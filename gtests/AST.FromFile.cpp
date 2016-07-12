@@ -185,7 +185,10 @@ INSTANTIATE_TEST_CASE_P(
         "voidFunction.frag",
         "whileLoop.frag",
         "nonVulkan.frag",
-        "spv.atomic.comp",
+        "negativeArraySize.comp",
+        "precise.tesc",
+        "precise_struct_block.vert",
+        "maxClipDistances.vert",
     })),
     FileNameAsCustomTestSuffix
 );

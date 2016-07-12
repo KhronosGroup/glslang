@@ -2,16 +2,16 @@ hlsl.void.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:2  Function Definition: foo1( (temp void)
+0:2  Function Definition: foo1( (global void)
 0:1    Function Parameters: 
-0:4  Function Definition: foo2( (temp void)
+0:4  Function Definition: foo2( (global void)
 0:2    Function Parameters: 
-0:8  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
+0:8  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:5    Function Parameters: 
 0:5      'input' (in 4-component vector of float)
 0:?     Sequence
-0:6      Function Call: foo1( (temp void)
-0:7      Function Call: foo2( (temp void)
+0:6      Function Call: foo1( (global void)
+0:7      Function Call: foo2( (global void)
 0:?   Linker Objects
 
 
@@ -21,16 +21,16 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:2  Function Definition: foo1( (temp void)
+0:2  Function Definition: foo1( (global void)
 0:1    Function Parameters: 
-0:4  Function Definition: foo2( (temp void)
+0:4  Function Definition: foo2( (global void)
 0:2    Function Parameters: 
-0:8  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
+0:8  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:5    Function Parameters: 
 0:5      'input' (in 4-component vector of float)
 0:?     Sequence
-0:6      Function Call: foo1( (temp void)
-0:7      Function Call: foo2( (temp void)
+0:6      Function Call: foo1( (global void)
+0:7      Function Call: foo2( (global void)
 0:?   Linker Objects
 
 // Module Version 10000

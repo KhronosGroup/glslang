@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2016 Google, Inc.
+//Copyright (C) 2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -105,16 +106,119 @@ bool HlslGrammar::acceptCompilationUnit()
 }
 
 // declaration
-//      : SEMICOLON
-//      : fully_specified_type SEMICOLON
-//      | fully_specified_type identifier array_specifier post_decls (EQUAL expression)opt SEMICOLON
-//      | fully_specified_type identifier function_parameters post_decls SEMICOLON           // function prototype
+//      : fully_specified_type declarator_list SEMICOLON
 //      | fully_specified_type identifier function_parameters post_decls compound_statement  // function definition
+//      | typedef declaration
 //
-// 'node' could get created if the declaration creates code, like an initializer
+// declarator_list
+//      : declarator COMMA declarator COMMA declarator...  // zero or more declarators
+//
+// declarator
+//      : identifier array_specifier post_decls
+//      | identifier array_specifier post_decls EQUAL assignment_expression
+//      | identifier function_parameters post_decls                                          // function prototype
+//
+// Parsing has to go pretty far in to know whether it's a variable, prototype, or
+// function definition, so the implementation below doesn't perfectly divide up the grammar
+// as above.  (The 'identifier' in the first item in init_declarator list is the
+// same as 'identifier' for function declarations.)
+//
+// 'node' could get populated if the declaration creates code, like an initializer
 // or a function body.
 //
 bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
+{
+    node = nullptr;
+    bool list = false;
+
+    // typedef
+    bool typedefDecl = acceptTokenClass(EHTokTypedef);
+
+    // fully_specified_type
+    TType type;
+    if (! acceptFullySpecifiedType(type))
+        return false;
+    if (type.getQualifier().storage == EvqTemporary && parseContext.symbolTable.atGlobalLevel())
+        type.getQualifier().storage = EvqGlobal;
+
+    // identifier
+    HlslToken idToken;
+    while (acceptIdentifier(idToken)) {
+        // function_parameters
+        TFunction* function = new TFunction(idToken.string, type);
+        if (acceptFunctionParameters(*function)) {
+            // post_decls
+            acceptPostDecls(type);
+
+            // compound_statement (function body definition) or just a prototype?
+            if (peekTokenClass(EHTokLeftBrace)) {
+                if (list)
+                    parseContext.error(idToken.loc, "function body can't be in a declarator list", "{", "");
+                if (typedefDecl)
+                    parseContext.error(idToken.loc, "function body can't be in a typedef", "{", "");
+                return acceptFunctionDefinition(*function, node);
+            } else {
+                if (typedefDecl)
+                    parseContext.error(idToken.loc, "function typedefs not implemented", "{", "");
+                parseContext.handleFunctionDeclarator(idToken.loc, *function, true);
+            }
+        } else {
+            // a variable declaration
+
+            // array_specifier
+            TArraySizes* arraySizes = nullptr;
+            acceptArraySpecifier(arraySizes);
+
+            // post_decls
+            acceptPostDecls(type);
+
+            // EQUAL assignment_expression
+            TIntermTyped* expressionNode = nullptr;
+            if (acceptTokenClass(EHTokAssign)) {
+                if (typedefDecl)
+                    parseContext.error(idToken.loc, "can't have an initializer", "typedef", "");
+                if (! acceptAssignmentExpression(expressionNode)) {
+                    expected("initializer");
+                    return false;
+                }
+            }
+
+            if (typedefDecl)
+                parseContext.declareTypedef(idToken.loc, *idToken.string, type, arraySizes);
+            else {
+                // Declare the variable and add any initializer code to the AST.
+                // The top-level node is always made into an aggregate, as that's
+                // historically how the AST has been.
+                node = intermediate.growAggregate(node,
+                                                  parseContext.declareVariable(idToken.loc, *idToken.string, type,
+                                                                               arraySizes, expressionNode),
+                                                  idToken.loc);
+            }
+        }
+
+        if (acceptTokenClass(EHTokComma)) {
+            list = true;
+            continue;
+        }
+    };
+
+    // The top-level node is a sequence.
+    if (node != nullptr)
+        node->getAsAggregate()->setOperator(EOpSequence);
+
+    // SEMICOLON
+    if (! acceptTokenClass(EHTokSemicolon)) {
+        expected(";");
+        return false;
+    }
+    
+    return true;
+}
+
+// control_declaration
+//      : fully_specified_type identifier EQUAL expression
+//
+bool HlslGrammar::acceptControlDeclaration(TIntermNode*& node)
 {
     node = nullptr;
 
@@ -125,50 +229,25 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
 
     // identifier
     HlslToken idToken;
-    if (acceptIdentifier(idToken)) {
-        // array_specifier
-        TArraySizes* arraySizes = nullptr;
-        acceptArraySpecifier(arraySizes);
-
-        // post_decls
-        acceptPostDecls(type);
-
-        // EQUAL expression
-        TIntermTyped* expressionNode = nullptr;
-        if (acceptTokenClass(EHTokAssign)) {
-            if (! acceptExpression(expressionNode)) {
-                expected("initializer");
-                return false;
-            }
-        }
-
-        // SEMICOLON
-        if (acceptTokenClass(EHTokSemicolon)) {
-            node = parseContext.declareVariable(idToken.loc, *idToken.string, type, arraySizes, expressionNode);
-            return true;
-        }
-
-        // function_parameters
-        TFunction* function = new TFunction(idToken.string, type);
-        if (acceptFunctionParameters(*function)) {
-            // post_decls
-            acceptPostDecls(type);
-
-            // compound_statement
-            if (peekTokenClass(EHTokLeftBrace))
-                return acceptFunctionDefinition(*function, node);
-
-            // SEMICOLON
-            if (acceptTokenClass(EHTokSemicolon))
-                return true;
-
-            return false;
-        }
+    if (! acceptIdentifier(idToken)) {
+        expected("identifier");
+        return false;
     }
 
-    // SEMICOLON
-    if (acceptTokenClass(EHTokSemicolon))
-        return true;
+    // EQUAL
+    TIntermTyped* expressionNode = nullptr;
+    if (! acceptTokenClass(EHTokAssign)) {
+        expected("=");
+        return false;
+    }
+
+    // expression
+    if (! acceptExpression(expressionNode)) {
+        expected("initializer");
+        return false;
+    }
+
+    node = parseContext.declareVariable(idToken.loc, *idToken.string, type, 0, expressionNode);
 
     return true;
 }
@@ -254,12 +333,174 @@ void HlslGrammar::acceptQualifier(TQualifier& qualifier)
     } while (true);
 }
 
+// template_type
+//      : FLOAT
+//      | DOUBLE
+//      | INT
+//      | DWORD
+//      | UINT
+//      | BOOL
+//
+bool HlslGrammar::acceptTemplateType(TBasicType& basicType)
+{
+    switch (peek()) {
+    case EHTokFloat:
+        basicType = EbtFloat;
+        break;
+    case EHTokDouble:
+        basicType = EbtDouble;
+        break;
+    case EHTokInt:
+    case EHTokDword:
+        basicType = EbtInt;
+        break;
+    case EHTokUint:
+        basicType = EbtUint;
+        break;
+    case EHTokBool:
+        basicType = EbtBool;
+        break;
+    default:
+        return false;
+    }
+
+    advanceToken();
+
+    return true;
+}
+
+// vector_template_type
+//      : VECTOR
+//      | VECTOR LEFT_ANGLE template_type COMMA integer_literal RIGHT_ANGLE
+//
+bool HlslGrammar::acceptVectorTemplateType(TType& type)
+{
+    if (! acceptTokenClass(EHTokVector))
+        return false;
+
+    if (! acceptTokenClass(EHTokLeftAngle)) {
+        // in HLSL, 'vector' alone means float4.
+        new(&type) TType(EbtFloat, EvqTemporary, 4);
+        return true;
+    }
+
+    TBasicType basicType;
+    if (! acceptTemplateType(basicType)) {
+        expected("scalar type");
+        return false;
+    }
+
+    // COMMA
+    if (! acceptTokenClass(EHTokComma)) {
+        expected(",");
+        return false;
+    }
+
+    // integer
+    if (! peekTokenClass(EHTokIntConstant)) {
+        expected("literal integer");
+        return false;
+    }
+
+    TIntermTyped* vecSize;
+    if (! acceptLiteral(vecSize))
+        return false;
+
+    const int vecSizeI = vecSize->getAsConstantUnion()->getConstArray()[0].getIConst();
+
+    new(&type) TType(basicType, EvqTemporary, vecSizeI);
+
+    if (vecSizeI == 1)
+        type.makeVector();
+
+    if (!acceptTokenClass(EHTokRightAngle)) {
+        expected("right angle bracket");
+        return false;
+    }
+
+    return true;
+}
+
+// matrix_template_type
+//      : MATRIX
+//      | MATRIX LEFT_ANGLE template_type COMMA integer_literal COMMA integer_literal RIGHT_ANGLE
+//
+bool HlslGrammar::acceptMatrixTemplateType(TType& type)
+{
+    if (! acceptTokenClass(EHTokMatrix))
+        return false;
+
+    if (! acceptTokenClass(EHTokLeftAngle)) {
+        // in HLSL, 'matrix' alone means float4x4.
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 4, 4);
+        return true;
+    }
+
+    TBasicType basicType;
+    if (! acceptTemplateType(basicType)) {
+        expected("scalar type");
+        return false;
+    }
+
+    // COMMA
+    if (! acceptTokenClass(EHTokComma)) {
+        expected(",");
+        return false;
+    }
+
+    // integer rows
+    if (! peekTokenClass(EHTokIntConstant)) {
+        expected("literal integer");
+        return false;
+    }
+
+    TIntermTyped* rows;
+    if (! acceptLiteral(rows))
+        return false;
+
+    // COMMA
+    if (! acceptTokenClass(EHTokComma)) {
+        expected(",");
+        return false;
+    }
+    
+    // integer cols
+    if (! peekTokenClass(EHTokIntConstant)) {
+        expected("literal integer");
+        return false;
+    }
+
+    TIntermTyped* cols;
+    if (! acceptLiteral(cols))
+        return false;
+
+    new(&type) TType(basicType, EvqTemporary, 0,
+                     cols->getAsConstantUnion()->getConstArray()[0].getIConst(),
+                     rows->getAsConstantUnion()->getConstArray()[0].getIConst());
+
+    if (!acceptTokenClass(EHTokRightAngle)) {
+        expected("right angle bracket");
+        return false;
+    }
+
+    return true;
+}
+
+
 // If token is for a type, update 'type' with the type information,
 // and return true and advance.
 // Otherwise, return false, and don't advance
 bool HlslGrammar::acceptType(TType& type)
 {
     switch (peek()) {
+    case EHTokVector:
+        return acceptVectorTemplateType(type);
+        break;
+
+    case EHTokMatrix:
+        return acceptMatrixTemplateType(type);
+        break;
+
     case EHTokStruct:
         return acceptStruct(type);
         break;
@@ -348,6 +589,7 @@ bool HlslGrammar::acceptType(TType& type)
     case EHTokUint4:
         new(&type) TType(EbtUint, EvqTemporary, 4);
         break;
+
 
     case EHTokBool:
         new(&type) TType(EbtBool);
@@ -833,7 +1075,9 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
 
 // Accept an expression with parenthesis around it, where
 // the parenthesis ARE NOT expression parenthesis, but the
-// syntactically required ones like in "if ( expression )"
+// syntactically required ones like in "if ( expression )".
+//
+// Also accepts a declaration expression; "if (int a = expression)".
 //
 // Note this one is not set up to be speculative; as it gives
 // errors if not found.
@@ -844,9 +1088,21 @@ bool HlslGrammar::acceptParenExpression(TIntermTyped*& expression)
     if (! acceptTokenClass(EHTokLeftParen))
         expected("(");
 
-    if (! acceptExpression(expression)) {
-        expected("expression");
-        return false;
+    bool decl = false;
+    TIntermNode* declNode = nullptr;
+    decl = acceptControlDeclaration(declNode);
+    if (decl) {
+        if (declNode == nullptr || declNode->getAsTyped() == nullptr) {
+            expected("initialized declaration");
+            return false;
+        } else
+            expression = declNode->getAsTyped();
+    } else {
+        // no declaration
+        if (! acceptExpression(expression)) {
+            expected("expression");
+            return false;
+        }
     }
 
     // RIGHT_PAREN
@@ -891,28 +1147,77 @@ bool HlslGrammar::acceptExpression(TIntermTyped*& node)
     } while (true);
 }
 
+// initializer
+//      : LEFT_BRACE initializer_list RIGHT_BRACE
+//
+// initializer_list
+//      : assignment_expression COMMA assignment_expression COMMA ...
+//
+bool HlslGrammar::acceptInitializer(TIntermTyped*& node)
+{
+    // LEFT_BRACE
+    if (! acceptTokenClass(EHTokLeftBrace))
+        return false;
+
+    // initializer_list
+    TSourceLoc loc = token.loc;
+    node = nullptr;
+    do {
+        // assignment_expression
+        TIntermTyped* expr;
+        if (! acceptAssignmentExpression(expr)) {
+            expected("assignment expression in initializer list");
+            return false;
+        }
+        node = intermediate.growAggregate(node, expr, loc);
+
+        // COMMA
+        if (acceptTokenClass(EHTokComma))
+            continue;
+
+        // RIGHT_BRACE
+        if (acceptTokenClass(EHTokRightBrace))
+            return true;
+
+        expected(", or }");
+        return false;
+    } while (true);
+}
+
 // Accept an assignment expression, where assignment operations
-// associate right-to-left.  This is, it is implicit, for example
+// associate right-to-left.  That is, it is implicit, for example
 //
 //    a op (b op (c op d))
 //
 // assigment_expression
 //      : binary_expression op binary_expression op binary_expression ...
+//      | initializer
 //
 bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
 {
+    // initializer
+    if (peekTokenClass(EHTokLeftBrace)) {
+        if (acceptInitializer(node))
+            return true;
+
+        expected("initializer");
+        return false;
+    }
+
+    // binary_expression
     if (! acceptBinaryExpression(node, PlLogicalOr))
         return false;
 
+    // assignment operation?
     TOperator assignOp = HlslOpMap::assignment(peek());
     if (assignOp == EOpNull)
         return true;
 
-    // ... op
+    // assignment op
     TSourceLoc loc = token.loc;
     advanceToken();
 
-    // ... binary_expression
+    // binary_expression
     // But, done by recursing this function, which automatically
     // gets the right-to-left associativity.
     TIntermTyped* rightNode = nullptr;
@@ -1271,8 +1576,16 @@ bool HlslGrammar::acceptCompoundStatement(TIntermNode*& retStatement)
     // statement statement ...
     TIntermNode* statement = nullptr;
     while (acceptStatement(statement)) {
-        // hook it up
-        compoundStatement = intermediate.growAggregate(compoundStatement, statement);
+        TIntermBranch* branch = statement ? statement->getAsBranchNode() : nullptr;
+        if (branch != nullptr && (branch->getFlowOp() == EOpCase ||
+                                  branch->getFlowOp() == EOpDefault)) {
+            // hook up individual subsequences within a switch statement
+            parseContext.wrapupSwitchSubsequence(compoundStatement, statement);
+            compoundStatement = nullptr;
+        } else {
+            // hook it up to the growing compound statement
+            compoundStatement = intermediate.growAggregate(compoundStatement, statement);
+        }
     }
     if (compoundStatement)
         compoundStatement->setOperator(EOpSequence);
@@ -1346,6 +1659,8 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
 
     case EHTokCase:
         return acceptCaseLabel(statement);
+    case EHTokDefault:
+        return acceptDefaultLabel(statement);
 
     case EHTokSemicolon:
         return acceptTokenClass(EHTokSemicolon);
@@ -1476,9 +1791,34 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement)
     return true;
 }
 
+// switch_statement
+//      : SWITCH LEFT_PAREN expression RIGHT_PAREN compound_statement
+//
 bool HlslGrammar::acceptSwitchStatement(TIntermNode*& statement)
 {
-    return false;
+    // SWITCH
+    TSourceLoc loc = token.loc;
+    if (! acceptTokenClass(EHTokSwitch))
+        return false;
+
+    // LEFT_PAREN expression RIGHT_PAREN
+    parseContext.pushScope();
+    TIntermTyped* switchExpression;
+    if (! acceptParenExpression(switchExpression)) {
+        parseContext.popScope();
+        return false;
+    }
+
+    // compound_statement
+    parseContext.pushSwitchSequence(new TIntermSequence);
+    bool statementOkay = acceptCompoundStatement(statement);
+    if (statementOkay)
+        statement = parseContext.addSwitch(loc, switchExpression, statement ? statement->getAsAggregate() : nullptr);
+
+    parseContext.popSwitchSequence();
+    parseContext.popScope();
+
+    return statementOkay;
 }
 
 // iteration_statement
@@ -1567,9 +1907,14 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
         // of the for sub-statement
         parseContext.pushScope();
 
-        // initializer SEMI_COLON
-        TIntermTyped* initializer = nullptr; // TODO, "for (initializer" needs to support decl. statement
-        acceptExpression(initializer);
+        // initializer
+        TIntermNode* initNode = nullptr;
+        if (! acceptControlDeclaration(initNode)) {
+            TIntermTyped* initExpr = nullptr;
+            acceptExpression(initExpr);
+            initNode = initExpr;
+        }
+        // SEMI_COLON
         if (! acceptTokenClass(EHTokSemicolon))
             expected(";");
 
@@ -1592,7 +1937,7 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
             return false;
         }
 
-        statement = intermediate.addForLoop(statement, initializer, condition, iterator, true, loc);
+        statement = intermediate.addForLoop(statement, initNode, condition, iterator, true, loc);
 
         parseContext.popScope();
         parseContext.unnestLooping();
@@ -1614,42 +1959,96 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
 //
 bool HlslGrammar::acceptJumpStatement(TIntermNode*& statement)
 {
-    switch (peek()) {
+    EHlslTokenClass jump = peek();
+    switch (jump) {
     case EHTokContinue:
     case EHTokBreak:
     case EHTokDiscard:
-        // TODO
-        return false;
-
     case EHTokReturn:
-        // return
-        if (acceptTokenClass(EHTokReturn)) {
-            // expression
-            TIntermTyped* node;
-            if (acceptExpression(node)) {
-                // hook it up
-                statement = intermediate.addBranch(EOpReturn, node, token.loc);
-            } else
-                statement = intermediate.addBranch(EOpReturn, token.loc);
-
-            // SEMICOLON
-            if (! acceptTokenClass(EHTokSemicolon)) {
-                expected(";");
-                return false;
-            }
-
-            return true;
-        }
-
+        advanceToken();
+        break;
     default:
+        // not something we handle in this function
         return false;
     }
+
+    switch (jump) {
+    case EHTokContinue:
+        statement = intermediate.addBranch(EOpContinue, token.loc);
+        break;
+    case EHTokBreak:
+        statement = intermediate.addBranch(EOpBreak, token.loc);
+        break;
+    case EHTokDiscard:
+        statement = intermediate.addBranch(EOpKill, token.loc);
+        break;
+
+    case EHTokReturn:
+    {
+        // expression
+        TIntermTyped* node;
+        if (acceptExpression(node)) {
+            // hook it up
+            statement = intermediate.addBranch(EOpReturn, node, token.loc);
+        } else
+            statement = intermediate.addBranch(EOpReturn, token.loc);
+        break;
+    }
+
+    default:
+        assert(0);
+        return false;
+    }
+
+    // SEMICOLON
+    if (! acceptTokenClass(EHTokSemicolon))
+        expected(";");
+    
+    return true;
 }
 
-
+// case_label
+//      : CASE expression COLON
+//
 bool HlslGrammar::acceptCaseLabel(TIntermNode*& statement)
 {
-    return false;
+    TSourceLoc loc = token.loc;
+    if (! acceptTokenClass(EHTokCase))
+        return false;
+
+    TIntermTyped* expression;
+    if (! acceptExpression(expression)) {
+        expected("case expression");
+        return false;
+    }
+
+    if (! acceptTokenClass(EHTokColon)) {
+        expected(":");
+        return false;
+    }
+
+    statement = parseContext.intermediate.addBranch(EOpCase, expression, loc);
+
+    return true;
+}
+
+// default_label
+//      : DEFAULT COLON
+//
+bool HlslGrammar::acceptDefaultLabel(TIntermNode*& statement)
+{
+    TSourceLoc loc = token.loc;
+    if (! acceptTokenClass(EHTokDefault))
+        return false;
+
+    if (! acceptTokenClass(EHTokColon)) {
+        expected(":");
+        return false;
+    }
+
+    statement = parseContext.intermediate.addBranch(EOpDefault, loc);
+
+    return true;
 }
 
 // array_specifier

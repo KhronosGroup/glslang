@@ -1,4 +1,4 @@
-#version 310 es
+#version 450
 
 
 
@@ -22,6 +22,7 @@ void main()
     func(counter);
     uint val = atomicCounter(countArr[2]);
     atomicCounterDecrement(counter);
+    atomicCounterIncrement(counter);
 }
 
 shared int atomi;

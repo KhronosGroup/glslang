@@ -23,7 +23,7 @@ There are two components:
 How to add a feature protected by a version/extension/stage/profile:  See the
 comment in `glslang/MachineIndependent/Versions.cpp`.
 
-Things left to do:  See `Todo.txt`
+Tasks waiting to be done are documented as GitHub issues.
 
 Execution of Standalone Wrapper
 -------------------------------
@@ -177,15 +177,11 @@ For more information, please check `gtests/` directory's
 
 For the `runtests` script, it will generate current results in the
 `localResults/` directory and `diff` them against the `baseResults/`.
-The integration tests to run via the `runtests` script is registered
-via various `Test/test-*` text files and `Test/testlist`.
 When you want to update the tracked test results, they need to be
 copied from `localResults/` to `baseResults/`.  This can be done by
 the `bump` shell script.
 
-The list of files tested comes from `testlist`, and lists input shaders
-in this directory, which must all be public for this to work.  However,
-you can add your own private list of tests, not tracked here, by using
+You can add your own private list of tests, not tracked publicly, by using
 `localtestlist` to list non-tracked tests.  This is automatically read
 by `runtests` and included in the `diff` and `bump` process.
 

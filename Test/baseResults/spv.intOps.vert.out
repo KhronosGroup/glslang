@@ -44,14 +44,6 @@ Linked vertex stage:
                               Name 173  "u3"
                               Name 182  "i3"
                               Name 247  "v4"
-                              Decorate 210 RelaxedPrecision
-                              Decorate 216 RelaxedPrecision
-                              Decorate 223 RelaxedPrecision
-                              Decorate 230 RelaxedPrecision
-                              Decorate 234 RelaxedPrecision
-                              Decorate 240 RelaxedPrecision
-                              Decorate 261 RelaxedPrecision
-                              Decorate 265 RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

@@ -374,6 +374,18 @@ ERROR: node is still EOpNull!
 0:?       1 (const int)
 0:?       9.000000
 0:?       false (const bool)
+0:?     'cval1' (const bool)
+0:?       true (const bool)
+0:?     'cval2' (const bool)
+0:?       false (const bool)
+0:?     'cval3' (const bool)
+0:?       false (const bool)
+0:?     'cval4' (const bool)
+0:?       true (const bool)
+0:?     'cval5' (const bool)
+0:?       false (const bool)
+0:?     'cval6' (const bool)
+0:?       true (const bool)
 
 
 Linked fragment stage:
@@ -744,4 +756,16 @@ ERROR: node is still EOpNull!
 0:?       1 (const int)
 0:?       9.000000
 0:?       false (const bool)
+0:?     'cval1' (const bool)
+0:?       true (const bool)
+0:?     'cval2' (const bool)
+0:?       false (const bool)
+0:?     'cval3' (const bool)
+0:?       false (const bool)
+0:?     'cval4' (const bool)
+0:?       true (const bool)
+0:?     'cval5' (const bool)
+0:?       false (const bool)
+0:?     'cval6' (const bool)
+0:?       true (const bool)
 

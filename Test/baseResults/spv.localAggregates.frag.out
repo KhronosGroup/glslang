@@ -44,8 +44,11 @@ Linked fragment stage:
                               Name 128  "samp2D"
                               Name 134  "foo"
                               Name 135  "foo2"
+                              Decorate 15(foo3) Flat
                               Decorate 90(condition) Flat
                               Decorate 128(samp2D) DescriptorSet 0
+                              Decorate 134(foo) Flat
+                              Decorate 135(foo2) Flat
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

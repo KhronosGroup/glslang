@@ -180,8 +180,7 @@ public:
         shader->setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
         if (!entryPointName.empty()) shader->setEntryPoint(entryPointName.c_str());
         // Reinitialize glslang if the semantics change.
-        GlslangInitializer::InitializationToken token =
-            GlobalTestSettings.initializer->acquire(controls);
+        GlobalTestSettings.initializer->acquire(controls);
         return shader->parse(
                 (resources ? resources : &glslang::DefaultTBuiltInResource),
                 defaultVersion, isForwardCompatible, controls);
@@ -265,8 +264,7 @@ public:
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
-        GlslangResult result =
-            compileAndLink(testName, input, entryPointName, controls);
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
@@ -291,7 +289,7 @@ public:
         glslang::TShader::ForbidInclude includer;
         const bool success = shader.preprocess(
             &glslang::DefaultTBuiltInResource, defaultVersion, defaultProfile,
-            forceVersionProfile, isForwardCompatible, EShMsgOnlyPreprocessor,
+            forceVersionProfile, isForwardCompatible, (EShMessages)(EShMsgOnlyPreprocessor | EShMsgCascadingErrors),
             &ppShader, includer);
 
         std::string log = shader.getInfoLog();

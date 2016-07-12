@@ -18,7 +18,6 @@ ERROR: 0:22: 'EvaluateAttributeSnapped' : no matching overloaded function found
 ERROR: 0:23: 'f16tof32' : no matching overloaded function found 
 ERROR: 0:24: 'firstbithigh' : no matching overloaded function found 
 ERROR: 0:25: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:26: 'fma' : no matching overloaded function found 
 ERROR: 0:27: 'fwidth' : no matching overloaded function found 
 ERROR: 0:28: 'InterlockedAdd' : no matching overloaded function found 
 ERROR: 0:29: 'InterlockedAdd' : no matching overloaded function found 
@@ -61,7 +60,6 @@ ERROR: 0:83: 'EvaluateAttributeSnapped' : no matching overloaded function found
 ERROR: 0:84: 'f16tof32' : no matching overloaded function found 
 ERROR: 0:85: 'firstbithigh' : no matching overloaded function found 
 ERROR: 0:86: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:87: 'fma' : no matching overloaded function found 
 ERROR: 0:88: 'fwidth' : no matching overloaded function found 
 ERROR: 0:89: 'InterlockedAdd' : no matching overloaded function found 
 ERROR: 0:90: 'InterlockedAdd' : no matching overloaded function found 
@@ -96,7 +94,6 @@ ERROR: 0:128: 'EvaluateAttributeSnapped' : no matching overloaded function found
 ERROR: 0:129: 'f16tof32' : no matching overloaded function found 
 ERROR: 0:130: 'firstbithigh' : no matching overloaded function found 
 ERROR: 0:131: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:132: 'fma' : no matching overloaded function found 
 ERROR: 0:133: 'fwidth' : no matching overloaded function found 
 ERROR: 0:134: 'InterlockedAdd' : no matching overloaded function found 
 ERROR: 0:135: 'InterlockedAdd' : no matching overloaded function found 
@@ -131,7 +128,6 @@ ERROR: 0:173: 'EvaluateAttributeSnapped' : no matching overloaded function found
 ERROR: 0:174: 'f16tof32' : no matching overloaded function found 
 ERROR: 0:175: 'firstbithigh' : no matching overloaded function found 
 ERROR: 0:176: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:177: 'fma' : no matching overloaded function found 
 ERROR: 0:178: 'fwidth' : no matching overloaded function found 
 ERROR: 0:179: 'InterlockedAdd' : no matching overloaded function found 
 ERROR: 0:180: 'InterlockedAdd' : no matching overloaded function found 
@@ -150,13 +146,13 @@ ERROR: 0:192: 'InterlockedXor' : no matching overloaded function found
 ERROR: 0:193: 'noise' : no matching overloaded function found 
 ERROR: 0:194: 'reversebits' : no matching overloaded function found 
 ERROR: 0:195: 'transpose' : no matching overloaded function found 
-ERROR: 151 compilation errors.  No code generated.
+ERROR: 147 compilation errors.  No code generated.
 
 
 Shader version: 450
 local_size = (1, 1, 1)
 ERROR: node is still EOpNull!
-0:56  Function Definition: ComputeShaderFunction(f1;f1;f1;i1; (temp float)
+0:56  Function Definition: ComputeShaderFunctionS(f1;f1;f1;i1; (global float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:2      'inF1' (in float)
@@ -201,8 +197,6 @@ ERROR: node is still EOpNull!
 0:24        0.000000
 0:25      Constant:
 0:25        0.000000
-0:26      Constant:
-0:26        0.000000
 0:27      Constant:
 0:27        0.000000
 0:28      Constant:
@@ -252,7 +246,7 @@ ERROR: node is still EOpNull!
 0:53      Branch: Return with expression
 0:53        Constant:
 0:53          0.000000
-0:65  Function Definition: ComputeShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
+0:65  Function Definition: ComputeShaderFunction1(vf1;vf1;vf1;vi1; (global 1-component vector of float)
 0:57    Function Parameters: 
 0:57      'inF0' (in 1-component vector of float)
 0:57      'inF1' (in 1-component vector of float)
@@ -264,7 +258,7 @@ ERROR: node is still EOpNull!
 0:62      Branch: Return with expression
 0:62        Constant:
 0:62          0.000000
-0:112  Function Definition: ComputeShaderFunction(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
+0:112  Function Definition: ComputeShaderFunction2(vf2;vf2;vf2;vi2; (global 2-component vector of float)
 0:66    Function Parameters: 
 0:66      'inF0' (in 2-component vector of float)
 0:66      'inF1' (in 2-component vector of float)
@@ -307,8 +301,6 @@ ERROR: node is still EOpNull!
 0:85        0.000000
 0:86      Constant:
 0:86        0.000000
-0:87      Constant:
-0:87        0.000000
 0:88      Constant:
 0:88        0.000000
 0:89      Constant:
@@ -349,7 +341,7 @@ ERROR: node is still EOpNull!
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:157  Function Definition: ComputeShaderFunction(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
+0:157  Function Definition: ComputeShaderFunction3(vf3;vf3;vf3;vi3; (global 3-component vector of float)
 0:113    Function Parameters: 
 0:113      'inF0' (in 3-component vector of float)
 0:113      'inF1' (in 3-component vector of float)
@@ -388,8 +380,6 @@ ERROR: node is still EOpNull!
 0:130        0.000000
 0:131      Constant:
 0:131        0.000000
-0:132      Constant:
-0:132        0.000000
 0:133      Constant:
 0:133        0.000000
 0:134      Constant:
@@ -431,7 +421,7 @@ ERROR: node is still EOpNull!
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:202  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
+0:202  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
 0:158    Function Parameters: 
 0:158      'inF0' (in 4-component vector of float)
 0:158      'inF1' (in 4-component vector of float)
@@ -470,8 +460,6 @@ ERROR: node is still EOpNull!
 0:175        0.000000
 0:176      Constant:
 0:176        0.000000
-0:177      Constant:
-0:177        0.000000
 0:178      Constant:
 0:178        0.000000
 0:179      Constant:
@@ -523,7 +511,7 @@ Linked compute stage:
 Shader version: 450
 local_size = (1, 1, 1)
 ERROR: node is still EOpNull!
-0:56  Function Definition: ComputeShaderFunction(f1;f1;f1;i1; (temp float)
+0:56  Function Definition: ComputeShaderFunctionS(f1;f1;f1;i1; (global float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:2      'inF1' (in float)
@@ -568,8 +556,6 @@ ERROR: node is still EOpNull!
 0:24        0.000000
 0:25      Constant:
 0:25        0.000000
-0:26      Constant:
-0:26        0.000000
 0:27      Constant:
 0:27        0.000000
 0:28      Constant:
@@ -619,7 +605,7 @@ ERROR: node is still EOpNull!
 0:53      Branch: Return with expression
 0:53        Constant:
 0:53          0.000000
-0:65  Function Definition: ComputeShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
+0:65  Function Definition: ComputeShaderFunction1(vf1;vf1;vf1;vi1; (global 1-component vector of float)
 0:57    Function Parameters: 
 0:57      'inF0' (in 1-component vector of float)
 0:57      'inF1' (in 1-component vector of float)
@@ -631,7 +617,7 @@ ERROR: node is still EOpNull!
 0:62      Branch: Return with expression
 0:62        Constant:
 0:62          0.000000
-0:112  Function Definition: ComputeShaderFunction(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
+0:112  Function Definition: ComputeShaderFunction2(vf2;vf2;vf2;vi2; (global 2-component vector of float)
 0:66    Function Parameters: 
 0:66      'inF0' (in 2-component vector of float)
 0:66      'inF1' (in 2-component vector of float)
@@ -674,8 +660,6 @@ ERROR: node is still EOpNull!
 0:85        0.000000
 0:86      Constant:
 0:86        0.000000
-0:87      Constant:
-0:87        0.000000
 0:88      Constant:
 0:88        0.000000
 0:89      Constant:
@@ -716,7 +700,7 @@ ERROR: node is still EOpNull!
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:157  Function Definition: ComputeShaderFunction(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
+0:157  Function Definition: ComputeShaderFunction3(vf3;vf3;vf3;vi3; (global 3-component vector of float)
 0:113    Function Parameters: 
 0:113      'inF0' (in 3-component vector of float)
 0:113      'inF1' (in 3-component vector of float)
@@ -755,8 +739,6 @@ ERROR: node is still EOpNull!
 0:130        0.000000
 0:131      Constant:
 0:131        0.000000
-0:132      Constant:
-0:132        0.000000
 0:133      Constant:
 0:133        0.000000
 0:134      Constant:
@@ -798,7 +780,7 @@ ERROR: node is still EOpNull!
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:202  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
+0:202  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
 0:158    Function Parameters: 
 0:158      'inF0' (in 4-component vector of float)
 0:158      'inF1' (in 4-component vector of float)
@@ -837,8 +819,6 @@ ERROR: node is still EOpNull!
 0:175        0.000000
 0:176      Constant:
 0:176        0.000000
-0:177      Constant:
-0:177        0.000000
 0:178      Constant:
 0:178        0.000000
 0:179      Constant:

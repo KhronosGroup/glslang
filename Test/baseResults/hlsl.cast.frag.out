@@ -2,7 +2,7 @@ hlsl.cast.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:5  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
+0:5  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
 0:2      'input' (in 4-component vector of float)
 0:?     Sequence
@@ -28,7 +28,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:5  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
+0:5  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
 0:2      'input' (in 4-component vector of float)
 0:?     Sequence

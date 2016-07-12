@@ -11,7 +11,7 @@ uint4 gs_ua4;
 uint4 gs_ub4;
 uint4 gs_uc4;
 
-float VertexShaderFunction(float inF0, float inF1, float inF2, int inI0)
+float VertexShaderFunctionS(float inF0, float inF1, float inF2, int inI0)
 {
     uint out_u1;
 
@@ -39,7 +39,7 @@ float VertexShaderFunction(float inF0, float inF1, float inF2, int inI0)
     f16tof32(inF0);                           // expected error: only integer inputs
     firstbithigh(inF0);                       // expected error: only integer inputs
     firstbitlow(inF0);                        // expected error: only integer inputs
-    fma(inF0, inF1, inF2);                    // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     fwidth(inF0);                             // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua, gs_ub);             // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua, gs_ub, out_u1);     // expected error: only valid in pixel stage
@@ -71,7 +71,7 @@ float VertexShaderFunction(float inF0, float inF1, float inF2, int inI0)
     return 0.0;
 }
 
-float1 VertexShaderFunction(float1 inF0, float1 inF1, float1 inF2, int1 inI0)
+float1 VertexShaderFunction1(float1 inF0, float1 inF1, float1 inF2, int1 inI0)
 {
     // TODO: ... add when float1 prototypes are generated
 
@@ -80,7 +80,7 @@ float1 VertexShaderFunction(float1 inF0, float1 inF1, float1 inF2, int1 inI0)
     return 0.0;
 }
 
-float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
+float2 VertexShaderFunction2(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
 {
     uint2 out_u2;
 
@@ -102,7 +102,7 @@ float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
     f16tof32(inF0);                                             // expected error: only integer inputs
     firstbithigh(inF0);                                         // expected error: only integer inputs
     firstbitlow(inF0);                                          // expected error: only integer inputs
-    fma(inF0, inF1, inF2);                                      // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     fwidth(inF0);                                               // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua2, gs_ub2);                             // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua2, gs_ub2, out_u2);                     // expected error: only valid in pixel stage
@@ -127,7 +127,7 @@ float2 VertexShaderFunction(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
     return float2(1,2);
 }
 
-float3 VertexShaderFunction(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
+float3 VertexShaderFunction3(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
 {
     uint3 out_u3;
 
@@ -147,7 +147,7 @@ float3 VertexShaderFunction(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
     f16tof32(inF0);                                             // expected error: only integer inputs
     firstbithigh(inF0);                                         // expected error: only integer inputs
     firstbitlow(inF0);                                          // expected error: only integer inputs
-    fma(inF0, inF1, inF2);                                      // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     fwidth(inF0);                                               // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua3, gs_ub3);                             // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua3, gs_ub3, out_u3);                     // expected error: only valid in pixel stage
@@ -192,7 +192,7 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
     f16tof32(inF0);                                             // expected error: only integer inputs
     firstbithigh(inF0);                                         // expected error: only integer inputs
     firstbitlow(inF0);                                          // expected error: only integer inputs
-    fma(inF0, inF1, inF2);                                      // expected error: only double inputs
+    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
     fwidth(inF0);                                               // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua4, gs_ub4);                             // expected error: only valid in pixel stage
     InterlockedAdd(gs_ua4, gs_ub4, out_u4);                     // expected error: only valid in pixel stage
@@ -234,7 +234,6 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
     f16tof32(inF0);                          \
     firstbithigh(inF0);                      \
     firstbitlow(inF0);                       \
-    fma(inF0, inF1, inF2);                   \
     fwidth(inF0);                            \
     noise(inF0);                             \
     reversebits(inF0);                       \
@@ -248,7 +247,7 @@ float4 VertexShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
 
 // TODO: turn on non-square matrix tests when protos are available.
 
-float2x2 VertexShaderFunction(float2x2 inF0, float2x2 inF1, float2x2 inF2)
+float2x2 VertexShaderFunction2x2(float2x2 inF0, float2x2 inF1, float2x2 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
     MATFNS()
@@ -256,7 +255,7 @@ float2x2 VertexShaderFunction(float2x2 inF0, float2x2 inF1, float2x2 inF2)
     return float2x2(2,2,2,2);
 }
 
-float3x3 VertexShaderFunction(float3x3 inF0, float3x3 inF1, float3x3 inF2)
+float3x3 VertexShaderFunction3x3(float3x3 inF0, float3x3 inF1, float3x3 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
     MATFNS()
@@ -264,7 +263,7 @@ float3x3 VertexShaderFunction(float3x3 inF0, float3x3 inF1, float3x3 inF2)
     return float3x3(3,3,3,3,3,3,3,3,3);
 }
 
-float4x4 VertexShaderFunction(float4x4 inF0, float4x4 inF1, float4x4 inF2)
+float4x4 VertexShaderFunction4x4(float4x4 inF0, float4x4 inF1, float4x4 inF2)
 {
     // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
     MATFNS()

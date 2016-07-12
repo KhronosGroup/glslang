@@ -68,7 +68,7 @@ EShLanguage GetShaderStage(const std::string& stage)
 
 EShMessages DeriveOptions(Source source, Semantics semantics, Target target)
 {
-    EShMessages result = EShMsgDefault;
+    EShMessages result = EShMsgCascadingErrors;
 
     switch (source) {
         case Source::GLSL:
@@ -107,7 +107,7 @@ std::pair<bool, std::string> ReadFile(const std::string& path)
     if (fstream) {
         std::string contents;
         fstream.seekg(0, std::ios::end);
-        contents.reserve(fstream.tellg());
+        contents.reserve((std::string::size_type)fstream.tellg());
         fstream.seekg(0, std::ios::beg);
         contents.assign((std::istreambuf_iterator<char>(fstream)),
                         std::istreambuf_iterator<char>());

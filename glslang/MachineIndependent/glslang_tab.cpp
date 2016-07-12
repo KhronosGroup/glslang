@@ -827,8 +827,8 @@ static const yytype_uint16 yyrline[] =
     2399,  2399,  2413,  2416,  2424,  2432,  2443,  2444,  2448,  2455,
     2459,  2467,  2471,  2484,  2484,  2504,  2507,  2513,  2525,  2537,
     2537,  2552,  2552,  2568,  2568,  2589,  2592,  2598,  2601,  2607,
-    2611,  2618,  2623,  2628,  2635,  2653,  2662,  2666,  2673,  2676,
-    2682,  2682
+    2611,  2618,  2623,  2628,  2635,  2638,  2647,  2651,  2658,  2661,
+    2667,  2667
 };
 #endif
 
@@ -7360,80 +7360,65 @@ yyreduce:
   case 414:
 #line 2635 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
-        parseContext.functionReturnsValue = true;
-        if (parseContext.currentFunctionType->getBasicType() == EbtVoid) {
-            parseContext.error((yyvsp[-2].lex).loc, "void function cannot return a value", "return", "");
-            (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpReturn, (yyvsp[-2].lex).loc);
-        } else if (*(parseContext.currentFunctionType) != (yyvsp[-1].interm.intermTypedNode)->getType()) {
-            TIntermTyped* converted = parseContext.intermediate.addConversion(EOpReturn, *parseContext.currentFunctionType, (yyvsp[-1].interm.intermTypedNode));
-            if (converted) {
-                if (parseContext.version < 420)
-                    parseContext.warn((yyvsp[-2].lex).loc, "type conversion on return values was not explicitly allowed until version 420", "return", "");
-                (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpReturn, converted, (yyvsp[-2].lex).loc);
-            } else {
-                parseContext.error((yyvsp[-2].lex).loc, "type does not match, or is not convertible to, the function's return type", "return", "");
-                (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpReturn, (yyvsp[-1].interm.intermTypedNode), (yyvsp[-2].lex).loc);
-            }
-        } else
-            (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpReturn, (yyvsp[-1].interm.intermTypedNode), (yyvsp[-2].lex).loc);
+        (yyval.interm.intermNode) = parseContext.handleReturnValue((yyvsp[-2].lex).loc, (yyvsp[-1].interm.intermTypedNode));
     }
-#line 7381 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 7366 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 415:
-#line 2653 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 2638 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.requireStage((yyvsp[-1].lex).loc, EShLangFragment, "discard");
         (yyval.interm.intermNode) = parseContext.intermediate.addBranch(EOpKill, (yyvsp[-1].lex).loc);
     }
-#line 7390 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 7375 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 416:
-#line 2662 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 2647 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
         parseContext.intermediate.setTreeRoot((yyval.interm.intermNode));
     }
-#line 7399 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 7384 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 417:
-#line 2666 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 2651 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = parseContext.intermediate.growAggregate((yyvsp[-1].interm.intermNode), (yyvsp[0].interm.intermNode));
         parseContext.intermediate.setTreeRoot((yyval.interm.intermNode));
     }
-#line 7408 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 7393 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 418:
-#line 2673 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 2658 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 7416 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 7401 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 419:
-#line 2676 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 2661 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyval.interm.intermNode) = (yyvsp[0].interm.intermNode);
     }
-#line 7424 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 7409 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 420:
-#line 2682 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 2667 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         (yyvsp[0].interm).function = parseContext.handleFunctionDeclarator((yyvsp[0].interm).loc, *(yyvsp[0].interm).function, false /* not prototype */);
         (yyvsp[0].interm).intermNode = parseContext.handleFunctionDefinition((yyvsp[0].interm).loc, *(yyvsp[0].interm).function);
     }
-#line 7433 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 7418 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
   case 421:
-#line 2686 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 2671 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         //   May be best done as post process phase on intermediate code
         if (parseContext.currentFunctionType->getBasicType() != EbtVoid && ! parseContext.functionReturnsValue)
@@ -7449,11 +7434,11 @@ yyreduce:
         (yyval.interm.intermNode)->getAsAggregate()->setDebug(parseContext.contextPragma.debug);
         (yyval.interm.intermNode)->getAsAggregate()->addToPragmaTable(parseContext.contextPragma.pragmaTable);
     }
-#line 7453 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 7438 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 7457 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
+#line 7442 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -7681,5 +7666,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 2703 "MachineIndependent/glslang.y" /* yacc.c:1906  */
+#line 2688 "MachineIndependent/glslang.y" /* yacc.c:1906  */
 

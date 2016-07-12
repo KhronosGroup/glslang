@@ -2045,8 +2045,15 @@ Block& Builder::makeNewBlock()
 
 Builder::LoopBlocks& Builder::makeNewLoop()
 {
-    // Older MSVC versions don't allow inlining of blocks below.
-    LoopBlocks blocks = {makeNewBlock(), makeNewBlock(), makeNewBlock(), makeNewBlock()};
+    // This verbosity is needed to simultaneously get the same behavior
+    // everywhere (id's in the same order), have a syntax that works
+    // across lots of versions of C++, have no warnings from pedantic
+    // compilation modes, and leave the rest of the code alone.
+    Block& head            = makeNewBlock();
+    Block& body            = makeNewBlock();
+    Block& merge           = makeNewBlock();
+    Block& continue_target = makeNewBlock();
+    LoopBlocks blocks(head, body, merge, continue_target);
     loops.push(blocks);
     return loops.top();
 }

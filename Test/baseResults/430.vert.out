@@ -14,7 +14,7 @@ ERROR: 0:28: '' : cannot use invariant qualifier on a function parameter
 ERROR: 0:30: '' : cannot use layout qualifiers on a function parameter 
 ERROR: 0:31: '' : cannot use auxiliary or interpolation qualifiers on a function parameter 
 ERROR: 0:42: 'location' : overlapping use of location 53
-ERROR: 0:47: 'gl_ClipDistance array size' : must be less than gl_MaxClipDistances (8)
+ERROR: 0:47: 'gl_ClipDistance array size' : must be less than or equal to gl_MaxClipDistances (8)
 ERROR: 0:51: 'start' : undeclared identifier 
 ERROR: 0:51: '' : constant expression required 
 ERROR: 0:51: 'layout-id value' : scalar integer expression required 

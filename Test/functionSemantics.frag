@@ -68,3 +68,8 @@ void aggCall()
     float F;
     m(ivec2(F));  // test input conversion of single argument that's an aggregate; other function tests in 120.vert
 }
+
+vec4 badConv()
+{
+    return u;     // ERROR, can change scalar to vector
+}

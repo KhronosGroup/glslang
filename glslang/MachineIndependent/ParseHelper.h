@@ -197,6 +197,7 @@ public:
     TFunction* handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
     TIntermTyped* handleFunctionCall(const TSourceLoc&, TFunction*, TIntermNode*);
+    TIntermNode* handleReturnValue(const TSourceLoc&, TIntermTyped*);
     void checkLocation(const TSourceLoc&, TOperator);
     TIntermTyped* handleLengthMethod(const TSourceLoc&, TFunction*, TIntermNode*);
     void addInputArgumentConversions(const TFunction&, TIntermNode*&) const;

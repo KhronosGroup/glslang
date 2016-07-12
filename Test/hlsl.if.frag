@@ -25,4 +25,9 @@ float4 PixelShaderFunction(float4 input) : COLOR0
     } else {
         return -input;
     }
+
+	int ii;
+	if (float ii = input.z)
+	    ++ii;
+	++ii;
 }

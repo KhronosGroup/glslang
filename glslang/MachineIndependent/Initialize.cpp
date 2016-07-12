@@ -948,9 +948,9 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         (profile != EEsProfile && version >= 420)) {
         commonBuiltins.append(
             "highp uint packSnorm2x16(vec2);"
-            "highp vec2 unpackSnorm2x16(highp uint);"
+            "      vec2 unpackSnorm2x16(highp uint);"
             "highp uint packHalf2x16(mediump vec2);"
-            "mediump vec2 unpackHalf2x16(highp uint);"
+            "      vec2 unpackHalf2x16(highp uint);"
             "\n");
     }
 
@@ -958,9 +958,9 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
             "highp   uint packSnorm4x8  (mediump vec4);"
-            "mediump vec4 unpackSnorm4x8(highp   uint);"
+            "        vec4 unpackSnorm4x8(highp   uint);"
             "highp   uint packUnorm4x8  (mediump vec4);"
-            "mediump vec4 unpackUnorm4x8(highp   uint);"
+            "        vec4 unpackUnorm4x8(highp   uint);"
             "\n");
     }
 
@@ -1259,7 +1259,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     if (spvVersion.vulkan == 0) {
-        // gl_spirv TODO
         //
         // Atomic counter functions.
         //
@@ -1298,15 +1297,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec3 bitfieldInsert(uvec3 base, uvec3, int, int);"
             "uvec4 bitfieldInsert(uvec4 base, uvec4, int, int);"
 
-            "lowp   int findLSB(  int);"
-            "lowp ivec2 findLSB(ivec2);"
-            "lowp ivec3 findLSB(ivec3);"
-            "lowp ivec4 findLSB(ivec4);"
+            "  int findLSB(  int);"
+            "ivec2 findLSB(ivec2);"
+            "ivec3 findLSB(ivec3);"
+            "ivec4 findLSB(ivec4);"
 
-            "lowp   int findLSB( uint);"
-            "lowp ivec2 findLSB(uvec2);"
-            "lowp ivec3 findLSB(uvec3);"
-            "lowp ivec4 findLSB(uvec4);"
+            "  int findLSB( uint);"
+            "ivec2 findLSB(uvec2);"
+            "ivec3 findLSB(uvec3);"
+            "ivec4 findLSB(uvec4);"
 
             "\n");
     }
@@ -1398,25 +1397,25 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "highp uvec3 bitfieldReverse(highp uvec3);"
             "highp uvec4 bitfieldReverse(highp uvec4);"
 
-            "lowp   int bitCount(  int);"
-            "lowp ivec2 bitCount(ivec2);"
-            "lowp ivec3 bitCount(ivec3);"
-            "lowp ivec4 bitCount(ivec4);"
+            "  int bitCount(  int);"
+            "ivec2 bitCount(ivec2);"
+            "ivec3 bitCount(ivec3);"
+            "ivec4 bitCount(ivec4);"
 
-            "lowp   int bitCount( uint);"
-            "lowp ivec2 bitCount(uvec2);"
-            "lowp ivec3 bitCount(uvec3);"
-            "lowp ivec4 bitCount(uvec4);"
+            "  int bitCount( uint);"
+            "ivec2 bitCount(uvec2);"
+            "ivec3 bitCount(uvec3);"
+            "ivec4 bitCount(uvec4);"
 
-            "lowp   int findMSB(highp   int);"
-            "lowp ivec2 findMSB(highp ivec2);"
-            "lowp ivec3 findMSB(highp ivec3);"
-            "lowp ivec4 findMSB(highp ivec4);"
+            "  int findMSB(highp   int);"
+            "ivec2 findMSB(highp ivec2);"
+            "ivec3 findMSB(highp ivec3);"
+            "ivec4 findMSB(highp ivec4);"
 
-            "lowp   int findMSB(highp  uint);"
-            "lowp ivec2 findMSB(highp uvec2);"
-            "lowp ivec3 findMSB(highp uvec3);"
-            "lowp ivec4 findMSB(highp uvec4);"
+            "  int findMSB(highp  uint);"
+            "ivec2 findMSB(highp uvec2);"
+            "ivec3 findMSB(highp uvec3);"
+            "ivec4 findMSB(highp uvec4);"
             
             "\n");
     }
@@ -1986,17 +1985,14 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "\n");
         }
         if (version >= 130 && spvVersion.vulkan == 0)
-            // gl_spirv TODO
             stageBuiltins[EShLangVertex].append(
                 "int gl_VertexID;"            // needs qualifier fixed later
                 );
         if (version >= 140 && spvVersion.vulkan == 0)
-            // gl_spirv TODO
             stageBuiltins[EShLangVertex].append(
                 "int gl_InstanceID;"          // needs qualifier fixed later
                 );
         if (spvVersion.vulkan >= 100 && version >= 140)
-            // gl_spirv TODO
             stageBuiltins[EShLangVertex].append(
                 "in int gl_VertexIndex;"
                 "in int gl_InstanceIndex;"
@@ -2017,13 +2013,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 );
         } else {
             if (spvVersion.vulkan == 0)
-                // gl_spirv TODO
                 stageBuiltins[EShLangVertex].append(
                     "in highp int gl_VertexID;"      // needs qualifier fixed later
                     "in highp int gl_InstanceID;"    // needs qualifier fixed later
                     );
             if (spvVersion.vulkan >= 100)
-                // gl_spirv TODO
                 stageBuiltins[EShLangVertex].append(
                     "in highp int gl_VertexIndex;"
                     "in highp int gl_InstanceIndex;"
@@ -3634,13 +3628,14 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         if (spvVersion.vulkan == 0) {
-            // gl_spirv TODO
             SpecialQualifier("gl_VertexID",   EvqVertexId,   EbvVertexId,   symbolTable);
             SpecialQualifier("gl_InstanceID", EvqInstanceId, EbvInstanceId, symbolTable);
         }
 
-        BuiltInVariable("gl_VertexIndex",   EbvVertexIndex,   symbolTable);
-        BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
+        if (spvVersion.vulkan >= 100) {
+            BuiltInVariable("gl_VertexIndex",   EbvVertexIndex,   symbolTable);
+            BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
+        }
 
         // Fall through
 

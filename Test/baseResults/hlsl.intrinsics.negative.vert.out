@@ -23,7 +23,6 @@ ERROR: 0:38: 'EvaluateAttributeSnapped' : no matching overloaded function found
 ERROR: 0:39: 'f16tof32' : no matching overloaded function found 
 ERROR: 0:40: 'firstbithigh' : no matching overloaded function found 
 ERROR: 0:41: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:42: 'fma' : no matching overloaded function found 
 ERROR: 0:43: 'fwidth' : no matching overloaded function found 
 ERROR: 0:44: 'InterlockedAdd' : no matching overloaded function found 
 ERROR: 0:45: 'InterlockedAdd' : no matching overloaded function found 
@@ -68,7 +67,6 @@ ERROR: 0:101: 'EvaluateAttributeSnapped' : no matching overloaded function found
 ERROR: 0:102: 'f16tof32' : no matching overloaded function found 
 ERROR: 0:103: 'firstbithigh' : no matching overloaded function found 
 ERROR: 0:104: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:105: 'fma' : no matching overloaded function found 
 ERROR: 0:106: 'fwidth' : no matching overloaded function found 
 ERROR: 0:107: 'InterlockedAdd' : no matching overloaded function found 
 ERROR: 0:108: 'InterlockedAdd' : no matching overloaded function found 
@@ -103,7 +101,6 @@ ERROR: 0:146: 'EvaluateAttributeSnapped' : no matching overloaded function found
 ERROR: 0:147: 'f16tof32' : no matching overloaded function found 
 ERROR: 0:148: 'firstbithigh' : no matching overloaded function found 
 ERROR: 0:149: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:150: 'fma' : no matching overloaded function found 
 ERROR: 0:151: 'fwidth' : no matching overloaded function found 
 ERROR: 0:152: 'InterlockedAdd' : no matching overloaded function found 
 ERROR: 0:153: 'InterlockedAdd' : no matching overloaded function found 
@@ -138,7 +135,6 @@ ERROR: 0:191: 'EvaluateAttributeSnapped' : no matching overloaded function found
 ERROR: 0:192: 'f16tof32' : no matching overloaded function found 
 ERROR: 0:193: 'firstbithigh' : no matching overloaded function found 
 ERROR: 0:194: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:195: 'fma' : no matching overloaded function found 
 ERROR: 0:196: 'fwidth' : no matching overloaded function found 
 ERROR: 0:197: 'InterlockedAdd' : no matching overloaded function found 
 ERROR: 0:198: 'InterlockedAdd' : no matching overloaded function found 
@@ -157,87 +153,84 @@ ERROR: 0:210: 'InterlockedXor' : no matching overloaded function found
 ERROR: 0:211: 'noise' : no matching overloaded function found 
 ERROR: 0:212: 'reversebits' : no matching overloaded function found 
 ERROR: 0:213: 'transpose' : no matching overloaded function found 
-ERROR: 0:254: 'countbits' : no matching overloaded function found 
-ERROR: 0:254: 'cross' : no matching overloaded function found 
-ERROR: 0:254: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
-ERROR: 0:254: 'ddx' : no matching overloaded function found 
-ERROR: 0:254: 'ddx_coarse' : no matching overloaded function found 
-ERROR: 0:254: 'ddx_fine' : no matching overloaded function found 
-ERROR: 0:254: 'ddy' : no matching overloaded function found 
-ERROR: 0:254: 'ddy_coarse' : no matching overloaded function found 
-ERROR: 0:254: 'ddy_fine' : no matching overloaded function found 
-ERROR: 0:254: 'EvaluateAttributeAtCentroid' : no matching overloaded function found 
-ERROR: 0:254: 'EvaluateAttributeAtSample' : no matching overloaded function found 
-ERROR: 0:254: 'EvaluateAttributeSnapped' : no matching overloaded function found 
-ERROR: 0:254: 'f16tof32' : no matching overloaded function found 
-ERROR: 0:254: 'firstbithigh' : no matching overloaded function found 
-ERROR: 0:254: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:254: 'fma' : no matching overloaded function found 
-ERROR: 0:254: 'fwidth' : no matching overloaded function found 
-ERROR: 0:254: 'noise' : no matching overloaded function found 
-ERROR: 0:254: 'reversebits' : no matching overloaded function found 
-ERROR: 0:254: 'length' : no matching overloaded function found 
-ERROR: 0:254: 'noise' : no matching overloaded function found 
-ERROR: 0:254: 'normalize' : no matching overloaded function found 
-ERROR: 0:254: 'reflect' : no matching overloaded function found 
-ERROR: 0:254: 'refract' : no matching overloaded function found 
-ERROR: 0:254: 'reversebits' : no matching overloaded function found 
-ERROR: 0:262: 'countbits' : no matching overloaded function found 
-ERROR: 0:262: 'cross' : no matching overloaded function found 
-ERROR: 0:262: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
-ERROR: 0:262: 'ddx' : no matching overloaded function found 
-ERROR: 0:262: 'ddx_coarse' : no matching overloaded function found 
-ERROR: 0:262: 'ddx_fine' : no matching overloaded function found 
-ERROR: 0:262: 'ddy' : no matching overloaded function found 
-ERROR: 0:262: 'ddy_coarse' : no matching overloaded function found 
-ERROR: 0:262: 'ddy_fine' : no matching overloaded function found 
-ERROR: 0:262: 'EvaluateAttributeAtCentroid' : no matching overloaded function found 
-ERROR: 0:262: 'EvaluateAttributeAtSample' : no matching overloaded function found 
-ERROR: 0:262: 'EvaluateAttributeSnapped' : no matching overloaded function found 
-ERROR: 0:262: 'f16tof32' : no matching overloaded function found 
-ERROR: 0:262: 'firstbithigh' : no matching overloaded function found 
-ERROR: 0:262: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:262: 'fma' : no matching overloaded function found 
-ERROR: 0:262: 'fwidth' : no matching overloaded function found 
-ERROR: 0:262: 'noise' : no matching overloaded function found 
-ERROR: 0:262: 'reversebits' : no matching overloaded function found 
-ERROR: 0:262: 'length' : no matching overloaded function found 
-ERROR: 0:262: 'noise' : no matching overloaded function found 
-ERROR: 0:262: 'normalize' : no matching overloaded function found 
-ERROR: 0:262: 'reflect' : no matching overloaded function found 
-ERROR: 0:262: 'refract' : no matching overloaded function found 
-ERROR: 0:262: 'reversebits' : no matching overloaded function found 
-ERROR: 0:270: 'countbits' : no matching overloaded function found 
-ERROR: 0:270: 'cross' : no matching overloaded function found 
-ERROR: 0:270: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
-ERROR: 0:270: 'ddx' : no matching overloaded function found 
-ERROR: 0:270: 'ddx_coarse' : no matching overloaded function found 
-ERROR: 0:270: 'ddx_fine' : no matching overloaded function found 
-ERROR: 0:270: 'ddy' : no matching overloaded function found 
-ERROR: 0:270: 'ddy_coarse' : no matching overloaded function found 
-ERROR: 0:270: 'ddy_fine' : no matching overloaded function found 
-ERROR: 0:270: 'EvaluateAttributeAtCentroid' : no matching overloaded function found 
-ERROR: 0:270: 'EvaluateAttributeAtSample' : no matching overloaded function found 
-ERROR: 0:270: 'EvaluateAttributeSnapped' : no matching overloaded function found 
-ERROR: 0:270: 'f16tof32' : no matching overloaded function found 
-ERROR: 0:270: 'firstbithigh' : no matching overloaded function found 
-ERROR: 0:270: 'firstbitlow' : no matching overloaded function found 
-ERROR: 0:270: 'fma' : no matching overloaded function found 
-ERROR: 0:270: 'fwidth' : no matching overloaded function found 
-ERROR: 0:270: 'noise' : no matching overloaded function found 
-ERROR: 0:270: 'reversebits' : no matching overloaded function found 
-ERROR: 0:270: 'length' : no matching overloaded function found 
-ERROR: 0:270: 'noise' : no matching overloaded function found 
-ERROR: 0:270: 'normalize' : no matching overloaded function found 
-ERROR: 0:270: 'reflect' : no matching overloaded function found 
-ERROR: 0:270: 'refract' : no matching overloaded function found 
-ERROR: 0:270: 'reversebits' : no matching overloaded function found 
-ERROR: 233 compilation errors.  No code generated.
+ERROR: 0:253: 'countbits' : no matching overloaded function found 
+ERROR: 0:253: 'cross' : no matching overloaded function found 
+ERROR: 0:253: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
+ERROR: 0:253: 'ddx' : no matching overloaded function found 
+ERROR: 0:253: 'ddx_coarse' : no matching overloaded function found 
+ERROR: 0:253: 'ddx_fine' : no matching overloaded function found 
+ERROR: 0:253: 'ddy' : no matching overloaded function found 
+ERROR: 0:253: 'ddy_coarse' : no matching overloaded function found 
+ERROR: 0:253: 'ddy_fine' : no matching overloaded function found 
+ERROR: 0:253: 'EvaluateAttributeAtCentroid' : no matching overloaded function found 
+ERROR: 0:253: 'EvaluateAttributeAtSample' : no matching overloaded function found 
+ERROR: 0:253: 'EvaluateAttributeSnapped' : no matching overloaded function found 
+ERROR: 0:253: 'f16tof32' : no matching overloaded function found 
+ERROR: 0:253: 'firstbithigh' : no matching overloaded function found 
+ERROR: 0:253: 'firstbitlow' : no matching overloaded function found 
+ERROR: 0:253: 'fwidth' : no matching overloaded function found 
+ERROR: 0:253: 'noise' : no matching overloaded function found 
+ERROR: 0:253: 'reversebits' : no matching overloaded function found 
+ERROR: 0:253: 'length' : no matching overloaded function found 
+ERROR: 0:253: 'noise' : no matching overloaded function found 
+ERROR: 0:253: 'normalize' : no matching overloaded function found 
+ERROR: 0:253: 'reflect' : no matching overloaded function found 
+ERROR: 0:253: 'refract' : no matching overloaded function found 
+ERROR: 0:253: 'reversebits' : no matching overloaded function found 
+ERROR: 0:261: 'countbits' : no matching overloaded function found 
+ERROR: 0:261: 'cross' : no matching overloaded function found 
+ERROR: 0:261: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
+ERROR: 0:261: 'ddx' : no matching overloaded function found 
+ERROR: 0:261: 'ddx_coarse' : no matching overloaded function found 
+ERROR: 0:261: 'ddx_fine' : no matching overloaded function found 
+ERROR: 0:261: 'ddy' : no matching overloaded function found 
+ERROR: 0:261: 'ddy_coarse' : no matching overloaded function found 
+ERROR: 0:261: 'ddy_fine' : no matching overloaded function found 
+ERROR: 0:261: 'EvaluateAttributeAtCentroid' : no matching overloaded function found 
+ERROR: 0:261: 'EvaluateAttributeAtSample' : no matching overloaded function found 
+ERROR: 0:261: 'EvaluateAttributeSnapped' : no matching overloaded function found 
+ERROR: 0:261: 'f16tof32' : no matching overloaded function found 
+ERROR: 0:261: 'firstbithigh' : no matching overloaded function found 
+ERROR: 0:261: 'firstbitlow' : no matching overloaded function found 
+ERROR: 0:261: 'fwidth' : no matching overloaded function found 
+ERROR: 0:261: 'noise' : no matching overloaded function found 
+ERROR: 0:261: 'reversebits' : no matching overloaded function found 
+ERROR: 0:261: 'length' : no matching overloaded function found 
+ERROR: 0:261: 'noise' : no matching overloaded function found 
+ERROR: 0:261: 'normalize' : no matching overloaded function found 
+ERROR: 0:261: 'reflect' : no matching overloaded function found 
+ERROR: 0:261: 'refract' : no matching overloaded function found 
+ERROR: 0:261: 'reversebits' : no matching overloaded function found 
+ERROR: 0:269: 'countbits' : no matching overloaded function found 
+ERROR: 0:269: 'cross' : no matching overloaded function found 
+ERROR: 0:269: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
+ERROR: 0:269: 'ddx' : no matching overloaded function found 
+ERROR: 0:269: 'ddx_coarse' : no matching overloaded function found 
+ERROR: 0:269: 'ddx_fine' : no matching overloaded function found 
+ERROR: 0:269: 'ddy' : no matching overloaded function found 
+ERROR: 0:269: 'ddy_coarse' : no matching overloaded function found 
+ERROR: 0:269: 'ddy_fine' : no matching overloaded function found 
+ERROR: 0:269: 'EvaluateAttributeAtCentroid' : no matching overloaded function found 
+ERROR: 0:269: 'EvaluateAttributeAtSample' : no matching overloaded function found 
+ERROR: 0:269: 'EvaluateAttributeSnapped' : no matching overloaded function found 
+ERROR: 0:269: 'f16tof32' : no matching overloaded function found 
+ERROR: 0:269: 'firstbithigh' : no matching overloaded function found 
+ERROR: 0:269: 'firstbitlow' : no matching overloaded function found 
+ERROR: 0:269: 'fwidth' : no matching overloaded function found 
+ERROR: 0:269: 'noise' : no matching overloaded function found 
+ERROR: 0:269: 'reversebits' : no matching overloaded function found 
+ERROR: 0:269: 'length' : no matching overloaded function found 
+ERROR: 0:269: 'noise' : no matching overloaded function found 
+ERROR: 0:269: 'normalize' : no matching overloaded function found 
+ERROR: 0:269: 'reflect' : no matching overloaded function found 
+ERROR: 0:269: 'refract' : no matching overloaded function found 
+ERROR: 0:269: 'reversebits' : no matching overloaded function found 
+ERROR: 226 compilation errors.  No code generated.
 
 
 Shader version: 450
 ERROR: node is still EOpNull!
-0:74  Function Definition: VertexShaderFunction(f1;f1;f1;i1; (temp float)
+0:74  Function Definition: VertexShaderFunctionS(f1;f1;f1;i1; (global float)
 0:15    Function Parameters: 
 0:15      'inF0' (in float)
 0:15      'inF1' (in float)
@@ -292,8 +285,6 @@ ERROR: node is still EOpNull!
 0:40        0.000000
 0:41      Constant:
 0:41        0.000000
-0:42      Constant:
-0:42        0.000000
 0:43      Constant:
 0:43        0.000000
 0:44      Constant:
@@ -347,7 +338,7 @@ ERROR: node is still EOpNull!
 0:71      Branch: Return with expression
 0:71        Constant:
 0:71          0.000000
-0:83  Function Definition: VertexShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
+0:83  Function Definition: VertexShaderFunction1(vf1;vf1;vf1;vi1; (global 1-component vector of float)
 0:75    Function Parameters: 
 0:75      'inF0' (in 1-component vector of float)
 0:75      'inF1' (in 1-component vector of float)
@@ -359,7 +350,7 @@ ERROR: node is still EOpNull!
 0:80      Branch: Return with expression
 0:80        Constant:
 0:80          0.000000
-0:130  Function Definition: VertexShaderFunction(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
+0:130  Function Definition: VertexShaderFunction2(vf2;vf2;vf2;vi2; (global 2-component vector of float)
 0:84    Function Parameters: 
 0:84      'inF0' (in 2-component vector of float)
 0:84      'inF1' (in 2-component vector of float)
@@ -402,8 +393,6 @@ ERROR: node is still EOpNull!
 0:103        0.000000
 0:104      Constant:
 0:104        0.000000
-0:105      Constant:
-0:105        0.000000
 0:106      Constant:
 0:106        0.000000
 0:107      Constant:
@@ -444,7 +433,7 @@ ERROR: node is still EOpNull!
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:175  Function Definition: VertexShaderFunction(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
+0:175  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vi3; (global 3-component vector of float)
 0:131    Function Parameters: 
 0:131      'inF0' (in 3-component vector of float)
 0:131      'inF1' (in 3-component vector of float)
@@ -483,8 +472,6 @@ ERROR: node is still EOpNull!
 0:148        0.000000
 0:149      Constant:
 0:149        0.000000
-0:150      Constant:
-0:150        0.000000
 0:151      Constant:
 0:151        0.000000
 0:152      Constant:
@@ -526,7 +513,7 @@ ERROR: node is still EOpNull!
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:251  Function Definition: VertexShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
+0:250  Function Definition: VertexShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
 0:176    Function Parameters: 
 0:176      'inF0' (in 4-component vector of float)
 0:176      'inF1' (in 4-component vector of float)
@@ -565,8 +552,6 @@ ERROR: node is still EOpNull!
 0:193        0.000000
 0:194      Constant:
 0:194        0.000000
-0:195      Constant:
-0:195        0.000000
 0:196      Constant:
 0:196        0.000000
 0:197      Constant:
@@ -609,125 +594,121 @@ ERROR: node is still EOpNull!
 0:?           2.000000
 0:?           3.000000
 0:?           4.000000
-0:259  Function Definition: VertexShaderFunction(mf22;mf22;mf22; (temp 2X2 matrix of float)
-0:252    Function Parameters: 
-0:252      'inF0' (in 2X2 matrix of float)
-0:252      'inF1' (in 2X2 matrix of float)
-0:252      'inF2' (in 2X2 matrix of float)
+0:258  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
+0:251    Function Parameters: 
+0:251      'inF0' (in 2X2 matrix of float)
+0:251      'inF1' (in 2X2 matrix of float)
+0:251      'inF2' (in 2X2 matrix of float)
 0:?     Sequence
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:256      Branch: Return with expression
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:255      Branch: Return with expression
 0:?         Constant:
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
-0:267  Function Definition: VertexShaderFunction(mf33;mf33;mf33; (temp 3X3 matrix of float)
-0:260    Function Parameters: 
-0:260      'inF0' (in 3X3 matrix of float)
-0:260      'inF1' (in 3X3 matrix of float)
-0:260      'inF2' (in 3X3 matrix of float)
+0:266  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; (global 3X3 matrix of float)
+0:259    Function Parameters: 
+0:259      'inF0' (in 3X3 matrix of float)
+0:259      'inF1' (in 3X3 matrix of float)
+0:259      'inF2' (in 3X3 matrix of float)
 0:?     Sequence
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:264      Branch: Return with expression
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:263      Branch: Return with expression
 0:?         Constant:
 0:?           3.000000
 0:?           3.000000
@@ -738,63 +719,61 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:?           3.000000
 0:?           3.000000
-0:274  Function Definition: VertexShaderFunction(mf44;mf44;mf44; (temp 4X4 matrix of float)
-0:268    Function Parameters: 
-0:268      'inF0' (in 4X4 matrix of float)
-0:268      'inF1' (in 4X4 matrix of float)
-0:268      'inF2' (in 4X4 matrix of float)
+0:273  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; (global 4X4 matrix of float)
+0:267    Function Parameters: 
+0:267      'inF0' (in 4X4 matrix of float)
+0:267      'inF1' (in 4X4 matrix of float)
+0:267      'inF2' (in 4X4 matrix of float)
 0:?     Sequence
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:272      Branch: Return with expression
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:271      Branch: Return with expression
 0:?         Constant:
 0:?           4.000000
 0:?           4.000000
@@ -813,18 +792,18 @@ ERROR: node is still EOpNull!
 0:?           4.000000
 0:?           4.000000
 0:?   Linker Objects
-0:?     'gs_ua' (temp uint)
-0:?     'gs_ub' (temp uint)
-0:?     'gs_uc' (temp uint)
-0:?     'gs_ua2' (temp 2-component vector of uint)
-0:?     'gs_ub2' (temp 2-component vector of uint)
-0:?     'gs_uc2' (temp 2-component vector of uint)
-0:?     'gs_ua3' (temp 3-component vector of uint)
-0:?     'gs_ub3' (temp 3-component vector of uint)
-0:?     'gs_uc3' (temp 3-component vector of uint)
-0:?     'gs_ua4' (temp 4-component vector of uint)
-0:?     'gs_ub4' (temp 4-component vector of uint)
-0:?     'gs_uc4' (temp 4-component vector of uint)
+0:?     'gs_ua' (global uint)
+0:?     'gs_ub' (global uint)
+0:?     'gs_uc' (global uint)
+0:?     'gs_ua2' (global 2-component vector of uint)
+0:?     'gs_ub2' (global 2-component vector of uint)
+0:?     'gs_uc2' (global 2-component vector of uint)
+0:?     'gs_ua3' (global 3-component vector of uint)
+0:?     'gs_ub3' (global 3-component vector of uint)
+0:?     'gs_uc3' (global 3-component vector of uint)
+0:?     'gs_ua4' (global 4-component vector of uint)
+0:?     'gs_ub4' (global 4-component vector of uint)
+0:?     'gs_uc4' (global 4-component vector of uint)
 
 
 Linked vertex stage:
@@ -832,7 +811,7 @@ Linked vertex stage:
 
 Shader version: 450
 ERROR: node is still EOpNull!
-0:74  Function Definition: VertexShaderFunction(f1;f1;f1;i1; (temp float)
+0:74  Function Definition: VertexShaderFunctionS(f1;f1;f1;i1; (global float)
 0:15    Function Parameters: 
 0:15      'inF0' (in float)
 0:15      'inF1' (in float)
@@ -887,8 +866,6 @@ ERROR: node is still EOpNull!
 0:40        0.000000
 0:41      Constant:
 0:41        0.000000
-0:42      Constant:
-0:42        0.000000
 0:43      Constant:
 0:43        0.000000
 0:44      Constant:
@@ -942,7 +919,7 @@ ERROR: node is still EOpNull!
 0:71      Branch: Return with expression
 0:71        Constant:
 0:71          0.000000
-0:83  Function Definition: VertexShaderFunction(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
+0:83  Function Definition: VertexShaderFunction1(vf1;vf1;vf1;vi1; (global 1-component vector of float)
 0:75    Function Parameters: 
 0:75      'inF0' (in 1-component vector of float)
 0:75      'inF1' (in 1-component vector of float)
@@ -954,7 +931,7 @@ ERROR: node is still EOpNull!
 0:80      Branch: Return with expression
 0:80        Constant:
 0:80          0.000000
-0:130  Function Definition: VertexShaderFunction(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
+0:130  Function Definition: VertexShaderFunction2(vf2;vf2;vf2;vi2; (global 2-component vector of float)
 0:84    Function Parameters: 
 0:84      'inF0' (in 2-component vector of float)
 0:84      'inF1' (in 2-component vector of float)
@@ -997,8 +974,6 @@ ERROR: node is still EOpNull!
 0:103        0.000000
 0:104      Constant:
 0:104        0.000000
-0:105      Constant:
-0:105        0.000000
 0:106      Constant:
 0:106        0.000000
 0:107      Constant:
@@ -1039,7 +1014,7 @@ ERROR: node is still EOpNull!
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:175  Function Definition: VertexShaderFunction(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
+0:175  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vi3; (global 3-component vector of float)
 0:131    Function Parameters: 
 0:131      'inF0' (in 3-component vector of float)
 0:131      'inF1' (in 3-component vector of float)
@@ -1078,8 +1053,6 @@ ERROR: node is still EOpNull!
 0:148        0.000000
 0:149      Constant:
 0:149        0.000000
-0:150      Constant:
-0:150        0.000000
 0:151      Constant:
 0:151        0.000000
 0:152      Constant:
@@ -1121,7 +1094,7 @@ ERROR: node is still EOpNull!
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:251  Function Definition: VertexShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
+0:250  Function Definition: VertexShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
 0:176    Function Parameters: 
 0:176      'inF0' (in 4-component vector of float)
 0:176      'inF1' (in 4-component vector of float)
@@ -1160,8 +1133,6 @@ ERROR: node is still EOpNull!
 0:193        0.000000
 0:194      Constant:
 0:194        0.000000
-0:195      Constant:
-0:195        0.000000
 0:196      Constant:
 0:196        0.000000
 0:197      Constant:
@@ -1204,125 +1175,121 @@ ERROR: node is still EOpNull!
 0:?           2.000000
 0:?           3.000000
 0:?           4.000000
-0:259  Function Definition: VertexShaderFunction(mf22;mf22;mf22; (temp 2X2 matrix of float)
-0:252    Function Parameters: 
-0:252      'inF0' (in 2X2 matrix of float)
-0:252      'inF1' (in 2X2 matrix of float)
-0:252      'inF2' (in 2X2 matrix of float)
+0:258  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
+0:251    Function Parameters: 
+0:251      'inF0' (in 2X2 matrix of float)
+0:251      'inF1' (in 2X2 matrix of float)
+0:251      'inF2' (in 2X2 matrix of float)
 0:?     Sequence
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:254      Constant:
-0:254        0.000000
-0:256      Branch: Return with expression
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:253      Constant:
+0:253        0.000000
+0:255      Branch: Return with expression
 0:?         Constant:
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
-0:267  Function Definition: VertexShaderFunction(mf33;mf33;mf33; (temp 3X3 matrix of float)
-0:260    Function Parameters: 
-0:260      'inF0' (in 3X3 matrix of float)
-0:260      'inF1' (in 3X3 matrix of float)
-0:260      'inF2' (in 3X3 matrix of float)
+0:266  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; (global 3X3 matrix of float)
+0:259    Function Parameters: 
+0:259      'inF0' (in 3X3 matrix of float)
+0:259      'inF1' (in 3X3 matrix of float)
+0:259      'inF2' (in 3X3 matrix of float)
 0:?     Sequence
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:262      Constant:
-0:262        0.000000
-0:264      Branch: Return with expression
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:261      Constant:
+0:261        0.000000
+0:263      Branch: Return with expression
 0:?         Constant:
 0:?           3.000000
 0:?           3.000000
@@ -1333,63 +1300,61 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:?           3.000000
 0:?           3.000000
-0:274  Function Definition: VertexShaderFunction(mf44;mf44;mf44; (temp 4X4 matrix of float)
-0:268    Function Parameters: 
-0:268      'inF0' (in 4X4 matrix of float)
-0:268      'inF1' (in 4X4 matrix of float)
-0:268      'inF2' (in 4X4 matrix of float)
+0:273  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; (global 4X4 matrix of float)
+0:267    Function Parameters: 
+0:267      'inF0' (in 4X4 matrix of float)
+0:267      'inF1' (in 4X4 matrix of float)
+0:267      'inF2' (in 4X4 matrix of float)
 0:?     Sequence
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:270      Constant:
-0:270        0.000000
-0:272      Branch: Return with expression
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:269      Constant:
+0:269        0.000000
+0:271      Branch: Return with expression
 0:?         Constant:
 0:?           4.000000
 0:?           4.000000
@@ -1408,17 +1373,17 @@ ERROR: node is still EOpNull!
 0:?           4.000000
 0:?           4.000000
 0:?   Linker Objects
-0:?     'gs_ua' (temp uint)
-0:?     'gs_ub' (temp uint)
-0:?     'gs_uc' (temp uint)
-0:?     'gs_ua2' (temp 2-component vector of uint)
-0:?     'gs_ub2' (temp 2-component vector of uint)
-0:?     'gs_uc2' (temp 2-component vector of uint)
-0:?     'gs_ua3' (temp 3-component vector of uint)
-0:?     'gs_ub3' (temp 3-component vector of uint)
-0:?     'gs_uc3' (temp 3-component vector of uint)
-0:?     'gs_ua4' (temp 4-component vector of uint)
-0:?     'gs_ub4' (temp 4-component vector of uint)
-0:?     'gs_uc4' (temp 4-component vector of uint)
+0:?     'gs_ua' (global uint)
+0:?     'gs_ub' (global uint)
+0:?     'gs_uc' (global uint)
+0:?     'gs_ua2' (global 2-component vector of uint)
+0:?     'gs_ub2' (global 2-component vector of uint)
+0:?     'gs_uc2' (global 2-component vector of uint)
+0:?     'gs_ua3' (global 3-component vector of uint)
+0:?     'gs_ub3' (global 3-component vector of uint)
+0:?     'gs_uc3' (global 3-component vector of uint)
+0:?     'gs_ua4' (global 4-component vector of uint)
+0:?     'gs_ub4' (global 4-component vector of uint)
+0:?     'gs_uc4' (global 4-component vector of uint)
 
 SPIR-V is not generated for failed compile or link

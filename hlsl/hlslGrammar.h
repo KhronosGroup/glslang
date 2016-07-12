@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2016 Google, Inc.
+//Copyright (C) 2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -54,13 +55,20 @@ namespace glslang {
         bool parse();
 
     protected:
+        HlslGrammar();
+        HlslGrammar& operator=(const HlslGrammar&);
+
         void expected(const char*);
         bool acceptIdentifier(HlslToken&);
         bool acceptCompilationUnit();
         bool acceptDeclaration(TIntermNode*& node);
+        bool acceptControlDeclaration(TIntermNode*& node);
         bool acceptFullySpecifiedType(TType&);
         void acceptQualifier(TQualifier&);
         bool acceptType(TType&);
+        bool acceptTemplateType(TBasicType&);
+        bool acceptVectorTemplateType(TType&);
+        bool acceptMatrixTemplateType(TType&);
         bool acceptStruct(TType&);
         bool acceptStructDeclarationList(TTypeList*&);
         bool acceptFunctionParameters(TFunction&);
@@ -68,6 +76,7 @@ namespace glslang {
         bool acceptFunctionDefinition(TFunction&, TIntermNode*&);
         bool acceptParenExpression(TIntermTyped*&);
         bool acceptExpression(TIntermTyped*&);
+        bool acceptInitializer(TIntermTyped*&);
         bool acceptAssignmentExpression(TIntermTyped*&);
         bool acceptBinaryExpression(TIntermTyped*&, PrecedenceLevel);
         bool acceptUnaryExpression(TIntermTyped*&);
@@ -87,6 +96,7 @@ namespace glslang {
         bool acceptIterationStatement(TIntermNode*&);
         bool acceptJumpStatement(TIntermNode*&);
         bool acceptCaseLabel(TIntermNode*&);
+        bool acceptDefaultLabel(TIntermNode*&);
         void acceptArraySpecifier(TArraySizes*&);
         void acceptPostDecls(TType&);
 
