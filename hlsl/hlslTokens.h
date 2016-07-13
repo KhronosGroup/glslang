@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2016 Google, Inc.
+//Copyright (C) 2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -200,6 +201,9 @@ enum EHlslTokenClass {
     EHTokTexture2darray,
     EHTokTexture3d,
     EHTokTextureCube,
+    EHTokTextureCubearray,
+    EHTokTexture2DMS,
+    EHTokTexture2DMSarray,
 
     // variable, user type, ...
     EHTokIdentifier,

@@ -3,6 +3,7 @@
 *.so
 *.exe
 tags
+TAGS
 build/
 Test/localResults/
 Test/multiThread.out
