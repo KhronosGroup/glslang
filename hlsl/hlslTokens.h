@@ -61,6 +61,9 @@ enum EHlslTokenClass {
     EHTokRowMajor,
     EHTokColumnMajor,
     EHTokPackOffset,
+    EHTokIn,
+    EHTokOut,
+    EHTokInOut,
 
     // template types
     EHTokBuffer,
