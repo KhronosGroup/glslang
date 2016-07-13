@@ -478,6 +478,15 @@ void HlslGrammar::acceptQualifier(TQualifier& qualifier)
         case EHTokPrecise:
             qualifier.noContraction = true;
             break;
+        case EHTokIn:
+            qualifier.storage = EvqIn;
+            break;
+        case EHTokOut:
+            qualifier.storage = EvqOut;
+            break;
+        case EHTokInOut:
+            qualifier.storage = EvqInOut;
+            break;
         default:
             return;
         }

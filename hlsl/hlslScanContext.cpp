@@ -114,6 +114,9 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["row_major"] =               EHTokRowMajor;
     (*KeywordMap)["column_major"] =            EHTokColumnMajor;
     (*KeywordMap)["packoffset"] =              EHTokPackOffset;
+    (*KeywordMap)["in"] =                      EHTokIn;
+    (*KeywordMap)["out"] =                     EHTokOut;
+    (*KeywordMap)["inout"] =                   EHTokInOut;
 
     (*KeywordMap)["Buffer"] =                  EHTokBuffer;
     (*KeywordMap)["vector"] =                  EHTokVector;
@@ -449,6 +452,9 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokRowMajor:
     case EHTokColumnMajor:
     case EHTokPackOffset:
+    case EHTokIn:
+    case EHTokOut:
+    case EHTokInOut:
         return keyword;
 
     // template types
