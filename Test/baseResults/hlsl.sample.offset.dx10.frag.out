@@ -1,4 +1,4 @@
-hlsl.sample.offsetdx10.frag
+hlsl.sample.offset.dx10.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence

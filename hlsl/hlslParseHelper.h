@@ -88,13 +88,14 @@ public:
     TIntermTyped* handleFunctionCall(const TSourceLoc&, TFunction*, TIntermNode*);
     void decomposeIntrinsic(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     void decomposeSampleMethods(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
-    void textureParameters(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     TIntermTyped* handleLengthMethod(const TSourceLoc&, TFunction*, TIntermNode*);
     void addInputArgumentConversions(const TFunction&, TIntermNode*&) const;
     TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermAggregate&) const;
     void builtInOpCheck(const TSourceLoc&, const TFunction&, TIntermOperator&);
     TFunction* handleConstructorCall(const TSourceLoc&, const TType&);
     void handleSemantic(TType& type, const TString& semantic);
+
+    TIntermAggregate* handleSamplerTextureCombine(const TSourceLoc& loc, TIntermTyped* argTex, TIntermTyped* argSampler);
 
     bool parseVectorFields(const TSourceLoc&, const TString&, int vecSize, TVectorFields&);
     void assignError(const TSourceLoc&, const char* op, TString left, TString right);
