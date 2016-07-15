@@ -1,4 +1,4 @@
-hlsl.sample.basicdx10.frag
+hlsl.sample.basic.dx10.frag
 WARNING: 0:4: 'immediate sampler state' : unimplemented 
 
 Shader version: 450

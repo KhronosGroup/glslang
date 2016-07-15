@@ -814,9 +814,28 @@ TOperator HlslParseContext::mapAtomicOp(const TSourceLoc& loc, TOperator op, boo
 }
 
 //
-// Change texture parameters to match AST & SPIR-V semantics
+// Create a combined sampler/texture from separate sampler and texture.
 //
-void HlslParseContext::textureParameters(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
+TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc& loc, TIntermTyped* argTex, TIntermTyped* argSampler)
+{
+    TIntermAggregate* txcombine = new TIntermAggregate(EOpConstructTextureSampler);
+
+    txcombine->getSequence().push_back(argTex);
+    txcombine->getSequence().push_back(argSampler);
+
+    TSampler samplerType = argTex->getType().getSampler();
+    samplerType.combined = true;
+
+    txcombine->setType(TType(samplerType, EvqTemporary));
+    txcombine->setLoc(loc);
+
+    return txcombine;
+}
+
+//
+// Decompose DX9 and DX10 sample intrinsics & object methods into AST
+//
+void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
 {
     if (!node || !node->getAsOperator())
         return;
@@ -825,9 +844,10 @@ void HlslParseContext::textureParameters(const TSourceLoc& loc, TIntermTyped*& n
     const TIntermAggregate* argAggregate = arguments ? arguments->getAsAggregate() : nullptr;
 
     switch (op) {
+    // **** DX9 intrinsics: ****
     case EOpTexture:
         {
-            // Texture with ddx & ddy is really gradient form
+            // Texture with ddx & ddy is really gradient form in HLSL
             if (argAggregate->getSequence().size() == 4) {
                 node->getAsAggregate()->setOperator(EOpTextureGrad);
                 break;
@@ -865,6 +885,81 @@ void HlslParseContext::textureParameters(const TSourceLoc& loc, TIntermTyped*& n
             tex->getSequence().push_back(bias);           // bias
             tex->setLoc(loc);
             node = tex;
+
+            break;
+        }
+
+    // **** DX10 methods: ****
+    case EOpMethodSample:     // fall through
+    case EOpMethodSampleBias: // ...
+        {
+            TIntermTyped* argTex    = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* argSamp   = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* argCoord  = argAggregate->getSequence()[2]->getAsTyped();
+            TIntermTyped* argBias   = nullptr;
+            TIntermTyped* argOffset = nullptr;
+
+            int nextArg = 3;
+
+            if (op == EOpMethodSampleBias)  // SampleBias has a bias arg
+                argBias = argAggregate->getSequence()[nextArg++]->getAsTyped();
+
+            TOperator textureOp = EOpTexture;
+
+            if (argAggregate->getSequence().size() == (nextArg+1)) { // last parameter is offset form
+                textureOp = EOpTextureOffset;
+                argOffset = argAggregate->getSequence()[nextArg++]->getAsTyped();
+            }
+
+            TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
+
+            TIntermAggregate* txsample = new TIntermAggregate(textureOp);
+            txsample->getSequence().push_back(txcombine);
+            txsample->getSequence().push_back(argCoord);
+
+            if (argBias != nullptr)
+                txsample->getSequence().push_back(argBias);
+
+            if (argOffset != nullptr)
+                txsample->getSequence().push_back(argOffset);
+
+            txsample->setType(node->getType());
+            txsample->setLoc(loc);
+            node = txsample;
+
+            break;
+        }
+        
+    case EOpMethodSampleGrad: // ...
+        {
+            TIntermTyped* argTex    = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* argSamp   = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* argCoord  = argAggregate->getSequence()[2]->getAsTyped();
+            TIntermTyped* argDDX    = argAggregate->getSequence()[3]->getAsTyped();
+            TIntermTyped* argDDY    = argAggregate->getSequence()[4]->getAsTyped();
+            TIntermTyped* argOffset = nullptr;
+
+            TOperator textureOp = EOpTextureGrad;
+
+            if (argAggregate->getSequence().size() == 6) { // last parameter is offset form
+                textureOp = EOpTextureGradOffset;
+                argOffset = argAggregate->getSequence()[5]->getAsTyped();
+            }
+
+            TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
+
+            TIntermAggregate* txsample = new TIntermAggregate(textureOp);
+            txsample->getSequence().push_back(txcombine);
+            txsample->getSequence().push_back(argCoord);
+            txsample->getSequence().push_back(argDDX);
+            txsample->getSequence().push_back(argDDY);
+
+            if (argOffset != nullptr)
+                txsample->getSequence().push_back(argOffset);
+
+            txsample->setType(node->getType());
+            txsample->setLoc(loc);
+            node = txsample;
 
             break;
         }
@@ -1223,59 +1318,6 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
 }
 
 //
-// Decompose sample methods into AST
-//
-void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
-{
-    if (!node || !node->getAsOperator())
-        return;
-
-    const TIntermAggregate* argAggregate = arguments ? arguments->getAsAggregate() : nullptr;
-    const TOperator op  = node->getAsOperator()->getOp();
-
-    switch (op) {
-    case EOpMethodSample:
-        {
-            TIntermTyped* argTex    = argAggregate->getSequence()[0]->getAsTyped();
-            TIntermTyped* argSamp   = argAggregate->getSequence()[1]->getAsTyped();
-            TIntermTyped* argCoord  = argAggregate->getSequence()[2]->getAsTyped();
-            TIntermTyped* argOffset = nullptr;
-
-            TOperator textureOp = EOpTexture;
-
-            if (argAggregate->getSequence().size() == 4) { // 4th parameter is offset form
-                textureOp = EOpTextureOffset;
-                argOffset = argAggregate->getSequence()[3]->getAsTyped();
-            }
-
-            TIntermAggregate* txcombine = new TIntermAggregate(EOpConstructTextureSampler);
-
-            txcombine->getSequence().push_back(argTex);
-            txcombine->getSequence().push_back(argSamp);
-            TSampler samplerType = argTex->getType().getSampler();
-            samplerType.combined = true;
-            txcombine->setType(TType(samplerType, EvqTemporary));
-            txcombine->setLoc(loc);
-
-            TIntermAggregate* txsample = new TIntermAggregate(textureOp);
-            txsample->getSequence().push_back(txcombine);
-            txsample->getSequence().push_back(argCoord);
-            if (argOffset != nullptr)
-                txsample->getSequence().push_back(argOffset);
-            txsample->setType(node->getType());
-            txsample->setLoc(loc);
-            node = txsample;
-
-            break;
-        }
-        
-    default:
-        break; // most pass through unchanged
-    }
-}
-
-
-//
 // Handle seeing function call syntax in the grammar, which could be any of
 //  - .length() method
 //  - constructor
@@ -1380,7 +1422,6 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
 
             decomposeIntrinsic(loc, result, arguments);      // HLSL->AST intrinsic decompositions
             decomposeSampleMethods(loc, result, arguments);  // HLSL->AST sample method decompositions
-            textureParameters(loc, result, arguments);       // HLSL->AST texture intrinsics
         }
     }
 

@@ -67,23 +67,38 @@ const char* BaseTypeName(const char argOrder, const char* scalarName, const char
     }
 }
 
-bool IsTextureType(const char argOrder)  { return argOrder == '%' || argOrder == '@'; }
-bool IsTextureArrayed(const char argOrder)  { return argOrder == '@'; }
+bool IsTextureType(const char argOrder)    { return argOrder == '%' || argOrder == '@'; }
+bool IsTextureArrayed(const char argOrder) { return argOrder == '@'; }
+bool IsTextureMS(const char argOrder)      { return false; } // TODO: ...
 
 // Reject certain combinations that are illegal sample methods.  For example,
 // 3D arrays.
 bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim0)
 {
     const bool isArrayed = IsTextureArrayed(*argOrder);
+    const bool isMS      = IsTextureMS(*argOrder);
 
-    if (isArrayed && dim0 == 3)  // there are no 3D arrayed textures.
+    // there are no 3D arrayed textures, or 3D SampleCmp
+    if (dim0 == 3 && (isArrayed || name == "SampleCmp"))
         return true;
 
     const int numArgs = int(std::count(argOrder, argOrder + strlen(argOrder), ',')) + 1;
 
-    // Reject invalid offset arrayed forms.
+    // Reject invalid offset arrayed forms with cubemaps
     if (isArrayed && dim0 == 4) {
-        if (name == "Sample" && numArgs == 4)
+        if ((name == "Sample"             && numArgs >= 4) ||
+            (name == "SampleBias"         && numArgs >= 5) ||
+            (name == "SampleCmp"          && numArgs >= 5) ||
+            (name == "SampleCmpLevelZero" && numArgs >= 4) ||
+            (name == "SampleGrad"         && numArgs >= 6) ||
+            (name == "SampleLevel"        && numArgs >= 5))
+            return true;
+    }
+
+    // Reject invalid Loads
+    if (name == "Load") {
+        if ((numArgs >= 3 && !isMS) ||  // Load with sampleindex requires multisample
+            (dim0 == 4))                // Load does not support any cubemaps, arrayed or not.
             return true;
     }
 
@@ -103,6 +118,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     const bool isMatMul    = (argOrder[0] == '#');
     const bool isTexture   = IsTextureType(argOrder[0]);
     const bool isArrayed   = IsTextureArrayed(argOrder[0]);
+    const bool isMS        = IsTextureMS(argOrder[0]);
 
     char order = *argOrder;
     char type  = *argType;
@@ -187,14 +203,14 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
         switch (order) {
         case '-': break;  // no dimensions for voids
         case 'S': break;  // no dimensions on scalars
-        case 'V': s += ('0' + (char)dim0); break;
+        case 'V': s += ('0' + char(dim0)); break;
         case 'M': 
             {
                 if (!UseHlslTypes)  // GLSL has column first for mat types
                     std::swap(dim0, dim1);
-                s += ('0' + (char)dim0);
+                s += ('0' + char(dim0));
                 s += 'x';
-                s += ('0' + (char)dim1);
+                s += ('0' + char(dim1));
                 break;
             }
         }
@@ -517,10 +533,43 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
 
         // Texture object methods.  Return type can be overridden by shader declaration.
         // !O = no offset, O = offset, !A = no array, A = array
-        { "Sample",  /*!O !A*/                "V4",    nullptr,   "%V,S,V",     "FIU,S,F",   EShLangFragmentMask },
-        { "Sample",  /* O !A*/                "V4",    nullptr,   "%V,S,V,V",   "FIU,S,F,I", EShLangFragmentMask },
-        { "Sample",  /*!O  A*/                "V4",    nullptr,   "@V,S,V",     "FIU,S,F",   EShLangFragmentMask },
-        { "Sample",  /* O  A*/                "V4",    nullptr,   "@V,S,V,V",   "FIU,S,F,I", EShLangFragmentMask },
+        { "Sample",             /*!O !A*/     "V4",    nullptr,   "%V,S,V",     "FIU,S,F",     EShLangFragmentMask },
+        { "Sample",             /* O !A*/     "V4",    nullptr,   "%V,S,V,V",   "FIU,S,F,I",   EShLangFragmentMask },
+        { "Sample",             /*!O  A*/     "V4",    nullptr,   "@V,S,V",     "FIU,S,F",     EShLangFragmentMask },
+        { "Sample",             /* O  A*/     "V4",    nullptr,   "@V,S,V,V",   "FIU,S,F,I",   EShLangFragmentMask },
+
+        { "SampleBias",         /*!O !A*/     "V4",    nullptr,   "%V,S,V,S",   "FIU,S,F,F",   EShLangFragmentMask },
+        { "SampleBias",         /* O !A*/     "V4",    nullptr,   "%V,S,V,S,V", "FIU,S,F,F,I", EShLangFragmentMask },
+        { "SampleBias",         /*!O  A*/     "V4",    nullptr,   "@V,S,V,S",   "FIU,S,F,F",   EShLangFragmentMask },
+        { "SampleBias",         /* O  A*/     "V4",    nullptr,   "@V,S,V,S,V", "FIU,S,F,F,I", EShLangFragmentMask },
+
+        // { "SampleCmp",          /*!O !A*/     "V4",    nullptr,   "%V,S,V,S",   "FIU,S,F,F",   EShLangFragmentMask },
+        // { "SampleCmp",          /* O !A*/     "V4",    nullptr,   "%V,S,V,S,V", "FIU,S,F,F,I", EShLangFragmentMask },
+        // { "SampleCmp",          /*!O  A*/     "V4",    nullptr,   "@V,S,V,S",   "FIU,S,F,F",   EShLangFragmentMask },
+        // { "SampleCmp",          /* O  A*/     "V4",    nullptr,   "@V,S,V,S,V", "FIU,S,F,F,I", EShLangFragmentMask },
+
+        // { "SampleCmpLevelZero", /*!O !A*/     "V4",    nullptr,   "%V,S,V",     "FIU,S,F",     EShLangFragmentMask },
+        // { "SampleCmpLevelZero", /* O !A*/     "V4",    nullptr,   "%V,S,V,V",   "FIU,S,F,I",   EShLangFragmentMask },
+        // { "SampleCmpLevelZero", /*!O  A*/     "V4",    nullptr,   "@V,S,V",     "FIU,S,F",     EShLangFragmentMask },
+        // { "SampleCmpLevelZero", /* O  A*/     "V4",    nullptr,   "@V,S,V,V",   "FIU,S,F,I",   EShLangFragmentMask },
+
+        { "SampleGrad",         /*!O !A*/     "V4",    nullptr,   "%V,S,V,V,V",   "FIU,S,F,F,F",   EShLangAll },
+        { "SampleGrad",         /* O !A*/     "V4",    nullptr,   "%V,S,V,V,V,V", "FIU,S,F,F,F,I", EShLangAll },
+        { "SampleGrad",         /*!O  A*/     "V4",    nullptr,   "@V,S,V,V,V",   "FIU,S,F,F,F",   EShLangAll },
+        { "SampleGrad",         /* O  A*/     "V4",    nullptr,   "@V,S,V,V,V,V", "FIU,S,F,F,F,I", EShLangAll },
+
+        // { "SampleLevel",        /*!O !A*/     "V4",    nullptr,   "%V,S,V,S",   "FIU,S,F,F",       EShLangFragmentMask },
+        // { "SampleLevel",        /* O !A*/     "V4",    nullptr,   "%V,S,V,S,V", "FIU,S,F,F,I",     EShLangFragmentMask },
+        // { "SampleLevel",        /*!O  A*/     "V4",    nullptr,   "@V,S,V,S",   "FIU,S,F,F",       EShLangFragmentMask },
+        // { "SampleLevel",        /* O  A*/     "V4",    nullptr,   "@V,S,V,S,V", "FIU,S,F,F,I",     EShLangFragmentMask },
+
+        // TODO: ...
+        // { "Load",                            "V4",    nullptr,   "%V,V",       "FIU,I",           EShLangFragmentMask },
+        // { "Load", /* +sampleidex*/           "V4",    nullptr,   "%V,V,S",     "FIU,I,I",         EShLangFragmentMask },
+        // { "Load", /* +samplindex, offset*/   "V4",    nullptr,   "%V,V,S,V",   "FIU,I,I,I",       EShLangFragmentMask },
+        // { "Load",                            "V4",    nullptr,   "@V,V",       "FIU,I",           EShLangFragmentMask },
+        // { "Load", /* +sampleidex*/           "V4",    nullptr,   "@V,V,S",     "FIU,I,I",         EShLangFragmentMask },
+        // { "Load", /* +samplindex, offset*/   "V4",    nullptr,   "@V,V,S,V",   "FIU,I,I,I",       EShLangFragmentMask },
 
         // Mark end of list, since we want to avoid a range-based for, as some compilers don't handle it yet.
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0 },
@@ -565,7 +614,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                                 continue;
 
                             // Reject some forms of sample methods that don't exist.
-                            if (isTexture && IsIllegalSample(s, argOrder, dim0))
+                            if (isTexture && IsIllegalSample(intrinsic.name, argOrder, dim0))
                                 continue;
 
                             AppendTypeName(s, retOrder, retType, dim0, dim1);  // add return type
@@ -796,6 +845,12 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
 
     // Texture methods
     symbolTable.relateToOperator("Sample",                      EOpMethodSample);
+    symbolTable.relateToOperator("SampleBias",                  EOpMethodSampleBias);
+    // symbolTable.relateToOperator("SampleCmp",                   EOpMethodSampleCmp);
+    // symbolTable.relateToOperator("SampleCmpLevelZero",          EOpMethodSampleCmpLevelZero);
+    symbolTable.relateToOperator("SampleGrad",                  EOpMethodSampleGrad);
+    // symbolTable.relateToOperator("SampleLevel",                 EOpMethodSampleLevel);
+    // symbolTable.relateToOperator("Load",                        EOpMethodLoad);
 }
 
 //
