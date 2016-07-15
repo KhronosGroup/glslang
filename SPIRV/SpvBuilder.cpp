@@ -907,7 +907,7 @@ void Builder::addLine(Id target, Id fileName, int lineNum, int column)
 
 void Builder::addDecoration(Id id, Decoration decoration, int num)
 {
-    if (decoration == (spv::Decoration)spv::BadValue)
+    if (decoration == spv::DecorationMax)
         return;
     Instruction* dec = new Instruction(OpDecorate);
     dec->addIdOperand(id);

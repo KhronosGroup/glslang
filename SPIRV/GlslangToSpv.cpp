@@ -301,7 +301,7 @@ spv::Decoration TranslateBlockDecoration(const glslang::TType& type)
         }
     }
 
-    return (spv::Decoration)spv::BadValue;
+    return spv::DecorationMax;
 }
 
 // Translate glslang type to SPIR-V memory decorations.
@@ -330,12 +330,12 @@ spv::Decoration TranslateLayoutDecoration(const glslang::TType& type, glslang::T
             return spv::DecorationColMajor;
         default:
             // opaque layouts don't need a majorness
-            return (spv::Decoration)spv::BadValue;
+            return spv::DecorationMax;
         }
     } else {
         switch (type.getBasicType()) {
         default:
-            return (spv::Decoration)spv::BadValue;
+            return spv::DecorationMax;
             break;
         case glslang::EbtBlock:
             switch (type.getQualifier().storage) {
@@ -345,38 +345,38 @@ spv::Decoration TranslateLayoutDecoration(const glslang::TType& type, glslang::T
                 case glslang::ElpShared:  return spv::DecorationGLSLShared;
                 case glslang::ElpPacked:  return spv::DecorationGLSLPacked;
                 default:
-                    return (spv::Decoration)spv::BadValue;
+                    return spv::DecorationMax;
                 }
             case glslang::EvqVaryingIn:
             case glslang::EvqVaryingOut:
                 assert(type.getQualifier().layoutPacking == glslang::ElpNone);
-                return (spv::Decoration)spv::BadValue;
+                return spv::DecorationMax;
             default:
                 assert(0);
-                return (spv::Decoration)spv::BadValue;
+                return spv::DecorationMax;
             }
         }
     }
 }
 
 // Translate glslang type to SPIR-V interpolation decorations.
-// Returns spv::Decoration(spv::BadValue) when no decoration
+// Returns spv::DecorationMax when no decoration
 // should be applied.
 spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qualifier)
 {
     if (qualifier.smooth)
         // Smooth decoration doesn't exist in SPIR-V 1.0
-        return (spv::Decoration)spv::BadValue;
+        return spv::DecorationMax;
     else if (qualifier.nopersp)
         return spv::DecorationNoPerspective;
     else if (qualifier.flat)
         return spv::DecorationFlat;
     else
-        return (spv::Decoration)spv::BadValue;
+        return spv::DecorationMax;
 }
 
 // Translate glslang type to SPIR-V auxiliary storage decorations.
-// Returns spv::Decoration(spv::BadValue) when no decoration
+// Returns spv::DecorationMax when no decoration
 // should be applied.
 spv::Decoration TGlslangToSpvTraverser::TranslateAuxiliaryStorageDecoration(const glslang::TQualifier& qualifier)
 {
@@ -388,7 +388,7 @@ spv::Decoration TGlslangToSpvTraverser::TranslateAuxiliaryStorageDecoration(cons
         builder.addCapability(spv::CapabilitySampleRateShading);
         return spv::DecorationSample;
     } else
-        return (spv::Decoration)spv::BadValue;
+        return spv::DecorationMax;
 }
 
 // If glslang type is invariant, return SPIR-V invariant decoration.
@@ -397,7 +397,7 @@ spv::Decoration TranslateInvariantDecoration(const glslang::TQualifier& qualifie
     if (qualifier.invariant)
         return spv::DecorationInvariant;
     else
-        return (spv::Decoration)spv::BadValue;
+        return spv::DecorationMax;
 }
 
 // If glslang type is noContraction, return SPIR-V NoContraction decoration.
@@ -406,7 +406,7 @@ spv::Decoration TranslateNoContractionDecoration(const glslang::TQualifier& qual
     if (qualifier.noContraction)
         return spv::DecorationNoContraction;
     else
-        return (spv::Decoration)spv::BadValue;
+        return spv::DecorationMax;
 }
 
 // Translate a glslang built-in variable to a SPIR-V built in decoration.  Also generate
@@ -480,7 +480,7 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvDrawId:
         // TODO: Add SPIR-V builtin ID.
         logger->missingFunctionality("shader draw parameters");
-        return (spv::BuiltIn)spv::BadValue;
+        return spv::BuiltInMax;
     case glslang::EbvPrimitiveId:          return spv::BuiltInPrimitiveId;
     case glslang::EbvInvocationId:         return spv::BuiltInInvocationId;
     case glslang::EbvTessLevelInner:       return spv::BuiltInTessLevelInner;
@@ -507,8 +507,8 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvSubGroupLtMask:
         // TODO: Add SPIR-V builtin ID.
         logger->missingFunctionality("shader ballot");
-        return (spv::BuiltIn)spv::BadValue;
-    default:                               return (spv::BuiltIn)spv::BadValue;
+        return spv::BuiltInMax;
+    default:                               return spv::BuiltInMax;
     }
 }
 
@@ -596,7 +596,7 @@ spv::ImageFormat TGlslangToSpvTraverser::TranslateImageFormat(const glslang::TTy
     case glslang::ElfRg8ui:         return spv::ImageFormatRg8ui;
     case glslang::ElfR16ui:         return spv::ImageFormatR16ui;
     case glslang::ElfR8ui:          return spv::ImageFormatR8ui;
-    default:                        return (spv::ImageFormat)spv::BadValue;
+    default:                        return spv::ImageFormatMax;
     }
 }
 
@@ -705,26 +705,26 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
         case glslang::ElgTriangles:           mode = spv::ExecutionModeTriangles;     break;
         case glslang::ElgQuads:               mode = spv::ExecutionModeQuads;         break;
         case glslang::ElgIsolines:            mode = spv::ExecutionModeIsolines;      break;
-        default:                              mode = spv::BadValue;                        break;
+        default:                              mode = spv::ExecutionModeMax;           break;
         }
-        if (mode != spv::BadValue)
+        if (mode != spv::ExecutionModeMax)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
 
         switch (glslangIntermediate->getVertexSpacing()) {
         case glslang::EvsEqual:            mode = spv::ExecutionModeSpacingEqual;          break;
         case glslang::EvsFractionalEven:   mode = spv::ExecutionModeSpacingFractionalEven; break;
         case glslang::EvsFractionalOdd:    mode = spv::ExecutionModeSpacingFractionalOdd;  break;
-        default:                           mode = spv::BadValue;                           break;
+        default:                           mode = spv::ExecutionModeMax;                   break;
         }
-        if (mode != spv::BadValue)
+        if (mode != spv::ExecutionModeMax)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
 
         switch (glslangIntermediate->getVertexOrder()) {
         case glslang::EvoCw:     mode = spv::ExecutionModeVertexOrderCw;  break;
         case glslang::EvoCcw:    mode = spv::ExecutionModeVertexOrderCcw; break;
-        default:                 mode = spv::BadValue;                    break;
+        default:                 mode = spv::ExecutionModeMax;            break;
         }
-        if (mode != spv::BadValue)
+        if (mode != spv::ExecutionModeMax)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
 
         if (glslangIntermediate->getPointMode())
@@ -739,9 +739,9 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
         case glslang::ElgLinesAdjacency:     mode = spv::ExecutionModeInputLinesAdjacency;     break;
         case glslang::ElgTriangles:          mode = spv::ExecutionModeTriangles;               break;
         case glslang::ElgTrianglesAdjacency: mode = spv::ExecutionModeInputTrianglesAdjacency; break;
-        default:                             mode = spv::BadValue;         break;
+        default:                             mode = spv::ExecutionModeMax;                     break;
         }
-        if (mode != spv::BadValue)
+        if (mode != spv::ExecutionModeMax)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
 
         builder.addExecutionMode(shaderEntry, spv::ExecutionModeInvocations, glslangIntermediate->getInvocations());
@@ -750,9 +750,9 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
         case glslang::ElgPoints:        mode = spv::ExecutionModeOutputPoints;                 break;
         case glslang::ElgLineStrip:     mode = spv::ExecutionModeOutputLineStrip;              break;
         case glslang::ElgTriangleStrip: mode = spv::ExecutionModeOutputTriangleStrip;          break;
-        default:                        mode = spv::BadValue;              break;
+        default:                        mode = spv::ExecutionModeMax;                          break;
         }
-        if (mode != spv::BadValue)
+        if (mode != spv::ExecutionModeMax)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
         builder.addExecutionMode(shaderEntry, spv::ExecutionModeOutputVertices, glslangIntermediate->getVertices());
         break;
@@ -773,9 +773,9 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
         switch(glslangIntermediate->getDepth()) {
         case glslang::EldGreater:  mode = spv::ExecutionModeDepthGreater; break;
         case glslang::EldLess:     mode = spv::ExecutionModeDepthLess;    break;
-        default:                   mode = spv::BadValue;                  break;
+        default:                   mode = spv::ExecutionModeMax;          break;
         }
-        if (mode != spv::BadValue)
+        if (mode != spv::ExecutionModeMax)
             builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
 
         if (glslangIntermediate->getDepth() != glslang::EldUnchanged && glslangIntermediate->isDepthReplacing())
@@ -2070,7 +2070,7 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
 
             // built-in variable decorations
             spv::BuiltIn builtIn = TranslateBuiltInDecoration(glslangMember.getQualifier().builtIn, true);
-            if (builtIn != spv::BadValue)
+            if (builtIn != spv::BuiltInMax)
                 addMemberDecoration(spvType, member, spv::DecorationBuiltIn, (int)builtIn);
         }
     }
@@ -4122,7 +4122,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
 
     // built-in variable decorations
     spv::BuiltIn builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn, false);
-    if (builtIn != spv::BadValue)
+    if (builtIn != spv::BuiltInMax)
         addDecoration(id, spv::DecorationBuiltIn, (int)builtIn);
 
     return id;
@@ -4131,28 +4131,28 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
 // If 'dec' is valid, add no-operand decoration to an object
 void TGlslangToSpvTraverser::addDecoration(spv::Id id, spv::Decoration dec)
 {
-    if (dec != spv::BadValue)
+    if (dec != spv::DecorationMax)
         builder.addDecoration(id, dec);
 }
 
 // If 'dec' is valid, add a one-operand decoration to an object
 void TGlslangToSpvTraverser::addDecoration(spv::Id id, spv::Decoration dec, unsigned value)
 {
-    if (dec != spv::BadValue)
+    if (dec != spv::DecorationMax)
         builder.addDecoration(id, dec, value);
 }
 
 // If 'dec' is valid, add a no-operand decoration to a struct member
 void TGlslangToSpvTraverser::addMemberDecoration(spv::Id id, int member, spv::Decoration dec)
 {
-    if (dec != spv::BadValue)
+    if (dec != spv::DecorationMax)
         builder.addMemberDecoration(id, (unsigned)member, dec);
 }
 
 // If 'dec' is valid, add a one-operand decoration to a struct member
 void TGlslangToSpvTraverser::addMemberDecoration(spv::Id id, int member, spv::Decoration dec, unsigned value)
 {
-    if (dec != spv::BadValue)
+    if (dec != spv::DecorationMax)
         builder.addMemberDecoration(id, (unsigned)member, dec, value);
 }
 
