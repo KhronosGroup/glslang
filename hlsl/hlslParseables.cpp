@@ -272,6 +272,18 @@ inline const char* FindEndOfArg(const char* arg)
     return *arg == '\0' ? nullptr : arg;
 }
 
+// If this is a fixed vector size, such as V3, return the size.  Else return 0.
+int FixedVecSize(const char* arg) 
+{
+    while (!IsEndOfArg(arg)) {
+        if (isdigit(*arg))
+            return *arg - '0';
+        ++arg;
+    }
+
+    return 0; // none found.
+}
+
 
 // Return pointer to beginning of Nth argument specifier in the string.
 inline const char* NthArg(const char* arg, int n)
@@ -571,6 +583,61 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         // { "Load", /* +sampleidex*/           "V4",    nullptr,   "@V,V,S",     "FIU,I,I",         EShLangFragmentMask },
         // { "Load", /* +samplindex, offset*/   "V4",    nullptr,   "@V,V,S,V",   "FIU,I,I,I",       EShLangFragmentMask },
 
+        // table of overloads from: https://msdn.microsoft.com/en-us/library/windows/desktop/bb509693(v=vs.85).aspx
+        // 
+        // UINT Width
+        // UINT MipLevel, UINT Width, UINT NumberOfLevels
+        { "GetDimensions",   /* 1D */         "-",     "-",       "%V1,>S",             "FUI,U",         EShLangAll },
+        { "GetDimensions",   /* 1D */         "-",     "-",       "%V1,>S",             "FUI,F",         EShLangAll },
+        { "GetDimensions",   /* 1D */         "-",     "-",       "%V1,S,>S,>S",        "FUI,U,U,U",     EShLangAll },
+        { "GetDimensions",   /* 1D */         "-",     "-",       "%V1,S,>S,>S",        "FUI,U,F,F",     EShLangAll },
+
+        // UINT Width, UINT Elements
+        // UINT MipLevel, UINT Width, UINT Elements, UINT NumberOfLevels
+        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@V1,>S,>S",          "FUI,U,U",       EShLangAll },
+        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@V1,>S,>S",          "FUI,F,F",       EShLangAll },
+        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@V1,S,>S,>S,>S",     "FUI,U,U,U,U",   EShLangAll },
+        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@V1,S,>S,>S,>S",     "FUI,U,F,F,F",   EShLangAll },
+
+        // UINT Width, UINT Height
+        // UINT MipLevel, UINT Width, UINT Height, UINT NumberOfLevels
+        { "GetDimensions",   /* 2D */         "-",     "-",       "%V2,>S,>S",          "FUI,U,U",       EShLangAll },
+        { "GetDimensions",   /* 2D */         "-",     "-",       "%V2,>S,>S",          "FUI,F,F",       EShLangAll },
+        { "GetDimensions",   /* 2D */         "-",     "-",       "%V2,S,>S,>S,>S",     "FUI,U,U,U,U",   EShLangAll },
+        { "GetDimensions",   /* 2D */         "-",     "-",       "%V2,S,>S,>S,>S",     "FUI,U,F,F,F",   EShLangAll },
+
+        // UINT Width, UINT Height, UINT Elements
+        // UINT MipLevel, UINT Width, UINT Height, UINT Elements, UINT NumberOfLevels
+        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@V2,>S,>S,>S",       "FUI,U,U,U",     EShLangAll },
+        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@V2,>S,>S,>S",       "FUI,F,F,F",     EShLangAll },
+        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@V2,S,>S,>S,>S,>S",  "FUI,U,U,U,U,U", EShLangAll },
+        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@V2,S,>S,>S,>S,>S",  "FUI,U,F,F,F,F", EShLangAll },
+
+        // UINT Width, UINT Height, UINT Depth
+        // UINT MipLevel, UINT Width, UINT Height, UINT Depth, UINT NumberOfLevels
+        { "GetDimensions",   /* 3D */         "-",     "-",       "%V3,>S,>S,>S",       "FUI,U,U,U",     EShLangAll },
+        { "GetDimensions",   /* 3D */         "-",     "-",       "%V3,>S,>S,>S",       "FUI,F,F,F",     EShLangAll },
+        { "GetDimensions",   /* 3D */         "-",     "-",       "%V3,S,>S,>S,>S,>S",  "FUI,U,U,U,U,U", EShLangAll },
+        { "GetDimensions",   /* 3D */         "-",     "-",       "%V3,S,>S,>S,>S,>S",  "FUI,U,F,F,F,F", EShLangAll },
+
+        // UINT Width, UINT Height
+        // UINT MipLevel, UINT Width, UINT Height, UINT NumberOfLevels
+        { "GetDimensions",   /* Cube */       "-",     "-",       "%V4,>S,>S",          "FUI,U,U",       EShLangAll },
+        { "GetDimensions",   /* Cube */       "-",     "-",       "%V4,>S,>S",          "FUI,F,F",       EShLangAll },
+        { "GetDimensions",   /* Cube */       "-",     "-",       "%V4,S,>S,>S,>S",     "FUI,U,U,U,U",   EShLangAll },
+        { "GetDimensions",   /* Cube */       "-",     "-",       "%V4,S,>S,>S,>S",     "FUI,U,F,F,F",   EShLangAll },
+
+        // UINT Width, UINT Height, UINT Elements
+        // UINT MipLevel, UINT Width, UINT Height, UINT Elements, UINT NumberOfLevels
+        { "GetDimensions",   /* CubeArray */  "-",     "-",       "@V4,>S,>S,>S",       "FUI,U,U,U",     EShLangAll },
+        { "GetDimensions",   /* CubeArray */  "-",     "-",       "@V4,>S,>S,>S",       "FUI,F,F,F",     EShLangAll },
+        { "GetDimensions",   /* CubeArray */  "-",     "-",       "@V4,S,>S,>S,>S,>S",  "FUI,U,U,U,U,U", EShLangAll },
+        { "GetDimensions",   /* CubeArray */  "-",     "-",       "@V4,S,>S,>S,>S,>S",  "FUI,U,F,F,F,F", EShLangAll },
+
+        // TODO: GetDimensions for Texture2DMS, Texture2DMSArray
+        // UINT Width, UINT Height, UINT Samples
+        // UINT Width, UINT Height, UINT Elements, UINT Samples
+
         // Mark end of list, since we want to avoid a range-based for, as some compilers don't handle it yet.
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0 },
     };
@@ -593,7 +660,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
             for (const char* argOrder = intrinsic.argOrder; !IsEndOfArg(argOrder); ++argOrder) { // for each order...
                 const bool isTexture   = IsTextureType(*argOrder);
                 const bool isArrayed   = IsTextureArrayed(*argOrder);
-                const int fixedVecSize = isdigit(argOrder[1]) ? (argOrder[1] - '0') : 0;
+                const int fixedVecSize = FixedVecSize(argOrder);
 
                 // calculate min and max vector and matrix dimensions
                 int dim0Min = 1;
@@ -663,7 +730,10 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                     }
                 }
 
-                if (fixedVecSize > 0 || isTexture)  // skip over special characters
+                // skip over special characters
+                if (isTexture)
+                    ++argOrder;
+                if (isdigit(argOrder[1]))  
                     ++argOrder;
             }
             
@@ -851,6 +921,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("SampleGrad",                  EOpMethodSampleGrad);
     // symbolTable.relateToOperator("SampleLevel",                 EOpMethodSampleLevel);
     // symbolTable.relateToOperator("Load",                        EOpMethodLoad);
+    symbolTable.relateToOperator("GetDimensions",               EOpMethodGetDimensions);
 }
 
 //

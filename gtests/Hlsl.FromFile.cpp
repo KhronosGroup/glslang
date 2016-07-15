@@ -81,6 +81,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.float1.frag", "PixelShaderFunction"},
         {"hlsl.float4.frag", "PixelShaderFunction"},
         {"hlsl.forLoop.frag", "PixelShaderFunction"},
+        {"hlsl.getdimensions.dx10.frag", "main"},
+        {"hlsl.getdimensions.dx10.vert", "main"},
         {"hlsl.if.frag", "PixelShaderFunction"},
         {"hlsl.inoutquals.frag", "main"},
         {"hlsl.init.frag", "ShaderFunction"},
