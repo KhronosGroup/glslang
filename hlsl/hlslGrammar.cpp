@@ -211,7 +211,7 @@ bool HlslGrammar::acceptSamplerState()
 // sampler_declaration_dx9
 //    : SAMPLER identifier EQUAL sampler_type sampler_state
 //
-bool HlslGrammar::acceptSamplerDeclarationDX9(TType& type)
+bool HlslGrammar::acceptSamplerDeclarationDX9(TType& /*type*/)
 {
     if (! acceptTokenClass(EHTokSampler))
         return false;

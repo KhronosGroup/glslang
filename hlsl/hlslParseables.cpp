@@ -69,7 +69,7 @@ const char* BaseTypeName(const char argOrder, const char* scalarName, const char
 
 bool IsTextureType(const char argOrder)    { return argOrder == '%' || argOrder == '@'; }
 bool IsTextureArrayed(const char argOrder) { return argOrder == '@'; }
-bool IsTextureMS(const char argOrder)      { return false; } // TODO: ...
+bool IsTextureMS(const char /*argOrder*/)      { return false; } // TODO: ...
 
 // Reject certain combinations that are illegal sample methods.  For example,
 // 3D arrays.
@@ -118,7 +118,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     const bool isMatMul    = (argOrder[0] == '#');
     const bool isTexture   = IsTextureType(argOrder[0]);
     const bool isArrayed   = IsTextureArrayed(argOrder[0]);
-    const bool isMS        = IsTextureMS(argOrder[0]);
+    //const bool isMS        = IsTextureMS(argOrder[0]);
 
     char order = *argOrder;
     char type  = *argType;

@@ -906,7 +906,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
             TOperator textureOp = EOpTexture;
 
-            if (argAggregate->getSequence().size() == (nextArg+1)) { // last parameter is offset form
+            if ((int)argAggregate->getSequence().size() == (nextArg+1)) { // last parameter is offset form
                 textureOp = EOpTextureOffset;
                 argOffset = argAggregate->getSequence()[nextArg++]->getAsTyped();
             }
