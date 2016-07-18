@@ -69,14 +69,14 @@ const char* BaseTypeName(const char argOrder, const char* scalarName, const char
 
 bool IsTextureType(const char argOrder)    { return argOrder == '%' || argOrder == '@'; }
 bool IsTextureArrayed(const char argOrder) { return argOrder == '@'; }
-bool IsTextureMS(const char /*argOrder*/)  { return false; } // TODO: ...
+// bool IsTextureMS(const char /*argOrder*/)  { return false; } // TODO: ...
 
 // Reject certain combinations that are illegal sample methods.  For example,
 // 3D arrays.
 bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim0)
 {
     const bool isArrayed = IsTextureArrayed(*argOrder);
-    const bool isMS      = IsTextureMS(*argOrder);
+    // const bool isMS      = IsTextureMS(*argOrder);
 
     // there are no 3D arrayed textures, or 3D SampleCmp(LevelZero)
     if (dim0 == 3 && (isArrayed || name == "SampleCmp" || name == "SampleCmpLevelZero"))

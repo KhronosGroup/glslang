@@ -197,20 +197,25 @@ template <class T> T Max(const T a, const T b) { return a > b ? a : b; }
 //
 // Create a TString object from an integer.
 //
+#if defined _MSC_VER || defined MINGW_HAS_SECURE_API
 inline const TString String(const int i, const int base = 10)
 {
     char text[16];     // 32 bit ints are at most 10 digits in base 10
+    _itoa_s(i, text, sizeof(text), base);
+    return text;
+}
+#else
+inline const TString String(const int i, const int /*base*/ = 10)
+{
+    char text[16];     // 32 bit ints are at most 10 digits in base 10
     
-    #if defined _MSC_VER || defined MINGW_HAS_SECURE_API
-        _itoa_s(i, text, sizeof(text), base);
-    #else
-        // we assume base 10 for all cases
-        snprintf(text, sizeof(text), "%d", i);
-    #endif
+    // we assume base 10 for all cases
+    snprintf(text, sizeof(text), "%d", i);
 
     return text;
 }
-
+#endif
+    
 struct TSourceLoc {
     void init() { name = nullptr; string = 0; line = 0; column = 0; }
     // Returns the name if it exists. Otherwise, returns the string number.
