@@ -661,7 +661,10 @@ bool HlslGrammar::acceptSamplerType(TType& type)
     // read sampler type
     const EHlslTokenClass samplerType = peek();
 
+    // TODO: for DX9
     // TSamplerDim dim = EsdNone;
+
+    bool isShadow = false;
 
     switch (samplerType) {
     case EHTokSampler:      break;
@@ -670,7 +673,7 @@ bool HlslGrammar::acceptSamplerType(TType& type)
     case EHTokSampler3d:    /*dim = Esd3D*/; break;
     case EHTokSamplerCube:  /*dim = EsdCube*/; break;
     case EHTokSamplerState: break;
-    case EHTokSamplerComparisonState: break;
+    case EHTokSamplerComparisonState: isShadow = true; break;
     default:
         return false;  // not a sampler declaration
     }
@@ -678,10 +681,9 @@ bool HlslGrammar::acceptSamplerType(TType& type)
     advanceToken();  // consume the sampler type keyword
 
     TArraySizes* arraySizes = nullptr; // TODO: array
-    bool shadow = false;               // TODO: shadow
 
     TSampler sampler;
-    sampler.setPureSampler(shadow);
+    sampler.setPureSampler(isShadow);
 
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));
 
