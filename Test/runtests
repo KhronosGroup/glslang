@@ -19,6 +19,13 @@ fi
 rm -f comp.spv frag.spv geom.spv tesc.spv tese.spv vert.spv
 
 #
+# special tests
+#
+
+$EXE badMacroArgs.frag > $TARGETDIR/badMacroArgs.frag.out
+diff -b $BASEDIR/badMacroArgs.frag.out $TARGETDIR/badMacroArgs.frag.out || HASERROR=1
+
+#
 # reflection tests
 #
 echo Running reflection...

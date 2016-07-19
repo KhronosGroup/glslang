@@ -179,7 +179,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
     if (ltoken > 127)
         ltoken += 128;
     switch (ltoken) {
-    case '#':        
+    case '#':
         if (lReadByte(pTok) == '#') {
             parseContext.requireProfile(ppToken->loc, ~EEsProfile, "token pasting (##)");
             parseContext.profileRequires(ppToken->loc, ~EEsProfile, 130, 0, "token pasting (##)");
