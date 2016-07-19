@@ -3175,12 +3175,13 @@ void TParseContext::arrayDimMerge(TType& type, const TArraySizes* sizes)
 //
 void TParseContext::declareArray(const TSourceLoc& loc, TString& identifier, const TType& type, TSymbol*& symbol, bool& newDeclaration)
 {
-    if (! symbol) {
+    if (symbol == nullptr) {
         bool currentScope;
         symbol = symbolTable.find(identifier, nullptr, &currentScope);
 
         if (symbol && builtInName(identifier) && ! symbolTable.atBuiltInLevel()) {
             // bad shader (errors already reported) trying to redeclare a built-in name as an array
+            symbol = nullptr;
             return;
         }
         if (symbol == nullptr || ! currentScope) {
@@ -3213,7 +3214,7 @@ void TParseContext::declareArray(const TSourceLoc& loc, TString& identifier, con
     // Process a redeclaration.
     //
 
-    if (! symbol) {
+    if (symbol == nullptr) {
         error(loc, "array variable name expected", identifier.c_str(), "");
         return;
     }
@@ -4934,7 +4935,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     bool newDeclaration = false;    // true if a new entry gets added to the symbol table
     TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), publicType.shaderQualifiers, newDeclaration);
-    if (! symbol)
+    if (symbol == nullptr)
         reservedErrorCheck(loc, identifier);
 
     inheritGlobalDefaults(type.getQualifier());
@@ -4959,18 +4960,18 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         }
     } else {
         // non-array case
-        if (! symbol)
+        if (symbol == nullptr)
             symbol = declareNonArray(loc, identifier, type, newDeclaration);
         else if (type != symbol->getType())
             error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
     }
 
-    if (! symbol)
+    if (symbol == nullptr)
         return nullptr;
 
     // Deal with initializer
     TIntermNode* initNode = nullptr;
-    if (symbol && initializer) {
+    if (symbol != nullptr && initializer) {
         TVariable* variable = symbol->getAsVariable();
         if (! variable) {
             error(loc, "initializer requires a variable, not a member", identifier.c_str(), "");
