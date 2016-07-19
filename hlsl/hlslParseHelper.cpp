@@ -964,6 +964,105 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             break;
         }
 
+    case EOpMethodGetDimensions:
+        {
+            // AST returns a vector of results, which we break apart component-wise into
+            // separate values to assign to the HLSL method's outputs, ala:
+            //  tx . GetDimensions(width, height);
+            //      float2 sizeQueryTemp = EOpTextureQuerySize
+            //      width = sizeQueryTemp.X;
+            //      height = sizeQueryTemp.Y;
+
+            TIntermTyped* argTex = argAggregate->getSequence()[0]->getAsTyped();
+            const TType& texType = argTex->getType();
+
+            assert(texType.getBasicType() == EbtSampler);
+
+            const TSampler& texSampler = texType.getSampler();
+            const TSamplerDim dim = texSampler.dim;
+            const int numArgs = argAggregate->getSequence().size();
+
+            int numDims = 0;
+
+            switch (dim) {
+            case Esd1D:   numDims = 1; break; // W
+            case Esd2D:   numDims = 2; break; // W, H
+            case Esd3D:   numDims = 3; break; // W, H, D
+            case EsdCube: numDims = 2; break; // W, H (cube)
+            default:
+                assert(0 && "unhandled texture dimension");
+            }
+
+            // Arrayed adds another dimension for the number of array elements
+            if (texSampler.isArrayed())
+                ++numDims;
+
+            // Establish whether we're querying mip levels
+            const bool mipQuery = numArgs > (numDims + 1);
+
+            // AST assumes integer return.  Will be converted to float if required.
+            TIntermAggregate* sizeQuery = new TIntermAggregate(EOpTextureQuerySize);
+            sizeQuery->getSequence().push_back(argTex);
+            // If we're querying an explicit LOD, add the LOD, which is always arg #1
+            if (mipQuery) {
+                TIntermTyped* queryLod = argAggregate->getSequence()[1]->getAsTyped();
+                sizeQuery->getSequence().push_back(queryLod);
+            }
+            sizeQuery->setType(TType(EbtUint, EvqTemporary, numDims));
+            sizeQuery->setLoc(loc);
+
+            // Return value from size query
+            TVariable* tempArg = makeInternalVariable("sizeQueryTemp", sizeQuery->getType());
+            tempArg->getWritableType().getQualifier().makeTemporary();
+            TIntermSymbol* sizeQueryReturn = intermediate.addSymbol(*tempArg, loc);
+
+            TIntermTyped* sizeQueryAssign = intermediate.addAssign(EOpAssign, sizeQueryReturn, sizeQuery, loc);
+
+            // Compound statement for assigning outputs
+            TIntermAggregate* compoundStatement = intermediate.makeAggregate(sizeQueryAssign, loc);
+            // Index of first output parameter
+            const int outParamBase = mipQuery ? 2 : 1;
+
+            for (int compNum = 0; compNum < numDims; ++compNum) {
+                TIntermTyped* indexedOut = nullptr;
+
+                if (numDims > 1) {
+                    TIntermTyped* component = intermediate.addConstantUnion(compNum, loc, true);
+                    indexedOut = intermediate.addIndex(EOpIndexDirect, sizeQueryReturn, component, loc);
+                    indexedOut->setType(TType(EbtUint, EvqTemporary, 1));
+                    indexedOut->setLoc(loc);
+                } else {
+                    indexedOut = sizeQueryReturn;
+                }
+                
+                TIntermTyped* outParam = argAggregate->getSequence()[outParamBase + compNum]->getAsTyped();
+                TIntermTyped* compAssign = intermediate.addAssign(EOpAssign, outParam, indexedOut, loc);
+
+                compoundStatement = intermediate.growAggregate(compoundStatement, compAssign);
+            }
+
+            // handle mip level parameter
+            if (mipQuery) {
+                TIntermTyped* outParam = argAggregate->getSequence()[outParamBase + numDims]->getAsTyped();
+
+                TIntermAggregate* levelsQuery = new TIntermAggregate(EOpTextureQueryLevels);
+                levelsQuery->getSequence().push_back(argTex);
+                levelsQuery->setType(TType(EbtUint, EvqTemporary, 1));
+                levelsQuery->setLoc(loc);
+
+                TIntermTyped* compAssign = intermediate.addAssign(EOpAssign, outParam, levelsQuery, loc);
+                compoundStatement = intermediate.growAggregate(compoundStatement, compAssign);
+            }
+
+            compoundStatement->setOperator(EOpSequence);
+            compoundStatement->setLoc(loc);
+            compoundStatement->setType(TType(EbtVoid));
+
+            node = compoundStatement;
+
+            break;
+        }
+
     default:
         break; // most pass through unchanged
     }

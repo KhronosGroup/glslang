@@ -85,6 +85,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool isPureSampler() const { return sampler; }
     bool isTexture()     const { return !sampler && !image; }
     bool isShadow()      const { return shadow; }
+    bool isArrayed()     const { return arrayed; }
 
     void clear()
     {

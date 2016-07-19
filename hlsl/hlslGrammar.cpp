@@ -661,14 +661,14 @@ bool HlslGrammar::acceptSamplerType(TType& type)
     // read sampler type
     const EHlslTokenClass samplerType = peek();
 
-    TSamplerDim dim = EsdNone;
+    // TSamplerDim dim = EsdNone;
 
     switch (samplerType) {
     case EHTokSampler:      break;
-    case EHTokSampler1d:    dim = Esd1D; break;
-    case EHTokSampler2d:    dim = Esd2D; break;
-    case EHTokSampler3d:    dim = Esd3D; break;
-    case EHTokSamplerCube:  dim = EsdCube; break;
+    case EHTokSampler1d:    /*dim = Esd1D*/; break;
+    case EHTokSampler2d:    /*dim = Esd2D*/; break;
+    case EHTokSampler3d:    /*dim = Esd3D*/; break;
+    case EHTokSamplerCube:  /*dim = EsdCube*/; break;
     case EHTokSamplerState: break;
     case EHTokSamplerComparisonState: break;
     default:
