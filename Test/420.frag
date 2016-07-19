@@ -10,3 +10,5 @@ void main()
 
 layout(depth_less) in float depth; // ERROR: depth_less only applies to gl_FragDepth
 layout(depth_any) out float gl_FragDepth;  // ERROR, done after use
+
+layout(binding=0) uniform atomic_uint a[];

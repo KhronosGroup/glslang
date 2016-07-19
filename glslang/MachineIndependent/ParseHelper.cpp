@@ -4753,8 +4753,18 @@ void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
 
             // Check for overlap
             int numOffsets = 4;
-            if (symbol.getType().isArray())
-                numOffsets *= symbol.getType().getCumulativeArraySize();
+            if (symbol.getType().isArray()) {
+                if (symbol.getType().isExplicitlySizedArray())
+                    numOffsets *= symbol.getType().getCumulativeArraySize();
+                else {
+                    // TODO: functionality: implicitly-sized atomic_uint arrays.
+                    // We don't know the full size until later.  This might
+                    // be a specification problem, will report to Khronos.  For the
+                    // cases that is not true, the rest of the checking would need
+                    // to be done at link time instead of compile time.
+                    warn(loc, "implicitly sized atomic_uint array treated as having one element for tracking the default offset", "atomic_uint", "");
+                }
+            }
             int repeated = intermediate.addUsedOffsets(qualifier.layoutBinding, offset, numOffsets);
             if (repeated >= 0)
                 error(loc, "atomic counters sharing the same offset:", "offset", "%d", repeated);
