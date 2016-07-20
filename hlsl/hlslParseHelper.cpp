@@ -825,6 +825,7 @@ TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc
 
     TSampler samplerType = argTex->getType().getSampler();
     samplerType.combined = true;
+    samplerType.shadow   = argSampler->getType().getSampler().shadow;
 
     txcombine->setType(TType(samplerType, EvqTemporary));
     txcombine->setLoc(loc);
@@ -1059,6 +1060,66 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             compoundStatement->setType(TType(EbtVoid));
 
             node = compoundStatement;
+
+            break;
+        }
+
+    case EOpMethodSampleCmp:  // fall through...
+    case EOpMethodSampleCmpLevelZero:
+        {
+            TIntermTyped* argTex    = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* argSamp   = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* argCoord  = argAggregate->getSequence()[2]->getAsTyped();
+            TIntermTyped* argCmpVal = argAggregate->getSequence()[3]->getAsTyped();
+            TIntermTyped* argOffset = nullptr;
+
+            // optional offset value
+            if (argAggregate->getSequence().size() > 4)
+                argOffset = argAggregate->getSequence()[4]->getAsTyped();
+            
+            const int coordDimWithCmpVal = argCoord->getType().getVectorSize() + 1; // +1 for cmp
+
+            // AST wants comparison value as one of the texture coordinates
+            TOperator constructOp = EOpNull;
+            switch (coordDimWithCmpVal) {
+            // 1D can't happen: there's always at least 1 coordinate dimension + 1 cmp val
+            case 2: constructOp = EOpConstructVec2;  break;
+            case 3: constructOp = EOpConstructVec3;  break;
+            case 4: constructOp = EOpConstructVec4;  break;
+            case 5: constructOp = EOpConstructVec4;  break; // cubeArrayShadow, cmp value is separate arg.
+            default: assert(0); break;
+            }
+
+            TIntermAggregate* coordWithCmp = new TIntermAggregate(constructOp);
+            coordWithCmp->getSequence().push_back(argCoord);
+            if (coordDimWithCmpVal != 5) // cube array shadow is special.
+                coordWithCmp->getSequence().push_back(argCmpVal);
+            coordWithCmp->setLoc(loc);
+
+            TOperator textureOp = (op == EOpMethodSampleCmpLevelZero ? EOpTextureLod : EOpTexture);
+            if (argOffset != nullptr)
+                textureOp = (op == EOpMethodSampleCmpLevelZero ? EOpTextureLodOffset : EOpTextureOffset);
+
+            // Create combined sampler & texture op
+            TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
+            TIntermAggregate* txsample = new TIntermAggregate(textureOp);
+            txsample->getSequence().push_back(txcombine);
+            txsample->getSequence().push_back(coordWithCmp);
+
+            if (coordDimWithCmpVal == 5) // cube array shadow is special: cmp val follows coord.
+                txsample->getSequence().push_back(argCmpVal);
+
+            // the LevelZero form uses 0 as an explicit LOD
+            if (op == EOpMethodSampleCmpLevelZero)
+                txsample->getSequence().push_back(intermediate.addConstantUnion(0.0, EbtFloat, loc, true));
+
+            // Add offset if present
+            if (argOffset != nullptr)
+                txsample->getSequence().push_back(argOffset);
+
+            txsample->setType(node->getType());
+            txsample->setLoc(loc);
+            node = txsample;
 
             break;
         }

@@ -69,7 +69,7 @@ const char* BaseTypeName(const char argOrder, const char* scalarName, const char
 
 bool IsTextureType(const char argOrder)    { return argOrder == '%' || argOrder == '@'; }
 bool IsTextureArrayed(const char argOrder) { return argOrder == '@'; }
-bool IsTextureMS(const char /*argOrder*/)      { return false; } // TODO: ...
+bool IsTextureMS(const char /*argOrder*/)  { return false; } // TODO: ...
 
 // Reject certain combinations that are illegal sample methods.  For example,
 // 3D arrays.
@@ -78,33 +78,47 @@ bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim
     const bool isArrayed = IsTextureArrayed(*argOrder);
     const bool isMS      = IsTextureMS(*argOrder);
 
-    // there are no 3D arrayed textures, or 3D SampleCmp
-    if (dim0 == 3 && (isArrayed || name == "SampleCmp"))
+    // there are no 3D arrayed textures, or 3D SampleCmp(LevelZero)
+    if (dim0 == 3 && (isArrayed || name == "SampleCmp" || name == "SampleCmpLevelZero"))
         return true;
 
     const int numArgs = int(std::count(argOrder, argOrder + strlen(argOrder), ',')) + 1;
 
-    // Reject invalid offset arrayed forms with cubemaps
-    if (isArrayed && dim0 == 4) {
+    // Reject invalid offset forms with cubemaps
+    if (dim0 == 4) {
         if ((name == "Sample"             && numArgs >= 4) ||
             (name == "SampleBias"         && numArgs >= 5) ||
             (name == "SampleCmp"          && numArgs >= 5) ||
-            (name == "SampleCmpLevelZero" && numArgs >= 4) ||
+            (name == "SampleCmpLevelZero" && numArgs >= 5) ||
             (name == "SampleGrad"         && numArgs >= 6) ||
             (name == "SampleLevel"        && numArgs >= 5))
             return true;
     }
 
     // Reject invalid Loads
-    if (name == "Load") {
-        if ((numArgs >= 3 && !isMS) ||  // Load with sampleindex requires multisample
-            (dim0 == 4))                // Load does not support any cubemaps, arrayed or not.
-            return true;
-    }
+    if (name == "Load" && dim0 == 4)
+        return true; // Load does not support any cubemaps, arrayed or not.
 
     return false;
 }
-    
+
+// Return the number of the coordinate arg, if any
+int CoordinateArgPos(const glslang::TString& name, bool isTexture)
+{
+    if (!isTexture || (name == "GetDimensions"))
+        return -1;  // has none
+    else if (name == "Load")
+        return 1;
+    else
+        return 2;  // other texture methods are 2
+}
+
+// Some texture methods use an addition coordinate dimension for the mip
+bool HasMipInCoord(const glslang::TString& name)
+{
+    return name == "Load";
+}
+
 // Create and return a type name.  This is done in GLSL, not HLSL conventions, until such
 // time as builtins are parsed using the HLSL parser.
 //
@@ -141,17 +155,18 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
 
     if (UseHlslTypes) {
         switch (type) {
-        case '-': s += "void";            break;
-        case 'F': s += "float";           break;
-        case 'D': s += "double";          break;
-        case 'I': s += "int";             break;
-        case 'U': s += "uint";            break;
-        case 'B': s += "bool";            break;
-        case 'S': s += "sampler";         break;
-        case 'T': s += "Texture";         break;
-        case 'i': s += "Texture <int4>";  break;
-        case 'u': s += "Texture <uint4>"; break;
-        default:  s += "UNKNOWN_TYPE";    break;
+        case '-': s += "void";                   break;
+        case 'F': s += "float";                  break;
+        case 'D': s += "double";                 break;
+        case 'I': s += "int";                    break;
+        case 'U': s += "uint";                   break;
+        case 'B': s += "bool";                   break;
+        case 'S': s += "sampler";                break;
+        case 's': s += "SamplerComparisonState"; break;
+        case 'T': s += "Texture";                break;
+        case 'i': s += "Texture <int4>";         break;
+        case 'u': s += "Texture <uint4>";        break;
+        default:  s += "UNKNOWN_TYPE";           break;
         }
     } else {
         switch (type) {
@@ -162,6 +177,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
         case 'U': s += BaseTypeName(order, "uint",    "uvec",    "umat");    break;
         case 'B': s += BaseTypeName(order, "bool",    "bvec",    "bmat");    break;
         case 'S': s += "sampler";                                            break;
+        case 's': s += "samplerShadow";                                      break;
         case 'T': // fall through
         case 'i': // ...
         case 'u': // ...
@@ -369,7 +385,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     // orderKey can be:
     //   S = scalar, V = vector, M = matrix, - = void
     // typekey can be:
-    //   D = double, F = float, U = uint, I = int, B = bool, S = sampler
+    //   D = double, F = float, U = uint, I = int, B = bool, S = sampler, s = shadowSampler
     // An empty order or type key repeats the first one.  E.g: SVM,, means 3 args each of SVM.
     // '>' as first letter of order creates an output parameter
     // '<' as first letter of order creates an input parameter
@@ -555,33 +571,35 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "SampleBias",         /*!O  A*/     "V4",    nullptr,   "@V,S,V,S",   "FIU,S,F,F",   EShLangFragmentMask },
         { "SampleBias",         /* O  A*/     "V4",    nullptr,   "@V,S,V,S,V", "FIU,S,F,F,I", EShLangFragmentMask },
 
-        // { "SampleCmp",          /*!O !A*/     "V4",    nullptr,   "%V,S,V,S",   "FIU,S,F,F",   EShLangFragmentMask },
-        // { "SampleCmp",          /* O !A*/     "V4",    nullptr,   "%V,S,V,S,V", "FIU,S,F,F,I", EShLangFragmentMask },
-        // { "SampleCmp",          /*!O  A*/     "V4",    nullptr,   "@V,S,V,S",   "FIU,S,F,F",   EShLangFragmentMask },
-        // { "SampleCmp",          /* O  A*/     "V4",    nullptr,   "@V,S,V,S,V", "FIU,S,F,F,I", EShLangFragmentMask },
+        // TODO: FXC accepts int/uint samplers here.  unclear what that means.
+        { "SampleCmp",          /*!O !A*/     "S",     "F",       "%V,S,V,S",   "FIU,s,F,F",   EShLangFragmentMask },
+        { "SampleCmp",          /* O !A*/     "S",     "F",       "%V,S,V,S,V", "FIU,s,F,F,I", EShLangFragmentMask },
+        { "SampleCmp",          /*!O  A*/     "S",     "F",       "@V,S,V,S",   "FIU,s,F,F",   EShLangFragmentMask },
+        { "SampleCmp",          /* O  A*/     "S",     "F",       "@V,S,V,S,V", "FIU,s,F,F,I", EShLangFragmentMask },
 
-        // { "SampleCmpLevelZero", /*!O !A*/     "V4",    nullptr,   "%V,S,V",     "FIU,S,F",     EShLangFragmentMask },
-        // { "SampleCmpLevelZero", /* O !A*/     "V4",    nullptr,   "%V,S,V,V",   "FIU,S,F,I",   EShLangFragmentMask },
-        // { "SampleCmpLevelZero", /*!O  A*/     "V4",    nullptr,   "@V,S,V",     "FIU,S,F",     EShLangFragmentMask },
-        // { "SampleCmpLevelZero", /* O  A*/     "V4",    nullptr,   "@V,S,V,V",   "FIU,S,F,I",   EShLangFragmentMask },
+        // TODO: FXC accepts int/uint samplers here.  unclear what that means.
+        { "SampleCmpLevelZero", /*!O !A*/     "S",     "F",       "%V,S,V,S",   "FIU,s,F,F",   EShLangFragmentMask },
+        { "SampleCmpLevelZero", /* O !A*/     "S",     "F",       "%V,S,V,S,V", "FIU,s,F,F,I", EShLangFragmentMask },
+        { "SampleCmpLevelZero", /*!O  A*/     "S",     "F",       "@V,S,V,S",   "FIU,s,F,F",   EShLangFragmentMask },
+        { "SampleCmpLevelZero", /* O  A*/     "S",     "F",       "@V,S,V,S,V", "FIU,s,F,F,I", EShLangFragmentMask },
 
         { "SampleGrad",         /*!O !A*/     "V4",    nullptr,   "%V,S,V,V,V",   "FIU,S,F,F,F",   EShLangAll },
         { "SampleGrad",         /* O !A*/     "V4",    nullptr,   "%V,S,V,V,V,V", "FIU,S,F,F,F,I", EShLangAll },
         { "SampleGrad",         /*!O  A*/     "V4",    nullptr,   "@V,S,V,V,V",   "FIU,S,F,F,F",   EShLangAll },
         { "SampleGrad",         /* O  A*/     "V4",    nullptr,   "@V,S,V,V,V,V", "FIU,S,F,F,F,I", EShLangAll },
 
-        // { "SampleLevel",        /*!O !A*/     "V4",    nullptr,   "%V,S,V,S",   "FIU,S,F,F",       EShLangFragmentMask },
-        // { "SampleLevel",        /* O !A*/     "V4",    nullptr,   "%V,S,V,S,V", "FIU,S,F,F,I",     EShLangFragmentMask },
-        // { "SampleLevel",        /*!O  A*/     "V4",    nullptr,   "@V,S,V,S",   "FIU,S,F,F",       EShLangFragmentMask },
-        // { "SampleLevel",        /* O  A*/     "V4",    nullptr,   "@V,S,V,S,V", "FIU,S,F,F,I",     EShLangFragmentMask },
+        // { "SampleLevel",        /*!O !A*/     "V4",    nullptr,   "%V,S,V,S",   "FIU,S,F,F",       EShLangAll },
+        // { "SampleLevel",        /* O !A*/     "V4",    nullptr,   "%V,S,V,S,V", "FIU,S,F,F,I",     EShLangAll },
+        // { "SampleLevel",        /*!O  A*/     "V4",    nullptr,   "@V,S,V,S",   "FIU,S,F,F",       EShLangAll },
+        // { "SampleLevel",        /* O  A*/     "V4",    nullptr,   "@V,S,V,S,V", "FIU,S,F,F,I",     EShLangAll },
 
-        // TODO: ...
-        // { "Load",                            "V4",    nullptr,   "%V,V",       "FIU,I",           EShLangFragmentMask },
-        // { "Load", /* +sampleidex*/           "V4",    nullptr,   "%V,V,S",     "FIU,I,I",         EShLangFragmentMask },
-        // { "Load", /* +samplindex, offset*/   "V4",    nullptr,   "%V,V,S,V",   "FIU,I,I,I",       EShLangFragmentMask },
-        // { "Load",                            "V4",    nullptr,   "@V,V",       "FIU,I",           EShLangFragmentMask },
-        // { "Load", /* +sampleidex*/           "V4",    nullptr,   "@V,V,S",     "FIU,I,I",         EShLangFragmentMask },
-        // { "Load", /* +samplindex, offset*/   "V4",    nullptr,   "@V,V,S,V",   "FIU,I,I,I",       EShLangFragmentMask },
+        // { "Load",                             "V4",    nullptr,   "%V,V",               "FIU,I",           EShLangAll },
+        // { "Load",                             "V4",    nullptr,   "@V,V",               "FIU,I",           EShLangAll },
+        // { "Load", /* offset*/                 "V4",    nullptr,   "%V,V,V",             "FIU,I,I",         EShLangAll },
+        // { "Load", /* offset*/                 "V4",    nullptr,   "@V,V,V",             "FIU,I,I",         EShLangAll },
+        // TODO: MS variants of Load
+        // { "Load", /* +sampleidex*/            "V4",    nullptr,   "$V,V,S",          "FIU,I,I",         EShLangAll },
+        // { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$V,V,S,V",        "FIU,I,I,I",       EShLangAll },
 
         // table of overloads from: https://msdn.microsoft.com/en-us/library/windows/desktop/bb509693(v=vs.85).aspx
         // 
@@ -660,7 +678,9 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
             for (const char* argOrder = intrinsic.argOrder; !IsEndOfArg(argOrder); ++argOrder) { // for each order...
                 const bool isTexture   = IsTextureType(*argOrder);
                 const bool isArrayed   = IsTextureArrayed(*argOrder);
+                const bool mipInCoord  = HasMipInCoord(intrinsic.name);
                 const int fixedVecSize = FixedVecSize(argOrder);
+                const int coordArg     = CoordinateArgPos(intrinsic.name, isTexture);
 
                 // calculate min and max vector and matrix dimensions
                 int dim0Min = 1;
@@ -701,7 +721,11 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                                 int argDim0 = isTexture && arg > 0 ? std::min(dim0, 3) : dim0;
 
                                 // arrayed textures have one extra coordinate dimension
-                                if (isArrayed && arg == 2)
+                                if (isArrayed && arg == coordArg)
+                                    argDim0++;
+
+                                // Some texture methods use an addition arg dimension to hold mip
+                                if (arg == coordArg && mipInCoord)
                                     argDim0++;
 
                                 // For textures, the 1D case isn't a 1-vector, but a scalar.
@@ -916,8 +940,8 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     // Texture methods
     symbolTable.relateToOperator("Sample",                      EOpMethodSample);
     symbolTable.relateToOperator("SampleBias",                  EOpMethodSampleBias);
-    // symbolTable.relateToOperator("SampleCmp",                   EOpMethodSampleCmp);
-    // symbolTable.relateToOperator("SampleCmpLevelZero",          EOpMethodSampleCmpLevelZero);
+    symbolTable.relateToOperator("SampleCmp",                   EOpMethodSampleCmp);
+    symbolTable.relateToOperator("SampleCmpLevelZero",          EOpMethodSampleCmpLevelZero);
     symbolTable.relateToOperator("SampleGrad",                  EOpMethodSampleGrad);
     // symbolTable.relateToOperator("SampleLevel",                 EOpMethodSampleLevel);
     // symbolTable.relateToOperator("Load",                        EOpMethodLoad);
