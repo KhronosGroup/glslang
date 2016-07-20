@@ -1124,6 +1124,71 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             break;
         }
 
+    case EOpMethodLoad:
+        {
+            TIntermTyped* argTex    = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* argCoord  = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* argOffset = nullptr;
+            TIntermTyped* lodComponent = nullptr;
+            TIntermTyped* coordSwizzle = nullptr;
+
+            const bool isMS = argTex->getType().getSampler().isMultiSample();
+            const TBasicType coordBaseType = argCoord->getType().getBasicType();
+
+            // Last component of coordinate is the mip level, for non-MS.  we separate them here:
+            if (isMS) {
+                // MS has no LOD
+                coordSwizzle = argTex;
+            } else {
+                // Extract coordinate
+                TVectorFields coordFields(0,1,2,3);
+                coordFields.num = argCoord->getType().getVectorSize() - (isMS ? 0 : 1);
+                TIntermTyped* coordIdx = intermediate.addSwizzle(coordFields, loc);
+                coordSwizzle = intermediate.addIndex(EOpVectorSwizzle, argCoord, coordIdx, loc);
+                coordSwizzle->setType(TType(coordBaseType, EvqTemporary, coordFields.num));
+
+                // Extract LOD
+                TIntermTyped* lodIdx = intermediate.addConstantUnion(coordFields.num, loc, true);
+                lodComponent = intermediate.addIndex(EOpIndexDirect, argCoord, lodIdx, loc);
+                lodComponent->setType(TType(coordBaseType, EvqTemporary, 1));
+            }
+
+            const int numArgs    = argAggregate->getSequence().size();
+            const bool hasOffset = ((!isMS && numArgs == 3) || (isMS && numArgs == 4));
+
+            // Obtain offset arg, if there is one.
+            if (hasOffset) {
+                const int offsetPos  = (isMS ? 3 : 2);
+                argOffset = argAggregate->getSequence()[offsetPos]->getAsTyped();
+            }
+
+            // Create texel fetch
+            const TOperator fetchOp = (hasOffset ? EOpTextureFetchOffset : EOpTextureFetch);
+            TIntermAggregate* txfetch = new TIntermAggregate(fetchOp);
+
+            const TSamplerDim dim = argTex->getType().getSampler().dim;
+            if (dim == EsdBuffer) // TODO: buffers
+                assert(0);
+            if (isMS) // TODO: 2DMS sample number
+                assert(0);
+
+            // Build up the fetch
+            txfetch->getSequence().push_back(argTex);
+            txfetch->getSequence().push_back(coordSwizzle);
+
+            if (!isMS) // MS has no LOD
+                txfetch->getSequence().push_back(lodComponent);
+
+            if (hasOffset)
+                txfetch->getSequence().push_back(argOffset);
+
+            txfetch->setType(node->getType());
+            txfetch->setLoc(loc);
+            node = txfetch;
+
+            break;
+        }
+
     default:
         break; // most pass through unchanged
     }
