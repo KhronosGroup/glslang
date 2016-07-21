@@ -593,10 +593,10 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         // { "SampleLevel",        /*!O  A*/     "V4",    nullptr,   "@V,S,V,S",   "FIU,S,F,F",       EShLangAll },
         // { "SampleLevel",        /* O  A*/     "V4",    nullptr,   "@V,S,V,S,V", "FIU,S,F,F,I",     EShLangAll },
 
-        // { "Load",                             "V4",    nullptr,   "%V,V",               "FIU,I",           EShLangAll },
-        // { "Load",                             "V4",    nullptr,   "@V,V",               "FIU,I",           EShLangAll },
-        // { "Load", /* offset*/                 "V4",    nullptr,   "%V,V,V",             "FIU,I,I",         EShLangAll },
-        // { "Load", /* offset*/                 "V4",    nullptr,   "@V,V,V",             "FIU,I,I",         EShLangAll },
+        { "Load",               /*!O !A*/     "V4",    nullptr,   "%V,V",               "FIU,I",           EShLangAll },
+        { "Load",               /*!O  A*/     "V4",    nullptr,   "@V,V",               "FIU,I",           EShLangAll },
+        { "Load",               /* O !A*/     "V4",    nullptr,   "%V,V,V",             "FIU,I,I",         EShLangAll },
+        { "Load",               /* O  A*/     "V4",    nullptr,   "@V,V,V",             "FIU,I,I",         EShLangAll },
         // TODO: MS variants of Load
         // { "Load", /* +sampleidex*/            "V4",    nullptr,   "$V,V,S",          "FIU,I,I",         EShLangAll },
         // { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$V,V,S,V",        "FIU,I,I,I",       EShLangAll },
@@ -944,7 +944,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("SampleCmpLevelZero",          EOpMethodSampleCmpLevelZero);
     symbolTable.relateToOperator("SampleGrad",                  EOpMethodSampleGrad);
     // symbolTable.relateToOperator("SampleLevel",                 EOpMethodSampleLevel);
-    // symbolTable.relateToOperator("Load",                        EOpMethodLoad);
+    symbolTable.relateToOperator("Load",                        EOpMethodLoad);
     symbolTable.relateToOperator("GetDimensions",               EOpMethodGetDimensions);
 }
 

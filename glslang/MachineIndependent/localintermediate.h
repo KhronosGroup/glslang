@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2016 LunarG, Inc.
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -47,6 +48,16 @@ class TInfoSink;
 namespace glslang {
 
 struct TVectorFields {
+    TVectorFields() { }
+
+    TVectorFields(int c0, int c1, int c2, int c3) : num(4)
+    {
+        offsets[0] = c0;
+        offsets[1] = c1;
+        offsets[2] = c2;
+        offsets[3] = c3;
+    }
+
     int offsets[4];
     int num;
 };
