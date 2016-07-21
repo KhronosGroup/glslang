@@ -940,7 +940,7 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, b
     //      components each, according to rule (4).
     //
     //   6. If the member is an array of S column-major matrices with C columns and
-    //      R rows, the matrix is stored identically to a row of S  C column vectors
+    //      R rows, the matrix is stored identically to a row of S X C column vectors
     //      with R components each, according to rule (4).
     //
     //   7. If the member is a row-major matrix with C columns and R rows, the matrix
@@ -948,7 +948,7 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, b
     //      according to rule (4).
     //
     //   8. If the member is an array of S row-major matrices with C columns and R
-    //      rows, the matrix is stored identically to a row of S  R row vectors with C
+    //      rows, the matrix is stored identically to a row of S X R row vectors with C
     //      components each, according to rule (4).
     //
     //   9. If the member is a structure, the base alignment of the structure is N , where
