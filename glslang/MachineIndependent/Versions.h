@@ -135,6 +135,13 @@ const char* const E_GL_EXT_shader_non_constant_global_initializers = "GL_EXT_sha
 const char* const E_GL_GOOGLE_cpp_style_line_directive          = "GL_GOOGLE_cpp_style_line_directive";
 const char* const E_GL_GOOGLE_include_directive                 = "GL_GOOGLE_include_directive";
 
+#ifdef AMD_EXTENSIONS
+const char* const E_GL_AMD_shader_ballot = "GL_AMD_shader_ballot";
+const char* const E_GL_AMD_shader_trinary_minmax = "GL_AMD_shader_trinary_minmax";
+const char* const E_GL_AMD_shader_explicit_vertex_parameter = "GL_AMD_shader_explicit_vertex_parameter";
+const char* const E_GL_AMD_gcn_shader = "GL_AMD_gcn_shader";
+#endif
+
 // AEP
 const char* const E_GL_ANDROID_extension_pack_es31a             = "GL_ANDROID_extension_pack_es31a";
 const char* const E_GL_KHR_blend_equation_advanced              = "GL_KHR_blend_equation_advanced";

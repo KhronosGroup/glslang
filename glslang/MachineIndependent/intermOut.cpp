@@ -355,6 +355,7 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 
     case EOpBallot:                 out.debug << "ballot";                break;
     case EOpReadFirstInvocation:    out.debug << "readFirstInvocation";   break;
+
     case EOpAnyInvocation:          out.debug << "anyInvocation";         break;
     case EOpAllInvocations:         out.debug << "allInvocations";        break;
     case EOpAllInvocationsEqual:    out.debug << "allInvocationsEqual";   break;
@@ -364,6 +365,19 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpLog10:                  out.debug << "log10";                 break;
     case EOpRcp:                    out.debug << "rcp";                   break;
     case EOpSaturate:               out.debug << "saturate";              break;
+
+#ifdef AMD_EXTENSIONS
+    case EOpMinInvocations:             out.debug << "minInvocations";              break;
+    case EOpMaxInvocations:             out.debug << "maxInvocations";              break;
+    case EOpAddInvocations:             out.debug << "addInvocations";              break;
+    case EOpMinInvocationsNonUniform:   out.debug << "minInvocationsNonUniform";    break;
+    case EOpMaxInvocationsNonUniform:   out.debug << "maxInvocationsNonUniform";    break;
+    case EOpAddInvocationsNonUniform:   out.debug << "addInvocationsNonUniform";    break;
+    case EOpMbcnt:                      out.debug << "mbcnt";                       break;
+
+    case EOpCubeFaceIndex:          out.debug << "cubeFaceIndex";         break;
+    case EOpCubeFaceCoord:          out.debug << "cubeFaceCoord";         break;
+#endif
 
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
@@ -482,6 +496,18 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
 
     case EOpReadInvocation:             out.debug << "readInvocation";        break;
 
+#ifdef AMD_EXTENSIONS
+    case EOpSwizzleInvocations:         out.debug << "swizzleInvocations";       break;
+    case EOpSwizzleInvocationsMasked:   out.debug << "swizzleInvocationsMasked"; break;
+    case EOpWriteInvocation:            out.debug << "writeInvocation";          break;
+
+    case EOpMin3:                       out.debug << "min3";                  break;
+    case EOpMax3:                       out.debug << "max3";                  break;
+    case EOpMid3:                       out.debug << "mid3";                  break;
+
+    case EOpTime:                       out.debug << "time";                  break;
+#endif
+
     case EOpAtomicAdd:                  out.debug << "AtomicAdd";             break;
     case EOpAtomicMin:                  out.debug << "AtomicMin";             break;
     case EOpAtomicMax:                  out.debug << "AtomicMax";             break;
@@ -539,6 +565,9 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
 
     case EOpInterpolateAtSample:   out.debug << "interpolateAtSample";    break;
     case EOpInterpolateAtOffset:   out.debug << "interpolateAtOffset";    break;
+#ifdef AMD_EXTENSIONS
+    case EOpInterpolateAtVertex:   out.debug << "interpolateAtVertex";    break;
+#endif
 
     case EOpSinCos:                     out.debug << "sincos";                break;
     case EOpGenMul:                     out.debug << "mul";                   break;

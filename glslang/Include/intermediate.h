@@ -246,6 +246,12 @@ enum TOperator {
     EOpReflect,
     EOpRefract,
 
+#ifdef AMD_EXTENSIONS
+    EOpMin3,
+    EOpMax3,
+    EOpMid3,
+#endif
+
     EOpDPdx,            // Fragment only
     EOpDPdy,            // Fragment only
     EOpFwidth,          // Fragment only
@@ -259,6 +265,10 @@ enum TOperator {
     EOpInterpolateAtCentroid, // Fragment only
     EOpInterpolateAtSample,   // Fragment only
     EOpInterpolateAtOffset,   // Fragment only
+
+#ifdef AMD_EXTENSIONS
+    EOpInterpolateAtVertex,
+#endif
 
     EOpMatrixTimesMatrix,
     EOpOuterProduct,
@@ -290,6 +300,23 @@ enum TOperator {
     EOpAnyInvocation,
     EOpAllInvocations,
     EOpAllInvocationsEqual,
+
+#ifdef AMD_EXTENSIONS
+    EOpMinInvocations,
+    EOpMaxInvocations,
+    EOpAddInvocations,
+    EOpMinInvocationsNonUniform,
+    EOpMaxInvocationsNonUniform,
+    EOpAddInvocationsNonUniform,
+    EOpSwizzleInvocations,
+    EOpSwizzleInvocationsMasked,
+    EOpWriteInvocation,
+    EOpMbcnt,
+
+    EOpCubeFaceIndex,
+    EOpCubeFaceCoord,
+    EOpTime,
+#endif
 
     EOpAtomicAdd,
     EOpAtomicMin,

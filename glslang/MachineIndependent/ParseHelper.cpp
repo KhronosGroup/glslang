@@ -2119,6 +2119,10 @@ void TParseContext::rValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
     TIntermSymbol* symNode = node->getAsSymbolNode();
     if (symNode && symNode->getQualifier().writeonly)
         error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
+#ifdef AMD_EXTENSIONS
+    else if (symNode && symNode->getQualifier().explicitInterp)
+        error(loc, "can't read from explicitly-interpolated object: ", op, symNode->getName().c_str());
+#endif
 }
 
 //
@@ -2665,7 +2669,11 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
         publicType.basicType == EbtDouble)
         profileRequires(loc, EEsProfile, 300, nullptr, "shader input/output");
 
-    if (! qualifier.flat) {
+#ifdef AMD_EXTENSIONS
+    if (! qualifier.flat && ! qualifier.explicitInterp) {
+#else
+    if (!qualifier.flat) {
+#endif
         if (publicType.basicType == EbtInt    || publicType.basicType == EbtUint   ||
             publicType.basicType == EbtInt64  || publicType.basicType == EbtUint64 ||
             publicType.basicType == EbtDouble ||
@@ -2802,7 +2810,11 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
 
     // Multiple interpolation qualifiers (mostly done later by 'individual qualifiers')
     if (src.isInterpolation() && dst.isInterpolation())
+#ifdef AMD_EXTENSIONS
+        error(loc, "can only have one interpolation qualifier (flat, smooth, noperspective, __explicitInterpAMD)", "", "");
+#else
         error(loc, "can only have one interpolation qualifier (flat, smooth, noperspective)", "", "");
+#endif
 
     // Ordering
     if (! force && ((profile != EEsProfile && version < 420) || 
@@ -2858,6 +2870,9 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
     MERGE_SINGLETON(smooth);
     MERGE_SINGLETON(flat);
     MERGE_SINGLETON(nopersp);
+#ifdef AMD_EXTENSIONS
+    MERGE_SINGLETON(explicitInterp);
+#endif
     MERGE_SINGLETON(patch);
     MERGE_SINGLETON(sample);
     MERGE_SINGLETON(coherent);

@@ -126,7 +126,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> UNIFORM PATCH SAMPLE BUFFER SHARED
 %token <lex> COHERENT VOLATILE RESTRICT READONLY WRITEONLY
 %token <lex> DVEC2 DVEC3 DVEC4 DMAT2 DMAT3 DMAT4
-%token <lex> NOPERSPECTIVE FLAT SMOOTH LAYOUT
+%token <lex> NOPERSPECTIVE FLAT SMOOTH LAYOUT __EXPLICITINTERPAMD
 
 %token <lex> MAT2X2 MAT2X3 MAT2X4
 %token <lex> MAT3X2 MAT3X3 MAT3X4
@@ -1049,6 +1049,15 @@ interpolation_qualifier
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "noperspective");
         $$.init($1.loc);
         $$.qualifier.nopersp = true;
+    }
+    | __EXPLICITINTERPAMD {
+#ifdef AMD_EXTENSIONS
+        parseContext.globalCheck($1.loc, "__explicitInterpAMD");
+        parseContext.profileRequires($1.loc, ECoreProfile, 450, E_GL_AMD_shader_explicit_vertex_parameter, "explicit interpolation");
+        parseContext.profileRequires($1.loc, ECompatibilityProfile, 450, E_GL_AMD_shader_explicit_vertex_parameter, "explicit interpolation");
+        $$.init($1.loc);
+        $$.qualifier.explicitInterp = true;
+#endif
     }
     ;
 

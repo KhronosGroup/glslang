@@ -1,11 +1,17 @@
 cmake_minimum_required(VERSION 2.8.12)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+option(ENABLE_AMD_EXTENSIONS "Enables support of AMD-specific extensions" OFF)
+
 enable_testing()
 
 set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "prefix")
 
 project(glslang)
+
+if(ENABLE_AMD_EXTENSIONS)
+    add_definitions(-DAMD_EXTENSIONS)
+endif(ENABLE_AMD_EXTENSIONS)
 
 if(WIN32)
     set(CMAKE_DEBUG_POSTFIX "d")

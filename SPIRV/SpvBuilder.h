@@ -70,7 +70,8 @@ public:
         source = lang;
         sourceVersion = version;
     }
-    void addSourceExtension(const char* ext) { extensions.push_back(ext); }
+    void addSourceExtension(const char* ext) { sourceExtensions.push_back(ext); }
+    void addExtensions(const char* ext) { extensions.push_back(ext); }
     Id import(const char*);
     void setMemoryModel(spv::AddressingModel addr, spv::MemoryModel mem)
     {
@@ -552,6 +553,7 @@ public:
     SourceLanguage source;
     int sourceVersion;
     std::vector<const char*> extensions;
+    std::vector<const char*> sourceExtensions;
     AddressingModel addressModel;
     MemoryModel memoryModel;
     std::set<spv::Capability> capabilities;
