@@ -25,8 +25,14 @@ else(WIN32)
 endif(WIN32)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions(-Wall -Wmaybe-uninitialized -Wuninitialized -Wunused -Wunused-local-typedefs
+      -Wunused-parameter -Wunused-value  -Wunused-variable -Wunused-but-set-parameter -Wunused-but-set-variable)
+    add_definitions(-Wno-reorder)  # disable this from -Wall, since it happens all over.
     add_definitions(-std=c++11)
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+    add_definitions(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs
+      -Wunused-parameter -Wunused-value  -Wunused-variable)
+    add_definitions(-Wno-reorder)  # disable this from -Wall, since it happens all over.
     add_definitions(-std=c++11)
 endif()
 
