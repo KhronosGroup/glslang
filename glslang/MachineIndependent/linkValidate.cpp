@@ -664,12 +664,19 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
             size = computeTypeLocationSize(type);
     }
 
+    // locations...
     TRange locationRange(qualifier.layoutLocation, qualifier.layoutLocation + size - 1);
+
+    // components in this location slot...    
     TRange componentRange(0, 3);
-    if (qualifier.hasComponent()) {
-        componentRange.start = qualifier.layoutComponent;
-        componentRange.last = componentRange.start + type.getVectorSize() - 1;
+    if (qualifier.hasComponent() || type.getVectorSize() > 0) {
+        int consumedComponents = type.getVectorSize() * (type.getBasicType() == EbtDouble ? 2 : 1);
+        if (qualifier.hasComponent())
+            componentRange.start = qualifier.layoutComponent;
+        componentRange.last  = componentRange.start + consumedComponents - 1;
     }
+
+    // both...
     TIoRange range(locationRange, componentRange, type.getBasicType(), qualifier.hasIndex() ? qualifier.layoutIndex : 0);
 
     // check for collisions, except for vertex inputs on desktop

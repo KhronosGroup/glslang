@@ -4475,12 +4475,17 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         }
         if (qualifier.hasComponent()) {
             // "It is a compile-time error if this sequence of components gets larger than 3."
-            if (qualifier.layoutComponent + type.getVectorSize() > 4)
+            if (qualifier.layoutComponent + type.getVectorSize() * (type.getBasicType() == EbtDouble ? 2 : 1) > 4)
                 error(loc, "type overflows the available 4 components", "component", "");
 
             // "It is a compile-time error to apply the component qualifier to a matrix, a structure, a block, or an array containing any of these."
             if (type.isMatrix() || type.getBasicType() == EbtBlock || type.getBasicType() == EbtStruct)
                 error(loc, "cannot apply to a matrix, structure, or block", "component", "");
+
+            // " It is a compile-time error to use component 1 or 3 as the beginning of a double or dvec2."
+            if (type.getBasicType() == EbtDouble)
+                if (qualifier.layoutComponent & 1)
+                    error(loc, "doubles cannot start on an odd-numbered component", "component", "");
         }
 
         switch (qualifier.storage) {
