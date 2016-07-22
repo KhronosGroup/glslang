@@ -498,13 +498,21 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvInstanceId:           return spv::BuiltInInstanceId;
     case glslang::EbvVertexIndex:          return spv::BuiltInVertexIndex;
     case glslang::EbvInstanceIndex:        return spv::BuiltInInstanceIndex;
+
     case glslang::EbvBaseVertex:
+        builder.addExtension(spv::E_SPV_KHR_shader_draw_parameters);
+        builder.addCapability(spv::CapabilityDrawParameters);
+        return spv::BuiltInBaseVertex;
+
     case glslang::EbvBaseInstance:
+        builder.addExtension(spv::E_SPV_KHR_shader_draw_parameters);
+        builder.addCapability(spv::CapabilityDrawParameters);
+        return spv::BuiltInBaseInstance;
 
     case glslang::EbvDrawId:
-        // TODO: Add SPIR-V builtin ID.
-        logger->missingFunctionality("shader draw parameters");
-        return spv::BuiltInMax;
+        builder.addExtension(spv::E_SPV_KHR_shader_draw_parameters);
+        builder.addCapability(spv::CapabilityDrawParameters);
+        return spv::BuiltInDrawIndex;
 
     case glslang::EbvPrimitiveId:
         if (glslangIntermediate->getStage() == EShLangFragment)

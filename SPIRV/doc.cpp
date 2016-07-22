@@ -48,7 +48,6 @@
 namespace spv {
     extern "C" {
         // Include C-based headers that don't have a namespace
-        #include "GLSL.ext.KHR.h"
 #ifdef AMD_EXTENSIONS
         #include "GLSL.ext.AMD.h"
 #endif
@@ -318,6 +317,10 @@ const char* BuiltInString(int builtIn)
     case 4418: return "SubgroupGtMaskKHR";
     case 4419: return "SubgroupLeMaskKHR";
     case 4420: return "SubgroupLtMaskKHR";
+
+    case 4424: return "BaseVertex";
+    case 4425: return "BaseInstance";
+    case 4426: return "DrawIndex";
 
 #ifdef AMD_EXTENSIONS
     case 4992: return "BaryCoordNoPerspAMD";
@@ -808,6 +811,7 @@ const char* CapabilityString(int info)
     default: return "Bad";
 
     case 4423: return "SubgroupBallotKHR";
+    case 4427: return "DrawParameters";
     }
 }
 
