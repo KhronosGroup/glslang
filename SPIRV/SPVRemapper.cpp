@@ -440,6 +440,8 @@ namespace spv {
         for (int op = 0; numOperands > 0; ++op, --numOperands) {
             switch (spv::InstructionDesc[opCode].operands.getClass(op)) {
             case spv::OperandId:
+            case spv::OperandScope:
+            case spv::OperandMemorySemantics:
                 idFn(asId(word++));
                 break;
 
@@ -500,9 +502,7 @@ namespace spv {
             case spv::OperandSelect:
             case spv::OperandLoop:
             case spv::OperandFunction:
-            case spv::OperandMemorySemantics:
             case spv::OperandMemoryAccess:
-            case spv::OperandScope:
             case spv::OperandGroupOperation:
             case spv::OperandKernelEnqueueFlags:
             case spv::OperandKernelProfilingInfo:
