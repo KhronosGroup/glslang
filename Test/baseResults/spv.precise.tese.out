@@ -18,8 +18,8 @@ Linked tessellation evaluation stage:
                               ExecutionMode 4 VertexOrderCcw
                               Source ESSL 310
                               SourceExtension  "GL_EXT_gpu_shader5"
-                              SourceExtension  "GL_EXT_shader_io_blocks"
                               SourceExtension  "GL_EXT_tessellation_shader"
+                              SourceExtension  "GL_EXT_shader_io_blocks"
                               Name 4  "main"
                               Name 9  "pos"
                               Name 12  "gl_TessCoord"

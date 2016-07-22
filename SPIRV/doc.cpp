@@ -312,6 +312,10 @@ const char* BuiltInString(int builtIn)
     case BuiltInCeiling:
     default: return "Bad";
 
+    case 5504: return "BaseVertexKHR";
+    case 5505: return "BaseInstanceKHR";
+    case 5506: return "DrawIDKHR";
+
 #ifdef AMD_EXTENSIONS
     case 4992: return "BaryCoordNoPerspAMD";
     case 4993: return "BaryCoordNoPerspCentroidAMD";
