@@ -9,6 +9,7 @@ set(SOURCES
 
 set(HEADERS
     spirv.hpp
+    GLSL.ext.KHR.h
     GLSL.std.450.h
     GlslangToSpv.h
     Logger.h

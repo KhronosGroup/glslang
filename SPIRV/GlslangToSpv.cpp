@@ -43,6 +43,7 @@
 #include "SpvBuilder.h"
 namespace spv {
    #include "GLSL.std.450.h"
+   #include "GLSL.ext.KHR.h"
 #ifdef AMD_EXTENSIONS
    #include "GLSL.ext.AMD.h"
 #endif
@@ -479,17 +480,23 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilityGeometry);
         return spv::BuiltInLayer;
 
+    case glslang::EbvBaseVertex:
+        builder.addExtensions(spv::E_SPV_KHR_shader_draw_parameters);
+        return spv::BuiltInBaseVertexKHR;
+
+    case glslang::EbvBaseInstance:
+        builder.addExtensions(spv::E_SPV_KHR_shader_draw_parameters);
+        return spv::BuiltInBaseInstanceKHR;
+
+    case glslang::EbvDrawId:
+        builder.addExtensions(spv::E_SPV_KHR_shader_draw_parameters);
+        return spv::BuiltInDrawIDKHR;
+
     case glslang::EbvPosition:             return spv::BuiltInPosition;
     case glslang::EbvVertexId:             return spv::BuiltInVertexId;
     case glslang::EbvInstanceId:           return spv::BuiltInInstanceId;
     case glslang::EbvVertexIndex:          return spv::BuiltInVertexIndex;
     case glslang::EbvInstanceIndex:        return spv::BuiltInInstanceIndex;
-    case glslang::EbvBaseVertex:
-    case glslang::EbvBaseInstance:
-    case glslang::EbvDrawId:
-        // TODO: Add SPIR-V builtin ID.
-        logger->missingFunctionality("shader draw parameters");
-        return spv::BuiltInMax;
     case glslang::EbvPrimitiveId:          return spv::BuiltInPrimitiveId;
     case glslang::EbvInvocationId:         return spv::BuiltInInvocationId;
     case glslang::EbvTessLevelInner:       return spv::BuiltInTessLevelInner;

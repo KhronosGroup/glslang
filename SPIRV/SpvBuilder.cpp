@@ -2312,9 +2312,9 @@ void Builder::dump(std::vector<unsigned int>& out) const
         capInst.dump(out);
     }
 
-    for (int e = 0; e < (int)extensions.size(); ++e) {
+    for (auto it = extensions.cbegin(); it != extensions.cend(); ++it) {
         Instruction extInst(0, 0, OpExtension);
-        extInst.addStringOperand(extensions[e]);
+        extInst.addStringOperand(*it);
         extInst.dump(out);
     }
 
@@ -2335,9 +2335,9 @@ void Builder::dump(std::vector<unsigned int>& out) const
         sourceInst.addImmediateOperand(sourceVersion);
         sourceInst.dump(out);
     }
-    for (int e = 0; e < (int)sourceExtensions.size(); ++e) {
+    for (auto it = sourceExtensions.cbegin(); it != sourceExtensions.cend(); ++it) {
         Instruction sourceExtInst(0, 0, OpSourceExtension);
-        sourceExtInst.addStringOperand(sourceExtensions[e]);
+        sourceExtInst.addStringOperand(*it);
         sourceExtInst.dump(out);
     }
     dumpInstructions(out, names);

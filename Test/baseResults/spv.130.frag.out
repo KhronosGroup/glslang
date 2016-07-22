@@ -20,12 +20,12 @@ Linked fragment stage:
                               EntryPoint Fragment 4  "main" 17 68 79 99 173 184 185 186
                               ExecutionMode 4 OriginUpperLeft
                               Source GLSL 140
+                              SourceExtension  "GL_ARB_texture_rectangle"
+                              SourceExtension  "GL_ARB_texture_cube_map_array"
+                              SourceExtension  "GL_ARB_texture_gather"
                               SourceExtension  "GL_ARB_gpu_shader5"
                               SourceExtension  "GL_ARB_shader_texture_lod"
                               SourceExtension  "GL_ARB_shading_language_420pack"
-                              SourceExtension  "GL_ARB_texture_cube_map_array"
-                              SourceExtension  "GL_ARB_texture_gather"
-                              SourceExtension  "GL_ARB_texture_rectangle"
                               Name 4  "main"
                               Name 6  "bar3("
                               Name 8  "bar4("

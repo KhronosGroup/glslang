@@ -15,8 +15,8 @@ Linked tessellation control stage:
                               EntryPoint TessellationControl 4  "main" 12 15 20 30 40 45
                               ExecutionMode 4 OutputVertices 3
                               Source ESSL 310
-                              SourceExtension  "GL_EXT_gpu_shader5"
                               SourceExtension  "GL_EXT_shader_io_blocks"
+                              SourceExtension  "GL_EXT_gpu_shader5"
                               SourceExtension  "GL_EXT_tessellation_shader"
                               Name 4  "main"
                               Name 12  "in_te_position"
