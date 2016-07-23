@@ -47,6 +47,8 @@ public:
                      int version, EProfile, const SpvVersion& spvVersion, EShLanguage, TInfoSink&,
                      bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
     virtual ~HlslParseContext();
+    void initializeExtensionBehavior();
+
     void setLimits(const TBuiltInResource&);
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
     void getPreamble(std::string&);
@@ -184,7 +186,6 @@ protected:
     HlslParseContext(HlslParseContext&);
     HlslParseContext& operator=(HlslParseContext&);
 
-    TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2 * 2)); // see computeSamplerTypeIndex()
     bool afterEOF;
     TQualifier globalBufferDefaults;

@@ -100,6 +100,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.load.basic.dx10.frag", "main"},
         {"hlsl.load.offset.dx10.frag", "main"},
         {"hlsl.load.offsetarray.dx10.frag", "main"},
+        {"hlsl.pp.line.frag", "main"},
         {"hlsl.sample.array.dx10.frag", "main"},
         {"hlsl.sample.basic.dx10.frag", "main"},
         {"hlsl.sample.offset.dx10.frag", "main"},
