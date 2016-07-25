@@ -212,6 +212,8 @@ enum EHlslTokenClass {
     EHTokIdentifier,
     EHTokTypeName,
     EHTokStruct,
+    EHTokCBuffer,
+    EHTokTBuffer,
     EHTokTypedef,
 
     // constant

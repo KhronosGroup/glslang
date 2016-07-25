@@ -133,7 +133,7 @@ public:
     TIntermTyped* addConstructor(const TSourceLoc&, TIntermNode*, const TType&, TOperator);
     TIntermTyped* constructAggregate(TIntermNode*, const TType&, int, const TSourceLoc&);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, const TSourceLoc&, bool subset);
-    void declareBlock(const TSourceLoc&, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
+    void declareBlock(const TSourceLoc&, TType&, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
     void fixBlockLocations(const TSourceLoc&, TQualifier&, TTypeList&, bool memberWithLocation, bool memberWithoutLocation);
     void fixBlockXfbOffsets(TQualifier&, TTypeList&);
     void fixBlockUniformOffsets(TQualifier&, TTypeList&);
@@ -176,8 +176,6 @@ protected:
     bool postMainReturn;         // if inside a function, true if the function is the entry point and this is after a return statement
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
-    const TString* blockName;
-    TQualifier currentBlockQualifier;
     TBuiltInResource resources;
     TLimits& limits;
 

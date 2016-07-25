@@ -2533,10 +2533,10 @@ void HlslParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, c
     if (dst.storage == EvqTemporary || dst.storage == EvqGlobal)
         dst.storage = src.storage;
     else if ((dst.storage == EvqIn  && src.storage == EvqOut) ||
-        (dst.storage == EvqOut && src.storage == EvqIn))
+             (dst.storage == EvqOut && src.storage == EvqIn))
         dst.storage = EvqInOut;
     else if ((dst.storage == EvqIn    && src.storage == EvqConst) ||
-        (dst.storage == EvqConst && src.storage == EvqIn))
+             (dst.storage == EvqConst && src.storage == EvqIn))
         dst.storage = EvqConstReadOnly;
     else if (src.storage != EvqTemporary && src.storage != EvqGlobal)
         error(loc, "too many storage qualifiers", GetStorageQualifierString(src.storage), "");
@@ -3898,28 +3898,31 @@ TIntermTyped* HlslParseContext::constructAggregate(TIntermNode* node, const TTyp
 //
 // Do everything needed to add an interface block.
 //
-void HlslParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, const TString* instanceName, TArraySizes* arraySizes)
+void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TString* instanceName, TArraySizes* arraySizes)
 {
+    assert(type.getWritableStruct() != nullptr);
+
+    TTypeList& typeList = *type.getWritableStruct();
     // fix and check for member storage qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TType& memberType = *typeList[member].type;
         TQualifier& memberQualifier = memberType.getQualifier();
         const TSourceLoc& memberLoc = typeList[member].loc;
         globalQualifierFix(memberLoc, memberQualifier);
-        memberQualifier.storage = currentBlockQualifier.storage;
+        memberQualifier.storage = type.getQualifier().storage;
     }
 
     // This might be a redeclaration of a built-in block.  If so, redeclareBuiltinBlock() will
     // do all the rest.
-    if (! symbolTable.atBuiltInLevel() && builtInName(*blockName)) {
-        redeclareBuiltinBlock(loc, typeList, *blockName, instanceName, arraySizes);
-        return;
-    }
+    //if (! symbolTable.atBuiltInLevel() && builtInName(*blockName)) {
+    //    redeclareBuiltinBlock(loc, typeList, *blockName, instanceName, arraySizes);
+    //    return;
+    //}
 
     // Make default block qualification, and adjust the member qualifications
 
     TQualifier defaultQualification;
-    switch (currentBlockQualifier.storage) {
+    switch (type.getQualifier().storage) {
     case EvqUniform:    defaultQualification = globalUniformDefaults;    break;
     case EvqBuffer:     defaultQualification = globalBufferDefaults;     break;
     case EvqVaryingIn:  defaultQualification = globalInputDefaults;      break;
@@ -3929,12 +3932,12 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, 
 
     // Special case for "push_constant uniform", which has a default of std430,
     // contrary to normal uniform defaults, and can't have a default tracked for it.
-    if (currentBlockQualifier.layoutPushConstant && ! currentBlockQualifier.hasPacking())
-        currentBlockQualifier.layoutPacking = ElpStd430;
+    if (type.getQualifier().layoutPushConstant && ! type.getQualifier().hasPacking())
+        type.getQualifier().layoutPacking = ElpStd430;
 
     // fix and check for member layout qualifiers
 
-    mergeObjectLayoutQualifiers(defaultQualification, currentBlockQualifier, true);
+    mergeObjectLayoutQualifiers(defaultQualification, type.getQualifier(), true);
 
     bool memberWithLocation = false;
     bool memberWithoutLocation = false;
@@ -3958,7 +3961,7 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, 
         if (memberQualifier.hasPacking())
             error(memberLoc, "member of block cannot have a packing layout qualifier", typeList[member].type->getFieldName().c_str(), "");
         if (memberQualifier.hasLocation()) {
-            switch (currentBlockQualifier.storage) {
+            switch (type.getQualifier().storage) {
             case EvqVaryingIn:
             case EvqVaryingOut:
                 memberWithLocation = true;
@@ -3979,19 +3982,20 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, 
     }
 
     // Process the members
-    fixBlockLocations(loc, currentBlockQualifier, typeList, memberWithLocation, memberWithoutLocation);
-    fixBlockXfbOffsets(currentBlockQualifier, typeList);
-    fixBlockUniformOffsets(currentBlockQualifier, typeList);
+    fixBlockLocations(loc, type.getQualifier(), typeList, memberWithLocation, memberWithoutLocation);
+    fixBlockXfbOffsets(type.getQualifier(), typeList);
+    fixBlockUniformOffsets(type.getQualifier(), typeList);
 
     // reverse merge, so that currentBlockQualifier now has all layout information
     // (can't use defaultQualification directly, it's missing other non-layout-default-class qualifiers)
-    mergeObjectLayoutQualifiers(currentBlockQualifier, defaultQualification, true);
+    mergeObjectLayoutQualifiers(type.getQualifier(), defaultQualification, true);
 
     //
     // Build and add the interface block as a new type named 'blockName'
     //
 
-    TType blockType(&typeList, *blockName, currentBlockQualifier);
+    //?? need the block name to be a typename?
+    TType blockType(&typeList, "" /* *blockName */, type.getQualifier());
     if (arraySizes)
         blockType.newArraySizes(*arraySizes);
 
@@ -4008,20 +4012,20 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, 
     // whose type is EbtBlock, but without all the structure; that will come from the type
     // the instances point to.
     //
-    TType blockNameType(EbtBlock, blockType.getQualifier().storage);
-    TVariable* blockNameVar = new TVariable(blockName, blockNameType);
-    if (! symbolTable.insert(*blockNameVar)) {
-        TSymbol* existingName = symbolTable.find(*blockName);
-        if (existingName->getType().getBasicType() == EbtBlock) {
-            if (existingName->getType().getQualifier().storage == blockType.getQualifier().storage) {
-                error(loc, "Cannot reuse block name within the same interface:", blockName->c_str(), blockType.getStorageQualifierString());
-                return;
-            }
-        } else {
-            error(loc, "block name cannot redefine a non-block name", blockName->c_str(), "");
-            return;
-        }
-    }
+    //??TType blockNameType(EbtBlock, blockType.getQualifier().storage);
+    //??TVariable* blockNameVar = new TVariable(blockName, blockNameType);
+    //if (! symbolTable.insert(*blockNameVar)) {
+    //    TSymbol* existingName = symbolTable.find(*blockName);
+    //    if (existingName->getType().getBasicType() == EbtBlock) {
+    //        if (existingName->getType().getQualifier().storage == blockType.getQualifier().storage) {
+    //            error(loc, "Cannot reuse block name within the same interface:", blockName->c_str(), blockType.getStorageQualifierString());
+    //            return;
+    //        }
+    //    } else {
+    //        error(loc, "block name cannot redefine a non-block name", blockName->c_str(), "");
+    //        return;
+    //    }
+    //}
 
     // Add the variable, as anonymous or named instanceName.
     // Make an anonymous variable if no name was provided.
@@ -4031,7 +4035,7 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, 
     TVariable& variable = *new TVariable(instanceName, blockType);
     if (! symbolTable.insert(variable)) {
         if (*instanceName == "")
-            error(loc, "nameless block contains a member that already has a name at global scope", blockName->c_str(), "");
+            error(loc, "nameless block contains a member that already has a name at global scope", "" /* blockName->c_str() */, "");
         else
             error(loc, "block instance name redefinition", variable.getName().c_str(), "");
 

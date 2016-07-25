@@ -337,6 +337,8 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
 
             if (typedefDecl)
                 parseContext.declareTypedef(idToken.loc, *idToken.string, type, arraySizes);
+            else if (type.getBasicType() == EbtBlock)
+                parseContext.declareBlock(idToken.loc, type, idToken.string);
             else {
                 // Declare the variable and add any initializer code to the AST.
                 // The top-level node is always made into an aggregate, as that's
@@ -414,11 +416,19 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type)
     TQualifier qualifier;
     qualifier.clear();
     acceptQualifier(qualifier);
+    TSourceLoc loc = token.loc;
 
     // type_specifier
     if (! acceptType(type))
         return false;
-    type.getQualifier() = qualifier;
+    if (type.getBasicType() == EbtBlock) {
+        // the type was a block, which set some parts of the qualifier
+        parseContext.mergeQualifiers(loc, type.getQualifier(), qualifier, true);
+        // further, it can create an anonymous instance of the block
+        if (peekTokenClass(EHTokSemicolon))
+            parseContext.declareBlock(loc, type);
+    } else
+        type.getQualifier() = qualifier;
 
     return true;
 }
@@ -825,6 +835,8 @@ bool HlslGrammar::acceptType(TType& type)
         break;
 
     case EHTokStruct:
+    case EHTokCBuffer:
+    case EHTokTBuffer:
         return acceptStruct(type);
         break;
 
@@ -1186,13 +1198,29 @@ bool HlslGrammar::acceptType(TType& type)
 }
 
 // struct
-//      : STRUCT IDENTIFIER LEFT_BRACE struct_declaration_list RIGHT_BRACE
-//      | STRUCT            LEFT_BRACE struct_declaration_list RIGHT_BRACE
+//      : struct_type IDENTIFIER post_decls LEFT_BRACE struct_declaration_list RIGHT_BRACE
+//      | struct_type            post_decls LEFT_BRACE struct_declaration_list RIGHT_BRACE
+//
+// struct_type
+//      : STRUCT
+//      | CBUFFER
+//      | TBUFFER
 //
 bool HlslGrammar::acceptStruct(TType& type)
 {
+    // This qualifier.storage will tell us whether it's an AST block or
+    // just a struct.
+    TQualifier qualifier;
+    qualifier.clear();
+
+    // CBUFFER
+    if (acceptTokenClass(EHTokCBuffer))
+        qualifier.storage = EvqUniform;
+    // TBUFFER
+    else if (acceptTokenClass(EHTokTBuffer))
+        qualifier.storage = EvqBuffer;
     // STRUCT
-    if (! acceptTokenClass(EHTokStruct))
+    else if (! acceptTokenClass(EHTokStruct))
         return false;
 
     // IDENTIFIER
@@ -1201,6 +1229,9 @@ bool HlslGrammar::acceptStruct(TType& type)
         structName = *token.string;
         advanceToken();
     }
+
+    // post_decls
+    acceptPostDecls(type);
 
     // LEFT_BRACE
     if (! acceptTokenClass(EHTokLeftBrace)) {
@@ -1222,11 +1253,15 @@ bool HlslGrammar::acceptStruct(TType& type)
     }
 
     // create the user-defined type
-    new(&type) TType(typeList, structName);
+    if (qualifier.storage == EvqTemporary)
+        new(&type) TType(typeList, structName);
+    else
+        new(&type) TType(typeList, structName, qualifier); // sets EbtBlock
 
-    // If it was named, which means it can be reused later, add
-    // it to the symbol table.
-    if (structName.size() > 0) {
+    // If it was named, which means the type can be reused later, add
+    // it to the symbol table.  (Unless it's a block, in which
+    // case the name is not a type.)
+    if (type.getBasicType() != EbtBlock && structName.size() > 0) {
         TVariable* userTypeDef = new TVariable(&structName, type, true);
         if (! parseContext.symbolTable.insert(*userTypeDef))
             parseContext.error(token.loc, "redefinition", structName.c_str(), "struct");
@@ -2442,6 +2477,7 @@ void HlslGrammar::acceptPostDecls(TType& type)
                     break;
                 }
                 // TODO: process the packoffset information
+                // c1.y means component y of location slot 1
             } else if (! acceptIdentifier(idToken)) {
                 expected("semantic or packoffset or register");
                 return;
@@ -2462,6 +2498,7 @@ void HlslGrammar::acceptPostDecls(TType& type)
                     break;
                 }
                 // TODO: process the register information
+                // b2 means buffer 2
             } else {
                 // semantic, in idToken.string
                 parseContext.handleSemantic(type, *idToken.string);

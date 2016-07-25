@@ -75,6 +75,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.array.frag", "PixelShaderFunction"},
         {"hlsl.assoc.frag", "PixelShaderFunction"},
         {"hlsl.attribute.frag", "PixelShaderFunction"},
+        {"hlsl.buffer.frag", "PixelShaderFunction"},
         {"hlsl.cast.frag", "PixelShaderFunction"},
         {"hlsl.discard.frag", "PixelShaderFunction"},
         {"hlsl.doLoop.frag", "PixelShaderFunction"},

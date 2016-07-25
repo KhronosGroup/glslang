@@ -258,6 +258,8 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["Texture2DMSArray"] =        EHTokTexture2DMSarray;
 
     (*KeywordMap)["struct"] =                  EHTokStruct;
+    (*KeywordMap)["cbuffer"] =                 EHTokCBuffer;
+    (*KeywordMap)["tbuffer"] =                 EHTokTBuffer;
     (*KeywordMap)["typedef"] =                 EHTokTypedef;
 
     (*KeywordMap)["true"] =                    EHTokBoolConstant;
@@ -574,6 +576,9 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     // variable, user type, ...
     case EHTokStruct:
     case EHTokTypedef:
+    case EHTokCBuffer:
+    case EHTokTBuffer:
+        return keyword;
 
     case EHTokBoolConstant:
         if (strcmp("true", tokenText) == 0)
