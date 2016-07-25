@@ -13,12 +13,15 @@ glslang
 
 An OpenGL and OpenGL ES shader front end and validator.
 
-There are two components:
+There are several components:
 
-1. A front-end library for programmatic parsing of GLSL/ESSL into an AST.
+. A GLSL/ESSL front-end for reference validation and translation of GLSL/ESSL into an AST.
 
-2. A standalone wrapper, `glslangValidator`, that can be used as a shader
-   validation tool.
+. An HLSL front-end for translation of a broad generic HLL into the AST.
+
+. A SPIR-V back end for translating the AST to SPIR-V.
+
+. A standalone wrapper, `glslangValidator`, that can be used as a command-line tool for the above.
 
 How to add a feature protected by a version/extension/stage/profile:  See the
 comment in `glslang/MachineIndependent/Versions.cpp`.
