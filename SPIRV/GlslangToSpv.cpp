@@ -118,6 +118,9 @@ protected:
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
+    spv::Id getInvertedSwizzleType(const glslang::TIntermTyped&);
+    spv::Id createInvertedSwizzle(spv::Decoration precision, const glslang::TIntermTyped&, spv::Id parentResult);
+    void convertSwizzle(const glslang::TIntermAggregate&, std::vector<unsigned>& swizzle);
     spv::Id convertGlslangToSpvType(const glslang::TType& type);
     spv::Id convertGlslangToSpvType(const glslang::TType& type, glslang::TLayoutPacking, const glslang::TQualifier&);
     spv::Id convertGlslangStructToSpvType(const glslang::TType&, const glslang::TTypeList* glslangStruct,
@@ -1025,10 +1028,8 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
     case glslang::EOpVectorSwizzle:
         {
             node->getLeft()->traverse(this);
-            glslang::TIntermSequence& swizzleSequence = node->getRight()->getAsAggregate()->getSequence();
             std::vector<unsigned> swizzle;
-            for (int i = 0; i < (int)swizzleSequence.size(); ++i)
-                swizzle.push_back(swizzleSequence[i]->getAsConstantUnion()->getConstArray()[0].getIConst());
+            convertSwizzle(*node->getRight()->getAsAggregate(), swizzle);
             builder.accessChainPushSwizzle(swizzle, convertGlslangToSpvType(node->getLeft()->getType()));
         }
         return false;
@@ -1118,8 +1119,18 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
     // Start by evaluating the operand
 
+    // Does it need a swizzle inversion?  If so, evaluation is inverted;
+    // operate first on the swizzle base, then apply the swizzle.
+    spv::Id invertedType = spv::NoType;
+    auto resultType = [&invertedType, &node, this](){ return invertedType != spv::NoType ? invertedType : convertGlslangToSpvType(node->getType()); };
+    if (node->getOp() == glslang::EOpInterpolateAtCentroid)
+        invertedType = getInvertedSwizzleType(*node->getOperand());
+
     builder.clearAccessChain();
-    node->getOperand()->traverse(this);
+    if (invertedType != spv::NoType)
+        node->getOperand()->getAsBinaryNode()->getLeft()->traverse(this);
+    else
+        node->getOperand()->traverse(this);
 
     spv::Id operand = spv::NoResult;
 
@@ -1136,13 +1147,16 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
     // it could be a conversion
     if (! result)
-        result = createConversion(node->getOp(), precision, noContraction, convertGlslangToSpvType(node->getType()), operand, node->getOperand()->getBasicType());
+        result = createConversion(node->getOp(), precision, noContraction, resultType(), operand, node->getOperand()->getBasicType());
 
     // if not, then possibly an operation
     if (! result)
-        result = createUnaryOperation(node->getOp(), precision, noContraction, convertGlslangToSpvType(node->getType()), operand, node->getOperand()->getBasicType());
+        result = createUnaryOperation(node->getOp(), precision, noContraction, resultType(), operand, node->getOperand()->getBasicType());
 
     if (result) {
+        if (invertedType)
+            result = createInvertedSwizzle(precision, *node->getOperand(), result);
+
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
 
@@ -1210,6 +1224,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
 
     spv::Id result = spv::NoResult;
+    spv::Id invertedType = spv::NoType;  // to use to override the natural type of the node
+    auto resultType = [&invertedType, &node, this](){ return invertedType != spv::NoType ? invertedType : convertGlslangToSpvType(node->getType()); };
 
     // try texturing
     result = createImageTextureFunctionCall(node);
@@ -1366,19 +1382,18 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     {
         std::vector<spv::Id> arguments;
         translateArguments(*node, arguments);
-        spv::Id resultTypeId = convertGlslangToSpvType(node->getType());
         spv::Id constructed;
         if (node->getOp() == glslang::EOpConstructTextureSampler)
-            constructed = builder.createOp(spv::OpSampledImage, resultTypeId, arguments);
+            constructed = builder.createOp(spv::OpSampledImage, resultType(), arguments);
         else if (node->getOp() == glslang::EOpConstructStruct || node->getType().isArray()) {
             std::vector<spv::Id> constituents;
             for (int c = 0; c < (int)arguments.size(); ++c)
                 constituents.push_back(arguments[c]);
-            constructed = builder.createCompositeConstruct(resultTypeId, constituents);
+            constructed = builder.createCompositeConstruct(resultType(), constituents);
         } else if (isMatrix)
-            constructed = builder.createMatrixConstructor(precision, arguments, resultTypeId);
+            constructed = builder.createMatrixConstructor(precision, arguments, resultType());
         else
-            constructed = builder.createConstructor(precision, arguments, resultTypeId);
+            constructed = builder.createConstructor(precision, arguments, resultType());
 
         builder.clearAccessChain();
         builder.setAccessChainRValue(constructed);
@@ -1407,7 +1422,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         break;
     }
     case glslang::EOpMul:
-        // compontent-wise matrix multiply
+        // component-wise matrix multiply
         binOp = glslang::EOpMul;
         break;
     case glslang::EOpOuterProduct:
@@ -1476,7 +1491,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         spv::Id rightId = accessChainLoad(right->getType());
 
         result = createBinaryOperation(binOp, precision, TranslateNoContractionDecoration(node->getType().getQualifier()),
-                                       convertGlslangToSpvType(node->getType()), leftId, rightId,
+                                       resultType(), leftId, rightId,
                                        left->getType().getBasicType(), reduceComparison);
 
         // code above should only make binOp that exists in createBinaryOperation
@@ -1493,9 +1508,6 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     glslang::TIntermSequence& glslangOperands = node->getSequence();
     std::vector<spv::Id> operands;
     for (int arg = 0; arg < (int)glslangOperands.size(); ++arg) {
-        builder.clearAccessChain();
-        glslangOperands[arg]->traverse(this);
-
         // special case l-value operands; there are just a few
         bool lvalue = false;
         switch (node->getOp()) {
@@ -1509,8 +1521,15 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 #ifdef AMD_EXTENSIONS
         case glslang::EOpInterpolateAtVertex:
 #endif
-            if (arg == 0)
+            if (arg == 0) {
                 lvalue = true;
+
+                // Does it need a swizzle inversion?  If so, evaluation is inverted;
+                // operate first on the swizzle base, then apply the swizzle.
+                if (glslangOperands[0]->getAsOperator() && 
+                    glslangOperands[0]->getAsOperator()->getOp() == glslang::EOpVectorSwizzle)
+                    invertedType = convertGlslangToSpvType(glslangOperands[0]->getAsBinaryNode()->getLeft()->getType());
+            }
             break;
         case glslang::EOpAtomicAdd:
         case glslang::EOpAtomicMin:
@@ -1536,6 +1555,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         default:
             break;
         }
+        builder.clearAccessChain();
+        if (invertedType != spv::NoType && arg == 0)
+            glslangOperands[0]->getAsBinaryNode()->getLeft()->traverse(this);
+        else
+            glslangOperands[arg]->traverse(this);
         if (lvalue)
             operands.push_back(builder.accessChainGetLValue());
         else
@@ -1544,24 +1568,26 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
     if (atomic) {
         // Handle all atomics
-        result = createAtomicOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands, node->getBasicType());
+        result = createAtomicOperation(node->getOp(), precision, resultType(), operands, node->getBasicType());
     } else {
         // Pass through to generic operations.
         switch (glslangOperands.size()) {
         case 0:
-            result = createNoArgOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()));
+            result = createNoArgOperation(node->getOp(), precision, resultType());
             break;
         case 1:
             result = createUnaryOperation(
                 node->getOp(), precision,
                 TranslateNoContractionDecoration(node->getType().getQualifier()),
-                convertGlslangToSpvType(node->getType()), operands.front(),
+                resultType(), operands.front(),
                 glslangOperands[0]->getAsTyped()->getBasicType());
             break;
         default:
-            result = createMiscOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands, node->getBasicType());
+            result = createMiscOperation(node->getOp(), precision, resultType(), operands, node->getBasicType());
             break;
         }
+        if (invertedType)
+            result = createInvertedSwizzle(precision, *glslangOperands[0]->getAsBinaryNode(), result);
     }
 
     if (noReturnValue)
@@ -1811,6 +1837,36 @@ spv::Id TGlslangToSpvTraverser::getSampledType(const glslang::TSampler& sampler)
             assert(0);
             return builder.makeFloatType(32);
     }
+}
+
+// If node is a swizzle operation, return the type that should be used if
+// the swizzle base is first consumed by another operation, before the swizzle
+// is applied.
+spv::Id TGlslangToSpvTraverser::getInvertedSwizzleType(const glslang::TIntermTyped& node)
+{
+    if (node.getAsOperator() && 
+        node.getAsOperator()->getOp() == glslang::EOpVectorSwizzle)
+        return convertGlslangToSpvType(node.getAsBinaryNode()->getLeft()->getType());
+    else
+        return spv::NoType;
+}
+
+// When inverting a swizzle with a parent op, this function
+// will apply the swizzle operation to a completed parent operation.
+spv::Id TGlslangToSpvTraverser::createInvertedSwizzle(spv::Decoration precision, const glslang::TIntermTyped& node, spv::Id parentResult)
+{
+    std::vector<unsigned> swizzle;
+    convertSwizzle(*node.getAsBinaryNode()->getRight()->getAsAggregate(), swizzle);
+    return builder.createRvalueSwizzle(precision, convertGlslangToSpvType(node.getType()), parentResult, swizzle);
+}
+
+
+// Convert a glslang AST swizzle node to a swizzle vector for building SPIR-V.
+void TGlslangToSpvTraverser::convertSwizzle(const glslang::TIntermAggregate& node, std::vector<unsigned>& swizzle)
+{
+    const glslang::TIntermSequence& swizzleSequence = node.getSequence();
+    for (int i = 0; i < (int)swizzleSequence.size(); ++i)
+        swizzle.push_back(swizzleSequence[i]->getAsConstantUnion()->getConstArray()[0].getIConst());
 }
 
 // Convert from a glslang type to an SPV type, by calling into a
@@ -2505,6 +2561,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     if (! node->isImage() && ! node->isTexture()) {
         return spv::NoResult;
     }
+    auto resultType = [&node,this]{ return convertGlslangToSpvType(node->getType()); };
 
     // Process a GLSL texturing op (will be SPV image)
     const glslang::TSampler sampler = node->getAsAggregate() ? node->getAsAggregate()->getSequence()[0]->getAsTyped()->getType().getSampler()
@@ -2571,7 +2628,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 operands.push_back(spv::ImageOperandsSampleMask);
                 operands.push_back(*(opIt++));
             }
-            return builder.createOp(spv::OpImageRead, convertGlslangToSpvType(node->getType()), operands);
+            return builder.createOp(spv::OpImageRead, resultType(), operands);
         }
 
         operands.push_back(*(opIt++));
@@ -2582,7 +2639,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             }
             if (builder.getImageTypeFormat(builder.getImageType(operands.front())) == spv::ImageFormatUnknown)
                 builder.addCapability(spv::CapabilityStorageImageReadWithoutFormat);
-            return builder.createOp(spv::OpImageRead, convertGlslangToSpvType(node->getType()), operands);
+            return builder.createOp(spv::OpImageRead, resultType(), operands);
         } else if (node->getOp() == glslang::EOpImageStore) {
             if (sampler.ms) {
                 operands.push_back(*(opIt + 1));
@@ -2606,7 +2663,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
             // Create the return type that was a special structure
             spv::Id texelOut = *opIt;
-            spv::Id typeId0 = convertGlslangToSpvType(node->getType());
+            spv::Id typeId0 = resultType();
             spv::Id typeId1 = builder.getDerefTypeId(texelOut);
             spv::Id resultTypeId = builder.makeStructResultType(typeId0, typeId1);
 
@@ -2622,7 +2679,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             // as the first source operand, is required by SPIR-V atomic operations.
             operands.push_back(sampler.ms ? *(opIt++) : builder.makeUintConstant(0)); // For non-MS, the value should be 0
 
-            spv::Id resultTypeId = builder.makePointer(spv::StorageClassImage, convertGlslangToSpvType(node->getType()));
+            spv::Id resultTypeId = builder.makePointer(spv::StorageClassImage, resultType());
             spv::Id pointer = builder.createOp(spv::OpImageTexelPointer, resultTypeId, operands);
 
             std::vector<spv::Id> operands;
@@ -2630,7 +2687,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             for (; opIt != arguments.end(); ++opIt)
                 operands.push_back(*opIt);
 
-            return createAtomicOperation(node->getOp(), precision, convertGlslangToSpvType(node->getType()), operands, node->getBasicType());
+            return createAtomicOperation(node->getOp(), precision, resultType(), operands, node->getBasicType());
         }
     }
 
@@ -2770,7 +2827,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
     }
 
-    return builder.createTextureCall(precision, convertGlslangToSpvType(node->getType()), sparse, cracked.fetch, cracked.proj, cracked.gather, noImplicitLod, params);
+    return builder.createTextureCall(precision, resultType(), sparse, cracked.fetch, cracked.proj, cracked.gather, noImplicitLod, params);
 }
 
 spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAggregate* node)

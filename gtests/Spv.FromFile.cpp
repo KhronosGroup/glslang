@@ -184,6 +184,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.structure.frag",
         "spv.switch.frag",
         "spv.swizzle.frag",
+        "spv.swizzleInversion.frag",
         "spv.test.frag",
         "spv.test.vert",
         "spv.texture.frag",
