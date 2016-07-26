@@ -1229,6 +1229,35 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             break;
         }
 
+    case EOpMethodGather:
+        {
+            TIntermTyped* argTex    = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* argSamp   = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* argCoord  = argAggregate->getSequence()[2]->getAsTyped();
+            TIntermTyped* argOffset = nullptr;
+
+            // Offset is optional
+            if (argAggregate->getSequence().size() == 4)
+                argOffset = argAggregate->getSequence()[3]->getAsTyped();
+
+            const TOperator textureOp = (argOffset == nullptr ? EOpTextureGather : EOpTextureGatherOffset);
+            TIntermAggregate* txgather = new TIntermAggregate(textureOp);
+
+            TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
+
+            txgather->getSequence().push_back(txcombine);
+            txgather->getSequence().push_back(argCoord);
+
+            if (argOffset != nullptr)
+                txgather->getSequence().push_back(argOffset);
+
+            txgather->setType(node->getType());
+            txgather->setLoc(loc);
+            node = txgather;
+
+            break;
+        }
+        
     default:
         break; // most pass through unchanged
     }
