@@ -1273,6 +1273,38 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             break;
         }
         
+    case EOpMethodCalculateLevelOfDetail:
+    case EOpMethodCalculateLevelOfDetailUnclamped:
+        {
+            TIntermTyped* argTex    = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* argSamp   = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* argCoord  = argAggregate->getSequence()[2]->getAsTyped();
+
+            TIntermAggregate* txquerylod = new TIntermAggregate(EOpTextureQueryLod);
+
+            TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
+            txquerylod->getSequence().push_back(txcombine);
+            txquerylod->getSequence().push_back(argCoord);
+
+            TIntermTyped* lodComponent = intermediate.addConstantUnion(0, loc, true);
+            TIntermTyped* lodComponentIdx = intermediate.addIndex(EOpIndexDirect, txquerylod, lodComponent, loc);
+            lodComponentIdx->setType(TType(EbtFloat, EvqTemporary, 1));
+
+            node = lodComponentIdx;
+
+            // We cannot currently obtain the unclamped LOD
+            if (op == EOpMethodCalculateLevelOfDetailUnclamped)
+                error(loc, "unimplemented: CalculateLevelOfDetailUnclamped", "", "");
+
+            break;
+        }
+
+    case EOpMethodGetSamplePosition:
+        {
+            error(loc, "unimplemented: GetSamplePosition", "", "");
+            break;
+        }
+
     default:
         break; // most pass through unchanged
     }
