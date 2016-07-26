@@ -88,6 +88,14 @@ HlslParseContext::~HlslParseContext()
 {
 }
 
+void HlslParseContext::initializeExtensionBehavior()
+{
+    TParseContextBase::initializeExtensionBehavior();
+
+    // HLSL allows #line by default.
+    extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive] = EBhEnable;
+}
+
 void HlslParseContext::setLimits(const TBuiltInResource& r)
 {
     resources = r;
