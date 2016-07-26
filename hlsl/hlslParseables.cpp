@@ -67,17 +67,17 @@ const char* BaseTypeName(const char argOrder, const char* scalarName, const char
     }
 }
 
-bool IsTextureType(const char argOrder)    { return argOrder == '%' || argOrder == '@'; }
 bool IsSamplerType(const char argType)     { return argType == 'S' || argType == 's'; }
-bool IsTextureArrayed(const char argOrder) { return argOrder == '@'; }
-// bool IsTextureMS(const char /*argOrder*/)  { return false; } // TODO: ...
+bool IsTextureArrayed(const char argOrder) { return argOrder == '@' || argOrder == '&'; }
+bool IsTextureMS(const char argOrder)      { return argOrder == '$' || argOrder == '&'; }
+bool IsTextureType(const char argOrder)    { return argOrder == '%' || argOrder == '@' || IsTextureMS(argOrder); }
 
 // Reject certain combinations that are illegal sample methods.  For example,
 // 3D arrays.
 bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim0)
 {
     const bool isArrayed = IsTextureArrayed(*argOrder);
-    // const bool isMS      = IsTextureMS(*argOrder);
+    const bool isMS      = IsTextureMS(*argOrder);
 
     // there are no 3D arrayed textures, or 3D SampleCmp(LevelZero)
     if (dim0 == 3 && (isArrayed || name == "SampleCmp" || name == "SampleCmpLevelZero"))
@@ -108,6 +108,10 @@ bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim
     if (name == "Load" && dim0 == 4)
         return true; // Load does not support any cubemaps, arrayed or not.
 
+    // Multisample formats are only 2D and 2Darray
+    if (isMS && dim0 != 2)
+        return true;
+
     return false;
 }
 
@@ -123,9 +127,9 @@ int CoordinateArgPos(const glslang::TString& name, bool isTexture)
 }
 
 // Some texture methods use an addition coordinate dimension for the mip
-bool HasMipInCoord(const glslang::TString& name)
+bool HasMipInCoord(const glslang::TString& name, bool isMS)
 {
-    return name == "Load";
+    return name == "Load" && !isMS;
 }
 
 // Handle IO params marked with > or <
@@ -151,6 +155,27 @@ void HandleRepeatArg(const char*& arg, const char*& prev, const char* current)
         prev = current;
 }
 
+// Return true for the end of a single argument key, which can be the end of the string, or
+// the comma separator.
+inline bool IsEndOfArg(const char* arg)
+{
+    return arg == nullptr || *arg == '\0' || *arg == ',';
+}
+
+
+// If this is a fixed vector size, such as V3, return the size.  Else return 0.
+int FixedVecSize(const char* arg) 
+{
+    while (!IsEndOfArg(arg)) {
+        if (isdigit(*arg))
+            return *arg - '0';
+        ++arg;
+    }
+
+    return 0; // none found.
+}
+
+
 // Create and return a type name.  This is done in GLSL, not HLSL conventions, until such
 // time as builtins are parsed using the HLSL parser.
 //
@@ -165,7 +190,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     const bool isTexture   = IsTextureType(argOrder[0]);
     const bool isArrayed   = IsTextureArrayed(argOrder[0]);
     const bool isSampler   = IsSamplerType(argType[0]);
-    //const bool isMS        = IsTextureMS(argOrder[0]);
+    const bool isMS        = IsTextureMS(argOrder[0]);
 
     char type  = *argType;
 
@@ -182,7 +207,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
             type = 'u';
     }
 
-    while (!isalpha(*argOrder))
+    if (isTranspose || isMatMul)
         ++argOrder;
 
     char order = *argOrder;
@@ -226,7 +251,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     }
 
     // handle fixed vector sizes, such as float3, and only ever 3.
-    const int fixedVecSize = isdigit(argOrder[1]) ? (argOrder[1] - '0') : 0;
+    const int fixedVecSize = FixedVecSize(argOrder);
     if (fixedVecSize != 0)
         dim0 = dim1 = fixedVecSize;
 
@@ -234,11 +259,11 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     if (isSampler || isTexture) {
         if (order == 'V' || isTexture) {
             switch (dim0) {
-            case 1: s += "1D";   break;
-            case 2: s += "2D";   break;
-            case 3: s += "3D";   break;
-            case 4: s += "Cube"; break;
-            default: s += "UNKNOWN_SAMPLER"; break;
+            case 1: s += "1D";                   break;
+            case 2: s += (isMS ? "2DMS" : "2D"); break;
+            case 3: s += "3D";                   break;
+            case 4: s += "Cube";                 break;
+            default: s += "UNKNOWN_SAMPLER";     break;
             }
         }
     } else {
@@ -263,6 +288,8 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
                 s += ('0' + char(dim1));
                 break;
             }
+        default:
+            break;
         }
     }
 
@@ -305,14 +332,6 @@ inline bool IsValidGlsl(const char* cname, char retOrder, char retType, char arg
 }
 
 
-// Return true for the end of a single argument key, which can be the end of the string, or
-// the comma separator.
-inline bool IsEndOfArg(const char* arg)
-{
-    return arg == nullptr || *arg == '\0' || *arg == ',';
-}
-
-
 // return position of end of argument specifier
 inline const char* FindEndOfArg(const char* arg)
 {
@@ -321,19 +340,6 @@ inline const char* FindEndOfArg(const char* arg)
 
     return *arg == '\0' ? nullptr : arg;
 }
-
-// If this is a fixed vector size, such as V3, return the size.  Else return 0.
-int FixedVecSize(const char* arg) 
-{
-    while (!IsEndOfArg(arg)) {
-        if (isdigit(*arg))
-            return *arg - '0';
-        ++arg;
-    }
-
-    return 0; // none found.
-}
-
 
 // Return pointer to beginning of Nth argument specifier in the string.
 inline const char* NthArg(const char* arg, int n)
@@ -429,6 +435,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     // '#' as first letter of order sets rows=cols for mats
     // '%' as first letter of order creates texture of given F/I/U type (texture, itexture, etc)
     // '@' as first letter of order creates arrayed texture of given type
+    // '$' / '&' as first letter of order creates 2DMS / 2DMSArray textures
 
     static const struct {
         const char*   name;      // intrinsic name
@@ -619,9 +626,8 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
 
         { "Load",               /*!O*/        "V4",    nullptr,   "%@,V",           "FIU,I",         EShLangAll },
         { "Load",               /* O*/        "V4",    nullptr,   "%@,V,V",         "FIU,I,I",       EShLangAll },
-        // TODO: MS variants of Load
-        // { "Load", /* +sampleidex*/            "V4",    nullptr,   "$V,V,S",          "FIU,I,I",   EShLangAll },
-        // { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$V,V,S,V",        "FIU,I,I,I", EShLangAll },
+        { "Load", /* +sampleidex*/            "V4",    nullptr,   "$&,V,S",         "FIU,I,I",       EShLangAll },
+        { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$&,V,S,V",       "FIU,I,I,I",     EShLangAll },
 
         { "Gather",             /*!O*/        "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangVSPSGS },
         { "Gather",             /* O*/        "V4",    nullptr,   "%@,S,V,V",       "FIU,S,F,I",     EShLangVSPSGS },
@@ -677,9 +683,12 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "GetDimensions",   /* CubeArray */  "-",     "-",       "@4,S,>S,,,",     "FUI,U,,,,",     EShLangAll },
         { "GetDimensions",   /* CubeArray */  "-",     "-",       "@4,S,>S,,,",     "FUI,U,F,,,",    EShLangAll },
 
-        // TODO: GetDimensions for Texture2DMS, Texture2DMSArray
         // UINT Width, UINT Height, UINT Samples
         // UINT Width, UINT Height, UINT Elements, UINT Samples
+        { "GetDimensions",   /* 2DMS */       "-",     "-",       "$2,>S,,",        "FUI,U,,",        EShLangAll },
+        { "GetDimensions",   /* 2DMS */       "-",     "-",       "$2,>S,,",        "FUI,U,,",        EShLangAll },
+        { "GetDimensions",   /* 2DMSArray */  "-",     "-",       "&2,>S,,,",       "FUI,U,,,",       EShLangAll },
+        { "GetDimensions",   /* 2DMSArray */  "-",     "-",       "&2,>S,,,",       "FUI,U,,,",       EShLangAll },
 
         // Mark end of list, since we want to avoid a range-based for, as some compilers don't handle it yet.
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0 },
@@ -703,7 +712,8 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
             for (const char* argOrder = intrinsic.argOrder; !IsEndOfArg(argOrder); ++argOrder) { // for each order...
                 const bool isTexture   = IsTextureType(*argOrder);
                 const bool isArrayed   = IsTextureArrayed(*argOrder);
-                const bool mipInCoord  = HasMipInCoord(intrinsic.name);
+                const bool isMS        = IsTextureMS(*argOrder);
+                const bool mipInCoord  = HasMipInCoord(intrinsic.name, isMS);
                 const int fixedVecSize = FixedVecSize(argOrder);
                 const int coordArg     = CoordinateArgPos(intrinsic.name, isTexture);
 

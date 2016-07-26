@@ -1,0 +1,340 @@
+hlsl.load.2dms.dx10.frag
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:57  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:28    Function Parameters: 
+0:?     Sequence
+0:32      textureFetch (global 4-component vector of float)
+0:32        'g_tTex2dmsf4' (uniform texture2DMS)
+0:32        'c2' (uniform 2-component vector of int)
+0:32        Constant:
+0:32          3 (const int)
+0:33      textureFetch (global 4-component vector of int)
+0:33        'g_tTex2dmsi4' (uniform itexture2DMS)
+0:33        'c2' (uniform 2-component vector of int)
+0:33        Constant:
+0:33          3 (const int)
+0:34      textureFetch (global 4-component vector of uint)
+0:34        'g_tTex2dmsu4' (uniform utexture2DMS)
+0:34        'c2' (uniform 2-component vector of int)
+0:34        Constant:
+0:34          3 (const int)
+0:37      textureFetchOffset (global 4-component vector of float)
+0:37        'g_tTex2dmsf4' (uniform texture2DMS)
+0:37        'c2' (uniform 2-component vector of int)
+0:37        Constant:
+0:37          3 (const int)
+0:37        'o2' (uniform 2-component vector of int)
+0:38      textureFetchOffset (global 4-component vector of int)
+0:38        'g_tTex2dmsi4' (uniform itexture2DMS)
+0:38        'c2' (uniform 2-component vector of int)
+0:38        Constant:
+0:38          3 (const int)
+0:38        'o2' (uniform 2-component vector of int)
+0:39      textureFetchOffset (global 4-component vector of uint)
+0:39        'g_tTex2dmsu4' (uniform utexture2DMS)
+0:39        'c2' (uniform 2-component vector of int)
+0:39        Constant:
+0:39          3 (const int)
+0:39        'o2' (uniform 2-component vector of int)
+0:42      textureFetch (global 4-component vector of float)
+0:42        'g_tTex2dmsf4a' (uniform texture2DMSArray)
+0:42        'c3' (uniform 3-component vector of int)
+0:42        Constant:
+0:42          3 (const int)
+0:43      textureFetch (global 4-component vector of int)
+0:43        'g_tTex2dmsi4a' (uniform itexture2DMSArray)
+0:43        'c3' (uniform 3-component vector of int)
+0:43        Constant:
+0:43          3 (const int)
+0:44      textureFetch (global 4-component vector of uint)
+0:44        'g_tTex2dmsu4a' (uniform utexture2DMSArray)
+0:44        'c3' (uniform 3-component vector of int)
+0:44        Constant:
+0:44          3 (const int)
+0:47      textureFetchOffset (global 4-component vector of float)
+0:47        'g_tTex2dmsf4a' (uniform texture2DMSArray)
+0:47        'c3' (uniform 3-component vector of int)
+0:47        Constant:
+0:47          3 (const int)
+0:47        'o2' (uniform 2-component vector of int)
+0:48      textureFetchOffset (global 4-component vector of int)
+0:48        'g_tTex2dmsi4a' (uniform itexture2DMSArray)
+0:48        'c3' (uniform 3-component vector of int)
+0:48        Constant:
+0:48          3 (const int)
+0:48        'o2' (uniform 2-component vector of int)
+0:49      textureFetchOffset (global 4-component vector of uint)
+0:49        'g_tTex2dmsu4a' (uniform utexture2DMSArray)
+0:49        'c3' (uniform 3-component vector of int)
+0:49        Constant:
+0:49          3 (const int)
+0:49        'o2' (uniform 2-component vector of int)
+0:52      move second child to first child (temp float)
+0:52        Depth: direct index for structure (temp float FragDepth)
+0:52          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:52          Constant:
+0:52            1 (const int)
+0:52        Constant:
+0:52          1.000000
+0:54      Branch: Return with expression
+0:54        'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:?   Linker Objects
+0:?     'g_sSamp' (uniform sampler)
+0:?     'g_tTex2dmsf4' (uniform texture2DMS)
+0:?     'g_tTex2dmsi4' (uniform itexture2DMS)
+0:?     'g_tTex2dmsu4' (uniform utexture2DMS)
+0:?     'g_tTex2dmsf4a' (uniform texture2DMSArray)
+0:?     'g_tTex2dmsi4a' (uniform itexture2DMSArray)
+0:?     'g_tTex2dmsu4a' (uniform utexture2DMSArray)
+0:?     'c1' (uniform int)
+0:?     'c2' (uniform 2-component vector of int)
+0:?     'c3' (uniform 3-component vector of int)
+0:?     'c4' (uniform 4-component vector of int)
+0:?     'o1' (uniform int)
+0:?     'o2' (uniform 2-component vector of int)
+0:?     'o3' (uniform 3-component vector of int)
+0:?     'o4' (uniform 4-component vector of int)
+
+
+Linked fragment stage:
+
+
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:57  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:28    Function Parameters: 
+0:?     Sequence
+0:32      textureFetch (global 4-component vector of float)
+0:32        'g_tTex2dmsf4' (uniform texture2DMS)
+0:32        'c2' (uniform 2-component vector of int)
+0:32        Constant:
+0:32          3 (const int)
+0:33      textureFetch (global 4-component vector of int)
+0:33        'g_tTex2dmsi4' (uniform itexture2DMS)
+0:33        'c2' (uniform 2-component vector of int)
+0:33        Constant:
+0:33          3 (const int)
+0:34      textureFetch (global 4-component vector of uint)
+0:34        'g_tTex2dmsu4' (uniform utexture2DMS)
+0:34        'c2' (uniform 2-component vector of int)
+0:34        Constant:
+0:34          3 (const int)
+0:37      textureFetchOffset (global 4-component vector of float)
+0:37        'g_tTex2dmsf4' (uniform texture2DMS)
+0:37        'c2' (uniform 2-component vector of int)
+0:37        Constant:
+0:37          3 (const int)
+0:37        'o2' (uniform 2-component vector of int)
+0:38      textureFetchOffset (global 4-component vector of int)
+0:38        'g_tTex2dmsi4' (uniform itexture2DMS)
+0:38        'c2' (uniform 2-component vector of int)
+0:38        Constant:
+0:38          3 (const int)
+0:38        'o2' (uniform 2-component vector of int)
+0:39      textureFetchOffset (global 4-component vector of uint)
+0:39        'g_tTex2dmsu4' (uniform utexture2DMS)
+0:39        'c2' (uniform 2-component vector of int)
+0:39        Constant:
+0:39          3 (const int)
+0:39        'o2' (uniform 2-component vector of int)
+0:42      textureFetch (global 4-component vector of float)
+0:42        'g_tTex2dmsf4a' (uniform texture2DMSArray)
+0:42        'c3' (uniform 3-component vector of int)
+0:42        Constant:
+0:42          3 (const int)
+0:43      textureFetch (global 4-component vector of int)
+0:43        'g_tTex2dmsi4a' (uniform itexture2DMSArray)
+0:43        'c3' (uniform 3-component vector of int)
+0:43        Constant:
+0:43          3 (const int)
+0:44      textureFetch (global 4-component vector of uint)
+0:44        'g_tTex2dmsu4a' (uniform utexture2DMSArray)
+0:44        'c3' (uniform 3-component vector of int)
+0:44        Constant:
+0:44          3 (const int)
+0:47      textureFetchOffset (global 4-component vector of float)
+0:47        'g_tTex2dmsf4a' (uniform texture2DMSArray)
+0:47        'c3' (uniform 3-component vector of int)
+0:47        Constant:
+0:47          3 (const int)
+0:47        'o2' (uniform 2-component vector of int)
+0:48      textureFetchOffset (global 4-component vector of int)
+0:48        'g_tTex2dmsi4a' (uniform itexture2DMSArray)
+0:48        'c3' (uniform 3-component vector of int)
+0:48        Constant:
+0:48          3 (const int)
+0:48        'o2' (uniform 2-component vector of int)
+0:49      textureFetchOffset (global 4-component vector of uint)
+0:49        'g_tTex2dmsu4a' (uniform utexture2DMSArray)
+0:49        'c3' (uniform 3-component vector of int)
+0:49        Constant:
+0:49          3 (const int)
+0:49        'o2' (uniform 2-component vector of int)
+0:52      move second child to first child (temp float)
+0:52        Depth: direct index for structure (temp float FragDepth)
+0:52          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:52          Constant:
+0:52            1 (const int)
+0:52        Constant:
+0:52          1.000000
+0:54      Branch: Return with expression
+0:54        'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:?   Linker Objects
+0:?     'g_sSamp' (uniform sampler)
+0:?     'g_tTex2dmsf4' (uniform texture2DMS)
+0:?     'g_tTex2dmsi4' (uniform itexture2DMS)
+0:?     'g_tTex2dmsu4' (uniform utexture2DMS)
+0:?     'g_tTex2dmsf4a' (uniform texture2DMSArray)
+0:?     'g_tTex2dmsi4a' (uniform itexture2DMSArray)
+0:?     'g_tTex2dmsu4a' (uniform utexture2DMSArray)
+0:?     'c1' (uniform int)
+0:?     'c2' (uniform 2-component vector of int)
+0:?     'c3' (uniform 3-component vector of int)
+0:?     'c4' (uniform 4-component vector of int)
+0:?     'o1' (uniform int)
+0:?     'o2' (uniform 2-component vector of int)
+0:?     'o3' (uniform 3-component vector of int)
+0:?     'o4' (uniform 4-component vector of int)
+
+// Module Version 10000
+// Generated by (magic number): 80001
+// Id's are bound by 99
+
+                              Capability Shader
+                              Capability ImageGatherExtended
+                              Capability ImageMSArray
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint Fragment 4  "main"
+                              ExecutionMode 4 OriginUpperLeft
+                              Source HLSL 450
+                              Name 4  "main"
+                              Name 9  "g_tTex2dmsf4"
+                              Name 14  "c2"
+                              Name 21  "g_tTex2dmsi4"
+                              Name 29  "g_tTex2dmsu4"
+                              Name 36  "o2"
+                              Name 49  "g_tTex2dmsf4a"
+                              Name 53  "c3"
+                              Name 58  "g_tTex2dmsi4a"
+                              Name 64  "g_tTex2dmsu4a"
+                              Name 80  "PS_OUTPUT"
+                              MemberName 80(PS_OUTPUT) 0  "Color"
+                              MemberName 80(PS_OUTPUT) 1  "Depth"
+                              Name 82  "psout"
+                              Name 91  "g_sSamp"
+                              Name 93  "c1"
+                              Name 95  "c4"
+                              Name 96  "o1"
+                              Name 97  "o3"
+                              Name 98  "o4"
+                              Decorate 9(g_tTex2dmsf4) DescriptorSet 0
+                              Decorate 21(g_tTex2dmsi4) DescriptorSet 0
+                              Decorate 29(g_tTex2dmsu4) DescriptorSet 0
+                              Decorate 49(g_tTex2dmsf4a) DescriptorSet 0
+                              Decorate 58(g_tTex2dmsi4a) DescriptorSet 0
+                              Decorate 64(g_tTex2dmsu4a) DescriptorSet 0
+                              MemberDecorate 80(PS_OUTPUT) 1 BuiltIn FragDepth
+                              Decorate 91(g_sSamp) DescriptorSet 0
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 32
+               7:             TypeImage 6(float) 2D multi-sampled sampled format:Unknown
+               8:             TypePointer UniformConstant 7
+ 9(g_tTex2dmsf4):      8(ptr) Variable UniformConstant
+              11:             TypeInt 32 1
+              12:             TypeVector 11(int) 2
+              13:             TypePointer UniformConstant 12(ivec2)
+          14(c2):     13(ptr) Variable UniformConstant
+              16:     11(int) Constant 3
+              17:             TypeVector 6(float) 4
+              19:             TypeImage 11(int) 2D multi-sampled sampled format:Unknown
+              20:             TypePointer UniformConstant 19
+21(g_tTex2dmsi4):     20(ptr) Variable UniformConstant
+              24:             TypeVector 11(int) 4
+              26:             TypeInt 32 0
+              27:             TypeImage 26(int) 2D multi-sampled sampled format:Unknown
+              28:             TypePointer UniformConstant 27
+29(g_tTex2dmsu4):     28(ptr) Variable UniformConstant
+              32:             TypeVector 26(int) 4
+          36(o2):     13(ptr) Variable UniformConstant
+              47:             TypeImage 6(float) 2D array multi-sampled sampled format:Unknown
+              48:             TypePointer UniformConstant 47
+49(g_tTex2dmsf4a):     48(ptr) Variable UniformConstant
+              51:             TypeVector 11(int) 3
+              52:             TypePointer UniformConstant 51(ivec3)
+          53(c3):     52(ptr) Variable UniformConstant
+              56:             TypeImage 11(int) 2D array multi-sampled sampled format:Unknown
+              57:             TypePointer UniformConstant 56
+58(g_tTex2dmsi4a):     57(ptr) Variable UniformConstant
+              62:             TypeImage 26(int) 2D array multi-sampled sampled format:Unknown
+              63:             TypePointer UniformConstant 62
+64(g_tTex2dmsu4a):     63(ptr) Variable UniformConstant
+   80(PS_OUTPUT):             TypeStruct 17(fvec4) 6(float)
+              81:             TypePointer Function 80(PS_OUTPUT)
+              83:     11(int) Constant 1
+              84:    6(float) Constant 1065353216
+              85:             TypePointer Function 6(float)
+              89:             TypeSampler
+              90:             TypePointer UniformConstant 89
+     91(g_sSamp):     90(ptr) Variable UniformConstant
+              92:             TypePointer UniformConstant 11(int)
+          93(c1):     92(ptr) Variable UniformConstant
+              94:             TypePointer UniformConstant 24(ivec4)
+          95(c4):     94(ptr) Variable UniformConstant
+          96(o1):     92(ptr) Variable UniformConstant
+          97(o3):     52(ptr) Variable UniformConstant
+          98(o4):     94(ptr) Variable UniformConstant
+         4(main):           2 Function None 3
+               5:             Label
+       82(psout):     81(ptr) Variable Function
+              10:           7 Load 9(g_tTex2dmsf4)
+              15:   12(ivec2) Load 14(c2)
+              18:   17(fvec4) ImageFetch 10 15 Sample 16
+              22:          19 Load 21(g_tTex2dmsi4)
+              23:   12(ivec2) Load 14(c2)
+              25:   24(ivec4) ImageFetch 22 23 Sample 16
+              30:          27 Load 29(g_tTex2dmsu4)
+              31:   12(ivec2) Load 14(c2)
+              33:   32(ivec4) ImageFetch 30 31 Sample 16
+              34:           7 Load 9(g_tTex2dmsf4)
+              35:   12(ivec2) Load 14(c2)
+              37:   12(ivec2) Load 36(o2)
+              38:   17(fvec4) ImageFetch 34 35 Offset Sample 37 16
+              39:          19 Load 21(g_tTex2dmsi4)
+              40:   12(ivec2) Load 14(c2)
+              41:   12(ivec2) Load 36(o2)
+              42:   24(ivec4) ImageFetch 39 40 Offset Sample 41 16
+              43:          27 Load 29(g_tTex2dmsu4)
+              44:   12(ivec2) Load 14(c2)
+              45:   12(ivec2) Load 36(o2)
+              46:   32(ivec4) ImageFetch 43 44 Offset Sample 45 16
+              50:          47 Load 49(g_tTex2dmsf4a)
+              54:   51(ivec3) Load 53(c3)
+              55:   17(fvec4) ImageFetch 50 54 Sample 16
+              59:          56 Load 58(g_tTex2dmsi4a)
+              60:   51(ivec3) Load 53(c3)
+              61:   24(ivec4) ImageFetch 59 60 Sample 16
+              65:          62 Load 64(g_tTex2dmsu4a)
+              66:   51(ivec3) Load 53(c3)
+              67:   32(ivec4) ImageFetch 65 66 Sample 16
+              68:          47 Load 49(g_tTex2dmsf4a)
+              69:   51(ivec3) Load 53(c3)
+              70:   12(ivec2) Load 36(o2)
+              71:   17(fvec4) ImageFetch 68 69 Offset Sample 70 16
+              72:          56 Load 58(g_tTex2dmsi4a)
+              73:   51(ivec3) Load 53(c3)
+              74:   12(ivec2) Load 36(o2)
+              75:   24(ivec4) ImageFetch 72 73 Offset Sample 74 16
+              76:          62 Load 64(g_tTex2dmsu4a)
+              77:   51(ivec3) Load 53(c3)
+              78:   12(ivec2) Load 36(o2)
+              79:   32(ivec4) ImageFetch 76 77 Offset Sample 78 16
+              86:     85(ptr) AccessChain 82(psout) 83
+                              Store 86 84
+              87:80(PS_OUTPUT) Load 82(psout)
+                              ReturnValue 87
+                              FunctionEnd

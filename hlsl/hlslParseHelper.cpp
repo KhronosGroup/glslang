@@ -1007,7 +1007,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 ++numDims;
 
             // Establish whether we're querying mip levels
-            const bool mipQuery = numArgs > (numDims + 1);
+            const bool mipQuery = (numArgs > (numDims + 1)) && (!texSampler.isMultiSample());
 
             // AST assumes integer return.  Will be converted to float if required.
             TIntermAggregate* sizeQuery = new TIntermAggregate(EOpTextureQuerySize);
@@ -1060,6 +1060,19 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 levelsQuery->setLoc(loc);
 
                 TIntermTyped* compAssign = intermediate.addAssign(EOpAssign, outParam, levelsQuery, loc);
+                compoundStatement = intermediate.growAggregate(compoundStatement, compAssign);
+            }
+
+            // 2DMS formats query # samples, which needs a different query op
+            if (texSampler.isMultiSample()) {
+                TIntermTyped* outParam = argAggregate->getSequence()[outParamBase + numDims]->getAsTyped();
+
+                TIntermAggregate* samplesQuery = new TIntermAggregate(EOpImageQuerySamples);
+                samplesQuery->getSequence().push_back(argTex);
+                samplesQuery->setType(TType(EbtUint, EvqTemporary, 1));
+                samplesQuery->setLoc(loc);
+                
+                TIntermTyped* compAssign = intermediate.addAssign(EOpAssign, outParam, samplesQuery, loc);
                 compoundStatement = intermediate.growAggregate(compoundStatement, compAssign);
             }
 
@@ -1146,7 +1159,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             // Last component of coordinate is the mip level, for non-MS.  we separate them here:
             if (isMS) {
                 // MS has no LOD
-                coordSwizzle = argTex;
+                coordSwizzle = argCoord;
             } else {
                 // Extract coordinate
                 TVectorFields coordFields(0,1,2,3);
@@ -1164,12 +1177,6 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             const int numArgs    = argAggregate->getSequence().size();
             const bool hasOffset = ((!isMS && numArgs == 3) || (isMS && numArgs == 4));
 
-            // Obtain offset arg, if there is one.
-            if (hasOffset) {
-                const int offsetPos  = (isMS ? 3 : 2);
-                argOffset = argAggregate->getSequence()[offsetPos]->getAsTyped();
-            }
-
             // Create texel fetch
             const TOperator fetchOp = (hasOffset ? EOpTextureFetchOffset : EOpTextureFetch);
             TIntermAggregate* txfetch = new TIntermAggregate(fetchOp);
@@ -1177,18 +1184,26 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             const TSamplerDim dim = argTex->getType().getSampler().dim;
             if (dim == EsdBuffer) // TODO: buffers
                 assert(0);
-            if (isMS) // TODO: 2DMS sample number
-                assert(0);
 
             // Build up the fetch
             txfetch->getSequence().push_back(argTex);
             txfetch->getSequence().push_back(coordSwizzle);
 
-            if (!isMS) // MS has no LOD
+            if (isMS) {
+                // add 2DMS sample index
+                TIntermTyped* argSampleIdx  = argAggregate->getSequence()[2]->getAsTyped();
+                txfetch->getSequence().push_back(argSampleIdx);
+            } else {
+                // 2DMS has no LOD, but everything else does.
                 txfetch->getSequence().push_back(lodComponent);
+            }
 
-            if (hasOffset)
+            // Obtain offset arg, if there is one.
+            if (hasOffset) {
+                const int offsetPos  = (isMS ? 3 : 2);
+                argOffset = argAggregate->getSequence()[offsetPos]->getAsTyped();
                 txfetch->getSequence().push_back(argOffset);
+            }
 
             txfetch->setType(node->getType());
             txfetch->setLoc(loc);

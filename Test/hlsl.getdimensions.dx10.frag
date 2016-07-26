@@ -28,6 +28,14 @@ TextureCubeArray <float4> g_tTexcdf4a;
 TextureCubeArray <int4>   g_tTexcdi4a;
 TextureCubeArray <uint4>  g_tTexcdu4a;
 
+Texture2DMS <float4> g_tTex2dmsf4;
+Texture2DMS <int4>   g_tTex2dmsi4;
+Texture2DMS <uint4>  g_tTex2dmsu4;
+
+Texture2DMSArray <float4> g_tTex2dmsf4a;
+Texture2DMSArray <int4>   g_tTex2dmsi4a;
+Texture2DMSArray <uint4>  g_tTex2dmsu4a;
+
 struct PS_OUTPUT
 {
     float4 Color : SV_Target0;
@@ -137,6 +145,23 @@ PS_OUTPUT main()
    g_tTexcdu4a . GetDimensions(WidthU, HeightU, ElementsU);
    g_tTexcdu4a . GetDimensions(6, WidthU, HeightU, ElementsU, NumberOfLevelsU);
 
+   // 2DMS, float tx, uint params
+   g_tTex2dmsf4 . GetDimensions(WidthU, HeightU, NumberOfSamplesU);
+
+   // 2DMS, int tx, uint params
+   g_tTex2dmsi4 . GetDimensions(WidthU, HeightU, NumberOfSamplesU);
+
+   // 2DMS, uint tx, uint params
+   g_tTex2dmsu4 . GetDimensions(WidthU, HeightU, NumberOfSamplesU);
+
+   // 2DMSArray, float tx, uint params
+   g_tTex2dmsf4a . GetDimensions(WidthU, HeightU, ElementsU, NumberOfSamplesU);
+
+   // 2DMSArray, int tx, uint params
+   g_tTex2dmsi4a . GetDimensions(WidthU, HeightU, ElementsU, NumberOfSamplesU);
+
+   // 2DMSArray, uint tx, uint params
+   g_tTex2dmsu4a . GetDimensions(WidthU, HeightU, ElementsU, NumberOfSamplesU);
 
    // TODO: ***************************************************
    // Change this to 1 to enable float overloads when the HLSL
@@ -228,6 +253,24 @@ PS_OUTPUT main()
    // Cubearray, uint, float params
    g_tTexcdu4a . GetDimensions(WidthF, HeightF, ElementsF);
    g_tTexcdu4a . GetDimensions(6, WidthF, HeightF, ElementsF, NumberOfLevelsF);
+
+   // 2DMS, float tx, uint params
+   g_tTex2dmsf4 . GetDimensions(WidthF, HeightF, NumberOfSamplesF);
+
+   // 2DMS, int tx, uint params
+   g_tTex2dmsi4 . GetDimensions(WidthF, HeightF, NumberOfSamplesF);
+
+   // 2DMS, uint tx, uint params
+   g_tTex2dmsu4 . GetDimensions(WidthF, HeightF, NumberOfSamplesF);
+
+   // 2DMSArray, float tx, uint params
+   g_tTex2dmsf4a . GetDimensions(WidthF, HeightF, ElementsF, NumberOfSamplesF);
+
+   // 2DMSArray, int tx, uint params
+   g_tTex2dmsi4a . GetDimensions(WidthF, HeightF, ElementsF, NumberOfSamplesF);
+
+   // 2DMSArray, uint tx, uint params
+   g_tTex2dmsu4a . GetDimensions(WidthF, HeightF, ElementsF, NumberOfSamplesF);
 #endif // OVERLOAD_FIX
 
    psout.Color = 1.0;
