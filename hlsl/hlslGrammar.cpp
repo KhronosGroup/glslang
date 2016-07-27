@@ -1548,8 +1548,9 @@ bool HlslGrammar::acceptInitializer(TIntermTyped*& node)
 //    a op (b op (c op d))
 //
 // assigment_expression
-//      : binary_expression op binary_expression op binary_expression ...
-//      | initializer
+//      : initializer
+//      | conditional_expression
+//      | conditional_expression assign_op conditional_expression assign_op conditional_expression ...
 //
 bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
 {
@@ -1562,8 +1563,8 @@ bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
         return false;
     }
 
-    // binary_expression
-    if (! acceptBinaryExpression(node, PlLogicalOr))
+    // conditional_expression
+    if (! acceptConditionalExpression(node))
         return false;
 
     // assignment operation?
@@ -1571,12 +1572,12 @@ bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
     if (assignOp == EOpNull)
         return true;
 
-    // assignment op
+    // assign_op
     TSourceLoc loc = token.loc;
     advanceToken();
 
-    // binary_expression
-    // But, done by recursing this function, which automatically
+    // conditional_expression assign_op conditional_expression ...
+    // Done by recursing this function, which automatically
     // gets the right-to-left associativity.
     TIntermTyped* rightNode = nullptr;
     if (! acceptAssignmentExpression(rightNode)) {
@@ -1591,6 +1592,46 @@ bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
 
     if (! peekTokenClass(EHTokComma))
         return true;
+
+    return true;
+}
+
+// Accept a conditional expression, which associates right-to-left,
+// accomplished by the "true" expression calling down to lower
+// precedence levels than this level.
+//
+// conditional_expression
+//      : binary_expression
+//      | binary_expression QUESTION expression COLON assignment_expression
+//
+bool HlslGrammar::acceptConditionalExpression(TIntermTyped*& node)
+{
+    // binary_expression
+    if (! acceptBinaryExpression(node, PlLogicalOr))
+        return false;
+
+    if (! acceptTokenClass(EHTokQuestion))
+        return true;
+
+    TIntermTyped* trueNode = nullptr;
+    if (! acceptExpression(trueNode)) {
+        expected("expression after ?");
+        return false;
+    }
+    TSourceLoc loc = token.loc;
+
+    if (! acceptTokenClass(EHTokColon)) {
+        expected(":");
+        return false;
+    }
+
+    TIntermTyped* falseNode = nullptr;
+    if (! acceptAssignmentExpression(falseNode)) {
+        expected("expression after :");
+        return false;
+    }
+
+    node = intermediate.addSelection(node, trueNode, falseNode, loc);
 
     return true;
 }
