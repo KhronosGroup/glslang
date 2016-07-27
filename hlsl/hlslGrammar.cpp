@@ -754,6 +754,18 @@ bool HlslGrammar::acceptTextureType(TType& type)
             return false;
         }
 
+        // Buffers can handle small mats if they fit in 4 components
+        if (dim == EsdBuffer && txType.isMatrix()) {
+            if ((txType.getMatrixCols() * txType.getMatrixRows()) > 4) {
+                expected("components < 4 in matrix buffer type");
+                return false;
+            }
+
+            // TODO: except we don't handle it yet...
+            unimplemented("matrix type in buffer");
+            return false;
+        }
+
         if (!txType.isScalar() && !txType.isVector()) {
             expected("scalar or vector type");
             return false;
@@ -789,7 +801,14 @@ bool HlslGrammar::acceptTextureType(TType& type)
     const bool shadow = txType.isScalar() || (txType.isVector() && txType.getVectorSize() == 1);
 
     TSampler sampler;
-    sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms);
+
+    // Buffers are combined.
+    if (dim == EsdBuffer) {
+        sampler.set(txType.getBasicType(), dim, array);
+    } else {
+        // DX10 textures are separated.  TODO: DX9.
+        sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms);
+    }
     
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));
 
