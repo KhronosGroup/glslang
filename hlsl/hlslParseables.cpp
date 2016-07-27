@@ -132,6 +132,12 @@ bool HasMipInCoord(const glslang::TString& name, bool isMS)
     return name == "Load" && !isMS;
 }
 
+// LOD calculations don't pass the array level in the coordinate.
+bool NoArrayCoord(const glslang::TString& name)
+{
+    return name == "CalculateLevelOfDetail" || name == "CalculateLevelOfDetailUnclamped";
+}
+
 // Handle IO params marked with > or <
 const char* IoParam(glslang::TString& s, const char* nthArgOrder)
 {
@@ -632,6 +638,11 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "Gather",             /*!O*/        "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangVSPSGS },
         { "Gather",             /* O*/        "V4",    nullptr,   "%@,S,V,V",       "FIU,S,F,I",     EShLangVSPSGS },
 
+        { "CalculateLevelOfDetail",           "S",     "F",       "%@,S,V",         "FUI,S,F",       EShLangFragmentMask },
+        { "CalculateLevelOfDetailUnclamped",  "S",     "F",       "%@,S,V",         "FUI,S,F",       EShLangFragmentMask },
+
+        { "GetSamplePosition",                "V2",    "F",       "$&2,S",          "FUI,I",         EShLangVSPSGS },
+
         // table of overloads from: https://msdn.microsoft.com/en-us/library/windows/desktop/bb509693(v=vs.85).aspx
         // 
         // UINT Width
@@ -770,8 +781,9 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                                 // In case the repeated arg has its own I/O marker
                                 nthArgOrder = IoParam(s, nthArgOrder);
 
-                                // arrayed textures have one extra coordinate dimension
-                                if (isArrayed && arg == coordArg)
+                                // arrayed textures have one extra coordinate dimension, except for
+                                // the CalculateLevelOfDetail family.
+                                if (isArrayed && arg == coordArg && !NoArrayCoord(intrinsic.name))
                                     argDim0++;
 
                                 // Some texture methods use an addition arg dimension to hold mip
@@ -982,7 +994,10 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("SampleLevel",                 EOpMethodSampleLevel);
     symbolTable.relateToOperator("Load",                        EOpMethodLoad);
     symbolTable.relateToOperator("GetDimensions",               EOpMethodGetDimensions);
+    symbolTable.relateToOperator("GetSamplePosition",           EOpMethodGetSamplePosition);
     symbolTable.relateToOperator("Gather",                      EOpMethodGather);
+    symbolTable.relateToOperator("CalculateLevelOfDetail",      EOpMethodCalculateLevelOfDetail);
+    symbolTable.relateToOperator("CalculateLevelOfDetailUnclamped", EOpMethodCalculateLevelOfDetailUnclamped);
 }
 
 //
