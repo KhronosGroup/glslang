@@ -1585,6 +1585,9 @@ bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
     }
 
     node = intermediate.addAssign(assignOp, node, rightNode, loc);
+    // TODO: Turn this on after tests are fixed for it:
+    //if (node == nullptr)
+    //    parseContext.error(loc, "could not create assignment", "", "");
 
     if (! peekTokenClass(EHTokComma))
         return true;
