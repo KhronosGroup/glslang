@@ -57,14 +57,21 @@ Building
 
 ### Build steps
 
-#### 1) Check-Out External Projects
+#### 1) Check-Out this project 
 
 ```bash
-cd <the directory glslang was cloned to, External will be a subdirectory>
+cd <parent of where you want glslang to be>
+git clone git@github.com:KhronosGroup/glslang.git
+```
+
+#### 2) Check-Out External Projects
+
+```bash
+cd <the directory glslang was cloned to, "External" will be a subdirectory>
 git clone https://github.com/google/googletest.git External/googletest
 ```
 
-#### 2) Configure
+#### 3) Configure
 
 Assume the source directory is `$SOURCE_DIR` and
 the build directory is `$BUILD_DIR`:
@@ -87,7 +94,7 @@ cmake $SOURCE_DIR -DCMAKE_INSTALL_PREFIX=`pwd`/install
 
 The CMake GUI also works for Windows (version 3.4.1 tested).
 
-#### 3) Build and Install
+#### 4) Build and Install
 
 ```bash
 # for Linux:
