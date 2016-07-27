@@ -651,7 +651,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
 
     int size;
     if (qualifier.isUniformOrBuffer()) {
-        if (type.isArray())
+        if (type.isExplicitlySizedArray())
             size = type.getCumulativeArraySize();
         else
             size = 1;
