@@ -223,6 +223,7 @@ float3 PixelShaderFunction3(float3 inF0, float3 inF1, float3 inF2, uint3 inU0, u
     bool3 r041 = isnan(inF0);
     float3 r042 = ldexp(inF0, inF1);
     float3 r039a = lerp(inF0, inF1, inF2);
+    float3 r039b = lerp(inF0, inF1, 0.3); // test vec,vec,scalar lerp
     float r043 = length(inF0);
     float3 r044 = log(inF0);
     float3 r045 = log10(inF0);
