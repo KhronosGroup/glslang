@@ -752,6 +752,150 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to) const
 }
 
 //
+// Given a type, find what operation would fully construct it.
+//
+TOperator TIntermediate::mapTypeToConstructorOp(const TType& type) const
+{
+    TOperator op = EOpNull;
+
+    switch (type.getBasicType()) {
+    case EbtStruct:
+        op = EOpConstructStruct;
+        break;
+    case EbtSampler:
+        if (type.getSampler().combined)
+            op = EOpConstructTextureSampler;
+        break;
+    case EbtFloat:
+        if (type.isMatrix()) {
+            switch (type.getMatrixCols()) {
+            case 2:
+                switch (type.getMatrixRows()) {
+                case 2: op = EOpConstructMat2x2; break;
+                case 3: op = EOpConstructMat2x3; break;
+                case 4: op = EOpConstructMat2x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            case 3:
+                switch (type.getMatrixRows()) {
+                case 2: op = EOpConstructMat3x2; break;
+                case 3: op = EOpConstructMat3x3; break;
+                case 4: op = EOpConstructMat3x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            case 4:
+                switch (type.getMatrixRows()) {
+                case 2: op = EOpConstructMat4x2; break;
+                case 3: op = EOpConstructMat4x3; break;
+                case 4: op = EOpConstructMat4x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            default: break; // some compilers want this
+            }
+        } else {
+            switch(type.getVectorSize()) {
+            case 1: op = EOpConstructFloat; break;
+            case 2: op = EOpConstructVec2;  break;
+            case 3: op = EOpConstructVec3;  break;
+            case 4: op = EOpConstructVec4;  break;
+            default: break; // some compilers want this
+            }
+        }
+        break;
+    case EbtDouble:
+        if (type.getMatrixCols()) {
+            switch (type.getMatrixCols()) {
+            case 2:
+                switch (type.getMatrixRows()) {
+                case 2: op = EOpConstructDMat2x2; break;
+                case 3: op = EOpConstructDMat2x3; break;
+                case 4: op = EOpConstructDMat2x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            case 3:
+                switch (type.getMatrixRows()) {
+                case 2: op = EOpConstructDMat3x2; break;
+                case 3: op = EOpConstructDMat3x3; break;
+                case 4: op = EOpConstructDMat3x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            case 4:
+                switch (type.getMatrixRows()) {
+                case 2: op = EOpConstructDMat4x2; break;
+                case 3: op = EOpConstructDMat4x3; break;
+                case 4: op = EOpConstructDMat4x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            }
+        } else {
+            switch(type.getVectorSize()) {
+            case 1: op = EOpConstructDouble; break;
+            case 2: op = EOpConstructDVec2;  break;
+            case 3: op = EOpConstructDVec3;  break;
+            case 4: op = EOpConstructDVec4;  break;
+            default: break; // some compilers want this
+            }
+        }
+        break;
+    case EbtInt:
+        switch(type.getVectorSize()) {
+        case 1: op = EOpConstructInt;   break;
+        case 2: op = EOpConstructIVec2; break;
+        case 3: op = EOpConstructIVec3; break;
+        case 4: op = EOpConstructIVec4; break;
+        default: break; // some compilers want this
+        }
+        break;
+    case EbtUint:
+        switch(type.getVectorSize()) {
+        case 1: op = EOpConstructUint;  break;
+        case 2: op = EOpConstructUVec2; break;
+        case 3: op = EOpConstructUVec3; break;
+        case 4: op = EOpConstructUVec4; break;
+        default: break; // some compilers want this
+        }
+        break;
+    case EbtInt64:
+        switch(type.getVectorSize()) {
+        case 1: op = EOpConstructInt64;   break;
+        case 2: op = EOpConstructI64Vec2; break;
+        case 3: op = EOpConstructI64Vec3; break;
+        case 4: op = EOpConstructI64Vec4; break;
+        default: break; // some compilers want this
+        }
+        break;
+    case EbtUint64:
+        switch(type.getVectorSize()) {
+        case 1: op = EOpConstructUint64;  break;
+        case 2: op = EOpConstructU64Vec2; break;
+        case 3: op = EOpConstructU64Vec3; break;
+        case 4: op = EOpConstructU64Vec4; break;
+        default: break; // some compilers want this
+        }
+        break;
+    case EbtBool:
+        switch(type.getVectorSize()) {
+        case 1:  op = EOpConstructBool;  break;
+        case 2:  op = EOpConstructBVec2; break;
+        case 3:  op = EOpConstructBVec3; break;
+        case 4:  op = EOpConstructBVec4; break;
+        default: break; // some compilers want this
+        }
+        break;
+    default:
+        break;
+    }
+
+    return op;
+}
+
+//
 // Safe way to combine two nodes into an aggregate.  Works with null pointers,
 // a node that's not a aggregate yet, etc.
 //

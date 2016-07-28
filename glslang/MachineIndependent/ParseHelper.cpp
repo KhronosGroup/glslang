@@ -850,7 +850,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
                 // Swizzle operations propagate specialization-constantness
                 if (base->getQualifier().isSpecConstant())
                     type.getQualifier().makeSpecConstant();
-                return addConstructor(loc, base, type, mapTypeToConstructorOp(type));
+                return addConstructor(loc, base, type);
             }
         }
 
@@ -1092,7 +1092,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
             //
             // It's a constructor, of type 'type'.
             //
-            result = addConstructor(loc, arguments, type, op);
+            result = addConstructor(loc, arguments, type);
             if (result == nullptr)
                 error(loc, "cannot construct with these arguments", type.getCompleteString().c_str(), "");
         }
@@ -1736,7 +1736,7 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
         profileRequires(loc, EEsProfile, 300, nullptr, "arrayed constructor");
     }
 
-    TOperator op = mapTypeToConstructorOp(type);
+    TOperator op = intermediate.mapTypeToConstructorOp(type);
 
     if (op == EOpNull) {
         error(loc, "cannot construct this type", type.getBasicString(), "");
@@ -1748,150 +1748,6 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
     TString empty("");
 
     return new TFunction(&empty, type, op);
-}
-
-//
-// Given a type, find what operation would fully construct it.
-//
-TOperator TParseContext::mapTypeToConstructorOp(const TType& type) const
-{
-    TOperator op = EOpNull;
- 
-    switch (type.getBasicType()) {
-    case EbtStruct:
-        op = EOpConstructStruct;
-        break;
-    case EbtSampler:
-        if (type.getSampler().combined)
-            op = EOpConstructTextureSampler;
-        break;
-    case EbtFloat:
-        if (type.isMatrix()) {
-            switch (type.getMatrixCols()) {
-            case 2:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructMat2x2; break;
-                case 3: op = EOpConstructMat2x3; break;
-                case 4: op = EOpConstructMat2x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            case 3:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructMat3x2; break;
-                case 3: op = EOpConstructMat3x3; break;
-                case 4: op = EOpConstructMat3x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            case 4:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructMat4x2; break;
-                case 3: op = EOpConstructMat4x3; break;
-                case 4: op = EOpConstructMat4x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            default: break; // some compilers want this
-            }
-        } else {
-            switch(type.getVectorSize()) {
-            case 1: op = EOpConstructFloat; break;
-            case 2: op = EOpConstructVec2;  break;
-            case 3: op = EOpConstructVec3;  break;
-            case 4: op = EOpConstructVec4;  break;
-            default: break; // some compilers want this
-            }
-        }
-        break;
-    case EbtDouble:
-        if (type.getMatrixCols()) {
-            switch (type.getMatrixCols()) {
-            case 2:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructDMat2x2; break;
-                case 3: op = EOpConstructDMat2x3; break;
-                case 4: op = EOpConstructDMat2x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            case 3:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructDMat3x2; break;
-                case 3: op = EOpConstructDMat3x3; break;
-                case 4: op = EOpConstructDMat3x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            case 4:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructDMat4x2; break;
-                case 3: op = EOpConstructDMat4x3; break;
-                case 4: op = EOpConstructDMat4x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            }
-        } else {
-            switch(type.getVectorSize()) {
-            case 1: op = EOpConstructDouble; break;
-            case 2: op = EOpConstructDVec2;  break;
-            case 3: op = EOpConstructDVec3;  break;
-            case 4: op = EOpConstructDVec4;  break;
-            default: break; // some compilers want this
-            }
-        }
-        break;
-    case EbtInt:
-        switch(type.getVectorSize()) {
-        case 1: op = EOpConstructInt;   break;
-        case 2: op = EOpConstructIVec2; break;
-        case 3: op = EOpConstructIVec3; break;
-        case 4: op = EOpConstructIVec4; break;
-        default: break; // some compilers want this
-        }
-        break;
-    case EbtUint:
-        switch(type.getVectorSize()) {
-        case 1: op = EOpConstructUint;  break;
-        case 2: op = EOpConstructUVec2; break;
-        case 3: op = EOpConstructUVec3; break;
-        case 4: op = EOpConstructUVec4; break;
-        default: break; // some compilers want this
-        }
-        break;
-    case EbtInt64:
-        switch(type.getVectorSize()) {
-        case 1: op = EOpConstructInt64;   break;
-        case 2: op = EOpConstructI64Vec2; break;
-        case 3: op = EOpConstructI64Vec3; break;
-        case 4: op = EOpConstructI64Vec4; break;
-        default: break; // some compilers want this
-        }
-        break;
-    case EbtUint64:
-        switch(type.getVectorSize()) {
-        case 1: op = EOpConstructUint64;  break;
-        case 2: op = EOpConstructU64Vec2; break;
-        case 3: op = EOpConstructU64Vec3; break;
-        case 4: op = EOpConstructU64Vec4; break;
-        default: break; // some compilers want this
-        }
-        break;
-    case EbtBool:
-        switch(type.getVectorSize()) {
-        case 1:  op = EOpConstructBool;  break;
-        case 2:  op = EOpConstructBVec2; break;
-        case 3:  op = EOpConstructBVec3; break;
-        case 4:  op = EOpConstructBVec4; break;
-        default: break; // some compilers want this
-        }
-        break;
-    default:
-        break;
-    }
-
-    return op;
 }
 
 //
@@ -5257,7 +5113,7 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
                 return nullptr;
         }
 
-        return addConstructor(loc, initList, arrayType, mapTypeToConstructorOp(arrayType));
+        return addConstructor(loc, initList, arrayType);
     } else if (type.isStruct()) {
         if (type.getStruct()->size() != initList->getSequence().size()) {
             error(loc, "wrong number of structure members", "initializer list", "");
@@ -5290,7 +5146,7 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
     }
 
     // now that the subtree is processed, process this node
-    return addConstructor(loc, initList, type, mapTypeToConstructorOp(type));
+    return addConstructor(loc, initList, type);
 }
 
 //
@@ -5299,13 +5155,14 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
 //
 // Returns nullptr for an error or the constructed node (aggregate or typed) for no error.
 //
-TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* node, const TType& type, TOperator op)
+TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* node, const TType& type)
 {
     if (node == nullptr || node->getAsTyped() == nullptr)
         return nullptr;
     rValueErrorCheck(loc, "constructor", node->getAsTyped());
 
     TIntermAggregate* aggrNode = node->getAsAggregate();
+    TOperator op = intermediate.mapTypeToConstructorOp(type);
 
     // Combined texture-sampler constructors are completely semantic checked
     // in constructorTextureSamplerError()

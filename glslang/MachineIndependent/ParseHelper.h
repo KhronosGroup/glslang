@@ -276,7 +276,7 @@ public:
     const TFunction* findFunction400(const TSourceLoc& loc, const TFunction& call, bool& builtIn);
     void declareTypeDefaults(const TSourceLoc&, const TPublicType&);
     TIntermNode* declareVariable(const TSourceLoc&, TString& identifier, const TPublicType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);
-    TIntermTyped* addConstructor(const TSourceLoc&, TIntermNode*, const TType&, TOperator);
+    TIntermTyped* addConstructor(const TSourceLoc&, TIntermNode*, const TType&);
     TIntermTyped* constructAggregate(TIntermNode*, const TType&, int, const TSourceLoc&);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, const TSourceLoc&, bool subset);
     void declareBlock(const TSourceLoc&, TTypeList& typeList, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
@@ -302,7 +302,6 @@ protected:
     void declareArray(const TSourceLoc&, TString& identifier, const TType&, TSymbol*&, bool& newDeclaration);
     TIntermNode* executeInitializer(const TSourceLoc&, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(const TSourceLoc&, const TType&, TIntermTyped* initializer);
-    TOperator mapTypeToConstructorOp(const TType&) const;
     void finalErrorCheck();
     void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,
                        const char* szExtraInfoFormat, TPrefixType prefix,

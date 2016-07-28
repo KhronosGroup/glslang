@@ -189,6 +189,7 @@ public:
     TIntermTyped* addUnaryMath(TOperator, TIntermTyped* child, TSourceLoc);
     TIntermTyped* addBuiltInFunctionCall(const TSourceLoc& line, TOperator, bool unary, TIntermNode*, const TType& returnType);
     bool canImplicitlyPromote(TBasicType from, TBasicType to) const;
+    TOperator mapTypeToConstructorOp(const TType&) const;
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right);
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right, const TSourceLoc&);
     TIntermAggregate* makeAggregate(TIntermNode* node);
