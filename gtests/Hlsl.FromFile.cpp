@@ -141,6 +141,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.samplelevel.basic.dx10.vert", "main"},
         {"hlsl.samplelevel.offset.dx10.frag", "main"},
         {"hlsl.samplelevel.offsetarray.dx10.frag", "main"},
+        {"hlsl.shapeConv.frag", "main"},
         {"hlsl.intrinsics.vert", "VertexShaderFunction"},
         {"hlsl.matType.frag", "PixelShaderFunction"},
         {"hlsl.max.frag", "PixelShaderFunction"},

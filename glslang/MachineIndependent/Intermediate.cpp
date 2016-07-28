@@ -98,6 +98,8 @@ TIntermSymbol* TIntermediate::addSymbol(const TType& type, const TSourceLoc& loc
 //
 // Returns the added node.
 //
+// Returns nullptr if the working conversions and promotions could not be found.
+//
 TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc loc)
 {
     // No operations work on blocks
@@ -161,29 +163,38 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
 //
 // Returns the added node.
 //
+// Returns nullptr if the 'right' type could not be converted to match the 'left' type,
+// or the resulting operation cannot be properly promoted.
+//
 TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc loc)
 {
     // No block assignment
     if (left->getType().getBasicType() == EbtBlock || right->getType().getBasicType() == EbtBlock)
-        return 0;
+        return nullptr;
 
     //
     // Like adding binary math, except the conversion can only go
     // from right to left.
     //
+
+    // convert base types, nullptr return means not possible
+    right = addConversion(op, left->getType(), right);
+    if (right == nullptr)
+        return nullptr;
+
+    // convert shape
+    right = addShapeConversion(op, left->getType(), right);
+
+    // build the node
     TIntermBinary* node = new TIntermBinary(op);
     if (loc.line == 0)
         loc = left->getLoc();
     node->setLoc(loc);
-
-    TIntermTyped* child = addConversion(op, left->getType(), right);
-    if (child == 0)
-        return 0;
-
     node->setLeft(left);
-    node->setRight(child);
+    node->setRight(right);
+
     if (! node->promote())
-        return 0;
+        return nullptr;
 
     node->updatePrecision();
 
@@ -413,6 +424,9 @@ TIntermTyped* TIntermediate::setAggregateOperator(TIntermNode* node, TOperator o
 //
 // Returns a node representing the conversion, which could be the same
 // node passed in if no conversion was needed.
+//
+// Generally, this is focused on basic type conversion, not shape conversion.
+// See addShapeConversion().
 //
 // Return 0 if a conversion can't be done.
 //
@@ -679,6 +693,50 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         newNode->getWritableType().getQualifier().makeSpecConstant();
 
     return newNode;
+}
+
+// Convert the node's shape of type for the given type, as allowed by the
+// operation involved: 'op'.
+//
+// Generally, the AST represents allowed GLSL shapes, so this isn't needed
+// for GLSL.  Bad shapes are caught in conversion or promotion.
+//
+// Return 'node' if no conversion was done. Promotion handles final shape
+// checking.
+//
+TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type, TIntermTyped* node)
+{
+    // some source languages don't do this
+    switch (source) {
+    case EShSourceHlsl:
+        break;
+    case EShSourceGlsl:
+    default:
+        return node;
+    }
+
+    // some operations don't do this
+    switch (op) {
+    case EOpAssign:
+        break;
+    default:
+        return node;
+    }
+
+    // structures and arrays don't change shape, either to or from
+    if (node->getType().isStruct() || node->getType().isArray() ||
+        type.isStruct() || type.isArray())
+        return node;
+
+    // The new node that handles the conversion
+    TIntermTyped* conversionNode = node;
+    TOperator constructorOp = mapTypeToConstructorOp(type);
+
+    // scalar -> smeared -> vector
+    if (type.isVector() && node->getType().isScalar())
+        return setAggregateOperator(node, constructorOp, type, node->getLoc());
+
+    return node;
 }
 
 //

@@ -1605,9 +1605,10 @@ bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
     }
 
     node = intermediate.addAssign(assignOp, node, rightNode, loc);
-    // TODO: Turn this on after tests are fixed for it:
-    //if (node == nullptr)
-    //    parseContext.error(loc, "could not create assignment", "", "");
+    if (node == nullptr) {
+        parseContext.error(loc, "could not create assignment", "", "");
+        return false;
+    }
 
     if (! peekTokenClass(EHTokComma))
         return true;
@@ -1692,6 +1693,10 @@ bool HlslGrammar::acceptBinaryExpression(TIntermTyped*& node, PrecedenceLevel pr
         }
 
         node = intermediate.addBinaryMath(op, node, rightNode, loc);
+        if (node == nullptr) {
+            parseContext.error(loc, "Could not perform requested binary operation", "", "");
+            return false;
+        }
 
         if (! peekTokenClass(EHTokComma))
             return true;
