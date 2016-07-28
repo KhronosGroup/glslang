@@ -110,6 +110,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.load.array.dx10.frag", "main"},
         {"hlsl.load.basic.dx10.frag", "main"},
         {"hlsl.load.basic.dx10.vert", "main"},
+        {"hlsl.load.buffer.dx10.frag", "main"},
         {"hlsl.load.offset.dx10.frag", "main"},
         {"hlsl.load.offsetarray.dx10.frag", "main"},
         {"hlsl.numericsuffixes.frag", "main"},

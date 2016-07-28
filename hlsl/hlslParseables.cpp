@@ -70,7 +70,11 @@ const char* BaseTypeName(const char argOrder, const char* scalarName, const char
 bool IsSamplerType(const char argType)     { return argType == 'S' || argType == 's'; }
 bool IsTextureArrayed(const char argOrder) { return argOrder == '@' || argOrder == '&'; }
 bool IsTextureMS(const char argOrder)      { return argOrder == '$' || argOrder == '&'; }
-bool IsTextureType(const char argOrder)    { return argOrder == '%' || argOrder == '@' || IsTextureMS(argOrder); }
+bool IsBuffer(const char argOrder)         { return argOrder == '*'; }
+bool IsTextureType(const char argOrder)
+{
+    return argOrder == '%' || argOrder == '@' || IsTextureMS(argOrder) || IsBuffer(argOrder);
+}
 
 // Reject certain combinations that are illegal sample methods.  For example,
 // 3D arrays.
@@ -78,6 +82,7 @@ bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim
 {
     const bool isArrayed = IsTextureArrayed(*argOrder);
     const bool isMS      = IsTextureMS(*argOrder);
+    const bool isBuffer  = IsBuffer(*argOrder);
 
     // there are no 3D arrayed textures, or 3D SampleCmp(LevelZero)
     if (dim0 == 3 && (isArrayed || name == "SampleCmp" || name == "SampleCmpLevelZero"))
@@ -112,6 +117,10 @@ bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim
     if (isMS && dim0 != 2)
         return true;
 
+    // Buffer are only 1D
+    if (isBuffer && dim0 != 1)
+        return true;
+
     return false;
 }
 
@@ -127,9 +136,9 @@ int CoordinateArgPos(const glslang::TString& name, bool isTexture)
 }
 
 // Some texture methods use an addition coordinate dimension for the mip
-bool HasMipInCoord(const glslang::TString& name, bool isMS)
+bool HasMipInCoord(const glslang::TString& name, bool isMS, bool isBuffer)
 {
-    return name == "Load" && !isMS;
+    return name == "Load" && !isMS && !isBuffer;
 }
 
 // LOD calculations don't pass the array level in the coordinate.
@@ -197,6 +206,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     const bool isArrayed   = IsTextureArrayed(argOrder[0]);
     const bool isSampler   = IsSamplerType(argType[0]);
     const bool isMS        = IsTextureMS(argOrder[0]);
+    const bool isBuffer    = IsBuffer(argOrder[0]);
 
     char type  = *argType;
 
@@ -219,37 +229,38 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     char order = *argOrder;
 
     if (UseHlslTypes) {
+        // TODO: handle sub-vec4 returns
         switch (type) {
-        case '-': s += "void";                   break;
-        case 'F': s += "float";                  break;
-        case 'D': s += "double";                 break;
-        case 'I': s += "int";                    break;
-        case 'U': s += "uint";                   break;
-        case 'B': s += "bool";                   break;
-        case 'S': s += "sampler";                break;
-        case 's': s += "SamplerComparisonState"; break;
-        case 'T': s += "Texture";                break;
-        case 'i': s += "Texture <int4>";         break;
-        case 'u': s += "Texture <uint4>";        break;
-        default:  s += "UNKNOWN_TYPE";           break;
+        case '-': s += "void";                                            break;
+        case 'F': s += "float";                                           break;
+        case 'D': s += "double";                                          break;
+        case 'I': s += "int";                                             break;
+        case 'U': s += "uint";                                            break;
+        case 'B': s += "bool";                                            break;
+        case 'S': s += "sampler";                                         break;
+        case 's': s += "SamplerComparisonState";                          break;
+        case 'T': s += (isBuffer ? "Buffer" : "Texture");                 break;
+        case 'i': s += (isBuffer ? "Buffer <int4>" : "Texture <int4>");   break;
+        case 'u': s += (isBuffer ? "Buffer <uint4>" : "Texture <uint4>"); break;
+        default:  s += "UNKNOWN_TYPE";                                    break;
         }
     } else {
         switch (type) {
         case '-': s += "void"; break;
-        case 'F': s += BaseTypeName(order, "float",   "vec",     "mat");     break;
-        case 'D': s += BaseTypeName(order, "double",  "dvec",    "dmat");    break;
-        case 'I': s += BaseTypeName(order, "int",     "ivec",    "imat");    break;
-        case 'U': s += BaseTypeName(order, "uint",    "uvec",    "umat");    break;
-        case 'B': s += BaseTypeName(order, "bool",    "bvec",    "bmat");    break;
-        case 'S': s += "sampler";                                            break;
-        case 's': s += "samplerShadow";                                      break;
+        case 'F': s += BaseTypeName(order, "float",  "vec",  "mat");  break;
+        case 'D': s += BaseTypeName(order, "double", "dvec", "dmat"); break;
+        case 'I': s += BaseTypeName(order, "int",    "ivec", "imat"); break;
+        case 'U': s += BaseTypeName(order, "uint",   "uvec", "umat"); break;
+        case 'B': s += BaseTypeName(order, "bool",   "bvec", "bmat"); break;
+        case 'S': s += "sampler";                                     break;
+        case 's': s += "samplerShadow";                               break;
         case 'T': // fall through
         case 'i': // ...
         case 'u': // ...
-            if (type != 'T')
+            if (type != 'T') // create itexture, utexture, etc
                 s += type;
 
-            s += "texture";
+            s += (isBuffer ? "samplerBuffer" : "texture");
             break;
 
         default:  s += "UNKNOWN_TYPE"; break;
@@ -263,7 +274,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
 
     // Add sampler dimensions
     if (isSampler || isTexture) {
-        if (order == 'V' || isTexture) {
+        if ((order == 'V' || isTexture) && !isBuffer) {
             switch (dim0) {
             case 1: s += "1D";                   break;
             case 2: s += (isMS ? "2DMS" : "2D"); break;
@@ -442,6 +453,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     // '%' as first letter of order creates texture of given F/I/U type (texture, itexture, etc)
     // '@' as first letter of order creates arrayed texture of given type
     // '$' / '&' as first letter of order creates 2DMS / 2DMSArray textures
+    // '*' as first letter of order creates buffer object
 
     static const struct {
         const char*   name;      // intrinsic name
@@ -631,7 +643,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "SampleLevel",        /*!O*/        "V4",    nullptr,   "%@,S,V,S",       "FIU,S,F,",      EShLangAll },
         { "SampleLevel",        /* O*/        "V4",    nullptr,   "%@,S,V,S,V",     "FIU,S,F,,I",    EShLangAll },
 
-        { "Load",               /*!O*/        "V4",    nullptr,   "%@,V",           "FIU,I",         EShLangAll },
+        { "Load",               /*!O*/        "V4",    nullptr,   "%@*,V",          "FIU,I",         EShLangAll },
         { "Load",               /* O*/        "V4",    nullptr,   "%@,V,V",         "FIU,I,I",       EShLangAll },
         { "Load", /* +sampleidex*/            "V4",    nullptr,   "$&,V,S",         "FIU,I,I",       EShLangAll },
         { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$&,V,S,V",       "FIU,I,I,I",     EShLangAll },
@@ -725,7 +737,8 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                 const bool isTexture   = IsTextureType(*argOrder);
                 const bool isArrayed   = IsTextureArrayed(*argOrder);
                 const bool isMS        = IsTextureMS(*argOrder);
-                const bool mipInCoord  = HasMipInCoord(intrinsic.name, isMS);
+                const bool isBuffer    = IsBuffer(*argOrder);
+                const bool mipInCoord  = HasMipInCoord(intrinsic.name, isMS, isBuffer);
                 const int fixedVecSize = FixedVecSize(argOrder);
                 const int coordArg     = CoordinateArgPos(intrinsic.name, isTexture);
 

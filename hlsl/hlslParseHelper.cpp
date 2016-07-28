@@ -1154,11 +1154,12 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* coordSwizzle = nullptr;
 
             const bool isMS = argTex->getType().getSampler().isMultiSample();
+            const bool isBuffer = argTex->getType().getSampler().dim == EsdBuffer;
             const TBasicType coordBaseType = argCoord->getType().getBasicType();
 
             // Last component of coordinate is the mip level, for non-MS.  we separate them here:
-            if (isMS) {
-                // MS has no LOD
+            if (isMS || isBuffer) {
+                // MS and Buffer have no LOD
                 coordSwizzle = argCoord;
             } else {
                 // Extract coordinate
@@ -1181,10 +1182,6 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             const TOperator fetchOp = (hasOffset ? EOpTextureFetchOffset : EOpTextureFetch);
             TIntermAggregate* txfetch = new TIntermAggregate(fetchOp);
 
-            const TSamplerDim dim = argTex->getType().getSampler().dim;
-            if (dim == EsdBuffer) // TODO: buffers
-                assert(0);
-
             // Build up the fetch
             txfetch->getSequence().push_back(argTex);
             txfetch->getSequence().push_back(coordSwizzle);
@@ -1193,8 +1190,10 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 // add 2DMS sample index
                 TIntermTyped* argSampleIdx  = argAggregate->getSequence()[2]->getAsTyped();
                 txfetch->getSequence().push_back(argSampleIdx);
+            } else if (isBuffer) {
+                // Nothing else to do for buffers.
             } else {
-                // 2DMS has no LOD, but everything else does.
+                // 2DMS and buffer have no LOD, but everything else does.
                 txfetch->getSequence().push_back(lodComponent);
             }
 
