@@ -67,6 +67,9 @@ using OpenGLSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 using VulkanAstSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 using HlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
 using GlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
+#ifdef AMD_EXTENSIONS
+using CompileVulkanToSpirvTestAMD = GlslangTest<::testing::TestWithParam<std::string>>;
+#endif
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
@@ -137,6 +140,17 @@ TEST_P(GlslIoMap, FromFile)
                                  GetParam().autoMapBindings,
                                  GetParam().flattenUniforms);
 }
+
+#ifdef AMD_EXTENSIONS
+// Compiling GLSL to SPIR-V under Vulkan semantics (AMD extensions enabled).
+// Expected to successfully generate SPIR-V.
+TEST_P(CompileVulkanToSpirvTestAMD, FromFile)
+{
+    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+                            Source::GLSL, Semantics::Vulkan,
+                            Target::Spv);
+}
+#endif
 
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
@@ -324,6 +338,16 @@ INSTANTIATE_TEST_CASE_P(
     })),
     FileNameAsCustomTestSuffix
 );
+
+#ifdef AMD_EXTENSIONS
+INSTANTIATE_TEST_CASE_P(
+    Glsl, CompileVulkanToSpirvTestAMD,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "spv.float16.frag",
+    })),
+    FileNameAsCustomTestSuffix
+);
+#endif
 // clang-format on
 
 }  // anonymous namespace

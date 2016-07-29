@@ -119,6 +119,22 @@ enum TOperator {
     EOpConvFloatToUint64,
     EOpConvDoubleToUint64,
     EOpConvInt64ToUint64,
+#ifdef AMD_EXTENSIONS
+    EOpConvBoolToFloat16,
+    EOpConvIntToFloat16,
+    EOpConvUintToFloat16,
+    EOpConvFloatToFloat16,
+    EOpConvDoubleToFloat16,
+    EOpConvInt64ToFloat16,
+    EOpConvUint64ToFloat16,
+    EOpConvFloat16ToBool,
+    EOpConvFloat16ToInt,
+    EOpConvFloat16ToUint,
+    EOpConvFloat16ToFloat,
+    EOpConvFloat16ToDouble,
+    EOpConvFloat16ToInt64,
+    EOpConvFloat16ToUint64,
+#endif
 
     //
     // binary operations
@@ -236,6 +252,10 @@ enum TOperator {
     EOpUnpackInt2x32,
     EOpPackUint2x32,
     EOpUnpackUint2x32,
+#ifdef AMD_EXTENSIONS
+    EOpPackFloat2x16,
+    EOpUnpackFloat2x16,
+#endif
 
     EOpLength,
     EOpDistance,
@@ -396,6 +416,21 @@ enum TOperator {
     EOpConstructDMat4x2,
     EOpConstructDMat4x3,
     EOpConstructDMat4x4,
+#ifdef AMD_EXTENSIONS
+    EOpConstructFloat16,
+    EOpConstructF16Vec2,
+    EOpConstructF16Vec3,
+    EOpConstructF16Vec4,
+    EOpConstructF16Mat2x2,
+    EOpConstructF16Mat2x3,
+    EOpConstructF16Mat2x4,
+    EOpConstructF16Mat3x2,
+    EOpConstructF16Mat3x3,
+    EOpConstructF16Mat3x4,
+    EOpConstructF16Mat4x2,
+    EOpConstructF16Mat4x3,
+    EOpConstructF16Mat4x4,
+#endif
     EOpConstructStruct,
     EOpConstructTextureSampler,
     EOpConstructGuardEnd,
