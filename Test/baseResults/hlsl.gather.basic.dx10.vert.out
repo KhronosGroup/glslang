@@ -10,7 +10,7 @@ Shader version: 450
 0:33          textureGather (global 4-component vector of float)
 0:33            Construct combined texture-sampler (temp sampler2D)
 0:33              'g_tTex2df4' (uniform texture2D)
-0:33              'g_sSamp' (uniform sampler)
+0:33              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.100000
 0:?               0.200000
@@ -20,7 +20,7 @@ Shader version: 450
 0:34          textureGather (global 4-component vector of int)
 0:34            Construct combined texture-sampler (temp isampler2D)
 0:34              'g_tTex2di4' (uniform itexture2D)
-0:34              'g_sSamp' (uniform sampler)
+0:34              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.300000
 0:?               0.400000
@@ -30,7 +30,7 @@ Shader version: 450
 0:35          textureGather (global 4-component vector of uint)
 0:35            Construct combined texture-sampler (temp usampler2D)
 0:35              'g_tTex2du4' (uniform utexture2D)
-0:35              'g_sSamp' (uniform sampler)
+0:35              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.500000
 0:?               0.600000
@@ -40,7 +40,7 @@ Shader version: 450
 0:39          textureGather (global 4-component vector of float)
 0:39            Construct combined texture-sampler (temp samplerCube)
 0:39              'g_tTexcdf4' (uniform textureCube)
-0:39              'g_sSamp' (uniform sampler)
+0:39              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.100000
 0:?               0.200000
@@ -51,7 +51,7 @@ Shader version: 450
 0:40          textureGather (global 4-component vector of int)
 0:40            Construct combined texture-sampler (temp isamplerCube)
 0:40              'g_tTexcdi4' (uniform itextureCube)
-0:40              'g_sSamp' (uniform sampler)
+0:40              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.400000
 0:?               0.500000
@@ -62,7 +62,7 @@ Shader version: 450
 0:41          textureGather (global 4-component vector of uint)
 0:41            Construct combined texture-sampler (temp usamplerCube)
 0:41              'g_tTexcdu4' (uniform utextureCube)
-0:41              'g_sSamp' (uniform sampler)
+0:41              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.700000
 0:?               0.800000
@@ -80,10 +80,10 @@ Shader version: 450
 0:45      Branch: Return with expression
 0:45        'vsout' (temp structure{temp 4-component vector of float FragCoord Pos})
 0:?   Linker Objects
-0:?     'g_sSamp' (uniform sampler)
+0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?     'g_sSamp2d' (uniform sampler)
-0:?     'g_tTex1df4a' (uniform texture1D)
-0:?     'g_tTex1df4' (uniform texture1D)
+0:?     'g_tTex1df4a' (layout(binding=1 ) uniform texture1D)
+0:?     'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:?     'g_tTex1di4' (uniform itexture1D)
 0:?     'g_tTex1du4' (uniform utexture1D)
 0:?     'g_tTex2df4' (uniform texture2D)
@@ -111,7 +111,7 @@ Shader version: 450
 0:33          textureGather (global 4-component vector of float)
 0:33            Construct combined texture-sampler (temp sampler2D)
 0:33              'g_tTex2df4' (uniform texture2D)
-0:33              'g_sSamp' (uniform sampler)
+0:33              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.100000
 0:?               0.200000
@@ -121,7 +121,7 @@ Shader version: 450
 0:34          textureGather (global 4-component vector of int)
 0:34            Construct combined texture-sampler (temp isampler2D)
 0:34              'g_tTex2di4' (uniform itexture2D)
-0:34              'g_sSamp' (uniform sampler)
+0:34              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.300000
 0:?               0.400000
@@ -131,7 +131,7 @@ Shader version: 450
 0:35          textureGather (global 4-component vector of uint)
 0:35            Construct combined texture-sampler (temp usampler2D)
 0:35              'g_tTex2du4' (uniform utexture2D)
-0:35              'g_sSamp' (uniform sampler)
+0:35              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.500000
 0:?               0.600000
@@ -141,7 +141,7 @@ Shader version: 450
 0:39          textureGather (global 4-component vector of float)
 0:39            Construct combined texture-sampler (temp samplerCube)
 0:39              'g_tTexcdf4' (uniform textureCube)
-0:39              'g_sSamp' (uniform sampler)
+0:39              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.100000
 0:?               0.200000
@@ -152,7 +152,7 @@ Shader version: 450
 0:40          textureGather (global 4-component vector of int)
 0:40            Construct combined texture-sampler (temp isamplerCube)
 0:40              'g_tTexcdi4' (uniform itextureCube)
-0:40              'g_sSamp' (uniform sampler)
+0:40              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.400000
 0:?               0.500000
@@ -163,7 +163,7 @@ Shader version: 450
 0:41          textureGather (global 4-component vector of uint)
 0:41            Construct combined texture-sampler (temp usamplerCube)
 0:41              'g_tTexcdu4' (uniform utextureCube)
-0:41              'g_sSamp' (uniform sampler)
+0:41              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.700000
 0:?               0.800000
@@ -181,10 +181,10 @@ Shader version: 450
 0:45      Branch: Return with expression
 0:45        'vsout' (temp structure{temp 4-component vector of float FragCoord Pos})
 0:?   Linker Objects
-0:?     'g_sSamp' (uniform sampler)
+0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?     'g_sSamp2d' (uniform sampler)
-0:?     'g_tTex1df4a' (uniform texture1D)
-0:?     'g_tTex1df4' (uniform texture1D)
+0:?     'g_tTex1df4a' (layout(binding=1 ) uniform texture1D)
+0:?     'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:?     'g_tTex1di4' (uniform itexture1D)
 0:?     'g_tTex1du4' (uniform utexture1D)
 0:?     'g_tTex2df4' (uniform texture2D)
@@ -234,6 +234,7 @@ Shader version: 450
                               Name 117  "g_tTex3du4"
                               Decorate 12(g_tTex2df4) DescriptorSet 0
                               Decorate 16(g_sSamp) DescriptorSet 0
+                              Decorate 16(g_sSamp) Binding 0
                               Decorate 32(g_tTex2di4) DescriptorSet 0
                               Decorate 47(g_tTex2du4) DescriptorSet 0
                               Decorate 59(g_tTexcdf4) DescriptorSet 0
@@ -242,7 +243,9 @@ Shader version: 450
                               MemberDecorate 90(VS_OUTPUT) 0 BuiltIn FragCoord
                               Decorate 98(g_sSamp2d) DescriptorSet 0
                               Decorate 101(g_tTex1df4a) DescriptorSet 0
+                              Decorate 101(g_tTex1df4a) Binding 1
                               Decorate 102(g_tTex1df4) DescriptorSet 0
+                              Decorate 102(g_tTex1df4) Binding 0
                               Decorate 105(g_tTex1di4) DescriptorSet 0
                               Decorate 108(g_tTex1du4) DescriptorSet 0
                               Decorate 111(g_tTex3df4) DescriptorSet 0

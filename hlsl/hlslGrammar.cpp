@@ -2521,10 +2521,10 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 }
 
 // post_decls
-//      : COLON semantic    // optional
-//        COLON PACKOFFSET LEFT_PAREN ... RIGHT_PAREN  // optional
-//        COLON REGISTER    // optional
-//        annotations       // optional
+//      : COLON semantic                                                      // optional
+//        COLON PACKOFFSET LEFT_PAREN c[Subcomponent][.component] RIGHT_PAREN // optional
+//        COLON REGISTER LEFT_PAREN [shader_profile,] Type# RIGHT_PAREN       // optional
+//        annotations                                                         // optional
 //
 void HlslGrammar::acceptPostDecls(TType& type)
 {
@@ -2533,6 +2533,7 @@ void HlslGrammar::acceptPostDecls(TType& type)
         if (acceptTokenClass(EHTokColon)) {
             HlslToken idToken;
             if (acceptTokenClass(EHTokPackOffset)) {
+                // PACKOFFSET LEFT_PAREN c[Subcomponent][.component] RIGHT_PAREN
                 if (! acceptTokenClass(EHTokLeftParen)) {
                     expected("(");
                     return;
@@ -2558,23 +2559,31 @@ void HlslGrammar::acceptPostDecls(TType& type)
                 expected("semantic or packoffset or register");
                 return;
             } else if (*idToken.string == "register") {
+                // REGISTER LEFT_PAREN [shader_profile,] Type# RIGHT_PAREN
                 if (! acceptTokenClass(EHTokLeftParen)) {
                     expected("(");
                     return;
                 }
-                acceptTokenClass(EHTokIdentifier);
-                acceptTokenClass(EHTokComma);
-                acceptTokenClass(EHTokIdentifier);
-                acceptTokenClass(EHTokLeftBracket);
-                if (peekTokenClass(EHTokIntConstant))
-                    advanceToken();
-                acceptTokenClass(EHTokRightBracket);
+                HlslToken registerDesc;
+                if (! acceptIdentifier(registerDesc)) {
+                    expected("register number description");
+                    return;
+                }
+                HlslToken profile;
+                if (acceptTokenClass(EHTokComma)) {
+                    // then we didn't really see the registerDesc yet, it was
+                    // actually the profile
+                    profile = registerDesc;
+                    if (! acceptIdentifier(registerDesc)) {
+                        expected("register number description");
+                        return;
+                    }
+                }
                 if (! acceptTokenClass(EHTokRightParen)) {
                     expected(")");
                     break;
                 }
-                // TODO: process the register information
-                // b2 means buffer 2
+                parseContext.handleRegister(registerDesc.loc, type, profile.string, *registerDesc.string);
             } else {
                 // semantic, in idToken.string
                 parseContext.handleSemantic(type, *idToken.string);

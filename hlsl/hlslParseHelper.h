@@ -96,6 +96,7 @@ public:
     TFunction* handleConstructorCall(const TSourceLoc&, const TType&);
     void handleSemantic(TType& type, const TString& semantic);
     void handlePackOffset(const TSourceLoc&, TType& type, const glslang::TString& location, const glslang::TString* component);
+    void handleRegister(const TSourceLoc&, TType& type, const glslang::TString* profile, const glslang::TString& desc);
 
     TIntermAggregate* handleSamplerTextureCombine(const TSourceLoc& loc, TIntermTyped* argTex, TIntermTyped* argSampler);
 

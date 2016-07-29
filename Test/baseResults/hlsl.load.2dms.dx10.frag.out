@@ -91,7 +91,7 @@ gl_FragCoord origin is upper left
 0:54      Branch: Return with expression
 0:54        'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:?   Linker Objects
-0:?     'g_sSamp' (uniform sampler)
+0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?     'g_tTex2dmsf4' (uniform texture2DMS)
 0:?     'g_tTex2dmsi4' (uniform itexture2DMS)
 0:?     'g_tTex2dmsu4' (uniform utexture2DMS)
@@ -203,7 +203,7 @@ gl_FragCoord origin is upper left
 0:54      Branch: Return with expression
 0:54        'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:?   Linker Objects
-0:?     'g_sSamp' (uniform sampler)
+0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?     'g_tTex2dmsf4' (uniform texture2DMS)
 0:?     'g_tTex2dmsi4' (uniform itexture2DMS)
 0:?     'g_tTex2dmsu4' (uniform utexture2DMS)
@@ -259,6 +259,7 @@ gl_FragCoord origin is upper left
                               Decorate 64(g_tTex2dmsu4a) DescriptorSet 0
                               MemberDecorate 80(PS_OUTPUT) 1 BuiltIn FragDepth
                               Decorate 95(g_sSamp) DescriptorSet 0
+                              Decorate 95(g_sSamp) Binding 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

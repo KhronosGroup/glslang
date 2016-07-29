@@ -11,7 +11,7 @@ gl_FragCoord origin is upper left
 0:29          textureGather (global 4-component vector of float)
 0:29            Construct combined texture-sampler (temp sampler2DArray)
 0:29              'g_tTex2df4a' (uniform texture2DArray)
-0:29              'g_sSamp' (uniform sampler)
+0:29              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.100000
 0:?               0.200000
@@ -22,7 +22,7 @@ gl_FragCoord origin is upper left
 0:30          textureGather (global 4-component vector of int)
 0:30            Construct combined texture-sampler (temp isampler2DArray)
 0:30              'g_tTex2di4a' (uniform itexture2DArray)
-0:30              'g_sSamp' (uniform sampler)
+0:30              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.300000
 0:?               0.400000
@@ -33,7 +33,7 @@ gl_FragCoord origin is upper left
 0:31          textureGather (global 4-component vector of uint)
 0:31            Construct combined texture-sampler (temp usampler2DArray)
 0:31              'g_tTex2du4a' (uniform utexture2DArray)
-0:31              'g_sSamp' (uniform sampler)
+0:31              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.500000
 0:?               0.600000
@@ -44,7 +44,7 @@ gl_FragCoord origin is upper left
 0:35          textureGather (global 4-component vector of float)
 0:35            Construct combined texture-sampler (temp samplerCubeArray)
 0:35              'g_tTexcdf4a' (uniform textureCubeArray)
-0:35              'g_sSamp' (uniform sampler)
+0:35              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.100000
 0:?               0.200000
@@ -56,7 +56,7 @@ gl_FragCoord origin is upper left
 0:36          textureGather (global 4-component vector of int)
 0:36            Construct combined texture-sampler (temp isamplerCubeArray)
 0:36              'g_tTexcdi4a' (uniform itextureCubeArray)
-0:36              'g_sSamp' (uniform sampler)
+0:36              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.400000
 0:?               0.500000
@@ -68,7 +68,7 @@ gl_FragCoord origin is upper left
 0:37          textureGather (global 4-component vector of uint)
 0:37            Construct combined texture-sampler (temp usamplerCubeArray)
 0:37              'g_tTexcdu4a' (uniform utextureCubeArray)
-0:37              'g_sSamp' (uniform sampler)
+0:37              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.700000
 0:?               0.800000
@@ -94,9 +94,9 @@ gl_FragCoord origin is upper left
 0:42      Branch: Return with expression
 0:42        'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:?   Linker Objects
-0:?     'g_sSamp' (uniform sampler)
-0:?     'g_tTex1df4a' (uniform texture1DArray)
-0:?     'g_tTex1df4' (uniform texture1DArray)
+0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
+0:?     'g_tTex1df4a' (layout(binding=1 ) uniform texture1DArray)
+0:?     'g_tTex1df4' (layout(binding=0 ) uniform texture1DArray)
 0:?     'g_tTex1di4a' (uniform itexture1DArray)
 0:?     'g_tTex1du4a' (uniform utexture1DArray)
 0:?     'g_tTex2df4a' (uniform texture2DArray)
@@ -122,7 +122,7 @@ gl_FragCoord origin is upper left
 0:29          textureGather (global 4-component vector of float)
 0:29            Construct combined texture-sampler (temp sampler2DArray)
 0:29              'g_tTex2df4a' (uniform texture2DArray)
-0:29              'g_sSamp' (uniform sampler)
+0:29              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.100000
 0:?               0.200000
@@ -133,7 +133,7 @@ gl_FragCoord origin is upper left
 0:30          textureGather (global 4-component vector of int)
 0:30            Construct combined texture-sampler (temp isampler2DArray)
 0:30              'g_tTex2di4a' (uniform itexture2DArray)
-0:30              'g_sSamp' (uniform sampler)
+0:30              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.300000
 0:?               0.400000
@@ -144,7 +144,7 @@ gl_FragCoord origin is upper left
 0:31          textureGather (global 4-component vector of uint)
 0:31            Construct combined texture-sampler (temp usampler2DArray)
 0:31              'g_tTex2du4a' (uniform utexture2DArray)
-0:31              'g_sSamp' (uniform sampler)
+0:31              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.500000
 0:?               0.600000
@@ -155,7 +155,7 @@ gl_FragCoord origin is upper left
 0:35          textureGather (global 4-component vector of float)
 0:35            Construct combined texture-sampler (temp samplerCubeArray)
 0:35              'g_tTexcdf4a' (uniform textureCubeArray)
-0:35              'g_sSamp' (uniform sampler)
+0:35              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.100000
 0:?               0.200000
@@ -167,7 +167,7 @@ gl_FragCoord origin is upper left
 0:36          textureGather (global 4-component vector of int)
 0:36            Construct combined texture-sampler (temp isamplerCubeArray)
 0:36              'g_tTexcdi4a' (uniform itextureCubeArray)
-0:36              'g_sSamp' (uniform sampler)
+0:36              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.400000
 0:?               0.500000
@@ -179,7 +179,7 @@ gl_FragCoord origin is upper left
 0:37          textureGather (global 4-component vector of uint)
 0:37            Construct combined texture-sampler (temp usamplerCubeArray)
 0:37              'g_tTexcdu4a' (uniform utextureCubeArray)
-0:37              'g_sSamp' (uniform sampler)
+0:37              'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?             Constant:
 0:?               0.700000
 0:?               0.800000
@@ -205,9 +205,9 @@ gl_FragCoord origin is upper left
 0:42      Branch: Return with expression
 0:42        'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:?   Linker Objects
-0:?     'g_sSamp' (uniform sampler)
-0:?     'g_tTex1df4a' (uniform texture1DArray)
-0:?     'g_tTex1df4' (uniform texture1DArray)
+0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
+0:?     'g_tTex1df4a' (layout(binding=1 ) uniform texture1DArray)
+0:?     'g_tTex1df4' (layout(binding=0 ) uniform texture1DArray)
 0:?     'g_tTex1di4a' (uniform itexture1DArray)
 0:?     'g_tTex1du4a' (uniform utexture1DArray)
 0:?     'g_tTex2df4a' (uniform texture2DArray)
@@ -253,6 +253,7 @@ gl_FragCoord origin is upper left
                               Name 109  "g_tTex1du4a"
                               Decorate 12(g_tTex2df4a) DescriptorSet 0
                               Decorate 16(g_sSamp) DescriptorSet 0
+                              Decorate 16(g_sSamp) Binding 0
                               Decorate 33(g_tTex2di4a) DescriptorSet 0
                               Decorate 48(g_tTex2du4a) DescriptorSet 0
                               Decorate 60(g_tTexcdf4a) DescriptorSet 0
@@ -260,7 +261,9 @@ gl_FragCoord origin is upper left
                               Decorate 80(g_tTexcdu4a) DescriptorSet 0
                               MemberDecorate 90(PS_OUTPUT) 1 BuiltIn FragDepth
                               Decorate 102(g_tTex1df4a) DescriptorSet 0
+                              Decorate 102(g_tTex1df4a) Binding 1
                               Decorate 103(g_tTex1df4) DescriptorSet 0
+                              Decorate 103(g_tTex1df4) Binding 0
                               Decorate 106(g_tTex1di4a) DescriptorSet 0
                               Decorate 109(g_tTex1du4a) DescriptorSet 0
                2:             TypeVoid

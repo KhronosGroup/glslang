@@ -2135,7 +2135,7 @@ void HlslParseContext::handleSemantic(TType& type, const TString& semantic)
 }
 
 //
-// Handle seeing something like ": packoffset( c[Subcomponent][.component] )"
+// Handle seeing something like "PACKOFFSET LEFT_PAREN c[Subcomponent][.component] RIGHT_PAREN"
 //
 // 'location' has the "c[Subcomponent]" part.
 // 'component' points to the "component" part, or nullptr if not present.
@@ -2155,7 +2155,7 @@ void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TType& type, cons
     }
 
     type.getQualifier().layoutOffset = 16 * atoi(location.substr(1, location.size()).c_str());
-    if (component) {
+    if (component != nullptr) {
         int componentOffset = 0;
         switch ((*component)[0]) {
         case 'x': componentOffset =  0; break;
@@ -2171,6 +2171,41 @@ void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TType& type, cons
             return;
         }
         type.getQualifier().layoutOffset += componentOffset;
+    }
+}
+
+//
+// Handle seeing something like "REGISTER LEFT_PAREN [shader_profile,] Type# RIGHT_PAREN"
+//
+// 'profile' points to the shader_profile part, or nullptr if not present.
+// 'desc' is the type# part.
+//
+void HlslParseContext::handleRegister(const TSourceLoc& loc, TType& type, const glslang::TString* profile,
+                                                                          const glslang::TString& desc)
+{
+    if (profile != nullptr)
+        warn(loc, "ignoring shader_profile", "register", "");
+
+    if (desc.size() < 2) {
+        error(loc, "expected register type and number", "register", "");
+        return;
+    }
+
+    if (! isdigit(desc[1])) {
+        error(loc, "expected register number after register type", "register", "");
+        return;
+    }
+
+    switch (desc[0]) {
+    case 'b':
+    case 't':
+    case 'c':
+    case 's':
+        type.getQualifier().layoutBinding = atoi(desc.substr(1, desc.size()).c_str());
+        break;
+    default:
+        warn(loc, "ignoring unrecognized register type", "register", "%c", desc[0]);
+        break;
     }
 }
 
