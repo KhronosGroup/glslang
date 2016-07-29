@@ -11,38 +11,38 @@ gl_FragCoord origin is upper left
 0:10        add (temp 4-component vector of float)
 0:10          add (temp 4-component vector of float)
 0:10            add (temp 4-component vector of float)
-0:10              direct index (temp 4-component vector of float)
-0:10                'a' (global 4-element array of 4-component vector of float)
-0:10                Constant:
-0:10                  1 (const int)
-0:10              indirect index (temp 4-component vector of float)
-0:10                'a' (global 4-element array of 4-component vector of float)
-0:10                'i' (in int)
-0:10            add (temp 4-component vector of float)
-0:10              direct index (temp 4-component vector of float)
-0:10                'input' (in 3-element array of 4-component vector of float)
-0:10                Constant:
-0:10                  2 (const int)
-0:10              indirect index (temp 4-component vector of float)
-0:10                'input' (in 3-element array of 4-component vector of float)
-0:10                'i' (in int)
-0:10          add (temp 4-component vector of float)
-0:10            add (temp 4-component vector of float)
+0:10              add (temp 4-component vector of float)
+0:10                add (temp 4-component vector of float)
+0:10                  add (temp 4-component vector of float)
+0:10                    direct index (temp 4-component vector of float)
+0:10                      'a' (global 4-element array of 4-component vector of float)
+0:10                      Constant:
+0:10                        1 (const int)
+0:10                    indirect index (temp 4-component vector of float)
+0:10                      'a' (global 4-element array of 4-component vector of float)
+0:10                      'i' (in int)
+0:10                  direct index (temp 4-component vector of float)
+0:10                    'input' (in 3-element array of 4-component vector of float)
+0:10                    Constant:
+0:10                      2 (const int)
+0:10                indirect index (temp 4-component vector of float)
+0:10                  'input' (in 3-element array of 4-component vector of float)
+0:10                  'i' (in int)
 0:10              direct index (temp 4-component vector of float)
 0:10                'b' (temp 10-element array of 4-component vector of float)
 0:10                Constant:
 0:10                  5 (const int)
-0:10              indirect index (temp 4-component vector of float)
-0:10                'b' (temp 10-element array of 4-component vector of float)
-0:10                'i' (in int)
 0:10            indirect index (temp 4-component vector of float)
-0:10              m: direct index for structure (temp 7-element array of 4-component vector of float)
-0:10                indirect index (temp structure{temp 7-element array of 4-component vector of float m})
-0:10                  's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
-0:10                  'i' (in int)
-0:10                Constant:
-0:10                  0 (const int)
+0:10              'b' (temp 10-element array of 4-component vector of float)
 0:10              'i' (in int)
+0:10          indirect index (temp 4-component vector of float)
+0:10            m: direct index for structure (temp 7-element array of 4-component vector of float)
+0:10              indirect index (temp structure{temp 7-element array of 4-component vector of float m})
+0:10                's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
+0:10                'i' (in int)
+0:10              Constant:
+0:10                0 (const int)
+0:10            'i' (in int)
 0:?   Linker Objects
 0:?     'a' (global 4-element array of 4-component vector of float)
 0:?     's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
@@ -63,38 +63,38 @@ gl_FragCoord origin is upper left
 0:10        add (temp 4-component vector of float)
 0:10          add (temp 4-component vector of float)
 0:10            add (temp 4-component vector of float)
-0:10              direct index (temp 4-component vector of float)
-0:10                'a' (global 4-element array of 4-component vector of float)
-0:10                Constant:
-0:10                  1 (const int)
-0:10              indirect index (temp 4-component vector of float)
-0:10                'a' (global 4-element array of 4-component vector of float)
-0:10                'i' (in int)
-0:10            add (temp 4-component vector of float)
-0:10              direct index (temp 4-component vector of float)
-0:10                'input' (in 3-element array of 4-component vector of float)
-0:10                Constant:
-0:10                  2 (const int)
-0:10              indirect index (temp 4-component vector of float)
-0:10                'input' (in 3-element array of 4-component vector of float)
-0:10                'i' (in int)
-0:10          add (temp 4-component vector of float)
-0:10            add (temp 4-component vector of float)
+0:10              add (temp 4-component vector of float)
+0:10                add (temp 4-component vector of float)
+0:10                  add (temp 4-component vector of float)
+0:10                    direct index (temp 4-component vector of float)
+0:10                      'a' (global 4-element array of 4-component vector of float)
+0:10                      Constant:
+0:10                        1 (const int)
+0:10                    indirect index (temp 4-component vector of float)
+0:10                      'a' (global 4-element array of 4-component vector of float)
+0:10                      'i' (in int)
+0:10                  direct index (temp 4-component vector of float)
+0:10                    'input' (in 3-element array of 4-component vector of float)
+0:10                    Constant:
+0:10                      2 (const int)
+0:10                indirect index (temp 4-component vector of float)
+0:10                  'input' (in 3-element array of 4-component vector of float)
+0:10                  'i' (in int)
 0:10              direct index (temp 4-component vector of float)
 0:10                'b' (temp 10-element array of 4-component vector of float)
 0:10                Constant:
 0:10                  5 (const int)
-0:10              indirect index (temp 4-component vector of float)
-0:10                'b' (temp 10-element array of 4-component vector of float)
-0:10                'i' (in int)
 0:10            indirect index (temp 4-component vector of float)
-0:10              m: direct index for structure (temp 7-element array of 4-component vector of float)
-0:10                indirect index (temp structure{temp 7-element array of 4-component vector of float m})
-0:10                  's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
-0:10                  'i' (in int)
-0:10                Constant:
-0:10                  0 (const int)
+0:10              'b' (temp 10-element array of 4-component vector of float)
 0:10              'i' (in int)
+0:10          indirect index (temp 4-component vector of float)
+0:10            m: direct index for structure (temp 7-element array of 4-component vector of float)
+0:10              indirect index (temp structure{temp 7-element array of 4-component vector of float m})
+0:10                's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
+0:10                'i' (in int)
+0:10              Constant:
+0:10                0 (const int)
+0:10            'i' (in int)
 0:?   Linker Objects
 0:?     'a' (global 4-element array of 4-component vector of float)
 0:?     's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
@@ -114,9 +114,9 @@ gl_FragCoord origin is upper left
                               Name 19  "i"
                               Name 27  "input"
                               Name 40  "b"
-                              Name 51  ""
-                              MemberName 51 0  "m"
-                              Name 55  "s"
+                              Name 52  ""
+                              MemberName 52 0  "m"
+                              Name 56  "s"
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -142,14 +142,14 @@ gl_FragCoord origin is upper left
               39:             TypePointer Function 38
               41:     13(int) Constant 5
               42:             TypePointer Function 7(fvec4)
-              49:      8(int) Constant 7
-              50:             TypeArray 7(fvec4) 49
-              51:             TypeStruct 50
-              52:      8(int) Constant 11
-              53:             TypeArray 51(struct) 52
-              54:             TypePointer Private 53
-           55(s):     54(ptr) Variable Private
-              57:     13(int) Constant 0
+              50:      8(int) Constant 7
+              51:             TypeArray 7(fvec4) 50
+              52:             TypeStruct 51
+              53:      8(int) Constant 11
+              54:             TypeArray 52(struct) 53
+              55:             TypePointer Private 54
+           56(s):     55(ptr) Variable Private
+              58:     13(int) Constant 0
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
            40(b):     39(ptr) Variable Function
@@ -161,22 +161,22 @@ gl_FragCoord origin is upper left
               23:    7(fvec4) FAdd 17 22
               30:     29(ptr) AccessChain 27(input) 28
               31:    7(fvec4) Load 30
-              32:     13(int) Load 19(i)
-              33:     29(ptr) AccessChain 27(input) 32
-              34:    7(fvec4) Load 33
-              35:    7(fvec4) FAdd 31 34
-              36:    7(fvec4) FAdd 23 35
+              32:    7(fvec4) FAdd 23 31
+              33:     13(int) Load 19(i)
+              34:     29(ptr) AccessChain 27(input) 33
+              35:    7(fvec4) Load 34
+              36:    7(fvec4) FAdd 32 35
               43:     42(ptr) AccessChain 40(b) 41
               44:    7(fvec4) Load 43
-              45:     13(int) Load 19(i)
-              46:     42(ptr) AccessChain 40(b) 45
-              47:    7(fvec4) Load 46
-              48:    7(fvec4) FAdd 44 47
-              56:     13(int) Load 19(i)
-              58:     13(int) Load 19(i)
-              59:     15(ptr) AccessChain 55(s) 56 57 58
-              60:    7(fvec4) Load 59
-              61:    7(fvec4) FAdd 48 60
-              62:    7(fvec4) FAdd 36 61
+              45:    7(fvec4) FAdd 36 44
+              46:     13(int) Load 19(i)
+              47:     42(ptr) AccessChain 40(b) 46
+              48:    7(fvec4) Load 47
+              49:    7(fvec4) FAdd 45 48
+              57:     13(int) Load 19(i)
+              59:     13(int) Load 19(i)
+              60:     15(ptr) AccessChain 56(s) 57 58 59
+              61:    7(fvec4) Load 60
+              62:    7(fvec4) FAdd 49 61
                               ReturnValue 62
                               FunctionEnd

@@ -1675,12 +1675,12 @@ bool HlslGrammar::acceptBinaryExpression(TIntermTyped*& node, PrecedenceLevel pr
     if (! acceptBinaryExpression(node, (PrecedenceLevel)(precedenceLevel + 1)))
         return false;
 
-    TOperator op = HlslOpMap::binary(peek());
-    PrecedenceLevel tokenLevel = HlslOpMap::precedenceLevel(op);
-    if (tokenLevel < precedenceLevel)
-        return true;
-
     do {
+        TOperator op = HlslOpMap::binary(peek());
+        PrecedenceLevel tokenLevel = HlslOpMap::precedenceLevel(op);
+        if (tokenLevel < precedenceLevel)
+            return true;
+
         // ... op
         TSourceLoc loc = token.loc;
         advanceToken();
@@ -1697,9 +1697,6 @@ bool HlslGrammar::acceptBinaryExpression(TIntermTyped*& node, PrecedenceLevel pr
             parseContext.error(loc, "Could not perform requested binary operation", "", "");
             return false;
         }
-
-        if (! peekTokenClass(EHTokComma))
-            return true;
     } while (true);
 }
 

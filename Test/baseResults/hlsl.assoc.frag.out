@@ -23,11 +23,11 @@ gl_FragCoord origin is upper left
 0:10        add (temp 4-component vector of float)
 0:10          add (temp 4-component vector of float)
 0:10            add (temp 4-component vector of float)
-0:10              'a1' (in 4-component vector of float)
-0:10              'a2' (in 4-component vector of float)
-0:10            add (temp 4-component vector of float)
+0:10              add (temp 4-component vector of float)
+0:10                'a1' (in 4-component vector of float)
+0:10                'a2' (in 4-component vector of float)
 0:10              'a3' (in 4-component vector of float)
-0:10              'a4' (in 4-component vector of float)
+0:10            'a4' (in 4-component vector of float)
 0:10          'a5' (in 4-component vector of float)
 0:?   Linker Objects
 
@@ -59,11 +59,11 @@ gl_FragCoord origin is upper left
 0:10        add (temp 4-component vector of float)
 0:10          add (temp 4-component vector of float)
 0:10            add (temp 4-component vector of float)
-0:10              'a1' (in 4-component vector of float)
-0:10              'a2' (in 4-component vector of float)
-0:10            add (temp 4-component vector of float)
+0:10              add (temp 4-component vector of float)
+0:10                'a1' (in 4-component vector of float)
+0:10                'a2' (in 4-component vector of float)
 0:10              'a3' (in 4-component vector of float)
-0:10              'a4' (in 4-component vector of float)
+0:10            'a4' (in 4-component vector of float)
 0:10          'a5' (in 4-component vector of float)
 0:?   Linker Objects
 
@@ -104,9 +104,9 @@ gl_FragCoord origin is upper left
               16:    7(fvec4) Load 10(a2)
               17:    7(fvec4) FAdd 15 16
               18:    7(fvec4) Load 11(a3)
-              19:    7(fvec4) Load 12(a4)
-              20:    7(fvec4) FAdd 18 19
-              21:    7(fvec4) FAdd 17 20
+              19:    7(fvec4) FAdd 17 18
+              20:    7(fvec4) Load 12(a4)
+              21:    7(fvec4) FAdd 19 20
               22:    7(fvec4) Load 13(a5)
               23:    7(fvec4) FAdd 21 22
                               ReturnValue 23

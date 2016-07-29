@@ -10,20 +10,20 @@ gl_FragCoord origin is upper left
 0:21        add (temp 4-component vector of float)
 0:21          add (temp 4-component vector of float)
 0:21            add (temp 4-component vector of float)
-0:21              'input' (in 4-component vector of float)
-0:21              v1: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
-0:21                'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
-0:21                Constant:
-0:21                  0 (const uint)
-0:21            add (temp 4-component vector of float)
+0:21              add (temp 4-component vector of float)
+0:21                'input' (in 4-component vector of float)
+0:21                v1: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
+0:21                  'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
+0:21                  Constant:
+0:21                    0 (const uint)
 0:21              v2: direct index for structure (layout(column_major std430 ) buffer 4-component vector of float)
 0:21                'anon@1' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v2})
 0:21                Constant:
 0:21                  0 (const uint)
-0:21              v3: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
-0:21                'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 ) uniform int i3})
-0:21                Constant:
-0:21                  0 (const uint)
+0:21            v3: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
+0:21              'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 ) uniform int i3})
+0:21              Constant:
+0:21                0 (const uint)
 0:21          v4: direct index for structure (layout(column_major std430 ) buffer 4-component vector of float)
 0:21            'anon@3' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v4, layout(column_major std430 ) buffer int i4})
 0:21            Constant:
@@ -49,20 +49,20 @@ gl_FragCoord origin is upper left
 0:21        add (temp 4-component vector of float)
 0:21          add (temp 4-component vector of float)
 0:21            add (temp 4-component vector of float)
-0:21              'input' (in 4-component vector of float)
-0:21              v1: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
-0:21                'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
-0:21                Constant:
-0:21                  0 (const uint)
-0:21            add (temp 4-component vector of float)
+0:21              add (temp 4-component vector of float)
+0:21                'input' (in 4-component vector of float)
+0:21                v1: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
+0:21                  'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
+0:21                  Constant:
+0:21                    0 (const uint)
 0:21              v2: direct index for structure (layout(column_major std430 ) buffer 4-component vector of float)
 0:21                'anon@1' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v2})
 0:21                Constant:
 0:21                  0 (const uint)
-0:21              v3: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
-0:21                'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 ) uniform int i3})
-0:21                Constant:
-0:21                  0 (const uint)
+0:21            v3: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
+0:21              'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 ) uniform int i3})
+0:21              Constant:
+0:21                0 (const uint)
 0:21          v4: direct index for structure (layout(column_major std430 ) buffer 4-component vector of float)
 0:21            'anon@3' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v4, layout(column_major std430 ) buffer int i4})
 0:21            Constant:
@@ -91,10 +91,10 @@ gl_FragCoord origin is upper left
                               Name 20  ""
                               MemberName 20 0  "v2"
                               Name 22  ""
-                              Name 25  ""
-                              MemberName 25 0  "v3"
-                              MemberName 25 1  "i3"
-                              Name 27  ""
+                              Name 26  ""
+                              MemberName 26 0  "v3"
+                              MemberName 26 1  "i3"
+                              Name 28  ""
                               Name 32  ""
                               MemberName 32 0  "v4"
                               MemberName 32 1  "i4"
@@ -105,10 +105,10 @@ gl_FragCoord origin is upper left
                               MemberDecorate 20 0 Offset 0
                               Decorate 20 BufferBlock
                               Decorate 22 DescriptorSet 0
-                              MemberDecorate 25 0 Offset 0
-                              MemberDecorate 25 1 Offset 16
-                              Decorate 25 Block
-                              Decorate 27 DescriptorSet 0
+                              MemberDecorate 26 0 Offset 0
+                              MemberDecorate 26 1 Offset 16
+                              Decorate 26 Block
+                              Decorate 28 DescriptorSet 0
                               MemberDecorate 32 0 Offset 0
                               MemberDecorate 32 1 Offset 16
                               Decorate 32 BufferBlock
@@ -128,9 +128,9 @@ gl_FragCoord origin is upper left
               20:             TypeStruct 7(fvec4)
               21:             TypePointer Uniform 20(struct)
               22:     21(ptr) Variable Uniform
-              25:             TypeStruct 7(fvec4) 14(int)
-              26:             TypePointer Uniform 25(struct)
-              27:     26(ptr) Variable Uniform
+              26:             TypeStruct 7(fvec4) 14(int)
+              27:             TypePointer Uniform 26(struct)
+              28:     27(ptr) Variable Uniform
               32:             TypeStruct 7(fvec4) 14(int)
               33:             TypePointer Uniform 32(struct)
               34:     33(ptr) Variable Uniform
@@ -142,10 +142,10 @@ gl_FragCoord origin is upper left
               19:    7(fvec4) FAdd 10 18
               23:     16(ptr) AccessChain 22 15
               24:    7(fvec4) Load 23
-              28:     16(ptr) AccessChain 27 15
-              29:    7(fvec4) Load 28
-              30:    7(fvec4) FAdd 24 29
-              31:    7(fvec4) FAdd 19 30
+              25:    7(fvec4) FAdd 19 24
+              29:     16(ptr) AccessChain 28 15
+              30:    7(fvec4) Load 29
+              31:    7(fvec4) FAdd 25 30
               35:     16(ptr) AccessChain 34 15
               36:    7(fvec4) Load 35
               37:    7(fvec4) FAdd 31 36
