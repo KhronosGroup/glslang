@@ -2537,15 +2537,23 @@ void HlslGrammar::acceptPostDecls(TType& type)
                     expected("(");
                     return;
                 }
-                acceptTokenClass(EHTokIdentifier);
-                acceptTokenClass(EHTokDot);
-                acceptTokenClass(EHTokIdentifier);
+                HlslToken locationToken;
+                if (! acceptIdentifier(locationToken)) {
+                    expected("c[subcomponent][.component]");
+                    return;
+                }
+                HlslToken componentToken;
+                if (acceptTokenClass(EHTokDot)) {
+                    if (! acceptIdentifier(componentToken)) {
+                        expected("component");
+                        return;
+                    }
+                }
                 if (! acceptTokenClass(EHTokRightParen)) {
                     expected(")");
                     break;
                 }
-                // TODO: process the packoffset information
-                // c1.y means component y of location slot 1
+                parseContext.handlePackOffset(locationToken.loc, type, *locationToken.string, componentToken.string);
             } else if (! acceptIdentifier(idToken)) {
                 expected("semantic or packoffset or register");
                 return;

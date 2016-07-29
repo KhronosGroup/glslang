@@ -2,37 +2,37 @@ hlsl.buffer.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:23  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
-0:20    Function Parameters: 
-0:20      'input' (in 4-component vector of float)
+0:29  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
+0:26    Function Parameters: 
+0:26      'input' (in 4-component vector of float)
 0:?     Sequence
-0:21      Branch: Return with expression
-0:21        add (temp 4-component vector of float)
-0:21          add (temp 4-component vector of float)
-0:21            add (temp 4-component vector of float)
-0:21              add (temp 4-component vector of float)
-0:21                'input' (in 4-component vector of float)
-0:21                v1: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
-0:21                  'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
-0:21                  Constant:
-0:21                    0 (const uint)
-0:21              v2: direct index for structure (layout(column_major std430 ) buffer 4-component vector of float)
-0:21                'anon@1' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v2})
-0:21                Constant:
-0:21                  0 (const uint)
-0:21            v3: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
-0:21              'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 ) uniform int i3})
-0:21              Constant:
-0:21                0 (const uint)
-0:21          v4: direct index for structure (layout(column_major std430 ) buffer 4-component vector of float)
-0:21            'anon@3' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v4, layout(column_major std430 ) buffer int i4})
-0:21            Constant:
-0:21              0 (const uint)
+0:27      Branch: Return with expression
+0:27        add (temp 4-component vector of float)
+0:27          add (temp 4-component vector of float)
+0:27            add (temp 4-component vector of float)
+0:27              add (temp 4-component vector of float)
+0:27                'input' (in 4-component vector of float)
+0:27                v1: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
+0:27                  'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
+0:27                  Constant:
+0:27                    0 (const uint)
+0:27              v2: direct index for structure (layout(column_major std430 ) buffer 4-component vector of float)
+0:27                'anon@1' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v2})
+0:27                Constant:
+0:27                  0 (const uint)
+0:27            v3: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
+0:27              'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 offset=20 ) uniform int i3})
+0:27              Constant:
+0:27                0 (const uint)
+0:27          v4: direct index for structure (layout(column_major std430 offset=16 ) buffer 4-component vector of float)
+0:27            'anon@3' (layout(column_major std430 ) buffer block{layout(column_major std430 offset=16 ) buffer 4-component vector of float v4, layout(column_major std430 offset=48 ) buffer int i4, layout(column_major std430 offset=60 ) buffer float f1, layout(column_major std430 offset=64 ) buffer float f3, layout(column_major std430 offset=68 ) buffer float f4, layout(column_major std430 offset=72 ) buffer float f5, layout(column_major std430 ) buffer float f6, layout(column_major std430 ) buffer float f7})
+0:27            Constant:
+0:27              0 (const uint)
 0:?   Linker Objects
 0:?     'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
 0:?     'anon@1' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v2})
-0:?     'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 ) uniform int i3})
-0:?     'anon@3' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v4, layout(column_major std430 ) buffer int i4})
+0:?     'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 offset=20 ) uniform int i3})
+0:?     'anon@3' (layout(column_major std430 ) buffer block{layout(column_major std430 offset=16 ) buffer 4-component vector of float v4, layout(column_major std430 offset=48 ) buffer int i4, layout(column_major std430 offset=60 ) buffer float f1, layout(column_major std430 offset=64 ) buffer float f3, layout(column_major std430 offset=68 ) buffer float f4, layout(column_major std430 offset=72 ) buffer float f5, layout(column_major std430 ) buffer float f6, layout(column_major std430 ) buffer float f7})
 
 
 Linked fragment stage:
@@ -41,37 +41,37 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:23  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
-0:20    Function Parameters: 
-0:20      'input' (in 4-component vector of float)
+0:29  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
+0:26    Function Parameters: 
+0:26      'input' (in 4-component vector of float)
 0:?     Sequence
-0:21      Branch: Return with expression
-0:21        add (temp 4-component vector of float)
-0:21          add (temp 4-component vector of float)
-0:21            add (temp 4-component vector of float)
-0:21              add (temp 4-component vector of float)
-0:21                'input' (in 4-component vector of float)
-0:21                v1: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
-0:21                  'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
-0:21                  Constant:
-0:21                    0 (const uint)
-0:21              v2: direct index for structure (layout(column_major std430 ) buffer 4-component vector of float)
-0:21                'anon@1' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v2})
-0:21                Constant:
-0:21                  0 (const uint)
-0:21            v3: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
-0:21              'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 ) uniform int i3})
-0:21              Constant:
-0:21                0 (const uint)
-0:21          v4: direct index for structure (layout(column_major std430 ) buffer 4-component vector of float)
-0:21            'anon@3' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v4, layout(column_major std430 ) buffer int i4})
-0:21            Constant:
-0:21              0 (const uint)
+0:27      Branch: Return with expression
+0:27        add (temp 4-component vector of float)
+0:27          add (temp 4-component vector of float)
+0:27            add (temp 4-component vector of float)
+0:27              add (temp 4-component vector of float)
+0:27                'input' (in 4-component vector of float)
+0:27                v1: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
+0:27                  'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
+0:27                  Constant:
+0:27                    0 (const uint)
+0:27              v2: direct index for structure (layout(column_major std430 ) buffer 4-component vector of float)
+0:27                'anon@1' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v2})
+0:27                Constant:
+0:27                  0 (const uint)
+0:27            v3: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
+0:27              'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 offset=20 ) uniform int i3})
+0:27              Constant:
+0:27                0 (const uint)
+0:27          v4: direct index for structure (layout(column_major std430 offset=16 ) buffer 4-component vector of float)
+0:27            'anon@3' (layout(column_major std430 ) buffer block{layout(column_major std430 offset=16 ) buffer 4-component vector of float v4, layout(column_major std430 offset=48 ) buffer int i4, layout(column_major std430 offset=60 ) buffer float f1, layout(column_major std430 offset=64 ) buffer float f3, layout(column_major std430 offset=68 ) buffer float f4, layout(column_major std430 offset=72 ) buffer float f5, layout(column_major std430 ) buffer float f6, layout(column_major std430 ) buffer float f7})
+0:27            Constant:
+0:27              0 (const uint)
 0:?   Linker Objects
 0:?     'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
 0:?     'anon@1' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v2})
-0:?     'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 ) uniform int i3})
-0:?     'anon@3' (layout(column_major std430 ) buffer block{layout(column_major std430 ) buffer 4-component vector of float v4, layout(column_major std430 ) buffer int i4})
+0:?     'anon@2' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v3, layout(column_major std140 offset=20 ) uniform int i3})
+0:?     'anon@3' (layout(column_major std430 ) buffer block{layout(column_major std430 offset=16 ) buffer 4-component vector of float v4, layout(column_major std430 offset=48 ) buffer int i4, layout(column_major std430 offset=60 ) buffer float f1, layout(column_major std430 offset=64 ) buffer float f3, layout(column_major std430 offset=68 ) buffer float f4, layout(column_major std430 offset=72 ) buffer float f5, layout(column_major std430 ) buffer float f6, layout(column_major std430 ) buffer float f7})
 
 // Module Version 10000
 // Generated by (magic number): 80001
@@ -98,6 +98,12 @@ gl_FragCoord origin is upper left
                               Name 32  ""
                               MemberName 32 0  "v4"
                               MemberName 32 1  "i4"
+                              MemberName 32 2  "f1"
+                              MemberName 32 3  "f3"
+                              MemberName 32 4  "f4"
+                              MemberName 32 5  "f5"
+                              MemberName 32 6  "f6"
+                              MemberName 32 7  "f7"
                               Name 34  ""
                               MemberDecorate 11 0 Offset 0
                               Decorate 11 Block
@@ -106,11 +112,17 @@ gl_FragCoord origin is upper left
                               Decorate 20 BufferBlock
                               Decorate 22 DescriptorSet 0
                               MemberDecorate 26 0 Offset 0
-                              MemberDecorate 26 1 Offset 16
+                              MemberDecorate 26 1 Offset 20
                               Decorate 26 Block
                               Decorate 28 DescriptorSet 0
-                              MemberDecorate 32 0 Offset 0
-                              MemberDecorate 32 1 Offset 16
+                              MemberDecorate 32 0 Offset 16
+                              MemberDecorate 32 1 Offset 48
+                              MemberDecorate 32 2 Offset 60
+                              MemberDecorate 32 3 Offset 64
+                              MemberDecorate 32 4 Offset 68
+                              MemberDecorate 32 5 Offset 72
+                              MemberDecorate 32 6 Offset 76
+                              MemberDecorate 32 7 Offset 80
                               Decorate 32 BufferBlock
                               Decorate 34 DescriptorSet 0
                2:             TypeVoid
@@ -131,7 +143,7 @@ gl_FragCoord origin is upper left
               26:             TypeStruct 7(fvec4) 14(int)
               27:             TypePointer Uniform 26(struct)
               28:     27(ptr) Variable Uniform
-              32:             TypeStruct 7(fvec4) 14(int)
+              32:             TypeStruct 7(fvec4) 14(int) 6(float) 6(float) 6(float) 6(float) 6(float) 6(float)
               33:             TypePointer Uniform 32(struct)
               34:     33(ptr) Variable Uniform
 4(PixelShaderFunction):           2 Function None 3

@@ -2135,6 +2135,46 @@ void HlslParseContext::handleSemantic(TType& type, const TString& semantic)
 }
 
 //
+// Handle seeing something like ": packoffset( c[Subcomponent][.component] )"
+//
+// 'location' has the "c[Subcomponent]" part.
+// 'component' points to the "component" part, or nullptr if not present.
+//
+void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TType& type, const glslang::TString& location,
+                                                                            const glslang::TString* component)
+{
+    if (location.size() == 0 || location[0] != 'c') {
+        error(loc, "expected 'c'", "packoffset", "");
+        return;
+    }
+    if (location.size() == 1)
+        return;
+    if (! isdigit(location[1])) {
+        error(loc, "expected number after 'c'", "packoffset", "");
+        return;
+    }
+
+    type.getQualifier().layoutOffset = 16 * atoi(location.substr(1, location.size()).c_str());
+    if (component) {
+        int componentOffset = 0;
+        switch ((*component)[0]) {
+        case 'x': componentOffset =  0; break;
+        case 'y': componentOffset =  4; break;
+        case 'z': componentOffset =  8; break;
+        case 'w': componentOffset = 12; break;
+        default:
+            componentOffset = -1;
+            break;
+        }
+        if (componentOffset < 0 || component->size() > 1) {
+            error(loc, "expected {x, y, z, w} for component", "packoffset", "");
+            return;
+        }
+        type.getQualifier().layoutOffset += componentOffset;
+    }
+}
+
+//
 // Same error message for all places assignments don't work.
 //
 void HlslParseContext::assignError(const TSourceLoc& loc, const char* op, TString left, TString right)
