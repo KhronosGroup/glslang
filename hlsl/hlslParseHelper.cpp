@@ -2181,27 +2181,34 @@ void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TType& type, cons
 // 'desc' is the type# part.
 //
 void HlslParseContext::handleRegister(const TSourceLoc& loc, TType& type, const glslang::TString* profile,
-                                                                          const glslang::TString& desc)
+                                                                          const glslang::TString& desc,
+                                                                          int subComponent)
 {
     if (profile != nullptr)
         warn(loc, "ignoring shader_profile", "register", "");
 
-    if (desc.size() < 2) {
-        error(loc, "expected register type and number", "register", "");
+    if (desc.size() < 1) {
+        error(loc, "expected register type", "register", "");
         return;
     }
 
-    if (! isdigit(desc[1])) {
-        error(loc, "expected register number after register type", "register", "");
-        return;
+    int regNumber = 0;
+    if (desc.size() > 1) {
+        if (isdigit(desc[1]))
+            regNumber = atoi(desc.substr(1, desc.size()).c_str());
+        else {
+            error(loc, "expected register number after register type", "register", "");
+            return;
+        }
     }
 
+    // TODO: learn what all these really mean and how they interact with regNumber and subComponent
     switch (desc[0]) {
     case 'b':
     case 't':
     case 'c':
     case 's':
-        type.getQualifier().layoutBinding = atoi(desc.substr(1, desc.size()).c_str());
+        type.getQualifier().layoutBinding = regNumber + subComponent;
         break;
     default:
         warn(loc, "ignoring unrecognized register type", "register", "%c", desc[0]);

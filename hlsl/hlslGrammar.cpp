@@ -2523,10 +2523,10 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 }
 
 // post_decls
-//      : COLON semantic                                                      // optional
-//        COLON PACKOFFSET LEFT_PAREN c[Subcomponent][.component] RIGHT_PAREN // optional
-//        COLON REGISTER LEFT_PAREN [shader_profile,] Type# RIGHT_PAREN       // optional
-//        annotations                                                         // optional
+//      : COLON semantic                                                            // optional
+//        COLON PACKOFFSET LEFT_PAREN c[Subcomponent][.component]       RIGHT_PAREN // optional
+//        COLON REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt RIGHT_PAREN // optional
+//        annotations                                                               // optional
 //
 void HlslGrammar::acceptPostDecls(TType& type)
 {
@@ -2561,31 +2561,45 @@ void HlslGrammar::acceptPostDecls(TType& type)
                 expected("semantic or packoffset or register");
                 return;
             } else if (*idToken.string == "register") {
-                // REGISTER LEFT_PAREN [shader_profile,] Type# RIGHT_PAREN
+                // REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt RIGHT_PAREN
                 if (! acceptTokenClass(EHTokLeftParen)) {
                     expected("(");
                     return;
                 }
-                HlslToken registerDesc;
+                HlslToken registerDesc;  // for Type#
+                HlslToken profile;
                 if (! acceptIdentifier(registerDesc)) {
                     expected("register number description");
                     return;
                 }
-                HlslToken profile;
                 if (acceptTokenClass(EHTokComma)) {
-                    // then we didn't really see the registerDesc yet, it was
-                    // actually the profile
+                    // Then we didn't really see the registerDesc yet, it was
+                    // actually the profile.  Adjust...
                     profile = registerDesc;
                     if (! acceptIdentifier(registerDesc)) {
                         expected("register number description");
                         return;
                     }
                 }
+                int subComponent = 0;
+                if (acceptTokenClass(EHTokLeftBracket)) {
+                    // LEFT_BRACKET subcomponent RIGHT_BRACKET
+                    if (! peekTokenClass(EHTokIntConstant)) {
+                        expected("literal integer");
+                        return;
+                    }
+                    subComponent = token.i;
+                    advanceToken();
+                    if (! acceptTokenClass(EHTokRightBracket)) {
+                        expected("]");
+                        break;
+                    }
+                }
                 if (! acceptTokenClass(EHTokRightParen)) {
                     expected(")");
                     break;
                 }
-                parseContext.handleRegister(registerDesc.loc, type, profile.string, *registerDesc.string);
+                parseContext.handleRegister(registerDesc.loc, type, profile.string, *registerDesc.string, subComponent);
             } else {
                 // semantic, in idToken.string
                 parseContext.handleSemantic(type, *idToken.string);
