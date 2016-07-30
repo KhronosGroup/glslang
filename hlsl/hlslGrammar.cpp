@@ -1718,27 +1718,29 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
     if (acceptTokenClass(EHTokLeftParen)) {
         TType castType;
         if (acceptType(castType)) {
-            if (! acceptTokenClass(EHTokRightParen)) {
-                expected(")");
-                return false;
+            if (acceptTokenClass(EHTokRightParen)) {
+                // We've matched "(type)" now, get the expression to cast
+                TSourceLoc loc = token.loc;
+                if (! acceptUnaryExpression(node))
+                    return false;
+
+                // Hook it up like a constructor
+                TFunction* constructorFunction = parseContext.handleConstructorCall(loc, castType);
+                if (constructorFunction == nullptr) {
+                    expected("type that can be constructed");
+                    return false;
+                }
+                TIntermTyped* arguments = nullptr;
+                parseContext.handleFunctionArgument(constructorFunction, arguments, node);
+                node = parseContext.handleFunctionCall(loc, constructorFunction, arguments);
+
+                return true;
+            } else {
+                // This could be a parenthesized constructor, ala (int(3)), and we just accepted
+                // the '(int' part.  We must back up twice.
+                recedeToken();
+                recedeToken();
             }
-
-            // We've matched "(type)" now, get the expression to cast
-            TSourceLoc loc = token.loc;
-            if (! acceptUnaryExpression(node))
-                return false;
-
-            // Hook it up like a constructor
-            TFunction* constructorFunction = parseContext.handleConstructorCall(loc, castType);
-            if (constructorFunction == nullptr) {
-                expected("type that can be constructed");
-                return false;
-            }
-            TIntermTyped* arguments = nullptr;
-            parseContext.handleFunctionArgument(constructorFunction, arguments, node);
-            node = parseContext.handleFunctionCall(loc, constructorFunction, arguments);
-
-            return true;
         } else {
             // This isn't a type cast, but it still started "(", so if it is a
             // unary expression, it can only be a postfix_expression, so try that.
