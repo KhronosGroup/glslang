@@ -5,6 +5,18 @@ float a3, b3 = 0.3;
 float a4, b4 = 0.4, c4;
 float a5 = 0.5, b5, c5 = 1.5;
 
+struct Single1 { int f; };
+Single1 single1 = { 10 };
+
+struct Single2 { uint2 v; };
+Single2 single2 = { { 1, 2 } };
+
+struct Single3 { Single1 s1; };
+Single3 single3 = { { 3 } };
+
+struct Single4 { Single2 s1; };
+Single4 single4 = { { { 4u, 5u } } };
+
 float4 ShaderFunction(float4 input) : COLOR0
 {
     float4 a2 = float4(0.2, 0.3, 0.4, 0.5);
