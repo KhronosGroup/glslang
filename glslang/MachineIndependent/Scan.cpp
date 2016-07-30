@@ -55,7 +55,7 @@
 
 // Required to avoid missing prototype warnings for some compilers
 int yylex(YYSTYPE*, glslang::TParseContext&);
-    
+
 namespace glslang {
 
 // read past any white space
@@ -564,7 +564,7 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["superp"] =                  SUPERP;
 
     ReservedSet = new std::unordered_set<const char*, str_hash, str_eq>;
-    
+
     ReservedSet->insert("common");
     ReservedSet->insert("partition");
     ReservedSet->insert("active");
@@ -678,7 +678,7 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 
         case PpAtomDecrement:          return DEC_OP;
         case PpAtomIncrement:          return INC_OP;
-                                   
+
         case PpAtomConstInt:           parserToken->sType.lex.i   = ppToken.ival;       return INTCONSTANT;
         case PpAtomConstUint:          parserToken->sType.lex.i   = ppToken.ival;       return UINTCONSTANT;
         case PpAtomConstInt64:         parserToken->sType.lex.i64 = ppToken.i64val;     return INT64CONSTANT;
@@ -850,7 +850,7 @@ int TScanContext::tokenizeIdentifier()
     case MAT3X4:
     case MAT4X2:
     case MAT4X3:
-    case MAT4X4:        
+    case MAT4X4:
         return matNxM();
 
     case DMAT2:
@@ -976,7 +976,7 @@ int TScanContext::tokenizeIdentifier()
     case USAMPLER2DARRAY:
         afterType = true;
         return nonreservedKeyword(300, 130);
-        
+
     case ISAMPLER2DRECT:
     case USAMPLER2DRECT:
         afterType = true;
@@ -994,7 +994,7 @@ int TScanContext::tokenizeIdentifier()
         if (parseContext.extensionsTurnedOn(Num_AEP_texture_buffer, AEP_texture_buffer))
             return keyword;
         return es30ReservedFromGLSL(140);
-        
+
     case SAMPLER2DMS:
     case ISAMPLER2DMS:
     case USAMPLER2DMS:
@@ -1113,7 +1113,7 @@ int TScanContext::tokenizeIdentifier()
 
     case NOPERSPECTIVE:
         return es30ReservedFromGLSL(130);
-        
+
     case SMOOTH:
         if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
             (parseContext.profile != EEsProfile && parseContext.version < 130))
@@ -1172,7 +1172,7 @@ int TScanContext::tokenizeIdentifier()
         bool reserved = parseContext.profile == EEsProfile || parseContext.version >= 130;
         return identifierOrReserved(reserved);
     }
-    
+
     default:
         parseContext.infoSink.info.message(EPrefixInternalError, "Unknown glslang keyword", loc);
         return 0;

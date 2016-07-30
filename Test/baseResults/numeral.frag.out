@@ -7,8 +7,8 @@ ERROR: 0:17: '' : octal literal too big
 ERROR: 0:18: '' : octal literal too big 
 ERROR: 0:23: '' : octal literal digit too large 
 ERROR: 0:24: '' : octal literal digit too large 
-ERROR: 0:49: '' : bad digit in hexidecimal literal 
-ERROR: 0:50: '' : hexidecimal literal too big 
+ERROR: 0:49: '' : bad digit in hexadecimal literal 
+ERROR: 0:50: '' : hexadecimal literal too big 
 ERROR: 0:88: '' : float literal needs a decimal point or exponent 
 ERROR: 0:98: '' : numeric literal too big 
 ERROR: 0:101: '' : numeric literal too big 
