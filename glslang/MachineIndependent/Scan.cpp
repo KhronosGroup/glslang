@@ -612,13 +612,15 @@ void TScanContext::deleteKeywordMap()
     ReservedSet = nullptr;
 }
 
+// Called by yylex to get the next token.
+// Returning 0 implies end of input.
 int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 {
     do {
         parserToken = &token;
         TPpToken ppToken;
         tokenText = pp->tokenize(&ppToken);
-        if (tokenText == nullptr)
+        if (tokenText == nullptr || tokenText[0] == 0)
             return 0;
 
         loc = ppToken.loc;
