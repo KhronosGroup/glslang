@@ -97,6 +97,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.if.frag", "PixelShaderFunction"},
         {"hlsl.inoutquals.frag", "main"},
         {"hlsl.init.frag", "ShaderFunction"},
+        {"hlsl.init2.frag", "main"},
         {"hlsl.intrinsics.barriers.comp", "ComputeShaderFunction"},
         {"hlsl.intrinsics.comp", "ComputeShaderFunction"},
         {"hlsl.intrinsics.evalfns.frag", "main"},

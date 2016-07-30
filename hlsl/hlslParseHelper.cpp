@@ -3727,7 +3727,12 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
             error(loc, "wrong vector size (or rows in a matrix column):", "initializer list", type.getCompleteString().c_str());
             return nullptr;
         }
-    } else {
+    } else if (type.isScalar()) {
+        if ((int)initList->getSequence().size() != 1) {
+            error(loc, "scalar expected one element:", "initializer list", type.getCompleteString().c_str());
+            return nullptr;
+        }
+   } else {
         error(loc, "unexpected initializer-list type:", "initializer list", type.getCompleteString().c_str());
         return nullptr;
     }
