@@ -180,14 +180,17 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
         ltoken += 128;
     switch (ltoken) {
     case '#':
-        if (lReadByte(pTok) == '#') {
-            parseContext.requireProfile(ppToken->loc, ~EEsProfile, "token pasting (##)");
-            parseContext.profileRequires(ppToken->loc, ~EEsProfile, 130, 0, "token pasting (##)");
-            parseContext.error(ppToken->loc, "token pasting not implemented (internal error)", "##", "");
-            //return PpAtomPaste;
-            return ReadToken(pTok, ppToken);
-        } else
-            lUnreadByte(pTok);
+        // Check for ##, unless the current # is the last character
+        if (pTok->current < pTok->data.size()) {
+            if (lReadByte(pTok) == '#') {
+                parseContext.requireProfile(ppToken->loc, ~EEsProfile, "token pasting (##)");
+                parseContext.profileRequires(ppToken->loc, ~EEsProfile, 130, 0, "token pasting (##)");
+                parseContext.error(ppToken->loc, "token pasting not implemented (internal error)", "##", "");
+                //return PpAtomPaste;
+                return ReadToken(pTok, ppToken);
+            } else
+                lUnreadByte(pTok);
+        }
         break;
     case PpAtomConstString:
     case PpAtomIdentifier:

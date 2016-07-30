@@ -78,6 +78,7 @@ INSTANTIATE_TEST_CASE_P(
         "cppSimple.vert",
         "cppIndent.vert",
         "cppNest.vert",
+        "cppBad.vert",
         "cppComplexExpr.vert",
         "badChars.frag",
         "pointCoord.frag",
