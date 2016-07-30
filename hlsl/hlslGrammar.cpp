@@ -1549,8 +1549,11 @@ bool HlslGrammar::acceptInitializer(TIntermTyped*& node)
         node = intermediate.growAggregate(node, expr, loc);
 
         // COMMA
-        if (acceptTokenClass(EHTokComma))
+        if (acceptTokenClass(EHTokComma)) {
+            if (acceptTokenClass(EHTokRightBrace))  // allow trailing comma
+                return true;
             continue;
+        }
 
         // RIGHT_BRACE
         if (acceptTokenClass(EHTokRightBrace))
