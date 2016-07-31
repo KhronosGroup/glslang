@@ -101,12 +101,29 @@ bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim
             return true;
     }
 
+    const bool isGather = 
+        (name == "Gather" || 
+         name == "GatherRed" ||
+         name == "GatherGreen" || 
+         name == "GatherBlue"  ||
+         name == "GatherAlpha");
+
+    const bool isGatherCmp = 
+        (name == "GatherCmpRed"   ||
+         name == "GatherCmpGreen" ||
+         name == "GatherCmpBlue"  ||
+         name == "GatherCmpAlpha");
+
     // Reject invalid Gathers
-    if (name == "Gather") {
+    if (isGather || isGatherCmp) {
         if (dim0 == 1 || dim0 == 3)   // there are no 1D or 3D gathers
             return true;
-        if (dim0 == 4 && numArgs == 4) // there are no Cube gathers with offset
-            return true;
+
+        // no offset on cube or cube array gathers
+        if (dim0 == 4) {
+            if ((isGather && numArgs > 3) || (isGatherCmp && numArgs > 4))
+                return true;
+        }
     }
 
     // Reject invalid Loads
@@ -648,15 +665,14 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "Load", /* +sampleidex*/            "V4",    nullptr,   "$&,V,S",         "FIU,I,I",       EShLangAll },
         { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$&,V,S,V",       "FIU,I,I,I",     EShLangAll },
 
-        { "Gather",             /*!O*/        "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangVSPSGS },
-        { "Gather",             /* O*/        "V4",    nullptr,   "%@,S,V,V",       "FIU,S,F,I",     EShLangVSPSGS },
+        { "Gather",             /*!O*/        "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangAll },
+        { "Gather",             /* O*/        "V4",    nullptr,   "%@,S,V,V",       "FIU,S,F,I",     EShLangAll },
 
         { "CalculateLevelOfDetail",           "S",     "F",       "%@,S,V",         "FUI,S,F",       EShLangFragmentMask },
         { "CalculateLevelOfDetailUnclamped",  "S",     "F",       "%@,S,V",         "FUI,S,F",       EShLangFragmentMask },
 
         { "GetSamplePosition",                "V2",    "F",       "$&2,S",          "FUI,I",         EShLangVSPSGS },
 
-        // table of overloads from: https://msdn.microsoft.com/en-us/library/windows/desktop/bb509693(v=vs.85).aspx
         // 
         // UINT Width
         // UINT MipLevel, UINT Width, UINT NumberOfLevels
@@ -709,10 +725,61 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
 
         // UINT Width, UINT Height, UINT Samples
         // UINT Width, UINT Height, UINT Elements, UINT Samples
-        { "GetDimensions",   /* 2DMS */       "-",     "-",       "$2,>S,,",        "FUI,U,,",        EShLangAll },
-        { "GetDimensions",   /* 2DMS */       "-",     "-",       "$2,>S,,",        "FUI,U,,",        EShLangAll },
-        { "GetDimensions",   /* 2DMSArray */  "-",     "-",       "&2,>S,,,",       "FUI,U,,,",       EShLangAll },
-        { "GetDimensions",   /* 2DMSArray */  "-",     "-",       "&2,>S,,,",       "FUI,U,,,",       EShLangAll },
+        { "GetDimensions",   /* 2DMS */       "-",     "-",       "$2,>S,,",        "FUI,U,,",       EShLangAll },
+        { "GetDimensions",   /* 2DMS */       "-",     "-",       "$2,>S,,",        "FUI,U,,",       EShLangAll },
+        { "GetDimensions",   /* 2DMSArray */  "-",     "-",       "&2,>S,,,",       "FUI,U,,,",      EShLangAll },
+        { "GetDimensions",   /* 2DMSArray */  "-",     "-",       "&2,>S,,,",       "FUI,U,,,",      EShLangAll },
+
+        // SM5 texture methods
+        { "GatherRed",       /*!O*/           "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangAll },
+        { "GatherRed",       /* O*/           "V4",    nullptr,   "%@,S,V,",        "FIU,S,F,I",     EShLangAll },
+        { "GatherRed",       /* O, status*/   "V4",    nullptr,   "%@,S,V,,>S",     "FIU,S,F,I,U",   EShLangAll },
+        { "GatherRed",       /* O-4 */        "V4",    nullptr,   "%@,S,V,,,,",     "FIU,S,F,I,,,",  EShLangAll },
+        { "GatherRed",       /* O-4, status */"V4",    nullptr,   "%@,S,V,,,,,S",   "FIU,S,F,I,,,,U",EShLangAll },
+
+        { "GatherGreen",     /*!O*/           "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangAll },
+        { "GatherGreen",     /* O*/           "V4",    nullptr,   "%@,S,V,",        "FIU,S,F,I",     EShLangAll },
+        { "GatherGreen",     /* O, status*/   "V4",    nullptr,   "%@,S,V,,>S",     "FIU,S,F,I,U",   EShLangAll },
+        { "GatherGreen",     /* O-4 */        "V4",    nullptr,   "%@,S,V,,,,",     "FIU,S,F,I,,,",  EShLangAll },
+        { "GatherGreen",     /* O-4, status */"V4",    nullptr,   "%@,S,V,,,,,S",   "FIU,S,F,I,,,,U",EShLangAll },
+
+        { "GatherBlue",      /*!O*/           "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangAll },
+        { "GatherBlue",      /* O*/           "V4",    nullptr,   "%@,S,V,",        "FIU,S,F,I",     EShLangAll },
+        { "GatherBlue",      /* O, status*/   "V4",    nullptr,   "%@,S,V,,>S",     "FIU,S,F,I,U",   EShLangAll },
+        { "GatherBlue",      /* O-4 */        "V4",    nullptr,   "%@,S,V,,,,",     "FIU,S,F,I,,,",  EShLangAll },
+        { "GatherBlue",      /* O-4, status */"V4",    nullptr,   "%@,S,V,,,,,S",   "FIU,S,F,I,,,,U",EShLangAll },
+
+        { "GatherAlpha",     /*!O*/           "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangAll },
+        { "GatherAlpha",     /* O*/           "V4",    nullptr,   "%@,S,V,",        "FIU,S,F,I",     EShLangAll },
+        { "GatherAlpha",     /* O, status*/   "V4",    nullptr,   "%@,S,V,,>S",     "FIU,S,F,I,U",   EShLangAll },
+        { "GatherAlpha",     /* O-4 */        "V4",    nullptr,   "%@,S,V,,,,",     "FIU,S,F,I,,,",  EShLangAll },
+        { "GatherAlpha",     /* O-4, status */"V4",    nullptr,   "%@,S,V,,,,,S",   "FIU,S,F,I,,,,U",EShLangAll },
+
+        { "GatherCmpRed",    /*!O*/           "V4",    nullptr,   "%@,S,V,S",       "FIU,s,F,",       EShLangAll },
+        { "GatherCmpRed",    /* O*/           "V4",    nullptr,   "%@,S,V,S,V",     "FIU,s,F,,I",     EShLangAll },
+        { "GatherCmpRed",    /* O, status*/   "V4",    nullptr,   "%@,S,V,S,V,>S",  "FIU,s,F,,I,U",   EShLangAll },
+        { "GatherCmpRed",    /* O-4 */        "V4",    nullptr,   "%@,S,V,S,V,,,",  "FIU,s,F,,I,,,",  EShLangAll },
+        { "GatherCmpRed",    /* O-4, status */"V4",    nullptr,   "%@,S,V,S,V,,V,S","FIU,s,F,,I,,,,U",EShLangAll },
+
+        { "GatherCmpGreen",  /*!O*/           "V4",    nullptr,   "%@,S,V,S",       "FIU,s,F,",       EShLangAll },
+        { "GatherCmpGreen",  /* O*/           "V4",    nullptr,   "%@,S,V,S,V",     "FIU,s,F,,I",     EShLangAll },
+        { "GatherCmpGreen",  /* O, status*/   "V4",    nullptr,   "%@,S,V,S,V,>S",  "FIU,s,F,,I,U",   EShLangAll },
+        { "GatherCmpGreen",  /* O-4 */        "V4",    nullptr,   "%@,S,V,S,V,,,",  "FIU,s,F,,I,,,",  EShLangAll },
+        { "GatherCmpGreen",  /* O-4, status */"V4",    nullptr,   "%@,S,V,S,V,,,,S","FIU,s,F,,I,,,,U",EShLangAll },
+
+        { "GatherCmpBlue",   /*!O*/           "V4",    nullptr,   "%@,S,V,S",       "FIU,s,F,",       EShLangAll },
+        { "GatherCmpBlue",   /* O*/           "V4",    nullptr,   "%@,S,V,S,V",     "FIU,s,F,,I",     EShLangAll },
+        { "GatherCmpBlue",   /* O, status*/   "V4",    nullptr,   "%@,S,V,S,V,>S",  "FIU,s,F,,I,U",   EShLangAll },
+        { "GatherCmpBlue",   /* O-4 */        "V4",    nullptr,   "%@,S,V,S,V,,,",  "FIU,s,F,,I,,,",  EShLangAll },
+        { "GatherCmpBlue",   /* O-4, status */"V4",    nullptr,   "%@,S,V,S,V,,,,S","FIU,s,F,,I,,,,U",EShLangAll },
+
+        { "GatherCmpAlpha",  /*!O*/           "V4",    nullptr,   "%@,S,V,S",       "FIU,s,F,",       EShLangAll },
+        { "GatherCmpAlpha",  /* O*/           "V4",    nullptr,   "%@,S,V,S,V",     "FIU,s,F,,I",     EShLangAll },
+        { "GatherCmpAlpha",  /* O, status*/   "V4",    nullptr,   "%@,S,V,S,V,>S",  "FIU,s,F,,I,U",   EShLangAll },
+        { "GatherCmpAlpha",  /* O-4 */        "V4",    nullptr,   "%@,S,V,S,V,,,",  "FIU,s,F,,I,,,",  EShLangAll },
+        { "GatherCmpAlpha",  /* O-4, status */"V4",    nullptr,   "%@,S,V,S,V,,,,S","FIU,s,F,,I,,,,U",EShLangAll },
+
+        // TODO: Cmp forms
 
         // Mark end of list, since we want to avoid a range-based for, as some compilers don't handle it yet.
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0 },
@@ -1012,6 +1079,16 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("Gather",                      EOpMethodGather);
     symbolTable.relateToOperator("CalculateLevelOfDetail",      EOpMethodCalculateLevelOfDetail);
     symbolTable.relateToOperator("CalculateLevelOfDetailUnclamped", EOpMethodCalculateLevelOfDetailUnclamped);
+
+    // SM5 Texture methods
+    symbolTable.relateToOperator("GatherRed",                   EOpMethodGatherRed);
+    symbolTable.relateToOperator("GatherGreen",                 EOpMethodGatherGreen);
+    symbolTable.relateToOperator("GatherBlue",                  EOpMethodGatherBlue);
+    symbolTable.relateToOperator("GatherAlpha",                 EOpMethodGatherAlpha);
+    symbolTable.relateToOperator("GatherCmpRed",                EOpMethodGatherCmpRed);
+    symbolTable.relateToOperator("GatherCmpGreen",              EOpMethodGatherCmpGreen);
+    symbolTable.relateToOperator("GatherCmpBlue",               EOpMethodGatherCmpBlue);
+    symbolTable.relateToOperator("GatherCmpAlpha",              EOpMethodGatherCmpAlpha);
 }
 
 //
