@@ -23,9 +23,12 @@ struct {
     sample centroid float2 d;
     bool ff1 : SV_IsFrontFace;
     bool ff2 : packoffset(c0.y);
-    bool ff3 : packoffset(c0.y) : register(ps_5_0, s[0]) ;
-    float4 ff4 : VPOS : packoffset(c0.y) : register(ps_5_0, s[0]) <int bambam=30;> ;
+    bool ff3 : packoffset(c0.y) : register(ps_5_0, s0) ;
+    float4 ff4 : VPOS : packoffset(c0.y) : register(ps_5_0, s0) <int bambam=30;> ;
 } s4;
+
+float3 ff5 : packoffset(c1.y) : register(ps_5_0, s[5]);
+float3 ff6 : packoffset(c2.y) : register(s3[5]);
 
 float4 PixelShaderFunction(float4 input) : COLOR0
 {

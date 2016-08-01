@@ -6,7 +6,7 @@ gl_FragCoord origin is upper left
 0:48    Function Parameters: 
 0:?     Sequence
 0:52      textureFetchOffset (global 4-component vector of float)
-0:52        'g_tTex1df4' (uniform texture1D)
+0:52        'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:52        vector swizzle (temp int)
 0:52          'c2' (uniform 2-component vector of int)
 0:52          Sequence
@@ -151,8 +151,8 @@ gl_FragCoord origin is upper left
 0:75      Branch: Return with expression
 0:75        'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:?   Linker Objects
-0:?     'g_sSamp' (uniform sampler)
-0:?     'g_tTex1df4' (uniform texture1D)
+0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
+0:?     'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:?     'g_tTex1di4' (uniform itexture1D)
 0:?     'g_tTex1du4' (uniform utexture1D)
 0:?     'g_tTex2df4' (uniform texture2D)
@@ -193,7 +193,7 @@ gl_FragCoord origin is upper left
 0:48    Function Parameters: 
 0:?     Sequence
 0:52      textureFetchOffset (global 4-component vector of float)
-0:52        'g_tTex1df4' (uniform texture1D)
+0:52        'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:52        vector swizzle (temp int)
 0:52          'c2' (uniform 2-component vector of int)
 0:52          Sequence
@@ -338,8 +338,8 @@ gl_FragCoord origin is upper left
 0:75      Branch: Return with expression
 0:75        'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:?   Linker Objects
-0:?     'g_sSamp' (uniform sampler)
-0:?     'g_tTex1df4' (uniform texture1D)
+0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
+0:?     'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:?     'g_tTex1di4' (uniform itexture1D)
 0:?     'g_tTex1du4' (uniform utexture1D)
 0:?     'g_tTex2df4' (uniform texture2D)
@@ -418,6 +418,7 @@ gl_FragCoord origin is upper left
                               Name 170  "c1"
                               Name 171  "o4"
                               Decorate 9(g_tTex1df4) DescriptorSet 0
+                              Decorate 9(g_tTex1df4) Binding 0
                               Decorate 29(g_tTex1di4) DescriptorSet 0
                               Decorate 40(g_tTex1du4) DescriptorSet 0
                               Decorate 51(g_tTex2df4) DescriptorSet 0
@@ -428,6 +429,7 @@ gl_FragCoord origin is upper left
                               Decorate 110(g_tTex3du4) DescriptorSet 0
                               MemberDecorate 118(PS_OUTPUT) 1 BuiltIn FragDepth
                               Decorate 133(g_sSamp) DescriptorSet 0
+                              Decorate 133(g_sSamp) Binding 0
                               Decorate 136(g_tTexcdf4) DescriptorSet 0
                               Decorate 139(g_tTexcdi4) DescriptorSet 0
                               Decorate 142(g_tTexcdu4) DescriptorSet 0

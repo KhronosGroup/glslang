@@ -691,6 +691,7 @@ expression
         $$ = $1;
     }
     | expression COMMA assignment_expression {
+        parseContext.samplerConstructorLocationCheck($2.loc, ",", $3);
         $$ = parseContext.intermediate.addComma($1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, ",", $1->getCompleteString(), $3->getCompleteString());

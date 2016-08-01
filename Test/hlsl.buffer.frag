@@ -13,7 +13,13 @@ cbuffer cbufName : register(b2) {
 
 tbuffer tbufName : register(b8) {
     float4 v4 : packoffset(c1);
-    int i4 : packoffset(c3);
+    int i4    : packoffset(c3);
+    float f1  : packoffset(c3.w);
+    float f3  : packoffset(c4.x);
+    float f4  : packoffset(c4.y);
+    float f5  : packoffset(c4.z);
+    float f6  : packoffset(c);
+    float f7;
 };
 
 float4 PixelShaderFunction(float4 input) : COLOR0

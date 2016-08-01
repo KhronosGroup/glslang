@@ -1181,6 +1181,8 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 
                 if (builtIn)
                     nonOpBuiltInCheck(loc, *fnCandidate, *call);
+                else
+                    userFunctionCallCheck(loc, *call);
             }
 
             // Convert 'out' arguments.  If it was a constant folded built-in, it won't be an aggregate anymore.
@@ -1721,6 +1723,26 @@ void TParseContext::nonOpBuiltInCheck(const TSourceLoc& loc, const TFunction& fn
                 error(loc, "only supported on image with format r32f", fnCandidate.getName().c_str(), "");
         }
     }
+}
+
+//
+// Do any extra checking for a user function call.
+//
+void TParseContext::userFunctionCallCheck(const TSourceLoc& loc, TIntermAggregate& callNode)
+{
+    TIntermSequence& arguments = callNode.getSequence();
+
+    for (int i = 0; i < (int)arguments.size(); ++i)
+        samplerConstructorLocationCheck(loc, "call argument", arguments[i]);
+}
+
+//
+// Emit an error if this is a sampler constructor
+//
+void TParseContext::samplerConstructorLocationCheck(const TSourceLoc& loc, const char* token, TIntermNode* node)
+{
+    if (node->getAsOperator() && node->getAsOperator()->getOp() == EOpConstructTextureSampler)
+        error(loc, "sampler constructor must appear at point of use", token, "");
 }
 
 //
@@ -5145,8 +5167,14 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
         return nullptr;
     }
 
-    // now that the subtree is processed, process this node
-    return addConstructor(loc, initList, type);
+    // Now that the subtree is processed, process this node as if the
+    // initializer list is a set of arguments to a constructor.
+    TIntermNode* emulatedConstructorArguments;
+    if (initList->getSequence().size() == 1)
+        emulatedConstructorArguments = initList->getSequence()[0];
+    else
+        emulatedConstructorArguments = initList;
+    return addConstructor(loc, emulatedConstructorArguments, type);
 }
 
 //

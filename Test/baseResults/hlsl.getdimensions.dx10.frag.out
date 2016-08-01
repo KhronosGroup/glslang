@@ -9,7 +9,7 @@ gl_FragCoord origin is upper left
 0:65        move second child to first child (temp uint)
 0:65          'sizeQueryTemp' (temp uint)
 0:65          textureSize (temp uint)
-0:65            'g_tTex1df4' (uniform texture1D)
+0:65            'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:65        move second child to first child (temp uint)
 0:65          'WidthU' (temp uint)
 0:65          'sizeQueryTemp' (temp uint)
@@ -17,7 +17,7 @@ gl_FragCoord origin is upper left
 0:66        move second child to first child (temp uint)
 0:66          'sizeQueryTemp' (temp uint)
 0:66          textureSize (temp uint)
-0:66            'g_tTex1df4' (uniform texture1D)
+0:66            'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:66            Constant:
 0:66              6 (const uint)
 0:66        move second child to first child (temp uint)
@@ -26,7 +26,7 @@ gl_FragCoord origin is upper left
 0:66        move second child to first child (temp uint)
 0:66          'NumberOfLevelsU' (temp uint)
 0:66          textureQueryLevels (temp uint)
-0:66            'g_tTex1df4' (uniform texture1D)
+0:66            'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:69      Sequence
 0:69        move second child to first child (temp uint)
 0:69          'sizeQueryTemp' (temp uint)
@@ -1063,8 +1063,8 @@ gl_FragCoord origin is upper left
 0:279      Branch: Return with expression
 0:279        'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:?   Linker Objects
-0:?     'g_sSamp' (uniform sampler)
-0:?     'g_tTex1df4' (uniform texture1D)
+0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
+0:?     'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:?     'g_tTex1di4' (uniform itexture1D)
 0:?     'g_tTex1du4' (uniform utexture1D)
 0:?     'g_tTex2df4' (uniform texture2D)
@@ -1106,7 +1106,7 @@ gl_FragCoord origin is upper left
 0:65        move second child to first child (temp uint)
 0:65          'sizeQueryTemp' (temp uint)
 0:65          textureSize (temp uint)
-0:65            'g_tTex1df4' (uniform texture1D)
+0:65            'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:65        move second child to first child (temp uint)
 0:65          'WidthU' (temp uint)
 0:65          'sizeQueryTemp' (temp uint)
@@ -1114,7 +1114,7 @@ gl_FragCoord origin is upper left
 0:66        move second child to first child (temp uint)
 0:66          'sizeQueryTemp' (temp uint)
 0:66          textureSize (temp uint)
-0:66            'g_tTex1df4' (uniform texture1D)
+0:66            'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:66            Constant:
 0:66              6 (const uint)
 0:66        move second child to first child (temp uint)
@@ -1123,7 +1123,7 @@ gl_FragCoord origin is upper left
 0:66        move second child to first child (temp uint)
 0:66          'NumberOfLevelsU' (temp uint)
 0:66          textureQueryLevels (temp uint)
-0:66            'g_tTex1df4' (uniform texture1D)
+0:66            'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:69      Sequence
 0:69        move second child to first child (temp uint)
 0:69          'sizeQueryTemp' (temp uint)
@@ -2160,8 +2160,8 @@ gl_FragCoord origin is upper left
 0:279      Branch: Return with expression
 0:279        'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:?   Linker Objects
-0:?     'g_sSamp' (uniform sampler)
-0:?     'g_tTex1df4' (uniform texture1D)
+0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
+0:?     'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:?     'g_tTex1di4' (uniform itexture1D)
 0:?     'g_tTex1du4' (uniform utexture1D)
 0:?     'g_tTex2df4' (uniform texture2D)
@@ -2291,6 +2291,7 @@ gl_FragCoord origin is upper left
                               Name 524  "psout"
                               Name 537  "g_sSamp"
                               Decorate 12(g_tTex1df4) DescriptorSet 0
+                              Decorate 12(g_tTex1df4) Binding 0
                               Decorate 29(g_tTex1di4) DescriptorSet 0
                               Decorate 42(g_tTex1du4) DescriptorSet 0
                               Decorate 57(g_tTex1df4a) DescriptorSet 0
@@ -2319,6 +2320,7 @@ gl_FragCoord origin is upper left
                               Decorate 510(g_tTex2dmsu4a) DescriptorSet 0
                               MemberDecorate 522(PS_OUTPUT) 1 BuiltIn FragDepth
                               Decorate 537(g_sSamp) DescriptorSet 0
+                              Decorate 537(g_sSamp) Binding 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

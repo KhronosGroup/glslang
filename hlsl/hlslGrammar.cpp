@@ -1549,8 +1549,11 @@ bool HlslGrammar::acceptInitializer(TIntermTyped*& node)
         node = intermediate.growAggregate(node, expr, loc);
 
         // COMMA
-        if (acceptTokenClass(EHTokComma))
+        if (acceptTokenClass(EHTokComma)) {
+            if (acceptTokenClass(EHTokRightBrace))  // allow trailing comma
+                return true;
             continue;
+        }
 
         // RIGHT_BRACE
         if (acceptTokenClass(EHTokRightBrace))
@@ -1718,27 +1721,29 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
     if (acceptTokenClass(EHTokLeftParen)) {
         TType castType;
         if (acceptType(castType)) {
-            if (! acceptTokenClass(EHTokRightParen)) {
-                expected(")");
-                return false;
+            if (acceptTokenClass(EHTokRightParen)) {
+                // We've matched "(type)" now, get the expression to cast
+                TSourceLoc loc = token.loc;
+                if (! acceptUnaryExpression(node))
+                    return false;
+
+                // Hook it up like a constructor
+                TFunction* constructorFunction = parseContext.handleConstructorCall(loc, castType);
+                if (constructorFunction == nullptr) {
+                    expected("type that can be constructed");
+                    return false;
+                }
+                TIntermTyped* arguments = nullptr;
+                parseContext.handleFunctionArgument(constructorFunction, arguments, node);
+                node = parseContext.handleFunctionCall(loc, constructorFunction, arguments);
+
+                return true;
+            } else {
+                // This could be a parenthesized constructor, ala (int(3)), and we just accepted
+                // the '(int' part.  We must back up twice.
+                recedeToken();
+                recedeToken();
             }
-
-            // We've matched "(type)" now, get the expression to cast
-            TSourceLoc loc = token.loc;
-            if (! acceptUnaryExpression(node))
-                return false;
-
-            // Hook it up like a constructor
-            TFunction* constructorFunction = parseContext.handleConstructorCall(loc, castType);
-            if (constructorFunction == nullptr) {
-                expected("type that can be constructed");
-                return false;
-            }
-            TIntermTyped* arguments = nullptr;
-            parseContext.handleFunctionArgument(constructorFunction, arguments, node);
-            node = parseContext.handleFunctionCall(loc, constructorFunction, arguments);
-
-            return true;
         } else {
             // This isn't a type cast, but it still started "(", so if it is a
             // unary expression, it can only be a postfix_expression, so try that.
@@ -2521,10 +2526,10 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 }
 
 // post_decls
-//      : COLON semantic    // optional
-//        COLON PACKOFFSET LEFT_PAREN ... RIGHT_PAREN  // optional
-//        COLON REGISTER    // optional
-//        annotations       // optional
+//      : COLON semantic                                                            // optional
+//        COLON PACKOFFSET LEFT_PAREN c[Subcomponent][.component]       RIGHT_PAREN // optional
+//        COLON REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt RIGHT_PAREN // optional
+//        annotations                                                               // optional
 //
 void HlslGrammar::acceptPostDecls(TType& type)
 {
@@ -2533,40 +2538,71 @@ void HlslGrammar::acceptPostDecls(TType& type)
         if (acceptTokenClass(EHTokColon)) {
             HlslToken idToken;
             if (acceptTokenClass(EHTokPackOffset)) {
+                // PACKOFFSET LEFT_PAREN c[Subcomponent][.component] RIGHT_PAREN
                 if (! acceptTokenClass(EHTokLeftParen)) {
                     expected("(");
                     return;
                 }
-                acceptTokenClass(EHTokIdentifier);
-                acceptTokenClass(EHTokDot);
-                acceptTokenClass(EHTokIdentifier);
+                HlslToken locationToken;
+                if (! acceptIdentifier(locationToken)) {
+                    expected("c[subcomponent][.component]");
+                    return;
+                }
+                HlslToken componentToken;
+                if (acceptTokenClass(EHTokDot)) {
+                    if (! acceptIdentifier(componentToken)) {
+                        expected("component");
+                        return;
+                    }
+                }
                 if (! acceptTokenClass(EHTokRightParen)) {
                     expected(")");
                     break;
                 }
-                // TODO: process the packoffset information
-                // c1.y means component y of location slot 1
+                parseContext.handlePackOffset(locationToken.loc, type, *locationToken.string, componentToken.string);
             } else if (! acceptIdentifier(idToken)) {
                 expected("semantic or packoffset or register");
                 return;
             } else if (*idToken.string == "register") {
+                // REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt RIGHT_PAREN
                 if (! acceptTokenClass(EHTokLeftParen)) {
                     expected("(");
                     return;
                 }
-                acceptTokenClass(EHTokIdentifier);
-                acceptTokenClass(EHTokComma);
-                acceptTokenClass(EHTokIdentifier);
-                acceptTokenClass(EHTokLeftBracket);
-                if (peekTokenClass(EHTokIntConstant))
+                HlslToken registerDesc;  // for Type#
+                HlslToken profile;
+                if (! acceptIdentifier(registerDesc)) {
+                    expected("register number description");
+                    return;
+                }
+                if (acceptTokenClass(EHTokComma)) {
+                    // Then we didn't really see the registerDesc yet, it was
+                    // actually the profile.  Adjust...
+                    profile = registerDesc;
+                    if (! acceptIdentifier(registerDesc)) {
+                        expected("register number description");
+                        return;
+                    }
+                }
+                int subComponent = 0;
+                if (acceptTokenClass(EHTokLeftBracket)) {
+                    // LEFT_BRACKET subcomponent RIGHT_BRACKET
+                    if (! peekTokenClass(EHTokIntConstant)) {
+                        expected("literal integer");
+                        return;
+                    }
+                    subComponent = token.i;
                     advanceToken();
-                acceptTokenClass(EHTokRightBracket);
+                    if (! acceptTokenClass(EHTokRightBracket)) {
+                        expected("]");
+                        break;
+                    }
+                }
                 if (! acceptTokenClass(EHTokRightParen)) {
                     expected(")");
                     break;
                 }
-                // TODO: process the register information
-                // b2 means buffer 2
+                parseContext.handleRegister(registerDesc.loc, type, profile.string, *registerDesc.string, subComponent);
             } else {
                 // semantic, in idToken.string
                 parseContext.handleSemantic(type, *idToken.string);

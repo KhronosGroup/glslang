@@ -298,7 +298,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             ppToken->name[len++] = (char)ch;
             ch = getch();
             if (ch == 'x' || ch == 'X') {
-                // must be hexidecimal
+                // must be hexadecimal
 
                 bool isUnsigned = false;
                 bool isInt64 = false;
@@ -319,11 +319,11 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                             } else if (ch >= 'a' && ch <= 'f') {
                                 ii = ch - 'a' + 10;
                             } else
-                                pp->parseContext.ppError(ppToken->loc, "bad digit in hexidecimal literal", "", "");
+                                pp->parseContext.ppError(ppToken->loc, "bad digit in hexadecimal literal", "", "");
                             ival = (ival << 4) | ii;
                         } else {
                             if (! AlreadyComplained) {
-                                pp->parseContext.ppError(ppToken->loc, "hexidecimal literal too big", "", "");
+                                pp->parseContext.ppError(ppToken->loc, "hexadecimal literal too big", "", "");
                                 AlreadyComplained = 1;
                             }
                             ival = 0xffffffffffffffffull;
@@ -333,7 +333,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                              (ch >= 'A' && ch <= 'F') ||
                              (ch >= 'a' && ch <= 'f'));
                 } else {
-                    pp->parseContext.ppError(ppToken->loc, "bad digit in hexidecimal literal", "", "");
+                    pp->parseContext.ppError(ppToken->loc, "bad digit in hexadecimal literal", "", "");
                 }
                 if (ch == 'u' || ch == 'U') {
                     if (len < MaxTokenLength)
@@ -405,7 +405,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 }
                 if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'E' || ch == 'F')
                     return pp->lFloatConst(len, ch, ppToken);
-                
+
                 // wasn't a float, so must be octal...
                 if (nonOctal)
                     pp->parseContext.ppError(ppToken->loc, "octal literal digit too large", "", "");
@@ -447,7 +447,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             break;
         case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
-            // can't be hexidecimal or octal, is either decimal or floating point
+            // can't be hexadecimal or octal, is either decimal or floating point
 
             do {
                 if (len < MaxTokenLength)
@@ -705,7 +705,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 // Return 0 when no more tokens.
 //
 const char* TPpContext::tokenize(TPpToken* ppToken)
-{    
+{
     int token = '\n';
 
     for(;;) {

@@ -1174,6 +1174,8 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
             spv::Id one = 0;
             if (node->getBasicType() == glslang::EbtFloat)
                 one = builder.makeFloatConstant(1.0F);
+            else if (node->getBasicType() == glslang::EbtDouble)
+                one = builder.makeDoubleConstant(1.0);
             else if (node->getBasicType() == glslang::EbtInt64 || node->getBasicType() == glslang::EbtUint64)
                 one = builder.makeInt64Constant(1);
             else
@@ -2857,7 +2859,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
         builder.clearAccessChain();
         glslangArgs[a]->traverse(this);
         argTypes.push_back(&paramType);
-        // keep outputs as and opaque objects l-values, evaluate input-only as r-values
+        // keep outputs and opaque objects as l-values, evaluate input-only as r-values
         if (qualifiers[a] != glslang::EvqConstReadOnly || paramType.isOpaque()) {
             // save l-value
             lValues.push_back(builder.getAccessChain());

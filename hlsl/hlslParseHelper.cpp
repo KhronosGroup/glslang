@@ -2135,6 +2135,88 @@ void HlslParseContext::handleSemantic(TType& type, const TString& semantic)
 }
 
 //
+// Handle seeing something like "PACKOFFSET LEFT_PAREN c[Subcomponent][.component] RIGHT_PAREN"
+//
+// 'location' has the "c[Subcomponent]" part.
+// 'component' points to the "component" part, or nullptr if not present.
+//
+void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TType& type, const glslang::TString& location,
+                                                                            const glslang::TString* component)
+{
+    if (location.size() == 0 || location[0] != 'c') {
+        error(loc, "expected 'c'", "packoffset", "");
+        return;
+    }
+    if (location.size() == 1)
+        return;
+    if (! isdigit(location[1])) {
+        error(loc, "expected number after 'c'", "packoffset", "");
+        return;
+    }
+
+    type.getQualifier().layoutOffset = 16 * atoi(location.substr(1, location.size()).c_str());
+    if (component != nullptr) {
+        int componentOffset = 0;
+        switch ((*component)[0]) {
+        case 'x': componentOffset =  0; break;
+        case 'y': componentOffset =  4; break;
+        case 'z': componentOffset =  8; break;
+        case 'w': componentOffset = 12; break;
+        default:
+            componentOffset = -1;
+            break;
+        }
+        if (componentOffset < 0 || component->size() > 1) {
+            error(loc, "expected {x, y, z, w} for component", "packoffset", "");
+            return;
+        }
+        type.getQualifier().layoutOffset += componentOffset;
+    }
+}
+
+//
+// Handle seeing something like "REGISTER LEFT_PAREN [shader_profile,] Type# RIGHT_PAREN"
+//
+// 'profile' points to the shader_profile part, or nullptr if not present.
+// 'desc' is the type# part.
+//
+void HlslParseContext::handleRegister(const TSourceLoc& loc, TType& type, const glslang::TString* profile,
+                                                                          const glslang::TString& desc,
+                                                                          int subComponent)
+{
+    if (profile != nullptr)
+        warn(loc, "ignoring shader_profile", "register", "");
+
+    if (desc.size() < 1) {
+        error(loc, "expected register type", "register", "");
+        return;
+    }
+
+    int regNumber = 0;
+    if (desc.size() > 1) {
+        if (isdigit(desc[1]))
+            regNumber = atoi(desc.substr(1, desc.size()).c_str());
+        else {
+            error(loc, "expected register number after register type", "register", "");
+            return;
+        }
+    }
+
+    // TODO: learn what all these really mean and how they interact with regNumber and subComponent
+    switch (desc[0]) {
+    case 'b':
+    case 't':
+    case 'c':
+    case 's':
+        type.getQualifier().layoutBinding = regNumber + subComponent;
+        break;
+    default:
+        warn(loc, "ignoring unrecognized register type", "register", "%c", desc[0]);
+        break;
+    }
+}
+
+//
 // Same error message for all places assignments don't work.
 //
 void HlslParseContext::assignError(const TSourceLoc& loc, const char* op, TString left, TString right)
@@ -3645,13 +3727,24 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
             error(loc, "wrong vector size (or rows in a matrix column):", "initializer list", type.getCompleteString().c_str());
             return nullptr;
         }
-    } else {
+    } else if (type.isScalar()) {
+        if ((int)initList->getSequence().size() != 1) {
+            error(loc, "scalar expected one element:", "initializer list", type.getCompleteString().c_str());
+            return nullptr;
+        }
+   } else {
         error(loc, "unexpected initializer-list type:", "initializer list", type.getCompleteString().c_str());
         return nullptr;
     }
 
-    // now that the subtree is processed, process this node
-    return addConstructor(loc, initList, type);
+    // Now that the subtree is processed, process this node as if the
+    // initializer list is a set of arguments to a constructor.
+    TIntermNode* emulatedConstructorArguments;
+    if (initList->getSequence().size() == 1)
+        emulatedConstructorArguments = initList->getSequence()[0];
+    else
+        emulatedConstructorArguments = initList;
+    return addConstructor(loc, emulatedConstructorArguments, type);
 }
 
 //
