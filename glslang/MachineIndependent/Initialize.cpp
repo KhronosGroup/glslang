@@ -934,25 +934,25 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     if ((profile == EEsProfile && version >= 300) ||
         (profile != EEsProfile && version >= 330)) {
         commonBuiltins.append(
-            "highp int   floatBitsToInt(highp float value);"
-            "highp ivec2 floatBitsToInt(highp vec2  value);"
-            "highp ivec3 floatBitsToInt(highp vec3  value);"
-            "highp ivec4 floatBitsToInt(highp vec4  value);"
-                     
-            "highp uint  floatBitsToUint(highp float value);"
-            "highp uvec2 floatBitsToUint(highp vec2  value);"
-            "highp uvec3 floatBitsToUint(highp vec3  value);"
-            "highp uvec4 floatBitsToUint(highp vec4  value);"
+            "int   floatBitsToInt(highp float value);"
+            "ivec2 floatBitsToInt(highp vec2  value);"
+            "ivec3 floatBitsToInt(highp vec3  value);"
+            "ivec4 floatBitsToInt(highp vec4  value);"
 
-            "highp float intBitsToFloat(highp int   value);"
-            "highp vec2  intBitsToFloat(highp ivec2 value);"
-            "highp vec3  intBitsToFloat(highp ivec3 value);"
-            "highp vec4  intBitsToFloat(highp ivec4 value);"
+            "uint  floatBitsToUint(highp float value);"
+            "uvec2 floatBitsToUint(highp vec2  value);"
+            "uvec3 floatBitsToUint(highp vec3  value);"
+            "uvec4 floatBitsToUint(highp vec4  value);"
 
-            "highp float uintBitsToFloat(highp uint  value);"
-            "highp vec2  uintBitsToFloat(highp uvec2 value);"
-            "highp vec3  uintBitsToFloat(highp uvec3 value);"
-            "highp vec4  uintBitsToFloat(highp uvec4 value);"
+            "float intBitsToFloat(highp int   value);"
+            "vec2  intBitsToFloat(highp ivec2 value);"
+            "vec3  intBitsToFloat(highp ivec3 value);"
+            "vec4  intBitsToFloat(highp ivec4 value);"
+
+            "float uintBitsToFloat(highp uint  value);"
+            "vec2  uintBitsToFloat(highp uvec2 value);"
+            "vec3  uintBitsToFloat(highp uvec3 value);"
+            "vec4  uintBitsToFloat(highp uvec4 value);"
 
             "\n");
     }
@@ -980,15 +980,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
-            "highp float frexp(highp float, out highp int);"
-            "highp vec2  frexp(highp vec2,  out highp ivec2);"
-            "highp vec3  frexp(highp vec3,  out highp ivec3);"
-            "highp vec4  frexp(highp vec4,  out highp ivec4);"
+            "float frexp(highp float, out highp int);"
+            "vec2  frexp(highp vec2,  out highp ivec2);"
+            "vec3  frexp(highp vec3,  out highp ivec3);"
+            "vec4  frexp(highp vec4,  out highp ivec4);"
 
-            "highp float ldexp(highp float, highp int);"
-            "highp vec2  ldexp(highp vec2,  highp ivec2);"
-            "highp vec3  ldexp(highp vec3,  highp ivec3);"
-            "highp vec4  ldexp(highp vec4,  highp ivec4);"
+            "float ldexp(highp float, highp int);"
+            "vec2  ldexp(highp vec2,  highp ivec2);"
+            "vec3  ldexp(highp vec3,  highp ivec3);"
+            "vec4  ldexp(highp vec4,  highp ivec4);"
 
             "\n");
     }
@@ -1015,7 +1015,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
             "highp uint packUnorm2x16(vec2);"
-            "highp vec2 unpackUnorm2x16(highp uint);"
+                  "vec2 unpackUnorm2x16(highp uint);"
             "\n");
     }
 
@@ -1024,18 +1024,37 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         commonBuiltins.append(
             "highp uint packSnorm2x16(vec2);"
             "      vec2 unpackSnorm2x16(highp uint);"
-            "highp uint packHalf2x16(mediump vec2);"
-            "      vec2 unpackHalf2x16(highp uint);"
+            "highp uint packHalf2x16(vec2);"
+            "\n");
+    }
+
+    if (profile == EEsProfile && version >= 300) {
+        commonBuiltins.append(
+            "mediump vec2 unpackHalf2x16(highp uint);"
+            "\n");
+    } else if (profile != EEsProfile && version >= 420) {
+        commonBuiltins.append(
+            "        vec2 unpackHalf2x16(highp uint);"
             "\n");
     }
 
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
-            "highp   uint packSnorm4x8  (mediump vec4);"
-            "        vec4 unpackSnorm4x8(highp   uint);"
-            "highp   uint packUnorm4x8  (mediump vec4);"
-            "        vec4 unpackUnorm4x8(highp   uint);"
+            "highp uint packSnorm4x8(vec4);"
+            "highp uint packUnorm4x8(vec4);"
+            "\n");
+    }
+
+    if (profile == EEsProfile && version >= 310) {
+        commonBuiltins.append(
+            "mediump vec4 unpackSnorm4x8(highp uint);"
+            "mediump vec4 unpackUnorm4x8(highp uint);"
+            "\n");
+    } else if (profile != EEsProfile && version >= 400) {
+        commonBuiltins.append(
+                    "vec4 unpackSnorm4x8(highp uint);"
+                    "vec4 unpackUnorm4x8(highp uint);"
             "\n");
     }
 
@@ -1372,6 +1391,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec3 bitfieldInsert(uvec3 base, uvec3, int, int);"
             "uvec4 bitfieldInsert(uvec4 base, uvec4, int, int);"
 
+            "\n");
+    }
+
+    if (profile != EEsProfile && version >= 400) {
+        commonBuiltins.append(
             "  int findLSB(  int);"
             "ivec2 findLSB(ivec2);"
             "ivec3 findLSB(ivec3);"
@@ -1383,95 +1407,23 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "ivec4 findLSB(uvec4);"
 
             "\n");
-    }
-
-    if (profile != EEsProfile && version >= 400) {
+    } else if (profile == EEsProfile && version >= 310) {
         commonBuiltins.append(
-            " uint uaddCarry( uint,  uint, out  uint carry);"
-            "uvec2 uaddCarry(uvec2, uvec2, out uvec2 carry);"
-            "uvec3 uaddCarry(uvec3, uvec3, out uvec3 carry);"
-            "uvec4 uaddCarry(uvec4, uvec4, out uvec4 carry);"
+            "lowp   int findLSB(  int);"
+            "lowp ivec2 findLSB(ivec2);"
+            "lowp ivec3 findLSB(ivec3);"
+            "lowp ivec4 findLSB(ivec4);"
 
-            " uint usubBorrow( uint,  uint, out  uint borrow);"
-            "uvec2 usubBorrow(uvec2, uvec2, out uvec2 borrow);"
-            "uvec3 usubBorrow(uvec3, uvec3, out uvec3 borrow);"
-            "uvec4 usubBorrow(uvec4, uvec4, out uvec4 borrow);"
-
-            "void umulExtended( uint,  uint, out  uint, out  uint lsb);"
-            "void umulExtended(uvec2, uvec2, out uvec2, out uvec2 lsb);"
-            "void umulExtended(uvec3, uvec3, out uvec3, out uvec3 lsb);"
-            "void umulExtended(uvec4, uvec4, out uvec4, out uvec4 lsb);"
-
-            "void imulExtended(  int,   int, out   int, out   int lsb);"
-            "void imulExtended(ivec2, ivec2, out ivec2, out ivec2 lsb);"
-            "void imulExtended(ivec3, ivec3, out ivec3, out ivec3 lsb);"
-            "void imulExtended(ivec4, ivec4, out ivec4, out ivec4 lsb);"
-
-            "  int bitfieldReverse(  int);"
-            "ivec2 bitfieldReverse(ivec2);"
-            "ivec3 bitfieldReverse(ivec3);"
-            "ivec4 bitfieldReverse(ivec4);"
-
-            " uint bitfieldReverse( uint);"
-            "uvec2 bitfieldReverse(uvec2);"
-            "uvec3 bitfieldReverse(uvec3);"
-            "uvec4 bitfieldReverse(uvec4);"
-
-            "  int bitCount(  int);"
-            "ivec2 bitCount(ivec2);"
-            "ivec3 bitCount(ivec3);"
-            "ivec4 bitCount(ivec4);"
-
-            "  int bitCount( uint);"
-            "ivec2 bitCount(uvec2);"
-            "ivec3 bitCount(uvec3);"
-            "ivec4 bitCount(uvec4);"
-
-            "  int findMSB(  int);"
-            "ivec2 findMSB(ivec2);"
-            "ivec3 findMSB(ivec3);"
-            "ivec4 findMSB(ivec4);"
-
-            "  int findMSB( uint);"
-            "ivec2 findMSB(uvec2);"
-            "ivec3 findMSB(uvec3);"
-            "ivec4 findMSB(uvec4);"
+            "lowp   int findLSB( uint);"
+            "lowp ivec2 findLSB(uvec2);"
+            "lowp ivec3 findLSB(uvec3);"
+            "lowp ivec4 findLSB(uvec4);"
 
             "\n");
     }
 
-    if (profile == EEsProfile && version >= 310) {
+    if (profile != EEsProfile && version >= 400) {
         commonBuiltins.append(
-            "highp  uint uaddCarry(highp  uint, highp  uint, out lowp  uint carry);"
-            "highp uvec2 uaddCarry(highp uvec2, highp uvec2, out lowp uvec2 carry);"
-            "highp uvec3 uaddCarry(highp uvec3, highp uvec3, out lowp uvec3 carry);"
-            "highp uvec4 uaddCarry(highp uvec4, highp uvec4, out lowp uvec4 carry);"
-
-            "highp  uint usubBorrow(highp  uint, highp  uint, out lowp  uint borrow);"
-            "highp uvec2 usubBorrow(highp uvec2, highp uvec2, out lowp uvec2 borrow);"
-            "highp uvec3 usubBorrow(highp uvec3, highp uvec3, out lowp uvec3 borrow);"
-            "highp uvec4 usubBorrow(highp uvec4, highp uvec4, out lowp uvec4 borrow);"
-
-            "void umulExtended(highp  uint, highp  uint, highp out  uint, out highp  uint lsb);"
-            "void umulExtended(highp uvec2, highp uvec2, highp out uvec2, out highp uvec2 lsb);"
-            "void umulExtended(highp uvec3, highp uvec3, highp out uvec3, out highp uvec3 lsb);"
-            "void umulExtended(highp uvec4, highp uvec4, highp out uvec4, out highp uvec4 lsb);"
-
-            "void imulExtended(highp   int, highp   int, highp out   int, out highp   int lsb);"
-            "void imulExtended(highp ivec2, highp ivec2, highp out ivec2, out highp ivec2 lsb);"
-            "void imulExtended(highp ivec3, highp ivec3, highp out ivec3, out highp ivec3 lsb);"
-            "void imulExtended(highp ivec4, highp ivec4, highp out ivec4, out highp ivec4 lsb);"
-
-            "highp   int bitfieldReverse(highp   int);"
-            "highp ivec2 bitfieldReverse(highp ivec2);"
-            "highp ivec3 bitfieldReverse(highp ivec3);"
-            "highp ivec4 bitfieldReverse(highp ivec4);"
-
-            "highp  uint bitfieldReverse(highp  uint);"
-            "highp uvec2 bitfieldReverse(highp uvec2);"
-            "highp uvec3 bitfieldReverse(highp uvec3);"
-            "highp uvec4 bitfieldReverse(highp uvec4);"
-
             "  int bitCount(  int);"
             "ivec2 bitCount(ivec2);"
             "ivec3 bitCount(ivec3);"
@@ -1491,6 +1443,67 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "ivec2 findMSB(highp uvec2);"
             "ivec3 findMSB(highp uvec3);"
             "ivec4 findMSB(highp uvec4);"
+
+            "\n");
+    }
+
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 400)) {
+        commonBuiltins.append(
+            " uint uaddCarry(highp  uint, highp  uint, out lowp  uint carry);"
+            "uvec2 uaddCarry(highp uvec2, highp uvec2, out lowp uvec2 carry);"
+            "uvec3 uaddCarry(highp uvec3, highp uvec3, out lowp uvec3 carry);"
+            "uvec4 uaddCarry(highp uvec4, highp uvec4, out lowp uvec4 carry);"
+
+            " uint usubBorrow(highp  uint, highp  uint, out lowp  uint borrow);"
+            "uvec2 usubBorrow(highp uvec2, highp uvec2, out lowp uvec2 borrow);"
+            "uvec3 usubBorrow(highp uvec3, highp uvec3, out lowp uvec3 borrow);"
+            "uvec4 usubBorrow(highp uvec4, highp uvec4, out lowp uvec4 borrow);"
+
+            "void umulExtended(highp  uint, highp  uint, highp out  uint, out highp  uint lsb);"
+            "void umulExtended(highp uvec2, highp uvec2, highp out uvec2, out highp uvec2 lsb);"
+            "void umulExtended(highp uvec3, highp uvec3, highp out uvec3, out highp uvec3 lsb);"
+            "void umulExtended(highp uvec4, highp uvec4, highp out uvec4, out highp uvec4 lsb);"
+
+            "void imulExtended(highp   int, highp   int, highp out   int, out highp   int lsb);"
+            "void imulExtended(highp ivec2, highp ivec2, highp out ivec2, out highp ivec2 lsb);"
+            "void imulExtended(highp ivec3, highp ivec3, highp out ivec3, out highp ivec3 lsb);"
+            "void imulExtended(highp ivec4, highp ivec4, highp out ivec4, out highp ivec4 lsb);"
+
+            "  int bitfieldReverse(highp   int);"
+            "ivec2 bitfieldReverse(highp ivec2);"
+            "ivec3 bitfieldReverse(highp ivec3);"
+            "ivec4 bitfieldReverse(highp ivec4);"
+
+            " uint bitfieldReverse(highp  uint);"
+            "uvec2 bitfieldReverse(highp uvec2);"
+            "uvec3 bitfieldReverse(highp uvec3);"
+            "uvec4 bitfieldReverse(highp uvec4);"
+
+            "\n");
+    }
+
+    if (profile == EEsProfile && version >= 310) {
+        commonBuiltins.append(
+            "lowp   int bitCount(  int);"
+            "lowp ivec2 bitCount(ivec2);"
+            "lowp ivec3 bitCount(ivec3);"
+            "lowp ivec4 bitCount(ivec4);"
+
+            "lowp   int bitCount( uint);"
+            "lowp ivec2 bitCount(uvec2);"
+            "lowp ivec3 bitCount(uvec3);"
+            "lowp ivec4 bitCount(uvec4);"
+
+            "lowp   int findMSB(highp   int);"
+            "lowp ivec2 findMSB(highp ivec2);"
+            "lowp ivec3 findMSB(highp ivec3);"
+            "lowp ivec4 findMSB(highp ivec4);"
+
+            "lowp   int findMSB(highp  uint);"
+            "lowp ivec2 findMSB(highp uvec2);"
+            "lowp ivec3 findMSB(highp uvec3);"
+            "lowp ivec4 findMSB(highp uvec4);"
             
             "\n");
     }

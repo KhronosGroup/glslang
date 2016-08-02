@@ -634,7 +634,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
             if (fields.num == 1) {
                 TIntermTyped* index = intermediate.addConstantUnion(fields.offsets[0], loc);
                 result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
-                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision));
+                result->setType(TType(base->getBasicType(), EvqTemporary));
             } else {
                 TString vectorString = field;
                 TIntermTyped* index = intermediate.addSwizzle(fields, loc);
@@ -1953,11 +1953,6 @@ void HlslParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fn
     }
     const TIntermSequence& aggArgs = *argp;  // only valid when unaryArg is nullptr
 
-    // built-in texturing functions get their return value precision from the precision of the sampler
-    if (fnCandidate.getType().getQualifier().precision == EpqNone &&
-        fnCandidate.getParamCount() > 0 && fnCandidate[0].type->getBasicType() == EbtSampler)
-        callNode.getQualifier().precision = arg0->getQualifier().precision;
-
     switch (callNode.getOp()) {
     case EOpTextureGather:
     case EOpTextureGatherOffset:
@@ -2060,11 +2055,6 @@ void HlslParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fn
     case EOpInterpolateAtCentroid:
     case EOpInterpolateAtSample:
     case EOpInterpolateAtOffset:
-        // "For the interpolateAt* functions, the call will return a precision
-        // qualification matching the precision of the 'interpolant' argument to
-        // the function call."
-        callNode.getQualifier().precision = arg0->getQualifier().precision;
-
         // Make sure the first argument is an interpolant, or an array element of an interpolant
         if (arg0->getType().getQualifier().storage != EvqVaryingIn) {
             // It might still be an array element.
@@ -2579,10 +2569,6 @@ void HlslParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, c
         dst.storage = EvqConstReadOnly;
     else if (src.storage != EvqTemporary && src.storage != EvqGlobal)
         error(loc, "too many storage qualifiers", GetStorageQualifierString(src.storage), "");
-
-    // Precision qualifiers
-    if (dst.precision == EpqNone || (force && src.precision != EpqNone))
-        dst.precision = src.precision;
 
     // Layout qualifiers
     mergeObjectLayoutQualifiers(dst, src, false);

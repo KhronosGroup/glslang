@@ -341,34 +341,10 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(const TSourceLoc& loc, TOper
         node->setOperand(child);
         node->setType(returnType);
 
-        // propagate precision up from child
-        if (profile == EEsProfile && returnType.getQualifier().precision == EpqNone && returnType.getBasicType() != EbtBool)
-            node->getQualifier().precision = child->getQualifier().precision;
-
-        // propagate precision down to child
-        if (node->getQualifier().precision != EpqNone)
-            child->propagatePrecision(node->getQualifier().precision);
-
         return node;
     } else {
         // setAggregateOperater() calls fold() for constant folding
         TIntermTyped* node = setAggregateOperator(childNode, op, returnType, loc);
-
-        // if not folded, we'll still have an aggregate node to propagate precision with
-        if (node->getAsAggregate()) {
-            TPrecisionQualifier correctPrecision = returnType.getQualifier().precision;
-            if (correctPrecision == EpqNone && profile == EEsProfile) {
-                // find the maximum precision from the arguments, for the built-in's return precision
-                TIntermSequence& sequence = node->getAsAggregate()->getSequence();
-                for (unsigned int arg = 0; arg < sequence.size(); ++arg)
-                    correctPrecision = std::max(correctPrecision, sequence[arg]->getAsTyped()->getQualifier().precision);
-            }
-
-            // Propagate precision through this node and its children. That algorithm stops
-            // when a precision is found, so start by clearing this subroot precision
-            node->getQualifier().precision = EpqNone;
-            node->propagatePrecision(correctPrecision);
-        }
 
         return node;
     }

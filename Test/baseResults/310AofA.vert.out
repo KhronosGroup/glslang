@@ -310,7 +310,7 @@ ERROR: node is still EOpNull!
 0:96          1 (const int)
 0:98      Constant:
 0:98        7 (const int)
-0:99      array length (temp highp int)
+0:99      array length (temp int)
 0:99        v: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of 7-element array of highp 4-component vector of float)
 0:99          direct index (layout(column_major shared ) temp block{layout(column_major shared ) buffer highp float u, layout(column_major shared ) buffer implicitly-sized array of 7-element array of highp 4-component vector of float v})
 0:99            'name3' (layout(column_major shared ) buffer 3-element array of block{layout(column_major shared ) buffer highp float u, layout(column_major shared ) buffer implicitly-sized array of 7-element array of highp 4-component vector of float v})
@@ -622,7 +622,7 @@ ERROR: node is still EOpNull!
 0:96          1 (const int)
 0:98      Constant:
 0:98        7 (const int)
-0:99      array length (temp highp int)
+0:99      array length (temp int)
 0:99        v: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of 7-element array of highp 4-component vector of float)
 0:99          direct index (layout(column_major shared ) temp block{layout(column_major shared ) buffer highp float u, layout(column_major shared ) buffer implicitly-sized array of 7-element array of highp 4-component vector of float v})
 0:99            'name3' (layout(column_major shared ) buffer 3-element array of block{layout(column_major shared ) buffer highp float u, layout(column_major shared ) buffer implicitly-sized array of 7-element array of highp 4-component vector of float v})
