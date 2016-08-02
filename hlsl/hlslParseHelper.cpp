@@ -989,7 +989,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
             const TSampler& texSampler = texType.getSampler();
             const TSamplerDim dim = texSampler.dim;
-            const int numArgs = argAggregate->getSequence().size();
+            const int numArgs = (int) argAggregate->getSequence().size();
 
             int numDims = 0;
 
@@ -1175,7 +1175,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 lodComponent->setType(TType(coordBaseType, EvqTemporary, 1));
             }
 
-            const int numArgs    = argAggregate->getSequence().size();
+            const int numArgs    = (int) argAggregate->getSequence().size();
             const bool hasOffset = ((!isMS && numArgs == 3) || (isMS && numArgs == 4));
 
             // Create texel fetch
@@ -1219,7 +1219,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* argLod    = argAggregate->getSequence()[3]->getAsTyped();
             TIntermTyped* argOffset = nullptr;
 
-            const int  numArgs = argAggregate->getSequence().size();
+            const int  numArgs = (int) argAggregate->getSequence().size();
 
             if (numArgs == 5) // offset, if present
                 argOffset = argAggregate->getSequence()[4]->getAsTyped();
