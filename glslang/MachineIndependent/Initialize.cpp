@@ -1460,15 +1460,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec3 usubBorrow(highp uvec3, highp uvec3, out lowp uvec3 borrow);"
             "uvec4 usubBorrow(highp uvec4, highp uvec4, out lowp uvec4 borrow);"
 
-            "void umulExtended(highp  uint, highp  uint, highp out  uint, out highp  uint lsb);"
-            "void umulExtended(highp uvec2, highp uvec2, highp out uvec2, out highp uvec2 lsb);"
-            "void umulExtended(highp uvec3, highp uvec3, highp out uvec3, out highp uvec3 lsb);"
-            "void umulExtended(highp uvec4, highp uvec4, highp out uvec4, out highp uvec4 lsb);"
+            "void umulExtended(highp  uint, highp  uint, out highp  uint, out highp  uint lsb);"
+            "void umulExtended(highp uvec2, highp uvec2, out highp uvec2, out highp uvec2 lsb);"
+            "void umulExtended(highp uvec3, highp uvec3, out highp uvec3, out highp uvec3 lsb);"
+            "void umulExtended(highp uvec4, highp uvec4, out highp uvec4, out highp uvec4 lsb);"
 
-            "void imulExtended(highp   int, highp   int, highp out   int, out highp   int lsb);"
-            "void imulExtended(highp ivec2, highp ivec2, highp out ivec2, out highp ivec2 lsb);"
-            "void imulExtended(highp ivec3, highp ivec3, highp out ivec3, out highp ivec3 lsb);"
-            "void imulExtended(highp ivec4, highp ivec4, highp out ivec4, out highp ivec4 lsb);"
+            "void imulExtended(highp   int, highp   int, out highp   int, out highp   int lsb);"
+            "void imulExtended(highp ivec2, highp ivec2, out highp ivec2, out highp ivec2 lsb);"
+            "void imulExtended(highp ivec3, highp ivec3, out highp ivec3, out highp ivec3 lsb);"
+            "void imulExtended(highp ivec4, highp ivec4, out highp ivec4, out highp ivec4 lsb);"
 
             "  int bitfieldReverse(highp   int);"
             "ivec2 bitfieldReverse(highp ivec2);"
@@ -2638,10 +2638,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 );
 
             stageBuiltins[EShLangFragment].append(  // GL_OES_sample_variables
-                "flat lowp    in  int  gl_SampleID;"
-                "     mediump in  vec2 gl_SamplePosition;"
-                "flat highp   in  int  gl_SampleMaskIn[];"
-                "     highp   out int  gl_SampleMask[];"
+                "flat  in lowp     int gl_SampleID;"
+                "      in mediump vec2 gl_SamplePosition;"
+                "flat  in highp    int gl_SampleMaskIn[];"
+                "     out highp    int gl_SampleMask[];"
                 "uniform lowp int gl_NumSamples;"
                 );
         }

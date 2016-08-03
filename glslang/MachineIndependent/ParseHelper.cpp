@@ -62,7 +62,7 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
     linkage = new TIntermAggregate;
 
     // decide whether precision qualifiers should be ignored or respected
-    obeyPrecisionQualifiers_ = profile == EEsProfile;
+    obeyPrecisionQualifiers_ = profile == EEsProfile || spvVersion.vulkan > 0;
     setPrecisionDefaults();
 
     globalUniformDefaults.clear();
@@ -98,8 +98,11 @@ TParseContext::~TParseContext()
 // Intended just as a TParseContext constructor helper.
 void TParseContext::setPrecisionDefaults()
 {
-    // set all precision defaults to EpqNone, which is correct for all desktop types
-    // and for ES types that don't have defaults (thus getting an error on use)
+    // Set all precision defaults to EpqNone, which is correct for all types
+    // when not obeying precision qualifiers, and correct for types that don't
+    // have defaults (thus getting an error on use) when obeying precision
+    // qualifiers.
+
     for (int type = 0; type < EbtNumTypes; ++type)
         defaultPrecision[type] = EpqNone;
 
@@ -108,30 +111,35 @@ void TParseContext::setPrecisionDefaults()
 
     // replace with real precision defaults for those that have them
     if (obeyPrecisionQualifiers()) {
-        TSampler sampler;
-        sampler.set(EbtFloat, Esd2D);
-        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
-        sampler.set(EbtFloat, EsdCube);
-        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
-        sampler.set(EbtFloat, Esd2D);
-        sampler.external = true;
-        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+        if (profile == EEsProfile) {
+            // Most don't have defaults, a few default to lowp.
+            TSampler sampler;
+            sampler.set(EbtFloat, Esd2D);
+            defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+            sampler.set(EbtFloat, EsdCube);
+            defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+            sampler.set(EbtFloat, Esd2D);
+            sampler.external = true;
+            defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+        } else {
+            // Non-ES profile
+            // All default to highp.
+            for (int type = 0; type < maxSamplerIndex; ++type)
+                defaultSamplerPrecision[type] = EpqHigh;
+        }
 
         // If we are parsing built-in computational variables/functions, it is meaningful to record
         // whether the built-in has no precision qualifier, as that ambiguity
         // is used to resolve the precision from the supplied arguments/operands instead.
         // So, we don't actually want to replace EpqNone with a default precision for built-ins.
         if (! parsingBuiltins) {
-            switch (language) {
-            case EShLangFragment:
+            if (profile == EEsProfile && language == EShLangFragment) {
                 defaultPrecision[EbtInt] = EpqMedium;
                 defaultPrecision[EbtUint] = EpqMedium;
-                break;
-            default:
+            } else {
                 defaultPrecision[EbtInt] = EpqHigh;
                 defaultPrecision[EbtUint] = EpqHigh;
                 defaultPrecision[EbtFloat] = EpqHigh;
-                break;
             }
         }
 

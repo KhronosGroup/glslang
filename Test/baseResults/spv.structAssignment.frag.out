@@ -34,6 +34,8 @@ Linked fragment stage:
                               Name 44  "coord"
                               Name 49  "foo"
                               Decorate 40(samp2D) DescriptorSet 0
+                              Decorate 44(coord) RelaxedPrecision
+                              Decorate 45 RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1
