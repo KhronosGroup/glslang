@@ -1075,7 +1075,7 @@ public:
                                 qualifier.clear();
                                 qualifier.storage = q;
                                 qualifier.precision = p;
-                                assert(p >= 0 && p <= EpqHigh);
+                                assert(p >= EpqNone && p <= EpqHigh);
                             }
     // for turning a TPublicType into a TType, using a shallow copy
     explicit TType(const TPublicType& p) :

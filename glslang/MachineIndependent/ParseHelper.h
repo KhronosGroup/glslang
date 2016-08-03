@@ -80,7 +80,7 @@ public:
             symbolTable(symbolTable), tokensBeforeEOF(false),
             linkage(nullptr), scanContext(nullptr), ppContext(nullptr) { }
     virtual ~TParseContextBase() { }
-    
+
     virtual void setLimits(const TBuiltInResource&) = 0;
     
     EShLanguage getLanguage() const { return language; }
@@ -154,6 +154,9 @@ public:
     TParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins, int version, EProfile, const SpvVersion& spvVersion, EShLanguage, TInfoSink&,
                   bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
     virtual ~TParseContext();
+
+    bool obeyPrecisionQualifiers() const { return obeyPrecisionQualifiers_; };
+    void setPrecisionDefaults();
 
     void setLimits(const TBuiltInResource&);
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
@@ -351,6 +354,7 @@ protected:
     TIdSetType inductiveLoopIds;
     bool anyIndexLimits;
     TVector<TIntermTyped*> needsIndexLimitationChecking;
+    bool obeyPrecisionQualifiers_;
 
     //
     // Geometry shader input arrays:
