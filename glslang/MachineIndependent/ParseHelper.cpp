@@ -1078,17 +1078,16 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 {
     TIntermTyped* result = nullptr;
 
-    TOperator op = function->getBuiltInOp();
-    if (op == EOpArrayLength)
+    if (function->getBuiltInOp() == EOpArrayLength)
         result = handleLengthMethod(loc, function, arguments);
-    else if (op != EOpNull) {
+    else if (function->getBuiltInOp() != EOpNull) {
         //
         // Then this should be a constructor.
         // Don't go through the symbol table for constructors.
         // Their parameters will be verified algorithmically.
         //
         TType type(EbtVoid);  // use this to get the type back
-        if (! constructorError(loc, arguments, *function, op, type)) {
+        if (! constructorError(loc, arguments, *function, function->getBuiltInOp(), type)) {
             //
             // It's a constructor, of type 'type'.
             //
@@ -1149,18 +1148,9 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                 addInputArgumentConversions(*fnCandidate, arguments);  // arguments may be modified if it's just a single argument node
             }
 
-            op = fnCandidate->getBuiltInOp();
-            if (builtIn && op != EOpNull) {
+            if (builtIn && fnCandidate->getBuiltInOp() != EOpNull) {
                 // A function call mapped to a built-in operation.
-                checkLocation(loc, op);
-                result = intermediate.addBuiltInFunctionCall(loc, op, fnCandidate->getParamCount() == 1, arguments, fnCandidate->getType());
-                if (result == nullptr)  {
-                    error(arguments->getLoc(), " wrong operand type", "Internal Error",
-                                               "built in unary operator function.  Type: %s",
-                                               static_cast<TIntermTyped*>(arguments)->getCompleteString().c_str());
-                } else if (result->getAsOperator()) {
-                    builtInOpCheck(loc, *fnCandidate, *result->getAsOperator());
-                }
+                result = handleBuiltInFunctionCall(loc, *arguments, *fnCandidate);
             } else {
                 // This is a function call not mapped to built-in operator.
                 // It could still be a built-in function, but only if PureOperatorBuiltins == false.
@@ -1205,6 +1195,118 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
         result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
 
     return result;
+}
+
+TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNode& arguments,
+                                                       const TFunction& function)
+{
+    checkLocation(loc, function.getBuiltInOp());
+    TIntermTyped *result = intermediate.addBuiltInFunctionCall(loc, function.getBuiltInOp(),
+                                                               function.getParamCount() == 1,
+                                                               &arguments, function.getType());
+    computeBuiltinPrecisions(*result, function);
+    if (result == nullptr)  {
+        error(arguments.getLoc(), " wrong operand type", "Internal Error",
+                                  "built in unary operator function.  Type: %s",
+                                  static_cast<TIntermTyped*>(&arguments)->getCompleteString().c_str());
+    } else if (result->getAsOperator())
+        builtInOpCheck(loc, function, *result->getAsOperator());
+
+    return result;
+}
+
+// "The operation of a built-in function can have a different precision
+// qualification than the precision qualification of the resulting value.
+// These two precision qualifications are established as follows.
+//
+// The precision qualification of the operation of a built-in function is
+// based on the precision qualification of its input arguments and formal
+// parameters:  When a formal parameter specifies a precision qualifier,
+// that is used, otherwise, the precision qualification of the calling
+// argument is used.  The highest precision of these will be the precision
+// qualification of the operation of the built-in function. Generally,
+// this is applied across all arguments to a built-in function, with the
+// exceptions being:
+//   - bitfieldExtract and bitfieldInsert ignore the 'offset' and 'bits'
+//     arguments.
+//   - interpolateAt* functions only look at the 'interpolant' argument.
+//
+// The precision qualification of the result of a built-in function is
+// determined in one of the following ways:
+//
+//   - For the texture sampling, image load, and image store functions,
+//     the precision of the return type matches the precision of the
+//     sampler type
+//
+//   Otherwise:
+//
+//   - For prototypes that do not specify a resulting precision qualifier,
+//     the precision will be the same as the precision of the operation.
+//
+//   - For prototypes that do specify a resulting precision qualifier,
+//     the specified precision qualifier is the precision qualification of
+//     the result."
+//
+void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction& function)
+{
+    TPrecisionQualifier operationPrecision = EpqNone;
+    TPrecisionQualifier resultPrecision = EpqNone;
+
+    if (profile != EEsProfile)
+        return;
+
+    TIntermOperator* opNode = node.getAsOperator();
+    if (opNode == nullptr)
+        return;
+
+    if (TIntermUnary* unaryNode = node.getAsUnaryNode()) {
+        operationPrecision = std::max(function[0].type->getQualifier().precision,
+                                      unaryNode->getOperand()->getType().getQualifier().precision);
+        if (function.getType().getBasicType() != EbtBool)
+            resultPrecision = function.getType().getQualifier().precision == EpqNone ? 
+                                        operationPrecision :
+                                        function.getType().getQualifier().precision;
+    } else if (TIntermAggregate* agg = node.getAsAggregate()) {
+        TIntermSequence& sequence = agg->getSequence();
+        int numArgs = (int)sequence.size();
+        switch (agg->getOp()) {
+        case EOpBitfieldExtract:
+            numArgs = 1;
+            break;
+        case EOpBitfieldInsert:
+            numArgs = 2;
+            break;
+        case EOpInterpolateAtCentroid:
+        case EOpInterpolateAtOffset:
+        case EOpInterpolateAtSample:
+            numArgs = 1;
+            break;
+        default:
+            break;
+        }
+        // find the maximum precision from the arguments and parameters
+        for (unsigned int arg = 0; arg < sequence.size(); ++arg) {
+            operationPrecision = std::max(operationPrecision, sequence[arg]->getAsTyped()->getQualifier().precision);
+            operationPrecision = std::max(operationPrecision, function[arg].type->getQualifier().precision);
+        }
+        // compute the result precision
+        if (agg->isSampling() || agg->getOp() == EOpImageLoad || agg->getOp() == EOpImageStore)
+            resultPrecision = sequence[0]->getAsTyped()->getQualifier().precision;
+        else if (function.getType().getBasicType() != EbtBool)
+            resultPrecision = function.getType().getQualifier().precision == EpqNone ? 
+                                        operationPrecision :
+                                        function.getType().getQualifier().precision;
+    }
+
+    // Propagate precision through this node and its children. That algorithm stops
+    // when a precision is found, so start by clearing this subroot precision
+    opNode->getQualifier().precision = EpqNone;
+    if (operationPrecision != EpqNone) {
+        opNode->propagatePrecision(operationPrecision);
+        opNode->setOperationPrecision(operationPrecision);
+    }
+    // Now, set the result precision, which might not match
+    opNode->getQualifier().precision = resultPrecision;
 }
 
 TIntermNode* TParseContext::handleReturnValue(const TSourceLoc& loc, TIntermTyped* value)
@@ -1433,11 +1535,6 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     }
     const TIntermSequence& aggArgs = *argp;  // only valid when unaryArg is nullptr
 
-    // built-in texturing functions get their return value precision from the precision of the sampler
-    if (fnCandidate.getType().getQualifier().precision == EpqNone &&
-        fnCandidate.getParamCount() > 0 && fnCandidate[0].type->getBasicType() == EbtSampler)
-        callNode.getQualifier().precision = arg0->getQualifier().precision;
-
     switch (callNode.getOp()) {
     case EOpTextureGather:
     case EOpTextureGatherOffset:
@@ -1569,11 +1666,6 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpInterpolateAtCentroid:
     case EOpInterpolateAtSample:
     case EOpInterpolateAtOffset:
-        // "For the interpolateAt* functions, the call will return a precision
-        // qualification matching the precision of the 'interpolant' argument to
-        // the function call."
-        callNode.getQualifier().precision = arg0->getQualifier().precision;
-
         // Make sure the first argument is an interpolant, or an array element of an interpolant
         if (arg0->getType().getQualifier().storage != EvqVaryingIn) {
             // It might still be an array element.

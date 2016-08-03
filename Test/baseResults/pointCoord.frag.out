@@ -14,7 +14,7 @@ Shader version: 100
 0:9        true case
 0:10        move second child to first child (temp highp 4-component vector of float)
 0:10          'color' (temp highp 4-component vector of float)
-0:10          texture (global lowp 4-component vector of float)
+0:10          texture (global lowp 4-component vector of float, operation at mediump)
 0:10            'sampler' (uniform lowp sampler2D)
 0:10            'gl_PointCoord' (gl_PointCoord mediump 2-component vector of float PointCoord)
 0:9        false case
@@ -50,7 +50,7 @@ Shader version: 100
 0:9        true case
 0:10        move second child to first child (temp highp 4-component vector of float)
 0:10          'color' (temp highp 4-component vector of float)
-0:10          texture (global lowp 4-component vector of float)
+0:10          texture (global lowp 4-component vector of float, operation at mediump)
 0:10            'sampler' (uniform lowp sampler2D)
 0:10            'gl_PointCoord' (gl_PointCoord mediump 2-component vector of float PointCoord)
 0:9        false case

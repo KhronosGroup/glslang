@@ -283,15 +283,21 @@ spv::Dim TranslateDimensionality(const glslang::TSampler& sampler)
     }
 }
 
-// Translate glslang type to SPIR-V precision decorations.
-spv::Decoration TranslatePrecisionDecoration(const glslang::TType& type)
+// Translate glslang precision to SPIR-V precision decorations.
+spv::Decoration TranslatePrecisionDecoration(glslang::TPrecisionQualifier glslangPrecision)
 {
-    switch (type.getQualifier().precision) {
+    switch (glslangPrecision) {
     case glslang::EpqLow:    return spv::DecorationRelaxedPrecision;
     case glslang::EpqMedium: return spv::DecorationRelaxedPrecision;
     default:
         return spv::NoPrecision;
     }
+}
+
+// Translate glslang type to SPIR-V precision decorations.
+spv::Decoration TranslatePrecisionDecoration(const glslang::TType& type)
+{
+    return TranslatePrecisionDecoration(type.getQualifier().precision);
 }
 
 // Translate glslang type to SPIR-V block decorations.
@@ -940,7 +946,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                 spv::Id leftRValue = accessChainLoad(node->getLeft()->getType());
 
                 // do the operation
-                rValue = createBinaryOperation(node->getOp(), TranslatePrecisionDecoration(node->getType()),
+                rValue = createBinaryOperation(node->getOp(), TranslatePrecisionDecoration(node->getOperationPrecision()),
                                                TranslateNoContractionDecoration(node->getType().getQualifier()),
                                                convertGlslangToSpvType(node->getType()), leftRValue, rValue,
                                                node->getType().getBasicType());
@@ -1065,7 +1071,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
     spv::Id right = accessChainLoad(node->getRight()->getType());
 
     // get result
-    spv::Id result = createBinaryOperation(node->getOp(), TranslatePrecisionDecoration(node->getType()),
+    spv::Id result = createBinaryOperation(node->getOp(), TranslatePrecisionDecoration(node->getOperationPrecision()),
                                            TranslateNoContractionDecoration(node->getType().getQualifier()),
                                            convertGlslangToSpvType(node->getType()), left, right,
                                            node->getLeft()->getType().getBasicType());
@@ -1142,7 +1148,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     else
         operand = accessChainLoad(node->getOperand()->getType());
 
-    spv::Decoration precision = TranslatePrecisionDecoration(node->getType());
+    spv::Decoration precision = TranslatePrecisionDecoration(node->getOperationPrecision());
     spv::Decoration noContraction = TranslateNoContractionDecoration(node->getType().getQualifier());
 
     // it could be a conversion
@@ -1187,7 +1193,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
             else
                 op = glslang::EOpSub;
 
-            spv::Id result = createBinaryOperation(op, TranslatePrecisionDecoration(node->getType()),
+            spv::Id result = createBinaryOperation(op, precision,
                                                    TranslateNoContractionDecoration(node->getType().getQualifier()),
                                                    convertGlslangToSpvType(node->getType()), operand, one,
                                                    node->getType().getBasicType());
@@ -1249,7 +1255,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
     assert(node->getOp());
 
-    spv::Decoration precision = TranslatePrecisionDecoration(node->getType());
+    spv::Decoration precision = TranslatePrecisionDecoration(node->getOperationPrecision());
 
     switch (node->getOp()) {
     case glslang::EOpSequence:
@@ -2573,7 +2579,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         translateArguments(*node->getAsAggregate(), arguments);
     else
         translateArguments(*node->getAsUnaryNode(), arguments);
-    spv::Decoration precision = TranslatePrecisionDecoration(node->getType());
+    spv::Decoration precision = TranslatePrecisionDecoration(node->getOperationPrecision());
 
     spv::Builder::TextureParameters params = { };
     params.sampler = arguments[0];

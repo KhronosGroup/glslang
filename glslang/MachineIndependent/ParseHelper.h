@@ -197,6 +197,8 @@ public:
     TFunction* handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
     TIntermTyped* handleFunctionCall(const TSourceLoc&, TFunction*, TIntermNode*);
+    TIntermTyped* handleBuiltInFunctionCall(TSourceLoc, TIntermNode& arguments, const TFunction& function);
+    void computeBuiltinPrecisions(TIntermTyped&, const TFunction&);
     TIntermNode* handleReturnValue(const TSourceLoc&, TIntermTyped*);
     void checkLocation(const TSourceLoc&, TOperator);
     TIntermTyped* handleLengthMethod(const TSourceLoc&, TFunction*, TIntermNode*);

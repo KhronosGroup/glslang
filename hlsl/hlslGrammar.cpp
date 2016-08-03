@@ -89,12 +89,17 @@ bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
 
 // compilationUnit
 //      : list of externalDeclaration
+//      |   SEMICOLONS
 //
 bool HlslGrammar::acceptCompilationUnit()
 {
     TIntermNode* unitNode = nullptr;
 
     while (! peekTokenClass(EHTokNone)) {
+        // HLSL allows semicolons between global declarations, e.g, between functions.
+        if (acceptTokenClass(EHTokSemicolon))
+            continue;
+
         // externalDeclaration
         TIntermNode* declarationNode;
         if (! acceptDeclaration(declarationNode))

@@ -122,7 +122,7 @@ ERROR: node is still EOpNull!
 0:61            2 (const int)
 0:61        Constant:
 0:61          4.700000
-0:62      array length (temp highp int)
+0:62      array length (temp int)
 0:62        values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
 0:62          'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
 0:62          Constant:
@@ -178,9 +178,9 @@ ERROR: node is still EOpNull!
 0:92          0 (const int)
 0:92          0 (const int)
 0:92          0 (const int)
-0:93      imageLoad (global highp 4-component vector of float)
+0:93      imageLoad (global mediump 4-component vector of float)
 0:93        'img2Drgba' (layout(rgba32f ) readonly uniform mediump image2D)
-0:93        Construct ivec2 (temp highp 2-component vector of int)
+0:93        Construct ivec2 (temp mediump 2-component vector of int)
 0:93          'i' (temp highp int)
 0:93          'i' (temp highp int)
 0:94      imageLoad (global highp 4-component vector of int)
@@ -549,7 +549,7 @@ ERROR: node is still EOpNull!
 0:61            2 (const int)
 0:61        Constant:
 0:61          4.700000
-0:62      array length (temp highp int)
+0:62      array length (temp int)
 0:62        values: direct index for structure (layout(column_major shared ) buffer implicitly-sized array of highp float)
 0:62          'ro' (layout(column_major shared ) readonly buffer block{layout(column_major shared ) buffer highp int value, layout(column_major shared ) buffer implicitly-sized array of highp float values})
 0:62          Constant:
@@ -605,9 +605,9 @@ ERROR: node is still EOpNull!
 0:92          0 (const int)
 0:92          0 (const int)
 0:92          0 (const int)
-0:93      imageLoad (global highp 4-component vector of float)
+0:93      imageLoad (global mediump 4-component vector of float)
 0:93        'img2Drgba' (layout(rgba32f ) readonly uniform mediump image2D)
-0:93        Construct ivec2 (temp highp 2-component vector of int)
+0:93        Construct ivec2 (temp mediump 2-component vector of int)
 0:93          'i' (temp highp int)
 0:93          'i' (temp highp int)
 0:94      imageLoad (global highp 4-component vector of int)

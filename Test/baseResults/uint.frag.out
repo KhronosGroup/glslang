@@ -113,7 +113,7 @@ ERROR: node is still EOpNull!
 0:55        true case
 0:56        move second child to first child (temp mediump 4-component vector of uint)
 0:56          'c' (out mediump 4-component vector of uint)
-0:56          texture (global lowp 4-component vector of uint)
+0:56          texture (global lowp 4-component vector of uint, operation at highp)
 0:56            'usampler' (uniform lowp usampler2D)
 0:56            'tc' (smooth in highp 2-component vector of float)
 0:57      Test condition and select (temp void)
@@ -124,7 +124,7 @@ ERROR: node is still EOpNull!
 0:57        true case
 0:58        move second child to first child (temp mediump 4-component vector of uint)
 0:58          'c' (out mediump 4-component vector of uint)
-0:58          texture (global lowp 4-component vector of uint)
+0:58          texture (global lowp 4-component vector of uint, operation at highp)
 0:58            'usampler' (uniform lowp usampler2D)
 0:58            add (temp highp 2-component vector of float)
 0:58              'tc' (smooth in highp 2-component vector of float)
@@ -139,7 +139,7 @@ ERROR: node is still EOpNull!
 0:59        true case
 0:60        move second child to first child (temp mediump 4-component vector of uint)
 0:60          'c' (out mediump 4-component vector of uint)
-0:60          texture (global lowp 4-component vector of uint)
+0:60          texture (global lowp 4-component vector of uint, operation at highp)
 0:60            'usampler' (uniform lowp usampler2D)
 0:60            subtract (temp highp 2-component vector of float)
 0:60              'tc' (smooth in highp 2-component vector of float)
@@ -412,7 +412,7 @@ ERROR: node is still EOpNull!
 0:55        true case
 0:56        move second child to first child (temp mediump 4-component vector of uint)
 0:56          'c' (out mediump 4-component vector of uint)
-0:56          texture (global lowp 4-component vector of uint)
+0:56          texture (global lowp 4-component vector of uint, operation at highp)
 0:56            'usampler' (uniform lowp usampler2D)
 0:56            'tc' (smooth in highp 2-component vector of float)
 0:57      Test condition and select (temp void)
@@ -423,7 +423,7 @@ ERROR: node is still EOpNull!
 0:57        true case
 0:58        move second child to first child (temp mediump 4-component vector of uint)
 0:58          'c' (out mediump 4-component vector of uint)
-0:58          texture (global lowp 4-component vector of uint)
+0:58          texture (global lowp 4-component vector of uint, operation at highp)
 0:58            'usampler' (uniform lowp usampler2D)
 0:58            add (temp highp 2-component vector of float)
 0:58              'tc' (smooth in highp 2-component vector of float)
@@ -438,7 +438,7 @@ ERROR: node is still EOpNull!
 0:59        true case
 0:60        move second child to first child (temp mediump 4-component vector of uint)
 0:60          'c' (out mediump 4-component vector of uint)
-0:60          texture (global lowp 4-component vector of uint)
+0:60          texture (global lowp 4-component vector of uint, operation at highp)
 0:60            'usampler' (uniform lowp usampler2D)
 0:60            subtract (temp highp 2-component vector of float)
 0:60              'tc' (smooth in highp 2-component vector of float)

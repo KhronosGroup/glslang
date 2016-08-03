@@ -461,6 +461,9 @@ enum TOperator {
     EOpTextureQueryLod,
     EOpTextureQueryLevels,
     EOpTextureQuerySamples,
+
+    EOpSamplingGuardBegin,
+
     EOpTexture,
     EOpTextureProj,
     EOpTextureLod,
@@ -503,7 +506,7 @@ enum TOperator {
     EOpSparseTextureGradOffsetClamp,
 
     EOpSparseTextureGuardEnd,
-
+    EOpSamplingGuardEnd,
     EOpTextureGuardEnd,
 
     //
@@ -799,10 +802,26 @@ public:
     virtual bool promote() { return true; }
     bool modifiesState() const;
     bool isConstructor() const;
-    bool isTexture() const { return op > EOpTextureGuardBegin && op < EOpTextureGuardEnd; }
-    bool isImage()   const { return op > EOpImageGuardBegin   && op < EOpImageGuardEnd; }
+    bool isTexture()  const { return op > EOpTextureGuardBegin  && op < EOpTextureGuardEnd; }
+    bool isSampling() const { return op > EOpSamplingGuardBegin && op < EOpSamplingGuardEnd; }
+    bool isImage()    const { return op > EOpImageGuardBegin    && op < EOpImageGuardEnd; }
     bool isSparseTexture() const { return op > EOpSparseTextureGuardBegin && op < EOpSparseTextureGuardEnd; }
     bool isSparseImage()   const { return op == EOpSparseImageLoad; }
+
+    void setOperationPrecision(TPrecisionQualifier p) { operationPrecision = p; }
+    TPrecisionQualifier getOperationPrecision() const { return operationPrecision != EpqNone ?
+                                                                                     operationPrecision :
+                                                                                     type.getQualifier().precision; }
+    TString getCompleteString() const
+    {
+        TString cs = type.getCompleteString();
+        if (getOperationPrecision() != type.getQualifier().precision) {
+            cs += ", operation at ";
+            cs += GetPrecisionQualifierString(getOperationPrecision());
+        }
+
+        return cs;
+    }
 
     // Crack the op into the individual dimensions of texturing operation.
     void crackTexture(TSampler sampler, TCrackedTextureOp& cracked) const
@@ -935,9 +954,15 @@ public:
     }
 
 protected:
-    TIntermOperator(TOperator o) : TIntermTyped(EbtFloat), op(o) {}
-    TIntermOperator(TOperator o, TType& t) : TIntermTyped(t), op(o) {}
+    TIntermOperator(TOperator o) : TIntermTyped(EbtFloat), op(o), operationPrecision(EpqNone) {}
+    TIntermOperator(TOperator o, TType& t) : TIntermTyped(t), op(o), operationPrecision(EpqNone) {}
     TOperator op;
+    // The result precision is in the inherited TType, and is usually meant to be both
+    // the operation precision and the result precision. However, some more complex things,
+    // like built-in function calls, distinguish between the two, in which case non-EqpNone
+    // 'operationPrecision' overrides the result precision as far as operation precision
+    // is concerned.
+    TPrecisionQualifier operationPrecision;
 };
 
 //
