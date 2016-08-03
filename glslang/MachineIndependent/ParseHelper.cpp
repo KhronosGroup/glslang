@@ -61,6 +61,43 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
     linkage = new TIntermAggregate;
 
+    // decide whether precision qualifiers should be ignored or respected
+    obeyPrecisionQualifiers_ = profile == EEsProfile;
+    setPrecisionDefaults();
+
+    globalUniformDefaults.clear();
+    globalUniformDefaults.layoutMatrix = ElmColumnMajor;
+    globalUniformDefaults.layoutPacking = spvVersion.spv != 0 ? ElpStd140 : ElpShared;
+
+    globalBufferDefaults.clear();
+    globalBufferDefaults.layoutMatrix = ElmColumnMajor;
+    globalBufferDefaults.layoutPacking = spvVersion.spv != 0 ? ElpStd430 : ElpShared;
+
+    globalInputDefaults.clear();
+    globalOutputDefaults.clear();
+
+    // "Shaders in the transform 
+    // feedback capturing mode have an initial global default of
+    //     layout(xfb_buffer = 0) out;"
+    if (language == EShLangVertex ||
+        language == EShLangTessControl ||
+        language == EShLangTessEvaluation ||
+        language == EShLangGeometry)
+        globalOutputDefaults.layoutXfbBuffer = 0;
+
+    if (language == EShLangGeometry)
+        globalOutputDefaults.layoutStream = 0;
+}
+
+TParseContext::~TParseContext()
+{
+    delete [] atomicUintOffsets;
+}
+
+// Set up all default precisions as needed by the current environment.
+// Intended just as a TParseContext constructor helper.
+void TParseContext::setPrecisionDefaults()
+{
     // set all precision defaults to EpqNone, which is correct for all desktop types
     // and for ES types that don't have defaults (thus getting an error on use)
     for (int type = 0; type < EbtNumTypes; ++type)
@@ -70,7 +107,7 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
         defaultSamplerPrecision[type] = EpqNone;
 
     // replace with real precision defaults for those that have them
-    if (profile == EEsProfile) {
+    if (obeyPrecisionQualifiers()) {
         TSampler sampler;
         sampler.set(EbtFloat, Esd2D);
         defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
@@ -101,34 +138,6 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
         defaultPrecision[EbtSampler] = EpqLow;
         defaultPrecision[EbtAtomicUint] = EpqHigh;
     }
-
-    globalUniformDefaults.clear();
-    globalUniformDefaults.layoutMatrix = ElmColumnMajor;
-    globalUniformDefaults.layoutPacking = spvVersion.spv != 0 ? ElpStd140 : ElpShared;
-
-    globalBufferDefaults.clear();
-    globalBufferDefaults.layoutMatrix = ElmColumnMajor;
-    globalBufferDefaults.layoutPacking = spvVersion.spv != 0 ? ElpStd430 : ElpShared;
-
-    globalInputDefaults.clear();
-    globalOutputDefaults.clear();
-
-    // "Shaders in the transform 
-    // feedback capturing mode have an initial global default of
-    //     layout(xfb_buffer = 0) out;"
-    if (language == EShLangVertex ||
-        language == EShLangTessControl ||
-        language == EShLangTessEvaluation ||
-        language == EShLangGeometry)
-        globalOutputDefaults.layoutXfbBuffer = 0;
-
-    if (language == EShLangGeometry)
-        globalOutputDefaults.layoutStream = 0;
-}
-
-TParseContext::~TParseContext()
-{
-    delete [] atomicUintOffsets;
 }
 
 void TParseContext::setLimits(const TBuiltInResource& r)
@@ -1223,7 +1232,9 @@ TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNo
     TIntermTyped *result = intermediate.addBuiltInFunctionCall(loc, function.getBuiltInOp(),
                                                                function.getParamCount() == 1,
                                                                &arguments, function.getType());
-    computeBuiltinPrecisions(*result, function);
+    if (obeyPrecisionQualifiers())
+        computeBuiltinPrecisions(*result, function);
+
     if (result == nullptr)  {
         error(arguments.getLoc(), " wrong operand type", "Internal Error",
                                   "built in unary operator function.  Type: %s",
@@ -1270,9 +1281,6 @@ void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction
 {
     TPrecisionQualifier operationPrecision = EpqNone;
     TPrecisionQualifier resultPrecision = EpqNone;
-
-    if (profile != EEsProfile)
-        return;
 
     TIntermOperator* opNode = node.getAsOperator();
     if (opNode == nullptr)
@@ -2934,7 +2942,7 @@ void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType ba
 {
     // Built-in symbols are allowed some ambiguous precisions, to be pinned down
     // later by context.
-    if (profile != EEsProfile || parsingBuiltins)
+    if (! obeyPrecisionQualifiers() || parsingBuiltins)
         return;
 
     if (baseType == EbtAtomicUint && qualifier.precision != EpqNone && qualifier.precision != EpqHigh)

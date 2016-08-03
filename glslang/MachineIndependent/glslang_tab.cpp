@@ -6667,7 +6667,7 @@ yyreduce:
     {
         parseContext.profileRequires((yyvsp[0].lex).loc, ENoProfile, 130, 0, "highp precision qualifier");
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        if (parseContext.profile == EEsProfile)
+        if (parseContext.obeyPrecisionQualifiers())
             (yyval.interm.type).qualifier.precision = EpqHigh;
     }
 #line 6674 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
@@ -6678,7 +6678,7 @@ yyreduce:
     {
         parseContext.profileRequires((yyvsp[0].lex).loc, ENoProfile, 130, 0, "mediump precision qualifier");
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        if (parseContext.profile == EEsProfile)
+        if (parseContext.obeyPrecisionQualifiers())
             (yyval.interm.type).qualifier.precision = EpqMedium;
     }
 #line 6685 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
@@ -6689,7 +6689,7 @@ yyreduce:
     {
         parseContext.profileRequires((yyvsp[0].lex).loc, ENoProfile, 130, 0, "lowp precision qualifier");
         (yyval.interm.type).init((yyvsp[0].lex).loc, parseContext.symbolTable.atGlobalLevel());
-        if (parseContext.profile == EEsProfile)
+        if (parseContext.obeyPrecisionQualifiers())
             (yyval.interm.type).qualifier.precision = EpqLow;
     }
 #line 6696 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */

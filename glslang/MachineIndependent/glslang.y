@@ -2206,19 +2206,19 @@ precision_qualifier
     : HIGH_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "highp precision qualifier");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
-        if (parseContext.profile == EEsProfile)
+        if (parseContext.obeyPrecisionQualifiers())
             $$.qualifier.precision = EpqHigh;
     }
     | MEDIUM_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "mediump precision qualifier");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
-        if (parseContext.profile == EEsProfile)
+        if (parseContext.obeyPrecisionQualifiers())
             $$.qualifier.precision = EpqMedium;
     }
     | LOW_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "lowp precision qualifier");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
-        if (parseContext.profile == EEsProfile)
+        if (parseContext.obeyPrecisionQualifiers())
             $$.qualifier.precision = EpqLow;
     }
     ;
