@@ -81,6 +81,7 @@ INSTANTIATE_TEST_CASE_P(
         "cppBad.vert",
         "cppComplexExpr.vert",
         "badChars.frag",
+        "utf8bom.comp",
         "pointCoord.frag",
         "array.frag",
         "array100.frag",

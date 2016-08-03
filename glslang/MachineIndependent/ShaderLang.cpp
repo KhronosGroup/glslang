@@ -570,6 +570,68 @@ bool ProcessDeferred(
 
     if (numStrings == 0)
         return true;
+
+    char** cleanShaderStrings = new char*[numStrings];
+    size_t* cleanInputLengths = new size_t[numStrings];
+
+    // as bison/lex doesn't handle UTF-8 by default and
+    // I'm not brave enough (or knowledgable enough) to modify it
+    // we clean the input streams of non ASCII characters
+    // TODO Make gslang handle UTF-8 has per the GLSL >=4.1 standard
+    for (int i = 0; i < numStrings; ++i)
+    {
+        // we allocate enough memory for the unclean version of each string
+        // in practise this is only a few byte more than the actual
+        // cleaned length (due to multi-byte reduction)
+
+        size_t len = 0;
+        if (inputLengths == nullptr || inputLengths[i] < 0)
+            len = strlen(shaderStrings[i])+1;
+        else
+            len = inputLengths[i]+1;
+
+        cleanShaderStrings[i] = new char[len];
+        // basic slow copy and check... if this shows up on profiles
+        // there are lots of ways of optimising this.
+        cleanInputLengths[i] = 0;
+        char const * src = shaderStrings[i];
+        char * dst = cleanShaderStrings[i];
+        unsigned char c = *src;
+        while( c != 0x0 )
+        {
+            if( (c & 0x80) == 0x80 )
+            {
+                // this is non ASCII character for UTF8 mean > 1 byte
+                if( c >> 5 == 0x0C)
+                {
+                    // 2 byte character
+                    src += 2;
+                } else if( c >> 4 == 0x0E )
+                {
+                    // 3 byte character
+                    src += 3;
+                } else if( c >> 3 == 0x1E )
+                {
+                    // 4 byte character
+                    src += 4;
+                } else
+                {
+                    src += 1;
+                }
+            } else
+            {
+                // easy case
+                *dst = *src;
+                ++dst;
+                ++src;
+            }
+            c = *src;
+        }
+        // always null terminate but inputlength doesn't include it
+        cleanInputLengths[i] = dst - cleanShaderStrings[i];
+        *dst = 0;
+    }
+
     
     // Move to length-based strings, rather than null-terminated strings.
     // Also, add strings to include the preamble and to ensure the shader is not null,
@@ -587,12 +649,10 @@ bool ProcessDeferred(
     const char** strings = new const char*[numTotal];
     const char** names = new const char*[numTotal];
     for (int s = 0; s < numStrings; ++s) {
-        strings[s + numPre] = shaderStrings[s];
-        if (inputLengths == 0 || inputLengths[s] < 0)
-            lengths[s + numPre] = strlen(shaderStrings[s]);
-        else
-            lengths[s + numPre] = inputLengths[s];
+        strings[s + numPre] = cleanShaderStrings[s];
+        lengths[s + numPre] = cleanInputLengths[s];
     }
+
     if (stringNames != nullptr) {
         for (int s = 0; s < numStrings; ++s)
             names[s + numPre] = stringNames[s];
@@ -726,6 +786,14 @@ bool ProcessDeferred(
     bool success = processingContext(*parseContext, ppContext, fullInput,
                                      versionWillBeError, symbolTable,
                                      intermediate, optLevel, messages);
+
+    // free up the cleaned shader source
+    for (int i = 0; i < numStrings; ++i)
+    {
+        delete[] cleanShaderStrings[i];
+    }
+    delete[] cleanInputLengths;
+    delete[] cleanShaderStrings;
 
     // Clean up the symbol table. The AST is self-sufficient now.
     delete symbolTableMemory;

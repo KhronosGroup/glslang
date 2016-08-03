@@ -221,6 +221,7 @@ public:
     bool scanVersion(int& version, EProfile& profile, bool& notFirstToken);
 
 protected:
+    bool skipUTF8BOMif(int c);
 
     // advance one character
     void advance()

@@ -57,14 +57,68 @@
 int yylex(YYSTYPE*, glslang::TParseContext&);
 
 namespace glslang {
+// 'c' arg = character that might be the start of the UTF8 BOM
+// if character is 1st of BOM, gets next char checks for 2nd of BOM
+// if it is, check for 3rd of BOM. if all true return true and input
+// stream is set to character *after*last byte of the BOM
+// if at any stage its found it isn't the BOM reset stream to as it was
+// when function was called (so get() will return c) and return false
+bool TInputScanner::skipUTF8BOMif( int c )
+{
+    if( c == 0xEF )
+    {
+        get(); // consume 0xEF
+        c = peek();
+        if( c == 0xBB )
+        {
+            get();  // consume 0xBB
+            c = peek();
+            if( c == 0xBF )
+            {
+                get(); // consume 0xBF
+                return true; // we've found and skipped the BOM
+            } else
+            {
+                unget(); // unconsume 0xBB
+                unget(); // unconsume 0xEF
+                return false;
+            }
+        } else
+        {
+            unget(); // unconsume 0xEF
+            return false;
+        }
+    } else
+    {
+        return false;
+    }
+}
 
 // read past any white space
 void TInputScanner::consumeWhiteSpace(bool& foundNonSpaceTab)
 {
     int c = peek();  // don't accidentally consume anything other than whitespace
-    while (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+    while (	c == ' ' || c == '\t' ||
+               c == '\r' || c == '\n' ||
+               c == 0xEF ) {
+        if( c == 0xEF )
+        {
+            if (skipUTF8BOMif(c) == true)
+            {
+                foundNonSpaceTab = true;
+                c = peek();
+                continue;
+            } else
+            {
+                // we have partial BOM or another UTF8 char
+                // assume its non white space (until further UTF8 decoding)
+                return;
+            }
+        }
+
         if (c == '\r' || c == '\n')
             foundNonSpaceTab = true;
+
         get();
         c = peek();
     }
@@ -142,13 +196,13 @@ void TInputScanner::consumeWhitespaceComment(bool& foundNonSpaceTab)
 {
     do {
         consumeWhiteSpace(foundNonSpaceTab);
- 
+
         // if not starting a comment now, then done
         int c = peek();
         if (c != '/' || c == EndOfInput)
             return;
 
-        // skip potential comment 
+        // skip potential comment
         foundNonSpaceTab = true;
         if (! consumeComment())
             return;
@@ -199,10 +253,10 @@ bool TInputScanner::scanVersion(int& version, EProfile& profile, bool& notFirstT
         }
         lookingInMiddle = true;
 
-        // Nominal start, skipping the desktop allowed comments and white space, but tracking if 
+        // Nominal start, skipping the desktop allowed comments and white space, but tracking if
         // something else was found for ES:
         consumeWhitespaceComment(foundNonSpaceTab);
-        if (foundNonSpaceTab) 
+        if (foundNonSpaceTab)
             versionNotFirst = true;
 
         // "#"
@@ -779,7 +833,7 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case BUFFER:
-        if ((parseContext.profile == EEsProfile && parseContext.version < 310) || 
+        if ((parseContext.profile == EEsProfile && parseContext.version < 310) ||
             (parseContext.profile != EEsProfile && parseContext.version < 430))
             return identifierOrType();
         return keyword;
@@ -1143,7 +1197,7 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case PRECISE:
-        if ((parseContext.profile == EEsProfile && parseContext.extensionsTurnedOn(Num_AEP_gpu_shader5, AEP_gpu_shader5)) || 
+        if ((parseContext.profile == EEsProfile && parseContext.extensionsTurnedOn(Num_AEP_gpu_shader5, AEP_gpu_shader5)) ||
             (parseContext.profile != EEsProfile && parseContext.version >= 400))
             return keyword;
         if (parseContext.profile == EEsProfile && parseContext.version == 310) {
@@ -1305,7 +1359,7 @@ int TScanContext::dMat()
 
 int TScanContext::firstGenerationImage(bool inEs310)
 {
-    if (parseContext.symbolTable.atBuiltInLevel() || 
+    if (parseContext.symbolTable.atBuiltInLevel() ||
         (parseContext.profile != EEsProfile && (parseContext.version >= 420 || parseContext.extensionTurnedOn(E_GL_ARB_shader_image_load_store))) ||
         (inEs310 && parseContext.profile == EEsProfile && parseContext.version >= 310))
         return keyword;
@@ -1330,8 +1384,8 @@ int TScanContext::secondGenerationImage()
         return keyword;
     }
 
-    if (parseContext.symbolTable.atBuiltInLevel() || 
-        (parseContext.profile != EEsProfile && 
+    if (parseContext.symbolTable.atBuiltInLevel() ||
+        (parseContext.profile != EEsProfile &&
          (parseContext.version >= 420 || parseContext.extensionTurnedOn(E_GL_ARB_shader_image_load_store))))
         return keyword;
 
