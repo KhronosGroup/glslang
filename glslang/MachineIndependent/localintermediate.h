@@ -219,7 +219,7 @@ public:
     // Constant folding (in Constant.cpp)
     TIntermTyped* fold(TIntermAggregate* aggrNode);
     TIntermTyped* foldConstructor(TIntermAggregate* aggrNode);
-    TIntermTyped* foldDereference(TIntermTyped* node, int index, const TSourceLoc&);
+    TIntermTyped* foldDereference(TIntermTyped* node, int index, const TSourceLoc&, bool rowMajor = false);
     TIntermTyped* foldSwizzle(TIntermTyped* node, TVectorFields& fields, const TSourceLoc&);
 
     // Tree ops

@@ -928,9 +928,10 @@ TIntermTyped* TIntermediate::foldConstructor(TIntermAggregate* aggrNode)
 // dereference.  Can handle anything except a multi-character swizzle, though
 // all swizzles may go to foldSwizzle().
 //
-TIntermTyped* TIntermediate::foldDereference(TIntermTyped* node, int index, const TSourceLoc& loc)
+TIntermTyped* TIntermediate::foldDereference(TIntermTyped* node, int index, const TSourceLoc& loc,
+                                             bool rowMajor)
 {
-    TType dereferencedType(node->getType(), index);
+    TType dereferencedType(node->getType(), index, rowMajor);
     dereferencedType.getQualifier().storage = EvqConst;
     TIntermTyped* result = 0;
     int size = dereferencedType.computeNumComponents();
