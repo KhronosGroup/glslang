@@ -1,5 +1,7 @@
 #version 140
 
+precision mediump int;
+
 uniform sampler2D samp2D;
 in mediump vec2 coord;
 
