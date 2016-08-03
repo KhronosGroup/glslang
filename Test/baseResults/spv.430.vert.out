@@ -63,6 +63,7 @@ Linked vertex stage:
                               Decorate 55(sampb2) Binding 5
                               Decorate 56(sampb4) DescriptorSet 0
                               Decorate 56(sampb4) Binding 31
+                              MemberDecorate 59(S) 0 RelaxedPrecision
                               Decorate 62(var) Flat
                               Decorate 62(var) Location 0
                               MemberDecorate 63(MS) 0 Location 17

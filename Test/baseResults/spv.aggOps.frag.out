@@ -64,6 +64,11 @@ Linked fragment stage:
                               Decorate 66(ub2) BufferBlock
                               Decorate 68(uName2) DescriptorSet 0
                               Decorate 97(samp2D) DescriptorSet 0
+                              Decorate 101(coord) RelaxedPrecision
+                              Decorate 102 RelaxedPrecision
+                              Decorate 107 RelaxedPrecision
+                              Decorate 108 RelaxedPrecision
+                              Decorate 129 RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

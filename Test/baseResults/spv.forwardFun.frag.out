@@ -25,6 +25,26 @@ Linked fragment stage:
                               Name 30  "gl_FragColor"
                               Name 36  "d"
                               Name 59  "bigColor"
+                              Decorate 10(unreachableReturn() RelaxedPrecision
+                              Decorate 16(foo(vf4;) RelaxedPrecision
+                              Decorate 15(bar) RelaxedPrecision
+                              Decorate 18(color) RelaxedPrecision
+                              Decorate 20(BaseColor) RelaxedPrecision
+                              Decorate 22 RelaxedPrecision
+                              Decorate 23 RelaxedPrecision
+                              Decorate 24 RelaxedPrecision
+                              Decorate 27(f) RelaxedPrecision
+                              Decorate 28 RelaxedPrecision
+                              Decorate 30(gl_FragColor) RelaxedPrecision
+                              Decorate 31 RelaxedPrecision
+                              Decorate 32 RelaxedPrecision
+                              Decorate 33 RelaxedPrecision
+                              Decorate 36(d) RelaxedPrecision
+                              Decorate 37 RelaxedPrecision
+                              Decorate 52 RelaxedPrecision
+                              Decorate 55 RelaxedPrecision
+                              Decorate 56 RelaxedPrecision
+                              Decorate 59(bigColor) RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                8:             TypeFloat 32

@@ -91,13 +91,17 @@ Linked vertex stage:
                               Decorate 13 ArrayStride 32
                               MemberDecorate 14(S) 0 Offset 0
                               MemberDecorate 14(S) 1 ColMajor
+                              MemberDecorate 14(S) 1 RelaxedPrecision
                               MemberDecorate 14(S) 1 Offset 16
                               MemberDecorate 14(S) 1 MatrixStride 16
+                              MemberDecorate 14(S) 2 RelaxedPrecision
                               MemberDecorate 14(S) 2 Offset 144
                               Decorate 16 ArrayStride 160
                               Decorate 18 ArrayStride 480
+                              MemberDecorate 19(Block140) 0 RelaxedPrecision
                               MemberDecorate 19(Block140) 0 Offset 0
                               MemberDecorate 19(Block140) 1 Offset 16
+                              MemberDecorate 19(Block140) 2 RelaxedPrecision
                               MemberDecorate 19(Block140) 2 Offset 976
                               Decorate 19(Block140) Block
                               Decorate 21(inst140) DescriptorSet 0
@@ -105,17 +109,23 @@ Linked vertex stage:
                               Decorate 22 ArrayStride 16
                               MemberDecorate 23(S) 0 Offset 0
                               MemberDecorate 23(S) 1 ColMajor
+                              MemberDecorate 23(S) 1 RelaxedPrecision
                               MemberDecorate 23(S) 1 Offset 16
                               MemberDecorate 23(S) 1 MatrixStride 8
+                              MemberDecorate 23(S) 2 RelaxedPrecision
                               MemberDecorate 23(S) 2 Offset 80
                               Decorate 24 ArrayStride 96
                               Decorate 25 ArrayStride 288
+                              MemberDecorate 26(Block430) 0 RelaxedPrecision
                               MemberDecorate 26(Block430) 0 Offset 0
                               MemberDecorate 26(Block430) 1 Offset 16
+                              MemberDecorate 26(Block430) 2 RelaxedPrecision
                               MemberDecorate 26(Block430) 2 Offset 592
                               Decorate 26(Block430) BufferBlock
                               Decorate 28(inst430) DescriptorSet 0
                               Decorate 28(inst430) Binding 1
+                              MemberDecorate 29(S) 1 RelaxedPrecision
+                              MemberDecorate 29(S) 2 RelaxedPrecision
                               MemberDecorate 35(T) 0 RowMajor
                               MemberDecorate 35(T) 0 Offset 0
                               MemberDecorate 35(T) 0 MatrixStride 16
@@ -164,7 +174,9 @@ Linked vertex stage:
                               Decorate 60(bBtn3) Binding 0
                               Decorate 62(sout) Flat
                               MemberDecorate 63(S) 0 Invariant
+                              MemberDecorate 63(S) 1 RelaxedPrecision
                               MemberDecorate 63(S) 1 Invariant
+                              MemberDecorate 63(S) 2 RelaxedPrecision
                               MemberDecorate 63(S) 2 Invariant
                               Decorate 65(soutinv) Invariant
                2:             TypeVoid
