@@ -62,7 +62,12 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
     linkage = new TIntermAggregate;
 
     // decide whether precision qualifiers should be ignored or respected
-    obeyPrecisionQualifiers_ = profile == EEsProfile || spvVersion.vulkan > 0;
+    if (profile == EEsProfile || spvVersion.vulkan > 0) {
+        precisionManager.respectPrecisionQualifiers();
+        if (! parsingBuiltins && language == EShLangFragment && profile != EEsProfile && spvVersion.vulkan > 0)
+            precisionManager.warnAboutDefaults();
+    }
+
     setPrecisionDefaults();
 
     globalUniformDefaults.clear();
@@ -1899,6 +1904,24 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
     return new TFunction(&empty, type, op);
 }
 
+// Handle seeing a precision qualifier in the grammar.
+void TParseContext::handlePrecisionQualifier(const TSourceLoc& loc, TQualifier& qualifier, TPrecisionQualifier precision)
+{
+    if (obeyPrecisionQualifiers())
+        qualifier.precision = precision;
+}
+
+// Check for messages to give on seeing a precision qualifier used in a
+// declaration in the grammar.
+void TParseContext::checkPrecisionQualifier(const TSourceLoc& loc, TPrecisionQualifier)
+{
+    if (precisionManager.shouldWarnAboutDefaults()) {
+        warn(loc, "all default precisions are highp; use precision statements to quiet warning, e.g.:\n"
+                  "         \"precision mediump int; precision highp float;\"", "", "");
+        precisionManager.defaultWarningGiven();
+    }
+}
+
 //
 // Same error message for all places assignments don't work.
 //
@@ -2904,8 +2927,11 @@ void TParseContext::setDefaultPrecision(const TSourceLoc& loc, TPublicType& publ
     if (basicType == EbtInt || basicType == EbtFloat) {
         if (publicType.isScalar()) {
             defaultPrecision[basicType] = qualifier;
-            if (basicType == EbtInt)
+            if (basicType == EbtInt) {
                 defaultPrecision[EbtUint] = qualifier;
+                precisionManager.explicitIntDefaultSeen();
+            } else
+                precisionManager.explicitFloatDefaultSeen();
 
             return;  // all is well
         }

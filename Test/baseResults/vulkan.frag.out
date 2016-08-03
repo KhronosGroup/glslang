@@ -33,6 +33,8 @@ ERROR: 0:67: 'uniform' : no qualifiers allowed for function return
 ERROR: 0:69: 'non-opaque uniforms outside a block' : not allowed when using GLSL for Vulkan 
 ERROR: 0:73: 'texture' : no matching overloaded function found 
 ERROR: 0:74: 'imageStore' : no matching overloaded function found 
+WARNING: 0:82: '' : all default precisions are highp; use precision statements to quiet warning, e.g.:
+         "precision mediump int; precision highp float;" 
 ERROR: 0:91: 'call argument' : sampler constructor must appear at point of use 
 ERROR: 0:92: 'call argument' : sampler constructor must appear at point of use 
 ERROR: 0:93: ',' : sampler constructor must appear at point of use 
