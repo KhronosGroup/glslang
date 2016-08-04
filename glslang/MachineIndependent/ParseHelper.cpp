@@ -61,46 +61,14 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
     linkage = new TIntermAggregate;
 
-    // set all precision defaults to EpqNone, which is correct for all desktop types
-    // and for ES types that don't have defaults (thus getting an error on use)
-    for (int type = 0; type < EbtNumTypes; ++type)
-        defaultPrecision[type] = EpqNone;
-
-    for (int type = 0; type < maxSamplerIndex; ++type)
-        defaultSamplerPrecision[type] = EpqNone;
-
-    // replace with real precision defaults for those that have them
-    if (profile == EEsProfile) {
-        TSampler sampler;
-        sampler.set(EbtFloat, Esd2D);
-        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
-        sampler.set(EbtFloat, EsdCube);
-        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
-        sampler.set(EbtFloat, Esd2D);
-        sampler.external = true;
-        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
-
-        // If we are parsing built-in computational variables/functions, it is meaningful to record
-        // whether the built-in has no precision qualifier, as that ambiguity
-        // is used to resolve the precision from the supplied arguments/operands instead.
-        // So, we don't actually want to replace EpqNone with a default precision for built-ins.
-        if (! parsingBuiltins) {
-            switch (language) {
-            case EShLangFragment:
-                defaultPrecision[EbtInt] = EpqMedium;
-                defaultPrecision[EbtUint] = EpqMedium;
-                break;
-            default:
-                defaultPrecision[EbtInt] = EpqHigh;
-                defaultPrecision[EbtUint] = EpqHigh;
-                defaultPrecision[EbtFloat] = EpqHigh;
-                break;
-            }
-        }
-
-        defaultPrecision[EbtSampler] = EpqLow;
-        defaultPrecision[EbtAtomicUint] = EpqHigh;
+    // decide whether precision qualifiers should be ignored or respected
+    if (profile == EEsProfile || spvVersion.vulkan > 0) {
+        precisionManager.respectPrecisionQualifiers();
+        if (! parsingBuiltins && language == EShLangFragment && profile != EEsProfile && spvVersion.vulkan > 0)
+            precisionManager.warnAboutDefaults();
     }
+
+    setPrecisionDefaults();
 
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmColumnMajor;
@@ -129,6 +97,60 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
 TParseContext::~TParseContext()
 {
     delete [] atomicUintOffsets;
+}
+
+// Set up all default precisions as needed by the current environment.
+// Intended just as a TParseContext constructor helper.
+void TParseContext::setPrecisionDefaults()
+{
+    // Set all precision defaults to EpqNone, which is correct for all types
+    // when not obeying precision qualifiers, and correct for types that don't
+    // have defaults (thus getting an error on use) when obeying precision
+    // qualifiers.
+
+    for (int type = 0; type < EbtNumTypes; ++type)
+        defaultPrecision[type] = EpqNone;
+
+    for (int type = 0; type < maxSamplerIndex; ++type)
+        defaultSamplerPrecision[type] = EpqNone;
+
+    // replace with real precision defaults for those that have them
+    if (obeyPrecisionQualifiers()) {
+        if (profile == EEsProfile) {
+            // Most don't have defaults, a few default to lowp.
+            TSampler sampler;
+            sampler.set(EbtFloat, Esd2D);
+            defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+            sampler.set(EbtFloat, EsdCube);
+            defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+            sampler.set(EbtFloat, Esd2D);
+            sampler.external = true;
+            defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+        } else {
+            // Non-ES profile
+            // All default to highp.
+            for (int type = 0; type < maxSamplerIndex; ++type)
+                defaultSamplerPrecision[type] = EpqHigh;
+        }
+
+        // If we are parsing built-in computational variables/functions, it is meaningful to record
+        // whether the built-in has no precision qualifier, as that ambiguity
+        // is used to resolve the precision from the supplied arguments/operands instead.
+        // So, we don't actually want to replace EpqNone with a default precision for built-ins.
+        if (! parsingBuiltins) {
+            if (profile == EEsProfile && language == EShLangFragment) {
+                defaultPrecision[EbtInt] = EpqMedium;
+                defaultPrecision[EbtUint] = EpqMedium;
+            } else {
+                defaultPrecision[EbtInt] = EpqHigh;
+                defaultPrecision[EbtUint] = EpqHigh;
+                defaultPrecision[EbtFloat] = EpqHigh;
+            }
+        }
+
+        defaultPrecision[EbtSampler] = EpqLow;
+        defaultPrecision[EbtAtomicUint] = EpqHigh;
+    }
 }
 
 void TParseContext::setLimits(const TBuiltInResource& r)
@@ -1204,7 +1226,9 @@ TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNo
     TIntermTyped *result = intermediate.addBuiltInFunctionCall(loc, function.getBuiltInOp(),
                                                                function.getParamCount() == 1,
                                                                &arguments, function.getType());
-    computeBuiltinPrecisions(*result, function);
+    if (obeyPrecisionQualifiers())
+        computeBuiltinPrecisions(*result, function);
+
     if (result == nullptr)  {
         error(arguments.getLoc(), " wrong operand type", "Internal Error",
                                   "built in unary operator function.  Type: %s",
@@ -1251,9 +1275,6 @@ void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction
 {
     TPrecisionQualifier operationPrecision = EpqNone;
     TPrecisionQualifier resultPrecision = EpqNone;
-
-    if (profile != EEsProfile)
-        return;
 
     TIntermOperator* opNode = node.getAsOperator();
     if (opNode == nullptr)
@@ -1862,6 +1883,24 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
     TString empty("");
 
     return new TFunction(&empty, type, op);
+}
+
+// Handle seeing a precision qualifier in the grammar.
+void TParseContext::handlePrecisionQualifier(const TSourceLoc& loc, TQualifier& qualifier, TPrecisionQualifier precision)
+{
+    if (obeyPrecisionQualifiers())
+        qualifier.precision = precision;
+}
+
+// Check for messages to give on seeing a precision qualifier used in a
+// declaration in the grammar.
+void TParseContext::checkPrecisionQualifier(const TSourceLoc& loc, TPrecisionQualifier)
+{
+    if (precisionManager.shouldWarnAboutDefaults()) {
+        warn(loc, "all default precisions are highp; use precision statements to quiet warning, e.g.:\n"
+                  "         \"precision mediump int; precision highp float;\"", "", "");
+        precisionManager.defaultWarningGiven();
+    }
 }
 
 //
@@ -2869,8 +2908,11 @@ void TParseContext::setDefaultPrecision(const TSourceLoc& loc, TPublicType& publ
     if (basicType == EbtInt || basicType == EbtFloat) {
         if (publicType.isScalar()) {
             defaultPrecision[basicType] = qualifier;
-            if (basicType == EbtInt)
+            if (basicType == EbtInt) {
                 defaultPrecision[EbtUint] = qualifier;
+                precisionManager.explicitIntDefaultSeen();
+            } else
+                precisionManager.explicitFloatDefaultSeen();
 
             return;  // all is well
         }
@@ -2915,7 +2957,7 @@ void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType ba
 {
     // Built-in symbols are allowed some ambiguous precisions, to be pinned down
     // later by context.
-    if (profile != EEsProfile || parsingBuiltins)
+    if (! obeyPrecisionQualifiers() || parsingBuiltins)
         return;
 
     if (baseType == EbtAtomicUint && qualifier.precision != EpqNone && qualifier.precision != EpqHigh)

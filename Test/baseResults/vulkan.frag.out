@@ -14,7 +14,7 @@ ERROR: 0:25: 'sampler2DShadow' : sampler-constructor second argument presence of
 ERROR: 0:28: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: s2D
 ERROR: 0:29: 'sampler3D' : sampler-constructor cannot make an array of samplers 
 ERROR: 0:29: 'sampler3D' : sampler/image types can only be used in uniform variables or function parameters: s3d
-ERROR: 0:29: '=' :  cannot convert from 'const float' to 'global 4-element array of sampler3D'
+ERROR: 0:29: '=' :  cannot convert from 'const float' to 'global 4-element array of highp sampler3D'
 ERROR: 0:39: 'push_constant' : can only be used with a uniform 
 ERROR: 0:43: 'non-opaque uniforms outside a block' : not allowed when using GLSL for Vulkan 
 ERROR: 0:43: 'push_constant' : can only be used with a block 
@@ -33,6 +33,8 @@ ERROR: 0:67: 'uniform' : no qualifiers allowed for function return
 ERROR: 0:69: 'non-opaque uniforms outside a block' : not allowed when using GLSL for Vulkan 
 ERROR: 0:73: 'texture' : no matching overloaded function found 
 ERROR: 0:74: 'imageStore' : no matching overloaded function found 
+WARNING: 0:82: '' : all default precisions are highp; use precision statements to quiet warning, e.g.:
+         "precision mediump int; precision highp float;" 
 ERROR: 0:91: 'call argument' : sampler constructor must appear at point of use 
 ERROR: 0:92: 'call argument' : sampler constructor must appear at point of use 
 ERROR: 0:93: ',' : sampler constructor must appear at point of use 
