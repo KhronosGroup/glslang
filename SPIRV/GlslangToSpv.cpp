@@ -2081,7 +2081,6 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
 {
     // Name and decorate the non-hidden members
     int offset = -1;
-    int locationOffset = 0;  // for use within the members of this struct
     for (int i = 0; i < (int)glslangMembers->size(); i++) {
         glslang::TType& glslangMember = *(*glslangMembers)[i].type;
         int member = i;
@@ -2127,18 +2126,18 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
                 if (memberQualifier.hasLocation()) { // no inheritance, or override of inheritance
                     // struct members should not have explicit locations
                     assert(type.getBasicType() != glslang::EbtStruct);
+                    // If the structure type is a Block but without a Location, then each of its members must have a Location decoration.
                     location = memberQualifier.layoutLocation;
                 } else if (type.getBasicType() != glslang::EbtBlock) {
                     // If it is a not a Block, (...) Its members are assigned consecutive locations (...)
                     // The members, and their nested types, must not themselves have Location decorations.
-                } else if (qualifier.hasLocation()) // inheritance
-                    location = qualifier.layoutLocation + locationOffset;
+                } else if (qualifier.hasLocation()) {
+                    // If it is a Block with a Location decoration, then its members are assigned consecutive locations in declaration order,
+                    // starting from the first member which is initially assigned the location specified for the Block
+                }
             }
             if (location >= 0)
                 builder.addMemberDecoration(spvType, member, spv::DecorationLocation, location);
-
-            if (qualifier.hasLocation())      // track for upcoming inheritance
-                locationOffset += glslangIntermediate->computeTypeLocationSize(glslangMember);
 
             // component, XFB, others
             if (glslangMember.getQualifier().hasComponent())

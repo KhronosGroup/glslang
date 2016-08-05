@@ -15,6 +15,12 @@ layout(location = 12) patch out TheBlock {
     S s;                // should see a patch decoration
 } tcBlock[2];
 
+layout(location = 2) patch out SingleBlock {
+    highp float bMem1;  // should not see a location decoration
+    highp float bMem2;
+    S s;                // should see a patch decoration
+} singleBlock;
+
 void main()
 {
 }
