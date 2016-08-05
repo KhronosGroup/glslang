@@ -581,6 +581,15 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
     } else if (field == "CalculateLevelOfDetail"          ||
                field == "CalculateLevelOfDetailUnclamped" ||
                field == "Gather"                          ||
+               field == "GatherRed"                       ||
+               field == "GatherGreen"                     ||
+               field == "GatherBlue"                      ||
+               field == "GatherAlpha"                     ||
+               field == "GatherCmp"                       ||
+               field == "GatherCmpRed"                    ||
+               field == "GatherCmpGreen"                  ||
+               field == "GatherCmpBlue"                   ||
+               field == "GatherCmpAlpha"                  ||
                field == "GetDimensions"                   ||
                field == "GetSamplePosition"               ||
                field == "Load"                            ||
@@ -1251,7 +1260,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* argOffset = nullptr;
 
             // Offset is optional
-            if (argAggregate->getSequence().size() == 4)
+            if (argAggregate->getSequence().size() > 3)
                 argOffset = argAggregate->getSequence()[3]->getAsTyped();
 
             const TOperator textureOp = (argOffset == nullptr ? EOpTextureGather : EOpTextureGatherOffset);
@@ -1261,6 +1270,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
             txgather->getSequence().push_back(txcombine);
             txgather->getSequence().push_back(argCoord);
+            // Offset if not given is implicitly channel 0 (red)
 
             if (argOffset != nullptr)
                 txgather->getSequence().push_back(argOffset);
@@ -1272,6 +1282,131 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             break;
         }
         
+    case EOpMethodGatherRed:      // fall through...
+    case EOpMethodGatherGreen:    // ...
+    case EOpMethodGatherBlue:     // ...
+    case EOpMethodGatherAlpha:    // ...
+    case EOpMethodGatherCmpRed:   // ...
+    case EOpMethodGatherCmpGreen: // ...
+    case EOpMethodGatherCmpBlue:  // ...
+    case EOpMethodGatherCmpAlpha: // ...
+        {
+            int channel = 0;    // the channel we are gathering
+            int cmpValues = 0;  // 1 if there is a compare value (handier than a bool below)
+
+            switch (op) {
+            case EOpMethodGatherCmpRed:   cmpValues = 1;  // fall through
+            case EOpMethodGatherRed:      channel = 0; break;
+            case EOpMethodGatherCmpGreen: cmpValues = 1;  // fall through
+            case EOpMethodGatherGreen:    channel = 1; break;
+            case EOpMethodGatherCmpBlue:  cmpValues = 1;  // fall through
+            case EOpMethodGatherBlue:     channel = 2; break;
+            case EOpMethodGatherCmpAlpha: cmpValues = 1;  // fall through
+            case EOpMethodGatherAlpha:    channel = 3; break;
+            default:                      assert(0);   break;
+            }
+
+            // For now, we have nothing to map the component-wise comparison forms
+            // to, because neither GLSL nor SPIR-V has such an opcode.  Issue an
+            // unimplemented error instead.  Most of the machinery is here if that
+            // should ever become available.
+            if (cmpValues) {
+                error(loc, "unimplemented: component-level gather compare", "", "");
+                return;
+            }
+
+            int arg = 0;
+
+            TIntermTyped* argTex        = argAggregate->getSequence()[arg++]->getAsTyped();
+            TIntermTyped* argSamp       = argAggregate->getSequence()[arg++]->getAsTyped();
+            TIntermTyped* argCoord      = argAggregate->getSequence()[arg++]->getAsTyped();
+            TIntermTyped* argOffset     = nullptr;
+            TIntermTyped* argOffsets[4] = { nullptr, nullptr, nullptr, nullptr };
+            // TIntermTyped* argStatus     = nullptr; // TODO: residency
+            TIntermTyped* argCmp        = nullptr;
+
+            const TSamplerDim dim = argTex->getType().getSampler().dim;
+
+            const int  argSize = argAggregate->getSequence().size();
+            bool hasStatus     = (argSize == (5+cmpValues) || argSize == (8+cmpValues));
+            bool hasOffset1    = false;
+            bool hasOffset4    = false;
+
+            // Only 2D forms can have offsets.  Discover if we have 0, 1 or 4 offsets.
+            if (dim == Esd2D) {
+                hasOffset1 = (argSize == (4+cmpValues) || argSize == (5+cmpValues));
+                hasOffset4 = (argSize == (7+cmpValues) || argSize == (8+cmpValues));
+            }
+
+            assert(!(hasOffset1 && hasOffset4));
+
+            TOperator textureOp = EOpTextureGather;
+
+            // Compare forms have compare value
+            if (cmpValues != 0)
+                argCmp = argOffset = argAggregate->getSequence()[arg++]->getAsTyped();
+
+            // Some forms have single offset
+            if (hasOffset1) {
+                textureOp = EOpTextureGatherOffset;   // single offset form
+                argOffset = argAggregate->getSequence()[arg++]->getAsTyped();
+            }
+
+            // Some forms have 4 gather offsets
+            if (hasOffset4) {
+                textureOp = EOpTextureGatherOffsets;  // note plural, for 4 offset form
+                for (int offsetNum = 0; offsetNum < 4; ++offsetNum)
+                    argOffsets[offsetNum] = argAggregate->getSequence()[arg++]->getAsTyped();
+            }
+
+            // Residency status
+            if (hasStatus) {
+                // argStatus = argAggregate->getSequence()[arg++]->getAsTyped();
+                error(loc, "unimplemented: residency status", "", "");
+                return;
+            }
+
+            TIntermAggregate* txgather = new TIntermAggregate(textureOp);
+            TIntermAggregate* txcombine = handleSamplerTextureCombine(loc, argTex, argSamp);
+
+            TIntermTyped* argChannel = intermediate.addConstantUnion(channel, loc, true);
+
+            txgather->getSequence().push_back(txcombine);
+            txgather->getSequence().push_back(argCoord);
+
+            // AST wants an array of 4 offsets, where HLSL has separate args.  Here
+            // we construct an array from the separate args.
+            if (hasOffset4) {
+                TType arrayType(EbtInt, EvqTemporary, 2);
+                TArraySizes arraySizes;
+                arraySizes.addInnerSize(4);
+                arrayType.newArraySizes(arraySizes);
+
+                TIntermAggregate* initList = new TIntermAggregate(EOpNull);
+
+                for (int offsetNum = 0; offsetNum < 4; ++offsetNum)
+                    initList->getSequence().push_back(argOffsets[offsetNum]);
+
+                argOffset = addConstructor(loc, initList, arrayType);
+            }
+
+            // Add comparison value if we have one
+            if (argTex->getType().getSampler().isShadow())
+                txgather->getSequence().push_back(argCmp);
+
+            // Add offset (either 1, or an array of 4) if we have one
+            if (argOffset != nullptr)
+                txgather->getSequence().push_back(argOffset);
+
+            txgather->getSequence().push_back(argChannel);
+
+            txgather->setType(node->getType());
+            txgather->setLoc(loc);
+            node = txgather;
+
+            break;
+        }
+
     case EOpMethodCalculateLevelOfDetail:
     case EOpMethodCalculateLevelOfDetailUnclamped:
         {
