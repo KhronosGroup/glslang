@@ -297,10 +297,10 @@ public:
     pointer allocate(size_type n, const void*) { 
         return reinterpret_cast<pointer>(getAllocator().allocate(n * sizeof(T))); }
 
-	void deallocate(void*, size_type) { }
+    void deallocate(void*, size_type) { }
     void deallocate(pointer, size_type) { }
 
-	pointer _Charalloc(size_t n) {
+    pointer _Charalloc(size_t n) {
         return reinterpret_cast<pointer>(getAllocator().allocate(n)); }
 
     void construct(pointer p, const T& val) { new ((void *)p) T(val); }

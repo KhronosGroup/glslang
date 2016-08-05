@@ -253,7 +253,7 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
 //
 bool TParseContext::parseVectorFields(const TSourceLoc& loc, const TString& compString, int vecSize, TVectorFields& fields)
 {
-    fields.num = (int) compString.size();
+    fields.num = (int)compString.size();
     if (fields.num > 4) {
         error(loc, "illegal vector field selection", compString.c_str(), "");
         return false;
@@ -865,7 +865,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
                 TString vectorString = field;
                 TIntermTyped* index = intermediate.addSwizzle(fields, loc);
                 result = intermediate.addIndex(EOpVectorSwizzle, base, index, loc);
-                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, (int) vectorString.size()));
+                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, (int)vectorString.size()));
             }
             // Swizzle operations propagate specialization-constantness
             if (base->getType().getQualifier().isSpecConstant())
