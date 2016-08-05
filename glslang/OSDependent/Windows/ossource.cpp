@@ -37,14 +37,14 @@
 #define STRICT
 #define VC_EXTRALEAN 1
 #include <windows.h>
-#include <assert.h>
+#include <cassert>
 #include <process.h>
 #include <psapi.h>
-#include <stdio.h>
-#include <stdint.h>
+#include <cstdio>
+#include <cstdint>
 
 //
-// This file contains contains the Window-OS-specific functions
+// This file contains the Window-OS-specific functions
 //
 
 #if !(defined(_WIN32) || defined(_WIN64))

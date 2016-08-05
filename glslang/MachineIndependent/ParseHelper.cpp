@@ -39,7 +39,7 @@
 #include "Scan.h"
 
 #include "../OSDependent/osinclude.h"
-#include <stdarg.h>
+#include <cstdarg>
 #include <algorithm>
 
 #include "preprocessor/PpContext.h"
