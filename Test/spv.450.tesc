@@ -18,3 +18,15 @@ layout(location = 12) patch out TheBlock {
 void main()
 {
 }
+
+layout(location = 2) patch out SingleBlock {
+    highp float bMem1;  // should not see a location decoration
+    highp float bMem2;
+    S s;                // should see a patch decoration
+} singleBlock;
+
+layout(location = 20) patch out bn {
+                        vec4 v1; // location 20
+  layout(location = 24) vec4 v2; // location 24
+                        vec4 v3; // location 25
+};
