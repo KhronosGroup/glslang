@@ -37,11 +37,11 @@
 #define STRICT
 #define VC_EXTRALEAN 1
 #include <windows.h>
-#include <assert.h>
+#include <cassert>
 #include <process.h>
 #include <psapi.h>
-#include <stdio.h>
-#include <stdint.h>
+#include <cstdio>
+#include <cstdint>
 
 //
 // This file contains contains the Window-OS-specific functions
@@ -134,7 +134,7 @@ unsigned int __stdcall EnterGenericThread (void* entry)
 
 void* OS_CreateThread(TThreadEntrypoint entry)
 {
-    return (void*)_beginthreadex(0, 0, EnterGenericThread, (void*)entry, 0, 0);
+    return (void*)_beginthreadex(0, 0, EnterGenericThread, entry, 0, 0);
 }
 
 void OS_WaitForAllThreads(void* threads, int numThreads)

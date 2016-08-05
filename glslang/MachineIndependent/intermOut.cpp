@@ -38,11 +38,11 @@
 #include "../Include/InfoSink.h"
 
 #ifdef _MSC_VER
-#include <float.h>
+#include <cfloat>
 #elif defined __ANDROID__ || defined __linux__ || __MINGW32__ || __MINGW64__
 #include <cmath>
 #else
-#include <math.h>
+#include <cmath>
 #endif
 
 namespace {
