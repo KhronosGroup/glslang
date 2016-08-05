@@ -98,6 +98,32 @@ const struct {
     int val;
     const char* str;
 } tokens[] = {
+
+    { PpAtomAdd,            "+=" },
+    { PpAtomSub,            "-=" },
+    { PpAtomMul,            "*=" },
+    { PpAtomDiv,            "/=" },
+    { PpAtomMod,            "%=" },
+    { PpAtomRight,          ">>" },
+    { PpAtomLeft,           "<<" },
+    { PpAtomAnd,            "&&" },
+    { PpAtomOr,             "||" },
+    { PpAtomXor,            "^^" },
+
+    { PpAtomRightAssign,    ">>=" },
+    { PpAtomLeftAssign,     "<<=" },
+    { PpAtomAndAssign,      "&=" },
+    { PpAtomOrAssign,       "|=" },
+    { PpAtomXorAssign,      "^=" },
+
+    { PpAtomEQ,             "==" },
+    { PpAtomNE,             "!=" },
+    { PpAtomGE,             ">=" },
+    { PpAtomLE,             "<=" },
+
+    { PpAtomDecrement,      "--" },
+    { PpAtomIncrement,      "++" },
+
     { PpAtomDefine,         "define" },
     { PpAtomDefined,        "defined" },
     { PpAtomUndef,          "undef" },
@@ -121,8 +147,7 @@ const struct {
     { PpAtomFileMacro,       "__FILE__" },
     { PpAtomVersionMacro,    "__VERSION__" },
 
-    { PpAtomInclude,        "include" },
-
+    { PpAtomInclude,         "include" },
 };
 
 } // end anonymous namespace

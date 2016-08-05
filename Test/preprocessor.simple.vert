@@ -19,4 +19,11 @@ int main() {
   gl_Position = vec4(Z);
   gl_Position = vec4(F);
   gl_Position = vec4(fn(3));
+  [] . ++ --
+  + - * % / - ! ~
+  << >> < > <= >=
+  == !=
+  & ^ | && ^^ || ? :
+  += -= *= /= %= <<= >>= &= |= ^=
+  1.2 2E10 5u -5lf
 }
