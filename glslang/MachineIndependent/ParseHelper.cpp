@@ -761,13 +761,32 @@ void TParseContext::checkIoArrayConsistency(const TSourceLoc& loc, int requiredS
 }
 
 // Handle seeing a binary node with a math operation.
+// Returns nullptr if not semantically allowed.
 TIntermTyped* TParseContext::handleBinaryMath(const TSourceLoc& loc, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right)
 {
     rValueErrorCheck(loc, str, left->getAsTyped());
     rValueErrorCheck(loc, str, right->getAsTyped());
 
-    TIntermTyped* result = intermediate.addBinaryMath(op, left, right, loc);
-    if (! result)
+    bool allowed = true;
+    switch (op) {
+    // TODO: Bring more source language-specific checks up from intermediate.cpp
+    // to the specific parse helpers for that source language.
+    case EOpLessThan:
+    case EOpGreaterThan:
+    case EOpLessThanEqual:
+    case EOpGreaterThanEqual:
+        if (! left->isScalar() || ! right->isScalar())
+            allowed = false;
+        break;
+    default:
+        break;
+    }
+
+    TIntermTyped* result = nullptr;
+    if (allowed)
+        result = intermediate.addBinaryMath(op, left, right, loc);
+
+    if (result == nullptr)
         binaryOpError(loc, str, left->getCompleteString(), right->getCompleteString());
 
     return result;

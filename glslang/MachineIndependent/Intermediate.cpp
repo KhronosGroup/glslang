@@ -118,6 +118,10 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
             return 0;
     }
 
+    // Convert the children's type shape to be compatible.
+    right = addShapeConversion(op,  left->getType(), right);
+    left  = addShapeConversion(op, right->getType(),  left);
+
     //
     // Need a new node holding things together.  Make
     // one and promote it to the right type.
@@ -694,6 +698,10 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
     // some operations don't do this
     switch (op) {
     case EOpAssign:
+    case EOpLessThan:
+    case EOpGreaterThan:
+    case EOpLessThanEqual:
+    case EOpGreaterThanEqual:
         break;
     default:
         return node;
@@ -705,7 +713,6 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
         return node;
 
     // The new node that handles the conversion
-    TIntermTyped* conversionNode = node;
     TOperator constructorOp = mapTypeToConstructorOp(type);
 
     // scalar -> smeared -> vector
@@ -1624,11 +1631,11 @@ bool TIntermBinary::promote()
     case EOpGreaterThan:
     case EOpLessThanEqual:
     case EOpGreaterThanEqual:
-        // Relational comparisons need matching numeric types and will promote to scalar Boolean.
-        if (left->getBasicType() == EbtBool || left->getType().isVector() || left->getType().isMatrix())
+        // Relational comparisons need numeric types and will promote to scalar Boolean.
+        if (left->getBasicType() == EbtBool)
             return false;
-
-        // Fall through
+        setType(TType(EbtBool));
+        break;
 
     case EOpEqual:
     case EOpNotEqual:
