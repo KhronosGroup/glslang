@@ -331,6 +331,7 @@ public:
     bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
 
     int addUsedLocation(const TQualifier&, const TType&, bool& typeCollision);
+    int checkLocationRange(int set, const TIoRange& range, const TType&, bool& typeCollision);
     int addUsedOffsets(int binding, int offset, int numOffsets);
     bool addUsedConstantId(int id);
     int computeTypeLocationSize(const TType&) const;
