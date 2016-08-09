@@ -793,9 +793,11 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     for (int icount = 0; hlslIntrinsics[icount].name; ++icount) {
         const auto& intrinsic = hlslIntrinsics[icount];
 
-        for (int stage = 0; stage < EShLangCount; ++stage) {                                // for each stage...
-            if ((intrinsic.stage & (1<<stage)) == 0) // skip inapplicable stages
-                continue;
+        for (int stage = 0; stage < EShLangCount; ++stage) {                                // for each stage...         
+            // don't filter these by stages, since they have to be parsed on any target since functions
+            // might exist for other targets that aren't used by this profile
+           //   if ((intrinsic.stage & (1<<stage)) == 0) // skip inapplicable stages
+           //      continue;
 
             // reference to either the common builtins, or stage specific builtins.
             TString& s = (intrinsic.stage == EShLangAll) ? commonBuiltins : stageBuiltins[stage];
@@ -1067,6 +1069,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("trunc",                       EOpTrunc);
 
     // Texture methods
+    // Possible ToDO: on targets these aren't valid, use an undefined Op? this might be a simple way to validate without doing it in the AST
     symbolTable.relateToOperator("Sample",                      EOpMethodSample);
     symbolTable.relateToOperator("SampleBias",                  EOpMethodSampleBias);
     symbolTable.relateToOperator("SampleCmp",                   EOpMethodSampleCmp);

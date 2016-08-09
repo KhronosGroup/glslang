@@ -70,6 +70,8 @@ enum TSamplerDim {
 
 struct TSampler {   // misnomer now; includes images, textures without sampler, and textures with sampler
     TBasicType type : 8;  // type returned by sampler
+    int vectorSize  : 4;  //dimensionality of return type
+
     TSamplerDim dim : 8;
     bool    arrayed : 1;
     bool     shadow : 1;
@@ -78,6 +80,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
     bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
     bool   external : 1;  // GL_OES_EGL_image_external
+    
 
     bool isImage()       const { return image && dim != EsdSubpass; }
     bool isSubpass()     const { return dim == EsdSubpass; }
@@ -99,10 +102,11 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         combined = false;
         sampler = false;
         external = false;
+        vectorSize = 0;
     }
 
     // make a combined sampler and texture
-    void set(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
+    void set(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false,int v = 4)
     {
         clear();
         type = t;
@@ -111,10 +115,11 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         shadow = s;
         ms = m;
         combined = true;
+        vectorSize = v;
     }
 
     // make an image
-    void setImage(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
+    void setImage(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false, int v = 4)
     {
         clear();
         type = t;
@@ -123,10 +128,11 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         shadow = s;
         ms = m;
         image = true;
+        vectorSize = v;
     }
 
     // make a texture with no sampler
-    void setTexture(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
+    void setTexture(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false, int v = 4)
     {
         clear();
         type = t;
@@ -134,6 +140,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         arrayed = a;
         shadow = s;
         ms = m;
+        vectorSize = v;
     }
 
     // make a subpass input attachment
@@ -157,6 +164,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool operator==(const TSampler& right) const
     {
         return type == right.type &&
+         vectorSize == right.vectorSize &&
                 dim == right.dim &&
             arrayed == right.arrayed &&
              shadow == right.shadow &&

@@ -1327,7 +1327,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
             const TSamplerDim dim = argTex->getType().getSampler().dim;
 
-            const int  argSize = argAggregate->getSequence().size();
+            const int  argSize = (int) argAggregate->getSequence().size();
             bool hasStatus     = (argSize == (5+cmpValues) || argSize == (8+cmpValues));
             bool hasOffset1    = false;
             bool hasOffset4    = false;
