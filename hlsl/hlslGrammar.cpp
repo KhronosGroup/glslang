@@ -2446,7 +2446,7 @@ bool HlslGrammar::acceptJumpStatement(TIntermNode*& statement)
         TIntermTyped* node;
         if (acceptExpression(node)) {
             // hook it up
-            statement = intermediate.addBranch(EOpReturn, node, token.loc);
+            statement = parseContext.handleReturnValue(token.loc, node);
         } else
             statement = intermediate.addBranch(EOpReturn, token.loc);
         break;
