@@ -85,6 +85,7 @@ public:
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
     TFunction* handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
+    TIntermNode* handleReturnValue(const TSourceLoc&, TIntermTyped*);
     void handleFunctionArgument(TFunction*, TIntermTyped*& arguments, TIntermTyped* newArg);
     TIntermTyped* handleFunctionCall(const TSourceLoc&, TFunction*, TIntermNode*);
     void decomposeIntrinsic(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);

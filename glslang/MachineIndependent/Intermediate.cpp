@@ -524,7 +524,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         if (type.getBasicType() == node->getType().getBasicType())
             return node;
 
-        if (canImplicitlyPromote(node->getType().getBasicType(), type.getBasicType()))
+        if (canImplicitlyPromote(node->getType().getBasicType(), type.getBasicType(), op))
             promoteTo = type.getBasicType();
         else
             return 0;
@@ -726,10 +726,36 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
 // See if the 'from' type is allowed to be implicitly converted to the
 // 'to' type.  This is not about vector/array/struct, only about basic type.
 //
-bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to) const
+bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperator op) const
 {
     if (profile == EEsProfile || version == 110)
         return false;
+
+    // Some languages allow more general (or potentially, more specific) conversions under some conditions.
+    if (source == EShSourceHlsl) {
+        const bool fromConvertable = (from == EbtFloat || from == EbtDouble || from == EbtInt || from == EbtUint || from == EbtBool);
+        const bool toConvertable = (to == EbtFloat || to == EbtDouble || to == EbtInt || to == EbtUint || to == EbtBool);
+
+        if (fromConvertable && toConvertable) {
+            switch (op) {
+            case EOpAndAssign:               // assignments can perform arbitrary conversions
+            case EOpInclusiveOrAssign:       // ... 
+            case EOpExclusiveOrAssign:       // ... 
+            case EOpAssign:                  // ... 
+            case EOpAddAssign:               // ... 
+            case EOpSubAssign:               // ... 
+            case EOpMulAssign:               // ... 
+            case EOpVectorTimesScalarAssign: // ... 
+            case EOpMatrixTimesScalarAssign: // ... 
+            case EOpDivAssign:               // ... 
+            case EOpModAssign:               // ... 
+            case EOpReturn:                  // function returns can also perform arbitrary conversions
+                return true;
+            default:
+                break;
+            }
+        }
+    }
 
     switch (to) {
     case EbtDouble:

@@ -796,6 +796,25 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     return paramNodes;
 }
 
+// Handle function returns, including type conversions to the function return type
+// if necessary.
+TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermTyped* value)
+{
+    if (currentFunctionType->getBasicType() == EbtVoid) {
+        error(loc, "void function cannot return a value", "return", "");
+        return intermediate.addBranch(EOpReturn, loc);
+    } else if (*currentFunctionType != value->getType()) {
+        TIntermTyped* converted = intermediate.addConversion(EOpReturn, *currentFunctionType, value);
+        if (converted) {
+            return intermediate.addBranch(EOpReturn, converted, loc);
+        } else {
+            error(loc, "type does not match, or is not convertible to, the function's return type", "return", "");
+            return intermediate.addBranch(EOpReturn, value, loc);
+        }
+    } else
+        return intermediate.addBranch(EOpReturn, value, loc);
+}
+
 void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermTyped*& arguments, TIntermTyped* newArg)
 {
     TParameter param = { 0, new TType };
