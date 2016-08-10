@@ -794,8 +794,10 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         const auto& intrinsic = hlslIntrinsics[icount];
 
         for (int stage = 0; stage < EShLangCount; ++stage) {                                // for each stage...
-            if ((intrinsic.stage & (1<<stage)) == 0) // skip inapplicable stages
-                continue;
+         
+            //These need to be accepted as inputs, they just can't be used during actual code production
+         //   if ((intrinsic.stage & (1<<stage)) == 0) // skip inapplicable stages
+         //       continue;
 
             // reference to either the common builtins, or stage specific builtins.
             TString& s = (intrinsic.stage == EShLangAll) ? commonBuiltins : stageBuiltins[stage];
