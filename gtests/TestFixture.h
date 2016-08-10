@@ -179,8 +179,6 @@ public:
 
         shader->setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
         if (!entryPointName.empty()) shader->setEntryPoint(entryPointName.c_str());
-        // Reinitialize glslang if the semantics change.
-        GlobalTestSettings.initializer->acquire(controls);
         return shader->parse(
                 (resources ? resources : &glslang::DefaultTBuiltInResource),
                 defaultVersion, isForwardCompatible, controls);
