@@ -274,11 +274,11 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     TType type;
 
     // DX9 sampler declaration use a different syntax
-	// DX9 shaders need to run through HLSL compiler (fxc) via a back compat mode, it isn't going to
-	// be possible to simultanously compile D3D10+ style shaders and DX9 shaders. If we want to compile DX9
-	// HLSL shaders, this will have to be a master level switch
-	// As such, the sampler keyword in D3D10+ turns into an automatic sampler type, and is commonly used
-	// For that reason, this line is commented out 
+    // DX9 shaders need to run through HLSL compiler (fxc) via a back compat mode, it isn't going to
+    // be possible to simultaneously compile D3D10+ style shaders and DX9 shaders. If we want to compile DX9
+    // HLSL shaders, this will have to be a master level switch
+    // As such, the sampler keyword in D3D10+ turns into an automatic sampler type, and is commonly used
+    // For that reason, this line is commented out 
 
    // if (acceptSamplerDeclarationDX9(type))
    //     return true;
@@ -2446,7 +2446,7 @@ bool HlslGrammar::acceptJumpStatement(TIntermNode*& statement)
         TIntermTyped* node;
         if (acceptExpression(node)) {
             // hook it up
-            statement = intermediate.addBranch(EOpReturn, node, token.loc);
+            statement = parseContext.handleReturnValue(token.loc, node);
         } else
             statement = intermediate.addBranch(EOpReturn, token.loc);
         break;

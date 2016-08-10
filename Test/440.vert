@@ -73,6 +73,9 @@ layout(location = 56, component = 1) out vec2 df2o;
 layout(location = 56, component = 3) out float sf2o;
 layout(location = 57, component = 2) out vec2 dv3o;
 layout(location = 57, component = 3) out float sf4o;     // ERROR, overlapping component
+layout(location=58) out flat dvec3 dv3o2;                // uses part of location 59
+layout(location=59, component=2) out flat double dfo3;   // okay, fits
+layout(location=59, component=0) out flat double dfo4;   // ERROR, overlaps the dvec3 in starting in 58
 
 out bblck1 {
     vec4 bbv;
