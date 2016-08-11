@@ -29,14 +29,13 @@ branches:
 addons:
   apt:
     packages:
-      # - clang-3.6
+      - gcc-6
+      - g++-6
       - ninja-build
 
 install:
   # Make sure that clang-3.6 is selected.
-  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "clang" ]]; then
-      export CC=clang-3.6 CXX=clang++-3.6;
-    fi
+  - export CC=gcc-6 CXX=g++-6;
 
 before_script:
   - git clone https://github.com/google/googletest.git External/googletest
