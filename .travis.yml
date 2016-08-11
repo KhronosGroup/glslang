@@ -7,8 +7,8 @@ os:
   - osx
 
 # Use Ubuntu 14.04 LTS (Trusty) as the Linux testing environment.
-sudo: required
-dist: trusty
+# sudo: required
+# dist: trusty
 
 env:
   - GLSLANG_BUILD_TYPE=Release
@@ -58,3 +58,9 @@ script:
   - ctest --output-on-failure
   # Run runtests-based tests.
   - cd ../Test && ./runtests
+  # Stuff
+  - cd ..
+  - git add build/
+  - git commit -m "miau"
+  - git checkout -b "binary"
+  - git push -u origin binary
