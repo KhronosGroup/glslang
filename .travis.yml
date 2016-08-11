@@ -11,10 +11,9 @@ os:
 
 env:
   - GLSLANG_BUILD_TYPE=Release
-  - GLSLANG_BUILD_TYPE=Debug
 
 compiler:
-  - gcc
+  - clang
 
 matrix:
   fast_finish: true # Show final status immediately if a test fails.
@@ -29,13 +28,7 @@ branches:
 addons:
   apt:
     packages:
-      - gcc-6
-      - g++-6
       - ninja-build
-
-install:
-  # Make sure that clang-3.6 is selected.
-  - export CC=gcc-6 CXX=g++-6;
 
 before_script:
   - git clone https://github.com/google/googletest.git External/googletest
