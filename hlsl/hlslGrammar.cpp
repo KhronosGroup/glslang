@@ -782,9 +782,9 @@ bool HlslGrammar::acceptTextureType(TType& type)
             return false;
         }
 
-        if (txType.getVectorSize() != 1 && txType.getVectorSize() != 4) {
+        if (txType.getVectorSize() < 1 || txType.getVectorSize() > 4) {
             // TODO: handle vec2/3 types
-            expected("vector size not yet supported in texture type");
+            expected("vector size must between 1 and 4");
             return false;
         }
 
@@ -815,10 +815,10 @@ bool HlslGrammar::acceptTextureType(TType& type)
 
     // Buffers are combined.
     if (dim == EsdBuffer) {
-        sampler.set(txType.getBasicType(), dim, array);
+        sampler.set(txType.getBasicType(), dim, array, false, false, txType.getVectorSize());
     } else {
         // DX10 textures are separated.  TODO: DX9.
-        sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms);
+        sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms, txType.getVectorSize());
     }
     
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));
