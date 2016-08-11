@@ -155,7 +155,7 @@ int Options = 0;
 const char* ExecutableName = nullptr;
 const char* binaryFileName = nullptr;
 const char* entryPointName = nullptr;
-const char* shaderTargetName = nullptr;
+const char* shaderStageName = nullptr;
 
 //
 // Create the default name for saving a binary if -o is not provided.
@@ -238,7 +238,7 @@ void ProcessArguments(int argc, char* argv[])
                 Options |= EOptionLinkProgram;
                 break;
             case 'T':
-                shaderTargetName = argv[1];
+                shaderStageName = argv[1];
                 if (argc > 0) {
                     argc--;
                     argv++;
@@ -696,8 +696,8 @@ EShLanguage FindLanguage(const std::string& name)
     }
 
     std::string suffix = name.substr(ext + 1, std::string::npos);
-    if (shaderTargetName)
-        suffix = shaderTargetName;
+    if (shaderStageName)
+        suffix = shaderStageName;
 
     if (suffix == "vert")
         return EShLangVertex;
@@ -792,7 +792,7 @@ void usage()
            "  -H          print human readable form of SPIR-V; turns on -V\n"
            "  -E          print pre-processed GLSL; cannot be used with -l;\n"
            "              errors will appear on stderr.\n"
-           "  -T <target> uses explicit target specified, rather then the file extension.\n"
+           "  -S <stage>  uses explicit stage specified, rather then the file extension.\n"
            "              valid choices are vert,tesc, tese,geom, rag,comp\n"
            "  -c          configuration dump;\n"
            "              creates the default configuration file (redirect to a .conf file)\n"
