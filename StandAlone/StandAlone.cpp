@@ -244,7 +244,7 @@ void ProcessArguments(int argc, char* argv[])
                     argv++;
                 }
                 else
-                    Error("no <target> specified for -T");
+                    Error("no <stage> specified for -T");
                 break;
             case 'G':
                 Options |= EOptionSpv;
@@ -270,7 +270,6 @@ void ProcessArguments(int argc, char* argv[])
             case 'e':
                 // HLSL todo: entry point handle needs much more sophistication.
                 // This is okay for one compilation unit with one entry point.
-                // dankbaker - not sure it needs to be, fxc has no more sophistication then this
                 entryPointName = argv[1];
                 if (argc > 0) {
                     argc--;
@@ -793,7 +792,7 @@ void usage()
            "  -E          print pre-processed GLSL; cannot be used with -l;\n"
            "              errors will appear on stderr.\n"
            "  -S <stage>  uses explicit stage specified, rather then the file extension.\n"
-           "              valid choices are vert,tesc, tese,geom, rag,comp\n"
+           "              valid choices are vert, tesc, tese, geom, frag, or comp\n"
            "  -c          configuration dump;\n"
            "              creates the default configuration file (redirect to a .conf file)\n"
            "  -C          cascading errors; risks crashes from accumulation of error recoveries\n"
