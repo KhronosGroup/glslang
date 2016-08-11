@@ -453,8 +453,24 @@ void TBuiltInParseablesHlsl::createMatTimesMat()
 void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, const SpvVersion& /*spvVersion*/)
 {
     static const EShLanguageMask EShLangAll    = EShLanguageMask(EShLangCount - 1);
-    static const EShLanguageMask EShLangPSCS   = EShLanguageMask(EShLangFragmentMask | EShLangComputeMask);
-    static const EShLanguageMask EShLangVSPSGS = EShLanguageMask(EShLangVertexMask | EShLangFragmentMask | EShLangGeometryMask);
+
+    // These are the actual stage masks defined in the documentation, in case they are
+    // needed for furture validation.  For now, they are commented out, and set below
+    // to EShLangAll, to allow any intrinsic to be used in any shader, which is legal
+    // if it is not called.
+    // 
+    // static const EShLanguageMask EShLangPSCS   = EShLanguageMask(EShLangFragmentMask | EShLangComputeMask);
+    // static const EShLanguageMask EShLangVSPSGS = EShLanguageMask(EShLangVertexMask | EShLangFragmentMask | EShLangGeometryMask);
+    // static const EShLanguageMask EShLangCS     = EShLangComputeMask;
+    // static const EShLanguageMask EShLangPS     = EShLangFragmentMask;
+    // static const EShLanguageMask EShLangHS     = EShLangTessControlMask;
+
+    // This set uses EShLangAll for everything.
+    static const EShLanguageMask EShLangPSCS   = EShLangAll;
+    static const EShLanguageMask EShLangVSPSGS = EShLangAll;
+    static const EShLanguageMask EShLangCS     = EShLangAll;
+    static const EShLanguageMask EShLangPS     = EShLangAll;
+    static const EShLanguageMask EShLangHS     = EShLangAll;
 
     // This structure encodes the prototype information for each HLSL intrinsic.
     // Because explicit enumeration would be cumbersome, it's procedurally generated.
@@ -486,8 +502,8 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "abs",                              nullptr, nullptr,   "SVM",            "DFUI",          EShLangAll },
         { "acos",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "all",                              "S",    "B",        "SVM",            "BFI",           EShLangAll },
-        { "AllMemoryBarrier",                 nullptr, nullptr,   "-",              "-",             EShLangComputeMask },
-        { "AllMemoryBarrierWithGroupSync",    nullptr, nullptr,   "-",              "-",             EShLangComputeMask },
+        { "AllMemoryBarrier",                 nullptr, nullptr,   "-",              "-",             EShLangCS },
+        { "AllMemoryBarrierWithGroupSync",    nullptr, nullptr,   "-",              "-",             EShLangCS },
         { "any",                              "S",     "B",       "SVM",            "BFI",           EShLangAll },
         { "asdouble",                         "S",     "D",       "S,",             "U,",            EShLangAll },
         { "asdouble",                         "V2",    "D",       "V2,",            "U,",            EShLangAll },
@@ -500,29 +516,29 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "ceil",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "CheckAccessFullyMapped",           "S",     "B" ,      "S",              "U",             EShLangPSCS },
         { "clamp",                            nullptr, nullptr,   "SVM,,",          "FUI,,",         EShLangAll },
-        { "clip",                             "-",     "-",       "SVM",            "F",             EShLangFragmentMask },
+        { "clip",                             "-",     "-",       "SVM",            "F",             EShLangPS },
         { "cos",                              nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "cosh",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "countbits",                        nullptr, nullptr,   "SV",             "U",             EShLangAll },
         { "cross",                            nullptr, nullptr,   "V3,",            "F,",            EShLangAll },
         { "D3DCOLORtoUBYTE4",                 "V4",    "I",       "V4",             "F",             EShLangAll },
-        { "ddx",                              nullptr, nullptr,   "SVM",            "F",             EShLangFragmentMask },
-        { "ddx_coarse",                       nullptr, nullptr,   "SVM",            "F",             EShLangFragmentMask },
-        { "ddx_fine",                         nullptr, nullptr,   "SVM",            "F",             EShLangFragmentMask },
-        { "ddy",                              nullptr, nullptr,   "SVM",            "F",             EShLangFragmentMask },
-        { "ddy_coarse",                       nullptr, nullptr,   "SVM",            "F",             EShLangFragmentMask },
-        { "ddy_fine",                         nullptr, nullptr,   "SVM",            "F",             EShLangFragmentMask },
+        { "ddx",                              nullptr, nullptr,   "SVM",            "F",             EShLangPS },
+        { "ddx_coarse",                       nullptr, nullptr,   "SVM",            "F",             EShLangPS },
+        { "ddx_fine",                         nullptr, nullptr,   "SVM",            "F",             EShLangPS },
+        { "ddy",                              nullptr, nullptr,   "SVM",            "F",             EShLangPS },
+        { "ddy_coarse",                       nullptr, nullptr,   "SVM",            "F",             EShLangPS },
+        { "ddy_fine",                         nullptr, nullptr,   "SVM",            "F",             EShLangPS },
         { "degrees",                          nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "determinant",                      "S",     "F",       "M",              "F",             EShLangAll },
         { "DeviceMemoryBarrier",              nullptr, nullptr,   "-",              "-",             EShLangPSCS },
-        { "DeviceMemoryBarrierWithGroupSync", nullptr, nullptr,   "-",              "-",             EShLangComputeMask },
+        { "DeviceMemoryBarrierWithGroupSync", nullptr, nullptr,   "-",              "-",             EShLangCS },
         { "distance",                         "S",     "F",       "V,",             "F,",            EShLangAll },
         { "dot",                              "S",     nullptr,   "V,",             "FI,",           EShLangAll },
         { "dst",                              nullptr, nullptr,   "V4,",            "F,",            EShLangAll },
         // { "errorf",                           "-",     "-",       "",             "",             EShLangAll }, TODO: varargs
-        { "EvaluateAttributeAtCentroid",      nullptr, nullptr,   "SVM",            "F",             EShLangFragmentMask },
-        { "EvaluateAttributeAtSample",        nullptr, nullptr,   "SVM,S",          "F,U",           EShLangFragmentMask },
-        { "EvaluateAttributeSnapped",         nullptr, nullptr,   "SVM,V2",         "F,I",           EShLangFragmentMask },
+        { "EvaluateAttributeAtCentroid",      nullptr, nullptr,   "SVM",            "F",             EShLangPS },
+        { "EvaluateAttributeAtSample",        nullptr, nullptr,   "SVM,S",          "F,U",           EShLangPS },
+        { "EvaluateAttributeSnapped",         nullptr, nullptr,   "SVM,V2",         "F,I",           EShLangPS },
         { "exp",                              nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "exp2",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "f16tof32",                         nullptr, "F",       "SV",             "U",             EShLangAll },
@@ -535,11 +551,11 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "fmod",                             nullptr, nullptr,   "SVM,",           "F,",            EShLangAll },
         { "frac",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "frexp",                            nullptr, nullptr,   "SVM,",           "F,",            EShLangAll },
-        { "fwidth",                           nullptr, nullptr,   "SVM",            "F",             EShLangFragmentMask },
+        { "fwidth",                           nullptr, nullptr,   "SVM",            "F",             EShLangPS },
         { "GetRenderTargetSampleCount",       "S",     "U",       "-",              "-",             EShLangAll },
         { "GetRenderTargetSamplePosition",    "V2",    "F",       "V1",             "I",             EShLangAll },
-        { "GroupMemoryBarrier",               nullptr, nullptr,   "-",              "-",             EShLangComputeMask },
-        { "GroupMemoryBarrierWithGroupSync",  nullptr, nullptr,   "-",              "-",             EShLangComputeMask },
+        { "GroupMemoryBarrier",               nullptr, nullptr,   "-",              "-",             EShLangCS },
+        { "GroupMemoryBarrierWithGroupSync",  nullptr, nullptr,   "-",              "-",             EShLangCS },
         { "InterlockedAdd",                   "-",     "-",       "SVM,,>",         "UI,,",          EShLangPSCS },
         { "InterlockedAdd",                   "-",     "-",       "SVM,",           "UI,",           EShLangPSCS },
         { "InterlockedAnd",                   "-",     "-",       "SVM,,>",         "UI,,",          EShLangPSCS },
@@ -580,20 +596,20 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "mul",                              "M",     nullptr,   "M,S",            "FI,",           EShLangAll },
         { "mul",                              "V",     nullptr,   "M,#V",           "FI,",           EShLangAll },
         // mat*mat form of mul is handled in createMatTimesMat()
-        { "noise",                            "S",     "F",       "V",              "F",             EShLangFragmentMask },
+        { "noise",                            "S",     "F",       "V",              "F",             EShLangPS },
         { "normalize",                        nullptr, nullptr,   "V",              "F",             EShLangAll },
         { "pow",                              nullptr, nullptr,   "SVM,",           "F,",            EShLangAll },
         // { "printf",                           "-",     "-",       "",            "",              EShLangAll }, TODO: varargs
-        { "Process2DQuadTessFactorsAvg",      "-",     "-",       "V4,V2,>V4,>V2,", "F,,,,",         EShLangTessControlMask },
-        { "Process2DQuadTessFactorsMax",      "-",     "-",       "V4,V2,>V4,>V2,", "F,,,,",         EShLangTessControlMask },
-        { "Process2DQuadTessFactorsMin",      "-",     "-",       "V4,V2,>V4,>V2,", "F,,,,",         EShLangTessControlMask },
-        { "ProcessIsolineTessFactors",        "-",     "-",       "S,,>,>",         "F,,,",          EShLangTessControlMask },
-        { "ProcessQuadTessFactorsAvg",        "-",     "-",       "V4,S,>V4,>V2,",  "F,,,,",         EShLangTessControlMask },
-        { "ProcessQuadTessFactorsMax",        "-",     "-",       "V4,S,>V4,>V2,",  "F,,,,",         EShLangTessControlMask },
-        { "ProcessQuadTessFactorsMin",        "-",     "-",       "V4,S,>V4,>V2,",  "F,,,,",         EShLangTessControlMask },
-        { "ProcessTriTessFactorsAvg",         "-",     "-",       "V3,S,>V3,>S,",   "F,,,,",         EShLangTessControlMask },
-        { "ProcessTriTessFactorsMax",         "-",     "-",       "V3,S,>V3,>S,",   "F,,,,",         EShLangTessControlMask },
-        { "ProcessTriTessFactorsMin",         "-",     "-",       "V3,S,>V3,>S,",   "F,,,,",         EShLangTessControlMask },
+        { "Process2DQuadTessFactorsAvg",      "-",     "-",       "V4,V2,>V4,>V2,", "F,,,,",         EShLangHS },
+        { "Process2DQuadTessFactorsMax",      "-",     "-",       "V4,V2,>V4,>V2,", "F,,,,",         EShLangHS },
+        { "Process2DQuadTessFactorsMin",      "-",     "-",       "V4,V2,>V4,>V2,", "F,,,,",         EShLangHS },
+        { "ProcessIsolineTessFactors",        "-",     "-",       "S,,>,>",         "F,,,",          EShLangHS },
+        { "ProcessQuadTessFactorsAvg",        "-",     "-",       "V4,S,>V4,>V2,",  "F,,,,",         EShLangHS },
+        { "ProcessQuadTessFactorsMax",        "-",     "-",       "V4,S,>V4,>V2,",  "F,,,,",         EShLangHS },
+        { "ProcessQuadTessFactorsMin",        "-",     "-",       "V4,S,>V4,>V2,",  "F,,,,",         EShLangHS },
+        { "ProcessTriTessFactorsAvg",         "-",     "-",       "V3,S,>V3,>S,",   "F,,,,",         EShLangHS },
+        { "ProcessTriTessFactorsMax",         "-",     "-",       "V3,S,>V3,>S,",   "F,,,,",         EShLangHS },
+        { "ProcessTriTessFactorsMin",         "-",     "-",       "V3,S,>V3,>S,",   "F,,,,",         EShLangHS },
         { "radians",                          nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "rcp",                              nullptr, nullptr,   "SVM",            "FD",            EShLangAll },
         { "reflect",                          nullptr, nullptr,   "V,",             "F,",            EShLangAll },
@@ -611,48 +627,48 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "step",                             nullptr, nullptr,   "SVM,",           "F,",            EShLangAll },
         { "tan",                              nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "tanh",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll },
-        { "tex1D",                            "V4",    "F",       "V1,S",           "S,F",           EShLangFragmentMask },
-        { "tex1D",                            "V4",    "F",       "V1,S,V1,",       "S,F,,",         EShLangFragmentMask },
-        { "tex1Dbias",                        "V4",    "F",       "V1,V4",          "S,F",           EShLangFragmentMask },
-        { "tex1Dgrad",                        "V4",    "F",       "V1,,,",          "S,F,,",         EShLangFragmentMask },
-        { "tex1Dlod",                         "V4",    "F",       "V1,V4",          "S,F",           EShLangFragmentMask },
-        { "tex1Dproj",                        "V4",    "F",       "V1,V4",          "S,F",           EShLangFragmentMask },
-        { "tex2D",                            "V4",    "F",       "V2,",            "S,F",           EShLangFragmentMask },
-        { "tex2D",                            "V4",    "F",       "V2,,,",          "S,F,,",         EShLangFragmentMask },
-        { "tex2Dbias",                        "V4",    "F",       "V2,V4",          "S,F",           EShLangFragmentMask },
-        { "tex2Dgrad",                        "V4",    "F",       "V2,,,",          "S,F,,",         EShLangFragmentMask },
-        { "tex2Dlod",                         "V4",    "F",       "V2,V4",          "S,F",           EShLangFragmentMask },
-        { "tex2Dproj",                        "V4",    "F",       "V2,V4",          "S,F",           EShLangFragmentMask },
-        { "tex3D",                            "V4",    "F",       "V3,",            "S,F",           EShLangFragmentMask },
-        { "tex3D",                            "V4",    "F",       "V3,,,",          "S,F,,",         EShLangFragmentMask },
-        { "tex3Dbias",                        "V4",    "F",       "V3,V4",          "S,F",           EShLangFragmentMask },
-        { "tex3Dgrad",                        "V4",    "F",       "V3,,,",          "S,F,,",         EShLangFragmentMask },
-        { "tex3Dlod",                         "V4",    "F",       "V3,V4",          "S,F",           EShLangFragmentMask },
-        { "tex3Dproj",                        "V4",    "F",       "V3,V4",          "S,F",           EShLangFragmentMask },
-        { "texCUBE",                          "V4",    "F",       "V4,V3",          "S,F",           EShLangFragmentMask },
-        { "texCUBE",                          "V4",    "F",       "V4,V3,,",        "S,F,,",         EShLangFragmentMask },
-        { "texCUBEbias",                      "V4",    "F",       "V4,",            "S,F",           EShLangFragmentMask },
-        { "texCUBEgrad",                      "V4",    "F",       "V4,V3,,",        "S,F,,",         EShLangFragmentMask },
-        { "texCUBElod",                       "V4",    "F",       "V4,",            "S,F",           EShLangFragmentMask },
-        { "texCUBEproj",                      "V4",    "F",       "V4,",            "S,F",           EShLangFragmentMask },
+        { "tex1D",                            "V4",    "F",       "V1,S",           "S,F",           EShLangPS },
+        { "tex1D",                            "V4",    "F",       "V1,S,V1,",       "S,F,,",         EShLangPS },
+        { "tex1Dbias",                        "V4",    "F",       "V1,V4",          "S,F",           EShLangPS },
+        { "tex1Dgrad",                        "V4",    "F",       "V1,,,",          "S,F,,",         EShLangPS },
+        { "tex1Dlod",                         "V4",    "F",       "V1,V4",          "S,F",           EShLangPS },
+        { "tex1Dproj",                        "V4",    "F",       "V1,V4",          "S,F",           EShLangPS },
+        { "tex2D",                            "V4",    "F",       "V2,",            "S,F",           EShLangPS },
+        { "tex2D",                            "V4",    "F",       "V2,,,",          "S,F,,",         EShLangPS },
+        { "tex2Dbias",                        "V4",    "F",       "V2,V4",          "S,F",           EShLangPS },
+        { "tex2Dgrad",                        "V4",    "F",       "V2,,,",          "S,F,,",         EShLangPS },
+        { "tex2Dlod",                         "V4",    "F",       "V2,V4",          "S,F",           EShLangPS },
+        { "tex2Dproj",                        "V4",    "F",       "V2,V4",          "S,F",           EShLangPS },
+        { "tex3D",                            "V4",    "F",       "V3,",            "S,F",           EShLangPS },
+        { "tex3D",                            "V4",    "F",       "V3,,,",          "S,F,,",         EShLangPS },
+        { "tex3Dbias",                        "V4",    "F",       "V3,V4",          "S,F",           EShLangPS },
+        { "tex3Dgrad",                        "V4",    "F",       "V3,,,",          "S,F,,",         EShLangPS },
+        { "tex3Dlod",                         "V4",    "F",       "V3,V4",          "S,F",           EShLangPS },
+        { "tex3Dproj",                        "V4",    "F",       "V3,V4",          "S,F",           EShLangPS },
+        { "texCUBE",                          "V4",    "F",       "V4,V3",          "S,F",           EShLangPS },
+        { "texCUBE",                          "V4",    "F",       "V4,V3,,",        "S,F,,",         EShLangPS },
+        { "texCUBEbias",                      "V4",    "F",       "V4,",            "S,F",           EShLangPS },
+        { "texCUBEgrad",                      "V4",    "F",       "V4,V3,,",        "S,F,,",         EShLangPS },
+        { "texCUBElod",                       "V4",    "F",       "V4,",            "S,F",           EShLangPS },
+        { "texCUBEproj",                      "V4",    "F",       "V4,",            "S,F",           EShLangPS },
         { "transpose",                        "^M",    nullptr,   "M",              "F",             EShLangAll },
         { "trunc",                            nullptr, nullptr,   "SVM",            "F",             EShLangAll },
 
         // Texture object methods.  Return type can be overridden by shader declaration.
         // !O = no offset, O = offset
-        { "Sample",             /*!O*/        "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangFragmentMask },
-        { "Sample",             /* O*/        "V4",    nullptr,   "%@,S,V,",        "FIU,S,F,I",     EShLangFragmentMask },
+        { "Sample",             /*!O*/        "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangPS },
+        { "Sample",             /* O*/        "V4",    nullptr,   "%@,S,V,",        "FIU,S,F,I",     EShLangPS },
 
-        { "SampleBias",         /*!O*/        "V4",    nullptr,   "%@,S,V,S",       "FIU,S,F,",      EShLangFragmentMask },
-        { "SampleBias",         /* O*/        "V4",    nullptr,   "%@,S,V,S,V",     "FIU,S,F,,I",    EShLangFragmentMask },
-
-        // TODO: FXC accepts int/uint samplers here.  unclear what that means.
-        { "SampleCmp",          /*!O*/        "S",     "F",       "%@,S,V,S",       "FIU,s,F,",      EShLangFragmentMask },
-        { "SampleCmp",          /* O*/        "S",     "F",       "%@,S,V,S,V",     "FIU,s,F,,I",    EShLangFragmentMask },
+        { "SampleBias",         /*!O*/        "V4",    nullptr,   "%@,S,V,S",       "FIU,S,F,",      EShLangPS },
+        { "SampleBias",         /* O*/        "V4",    nullptr,   "%@,S,V,S,V",     "FIU,S,F,,I",    EShLangPS },
 
         // TODO: FXC accepts int/uint samplers here.  unclear what that means.
-        { "SampleCmpLevelZero", /*!O*/        "S",     "F",       "%@,S,V,S",       "FIU,s,F,F",     EShLangFragmentMask },
-        { "SampleCmpLevelZero", /* O*/        "S",     "F",       "%@,S,V,S,V",     "FIU,s,F,F,I",   EShLangFragmentMask },
+        { "SampleCmp",          /*!O*/        "S",     "F",       "%@,S,V,S",       "FIU,s,F,",      EShLangPS },
+        { "SampleCmp",          /* O*/        "S",     "F",       "%@,S,V,S,V",     "FIU,s,F,,I",    EShLangPS },
+
+        // TODO: FXC accepts int/uint samplers here.  unclear what that means.
+        { "SampleCmpLevelZero", /*!O*/        "S",     "F",       "%@,S,V,S",       "FIU,s,F,F",     EShLangPS },
+        { "SampleCmpLevelZero", /* O*/        "S",     "F",       "%@,S,V,S,V",     "FIU,s,F,F,I",   EShLangPS },
 
         { "SampleGrad",         /*!O*/        "V4",    nullptr,   "%@,S,V,,",       "FIU,S,F,,",     EShLangAll },
         { "SampleGrad",         /* O*/        "V4",    nullptr,   "%@,S,V,,,",      "FIU,S,F,,,I",   EShLangAll },
@@ -668,8 +684,8 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "Gather",             /*!O*/        "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangAll },
         { "Gather",             /* O*/        "V4",    nullptr,   "%@,S,V,V",       "FIU,S,F,I",     EShLangAll },
 
-        { "CalculateLevelOfDetail",           "S",     "F",       "%@,S,V",         "FUI,S,F",       EShLangFragmentMask },
-        { "CalculateLevelOfDetailUnclamped",  "S",     "F",       "%@,S,V",         "FUI,S,F",       EShLangFragmentMask },
+        { "CalculateLevelOfDetail",           "S",     "F",       "%@,S,V",         "FUI,S,F",       EShLangPS },
+        { "CalculateLevelOfDetailUnclamped",  "S",     "F",       "%@,S,V",         "FUI,S,F",       EShLangPS },
 
         { "GetSamplePosition",                "V2",    "F",       "$&2,S",          "FUI,I",         EShLangVSPSGS },
 
