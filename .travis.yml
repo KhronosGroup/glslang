@@ -4,7 +4,6 @@ language: cpp
 
 os:
   - linux
-  - osx
 
 # Use Ubuntu 14.04 LTS (Trusty) as the Linux testing environment.
 # sudo: required
@@ -15,15 +14,10 @@ env:
   - GLSLANG_BUILD_TYPE=Debug
 
 compiler:
-  - clang
   - gcc
 
 matrix:
   fast_finish: true # Show final status immediately if a test fails.
-  exclude:
-    # Skip GCC builds on Mac OS X.
-    - os: osx
-      compiler: gcc
 
 cache:
   apt: true
@@ -35,12 +29,10 @@ branches:
 addons:
   apt:
     packages:
-      - clang-3.6
+      # - clang-3.6
       - ninja-build
 
 install:
-  # Install ninja on Mac OS X.
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install ninja; fi
   # Make sure that clang-3.6 is selected.
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CC" == "clang" ]]; then
       export CC=clang-3.6 CXX=clang++-3.6;
