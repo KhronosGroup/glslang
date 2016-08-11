@@ -237,14 +237,14 @@ void ProcessArguments(int argc, char* argv[])
                 Options |= EOptionVulkanRules;
                 Options |= EOptionLinkProgram;
                 break;
-            case 'T':
+            case 'S':
                 shaderStageName = argv[1];
                 if (argc > 0) {
                     argc--;
                     argv++;
                 }
                 else
-                    Error("no <stage> specified for -T");
+                    Error("no <stage> specified for -S");
                 break;
             case 'G':
                 Options |= EOptionSpv;
