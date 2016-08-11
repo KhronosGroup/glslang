@@ -37,7 +37,7 @@
 #include "../Include/ResourceLimits.h"
 #include "../MachineIndependent/Versions.h"
 
-#include <string.h>
+#include <cstring>
 
 #ifdef _WIN32
 #define C_DECL __cdecl

@@ -38,7 +38,7 @@
 
 #include <string>
 #include <vector>
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace spv {
 
@@ -74,7 +74,7 @@ public:
 } // namespace SPV
 
 #if !defined (use_cpp11)
-#include <stdio.h>
+#include <cstdio>
 
 namespace spv {
 class spirvbin_t : public spirvbin_base_t

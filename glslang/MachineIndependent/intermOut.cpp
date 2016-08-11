@@ -38,11 +38,9 @@
 #include "../Include/InfoSink.h"
 
 #ifdef _MSC_VER
-#include <float.h>
-#elif defined __ANDROID__ || defined __linux__ || __MINGW32__ || __MINGW64__
-#include <cmath>
+#include <cfloat>
 #else
-#include <math.h>
+#include <cmath>
 #endif
 
 namespace {
@@ -50,10 +48,8 @@ namespace {
 bool is_positive_infinity(double x) {
 #ifdef _MSC_VER
   return _fpclass(x) == _FPCLASS_PINF;
-#elif defined __ANDROID__ || defined __linux__ || __MINGW32__ || __MINGW64__
-  return std::isinf(x) && (x >= 0);
 #else
-  return isinf(x) && (x >= 0);
+  return std::isinf(x) && (x >= 0);
 #endif
 }
 

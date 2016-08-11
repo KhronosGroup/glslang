@@ -43,7 +43,7 @@
 
 #include "../glslang/OSDependent/osinclude.h"
 
-#include <stdarg.h>
+#include <cstdarg>
 #include <algorithm>
 
 namespace glslang {

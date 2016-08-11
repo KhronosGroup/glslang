@@ -38,8 +38,8 @@
 // SpvBuilder.h.
 //
 
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdlib>
 
 #include <unordered_set>
 #include <algorithm>

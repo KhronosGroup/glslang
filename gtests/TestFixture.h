@@ -35,7 +35,7 @@
 #ifndef GLSLANG_GTESTS_TEST_FIXTURE_H
 #define GLSLANG_GTESTS_TEST_FIXTURE_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <fstream>
 #include <sstream>
 #include <streambuf>
