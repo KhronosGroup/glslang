@@ -23,6 +23,7 @@ ERROR: 0:66: 'component' : doubles cannot start on an odd-numbered component
 ERROR: 0:67: 'component' : type overflows the available 4 components 
 ERROR: 0:71: 'location' : overlapping use of location 55
 ERROR: 0:75: 'location' : overlapping use of location 57
+ERROR: 0:77: 'location' : overlapping use of location 59
 ERROR: 0:78: 'location' : overlapping use of location 59
 ERROR: 0:95: 'xfb layout qualifier' : can only be used on an output 
 ERROR: 0:101: 'xfb_offset' : cannot declare a default, use a full declaration 
@@ -54,7 +55,7 @@ ERROR: 0:187: 'assign' :  l-value required "gl_BaseVertexARB" (can't modify shad
 ERROR: 0:188: 'assign' :  l-value required "gl_BaseInstanceARB" (can't modify shader input)
 ERROR: 0:189: 'assign' :  l-value required "gl_DrawIDARB" (can't modify shader input)
 ERROR: 0:190: 'glBaseInstanceARB' : undeclared identifier 
-ERROR: 54 compilation errors.  No code generated.
+ERROR: 55 compilation errors.  No code generated.
 
 
 Shader version: 440
