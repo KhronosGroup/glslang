@@ -44,7 +44,7 @@
 #include "SymbolTable.h"
 #include "propagateNoContraction.h"
 
-#include <float.h>
+#include <cfloat>
 
 namespace glslang {
 

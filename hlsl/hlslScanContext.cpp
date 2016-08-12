@@ -38,7 +38,7 @@
 // HLSL scanning, leveraging the scanning done by the preprocessor.
 //
 
-#include <string.h>
+#include <cstring>
 #include <unordered_map>
 #include <unordered_set>
 

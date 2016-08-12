@@ -46,9 +46,9 @@
 #include "../SPIRV/GLSL.std.450.h"
 #include "../SPIRV/doc.h"
 #include "../SPIRV/disassemble.h"
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
+#include <cstring>
+#include <cstdlib>
+#include <cmath>
 
 #include "../glslang/OSDependent/osinclude.h"
 
@@ -155,7 +155,7 @@ int Options = 0;
 const char* ExecutableName = nullptr;
 const char* binaryFileName = nullptr;
 const char* entryPointName = nullptr;
-const char* shaderTargetName = nullptr;
+const char* shaderStageName = nullptr;
 
 //
 // Create the default name for saving a binary if -o is not provided.
@@ -237,14 +237,14 @@ void ProcessArguments(int argc, char* argv[])
                 Options |= EOptionVulkanRules;
                 Options |= EOptionLinkProgram;
                 break;
-            case 'T':
-                shaderTargetName = argv[1];
+            case 'S':
+                shaderStageName = argv[1];
                 if (argc > 0) {
                     argc--;
                     argv++;
                 }
                 else
-                    Error("no <target> specified for -T");
+                    Error("no <stage> specified for -S");
                 break;
             case 'G':
                 Options |= EOptionSpv;
@@ -270,7 +270,6 @@ void ProcessArguments(int argc, char* argv[])
             case 'e':
                 // HLSL todo: entry point handle needs much more sophistication.
                 // This is okay for one compilation unit with one entry point.
-                // dankbaker - not sure it needs to be, fxc has no more sophistication then this
                 entryPointName = argv[1];
                 if (argc > 0) {
                     argc--;
@@ -696,8 +695,8 @@ EShLanguage FindLanguage(const std::string& name)
     }
 
     std::string suffix = name.substr(ext + 1, std::string::npos);
-    if (shaderTargetName)
-        suffix = shaderTargetName;
+    if (shaderStageName)
+        suffix = shaderStageName;
 
     if (suffix == "vert")
         return EShLangVertex;
@@ -792,8 +791,8 @@ void usage()
            "  -H          print human readable form of SPIR-V; turns on -V\n"
            "  -E          print pre-processed GLSL; cannot be used with -l;\n"
            "              errors will appear on stderr.\n"
-           "  -T <target> uses explicit target specified, rather then the file extension.\n"
-           "              valid choices are vert,tesc, tese,geom, rag,comp\n"
+           "  -S <stage>  uses explicit stage specified, rather then the file extension.\n"
+           "              valid choices are vert, tesc, tese, geom, frag, or comp\n"
            "  -c          configuration dump;\n"
            "              creates the default configuration file (redirect to a .conf file)\n"
            "  -C          cascading errors; risks crashes from accumulation of error recoveries\n"

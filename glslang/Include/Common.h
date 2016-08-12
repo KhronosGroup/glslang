@@ -89,8 +89,8 @@ inline long long int atoll (const char* str)
 #include <list>
 #include <algorithm>
 #include <string>
-#include <stdio.h>
-#include <assert.h>
+#include <cstdio>
+#include <cassert>
 
 #include "PoolAlloc.h"
 
