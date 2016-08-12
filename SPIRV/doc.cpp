@@ -33,7 +33,7 @@
 //POSSIBILITY OF SUCH DAMAGE.
 
 //
-// 1) Programatically fill in instruction/operand information.
+// 1) Programmatically fill in instruction/operand information.
 //    This can be used for disassembly, printing documentation, etc.
 //
 // 2) Print documentation from this parameterization.
@@ -41,8 +41,8 @@
 
 #include "doc.h"
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #include <algorithm>
 
 #ifdef AMD_EXTENSIONS
