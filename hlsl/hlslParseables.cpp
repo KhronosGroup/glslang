@@ -676,10 +676,21 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "SampleLevel",        /*!O*/        "V4",    nullptr,   "%@,S,V,S",       "FIU,S,F,",      EShLangAll },
         { "SampleLevel",        /* O*/        "V4",    nullptr,   "%@,S,V,S,V",     "FIU,S,F,,I",    EShLangAll },
 
-        { "Load",               /*!O*/        "V4",    nullptr,   "%@*,SV",         "FIU,UI",        EShLangAll },
-        { "Load",               /* O*/        "V4",    nullptr,   "%@,V,V",         "FIU,UI,I",       EShLangAll },
-        { "Load", /* +sampleidex*/            "V4",    nullptr,   "$&,V,S",         "FIU,UI,UI",       EShLangAll },
-        { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$&,V,S,V",       "FIU,UI,UI,I",     EShLangAll },
+
+        //It appears that if you have multiple types that not in the second column, that these are not iterated over,
+        // that is    { "Load",               /*!O*/        "V4",    nullptr,   "%@*,V",          "FIU,UI",        EShLangAll },
+        // ends up being { "Load",               /*!O*/        "V4",    nullptr,   "%@*,V",          "FIU,U",        EShLangAll },
+        // Since that is the case, these functions need to be repeated to get both the uint and int versions of them
+
+        { "Load",               /*!O*/        "V4",    nullptr,   "%@*,V",          "FIU,U",        EShLangAll },
+        { "Load",               /* O*/        "V4",    nullptr,   "%@,V,V",         "FIU,U,I",      EShLangAll },
+        { "Load", /* +sampleidex*/            "V4",    nullptr,   "$&,V,S",         "FIU,U,I",      EShLangAll },
+        { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$&,V,S,V",       "FIU,U,I,I",    EShLangAll },
+
+        { "Load",               /*!O*/        "V4",    nullptr,   "%@*,V",          "FIU,I",        EShLangAll },
+        { "Load",               /* O*/        "V4",    nullptr,   "%@,V,V",         "FIU,I,I",      EShLangAll },
+        { "Load", /* +sampleidex*/            "V4",    nullptr,   "$&,V,S",         "FIU,I,I",      EShLangAll },
+        { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$&,V,S,V",       "FIU,I,I,I",    EShLangAll },
 
         { "Gather",             /*!O*/        "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangAll },
         { "Gather",             /* O*/        "V4",    nullptr,   "%@,S,V,V",       "FIU,S,F,I",     EShLangAll },
@@ -811,9 +822,8 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
 
         for (int stage = 0; stage < EShLangCount; ++stage) {                                // for each stage...
          
-            //These need to be accepted as inputs, they just can't be used during actual code production
-         //   if ((intrinsic.stage & (1<<stage)) == 0) // skip inapplicable stages
-         //       continue;
+            if ((intrinsic.stage & (1<<stage)) == 0) // skip inapplicable stages
+                continue;
 
             // reference to either the common builtins, or stage specific builtins.
             TString& s = (intrinsic.stage == EShLangAll) ? commonBuiltins : stageBuiltins[stage];
