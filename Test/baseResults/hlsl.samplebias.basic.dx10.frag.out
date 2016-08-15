@@ -389,7 +389,6 @@ gl_FragCoord origin is upper left
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main"
                               ExecutionMode 4 OriginUpperLeft
-                              Source HLSL 450
                               Name 4  "main"
                               Name 9  "txval10"
                               Name 12  "g_tTex1df4"
