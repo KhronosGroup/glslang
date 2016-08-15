@@ -67,7 +67,7 @@ void TType::buildMangledName(TString& mangledName)
     case EbtBool:               mangledName += 'b';      break;
     case EbtAtomicUint:         mangledName += "au";     break;
     case EbtSampler:
-        switch (sampler.type) {
+        switch (sampler.getBasicType()) {
         case EbtInt:   mangledName += "i"; break;
         case EbtUint:  mangledName += "u"; break;
         default: break; // some compilers want this

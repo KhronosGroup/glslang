@@ -1837,7 +1837,7 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
 // Return type Id of the sampled type.
 spv::Id TGlslangToSpvTraverser::getSampledType(const glslang::TSampler& sampler)
 {
-    switch (sampler.type) {
+    switch (sampler.getBasicType()) {
         case glslang::EbtFloat:    return builder.makeFloatType(32);
         case glslang::EbtInt:      return builder.makeIntType(32);
         case glslang::EbtUint:     return builder.makeUintType(32);

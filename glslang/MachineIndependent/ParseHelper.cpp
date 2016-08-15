@@ -1669,7 +1669,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     {
         // Make sure the image types have the correct layout() format and correct argument types
         const TType& imageType = arg0->getType();
-        if (imageType.getSampler().type == EbtInt || imageType.getSampler().type == EbtUint) {
+        if (imageType.getSampler().getBasicType() == EbtInt || imageType.getSampler().getBasicType() == EbtUint) {
             if (imageType.getQualifier().layoutFormat != ElfR32i && imageType.getQualifier().layoutFormat != ElfR32ui)
                 error(loc, "only supported on image with format r32i or r32ui", fnCandidate.getName().c_str(), "");
         } else {
@@ -1824,7 +1824,7 @@ void TParseContext::nonOpBuiltInCheck(const TSourceLoc& loc, const TFunction& fn
 
     if (fnCandidate.getName().compare(0, 11, "imageAtomic") == 0) {
         const TType& imageType = callNode.getSequence()[0]->getAsTyped()->getType();
-        if (imageType.getSampler().type == EbtInt || imageType.getSampler().type == EbtUint) {
+        if (imageType.getSampler().getBasicType() == EbtInt || imageType.getSampler().getBasicType() == EbtUint) {
             if (imageType.getQualifier().layoutFormat != ElfR32i && imageType.getQualifier().layoutFormat != ElfR32ui)
                 error(loc, "only supported on image with format r32i or r32ui", fnCandidate.getName().c_str(), "");
         } else {
@@ -2916,7 +2916,7 @@ int TParseContext::computeSamplerTypeIndex(TSampler& sampler)
     int msIndex       = sampler.ms      ? 1 : 0;
 
     int flattened = EsdNumDims * (EbtNumTypes * (2 * (2 * (2 * (2 * arrayIndex + msIndex) + imageIndex) + shadowIndex) +
-                                                 externalIndex) + sampler.type) + sampler.dim;
+                                                 externalIndex) + sampler.getBasicType()) + sampler.dim;
     assert(flattened < maxSamplerIndex);
 
     return flattened;
@@ -4568,11 +4568,11 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         if (! type.isImage())
             error(loc, "only apply to images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
         else {
-            if (type.getSampler().type == EbtFloat && qualifier.layoutFormat > ElfFloatGuard)
+            if (type.getSampler().getBasicType() == EbtFloat && qualifier.layoutFormat > ElfFloatGuard)
                 error(loc, "does not apply to floating point images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
-            if (type.getSampler().type == EbtInt && (qualifier.layoutFormat < ElfFloatGuard || qualifier.layoutFormat > ElfIntGuard))
+            if (type.getSampler().getBasicType() == EbtInt && (qualifier.layoutFormat < ElfFloatGuard || qualifier.layoutFormat > ElfIntGuard))
                 error(loc, "does not apply to signed integer images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
-            if (type.getSampler().type == EbtUint && qualifier.layoutFormat < ElfIntGuard)
+            if (type.getSampler().getBasicType() == EbtUint && qualifier.layoutFormat < ElfIntGuard)
                 error(loc, "does not apply to unsigned integer images", TQualifier::getLayoutFormatString(qualifier.layoutFormat), "");
 
             if (profile == EEsProfile) {

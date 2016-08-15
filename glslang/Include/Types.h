@@ -68,8 +68,12 @@ enum TSamplerDim {
     EsdNumDims
 };
 
+class TType;
 struct TSampler {   // misnomer now; includes images, textures without sampler, and textures with sampler
-    TBasicType type : 8;  // type returned by sampler
+
+	//The return type of the object
+	TType *samplerType;
+
     TSamplerDim dim : 8;
     bool    arrayed : 1;
     bool     shadow : 1;
@@ -78,6 +82,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
     bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
     bool   external : 1;  // GL_OES_EGL_image_external
+    
 
     bool isImage()       const { return image && dim != EsdSubpass; }
     bool isSubpass()     const { return dim == EsdSubpass; }
@@ -87,141 +92,31 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool isShadow()      const { return shadow; }
     bool isArrayed()     const { return arrayed; }
     bool isMultiSample() const { return ms; }
+	
 
-    void clear()
-    {
-        type = EbtVoid;
-        dim = EsdNone;
-        arrayed = false;
-        shadow = false;
-        ms = false;
-        image = false;
-        combined = false;
-        sampler = false;
-        external = false;
-    }
+	void deepCopy(const TSampler& copyOf);
+	void clear();
+    //create a type with a generic basetype
+    void set(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false);
+	void set(TType *t, TSamplerDim d, bool a = false, bool s = false, bool m = false);
+	void setImage(TType *t, TSamplerDim d, bool a = false, bool s = false, bool m = false);
+    void setImage(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false);
+	void setTexture(TType *t, TSamplerDim d, bool a = false, bool s = false, bool m = false);
+    void setTexture(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false);
 
-    // make a combined sampler and texture
-    void set(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
-    {
-        clear();
-        type = t;
-        dim = d;
-        arrayed = a;
-        shadow = s;
-        ms = m;
-        combined = true;
-    }
+	// make a pure sampler, no texture, no image, nothing combined, the 'sampler' keyword
+	void setPureSampler(bool s);
+    TBasicType getBasicType() const;
 
-    // make an image
-    void setImage(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
-    {
-        clear();
-        type = t;
-        dim = d;
-        arrayed = a;
-        shadow = s;
-        ms = m;
-        image = true;
-    }
+	void setSubpass(TType *t, bool m = false);
+    void setSubpass(TBasicType t, bool m = false);
 
-    // make a texture with no sampler
-    void setTexture(TBasicType t, TSamplerDim d, bool a = false, bool s = false, bool m = false)
-    {
-        clear();
-        type = t;
-        dim = d;
-        arrayed = a;
-        shadow = s;
-        ms = m;
-    }
+	bool operator==(const TSampler& right) const;
+	
+	bool operator!=(const TSampler& right) const;
+	
+	TString getString() const;
 
-    // make a subpass input attachment
-    void setSubpass(TBasicType t, bool m = false)
-    {
-        clear();
-        type = t;
-        image = true;
-        dim = EsdSubpass;
-        ms = m;
-    }
-
-    // make a pure sampler, no texture, no image, nothing combined, the 'sampler' keyword
-    void setPureSampler(bool s)
-    {
-        clear();
-        sampler = true;
-        shadow = s;
-    }
-
-    bool operator==(const TSampler& right) const
-    {
-        return type == right.type &&
-                dim == right.dim &&
-            arrayed == right.arrayed &&
-             shadow == right.shadow &&
-                 ms == right.ms &&
-              image == right.image &&
-           combined == right.combined &&
-            sampler == right.sampler &&
-           external == right.external;
-    }
-
-    bool operator!=(const TSampler& right) const
-    {
-        return ! operator==(right);
-    }
-
-    TString getString() const
-    {
-        TString s;
-
-        if (sampler) {
-            s.append("sampler");
-            return s;
-        }
-
-        switch (type) {
-        case EbtFloat:               break;
-        case EbtInt:  s.append("i"); break;
-        case EbtUint: s.append("u"); break;
-        case EbtInt64:  s.append("i64"); break;
-        case EbtUint64: s.append("u64"); break;
-        default:  break;  // some compilers want this
-        }
-        if (image) {
-            if (dim == EsdSubpass)
-                s.append("subpass");
-            else
-                s.append("image");
-        } else if (combined) {
-            s.append("sampler");
-        } else {
-            s.append("texture");
-        }
-        if (external) {
-            s.append("ExternalOES");
-            return s;
-        }
-        switch (dim) {
-        case Esd1D:      s.append("1D");      break;
-        case Esd2D:      s.append("2D");      break;
-        case Esd3D:      s.append("3D");      break;
-        case EsdCube:    s.append("Cube");    break;
-        case EsdRect:    s.append("2DRect");  break;
-        case EsdBuffer:  s.append("Buffer");  break;
-        case EsdSubpass: s.append("Input"); break;
-        default:  break;  // some compilers want this
-        }
-        if (ms)
-            s.append("MS");
-        if (arrayed)
-            s.append("Array");
-        if (shadow)
-            s.append("Shadow");
-
-        return s;
-    }
 };
 
 //
@@ -1181,6 +1076,8 @@ public:
     void deepCopy(const TType& copyOf)
     {
         shallowCopy(copyOf);
+
+		sampler.deepCopy(copyOf.sampler);
 
         if (copyOf.arraySizes) {
             arraySizes = new TArraySizes;

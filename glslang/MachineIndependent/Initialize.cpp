@@ -2684,7 +2684,11 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
     // to enumerate all the uses for that type.
     //
 
-    TBasicType bTypes[3] = { EbtFloat, EbtInt, EbtUint };
+	TType *bTypes[3];
+	bTypes[0] = new TType(EbtFloat);
+	bTypes[1] = new TType(EbtInt);
+	bTypes[2] = new TType(EbtUint);
+
     bool skipBuffer = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 140);
     bool skipCubeArrayed = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 130);
 
@@ -2883,7 +2887,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
 
     if (profile == EEsProfile)
         commonBuiltins.append("highp ");
-    commonBuiltins.append(prefixes[sampler.type]);
+    commonBuiltins.append(prefixes[sampler.getBasicType()]);
     commonBuiltins.append("vec4 imageLoad(readonly volatile coherent ");
     commonBuiltins.append(imageParams);
     commonBuiltins.append(");\n");
@@ -2891,22 +2895,22 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
     commonBuiltins.append("void imageStore(writeonly volatile coherent ");
     commonBuiltins.append(imageParams);
     commonBuiltins.append(", ");
-    commonBuiltins.append(prefixes[sampler.type]);
+    commonBuiltins.append(prefixes[sampler.getBasicType()]);
     commonBuiltins.append("vec4);\n");
 
     if (sampler.dim != Esd1D && sampler.dim != EsdBuffer && profile != EEsProfile && version >= 450) {
         commonBuiltins.append("int sparseImageLoadARB(readonly volatile coherent ");
         commonBuiltins.append(imageParams);
         commonBuiltins.append(", out ");
-        commonBuiltins.append(prefixes[sampler.type]);
+        commonBuiltins.append(prefixes[sampler.getBasicType()]);
         commonBuiltins.append("vec4");
         commonBuiltins.append(");\n");
     }
 
     if ( profile != EEsProfile ||
         (profile == EEsProfile && version >= 310)) {
-        if (sampler.type == EbtInt || sampler.type == EbtUint) {
-            const char* dataType = sampler.type == EbtInt ? "highp int" : "highp uint";
+        if (sampler.getBasicType() == EbtInt || sampler.getBasicType() == EbtUint) {
+            const char* dataType = sampler.getBasicType() == EbtInt ? "highp int" : "highp uint";
 
             const int numBuiltins = 7;
 
@@ -2959,7 +2963,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
 //
 void TBuiltIns::addSubpassSampling(TSampler sampler, TString& typeName, int /*version*/, EProfile /*profile*/)
 {
-    stageBuiltins[EShLangFragment].append(prefixes[sampler.type]);
+    stageBuiltins[EShLangFragment].append(prefixes[sampler.getBasicType()]);
     stageBuiltins[EShLangFragment].append("vec4 subpassLoad");
     stageBuiltins[EShLangFragment].append("(");
     stageBuiltins[EShLangFragment].append(typeName.c_str());
@@ -3071,7 +3075,7 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
                                             if (sampler.shadow)
                                                 s.append("float ");
                                             else {
-                                                s.append(prefixes[sampler.type]);
+                                                s.append(prefixes[sampler.getBasicType()]);
                                                 s.append("vec4 ");
                                             }
                                         }
@@ -3170,7 +3174,7 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
                                             if (sampler.shadow)
                                                 s.append("float ");
                                             else {
-                                                s.append(prefixes[sampler.type]);
+                                                s.append(prefixes[sampler.getBasicType()]);
                                                 s.append("vec4 ");
                                             }
                                         }
@@ -3219,7 +3223,7 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int vers
     if (sampler.ms)
         return;
 
-    if (version < 140 && sampler.dim == EsdRect && sampler.type != EbtFloat)
+    if (version < 140 && sampler.dim == EsdRect && sampler.getBasicType() != EbtFloat)
         return;
 
     for (int offset = 0; offset < 3; ++offset) { // loop over three forms of offset in the call name:  none, Offset, and Offsets
@@ -3242,7 +3246,7 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int vers
                 if (sparse)
                     s.append("int ");
                 else {
-                    s.append(prefixes[sampler.type]);
+                    s.append(prefixes[sampler.getBasicType()]);
                     s.append("vec4 ");
                 }
 
@@ -3286,7 +3290,7 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int vers
                 // texel out (for sparse texture)
                 if (sparse) {
                     s.append(",out ");
-                    s.append(prefixes[sampler.type]);
+                    s.append(prefixes[sampler.getBasicType()]);
                     s.append("vec4 ");
                 }
 

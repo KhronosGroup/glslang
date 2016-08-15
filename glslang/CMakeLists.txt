@@ -35,6 +35,7 @@ set(SOURCES
     MachineIndependent/preprocessor/PpTokens.cpp
     MachineIndependent/propagateNoContraction.cpp
     GenericCodeGen/CodeGen.cpp
+    GenericCodeGen/Types.cpp
     GenericCodeGen/Link.cpp)
 
 set(HEADERS

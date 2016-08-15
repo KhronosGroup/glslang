@@ -604,7 +604,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
             const TSampler& texType = base->getType().getSampler();
             if (! texType.isPureSampler()) {
                 const int vecSize = texType.isShadow() ? 1 : 4;
-                return intermediate.addMethod(base, TType(texType.type, EvqTemporary, vecSize), &field, loc);
+                return intermediate.addMethod(base, TType(texType.getBasicType(), EvqTemporary, vecSize), &field, loc);
             }
         }
     }
@@ -2754,7 +2754,7 @@ int HlslParseContext::computeSamplerTypeIndex(TSampler& sampler)
     int shadowIndex = sampler.shadow ? 1 : 0;
     int externalIndex = sampler.external ? 1 : 0;
 
-    return EsdNumDims * (EbtNumTypes * (2 * (2 * arrayIndex + shadowIndex) + externalIndex) + sampler.type) + sampler.dim;
+    return EsdNumDims * (EbtNumTypes * (2 * (2 * arrayIndex + shadowIndex) + externalIndex) + sampler.getBasicType()) + sampler.dim;
 }
 
 //
