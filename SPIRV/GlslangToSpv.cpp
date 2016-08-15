@@ -212,7 +212,8 @@ spv::SourceLanguage TranslateSourceLanguage(glslang::EShSource source, EProfile 
             return spv::SourceLanguageUnknown;
         }
     case glslang::EShSourceHlsl:
-        return spv::SourceLanguageHLSL;
+        //Use SourceLanguageUnknown instead of SourceLanguageHLSL for now, until Vulkan knows what HLSL is
+        return spv::SourceLanguageUnknown;
     default:
         return spv::SourceLanguageUnknown;
     }

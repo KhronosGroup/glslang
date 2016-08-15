@@ -99,7 +99,6 @@ Shader version: 450
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Vertex 4  "main"
-                              Source HLSL 450
                               Name 4  "main"
                               Name 8  "sizeQueryTemp"
                               Name 12  "g_tTex1df4"

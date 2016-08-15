@@ -76,7 +76,6 @@ gl_FragCoord origin is upper left
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "PixelShaderFunction" 9 10 11 12 13
                               ExecutionMode 4 OriginUpperLeft
-                              Source HLSL 450
                               Name 4  "PixelShaderFunction"
                               Name 9  "a1"
                               Name 10  "a2"
