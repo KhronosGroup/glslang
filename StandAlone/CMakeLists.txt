@@ -24,6 +24,7 @@ set(LIBRARIES
     OSDependent
     HLSL
     SPIRV
+    SPVRemapper
     glslang-default-resource-limits)
 
 if(WIN32)

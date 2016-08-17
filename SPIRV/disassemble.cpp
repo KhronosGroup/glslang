@@ -217,10 +217,12 @@ void SpirvStream::outputIndent()
 
 void SpirvStream::formatId(Id id, std::stringstream& idStream)
 {
-    if (id >= bound)
-        Kill(out, "Bad <id>");
-
     if (id != 0) {
+        // On instructions with no IDs, this is called with "0", which does not
+        // have to be within ID bounds on null shaders.
+        if (id >= bound)
+            Kill(out, "Bad <id>");
+
         idStream << id;
         if (idDescriptor[id].size() > 0)
             idStream << "(" << idDescriptor[id] << ")";
@@ -334,7 +336,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
         idDescriptor[resultId] = (const char*)(&stream[word]);
     }
     else {
-        if (idDescriptor[resultId].size() == 0) {
+        if (resultId != 0 && idDescriptor[resultId].size() == 0) {
             switch (opCode) {
             case OpTypeInt:
                 idDescriptor[resultId] = "int";
