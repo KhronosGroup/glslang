@@ -117,6 +117,7 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["in"] =                      EHTokIn;
     (*KeywordMap)["out"] =                     EHTokOut;
     (*KeywordMap)["inout"] =                   EHTokInOut;
+    (*KeywordMap)["layout"] =                  EHTokLayout;
 
     (*KeywordMap)["Buffer"] =                  EHTokBuffer;
     (*KeywordMap)["vector"] =                  EHTokVector;
@@ -457,6 +458,7 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokIn:
     case EHTokOut:
     case EHTokInOut:
+    case EHTokLayout:
         return keyword;
 
     // template types

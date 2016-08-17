@@ -426,7 +426,8 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type)
     // type_qualifier
     TQualifier qualifier;
     qualifier.clear();
-    acceptQualifier(qualifier);
+    if (! acceptQualifier(qualifier))
+        return false;
     TSourceLoc loc = token.loc;
 
     // type_specifier
@@ -449,7 +450,7 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type)
 //
 // Zero or more of these, so this can't return false.
 //
-void HlslGrammar::acceptQualifier(TQualifier& qualifier)
+bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
 {
     do {
         switch (peek()) {
@@ -508,11 +509,64 @@ void HlslGrammar::acceptQualifier(TQualifier& qualifier)
         case EHTokInOut:
             qualifier.storage = EvqInOut;
             break;
+        case EHTokLayout:
+            if (! acceptLayoutQualifierList(qualifier))
+                return false;
+            continue;
         default:
-            return;
+            return true;
         }
         advanceToken();
     } while (true);
+}
+
+// layout_qualifier_list
+//      : LEFT_PAREN layout_qualifier COMMA layout_qualifier ... RIGHT_PAREN
+//
+// layout_qualifier
+//      : identifier
+//      | identifier EQUAL expresion
+//
+// Zero or more of these, so this can't return false.
+//
+bool HlslGrammar::acceptLayoutQualifierList(TQualifier& qualifier)
+{
+    if (! acceptTokenClass(EHTokLayout))
+        return false;
+
+    // LEFT_PAREN
+    if (! acceptTokenClass(EHTokLeftParen))
+        return false;
+
+    do {
+        // identifier
+        HlslToken idToken;
+        if (! acceptIdentifier(idToken))
+            break;
+
+        // EQUAL expression
+        if (acceptTokenClass(EHTokAssign)) {
+            TIntermTyped* expr;
+            if (! acceptConditionalExpression(expr)) {
+                expected("expression");
+                return false;
+            }
+            parseContext.setLayoutQualifier(idToken.loc, qualifier, *idToken.string, expr);
+        } else
+            parseContext.setLayoutQualifier(idToken.loc, qualifier, *idToken.string);
+
+        // COMMA
+        if (! acceptTokenClass(EHTokComma))
+            break;
+    } while (true);
+
+    // RIGHT_PAREN
+    if (! acceptTokenClass(EHTokRightParen)) {
+        expected(")");
+        return false;
+    }
+
+    return true;
 }
 
 // template_type

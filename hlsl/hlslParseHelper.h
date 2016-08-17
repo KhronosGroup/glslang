@@ -128,8 +128,8 @@ public:
     void paramFix(TType& type);
     void specializationCheck(const TSourceLoc&, const TType&, const char* op);
 
-    void setLayoutQualifier(const TSourceLoc&, TPublicType&, TString&);
-    void setLayoutQualifier(const TSourceLoc&, TPublicType&, TString&, const TIntermTyped*);
+    void setLayoutQualifier(const TSourceLoc&, TQualifier&, TString&);
+    void setLayoutQualifier(const TSourceLoc&, TQualifier&, TString&, const TIntermTyped*);
     void mergeObjectLayoutQualifiers(TQualifier& dest, const TQualifier& src, bool inheritOnly);
     void checkNoShaderLayouts(const TSourceLoc&, const TShaderQualifiers&);
 

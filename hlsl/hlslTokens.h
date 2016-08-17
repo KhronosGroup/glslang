@@ -64,6 +64,7 @@ enum EHlslTokenClass {
     EHTokIn,
     EHTokOut,
     EHTokInOut,
+    EHTokLayout,
 
     // template types
     EHTokBuffer,
