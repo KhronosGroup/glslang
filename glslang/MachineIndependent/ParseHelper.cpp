@@ -4844,10 +4844,10 @@ const TFunction* TParseContext::findFunction120(const TSourceLoc& loc, const TFu
     // more than one function."
 
     const TFunction* candidate = nullptr;
-    TVector<TFunction*> candidateList;
+    TVector<const TFunction*> candidateList;
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
 
-    for (TVector<TFunction*>::const_iterator it = candidateList.begin(); it != candidateList.end(); ++it) {
+    for (auto it = candidateList.begin(); it != candidateList.end(); ++it) {
         const TFunction& function = *(*it);
 
         // to even be a potential match, number of arguments has to match

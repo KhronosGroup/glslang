@@ -357,7 +357,7 @@ public:
             return (*it).second;
     }
 
-    void findFunctionNameList(const TString& name, TVector<TFunction*>& list)
+    void findFunctionNameList(const TString& name, TVector<const TFunction*>& list)
     {
         size_t parenAt = name.find_first_of('(');
         TString base(name, 0, parenAt + 1);
@@ -624,7 +624,7 @@ public:
         return false;
     }
 
-    void findFunctionNameList(const TString& name, TVector<TFunction*>& list, bool& builtIn)
+    void findFunctionNameList(const TString& name, TVector<const TFunction*>& list, bool& builtIn)
     {
         // For user levels, return the set found in the first scope with a match
         builtIn = false;
