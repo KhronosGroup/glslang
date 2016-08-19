@@ -4895,10 +4895,239 @@ const TFunction* TParseContext::findFunction120(const TSourceLoc& loc, const TFu
 }
 
 // Function finding algorithm for desktop version 400 and above.
+//
+// "When function calls are resolved, an exact type match for all the arguments
+// is sought. If an exact match is found, all other functions are ignored, and
+// the exact match is used. If no exact match is found, then the implicit
+// conversions in section 4.1.10 “Implicit Conversions” will be applied to find
+// a match. Mismatched types on input parameters (in or inout or default) must
+// have a conversion from the calling argument type to the formal parameter type.
+// Mismatched types on output parameters (out or inout) must have a conversion
+// from the formal parameter type to the calling argument type.
+//
+// "If implicit conversions can be used to find more than one matching function,
+// a single best-matching function is sought. To determine a best match, the
+// conversions between calling argument and formal parameter types are compared
+// for each function argument and pair of matching functions. After these
+// comparisons are performed, each pair of matching functions are compared.
+// A function declaration A is considered a better match than function
+// declaration B if
+//
+//  * for at least one function argument, the conversion for that argument in A
+//    is better than the corresponding conversion in B; and
+//  * there is no function argument for which the conversion in B is better than
+//    the corresponding conversion in A.
+//
+// "If a single function declaration is considered a better match than every
+// other matching function declaration, it will be used. Otherwise, a
+// compile-time semantic error for an ambiguous overloaded function call occurs.
+//
+// "To determine whether the conversion for a single argument in one match is
+// better than that for another match, the following rules are applied, in order:
+//
+//  1. An exact match is better than a match involving any implicit conversion.
+//  2. A match involving an implicit conversion from float to double is better
+//     than a match involving any other implicit conversion.
+//  3. A match involving an implicit conversion from either int or uint to float
+//     is better than a match involving an implicit conversion from either int
+//     or uint to double.
+//
+// "If none of the rules above apply to a particular pair of conversions, neither
+// conversion is considered better than the other."
+//
 const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFunction& call, bool& builtIn)
 {
-    // TODO: 4.00 functionality: findFunction400()
-    return findFunction120(loc, call, builtIn);
+    // first, look for an exact match
+    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn);
+    if (symbol)
+        return symbol->getAsFunction();
+
+    // no exact match, use the generic selector, parameterized by the GLSL rules
+
+    // create list of candidates to send
+    TVector<const TFunction*> candidateList;
+    symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
+    
+    // can 'from' convert to 'to'?
+    auto convertible = [this](const TType& from, const TType& to) {
+        if (from == to)
+            return true;
+        if (from.isArray() || to.isArray() || ! from.sameElementShape(to))
+            return false;
+        return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType());
+    };
+
+    // Is 'to2' a better conversion than 'to1'?
+    // Ties should not be considered as better.
+    // Assumes 'convertible' already said true.
+    auto better = [](const TType& from, const TType& to1, const TType& to2) {
+        // 1. exact match
+        if (from == to2)
+            return from != to1;
+        if (from == to1)
+            return false;
+
+        // 2. float -> double is better
+        if (from.getBasicType() == EbtFloat) {
+            if (to2.getBasicType() == EbtDouble && to1.getBasicType() != EbtDouble)
+                return true;
+        }
+
+        // 3. -> float is better than -> double
+        return to2.getBasicType() == EbtFloat && to1.getBasicType() == EbtDouble;
+    };
+
+    // for ambiguity reporting
+    bool tie = false;
+    
+    // send to the generic selector
+    const TFunction* bestMatch = selectFunction(candidateList, call, convertible, better, tie);
+
+    if (bestMatch == nullptr)
+        error(loc, "no matching overloaded function found", call.getName().c_str(), "");
+    else if (tie)
+        error(loc, "ambiguous best function under implicit type conversion", call.getName().c_str(), "");
+
+    return bestMatch;
+}
+
+// Select the best matching function for 'call' from 'candidateList'.
+//
+// Assumptions
+//
+// There is no exact match, so a selection algorithm needs to run. That is, the
+// language-specific handler should should check for exact match first, to
+// decide what to do, before calling this selector.
+//
+// Input
+//
+//  * list of candidate signatures to select from
+//  * the call
+//  * a predicate function convertible(from, to) that says whether or not type
+//    'from' can implicitly convert to type 'to' (it includes the case of what
+//    the calling language would consider a matching type with no conversion
+//    needed)
+//  * a predicate function better(from1, from2, to1, to2) that says whether or
+//    not a conversion from from <-> to2 is considered better than a conversion
+//    from <-> to1 (both in and out directions need testing, as declared by the
+//    formal parameter)
+//
+// Output
+//
+//  * best matching candidate (or none, if no viable candidates found)
+//  * whether there was a tie for the best match (ambiguous overload selection,
+//    caller's choice for how to report)
+//
+const TFunction* TParseContextBase::selectFunction(
+    TVector<const TFunction*> candidateList,
+    const TFunction& call,
+    std::function<bool(const TType& from, const TType& to)> convertible,
+    std::function<bool(const TType& from, const TType& to1, const TType& to2)> better,
+    /* output */ bool& tie)
+{
+// 
+// Operation
+// 
+// 1. Prune the input list of candidates down to a list of viable candidates,
+// where each viable candidate has
+// 
+//  * at least as many parameters as there are calling arguments, with any
+//    remainding parameters being optional or having default values
+//  * each parameter is true under convertible(A, B), where A is the calling
+//    type for in and B is the formal type, and in addition, for out B is the
+//    calling type and A is the formal type
+// 
+// 2. If there are no viable candidates, return with no match.
+// 
+// 3. If there is only one viable candidate, it is the best match.
+//
+// 4. If there are multiple viable candidates, select the first viable candidate
+// as the incumbent. Compare the incumbent to the next viable candidate, and if
+// that candidate is better (bullets below), make it the incumbent. Repeat, with
+// a linear walk through the viable candidate list. The final incumbent will be
+// returned as the best match. A viable candidate is better than the incumbent if
+// 
+//  * it has a function argument with a better(...) conversion than the incumbent,
+//    for all directions needed by in and out
+//  * the incumbent has no argument with a better(...) conversion then the
+//    candidate, for either in or out (as needed)
+//
+// 5. Check for ambiguity by comparing the best match against all other viable
+// candidates. If any other viable candidate has a function argument with a
+// better(...) conversion than the best candidate (for either in or out
+// directions), return that there was a tie for best.
+//
+
+    tie = false;
+
+    // 1. prune to viable...
+    TVector<const TFunction*> viableCandidates;
+    for (auto it = candidateList.begin(); it != candidateList.end(); ++it) {
+        const TFunction& candidate = *(*it);
+
+        // to even be a potential match, number of arguments has to match
+        if (call.getParamCount() != candidate.getParamCount())
+            continue;
+
+        // see if arguments are convertible
+        bool viable = true;
+        for (int param = 0; param < candidate.getParamCount(); ++param) {
+            if (candidate[param].type->getQualifier().isParamInput()) {
+                if (! convertible(*call[param].type, *candidate[param].type)) {
+                    viable = false;
+                    break;
+                }
+            }
+            if (candidate[param].type->getQualifier().isParamOutput()) {
+                if (! convertible(*candidate[param].type, *call[param].type)) {
+                    viable = false;
+                    break;
+                }
+            }
+        }
+
+        if (viable)
+            viableCandidates.push_back(&candidate);
+    }
+
+    // 2. none viable...
+    if (viableCandidates.size() == 0)
+        return nullptr;
+
+    // 3. only one viable...
+    if (viableCandidates.size() == 1)
+        return viableCandidates.front();
+
+    // 4. find best...
+    auto betterParam = [&call, &better](const TFunction& can1, const TFunction& can2){
+        // is call -> can2 better than call -> can1 for any parameter
+        bool hasBetterParam = false;
+        for (int param = 0; param < call.getParamCount(); ++param) {
+            if (better(*call[param].type, *can1[param].type, *can2[param].type)) {
+                hasBetterParam = true;
+                break;
+            }
+        }
+        return hasBetterParam;
+    };
+
+    const TFunction* incumbent = viableCandidates.front();
+    for (auto it = viableCandidates.begin() + 1; it != viableCandidates.end(); ++it) {
+        const TFunction& candidate = *(*it);
+        if (betterParam(*incumbent, candidate) && ! betterParam(candidate, *incumbent))
+            incumbent = &candidate;
+    }
+
+    // 5. ambiguity...
+    for (auto it = viableCandidates.begin(); it != viableCandidates.end(); ++it) {
+        if (incumbent == *it)
+            continue;
+        const TFunction& candidate = *(*it);
+        if (betterParam(*incumbent, candidate))
+            tie = true;
+    }
+
+    return incumbent;
 }
 
 // When a declaration includes a type, but not a variable name, it can be 
