@@ -223,6 +223,7 @@ enum EHlslTokenClass {
     EHTokIntConstant,
     EHTokUintConstant,
     EHTokBoolConstant,
+    EHTokStringConstant,
 
     // control flow
     EHTokFor,
