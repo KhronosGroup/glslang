@@ -415,13 +415,13 @@ struct ShaderCompUnit {
     char** text;             // memory owned/managed externally
     const char*  fileNameList[1];
 
-    //Need to have a special constructors to adjust the fileNameList, since back end needs a list of ptrs
+    // Need to have a special constructors to adjust the fileNameList, since back end needs a list of ptrs
     ShaderCompUnit(EShLanguage istage, std::string &ifileName, char** itext)
     {
         stage = istage;
         fileName = ifileName;
         text    = itext;
-		fileNameList[0] = fileName.c_str();
+        fileNameList[0] = fileName.c_str();
     }
 
     ShaderCompUnit(const ShaderCompUnit &rhs)
@@ -429,7 +429,7 @@ struct ShaderCompUnit {
         stage = rhs.stage;
         fileName = rhs.fileName;
         text = rhs.text;
-		fileNameList[0] = fileName.c_str();
+        fileNameList[0] = fileName.c_str();
     }
 
 };
