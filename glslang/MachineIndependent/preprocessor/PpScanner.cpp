@@ -747,7 +747,12 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
             tokenString = ppToken->name;
             break;
         case PpAtomConstString:
-            parseContext.ppError(ppToken->loc, "string literals not supported", "\"\"", "");
+            if (parseContext.intermediate.getSource() == EShSourceHlsl) {
+                // HLSL allows string literals.
+                tokenString = ppToken->name;
+            } else {
+                parseContext.ppError(ppToken->loc, "string literals not supported", "\"\"", "");
+            }
             break;
         case '\'':
             parseContext.ppError(ppToken->loc, "character literals not supported", "\'", "");
