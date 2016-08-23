@@ -116,9 +116,12 @@ bool HlslParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& 
 
     HlslScanContext scanContext(*this, ppContext);
     HlslGrammar grammar(scanContext, *this);
-    if (! grammar.parse())
-        printf("HLSL translation failed.\n");
-
+    if (!grammar.parse())
+    {
+        //Print out a nicer error message that should be formated such that if you click on the message it will take you right to the line through most UIs
+        const glslang::TSourceLoc& sourceLoc = input.getSourceLoc();
+        printf("\n%s(%i): error at column %i, HLSL translation failed.\n", sourceLoc.name, sourceLoc.line, sourceLoc.column);
+    }
     return numErrors == 0;
 }
 

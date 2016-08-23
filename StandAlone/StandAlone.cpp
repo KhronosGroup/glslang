@@ -412,7 +412,26 @@ void StderrIfNonEmpty(const char* str)
 struct ShaderCompUnit {
     EShLanguage stage;
     std::string fileName;
-    char** text;           // memory owned/managed externally
+    char** text;             // memory owned/managed externally
+    const char*  fileNameList[1];
+
+    //Need to have a special constructors to adjust the fileNameList, since back end needs a list of ptrs
+    ShaderCompUnit(EShLanguage istage, std::string &ifileName, char** itext)
+    {
+        stage = istage;
+        fileName = ifileName;
+        text    = itext;
+		fileNameList[0] = fileName.c_str();
+    }
+
+    ShaderCompUnit(const ShaderCompUnit &rhs)
+    {
+        stage = rhs.stage;
+        fileName = rhs.fileName;
+        text = rhs.text;
+		fileNameList[0] = fileName.c_str();
+    }
+
 };
 
 //
@@ -439,7 +458,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
     for (auto it = compUnits.cbegin(); it != compUnits.cend(); ++it) {
         const auto &compUnit = *it;
         glslang::TShader* shader = new glslang::TShader(compUnit.stage);
-        shader->setStrings(compUnit.text, 1);
+        shader->setStringsWithLengthsAndNames(compUnit.text, NULL, compUnit.fileNameList, 1);
         if (entryPointName) // HLSL todo: this needs to be tracked per compUnits
             shader->setEntryPoint(entryPointName);
         shaders.push_back(shader);
