@@ -482,3 +482,12 @@ void TestGenMulNxM(float inF0, float inF1,
     float2x4 r15 = mul(inFM2x3, inFM3x4);
     float3x4 r16 = mul(inFM3x2, inFM2x4);
 }
+
+struct PS_OUTPUT { float4 color : SV_Target0; };
+
+PS_OUTPUT main()
+{
+    PS_OUTPUT ps_output;
+    ps_output.color = 1.0;
+    return ps_output;
+};
