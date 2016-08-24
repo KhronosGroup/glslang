@@ -3554,10 +3554,10 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
     // exact match not found, look through a list of overloaded functions of the same name
 
     const TFunction* candidate = nullptr;
-    TVector<TFunction*> candidateList;
+    TVector<const TFunction*> candidateList;
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
 
-    for (TVector<TFunction*>::const_iterator it = candidateList.begin(); it != candidateList.end(); ++it) {
+    for (auto it = candidateList.begin(); it != candidateList.end(); ++it) {
         const TFunction& function = *(*it);
 
         // to even be a potential match, number of arguments has to match

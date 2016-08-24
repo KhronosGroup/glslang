@@ -4886,10 +4886,10 @@ const TFunction* TParseContext::findFunction120(const TSourceLoc& loc, const TFu
     // more than one function."
 
     const TFunction* candidate = nullptr;
-    TVector<TFunction*> candidateList;
+    TVector<const TFunction*> candidateList;
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
 
-    for (TVector<TFunction*>::const_iterator it = candidateList.begin(); it != candidateList.end(); ++it) {
+    for (auto it = candidateList.begin(); it != candidateList.end(); ++it) {
         const TFunction& function = *(*it);
 
         // to even be a potential match, number of arguments has to match
@@ -4937,10 +4937,100 @@ const TFunction* TParseContext::findFunction120(const TSourceLoc& loc, const TFu
 }
 
 // Function finding algorithm for desktop version 400 and above.
+//
+// "When function calls are resolved, an exact type match for all the arguments
+// is sought. If an exact match is found, all other functions are ignored, and
+// the exact match is used. If no exact match is found, then the implicit
+// conversions in section 4.1.10 “Implicit Conversions” will be applied to find
+// a match. Mismatched types on input parameters (in or inout or default) must
+// have a conversion from the calling argument type to the formal parameter type.
+// Mismatched types on output parameters (out or inout) must have a conversion
+// from the formal parameter type to the calling argument type.
+//
+// "If implicit conversions can be used to find more than one matching function,
+// a single best-matching function is sought. To determine a best match, the
+// conversions between calling argument and formal parameter types are compared
+// for each function argument and pair of matching functions. After these
+// comparisons are performed, each pair of matching functions are compared.
+// A function declaration A is considered a better match than function
+// declaration B if
+//
+//  * for at least one function argument, the conversion for that argument in A
+//    is better than the corresponding conversion in B; and
+//  * there is no function argument for which the conversion in B is better than
+//    the corresponding conversion in A.
+//
+// "If a single function declaration is considered a better match than every
+// other matching function declaration, it will be used. Otherwise, a
+// compile-time semantic error for an ambiguous overloaded function call occurs.
+//
+// "To determine whether the conversion for a single argument in one match is
+// better than that for another match, the following rules are applied, in order:
+//
+//  1. An exact match is better than a match involving any implicit conversion.
+//  2. A match involving an implicit conversion from float to double is better
+//     than a match involving any other implicit conversion.
+//  3. A match involving an implicit conversion from either int or uint to float
+//     is better than a match involving an implicit conversion from either int
+//     or uint to double.
+//
+// "If none of the rules above apply to a particular pair of conversions, neither
+// conversion is considered better than the other."
+//
 const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFunction& call, bool& builtIn)
 {
-    // TODO: 4.00 functionality: findFunction400()
-    return findFunction120(loc, call, builtIn);
+    // first, look for an exact match
+    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn);
+    if (symbol)
+        return symbol->getAsFunction();
+
+    // no exact match, use the generic selector, parameterized by the GLSL rules
+
+    // create list of candidates to send
+    TVector<const TFunction*> candidateList;
+    symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
+    
+    // can 'from' convert to 'to'?
+    auto convertible = [this](const TType& from, const TType& to) {
+        if (from == to)
+            return true;
+        if (from.isArray() || to.isArray() || ! from.sameElementShape(to))
+            return false;
+        return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType());
+    };
+
+    // Is 'to2' a better conversion than 'to1'?
+    // Ties should not be considered as better.
+    // Assumes 'convertible' already said true.
+    auto better = [](const TType& from, const TType& to1, const TType& to2) {
+        // 1. exact match
+        if (from == to2)
+            return from != to1;
+        if (from == to1)
+            return false;
+
+        // 2. float -> double is better
+        if (from.getBasicType() == EbtFloat) {
+            if (to2.getBasicType() == EbtDouble && to1.getBasicType() != EbtDouble)
+                return true;
+        }
+
+        // 3. -> float is better than -> double
+        return to2.getBasicType() == EbtFloat && to1.getBasicType() == EbtDouble;
+    };
+
+    // for ambiguity reporting
+    bool tie = false;
+    
+    // send to the generic selector
+    const TFunction* bestMatch = selectFunction(candidateList, call, convertible, better, tie);
+
+    if (bestMatch == nullptr)
+        error(loc, "no matching overloaded function found", call.getName().c_str(), "");
+    else if (tie)
+        error(loc, "ambiguous best function under implicit type conversion", call.getName().c_str(), "");
+
+    return bestMatch;
 }
 
 // When a declaration includes a type, but not a variable name, it can be 

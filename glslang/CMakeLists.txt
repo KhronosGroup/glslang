@@ -14,6 +14,7 @@ set(SOURCES
     MachineIndependent/Initialize.cpp
     MachineIndependent/IntermTraverse.cpp
     MachineIndependent/Intermediate.cpp
+    MachineIndependent/ParseContextBase.cpp
     MachineIndependent/ParseHelper.cpp
     MachineIndependent/PoolAlloc.cpp
     MachineIndependent/RemoveTree.cpp
