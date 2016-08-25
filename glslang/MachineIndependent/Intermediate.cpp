@@ -702,6 +702,7 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
     case EOpGreaterThan:
     case EOpLessThanEqual:
     case EOpGreaterThanEqual:
+    case EOpFunctionCall:
         break;
     default:
         return node;
@@ -715,9 +716,11 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
     // The new node that handles the conversion
     TOperator constructorOp = mapTypeToConstructorOp(type);
 
-    // scalar -> smeared -> vector
-    if (type.isVector() && node->getType().isScalar())
-        return setAggregateOperator(node, constructorOp, type, node->getLoc());
+    // scalar -> smeared -> vector, or
+    // bigger vector -> smaller vector or scalar
+    if ((type.isVector() && node->getType().isScalar()) ||
+        (node->getVectorSize() > type.getVectorSize() && type.isVector()))
+        return setAggregateOperator(makeAggregate(node), constructorOp, type, node->getLoc());
 
     return node;
 }
@@ -731,6 +734,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
     if (profile == EEsProfile || version == 110)
         return false;
 
+    // TODO: Move more policies into language-specific handlers.
     // Some languages allow more general (or potentially, more specific) conversions under some conditions.
     if (source == EShSourceHlsl) {
         const bool fromConvertable = (from == EbtFloat || from == EbtDouble || from == EbtInt || from == EbtUint || from == EbtBool);

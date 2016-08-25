@@ -2001,6 +2001,7 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
                 // In-qualified arguments just need an extra node added above the argument to
                 // convert to the correct type.
                 arg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
+                arg = intermediate.addShapeConversion(EOpFunctionCall, *function[i].type, arg);
                 if (arg) {
                     if (function.getParamCount() == 1)
                         arguments = arg;
@@ -3565,9 +3566,25 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
     auto convertible = [this](const TType& from, const TType& to) {
         if (from == to)
             return true;
-        if (from.isArray() || to.isArray() || ! from.sameElementShape(to))
+
+        // no aggregate conversions
+        if (from.isArray()  || to.isArray() || 
+            from.isStruct() || to.isStruct())
             return false;
-        return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), EOpFunctionCall);
+
+        // basic types have to be convertible
+        if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), EOpFunctionCall))
+            return false;
+
+        // shapes have to be convertible
+        if ((from.isScalar() && to.isScalar()) ||
+            (from.isScalar() && to.isVector()) ||
+            (from.isVector() && to.isVector() && from.getVectorSize() >= to.getVectorSize()))
+            return true;
+
+        // TODO: what are the matrix rules? they go here
+
+        return false;
     };
 
     // Is 'to2' a better conversion than 'to1'?
@@ -3580,33 +3597,41 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
         if (from == to1)
             return false;
 
-        // float -> double is better than any other float conversion
-        if (from.getBasicType() == EbtFloat) {
-            if (to2.getBasicType() == EbtDouble && to1.getBasicType() != EbtDouble)
+        // shape changes are always worse
+        if (from.isScalar() || from.isVector()) {
+            if (from.getVectorSize() == to2.getVectorSize() &&
+                from.getVectorSize() != to1.getVectorSize())
                 return true;
+            if (from.getVectorSize() == to1.getVectorSize() &&
+                from.getVectorSize() != to2.getVectorSize())
+                return false;
         }
 
-        // int -> uint is better than any other int conversion
-        if (from.getBasicType() == EbtInt) {
-            if (to2.getBasicType() == EbtUint && to1.getBasicType() != EbtUint)
-                return true;
-        }
+        // Might or might not be changing shape, which means basic type might
+        // or might not match, so within that, the question is how big a
+        // basic-type conversion is being done.
+        //
+        // Use a hierarchy of domains, translated to order of magnitude
+        // in a linearized view:
+        //   - floating-point vs. integer
+        //     - 32 vs. 64 bit (or width in general)
+        //       - bool vs. non bool
+        //         - signed vs. not signed
+        auto linearize = [](const TBasicType& basicType) {
+            switch (basicType) {
+            case EbtBool:     return 1;
+            case EbtInt:      return 10;
+            case EbtUint:     return 11;
+            case EbtInt64:    return 20;
+            case EbtUint64:   return 21;
+            case EbtFloat:    return 100;
+            case EbtDouble:   return 110;
+            default:          return 0;
+            }
+        };
 
-        // TODO: these should be replaced by a more generic "shorter chain is better than longer chain" rule
-
-        // -> float is better than -> double
-        if (to2.getBasicType() == EbtFloat && to1.getBasicType() == EbtDouble)
-            return true;
-
-        // -> int is better than -> bool
-        if ((to2.getBasicType() == EbtInt || to2.getBasicType() == EbtUint) &&  to1.getBasicType() == EbtBool)
-            return true;
-
-        // -> uint is better than -> int
-        if (to2.getBasicType() == EbtUint &&  to1.getBasicType() == EbtInt)
-            return true;
-
-        return false;
+        return std::abs(linearize(to2.getBasicType()) - linearize(from.getBasicType())) <
+               std::abs(linearize(to1.getBasicType()) - linearize(from.getBasicType()));
     };
 
     // for ambiguity reporting

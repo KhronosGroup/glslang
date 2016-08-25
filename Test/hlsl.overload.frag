@@ -20,12 +20,27 @@ void foo6(float b) {}
 void foo7(double b){}
 
 // shorter forward chain better than longer or backward chain
-void foo8(float);
-void foo8(double);
-void foo9(int);
-void foo9(uint);
-void foo10(bool);
-void foo10(int);
+void foo8(float)  {}
+void foo8(double) {}
+void foo9(int)    {}
+void foo9(uint)   {}
+void foo10(bool)  {}
+void foo10(int)   {}
+
+// shape change is worse
+void foo11(float3)  {}
+void foo11(double)  {}
+void foo11(int3)    {}
+void foo11(uint)    {}
+void foo12(float1)  {}
+void foo12(double3) {}
+void foo16(uint)    {}
+void foo16(uint2)   {}
+
+// shape change
+void foo13(float3)  {}
+void foo14(int1)     {}
+void foo15(bool1)   {}
 
 float4 PixelShaderFunction(float4 input) : COLOR0
 {
@@ -112,6 +127,16 @@ float4 PixelShaderFunction(float4 input) : COLOR0
     foo10(u);
     foo10(f);
     foo10(d);
+
+    foo11(b);
+    foo11(f);
+    foo12(float3(f));
+    foo16(int2(i,i));
+
+    foo13(f);
+    foo14(int4(i));
+    foo15(b);
+    foo15(bool3(b));
 
     return input;
 }
