@@ -107,7 +107,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.intrinsics.evalfns.frag", "main"},
         {"hlsl.intrinsics.double.frag", "PixelShaderFunction"},
         {"hlsl.intrinsics.f1632.frag", "PixelShaderFunction"},
-        {"hlsl.intrinsics.frag", "PixelShaderFunction"},
+        {"hlsl.intrinsics.frag", "main"},
         {"hlsl.intrinsics.lit.frag", "PixelShaderFunction"},
         {"hlsl.intrinsics.negative.comp", "ComputeShaderFunction"},
         {"hlsl.intrinsics.negative.frag", "PixelShaderFunction"},

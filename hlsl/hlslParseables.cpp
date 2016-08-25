@@ -218,7 +218,6 @@ int FixedVecSize(const char* arg)
 glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, const char* argType, int dim0, int dim1)
 {
     const bool isTranspose = (argOrder[0] == '^');
-    const bool isMatMul    = (argOrder[0] == '#');
     const bool isTexture   = IsTextureType(argOrder[0]);
     const bool isArrayed   = IsTextureArrayed(argOrder[0]);
     const bool isSampler   = IsSamplerType(argType[0]);
@@ -229,8 +228,6 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
 
     if (isTranspose) {  // Take transpose of matrix dimensions
         std::swap(dim0, dim1); 
-    } else if (isMatMul) {
-        dim0 = dim1;    // set vector dimension to mat col
     } else if (isTexture) {
         if (type == 'F')       // map base type to texture of that type.
             type = 'T';        // e.g, int -> itexture, uint -> utexture, etc.
@@ -240,7 +237,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
             type = 'u';
     }
 
-    if (isTranspose || isMatMul)
+    if (isTranspose)
         ++argOrder;
 
     char order = *argOrder;
@@ -312,16 +309,14 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
         switch (order) {
         case '-': break;  // no dimensions for voids
         case 'S': break;  // no dimensions on scalars
-        case 'V': s += ('0' + char(dim0)); break;
+        case 'V':
+            s += ('0' + char(dim0));
+            break;
         case 'M': 
-            {
-                if (!UseHlslTypes)  // GLSL has column first for mat types
-                    std::swap(dim0, dim1);
-                s += ('0' + char(dim0));
-                s += 'x';
-                s += ('0' + char(dim1));
-                break;
-            }
+            s += ('0' + char(dim0));
+            s += 'x';
+            s += ('0' + char(dim1));
+            break;
         default:
             break;
         }
@@ -427,6 +422,7 @@ void TBuiltInParseablesHlsl::createMatTimesMat()
                 const int retRows = xRows;
                 const int retCols = yCols;
 
+                // Create a mat * mat of the appropriate dimensions
                 AppendTypeName(s, "M", "F", retRows, retCols);  // add return type
                 s.append(" ");                                  // space between type and name
                 s.append("mul");                                // intrinsic name
@@ -438,6 +434,31 @@ void TBuiltInParseablesHlsl::createMatTimesMat()
 
                 s.append(");\n");                               // close paren
             }
+
+            // Create M*V
+            AppendTypeName(s, "V", "F", xRows, 1);          // add return type
+            s.append(" ");                                  // space between type and name
+            s.append("mul");                                // intrinsic name
+            s.append("(");                                  // open paren
+
+            AppendTypeName(s, "M", "F", xRows, xCols);      // add X input
+            s.append(", ");
+            AppendTypeName(s, "V", "F", xCols, 1);          // add Y input
+
+            s.append(");\n");                               // close paren
+
+
+            // Create V*M
+            AppendTypeName(s, "V", "F", xCols, 1);          // add return type
+            s.append(" ");                                  // space between type and name
+            s.append("mul");                                // intrinsic name
+            s.append("(");                                  // open paren
+
+            AppendTypeName(s, "V", "F", xRows, 1);          // add Y input
+            s.append(", ");
+            AppendTypeName(s, "M", "F", xRows, xCols);      // add X input
+
+            s.append(");\n");                               // close paren
         }
     }
 }
@@ -482,7 +503,6 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     // '>' as first letter of order creates an output parameter
     // '<' as first letter of order creates an input parameter
     // '^' as first letter of order takes transpose dimensions
-    // '#' as first letter of order sets rows=cols for mats
     // '%' as first letter of order creates texture of given F/I/U type (texture, itexture, etc)
     // '@' as first letter of order creates arrayed texture of given type
     // '$' / '&' as first letter of order creates 2DMS / 2DMSArray textures
@@ -592,9 +612,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "mul",                              "M",     nullptr,   "S,M",            "FI,",           EShLangAll },
         { "mul",                              "V",     nullptr,   "V,S",            "FI,",           EShLangAll },
         { "mul",                              "S",     nullptr,   "V,V",            "FI,",           EShLangAll },
-        { "mul",                              "#V",    nullptr,   "V,M",            "FI,",           EShLangAll },
         { "mul",                              "M",     nullptr,   "M,S",            "FI,",           EShLangAll },
-        { "mul",                              "V",     nullptr,   "M,#V",           "FI,",           EShLangAll },
         // mat*mat form of mul is handled in createMatTimesMat()
         { "noise",                            "S",     "F",       "V",              "F",             EShLangPS },
         { "normalize",                        nullptr, nullptr,   "V",              "F",             EShLangAll },

@@ -1488,8 +1488,10 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
     case EOpGenMul:
         {
             // mul(a,b) -> MatrixTimesMatrix, MatrixTimesVector, MatrixTimesScalar, VectorTimesScalar, Dot, Mul
-            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();
-            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();
+            // Since we are treating HLSL rows like GLSL columns (the first matrix indirection),
+            // we must reverse the operand order here.  Hence, arg0 gets sequence[1], etc.
+            TIntermTyped* arg0 = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* arg1 = argAggregate->getSequence()[0]->getAsTyped();
 
             if (arg0->isVector() && arg1->isVector()) {  // vec * vec
                 node->getAsAggregate()->setOperator(EOpDot);
