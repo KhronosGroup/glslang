@@ -755,8 +755,24 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     inEntrypoint = (function.getName() == intermediate.getEntryPoint().c_str());
     if (inEntrypoint) {
         // parameters are actually shader-level inputs
+        unsigned int inCount = 0, outCount = 0;
         for (int i = 0; i < function.getParamCount(); i++)
-            function[i].type->getQualifier().storage = EvqVaryingIn;
+        {
+            // Fragment programs do not use ordering for the output layout position, rather it is 
+            // embedded in the semantic
+            if (function[i].type->getQualifier().isParamOutput() && language != EShLangFragment)
+            {
+                if (function[i].type->getQualifier().builtIn == EbvNone)
+                    function[i].type->getQualifier().layoutLocation = outCount++;
+                function[i].type->getQualifier().storage = EvqVaryingOut;
+            }
+            else
+            {
+                if (function[i].type->getQualifier().builtIn == EbvNone)
+                    function[i].type->getQualifier().layoutLocation = inCount++;
+                function[i].type->getQualifier().storage = EvqVaryingIn;
+            }
+        }
     }
 
     //
@@ -2260,27 +2276,108 @@ void HlslParseContext::handleSemantic(TType& type, const TString& semantic)
     // TODO: need to know if it's an input or an output
     // The following sketches what needs to be done, but can't be right
     // without taking into account stage and input/output.
+   
+    // in DX9, all outputs had to have a semantic associated with them, that was either consumed
+    // by the system or was a specific register assignment
+    // in DX10+, only semantics with the SV_ prefix have any meaning beyond decoration
+    // Fxc will only accept DX9 style semantics in compat mode
+    // Also, in DX10 if a SV value is present as the input of a stage, but isn't appropriate for that
+    // stage, it would just be ignored as it is likely there as part of an output struct from one stage
+    // to the next
+    bool bParseDX9 = false;
     
-    if (semantic == "PSIZE")
-        type.getQualifier().builtIn = EbvPointSize;
-    else if (semantic == "POSITION")
-        type.getQualifier().builtIn = EbvPosition;
-    else if (semantic == "FOG")
-        type.getQualifier().builtIn = EbvFogFragCoord;
-    else if (semantic == "DEPTH" || semantic == "SV_Depth")
-        type.getQualifier().builtIn = EbvFragDepth;
-    else if (semantic == "VFACE" || semantic == "SV_IsFrontFace")
-        type.getQualifier().builtIn = EbvFace;
-    else if (semantic == "VPOS" || semantic == "SV_Position")
-        type.getQualifier().builtIn = EbvFragCoord;
-    else if (semantic == "SV_ClipDistance")
-        type.getQualifier().builtIn = EbvClipDistance;
-    else if (semantic == "SV_CullDistance")
-        type.getQualifier().builtIn = EbvCullDistance;
-    else if (semantic == "SV_VertexID")
-        type.getQualifier().builtIn = EbvVertexId;
-    else if (semantic == "SV_ViewportArrayIndex")
-        type.getQualifier().builtIn = EbvViewportIndex;
+    if (bParseDX9)
+    {
+        if (semantic == "PSIZE")
+            type.getQualifier().builtIn = EbvPointSize;
+        else if (semantic == "FOG")
+            type.getQualifier().builtIn = EbvFogFragCoord;
+        else if (semantic == "DEPTH" || semantic == "SV_Depth")
+            type.getQualifier().builtIn = EbvFragDepth;
+        else if (semantic == "VFACE" || semantic == "SV_IsFrontFace")
+            type.getQualifier().builtIn = EbvFace;
+        else if (semantic == "VPOS" || semantic == "SV_Position")
+            type.getQualifier().builtIn = EbvFragCoord;
+    }
+    
+    TString semanticUpperCase = semantic;
+    std::transform(semanticUpperCase.begin(), semanticUpperCase.end(), semanticUpperCase.begin(), ::toupper);
+    {
+        //SV Position has a different meaning in vertex vs fragment
+        if (semanticUpperCase == "SV_POSITION" && language != EShLangFragment)
+            type.getQualifier().builtIn = EbvPosition;
+        else if (semanticUpperCase == "SV_POSITION" && language == EShLangFragment)
+            type.getQualifier().builtIn = EbvFragCoord;
+        else if (semanticUpperCase == "SV_CLIPDISTANCE")
+            type.getQualifier().builtIn = EbvClipDistance;
+        else if (semanticUpperCase == "SV_CULLDISTANCE")
+            type.getQualifier().builtIn = EbvCullDistance;
+        else if (semanticUpperCase == "SV_VERTEXID")
+            type.getQualifier().builtIn = EbvVertexIndex;
+        else if (semanticUpperCase == "SV_VIEWPORTARRAYINDEX")
+            type.getQualifier().builtIn = EbvViewportIndex;
+        else if (semanticUpperCase == "SV_TESSFACTOR")
+            type.getQualifier().builtIn = EbvTessLevelOuter;
+
+        //Targets are defined 0-7
+        else if (semanticUpperCase == "SV_TARGET") {
+            type.getQualifier().builtIn = EbvNone;   type.getQualifier().layoutLocation = 0; }
+        else if (semanticUpperCase == "SV_TARGET0") {
+            type.getQualifier().builtIn = EbvNone;   type.getQualifier().layoutLocation = 0; }
+        else if (semanticUpperCase == "SV_TARGET1") {
+            type.getQualifier().builtIn = EbvNone;   type.getQualifier().layoutLocation = 1; }
+        else if (semanticUpperCase == "SV_TARGET2") {
+            type.getQualifier().builtIn = EbvNone;   type.getQualifier().layoutLocation = 2; }
+        else if (semanticUpperCase == "SV_TARGET3") {
+            type.getQualifier().builtIn = EbvNone;   type.getQualifier().layoutLocation = 3; }
+        else if (semanticUpperCase == "SV_TARGET4") {
+            type.getQualifier().builtIn = EbvNone;   type.getQualifier().layoutLocation = 4; }
+        else if (semanticUpperCase == "SV_TARGET5") {
+            type.getQualifier().builtIn = EbvNone;   type.getQualifier().layoutLocation = 5; }
+        else if (semanticUpperCase == "SV_TARGET6") {
+            type.getQualifier().builtIn = EbvNone;   type.getQualifier().layoutLocation = 6; }
+        else if (semanticUpperCase == "SV_TARGET7") {
+            type.getQualifier().builtIn = EbvNone;   type.getQualifier().layoutLocation = 7; }
+        else if (semanticUpperCase == "SV_SAMPLEINDEX")
+            type.getQualifier().builtIn = EbvSampleId;
+        else if (semanticUpperCase == "SV_RENDERTARGETARRAYINDEX")
+            type.getQualifier().builtIn = EbvLayer;
+        else if (semanticUpperCase == "SV_PRIMITIVEID")
+            type.getQualifier().builtIn = EbvPrimitiveId;
+        else if (semanticUpperCase == "SV_OUTPUTCONTROLPOINTID")
+            type.getQualifier().builtIn = EbvInvocationId;
+        else if (semanticUpperCase == "SV_ISFRONTFACE")
+            type.getQualifier().builtIn = EbvFace;
+        else if (semanticUpperCase == "SV_INSTANCEID")
+            type.getQualifier().builtIn = EbvInstanceIndex;
+        else if (semanticUpperCase == "SV_INSIDETESSFACTOR")
+            type.getQualifier().builtIn = EbvTessLevelInner;
+        else if (semanticUpperCase == "SV_GSINSTANCEID")
+            type.getQualifier().builtIn = EbvInvocationId;
+        else if (semanticUpperCase == "SV_GROUPTHREADID")
+            type.getQualifier().builtIn = EbvLocalInvocationId;
+        else if (semanticUpperCase == "SV_GROUPID")
+            type.getQualifier().builtIn = EbvWorkGroupId;
+        else if (semanticUpperCase == "SV_DOMAINLOCATION")
+            type.getQualifier().builtIn = EbvTessCoord;
+        else if (semanticUpperCase == "SV_DEPTH")
+            type.getQualifier().builtIn = EbvFragDepth;
+     
+         
+        //not supported or not trivial
+        //else if( semanticUpperCase == "SV_STENCILREF")
+        //    type.getQualifier().builtIn = gl_FragStencilRef
+        //else if( semanticUpperCase == "SV_DEPTHGREATEREQUAL")
+        //    type.getQualifier().builtIn = ??
+        //else if( semanticUpperCase == "SV_DEPTHLESSEQUAL")
+        //    type.getQualifier().builtIn = ??
+        //else if( semanticUpperCase == "SV_COVERAGE")
+        //    type.getQualifier().builtIn = ??
+     
+        
+    }
+
+
 }
 
 //
