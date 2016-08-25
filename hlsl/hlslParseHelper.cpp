@@ -3535,6 +3535,10 @@ void HlslParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQuali
 //
 // Look up a function name in the symbol table, and make sure it is a function.
 //
+// First, look for an exact match.  If there is none, use the generic selector
+// TParseContextBase::selectFunction() to find one, parameterized by the 
+// convertible() and better() predicates defined below.
+//
 // Return the function symbol if found, otherwise nullptr.
 //
 const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFunction& call, bool& builtIn)
@@ -3551,57 +3555,53 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
     if (symbol)
         return symbol->getAsFunction();
 
-    // exact match not found, look through a list of overloaded functions of the same name
+    // no exact match, use the generic selector, parameterized by the GLSL rules
 
-    const TFunction* candidate = nullptr;
+    // create list of candidates to send
     TVector<const TFunction*> candidateList;
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
+    
+    // can 'from' convert to 'to'?
+    auto convertible = [this](const TType& from, const TType& to) {
+        if (from == to)
+            return true;
+        if (from.isArray() || to.isArray() || ! from.sameElementShape(to))
+            return false;
+        return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType());
+    };
 
-    for (auto it = candidateList.begin(); it != candidateList.end(); ++it) {
-        const TFunction& function = *(*it);
+    // Is 'to2' a better conversion than 'to1'?
+    // Ties should not be considered as better.
+    // Assumes 'convertible' already said true.
+    auto better = [](const TType& from, const TType& to1, const TType& to2) {
+        // 1. exact match
+        if (from == to2)
+            return from != to1;
+        if (from == to1)
+            return false;
 
-        // to even be a potential match, number of arguments has to match
-        if (call.getParamCount() != function.getParamCount())
-            continue;
-
-        bool possibleMatch = true;
-        for (int i = 0; i < function.getParamCount(); ++i) {
-            // same types is easy
-            if (*function[i].type == *call[i].type)
-                continue;
-
-            // We have a mismatch in type, see if it is implicitly convertible
-
-            if (function[i].type->isArray() || call[i].type->isArray() ||
-                ! function[i].type->sameElementShape(*call[i].type))
-                possibleMatch = false;
-            else {
-                // do direction-specific checks for conversion of basic type
-                if (function[i].type->getQualifier().isParamInput()) {
-                    if (! intermediate.canImplicitlyPromote(call[i].type->getBasicType(), function[i].type->getBasicType()))
-                        possibleMatch = false;
-                }
-                if (function[i].type->getQualifier().isParamOutput()) {
-                    if (! intermediate.canImplicitlyPromote(function[i].type->getBasicType(), call[i].type->getBasicType()))
-                        possibleMatch = false;
-                }
-            }
-            if (! possibleMatch)
-                break;
+        // 2. float -> double is better
+        if (from.getBasicType() == EbtFloat) {
+            if (to2.getBasicType() == EbtDouble && to1.getBasicType() != EbtDouble)
+                return true;
         }
-        if (possibleMatch) {
-            if (candidate) {
-                // our second match, meaning ambiguity
-                error(loc, "ambiguous function signature match: multiple signatures match under implicit type conversion", call.getName().c_str(), "");
-            } else
-                candidate = &function;
-        }
-    }
 
-    if (candidate == nullptr)
+        // 3. -> float is better than -> double
+        return to2.getBasicType() == EbtFloat && to1.getBasicType() == EbtDouble;
+    };
+
+    // for ambiguity reporting
+    bool tie = false;
+    
+    // send to the generic selector
+    const TFunction* bestMatch = selectFunction(candidateList, call, convertible, better, tie);
+
+    if (bestMatch == nullptr)
         error(loc, "no matching overloaded function found", call.getName().c_str(), "");
+    else if (tie)
+        error(loc, "ambiguous best function under implicit type conversion", call.getName().c_str(), "");
 
-    return candidate;
+    return bestMatch;
 }
 
 //

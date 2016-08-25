@@ -1,0 +1,413 @@
+hlsl.overload.frag
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:3  Function Definition: foo1(d1;u1; (global void)
+0:2    Function Parameters: 
+0:2      'a' (in double)
+0:2      'b' (in uint)
+0:4  Function Definition: foo1(d1;i1; (global void)
+0:3    Function Parameters: 
+0:3      'a' (in double)
+0:3      'b' (in int)
+0:5  Function Definition: foo1(d1;f1; (global void)
+0:4    Function Parameters: 
+0:4      'a' (in double)
+0:4      'b' (in float)
+0:7  Function Definition: foo1(d1;d1; (global void)
+0:5    Function Parameters: 
+0:5      'a' (in double)
+0:5      'b' (in double)
+0:36  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
+0:8    Function Parameters: 
+0:8      'input' (in 4-component vector of float)
+0:?     Sequence
+0:14      Function Call: foo1(d1;d1; (global void)
+0:14        'd' (temp double)
+0:14        'd' (temp double)
+0:15      Function Call: foo1(d1;u1; (global void)
+0:15        'd' (temp double)
+0:15        'u' (temp uint)
+0:16      Function Call: foo1(d1;i1; (global void)
+0:16        'd' (temp double)
+0:16        'i' (temp int)
+0:17      Function Call: foo1(d1;f1; (global void)
+0:17        'd' (temp double)
+0:17        'f' (temp float)
+0:19      Function Call: foo1(d1;d1; (global void)
+0:19        Convert float to double (temp double)
+0:19          'f' (temp float)
+0:19        'd' (temp double)
+0:20      Function Call: foo1(d1;u1; (global void)
+0:20        Convert float to double (temp double)
+0:20          'f' (temp float)
+0:20        'u' (temp uint)
+0:21      Function Call: foo1(d1;i1; (global void)
+0:21        Convert float to double (temp double)
+0:21          'f' (temp float)
+0:21        'i' (temp int)
+0:22      Function Call: foo1(d1;f1; (global void)
+0:22        Convert float to double (temp double)
+0:22          'f' (temp float)
+0:22        'f' (temp float)
+0:24      Function Call: foo1(d1;d1; (global void)
+0:24        Convert uint to double (temp double)
+0:24          'u' (temp uint)
+0:24        'd' (temp double)
+0:25      Function Call: foo1(d1;u1; (global void)
+0:25        Convert uint to double (temp double)
+0:25          'u' (temp uint)
+0:25        'u' (temp uint)
+0:26      Function Call: foo1(d1;i1; (global void)
+0:26        Convert uint to double (temp double)
+0:26          'u' (temp uint)
+0:26        'i' (temp int)
+0:27      Function Call: foo1(d1;f1; (global void)
+0:27        Convert uint to double (temp double)
+0:27          'u' (temp uint)
+0:27        'f' (temp float)
+0:29      Function Call: foo1(d1;d1; (global void)
+0:29        Convert int to double (temp double)
+0:29          'i' (temp int)
+0:29        'd' (temp double)
+0:30      Function Call: foo1(d1;u1; (global void)
+0:30        Convert int to double (temp double)
+0:30          'i' (temp int)
+0:30        'u' (temp uint)
+0:31      Function Call: foo1(d1;i1; (global void)
+0:31        Convert int to double (temp double)
+0:31          'i' (temp int)
+0:31        'i' (temp int)
+0:32      Function Call: foo1(d1;f1; (global void)
+0:32        Convert int to double (temp double)
+0:32          'i' (temp int)
+0:32        'f' (temp float)
+0:34      Branch: Return with expression
+0:34        'input' (in 4-component vector of float)
+0:?   Linker Objects
+
+
+Linked fragment stage:
+
+
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:3  Function Definition: foo1(d1;u1; (global void)
+0:2    Function Parameters: 
+0:2      'a' (in double)
+0:2      'b' (in uint)
+0:4  Function Definition: foo1(d1;i1; (global void)
+0:3    Function Parameters: 
+0:3      'a' (in double)
+0:3      'b' (in int)
+0:5  Function Definition: foo1(d1;f1; (global void)
+0:4    Function Parameters: 
+0:4      'a' (in double)
+0:4      'b' (in float)
+0:7  Function Definition: foo1(d1;d1; (global void)
+0:5    Function Parameters: 
+0:5      'a' (in double)
+0:5      'b' (in double)
+0:36  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
+0:8    Function Parameters: 
+0:8      'input' (in 4-component vector of float)
+0:?     Sequence
+0:14      Function Call: foo1(d1;d1; (global void)
+0:14        'd' (temp double)
+0:14        'd' (temp double)
+0:15      Function Call: foo1(d1;u1; (global void)
+0:15        'd' (temp double)
+0:15        'u' (temp uint)
+0:16      Function Call: foo1(d1;i1; (global void)
+0:16        'd' (temp double)
+0:16        'i' (temp int)
+0:17      Function Call: foo1(d1;f1; (global void)
+0:17        'd' (temp double)
+0:17        'f' (temp float)
+0:19      Function Call: foo1(d1;d1; (global void)
+0:19        Convert float to double (temp double)
+0:19          'f' (temp float)
+0:19        'd' (temp double)
+0:20      Function Call: foo1(d1;u1; (global void)
+0:20        Convert float to double (temp double)
+0:20          'f' (temp float)
+0:20        'u' (temp uint)
+0:21      Function Call: foo1(d1;i1; (global void)
+0:21        Convert float to double (temp double)
+0:21          'f' (temp float)
+0:21        'i' (temp int)
+0:22      Function Call: foo1(d1;f1; (global void)
+0:22        Convert float to double (temp double)
+0:22          'f' (temp float)
+0:22        'f' (temp float)
+0:24      Function Call: foo1(d1;d1; (global void)
+0:24        Convert uint to double (temp double)
+0:24          'u' (temp uint)
+0:24        'd' (temp double)
+0:25      Function Call: foo1(d1;u1; (global void)
+0:25        Convert uint to double (temp double)
+0:25          'u' (temp uint)
+0:25        'u' (temp uint)
+0:26      Function Call: foo1(d1;i1; (global void)
+0:26        Convert uint to double (temp double)
+0:26          'u' (temp uint)
+0:26        'i' (temp int)
+0:27      Function Call: foo1(d1;f1; (global void)
+0:27        Convert uint to double (temp double)
+0:27          'u' (temp uint)
+0:27        'f' (temp float)
+0:29      Function Call: foo1(d1;d1; (global void)
+0:29        Convert int to double (temp double)
+0:29          'i' (temp int)
+0:29        'd' (temp double)
+0:30      Function Call: foo1(d1;u1; (global void)
+0:30        Convert int to double (temp double)
+0:30          'i' (temp int)
+0:30        'u' (temp uint)
+0:31      Function Call: foo1(d1;i1; (global void)
+0:31        Convert int to double (temp double)
+0:31          'i' (temp int)
+0:31        'i' (temp int)
+0:32      Function Call: foo1(d1;f1; (global void)
+0:32        Convert int to double (temp double)
+0:32          'i' (temp int)
+0:32        'f' (temp float)
+0:34      Branch: Return with expression
+0:34        'input' (in 4-component vector of float)
+0:?   Linker Objects
+
+// Module Version 10000
+// Generated by (magic number): 80001
+// Id's are bound by 135
+
+                              Capability Shader
+                              Capability Float64
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint Fragment 4  "PixelShaderFunction" 132
+                              ExecutionMode 4 OriginUpperLeft
+                              Name 4  "PixelShaderFunction"
+                              Name 13  "foo1(d1;u1;"
+                              Name 11  "a"
+                              Name 12  "b"
+                              Name 20  "foo1(d1;i1;"
+                              Name 18  "a"
+                              Name 19  "b"
+                              Name 27  "foo1(d1;f1;"
+                              Name 25  "a"
+                              Name 26  "b"
+                              Name 32  "foo1(d1;d1;"
+                              Name 30  "a"
+                              Name 31  "b"
+                              Name 34  "d"
+                              Name 35  "param"
+                              Name 37  "param"
+                              Name 40  "u"
+                              Name 41  "param"
+                              Name 43  "param"
+                              Name 46  "i"
+                              Name 47  "param"
+                              Name 49  "param"
+                              Name 52  "f"
+                              Name 53  "param"
+                              Name 55  "param"
+                              Name 60  "param"
+                              Name 61  "param"
+                              Name 66  "param"
+                              Name 67  "param"
+                              Name 72  "param"
+                              Name 73  "param"
+                              Name 78  "param"
+                              Name 79  "param"
+                              Name 84  "param"
+                              Name 85  "param"
+                              Name 90  "param"
+                              Name 91  "param"
+                              Name 96  "param"
+                              Name 97  "param"
+                              Name 102  "param"
+                              Name 103  "param"
+                              Name 108  "param"
+                              Name 109  "param"
+                              Name 114  "param"
+                              Name 115  "param"
+                              Name 120  "param"
+                              Name 121  "param"
+                              Name 126  "param"
+                              Name 127  "param"
+                              Name 132  "input"
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 64
+               7:             TypePointer Function 6(float)
+               8:             TypeInt 32 0
+               9:             TypePointer Function 8(int)
+              10:             TypeFunction 2 7(ptr) 9(ptr)
+              15:             TypeInt 32 1
+              16:             TypePointer Function 15(int)
+              17:             TypeFunction 2 7(ptr) 16(ptr)
+              22:             TypeFloat 32
+              23:             TypePointer Function 22(float)
+              24:             TypeFunction 2 7(ptr) 23(ptr)
+              29:             TypeFunction 2 7(ptr) 7(ptr)
+             130:             TypeVector 22(float) 4
+             131:             TypePointer Input 130(fvec4)
+      132(input):    131(ptr) Variable Input
+4(PixelShaderFunction):           2 Function None 3
+               5:             Label
+           34(d):      7(ptr) Variable Function
+       35(param):      7(ptr) Variable Function
+       37(param):      7(ptr) Variable Function
+           40(u):      9(ptr) Variable Function
+       41(param):      7(ptr) Variable Function
+       43(param):      9(ptr) Variable Function
+           46(i):     16(ptr) Variable Function
+       47(param):      7(ptr) Variable Function
+       49(param):     16(ptr) Variable Function
+           52(f):     23(ptr) Variable Function
+       53(param):      7(ptr) Variable Function
+       55(param):     23(ptr) Variable Function
+       60(param):      7(ptr) Variable Function
+       61(param):      7(ptr) Variable Function
+       66(param):      7(ptr) Variable Function
+       67(param):      9(ptr) Variable Function
+       72(param):      7(ptr) Variable Function
+       73(param):     16(ptr) Variable Function
+       78(param):      7(ptr) Variable Function
+       79(param):     23(ptr) Variable Function
+       84(param):      7(ptr) Variable Function
+       85(param):      7(ptr) Variable Function
+       90(param):      7(ptr) Variable Function
+       91(param):      9(ptr) Variable Function
+       96(param):      7(ptr) Variable Function
+       97(param):     16(ptr) Variable Function
+      102(param):      7(ptr) Variable Function
+      103(param):     23(ptr) Variable Function
+      108(param):      7(ptr) Variable Function
+      109(param):      7(ptr) Variable Function
+      114(param):      7(ptr) Variable Function
+      115(param):      9(ptr) Variable Function
+      120(param):      7(ptr) Variable Function
+      121(param):     16(ptr) Variable Function
+      126(param):      7(ptr) Variable Function
+      127(param):     23(ptr) Variable Function
+              36:    6(float) Load 34(d)
+                              Store 35(param) 36
+              38:    6(float) Load 34(d)
+                              Store 37(param) 38
+              39:           2 FunctionCall 32(foo1(d1;d1;) 35(param) 37(param)
+              42:    6(float) Load 34(d)
+                              Store 41(param) 42
+              44:      8(int) Load 40(u)
+                              Store 43(param) 44
+              45:           2 FunctionCall 13(foo1(d1;u1;) 41(param) 43(param)
+              48:    6(float) Load 34(d)
+                              Store 47(param) 48
+              50:     15(int) Load 46(i)
+                              Store 49(param) 50
+              51:           2 FunctionCall 20(foo1(d1;i1;) 47(param) 49(param)
+              54:    6(float) Load 34(d)
+                              Store 53(param) 54
+              56:   22(float) Load 52(f)
+                              Store 55(param) 56
+              57:           2 FunctionCall 27(foo1(d1;f1;) 53(param) 55(param)
+              58:   22(float) Load 52(f)
+              59:    6(float) FConvert 58
+                              Store 60(param) 59
+              62:    6(float) Load 34(d)
+                              Store 61(param) 62
+              63:           2 FunctionCall 32(foo1(d1;d1;) 60(param) 61(param)
+              64:   22(float) Load 52(f)
+              65:    6(float) FConvert 64
+                              Store 66(param) 65
+              68:      8(int) Load 40(u)
+                              Store 67(param) 68
+              69:           2 FunctionCall 13(foo1(d1;u1;) 66(param) 67(param)
+              70:   22(float) Load 52(f)
+              71:    6(float) FConvert 70
+                              Store 72(param) 71
+              74:     15(int) Load 46(i)
+                              Store 73(param) 74
+              75:           2 FunctionCall 20(foo1(d1;i1;) 72(param) 73(param)
+              76:   22(float) Load 52(f)
+              77:    6(float) FConvert 76
+                              Store 78(param) 77
+              80:   22(float) Load 52(f)
+                              Store 79(param) 80
+              81:           2 FunctionCall 27(foo1(d1;f1;) 78(param) 79(param)
+              82:      8(int) Load 40(u)
+              83:    6(float) ConvertUToF 82
+                              Store 84(param) 83
+              86:    6(float) Load 34(d)
+                              Store 85(param) 86
+              87:           2 FunctionCall 32(foo1(d1;d1;) 84(param) 85(param)
+              88:      8(int) Load 40(u)
+              89:    6(float) ConvertUToF 88
+                              Store 90(param) 89
+              92:      8(int) Load 40(u)
+                              Store 91(param) 92
+              93:           2 FunctionCall 13(foo1(d1;u1;) 90(param) 91(param)
+              94:      8(int) Load 40(u)
+              95:    6(float) ConvertUToF 94
+                              Store 96(param) 95
+              98:     15(int) Load 46(i)
+                              Store 97(param) 98
+              99:           2 FunctionCall 20(foo1(d1;i1;) 96(param) 97(param)
+             100:      8(int) Load 40(u)
+             101:    6(float) ConvertUToF 100
+                              Store 102(param) 101
+             104:   22(float) Load 52(f)
+                              Store 103(param) 104
+             105:           2 FunctionCall 27(foo1(d1;f1;) 102(param) 103(param)
+             106:     15(int) Load 46(i)
+             107:    6(float) ConvertSToF 106
+                              Store 108(param) 107
+             110:    6(float) Load 34(d)
+                              Store 109(param) 110
+             111:           2 FunctionCall 32(foo1(d1;d1;) 108(param) 109(param)
+             112:     15(int) Load 46(i)
+             113:    6(float) ConvertSToF 112
+                              Store 114(param) 113
+             116:      8(int) Load 40(u)
+                              Store 115(param) 116
+             117:           2 FunctionCall 13(foo1(d1;u1;) 114(param) 115(param)
+             118:     15(int) Load 46(i)
+             119:    6(float) ConvertSToF 118
+                              Store 120(param) 119
+             122:     15(int) Load 46(i)
+                              Store 121(param) 122
+             123:           2 FunctionCall 20(foo1(d1;i1;) 120(param) 121(param)
+             124:     15(int) Load 46(i)
+             125:    6(float) ConvertSToF 124
+                              Store 126(param) 125
+             128:   22(float) Load 52(f)
+                              Store 127(param) 128
+             129:           2 FunctionCall 27(foo1(d1;f1;) 126(param) 127(param)
+             133:  130(fvec4) Load 132(input)
+                              ReturnValue 133
+                              FunctionEnd
+ 13(foo1(d1;u1;):           2 Function None 10
+           11(a):      7(ptr) FunctionParameter
+           12(b):      9(ptr) FunctionParameter
+              14:             Label
+                              Return
+                              FunctionEnd
+ 20(foo1(d1;i1;):           2 Function None 17
+           18(a):      7(ptr) FunctionParameter
+           19(b):     16(ptr) FunctionParameter
+              21:             Label
+                              Return
+                              FunctionEnd
+ 27(foo1(d1;f1;):           2 Function None 24
+           25(a):      7(ptr) FunctionParameter
+           26(b):     23(ptr) FunctionParameter
+              28:             Label
+                              Return
+                              FunctionEnd
+ 32(foo1(d1;d1;):           2 Function None 29
+           30(a):      7(ptr) FunctionParameter
+           31(b):      7(ptr) FunctionParameter
+              33:             Label
+                              Return
+                              FunctionEnd
