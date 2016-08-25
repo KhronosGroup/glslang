@@ -123,6 +123,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.numericsuffixes.frag", "main"},
         {"hlsl.overload.frag", "PixelShaderFunction"},
         {"hlsl.pp.line.frag", "main"},
+        {"hlsl.precise.frag", "main"},
         {"hlsl.promotions.frag", "main"},
         {"hlsl.sample.array.dx10.frag", "main"},
         {"hlsl.sample.basic.dx10.frag", "main"},
