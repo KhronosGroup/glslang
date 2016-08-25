@@ -463,6 +463,7 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokIn:
     case EHTokOut:
     case EHTokInOut:
+    case EHTokPrecise:
     case EHTokLayout:
         return keyword;
 
