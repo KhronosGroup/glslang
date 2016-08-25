@@ -750,6 +750,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EOpDivAssign:               // ... 
             case EOpModAssign:               // ... 
             case EOpReturn:                  // function returns can also perform arbitrary conversions
+            case EOpFunctionCall:            // conversion of a calling parameter
                 return true;
             default:
                 break;

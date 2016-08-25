@@ -3567,27 +3567,46 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
             return true;
         if (from.isArray() || to.isArray() || ! from.sameElementShape(to))
             return false;
-        return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType());
+        return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), EOpFunctionCall);
     };
 
     // Is 'to2' a better conversion than 'to1'?
     // Ties should not be considered as better.
     // Assumes 'convertible' already said true.
     auto better = [](const TType& from, const TType& to1, const TType& to2) {
-        // 1. exact match
+        // exact match is always better than mismatch
         if (from == to2)
             return from != to1;
         if (from == to1)
             return false;
 
-        // 2. float -> double is better
+        // float -> double is better than any other float conversion
         if (from.getBasicType() == EbtFloat) {
             if (to2.getBasicType() == EbtDouble && to1.getBasicType() != EbtDouble)
                 return true;
         }
 
-        // 3. -> float is better than -> double
-        return to2.getBasicType() == EbtFloat && to1.getBasicType() == EbtDouble;
+        // int -> uint is better than any other int conversion
+        if (from.getBasicType() == EbtInt) {
+            if (to2.getBasicType() == EbtUint && to1.getBasicType() != EbtUint)
+                return true;
+        }
+
+        // TODO: these should be replaced by a more generic "shorter chain is better than longer chain" rule
+
+        // -> float is better than -> double
+        if (to2.getBasicType() == EbtFloat && to1.getBasicType() == EbtDouble)
+            return true;
+
+        // -> int is better than -> bool
+        if ((to2.getBasicType() == EbtInt || to2.getBasicType() == EbtUint) &&  to1.getBasicType() == EbtBool)
+            return true;
+
+        // -> uint is better than -> int
+        if (to2.getBasicType() == EbtUint &&  to1.getBasicType() == EbtInt)
+            return true;
+
+        return false;
     };
 
     // for ambiguity reporting
