@@ -756,18 +756,14 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     if (inEntrypoint) {
         // parameters are actually shader-level inputs
         unsigned int inCount = 0, outCount = 0;
-        for (int i = 0; i < function.getParamCount(); i++)
-        {
+        for (int i = 0; i < function.getParamCount(); i++) {
             // Fragment programs do not use ordering for the output layout position, rather it is 
             // embedded in the semantic
-            if (function[i].type->getQualifier().isParamOutput() && language != EShLangFragment)
-            {
-                if (function[i].type->getQualifier().builtIn == EbvNone)
+            if (function[i].type->getQualifier().isParamOutput() ) {
+                if (function[i].type->getQualifier().builtIn == EbvNone && language != EShLangFragment)
                     function[i].type->getQualifier().layoutLocation = outCount++;
                 function[i].type->getQualifier().storage = EvqVaryingOut;
-            }
-            else
-            {
+            } else {
                 if (function[i].type->getQualifier().builtIn == EbvNone)
                     function[i].type->getQualifier().layoutLocation = inCount++;
                 function[i].type->getQualifier().storage = EvqVaryingIn;
@@ -2276,7 +2272,9 @@ void HlslParseContext::handleSemantic(TType& type, const TString& semantic)
     // TODO: need to know if it's an input or an output
     // The following sketches what needs to be done, but can't be right
     // without taking into account stage and input/output.
-   
+
+    TString semanticUpperCase = semantic;
+    std::transform(semanticUpperCase.begin(), semanticUpperCase.end(), semanticUpperCase.begin(), ::toupper);
     // in DX9, all outputs had to have a semantic associated with them, that was either consumed
     // by the system or was a specific register assignment
     // in DX10+, only semantics with the SV_ prefix have any meaning beyond decoration
@@ -2284,24 +2282,23 @@ void HlslParseContext::handleSemantic(TType& type, const TString& semantic)
     // Also, in DX10 if a SV value is present as the input of a stage, but isn't appropriate for that
     // stage, it would just be ignored as it is likely there as part of an output struct from one stage
     // to the next
-    bool bParseDX9 = false;
     
+    
+    bool bParseDX9 = false;
     if (bParseDX9)
     {
-        if (semantic == "PSIZE")
+        if (semanticUpperCase == "PSIZE")
             type.getQualifier().builtIn = EbvPointSize;
         else if (semantic == "FOG")
             type.getQualifier().builtIn = EbvFogFragCoord;
-        else if (semantic == "DEPTH" || semantic == "SV_Depth")
+        else if (semanticUpperCase == "DEPTH")
             type.getQualifier().builtIn = EbvFragDepth;
-        else if (semantic == "VFACE" || semantic == "SV_IsFrontFace")
+        else if (semanticUpperCase == "VFACE")
             type.getQualifier().builtIn = EbvFace;
-        else if (semantic == "VPOS" || semantic == "SV_Position")
+        else if (semanticUpperCase == "VPOS")
             type.getQualifier().builtIn = EbvFragCoord;
     }
     
-    TString semanticUpperCase = semantic;
-    std::transform(semanticUpperCase.begin(), semanticUpperCase.end(), semanticUpperCase.begin(), ::toupper);
     {
         //SV Position has a different meaning in vertex vs fragment
         if (semanticUpperCase == "SV_POSITION" && language != EShLangFragment)
