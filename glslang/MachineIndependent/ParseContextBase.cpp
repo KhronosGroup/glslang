@@ -70,7 +70,7 @@ namespace glslang {
 //    caller's choice for how to report)
 //
 const TFunction* TParseContextBase::selectFunction(
-    TVector<const TFunction*> candidateList,
+    const TVector<const TFunction*> candidateList,
     const TFunction& call,
     std::function<bool(const TType& from, const TType& to)> convertible,
     std::function<bool(const TType& from, const TType& to1, const TType& to2)> better,

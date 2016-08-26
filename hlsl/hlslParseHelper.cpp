@@ -3563,7 +3563,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
     
     // can 'from' convert to 'to'?
-    auto convertible = [this](const TType& from, const TType& to) {
+    const auto convertible = [this](const TType& from, const TType& to) {
         if (from == to)
             return true;
 
@@ -3590,7 +3590,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
     // Is 'to2' a better conversion than 'to1'?
     // Ties should not be considered as better.
     // Assumes 'convertible' already said true.
-    auto better = [](const TType& from, const TType& to1, const TType& to2) {
+    const auto better = [](const TType& from, const TType& to1, const TType& to2) {
         // exact match is always better than mismatch
         if (from == to2)
             return from != to1;
@@ -3617,7 +3617,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
         //     - 32 vs. 64 bit (or width in general)
         //       - bool vs. non bool
         //         - signed vs. not signed
-        auto linearize = [](const TBasicType& basicType) {
+        const auto linearize = [](const TBasicType& basicType) {
             switch (basicType) {
             case EbtBool:     return 1;
             case EbtInt:      return 10;
