@@ -37,4 +37,37 @@ if (TARGET gmock)
     glslang OSDependent OGLCompiler HLSL glslang
     SPIRV glslang-default-resource-limits gmock)
   add_test(NAME glslang-gtests COMMAND glslangtests)
+
+  # -- Remapper tests
+  set(REMAPPER_TEST_SOURCES
+    # Framework related source files
+    ${CMAKE_CURRENT_SOURCE_DIR}/Initializer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Settings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Settings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/TestFixture.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/TestFixture.h
+
+    # Test related source files
+    ${CMAKE_CURRENT_SOURCE_DIR}/Remap.FromFile.cpp
+  )
+
+  add_executable(remappertests ${REMAPPER_TEST_SOURCES})
+  set_property(TARGET remappertests PROPERTY FOLDER tests)
+  glslang_set_link_args(remappertests)
+  install(TARGETS remappertests
+        RUNTIME DESTINATION bin)
+
+  target_compile_definitions(remappertests
+    PRIVATE GLSLANG_TEST_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/../Test")
+  target_include_directories(remappertests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${PROJECT_SOURCE_DIR}
+    ${gmock_SOURCE_DIR}/include
+    ${gtest_SOURCE_DIR}/include)
+  target_link_libraries(remappertests PRIVATE
+    SPVRemapper
+    glslang OSDependent OGLCompiler HLSL glslang
+    SPIRV glslang-default-resource-limits gmock)
+  add_test(NAME remapper-gtests COMMAND remappertests)
 endif()

@@ -82,7 +82,7 @@ class spirvbin_t : public spirvbin_base_t
 public:
     spirvbin_t(int /*verbose = 0*/) { }
 
-    void remap(std::vector<unsigned int>& /*spv*/, unsigned int /*opts = 0*/)
+    void remap(std::vector<std::uint32_t>& /*spv*/, unsigned int /*opts = 0*/)
     {
         printf("Tool not compiled for C++11, which is required for SPIR-V remapping.\n");
         exit(5);
