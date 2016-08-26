@@ -1488,8 +1488,10 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
     case EOpGenMul:
         {
             // mul(a,b) -> MatrixTimesMatrix, MatrixTimesVector, MatrixTimesScalar, VectorTimesScalar, Dot, Mul
-            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();
-            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();
+            // Since we are treating HLSL rows like GLSL columns (the first matrix indirection),
+            // we must reverse the operand order here.  Hence, arg0 gets sequence[1], etc.
+            TIntermTyped* arg0 = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* arg1 = argAggregate->getSequence()[0]->getAsTyped();
 
             if (arg0->isVector() && arg1->isVector()) {  // vec * vec
                 node->getAsAggregate()->setOperator(EOpDot);
@@ -3931,15 +3933,21 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
                 return nullptr;
         }
     } else if (type.isMatrix()) {
-        if (type.getMatrixCols() != (int)initList->getSequence().size()) {
-            error(loc, "wrong number of matrix columns:", "initializer list", type.getCompleteString().c_str());
-            return nullptr;
-        }
-        TType vectorType(type, 0); // dereferenced type
-        for (int i = 0; i < type.getMatrixCols(); ++i) {
-            initList->getSequence()[i] = convertInitializerList(loc, vectorType, initList->getSequence()[i]->getAsTyped());
-            if (initList->getSequence()[i] == nullptr)
+        if (type.computeNumComponents() == (int)initList->getSequence().size()) {
+            // This means the matrix is initialized component-wise, rather than as
+            // a series of rows and columns.  We can just use the list directly as
+            // a constructor; no further processing needed.
+        } else {
+            if (type.getMatrixCols() != (int)initList->getSequence().size()) {
+                error(loc, "wrong number of matrix columns:", "initializer list", type.getCompleteString().c_str());
                 return nullptr;
+            }
+            TType vectorType(type, 0); // dereferenced type
+            for (int i = 0; i < type.getMatrixCols(); ++i) {
+                initList->getSequence()[i] = convertInitializerList(loc, vectorType, initList->getSequence()[i]->getAsTyped());
+                if (initList->getSequence()[i] == nullptr)
+                    return nullptr;
+            }
         }
     } else if (type.isVector()) {
         if (type.getVectorSize() != (int)initList->getSequence().size()) {

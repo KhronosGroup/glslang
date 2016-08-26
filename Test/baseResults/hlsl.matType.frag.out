@@ -14,9 +14,9 @@ gl_FragCoord origin is upper left
 0:?   Linker Objects
 0:?     'f1' (global 1-component vector of float)
 0:?     'fmat11' (global 1X1 matrix of float)
-0:?     'fmat41' (global 1X4 matrix of float)
-0:?     'fmat12' (global 2X1 matrix of float)
-0:?     'dmat23' (global 3X2 matrix of double)
+0:?     'fmat41' (global 4X1 matrix of float)
+0:?     'fmat12' (global 1X2 matrix of float)
+0:?     'dmat23' (global 2X3 matrix of double)
 0:?     'int44' (global 4X4 matrix of int)
 
 
@@ -38,9 +38,9 @@ gl_FragCoord origin is upper left
 0:?   Linker Objects
 0:?     'f1' (global 1-component vector of float)
 0:?     'fmat11' (global 1X1 matrix of float)
-0:?     'fmat41' (global 1X4 matrix of float)
-0:?     'fmat12' (global 2X1 matrix of float)
-0:?     'dmat23' (global 3X2 matrix of double)
+0:?     'fmat41' (global 4X1 matrix of float)
+0:?     'fmat12' (global 1X2 matrix of float)
+0:?     'dmat23' (global 2X3 matrix of double)
 0:?     'int44' (global 4X4 matrix of int)
 
 // Module Version 10000
@@ -59,7 +59,7 @@ gl_FragCoord origin is upper left
                               Name 10  "inScalar"
                               Name 14  "f1"
                               Name 20  "fmat11"
-                              Name 24  "fmat41"
+                              Name 23  "fmat41"
                               Name 27  "fmat12"
                               Name 32  "dmat23"
                               Name 37  "int44"
@@ -75,16 +75,16 @@ gl_FragCoord origin is upper left
               18:             TypeMatrix 17(fvec) 1
               19:             TypePointer Private 18
       20(fmat11):     19(ptr) Variable Private
-              21:             TypeVector 6(float) 4
-              22:             TypeMatrix 21(fvec4) 1
-              23:             TypePointer Private 22
-      24(fmat41):     23(ptr) Variable Private
-              25:             TypeMatrix 17(fvec) 2
+              21:             TypeMatrix 17(fvec) 4
+              22:             TypePointer Private 21
+      23(fmat41):     22(ptr) Variable Private
+              24:             TypeVector 6(float) 2
+              25:             TypeMatrix 24(fvec2) 1
               26:             TypePointer Private 25
       27(fmat12):     26(ptr) Variable Private
               28:             TypeFloat 64
-              29:             TypeVector 28(float) 2
-              30:             TypeMatrix 29(fvec2) 3
+              29:             TypeVector 28(float) 3
+              30:             TypeMatrix 29(fvec3) 2
               31:             TypePointer Private 30
       32(dmat23):     31(ptr) Variable Private
               33:             TypeInt 32 1
