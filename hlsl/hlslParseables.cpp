@@ -676,6 +676,12 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "SampleLevel",        /*!O*/        "V4",    nullptr,   "%@,S,V,S",       "FIU,S,F,",      EShLangAll },
         { "SampleLevel",        /* O*/        "V4",    nullptr,   "%@,S,V,S,V",     "FIU,S,F,,I",    EShLangAll },
 
+        //Multiple fields in non first field are ignored, so need seperate entries for unsigned int version of Load
+        { "Load",               /*!O*/        "V4",    nullptr,   "%@*,V",          "FIU,U",         EShLangAll },
+        { "Load",               /* O*/        "V4",    nullptr,   "%@,V,V",         "FIU,U,I",       EShLangAll },
+        { "Load", /* +sampleidex*/            "V4",    nullptr,   "$&,V,S",         "FIU,U,I",       EShLangAll },
+        { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$&,V,S,V",       "FIU,U,I,I",     EShLangAll },
+
         { "Load",               /*!O*/        "V4",    nullptr,   "%@*,V",          "FIU,I",         EShLangAll },
         { "Load",               /* O*/        "V4",    nullptr,   "%@,V,V",         "FIU,I,I",       EShLangAll },
         { "Load", /* +sampleidex*/            "V4",    nullptr,   "$&,V,S",         "FIU,I,I",       EShLangAll },

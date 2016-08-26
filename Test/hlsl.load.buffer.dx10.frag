@@ -15,6 +15,11 @@ uniform int2  c2;
 uniform int3  c3;
 uniform int4  c4;
 
+uniform int   uc1;
+uniform int2  uc2;
+uniform int3  uc3;
+uniform int4  uc4;
+
 uniform int   o1;
 uniform int2  o2;
 uniform int3  o3;
@@ -28,6 +33,11 @@ PS_OUTPUT main()
    float4 r00 = g_tTexbf4.Load(c1);
    int4   r01 = g_tTexbi4.Load(c1);
    uint4  r02 = g_tTexbu4.Load(c1);
+
+   //uint cast
+   r00 = g_tTexbf4.Load(uc1);
+   r01 = g_tTexbi4.Load(uc1);
+   r02 = g_tTexbu4.Load(uc1);
 
    // TODO: other types that can be put in sampler buffers, like float2x2, and float3.
 

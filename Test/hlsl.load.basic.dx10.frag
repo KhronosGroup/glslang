@@ -39,6 +39,12 @@ uniform int2  c2;
 uniform int3  c3;
 uniform int4  c4;
 
+uniform uint   uc1;
+uniform uint2  uc2;
+uniform uint3  uc3;
+uniform uint4  uc4;
+
+
 uniform int   o1;
 uniform int2  o2;
 uniform int3  o3;
@@ -52,16 +58,26 @@ PS_OUTPUT main()
    g_tTex1df4.Load(c2);
    g_tTex1di4.Load(c2);
    g_tTex1du4.Load(c2);
+   g_tTex1df4.Load(uc2);
+   g_tTex1di4.Load(uc2);
+   g_tTex1du4.Load(uc2);
 
    // 2D
    g_tTex2df4.Load(c3);
    g_tTex2di4.Load(c3);
    g_tTex2du4.Load(c3);
+   g_tTex2df4.Load(uc3);
+   g_tTex2di4.Load(uc3);
+   g_tTex2du4.Load(uc3);
+
 
    // 3D
    g_tTex3df4.Load(c4);
    g_tTex3di4.Load(c4);
    g_tTex3du4.Load(c4);
+   g_tTex3df4.Load(uc4);
+   g_tTex3di4.Load(uc4);
+   g_tTex3du4.Load(uc4);
 
    // Offset has no Cube or CubeArray forms
 
