@@ -267,12 +267,15 @@ ERROR: node is still EOpNull!
 0:89          'inF0' (in 4-component vector of float)
 0:90      Constant:
 0:90        0.000000
-0:92      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:92      Sequence
+0:92        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           Constant:
+0:?             1.000000
+0:?             2.000000
+0:?             3.000000
+0:?             4.000000
+0:92        Branch: Return
 0:122  Function Definition: PixelShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
 0:115    Function Parameters: 
 0:115      'inF0' (in 2X2 matrix of float)
@@ -615,12 +618,15 @@ ERROR: node is still EOpNull!
 0:89          'inF0' (in 4-component vector of float)
 0:90      Constant:
 0:90        0.000000
-0:92      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:92      Sequence
+0:92        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           Constant:
+0:?             1.000000
+0:?             2.000000
+0:?             3.000000
+0:?             4.000000
+0:92        Branch: Return
 0:122  Function Definition: PixelShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
 0:115    Function Parameters: 
 0:115      'inF0' (in 2X2 matrix of float)

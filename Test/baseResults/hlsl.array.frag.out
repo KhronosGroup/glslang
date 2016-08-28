@@ -7,42 +7,45 @@ gl_FragCoord origin is upper left
 0:8      'i' (in int)
 0:8      'input' (in 3-element array of 4-component vector of float)
 0:?     Sequence
-0:10      Branch: Return with expression
-0:10        add (temp 4-component vector of float)
+0:10      Sequence
+0:10        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (out 4-component vector of float)
 0:10          add (temp 4-component vector of float)
 0:10            add (temp 4-component vector of float)
 0:10              add (temp 4-component vector of float)
 0:10                add (temp 4-component vector of float)
 0:10                  add (temp 4-component vector of float)
+0:10                    add (temp 4-component vector of float)
+0:10                      direct index (temp 4-component vector of float)
+0:10                        'a' (global 4-element array of 4-component vector of float)
+0:10                        Constant:
+0:10                          1 (const int)
+0:10                      indirect index (temp 4-component vector of float)
+0:10                        'a' (global 4-element array of 4-component vector of float)
+0:10                        'i' (in int)
 0:10                    direct index (temp 4-component vector of float)
-0:10                      'a' (global 4-element array of 4-component vector of float)
+0:10                      'input' (in 3-element array of 4-component vector of float)
 0:10                      Constant:
-0:10                        1 (const int)
-0:10                    indirect index (temp 4-component vector of float)
-0:10                      'a' (global 4-element array of 4-component vector of float)
-0:10                      'i' (in int)
-0:10                  direct index (temp 4-component vector of float)
+0:10                        2 (const int)
+0:10                  indirect index (temp 4-component vector of float)
 0:10                    'input' (in 3-element array of 4-component vector of float)
-0:10                    Constant:
-0:10                      2 (const int)
-0:10                indirect index (temp 4-component vector of float)
-0:10                  'input' (in 3-element array of 4-component vector of float)
-0:10                  'i' (in int)
-0:10              direct index (temp 4-component vector of float)
+0:10                    'i' (in int)
+0:10                direct index (temp 4-component vector of float)
+0:10                  'b' (temp 10-element array of 4-component vector of float)
+0:10                  Constant:
+0:10                    5 (const int)
+0:10              indirect index (temp 4-component vector of float)
 0:10                'b' (temp 10-element array of 4-component vector of float)
-0:10                Constant:
-0:10                  5 (const int)
-0:10            indirect index (temp 4-component vector of float)
-0:10              'b' (temp 10-element array of 4-component vector of float)
-0:10              'i' (in int)
-0:10          indirect index (temp 4-component vector of float)
-0:10            m: direct index for structure (temp 7-element array of 4-component vector of float)
-0:10              indirect index (temp structure{temp 7-element array of 4-component vector of float m})
-0:10                's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
 0:10                'i' (in int)
-0:10              Constant:
-0:10                0 (const int)
-0:10            'i' (in int)
+0:10            indirect index (temp 4-component vector of float)
+0:10              m: direct index for structure (temp 7-element array of 4-component vector of float)
+0:10                indirect index (temp structure{temp 7-element array of 4-component vector of float m})
+0:10                  's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
+0:10                  'i' (in int)
+0:10                Constant:
+0:10                  0 (const int)
+0:10              'i' (in int)
+0:10        Branch: Return
 0:?   Linker Objects
 0:?     'a' (global 4-element array of 4-component vector of float)
 0:?     's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
@@ -59,123 +62,130 @@ gl_FragCoord origin is upper left
 0:8      'i' (in int)
 0:8      'input' (in 3-element array of 4-component vector of float)
 0:?     Sequence
-0:10      Branch: Return with expression
-0:10        add (temp 4-component vector of float)
+0:10      Sequence
+0:10        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (out 4-component vector of float)
 0:10          add (temp 4-component vector of float)
 0:10            add (temp 4-component vector of float)
 0:10              add (temp 4-component vector of float)
 0:10                add (temp 4-component vector of float)
 0:10                  add (temp 4-component vector of float)
+0:10                    add (temp 4-component vector of float)
+0:10                      direct index (temp 4-component vector of float)
+0:10                        'a' (global 4-element array of 4-component vector of float)
+0:10                        Constant:
+0:10                          1 (const int)
+0:10                      indirect index (temp 4-component vector of float)
+0:10                        'a' (global 4-element array of 4-component vector of float)
+0:10                        'i' (in int)
 0:10                    direct index (temp 4-component vector of float)
-0:10                      'a' (global 4-element array of 4-component vector of float)
+0:10                      'input' (in 3-element array of 4-component vector of float)
 0:10                      Constant:
-0:10                        1 (const int)
-0:10                    indirect index (temp 4-component vector of float)
-0:10                      'a' (global 4-element array of 4-component vector of float)
-0:10                      'i' (in int)
-0:10                  direct index (temp 4-component vector of float)
+0:10                        2 (const int)
+0:10                  indirect index (temp 4-component vector of float)
 0:10                    'input' (in 3-element array of 4-component vector of float)
-0:10                    Constant:
-0:10                      2 (const int)
-0:10                indirect index (temp 4-component vector of float)
-0:10                  'input' (in 3-element array of 4-component vector of float)
-0:10                  'i' (in int)
-0:10              direct index (temp 4-component vector of float)
+0:10                    'i' (in int)
+0:10                direct index (temp 4-component vector of float)
+0:10                  'b' (temp 10-element array of 4-component vector of float)
+0:10                  Constant:
+0:10                    5 (const int)
+0:10              indirect index (temp 4-component vector of float)
 0:10                'b' (temp 10-element array of 4-component vector of float)
-0:10                Constant:
-0:10                  5 (const int)
-0:10            indirect index (temp 4-component vector of float)
-0:10              'b' (temp 10-element array of 4-component vector of float)
-0:10              'i' (in int)
-0:10          indirect index (temp 4-component vector of float)
-0:10            m: direct index for structure (temp 7-element array of 4-component vector of float)
-0:10              indirect index (temp structure{temp 7-element array of 4-component vector of float m})
-0:10                's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
 0:10                'i' (in int)
-0:10              Constant:
-0:10                0 (const int)
-0:10            'i' (in int)
+0:10            indirect index (temp 4-component vector of float)
+0:10              m: direct index for structure (temp 7-element array of 4-component vector of float)
+0:10                indirect index (temp structure{temp 7-element array of 4-component vector of float m})
+0:10                  's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
+0:10                  'i' (in int)
+0:10                Constant:
+0:10                  0 (const int)
+0:10              'i' (in int)
+0:10        Branch: Return
 0:?   Linker Objects
 0:?     'a' (global 4-element array of 4-component vector of float)
 0:?     's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
 
 // Module Version 10000
 // Generated by (magic number): 80001
-// Id's are bound by 64
+// Id's are bound by 66
 
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "PixelShaderFunction" 19 27
+                              EntryPoint Fragment 4  "PixelShaderFunction" 9 21 29
                               ExecutionMode 4 OriginUpperLeft
                               Name 4  "PixelShaderFunction"
-                              Name 12  "a"
-                              Name 19  "i"
-                              Name 27  "input"
-                              Name 40  "b"
-                              Name 52  ""
-                              MemberName 52 0  "m"
-                              Name 56  "s"
+                              Name 9  "@entryPointOutput"
+                              Name 14  "a"
+                              Name 21  "i"
+                              Name 29  "input"
+                              Name 42  "b"
+                              Name 54  ""
+                              MemberName 54 0  "m"
+                              Name 58  "s"
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeInt 32 0
-               9:      8(int) Constant 4
-              10:             TypeArray 7(fvec4) 9
-              11:             TypePointer Private 10
-           12(a):     11(ptr) Variable Private
-              13:             TypeInt 32 1
-              14:     13(int) Constant 1
-              15:             TypePointer Private 7(fvec4)
-              18:             TypePointer Input 13(int)
-           19(i):     18(ptr) Variable Input
-              24:      8(int) Constant 3
-              25:             TypeArray 7(fvec4) 24
-              26:             TypePointer Input 25
-       27(input):     26(ptr) Variable Input
-              28:     13(int) Constant 2
-              29:             TypePointer Input 7(fvec4)
-              37:      8(int) Constant 10
-              38:             TypeArray 7(fvec4) 37
-              39:             TypePointer Function 38
-              41:     13(int) Constant 5
-              42:             TypePointer Function 7(fvec4)
-              50:      8(int) Constant 7
-              51:             TypeArray 7(fvec4) 50
-              52:             TypeStruct 51
-              53:      8(int) Constant 11
-              54:             TypeArray 52(struct) 53
-              55:             TypePointer Private 54
-           56(s):     55(ptr) Variable Private
-              58:     13(int) Constant 0
+               8:             TypePointer Output 7(fvec4)
+9(@entryPointOutput):      8(ptr) Variable Output
+              10:             TypeInt 32 0
+              11:     10(int) Constant 4
+              12:             TypeArray 7(fvec4) 11
+              13:             TypePointer Private 12
+           14(a):     13(ptr) Variable Private
+              15:             TypeInt 32 1
+              16:     15(int) Constant 1
+              17:             TypePointer Private 7(fvec4)
+              20:             TypePointer Input 15(int)
+           21(i):     20(ptr) Variable Input
+              26:     10(int) Constant 3
+              27:             TypeArray 7(fvec4) 26
+              28:             TypePointer Input 27
+       29(input):     28(ptr) Variable Input
+              30:     15(int) Constant 2
+              31:             TypePointer Input 7(fvec4)
+              39:     10(int) Constant 10
+              40:             TypeArray 7(fvec4) 39
+              41:             TypePointer Function 40
+              43:     15(int) Constant 5
+              44:             TypePointer Function 7(fvec4)
+              52:     10(int) Constant 7
+              53:             TypeArray 7(fvec4) 52
+              54:             TypeStruct 53
+              55:     10(int) Constant 11
+              56:             TypeArray 54(struct) 55
+              57:             TypePointer Private 56
+           58(s):     57(ptr) Variable Private
+              60:     15(int) Constant 0
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
-           40(b):     39(ptr) Variable Function
-              16:     15(ptr) AccessChain 12(a) 14
-              17:    7(fvec4) Load 16
-              20:     13(int) Load 19(i)
-              21:     15(ptr) AccessChain 12(a) 20
-              22:    7(fvec4) Load 21
-              23:    7(fvec4) FAdd 17 22
-              30:     29(ptr) AccessChain 27(input) 28
-              31:    7(fvec4) Load 30
-              32:    7(fvec4) FAdd 23 31
-              33:     13(int) Load 19(i)
-              34:     29(ptr) AccessChain 27(input) 33
-              35:    7(fvec4) Load 34
-              36:    7(fvec4) FAdd 32 35
-              43:     42(ptr) AccessChain 40(b) 41
-              44:    7(fvec4) Load 43
-              45:    7(fvec4) FAdd 36 44
-              46:     13(int) Load 19(i)
-              47:     42(ptr) AccessChain 40(b) 46
-              48:    7(fvec4) Load 47
-              49:    7(fvec4) FAdd 45 48
-              57:     13(int) Load 19(i)
-              59:     13(int) Load 19(i)
-              60:     15(ptr) AccessChain 56(s) 57 58 59
-              61:    7(fvec4) Load 60
-              62:    7(fvec4) FAdd 49 61
-                              ReturnValue 62
+           42(b):     41(ptr) Variable Function
+              18:     17(ptr) AccessChain 14(a) 16
+              19:    7(fvec4) Load 18
+              22:     15(int) Load 21(i)
+              23:     17(ptr) AccessChain 14(a) 22
+              24:    7(fvec4) Load 23
+              25:    7(fvec4) FAdd 19 24
+              32:     31(ptr) AccessChain 29(input) 30
+              33:    7(fvec4) Load 32
+              34:    7(fvec4) FAdd 25 33
+              35:     15(int) Load 21(i)
+              36:     31(ptr) AccessChain 29(input) 35
+              37:    7(fvec4) Load 36
+              38:    7(fvec4) FAdd 34 37
+              45:     44(ptr) AccessChain 42(b) 43
+              46:    7(fvec4) Load 45
+              47:    7(fvec4) FAdd 38 46
+              48:     15(int) Load 21(i)
+              49:     44(ptr) AccessChain 42(b) 48
+              50:    7(fvec4) Load 49
+              51:    7(fvec4) FAdd 47 50
+              59:     15(int) Load 21(i)
+              61:     15(int) Load 21(i)
+              62:     17(ptr) AccessChain 58(s) 59 60 61
+              63:    7(fvec4) Load 62
+              64:    7(fvec4) FAdd 51 63
+                              Store 9(@entryPointOutput) 64
+                              Return
                               FunctionEnd
