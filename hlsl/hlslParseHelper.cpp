@@ -2359,14 +2359,14 @@ void HlslParseContext::handleSemantic(TType& type, const TString& semantic)
             type.getQualifier().builtIn = EbvTessCoord;
         else if (semanticUpperCase == "SV_DEPTH")
             type.getQualifier().builtIn = EbvFragDepth;
-     
-         
+        //TODO, these need to get refined to be more specific 
+        else if( semanticUpperCase == "SV_DEPTHGREATEREQUAL")
+            type.getQualifier().builtIn = EbvFragDepth;
+        else if( semanticUpperCase == "SV_DEPTHLESSEQUAL")
+            type.getQualifier().builtIn = EbvFragDepth;
         //not supported or not trivial
         //else if( semanticUpperCase == "SV_STENCILREF")
-        //    type.getQualifier().builtIn = gl_FragStencilRef
-        //else if( semanticUpperCase == "SV_DEPTHGREATEREQUAL")
-        //    type.getQualifier().builtIn = ??
-        //else if( semanticUpperCase == "SV_DEPTHLESSEQUAL")
+        //    type.getQualifier().builtIn = gl_FragStencilRef    
         //    type.getQualifier().builtIn = ??
         //else if( semanticUpperCase == "SV_COVERAGE")
         //    type.getQualifier().builtIn = ??
