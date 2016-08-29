@@ -78,7 +78,6 @@ Linked fragment stage:
                               Decorate 147(g_tTexcdf4) DescriptorSet 0
                               Decorate 156(g_tTexcdi4) DescriptorSet 0
                               Decorate 165(g_tTexcdu4) DescriptorSet 0
-                              MemberDecorate 171(PS_OUTPUT) 0 Location 0
                               MemberDecorate 171(PS_OUTPUT) 1 BuiltIn FragDepth
                               Decorate 182(g_sSamp2d) DescriptorSet 0
                               Decorate 183(g_sSamp2D_b) DescriptorSet 0

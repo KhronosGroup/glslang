@@ -2343,31 +2343,31 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TType& type, const TString
     //Targets are defined 0-7
     else if (semanticUpperCase == "SV_TARGET") {
         type.getQualifier().builtIn = EbvNone;
-        type.getQualifier().layoutLocation = 0;
+        //type.getQualifier().layoutLocation = 0;
     } else if (semanticUpperCase == "SV_TARGET0") {
         type.getQualifier().builtIn = EbvNone;
-        type.getQualifier().layoutLocation = 0;
+        //type.getQualifier().layoutLocation = 0;
     } else if (semanticUpperCase == "SV_TARGET1") {
         type.getQualifier().builtIn = EbvNone;
-        type.getQualifier().layoutLocation = 1;
+        //type.getQualifier().layoutLocation = 1;
     } else if (semanticUpperCase == "SV_TARGET2") {
         type.getQualifier().builtIn = EbvNone;
-        type.getQualifier().layoutLocation = 2;
+        //type.getQualifier().layoutLocation = 2;
     } else if (semanticUpperCase == "SV_TARGET3") {
         type.getQualifier().builtIn = EbvNone;
-        type.getQualifier().layoutLocation = 3;
+        //type.getQualifier().layoutLocation = 3;
     } else if (semanticUpperCase == "SV_TARGET4") {
         type.getQualifier().builtIn = EbvNone;
-        type.getQualifier().layoutLocation = 4;
+        //type.getQualifier().layoutLocation = 4;
     } else if (semanticUpperCase == "SV_TARGET5") {
         type.getQualifier().builtIn = EbvNone;
-        type.getQualifier().layoutLocation = 5;
+        //type.getQualifier().layoutLocation = 5;
     } else if (semanticUpperCase == "SV_TARGET6") {
         type.getQualifier().builtIn = EbvNone;
-        type.getQualifier().layoutLocation = 6;
+        //type.getQualifier().layoutLocation = 6;
     } else if (semanticUpperCase == "SV_TARGET7") {
         type.getQualifier().builtIn = EbvNone;
-        type.getQualifier().layoutLocation = 7;
+        //type.getQualifier().layoutLocation = 7;
     } else if (semanticUpperCase == "SV_SAMPLEINDEX")
         type.getQualifier().builtIn = EbvSampleId;
     else if (semanticUpperCase == "SV_RENDERTARGETARRAYINDEX")
