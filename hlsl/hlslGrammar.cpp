@@ -2670,7 +2670,7 @@ void HlslGrammar::acceptPostDecls(TType& type)
                 parseContext.handleRegister(registerDesc.loc, type, profile.string, *registerDesc.string, subComponent);
             } else {
                 // semantic, in idToken.string
-                parseContext.handleSemantic(type, *idToken.string);
+                parseContext.handleSemantic(idToken.loc, type, *idToken.string);
             }
         } else if (acceptTokenClass(EHTokLeftAngle)) {
             // TODO: process annotations, just accepting them for now
