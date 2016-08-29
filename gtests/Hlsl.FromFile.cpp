@@ -83,6 +83,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.constructexpr.frag", "main"},
         {"hlsl.discard.frag", "PixelShaderFunction"},
         {"hlsl.doLoop.frag", "PixelShaderFunction"},
+        {"hlsl.entry-out.frag", "PixelShaderFunction"},
         {"hlsl.float1.frag", "PixelShaderFunction"},
         {"hlsl.float4.frag", "PixelShaderFunction"},
         {"hlsl.forLoop.frag", "PixelShaderFunction"},

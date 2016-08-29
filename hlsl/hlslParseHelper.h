@@ -196,6 +196,7 @@ protected:
     TString currentCaller;        // name of last function body entered (not valid when at global scope)
     TIdSetType inductiveLoopIds;
     TVector<TIntermTyped*> needsIndexLimitationChecking;
+    TVariable* entryPointOutput;
 
     //
     // Geometry shader input arrays:

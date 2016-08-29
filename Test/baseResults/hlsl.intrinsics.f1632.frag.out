@@ -56,12 +56,15 @@ ERROR: node is still EOpNull!
 0:30      ERROR: Bad unary op
  (global 4-component vector of uint)
 0:30        'inF0' (in 4-component vector of float)
-0:32      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:32      Sequence
+0:32        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           Constant:
+0:?             1.000000
+0:?             2.000000
+0:?             3.000000
+0:?             4.000000
+0:32        Branch: Return
 0:?   Linker Objects
 
 
@@ -118,12 +121,15 @@ ERROR: node is still EOpNull!
 0:30      ERROR: Bad unary op
  (global 4-component vector of uint)
 0:30        'inF0' (in 4-component vector of float)
-0:32      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:32      Sequence
+0:32        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           Constant:
+0:?             1.000000
+0:?             2.000000
+0:?             3.000000
+0:?             4.000000
+0:32        Branch: Return
 0:?   Linker Objects
 
 SPIR-V is not generated for failed compile or link

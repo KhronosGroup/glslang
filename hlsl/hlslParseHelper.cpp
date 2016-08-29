@@ -55,7 +55,8 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
     postMainReturn(false),
     limits(resources.limits),
-    afterEOF(false)
+    afterEOF(false),
+    entryPointOutput(nullptr)
 {
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
     linkage = new TIntermAggregate;
@@ -754,9 +755,20 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
 
     inEntrypoint = (function.getName() == intermediate.getEntryPoint().c_str());
     if (inEntrypoint) {
-        // parameters are actually shader-level inputs
-        for (int i = 0; i < function.getParamCount(); i++)
-            function[i].type->getQualifier().storage = EvqVaryingIn;
+        // in parameters are actually shader-scoped inputs (in)
+        for (int i = 0; i < function.getParamCount(); i++) {
+            if (function[i].type->getQualifier().storage == EvqIn ||
+                function[i].type->getQualifier().storage == EvqConstReadOnly)
+                function[i].type->getQualifier().storage = EvqVaryingIn;
+            else
+                function[i].type->getQualifier().storage = EvqVaryingOut;
+        }
+
+        // return value is actually shader-scoped output (out)
+        if (function.getType().getBasicType() != EbtVoid) {
+            entryPointOutput = makeInternalVariable("@entryPointOutput", function.getType());
+            entryPointOutput->getWritableType().getQualifier().storage = EvqVaryingOut;
+        }
     }
 
     //
@@ -805,17 +817,36 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
 // if necessary.
 TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermTyped* value)
 {
+    TIntermTyped* converted = value;
+
     if (currentFunctionType->getBasicType() == EbtVoid) {
         error(loc, "void function cannot return a value", "return", "");
         return intermediate.addBranch(EOpReturn, loc);
     } else if (*currentFunctionType != value->getType()) {
-        TIntermTyped* converted = intermediate.addConversion(EOpReturn, *currentFunctionType, value);
+        converted = intermediate.addConversion(EOpReturn, *currentFunctionType, value);
         if (converted) {
             return intermediate.addBranch(EOpReturn, converted, loc);
         } else {
             error(loc, "type does not match, or is not convertible to, the function's return type", "return", "");
-            return intermediate.addBranch(EOpReturn, value, loc);
+            converted = value;
         }
+    }
+
+    // The entry point needs to send any return value to the entry-point output instead.
+    // So, a subtree is built up, as a two-part sequence, with the first part being an
+    // assignment subtree, and the second part being a return with no value.
+    //
+    // Otherwise, for a non entry point, just return a return statement.
+    if (inEntrypoint) {
+        assert(entryPointOutput != nullptr); // should have been error tested at the beginning
+        TIntermSymbol* left = new TIntermSymbol(entryPointOutput->getUniqueId(), entryPointOutput->getName(),
+                                                entryPointOutput->getType());
+        TIntermNode* returnSequence = intermediate.addAssign(EOpAssign, left, converted, loc);
+        returnSequence = intermediate.makeAggregate(returnSequence);
+        returnSequence = intermediate.growAggregate(returnSequence, intermediate.addBranch(EOpReturn, loc));
+        returnSequence->getAsAggregate()->setOperator(EOpSequence);
+
+        return returnSequence;
     } else
         return intermediate.addBranch(EOpReturn, value, loc);
 }
