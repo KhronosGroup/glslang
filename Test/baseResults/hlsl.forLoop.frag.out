@@ -4,7 +4,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:14  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (in 4-component vector of float)
+0:2      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:?       Sequence
 0:3        Loop with condition tested first
@@ -12,7 +12,7 @@ gl_FragCoord origin is upper left
 0:3          No loop body
 0:4      Sequence
 0:4        Pre-Increment (temp 4-component vector of float)
-0:4          'input' (in 4-component vector of float)
+0:4          'input' (layout(location=0 ) in 4-component vector of float)
 0:4        Loop with condition tested first
 0:4          No loop condition
 0:4          No loop body
@@ -20,42 +20,42 @@ gl_FragCoord origin is upper left
 0:5        Loop with condition tested first
 0:5          Loop Condition
 0:5          Compare Not Equal (temp bool)
-0:5            'input' (in 4-component vector of float)
-0:5            'input' (in 4-component vector of float)
+0:5            'input' (layout(location=0 ) in 4-component vector of float)
+0:5            'input' (layout(location=0 ) in 4-component vector of float)
 0:5          No loop body
 0:?       Sequence
 0:6        Loop with condition tested first
 0:6          Loop Condition
 0:6          Compare Not Equal (temp bool)
-0:6            'input' (in 4-component vector of float)
-0:6            'input' (in 4-component vector of float)
+0:6            'input' (layout(location=0 ) in 4-component vector of float)
+0:6            'input' (layout(location=0 ) in 4-component vector of float)
 0:6          Loop Body
 0:?           Sequence
 0:6            Sequence
 0:6              move second child to first child (temp 4-component vector of float)
 0:?                 '@entryPointOutput' (out 4-component vector of float)
 0:6                Negate value (temp 4-component vector of float)
-0:6                  'input' (in 4-component vector of float)
+0:6                  'input' (layout(location=0 ) in 4-component vector of float)
 0:6              Branch: Return
 0:7      Sequence
 0:7        Pre-Decrement (temp 4-component vector of float)
-0:7          'input' (in 4-component vector of float)
+0:7          'input' (layout(location=0 ) in 4-component vector of float)
 0:7        Loop with condition tested first
 0:7          Loop Condition
 0:7          Compare Not Equal (temp bool)
-0:7            'input' (in 4-component vector of float)
-0:7            'input' (in 4-component vector of float)
+0:7            'input' (layout(location=0 ) in 4-component vector of float)
+0:7            'input' (layout(location=0 ) in 4-component vector of float)
 0:7          Loop Body
 0:?           Sequence
 0:7            Sequence
 0:7              move second child to first child (temp 4-component vector of float)
 0:?                 '@entryPointOutput' (out 4-component vector of float)
 0:7                Negate value (temp 4-component vector of float)
-0:7                  'input' (in 4-component vector of float)
+0:7                  'input' (layout(location=0 ) in 4-component vector of float)
 0:7              Branch: Return
 0:7          Loop Terminal Expression
 0:7          add second child into first child (temp 4-component vector of float)
-0:7            'input' (in 4-component vector of float)
+0:7            'input' (layout(location=0 ) in 4-component vector of float)
 0:7            Constant:
 0:7              2.000000
 0:?       Sequence
@@ -66,7 +66,7 @@ gl_FragCoord origin is upper left
 0:8            Condition
 0:8            Compare Greater Than (temp bool)
 0:8              direct index (temp float)
-0:8                'input' (in 4-component vector of float)
+0:8                'input' (layout(location=0 ) in 4-component vector of float)
 0:8                Constant:
 0:8                  0 (const int)
 0:8              Constant:
@@ -81,7 +81,7 @@ gl_FragCoord origin is upper left
 0:9            Condition
 0:9            Compare Greater Than (temp bool)
 0:9              direct index (temp float)
-0:9                'input' (in 4-component vector of float)
+0:9                'input' (layout(location=0 ) in 4-component vector of float)
 0:9                Constant:
 0:9                  0 (const int)
 0:9              Constant:
@@ -124,7 +124,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:14  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (in 4-component vector of float)
+0:2      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:?       Sequence
 0:3        Loop with condition tested first
@@ -132,7 +132,7 @@ gl_FragCoord origin is upper left
 0:3          No loop body
 0:4      Sequence
 0:4        Pre-Increment (temp 4-component vector of float)
-0:4          'input' (in 4-component vector of float)
+0:4          'input' (layout(location=0 ) in 4-component vector of float)
 0:4        Loop with condition tested first
 0:4          No loop condition
 0:4          No loop body
@@ -140,42 +140,42 @@ gl_FragCoord origin is upper left
 0:5        Loop with condition tested first
 0:5          Loop Condition
 0:5          Compare Not Equal (temp bool)
-0:5            'input' (in 4-component vector of float)
-0:5            'input' (in 4-component vector of float)
+0:5            'input' (layout(location=0 ) in 4-component vector of float)
+0:5            'input' (layout(location=0 ) in 4-component vector of float)
 0:5          No loop body
 0:?       Sequence
 0:6        Loop with condition tested first
 0:6          Loop Condition
 0:6          Compare Not Equal (temp bool)
-0:6            'input' (in 4-component vector of float)
-0:6            'input' (in 4-component vector of float)
+0:6            'input' (layout(location=0 ) in 4-component vector of float)
+0:6            'input' (layout(location=0 ) in 4-component vector of float)
 0:6          Loop Body
 0:?           Sequence
 0:6            Sequence
 0:6              move second child to first child (temp 4-component vector of float)
 0:?                 '@entryPointOutput' (out 4-component vector of float)
 0:6                Negate value (temp 4-component vector of float)
-0:6                  'input' (in 4-component vector of float)
+0:6                  'input' (layout(location=0 ) in 4-component vector of float)
 0:6              Branch: Return
 0:7      Sequence
 0:7        Pre-Decrement (temp 4-component vector of float)
-0:7          'input' (in 4-component vector of float)
+0:7          'input' (layout(location=0 ) in 4-component vector of float)
 0:7        Loop with condition tested first
 0:7          Loop Condition
 0:7          Compare Not Equal (temp bool)
-0:7            'input' (in 4-component vector of float)
-0:7            'input' (in 4-component vector of float)
+0:7            'input' (layout(location=0 ) in 4-component vector of float)
+0:7            'input' (layout(location=0 ) in 4-component vector of float)
 0:7          Loop Body
 0:?           Sequence
 0:7            Sequence
 0:7              move second child to first child (temp 4-component vector of float)
 0:?                 '@entryPointOutput' (out 4-component vector of float)
 0:7                Negate value (temp 4-component vector of float)
-0:7                  'input' (in 4-component vector of float)
+0:7                  'input' (layout(location=0 ) in 4-component vector of float)
 0:7              Branch: Return
 0:7          Loop Terminal Expression
 0:7          add second child into first child (temp 4-component vector of float)
-0:7            'input' (in 4-component vector of float)
+0:7            'input' (layout(location=0 ) in 4-component vector of float)
 0:7            Constant:
 0:7              2.000000
 0:?       Sequence
@@ -186,7 +186,7 @@ gl_FragCoord origin is upper left
 0:8            Condition
 0:8            Compare Greater Than (temp bool)
 0:8              direct index (temp float)
-0:8                'input' (in 4-component vector of float)
+0:8                'input' (layout(location=0 ) in 4-component vector of float)
 0:8                Constant:
 0:8                  0 (const int)
 0:8              Constant:
@@ -201,7 +201,7 @@ gl_FragCoord origin is upper left
 0:9            Condition
 0:9            Compare Greater Than (temp bool)
 0:9              direct index (temp float)
-0:9                'input' (in 4-component vector of float)
+0:9                'input' (layout(location=0 ) in 4-component vector of float)
 0:9                Constant:
 0:9                  0 (const int)
 0:9              Constant:
@@ -249,6 +249,7 @@ gl_FragCoord origin is upper left
                               Name 43  "@entryPointOutput"
                               Name 91  "ii"
                               Name 111  "ii"
+                              Decorate 13(input) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
               10:             TypeFloat 32

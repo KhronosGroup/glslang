@@ -232,14 +232,14 @@ local_size = (1, 1, 1)
 0:?           3.000000
 0:130  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vu4;vu4; (global 4-component vector of float)
 0:105    Function Parameters: 
-0:105      'inF0' (in 4-component vector of float)
-0:105      'inF1' (in 4-component vector of float)
-0:105      'inF2' (in 4-component vector of float)
-0:105      'inU0' (in 4-component vector of uint)
-0:105      'inU1' (in 4-component vector of uint)
+0:105      'inF0' (layout(location=0 ) in 4-component vector of float)
+0:105      'inF1' (layout(location=1 ) in 4-component vector of float)
+0:105      'inF2' (layout(location=2 ) in 4-component vector of float)
+0:105      'inU0' (layout(location=3 ) in 4-component vector of uint)
+0:105      'inU1' (layout(location=4 ) in 4-component vector of uint)
 0:?     Sequence
 0:109      all (global bool)
-0:109        'inF0' (in 4-component vector of float)
+0:109        'inF0' (layout(location=0 ) in 4-component vector of float)
 0:112      AtomicAdd (global void)
 0:112        'gs_ua4' (global 4-component vector of uint)
 0:112        'gs_ub4' (global 4-component vector of uint)
@@ -559,14 +559,14 @@ local_size = (1, 1, 1)
 0:?           3.000000
 0:130  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vu4;vu4; (global 4-component vector of float)
 0:105    Function Parameters: 
-0:105      'inF0' (in 4-component vector of float)
-0:105      'inF1' (in 4-component vector of float)
-0:105      'inF2' (in 4-component vector of float)
-0:105      'inU0' (in 4-component vector of uint)
-0:105      'inU1' (in 4-component vector of uint)
+0:105      'inF0' (layout(location=0 ) in 4-component vector of float)
+0:105      'inF1' (layout(location=1 ) in 4-component vector of float)
+0:105      'inF2' (layout(location=2 ) in 4-component vector of float)
+0:105      'inU0' (layout(location=3 ) in 4-component vector of uint)
+0:105      'inU1' (layout(location=4 ) in 4-component vector of uint)
 0:?     Sequence
 0:109      all (global bool)
-0:109        'inF0' (in 4-component vector of float)
+0:109        'inF0' (layout(location=0 ) in 4-component vector of float)
 0:112      AtomicAdd (global void)
 0:112        'gs_ua4' (global 4-component vector of uint)
 0:112        'gs_ub4' (global 4-component vector of uint)
@@ -699,6 +699,7 @@ local_size = (1, 1, 1)
                               Name 185  "out_u4"
                               Name 193  "gs_uc4"
                               Name 215  "@entryPointOutput"
+                              Decorate 175(inF0) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

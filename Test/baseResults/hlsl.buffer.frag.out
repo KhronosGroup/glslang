@@ -4,7 +4,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:29  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:26    Function Parameters: 
-0:26      'input' (in 4-component vector of float)
+0:26      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:27      Sequence
 0:27        move second child to first child (temp 4-component vector of float)
@@ -13,7 +13,7 @@ gl_FragCoord origin is upper left
 0:27            add (temp 4-component vector of float)
 0:27              add (temp 4-component vector of float)
 0:27                add (temp 4-component vector of float)
-0:27                  'input' (in 4-component vector of float)
+0:27                  'input' (layout(location=0 ) in 4-component vector of float)
 0:27                  v1: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
 0:27                    'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
 0:27                    Constant:
@@ -46,7 +46,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:29  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:26    Function Parameters: 
-0:26      'input' (in 4-component vector of float)
+0:26      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:27      Sequence
 0:27        move second child to first child (temp 4-component vector of float)
@@ -55,7 +55,7 @@ gl_FragCoord origin is upper left
 0:27            add (temp 4-component vector of float)
 0:27              add (temp 4-component vector of float)
 0:27                add (temp 4-component vector of float)
-0:27                  'input' (in 4-component vector of float)
+0:27                  'input' (layout(location=0 ) in 4-component vector of float)
 0:27                  v1: direct index for structure (layout(column_major std140 ) uniform 4-component vector of float)
 0:27                    'anon@0' (layout(column_major std140 ) uniform block{layout(column_major std140 ) uniform 4-component vector of float v1})
 0:27                    Constant:
@@ -111,6 +111,7 @@ gl_FragCoord origin is upper left
                               MemberName 34 6  "f6"
                               MemberName 34 7  "f7"
                               Name 36  ""
+                              Decorate 11(input) Location 0
                               MemberDecorate 13 0 Offset 0
                               Decorate 13 Block
                               Decorate 15 DescriptorSet 0

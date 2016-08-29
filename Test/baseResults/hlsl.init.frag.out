@@ -80,7 +80,7 @@ gl_FragCoord origin is upper left
 0:18        5 (const uint)
 0:37  Function Definition: ShaderFunction(vf4; (global 4-component vector of float)
 0:21    Function Parameters: 
-0:21      'input' (in 4-component vector of float)
+0:21      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:22      Sequence
 0:22        move second child to first child (temp 4-component vector of float)
@@ -128,7 +128,7 @@ gl_FragCoord origin is upper left
 0:35        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
 0:35          component-wise multiply (temp 4-component vector of float)
-0:35            'input' (in 4-component vector of float)
+0:35            'input' (layout(location=0 ) in 4-component vector of float)
 0:35            'a1' (global 4-component vector of float)
 0:35        Branch: Return
 0:?   Linker Objects
@@ -236,7 +236,7 @@ gl_FragCoord origin is upper left
 0:18        5 (const uint)
 0:37  Function Definition: ShaderFunction(vf4; (global 4-component vector of float)
 0:21    Function Parameters: 
-0:21      'input' (in 4-component vector of float)
+0:21      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:22      Sequence
 0:22        move second child to first child (temp 4-component vector of float)
@@ -284,7 +284,7 @@ gl_FragCoord origin is upper left
 0:35        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
 0:35          component-wise multiply (temp 4-component vector of float)
-0:35            'input' (in 4-component vector of float)
+0:35            'input' (layout(location=0 ) in 4-component vector of float)
 0:35            'a1' (global 4-component vector of float)
 0:35        Branch: Return
 0:?   Linker Objects
@@ -357,6 +357,7 @@ gl_FragCoord origin is upper left
                               Name 90  "input"
                               Name 95  "c4"
                               Name 96  "b5"
+                              Decorate 90(input) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

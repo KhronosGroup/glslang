@@ -4,13 +4,13 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:5  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (in 4-component vector of float)
+0:2      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:3      Sequence
 0:3        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
 0:3          sine (global 4-component vector of float)
-0:3            'input' (in 4-component vector of float)
+0:3            'input' (layout(location=0 ) in 4-component vector of float)
 0:3        Branch: Return
 0:?   Linker Objects
 
@@ -23,13 +23,13 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:5  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (in 4-component vector of float)
+0:2      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:3      Sequence
 0:3        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
 0:3          sine (global 4-component vector of float)
-0:3            'input' (in 4-component vector of float)
+0:3            'input' (layout(location=0 ) in 4-component vector of float)
 0:3        Branch: Return
 0:?   Linker Objects
 
@@ -45,6 +45,7 @@ gl_FragCoord origin is upper left
                               Name 4  "PixelShaderFunction"
                               Name 9  "@entryPointOutput"
                               Name 11  "input"
+                              Decorate 11(input) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

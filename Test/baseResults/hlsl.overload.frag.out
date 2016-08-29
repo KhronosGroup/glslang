@@ -110,7 +110,7 @@ gl_FragCoord origin is upper left
 0:43      '' (in 1-component vector of bool)
 0:143  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:46    Function Parameters: 
-0:46      'input' (in 4-component vector of float)
+0:46      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:53      Function Call: foo1(d1;b1; (global void)
 0:53        'd' (temp double)
@@ -351,7 +351,7 @@ gl_FragCoord origin is upper left
 0:141      Sequence
 0:141        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
-0:141          'input' (in 4-component vector of float)
+0:141          'input' (layout(location=0 ) in 4-component vector of float)
 0:141        Branch: Return
 0:?   Linker Objects
 
@@ -470,7 +470,7 @@ gl_FragCoord origin is upper left
 0:43      '' (in 1-component vector of bool)
 0:143  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:46    Function Parameters: 
-0:46      'input' (in 4-component vector of float)
+0:46      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:53      Function Call: foo1(d1;b1; (global void)
 0:53        'd' (temp double)
@@ -711,7 +711,7 @@ gl_FragCoord origin is upper left
 0:141      Sequence
 0:141        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
-0:141          'input' (in 4-component vector of float)
+0:141          'input' (layout(location=0 ) in 4-component vector of float)
 0:141        Branch: Return
 0:?   Linker Objects
 
@@ -909,6 +909,7 @@ gl_FragCoord origin is upper left
                               Name 500  "param"
                               Name 504  "@entryPointOutput"
                               Name 506  "input"
+                              Decorate 506(input) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 64

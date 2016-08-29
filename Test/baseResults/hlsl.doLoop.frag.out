@@ -4,7 +4,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:7  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (in 4-component vector of float)
+0:2      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:3      Loop with condition not tested first
 0:3        Loop Condition
@@ -19,13 +19,13 @@ gl_FragCoord origin is upper left
 0:5      Loop with condition not tested first
 0:5        Loop Condition
 0:5        Compare Equal (temp bool)
-0:5          'input' (in 4-component vector of float)
-0:5          'input' (in 4-component vector of float)
+0:5          'input' (layout(location=0 ) in 4-component vector of float)
+0:5          'input' (layout(location=0 ) in 4-component vector of float)
 0:5        Loop Body
 0:5        Sequence
 0:5          move second child to first child (temp 4-component vector of float)
 0:?             '@entryPointOutput' (out 4-component vector of float)
-0:5            'input' (in 4-component vector of float)
+0:5            'input' (layout(location=0 ) in 4-component vector of float)
 0:5          Branch: Return
 0:?   Linker Objects
 
@@ -38,7 +38,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:7  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (in 4-component vector of float)
+0:2      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:3      Loop with condition not tested first
 0:3        Loop Condition
@@ -53,13 +53,13 @@ gl_FragCoord origin is upper left
 0:5      Loop with condition not tested first
 0:5        Loop Condition
 0:5        Compare Equal (temp bool)
-0:5          'input' (in 4-component vector of float)
-0:5          'input' (in 4-component vector of float)
+0:5          'input' (layout(location=0 ) in 4-component vector of float)
+0:5          'input' (layout(location=0 ) in 4-component vector of float)
 0:5        Loop Body
 0:5        Sequence
 0:5          move second child to first child (temp 4-component vector of float)
 0:?             '@entryPointOutput' (out 4-component vector of float)
-0:5            'input' (in 4-component vector of float)
+0:5            'input' (layout(location=0 ) in 4-component vector of float)
 0:5          Branch: Return
 0:?   Linker Objects
 
@@ -75,6 +75,7 @@ gl_FragCoord origin is upper left
                               Name 4  "PixelShaderFunction"
                               Name 23  "@entryPointOutput"
                               Name 25  "input"
+                              Decorate 25(input) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
               10:             TypeBool

@@ -6,12 +6,12 @@ gl_FragCoord origin is upper left
 0:6    Function Parameters: 
 0:6      'myfloat' (noContraction in float)
 0:6      'myfloat3' (noContraction out 3-component vector of float)
-0:15  Function Definition: main( (global structure{noContraction temp 4-component vector of float color})
+0:15  Function Definition: main( (global structure{layout(location=0 ) noContraction temp 4-component vector of float color})
 0:9    Function Parameters: 
 0:?     Sequence
 0:11      move second child to first child (noContraction temp 4-component vector of float)
-0:11        color: direct index for structure (noContraction temp 4-component vector of float)
-0:11          'ps_output' (temp structure{noContraction temp 4-component vector of float color})
+0:11        color: direct index for structure (layout(location=0 ) noContraction temp 4-component vector of float)
+0:11          'ps_output' (temp structure{layout(location=0 ) noContraction temp 4-component vector of float color})
 0:11          Constant:
 0:11            0 (const int)
 0:11        Constant:
@@ -20,9 +20,9 @@ gl_FragCoord origin is upper left
 0:11          1.000000
 0:11          1.000000
 0:12      Sequence
-0:12        move second child to first child (temp structure{noContraction temp 4-component vector of float color})
-0:?           '@entryPointOutput' (out structure{noContraction temp 4-component vector of float color})
-0:12          'ps_output' (temp structure{noContraction temp 4-component vector of float color})
+0:12        move second child to first child (temp structure{layout(location=0 ) noContraction temp 4-component vector of float color})
+0:?           '@entryPointOutput' (out structure{layout(location=0 ) noContraction temp 4-component vector of float color})
+0:12          'ps_output' (temp structure{layout(location=0 ) noContraction temp 4-component vector of float color})
 0:12        Branch: Return
 0:?   Linker Objects
 0:?     'precisefloat' (noContraction global float)
@@ -38,12 +38,12 @@ gl_FragCoord origin is upper left
 0:6    Function Parameters: 
 0:6      'myfloat' (noContraction in float)
 0:6      'myfloat3' (noContraction out 3-component vector of float)
-0:15  Function Definition: main( (global structure{noContraction temp 4-component vector of float color})
+0:15  Function Definition: main( (global structure{layout(location=0 ) noContraction temp 4-component vector of float color})
 0:9    Function Parameters: 
 0:?     Sequence
 0:11      move second child to first child (noContraction temp 4-component vector of float)
-0:11        color: direct index for structure (noContraction temp 4-component vector of float)
-0:11          'ps_output' (temp structure{noContraction temp 4-component vector of float color})
+0:11        color: direct index for structure (layout(location=0 ) noContraction temp 4-component vector of float)
+0:11          'ps_output' (temp structure{layout(location=0 ) noContraction temp 4-component vector of float color})
 0:11          Constant:
 0:11            0 (const int)
 0:11        Constant:
@@ -52,9 +52,9 @@ gl_FragCoord origin is upper left
 0:11          1.000000
 0:11          1.000000
 0:12      Sequence
-0:12        move second child to first child (temp structure{noContraction temp 4-component vector of float color})
-0:?           '@entryPointOutput' (out structure{noContraction temp 4-component vector of float color})
-0:12          'ps_output' (temp structure{noContraction temp 4-component vector of float color})
+0:12        move second child to first child (temp structure{layout(location=0 ) noContraction temp 4-component vector of float color})
+0:?           '@entryPointOutput' (out structure{layout(location=0 ) noContraction temp 4-component vector of float color})
+0:12          'ps_output' (temp structure{layout(location=0 ) noContraction temp 4-component vector of float color})
 0:12        Branch: Return
 0:?   Linker Objects
 0:?     'precisefloat' (noContraction global float)
@@ -77,6 +77,7 @@ gl_FragCoord origin is upper left
                               Name 18  "ps_output"
                               Name 26  "@entryPointOutput"
                               Name 30  "precisefloat"
+                              MemberDecorate 16(PS_OUTPUT) 0 Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

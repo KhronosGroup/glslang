@@ -235,36 +235,36 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:114  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
 0:80    Function Parameters: 
-0:80      'inF0' (in 4-component vector of float)
-0:80      'inF1' (in 4-component vector of float)
-0:80      'inF2' (in 4-component vector of float)
-0:80      'inI0' (in 4-component vector of int)
+0:80      'inF0' (layout(location=0 ) in 4-component vector of float)
+0:80      'inF1' (layout(location=1 ) in 4-component vector of float)
+0:80      'inF2' (layout(location=2 ) in 4-component vector of float)
+0:80      'inI0' (layout(location=3 ) in 4-component vector of int)
 0:?     Sequence
 0:81      Constant:
 0:81        0.000000
 0:82      bitCount (global 4-component vector of uint)
 0:82        Convert float to uint (temp 4-component vector of uint)
-0:82          'inF0' (in 4-component vector of float)
+0:82          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:83      cross-product (global 3-component vector of float)
 0:83        Construct vec3 (in 3-component vector of float)
-0:83          'inF0' (in 4-component vector of float)
+0:83          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:83        Construct vec3 (in 3-component vector of float)
-0:83          'inF1' (in 4-component vector of float)
+0:83          'inF1' (layout(location=1 ) in 4-component vector of float)
 0:84      Constant:
 0:84        0.000000
 0:85      ERROR: Bad unary op
  (global 4-component vector of float)
 0:85        Convert float to uint (temp 4-component vector of uint)
-0:85          'inF0' (in 4-component vector of float)
+0:85          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:86      findMSB (global 4-component vector of uint)
 0:86        Convert float to uint (temp 4-component vector of uint)
-0:86          'inF0' (in 4-component vector of float)
+0:86          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:87      findLSB (global 4-component vector of uint)
 0:87        Convert float to uint (temp 4-component vector of uint)
-0:87          'inF0' (in 4-component vector of float)
+0:87          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:89      bitFieldReverse (global 4-component vector of uint)
 0:89        Convert float to uint (temp 4-component vector of uint)
-0:89          'inF0' (in 4-component vector of float)
+0:89          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:90      Constant:
 0:90        0.000000
 0:92      Sequence
@@ -586,36 +586,36 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:114  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
 0:80    Function Parameters: 
-0:80      'inF0' (in 4-component vector of float)
-0:80      'inF1' (in 4-component vector of float)
-0:80      'inF2' (in 4-component vector of float)
-0:80      'inI0' (in 4-component vector of int)
+0:80      'inF0' (layout(location=0 ) in 4-component vector of float)
+0:80      'inF1' (layout(location=1 ) in 4-component vector of float)
+0:80      'inF2' (layout(location=2 ) in 4-component vector of float)
+0:80      'inI0' (layout(location=3 ) in 4-component vector of int)
 0:?     Sequence
 0:81      Constant:
 0:81        0.000000
 0:82      bitCount (global 4-component vector of uint)
 0:82        Convert float to uint (temp 4-component vector of uint)
-0:82          'inF0' (in 4-component vector of float)
+0:82          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:83      cross-product (global 3-component vector of float)
 0:83        Construct vec3 (in 3-component vector of float)
-0:83          'inF0' (in 4-component vector of float)
+0:83          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:83        Construct vec3 (in 3-component vector of float)
-0:83          'inF1' (in 4-component vector of float)
+0:83          'inF1' (layout(location=1 ) in 4-component vector of float)
 0:84      Constant:
 0:84        0.000000
 0:85      ERROR: Bad unary op
  (global 4-component vector of float)
 0:85        Convert float to uint (temp 4-component vector of uint)
-0:85          'inF0' (in 4-component vector of float)
+0:85          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:86      findMSB (global 4-component vector of uint)
 0:86        Convert float to uint (temp 4-component vector of uint)
-0:86          'inF0' (in 4-component vector of float)
+0:86          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:87      findLSB (global 4-component vector of uint)
 0:87        Convert float to uint (temp 4-component vector of uint)
-0:87          'inF0' (in 4-component vector of float)
+0:87          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:89      bitFieldReverse (global 4-component vector of uint)
 0:89        Convert float to uint (temp 4-component vector of uint)
-0:89          'inF0' (in 4-component vector of float)
+0:89          'inF0' (layout(location=0 ) in 4-component vector of float)
 0:90      Constant:
 0:90        0.000000
 0:92      Sequence

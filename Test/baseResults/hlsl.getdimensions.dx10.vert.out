@@ -1,7 +1,7 @@
 hlsl.getdimensions.dx10.vert
 Shader version: 450
 0:? Sequence
-0:28  Function Definition: main( (global structure{temp 4-component vector of float FragCoord Pos})
+0:28  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
 0:11    Function Parameters: 
 0:?     Sequence
 0:21      Sequence
@@ -27,8 +27,8 @@ Shader version: 450
 0:22          textureQueryLevels (temp uint)
 0:22            'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:24      move second child to first child (temp 4-component vector of float)
-0:24        Pos: direct index for structure (temp 4-component vector of float FragCoord)
-0:24          'vsout' (temp structure{temp 4-component vector of float FragCoord Pos})
+0:24        Pos: direct index for structure (temp 4-component vector of float Position)
+0:24          'vsout' (temp structure{temp 4-component vector of float Position Pos})
 0:24          Constant:
 0:24            0 (const int)
 0:?         Constant:
@@ -37,9 +37,9 @@ Shader version: 450
 0:?           0.000000
 0:?           0.000000
 0:26      Sequence
-0:26        move second child to first child (temp structure{temp 4-component vector of float FragCoord Pos})
-0:?           '@entryPointOutput' (out structure{temp 4-component vector of float FragCoord Pos})
-0:26          'vsout' (temp structure{temp 4-component vector of float FragCoord Pos})
+0:26        move second child to first child (temp structure{temp 4-component vector of float Position Pos})
+0:?           '@entryPointOutput' (out structure{temp 4-component vector of float Position Pos})
+0:26          'vsout' (temp structure{temp 4-component vector of float Position Pos})
 0:26        Branch: Return
 0:?   Linker Objects
 0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -51,7 +51,7 @@ Linked vertex stage:
 
 Shader version: 450
 0:? Sequence
-0:28  Function Definition: main( (global structure{temp 4-component vector of float FragCoord Pos})
+0:28  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
 0:11    Function Parameters: 
 0:?     Sequence
 0:21      Sequence
@@ -77,8 +77,8 @@ Shader version: 450
 0:22          textureQueryLevels (temp uint)
 0:22            'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:24      move second child to first child (temp 4-component vector of float)
-0:24        Pos: direct index for structure (temp 4-component vector of float FragCoord)
-0:24          'vsout' (temp structure{temp 4-component vector of float FragCoord Pos})
+0:24        Pos: direct index for structure (temp 4-component vector of float Position)
+0:24          'vsout' (temp structure{temp 4-component vector of float Position Pos})
 0:24          Constant:
 0:24            0 (const int)
 0:?         Constant:
@@ -87,9 +87,9 @@ Shader version: 450
 0:?           0.000000
 0:?           0.000000
 0:26      Sequence
-0:26        move second child to first child (temp structure{temp 4-component vector of float FragCoord Pos})
-0:?           '@entryPointOutput' (out structure{temp 4-component vector of float FragCoord Pos})
-0:26          'vsout' (temp structure{temp 4-component vector of float FragCoord Pos})
+0:26        move second child to first child (temp structure{temp 4-component vector of float Position Pos})
+0:?           '@entryPointOutput' (out structure{temp 4-component vector of float Position Pos})
+0:26          'vsout' (temp structure{temp 4-component vector of float Position Pos})
 0:26        Branch: Return
 0:?   Linker Objects
 0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -118,7 +118,7 @@ Shader version: 450
                               Name 41  "g_sSamp"
                               Decorate 12(g_tTex1df4) DescriptorSet 0
                               Decorate 12(g_tTex1df4) Binding 0
-                              MemberDecorate 27(VS_OUTPUT) 0 BuiltIn FragCoord
+                              MemberDecorate 27(VS_OUTPUT) 0 BuiltIn Position
                               Decorate 41(g_sSamp) DescriptorSet 0
                               Decorate 41(g_sSamp) Binding 0
                2:             TypeVoid

@@ -8,7 +8,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:43  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:34    Function Parameters: 
-0:34      'input' (in 4-component vector of float)
+0:34      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:39      Compare Equal (temp bool)
 0:39        's3' (temp structure{temp 3-component vector of bool b3})
@@ -18,19 +18,19 @@ gl_FragCoord origin is upper left
 0:40          's2' (global structure{temp 4-component vector of float i})
 0:40          Constant:
 0:40            0 (const int)
-0:40        ff4: direct index for structure (layout(binding=0 offset=4 ) temp 4-component vector of float FragCoord)
-0:40          's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float FragCoord ff4})
+0:40        ff4: direct index for structure (layout(binding=0 offset=4 ) temp 4-component vector of float)
+0:40          's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
 0:40          Constant:
 0:40            7 (const int)
 0:42      Sequence
 0:42        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
-0:42          'input' (in 4-component vector of float)
+0:42          'input' (layout(location=0 ) in 4-component vector of float)
 0:42        Branch: Return
 0:?   Linker Objects
 0:?     's1' (global structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d})
 0:?     's2' (global structure{temp 4-component vector of float i})
-0:?     's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float FragCoord ff4})
+0:?     's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
 0:?     'ff5' (layout(binding=5 offset=20 ) global 3-component vector of float)
 0:?     'ff6' (layout(binding=8 offset=36 ) global 3-component vector of float)
 
@@ -43,7 +43,7 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:43  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:34    Function Parameters: 
-0:34      'input' (in 4-component vector of float)
+0:34      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:39      Compare Equal (temp bool)
 0:39        's3' (temp structure{temp 3-component vector of bool b3})
@@ -53,19 +53,19 @@ gl_FragCoord origin is upper left
 0:40          's2' (global structure{temp 4-component vector of float i})
 0:40          Constant:
 0:40            0 (const int)
-0:40        ff4: direct index for structure (layout(binding=0 offset=4 ) temp 4-component vector of float FragCoord)
-0:40          's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float FragCoord ff4})
+0:40        ff4: direct index for structure (layout(binding=0 offset=4 ) temp 4-component vector of float)
+0:40          's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
 0:40          Constant:
 0:40            7 (const int)
 0:42      Sequence
 0:42        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
-0:42          'input' (in 4-component vector of float)
+0:42          'input' (layout(location=0 ) in 4-component vector of float)
 0:42        Branch: Return
 0:?   Linker Objects
 0:?     's1' (global structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d})
 0:?     's2' (global structure{temp 4-component vector of float i})
-0:?     's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float FragCoord ff4})
+0:?     's4' (global structure{smooth in 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
 0:?     'ff5' (layout(binding=5 offset=20 ) global 3-component vector of float)
 0:?     'ff6' (layout(binding=8 offset=36 ) global 3-component vector of float)
 
@@ -106,7 +106,7 @@ gl_FragCoord origin is upper left
                               Name 44  "ff5"
                               Name 45  "ff6"
                               MemberDecorate 25 4 BuiltIn FrontFacing
-                              MemberDecorate 25 7 BuiltIn FragCoord
+                              Decorate 36(input) Location 0
                               Decorate 44(ff5) Offset 20
                               Decorate 44(ff5) Binding 5
                               Decorate 45(ff6) Offset 36

@@ -4,15 +4,15 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:5  Function Definition: PixelShaderFunction(vf4;vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input1' (in 4-component vector of float)
-0:2      'input2' (in 4-component vector of float)
+0:2      'input1' (layout(location=0 ) in 4-component vector of float)
+0:2      'input2' (layout(location=1 ) in 4-component vector of float)
 0:?     Sequence
 0:3      Sequence
 0:3        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
 0:3          max (global 4-component vector of float)
-0:3            'input1' (in 4-component vector of float)
-0:3            'input2' (in 4-component vector of float)
+0:3            'input1' (layout(location=0 ) in 4-component vector of float)
+0:3            'input2' (layout(location=1 ) in 4-component vector of float)
 0:3        Branch: Return
 0:?   Linker Objects
 
@@ -25,15 +25,15 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:5  Function Definition: PixelShaderFunction(vf4;vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input1' (in 4-component vector of float)
-0:2      'input2' (in 4-component vector of float)
+0:2      'input1' (layout(location=0 ) in 4-component vector of float)
+0:2      'input2' (layout(location=1 ) in 4-component vector of float)
 0:?     Sequence
 0:3      Sequence
 0:3        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
 0:3          max (global 4-component vector of float)
-0:3            'input1' (in 4-component vector of float)
-0:3            'input2' (in 4-component vector of float)
+0:3            'input1' (layout(location=0 ) in 4-component vector of float)
+0:3            'input2' (layout(location=1 ) in 4-component vector of float)
 0:3        Branch: Return
 0:?   Linker Objects
 
@@ -50,6 +50,8 @@ gl_FragCoord origin is upper left
                               Name 9  "@entryPointOutput"
                               Name 11  "input1"
                               Name 13  "input2"
+                              Decorate 11(input1) Location 0
+                              Decorate 13(input2) Location 1
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

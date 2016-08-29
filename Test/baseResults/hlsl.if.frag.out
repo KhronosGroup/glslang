@@ -4,72 +4,72 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:34  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (in 4-component vector of float)
+0:2      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:3      Test condition and select (temp void)
 0:3        Condition
 0:3        Compare Equal (temp bool)
-0:3          'input' (in 4-component vector of float)
-0:3          'input' (in 4-component vector of float)
+0:3          'input' (layout(location=0 ) in 4-component vector of float)
+0:3          'input' (layout(location=0 ) in 4-component vector of float)
 0:3        true case
 0:4        Sequence
 0:4          move second child to first child (temp 4-component vector of float)
 0:?             '@entryPointOutput' (out 4-component vector of float)
-0:4            'input' (in 4-component vector of float)
+0:4            'input' (layout(location=0 ) in 4-component vector of float)
 0:4          Branch: Return
 0:6      Test condition and select (temp void)
 0:6        Condition
 0:6        Compare Equal (temp bool)
-0:6          'input' (in 4-component vector of float)
-0:6          'input' (in 4-component vector of float)
+0:6          'input' (layout(location=0 ) in 4-component vector of float)
+0:6          'input' (layout(location=0 ) in 4-component vector of float)
 0:6        true case
 0:7        Sequence
 0:7          move second child to first child (temp 4-component vector of float)
 0:?             '@entryPointOutput' (out 4-component vector of float)
-0:7            'input' (in 4-component vector of float)
+0:7            'input' (layout(location=0 ) in 4-component vector of float)
 0:7          Branch: Return
 0:6        false case
 0:9        Sequence
 0:9          move second child to first child (temp 4-component vector of float)
 0:?             '@entryPointOutput' (out 4-component vector of float)
 0:9            Negate value (temp 4-component vector of float)
-0:9              'input' (in 4-component vector of float)
+0:9              'input' (layout(location=0 ) in 4-component vector of float)
 0:9          Branch: Return
 0:11      Test condition and select (temp void)
 0:11        Condition
 0:11        Compare Equal (temp bool)
-0:11          'input' (in 4-component vector of float)
-0:11          'input' (in 4-component vector of float)
+0:11          'input' (layout(location=0 ) in 4-component vector of float)
+0:11          'input' (layout(location=0 ) in 4-component vector of float)
 0:11        true case is null
 0:14      Test condition and select (temp void)
 0:14        Condition
 0:14        Compare Equal (temp bool)
-0:14          'input' (in 4-component vector of float)
-0:14          'input' (in 4-component vector of float)
+0:14          'input' (layout(location=0 ) in 4-component vector of float)
+0:14          'input' (layout(location=0 ) in 4-component vector of float)
 0:14        true case is null
 0:19      Test condition and select (temp void)
 0:19        Condition
 0:19        Compare Equal (temp bool)
-0:19          'input' (in 4-component vector of float)
-0:19          'input' (in 4-component vector of float)
+0:19          'input' (layout(location=0 ) in 4-component vector of float)
+0:19          'input' (layout(location=0 ) in 4-component vector of float)
 0:19        true case
 0:?         Sequence
 0:20          Sequence
 0:20            move second child to first child (temp 4-component vector of float)
 0:?               '@entryPointOutput' (out 4-component vector of float)
-0:20              'input' (in 4-component vector of float)
+0:20              'input' (layout(location=0 ) in 4-component vector of float)
 0:20            Branch: Return
 0:23      Test condition and select (temp void)
 0:23        Condition
 0:23        Compare Equal (temp bool)
-0:23          'input' (in 4-component vector of float)
-0:23          'input' (in 4-component vector of float)
+0:23          'input' (layout(location=0 ) in 4-component vector of float)
+0:23          'input' (layout(location=0 ) in 4-component vector of float)
 0:23        true case
 0:?         Sequence
 0:24          Sequence
 0:24            move second child to first child (temp 4-component vector of float)
 0:?               '@entryPointOutput' (out 4-component vector of float)
-0:24              'input' (in 4-component vector of float)
+0:24              'input' (layout(location=0 ) in 4-component vector of float)
 0:24            Branch: Return
 0:23        false case
 0:?         Sequence
@@ -77,14 +77,14 @@ gl_FragCoord origin is upper left
 0:26            move second child to first child (temp 4-component vector of float)
 0:?               '@entryPointOutput' (out 4-component vector of float)
 0:26              Negate value (temp 4-component vector of float)
-0:26                'input' (in 4-component vector of float)
+0:26                'input' (layout(location=0 ) in 4-component vector of float)
 0:26            Branch: Return
 0:30      Test condition and select (temp void)
 0:30        Condition
 0:30        move second child to first child (temp float)
 0:30          'ii' (temp float)
 0:30          direct index (temp float)
-0:30            'input' (in 4-component vector of float)
+0:30            'input' (layout(location=0 ) in 4-component vector of float)
 0:30            Constant:
 0:30              2 (const int)
 0:30        true case
@@ -103,72 +103,72 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:34  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (in 4-component vector of float)
+0:2      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:3      Test condition and select (temp void)
 0:3        Condition
 0:3        Compare Equal (temp bool)
-0:3          'input' (in 4-component vector of float)
-0:3          'input' (in 4-component vector of float)
+0:3          'input' (layout(location=0 ) in 4-component vector of float)
+0:3          'input' (layout(location=0 ) in 4-component vector of float)
 0:3        true case
 0:4        Sequence
 0:4          move second child to first child (temp 4-component vector of float)
 0:?             '@entryPointOutput' (out 4-component vector of float)
-0:4            'input' (in 4-component vector of float)
+0:4            'input' (layout(location=0 ) in 4-component vector of float)
 0:4          Branch: Return
 0:6      Test condition and select (temp void)
 0:6        Condition
 0:6        Compare Equal (temp bool)
-0:6          'input' (in 4-component vector of float)
-0:6          'input' (in 4-component vector of float)
+0:6          'input' (layout(location=0 ) in 4-component vector of float)
+0:6          'input' (layout(location=0 ) in 4-component vector of float)
 0:6        true case
 0:7        Sequence
 0:7          move second child to first child (temp 4-component vector of float)
 0:?             '@entryPointOutput' (out 4-component vector of float)
-0:7            'input' (in 4-component vector of float)
+0:7            'input' (layout(location=0 ) in 4-component vector of float)
 0:7          Branch: Return
 0:6        false case
 0:9        Sequence
 0:9          move second child to first child (temp 4-component vector of float)
 0:?             '@entryPointOutput' (out 4-component vector of float)
 0:9            Negate value (temp 4-component vector of float)
-0:9              'input' (in 4-component vector of float)
+0:9              'input' (layout(location=0 ) in 4-component vector of float)
 0:9          Branch: Return
 0:11      Test condition and select (temp void)
 0:11        Condition
 0:11        Compare Equal (temp bool)
-0:11          'input' (in 4-component vector of float)
-0:11          'input' (in 4-component vector of float)
+0:11          'input' (layout(location=0 ) in 4-component vector of float)
+0:11          'input' (layout(location=0 ) in 4-component vector of float)
 0:11        true case is null
 0:14      Test condition and select (temp void)
 0:14        Condition
 0:14        Compare Equal (temp bool)
-0:14          'input' (in 4-component vector of float)
-0:14          'input' (in 4-component vector of float)
+0:14          'input' (layout(location=0 ) in 4-component vector of float)
+0:14          'input' (layout(location=0 ) in 4-component vector of float)
 0:14        true case is null
 0:19      Test condition and select (temp void)
 0:19        Condition
 0:19        Compare Equal (temp bool)
-0:19          'input' (in 4-component vector of float)
-0:19          'input' (in 4-component vector of float)
+0:19          'input' (layout(location=0 ) in 4-component vector of float)
+0:19          'input' (layout(location=0 ) in 4-component vector of float)
 0:19        true case
 0:?         Sequence
 0:20          Sequence
 0:20            move second child to first child (temp 4-component vector of float)
 0:?               '@entryPointOutput' (out 4-component vector of float)
-0:20              'input' (in 4-component vector of float)
+0:20              'input' (layout(location=0 ) in 4-component vector of float)
 0:20            Branch: Return
 0:23      Test condition and select (temp void)
 0:23        Condition
 0:23        Compare Equal (temp bool)
-0:23          'input' (in 4-component vector of float)
-0:23          'input' (in 4-component vector of float)
+0:23          'input' (layout(location=0 ) in 4-component vector of float)
+0:23          'input' (layout(location=0 ) in 4-component vector of float)
 0:23        true case
 0:?         Sequence
 0:24          Sequence
 0:24            move second child to first child (temp 4-component vector of float)
 0:?               '@entryPointOutput' (out 4-component vector of float)
-0:24              'input' (in 4-component vector of float)
+0:24              'input' (layout(location=0 ) in 4-component vector of float)
 0:24            Branch: Return
 0:23        false case
 0:?         Sequence
@@ -176,14 +176,14 @@ gl_FragCoord origin is upper left
 0:26            move second child to first child (temp 4-component vector of float)
 0:?               '@entryPointOutput' (out 4-component vector of float)
 0:26              Negate value (temp 4-component vector of float)
-0:26                'input' (in 4-component vector of float)
+0:26                'input' (layout(location=0 ) in 4-component vector of float)
 0:26            Branch: Return
 0:30      Test condition and select (temp void)
 0:30        Condition
 0:30        move second child to first child (temp float)
 0:30          'ii' (temp float)
 0:30          direct index (temp float)
-0:30            'input' (in 4-component vector of float)
+0:30            'input' (layout(location=0 ) in 4-component vector of float)
 0:30            Constant:
 0:30              2 (const int)
 0:30        true case
@@ -207,6 +207,7 @@ gl_FragCoord origin is upper left
                               Name 19  "@entryPointOutput"
                               Name 67  "ii"
                               Name 80  "ii"
+                              Decorate 9(input) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

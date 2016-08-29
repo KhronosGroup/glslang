@@ -51,11 +51,11 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:35  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:29    Function Parameters: 
-0:29      'inF0' (in 4-component vector of float)
+0:29      'inF0' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:30      ERROR: Bad unary op
  (global 4-component vector of uint)
-0:30        'inF0' (in 4-component vector of float)
+0:30        'inF0' (layout(location=0 ) in 4-component vector of float)
 0:32      Sequence
 0:32        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)
@@ -116,11 +116,11 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:35  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:29    Function Parameters: 
-0:29      'inF0' (in 4-component vector of float)
+0:29      'inF0' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:30      ERROR: Bad unary op
  (global 4-component vector of uint)
-0:30        'inF0' (in 4-component vector of float)
+0:30        'inF0' (layout(location=0 ) in 4-component vector of float)
 0:32      Sequence
 0:32        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float)

@@ -4,10 +4,10 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:10  Function Definition: PixelShaderFunction(i1;i1;i1;i1; (global int)
 0:7    Function Parameters: 
-0:7      'a1' (in int)
-0:7      'a2' (in int)
-0:7      'a3' (in int)
-0:7      'a4' (in int)
+0:7      'a1' (layout(location=0 ) in int)
+0:7      'a2' (layout(location=1 ) in int)
+0:7      'a3' (layout(location=2 ) in int)
+0:7      'a4' (layout(location=3 ) in int)
 0:?     Sequence
 0:8      Sequence
 0:8        move second child to first child (temp int)
@@ -16,17 +16,17 @@ gl_FragCoord origin is upper left
 0:8            left-shift (temp int)
 0:8              add (temp int)
 0:8                component-wise multiply (temp int)
-0:8                  'a1' (in int)
-0:8                  'a2' (in int)
-0:8                'a3' (in int)
-0:8              'a4' (in int)
+0:8                  'a1' (layout(location=0 ) in int)
+0:8                  'a2' (layout(location=1 ) in int)
+0:8                'a3' (layout(location=2 ) in int)
+0:8              'a4' (layout(location=3 ) in int)
 0:8            left-shift (temp int)
-0:8              'a1' (in int)
+0:8              'a1' (layout(location=0 ) in int)
 0:8              add (temp int)
-0:8                'a2' (in int)
+0:8                'a2' (layout(location=1 ) in int)
 0:8                component-wise multiply (temp int)
-0:8                  'a3' (in int)
-0:8                  'a4' (in int)
+0:8                  'a3' (layout(location=2 ) in int)
+0:8                  'a4' (layout(location=3 ) in int)
 0:8        Branch: Return
 0:?   Linker Objects
 
@@ -39,10 +39,10 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:10  Function Definition: PixelShaderFunction(i1;i1;i1;i1; (global int)
 0:7    Function Parameters: 
-0:7      'a1' (in int)
-0:7      'a2' (in int)
-0:7      'a3' (in int)
-0:7      'a4' (in int)
+0:7      'a1' (layout(location=0 ) in int)
+0:7      'a2' (layout(location=1 ) in int)
+0:7      'a3' (layout(location=2 ) in int)
+0:7      'a4' (layout(location=3 ) in int)
 0:?     Sequence
 0:8      Sequence
 0:8        move second child to first child (temp int)
@@ -51,17 +51,17 @@ gl_FragCoord origin is upper left
 0:8            left-shift (temp int)
 0:8              add (temp int)
 0:8                component-wise multiply (temp int)
-0:8                  'a1' (in int)
-0:8                  'a2' (in int)
-0:8                'a3' (in int)
-0:8              'a4' (in int)
+0:8                  'a1' (layout(location=0 ) in int)
+0:8                  'a2' (layout(location=1 ) in int)
+0:8                'a3' (layout(location=2 ) in int)
+0:8              'a4' (layout(location=3 ) in int)
 0:8            left-shift (temp int)
-0:8              'a1' (in int)
+0:8              'a1' (layout(location=0 ) in int)
 0:8              add (temp int)
-0:8                'a2' (in int)
+0:8                'a2' (layout(location=1 ) in int)
 0:8                component-wise multiply (temp int)
-0:8                  'a3' (in int)
-0:8                  'a4' (in int)
+0:8                  'a3' (layout(location=2 ) in int)
+0:8                  'a4' (layout(location=3 ) in int)
 0:8        Branch: Return
 0:?   Linker Objects
 
@@ -80,6 +80,10 @@ gl_FragCoord origin is upper left
                               Name 12  "a2"
                               Name 15  "a3"
                               Name 18  "a4"
+                              Decorate 10(a1) Location 0
+                              Decorate 12(a2) Location 1
+                              Decorate 15(a3) Location 2
+                              Decorate 18(a4) Location 3
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

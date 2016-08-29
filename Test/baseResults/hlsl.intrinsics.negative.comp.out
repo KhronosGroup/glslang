@@ -47,10 +47,10 @@ local_size = (1, 1, 1)
 0:?           3.000000
 0:202  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
 0:158    Function Parameters: 
-0:158      'inF0' (in 4-component vector of float)
-0:158      'inF1' (in 4-component vector of float)
-0:158      'inF2' (in 4-component vector of float)
-0:158      'inI0' (in 4-component vector of int)
+0:158      'inF0' (layout(location=0 ) in 4-component vector of float)
+0:158      'inF1' (layout(location=1 ) in 4-component vector of float)
+0:158      'inF2' (layout(location=2 ) in 4-component vector of float)
+0:158      'inI0' (layout(location=3 ) in 4-component vector of int)
 0:?     Sequence
 0:199      Sequence
 0:199        move second child to first child (temp 4-component vector of float)
@@ -115,10 +115,10 @@ local_size = (1, 1, 1)
 0:?           3.000000
 0:202  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
 0:158    Function Parameters: 
-0:158      'inF0' (in 4-component vector of float)
-0:158      'inF1' (in 4-component vector of float)
-0:158      'inF2' (in 4-component vector of float)
-0:158      'inI0' (in 4-component vector of int)
+0:158      'inF0' (layout(location=0 ) in 4-component vector of float)
+0:158      'inF1' (layout(location=1 ) in 4-component vector of float)
+0:158      'inF2' (layout(location=2 ) in 4-component vector of float)
+0:158      'inI0' (layout(location=3 ) in 4-component vector of int)
 0:?     Sequence
 0:199      Sequence
 0:199        move second child to first child (temp 4-component vector of float)

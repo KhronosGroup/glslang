@@ -4,29 +4,29 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:12  Function Definition: PixelShaderFunction(d1;d1;d1;vd2;vd3;vd4;u1;u1; (global float)
 0:5    Function Parameters: 
-0:5      'inDV1a' (in double)
-0:5      'inDV1b' (in double)
-0:5      'inDV1c' (in double)
-0:5      'inDV2' (in 2-component vector of double)
-0:5      'inDV3' (in 3-component vector of double)
-0:5      'inDV4' (in 4-component vector of double)
-0:5      'inU1a' (in uint)
-0:5      'inU1b' (in uint)
+0:5      'inDV1a' (layout(location=0 ) in double)
+0:5      'inDV1b' (layout(location=1 ) in double)
+0:5      'inDV1c' (layout(location=2 ) in double)
+0:5      'inDV2' (layout(location=3 ) in 2-component vector of double)
+0:5      'inDV3' (layout(location=4 ) in 3-component vector of double)
+0:5      'inDV4' (layout(location=5 ) in 4-component vector of double)
+0:5      'inU1a' (layout(location=6 ) in uint)
+0:5      'inU1b' (layout(location=7 ) in uint)
 0:?     Sequence
 0:6      Sequence
 0:6        move second child to first child (temp double)
 0:6          'r00' (temp double)
 0:6          fma (global double)
-0:6            'inDV1a' (in double)
-0:6            'inDV1b' (in double)
-0:6            'inDV1c' (in double)
+0:6            'inDV1a' (layout(location=0 ) in double)
+0:6            'inDV1b' (layout(location=1 ) in double)
+0:6            'inDV1c' (layout(location=2 ) in double)
 0:7      Sequence
 0:7        move second child to first child (temp double)
 0:7          'r01' (temp double)
 0:7          uint64BitsToDouble (temp double)
 0:7            Construct uvec2 (temp 2-component vector of uint)
-0:7              'inU1a' (in uint)
-0:7              'inU1b' (in uint)
+0:7              'inU1a' (layout(location=6 ) in uint)
+0:7              'inU1b' (layout(location=7 ) in uint)
 0:9      Sequence
 0:9        move second child to first child (temp float)
 0:?           '@entryPointOutput' (out float)
@@ -44,29 +44,29 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:12  Function Definition: PixelShaderFunction(d1;d1;d1;vd2;vd3;vd4;u1;u1; (global float)
 0:5    Function Parameters: 
-0:5      'inDV1a' (in double)
-0:5      'inDV1b' (in double)
-0:5      'inDV1c' (in double)
-0:5      'inDV2' (in 2-component vector of double)
-0:5      'inDV3' (in 3-component vector of double)
-0:5      'inDV4' (in 4-component vector of double)
-0:5      'inU1a' (in uint)
-0:5      'inU1b' (in uint)
+0:5      'inDV1a' (layout(location=0 ) in double)
+0:5      'inDV1b' (layout(location=1 ) in double)
+0:5      'inDV1c' (layout(location=2 ) in double)
+0:5      'inDV2' (layout(location=3 ) in 2-component vector of double)
+0:5      'inDV3' (layout(location=4 ) in 3-component vector of double)
+0:5      'inDV4' (layout(location=5 ) in 4-component vector of double)
+0:5      'inU1a' (layout(location=6 ) in uint)
+0:5      'inU1b' (layout(location=7 ) in uint)
 0:?     Sequence
 0:6      Sequence
 0:6        move second child to first child (temp double)
 0:6          'r00' (temp double)
 0:6          fma (global double)
-0:6            'inDV1a' (in double)
-0:6            'inDV1b' (in double)
-0:6            'inDV1c' (in double)
+0:6            'inDV1a' (layout(location=0 ) in double)
+0:6            'inDV1b' (layout(location=1 ) in double)
+0:6            'inDV1c' (layout(location=2 ) in double)
 0:7      Sequence
 0:7        move second child to first child (temp double)
 0:7          'r01' (temp double)
 0:7          uint64BitsToDouble (temp double)
 0:7            Construct uvec2 (temp 2-component vector of uint)
-0:7              'inU1a' (in uint)
-0:7              'inU1b' (in uint)
+0:7              'inU1a' (layout(location=6 ) in uint)
+0:7              'inU1b' (layout(location=7 ) in uint)
 0:9      Sequence
 0:9        move second child to first child (temp float)
 0:?           '@entryPointOutput' (out float)
@@ -94,6 +94,11 @@ gl_FragCoord origin is upper left
                               Name 20  "inU1a"
                               Name 22  "inU1b"
                               Name 29  "@entryPointOutput"
+                              Decorate 10(inDV1a) Location 0
+                              Decorate 12(inDV1b) Location 1
+                              Decorate 14(inDV1c) Location 2
+                              Decorate 20(inU1a) Location 6
+                              Decorate 22(inU1b) Location 7
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 64
