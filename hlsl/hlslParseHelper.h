@@ -95,7 +95,7 @@ public:
     TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermAggregate&) const;
     void builtInOpCheck(const TSourceLoc&, const TFunction&, TIntermOperator&);
     TFunction* handleConstructorCall(const TSourceLoc&, const TType&);
-    void handleSemantic(TType& type, const TString& semantic);
+    void handleSemantic(TSourceLoc, TType& type, const TString& semantic);
     void handlePackOffset(const TSourceLoc&, TType& type, const glslang::TString& location,
                           const glslang::TString* component);
     void handleRegister(const TSourceLoc&, TType& type, const glslang::TString* profile, const glslang::TString& desc,
