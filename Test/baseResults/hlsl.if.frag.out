@@ -14,7 +14,7 @@ gl_FragCoord origin is upper left
 0:3        true case
 0:4        Sequence
 0:4          move second child to first child (temp 4-component vector of float)
-0:?             '@entryPointOutput' (out 4-component vector of float)
+0:?             '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:4            'input' (layout(location=0 ) in 4-component vector of float)
 0:4          Branch: Return
 0:6      Test condition and select (temp void)
@@ -25,13 +25,13 @@ gl_FragCoord origin is upper left
 0:6        true case
 0:7        Sequence
 0:7          move second child to first child (temp 4-component vector of float)
-0:?             '@entryPointOutput' (out 4-component vector of float)
+0:?             '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:7            'input' (layout(location=0 ) in 4-component vector of float)
 0:7          Branch: Return
 0:6        false case
 0:9        Sequence
 0:9          move second child to first child (temp 4-component vector of float)
-0:?             '@entryPointOutput' (out 4-component vector of float)
+0:?             '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:9            Negate value (temp 4-component vector of float)
 0:9              'input' (layout(location=0 ) in 4-component vector of float)
 0:9          Branch: Return
@@ -56,7 +56,7 @@ gl_FragCoord origin is upper left
 0:?         Sequence
 0:20          Sequence
 0:20            move second child to first child (temp 4-component vector of float)
-0:?               '@entryPointOutput' (out 4-component vector of float)
+0:?               '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:20              'input' (layout(location=0 ) in 4-component vector of float)
 0:20            Branch: Return
 0:23      Test condition and select (temp void)
@@ -68,14 +68,14 @@ gl_FragCoord origin is upper left
 0:?         Sequence
 0:24          Sequence
 0:24            move second child to first child (temp 4-component vector of float)
-0:?               '@entryPointOutput' (out 4-component vector of float)
+0:?               '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:24              'input' (layout(location=0 ) in 4-component vector of float)
 0:24            Branch: Return
 0:23        false case
 0:?         Sequence
 0:26          Sequence
 0:26            move second child to first child (temp 4-component vector of float)
-0:?               '@entryPointOutput' (out 4-component vector of float)
+0:?               '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:26              Negate value (temp 4-component vector of float)
 0:26                'input' (layout(location=0 ) in 4-component vector of float)
 0:26            Branch: Return
@@ -113,7 +113,7 @@ gl_FragCoord origin is upper left
 0:3        true case
 0:4        Sequence
 0:4          move second child to first child (temp 4-component vector of float)
-0:?             '@entryPointOutput' (out 4-component vector of float)
+0:?             '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:4            'input' (layout(location=0 ) in 4-component vector of float)
 0:4          Branch: Return
 0:6      Test condition and select (temp void)
@@ -124,13 +124,13 @@ gl_FragCoord origin is upper left
 0:6        true case
 0:7        Sequence
 0:7          move second child to first child (temp 4-component vector of float)
-0:?             '@entryPointOutput' (out 4-component vector of float)
+0:?             '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:7            'input' (layout(location=0 ) in 4-component vector of float)
 0:7          Branch: Return
 0:6        false case
 0:9        Sequence
 0:9          move second child to first child (temp 4-component vector of float)
-0:?             '@entryPointOutput' (out 4-component vector of float)
+0:?             '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:9            Negate value (temp 4-component vector of float)
 0:9              'input' (layout(location=0 ) in 4-component vector of float)
 0:9          Branch: Return
@@ -155,7 +155,7 @@ gl_FragCoord origin is upper left
 0:?         Sequence
 0:20          Sequence
 0:20            move second child to first child (temp 4-component vector of float)
-0:?               '@entryPointOutput' (out 4-component vector of float)
+0:?               '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:20              'input' (layout(location=0 ) in 4-component vector of float)
 0:20            Branch: Return
 0:23      Test condition and select (temp void)
@@ -167,14 +167,14 @@ gl_FragCoord origin is upper left
 0:?         Sequence
 0:24          Sequence
 0:24            move second child to first child (temp 4-component vector of float)
-0:?               '@entryPointOutput' (out 4-component vector of float)
+0:?               '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:24              'input' (layout(location=0 ) in 4-component vector of float)
 0:24            Branch: Return
 0:23        false case
 0:?         Sequence
 0:26          Sequence
 0:26            move second child to first child (temp 4-component vector of float)
-0:?               '@entryPointOutput' (out 4-component vector of float)
+0:?               '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:26              Negate value (temp 4-component vector of float)
 0:26                'input' (layout(location=0 ) in 4-component vector of float)
 0:26            Branch: Return
@@ -208,6 +208,7 @@ gl_FragCoord origin is upper left
                               Name 67  "ii"
                               Name 80  "ii"
                               Decorate 9(input) Location 0
+                              Decorate 19(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

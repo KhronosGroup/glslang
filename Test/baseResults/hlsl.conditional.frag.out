@@ -100,7 +100,7 @@ gl_FragCoord origin is upper left
 0:14            'input' (layout(location=0 ) in 4-component vector of float)
 0:15      Sequence
 0:15        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:15          add (temp 4-component vector of float)
 0:15            vector-scale (temp 4-component vector of float)
 0:15              Convert int to float (temp float)
@@ -215,7 +215,7 @@ gl_FragCoord origin is upper left
 0:14            'input' (layout(location=0 ) in 4-component vector of float)
 0:15      Sequence
 0:15        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:15          add (temp 4-component vector of float)
 0:15            vector-scale (temp 4-component vector of float)
 0:15              Convert int to float (temp float)
@@ -245,6 +245,7 @@ gl_FragCoord origin is upper left
                               Name 57  "f"
                               Name 83  "@entryPointOutput"
                               Decorate 22(input) Location 0
+                              Decorate 83(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

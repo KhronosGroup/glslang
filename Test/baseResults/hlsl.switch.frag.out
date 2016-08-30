@@ -121,7 +121,7 @@ gl_FragCoord origin is upper left
 0:51              'input' (layout(location=0 ) in 4-component vector of float)
 0:54      Sequence
 0:54        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:54          'input' (layout(location=0 ) in 4-component vector of float)
 0:54        Branch: Return
 0:?   Linker Objects
@@ -252,7 +252,7 @@ gl_FragCoord origin is upper left
 0:51              'input' (layout(location=0 ) in 4-component vector of float)
 0:54      Sequence
 0:54        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:54          'input' (layout(location=0 ) in 4-component vector of float)
 0:54        Branch: Return
 0:?   Linker Objects
@@ -274,6 +274,7 @@ gl_FragCoord origin is upper left
                               Decorate 8(c) Location 1
                               Decorate 21(input) Location 0
                               Decorate 41(d) Location 2
+                              Decorate 81(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

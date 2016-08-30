@@ -33,7 +33,7 @@ gl_FragCoord origin is upper left
 0:?           Sequence
 0:6            Sequence
 0:6              move second child to first child (temp 4-component vector of float)
-0:?                 '@entryPointOutput' (out 4-component vector of float)
+0:?                 '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:6                Negate value (temp 4-component vector of float)
 0:6                  'input' (layout(location=0 ) in 4-component vector of float)
 0:6              Branch: Return
@@ -49,7 +49,7 @@ gl_FragCoord origin is upper left
 0:?           Sequence
 0:7            Sequence
 0:7              move second child to first child (temp 4-component vector of float)
-0:?                 '@entryPointOutput' (out 4-component vector of float)
+0:?                 '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:7                Negate value (temp 4-component vector of float)
 0:7                  'input' (layout(location=0 ) in 4-component vector of float)
 0:7              Branch: Return
@@ -153,7 +153,7 @@ gl_FragCoord origin is upper left
 0:?           Sequence
 0:6            Sequence
 0:6              move second child to first child (temp 4-component vector of float)
-0:?                 '@entryPointOutput' (out 4-component vector of float)
+0:?                 '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:6                Negate value (temp 4-component vector of float)
 0:6                  'input' (layout(location=0 ) in 4-component vector of float)
 0:6              Branch: Return
@@ -169,7 +169,7 @@ gl_FragCoord origin is upper left
 0:?           Sequence
 0:7            Sequence
 0:7              move second child to first child (temp 4-component vector of float)
-0:?                 '@entryPointOutput' (out 4-component vector of float)
+0:?                 '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:7                Negate value (temp 4-component vector of float)
 0:7                  'input' (layout(location=0 ) in 4-component vector of float)
 0:7              Branch: Return
@@ -250,6 +250,7 @@ gl_FragCoord origin is upper left
                               Name 91  "ii"
                               Name 111  "ii"
                               Decorate 13(input) Location 0
+                              Decorate 43(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
               10:             TypeFloat 32

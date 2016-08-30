@@ -9,7 +9,7 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:10      Sequence
 0:10        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:10          add (temp 4-component vector of float)
 0:10            add (temp 4-component vector of float)
 0:10              add (temp 4-component vector of float)
@@ -64,7 +64,7 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:10      Sequence
 0:10        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:10          add (temp 4-component vector of float)
 0:10            add (temp 4-component vector of float)
 0:10              add (temp 4-component vector of float)
@@ -123,6 +123,7 @@ gl_FragCoord origin is upper left
                               Name 54  ""
                               MemberName 54 0  "m"
                               Name 58  "s"
+                              Decorate 9(@entryPointOutput) Location 0
                               Decorate 21(i) Location 0
                               Decorate 29(input) Location 1
                2:             TypeVoid

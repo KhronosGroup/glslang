@@ -54,7 +54,7 @@ local_size = (1, 1, 1)
 0:?     Sequence
 0:199      Sequence
 0:199        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -122,7 +122,7 @@ local_size = (1, 1, 1)
 0:?     Sequence
 0:199      Sequence
 0:199        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -162,6 +162,7 @@ local_size = (1, 1, 1)
                               Name 41  "inF2"
                               Name 42  "inI0"
                               Name 61  "@entryPointOutput"
+                              Decorate 61(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

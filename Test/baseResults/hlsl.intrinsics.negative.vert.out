@@ -53,7 +53,7 @@ Shader version: 450
 0:?     Sequence
 0:217      Sequence
 0:217        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -185,7 +185,7 @@ Shader version: 450
 0:?     Sequence
 0:217      Sequence
 0:217        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -313,6 +313,7 @@ Shader version: 450
                               Name 118  "gs_ua4"
                               Name 119  "gs_ub4"
                               Name 120  "gs_uc4"
+                              Decorate 85(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

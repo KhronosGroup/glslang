@@ -754,28 +754,8 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     functionReturnsValue = false;
 
     inEntrypoint = (function.getName() == intermediate.getEntryPoint().c_str());
-    if (inEntrypoint) {
-        // parameters are actually shader-scoped inputs and outputs (in or out)
-        unsigned int inCount = 0;
-        unsigned int outCount = 0;
-        for (int i = 0; i < function.getParamCount(); i++) {
-            if (function[i].type->getQualifier().isParamInput()) {
-                if (function[i].type->getQualifier().builtIn == EbvNone)
-                    function[i].type->getQualifier().layoutLocation = inCount++;
-                function[i].type->getQualifier().storage = EvqVaryingIn;
-            } else {
-                if (function[i].type->getQualifier().builtIn == EbvNone && language != EShLangFragment)
-                    function[i].type->getQualifier().layoutLocation = outCount++;
-                function[i].type->getQualifier().storage = EvqVaryingOut;
-            }
-        }
-
-        // return value is actually shader-scoped output (out)
-        if (function.getType().getBasicType() != EbtVoid) {
-            entryPointOutput = makeInternalVariable("@entryPointOutput", function.getType());
-            entryPointOutput->getWritableType().getQualifier().storage = EvqVaryingOut;
-        }
-    }
+    if (inEntrypoint)
+        remapEntrypointIO(function);
 
     //
     // New symbol table scope for body of function plus its arguments
@@ -817,6 +797,43 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     postMainReturn = false;
 
     return paramNodes;
+}
+
+// AST I/O is done through shader globals declared in the 'in' or 'out'
+// storage class.  An HLSL entry point has a return value, input parameters
+// and output parameters.  These need to get remapped to the AST I/O.
+void HlslParseContext::remapEntrypointIO(TFunction& function)
+{
+    // Will auto-assign locations here to the inputs/outputs defined by the entry point
+    unsigned int inCount = 0;
+    unsigned int outCount = 0;
+
+    // return value is actually a shader-scoped output (out)
+    if (function.getType().getBasicType() != EbtVoid) {
+        entryPointOutput = makeInternalVariable("@entryPointOutput", function.getType());
+        entryPointOutput->getWritableType().getQualifier().storage = EvqVaryingOut;
+        if (function.getType().getQualifier().builtIn == EbvNone) {
+            entryPointOutput->getWritableType().getQualifier().layoutLocation = outCount;
+            outCount += intermediate.computeTypeLocationSize(function.getType());
+        }
+    }
+
+    // parameters are actually shader-scoped inputs and outputs (in or out)
+    for (int i = 0; i < function.getParamCount(); i++) {
+        if (function[i].type->getQualifier().isParamInput()) {
+            function[i].type->getQualifier().storage = EvqVaryingIn;
+            if (function[i].type->getQualifier().builtIn == EbvNone) {
+                function[i].type->getQualifier().layoutLocation = inCount;
+                inCount += intermediate.computeTypeLocationSize(*function[i].type);
+            }
+        } else {
+            function[i].type->getQualifier().storage = EvqVaryingOut;
+            if (function[i].type->getQualifier().builtIn == EbvNone && language != EShLangFragment) {
+                function[i].type->getQualifier().layoutLocation = outCount;
+                outCount += intermediate.computeTypeLocationSize(*function[i].type);
+            }
+        }
+    }
 }
 
 // Handle function returns, including type conversions to the function return type

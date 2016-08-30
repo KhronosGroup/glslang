@@ -15,7 +15,7 @@ gl_FragCoord origin is upper left
 0:?         Sequence
 0:3          Sequence
 0:3            move second child to first child (temp 4-component vector of float)
-0:?               '@entryPointOutput' (out 4-component vector of float)
+0:?               '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:3              'input' (layout(location=0 ) in 4-component vector of float)
 0:3            Branch: Return
 0:4      Loop with condition tested first
@@ -55,7 +55,7 @@ gl_FragCoord origin is upper left
 0:?         Sequence
 0:3          Sequence
 0:3            move second child to first child (temp 4-component vector of float)
-0:?               '@entryPointOutput' (out 4-component vector of float)
+0:?               '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:3              'input' (layout(location=0 ) in 4-component vector of float)
 0:3            Branch: Return
 0:4      Loop with condition tested first
@@ -88,6 +88,7 @@ gl_FragCoord origin is upper left
                               Name 14  "input"
                               Name 22  "@entryPointOutput"
                               Decorate 14(input) Location 0
+                              Decorate 22(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
               11:             TypeFloat 32

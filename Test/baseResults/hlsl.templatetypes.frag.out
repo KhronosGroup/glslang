@@ -241,7 +241,7 @@ gl_FragCoord origin is upper left
 0:?             12.000000
 0:45      Sequence
 0:45        move second child to first child (temp float)
-0:?           '@entryPointOutput' (out float)
+0:?           '@entryPointOutput' (layout(location=0 ) out float)
 0:45          Constant:
 0:45            0.000000
 0:45        Branch: Return
@@ -493,7 +493,7 @@ gl_FragCoord origin is upper left
 0:?             12.000000
 0:45      Sequence
 0:45        move second child to first child (temp float)
-0:?           '@entryPointOutput' (out float)
+0:?           '@entryPointOutput' (layout(location=0 ) out float)
 0:45          Constant:
 0:45            0.000000
 0:45        Branch: Return
@@ -539,6 +539,7 @@ gl_FragCoord origin is upper left
                               Name 136  "r65"
                               Name 141  "r66"
                               Name 145  "@entryPointOutput"
+                              Decorate 145(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

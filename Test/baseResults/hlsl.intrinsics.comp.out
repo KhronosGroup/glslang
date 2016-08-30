@@ -301,7 +301,7 @@ local_size = (1, 1, 1)
 0:125          'gs_ub4' (global 4-component vector of uint)
 0:128      Sequence
 0:128        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -628,7 +628,7 @@ local_size = (1, 1, 1)
 0:125          'gs_ub4' (global 4-component vector of uint)
 0:128      Sequence
 0:128        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -700,6 +700,7 @@ local_size = (1, 1, 1)
                               Name 193  "gs_uc4"
                               Name 215  "@entryPointOutput"
                               Decorate 175(inF0) Location 0
+                              Decorate 215(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

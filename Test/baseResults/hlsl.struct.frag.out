@@ -24,7 +24,7 @@ gl_FragCoord origin is upper left
 0:40            7 (const int)
 0:42      Sequence
 0:42        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:42          'input' (layout(location=0 ) in 4-component vector of float)
 0:42        Branch: Return
 0:?   Linker Objects
@@ -59,7 +59,7 @@ gl_FragCoord origin is upper left
 0:40            7 (const int)
 0:42      Sequence
 0:42        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:42          'input' (layout(location=0 ) in 4-component vector of float)
 0:42        Branch: Return
 0:?   Linker Objects
@@ -106,6 +106,7 @@ gl_FragCoord origin is upper left
                               Name 44  "ff5"
                               Name 45  "ff6"
                               MemberDecorate 25 4 BuiltIn FrontFacing
+                              Decorate 34(@entryPointOutput) Location 0
                               Decorate 36(input) Location 0
                               Decorate 44(ff5) Offset 20
                               Decorate 44(ff5) Binding 5

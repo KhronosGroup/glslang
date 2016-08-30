@@ -350,7 +350,7 @@ gl_FragCoord origin is upper left
 0:139            'b' (temp bool)
 0:141      Sequence
 0:141        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:141          'input' (layout(location=0 ) in 4-component vector of float)
 0:141        Branch: Return
 0:?   Linker Objects
@@ -710,7 +710,7 @@ gl_FragCoord origin is upper left
 0:139            'b' (temp bool)
 0:141      Sequence
 0:141        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:141          'input' (layout(location=0 ) in 4-component vector of float)
 0:141        Branch: Return
 0:?   Linker Objects
@@ -909,6 +909,7 @@ gl_FragCoord origin is upper left
                               Name 500  "param"
                               Name 504  "@entryPointOutput"
                               Name 506  "input"
+                              Decorate 504(@entryPointOutput) Location 0
                               Decorate 506(input) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

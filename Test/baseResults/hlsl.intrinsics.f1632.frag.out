@@ -58,7 +58,7 @@ ERROR: node is still EOpNull!
 0:30        'inF0' (layout(location=0 ) in 4-component vector of float)
 0:32      Sequence
 0:32        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -123,7 +123,7 @@ ERROR: node is still EOpNull!
 0:30        'inF0' (layout(location=0 ) in 4-component vector of float)
 0:32      Sequence
 0:32        move second child to first child (temp 4-component vector of float)
-0:?           '@entryPointOutput' (out 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
