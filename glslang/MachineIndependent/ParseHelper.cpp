@@ -55,7 +55,6 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0), statementNestingLevel(0),
             inMain(false), postMainReturn(false), currentFunctionType(nullptr), blockName(nullptr),
             limits(resources.limits), parsingBuiltins(parsingBuiltins),
-            afterEOF(false),
             atomicUintOffsets(nullptr), anyIndexLimits(false)
 {
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
@@ -193,13 +192,15 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& inp
 }
 
 // This is called from bison when it has a parse (syntax) error
+// Note though that to stop cascading errors, we set EOF, which
+// will usually cause a syntax error, so be more accurate that
+// compilation is terminating.
 void TParseContext::parserError(const char* s)
 {
-    if (afterEOF) {
-        if (tokensBeforeEOF == 1)
-            error(getCurrentLoc(), "", "premature end of input", s, "");
-    } else
+    if (! getScanner()->atEndOfInput() || numErrors == 0)
         error(getCurrentLoc(), "", "", s, "");
+    else
+        error(getCurrentLoc(), "compilation terminated", "", "");
 }
 
 void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& tokens)

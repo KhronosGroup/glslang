@@ -762,12 +762,8 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
             break;
         }
 
-        if (tokenString) {
-            if (tokenString[0] != 0)
-                parseContext.tokensBeforeEOF = 1;
-
+        if (tokenString)
             return tokenString;
-        }
     }
 }
 

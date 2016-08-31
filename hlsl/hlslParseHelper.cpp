@@ -55,7 +55,6 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
     postMainReturn(false),
     limits(resources.limits),
-    afterEOF(false),
     entryPointOutput(nullptr)
 {
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms

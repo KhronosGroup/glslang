@@ -4,7 +4,7 @@ ERROR: 0:152: '#else' : #else after #else
 ERROR: 0:161: '#elif' : #elif after #else 
 ERROR: 0:169: '#else' : #else after #else 
 ERROR: 0:177: 'macro expansion' : End of input in macro FUNC
-ERROR: 0:178: '' :  syntax error
+ERROR: 0:178: '' : compilation terminated 
 ERROR: 6 compilation errors.  No code generated.
 
 

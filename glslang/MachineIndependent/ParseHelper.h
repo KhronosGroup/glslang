@@ -77,7 +77,7 @@ public:
                       EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
                       TInfoSink& infoSink, bool forwardCompatible, EShMessages messages)
           : TParseVersions(interm, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
-            symbolTable(symbolTable), tokensBeforeEOF(false),
+            symbolTable(symbolTable),
             linkage(nullptr), scanContext(nullptr), ppContext(nullptr) { }
     virtual ~TParseContextBase() { }
 
@@ -125,7 +125,6 @@ public:
     }
 
     TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
-    bool tokensBeforeEOF;
 
 protected:
     TParseContextBase(TParseContextBase&);
@@ -387,7 +386,6 @@ protected:
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2 * 2 * 2 * 2)); // see computeSamplerTypeIndex()
     TPrecisionQualifier defaultSamplerPrecision[maxSamplerIndex];
     TPrecisionManager precisionManager;
-    bool afterEOF;
     TQualifier globalBufferDefaults;
     TQualifier globalUniformDefaults;
     TQualifier globalInputDefaults;

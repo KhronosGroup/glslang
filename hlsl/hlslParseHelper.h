@@ -189,7 +189,6 @@ protected:
     HlslParseContext& operator=(HlslParseContext&);
 
     static const int maxSamplerIndex = EsdNumDims * (EbtNumTypes * (2 * 2 * 2)); // see computeSamplerTypeIndex()
-    bool afterEOF;
     TQualifier globalBufferDefaults;
     TQualifier globalUniformDefaults;
     TQualifier globalInputDefaults;
