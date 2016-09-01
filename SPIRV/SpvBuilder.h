@@ -467,7 +467,7 @@ public:
 
     //
     // the SPIR-V builder maintains a single active chain that
-    // the following methods operated on
+    // the following methods operate on
     //
 
     // for external save and restore

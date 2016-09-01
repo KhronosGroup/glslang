@@ -683,13 +683,17 @@ void InheritQualifiers(glslang::TQualifier& child, const glslang::TQualifier& pa
         child.writeonly = true;
 }
 
-bool HasNonLayoutQualifiers(const glslang::TQualifier& qualifier)
+bool HasNonLayoutQualifiers(const glslang::TType& type, const glslang::TQualifier& qualifier)
 {
     // This should list qualifiers that simultaneous satisfy:
-    // - struct members can inherit from a struct declaration
-    // - affect decorations on the struct members (note smooth does not, and expecting something like volatile to effect the whole object)
+    // - struct members might inherit from a struct declaration
+    //     (note that non-block structs don't explicitly inherit,
+    //      only implicitly, meaning no decoration involved)
+    // - affect decorations on the struct members
+    //     (note smooth does not, and expecting something like volatile
+    //      to effect the whole object)
     // - are not part of the offset/st430/etc or row/column-major layout
-    return qualifier.invariant || qualifier.hasLocation();
+    return qualifier.invariant || (qualifier.hasLocation() && type.getBasicType() == glslang::EbtBlock);
 }
 
 //
@@ -961,7 +965,16 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
 
             // store the result
             builder.setAccessChain(lValue);
-            accessChainStore(node->getType(), rValue);
+            if (builder.isStructType(builder.getTypeId(rValue))) {
+                //spv::Id lType = builder.getContainedTypeId(builder.getTypeId(builder.accessChainGetLValue()));
+                //spv::Id rType = builder.getTypeId(rValue);
+                //if (lType != rType) {
+                    // TODO: do member-wise copy instead, this is current issue
+                    // https://github.com/KhronosGroup/glslang/issues/304
+                //} else
+                    accessChainStore(node->getType(), rValue);
+            } else
+                accessChainStore(node->getType(), rValue);
 
             // assignments are expressions having an rValue after they are evaluated...
             builder.clearAccessChain();
@@ -1958,7 +1971,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
 
             // Try to share structs for different layouts, but not yet for other
             // kinds of qualification (primarily not yet including interpolant qualification).
-            if (! HasNonLayoutQualifiers(qualifier))
+            if (! HasNonLayoutQualifiers(type, qualifier))
                 spvType = structMap[explicitLayout][qualifier.layoutMatrix][glslangMembers];
             if (spvType != spv::NoResult)
                 break;
@@ -2068,7 +2081,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
 
     // Make the SPIR-V type
     spv::Id spvType = builder.makeStructType(spvMembers, type.getTypeName().c_str());
-    if (! HasNonLayoutQualifiers(qualifier))
+    if (! HasNonLayoutQualifiers(type, qualifier))
         structMap[explicitLayout][qualifier.layoutMatrix][glslangMembers] = spvType;
 
     // Decorate it
