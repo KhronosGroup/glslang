@@ -164,6 +164,8 @@ INSTANTIATE_TEST_CASE_P(
         "spv.matrix2.frag",
         "spv.memoryQualifier.frag",
         "spv.merge-unreachable.frag",
+        "spv.multiStruct.comp",
+        "spv.multiStructFuncall.frag",
         "spv.newTexture.frag",
         "spv.noDeadDecorations.vert",
         "spv.nonSquare.vert",
