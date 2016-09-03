@@ -755,6 +755,8 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     inEntrypoint = (function.getName() == intermediate.getEntryPoint().c_str());
     if (inEntrypoint)
         remapEntrypointIO(function);
+    else
+        remapNonEntrypointIO(function);
 
     //
     // New symbol table scope for body of function plus its arguments
@@ -862,6 +864,21 @@ void HlslParseContext::remapEntrypointIO(TFunction& function)
         }
         remapBuiltInType(*function[i].type);
     }
+}
+
+// An HLSL function that looks like an entry point, but is not,
+// declares entry point IO built-ins, but these have to be undone.
+void HlslParseContext::remapNonEntrypointIO(TFunction& function)
+{
+    const auto remapBuiltInType = [&](TType& type) { type.getQualifier().builtIn = EbvNone; };
+
+    // return value
+    if (function.getType().getBasicType() != EbtVoid)
+        remapBuiltInType(function.getWritableType());
+
+    // parameters
+    for (int i = 0; i < function.getParamCount(); i++)
+        remapBuiltInType(*function[i].type);
 }
 
 // Handle function returns, including type conversions to the function return type

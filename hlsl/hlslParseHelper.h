@@ -87,6 +87,7 @@ public:
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
     void handleFunctionBody(const TSourceLoc&, TFunction&, TIntermNode* functionBody, TIntermNode*& node);
     void remapEntrypointIO(TFunction& function);
+    void remapNonEntrypointIO(TFunction& function);
     TIntermNode* handleReturnValue(const TSourceLoc&, TIntermTyped*);
     void handleFunctionArgument(TFunction*, TIntermTyped*& arguments, TIntermTyped* newArg);
     TIntermTyped* handleFunctionCall(const TSourceLoc&, TFunction*, TIntermNode*);
