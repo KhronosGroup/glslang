@@ -2,22 +2,22 @@ hlsl.promotions.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:20  Function Definition: Fn_F3(vf3; (global void)
+0:19  Function Definition: Fn_F3(vf3; (global void)
 0:19    Function Parameters: 
 0:19      'x' (in 3-component vector of float)
-0:21  Function Definition: Fn_I3(vi3; (global void)
+0:20  Function Definition: Fn_I3(vi3; (global void)
 0:20    Function Parameters: 
 0:20      'x' (in 3-component vector of int)
-0:22  Function Definition: Fn_U3(vu3; (global void)
+0:21  Function Definition: Fn_U3(vu3; (global void)
 0:21    Function Parameters: 
 0:21      'x' (in 3-component vector of uint)
-0:23  Function Definition: Fn_B3(vb3; (global void)
+0:22  Function Definition: Fn_B3(vb3; (global void)
 0:22    Function Parameters: 
 0:22      'x' (in 3-component vector of bool)
-0:26  Function Definition: Fn_D3(vd3; (global void)
+0:23  Function Definition: Fn_D3(vd3; (global void)
 0:23    Function Parameters: 
 0:23      'x' (in 3-component vector of double)
-0:27  Function Definition: Fn_R_F3I(vf3; (global 3-component vector of float)
+0:26  Function Definition: Fn_R_F3I(vf3; (global 3-component vector of float)
 0:26    Function Parameters: 
 0:26      'p' (out 3-component vector of float)
 0:?     Sequence
@@ -28,7 +28,7 @@ gl_FragCoord origin is upper left
 0:26      Branch: Return with expression
 0:26        Convert int to float (temp 3-component vector of float)
 0:26          'i3' (uniform 3-component vector of int)
-0:28  Function Definition: Fn_R_F3U(vf3; (global 3-component vector of float)
+0:27  Function Definition: Fn_R_F3U(vf3; (global 3-component vector of float)
 0:27    Function Parameters: 
 0:27      'p' (out 3-component vector of float)
 0:?     Sequence
@@ -39,7 +39,7 @@ gl_FragCoord origin is upper left
 0:27      Branch: Return with expression
 0:27        Convert uint to float (temp 3-component vector of float)
 0:27          'u3' (uniform 3-component vector of uint)
-0:29  Function Definition: Fn_R_F3B(vf3; (global 3-component vector of float)
+0:28  Function Definition: Fn_R_F3B(vf3; (global 3-component vector of float)
 0:28    Function Parameters: 
 0:28      'p' (out 3-component vector of float)
 0:?     Sequence
@@ -50,7 +50,7 @@ gl_FragCoord origin is upper left
 0:28      Branch: Return with expression
 0:28        Convert bool to float (temp 3-component vector of float)
 0:28          'b3' (uniform 3-component vector of bool)
-0:31  Function Definition: Fn_R_F3D(vf3; (global 3-component vector of float)
+0:29  Function Definition: Fn_R_F3D(vf3; (global 3-component vector of float)
 0:29    Function Parameters: 
 0:29      'p' (out 3-component vector of float)
 0:?     Sequence
@@ -61,7 +61,7 @@ gl_FragCoord origin is upper left
 0:29      Branch: Return with expression
 0:29        Convert double to float (temp 3-component vector of float)
 0:29          'd3' (uniform 3-component vector of double)
-0:32  Function Definition: Fn_R_I3U(vi3; (global 3-component vector of int)
+0:31  Function Definition: Fn_R_I3U(vi3; (global 3-component vector of int)
 0:31    Function Parameters: 
 0:31      'p' (out 3-component vector of int)
 0:?     Sequence
@@ -72,7 +72,7 @@ gl_FragCoord origin is upper left
 0:31      Branch: Return with expression
 0:31        Convert uint to int (temp 3-component vector of int)
 0:31          'u3' (uniform 3-component vector of uint)
-0:33  Function Definition: Fn_R_I3B(vi3; (global 3-component vector of int)
+0:32  Function Definition: Fn_R_I3B(vi3; (global 3-component vector of int)
 0:32    Function Parameters: 
 0:32      'p' (out 3-component vector of int)
 0:?     Sequence
@@ -83,7 +83,7 @@ gl_FragCoord origin is upper left
 0:32      Branch: Return with expression
 0:32        Convert bool to int (temp 3-component vector of int)
 0:32          'b3' (uniform 3-component vector of bool)
-0:34  Function Definition: Fn_R_I3F(vi3; (global 3-component vector of int)
+0:33  Function Definition: Fn_R_I3F(vi3; (global 3-component vector of int)
 0:33    Function Parameters: 
 0:33      'p' (out 3-component vector of int)
 0:?     Sequence
@@ -94,7 +94,7 @@ gl_FragCoord origin is upper left
 0:33      Branch: Return with expression
 0:33        Convert float to int (temp 3-component vector of int)
 0:33          'f3' (uniform 3-component vector of float)
-0:36  Function Definition: Fn_R_I3D(vi3; (global 3-component vector of int)
+0:34  Function Definition: Fn_R_I3D(vi3; (global 3-component vector of int)
 0:34    Function Parameters: 
 0:34      'p' (out 3-component vector of int)
 0:?     Sequence
@@ -105,7 +105,7 @@ gl_FragCoord origin is upper left
 0:34      Branch: Return with expression
 0:34        Convert double to int (temp 3-component vector of int)
 0:34          'd3' (uniform 3-component vector of double)
-0:37  Function Definition: Fn_R_U3I(vu3; (global 3-component vector of uint)
+0:36  Function Definition: Fn_R_U3I(vu3; (global 3-component vector of uint)
 0:36    Function Parameters: 
 0:36      'p' (out 3-component vector of uint)
 0:?     Sequence
@@ -116,7 +116,7 @@ gl_FragCoord origin is upper left
 0:36      Branch: Return with expression
 0:36        Convert int to uint (temp 3-component vector of uint)
 0:36          'i3' (uniform 3-component vector of int)
-0:38  Function Definition: Fn_R_U3F(vu3; (global 3-component vector of uint)
+0:37  Function Definition: Fn_R_U3F(vu3; (global 3-component vector of uint)
 0:37    Function Parameters: 
 0:37      'p' (out 3-component vector of uint)
 0:?     Sequence
@@ -127,7 +127,7 @@ gl_FragCoord origin is upper left
 0:37      Branch: Return with expression
 0:37        Convert float to uint (temp 3-component vector of uint)
 0:37          'f3' (uniform 3-component vector of float)
-0:39  Function Definition: Fn_R_U3B(vu3; (global 3-component vector of uint)
+0:38  Function Definition: Fn_R_U3B(vu3; (global 3-component vector of uint)
 0:38    Function Parameters: 
 0:38      'p' (out 3-component vector of uint)
 0:?     Sequence
@@ -138,7 +138,7 @@ gl_FragCoord origin is upper left
 0:38      Branch: Return with expression
 0:38        Convert bool to uint (temp 3-component vector of uint)
 0:38          'b3' (uniform 3-component vector of bool)
-0:41  Function Definition: Fn_R_U3D(vu3; (global 3-component vector of uint)
+0:39  Function Definition: Fn_R_U3D(vu3; (global 3-component vector of uint)
 0:39    Function Parameters: 
 0:39      'p' (out 3-component vector of uint)
 0:?     Sequence
@@ -149,7 +149,7 @@ gl_FragCoord origin is upper left
 0:39      Branch: Return with expression
 0:39        Convert double to uint (temp 3-component vector of uint)
 0:39          'd3' (uniform 3-component vector of double)
-0:42  Function Definition: Fn_R_B3I(vb3; (global 3-component vector of bool)
+0:41  Function Definition: Fn_R_B3I(vb3; (global 3-component vector of bool)
 0:41    Function Parameters: 
 0:41      'p' (out 3-component vector of bool)
 0:?     Sequence
@@ -160,7 +160,7 @@ gl_FragCoord origin is upper left
 0:41      Branch: Return with expression
 0:41        Convert int to bool (temp 3-component vector of bool)
 0:41          'i3' (uniform 3-component vector of int)
-0:43  Function Definition: Fn_R_B3U(vb3; (global 3-component vector of bool)
+0:42  Function Definition: Fn_R_B3U(vb3; (global 3-component vector of bool)
 0:42    Function Parameters: 
 0:42      'p' (out 3-component vector of bool)
 0:?     Sequence
@@ -171,7 +171,7 @@ gl_FragCoord origin is upper left
 0:42      Branch: Return with expression
 0:42        Convert uint to bool (temp 3-component vector of bool)
 0:42          'u3' (uniform 3-component vector of uint)
-0:44  Function Definition: Fn_R_B3F(vb3; (global 3-component vector of bool)
+0:43  Function Definition: Fn_R_B3F(vb3; (global 3-component vector of bool)
 0:43    Function Parameters: 
 0:43      'p' (out 3-component vector of bool)
 0:?     Sequence
@@ -182,7 +182,7 @@ gl_FragCoord origin is upper left
 0:43      Branch: Return with expression
 0:43        Convert float to bool (temp 3-component vector of bool)
 0:43          'f3' (uniform 3-component vector of float)
-0:46  Function Definition: Fn_R_B3D(vb3; (global 3-component vector of bool)
+0:44  Function Definition: Fn_R_B3D(vb3; (global 3-component vector of bool)
 0:44    Function Parameters: 
 0:44      'p' (out 3-component vector of bool)
 0:?     Sequence
@@ -193,7 +193,7 @@ gl_FragCoord origin is upper left
 0:44      Branch: Return with expression
 0:44        Convert double to bool (temp 3-component vector of bool)
 0:44          'd3' (uniform 3-component vector of double)
-0:47  Function Definition: Fn_R_D3I(vd3; (global 3-component vector of double)
+0:46  Function Definition: Fn_R_D3I(vd3; (global 3-component vector of double)
 0:46    Function Parameters: 
 0:46      'p' (out 3-component vector of double)
 0:?     Sequence
@@ -204,7 +204,7 @@ gl_FragCoord origin is upper left
 0:46      Branch: Return with expression
 0:46        Convert int to double (temp 3-component vector of double)
 0:46          'i3' (uniform 3-component vector of int)
-0:48  Function Definition: Fn_R_D3U(vd3; (global 3-component vector of double)
+0:47  Function Definition: Fn_R_D3U(vd3; (global 3-component vector of double)
 0:47    Function Parameters: 
 0:47      'p' (out 3-component vector of double)
 0:?     Sequence
@@ -215,7 +215,7 @@ gl_FragCoord origin is upper left
 0:47      Branch: Return with expression
 0:47        Convert uint to double (temp 3-component vector of double)
 0:47          'u3' (uniform 3-component vector of uint)
-0:49  Function Definition: Fn_R_D3B(vd3; (global 3-component vector of double)
+0:48  Function Definition: Fn_R_D3B(vd3; (global 3-component vector of double)
 0:48    Function Parameters: 
 0:48      'p' (out 3-component vector of double)
 0:?     Sequence
@@ -226,7 +226,7 @@ gl_FragCoord origin is upper left
 0:48      Branch: Return with expression
 0:48        Convert bool to double (temp 3-component vector of double)
 0:48          'b3' (uniform 3-component vector of bool)
-0:51  Function Definition: Fn_R_D3F(vd3; (global 3-component vector of double)
+0:49  Function Definition: Fn_R_D3F(vd3; (global 3-component vector of double)
 0:49    Function Parameters: 
 0:49      'p' (out 3-component vector of double)
 0:?     Sequence
@@ -237,7 +237,7 @@ gl_FragCoord origin is upper left
 0:49      Branch: Return with expression
 0:49        Convert float to double (temp 3-component vector of double)
 0:49          'f3' (uniform 3-component vector of float)
-0:202  Function Definition: main( (global structure{temp 4-component vector of float Color})
+0:52  Function Definition: main( (global structure{temp 4-component vector of float Color})
 0:52    Function Parameters: 
 0:?     Sequence
 0:54      Sequence
@@ -520,22 +520,22 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:20  Function Definition: Fn_F3(vf3; (global void)
+0:19  Function Definition: Fn_F3(vf3; (global void)
 0:19    Function Parameters: 
 0:19      'x' (in 3-component vector of float)
-0:21  Function Definition: Fn_I3(vi3; (global void)
+0:20  Function Definition: Fn_I3(vi3; (global void)
 0:20    Function Parameters: 
 0:20      'x' (in 3-component vector of int)
-0:22  Function Definition: Fn_U3(vu3; (global void)
+0:21  Function Definition: Fn_U3(vu3; (global void)
 0:21    Function Parameters: 
 0:21      'x' (in 3-component vector of uint)
-0:23  Function Definition: Fn_B3(vb3; (global void)
+0:22  Function Definition: Fn_B3(vb3; (global void)
 0:22    Function Parameters: 
 0:22      'x' (in 3-component vector of bool)
-0:26  Function Definition: Fn_D3(vd3; (global void)
+0:23  Function Definition: Fn_D3(vd3; (global void)
 0:23    Function Parameters: 
 0:23      'x' (in 3-component vector of double)
-0:27  Function Definition: Fn_R_F3I(vf3; (global 3-component vector of float)
+0:26  Function Definition: Fn_R_F3I(vf3; (global 3-component vector of float)
 0:26    Function Parameters: 
 0:26      'p' (out 3-component vector of float)
 0:?     Sequence
@@ -546,7 +546,7 @@ gl_FragCoord origin is upper left
 0:26      Branch: Return with expression
 0:26        Convert int to float (temp 3-component vector of float)
 0:26          'i3' (uniform 3-component vector of int)
-0:28  Function Definition: Fn_R_F3U(vf3; (global 3-component vector of float)
+0:27  Function Definition: Fn_R_F3U(vf3; (global 3-component vector of float)
 0:27    Function Parameters: 
 0:27      'p' (out 3-component vector of float)
 0:?     Sequence
@@ -557,7 +557,7 @@ gl_FragCoord origin is upper left
 0:27      Branch: Return with expression
 0:27        Convert uint to float (temp 3-component vector of float)
 0:27          'u3' (uniform 3-component vector of uint)
-0:29  Function Definition: Fn_R_F3B(vf3; (global 3-component vector of float)
+0:28  Function Definition: Fn_R_F3B(vf3; (global 3-component vector of float)
 0:28    Function Parameters: 
 0:28      'p' (out 3-component vector of float)
 0:?     Sequence
@@ -568,7 +568,7 @@ gl_FragCoord origin is upper left
 0:28      Branch: Return with expression
 0:28        Convert bool to float (temp 3-component vector of float)
 0:28          'b3' (uniform 3-component vector of bool)
-0:31  Function Definition: Fn_R_F3D(vf3; (global 3-component vector of float)
+0:29  Function Definition: Fn_R_F3D(vf3; (global 3-component vector of float)
 0:29    Function Parameters: 
 0:29      'p' (out 3-component vector of float)
 0:?     Sequence
@@ -579,7 +579,7 @@ gl_FragCoord origin is upper left
 0:29      Branch: Return with expression
 0:29        Convert double to float (temp 3-component vector of float)
 0:29          'd3' (uniform 3-component vector of double)
-0:32  Function Definition: Fn_R_I3U(vi3; (global 3-component vector of int)
+0:31  Function Definition: Fn_R_I3U(vi3; (global 3-component vector of int)
 0:31    Function Parameters: 
 0:31      'p' (out 3-component vector of int)
 0:?     Sequence
@@ -590,7 +590,7 @@ gl_FragCoord origin is upper left
 0:31      Branch: Return with expression
 0:31        Convert uint to int (temp 3-component vector of int)
 0:31          'u3' (uniform 3-component vector of uint)
-0:33  Function Definition: Fn_R_I3B(vi3; (global 3-component vector of int)
+0:32  Function Definition: Fn_R_I3B(vi3; (global 3-component vector of int)
 0:32    Function Parameters: 
 0:32      'p' (out 3-component vector of int)
 0:?     Sequence
@@ -601,7 +601,7 @@ gl_FragCoord origin is upper left
 0:32      Branch: Return with expression
 0:32        Convert bool to int (temp 3-component vector of int)
 0:32          'b3' (uniform 3-component vector of bool)
-0:34  Function Definition: Fn_R_I3F(vi3; (global 3-component vector of int)
+0:33  Function Definition: Fn_R_I3F(vi3; (global 3-component vector of int)
 0:33    Function Parameters: 
 0:33      'p' (out 3-component vector of int)
 0:?     Sequence
@@ -612,7 +612,7 @@ gl_FragCoord origin is upper left
 0:33      Branch: Return with expression
 0:33        Convert float to int (temp 3-component vector of int)
 0:33          'f3' (uniform 3-component vector of float)
-0:36  Function Definition: Fn_R_I3D(vi3; (global 3-component vector of int)
+0:34  Function Definition: Fn_R_I3D(vi3; (global 3-component vector of int)
 0:34    Function Parameters: 
 0:34      'p' (out 3-component vector of int)
 0:?     Sequence
@@ -623,7 +623,7 @@ gl_FragCoord origin is upper left
 0:34      Branch: Return with expression
 0:34        Convert double to int (temp 3-component vector of int)
 0:34          'd3' (uniform 3-component vector of double)
-0:37  Function Definition: Fn_R_U3I(vu3; (global 3-component vector of uint)
+0:36  Function Definition: Fn_R_U3I(vu3; (global 3-component vector of uint)
 0:36    Function Parameters: 
 0:36      'p' (out 3-component vector of uint)
 0:?     Sequence
@@ -634,7 +634,7 @@ gl_FragCoord origin is upper left
 0:36      Branch: Return with expression
 0:36        Convert int to uint (temp 3-component vector of uint)
 0:36          'i3' (uniform 3-component vector of int)
-0:38  Function Definition: Fn_R_U3F(vu3; (global 3-component vector of uint)
+0:37  Function Definition: Fn_R_U3F(vu3; (global 3-component vector of uint)
 0:37    Function Parameters: 
 0:37      'p' (out 3-component vector of uint)
 0:?     Sequence
@@ -645,7 +645,7 @@ gl_FragCoord origin is upper left
 0:37      Branch: Return with expression
 0:37        Convert float to uint (temp 3-component vector of uint)
 0:37          'f3' (uniform 3-component vector of float)
-0:39  Function Definition: Fn_R_U3B(vu3; (global 3-component vector of uint)
+0:38  Function Definition: Fn_R_U3B(vu3; (global 3-component vector of uint)
 0:38    Function Parameters: 
 0:38      'p' (out 3-component vector of uint)
 0:?     Sequence
@@ -656,7 +656,7 @@ gl_FragCoord origin is upper left
 0:38      Branch: Return with expression
 0:38        Convert bool to uint (temp 3-component vector of uint)
 0:38          'b3' (uniform 3-component vector of bool)
-0:41  Function Definition: Fn_R_U3D(vu3; (global 3-component vector of uint)
+0:39  Function Definition: Fn_R_U3D(vu3; (global 3-component vector of uint)
 0:39    Function Parameters: 
 0:39      'p' (out 3-component vector of uint)
 0:?     Sequence
@@ -667,7 +667,7 @@ gl_FragCoord origin is upper left
 0:39      Branch: Return with expression
 0:39        Convert double to uint (temp 3-component vector of uint)
 0:39          'd3' (uniform 3-component vector of double)
-0:42  Function Definition: Fn_R_B3I(vb3; (global 3-component vector of bool)
+0:41  Function Definition: Fn_R_B3I(vb3; (global 3-component vector of bool)
 0:41    Function Parameters: 
 0:41      'p' (out 3-component vector of bool)
 0:?     Sequence
@@ -678,7 +678,7 @@ gl_FragCoord origin is upper left
 0:41      Branch: Return with expression
 0:41        Convert int to bool (temp 3-component vector of bool)
 0:41          'i3' (uniform 3-component vector of int)
-0:43  Function Definition: Fn_R_B3U(vb3; (global 3-component vector of bool)
+0:42  Function Definition: Fn_R_B3U(vb3; (global 3-component vector of bool)
 0:42    Function Parameters: 
 0:42      'p' (out 3-component vector of bool)
 0:?     Sequence
@@ -689,7 +689,7 @@ gl_FragCoord origin is upper left
 0:42      Branch: Return with expression
 0:42        Convert uint to bool (temp 3-component vector of bool)
 0:42          'u3' (uniform 3-component vector of uint)
-0:44  Function Definition: Fn_R_B3F(vb3; (global 3-component vector of bool)
+0:43  Function Definition: Fn_R_B3F(vb3; (global 3-component vector of bool)
 0:43    Function Parameters: 
 0:43      'p' (out 3-component vector of bool)
 0:?     Sequence
@@ -700,7 +700,7 @@ gl_FragCoord origin is upper left
 0:43      Branch: Return with expression
 0:43        Convert float to bool (temp 3-component vector of bool)
 0:43          'f3' (uniform 3-component vector of float)
-0:46  Function Definition: Fn_R_B3D(vb3; (global 3-component vector of bool)
+0:44  Function Definition: Fn_R_B3D(vb3; (global 3-component vector of bool)
 0:44    Function Parameters: 
 0:44      'p' (out 3-component vector of bool)
 0:?     Sequence
@@ -711,7 +711,7 @@ gl_FragCoord origin is upper left
 0:44      Branch: Return with expression
 0:44        Convert double to bool (temp 3-component vector of bool)
 0:44          'd3' (uniform 3-component vector of double)
-0:47  Function Definition: Fn_R_D3I(vd3; (global 3-component vector of double)
+0:46  Function Definition: Fn_R_D3I(vd3; (global 3-component vector of double)
 0:46    Function Parameters: 
 0:46      'p' (out 3-component vector of double)
 0:?     Sequence
@@ -722,7 +722,7 @@ gl_FragCoord origin is upper left
 0:46      Branch: Return with expression
 0:46        Convert int to double (temp 3-component vector of double)
 0:46          'i3' (uniform 3-component vector of int)
-0:48  Function Definition: Fn_R_D3U(vd3; (global 3-component vector of double)
+0:47  Function Definition: Fn_R_D3U(vd3; (global 3-component vector of double)
 0:47    Function Parameters: 
 0:47      'p' (out 3-component vector of double)
 0:?     Sequence
@@ -733,7 +733,7 @@ gl_FragCoord origin is upper left
 0:47      Branch: Return with expression
 0:47        Convert uint to double (temp 3-component vector of double)
 0:47          'u3' (uniform 3-component vector of uint)
-0:49  Function Definition: Fn_R_D3B(vd3; (global 3-component vector of double)
+0:48  Function Definition: Fn_R_D3B(vd3; (global 3-component vector of double)
 0:48    Function Parameters: 
 0:48      'p' (out 3-component vector of double)
 0:?     Sequence
@@ -744,7 +744,7 @@ gl_FragCoord origin is upper left
 0:48      Branch: Return with expression
 0:48        Convert bool to double (temp 3-component vector of double)
 0:48          'b3' (uniform 3-component vector of bool)
-0:51  Function Definition: Fn_R_D3F(vd3; (global 3-component vector of double)
+0:49  Function Definition: Fn_R_D3F(vd3; (global 3-component vector of double)
 0:49    Function Parameters: 
 0:49      'p' (out 3-component vector of double)
 0:?     Sequence
@@ -755,7 +755,7 @@ gl_FragCoord origin is upper left
 0:49      Branch: Return with expression
 0:49        Convert float to double (temp 3-component vector of double)
 0:49          'f3' (uniform 3-component vector of float)
-0:202  Function Definition: main( (global structure{temp 4-component vector of float Color})
+0:52  Function Definition: main( (global structure{temp 4-component vector of float Color})
 0:52    Function Parameters: 
 0:?     Sequence
 0:54      Sequence

@@ -1497,15 +1497,16 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& node)
 {
     TFunction* functionDeclarator = parseContext.handleFunctionDeclarator(token.loc, function, false /* not prototype */);
+    TSourceLoc loc = token.loc;
 
     // This does a pushScope()
-    node = parseContext.handleFunctionDefinition(token.loc, *functionDeclarator);
+    node = parseContext.handleFunctionDefinition(loc, *functionDeclarator);
 
     // compound_statement
     TIntermNode* functionBody = nullptr;
     if (acceptCompoundStatement(functionBody)) {
         node = intermediate.growAggregate(node, functionBody);
-        intermediate.setAggregateOperator(node, EOpFunction, functionDeclarator->getType(), token.loc);
+        intermediate.setAggregateOperator(node, EOpFunction, functionDeclarator->getType(), loc);
         node->getAsAggregate()->setName(functionDeclarator->getMangledName().c_str());
         parseContext.popScope();
 

@@ -1,7 +1,7 @@
 hlsl.samplelevel.basic.dx10.vert
 Shader version: 450
 0:? Sequence
-0:50  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
+0:27  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
 0:27    Function Parameters: 
 0:?     Sequence
 0:30      Sequence
@@ -188,7 +188,7 @@ Linked vertex stage:
 
 Shader version: 450
 0:? Sequence
-0:50  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
+0:27  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
 0:27    Function Parameters: 
 0:?     Sequence
 0:30      Sequence

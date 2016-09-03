@@ -2,7 +2,7 @@ hlsl.typedef.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:12  Function Definition: ShaderFunction(vf4;i1; (global 4-component vector of float)
+0:4  Function Definition: ShaderFunction(vf4;i1; (global 4-component vector of float)
 0:4    Function Parameters: 
 0:4      'input' (in 4-component vector of float)
 0:4      'ii' (in int)
@@ -43,7 +43,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:12  Function Definition: ShaderFunction(vf4;i1; (global 4-component vector of float)
+0:4  Function Definition: ShaderFunction(vf4;i1; (global 4-component vector of float)
 0:4    Function Parameters: 
 0:4      'input' (in 4-component vector of float)
 0:4      'ii' (in int)

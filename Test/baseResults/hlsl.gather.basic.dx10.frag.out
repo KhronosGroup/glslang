@@ -2,7 +2,7 @@ hlsl.gather.basic.dx10.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:49  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:29  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:29    Function Parameters: 
 0:?     Sequence
 0:34      Sequence
@@ -114,7 +114,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:49  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:29  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:29    Function Parameters: 
 0:?     Sequence
 0:34      Sequence

@@ -1,7 +1,7 @@
 hlsl.load.basic.dx10.vert
 Shader version: 450
 0:? Sequence
-0:71  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
+0:47  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
 0:47    Function Parameters: 
 0:?     Sequence
 0:51      textureFetch (global 4-component vector of float)
@@ -174,7 +174,7 @@ Linked vertex stage:
 
 Shader version: 450
 0:? Sequence
-0:71  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
+0:47  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
 0:47    Function Parameters: 
 0:?     Sequence
 0:51      textureFetch (global 4-component vector of float)

@@ -2,7 +2,7 @@ hlsl.entry-out.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:13  Function Definition: PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21; (global 4-component vector of float)
+0:7  Function Definition: PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21; (global 4-component vector of float)
 0:7    Function Parameters: 
 0:7      'input' (layout(location=0 ) in 4-component vector of float)
 0:7      'out1' (out 4-component vector of float)
@@ -41,7 +41,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:13  Function Definition: PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21; (global 4-component vector of float)
+0:7  Function Definition: PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21; (global 4-component vector of float)
 0:7    Function Parameters: 
 0:7      'input' (layout(location=0 ) in 4-component vector of float)
 0:7      'out1' (out 4-component vector of float)

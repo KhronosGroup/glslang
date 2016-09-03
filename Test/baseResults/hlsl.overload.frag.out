@@ -2,113 +2,113 @@ hlsl.overload.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:3  Function Definition: foo1(d1;b1; (global void)
+0:2  Function Definition: foo1(d1;b1; (global void)
 0:2    Function Parameters: 
 0:2      'a' (in double)
 0:2      'b' (in bool)
-0:4  Function Definition: foo1(d1;u1; (global void)
+0:3  Function Definition: foo1(d1;u1; (global void)
 0:3    Function Parameters: 
 0:3      'a' (in double)
 0:3      'b' (in uint)
-0:5  Function Definition: foo1(d1;i1; (global void)
+0:4  Function Definition: foo1(d1;i1; (global void)
 0:4    Function Parameters: 
 0:4      'a' (in double)
 0:4      'b' (in int)
-0:6  Function Definition: foo1(d1;f1; (global void)
+0:5  Function Definition: foo1(d1;f1; (global void)
 0:5    Function Parameters: 
 0:5      'a' (in double)
 0:5      'b' (in float)
-0:9  Function Definition: foo1(d1;d1; (global void)
+0:6  Function Definition: foo1(d1;d1; (global void)
 0:6    Function Parameters: 
 0:6      'a' (in double)
 0:6      'b' (in double)
-0:10  Function Definition: foo2(i1;b1; (global void)
+0:9  Function Definition: foo2(i1;b1; (global void)
 0:9    Function Parameters: 
 0:9      'a' (in int)
 0:9      'b' (in bool)
-0:11  Function Definition: foo2(i1;u1; (global void)
+0:10  Function Definition: foo2(i1;u1; (global void)
 0:10    Function Parameters: 
 0:10      'a' (in int)
 0:10      'b' (in uint)
-0:12  Function Definition: foo2(i1;i1; (global void)
+0:11  Function Definition: foo2(i1;i1; (global void)
 0:11    Function Parameters: 
 0:11      'a' (in int)
 0:11      'b' (in int)
-0:13  Function Definition: foo2(i1;f1; (global void)
+0:12  Function Definition: foo2(i1;f1; (global void)
 0:12    Function Parameters: 
 0:12      'a' (in int)
 0:12      'b' (in float)
-0:16  Function Definition: foo2(i1;d1; (global void)
+0:13  Function Definition: foo2(i1;d1; (global void)
 0:13    Function Parameters: 
 0:13      'a' (in int)
 0:13      'b' (in double)
-0:17  Function Definition: foo3(b1; (global void)
+0:16  Function Definition: foo3(b1; (global void)
 0:16    Function Parameters: 
 0:16      'b' (in bool)
-0:18  Function Definition: foo4(u1; (global void)
+0:17  Function Definition: foo4(u1; (global void)
 0:17    Function Parameters: 
 0:17      'b' (in uint)
-0:19  Function Definition: foo5(i1; (global void)
+0:18  Function Definition: foo5(i1; (global void)
 0:18    Function Parameters: 
 0:18      'b' (in int)
-0:20  Function Definition: foo6(f1; (global void)
+0:19  Function Definition: foo6(f1; (global void)
 0:19    Function Parameters: 
 0:19      'b' (in float)
-0:23  Function Definition: foo7(d1; (global void)
+0:20  Function Definition: foo7(d1; (global void)
 0:20    Function Parameters: 
 0:20      'b' (in double)
-0:24  Function Definition: foo8(f1; (global void)
+0:23  Function Definition: foo8(f1; (global void)
 0:23    Function Parameters: 
 0:23      '' (in float)
-0:25  Function Definition: foo8(d1; (global void)
+0:24  Function Definition: foo8(d1; (global void)
 0:24    Function Parameters: 
 0:24      '' (in double)
-0:26  Function Definition: foo9(i1; (global void)
+0:25  Function Definition: foo9(i1; (global void)
 0:25    Function Parameters: 
 0:25      '' (in int)
-0:27  Function Definition: foo9(u1; (global void)
+0:26  Function Definition: foo9(u1; (global void)
 0:26    Function Parameters: 
 0:26      '' (in uint)
-0:28  Function Definition: foo10(b1; (global void)
+0:27  Function Definition: foo10(b1; (global void)
 0:27    Function Parameters: 
 0:27      '' (in bool)
-0:31  Function Definition: foo10(i1; (global void)
+0:28  Function Definition: foo10(i1; (global void)
 0:28    Function Parameters: 
 0:28      '' (in int)
-0:32  Function Definition: foo11(vf3; (global void)
+0:31  Function Definition: foo11(vf3; (global void)
 0:31    Function Parameters: 
 0:31      '' (in 3-component vector of float)
-0:33  Function Definition: foo11(d1; (global void)
+0:32  Function Definition: foo11(d1; (global void)
 0:32    Function Parameters: 
 0:32      '' (in double)
-0:34  Function Definition: foo11(vi3; (global void)
+0:33  Function Definition: foo11(vi3; (global void)
 0:33    Function Parameters: 
 0:33      '' (in 3-component vector of int)
-0:35  Function Definition: foo11(u1; (global void)
+0:34  Function Definition: foo11(u1; (global void)
 0:34    Function Parameters: 
 0:34      '' (in uint)
-0:36  Function Definition: foo12(vf1; (global void)
+0:35  Function Definition: foo12(vf1; (global void)
 0:35    Function Parameters: 
 0:35      '' (in 1-component vector of float)
-0:37  Function Definition: foo12(vd3; (global void)
+0:36  Function Definition: foo12(vd3; (global void)
 0:36    Function Parameters: 
 0:36      '' (in 3-component vector of double)
-0:38  Function Definition: foo16(u1; (global void)
+0:37  Function Definition: foo16(u1; (global void)
 0:37    Function Parameters: 
 0:37      '' (in uint)
-0:41  Function Definition: foo16(vu2; (global void)
+0:38  Function Definition: foo16(vu2; (global void)
 0:38    Function Parameters: 
 0:38      '' (in 2-component vector of uint)
-0:42  Function Definition: foo13(vf3; (global void)
+0:41  Function Definition: foo13(vf3; (global void)
 0:41    Function Parameters: 
 0:41      '' (in 3-component vector of float)
-0:43  Function Definition: foo14(vi1; (global void)
+0:42  Function Definition: foo14(vi1; (global void)
 0:42    Function Parameters: 
 0:42      '' (in 1-component vector of int)
-0:45  Function Definition: foo15(vb1; (global void)
+0:43  Function Definition: foo15(vb1; (global void)
 0:43    Function Parameters: 
 0:43      '' (in 1-component vector of bool)
-0:143  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
+0:46  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:46    Function Parameters: 
 0:46      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
@@ -362,113 +362,113 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:3  Function Definition: foo1(d1;b1; (global void)
+0:2  Function Definition: foo1(d1;b1; (global void)
 0:2    Function Parameters: 
 0:2      'a' (in double)
 0:2      'b' (in bool)
-0:4  Function Definition: foo1(d1;u1; (global void)
+0:3  Function Definition: foo1(d1;u1; (global void)
 0:3    Function Parameters: 
 0:3      'a' (in double)
 0:3      'b' (in uint)
-0:5  Function Definition: foo1(d1;i1; (global void)
+0:4  Function Definition: foo1(d1;i1; (global void)
 0:4    Function Parameters: 
 0:4      'a' (in double)
 0:4      'b' (in int)
-0:6  Function Definition: foo1(d1;f1; (global void)
+0:5  Function Definition: foo1(d1;f1; (global void)
 0:5    Function Parameters: 
 0:5      'a' (in double)
 0:5      'b' (in float)
-0:9  Function Definition: foo1(d1;d1; (global void)
+0:6  Function Definition: foo1(d1;d1; (global void)
 0:6    Function Parameters: 
 0:6      'a' (in double)
 0:6      'b' (in double)
-0:10  Function Definition: foo2(i1;b1; (global void)
+0:9  Function Definition: foo2(i1;b1; (global void)
 0:9    Function Parameters: 
 0:9      'a' (in int)
 0:9      'b' (in bool)
-0:11  Function Definition: foo2(i1;u1; (global void)
+0:10  Function Definition: foo2(i1;u1; (global void)
 0:10    Function Parameters: 
 0:10      'a' (in int)
 0:10      'b' (in uint)
-0:12  Function Definition: foo2(i1;i1; (global void)
+0:11  Function Definition: foo2(i1;i1; (global void)
 0:11    Function Parameters: 
 0:11      'a' (in int)
 0:11      'b' (in int)
-0:13  Function Definition: foo2(i1;f1; (global void)
+0:12  Function Definition: foo2(i1;f1; (global void)
 0:12    Function Parameters: 
 0:12      'a' (in int)
 0:12      'b' (in float)
-0:16  Function Definition: foo2(i1;d1; (global void)
+0:13  Function Definition: foo2(i1;d1; (global void)
 0:13    Function Parameters: 
 0:13      'a' (in int)
 0:13      'b' (in double)
-0:17  Function Definition: foo3(b1; (global void)
+0:16  Function Definition: foo3(b1; (global void)
 0:16    Function Parameters: 
 0:16      'b' (in bool)
-0:18  Function Definition: foo4(u1; (global void)
+0:17  Function Definition: foo4(u1; (global void)
 0:17    Function Parameters: 
 0:17      'b' (in uint)
-0:19  Function Definition: foo5(i1; (global void)
+0:18  Function Definition: foo5(i1; (global void)
 0:18    Function Parameters: 
 0:18      'b' (in int)
-0:20  Function Definition: foo6(f1; (global void)
+0:19  Function Definition: foo6(f1; (global void)
 0:19    Function Parameters: 
 0:19      'b' (in float)
-0:23  Function Definition: foo7(d1; (global void)
+0:20  Function Definition: foo7(d1; (global void)
 0:20    Function Parameters: 
 0:20      'b' (in double)
-0:24  Function Definition: foo8(f1; (global void)
+0:23  Function Definition: foo8(f1; (global void)
 0:23    Function Parameters: 
 0:23      '' (in float)
-0:25  Function Definition: foo8(d1; (global void)
+0:24  Function Definition: foo8(d1; (global void)
 0:24    Function Parameters: 
 0:24      '' (in double)
-0:26  Function Definition: foo9(i1; (global void)
+0:25  Function Definition: foo9(i1; (global void)
 0:25    Function Parameters: 
 0:25      '' (in int)
-0:27  Function Definition: foo9(u1; (global void)
+0:26  Function Definition: foo9(u1; (global void)
 0:26    Function Parameters: 
 0:26      '' (in uint)
-0:28  Function Definition: foo10(b1; (global void)
+0:27  Function Definition: foo10(b1; (global void)
 0:27    Function Parameters: 
 0:27      '' (in bool)
-0:31  Function Definition: foo10(i1; (global void)
+0:28  Function Definition: foo10(i1; (global void)
 0:28    Function Parameters: 
 0:28      '' (in int)
-0:32  Function Definition: foo11(vf3; (global void)
+0:31  Function Definition: foo11(vf3; (global void)
 0:31    Function Parameters: 
 0:31      '' (in 3-component vector of float)
-0:33  Function Definition: foo11(d1; (global void)
+0:32  Function Definition: foo11(d1; (global void)
 0:32    Function Parameters: 
 0:32      '' (in double)
-0:34  Function Definition: foo11(vi3; (global void)
+0:33  Function Definition: foo11(vi3; (global void)
 0:33    Function Parameters: 
 0:33      '' (in 3-component vector of int)
-0:35  Function Definition: foo11(u1; (global void)
+0:34  Function Definition: foo11(u1; (global void)
 0:34    Function Parameters: 
 0:34      '' (in uint)
-0:36  Function Definition: foo12(vf1; (global void)
+0:35  Function Definition: foo12(vf1; (global void)
 0:35    Function Parameters: 
 0:35      '' (in 1-component vector of float)
-0:37  Function Definition: foo12(vd3; (global void)
+0:36  Function Definition: foo12(vd3; (global void)
 0:36    Function Parameters: 
 0:36      '' (in 3-component vector of double)
-0:38  Function Definition: foo16(u1; (global void)
+0:37  Function Definition: foo16(u1; (global void)
 0:37    Function Parameters: 
 0:37      '' (in uint)
-0:41  Function Definition: foo16(vu2; (global void)
+0:38  Function Definition: foo16(vu2; (global void)
 0:38    Function Parameters: 
 0:38      '' (in 2-component vector of uint)
-0:42  Function Definition: foo13(vf3; (global void)
+0:41  Function Definition: foo13(vf3; (global void)
 0:41    Function Parameters: 
 0:41      '' (in 3-component vector of float)
-0:43  Function Definition: foo14(vi1; (global void)
+0:42  Function Definition: foo14(vi1; (global void)
 0:42    Function Parameters: 
 0:42      '' (in 1-component vector of int)
-0:45  Function Definition: foo15(vb1; (global void)
+0:43  Function Definition: foo15(vb1; (global void)
 0:43    Function Parameters: 
 0:43      '' (in 1-component vector of bool)
-0:143  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
+0:46  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
 0:46    Function Parameters: 
 0:46      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence

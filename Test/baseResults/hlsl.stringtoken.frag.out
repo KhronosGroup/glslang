@@ -2,7 +2,7 @@ hlsl.stringtoken.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:21  Function Definition: main( (global structure{temp 4-component vector of float Color})
+0:16  Function Definition: main( (global structure{temp 4-component vector of float Color})
 0:16    Function Parameters: 
 0:?     Sequence
 0:18      move second child to first child (temp 4-component vector of float)
@@ -31,7 +31,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:21  Function Definition: main( (global structure{temp 4-component vector of float Color})
+0:16  Function Definition: main( (global structure{temp 4-component vector of float Color})
 0:16    Function Parameters: 
 0:?     Sequence
 0:18      move second child to first child (temp 4-component vector of float)

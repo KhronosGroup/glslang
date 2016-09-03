@@ -2,7 +2,7 @@ hlsl.sample.array.dx10.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:44  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:24  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:24    Function Parameters: 
 0:?     Sequence
 0:27      Sequence
@@ -146,7 +146,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:44  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:24  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:24    Function Parameters: 
 0:?     Sequence
 0:27      Sequence
