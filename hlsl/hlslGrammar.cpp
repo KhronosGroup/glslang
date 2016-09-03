@@ -525,7 +525,7 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
 //
 // layout_qualifier
 //      : identifier
-//      | identifier EQUAL expresion
+//      | identifier EQUAL expression
 //
 // Zero or more of these, so this can't return false.
 //

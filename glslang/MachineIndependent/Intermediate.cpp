@@ -702,6 +702,8 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
     case EOpGreaterThan:
     case EOpLessThanEqual:
     case EOpGreaterThanEqual:
+    case EOpEqual:
+    case EOpNotEqual:
     case EOpFunctionCall:
         break;
     default:
