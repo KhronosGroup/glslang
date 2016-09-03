@@ -274,7 +274,8 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     if (newType != EbtVoid) {
         child = addConversion(op, TType(newType, EvqTemporary, child->getVectorSize(),
                                                                child->getMatrixCols(),
-                                                               child->getMatrixRows()),
+                                                               child->getMatrixRows(),
+                                                               child->isVector()),
                               child);
         if (child == 0)
             return 0;

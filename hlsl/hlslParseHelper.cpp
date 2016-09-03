@@ -641,6 +641,15 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
                 return addConstructor(loc, base, type);
             }
         }
+        if (base->getVectorSize() == 1) {
+            TType scalarType(base->getBasicType(), EvqTemporary, 1);
+            if (fields.num == 1)
+                return addConstructor(loc, base, scalarType);
+            else {
+                TType vectorType(base->getBasicType(), EvqTemporary, fields.num);
+                return addConstructor(loc, addConstructor(loc, base, scalarType), vectorType);
+            }
+        }
 
         if (base->getType().getQualifier().isFrontEndConstant())
             result = intermediate.foldSwizzle(base, fields, loc);
