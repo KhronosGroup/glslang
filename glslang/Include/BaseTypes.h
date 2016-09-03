@@ -196,6 +196,11 @@ enum TBuiltInVariable {
     EbvBaryCoordPullModel,
 #endif
 
+    // HLSL built-ins that live only temporarily, until they get remapped
+    // to one of the above.
+    EbvFragDepthGreater,
+    EbvFragDepthLesser,
+
     EbvLast
 };
 

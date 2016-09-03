@@ -302,10 +302,10 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     HlslToken idToken;
     while (acceptIdentifier(idToken)) {
         // function_parameters
-        TFunction* function = new TFunction(idToken.string, type);
-        if (acceptFunctionParameters(*function)) {
+        TFunction& function = *new TFunction(idToken.string, type);
+        if (acceptFunctionParameters(function)) {
             // post_decls
-            acceptPostDecls(type);
+            acceptPostDecls(function.getWritableType());
 
             // compound_statement (function body definition) or just a prototype?
             if (peekTokenClass(EHTokLeftBrace)) {
@@ -313,11 +313,11 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
                     parseContext.error(idToken.loc, "function body can't be in a declarator list", "{", "");
                 if (typedefDecl)
                     parseContext.error(idToken.loc, "function body can't be in a typedef", "{", "");
-                return acceptFunctionDefinition(*function, node);
+                return acceptFunctionDefinition(function, node);
             } else {
                 if (typedefDecl)
                     parseContext.error(idToken.loc, "function typedefs not implemented", "{", "");
-                parseContext.handleFunctionDeclarator(idToken.loc, *function, true);
+                parseContext.handleFunctionDeclarator(idToken.loc, function, true);
             }
         } else {
             // a variable declaration

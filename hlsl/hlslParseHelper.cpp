@@ -819,6 +819,21 @@ void HlslParseContext::remapEntrypointIO(TFunction& function)
     unsigned int inCount = 0;
     unsigned int outCount = 0;
 
+    const auto remapBuiltInType = [&](TType& type) {
+        switch (type.getQualifier().builtIn) {
+        case EbvFragDepthGreater:
+            intermediate.setDepth(EldGreater);
+            type.getQualifier().builtIn = EbvFragDepth;
+            break;
+        case EbvFragDepthLesser:
+            intermediate.setDepth(EldLess);
+            type.getQualifier().builtIn = EbvFragDepth;
+            break;
+        default:
+            break;
+        }
+    };
+
     // return value is actually a shader-scoped output (out)
     if (function.getType().getBasicType() != EbtVoid) {
         entryPointOutput = makeInternalVariable("@entryPointOutput", function.getType());
@@ -827,6 +842,7 @@ void HlslParseContext::remapEntrypointIO(TFunction& function)
             entryPointOutput->getWritableType().getQualifier().layoutLocation = outCount;
             outCount += intermediate.computeTypeLocationSize(function.getType());
         }
+        remapBuiltInType(function.getWritableType());
     }
 
     // parameters are actually shader-scoped inputs and outputs (in or out)
@@ -844,6 +860,7 @@ void HlslParseContext::remapEntrypointIO(TFunction& function)
                 outCount += intermediate.computeTypeLocationSize(*function[i].type);
             }
         }
+        remapBuiltInType(*function[i].type);
     }
 }
 
@@ -2423,13 +2440,11 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TType& type, const TString
         type.getQualifier().builtIn = EbvFragDepth;
 
     //TODO, these need to get refined to be more specific 
-    else if( semanticUpperCase == "SV_DEPTHGREATEREQUAL") {
-        type.getQualifier().builtIn = EbvFragDepth;
-        warn(loc, "depth mode unimplemented", "SV_DEPTHGREATEREQUAL", "");
-    } else if( semanticUpperCase == "SV_DEPTHLESSEQUAL") {
-        type.getQualifier().builtIn = EbvFragDepth;
-        warn(loc, "depth mode unimplemented", "SV_DEPTHLESSEQUAL", "");
-    } else if( semanticUpperCase == "SV_STENCILREF")
+    else if( semanticUpperCase == "SV_DEPTHGREATEREQUAL")
+        type.getQualifier().builtIn = EbvFragDepthGreater;
+    else if( semanticUpperCase == "SV_DEPTHLESSEQUAL")
+        type.getQualifier().builtIn = EbvFragDepthLesser;
+    else if( semanticUpperCase == "SV_STENCILREF")
         error(loc, "unimplemented", "SV_STENCILREF", "");
     else if( semanticUpperCase == "SV_COVERAGE")
         error(loc, "unimplemented", "SV_COVERAGE", "");
