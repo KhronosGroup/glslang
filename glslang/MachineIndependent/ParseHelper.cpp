@@ -1036,7 +1036,7 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
         error(loc, "can't find function", function.getName().c_str(), "");
     // Note:  'prevDec' could be 'function' if this is the first time we've seen function
     // as it would have just been put in the symbol table.  Otherwise, we're looking up
-    // an earlier occurance.
+    // an earlier occurrence.
 
     if (prevDec && prevDec->isDefined()) {
         // Then this function already has a body.

@@ -686,7 +686,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
 // Handle seeing a function declarator in the grammar.  This is the precursor
 // to recognizing a function prototype or function definition.
 //
-TFunction* HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunction& function, bool prototype)
+TFunction& HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunction& function, bool prototype)
 {
     //
     // Multiple declarations of the same function name are allowed.
@@ -720,7 +720,7 @@ TFunction* HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFu
     // in which case, we need to use the parameter names from this one, and not the one that's
     // being redeclared.  So, pass back this declaration, not the one in the symbol table.
     //
-    return &function;
+    return function;
 }
 
 //
@@ -798,6 +798,18 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     return paramNodes;
 }
 
+void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& function, TIntermNode* functionBody, TIntermNode*& node)
+{
+    node = intermediate.growAggregate(node, functionBody);
+    intermediate.setAggregateOperator(node, EOpFunction, function.getType(), loc);
+    node->getAsAggregate()->setName(function.getMangledName().c_str());
+
+    popScope();
+
+    if (function.getType().getBasicType() != EbtVoid && ! functionReturnsValue)
+        error(loc, "function does not return a value:", "", function.getName().c_str());
+}
+
 // AST I/O is done through shader globals declared in the 'in' or 'out'
 // storage class.  An HLSL entry point has a return value, input parameters
 // and output parameters.  These need to get remapped to the AST I/O.
@@ -839,6 +851,7 @@ void HlslParseContext::remapEntrypointIO(TFunction& function)
 // if necessary.
 TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermTyped* value)
 {
+    functionReturnsValue = true;
     TIntermTyped* converted = value;
 
     if (currentFunctionType->getBasicType() == EbtVoid) {
