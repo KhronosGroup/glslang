@@ -4942,7 +4942,7 @@ const TFunction* TParseContext::findFunction120(const TSourceLoc& loc, const TFu
 // "When function calls are resolved, an exact type match for all the arguments
 // is sought. If an exact match is found, all other functions are ignored, and
 // the exact match is used. If no exact match is found, then the implicit
-// conversions in section 4.1.10 “Implicit Conversions” will be applied to find
+// conversions in section 4.1.10 Implicit Conversions will be applied to find
 // a match. Mismatched types on input parameters (in or inout or default) must
 // have a conversion from the calling argument type to the formal parameter type.
 // Mismatched types on output parameters (out or inout) must have a conversion
