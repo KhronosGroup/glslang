@@ -8,7 +8,11 @@ layout(push_constant) tbuffer tbufName2 {
 
 layout(constant_id=17) const int specConst = 10;
 
+tbuffer tbufName2 : layout(set=4,binding=7) {
+    layout(offset = 16) float4 v1PostLayout;
+};
+
 float4 PixelShaderFunction(float4 input) : COLOR0
 {
-    return input + v1 + v5;
+    return input + v1 + v5 + v1PostLayout;
 }

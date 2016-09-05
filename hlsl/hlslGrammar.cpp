@@ -521,7 +521,7 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
 }
 
 // layout_qualifier_list
-//      : LEFT_PAREN layout_qualifier COMMA layout_qualifier ... RIGHT_PAREN
+//      : LAYOUT LEFT_PAREN layout_qualifier COMMA layout_qualifier ... RIGHT_PAREN
 //
 // layout_qualifier
 //      : identifier
@@ -2594,6 +2594,7 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 //      : COLON semantic                                                            // optional
 //        COLON PACKOFFSET LEFT_PAREN c[Subcomponent][.component]       RIGHT_PAREN // optional
 //        COLON REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt RIGHT_PAREN // optional
+//        COLON LAYOUT layout_qualifier_list
 //        annotations                                                               // optional
 //
 void HlslGrammar::acceptPostDecls(TQualifier& qualifier)
@@ -2602,7 +2603,9 @@ void HlslGrammar::acceptPostDecls(TQualifier& qualifier)
         // COLON 
         if (acceptTokenClass(EHTokColon)) {
             HlslToken idToken;
-            if (acceptTokenClass(EHTokPackOffset)) {
+            if (peekTokenClass(EHTokLayout))
+                acceptLayoutQualifierList(qualifier);
+            else if (acceptTokenClass(EHTokPackOffset)) {
                 // PACKOFFSET LEFT_PAREN c[Subcomponent][.component] RIGHT_PAREN
                 if (! acceptTokenClass(EHTokLeftParen)) {
                     expected("(");
@@ -2626,7 +2629,7 @@ void HlslGrammar::acceptPostDecls(TQualifier& qualifier)
                 }
                 parseContext.handlePackOffset(locationToken.loc, qualifier, *locationToken.string, componentToken.string);
             } else if (! acceptIdentifier(idToken)) {
-                expected("semantic or packoffset or register");
+                expected("layout, semantic, packoffset, or register");
                 return;
             } else if (*idToken.string == "register") {
                 // REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt RIGHT_PAREN
