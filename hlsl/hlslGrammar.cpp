@@ -2591,11 +2591,11 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 }
 
 // post_decls
-//      : COLON semantic                                                            // optional
-//        COLON PACKOFFSET LEFT_PAREN c[Subcomponent][.component]       RIGHT_PAREN // optional
-//        COLON REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt RIGHT_PAREN // optional
+//      : COLON semantic // optional
+//        COLON PACKOFFSET LEFT_PAREN c[Subcomponent][.component] RIGHT_PAREN // optional
+//        COLON REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt (COMMA SPACEN)opt RIGHT_PAREN // optional
 //        COLON LAYOUT layout_qualifier_list
-//        annotations                                                               // optional
+//        annotations // optional
 //
 void HlslGrammar::acceptPostDecls(TQualifier& qualifier)
 {
@@ -2632,7 +2632,8 @@ void HlslGrammar::acceptPostDecls(TQualifier& qualifier)
                 expected("layout, semantic, packoffset, or register");
                 return;
             } else if (*idToken.string == "register") {
-                // REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt RIGHT_PAREN
+                // REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt (COMMA SPACEN)opt RIGHT_PAREN
+                // LEFT_PAREN
                 if (! acceptTokenClass(EHTokLeftParen)) {
                     expected("(");
                     return;
@@ -2643,7 +2644,8 @@ void HlslGrammar::acceptPostDecls(TQualifier& qualifier)
                     expected("register number description");
                     return;
                 }
-                if (acceptTokenClass(EHTokComma)) {
+                if (registerDesc.string->size() > 1 && !isdigit((*registerDesc.string)[1]) &&
+                                                       acceptTokenClass(EHTokComma)) {
                     // Then we didn't really see the registerDesc yet, it was
                     // actually the profile.  Adjust...
                     profile = registerDesc;
@@ -2666,11 +2668,20 @@ void HlslGrammar::acceptPostDecls(TQualifier& qualifier)
                         break;
                     }
                 }
+                // (COMMA SPACEN)opt
+                HlslToken spaceDesc;
+                if (acceptTokenClass(EHTokComma)) {
+                    if (! acceptIdentifier(spaceDesc)) {
+                        expected ("space identifier");
+                        return;
+                    }
+                }
+                // RIGHT_PAREN
                 if (! acceptTokenClass(EHTokRightParen)) {
                     expected(")");
                     break;
                 }
-                parseContext.handleRegister(registerDesc.loc, qualifier, profile.string, *registerDesc.string, subComponent);
+                parseContext.handleRegister(registerDesc.loc, qualifier, profile.string, *registerDesc.string, subComponent, spaceDesc.string);
             } else {
                 // semantic, in idToken.string
                 parseContext.handleSemantic(idToken.loc, qualifier, *idToken.string);

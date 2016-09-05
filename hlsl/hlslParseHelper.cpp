@@ -2523,7 +2523,7 @@ void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TQualifier& quali
 // 'desc' is the type# part.
 //
 void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifier, const glslang::TString* profile,
-                                      const glslang::TString& desc, int subComponent)
+                                      const glslang::TString& desc, int subComponent, const glslang::TString* spaceDesc)
 {
     if (profile != nullptr)
         warn(loc, "ignoring shader_profile", "register", "");
@@ -2554,6 +2554,28 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
     default:
         warn(loc, "ignoring unrecognized register type", "register", "%c", desc[0]);
         break;
+    }
+
+    // space
+    unsigned int setNumber;
+    const auto crackSpace = [&]() {
+        const int spaceLen = 5;
+        if (spaceDesc->size() < spaceLen + 1)
+            return false;
+        if (spaceDesc->compare(0, spaceLen, "space") != 0)
+            return false;
+        if (! isdigit((*spaceDesc)[spaceLen]))
+            return false;
+        setNumber = atoi(spaceDesc->substr(spaceLen, spaceDesc->size()).c_str());
+        return true;
+    };
+
+    if (spaceDesc) {
+        if (! crackSpace()) {
+            error(loc, "expected spaceN", "register", "");
+            return;
+        }
+        qualifier.layoutSet = setNumber;
     }
 }
 

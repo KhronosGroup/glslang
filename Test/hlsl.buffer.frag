@@ -6,7 +6,7 @@ tbuffer {
     float4 v2;
 };
 
-cbuffer cbufName : register(b2) {
+cbuffer cbufName : register(b2, space10) {
     float4 v3;
     int i3 : packoffset(c1.y);
 };
