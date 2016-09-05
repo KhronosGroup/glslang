@@ -3761,8 +3761,8 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, spv::Dec
     case glslang::EOpConvInt64ToUint64:
         if (builder.isInSpecConstCodeGenMode()) {
             // Build zero scalar or vector for OpIAdd.
-            zero = (op == glslang::EOpConvUintToInt64 ||
-                    op == glslang::EOpConvIntToUint64) ? builder.makeUint64Constant(0) : builder.makeUintConstant(0);
+            zero = (op == glslang::EOpConvUint64ToInt64 ||
+                    op == glslang::EOpConvInt64ToUint64) ? builder.makeUint64Constant(0) : builder.makeUintConstant(0);
             zero = makeSmearedConstant(zero, vectorSize);
             // Use OpIAdd, instead of OpBitcast to do the conversion when
             // generating for OpSpecConstantOp instruction.

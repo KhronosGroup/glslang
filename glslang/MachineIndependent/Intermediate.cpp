@@ -1444,6 +1444,8 @@ bool TIntermediate::isSpecializationOperation(const TIntermOperator& node) const
         case EOpIndexIndirect:
         case EOpIndexDirectStruct:
         case EOpVectorSwizzle:
+        case EOpConvFloatToDouble:
+        case EOpConvDoubleToFloat:
             return true;
         default:
             return false;
@@ -1474,6 +1476,20 @@ bool TIntermediate::isSpecializationOperation(const TIntermOperator& node) const
     case EOpConvBoolToInt:
     case EOpConvIntToUint:
     case EOpConvBoolToUint:
+    case EOpConvInt64ToBool:
+    case EOpConvBoolToInt64:
+    case EOpConvUint64ToBool:
+    case EOpConvBoolToUint64:
+    case EOpConvInt64ToInt:
+    case EOpConvIntToInt64:
+    case EOpConvUint64ToUint:
+    case EOpConvUintToUint64:
+    case EOpConvInt64ToUint64:
+    case EOpConvUint64ToInt64:
+    case EOpConvInt64ToUint:
+    case EOpConvUintToInt64:
+    case EOpConvUint64ToInt:
+    case EOpConvIntToUint64:
 
     // unary operations
     case EOpNegative:
