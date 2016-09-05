@@ -98,10 +98,10 @@ public:
     TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermAggregate&) const;
     void builtInOpCheck(const TSourceLoc&, const TFunction&, TIntermOperator&);
     TFunction* handleConstructorCall(const TSourceLoc&, const TType&);
-    void handleSemantic(TSourceLoc, TType& type, const TString& semantic);
-    void handlePackOffset(const TSourceLoc&, TType& type, const glslang::TString& location,
+    void handleSemantic(TSourceLoc, TQualifier&, const TString& semantic);
+    void handlePackOffset(const TSourceLoc&, TQualifier&, const glslang::TString& location,
                           const glslang::TString* component);
-    void handleRegister(const TSourceLoc&, TType& type, const glslang::TString* profile, const glslang::TString& desc,
+    void handleRegister(const TSourceLoc&, TQualifier&, const glslang::TString* profile, const glslang::TString& desc,
                         int subComponent);
 
     TIntermAggregate* handleSamplerTextureCombine(const TSourceLoc& loc, TIntermTyped* argTex, TIntermTyped* argSampler);

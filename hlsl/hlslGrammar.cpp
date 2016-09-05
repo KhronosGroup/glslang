@@ -305,7 +305,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
         TFunction& function = *new TFunction(idToken.string, type);
         if (acceptFunctionParameters(function)) {
             // post_decls
-            acceptPostDecls(function.getWritableType());
+            acceptPostDecls(function.getWritableType().getQualifier());
 
             // compound_statement (function body definition) or just a prototype?
             if (peekTokenClass(EHTokLeftBrace)) {
@@ -333,7 +333,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
             }
 
             // post_decls
-            acceptPostDecls(type);
+            acceptPostDecls(type.getQualifier());
 
             // EQUAL assignment_expression
             TIntermTyped* expressionNode = nullptr;
@@ -1314,7 +1314,9 @@ bool HlslGrammar::acceptStruct(TType& type)
     }
 
     // post_decls
-    acceptPostDecls(type);
+    TQualifier postDeclQualifier;
+    postDeclQualifier.clear();
+    acceptPostDecls(postDeclQualifier);
 
     // LEFT_BRACE
     if (! acceptTokenClass(EHTokLeftBrace)) {
@@ -1339,9 +1341,8 @@ bool HlslGrammar::acceptStruct(TType& type)
     if (storageQualifier == EvqTemporary)
         new(&type) TType(typeList, structName);
     else {
-        TQualifier qualifier = type.getQualifier();
-        qualifier.storage = storageQualifier;
-        new(&type) TType(typeList, structName, qualifier); // sets EbtBlock
+        postDeclQualifier.storage = storageQualifier;
+        new(&type) TType(typeList, structName, postDeclQualifier); // sets EbtBlock
     }
 
     // If it was named, which means the type can be reused later, add
@@ -1407,7 +1408,7 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList)
             if (arraySizes)
                 typeList->back().type->newArraySizes(*arraySizes);
 
-            acceptPostDecls(*member.type);
+            acceptPostDecls(member.type->getQualifier());
 
             // success on seeing the SEMICOLON coming up
             if (peekTokenClass(EHTokSemicolon))
@@ -1484,7 +1485,7 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
         type->newArraySizes(*arraySizes);
 
     // post_decls
-    acceptPostDecls(*type);
+    acceptPostDecls(type->getQualifier());
 
     parseContext.paramFix(*type);
 
@@ -2595,7 +2596,7 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 //        COLON REGISTER LEFT_PAREN [shader_profile,] Type#[subcomp]opt RIGHT_PAREN // optional
 //        annotations                                                               // optional
 //
-void HlslGrammar::acceptPostDecls(TType& type)
+void HlslGrammar::acceptPostDecls(TQualifier& qualifier)
 {
     do {
         // COLON 
@@ -2623,7 +2624,7 @@ void HlslGrammar::acceptPostDecls(TType& type)
                     expected(")");
                     break;
                 }
-                parseContext.handlePackOffset(locationToken.loc, type, *locationToken.string, componentToken.string);
+                parseContext.handlePackOffset(locationToken.loc, qualifier, *locationToken.string, componentToken.string);
             } else if (! acceptIdentifier(idToken)) {
                 expected("semantic or packoffset or register");
                 return;
@@ -2666,10 +2667,10 @@ void HlslGrammar::acceptPostDecls(TType& type)
                     expected(")");
                     break;
                 }
-                parseContext.handleRegister(registerDesc.loc, type, profile.string, *registerDesc.string, subComponent);
+                parseContext.handleRegister(registerDesc.loc, qualifier, profile.string, *registerDesc.string, subComponent);
             } else {
                 // semantic, in idToken.string
-                parseContext.handleSemantic(idToken.loc, type, *idToken.string);
+                parseContext.handleSemantic(idToken.loc, qualifier, *idToken.string);
             }
         } else if (acceptTokenClass(EHTokLeftAngle)) {
             // TODO: process annotations, just accepting them for now

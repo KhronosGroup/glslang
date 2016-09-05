@@ -2365,7 +2365,7 @@ TFunction* HlslParseContext::handleConstructorCall(const TSourceLoc& loc, const 
 // Handle seeing a "COLON semantic" at the end of a type declaration,
 // by updating the type according to the semantic.
 //
-void HlslParseContext::handleSemantic(TSourceLoc loc, TType& type, const TString& semantic)
+void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, const TString& semantic)
 {
     // TODO: need to know if it's an input or an output
     // The following sketches what needs to be done, but can't be right
@@ -2385,91 +2385,91 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TType& type, const TString
     bool bParseDX9 = false;
     if (bParseDX9) {
         if (semanticUpperCase == "PSIZE")
-            type.getQualifier().builtIn = EbvPointSize;
+            qualifier.builtIn = EbvPointSize;
         else if (semantic == "FOG")
-            type.getQualifier().builtIn = EbvFogFragCoord;
+            qualifier.builtIn = EbvFogFragCoord;
         else if (semanticUpperCase == "DEPTH")
-            type.getQualifier().builtIn = EbvFragDepth;
+            qualifier.builtIn = EbvFragDepth;
         else if (semanticUpperCase == "VFACE")
-            type.getQualifier().builtIn = EbvFace;
+            qualifier.builtIn = EbvFace;
         else if (semanticUpperCase == "VPOS")
-            type.getQualifier().builtIn = EbvFragCoord;
+            qualifier.builtIn = EbvFragCoord;
     }
 
     //SV Position has a different meaning in vertex vs fragment
     if (semanticUpperCase == "SV_POSITION" && language != EShLangFragment)
-        type.getQualifier().builtIn = EbvPosition;
+        qualifier.builtIn = EbvPosition;
     else if (semanticUpperCase == "SV_POSITION" && language == EShLangFragment)
-        type.getQualifier().builtIn = EbvFragCoord;
+        qualifier.builtIn = EbvFragCoord;
     else if (semanticUpperCase == "SV_CLIPDISTANCE")
-        type.getQualifier().builtIn = EbvClipDistance;
+        qualifier.builtIn = EbvClipDistance;
     else if (semanticUpperCase == "SV_CULLDISTANCE")
-        type.getQualifier().builtIn = EbvCullDistance;
+        qualifier.builtIn = EbvCullDistance;
     else if (semanticUpperCase == "SV_VERTEXID")
-        type.getQualifier().builtIn = EbvVertexIndex;
+        qualifier.builtIn = EbvVertexIndex;
     else if (semanticUpperCase == "SV_VIEWPORTARRAYINDEX")
-        type.getQualifier().builtIn = EbvViewportIndex;
+        qualifier.builtIn = EbvViewportIndex;
     else if (semanticUpperCase == "SV_TESSFACTOR")
-        type.getQualifier().builtIn = EbvTessLevelOuter;
+        qualifier.builtIn = EbvTessLevelOuter;
 
     //Targets are defined 0-7
     else if (semanticUpperCase == "SV_TARGET") {
-        type.getQualifier().builtIn = EbvNone;
-        //type.getQualifier().layoutLocation = 0;
+        qualifier.builtIn = EbvNone;
+        //qualifier.layoutLocation = 0;
     } else if (semanticUpperCase == "SV_TARGET0") {
-        type.getQualifier().builtIn = EbvNone;
-        //type.getQualifier().layoutLocation = 0;
+        qualifier.builtIn = EbvNone;
+        //qualifier.layoutLocation = 0;
     } else if (semanticUpperCase == "SV_TARGET1") {
-        type.getQualifier().builtIn = EbvNone;
-        //type.getQualifier().layoutLocation = 1;
+        qualifier.builtIn = EbvNone;
+        //qualifier.layoutLocation = 1;
     } else if (semanticUpperCase == "SV_TARGET2") {
-        type.getQualifier().builtIn = EbvNone;
-        //type.getQualifier().layoutLocation = 2;
+        qualifier.builtIn = EbvNone;
+        //qualifier.layoutLocation = 2;
     } else if (semanticUpperCase == "SV_TARGET3") {
-        type.getQualifier().builtIn = EbvNone;
-        //type.getQualifier().layoutLocation = 3;
+        qualifier.builtIn = EbvNone;
+        //qualifier.layoutLocation = 3;
     } else if (semanticUpperCase == "SV_TARGET4") {
-        type.getQualifier().builtIn = EbvNone;
-        //type.getQualifier().layoutLocation = 4;
+        qualifier.builtIn = EbvNone;
+        //qualifier.layoutLocation = 4;
     } else if (semanticUpperCase == "SV_TARGET5") {
-        type.getQualifier().builtIn = EbvNone;
-        //type.getQualifier().layoutLocation = 5;
+        qualifier.builtIn = EbvNone;
+        //qualifier.layoutLocation = 5;
     } else if (semanticUpperCase == "SV_TARGET6") {
-        type.getQualifier().builtIn = EbvNone;
-        //type.getQualifier().layoutLocation = 6;
+        qualifier.builtIn = EbvNone;
+        //qualifier.layoutLocation = 6;
     } else if (semanticUpperCase == "SV_TARGET7") {
-        type.getQualifier().builtIn = EbvNone;
-        //type.getQualifier().layoutLocation = 7;
+        qualifier.builtIn = EbvNone;
+        //qualifier.layoutLocation = 7;
     } else if (semanticUpperCase == "SV_SAMPLEINDEX")
-        type.getQualifier().builtIn = EbvSampleId;
+        qualifier.builtIn = EbvSampleId;
     else if (semanticUpperCase == "SV_RENDERTARGETARRAYINDEX")
-        type.getQualifier().builtIn = EbvLayer;
+        qualifier.builtIn = EbvLayer;
     else if (semanticUpperCase == "SV_PRIMITIVEID")
-        type.getQualifier().builtIn = EbvPrimitiveId;
+        qualifier.builtIn = EbvPrimitiveId;
     else if (semanticUpperCase == "SV_OUTPUTCONTROLPOINTID")
-        type.getQualifier().builtIn = EbvInvocationId;
+        qualifier.builtIn = EbvInvocationId;
     else if (semanticUpperCase == "SV_ISFRONTFACE")
-        type.getQualifier().builtIn = EbvFace;
+        qualifier.builtIn = EbvFace;
     else if (semanticUpperCase == "SV_INSTANCEID")
-        type.getQualifier().builtIn = EbvInstanceIndex;
+        qualifier.builtIn = EbvInstanceIndex;
     else if (semanticUpperCase == "SV_INSIDETESSFACTOR")
-        type.getQualifier().builtIn = EbvTessLevelInner;
+        qualifier.builtIn = EbvTessLevelInner;
     else if (semanticUpperCase == "SV_GSINSTANCEID")
-        type.getQualifier().builtIn = EbvInvocationId;
+        qualifier.builtIn = EbvInvocationId;
     else if (semanticUpperCase == "SV_GROUPTHREADID")
-        type.getQualifier().builtIn = EbvLocalInvocationId;
+        qualifier.builtIn = EbvLocalInvocationId;
     else if (semanticUpperCase == "SV_GROUPID")
-        type.getQualifier().builtIn = EbvWorkGroupId;
+        qualifier.builtIn = EbvWorkGroupId;
     else if (semanticUpperCase == "SV_DOMAINLOCATION")
-        type.getQualifier().builtIn = EbvTessCoord;
+        qualifier.builtIn = EbvTessCoord;
     else if (semanticUpperCase == "SV_DEPTH")
-        type.getQualifier().builtIn = EbvFragDepth;
+        qualifier.builtIn = EbvFragDepth;
 
     //TODO, these need to get refined to be more specific 
     else if( semanticUpperCase == "SV_DEPTHGREATEREQUAL")
-        type.getQualifier().builtIn = EbvFragDepthGreater;
+        qualifier.builtIn = EbvFragDepthGreater;
     else if( semanticUpperCase == "SV_DEPTHLESSEQUAL")
-        type.getQualifier().builtIn = EbvFragDepthLesser;
+        qualifier.builtIn = EbvFragDepthLesser;
     else if( semanticUpperCase == "SV_STENCILREF")
         error(loc, "unimplemented", "SV_STENCILREF", "");
     else if( semanticUpperCase == "SV_COVERAGE")
@@ -2482,8 +2482,8 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TType& type, const TString
 // 'location' has the "c[Subcomponent]" part.
 // 'component' points to the "component" part, or nullptr if not present.
 //
-void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TType& type, const glslang::TString& location,
-                                                                            const glslang::TString* component)
+void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TQualifier& qualifier, const glslang::TString& location,
+                                        const glslang::TString* component)
 {
     if (location.size() == 0 || location[0] != 'c') {
         error(loc, "expected 'c'", "packoffset", "");
@@ -2496,7 +2496,7 @@ void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TType& type, cons
         return;
     }
 
-    type.getQualifier().layoutOffset = 16 * atoi(location.substr(1, location.size()).c_str());
+    qualifier.layoutOffset = 16 * atoi(location.substr(1, location.size()).c_str());
     if (component != nullptr) {
         int componentOffset = 0;
         switch ((*component)[0]) {
@@ -2512,7 +2512,7 @@ void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TType& type, cons
             error(loc, "expected {x, y, z, w} for component", "packoffset", "");
             return;
         }
-        type.getQualifier().layoutOffset += componentOffset;
+        qualifier.layoutOffset += componentOffset;
     }
 }
 
@@ -2522,9 +2522,8 @@ void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TType& type, cons
 // 'profile' points to the shader_profile part, or nullptr if not present.
 // 'desc' is the type# part.
 //
-void HlslParseContext::handleRegister(const TSourceLoc& loc, TType& type, const glslang::TString* profile,
-                                                                          const glslang::TString& desc,
-                                                                          int subComponent)
+void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifier, const glslang::TString* profile,
+                                      const glslang::TString& desc, int subComponent)
 {
     if (profile != nullptr)
         warn(loc, "ignoring shader_profile", "register", "");
@@ -2550,7 +2549,7 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TType& type, const 
     case 't':
     case 'c':
     case 's':
-        type.getQualifier().layoutBinding = regNumber + subComponent;
+        qualifier.layoutBinding = regNumber + subComponent;
         break;
     default:
         warn(loc, "ignoring unrecognized register type", "register", "%c", desc[0]);
