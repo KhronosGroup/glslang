@@ -1292,17 +1292,16 @@ bool HlslGrammar::acceptType(TType& type)
 //
 bool HlslGrammar::acceptStruct(TType& type)
 {
-    // This qualifier.storage will tell us whether it's an AST block or
-    // just a struct.
-    TQualifier qualifier;
-    qualifier.clear();
+    // This storage qualifier will tell us whether it's an AST
+    // block type or just a generic structure type.
+    TStorageQualifier storageQualifier = EvqTemporary;
 
     // CBUFFER
     if (acceptTokenClass(EHTokCBuffer))
-        qualifier.storage = EvqUniform;
+        storageQualifier = EvqUniform;
     // TBUFFER
     else if (acceptTokenClass(EHTokTBuffer))
-        qualifier.storage = EvqBuffer;
+        storageQualifier = EvqBuffer;
     // STRUCT
     else if (! acceptTokenClass(EHTokStruct))
         return false;
@@ -1337,10 +1336,13 @@ bool HlslGrammar::acceptStruct(TType& type)
     }
 
     // create the user-defined type
-    if (qualifier.storage == EvqTemporary)
+    if (storageQualifier == EvqTemporary)
         new(&type) TType(typeList, structName);
-    else
+    else {
+        TQualifier qualifier = type.getQualifier();
+        qualifier.storage = storageQualifier;
         new(&type) TType(typeList, structName, qualifier); // sets EbtBlock
+    }
 
     // If it was named, which means the type can be reused later, add
     // it to the symbol table.  (Unless it's a block, in which
