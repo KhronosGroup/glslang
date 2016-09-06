@@ -95,5 +95,8 @@ void main()
     if ((mask1 ^ mask4) == 0xA10u)
         count *= 7;  // 341413380
 
-    c += uvec4(count);	
+    c += uvec4(count);
+
+    #define UINT_MAX  4294967295u
+    c.x += UINT_MAX;
 }
