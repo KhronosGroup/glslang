@@ -300,6 +300,10 @@ public:
         const char* const* s, const int* l, const char* const* names, int n);
     void setPreamble(const char* s) { preamble = s; }
     void setEntryPoint(const char* entryPoint);
+    void setShiftSamplerBinding(unsigned int base);
+    void setShiftTextureBinding(unsigned int base);
+    void setShiftUboBinding(unsigned int base);
+    void setAutoMapBindings(bool map);
 
     // Interface to #include handlers.
     //
@@ -433,6 +437,7 @@ private:
 };
 
 class TReflection;
+class TIoMapper;
 
 // Make one TProgram per set of shaders that will get linked together.  Add all 
 // the shaders that are to be linked together.  After calling shader.parse()
@@ -470,6 +475,9 @@ public:
     int getAttributeType(int index);                 // can be used for glGetActiveAttrib()
     void dumpReflection();
 
+    // I/O mapping: apply base offsets and map live unbound variables
+    bool mapIO();
+
 protected:
     bool linkStage(EShLanguage, EShMessages);
 
@@ -479,6 +487,7 @@ protected:
     bool newedIntermediate[EShLangCount];      // track which intermediate were "new" versus reusing a singleton unit in a stage
     TInfoSink* infoSink;
     TReflection* reflection;
+    TIoMapper* ioMapper;
     bool linked;
 
 private:

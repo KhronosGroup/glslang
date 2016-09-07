@@ -141,7 +141,11 @@ public:
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet), inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),
         vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), depthLayout(EldNone), depthReplacing(false), blendEquations(0),
-        multiStream(false), xfbMode(false)
+        multiStream(false), xfbMode(false),
+        shiftSamplerBinding(0),
+        shiftTextureBinding(0),
+        shiftUboBinding(0),
+        autoMapBindings(false)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -163,6 +167,16 @@ public:
     void setEntryPointMangledName(const char* ep) { entryPointMangledName = ep; }
     const std::string& getEntryPointName() const { return entryPointName; }
     const std::string& getEntryPointMangledName() const { return entryPointMangledName; }
+
+    void setShiftSamplerBinding(unsigned int shift) { shiftSamplerBinding = shift; }
+    unsigned int getShiftSamplerBinding() const { return shiftSamplerBinding; }
+    void setShiftTextureBinding(unsigned int shift) { shiftTextureBinding = shift; }
+    unsigned int getShiftTextureBinding() const { return shiftTextureBinding; }
+    void setShiftUboBinding(unsigned int shift)     { shiftUboBinding = shift; }
+    unsigned int getShiftUboBinding()     const { return shiftUboBinding; }
+    void setAutoMapBindings(bool map)               { autoMapBindings = map; }
+    bool getAutoMapBindings()             const { return autoMapBindings; }
+
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
     void setProfile(EProfile p) { profile = p; }
@@ -367,6 +381,11 @@ protected:
     EShSource source;            // source language, known a bit later
     std::string entryPointName;
     std::string entryPointMangledName;
+    unsigned int shiftSamplerBinding;
+    unsigned int shiftTextureBinding;
+    unsigned int shiftUboBinding;
+    bool autoMapBindings;
+
     EProfile profile;
     int version;
     SpvVersion spvVersion;
