@@ -1,6 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2013 LunarG, Inc.
+//Copyright (C) 2013-2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -48,7 +48,9 @@
 #include "../SPIRV/disassemble.h"
 #include <cstring>
 #include <cstdlib>
+#include <cctype>
 #include <cmath>
+#include <array>
 
 #include "../glslang/OSDependent/osinclude.h"
 
@@ -96,7 +98,7 @@ enum TFailCode {
 //
 // Forward declarations.
 //
-EShLanguage FindLanguage(const std::string& name);
+EShLanguage FindLanguage(const std::string& name, bool noSuffix=false);
 void CompileFile(const char* fileName, ShHandle);
 void usage();
 void FreeFileData(char** data);
@@ -157,6 +159,10 @@ const char* binaryFileName = nullptr;
 const char* entryPointName = nullptr;
 const char* shaderStageName = nullptr;
 
+std::array<unsigned int, EShLangCount> baseSamplerBinding;
+std::array<unsigned int, EShLangCount> baseTextureBinding;
+std::array<unsigned int, EShLangCount> baseUboBinding;
+
 //
 // Create the default name for saving a binary if -o is not provided.
 //
@@ -205,6 +211,35 @@ void Error(const char* message)
 }
 
 //
+// Process an optional binding base of the form:
+//   --argname [stage] base
+// Where stage is one of the forms accepted by FindLanguage, and base is an integer
+//
+void ProcessBindingBase(int& argc, char**& argv, std::array<unsigned int, EShLangCount>& base)
+{
+    if (argc < 2)
+        usage();
+
+    if (!isdigit(argv[1][0])) {
+        if (argc < 3) // this form needs one more argument
+            usage();
+    
+        // Parse form: --argname stage base
+        const EShLanguage lang = FindLanguage(argv[1], true);
+        base[lang] = atoi(argv[2]);
+        argc-= 2;
+        argv+= 2;
+    } else {
+        // Parse form: --argname base
+        for (int lang=0; lang<EShLangCount; ++lang)
+            base[lang] = atoi(argv[1]);
+
+        argc--;
+        argv++;
+    }
+}
+
+//
 // Do all command-line argument parsing.  This includes building up the work-items
 // to be processed later, and saving all the command-line options.
 //
@@ -212,6 +247,10 @@ void Error(const char* message)
 //
 void ProcessArguments(int argc, char* argv[])
 {
+    baseSamplerBinding.fill(0);
+    baseTextureBinding.fill(0);
+    baseUboBinding.fill(0);
+
     ExecutableName = argv[0];
     NumWorkItems = argc;  // will include some empties where the '-' options were, but it doesn't matter, they'll be 0
     Work = new glslang::TWorkItem*[NumWorkItems];
@@ -223,6 +262,18 @@ void ProcessArguments(int argc, char* argv[])
     for (; argc >= 1; argc--, argv++) {
         if (argv[0][0] == '-') {
             switch (argv[0][1]) {
+            case '-':
+                // handle --word style options
+                if (strcmp(argv[0]+2, "base-sampler-binding") == 0) {
+                    ProcessBindingBase(argc, argv, baseSamplerBinding);
+                } else if (strcmp(argv[0]+2, "base-texture-binding") == 0) {
+                    ProcessBindingBase(argc, argv, baseTextureBinding);
+                } else if (strcmp(argv[0]+2, "base-UBO-binding") == 0) {
+                    ProcessBindingBase(argc, argv, baseUboBinding);
+                } else {
+                    usage();
+                }
+                break;
             case 'H':
                 Options |= EOptionHumanReadableSpv;
                 if ((Options & EOptionSpv) == 0) {
@@ -461,6 +512,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         shader->setStringsWithLengthsAndNames(compUnit.text, NULL, compUnit.fileNameList, 1);
         if (entryPointName) // HLSL todo: this needs to be tracked per compUnits
             shader->setEntryPoint(entryPointName);
+        shader->setBaseSamplerBinding(baseSamplerBinding[compUnit.stage]);
+        shader->setBaseTextureBinding(baseTextureBinding[compUnit.stage]);
+        shader->setBaseUboBinding(baseUboBinding[compUnit.stage]);
         shaders.push_back(shader);
 
         const int defaultVersion = Options & EOptionDefaultDesktop? 110: 100;
@@ -517,6 +571,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         if (CompileFailed || LinkFailed)
             printf("SPIR-V is not generated for failed compile or link\n");
         else {
+            // Map IO
+            program.mapIO();
+
             for (int stage = 0; stage < EShLangCount; ++stage) {
                 if (program.getIntermediate((EShLanguage)stage)) {
                     std::vector<unsigned int> spirv;
@@ -705,15 +762,20 @@ int C_DECL main(int argc, char* argv[])
 //   .frag = fragment
 //   .comp = compute
 //
-EShLanguage FindLanguage(const std::string& name)
+EShLanguage FindLanguage(const std::string& name, bool noSuffix)
 {
-    size_t ext = name.rfind('.');
-    if (ext == std::string::npos) {
-        usage();
-        return EShLangVertex;
+    size_t ext = 0;
+
+    if (!noSuffix) {
+        ext = name.rfind('.');
+        if (ext == std::string::npos) {
+            usage();
+            return EShLangVertex;
+        }
+        ++ext;
     }
 
-    std::string suffix = name.substr(ext + 1, std::string::npos);
+    std::string suffix = name.substr(ext, std::string::npos);
     if (shaderStageName)
         suffix = shaderStageName;
 
@@ -831,6 +893,9 @@ void usage()
            "  -v          print version strings\n"
            "  -w          suppress warnings (except as required by #extension : warn)\n"
            "  -x          save 32-bit hexadecimal numbers as text, requires a binary option (e.g., -V)\n"
+           "  --base-sampler-binding [stage] num     set base binding number for samplers\n"
+           "  --base-texture-binding [stage] num     set base binding number for textures\n"
+           "  --base-UBO-binding [stage] num         set base binding number for UBOs\n"
            );
 
     exit(EFailUsage);

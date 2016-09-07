@@ -852,6 +852,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
 
     inEntrypoint = (function.getName() == intermediate.getEntryPoint().c_str());
     if (inEntrypoint) {
+        intermediate.addMainCount();
         remapEntrypointIO(function);
         if (entryPointOutput) {
             if (shouldFlatten(entryPointOutput->getType()))

@@ -141,7 +141,10 @@ public:
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet), inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),
         vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), depthLayout(EldNone), depthReplacing(false), blendEquations(0),
-        multiStream(false), xfbMode(false)
+        multiStream(false), xfbMode(false),
+        baseSamplerBinding(0),
+        baseTextureBinding(0),
+        baseUboBinding(0)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -161,6 +164,12 @@ public:
     EShSource getSource() const { return source; }
     void setEntryPoint(const char* ep) { entryPoint = ep; }
     const std::string& getEntryPoint() const { return entryPoint; }
+    void setBaseSamplerBinding(unsigned int base) { baseSamplerBinding = base; }
+    unsigned int getBaseSamplerBinding() const { return baseSamplerBinding; }
+    void setBaseTextureBinding(unsigned int base) { baseTextureBinding = base; }
+    unsigned int getBaseTextureBinding() const { return baseTextureBinding; }
+    void setBaseUboBinding(unsigned int base)     { baseUboBinding = base; }
+    unsigned int getBaseUboBinding()     const { return baseUboBinding; }
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
     void setProfile(EProfile p) { profile = p; }
@@ -364,6 +373,10 @@ protected:
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later
     std::string entryPoint;
+    unsigned int baseSamplerBinding;
+    unsigned int baseTextureBinding;
+    unsigned int baseUboBinding;
+
     EProfile profile;
     int version;
     SpvVersion spvVersion;
