@@ -224,7 +224,6 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
             ppToken->dval = atof(ppToken->name);
             break;
         case PpAtomConstInt:
-        case PpAtomConstUint:
             if (len > 0 && tokenText[0] == '0') {
                 if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
                     ppToken->ival = strtol(ppToken->name, 0, 16);
@@ -233,8 +232,16 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
             } else
                 ppToken->ival = atoi(ppToken->name);
             break;
+        case PpAtomConstUint:
+            if (len > 0 && tokenText[0] == '0') {
+                if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
+                    ppToken->ival = (int)strtoul(ppToken->name, 0, 16);
+                else
+                    ppToken->ival = (int)strtoul(ppToken->name, 0, 8);
+            } else
+                ppToken->ival = (int)strtoul(ppToken->name, 0, 10);
+            break;
         case PpAtomConstInt64:
-        case PpAtomConstUint64:
             if (len > 0 && tokenText[0] == '0') {
                 if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
                     ppToken->i64val = strtoll(ppToken->name, nullptr, 16);
@@ -242,6 +249,15 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
                     ppToken->i64val = strtoll(ppToken->name, nullptr, 8);
             } else
                 ppToken->i64val = atoll(ppToken->name);
+            break;
+        case PpAtomConstUint64:
+            if (len > 0 && tokenText[0] == '0') {
+                if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
+                    ppToken->i64val = (long long)strtoull(ppToken->name, nullptr, 16);
+                else
+                    ppToken->i64val = (long long)strtoull(ppToken->name, nullptr, 8);
+            } else
+                ppToken->i64val = (long long)strtoull(ppToken->name, 0, 10);
             break;
         }
     }
