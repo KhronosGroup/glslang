@@ -259,3 +259,6 @@ const uint64_t i_to_u64 = uint64_t(si);
 // uint <-> int64
 const uint    i64_to_u = uint(si64);
 const int64_t u_to_i64 = int64_t(su);
+
+#define UINT64_MAX  18446744073709551615ul
+uint64_t u64Max = UINT64_MAX;
