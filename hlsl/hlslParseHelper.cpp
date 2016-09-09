@@ -679,12 +679,16 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
             }
         }
         if (fieldFound) {
-            if (base->getType().getQualifier().storage == EvqConst)
-                result = intermediate.foldDereference(base, member, loc);
+            if (base->getAsSymbolNode() && shouldFlatten(base->getType()))
+                result = flattenAccess(base, member);
             else {
-                TIntermTyped* index = intermediate.addConstantUnion(member, loc);
-                result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
-                result->setType(*(*fields)[member].type);
+                if (base->getType().getQualifier().storage == EvqConst)
+                    result = intermediate.foldDereference(base, member, loc);
+                else {
+                    TIntermTyped* index = intermediate.addConstantUnion(member, loc);
+                    result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
+                    result->setType(*(*fields)[member].type);
+                }
             }
         } else
             error(loc, "no such field in structure", field.c_str(), "");
@@ -692,6 +696,54 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
         error(loc, "does not apply to this type:", field.c_str(), base->getType().getCompleteString().c_str());
 
     return result;
+}
+
+// Is this a structure that can't be passed down the stack?
+// E.g., pipeline inputs to the vertex stage and outputs from the fragment stage.
+bool HlslParseContext::shouldFlatten(const TType& type)
+{
+    const TStorageQualifier qualifier = type.getQualifier().storage;
+
+    return type.isStruct() &&
+           ((language == EShLangVertex   && qualifier == EvqVaryingIn) ||
+            (language == EShLangFragment && qualifier == EvqVaryingOut));
+}
+
+// Figure out mapping between a structures top members and an
+// equivalent set of individual variables.
+//
+// Assumes shouldFlatten() or equivalent was called first.
+//
+// TODO: generalize this to arbitrary nesting?
+void HlslParseContext::flattenStruct(const TVariable& variable)
+{
+    TVector<TVariable*> memberVariables;
+
+    auto members = *variable.getType().getStruct();
+    int location = variable.getType().getQualifier().layoutLocation;
+    for (int member = 0; member < (int)members.size(); ++member) {
+        TVariable* memberVariable = makeInternalVariable(members[member].type->getFieldName().c_str(), *members[member].type);
+        memberVariable->getWritableType().getQualifier() = variable.getType().getQualifier();
+        memberVariable->getWritableType().getQualifier().layoutLocation = location;
+        location += intermediate.computeTypeLocationSize(memberVariable->getType());
+        memberVariables.push_back(memberVariable);
+    }
+
+    flattenMap[variable.getUniqueId()] = memberVariables;
+}
+
+// Turn an access into structure that was flattened to instead be
+// an access to the individual variable the member was flattened to.
+// Assumes shouldFlatten() or equivalent was called first.
+TIntermTyped* HlslParseContext::flattenAccess(TIntermTyped* base, int member)
+{
+    const TIntermSymbol& symbolNode = *base->getAsSymbolNode();
+
+    if (flattenMap.find(symbolNode.getId()) == flattenMap.end())
+        return base;
+
+    const TVariable* memberVariable = flattenMap[symbolNode.getId()][member];
+    return intermediate.addSymbol(*memberVariable);
 }
 
 //
@@ -800,6 +852,9 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
                 paramNodes = intermediate.growAggregate(paramNodes,
                     intermediate.addSymbol(*variable, loc),
                     loc);
+
+                if (shouldFlatten(*param.type))
+                    flattenStruct(*variable);
             }
         } else
             paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(*param.type, loc), loc);
@@ -861,20 +916,21 @@ void HlslParseContext::remapEntrypointIO(TFunction& function)
 
     // parameters are actually shader-scoped inputs and outputs (in or out)
     for (int i = 0; i < function.getParamCount(); i++) {
-        if (function[i].type->getQualifier().isParamInput()) {
-            function[i].type->getQualifier().storage = EvqVaryingIn;
-            if (function[i].type->getQualifier().builtIn == EbvNone) {
-                function[i].type->getQualifier().layoutLocation = inCount;
+        TType& paramType = *function[i].type;
+        if (paramType.getQualifier().isParamInput()) {
+            paramType.getQualifier().storage = EvqVaryingIn;
+            if (paramType.getQualifier().builtIn == EbvNone) {
+                paramType.getQualifier().layoutLocation = inCount;
                 inCount += intermediate.computeTypeLocationSize(*function[i].type);
             }
         } else {
-            function[i].type->getQualifier().storage = EvqVaryingOut;
-            if (function[i].type->getQualifier().builtIn == EbvNone && language != EShLangFragment) {
-                function[i].type->getQualifier().layoutLocation = outCount;
+            paramType.getQualifier().storage = EvqVaryingOut;
+            if (paramType.getQualifier().builtIn == EbvNone) {
+                paramType.getQualifier().layoutLocation = outCount;
                 outCount += intermediate.computeTypeLocationSize(*function[i].type);
             }
         }
-        remapBuiltInType(*function[i].type);
+        remapBuiltInType(paramType);
     }
 }
 

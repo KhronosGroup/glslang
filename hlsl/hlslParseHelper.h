@@ -83,6 +83,9 @@ public:
     TIntermTyped* handleBinaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleUnaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* childNode);
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
+    bool shouldFlatten(const TType&);
+    void flattenStruct(const TVariable& variable);
+    TIntermTyped* flattenAccess(TIntermTyped* base, int member);
     TFunction& handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
     void handleFunctionBody(const TSourceLoc&, TFunction&, TIntermNode* functionBody, TIntermNode*& node);
@@ -233,6 +236,8 @@ protected:
     //    array-sizing declarations
     //
     TVector<TSymbol*> ioArraySymbolResizeList;
+
+    TMap<int, TVector<TVariable*>> flattenMap;
 };
 
 } // end namespace glslang
