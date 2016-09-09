@@ -711,8 +711,8 @@ bool HlslGrammar::acceptMatrixTemplateType(TType& type)
         return false;
 
     new(&type) TType(basicType, EvqTemporary, 0,
-                     cols->getAsConstantUnion()->getConstArray()[0].getIConst(),
-                     rows->getAsConstantUnion()->getConstArray()[0].getIConst());
+                     rows->getAsConstantUnion()->getConstArray()[0].getIConst(),
+                     cols->getAsConstantUnion()->getConstArray()[0].getIConst());
 
     if (!acceptTokenClass(EHTokRightAngle)) {
         expected("right angle bracket");
@@ -1031,46 +1031,46 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtInt, EvqTemporary, 0, 1, 1);
         break;
     case EHTokInt1x2:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 2, 1);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 1, 2);
         break;
     case EHTokInt1x3:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 3, 1);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 1, 3);
         break;
     case EHTokInt1x4:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 4, 1);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 1, 4);
         break;
     case EHTokInt2x1:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 1, 2);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 2, 1);
         break;
     case EHTokInt2x2:
         new(&type) TType(EbtInt, EvqTemporary, 0, 2, 2);
         break;
     case EHTokInt2x3:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 3, 2);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 2, 3);
         break;
     case EHTokInt2x4:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 4, 2);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 2, 4);
         break;
     case EHTokInt3x1:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 1, 3);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 3, 1);
         break;
     case EHTokInt3x2:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 2, 3);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 3, 2);
         break;
     case EHTokInt3x3:
         new(&type) TType(EbtInt, EvqTemporary, 0, 3, 3);
         break;
     case EHTokInt3x4:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 4, 3);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 3, 4);
         break;
     case EHTokInt4x1:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 1, 4);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 4, 1);
         break;
     case EHTokInt4x2:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 2, 4);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 4, 2);
         break;
     case EHTokInt4x3:
-        new(&type) TType(EbtInt, EvqTemporary, 0, 3, 4);
+        new(&type) TType(EbtInt, EvqTemporary, 0, 4, 3);
         break;
     case EHTokInt4x4:
         new(&type) TType(EbtInt, EvqTemporary, 0, 4, 4);
@@ -1080,46 +1080,46 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtUint, EvqTemporary, 0, 1, 1);
         break;
     case EHTokUint1x2:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 2, 1);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 1, 2);
         break;
     case EHTokUint1x3:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 3, 1);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 1, 3);
         break;
     case EHTokUint1x4:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 4, 1);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 1, 4);
         break;
     case EHTokUint2x1:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 1, 2);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 2, 1);
         break;
     case EHTokUint2x2:
         new(&type) TType(EbtUint, EvqTemporary, 0, 2, 2);
         break;
     case EHTokUint2x3:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 3, 2);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 2, 3);
         break;
     case EHTokUint2x4:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 4, 2);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 2, 4);
         break;
     case EHTokUint3x1:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 1, 3);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 3, 1);
         break;
     case EHTokUint3x2:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 2, 3);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 3, 2);
         break;
     case EHTokUint3x3:
         new(&type) TType(EbtUint, EvqTemporary, 0, 3, 3);
         break;
     case EHTokUint3x4:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 4, 3);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 3, 4);
         break;
     case EHTokUint4x1:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 1, 4);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 4, 1);
         break;
     case EHTokUint4x2:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 2, 4);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 4, 2);
         break;
     case EHTokUint4x3:
-        new(&type) TType(EbtUint, EvqTemporary, 0, 3, 4);
+        new(&type) TType(EbtUint, EvqTemporary, 0, 4, 3);
         break;
     case EHTokUint4x4:
         new(&type) TType(EbtUint, EvqTemporary, 0, 4, 4);
@@ -1129,46 +1129,46 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtBool, EvqTemporary, 0, 1, 1);
         break;
     case EHTokBool1x2:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 2, 1);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 1, 2);
         break;
     case EHTokBool1x3:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 3, 1);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 1, 3);
         break;
     case EHTokBool1x4:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 4, 1);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 1, 4);
         break;
     case EHTokBool2x1:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 1, 2);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 2, 1);
         break;
     case EHTokBool2x2:
         new(&type) TType(EbtBool, EvqTemporary, 0, 2, 2);
         break;
     case EHTokBool2x3:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 3, 2);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 2, 3);
         break;
     case EHTokBool2x4:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 4, 2);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 2, 4);
         break;
     case EHTokBool3x1:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 1, 3);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 3, 1);
         break;
     case EHTokBool3x2:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 2, 3);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 3, 2);
         break;
     case EHTokBool3x3:
         new(&type) TType(EbtBool, EvqTemporary, 0, 3, 3);
         break;
     case EHTokBool3x4:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 4, 3);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 3, 4);
         break;
     case EHTokBool4x1:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 1, 4);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 4, 1);
         break;
     case EHTokBool4x2:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 2, 4);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 4, 2);
         break;
     case EHTokBool4x3:
-        new(&type) TType(EbtBool, EvqTemporary, 0, 3, 4);
+        new(&type) TType(EbtBool, EvqTemporary, 0, 4, 3);
         break;
     case EHTokBool4x4:
         new(&type) TType(EbtBool, EvqTemporary, 0, 4, 4);
@@ -1178,46 +1178,46 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtFloat, EvqTemporary, 0, 1, 1);
         break;
     case EHTokFloat1x2:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 2, 1);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 1, 2);
         break;
     case EHTokFloat1x3:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 3, 1);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 1, 3);
         break;
     case EHTokFloat1x4:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 4, 1);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 1, 4);
         break;
     case EHTokFloat2x1:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 1, 2);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 2, 1);
         break;
     case EHTokFloat2x2:
         new(&type) TType(EbtFloat, EvqTemporary, 0, 2, 2);
         break;
     case EHTokFloat2x3:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 3, 2);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 2, 3);
         break;
     case EHTokFloat2x4:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 4, 2);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 2, 4);
         break;
     case EHTokFloat3x1:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 1, 3);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 3, 1);
         break;
     case EHTokFloat3x2:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 2, 3);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 3, 2);
         break;
     case EHTokFloat3x3:
         new(&type) TType(EbtFloat, EvqTemporary, 0, 3, 3);
         break;
     case EHTokFloat3x4:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 4, 3);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 3, 4);
         break;
     case EHTokFloat4x1:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 1, 4);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 4, 1);
         break;
     case EHTokFloat4x2:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 2, 4);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 4, 2);
         break;
     case EHTokFloat4x3:
-        new(&type) TType(EbtFloat, EvqTemporary, 0, 3, 4);
+        new(&type) TType(EbtFloat, EvqTemporary, 0, 4, 3);
         break;
     case EHTokFloat4x4:
         new(&type) TType(EbtFloat, EvqTemporary, 0, 4, 4);
@@ -1227,46 +1227,46 @@ bool HlslGrammar::acceptType(TType& type)
         new(&type) TType(EbtDouble, EvqTemporary, 0, 1, 1);
         break;
     case EHTokDouble1x2:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 2, 1);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 1, 2);
         break;
     case EHTokDouble1x3:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 3, 1);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 1, 3);
         break;
     case EHTokDouble1x4:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 4, 1);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 1, 4);
         break;
     case EHTokDouble2x1:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 1, 2);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 2, 1);
         break;
     case EHTokDouble2x2:
         new(&type) TType(EbtDouble, EvqTemporary, 0, 2, 2);
         break;
     case EHTokDouble2x3:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 3, 2);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 2, 3);
         break;
     case EHTokDouble2x4:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 4, 2);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 2, 4);
         break;
     case EHTokDouble3x1:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 1, 3);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 3, 1);
         break;
     case EHTokDouble3x2:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 2, 3);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 3, 2);
         break;
     case EHTokDouble3x3:
         new(&type) TType(EbtDouble, EvqTemporary, 0, 3, 3);
         break;
     case EHTokDouble3x4:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 4, 3);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 3, 4);
         break;
     case EHTokDouble4x1:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 1, 4);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 4, 1);
         break;
     case EHTokDouble4x2:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 2, 4);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 4, 2);
         break;
     case EHTokDouble4x3:
-        new(&type) TType(EbtDouble, EvqTemporary, 0, 3, 4);
+        new(&type) TType(EbtDouble, EvqTemporary, 0, 4, 3);
         break;
     case EHTokDouble4x4:
         new(&type) TType(EbtDouble, EvqTemporary, 0, 4, 4);
