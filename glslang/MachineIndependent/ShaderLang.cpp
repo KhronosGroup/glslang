@@ -695,9 +695,8 @@ bool ProcessDeferred(
     TParseContextBase* parseContext;
     if (source == EShSourceHlsl) {
         parseContext = new HlslParseContext(symbolTable, intermediate, false, version, profile, spvVersion,
-                                             compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
-    }
-    else {
+                                            compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
+    } else {
         intermediate.setEntryPoint("main");
         parseContext = new TParseContext(symbolTable, intermediate, false, version, profile, spvVersion,
                                          compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
