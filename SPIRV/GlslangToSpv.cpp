@@ -3504,8 +3504,7 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
     case glslang::EOpUnpackInt2x32:
     case glslang::EOpPackUint2x32:
     case glslang::EOpUnpackUint2x32:
-        logger->missingFunctionality("shader int64");
-        libCall = spv::GLSLstd450Bad; // TODO: This is a placeholder.
+        unaryOp = spv::OpBitcast;
         break;
 
     case glslang::EOpDPdx:
