@@ -2,7 +2,7 @@
 
 struct MyStruct
 {
-    vec4 foo;
+    vec2 foo[2];
     bool sb;
 };
 
@@ -23,7 +23,7 @@ layout(binding = 2, std140) uniform UBO
 
 struct Nested {
     float f;
-    MyStruct S;
+    MyStruct S[2];
 };
 
 layout(binding = 2, std140) uniform UBON

@@ -2283,13 +2283,13 @@ void TGlslangToSpvTraverser::accessChainStore(const glslang::TType& type, spv::I
 // Implicitly uses the existing builder.accessChain as the storage target.
 void TGlslangToSpvTraverser::multiTypeStore(const glslang::TType& type, spv::Id rValue)
 {
-    // we only do the complex path here if it's a structure
-    if (! type.isStruct()) {
+    // we only do the complex path here if it's an aggregate
+    if (! type.isStruct() && ! type.isArray()) {
         accessChainStore(type, rValue);
         return;
     }
 
-    // and, it has to be a case of structure type aliasing
+    // and, it has to be a case of type aliasing
     spv::Id rType = builder.getTypeId(rValue);
     spv::Id lValue = builder.accessChainGetLValue();
     spv::Id lType = builder.getContainedTypeId(builder.getTypeId(lValue));
@@ -2298,26 +2298,46 @@ void TGlslangToSpvTraverser::multiTypeStore(const glslang::TType& type, spv::Id 
         return;
     }
 
-    // Recursively (as needed) copy a struct type to a different struct type,
+    // Recursively (as needed) copy an aggregate type to a different aggregate type,
     // where the two types were the same type in GLSL. This requires member
     // by member copy, recursively.
 
-    // loop over members
-    const glslang::TTypeList& members = *type.getStruct();
-    for (int m = 0; m < (int)members.size(); ++m) {
-        const glslang::TType& glslangMemberType = *members[m].type;
+    // If an array, copy element by element.
+    if (type.isArray()) {
+        glslang::TType glslangElementType(type, 0);
+        spv::Id elementRType = builder.getContainedTypeId(rType);
+        for (int index = 0; index < type.getOuterArraySize(); ++index) {
+            // get the source member
+            spv::Id elementRValue = builder.createCompositeExtract(rValue, elementRType, index);
 
-        // get the source member
-        spv::Id memberRType = builder.getContainedTypeId(rType, m);
-        spv::Id memberRValue = builder.createCompositeExtract(rValue, memberRType, m);
+            // set up the target storage
+            builder.clearAccessChain();
+            builder.setAccessChainLValue(lValue);
+            builder.accessChainPush(builder.makeIntConstant(index));
 
-        // set up the target storage
-        builder.clearAccessChain();
-        builder.setAccessChainLValue(lValue);
-        builder.accessChainPush(builder.makeIntConstant(m));
+            // store the member
+            multiTypeStore(glslangElementType, elementRValue);
+        }
+    } else {
+        assert(type.isStruct());
 
-        // store the member
-        multiTypeStore(glslangMemberType, memberRValue);
+        // loop over structure members
+        const glslang::TTypeList& members = *type.getStruct();
+        for (int m = 0; m < (int)members.size(); ++m) {
+            const glslang::TType& glslangMemberType = *members[m].type;
+
+            // get the source member
+            spv::Id memberRType = builder.getContainedTypeId(rType, m);
+            spv::Id memberRValue = builder.createCompositeExtract(rValue, memberRType, m);
+
+            // set up the target storage
+            builder.clearAccessChain();
+            builder.setAccessChainLValue(lValue);
+            builder.accessChainPush(builder.makeIntConstant(m));
+
+            // store the member
+            multiTypeStore(glslangMemberType, memberRValue);
+        }
     }
 }
 
