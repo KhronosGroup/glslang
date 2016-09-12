@@ -408,6 +408,11 @@ ERROR: node is still EOpNull!
 0:?           4.000000
 0:?           4.000000
 0:?   Linker Objects
+0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     'inF0' (layout(location=0 ) in 4-component vector of float)
+0:?     'inF1' (layout(location=1 ) in 4-component vector of float)
+0:?     'inF2' (layout(location=2 ) in 4-component vector of float)
+0:?     'inI0' (layout(location=3 ) in 4-component vector of int)
 
 
 Linked fragment stage:
@@ -759,5 +764,10 @@ ERROR: node is still EOpNull!
 0:?           4.000000
 0:?           4.000000
 0:?   Linker Objects
+0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     'inF0' (layout(location=0 ) in 4-component vector of float)
+0:?     'inF1' (layout(location=1 ) in 4-component vector of float)
+0:?     'inF2' (layout(location=2 ) in 4-component vector of float)
+0:?     'inI0' (layout(location=3 ) in 4-component vector of int)
 
 SPIR-V is not generated for failed compile or link

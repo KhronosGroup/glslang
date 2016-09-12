@@ -702,6 +702,9 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
 // E.g., pipeline inputs to the vertex stage and outputs from the fragment stage.
 bool HlslParseContext::shouldFlatten(const TType& type)
 {
+    if (! inEntrypoint)
+        return false;
+
     const TStorageQualifier qualifier = type.getQualifier().storage;
 
     return type.isStruct() &&
@@ -727,6 +730,7 @@ void HlslParseContext::flattenStruct(const TVariable& variable)
         memberVariable->getWritableType().getQualifier().layoutLocation = location;
         location += intermediate.computeTypeLocationSize(memberVariable->getType());
         memberVariables.push_back(memberVariable);
+        intermediate.addSymbolLinkageNode(linkage, *memberVariable);
     }
 
     flattenMap[variable.getUniqueId()] = memberVariables;
@@ -855,6 +859,8 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
 
                 if (shouldFlatten(*param.type))
                     flattenStruct(*variable);
+                else if (inEntrypoint)
+                    intermediate.addSymbolLinkageNode(linkage, *variable);
             }
         } else
             paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(*param.type, loc), loc);
@@ -907,6 +913,7 @@ void HlslParseContext::remapEntrypointIO(TFunction& function)
     if (function.getType().getBasicType() != EbtVoid) {
         entryPointOutput = makeInternalVariable("@entryPointOutput", function.getType());
         entryPointOutput->getWritableType().getQualifier().storage = EvqVaryingOut;
+        intermediate.addSymbolLinkageNode(linkage, *entryPointOutput);
         if (function.getType().getQualifier().builtIn == EbvNone) {
             entryPointOutput->getWritableType().getQualifier().layoutLocation = outCount;
             outCount += intermediate.computeTypeLocationSize(function.getType());
