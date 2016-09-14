@@ -1328,15 +1328,20 @@ Id Builder::createRvalueSwizzle(Decoration precision, Id typeId, Id source, std:
 // Comments in header
 Id Builder::createLvalueSwizzle(Id typeId, Id target, Id source, std::vector<unsigned>& channels)
 {
-    assert(getNumComponents(source) == (int)channels.size());
     if (channels.size() == 1 && getNumComponents(source) == 1)
         return createCompositeInsert(source, target, typeId, channels.front());
 
     Instruction* swizzle = new Instruction(getUniqueId(), typeId, OpVectorShuffle);
-    assert(isVector(source));
     assert(isVector(target));
     swizzle->addIdOperand(target);
-    swizzle->addIdOperand(source);
+    if (accessChain.component != NoResult)
+        // For dynamic component selection, source does not involve in l-value swizzle
+        swizzle->addIdOperand(target);
+    else {
+        assert(getNumComponents(source) == (int)channels.size());
+        assert(isVector(source));
+        swizzle->addIdOperand(source);
+    }
 
     // Set up an identity shuffle from the base value to the result value
     unsigned int components[4];
@@ -1345,8 +1350,12 @@ Id Builder::createLvalueSwizzle(Id typeId, Id target, Id source, std::vector<uns
         components[i] = i;
 
     // Punch in the l-value swizzle
-    for (int i = 0; i < (int)channels.size(); ++i)
-        components[channels[i]] = numTargetComponents + i;
+    for (int i = 0; i < (int)channels.size(); ++i) {
+        if (accessChain.component != NoResult)
+            components[i] = channels[i]; // Only shuffle the base value
+        else
+            components[channels[i]] = numTargetComponents + i;
+    }
 
     // finish the instruction with these components selectors
     for (int i = 0; i < numTargetComponents; ++i)
@@ -2117,9 +2126,6 @@ void Builder::accessChainStore(Id rvalue)
 
     transferAccessChainSwizzle(true);
     Id base = collapseAccessChain();
-
-    if (accessChain.swizzle.size() && accessChain.component != NoResult)
-        logger->missingFunctionality("simultaneous l-value swizzle and dynamic component selection");
 
     // If swizzle still exists, it is out-of-order or not full, we must load the target vector,
     // extract and insert elements to perform writeMask and/or swizzle.
