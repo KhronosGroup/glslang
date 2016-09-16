@@ -728,7 +728,7 @@ void HlslParseContext::flattenStruct(const TVariable& variable)
     for (int member = 0; member < (int)members.size(); ++member) {
         TVariable* memberVariable = makeInternalVariable(members[member].type->getFieldName().c_str(),
                                                          *members[member].type);
-        memberVariable->getWritableType().getQualifier().storage = variable.getType().getQualifier().storage;
+        mergeQualifiers(memberVariable->getWritableType().getQualifier(), variable.getType().getQualifier());
         memberVariables.push_back(memberVariable);
     }
 
@@ -3049,7 +3049,7 @@ void HlslParseContext::globalQualifierFix(const TSourceLoc&, TQualifier& qualifi
 // 'dst', for the purpose of error checking order for versions
 // that require specific orderings of qualifiers.
 //
-void HlslParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, const TQualifier& src, bool force)
+void HlslParseContext::mergeQualifiers(TQualifier& dst, const TQualifier& src)
 {
     // Storage qualification
     if (dst.storage == EvqTemporary || dst.storage == EvqGlobal)
@@ -3060,8 +3060,6 @@ void HlslParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, c
     else if ((dst.storage == EvqIn    && src.storage == EvqConst) ||
              (dst.storage == EvqConst && src.storage == EvqIn))
         dst.storage = EvqConstReadOnly;
-    else if (src.storage != EvqTemporary && src.storage != EvqGlobal)
-        error(loc, "too many storage qualifiers", GetStorageQualifierString(src.storage), "");
 
     // Layout qualifiers
     mergeObjectLayoutQualifiers(dst, src, false);
@@ -4586,7 +4584,7 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
         }
 
         TQualifier newMemberQualification = defaultQualification;
-        mergeQualifiers(memberLoc, newMemberQualification, memberQualifier, false);
+        mergeQualifiers(newMemberQualification, memberQualifier);
         memberQualifier = newMemberQualification;
     }
 

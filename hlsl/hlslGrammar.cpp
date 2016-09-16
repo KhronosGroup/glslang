@@ -435,7 +435,7 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type)
         return false;
     if (type.getBasicType() == EbtBlock) {
         // the type was a block, which set some parts of the qualifier
-        parseContext.mergeQualifiers(loc, type.getQualifier(), qualifier, true);
+        parseContext.mergeQualifiers(type.getQualifier(), qualifier);
         // further, it can create an anonymous instance of the block
         if (peekTokenClass(EHTokSemicolon))
             parseContext.declareBlock(loc, type);
@@ -476,7 +476,6 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
             qualifier.volatil = true;
             break;
         case EHTokLinear:
-            qualifier.storage = EvqVaryingIn;
             qualifier.smooth = true;
             break;
         case EHTokCentroid:

@@ -129,7 +129,7 @@ public:
     void boolCheck(const TSourceLoc&, const TIntermTyped*);
     void globalQualifierFix(const TSourceLoc&, TQualifier&);
     bool structQualifierErrorCheck(const TSourceLoc&, const TPublicType& pType);
-    void mergeQualifiers(const TSourceLoc&, TQualifier& dst, const TQualifier& src, bool force);
+    void mergeQualifiers(TQualifier& dst, const TQualifier& src);
     int computeSamplerTypeIndex(TSampler&);
     TSymbol* redeclareBuiltinVariable(const TSourceLoc&, const TString&, const TQualifier&, const TShaderQualifiers&, bool& newDeclaration);
     void redeclareBuiltinBlock(const TSourceLoc&, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
