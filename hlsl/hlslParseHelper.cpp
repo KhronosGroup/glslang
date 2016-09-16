@@ -710,8 +710,8 @@ bool HlslParseContext::shouldFlatten(const TType& type)
     const TStorageQualifier qualifier = type.getQualifier().storage;
 
     return type.isStruct() &&
-           ((language == EShLangVertex   && qualifier == EvqVaryingIn) ||
-            (language == EShLangFragment && qualifier == EvqVaryingOut));
+           (qualifier == EvqVaryingIn ||
+            qualifier == EvqVaryingOut);
 }
 
 // Figure out the mapping between a structure's top members and an
