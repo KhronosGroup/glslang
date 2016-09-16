@@ -71,7 +71,7 @@ void GetColor12(const S i, int comp)
 
 void GetColor13(const S i, int comp)
 { 
-    // OutColor.zy[comp] += i.color.x; // not yet supported
+    OutColor.zy[comp] += i.color.x;
 }
 
 void main()
