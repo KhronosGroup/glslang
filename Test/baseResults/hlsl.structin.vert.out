@@ -4,7 +4,7 @@ Shader version: 450
 0:7  Function Definition: main(vf4;struct-VI-vf4[2]-vu21;vf4; (global 4-component vector of float Position)
 0:7    Function Parameters: 
 0:7      'd' (layout(location=0 ) in 4-component vector of float)
-0:7      'vi' (layout(location=1 ) in structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord})
+0:7      'vi' (in structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord})
 0:7      'e' (layout(location=4 ) in 4-component vector of float)
 0:?     Sequence
 0:8      Sequence
@@ -47,7 +47,7 @@ Shader version: 450
 0:7  Function Definition: main(vf4;struct-VI-vf4[2]-vu21;vf4; (global 4-component vector of float Position)
 0:7    Function Parameters: 
 0:7      'd' (layout(location=0 ) in 4-component vector of float)
-0:7      'vi' (layout(location=1 ) in structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord})
+0:7      'vi' (in structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord})
 0:7      'e' (layout(location=4 ) in 4-component vector of float)
 0:?     Sequence
 0:8      Sequence

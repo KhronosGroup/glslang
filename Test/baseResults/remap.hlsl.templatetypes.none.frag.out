@@ -44,6 +44,7 @@ Linked fragment stage:
                               Name 141  "r66"
                               Name 146  "@entryPointOutput"
                               Name 148  "input"
+                              Decorate 146(@entryPointOutput) Location 0
                               Decorate 148(input) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

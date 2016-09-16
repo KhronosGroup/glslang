@@ -49,7 +49,7 @@ gl_FragCoord origin is upper left
 0:?   Linker Objects
 0:?     'a' (global 4-element array of 4-component vector of float)
 0:?     's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
-0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'i' (layout(location=0 ) in int)
 0:?     'input' (layout(location=1 ) in 3-element array of 4-component vector of float)
 
@@ -107,7 +107,7 @@ gl_FragCoord origin is upper left
 0:?   Linker Objects
 0:?     'a' (global 4-element array of 4-component vector of float)
 0:?     's' (global 11-element array of structure{temp 7-element array of 4-component vector of float m})
-0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'i' (layout(location=0 ) in int)
 0:?     'input' (layout(location=1 ) in 3-element array of 4-component vector of float)
 

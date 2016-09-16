@@ -150,7 +150,7 @@ gl_FragCoord origin is upper left
 0:?     'single2' (global structure{temp 2-component vector of uint v})
 0:?     'single3' (global structure{temp structure{temp int f} s1})
 0:?     'single4' (global structure{temp structure{temp 2-component vector of uint v} s1})
-0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'input' (layout(location=0 ) in 4-component vector of float)
 
 
@@ -308,7 +308,7 @@ gl_FragCoord origin is upper left
 0:?     'single2' (global structure{temp 2-component vector of uint v})
 0:?     'single3' (global structure{temp structure{temp int f} s1})
 0:?     'single4' (global structure{temp structure{temp 2-component vector of uint v} s1})
-0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'input' (layout(location=0 ) in 4-component vector of float)
 
 // Module Version 10000

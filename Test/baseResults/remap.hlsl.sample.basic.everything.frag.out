@@ -13,7 +13,7 @@ Linked fragment stage:
                               Capability Sampled1D
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 5663  "main" 4045
+                              EntryPoint Fragment 5663  "main" 4045 4656 4112
                               ExecutionMode 5663 OriginUpperLeft
                               Decorate 4727 DescriptorSet 0
                               Decorate 4727 Binding 0
@@ -31,7 +31,8 @@ Linked fragment stage:
                               Decorate 3805 DescriptorSet 0
                               Decorate 3869 DescriptorSet 0
                               MemberDecorate 1032 1 BuiltIn FragDepth
-                              Decorate 4045 Location 0
+                              Decorate 4656 Location 0
+                              Decorate 4112 BuiltIn FragDepth
                8:             TypeVoid
             1282:             TypeFunction 8
               12:             TypeInt 32 1
@@ -131,6 +132,10 @@ Linked fragment stage:
              650:             TypePointer Function 13(float)
             1670:             TypePointer Output 1032(struct)
             4045:   1670(ptr) Variable Output
+             667:             TypePointer Output 29(fvec4)
+            4656:    667(ptr) Variable Output
+             651:             TypePointer Output 13(float)
+            4112:    651(ptr) Variable Output
             5663:           8 Function None 1282
            24915:             Label
             5830:   1972(ptr) Variable Function

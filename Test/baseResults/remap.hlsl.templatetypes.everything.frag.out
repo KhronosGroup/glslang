@@ -13,6 +13,7 @@ Linked fragment stage:
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 5663  "main" 4045 4872
                               ExecutionMode 5663 OriginUpperLeft
+                              Decorate 4045 Location 0
                               Decorate 4872 Location 0
                8:             TypeVoid
             1282:             TypeFunction 8

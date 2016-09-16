@@ -34,7 +34,7 @@ gl_FragCoord origin is upper left
 0:9            0.000000
 0:9        Branch: Return
 0:?   Linker Objects
-0:?     '@entryPointOutput' (out float)
+0:?     '@entryPointOutput' (layout(location=0 ) out float)
 0:?     'inDV1a' (layout(location=0 ) in double)
 0:?     'inDV1b' (layout(location=1 ) in double)
 0:?     'inDV1c' (layout(location=2 ) in double)
@@ -83,7 +83,7 @@ gl_FragCoord origin is upper left
 0:9            0.000000
 0:9        Branch: Return
 0:?   Linker Objects
-0:?     '@entryPointOutput' (out float)
+0:?     '@entryPointOutput' (layout(location=0 ) out float)
 0:?     'inDV1a' (layout(location=0 ) in double)
 0:?     'inDV1b' (layout(location=1 ) in double)
 0:?     'inDV1c' (layout(location=2 ) in double)

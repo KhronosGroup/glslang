@@ -86,6 +86,7 @@ public:
     bool shouldFlatten(const TType&);
     void flattenStruct(const TVariable& variable);
     TIntermTyped* flattenAccess(TIntermTyped* base, int member);
+    void assignLocations(TVariable& variable);
     TFunction& handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
     void handleFunctionBody(const TSourceLoc&, TFunction&, TIntermNode* functionBody, TIntermNode*& node);
@@ -237,7 +238,9 @@ protected:
     //
     TVector<TSymbol*> ioArraySymbolResizeList;
 
-    TMap<int, TVector<TVariable*>> flattenMap;
+    TUnorderedMap<int, TVector<TVariable*>> flattenMap;
+    unsigned int nextInLocation;
+    unsigned int nextOutLocation;
 };
 
 } // end namespace glslang

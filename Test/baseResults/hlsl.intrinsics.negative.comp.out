@@ -62,7 +62,7 @@ local_size = (1, 1, 1)
 0:?             4.000000
 0:199        Branch: Return
 0:?   Linker Objects
-0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'inF0' (layout(location=0 ) in 4-component vector of float)
 0:?     'inF1' (layout(location=1 ) in 4-component vector of float)
 0:?     'inF2' (layout(location=2 ) in 4-component vector of float)
@@ -135,7 +135,7 @@ local_size = (1, 1, 1)
 0:?             4.000000
 0:199        Branch: Return
 0:?   Linker Objects
-0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'inF0' (layout(location=0 ) in 4-component vector of float)
 0:?     'inF1' (layout(location=1 ) in 4-component vector of float)
 0:?     'inF2' (layout(location=2 ) in 4-component vector of float)

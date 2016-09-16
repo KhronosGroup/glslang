@@ -55,7 +55,8 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
     postMainReturn(false),
     limits(resources.limits),
-    entryPointOutput(nullptr)
+    entryPointOutput(nullptr),
+    nextInLocation(0), nextOutLocation(0)
 {
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
     linkage = new TIntermAggregate;
@@ -713,7 +714,7 @@ bool HlslParseContext::shouldFlatten(const TType& type)
             (language == EShLangFragment && qualifier == EvqVaryingOut));
 }
 
-// Figure out mapping between a structures top members and an
+// Figure out the mapping between a structure's top members and an
 // equivalent set of individual variables.
 //
 // Assumes shouldFlatten() or equivalent was called first.
@@ -724,14 +725,11 @@ void HlslParseContext::flattenStruct(const TVariable& variable)
     TVector<TVariable*> memberVariables;
 
     auto members = *variable.getType().getStruct();
-    int location = variable.getType().getQualifier().layoutLocation;
     for (int member = 0; member < (int)members.size(); ++member) {
-        TVariable* memberVariable = makeInternalVariable(members[member].type->getFieldName().c_str(), *members[member].type);
-        memberVariable->getWritableType().getQualifier() = variable.getType().getQualifier();
-        memberVariable->getWritableType().getQualifier().layoutLocation = location;
-        location += intermediate.computeTypeLocationSize(memberVariable->getType());
+        TVariable* memberVariable = makeInternalVariable(members[member].type->getFieldName().c_str(),
+                                                         *members[member].type);
+        memberVariable->getWritableType().getQualifier().storage = variable.getType().getQualifier().storage;
         memberVariables.push_back(memberVariable);
-        intermediate.addSymbolLinkageNode(linkage, *memberVariable);
     }
 
     flattenMap[variable.getUniqueId()] = memberVariables;
@@ -749,6 +747,37 @@ TIntermTyped* HlslParseContext::flattenAccess(TIntermTyped* base, int member)
 
     const TVariable* memberVariable = flattenMap[symbolNode.getId()][member];
     return intermediate.addSymbol(*memberVariable);
+}
+
+// Variables that correspond to the user-interface in and out of a stage
+// (not the built-in interface) are assigned locations and
+// registered as a linkage node (part of the stage's external interface).
+//
+// Assumes it is called in the order in which locations should be assigned.
+void HlslParseContext::assignLocations(TVariable& variable)
+{
+    const auto assignLocation = [&](TVariable& variable) {
+        const TQualifier& qualifier = variable.getType().getQualifier();
+        if (qualifier.storage == EvqVaryingIn || qualifier.storage == EvqVaryingOut) {
+            if (qualifier.builtIn == EbvNone) {
+                if (qualifier.storage == EvqVaryingIn) {
+                    variable.getWritableType().getQualifier().layoutLocation = nextInLocation;
+                    nextInLocation += intermediate.computeTypeLocationSize(variable.getType());
+                } else {
+                    variable.getWritableType().getQualifier().layoutLocation = nextOutLocation;
+                    nextOutLocation += intermediate.computeTypeLocationSize(variable.getType());
+                }
+            }
+            intermediate.addSymbolLinkageNode(linkage, variable);
+        }
+    };
+
+    if (shouldFlatten(variable.getType())) {
+        auto& memberList = flattenMap[variable.getUniqueId()];
+        for (auto member = memberList.begin(); member != memberList.end(); ++member)
+            assignLocation(**member);
+    } else
+        assignLocation(variable);
 }
 
 //
@@ -822,9 +851,14 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     functionReturnsValue = false;
 
     inEntrypoint = (function.getName() == intermediate.getEntryPoint().c_str());
-    if (inEntrypoint)
+    if (inEntrypoint) {
         remapEntrypointIO(function);
-    else
+        if (entryPointOutput) {
+            if (shouldFlatten(entryPointOutput->getType()))
+                flattenStruct(*entryPointOutput);
+            assignLocations(*entryPointOutput);
+        }
+    } else
         remapNonEntrypointIO(function);
 
     //
@@ -837,7 +871,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     // If the parameter has no name, it's not an error, just don't insert it
     // (could be used for unused args).
     //
-    // Also, accumulate the list of parameters into the HIL, so lower level code
+    // Also, accumulate the list of parameters into the AST, so lower level code
     // knows where to find parameters.
     //
     TIntermAggregate* paramNodes = new TIntermAggregate;
@@ -850,18 +884,20 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
             if (! symbolTable.insert(*variable))
                 error(loc, "redefinition", variable->getName().c_str(), "");
             else {
+                // get IO straightened out
+                if (inEntrypoint) {
+                    if (shouldFlatten(*param.type))
+                        flattenStruct(*variable);
+                    assignLocations(*variable);
+                }
+
                 // Transfer ownership of name pointer to symbol table.
                 param.name = nullptr;
 
-                // Add the parameter to the HIL
+                // Add the parameter to the AST
                 paramNodes = intermediate.growAggregate(paramNodes,
-                    intermediate.addSymbol(*variable, loc),
-                    loc);
-
-                if (shouldFlatten(*param.type))
-                    flattenStruct(*variable);
-                else if (inEntrypoint)
-                    intermediate.addSymbolLinkageNode(linkage, *variable);
+                                                        intermediate.addSymbol(*variable, loc),
+                                                        loc);
             }
         } else
             paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(*param.type, loc), loc);
@@ -892,21 +928,27 @@ void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& func
 void HlslParseContext::remapEntrypointIO(TFunction& function)
 {
     // Will auto-assign locations here to the inputs/outputs defined by the entry point
-    unsigned int inCount = 0;
-    unsigned int outCount = 0;
 
-    const auto remapBuiltInType = [&](TType& type) {
-        switch (type.getQualifier().builtIn) {
-        case EbvFragDepthGreater:
-            intermediate.setDepth(EldGreater);
-            type.getQualifier().builtIn = EbvFragDepth;
-            break;
-        case EbvFragDepthLesser:
-            intermediate.setDepth(EldLess);
-            type.getQualifier().builtIn = EbvFragDepth;
-            break;
-        default:
-            break;
+    const auto remapType = [&](TType& type) {
+        const auto remapBuiltInType = [&](TType& type) {
+            switch (type.getQualifier().builtIn) {
+            case EbvFragDepthGreater:
+                intermediate.setDepth(EldGreater);
+                type.getQualifier().builtIn = EbvFragDepth;
+                break;
+            case EbvFragDepthLesser:
+                intermediate.setDepth(EldLess);
+                type.getQualifier().builtIn = EbvFragDepth;
+                break;
+            default:
+                break;
+            }
+        };
+        remapBuiltInType(type);
+        if (type.isStruct()) {
+            auto members = *type.getStruct();
+            for (auto member = members.begin(); member != members.end(); ++member)
+                remapBuiltInType(*member->type);
         }
     };
 
@@ -914,31 +956,14 @@ void HlslParseContext::remapEntrypointIO(TFunction& function)
     if (function.getType().getBasicType() != EbtVoid) {
         entryPointOutput = makeInternalVariable("@entryPointOutput", function.getType());
         entryPointOutput->getWritableType().getQualifier().storage = EvqVaryingOut;
-        intermediate.addSymbolLinkageNode(linkage, *entryPointOutput);
-        if (function.getType().getQualifier().builtIn == EbvNone) {
-            entryPointOutput->getWritableType().getQualifier().layoutLocation = outCount;
-            outCount += intermediate.computeTypeLocationSize(function.getType());
-        }
-        remapBuiltInType(function.getWritableType());
+        remapType(function.getWritableType());
     }
 
     // parameters are actually shader-scoped inputs and outputs (in or out)
     for (int i = 0; i < function.getParamCount(); i++) {
         TType& paramType = *function[i].type;
-        if (paramType.getQualifier().isParamInput()) {
-            paramType.getQualifier().storage = EvqVaryingIn;
-            if (paramType.getQualifier().builtIn == EbvNone) {
-                paramType.getQualifier().layoutLocation = inCount;
-                inCount += intermediate.computeTypeLocationSize(*function[i].type);
-            }
-        } else {
-            paramType.getQualifier().storage = EvqVaryingOut;
-            if (paramType.getQualifier().builtIn == EbvNone) {
-                paramType.getQualifier().layoutLocation = outCount;
-                outCount += intermediate.computeTypeLocationSize(*function[i].type);
-            }
-        }
-        remapBuiltInType(paramType);
+        paramType.getQualifier().storage = paramType.getQualifier().isParamInput() ? EvqVaryingIn : EvqVaryingOut;
+        remapType(paramType);
     }
 }
 

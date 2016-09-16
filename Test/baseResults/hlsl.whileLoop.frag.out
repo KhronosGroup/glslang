@@ -34,7 +34,7 @@ gl_FragCoord origin is upper left
 0:6          false (const bool)
 0:6        No loop body
 0:?   Linker Objects
-0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'input' (layout(location=0 ) in 4-component vector of float)
 
 
@@ -76,7 +76,7 @@ gl_FragCoord origin is upper left
 0:6          false (const bool)
 0:6        No loop body
 0:?   Linker Objects
-0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'input' (layout(location=0 ) in 4-component vector of float)
 
 // Module Version 10000

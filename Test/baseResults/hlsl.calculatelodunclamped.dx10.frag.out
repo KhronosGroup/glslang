@@ -153,7 +153,7 @@ ERROR: node is still EOpNull!
 0:41          1.000000
 0:43      Sequence
 0:43        move second child to first child (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
-0:?           '@entryPointOutput' (layout(location=0 ) out structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:?           '@entryPointOutput' (out structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:43          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:43        Branch: Return
 0:?   Linker Objects
@@ -168,7 +168,8 @@ ERROR: node is still EOpNull!
 0:?     'g_tTexcdf4a' (uniform textureCubeArray)
 0:?     'g_tTexcdi4a' (uniform itextureCubeArray)
 0:?     'g_tTexcdu4a' (uniform utextureCubeArray)
-0:?     '@entryPointOutput' (out structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:?     'Color' (layout(location=0 ) out 4-component vector of float)
+0:?     'Depth' (out float FragDepth)
 
 
 Linked fragment stage:
@@ -316,7 +317,7 @@ ERROR: node is still EOpNull!
 0:41          1.000000
 0:43      Sequence
 0:43        move second child to first child (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
-0:?           '@entryPointOutput' (layout(location=0 ) out structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:?           '@entryPointOutput' (out structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:43          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
 0:43        Branch: Return
 0:?   Linker Objects
@@ -331,6 +332,7 @@ ERROR: node is still EOpNull!
 0:?     'g_tTexcdf4a' (uniform textureCubeArray)
 0:?     'g_tTexcdi4a' (uniform itextureCubeArray)
 0:?     'g_tTexcdu4a' (uniform utextureCubeArray)
-0:?     '@entryPointOutput' (out structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:?     'Color' (layout(location=0 ) out 4-component vector of float)
+0:?     'Depth' (out float FragDepth)
 
 SPIR-V is not generated for failed compile or link

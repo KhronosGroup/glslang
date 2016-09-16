@@ -46,7 +46,7 @@ gl_FragCoord origin is upper left
 0:8                  3 (const int)
 0:8        Branch: Return
 0:?   Linker Objects
-0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'a1' (layout(location=0 ) in 4-component vector of float)
 0:?     'a2' (layout(location=1 ) in 4-component vector of float)
 0:?     'a3' (layout(location=2 ) in 4-component vector of float)
@@ -103,7 +103,7 @@ gl_FragCoord origin is upper left
 0:8                  3 (const int)
 0:8        Branch: Return
 0:?   Linker Objects
-0:?     '@entryPointOutput' (out 4-component vector of float)
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'a1' (layout(location=0 ) in 4-component vector of float)
 0:?     'a2' (layout(location=1 ) in 4-component vector of float)
 0:?     'a3' (layout(location=2 ) in 4-component vector of float)
