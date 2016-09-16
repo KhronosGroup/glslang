@@ -145,7 +145,8 @@ public:
         shiftSamplerBinding(0),
         shiftTextureBinding(0),
         shiftUboBinding(0),
-        autoMapBindings(false)
+        autoMapBindings(false),
+        flattenUniformArrays(false)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -176,6 +177,8 @@ public:
     unsigned int getShiftUboBinding()     const { return shiftUboBinding; }
     void setAutoMapBindings(bool map)               { autoMapBindings = map; }
     bool getAutoMapBindings()             const { return autoMapBindings; }
+    void setFlattenUniformArrays(bool flatten)      { flattenUniformArrays = flatten; }
+    bool getFlattenUniformArrays()        const { return flattenUniformArrays; }
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -385,6 +388,7 @@ protected:
     unsigned int shiftTextureBinding;
     unsigned int shiftUboBinding;
     bool autoMapBindings;
+    bool flattenUniformArrays;
 
     EProfile profile;
     int version;

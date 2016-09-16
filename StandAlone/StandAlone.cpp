@@ -81,6 +81,7 @@ enum TOptions {
     EOptionReadHlsl           = (1 << 17),
     EOptionCascadingErrors    = (1 << 18),
     EOptionAutoMapBindings    = (1 << 19),
+    EOptionFlattenUniformArrays = (1 << 20),
 };
 
 //
@@ -285,6 +286,10 @@ void ProcessArguments(int argc, char* argv[])
                                lowerword == "auto-map-binding"  || 
                                lowerword == "amb") {
                         Options |= EOptionAutoMapBindings;
+                    } else if (lowerword == "flatten-uniform-arrays" || // synonyms
+                               lowerword == "flatten-uniform-array"  ||
+                               lowerword == "fua") {
+                        Options |= EOptionFlattenUniformArrays;
                     } else {
                         usage();
                     }
@@ -407,6 +412,10 @@ void ProcessArguments(int argc, char* argv[])
     // -o or -x makes no sense if there is no target binary
     if (binaryFileName && (Options & EOptionSpv) == 0)
         Error("no binary generation requested (e.g., -V)");
+
+    if ((Options & EOptionFlattenUniformArrays) != 0 &&
+        (Options & EOptionReadHlsl) == 0)
+        Error("uniform array flattening only valid when compiling HLSL source.");
 }
 
 //
@@ -532,6 +541,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         shader->setShiftSamplerBinding(baseSamplerBinding[compUnit.stage]);
         shader->setShiftTextureBinding(baseTextureBinding[compUnit.stage]);
         shader->setShiftUboBinding(baseUboBinding[compUnit.stage]);
+        shader->setFlattenUniformArrays((Options & EOptionFlattenUniformArrays) != 0);
 
         if (Options & EOptionAutoMapBindings)
             shader->setAutoMapBindings(true);
@@ -930,6 +940,9 @@ void usage()
            "  --auto-map-bindings                     automatically bind uniform variables without\n"
            "                                          explicit bindings.\n"
            "  --amb                                   synonym for --auto-map-bindings\n"
+           "\n"
+           "  --flatten-uniform-arrays                flatten uniform array references to scalars\n"
+           "  --fua                                   synonym for --flatten-uniform-arrays\n"
            );
 
     exit(EFailUsage);

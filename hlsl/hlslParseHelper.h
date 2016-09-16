@@ -83,9 +83,6 @@ public:
     TIntermTyped* handleBinaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleUnaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* childNode);
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
-    bool shouldFlatten(const TType&) const;
-    void flatten(const TVariable& variable);
-    TIntermTyped* flattenAccess(TIntermTyped* base, int member);
     void assignLocations(TVariable& variable);
     TFunction& handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
@@ -180,6 +177,15 @@ protected:
     void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,
                        const char* szExtraInfoFormat, TPrefixType prefix,
                        va_list args);
+
+    // Array and struct flattening
+    bool shouldFlatten(const TType& type) const { return shouldFlattenIO(type) || shouldFlattenUniform(type); }
+    TIntermTyped* flattenAccess(TIntermTyped* base, int member);
+    bool shouldFlattenIO(const TType&) const;
+    bool shouldFlattenUniform(const TType&) const;
+    void flatten(const TSourceLoc& loc, const TVariable& variable);
+    void flattenStruct(const TVariable& variable);
+    void flattenArray(const TSourceLoc& loc, const TVariable& variable);
 
     // Current state of parsing
     struct TPragma contextPragma;
