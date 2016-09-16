@@ -1011,7 +1011,7 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
         assert(entryPointOutput != nullptr); // should have been error tested at the beginning
         TIntermSymbol* left = new TIntermSymbol(entryPointOutput->getUniqueId(), entryPointOutput->getName(),
                                                 entryPointOutput->getType());
-        TIntermNode* returnSequence = intermediate.addAssign(EOpAssign, left, converted, loc);
+        TIntermNode* returnSequence = handleAssign(loc, EOpAssign, left, converted);
         returnSequence = intermediate.makeAggregate(returnSequence);
         returnSequence = intermediate.growAggregate(returnSequence, intermediate.addBranch(EOpReturn, loc));
         returnSequence->getAsAggregate()->setOperator(EOpSequence);
@@ -1030,6 +1030,32 @@ void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermTyped*
         arguments = intermediate.growAggregate(arguments, newArg);
     else
         arguments = newArg;
+}
+
+// Some simple source assignments need to be flattened to a sequence
+// of AST assignments.  Catch these and flatten, otherwise, pass through
+// to intermediate.addAssign().
+TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op, TIntermTyped* left, TIntermTyped* right)
+{
+    if (! shouldFlatten(left->getType()) ||
+            ! left->getAsSymbolNode() ||
+            flattenMap.find(left->getAsSymbolNode()->getId()) == flattenMap.end())
+        return intermediate.addAssign(op, left, right, loc);
+
+    // If we get here, we are assigning a whole struct to a flattened l-value, so have to
+    // do member-by-member assignment:
+    const auto& members = *left->getType().getStruct();
+    const auto& memberVariables = flattenMap[left->getAsSymbolNode()->getId()];
+    TIntermAggregate* assignList = nullptr;
+    for (int member = 0; member < (int)memberVariables.size(); ++member) {
+        TIntermTyped* subRight = intermediate.addIndex(EOpIndexDirectStruct, right, intermediate.addConstantUnion(member, loc), loc);
+        subRight->setType(*members[member].type);
+        TIntermTyped* subLeft = intermediate.addSymbol(*memberVariables[member]);
+        assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc));
+    }
+    assignList->setOperator(EOpSequence);
+
+    return assignList;
 }
 
 //

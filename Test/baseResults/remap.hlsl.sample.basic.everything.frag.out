@@ -13,7 +13,7 @@ Linked fragment stage:
                               Capability Sampled1D
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 5663  "main" 4045 4656 4112
+                              EntryPoint Fragment 5663  "main" 4656 4112
                               ExecutionMode 5663 OriginUpperLeft
                               Decorate 4727 DescriptorSet 0
                               Decorate 4727 Binding 0
@@ -130,8 +130,6 @@ Linked fragment stage:
              138:   13(float) Constant 1065353216
             1284:   29(fvec4) ConstantComposite 138 138 138 138
              650:             TypePointer Function 13(float)
-            1670:             TypePointer Output 1032(struct)
-            4045:   1670(ptr) Variable Output
              667:             TypePointer Output 29(fvec4)
             4656:    667(ptr) Variable Output
              651:             TypePointer Output 13(float)
@@ -214,9 +212,13 @@ Linked fragment stage:
             7204:   23(ivec4) ImageSampleImplicitLod 12016 2476
            20158:    666(ptr) AccessChain 5072 2571
                               Store 20158 1284
-           19657:    650(ptr) AccessChain 5072 2574
-                              Store 19657 138
-           17934:1032(struct) Load 5072
-                              Store 4045 17934
+           19742:    650(ptr) AccessChain 5072 2574
+                              Store 19742 138
+           19848:    666(ptr) AccessChain 5072 2571
+            7967:   29(fvec4) Load 19848
+                              Store 4656 7967
+           16622:    650(ptr) AccessChain 5072 2574
+           11539:   13(float) Load 16622
+                              Store 4112 11539
                               Return
                               FunctionEnd

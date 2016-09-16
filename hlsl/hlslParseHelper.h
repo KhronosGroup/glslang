@@ -94,6 +94,7 @@ public:
     void remapNonEntrypointIO(TFunction& function);
     TIntermNode* handleReturnValue(const TSourceLoc&, TIntermTyped*);
     void handleFunctionArgument(TFunction*, TIntermTyped*& arguments, TIntermTyped* newArg);
+    TIntermTyped* handleAssign(const TSourceLoc&, TOperator, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleFunctionCall(const TSourceLoc&, TFunction*, TIntermNode*);
     void decomposeIntrinsic(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     void decomposeSampleMethods(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
@@ -238,7 +239,7 @@ protected:
     //
     TVector<TSymbol*> ioArraySymbolResizeList;
 
-    TUnorderedMap<int, TVector<TVariable*>> flattenMap;
+    TMap<int, TVector<TVariable*>> flattenMap;
     unsigned int nextInLocation;
     unsigned int nextOutLocation;
 };

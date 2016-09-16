@@ -1672,7 +1672,7 @@ bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
         return false;
     }
 
-    node = intermediate.addAssign(assignOp, node, rightNode, loc);
+    node = parseContext.handleAssign(loc, assignOp, node, rightNode);
     if (node == nullptr) {
         parseContext.error(loc, "could not create assignment", "", "");
         return false;
