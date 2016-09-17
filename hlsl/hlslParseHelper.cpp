@@ -1037,20 +1037,39 @@ void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermTyped*
 // to intermediate.addAssign().
 TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op, TIntermTyped* left, TIntermTyped* right)
 {
-    if (! shouldFlatten(left->getType()) ||
-            ! left->getAsSymbolNode() ||
-            flattenMap.find(left->getAsSymbolNode()->getId()) == flattenMap.end())
+    const auto mustFlatten = [&](const TIntermTyped& node) {
+        return shouldFlatten(node.getType()) && node.getAsSymbolNode() &&
+               flattenMap.find(node.getAsSymbolNode()->getId()) != flattenMap.end();
+    };
+
+    bool flattenLeft = mustFlatten(*left);
+    bool flattenRight = mustFlatten(*right);
+    if (! flattenLeft && ! flattenRight)
         return intermediate.addAssign(op, left, right, loc);
 
-    // If we get here, we are assigning a whole struct to a flattened l-value, so have to
-    // do member-by-member assignment:
+    // If we get here, we are assigning to or from a whole struct that must be
+    // flattened, so have to do member-by-member assignment:
     const auto& members = *left->getType().getStruct();
-    const auto& memberVariables = flattenMap[left->getAsSymbolNode()->getId()];
+    const auto getMember = [&](bool flatten, TIntermTyped* node,
+                               const TVector<TVariable*>& memberVariables, int member) {
+        TIntermTyped* subTree;
+        if (flatten)
+            subTree = intermediate.addSymbol(*memberVariables[member]);
+        else {
+            subTree = intermediate.addIndex(EOpIndexDirectStruct, node,
+                                            intermediate.addConstantUnion(member, loc), loc);
+            subTree->setType(*members[member].type);
+        }
+
+        return subTree;
+    };
+
+    const auto& leftVariables = flattenMap[left->getAsSymbolNode()->getId()];
+    const auto& rightVariables = flattenMap[right->getAsSymbolNode()->getId()];
     TIntermAggregate* assignList = nullptr;
-    for (int member = 0; member < (int)memberVariables.size(); ++member) {
-        TIntermTyped* subRight = intermediate.addIndex(EOpIndexDirectStruct, right, intermediate.addConstantUnion(member, loc), loc);
-        subRight->setType(*members[member].type);
-        TIntermTyped* subLeft = intermediate.addSymbol(*memberVariables[member]);
+    for (int member = 0; member < (int)members.size(); ++member) {
+        TIntermTyped* subRight = getMember(flattenRight, right, rightVariables, member);
+        TIntermTyped* subLeft = getMember(flattenLeft, left, leftVariables, member);
         assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc));
     }
     assignList->setOperator(EOpSequence);
