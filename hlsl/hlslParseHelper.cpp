@@ -1063,13 +1063,17 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
         return subTree;
     };
-
-    const auto& leftVariables = flattenMap[left->getAsSymbolNode()->getId()];
-    const auto& rightVariables = flattenMap[right->getAsSymbolNode()->getId()];
+    
+    TVector<TVariable*>* leftVariables = nullptr;
+    TVector<TVariable*>* rightVariables = nullptr;
+    if (flattenLeft)
+        leftVariables = &flattenMap[left->getAsSymbolNode()->getId()];
+    if (flattenRight)
+        rightVariables = &flattenMap[right->getAsSymbolNode()->getId()];
     TIntermAggregate* assignList = nullptr;
     for (int member = 0; member < (int)members.size(); ++member) {
-        TIntermTyped* subRight = getMember(flattenRight, right, rightVariables, member);
-        TIntermTyped* subLeft = getMember(flattenLeft, left, leftVariables, member);
+        TIntermTyped* subRight = getMember(flattenRight, right, *rightVariables, member);
+        TIntermTyped* subLeft = getMember(flattenLeft, left, *leftVariables, member);
         assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc));
     }
     assignList->setOperator(EOpSequence);
