@@ -83,8 +83,8 @@ public:
     TIntermTyped* handleBinaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleUnaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* childNode);
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
-    bool shouldFlatten(const TType&);
-    void flattenStruct(const TVariable& variable);
+    bool shouldFlatten(const TType&) const;
+    void flatten(const TVariable& variable);
     TIntermTyped* flattenAccess(TIntermTyped* base, int member);
     void assignLocations(TVariable& variable);
     TFunction& handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
@@ -94,7 +94,7 @@ public:
     void remapNonEntrypointIO(TFunction& function);
     TIntermNode* handleReturnValue(const TSourceLoc&, TIntermTyped*);
     void handleFunctionArgument(TFunction*, TIntermTyped*& arguments, TIntermTyped* newArg);
-    TIntermTyped* handleAssign(const TSourceLoc&, TOperator, TIntermTyped* left, TIntermTyped* right);
+    TIntermTyped* handleAssign(const TSourceLoc&, TOperator, TIntermTyped* left, TIntermTyped* right) const;
     TIntermTyped* handleFunctionCall(const TSourceLoc&, TFunction*, TIntermNode*);
     void decomposeIntrinsic(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     void decomposeSampleMethods(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);

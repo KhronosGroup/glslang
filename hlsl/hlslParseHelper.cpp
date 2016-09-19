@@ -700,9 +700,9 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
     return result;
 }
 
-// Is this a structure that can't be passed down the stack?
+// Is this an aggregate that can't be passed down the stack?
 // E.g., pipeline inputs to the vertex stage and outputs from the fragment stage.
-bool HlslParseContext::shouldFlatten(const TType& type)
+bool HlslParseContext::shouldFlatten(const TType& type) const
 {
     if (! inEntrypoint)
         return false;
@@ -714,13 +714,13 @@ bool HlslParseContext::shouldFlatten(const TType& type)
             qualifier == EvqVaryingOut);
 }
 
-// Figure out the mapping between a structure's top members and an
+// Figure out the mapping between an aggregate's top members and an
 // equivalent set of individual variables.
 //
 // Assumes shouldFlatten() or equivalent was called first.
 //
 // TODO: generalize this to arbitrary nesting?
-void HlslParseContext::flattenStruct(const TVariable& variable)
+void HlslParseContext::flatten(const TVariable& variable)
 {
     TVector<TVariable*> memberVariables;
 
@@ -735,8 +735,8 @@ void HlslParseContext::flattenStruct(const TVariable& variable)
     flattenMap[variable.getUniqueId()] = memberVariables;
 }
 
-// Turn an access into structure that was flattened to instead be
-// an access to the individual variable the member was flattened to.
+// Turn an access into aggregate that was flattened to instead be
+// an access to the individual variable the element/member was flattened to.
 // Assumes shouldFlatten() or equivalent was called first.
 TIntermTyped* HlslParseContext::flattenAccess(TIntermTyped* base, int member)
 {
@@ -855,7 +855,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
         remapEntrypointIO(function);
         if (entryPointOutput) {
             if (shouldFlatten(entryPointOutput->getType()))
-                flattenStruct(*entryPointOutput);
+                flatten(*entryPointOutput);
             assignLocations(*entryPointOutput);
         }
     } else
@@ -887,7 +887,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
                 // get IO straightened out
                 if (inEntrypoint) {
                     if (shouldFlatten(*param.type))
-                        flattenStruct(*variable);
+                        flatten(*variable);
                     assignLocations(*variable);
                 }
 
@@ -1035,7 +1035,7 @@ void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermTyped*
 // Some simple source assignments need to be flattened to a sequence
 // of AST assignments.  Catch these and flatten, otherwise, pass through
 // to intermediate.addAssign().
-TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op, TIntermTyped* left, TIntermTyped* right)
+TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op, TIntermTyped* left, TIntermTyped* right) const
 {
     const auto mustFlatten = [&](const TIntermTyped& node) {
         return shouldFlatten(node.getType()) && node.getAsSymbolNode() &&
@@ -1064,12 +1064,12 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         return subTree;
     };
     
-    TVector<TVariable*>* leftVariables = nullptr;
-    TVector<TVariable*>* rightVariables = nullptr;
+    const TVector<TVariable*>* leftVariables = nullptr;
+    const TVector<TVariable*>* rightVariables = nullptr;
     if (flattenLeft)
-        leftVariables = &flattenMap[left->getAsSymbolNode()->getId()];
+        leftVariables = &flattenMap.find(left->getAsSymbolNode()->getId())->second;
     if (flattenRight)
-        rightVariables = &flattenMap[right->getAsSymbolNode()->getId()];
+        rightVariables = &flattenMap.find(right->getAsSymbolNode()->getId())->second;
     TIntermAggregate* assignList = nullptr;
     for (int member = 0; member < (int)members.size(); ++member) {
         TIntermTyped* subRight = getMember(flattenRight, right, *rightVariables, member);
