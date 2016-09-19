@@ -2271,6 +2271,7 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
                 TSourceLoc dummyLoc;
                 dummyLoc.init();
                 TVariable* internalAggregate = makeInternalVariable("aggShadow", *function[i].type);
+                internalAggregate->getWritableType().getQualifier().makeTemporary();
                 TIntermSymbol* internalSymbolNode = new TIntermSymbol(internalAggregate->getUniqueId(), 
                                                                       internalAggregate->getName(),
                                                                       internalAggregate->getType());

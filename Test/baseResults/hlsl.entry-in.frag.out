@@ -58,23 +58,23 @@ gl_FragCoord origin is upper left
 0:?               Sequence
 0:?                 move second child to first child (temp 2-component vector of float)
 0:?                   v: direct index for structure (temp 2-component vector of float)
-0:?                     'aggShadow' (in structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:?                     'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
 0:?                     Constant:
 0:?                       0 (const int)
 0:?                   'v' (layout(location=0 ) in 2-component vector of float)
 0:?                 move second child to first child (temp 4-component vector of float)
 0:?                   fragCoord: direct index for structure (temp 4-component vector of float FragCoord)
-0:?                     'aggShadow' (in structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:?                     'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
 0:?                     Constant:
 0:?                       1 (const int)
 0:?                   'fragCoord' (in 4-component vector of float FragCoord)
 0:?                 move second child to first child (temp 2-component vector of int)
 0:?                   i2: direct index for structure (temp 2-component vector of int)
-0:?                     'aggShadow' (in structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:?                     'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
 0:?                     Constant:
 0:?                       2 (const int)
 0:?                   'i2' (layout(location=1 ) in 2-component vector of int)
-0:?               'aggShadow' (in structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:?               'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
 0:19      Sequence
 0:19        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
@@ -156,23 +156,23 @@ gl_FragCoord origin is upper left
 0:?               Sequence
 0:?                 move second child to first child (temp 2-component vector of float)
 0:?                   v: direct index for structure (temp 2-component vector of float)
-0:?                     'aggShadow' (in structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:?                     'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
 0:?                     Constant:
 0:?                       0 (const int)
 0:?                   'v' (layout(location=0 ) in 2-component vector of float)
 0:?                 move second child to first child (temp 4-component vector of float)
 0:?                   fragCoord: direct index for structure (temp 4-component vector of float FragCoord)
-0:?                     'aggShadow' (in structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:?                     'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
 0:?                     Constant:
 0:?                       1 (const int)
 0:?                   'fragCoord' (in 4-component vector of float FragCoord)
 0:?                 move second child to first child (temp 2-component vector of int)
 0:?                   i2: direct index for structure (temp 2-component vector of int)
-0:?                     'aggShadow' (in structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:?                     'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
 0:?                     Constant:
 0:?                       2 (const int)
 0:?                   'i2' (layout(location=1 ) in 2-component vector of int)
-0:?               'aggShadow' (in structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:?               'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
 0:19      Sequence
 0:19        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
