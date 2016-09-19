@@ -49,7 +49,7 @@ namespace glslang {
 
 class TIntermediate;
 class TIntermAggregate;
-class TLiveTraverser;
+class TReflectionTraverser;
 
 // Data needed for just a single object at the granularity exchanged by the reflection API
 class TObjectReflection {
@@ -116,7 +116,7 @@ public:
     void dump();
 
 protected:
-    friend class glslang::TLiveTraverser;
+    friend class glslang::TReflectionTraverser;
 
     // Need a TString hash: typedef std::unordered_map<TString, int> TNameToIndex;
     typedef std::map<TString, int> TNameToIndex;

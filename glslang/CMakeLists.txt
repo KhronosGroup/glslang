@@ -55,6 +55,7 @@ set(HEADERS
     MachineIndependent/glslang_tab.cpp.h
     MachineIndependent/gl_types.h
     MachineIndependent/Initialize.h
+    MachineIndependent/LiveTraverser.h
     MachineIndependent/localintermediate.h
     MachineIndependent/ParseHelper.h
     MachineIndependent/reflection.h

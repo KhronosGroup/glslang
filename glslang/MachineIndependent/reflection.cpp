@@ -1,5 +1,5 @@
 //
-//Copyright (C) 2013 LunarG, Inc.
+//Copyright (C) 2013-2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -35,6 +35,7 @@
 
 #include "../Include/Common.h"
 #include "reflection.h"
+#include "LiveTraverser.h"
 #include "localintermediate.h"
 
 #include "gl_types.h"
@@ -62,37 +63,26 @@
 // there wasn't exactly one entry point.
 //
 
+   
 namespace glslang {
 
 //
 // The traverser: mostly pass through, except
-//  - processing function-call nodes to push live functions onto the stack of functions to process
 //  - processing binary nodes to see if they are dereferences of an aggregates to track
 //  - processing symbol nodes to see if they are non-aggregate objects to track
-//  - processing selection nodes to trim semantically dead code
+//
+// This ignores semantically dead code by using TLiveTraverser.
 //
 // This is in the glslang namespace directly so it can be a friend of TReflection.
 //
 
-class TLiveTraverser : public TIntermTraverser {
+class TReflectionTraverser : public TLiveTraverser {
 public:
-    TLiveTraverser(const TIntermediate& i, TReflection& r) : intermediate(i), reflection(r) { }
+    TReflectionTraverser(const TIntermediate& i, TReflection& r) :
+         TLiveTraverser(i), reflection(r) { }
 
-    virtual bool visitAggregate(TVisit, TIntermAggregate* node);
     virtual bool visitBinary(TVisit, TIntermBinary* node);
     virtual void visitSymbol(TIntermSymbol* base);
-    virtual bool visitSelection(TVisit, TIntermSelection* node);
-
-    // Track live functions as well as uniforms, so that we don't visit dead functions
-    // and only visit each function once.
-    void addFunctionCall(TIntermAggregate* call)
-    {
-        // just use the map to ensure we process each function at most once
-        if (reflection.nameToIndex.find(call->getName()) == reflection.nameToIndex.end()) {
-            reflection.nameToIndex[call->getName()] = -1;
-            pushFunction(call->getName());
-        }
-    }
 
     // Add a simple reference to a uniform variable to the uniform database, no dereference involved.
     // However, no dereference doesn't mean simple... it could be a complex aggregate.
@@ -358,21 +348,6 @@ public:
         return blockIndex;
     }
 
-    //
-    // Given a function name, find its subroot in the tree, and push it onto the stack of
-    // functions left to process.
-    //
-    void pushFunction(const TString& name)
-    {
-        TIntermSequence& globals = intermediate.getTreeRoot()->getAsAggregate()->getSequence();
-        for (unsigned int f = 0; f < globals.size(); ++f) {
-            TIntermAggregate* candidate = globals[f]->getAsAggregate();
-            if (candidate && candidate->getOp() == EOpFunction && candidate->getName() == name) {
-                functions.push_back(candidate);
-                break;
-            }
-        }
-    }
 
     // Are we at a level in a dereference chain at which individual active uniform queries are made?
     bool isReflectionGranularity(const TType& type)
@@ -639,33 +614,21 @@ public:
         return type.isArray() ? type.getOuterArraySize() : 1;
     }
 
-    typedef std::list<TIntermAggregate*> TFunctionStack;
-    TFunctionStack functions;
-    const TIntermediate& intermediate;
     TReflection& reflection;
     std::set<const TIntermNode*> processedDerefs;
 
 protected:
-    TLiveTraverser(TLiveTraverser&);
-    TLiveTraverser& operator=(TLiveTraverser&);
+    TReflectionTraverser(TReflectionTraverser&);
+    TReflectionTraverser& operator=(TReflectionTraverser&);
 };
 
 //
 // Implement the traversal functions of interest.
 //
 
-// To catch which function calls are not dead, and hence which functions must be visited.
-bool TLiveTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node)
-{
-    if (node->getOp() == EOpFunctionCall)
-        addFunctionCall(node);
-
-    return true; // traverse this subtree
-}
-
 // To catch dereferenced aggregates that must be reflected.
 // This catches them at the highest level possible in the tree.
-bool TLiveTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
+bool TReflectionTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 {
     switch (node->getOp()) {
     case EOpIndexDirect:
@@ -683,7 +646,7 @@ bool TLiveTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 }
 
 // To reflect non-dereferenced objects.
-void TLiveTraverser::visitSymbol(TIntermSymbol* base)
+void TReflectionTraverser::visitSymbol(TIntermSymbol* base)
 {
     if (base->getQualifier().storage == EvqUniform)
         addUniform(*base);
@@ -692,21 +655,6 @@ void TLiveTraverser::visitSymbol(TIntermSymbol* base)
         addAttribute(*base);
 }
 
-// To prune semantically dead paths.
-bool TLiveTraverser::visitSelection(TVisit /* visit */,  TIntermSelection* node)
-{
-    TIntermConstantUnion* constant = node->getCondition()->getAsConstantUnion();
-    if (constant) {
-        // cull the path that is dead
-        if (constant->getConstArray()[0].getBConst() == true && node->getTrueBlock())
-            node->getTrueBlock()->traverse(this);
-        if (constant->getConstArray()[0].getBConst() == false && node->getFalseBlock())
-            node->getFalseBlock()->traverse(this);
-
-        return false; // don't traverse any more, we did it all above
-    } else
-        return true; // traverse the whole subtree
-}
 
 //
 // Implement TReflection methods.
@@ -720,7 +668,7 @@ bool TReflection::addStage(EShLanguage, const TIntermediate& intermediate)
     if (intermediate.getNumEntryPoints() != 1 || intermediate.isRecursive())
         return false;
 
-    TLiveTraverser it(intermediate, *this);
+    TReflectionTraverser it(intermediate, *this);
 
     // put the entry point on functions to process
     it.pushFunction("main(");
