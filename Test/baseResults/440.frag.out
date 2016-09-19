@@ -122,7 +122,7 @@ ERROR: node is still EOpNull!
 
 Linked fragment stage:
 
-ERROR: Linking fragment stage: Missing entry point: Each stage requires one "void main()" entry point
+ERROR: Linking fragment stage: Missing entry point: Each stage requires one entry point
 
 Shader version: 440
 ERROR: node is still EOpNull!

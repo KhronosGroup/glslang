@@ -931,7 +931,7 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
 }
 
 // Comments in header
-Function* Builder::makeEntrypoint(const char* entryPoint)
+Function* Builder::makeEntryPoint(const char* entryPoint)
 {
     assert(! mainFunction);
 

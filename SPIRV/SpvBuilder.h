@@ -210,7 +210,7 @@ public:
 
     // Make the entry-point function. The returned pointer is only valid
     // for the lifetime of this builder.
-    Function* makeEntrypoint(const char*);
+    Function* makeEntryPoint(const char*);
 
     // Make a shader-style function, and create its entry block if entry is non-zero.
     // Return the function, pass back the entry.

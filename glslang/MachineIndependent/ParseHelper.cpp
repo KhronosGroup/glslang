@@ -1058,8 +1058,8 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
         if (function.getParamCount() > 0)
             error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
         if (function.getType().getBasicType() != EbtVoid)
-            error(loc, "", function.getType().getBasicTypeString().c_str(), "main function cannot return a value");
-        intermediate.addMainCount();
+            error(loc, "", function.getType().getBasicTypeString().c_str(), "entry point cannot return a value");
+        intermediate.incrementEntryPointCount();
         inMain = true;
     } else
         inMain = false;

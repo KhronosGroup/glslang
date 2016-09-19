@@ -704,7 +704,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
 // E.g., pipeline inputs to the vertex stage and outputs from the fragment stage.
 bool HlslParseContext::shouldFlatten(const TType& type) const
 {
-    if (! inEntrypoint)
+    if (! inEntryPoint)
         return false;
 
     const TStorageQualifier qualifier = type.getQualifier().storage;
@@ -850,16 +850,16 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
         currentFunctionType = new TType(EbtVoid);
     functionReturnsValue = false;
 
-    inEntrypoint = (function.getName() == intermediate.getEntryPoint().c_str());
-    if (inEntrypoint) {
-        remapEntrypointIO(function);
+    inEntryPoint = (function.getName() == intermediate.getEntryPoint().c_str());
+    if (inEntryPoint) {
+        remapEntryPointIO(function);
         if (entryPointOutput) {
             if (shouldFlatten(entryPointOutput->getType()))
                 flatten(*entryPointOutput);
             assignLocations(*entryPointOutput);
         }
     } else
-        remapNonEntrypointIO(function);
+        remapNonEntryPointIO(function);
 
     //
     // New symbol table scope for body of function plus its arguments
@@ -885,7 +885,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
                 error(loc, "redefinition", variable->getName().c_str(), "");
             else {
                 // get IO straightened out
-                if (inEntrypoint) {
+                if (inEntryPoint) {
                     if (shouldFlatten(*param.type))
                         flatten(*variable);
                     assignLocations(*variable);
@@ -925,7 +925,7 @@ void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& func
 // AST I/O is done through shader globals declared in the 'in' or 'out'
 // storage class.  An HLSL entry point has a return value, input parameters
 // and output parameters.  These need to get remapped to the AST I/O.
-void HlslParseContext::remapEntrypointIO(TFunction& function)
+void HlslParseContext::remapEntryPointIO(TFunction& function)
 {
     // Will auto-assign locations here to the inputs/outputs defined by the entry point
 
@@ -969,7 +969,7 @@ void HlslParseContext::remapEntrypointIO(TFunction& function)
 
 // An HLSL function that looks like an entry point, but is not,
 // declares entry point IO built-ins, but these have to be undone.
-void HlslParseContext::remapNonEntrypointIO(TFunction& function)
+void HlslParseContext::remapNonEntryPointIO(TFunction& function)
 {
     const auto remapBuiltInType = [&](TType& type) { type.getQualifier().builtIn = EbvNone; };
 
@@ -1007,7 +1007,7 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
     // assignment subtree, and the second part being a return with no value.
     //
     // Otherwise, for a non entry point, just return a return statement.
-    if (inEntrypoint) {
+    if (inEntryPoint) {
         assert(entryPointOutput != nullptr); // should have been error tested at the beginning
         TIntermSymbol* left = new TIntermSymbol(entryPointOutput->getUniqueId(), entryPointOutput->getName(),
                                                 entryPointOutput->getType());

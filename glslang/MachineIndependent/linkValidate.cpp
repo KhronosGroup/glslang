@@ -81,7 +81,7 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
         else
             entryPoint = unit.entryPoint;
     }
-    numMains += unit.numMains;
+    numEntryPoints += unit.numEntryPoints;
     numErrors += unit.numErrors;
     numPushConstants += unit.numPushConstants;
     callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
@@ -370,8 +370,8 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
 //
 void TIntermediate::finalCheck(TInfoSink& infoSink)
 {
-    if (source == EShSourceGlsl && numMains < 1)
-        error(infoSink, "Missing entry point: Each stage requires one \"void main()\" entry point");
+    if (source == EShSourceGlsl && numEntryPoints < 1)
+        error(infoSink, "Missing entry point: Each stage requires one entry point");
 
     if (numPushConstants > 1)
         error(infoSink, "Only one push_constant block is allowed per stage");

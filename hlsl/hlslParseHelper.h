@@ -90,8 +90,8 @@ public:
     TFunction& handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
     void handleFunctionBody(const TSourceLoc&, TFunction&, TIntermNode* functionBody, TIntermNode*& node);
-    void remapEntrypointIO(TFunction& function);
-    void remapNonEntrypointIO(TFunction& function);
+    void remapEntryPointIO(TFunction& function);
+    void remapNonEntryPointIO(TFunction& function);
     TIntermNode* handleReturnValue(const TSourceLoc&, TIntermTyped*);
     void handleFunctionArgument(TFunction*, TIntermTyped*& arguments, TIntermTyped* newArg);
     TIntermTyped* handleAssign(const TSourceLoc&, TOperator, TIntermTyped* left, TIntermTyped* right) const;
@@ -185,7 +185,7 @@ protected:
     int structNestingLevel;      // 0 if outside blocks and structures
     int controlFlowNestingLevel; // 0 if outside all flow control
     TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
-    bool inEntrypoint;           // if inside a function, true if the function is the entry point
+    bool inEntryPoint;           // if inside a function, true if the function is the entry point
     bool postMainReturn;         // if inside a function, true if the function is the entry point and this is after a return statement
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return

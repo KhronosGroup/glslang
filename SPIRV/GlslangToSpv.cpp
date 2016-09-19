@@ -137,7 +137,7 @@ protected:
     void updateMemberOffset(const glslang::TType& structType, const glslang::TType& memberType, int& currentOffset, int& nextOffset, glslang::TLayoutPacking, glslang::TLayoutMatrix);
     void declareUseOfStructMember(const glslang::TTypeList& members, int glslangMember);
 
-    bool isShaderEntrypoint(const glslang::TIntermAggregate* node);
+    bool isShaderEntryPoint(const glslang::TIntermAggregate* node);
     void makeFunctions(const glslang::TIntermSequence&);
     void makeGlobalInitializers(const glslang::TIntermSequence&);
     void visitFunctions(const glslang::TIntermSequence&);
@@ -713,7 +713,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
     builder.setSource(TranslateSourceLanguage(glslangIntermediate->getSource(), glslangIntermediate->getProfile()), glslangIntermediate->getVersion());
     stdBuiltins = builder.import("GLSL.std.450");
     builder.setMemoryModel(spv::AddressingModelLogical, spv::MemoryModelGLSL450);
-    shaderEntry = builder.makeEntrypoint(glslangIntermediate->getEntryPoint().c_str());
+    shaderEntry = builder.makeEntryPoint(glslangIntermediate->getEntryPoint().c_str());
     entryPoint = builder.addEntryPoint(executionModel, shaderEntry, glslangIntermediate->getEntryPoint().c_str());
 
     // Add the source extensions
@@ -1279,7 +1279,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             // In all cases, still let the traverser visit the children for us.
             makeFunctions(node->getAsAggregate()->getSequence());
 
-            // Also, we want all globals initializers to go into the entry of main(), before
+            // Also, we want all globals initializers to go into the beginning of the entry point, before
             // anything else gets there, so visit out of order, doing them all now.
             makeGlobalInitializers(node->getAsAggregate()->getSequence());
 
@@ -1313,7 +1313,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     }
     case glslang::EOpFunction:
         if (visit == glslang::EvPreVisit) {
-            if (isShaderEntrypoint(node)) {
+            if (isShaderEntryPoint(node)) {
                 inMain = true;
                 builder.setBuildPoint(shaderEntry->getLastBlock());
             } else {
@@ -2451,7 +2451,7 @@ void TGlslangToSpvTraverser::declareUseOfStructMember(const glslang::TTypeList& 
     }
 }
 
-bool TGlslangToSpvTraverser::isShaderEntrypoint(const glslang::TIntermAggregate* node)
+bool TGlslangToSpvTraverser::isShaderEntryPoint(const glslang::TIntermAggregate* node)
 {
     // have to ignore mangling and just look at the base name
     size_t firstOpen = node->getName().find('(');
@@ -2463,7 +2463,7 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
 {
     for (int f = 0; f < (int)glslFunctions.size(); ++f) {
         glslang::TIntermAggregate* glslFunction = glslFunctions[f]->getAsAggregate();
-        if (! glslFunction || glslFunction->getOp() != glslang::EOpFunction || isShaderEntrypoint(glslFunction))
+        if (! glslFunction || glslFunction->getOp() != glslang::EOpFunction || isShaderEntryPoint(glslFunction))
             continue;
 
         // We're on a user function.  Set up the basic interface for the function now,
@@ -2523,7 +2523,7 @@ void TGlslangToSpvTraverser::makeGlobalInitializers(const glslang::TIntermSequen
         if (initializer && initializer->getOp() != glslang::EOpFunction && initializer->getOp() != glslang::EOpLinkerObjects) {
 
             // We're on a top-level node that's not a function.  Treat as an initializer, whose
-            // code goes into the beginning of main.
+            // code goes into the beginning of the entry point.
             initializer->traverse(this);
         }
     }

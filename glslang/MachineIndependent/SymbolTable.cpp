@@ -35,7 +35,7 @@
 //
 
 //
-// Symbol table for parsing.  Most functionaliy and main ideas
+// Symbol table for parsing.  Most functionality and main ideas
 // are documented in the header file.
 //
 

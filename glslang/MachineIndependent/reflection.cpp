@@ -48,7 +48,7 @@
 //
 // High-level algorithm for one stage:
 //
-// 1. Put main() on list of live functions.
+// 1. Put the entry point on the list of live functions.
 //
 // 2. Traverse any live function, while skipping if-tests with a compile-time constant
 //    condition of false, and while adding any encountered function calls to the live
@@ -59,7 +59,7 @@
 // 3. Add any encountered uniform variables and blocks to the reflection database.
 //
 // Can be attempted with a failed link, but will return false if recursion had been detected, or
-// there wasn't exactly one main.
+// there wasn't exactly one entry point.
 //
 
 namespace glslang {
@@ -83,7 +83,7 @@ public:
     virtual void visitSymbol(TIntermSymbol* base);
     virtual bool visitSelection(TVisit, TIntermSelection* node);
 
-    // Track live funtions as well as uniforms, so that we don't visit dead functions
+    // Track live functions as well as uniforms, so that we don't visit dead functions
     // and only visit each function once.
     void addFunctionCall(TIntermAggregate* call)
     {
@@ -717,12 +717,12 @@ bool TLiveTraverser::visitSelection(TVisit /* visit */,  TIntermSelection* node)
 // Returns false if the input is too malformed to do this.
 bool TReflection::addStage(EShLanguage, const TIntermediate& intermediate)
 {
-    if (intermediate.getNumMains() != 1 || intermediate.isRecursive())
+    if (intermediate.getNumEntryPoints() != 1 || intermediate.isRecursive())
         return false;
 
     TLiveTraverser it(intermediate, *this);
 
-    // put main() on functions to process
+    // put the entry point on functions to process
     it.pushFunction("main(");
 
     // process all the functions

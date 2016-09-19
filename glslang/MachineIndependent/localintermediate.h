@@ -137,7 +137,7 @@ class TIntermediate {
 public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) :
         source(EShSourceNone), language(l), profile(p), version(v), treeRoot(0),
-        numMains(0), numErrors(0), numPushConstants(0), recursive(false),
+        numEntryPoints(0), numErrors(0), numPushConstants(0), recursive(false),
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet), inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),
         vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), depthLayout(EldNone), depthReplacing(false), blendEquations(0),
@@ -173,8 +173,8 @@ public:
 
     void setTreeRoot(TIntermNode* r) { treeRoot = r; }
     TIntermNode* getTreeRoot() const { return treeRoot; }
-    void addMainCount() { ++numMains; }
-    int getNumMains() const { return numMains; }
+    void incrementEntryPointCount() { ++numEntryPoints; }
+    int getNumEntryPoints() const { return numEntryPoints; }
     int getNumErrors() const { return numErrors; }
     void addPushConstantCount() { ++numPushConstants; }
     bool isRecursive() const { return recursive; }
@@ -370,7 +370,7 @@ protected:
     TIntermNode* treeRoot;
     std::set<std::string> requestedExtensions;  // cumulation of all enabled or required extensions; not connected to what subset of the shader used them
     TBuiltInResource resources;
-    int numMains;
+    int numEntryPoints;
     int numErrors;
     int numPushConstants;
     bool recursive;

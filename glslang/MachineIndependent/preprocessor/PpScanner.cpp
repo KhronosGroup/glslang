@@ -696,7 +696,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 }
 
 //
-// The main functional entry-point into the preprocessor, which will
+// The main functional entry point into the preprocessor, which will
 // scan the source strings to figure out and return the next processing token.
 //
 // Return string pointer to next token.

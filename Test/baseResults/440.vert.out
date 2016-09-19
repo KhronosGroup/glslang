@@ -160,7 +160,7 @@ ERROR: node is still EOpNull!
 
 Linked vertex stage:
 
-ERROR: Linking vertex stage: Missing entry point: Each stage requires one "void main()" entry point
+ERROR: Linking vertex stage: Missing entry point: Each stage requires one entry point
 ERROR: Linking vertex stage: xfb_stride is too small to hold all buffer entries:
 ERROR:     xfb_buffer 0, xfb_stride 92, minimum stride needed: 96
 ERROR: Linking vertex stage: xfb_stride must be multiple of 8 for buffer holding a double:

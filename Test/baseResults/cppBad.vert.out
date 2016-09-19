@@ -14,7 +14,7 @@ ERROR: node is still EOpNull!
 
 Linked vertex stage:
 
-ERROR: Linking vertex stage: Missing entry point: Each stage requires one "void main()" entry point
+ERROR: Linking vertex stage: Missing entry point: Each stage requires one entry point
 
 Shader version: 100
 ERROR: node is still EOpNull!
