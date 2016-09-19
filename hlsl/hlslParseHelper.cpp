@@ -2241,6 +2241,16 @@ TIntermTyped* HlslParseContext::handleLengthMethod(const TSourceLoc& loc, TFunct
 void HlslParseContext::addInputArgumentConversions(const TFunction& function, TIntermNode*& arguments) const
 {
     TIntermAggregate* aggregate = arguments->getAsAggregate();
+    const auto setArg = [&](int argNum, TIntermNode* arg) {
+        if (function.getParamCount() == 1)
+            arguments = arg;
+        else {
+            if (aggregate)
+                aggregate->getSequence()[argNum] = arg;
+            else
+                arguments = arg;
+        }
+    };
 
     // Process each argument's conversion
     for (int i = 0; i < function.getParamCount(); ++i) {
@@ -2254,16 +2264,20 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
                 // convert to the correct type.
                 arg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
                 arg = intermediate.addShapeConversion(EOpFunctionCall, *function[i].type, arg);
-                if (arg) {
-                    if (function.getParamCount() == 1)
-                        arguments = arg;
-                    else {
-                        if (aggregate)
-                            aggregate->getSequence()[i] = arg;
-                        else
-                            arguments = arg;
-                    }
-                }
+                setArg(i, arg);
+            }
+        } else {
+            if (shouldFlatten(arg->getType())) {
+                TSourceLoc dummyLoc;
+                dummyLoc.init();
+                TVariable* internalAggregate = makeInternalVariable("aggShadow", *function[i].type);
+                TIntermSymbol* internalSymbolNode = new TIntermSymbol(internalAggregate->getUniqueId(), 
+                                                                      internalAggregate->getName(),
+                                                                      internalAggregate->getType());
+                TIntermAggregate* assignAgg = handleAssign(dummyLoc, EOpAssign, internalSymbolNode, arg)->getAsAggregate();
+                assignAgg = intermediate.growAggregate(assignAgg, internalSymbolNode);
+                assignAgg->setOperator(EOpComma);
+                setArg(i, assignAgg);
             }
         }
     }
