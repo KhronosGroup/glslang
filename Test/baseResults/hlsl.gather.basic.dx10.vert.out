@@ -1,7 +1,7 @@
 hlsl.gather.basic.dx10.vert
 Shader version: 450
 0:? Sequence
-0:28  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
+0:28  Function Definition: main( (global structure{temp 4-component vector of float Pos})
 0:28    Function Parameters: 
 0:?     Sequence
 0:33      Sequence
@@ -68,8 +68,8 @@ Shader version: 450
 0:?               0.800000
 0:?               0.900000
 0:43      move second child to first child (temp 4-component vector of float)
-0:43        Pos: direct index for structure (temp 4-component vector of float Position)
-0:43          'vsout' (temp structure{temp 4-component vector of float Position Pos})
+0:43        Pos: direct index for structure (temp 4-component vector of float)
+0:43          'vsout' (temp structure{temp 4-component vector of float Pos})
 0:43          Constant:
 0:43            0 (const int)
 0:?         Constant:
@@ -81,8 +81,8 @@ Shader version: 450
 0:?         Sequence
 0:45          move second child to first child (temp 4-component vector of float)
 0:?             'Pos' (out 4-component vector of float Position)
-0:45            Pos: direct index for structure (temp 4-component vector of float Position)
-0:45              'vsout' (temp structure{temp 4-component vector of float Position Pos})
+0:45            Pos: direct index for structure (temp 4-component vector of float)
+0:45              'vsout' (temp structure{temp 4-component vector of float Pos})
 0:45              Constant:
 0:45                0 (const int)
 0:45        Branch: Return
@@ -110,7 +110,7 @@ Linked vertex stage:
 
 Shader version: 450
 0:? Sequence
-0:28  Function Definition: main( (global structure{temp 4-component vector of float Position Pos})
+0:28  Function Definition: main( (global structure{temp 4-component vector of float Pos})
 0:28    Function Parameters: 
 0:?     Sequence
 0:33      Sequence
@@ -177,8 +177,8 @@ Shader version: 450
 0:?               0.800000
 0:?               0.900000
 0:43      move second child to first child (temp 4-component vector of float)
-0:43        Pos: direct index for structure (temp 4-component vector of float Position)
-0:43          'vsout' (temp structure{temp 4-component vector of float Position Pos})
+0:43        Pos: direct index for structure (temp 4-component vector of float)
+0:43          'vsout' (temp structure{temp 4-component vector of float Pos})
 0:43          Constant:
 0:43            0 (const int)
 0:?         Constant:
@@ -190,8 +190,8 @@ Shader version: 450
 0:?         Sequence
 0:45          move second child to first child (temp 4-component vector of float)
 0:?             'Pos' (out 4-component vector of float Position)
-0:45            Pos: direct index for structure (temp 4-component vector of float Position)
-0:45              'vsout' (temp structure{temp 4-component vector of float Position Pos})
+0:45            Pos: direct index for structure (temp 4-component vector of float)
+0:45              'vsout' (temp structure{temp 4-component vector of float Pos})
 0:45              Constant:
 0:45                0 (const int)
 0:45        Branch: Return
@@ -256,7 +256,6 @@ Shader version: 450
                               Decorate 59(g_tTexcdf4) DescriptorSet 0
                               Decorate 70(g_tTexcdi4) DescriptorSet 0
                               Decorate 80(g_tTexcdu4) DescriptorSet 0
-                              MemberDecorate 90(VS_OUTPUT) 0 BuiltIn Position
                               Decorate 97(Pos) BuiltIn Position
                               Decorate 101(g_sSamp2d) DescriptorSet 0
                               Decorate 104(g_tTex1df4a) DescriptorSet 0

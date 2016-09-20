@@ -2,7 +2,7 @@ hlsl.gatherRGBA.basic.dx10.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:34  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:34  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float Depth})
 0:34    Function Parameters: 
 0:?     Sequence
 0:39      Sequence
@@ -247,7 +247,7 @@ gl_FragCoord origin is upper left
 0:71              3 (const int)
 0:73      move second child to first child (temp 4-component vector of float)
 0:73        Color: direct index for structure (temp 4-component vector of float)
-0:73          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:73          'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:73          Constant:
 0:73            0 (const int)
 0:73        Constant:
@@ -256,8 +256,8 @@ gl_FragCoord origin is upper left
 0:73          1.000000
 0:73          1.000000
 0:74      move second child to first child (temp float)
-0:74        Depth: direct index for structure (temp float FragDepth)
-0:74          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:74        Depth: direct index for structure (temp float)
+0:74          'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:74          Constant:
 0:74            1 (const int)
 0:74        Constant:
@@ -267,13 +267,13 @@ gl_FragCoord origin is upper left
 0:76          move second child to first child (temp 4-component vector of float)
 0:?             'Color' (layout(location=0 ) out 4-component vector of float)
 0:76            Color: direct index for structure (temp 4-component vector of float)
-0:76              'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:76              'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:76              Constant:
 0:76                0 (const int)
 0:76          move second child to first child (temp float)
 0:?             'Depth' (out float FragDepth)
-0:76            Depth: direct index for structure (temp float FragDepth)
-0:76              'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:76            Depth: direct index for structure (temp float)
+0:76              'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:76              Constant:
 0:76                1 (const int)
 0:76        Branch: Return
@@ -307,7 +307,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:34  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:34  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float Depth})
 0:34    Function Parameters: 
 0:?     Sequence
 0:39      Sequence
@@ -552,7 +552,7 @@ gl_FragCoord origin is upper left
 0:71              3 (const int)
 0:73      move second child to first child (temp 4-component vector of float)
 0:73        Color: direct index for structure (temp 4-component vector of float)
-0:73          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:73          'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:73          Constant:
 0:73            0 (const int)
 0:73        Constant:
@@ -561,8 +561,8 @@ gl_FragCoord origin is upper left
 0:73          1.000000
 0:73          1.000000
 0:74      move second child to first child (temp float)
-0:74        Depth: direct index for structure (temp float FragDepth)
-0:74          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:74        Depth: direct index for structure (temp float)
+0:74          'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:74          Constant:
 0:74            1 (const int)
 0:74        Constant:
@@ -572,13 +572,13 @@ gl_FragCoord origin is upper left
 0:76          move second child to first child (temp 4-component vector of float)
 0:?             'Color' (layout(location=0 ) out 4-component vector of float)
 0:76            Color: direct index for structure (temp 4-component vector of float)
-0:76              'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:76              'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:76              Constant:
 0:76                0 (const int)
 0:76          move second child to first child (temp float)
 0:?             'Depth' (out float FragDepth)
-0:76            Depth: direct index for structure (temp float FragDepth)
-0:76              'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:76            Depth: direct index for structure (temp float)
+0:76              'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:76              Constant:
 0:76                1 (const int)
 0:76        Branch: Return
@@ -673,7 +673,6 @@ gl_FragCoord origin is upper left
                               Decorate 112(g_tTexcdf4) DescriptorSet 0
                               Decorate 125(g_tTexcdi4) DescriptorSet 0
                               Decorate 135(g_tTexcdu4) DescriptorSet 0
-                              MemberDecorate 196(PS_OUTPUT) 1 BuiltIn FragDepth
                               Decorate 205(Color) Location 0
                               Decorate 209(Depth) BuiltIn FragDepth
                               Decorate 213(g_sSamp2d) DescriptorSet 0

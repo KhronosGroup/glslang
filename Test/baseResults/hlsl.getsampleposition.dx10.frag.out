@@ -7,7 +7,7 @@ ERROR: 2 compilation errors.  No code generated.
 Shader version: 450
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
-0:13  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:13  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float Depth})
 0:13    Function Parameters: 
 0:?     Sequence
 0:16      Sequence
@@ -28,7 +28,7 @@ ERROR: node is still EOpNull!
 0:17              2 (const int)
 0:19      move second child to first child (temp 4-component vector of float)
 0:19        Color: direct index for structure (temp 4-component vector of float)
-0:19          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:19          'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:19          Constant:
 0:19            0 (const int)
 0:19        Constant:
@@ -37,8 +37,8 @@ ERROR: node is still EOpNull!
 0:19          1.000000
 0:19          1.000000
 0:20      move second child to first child (temp float)
-0:20        Depth: direct index for structure (temp float FragDepth)
-0:20          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:20        Depth: direct index for structure (temp float)
+0:20          'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:20          Constant:
 0:20            1 (const int)
 0:20        Constant:
@@ -48,13 +48,13 @@ ERROR: node is still EOpNull!
 0:22          move second child to first child (temp 4-component vector of float)
 0:?             'Color' (layout(location=0 ) out 4-component vector of float)
 0:22            Color: direct index for structure (temp 4-component vector of float)
-0:22              'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:22              'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:22              Constant:
 0:22                0 (const int)
 0:22          move second child to first child (temp float)
 0:?             'Depth' (out float FragDepth)
-0:22            Depth: direct index for structure (temp float FragDepth)
-0:22              'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:22            Depth: direct index for structure (temp float)
+0:22              'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:22              Constant:
 0:22                1 (const int)
 0:22        Branch: Return
@@ -72,7 +72,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
-0:13  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:13  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float Depth})
 0:13    Function Parameters: 
 0:?     Sequence
 0:16      Sequence
@@ -93,7 +93,7 @@ ERROR: node is still EOpNull!
 0:17              2 (const int)
 0:19      move second child to first child (temp 4-component vector of float)
 0:19        Color: direct index for structure (temp 4-component vector of float)
-0:19          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:19          'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:19          Constant:
 0:19            0 (const int)
 0:19        Constant:
@@ -102,8 +102,8 @@ ERROR: node is still EOpNull!
 0:19          1.000000
 0:19          1.000000
 0:20      move second child to first child (temp float)
-0:20        Depth: direct index for structure (temp float FragDepth)
-0:20          'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:20        Depth: direct index for structure (temp float)
+0:20          'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:20          Constant:
 0:20            1 (const int)
 0:20        Constant:
@@ -113,13 +113,13 @@ ERROR: node is still EOpNull!
 0:22          move second child to first child (temp 4-component vector of float)
 0:?             'Color' (layout(location=0 ) out 4-component vector of float)
 0:22            Color: direct index for structure (temp 4-component vector of float)
-0:22              'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:22              'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:22              Constant:
 0:22                0 (const int)
 0:22          move second child to first child (temp float)
 0:?             'Depth' (out float FragDepth)
-0:22            Depth: direct index for structure (temp float FragDepth)
-0:22              'psout' (temp structure{temp 4-component vector of float Color, temp float FragDepth Depth})
+0:22            Depth: direct index for structure (temp float)
+0:22              'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:22              Constant:
 0:22                1 (const int)
 0:22        Branch: Return

@@ -717,6 +717,9 @@ bool HlslParseContext::shouldFlatten(const TType& type) const
 // Figure out the mapping between an aggregate's top members and an
 // equivalent set of individual variables.
 //
+// N.B. Erases memory of I/O-related annotations in the original type's member,
+//      effecting a transfer of this information to the flattened variable form.
+//
 // Assumes shouldFlatten() or equivalent was called first.
 //
 // TODO: generalize this to arbitrary nesting?
@@ -730,6 +733,9 @@ void HlslParseContext::flatten(const TVariable& variable)
                                                          *members[member].type);
         mergeQualifiers(memberVariable->getWritableType().getQualifier(), variable.getType().getQualifier());
         memberVariables.push_back(memberVariable);
+
+        // N.B. Erase I/O-related annotations from the source-type member.
+        members[member].type->getQualifier().makeTemporary();
     }
 
     flattenMap[variable.getUniqueId()] = memberVariables;

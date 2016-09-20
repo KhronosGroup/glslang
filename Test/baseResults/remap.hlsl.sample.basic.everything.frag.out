@@ -30,7 +30,6 @@ Linked fragment stage:
                               Decorate 3789 DescriptorSet 0
                               Decorate 3805 DescriptorSet 0
                               Decorate 3869 DescriptorSet 0
-                              MemberDecorate 1032 1 BuiltIn FragDepth
                               Decorate 4656 Location 0
                               Decorate 4112 BuiltIn FragDepth
                8:             TypeVoid

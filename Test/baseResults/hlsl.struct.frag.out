@@ -9,7 +9,7 @@ gl_FragCoord origin is upper left
 0:34  Function Definition: PixelShaderFunction(vf4;struct-IN_S-vf4-b1-vf1-vf2-b1-b1-b1-vf41; (global 4-component vector of float)
 0:34    Function Parameters: 
 0:34      'input' (layout(location=0 ) in 4-component vector of float)
-0:34      's' (in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34      's' (in structure{temp 4-component vector of float a, temp bool b, temp 1-component vector of float c, temp 2-component vector of float d, temp bool ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:?     Sequence
 0:39      Compare Equal (temp bool)
 0:39        's3' (temp structure{temp 3-component vector of bool b3})
@@ -51,7 +51,7 @@ gl_FragCoord origin is upper left
 0:34  Function Definition: PixelShaderFunction(vf4;struct-IN_S-vf4-b1-vf1-vf2-b1-b1-b1-vf41; (global 4-component vector of float)
 0:34    Function Parameters: 
 0:34      'input' (layout(location=0 ) in 4-component vector of float)
-0:34      's' (in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool Face ff1, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34      's' (in structure{temp 4-component vector of float a, temp bool b, temp 1-component vector of float c, temp 2-component vector of float d, temp bool ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:?     Sequence
 0:39      Compare Equal (temp bool)
 0:39        's3' (temp structure{temp 3-component vector of bool b3})
