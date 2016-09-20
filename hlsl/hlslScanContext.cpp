@@ -122,6 +122,7 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["Buffer"] =                  EHTokBuffer;
     (*KeywordMap)["vector"] =                  EHTokVector;
     (*KeywordMap)["matrix"] =                  EHTokMatrix;
+    (*KeywordMap)["string"] =                  EHTokString;
 
     (*KeywordMap)["void"] =                    EHTokVoid;
     (*KeywordMap)["bool"] =                    EHTokBool;
@@ -471,6 +472,7 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokBuffer:
     case EHTokVector:
     case EHTokMatrix:
+    case EHTokString:
         return keyword;
 
     // scalar types

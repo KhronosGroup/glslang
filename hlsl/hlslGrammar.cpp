@@ -721,6 +721,54 @@ bool HlslGrammar::acceptMatrixTemplateType(TType& type)
     return true;
 }
 
+// string_template_type
+//      : STRING
+//      | STRING identifier LEFT_ANGLE declaration SEMI_COLON ... declaration SEMICOLON RIGHT_ANGLE
+//
+bool HlslGrammar::acceptStringTemplateType(TType& type)
+{
+    // STRING
+    if (! acceptTokenClass(EHTokString))
+        return false;
+
+    // no matter what happens next, we recognized a string type
+    new(&type) TType(EbtString);
+
+    // identifier LEFT_ANGLE, or not?
+    if (! acceptTokenClass(EHTokIdentifier)) {
+        expected("identifier following 'string'");
+        return false;
+    }
+
+    if (! peekTokenClass(EHTokLeftAngle)) {
+        // then it must be the non-template version, back up and let
+        // normal declaration code handle it
+
+        // recede the identifier
+        recedeToken();
+        return true;
+    }
+
+    // move past the LEFT_ANGLE
+    advanceToken();
+
+    // declaration SEMI_COLON ... declaration SEMICOLON RIGHT_ANGLE
+    do {
+        // eat any extra SEMI_COLON; don't know if the grammar calls for this or not
+        while (acceptTokenClass(EHTokSemicolon))
+            ;
+
+        if (acceptTokenClass(EHTokRightAngle))
+            return true;
+
+        // declaration
+        TIntermNode* node;
+        if (! acceptDeclaration(node)) {
+            expected("declaration in string list");
+            return false;
+        }
+    } while (true);
+}
 
 // sampler_type
 //      : SAMPLER
@@ -892,6 +940,10 @@ bool HlslGrammar::acceptType(TType& type)
 
     case EHTokMatrix:
         return acceptMatrixTemplateType(type);
+        break;
+
+    case EHTokString:
+        return acceptStringTemplateType(type);
         break;
 
     case EHTokSampler:                // fall through
@@ -2061,6 +2113,9 @@ bool HlslGrammar::acceptLiteral(TIntermTyped*& node)
         break;
     case EHTokBoolConstant:
         node = intermediate.addConstantUnion(token.b, token.loc, true);
+        break;
+    case EHTokStringConstant:
+        node = nullptr;
         break;
 
     default:

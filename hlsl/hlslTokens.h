@@ -70,6 +70,7 @@ enum EHlslTokenClass {
     EHTokBuffer,
     EHTokVector,
     EHTokMatrix,
+    EHTokString,
 
     // scalar types
     EHTokVoid,

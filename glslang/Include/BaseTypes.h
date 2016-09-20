@@ -55,6 +55,10 @@ enum TBasicType {
     EbtSampler,
     EbtStruct,
     EbtBlock,
+
+    // HLSL types that live only temporarily.
+    EbtString,
+
     EbtNumTypes
 };
 

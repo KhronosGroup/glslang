@@ -160,6 +160,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.semicolons.frag", "main"},
         {"hlsl.shapeConv.frag", "main"},
         {"hlsl.stringtoken.frag", "main"},
+        {"hlsl.string.frag", "main"},
         {"hlsl.structin.vert", "main"},
         {"hlsl.intrinsics.vert", "VertexShaderFunction"},
         {"hlsl.matType.frag", "PixelShaderFunction"},

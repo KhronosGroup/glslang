@@ -4052,6 +4052,11 @@ void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier
 //
 TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, const TType& parseType, TArraySizes* arraySizes, TIntermTyped* initializer)
 {
+    // string identifiers can nest inside < ... >, apparently with their own namespace,
+    // which is not implemented
+    if (parseType.getBasicType() == EbtString)
+        return nullptr;
+
     TType type;
     type.shallowCopy(parseType);
     if (type.isImplicitlySizedArray()) {
