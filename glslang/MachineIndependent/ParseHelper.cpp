@@ -1051,18 +1051,23 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
         currentFunctionType = new TType(EbtVoid);
     functionReturnsValue = false;
 
-    //
-    // Raise error message if main function takes any parameters or returns anything other than void
-    //
-    if (function.getName() == intermediate.getEntryPoint().c_str()) {
-        if (function.getParamCount() > 0)
-            error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
-        if (function.getType().getBasicType() != EbtVoid)
-            error(loc, "", function.getType().getBasicTypeString().c_str(), "entry point cannot return a value");
+    // Check for entry point
+    if (function.getName().compare(intermediate.getEntryPointName().c_str()) == 0) {
+        intermediate.setEntryPointMangledName(function.getMangledName().c_str());
         intermediate.incrementEntryPointCount();
         inMain = true;
     } else
         inMain = false;
+
+    //
+    // Raise error message if main function takes any parameters or returns anything other than void
+    //
+    if (inMain) {
+        if (function.getParamCount() > 0)
+            error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
+        if (function.getType().getBasicType() != EbtVoid)
+            error(loc, "", function.getType().getBasicTypeString().c_str(), "entry point cannot return a value");
+    }
 
     //
     // New symbol table scope for body of function plus its arguments

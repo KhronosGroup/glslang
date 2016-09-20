@@ -670,8 +670,8 @@ bool TReflection::addStage(EShLanguage, const TIntermediate& intermediate)
 
     TReflectionTraverser it(intermediate, *this);
 
-    // put the entry point on functions to process
-    it.pushFunction("main(");
+    // put the entry point on the list of functions to process
+    it.pushFunction(intermediate.getEntryPointMangledName().c_str());
 
     // process all the functions
     while (! it.functions.empty()) {

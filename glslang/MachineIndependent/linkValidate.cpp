@@ -75,11 +75,11 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     if (source != unit.source)
         error(infoSink, "can't link compilation units from different source languages");
 
-    if (source == EShSourceHlsl && unit.entryPoint.size() > 0) {
-        if (entryPoint.size() > 0)
+    if (source == EShSourceHlsl && unit.entryPointName.size() > 0) {
+        if (entryPointName.size() > 0)
             error(infoSink, "can't handle multiple entry points per stage");
         else
-            entryPoint = unit.entryPoint;
+            entryPointName = unit.entryPointName;
     }
     numEntryPoints += unit.numEntryPoints;
     numErrors += unit.numErrors;

@@ -159,8 +159,10 @@ public:
 
     void setSource(EShSource s) { source = s; }
     EShSource getSource() const { return source; }
-    void setEntryPoint(const char* ep) { entryPoint = ep; }
-    const std::string& getEntryPoint() const { return entryPoint; }
+    void setEntryPointName(const char* ep) { entryPointName = ep; }
+    void setEntryPointMangledName(const char* ep) { entryPointMangledName = ep; }
+    const std::string& getEntryPointName() const { return entryPointName; }
+    const std::string& getEntryPointMangledName() const { return entryPointMangledName; }
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
     void setProfile(EProfile p) { profile = p; }
@@ -363,7 +365,8 @@ protected:
 
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later
-    std::string entryPoint;
+    std::string entryPointName;
+    std::string entryPointMangledName;
     EProfile profile;
     int version;
     SpvVersion spvVersion;
