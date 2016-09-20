@@ -52,7 +52,8 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
                                    int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TInfoSink& infoSink,
                                    bool forwardCompatible, EShMessages messages) :
     TParseContextBase(symbolTable, interm, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
-    contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
+    contextPragma(true, false),
+    loopNestingLevel(0), annotationNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
     postMainReturn(false),
     limits(resources.limits),
     entryPointOutput(nullptr),
@@ -4059,8 +4060,12 @@ void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier
 //
 TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, const TType& parseType, TArraySizes* arraySizes, TIntermTyped* initializer)
 {
-    // string identifiers can nest inside < ... >, apparently with their own namespace,
-    // which is not implemented
+    // TODO: things scoped within an annotation need their own name space;
+    // haven't done that yet
+    if (annotationNestingLevel > 0)
+        return nullptr;
+
+    // TODO: strings are not yet handled
     if (parseType.getBasicType() == EbtString)
         return nullptr;
 

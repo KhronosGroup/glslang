@@ -159,10 +159,12 @@ public:
 
     void updateImplicitArraySize(const TSourceLoc&, TIntermNode*, int index);
 
-    void nestLooping()     { ++loopNestingLevel; }
-    void unnestLooping()   { --loopNestingLevel; }
-    void pushScope()       { symbolTable.push(); }
-    void popScope()        { symbolTable.pop(0); }
+    void nestLooping()       { ++loopNestingLevel; }
+    void unnestLooping()     { --loopNestingLevel; }
+    void nestAnnotations()   { ++annotationNestingLevel; }
+    void unnestAnnotations() { --annotationNestingLevel; }
+    void pushScope()         { symbolTable.push(); }
+    void popScope()          { symbolTable.pop(0); }
 
     void pushSwitchSequence(TIntermSequence* sequence) { switchSequenceStack.push_back(sequence); }
     void popSwitchSequence() { switchSequenceStack.pop_back(); }
@@ -182,6 +184,7 @@ protected:
     // Current state of parsing
     struct TPragma contextPragma;
     int loopNestingLevel;        // 0 if outside all loops
+    int annotationNestingLevel;  // 0 if outside all annotations
     int structNestingLevel;      // 0 if outside blocks and structures
     int controlFlowNestingLevel; // 0 if outside all flow control
     TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting

@@ -73,7 +73,7 @@ namespace glslang {
         bool acceptTemplateType(TBasicType&);
         bool acceptVectorTemplateType(TType&);
         bool acceptMatrixTemplateType(TType&);
-        bool acceptStringTemplateType(TType&);
+        bool acceptAnnotations(TQualifier&);
         bool acceptSamplerType(TType&);
         bool acceptTextureType(TType&);
         bool acceptStruct(TType&);

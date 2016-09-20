@@ -721,36 +721,16 @@ bool HlslGrammar::acceptMatrixTemplateType(TType& type)
     return true;
 }
 
-// string_template_type
-//      : STRING
-//      | STRING identifier LEFT_ANGLE declaration SEMI_COLON ... declaration SEMICOLON RIGHT_ANGLE
+// annotations
+//      : LEFT_ANGLE declaration SEMI_COLON ... declaration SEMICOLON RIGHT_ANGLE
 //
-bool HlslGrammar::acceptStringTemplateType(TType& type)
+bool HlslGrammar::acceptAnnotations(TQualifier&)
 {
-    // STRING
-    if (! acceptTokenClass(EHTokString))
+    if (! acceptTokenClass(EHTokLeftAngle))
         return false;
 
-    // no matter what happens next, we recognized a string type
-    new(&type) TType(EbtString);
-
-    // identifier LEFT_ANGLE, or not?
-    if (! acceptTokenClass(EHTokIdentifier)) {
-        expected("identifier following 'string'");
-        return false;
-    }
-
-    if (! peekTokenClass(EHTokLeftAngle)) {
-        // then it must be the non-template version, back up and let
-        // normal declaration code handle it
-
-        // recede the identifier
-        recedeToken();
-        return true;
-    }
-
-    // move past the LEFT_ANGLE
-    advanceToken();
+    // note that we are nesting a name space
+    parseContext.nestAnnotations();
 
     // declaration SEMI_COLON ... declaration SEMICOLON RIGHT_ANGLE
     do {
@@ -759,15 +739,18 @@ bool HlslGrammar::acceptStringTemplateType(TType& type)
             ;
 
         if (acceptTokenClass(EHTokRightAngle))
-            return true;
+            break;
 
         // declaration
         TIntermNode* node;
         if (! acceptDeclaration(node)) {
-            expected("declaration in string list");
+            expected("declaration in annotation");
             return false;
         }
     } while (true);
+
+    parseContext.unnestAnnotations();
+    return true;
 }
 
 // sampler_type
@@ -942,10 +925,6 @@ bool HlslGrammar::acceptType(TType& type)
         return acceptMatrixTemplateType(type);
         break;
 
-    case EHTokString:
-        return acceptStringTemplateType(type);
-        break;
-
     case EHTokSampler:                // fall through
     case EHTokSampler1d:              // ...
     case EHTokSampler2d:              // ...
@@ -989,6 +968,10 @@ bool HlslGrammar::acceptType(TType& type)
 
     case EHTokVoid:
         new(&type) TType(EbtVoid);
+        break;
+
+    case EHTokString:
+        new(&type) TType(EbtString);
         break;
 
     case EHTokFloat:
@@ -2740,16 +2723,9 @@ void HlslGrammar::acceptPostDecls(TQualifier& qualifier)
                 // semantic, in idToken.string
                 parseContext.handleSemantic(idToken.loc, qualifier, *idToken.string);
             }
-        } else if (acceptTokenClass(EHTokLeftAngle)) {
-            // TODO: process annotations, just accepting them for now
-            do {
-                if (peekTokenClass(EHTokNone))
-                    return;
-                if (acceptTokenClass(EHTokRightAngle))
-                    break;
-                advanceToken();
-            } while (true);
-        } else
+        } else if (peekTokenClass(EHTokLeftAngle))
+            acceptAnnotations(qualifier);
+        else
             break;
 
     } while (true);
