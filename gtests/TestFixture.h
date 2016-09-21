@@ -234,6 +234,54 @@ public:
         }
     }
 
+    // Compiles and links the given source |code| of the given shader
+    // |stage| into the target under the semantics specified via |controls|.
+    // Returns a GlslangResult instance containing all the information generated
+    // during the process. If the target includes SPIR-V, also disassembles
+    // the result and returns disassembly text.
+    GlslangResult compileLinkIoMap(
+            const std::string shaderName, const std::string& code,
+            const std::string& entryPointName, EShMessages controls,
+            int baseSamplerBinding,
+            int baseTextureBinding,
+            int baseUboBinding,
+            bool autoMapBindings)
+    {
+        const EShLanguage kind = GetShaderStage(GetSuffix(shaderName));
+
+        glslang::TShader shader(kind);
+        shader.setShiftSamplerBinding(baseSamplerBinding);
+        shader.setShiftTextureBinding(baseTextureBinding);
+        shader.setShiftUboBinding(baseUboBinding);
+        shader.setAutoMapBindings(autoMapBindings);
+
+        bool success = compile(&shader, code, entryPointName, controls);
+
+        glslang::TProgram program;
+        program.addShader(&shader);
+        
+        success &= program.link(controls);
+        success &= program.mapIO();
+
+        spv::SpvBuildLogger logger;
+
+        if (success && (controls & EShMsgSpvRules)) {
+            std::vector<uint32_t> spirv_binary;
+            glslang::GlslangToSpv(*program.getIntermediate(kind),
+                                  spirv_binary, &logger);
+
+            std::ostringstream disassembly_stream;
+            spv::Parameterize();
+            spv::Disassemble(disassembly_stream, spirv_binary);
+            return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
+                    program.getInfoLog(), program.getInfoDebugLog(),
+                    logger.getAllMessages(), disassembly_stream.str()};
+        } else {
+            return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
+                    program.getInfoLog(), program.getInfoDebugLog(), "", ""};
+        }
+    }
+
     // This is like compileAndLink but with remapping of the SPV binary
     // through spirvbin_t::remap().  While technically this could be merged
     // with compileAndLink() above (with the remap step optionally being a no-op)
@@ -338,6 +386,38 @@ public:
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result = compileAndLink(testName, input, entryPointName, controls);
+
+        // Generate the hybrid output in the way of glslangValidator.
+        std::ostringstream stream;
+        outputResultToStream(&stream, result, controls);
+
+        checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
+                                    expectedOutputFname);
+    }
+
+    void loadFileCompileIoMapAndCheck(const std::string& testDir,
+                                      const std::string& testName,
+                                      Source source,
+                                      Semantics semantics,
+                                      Target target,
+                                      const std::string& entryPointName,
+                                      int baseSamplerBinding,
+                                      int baseTextureBinding,
+                                      int baseUboBinding,
+                                      bool autoMapBindings)
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedOutputFname =
+            testDir + "/baseResults/" + testName + ".out";
+        std::string input, expectedOutput;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
+
+        const EShMessages controls = DeriveOptions(source, semantics, target);
+        GlslangResult result = compileLinkIoMap(testName, input, entryPointName, controls,
+                                                baseSamplerBinding, baseTextureBinding, baseUboBinding,
+                                                autoMapBindings);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;

@@ -60,6 +60,7 @@
 #define SH_EXPORTING
 #include "../Public/ShaderLang.h"
 #include "reflection.h"
+#include "iomapper.h"
 #include "Initialize.h"
 
 namespace { // anonymous namespace for file-local functions and symbols
@@ -1488,6 +1489,10 @@ void TShader::setEntryPoint(const char* entryPoint)
     intermediate->setEntryPointName(entryPoint);
 }
 
+void TShader::setShiftSamplerBinding(unsigned int base) { intermediate->setShiftSamplerBinding(base); }
+void TShader::setShiftTextureBinding(unsigned int base) { intermediate->setShiftTextureBinding(base); }
+void TShader::setShiftUboBinding(unsigned int base)     { intermediate->setShiftUboBinding(base); }
+void TShader::setAutoMapBindings(bool map)              { intermediate->setAutoMapBindings(map); }
 //
 // Turn the shader strings into a parse tree in the TIntermediate.
 //
@@ -1548,7 +1553,7 @@ const char* TShader::getInfoDebugLog()
     return infoSink->debug.c_str();
 }
 
-TProgram::TProgram() : pool(0), reflection(0), linked(false)
+TProgram::TProgram() : pool(0), reflection(0), ioMapper(nullptr), linked(false)
 {
     infoSink = new TInfoSink;
     for (int s = 0; s < EShLangCount; ++s) {
@@ -1699,5 +1704,25 @@ const char* TProgram::getAttributeName(int index)    { return reflection->getAtt
 int TProgram::getAttributeType(int index)            { return reflection->getAttribute(index).glDefineType; }
 
 void TProgram::dumpReflection()                      { reflection->dump(); }
+
+//
+// I/O mapping implementation.
+//
+bool TProgram::mapIO()
+{
+    if (! linked || ioMapper)
+        return false;
+
+    ioMapper = new TIoMapper;
+
+    for (int s = 0; s < EShLangCount; ++s) {
+        if (intermediate[s]) {
+            if (! ioMapper->addStage((EShLanguage)s, *intermediate[s]))
+                return false;
+        }
+    }
+
+    return true;
+}
 
 } // end namespace glslang

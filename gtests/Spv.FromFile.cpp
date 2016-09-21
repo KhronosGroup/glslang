@@ -41,11 +41,30 @@
 namespace glslangtest {
 namespace {
 
+struct IoMapData {
+    const char* fileName;
+    const char* entryPoint;
+    int baseSamplerBinding;
+    int baseTextureBinding;
+    int baseUboBinding;
+    bool autoMapBindings;
+};
+
+std::string FileNameAsCustomTestSuffixIoMap(
+    const ::testing::TestParamInfo<IoMapData>& info) {
+    std::string name = info.param.fileName;
+    // A valid test case suffix cannot have '.' and '-' inside.
+    std::replace(name.begin(), name.end(), '.', '_');
+    std::replace(name.begin(), name.end(), '-', '_');
+    return name;
+}
+
 using CompileVulkanToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileOpenGLToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using VulkanSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 using OpenGLSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 using VulkanAstSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
+using HlslSemantics = GlslangTest<::testing::TestWithParam<IoMapData>>;
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
@@ -89,6 +108,18 @@ TEST_P(VulkanAstSemantics, FromFile)
     loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
                             Source::GLSL, Semantics::Vulkan,
                             Target::AST);
+}
+
+// HLSL-level Vulkan semantics tests.
+TEST_P(HlslSemantics, FromFile)
+{
+    loadFileCompileIoMapAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
+                                 Source::HLSL, Semantics::Vulkan,
+                                 Target::Spv, GetParam().entryPoint,
+                                 GetParam().baseSamplerBinding,
+                                 GetParam().baseTextureBinding,
+                                 GetParam().baseUboBinding,
+                                 GetParam().autoMapBindings);
 }
 
 // clang-format off
@@ -214,6 +245,16 @@ INSTANTIATE_TEST_CASE_P(
         "spv.precise.tesc",
     })),
     FileNameAsCustomTestSuffix
+);
+
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    Hlsl, HlslSemantics,
+    ::testing::ValuesIn(std::vector<IoMapData>{
+        { "spv.register.autoassign.frag", "main_ep", 5, 10, 15, true },
+        { "spv.register.noautoassign.frag", "main_ep", 5, 10, 15, false },
+    }),
+    FileNameAsCustomTestSuffixIoMap
 );
 
 // clang-format off
