@@ -33,6 +33,9 @@ $EXE -l -q -C reflection.vert > $TARGETDIR/reflection.vert.out
 diff -b $BASEDIR/reflection.vert.out $TARGETDIR/reflection.vert.out || HASERROR=1
 $EXE -D -e flizv -l -q -C -V hlsl.reflection.vert > $TARGETDIR/hlsl.reflection.vert.out
 diff -b $BASEDIR/hlsl.reflection.vert.out $TARGETDIR/hlsl.reflection.vert.out || HASERROR=1
+$EXE -D -e main -l -q -C -V hlsl.reflection.binding.frag > $TARGETDIR/hlsl.reflection.binding.frag.out
+diff -b $BASEDIR/hlsl.reflection.binding.frag.out $TARGETDIR/hlsl.reflection.binding.frag.out || HASERROR=1
+
 
 #
 # multi-threaded test

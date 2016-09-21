@@ -16,28 +16,28 @@ Linked fragment stage:
                               Name 8  "PS_OUTPUT"
                               MemberName 8(PS_OUTPUT) 0  "Color"
                               Name 10  "psout"
-                              Name 13  ""
-                              MemberName 13 0  "g_a"
-                              MemberName 13 1  "g_b"
+                              Name 13  "MyUB1"
+                              MemberName 13(MyUB1) 0  "g_a"
+                              MemberName 13(MyUB1) 1  "g_b"
                               Name 15  ""
-                              Name 25  ""
-                              MemberName 25 0  "g_c"
+                              Name 25  "MyUB2"
+                              MemberName 25(MyUB2) 0  "g_c"
                               Name 27  ""
-                              Name 31  ""
-                              MemberName 31 0  "g_d"
+                              Name 31  "MyUB3"
+                              MemberName 31(MyUB3) 0  "g_d"
                               Name 33  ""
                               Name 41  "Color"
-                              MemberDecorate 13 0 Offset 0
-                              MemberDecorate 13 1 Offset 4
-                              Decorate 13 Block
+                              MemberDecorate 13(MyUB1) 0 Offset 0
+                              MemberDecorate 13(MyUB1) 1 Offset 4
+                              Decorate 13(MyUB1) Block
                               Decorate 15 DescriptorSet 0
                               Decorate 15 Binding 20
-                              MemberDecorate 25 0 Offset 0
-                              Decorate 25 Block
+                              MemberDecorate 25(MyUB2) 0 Offset 0
+                              Decorate 25(MyUB2) Block
                               Decorate 27 DescriptorSet 0
                               Decorate 27 Binding 15
-                              MemberDecorate 31 0 Offset 0
-                              Decorate 31 Block
+                              MemberDecorate 31(MyUB3) 0 Offset 0
+                              Decorate 31(MyUB3) Block
                               Decorate 33 DescriptorSet 0
                               Decorate 33 Binding 16
                               Decorate 41(Color) Location 0
@@ -49,17 +49,17 @@ Linked fragment stage:
                9:             TypePointer Function 8(PS_OUTPUT)
               11:             TypeInt 32 1
               12:     11(int) Constant 0
-              13:             TypeStruct 6(float) 11(int)
-              14:             TypePointer Uniform 13(struct)
+       13(MyUB1):             TypeStruct 6(float) 11(int)
+              14:             TypePointer Uniform 13(MyUB1)
               15:     14(ptr) Variable Uniform
               16:             TypePointer Uniform 6(float)
               19:     11(int) Constant 1
               20:             TypePointer Uniform 11(int)
-              25:             TypeStruct 6(float)
-              26:             TypePointer Uniform 25(struct)
+       25(MyUB2):             TypeStruct 6(float)
+              26:             TypePointer Uniform 25(MyUB2)
               27:     26(ptr) Variable Uniform
-              31:             TypeStruct 6(float)
-              32:             TypePointer Uniform 31(struct)
+       31(MyUB3):             TypeStruct 6(float)
+              32:             TypePointer Uniform 31(MyUB3)
               33:     32(ptr) Variable Uniform
               38:             TypePointer Function 7(fvec4)
               40:             TypePointer Output 7(fvec4)

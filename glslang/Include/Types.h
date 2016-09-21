@@ -1202,7 +1202,7 @@ public:
             typeName = NewPoolTString(copyOf.typeName->c_str());
     }
 
-    TType* clone()
+    TType* clone() const
     {
         TType *newType = new TType();
         newType->deepCopy(*this);

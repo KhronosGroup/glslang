@@ -109,7 +109,7 @@ public:
             TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
             if (it == reflection.nameToIndex.end()) {
                 reflection.nameToIndex[name] = (int)reflection.indexToAttribute.size();
-                reflection.indexToAttribute.push_back(TObjectReflection(name, 0, mapToGlType(type), 0, 0));
+                reflection.indexToAttribute.push_back(TObjectReflection(name, type, 0, mapToGlType(type), 0, 0));
             }
         }
     }
@@ -245,7 +245,8 @@ public:
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
         if (it == reflection.nameToIndex.end()) {
             reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
-            reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+            reflection.indexToUniform.push_back(TObjectReflection(name, *terminalType, offset, mapToGlType(*terminalType),
+                                                                  arraySize, blockIndex));
         } else if (arraySize > 1) {
             int& reflectedArraySize = reflection.indexToUniform[it->second].size;
             reflectedArraySize = std::max(arraySize, reflectedArraySize);
@@ -296,12 +297,18 @@ public:
         if (block) {
             offset = 0;
             anonymous = IsAnonymous(base->getName());
+
+            const TString& blockName = base->getType().getTypeName();
+
             if (base->getType().isArray()) {
+                TType derefType(base->getType(), 0);
+
                 assert(! anonymous);
                 for (int e = 0; e < base->getType().getCumulativeArraySize(); ++e)
-                    blockIndex = addBlockName(base->getType().getTypeName() + "[" + String(e) + "]", getBlockSize(base->getType()));
+                    blockIndex = addBlockName(blockName + "[" + String(e) + "]", derefType,
+                                              getBlockSize(base->getType()));
             } else
-                blockIndex = addBlockName(base->getType().getTypeName(), getBlockSize(base->getType()));
+                blockIndex = addBlockName(blockName, base->getType(), getBlockSize(base->getType()));
         }
 
         // Process the dereference chain, backward, accumulating the pieces for later forward traversal.
@@ -334,14 +341,14 @@ public:
         blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize);
     }
 
-    int addBlockName(const TString& name, int size)
+    int addBlockName(const TString& name, const TType& type, int size)
     {
         int blockIndex;
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
         if (reflection.nameToIndex.find(name) == reflection.nameToIndex.end()) {
             blockIndex = (int)reflection.indexToUniformBlock.size();
             reflection.nameToIndex[name] = blockIndex;
-            reflection.indexToUniformBlock.push_back(TObjectReflection(name, -1, -1, size, -1));
+            reflection.indexToUniformBlock.push_back(TObjectReflection(name, type, -1, -1, size, -1));
         } else
             blockIndex = it->second;
 
