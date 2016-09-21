@@ -13,6 +13,7 @@ set(SPVREMAP_SOURCES
 set(HEADERS
     spirv.hpp
     GLSL.std.450.h
+    GLSL.ext.KHR.h
     GlslangToSpv.h
     Logger.h
     SpvBuilder.h

@@ -2318,9 +2318,9 @@ void Builder::dump(std::vector<unsigned int>& out) const
         capInst.dump(out);
     }
 
-    for (int e = 0; e < (int)extensions.size(); ++e) {
+    for (auto it = extensions.cbegin(); it != extensions.cend(); ++it) {
         Instruction extInst(0, 0, OpExtension);
-        extInst.addStringOperand(extensions[e]);
+        extInst.addStringOperand(*it);
         extInst.dump(out);
     }
 
