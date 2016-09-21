@@ -2277,6 +2277,10 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
             }
         } else {
             if (shouldFlatten(arg->getType())) {
+                // Will make a two-level subtree.
+                // The deepest will copy member-by-member to build the structure to pass.
+                // The level above that will be an two-operand EOpComma sequence that follows the copy by the
+                // object itself.
                 TSourceLoc dummyLoc;
                 dummyLoc.init();
                 TVariable* internalAggregate = makeInternalVariable("aggShadow", *function[i].type);
@@ -2284,9 +2288,13 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
                 TIntermSymbol* internalSymbolNode = new TIntermSymbol(internalAggregate->getUniqueId(), 
                                                                       internalAggregate->getName(),
                                                                       internalAggregate->getType());
+                // This makes the deepest level, the member-wise copy
                 TIntermAggregate* assignAgg = handleAssign(dummyLoc, EOpAssign, internalSymbolNode, arg)->getAsAggregate();
+
+                // Now, pair that with the resulting aggregate.
                 assignAgg = intermediate.growAggregate(assignAgg, internalSymbolNode);
                 assignAgg->setOperator(EOpComma);
+                assignAgg->setType(internalAggregate->getType());
                 setArg(i, assignAgg);
             }
         }

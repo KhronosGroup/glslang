@@ -54,7 +54,7 @@ gl_FragCoord origin is upper left
 0:17        move second child to first child (temp float)
 0:17          'ret2' (temp float)
 0:17          Function Call: fun(struct-InParam-vf2-vf4-vi21; (global float)
-0:?             Comma (temp float)
+0:?             Comma (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:?               Sequence
 0:?                 move second child to first child (temp 2-component vector of float)
 0:?                   v: direct index for structure (temp 2-component vector of float)
@@ -152,7 +152,7 @@ gl_FragCoord origin is upper left
 0:17        move second child to first child (temp float)
 0:17          'ret2' (temp float)
 0:17          Function Call: fun(struct-InParam-vf2-vf4-vi21; (global float)
-0:?             Comma (temp float)
+0:?             Comma (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:?               Sequence
 0:?                 move second child to first child (temp 2-component vector of float)
 0:?                   v: direct index for structure (temp 2-component vector of float)
@@ -256,7 +256,7 @@ gl_FragCoord origin is upper left
        48(param):     12(ptr) Variable Function
         51(ret2):     20(ptr) Variable Function
    52(aggShadow):     12(ptr) Variable Function
-       59(param):     20(ptr) Variable Function
+       59(param):     12(ptr) Variable Function
               33:    7(fvec2) Load 32(v)
               35:     34(ptr) AccessChain 30(local) 17
                               Store 35 33
