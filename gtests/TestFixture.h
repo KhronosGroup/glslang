@@ -248,7 +248,8 @@ public:
             int baseSamplerBinding,
             int baseTextureBinding,
             int baseUboBinding,
-            bool autoMapBindings)
+            bool autoMapBindings,
+            bool flattenUniformArrays)
     {
         const EShLanguage kind = GetShaderStage(GetSuffix(shaderName));
 
@@ -257,6 +258,7 @@ public:
         shader.setShiftTextureBinding(baseTextureBinding);
         shader.setShiftUboBinding(baseUboBinding);
         shader.setAutoMapBindings(autoMapBindings);
+        shader.setFlattenUniformArrays(flattenUniformArrays);
 
         bool success = compile(&shader, code, entryPointName, controls);
 
@@ -433,7 +435,8 @@ public:
                                       int baseSamplerBinding,
                                       int baseTextureBinding,
                                       int baseUboBinding,
-                                      bool autoMapBindings)
+                                      bool autoMapBindings,
+                                      bool flattenUniformArrays)
     {
         const std::string inputFname = testDir + "/" + testName;
         const std::string expectedOutputFname =
@@ -446,7 +449,8 @@ public:
         const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result = compileLinkIoMap(testName, input, entryPointName, controls,
                                                 baseSamplerBinding, baseTextureBinding, baseUboBinding,
-                                                autoMapBindings);
+                                                autoMapBindings,
+                                                flattenUniformArrays);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;

@@ -74,7 +74,7 @@ class TBindingTraverser : public TLiveTraverser {
 public:
     TBindingTraverser(const TIntermediate& i, TBindingMap& bindingMap, TUsedBindings& usedBindings,
                       bool traverseDeadCode = false) :
-        TLiveTraverser(i, traverseDeadCode),
+        TLiveTraverser(i, traverseDeadCode, true, true, false),
         bindingMap(bindingMap),
         usedBindings(usedBindings)
     { }
