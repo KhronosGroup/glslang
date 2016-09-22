@@ -304,6 +304,7 @@ public:
     void setShiftTextureBinding(unsigned int base);
     void setShiftUboBinding(unsigned int base);
     void setAutoMapBindings(bool map);
+    void setFlattenUniformArrays(bool flatten);
 
     // Interface to #include handlers.
     //

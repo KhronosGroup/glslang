@@ -204,11 +204,14 @@ public:
     // the result and returns disassembly text.
     GlslangResult compileAndLink(
             const std::string shaderName, const std::string& code,
-            const std::string& entryPointName, EShMessages controls)
+            const std::string& entryPointName, EShMessages controls,
+            bool flattenUniformArrays = false)
     {
         const EShLanguage kind = GetShaderStage(GetSuffix(shaderName));
 
         glslang::TShader shader(kind);
+        shader.setFlattenUniformArrays(flattenUniformArrays);
+
         bool success = compile(&shader, code, entryPointName, controls);
 
         glslang::TProgram program;
@@ -386,6 +389,32 @@ public:
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result = compileAndLink(testName, input, entryPointName, controls);
+
+        // Generate the hybrid output in the way of glslangValidator.
+        std::ostringstream stream;
+        outputResultToStream(&stream, result, controls);
+
+        checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
+                                    expectedOutputFname);
+    }
+
+    void loadFileCompileFlattenUniformsAndCheck(const std::string& testDir,
+                                                const std::string& testName,
+                                                Source source,
+                                                Semantics semantics,
+                                                Target target,
+                                                const std::string& entryPointName="")
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedOutputFname =
+            testDir + "/baseResults/" + testName + ".out";
+        std::string input, expectedOutput;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
+
+        const EShMessages controls = DeriveOptions(source, semantics, target);
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, true);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;

@@ -58,6 +58,7 @@ std::string FileNameAsCustomTestSuffix(
 }
 
 using HlslCompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+using HlslCompileAndFlattenTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 
 // Compiling HLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate both AST and SPIR-V.
@@ -66,6 +67,13 @@ TEST_P(HlslCompileTest, FromFile)
     loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
                             Source::HLSL, Semantics::Vulkan,
                             Target::BothASTAndSpv, GetParam().entryPoint);
+}
+
+TEST_P(HlslCompileAndFlattenTest, FromFile)
+{
+    loadFileCompileFlattenUniformsAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
+                                           Source::HLSL, Semantics::Vulkan,
+                                           Target::BothASTAndSpv, GetParam().entryPoint);
 }
 
 // clang-format off
@@ -181,5 +189,15 @@ INSTANTIATE_TEST_CASE_P(
 );
 // clang-format on
 
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    ToSpirv, HlslCompileAndFlattenTest,
+    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
+        {"hlsl.array.flatten.frag", "main"},
+    }),
+    FileNameAsCustomTestSuffix
+);
+
+// clang-format on
 }  // anonymous namespace
 }  // namespace glslangtest
