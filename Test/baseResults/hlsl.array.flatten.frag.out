@@ -8,8 +8,8 @@ gl_FragCoord origin is upper left
 0:18      Branch: Return with expression
 0:18        texture (global 4-component vector of float)
 0:18          Construct combined texture-sampler (temp sampler1D)
-0:?             'g_tex[1]' (temp texture1D)
-0:?             'g_samp[1]' (temp sampler)
+0:?             'g_tex[1]' (uniform texture1D)
+0:?             'g_samp[1]' (uniform sampler)
 0:18          Constant:
 0:18            0.200000
 0:22  Function Definition: TestFn2(t11[3];p1[3]; (global 4-component vector of float)
@@ -197,8 +197,8 @@ gl_FragCoord origin is upper left
 0:18      Branch: Return with expression
 0:18        texture (global 4-component vector of float)
 0:18          Construct combined texture-sampler (temp sampler1D)
-0:?             'g_tex[1]' (temp texture1D)
-0:?             'g_samp[1]' (temp sampler)
+0:?             'g_tex[1]' (uniform texture1D)
+0:?             'g_samp[1]' (uniform sampler)
 0:18          Constant:
 0:18            0.200000
 0:22  Function Definition: TestFn2(t11[3];p1[3]; (global 4-component vector of float)
@@ -419,6 +419,8 @@ gl_FragCoord origin is upper left
                               Name 125  "g_mats_explicit[1]"
                               Name 126  "g_mats_explicit[2]"
                               Name 127  "g_mats_explicit[3]"
+                              Decorate 36(g_tex[1]) DescriptorSet 0
+                              Decorate 39(g_samp[1]) DescriptorSet 0
                               Decorate 57(g_samp[0]) DescriptorSet 0
                               Decorate 62(g_samp[2]) DescriptorSet 0
                               Decorate 66(g_tex[0]) DescriptorSet 0

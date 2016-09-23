@@ -56,7 +56,9 @@ namespace glslang {
 
 class TLiveTraverser : public TIntermTraverser {
 public:
-    TLiveTraverser(const TIntermediate& i, bool traverseAll = false) :
+    TLiveTraverser(const TIntermediate& i, bool traverseAll = false,
+                   bool preVisit = true, bool inVisit = false, bool postVisit = false) :
+        TIntermTraverser(preVisit, inVisit, postVisit),
         intermediate(i), traverseAll(traverseAll)
     { }
 

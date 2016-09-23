@@ -383,6 +383,7 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
 {
     TIntermTyped* result = nullptr;
 
+    bool flattened = false;
     int indexValue = 0;
     if (index->getQualifier().storage == EvqConst) {
         indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
@@ -408,6 +409,7 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
                 error(loc, "Invalid variable index to flattened uniform array", base->getAsSymbolNode()->getName().c_str(), "");
 
             result = flattenAccess(base, indexValue);
+            flattened = (result != base);
         } else {
             if (index->getQualifier().storage == EvqConst) {
                 if (base->getType().isImplicitlySizedArray())
@@ -423,13 +425,18 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
         // Insert dummy error-recovery result
         result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
     } else {
-        // Insert valid dereferenced result
-        TType newType(base->getType(), 0);  // dereferenced type
-        if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
-            newType.getQualifier().storage = EvqConst;
-        else
-            newType.getQualifier().storage = EvqTemporary;
-        result->setType(newType);
+        // If the array reference was flattened, it has the correct type.  E.g, if it was
+        // a uniform array, it was flattened INTO a set of scalar uniforms, not scalar temps.
+        // In that case, we preserve the qualifiers.
+        if (!flattened) {
+            // Insert valid dereferenced result
+            TType newType(base->getType(), 0);  // dereferenced type
+            if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
+                newType.getQualifier().storage = EvqConst;
+            else
+                newType.getQualifier().storage = EvqTemporary;
+            result->setType(newType);
+        }
     }
 
     return result;
