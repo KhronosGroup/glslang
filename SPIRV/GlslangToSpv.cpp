@@ -524,10 +524,12 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvGlobalInvocationId:   return spv::BuiltInGlobalInvocationId;
 
     case glslang::EbvSubGroupSize:
+        builder.addExtension(spv::E_SPV_KHR_shader_ballot);
         builder.addCapability(spv::CapabilitySubgroupBallotKHR);
         return spv::BuiltInSubgroupSize;
 
     case glslang::EbvSubGroupInvocation:
+        builder.addExtension(spv::E_SPV_KHR_shader_ballot);
         builder.addCapability(spv::CapabilitySubgroupBallotKHR);
         return spv::BuiltInSubgroupLocalInvocationId;
 
