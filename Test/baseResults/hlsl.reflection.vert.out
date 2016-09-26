@@ -4,16 +4,16 @@ Linked vertex stage:
 
 
 Uniform reflection:
-anonMember3: offset 96, type 8b52, size 1, index 0
+anonMember3: offset 80, type 8b52, size 1, index 0
 s.a: offset -1, type 1404, size 1, index -1
 scalar: offset 12, type 1404, size 1, index 0
 m23: offset 16, type 8b67, size 1, index 0
-scalarAfterm23: offset 64, type 1404, size 1, index 0
+scalarAfterm23: offset 48, type 1404, size 1, index 0
 c_m23: offset 16, type 8b67, size 1, index 0
-c_scalarAfterm23: offset 64, type 1404, size 1, index 0
-scalarBeforeArray: offset 112, type 1404, size 1, index 0
-floatArray: offset 128, type 1406, size 5, index 0
-scalarAfterArray: offset 208, type 1404, size 1, index 0
+c_scalarAfterm23: offset 48, type 1404, size 1, index 0
+scalarBeforeArray: offset 96, type 1404, size 1, index 0
+floatArray: offset 112, type 1406, size 5, index 0
+scalarAfterArray: offset 192, type 1404, size 1, index 0
 memfloat2: offset 48, type 8b50, size 1, index 0
 memf1: offset 56, type 1406, size 1, index 0
 memf2: offset 60, type 8b56, size 1, index 0
@@ -73,7 +73,7 @@ anonMember1: offset 0, type 8b51, size 1, index 0
 uf1: offset -1, type 1406, size 1, index -1
 
 Uniform block reflection:
-: offset -1, type ffffffff, size 512, index -1
+: offset -1, type ffffffff, size 496, index -1
 
 Vertex attribute reflection:
 attributeFloat: offset 0, type 1406, size 0, index 0

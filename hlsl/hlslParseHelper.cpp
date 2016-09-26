@@ -63,11 +63,11 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     linkage = new TIntermAggregate;
 
     globalUniformDefaults.clear();
-    globalUniformDefaults.layoutMatrix = ElmColumnMajor;
+    globalUniformDefaults.layoutMatrix = ElmRowMajor;
     globalUniformDefaults.layoutPacking = ElpStd140;
 
     globalBufferDefaults.clear();
-    globalBufferDefaults.layoutMatrix = ElmColumnMajor;
+    globalBufferDefaults.layoutMatrix = ElmRowMajor;
     globalBufferDefaults.layoutPacking = ElpStd430;
 
     globalInputDefaults.clear();
@@ -3624,11 +3624,11 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
     std::transform(id.begin(), id.end(), id.begin(), ::tolower);
 
     if (id == TQualifier::getLayoutMatrixString(ElmColumnMajor)) {
-        qualifier.layoutMatrix = ElmColumnMajor;
+        qualifier.layoutMatrix = ElmRowMajor;
         return;
     }
     if (id == TQualifier::getLayoutMatrixString(ElmRowMajor)) {
-        qualifier.layoutMatrix = ElmRowMajor;
+        qualifier.layoutMatrix = ElmColumnMajor;
         return;
     }
     if (id == "push_constant") {

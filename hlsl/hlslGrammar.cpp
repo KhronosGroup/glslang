@@ -491,10 +491,10 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
             qualifier.sample = true;
             break;
         case EHTokRowMajor:
-            qualifier.layoutMatrix = ElmRowMajor;
+            qualifier.layoutMatrix = ElmColumnMajor;
             break;
         case EHTokColumnMajor:
-            qualifier.layoutMatrix = ElmColumnMajor;
+            qualifier.layoutMatrix = ElmRowMajor;
             break;
         case EHTokPrecise:
             qualifier.noContraction = true;
