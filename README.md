@@ -1,50 +1,7 @@
-Also see the Khronos landing page for glslang as a reference front end:
+Private version of glslang for Khronos-internal development.
 
-https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/
-
-The above page includes where to get binaries, and is kept up to date
-regarding the feature level of glslang.
-
-glslang
-=======
-
-[![Build Status](https://travis-ci.org/KhronosGroup/glslang.svg?branch=master)](https://travis-ci.org/KhronosGroup/glslang)
-[![Build status](https://ci.appveyor.com/api/projects/status/q6fi9cb0qnhkla68/branch/master?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/glslang/branch/master)
-
-An OpenGL and OpenGL ES shader front end and validator.
-
-There are several components:
-
-1. A GLSL/ESSL front-end for reference validation and translation of GLSL/ESSL into an AST.
-
-2. An HLSL front-end for translation of a broad generic HLL into the AST.
-
-3. A SPIR-V back end for translating the AST to SPIR-V.
-
-4. A standalone wrapper, `glslangValidator`, that can be used as a command-line tool for the above.
-
-How to add a feature protected by a version/extension/stage/profile:  See the
-comment in `glslang/MachineIndependent/Versions.cpp`.
-
-Tasks waiting to be done are documented as GitHub issues.
-
-Execution of Standalone Wrapper
--------------------------------
-
-To use the standalone binary form, execute `glslangValidator`, and it will print
-a usage statement.  Basic operation is to give it a file containing a shader,
-and it will print out warnings/errors and optionally an AST.
-
-The applied stage-specific rules are based on the file extension:
-* `.vert` for a vertex shader
-* `.tesc` for a tessellation control shader
-* `.tese` for a tessellation evaluation shader
-* `.geom` for a geometry shader
-* `.frag` for a fragment shader
-* `.comp` for a compute shader
-
-There is also a non-shader extension
-* `.conf` for a configuration file of limits, see usage statement for example
+MRs to add functionality must be accompanied by simple regression tests, which are supplied with the gtests framework.
+See instructions below.
 
 Building
 --------
@@ -53,7 +10,7 @@ Building
 
 * [CMake][cmake]: for generating compilation targets.
 * [bison][bison]: _optional_, but needed when changing the grammar (glslang.y).
-* [googletest][googletest]: _optional_, but should use if making any changes to glslang.
+* [googletest][googletest]: needed if making any changes to glslang.
 
 ### Build steps
 
