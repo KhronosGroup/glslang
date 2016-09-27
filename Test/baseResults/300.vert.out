@@ -9,7 +9,7 @@ ERROR: 0:12: '' : vertex input cannot be further qualified
 ERROR: 0:13: '' : interpolation qualifiers must appear before storage and precision qualifiers 
 ERROR: 0:14: '' : in/out must appear before const 
 ERROR: 0:15: '' : precision qualifier must appear as last qualifier 
-ERROR: 0:16: '' : can only have one interpolation qualifier (flat, smooth, noperspective) 
+ERROR: 0:16: '' : can only have one interpolation qualifier (flat, smooth, noperspective, __explicitInterpAMD) 
 ERROR: 0:17: 'sample' : Reserved word. 
 ERROR: 0:17: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
 ERROR: 0:18: 'uniform' : too many storage qualifiers 

@@ -4,7 +4,7 @@ ERROR: 0:2: '#version' : must occur first in shader
 WARNING: 0:3: varying deprecated in version 130; may be removed in future release
 ERROR: 0:3: 'varying' : no longer supported in core profile; removed in version 420
 ERROR: 0:7: '' : vertex input cannot be further qualified 
-ERROR: 0:11: '' : can only have one interpolation qualifier (flat, smooth, noperspective) 
+ERROR: 0:11: '' : can only have one interpolation qualifier (flat, smooth, noperspective, __explicitInterpAMD) 
 ERROR: 0:12: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
 ERROR: 0:13: 'uniform' : too many storage qualifiers 
 ERROR: 0:18: '=' : global const initializers must be constant 'const int'
