@@ -140,7 +140,7 @@ public:
 
     const TFunction* findFunction(const TSourceLoc& loc, const TFunction& call, bool& builtIn);
     void declareTypedef(const TSourceLoc&, TString& identifier, const TType&, TArraySizes* typeArray = 0);
-    TIntermNode* declareVariable(const TSourceLoc&, TString& identifier, const TType&, TArraySizes* typeArray = 0, TIntermTyped* initializer = 0);
+    TIntermNode* declareVariable(const TSourceLoc&, TString& identifier, TType&, TIntermTyped* initializer = 0);
     TIntermTyped* addConstructor(const TSourceLoc&, TIntermNode*, const TType&);
     TIntermTyped* constructAggregate(TIntermNode*, const TType&, int, const TSourceLoc&);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, const TSourceLoc&, bool subset);

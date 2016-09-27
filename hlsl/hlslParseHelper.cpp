@@ -4160,11 +4160,6 @@ void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier
     TType type;
     type.deepCopy(parseType);
 
-    // Arrayness is potentially coming both from the type and from the 
-    // variable: "int[] a[];" or just one or the other.
-    // Merge it all to the type, so all arrayness is part of the type.
-    arrayDimMerge(type, arraySizes);
-
     TVariable* typeSymbol = new TVariable(&identifier, type, true);
     if (! symbolTable.insert(*typeSymbol))
         error(loc, "name already defined", "typedef", identifier.c_str());
@@ -4181,7 +4176,7 @@ void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier
 // 'parseType' is the type part of the declaration (to the left)
 // 'arraySizes' is the arrayness tagged on the identifier (to the right)
 //
-TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, const TType& parseType, TArraySizes* arraySizes, TIntermTyped* initializer)
+TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, TType& type, TIntermTyped* initializer)
 {
     // TODO: things scoped within an annotation need their own name space;
     // haven't done that yet
@@ -4189,17 +4184,8 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
         return nullptr;
 
     // TODO: strings are not yet handled
-    if (parseType.getBasicType() == EbtString)
+    if (type.getBasicType() == EbtString)
         return nullptr;
-
-    TType type;
-    type.shallowCopy(parseType);
-    if (type.isImplicitlySizedArray()) {
-        // Because "int[] a = int[2](...), b = int[3](...)" makes two arrays a and b
-        // of different sizes, for this case sharing the shallow copy of arrayness
-        // with the parseType oversubscribes it, so get a deep copy of the arrayness.
-        type.newArraySizes(*parseType.getArraySizes());
-    }
 
     if (voidErrorCheck(loc, identifier, type.getBasicType()))
         return nullptr;
@@ -4213,16 +4199,10 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
     bool flattenVar = false;
 
     // Declare the variable
-    if (arraySizes || type.isArray()) {
-        // Arrayness is potentially coming both from the type and from the 
-        // variable: "int[] a[];" or just one or the other.
-        // Merge it all to the type, so all arrayness is part of the type.
-        arrayDimMerge(type, arraySizes);  // Safe if there are no arraySizes
-
+    if (type.isArray()) {
+        // array case
         declareArray(loc, identifier, type, symbol, newDeclaration);
-
         flattenVar = shouldFlatten(type);
-
         if (flattenVar)
             flatten(loc, *symbol->getAsVariable());
     } else {
