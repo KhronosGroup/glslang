@@ -100,3 +100,6 @@ void foop()
 patch out pinbn {
     int a;
 } pinbi;
+
+invariant precise out vec4 badOrder[]; // ERROR, precise must appear first
+void badp(out precise float f);        // ERROR, precise must appear first

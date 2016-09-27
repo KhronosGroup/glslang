@@ -49,7 +49,7 @@ namespace glslang {
 
 class TIntermediate;
 class TIntermAggregate;
-class TLiveTraverser;
+class TReflectionTraverser;
 
 // Data needed for just a single object at the granularity exchanged by the reflection API
 class TObjectReflection {
@@ -93,7 +93,17 @@ public:
             return badReflection;
     }
 
-    // for mapping any name to its index (both block names and uniforms names)
+    // for mapping an attribute index to the attribute's description
+    int getNumAttributes() { return (int)indexToAttribute.size(); }
+    const TObjectReflection& getAttribute(int i) const
+    {
+        if (i >= 0 && i < (int)indexToAttribute.size())
+            return indexToAttribute[i];
+        else
+            return badReflection;
+    }
+
+    // for mapping any name to its index (block names, uniform names and attribute names)
     int getIndex(const char* name) const 
     {
         TNameToIndex::const_iterator it = nameToIndex.find(name);
@@ -106,7 +116,7 @@ public:
     void dump();
 
 protected:
-    friend class glslang::TLiveTraverser;
+    friend class glslang::TReflectionTraverser;
 
     // Need a TString hash: typedef std::unordered_map<TString, int> TNameToIndex;
     typedef std::map<TString, int> TNameToIndex;
@@ -116,6 +126,7 @@ protected:
     TNameToIndex nameToIndex;        // maps names to indexes; can hold all types of data: uniform/buffer and which function names have been processed
     TMapIndexToReflection indexToUniform;
     TMapIndexToReflection indexToUniformBlock;
+    TMapIndexToReflection indexToAttribute;
 };
 
 } // end namespace glslang

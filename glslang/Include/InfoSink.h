@@ -36,7 +36,7 @@
 #define _INFOSINK_INCLUDED_
 
 #include "../Include/Common.h"
-#include <math.h>
+#include <cmath>
 
 namespace glslang {
 
@@ -92,7 +92,7 @@ public:
         case EPrefixInternalError: append("INTERNAL ERROR: "); break;
         case EPrefixUnimplemented: append("UNIMPLEMENTED: ");  break;
         case EPrefixNote:          append("NOTE: ");           break;
-        default:                   append("UNKOWN ERROR: ");   break;
+        default:                   append("UNKNOWN ERROR: ");   break;
         }
     }
     void location(const TSourceLoc& loc) {

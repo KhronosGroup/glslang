@@ -157,3 +157,5 @@ void qlod()
     levels = textureQueryLevels(samp1D);   // ERROR, not until 430
     levels = textureQueryLevels(samp1Ds);  // ERROR, not until 430
 }
+
+layout(binding=0) writeonly uniform image1D badArray[];

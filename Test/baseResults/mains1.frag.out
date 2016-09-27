@@ -42,7 +42,7 @@ output primitive = line_strip
 Linked geometry stage:
 
 ERROR: Linking geometry stage: Contradictory output layout primitives
-ERROR: Linking geometry stage: Missing entry point: Each stage requires one "void main()" entry point
+ERROR: Linking geometry stage: Missing entry point: Each stage requires one entry point
 ERROR: Linking geometry stage: At least one shader must specify an input layout primitive
 ERROR: Linking geometry stage: At least one shader must specify a layout(max_vertices = value)
 

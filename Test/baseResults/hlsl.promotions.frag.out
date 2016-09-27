@@ -1,0 +1,1709 @@
+hlsl.promotions.frag
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:19  Function Definition: Fn_F3(vf3; (global void)
+0:19    Function Parameters: 
+0:19      'x' (in 3-component vector of float)
+0:20  Function Definition: Fn_I3(vi3; (global void)
+0:20    Function Parameters: 
+0:20      'x' (in 3-component vector of int)
+0:21  Function Definition: Fn_U3(vu3; (global void)
+0:21    Function Parameters: 
+0:21      'x' (in 3-component vector of uint)
+0:22  Function Definition: Fn_B3(vb3; (global void)
+0:22    Function Parameters: 
+0:22      'x' (in 3-component vector of bool)
+0:23  Function Definition: Fn_D3(vd3; (global void)
+0:23    Function Parameters: 
+0:23      'x' (in 3-component vector of double)
+0:26  Function Definition: Fn_R_F3I(vf3; (global 3-component vector of float)
+0:26    Function Parameters: 
+0:26      'p' (out 3-component vector of float)
+0:?     Sequence
+0:26      move second child to first child (temp 3-component vector of float)
+0:26        'p' (out 3-component vector of float)
+0:26        Convert int to float (temp 3-component vector of float)
+0:26          'i3' (uniform 3-component vector of int)
+0:26      Branch: Return with expression
+0:26        Convert int to float (temp 3-component vector of float)
+0:26          'i3' (uniform 3-component vector of int)
+0:27  Function Definition: Fn_R_F3U(vf3; (global 3-component vector of float)
+0:27    Function Parameters: 
+0:27      'p' (out 3-component vector of float)
+0:?     Sequence
+0:27      move second child to first child (temp 3-component vector of float)
+0:27        'p' (out 3-component vector of float)
+0:27        Convert uint to float (temp 3-component vector of float)
+0:27          'u3' (uniform 3-component vector of uint)
+0:27      Branch: Return with expression
+0:27        Convert uint to float (temp 3-component vector of float)
+0:27          'u3' (uniform 3-component vector of uint)
+0:28  Function Definition: Fn_R_F3B(vf3; (global 3-component vector of float)
+0:28    Function Parameters: 
+0:28      'p' (out 3-component vector of float)
+0:?     Sequence
+0:28      move second child to first child (temp 3-component vector of float)
+0:28        'p' (out 3-component vector of float)
+0:28        Convert bool to float (temp 3-component vector of float)
+0:28          'b3' (uniform 3-component vector of bool)
+0:28      Branch: Return with expression
+0:28        Convert bool to float (temp 3-component vector of float)
+0:28          'b3' (uniform 3-component vector of bool)
+0:29  Function Definition: Fn_R_F3D(vf3; (global 3-component vector of float)
+0:29    Function Parameters: 
+0:29      'p' (out 3-component vector of float)
+0:?     Sequence
+0:29      move second child to first child (temp 3-component vector of float)
+0:29        'p' (out 3-component vector of float)
+0:29        Convert double to float (temp 3-component vector of float)
+0:29          'd3' (uniform 3-component vector of double)
+0:29      Branch: Return with expression
+0:29        Convert double to float (temp 3-component vector of float)
+0:29          'd3' (uniform 3-component vector of double)
+0:31  Function Definition: Fn_R_I3U(vi3; (global 3-component vector of int)
+0:31    Function Parameters: 
+0:31      'p' (out 3-component vector of int)
+0:?     Sequence
+0:31      move second child to first child (temp 3-component vector of int)
+0:31        'p' (out 3-component vector of int)
+0:31        Convert uint to int (temp 3-component vector of int)
+0:31          'u3' (uniform 3-component vector of uint)
+0:31      Branch: Return with expression
+0:31        Convert uint to int (temp 3-component vector of int)
+0:31          'u3' (uniform 3-component vector of uint)
+0:32  Function Definition: Fn_R_I3B(vi3; (global 3-component vector of int)
+0:32    Function Parameters: 
+0:32      'p' (out 3-component vector of int)
+0:?     Sequence
+0:32      move second child to first child (temp 3-component vector of int)
+0:32        'p' (out 3-component vector of int)
+0:32        Convert bool to int (temp 3-component vector of int)
+0:32          'b3' (uniform 3-component vector of bool)
+0:32      Branch: Return with expression
+0:32        Convert bool to int (temp 3-component vector of int)
+0:32          'b3' (uniform 3-component vector of bool)
+0:33  Function Definition: Fn_R_I3F(vi3; (global 3-component vector of int)
+0:33    Function Parameters: 
+0:33      'p' (out 3-component vector of int)
+0:?     Sequence
+0:33      move second child to first child (temp 3-component vector of int)
+0:33        'p' (out 3-component vector of int)
+0:33        Convert float to int (temp 3-component vector of int)
+0:33          'f3' (uniform 3-component vector of float)
+0:33      Branch: Return with expression
+0:33        Convert float to int (temp 3-component vector of int)
+0:33          'f3' (uniform 3-component vector of float)
+0:34  Function Definition: Fn_R_I3D(vi3; (global 3-component vector of int)
+0:34    Function Parameters: 
+0:34      'p' (out 3-component vector of int)
+0:?     Sequence
+0:34      move second child to first child (temp 3-component vector of int)
+0:34        'p' (out 3-component vector of int)
+0:34        Convert double to int (temp 3-component vector of int)
+0:34          'd3' (uniform 3-component vector of double)
+0:34      Branch: Return with expression
+0:34        Convert double to int (temp 3-component vector of int)
+0:34          'd3' (uniform 3-component vector of double)
+0:36  Function Definition: Fn_R_U3I(vu3; (global 3-component vector of uint)
+0:36    Function Parameters: 
+0:36      'p' (out 3-component vector of uint)
+0:?     Sequence
+0:36      move second child to first child (temp 3-component vector of uint)
+0:36        'p' (out 3-component vector of uint)
+0:36        Convert int to uint (temp 3-component vector of uint)
+0:36          'i3' (uniform 3-component vector of int)
+0:36      Branch: Return with expression
+0:36        Convert int to uint (temp 3-component vector of uint)
+0:36          'i3' (uniform 3-component vector of int)
+0:37  Function Definition: Fn_R_U3F(vu3; (global 3-component vector of uint)
+0:37    Function Parameters: 
+0:37      'p' (out 3-component vector of uint)
+0:?     Sequence
+0:37      move second child to first child (temp 3-component vector of uint)
+0:37        'p' (out 3-component vector of uint)
+0:37        Convert float to uint (temp 3-component vector of uint)
+0:37          'f3' (uniform 3-component vector of float)
+0:37      Branch: Return with expression
+0:37        Convert float to uint (temp 3-component vector of uint)
+0:37          'f3' (uniform 3-component vector of float)
+0:38  Function Definition: Fn_R_U3B(vu3; (global 3-component vector of uint)
+0:38    Function Parameters: 
+0:38      'p' (out 3-component vector of uint)
+0:?     Sequence
+0:38      move second child to first child (temp 3-component vector of uint)
+0:38        'p' (out 3-component vector of uint)
+0:38        Convert bool to uint (temp 3-component vector of uint)
+0:38          'b3' (uniform 3-component vector of bool)
+0:38      Branch: Return with expression
+0:38        Convert bool to uint (temp 3-component vector of uint)
+0:38          'b3' (uniform 3-component vector of bool)
+0:39  Function Definition: Fn_R_U3D(vu3; (global 3-component vector of uint)
+0:39    Function Parameters: 
+0:39      'p' (out 3-component vector of uint)
+0:?     Sequence
+0:39      move second child to first child (temp 3-component vector of uint)
+0:39        'p' (out 3-component vector of uint)
+0:39        Convert double to uint (temp 3-component vector of uint)
+0:39          'd3' (uniform 3-component vector of double)
+0:39      Branch: Return with expression
+0:39        Convert double to uint (temp 3-component vector of uint)
+0:39          'd3' (uniform 3-component vector of double)
+0:41  Function Definition: Fn_R_B3I(vb3; (global 3-component vector of bool)
+0:41    Function Parameters: 
+0:41      'p' (out 3-component vector of bool)
+0:?     Sequence
+0:41      move second child to first child (temp 3-component vector of bool)
+0:41        'p' (out 3-component vector of bool)
+0:41        Convert int to bool (temp 3-component vector of bool)
+0:41          'i3' (uniform 3-component vector of int)
+0:41      Branch: Return with expression
+0:41        Convert int to bool (temp 3-component vector of bool)
+0:41          'i3' (uniform 3-component vector of int)
+0:42  Function Definition: Fn_R_B3U(vb3; (global 3-component vector of bool)
+0:42    Function Parameters: 
+0:42      'p' (out 3-component vector of bool)
+0:?     Sequence
+0:42      move second child to first child (temp 3-component vector of bool)
+0:42        'p' (out 3-component vector of bool)
+0:42        Convert uint to bool (temp 3-component vector of bool)
+0:42          'u3' (uniform 3-component vector of uint)
+0:42      Branch: Return with expression
+0:42        Convert uint to bool (temp 3-component vector of bool)
+0:42          'u3' (uniform 3-component vector of uint)
+0:43  Function Definition: Fn_R_B3F(vb3; (global 3-component vector of bool)
+0:43    Function Parameters: 
+0:43      'p' (out 3-component vector of bool)
+0:?     Sequence
+0:43      move second child to first child (temp 3-component vector of bool)
+0:43        'p' (out 3-component vector of bool)
+0:43        Convert float to bool (temp 3-component vector of bool)
+0:43          'f3' (uniform 3-component vector of float)
+0:43      Branch: Return with expression
+0:43        Convert float to bool (temp 3-component vector of bool)
+0:43          'f3' (uniform 3-component vector of float)
+0:44  Function Definition: Fn_R_B3D(vb3; (global 3-component vector of bool)
+0:44    Function Parameters: 
+0:44      'p' (out 3-component vector of bool)
+0:?     Sequence
+0:44      move second child to first child (temp 3-component vector of bool)
+0:44        'p' (out 3-component vector of bool)
+0:44        Convert double to bool (temp 3-component vector of bool)
+0:44          'd3' (uniform 3-component vector of double)
+0:44      Branch: Return with expression
+0:44        Convert double to bool (temp 3-component vector of bool)
+0:44          'd3' (uniform 3-component vector of double)
+0:46  Function Definition: Fn_R_D3I(vd3; (global 3-component vector of double)
+0:46    Function Parameters: 
+0:46      'p' (out 3-component vector of double)
+0:?     Sequence
+0:46      move second child to first child (temp 3-component vector of double)
+0:46        'p' (out 3-component vector of double)
+0:46        Convert int to double (temp 3-component vector of double)
+0:46          'i3' (uniform 3-component vector of int)
+0:46      Branch: Return with expression
+0:46        Convert int to double (temp 3-component vector of double)
+0:46          'i3' (uniform 3-component vector of int)
+0:47  Function Definition: Fn_R_D3U(vd3; (global 3-component vector of double)
+0:47    Function Parameters: 
+0:47      'p' (out 3-component vector of double)
+0:?     Sequence
+0:47      move second child to first child (temp 3-component vector of double)
+0:47        'p' (out 3-component vector of double)
+0:47        Convert uint to double (temp 3-component vector of double)
+0:47          'u3' (uniform 3-component vector of uint)
+0:47      Branch: Return with expression
+0:47        Convert uint to double (temp 3-component vector of double)
+0:47          'u3' (uniform 3-component vector of uint)
+0:48  Function Definition: Fn_R_D3B(vd3; (global 3-component vector of double)
+0:48    Function Parameters: 
+0:48      'p' (out 3-component vector of double)
+0:?     Sequence
+0:48      move second child to first child (temp 3-component vector of double)
+0:48        'p' (out 3-component vector of double)
+0:48        Convert bool to double (temp 3-component vector of double)
+0:48          'b3' (uniform 3-component vector of bool)
+0:48      Branch: Return with expression
+0:48        Convert bool to double (temp 3-component vector of double)
+0:48          'b3' (uniform 3-component vector of bool)
+0:49  Function Definition: Fn_R_D3F(vd3; (global 3-component vector of double)
+0:49    Function Parameters: 
+0:49      'p' (out 3-component vector of double)
+0:?     Sequence
+0:49      move second child to first child (temp 3-component vector of double)
+0:49        'p' (out 3-component vector of double)
+0:49        Convert float to double (temp 3-component vector of double)
+0:49          'f3' (uniform 3-component vector of float)
+0:49      Branch: Return with expression
+0:49        Convert float to double (temp 3-component vector of double)
+0:49          'f3' (uniform 3-component vector of float)
+0:52  Function Definition: main( (global structure{temp 4-component vector of float Color})
+0:52    Function Parameters: 
+0:?     Sequence
+0:54      Sequence
+0:54        move second child to first child (temp 3-component vector of float)
+0:54          'r00' (temp 3-component vector of float)
+0:54          Convert int to float (temp 3-component vector of float)
+0:54            'i3' (uniform 3-component vector of int)
+0:55      Sequence
+0:55        move second child to first child (temp 3-component vector of float)
+0:55          'r01' (temp 3-component vector of float)
+0:55          Convert bool to float (temp 3-component vector of float)
+0:55            'b3' (uniform 3-component vector of bool)
+0:56      Sequence
+0:56        move second child to first child (temp 3-component vector of float)
+0:56          'r02' (temp 3-component vector of float)
+0:56          Convert uint to float (temp 3-component vector of float)
+0:56            'u3' (uniform 3-component vector of uint)
+0:57      Sequence
+0:57        move second child to first child (temp 3-component vector of float)
+0:57          'r03' (temp 3-component vector of float)
+0:57          Convert double to float (temp 3-component vector of float)
+0:57            'd3' (uniform 3-component vector of double)
+0:59      Sequence
+0:59        move second child to first child (temp 3-component vector of int)
+0:59          'r10' (temp 3-component vector of int)
+0:59          Convert bool to int (temp 3-component vector of int)
+0:59            'b3' (uniform 3-component vector of bool)
+0:60      Sequence
+0:60        move second child to first child (temp 3-component vector of int)
+0:60          'r11' (temp 3-component vector of int)
+0:60          Convert uint to int (temp 3-component vector of int)
+0:60            'u3' (uniform 3-component vector of uint)
+0:61      Sequence
+0:61        move second child to first child (temp 3-component vector of int)
+0:61          'r12' (temp 3-component vector of int)
+0:61          Convert float to int (temp 3-component vector of int)
+0:61            'f3' (uniform 3-component vector of float)
+0:62      Sequence
+0:62        move second child to first child (temp 3-component vector of int)
+0:62          'r13' (temp 3-component vector of int)
+0:62          Convert double to int (temp 3-component vector of int)
+0:62            'd3' (uniform 3-component vector of double)
+0:64      Sequence
+0:64        move second child to first child (temp 3-component vector of uint)
+0:64          'r20' (temp 3-component vector of uint)
+0:64          Convert bool to uint (temp 3-component vector of uint)
+0:64            'b3' (uniform 3-component vector of bool)
+0:65      Sequence
+0:65        move second child to first child (temp 3-component vector of uint)
+0:65          'r21' (temp 3-component vector of uint)
+0:65          Convert int to uint (temp 3-component vector of uint)
+0:65            'i3' (uniform 3-component vector of int)
+0:66      Sequence
+0:66        move second child to first child (temp 3-component vector of uint)
+0:66          'r22' (temp 3-component vector of uint)
+0:66          Convert float to uint (temp 3-component vector of uint)
+0:66            'f3' (uniform 3-component vector of float)
+0:67      Sequence
+0:67        move second child to first child (temp 3-component vector of uint)
+0:67          'r23' (temp 3-component vector of uint)
+0:67          Convert double to uint (temp 3-component vector of uint)
+0:67            'd3' (uniform 3-component vector of double)
+0:69      Sequence
+0:69        move second child to first child (temp 3-component vector of bool)
+0:69          'r30' (temp 3-component vector of bool)
+0:69          Convert int to bool (temp 3-component vector of bool)
+0:69            'i3' (uniform 3-component vector of int)
+0:70      Sequence
+0:70        move second child to first child (temp 3-component vector of bool)
+0:70          'r31' (temp 3-component vector of bool)
+0:70          Convert uint to bool (temp 3-component vector of bool)
+0:70            'u3' (uniform 3-component vector of uint)
+0:71      Sequence
+0:71        move second child to first child (temp 3-component vector of bool)
+0:71          'r32' (temp 3-component vector of bool)
+0:71          Convert float to bool (temp 3-component vector of bool)
+0:71            'f3' (uniform 3-component vector of float)
+0:72      Sequence
+0:72        move second child to first child (temp 3-component vector of bool)
+0:72          'r33' (temp 3-component vector of bool)
+0:72          Convert double to bool (temp 3-component vector of bool)
+0:72            'd3' (uniform 3-component vector of double)
+0:74      Sequence
+0:74        move second child to first child (temp 3-component vector of double)
+0:74          'r40' (temp 3-component vector of double)
+0:74          Convert int to double (temp 3-component vector of double)
+0:74            'i3' (uniform 3-component vector of int)
+0:75      Sequence
+0:75        move second child to first child (temp 3-component vector of double)
+0:75          'r41' (temp 3-component vector of double)
+0:75          Convert uint to double (temp 3-component vector of double)
+0:75            'u3' (uniform 3-component vector of uint)
+0:76      Sequence
+0:76        move second child to first child (temp 3-component vector of double)
+0:76          'r42' (temp 3-component vector of double)
+0:76          Convert float to double (temp 3-component vector of double)
+0:76            'f3' (uniform 3-component vector of float)
+0:77      Sequence
+0:77        move second child to first child (temp 3-component vector of double)
+0:77          'r43' (temp 3-component vector of double)
+0:77          Convert bool to double (temp 3-component vector of double)
+0:77            'b3' (uniform 3-component vector of bool)
+0:80      multiply second child into first child (temp 3-component vector of float)
+0:80        'r00' (temp 3-component vector of float)
+0:80        Convert int to float (temp 3-component vector of float)
+0:80          'i3' (uniform 3-component vector of int)
+0:81      multiply second child into first child (temp 3-component vector of float)
+0:81        'r01' (temp 3-component vector of float)
+0:81        Convert bool to float (temp 3-component vector of float)
+0:81          'b3' (uniform 3-component vector of bool)
+0:82      multiply second child into first child (temp 3-component vector of float)
+0:82        'r02' (temp 3-component vector of float)
+0:82        Convert uint to float (temp 3-component vector of float)
+0:82          'u3' (uniform 3-component vector of uint)
+0:83      multiply second child into first child (temp 3-component vector of float)
+0:83        'r03' (temp 3-component vector of float)
+0:83        Convert double to float (temp 3-component vector of float)
+0:83          'd3' (uniform 3-component vector of double)
+0:85      multiply second child into first child (temp 3-component vector of int)
+0:85        'r10' (temp 3-component vector of int)
+0:85        Convert bool to int (temp 3-component vector of int)
+0:85          'b3' (uniform 3-component vector of bool)
+0:86      multiply second child into first child (temp 3-component vector of int)
+0:86        'r11' (temp 3-component vector of int)
+0:86        Convert uint to int (temp 3-component vector of int)
+0:86          'u3' (uniform 3-component vector of uint)
+0:87      multiply second child into first child (temp 3-component vector of int)
+0:87        'r12' (temp 3-component vector of int)
+0:87        Convert float to int (temp 3-component vector of int)
+0:87          'f3' (uniform 3-component vector of float)
+0:88      multiply second child into first child (temp 3-component vector of int)
+0:88        'r13' (temp 3-component vector of int)
+0:88        Convert double to int (temp 3-component vector of int)
+0:88          'd3' (uniform 3-component vector of double)
+0:90      multiply second child into first child (temp 3-component vector of uint)
+0:90        'r20' (temp 3-component vector of uint)
+0:90        Convert bool to uint (temp 3-component vector of uint)
+0:90          'b3' (uniform 3-component vector of bool)
+0:91      multiply second child into first child (temp 3-component vector of uint)
+0:91        'r21' (temp 3-component vector of uint)
+0:91        Convert int to uint (temp 3-component vector of uint)
+0:91          'i3' (uniform 3-component vector of int)
+0:92      multiply second child into first child (temp 3-component vector of uint)
+0:92        'r22' (temp 3-component vector of uint)
+0:92        Convert float to uint (temp 3-component vector of uint)
+0:92          'f3' (uniform 3-component vector of float)
+0:93      multiply second child into first child (temp 3-component vector of uint)
+0:93        'r23' (temp 3-component vector of uint)
+0:93        Convert double to uint (temp 3-component vector of uint)
+0:93          'd3' (uniform 3-component vector of double)
+0:97      multiply second child into first child (temp 3-component vector of double)
+0:97        'r40' (temp 3-component vector of double)
+0:97        Convert int to double (temp 3-component vector of double)
+0:97          'i3' (uniform 3-component vector of int)
+0:98      multiply second child into first child (temp 3-component vector of double)
+0:98        'r41' (temp 3-component vector of double)
+0:98        Convert uint to double (temp 3-component vector of double)
+0:98          'u3' (uniform 3-component vector of uint)
+0:99      multiply second child into first child (temp 3-component vector of double)
+0:99        'r42' (temp 3-component vector of double)
+0:99        Convert float to double (temp 3-component vector of double)
+0:99          'f3' (uniform 3-component vector of float)
+0:100      multiply second child into first child (temp 3-component vector of double)
+0:100        'r43' (temp 3-component vector of double)
+0:100        Convert bool to double (temp 3-component vector of double)
+0:100          'b3' (uniform 3-component vector of bool)
+0:103      vector scale second child into first child (temp 3-component vector of float)
+0:103        'r00' (temp 3-component vector of float)
+0:103        Convert int to float (temp float)
+0:103          'is' (uniform int)
+0:104      vector scale second child into first child (temp 3-component vector of float)
+0:104        'r01' (temp 3-component vector of float)
+0:104        Convert bool to float (temp float)
+0:104          'bs' (uniform bool)
+0:105      vector scale second child into first child (temp 3-component vector of float)
+0:105        'r02' (temp 3-component vector of float)
+0:105        Convert uint to float (temp float)
+0:105          'us' (uniform uint)
+0:106      vector scale second child into first child (temp 3-component vector of float)
+0:106        'r03' (temp 3-component vector of float)
+0:106        Convert double to float (temp float)
+0:106          'ds' (uniform double)
+0:108      vector scale second child into first child (temp 3-component vector of int)
+0:108        'r10' (temp 3-component vector of int)
+0:108        Convert bool to int (temp int)
+0:108          'bs' (uniform bool)
+0:109      vector scale second child into first child (temp 3-component vector of int)
+0:109        'r11' (temp 3-component vector of int)
+0:109        Convert uint to int (temp int)
+0:109          'us' (uniform uint)
+0:110      vector scale second child into first child (temp 3-component vector of int)
+0:110        'r12' (temp 3-component vector of int)
+0:110        Convert float to int (temp int)
+0:110          'fs' (uniform float)
+0:111      vector scale second child into first child (temp 3-component vector of int)
+0:111        'r13' (temp 3-component vector of int)
+0:111        Convert double to int (temp int)
+0:111          'ds' (uniform double)
+0:113      vector scale second child into first child (temp 3-component vector of uint)
+0:113        'r20' (temp 3-component vector of uint)
+0:113        Convert bool to uint (temp uint)
+0:113          'bs' (uniform bool)
+0:114      vector scale second child into first child (temp 3-component vector of uint)
+0:114        'r21' (temp 3-component vector of uint)
+0:114        Convert int to uint (temp uint)
+0:114          'is' (uniform int)
+0:115      vector scale second child into first child (temp 3-component vector of uint)
+0:115        'r22' (temp 3-component vector of uint)
+0:115        Convert float to uint (temp uint)
+0:115          'fs' (uniform float)
+0:116      vector scale second child into first child (temp 3-component vector of uint)
+0:116        'r23' (temp 3-component vector of uint)
+0:116        Convert double to uint (temp uint)
+0:116          'ds' (uniform double)
+0:120      vector scale second child into first child (temp 3-component vector of double)
+0:120        'r40' (temp 3-component vector of double)
+0:120        Convert int to double (temp double)
+0:120          'is' (uniform int)
+0:121      vector scale second child into first child (temp 3-component vector of double)
+0:121        'r41' (temp 3-component vector of double)
+0:121        Convert uint to double (temp double)
+0:121          'us' (uniform uint)
+0:122      vector scale second child into first child (temp 3-component vector of double)
+0:122        'r42' (temp 3-component vector of double)
+0:122        Convert float to double (temp double)
+0:122          'fs' (uniform float)
+0:123      vector scale second child into first child (temp 3-component vector of double)
+0:123        'r43' (temp 3-component vector of double)
+0:123        Convert bool to double (temp double)
+0:123          'bs' (uniform bool)
+0:193      Sequence
+0:193        move second child to first child (temp int)
+0:193          'c1' (temp int)
+0:193          Constant:
+0:193            3 (const int)
+0:194      Sequence
+0:194        move second child to first child (temp int)
+0:194          'c2' (temp int)
+0:194          Constant:
+0:194            3 (const int)
+0:196      Sequence
+0:196        move second child to first child (temp 4-component vector of float)
+0:196          'outval' (temp 4-component vector of float)
+0:?           Construct vec4 (temp 4-component vector of float)
+0:196            Constant:
+0:196              3.600000
+0:196            Constant:
+0:196              3.600000
+0:196            Convert int to float (temp float)
+0:196              'c1' (temp int)
+0:196            Convert int to float (temp float)
+0:196              'c2' (temp int)
+0:199      move second child to first child (temp 4-component vector of float)
+0:199        Color: direct index for structure (temp 4-component vector of float)
+0:199          'psout' (temp structure{temp 4-component vector of float Color})
+0:199          Constant:
+0:199            0 (const int)
+0:199        'outval' (temp 4-component vector of float)
+0:?       Sequence
+0:?         Sequence
+0:200          move second child to first child (temp 4-component vector of float)
+0:?             'Color' (layout(location=0 ) out 4-component vector of float)
+0:200            Color: direct index for structure (temp 4-component vector of float)
+0:200              'psout' (temp structure{temp 4-component vector of float Color})
+0:200              Constant:
+0:200                0 (const int)
+0:200        Branch: Return
+0:?   Linker Objects
+0:?     'i3' (uniform 3-component vector of int)
+0:?     'b3' (uniform 3-component vector of bool)
+0:?     'f3' (uniform 3-component vector of float)
+0:?     'u3' (uniform 3-component vector of uint)
+0:?     'd3' (uniform 3-component vector of double)
+0:?     'is' (uniform int)
+0:?     'bs' (uniform bool)
+0:?     'fs' (uniform float)
+0:?     'us' (uniform uint)
+0:?     'ds' (uniform double)
+0:?     'Color' (layout(location=0 ) out 4-component vector of float)
+
+
+Linked fragment stage:
+
+
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:19  Function Definition: Fn_F3(vf3; (global void)
+0:19    Function Parameters: 
+0:19      'x' (in 3-component vector of float)
+0:20  Function Definition: Fn_I3(vi3; (global void)
+0:20    Function Parameters: 
+0:20      'x' (in 3-component vector of int)
+0:21  Function Definition: Fn_U3(vu3; (global void)
+0:21    Function Parameters: 
+0:21      'x' (in 3-component vector of uint)
+0:22  Function Definition: Fn_B3(vb3; (global void)
+0:22    Function Parameters: 
+0:22      'x' (in 3-component vector of bool)
+0:23  Function Definition: Fn_D3(vd3; (global void)
+0:23    Function Parameters: 
+0:23      'x' (in 3-component vector of double)
+0:26  Function Definition: Fn_R_F3I(vf3; (global 3-component vector of float)
+0:26    Function Parameters: 
+0:26      'p' (out 3-component vector of float)
+0:?     Sequence
+0:26      move second child to first child (temp 3-component vector of float)
+0:26        'p' (out 3-component vector of float)
+0:26        Convert int to float (temp 3-component vector of float)
+0:26          'i3' (uniform 3-component vector of int)
+0:26      Branch: Return with expression
+0:26        Convert int to float (temp 3-component vector of float)
+0:26          'i3' (uniform 3-component vector of int)
+0:27  Function Definition: Fn_R_F3U(vf3; (global 3-component vector of float)
+0:27    Function Parameters: 
+0:27      'p' (out 3-component vector of float)
+0:?     Sequence
+0:27      move second child to first child (temp 3-component vector of float)
+0:27        'p' (out 3-component vector of float)
+0:27        Convert uint to float (temp 3-component vector of float)
+0:27          'u3' (uniform 3-component vector of uint)
+0:27      Branch: Return with expression
+0:27        Convert uint to float (temp 3-component vector of float)
+0:27          'u3' (uniform 3-component vector of uint)
+0:28  Function Definition: Fn_R_F3B(vf3; (global 3-component vector of float)
+0:28    Function Parameters: 
+0:28      'p' (out 3-component vector of float)
+0:?     Sequence
+0:28      move second child to first child (temp 3-component vector of float)
+0:28        'p' (out 3-component vector of float)
+0:28        Convert bool to float (temp 3-component vector of float)
+0:28          'b3' (uniform 3-component vector of bool)
+0:28      Branch: Return with expression
+0:28        Convert bool to float (temp 3-component vector of float)
+0:28          'b3' (uniform 3-component vector of bool)
+0:29  Function Definition: Fn_R_F3D(vf3; (global 3-component vector of float)
+0:29    Function Parameters: 
+0:29      'p' (out 3-component vector of float)
+0:?     Sequence
+0:29      move second child to first child (temp 3-component vector of float)
+0:29        'p' (out 3-component vector of float)
+0:29        Convert double to float (temp 3-component vector of float)
+0:29          'd3' (uniform 3-component vector of double)
+0:29      Branch: Return with expression
+0:29        Convert double to float (temp 3-component vector of float)
+0:29          'd3' (uniform 3-component vector of double)
+0:31  Function Definition: Fn_R_I3U(vi3; (global 3-component vector of int)
+0:31    Function Parameters: 
+0:31      'p' (out 3-component vector of int)
+0:?     Sequence
+0:31      move second child to first child (temp 3-component vector of int)
+0:31        'p' (out 3-component vector of int)
+0:31        Convert uint to int (temp 3-component vector of int)
+0:31          'u3' (uniform 3-component vector of uint)
+0:31      Branch: Return with expression
+0:31        Convert uint to int (temp 3-component vector of int)
+0:31          'u3' (uniform 3-component vector of uint)
+0:32  Function Definition: Fn_R_I3B(vi3; (global 3-component vector of int)
+0:32    Function Parameters: 
+0:32      'p' (out 3-component vector of int)
+0:?     Sequence
+0:32      move second child to first child (temp 3-component vector of int)
+0:32        'p' (out 3-component vector of int)
+0:32        Convert bool to int (temp 3-component vector of int)
+0:32          'b3' (uniform 3-component vector of bool)
+0:32      Branch: Return with expression
+0:32        Convert bool to int (temp 3-component vector of int)
+0:32          'b3' (uniform 3-component vector of bool)
+0:33  Function Definition: Fn_R_I3F(vi3; (global 3-component vector of int)
+0:33    Function Parameters: 
+0:33      'p' (out 3-component vector of int)
+0:?     Sequence
+0:33      move second child to first child (temp 3-component vector of int)
+0:33        'p' (out 3-component vector of int)
+0:33        Convert float to int (temp 3-component vector of int)
+0:33          'f3' (uniform 3-component vector of float)
+0:33      Branch: Return with expression
+0:33        Convert float to int (temp 3-component vector of int)
+0:33          'f3' (uniform 3-component vector of float)
+0:34  Function Definition: Fn_R_I3D(vi3; (global 3-component vector of int)
+0:34    Function Parameters: 
+0:34      'p' (out 3-component vector of int)
+0:?     Sequence
+0:34      move second child to first child (temp 3-component vector of int)
+0:34        'p' (out 3-component vector of int)
+0:34        Convert double to int (temp 3-component vector of int)
+0:34          'd3' (uniform 3-component vector of double)
+0:34      Branch: Return with expression
+0:34        Convert double to int (temp 3-component vector of int)
+0:34          'd3' (uniform 3-component vector of double)
+0:36  Function Definition: Fn_R_U3I(vu3; (global 3-component vector of uint)
+0:36    Function Parameters: 
+0:36      'p' (out 3-component vector of uint)
+0:?     Sequence
+0:36      move second child to first child (temp 3-component vector of uint)
+0:36        'p' (out 3-component vector of uint)
+0:36        Convert int to uint (temp 3-component vector of uint)
+0:36          'i3' (uniform 3-component vector of int)
+0:36      Branch: Return with expression
+0:36        Convert int to uint (temp 3-component vector of uint)
+0:36          'i3' (uniform 3-component vector of int)
+0:37  Function Definition: Fn_R_U3F(vu3; (global 3-component vector of uint)
+0:37    Function Parameters: 
+0:37      'p' (out 3-component vector of uint)
+0:?     Sequence
+0:37      move second child to first child (temp 3-component vector of uint)
+0:37        'p' (out 3-component vector of uint)
+0:37        Convert float to uint (temp 3-component vector of uint)
+0:37          'f3' (uniform 3-component vector of float)
+0:37      Branch: Return with expression
+0:37        Convert float to uint (temp 3-component vector of uint)
+0:37          'f3' (uniform 3-component vector of float)
+0:38  Function Definition: Fn_R_U3B(vu3; (global 3-component vector of uint)
+0:38    Function Parameters: 
+0:38      'p' (out 3-component vector of uint)
+0:?     Sequence
+0:38      move second child to first child (temp 3-component vector of uint)
+0:38        'p' (out 3-component vector of uint)
+0:38        Convert bool to uint (temp 3-component vector of uint)
+0:38          'b3' (uniform 3-component vector of bool)
+0:38      Branch: Return with expression
+0:38        Convert bool to uint (temp 3-component vector of uint)
+0:38          'b3' (uniform 3-component vector of bool)
+0:39  Function Definition: Fn_R_U3D(vu3; (global 3-component vector of uint)
+0:39    Function Parameters: 
+0:39      'p' (out 3-component vector of uint)
+0:?     Sequence
+0:39      move second child to first child (temp 3-component vector of uint)
+0:39        'p' (out 3-component vector of uint)
+0:39        Convert double to uint (temp 3-component vector of uint)
+0:39          'd3' (uniform 3-component vector of double)
+0:39      Branch: Return with expression
+0:39        Convert double to uint (temp 3-component vector of uint)
+0:39          'd3' (uniform 3-component vector of double)
+0:41  Function Definition: Fn_R_B3I(vb3; (global 3-component vector of bool)
+0:41    Function Parameters: 
+0:41      'p' (out 3-component vector of bool)
+0:?     Sequence
+0:41      move second child to first child (temp 3-component vector of bool)
+0:41        'p' (out 3-component vector of bool)
+0:41        Convert int to bool (temp 3-component vector of bool)
+0:41          'i3' (uniform 3-component vector of int)
+0:41      Branch: Return with expression
+0:41        Convert int to bool (temp 3-component vector of bool)
+0:41          'i3' (uniform 3-component vector of int)
+0:42  Function Definition: Fn_R_B3U(vb3; (global 3-component vector of bool)
+0:42    Function Parameters: 
+0:42      'p' (out 3-component vector of bool)
+0:?     Sequence
+0:42      move second child to first child (temp 3-component vector of bool)
+0:42        'p' (out 3-component vector of bool)
+0:42        Convert uint to bool (temp 3-component vector of bool)
+0:42          'u3' (uniform 3-component vector of uint)
+0:42      Branch: Return with expression
+0:42        Convert uint to bool (temp 3-component vector of bool)
+0:42          'u3' (uniform 3-component vector of uint)
+0:43  Function Definition: Fn_R_B3F(vb3; (global 3-component vector of bool)
+0:43    Function Parameters: 
+0:43      'p' (out 3-component vector of bool)
+0:?     Sequence
+0:43      move second child to first child (temp 3-component vector of bool)
+0:43        'p' (out 3-component vector of bool)
+0:43        Convert float to bool (temp 3-component vector of bool)
+0:43          'f3' (uniform 3-component vector of float)
+0:43      Branch: Return with expression
+0:43        Convert float to bool (temp 3-component vector of bool)
+0:43          'f3' (uniform 3-component vector of float)
+0:44  Function Definition: Fn_R_B3D(vb3; (global 3-component vector of bool)
+0:44    Function Parameters: 
+0:44      'p' (out 3-component vector of bool)
+0:?     Sequence
+0:44      move second child to first child (temp 3-component vector of bool)
+0:44        'p' (out 3-component vector of bool)
+0:44        Convert double to bool (temp 3-component vector of bool)
+0:44          'd3' (uniform 3-component vector of double)
+0:44      Branch: Return with expression
+0:44        Convert double to bool (temp 3-component vector of bool)
+0:44          'd3' (uniform 3-component vector of double)
+0:46  Function Definition: Fn_R_D3I(vd3; (global 3-component vector of double)
+0:46    Function Parameters: 
+0:46      'p' (out 3-component vector of double)
+0:?     Sequence
+0:46      move second child to first child (temp 3-component vector of double)
+0:46        'p' (out 3-component vector of double)
+0:46        Convert int to double (temp 3-component vector of double)
+0:46          'i3' (uniform 3-component vector of int)
+0:46      Branch: Return with expression
+0:46        Convert int to double (temp 3-component vector of double)
+0:46          'i3' (uniform 3-component vector of int)
+0:47  Function Definition: Fn_R_D3U(vd3; (global 3-component vector of double)
+0:47    Function Parameters: 
+0:47      'p' (out 3-component vector of double)
+0:?     Sequence
+0:47      move second child to first child (temp 3-component vector of double)
+0:47        'p' (out 3-component vector of double)
+0:47        Convert uint to double (temp 3-component vector of double)
+0:47          'u3' (uniform 3-component vector of uint)
+0:47      Branch: Return with expression
+0:47        Convert uint to double (temp 3-component vector of double)
+0:47          'u3' (uniform 3-component vector of uint)
+0:48  Function Definition: Fn_R_D3B(vd3; (global 3-component vector of double)
+0:48    Function Parameters: 
+0:48      'p' (out 3-component vector of double)
+0:?     Sequence
+0:48      move second child to first child (temp 3-component vector of double)
+0:48        'p' (out 3-component vector of double)
+0:48        Convert bool to double (temp 3-component vector of double)
+0:48          'b3' (uniform 3-component vector of bool)
+0:48      Branch: Return with expression
+0:48        Convert bool to double (temp 3-component vector of double)
+0:48          'b3' (uniform 3-component vector of bool)
+0:49  Function Definition: Fn_R_D3F(vd3; (global 3-component vector of double)
+0:49    Function Parameters: 
+0:49      'p' (out 3-component vector of double)
+0:?     Sequence
+0:49      move second child to first child (temp 3-component vector of double)
+0:49        'p' (out 3-component vector of double)
+0:49        Convert float to double (temp 3-component vector of double)
+0:49          'f3' (uniform 3-component vector of float)
+0:49      Branch: Return with expression
+0:49        Convert float to double (temp 3-component vector of double)
+0:49          'f3' (uniform 3-component vector of float)
+0:52  Function Definition: main( (global structure{temp 4-component vector of float Color})
+0:52    Function Parameters: 
+0:?     Sequence
+0:54      Sequence
+0:54        move second child to first child (temp 3-component vector of float)
+0:54          'r00' (temp 3-component vector of float)
+0:54          Convert int to float (temp 3-component vector of float)
+0:54            'i3' (uniform 3-component vector of int)
+0:55      Sequence
+0:55        move second child to first child (temp 3-component vector of float)
+0:55          'r01' (temp 3-component vector of float)
+0:55          Convert bool to float (temp 3-component vector of float)
+0:55            'b3' (uniform 3-component vector of bool)
+0:56      Sequence
+0:56        move second child to first child (temp 3-component vector of float)
+0:56          'r02' (temp 3-component vector of float)
+0:56          Convert uint to float (temp 3-component vector of float)
+0:56            'u3' (uniform 3-component vector of uint)
+0:57      Sequence
+0:57        move second child to first child (temp 3-component vector of float)
+0:57          'r03' (temp 3-component vector of float)
+0:57          Convert double to float (temp 3-component vector of float)
+0:57            'd3' (uniform 3-component vector of double)
+0:59      Sequence
+0:59        move second child to first child (temp 3-component vector of int)
+0:59          'r10' (temp 3-component vector of int)
+0:59          Convert bool to int (temp 3-component vector of int)
+0:59            'b3' (uniform 3-component vector of bool)
+0:60      Sequence
+0:60        move second child to first child (temp 3-component vector of int)
+0:60          'r11' (temp 3-component vector of int)
+0:60          Convert uint to int (temp 3-component vector of int)
+0:60            'u3' (uniform 3-component vector of uint)
+0:61      Sequence
+0:61        move second child to first child (temp 3-component vector of int)
+0:61          'r12' (temp 3-component vector of int)
+0:61          Convert float to int (temp 3-component vector of int)
+0:61            'f3' (uniform 3-component vector of float)
+0:62      Sequence
+0:62        move second child to first child (temp 3-component vector of int)
+0:62          'r13' (temp 3-component vector of int)
+0:62          Convert double to int (temp 3-component vector of int)
+0:62            'd3' (uniform 3-component vector of double)
+0:64      Sequence
+0:64        move second child to first child (temp 3-component vector of uint)
+0:64          'r20' (temp 3-component vector of uint)
+0:64          Convert bool to uint (temp 3-component vector of uint)
+0:64            'b3' (uniform 3-component vector of bool)
+0:65      Sequence
+0:65        move second child to first child (temp 3-component vector of uint)
+0:65          'r21' (temp 3-component vector of uint)
+0:65          Convert int to uint (temp 3-component vector of uint)
+0:65            'i3' (uniform 3-component vector of int)
+0:66      Sequence
+0:66        move second child to first child (temp 3-component vector of uint)
+0:66          'r22' (temp 3-component vector of uint)
+0:66          Convert float to uint (temp 3-component vector of uint)
+0:66            'f3' (uniform 3-component vector of float)
+0:67      Sequence
+0:67        move second child to first child (temp 3-component vector of uint)
+0:67          'r23' (temp 3-component vector of uint)
+0:67          Convert double to uint (temp 3-component vector of uint)
+0:67            'd3' (uniform 3-component vector of double)
+0:69      Sequence
+0:69        move second child to first child (temp 3-component vector of bool)
+0:69          'r30' (temp 3-component vector of bool)
+0:69          Convert int to bool (temp 3-component vector of bool)
+0:69            'i3' (uniform 3-component vector of int)
+0:70      Sequence
+0:70        move second child to first child (temp 3-component vector of bool)
+0:70          'r31' (temp 3-component vector of bool)
+0:70          Convert uint to bool (temp 3-component vector of bool)
+0:70            'u3' (uniform 3-component vector of uint)
+0:71      Sequence
+0:71        move second child to first child (temp 3-component vector of bool)
+0:71          'r32' (temp 3-component vector of bool)
+0:71          Convert float to bool (temp 3-component vector of bool)
+0:71            'f3' (uniform 3-component vector of float)
+0:72      Sequence
+0:72        move second child to first child (temp 3-component vector of bool)
+0:72          'r33' (temp 3-component vector of bool)
+0:72          Convert double to bool (temp 3-component vector of bool)
+0:72            'd3' (uniform 3-component vector of double)
+0:74      Sequence
+0:74        move second child to first child (temp 3-component vector of double)
+0:74          'r40' (temp 3-component vector of double)
+0:74          Convert int to double (temp 3-component vector of double)
+0:74            'i3' (uniform 3-component vector of int)
+0:75      Sequence
+0:75        move second child to first child (temp 3-component vector of double)
+0:75          'r41' (temp 3-component vector of double)
+0:75          Convert uint to double (temp 3-component vector of double)
+0:75            'u3' (uniform 3-component vector of uint)
+0:76      Sequence
+0:76        move second child to first child (temp 3-component vector of double)
+0:76          'r42' (temp 3-component vector of double)
+0:76          Convert float to double (temp 3-component vector of double)
+0:76            'f3' (uniform 3-component vector of float)
+0:77      Sequence
+0:77        move second child to first child (temp 3-component vector of double)
+0:77          'r43' (temp 3-component vector of double)
+0:77          Convert bool to double (temp 3-component vector of double)
+0:77            'b3' (uniform 3-component vector of bool)
+0:80      multiply second child into first child (temp 3-component vector of float)
+0:80        'r00' (temp 3-component vector of float)
+0:80        Convert int to float (temp 3-component vector of float)
+0:80          'i3' (uniform 3-component vector of int)
+0:81      multiply second child into first child (temp 3-component vector of float)
+0:81        'r01' (temp 3-component vector of float)
+0:81        Convert bool to float (temp 3-component vector of float)
+0:81          'b3' (uniform 3-component vector of bool)
+0:82      multiply second child into first child (temp 3-component vector of float)
+0:82        'r02' (temp 3-component vector of float)
+0:82        Convert uint to float (temp 3-component vector of float)
+0:82          'u3' (uniform 3-component vector of uint)
+0:83      multiply second child into first child (temp 3-component vector of float)
+0:83        'r03' (temp 3-component vector of float)
+0:83        Convert double to float (temp 3-component vector of float)
+0:83          'd3' (uniform 3-component vector of double)
+0:85      multiply second child into first child (temp 3-component vector of int)
+0:85        'r10' (temp 3-component vector of int)
+0:85        Convert bool to int (temp 3-component vector of int)
+0:85          'b3' (uniform 3-component vector of bool)
+0:86      multiply second child into first child (temp 3-component vector of int)
+0:86        'r11' (temp 3-component vector of int)
+0:86        Convert uint to int (temp 3-component vector of int)
+0:86          'u3' (uniform 3-component vector of uint)
+0:87      multiply second child into first child (temp 3-component vector of int)
+0:87        'r12' (temp 3-component vector of int)
+0:87        Convert float to int (temp 3-component vector of int)
+0:87          'f3' (uniform 3-component vector of float)
+0:88      multiply second child into first child (temp 3-component vector of int)
+0:88        'r13' (temp 3-component vector of int)
+0:88        Convert double to int (temp 3-component vector of int)
+0:88          'd3' (uniform 3-component vector of double)
+0:90      multiply second child into first child (temp 3-component vector of uint)
+0:90        'r20' (temp 3-component vector of uint)
+0:90        Convert bool to uint (temp 3-component vector of uint)
+0:90          'b3' (uniform 3-component vector of bool)
+0:91      multiply second child into first child (temp 3-component vector of uint)
+0:91        'r21' (temp 3-component vector of uint)
+0:91        Convert int to uint (temp 3-component vector of uint)
+0:91          'i3' (uniform 3-component vector of int)
+0:92      multiply second child into first child (temp 3-component vector of uint)
+0:92        'r22' (temp 3-component vector of uint)
+0:92        Convert float to uint (temp 3-component vector of uint)
+0:92          'f3' (uniform 3-component vector of float)
+0:93      multiply second child into first child (temp 3-component vector of uint)
+0:93        'r23' (temp 3-component vector of uint)
+0:93        Convert double to uint (temp 3-component vector of uint)
+0:93          'd3' (uniform 3-component vector of double)
+0:97      multiply second child into first child (temp 3-component vector of double)
+0:97        'r40' (temp 3-component vector of double)
+0:97        Convert int to double (temp 3-component vector of double)
+0:97          'i3' (uniform 3-component vector of int)
+0:98      multiply second child into first child (temp 3-component vector of double)
+0:98        'r41' (temp 3-component vector of double)
+0:98        Convert uint to double (temp 3-component vector of double)
+0:98          'u3' (uniform 3-component vector of uint)
+0:99      multiply second child into first child (temp 3-component vector of double)
+0:99        'r42' (temp 3-component vector of double)
+0:99        Convert float to double (temp 3-component vector of double)
+0:99          'f3' (uniform 3-component vector of float)
+0:100      multiply second child into first child (temp 3-component vector of double)
+0:100        'r43' (temp 3-component vector of double)
+0:100        Convert bool to double (temp 3-component vector of double)
+0:100          'b3' (uniform 3-component vector of bool)
+0:103      vector scale second child into first child (temp 3-component vector of float)
+0:103        'r00' (temp 3-component vector of float)
+0:103        Convert int to float (temp float)
+0:103          'is' (uniform int)
+0:104      vector scale second child into first child (temp 3-component vector of float)
+0:104        'r01' (temp 3-component vector of float)
+0:104        Convert bool to float (temp float)
+0:104          'bs' (uniform bool)
+0:105      vector scale second child into first child (temp 3-component vector of float)
+0:105        'r02' (temp 3-component vector of float)
+0:105        Convert uint to float (temp float)
+0:105          'us' (uniform uint)
+0:106      vector scale second child into first child (temp 3-component vector of float)
+0:106        'r03' (temp 3-component vector of float)
+0:106        Convert double to float (temp float)
+0:106          'ds' (uniform double)
+0:108      vector scale second child into first child (temp 3-component vector of int)
+0:108        'r10' (temp 3-component vector of int)
+0:108        Convert bool to int (temp int)
+0:108          'bs' (uniform bool)
+0:109      vector scale second child into first child (temp 3-component vector of int)
+0:109        'r11' (temp 3-component vector of int)
+0:109        Convert uint to int (temp int)
+0:109          'us' (uniform uint)
+0:110      vector scale second child into first child (temp 3-component vector of int)
+0:110        'r12' (temp 3-component vector of int)
+0:110        Convert float to int (temp int)
+0:110          'fs' (uniform float)
+0:111      vector scale second child into first child (temp 3-component vector of int)
+0:111        'r13' (temp 3-component vector of int)
+0:111        Convert double to int (temp int)
+0:111          'ds' (uniform double)
+0:113      vector scale second child into first child (temp 3-component vector of uint)
+0:113        'r20' (temp 3-component vector of uint)
+0:113        Convert bool to uint (temp uint)
+0:113          'bs' (uniform bool)
+0:114      vector scale second child into first child (temp 3-component vector of uint)
+0:114        'r21' (temp 3-component vector of uint)
+0:114        Convert int to uint (temp uint)
+0:114          'is' (uniform int)
+0:115      vector scale second child into first child (temp 3-component vector of uint)
+0:115        'r22' (temp 3-component vector of uint)
+0:115        Convert float to uint (temp uint)
+0:115          'fs' (uniform float)
+0:116      vector scale second child into first child (temp 3-component vector of uint)
+0:116        'r23' (temp 3-component vector of uint)
+0:116        Convert double to uint (temp uint)
+0:116          'ds' (uniform double)
+0:120      vector scale second child into first child (temp 3-component vector of double)
+0:120        'r40' (temp 3-component vector of double)
+0:120        Convert int to double (temp double)
+0:120          'is' (uniform int)
+0:121      vector scale second child into first child (temp 3-component vector of double)
+0:121        'r41' (temp 3-component vector of double)
+0:121        Convert uint to double (temp double)
+0:121          'us' (uniform uint)
+0:122      vector scale second child into first child (temp 3-component vector of double)
+0:122        'r42' (temp 3-component vector of double)
+0:122        Convert float to double (temp double)
+0:122          'fs' (uniform float)
+0:123      vector scale second child into first child (temp 3-component vector of double)
+0:123        'r43' (temp 3-component vector of double)
+0:123        Convert bool to double (temp double)
+0:123          'bs' (uniform bool)
+0:193      Sequence
+0:193        move second child to first child (temp int)
+0:193          'c1' (temp int)
+0:193          Constant:
+0:193            3 (const int)
+0:194      Sequence
+0:194        move second child to first child (temp int)
+0:194          'c2' (temp int)
+0:194          Constant:
+0:194            3 (const int)
+0:196      Sequence
+0:196        move second child to first child (temp 4-component vector of float)
+0:196          'outval' (temp 4-component vector of float)
+0:?           Construct vec4 (temp 4-component vector of float)
+0:196            Constant:
+0:196              3.600000
+0:196            Constant:
+0:196              3.600000
+0:196            Convert int to float (temp float)
+0:196              'c1' (temp int)
+0:196            Convert int to float (temp float)
+0:196              'c2' (temp int)
+0:199      move second child to first child (temp 4-component vector of float)
+0:199        Color: direct index for structure (temp 4-component vector of float)
+0:199          'psout' (temp structure{temp 4-component vector of float Color})
+0:199          Constant:
+0:199            0 (const int)
+0:199        'outval' (temp 4-component vector of float)
+0:?       Sequence
+0:?         Sequence
+0:200          move second child to first child (temp 4-component vector of float)
+0:?             'Color' (layout(location=0 ) out 4-component vector of float)
+0:200            Color: direct index for structure (temp 4-component vector of float)
+0:200              'psout' (temp structure{temp 4-component vector of float Color})
+0:200              Constant:
+0:200                0 (const int)
+0:200        Branch: Return
+0:?   Linker Objects
+0:?     'i3' (uniform 3-component vector of int)
+0:?     'b3' (uniform 3-component vector of bool)
+0:?     'f3' (uniform 3-component vector of float)
+0:?     'u3' (uniform 3-component vector of uint)
+0:?     'd3' (uniform 3-component vector of double)
+0:?     'is' (uniform int)
+0:?     'bs' (uniform bool)
+0:?     'fs' (uniform float)
+0:?     'us' (uniform uint)
+0:?     'ds' (uniform double)
+0:?     'Color' (layout(location=0 ) out 4-component vector of float)
+
+// Module Version 10000
+// Generated by (magic number): 80001
+// Id's are bound by 481
+
+                              Capability Shader
+                              Capability Float64
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint Fragment 4  "main" 477
+                              ExecutionMode 4 OriginUpperLeft
+                              Name 4  "main"
+                              Name 11  "Fn_F3(vf3;"
+                              Name 10  "x"
+                              Name 18  "Fn_I3(vi3;"
+                              Name 17  "x"
+                              Name 25  "Fn_U3(vu3;"
+                              Name 24  "x"
+                              Name 32  "Fn_B3(vb3;"
+                              Name 31  "x"
+                              Name 39  "Fn_D3(vd3;"
+                              Name 38  "x"
+                              Name 43  "Fn_R_F3I(vf3;"
+                              Name 42  "p"
+                              Name 46  "Fn_R_F3U(vf3;"
+                              Name 45  "p"
+                              Name 49  "Fn_R_F3B(vf3;"
+                              Name 48  "p"
+                              Name 52  "Fn_R_F3D(vf3;"
+                              Name 51  "p"
+                              Name 56  "Fn_R_I3U(vi3;"
+                              Name 55  "p"
+                              Name 59  "Fn_R_I3B(vi3;"
+                              Name 58  "p"
+                              Name 62  "Fn_R_I3F(vi3;"
+                              Name 61  "p"
+                              Name 65  "Fn_R_I3D(vi3;"
+                              Name 64  "p"
+                              Name 69  "Fn_R_U3I(vu3;"
+                              Name 68  "p"
+                              Name 72  "Fn_R_U3F(vu3;"
+                              Name 71  "p"
+                              Name 75  "Fn_R_U3B(vu3;"
+                              Name 74  "p"
+                              Name 78  "Fn_R_U3D(vu3;"
+                              Name 77  "p"
+                              Name 82  "Fn_R_B3I(vb3;"
+                              Name 81  "p"
+                              Name 85  "Fn_R_B3U(vb3;"
+                              Name 84  "p"
+                              Name 88  "Fn_R_B3F(vb3;"
+                              Name 87  "p"
+                              Name 91  "Fn_R_B3D(vb3;"
+                              Name 90  "p"
+                              Name 95  "Fn_R_D3I(vd3;"
+                              Name 94  "p"
+                              Name 98  "Fn_R_D3U(vd3;"
+                              Name 97  "p"
+                              Name 101  "Fn_R_D3B(vd3;"
+                              Name 100  "p"
+                              Name 104  "Fn_R_D3F(vd3;"
+                              Name 103  "p"
+                              Name 107  "i3"
+                              Name 115  "u3"
+                              Name 123  "b3"
+                              Name 135  "d3"
+                              Name 159  "f3"
+                              Name 252  "r00"
+                              Name 255  "r01"
+                              Name 258  "r02"
+                              Name 261  "r03"
+                              Name 264  "r10"
+                              Name 267  "r11"
+                              Name 270  "r12"
+                              Name 273  "r13"
+                              Name 276  "r20"
+                              Name 279  "r21"
+                              Name 282  "r22"
+                              Name 285  "r23"
+                              Name 288  "r30"
+                              Name 291  "r31"
+                              Name 294  "r32"
+                              Name 297  "r33"
+                              Name 300  "r40"
+                              Name 303  "r41"
+                              Name 306  "r42"
+                              Name 309  "r43"
+                              Name 377  "is"
+                              Name 383  "bs"
+                              Name 389  "us"
+                              Name 395  "ds"
+                              Name 411  "fs"
+                              Name 459  "c1"
+                              Name 461  "c2"
+                              Name 464  "outval"
+                              Name 471  "PS_OUTPUT"
+                              MemberName 471(PS_OUTPUT) 0  "Color"
+                              Name 473  "psout"
+                              Name 477  "Color"
+                              Decorate 477(Color) Location 0
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 32
+               7:             TypeVector 6(float) 3
+               8:             TypePointer Function 7(fvec3)
+               9:             TypeFunction 2 8(ptr)
+              13:             TypeInt 32 1
+              14:             TypeVector 13(int) 3
+              15:             TypePointer Function 14(ivec3)
+              16:             TypeFunction 2 15(ptr)
+              20:             TypeInt 32 0
+              21:             TypeVector 20(int) 3
+              22:             TypePointer Function 21(ivec3)
+              23:             TypeFunction 2 22(ptr)
+              27:             TypeBool
+              28:             TypeVector 27(bool) 3
+              29:             TypePointer Function 28(bvec3)
+              30:             TypeFunction 2 29(ptr)
+              34:             TypeFloat 64
+              35:             TypeVector 34(float) 3
+              36:             TypePointer Function 35(fvec3)
+              37:             TypeFunction 2 36(ptr)
+              41:             TypeFunction 7(fvec3) 8(ptr)
+              54:             TypeFunction 14(ivec3) 15(ptr)
+              67:             TypeFunction 21(ivec3) 22(ptr)
+              80:             TypeFunction 28(bvec3) 29(ptr)
+              93:             TypeFunction 35(fvec3) 36(ptr)
+             106:             TypePointer UniformConstant 14(ivec3)
+         107(i3):    106(ptr) Variable UniformConstant
+             114:             TypePointer UniformConstant 21(ivec3)
+         115(u3):    114(ptr) Variable UniformConstant
+             122:             TypePointer UniformConstant 28(bvec3)
+         123(b3):    122(ptr) Variable UniformConstant
+             125:    6(float) Constant 0
+             126:    6(float) Constant 1065353216
+             127:    7(fvec3) ConstantComposite 125 125 125
+             128:    7(fvec3) ConstantComposite 126 126 126
+             134:             TypePointer UniformConstant 35(fvec3)
+         135(d3):    134(ptr) Variable UniformConstant
+             149:     13(int) Constant 0
+             150:     13(int) Constant 1
+             151:   14(ivec3) ConstantComposite 149 149 149
+             152:   14(ivec3) ConstantComposite 150 150 150
+             158:             TypePointer UniformConstant 7(fvec3)
+         159(f3):    158(ptr) Variable UniformConstant
+             185:     20(int) Constant 0
+             186:     20(int) Constant 1
+             187:   21(ivec3) ConstantComposite 185 185 185
+             188:   21(ivec3) ConstantComposite 186 186 186
+             219:   34(float) Constant 0 0
+             220:   35(fvec3) ConstantComposite 219 219 219
+             239:   34(float) Constant 0 1072693248
+             240:   35(fvec3) ConstantComposite 239 239 239
+             376:             TypePointer UniformConstant 13(int)
+         377(is):    376(ptr) Variable UniformConstant
+             382:             TypePointer UniformConstant 27(bool)
+         383(bs):    382(ptr) Variable UniformConstant
+             388:             TypePointer UniformConstant 20(int)
+         389(us):    388(ptr) Variable UniformConstant
+             394:             TypePointer UniformConstant 34(float)
+         395(ds):    394(ptr) Variable UniformConstant
+             410:             TypePointer UniformConstant 6(float)
+         411(fs):    410(ptr) Variable UniformConstant
+             458:             TypePointer Function 13(int)
+             460:     13(int) Constant 3
+             462:             TypeVector 6(float) 4
+             463:             TypePointer Function 462(fvec4)
+             465:    6(float) Constant 1080452710
+  471(PS_OUTPUT):             TypeStruct 462(fvec4)
+             472:             TypePointer Function 471(PS_OUTPUT)
+             476:             TypePointer Output 462(fvec4)
+      477(Color):    476(ptr) Variable Output
+         4(main):           2 Function None 3
+               5:             Label
+        252(r00):      8(ptr) Variable Function
+        255(r01):      8(ptr) Variable Function
+        258(r02):      8(ptr) Variable Function
+        261(r03):      8(ptr) Variable Function
+        264(r10):     15(ptr) Variable Function
+        267(r11):     15(ptr) Variable Function
+        270(r12):     15(ptr) Variable Function
+        273(r13):     15(ptr) Variable Function
+        276(r20):     22(ptr) Variable Function
+        279(r21):     22(ptr) Variable Function
+        282(r22):     22(ptr) Variable Function
+        285(r23):     22(ptr) Variable Function
+        288(r30):     29(ptr) Variable Function
+        291(r31):     29(ptr) Variable Function
+        294(r32):     29(ptr) Variable Function
+        297(r33):     29(ptr) Variable Function
+        300(r40):     36(ptr) Variable Function
+        303(r41):     36(ptr) Variable Function
+        306(r42):     36(ptr) Variable Function
+        309(r43):     36(ptr) Variable Function
+         459(c1):    458(ptr) Variable Function
+         461(c2):    458(ptr) Variable Function
+     464(outval):    463(ptr) Variable Function
+      473(psout):    472(ptr) Variable Function
+             253:   14(ivec3) Load 107(i3)
+             254:    7(fvec3) ConvertSToF 253
+                              Store 252(r00) 254
+             256:   28(bvec3) Load 123(b3)
+             257:    7(fvec3) Select 256 128 127
+                              Store 255(r01) 257
+             259:   21(ivec3) Load 115(u3)
+             260:    7(fvec3) ConvertUToF 259
+                              Store 258(r02) 260
+             262:   35(fvec3) Load 135(d3)
+             263:    7(fvec3) FConvert 262
+                              Store 261(r03) 263
+             265:   28(bvec3) Load 123(b3)
+             266:   14(ivec3) Select 265 152 151
+                              Store 264(r10) 266
+             268:   21(ivec3) Load 115(u3)
+             269:   14(ivec3) Bitcast 268
+                              Store 267(r11) 269
+             271:    7(fvec3) Load 159(f3)
+             272:   14(ivec3) ConvertFToS 271
+                              Store 270(r12) 272
+             274:   35(fvec3) Load 135(d3)
+             275:   14(ivec3) ConvertFToS 274
+                              Store 273(r13) 275
+             277:   28(bvec3) Load 123(b3)
+             278:   21(ivec3) Select 277 188 187
+                              Store 276(r20) 278
+             280:   14(ivec3) Load 107(i3)
+             281:   21(ivec3) Bitcast 280
+                              Store 279(r21) 281
+             283:    7(fvec3) Load 159(f3)
+             284:   21(ivec3) ConvertFToU 283
+                              Store 282(r22) 284
+             286:   35(fvec3) Load 135(d3)
+             287:   21(ivec3) ConvertFToU 286
+                              Store 285(r23) 287
+             289:   14(ivec3) Load 107(i3)
+             290:   28(bvec3) INotEqual 289 187
+                              Store 288(r30) 290
+             292:   21(ivec3) Load 115(u3)
+             293:   28(bvec3) INotEqual 292 187
+                              Store 291(r31) 293
+             295:    7(fvec3) Load 159(f3)
+             296:   28(bvec3) FOrdNotEqual 295 127
+                              Store 294(r32) 296
+             298:   35(fvec3) Load 135(d3)
+             299:   28(bvec3) FOrdNotEqual 298 220
+                              Store 297(r33) 299
+             301:   14(ivec3) Load 107(i3)
+             302:   35(fvec3) ConvertSToF 301
+                              Store 300(r40) 302
+             304:   21(ivec3) Load 115(u3)
+             305:   35(fvec3) ConvertUToF 304
+                              Store 303(r41) 305
+             307:    7(fvec3) Load 159(f3)
+             308:   35(fvec3) FConvert 307
+                              Store 306(r42) 308
+             310:   28(bvec3) Load 123(b3)
+             311:   35(fvec3) Select 310 240 220
+                              Store 309(r43) 311
+             312:   14(ivec3) Load 107(i3)
+             313:    7(fvec3) ConvertSToF 312
+             314:    7(fvec3) Load 252(r00)
+             315:    7(fvec3) FMul 314 313
+                              Store 252(r00) 315
+             316:   28(bvec3) Load 123(b3)
+             317:    7(fvec3) Select 316 128 127
+             318:    7(fvec3) Load 255(r01)
+             319:    7(fvec3) FMul 318 317
+                              Store 255(r01) 319
+             320:   21(ivec3) Load 115(u3)
+             321:    7(fvec3) ConvertUToF 320
+             322:    7(fvec3) Load 258(r02)
+             323:    7(fvec3) FMul 322 321
+                              Store 258(r02) 323
+             324:   35(fvec3) Load 135(d3)
+             325:    7(fvec3) FConvert 324
+             326:    7(fvec3) Load 261(r03)
+             327:    7(fvec3) FMul 326 325
+                              Store 261(r03) 327
+             328:   28(bvec3) Load 123(b3)
+             329:   14(ivec3) Select 328 152 151
+             330:   14(ivec3) Load 264(r10)
+             331:   14(ivec3) IMul 330 329
+                              Store 264(r10) 331
+             332:   21(ivec3) Load 115(u3)
+             333:   14(ivec3) Bitcast 332
+             334:   14(ivec3) Load 267(r11)
+             335:   14(ivec3) IMul 334 333
+                              Store 267(r11) 335
+             336:    7(fvec3) Load 159(f3)
+             337:   14(ivec3) ConvertFToS 336
+             338:   14(ivec3) Load 270(r12)
+             339:   14(ivec3) IMul 338 337
+                              Store 270(r12) 339
+             340:   35(fvec3) Load 135(d3)
+             341:   14(ivec3) ConvertFToS 340
+             342:   14(ivec3) Load 273(r13)
+             343:   14(ivec3) IMul 342 341
+                              Store 273(r13) 343
+             344:   28(bvec3) Load 123(b3)
+             345:   21(ivec3) Select 344 188 187
+             346:   21(ivec3) Load 276(r20)
+             347:   21(ivec3) IMul 346 345
+                              Store 276(r20) 347
+             348:   14(ivec3) Load 107(i3)
+             349:   21(ivec3) Bitcast 348
+             350:   21(ivec3) Load 279(r21)
+             351:   21(ivec3) IMul 350 349
+                              Store 279(r21) 351
+             352:    7(fvec3) Load 159(f3)
+             353:   21(ivec3) ConvertFToU 352
+             354:   21(ivec3) Load 282(r22)
+             355:   21(ivec3) IMul 354 353
+                              Store 282(r22) 355
+             356:   35(fvec3) Load 135(d3)
+             357:   21(ivec3) ConvertFToU 356
+             358:   21(ivec3) Load 285(r23)
+             359:   21(ivec3) IMul 358 357
+                              Store 285(r23) 359
+             360:   14(ivec3) Load 107(i3)
+             361:   35(fvec3) ConvertSToF 360
+             362:   35(fvec3) Load 300(r40)
+             363:   35(fvec3) FMul 362 361
+                              Store 300(r40) 363
+             364:   21(ivec3) Load 115(u3)
+             365:   35(fvec3) ConvertUToF 364
+             366:   35(fvec3) Load 303(r41)
+             367:   35(fvec3) FMul 366 365
+                              Store 303(r41) 367
+             368:    7(fvec3) Load 159(f3)
+             369:   35(fvec3) FConvert 368
+             370:   35(fvec3) Load 306(r42)
+             371:   35(fvec3) FMul 370 369
+                              Store 306(r42) 371
+             372:   28(bvec3) Load 123(b3)
+             373:   35(fvec3) Select 372 240 220
+             374:   35(fvec3) Load 309(r43)
+             375:   35(fvec3) FMul 374 373
+                              Store 309(r43) 375
+             378:     13(int) Load 377(is)
+             379:    6(float) ConvertSToF 378
+             380:    7(fvec3) Load 252(r00)
+             381:    7(fvec3) VectorTimesScalar 380 379
+                              Store 252(r00) 381
+             384:    27(bool) Load 383(bs)
+             385:    6(float) Select 384 126 125
+             386:    7(fvec3) Load 255(r01)
+             387:    7(fvec3) VectorTimesScalar 386 385
+                              Store 255(r01) 387
+             390:     20(int) Load 389(us)
+             391:    6(float) ConvertUToF 390
+             392:    7(fvec3) Load 258(r02)
+             393:    7(fvec3) VectorTimesScalar 392 391
+                              Store 258(r02) 393
+             396:   34(float) Load 395(ds)
+             397:    6(float) FConvert 396
+             398:    7(fvec3) Load 261(r03)
+             399:    7(fvec3) VectorTimesScalar 398 397
+                              Store 261(r03) 399
+             400:    27(bool) Load 383(bs)
+             401:     13(int) Select 400 150 149
+             402:   14(ivec3) Load 264(r10)
+             403:   14(ivec3) CompositeConstruct 401 401 401
+             404:   14(ivec3) IMul 402 403
+                              Store 264(r10) 404
+             405:     20(int) Load 389(us)
+             406:     13(int) Bitcast 405
+             407:   14(ivec3) Load 267(r11)
+             408:   14(ivec3) CompositeConstruct 406 406 406
+             409:   14(ivec3) IMul 407 408
+                              Store 267(r11) 409
+             412:    6(float) Load 411(fs)
+             413:     13(int) ConvertFToS 412
+             414:   14(ivec3) Load 270(r12)
+             415:   14(ivec3) CompositeConstruct 413 413 413
+             416:   14(ivec3) IMul 414 415
+                              Store 270(r12) 416
+             417:   34(float) Load 395(ds)
+             418:     13(int) ConvertFToS 417
+             419:   14(ivec3) Load 273(r13)
+             420:   14(ivec3) CompositeConstruct 418 418 418
+             421:   14(ivec3) IMul 419 420
+                              Store 273(r13) 421
+             422:    27(bool) Load 383(bs)
+             423:     20(int) Select 422 186 185
+             424:   21(ivec3) Load 276(r20)
+             425:   21(ivec3) CompositeConstruct 423 423 423
+             426:   21(ivec3) IMul 424 425
+                              Store 276(r20) 426
+             427:     13(int) Load 377(is)
+             428:     20(int) Bitcast 427
+             429:   21(ivec3) Load 279(r21)
+             430:   21(ivec3) CompositeConstruct 428 428 428
+             431:   21(ivec3) IMul 429 430
+                              Store 279(r21) 431
+             432:    6(float) Load 411(fs)
+             433:     20(int) ConvertFToU 432
+             434:   21(ivec3) Load 282(r22)
+             435:   21(ivec3) CompositeConstruct 433 433 433
+             436:   21(ivec3) IMul 434 435
+                              Store 282(r22) 436
+             437:   34(float) Load 395(ds)
+             438:     20(int) ConvertFToU 437
+             439:   21(ivec3) Load 285(r23)
+             440:   21(ivec3) CompositeConstruct 438 438 438
+             441:   21(ivec3) IMul 439 440
+                              Store 285(r23) 441
+             442:     13(int) Load 377(is)
+             443:   34(float) ConvertSToF 442
+             444:   35(fvec3) Load 300(r40)
+             445:   35(fvec3) VectorTimesScalar 444 443
+                              Store 300(r40) 445
+             446:     20(int) Load 389(us)
+             447:   34(float) ConvertUToF 446
+             448:   35(fvec3) Load 303(r41)
+             449:   35(fvec3) VectorTimesScalar 448 447
+                              Store 303(r41) 449
+             450:    6(float) Load 411(fs)
+             451:   34(float) FConvert 450
+             452:   35(fvec3) Load 306(r42)
+             453:   35(fvec3) VectorTimesScalar 452 451
+                              Store 306(r42) 453
+             454:    27(bool) Load 383(bs)
+             455:   34(float) Select 454 239 219
+             456:   35(fvec3) Load 309(r43)
+             457:   35(fvec3) VectorTimesScalar 456 455
+                              Store 309(r43) 457
+                              Store 459(c1) 460
+                              Store 461(c2) 460
+             466:     13(int) Load 459(c1)
+             467:    6(float) ConvertSToF 466
+             468:     13(int) Load 461(c2)
+             469:    6(float) ConvertSToF 468
+             470:  462(fvec4) CompositeConstruct 465 465 467 469
+                              Store 464(outval) 470
+             474:  462(fvec4) Load 464(outval)
+             475:    463(ptr) AccessChain 473(psout) 149
+                              Store 475 474
+             478:    463(ptr) AccessChain 473(psout) 149
+             479:  462(fvec4) Load 478
+                              Store 477(Color) 479
+                              Return
+                              FunctionEnd
+  11(Fn_F3(vf3;):           2 Function None 9
+           10(x):      8(ptr) FunctionParameter
+              12:             Label
+                              Return
+                              FunctionEnd
+  18(Fn_I3(vi3;):           2 Function None 16
+           17(x):     15(ptr) FunctionParameter
+              19:             Label
+                              Return
+                              FunctionEnd
+  25(Fn_U3(vu3;):           2 Function None 23
+           24(x):     22(ptr) FunctionParameter
+              26:             Label
+                              Return
+                              FunctionEnd
+  32(Fn_B3(vb3;):           2 Function None 30
+           31(x):     29(ptr) FunctionParameter
+              33:             Label
+                              Return
+                              FunctionEnd
+  39(Fn_D3(vd3;):           2 Function None 37
+           38(x):     36(ptr) FunctionParameter
+              40:             Label
+                              Return
+                              FunctionEnd
+43(Fn_R_F3I(vf3;):    7(fvec3) Function None 41
+           42(p):      8(ptr) FunctionParameter
+              44:             Label
+             108:   14(ivec3) Load 107(i3)
+             109:    7(fvec3) ConvertSToF 108
+                              Store 42(p) 109
+             110:   14(ivec3) Load 107(i3)
+             111:    7(fvec3) ConvertSToF 110
+                              ReturnValue 111
+                              FunctionEnd
+46(Fn_R_F3U(vf3;):    7(fvec3) Function None 41
+           45(p):      8(ptr) FunctionParameter
+              47:             Label
+             116:   21(ivec3) Load 115(u3)
+             117:    7(fvec3) ConvertUToF 116
+                              Store 45(p) 117
+             118:   21(ivec3) Load 115(u3)
+             119:    7(fvec3) ConvertUToF 118
+                              ReturnValue 119
+                              FunctionEnd
+49(Fn_R_F3B(vf3;):    7(fvec3) Function None 41
+           48(p):      8(ptr) FunctionParameter
+              50:             Label
+             124:   28(bvec3) Load 123(b3)
+             129:    7(fvec3) Select 124 128 127
+                              Store 48(p) 129
+             130:   28(bvec3) Load 123(b3)
+             131:    7(fvec3) Select 130 128 127
+                              ReturnValue 131
+                              FunctionEnd
+52(Fn_R_F3D(vf3;):    7(fvec3) Function None 41
+           51(p):      8(ptr) FunctionParameter
+              53:             Label
+             136:   35(fvec3) Load 135(d3)
+             137:    7(fvec3) FConvert 136
+                              Store 51(p) 137
+             138:   35(fvec3) Load 135(d3)
+             139:    7(fvec3) FConvert 138
+                              ReturnValue 139
+                              FunctionEnd
+56(Fn_R_I3U(vi3;):   14(ivec3) Function None 54
+           55(p):     15(ptr) FunctionParameter
+              57:             Label
+             142:   21(ivec3) Load 115(u3)
+             143:   14(ivec3) Bitcast 142
+                              Store 55(p) 143
+             144:   21(ivec3) Load 115(u3)
+             145:   14(ivec3) Bitcast 144
+                              ReturnValue 145
+                              FunctionEnd
+59(Fn_R_I3B(vi3;):   14(ivec3) Function None 54
+           58(p):     15(ptr) FunctionParameter
+              60:             Label
+             148:   28(bvec3) Load 123(b3)
+             153:   14(ivec3) Select 148 152 151
+                              Store 58(p) 153
+             154:   28(bvec3) Load 123(b3)
+             155:   14(ivec3) Select 154 152 151
+                              ReturnValue 155
+                              FunctionEnd
+62(Fn_R_I3F(vi3;):   14(ivec3) Function None 54
+           61(p):     15(ptr) FunctionParameter
+              63:             Label
+             160:    7(fvec3) Load 159(f3)
+             161:   14(ivec3) ConvertFToS 160
+                              Store 61(p) 161
+             162:    7(fvec3) Load 159(f3)
+             163:   14(ivec3) ConvertFToS 162
+                              ReturnValue 163
+                              FunctionEnd
+65(Fn_R_I3D(vi3;):   14(ivec3) Function None 54
+           64(p):     15(ptr) FunctionParameter
+              66:             Label
+             166:   35(fvec3) Load 135(d3)
+             167:   14(ivec3) ConvertFToS 166
+                              Store 64(p) 167
+             168:   35(fvec3) Load 135(d3)
+             169:   14(ivec3) ConvertFToS 168
+                              ReturnValue 169
+                              FunctionEnd
+69(Fn_R_U3I(vu3;):   21(ivec3) Function None 67
+           68(p):     22(ptr) FunctionParameter
+              70:             Label
+             172:   14(ivec3) Load 107(i3)
+             173:   21(ivec3) Bitcast 172
+                              Store 68(p) 173
+             174:   14(ivec3) Load 107(i3)
+             175:   21(ivec3) Bitcast 174
+                              ReturnValue 175
+                              FunctionEnd
+72(Fn_R_U3F(vu3;):   21(ivec3) Function None 67
+           71(p):     22(ptr) FunctionParameter
+              73:             Label
+             178:    7(fvec3) Load 159(f3)
+             179:   21(ivec3) ConvertFToU 178
+                              Store 71(p) 179
+             180:    7(fvec3) Load 159(f3)
+             181:   21(ivec3) ConvertFToU 180
+                              ReturnValue 181
+                              FunctionEnd
+75(Fn_R_U3B(vu3;):   21(ivec3) Function None 67
+           74(p):     22(ptr) FunctionParameter
+              76:             Label
+             184:   28(bvec3) Load 123(b3)
+             189:   21(ivec3) Select 184 188 187
+                              Store 74(p) 189
+             190:   28(bvec3) Load 123(b3)
+             191:   21(ivec3) Select 190 188 187
+                              ReturnValue 191
+                              FunctionEnd
+78(Fn_R_U3D(vu3;):   21(ivec3) Function None 67
+           77(p):     22(ptr) FunctionParameter
+              79:             Label
+             194:   35(fvec3) Load 135(d3)
+             195:   21(ivec3) ConvertFToU 194
+                              Store 77(p) 195
+             196:   35(fvec3) Load 135(d3)
+             197:   21(ivec3) ConvertFToU 196
+                              ReturnValue 197
+                              FunctionEnd
+82(Fn_R_B3I(vb3;):   28(bvec3) Function None 80
+           81(p):     29(ptr) FunctionParameter
+              83:             Label
+             200:   14(ivec3) Load 107(i3)
+             201:   28(bvec3) INotEqual 200 187
+                              Store 81(p) 201
+             202:   14(ivec3) Load 107(i3)
+             203:   28(bvec3) INotEqual 202 187
+                              ReturnValue 203
+                              FunctionEnd
+85(Fn_R_B3U(vb3;):   28(bvec3) Function None 80
+           84(p):     29(ptr) FunctionParameter
+              86:             Label
+             206:   21(ivec3) Load 115(u3)
+             207:   28(bvec3) INotEqual 206 187
+                              Store 84(p) 207
+             208:   21(ivec3) Load 115(u3)
+             209:   28(bvec3) INotEqual 208 187
+                              ReturnValue 209
+                              FunctionEnd
+88(Fn_R_B3F(vb3;):   28(bvec3) Function None 80
+           87(p):     29(ptr) FunctionParameter
+              89:             Label
+             212:    7(fvec3) Load 159(f3)
+             213:   28(bvec3) FOrdNotEqual 212 127
+                              Store 87(p) 213
+             214:    7(fvec3) Load 159(f3)
+             215:   28(bvec3) FOrdNotEqual 214 127
+                              ReturnValue 215
+                              FunctionEnd
+91(Fn_R_B3D(vb3;):   28(bvec3) Function None 80
+           90(p):     29(ptr) FunctionParameter
+              92:             Label
+             218:   35(fvec3) Load 135(d3)
+             221:   28(bvec3) FOrdNotEqual 218 220
+                              Store 90(p) 221
+             222:   35(fvec3) Load 135(d3)
+             223:   28(bvec3) FOrdNotEqual 222 220
+                              ReturnValue 223
+                              FunctionEnd
+95(Fn_R_D3I(vd3;):   35(fvec3) Function None 93
+           94(p):     36(ptr) FunctionParameter
+              96:             Label
+             226:   14(ivec3) Load 107(i3)
+             227:   35(fvec3) ConvertSToF 226
+                              Store 94(p) 227
+             228:   14(ivec3) Load 107(i3)
+             229:   35(fvec3) ConvertSToF 228
+                              ReturnValue 229
+                              FunctionEnd
+98(Fn_R_D3U(vd3;):   35(fvec3) Function None 93
+           97(p):     36(ptr) FunctionParameter
+              99:             Label
+             232:   21(ivec3) Load 115(u3)
+             233:   35(fvec3) ConvertUToF 232
+                              Store 97(p) 233
+             234:   21(ivec3) Load 115(u3)
+             235:   35(fvec3) ConvertUToF 234
+                              ReturnValue 235
+                              FunctionEnd
+101(Fn_R_D3B(vd3;):   35(fvec3) Function None 93
+          100(p):     36(ptr) FunctionParameter
+             102:             Label
+             238:   28(bvec3) Load 123(b3)
+             241:   35(fvec3) Select 238 240 220
+                              Store 100(p) 241
+             242:   28(bvec3) Load 123(b3)
+             243:   35(fvec3) Select 242 240 220
+                              ReturnValue 243
+                              FunctionEnd
+104(Fn_R_D3F(vd3;):   35(fvec3) Function None 93
+          103(p):     36(ptr) FunctionParameter
+             105:             Label
+             246:    7(fvec3) Load 159(f3)
+             247:   35(fvec3) FConvert 246
+                              Store 103(p) 247
+             248:    7(fvec3) Load 159(f3)
+             249:   35(fvec3) FConvert 248
+                              ReturnValue 249
+                              FunctionEnd

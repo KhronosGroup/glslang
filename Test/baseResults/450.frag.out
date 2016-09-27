@@ -51,7 +51,7 @@ Shader version: 450
 0:18        move second child to first child (temp float)
 0:18          'cull' (temp float)
 0:18          direct index (smooth temp float CullDistance)
-0:18            'gl_CullDistance' (smooth in implicitly-sized array of float CullDistance)
+0:18            'gl_CullDistance' (smooth in 6-element array of float CullDistance)
 0:18            Constant:
 0:18              2 (const int)
 0:19      Sequence
@@ -130,12 +130,32 @@ Shader version: 450
 0:48              2 (const int)
 0:48            Constant:
 0:48              4.500000
+0:53  Function Definition: cull(i1; (global float)
+0:53    Function Parameters: 
+0:53      'i' (in int)
+0:55    Sequence
+0:55      Branch: Return with expression
+0:55        Test condition and select (temp float)
+0:55          Condition
+0:55          Compare Greater Than or Equal (temp bool)
+0:55            'i' (in int)
+0:55            Constant:
+0:55              6 (const int)
+0:55          true case
+0:55          direct index (smooth temp float CullDistance)
+0:55            'gl_CullDistance' (smooth in 6-element array of float CullDistance)
+0:55            Constant:
+0:55              5 (const int)
+0:55          false case
+0:55          indirect index (smooth temp float CullDistance)
+0:55            'gl_CullDistance' (smooth in 6-element array of float CullDistance)
+0:55            'i' (in int)
 0:?   Linker Objects
 0:?     'in1' (smooth in float)
 0:?     'in2' (smooth in 2-component vector of float)
 0:?     'in3' (smooth in 3-component vector of float)
 0:?     'in4' (smooth in 4-component vector of float)
-0:?     'gl_CullDistance' (smooth in implicitly-sized array of float CullDistance)
+0:?     'gl_CullDistance' (smooth in 6-element array of float CullDistance)
 0:?     's2dms' (uniform sampler2DMS)
 0:?     'us2dmsa' (uniform usampler2DMSArray)
 0:?     'ii2dms' (layout(rgba32i ) uniform iimage2DMS)
@@ -195,7 +215,7 @@ Shader version: 450
 0:18        move second child to first child (temp float)
 0:18          'cull' (temp float)
 0:18          direct index (smooth temp float CullDistance)
-0:18            'gl_CullDistance' (smooth in 3-element array of float CullDistance)
+0:18            'gl_CullDistance' (smooth in 6-element array of float CullDistance)
 0:18            Constant:
 0:18              2 (const int)
 0:19      Sequence
@@ -274,12 +294,32 @@ Shader version: 450
 0:48              2 (const int)
 0:48            Constant:
 0:48              4.500000
+0:53  Function Definition: cull(i1; (global float)
+0:53    Function Parameters: 
+0:53      'i' (in int)
+0:55    Sequence
+0:55      Branch: Return with expression
+0:55        Test condition and select (temp float)
+0:55          Condition
+0:55          Compare Greater Than or Equal (temp bool)
+0:55            'i' (in int)
+0:55            Constant:
+0:55              6 (const int)
+0:55          true case
+0:55          direct index (smooth temp float CullDistance)
+0:55            'gl_CullDistance' (smooth in 6-element array of float CullDistance)
+0:55            Constant:
+0:55              5 (const int)
+0:55          false case
+0:55          indirect index (smooth temp float CullDistance)
+0:55            'gl_CullDistance' (smooth in 6-element array of float CullDistance)
+0:55            'i' (in int)
 0:?   Linker Objects
 0:?     'in1' (smooth in float)
 0:?     'in2' (smooth in 2-component vector of float)
 0:?     'in3' (smooth in 3-component vector of float)
 0:?     'in4' (smooth in 4-component vector of float)
-0:?     'gl_CullDistance' (smooth in 3-element array of float CullDistance)
+0:?     'gl_CullDistance' (smooth in 6-element array of float CullDistance)
 0:?     's2dms' (uniform sampler2DMS)
 0:?     'us2dmsa' (uniform usampler2DMSArray)
 0:?     'ii2dms' (layout(rgba32i ) uniform iimage2DMS)

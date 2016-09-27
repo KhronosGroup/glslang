@@ -148,3 +148,5 @@ void fooKeyMem()
 {
     KeyMem.precise;
 }
+
+layout(location=28, index=2) out vec4 outIndex2; // ERROR index out of range

@@ -1,6 +1,6 @@
-#version 310 es
+#version 450
 
-#extension GL_ARB_gl_spirv : enable
+
 
 layout(binding = 0) uniform atomic_uint counter;
 
@@ -22,6 +22,7 @@ void main()
     func(counter);
     uint val = atomicCounter(countArr[2]);
     atomicCounterDecrement(counter);
+    atomicCounterIncrement(counter);
 }
 
 shared int atomi;

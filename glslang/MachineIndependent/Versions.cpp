@@ -74,12 +74,12 @@
 //
 //     const char* const XXX_extension_X = "XXX_extension_X";
 // 
-// 2) Add extension initialization to TParseContext::initializeExtensionBehavior(),
+// 2) Add extension initialization to TParseVersions::initializeExtensionBehavior(),
 //    the first function below:
 // 
 //     extensionBehavior[XXX_extension_X] = EBhDisable;
 //
-// 3) Add any preprocessor directives etc. in the next function, TParseContext::getPreamble():
+// 3) Add any preprocessor directives etc. in the next function, TParseVersions::getPreamble():
 //
 //           "#define XXX_extension_X 1\n"
 //
@@ -138,7 +138,8 @@
 //    table. (There is a different symbol table for each version.)
 //
 
-#include "ParseHelper.h"
+#include "parseVersions.h"
+#include "localintermediate.h"
 
 namespace glslang {
 
@@ -147,7 +148,7 @@ namespace glslang {
 // are incorporated into a core version, their features are supported through allowing that
 // core version, not through a pseudo-enablement of the extension.
 //
-void TParseContext::initializeExtensionBehavior()
+void TParseVersions::initializeExtensionBehavior()
 {
     extensionBehavior[E_GL_OES_texture_3D]                   = EBhDisable;
     extensionBehavior[E_GL_OES_standard_derivatives]         = EBhDisable;
@@ -161,7 +162,7 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_texture_gather]               = EBhDisable;
     extensionBehavior[E_GL_ARB_gpu_shader5]                  = EBhDisablePartial;
     extensionBehavior[E_GL_ARB_separate_shader_objects]      = EBhDisable;
-    extensionBehavior[E_GL_ARB_compute_shader]               = EBhDisablePartial;
+    extensionBehavior[E_GL_ARB_compute_shader]               = EBhDisable;
     extensionBehavior[E_GL_ARB_tessellation_shader]          = EBhDisable;
     extensionBehavior[E_GL_ARB_enhanced_layouts]             = EBhDisable;
     extensionBehavior[E_GL_ARB_texture_cube_map_array]       = EBhDisable;
@@ -170,17 +171,28 @@ void TParseContext::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_shader_image_load_store]      = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_atomic_counters]       = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_draw_parameters]       = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_group_vote]            = EBhDisable;
     extensionBehavior[E_GL_ARB_derivative_control]           = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_texture_image_samples] = EBhDisable;
     extensionBehavior[E_GL_ARB_viewport_array]               = EBhDisable;
-    extensionBehavior[E_GL_ARB_gl_spirv]                     = EBhDisable;
+    extensionBehavior[E_GL_ARB_gpu_shader_int64]             = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_ballot]                = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture2]              = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture_clamp]         = EBhDisable;
 //    extensionBehavior[E_GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
 
+    extensionBehavior[E_GL_EXT_shader_non_constant_global_initializers] = EBhDisable;
+
     // #line and #include
     extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;
     extensionBehavior[E_GL_GOOGLE_include_directive]                 = EBhDisable;
+
+#ifdef AMD_EXTENSIONS
+    extensionBehavior[E_GL_AMD_shader_ballot]                        = EBhDisable;
+    extensionBehavior[E_GL_AMD_shader_trinary_minmax]                = EBhDisable;
+    extensionBehavior[E_GL_AMD_shader_explicit_vertex_parameter]     = EBhDisable;
+    extensionBehavior[E_GL_AMD_gcn_shader]                           = EBhDisable;
+#endif
 
     // AEP
     extensionBehavior[E_GL_ANDROID_extension_pack_es31a]             = EBhDisable;
@@ -213,10 +225,10 @@ void TParseContext::initializeExtensionBehavior()
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
 // or needed by the preprocessor (which does not use a shared symbol table).
-const char* TParseContext::getPreamble()
+void TParseVersions::getPreamble(std::string& preamble)
 {
     if (profile == EEsProfile) {
-        return
+        preamble = 
             "#define GL_ES 1\n"
             "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
             "#define GL_OES_texture_3D 1\n"
@@ -224,10 +236,6 @@ const char* TParseContext::getPreamble()
             "#define GL_EXT_frag_depth 1\n"
             "#define GL_OES_EGL_image_external 1\n"
             "#define GL_EXT_shader_texture_lod 1\n"
-
-            // #line and #include
-            "#define GL_GOOGLE_cpp_style_line_directive 1\n"
-            "#define GL_GOOGLE_include_directive 1\n"
 
             // AEP
             "#define GL_ANDROID_extension_pack_es31a 1\n"
@@ -256,9 +264,10 @@ const char* TParseContext::getPreamble()
             "#define GL_OES_tessellation_point_size 1\n"
             "#define GL_OES_texture_buffer 1\n"
             "#define GL_OES_texture_cube_map_array 1\n"
+            "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             ;
     } else {
-        return
+        preamble = 
             "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
             "#define GL_ARB_texture_rectangle 1\n"
             "#define GL_ARB_shading_language_420pack 1\n"
@@ -274,18 +283,49 @@ const char* TParseContext::getPreamble()
             "#define GL_ARB_shader_image_load_store 1\n"
             "#define GL_ARB_shader_atomic_counters 1\n"
             "#define GL_ARB_shader_draw_parameters 1\n"
+            "#define GL_ARB_shader_group_vote 1\n"
             "#define GL_ARB_derivative_control 1\n"
             "#define GL_ARB_shader_texture_image_samples 1\n"
             "#define GL_ARB_viewport_array 1\n"
-            "#define GL_ARB_gl_spirv 1\n"
+            "#define GL_ARB_gpu_shader_int64 1\n"
+            "#define GL_ARB_shader_ballot 1\n"
             "#define GL_ARB_sparse_texture2 1\n"
             "#define GL_ARB_sparse_texture_clamp 1\n"
-
-            "#define GL_GOOGLE_cpp_style_line_directive 1\n"
-            "#define GL_GOOGLE_include_directive 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
+            "#define GL_EXT_shader_non_constant_global_initializers 1\n"
+
+#ifdef AMD_EXTENSIONS
+            "#define GL_AMD_shader_ballot 1\n"
+            "#define GL_AMD_shader_trinary_minmax 1\n"
+            "#define GL_AMD_shader_explicit_vertex_parameter 1\n"
+            "#define GL_AMD_gcn_shader 1\n"
+#endif
             ;
     }
+
+    // #line and #include
+    preamble += 
+            "#define GL_GOOGLE_cpp_style_line_directive 1\n"
+            "#define GL_GOOGLE_include_directive 1\n"
+            ;
+
+    // #define VULKAN XXXX
+    const int numberBufSize = 12;
+    char numberBuf[numberBufSize];
+    if (spvVersion.vulkan > 0) {
+        preamble += "#define VULKAN ";
+        snprintf(numberBuf, numberBufSize, "%d", spvVersion.vulkan);
+        preamble += numberBuf;
+        preamble += "\n";
+    }
+    // #define GL_SPIRV XXXX
+    if (spvVersion.openGl > 0) {
+        preamble += "#define GL_SPIRV ";
+        snprintf(numberBuf, numberBufSize, "%d", spvVersion.openGl);
+        preamble += numberBuf;
+        preamble += "\n";
+    }
+
 }
 
 //
@@ -297,7 +337,7 @@ const char* TParseContext::getPreamble()
 // Operation:  If the current profile is not one of the profileMask,
 // give an error message.
 //
-void TParseContext::requireProfile(const TSourceLoc& loc, int profileMask, const char* featureDesc)
+void TParseVersions::requireProfile(const TSourceLoc& loc, int profileMask, const char* featureDesc)
 {
     if (! (profile & profileMask))
         error(loc, "not supported with this profile:", featureDesc, ProfileName(profile));
@@ -336,7 +376,7 @@ const char* StageName(EShLanguage stage)
 //
 
 // entry point that takes multiple extensions
-void TParseContext::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions, const char* const extensions[], const char* featureDesc)
+void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions, const char* const extensions[], const char* featureDesc)
 {
     if (profile & profileMask) {
         bool okay = false;
@@ -361,7 +401,7 @@ void TParseContext::profileRequires(const TSourceLoc& loc, int profileMask, int 
 }
 
 // entry point for the above that takes a single extension
-void TParseContext::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, const char* extension, const char* featureDesc)
+void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, const char* extension, const char* featureDesc)
 {
     profileRequires(loc, profileMask, minVersion, extension ? 1 : 0, &extension, featureDesc);
 }
@@ -373,7 +413,7 @@ void TParseContext::profileRequires(const TSourceLoc& loc, int profileMask, int 
 //
 // Operation: If the current stage is not present, give an error message.
 //
-void TParseContext::requireStage(const TSourceLoc& loc, EShLanguageMask languageMask, const char* featureDesc)
+void TParseVersions::requireStage(const TSourceLoc& loc, EShLanguageMask languageMask, const char* featureDesc)
 {
     if (((1 << language) & languageMask) == 0)
         error(loc, "not supported in this stage:", featureDesc, StageName(language));
@@ -381,7 +421,7 @@ void TParseContext::requireStage(const TSourceLoc& loc, EShLanguageMask language
 
 // If only one stage supports a feature, this can be called.  But, all supporting stages
 // must be specified with one call.
-void TParseContext::requireStage(const TSourceLoc& loc, EShLanguage stage, const char* featureDesc)
+void TParseVersions::requireStage(const TSourceLoc& loc, EShLanguage stage, const char* featureDesc)
 {
     requireStage(loc, static_cast<EShLanguageMask>(1 << stage), featureDesc);
 }
@@ -390,7 +430,7 @@ void TParseContext::requireStage(const TSourceLoc& loc, EShLanguage stage, const
 // Within a set of profiles, see if a feature is deprecated and give an error or warning based on whether
 // a future compatibility context is being use.
 //
-void TParseContext::checkDeprecated(const TSourceLoc& loc, int profileMask, int depVersion, const char* featureDesc)
+void TParseVersions::checkDeprecated(const TSourceLoc& loc, int profileMask, int depVersion, const char* featureDesc)
 {
     if (profile & profileMask) {
         if (version >= depVersion) {
@@ -407,7 +447,7 @@ void TParseContext::checkDeprecated(const TSourceLoc& loc, int profileMask, int 
 // Within a set of profiles, see if a feature has now been removed and if so, give an error.
 // The version argument is the first version no longer having the feature.
 //
-void TParseContext::requireNotRemoved(const TSourceLoc& loc, int profileMask, int removedVersion, const char* featureDesc)
+void TParseVersions::requireNotRemoved(const TSourceLoc& loc, int profileMask, int removedVersion, const char* featureDesc)
 {
     if (profile & profileMask) {
         if (version >= removedVersion) {
@@ -421,7 +461,7 @@ void TParseContext::requireNotRemoved(const TSourceLoc& loc, int profileMask, in
 
 // Returns true if at least one of the extensions in the extensions parameter is requested. Otherwise, returns false.
 // Warns appropriately if the requested behavior of an extension is "warn".
-bool TParseContext::checkExtensionsRequested(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
+bool TParseVersions::checkExtensionsRequested(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
 {
     // First, see if any of the extensions are enabled
     for (int i = 0; i < numExtensions; ++i) {
@@ -452,7 +492,7 @@ bool TParseContext::checkExtensionsRequested(const TSourceLoc& loc, int numExten
 // Use when there are no profile/version to check, it's just an error if one of the
 // extensions is not present.
 //
-void TParseContext::requireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
+void TParseVersions::requireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
 {
     if (checkExtensionsRequested(loc, numExtensions, extensions, featureDesc)) return;
 
@@ -470,7 +510,7 @@ void TParseContext::requireExtensions(const TSourceLoc& loc, int numExtensions, 
 // Use by preprocessor when there are no profile/version to check, it's just an error if one of the
 // extensions is not present.
 //
-void TParseContext::ppRequireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
+void TParseVersions::ppRequireExtensions(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)
 {
     if (checkExtensionsRequested(loc, numExtensions, extensions, featureDesc)) return;
 
@@ -484,7 +524,7 @@ void TParseContext::ppRequireExtensions(const TSourceLoc& loc, int numExtensions
     }
 }
 
-TExtensionBehavior TParseContext::getExtensionBehavior(const char* extension)
+TExtensionBehavior TParseVersions::getExtensionBehavior(const char* extension)
 {
     auto iter = extensionBehavior.find(TString(extension));
     if (iter == extensionBehavior.end())
@@ -494,7 +534,7 @@ TExtensionBehavior TParseContext::getExtensionBehavior(const char* extension)
 }
 
 // Returns true if the given extension is set to enable, require, or warn.
-bool TParseContext::extensionTurnedOn(const char* const extension)
+bool TParseVersions::extensionTurnedOn(const char* const extension)
 {
       switch (getExtensionBehavior(extension)) {
       case EBhEnable:
@@ -507,7 +547,7 @@ bool TParseContext::extensionTurnedOn(const char* const extension)
       return false;
 }
 // See if any of the extensions are set to enable, require, or warn.
-bool TParseContext::extensionsTurnedOn(int numExtensions, const char* const extensions[])
+bool TParseVersions::extensionsTurnedOn(int numExtensions, const char* const extensions[])
 {
     for (int i = 0; i < numExtensions; ++i) {
         if (extensionTurnedOn(extensions[i])) return true;
@@ -518,7 +558,7 @@ bool TParseContext::extensionsTurnedOn(int numExtensions, const char* const exte
 //
 // Change the current state of an extension's behavior.
 //
-void TParseContext::updateExtensionBehavior(int line, const char* extension, const char* behaviorString)
+void TParseVersions::updateExtensionBehavior(int line, const char* extension, const char* behaviorString)
 {
     // Translate from text string of extension's behavior to an enum.
     TExtensionBehavior behavior = EBhDisable;
@@ -566,12 +606,9 @@ void TParseContext::updateExtensionBehavior(int line, const char* extension, con
         updateExtensionBehavior(line, "GL_OES_shader_io_blocks", behaviorString);
     else if (strcmp(extension, "GL_GOOGLE_include_directive") == 0)
         updateExtensionBehavior(line, "GL_GOOGLE_cpp_style_line_directive", behaviorString);
-    // SPIR-V
-    else if (strcmp(extension, "GL_ARB_gl_spirv") == 0)
-        spv = 100;
 }
 
-void TParseContext::updateExtensionBehavior(const char* extension, TExtensionBehavior behavior)
+void TParseVersions::updateExtensionBehavior(const char* extension, TExtensionBehavior behavior)
 {
     // Update the current behavior
     if (strcmp(extension, "all") == 0) {
@@ -612,45 +649,56 @@ void TParseContext::updateExtensionBehavior(const char* extension, TExtensionBeh
 }
 
 // Call for any operation needing full GLSL integer data-type support.
-void TParseContext::fullIntegerCheck(const TSourceLoc& loc, const char* op)
+void TParseVersions::fullIntegerCheck(const TSourceLoc& loc, const char* op)
 {
     profileRequires(loc, ENoProfile, 130, nullptr, op); 
     profileRequires(loc, EEsProfile, 300, nullptr, op);
 }
 
 // Call for any operation needing GLSL double data-type support.
-void TParseContext::doubleCheck(const TSourceLoc& loc, const char* op)
+void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
 {
     requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
     profileRequires(loc, ECoreProfile, 400, nullptr, op);
     profileRequires(loc, ECompatibilityProfile, 400, nullptr, op);
 }
 
-// Call for any operation removed because SPIR-V is in use.
-void TParseContext::spvRemoved(const TSourceLoc& loc, const char* op)
+// Call for any operation needing GLSL 64-bit integer data-type support.
+void TParseVersions::int64Check(const TSourceLoc& loc, const char* op, bool builtIn)
 {
-    if (spv > 0)
+    if (! builtIn) {
+        requireExtensions(loc, 1, &E_GL_ARB_gpu_shader_int64, "shader int64");
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+        profileRequires(loc, ECoreProfile, 450, nullptr, op);
+        profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
+    }
+}
+
+// Call for any operation removed because SPIR-V is in use.
+void TParseVersions::spvRemoved(const TSourceLoc& loc, const char* op)
+{
+    if (spvVersion.spv != 0)
         error(loc, "not allowed when generating SPIR-V", op, "");
 }
 
 // Call for any operation removed because Vulkan SPIR-V is being generated.
-void TParseContext::vulkanRemoved(const TSourceLoc& loc, const char* op)
+void TParseVersions::vulkanRemoved(const TSourceLoc& loc, const char* op)
 {
-    if (vulkan > 0)
+    if (spvVersion.vulkan >= 100)
         error(loc, "not allowed when using GLSL for Vulkan", op, "");
 }
 
 // Call for any operation that requires Vulkan.
-void TParseContext::requireVulkan(const TSourceLoc& loc, const char* op)
+void TParseVersions::requireVulkan(const TSourceLoc& loc, const char* op)
 {
-    if (vulkan == 0)
+    if (spvVersion.vulkan == 0)
         error(loc, "only allowed when using GLSL for Vulkan", op, "");
 }
 
 // Call for any operation that requires SPIR-V.
-void TParseContext::requireSpv(const TSourceLoc& loc, const char* op)
+void TParseVersions::requireSpv(const TSourceLoc& loc, const char* op)
 {
-    if (spv == 0)
+    if (spvVersion.spv == 0)
         error(loc, "only allowed when generating SPIR-V", op, "");
 }
 

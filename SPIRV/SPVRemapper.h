@@ -38,7 +38,7 @@
 
 #include <string>
 #include <vector>
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace spv {
 
@@ -74,7 +74,7 @@ public:
 } // namespace SPV
 
 #if !defined (use_cpp11)
-#include <stdio.h>
+#include <cstdio>
 
 namespace spv {
 class spirvbin_t : public spirvbin_base_t
@@ -82,7 +82,7 @@ class spirvbin_t : public spirvbin_base_t
 public:
     spirvbin_t(int /*verbose = 0*/) { }
 
-    void remap(std::vector<unsigned int>& /*spv*/, unsigned int /*opts = 0*/)
+    void remap(std::vector<std::uint32_t>& /*spv*/, unsigned int /*opts = 0*/)
     {
         printf("Tool not compiled for C++11, which is required for SPIR-V remapping.\n");
         exit(5);
@@ -159,16 +159,21 @@ private:
    typedef std::set<int>                    posmap_t;
    typedef std::unordered_map<spv::Id, int> posmap_rev_t;
 
+   // Maps and ID to the size of its base type, if known.
+   typedef std::unordered_map<spv::Id, unsigned> typesize_map_t;
+
    // handle error
    void error(const std::string& txt) const { errorHandler(txt); }
 
-   bool    isConstOp(spv::Op opCode)       const;
-   bool    isTypeOp(spv::Op opCode)        const;
-   bool    isStripOp(spv::Op opCode)       const;
-   bool    isFlowCtrl(spv::Op opCode)      const;
-   range_t literalRange(spv::Op opCode)    const;
-   range_t typeRange(spv::Op opCode)       const;
-   range_t constRange(spv::Op opCode)      const;
+   bool     isConstOp(spv::Op opCode)      const;
+   bool     isTypeOp(spv::Op opCode)       const;
+   bool     isStripOp(spv::Op opCode)      const;
+   bool     isFlowCtrl(spv::Op opCode)     const;
+   range_t  literalRange(spv::Op opCode)   const;
+   range_t  typeRange(spv::Op opCode)      const;
+   range_t  constRange(spv::Op opCode)     const;
+   unsigned typeSizeInWords(spv::Id id)    const;
+   unsigned idTypeSizeInWords(spv::Id id)  const;
    
    spv::Id&        asId(unsigned word)                { return spv[word]; }
    const spv::Id&  asId(unsigned word)          const { return spv[word]; }
@@ -177,10 +182,10 @@ private:
    spv::Decoration asDecoration(unsigned word)  const { return spv::Decoration(spv[word]); }
    unsigned        asWordCount(unsigned word)   const { return opWordCount(spv[word]); }
    spv::Id         asTypeConstId(unsigned word) const { return asId(word + (isTypeOp(asOpCode(word)) ? 1 : 2)); }
-   unsigned        typePos(spv::Id id)          const;
+   unsigned        idPos(spv::Id id)            const;
 
-   static unsigned    opWordCount(spirword_t data) { return data >> spv::WordCountShift; }
-   static spv::Op     opOpCode(spirword_t data)    { return spv::Op(data & spv::OpCodeMask); }
+   static unsigned opWordCount(spirword_t data) { return data >> spv::WordCountShift; }
+   static spv::Op  opOpCode(spirword_t data)    { return spv::Op(data & spv::OpCodeMask); }
 
    // Header access & set methods
    spirword_t  magic()    const       { return spv[0]; } // return magic number
@@ -263,8 +268,9 @@ private:
    // Which functions are called, anywhere in the module, with a call count
    std::unordered_map<spv::Id, int> fnCalls;
    
-   posmap_t     typeConstPos;   // word positions that define types & consts (ordered)
-   posmap_rev_t typeConstPosR;  // reverse map from IDs to positions
+   posmap_t       typeConstPos;  // word positions that define types & consts (ordered)
+   posmap_rev_t   idPosR;        // reverse map from IDs to positions
+   typesize_map_t idTypeSizeMap; // maps each ID to its type size, if known.
    
    std::vector<spv::Id>  idMapL;   // ID {M}ap from {L}ocal to {G}lobal IDs
 

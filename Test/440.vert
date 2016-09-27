@@ -63,6 +63,20 @@ layout(location = 1, component = 1) out;                 // ERROR, no global set
 layout(location = 50, component = 3) out int be;
 layout(location = 50, component = 0) out vec3 bf;
 
+layout(location = 51, component = 1) out double dfo;     // ERROR, odd component
+layout(location = 52, component = 2) out dvec2 dvo;      // ERROR, overflow
+layout(location = 53) out double dfo2;
+layout(location = 53, component = 2) out vec2 ffv2;      // okay, fits
+layout(location = 54) out dvec4 dvec4out;                // uses up location 55 too
+layout(location = 55) out float overf;                   // ERROR, collides with previous dvec4
+layout(location = 56, component = 1) out vec2 df2o;
+layout(location = 56, component = 3) out float sf2o;
+layout(location = 57, component = 2) out vec2 dv3o;
+layout(location = 57, component = 3) out float sf4o;     // ERROR, overlapping component
+layout(location=58) out flat dvec3 dv3o2;                // uses part of location 59
+layout(location=59, component=2) out flat double dfo3;   // okay, fits
+layout(location=59, component=0) out flat double dfo4;   // ERROR, overlaps the dvec3 in starting in 58
+
 out bblck1 {
     vec4 bbv;
 } bbinst1;

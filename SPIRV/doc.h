@@ -33,10 +33,6 @@
 //POSSIBILITY OF SUCH DAMAGE.
 
 //
-// Author: John Kessenich, LunarG
-//
-
-//
 // Parameterize the SPIR-V enumerants.
 //
 
@@ -153,7 +149,7 @@ enum OperandClass {
     OperandMemorySemantics,
     OperandMemoryAccess,
     OperandScope,
-	OperandGroupOperation,
+    OperandGroupOperation,
     OperandKernelEnqueueFlags,
     OperandKernelProfilingInfo,
     OperandCapability,

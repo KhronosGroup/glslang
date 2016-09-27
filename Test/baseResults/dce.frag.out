@@ -138,7 +138,7 @@ Shader version: 400
 
 Linked fragment stage:
 
-ERROR: Linking fragment stage: Missing entry point: Each stage requires one "void main()" entry point
+ERROR: Linking fragment stage: Missing entry point: Each stage requires one entry point
 
 Shader version: 400
 0:? Sequence

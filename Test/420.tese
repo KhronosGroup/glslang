@@ -51,6 +51,18 @@ struct S4 {
     S3 s[2];
 };
 
+struct Single1 { int f; };
+Single1 single1 = { 10 };
+
+struct Single2 { uvec2 v; };
+Single2 single2 = { { 1, 2 } };
+
+struct Single3 { Single1 s1; };
+Single3 single3 = { { 3 } };
+
+struct Single4 { Single2 s1; };
+Single4 single4 = { { { 4u, 5u } } };
+
 const S4 constructed = S4(uvec2(1, 2), 
                           S3[2](S3(3.0, mat2x3(4.0)), 
                                 S3(5.0, mat2x3(6.0))));

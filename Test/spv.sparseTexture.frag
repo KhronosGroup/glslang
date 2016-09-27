@@ -16,9 +16,16 @@ uniform isampler2DArray         is2DArray;
 uniform usamplerCubeArray       usCubeArray;
 uniform usampler2DRect          us2DRect;
 
+layout(rgba32f) uniform image2D i2D;
+layout(rgba32i) uniform iimage3D ii3D;
+layout(rgba32f) uniform image2DMS i2DMS;
+
 in vec2 c2;
 in vec3 c3;
 in vec4 c4;
+
+in flat ivec2 ic2;
+in flat ivec3 ic3;
 
 in flat ivec2 offsets[4];
 
@@ -70,11 +77,15 @@ void main()
 
     resident |= sparseTextureGatherOffsetARB(s2D, c2, ivec2(4), texel);
     resident |= sparseTextureGatherOffsetARB(is2DArray, c3, ivec2(5), itexel, 2);
-    resident |= sparseTextureGatherOffsetARB(s2DRectShadow, c2, 2.0, ivec2(7), texel); 
+    resident |= sparseTextureGatherOffsetARB(s2DRectShadow, c2, 2.0, ivec2(7), texel);
 
     resident |= sparseTextureGatherOffsetsARB(s2D, c2, offsets, texel);
     resident |= sparseTextureGatherOffsetsARB(is2DArray, c3, offsets, itexel, 2);
-    resident |= sparseTextureGatherOffsetsARB(s2DRectShadow, c2, 2.0, offsets, texel); 
+    resident |= sparseTextureGatherOffsetsARB(s2DRectShadow, c2, 2.0, offsets, texel);
+
+    resident |= sparseImageLoadARB(i2D, ic2, texel);
+    resident |= sparseImageLoadARB(ii3D, ic3, itexel);
+    resident |= sparseImageLoadARB(i2DMS, ic2, 3, texel);
 
     outColor = sparseTexelsResidentARB(resident) ? texel : vec4(itexel) + vec4(utexel);
 }

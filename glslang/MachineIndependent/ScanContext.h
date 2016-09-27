@@ -48,7 +48,7 @@ class TParserToken;
 
 class TScanContext {
 public:
-    explicit TScanContext(TParseContext& pc) : parseContext(pc), afterType(false), field(false) { }
+    explicit TScanContext(TParseContextBase& pc) : parseContext(pc), afterType(false), field(false) { }
     virtual ~TScanContext() { }
 
     static void fillInKeywordMap();
@@ -72,7 +72,7 @@ protected:
     int firstGenerationImage(bool inEs310);
     int secondGenerationImage();
 
-    TParseContext& parseContext;
+    TParseContextBase& parseContext;
     bool afterType;           // true if we've recognized a type, so can only be looking for an identifier
     bool field;               // true if we're on a field, right after a '.'
     TSourceLoc loc;

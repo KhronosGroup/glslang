@@ -128,37 +128,37 @@ ERROR: node is still EOpNull!
 0:52      Sequence
 0:52        move second child to first child (temp 2-component vector of bool)
 0:52          'b10' (temp 2-component vector of bool)
-0:52          isnan (global 2-component vector of bool)
+0:52          isnan (global 2-component vector of bool, operation at mediump)
 0:52            'v2a' (global mediump 2-component vector of float)
 0:53      Sequence
 0:53        move second child to first child (temp 4-component vector of bool)
 0:53          'b11' (temp 4-component vector of bool)
-0:53          isinf (global 4-component vector of bool)
+0:53          isinf (global 4-component vector of bool, operation at mediump)
 0:53            'v4' (global mediump 4-component vector of float)
 0:56      Sequence
-0:56        move second child to first child (temp mediump int)
+0:56        move second child to first child (temp highp int)
 0:56          'i' (temp mediump int)
-0:56          floatBitsToInt (global mediump int)
+0:56          floatBitsToInt (global highp int)
 0:56            'f' (global mediump float)
 0:57      Sequence
-0:57        move second child to first child (temp mediump 4-component vector of uint)
+0:57        move second child to first child (temp highp 4-component vector of uint)
 0:57          'uv11' (temp mediump 4-component vector of uint)
-0:57          floatBitsToUint (global mediump 4-component vector of uint)
+0:57          floatBitsToUint (global highp 4-component vector of uint)
 0:57            'v4' (global mediump 4-component vector of float)
 0:58      Sequence
-0:58        move second child to first child (temp mediump 4-component vector of float)
+0:58        move second child to first child (temp highp 4-component vector of float)
 0:58          'v14' (temp mediump 4-component vector of float)
-0:58          intBitsToFloat (global mediump 4-component vector of float)
+0:58          intBitsToFloat (global highp 4-component vector of float)
 0:58            'iv4a' (global mediump 4-component vector of int)
 0:59      Sequence
-0:59        move second child to first child (temp mediump 2-component vector of float)
+0:59        move second child to first child (temp highp 2-component vector of float)
 0:59          'v15' (temp mediump 2-component vector of float)
-0:59          uintBitsToFloat (global mediump 2-component vector of float)
+0:59          uintBitsToFloat (global highp 2-component vector of float)
 0:59            'uv2c' (global mediump 2-component vector of uint)
 0:62      Sequence
 0:62        move second child to first child (temp highp uint)
 0:62          'u19' (temp mediump uint)
-0:62          packSnorm2x16 (global highp uint)
+0:62          packSnorm2x16 (global highp uint, operation at mediump)
 0:62            'v2a' (global mediump 2-component vector of float)
 0:63      Sequence
 0:63        move second child to first child (temp highp 2-component vector of float)
@@ -168,7 +168,7 @@ ERROR: node is still EOpNull!
 0:64      Sequence
 0:64        move second child to first child (temp highp uint)
 0:64          'u15' (temp mediump uint)
-0:64          packUnorm2x16 (global highp uint)
+0:64          packUnorm2x16 (global highp uint, operation at mediump)
 0:64            'v2a' (global mediump 2-component vector of float)
 0:65      Sequence
 0:65        move second child to first child (temp highp 2-component vector of float)
@@ -178,12 +178,12 @@ ERROR: node is still EOpNull!
 0:66      Sequence
 0:66        move second child to first child (temp highp uint)
 0:66          'u17' (temp mediump uint)
-0:66          packHalf2x16 (global highp uint)
+0:66          packHalf2x16 (global highp uint, operation at mediump)
 0:66            'v2b' (global mediump 2-component vector of float)
 0:67      Sequence
 0:67        move second child to first child (temp mediump 2-component vector of float)
 0:67          'v18' (temp mediump 2-component vector of float)
-0:67          unpackHalf2x16 (global mediump 2-component vector of float)
+0:67          unpackHalf2x16 (global mediump 2-component vector of float, operation at highp)
 0:67            'uy' (global mediump uint)
 0:70      Constant:
 0:70        0.000000
@@ -335,37 +335,37 @@ ERROR: node is still EOpNull!
 0:52      Sequence
 0:52        move second child to first child (temp 2-component vector of bool)
 0:52          'b10' (temp 2-component vector of bool)
-0:52          isnan (global 2-component vector of bool)
+0:52          isnan (global 2-component vector of bool, operation at mediump)
 0:52            'v2a' (global mediump 2-component vector of float)
 0:53      Sequence
 0:53        move second child to first child (temp 4-component vector of bool)
 0:53          'b11' (temp 4-component vector of bool)
-0:53          isinf (global 4-component vector of bool)
+0:53          isinf (global 4-component vector of bool, operation at mediump)
 0:53            'v4' (global mediump 4-component vector of float)
 0:56      Sequence
-0:56        move second child to first child (temp mediump int)
+0:56        move second child to first child (temp highp int)
 0:56          'i' (temp mediump int)
-0:56          floatBitsToInt (global mediump int)
+0:56          floatBitsToInt (global highp int)
 0:56            'f' (global mediump float)
 0:57      Sequence
-0:57        move second child to first child (temp mediump 4-component vector of uint)
+0:57        move second child to first child (temp highp 4-component vector of uint)
 0:57          'uv11' (temp mediump 4-component vector of uint)
-0:57          floatBitsToUint (global mediump 4-component vector of uint)
+0:57          floatBitsToUint (global highp 4-component vector of uint)
 0:57            'v4' (global mediump 4-component vector of float)
 0:58      Sequence
-0:58        move second child to first child (temp mediump 4-component vector of float)
+0:58        move second child to first child (temp highp 4-component vector of float)
 0:58          'v14' (temp mediump 4-component vector of float)
-0:58          intBitsToFloat (global mediump 4-component vector of float)
+0:58          intBitsToFloat (global highp 4-component vector of float)
 0:58            'iv4a' (global mediump 4-component vector of int)
 0:59      Sequence
-0:59        move second child to first child (temp mediump 2-component vector of float)
+0:59        move second child to first child (temp highp 2-component vector of float)
 0:59          'v15' (temp mediump 2-component vector of float)
-0:59          uintBitsToFloat (global mediump 2-component vector of float)
+0:59          uintBitsToFloat (global highp 2-component vector of float)
 0:59            'uv2c' (global mediump 2-component vector of uint)
 0:62      Sequence
 0:62        move second child to first child (temp highp uint)
 0:62          'u19' (temp mediump uint)
-0:62          packSnorm2x16 (global highp uint)
+0:62          packSnorm2x16 (global highp uint, operation at mediump)
 0:62            'v2a' (global mediump 2-component vector of float)
 0:63      Sequence
 0:63        move second child to first child (temp highp 2-component vector of float)
@@ -375,7 +375,7 @@ ERROR: node is still EOpNull!
 0:64      Sequence
 0:64        move second child to first child (temp highp uint)
 0:64          'u15' (temp mediump uint)
-0:64          packUnorm2x16 (global highp uint)
+0:64          packUnorm2x16 (global highp uint, operation at mediump)
 0:64            'v2a' (global mediump 2-component vector of float)
 0:65      Sequence
 0:65        move second child to first child (temp highp 2-component vector of float)
@@ -385,12 +385,12 @@ ERROR: node is still EOpNull!
 0:66      Sequence
 0:66        move second child to first child (temp highp uint)
 0:66          'u17' (temp mediump uint)
-0:66          packHalf2x16 (global highp uint)
+0:66          packHalf2x16 (global highp uint, operation at mediump)
 0:66            'v2b' (global mediump 2-component vector of float)
 0:67      Sequence
 0:67        move second child to first child (temp mediump 2-component vector of float)
 0:67          'v18' (temp mediump 2-component vector of float)
-0:67          unpackHalf2x16 (global mediump 2-component vector of float)
+0:67          unpackHalf2x16 (global mediump 2-component vector of float, operation at highp)
 0:67            'uy' (global mediump uint)
 0:70      Constant:
 0:70        0.000000

@@ -192,6 +192,8 @@ void foo213()
     gl_ClipDistance[1] = 0.3;        // ERROR
 }
 
+int gl_ModelViewMatrix[] = 0;
+
 // token pasting (ERRORS...)
 
 #define mac abc##def

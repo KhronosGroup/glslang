@@ -81,12 +81,10 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <stdarg.h>
-#include <stdio.h>
 #include <sstream>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
 
 #include "PpContext.h"
 #include "PpTokens.h"
@@ -192,7 +190,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
                 do {
                     int oldToken;
                     TPpToken oldPpToken;
-                    TPpToken newPpToken;                    
+                    TPpToken newPpToken;
                     oldToken = ReadToken(symb->mac.body, &oldPpToken);
                     newToken = ReadToken(mac.body, &newPpToken);
                     if (oldToken != newToken || oldPpToken != newPpToken) {
@@ -250,7 +248,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
         if (token != '#') {
             while (token != '\n' && token != EndOfInput)
                 token = scanToken(ppToken);
-            
+
             if (token == EndOfInput)
                 return token;
 
@@ -495,7 +493,7 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
         if (op < 0 || binop[op].precedence <= precedence)
             break;
         int leftSide = res;
-        
+
         // Setup short-circuiting, needed for ES, unless already in a short circuit.
         // (Once in a short-circuit, can't turn off again, until that whole subexpression is done.
         if (! shortCircuit) {
@@ -611,24 +609,28 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
         if (token != '\n' && token != EndOfInput) {
             parseContext.ppError(ppToken->loc, "extra content after file designation", "#include", "");
         } else {
-            auto include = includer.include(filename.c_str());
-            std::string sourceName = include.first;
-            std::string replacement = include.second;
-            if (!sourceName.empty()) {
-                if (!replacement.empty()) {
+            TShader::Includer::IncludeResult* res = includer.include(filename.c_str(), TShader::Includer::EIncludeRelative, currentSourceFile.c_str(), includeStack.size() + 1);
+            if (res && !res->file_name.empty()) {
+                if (res->file_data && res->file_length) {
                     const bool forNextLine = parseContext.lineDirectiveShouldSetNextLine();
-                    std::ostringstream content;
-                    content << "#line " << forNextLine << " " << "\"" << sourceName << "\"\n";
-                    content << replacement << (replacement.back() == '\n' ? "" : "\n");
-                    content << "#line " << directiveLoc.line + forNextLine << " " << directiveLoc.getStringNameOrNum() << "\n";
-                    pushInput(new TokenizableString(directiveLoc, content.str(), this));
+                    std::ostringstream prologue;
+                    std::ostringstream epilogue;
+                    prologue << "#line " << forNextLine << " " << "\"" << res->file_name << "\"\n";
+                    epilogue << (res->file_data[res->file_length - 1] == '\n'? "" : "\n") << "#line " << directiveLoc.line + forNextLine << " " << directiveLoc.getStringNameOrNum() << "\n";
+                    pushInput(new TokenizableIncludeFile(directiveLoc, prologue.str(), res, epilogue.str(), this));
                 }
                 // At EOF, there's no "current" location anymore.
                 if (token != EndOfInput) parseContext.setCurrentColumn(0);
                 // Don't accidentally return EndOfInput, which will end all preprocessing.
                 return '\n';
             } else {
-                parseContext.ppError(directiveLoc, replacement.c_str(), "#include", "");
+                std::string message =
+                    res ? std::string(res->file_data, res->file_length)
+                        : std::string("Could not process include directive");
+                parseContext.ppError(directiveLoc, message.c_str(), "#include", "");
+                if (res) {
+                    includer.releaseInclude(res);
+                }
             }
         }
     }
@@ -701,7 +703,8 @@ int TPpContext::CPPerror(TPpToken* ppToken)
     TSourceLoc loc = ppToken->loc;
 
     while (token != '\n' && token != EndOfInput) {
-        if (token == PpAtomConstInt || token == PpAtomConstUint ||
+        if (token == PpAtomConstInt   || token == PpAtomConstUint   ||
+            token == PpAtomConstInt64 || token == PpAtomConstUint64 ||
             token == PpAtomConstFloat || token == PpAtomConstDouble) {
                 message.append(ppToken->name);
         } else if (token == PpAtomIdentifier || token == PpAtomConstString) {
@@ -732,6 +735,8 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
         case PpAtomIdentifier:
         case PpAtomConstInt:
         case PpAtomConstUint:
+        case PpAtomConstInt64:
+        case PpAtomConstUint64:
         case PpAtomConstFloat:
         case PpAtomConstDouble:
             tokens.push_back(ppToken->name);
@@ -749,7 +754,7 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
     else
         parseContext.handlePragma(loc, tokens);
 
-    return token;    
+    return token;
 }
 
 // #version: This is just for error checking: the version and profile are decided before preprocessing starts
@@ -867,12 +872,13 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             token = CPPelse(0, ppToken);
             break;
         case PpAtomEndif:
-            elseSeen[elsetracker] = false;
-            --elsetracker;
             if (! ifdepth)
                 parseContext.ppError(ppToken->loc, "mismatched statements", "#endif", "");
-            else
+            else {
+                elseSeen[elsetracker] = false;
+                --elsetracker;
                 --ifdepth;
+            }
             token = extraTokenCheck(PpAtomEndif, ppToken, scanToken(ppToken));
             break;
         case PpAtomIf:
@@ -972,7 +978,7 @@ int TPpContext::tMacroInput::scan(TPpToken* ppToken)
 
     if (token == EndOfInput)
         mac->busy = 0;
-        
+
     return token;
 }
 
@@ -1052,7 +1058,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
     if (sym->mac.args) {
         token = scanToken(ppToken);
         if (newLineOkay) {
-            while (token == '\n')                
+            while (token == '\n')
                 token = scanToken(ppToken);
         }
         if (token != '(') {

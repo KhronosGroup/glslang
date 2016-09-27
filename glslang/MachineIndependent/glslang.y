@@ -70,6 +70,8 @@ using namespace glslang;
             glslang::TString *string;
             int i;
             unsigned int u;
+            long long i64;
+            unsigned long long u64;
             bool b;
             double d;
         };
@@ -117,14 +119,14 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %expect 1     // One shift reduce conflict because of if | else
 
 %token <lex> ATTRIBUTE VARYING
-%token <lex> CONST BOOL FLOAT DOUBLE INT UINT
+%token <lex> CONST BOOL FLOAT DOUBLE INT UINT INT64_T UINT64_T
 %token <lex> BREAK CONTINUE DO ELSE FOR IF DISCARD RETURN SWITCH CASE DEFAULT SUBROUTINE
-%token <lex> BVEC2 BVEC3 BVEC4 IVEC2 IVEC3 IVEC4 UVEC2 UVEC3 UVEC4 VEC2 VEC3 VEC4
+%token <lex> BVEC2 BVEC3 BVEC4 IVEC2 IVEC3 IVEC4 I64VEC2 I64VEC3 I64VEC4 UVEC2 UVEC3 UVEC4 U64VEC2 U64VEC3 U64VEC4 VEC2 VEC3 VEC4
 %token <lex> MAT2 MAT3 MAT4 CENTROID IN OUT INOUT
 %token <lex> UNIFORM PATCH SAMPLE BUFFER SHARED
 %token <lex> COHERENT VOLATILE RESTRICT READONLY WRITEONLY
 %token <lex> DVEC2 DVEC3 DVEC4 DMAT2 DMAT3 DMAT4
-%token <lex> NOPERSPECTIVE FLAT SMOOTH LAYOUT
+%token <lex> NOPERSPECTIVE FLAT SMOOTH LAYOUT __EXPLICITINTERPAMD
 
 %token <lex> MAT2X2 MAT2X3 MAT2X4
 %token <lex> MAT3X2 MAT3X3 MAT3X4
@@ -180,7 +182,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> STRUCT VOID WHILE
 
 %token <lex> IDENTIFIER TYPE_NAME
-%token <lex> FLOATCONSTANT DOUBLECONSTANT INTCONSTANT UINTCONSTANT BOOLCONSTANT
+%token <lex> FLOATCONSTANT DOUBLECONSTANT INTCONSTANT UINTCONSTANT INT64CONSTANT UINT64CONSTANT BOOLCONSTANT
 %token <lex> LEFT_OP RIGHT_OP
 %token <lex> INC_OP DEC_OP LE_OP GE_OP EQ_OP NE_OP
 %token <lex> AND_OP OR_OP XOR_OP MUL_ASSIGN DIV_ASSIGN ADD_ASSIGN
@@ -256,6 +258,14 @@ primary_expression
     | UINTCONSTANT {
         parseContext.fullIntegerCheck($1.loc, "unsigned literal");
         $$ = parseContext.intermediate.addConstantUnion($1.u, $1.loc, true);
+    }
+    | INT64CONSTANT {
+        parseContext.int64Check($1.loc, "64-bit integer literal");
+        $$ = parseContext.intermediate.addConstantUnion($1.i64, $1.loc, true);
+    }
+    | UINT64CONSTANT {
+        parseContext.int64Check($1.loc, "64-bit unsigned integer literal");
+        $$ = parseContext.intermediate.addConstantUnion($1.u64, $1.loc, true);
     }
     | FLOATCONSTANT {
         $$ = parseContext.intermediate.addConstantUnion($1.d, EbtFloat, $1.loc, true);
@@ -681,6 +691,7 @@ expression
         $$ = $1;
     }
     | expression COMMA assignment_expression {
+        parseContext.samplerConstructorLocationCheck($2.loc, ",", $3);
         $$ = parseContext.intermediate.addComma($1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.binaryOpError($2.loc, ",", $1->getCompleteString(), $3->getCompleteString());
@@ -1040,6 +1051,15 @@ interpolation_qualifier
         $$.init($1.loc);
         $$.qualifier.nopersp = true;
     }
+    | __EXPLICITINTERPAMD {
+#ifdef AMD_EXTENSIONS
+        parseContext.globalCheck($1.loc, "__explicitInterpAMD");
+        parseContext.profileRequires($1.loc, ECoreProfile, 450, E_GL_AMD_shader_explicit_vertex_parameter, "explicit interpolation");
+        parseContext.profileRequires($1.loc, ECompatibilityProfile, 450, E_GL_AMD_shader_explicit_vertex_parameter, "explicit interpolation");
+        $$.init($1.loc);
+        $$.qualifier.explicitInterp = true;
+#endif
+    }
     ;
 
 layout_qualifier
@@ -1076,7 +1096,10 @@ layout_qualifier_id
 
 precise_qualifier
     : PRECISE {
+        parseContext.profileRequires($$.loc, ECoreProfile | ECompatibilityProfile, 400, E_GL_ARB_gpu_shader5, "precise");
+        parseContext.profileRequires($1.loc, EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5, "precise");
         $$.init($1.loc);
+        $$.qualifier.noContraction = true;
     }
     ;
 
@@ -1102,6 +1125,7 @@ single_type_qualifier
         $$ = $1;
     }
     | precision_qualifier {
+        parseContext.checkPrecisionQualifier($1.loc, $1.qualifier.precision);
         $$ = $1;
     }
     | interpolation_qualifier {
@@ -1195,7 +1219,7 @@ storage_qualifier
         $$.qualifier.storage = EvqBuffer;
     }
     | SHARED {
-        parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 430, 0, "shared");
+        parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 430, E_GL_ARB_compute_shader, "shared");
         parseContext.profileRequires($1.loc, EEsProfile, 310, 0, "shared");
         parseContext.requireStage($1.loc, EShLangCompute, "shared");
         $$.init($1.loc);
@@ -1309,6 +1333,16 @@ type_specifier_nonarray
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint;
     }
+    | INT64_T {
+        parseContext.int64Check($1.loc, "64-bit integer", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt64;
+    }
+    | UINT64_T {
+        parseContext.int64Check($1.loc, "64-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint64;
+    }
     | BOOL {
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtBool;
@@ -1376,6 +1410,24 @@ type_specifier_nonarray
         $$.basicType = EbtInt;
         $$.setVector(4);
     }
+    | I64VEC2 {
+        parseContext.int64Check($1.loc, "64-bit integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt64;
+        $$.setVector(2);
+    }
+    | I64VEC3 {
+        parseContext.int64Check($1.loc, "64-bit integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt64;
+        $$.setVector(3);
+    }
+    | I64VEC4 {
+        parseContext.int64Check($1.loc, "64-bit integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtInt64;
+        $$.setVector(4);
+    }
     | UVEC2 {
         parseContext.fullIntegerCheck($1.loc, "unsigned integer vector");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
@@ -1392,6 +1444,24 @@ type_specifier_nonarray
         parseContext.fullIntegerCheck($1.loc, "unsigned integer vector");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint;
+        $$.setVector(4);
+    }
+    | U64VEC2 {
+        parseContext.int64Check($1.loc, "64-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint64;
+        $$.setVector(2);
+    }
+    | U64VEC3 {
+        parseContext.int64Check($1.loc, "64-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint64;
+        $$.setVector(3);
+    }
+    | U64VEC4 {
+        parseContext.int64Check($1.loc, "64-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtUint64;
         $$.setVector(4);
     }
     | MAT2 {
@@ -2137,20 +2207,17 @@ precision_qualifier
     : HIGH_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "highp precision qualifier");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
-        if (parseContext.profile == EEsProfile)
-            $$.qualifier.precision = EpqHigh;
+        parseContext.handlePrecisionQualifier($1.loc, $$.qualifier, EpqHigh);
     }
     | MEDIUM_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "mediump precision qualifier");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
-        if (parseContext.profile == EEsProfile)
-            $$.qualifier.precision = EpqMedium;
+        parseContext.handlePrecisionQualifier($1.loc, $$.qualifier, EpqMedium);
     }
     | LOW_PRECISION {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "lowp precision qualifier");
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
-        if (parseContext.profile == EEsProfile)
-            $$.qualifier.precision = EpqLow;
+        parseContext.handlePrecisionQualifier($1.loc, $$.qualifier, EpqLow);
     }
     ;
 
@@ -2574,22 +2641,7 @@ jump_statement
             parseContext.postMainReturn = true;
     }
     | RETURN expression SEMICOLON {
-        parseContext.functionReturnsValue = true;
-        if (parseContext.currentFunctionType->getBasicType() == EbtVoid) {
-            parseContext.error($1.loc, "void function cannot return a value", "return", "");
-            $$ = parseContext.intermediate.addBranch(EOpReturn, $1.loc);
-        } else if (*(parseContext.currentFunctionType) != $2->getType()) {
-            TIntermTyped* converted = parseContext.intermediate.addConversion(EOpReturn, *parseContext.currentFunctionType, $2);
-            if (converted) {
-                if (parseContext.version < 420)
-                    parseContext.warn($1.loc, "type conversion on return values was not explicitly allowed until version 420", "return", "");
-                $$ = parseContext.intermediate.addBranch(EOpReturn, converted, $1.loc);
-            } else {
-                parseContext.error($1.loc, "type does not match, or is not convertible to, the function's return type", "return", "");
-                $$ = parseContext.intermediate.addBranch(EOpReturn, $2, $1.loc);
-            }
-        } else
-            $$ = parseContext.intermediate.addBranch(EOpReturn, $2, $1.loc);
+        $$ = parseContext.handleReturnValue($1.loc, $2);
     }
     | DISCARD SEMICOLON {
         parseContext.requireStage($1.loc, EShLangFragment, "discard");

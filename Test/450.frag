@@ -47,3 +47,10 @@ void foo()
     s += imageSamples(i2dmsa);
     float f = imageAtomicExchange(i2dmsa, ivec3(in3), 2, 4.5);
 }
+
+in float gl_CullDistance[6];
+
+float cull(int i)
+{
+    return (i >= 6) ? gl_CullDistance[5] : gl_CullDistance[i];
+}

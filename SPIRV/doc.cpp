@@ -33,11 +33,7 @@
 //POSSIBILITY OF SUCH DAMAGE.
 
 //
-// Author: John Kessenich, LunarG
-//
-
-//
-// 1) Programatically fill in instruction/operand information.
+// 1) Programmatically fill in instruction/operand information.
 //    This can be used for disassembly, printing documentation, etc.
 //
 // 2) Print documentation from this parameterization.
@@ -45,9 +41,19 @@
 
 #include "doc.h"
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #include <algorithm>
+
+namespace spv {
+    extern "C" {
+        // Include C-based headers that don't have a namespace
+        #include "GLSL.ext.KHR.h"
+#ifdef AMD_EXTENSIONS
+        #include "GLSL.ext.AMD.h"
+#endif
+    }
+}
 
 namespace spv {
 
@@ -64,7 +70,7 @@ namespace spv {
 //    (for non-sparse mask enums, this is the number of enumurants)
 //
 
-const int SourceLanguageCeiling = 5;
+const int SourceLanguageCeiling = 6; // HLSL todo: need official enumerant
 
 const char* SourceString(int source)
 {
@@ -74,6 +80,7 @@ const char* SourceString(int source)
     case 2:  return "GLSL";
     case 3:  return "OpenCL_C";
     case 4:  return "OpenCL_CPP";
+    case 5:  return "HLSL";
 
     case SourceLanguageCeiling:
     default: return "Bad";
@@ -246,6 +253,10 @@ const char* DecorationString(int decoration)
 
     case DecorationCeiling:
     default:  return "Bad";
+
+#ifdef AMD_EXTENSIONS
+    case 4999: return "ExplicitInterpAMD";
+#endif
     }
 }
 
@@ -301,6 +312,22 @@ const char* BuiltInString(int builtIn)
 
     case BuiltInCeiling:
     default: return "Bad";
+
+    case 4416: return "SubgroupEqMaskKHR";
+    case 4417: return "SubgroupGeMaskKHR";
+    case 4418: return "SubgroupGtMaskKHR";
+    case 4419: return "SubgroupLeMaskKHR";
+    case 4420: return "SubgroupLtMaskKHR";
+
+#ifdef AMD_EXTENSIONS
+    case 4992: return "BaryCoordNoPerspAMD";
+    case 4993: return "BaryCoordNoPerspCentroidAMD";
+    case 4994: return "BaryCoordNoPerspSampleAMD";
+    case 4995: return "BaryCoordSmoothAMD";
+    case 4996: return "BaryCoordSmoothCentroidAMD";
+    case 4997: return "BaryCoordSmoothSampleAMD";
+    case 4998: return "BaryCoordPullModelAMD";
+#endif
     }
 }
 
@@ -779,6 +806,8 @@ const char* CapabilityString(int info)
 
     case CapabilityCeiling:
     default: return "Bad";
+
+    case 4423: return "SubgroupBallotKHR";
     }
 }
 
@@ -1110,12 +1139,26 @@ const char* OpcodeString(int op)
     case OpcodeCeiling:
     default:
         return "Bad";
+
+    case 4421: return "OpSubgroupBallotKHR";
+    case 4422: return "OpSubgroupFirstInvocationKHR";
+
+#ifdef AMD_EXTENSIONS
+    case 5000: return "OpGroupIAddNonUniformAMD";
+    case 5001: return "OpGroupFAddNonUniformAMD";
+    case 5002: return "OpGroupFMinNonUniformAMD";
+    case 5003: return "OpGroupUMinNonUniformAMD";
+    case 5004: return "OpGroupSMinNonUniformAMD";
+    case 5005: return "OpGroupFMaxNonUniformAMD";
+    case 5006: return "OpGroupUMaxNonUniformAMD";
+    case 5007: return "OpGroupSMaxNonUniformAMD";
+#endif
     }
 }
 
 // The set of objects that hold all the instruction/operand
 // parameterization information.
-InstructionParameters InstructionDesc[OpcodeCeiling];
+InstructionParameters InstructionDesc[OpCodeMask + 1];
 OperandParameters ExecutionModeOperands[ExecutionModeCeiling];
 OperandParameters DecorationOperands[DecorationCeiling];
 
@@ -2706,6 +2749,52 @@ void Parameterize()
     InstructionDesc[OpEnqueueMarker].operands.push(OperandId, "'Num Events'");
     InstructionDesc[OpEnqueueMarker].operands.push(OperandId, "'Wait Events'");
     InstructionDesc[OpEnqueueMarker].operands.push(OperandId, "'Ret Event'");
+
+    InstructionDesc[OpSubgroupBallotKHR].operands.push(OperandId, "'Predicate'");
+
+    InstructionDesc[OpSubgroupFirstInvocationKHR].operands.push(OperandId, "'Value'");
+
+#ifdef AMD_EXTENSIONS
+    InstructionDesc[OpGroupIAddNonUniformAMD].capabilities.push_back(CapabilityGroups);
+    InstructionDesc[OpGroupIAddNonUniformAMD].operands.push(OperandScope, "'Execution'");
+    InstructionDesc[OpGroupIAddNonUniformAMD].operands.push(OperandGroupOperation, "'Operation'");
+    InstructionDesc[OpGroupIAddNonUniformAMD].operands.push(OperandId, "'X'");
+
+    InstructionDesc[OpGroupFAddNonUniformAMD].capabilities.push_back(CapabilityGroups);
+    InstructionDesc[OpGroupFAddNonUniformAMD].operands.push(OperandScope, "'Execution'");
+    InstructionDesc[OpGroupFAddNonUniformAMD].operands.push(OperandGroupOperation, "'Operation'");
+    InstructionDesc[OpGroupFAddNonUniformAMD].operands.push(OperandId, "'X'");
+
+    InstructionDesc[OpGroupUMinNonUniformAMD].capabilities.push_back(CapabilityGroups);
+    InstructionDesc[OpGroupUMinNonUniformAMD].operands.push(OperandScope, "'Execution'");
+    InstructionDesc[OpGroupUMinNonUniformAMD].operands.push(OperandGroupOperation, "'Operation'");
+    InstructionDesc[OpGroupUMinNonUniformAMD].operands.push(OperandId, "'X'");
+
+    InstructionDesc[OpGroupSMinNonUniformAMD].capabilities.push_back(CapabilityGroups);
+    InstructionDesc[OpGroupSMinNonUniformAMD].operands.push(OperandScope, "'Execution'");
+    InstructionDesc[OpGroupSMinNonUniformAMD].operands.push(OperandGroupOperation, "'Operation'");
+    InstructionDesc[OpGroupSMinNonUniformAMD].operands.push(OperandId, "X");
+
+    InstructionDesc[OpGroupFMinNonUniformAMD].capabilities.push_back(CapabilityGroups);
+    InstructionDesc[OpGroupFMinNonUniformAMD].operands.push(OperandScope, "'Execution'");
+    InstructionDesc[OpGroupFMinNonUniformAMD].operands.push(OperandGroupOperation, "'Operation'");
+    InstructionDesc[OpGroupFMinNonUniformAMD].operands.push(OperandId, "X");
+
+    InstructionDesc[OpGroupUMaxNonUniformAMD].capabilities.push_back(CapabilityGroups);
+    InstructionDesc[OpGroupUMaxNonUniformAMD].operands.push(OperandScope, "'Execution'");
+    InstructionDesc[OpGroupUMaxNonUniformAMD].operands.push(OperandGroupOperation, "'Operation'");
+    InstructionDesc[OpGroupUMaxNonUniformAMD].operands.push(OperandId, "X");
+
+    InstructionDesc[OpGroupSMaxNonUniformAMD].capabilities.push_back(CapabilityGroups);
+    InstructionDesc[OpGroupSMaxNonUniformAMD].operands.push(OperandScope, "'Execution'");
+    InstructionDesc[OpGroupSMaxNonUniformAMD].operands.push(OperandGroupOperation, "'Operation'");
+    InstructionDesc[OpGroupSMaxNonUniformAMD].operands.push(OperandId, "X");
+
+    InstructionDesc[OpGroupFMaxNonUniformAMD].capabilities.push_back(CapabilityGroups);
+    InstructionDesc[OpGroupFMaxNonUniformAMD].operands.push(OperandScope, "'Execution'");
+    InstructionDesc[OpGroupFMaxNonUniformAMD].operands.push(OperandGroupOperation, "'Operation'");
+    InstructionDesc[OpGroupFMaxNonUniformAMD].operands.push(OperandId, "X");
+#endif
 }
 
 }; // end spv namespace

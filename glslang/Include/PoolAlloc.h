@@ -61,13 +61,13 @@
 // class as the allocator (second) template argument.
 //
 
-#include <stddef.h>
-#include <string.h>
+#include <cstddef>
+#include <cstring>
 #include <vector>
 
 namespace glslang {
 
-// If we are using guard blocks, we must track each indivual
+// If we are using guard blocks, we must track each individual
 // allocation.  If we aren't using guard blocks, these
 // never get instantiated, so won't have any impact.
 // 
@@ -95,7 +95,7 @@ public:
 
     void checkAllocList() const;
 
-    // Return total size needed to accomodate user buffer of 'size',
+    // Return total size needed to accommodate user buffer of 'size',
     // plus our tracking data.
     inline static size_t allocationSize(size_t size) {
         return size + 2 * guardBlockSize + headerSize();
@@ -241,8 +241,8 @@ protected:
     int numCalls;           // just an interesting statistic
     size_t totalBytes;      // just an interesting statistic
 private:
-    TPoolAllocator& operator=(const TPoolAllocator&);  // dont allow assignment operator
-    TPoolAllocator(const TPoolAllocator&);  // dont allow default copy constructor
+    TPoolAllocator& operator=(const TPoolAllocator&);  // don't allow assignment operator
+    TPoolAllocator(const TPoolAllocator&);  // don't allow default copy constructor
 };
 
 
@@ -297,10 +297,10 @@ public:
     pointer allocate(size_type n, const void*) { 
         return reinterpret_cast<pointer>(getAllocator().allocate(n * sizeof(T))); }
 
-	void deallocate(void*, size_type) { }
+    void deallocate(void*, size_type) { }
     void deallocate(pointer, size_type) { }
 
-	pointer _Charalloc(size_t n) {
+    pointer _Charalloc(size_t n) {
         return reinterpret_cast<pointer>(getAllocator().allocate(n)); }
 
     void construct(pointer p, const T& val) { new ((void *)p) T(val); }

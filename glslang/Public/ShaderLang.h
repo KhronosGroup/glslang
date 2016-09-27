@@ -37,6 +37,8 @@
 #include "../Include/ResourceLimits.h"
 #include "../MachineIndependent/Versions.h"
 
+#include <cstring>
+
 #ifdef _WIN32
 #define C_DECL __cdecl
 //#ifdef SH_EXPORTING
@@ -86,7 +88,7 @@ typedef enum {
     EShLangFragment,
     EShLangCompute,
     EShLangCount,
-} EShLanguage;
+} EShLanguage;         // would be better as stage, but this is ancient now
 
 typedef enum {
     EShLangVertexMask         = (1 << EShLangVertex),
@@ -98,6 +100,12 @@ typedef enum {
 } EShLanguageMask;
 
 namespace glslang {
+
+typedef enum {
+    EShSourceNone,
+    EShSourceGlsl,
+    EShSourceHlsl,
+} EShSource;          // if EShLanguage were EShStage, this could be EShLanguage instead
 
 const char* StageName(EShLanguage);
 
@@ -132,6 +140,8 @@ enum EShMessages {
     EShMsgSpvRules         = (1 << 3),  // issue messages for SPIR-V generation
     EShMsgVulkanRules      = (1 << 4),  // issue messages for Vulkan-requirements of GLSL for SPIR-V
     EShMsgOnlyPreprocessor = (1 << 5),  // only print out errors produced by the preprocessor
+    EShMsgReadHlsl         = (1 << 6),  // use HLSL parsing rules and semantics
+    EShMsgCascadingErrors  = (1 << 7),  // get cascading errors; risks error-recovery issues, instead of an early exit
 };
 
 //
@@ -215,7 +225,6 @@ SH_IMPORT_EXPORT const char* ShGetInfoLog(const ShHandle);
 SH_IMPORT_EXPORT const void* ShGetExecutable(const ShHandle);
 SH_IMPORT_EXPORT int ShSetVirtualAttributeBindings(const ShHandle, const ShBindingTable*);   // to detect user aliasing
 SH_IMPORT_EXPORT int ShSetFixedAttributeBindings(const ShHandle, const ShBindingTable*);     // to force any physical mappings
-SH_IMPORT_EXPORT int ShGetPhysicalAttributeBindings(const ShHandle, const ShBindingTable**); // for all attributes
 //
 // Tell the linker to never assign a vertex attribute to this list of physical attributes
 //
@@ -290,27 +299,103 @@ public:
     void setStringsWithLengthsAndNames(
         const char* const* s, const int* l, const char* const* names, int n);
     void setPreamble(const char* s) { preamble = s; }
+    void setEntryPoint(const char* entryPoint);
+    void setShiftSamplerBinding(unsigned int base);
+    void setShiftTextureBinding(unsigned int base);
+    void setShiftUboBinding(unsigned int base);
+    void setAutoMapBindings(bool map);
+    void setFlattenUniformArrays(bool flatten);
 
     // Interface to #include handlers.
+    //
+    // To support #include, a client of Glslang does the following:
+    // 1. Call setStringsWithNames to set the source strings and associated
+    //    names.  For example, the names could be the names of the files
+    //    containing the shader sources.
+    // 2. Call parse with an Includer.
+    //
+    // When the Glslang parser encounters an #include directive, it calls
+    // the Includer's include method with the requested include name
+    // together with the current string name.  The returned IncludeResult
+    // contains the fully resolved name of the included source, together
+    // with the source text that should replace the #include directive
+    // in the source stream.  After parsing that source, Glslang will
+    // release the IncludeResult object.
     class Includer {
     public:
-        // On success, returns the full path and content of the file with the given
-        // filename that replaces "#include filename". On failure, returns an empty
-        // string and an error message.
-        virtual std::pair<std::string, std::string> include(const char* filename) const = 0;
+        typedef enum {
+          EIncludeRelative, // For #include "something"
+          EIncludeStandard  // Reserved. For #include <something>
+        } IncludeType;
+
+        // An IncludeResult contains the resolved name and content of a source
+        // inclusion.
+        struct IncludeResult {
+            IncludeResult(const std::string& file_name, const char* const file_data, const size_t file_length, void* user_data) :
+                file_name(file_name), file_data(file_data), file_length(file_length), user_data(user_data) { }
+            // For a successful inclusion, the fully resolved name of the requested
+            // include.  For example, in a file system-based includer, full resolution
+            // should convert a relative path name into an absolute path name.
+            // For a failed inclusion, this is an empty string.
+            const std::string file_name;
+            // The content and byte length of the requested inclusion.  The
+            // Includer producing this IncludeResult retains ownership of the
+            // storage.
+            // For a failed inclusion, the file_data
+            // field points to a string containing error details.
+            const char* const file_data;
+            const size_t file_length;
+            // Include resolver's context.
+            void* user_data;
+        protected:
+            IncludeResult& operator=(const IncludeResult&);
+            IncludeResult();
+        };
+
+        // Resolves an inclusion request by name, type, current source name,
+        // and include depth.
+        // On success, returns an IncludeResult containing the resolved name
+        // and content of the include.  On failure, returns an IncludeResult
+        // with an empty string for the file_name and error details in the
+        // file_data field.  The Includer retains ownership of the contents
+        // of the returned IncludeResult value, and those contents must
+        // remain valid until the releaseInclude method is called on that
+        // IncludeResult object.
+        virtual IncludeResult* include(const char* requested_source,
+                                      IncludeType type,
+                                      const char* requesting_source,
+                                      size_t inclusion_depth) = 0;
+        // Signals that the parser will no longer use the contents of the
+        // specified IncludeResult.
+        virtual void releaseInclude(IncludeResult* result) = 0;
+#ifdef __ANDROID__
+        virtual ~Includer() {} // Pacify -Werror=non-virtual-dtor
+#endif
     };
 
     // Returns an error message for any #include directive.
     class ForbidInclude : public Includer {
     public:
-        std::pair<std::string, std::string> include(const char* /*filename*/) const override
+        IncludeResult* include(const char*, IncludeType, const char*, size_t) override
         {
-            return std::make_pair<std::string, std::string>("", "unexpected include directive");
+            const char* unexpected_include = "unexpected include directive";
+            return new IncludeResult(std::string(""), unexpected_include, strlen(unexpected_include), nullptr);
+        }
+        virtual void releaseInclude(IncludeResult* result) override
+        {
+            delete result;
         }
     };
 
+    bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
+               bool forwardCompatible, EShMessages messages)
+    {
+        TShader::ForbidInclude includer;
+        return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer);
+    }
+
     bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-               bool forwardCompatible, EShMessages, const Includer& = ForbidInclude());
+               bool forwardCompatible, EShMessages, Includer&);
 
     // Equivalent to parse() without a default profile and without forcing defaults.
     // Provided for backwards compatibility.
@@ -318,7 +403,7 @@ public:
     bool preprocess(const TBuiltInResource* builtInResources,
                     int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                     bool forwardCompatible, EShMessages message, std::string* outputString,
-                    const TShader::Includer& includer);
+                    Includer& includer);
 
     const char* getInfoLog();
     const char* getInfoDebugLog();
@@ -353,6 +438,7 @@ private:
 };
 
 class TReflection;
+class TIoMapper;
 
 // Make one TProgram per set of shaders that will get linked together.  Add all 
 // the shaders that are to be linked together.  After calling shader.parse()
@@ -385,7 +471,13 @@ public:
     int getUniformType(int index);                   // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
     int getUniformBufferOffset(int index);           // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
     int getUniformArraySize(int index);              // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
+    int getNumLiveAttributes();                      // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
+    const char *getAttributeName(int index);         // can be used for glGetActiveAttrib()
+    int getAttributeType(int index);                 // can be used for glGetActiveAttrib()
     void dumpReflection();
+
+    // I/O mapping: apply base offsets and map live unbound variables
+    bool mapIO();
 
 protected:
     bool linkStage(EShLanguage, EShMessages);
@@ -396,6 +488,7 @@ protected:
     bool newedIntermediate[EShLangCount];      // track which intermediate were "new" versus reusing a singleton unit in a stage
     TInfoSink* infoSink;
     TReflection* reflection;
+    TIoMapper* ioMapper;
     bool linked;
 
 private:

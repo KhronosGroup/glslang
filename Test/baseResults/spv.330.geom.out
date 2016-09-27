@@ -9,7 +9,6 @@ Linked geometry stage:
 
                               Capability Geometry
                               Capability ClipDistance
-                              Capability GeometryStreams
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Geometry 4  "main" 13 20
@@ -31,8 +30,6 @@ Linked geometry stage:
                               MemberDecorate 11(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 11(gl_PerVertex) 1 BuiltIn ClipDistance
                               Decorate 11(gl_PerVertex) Block
-                              Decorate 11(gl_PerVertex) Stream 0
-                              Decorate 13 Stream 0
                               MemberDecorate 16(gl_PerVertex) 0 BuiltIn Position
                               MemberDecorate 16(gl_PerVertex) 1 BuiltIn ClipDistance
                               Decorate 16(gl_PerVertex) Block

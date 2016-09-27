@@ -1,6 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2012-2013 LunarG, Inc.
+//Copyright (C) 2012-2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -38,9 +38,9 @@
 #include "../Include/InfoSink.h"
 
 #ifdef _MSC_VER
-#include <float.h>
+#include <cfloat>
 #else
-#include <math.h>
+#include <cmath>
 #endif
 
 namespace {
@@ -48,10 +48,8 @@ namespace {
 bool is_positive_infinity(double x) {
 #ifdef _MSC_VER
   return _fpclass(x) == _FPCLASS_PINF;
-#elif defined __ANDROID__ || defined __linux__
-  return std::isinf(x) && (x >= 0);
 #else
-  return isinf(x) && (x >= 0);
+  return std::isinf(x) && (x >= 0);
 #endif
 }
 
@@ -206,22 +204,44 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpConvUintToBool:    out.debug << "Convert uint to bool";    break;
     case EOpConvFloatToBool:   out.debug << "Convert float to bool";   break;
     case EOpConvDoubleToBool:  out.debug << "Convert double to bool";  break;
+    case EOpConvInt64ToBool:   out.debug << "Convert int64 to bool";   break;
+    case EOpConvUint64ToBool:  out.debug << "Convert uint64 to bool";  break;
     case EOpConvIntToFloat:    out.debug << "Convert int to float";    break;
     case EOpConvUintToFloat:   out.debug << "Convert uint to float";   break;
     case EOpConvDoubleToFloat: out.debug << "Convert double to float"; break;
+    case EOpConvInt64ToFloat:  out.debug << "Convert int64 to float";  break;
+    case EOpConvUint64ToFloat: out.debug << "Convert uint64 to float"; break;
     case EOpConvBoolToFloat:   out.debug << "Convert bool to float";   break;
     case EOpConvUintToInt:     out.debug << "Convert uint to int";     break;
     case EOpConvFloatToInt:    out.debug << "Convert float to int";    break;
     case EOpConvDoubleToInt:   out.debug << "Convert double to int";   break;
     case EOpConvBoolToInt:     out.debug << "Convert bool to int";     break;
+    case EOpConvInt64ToInt:    out.debug << "Convert int64 to int";    break;
+    case EOpConvUint64ToInt:   out.debug << "Convert uint64 to int";   break;
     case EOpConvIntToUint:     out.debug << "Convert int to uint";     break;
     case EOpConvFloatToUint:   out.debug << "Convert float to uint";   break;
     case EOpConvDoubleToUint:  out.debug << "Convert double to uint";  break;
     case EOpConvBoolToUint:    out.debug << "Convert bool to uint";    break;
+    case EOpConvInt64ToUint:   out.debug << "Convert int64 to uint";   break;
+    case EOpConvUint64ToUint:  out.debug << "Convert uint64 to uint";  break;
     case EOpConvIntToDouble:   out.debug << "Convert int to double";   break;
     case EOpConvUintToDouble:  out.debug << "Convert uint to double";  break;
     case EOpConvFloatToDouble: out.debug << "Convert float to double"; break;
     case EOpConvBoolToDouble:  out.debug << "Convert bool to double";  break;
+    case EOpConvInt64ToDouble: out.debug << "Convert int64 to double"; break;
+    case EOpConvUint64ToDouble: out.debug << "Convert uint64 to double";  break;
+    case EOpConvBoolToInt64:   out.debug << "Convert bool to int64";   break;
+    case EOpConvIntToInt64:    out.debug << "Convert int to int64";    break;
+    case EOpConvUintToInt64:   out.debug << "Convert uint to int64";   break;
+    case EOpConvFloatToInt64:  out.debug << "Convert float to int64";  break;
+    case EOpConvDoubleToInt64: out.debug << "Convert double to int64"; break;
+    case EOpConvUint64ToInt64: out.debug << "Convert uint64 to int64"; break;
+    case EOpConvBoolToUint64:  out.debug << "Convert bool to uint64";  break;
+    case EOpConvIntToUint64:   out.debug << "Convert int to uint64";   break;
+    case EOpConvUintToUint64:  out.debug << "Convert uint to uint64";  break;
+    case EOpConvFloatToUint64: out.debug << "Convert float to uint64"; break;
+    case EOpConvDoubleToUint64: out.debug << "Convert double to uint64"; break;
+    case EOpConvInt64ToUint64: out.debug << "Convert uint64 to uint64"; break;
 
     case EOpRadians:        out.debug << "radians";              break;
     case EOpDegrees:        out.debug << "degrees";              break;
@@ -261,6 +281,10 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpFloatBitsToUint:out.debug << "floatBitsToUint";      break;
     case EOpIntBitsToFloat: out.debug << "intBitsToFloat";       break;
     case EOpUintBitsToFloat:out.debug << "uintBitsToFloat";      break;
+    case EOpDoubleBitsToInt64:  out.debug << "doubleBitsToInt64";  break;
+    case EOpDoubleBitsToUint64: out.debug << "doubleBitsToUint64"; break;
+    case EOpInt64BitsToDouble:  out.debug << "int64BitsToDouble";  break;
+    case EOpUint64BitsToDouble: out.debug << "uint64BitsToDouble"; break;
     case EOpPackSnorm2x16:  out.debug << "packSnorm2x16";        break;
     case EOpUnpackSnorm2x16:out.debug << "unpackSnorm2x16";      break;
     case EOpPackUnorm2x16:  out.debug << "packUnorm2x16";        break;
@@ -274,6 +298,11 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpUnpackUnorm4x8:   out.debug << "UnpackUnorm4x8";     break;
     case EOpPackDouble2x32:   out.debug << "PackDouble2x32";     break;
     case EOpUnpackDouble2x32: out.debug << "UnpackDouble2x32";   break;
+
+    case EOpPackInt2x32:      out.debug << "packInt2x32";        break;
+    case EOpUnpackInt2x32:    out.debug << "unpackInt2x32";      break;
+    case EOpPackUint2x32:     out.debug << "packUint2x32";       break;
+    case EOpUnpackUint2x32:   out.debug << "unpackUint2x32";     break;
 
     case EOpLength:         out.debug << "length";               break;
     case EOpNormalize:      out.debug << "normalize";            break;
@@ -319,6 +348,32 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpFindMSB:                out.debug << "findMSB";               break;
 
     case EOpNoise:                  out.debug << "noise";                 break;
+
+    case EOpBallot:                 out.debug << "ballot";                break;
+    case EOpReadFirstInvocation:    out.debug << "readFirstInvocation";   break;
+
+    case EOpAnyInvocation:          out.debug << "anyInvocation";         break;
+    case EOpAllInvocations:         out.debug << "allInvocations";        break;
+    case EOpAllInvocationsEqual:    out.debug << "allInvocationsEqual";   break;
+
+    case EOpClip:                   out.debug << "clip";                  break;
+    case EOpIsFinite:               out.debug << "isfinite";              break;
+    case EOpLog10:                  out.debug << "log10";                 break;
+    case EOpRcp:                    out.debug << "rcp";                   break;
+    case EOpSaturate:               out.debug << "saturate";              break;
+
+#ifdef AMD_EXTENSIONS
+    case EOpMinInvocations:             out.debug << "minInvocations";              break;
+    case EOpMaxInvocations:             out.debug << "maxInvocations";              break;
+    case EOpAddInvocations:             out.debug << "addInvocations";              break;
+    case EOpMinInvocationsNonUniform:   out.debug << "minInvocationsNonUniform";    break;
+    case EOpMaxInvocationsNonUniform:   out.debug << "maxInvocationsNonUniform";    break;
+    case EOpAddInvocationsNonUniform:   out.debug << "addInvocationsNonUniform";    break;
+    case EOpMbcnt:                      out.debug << "mbcnt";                       break;
+
+    case EOpCubeFaceIndex:          out.debug << "cubeFaceIndex";         break;
+    case EOpCubeFaceCoord:          out.debug << "cubeFaceCoord";         break;
+#endif
 
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
@@ -366,6 +421,14 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpConstructUVec2:   out.debug << "Construct uvec2";   break;
     case EOpConstructUVec3:   out.debug << "Construct uvec3";   break;
     case EOpConstructUVec4:   out.debug << "Construct uvec4";   break;
+    case EOpConstructInt64:   out.debug << "Construct int64_t"; break;
+    case EOpConstructI64Vec2: out.debug << "Construct i64vec2"; break;
+    case EOpConstructI64Vec3: out.debug << "Construct i64vec3"; break;
+    case EOpConstructI64Vec4: out.debug << "Construct i64vec4"; break;
+    case EOpConstructUint64:  out.debug << "Construct uint64_t"; break;
+    case EOpConstructU64Vec2: out.debug << "Construct u64vec2"; break;
+    case EOpConstructU64Vec3: out.debug << "Construct u64vec3"; break;
+    case EOpConstructU64Vec4: out.debug << "Construct u64vec4"; break;
     case EOpConstructMat2x2:  out.debug << "Construct mat2";    break;
     case EOpConstructMat2x3:  out.debug << "Construct mat2x3";  break;
     case EOpConstructMat2x4:  out.debug << "Construct mat2x4";  break;
@@ -427,6 +490,20 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpMemoryBarrierShared:        out.debug << "MemoryBarrierShared";        break;
     case EOpGroupMemoryBarrier:         out.debug << "GroupMemoryBarrier";         break;
 
+    case EOpReadInvocation:             out.debug << "readInvocation";        break;
+
+#ifdef AMD_EXTENSIONS
+    case EOpSwizzleInvocations:         out.debug << "swizzleInvocations";       break;
+    case EOpSwizzleInvocationsMasked:   out.debug << "swizzleInvocationsMasked"; break;
+    case EOpWriteInvocation:            out.debug << "writeInvocation";          break;
+
+    case EOpMin3:                       out.debug << "min3";                  break;
+    case EOpMax3:                       out.debug << "max3";                  break;
+    case EOpMid3:                       out.debug << "mid3";                  break;
+
+    case EOpTime:                       out.debug << "time";                  break;
+#endif
+
     case EOpAtomicAdd:                  out.debug << "AtomicAdd";             break;
     case EOpAtomicMin:                  out.debug << "AtomicMin";             break;
     case EOpAtomicMax:                  out.debug << "AtomicMax";             break;
@@ -484,6 +561,17 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
 
     case EOpInterpolateAtSample:   out.debug << "interpolateAtSample";    break;
     case EOpInterpolateAtOffset:   out.debug << "interpolateAtOffset";    break;
+#ifdef AMD_EXTENSIONS
+    case EOpInterpolateAtVertex:   out.debug << "interpolateAtVertex";    break;
+#endif
+
+    case EOpSinCos:                     out.debug << "sincos";                break;
+    case EOpGenMul:                     out.debug << "mul";                   break;
+
+    case EOpAllMemoryBarrierWithGroupSync:    out.debug << "AllMemoryBarrierWithGroupSync";    break;
+    case EOpGroupMemoryBarrierWithGroupSync: out.debug << "GroupMemoryBarrierWithGroupSync"; break;
+    case EOpWorkgroupMemoryBarrier:           out.debug << "WorkgroupMemoryBarrier";           break;
+    case EOpWorkgroupMemoryBarrierWithGroupSync: out.debug << "WorkgroupMemoryBarrierWithGroupSync"; break;
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
@@ -582,6 +670,24 @@ static void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const 
                 out.debug << buf << "\n";
             }
             break;
+        case EbtInt64:
+            {
+                const int maxSize = 300;
+                char buf[maxSize];
+                snprintf(buf, maxSize, "%lld (%s)", constUnion[i].getI64Const(), "const int64_t");
+
+                out.debug << buf << "\n";
+            }
+            break;
+        case EbtUint64:
+            {
+                const int maxSize = 300;
+                char buf[maxSize];
+                snprintf(buf, maxSize, "%llu (%s)", constUnion[i].getU64Const(), "const uint64_t");
+
+                out.debug << buf << "\n";
+            }
+            break;
         default:
             out.info.message(EPrefixInternalError, "Unknown constant", node->getLoc());
             break;
@@ -605,6 +711,11 @@ void TOutputTraverser::visitSymbol(TIntermSymbol* node)
 
     if (! node->getConstArray().empty())
         OutputConstantUnion(infoSink, node, node->getConstArray(), depth + 1);
+    else if (node->getConstSubtree()) {
+        incrementDepth(node);
+        node->getConstSubtree()->traverse(this);
+        decrementDepth();
+    }
 }
 
 bool TOutputTraverser::visitLoop(TVisit /* visit */, TIntermLoop* node)

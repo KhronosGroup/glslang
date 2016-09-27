@@ -40,7 +40,7 @@
 
 namespace glslang {
 
-// Use a global end-of-input character, so no tranlation is needed across
+// Use a global end-of-input character, so no translation is needed across
 // layers of encapsulation.  Characters are all 8 bit, and positive, so there is
 // no aliasing of character 255 onto -1, for example.
 const int EndOfInput = -1;
@@ -51,10 +51,10 @@ const int EndOfInput = -1;
 //
 class TInputScanner {
 public:
-    TInputScanner(int n, const char* const s[], size_t L[], const char* const* names = nullptr, int b = 0, int f = 0) :
+    TInputScanner(int n, const char* const s[], size_t L[], const char* const* names = nullptr, int b = 0, int f = 0, bool single = false) :
         numSources(n),
         sources(reinterpret_cast<const unsigned char* const *>(s)), // up to this point, common usage is "char*", but now we need positive 8-bit characters
-        lengths(L), currentSource(0), currentChar(0), stringBias(b), finale(f)
+        lengths(L), currentSource(0), currentChar(0), stringBias(b), finale(f), singleLogical(single), endOfFileReached(false)
     {
         loc = new TSourceLoc[numSources];
         for (int i = 0; i < numSources; ++i) {
@@ -67,6 +67,10 @@ public:
         loc[currentSource].string = -stringBias;
         loc[currentSource].line = 1;
         loc[currentSource].column = 0;
+        logicalSourceLoc.string = 0;
+        logicalSourceLoc.line = 1;
+        logicalSourceLoc.column = 0;
+        logicalSourceLoc.name = loc[0].name;
     }
 
     virtual ~TInputScanner()
@@ -77,13 +81,15 @@ public:
     // retrieve the next character and advance one character
     int get()
     {
-        if (currentSource >= numSources)
-            return EndOfInput;
-
         int ret = peek();
+        if (ret == EndOfInput)
+            return ret;
         ++loc[currentSource].column;
+        ++logicalSourceLoc.column;
         if (ret == '\n') {
             ++loc[currentSource].line;
+            ++logicalSourceLoc.line;
+            logicalSourceLoc.column = 0;
             loc[currentSource].column = 0;
         }
         advance();
@@ -94,8 +100,10 @@ public:
     // retrieve the next character, no advance
     int peek()
     {
-        if (currentSource >= numSources)
+        if (currentSource >= numSources) {
+            endOfFileReached = true;
             return EndOfInput;
+        }
         // Make sure we do not read off the end of a string.
         // N.B. Sources can have a length of 0.
         int sourceToRead = currentSource;
@@ -115,9 +123,14 @@ public:
     // go back one character
     void unget()
     {
+        // Do not roll back once we've reached the end of the file.
+        if (endOfFileReached)
+            return;
+
         if (currentChar > 0) {
             --currentChar;
             --loc[currentSource].column;
+            --logicalSourceLoc.column;
             if (loc[currentSource].column < 0) {
                 // We've moved back past a new line. Find the
                 // previous newline (or start of the file) to compute
@@ -129,6 +142,7 @@ public:
                     }
                     --chIndex;
                 }
+                logicalSourceLoc.column = (int)(currentChar - chIndex);
                 loc[currentSource].column = (int)(currentChar - chIndex);
             }
         } else {
@@ -141,23 +155,65 @@ public:
             } else
                 currentChar = lengths[currentSource] - 1;
         }
-        if (peek() == '\n')
+        if (peek() == '\n') {
             --loc[currentSource].line;
+            --logicalSourceLoc.line;
+        }
     }
 
     // for #line override
-    void setLine(int newLine) { loc[getLastValidSourceIndex()].line = newLine; }
-    void setFile(const char* filename) { loc[getLastValidSourceIndex()].name = filename; }
+    void setLine(int newLine)
+    {
+        logicalSourceLoc.line = newLine;
+        loc[getLastValidSourceIndex()].line = newLine;
+    }
+
+    // for #line override in filename based parsing
+    void setFile(const char* filename)
+    {
+        logicalSourceLoc.name = filename;
+        loc[getLastValidSourceIndex()].name = filename;
+    }
+
+    void setFile(const char* filename, int i)
+    {
+        if (i == getLastValidSourceIndex()) {
+            logicalSourceLoc.name = filename;
+        }
+        loc[i].name = filename;
+    }
+
     void setString(int newString)
     {
+        logicalSourceLoc.string = newString;
         loc[getLastValidSourceIndex()].string = newString;
+        logicalSourceLoc.name = nullptr;
         loc[getLastValidSourceIndex()].name = nullptr;
     }
 
     // for #include content indentation
-    void setColumn(int col) { loc[getLastValidSourceIndex()].column = col; }
+    void setColumn(int col)
+    {
+        logicalSourceLoc.column = col;
+        loc[getLastValidSourceIndex()].column = col;
+    }
 
-    const TSourceLoc& getSourceLoc() const { return loc[std::max(0, std::min(currentSource, numSources - finale - 1))]; }
+    void setEndOfInput()
+    {
+        endOfFileReached = true;
+        currentSource = numSources;
+    }
+
+    bool atEndOfInput() const { return endOfFileReached; }
+
+    const TSourceLoc& getSourceLoc() const
+    {
+        if (singleLogical) {
+            return logicalSourceLoc;
+        } else {
+            return loc[std::max(0, std::min(currentSource, numSources - finale - 1))];
+        }
+    }
     // Returns the index (starting from 0) of the most recent valid source string we are reading from.
     int getLastValidSourceIndex() const { return std::min(currentSource, numSources - 1); }
 
@@ -204,6 +260,14 @@ protected:
 
     int stringBias;   // the first string that is the user's string number 0
     int finale;       // number of internal strings after user's last string
+
+    TSourceLoc logicalSourceLoc;
+    bool singleLogical; // treats the strings as a single logical string.
+                        // locations will be reported from the first string.
+
+    // Set to true once peek() returns EndOfFile, so that we won't roll back
+    // once we've reached EndOfFile.
+    bool endOfFileReached;
 };
 
 } // end namespace glslang

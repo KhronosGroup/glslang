@@ -8,19 +8,25 @@ regarding the feature level of glslang.
 glslang
 =======
 
+[![Build Status](https://travis-ci.org/KhronosGroup/glslang.svg?branch=master)](https://travis-ci.org/KhronosGroup/glslang)
+[![Build status](https://ci.appveyor.com/api/projects/status/q6fi9cb0qnhkla68/branch/master?svg=true)](https://ci.appveyor.com/project/Khronoswebmaster/glslang/branch/master)
+
 An OpenGL and OpenGL ES shader front end and validator.
 
-There are two components:
+There are several components:
 
-1. A front-end library for programmatic parsing of GLSL/ESSL into an AST.
+1. A GLSL/ESSL front-end for reference validation and translation of GLSL/ESSL into an AST.
 
-2. A standalone wrapper, `glslangValidator`, that can be used as a shader
-   validation tool.
+2. An HLSL front-end for translation of a broad generic HLL into the AST.
+
+3. A SPIR-V back end for translating the AST to SPIR-V.
+
+4. A standalone wrapper, `glslangValidator`, that can be used as a command-line tool for the above.
 
 How to add a feature protected by a version/extension/stage/profile:  See the
 comment in `glslang/MachineIndependent/Versions.cpp`.
 
-Things left to do:  See `Todo.txt`
+Tasks waiting to be done are documented as GitHub issues.
 
 Execution of Standalone Wrapper
 -------------------------------
@@ -43,9 +49,151 @@ There is also a non-shader extension
 Building
 --------
 
-CMake: The currently maintained and preferred way of building is through CMake.
-In MSVC, after running CMake, you may need to use the Configuration Manager to
-check the INSTALL project.
+### Dependencies
+
+* [CMake][cmake]: for generating compilation targets.
+* [bison][bison]: _optional_, but needed when changing the grammar (glslang.y).
+* [googletest][googletest]: _optional_, but should use if making any changes to glslang.
+
+### Build steps
+
+#### 1) Check-Out this project 
+
+```bash
+cd <parent of where you want glslang to be>
+git clone git@github.com:KhronosGroup/glslang.git
+```
+
+#### 2) Check-Out External Projects
+
+```bash
+cd <the directory glslang was cloned to, "External" will be a subdirectory>
+git clone https://github.com/google/googletest.git External/googletest
+```
+
+#### 3) Configure
+
+Assume the source directory is `$SOURCE_DIR` and
+the build directory is `$BUILD_DIR`:
+
+For building on Linux (assuming using the Ninja generator):
+
+```bash
+cd $BUILD_DIR
+
+cmake -GNinja -DCMAKE_BUILD_TYPE={Debug|Release|RelWithDebInfo} \
+      -DCMAKE_INSTALL_PREFIX=`pwd`/install $SOURCE_DIR
+```
+
+For building on Windows:
+
+```bash
+cmake $SOURCE_DIR -DCMAKE_INSTALL_PREFIX=`pwd`/install
+# The CMAKE_INSTALL_PREFIX part is for testing (explained later).
+```
+
+The CMake GUI also works for Windows (version 3.4.1 tested).
+
+#### 4) Build and Install
+
+```bash
+# for Linux:
+ninja install
+
+# for Windows:
+cmake --build . --config {Release|Debug|MinSizeRel|RelWithDebInfo} \
+      --target install
+```
+
+If using MSVC, after running CMake to configure, use the
+Configuration Manager to check the `INSTALL` project.
+
+### If you need to change the GLSL grammar
+
+The grammar in `glslang/MachineIndependent/glslang.y` has to be recompiled with
+bison if it changes, the output files are committed to the repo to avoid every
+developer needing to have bison configured to compile the project when grammar
+changes are quite infrequent. For windows you can get binaries from
+[GnuWin32][bison-gnu-win32].
+
+The command to rebuild is:
+
+```bash
+bison --defines=MachineIndependent/glslang_tab.cpp.h
+      -t MachineIndependent/glslang.y
+      -o MachineIndependent/glslang_tab.cpp
+```
+
+The above command is also available in the bash script at
+`glslang/updateGrammar`.
+
+Testing
+-------
+
+Right now, there are two test harnesses existing in glslang: one is [Google
+Test](gtests/), one is the [`runtests` script](Test/runtests). The former
+runs unit tests and single-shader single-threaded integration tests, while
+the latter runs multiple-shader linking tests and multi-threaded tests.
+
+### Running tests
+
+The [`runtests` script](Test/runtests) requires compiled binaries to be
+installed into `$BUILD_DIR/install`. Please make sure you have supplied the
+correct configuration to CMake (using `-DCMAKE_INSTALL_PREFIX`) when building;
+otherwise, you may want to modify the path in the `runtests` script.
+
+Running Google Test-backed tests:
+
+```bash
+cd $BUILD_DIR
+
+# for Linux:
+ctest
+
+# for Windows:
+ctest -C {Debug|Release|RelWithDebInfo|MinSizeRel}
+
+# or, run the test binary directly
+# (which gives more fine-grained control like filtering):
+<dir-to-glslangtests-in-build-dir>/glslangtests
+```
+
+Running `runtests` script-backed tests:
+
+```bash
+cd $SOURCE_DIR/Test && ./runtests
+```
+
+### Contributing tests
+
+Test results should always be included with a pull request that modifies
+functionality.
+
+If you are writing unit tests, please use the Google Test framework and
+place the tests under the `gtests/` directory.
+
+Integration tests are placed in the `Test/` directory. It contains test input
+and a subdirectory `baseResults/` that contains the expected results of the
+tests.  Both the tests and `baseResults/` are under source-code control.
+
+Google Test runs those integration tests by reading the test input, compiling
+them, and then compare against the expected results in `baseResults/`. The
+integration tests to run via Google Test is registered in various
+`gtests/*.FromFile.cpp` source files. `glslangtests` provides a command-line
+option `--update-mode`, which, if supplied, will overwrite the golden files
+under the `baseResults/` directory with real output from that invocation.
+For more information, please check `gtests/` directory's
+[README](gtests/README.md).
+
+For the `runtests` script, it will generate current results in the
+`localResults/` directory and `diff` them against the `baseResults/`.
+When you want to update the tracked test results, they need to be
+copied from `localResults/` to `baseResults/`.  This can be done by
+the `bump` shell script.
+
+You can add your own private list of tests, not tracked publicly, by using
+`localtestlist` to list non-tracked tests.  This is automatically read
+by `runtests` and included in the `diff` and `bump` process.
 
 Programmatic Interfaces
 -----------------------
@@ -83,7 +231,7 @@ class TProgram
 See `ShaderLang.h` and the usage of it in `StandAlone/StandAlone.cpp` for more
 details.
 
-### C Functional Interface (orginal)
+### C Functional Interface (orignal)
 
 This interface is in roughly the first 2/3 of `ShaderLang.h`, and referred to
 as the `Sh*()` interface, as all the entry points start `Sh`.
@@ -98,29 +246,7 @@ ShCompile(shader, compiler) -> compiler(AST) -> <back end>
 ```
 
 In practice, `ShCompile()` takes shader strings, default version, and
-warning/error and other options for controling compilation.
-
-Testing
--------
-
-Test results should always be included with a pull request that modifies
-functionality. There is a simple process for doing this, described here:
-
-`Test` is an active test directory that contains test input and a
-subdirectory `baseResults` that contains the expected results of the
-tests.  Both the tests and `baseResults` are under source-code control.
-Executing the script `./runtests` will generate current results in
-the `localResults` directory and `diff` them against the `baseResults`.
-
-When you want to update the tracked test results, they need to be
-copied from `localResults` to `baseResults`.  This can be done by
-the `bump` shell script.
-
-The list of files tested comes from `testlist`, and lists input shaders
-in this directory, which must all be public for this to work.  However,
-you can add your own private list of tests, not tracked here, by using
-`localtestlist` to list non-tracked tests.  This is automatically read
-by `runtests` and included in the `diff` and `bump` process.
+warning/error and other options for controlling compilation.
 
 Basic Internal Operation
 ------------------------
@@ -169,3 +295,9 @@ Basic Internal Operation
 
   - the object does not come from the pool, and you have to do normal
     C++ memory management of what you `new`
+
+
+[cmake]: https://cmake.org/
+[bison]: https://www.gnu.org/software/bison/
+[googletest]: https://github.com/google/googletest
+[bison-gnu-win32]: http://gnuwin32.sourceforge.net/packages/bison.htm

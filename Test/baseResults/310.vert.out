@@ -29,6 +29,7 @@ ERROR: 0:131: 'flat/smooth/noperspective' : cannot use interpolation qualifiers 
 ERROR: 0:135: 'centroid' : cannot use centroid qualifier on an interface block 
 ERROR: 0:139: 'invariant' : cannot use invariant qualifier on an interface block 
 ERROR: 0:155: 'precise' : Reserved word. 
+ERROR: 0:155: 'precise' : not supported for this version or the enabled extensions 
 ERROR: 0:156: 'fma' : required extension not requested: Possible extensions include:
 GL_EXT_gpu_shader5
 GL_OES_gpu_shader5
@@ -96,7 +97,7 @@ ERROR: 0:389: 'sample' : Reserved word.
 ERROR: 0:400: 'interpolateAtCentroid' : no matching overloaded function found 
 ERROR: 0:401: 'interpolateAtSample' : no matching overloaded function found 
 ERROR: 0:402: 'interpolateAtOffset' : no matching overloaded function found 
-ERROR: 92 compilation errors.  No code generated.
+ERROR: 93 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -124,12 +125,12 @@ ERROR: node is still EOpNull!
 0:17          'u1' (temp highp uint)
 0:17          'u1' (temp highp uint)
 0:17          'u1' (temp highp uint)
-0:19      uMulExtended (global void)
+0:19      uMulExtended (global highp void)
 0:19        'u4' (temp highp 4-component vector of uint)
 0:19        'u4' (temp highp 4-component vector of uint)
 0:19        'u4' (temp highp 4-component vector of uint)
 0:19        'u4' (temp highp 4-component vector of uint)
-0:21      iMulExtended (global void)
+0:21      iMulExtended (global highp void)
 0:21        'i4' (temp highp 4-component vector of int)
 0:21        'i4' (temp highp 4-component vector of int)
 0:21        'i4' (temp highp 4-component vector of int)
@@ -178,27 +179,27 @@ ERROR: node is still EOpNull!
 0:31          'u4' (temp highp 4-component vector of uint)
 0:32      move second child to first child (temp highp int)
 0:32        'i1' (temp highp int)
-0:32        bitCount (global highp int)
+0:32        bitCount (global lowp int, operation at highp)
 0:32          'i1' (temp highp int)
 0:33      move second child to first child (temp highp 3-component vector of int)
 0:33        'i3' (temp highp 3-component vector of int)
-0:33        bitCount (global highp 3-component vector of int)
+0:33        bitCount (global lowp 3-component vector of int, operation at highp)
 0:33          'u3' (temp highp 3-component vector of uint)
 0:34      move second child to first child (temp highp 2-component vector of int)
 0:34        'i2' (temp highp 2-component vector of int)
-0:34        findLSB (global highp 2-component vector of int)
+0:34        findLSB (global lowp 2-component vector of int, operation at highp)
 0:34          'i2' (temp highp 2-component vector of int)
 0:35      move second child to first child (temp highp 4-component vector of int)
 0:35        'i4' (temp highp 4-component vector of int)
-0:35        findLSB (global highp 4-component vector of int)
+0:35        findLSB (global lowp 4-component vector of int, operation at highp)
 0:35          'u4' (temp highp 4-component vector of uint)
 0:36      move second child to first child (temp highp int)
 0:36        'i1' (temp highp int)
-0:36        findMSB (global highp int)
+0:36        findMSB (global lowp int, operation at highp)
 0:36          'i1' (temp highp int)
 0:37      move second child to first child (temp highp 2-component vector of int)
 0:37        'i2' (temp highp 2-component vector of int)
-0:37        findMSB (global highp 2-component vector of int)
+0:37        findMSB (global lowp 2-component vector of int, operation at highp)
 0:37          'u2' (temp highp 2-component vector of uint)
 0:40      move second child to first child (temp highp 3-component vector of float)
 0:40        'v3' (temp highp 3-component vector of float)
@@ -212,19 +213,19 @@ ERROR: node is still EOpNull!
 0:42          'i2' (temp highp 2-component vector of int)
 0:45      move second child to first child (temp highp uint)
 0:45        'u1' (temp highp uint)
-0:45        PackUnorm4x8 (global highp uint)
+0:45        PackUnorm4x8 (global highp uint, operation at mediump)
 0:45          'v4' (temp mediump 4-component vector of float)
 0:46      move second child to first child (temp highp uint)
 0:46        'u1' (temp highp uint)
-0:46        PackSnorm4x8 (global highp uint)
+0:46        PackSnorm4x8 (global highp uint, operation at mediump)
 0:46          'v4' (temp mediump 4-component vector of float)
 0:47      move second child to first child (temp mediump 4-component vector of float)
 0:47        'v4' (temp mediump 4-component vector of float)
-0:47        UnpackUnorm4x8 (global mediump 4-component vector of float)
+0:47        UnpackUnorm4x8 (global mediump 4-component vector of float, operation at highp)
 0:47          'u1' (temp highp uint)
 0:48      move second child to first child (temp mediump 4-component vector of float)
 0:48        'v4' (temp mediump 4-component vector of float)
-0:48        UnpackSnorm4x8 (global mediump 4-component vector of float)
+0:48        UnpackSnorm4x8 (global mediump 4-component vector of float, operation at highp)
 0:48          'u1' (temp highp uint)
 0:60  Function Definition: foo( (global void)
 0:60    Function Parameters: 
@@ -285,13 +286,13 @@ ERROR: node is still EOpNull!
 0:153    Function Parameters: 
 0:?     Sequence
 0:156      move second child to first child (temp highp 2-component vector of float)
-0:156        'h' (temp highp 2-component vector of float)
+0:156        'h' (noContraction temp highp 2-component vector of float)
 0:156        fma (global highp 2-component vector of float)
 0:156          'inf' (in highp 2-component vector of float)
 0:156          'ing' (in highp 2-component vector of float)
-0:156          'h' (temp highp 2-component vector of float)
-0:157      indirect index (temp highp sampler2D)
-0:157        'sArray' (uniform 4-element array of highp sampler2D)
+0:156          'h' (noContraction temp highp 2-component vector of float)
+0:157      indirect index (temp lowp sampler2D)
+0:157        'sArray' (uniform 4-element array of lowp sampler2D)
 0:157        add (temp highp int)
 0:157          'sIndex' (uniform highp int)
 0:157          Constant:
@@ -329,19 +330,19 @@ ERROR: node is still EOpNull!
 0:164          'sIndex' (uniform highp int)
 0:164          Constant:
 0:164            2 (const int)
-0:165      textureGatherOffset (global highp 4-component vector of float)
-0:165        direct index (temp highp sampler2D)
-0:165          'sArray' (uniform 4-element array of highp sampler2D)
+0:165      textureGatherOffset (global lowp 4-component vector of float)
+0:165        direct index (temp lowp sampler2D)
+0:165          'sArray' (uniform 4-element array of lowp sampler2D)
 0:165          Constant:
 0:165            0 (const int)
 0:165        Constant:
 0:165          0.100000
 0:165          0.100000
-0:165        Convert float to int (temp highp 2-component vector of int)
+0:165        Convert float to int (temp lowp 2-component vector of int)
 0:165          'inf' (in highp 2-component vector of float)
-0:166      textureGatherOffsets (global highp 4-component vector of float)
-0:166        direct index (temp highp sampler2D)
-0:166          'sArray' (uniform 4-element array of highp sampler2D)
+0:166      textureGatherOffsets (global lowp 4-component vector of float, operation at highp)
+0:166        direct index (temp lowp sampler2D)
+0:166          'sArray' (uniform 4-element array of lowp sampler2D)
 0:166          Constant:
 0:166            0 (const int)
 0:166        Constant:
@@ -360,13 +361,13 @@ ERROR: node is still EOpNull!
 0:171    Function Parameters: 
 0:?     Sequence
 0:174      move second child to first child (temp highp 2-component vector of float)
-0:174        'h' (temp highp 2-component vector of float)
+0:174        'h' (noContraction temp highp 2-component vector of float)
 0:174        fma (global highp 2-component vector of float)
 0:174          'inf' (in highp 2-component vector of float)
 0:174          'ing' (in highp 2-component vector of float)
-0:174          'h' (temp highp 2-component vector of float)
-0:175      indirect index (temp highp sampler2D)
-0:175        'sArray' (uniform 4-element array of highp sampler2D)
+0:174          'h' (noContraction temp highp 2-component vector of float)
+0:175      indirect index (temp lowp sampler2D)
+0:175        'sArray' (uniform 4-element array of lowp sampler2D)
 0:175        add (temp highp int)
 0:175          'sIndex' (uniform highp int)
 0:175          Constant:
@@ -393,19 +394,19 @@ ERROR: node is still EOpNull!
 0:179          'sIndex' (uniform highp int)
 0:179          Constant:
 0:179            2 (const int)
-0:180      textureGatherOffset (global highp 4-component vector of float)
-0:180        direct index (temp highp sampler2D)
-0:180          'sArray' (uniform 4-element array of highp sampler2D)
+0:180      textureGatherOffset (global lowp 4-component vector of float)
+0:180        direct index (temp lowp sampler2D)
+0:180          'sArray' (uniform 4-element array of lowp sampler2D)
 0:180          Constant:
 0:180            0 (const int)
 0:180        Constant:
 0:180          0.100000
 0:180          0.100000
-0:180        Convert float to int (temp highp 2-component vector of int)
+0:180        Convert float to int (temp lowp 2-component vector of int)
 0:180          'inf' (in highp 2-component vector of float)
-0:181      textureGatherOffsets (global highp 4-component vector of float)
-0:181        direct index (temp highp sampler2D)
-0:181          'sArray' (uniform 4-element array of highp sampler2D)
+0:181      textureGatherOffsets (global lowp 4-component vector of float, operation at highp)
+0:181        direct index (temp lowp sampler2D)
+0:181          'sArray' (uniform 4-element array of lowp sampler2D)
 0:181          Constant:
 0:181            0 (const int)
 0:181        Constant:
@@ -420,9 +421,9 @@ ERROR: node is still EOpNull!
 0:181          0 (const int)
 0:181          0 (const int)
 0:181          0 (const int)
-0:182      textureGatherOffsets (global highp 4-component vector of float)
-0:182        direct index (temp highp sampler2D)
-0:182          'sArray' (uniform 4-element array of highp sampler2D)
+0:182      textureGatherOffsets (global lowp 4-component vector of float, operation at highp)
+0:182        direct index (temp lowp sampler2D)
+0:182          'sArray' (uniform 4-element array of lowp sampler2D)
 0:182          Constant:
 0:182            0 (const int)
 0:182        Constant:
@@ -926,7 +927,7 @@ ERROR: node is still EOpNull!
 0:?     'us2dms' (uniform highp usampler2DMS)
 0:?     'us2dmsa' (uniform mediump usampler2DMSArray)
 0:?     'outb' (smooth out bool)
-0:?     'outo' (smooth out highp sampler2D)
+0:?     'outo' (smooth out lowp sampler2D)
 0:?     'outa' (smooth out 4-element array of highp float)
 0:?     'outaa' (smooth out 4-element array of 2-element array of highp float)
 0:?     'outs' (smooth out structure{global highp float f})
@@ -948,7 +949,7 @@ ERROR: node is still EOpNull!
 0:?     'inf' (in highp 2-component vector of float)
 0:?     'ing' (in highp 2-component vector of float)
 0:?     'offsets' (uniform 4-element array of highp 2-component vector of int)
-0:?     'sArray' (uniform 4-element array of highp sampler2D)
+0:?     'sArray' (uniform 4-element array of lowp sampler2D)
 0:?     'sIndex' (uniform highp int)
 0:?     'auArray' (layout(binding=0 offset=0 ) uniform 2-element array of highp atomic_uint)
 0:?     'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})
@@ -1055,12 +1056,12 @@ ERROR: node is still EOpNull!
 0:17          'u1' (temp highp uint)
 0:17          'u1' (temp highp uint)
 0:17          'u1' (temp highp uint)
-0:19      uMulExtended (global void)
+0:19      uMulExtended (global highp void)
 0:19        'u4' (temp highp 4-component vector of uint)
 0:19        'u4' (temp highp 4-component vector of uint)
 0:19        'u4' (temp highp 4-component vector of uint)
 0:19        'u4' (temp highp 4-component vector of uint)
-0:21      iMulExtended (global void)
+0:21      iMulExtended (global highp void)
 0:21        'i4' (temp highp 4-component vector of int)
 0:21        'i4' (temp highp 4-component vector of int)
 0:21        'i4' (temp highp 4-component vector of int)
@@ -1109,27 +1110,27 @@ ERROR: node is still EOpNull!
 0:31          'u4' (temp highp 4-component vector of uint)
 0:32      move second child to first child (temp highp int)
 0:32        'i1' (temp highp int)
-0:32        bitCount (global highp int)
+0:32        bitCount (global lowp int, operation at highp)
 0:32          'i1' (temp highp int)
 0:33      move second child to first child (temp highp 3-component vector of int)
 0:33        'i3' (temp highp 3-component vector of int)
-0:33        bitCount (global highp 3-component vector of int)
+0:33        bitCount (global lowp 3-component vector of int, operation at highp)
 0:33          'u3' (temp highp 3-component vector of uint)
 0:34      move second child to first child (temp highp 2-component vector of int)
 0:34        'i2' (temp highp 2-component vector of int)
-0:34        findLSB (global highp 2-component vector of int)
+0:34        findLSB (global lowp 2-component vector of int, operation at highp)
 0:34          'i2' (temp highp 2-component vector of int)
 0:35      move second child to first child (temp highp 4-component vector of int)
 0:35        'i4' (temp highp 4-component vector of int)
-0:35        findLSB (global highp 4-component vector of int)
+0:35        findLSB (global lowp 4-component vector of int, operation at highp)
 0:35          'u4' (temp highp 4-component vector of uint)
 0:36      move second child to first child (temp highp int)
 0:36        'i1' (temp highp int)
-0:36        findMSB (global highp int)
+0:36        findMSB (global lowp int, operation at highp)
 0:36          'i1' (temp highp int)
 0:37      move second child to first child (temp highp 2-component vector of int)
 0:37        'i2' (temp highp 2-component vector of int)
-0:37        findMSB (global highp 2-component vector of int)
+0:37        findMSB (global lowp 2-component vector of int, operation at highp)
 0:37          'u2' (temp highp 2-component vector of uint)
 0:40      move second child to first child (temp highp 3-component vector of float)
 0:40        'v3' (temp highp 3-component vector of float)
@@ -1143,19 +1144,19 @@ ERROR: node is still EOpNull!
 0:42          'i2' (temp highp 2-component vector of int)
 0:45      move second child to first child (temp highp uint)
 0:45        'u1' (temp highp uint)
-0:45        PackUnorm4x8 (global highp uint)
+0:45        PackUnorm4x8 (global highp uint, operation at mediump)
 0:45          'v4' (temp mediump 4-component vector of float)
 0:46      move second child to first child (temp highp uint)
 0:46        'u1' (temp highp uint)
-0:46        PackSnorm4x8 (global highp uint)
+0:46        PackSnorm4x8 (global highp uint, operation at mediump)
 0:46          'v4' (temp mediump 4-component vector of float)
 0:47      move second child to first child (temp mediump 4-component vector of float)
 0:47        'v4' (temp mediump 4-component vector of float)
-0:47        UnpackUnorm4x8 (global mediump 4-component vector of float)
+0:47        UnpackUnorm4x8 (global mediump 4-component vector of float, operation at highp)
 0:47          'u1' (temp highp uint)
 0:48      move second child to first child (temp mediump 4-component vector of float)
 0:48        'v4' (temp mediump 4-component vector of float)
-0:48        UnpackSnorm4x8 (global mediump 4-component vector of float)
+0:48        UnpackSnorm4x8 (global mediump 4-component vector of float, operation at highp)
 0:48          'u1' (temp highp uint)
 0:60  Function Definition: foo( (global void)
 0:60    Function Parameters: 
@@ -1216,13 +1217,13 @@ ERROR: node is still EOpNull!
 0:153    Function Parameters: 
 0:?     Sequence
 0:156      move second child to first child (temp highp 2-component vector of float)
-0:156        'h' (temp highp 2-component vector of float)
+0:156        'h' (noContraction temp highp 2-component vector of float)
 0:156        fma (global highp 2-component vector of float)
 0:156          'inf' (in highp 2-component vector of float)
 0:156          'ing' (in highp 2-component vector of float)
-0:156          'h' (temp highp 2-component vector of float)
-0:157      indirect index (temp highp sampler2D)
-0:157        'sArray' (uniform 4-element array of highp sampler2D)
+0:156          'h' (noContraction temp highp 2-component vector of float)
+0:157      indirect index (temp lowp sampler2D)
+0:157        'sArray' (uniform 4-element array of lowp sampler2D)
 0:157        add (temp highp int)
 0:157          'sIndex' (uniform highp int)
 0:157          Constant:
@@ -1260,19 +1261,19 @@ ERROR: node is still EOpNull!
 0:164          'sIndex' (uniform highp int)
 0:164          Constant:
 0:164            2 (const int)
-0:165      textureGatherOffset (global highp 4-component vector of float)
-0:165        direct index (temp highp sampler2D)
-0:165          'sArray' (uniform 4-element array of highp sampler2D)
+0:165      textureGatherOffset (global lowp 4-component vector of float)
+0:165        direct index (temp lowp sampler2D)
+0:165          'sArray' (uniform 4-element array of lowp sampler2D)
 0:165          Constant:
 0:165            0 (const int)
 0:165        Constant:
 0:165          0.100000
 0:165          0.100000
-0:165        Convert float to int (temp highp 2-component vector of int)
+0:165        Convert float to int (temp lowp 2-component vector of int)
 0:165          'inf' (in highp 2-component vector of float)
-0:166      textureGatherOffsets (global highp 4-component vector of float)
-0:166        direct index (temp highp sampler2D)
-0:166          'sArray' (uniform 4-element array of highp sampler2D)
+0:166      textureGatherOffsets (global lowp 4-component vector of float, operation at highp)
+0:166        direct index (temp lowp sampler2D)
+0:166          'sArray' (uniform 4-element array of lowp sampler2D)
 0:166          Constant:
 0:166            0 (const int)
 0:166        Constant:
@@ -1291,13 +1292,13 @@ ERROR: node is still EOpNull!
 0:171    Function Parameters: 
 0:?     Sequence
 0:174      move second child to first child (temp highp 2-component vector of float)
-0:174        'h' (temp highp 2-component vector of float)
+0:174        'h' (noContraction temp highp 2-component vector of float)
 0:174        fma (global highp 2-component vector of float)
 0:174          'inf' (in highp 2-component vector of float)
 0:174          'ing' (in highp 2-component vector of float)
-0:174          'h' (temp highp 2-component vector of float)
-0:175      indirect index (temp highp sampler2D)
-0:175        'sArray' (uniform 4-element array of highp sampler2D)
+0:174          'h' (noContraction temp highp 2-component vector of float)
+0:175      indirect index (temp lowp sampler2D)
+0:175        'sArray' (uniform 4-element array of lowp sampler2D)
 0:175        add (temp highp int)
 0:175          'sIndex' (uniform highp int)
 0:175          Constant:
@@ -1324,19 +1325,19 @@ ERROR: node is still EOpNull!
 0:179          'sIndex' (uniform highp int)
 0:179          Constant:
 0:179            2 (const int)
-0:180      textureGatherOffset (global highp 4-component vector of float)
-0:180        direct index (temp highp sampler2D)
-0:180          'sArray' (uniform 4-element array of highp sampler2D)
+0:180      textureGatherOffset (global lowp 4-component vector of float)
+0:180        direct index (temp lowp sampler2D)
+0:180          'sArray' (uniform 4-element array of lowp sampler2D)
 0:180          Constant:
 0:180            0 (const int)
 0:180        Constant:
 0:180          0.100000
 0:180          0.100000
-0:180        Convert float to int (temp highp 2-component vector of int)
+0:180        Convert float to int (temp lowp 2-component vector of int)
 0:180          'inf' (in highp 2-component vector of float)
-0:181      textureGatherOffsets (global highp 4-component vector of float)
-0:181        direct index (temp highp sampler2D)
-0:181          'sArray' (uniform 4-element array of highp sampler2D)
+0:181      textureGatherOffsets (global lowp 4-component vector of float, operation at highp)
+0:181        direct index (temp lowp sampler2D)
+0:181          'sArray' (uniform 4-element array of lowp sampler2D)
 0:181          Constant:
 0:181            0 (const int)
 0:181        Constant:
@@ -1351,9 +1352,9 @@ ERROR: node is still EOpNull!
 0:181          0 (const int)
 0:181          0 (const int)
 0:181          0 (const int)
-0:182      textureGatherOffsets (global highp 4-component vector of float)
-0:182        direct index (temp highp sampler2D)
-0:182          'sArray' (uniform 4-element array of highp sampler2D)
+0:182      textureGatherOffsets (global lowp 4-component vector of float, operation at highp)
+0:182        direct index (temp lowp sampler2D)
+0:182          'sArray' (uniform 4-element array of lowp sampler2D)
 0:182          Constant:
 0:182            0 (const int)
 0:182        Constant:
@@ -1857,7 +1858,7 @@ ERROR: node is still EOpNull!
 0:?     'us2dms' (uniform highp usampler2DMS)
 0:?     'us2dmsa' (uniform mediump usampler2DMSArray)
 0:?     'outb' (smooth out bool)
-0:?     'outo' (smooth out highp sampler2D)
+0:?     'outo' (smooth out lowp sampler2D)
 0:?     'outa' (smooth out 4-element array of highp float)
 0:?     'outaa' (smooth out 4-element array of 2-element array of highp float)
 0:?     'outs' (smooth out structure{global highp float f})
@@ -1879,7 +1880,7 @@ ERROR: node is still EOpNull!
 0:?     'inf' (in highp 2-component vector of float)
 0:?     'ing' (in highp 2-component vector of float)
 0:?     'offsets' (uniform 4-element array of highp 2-component vector of int)
-0:?     'sArray' (uniform 4-element array of highp sampler2D)
+0:?     'sArray' (uniform 4-element array of lowp sampler2D)
 0:?     'sIndex' (uniform highp int)
 0:?     'auArray' (layout(binding=0 offset=0 ) uniform 2-element array of highp atomic_uint)
 0:?     'ubInst' (layout(column_major shared ) uniform 4-element array of block{layout(column_major shared ) uniform highp int i})

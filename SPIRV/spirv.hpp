@@ -47,11 +47,11 @@ namespace spv {
 typedef unsigned int Id;
 
 #define SPV_VERSION 0x10000
-#define SPV_REVISION 3
+#define SPV_REVISION 6
 
 static const unsigned int MagicNumber = 0x07230203;
 static const unsigned int Version = 0x00010000;
-static const unsigned int Revision = 3;
+static const unsigned int Revision = 6;
 static const unsigned int OpCodeMask = 0xffff;
 static const unsigned int WordCountShift = 16;
 
@@ -61,6 +61,8 @@ enum SourceLanguage {
     SourceLanguageGLSL = 2,
     SourceLanguageOpenCL_C = 3,
     SourceLanguageOpenCL_CPP = 4,
+    SourceLanguageHLSL = 5,
+    SourceLanguageMax = 0x7fffffff,
 };
 
 enum ExecutionModel {
@@ -71,18 +73,21 @@ enum ExecutionModel {
     ExecutionModelFragment = 4,
     ExecutionModelGLCompute = 5,
     ExecutionModelKernel = 6,
+    ExecutionModelMax = 0x7fffffff,
 };
 
 enum AddressingModel {
     AddressingModelLogical = 0,
     AddressingModelPhysical32 = 1,
     AddressingModelPhysical64 = 2,
+    AddressingModelMax = 0x7fffffff,
 };
 
 enum MemoryModel {
     MemoryModelSimple = 0,
     MemoryModelGLSL450 = 1,
     MemoryModelOpenCL = 2,
+    MemoryModelMax = 0x7fffffff,
 };
 
 enum ExecutionMode {
@@ -117,6 +122,7 @@ enum ExecutionMode {
     ExecutionModeOutputTriangleStrip = 29,
     ExecutionModeVecTypeHint = 30,
     ExecutionModeContractionOff = 31,
+    ExecutionModeMax = 0x7fffffff,
 };
 
 enum StorageClass {
@@ -132,6 +138,7 @@ enum StorageClass {
     StorageClassPushConstant = 9,
     StorageClassAtomicCounter = 10,
     StorageClassImage = 11,
+    StorageClassMax = 0x7fffffff,
 };
 
 enum Dim {
@@ -142,6 +149,7 @@ enum Dim {
     DimRect = 4,
     DimBuffer = 5,
     DimSubpassData = 6,
+    DimMax = 0x7fffffff,
 };
 
 enum SamplerAddressingMode {
@@ -150,11 +158,13 @@ enum SamplerAddressingMode {
     SamplerAddressingModeClamp = 2,
     SamplerAddressingModeRepeat = 3,
     SamplerAddressingModeRepeatMirrored = 4,
+    SamplerAddressingModeMax = 0x7fffffff,
 };
 
 enum SamplerFilterMode {
     SamplerFilterModeNearest = 0,
     SamplerFilterModeLinear = 1,
+    SamplerFilterModeMax = 0x7fffffff,
 };
 
 enum ImageFormat {
@@ -198,6 +208,7 @@ enum ImageFormat {
     ImageFormatRg8ui = 37,
     ImageFormatR16ui = 38,
     ImageFormatR8ui = 39,
+    ImageFormatMax = 0x7fffffff,
 };
 
 enum ImageChannelOrder {
@@ -220,6 +231,8 @@ enum ImageChannelOrder {
     ImageChannelOrdersRGBx = 16,
     ImageChannelOrdersRGBA = 17,
     ImageChannelOrdersBGRA = 18,
+    ImageChannelOrderABGR = 19,
+    ImageChannelOrderMax = 0x7fffffff,
 };
 
 enum ImageChannelDataType {
@@ -240,6 +253,7 @@ enum ImageChannelDataType {
     ImageChannelDataTypeFloat = 14,
     ImageChannelDataTypeUnormInt24 = 15,
     ImageChannelDataTypeUnormInt101010_2 = 16,
+    ImageChannelDataTypeMax = 0x7fffffff,
 };
 
 enum ImageOperandsShift {
@@ -251,6 +265,7 @@ enum ImageOperandsShift {
     ImageOperandsConstOffsetsShift = 5,
     ImageOperandsSampleShift = 6,
     ImageOperandsMinLodShift = 7,
+    ImageOperandsMax = 0x7fffffff,
 };
 
 enum ImageOperandsMask {
@@ -271,6 +286,7 @@ enum FPFastMathModeShift {
     FPFastMathModeNSZShift = 2,
     FPFastMathModeAllowRecipShift = 3,
     FPFastMathModeFastShift = 4,
+    FPFastMathModeMax = 0x7fffffff,
 };
 
 enum FPFastMathModeMask {
@@ -287,17 +303,20 @@ enum FPRoundingMode {
     FPRoundingModeRTZ = 1,
     FPRoundingModeRTP = 2,
     FPRoundingModeRTN = 3,
+    FPRoundingModeMax = 0x7fffffff,
 };
 
 enum LinkageType {
     LinkageTypeExport = 0,
     LinkageTypeImport = 1,
+    LinkageTypeMax = 0x7fffffff,
 };
 
 enum AccessQualifier {
     AccessQualifierReadOnly = 0,
     AccessQualifierWriteOnly = 1,
     AccessQualifierReadWrite = 2,
+    AccessQualifierMax = 0x7fffffff,
 };
 
 enum FunctionParameterAttribute {
@@ -309,6 +328,7 @@ enum FunctionParameterAttribute {
     FunctionParameterAttributeNoCapture = 5,
     FunctionParameterAttributeNoWrite = 6,
     FunctionParameterAttributeNoReadWrite = 7,
+    FunctionParameterAttributeMax = 0x7fffffff,
 };
 
 enum Decoration {
@@ -355,6 +375,7 @@ enum Decoration {
     DecorationNoContraction = 42,
     DecorationInputAttachmentIndex = 43,
     DecorationAlignment = 44,
+    DecorationMax = 0x7fffffff,
 };
 
 enum BuiltIn {
@@ -399,11 +420,13 @@ enum BuiltIn {
     BuiltInSubgroupLocalInvocationId = 41,
     BuiltInVertexIndex = 42,
     BuiltInInstanceIndex = 43,
+    BuiltInMax = 0x7fffffff,
 };
 
 enum SelectionControlShift {
     SelectionControlFlattenShift = 0,
     SelectionControlDontFlattenShift = 1,
+    SelectionControlMax = 0x7fffffff,
 };
 
 enum SelectionControlMask {
@@ -415,6 +438,7 @@ enum SelectionControlMask {
 enum LoopControlShift {
     LoopControlUnrollShift = 0,
     LoopControlDontUnrollShift = 1,
+    LoopControlMax = 0x7fffffff,
 };
 
 enum LoopControlMask {
@@ -428,6 +452,7 @@ enum FunctionControlShift {
     FunctionControlDontInlineShift = 1,
     FunctionControlPureShift = 2,
     FunctionControlConstShift = 3,
+    FunctionControlMax = 0x7fffffff,
 };
 
 enum FunctionControlMask {
@@ -449,6 +474,7 @@ enum MemorySemanticsShift {
     MemorySemanticsCrossWorkgroupMemoryShift = 9,
     MemorySemanticsAtomicCounterMemoryShift = 10,
     MemorySemanticsImageMemoryShift = 11,
+    MemorySemanticsMax = 0x7fffffff,
 };
 
 enum MemorySemanticsMask {
@@ -469,6 +495,7 @@ enum MemoryAccessShift {
     MemoryAccessVolatileShift = 0,
     MemoryAccessAlignedShift = 1,
     MemoryAccessNontemporalShift = 2,
+    MemoryAccessMax = 0x7fffffff,
 };
 
 enum MemoryAccessMask {
@@ -484,22 +511,26 @@ enum Scope {
     ScopeWorkgroup = 2,
     ScopeSubgroup = 3,
     ScopeInvocation = 4,
+    ScopeMax = 0x7fffffff,
 };
 
 enum GroupOperation {
     GroupOperationReduce = 0,
     GroupOperationInclusiveScan = 1,
     GroupOperationExclusiveScan = 2,
+    GroupOperationMax = 0x7fffffff,
 };
 
 enum KernelEnqueueFlags {
     KernelEnqueueFlagsNoWait = 0,
     KernelEnqueueFlagsWaitKernel = 1,
     KernelEnqueueFlagsWaitWorkGroup = 2,
+    KernelEnqueueFlagsMax = 0x7fffffff,
 };
 
 enum KernelProfilingInfoShift {
     KernelProfilingInfoCmdExecTimeShift = 0,
+    KernelProfilingInfoMax = 0x7fffffff,
 };
 
 enum KernelProfilingInfoMask {
@@ -564,6 +595,7 @@ enum Capability {
     CapabilityStorageImageReadWithoutFormat = 55,
     CapabilityStorageImageWriteWithoutFormat = 56,
     CapabilityMultiViewport = 57,
+    CapabilityMax = 0x7fffffff,
 };
 
 enum Op {
@@ -861,6 +893,7 @@ enum Op {
     OpAtomicFlagTestAndSet = 318,
     OpAtomicFlagClear = 319,
     OpImageSparseRead = 320,
+    OpMax = 0x7fffffff,
 };
 
 // Overload operator| for mask bit combining
@@ -877,3 +910,4 @@ inline KernelProfilingInfoMask operator|(KernelProfilingInfoMask a, KernelProfil
 }  // end namespace spv
 
 #endif  // #ifndef spirv_HPP
+

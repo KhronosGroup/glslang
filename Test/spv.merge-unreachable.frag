@@ -1,4 +1,5 @@
 #version 450
+precision mediump int; precision highp float;
 layout(location=1) in highp vec4 v;
 void main (void)
 {

@@ -94,6 +94,12 @@ struct deep3 {
     ivec3 v3;
 };
 
+in float attributeFloat;
+layout(location = 2) in vec2 attributeFloat2;
+in vec3 attributeFloat3;
+in vec4 attributeFloat4;
+in mat4 attributeMat4;
+
 uniform deep3 deepA[2], deepB[2], deepC[3], deepD[2];
 
 const bool control = true;
@@ -167,4 +173,10 @@ void main()
 
     f += arrBl[2].foo + arrBl[0].foo;
     f += arrBl2[i].foo;
+
+    f += attributeFloat;
+    f += attributeFloat2.x;
+    f += attributeFloat3.x;
+    f += attributeFloat4.x;
+    f += attributeMat4[0][1];
 }

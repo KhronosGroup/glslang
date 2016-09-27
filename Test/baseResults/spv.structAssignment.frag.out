@@ -1,4 +1,7 @@
 spv.structAssignment.frag
+WARNING: 0:6: '' : all default precisions are highp; use precision statements to quiet warning, e.g.:
+         "precision mediump int; precision highp float;" 
+
 
 Linked fragment stage:
 
@@ -33,7 +36,13 @@ Linked fragment stage:
                               Name 40  "samp2D"
                               Name 44  "coord"
                               Name 49  "foo"
+                              MemberDecorate 8(lunarStruct1) 0 RelaxedPrecision
+                              MemberDecorate 9(lunarStruct2) 0 RelaxedPrecision
+                              MemberDecorate 10(lunarStruct3) 1 RelaxedPrecision
+                              Decorate 16 RelaxedPrecision
                               Decorate 40(samp2D) DescriptorSet 0
+                              Decorate 44(coord) RelaxedPrecision
+                              Decorate 45 RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

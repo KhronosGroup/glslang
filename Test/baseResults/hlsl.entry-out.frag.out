@@ -1,0 +1,218 @@
+hlsl.entry-out.frag
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:7  Function Definition: PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21; (global 4-component vector of float)
+0:7    Function Parameters: 
+0:7      'input' (layout(location=0 ) in 4-component vector of float)
+0:7      'out1' (layout(location=1 ) out 4-component vector of float)
+0:7      'out2' (out structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:7      'out3' (out structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:?     Sequence
+0:8      move second child to first child (temp 4-component vector of float)
+0:8        'out1' (layout(location=1 ) out 4-component vector of float)
+0:8        'input' (layout(location=0 ) in 4-component vector of float)
+0:9      move second child to first child (temp 2-component vector of float)
+0:?         'v' (layout(location=2 ) out 2-component vector of float)
+0:9        Constant:
+0:9          2.000000
+0:9          2.000000
+0:10      move second child to first child (temp 2-component vector of int)
+0:?         'i' (layout(location=3 ) out 2-component vector of int)
+0:10        Constant:
+0:10          3 (const int)
+0:10          3 (const int)
+0:12      move second child to first child (temp 2-component vector of float)
+0:12        v: direct index for structure (temp 2-component vector of float)
+0:12          'local' (temp structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:12          Constant:
+0:12            0 (const int)
+0:12        Constant:
+0:12          12.000000
+0:12          12.000000
+0:13      move second child to first child (temp 2-component vector of int)
+0:13        i: direct index for structure (temp 2-component vector of int)
+0:13          'local' (temp structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:13          Constant:
+0:13            1 (const int)
+0:13        Constant:
+0:13          13 (const int)
+0:13          13 (const int)
+0:?       Sequence
+0:14        move second child to first child (temp 2-component vector of float)
+0:?           'v' (layout(location=4 ) out 2-component vector of float)
+0:14          v: direct index for structure (temp 2-component vector of float)
+0:14            'local' (temp structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:14            Constant:
+0:14              0 (const int)
+0:14        move second child to first child (temp 2-component vector of int)
+0:?           'i' (layout(location=5 ) out 2-component vector of int)
+0:14          i: direct index for structure (temp 2-component vector of int)
+0:14            'local' (temp structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:14            Constant:
+0:14              1 (const int)
+0:16      Sequence
+0:16        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:16          'out1' (layout(location=1 ) out 4-component vector of float)
+0:16        Branch: Return
+0:?   Linker Objects
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:?     'input' (layout(location=0 ) in 4-component vector of float)
+0:?     'out1' (layout(location=1 ) out 4-component vector of float)
+0:?     'v' (layout(location=2 ) out 2-component vector of float)
+0:?     'i' (layout(location=3 ) out 2-component vector of int)
+0:?     'v' (layout(location=4 ) out 2-component vector of float)
+0:?     'i' (layout(location=5 ) out 2-component vector of int)
+
+
+Linked fragment stage:
+
+
+Shader version: 450
+gl_FragCoord origin is upper left
+0:? Sequence
+0:7  Function Definition: PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21; (global 4-component vector of float)
+0:7    Function Parameters: 
+0:7      'input' (layout(location=0 ) in 4-component vector of float)
+0:7      'out1' (layout(location=1 ) out 4-component vector of float)
+0:7      'out2' (out structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:7      'out3' (out structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:?     Sequence
+0:8      move second child to first child (temp 4-component vector of float)
+0:8        'out1' (layout(location=1 ) out 4-component vector of float)
+0:8        'input' (layout(location=0 ) in 4-component vector of float)
+0:9      move second child to first child (temp 2-component vector of float)
+0:?         'v' (layout(location=2 ) out 2-component vector of float)
+0:9        Constant:
+0:9          2.000000
+0:9          2.000000
+0:10      move second child to first child (temp 2-component vector of int)
+0:?         'i' (layout(location=3 ) out 2-component vector of int)
+0:10        Constant:
+0:10          3 (const int)
+0:10          3 (const int)
+0:12      move second child to first child (temp 2-component vector of float)
+0:12        v: direct index for structure (temp 2-component vector of float)
+0:12          'local' (temp structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:12          Constant:
+0:12            0 (const int)
+0:12        Constant:
+0:12          12.000000
+0:12          12.000000
+0:13      move second child to first child (temp 2-component vector of int)
+0:13        i: direct index for structure (temp 2-component vector of int)
+0:13          'local' (temp structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:13          Constant:
+0:13            1 (const int)
+0:13        Constant:
+0:13          13 (const int)
+0:13          13 (const int)
+0:?       Sequence
+0:14        move second child to first child (temp 2-component vector of float)
+0:?           'v' (layout(location=4 ) out 2-component vector of float)
+0:14          v: direct index for structure (temp 2-component vector of float)
+0:14            'local' (temp structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:14            Constant:
+0:14              0 (const int)
+0:14        move second child to first child (temp 2-component vector of int)
+0:?           'i' (layout(location=5 ) out 2-component vector of int)
+0:14          i: direct index for structure (temp 2-component vector of int)
+0:14            'local' (temp structure{temp 2-component vector of float v, temp 2-component vector of int i})
+0:14            Constant:
+0:14              1 (const int)
+0:16      Sequence
+0:16        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:16          'out1' (layout(location=1 ) out 4-component vector of float)
+0:16        Branch: Return
+0:?   Linker Objects
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:?     'input' (layout(location=0 ) in 4-component vector of float)
+0:?     'out1' (layout(location=1 ) out 4-component vector of float)
+0:?     'v' (layout(location=2 ) out 2-component vector of float)
+0:?     'i' (layout(location=3 ) out 2-component vector of int)
+0:?     'v' (layout(location=4 ) out 2-component vector of float)
+0:?     'i' (layout(location=5 ) out 2-component vector of int)
+
+// Module Version 10000
+// Generated by (magic number): 80001
+// Id's are bound by 46
+
+                              Capability Shader
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint Fragment 4  "PixelShaderFunction" 9 11 15 21 37 40 43
+                              ExecutionMode 4 OriginUpperLeft
+                              Name 4  "PixelShaderFunction"
+                              Name 9  "out1"
+                              Name 11  "input"
+                              Name 15  "v"
+                              Name 21  "i"
+                              Name 24  "OutParam"
+                              MemberName 24(OutParam) 0  "v"
+                              MemberName 24(OutParam) 1  "i"
+                              Name 26  "local"
+                              Name 37  "v"
+                              Name 40  "i"
+                              Name 43  "@entryPointOutput"
+                              Decorate 9(out1) Location 1
+                              Decorate 11(input) Location 0
+                              Decorate 15(v) Location 2
+                              Decorate 21(i) Location 3
+                              Decorate 37(v) Location 4
+                              Decorate 40(i) Location 5
+                              Decorate 43(@entryPointOutput) Location 0
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 32
+               7:             TypeVector 6(float) 4
+               8:             TypePointer Output 7(fvec4)
+         9(out1):      8(ptr) Variable Output
+              10:             TypePointer Input 7(fvec4)
+       11(input):     10(ptr) Variable Input
+              13:             TypeVector 6(float) 2
+              14:             TypePointer Output 13(fvec2)
+           15(v):     14(ptr) Variable Output
+              16:    6(float) Constant 1073741824
+              17:   13(fvec2) ConstantComposite 16 16
+              18:             TypeInt 32 1
+              19:             TypeVector 18(int) 2
+              20:             TypePointer Output 19(ivec2)
+           21(i):     20(ptr) Variable Output
+              22:     18(int) Constant 3
+              23:   19(ivec2) ConstantComposite 22 22
+    24(OutParam):             TypeStruct 13(fvec2) 19(ivec2)
+              25:             TypePointer Function 24(OutParam)
+              27:     18(int) Constant 0
+              28:    6(float) Constant 1094713344
+              29:   13(fvec2) ConstantComposite 28 28
+              30:             TypePointer Function 13(fvec2)
+              32:     18(int) Constant 1
+              33:     18(int) Constant 13
+              34:   19(ivec2) ConstantComposite 33 33
+              35:             TypePointer Function 19(ivec2)
+           37(v):     14(ptr) Variable Output
+           40(i):     20(ptr) Variable Output
+43(@entryPointOutput):      8(ptr) Variable Output
+4(PixelShaderFunction):           2 Function None 3
+               5:             Label
+       26(local):     25(ptr) Variable Function
+              12:    7(fvec4) Load 11(input)
+                              Store 9(out1) 12
+                              Store 15(v) 17
+                              Store 21(i) 23
+              31:     30(ptr) AccessChain 26(local) 27
+                              Store 31 29
+              36:     35(ptr) AccessChain 26(local) 32
+                              Store 36 34
+              38:     30(ptr) AccessChain 26(local) 27
+              39:   13(fvec2) Load 38
+                              Store 37(v) 39
+              41:     35(ptr) AccessChain 26(local) 32
+              42:   19(ivec2) Load 41
+                              Store 40(i) 42
+              44:    7(fvec4) Load 9(out1)
+                              Store 43(@entryPointOutput) 44
+                              Return
+                              FunctionEnd

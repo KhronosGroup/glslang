@@ -21,9 +21,11 @@ Linked vertex stage:
                               Name 15  "outVf"
                               Name 17  "outVn"
                               Name 19  "outVcn"
+                              Decorate 9(outVc) Centroid
                               Decorate 15(outVf) Flat
                               Decorate 17(outVn) NoPerspective
                               Decorate 19(outVcn) NoPerspective
+                              Decorate 19(outVcn) Centroid
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

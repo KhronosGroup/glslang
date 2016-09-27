@@ -48,11 +48,17 @@ enum TBasicType {
     EbtDouble,
     EbtInt,
     EbtUint,
+    EbtInt64,
+    EbtUint64,
     EbtBool,
     EbtAtomicUint,
     EbtSampler,
     EbtStruct,
     EbtBlock,
+
+    // HLSL types that live only temporarily.
+    EbtString,
+
     EbtNumTypes
 };
 
@@ -128,6 +134,13 @@ enum TBuiltInVariable {
     EbvLocalInvocationId,
     EbvGlobalInvocationId,
     EbvLocalInvocationIndex,
+    EbvSubGroupSize,
+    EbvSubGroupInvocation,
+    EbvSubGroupEqMask,
+    EbvSubGroupGeMask,
+    EbvSubGroupGtMask,
+    EbvSubGroupLeMask,
+    EbvSubGroupLtMask,
     EbvVertexId,
     EbvInstanceId,
     EbvVertexIndex,
@@ -177,6 +190,20 @@ enum TBuiltInVariable {
     EbvSamplePosition,
     EbvSampleMask,
     EbvHelperInvocation,
+#ifdef AMD_EXTENSIONS
+    EbvBaryCoordNoPersp,
+    EbvBaryCoordNoPerspCentroid,
+    EbvBaryCoordNoPerspSample,
+    EbvBaryCoordSmooth,
+    EbvBaryCoordSmoothCentroid,
+    EbvBaryCoordSmoothSample,
+    EbvBaryCoordPullModel,
+#endif
+
+    // HLSL built-ins that live only temporarily, until they get remapped
+    // to one of the above.
+    EbvFragDepthGreater,
+    EbvFragDepthLesser,
 
     EbvLast
 };
@@ -221,6 +248,13 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvLocalInvocationId:    return "LocalInvocationID";
     case EbvGlobalInvocationId:   return "GlobalInvocationID";
     case EbvLocalInvocationIndex: return "LocalInvocationIndex";
+    case EbvSubGroupSize:         return "SubGroupSize";
+    case EbvSubGroupInvocation:   return "SubGroupInvocation";
+    case EbvSubGroupEqMask:       return "SubGroupEqMask";
+    case EbvSubGroupGeMask:       return "SubGroupGeMask";
+    case EbvSubGroupGtMask:       return "SubGroupGtMask";
+    case EbvSubGroupLeMask:       return "SubGroupLeMask";
+    case EbvSubGroupLtMask:       return "SubGroupLtMask";
     case EbvVertexId:             return "VertexId";
     case EbvInstanceId:           return "InstanceId";
     case EbvVertexIndex:          return "VertexIndex";
@@ -270,6 +304,15 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvSamplePosition:       return "SamplePosition";
     case EbvSampleMask:           return "SampleMaskIn";
     case EbvHelperInvocation:     return "HelperInvocation";
+#ifdef AMD_EXTENSIONS
+    case EbvBaryCoordNoPersp:           return "BaryCoordNoPersp";
+    case EbvBaryCoordNoPerspCentroid:   return "BaryCoordNoPerspCentroid";
+    case EbvBaryCoordNoPerspSample:     return "BaryCoordNoPerspSample";
+    case EbvBaryCoordSmooth:            return "BaryCoordSmooth";
+    case EbvBaryCoordSmoothCentroid:    return "BaryCoordSmoothCentroid";
+    case EbvBaryCoordSmoothSample:      return "BaryCoordSmoothSample";
+    case EbvBaryCoordPullModel:         return "BaryCoordPullModel";
+#endif
     default:                      return "unknown built-in variable";
     }
 }

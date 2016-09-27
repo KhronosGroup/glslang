@@ -2,10 +2,10 @@ tokenLength.vert
 ERROR: 0:9: '' : numeric literal too big 
 ERROR: 0:10: '' : numeric literal too big 
 ERROR: 0:13: '' : octal literal too big 
-ERROR: 0:14: '' : hexidecimal literal too big 
+ERROR: 0:14: '' : hexadecimal literal too big 
 ERROR: 0:23: '' : float literal too long 
 ERROR: 0:32: '' : name too long 
-ERROR: 0:33: '' : hexidecimal literal too big 
+ERROR: 0:33: '' : hexadecimal literal too big 
 ERROR: 0:34: '' : numeric literal too long 
 ERROR: 0:34: '' : octal literal too big 
 ERROR: 0:35: '' : numeric literal too long 

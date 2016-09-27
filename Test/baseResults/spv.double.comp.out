@@ -35,6 +35,7 @@ Linked compute stage:
                               Decorate 26(gl_GlobalInvocationID) BuiltIn GlobalInvocationId
                               Decorate 33(gl_LocalInvocationID) BuiltIn LocalInvocationId
                               Decorate 59(destTex) DescriptorSet 0
+                              Decorate 59(destTex) NonReadable
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

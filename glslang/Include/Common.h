@@ -51,7 +51,7 @@
     #define UINT_PTR uintptr_t
 #endif
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || _MSC_VER < 1700
 #include <sstream>
 namespace std {
 template<typename T>
@@ -62,6 +62,18 @@ std::string to_string(const T& val) {
 }
 }
 #endif
+
+#if defined(_MSC_VER) && _MSC_VER < 1700
+inline long long int strtoll (const char* str, char** endptr, int base)
+{
+  return _strtoi64(str, endptr, base); 
+}
+inline long long int atoll (const char* str)
+{
+  return strtoll(str, NULL, 10);
+}
+#endif
+
 /* windows only pragma */
 #ifdef _MSC_VER
     #pragma warning(disable : 4786) // Don't warn about too long identifiers
@@ -77,8 +89,8 @@ std::string to_string(const T& val) {
 #include <list>
 #include <algorithm>
 #include <string>
-#include <stdio.h>
-#include <assert.h>
+#include <cstdio>
+#include <cassert>
 
 #include "PoolAlloc.h"
 
@@ -87,11 +99,11 @@ std::string to_string(const T& val) {
 //
 #define POOL_ALLOCATOR_NEW_DELETE(A)                                  \
     void* operator new(size_t s) { return (A).allocate(s); }          \
-    void* operator new(size_t, void *_Where) { return (_Where);	}     \
+    void* operator new(size_t, void *_Where) { return (_Where); }     \
     void operator delete(void*) { }                                   \
     void operator delete(void *, void *) { }                          \
     void* operator new[](size_t s) { return (A).allocate(s); }        \
-    void* operator new[](size_t, void *_Where) { return (_Where);	} \
+    void* operator new[](size_t, void *_Where) { return (_Where); }   \
     void operator delete[](void*) { }                                 \
     void operator delete[](void *, void *) { }
 
@@ -163,7 +175,7 @@ template <class T> class TList  : public std::list<T, pool_allocator<T> > {
 };
 
 template <class K, class D, class CMP = std::less<K> > 
-class TMap : public std::map<K, D, CMP, pool_allocator<std::pair<K, D> > > {
+class TMap : public std::map<K, D, CMP, pool_allocator<std::pair<K const, D> > > {
 };
 
 template <class K, class D, class HASH = std::hash<K>, class PRED = std::equal_to<K> >
@@ -185,20 +197,25 @@ template <class T> T Max(const T a, const T b) { return a > b ? a : b; }
 //
 // Create a TString object from an integer.
 //
+#if defined _MSC_VER || defined MINGW_HAS_SECURE_API
 inline const TString String(const int i, const int base = 10)
 {
     char text[16];     // 32 bit ints are at most 10 digits in base 10
+    _itoa_s(i, text, sizeof(text), base);
+    return text;
+}
+#else
+inline const TString String(const int i, const int /*base*/ = 10)
+{
+    char text[16];     // 32 bit ints are at most 10 digits in base 10
     
-    #if defined _MSC_VER || defined MINGW_HAS_SECURE_API
-        _itoa_s(i, text, sizeof(text), base);
-    #else
-        // we assume base 10 for all cases
-        snprintf(text, sizeof(text), "%d", i);
-    #endif
+    // we assume base 10 for all cases
+    snprintf(text, sizeof(text), "%d", i);
 
     return text;
 }
-
+#endif
+    
 struct TSourceLoc {
     void init() { name = nullptr; string = 0; line = 0; column = 0; }
     // Returns the name if it exists. Otherwise, returns the string number.

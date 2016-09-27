@@ -281,7 +281,7 @@ Linked fragment stage:
              176:    7(fvec4) Load 9(v)
              177:    7(fvec4) Load 9(v)
              182:  179(bvec4) Load 181(ub41)
-             183:    7(fvec4) ExtInst 1(GLSL.std.450) 46(FMix) 176 177 182
+             183:    7(fvec4) Select 182 177 176
              184:    7(fvec4) Load 9(v)
              185:    7(fvec4) FAdd 184 183
                               Store 9(v) 185
@@ -470,7 +470,7 @@ Linked fragment stage:
              339:               Label
              341:  179(bvec4)   Load 181(ub41)
              343:  179(bvec4)   Load 342(ub42)
-             344:  179(bvec4)   IEqual 341 343
+             344:  179(bvec4)   LogicalEqual 341 343
              345:   178(bool)   Any 344
                                 Branch 340
              340:             Label
@@ -482,7 +482,7 @@ Linked fragment stage:
              348:               Label
              350:  179(bvec4)   Load 181(ub41)
              351:  179(bvec4)   Load 342(ub42)
-             352:  179(bvec4)   INotEqual 350 351
+             352:  179(bvec4)   LogicalNotEqual 350 351
              353:   178(bool)   Any 352
                                 Branch 349
              349:             Label
