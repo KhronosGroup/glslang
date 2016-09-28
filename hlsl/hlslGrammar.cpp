@@ -1515,8 +1515,14 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
     // array_specifier
     TArraySizes* arraySizes = nullptr;
     acceptArraySpecifier(arraySizes);
-    if (arraySizes)
+    if (arraySizes) {
+        if (arraySizes->isImplicit()) {
+            parseContext.error(token.loc, "function parameter array cannot be implicitly sized", "", "");
+            return false;
+        }
+
         type->newArraySizes(*arraySizes);
+    }
 
     // post_decls
     acceptPostDecls(type->getQualifier());
@@ -2601,6 +2607,7 @@ bool HlslGrammar::acceptDefaultLabel(TIntermNode*& statement)
 
 // array_specifier
 //      : LEFT_BRACKET integer_expression RGHT_BRACKET post_decls // optional
+//      : LEFT_BRACKET RGHT_BRACKET post_decls // optional
 //
 void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 {
@@ -2610,21 +2617,25 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
         return;
 
     TSourceLoc loc = token.loc;
-    TIntermTyped* sizeExpr;
-    if (! acceptAssignmentExpression(sizeExpr)) {
-        expected("array-sizing expression");
-        return;
-    }
+    TIntermTyped* sizeExpr = nullptr;
+
+    // Array sizing expression is optional.  If ommitted, array is implicitly sized.
+    const bool hasArraySize = acceptAssignmentExpression(sizeExpr);
 
     if (! acceptTokenClass(EHTokRightBracket)) {
         expected("]");
         return;
     }
 
-    TArraySize arraySize;
-    parseContext.arraySizeCheck(loc, sizeExpr, arraySize);
     arraySizes = new TArraySizes;
-    arraySizes->addInnerSize(arraySize);
+    
+    if (hasArraySize) {
+        TArraySize arraySize;
+        parseContext.arraySizeCheck(loc, sizeExpr, arraySize);
+        arraySizes->addInnerSize(arraySize);
+    } else {
+        arraySizes->addInnerSize();  // implicitly sized
+    }
 }
 
 // post_decls

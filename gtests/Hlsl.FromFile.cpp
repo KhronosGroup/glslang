@@ -81,6 +81,7 @@ INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
         {"hlsl.array.frag", "PixelShaderFunction"},
+        {"hlsl.array.implicit-size.frag", "PixelShaderFunction"},
         {"hlsl.assoc.frag", "PixelShaderFunction"},
         {"hlsl.attribute.frag", "PixelShaderFunction"},
         {"hlsl.buffer.frag", "PixelShaderFunction"},
