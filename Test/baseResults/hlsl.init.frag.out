@@ -78,7 +78,7 @@ gl_FragCoord origin is upper left
 0:18      Constant:
 0:18        4 (const uint)
 0:18        5 (const uint)
-0:21  Function Definition: ShaderFunction(vf4; (global 4-component vector of float)
+0:21  Function Definition: ShaderFunction(vf4; (temp 4-component vector of float)
 0:21    Function Parameters: 
 0:21      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
@@ -236,7 +236,7 @@ gl_FragCoord origin is upper left
 0:18      Constant:
 0:18        4 (const uint)
 0:18        5 (const uint)
-0:21  Function Definition: ShaderFunction(vf4; (global 4-component vector of float)
+0:21  Function Definition: ShaderFunction(vf4; (temp 4-component vector of float)
 0:21    Function Parameters: 
 0:21      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence

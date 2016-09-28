@@ -2,7 +2,7 @@ hlsl.constructexpr.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:4  Function Definition: main( (global structure{temp 4-component vector of float color})
+0:4  Function Definition: main( (temp structure{temp 4-component vector of float color})
 0:4    Function Parameters: 
 0:?     Sequence
 0:6      Constant:
@@ -53,7 +53,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:4  Function Definition: main( (global structure{temp 4-component vector of float color})
+0:4  Function Definition: main( (temp structure{temp 4-component vector of float color})
 0:4    Function Parameters: 
 0:?     Sequence
 0:6      Constant:

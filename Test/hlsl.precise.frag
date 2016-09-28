@@ -1,7 +1,7 @@
 
 struct PS_OUTPUT { precise float4 color : SV_Target0; };
 
-precise float precisefloat;
+static precise float precisefloat;
 
 void MyFunction(in precise float myfloat, out precise float3 myfloat3) { }
 

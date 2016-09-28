@@ -2,7 +2,7 @@ hlsl.gatherRGBA.offset.dx10.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:39  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float Depth})
+0:39  Function Definition: main( (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:39    Function Parameters: 
 0:?     Sequence
 0:46      Sequence
@@ -12,8 +12,14 @@ gl_FragCoord origin is upper left
 0:46            Construct combined texture-sampler (temp sampler2D)
 0:46              'g_tTex2df4' (uniform texture2D)
 0:46              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:46            'c2' (uniform 2-component vector of float)
-0:46            'o2' (uniform 2-component vector of int)
+0:46            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:46              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:46              Constant:
+0:46                1 (const uint)
+0:46            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:46              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:46              Constant:
+0:46                5 (const uint)
 0:46            Constant:
 0:46              0 (const int)
 0:47      Sequence
@@ -23,8 +29,14 @@ gl_FragCoord origin is upper left
 0:47            Construct combined texture-sampler (temp isampler2D)
 0:47              'g_tTex2di4' (uniform itexture2D)
 0:47              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:47            'c2' (uniform 2-component vector of float)
-0:47            'o2' (uniform 2-component vector of int)
+0:47            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:47              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:47              Constant:
+0:47                1 (const uint)
+0:47            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:47              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:47              Constant:
+0:47                5 (const uint)
 0:47            Constant:
 0:47              0 (const int)
 0:48      Sequence
@@ -34,8 +46,14 @@ gl_FragCoord origin is upper left
 0:48            Construct combined texture-sampler (temp usampler2D)
 0:48              'g_tTex2du4' (uniform utexture2D)
 0:48              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:48            'c2' (uniform 2-component vector of float)
-0:48            'o2' (uniform 2-component vector of int)
+0:48            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:48              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:48              Constant:
+0:48                1 (const uint)
+0:48            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:48              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:48              Constant:
+0:48                5 (const uint)
 0:48            Constant:
 0:48              0 (const int)
 0:50      Sequence
@@ -45,12 +63,27 @@ gl_FragCoord origin is upper left
 0:50            Construct combined texture-sampler (temp sampler2D)
 0:50              'g_tTex2df4' (uniform texture2D)
 0:50              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:50            'c2' (uniform 2-component vector of float)
+0:50            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:50              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:50              Constant:
+0:50                1 (const uint)
 0:50            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:50              'o2' (uniform 2-component vector of int)
-0:50              'o2' (uniform 2-component vector of int)
-0:50              'o2' (uniform 2-component vector of int)
-0:50              'o2' (uniform 2-component vector of int)
+0:50              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:50                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:50                Constant:
+0:50                  5 (const uint)
+0:50              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:50                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:50                Constant:
+0:50                  5 (const uint)
+0:50              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:50                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:50                Constant:
+0:50                  5 (const uint)
+0:50              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:50                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:50                Constant:
+0:50                  5 (const uint)
 0:50            Constant:
 0:50              0 (const int)
 0:51      Sequence
@@ -60,12 +93,27 @@ gl_FragCoord origin is upper left
 0:51            Construct combined texture-sampler (temp isampler2D)
 0:51              'g_tTex2di4' (uniform itexture2D)
 0:51              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:51            'c2' (uniform 2-component vector of float)
+0:51            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:51              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:51              Constant:
+0:51                1 (const uint)
 0:51            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:51              'o2' (uniform 2-component vector of int)
-0:51              'o2' (uniform 2-component vector of int)
-0:51              'o2' (uniform 2-component vector of int)
-0:51              'o2' (uniform 2-component vector of int)
+0:51              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:51                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:51                Constant:
+0:51                  5 (const uint)
+0:51              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:51                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:51                Constant:
+0:51                  5 (const uint)
+0:51              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:51                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:51                Constant:
+0:51                  5 (const uint)
+0:51              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:51                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:51                Constant:
+0:51                  5 (const uint)
 0:51            Constant:
 0:51              0 (const int)
 0:52      Sequence
@@ -75,12 +123,27 @@ gl_FragCoord origin is upper left
 0:52            Construct combined texture-sampler (temp usampler2D)
 0:52              'g_tTex2du4' (uniform utexture2D)
 0:52              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:52            'c2' (uniform 2-component vector of float)
+0:52            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:52              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:52              Constant:
+0:52                1 (const uint)
 0:52            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:52              'o2' (uniform 2-component vector of int)
-0:52              'o2' (uniform 2-component vector of int)
-0:52              'o2' (uniform 2-component vector of int)
-0:52              'o2' (uniform 2-component vector of int)
+0:52              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:52                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:52                Constant:
+0:52                  5 (const uint)
+0:52              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:52                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:52                Constant:
+0:52                  5 (const uint)
+0:52              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:52                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:52                Constant:
+0:52                  5 (const uint)
+0:52              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:52                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:52                Constant:
+0:52                  5 (const uint)
 0:52            Constant:
 0:52              0 (const int)
 0:62      Sequence
@@ -90,8 +153,14 @@ gl_FragCoord origin is upper left
 0:62            Construct combined texture-sampler (temp sampler2D)
 0:62              'g_tTex2df4' (uniform texture2D)
 0:62              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:62            'c2' (uniform 2-component vector of float)
-0:62            'o2' (uniform 2-component vector of int)
+0:62            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:62              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:62              Constant:
+0:62                1 (const uint)
+0:62            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:62              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:62              Constant:
+0:62                5 (const uint)
 0:62            Constant:
 0:62              1 (const int)
 0:63      Sequence
@@ -101,8 +170,14 @@ gl_FragCoord origin is upper left
 0:63            Construct combined texture-sampler (temp isampler2D)
 0:63              'g_tTex2di4' (uniform itexture2D)
 0:63              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:63            'c2' (uniform 2-component vector of float)
-0:63            'o2' (uniform 2-component vector of int)
+0:63            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:63              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:63              Constant:
+0:63                1 (const uint)
+0:63            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:63              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:63              Constant:
+0:63                5 (const uint)
 0:63            Constant:
 0:63              1 (const int)
 0:64      Sequence
@@ -112,8 +187,14 @@ gl_FragCoord origin is upper left
 0:64            Construct combined texture-sampler (temp usampler2D)
 0:64              'g_tTex2du4' (uniform utexture2D)
 0:64              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:64            'c2' (uniform 2-component vector of float)
-0:64            'o2' (uniform 2-component vector of int)
+0:64            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:64              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:64              Constant:
+0:64                1 (const uint)
+0:64            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:64              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:64              Constant:
+0:64                5 (const uint)
 0:64            Constant:
 0:64              1 (const int)
 0:66      Sequence
@@ -123,12 +204,27 @@ gl_FragCoord origin is upper left
 0:66            Construct combined texture-sampler (temp sampler2D)
 0:66              'g_tTex2df4' (uniform texture2D)
 0:66              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:66            'c2' (uniform 2-component vector of float)
+0:66            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:66              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:66              Constant:
+0:66                1 (const uint)
 0:66            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:66              'o2' (uniform 2-component vector of int)
-0:66              'o2' (uniform 2-component vector of int)
-0:66              'o2' (uniform 2-component vector of int)
-0:66              'o2' (uniform 2-component vector of int)
+0:66              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:66                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:66                Constant:
+0:66                  5 (const uint)
+0:66              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:66                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:66                Constant:
+0:66                  5 (const uint)
+0:66              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:66                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:66                Constant:
+0:66                  5 (const uint)
+0:66              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:66                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:66                Constant:
+0:66                  5 (const uint)
 0:66            Constant:
 0:66              1 (const int)
 0:67      Sequence
@@ -138,12 +234,27 @@ gl_FragCoord origin is upper left
 0:67            Construct combined texture-sampler (temp isampler2D)
 0:67              'g_tTex2di4' (uniform itexture2D)
 0:67              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:67            'c2' (uniform 2-component vector of float)
+0:67            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:67              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:67              Constant:
+0:67                1 (const uint)
 0:67            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:67              'o2' (uniform 2-component vector of int)
-0:67              'o2' (uniform 2-component vector of int)
-0:67              'o2' (uniform 2-component vector of int)
-0:67              'o2' (uniform 2-component vector of int)
+0:67              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:67                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:67                Constant:
+0:67                  5 (const uint)
+0:67              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:67                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:67                Constant:
+0:67                  5 (const uint)
+0:67              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:67                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:67                Constant:
+0:67                  5 (const uint)
+0:67              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:67                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:67                Constant:
+0:67                  5 (const uint)
 0:67            Constant:
 0:67              1 (const int)
 0:68      Sequence
@@ -153,12 +264,27 @@ gl_FragCoord origin is upper left
 0:68            Construct combined texture-sampler (temp usampler2D)
 0:68              'g_tTex2du4' (uniform utexture2D)
 0:68              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:68            'c2' (uniform 2-component vector of float)
+0:68            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:68              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:68              Constant:
+0:68                1 (const uint)
 0:68            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:68              'o2' (uniform 2-component vector of int)
-0:68              'o2' (uniform 2-component vector of int)
-0:68              'o2' (uniform 2-component vector of int)
-0:68              'o2' (uniform 2-component vector of int)
+0:68              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:68                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:68                Constant:
+0:68                  5 (const uint)
+0:68              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:68                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:68                Constant:
+0:68                  5 (const uint)
+0:68              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:68                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:68                Constant:
+0:68                  5 (const uint)
+0:68              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:68                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:68                Constant:
+0:68                  5 (const uint)
 0:68            Constant:
 0:68              1 (const int)
 0:78      Sequence
@@ -168,8 +294,14 @@ gl_FragCoord origin is upper left
 0:78            Construct combined texture-sampler (temp sampler2D)
 0:78              'g_tTex2df4' (uniform texture2D)
 0:78              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:78            'c2' (uniform 2-component vector of float)
-0:78            'o2' (uniform 2-component vector of int)
+0:78            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:78              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:78              Constant:
+0:78                1 (const uint)
+0:78            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:78              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:78              Constant:
+0:78                5 (const uint)
 0:78            Constant:
 0:78              2 (const int)
 0:79      Sequence
@@ -179,8 +311,14 @@ gl_FragCoord origin is upper left
 0:79            Construct combined texture-sampler (temp isampler2D)
 0:79              'g_tTex2di4' (uniform itexture2D)
 0:79              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:79            'c2' (uniform 2-component vector of float)
-0:79            'o2' (uniform 2-component vector of int)
+0:79            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:79              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:79              Constant:
+0:79                1 (const uint)
+0:79            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:79              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:79              Constant:
+0:79                5 (const uint)
 0:79            Constant:
 0:79              2 (const int)
 0:80      Sequence
@@ -190,8 +328,14 @@ gl_FragCoord origin is upper left
 0:80            Construct combined texture-sampler (temp usampler2D)
 0:80              'g_tTex2du4' (uniform utexture2D)
 0:80              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:80            'c2' (uniform 2-component vector of float)
-0:80            'o2' (uniform 2-component vector of int)
+0:80            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:80              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:80              Constant:
+0:80                1 (const uint)
+0:80            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:80              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:80              Constant:
+0:80                5 (const uint)
 0:80            Constant:
 0:80              2 (const int)
 0:82      Sequence
@@ -201,12 +345,27 @@ gl_FragCoord origin is upper left
 0:82            Construct combined texture-sampler (temp sampler2D)
 0:82              'g_tTex2df4' (uniform texture2D)
 0:82              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:82            'c2' (uniform 2-component vector of float)
+0:82            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:82              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:82              Constant:
+0:82                1 (const uint)
 0:82            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:82              'o2' (uniform 2-component vector of int)
-0:82              'o2' (uniform 2-component vector of int)
-0:82              'o2' (uniform 2-component vector of int)
-0:82              'o2' (uniform 2-component vector of int)
+0:82              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:82                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:82                Constant:
+0:82                  5 (const uint)
+0:82              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:82                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:82                Constant:
+0:82                  5 (const uint)
+0:82              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:82                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:82                Constant:
+0:82                  5 (const uint)
+0:82              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:82                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:82                Constant:
+0:82                  5 (const uint)
 0:82            Constant:
 0:82              2 (const int)
 0:83      Sequence
@@ -216,12 +375,27 @@ gl_FragCoord origin is upper left
 0:83            Construct combined texture-sampler (temp isampler2D)
 0:83              'g_tTex2di4' (uniform itexture2D)
 0:83              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:83            'c2' (uniform 2-component vector of float)
+0:83            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:83              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:83              Constant:
+0:83                1 (const uint)
 0:83            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:83              'o2' (uniform 2-component vector of int)
-0:83              'o2' (uniform 2-component vector of int)
-0:83              'o2' (uniform 2-component vector of int)
-0:83              'o2' (uniform 2-component vector of int)
+0:83              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:83                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:83                Constant:
+0:83                  5 (const uint)
+0:83              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:83                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:83                Constant:
+0:83                  5 (const uint)
+0:83              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:83                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:83                Constant:
+0:83                  5 (const uint)
+0:83              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:83                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:83                Constant:
+0:83                  5 (const uint)
 0:83            Constant:
 0:83              2 (const int)
 0:84      Sequence
@@ -231,12 +405,27 @@ gl_FragCoord origin is upper left
 0:84            Construct combined texture-sampler (temp usampler2D)
 0:84              'g_tTex2du4' (uniform utexture2D)
 0:84              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:84            'c2' (uniform 2-component vector of float)
+0:84            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:84              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:84              Constant:
+0:84                1 (const uint)
 0:84            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:84              'o2' (uniform 2-component vector of int)
-0:84              'o2' (uniform 2-component vector of int)
-0:84              'o2' (uniform 2-component vector of int)
-0:84              'o2' (uniform 2-component vector of int)
+0:84              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:84                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:84                Constant:
+0:84                  5 (const uint)
+0:84              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:84                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:84                Constant:
+0:84                  5 (const uint)
+0:84              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:84                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:84                Constant:
+0:84                  5 (const uint)
+0:84              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:84                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:84                Constant:
+0:84                  5 (const uint)
 0:84            Constant:
 0:84              2 (const int)
 0:94      Sequence
@@ -246,8 +435,14 @@ gl_FragCoord origin is upper left
 0:94            Construct combined texture-sampler (temp sampler2D)
 0:94              'g_tTex2df4' (uniform texture2D)
 0:94              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:94            'c2' (uniform 2-component vector of float)
-0:94            'o2' (uniform 2-component vector of int)
+0:94            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:94              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:94              Constant:
+0:94                1 (const uint)
+0:94            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:94              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:94              Constant:
+0:94                5 (const uint)
 0:94            Constant:
 0:94              3 (const int)
 0:95      Sequence
@@ -257,8 +452,14 @@ gl_FragCoord origin is upper left
 0:95            Construct combined texture-sampler (temp isampler2D)
 0:95              'g_tTex2di4' (uniform itexture2D)
 0:95              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:95            'c2' (uniform 2-component vector of float)
-0:95            'o2' (uniform 2-component vector of int)
+0:95            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:95              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:95              Constant:
+0:95                1 (const uint)
+0:95            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:95              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:95              Constant:
+0:95                5 (const uint)
 0:95            Constant:
 0:95              3 (const int)
 0:96      Sequence
@@ -268,8 +469,14 @@ gl_FragCoord origin is upper left
 0:96            Construct combined texture-sampler (temp usampler2D)
 0:96              'g_tTex2du4' (uniform utexture2D)
 0:96              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:96            'c2' (uniform 2-component vector of float)
-0:96            'o2' (uniform 2-component vector of int)
+0:96            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:96              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:96              Constant:
+0:96                1 (const uint)
+0:96            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:96              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:96              Constant:
+0:96                5 (const uint)
 0:96            Constant:
 0:96              3 (const int)
 0:98      Sequence
@@ -279,12 +486,27 @@ gl_FragCoord origin is upper left
 0:98            Construct combined texture-sampler (temp sampler2D)
 0:98              'g_tTex2df4' (uniform texture2D)
 0:98              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:98            'c2' (uniform 2-component vector of float)
+0:98            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:98              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:98              Constant:
+0:98                1 (const uint)
 0:98            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:98              'o2' (uniform 2-component vector of int)
-0:98              'o2' (uniform 2-component vector of int)
-0:98              'o2' (uniform 2-component vector of int)
-0:98              'o2' (uniform 2-component vector of int)
+0:98              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:98                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:98                Constant:
+0:98                  5 (const uint)
+0:98              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:98                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:98                Constant:
+0:98                  5 (const uint)
+0:98              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:98                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:98                Constant:
+0:98                  5 (const uint)
+0:98              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:98                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:98                Constant:
+0:98                  5 (const uint)
 0:98            Constant:
 0:98              3 (const int)
 0:99      Sequence
@@ -294,12 +516,27 @@ gl_FragCoord origin is upper left
 0:99            Construct combined texture-sampler (temp isampler2D)
 0:99              'g_tTex2di4' (uniform itexture2D)
 0:99              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:99            'c2' (uniform 2-component vector of float)
+0:99            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:99              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:99              Constant:
+0:99                1 (const uint)
 0:99            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:99              'o2' (uniform 2-component vector of int)
-0:99              'o2' (uniform 2-component vector of int)
-0:99              'o2' (uniform 2-component vector of int)
-0:99              'o2' (uniform 2-component vector of int)
+0:99              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:99                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:99                Constant:
+0:99                  5 (const uint)
+0:99              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:99                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:99                Constant:
+0:99                  5 (const uint)
+0:99              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:99                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:99                Constant:
+0:99                  5 (const uint)
+0:99              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:99                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:99                Constant:
+0:99                  5 (const uint)
 0:99            Constant:
 0:99              3 (const int)
 0:100      Sequence
@@ -309,12 +546,27 @@ gl_FragCoord origin is upper left
 0:100            Construct combined texture-sampler (temp usampler2D)
 0:100              'g_tTex2du4' (uniform utexture2D)
 0:100              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:100            'c2' (uniform 2-component vector of float)
+0:100            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:100              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:100              Constant:
+0:100                1 (const uint)
 0:100            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:100              'o2' (uniform 2-component vector of int)
-0:100              'o2' (uniform 2-component vector of int)
-0:100              'o2' (uniform 2-component vector of int)
-0:100              'o2' (uniform 2-component vector of int)
+0:100              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:100                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:100                Constant:
+0:100                  5 (const uint)
+0:100              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:100                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:100                Constant:
+0:100                  5 (const uint)
+0:100              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:100                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:100                Constant:
+0:100                  5 (const uint)
+0:100              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:100                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:100                Constant:
+0:100                  5 (const uint)
 0:100            Constant:
 0:100              3 (const int)
 0:112      move second child to first child (temp 4-component vector of float)
@@ -365,16 +617,9 @@ gl_FragCoord origin is upper left
 0:?     'g_tTexcdf4' (uniform textureCube)
 0:?     'g_tTexcdi4' (uniform itextureCube)
 0:?     'g_tTexcdu4' (uniform utextureCube)
-0:?     'c1' (uniform float)
-0:?     'c2' (uniform 2-component vector of float)
-0:?     'c3' (uniform 3-component vector of float)
-0:?     'c4' (uniform 4-component vector of float)
-0:?     'o1' (uniform int)
-0:?     'o2' (uniform 2-component vector of int)
-0:?     'o3' (uniform 3-component vector of int)
-0:?     'o4' (uniform 4-component vector of int)
 0:?     'Color' (layout(location=0 ) out 4-component vector of float)
 0:?     'Depth' (out float FragDepth)
+0:?     'anon@0' (uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 
 
 Linked fragment stage:
@@ -383,7 +628,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:39  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float Depth})
+0:39  Function Definition: main( (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:39    Function Parameters: 
 0:?     Sequence
 0:46      Sequence
@@ -393,8 +638,14 @@ gl_FragCoord origin is upper left
 0:46            Construct combined texture-sampler (temp sampler2D)
 0:46              'g_tTex2df4' (uniform texture2D)
 0:46              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:46            'c2' (uniform 2-component vector of float)
-0:46            'o2' (uniform 2-component vector of int)
+0:46            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:46              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:46              Constant:
+0:46                1 (const uint)
+0:46            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:46              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:46              Constant:
+0:46                5 (const uint)
 0:46            Constant:
 0:46              0 (const int)
 0:47      Sequence
@@ -404,8 +655,14 @@ gl_FragCoord origin is upper left
 0:47            Construct combined texture-sampler (temp isampler2D)
 0:47              'g_tTex2di4' (uniform itexture2D)
 0:47              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:47            'c2' (uniform 2-component vector of float)
-0:47            'o2' (uniform 2-component vector of int)
+0:47            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:47              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:47              Constant:
+0:47                1 (const uint)
+0:47            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:47              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:47              Constant:
+0:47                5 (const uint)
 0:47            Constant:
 0:47              0 (const int)
 0:48      Sequence
@@ -415,8 +672,14 @@ gl_FragCoord origin is upper left
 0:48            Construct combined texture-sampler (temp usampler2D)
 0:48              'g_tTex2du4' (uniform utexture2D)
 0:48              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:48            'c2' (uniform 2-component vector of float)
-0:48            'o2' (uniform 2-component vector of int)
+0:48            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:48              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:48              Constant:
+0:48                1 (const uint)
+0:48            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:48              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:48              Constant:
+0:48                5 (const uint)
 0:48            Constant:
 0:48              0 (const int)
 0:50      Sequence
@@ -426,12 +689,27 @@ gl_FragCoord origin is upper left
 0:50            Construct combined texture-sampler (temp sampler2D)
 0:50              'g_tTex2df4' (uniform texture2D)
 0:50              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:50            'c2' (uniform 2-component vector of float)
+0:50            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:50              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:50              Constant:
+0:50                1 (const uint)
 0:50            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:50              'o2' (uniform 2-component vector of int)
-0:50              'o2' (uniform 2-component vector of int)
-0:50              'o2' (uniform 2-component vector of int)
-0:50              'o2' (uniform 2-component vector of int)
+0:50              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:50                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:50                Constant:
+0:50                  5 (const uint)
+0:50              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:50                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:50                Constant:
+0:50                  5 (const uint)
+0:50              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:50                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:50                Constant:
+0:50                  5 (const uint)
+0:50              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:50                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:50                Constant:
+0:50                  5 (const uint)
 0:50            Constant:
 0:50              0 (const int)
 0:51      Sequence
@@ -441,12 +719,27 @@ gl_FragCoord origin is upper left
 0:51            Construct combined texture-sampler (temp isampler2D)
 0:51              'g_tTex2di4' (uniform itexture2D)
 0:51              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:51            'c2' (uniform 2-component vector of float)
+0:51            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:51              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:51              Constant:
+0:51                1 (const uint)
 0:51            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:51              'o2' (uniform 2-component vector of int)
-0:51              'o2' (uniform 2-component vector of int)
-0:51              'o2' (uniform 2-component vector of int)
-0:51              'o2' (uniform 2-component vector of int)
+0:51              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:51                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:51                Constant:
+0:51                  5 (const uint)
+0:51              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:51                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:51                Constant:
+0:51                  5 (const uint)
+0:51              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:51                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:51                Constant:
+0:51                  5 (const uint)
+0:51              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:51                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:51                Constant:
+0:51                  5 (const uint)
 0:51            Constant:
 0:51              0 (const int)
 0:52      Sequence
@@ -456,12 +749,27 @@ gl_FragCoord origin is upper left
 0:52            Construct combined texture-sampler (temp usampler2D)
 0:52              'g_tTex2du4' (uniform utexture2D)
 0:52              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:52            'c2' (uniform 2-component vector of float)
+0:52            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:52              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:52              Constant:
+0:52                1 (const uint)
 0:52            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:52              'o2' (uniform 2-component vector of int)
-0:52              'o2' (uniform 2-component vector of int)
-0:52              'o2' (uniform 2-component vector of int)
-0:52              'o2' (uniform 2-component vector of int)
+0:52              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:52                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:52                Constant:
+0:52                  5 (const uint)
+0:52              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:52                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:52                Constant:
+0:52                  5 (const uint)
+0:52              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:52                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:52                Constant:
+0:52                  5 (const uint)
+0:52              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:52                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:52                Constant:
+0:52                  5 (const uint)
 0:52            Constant:
 0:52              0 (const int)
 0:62      Sequence
@@ -471,8 +779,14 @@ gl_FragCoord origin is upper left
 0:62            Construct combined texture-sampler (temp sampler2D)
 0:62              'g_tTex2df4' (uniform texture2D)
 0:62              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:62            'c2' (uniform 2-component vector of float)
-0:62            'o2' (uniform 2-component vector of int)
+0:62            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:62              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:62              Constant:
+0:62                1 (const uint)
+0:62            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:62              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:62              Constant:
+0:62                5 (const uint)
 0:62            Constant:
 0:62              1 (const int)
 0:63      Sequence
@@ -482,8 +796,14 @@ gl_FragCoord origin is upper left
 0:63            Construct combined texture-sampler (temp isampler2D)
 0:63              'g_tTex2di4' (uniform itexture2D)
 0:63              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:63            'c2' (uniform 2-component vector of float)
-0:63            'o2' (uniform 2-component vector of int)
+0:63            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:63              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:63              Constant:
+0:63                1 (const uint)
+0:63            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:63              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:63              Constant:
+0:63                5 (const uint)
 0:63            Constant:
 0:63              1 (const int)
 0:64      Sequence
@@ -493,8 +813,14 @@ gl_FragCoord origin is upper left
 0:64            Construct combined texture-sampler (temp usampler2D)
 0:64              'g_tTex2du4' (uniform utexture2D)
 0:64              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:64            'c2' (uniform 2-component vector of float)
-0:64            'o2' (uniform 2-component vector of int)
+0:64            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:64              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:64              Constant:
+0:64                1 (const uint)
+0:64            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:64              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:64              Constant:
+0:64                5 (const uint)
 0:64            Constant:
 0:64              1 (const int)
 0:66      Sequence
@@ -504,12 +830,27 @@ gl_FragCoord origin is upper left
 0:66            Construct combined texture-sampler (temp sampler2D)
 0:66              'g_tTex2df4' (uniform texture2D)
 0:66              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:66            'c2' (uniform 2-component vector of float)
+0:66            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:66              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:66              Constant:
+0:66                1 (const uint)
 0:66            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:66              'o2' (uniform 2-component vector of int)
-0:66              'o2' (uniform 2-component vector of int)
-0:66              'o2' (uniform 2-component vector of int)
-0:66              'o2' (uniform 2-component vector of int)
+0:66              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:66                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:66                Constant:
+0:66                  5 (const uint)
+0:66              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:66                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:66                Constant:
+0:66                  5 (const uint)
+0:66              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:66                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:66                Constant:
+0:66                  5 (const uint)
+0:66              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:66                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:66                Constant:
+0:66                  5 (const uint)
 0:66            Constant:
 0:66              1 (const int)
 0:67      Sequence
@@ -519,12 +860,27 @@ gl_FragCoord origin is upper left
 0:67            Construct combined texture-sampler (temp isampler2D)
 0:67              'g_tTex2di4' (uniform itexture2D)
 0:67              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:67            'c2' (uniform 2-component vector of float)
+0:67            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:67              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:67              Constant:
+0:67                1 (const uint)
 0:67            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:67              'o2' (uniform 2-component vector of int)
-0:67              'o2' (uniform 2-component vector of int)
-0:67              'o2' (uniform 2-component vector of int)
-0:67              'o2' (uniform 2-component vector of int)
+0:67              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:67                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:67                Constant:
+0:67                  5 (const uint)
+0:67              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:67                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:67                Constant:
+0:67                  5 (const uint)
+0:67              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:67                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:67                Constant:
+0:67                  5 (const uint)
+0:67              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:67                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:67                Constant:
+0:67                  5 (const uint)
 0:67            Constant:
 0:67              1 (const int)
 0:68      Sequence
@@ -534,12 +890,27 @@ gl_FragCoord origin is upper left
 0:68            Construct combined texture-sampler (temp usampler2D)
 0:68              'g_tTex2du4' (uniform utexture2D)
 0:68              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:68            'c2' (uniform 2-component vector of float)
+0:68            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:68              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:68              Constant:
+0:68                1 (const uint)
 0:68            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:68              'o2' (uniform 2-component vector of int)
-0:68              'o2' (uniform 2-component vector of int)
-0:68              'o2' (uniform 2-component vector of int)
-0:68              'o2' (uniform 2-component vector of int)
+0:68              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:68                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:68                Constant:
+0:68                  5 (const uint)
+0:68              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:68                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:68                Constant:
+0:68                  5 (const uint)
+0:68              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:68                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:68                Constant:
+0:68                  5 (const uint)
+0:68              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:68                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:68                Constant:
+0:68                  5 (const uint)
 0:68            Constant:
 0:68              1 (const int)
 0:78      Sequence
@@ -549,8 +920,14 @@ gl_FragCoord origin is upper left
 0:78            Construct combined texture-sampler (temp sampler2D)
 0:78              'g_tTex2df4' (uniform texture2D)
 0:78              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:78            'c2' (uniform 2-component vector of float)
-0:78            'o2' (uniform 2-component vector of int)
+0:78            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:78              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:78              Constant:
+0:78                1 (const uint)
+0:78            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:78              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:78              Constant:
+0:78                5 (const uint)
 0:78            Constant:
 0:78              2 (const int)
 0:79      Sequence
@@ -560,8 +937,14 @@ gl_FragCoord origin is upper left
 0:79            Construct combined texture-sampler (temp isampler2D)
 0:79              'g_tTex2di4' (uniform itexture2D)
 0:79              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:79            'c2' (uniform 2-component vector of float)
-0:79            'o2' (uniform 2-component vector of int)
+0:79            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:79              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:79              Constant:
+0:79                1 (const uint)
+0:79            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:79              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:79              Constant:
+0:79                5 (const uint)
 0:79            Constant:
 0:79              2 (const int)
 0:80      Sequence
@@ -571,8 +954,14 @@ gl_FragCoord origin is upper left
 0:80            Construct combined texture-sampler (temp usampler2D)
 0:80              'g_tTex2du4' (uniform utexture2D)
 0:80              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:80            'c2' (uniform 2-component vector of float)
-0:80            'o2' (uniform 2-component vector of int)
+0:80            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:80              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:80              Constant:
+0:80                1 (const uint)
+0:80            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:80              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:80              Constant:
+0:80                5 (const uint)
 0:80            Constant:
 0:80              2 (const int)
 0:82      Sequence
@@ -582,12 +971,27 @@ gl_FragCoord origin is upper left
 0:82            Construct combined texture-sampler (temp sampler2D)
 0:82              'g_tTex2df4' (uniform texture2D)
 0:82              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:82            'c2' (uniform 2-component vector of float)
+0:82            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:82              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:82              Constant:
+0:82                1 (const uint)
 0:82            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:82              'o2' (uniform 2-component vector of int)
-0:82              'o2' (uniform 2-component vector of int)
-0:82              'o2' (uniform 2-component vector of int)
-0:82              'o2' (uniform 2-component vector of int)
+0:82              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:82                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:82                Constant:
+0:82                  5 (const uint)
+0:82              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:82                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:82                Constant:
+0:82                  5 (const uint)
+0:82              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:82                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:82                Constant:
+0:82                  5 (const uint)
+0:82              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:82                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:82                Constant:
+0:82                  5 (const uint)
 0:82            Constant:
 0:82              2 (const int)
 0:83      Sequence
@@ -597,12 +1001,27 @@ gl_FragCoord origin is upper left
 0:83            Construct combined texture-sampler (temp isampler2D)
 0:83              'g_tTex2di4' (uniform itexture2D)
 0:83              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:83            'c2' (uniform 2-component vector of float)
+0:83            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:83              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:83              Constant:
+0:83                1 (const uint)
 0:83            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:83              'o2' (uniform 2-component vector of int)
-0:83              'o2' (uniform 2-component vector of int)
-0:83              'o2' (uniform 2-component vector of int)
-0:83              'o2' (uniform 2-component vector of int)
+0:83              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:83                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:83                Constant:
+0:83                  5 (const uint)
+0:83              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:83                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:83                Constant:
+0:83                  5 (const uint)
+0:83              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:83                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:83                Constant:
+0:83                  5 (const uint)
+0:83              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:83                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:83                Constant:
+0:83                  5 (const uint)
 0:83            Constant:
 0:83              2 (const int)
 0:84      Sequence
@@ -612,12 +1031,27 @@ gl_FragCoord origin is upper left
 0:84            Construct combined texture-sampler (temp usampler2D)
 0:84              'g_tTex2du4' (uniform utexture2D)
 0:84              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:84            'c2' (uniform 2-component vector of float)
+0:84            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:84              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:84              Constant:
+0:84                1 (const uint)
 0:84            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:84              'o2' (uniform 2-component vector of int)
-0:84              'o2' (uniform 2-component vector of int)
-0:84              'o2' (uniform 2-component vector of int)
-0:84              'o2' (uniform 2-component vector of int)
+0:84              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:84                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:84                Constant:
+0:84                  5 (const uint)
+0:84              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:84                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:84                Constant:
+0:84                  5 (const uint)
+0:84              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:84                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:84                Constant:
+0:84                  5 (const uint)
+0:84              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:84                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:84                Constant:
+0:84                  5 (const uint)
 0:84            Constant:
 0:84              2 (const int)
 0:94      Sequence
@@ -627,8 +1061,14 @@ gl_FragCoord origin is upper left
 0:94            Construct combined texture-sampler (temp sampler2D)
 0:94              'g_tTex2df4' (uniform texture2D)
 0:94              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:94            'c2' (uniform 2-component vector of float)
-0:94            'o2' (uniform 2-component vector of int)
+0:94            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:94              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:94              Constant:
+0:94                1 (const uint)
+0:94            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:94              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:94              Constant:
+0:94                5 (const uint)
 0:94            Constant:
 0:94              3 (const int)
 0:95      Sequence
@@ -638,8 +1078,14 @@ gl_FragCoord origin is upper left
 0:95            Construct combined texture-sampler (temp isampler2D)
 0:95              'g_tTex2di4' (uniform itexture2D)
 0:95              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:95            'c2' (uniform 2-component vector of float)
-0:95            'o2' (uniform 2-component vector of int)
+0:95            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:95              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:95              Constant:
+0:95                1 (const uint)
+0:95            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:95              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:95              Constant:
+0:95                5 (const uint)
 0:95            Constant:
 0:95              3 (const int)
 0:96      Sequence
@@ -649,8 +1095,14 @@ gl_FragCoord origin is upper left
 0:96            Construct combined texture-sampler (temp usampler2D)
 0:96              'g_tTex2du4' (uniform utexture2D)
 0:96              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:96            'c2' (uniform 2-component vector of float)
-0:96            'o2' (uniform 2-component vector of int)
+0:96            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:96              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:96              Constant:
+0:96                1 (const uint)
+0:96            o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:96              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:96              Constant:
+0:96                5 (const uint)
 0:96            Constant:
 0:96              3 (const int)
 0:98      Sequence
@@ -660,12 +1112,27 @@ gl_FragCoord origin is upper left
 0:98            Construct combined texture-sampler (temp sampler2D)
 0:98              'g_tTex2df4' (uniform texture2D)
 0:98              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:98            'c2' (uniform 2-component vector of float)
+0:98            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:98              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:98              Constant:
+0:98                1 (const uint)
 0:98            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:98              'o2' (uniform 2-component vector of int)
-0:98              'o2' (uniform 2-component vector of int)
-0:98              'o2' (uniform 2-component vector of int)
-0:98              'o2' (uniform 2-component vector of int)
+0:98              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:98                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:98                Constant:
+0:98                  5 (const uint)
+0:98              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:98                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:98                Constant:
+0:98                  5 (const uint)
+0:98              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:98                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:98                Constant:
+0:98                  5 (const uint)
+0:98              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:98                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:98                Constant:
+0:98                  5 (const uint)
 0:98            Constant:
 0:98              3 (const int)
 0:99      Sequence
@@ -675,12 +1142,27 @@ gl_FragCoord origin is upper left
 0:99            Construct combined texture-sampler (temp isampler2D)
 0:99              'g_tTex2di4' (uniform itexture2D)
 0:99              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:99            'c2' (uniform 2-component vector of float)
+0:99            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:99              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:99              Constant:
+0:99                1 (const uint)
 0:99            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:99              'o2' (uniform 2-component vector of int)
-0:99              'o2' (uniform 2-component vector of int)
-0:99              'o2' (uniform 2-component vector of int)
-0:99              'o2' (uniform 2-component vector of int)
+0:99              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:99                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:99                Constant:
+0:99                  5 (const uint)
+0:99              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:99                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:99                Constant:
+0:99                  5 (const uint)
+0:99              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:99                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:99                Constant:
+0:99                  5 (const uint)
+0:99              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:99                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:99                Constant:
+0:99                  5 (const uint)
 0:99            Constant:
 0:99              3 (const int)
 0:100      Sequence
@@ -690,12 +1172,27 @@ gl_FragCoord origin is upper left
 0:100            Construct combined texture-sampler (temp usampler2D)
 0:100              'g_tTex2du4' (uniform utexture2D)
 0:100              'g_sSamp' (layout(binding=0 ) uniform sampler)
-0:100            'c2' (uniform 2-component vector of float)
+0:100            c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of float)
+0:100              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:100              Constant:
+0:100                1 (const uint)
 0:100            Construct ivec2 (temp 4-element array of 2-component vector of int)
-0:100              'o2' (uniform 2-component vector of int)
-0:100              'o2' (uniform 2-component vector of int)
-0:100              'o2' (uniform 2-component vector of int)
-0:100              'o2' (uniform 2-component vector of int)
+0:100              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:100                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:100                Constant:
+0:100                  5 (const uint)
+0:100              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:100                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:100                Constant:
+0:100                  5 (const uint)
+0:100              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:100                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:100                Constant:
+0:100                  5 (const uint)
+0:100              o2: direct index for structure (layout(offset=56 ) uniform 2-component vector of int)
+0:100                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:100                Constant:
+0:100                  5 (const uint)
 0:100            Constant:
 0:100              3 (const int)
 0:112      move second child to first child (temp 4-component vector of float)
@@ -746,102 +1243,107 @@ gl_FragCoord origin is upper left
 0:?     'g_tTexcdf4' (uniform textureCube)
 0:?     'g_tTexcdi4' (uniform itextureCube)
 0:?     'g_tTexcdu4' (uniform utextureCube)
-0:?     'c1' (uniform float)
-0:?     'c2' (uniform 2-component vector of float)
-0:?     'c3' (uniform 3-component vector of float)
-0:?     'c4' (uniform 4-component vector of float)
-0:?     'o1' (uniform int)
-0:?     'o2' (uniform 2-component vector of int)
-0:?     'o3' (uniform 3-component vector of int)
-0:?     'o4' (uniform 4-component vector of int)
 0:?     'Color' (layout(location=0 ) out 4-component vector of float)
 0:?     'Depth' (out float FragDepth)
+0:?     'anon@0' (uniform block{layout(offset=0 ) uniform float c1, layout(offset=8 ) uniform 2-component vector of float c2, layout(offset=16 ) uniform 3-component vector of float c3, layout(offset=32 ) uniform 4-component vector of float c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 
 // Module Version 10000
 // Generated by (magic number): 80001
-// Id's are bound by 318
+// Id's are bound by 392
 
                               Capability Shader
                               Capability ImageGatherExtended
                               Capability Sampled1D
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 267 271
+                              EntryPoint Fragment 4  "main" 355 359
                               ExecutionMode 4 OriginUpperLeft
                               Name 4  "main"
                               Name 9  "txval001"
                               Name 12  "g_tTex2df4"
                               Name 16  "g_sSamp"
-                              Name 22  "c2"
-                              Name 27  "o2"
-                              Name 33  "txval011"
-                              Name 36  "g_tTex2di4"
-                              Name 47  "txval021"
-                              Name 50  "g_tTex2du4"
-                              Name 58  "txval004"
-                              Name 71  "txval014"
-                              Name 82  "txval024"
-                              Name 93  "txval101"
-                              Name 101  "txval111"
-                              Name 108  "txval121"
-                              Name 115  "txval104"
-                              Name 126  "txval114"
-                              Name 137  "txval124"
-                              Name 148  "txval201"
-                              Name 156  "txval211"
-                              Name 163  "txval221"
-                              Name 170  "txval204"
-                              Name 181  "txval214"
-                              Name 192  "txval224"
-                              Name 203  "txval301"
-                              Name 211  "txval311"
-                              Name 218  "txval321"
-                              Name 225  "txval304"
-                              Name 236  "txval314"
-                              Name 247  "txval324"
-                              Name 258  "PS_OUTPUT"
-                              MemberName 258(PS_OUTPUT) 0  "Color"
-                              MemberName 258(PS_OUTPUT) 1  "Depth"
-                              Name 260  "psout"
-                              Name 267  "Color"
-                              Name 271  "Depth"
-                              Name 275  "g_sSamp2d"
-                              Name 278  "g_tTex1df4a"
-                              Name 279  "g_tTex1df4"
-                              Name 282  "g_tTex1di4"
-                              Name 285  "g_tTex1du4"
-                              Name 288  "g_tTex3df4"
-                              Name 291  "g_tTex3di4"
-                              Name 294  "g_tTex3du4"
-                              Name 297  "g_tTexcdf4"
-                              Name 300  "g_tTexcdi4"
-                              Name 303  "g_tTexcdu4"
-                              Name 305  "c1"
-                              Name 308  "c3"
-                              Name 310  "c4"
-                              Name 312  "o1"
-                              Name 315  "o3"
-                              Name 317  "o4"
+                              Name 26  "$Global"
+                              MemberName 26($Global) 0  "c1"
+                              MemberName 26($Global) 1  "c2"
+                              MemberName 26($Global) 2  "c3"
+                              MemberName 26($Global) 3  "c4"
+                              MemberName 26($Global) 4  "o1"
+                              MemberName 26($Global) 5  "o2"
+                              MemberName 26($Global) 6  "o3"
+                              MemberName 26($Global) 7  "o4"
+                              Name 28  ""
+                              Name 40  "txval011"
+                              Name 43  "g_tTex2di4"
+                              Name 56  "txval021"
+                              Name 59  "g_tTex2du4"
+                              Name 69  "txval004"
+                              Name 87  "txval014"
+                              Name 103  "txval024"
+                              Name 119  "txval101"
+                              Name 128  "txval111"
+                              Name 137  "txval121"
+                              Name 146  "txval104"
+                              Name 162  "txval114"
+                              Name 178  "txval124"
+                              Name 194  "txval201"
+                              Name 204  "txval211"
+                              Name 213  "txval221"
+                              Name 222  "txval204"
+                              Name 238  "txval214"
+                              Name 254  "txval224"
+                              Name 270  "txval301"
+                              Name 280  "txval311"
+                              Name 289  "txval321"
+                              Name 298  "txval304"
+                              Name 314  "txval314"
+                              Name 330  "txval324"
+                              Name 346  "PS_OUTPUT"
+                              MemberName 346(PS_OUTPUT) 0  "Color"
+                              MemberName 346(PS_OUTPUT) 1  "Depth"
+                              Name 348  "psout"
+                              Name 355  "Color"
+                              Name 359  "Depth"
+                              Name 363  "g_sSamp2d"
+                              Name 366  "g_tTex1df4a"
+                              Name 367  "g_tTex1df4"
+                              Name 370  "g_tTex1di4"
+                              Name 373  "g_tTex1du4"
+                              Name 376  "g_tTex3df4"
+                              Name 379  "g_tTex3di4"
+                              Name 382  "g_tTex3du4"
+                              Name 385  "g_tTexcdf4"
+                              Name 388  "g_tTexcdi4"
+                              Name 391  "g_tTexcdu4"
                               Decorate 12(g_tTex2df4) DescriptorSet 0
                               Decorate 16(g_sSamp) DescriptorSet 0
                               Decorate 16(g_sSamp) Binding 0
-                              Decorate 36(g_tTex2di4) DescriptorSet 0
-                              Decorate 50(g_tTex2du4) DescriptorSet 0
-                              Decorate 267(Color) Location 0
-                              Decorate 271(Depth) BuiltIn FragDepth
-                              Decorate 275(g_sSamp2d) DescriptorSet 0
-                              Decorate 278(g_tTex1df4a) DescriptorSet 0
-                              Decorate 278(g_tTex1df4a) Binding 1
-                              Decorate 279(g_tTex1df4) DescriptorSet 0
-                              Decorate 279(g_tTex1df4) Binding 0
-                              Decorate 282(g_tTex1di4) DescriptorSet 0
-                              Decorate 285(g_tTex1du4) DescriptorSet 0
-                              Decorate 288(g_tTex3df4) DescriptorSet 0
-                              Decorate 291(g_tTex3di4) DescriptorSet 0
-                              Decorate 294(g_tTex3du4) DescriptorSet 0
-                              Decorate 297(g_tTexcdf4) DescriptorSet 0
-                              Decorate 300(g_tTexcdi4) DescriptorSet 0
-                              Decorate 303(g_tTexcdu4) DescriptorSet 0
+                              MemberDecorate 26($Global) 0 Offset 0
+                              MemberDecorate 26($Global) 1 Offset 8
+                              MemberDecorate 26($Global) 2 Offset 16
+                              MemberDecorate 26($Global) 3 Offset 32
+                              MemberDecorate 26($Global) 4 Offset 48
+                              MemberDecorate 26($Global) 5 Offset 56
+                              MemberDecorate 26($Global) 6 Offset 64
+                              MemberDecorate 26($Global) 7 Offset 80
+                              Decorate 26($Global) Block
+                              Decorate 28 DescriptorSet 0
+                              Decorate 43(g_tTex2di4) DescriptorSet 0
+                              Decorate 59(g_tTex2du4) DescriptorSet 0
+                              Decorate 355(Color) Location 0
+                              Decorate 359(Depth) BuiltIn FragDepth
+                              Decorate 363(g_sSamp2d) DescriptorSet 0
+                              Decorate 366(g_tTex1df4a) DescriptorSet 0
+                              Decorate 366(g_tTex1df4a) Binding 1
+                              Decorate 367(g_tTex1df4) DescriptorSet 0
+                              Decorate 367(g_tTex1df4) Binding 0
+                              Decorate 370(g_tTex1di4) DescriptorSet 0
+                              Decorate 373(g_tTex1du4) DescriptorSet 0
+                              Decorate 376(g_tTex3df4) DescriptorSet 0
+                              Decorate 379(g_tTex3di4) DescriptorSet 0
+                              Decorate 382(g_tTex3du4) DescriptorSet 0
+                              Decorate 385(g_tTexcdf4) DescriptorSet 0
+                              Decorate 388(g_tTexcdi4) DescriptorSet 0
+                              Decorate 391(g_tTexcdu4) DescriptorSet 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -855,335 +1357,409 @@ gl_FragCoord origin is upper left
      16(g_sSamp):     15(ptr) Variable UniformConstant
               18:             TypeSampledImage 10
               20:             TypeVector 6(float) 2
-              21:             TypePointer UniformConstant 20(fvec2)
-          22(c2):     21(ptr) Variable UniformConstant
-              24:             TypeInt 32 1
-              25:             TypeVector 24(int) 2
-              26:             TypePointer UniformConstant 25(ivec2)
-          27(o2):     26(ptr) Variable UniformConstant
-              29:     24(int) Constant 0
-              31:             TypeVector 24(int) 4
-              32:             TypePointer Function 31(ivec4)
-              34:             TypeImage 24(int) 2D sampled format:Unknown
-              35:             TypePointer UniformConstant 34
-  36(g_tTex2di4):     35(ptr) Variable UniformConstant
-              39:             TypeSampledImage 34
-              44:             TypeInt 32 0
-              45:             TypeVector 44(int) 4
-              46:             TypePointer Function 45(ivec4)
-              48:             TypeImage 44(int) 2D sampled format:Unknown
-              49:             TypePointer UniformConstant 48
-  50(g_tTex2du4):     49(ptr) Variable UniformConstant
-              53:             TypeSampledImage 48
-              67:     44(int) Constant 4
-              68:             TypeArray 25(ivec2) 67
-              99:     24(int) Constant 1
-             154:     24(int) Constant 2
-             209:     24(int) Constant 3
-  258(PS_OUTPUT):             TypeStruct 7(fvec4) 6(float)
-             259:             TypePointer Function 258(PS_OUTPUT)
-             261:    6(float) Constant 1065353216
-             262:    7(fvec4) ConstantComposite 261 261 261 261
-             264:             TypePointer Function 6(float)
-             266:             TypePointer Output 7(fvec4)
-      267(Color):    266(ptr) Variable Output
-             270:             TypePointer Output 6(float)
-      271(Depth):    270(ptr) Variable Output
-  275(g_sSamp2d):     15(ptr) Variable UniformConstant
-             276:             TypeImage 6(float) 1D sampled format:Unknown
-             277:             TypePointer UniformConstant 276
-278(g_tTex1df4a):    277(ptr) Variable UniformConstant
- 279(g_tTex1df4):    277(ptr) Variable UniformConstant
-             280:             TypeImage 24(int) 1D sampled format:Unknown
-             281:             TypePointer UniformConstant 280
- 282(g_tTex1di4):    281(ptr) Variable UniformConstant
-             283:             TypeImage 44(int) 1D sampled format:Unknown
-             284:             TypePointer UniformConstant 283
- 285(g_tTex1du4):    284(ptr) Variable UniformConstant
-             286:             TypeImage 6(float) 3D sampled format:Unknown
-             287:             TypePointer UniformConstant 286
- 288(g_tTex3df4):    287(ptr) Variable UniformConstant
-             289:             TypeImage 24(int) 3D sampled format:Unknown
-             290:             TypePointer UniformConstant 289
- 291(g_tTex3di4):    290(ptr) Variable UniformConstant
-             292:             TypeImage 44(int) 3D sampled format:Unknown
-             293:             TypePointer UniformConstant 292
- 294(g_tTex3du4):    293(ptr) Variable UniformConstant
-             295:             TypeImage 6(float) Cube sampled format:Unknown
-             296:             TypePointer UniformConstant 295
- 297(g_tTexcdf4):    296(ptr) Variable UniformConstant
-             298:             TypeImage 24(int) Cube sampled format:Unknown
-             299:             TypePointer UniformConstant 298
- 300(g_tTexcdi4):    299(ptr) Variable UniformConstant
-             301:             TypeImage 44(int) Cube sampled format:Unknown
-             302:             TypePointer UniformConstant 301
- 303(g_tTexcdu4):    302(ptr) Variable UniformConstant
-             304:             TypePointer UniformConstant 6(float)
-         305(c1):    304(ptr) Variable UniformConstant
-             306:             TypeVector 6(float) 3
-             307:             TypePointer UniformConstant 306(fvec3)
-         308(c3):    307(ptr) Variable UniformConstant
-             309:             TypePointer UniformConstant 7(fvec4)
-         310(c4):    309(ptr) Variable UniformConstant
-             311:             TypePointer UniformConstant 24(int)
-         312(o1):    311(ptr) Variable UniformConstant
-             313:             TypeVector 24(int) 3
-             314:             TypePointer UniformConstant 313(ivec3)
-         315(o3):    314(ptr) Variable UniformConstant
-             316:             TypePointer UniformConstant 31(ivec4)
-         317(o4):    316(ptr) Variable UniformConstant
+              21:             TypeVector 6(float) 3
+              22:             TypeInt 32 1
+              23:             TypeVector 22(int) 2
+              24:             TypeVector 22(int) 3
+              25:             TypeVector 22(int) 4
+     26($Global):             TypeStruct 6(float) 20(fvec2) 21(fvec3) 7(fvec4) 22(int) 23(ivec2) 24(ivec3) 25(ivec4)
+              27:             TypePointer Uniform 26($Global)
+              28:     27(ptr) Variable Uniform
+              29:     22(int) Constant 1
+              30:             TypePointer Uniform 20(fvec2)
+              33:     22(int) Constant 5
+              34:             TypePointer Uniform 23(ivec2)
+              37:     22(int) Constant 0
+              39:             TypePointer Function 25(ivec4)
+              41:             TypeImage 22(int) 2D sampled format:Unknown
+              42:             TypePointer UniformConstant 41
+  43(g_tTex2di4):     42(ptr) Variable UniformConstant
+              46:             TypeSampledImage 41
+              53:             TypeInt 32 0
+              54:             TypeVector 53(int) 4
+              55:             TypePointer Function 54(ivec4)
+              57:             TypeImage 53(int) 2D sampled format:Unknown
+              58:             TypePointer UniformConstant 57
+  59(g_tTex2du4):     58(ptr) Variable UniformConstant
+              62:             TypeSampledImage 57
+              83:     53(int) Constant 4
+              84:             TypeArray 23(ivec2) 83
+             202:     22(int) Constant 2
+             278:     22(int) Constant 3
+  346(PS_OUTPUT):             TypeStruct 7(fvec4) 6(float)
+             347:             TypePointer Function 346(PS_OUTPUT)
+             349:    6(float) Constant 1065353216
+             350:    7(fvec4) ConstantComposite 349 349 349 349
+             352:             TypePointer Function 6(float)
+             354:             TypePointer Output 7(fvec4)
+      355(Color):    354(ptr) Variable Output
+             358:             TypePointer Output 6(float)
+      359(Depth):    358(ptr) Variable Output
+  363(g_sSamp2d):     15(ptr) Variable UniformConstant
+             364:             TypeImage 6(float) 1D sampled format:Unknown
+             365:             TypePointer UniformConstant 364
+366(g_tTex1df4a):    365(ptr) Variable UniformConstant
+ 367(g_tTex1df4):    365(ptr) Variable UniformConstant
+             368:             TypeImage 22(int) 1D sampled format:Unknown
+             369:             TypePointer UniformConstant 368
+ 370(g_tTex1di4):    369(ptr) Variable UniformConstant
+             371:             TypeImage 53(int) 1D sampled format:Unknown
+             372:             TypePointer UniformConstant 371
+ 373(g_tTex1du4):    372(ptr) Variable UniformConstant
+             374:             TypeImage 6(float) 3D sampled format:Unknown
+             375:             TypePointer UniformConstant 374
+ 376(g_tTex3df4):    375(ptr) Variable UniformConstant
+             377:             TypeImage 22(int) 3D sampled format:Unknown
+             378:             TypePointer UniformConstant 377
+ 379(g_tTex3di4):    378(ptr) Variable UniformConstant
+             380:             TypeImage 53(int) 3D sampled format:Unknown
+             381:             TypePointer UniformConstant 380
+ 382(g_tTex3du4):    381(ptr) Variable UniformConstant
+             383:             TypeImage 6(float) Cube sampled format:Unknown
+             384:             TypePointer UniformConstant 383
+ 385(g_tTexcdf4):    384(ptr) Variable UniformConstant
+             386:             TypeImage 22(int) Cube sampled format:Unknown
+             387:             TypePointer UniformConstant 386
+ 388(g_tTexcdi4):    387(ptr) Variable UniformConstant
+             389:             TypeImage 53(int) Cube sampled format:Unknown
+             390:             TypePointer UniformConstant 389
+ 391(g_tTexcdu4):    390(ptr) Variable UniformConstant
          4(main):           2 Function None 3
                5:             Label
      9(txval001):      8(ptr) Variable Function
-    33(txval011):     32(ptr) Variable Function
-    47(txval021):     46(ptr) Variable Function
-    58(txval004):      8(ptr) Variable Function
-    71(txval014):     32(ptr) Variable Function
-    82(txval024):     46(ptr) Variable Function
-    93(txval101):      8(ptr) Variable Function
-   101(txval111):     32(ptr) Variable Function
-   108(txval121):     46(ptr) Variable Function
-   115(txval104):      8(ptr) Variable Function
-   126(txval114):     32(ptr) Variable Function
-   137(txval124):     46(ptr) Variable Function
-   148(txval201):      8(ptr) Variable Function
-   156(txval211):     32(ptr) Variable Function
-   163(txval221):     46(ptr) Variable Function
-   170(txval204):      8(ptr) Variable Function
-   181(txval214):     32(ptr) Variable Function
-   192(txval224):     46(ptr) Variable Function
-   203(txval301):      8(ptr) Variable Function
-   211(txval311):     32(ptr) Variable Function
-   218(txval321):     46(ptr) Variable Function
-   225(txval304):      8(ptr) Variable Function
-   236(txval314):     32(ptr) Variable Function
-   247(txval324):     46(ptr) Variable Function
-      260(psout):    259(ptr) Variable Function
+    40(txval011):     39(ptr) Variable Function
+    56(txval021):     55(ptr) Variable Function
+    69(txval004):      8(ptr) Variable Function
+    87(txval014):     39(ptr) Variable Function
+   103(txval024):     55(ptr) Variable Function
+   119(txval101):      8(ptr) Variable Function
+   128(txval111):     39(ptr) Variable Function
+   137(txval121):     55(ptr) Variable Function
+   146(txval104):      8(ptr) Variable Function
+   162(txval114):     39(ptr) Variable Function
+   178(txval124):     55(ptr) Variable Function
+   194(txval201):      8(ptr) Variable Function
+   204(txval211):     39(ptr) Variable Function
+   213(txval221):     55(ptr) Variable Function
+   222(txval204):      8(ptr) Variable Function
+   238(txval214):     39(ptr) Variable Function
+   254(txval224):     55(ptr) Variable Function
+   270(txval301):      8(ptr) Variable Function
+   280(txval311):     39(ptr) Variable Function
+   289(txval321):     55(ptr) Variable Function
+   298(txval304):      8(ptr) Variable Function
+   314(txval314):     39(ptr) Variable Function
+   330(txval324):     55(ptr) Variable Function
+      348(psout):    347(ptr) Variable Function
               13:          10 Load 12(g_tTex2df4)
               17:          14 Load 16(g_sSamp)
               19:          18 SampledImage 13 17
-              23:   20(fvec2) Load 22(c2)
-              28:   25(ivec2) Load 27(o2)
-              30:    7(fvec4) ImageGather 19 23 29 Offset 28
-                              Store 9(txval001) 30
-              37:          34 Load 36(g_tTex2di4)
-              38:          14 Load 16(g_sSamp)
-              40:          39 SampledImage 37 38
-              41:   20(fvec2) Load 22(c2)
-              42:   25(ivec2) Load 27(o2)
-              43:   31(ivec4) ImageGather 40 41 29 Offset 42
-                              Store 33(txval011) 43
-              51:          48 Load 50(g_tTex2du4)
-              52:          14 Load 16(g_sSamp)
-              54:          53 SampledImage 51 52
-              55:   20(fvec2) Load 22(c2)
-              56:   25(ivec2) Load 27(o2)
-              57:   45(ivec4) ImageGather 54 55 29 Offset 56
-                              Store 47(txval021) 57
-              59:          10 Load 12(g_tTex2df4)
-              60:          14 Load 16(g_sSamp)
-              61:          18 SampledImage 59 60
-              62:   20(fvec2) Load 22(c2)
-              63:   25(ivec2) Load 27(o2)
-              64:   25(ivec2) Load 27(o2)
-              65:   25(ivec2) Load 27(o2)
-              66:   25(ivec2) Load 27(o2)
-              69:          68 CompositeConstruct 63 64 65 66
-              70:    7(fvec4) ImageGather 61 62 29 ConstOffsets 69
-                              Store 58(txval004) 70
-              72:          34 Load 36(g_tTex2di4)
-              73:          14 Load 16(g_sSamp)
-              74:          39 SampledImage 72 73
-              75:   20(fvec2) Load 22(c2)
-              76:   25(ivec2) Load 27(o2)
-              77:   25(ivec2) Load 27(o2)
-              78:   25(ivec2) Load 27(o2)
-              79:   25(ivec2) Load 27(o2)
-              80:          68 CompositeConstruct 76 77 78 79
-              81:   31(ivec4) ImageGather 74 75 29 ConstOffsets 80
-                              Store 71(txval014) 81
-              83:          48 Load 50(g_tTex2du4)
-              84:          14 Load 16(g_sSamp)
-              85:          53 SampledImage 83 84
-              86:   20(fvec2) Load 22(c2)
-              87:   25(ivec2) Load 27(o2)
-              88:   25(ivec2) Load 27(o2)
-              89:   25(ivec2) Load 27(o2)
-              90:   25(ivec2) Load 27(o2)
-              91:          68 CompositeConstruct 87 88 89 90
-              92:   45(ivec4) ImageGather 85 86 29 ConstOffsets 91
-                              Store 82(txval024) 92
-              94:          10 Load 12(g_tTex2df4)
-              95:          14 Load 16(g_sSamp)
-              96:          18 SampledImage 94 95
-              97:   20(fvec2) Load 22(c2)
-              98:   25(ivec2) Load 27(o2)
-             100:    7(fvec4) ImageGather 96 97 99 Offset 98
-                              Store 93(txval101) 100
-             102:          34 Load 36(g_tTex2di4)
-             103:          14 Load 16(g_sSamp)
-             104:          39 SampledImage 102 103
-             105:   20(fvec2) Load 22(c2)
-             106:   25(ivec2) Load 27(o2)
-             107:   31(ivec4) ImageGather 104 105 99 Offset 106
-                              Store 101(txval111) 107
-             109:          48 Load 50(g_tTex2du4)
-             110:          14 Load 16(g_sSamp)
-             111:          53 SampledImage 109 110
-             112:   20(fvec2) Load 22(c2)
-             113:   25(ivec2) Load 27(o2)
-             114:   45(ivec4) ImageGather 111 112 99 Offset 113
-                              Store 108(txval121) 114
-             116:          10 Load 12(g_tTex2df4)
-             117:          14 Load 16(g_sSamp)
-             118:          18 SampledImage 116 117
-             119:   20(fvec2) Load 22(c2)
-             120:   25(ivec2) Load 27(o2)
-             121:   25(ivec2) Load 27(o2)
-             122:   25(ivec2) Load 27(o2)
-             123:   25(ivec2) Load 27(o2)
-             124:          68 CompositeConstruct 120 121 122 123
-             125:    7(fvec4) ImageGather 118 119 99 ConstOffsets 124
-                              Store 115(txval104) 125
-             127:          34 Load 36(g_tTex2di4)
-             128:          14 Load 16(g_sSamp)
-             129:          39 SampledImage 127 128
-             130:   20(fvec2) Load 22(c2)
-             131:   25(ivec2) Load 27(o2)
-             132:   25(ivec2) Load 27(o2)
-             133:   25(ivec2) Load 27(o2)
-             134:   25(ivec2) Load 27(o2)
-             135:          68 CompositeConstruct 131 132 133 134
-             136:   31(ivec4) ImageGather 129 130 99 ConstOffsets 135
-                              Store 126(txval114) 136
-             138:          48 Load 50(g_tTex2du4)
+              31:     30(ptr) AccessChain 28 29
+              32:   20(fvec2) Load 31
+              35:     34(ptr) AccessChain 28 33
+              36:   23(ivec2) Load 35
+              38:    7(fvec4) ImageGather 19 32 37 Offset 36
+                              Store 9(txval001) 38
+              44:          41 Load 43(g_tTex2di4)
+              45:          14 Load 16(g_sSamp)
+              47:          46 SampledImage 44 45
+              48:     30(ptr) AccessChain 28 29
+              49:   20(fvec2) Load 48
+              50:     34(ptr) AccessChain 28 33
+              51:   23(ivec2) Load 50
+              52:   25(ivec4) ImageGather 47 49 37 Offset 51
+                              Store 40(txval011) 52
+              60:          57 Load 59(g_tTex2du4)
+              61:          14 Load 16(g_sSamp)
+              63:          62 SampledImage 60 61
+              64:     30(ptr) AccessChain 28 29
+              65:   20(fvec2) Load 64
+              66:     34(ptr) AccessChain 28 33
+              67:   23(ivec2) Load 66
+              68:   54(ivec4) ImageGather 63 65 37 Offset 67
+                              Store 56(txval021) 68
+              70:          10 Load 12(g_tTex2df4)
+              71:          14 Load 16(g_sSamp)
+              72:          18 SampledImage 70 71
+              73:     30(ptr) AccessChain 28 29
+              74:   20(fvec2) Load 73
+              75:     34(ptr) AccessChain 28 33
+              76:   23(ivec2) Load 75
+              77:     34(ptr) AccessChain 28 33
+              78:   23(ivec2) Load 77
+              79:     34(ptr) AccessChain 28 33
+              80:   23(ivec2) Load 79
+              81:     34(ptr) AccessChain 28 33
+              82:   23(ivec2) Load 81
+              85:          84 CompositeConstruct 76 78 80 82
+              86:    7(fvec4) ImageGather 72 74 37 ConstOffsets 85
+                              Store 69(txval004) 86
+              88:          41 Load 43(g_tTex2di4)
+              89:          14 Load 16(g_sSamp)
+              90:          46 SampledImage 88 89
+              91:     30(ptr) AccessChain 28 29
+              92:   20(fvec2) Load 91
+              93:     34(ptr) AccessChain 28 33
+              94:   23(ivec2) Load 93
+              95:     34(ptr) AccessChain 28 33
+              96:   23(ivec2) Load 95
+              97:     34(ptr) AccessChain 28 33
+              98:   23(ivec2) Load 97
+              99:     34(ptr) AccessChain 28 33
+             100:   23(ivec2) Load 99
+             101:          84 CompositeConstruct 94 96 98 100
+             102:   25(ivec4) ImageGather 90 92 37 ConstOffsets 101
+                              Store 87(txval014) 102
+             104:          57 Load 59(g_tTex2du4)
+             105:          14 Load 16(g_sSamp)
+             106:          62 SampledImage 104 105
+             107:     30(ptr) AccessChain 28 29
+             108:   20(fvec2) Load 107
+             109:     34(ptr) AccessChain 28 33
+             110:   23(ivec2) Load 109
+             111:     34(ptr) AccessChain 28 33
+             112:   23(ivec2) Load 111
+             113:     34(ptr) AccessChain 28 33
+             114:   23(ivec2) Load 113
+             115:     34(ptr) AccessChain 28 33
+             116:   23(ivec2) Load 115
+             117:          84 CompositeConstruct 110 112 114 116
+             118:   54(ivec4) ImageGather 106 108 37 ConstOffsets 117
+                              Store 103(txval024) 118
+             120:          10 Load 12(g_tTex2df4)
+             121:          14 Load 16(g_sSamp)
+             122:          18 SampledImage 120 121
+             123:     30(ptr) AccessChain 28 29
+             124:   20(fvec2) Load 123
+             125:     34(ptr) AccessChain 28 33
+             126:   23(ivec2) Load 125
+             127:    7(fvec4) ImageGather 122 124 29 Offset 126
+                              Store 119(txval101) 127
+             129:          41 Load 43(g_tTex2di4)
+             130:          14 Load 16(g_sSamp)
+             131:          46 SampledImage 129 130
+             132:     30(ptr) AccessChain 28 29
+             133:   20(fvec2) Load 132
+             134:     34(ptr) AccessChain 28 33
+             135:   23(ivec2) Load 134
+             136:   25(ivec4) ImageGather 131 133 29 Offset 135
+                              Store 128(txval111) 136
+             138:          57 Load 59(g_tTex2du4)
              139:          14 Load 16(g_sSamp)
-             140:          53 SampledImage 138 139
-             141:   20(fvec2) Load 22(c2)
-             142:   25(ivec2) Load 27(o2)
-             143:   25(ivec2) Load 27(o2)
-             144:   25(ivec2) Load 27(o2)
-             145:   25(ivec2) Load 27(o2)
-             146:          68 CompositeConstruct 142 143 144 145
-             147:   45(ivec4) ImageGather 140 141 99 ConstOffsets 146
-                              Store 137(txval124) 147
-             149:          10 Load 12(g_tTex2df4)
-             150:          14 Load 16(g_sSamp)
-             151:          18 SampledImage 149 150
-             152:   20(fvec2) Load 22(c2)
-             153:   25(ivec2) Load 27(o2)
-             155:    7(fvec4) ImageGather 151 152 154 Offset 153
-                              Store 148(txval201) 155
-             157:          34 Load 36(g_tTex2di4)
-             158:          14 Load 16(g_sSamp)
-             159:          39 SampledImage 157 158
-             160:   20(fvec2) Load 22(c2)
-             161:   25(ivec2) Load 27(o2)
-             162:   31(ivec4) ImageGather 159 160 154 Offset 161
-                              Store 156(txval211) 162
-             164:          48 Load 50(g_tTex2du4)
-             165:          14 Load 16(g_sSamp)
-             166:          53 SampledImage 164 165
-             167:   20(fvec2) Load 22(c2)
-             168:   25(ivec2) Load 27(o2)
-             169:   45(ivec4) ImageGather 166 167 154 Offset 168
-                              Store 163(txval221) 169
-             171:          10 Load 12(g_tTex2df4)
-             172:          14 Load 16(g_sSamp)
-             173:          18 SampledImage 171 172
-             174:   20(fvec2) Load 22(c2)
-             175:   25(ivec2) Load 27(o2)
-             176:   25(ivec2) Load 27(o2)
-             177:   25(ivec2) Load 27(o2)
-             178:   25(ivec2) Load 27(o2)
-             179:          68 CompositeConstruct 175 176 177 178
-             180:    7(fvec4) ImageGather 173 174 154 ConstOffsets 179
-                              Store 170(txval204) 180
-             182:          34 Load 36(g_tTex2di4)
-             183:          14 Load 16(g_sSamp)
-             184:          39 SampledImage 182 183
-             185:   20(fvec2) Load 22(c2)
-             186:   25(ivec2) Load 27(o2)
-             187:   25(ivec2) Load 27(o2)
-             188:   25(ivec2) Load 27(o2)
-             189:   25(ivec2) Load 27(o2)
-             190:          68 CompositeConstruct 186 187 188 189
-             191:   31(ivec4) ImageGather 184 185 154 ConstOffsets 190
-                              Store 181(txval214) 191
-             193:          48 Load 50(g_tTex2du4)
-             194:          14 Load 16(g_sSamp)
-             195:          53 SampledImage 193 194
-             196:   20(fvec2) Load 22(c2)
-             197:   25(ivec2) Load 27(o2)
-             198:   25(ivec2) Load 27(o2)
-             199:   25(ivec2) Load 27(o2)
-             200:   25(ivec2) Load 27(o2)
-             201:          68 CompositeConstruct 197 198 199 200
-             202:   45(ivec4) ImageGather 195 196 154 ConstOffsets 201
-                              Store 192(txval224) 202
-             204:          10 Load 12(g_tTex2df4)
-             205:          14 Load 16(g_sSamp)
-             206:          18 SampledImage 204 205
-             207:   20(fvec2) Load 22(c2)
-             208:   25(ivec2) Load 27(o2)
-             210:    7(fvec4) ImageGather 206 207 209 Offset 208
-                              Store 203(txval301) 210
-             212:          34 Load 36(g_tTex2di4)
-             213:          14 Load 16(g_sSamp)
-             214:          39 SampledImage 212 213
-             215:   20(fvec2) Load 22(c2)
-             216:   25(ivec2) Load 27(o2)
-             217:   31(ivec4) ImageGather 214 215 209 Offset 216
-                              Store 211(txval311) 217
-             219:          48 Load 50(g_tTex2du4)
-             220:          14 Load 16(g_sSamp)
-             221:          53 SampledImage 219 220
-             222:   20(fvec2) Load 22(c2)
-             223:   25(ivec2) Load 27(o2)
-             224:   45(ivec4) ImageGather 221 222 209 Offset 223
-                              Store 218(txval321) 224
-             226:          10 Load 12(g_tTex2df4)
-             227:          14 Load 16(g_sSamp)
-             228:          18 SampledImage 226 227
-             229:   20(fvec2) Load 22(c2)
-             230:   25(ivec2) Load 27(o2)
-             231:   25(ivec2) Load 27(o2)
-             232:   25(ivec2) Load 27(o2)
-             233:   25(ivec2) Load 27(o2)
-             234:          68 CompositeConstruct 230 231 232 233
-             235:    7(fvec4) ImageGather 228 229 209 ConstOffsets 234
-                              Store 225(txval304) 235
-             237:          34 Load 36(g_tTex2di4)
-             238:          14 Load 16(g_sSamp)
-             239:          39 SampledImage 237 238
-             240:   20(fvec2) Load 22(c2)
-             241:   25(ivec2) Load 27(o2)
-             242:   25(ivec2) Load 27(o2)
-             243:   25(ivec2) Load 27(o2)
-             244:   25(ivec2) Load 27(o2)
-             245:          68 CompositeConstruct 241 242 243 244
-             246:   31(ivec4) ImageGather 239 240 209 ConstOffsets 245
-                              Store 236(txval314) 246
-             248:          48 Load 50(g_tTex2du4)
-             249:          14 Load 16(g_sSamp)
-             250:          53 SampledImage 248 249
-             251:   20(fvec2) Load 22(c2)
-             252:   25(ivec2) Load 27(o2)
-             253:   25(ivec2) Load 27(o2)
-             254:   25(ivec2) Load 27(o2)
-             255:   25(ivec2) Load 27(o2)
-             256:          68 CompositeConstruct 252 253 254 255
-             257:   45(ivec4) ImageGather 250 251 209 ConstOffsets 256
-                              Store 247(txval324) 257
-             263:      8(ptr) AccessChain 260(psout) 29
-                              Store 263 262
-             265:    264(ptr) AccessChain 260(psout) 99
-                              Store 265 261
-             268:      8(ptr) AccessChain 260(psout) 29
-             269:    7(fvec4) Load 268
-                              Store 267(Color) 269
-             272:    264(ptr) AccessChain 260(psout) 99
-             273:    6(float) Load 272
-                              Store 271(Depth) 273
+             140:          62 SampledImage 138 139
+             141:     30(ptr) AccessChain 28 29
+             142:   20(fvec2) Load 141
+             143:     34(ptr) AccessChain 28 33
+             144:   23(ivec2) Load 143
+             145:   54(ivec4) ImageGather 140 142 29 Offset 144
+                              Store 137(txval121) 145
+             147:          10 Load 12(g_tTex2df4)
+             148:          14 Load 16(g_sSamp)
+             149:          18 SampledImage 147 148
+             150:     30(ptr) AccessChain 28 29
+             151:   20(fvec2) Load 150
+             152:     34(ptr) AccessChain 28 33
+             153:   23(ivec2) Load 152
+             154:     34(ptr) AccessChain 28 33
+             155:   23(ivec2) Load 154
+             156:     34(ptr) AccessChain 28 33
+             157:   23(ivec2) Load 156
+             158:     34(ptr) AccessChain 28 33
+             159:   23(ivec2) Load 158
+             160:          84 CompositeConstruct 153 155 157 159
+             161:    7(fvec4) ImageGather 149 151 29 ConstOffsets 160
+                              Store 146(txval104) 161
+             163:          41 Load 43(g_tTex2di4)
+             164:          14 Load 16(g_sSamp)
+             165:          46 SampledImage 163 164
+             166:     30(ptr) AccessChain 28 29
+             167:   20(fvec2) Load 166
+             168:     34(ptr) AccessChain 28 33
+             169:   23(ivec2) Load 168
+             170:     34(ptr) AccessChain 28 33
+             171:   23(ivec2) Load 170
+             172:     34(ptr) AccessChain 28 33
+             173:   23(ivec2) Load 172
+             174:     34(ptr) AccessChain 28 33
+             175:   23(ivec2) Load 174
+             176:          84 CompositeConstruct 169 171 173 175
+             177:   25(ivec4) ImageGather 165 167 29 ConstOffsets 176
+                              Store 162(txval114) 177
+             179:          57 Load 59(g_tTex2du4)
+             180:          14 Load 16(g_sSamp)
+             181:          62 SampledImage 179 180
+             182:     30(ptr) AccessChain 28 29
+             183:   20(fvec2) Load 182
+             184:     34(ptr) AccessChain 28 33
+             185:   23(ivec2) Load 184
+             186:     34(ptr) AccessChain 28 33
+             187:   23(ivec2) Load 186
+             188:     34(ptr) AccessChain 28 33
+             189:   23(ivec2) Load 188
+             190:     34(ptr) AccessChain 28 33
+             191:   23(ivec2) Load 190
+             192:          84 CompositeConstruct 185 187 189 191
+             193:   54(ivec4) ImageGather 181 183 29 ConstOffsets 192
+                              Store 178(txval124) 193
+             195:          10 Load 12(g_tTex2df4)
+             196:          14 Load 16(g_sSamp)
+             197:          18 SampledImage 195 196
+             198:     30(ptr) AccessChain 28 29
+             199:   20(fvec2) Load 198
+             200:     34(ptr) AccessChain 28 33
+             201:   23(ivec2) Load 200
+             203:    7(fvec4) ImageGather 197 199 202 Offset 201
+                              Store 194(txval201) 203
+             205:          41 Load 43(g_tTex2di4)
+             206:          14 Load 16(g_sSamp)
+             207:          46 SampledImage 205 206
+             208:     30(ptr) AccessChain 28 29
+             209:   20(fvec2) Load 208
+             210:     34(ptr) AccessChain 28 33
+             211:   23(ivec2) Load 210
+             212:   25(ivec4) ImageGather 207 209 202 Offset 211
+                              Store 204(txval211) 212
+             214:          57 Load 59(g_tTex2du4)
+             215:          14 Load 16(g_sSamp)
+             216:          62 SampledImage 214 215
+             217:     30(ptr) AccessChain 28 29
+             218:   20(fvec2) Load 217
+             219:     34(ptr) AccessChain 28 33
+             220:   23(ivec2) Load 219
+             221:   54(ivec4) ImageGather 216 218 202 Offset 220
+                              Store 213(txval221) 221
+             223:          10 Load 12(g_tTex2df4)
+             224:          14 Load 16(g_sSamp)
+             225:          18 SampledImage 223 224
+             226:     30(ptr) AccessChain 28 29
+             227:   20(fvec2) Load 226
+             228:     34(ptr) AccessChain 28 33
+             229:   23(ivec2) Load 228
+             230:     34(ptr) AccessChain 28 33
+             231:   23(ivec2) Load 230
+             232:     34(ptr) AccessChain 28 33
+             233:   23(ivec2) Load 232
+             234:     34(ptr) AccessChain 28 33
+             235:   23(ivec2) Load 234
+             236:          84 CompositeConstruct 229 231 233 235
+             237:    7(fvec4) ImageGather 225 227 202 ConstOffsets 236
+                              Store 222(txval204) 237
+             239:          41 Load 43(g_tTex2di4)
+             240:          14 Load 16(g_sSamp)
+             241:          46 SampledImage 239 240
+             242:     30(ptr) AccessChain 28 29
+             243:   20(fvec2) Load 242
+             244:     34(ptr) AccessChain 28 33
+             245:   23(ivec2) Load 244
+             246:     34(ptr) AccessChain 28 33
+             247:   23(ivec2) Load 246
+             248:     34(ptr) AccessChain 28 33
+             249:   23(ivec2) Load 248
+             250:     34(ptr) AccessChain 28 33
+             251:   23(ivec2) Load 250
+             252:          84 CompositeConstruct 245 247 249 251
+             253:   25(ivec4) ImageGather 241 243 202 ConstOffsets 252
+                              Store 238(txval214) 253
+             255:          57 Load 59(g_tTex2du4)
+             256:          14 Load 16(g_sSamp)
+             257:          62 SampledImage 255 256
+             258:     30(ptr) AccessChain 28 29
+             259:   20(fvec2) Load 258
+             260:     34(ptr) AccessChain 28 33
+             261:   23(ivec2) Load 260
+             262:     34(ptr) AccessChain 28 33
+             263:   23(ivec2) Load 262
+             264:     34(ptr) AccessChain 28 33
+             265:   23(ivec2) Load 264
+             266:     34(ptr) AccessChain 28 33
+             267:   23(ivec2) Load 266
+             268:          84 CompositeConstruct 261 263 265 267
+             269:   54(ivec4) ImageGather 257 259 202 ConstOffsets 268
+                              Store 254(txval224) 269
+             271:          10 Load 12(g_tTex2df4)
+             272:          14 Load 16(g_sSamp)
+             273:          18 SampledImage 271 272
+             274:     30(ptr) AccessChain 28 29
+             275:   20(fvec2) Load 274
+             276:     34(ptr) AccessChain 28 33
+             277:   23(ivec2) Load 276
+             279:    7(fvec4) ImageGather 273 275 278 Offset 277
+                              Store 270(txval301) 279
+             281:          41 Load 43(g_tTex2di4)
+             282:          14 Load 16(g_sSamp)
+             283:          46 SampledImage 281 282
+             284:     30(ptr) AccessChain 28 29
+             285:   20(fvec2) Load 284
+             286:     34(ptr) AccessChain 28 33
+             287:   23(ivec2) Load 286
+             288:   25(ivec4) ImageGather 283 285 278 Offset 287
+                              Store 280(txval311) 288
+             290:          57 Load 59(g_tTex2du4)
+             291:          14 Load 16(g_sSamp)
+             292:          62 SampledImage 290 291
+             293:     30(ptr) AccessChain 28 29
+             294:   20(fvec2) Load 293
+             295:     34(ptr) AccessChain 28 33
+             296:   23(ivec2) Load 295
+             297:   54(ivec4) ImageGather 292 294 278 Offset 296
+                              Store 289(txval321) 297
+             299:          10 Load 12(g_tTex2df4)
+             300:          14 Load 16(g_sSamp)
+             301:          18 SampledImage 299 300
+             302:     30(ptr) AccessChain 28 29
+             303:   20(fvec2) Load 302
+             304:     34(ptr) AccessChain 28 33
+             305:   23(ivec2) Load 304
+             306:     34(ptr) AccessChain 28 33
+             307:   23(ivec2) Load 306
+             308:     34(ptr) AccessChain 28 33
+             309:   23(ivec2) Load 308
+             310:     34(ptr) AccessChain 28 33
+             311:   23(ivec2) Load 310
+             312:          84 CompositeConstruct 305 307 309 311
+             313:    7(fvec4) ImageGather 301 303 278 ConstOffsets 312
+                              Store 298(txval304) 313
+             315:          41 Load 43(g_tTex2di4)
+             316:          14 Load 16(g_sSamp)
+             317:          46 SampledImage 315 316
+             318:     30(ptr) AccessChain 28 29
+             319:   20(fvec2) Load 318
+             320:     34(ptr) AccessChain 28 33
+             321:   23(ivec2) Load 320
+             322:     34(ptr) AccessChain 28 33
+             323:   23(ivec2) Load 322
+             324:     34(ptr) AccessChain 28 33
+             325:   23(ivec2) Load 324
+             326:     34(ptr) AccessChain 28 33
+             327:   23(ivec2) Load 326
+             328:          84 CompositeConstruct 321 323 325 327
+             329:   25(ivec4) ImageGather 317 319 278 ConstOffsets 328
+                              Store 314(txval314) 329
+             331:          57 Load 59(g_tTex2du4)
+             332:          14 Load 16(g_sSamp)
+             333:          62 SampledImage 331 332
+             334:     30(ptr) AccessChain 28 29
+             335:   20(fvec2) Load 334
+             336:     34(ptr) AccessChain 28 33
+             337:   23(ivec2) Load 336
+             338:     34(ptr) AccessChain 28 33
+             339:   23(ivec2) Load 338
+             340:     34(ptr) AccessChain 28 33
+             341:   23(ivec2) Load 340
+             342:     34(ptr) AccessChain 28 33
+             343:   23(ivec2) Load 342
+             344:          84 CompositeConstruct 337 339 341 343
+             345:   54(ivec4) ImageGather 333 335 278 ConstOffsets 344
+                              Store 330(txval324) 345
+             351:      8(ptr) AccessChain 348(psout) 37
+                              Store 351 350
+             353:    352(ptr) AccessChain 348(psout) 29
+                              Store 353 349
+             356:      8(ptr) AccessChain 348(psout) 37
+             357:    7(fvec4) Load 356
+                              Store 355(Color) 357
+             360:    352(ptr) AccessChain 348(psout) 29
+             361:    6(float) Load 360
+                              Store 359(Depth) 361
                               Return
                               FunctionEnd
