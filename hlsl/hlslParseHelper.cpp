@@ -957,6 +957,11 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     } else
         remapNonEntryPointIO(function);
 
+    // Insert the $Global constant buffer.
+    // TODO: this design fails if new members are declared between function definitions.
+    if (! insertGlobalUniformBlock())
+        error(loc, "failed to insert the global constant buffer", "uniform", "");
+
     //
     // New symbol table scope for body of function plus its arguments
     //
@@ -4178,15 +4183,6 @@ void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier
 //
 TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, TType& type, TIntermTyped* initializer)
 {
-    // TODO: things scoped within an annotation need their own name space;
-    // haven't done that yet
-    if (annotationNestingLevel > 0)
-        return nullptr;
-
-    // TODO: strings are not yet handled
-    if (type.getBasicType() == EbtString)
-        return nullptr;
-
     if (voidErrorCheck(loc, identifier, type.getBasicType()))
         return nullptr;
 
@@ -4832,6 +4828,13 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     intermediate.addSymbolLinkageNode(linkage, variable);
 }
 
+void HlslParseContext::finalizeGlobalUniformBlockLayout(TVariable& block)
+{
+    block.getWritableType().getQualifier().layoutPacking = ElpStd140;
+    block.getWritableType().getQualifier().layoutMatrix = ElmRowMajor;
+    fixBlockUniformOffsets(block.getType().getQualifier(), *block.getWritableType().getWritableStruct());
+}
+
 //
 // "For a block, this process applies to the entire block, or until the first member 
 // is reached that has a location layout qualifier. When a block member is declared with a location 
@@ -4912,7 +4915,7 @@ void HlslParseContext::fixBlockXfbOffsets(TQualifier& qualifier, TTypeList& type
 // Also, compute and save the total size of the block. For the block's size, arrayness 
 // is not taken into account, as each element is backed by a separate buffer.
 //
-void HlslParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typeList)
+void HlslParseContext::fixBlockUniformOffsets(const TQualifier& qualifier, TTypeList& typeList)
 {
     if (! qualifier.isUniformOrBuffer())
         return;
@@ -4930,8 +4933,10 @@ void HlslParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& 
         // modify just the children's view of matrix layout, if there is one for this member
         TLayoutMatrix subMatrixLayout = typeList[member].type->getQualifier().layoutMatrix;
         int dummyStride;
-        int memberAlignment = intermediate.getBaseAlignment(*typeList[member].type, memberSize, dummyStride, qualifier.layoutPacking == ElpStd140,
-            subMatrixLayout != ElmNone ? subMatrixLayout == ElmRowMajor : qualifier.layoutMatrix == ElmRowMajor);
+        int memberAlignment = intermediate.getBaseAlignment(*typeList[member].type, memberSize, dummyStride,
+                                                            qualifier.layoutPacking == ElpStd140,
+                                                            subMatrixLayout != ElmNone ? subMatrixLayout == ElmRowMajor
+                                                                                       : qualifier.layoutMatrix == ElmRowMajor);
         if (memberQualifier.hasOffset()) {
             // "The specified offset must be a multiple 
             // of the base alignment of the type of the block member it qualifies, or a compile-time error results."
