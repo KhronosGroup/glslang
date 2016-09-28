@@ -3995,6 +3995,12 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
     if (op == glslang::EOpBallot || op == glslang::EOpReadFirstInvocation) {
         builder.addExtension(spv::E_SPV_KHR_shader_ballot);
         builder.addCapability(spv::CapabilitySubgroupBallotKHR);
+    }
+    else if (op == glslang::EOpAnyInvocation ||
+             op == glslang::EOpAllInvocations ||
+             op == glslang::EOpAllInvocationsEqual) {
+        builder.addCapability(spv::CapabilitySubgroupVoteKHR);
+        spvGroupOperands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
     } else {
         builder.addCapability(spv::CapabilityGroups);
 
@@ -4011,20 +4017,14 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
 
     switch (op) {
     case glslang::EOpAnyInvocation:
-        opCode = spv::OpGroupAny;
+        opCode = spv::OpSubgroupAnyKHR;
         break;
     case glslang::EOpAllInvocations:
-        opCode = spv::OpGroupAll;
+        opCode = spv::OpSubgroupAllKHR;
         break;
     case glslang::EOpAllInvocationsEqual:
-    {
-        spv::Id groupAll = builder.createOp(spv::OpGroupAll, typeId, spvGroupOperands);
-        spv::Id groupAny = builder.createOp(spv::OpGroupAny, typeId, spvGroupOperands);
-
-        return builder.createBinOp(spv::OpLogicalOr, typeId, groupAll,
-                                   builder.createUnaryOp(spv::OpLogicalNot, typeId, groupAny));
-    }
-
+        opCode = spv::OpSubgroupAllEqualKHR;
+        break;
     case glslang::EOpReadInvocation:
         opCode = spv::OpGroupBroadcast;
         if (builder.isVectorType(typeId))
