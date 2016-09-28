@@ -831,18 +831,18 @@ bool HlslGrammar::acceptTextureType(TType& type)
 
     advanceToken();  // consume the texture object keyword
 
-    TType txType(EbtFloat, EvqUniform, 4); // default type is float4
-    
+	TType* txType = new TType(EbtFloat, EvqUniform, 4);
+
     TIntermTyped* msCount = nullptr;
 
     // texture type: required for multisample types!
     if (acceptTokenClass(EHTokLeftAngle)) {
-        if (! acceptType(txType)) {
+        if (! acceptType(*txType)) {
             expected("scalar or vector type");
             return false;
         }
 
-        const TBasicType basicRetType = txType.getBasicType() ;
+        const TBasicType basicRetType = txType->getBasicType() ;
 
         if (basicRetType != EbtFloat && basicRetType != EbtUint && basicRetType != EbtInt) {
             unimplemented("basic type in texture");
@@ -850,8 +850,8 @@ bool HlslGrammar::acceptTextureType(TType& type)
         }
 
         // Buffers can handle small mats if they fit in 4 components
-        if (dim == EsdBuffer && txType.isMatrix()) {
-            if ((txType.getMatrixCols() * txType.getMatrixRows()) > 4) {
+        if (dim == EsdBuffer && txType->isMatrix()) {
+            if ((txType->getMatrixCols() * txType->getMatrixRows()) > 4) {
                 expected("components < 4 in matrix buffer type");
                 return false;
             }
@@ -861,14 +861,14 @@ bool HlslGrammar::acceptTextureType(TType& type)
             return false;
         }
 
-        if (!txType.isScalar() && !txType.isVector()) {
+        if (!txType->isScalar() && !txType->isVector()) {
             expected("scalar or vector type");
             return false;
         }
 
-        if (txType.getVectorSize() != 1 && txType.getVectorSize() != 4) {
+        if (txType->getVectorSize() < 1 || txType->getVectorSize() > 4) {
             // TODO: handle vec2/3 types
-            expected("vector size not yet supported in texture type");
+            expected("vector size must between 1 and 4");
             return false;
         }
 
@@ -893,16 +893,16 @@ bool HlslGrammar::acceptTextureType(TType& type)
     }
 
     TArraySizes* arraySizes = nullptr;
-    const bool shadow = txType.isScalar() || (txType.isVector() && txType.getVectorSize() == 1);
+    const bool shadow = txType->isScalar() || (txType->isVector() && txType->getVectorSize() == 1);
 
     TSampler sampler;
 
     // Buffers are combined.
     if (dim == EsdBuffer) {
-        sampler.set(txType.getBasicType(), dim, array);
+        sampler.set(txType, dim, array, false, false);
     } else {
         // DX10 textures are separated.  TODO: DX9.
-        sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms);
+        sampler.setTexture(txType, dim, array, shadow, ms);
     }
     
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));

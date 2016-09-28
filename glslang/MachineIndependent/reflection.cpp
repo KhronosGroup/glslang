@@ -376,7 +376,7 @@ public:
     {
         if (! sampler.image) {
             // a sampler...
-            switch (sampler.type) {
+            switch (sampler.getBasicType()) {
             case EbtFloat:
                 switch ((int)sampler.dim) {
                 case Esd1D:
@@ -446,7 +446,7 @@ public:
             }
         } else {
             // an image...
-            switch (sampler.type) {
+            switch (sampler.getBasicType()) {
             case EbtFloat:
                 switch ((int)sampler.dim) {
                 case Esd1D:
