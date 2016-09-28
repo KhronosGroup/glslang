@@ -2,7 +2,7 @@ hlsl.inoutquals.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:8  Function Definition: MyFunc(f1;f1;f1; (global void)
+0:8  Function Definition: MyFunc(f1;f1;f1; (temp void)
 0:8    Function Parameters: 
 0:8      'x' (in float)
 0:8      'y' (out float)
@@ -18,7 +18,7 @@ gl_FragCoord origin is upper left
 0:11        'x' (in float)
 0:11        Constant:
 0:11          -1.000000
-0:15  Function Definition: main(vf4; (global structure{temp 4-component vector of float Color, temp float Depth})
+0:15  Function Definition: main(vf4; (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:15    Function Parameters: 
 0:15      'inpos' (noperspective in 4-component vector of float FragCoord)
 0:?     Sequence
@@ -31,7 +31,7 @@ gl_FragCoord origin is upper left
 0:18          'z' (temp float)
 0:18          Constant:
 0:18            3.000000
-0:19      Function Call: MyFunc(f1;f1;f1; (global void)
+0:19      Function Call: MyFunc(f1;f1;f1; (temp void)
 0:19        'x' (temp float)
 0:19        'y' (temp float)
 0:19        'z' (temp float)
@@ -82,7 +82,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:8  Function Definition: MyFunc(f1;f1;f1; (global void)
+0:8  Function Definition: MyFunc(f1;f1;f1; (temp void)
 0:8    Function Parameters: 
 0:8      'x' (in float)
 0:8      'y' (out float)
@@ -98,7 +98,7 @@ gl_FragCoord origin is upper left
 0:11        'x' (in float)
 0:11        Constant:
 0:11          -1.000000
-0:15  Function Definition: main(vf4; (global structure{temp 4-component vector of float Color, temp float Depth})
+0:15  Function Definition: main(vf4; (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:15    Function Parameters: 
 0:15      'inpos' (noperspective in 4-component vector of float FragCoord)
 0:?     Sequence
@@ -111,7 +111,7 @@ gl_FragCoord origin is upper left
 0:18          'z' (temp float)
 0:18          Constant:
 0:18            3.000000
-0:19      Function Call: MyFunc(f1;f1;f1; (global void)
+0:19      Function Call: MyFunc(f1;f1;f1; (temp void)
 0:19        'x' (temp float)
 0:19        'y' (temp float)
 0:19        'z' (temp float)

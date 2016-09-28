@@ -2,7 +2,7 @@ hlsl.samplecmplevelzero.basic.dx10.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:38  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float Depth})
+0:38  Function Definition: main( (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:38    Function Parameters: 
 0:?     Sequence
 0:42      Sequence
@@ -205,7 +205,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:38  Function Definition: main( (global structure{temp 4-component vector of float Color, temp float Depth})
+0:38  Function Definition: main( (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:38    Function Parameters: 
 0:?     Sequence
 0:42      Sequence

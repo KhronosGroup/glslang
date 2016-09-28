@@ -1,7 +1,7 @@
 hlsl.intrinsics.vert
 Shader version: 450
 0:? Sequence
-0:2  Function Definition: VertexShaderFunctionS(f1;f1;f1;u1;u1; (global float)
+0:2  Function Definition: VertexShaderFunctionS(f1;f1;f1;u1;u1; (temp float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:2      'inF1' (in float)
@@ -142,7 +142,7 @@ Shader version: 450
 0:60      Branch: Return with expression
 0:60        Constant:
 0:60          0.000000
-0:64  Function Definition: VertexShaderFunction1(vf1;vf1;vf1; (global 1-component vector of float)
+0:64  Function Definition: VertexShaderFunction1(vf1;vf1;vf1; (temp 1-component vector of float)
 0:64    Function Parameters: 
 0:64      'inF0' (in 1-component vector of float)
 0:64      'inF1' (in 1-component vector of float)
@@ -151,7 +151,7 @@ Shader version: 450
 0:66      Branch: Return with expression
 0:66        Constant:
 0:66          0.000000
-0:70  Function Definition: VertexShaderFunction2(vf2;vf2;vf2;vu2;vu2; (global 2-component vector of float)
+0:70  Function Definition: VertexShaderFunction2(vf2;vf2;vf2;vu2;vu2; (temp 2-component vector of float)
 0:70    Function Parameters: 
 0:70      'inF0' (in 2-component vector of float)
 0:70      'inF1' (in 2-component vector of float)
@@ -317,7 +317,7 @@ Shader version: 450
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:140  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; (global 3-component vector of float)
+0:140  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; (temp 3-component vector of float)
 0:140    Function Parameters: 
 0:140      'inF0' (in 3-component vector of float)
 0:140      'inF1' (in 3-component vector of float)
@@ -489,7 +489,7 @@ Shader version: 450
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:211  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; (global 4-component vector of float)
+0:211  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; (temp 4-component vector of float)
 0:211    Function Parameters: 
 0:211      'inF0' (in 4-component vector of float)
 0:211      'inF1' (in 4-component vector of float)
@@ -681,7 +681,7 @@ Shader version: 450
 0:?           2.000000
 0:?           3.000000
 0:?           4.000000
-0:336  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
+0:336  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; (temp 2X2 matrix of float)
 0:336    Function Parameters: 
 0:336      'inF0' (in 2X2 matrix of float)
 0:336      'inF1' (in 2X2 matrix of float)
@@ -811,7 +811,7 @@ Shader version: 450
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
-0:345  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; (global 3X3 matrix of float)
+0:345  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; (temp 3X3 matrix of float)
 0:345    Function Parameters: 
 0:345      'inF0' (in 3X3 matrix of float)
 0:345      'inF1' (in 3X3 matrix of float)
@@ -946,7 +946,7 @@ Shader version: 450
 0:?           3.000000
 0:?           3.000000
 0:?           3.000000
-0:354  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; (global 4X4 matrix of float)
+0:354  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; (temp 4X4 matrix of float)
 0:354    Function Parameters: 
 0:354      'inF0' (in 4X4 matrix of float)
 0:354      'inF1' (in 4X4 matrix of float)
@@ -1088,7 +1088,7 @@ Shader version: 450
 0:?           4.000000
 0:?           4.000000
 0:?           4.000000
-0:377  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (global void)
+0:377  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (temp void)
 0:377    Function Parameters: 
 0:377      'inF0' (in float)
 0:377      'inF1' (in float)
@@ -1151,7 +1151,7 @@ Shader version: 450
 0:378          matrix-multiply (temp 2X2 matrix of float)
 0:378            'inFM1' (in 2X2 matrix of float)
 0:378            'inFM0' (in 2X2 matrix of float)
-0:384  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (global void)
+0:384  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (temp void)
 0:384    Function Parameters: 
 0:384      'inF0' (in float)
 0:384      'inF1' (in float)
@@ -1214,7 +1214,7 @@ Shader version: 450
 0:385          matrix-multiply (temp 3X3 matrix of float)
 0:385            'inFM1' (in 3X3 matrix of float)
 0:385            'inFM0' (in 3X3 matrix of float)
-0:391  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (global void)
+0:391  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (temp void)
 0:391    Function Parameters: 
 0:391      'inF0' (in float)
 0:391      'inF1' (in float)
@@ -1277,7 +1277,7 @@ Shader version: 450
 0:392          matrix-multiply (temp 4X4 matrix of float)
 0:392            'inFM1' (in 4X4 matrix of float)
 0:392            'inFM0' (in 4X4 matrix of float)
-0:401  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf23;mf32;mf33;mf34;mf24; (global void)
+0:401  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf23;mf32;mf33;mf34;mf24; (temp void)
 0:401    Function Parameters: 
 0:401      'inF0' (in float)
 0:401      'inF1' (in float)
@@ -1399,7 +1399,7 @@ Linked vertex stage:
 
 Shader version: 450
 0:? Sequence
-0:2  Function Definition: VertexShaderFunctionS(f1;f1;f1;u1;u1; (global float)
+0:2  Function Definition: VertexShaderFunctionS(f1;f1;f1;u1;u1; (temp float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:2      'inF1' (in float)
@@ -1540,7 +1540,7 @@ Shader version: 450
 0:60      Branch: Return with expression
 0:60        Constant:
 0:60          0.000000
-0:64  Function Definition: VertexShaderFunction1(vf1;vf1;vf1; (global 1-component vector of float)
+0:64  Function Definition: VertexShaderFunction1(vf1;vf1;vf1; (temp 1-component vector of float)
 0:64    Function Parameters: 
 0:64      'inF0' (in 1-component vector of float)
 0:64      'inF1' (in 1-component vector of float)
@@ -1549,7 +1549,7 @@ Shader version: 450
 0:66      Branch: Return with expression
 0:66        Constant:
 0:66          0.000000
-0:70  Function Definition: VertexShaderFunction2(vf2;vf2;vf2;vu2;vu2; (global 2-component vector of float)
+0:70  Function Definition: VertexShaderFunction2(vf2;vf2;vf2;vu2;vu2; (temp 2-component vector of float)
 0:70    Function Parameters: 
 0:70      'inF0' (in 2-component vector of float)
 0:70      'inF1' (in 2-component vector of float)
@@ -1715,7 +1715,7 @@ Shader version: 450
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:140  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; (global 3-component vector of float)
+0:140  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; (temp 3-component vector of float)
 0:140    Function Parameters: 
 0:140      'inF0' (in 3-component vector of float)
 0:140      'inF1' (in 3-component vector of float)
@@ -1887,7 +1887,7 @@ Shader version: 450
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:211  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; (global 4-component vector of float)
+0:211  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; (temp 4-component vector of float)
 0:211    Function Parameters: 
 0:211      'inF0' (in 4-component vector of float)
 0:211      'inF1' (in 4-component vector of float)
@@ -2079,7 +2079,7 @@ Shader version: 450
 0:?           2.000000
 0:?           3.000000
 0:?           4.000000
-0:336  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
+0:336  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; (temp 2X2 matrix of float)
 0:336    Function Parameters: 
 0:336      'inF0' (in 2X2 matrix of float)
 0:336      'inF1' (in 2X2 matrix of float)
@@ -2209,7 +2209,7 @@ Shader version: 450
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
-0:345  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; (global 3X3 matrix of float)
+0:345  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; (temp 3X3 matrix of float)
 0:345    Function Parameters: 
 0:345      'inF0' (in 3X3 matrix of float)
 0:345      'inF1' (in 3X3 matrix of float)
@@ -2344,7 +2344,7 @@ Shader version: 450
 0:?           3.000000
 0:?           3.000000
 0:?           3.000000
-0:354  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; (global 4X4 matrix of float)
+0:354  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; (temp 4X4 matrix of float)
 0:354    Function Parameters: 
 0:354      'inF0' (in 4X4 matrix of float)
 0:354      'inF1' (in 4X4 matrix of float)
@@ -2486,7 +2486,7 @@ Shader version: 450
 0:?           4.000000
 0:?           4.000000
 0:?           4.000000
-0:377  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (global void)
+0:377  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (temp void)
 0:377    Function Parameters: 
 0:377      'inF0' (in float)
 0:377      'inF1' (in float)
@@ -2549,7 +2549,7 @@ Shader version: 450
 0:378          matrix-multiply (temp 2X2 matrix of float)
 0:378            'inFM1' (in 2X2 matrix of float)
 0:378            'inFM0' (in 2X2 matrix of float)
-0:384  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (global void)
+0:384  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (temp void)
 0:384    Function Parameters: 
 0:384      'inF0' (in float)
 0:384      'inF1' (in float)
@@ -2612,7 +2612,7 @@ Shader version: 450
 0:385          matrix-multiply (temp 3X3 matrix of float)
 0:385            'inFM1' (in 3X3 matrix of float)
 0:385            'inFM0' (in 3X3 matrix of float)
-0:391  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (global void)
+0:391  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (temp void)
 0:391    Function Parameters: 
 0:391      'inF0' (in float)
 0:391      'inF1' (in float)
@@ -2675,7 +2675,7 @@ Shader version: 450
 0:392          matrix-multiply (temp 4X4 matrix of float)
 0:392            'inFM1' (in 4X4 matrix of float)
 0:392            'inFM0' (in 4X4 matrix of float)
-0:401  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf23;mf32;mf33;mf34;mf24; (global void)
+0:401  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf23;mf32;mf33;mf34;mf24; (temp void)
 0:401    Function Parameters: 
 0:401      'inF0' (in float)
 0:401      'inF1' (in float)

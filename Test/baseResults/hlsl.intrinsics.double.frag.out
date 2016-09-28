@@ -2,7 +2,7 @@ hlsl.intrinsics.double.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:5  Function Definition: PixelShaderFunction(d1;d1;d1;vd2;vd3;vd4;u1;u1; (global float)
+0:5  Function Definition: PixelShaderFunction(d1;d1;d1;vd2;vd3;vd4;u1;u1; (temp float)
 0:5    Function Parameters: 
 0:5      'inDV1a' (layout(location=0 ) in double)
 0:5      'inDV1b' (layout(location=1 ) in double)
@@ -51,7 +51,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:5  Function Definition: PixelShaderFunction(d1;d1;d1;vd2;vd3;vd4;u1;u1; (global float)
+0:5  Function Definition: PixelShaderFunction(d1;d1;d1;vd2;vd3;vd4;u1;u1; (temp float)
 0:5    Function Parameters: 
 0:5      'inDV1a' (layout(location=0 ) in double)
 0:5      'inDV1b' (layout(location=1 ) in double)

@@ -2,7 +2,7 @@ hlsl.entry-in.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:8  Function Definition: fun(struct-InParam-vf2-vf4-vi21; (global float)
+0:8  Function Definition: fun(struct-InParam-vf2-vf4-vi21; (temp float)
 0:8    Function Parameters: 
 0:8      'p' (in structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:?     Sequence
@@ -22,7 +22,7 @@ gl_FragCoord origin is upper left
 0:9                1 (const int)
 0:9            Constant:
 0:9              0 (const int)
-0:13  Function Definition: PixelShaderFunction(struct-InParam-vf2-vf4-vi21; (global 4-component vector of float)
+0:13  Function Definition: PixelShaderFunction(struct-InParam-vf2-vf4-vi21; (temp 4-component vector of float)
 0:13    Function Parameters: 
 0:13      'i' (in structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:?     Sequence
@@ -48,12 +48,12 @@ gl_FragCoord origin is upper left
 0:16      Sequence
 0:16        move second child to first child (temp float)
 0:16          'ret1' (temp float)
-0:16          Function Call: fun(struct-InParam-vf2-vf4-vi21; (global float)
+0:16          Function Call: fun(struct-InParam-vf2-vf4-vi21; (temp float)
 0:16            'local' (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:17      Sequence
 0:17        move second child to first child (temp float)
 0:17          'ret2' (temp float)
-0:17          Function Call: fun(struct-InParam-vf2-vf4-vi21; (global float)
+0:17          Function Call: fun(struct-InParam-vf2-vf4-vi21; (temp float)
 0:?             Comma (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:?               Sequence
 0:?                 move second child to first child (temp 2-component vector of float)
@@ -100,7 +100,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:8  Function Definition: fun(struct-InParam-vf2-vf4-vi21; (global float)
+0:8  Function Definition: fun(struct-InParam-vf2-vf4-vi21; (temp float)
 0:8    Function Parameters: 
 0:8      'p' (in structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:?     Sequence
@@ -120,7 +120,7 @@ gl_FragCoord origin is upper left
 0:9                1 (const int)
 0:9            Constant:
 0:9              0 (const int)
-0:13  Function Definition: PixelShaderFunction(struct-InParam-vf2-vf4-vi21; (global 4-component vector of float)
+0:13  Function Definition: PixelShaderFunction(struct-InParam-vf2-vf4-vi21; (temp 4-component vector of float)
 0:13    Function Parameters: 
 0:13      'i' (in structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:?     Sequence
@@ -146,12 +146,12 @@ gl_FragCoord origin is upper left
 0:16      Sequence
 0:16        move second child to first child (temp float)
 0:16          'ret1' (temp float)
-0:16          Function Call: fun(struct-InParam-vf2-vf4-vi21; (global float)
+0:16          Function Call: fun(struct-InParam-vf2-vf4-vi21; (temp float)
 0:16            'local' (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:17      Sequence
 0:17        move second child to first child (temp float)
 0:17          'ret2' (temp float)
-0:17          Function Call: fun(struct-InParam-vf2-vf4-vi21; (global float)
+0:17          Function Call: fun(struct-InParam-vf2-vf4-vi21; (temp float)
 0:?             Comma (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:?               Sequence
 0:?                 move second child to first child (temp 2-component vector of float)

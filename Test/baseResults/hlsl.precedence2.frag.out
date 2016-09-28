@@ -2,7 +2,7 @@ hlsl.precedence2.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:7  Function Definition: PixelShaderFunction(i1;i1;i1;i1; (global int)
+0:7  Function Definition: PixelShaderFunction(i1;i1;i1;i1; (temp int)
 0:7    Function Parameters: 
 0:7      'a1' (layout(location=0 ) in int)
 0:7      'a2' (layout(location=1 ) in int)
@@ -42,7 +42,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:7  Function Definition: PixelShaderFunction(i1;i1;i1;i1; (global int)
+0:7  Function Definition: PixelShaderFunction(i1;i1;i1;i1; (temp int)
 0:7    Function Parameters: 
 0:7      'a1' (layout(location=0 ) in int)
 0:7      'a2' (layout(location=1 ) in int)
