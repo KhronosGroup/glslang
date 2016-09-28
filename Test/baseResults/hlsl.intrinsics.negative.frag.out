@@ -65,7 +65,7 @@ ERROR: 60 compilation errors.  No code generated.
 Shader version: 450
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
-0:2  Function Definition: PixelShaderFunctionS(f1;f1;f1;i1; (global float)
+0:2  Function Definition: PixelShaderFunctionS(f1;f1;f1;i1; (temp float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:2      'inF1' (in float)
@@ -142,7 +142,7 @@ ERROR: node is still EOpNull!
 0:32      Branch: Return with expression
 0:32        Constant:
 0:32          0.000000
-0:36  Function Definition: PixelShaderFunction1(vf1;vf1;vf1;vi1; (global 1-component vector of float)
+0:36  Function Definition: PixelShaderFunction1(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:36    Function Parameters: 
 0:36      'inF0' (in 1-component vector of float)
 0:36      'inF1' (in 1-component vector of float)
@@ -154,7 +154,7 @@ ERROR: node is still EOpNull!
 0:41      Branch: Return with expression
 0:41        Constant:
 0:41          0.000000
-0:45  Function Definition: PixelShaderFunction2(vf2;vf2;vf2;vi2; (global 2-component vector of float)
+0:45  Function Definition: PixelShaderFunction2(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
 0:45    Function Parameters: 
 0:45      'inF0' (in 2-component vector of float)
 0:45      'inF1' (in 2-component vector of float)
@@ -197,7 +197,7 @@ ERROR: node is still EOpNull!
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:63  Function Definition: PixelShaderFunction3(vf3;vf3;vf3;vi3; (global 3-component vector of float)
+0:63  Function Definition: PixelShaderFunction3(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
 0:63    Function Parameters: 
 0:63      'inF0' (in 3-component vector of float)
 0:63      'inF1' (in 3-component vector of float)
@@ -233,7 +233,7 @@ ERROR: node is still EOpNull!
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:80  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
+0:80  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
 0:80    Function Parameters: 
 0:80      'inF0' (layout(location=0 ) in 4-component vector of float)
 0:80      'inF1' (layout(location=1 ) in 4-component vector of float)
@@ -276,7 +276,7 @@ ERROR: node is still EOpNull!
 0:?             3.000000
 0:?             4.000000
 0:92        Branch: Return
-0:115  Function Definition: PixelShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
+0:115  Function Definition: PixelShaderFunction2x2(mf22;mf22;mf22; (temp 2X2 matrix of float)
 0:115    Function Parameters: 
 0:115      'inF0' (in 2X2 matrix of float)
 0:115      'inF1' (in 2X2 matrix of float)
@@ -314,7 +314,7 @@ ERROR: node is still EOpNull!
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
-0:123  Function Definition: PixelShaderFunction3x3(mf33;mf33;mf33; (global 3X3 matrix of float)
+0:123  Function Definition: PixelShaderFunction3x3(mf33;mf33;mf33; (temp 3X3 matrix of float)
 0:123    Function Parameters: 
 0:123      'inF0' (in 3X3 matrix of float)
 0:123      'inF1' (in 3X3 matrix of float)
@@ -357,7 +357,7 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:?           3.000000
 0:?           3.000000
-0:131  Function Definition: PixelShaderFunction4x4(mf44;mf44;mf44; (global 4X4 matrix of float)
+0:131  Function Definition: PixelShaderFunction4x4(mf44;mf44;mf44; (temp 4X4 matrix of float)
 0:131    Function Parameters: 
 0:131      'inF0' (in 4X4 matrix of float)
 0:131      'inF1' (in 4X4 matrix of float)
@@ -421,7 +421,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
-0:2  Function Definition: PixelShaderFunctionS(f1;f1;f1;i1; (global float)
+0:2  Function Definition: PixelShaderFunctionS(f1;f1;f1;i1; (temp float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:2      'inF1' (in float)
@@ -498,7 +498,7 @@ ERROR: node is still EOpNull!
 0:32      Branch: Return with expression
 0:32        Constant:
 0:32          0.000000
-0:36  Function Definition: PixelShaderFunction1(vf1;vf1;vf1;vi1; (global 1-component vector of float)
+0:36  Function Definition: PixelShaderFunction1(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:36    Function Parameters: 
 0:36      'inF0' (in 1-component vector of float)
 0:36      'inF1' (in 1-component vector of float)
@@ -510,7 +510,7 @@ ERROR: node is still EOpNull!
 0:41      Branch: Return with expression
 0:41        Constant:
 0:41          0.000000
-0:45  Function Definition: PixelShaderFunction2(vf2;vf2;vf2;vi2; (global 2-component vector of float)
+0:45  Function Definition: PixelShaderFunction2(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
 0:45    Function Parameters: 
 0:45      'inF0' (in 2-component vector of float)
 0:45      'inF1' (in 2-component vector of float)
@@ -553,7 +553,7 @@ ERROR: node is still EOpNull!
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:63  Function Definition: PixelShaderFunction3(vf3;vf3;vf3;vi3; (global 3-component vector of float)
+0:63  Function Definition: PixelShaderFunction3(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
 0:63    Function Parameters: 
 0:63      'inF0' (in 3-component vector of float)
 0:63      'inF1' (in 3-component vector of float)
@@ -589,7 +589,7 @@ ERROR: node is still EOpNull!
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:80  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
+0:80  Function Definition: PixelShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
 0:80    Function Parameters: 
 0:80      'inF0' (layout(location=0 ) in 4-component vector of float)
 0:80      'inF1' (layout(location=1 ) in 4-component vector of float)
@@ -632,7 +632,7 @@ ERROR: node is still EOpNull!
 0:?             3.000000
 0:?             4.000000
 0:92        Branch: Return
-0:115  Function Definition: PixelShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
+0:115  Function Definition: PixelShaderFunction2x2(mf22;mf22;mf22; (temp 2X2 matrix of float)
 0:115    Function Parameters: 
 0:115      'inF0' (in 2X2 matrix of float)
 0:115      'inF1' (in 2X2 matrix of float)
@@ -670,7 +670,7 @@ ERROR: node is still EOpNull!
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
-0:123  Function Definition: PixelShaderFunction3x3(mf33;mf33;mf33; (global 3X3 matrix of float)
+0:123  Function Definition: PixelShaderFunction3x3(mf33;mf33;mf33; (temp 3X3 matrix of float)
 0:123    Function Parameters: 
 0:123      'inF0' (in 3X3 matrix of float)
 0:123      'inF1' (in 3X3 matrix of float)
@@ -713,7 +713,7 @@ ERROR: node is still EOpNull!
 0:?           3.000000
 0:?           3.000000
 0:?           3.000000
-0:131  Function Definition: PixelShaderFunction4x4(mf44;mf44;mf44; (global 4X4 matrix of float)
+0:131  Function Definition: PixelShaderFunction4x4(mf44;mf44;mf44; (temp 4X4 matrix of float)
 0:131    Function Parameters: 
 0:131      'inF0' (in 4X4 matrix of float)
 0:131      'inF1' (in 4X4 matrix of float)

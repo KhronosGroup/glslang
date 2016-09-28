@@ -271,7 +271,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     // typedef
     bool typedefDecl = acceptTokenClass(EHTokTypedef);
 
-    TType type;
+    TType declaredType;
 
     // DX9 sampler declaration use a different syntax
     // DX9 shaders need to run through HLSL compiler (fxc) via a back compat mode, it isn't going to
@@ -280,29 +280,18 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     // As such, the sampler keyword in D3D10+ turns into an automatic sampler type, and is commonly used
     // For that reason, this line is commented out 
 
-   // if (acceptSamplerDeclarationDX9(type))
+   // if (acceptSamplerDeclarationDX9(declaredType))
    //     return true;
 
     // fully_specified_type
-    if (! acceptFullySpecifiedType(type))
+    if (! acceptFullySpecifiedType(declaredType))
         return false;
-
-    if (type.getQualifier().storage == EvqTemporary && parseContext.symbolTable.atGlobalLevel()) {
-        if (type.getBasicType() == EbtSampler) {
-            // Sampler/textures are uniform by default (if no explicit qualifier is present) in
-            // HLSL.  This line silently converts samplers *explicitly* declared static to uniform,
-            // which is incorrect but harmless.
-            type.getQualifier().storage = EvqUniform; 
-        } else {
-            type.getQualifier().storage = EvqGlobal;
-        }
-    }
 
     // identifier
     HlslToken idToken;
     while (acceptIdentifier(idToken)) {
         // function_parameters
-        TFunction& function = *new TFunction(idToken.string, type);
+        TFunction& function = *new TFunction(idToken.string, declaredType);
         if (acceptFunctionParameters(function)) {
             // post_decls
             acceptPostDecls(function.getWritableType().getQualifier());
@@ -320,20 +309,41 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
                 parseContext.handleFunctionDeclarator(idToken.loc, function, true);
             }
         } else {
-            // a variable declaration
+            // A variable declaration. Fix the storage qualifier if it's a global.
+            if (declaredType.getQualifier().storage == EvqTemporary && parseContext.symbolTable.atGlobalLevel())
+                declaredType.getQualifier().storage = EvqUniform;
 
-            // array_specifier
+            // We can handle multiple variables per type declaration, so 
+            // the number of types can expand when arrayness is different.
+            TType variableType;
+            variableType.shallowCopy(declaredType);
+
+            // recognize array_specifier
             TArraySizes* arraySizes = nullptr;
             acceptArraySpecifier(arraySizes);
 
+            // Fix arrayness in the variableType
+            if (declaredType.isImplicitlySizedArray()) {
+                // Because "int[] a = int[2](...), b = int[3](...)" makes two arrays a and b
+                // of different sizes, for this case sharing the shallow copy of arrayness
+                // with the parseType oversubscribes it, so get a deep copy of the arrayness.
+                variableType.newArraySizes(declaredType.getArraySizes());
+            }
+            if (arraySizes || variableType.isArray()) {
+                // In the most general case, arrayness is potentially coming both from the
+                // declared type and from the variable: "int[] a[];" or just one or the other.
+                // Merge it all to the variableType, so all arrayness is part of the variableType.
+                parseContext.arrayDimMerge(variableType, arraySizes);
+            }
+
             // samplers accept immediate sampler state
-            if (type.getBasicType() == EbtSampler) {
+            if (variableType.getBasicType() == EbtSampler) {
                 if (! acceptSamplerState())
                     return false;
             }
 
             // post_decls
-            acceptPostDecls(type.getQualifier());
+            acceptPostDecls(variableType.getQualifier());
 
             // EQUAL assignment_expression
             TIntermTyped* expressionNode = nullptr;
@@ -346,18 +356,29 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
                 }
             }
 
-            if (typedefDecl)
-                parseContext.declareTypedef(idToken.loc, *idToken.string, type, arraySizes);
-            else if (type.getBasicType() == EbtBlock)
-                parseContext.declareBlock(idToken.loc, type, idToken.string);
-            else {
-                // Declare the variable and add any initializer code to the AST.
-                // The top-level node is always made into an aggregate, as that's
-                // historically how the AST has been.
-                node = intermediate.growAggregate(node,
-                                                  parseContext.declareVariable(idToken.loc, *idToken.string, type,
-                                                                               arraySizes, expressionNode),
-                                                  idToken.loc);
+            // Hand off the actual declaration
+
+            // TODO: things scoped within an annotation need their own name space;
+            // TODO: strings are not yet handled.
+            if (variableType.getBasicType() != EbtString && parseContext.getAnnotationNestingLevel() == 0) {
+                if (typedefDecl)
+                    parseContext.declareTypedef(idToken.loc, *idToken.string, variableType);
+                else if (variableType.getBasicType() == EbtBlock)
+                    parseContext.declareBlock(idToken.loc, variableType, idToken.string);
+                else {
+                    if (variableType.getQualifier().storage == EvqUniform && variableType.getBasicType() != EbtSampler) {
+                        // this isn't really an individual variable, but a member of the $Global buffer
+                        parseContext.growGlobalUniformBlock(idToken.loc, variableType, *idToken.string);
+                    } else {
+                        // Declare the variable and add any initializer code to the AST.
+                        // The top-level node is always made into an aggregate, as that's
+                        // historically how the AST has been.
+                        node = intermediate.growAggregate(node,
+                                                          parseContext.declareVariable(idToken.loc, *idToken.string, variableType,
+                                                                                       expressionNode),
+                                                          idToken.loc);
+                    }
+                }
             }
         }
 
@@ -412,7 +433,7 @@ bool HlslGrammar::acceptControlDeclaration(TIntermNode*& node)
         return false;
     }
 
-    node = parseContext.declareVariable(idToken.loc, *idToken.string, type, 0, expressionNode);
+    node = parseContext.declareVariable(idToken.loc, *idToken.string, type, expressionNode);
 
     return true;
 }
@@ -455,7 +476,7 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
     do {
         switch (peek()) {
         case EHTokStatic:
-            // normal glslang default
+            qualifier.storage = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
             break;
         case EHTokExtern:
             // TODO: no meaning in glslang?

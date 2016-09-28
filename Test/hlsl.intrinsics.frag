@@ -1,5 +1,5 @@
 
-#define gs     // TODO: define as groupshared when available in the grammar
+#define gs static     // TODO: define as groupshared when available in the grammar
 gs uint gs_ua;
 gs uint gs_ub;
 gs uint gs_uc;

@@ -3,7 +3,7 @@ Shader version: 450
 gl_FragCoord origin is upper left
 using depth_less
 0:? Sequence
-0:2  Function Definition: PixelShaderFunction( (global float FragDepth)
+0:2  Function Definition: PixelShaderFunction( (temp float FragDepth)
 0:2    Function Parameters: 
 0:?     Sequence
 0:3      Sequence
@@ -23,7 +23,7 @@ Shader version: 450
 gl_FragCoord origin is upper left
 using depth_less
 0:? Sequence
-0:2  Function Definition: PixelShaderFunction( (global float FragDepth)
+0:2  Function Definition: PixelShaderFunction( (temp float FragDepth)
 0:2    Function Parameters: 
 0:?     Sequence
 0:3      Sequence

@@ -181,4 +181,54 @@ const TFunction* TParseContextBase::selectFunction(
     return incumbent;
 }
 
+//
+// Make the passed-in variable information become a member of the
+// global uniform block.  If this doesn't exist yet, make it.
+//
+void TParseContextBase::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName)
+{
+    // make the global block, if not yet made
+    if (globalUniformBlock == nullptr) {
+        TString& blockName = *NewPoolTString(getGlobalUniformBlockName());
+        TQualifier blockQualifier;
+        blockQualifier.clear();
+        blockQualifier.storage = EvqUniform;
+        TType blockType(new TTypeList, blockName, blockQualifier);
+        TString* instanceName = NewPoolTString("");
+        globalUniformBlock = new TVariable(instanceName, blockType, true);
+        globalUniformBlockAdded = false;
+    }
+
+    // add the requested member as a member to the block
+    TType* type = new TType;
+    type->shallowCopy(memberType);
+    type->setFieldName(memberName);
+    TTypeLoc typeLoc = {type, loc};
+    globalUniformBlock->getType().getWritableStruct()->push_back(typeLoc);
+    globalUniformBlockChanged = true;
+}
+
+//
+// Insert into the symbol table the global uniform block created in
+// growGlobalUniformBlock(). The variables added as members won't be
+// found unless this is done.
+//
+bool TParseContextBase::insertGlobalUniformBlock()
+{
+    if (globalUniformBlock == nullptr)
+        return true;
+
+    if (globalUniformBlockAdded)
+        return ! globalUniformBlockChanged;
+
+    globalUniformBlockChanged = false;
+    globalUniformBlockAdded = symbolTable.insert(*globalUniformBlock);
+    if (globalUniformBlockAdded) {
+        intermediate.addSymbolLinkageNode(linkage, *globalUniformBlock);
+        finalizeGlobalUniformBlockLayout(*globalUniformBlock);
+    }
+
+    return globalUniformBlockAdded;
+}
+
 } // end namespace glslang

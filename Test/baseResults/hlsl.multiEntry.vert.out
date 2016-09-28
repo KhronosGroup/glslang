@@ -1,7 +1,7 @@
 hlsl.multiEntry.vert
 Shader version: 450
 0:? Sequence
-0:4  Function Definition: FakeEntrypoint(u1; (global 4-component vector of float)
+0:4  Function Definition: FakeEntrypoint(u1; (temp 4-component vector of float)
 0:4    Function Parameters: 
 0:4      'Index' (in uint)
 0:?     Sequence
@@ -10,14 +10,14 @@ Shader version: 450
 0:5          'Position' (uniform samplerBuffer)
 0:5          Convert uint to int (temp int)
 0:5            'Index' (in uint)
-0:9  Function Definition: RealEntrypoint(u1; (global 4-component vector of float Position)
+0:9  Function Definition: RealEntrypoint(u1; (temp 4-component vector of float Position)
 0:9    Function Parameters: 
 0:9      'Index' (in uint VertexIndex)
 0:?     Sequence
 0:10      Sequence
 0:10        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float Position)
-0:10          Function Call: FakeEntrypoint(u1; (global 4-component vector of float)
+0:10          Function Call: FakeEntrypoint(u1; (temp 4-component vector of float)
 0:10            'Index' (in uint VertexIndex)
 0:10        Branch: Return
 0:?   Linker Objects
@@ -31,7 +31,7 @@ Linked vertex stage:
 
 Shader version: 450
 0:? Sequence
-0:4  Function Definition: FakeEntrypoint(u1; (global 4-component vector of float)
+0:4  Function Definition: FakeEntrypoint(u1; (temp 4-component vector of float)
 0:4    Function Parameters: 
 0:4      'Index' (in uint)
 0:?     Sequence
@@ -40,14 +40,14 @@ Shader version: 450
 0:5          'Position' (uniform samplerBuffer)
 0:5          Convert uint to int (temp int)
 0:5            'Index' (in uint)
-0:9  Function Definition: RealEntrypoint(u1; (global 4-component vector of float Position)
+0:9  Function Definition: RealEntrypoint(u1; (temp 4-component vector of float Position)
 0:9    Function Parameters: 
 0:9      'Index' (in uint VertexIndex)
 0:?     Sequence
 0:10      Sequence
 0:10        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (out 4-component vector of float Position)
-0:10          Function Call: FakeEntrypoint(u1; (global 4-component vector of float)
+0:10          Function Call: FakeEntrypoint(u1; (temp 4-component vector of float)
 0:10            'Index' (in uint VertexIndex)
 0:10        Branch: Return
 0:?   Linker Objects
