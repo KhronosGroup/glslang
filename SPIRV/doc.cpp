@@ -309,6 +309,9 @@ const char* BuiltInString(int builtIn)
     case 41: return "SubgroupLocalInvocationId";
     case 42: return "VertexIndex";                 // TBD: put next to VertexId?
     case 43: return "InstanceIndex";               // TBD: put next to InstanceId?
+    case 4424: return "BaseVertex";
+    case 4425: return "BaseInstance";
+    case 4426: return "DrawIndex";
 
     case BuiltInCeiling:
     default: return "Bad";
@@ -803,6 +806,7 @@ const char* CapabilityString(int info)
     case 55: return "StorageImageReadWithoutFormat";
     case 56: return "StorageImageWriteWithoutFormat";
     case 57: return "MultiViewport";
+    case 4427: return "DrawParameters";
 
     case CapabilityCeiling:
     default: return "Bad";
