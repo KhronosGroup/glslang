@@ -51,6 +51,7 @@ public:
 
     void setLimits(const TBuiltInResource&);
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
+    virtual const char* getGlobalUniformBlockName() { return "$Global"; }
 
     void C_DECL error(const TSourceLoc&, const char* szReason, const char* szToken,
         const char* szExtraInfoFormat, ...);
@@ -145,9 +146,10 @@ public:
     TIntermTyped* constructAggregate(TIntermNode*, const TType&, int, const TSourceLoc&);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, const TSourceLoc&, bool subset);
     void declareBlock(const TSourceLoc&, TType&, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
+    void finalizeGlobalUniformBlockLayout(TVariable& block);
     void fixBlockLocations(const TSourceLoc&, TQualifier&, TTypeList&, bool memberWithLocation, bool memberWithoutLocation);
     void fixBlockXfbOffsets(TQualifier&, TTypeList&);
-    void fixBlockUniformOffsets(TQualifier&, TTypeList&);
+    void fixBlockUniformOffsets(const TQualifier&, TTypeList&);
     void addQualifierToExisting(const TSourceLoc&, TQualifier, const TString& identifier);
     void addQualifierToExisting(const TSourceLoc&, TQualifier, TIdentifierList&);
     void updateStandaloneQualifierDefaults(const TSourceLoc&, const TPublicType&);
@@ -160,6 +162,7 @@ public:
     void unnestLooping()     { --loopNestingLevel; }
     void nestAnnotations()   { ++annotationNestingLevel; }
     void unnestAnnotations() { --annotationNestingLevel; }
+    int getAnnotationNestingLevel() { return annotationNestingLevel; }
     void pushScope()         { symbolTable.push(); }
     void popScope()          { symbolTable.pop(0); }
 

@@ -78,7 +78,8 @@ public:
                       TInfoSink& infoSink, bool forwardCompatible, EShMessages messages)
           : TParseVersions(interm, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
             symbolTable(symbolTable),
-            linkage(nullptr), scanContext(nullptr), ppContext(nullptr) { }
+            linkage(nullptr), scanContext(nullptr), ppContext(nullptr),
+            globalUniformBlock(nullptr) { }
     virtual ~TParseContextBase() { }
 
     virtual void setLimits(const TBuiltInResource&) = 0;
@@ -126,6 +127,13 @@ public:
 
     TSymbolTable& symbolTable;   // symbol table that goes with the current language, version, and profile
 
+    // Manage the global uniform block (default uniforms in GLSL, $Global in HLSL)
+    // TODO: This could perhaps get its own object, but the current design doesn't work
+    // yet when new uniform variables are declared between function definitions, so
+    // this is pending getting a fully functional design.
+    virtual void growGlobalUniformBlock(TSourceLoc&, TType&, TString& memberName);
+    virtual bool insertGlobalUniformBlock();
+
 protected:
     TParseContextBase(TParseContextBase&);
     TParseContextBase& operator=(TParseContextBase&);
@@ -147,6 +155,14 @@ protected:
         std::function<bool(const TType&, const TType&)>,
         std::function<bool(const TType&, const TType&, const TType&)>,
         /* output */ bool& tie);
+
+    // Manage the global uniform block (default uniforms in GLSL, $Global in HLSL)
+    TVariable* globalUniformBlock;   // the actual block, inserted into the symbol table
+    bool globalUniformBlockAdded;    // true once inserted into the symbol table
+    bool globalUniformBlockChanged;  // true if members have changed
+    // override this to set the language-specific name
+    virtual const char* getGlobalUniformBlockName() { return ""; }
+    virtual void finalizeGlobalUniformBlockLayout(TVariable&) { }
 };
 
 //

@@ -287,17 +287,6 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     if (! acceptFullySpecifiedType(declaredType))
         return false;
 
-    if (declaredType.getQualifier().storage == EvqTemporary && parseContext.symbolTable.atGlobalLevel()) {
-        if (declaredType.getBasicType() == EbtSampler) {
-            // Sampler/textures are uniform by default (if no explicit qualifier is present) in
-            // HLSL.  This line silently converts samplers *explicitly* declared static to uniform,
-            // which is incorrect but harmless.
-            declaredType.getQualifier().storage = EvqUniform; 
-        } else {
-            declaredType.getQualifier().storage = EvqGlobal;
-        }
-    }
-
     // identifier
     HlslToken idToken;
     while (acceptIdentifier(idToken)) {
@@ -320,7 +309,10 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
                 parseContext.handleFunctionDeclarator(idToken.loc, function, true);
             }
         } else {
-            // A variable declaration.
+            // A variable declaration. Fix the storage qualifier if it's a global.
+            if (declaredType.getQualifier().storage == EvqTemporary && parseContext.symbolTable.atGlobalLevel())
+                declaredType.getQualifier().storage = EvqUniform;
+
             // We can handle multiple variables per type declaration, so 
             // the number of types can expand when arrayness is different.
             TType variableType;
@@ -364,18 +356,29 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
                 }
             }
 
-            if (typedefDecl)
-                parseContext.declareTypedef(idToken.loc, *idToken.string, variableType, arraySizes);
-            else if (variableType.getBasicType() == EbtBlock)
-                parseContext.declareBlock(idToken.loc, variableType, idToken.string);
-            else {
-                // Declare the variable and add any initializer code to the AST.
-                // The top-level node is always made into an aggregate, as that's
-                // historically how the AST has been.
-                node = intermediate.growAggregate(node,
-                                                  parseContext.declareVariable(idToken.loc, *idToken.string, variableType,
-                                                                               expressionNode),
-                                                  idToken.loc);
+            // Hand off the actual declaration
+
+            // TODO: things scoped within an annotation need their own name space;
+            // TODO: strings are not yet handled.
+            if (variableType.getBasicType() != EbtString && parseContext.getAnnotationNestingLevel() == 0) {
+                if (typedefDecl)
+                    parseContext.declareTypedef(idToken.loc, *idToken.string, variableType);
+                else if (variableType.getBasicType() == EbtBlock)
+                    parseContext.declareBlock(idToken.loc, variableType, idToken.string);
+                else {
+                    if (variableType.getQualifier().storage == EvqUniform && variableType.getBasicType() != EbtSampler) {
+                        // this isn't really an individual variable, but a member of the $Global buffer
+                        parseContext.growGlobalUniformBlock(idToken.loc, variableType, *idToken.string);
+                    } else {
+                        // Declare the variable and add any initializer code to the AST.
+                        // The top-level node is always made into an aggregate, as that's
+                        // historically how the AST has been.
+                        node = intermediate.growAggregate(node,
+                                                          parseContext.declareVariable(idToken.loc, *idToken.string, variableType,
+                                                                                       expressionNode),
+                                                          idToken.loc);
+                    }
+                }
             }
         }
 
@@ -473,7 +476,7 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
     do {
         switch (peek()) {
         case EHTokStatic:
-            // normal glslang default
+            qualifier.storage = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
             break;
         case EHTokExtern:
             // TODO: no meaning in glslang?
