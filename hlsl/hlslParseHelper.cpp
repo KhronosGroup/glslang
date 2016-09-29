@@ -736,7 +736,9 @@ bool HlslParseContext::shouldFlattenUniform(const TType& type) const
 
     return type.isArray() &&
         intermediate.getFlattenUniformArrays() &&
-        qualifier == EvqUniform;
+        qualifier == EvqUniform &&
+        // Testing the EbtSampler basic type covers samplers and textures
+        type.getBasicType() == EbtSampler;
 }
 
 void HlslParseContext::flatten(const TSourceLoc& loc, const TVariable& variable)
