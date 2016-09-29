@@ -1,12 +1,12 @@
 
 // implicit sized array
-uniform float g_array [ ] = { 1, 2, 3, 4, 5 };
+static float g_array [ ] = { 1, 2, 3, 4, 5 };
 
 // Unused implicit sized array
-uniform float g_array_unused [ ] = { 1, 2, 3, 4, 5, 6, 7 };
+static float g_array_unused [ ] = { 1, 2, 3, 4, 5, 6, 7 };
 
 // Test implicit size arrayed structs
-uniform struct mystruct {
+static struct mystruct {
     int i;
     float f;
 } g_mystruct[] = {
