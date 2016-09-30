@@ -158,8 +158,7 @@ protected:
 
     // Manage the global uniform block (default uniforms in GLSL, $Global in HLSL)
     TVariable* globalUniformBlock;   // the actual block, inserted into the symbol table
-    bool globalUniformBlockAdded;    // true once inserted into the symbol table
-    bool globalUniformBlockChanged;  // true if members have changed
+    int firstNewMember;              // the index of the first member not yet inserted into the symbol table
     // override this to set the language-specific name
     virtual const char* getGlobalUniformBlockName() { return ""; }
     virtual void finalizeGlobalUniformBlockLayout(TVariable&) { }

@@ -196,7 +196,7 @@ void TParseContextBase::growGlobalUniformBlock(TSourceLoc& loc, TType& memberTyp
         TType blockType(new TTypeList, blockName, blockQualifier);
         TString* instanceName = NewPoolTString("");
         globalUniformBlock = new TVariable(instanceName, blockType, true);
-        globalUniformBlockAdded = false;
+        firstNewMember = 0;
     }
 
     // add the requested member as a member to the block
@@ -205,7 +205,6 @@ void TParseContextBase::growGlobalUniformBlock(TSourceLoc& loc, TType& memberTyp
     type->setFieldName(memberName);
     TTypeLoc typeLoc = {type, loc};
     globalUniformBlock->getType().getWritableStruct()->push_back(typeLoc);
-    globalUniformBlockChanged = true;
 }
 
 //
@@ -218,17 +217,25 @@ bool TParseContextBase::insertGlobalUniformBlock()
     if (globalUniformBlock == nullptr)
         return true;
 
-    if (globalUniformBlockAdded)
-        return ! globalUniformBlockChanged;
-
-    globalUniformBlockChanged = false;
-    globalUniformBlockAdded = symbolTable.insert(*globalUniformBlock);
-    if (globalUniformBlockAdded) {
-        intermediate.addSymbolLinkageNode(linkage, *globalUniformBlock);
-        finalizeGlobalUniformBlockLayout(*globalUniformBlock);
+    int numMembers = globalUniformBlock->getType().getStruct()->size();
+    bool inserted;
+    if (firstNewMember == 0) {
+        // This is the first request; we need a normal symbol table insert
+        inserted = symbolTable.insert(*globalUniformBlock);
+        if (inserted)
+            intermediate.addSymbolLinkageNode(linkage, *globalUniformBlock);
+    } else if (firstNewMember <= numMembers) {
+        // This is a follow-on request; we need to amend the first insert
+        inserted = symbolTable.amend(*globalUniformBlock, firstNewMember);
     }
 
-    return globalUniformBlockAdded;
+    if (inserted) {
+        finalizeGlobalUniformBlockLayout(*globalUniformBlock);
+        firstNewMember = numMembers;
+    }
+
+    return inserted;
+
 }
 
 } // end namespace glslang
