@@ -268,6 +268,9 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     case EOpConstructBool:   newType = EbtBool;   break;
     case EOpConstructFloat:  newType = EbtFloat;  break;
     case EOpConstructDouble: newType = EbtDouble; break;
+#ifdef AMD_EXTENSIONS
+    case EOpConstructFloat16: newType = EbtFloat16; break;
+#endif
     default: break; // some compilers want this
     }
 
@@ -293,6 +296,9 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     case EOpConstructBool:
     case EOpConstructFloat:
     case EOpConstructDouble:
+#ifdef AMD_EXTENSIONS
+    case EOpConstructFloat16:
+#endif
         return child;
     default: break; // some compilers want this
     }
@@ -471,6 +477,11 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpConstructDouble:
         promoteTo = EbtDouble;
         break;
+#ifdef AMD_EXTENSIONS
+    case EOpConstructFloat16:
+        promoteTo = EbtFloat16;
+        break;
+#endif
     case EOpConstructInt:
         promoteTo = EbtInt;
         break;
@@ -585,6 +596,9 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         case EbtUint:  newOp = EOpConvUintToDouble;  break;
         case EbtBool:  newOp = EOpConvBoolToDouble;  break;
         case EbtFloat: newOp = EOpConvFloatToDouble; break;
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16: newOp = EOpConvFloat16ToDouble; break;
+#endif
         case EbtInt64: newOp = EOpConvInt64ToDouble; break;
         case EbtUint64: newOp = EOpConvUint64ToDouble; break;
         default:
@@ -597,18 +611,39 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         case EbtUint:   newOp = EOpConvUintToFloat;   break;
         case EbtBool:   newOp = EOpConvBoolToFloat;   break;
         case EbtDouble: newOp = EOpConvDoubleToFloat; break;
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16: newOp = EOpConvFloat16ToFloat; break;
+#endif
         case EbtInt64:  newOp = EOpConvInt64ToFloat;  break;
         case EbtUint64: newOp = EOpConvUint64ToFloat; break;
         default:
             return 0;
         }
         break;
+#ifdef AMD_EXTENSIONS
+    case EbtFloat16:
+        switch (node->getBasicType()) {
+        case EbtInt:    newOp = EOpConvIntToFloat16;    break;
+        case EbtUint:   newOp = EOpConvUintToFloat16;   break;
+        case EbtBool:   newOp = EOpConvBoolToFloat16;   break;
+        case EbtFloat:  newOp = EOpConvFloatToFloat16;  break;
+        case EbtDouble: newOp = EOpConvDoubleToFloat16; break;
+        case EbtInt64:  newOp = EOpConvInt64ToFloat16;  break;
+        case EbtUint64: newOp = EOpConvUint64ToFloat16; break;
+        default:
+            return 0;
+        }
+        break;
+#endif
     case EbtBool:
         switch (node->getBasicType()) {
         case EbtInt:    newOp = EOpConvIntToBool;    break;
         case EbtUint:   newOp = EOpConvUintToBool;   break;
         case EbtFloat:  newOp = EOpConvFloatToBool;  break;
         case EbtDouble: newOp = EOpConvDoubleToBool; break;
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16: newOp = EOpConvFloat16ToBool; break;
+#endif
         case EbtInt64:  newOp = EOpConvInt64ToBool;  break;
         case EbtUint64: newOp = EOpConvUint64ToBool; break;
         default:
@@ -621,6 +656,9 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         case EbtBool:   newOp = EOpConvBoolToInt;   break;
         case EbtFloat:  newOp = EOpConvFloatToInt;  break;
         case EbtDouble: newOp = EOpConvDoubleToInt; break;
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16: newOp = EOpConvFloat16ToInt; break;
+#endif
         case EbtInt64:  newOp = EOpConvInt64ToInt;  break;
         case EbtUint64: newOp = EOpConvUint64ToInt; break;
         default:
@@ -633,6 +671,9 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         case EbtBool:   newOp = EOpConvBoolToUint;   break;
         case EbtFloat:  newOp = EOpConvFloatToUint;  break;
         case EbtDouble: newOp = EOpConvDoubleToUint; break;
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16: newOp = EOpConvFloat16ToUint; break;
+#endif
         case EbtInt64:  newOp = EOpConvInt64ToUint;  break;
         case EbtUint64: newOp = EOpConvUint64ToUint; break;
         default:
@@ -646,6 +687,9 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         case EbtBool:   newOp = EOpConvBoolToInt64;   break;
         case EbtFloat:  newOp = EOpConvFloatToInt64;  break;
         case EbtDouble: newOp = EOpConvDoubleToInt64; break;
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16: newOp = EOpConvFloat16ToInt64; break;
+#endif
         case EbtUint64: newOp = EOpConvUint64ToInt64; break;
         default:
             return 0;
@@ -658,6 +702,9 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         case EbtBool:   newOp = EOpConvBoolToUint64;   break;
         case EbtFloat:  newOp = EOpConvFloatToUint64;  break;
         case EbtDouble: newOp = EOpConvDoubleToUint64; break;
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16: newOp = EOpConvFloat16ToUint64; break;
+#endif
         case EbtInt64:  newOp = EOpConvInt64ToUint64;  break;
         default:
             return 0;
@@ -779,6 +826,9 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         case EbtUint64:
         case EbtFloat:
         case EbtDouble:
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16:
+#endif
             return true;
         default:
             return false;
@@ -788,6 +838,9 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         case EbtInt:
         case EbtUint:
         case EbtFloat:
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16:
+#endif
             return true;
         default:
             return false;
@@ -923,6 +976,47 @@ TOperator TIntermediate::mapTypeToConstructorOp(const TType& type) const
             }
         }
         break;
+#ifdef AMD_EXTENSIONS
+    case EbtFloat16:
+        if (type.getMatrixCols()) {
+            switch (type.getMatrixCols()) {
+            case 2:
+                switch (type.getMatrixRows()) {
+                case 2: op = EOpConstructF16Mat2x2; break;
+                case 3: op = EOpConstructF16Mat2x3; break;
+                case 4: op = EOpConstructF16Mat2x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            case 3:
+                switch (type.getMatrixRows()) {
+                case 2: op = EOpConstructF16Mat3x2; break;
+                case 3: op = EOpConstructF16Mat3x3; break;
+                case 4: op = EOpConstructF16Mat3x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            case 4:
+                switch (type.getMatrixRows()) {
+                case 2: op = EOpConstructF16Mat4x2; break;
+                case 3: op = EOpConstructF16Mat4x3; break;
+                case 4: op = EOpConstructF16Mat4x4; break;
+                default: break; // some compilers want this
+                }
+                break;
+            }
+        }
+        else {
+            switch (type.getVectorSize()) {
+            case 1: op = EOpConstructFloat16;  break;
+            case 2: op = EOpConstructF16Vec2;  break;
+            case 3: op = EOpConstructF16Vec3;  break;
+            case 4: op = EOpConstructF16Vec4;  break;
+            default: break; // some compilers want this
+            }
+        }
+        break;
+#endif
     case EbtInt:
         switch(type.getVectorSize()) {
         case 1: op = EOpConstructInt;   break;
@@ -1196,7 +1290,11 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(bool b, const TSourceLoc& 
 
 TIntermConstantUnion* TIntermediate::addConstantUnion(double d, TBasicType baseType, const TSourceLoc& loc, bool literal) const
 {
+#ifdef AMD_EXTENSIONS
+    assert(baseType == EbtFloat || baseType == EbtDouble || baseType == EbtFloat16);
+#else
     assert(baseType == EbtFloat || baseType == EbtDouble);
+#endif
 
     TConstUnionArray unionArray(1);
     unionArray[0].setDConst(d);
@@ -1451,6 +1549,12 @@ bool TIntermediate::isSpecializationOperation(const TIntermOperator& node) const
         case EOpVectorSwizzle:
         case EOpConvFloatToDouble:
         case EOpConvDoubleToFloat:
+#ifdef AMD_EXTENSIONS
+        case EOpConvFloat16ToFloat:
+        case EOpConvFloatToFloat16:
+        case EOpConvFloat16ToDouble:
+        case EOpConvDoubleToFloat16:
+#endif
             return true;
         default:
             return false;
@@ -1607,6 +1711,9 @@ bool TIntermUnary::promote()
             operand->getBasicType() != EbtInt64 &&
             operand->getBasicType() != EbtUint64 &&
             operand->getBasicType() != EbtFloat &&
+#ifdef AMD_EXTENSIONS
+            operand->getBasicType() != EbtFloat16 &&
+#endif
             operand->getBasicType() != EbtDouble)
 
             return false;
@@ -1626,7 +1733,11 @@ bool TIntermUnary::promote()
 
 void TIntermUnary::updatePrecision()
 {
+#ifdef AMD_EXTENSIONS
+    if (getBasicType() == EbtInt || getBasicType() == EbtUint || getBasicType() == EbtFloat || getBasicType() == EbtFloat16) {
+#else
     if (getBasicType() == EbtInt || getBasicType() == EbtUint || getBasicType() == EbtFloat) {
+#endif
         if (operand->getQualifier().precision > getQualifier().precision)
             getQualifier().precision = operand->getQualifier().precision;
     }
@@ -1955,7 +2066,11 @@ bool TIntermBinary::promote()
 
 void TIntermBinary::updatePrecision()
 {
+#ifdef AMD_EXTENSIONS
+    if (getBasicType() == EbtInt || getBasicType() == EbtUint || getBasicType() == EbtFloat || getBasicType() == EbtFloat16) {
+#else
     if (getBasicType() == EbtInt || getBasicType() == EbtUint || getBasicType() == EbtFloat) {
+#endif
         getQualifier().precision = std::max(right->getQualifier().precision, left->getQualifier().precision);
         if (getQualifier().precision != EpqNone) {
             left->propagatePrecision(getQualifier().precision);
@@ -1966,7 +2081,11 @@ void TIntermBinary::updatePrecision()
 
 void TIntermTyped::propagatePrecision(TPrecisionQualifier newPrecision)
 {
+#ifdef AMD_EXTENSIONS
+    if (getQualifier().precision != EpqNone || (getBasicType() != EbtInt && getBasicType() != EbtUint && getBasicType() != EbtFloat && getBasicType() != EbtFloat16))
+#else
     if (getQualifier().precision != EpqNone || (getBasicType() != EbtInt && getBasicType() != EbtUint && getBasicType() != EbtFloat))
+#endif
         return;
 
     getQualifier().precision = newPrecision;
@@ -2040,10 +2159,11 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getBConst()));
                 break;
             case EbtFloat:
-                leftUnionArray[i] = rightUnionArray[i];
-                break;
             case EbtDouble:
-                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getDConst()));
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:
+#endif
+                leftUnionArray[i] = rightUnionArray[i];
                 break;
             default:
                 return node;
@@ -2068,12 +2188,43 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 break;
             case EbtFloat:
             case EbtDouble:
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:
+#endif
                 leftUnionArray[i] = rightUnionArray[i];
                 break;
             default:
                 return node;
             }
             break;
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16:
+            switch (node->getType().getBasicType()) {
+            case EbtInt:
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getIConst()));
+                break;
+            case EbtUint:
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getUConst()));
+                break;
+            case EbtInt64:
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getI64Const()));
+                break;
+            case EbtUint64:
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getU64Const()));
+                break;
+            case EbtBool:
+                leftUnionArray[i].setDConst(static_cast<double>(rightUnionArray[i].getBConst()));
+                break;
+            case EbtFloat:
+            case EbtDouble:
+            case EbtFloat16:
+                leftUnionArray[i] = rightUnionArray[i];
+                break;
+            default:
+                return node;
+            }
+            break;
+#endif
         case EbtInt:
             switch (node->getType().getBasicType()) {
             case EbtInt:
@@ -2093,6 +2244,9 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 break;
             case EbtFloat:
             case EbtDouble:
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:
+#endif
                 leftUnionArray[i].setIConst(static_cast<int>(rightUnionArray[i].getDConst()));
                 break;
             default:
@@ -2118,6 +2272,9 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 break;
             case EbtFloat:
             case EbtDouble:
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:
+#endif
                 leftUnionArray[i].setUConst(static_cast<unsigned int>(rightUnionArray[i].getDConst()));
                 break;
             default:
@@ -2143,6 +2300,9 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 break;
             case EbtFloat:
             case EbtDouble:
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:
+#endif
                 leftUnionArray[i].setBConst(rightUnionArray[i].getDConst() != 0.0);
                 break;
             default:
@@ -2168,6 +2328,9 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 break;
             case EbtFloat:
             case EbtDouble:
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:
+#endif
                 leftUnionArray[i].setI64Const(static_cast<long long>(rightUnionArray[i].getDConst()));
                 break;
             default:
@@ -2193,6 +2356,9 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
                 break;
             case EbtFloat:
             case EbtDouble:
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:
+#endif
                 leftUnionArray[i].setU64Const(static_cast<unsigned long long>(rightUnionArray[i].getDConst()));
                 break;
             default:

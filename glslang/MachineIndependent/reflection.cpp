@@ -529,6 +529,9 @@ public:
             switch (type.getBasicType()) {
             case EbtFloat:      return GL_FLOAT_VEC2                  + offset;
             case EbtDouble:     return GL_DOUBLE_VEC2                 + offset;
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:    return GL_FLOAT16_VEC2_NV             + offset;
+#endif
             case EbtInt:        return GL_INT_VEC2                    + offset;
             case EbtUint:       return GL_UNSIGNED_INT_VEC2           + offset;
             case EbtInt64:      return GL_INT64_ARB                   + offset;
@@ -588,6 +591,32 @@ public:
                     default:   return 0;
                     }
                 }
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:
+                switch (type.getMatrixCols()) {
+                case 2:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_FLOAT16_MAT2_AMD;
+                    case 3:    return GL_FLOAT16_MAT2x3_AMD;
+                    case 4:    return GL_FLOAT16_MAT2x4_AMD;
+                    default:   return 0;
+                    }
+                case 3:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_FLOAT16_MAT3x2_AMD;
+                    case 3:    return GL_FLOAT16_MAT3_AMD;
+                    case 4:    return GL_FLOAT16_MAT3x4_AMD;
+                    default:   return 0;
+                    }
+                case 4:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_FLOAT16_MAT4x2_AMD;
+                    case 3:    return GL_FLOAT16_MAT4x3_AMD;
+                    case 4:    return GL_FLOAT16_MAT4_AMD;
+                    default:   return 0;
+                    }
+                }
+#endif
             default:
                 return 0;
             }
@@ -596,6 +625,9 @@ public:
             switch (type.getBasicType()) {
             case EbtFloat:      return GL_FLOAT;
             case EbtDouble:     return GL_DOUBLE;
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:    return GL_FLOAT16_NV;
+#endif
             case EbtInt:        return GL_INT;
             case EbtUint:       return GL_UNSIGNED_INT;
             case EbtInt64:      return GL_INT64_ARB;

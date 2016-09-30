@@ -46,6 +46,9 @@ enum TBasicType {
     EbtVoid,
     EbtFloat,
     EbtDouble,
+#ifdef AMD_EXTENSIONS
+    EbtFloat16,
+#endif
     EbtInt,
     EbtUint,
     EbtInt64,

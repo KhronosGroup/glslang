@@ -144,6 +144,9 @@ void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
     case PpAtomConstUint64:
     case PpAtomConstFloat:
     case PpAtomConstDouble:
+#ifdef AMD_EXTENSIONS
+    case PpAtomConstFloat16:
+#endif
         str = ppToken->name;
         while (*str) {
             lAddByte(pTok, (unsigned char) *str);
@@ -195,6 +198,9 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
     case PpAtomIdentifier:
     case PpAtomConstFloat:
     case PpAtomConstDouble:
+#ifdef AMD_EXTENSIONS
+    case PpAtomConstFloat16:
+#endif
     case PpAtomConstInt:
     case PpAtomConstUint:
     case PpAtomConstInt64:
@@ -221,6 +227,9 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
             break;
         case PpAtomConstFloat:
         case PpAtomConstDouble:
+#ifdef AMD_EXTENSIONS
+        case PpAtomConstFloat16:
+#endif
             ppToken->dval = atof(ppToken->name);
             break;
         case PpAtomConstInt:

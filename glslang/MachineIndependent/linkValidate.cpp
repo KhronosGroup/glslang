@@ -950,6 +950,9 @@ int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size)
     case EbtInt64:
     case EbtUint64:
     case EbtDouble:  size = 8; return 8;
+#ifdef AMD_EXTENSIONS
+    case EbtFloat16: size = 2; return 2;
+#endif
     default:         size = 4; return 4;
     }
 }
