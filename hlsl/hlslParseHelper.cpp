@@ -117,8 +117,6 @@ bool HlslParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& 
     currentScanner = &input;
     ppContext.setInput(input, versionWillBeError);
 
-    HlslScanContext::fillInKeywordMap();      // TODO: right place, and include the delete too
-
     HlslScanContext scanContext(*this, ppContext);
     HlslGrammar grammar(scanContext, *this);
     if (!grammar.parse()) {
@@ -4773,34 +4771,6 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     TType blockType(&typeList, "" /* *blockName */, type.getQualifier());
     if (arraySizes)
         blockType.newArraySizes(*arraySizes);
-
-    //
-    // Don't make a user-defined type out of block name; that will cause an error
-    // if the same block name gets reused in a different interface.
-    //
-    // "Block names have no other use within a shader
-    // beyond interface matching; it is a compile-time error to use a block name at global scope for anything
-    // other than as a block name (e.g., use of a block name for a global variable name or function name is
-    // currently reserved)."
-    //
-    // Use the symbol table to prevent normal reuse of the block's name, as a variable entry,
-    // whose type is EbtBlock, but without all the structure; that will come from the type
-    // the instances point to.
-    //
-    //??TType blockNameType(EbtBlock, blockType.getQualifier().storage);
-    //??TVariable* blockNameVar = new TVariable(blockName, blockNameType);
-    //if (! symbolTable.insert(*blockNameVar)) {
-    //    TSymbol* existingName = symbolTable.find(*blockName);
-    //    if (existingName->getType().getBasicType() == EbtBlock) {
-    //        if (existingName->getType().getQualifier().storage == blockType.getQualifier().storage) {
-    //            error(loc, "Cannot reuse block name within the same interface:", blockName->c_str(), blockType.getStorageQualifierString());
-    //            return;
-    //        }
-    //    } else {
-    //        error(loc, "block name cannot redefine a non-block name", blockName->c_str(), "");
-    //        return;
-    //    }
-    //}
 
     // Add the variable, as anonymous or named instanceName.
     // Make an anonymous variable if no name was provided.

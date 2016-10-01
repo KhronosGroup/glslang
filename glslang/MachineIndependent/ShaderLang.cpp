@@ -51,6 +51,7 @@
 #include "../../hlsl/hlslParseables.h"
 #include "Scan.h"
 #include "ScanContext.h"
+#include "../../hlsl/hlslScanContext.h"
 
 #include "../Include/ShHandle.h"
 #include "../../OGLCompilersDLL/InitializeDll.h"
@@ -1049,6 +1050,7 @@ int ShInitialize()
         PerProcessGPA = new TPoolAllocator();
 
     glslang::TScanContext::fillInKeywordMap();
+    glslang::HlslScanContext::fillInKeywordMap();
 
     return 1;
 }
@@ -1141,6 +1143,7 @@ int __fastcall ShFinalize()
     }
 
     glslang::TScanContext::deleteKeywordMap();
+    glslang::HlslScanContext::deleteKeywordMap();
 
     return 1;
 }
