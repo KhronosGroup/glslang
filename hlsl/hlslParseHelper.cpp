@@ -2246,21 +2246,9 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
             if (builtIn && fnCandidate->getNumExtensions())
                 requireExtensions(loc, fnCandidate->getNumExtensions(), fnCandidate->getExtensions(), fnCandidate->getName().c_str());
 
-            if (arguments) {
-                // Make sure qualifications work for these arguments.
-                //TIntermAggregate* aggregate = arguments->getAsAggregate();
-                //for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
-                //    // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
-                //    // is the single argument itself or its children are the arguments.  Only one argument
-                //    // means take 'arguments' itself as the one argument.
-                //    TIntermNode* arg = fnCandidate->getParamCount() == 1 ? arguments : (aggregate ? aggregate->getSequence()[i] : arguments);
-                //    TQualifier& formalQualifier = (*fnCandidate)[i].type->getQualifier();
-                //    TQualifier& argQualifier = arg->getAsTyped()->getQualifier();
-                //}
-
-                // Convert 'in' arguments
-                addInputArgumentConversions(*fnCandidate, arguments);  // arguments may be modified if it's just a single argument node
-            }
+            // Convert 'in' arguments
+            if (arguments)
+                addInputArgumentConversions(*fnCandidate, arguments);
 
             op = fnCandidate->getBuiltInOp();
             if (builtIn && op != EOpNull) {
@@ -2390,7 +2378,9 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
         // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
         // is the single argument itself or its children are the arguments.  Only one argument
         // means take 'arguments' itself as the one argument.
-        TIntermTyped* arg = function.getParamCount() == 1 ? arguments->getAsTyped() : (aggregate ? aggregate->getSequence()[i]->getAsTyped() : arguments->getAsTyped());
+        TIntermTyped* arg = function.getParamCount() == 1
+                                   ? arguments->getAsTyped()
+                                   : (aggregate ? aggregate->getSequence()[i]->getAsTyped() : arguments->getAsTyped());
         if (*function[i].type != arg->getType()) {
             // In-qualified arguments just need an extra node added above the argument to
             // convert to the correct type.
@@ -2401,9 +2391,9 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
             if (shouldFlatten(arg->getType())) {
                 // Will make a two-level subtree.
                 // The deepest will copy member-by-member to build the structure to pass.
-                // The level above that will be an two-operand EOpComma sequence that follows the copy by the
+                // The level above that will be a two-operand EOpComma sequence that follows the copy by the
                 // object itself.
-                TSourceLoc dummyLoc;
+                TSourceLoc dummyLoc;  // ?? fix these everywhere to be arguments[i]->getLoc()?
                 dummyLoc.init();
                 TVariable* internalAggregate = makeInternalVariable("aggShadow", *function[i].type);
                 internalAggregate->getWritableType().getQualifier().makeTemporary();
@@ -2433,11 +2423,16 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
 TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& function, TIntermAggregate& intermNode) const
 {
     TIntermSequence& arguments = intermNode.getSequence();
+    const auto needsConversion = [&](int argNum) {
+        return function[argNum].type->getQualifier().isParamOutput() &&
+               (*function[argNum].type != arguments[argNum]->getAsTyped()->getType() ||
+                shouldFlatten(arguments[argNum]->getAsTyped()->getType()));
+    };
 
     // Will there be any output conversions?
     bool outputConversions = false;
     for (int i = 0; i < function.getParamCount(); ++i) {
-        if (*function[i].type != arguments[i]->getAsTyped()->getType() && function[i].type->getQualifier().isParamOutput()) {
+        if (needsConversion(i)) {
             outputConversions = true;
             break;
         }
@@ -2468,18 +2463,21 @@ TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& fu
 
     // Process each argument's conversion
     for (int i = 0; i < function.getParamCount(); ++i) {
-        if (*function[i].type != arguments[i]->getAsTyped()->getType()) {
-            if (function[i].type->getQualifier().isParamOutput()) {
-                // Out-qualified arguments need to use the topology set up above.
-                // do the " ...(tempArg, ...), arg = tempArg" bit from above
-                TVariable* tempArg = makeInternalVariable("tempArg", *function[i].type);
-                tempArg->getWritableType().getQualifier().makeTemporary();
-                TIntermSymbol* tempArgNode = intermediate.addSymbol(*tempArg, intermNode.getLoc());
-                TIntermTyped* tempAssign = intermediate.addAssign(EOpAssign, arguments[i]->getAsTyped(), tempArgNode, arguments[i]->getLoc());
-                conversionTree = intermediate.growAggregate(conversionTree, tempAssign, arguments[i]->getLoc());
-                // replace the argument with another node for the same tempArg variable
-                arguments[i] = intermediate.addSymbol(*tempArg, intermNode.getLoc());
-            }
+        if (needsConversion(i)) {
+            // Out-qualified arguments needing conversion need to use the topology setup above.
+            // Do the " ...(tempArg, ...), arg = tempArg" bit from above.
+
+            // Make a temporary for what the function expects the argument to look like.
+            TVariable* tempArg = makeInternalVariable("tempArg", *function[i].type);
+            tempArg->getWritableType().getQualifier().makeTemporary();
+            TIntermSymbol* tempArgNode = intermediate.addSymbol(*tempArg, intermNode.getLoc());
+
+            // This makes the deepest level, the member-wise copy
+            TIntermTyped* tempAssign = handleAssign(arguments[i]->getLoc(), EOpAssign, arguments[i]->getAsTyped(), tempArgNode)->getAsAggregate();
+            conversionTree = intermediate.growAggregate(conversionTree, tempAssign, arguments[i]->getLoc());
+
+            // replace the argument with another node for the same tempArg variable
+            arguments[i] = intermediate.addSymbol(*tempArg, intermNode.getLoc());
         }
     }
 
