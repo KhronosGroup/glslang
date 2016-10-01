@@ -151,8 +151,7 @@ class TIoMappingTraverser : public TBindingTraverser {
 public:
     TIoMappingTraverser(TIntermediate& i, TBindingMap& bindingMap, TUsedBindings& usedBindings,
                         bool traverseDeadCode) :
-        TBindingTraverser(i, bindingMap, usedBindings, traverseDeadCode),
-        nextBinding(1)
+        TBindingTraverser(i, bindingMap, usedBindings, traverseDeadCode)
     { }
 
 protected:
@@ -172,7 +171,7 @@ protected:
 
         if (intermediate.getAutoMapBindings()) {
             // Otherwise, find a free spot for it.
-            const int freeBinding = getFreeBinding(base.getType());
+            const int freeBinding = getFreeBinding(base.getType(), getBindingBase(base.getType()));
 
             markBinding(base, freeBinding);
             base.getWritableType().getQualifier().layoutBinding = freeBinding;
@@ -190,14 +189,12 @@ protected:
     }
 
     // Find a free binding spot 
-    int getFreeBinding(const TType&) {
+    int getFreeBinding(const TType&, int nextBinding) {
         while (!hasNFreeSlots(nextBinding, 1))
             ++nextBinding;
 
         return nextBinding;
     }
-
-    int nextBinding;
 };
 
 // Map I/O variables to provided offsets, and make bindings for
