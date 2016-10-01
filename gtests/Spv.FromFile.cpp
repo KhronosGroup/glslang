@@ -281,7 +281,7 @@ INSTANTIATE_TEST_CASE_P(
 INSTANTIATE_TEST_CASE_P(
     Hlsl, HlslIoMap,
     ::testing::ValuesIn(std::vector<IoMapData>{
-        { "spv.register.autoassign.frag", "main_ep", 5, 10, 15, true, false },
+        { "spv.register.autoassign.frag", "main_ep", 5, 10, 20, true, false },
         { "spv.register.noautoassign.frag", "main_ep", 5, 10, 15, false, false },
         { "spv.register.autoassign-2.frag", "main", 5, 10, 15, true, true },
         { "spv.buffer.autoassign.frag", "main", 5, 10, 15, true, true },
@@ -293,7 +293,7 @@ INSTANTIATE_TEST_CASE_P(
 INSTANTIATE_TEST_CASE_P(
     Hlsl, GlslIoMap,
     ::testing::ValuesIn(std::vector<IoMapData>{
-        { "spv.glsl.register.autoassign.frag", "main", 5, 10, 15, true, false },
+        { "spv.glsl.register.autoassign.frag", "main", 5, 10, 20, true, false },
         { "spv.glsl.register.noautoassign.frag", "main", 5, 10, 15, false, false },
     }),
     FileNameAsCustomTestSuffixIoMap

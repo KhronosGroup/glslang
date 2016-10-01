@@ -51,21 +51,21 @@ Linked fragment stage:
                               Decorate 21(g_sSamp1) DescriptorSet 0
                               Decorate 21(g_sSamp1) Binding 5
                               Decorate 27(g_tTex2) DescriptorSet 0
-                              Decorate 27(g_tTex2) Binding 1
+                              Decorate 27(g_tTex2) Binding 14
                               Decorate 29(g_sSamp2) DescriptorSet 0
-                              Decorate 29(g_sSamp2) Binding 2
+                              Decorate 29(g_sSamp2) Binding 6
                               Decorate 39(g_tTex3) DescriptorSet 0
                               Decorate 39(g_tTex3) Binding 13
                               Decorate 46(g_sSamp3) DescriptorSet 0
                               Decorate 46(g_sSamp3) Binding 7
                               Decorate 64(g_tTex4) DescriptorSet 0
-                              Decorate 64(g_tTex4) Binding 3
+                              Decorate 64(g_tTex4) Binding 15
                               Decorate 69(g_sSamp4) DescriptorSet 0
-                              Decorate 69(g_sSamp4) Binding 4
+                              Decorate 69(g_sSamp4) Binding 8
                               Decorate 84(g_tTex5) DescriptorSet 0
-                              Decorate 84(g_tTex5) Binding 6
+                              Decorate 84(g_tTex5) Binding 16
                               Decorate 86(g_sSamp5) DescriptorSet 0
-                              Decorate 86(g_sSamp5) Binding 8
+                              Decorate 86(g_sSamp5) Binding 9
                               MemberDecorate 93(MyStruct_t) 0 Offset 0
                               MemberDecorate 93(MyStruct_t) 1 Offset 4
                               MemberDecorate 93(MyStruct_t) 2 Offset 16
@@ -75,7 +75,7 @@ Linked fragment stage:
                               MemberDecorate 95($Global) 3 Offset 64
                               Decorate 95($Global) Block
                               Decorate 97 DescriptorSet 0
-                              Decorate 97 Binding 9
+                              Decorate 97 Binding 20
                               Decorate 119(g_tTex_unused1) DescriptorSet 0
                               Decorate 119(g_tTex_unused1) Binding 10
                               Decorate 121(g_sSamp_unused1) DescriptorSet 0

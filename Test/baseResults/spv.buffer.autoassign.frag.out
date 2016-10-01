@@ -35,11 +35,11 @@ Linked fragment stage:
                               MemberDecorate 25 0 Offset 0
                               Decorate 25 Block
                               Decorate 27 DescriptorSet 0
-                              Decorate 27 Binding 1
+                              Decorate 27 Binding 15
                               MemberDecorate 31 0 Offset 0
                               Decorate 31 Block
                               Decorate 33 DescriptorSet 0
-                              Decorate 33 Binding 2
+                              Decorate 33 Binding 16
                               Decorate 41(Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
