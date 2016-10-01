@@ -28,7 +28,7 @@ ERROR: 0:102: 'arrays of arrays' : not supported for this version or the enabled
 ERROR: 0:103: 'arrays of arrays' : not supported for this version or the enabled extensions 
 ERROR: 0:100: 'arrays of arrays' : not supported for this version or the enabled extensions 
 ERROR: 0:100: 'array-of-array of block' : not supported with this profile: es
-ERROR: 0:111: 'variable indexing fragment shader ouput array' : not supported with this profile: es
+ERROR: 0:111: 'variable indexing fragment shader output array' : not supported with this profile: es
 ERROR: 0:119: '==' : can't use with samplers or structs containing samplers 
 ERROR: 0:120: '!=' : can't use with samplers or structs containing samplers 
 ERROR: 0:121: '==' : can't use with samplers or structs containing samplers 

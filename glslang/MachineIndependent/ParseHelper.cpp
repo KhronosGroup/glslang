@@ -558,7 +558,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
                     // input/output blocks either don't exist or can be variable indexed
                 }
             } else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
-                requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader ouput array");
+                requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader output array");
             else if (base->getBasicType() == EbtSampler && version >= 130) {
                 const char* explanation = "variable indexing sampler array";
                 requireProfile(base->getLoc(), EEsProfile | ECoreProfile | ECompatibilityProfile, explanation);
