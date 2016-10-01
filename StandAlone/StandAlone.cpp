@@ -941,7 +941,7 @@ void usage()
            "                                          explicit bindings.\n"
            "  --amb                                   synonym for --auto-map-bindings\n"
            "\n"
-           "  --flatten-uniform-arrays                flatten uniform array references to scalars\n"
+           "  --flatten-uniform-arrays                flatten uniform texture & sampler arrays to scalars\n"
            "  --fua                                   synonym for --flatten-uniform-arrays\n"
            );
 
