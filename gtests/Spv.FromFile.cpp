@@ -284,6 +284,7 @@ INSTANTIATE_TEST_CASE_P(
         { "spv.register.autoassign.frag", "main_ep", 5, 10, 15, true, false },
         { "spv.register.noautoassign.frag", "main_ep", 5, 10, 15, false, false },
         { "spv.register.autoassign-2.frag", "main", 5, 10, 15, true, true },
+        { "spv.buffer.autoassign.frag", "main", 5, 10, 15, true, true },
     }),
     FileNameAsCustomTestSuffixIoMap
 );
