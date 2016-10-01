@@ -366,7 +366,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
                 else if (variableType.getBasicType() == EbtBlock)
                     parseContext.declareBlock(idToken.loc, variableType, idToken.string);
                 else {
-                    if (variableType.getQualifier().storage == EvqUniform && variableType.getBasicType() != EbtSampler) {
+                    if (variableType.getQualifier().storage == EvqUniform && ! variableType.isOpaque()) {
                         // this isn't really an individual variable, but a member of the $Global buffer
                         parseContext.growGlobalUniformBlock(idToken.loc, variableType, *idToken.string);
                     } else {
