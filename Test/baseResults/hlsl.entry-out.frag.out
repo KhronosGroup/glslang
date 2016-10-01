@@ -61,7 +61,7 @@ gl_FragCoord origin is upper left
 0:20      Comma (temp void)
 0:20        Function Call: fun(struct-OutParam-vf2-vi21; (temp void)
 0:20          'tempArg' (temp structure{temp 2-component vector of float v, temp 2-component vector of int i})
-0:?         Sequence
+0:20        Sequence
 0:20          move second child to first child (temp 2-component vector of float)
 0:?             'v' (layout(location=4 ) out 2-component vector of float)
 0:20            v: direct index for structure (temp 2-component vector of float)
@@ -154,7 +154,7 @@ gl_FragCoord origin is upper left
 0:20      Comma (temp void)
 0:20        Function Call: fun(struct-OutParam-vf2-vi21; (temp void)
 0:20          'tempArg' (temp structure{temp 2-component vector of float v, temp 2-component vector of int i})
-0:?         Sequence
+0:20        Sequence
 0:20          move second child to first child (temp 2-component vector of float)
 0:?             'v' (layout(location=4 ) out 2-component vector of float)
 0:20            v: direct index for structure (temp 2-component vector of float)

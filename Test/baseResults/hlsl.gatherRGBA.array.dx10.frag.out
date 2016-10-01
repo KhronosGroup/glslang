@@ -334,8 +334,8 @@ gl_FragCoord origin is upper left
 0:68            1 (const int)
 0:68        Constant:
 0:68          1.000000
-0:?       Sequence
-0:?         Sequence
+0:70      Sequence
+0:70        Sequence
 0:70          move second child to first child (temp 4-component vector of float)
 0:?             'Color' (layout(location=0 ) out 4-component vector of float)
 0:70            Color: direct index for structure (temp 4-component vector of float)
@@ -704,8 +704,8 @@ gl_FragCoord origin is upper left
 0:68            1 (const int)
 0:68        Constant:
 0:68          1.000000
-0:?       Sequence
-0:?         Sequence
+0:70      Sequence
+0:70        Sequence
 0:70          move second child to first child (temp 4-component vector of float)
 0:?             'Color' (layout(location=0 ) out 4-component vector of float)
 0:70            Color: direct index for structure (temp 4-component vector of float)

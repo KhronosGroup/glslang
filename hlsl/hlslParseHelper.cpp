@@ -1115,7 +1115,7 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
                                                 entryPointOutput->getType());
         TIntermNode* returnSequence = handleAssign(loc, EOpAssign, left, converted);
         returnSequence = intermediate.makeAggregate(returnSequence);
-        returnSequence = intermediate.growAggregate(returnSequence, intermediate.addBranch(EOpReturn, loc));
+        returnSequence = intermediate.growAggregate(returnSequence, intermediate.addBranch(EOpReturn, loc), loc);
         returnSequence->getAsAggregate()->setOperator(EOpSequence);
 
         return returnSequence;
@@ -1183,7 +1183,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                                                EOpIndexDirectStruct, *members[member].type);
             TIntermTyped* subLeft = getMember(flattenLeft, left, *leftVariables, member,
                                               EOpIndexDirectStruct, *members[member].type);
-            assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc));
+            assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc), loc);
         }
     }
 
@@ -1201,7 +1201,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
             TIntermTyped* subLeft = getMember(flattenLeft, left, *leftVariables, element,
                                               EOpIndexDirect, dereferencedType);
 
-            assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc));
+            assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc), loc);
         }
     }
 
@@ -2393,18 +2393,17 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
                 // The deepest will copy member-by-member to build the structure to pass.
                 // The level above that will be a two-operand EOpComma sequence that follows the copy by the
                 // object itself.
-                TSourceLoc dummyLoc;  // ?? fix these everywhere to be arguments[i]->getLoc()?
-                dummyLoc.init();
                 TVariable* internalAggregate = makeInternalVariable("aggShadow", *function[i].type);
                 internalAggregate->getWritableType().getQualifier().makeTemporary();
                 TIntermSymbol* internalSymbolNode = new TIntermSymbol(internalAggregate->getUniqueId(), 
                                                                       internalAggregate->getName(),
                                                                       internalAggregate->getType());
+                internalSymbolNode->setLoc(arg->getLoc());
                 // This makes the deepest level, the member-wise copy
-                TIntermAggregate* assignAgg = handleAssign(dummyLoc, EOpAssign, internalSymbolNode, arg)->getAsAggregate();
+                TIntermAggregate* assignAgg = handleAssign(arg->getLoc(), EOpAssign, internalSymbolNode, arg)->getAsAggregate();
 
                 // Now, pair that with the resulting aggregate.
-                assignAgg = intermediate.growAggregate(assignAgg, internalSymbolNode);
+                assignAgg = intermediate.growAggregate(assignAgg, internalSymbolNode, arg->getLoc());
                 assignAgg->setOperator(EOpComma);
                 assignAgg->setType(internalAggregate->getType());
                 setArg(i, assignAgg);

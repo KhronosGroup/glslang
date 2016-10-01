@@ -44,7 +44,7 @@ gl_FragCoord origin is upper left
 0:31      'ps_output' (out structure{temp 4-component vector of float color})
 0:?     Sequence
 0:33      Sequence
-0:?         Sequence
+0:33        Sequence
 0:33          move second child to first child (temp sampler)
 0:33            direct index (temp sampler)
 0:33              'local_sampler_array' (temp 3-element array of sampler)
@@ -64,7 +64,7 @@ gl_FragCoord origin is upper left
 0:33                2 (const int)
 0:?             'g_samp[2]' (uniform sampler)
 0:34      Sequence
-0:?         Sequence
+0:34        Sequence
 0:34          move second child to first child (temp texture1D)
 0:34            direct index (temp texture1D)
 0:34              'local_texture_array' (temp 3-element array of texture1D)
@@ -95,48 +95,48 @@ gl_FragCoord origin is upper left
 0:37        add (temp 4-component vector of float)
 0:37          Function Call: TestFn1( (temp 4-component vector of float)
 0:37          Function Call: TestFn2(t11[3];p1[3]; (temp 4-component vector of float)
-0:?             Comma (temp 3-element array of texture1D)
-0:?               Sequence
-0:?                 move second child to first child (temp texture1D)
-0:?                   direct index (temp texture1D)
-0:?                     'aggShadow' (temp 3-element array of texture1D)
-0:?                     Constant:
-0:?                       0 (const int)
+0:37            Comma (temp 3-element array of texture1D)
+0:37              Sequence
+0:37                move second child to first child (temp texture1D)
+0:37                  direct index (temp texture1D)
+0:37                    'aggShadow' (temp 3-element array of texture1D)
+0:37                    Constant:
+0:37                      0 (const int)
 0:?                   'g_tex[0]' (uniform texture1D)
-0:?                 move second child to first child (temp texture1D)
-0:?                   direct index (temp texture1D)
-0:?                     'aggShadow' (temp 3-element array of texture1D)
-0:?                     Constant:
-0:?                       1 (const int)
+0:37                move second child to first child (temp texture1D)
+0:37                  direct index (temp texture1D)
+0:37                    'aggShadow' (temp 3-element array of texture1D)
+0:37                    Constant:
+0:37                      1 (const int)
 0:?                   'g_tex[1]' (uniform texture1D)
-0:?                 move second child to first child (temp texture1D)
-0:?                   direct index (temp texture1D)
-0:?                     'aggShadow' (temp 3-element array of texture1D)
-0:?                     Constant:
-0:?                       2 (const int)
+0:37                move second child to first child (temp texture1D)
+0:37                  direct index (temp texture1D)
+0:37                    'aggShadow' (temp 3-element array of texture1D)
+0:37                    Constant:
+0:37                      2 (const int)
 0:?                   'g_tex[2]' (uniform texture1D)
-0:?               'aggShadow' (temp 3-element array of texture1D)
-0:?             Comma (temp 3-element array of sampler)
-0:?               Sequence
-0:?                 move second child to first child (temp sampler)
-0:?                   direct index (temp sampler)
-0:?                     'aggShadow' (temp 3-element array of sampler)
-0:?                     Constant:
-0:?                       0 (const int)
+0:37              'aggShadow' (temp 3-element array of texture1D)
+0:37            Comma (temp 3-element array of sampler)
+0:37              Sequence
+0:37                move second child to first child (temp sampler)
+0:37                  direct index (temp sampler)
+0:37                    'aggShadow' (temp 3-element array of sampler)
+0:37                    Constant:
+0:37                      0 (const int)
 0:?                   'g_samp[0]' (uniform sampler)
-0:?                 move second child to first child (temp sampler)
-0:?                   direct index (temp sampler)
-0:?                     'aggShadow' (temp 3-element array of sampler)
-0:?                     Constant:
-0:?                       1 (const int)
+0:37                move second child to first child (temp sampler)
+0:37                  direct index (temp sampler)
+0:37                    'aggShadow' (temp 3-element array of sampler)
+0:37                    Constant:
+0:37                      1 (const int)
 0:?                   'g_samp[1]' (uniform sampler)
-0:?                 move second child to first child (temp sampler)
-0:?                   direct index (temp sampler)
-0:?                     'aggShadow' (temp 3-element array of sampler)
-0:?                     Constant:
-0:?                       2 (const int)
+0:37                move second child to first child (temp sampler)
+0:37                  direct index (temp sampler)
+0:37                    'aggShadow' (temp 3-element array of sampler)
+0:37                    Constant:
+0:37                      2 (const int)
 0:?                   'g_samp[2]' (uniform sampler)
-0:?               'aggShadow' (temp 3-element array of sampler)
+0:37              'aggShadow' (temp 3-element array of sampler)
 0:?   Linker Objects
 0:?     'g_tex[0]' (uniform texture1D)
 0:?     'g_tex[1]' (uniform texture1D)
@@ -203,7 +203,7 @@ gl_FragCoord origin is upper left
 0:31      'ps_output' (out structure{temp 4-component vector of float color})
 0:?     Sequence
 0:33      Sequence
-0:?         Sequence
+0:33        Sequence
 0:33          move second child to first child (temp sampler)
 0:33            direct index (temp sampler)
 0:33              'local_sampler_array' (temp 3-element array of sampler)
@@ -223,7 +223,7 @@ gl_FragCoord origin is upper left
 0:33                2 (const int)
 0:?             'g_samp[2]' (uniform sampler)
 0:34      Sequence
-0:?         Sequence
+0:34        Sequence
 0:34          move second child to first child (temp texture1D)
 0:34            direct index (temp texture1D)
 0:34              'local_texture_array' (temp 3-element array of texture1D)
@@ -254,48 +254,48 @@ gl_FragCoord origin is upper left
 0:37        add (temp 4-component vector of float)
 0:37          Function Call: TestFn1( (temp 4-component vector of float)
 0:37          Function Call: TestFn2(t11[3];p1[3]; (temp 4-component vector of float)
-0:?             Comma (temp 3-element array of texture1D)
-0:?               Sequence
-0:?                 move second child to first child (temp texture1D)
-0:?                   direct index (temp texture1D)
-0:?                     'aggShadow' (temp 3-element array of texture1D)
-0:?                     Constant:
-0:?                       0 (const int)
+0:37            Comma (temp 3-element array of texture1D)
+0:37              Sequence
+0:37                move second child to first child (temp texture1D)
+0:37                  direct index (temp texture1D)
+0:37                    'aggShadow' (temp 3-element array of texture1D)
+0:37                    Constant:
+0:37                      0 (const int)
 0:?                   'g_tex[0]' (uniform texture1D)
-0:?                 move second child to first child (temp texture1D)
-0:?                   direct index (temp texture1D)
-0:?                     'aggShadow' (temp 3-element array of texture1D)
-0:?                     Constant:
-0:?                       1 (const int)
+0:37                move second child to first child (temp texture1D)
+0:37                  direct index (temp texture1D)
+0:37                    'aggShadow' (temp 3-element array of texture1D)
+0:37                    Constant:
+0:37                      1 (const int)
 0:?                   'g_tex[1]' (uniform texture1D)
-0:?                 move second child to first child (temp texture1D)
-0:?                   direct index (temp texture1D)
-0:?                     'aggShadow' (temp 3-element array of texture1D)
-0:?                     Constant:
-0:?                       2 (const int)
+0:37                move second child to first child (temp texture1D)
+0:37                  direct index (temp texture1D)
+0:37                    'aggShadow' (temp 3-element array of texture1D)
+0:37                    Constant:
+0:37                      2 (const int)
 0:?                   'g_tex[2]' (uniform texture1D)
-0:?               'aggShadow' (temp 3-element array of texture1D)
-0:?             Comma (temp 3-element array of sampler)
-0:?               Sequence
-0:?                 move second child to first child (temp sampler)
-0:?                   direct index (temp sampler)
-0:?                     'aggShadow' (temp 3-element array of sampler)
-0:?                     Constant:
-0:?                       0 (const int)
+0:37              'aggShadow' (temp 3-element array of texture1D)
+0:37            Comma (temp 3-element array of sampler)
+0:37              Sequence
+0:37                move second child to first child (temp sampler)
+0:37                  direct index (temp sampler)
+0:37                    'aggShadow' (temp 3-element array of sampler)
+0:37                    Constant:
+0:37                      0 (const int)
 0:?                   'g_samp[0]' (uniform sampler)
-0:?                 move second child to first child (temp sampler)
-0:?                   direct index (temp sampler)
-0:?                     'aggShadow' (temp 3-element array of sampler)
-0:?                     Constant:
-0:?                       1 (const int)
+0:37                move second child to first child (temp sampler)
+0:37                  direct index (temp sampler)
+0:37                    'aggShadow' (temp 3-element array of sampler)
+0:37                    Constant:
+0:37                      1 (const int)
 0:?                   'g_samp[1]' (uniform sampler)
-0:?                 move second child to first child (temp sampler)
-0:?                   direct index (temp sampler)
-0:?                     'aggShadow' (temp 3-element array of sampler)
-0:?                     Constant:
-0:?                       2 (const int)
+0:37                move second child to first child (temp sampler)
+0:37                  direct index (temp sampler)
+0:37                    'aggShadow' (temp 3-element array of sampler)
+0:37                    Constant:
+0:37                      2 (const int)
 0:?                   'g_samp[2]' (uniform sampler)
-0:?               'aggShadow' (temp 3-element array of sampler)
+0:37              'aggShadow' (temp 3-element array of sampler)
 0:?   Linker Objects
 0:?     'g_tex[0]' (uniform texture1D)
 0:?     'g_tex[1]' (uniform texture1D)

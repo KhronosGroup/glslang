@@ -43,8 +43,8 @@ ERROR: node is still EOpNull!
 0:20            1 (const int)
 0:20        Constant:
 0:20          1.000000
-0:?       Sequence
-0:?         Sequence
+0:22      Sequence
+0:22        Sequence
 0:22          move second child to first child (temp 4-component vector of float)
 0:?             'Color' (layout(location=0 ) out 4-component vector of float)
 0:22            Color: direct index for structure (temp 4-component vector of float)
@@ -108,8 +108,8 @@ ERROR: node is still EOpNull!
 0:20            1 (const int)
 0:20        Constant:
 0:20          1.000000
-0:?       Sequence
-0:?         Sequence
+0:22      Sequence
+0:22        Sequence
 0:22          move second child to first child (temp 4-component vector of float)
 0:?             'Color' (layout(location=0 ) out 4-component vector of float)
 0:22            Color: direct index for structure (temp 4-component vector of float)

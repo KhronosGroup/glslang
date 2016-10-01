@@ -77,8 +77,8 @@ Shader version: 450
 0:?           0.000000
 0:?           0.000000
 0:?           0.000000
-0:?       Sequence
-0:?         Sequence
+0:45      Sequence
+0:45        Sequence
 0:45          move second child to first child (temp 4-component vector of float)
 0:?             'Pos' (out 4-component vector of float Position)
 0:45            Pos: direct index for structure (temp 4-component vector of float)
@@ -186,8 +186,8 @@ Shader version: 450
 0:?           0.000000
 0:?           0.000000
 0:?           0.000000
-0:?       Sequence
-0:?         Sequence
+0:45      Sequence
+0:45        Sequence
 0:45          move second child to first child (temp 4-component vector of float)
 0:?             'Pos' (out 4-component vector of float Position)
 0:45            Pos: direct index for structure (temp 4-component vector of float)
