@@ -1168,7 +1168,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                     // means take 'arguments' itself as the one argument.
                     TIntermNode* arg = fnCandidate->getParamCount() == 1 ? arguments : (aggregate ? aggregate->getSequence()[i] : arguments);
                     TQualifier& formalQualifier = (*fnCandidate)[i].type->getQualifier();
-                    if (formalQualifier.storage == EvqOut || formalQualifier.storage == EvqInOut) {
+                    if (formalQualifier.isParamOutput()) {
                         if (lValueErrorCheck(arguments->getLoc(), "assign", arg->getAsTyped()))
                             error(arguments->getLoc(), "Non-L-value cannot be passed for 'out' or 'inout' parameters.", "out", "");
                     }
@@ -1499,7 +1499,7 @@ TIntermTyped* TParseContext::addOutputArgumentConversions(const TFunction& funct
     // Will there be any output conversions?
     bool outputConversions = false;
     for (int i = 0; i < function.getParamCount(); ++i) {
-        if (*function[i].type != arguments[i]->getAsTyped()->getType() && function[i].type->getQualifier().storage == EvqOut) {
+        if (*function[i].type != arguments[i]->getAsTyped()->getType() && function[i].type->getQualifier().isParamOutput()) {
             outputConversions = true;
             break;
         }
@@ -3003,7 +3003,7 @@ void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType ba
 
 void TParseContext::parameterTypeCheck(const TSourceLoc& loc, TStorageQualifier qualifier, const TType& type)
 {
-    if ((qualifier == EvqOut || qualifier == EvqInOut) && (type.getBasicType() == EbtSampler || type.getBasicType() == EbtAtomicUint))
+    if ((qualifier == EvqOut || qualifier == EvqInOut) && type.isOpaque())
         error(loc, "samplers and atomic_uints cannot be output parameters", type.getBasicTypeString().c_str(), "");
 }
 
@@ -3716,7 +3716,7 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
     if (qualifier.invariant)
         error(loc, "cannot use invariant qualifier on a function parameter", "", "");
     if (qualifier.noContraction) {
-        if (qualifier.storage == EvqOut || qualifier.storage == EvqInOut)
+        if (qualifier.isParamOutput())
             type.getQualifier().noContraction = true;
         else
             warn(loc, "qualifier has no effect on non-output parameters", "precise", "");
@@ -4582,7 +4582,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         // an array of size N, all elements of the array from binding through binding + N - 1 must be within this
         // range."
         //
-        if (type.getBasicType() != EbtSampler && type.getBasicType() != EbtBlock && type.getBasicType() != EbtAtomicUint)
+        if (! type.isOpaque() && type.getBasicType() != EbtBlock)
             error(loc, "requires block, or sampler/image, or atomic-counter type", "binding", "");
         if (type.getBasicType() == EbtSampler) {
             int lastBinding = qualifier.layoutBinding;

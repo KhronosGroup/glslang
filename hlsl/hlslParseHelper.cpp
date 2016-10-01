@@ -2384,18 +2384,19 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
 
     // Process each argument's conversion
     for (int i = 0; i < function.getParamCount(); ++i) {
+        if (! function[i].type->getQualifier().isParamInput())
+            continue;
+
         // At this early point there is a slight ambiguity between whether an aggregate 'arguments'
         // is the single argument itself or its children are the arguments.  Only one argument
         // means take 'arguments' itself as the one argument.
         TIntermTyped* arg = function.getParamCount() == 1 ? arguments->getAsTyped() : (aggregate ? aggregate->getSequence()[i]->getAsTyped() : arguments->getAsTyped());
         if (*function[i].type != arg->getType()) {
-            if (function[i].type->getQualifier().isParamInput()) {
-                // In-qualified arguments just need an extra node added above the argument to
-                // convert to the correct type.
-                arg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
-                arg = intermediate.addShapeConversion(EOpFunctionCall, *function[i].type, arg);
-                setArg(i, arg);
-            }
+            // In-qualified arguments just need an extra node added above the argument to
+            // convert to the correct type.
+            arg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
+            arg = intermediate.addShapeConversion(EOpFunctionCall, *function[i].type, arg);
+            setArg(i, arg);
         } else {
             if (shouldFlatten(arg->getType())) {
                 // Will make a two-level subtree.
@@ -2436,7 +2437,7 @@ TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& fu
     // Will there be any output conversions?
     bool outputConversions = false;
     for (int i = 0; i < function.getParamCount(); ++i) {
-        if (*function[i].type != arguments[i]->getAsTyped()->getType() && function[i].type->getQualifier().storage == EvqOut) {
+        if (*function[i].type != arguments[i]->getAsTyped()->getType() && function[i].type->getQualifier().isParamOutput()) {
             outputConversions = true;
             break;
         }
