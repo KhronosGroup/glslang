@@ -82,8 +82,17 @@ public:
             globalUniformBlock(nullptr) { }
     virtual ~TParseContextBase() { }
 
+    void C_DECL   error(const TSourceLoc&, const char* szReason, const char* szToken,
+                        const char* szExtraInfoFormat, ...);
+    void C_DECL    warn(const TSourceLoc&, const char* szReason, const char* szToken,
+                        const char* szExtraInfoFormat, ...);
+    void C_DECL ppError(const TSourceLoc&, const char* szReason, const char* szToken,
+                        const char* szExtraInfoFormat, ...);
+    void C_DECL  ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
+                        const char* szExtraInfoFormat, ...);
+
     virtual void setLimits(const TBuiltInResource&) = 0;
-    
+
     EShLanguage getLanguage() const { return language; }
     TIntermAggregate*& getLinkage() { return linkage; }
     void setScanContext(TScanContext* c) { scanContext = c; }
@@ -162,6 +171,9 @@ protected:
     // override this to set the language-specific name
     virtual const char* getGlobalUniformBlockName() { return ""; }
     virtual void finalizeGlobalUniformBlockLayout(TVariable&) { }
+    void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,
+                    const char* szExtraInfoFormat, TPrefixType prefix,
+                    va_list args);
 };
 
 //
@@ -215,15 +227,6 @@ public:
     void setLimits(const TBuiltInResource&);
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
     void parserError(const char* s);     // for bison's yyerror
-
-    void C_DECL error(const TSourceLoc&, const char* szReason, const char* szToken,
-                      const char* szExtraInfoFormat, ...);
-    void C_DECL  warn(const TSourceLoc&, const char* szReason, const char* szToken,
-                      const char* szExtraInfoFormat, ...);
-    void C_DECL ppError(const TSourceLoc&, const char* szReason, const char* szToken,
-                      const char* szExtraInfoFormat, ...);
-    void C_DECL ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
-                      const char* szExtraInfoFormat, ...);
 
     void reservedErrorCheck(const TSourceLoc&, const TString&);
     void reservedPpErrorCheck(const TSourceLoc&, const char* name, const char* op);
@@ -366,9 +369,6 @@ protected:
     TIntermNode* executeInitializer(const TSourceLoc&, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(const TSourceLoc&, const TType&, TIntermTyped* initializer);
     void finalErrorCheck();
-    void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,
-                       const char* szExtraInfoFormat, TPrefixType prefix,
-                       va_list args);
 
 public:
     //

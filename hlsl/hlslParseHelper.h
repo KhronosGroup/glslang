@@ -53,15 +53,6 @@ public:
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false);
     virtual const char* getGlobalUniformBlockName() { return "$Global"; }
 
-    void C_DECL error(const TSourceLoc&, const char* szReason, const char* szToken,
-        const char* szExtraInfoFormat, ...);
-    void C_DECL  warn(const TSourceLoc&, const char* szReason, const char* szToken,
-        const char* szExtraInfoFormat, ...);
-    void C_DECL ppError(const TSourceLoc&, const char* szReason, const char* szToken,
-        const char* szExtraInfoFormat, ...);
-    void C_DECL ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
-        const char* szExtraInfoFormat, ...);
-
     void reservedPpErrorCheck(const TSourceLoc&, const char* /*name*/, const char* /*op*/) { }
     bool lineContinuationCheck(const TSourceLoc&, bool /*endOfComment*/) { return true; }
     bool lineDirectiveShouldSetNextLine() const { return true; }

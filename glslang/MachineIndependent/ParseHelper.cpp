@@ -39,7 +39,6 @@
 #include "Scan.h"
 
 #include "../OSDependent/osinclude.h"
-#include <cstdarg>
 #include <algorithm>
 
 #include "preprocessor/PpContext.h"
@@ -360,81 +359,6 @@ bool TParseContext::parseVectorFields(const TSourceLoc& loc, const TString& comp
     }
 
     return true;
-}
-
-///////////////////////////////////////////////////////////////////////
-//
-// Errors
-//
-////////////////////////////////////////////////////////////////////////
-
-//
-// Used to output syntax, parsing, and semantic errors.
-//
-
-void TParseContext::outputMessage(const TSourceLoc& loc, const char* szReason,
-                                  const char* szToken,
-                                  const char* szExtraInfoFormat,
-                                  TPrefixType prefix, va_list args)
-{
-    const int maxSize = MaxTokenLength + 200;
-    char szExtraInfo[maxSize];
-
-    safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, args);
-
-    infoSink.info.prefix(prefix);
-    infoSink.info.location(loc);
-    infoSink.info << "'" << szToken <<  "' : " << szReason << " " << szExtraInfo << "\n";
-
-    if (prefix == EPrefixError) {
-        ++numErrors;
-    }
-}
-
-void C_DECL TParseContext::error(const TSourceLoc& loc, const char* szReason, const char* szToken,
-                                 const char* szExtraInfoFormat, ...)
-{
-    if (messages & EShMsgOnlyPreprocessor)
-        return;
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
-    va_end(args);
-
-    if ((messages & EShMsgCascadingErrors) == 0)
-        currentScanner->setEndOfInput();
-}
-
-void C_DECL TParseContext::warn(const TSourceLoc& loc, const char* szReason, const char* szToken,
-                                 const char* szExtraInfoFormat, ...)
-{
-    if (suppressWarnings())
-        return;
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
-    va_end(args);
-}
-
-void C_DECL TParseContext::ppError(const TSourceLoc& loc, const char* szReason, const char* szToken,
-                                 const char* szExtraInfoFormat, ...)
-{
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
-    va_end(args);
-
-    if ((messages & EShMsgCascadingErrors) == 0)
-        currentScanner->setEndOfInput();
-}
-
-void C_DECL TParseContext::ppWarn(const TSourceLoc& loc, const char* szReason, const char* szToken,
-                                 const char* szExtraInfoFormat, ...)
-{
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
-    va_end(args);
 }
 
 //

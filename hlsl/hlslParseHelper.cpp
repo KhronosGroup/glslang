@@ -43,7 +43,6 @@
 
 #include "../glslang/OSDependent/osinclude.h"
 
-#include <cstdarg>
 #include <algorithm>
 
 namespace glslang {
@@ -232,69 +231,6 @@ bool HlslParseContext::parseVectorFields(const TSourceLoc& loc, const TString& c
         }
 
         return true;
-}
-
-//
-// Used to output syntax, parsing, and semantic errors.
-//
-
-void HlslParseContext::outputMessage(const TSourceLoc& loc, const char* szReason,
-    const char* szToken,
-    const char* szExtraInfoFormat,
-    TPrefixType prefix, va_list args)
-{
-    const int maxSize = MaxTokenLength + 200;
-    char szExtraInfo[maxSize];
-
-    safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, args);
-
-    infoSink.info.prefix(prefix);
-    infoSink.info.location(loc);
-    infoSink.info << "'" << szToken << "' : " << szReason << " " << szExtraInfo << "\n";
-
-    if (prefix == EPrefixError) {
-        ++numErrors;
-    }
-}
-
-void C_DECL HlslParseContext::error(const TSourceLoc& loc, const char* szReason, const char* szToken,
-    const char* szExtraInfoFormat, ...)
-{
-    if (messages & EShMsgOnlyPreprocessor)
-        return;
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
-    va_end(args);
-}
-
-void C_DECL HlslParseContext::warn(const TSourceLoc& loc, const char* szReason, const char* szToken,
-    const char* szExtraInfoFormat, ...)
-{
-    if (suppressWarnings())
-        return;
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
-    va_end(args);
-}
-
-void C_DECL HlslParseContext::ppError(const TSourceLoc& loc, const char* szReason, const char* szToken,
-    const char* szExtraInfoFormat, ...)
-{
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
-    va_end(args);
-}
-
-void C_DECL HlslParseContext::ppWarn(const TSourceLoc& loc, const char* szReason, const char* szToken,
-    const char* szExtraInfoFormat, ...)
-{
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
-    va_end(args);
 }
 
 //
