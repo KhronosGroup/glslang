@@ -249,19 +249,6 @@ TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, TSymbol* s
     if (symbol && symbol->getNumExtensions())
         requireExtensions(loc, symbol->getNumExtensions(), symbol->getExtensions(), symbol->getName().c_str());
 
-    if (symbol && symbol->isReadOnly()) {
-        // All shared things containing an implicitly sized array must be copied up 
-        // on first use, so that all future references will share its array structure,
-        // so that editing the implicit size will effect all nodes consuming it,
-        // and so that editing the implicit size won't change the shared one.
-        //
-        // If this is a variable or a block, check it and all it contains, but if this 
-        // is a member of an anonymous block, check the whole block, as the whole block
-        // will need to be copied up if it contains an implicitly-sized array.
-        if (symbol->getType().containsImplicitlySizedArray() || (symbol->getAsAnonMember() && symbol->getAsAnonMember()->getAnonContainer().getType().containsImplicitlySizedArray()))
-            makeEditable(symbol);
-    }
-
     const TVariable* variable;
     const TAnonMember* anon = symbol ? symbol->getAsAnonMember() : nullptr;
     TIntermTyped* node = nullptr;
@@ -335,9 +322,6 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
     else {
         // at least one of base and index is variable...
 
-        if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
-            handleIoResizeArrayAccess(loc, base);
-
         if (base->getAsSymbolNode() && shouldFlatten(base->getType())) {
             if (index->getQualifier().storage != EvqConst)
                 error(loc, "Invalid variable index to flattened uniform array", base->getAsSymbolNode()->getName().c_str(), "");
@@ -379,125 +363,6 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
 void HlslParseContext::checkIndex(const TSourceLoc& /*loc*/, const TType& /*type*/, int& /*index*/)
 {
     // HLSL todo: any rules for index fixups?
-}
-
-// Make a shared symbol have a non-shared version that can be edited by the current 
-// compile, such that editing its type will not change the shared version and will
-// effect all nodes sharing it.
-void HlslParseContext::makeEditable(TSymbol*& symbol)
-{
-    // copyUp() does a deep copy of the type.
-    symbol = symbolTable.copyUp(symbol);
-
-    // Also, see if it's tied to IO resizing
-    if (isIoResizeArray(symbol->getType()))
-        ioArraySymbolResizeList.push_back(symbol);
-
-    // Also, save it in the AST for linker use.
-    intermediate.addSymbolLinkageNode(linkage, *symbol);
-}
-
-TVariable* HlslParseContext::getEditableVariable(const char* name)
-{
-    bool builtIn;
-    TSymbol* symbol = symbolTable.find(name, &builtIn);
-    if (builtIn)
-        makeEditable(symbol);
-
-    return symbol->getAsVariable();
-}
-
-// Return true if this is a geometry shader input array or tessellation control output array.
-bool HlslParseContext::isIoResizeArray(const TType& type) const
-{
-    return type.isArray() &&
-        ((language == EShLangGeometry    && type.getQualifier().storage == EvqVaryingIn) ||
-        (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut && ! type.getQualifier().patch));
-}
-
-// If an array is not isIoResizeArray() but is an io array, make sure it has the right size
-void HlslParseContext::fixIoArraySize(const TSourceLoc& loc, TType& type)
-{
-    if (! type.isArray() || type.getQualifier().patch || symbolTable.atBuiltInLevel())
-        return;
-
-    assert(! isIoResizeArray(type));
-
-    if (type.getQualifier().storage != EvqVaryingIn || type.getQualifier().patch)
-        return;
-
-    if (language == EShLangTessControl || language == EShLangTessEvaluation) {
-        if (type.getOuterArraySize() != resources.maxPatchVertices) {
-            if (type.isExplicitlySizedArray())
-                error(loc, "tessellation input array size must be gl_MaxPatchVertices or implicitly sized", "[]", "");
-            type.changeOuterArraySize(resources.maxPatchVertices);
-        }
-    }
-}
-
-// Handle a dereference of a geometry shader input array or tessellation control output array.
-// See ioArraySymbolResizeList comment in ParseHelper.h.
-//
-void HlslParseContext::handleIoResizeArrayAccess(const TSourceLoc& /*loc*/, TIntermTyped* base)
-{
-    TIntermSymbol* symbolNode = base->getAsSymbolNode();
-    assert(symbolNode);
-    if (! symbolNode)
-        return;
-
-    // fix array size, if it can be fixed and needs to be fixed (will allow variable indexing)
-    if (symbolNode->getType().isImplicitlySizedArray()) {
-        int newSize = getIoArrayImplicitSize();
-        if (newSize > 0)
-            symbolNode->getWritableType().changeOuterArraySize(newSize);
-    }
-}
-
-// If there has been an input primitive declaration (geometry shader) or an output
-// number of vertices declaration(tessellation shader), make sure all input array types
-// match it in size.  Types come either from nodes in the AST or symbols in the 
-// symbol table.
-//
-// Types without an array size will be given one.
-// Types already having a size that is wrong will get an error.
-//
-void HlslParseContext::checkIoArraysConsistency(const TSourceLoc& loc, bool tailOnly)
-{
-    int requiredSize = getIoArrayImplicitSize();
-    if (requiredSize == 0)
-        return;
-
-    const char* feature;
-    if (language == EShLangGeometry)
-        feature = TQualifier::getGeometryString(intermediate.getInputPrimitive());
-    else if (language == EShLangTessControl)
-        feature = "vertices";
-    else
-        feature = "unknown";
-
-    if (tailOnly) {
-        checkIoArrayConsistency(loc, requiredSize, feature, ioArraySymbolResizeList.back()->getWritableType(), ioArraySymbolResizeList.back()->getName());
-        return;
-    }
-
-    for (size_t i = 0; i < ioArraySymbolResizeList.size(); ++i)
-        checkIoArrayConsistency(loc, requiredSize, feature, ioArraySymbolResizeList[i]->getWritableType(), ioArraySymbolResizeList[i]->getName());
-}
-
-int HlslParseContext::getIoArrayImplicitSize() const
-{
-    if (language == EShLangGeometry)
-        return TQualifier::mapGeometryToSize(intermediate.getInputPrimitive());
-    else if (language == EShLangTessControl)
-        return intermediate.getVertices() != TQualifier::layoutNotSet ? intermediate.getVertices() : 0;
-    else
-        return 0;
-}
-
-void HlslParseContext::checkIoArrayConsistency(const TSourceLoc& /*loc*/, int requiredSize, const char* /*feature*/, TType& type, const TString& /*name*/)
-{
-    if (type.isImplicitlySizedArray())
-        type.changeOuterArraySize(requiredSize);
 }
 
 // Handle seeing a binary node with a math operation.
@@ -2253,22 +2118,6 @@ TIntermTyped* HlslParseContext::handleLengthMethod(const TSourceLoc& loc, TFunct
             if (type.isRuntimeSizedArray()) {
                 // Create a unary op and let the back end handle it
                 return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, TType(EbtInt));
-            } else if (type.isImplicitlySizedArray()) {
-                if (intermNode->getAsSymbolNode() && isIoResizeArray(type)) {
-                    // We could be between a layout declaration that gives a built-in io array implicit size and 
-                    // a user redeclaration of that array, meaning we have to substitute its implicit size here 
-                    // without actually redeclaring the array.  (It is an error to use a member before the
-                    // redeclaration, but not an error to use the array name itself.)
-                    const TString& name = intermNode->getAsSymbolNode()->getName();
-                    if (name == "gl_in" || name == "gl_out")
-                        length = getIoArrayImplicitSize();
-                }
-                if (length == 0) {
-                    if (intermNode->getAsSymbolNode() && isIoResizeArray(type))
-                        error(loc, "", function->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
-                    else
-                        error(loc, "", function->getName().c_str(), "array must be declared with a size before using this method");
-                }
             } else
                 length = type.getOuterArraySize();
         } else if (type.isMatrix())
@@ -3294,14 +3143,6 @@ void HlslParseContext::declareArray(const TSourceLoc& loc, TString& identifier, 
             symbolTable.insert(*symbol);
             newDeclaration = true;
 
-            if (! symbolTable.atBuiltInLevel()) {
-                if (isIoResizeArray(type)) {
-                    ioArraySymbolResizeList.push_back(symbol);
-                    checkIoArraysConsistency(loc, true);
-                } else
-                    fixIoArraySize(loc, symbol->getWritableType());
-            }
-
             return;
         }
         if (symbol->getAsAnonMember()) {
@@ -3326,15 +3167,10 @@ void HlslParseContext::declareArray(const TSourceLoc& loc, TString& identifier, 
 
     if (existingType.isExplicitlySizedArray()) {
         // be more lenient for input arrays to geometry shaders and tessellation control outputs, where the redeclaration is the same size
-        if (! (isIoResizeArray(type) && existingType.getOuterArraySize() == type.getOuterArraySize()))
-            error(loc, "redeclaration of array with size", identifier.c_str(), "");
         return;
     }
 
     existingType.updateArraySizes(type);
-
-    if (isIoResizeArray(type))
-        checkIoArraysConsistency(loc);
 }
 
 void HlslParseContext::updateImplicitArraySize(const TSourceLoc& loc, TIntermNode *node, int index)
@@ -3518,13 +3354,6 @@ void HlslParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& n
     }
 
     symbolTable.insert(*block);
-
-    // Tracking for implicit sizing of array
-    if (isIoResizeArray(block->getType())) {
-        ioArraySymbolResizeList.push_back(block);
-        checkIoArraysConsistency(loc, true);
-    } else if (block->getType().isArray())
-        fixIoArraySize(loc, block->getWritableType());
 
     // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, *block);
@@ -4723,12 +4552,6 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
         return;
     }
 
-    if (isIoResizeArray(blockType)) {
-        ioArraySymbolResizeList.push_back(&variable);
-        checkIoArraysConsistency(loc, true);
-    } else
-        fixIoArraySize(loc, variable.getWritableType());
-
     // Save it in the AST for linker use.
     intermediate.addSymbolLinkageNode(linkage, variable);
 }
@@ -4933,9 +4756,6 @@ void HlslParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, 
     if (publicType.shaderQualifiers.vertices != TQualifier::layoutNotSet) {
         assert(language == EShLangTessControl || language == EShLangGeometry);
         // const char* id = (language == EShLangTessControl) ? "vertices" : "max_vertices";
-
-        if (language == EShLangTessControl)
-            checkIoArraysConsistency(loc);
     }
     if (publicType.shaderQualifiers.invocations != TQualifier::layoutNotSet) {
         if (! intermediate.setInvocations(publicType.shaderQualifiers.invocations))
@@ -4951,11 +4771,6 @@ void HlslParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, 
             case ElgTrianglesAdjacency:
             case ElgQuads:
             case ElgIsolines:
-                if (intermediate.setInputPrimitive(publicType.shaderQualifiers.geometry)) {
-                    if (language == EShLangGeometry)
-                        checkIoArraysConsistency(loc);
-                } else
-                    error(loc, "cannot change previously set input primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
                 break;
             default:
                 error(loc, "cannot apply to input", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");

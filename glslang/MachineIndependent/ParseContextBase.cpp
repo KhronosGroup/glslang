@@ -113,6 +113,38 @@ void C_DECL TParseContextBase::ppWarn(const TSourceLoc& loc, const char* szReaso
     va_end(args);
 }
 
+// Make a shared symbol have a non-shared version that can be edited by the current 
+// compile, such that editing its type will not change the shared version and will
+// effect all nodes sharing it.
+void TParseContextBase::makeEditable(TSymbol*& symbol)
+{
+    // copyUp() does a deep copy of the type.
+    symbol = symbolTable.copyUp(symbol);
+
+    // Save it in the AST for linker use.
+    intermediate.addSymbolLinkageNode(linkage, *symbol);
+}
+
+// Return a writable version of the variable 'name'.
+//
+// Return nullptr if 'name' is not found.  This should mean
+// something is seriously wrong (e.g., compiler asking self for
+// built-in that doesn't exist).
+TVariable* TParseContextBase::getEditableVariable(const char* name)
+{
+    bool builtIn;
+    TSymbol* symbol = symbolTable.find(name, &builtIn);
+    
+    assert(symbol != nullptr);
+    if (symbol == nullptr)
+        return nullptr;
+
+    if (builtIn)
+        makeEditable(symbol);
+
+    return symbol->getAsVariable();
+}
+
 // Select the best matching function for 'call' from 'candidateList'.
 //
 // Assumptions

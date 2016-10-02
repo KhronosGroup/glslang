@@ -82,14 +82,14 @@ public:
             globalUniformBlock(nullptr) { }
     virtual ~TParseContextBase() { }
 
-    void C_DECL   error(const TSourceLoc&, const char* szReason, const char* szToken,
-                        const char* szExtraInfoFormat, ...);
-    void C_DECL    warn(const TSourceLoc&, const char* szReason, const char* szToken,
-                        const char* szExtraInfoFormat, ...);
-    void C_DECL ppError(const TSourceLoc&, const char* szReason, const char* szToken,
-                        const char* szExtraInfoFormat, ...);
-    void C_DECL  ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
-                        const char* szExtraInfoFormat, ...);
+    virtual void C_DECL   error(const TSourceLoc&, const char* szReason, const char* szToken,
+                                const char* szExtraInfoFormat, ...);
+    virtual void C_DECL    warn(const TSourceLoc&, const char* szReason, const char* szToken,
+                                const char* szExtraInfoFormat, ...);
+    virtual void C_DECL ppError(const TSourceLoc&, const char* szReason, const char* szToken,
+                                const char* szExtraInfoFormat, ...);
+    virtual void C_DECL  ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
+                                const char* szExtraInfoFormat, ...);
 
     virtual void setLimits(const TBuiltInResource&) = 0;
 
@@ -171,9 +171,11 @@ protected:
     // override this to set the language-specific name
     virtual const char* getGlobalUniformBlockName() { return ""; }
     virtual void finalizeGlobalUniformBlockLayout(TVariable&) { }
-    void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,
-                    const char* szExtraInfoFormat, TPrefixType prefix,
-                    va_list args);
+    virtual void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,
+                               const char* szExtraInfoFormat, TPrefixType prefix,
+                               va_list args);
+    virtual void makeEditable(TSymbol*&);
+    virtual TVariable* getEditableVariable(const char* name);
 };
 
 //
@@ -241,7 +243,6 @@ public:
     void handleIndexLimits(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
 
     void makeEditable(TSymbol*&);
-    TVariable* getEditableVariable(const char* name);
     bool isIoResizeArray(const TType&) const;
     void fixIoArraySize(const TSourceLoc&, TType&);
     void ioArrayCheck(const TSourceLoc&, const TType&, const TString& identifier);

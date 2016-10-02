@@ -63,15 +63,6 @@ public:
     TIntermTyped* handleBracketDereference(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
     void checkIndex(const TSourceLoc&, const TType&, int& index);
 
-    void makeEditable(TSymbol*&);
-    TVariable* getEditableVariable(const char* name);
-    bool isIoResizeArray(const TType&) const;
-    void fixIoArraySize(const TSourceLoc&, TType&);
-    void handleIoResizeArrayAccess(const TSourceLoc&, TIntermTyped* base);
-    void checkIoArraysConsistency(const TSourceLoc&, bool tailOnly = false);
-    int getIoArrayImplicitSize() const;
-    void checkIoArrayConsistency(const TSourceLoc&, int requiredSize, const char* feature, TType&, const TString&);
-
     TIntermTyped* handleBinaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleUnaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* childNode);
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
@@ -168,9 +159,6 @@ protected:
     TIntermNode* executeInitializer(const TSourceLoc&, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(const TSourceLoc&, const TType&, TIntermTyped* initializer);
     TOperator mapAtomicOp(const TSourceLoc& loc, TOperator op, bool isImage);
-    void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,
-                       const char* szExtraInfoFormat, TPrefixType prefix,
-                       va_list args);
 
     // Array and struct flattening
     bool shouldFlatten(const TType& type) const { return shouldFlattenIO(type) || shouldFlattenUniform(type); }
