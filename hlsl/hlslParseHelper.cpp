@@ -4532,8 +4532,10 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     // Build and add the interface block as a new type named 'blockName'
     //
 
-    //?? need the block name to be a typename?
-    TType blockType(&typeList, "" /* *blockName */, type.getQualifier());
+    // Use the instance name as the interface name if one exists, else the block name.
+    const TString& interfaceName = (instanceName && !instanceName->empty()) ? *instanceName : type.getTypeName();
+
+    TType blockType(&typeList, interfaceName, type.getQualifier());
     if (arraySizes)
         blockType.newArraySizes(*arraySizes);
 

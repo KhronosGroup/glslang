@@ -1694,19 +1694,21 @@ bool TProgram::buildReflection()
     return true;
 }
 
-int TProgram::getNumLiveUniformVariables()           { return reflection->getNumUniforms(); }
-int TProgram::getNumLiveUniformBlocks()              { return reflection->getNumUniformBlocks(); }
-const char* TProgram::getUniformName(int index)      { return reflection->getUniform(index).name.c_str(); }
-const char* TProgram::getUniformBlockName(int index) { return reflection->getUniformBlock(index).name.c_str(); }
-int TProgram::getUniformBlockSize(int index)         { return reflection->getUniformBlock(index).size; }
-int TProgram::getUniformIndex(const char* name)      { return reflection->getIndex(name); }
-int TProgram::getUniformBlockIndex(int index)        { return reflection->getUniform(index).index; }
-int TProgram::getUniformType(int index)              { return reflection->getUniform(index).glDefineType; }
-int TProgram::getUniformBufferOffset(int index)      { return reflection->getUniform(index).offset; }
-int TProgram::getUniformArraySize(int index)         { return reflection->getUniform(index).size; }
-int TProgram::getNumLiveAttributes()                 { return reflection->getNumAttributes(); }
-const char* TProgram::getAttributeName(int index)    { return reflection->getAttribute(index).name.c_str(); }
-int TProgram::getAttributeType(int index)            { return reflection->getAttribute(index).glDefineType; }
+int TProgram::getNumLiveUniformVariables() const             { return reflection->getNumUniforms(); }
+int TProgram::getNumLiveUniformBlocks() const                { return reflection->getNumUniformBlocks(); }
+const char* TProgram::getUniformName(int index) const        { return reflection->getUniform(index).name.c_str(); }
+const char* TProgram::getUniformBlockName(int index) const   { return reflection->getUniformBlock(index).name.c_str(); }
+int TProgram::getUniformBlockSize(int index) const           { return reflection->getUniformBlock(index).size; }
+int TProgram::getUniformIndex(const char* name) const        { return reflection->getIndex(name); }
+int TProgram::getUniformBlockIndex(int index) const          { return reflection->getUniform(index).index; }
+int TProgram::getUniformType(int index) const                { return reflection->getUniform(index).glDefineType; }
+int TProgram::getUniformBufferOffset(int index) const        { return reflection->getUniform(index).offset; }
+int TProgram::getUniformArraySize(int index) const           { return reflection->getUniform(index).size; }
+int TProgram::getNumLiveAttributes() const                   { return reflection->getNumAttributes(); }
+const char* TProgram::getAttributeName(int index) const      { return reflection->getAttribute(index).name.c_str(); }
+int TProgram::getAttributeType(int index) const              { return reflection->getAttribute(index).glDefineType; }
+const TType* TProgram::getUniformTType(int index) const      { return reflection->getUniform(index).getType(); }
+const TType* TProgram::getUniformBlockTType(int index) const { return reflection->getUniformBlock(index).getType(); }
 
 void TProgram::dumpReflection()                      { reflection->dump(); }
 
