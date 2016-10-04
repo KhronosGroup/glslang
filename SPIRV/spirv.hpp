@@ -420,6 +420,9 @@ enum BuiltIn {
     BuiltInSubgroupLocalInvocationId = 41,
     BuiltInVertexIndex = 42,
     BuiltInInstanceIndex = 43,
+    BuiltInBaseVertex = 4424,
+    BuiltInBaseInstance = 4425,
+    BuiltInDrawIndex = 4426,
     BuiltInMax = 0x7fffffff,
 };
 
@@ -595,6 +598,7 @@ enum Capability {
     CapabilityStorageImageReadWithoutFormat = 55,
     CapabilityStorageImageWriteWithoutFormat = 56,
     CapabilityMultiViewport = 57,
+    CapabilityDrawParameters = 4427,
     CapabilityMax = 0x7fffffff,
 };
 
