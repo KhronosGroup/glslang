@@ -584,6 +584,12 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
     if (! (Options & EOptionOutputPreprocessed) && ! program.link(messages))
         LinkFailed = true;
 
+    // Map IO
+    if (Options & EOptionSpv) {
+        if (!program.mapIO())
+            LinkFailed = true;
+    }
+    
     // Report
     if (! (Options & EOptionSuppressInfolog) &&
         ! (Options & EOptionMemoryLeakMode)) {
@@ -591,10 +597,6 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         PutsIfNonEmpty(program.getInfoDebugLog());
     }
 
-    // Map IO
-    if (Options & EOptionSpv)
-        program.mapIO();
-    
     // Reflect
     if (Options & EOptionDumpReflection) {
         program.buildReflection();

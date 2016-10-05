@@ -1724,7 +1724,7 @@ bool TProgram::mapIO()
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (intermediate[s]) {
-            if (! ioMapper->addStage((EShLanguage)s, *intermediate[s]))
+            if (! ioMapper->addStage((EShLanguage)s, *intermediate[s], *infoSink))
                 return false;
         }
     }
