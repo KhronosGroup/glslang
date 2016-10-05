@@ -64,14 +64,14 @@ using HlslCompileAndFlattenTest = GlslangTest<::testing::TestWithParam<FileNameE
 // generate both AST and SPIR-V.
 TEST_P(HlslCompileTest, FromFile)
 {
-    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
                             Source::HLSL, Semantics::Vulkan,
                             Target::BothASTAndSpv, GetParam().entryPoint);
 }
 
 TEST_P(HlslCompileAndFlattenTest, FromFile)
 {
-    loadFileCompileFlattenUniformsAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
+    loadFileCompileFlattenUniformsAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
                                            Source::HLSL, Semantics::Vulkan,
                                            Target::BothASTAndSpv, GetParam().entryPoint);
 }

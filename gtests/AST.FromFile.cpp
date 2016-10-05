@@ -43,7 +43,7 @@ using CompileToAstTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
 TEST_P(CompileToAstTest, FromFile)
 {
-    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::OpenGL,
                             Target::AST);
 }

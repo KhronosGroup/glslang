@@ -75,7 +75,7 @@ using CompileVulkanToSpirvTestAMD = GlslangTest<::testing::TestWithParam<std::st
 // generate SPIR-V.
 TEST_P(CompileVulkanToSpirvTest, FromFile)
 {
-    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan,
                             Target::Spv);
 }
@@ -84,7 +84,7 @@ TEST_P(CompileVulkanToSpirvTest, FromFile)
 // generate SPIR-V.
 TEST_P(CompileOpenGLToSpirvTest, FromFile)
 {
-    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::OpenGL,
                             Target::Spv);
 }
@@ -93,7 +93,7 @@ TEST_P(CompileOpenGLToSpirvTest, FromFile)
 // SPIR-V.
 TEST_P(VulkanSemantics, FromFile)
 {
-    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan,
                             Target::Spv);
 }
@@ -102,7 +102,7 @@ TEST_P(VulkanSemantics, FromFile)
 // SPIR-V.
 TEST_P(OpenGLSemantics, FromFile)
 {
-    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::OpenGL,
                             Target::Spv);
 }
@@ -110,7 +110,7 @@ TEST_P(OpenGLSemantics, FromFile)
 // GLSL-level Vulkan semantics test that need to see the AST for validation.
 TEST_P(VulkanAstSemantics, FromFile)
 {
-    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan,
                             Target::AST);
 }
@@ -118,7 +118,7 @@ TEST_P(VulkanAstSemantics, FromFile)
 // HLSL-level Vulkan semantics tests.
 TEST_P(HlslIoMap, FromFile)
 {
-    loadFileCompileIoMapAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
+    loadFileCompileIoMapAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
                                  Source::HLSL, Semantics::Vulkan,
                                  Target::Spv, GetParam().entryPoint,
                                  GetParam().baseSamplerBinding,
@@ -131,7 +131,7 @@ TEST_P(HlslIoMap, FromFile)
 // GLSL-level Vulkan semantics tests.
 TEST_P(GlslIoMap, FromFile)
 {
-    loadFileCompileIoMapAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
+    loadFileCompileIoMapAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
                                  Source::GLSL, Semantics::Vulkan,
                                  Target::Spv, GetParam().entryPoint,
                                  GetParam().baseSamplerBinding,
@@ -146,7 +146,7 @@ TEST_P(GlslIoMap, FromFile)
 // Expected to successfully generate SPIR-V.
 TEST_P(CompileVulkanToSpirvTestAMD, FromFile)
 {
-    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::Vulkan,
                             Target::Spv);
 }
