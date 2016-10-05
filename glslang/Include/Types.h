@@ -621,8 +621,8 @@ public:
                  unsigned int layoutSet                 : 7;
     static const unsigned int layoutSetEnd         =   0x3F;
 
-                 unsigned int layoutBinding             : 8;
-    static const unsigned int layoutBindingEnd    =    0xFF;
+                 unsigned int layoutBinding            : 16;
+    static const unsigned int layoutBindingEnd    =  0xFFFF;
 
                  unsigned int layoutIndex              :  8;
     static const unsigned int layoutIndexEnd    =      0xFF;
