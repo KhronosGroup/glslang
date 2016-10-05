@@ -73,6 +73,16 @@ TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType
     return node;
 }
 
+TIntermSymbol* TIntermediate::addSymbol(const TIntermSymbol& intermSymbol)
+{
+    return addSymbol(intermSymbol.getId(),
+                     intermSymbol.getName(),
+                     intermSymbol.getType(),
+                     intermSymbol.getConstArray(),
+                     intermSymbol.getConstSubtree(),
+                     intermSymbol.getLoc());
+}
+
 TIntermSymbol* TIntermediate::addSymbol(const TVariable& variable)
 {
     glslang::TSourceLoc loc; // just a null location
