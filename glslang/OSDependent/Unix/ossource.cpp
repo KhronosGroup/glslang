@@ -165,11 +165,12 @@ bool OS_FreeTLSIndex(OS_TLSIndex nIndex)
 		return false;
 }
 
-// TODO: non-windows: if we need these on linux, flesh them out
-void InitGlobalLock() { }
-void GetGlobalLock() { }
-void ReleaseGlobalLock() { }
+static pthread_mutex_t gMutex;
+void InitGlobalLock() { pthread_mutex_init(&gMutex, NULL); }
+void GetGlobalLock() { pthread_mutex_lock(&gMutex); }
+void ReleaseGlobalLock() { pthread_mutex_unlock(&gMutex); }
 
+// TODO: non-windows: if we need these on linux, flesh them out
 void* OS_CreateThread(TThreadEntrypoint /*entry*/)
 {
     return 0;
