@@ -175,6 +175,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.samplelevel.offsetarray.dx10.frag", "main"},
         {"hlsl.semicolons.frag", "main"},
         {"hlsl.shapeConv.frag", "main"},
+        {"hlsl.shapeConvRet.frag", "main"},
         {"hlsl.stringtoken.frag", "main"},
         {"hlsl.string.frag", "main"},
         {"hlsl.structin.vert", "main"},

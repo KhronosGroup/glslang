@@ -888,18 +888,17 @@ void HlslParseContext::remapNonEntryPointIO(TFunction& function)
 TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermTyped* value)
 {
     functionReturnsValue = true;
-    TIntermTyped* converted = value;
 
     if (currentFunctionType->getBasicType() == EbtVoid) {
         error(loc, "void function cannot return a value", "return", "");
         return intermediate.addBranch(EOpReturn, loc);
     } else if (*currentFunctionType != value->getType()) {
-        converted = intermediate.addConversion(EOpReturn, *currentFunctionType, value);
-        if (converted) {
-            return intermediate.addBranch(EOpReturn, converted, loc);
-        } else {
+        value = intermediate.addConversion(EOpReturn, *currentFunctionType, value);
+        if (value && *currentFunctionType != value->getType())
+            value = intermediate.addShapeConversion(EOpReturn, *currentFunctionType, value);
+        if (value == nullptr) {
             error(loc, "type does not match, or is not convertible to, the function's return type", "return", "");
-            converted = value;
+            return value;
         }
     }
 
@@ -912,7 +911,7 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
         assert(entryPointOutput != nullptr); // should have been error tested at the beginning
         TIntermSymbol* left = new TIntermSymbol(entryPointOutput->getUniqueId(), entryPointOutput->getName(),
                                                 entryPointOutput->getType());
-        TIntermNode* returnSequence = handleAssign(loc, EOpAssign, left, converted);
+        TIntermNode* returnSequence = handleAssign(loc, EOpAssign, left, value);
         returnSequence = intermediate.makeAggregate(returnSequence);
         returnSequence = intermediate.growAggregate(returnSequence, intermediate.addBranch(EOpReturn, loc), loc);
         returnSequence->getAsAggregate()->setOperator(EOpSequence);

@@ -768,6 +768,7 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
     case EOpEqual:
     case EOpNotEqual:
     case EOpFunctionCall:
+    case EOpReturn:
         break;
     default:
         return node;
