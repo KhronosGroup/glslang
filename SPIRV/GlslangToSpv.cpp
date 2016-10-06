@@ -172,6 +172,7 @@ protected:
     spv::Id getExtBuiltins(const char* name);
 
     spv::Function* shaderEntry;
+    spv::Function* currentFunction;
     spv::Instruction* entryPoint;
     int sequenceDepth;
 
@@ -733,7 +734,8 @@ bool HasNonLayoutQualifiers(const glslang::TType& type, const glslang::TQualifie
 //
 
 TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* glslangIntermediate, spv::SpvBuildLogger* buildLogger)
-    : TIntermTraverser(true, false, true), shaderEntry(0), sequenceDepth(0), logger(buildLogger),
+    : TIntermTraverser(true, false, true), shaderEntry(nullptr), currentFunction(nullptr),
+      sequenceDepth(0), logger(buildLogger),
       builder((glslang::GetKhronosToolId() << 16) | GeneratorVersion, logger),
       inMain(false), mainTerminated(false), linkageOnly(false),
       glslangIntermediate(glslangIntermediate)
@@ -1351,6 +1353,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             if (isShaderEntryPoint(node)) {
                 inMain = true;
                 builder.setBuildPoint(shaderEntry->getLastBlock());
+                currentFunction = shaderEntry;
             } else {
                 handleFunctionEntry(node);
             }
@@ -1858,9 +1861,18 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
         builder.createLoopContinue();
         break;
     case glslang::EOpReturn:
-        if (node->getExpression())
-            builder.makeReturn(false, accessChainLoad(node->getExpression()->getType()));
-        else
+        if (node->getExpression()) {
+            const glslang::TType& glslangReturnType = node->getExpression()->getType();
+            spv::Id returnId = accessChainLoad(glslangReturnType);
+            if (builder.getTypeId(returnId) != currentFunction->getReturnType()) {
+                builder.clearAccessChain();
+                spv::Id copyId = builder.createVariable(spv::StorageClassFunction, currentFunction->getReturnType());
+                builder.setAccessChainLValue(copyId);
+                multiTypeStore(glslangReturnType, returnId);
+                returnId = builder.createLoad(copyId);
+            }
+            builder.makeReturn(false, returnId);
+        } else
             builder.makeReturn(false);
 
         builder.clearAccessChain();
@@ -2332,7 +2344,7 @@ void TGlslangToSpvTraverser::accessChainStore(const glslang::TType& type, spv::I
 // SPIR-V level.
 //
 // This especially happens when a single glslang type expands to multiple
-// SPIR-V types, like a struct that is used in an member-undecorated way as well
+// SPIR-V types, like a struct that is used in a member-undecorated way as well
 // as in a member-decorated way.
 //
 // NOTE: This function can handle any store request; if it's not special it
@@ -2599,8 +2611,8 @@ void TGlslangToSpvTraverser::handleFunctionEntry(const glslang::TIntermAggregate
 {
     // SPIR-V functions should already be in the functionMap from the prepass
     // that called makeFunctions().
-    spv::Function* function = functionMap[node->getName().c_str()];
-    spv::Block* functionBlock = function->getEntryBlock();
+    currentFunction = functionMap[node->getName().c_str()];
+    spv::Block* functionBlock = currentFunction->getEntryBlock();
     builder.setBuildPoint(functionBlock);
 }
 

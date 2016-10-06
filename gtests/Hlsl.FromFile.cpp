@@ -140,6 +140,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.load.offset.dx10.frag", "main"},
         {"hlsl.load.offsetarray.dx10.frag", "main"},
         {"hlsl.multiEntry.vert", "RealEntrypoint"},
+        {"hlsl.multiReturn.frag", "main"},
         {"hlsl.matrixindex.frag", "main"},
         {"hlsl.numericsuffixes.frag", "main"},
         {"hlsl.overload.frag", "PixelShaderFunction"},
