@@ -460,8 +460,14 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type)
         // further, it can create an anonymous instance of the block
         if (peekTokenClass(EHTokSemicolon))
             parseContext.declareBlock(loc, type);
-    } else
+    } else {
+        // Some qualifiers are set when parsing the type.  Merge those with
+        // whatever comes from acceptQualifier.
+        assert(qualifier.layoutFormat == ElfNone);
+        qualifier.layoutFormat = type.getQualifier().layoutFormat;
+
         type.getQualifier() = qualifier;
+    }
 
     return true;
 }
@@ -827,6 +833,13 @@ bool HlslGrammar::acceptSamplerType(TType& type)
 //      | TEXTURECUBEARRAY
 //      | TEXTURE2DMS
 //      | TEXTURE2DMSARRAY
+//      | RWBUFFER
+//      | RWTEXTURE1D
+//      | RWTEXTURE1DARRAY
+//      | RWTEXTURE2D
+//      | RWTEXTURE2DARRAY
+//      | RWTEXTURE3D
+
 bool HlslGrammar::acceptTextureType(TType& type)
 {
     const EHlslTokenClass textureType = peek();
@@ -834,6 +847,7 @@ bool HlslGrammar::acceptTextureType(TType& type)
     TSamplerDim dim = EsdNone;
     bool array = false;
     bool ms    = false;
+    bool image = false;
 
     switch (textureType) {
     case EHTokBuffer:            dim = EsdBuffer;                      break;
@@ -846,6 +860,12 @@ bool HlslGrammar::acceptTextureType(TType& type)
     case EHTokTextureCubearray:  dim = EsdCube; array = true;          break;
     case EHTokTexture2DMS:       dim = Esd2D; ms = true;               break;
     case EHTokTexture2DMSarray:  dim = Esd2D; array = true; ms = true; break;
+    case EHTokRWBuffer:          dim = EsdBuffer; image=true;          break;
+    case EHTokRWTexture1d:       dim = Esd1D; array=false; image=true; break;
+    case EHTokRWTexture1darray:  dim = Esd1D; array=true;  image=true; break;
+    case EHTokRWTexture2d:       dim = Esd2D; array=false; image=true; break;
+    case EHTokRWTexture2darray:  dim = Esd2D; array=true;  image=true; break;
+    case EHTokRWTexture3d:       dim = Esd3D; array=false; image=true; break;
     default:
         return false;  // not a texture declaration
     }
@@ -856,7 +876,7 @@ bool HlslGrammar::acceptTextureType(TType& type)
     
     TIntermTyped* msCount = nullptr;
 
-    // texture type: required for multisample types!
+    // texture type: required for multisample types and RWBuffer/RWTextures!
     if (acceptTokenClass(EHTokLeftAngle)) {
         if (! acceptType(txType)) {
             expected("scalar or vector type");
@@ -911,22 +931,45 @@ bool HlslGrammar::acceptTextureType(TType& type)
     } else if (ms) {
         expected("texture type for multisample");
         return false;
+    } else if (image) {
+        expected("type for RWTexture/RWBuffer");
+        return false;
     }
 
     TArraySizes* arraySizes = nullptr;
-    const bool shadow = txType.isScalar() || (txType.isVector() && txType.getVectorSize() == 1);
+    const bool shadow = !image && (txType.isScalar() || (txType.isVector() && txType.getVectorSize() == 1));
 
     TSampler sampler;
+    TLayoutFormat format = ElfNone;
 
-    // Buffers are combined.
-    if (dim == EsdBuffer) {
+    // RWBuffer and RWTexture (images) require a TLayoutFormat.  We handle only a limit set.
+    if (image) {
+        if (txType.getVectorSize() != 4)
+            expected("4 component image");
+
+        switch (txType.getBasicType()) {
+        case EbtFloat: format = ElfRgba32f;  break;
+        case EbtInt:   format = ElfRgba32i;  break;
+        case EbtUint:  format = ElfRgba32ui; break;
+        default:
+            expected("unknown basic type in image format");
+        }
+    }
+
+    // Non-image Buffers are combined
+    if (dim == EsdBuffer && !image) {
         sampler.set(txType.getBasicType(), dim, array);
     } else {
         // DX10 textures are separated.  TODO: DX9.
-        sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms);
+        if (image) {
+            sampler.setImage(txType.getBasicType(), dim, array, shadow, ms);
+        } else {
+            sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms);
+        }
     }
     
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));
+    type.getQualifier().layoutFormat = format;
 
     return true;
 }
@@ -966,6 +1009,12 @@ bool HlslGrammar::acceptType(TType& type)
     case EHTokTextureCubearray:       // ...
     case EHTokTexture2DMS:            // ...
     case EHTokTexture2DMSarray:       // ...
+    case EHTokRWTexture1d:            // ...
+    case EHTokRWTexture1darray:       // ...
+    case EHTokRWTexture2d:            // ...
+    case EHTokRWTexture2darray:       // ...
+    case EHTokRWTexture3d:            // ...
+    case EHTokRWBuffer:               // ...
         return acceptTextureType(type);
         break;
 

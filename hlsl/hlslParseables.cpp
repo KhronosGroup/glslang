@@ -67,20 +67,21 @@ const char* BaseTypeName(const char argOrder, const char* scalarName, const char
     }
 }
 
-bool IsSamplerType(const char argType)     { return argType == 'S' || argType == 's'; }
-bool IsTextureArrayed(const char argOrder) { return argOrder == '@' || argOrder == '&'; }
-bool IsTextureMS(const char argOrder)      { return argOrder == '$' || argOrder == '&'; }
-bool IsBuffer(const char argOrder)         { return argOrder == '*'; }
+bool IsSamplerType(const char argType) { return argType == 'S' || argType == 's'; }
+bool IsArrayed(const char argOrder)    { return argOrder == '@' || argOrder == '&' || argOrder == '#'; }
+bool IsTextureMS(const char argOrder)  { return argOrder == '$' || argOrder == '&'; }
+bool IsBuffer(const char argOrder)     { return argOrder == '*' || argOrder == '~'; }
+bool IsImage(const char argOrder)      { return argOrder == '!' || argOrder == '#' || argOrder == '~'; }
 bool IsTextureType(const char argOrder)
 {
-    return argOrder == '%' || argOrder == '@' || IsTextureMS(argOrder) || IsBuffer(argOrder);
+    return argOrder == '%' || argOrder == '@' || IsTextureMS(argOrder) || IsBuffer(argOrder) | IsImage(argOrder);
 }
 
 // Reject certain combinations that are illegal sample methods.  For example,
 // 3D arrays.
 bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim0)
 {
-    const bool isArrayed = IsTextureArrayed(*argOrder);
+    const bool isArrayed = IsArrayed(*argOrder);
     const bool isMS      = IsTextureMS(*argOrder);
     const bool isBuffer  = IsBuffer(*argOrder);
 
@@ -153,9 +154,9 @@ int CoordinateArgPos(const glslang::TString& name, bool isTexture)
 }
 
 // Some texture methods use an addition coordinate dimension for the mip
-bool HasMipInCoord(const glslang::TString& name, bool isMS, bool isBuffer)
+bool HasMipInCoord(const glslang::TString& name, bool isMS, bool isBuffer, bool isImage)
 {
-    return name == "Load" && !isMS && !isBuffer;
+    return name == "Load" && !isMS && !isBuffer && !isImage;
 }
 
 // LOD calculations don't pass the array level in the coordinate.
@@ -219,10 +220,11 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
 {
     const bool isTranspose = (argOrder[0] == '^');
     const bool isTexture   = IsTextureType(argOrder[0]);
-    const bool isArrayed   = IsTextureArrayed(argOrder[0]);
+    const bool isArrayed   = IsArrayed(argOrder[0]);
     const bool isSampler   = IsSamplerType(argType[0]);
     const bool isMS        = IsTextureMS(argOrder[0]);
     const bool isBuffer    = IsBuffer(argOrder[0]);
+    const bool isImage     = IsImage(argOrder[0]);
 
     char type  = *argType;
 
@@ -253,9 +255,15 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
         case 'B': s += "bool";                                            break;
         case 'S': s += "sampler";                                         break;
         case 's': s += "SamplerComparisonState";                          break;
-        case 'T': s += (isBuffer ? "Buffer" : "Texture");                 break;
-        case 'i': s += (isBuffer ? "Buffer <int4>" : "Texture <int4>");   break;
-        case 'u': s += (isBuffer ? "Buffer <uint4>" : "Texture <uint4>"); break;
+        case 'T': s += ((isBuffer && isImage) ? "RWBuffer" :
+                        isBuffer ? "Buffer" : 
+                        isImage  ? "RWTexture" : "Texture");              break;
+        case 'i': s += ((isBuffer && isImage) ? "RWBuffer <int4>" :
+                        isBuffer ? "Buffer <int4>" : 
+                        isImage ? "RWTexture <int4>" : "Texture <int4>"); break;
+        case 'u': s += ((isBuffer && isImage) ? "RWBuffer <uint4>" :
+                        isBuffer ? "Buffer <uint4>" :
+                        isImage ? "RWTexture <uint4>" : "Texture <uint4>");break;
         default:  s += "UNKNOWN_TYPE";                                    break;
         }
     } else {
@@ -274,7 +282,10 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
             if (type != 'T') // create itexture, utexture, etc
                 s += type;
 
-            s += (isBuffer ? "samplerBuffer" : "texture");
+            s += ((isImage && isBuffer) ? "imageBuffer"   :
+                  isImage               ? "image"         :
+                  isBuffer              ? "samplerBuffer" :
+                  "texture");
             break;
 
         default:  s += "UNKNOWN_TYPE"; break;
@@ -507,6 +518,9 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     // '@' as first letter of order creates arrayed texture of given type
     // '$' / '&' as first letter of order creates 2DMS / 2DMSArray textures
     // '*' as first letter of order creates buffer object
+    // '!' as first letter of order creates image object
+    // '#' as first letter of order creates arrayed image object
+    // '~' as first letter of order creates an image buffer object
 
     static const struct {
         const char*   name;      // intrinsic name
@@ -699,6 +713,11 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "Load", /* +sampleidex*/            "V4",    nullptr,   "$&,V,S",         "FIU,I,I",       EShLangAll },
         { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$&,V,S,V",       "FIU,I,I,I",     EShLangAll },
 
+        // RWTexture loads
+        { "Load",                             "V4",    nullptr,   "!#,V",           "FIU,I",         EShLangAll },
+        // RWBuffer loads
+        { "Load",                             "V4",    nullptr,   "~1,V",           "FIU,I",         EShLangAll },
+
         { "Gather",             /*!O*/        "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangAll },
         { "Gather",             /* O*/        "V4",    nullptr,   "%@,S,V,V",       "FIU,S,F,I",     EShLangAll },
 
@@ -710,36 +729,36 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         // 
         // UINT Width
         // UINT MipLevel, UINT Width, UINT NumberOfLevels
-        { "GetDimensions",   /* 1D */         "-",     "-",       "%1,>S",          "FUI,U",         EShLangAll },
-        { "GetDimensions",   /* 1D */         "-",     "-",       "%1,>S",          "FUI,F",         EShLangAll },
+        { "GetDimensions",   /* 1D */         "-",     "-",       "%!~1,>S",        "FUI,U",         EShLangAll },
+        { "GetDimensions",   /* 1D */         "-",     "-",       "%!~1,>S",        "FUI,F",         EShLangAll },
         { "GetDimensions",   /* 1D */         "-",     "-",       "%1,S,>S,",       "FUI,U,,",       EShLangAll },
         { "GetDimensions",   /* 1D */         "-",     "-",       "%1,S,>S,",       "FUI,U,F,",      EShLangAll },
 
         // UINT Width, UINT Elements
         // UINT MipLevel, UINT Width, UINT Elements, UINT NumberOfLevels
-        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@1,>S,",         "FUI,U,",        EShLangAll },
-        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@1,>S,",         "FUI,F,",        EShLangAll },
+        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@#1,>S,",        "FUI,U,",        EShLangAll },
+        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@#1,>S,",        "FUI,F,",        EShLangAll },
         { "GetDimensions",   /* 1DArray */    "-",     "-",       "@1,S,>S,,",      "FUI,U,,,",      EShLangAll },
         { "GetDimensions",   /* 1DArray */    "-",     "-",       "@1,S,>S,,",      "FUI,U,F,,",     EShLangAll },
 
         // UINT Width, UINT Height
         // UINT MipLevel, UINT Width, UINT Height, UINT NumberOfLevels
-        { "GetDimensions",   /* 2D */         "-",     "-",       "%2,>S,",         "FUI,U,",        EShLangAll },
-        { "GetDimensions",   /* 2D */         "-",     "-",       "%2,>S,",         "FUI,F,",        EShLangAll },
+        { "GetDimensions",   /* 2D */         "-",     "-",       "%!2,>S,",        "FUI,U,",        EShLangAll },
+        { "GetDimensions",   /* 2D */         "-",     "-",       "%!2,>S,",        "FUI,F,",        EShLangAll },
         { "GetDimensions",   /* 2D */         "-",     "-",       "%2,S,>S,,",      "FUI,U,,,",      EShLangAll },
         { "GetDimensions",   /* 2D */         "-",     "-",       "%2,S,>S,,",      "FUI,U,F,,",     EShLangAll },
 
         // UINT Width, UINT Height, UINT Elements
         // UINT MipLevel, UINT Width, UINT Height, UINT Elements, UINT NumberOfLevels
-        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@2,>S,,",        "FUI,U,,",       EShLangAll },
-        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@2,>S,,",        "FUI,F,F,F",     EShLangAll },
+        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@#2,>S,,",       "FUI,U,,",       EShLangAll },
+        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@#2,>S,,",       "FUI,F,F,F",     EShLangAll },
         { "GetDimensions",   /* 2DArray */    "-",     "-",       "@2,S,>S,,,",     "FUI,U,,,,",     EShLangAll },
         { "GetDimensions",   /* 2DArray */    "-",     "-",       "@2,S,>S,,,",     "FUI,U,F,,,",    EShLangAll },
 
         // UINT Width, UINT Height, UINT Depth
         // UINT MipLevel, UINT Width, UINT Height, UINT Depth, UINT NumberOfLevels
-        { "GetDimensions",   /* 3D */         "-",     "-",       "%3,>S,,",        "FUI,U,,",       EShLangAll },
-        { "GetDimensions",   /* 3D */         "-",     "-",       "%3,>S,,",        "FUI,F,,",       EShLangAll },
+        { "GetDimensions",   /* 3D */         "-",     "-",       "%!3,>S,,",       "FUI,U,,",       EShLangAll },
+        { "GetDimensions",   /* 3D */         "-",     "-",       "%!3,>S,,",       "FUI,F,,",       EShLangAll },
         { "GetDimensions",   /* 3D */         "-",     "-",       "%3,S,>S,,,",     "FUI,U,,,,",     EShLangAll },
         { "GetDimensions",   /* 3D */         "-",     "-",       "%3,S,>S,,,",     "FUI,U,F,,,",    EShLangAll },
 
@@ -836,10 +855,11 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
 
             for (const char* argOrder = intrinsic.argOrder; !IsEndOfArg(argOrder); ++argOrder) { // for each order...
                 const bool isTexture   = IsTextureType(*argOrder);
-                const bool isArrayed   = IsTextureArrayed(*argOrder);
+                const bool isArrayed   = IsArrayed(*argOrder);
                 const bool isMS        = IsTextureMS(*argOrder);
                 const bool isBuffer    = IsBuffer(*argOrder);
-                const bool mipInCoord  = HasMipInCoord(intrinsic.name, isMS, isBuffer);
+                const bool isImage     = IsImage(*argOrder);
+                const bool mipInCoord  = HasMipInCoord(intrinsic.name, isMS, isBuffer, isImage);
                 const int fixedVecSize = FixedVecSize(argOrder);
                 const int coordArg     = CoordinateArgPos(intrinsic.name, isTexture);
 

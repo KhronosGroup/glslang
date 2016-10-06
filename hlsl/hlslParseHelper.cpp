@@ -1252,15 +1252,17 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
             const TSampler& texSampler = texType.getSampler();
             const TSamplerDim dim = texSampler.dim;
+            const bool isImage = texSampler.isImage();
             const int numArgs = (int)argAggregate->getSequence().size();
 
             int numDims = 0;
 
             switch (dim) {
-            case Esd1D:   numDims = 1; break; // W
-            case Esd2D:   numDims = 2; break; // W, H
-            case Esd3D:   numDims = 3; break; // W, H, D
-            case EsdCube: numDims = 2; break; // W, H (cube)
+            case Esd1D:     numDims = 1; break; // W
+            case Esd2D:     numDims = 2; break; // W, H
+            case Esd3D:     numDims = 3; break; // W, H, D
+            case EsdCube:   numDims = 2; break; // W, H (cube)
+            case EsdBuffer: numDims = 1; break; // buffers
             default:
                 assert(0 && "unhandled texture dimension");
             }
@@ -1273,7 +1275,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             const bool mipQuery = (numArgs > (numDims + 1)) && (!texSampler.isMultiSample());
 
             // AST assumes integer return.  Will be converted to float if required.
-            TIntermAggregate* sizeQuery = new TIntermAggregate(EOpTextureQuerySize);
+            TIntermAggregate* sizeQuery = new TIntermAggregate(isImage ? EOpImageQuerySize : EOpTextureQuerySize);
             sizeQuery->getSequence().push_back(argTex);
             // If we're querying an explicit LOD, add the LOD, which is always arg #1
             if (mipQuery) {
@@ -1419,11 +1421,12 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
             const bool isMS = argTex->getType().getSampler().isMultiSample();
             const bool isBuffer = argTex->getType().getSampler().dim == EsdBuffer;
+            const bool isImage = argTex->getType().getSampler().isImage();
             const TBasicType coordBaseType = argCoord->getType().getBasicType();
 
             // Last component of coordinate is the mip level, for non-MS.  we separate them here:
-            if (isMS || isBuffer) {
-                // MS and Buffer have no LOD
+            if (isMS || isBuffer || isImage) {
+                // MS, Buffer, and Image have no LOD
                 coordSwizzle = argCoord;
             } else {
                 // Extract coordinate
@@ -1443,7 +1446,9 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             const bool hasOffset = ((!isMS && numArgs == 3) || (isMS && numArgs == 4));
 
             // Create texel fetch
-            const TOperator fetchOp = (hasOffset ? EOpTextureFetchOffset : EOpTextureFetch);
+            const TOperator fetchOp = (isImage   ? EOpImageLoad :
+                                       hasOffset ? EOpTextureFetchOffset :
+                                       EOpTextureFetch);
             TIntermAggregate* txfetch = new TIntermAggregate(fetchOp);
 
             // Build up the fetch
@@ -1456,6 +1461,8 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 txfetch->getSequence().push_back(argSampleIdx);
             } else if (isBuffer) {
                 // Nothing else to do for buffers.
+            } else if (isImage) {
+                // Nothing else to do for images.
             } else {
                 // 2DMS and buffer have no LOD, but everything else does.
                 txfetch->getSequence().push_back(lodComponent);
