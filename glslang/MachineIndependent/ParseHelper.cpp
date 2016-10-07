@@ -5946,16 +5946,23 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
             if (! IsMultipleOfPow2(memberQualifier.layoutOffset, memberAlignment))
                 error(memberLoc, "must be a multiple of the member's alignment", "offset", "");
 
-            // "It is a compile-time error to specify an offset that is smaller than the offset of the previous 
+            // GLSL: "It is a compile-time error to specify an offset that is smaller than the offset of the previous 
             // member in the block or that lies within the previous member of the block"
-            if (memberQualifier.layoutOffset < offset)
-                error(memberLoc, "cannot lie in previous members", "offset", "");
+            if (spvVersion.spv == 0) {
+                if (memberQualifier.layoutOffset < offset)
+                    error(memberLoc, "cannot lie in previous members", "offset", "");
 
-            // "The offset qualifier forces the qualified member to start at or after the specified 
-            // integral-constant expression, which will be its byte offset from the beginning of the buffer. 
-            // "The actual offset of a member is computed as 
-            // follows: If offset was declared, start with that offset, otherwise start with the next available offset."
-            offset = std::max(offset, memberQualifier.layoutOffset);
+                // "The offset qualifier forces the qualified member to start at or after the specified 
+                // integral-constant expression, which will be its byte offset from the beginning of the buffer. 
+                // "The actual offset of a member is computed as 
+                // follows: If offset was declared, start with that offset, otherwise start with the next available offset."
+                offset = std::max(offset, memberQualifier.layoutOffset);
+            } else {
+                // TODO: Vulkan: "It is a compile-time error to have any offset, explicit or assigned,
+                // that lies within another member of the block."
+
+                offset = memberQualifier.layoutOffset;
+            }
         }
 
         // "The actual alignment of a member will be the greater of the specified align alignment and the standard 

@@ -4731,11 +4731,6 @@ void HlslParseContext::fixBlockUniformOffsets(const TQualifier& qualifier, TType
             if (! IsMultipleOfPow2(memberQualifier.layoutOffset, memberAlignment))
                 error(memberLoc, "must be a multiple of the member's alignment", "offset", "");
 
-            // "It is a compile-time error to specify an offset that is smaller than the offset of the previous 
-            // member in the block or that lies within the previous member of the block"
-            if (memberQualifier.layoutOffset < offset)
-                error(memberLoc, "cannot lie in previous members", "offset", "");
-
             // "The offset qualifier forces the qualified member to start at or after the specified 
             // integral-constant expression, which will be its byte offset from the beginning of the buffer. 
             // "The actual offset of a member is computed as 

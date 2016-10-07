@@ -230,6 +230,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.newTexture.frag",
         "spv.noDeadDecorations.vert",
         "spv.nonSquare.vert",
+        "spv.offsets.frag",
         "spv.Operations.frag",
         "spv.intOps.vert",
         "spv.precision.frag",
