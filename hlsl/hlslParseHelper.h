@@ -61,6 +61,7 @@ public:
     void handlePragma(const TSourceLoc&, const TVector<TString>&);
     TIntermTyped* handleVariable(const TSourceLoc&, TSymbol* symbol,  const TString* string);
     TIntermTyped* handleBracketDereference(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
+    TIntermTyped* handleBracketOperator(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
     void checkIndex(const TSourceLoc&, const TType&, int& index);
 
     TIntermTyped* handleBinaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right);

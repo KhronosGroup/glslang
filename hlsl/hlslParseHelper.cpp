@@ -298,11 +298,39 @@ TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, TSymbol* s
 }
 
 //
+// Handle operator[] on any objects it applies to.  Currently:
+//    Textures
+//    Buffers
+//
+TIntermTyped* HlslParseContext::handleBracketOperator(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index)
+{
+    // handle r-value operator[] on textures and images.  l-values will be processed later.
+    if (base->getType().getBasicType() == EbtSampler && !base->isArray()) {
+        const TSampler& sampler = base->getType().getSampler();
+        if (sampler.isImage() || sampler.isTexture()) {
+            const int vecSize = 4; // TODO: handle arbitrary sizes (get from qualifier)
+            TIntermAggregate* load = new TIntermAggregate(EOpImageLoad);
+
+            load->setType(TType(sampler.type, EvqTemporary, vecSize));
+            load->setLoc(loc);
+            load->getSequence().push_back(base);
+            load->getSequence().push_back(index);
+            return load;
+        }
+    }
+
+    return nullptr;
+}
+
+//
 // Handle seeing a base[index] dereference in the grammar.
 //
 TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index)
 {
-    TIntermTyped* result = nullptr;
+    TIntermTyped* result = handleBracketOperator(loc, base, index);
+
+    if (result != nullptr)
+        return result;  // it was handled as an operator[]
 
     bool flattened = false;
     int indexValue = 0;
@@ -425,10 +453,10 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
                field == "SampleLevel") {
         // If it's not a method on a sampler object, we fall through in case it is a struct member.
         if (base->getType().getBasicType() == EbtSampler) {
-            const TSampler& texType = base->getType().getSampler();
-            if (! texType.isPureSampler()) {
-                const int vecSize = texType.isShadow() ? 1 : 4;
-                return intermediate.addMethod(base, TType(texType.type, EvqTemporary, vecSize), &field, loc);
+            const TSampler& sampler = base->getType().getSampler();
+            if (! sampler.isPureSampler()) {
+                const int vecSize = sampler.isShadow() ? 1 : 4; // TODO: handle arbitrary sample return sizes
+                return intermediate.addMethod(base, TType(sampler.type, EvqTemporary, vecSize), &field, loc);
             }
         }
     }
@@ -1261,7 +1289,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             case Esd2D:     numDims = 2; break; // W, H
             case Esd3D:     numDims = 3; break; // W, H, D
             case EsdCube:   numDims = 2; break; // W, H (cube)
-            case EsdBuffer: numDims = 1; break; // buffers
+            case EsdBuffer: numDims = 1; break; // W (buffers)
             default:
                 assert(0 && "unhandled texture dimension");
             }

@@ -147,6 +147,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.pp.line.frag", "main"},
         {"hlsl.precise.frag", "main"},
         {"hlsl.promotions.frag", "main"},
+        {"hlsl.rw.bracket.frag", "main"},
         {"hlsl.sample.array.dx10.frag", "main"},
         {"hlsl.sample.basic.dx10.frag", "main"},
         {"hlsl.sample.offset.dx10.frag", "main"},
