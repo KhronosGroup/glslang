@@ -1783,6 +1783,8 @@ bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
     }
 
     node = parseContext.handleAssign(loc, assignOp, node, rightNode);
+    node = parseContext.handleLvalue(loc, "assign", node);
+
     if (node == nullptr) {
         parseContext.error(loc, "could not create assignment", "", "");
         return false;
@@ -1946,6 +1948,7 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
         return true;
 
     node = intermediate.addUnaryMath(unaryOp, node, loc);
+    node = parseContext.handleLvalue(loc, "", node);
 
     return node != nullptr;
 }
@@ -2061,6 +2064,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         case EOpPostDecrement:
             // DEC_OP
             node = intermediate.addUnaryMath(postOp, node, loc);
+            node = parseContext.handleLvalue(loc, "", node);
             break;
         default:
             assert(0);

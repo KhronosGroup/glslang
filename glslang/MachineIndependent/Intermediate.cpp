@@ -2045,6 +2045,10 @@ bool TIntermBinary::promote()
         }
         break;
 
+    case EOpVectorTimesScalarAssign:
+        if (left->isVector() && right->isScalar())
+            return true;
+
     default:
         return false;
     }
