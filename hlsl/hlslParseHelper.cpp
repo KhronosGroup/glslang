@@ -136,12 +136,36 @@ bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
         return false;
 
     const TIntermAggregate* lhsAsAggregate = node->getAsAggregate();
+
     if (lhsAsAggregate != nullptr && lhsAsAggregate->getOp() == EOpImageLoad)
         return true;
 
     return false;
 }
 
+//
+// Both test and if necessary, spit out an error, to see if the node is really
+// an l-value that can be operated on this way.
+//
+// Returns true if there was an error.
+//
+bool HlslParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
+{
+    if (shouldConvertLValue(node)) {
+        // if we're writing to a texture, it must be an RW form.
+
+        TIntermAggregate* lhsAsAggregate = node->getAsAggregate();
+        TIntermTyped* object = lhsAsAggregate->getSequence()[0]->getAsTyped();
+        
+        if (!object->getType().getSampler().isImage()) {
+            error(loc, "operator[] on a non-RW texture must be an r-value", "", "");
+            return true;
+        }
+    }
+
+    // Let the base class check errors
+    return TParseContextBase::lValueErrorCheck(loc, op, node);
+}
 
 //
 // This function handles l-value conversions and verifications.  It uses, but is not synonymous
@@ -161,13 +185,11 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                         nodeAsBinary ? nodeAsBinary->getLeft() :
                         nullptr;
 
-
     // Early bail out if there is no conversion to apply
     if (!shouldConvertLValue(lhs)) {
-        // TODO: >..
-        // if (lhs != nullptr)
-        //     if (lValueErrorCheck(loc, op, lhs))
-        //         return nullptr;
+        if (lhs != nullptr)
+            if (lValueErrorCheck(loc, op, lhs))
+                return nullptr;
         return node;
     }
 
@@ -356,8 +378,6 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                 addUnary(assignOp, rhsTmp2);                       // rhsTmp op
                 makeStore(object, coordTmp, rhsTmp2);              // OpImageStore(object, coordTmp, rhsTmp2)
                 return finishSequence(rhsTmp1, objDerefType);      // return rhsTmp from sequence
-
-                break;
             }
                 
         default:
@@ -365,10 +385,9 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
         }
     }
 
-    // TODO:
-    // if (lhs)
-    //     if (lValueErrorCheck(loc, op, lhs))
-    //         return nullptr;
+    if (lhs)
+        if (lValueErrorCheck(loc, op, lhs))
+            return nullptr;
  
     return node;
 }

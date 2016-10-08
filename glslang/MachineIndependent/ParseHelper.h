@@ -143,6 +143,9 @@ public:
     virtual void growGlobalUniformBlock(TSourceLoc&, TType&, TString& memberName);
     virtual bool insertGlobalUniformBlock();
 
+    virtual bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*);
+    virtual void rValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*);
+
 protected:
     TParseContextBase(TParseContextBase&);
     TParseContextBase& operator=(TParseContextBase&);
@@ -278,8 +281,8 @@ public:
     void unaryOpError(const TSourceLoc&, const char* op, TString operand);
     void binaryOpError(const TSourceLoc&, const char* op, TString left, TString right);
     void variableCheck(TIntermTyped*& nodePtr);
-    bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*);
-    void rValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*);
+    bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
+    void rValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
     void constantValueCheck(TIntermTyped* node, const char* token);
     void integerCheck(const TIntermTyped* node, const char* token);
     void globalCheck(const TSourceLoc&, const char* token);

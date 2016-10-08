@@ -154,6 +154,7 @@ public:
 
     // Apply L-value conversions.  E.g, turning a write to a RWTexture into an ImageStore.
     TIntermTyped* handleLvalue(const TSourceLoc&, const char* op, TIntermTyped* node);
+    bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
 
 protected:
     void inheritGlobalDefaults(TQualifier& dst) const;
