@@ -1813,7 +1813,7 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
 }
 
 // Handle seeing a precision qualifier in the grammar.
-void TParseContext::handlePrecisionQualifier(const TSourceLoc& loc, TQualifier& qualifier, TPrecisionQualifier precision)
+void TParseContext::handlePrecisionQualifier(const TSourceLoc& /*loc*/, TQualifier& qualifier, TPrecisionQualifier precision)
 {
     if (obeyPrecisionQualifiers())
         qualifier.precision = precision;

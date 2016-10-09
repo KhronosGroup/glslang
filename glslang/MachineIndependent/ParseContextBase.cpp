@@ -320,8 +320,8 @@ bool TParseContextBase::insertGlobalUniformBlock()
     if (globalUniformBlock == nullptr)
         return true;
 
-    int numMembers = globalUniformBlock->getType().getStruct()->size();
-    bool inserted;
+    int numMembers = (int)globalUniformBlock->getType().getStruct()->size();
+    bool inserted = false;
     if (firstNewMember == 0) {
         // This is the first request; we need a normal symbol table insert
         inserted = symbolTable.insert(*globalUniformBlock);

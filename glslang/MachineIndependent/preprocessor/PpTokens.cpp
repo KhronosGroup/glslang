@@ -235,9 +235,9 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
         case PpAtomConstInt:
             if (len > 0 && tokenText[0] == '0') {
                 if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
-                    ppToken->ival = strtol(ppToken->name, 0, 16);
+                    ppToken->ival = (int)strtol(ppToken->name, 0, 16);
                 else
-                    ppToken->ival = strtol(ppToken->name, 0, 8);
+                    ppToken->ival = (int)strtol(ppToken->name, 0, 8);
             } else
                 ppToken->ival = atoi(ppToken->name);
             break;
