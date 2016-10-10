@@ -424,6 +424,11 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         // opaque types can be passed to functions
         if (op == EOpFunction)
             break;
+
+        // HLSL can assign samplers directly (no constructor)
+        if (source == EShSourceHlsl && node->getBasicType() == EbtSampler)
+            break;
+
         // samplers can get assigned via a sampler constructor
         // (well, not yet, but code in the rest of this function is ready for it)
         if (node->getBasicType() == EbtSampler && op == EOpAssign && 

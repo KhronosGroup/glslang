@@ -1493,6 +1493,8 @@ void TShader::setShiftSamplerBinding(unsigned int base) { intermediate->setShift
 void TShader::setShiftTextureBinding(unsigned int base) { intermediate->setShiftTextureBinding(base); }
 void TShader::setShiftUboBinding(unsigned int base)     { intermediate->setShiftUboBinding(base); }
 void TShader::setAutoMapBindings(bool map)              { intermediate->setAutoMapBindings(map); }
+void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlattenUniformArrays(flatten); }
+
 //
 // Turn the shader strings into a parse tree in the TIntermediate.
 //

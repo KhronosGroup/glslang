@@ -48,6 +48,7 @@ struct IoMapData {
     int baseTextureBinding;
     int baseUboBinding;
     bool autoMapBindings;
+    bool flattenUniforms;
 };
 
 std::string FileNameAsCustomTestSuffixIoMap(
@@ -119,7 +120,8 @@ TEST_P(HlslSemantics, FromFile)
                                  GetParam().baseSamplerBinding,
                                  GetParam().baseTextureBinding,
                                  GetParam().baseUboBinding,
-                                 GetParam().autoMapBindings);
+                                 GetParam().autoMapBindings,
+                                 GetParam().flattenUniforms);
 }
 
 // clang-format off
@@ -251,8 +253,9 @@ INSTANTIATE_TEST_CASE_P(
 INSTANTIATE_TEST_CASE_P(
     Hlsl, HlslSemantics,
     ::testing::ValuesIn(std::vector<IoMapData>{
-        { "spv.register.autoassign.frag", "main_ep", 5, 10, 15, true },
-        { "spv.register.noautoassign.frag", "main_ep", 5, 10, 15, false },
+        { "spv.register.autoassign.frag", "main_ep", 5, 10, 15, true, false },
+        { "spv.register.noautoassign.frag", "main_ep", 5, 10, 15, false, false },
+        { "spv.register.autoassign-2.frag", "main", 5, 10, 15, true, true },
     }),
     FileNameAsCustomTestSuffixIoMap
 );

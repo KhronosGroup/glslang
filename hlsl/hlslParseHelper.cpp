@@ -383,6 +383,7 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
 {
     TIntermTyped* result = nullptr;
 
+    bool flattened = false;
     int indexValue = 0;
     if (index->getQualifier().storage == EvqConst) {
         indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
@@ -403,12 +404,20 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
         if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
             handleIoResizeArrayAccess(loc, base);
 
-        if (index->getQualifier().storage == EvqConst) {
-            if (base->getType().isImplicitlySizedArray())
-                updateImplicitArraySize(loc, base, indexValue);
-            result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
+        if (base->getAsSymbolNode() && shouldFlatten(base->getType())) {
+            if (index->getQualifier().storage != EvqConst)
+                error(loc, "Invalid variable index to flattened uniform array", base->getAsSymbolNode()->getName().c_str(), "");
+
+            result = flattenAccess(base, indexValue);
+            flattened = (result != base);
         } else {
-            result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
+            if (index->getQualifier().storage == EvqConst) {
+                if (base->getType().isImplicitlySizedArray())
+                    updateImplicitArraySize(loc, base, indexValue);
+                result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
+            } else {
+                result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
+            }
         }
     }
 
@@ -416,13 +425,18 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
         // Insert dummy error-recovery result
         result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
     } else {
-        // Insert valid dereferenced result
-        TType newType(base->getType(), 0);  // dereferenced type
-        if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
-            newType.getQualifier().storage = EvqConst;
-        else
-            newType.getQualifier().storage = EvqTemporary;
-        result->setType(newType);
+        // If the array reference was flattened, it has the correct type.  E.g, if it was
+        // a uniform array, it was flattened INTO a set of scalar uniforms, not scalar temps.
+        // In that case, we preserve the qualifiers.
+        if (!flattened) {
+            // Insert valid dereferenced result
+            TType newType(base->getType(), 0);  // dereferenced type
+            if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
+                newType.getQualifier().storage = EvqConst;
+            else
+                newType.getQualifier().storage = EvqTemporary;
+            result->setType(newType);
+        }
     }
 
     return result;
@@ -701,9 +715,9 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
     return result;
 }
 
-// Is this an aggregate that can't be passed down the stack?
+// Is this an IO variable that can't be passed down the stack?
 // E.g., pipeline inputs to the vertex stage and outputs from the fragment stage.
-bool HlslParseContext::shouldFlatten(const TType& type) const
+bool HlslParseContext::shouldFlattenIO(const TType& type) const
 {
     if (! inEntryPoint)
         return false;
@@ -715,6 +729,33 @@ bool HlslParseContext::shouldFlatten(const TType& type) const
             qualifier == EvqVaryingOut);
 }
 
+// Is this a uniform array which should be flattened?
+bool HlslParseContext::shouldFlattenUniform(const TType& type) const
+{
+    const TStorageQualifier qualifier = type.getQualifier().storage;
+
+    return type.isArray() &&
+        intermediate.getFlattenUniformArrays() &&
+        qualifier == EvqUniform;
+}
+
+void HlslParseContext::flatten(const TSourceLoc& loc, const TVariable& variable)
+{
+    const TType& type = variable.getType();
+
+    // Presently, flattening of structure arrays is unimplemented.
+    // We handle one, or the other.
+    if (type.isArray() && type.isStruct()) {
+        error(loc, "cannot flatten structure array", variable.getName().c_str(), "");
+    }
+
+    if (type.isStruct())
+        flattenStruct(variable);
+    
+    if (type.isArray())
+        flattenArray(loc, variable);
+}
+
 // Figure out the mapping between an aggregate's top members and an
 // equivalent set of individual variables.
 //
@@ -724,7 +765,7 @@ bool HlslParseContext::shouldFlatten(const TType& type) const
 // Assumes shouldFlatten() or equivalent was called first.
 //
 // TODO: generalize this to arbitrary nesting?
-void HlslParseContext::flatten(const TVariable& variable)
+void HlslParseContext::flattenStruct(const TVariable& variable)
 {
     TVector<TVariable*> memberVariables;
 
@@ -742,8 +783,54 @@ void HlslParseContext::flatten(const TVariable& variable)
     flattenMap[variable.getUniqueId()] = memberVariables;
 }
 
-// Turn an access into aggregate that was flattened to instead be
-// an access to the individual variable the element/member was flattened to.
+// Figure out mapping between an array's members and an
+// equivalent set of individual variables.
+//
+// Assumes shouldFlatten() or equivalent was called first.
+void HlslParseContext::flattenArray(const TSourceLoc& loc, const TVariable& variable)
+{
+    const TType& type = variable.getType();
+    assert(type.isArray());
+
+    if (type.isImplicitlySizedArray())
+        error(loc, "cannot flatten implicitly sized array", variable.getName().c_str(), "");
+
+    if (type.getArraySizes()->getNumDims() != 1)
+        error(loc, "cannot flatten multi-dimensional array", variable.getName().c_str(), "");
+
+    const int size = type.getCumulativeArraySize();
+
+    TVector<TVariable*> memberVariables;
+
+    const TType dereferencedType(type, 0);
+    int binding = type.getQualifier().layoutBinding;
+
+    if (dereferencedType.isStruct() || dereferencedType.isArray()) {
+        error(loc, "cannot flatten array of aggregate types", variable.getName().c_str(), "");
+    }
+
+    for (int element=0; element < size; ++element) {
+        char elementNumBuf[20];  // sufficient for MAXINT
+        snprintf(elementNumBuf, sizeof(elementNumBuf)-1, "[%d]", element);
+        const TString memberName = variable.getName() + elementNumBuf;
+
+        TVariable* memberVariable = makeInternalVariable(memberName.c_str(), dereferencedType);
+        memberVariable->getWritableType().getQualifier() = variable.getType().getQualifier();
+
+        memberVariable->getWritableType().getQualifier().layoutBinding = binding;
+
+        if (binding != TQualifier::layoutBindingEnd)
+            ++binding;
+
+        memberVariables.push_back(memberVariable);
+        intermediate.addSymbolLinkageNode(linkage, *memberVariable);
+    }
+    
+    flattenMap[variable.getUniqueId()] = memberVariables;
+}
+
+// Turn an access into an aggregate that was flattened to instead be
+// an access to the individual variable the member was flattened to.
 // Assumes shouldFlatten() or equivalent was called first.
 TIntermTyped* HlslParseContext::flattenAccess(TIntermTyped* base, int member)
 {
@@ -864,7 +951,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
         remapEntryPointIO(function);
         if (entryPointOutput) {
             if (shouldFlatten(entryPointOutput->getType()))
-                flatten(*entryPointOutput);
+                flatten(loc, *entryPointOutput);
             assignLocations(*entryPointOutput);
         }
     } else
@@ -896,7 +983,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
                 // get IO straightened out
                 if (inEntryPoint) {
                     if (shouldFlatten(*param.type))
-                        flatten(*variable);
+                        flatten(loc, *variable);
                     assignLocations(*variable);
                 }
 
@@ -1051,40 +1138,68 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                flattenMap.find(node.getAsSymbolNode()->getId()) != flattenMap.end();
     };
 
-    bool flattenLeft = mustFlatten(*left);
-    bool flattenRight = mustFlatten(*right);
+    const bool flattenLeft = mustFlatten(*left);
+    const bool flattenRight = mustFlatten(*right);
     if (! flattenLeft && ! flattenRight)
         return intermediate.addAssign(op, left, right, loc);
 
-    // If we get here, we are assigning to or from a whole struct that must be
-    // flattened, so have to do member-by-member assignment:
-    const auto& members = *left->getType().getStruct();
-    const auto getMember = [&](bool flatten, TIntermTyped* node,
-                               const TVector<TVariable*>& memberVariables, int member) {
-        TIntermTyped* subTree;
-        if (flatten)
-            subTree = intermediate.addSymbol(*memberVariables[member]);
-        else {
-            subTree = intermediate.addIndex(EOpIndexDirectStruct, node,
-                                            intermediate.addConstantUnion(member, loc), loc);
-            subTree->setType(*members[member].type);
-        }
-
-        return subTree;
-    };
-    
+    TIntermAggregate* assignList = nullptr;
     const TVector<TVariable*>* leftVariables = nullptr;
     const TVector<TVariable*>* rightVariables = nullptr;
+
     if (flattenLeft)
         leftVariables = &flattenMap.find(left->getAsSymbolNode()->getId())->second;
     if (flattenRight)
         rightVariables = &flattenMap.find(right->getAsSymbolNode()->getId())->second;
-    TIntermAggregate* assignList = nullptr;
-    for (int member = 0; member < (int)members.size(); ++member) {
-        TIntermTyped* subRight = getMember(flattenRight, right, *rightVariables, member);
-        TIntermTyped* subLeft = getMember(flattenLeft, left, *leftVariables, member);
-        assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc));
+
+    const auto getMember = [&](bool flatten, TIntermTyped* node,
+                               const TVector<TVariable*>& memberVariables, int member,
+                               TOperator op, const TType& memberType) {
+        TIntermTyped* subTree;
+        if (flatten)
+            subTree = intermediate.addSymbol(*memberVariables[member]);
+        else {
+            subTree = intermediate.addIndex(op, node, intermediate.addConstantUnion(member, loc), loc);
+            subTree->setType(memberType);
+        }
+
+        return subTree;
+    };
+
+    // Handle struct assignment
+    if (left->getType().isStruct()) {
+        // If we get here, we are assigning to or from a whole struct that must be
+        // flattened, so have to do member-by-member assignment:
+        const auto& members = *left->getType().getStruct();
+
+        for (int member = 0; member < (int)members.size(); ++member) {
+            TIntermTyped* subRight = getMember(flattenRight, right, *rightVariables, member,
+                                               EOpIndexDirectStruct, *members[member].type);
+            TIntermTyped* subLeft = getMember(flattenLeft, left, *leftVariables, member,
+                                              EOpIndexDirectStruct, *members[member].type);
+            assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc));
+        }
     }
+
+    // Handle array assignment
+    if (left->getType().isArray()) {
+        // If we get here, we are assigning to or from a whole array that must be
+        // flattened, so have to do member-by-member assignment:
+
+        const TType dereferencedType(left->getType(), 0);
+        const int size = left->getType().getCumulativeArraySize();
+        
+        for (int element=0; element < size; ++element) {
+            TIntermTyped* subRight = getMember(flattenRight, right, *rightVariables, element,
+                                               EOpIndexDirect, dereferencedType);
+            TIntermTyped* subLeft = getMember(flattenLeft, left, *leftVariables, element,
+                                              EOpIndexDirect, dereferencedType);
+
+            assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc));
+        }
+    }
+
+    assert(assignList != nullptr);
     assignList->setOperator(EOpSequence);
 
     return assignList;
@@ -4095,13 +4210,21 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
 
     inheritGlobalDefaults(type.getQualifier());
 
+    bool flattenVar = false;
+
     // Declare the variable
     if (arraySizes || type.isArray()) {
         // Arrayness is potentially coming both from the type and from the 
         // variable: "int[] a[];" or just one or the other.
         // Merge it all to the type, so all arrayness is part of the type.
-        arrayDimMerge(type, arraySizes);
+        arrayDimMerge(type, arraySizes);  // Safe if there are no arraySizes
+
         declareArray(loc, identifier, type, symbol, newDeclaration);
+
+        flattenVar = shouldFlatten(type);
+
+        if (flattenVar)
+            flatten(loc, *symbol->getAsVariable());
     } else {
         // non-array case
         if (! symbol)
@@ -4116,6 +4239,9 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
     // Deal with initializer
     TIntermNode* initNode = nullptr;
     if (symbol && initializer) {
+        if (flattenVar)
+            error(loc, "flattened array with initializer list unsupported", identifier.c_str(), "");
+
         TVariable* variable = symbol->getAsVariable();
         if (! variable) {
             error(loc, "initializer requires a variable, not a member", identifier.c_str(), "");
@@ -4124,9 +4250,12 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
         initNode = executeInitializer(loc, initializer, variable);
     }
 
-    // see if it's a linker-level object to track
-    if (newDeclaration && symbolTable.atGlobalLevel())
-        intermediate.addSymbolLinkageNode(linkage, *symbol);
+    // see if it's a linker-level object to track.  if it's flattened above,
+    // that process added linkage objects for the flattened symbols, we don't
+    // add the aggregate here.
+    if (!flattenVar)
+        if (newDeclaration && symbolTable.atGlobalLevel())
+            intermediate.addSymbolLinkageNode(linkage, *symbol);
 
     return initNode;
 }
@@ -4257,7 +4386,7 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
         // normal assigning of a value to a variable...
         specializationCheck(loc, initializer->getType(), "initializer");
         TIntermSymbol* intermSymbol = intermediate.addSymbol(*variable, loc);
-        TIntermNode* initNode = intermediate.addAssign(EOpAssign, intermSymbol, initializer, loc);
+        TIntermNode* initNode = handleAssign(loc, EOpAssign, intermSymbol, initializer);
         if (! initNode)
             assignError(loc, "=", intermSymbol->getCompleteString(), initializer->getCompleteString());
 
