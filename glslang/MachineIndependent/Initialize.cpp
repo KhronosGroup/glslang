@@ -2336,10 +2336,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec3 interpolateAtVertexAMD(uvec3, uint);"
             "uvec4 interpolateAtVertexAMD(uvec4, uint);"
 
-            "uint  interpolateAtVertexAMD(float16_t, uint);"
-            "uvec2 interpolateAtVertexAMD(f16vec2,   uint);"
-            "uvec3 interpolateAtVertexAMD(f16vec3,   uint);"
-            "uvec4 interpolateAtVertexAMD(f16vec4,   uint);"
+            "float16_t interpolateAtVertexAMD(float16_t, uint);"
+            "f16vec2   interpolateAtVertexAMD(f16vec2,   uint);"
+            "f16vec3   interpolateAtVertexAMD(f16vec3,   uint);"
+            "f16vec4   interpolateAtVertexAMD(f16vec4,   uint);"
 
             "\n");
     }
@@ -2402,10 +2402,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   interpolateAtSample(f16vec3,   int);"
             "f16vec4   interpolateAtSample(f16vec4,   int);"
 
-            "float16_t interpolateAtOffset(float16_t, vec2);"
-            "f16vec2   interpolateAtOffset(f16vec2,   vec2);"
-            "f16vec3   interpolateAtOffset(f16vec3,   vec2);"
-            "f16vec4   interpolateAtOffset(f16vec4,   vec2);"
+            "float16_t interpolateAtOffset(float16_t, f16vec2);"
+            "f16vec2   interpolateAtOffset(f16vec2,   f16vec2);"
+            "f16vec3   interpolateAtOffset(f16vec3,   f16vec2);"
+            "f16vec4   interpolateAtOffset(f16vec4,   f16vec2);"
 
             "\n");
     }

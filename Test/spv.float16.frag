@@ -302,5 +302,5 @@ void builtinFragProcFuncs()
     // Interpolation
     f16v.x  = interpolateAtCentroid(if16v.x);
     f16v.xy = interpolateAtSample(if16v.xy, 1);
-    f16v    = interpolateAtOffset(if16v, vec2(0.5));
+    f16v    = interpolateAtOffset(if16v, f16vec2(0.5hf));
 }
