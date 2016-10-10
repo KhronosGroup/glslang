@@ -1948,7 +1948,7 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
         return true;
 
     node = intermediate.addUnaryMath(unaryOp, node, loc);
-    node = parseContext.handleLvalue(loc, "", node);
+    node = parseContext.handleLvalue(loc, "unary operator", node);
 
     return node != nullptr;
 }
@@ -2064,7 +2064,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         case EOpPostDecrement:
             // DEC_OP
             node = intermediate.addUnaryMath(postOp, node, loc);
-            node = parseContext.handleLvalue(loc, "", node);
+            node = parseContext.handleLvalue(loc, "unary operator", node);
             break;
         default:
             assert(0);

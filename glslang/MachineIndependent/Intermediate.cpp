@@ -2046,8 +2046,9 @@ bool TIntermBinary::promote()
         break;
 
     case EOpVectorTimesScalarAssign:
-        if (left->isVector() && right->isScalar())
-            return true;
+        if (!left->isVector() || !right->isScalar())
+            return false;
+        break;
 
     default:
         return false;
@@ -2069,6 +2070,7 @@ bool TIntermBinary::promote()
     case EOpExclusiveOrAssign:
     case EOpLeftShiftAssign:
     case EOpRightShiftAssign:
+    case EOpVectorTimesScalarAssign:
         if (getType() != left->getType())
             return false;
         break;

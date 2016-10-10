@@ -74,7 +74,7 @@ PS_OUTPUT main()
 
    // Test as L-values
    // 1D
-   g_tTex1df4[c1] = SomeValue(); // complex L-value
+   g_tTex1df4[c1] = SomeValue(); // complex R-value
    g_tTex1df4[c1] = lf4;
    g_tTex1di4[c1] = int4(2,2,3,4);
    g_tTex1du4[c1] = uint4(3,2,3,4);
@@ -103,7 +103,7 @@ PS_OUTPUT main()
    g_tTex3di4[c3] = int4(8,6,7,8);
    g_tTex3du4[c3] = uint4(9,2,3,4);
 
-   // // Test function calling
+   // Test function calling
    Fn1(g_tTex1df4[c1]);  // in
    Fn1(g_tTex1di4[c1]);  // in
    Fn1(g_tTex1du4[c1]);  // in
@@ -130,6 +130,9 @@ PS_OUTPUT main()
    g_tTex1df4[c1]--;
    g_tTex1di4[c1]++;
    g_tTex1du4[c1]--;
+
+   // read and write
+   g_tTex1df4[1] = g_tTex2df4[int2(2,3)];
 
    psout.Color = 1.0;
 

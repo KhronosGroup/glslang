@@ -130,6 +130,10 @@ bool HlslParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& 
     return numErrors == 0;
 }
 
+//
+// Return true if this l-value node should be converted in some manner.
+// For instance: turning a load aggregate into a store in an l-value.
+//
 bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
 {
     if (node == nullptr)
@@ -177,6 +181,9 @@ bool HlslParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, T
 // 
 TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* op, TIntermTyped* node)
 {
+    if (node == nullptr)
+        return nullptr;
+
     TIntermBinary* nodeAsBinary = node->getAsBinaryNode();
     TIntermUnary* nodeAsUnary = node->getAsUnaryNode();
     TIntermAggregate* sequence = nullptr;
@@ -571,12 +578,18 @@ TIntermTyped* HlslParseContext::handleBracketOperator(const TSourceLoc& loc, TIn
         const TSampler& sampler = base->getType().getSampler();
         if (sampler.isImage() || sampler.isTexture()) {
             const int vecSize = 4; // TODO: handle arbitrary sizes (get from qualifier)
-            TIntermAggregate* load = new TIntermAggregate(EOpImageLoad);
+            TIntermAggregate* load = new TIntermAggregate(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
 
             load->setType(TType(sampler.type, EvqTemporary, vecSize));
             load->setLoc(loc);
             load->getSequence().push_back(base);
             load->getSequence().push_back(index);
+
+            // Textures need a MIP.  First indirection is always to mip 0.  If there's another, we'll add it
+            // later.
+            if (sampler.isTexture())
+                load->getSequence().push_back(intermediate.addConstantUnion(0, loc, true));
+
             return load;
         }
     }
