@@ -907,11 +907,11 @@ bool HlslGrammar::acceptTextureType(TType& type)
             return false;
         }
 
-        if (txType.getVectorSize() != 1 && txType.getVectorSize() != 4) {
-            // TODO: handle vec2/3 types
-            expected("vector size not yet supported in texture type");
-            return false;
-        }
+        // if (txType.getVectorSize() != 1 && txType.getVectorSize() != 4 && !image) {
+        //     // TODO: handle vec2/3 types
+        //     expected("vector size not yet supported in texture type");
+        //     return false;
+        // }
 
         if (ms && acceptTokenClass(EHTokComma)) {
             // read sample count for multisample types, if given
@@ -937,24 +937,14 @@ bool HlslGrammar::acceptTextureType(TType& type)
     }
 
     TArraySizes* arraySizes = nullptr;
-    const bool shadow = !image && (txType.isScalar() || (txType.isVector() && txType.getVectorSize() == 1));
+    const bool shadow = false; // declared on the sampler
 
     TSampler sampler;
     TLayoutFormat format = ElfNone;
 
-    // RWBuffer and RWTexture (images) require a TLayoutFormat.  We handle only a limit set.
-    if (image) {
-        if (txType.getVectorSize() != 4)
-            expected("4 component image");
-
-        switch (txType.getBasicType()) {
-        case EbtFloat: format = ElfRgba32f;  break;
-        case EbtInt:   format = ElfRgba32i;  break;
-        case EbtUint:  format = ElfRgba32ui; break;
-        default:
-            expected("unknown basic type in image format");
-        }
-    }
+    // Buffer, RWBuffer and RWTexture (images) require a TLayoutFormat.  We handle only a limit set.
+    if (image || dim == EsdBuffer)
+        format = parseContext.getLayoutFromTxType(token.loc, txType);
 
     // Non-image Buffers are combined
     if (dim == EsdBuffer && !image) {

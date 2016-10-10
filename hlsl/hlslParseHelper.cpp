@@ -148,6 +148,28 @@ bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
 }
 
 //
+// Return a TLayoutFormat corresponding to the given texture type.
+//
+TLayoutFormat HlslParseContext::getLayoutFromTxType(const TSourceLoc& loc, const TType& txType)
+{
+    const int components = txType.getVectorSize();
+
+    const auto select = [&](TLayoutFormat v1, TLayoutFormat v2, TLayoutFormat v4) {
+        return components == 1 ? v1 :
+               components == 2 ? v2 : v4;
+    };
+
+    switch (txType.getBasicType()) {
+    case EbtFloat: return select(ElfR32f,  ElfRg32f,  ElfRgba32f);
+    case EbtInt:   return select(ElfR32i,  ElfRg32i,  ElfRgba32i);
+    case EbtUint:  return select(ElfR32ui, ElfRg32ui, ElfRgba32ui);
+    default:
+        error(loc, "unknown basic type in image format", "", "");
+        return ElfNone;
+    }
+}
+
+//
 // Both test and if necessary, spit out an error, to see if the node is really
 // an l-value that can be operated on this way.
 //
@@ -265,10 +287,14 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     TIntermTyped* coord  = lhsAsAggregate->getSequence()[1]->getAsTyped();
 
     const TLayoutFormat fmt = object->getType().getQualifier().layoutFormat;
-    // We only handle 4 component formats at the moment.
 
-    assert(fmt == ElfRgba32f || fmt == ElfRgba32i || fmt == ElfRgba32ui);
-    const TType objDerefType(object->getType().getSampler().type, EvqTemporary, 4);
+    // We only handle this subset of the possible formats.
+    assert(fmt == ElfRgba32f || fmt == ElfRgba32i || fmt == ElfRgba32ui ||
+           fmt == ElfRg32f   || fmt == ElfRg32i   || fmt == ElfRg32ui   ||
+           fmt == ElfR32f    || fmt == ElfR32i    || fmt == ElfR32ui);
+
+    const TType objDerefType(object->getType().getSampler().type, EvqTemporary, 
+                             TQualifier::getLayoutComponentCount(fmt));
 
     if (nodeAsBinary) {
         TIntermTyped* rhs = nodeAsBinary->getRight();
@@ -578,7 +604,7 @@ TIntermTyped* HlslParseContext::handleBracketOperator(const TSourceLoc& loc, TIn
     if (base->getType().getBasicType() == EbtSampler && !base->isArray()) {
         const TSampler& sampler = base->getType().getSampler();
         if (sampler.isImage() || sampler.isTexture()) {
-            const int vecSize = 4; // TODO: handle arbitrary sizes (get from qualifier)
+            const int vecSize = TQualifier::getLayoutComponentCount(base->getType().getQualifier().layoutFormat);
             TIntermAggregate* load = new TIntermAggregate(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
 
             load->setType(TType(sampler.type, EvqTemporary, vecSize));
@@ -1781,7 +1807,9 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 txfetch->getSequence().push_back(argOffset);
             }
 
-            txfetch->setType(node->getType());
+            int vecSize = TQualifier::getLayoutComponentCount(argTex->getType().getQualifier().layoutFormat);
+
+            txfetch->setType(TType(node->getType().getBasicType(), EvqTemporary, vecSize));
             txfetch->setLoc(loc);
             node = txfetch;
 
