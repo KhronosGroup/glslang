@@ -966,7 +966,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
     // Track how many items there are to copy.
     if (left->getType().isStruct())
-        memberCount = left->getType().getStruct()->size();
+        memberCount = (int)left->getType().getStruct()->size();
     if (left->getType().isArray())
         memberCount = left->getType().getCumulativeArraySize();
 
@@ -3980,7 +3980,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
 // 'parseType' is the type part of the declaration (to the left)
 // 'arraySizes' is the arrayness tagged on the identifier (to the right)
 //
-void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier, const TType& parseType, TArraySizes* arraySizes)
+void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier, const TType& parseType, TArraySizes* /*arraySizes*/)
 {
     TType type;
     type.deepCopy(parseType);
