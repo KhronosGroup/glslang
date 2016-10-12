@@ -3999,8 +3999,8 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
     else if (op == glslang::EOpAnyInvocation ||
              op == glslang::EOpAllInvocations ||
              op == glslang::EOpAllInvocationsEqual) {
+        builder.addExtension(spv::E_SPV_KHR_subgroup_vote);
         builder.addCapability(spv::CapabilitySubgroupVoteKHR);
-        spvGroupOperands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
     } else {
         builder.addCapability(spv::CapabilityGroups);
 
