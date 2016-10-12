@@ -228,9 +228,9 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     };
 
     // Helper to create an assign.
-    const auto makeAssign = [&](TOperator assignOp, TIntermTyped* lhs, TIntermTyped* rhs) {
+    const auto makeBinary = [&](TOperator op, TIntermTyped* lhs, TIntermTyped* rhs) {
         sequence = intermediate.growAggregate(sequence,
-                                              intermediate.addAssign(assignOp, lhs, rhs, loc),
+                                              intermediate.addBinaryNode(op, lhs, rhs, loc, lhs->getType()),
                                               loc);
     };
 
@@ -246,9 +246,10 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     };
 
     // Helper to add unary op
-    const auto addUnary = [&](TOperator op, TIntermSymbol* rhsTmp) {
+    const auto makeUnary = [&](TOperator op, TIntermSymbol* rhsTmp) {
         sequence = intermediate.growAggregate(sequence,
-                                              intermediate.addUnaryMath(op, intermediate.addSymbol(*rhsTmp), loc),
+                                              intermediate.addUnaryNode(op, intermediate.addSymbol(*rhsTmp), loc,
+                                                                        rhsTmp->getType()),
                                               loc);
     };
 
@@ -322,12 +323,12 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                     if (isModifyOp) {
                         // We have to make a temp var for the coordinate, to avoid evaluating it twice.
                         coordTmp = addTmpVar("coordTemp", coord->getType());
-                        makeAssign(EOpAssign, coordTmp, coord); // coordtmp = load[param1]
+                        makeBinary(EOpAssign, coordTmp, coord); // coordtmp = load[param1]
                         makeLoad(rhsTmp, object, coordTmp, objDerefType); // rhsTmp = OpImageLoad(object, coordTmp)
                     }
 
                     // rhsTmp op= rhs.
-                    makeAssign(assignOp, intermediate.addSymbol(*rhsTmp), rhs);
+                    makeBinary(assignOp, intermediate.addSymbol(*rhsTmp), rhs);
                 }
                 
                 makeStore(object, coordTmp, rhsTmp);         // add a store
@@ -357,9 +358,9 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                 TIntermSymbol* rhsTmp = addTmpVar("storeTemp", objDerefType);
                 TIntermTyped* coordTmp = addTmpVar("coordTemp", coord->getType());
  
-                makeAssign(EOpAssign, coordTmp, coord);           // coordtmp = load[param1]
+                makeBinary(EOpAssign, coordTmp, coord);           // coordtmp = load[param1]
                 makeLoad(rhsTmp, object, coordTmp, objDerefType); // rhsTmp = OpImageLoad(object, coordTmp)
-                addUnary(assignOp, rhsTmp);                       // op rhsTmp
+                makeUnary(assignOp, rhsTmp);                      // op rhsTmp
                 makeStore(object, coordTmp, rhsTmp);              // OpImageStore(object, coordTmp, rhsTmp)
                 return finishSequence(rhsTmp, objDerefType);      // return rhsTmp from sequence
             }
@@ -379,10 +380,10 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                 TIntermSymbol* rhsTmp2 = addTmpVar("storeTempPost", objDerefType);
                 TIntermTyped* coordTmp = addTmpVar("coordTemp", coord->getType());
 
-                makeAssign(EOpAssign, coordTmp, coord);            // coordtmp = load[param1]
+                makeBinary(EOpAssign, coordTmp, coord);            // coordtmp = load[param1]
                 makeLoad(rhsTmp1, object, coordTmp, objDerefType); // rhsTmp1 = OpImageLoad(object, coordTmp)
-                makeAssign(EOpAssign, rhsTmp2, rhsTmp1);           // rhsTmp2 = rhsTmp1
-                addUnary(assignOp, rhsTmp2);                       // rhsTmp op
+                makeBinary(EOpAssign, rhsTmp2, rhsTmp1);           // rhsTmp2 = rhsTmp1
+                makeUnary(assignOp, rhsTmp2);                      // rhsTmp op
                 makeStore(object, coordTmp, rhsTmp2);              // OpImageStore(object, coordTmp, rhsTmp2)
                 return finishSequence(rhsTmp1, objDerefType);      // return rhsTmp from sequence
             }

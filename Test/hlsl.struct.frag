@@ -12,7 +12,7 @@ struct myS {
 
 myS s1;
 
-struct {
+static struct {
     float4 i;
 } s2;
 
@@ -37,7 +37,7 @@ float4 PixelShaderFunction(float4 input, IN_S s) : COLOR0
     } s3;
 
     s3 == s3;
-    s2.i; s.ff4; // no assignments to uniforms, but preserve indirections.
+    s2.i = s.ff4;
 
     return input;
 }

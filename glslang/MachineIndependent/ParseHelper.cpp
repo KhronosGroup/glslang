@@ -1966,7 +1966,6 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
     if (TParseContextBase::lValueErrorCheck(loc, op, node))
         return true;
 
-    // GLSL specific
     const char* symbol = nullptr;
     TIntermSymbol* symNode = node->getAsSymbolNode();
     if (symNode != nullptr)
