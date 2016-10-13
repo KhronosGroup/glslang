@@ -34,6 +34,7 @@
 //
 
 #include "../Include/Common.h"
+#include "../Include/InfoSink.h"
 #include "iomapper.h"
 #include "LiveTraverser.h"
 #include "localintermediate.h"
@@ -150,11 +151,30 @@ protected:
 class TIoMappingTraverser : public TBindingTraverser {
 public:
     TIoMappingTraverser(TIntermediate& i, TBindingMap& bindingMap, TUsedBindings& usedBindings,
-                        bool traverseDeadCode) :
-        TBindingTraverser(i, bindingMap, usedBindings, traverseDeadCode)
+                        TInfoSink& infoSink, bool traverseDeadCode) :
+        TBindingTraverser(i, bindingMap, usedBindings, traverseDeadCode),
+        infoSink(infoSink),
+        assignError(false)
     { }
 
+    bool success() const { return !assignError; }
+
 protected:
+    unsigned checkBindingRange(const TIntermSymbol& base, unsigned binding)
+    {
+        if (binding >= TQualifier::layoutBindingEnd) {
+            TString err = "mapped binding out of range: ";
+            err += base.getName();
+
+            infoSink.info.message(EPrefixInternalError, err.c_str());
+            assignError = true;
+            
+            return 0;
+        }
+
+        return binding;
+    }
+
     void addUniform(TIntermSymbol& base) override
     {
         // Skip things we don't intend to bind.
@@ -165,7 +185,7 @@ protected:
 
         // Apply existing binding, if we were given one or already made one up.
         if (existingBinding != -1) {
-            base.getWritableType().getQualifier().layoutBinding = existingBinding;
+            base.getWritableType().getQualifier().layoutBinding = checkBindingRange(base, existingBinding);
             return;
         }
 
@@ -174,7 +194,7 @@ protected:
             const int freeBinding = getFreeBinding(base.getType(), getBindingBase(base.getType()));
 
             markBinding(base, freeBinding);
-            base.getWritableType().getQualifier().layoutBinding = freeBinding;
+            base.getWritableType().getQualifier().layoutBinding = checkBindingRange(base, freeBinding);
         }
     }
 
@@ -195,13 +215,17 @@ protected:
 
         return nextBinding;
     }
+
+private:
+    bool assignError;  // true if there was an error assigning the bindings
+    TInfoSink& infoSink;
 };
 
 // Map I/O variables to provided offsets, and make bindings for
 // unbound but live variables.
 //
 // Returns false if the input is too malformed to do this.
-bool TIoMapper::addStage(EShLanguage, TIntermediate& intermediate)
+bool TIoMapper::addStage(EShLanguage, TIntermediate& intermediate, TInfoSink& infoSink)
 {
     // Trivial return if there is nothing to do.
     if (intermediate.getShiftSamplerBinding() == 0 &&
@@ -223,7 +247,7 @@ bool TIoMapper::addStage(EShLanguage, TIntermediate& intermediate)
 
     TBindingTraverser it_binding_all(intermediate, bindingMap, usedBindings, true);
     TBindingTraverser it_binding_live(intermediate, bindingMap, usedBindings, false);
-    TIoMappingTraverser it_iomap(intermediate, bindingMap, usedBindings, true);
+    TIoMappingTraverser it_iomap(intermediate, bindingMap, usedBindings, infoSink, true);
 
     // Traverse all (live+dead) code to find explicit bindings, so we can avoid those.
     root->traverse(&it_binding_all);
@@ -240,7 +264,7 @@ bool TIoMapper::addStage(EShLanguage, TIntermediate& intermediate)
     // Bind everything that needs a binding and doesn't have one.
     root->traverse(&it_iomap);
 
-    return true;
+    return it_iomap.success();
 }
 
 } // end namespace glslang

@@ -42,6 +42,8 @@
 // A reflection database and its interface, consistent with the OpenGL API reflection queries.
 //
 
+class TInfoSink;
+
 namespace glslang {
 
 class TIntermediate;
@@ -53,7 +55,7 @@ public:
     virtual ~TIoMapper() {}
 
     // grow the reflection stage by stage
-    bool addStage(EShLanguage, TIntermediate&);
+    bool addStage(EShLanguage, TIntermediate&, TInfoSink&);
 };
 
 } // end namespace glslang
