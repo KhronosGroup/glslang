@@ -83,6 +83,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.amend.frag", "f1"},
         {"hlsl.array.frag", "PixelShaderFunction"},
         {"hlsl.array.implicit-size.frag", "PixelShaderFunction"},
+        {"hlsl.array.multidim.frag", "main"},
         {"hlsl.assoc.frag", "PixelShaderFunction"},
         {"hlsl.attribute.frag", "PixelShaderFunction"},
         {"hlsl.buffer.frag", "PixelShaderFunction"},

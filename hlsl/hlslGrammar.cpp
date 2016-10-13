@@ -2676,35 +2676,40 @@ bool HlslGrammar::acceptDefaultLabel(TIntermNode*& statement)
 }
 
 // array_specifier
-//      : LEFT_BRACKET integer_expression RGHT_BRACKET post_decls // optional
-//      : LEFT_BRACKET RGHT_BRACKET post_decls // optional
+//      : LEFT_BRACKET integer_expression RGHT_BRACKET ... // optional
+//      : LEFT_BRACKET RGHT_BRACKET // optional
 //
 void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 {
     arraySizes = nullptr;
 
-    if (! acceptTokenClass(EHTokLeftBracket))
+    // Early-out if there aren't any array dimensions
+    if (!peekTokenClass(EHTokLeftBracket))
         return;
 
-    TSourceLoc loc = token.loc;
-    TIntermTyped* sizeExpr = nullptr;
-
-    // Array sizing expression is optional.  If ommitted, array is implicitly sized.
-    const bool hasArraySize = acceptAssignmentExpression(sizeExpr);
-
-    if (! acceptTokenClass(EHTokRightBracket)) {
-        expected("]");
-        return;
-    }
-
+    // If we get here, we have at least one array dimension.  This will track the sizes we find.
     arraySizes = new TArraySizes;
-    
-    if (hasArraySize) {
-        TArraySize arraySize;
-        parseContext.arraySizeCheck(loc, sizeExpr, arraySize);
-        arraySizes->addInnerSize(arraySize);
-    } else {
-        arraySizes->addInnerSize();  // implicitly sized
+
+    // Collect each array dimension.
+    while (acceptTokenClass(EHTokLeftBracket)) {
+        TSourceLoc loc = token.loc;
+        TIntermTyped* sizeExpr = nullptr;
+
+        // Array sizing expression is optional.  If ommitted, array will be later sized by initializer list.
+        const bool hasArraySize = acceptAssignmentExpression(sizeExpr);
+
+        if (! acceptTokenClass(EHTokRightBracket)) {
+            expected("]");
+            return;
+        }
+
+        if (hasArraySize) {
+            TArraySize arraySize;
+            parseContext.arraySizeCheck(loc, sizeExpr, arraySize);
+            arraySizes->addInnerSize(arraySize);
+        } else {
+            arraySizes->addInnerSize(0);  // sized by initializers.
+        }
     }
 }
 
