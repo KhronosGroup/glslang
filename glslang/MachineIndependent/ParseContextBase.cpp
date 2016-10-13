@@ -253,7 +253,7 @@ const TFunction* TParseContextBase::selectFunction(
         return viableCandidates.front();
 
     // 4. find best...
-    auto betterParam = [&call, &better](const TFunction& can1, const TFunction& can2){
+    auto betterParam = [&call, &better](const TFunction& can1, const TFunction& can2) -> bool {
         // is call -> can2 better than call -> can1 for any parameter
         bool hasBetterParam = false;
         for (int param = 0; param < call.getParamCount(); ++param) {
