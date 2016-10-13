@@ -136,13 +136,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     // Need a new node holding things together.  Make
     // one and promote it to the right type.
     //
-    TIntermBinary* node = new TIntermBinary(op);
-    if (loc.line == 0)
-        loc = right->getLoc();
-    node->setLoc(loc);
-
-    node->setLeft(left);
-    node->setRight(right);
+    TIntermBinary* node = addBinaryNode(op, left, right, loc);
     if (! node->promote())
         return 0;
 
@@ -169,6 +163,56 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
         if (isSpecializationOperation(*node))
             node->getWritableType().getQualifier().makeSpecConstant();
 
+    return node;
+}
+
+//
+// Low level: add binary node (no promotions or other argument modifications)
+//
+TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc loc) const
+{
+    // build the node
+    TIntermBinary* node = new TIntermBinary(op);
+    if (loc.line == 0)
+        loc = left->getLoc();
+    node->setLoc(loc);
+    node->setLeft(left);
+    node->setRight(right);
+
+    return node;
+}
+
+//
+// like non-type form, but sets node's type.
+//
+TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc loc, const TType& type) const
+{
+    TIntermBinary* node = addBinaryNode(op, left, right, loc);
+    node->setType(type);
+    return node;
+}
+    
+//
+// Low level: add unary node (no promotions or other argument modifications)
+//
+TIntermUnary* TIntermediate::addUnaryNode(TOperator op, TIntermTyped* child, TSourceLoc loc) const
+{
+    TIntermUnary* node = new TIntermUnary(op);
+    if (loc.line == 0)
+        loc = child->getLoc();
+    node->setLoc(loc);
+    node->setOperand(child);
+
+    return node;
+}
+
+//
+// like non-type form, but sets node's type.
+//
+TIntermUnary* TIntermediate::addUnaryNode(TOperator op, TIntermTyped* child, TSourceLoc loc, const TType& type) const
+{
+    TIntermUnary* node = addUnaryNode(op, child, loc);
+    node->setType(type);
     return node;
 }
 
@@ -200,12 +244,7 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
     right = addShapeConversion(op, left->getType(), right);
 
     // build the node
-    TIntermBinary* node = new TIntermBinary(op);
-    if (loc.line == 0)
-        loc = left->getLoc();
-    node->setLoc(loc);
-    node->setLeft(left);
-    node->setRight(right);
+    TIntermBinary* node = addBinaryNode(op, left, right, loc);
 
     if (! node->promote())
         return nullptr;
@@ -224,16 +263,8 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
 //
 TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc loc)
 {
-    TIntermBinary* node = new TIntermBinary(op);
-    if (loc.line == 0)
-        loc = index->getLoc();
-    node->setLoc(loc);
-    node->setLeft(base);
-    node->setRight(index);
-
     // caller should set the type
-
-    return node;
+    return addBinaryNode(op, base, index, loc);
 }
 
 //
@@ -316,11 +347,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     //
     // Make a new node for the operator.
     //
-    TIntermUnary* node = new TIntermUnary(op);
-    if (loc.line == 0)
-        loc = child->getLoc();
-    node->setLoc(loc);
-    node->setOperand(child);
+    TIntermUnary* node = addUnaryNode(op, child, loc);
 
     if (! node->promote())
         return 0;
@@ -357,12 +384,7 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(const TSourceLoc& loc, TOper
                 return folded;
         }
 
-        TIntermUnary* node = new TIntermUnary(op);
-        node->setLoc(child->getLoc());
-        node->setOperand(child);
-        node->setType(returnType);
-
-        return node;
+        return addUnaryNode(op, child, child->getLoc(), returnType);
     } else {
         // setAggregateOperater() calls fold() for constant folding
         TIntermTyped* node = setAggregateOperator(childNode, op, returnType, loc);
@@ -725,9 +747,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     }
 
     TType newType(promoteTo, EvqTemporary, node->getVectorSize(), node->getMatrixCols(), node->getMatrixRows());
-    newNode = new TIntermUnary(newOp, newType);
-    newNode->setLoc(node->getLoc());
-    newNode->setOperand(node);
+    newNode = addUnaryNode(newOp, node, node->getLoc(), newType);
 
     // TODO: it seems that some unary folding operations should occur here, but are not
 

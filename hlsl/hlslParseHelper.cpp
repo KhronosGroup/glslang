@@ -130,6 +130,276 @@ bool HlslParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& 
     return numErrors == 0;
 }
 
+//
+// Return true if this l-value node should be converted in some manner.
+// For instance: turning a load aggregate into a store in an l-value.
+//
+bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
+{
+    if (node == nullptr)
+        return false;
+
+    const TIntermAggregate* lhsAsAggregate = node->getAsAggregate();
+
+    if (lhsAsAggregate != nullptr && lhsAsAggregate->getOp() == EOpImageLoad)
+        return true;
+
+    return false;
+}
+
+//
+// Both test and if necessary, spit out an error, to see if the node is really
+// an l-value that can be operated on this way.
+//
+// Returns true if there was an error.
+//
+bool HlslParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
+{
+    if (shouldConvertLValue(node)) {
+        // if we're writing to a texture, it must be an RW form.
+
+        TIntermAggregate* lhsAsAggregate = node->getAsAggregate();
+        TIntermTyped* object = lhsAsAggregate->getSequence()[0]->getAsTyped();
+        
+        if (!object->getType().getSampler().isImage()) {
+            error(loc, "operator[] on a non-RW texture must be an r-value", "", "");
+            return true;
+        }
+    }
+
+    // Let the base class check errors
+    return TParseContextBase::lValueErrorCheck(loc, op, node);
+}
+
+//
+// This function handles l-value conversions and verifications.  It uses, but is not synonymous
+// with lValueErrorCheck.  That function accepts an l-value directly, while this one must be
+// given the surrounding tree - e.g, with an assignment, so we can convert the assign into a
+// series of other image operations.
+//
+// Most things are passed through unmodified, except for error checking.
+// 
+TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* op, TIntermTyped* node)
+{
+    if (node == nullptr)
+        return nullptr;
+
+    TIntermBinary* nodeAsBinary = node->getAsBinaryNode();
+    TIntermUnary* nodeAsUnary = node->getAsUnaryNode();
+    TIntermAggregate* sequence = nullptr;
+
+    TIntermTyped* lhs = nodeAsUnary  ? nodeAsUnary->getOperand() :
+                        nodeAsBinary ? nodeAsBinary->getLeft() :
+                        nullptr;
+
+    // Early bail out if there is no conversion to apply
+    if (!shouldConvertLValue(lhs)) {
+        if (lhs != nullptr)
+            if (lValueErrorCheck(loc, op, lhs))
+                return nullptr;
+        return node;
+    }
+
+    // *** If we get here, we're going to apply some conversion to an l-value.
+
+    // Helper to create a load.
+    const auto makeLoad = [&](TIntermSymbol* rhsTmp, TIntermTyped* object, TIntermTyped* coord, const TType& derefType) {
+        TIntermAggregate* loadOp = new TIntermAggregate(EOpImageLoad);
+        loadOp->setLoc(loc);
+        loadOp->getSequence().push_back(object);
+        loadOp->getSequence().push_back(intermediate.addSymbol(*coord->getAsSymbolNode()));
+        loadOp->setType(derefType);
+
+        sequence = intermediate.growAggregate(sequence,
+                                              intermediate.addAssign(EOpAssign, rhsTmp, loadOp, loc),
+                                              loc);
+    };
+
+    // Helper to create a store.
+    const auto makeStore = [&](TIntermTyped* object, TIntermTyped* coord, TIntermSymbol* rhsTmp) {
+        TIntermAggregate* storeOp = new TIntermAggregate(EOpImageStore);
+        storeOp->getSequence().push_back(object);
+        storeOp->getSequence().push_back(coord);
+        storeOp->getSequence().push_back(intermediate.addSymbol(*rhsTmp));
+        storeOp->setLoc(loc);
+        storeOp->setType(TType(EbtVoid));
+
+        sequence = intermediate.growAggregate(sequence, storeOp);
+    };
+
+    // Helper to create an assign.
+    const auto makeBinary = [&](TOperator op, TIntermTyped* lhs, TIntermTyped* rhs) {
+        sequence = intermediate.growAggregate(sequence,
+                                              intermediate.addBinaryNode(op, lhs, rhs, loc, lhs->getType()),
+                                              loc);
+    };
+
+    // Helper to complete sequence by adding trailing variable, so we evaluate to the right value.
+    const auto finishSequence = [&](TIntermSymbol* rhsTmp, const TType& derefType) {
+        // Add a trailing use of the temp, so the sequence returns the proper value.
+        sequence = intermediate.growAggregate(sequence, intermediate.addSymbol(*rhsTmp));
+        sequence->setOperator(EOpSequence);
+        sequence->setLoc(loc);
+        sequence->setType(derefType);
+
+        return sequence;
+    };
+
+    // Helper to add unary op
+    const auto makeUnary = [&](TOperator op, TIntermSymbol* rhsTmp) {
+        sequence = intermediate.growAggregate(sequence,
+                                              intermediate.addUnaryNode(op, intermediate.addSymbol(*rhsTmp), loc,
+                                                                        rhsTmp->getType()),
+                                              loc);
+    };
+
+    // helper to create a temporary variable
+    const auto addTmpVar = [&](const char* name, const TType& derefType) {
+        TVariable* tmpVar = makeInternalVariable(name, derefType);
+        tmpVar->getWritableType().getQualifier().makeTemporary();
+        return intermediate.addSymbol(*tmpVar, loc);
+    };
+    
+    TIntermAggregate* lhsAsAggregate = lhs->getAsAggregate();
+    TIntermTyped* object = lhsAsAggregate->getSequence()[0]->getAsTyped();
+    TIntermTyped* coord  = lhsAsAggregate->getSequence()[1]->getAsTyped();
+
+    const TLayoutFormat fmt = object->getType().getQualifier().layoutFormat;
+    // We only handle 4 component formats at the moment.
+
+    assert(fmt == ElfRgba32f || fmt == ElfRgba32i || fmt == ElfRgba32ui);
+    const TType objDerefType(object->getType().getSampler().type, EvqTemporary, 4);
+
+    if (nodeAsBinary) {
+        TIntermTyped* rhs = nodeAsBinary->getRight();
+        const TOperator assignOp = nodeAsBinary->getOp();
+
+        bool isModifyOp = false;
+
+        switch (assignOp) {
+        case EOpAddAssign:
+        case EOpSubAssign:
+        case EOpMulAssign:
+        case EOpVectorTimesMatrixAssign:
+        case EOpVectorTimesScalarAssign:
+        case EOpMatrixTimesScalarAssign:
+        case EOpMatrixTimesMatrixAssign:
+        case EOpDivAssign:
+        case EOpModAssign:
+        case EOpAndAssign:
+        case EOpInclusiveOrAssign:
+        case EOpExclusiveOrAssign:
+        case EOpLeftShiftAssign:
+        case EOpRightShiftAssign:
+            isModifyOp = true;
+            // fall through...
+        case EOpAssign:
+            {
+                // Since this is an lvalue, we'll convert an image load to a sequence like this (to still provide the value):
+                //   OpSequence
+                //      OpImageStore(object, lhs, rhs)
+                //      rhs
+                // But if it's not a simple symbol RHS (say, a fn call), we don't want to duplicate the RHS, so we'll convert
+                // instead to this:
+                //   OpSequence
+                //      rhsTmp = rhs
+                //      OpImageStore(object, coord, rhsTmp)
+                //      rhsTmp
+                // If this is a read-modify-write op, like +=, we issue:
+                //   OpSequence
+                //      coordtmp = load's param1
+                //      rhsTmp = OpImageLoad(object, coordTmp)
+                //      rhsTmp op= rhs
+                //      OpImageStore(object, coordTmp, rhsTmp)
+                //      rhsTmp
+
+                TIntermSymbol* rhsTmp = rhs->getAsSymbolNode();
+                TIntermTyped* coordTmp = coord;
+ 
+                if (rhsTmp == nullptr || isModifyOp) {
+                    rhsTmp = addTmpVar("storeTemp", objDerefType);
+
+                    // Assign storeTemp = rhs
+                    if (isModifyOp) {
+                        // We have to make a temp var for the coordinate, to avoid evaluating it twice.
+                        coordTmp = addTmpVar("coordTemp", coord->getType());
+                        makeBinary(EOpAssign, coordTmp, coord); // coordtmp = load[param1]
+                        makeLoad(rhsTmp, object, coordTmp, objDerefType); // rhsTmp = OpImageLoad(object, coordTmp)
+                    }
+
+                    // rhsTmp op= rhs.
+                    makeBinary(assignOp, intermediate.addSymbol(*rhsTmp), rhs);
+                }
+                
+                makeStore(object, coordTmp, rhsTmp);         // add a store
+                return finishSequence(rhsTmp, objDerefType); // return rhsTmp from sequence
+            }
+
+        default:
+            break;
+        }
+    }
+
+    if (nodeAsUnary) {
+        const TOperator assignOp = nodeAsUnary->getOp();
+
+        switch (assignOp) {
+        case EOpPreIncrement:
+        case EOpPreDecrement:
+            {
+                // We turn this into:
+                //   OpSequence
+                //      coordtmp = load's param1
+                //      rhsTmp = OpImageLoad(object, coordTmp)
+                //      rhsTmp op
+                //      OpImageStore(object, coordTmp, rhsTmp)
+                //      rhsTmp
+                
+                TIntermSymbol* rhsTmp = addTmpVar("storeTemp", objDerefType);
+                TIntermTyped* coordTmp = addTmpVar("coordTemp", coord->getType());
+ 
+                makeBinary(EOpAssign, coordTmp, coord);           // coordtmp = load[param1]
+                makeLoad(rhsTmp, object, coordTmp, objDerefType); // rhsTmp = OpImageLoad(object, coordTmp)
+                makeUnary(assignOp, rhsTmp);                      // op rhsTmp
+                makeStore(object, coordTmp, rhsTmp);              // OpImageStore(object, coordTmp, rhsTmp)
+                return finishSequence(rhsTmp, objDerefType);      // return rhsTmp from sequence
+            }
+
+        case EOpPostIncrement:
+        case EOpPostDecrement:
+            {
+                // We turn this into:
+                //   OpSequence
+                //      coordtmp = load's param1
+                //      rhsTmp1 = OpImageLoad(object, coordTmp)
+                //      rhsTmp2 = rhsTmp1
+                //      rhsTmp2 op
+                //      OpImageStore(object, coordTmp, rhsTmp2)
+                //      rhsTmp1 (pre-op value)
+                TIntermSymbol* rhsTmp1 = addTmpVar("storeTempPre",  objDerefType);
+                TIntermSymbol* rhsTmp2 = addTmpVar("storeTempPost", objDerefType);
+                TIntermTyped* coordTmp = addTmpVar("coordTemp", coord->getType());
+
+                makeBinary(EOpAssign, coordTmp, coord);            // coordtmp = load[param1]
+                makeLoad(rhsTmp1, object, coordTmp, objDerefType); // rhsTmp1 = OpImageLoad(object, coordTmp)
+                makeBinary(EOpAssign, rhsTmp2, rhsTmp1);           // rhsTmp2 = rhsTmp1
+                makeUnary(assignOp, rhsTmp2);                      // rhsTmp op
+                makeStore(object, coordTmp, rhsTmp2);              // OpImageStore(object, coordTmp, rhsTmp2)
+                return finishSequence(rhsTmp1, objDerefType);      // return rhsTmp from sequence
+            }
+                
+        default:
+            break;
+        }
+    }
+
+    if (lhs)
+        if (lValueErrorCheck(loc, op, lhs))
+            return nullptr;
+ 
+    return node;
+}
+
 void HlslParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& tokens)
 {
     if (pragmaCallback)
@@ -298,11 +568,45 @@ TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, TSymbol* s
 }
 
 //
+// Handle operator[] on any objects it applies to.  Currently:
+//    Textures
+//    Buffers
+//
+TIntermTyped* HlslParseContext::handleBracketOperator(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index)
+{
+    // handle r-value operator[] on textures and images.  l-values will be processed later.
+    if (base->getType().getBasicType() == EbtSampler && !base->isArray()) {
+        const TSampler& sampler = base->getType().getSampler();
+        if (sampler.isImage() || sampler.isTexture()) {
+            const int vecSize = 4; // TODO: handle arbitrary sizes (get from qualifier)
+            TIntermAggregate* load = new TIntermAggregate(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
+
+            load->setType(TType(sampler.type, EvqTemporary, vecSize));
+            load->setLoc(loc);
+            load->getSequence().push_back(base);
+            load->getSequence().push_back(index);
+
+            // Textures need a MIP.  First indirection is always to mip 0.  If there's another, we'll add it
+            // later.
+            if (sampler.isTexture())
+                load->getSequence().push_back(intermediate.addConstantUnion(0, loc, true));
+
+            return load;
+        }
+    }
+
+    return nullptr;
+}
+
+//
 // Handle seeing a base[index] dereference in the grammar.
 //
 TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index)
 {
-    TIntermTyped* result = nullptr;
+    TIntermTyped* result = handleBracketOperator(loc, base, index);
+
+    if (result != nullptr)
+        return result;  // it was handled as an operator[]
 
     bool flattened = false;
     int indexValue = 0;
@@ -425,10 +729,10 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
                field == "SampleLevel") {
         // If it's not a method on a sampler object, we fall through in case it is a struct member.
         if (base->getType().getBasicType() == EbtSampler) {
-            const TSampler& texType = base->getType().getSampler();
-            if (! texType.isPureSampler()) {
-                const int vecSize = texType.isShadow() ? 1 : 4;
-                return intermediate.addMethod(base, TType(texType.type, EvqTemporary, vecSize), &field, loc);
+            const TSampler& sampler = base->getType().getSampler();
+            if (! sampler.isPureSampler()) {
+                const int vecSize = sampler.isShadow() ? 1 : 4; // TODO: handle arbitrary sample return sizes
+                return intermediate.addMethod(base, TType(sampler.type, EvqTemporary, vecSize), &field, loc);
             }
         }
     }
@@ -937,6 +1241,9 @@ void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermTyped*
 // to intermediate.addAssign().
 TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op, TIntermTyped* left, TIntermTyped* right) const
 {
+    if (left == nullptr || right == nullptr)
+        return nullptr;
+
     const auto mustFlatten = [&](const TIntermTyped& node) {
         return shouldFlatten(node.getType()) && node.getAsSymbolNode() &&
                flattenMap.find(node.getAsSymbolNode()->getId()) != flattenMap.end();
@@ -1261,7 +1568,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             case Esd2D:     numDims = 2; break; // W, H
             case Esd3D:     numDims = 3; break; // W, H, D
             case EsdCube:   numDims = 2; break; // W, H (cube)
-            case EsdBuffer: numDims = 1; break; // buffers
+            case EsdBuffer: numDims = 1; break; // W (buffers)
             default:
                 assert(0 && "unhandled texture dimension");
             }
@@ -2260,12 +2567,13 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
 //
 // Returns a node of a subtree that evaluates to the return value of the function.
 //
-TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& function, TIntermAggregate& intermNode) const
+TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& function, TIntermAggregate& intermNode)
 {
     TIntermSequence& arguments = intermNode.getSequence();
     const auto needsConversion = [&](int argNum) {
         return function[argNum].type->getQualifier().isParamOutput() &&
                (*function[argNum].type != arguments[argNum]->getAsTyped()->getType() ||
+                shouldConvertLValue(arguments[argNum]) ||
                 shouldFlatten(arguments[argNum]->getAsTyped()->getType()));
     };
 
@@ -2313,7 +2621,8 @@ TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& fu
             TIntermSymbol* tempArgNode = intermediate.addSymbol(*tempArg, intermNode.getLoc());
 
             // This makes the deepest level, the member-wise copy
-            TIntermTyped* tempAssign = handleAssign(arguments[i]->getLoc(), EOpAssign, arguments[i]->getAsTyped(), tempArgNode)->getAsAggregate();
+            TIntermTyped* tempAssign = handleAssign(arguments[i]->getLoc(), EOpAssign, arguments[i]->getAsTyped(), tempArgNode);
+            tempAssign = handleLvalue(arguments[i]->getLoc(), "assign", tempAssign);
             conversionTree = intermediate.growAggregate(conversionTree, tempAssign, arguments[i]->getLoc());
 
             // replace the argument with another node for the same tempArg variable

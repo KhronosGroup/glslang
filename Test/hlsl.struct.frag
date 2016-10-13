@@ -12,7 +12,7 @@ struct myS {
 
 myS s1;
 
-struct {
+static struct {
     float4 i;
 } s2;
 

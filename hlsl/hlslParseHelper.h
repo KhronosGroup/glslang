@@ -61,6 +61,7 @@ public:
     void handlePragma(const TSourceLoc&, const TVector<TString>&);
     TIntermTyped* handleVariable(const TSourceLoc&, TSymbol* symbol,  const TString* string);
     TIntermTyped* handleBracketDereference(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
+    TIntermTyped* handleBracketOperator(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
     void checkIndex(const TSourceLoc&, const TType&, int& index);
 
     TIntermTyped* handleBinaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right);
@@ -80,7 +81,7 @@ public:
     void decomposeSampleMethods(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     TIntermTyped* handleLengthMethod(const TSourceLoc&, TFunction*, TIntermNode*);
     void addInputArgumentConversions(const TFunction&, TIntermNode*&) const;
-    TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermAggregate&) const;
+    TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermAggregate&);
     void builtInOpCheck(const TSourceLoc&, const TFunction&, TIntermOperator&);
     TFunction* handleConstructorCall(const TSourceLoc&, const TType&);
     void handleSemantic(TSourceLoc, TQualifier&, const TString& semantic);
@@ -151,6 +152,10 @@ public:
     void pushSwitchSequence(TIntermSequence* sequence) { switchSequenceStack.push_back(sequence); }
     void popSwitchSequence() { switchSequenceStack.pop_back(); }
 
+    // Apply L-value conversions.  E.g, turning a write to a RWTexture into an ImageStore.
+    TIntermTyped* handleLvalue(const TSourceLoc&, const char* op, TIntermTyped* node);
+    bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
+
 protected:
     void inheritGlobalDefaults(TQualifier& dst) const;
     TVariable* makeInternalVariable(const char* name, const TType&) const;
@@ -159,6 +164,9 @@ protected:
     TIntermNode* executeInitializer(const TSourceLoc&, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(const TSourceLoc&, const TType&, TIntermTyped* initializer);
     TOperator mapAtomicOp(const TSourceLoc& loc, TOperator op, bool isImage);
+
+    // Return true if this node requires L-value conversion (e.g, to an imageStore).
+    bool shouldConvertLValue(const TIntermNode*) const;
 
     // Array and struct flattening
     bool shouldFlatten(const TType& type) const { return shouldFlattenIO(type) || shouldFlattenUniform(type); }

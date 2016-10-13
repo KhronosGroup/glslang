@@ -113,6 +113,114 @@ void C_DECL TParseContextBase::ppWarn(const TSourceLoc& loc, const char* szReaso
     va_end(args);
 }
 
+//
+// Both test and if necessary, spit out an error, to see if the node is really
+// an l-value that can be operated on this way.
+//
+// Returns true if there was an error.
+//
+bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
+{
+    TIntermBinary* binaryNode = node->getAsBinaryNode();
+
+    if (binaryNode) {
+        switch(binaryNode->getOp()) {
+        case EOpIndexDirect:
+        case EOpIndexIndirect:     // fall through
+        case EOpIndexDirectStruct: // fall through
+        case EOpVectorSwizzle:
+            return lValueErrorCheck(loc, op, binaryNode->getLeft());
+        default:
+            break;
+        }
+        error(loc, " l-value required", op, "", "");
+
+        return true;
+    }
+
+    const char* symbol = nullptr;
+    TIntermSymbol* symNode = node->getAsSymbolNode();
+    if (symNode != nullptr)
+        symbol = symNode->getName().c_str();
+
+    const char* message = nullptr;
+    switch (node->getQualifier().storage) {
+    case EvqConst:          message = "can't modify a const";        break;
+    case EvqConstReadOnly:  message = "can't modify a const";        break;
+    case EvqUniform:        message = "can't modify a uniform";      break;
+    case EvqBuffer:
+        if (node->getQualifier().readonly)
+            message = "can't modify a readonly buffer";
+        break;
+
+    default:
+        //
+        // Type that can't be written to?
+        //
+        switch (node->getBasicType()) {
+        case EbtSampler:
+            message = "can't modify a sampler";
+            break;
+        case EbtAtomicUint:
+            message = "can't modify an atomic_uint";
+            break;
+        case EbtVoid:
+            message = "can't modify void";
+            break;
+        default:
+            break;
+        }
+    }
+
+    if (message == nullptr && binaryNode == nullptr && symNode == nullptr) {
+        error(loc, " l-value required", op, "", "");
+
+        return true;
+    }
+
+    //
+    // Everything else is okay, no error.
+    //
+    if (message == nullptr)
+        return false;
+
+    //
+    // If we get here, we have an error and a message.
+    //
+    if (symNode)
+        error(loc, " l-value required", op, "\"%s\" (%s)", symbol, message);
+    else
+        error(loc, " l-value required", op, "(%s)", message);
+
+    return true;
+}
+
+// Test for and give an error if the node can't be read from.
+void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
+{
+    if (! node)
+        return;
+
+    TIntermBinary* binaryNode = node->getAsBinaryNode();
+    if (binaryNode) {
+        switch(binaryNode->getOp()) {
+        case EOpIndexDirect:
+        case EOpIndexIndirect:
+        case EOpIndexDirectStruct:
+        case EOpVectorSwizzle:
+            rValueErrorCheck(loc, op, binaryNode->getLeft());
+        default:
+            break;
+        }
+
+        return;
+    }
+
+    TIntermSymbol* symNode = node->getAsSymbolNode();
+    if (symNode && symNode->getQualifier().writeonly)
+        error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
+}
+
 // Make a shared symbol have a non-shared version that can be edited by the current 
 // compile, such that editing its type will not change the shared version and will
 // effect all nodes sharing it.
