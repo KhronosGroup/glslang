@@ -193,6 +193,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.depthOut.frag",
         "spv.discard-dce.frag",
         "spv.doWhileLoop.frag",
+        "spv.drawParams.vert",
         "spv.earlyReturnDiscard.frag",
         "spv.flowControl.frag",
         "spv.forLoop.frag",
