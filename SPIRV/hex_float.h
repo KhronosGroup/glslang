@@ -226,12 +226,11 @@ struct HexFloatTraits<FloatProxy<Float16>> {
   static const uint_type exponent_bias = 15;
 };
 
-enum class round_direction {
-  kToZero,
-  kToNearestEven,
-  kToPositiveInfinity,
-  kToNegativeInfinity,
-  max = kToNegativeInfinity
+enum round_direction {
+  kRoundToZero,
+  kRoundToNearestEven,
+  kRoundToPositiveInfinity,
+  kRoundToNegativeInfinity
 };
 
 // Template class that houses a floating pointer number.
@@ -520,15 +519,15 @@ class HexFloat {
     // We actually have to narrow the significand here, so we have to follow the
     // rounding rules.
     switch (dir) {
-      case round_direction::kToZero:
+      case kRoundToZero:
         break;
-      case round_direction::kToPositiveInfinity:
+      case kRoundToPositiveInfinity:
         round_away_from_zero = !isNegative();
         break;
-      case round_direction::kToNegativeInfinity:
+      case kRoundToNegativeInfinity:
         round_away_from_zero = isNegative();
         break;
-      case round_direction::kToNearestEven:
+      case kRoundToNearestEven:
         // Have to round down, round bit is 0
         if ((first_rounded_bit & significand) == 0) {
           break;
@@ -623,8 +622,8 @@ class HexFloat {
     }
 
     bool round_underflow_up =
-        isNegative() ? round_dir == round_direction::kToNegativeInfinity
-                     : round_dir == round_direction::kToPositiveInfinity;
+        isNegative() ? round_dir == kRoundToNegativeInfinity
+                     : round_dir == kRoundToPositiveInfinity;
     using other_int_type = typename other_T::int_type;
     // setFromSignUnbiasedExponentAndNormalizedSignificand will
     // zero out any underflowing value (but retain the sign).
@@ -812,7 +811,7 @@ ParseNormalFloat<FloatProxy<Float16>, HexFloatTraits<FloatProxy<Float16>>>(
 
   // Then convert to 16-bit float, saturating at infinities, and
   // rounding toward zero.
-  float_val.castTo(value, round_direction::kToZero);
+  float_val.castTo(value, kRoundToZero);
 
   // Overflow on 16-bit behaves the same as for 32- and 64-bit: set the
   // fail bit and set the lowest or highest value.
