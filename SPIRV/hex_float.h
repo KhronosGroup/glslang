@@ -456,33 +456,23 @@ class HexFloat {
   // constant_number < 0? 0: constant_number
   // These convert the negative left-shifts into right shifts.
 
-  template <int_type N, typename enable = void>
-  struct negatable_left_shift {
-    static uint_type val(uint_type val) {
-      return static_cast<uint_type>(val >> -N);
-    }
-  };
+  template <typename int_type>
+  uint_type negatable_left_shift(int_type N, uint_type val)
+  {
+    if(N >= 0)
+      return val << N;
 
-  template <int_type N>
-  struct negatable_left_shift<N, typename std::enable_if<N >= 0>::type> {
-    static uint_type val(uint_type val) {
-      return static_cast<uint_type>(val << N);
-    }
-  };
+    return val >> -N;
+  }
 
-  template <int_type N, typename enable = void>
-  struct negatable_right_shift {
-    static uint_type val(uint_type val) {
-      return static_cast<uint_type>(val << -N);
-    }
-  };
+  template <typename int_type>
+  uint_type negatable_right_shift(int_type N, uint_type val)
+  {
+    if(N >= 0)
+      return val >> N;
 
-  template <int_type N>
-  struct negatable_right_shift<N, typename std::enable_if<N >= 0>::type> {
-    static uint_type val(uint_type val) {
-      return static_cast<uint_type>(val >> N);
-    }
-  };
+    return val << -N;
+  }
 
   // Returns the significand, rounded to fit in a significand in
   // other_T. This is shifted so that the most significant
@@ -499,11 +489,11 @@ class HexFloat {
     static const uint_type last_significant_bit =
         (num_throwaway_bits < 0)
             ? 0
-            : negatable_left_shift<num_throwaway_bits>::val(1u);
+            : negatable_left_shift(num_throwaway_bits, 1u);
     static const uint_type first_rounded_bit =
         (num_throwaway_bits < 1)
             ? 0
-            : negatable_left_shift<num_throwaway_bits - 1>::val(1u);
+            : negatable_left_shift(num_throwaway_bits - 1, 1u);
 
     static const uint_type throwaway_mask_bits =
         num_throwaway_bits > 0 ? num_throwaway_bits : 0;
@@ -525,7 +515,7 @@ class HexFloat {
     // do.
     if ((significand & throwaway_mask) == 0) {
       return static_cast<other_uint_type>(
-          negatable_right_shift<num_throwaway_bits>::val(significand));
+          negatable_right_shift(num_throwaway_bits, significand));
     }
 
     bool round_away_from_zero = false;
@@ -562,11 +552,11 @@ class HexFloat {
 
     if (round_away_from_zero) {
       return static_cast<other_uint_type>(
-          negatable_right_shift<num_throwaway_bits>::val(incrementSignificand(
+          negatable_right_shift(num_throwaway_bits, incrementSignificand(
               significand, last_significant_bit, carry_bit)));
     } else {
       return static_cast<other_uint_type>(
-          negatable_right_shift<num_throwaway_bits>::val(significand));
+          negatable_right_shift(num_throwaway_bits, significand));
     }
   }
 
@@ -620,9 +610,9 @@ class HexFloat {
     if (is_nan) {
       typename other_T::uint_type shifted_significand;
       shifted_significand = static_cast<typename other_T::uint_type>(
-          negatable_left_shift<
+          negatable_left_shift(
               static_cast<int_type>(other_T::num_fraction_bits) -
-              static_cast<int_type>(num_fraction_bits)>::val(significand));
+              static_cast<int_type>(num_fraction_bits), significand));
 
       // We are some sort of Nan. We try to keep the bit-pattern of the Nan
       // as close as possible. If we had to shift off bits so we are 0, then we
