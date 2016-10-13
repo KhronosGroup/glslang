@@ -666,11 +666,11 @@ void CompileAndLinkShaderFiles()
     // they are all getting linked together.)
     glslang::TWorkItem* workItem;
     while (Worklist.remove(workItem)) {
-        ShaderCompUnit compUnit = {
+        ShaderCompUnit compUnit(
             FindLanguage(workItem->name),
             workItem->name,
             ReadFileData(workItem->name.c_str())
-        };
+        );
 
         if (! compUnit.text) {
             usage();
