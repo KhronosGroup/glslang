@@ -690,10 +690,10 @@ TEST(HexFloatOperationTests, NonRounding) {
   bool carry_bit = false;
 
   spvutils::round_direction rounding[] = {
-      spvutils::round_direction::kToZero,
-      spvutils::round_direction::kToNearestEven,
-      spvutils::round_direction::kToPositiveInfinity,
-      spvutils::round_direction::kToNegativeInfinity};
+      spvutils::kRoundToZero,
+      spvutils::kRoundToNearestEven,
+      spvutils::kRoundToPositiveInfinity,
+      spvutils::kRoundToNegativeInfinity};
 
   // Everything fits, so this should be straight-forward
   for (spvutils::round_direction round : rounding) {
@@ -725,7 +725,6 @@ TEST(HexFloatOperationTests, NonRounding) {
   }
 }
 
-using RD = spvutils::round_direction;
 struct RoundSignificandCase {
   float source_float;
   std::pair<int16_t, bool> expected_results;
@@ -751,49 +750,49 @@ TEST_P(HexFloatRoundTest, RoundDownToFP16) {
 INSTANTIATE_TEST_CASE_P(F32ToF16, HexFloatRoundTest,
   ::testing::ValuesIn(std::vector<RoundSignificandCase>(
   {
-    {float_fractions({0}), std::make_pair(half_bits_set({}), false), RD::kToZero},
-    {float_fractions({0}), std::make_pair(half_bits_set({}), false), RD::kToNearestEven},
-    {float_fractions({0}), std::make_pair(half_bits_set({}), false), RD::kToPositiveInfinity},
-    {float_fractions({0}), std::make_pair(half_bits_set({}), false), RD::kToNegativeInfinity},
-    {float_fractions({0, 1}), std::make_pair(half_bits_set({0}), false), RD::kToZero},
+    {float_fractions({0}), std::make_pair(half_bits_set({}), false), spvutils::kRoundToZero},
+    {float_fractions({0}), std::make_pair(half_bits_set({}), false), spvutils::kRoundToNearestEven},
+    {float_fractions({0}), std::make_pair(half_bits_set({}), false), spvutils::kRoundToPositiveInfinity},
+    {float_fractions({0}), std::make_pair(half_bits_set({}), false), spvutils::kRoundToNegativeInfinity},
+    {float_fractions({0, 1}), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToZero},
 
-    {float_fractions({0, 1, 11}), std::make_pair(half_bits_set({0}), false), RD::kToZero},
-    {float_fractions({0, 1, 11}), std::make_pair(half_bits_set({0, 9}), false), RD::kToPositiveInfinity},
-    {float_fractions({0, 1, 11}), std::make_pair(half_bits_set({0}), false), RD::kToNegativeInfinity},
-    {float_fractions({0, 1, 11}), std::make_pair(half_bits_set({0}), false), RD::kToNearestEven},
+    {float_fractions({0, 1, 11}), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToZero},
+    {float_fractions({0, 1, 11}), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToPositiveInfinity},
+    {float_fractions({0, 1, 11}), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToNegativeInfinity},
+    {float_fractions({0, 1, 11}), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToNearestEven},
 
-    {float_fractions({0, 1, 10, 11}), std::make_pair(half_bits_set({0, 9}), false), RD::kToZero},
-    {float_fractions({0, 1, 10, 11}), std::make_pair(half_bits_set({0, 8}), false), RD::kToPositiveInfinity},
-    {float_fractions({0, 1, 10, 11}), std::make_pair(half_bits_set({0, 9}), false), RD::kToNegativeInfinity},
-    {float_fractions({0, 1, 10, 11}), std::make_pair(half_bits_set({0, 8}), false), RD::kToNearestEven},
+    {float_fractions({0, 1, 10, 11}), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToZero},
+    {float_fractions({0, 1, 10, 11}), std::make_pair(half_bits_set({0, 8}), false), spvutils::kRoundToPositiveInfinity},
+    {float_fractions({0, 1, 10, 11}), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToNegativeInfinity},
+    {float_fractions({0, 1, 10, 11}), std::make_pair(half_bits_set({0, 8}), false), spvutils::kRoundToNearestEven},
 
-    {float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0}), false), RD::kToZero},
-    {float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0, 9}), false), RD::kToPositiveInfinity},
-    {float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0}), false), RD::kToNegativeInfinity},
-    {float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0, 9}), false), RD::kToNearestEven},
+    {float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToZero},
+    {float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToPositiveInfinity},
+    {float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToNegativeInfinity},
+    {float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToNearestEven},
 
-    {-float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0}), false), RD::kToZero},
-    {-float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0}), false), RD::kToPositiveInfinity},
-    {-float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0, 9}), false), RD::kToNegativeInfinity},
-    {-float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0, 9}), false), RD::kToNearestEven},
+    {-float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToZero},
+    {-float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToPositiveInfinity},
+    {-float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToNegativeInfinity},
+    {-float_fractions({0, 1, 11, 12}), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToNearestEven},
 
-    {float_fractions({0, 1, 11, 22}), std::make_pair(half_bits_set({0}), false), RD::kToZero},
-    {float_fractions({0, 1, 11, 22}), std::make_pair(half_bits_set({0, 9}), false), RD::kToPositiveInfinity},
-    {float_fractions({0, 1, 11, 22}), std::make_pair(half_bits_set({0}), false), RD::kToNegativeInfinity},
-    {float_fractions({0, 1, 11, 22}), std::make_pair(half_bits_set({0, 9}), false), RD::kToNearestEven},
+    {float_fractions({0, 1, 11, 22}), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToZero},
+    {float_fractions({0, 1, 11, 22}), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToPositiveInfinity},
+    {float_fractions({0, 1, 11, 22}), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToNegativeInfinity},
+    {float_fractions({0, 1, 11, 22}), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToNearestEven},
 
     // Carries
-    {float_fractions({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}), std::make_pair(half_bits_set({0, 1, 2, 3, 4, 5, 6, 7, 8, 9}), false), RD::kToZero},
-    {float_fractions({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}), std::make_pair(half_bits_set({}), true), RD::kToPositiveInfinity},
-    {float_fractions({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}), std::make_pair(half_bits_set({0, 1, 2, 3, 4, 5, 6, 7, 8, 9}), false), RD::kToNegativeInfinity},
-    {float_fractions({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}), std::make_pair(half_bits_set({}), true), RD::kToNearestEven},
+    {float_fractions({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}), std::make_pair(half_bits_set({0, 1, 2, 3, 4, 5, 6, 7, 8, 9}), false), spvutils::kRoundToZero},
+    {float_fractions({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}), std::make_pair(half_bits_set({}), true), spvutils::kRoundToPositiveInfinity},
+    {float_fractions({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}), std::make_pair(half_bits_set({0, 1, 2, 3, 4, 5, 6, 7, 8, 9}), false), spvutils::kRoundToNegativeInfinity},
+    {float_fractions({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}), std::make_pair(half_bits_set({}), true), spvutils::kRoundToNearestEven},
 
     // Cases where original number was denorm. Note: this should have no effect
     // the number is pre-normalized.
-    {static_cast<float>(ldexp(float_fractions({0, 1, 11, 13}), -128)), std::make_pair(half_bits_set({0}), false), RD::kToZero},
-    {static_cast<float>(ldexp(float_fractions({0, 1, 11, 13}), -129)), std::make_pair(half_bits_set({0, 9}), false), RD::kToPositiveInfinity},
-    {static_cast<float>(ldexp(float_fractions({0, 1, 11, 13}), -131)), std::make_pair(half_bits_set({0}), false), RD::kToNegativeInfinity},
-    {static_cast<float>(ldexp(float_fractions({0, 1, 11, 13}), -130)), std::make_pair(half_bits_set({0, 9}), false), RD::kToNearestEven},
+    {static_cast<float>(ldexp(float_fractions({0, 1, 11, 13}), -128)), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToZero},
+    {static_cast<float>(ldexp(float_fractions({0, 1, 11, 13}), -129)), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToPositiveInfinity},
+    {static_cast<float>(ldexp(float_fractions({0, 1, 11, 13}), -131)), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToNegativeInfinity},
+    {static_cast<float>(ldexp(float_fractions({0, 1, 11, 13}), -130)), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToNearestEven},
   })),);
 // clang-format on
 
@@ -810,10 +809,10 @@ TEST_P(HexFloatRoundUpSignificandTest, Widening) {
   bool carry_bit = false;
 
   spvutils::round_direction rounding[] = {
-      spvutils::round_direction::kToZero,
-      spvutils::round_direction::kToNearestEven,
-      spvutils::round_direction::kToPositiveInfinity,
-      spvutils::round_direction::kToNegativeInfinity};
+      spvutils::kRoundToZero,
+      spvutils::kRoundToNearestEven,
+      spvutils::kRoundToPositiveInfinity,
+      spvutils::kRoundToNegativeInfinity};
 
   // Everything fits, so everything should just be bit-shifts.
   for (spvutils::round_direction round : rounding) {
@@ -852,10 +851,10 @@ std::string get_round_text(spvutils::round_direction direction) {
     return #round_direction
 
   switch (direction) {
-    CASE(spvutils::round_direction::kToZero);
-    CASE(spvutils::round_direction::kToPositiveInfinity);
-    CASE(spvutils::round_direction::kToNegativeInfinity);
-    CASE(spvutils::round_direction::kToNearestEven);
+    CASE(spvutils::kRoundToZero);
+    CASE(spvutils::kRoundToPositiveInfinity);
+    CASE(spvutils::kRoundToNegativeInfinity);
+    CASE(spvutils::kRoundToNearestEven);
   }
 #undef CASE
   return "";
@@ -884,35 +883,35 @@ INSTANTIATE_TEST_CASE_P(F32ToF16, HexFloatFP32To16Tests,
   ::testing::ValuesIn(std::vector<DownCastTest>(
   {
     // Exactly representable as half.
-    {0.f, 0x0, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {-0.f, 0x8000, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {1.0f, 0x3C00, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {-1.0f, 0xBC00, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
+    {0.f, 0x0, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {-0.f, 0x8000, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {1.0f, 0x3C00, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {-1.0f, 0xBC00, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
 
-    {float_fractions({0, 1, 10}) , 0x3E01, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {-float_fractions({0, 1, 10}) , 0xBE01, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {static_cast<float>(ldexp(float_fractions({0, 1, 10}), 3)), 0x4A01, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {static_cast<float>(-ldexp(float_fractions({0, 1, 10}), 3)), 0xCA01, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
+    {float_fractions({0, 1, 10}) , 0x3E01, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {-float_fractions({0, 1, 10}) , 0xBE01, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {static_cast<float>(ldexp(float_fractions({0, 1, 10}), 3)), 0x4A01, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {static_cast<float>(-ldexp(float_fractions({0, 1, 10}), 3)), 0xCA01, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
 
 
     // Underflow
-    {static_cast<float>(ldexp(1.0f, -25)), 0x0, {RD::kToZero, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {static_cast<float>(ldexp(1.0f, -25)), 0x1, {RD::kToPositiveInfinity}},
-    {static_cast<float>(-ldexp(1.0f, -25)), 0x8000, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNearestEven}},
-    {static_cast<float>(-ldexp(1.0f, -25)), 0x8001, {RD::kToNegativeInfinity}},
-    {static_cast<float>(ldexp(1.0f, -24)), 0x1, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
+    {static_cast<float>(ldexp(1.0f, -25)), 0x0, {spvutils::kRoundToZero, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {static_cast<float>(ldexp(1.0f, -25)), 0x1, {spvutils::kRoundToPositiveInfinity}},
+    {static_cast<float>(-ldexp(1.0f, -25)), 0x8000, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNearestEven}},
+    {static_cast<float>(-ldexp(1.0f, -25)), 0x8001, {spvutils::kRoundToNegativeInfinity}},
+    {static_cast<float>(ldexp(1.0f, -24)), 0x1, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
 
     // Overflow
-    {static_cast<float>(ldexp(1.0f, 16)), positive_infinity, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {static_cast<float>(ldexp(1.0f, 18)), positive_infinity, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {static_cast<float>(ldexp(1.3f, 16)), positive_infinity, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {static_cast<float>(-ldexp(1.0f, 16)), negative_infinity, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {static_cast<float>(-ldexp(1.0f, 18)), negative_infinity, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {static_cast<float>(-ldexp(1.3f, 16)), negative_infinity, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
+    {static_cast<float>(ldexp(1.0f, 16)), positive_infinity, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {static_cast<float>(ldexp(1.0f, 18)), positive_infinity, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {static_cast<float>(ldexp(1.3f, 16)), positive_infinity, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {static_cast<float>(-ldexp(1.0f, 16)), negative_infinity, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {static_cast<float>(-ldexp(1.0f, 18)), negative_infinity, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {static_cast<float>(-ldexp(1.3f, 16)), negative_infinity, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
 
     // Transfer of Infinities
-    {std::numeric_limits<float>::infinity(), positive_infinity, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
-    {-std::numeric_limits<float>::infinity(), negative_infinity, {RD::kToZero, RD::kToPositiveInfinity, RD::kToNegativeInfinity, RD::kToNearestEven}},
+    {std::numeric_limits<float>::infinity(), positive_infinity, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
+    {-std::numeric_limits<float>::infinity(), negative_infinity, {spvutils::kRoundToZero, spvutils::kRoundToPositiveInfinity, spvutils::kRoundToNegativeInfinity, spvutils::kRoundToNearestEven}},
 
     // Nans are below because we cannot test for equality.
   })),);
@@ -929,10 +928,10 @@ TEST_P(HexFloatFP16To32Tests, WideningCasts) {
   HF16 f(GetParam().source_half);
 
   spvutils::round_direction rounding[] = {
-      spvutils::round_direction::kToZero,
-      spvutils::round_direction::kToNearestEven,
-      spvutils::round_direction::kToPositiveInfinity,
-      spvutils::round_direction::kToNegativeInfinity};
+      spvutils::kRoundToZero,
+      spvutils::kRoundToNearestEven,
+      spvutils::kRoundToPositiveInfinity,
+      spvutils::kRoundToNegativeInfinity};
 
   // Everything fits, so everything should just be bit-shifts.
   for (spvutils::round_direction round : rounding) {
@@ -972,10 +971,10 @@ TEST(HexFloatOperationTests, NanTests) {
   using HF = spvutils::HexFloat<spvutils::FloatProxy<float>>;
   using HF16 = spvutils::HexFloat<spvutils::FloatProxy<spvutils::Float16>>;
   spvutils::round_direction rounding[] = {
-      spvutils::round_direction::kToZero,
-      spvutils::round_direction::kToNearestEven,
-      spvutils::round_direction::kToPositiveInfinity,
-      spvutils::round_direction::kToNegativeInfinity};
+      spvutils::kRoundToZero,
+      spvutils::kRoundToNearestEven,
+      spvutils::kRoundToPositiveInfinity,
+      spvutils::kRoundToNegativeInfinity};
 
   // Everything fits, so everything should just be bit-shifts.
   for (spvutils::round_direction round : rounding) {
