@@ -43,7 +43,7 @@ namespace spvutils {
 class Float16 {
  public:
   Float16(uint16_t v) : val(v) {}
-  Float16() = default;
+  Float16() {}
   static bool isNan(const Float16& val) {
     return ((val.val & 0x7C00) == 0x7C00) && ((val.val & 0x3FF) != 0);
   }
@@ -118,7 +118,7 @@ class FloatProxy {
 
   // Since this is to act similar to the normal floats,
   // do not initialize the data by default.
-  FloatProxy() = default;
+  FloatProxy() {}
 
   // Intentionally non-explicit. This is a proxy type so
   // implicit conversions allow us to use it more transparently.
