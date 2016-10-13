@@ -757,7 +757,7 @@ inline bool RejectParseDueToLeadingSign(std::istream& is, bool negate_value,
     if (next_char == '-' || next_char == '+') {
       // Fail the parse.  Emulate standard behaviour by setting the value to
       // the zero value, and set the fail bit on the stream.
-      value = HexFloat<T, Traits>(typename HexFloat<T, Traits>::uint_type{0});
+      value = HexFloat<T, Traits>(typename HexFloat<T, Traits>::uint_type(0));
       is.setstate(std::ios_base::failbit);
       return true;
     }
@@ -789,7 +789,7 @@ inline std::istream& ParseNormalFloat(std::istream& is, bool negate_value,
   value.set_value(val);
   // In the failure case, map -0.0 to 0.0.
   if (is.fail() && value.getUnsignedBits() == 0u) {
-    value = HexFloat<T, Traits>(typename HexFloat<T, Traits>::uint_type{0});
+    value = HexFloat<T, Traits>(typename HexFloat<T, Traits>::uint_type(0));
   }
   if (val.isInfinity()) {
     // Fail the parse.  Emulate standard behaviour by setting the value to
