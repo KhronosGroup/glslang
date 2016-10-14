@@ -114,6 +114,7 @@ public:
     void dumpSpv(std::vector<unsigned int>& out);
 
 protected:
+    spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qualifier);
     spv::Decoration TranslateAuxiliaryStorageDecoration(const glslang::TQualifier& qualifier);
     spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool memberDeclaration);
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
@@ -381,7 +382,7 @@ spv::Decoration TranslateLayoutDecoration(const glslang::TType& type, glslang::T
 // Translate glslang type to SPIR-V interpolation decorations.
 // Returns spv::DecorationMax when no decoration
 // should be applied.
-spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qualifier)
+spv::Decoration TGlslangToSpvTraverser::TranslateInterpolationDecoration(const glslang::TQualifier& qualifier)
 {
     if (qualifier.smooth)
         // Smooth decoration doesn't exist in SPIR-V 1.0
@@ -391,8 +392,10 @@ spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qual
     else if (qualifier.flat)
         return spv::DecorationFlat;
 #ifdef AMD_EXTENSIONS
-    else if (qualifier.explicitInterp)
+    else if (qualifier.explicitInterp) {
+        builder.addExtension(spv::E_SPV_AMD_shader_explicit_vertex_parameter);
         return spv::DecorationExplicitInterpAMD;
+    }
 #endif
     else
         return spv::DecorationMax;
@@ -572,13 +575,33 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         return spv::BuiltInSubgroupLtMaskKHR;
 
 #ifdef AMD_EXTENSIONS
-    case glslang::EbvBaryCoordNoPersp:          return spv::BuiltInBaryCoordNoPerspAMD;
-    case glslang::EbvBaryCoordNoPerspCentroid:  return spv::BuiltInBaryCoordNoPerspCentroidAMD;
-    case glslang::EbvBaryCoordNoPerspSample:    return spv::BuiltInBaryCoordNoPerspSampleAMD;
-    case glslang::EbvBaryCoordSmooth:           return spv::BuiltInBaryCoordSmoothAMD;
-    case glslang::EbvBaryCoordSmoothCentroid:   return spv::BuiltInBaryCoordSmoothCentroidAMD;
-    case glslang::EbvBaryCoordSmoothSample:     return spv::BuiltInBaryCoordSmoothSampleAMD;
-    case glslang::EbvBaryCoordPullModel:        return spv::BuiltInBaryCoordPullModelAMD;
+    case glslang::EbvBaryCoordNoPersp:
+        builder.addExtension(spv::E_SPV_AMD_shader_explicit_vertex_parameter);
+        return spv::BuiltInBaryCoordNoPerspAMD;
+
+    case glslang::EbvBaryCoordNoPerspCentroid:
+        builder.addExtension(spv::E_SPV_AMD_shader_explicit_vertex_parameter);
+        return spv::BuiltInBaryCoordNoPerspCentroidAMD;
+
+    case glslang::EbvBaryCoordNoPerspSample:
+        builder.addExtension(spv::E_SPV_AMD_shader_explicit_vertex_parameter);
+        return spv::BuiltInBaryCoordNoPerspSampleAMD;
+
+    case glslang::EbvBaryCoordSmooth:
+        builder.addExtension(spv::E_SPV_AMD_shader_explicit_vertex_parameter);
+        return spv::BuiltInBaryCoordSmoothAMD;
+
+    case glslang::EbvBaryCoordSmoothCentroid:
+        builder.addExtension(spv::E_SPV_AMD_shader_explicit_vertex_parameter);
+        return spv::BuiltInBaryCoordSmoothCentroidAMD;
+
+    case glslang::EbvBaryCoordSmoothSample:
+        builder.addExtension(spv::E_SPV_AMD_shader_explicit_vertex_parameter);
+        return spv::BuiltInBaryCoordSmoothSampleAMD;
+
+    case glslang::EbvBaryCoordPullModel:
+        builder.addExtension(spv::E_SPV_AMD_shader_explicit_vertex_parameter);
+        return spv::BuiltInBaryCoordPullModelAMD;
 #endif
     default:                               return spv::BuiltInMax;
     }
@@ -4110,6 +4133,10 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
         builder.addCapability(spv::CapabilitySubgroupBallotKHR);
     } else {
         builder.addCapability(spv::CapabilityGroups);
+        if (op == glslang::EOpMinInvocationsNonUniform ||
+            op == glslang::EOpMaxInvocationsNonUniform ||
+            op == glslang::EOpAddInvocationsNonUniform)
+            builder.addExtension(spv::E_SPV_AMD_shader_ballot);
 
         spvGroupOperands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
 #ifdef AMD_EXTENSIONS
