@@ -8,30 +8,33 @@ gl_FragCoord origin is upper left
 0:28      Sequence
 0:28        move second child to first child (temp float)
 0:28          'r00' (temp float)
-0:28          textureFetch (temp float)
-0:28            'g_tTexbfs' (layout(r32f ) uniform samplerBuffer)
-0:28            c1: direct index for structure (layout(offset=0 ) uniform int)
-0:28              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
-0:28              Constant:
-0:28                0 (const uint)
+0:28          Construct float (temp float)
+0:?             textureFetch (temp 4-component vector of float)
+0:28              'g_tTexbfs' (layout(r32f ) uniform samplerBuffer)
+0:28              c1: direct index for structure (layout(offset=0 ) uniform int)
+0:28                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:28                Constant:
+0:28                  0 (const uint)
 0:29      Sequence
 0:29        move second child to first child (temp int)
 0:29          'r01' (temp int)
-0:29          textureFetch (temp int)
-0:29            'g_tTexbis' (layout(r32i ) uniform isamplerBuffer)
-0:29            c1: direct index for structure (layout(offset=0 ) uniform int)
-0:29              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
-0:29              Constant:
-0:29                0 (const uint)
+0:29          Construct int (temp int)
+0:?             textureFetch (temp 4-component vector of int)
+0:29              'g_tTexbis' (layout(r32i ) uniform isamplerBuffer)
+0:29              c1: direct index for structure (layout(offset=0 ) uniform int)
+0:29                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:29                Constant:
+0:29                  0 (const uint)
 0:30      Sequence
 0:30        move second child to first child (temp uint)
 0:30          'r02' (temp uint)
-0:30          textureFetch (temp uint)
-0:30            'g_tTexbus' (layout(r32ui ) uniform usamplerBuffer)
-0:30            c1: direct index for structure (layout(offset=0 ) uniform int)
-0:30              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
-0:30              Constant:
-0:30                0 (const uint)
+0:30          Construct uint (temp uint)
+0:?             textureFetch (temp 4-component vector of uint)
+0:30              'g_tTexbus' (layout(r32ui ) uniform usamplerBuffer)
+0:30              c1: direct index for structure (layout(offset=0 ) uniform int)
+0:30                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:30                Constant:
+0:30                  0 (const uint)
 0:34      move second child to first child (temp 4-component vector of float)
 0:34        Color: direct index for structure (temp 4-component vector of float)
 0:34          'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
@@ -86,30 +89,33 @@ gl_FragCoord origin is upper left
 0:28      Sequence
 0:28        move second child to first child (temp float)
 0:28          'r00' (temp float)
-0:28          textureFetch (temp float)
-0:28            'g_tTexbfs' (layout(r32f ) uniform samplerBuffer)
-0:28            c1: direct index for structure (layout(offset=0 ) uniform int)
-0:28              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
-0:28              Constant:
-0:28                0 (const uint)
+0:28          Construct float (temp float)
+0:?             textureFetch (temp 4-component vector of float)
+0:28              'g_tTexbfs' (layout(r32f ) uniform samplerBuffer)
+0:28              c1: direct index for structure (layout(offset=0 ) uniform int)
+0:28                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:28                Constant:
+0:28                  0 (const uint)
 0:29      Sequence
 0:29        move second child to first child (temp int)
 0:29          'r01' (temp int)
-0:29          textureFetch (temp int)
-0:29            'g_tTexbis' (layout(r32i ) uniform isamplerBuffer)
-0:29            c1: direct index for structure (layout(offset=0 ) uniform int)
-0:29              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
-0:29              Constant:
-0:29                0 (const uint)
+0:29          Construct int (temp int)
+0:?             textureFetch (temp 4-component vector of int)
+0:29              'g_tTexbis' (layout(r32i ) uniform isamplerBuffer)
+0:29              c1: direct index for structure (layout(offset=0 ) uniform int)
+0:29                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:29                Constant:
+0:29                  0 (const uint)
 0:30      Sequence
 0:30        move second child to first child (temp uint)
 0:30          'r02' (temp uint)
-0:30          textureFetch (temp uint)
-0:30            'g_tTexbus' (layout(r32ui ) uniform usamplerBuffer)
-0:30            c1: direct index for structure (layout(offset=0 ) uniform int)
-0:30              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
-0:30              Constant:
-0:30                0 (const uint)
+0:30          Construct uint (temp uint)
+0:?             textureFetch (temp 4-component vector of uint)
+0:30              'g_tTexbus' (layout(r32ui ) uniform usamplerBuffer)
+0:30              c1: direct index for structure (layout(offset=0 ) uniform int)
+0:30                'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
+0:30                Constant:
+0:30                  0 (const uint)
 0:34      move second child to first child (temp 4-component vector of float)
 0:34        Color: direct index for structure (temp 4-component vector of float)
 0:34          'psout' (temp structure{temp 4-component vector of float Color, temp float Depth})
@@ -153,13 +159,13 @@ gl_FragCoord origin is upper left
 
 // Module Version 10000
 // Generated by (magic number): 80001
-// Id's are bound by 70
+// Id's are bound by 74
 
                               Capability Shader
                               Capability SampledBuffer
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main" 61 65
+                              EntryPoint Fragment 4  "main" 65 69
                               ExecutionMode 4 OriginUpperLeft
                               Name 4  "main"
                               Name 8  "r00"
@@ -174,17 +180,17 @@ gl_FragCoord origin is upper left
                               MemberName 18($Global) 6  "o3"
                               MemberName 18($Global) 7  "o4"
                               Name 20  ""
-                              Name 28  "r01"
-                              Name 32  "g_tTexbis"
-                              Name 40  "r02"
-                              Name 44  "g_tTexbus"
-                              Name 51  "PS_OUTPUT"
-                              MemberName 51(PS_OUTPUT) 0  "Color"
-                              MemberName 51(PS_OUTPUT) 1  "Depth"
-                              Name 53  "psout"
-                              Name 61  "Color"
-                              Name 65  "Depth"
-                              Name 69  "g_tTexbfs_test"
+                              Name 30  "r01"
+                              Name 34  "g_tTexbis"
+                              Name 43  "r02"
+                              Name 47  "g_tTexbus"
+                              Name 55  "PS_OUTPUT"
+                              MemberName 55(PS_OUTPUT) 0  "Color"
+                              MemberName 55(PS_OUTPUT) 1  "Depth"
+                              Name 57  "psout"
+                              Name 65  "Color"
+                              Name 69  "Depth"
+                              Name 73  "g_tTexbfs_test"
                               Decorate 12(g_tTexbfs) DescriptorSet 0
                               MemberDecorate 18($Global) 0 Offset 0
                               MemberDecorate 18($Global) 1 Offset 8
@@ -196,12 +202,12 @@ gl_FragCoord origin is upper left
                               MemberDecorate 18($Global) 7 Offset 80
                               Decorate 18($Global) Block
                               Decorate 20 DescriptorSet 0
-                              Decorate 32(g_tTexbis) DescriptorSet 0
-                              Decorate 44(g_tTexbus) DescriptorSet 0
-                              Decorate 61(Color) Location 0
-                              Decorate 65(Depth) BuiltIn FragDepth
-                              Decorate 69(g_tTexbfs_test) DescriptorSet 0
-                              Decorate 69(g_tTexbfs_test) Binding 0
+                              Decorate 34(g_tTexbis) DescriptorSet 0
+                              Decorate 47(g_tTexbus) DescriptorSet 0
+                              Decorate 65(Color) Location 0
+                              Decorate 69(Depth) BuiltIn FragDepth
+                              Decorate 73(g_tTexbfs_test) DescriptorSet 0
+                              Decorate 73(g_tTexbfs_test) Binding 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -219,62 +225,66 @@ gl_FragCoord origin is upper left
               20:     19(ptr) Variable Uniform
               21:     14(int) Constant 0
               22:             TypePointer Uniform 14(int)
-              27:             TypePointer Function 14(int)
-              29:             TypeImage 14(int) Buffer sampled format:R32i
-              30:             TypeSampledImage 29
-              31:             TypePointer UniformConstant 30
-   32(g_tTexbis):     31(ptr) Variable UniformConstant
-              38:             TypeInt 32 0
-              39:             TypePointer Function 38(int)
-              41:             TypeImage 38(int) Buffer sampled format:R32ui
-              42:             TypeSampledImage 41
-              43:             TypePointer UniformConstant 42
-   44(g_tTexbus):     43(ptr) Variable UniformConstant
-              50:             TypeVector 6(float) 4
-   51(PS_OUTPUT):             TypeStruct 50(fvec4) 6(float)
-              52:             TypePointer Function 51(PS_OUTPUT)
-              54:    6(float) Constant 1065353216
-              55:   50(fvec4) ConstantComposite 54 54 54 54
-              56:             TypePointer Function 50(fvec4)
-              58:     14(int) Constant 1
-              60:             TypePointer Output 50(fvec4)
-       61(Color):     60(ptr) Variable Output
-              64:             TypePointer Output 6(float)
-       65(Depth):     64(ptr) Variable Output
-69(g_tTexbfs_test):     11(ptr) Variable UniformConstant
+              26:             TypeVector 6(float) 4
+              29:             TypePointer Function 14(int)
+              31:             TypeImage 14(int) Buffer sampled format:R32i
+              32:             TypeSampledImage 31
+              33:             TypePointer UniformConstant 32
+   34(g_tTexbis):     33(ptr) Variable UniformConstant
+              41:             TypeInt 32 0
+              42:             TypePointer Function 41(int)
+              44:             TypeImage 41(int) Buffer sampled format:R32ui
+              45:             TypeSampledImage 44
+              46:             TypePointer UniformConstant 45
+   47(g_tTexbus):     46(ptr) Variable UniformConstant
+              52:             TypeVector 41(int) 4
+   55(PS_OUTPUT):             TypeStruct 26(fvec4) 6(float)
+              56:             TypePointer Function 55(PS_OUTPUT)
+              58:    6(float) Constant 1065353216
+              59:   26(fvec4) ConstantComposite 58 58 58 58
+              60:             TypePointer Function 26(fvec4)
+              62:     14(int) Constant 1
+              64:             TypePointer Output 26(fvec4)
+       65(Color):     64(ptr) Variable Output
+              68:             TypePointer Output 6(float)
+       69(Depth):     68(ptr) Variable Output
+73(g_tTexbfs_test):     11(ptr) Variable UniformConstant
          4(main):           2 Function None 3
                5:             Label
           8(r00):      7(ptr) Variable Function
-         28(r01):     27(ptr) Variable Function
-         40(r02):     39(ptr) Variable Function
-       53(psout):     52(ptr) Variable Function
+         30(r01):     29(ptr) Variable Function
+         43(r02):     42(ptr) Variable Function
+       57(psout):     56(ptr) Variable Function
               13:          10 Load 12(g_tTexbfs)
               23:     22(ptr) AccessChain 20 21
               24:     14(int) Load 23
               25:           9 Image 13
-              26:    6(float) ImageFetch 25 24
-                              Store 8(r00) 26
-              33:          30 Load 32(g_tTexbis)
-              34:     22(ptr) AccessChain 20 21
-              35:     14(int) Load 34
-              36:          29 Image 33
-              37:     14(int) ImageFetch 36 35
-                              Store 28(r01) 37
-              45:          42 Load 44(g_tTexbus)
-              46:     22(ptr) AccessChain 20 21
-              47:     14(int) Load 46
-              48:          41 Image 45
-              49:     38(int) ImageFetch 48 47
-                              Store 40(r02) 49
-              57:     56(ptr) AccessChain 53(psout) 21
-                              Store 57 55
-              59:      7(ptr) AccessChain 53(psout) 58
-                              Store 59 54
-              62:     56(ptr) AccessChain 53(psout) 21
-              63:   50(fvec4) Load 62
-                              Store 61(Color) 63
-              66:      7(ptr) AccessChain 53(psout) 58
-              67:    6(float) Load 66
-                              Store 65(Depth) 67
+              27:   26(fvec4) ImageFetch 25 24
+              28:    6(float) CompositeExtract 27 0
+                              Store 8(r00) 28
+              35:          32 Load 34(g_tTexbis)
+              36:     22(ptr) AccessChain 20 21
+              37:     14(int) Load 36
+              38:          31 Image 35
+              39:   17(ivec4) ImageFetch 38 37
+              40:     14(int) CompositeExtract 39 0
+                              Store 30(r01) 40
+              48:          45 Load 47(g_tTexbus)
+              49:     22(ptr) AccessChain 20 21
+              50:     14(int) Load 49
+              51:          44 Image 48
+              53:   52(ivec4) ImageFetch 51 50
+              54:     41(int) CompositeExtract 53 0
+                              Store 43(r02) 54
+              61:     60(ptr) AccessChain 57(psout) 21
+                              Store 61 59
+              63:      7(ptr) AccessChain 57(psout) 62
+                              Store 63 58
+              66:     60(ptr) AccessChain 57(psout) 21
+              67:   26(fvec4) Load 66
+                              Store 65(Color) 67
+              70:      7(ptr) AccessChain 57(psout) 62
+              71:    6(float) Load 70
+                              Store 69(Depth) 71
                               Return
                               FunctionEnd

@@ -78,6 +78,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
     bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
     bool   external : 1;  // GL_OES_EGL_image_external
+    unsigned int vectorSize : 3;  // return vector size.  TODO: support arbitrary types.
 
     bool isImage()       const { return image && dim != EsdSubpass; }
     bool isSubpass()     const { return dim == EsdSubpass; }
@@ -99,6 +100,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         combined = false;
         sampler = false;
         external = false;
+        vectorSize = 4;
     }
 
     // make a combined sampler and texture
@@ -164,7 +166,8 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
               image == right.image &&
            combined == right.combined &&
             sampler == right.sampler &&
-           external == right.external;
+           external == right.external &&
+         vectorSize == right.vectorSize;
     }
 
     bool operator!=(const TSampler& right) const
@@ -821,53 +824,6 @@ public:
         case ElfR16ui:        return "r16ui";
         case ElfR8ui:         return "r8ui";
         default:              return "none";
-        }
-    }
-    static int getLayoutComponentCount(TLayoutFormat f)
-    {
-        switch (f) {
-        case ElfRgba32f:      return 4;
-        case ElfRgba16f:      return 4;
-        case ElfRg32f:        return 2;
-        case ElfRg16f:        return 2;
-        case ElfR11fG11fB10f: return 3;
-        case ElfR32f:         return 1;
-        case ElfR16f:         return 1;
-        case ElfRgba16:       return 4;
-        case ElfRgb10A2:      return 4;
-        case ElfRgba8:        return 4;
-        case ElfRg16:         return 2;
-        case ElfRg8:          return 2;
-        case ElfR16:          return 1;
-        case ElfR8:           return 1;
-        case ElfRgba16Snorm:  return 4;
-        case ElfRgba8Snorm:   return 4;
-        case ElfRg16Snorm:    return 2;
-        case ElfRg8Snorm:     return 2;
-        case ElfR16Snorm:     return 1;
-        case ElfR8Snorm:      return 1;
-
-        case ElfRgba32i:      return 4;
-        case ElfRgba16i:      return 4;
-        case ElfRgba8i:       return 4;
-        case ElfRg32i:        return 2;
-        case ElfRg16i:        return 2;
-        case ElfRg8i:         return 2;
-        case ElfR32i:         return 1;
-        case ElfR16i:         return 1;
-        case ElfR8i:          return 1;
-
-        case ElfRgba32ui:     return 4;
-        case ElfRgba16ui:     return 4;
-        case ElfRgba8ui:      return 4;
-        case ElfRg32ui:       return 2;
-        case ElfRg16ui:       return 2;
-        case ElfRgb10a2ui:    return 4;
-        case ElfRg8ui:        return 2;
-        case ElfR32ui:        return 1;
-        case ElfR16ui:        return 1;
-        case ElfR8ui:         return 1;
-        default:              return 4;
         }
     }
     static const char* getLayoutDepthString(TLayoutDepth d)

@@ -907,12 +907,6 @@ bool HlslGrammar::acceptTextureType(TType& type)
             return false;
         }
 
-        // if (txType.getVectorSize() != 1 && txType.getVectorSize() != 4 && !image) {
-        //     // TODO: handle vec2/3 types
-        //     expected("vector size not yet supported in texture type");
-        //     return false;
-        // }
-
         if (ms && acceptTokenClass(EHTokComma)) {
             // read sample count for multisample types, if given
             if (! peekTokenClass(EHTokIntConstant)) {
@@ -957,6 +951,9 @@ bool HlslGrammar::acceptTextureType(TType& type)
             sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms);
         }
     }
+
+    // Remember the declared vector size.
+    sampler.vectorSize = txType.getVectorSize();
     
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));
     type.getQualifier().layoutFormat = format;

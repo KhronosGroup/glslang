@@ -154,15 +154,15 @@ TLayoutFormat HlslParseContext::getLayoutFromTxType(const TSourceLoc& loc, const
 {
     const int components = txType.getVectorSize();
 
-    const auto select = [&](TLayoutFormat v1, TLayoutFormat v2, TLayoutFormat v4) {
+    const auto selectFormat = [&components](TLayoutFormat v1, TLayoutFormat v2, TLayoutFormat v4) {
         return components == 1 ? v1 :
                components == 2 ? v2 : v4;
     };
 
     switch (txType.getBasicType()) {
-    case EbtFloat: return select(ElfR32f,  ElfRg32f,  ElfRgba32f);
-    case EbtInt:   return select(ElfR32i,  ElfRg32i,  ElfRgba32i);
-    case EbtUint:  return select(ElfR32ui, ElfRg32ui, ElfRgba32ui);
+    case EbtFloat: return selectFormat(ElfR32f,  ElfRg32f,  ElfRgba32f);
+    case EbtInt:   return selectFormat(ElfR32i,  ElfRg32i,  ElfRgba32i);
+    case EbtUint:  return selectFormat(ElfR32ui, ElfRg32ui, ElfRgba32ui);
     default:
         error(loc, "unknown basic type in image format", "", "");
         return ElfNone;
@@ -286,6 +286,8 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     TIntermTyped* object = lhsAsAggregate->getSequence()[0]->getAsTyped();
     TIntermTyped* coord  = lhsAsAggregate->getSequence()[1]->getAsTyped();
 
+    const TSampler& texSampler = object->getType().getSampler();
+
     const TLayoutFormat fmt = object->getType().getQualifier().layoutFormat;
 
     // We only handle this subset of the possible formats.
@@ -293,8 +295,7 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
            fmt == ElfRg32f   || fmt == ElfRg32i   || fmt == ElfRg32ui   ||
            fmt == ElfR32f    || fmt == ElfR32i    || fmt == ElfR32ui);
 
-    const TType objDerefType(object->getType().getSampler().type, EvqTemporary, 
-                             TQualifier::getLayoutComponentCount(fmt));
+    const TType objDerefType(texSampler.type, EvqTemporary, texSampler.vectorSize);
 
     if (nodeAsBinary) {
         TIntermTyped* rhs = nodeAsBinary->getRight();
@@ -604,10 +605,9 @@ TIntermTyped* HlslParseContext::handleBracketOperator(const TSourceLoc& loc, TIn
     if (base->getType().getBasicType() == EbtSampler && !base->isArray()) {
         const TSampler& sampler = base->getType().getSampler();
         if (sampler.isImage() || sampler.isTexture()) {
-            const int vecSize = TQualifier::getLayoutComponentCount(base->getType().getQualifier().layoutFormat);
             TIntermAggregate* load = new TIntermAggregate(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
 
-            load->setType(TType(sampler.type, EvqTemporary, vecSize));
+            load->setType(TType(sampler.type, EvqTemporary, sampler.vectorSize));
             load->setLoc(loc);
             load->getSequence().push_back(base);
             load->getSequence().push_back(index);
@@ -1444,6 +1444,31 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
     if (!node || !node->getAsOperator())
         return;
 
+    const auto clampReturn = [&loc, &node, this](TIntermTyped* result, const TSampler& sampler) {
+        // Sampler return must always be a vec4, but we can construct a shorter vector
+        result->setType(TType(node->getType().getBasicType(), EvqTemporary, node->getVectorSize()));
+
+        if (sampler.vectorSize < node->getVectorSize()) {
+            // Too many components.  Construct shorter vector from it.
+            const TType clampedType(result->getType().getBasicType(), EvqTemporary, sampler.vectorSize);
+
+            TOperator op;
+
+            switch (sampler.type) {
+            case EbtInt:   op = EOpConstructInt;   break;
+            case EbtUint:  op = EOpConstructUint;  break;
+            case EbtFloat: op = EOpConstructFloat; break;
+            default:
+                error(loc, "unknown basic type in texture op", "", "");
+            }
+
+            result = constructBuiltIn(clampedType, op, result, loc, false);
+        }
+
+        result->setLoc(loc);
+        return result;
+    };
+
     const TOperator op  = node->getAsOperator()->getOp();
     const TIntermAggregate* argAggregate = arguments ? arguments->getAsAggregate() : nullptr;
 
@@ -1452,10 +1477,8 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
     case EOpTexture:
         {
             // Texture with ddx & ddy is really gradient form in HLSL
-            if (argAggregate->getSequence().size() == 4) {
+            if (argAggregate->getSequence().size() == 4)
                 node->getAsAggregate()->setOperator(EOpTextureGrad);
-                break;
-            }
 
             break;
         }
@@ -1471,14 +1494,16 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* bias = intermediate.addIndex(EOpIndexDirect, arg1, w, loc);
 
             TOperator constructOp = EOpNull;
-            switch (arg0->getType().getSampler().dim) {
+            const TSampler& sampler = arg0->getType().getSampler();
+
+            switch (sampler.dim) {
             case Esd1D:   constructOp = EOpConstructFloat; break; // 1D
             case Esd2D:   constructOp = EOpConstructVec2;  break; // 2D
             case Esd3D:   constructOp = EOpConstructVec3;  break; // 3D
             case EsdCube: constructOp = EOpConstructVec3;  break; // also 3D
             default: break;
             }
-            
+
             TIntermAggregate* constructCoord = new TIntermAggregate(constructOp);
             constructCoord->getSequence().push_back(arg1);
             constructCoord->setLoc(loc);
@@ -1487,8 +1512,8 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             tex->getSequence().push_back(arg0);           // sampler
             tex->getSequence().push_back(constructCoord); // coordinate
             tex->getSequence().push_back(bias);           // bias
-            tex->setLoc(loc);
-            node = tex;
+            
+            node = clampReturn(tex, sampler);
 
             break;
         }
@@ -1502,6 +1527,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* argCoord  = argAggregate->getSequence()[2]->getAsTyped();
             TIntermTyped* argBias   = nullptr;
             TIntermTyped* argOffset = nullptr;
+            const TSampler& sampler = argTex->getType().getSampler();
 
             int nextArg = 3;
 
@@ -1527,9 +1553,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             if (argOffset != nullptr)
                 txsample->getSequence().push_back(argOffset);
 
-            txsample->setType(node->getType());
-            txsample->setLoc(loc);
-            node = txsample;
+            node = clampReturn(txsample, sampler);
 
             break;
         }
@@ -1542,6 +1566,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* argDDX    = argAggregate->getSequence()[3]->getAsTyped();
             TIntermTyped* argDDY    = argAggregate->getSequence()[4]->getAsTyped();
             TIntermTyped* argOffset = nullptr;
+            const TSampler& sampler = argTex->getType().getSampler();
 
             TOperator textureOp = EOpTextureGrad;
 
@@ -1561,9 +1586,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             if (argOffset != nullptr)
                 txsample->getSequence().push_back(argOffset);
 
-            txsample->setType(node->getType());
-            txsample->setLoc(loc);
-            node = txsample;
+            node = clampReturn(txsample, sampler);
 
             break;
         }
@@ -1582,9 +1605,9 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
             assert(texType.getBasicType() == EbtSampler);
 
-            const TSampler& texSampler = texType.getSampler();
-            const TSamplerDim dim = texSampler.dim;
-            const bool isImage = texSampler.isImage();
+            const TSampler& sampler = texType.getSampler();
+            const TSamplerDim dim = sampler.dim;
+            const bool isImage = sampler.isImage();
             const int numArgs = (int)argAggregate->getSequence().size();
 
             int numDims = 0;
@@ -1600,11 +1623,11 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             }
 
             // Arrayed adds another dimension for the number of array elements
-            if (texSampler.isArrayed())
+            if (sampler.isArrayed())
                 ++numDims;
 
             // Establish whether we're querying mip levels
-            const bool mipQuery = (numArgs > (numDims + 1)) && (!texSampler.isMultiSample());
+            const bool mipQuery = (numArgs > (numDims + 1)) && (!sampler.isMultiSample());
 
             // AST assumes integer return.  Will be converted to float if required.
             TIntermAggregate* sizeQuery = new TIntermAggregate(isImage ? EOpImageQuerySize : EOpTextureQuerySize);
@@ -1662,7 +1685,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             }
 
             // 2DMS formats query # samples, which needs a different query op
-            if (texSampler.isMultiSample()) {
+            if (sampler.isMultiSample()) {
                 TIntermTyped* outParam = argAggregate->getSequence()[outParamBase + numDims]->getAsTyped();
 
                 TIntermAggregate* samplesQuery = new TIntermAggregate(EOpImageQuerySamples);
@@ -1751,9 +1774,10 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* lodComponent = nullptr;
             TIntermTyped* coordSwizzle = nullptr;
 
-            const bool isMS = argTex->getType().getSampler().isMultiSample();
-            const bool isBuffer = argTex->getType().getSampler().dim == EsdBuffer;
-            const bool isImage = argTex->getType().getSampler().isImage();
+            const TSampler& sampler = argTex->getType().getSampler();
+            const bool isMS = sampler.isMultiSample();
+            const bool isBuffer = sampler.dim == EsdBuffer;
+            const bool isImage = sampler.isImage();
             const TBasicType coordBaseType = argCoord->getType().getBasicType();
 
             // Last component of coordinate is the mip level, for non-MS.  we separate them here:
@@ -1807,11 +1831,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 txfetch->getSequence().push_back(argOffset);
             }
 
-            int vecSize = TQualifier::getLayoutComponentCount(argTex->getType().getQualifier().layoutFormat);
-
-            txfetch->setType(TType(node->getType().getBasicType(), EvqTemporary, vecSize));
-            txfetch->setLoc(loc);
-            node = txfetch;
+            node = clampReturn(txfetch, sampler);
 
             break;
         }
@@ -1823,7 +1843,8 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* argCoord  = argAggregate->getSequence()[2]->getAsTyped();
             TIntermTyped* argLod    = argAggregate->getSequence()[3]->getAsTyped();
             TIntermTyped* argOffset = nullptr;
-
+            const TSampler& sampler = argTex->getType().getSampler();
+            
             const int  numArgs = (int)argAggregate->getSequence().size();
 
             if (numArgs == 5) // offset, if present
@@ -1841,9 +1862,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             if (argOffset != nullptr)
                 txsample->getSequence().push_back(argOffset);
 
-            txsample->setType(node->getType());
-            txsample->setLoc(loc);
-            node = txsample;
+            node = clampReturn(txsample, sampler);
 
             break;
         }

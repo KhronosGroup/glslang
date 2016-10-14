@@ -6,7 +6,7 @@ gl_FragCoord origin is upper left
 0:17    Function Parameters: 
 0:?     Sequence
 0:18      Branch: Return with expression
-0:18        texture (global 4-component vector of float)
+0:18        texture (temp 4-component vector of float)
 0:18          Construct combined texture-sampler (temp sampler1D)
 0:?             'g_tex[1]' (uniform texture1D)
 0:?             'g_samp[1]' (uniform sampler)
@@ -18,7 +18,7 @@ gl_FragCoord origin is upper left
 0:22      'l_samp' (in 3-element array of sampler)
 0:?     Sequence
 0:23      Branch: Return with expression
-0:23        texture (global 4-component vector of float)
+0:23        texture (temp 4-component vector of float)
 0:23          Construct combined texture-sampler (temp sampler1D)
 0:23            direct index (temp texture1D)
 0:23              'l_tex' (in 3-element array of texture1D)
@@ -165,7 +165,7 @@ gl_FragCoord origin is upper left
 0:17    Function Parameters: 
 0:?     Sequence
 0:18      Branch: Return with expression
-0:18        texture (global 4-component vector of float)
+0:18        texture (temp 4-component vector of float)
 0:18          Construct combined texture-sampler (temp sampler1D)
 0:?             'g_tex[1]' (uniform texture1D)
 0:?             'g_samp[1]' (uniform sampler)
@@ -177,7 +177,7 @@ gl_FragCoord origin is upper left
 0:22      'l_samp' (in 3-element array of sampler)
 0:?     Sequence
 0:23      Branch: Return with expression
-0:23        texture (global 4-component vector of float)
+0:23        texture (temp 4-component vector of float)
 0:23          Construct combined texture-sampler (temp sampler1D)
 0:23            direct index (temp texture1D)
 0:23              'l_tex' (in 3-element array of texture1D)
