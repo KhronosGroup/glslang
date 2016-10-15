@@ -154,7 +154,10 @@ TLayoutFormat HlslParseContext::getLayoutFromTxType(const TSourceLoc& loc, const
 {
     const int components = txType.getVectorSize();
 
-    const auto selectFormat = [&components](TLayoutFormat v1, TLayoutFormat v2, TLayoutFormat v4) {
+    const auto selectFormat = [this,&components](TLayoutFormat v1, TLayoutFormat v2, TLayoutFormat v4) {
+        if (intermediate.getNoStorageFormat())
+            return ElfNone;
+
         return components == 1 ? v1 :
                components == 2 ? v2 : v4;
     };
@@ -287,13 +290,6 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     TIntermTyped* coord  = lhsAsAggregate->getSequence()[1]->getAsTyped();
 
     const TSampler& texSampler = object->getType().getSampler();
-
-    const TLayoutFormat fmt = object->getType().getQualifier().layoutFormat;
-
-    // We only handle this subset of the possible formats.
-    assert(fmt == ElfRgba32f || fmt == ElfRgba32i || fmt == ElfRgba32ui ||
-           fmt == ElfRg32f   || fmt == ElfRg32i   || fmt == ElfRg32ui   ||
-           fmt == ElfR32f    || fmt == ElfR32i    || fmt == ElfR32ui);
 
     const TType objDerefType(texSampler.type, EvqTemporary, texSampler.vectorSize);
 
@@ -1452,15 +1448,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             // Too many components.  Construct shorter vector from it.
             const TType clampedType(result->getType().getBasicType(), EvqTemporary, sampler.vectorSize);
 
-            TOperator op;
-
-            switch (sampler.type) {
-            case EbtInt:   op = EOpConstructInt;   break;
-            case EbtUint:  op = EOpConstructUint;  break;
-            case EbtFloat: op = EOpConstructFloat; break;
-            default:
-                error(loc, "unknown basic type in texture op", "", "");
-            }
+            const TOperator op = intermediate.mapTypeToConstructorOp(clampedType);
 
             result = constructBuiltIn(clampedType, op, result, loc, false);
         }

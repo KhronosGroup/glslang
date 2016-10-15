@@ -82,6 +82,7 @@ enum TOptions {
     EOptionCascadingErrors    = (1 << 18),
     EOptionAutoMapBindings    = (1 << 19),
     EOptionFlattenUniformArrays = (1 << 20),
+    EOptionNoStorageFormat    = (1 << 21),
 };
 
 //
@@ -290,6 +291,9 @@ void ProcessArguments(int argc, char* argv[])
                                lowerword == "flatten-uniform-array"  ||
                                lowerword == "fua") {
                         Options |= EOptionFlattenUniformArrays;
+                    } else if (lowerword == "no-storage-format" || // synonyms
+                               lowerword == "nsf") {
+                        Options |= EOptionNoStorageFormat;
                     } else {
                         usage();
                     }
@@ -542,6 +546,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         shader->setShiftTextureBinding(baseTextureBinding[compUnit.stage]);
         shader->setShiftUboBinding(baseUboBinding[compUnit.stage]);
         shader->setFlattenUniformArrays((Options & EOptionFlattenUniformArrays) != 0);
+        shader->setNoStorageFormat((Options & EOptionNoStorageFormat) != 0);
 
         if (Options & EOptionAutoMapBindings)
             shader->setAutoMapBindings(true);
@@ -945,6 +950,9 @@ void usage()
            "\n"
            "  --flatten-uniform-arrays                flatten uniform texture & sampler arrays to scalars\n"
            "  --fua                                   synonym for --flatten-uniform-arrays\n"
+           "\n"
+           "  --no-storage-format                     use Unknown image format\n"
+           "  --nsf                                   synonym for --no-storage-format\n"
            );
 
     exit(EFailUsage);
