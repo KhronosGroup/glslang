@@ -245,7 +245,6 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     char order = *argOrder;
 
     if (UseHlslTypes) {
-        // TODO: handle sub-vec4 returns
         switch (type) {
         case '-': s += "void";                                            break;
         case 'F': s += "float";                                           break;
@@ -831,8 +830,6 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "GatherCmpAlpha",  /* O, status*/   "V4",    nullptr,   "%@,S,V,S,V,>S",  "FIU,s,F,,I,U",   EShLangAll },
         { "GatherCmpAlpha",  /* O-4 */        "V4",    nullptr,   "%@,S,V,S,V,,,",  "FIU,s,F,,I,,,",  EShLangAll },
         { "GatherCmpAlpha",  /* O-4, status */"V4",    nullptr,   "%@,S,V,S,V,,,,S","FIU,s,F,,I,,,,U",EShLangAll },
-
-        // TODO: Cmp forms
 
         // Mark end of list, since we want to avoid a range-based for, as some compilers don't handle it yet.
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0 },

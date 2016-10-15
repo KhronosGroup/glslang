@@ -246,6 +246,9 @@ public:
     TIntermUnary* addUnaryNode(TOperator op, TIntermTyped* child, TSourceLoc) const;
     TIntermUnary* addUnaryNode(TOperator op, TIntermTyped* child, TSourceLoc, const TType&) const;
 
+    // Add conversion from node's type to given basic type.
+    TIntermTyped* convertToBasicType(TOperator op, TBasicType basicType, TIntermTyped* node) const;
+
     // Constant folding (in Constant.cpp)
     TIntermTyped* fold(TIntermAggregate* aggrNode);
     TIntermTyped* foldConstructor(TIntermAggregate* aggrNode);
@@ -390,7 +393,7 @@ protected:
     bool userOutputUsed() const;
     static int getBaseAlignmentScalar(const TType&, int& size);
     bool isSpecializationOperation(const TIntermOperator&) const;
-
+    
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later
     std::string entryPointName;
