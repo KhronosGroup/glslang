@@ -165,10 +165,27 @@ bool OS_FreeTLSIndex(OS_TLSIndex nIndex)
 		return false;
 }
 
-static pthread_mutex_t gMutex;
-void InitGlobalLock() { pthread_mutex_init(&gMutex, NULL); }
-void GetGlobalLock() { pthread_mutex_lock(&gMutex); }
-void ReleaseGlobalLock() { pthread_mutex_unlock(&gMutex); }
+namespace {
+pthread_mutex_t gMutex;
+}
+
+void InitGlobalLock()
+{
+  pthread_mutexattr_t mutexattr;
+  pthread_mutexattr_init(&mutexattr);
+  pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);
+  pthread_mutex_init(&gMutex, &mutexattr);
+}
+
+void GetGlobalLock()
+{
+  pthread_mutex_lock(&gMutex);
+}
+
+void ReleaseGlobalLock()
+{
+  pthread_mutex_unlock(&gMutex);
+}
 
 // TODO: non-windows: if we need these on linux, flesh them out
 void* OS_CreateThread(TThreadEntrypoint /*entry*/)
