@@ -1444,7 +1444,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
         // Sampler return must always be a vec4, but we can construct a shorter vector
         result->setType(TType(node->getType().getBasicType(), EvqTemporary, node->getVectorSize()));
 
-        if (sampler.vectorSize < node->getVectorSize()) {
+        if (sampler.vectorSize < (unsigned)node->getVectorSize()) {
             // Too many components.  Construct shorter vector from it.
             const TType clampedType(result->getType().getBasicType(), EvqTemporary, sampler.vectorSize);
 
