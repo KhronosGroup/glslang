@@ -2782,18 +2782,18 @@ gl_FragCoord origin is upper left
 0:492                0 (const int)
 0:492        Branch: Return
 0:?   Linker Objects
-0:?     'gs_ua' (global uint)
-0:?     'gs_ub' (global uint)
-0:?     'gs_uc' (global uint)
-0:?     'gs_ua2' (global 2-component vector of uint)
-0:?     'gs_ub2' (global 2-component vector of uint)
-0:?     'gs_uc2' (global 2-component vector of uint)
-0:?     'gs_ua3' (global 3-component vector of uint)
-0:?     'gs_ub3' (global 3-component vector of uint)
-0:?     'gs_uc3' (global 3-component vector of uint)
-0:?     'gs_ua4' (global 4-component vector of uint)
-0:?     'gs_ub4' (global 4-component vector of uint)
-0:?     'gs_uc4' (global 4-component vector of uint)
+0:?     'gs_ua' (shared uint)
+0:?     'gs_ub' (shared uint)
+0:?     'gs_uc' (shared uint)
+0:?     'gs_ua2' (shared 2-component vector of uint)
+0:?     'gs_ub2' (shared 2-component vector of uint)
+0:?     'gs_uc2' (shared 2-component vector of uint)
+0:?     'gs_ua3' (shared 3-component vector of uint)
+0:?     'gs_ub3' (shared 3-component vector of uint)
+0:?     'gs_uc3' (shared 3-component vector of uint)
+0:?     'gs_ua4' (shared 4-component vector of uint)
+0:?     'gs_ub4' (shared 4-component vector of uint)
+0:?     'gs_uc4' (shared 4-component vector of uint)
 0:?     'color' (layout(location=0 ) out 4-component vector of float)
 
 
@@ -5583,18 +5583,18 @@ gl_FragCoord origin is upper left
 0:492                0 (const int)
 0:492        Branch: Return
 0:?   Linker Objects
-0:?     'gs_ua' (global uint)
-0:?     'gs_ub' (global uint)
-0:?     'gs_uc' (global uint)
-0:?     'gs_ua2' (global 2-component vector of uint)
-0:?     'gs_ub2' (global 2-component vector of uint)
-0:?     'gs_uc2' (global 2-component vector of uint)
-0:?     'gs_ua3' (global 3-component vector of uint)
-0:?     'gs_ub3' (global 3-component vector of uint)
-0:?     'gs_uc3' (global 3-component vector of uint)
-0:?     'gs_ua4' (global 4-component vector of uint)
-0:?     'gs_ub4' (global 4-component vector of uint)
-0:?     'gs_uc4' (global 4-component vector of uint)
+0:?     'gs_ua' (shared uint)
+0:?     'gs_ub' (shared uint)
+0:?     'gs_uc' (shared uint)
+0:?     'gs_ua2' (shared 2-component vector of uint)
+0:?     'gs_ub2' (shared 2-component vector of uint)
+0:?     'gs_uc2' (shared 2-component vector of uint)
+0:?     'gs_ua3' (shared 3-component vector of uint)
+0:?     'gs_ub3' (shared 3-component vector of uint)
+0:?     'gs_uc3' (shared 3-component vector of uint)
+0:?     'gs_ua4' (shared 4-component vector of uint)
+0:?     'gs_ub4' (shared 4-component vector of uint)
+0:?     'gs_uc4' (shared 4-component vector of uint)
 0:?     'color' (layout(location=0 ) out 4-component vector of float)
 
 // Module Version 10000
@@ -6250,22 +6250,22 @@ gl_FragCoord origin is upper left
             1802:   48(fvec4) ConstantComposite 284 284 284 284
             1804:             TypePointer Output 48(fvec4)
      1805(color):   1804(ptr) Variable Output
-            1809:             TypePointer Private 8(int)
-     1810(gs_ua):   1809(ptr) Variable Private
-     1811(gs_ub):   1809(ptr) Variable Private
-     1812(gs_uc):   1809(ptr) Variable Private
-            1813:             TypePointer Private 26(ivec2)
-    1814(gs_ua2):   1813(ptr) Variable Private
-    1815(gs_ub2):   1813(ptr) Variable Private
-    1816(gs_uc2):   1813(ptr) Variable Private
-            1817:             TypePointer Private 38(ivec3)
-    1818(gs_ua3):   1817(ptr) Variable Private
-    1819(gs_ub3):   1817(ptr) Variable Private
-    1820(gs_uc3):   1817(ptr) Variable Private
-            1821:             TypePointer Private 50(ivec4)
-    1822(gs_ua4):   1821(ptr) Variable Private
-    1823(gs_ub4):   1821(ptr) Variable Private
-    1824(gs_uc4):   1821(ptr) Variable Private
+            1809:             TypePointer Workgroup 8(int)
+     1810(gs_ua):   1809(ptr) Variable Workgroup
+     1811(gs_ub):   1809(ptr) Variable Workgroup
+     1812(gs_uc):   1809(ptr) Variable Workgroup
+            1813:             TypePointer Workgroup 26(ivec2)
+    1814(gs_ua2):   1813(ptr) Variable Workgroup
+    1815(gs_ub2):   1813(ptr) Variable Workgroup
+    1816(gs_uc2):   1813(ptr) Variable Workgroup
+            1817:             TypePointer Workgroup 38(ivec3)
+    1818(gs_ua3):   1817(ptr) Variable Workgroup
+    1819(gs_ub3):   1817(ptr) Variable Workgroup
+    1820(gs_uc3):   1817(ptr) Variable Workgroup
+            1821:             TypePointer Workgroup 50(ivec4)
+    1822(gs_ua4):   1821(ptr) Variable Workgroup
+    1823(gs_ub4):   1821(ptr) Variable Workgroup
+    1824(gs_uc4):   1821(ptr) Variable Workgroup
          4(main):           2 Function None 3
                5:             Label
  1800(ps_output):   1799(ptr) Variable Function
