@@ -2935,6 +2935,8 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
         qualifier.builtIn = EbvTessLevelInner;
     else if (semanticUpperCase == "SV_GSINSTANCEID")
         qualifier.builtIn = EbvInvocationId;
+    else if (semanticUpperCase == "SV_DISPATCHTHREADID")
+        qualifier.builtIn = EbvLocalInvocationId;
     else if (semanticUpperCase == "SV_GROUPTHREADID")
         qualifier.builtIn = EbvLocalInvocationId;
     else if (semanticUpperCase == "SV_GROUPID")
@@ -2943,6 +2945,8 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
         qualifier.builtIn = EbvTessCoord;
     else if (semanticUpperCase == "SV_DEPTH")
         qualifier.builtIn = EbvFragDepth;
+    else if( semanticUpperCase == "SV_COVERAGE")
+        qualifier.builtIn = EbvSampleMask;
 
     //TODO, these need to get refined to be more specific 
     else if( semanticUpperCase == "SV_DEPTHGREATEREQUAL")
@@ -2950,9 +2954,9 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
     else if( semanticUpperCase == "SV_DEPTHLESSEQUAL")
         qualifier.builtIn = EbvFragDepthLesser;
     else if( semanticUpperCase == "SV_STENCILREF")
-        error(loc, "unimplemented", "SV_STENCILREF", "");
-    else if( semanticUpperCase == "SV_COVERAGE")
-        error(loc, "unimplemented", "SV_COVERAGE", "");
+        error(loc, "unimplemented; need ARB_shader_stencil_export", "SV_STENCILREF", "");
+    else if( semanticUpperCase == "SV_GROUPINDEX")
+        error(loc, "unimplemented", "SV_GROUPINDEX", "");
 }
 
 //

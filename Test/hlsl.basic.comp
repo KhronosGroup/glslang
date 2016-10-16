@@ -1,0 +1,6 @@
+int dti : SV_DispatchThreadID;
+
+void main()
+{
+    dti;
+}
