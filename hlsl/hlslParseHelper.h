@@ -156,6 +156,8 @@ public:
     TIntermTyped* handleLvalue(const TSourceLoc&, const char* op, TIntermTyped* node);
     bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
 
+    TLayoutFormat getLayoutFromTxType(const TSourceLoc&, const TType&);
+
 protected:
     void inheritGlobalDefaults(TQualifier& dst) const;
     TVariable* makeInternalVariable(const char* name, const TType&) const;

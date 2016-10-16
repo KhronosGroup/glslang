@@ -309,6 +309,7 @@ public:
     void setShiftUboBinding(unsigned int base);
     void setAutoMapBindings(bool map);
     void setFlattenUniformArrays(bool flatten);
+    void setNoStorageFormat(bool useUnknownFormat);
 
     // Interface to #include handlers.
     //

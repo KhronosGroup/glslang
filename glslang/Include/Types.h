@@ -78,6 +78,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
     bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
     bool   external : 1;  // GL_OES_EGL_image_external
+    unsigned int vectorSize : 3;  // return vector size.  TODO: support arbitrary types.
 
     bool isImage()       const { return image && dim != EsdSubpass; }
     bool isSubpass()     const { return dim == EsdSubpass; }
@@ -99,6 +100,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         combined = false;
         sampler = false;
         external = false;
+        vectorSize = 4;
     }
 
     // make a combined sampler and texture
@@ -164,7 +166,8 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
               image == right.image &&
            combined == right.combined &&
             sampler == right.sampler &&
-           external == right.external;
+           external == right.external &&
+         vectorSize == right.vectorSize;
     }
 
     bool operator!=(const TSampler& right) const

@@ -8,8 +8,8 @@ gl_FragCoord origin is upper left
 0:28      Sequence
 0:28        move second child to first child (temp 4-component vector of float)
 0:28          'r00' (temp 4-component vector of float)
-0:28          textureFetch (global 4-component vector of float)
-0:28            'g_tTexbf4' (uniform samplerBuffer)
+0:28          textureFetch (temp 4-component vector of float)
+0:28            'g_tTexbf4' (layout(rgba32f ) uniform samplerBuffer)
 0:28            c1: direct index for structure (layout(offset=0 ) uniform int)
 0:28              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 0:28              Constant:
@@ -17,8 +17,8 @@ gl_FragCoord origin is upper left
 0:29      Sequence
 0:29        move second child to first child (temp 4-component vector of int)
 0:29          'r01' (temp 4-component vector of int)
-0:29          textureFetch (global 4-component vector of int)
-0:29            'g_tTexbi4' (uniform isamplerBuffer)
+0:29          textureFetch (temp 4-component vector of int)
+0:29            'g_tTexbi4' (layout(rgba32i ) uniform isamplerBuffer)
 0:29            c1: direct index for structure (layout(offset=0 ) uniform int)
 0:29              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 0:29              Constant:
@@ -26,8 +26,8 @@ gl_FragCoord origin is upper left
 0:30      Sequence
 0:30        move second child to first child (temp 4-component vector of uint)
 0:30          'r02' (temp 4-component vector of uint)
-0:30          textureFetch (global 4-component vector of uint)
-0:30            'g_tTexbu4' (uniform usamplerBuffer)
+0:30          textureFetch (temp 4-component vector of uint)
+0:30            'g_tTexbu4' (layout(rgba32ui ) uniform usamplerBuffer)
 0:30            c1: direct index for structure (layout(offset=0 ) uniform int)
 0:30              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 0:30              Constant:
@@ -65,10 +65,10 @@ gl_FragCoord origin is upper left
 0:37                1 (const int)
 0:37        Branch: Return
 0:?   Linker Objects
-0:?     'g_tTexbf4_test' (layout(binding=0 ) uniform samplerBuffer)
-0:?     'g_tTexbf4' (uniform samplerBuffer)
-0:?     'g_tTexbi4' (uniform isamplerBuffer)
-0:?     'g_tTexbu4' (uniform usamplerBuffer)
+0:?     'g_tTexbf4_test' (layout(binding=0 rgba32f ) uniform samplerBuffer)
+0:?     'g_tTexbf4' (layout(rgba32f ) uniform samplerBuffer)
+0:?     'g_tTexbi4' (layout(rgba32i ) uniform isamplerBuffer)
+0:?     'g_tTexbu4' (layout(rgba32ui ) uniform usamplerBuffer)
 0:?     'Color' (layout(location=0 ) out 4-component vector of float)
 0:?     'Depth' (out float FragDepth)
 0:?     'anon@0' (uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
@@ -86,8 +86,8 @@ gl_FragCoord origin is upper left
 0:28      Sequence
 0:28        move second child to first child (temp 4-component vector of float)
 0:28          'r00' (temp 4-component vector of float)
-0:28          textureFetch (global 4-component vector of float)
-0:28            'g_tTexbf4' (uniform samplerBuffer)
+0:28          textureFetch (temp 4-component vector of float)
+0:28            'g_tTexbf4' (layout(rgba32f ) uniform samplerBuffer)
 0:28            c1: direct index for structure (layout(offset=0 ) uniform int)
 0:28              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 0:28              Constant:
@@ -95,8 +95,8 @@ gl_FragCoord origin is upper left
 0:29      Sequence
 0:29        move second child to first child (temp 4-component vector of int)
 0:29          'r01' (temp 4-component vector of int)
-0:29          textureFetch (global 4-component vector of int)
-0:29            'g_tTexbi4' (uniform isamplerBuffer)
+0:29          textureFetch (temp 4-component vector of int)
+0:29            'g_tTexbi4' (layout(rgba32i ) uniform isamplerBuffer)
 0:29            c1: direct index for structure (layout(offset=0 ) uniform int)
 0:29              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 0:29              Constant:
@@ -104,8 +104,8 @@ gl_FragCoord origin is upper left
 0:30      Sequence
 0:30        move second child to first child (temp 4-component vector of uint)
 0:30          'r02' (temp 4-component vector of uint)
-0:30          textureFetch (global 4-component vector of uint)
-0:30            'g_tTexbu4' (uniform usamplerBuffer)
+0:30          textureFetch (temp 4-component vector of uint)
+0:30            'g_tTexbu4' (layout(rgba32ui ) uniform usamplerBuffer)
 0:30            c1: direct index for structure (layout(offset=0 ) uniform int)
 0:30              'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 0:30              Constant:
@@ -143,10 +143,10 @@ gl_FragCoord origin is upper left
 0:37                1 (const int)
 0:37        Branch: Return
 0:?   Linker Objects
-0:?     'g_tTexbf4_test' (layout(binding=0 ) uniform samplerBuffer)
-0:?     'g_tTexbf4' (uniform samplerBuffer)
-0:?     'g_tTexbi4' (uniform isamplerBuffer)
-0:?     'g_tTexbu4' (uniform usamplerBuffer)
+0:?     'g_tTexbf4_test' (layout(binding=0 rgba32f ) uniform samplerBuffer)
+0:?     'g_tTexbf4' (layout(rgba32f ) uniform samplerBuffer)
+0:?     'g_tTexbi4' (layout(rgba32i ) uniform isamplerBuffer)
+0:?     'g_tTexbu4' (layout(rgba32ui ) uniform usamplerBuffer)
 0:?     'Color' (layout(location=0 ) out 4-component vector of float)
 0:?     'Depth' (out float FragDepth)
 0:?     'anon@0' (uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
@@ -207,7 +207,7 @@ gl_FragCoord origin is upper left
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypePointer Function 7(fvec4)
-              10:             TypeImage 6(float) Buffer sampled format:Unknown
+              10:             TypeImage 6(float) Buffer sampled format:Rgba32f
               11:             TypeSampledImage 10
               12:             TypePointer UniformConstant 11
    13(g_tTexbf4):     12(ptr) Variable UniformConstant
@@ -221,14 +221,14 @@ gl_FragCoord origin is upper left
               22:     15(int) Constant 0
               23:             TypePointer Uniform 15(int)
               28:             TypePointer Function 18(ivec4)
-              30:             TypeImage 15(int) Buffer sampled format:Unknown
+              30:             TypeImage 15(int) Buffer sampled format:Rgba32i
               31:             TypeSampledImage 30
               32:             TypePointer UniformConstant 31
    33(g_tTexbi4):     32(ptr) Variable UniformConstant
               39:             TypeInt 32 0
               40:             TypeVector 39(int) 4
               41:             TypePointer Function 40(ivec4)
-              43:             TypeImage 39(int) Buffer sampled format:Unknown
+              43:             TypeImage 39(int) Buffer sampled format:Rgba32ui
               44:             TypeSampledImage 43
               45:             TypePointer UniformConstant 44
    46(g_tTexbu4):     45(ptr) Variable UniformConstant

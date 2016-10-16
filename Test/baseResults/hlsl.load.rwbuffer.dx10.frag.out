@@ -5,19 +5,19 @@ gl_FragCoord origin is upper left
 0:22  Function Definition: main( (temp structure{temp 4-component vector of float Color})
 0:22    Function Parameters: 
 0:?     Sequence
-0:25      imageLoad (global 4-component vector of float)
+0:25      imageLoad (temp 4-component vector of float)
 0:25        'g_tBuffF' (layout(rgba32f ) uniform imageBuffer)
 0:25        c1: direct index for structure (layout(offset=0 ) uniform int)
 0:25          'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 0:25          Constant:
 0:25            0 (const uint)
-0:26      imageLoad (global 4-component vector of uint)
+0:26      imageLoad (temp 4-component vector of uint)
 0:26        'g_tBuffU' (layout(rgba32ui ) uniform uimageBuffer)
 0:26        c1: direct index for structure (layout(offset=0 ) uniform int)
 0:26          'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 0:26          Constant:
 0:26            0 (const uint)
-0:27      imageLoad (global 4-component vector of int)
+0:27      imageLoad (temp 4-component vector of int)
 0:27        'g_tBuffI' (layout(rgba32i ) uniform iimageBuffer)
 0:27        c1: direct index for structure (layout(offset=0 ) uniform int)
 0:27          'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
@@ -59,19 +59,19 @@ gl_FragCoord origin is upper left
 0:22  Function Definition: main( (temp structure{temp 4-component vector of float Color})
 0:22    Function Parameters: 
 0:?     Sequence
-0:25      imageLoad (global 4-component vector of float)
+0:25      imageLoad (temp 4-component vector of float)
 0:25        'g_tBuffF' (layout(rgba32f ) uniform imageBuffer)
 0:25        c1: direct index for structure (layout(offset=0 ) uniform int)
 0:25          'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 0:25          Constant:
 0:25            0 (const uint)
-0:26      imageLoad (global 4-component vector of uint)
+0:26      imageLoad (temp 4-component vector of uint)
 0:26        'g_tBuffU' (layout(rgba32ui ) uniform uimageBuffer)
 0:26        c1: direct index for structure (layout(offset=0 ) uniform int)
 0:26          'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})
 0:26          Constant:
 0:26            0 (const uint)
-0:27      imageLoad (global 4-component vector of int)
+0:27      imageLoad (temp 4-component vector of int)
 0:27        'g_tBuffI' (layout(rgba32i ) uniform iimageBuffer)
 0:27        c1: direct index for structure (layout(offset=0 ) uniform int)
 0:27          'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform int c1, layout(offset=8 ) uniform 2-component vector of int c2, layout(offset=16 ) uniform 3-component vector of int c3, layout(offset=32 ) uniform 4-component vector of int c4, layout(offset=48 ) uniform int o1, layout(offset=56 ) uniform 2-component vector of int o2, layout(offset=64 ) uniform 3-component vector of int o3, layout(offset=80 ) uniform 4-component vector of int o4})

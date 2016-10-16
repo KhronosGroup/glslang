@@ -94,7 +94,7 @@ gl_FragCoord origin is upper left
 0:70      Sequence
 0:70        move second child to first child (temp 4-component vector of float)
 0:70          'txval10' (temp 4-component vector of float)
-0:70          texture (global 4-component vector of float)
+0:70          texture (temp 4-component vector of float)
 0:70            Construct combined texture-sampler (temp sampler1D)
 0:70              'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:70              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -103,7 +103,7 @@ gl_FragCoord origin is upper left
 0:71      Sequence
 0:71        move second child to first child (temp 4-component vector of int)
 0:71          'txval11' (temp 4-component vector of int)
-0:71          texture (global 4-component vector of int)
+0:71          texture (temp 4-component vector of int)
 0:71            Construct combined texture-sampler (temp isampler1D)
 0:71              'g_tTex1di4' (uniform itexture1D)
 0:71              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -112,7 +112,7 @@ gl_FragCoord origin is upper left
 0:72      Sequence
 0:72        move second child to first child (temp 4-component vector of uint)
 0:72          'txval12' (temp 4-component vector of uint)
-0:72          texture (global 4-component vector of uint)
+0:72          texture (temp 4-component vector of uint)
 0:72            Construct combined texture-sampler (temp usampler1D)
 0:72              'g_tTex1du4' (uniform utexture1D)
 0:72              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -121,7 +121,7 @@ gl_FragCoord origin is upper left
 0:74      Sequence
 0:74        move second child to first child (temp 4-component vector of float)
 0:74          'txval20' (temp 4-component vector of float)
-0:74          texture (global 4-component vector of float)
+0:74          texture (temp 4-component vector of float)
 0:74            Construct combined texture-sampler (temp sampler2D)
 0:74              'g_tTex2df4' (uniform texture2D)
 0:74              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -131,7 +131,7 @@ gl_FragCoord origin is upper left
 0:75      Sequence
 0:75        move second child to first child (temp 4-component vector of int)
 0:75          'txval21' (temp 4-component vector of int)
-0:75          texture (global 4-component vector of int)
+0:75          texture (temp 4-component vector of int)
 0:75            Construct combined texture-sampler (temp isampler2D)
 0:75              'g_tTex2di4' (uniform itexture2D)
 0:75              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -141,7 +141,7 @@ gl_FragCoord origin is upper left
 0:76      Sequence
 0:76        move second child to first child (temp 4-component vector of uint)
 0:76          'txval22' (temp 4-component vector of uint)
-0:76          texture (global 4-component vector of uint)
+0:76          texture (temp 4-component vector of uint)
 0:76            Construct combined texture-sampler (temp usampler2D)
 0:76              'g_tTex2du4' (uniform utexture2D)
 0:76              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -151,7 +151,7 @@ gl_FragCoord origin is upper left
 0:78      Sequence
 0:78        move second child to first child (temp 4-component vector of float)
 0:78          'txval30' (temp 4-component vector of float)
-0:78          texture (global 4-component vector of float)
+0:78          texture (temp 4-component vector of float)
 0:78            Construct combined texture-sampler (temp sampler3D)
 0:78              'g_tTex3df4' (uniform texture3D)
 0:78              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -162,7 +162,7 @@ gl_FragCoord origin is upper left
 0:79      Sequence
 0:79        move second child to first child (temp 4-component vector of int)
 0:79          'txval31' (temp 4-component vector of int)
-0:79          texture (global 4-component vector of int)
+0:79          texture (temp 4-component vector of int)
 0:79            Construct combined texture-sampler (temp isampler3D)
 0:79              'g_tTex3di4' (uniform itexture3D)
 0:79              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -173,7 +173,7 @@ gl_FragCoord origin is upper left
 0:80      Sequence
 0:80        move second child to first child (temp 4-component vector of uint)
 0:80          'txval32' (temp 4-component vector of uint)
-0:80          texture (global 4-component vector of uint)
+0:80          texture (temp 4-component vector of uint)
 0:80            Construct combined texture-sampler (temp usampler3D)
 0:80              'g_tTex3du4' (uniform utexture3D)
 0:80              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -184,7 +184,7 @@ gl_FragCoord origin is upper left
 0:82      Sequence
 0:82        move second child to first child (temp 4-component vector of float)
 0:82          'txval40' (temp 4-component vector of float)
-0:82          texture (global 4-component vector of float)
+0:82          texture (temp 4-component vector of float)
 0:82            Construct combined texture-sampler (temp samplerCube)
 0:82              'g_tTexcdf4' (uniform textureCube)
 0:82              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -195,7 +195,7 @@ gl_FragCoord origin is upper left
 0:83      Sequence
 0:83        move second child to first child (temp 4-component vector of int)
 0:83          'txval41' (temp 4-component vector of int)
-0:83          texture (global 4-component vector of int)
+0:83          texture (temp 4-component vector of int)
 0:83            Construct combined texture-sampler (temp isamplerCube)
 0:83              'g_tTexcdi4' (uniform itextureCube)
 0:83              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -206,7 +206,7 @@ gl_FragCoord origin is upper left
 0:84      Sequence
 0:84        move second child to first child (temp 4-component vector of uint)
 0:84          'txval42' (temp 4-component vector of uint)
-0:84          texture (global 4-component vector of uint)
+0:84          texture (temp 4-component vector of uint)
 0:84            Construct combined texture-sampler (temp usamplerCube)
 0:84              'g_tTexcdu4' (uniform utextureCube)
 0:84              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -363,7 +363,7 @@ gl_FragCoord origin is upper left
 0:70      Sequence
 0:70        move second child to first child (temp 4-component vector of float)
 0:70          'txval10' (temp 4-component vector of float)
-0:70          texture (global 4-component vector of float)
+0:70          texture (temp 4-component vector of float)
 0:70            Construct combined texture-sampler (temp sampler1D)
 0:70              'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:70              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -372,7 +372,7 @@ gl_FragCoord origin is upper left
 0:71      Sequence
 0:71        move second child to first child (temp 4-component vector of int)
 0:71          'txval11' (temp 4-component vector of int)
-0:71          texture (global 4-component vector of int)
+0:71          texture (temp 4-component vector of int)
 0:71            Construct combined texture-sampler (temp isampler1D)
 0:71              'g_tTex1di4' (uniform itexture1D)
 0:71              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -381,7 +381,7 @@ gl_FragCoord origin is upper left
 0:72      Sequence
 0:72        move second child to first child (temp 4-component vector of uint)
 0:72          'txval12' (temp 4-component vector of uint)
-0:72          texture (global 4-component vector of uint)
+0:72          texture (temp 4-component vector of uint)
 0:72            Construct combined texture-sampler (temp usampler1D)
 0:72              'g_tTex1du4' (uniform utexture1D)
 0:72              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -390,7 +390,7 @@ gl_FragCoord origin is upper left
 0:74      Sequence
 0:74        move second child to first child (temp 4-component vector of float)
 0:74          'txval20' (temp 4-component vector of float)
-0:74          texture (global 4-component vector of float)
+0:74          texture (temp 4-component vector of float)
 0:74            Construct combined texture-sampler (temp sampler2D)
 0:74              'g_tTex2df4' (uniform texture2D)
 0:74              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -400,7 +400,7 @@ gl_FragCoord origin is upper left
 0:75      Sequence
 0:75        move second child to first child (temp 4-component vector of int)
 0:75          'txval21' (temp 4-component vector of int)
-0:75          texture (global 4-component vector of int)
+0:75          texture (temp 4-component vector of int)
 0:75            Construct combined texture-sampler (temp isampler2D)
 0:75              'g_tTex2di4' (uniform itexture2D)
 0:75              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -410,7 +410,7 @@ gl_FragCoord origin is upper left
 0:76      Sequence
 0:76        move second child to first child (temp 4-component vector of uint)
 0:76          'txval22' (temp 4-component vector of uint)
-0:76          texture (global 4-component vector of uint)
+0:76          texture (temp 4-component vector of uint)
 0:76            Construct combined texture-sampler (temp usampler2D)
 0:76              'g_tTex2du4' (uniform utexture2D)
 0:76              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -420,7 +420,7 @@ gl_FragCoord origin is upper left
 0:78      Sequence
 0:78        move second child to first child (temp 4-component vector of float)
 0:78          'txval30' (temp 4-component vector of float)
-0:78          texture (global 4-component vector of float)
+0:78          texture (temp 4-component vector of float)
 0:78            Construct combined texture-sampler (temp sampler3D)
 0:78              'g_tTex3df4' (uniform texture3D)
 0:78              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -431,7 +431,7 @@ gl_FragCoord origin is upper left
 0:79      Sequence
 0:79        move second child to first child (temp 4-component vector of int)
 0:79          'txval31' (temp 4-component vector of int)
-0:79          texture (global 4-component vector of int)
+0:79          texture (temp 4-component vector of int)
 0:79            Construct combined texture-sampler (temp isampler3D)
 0:79              'g_tTex3di4' (uniform itexture3D)
 0:79              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -442,7 +442,7 @@ gl_FragCoord origin is upper left
 0:80      Sequence
 0:80        move second child to first child (temp 4-component vector of uint)
 0:80          'txval32' (temp 4-component vector of uint)
-0:80          texture (global 4-component vector of uint)
+0:80          texture (temp 4-component vector of uint)
 0:80            Construct combined texture-sampler (temp usampler3D)
 0:80              'g_tTex3du4' (uniform utexture3D)
 0:80              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -453,7 +453,7 @@ gl_FragCoord origin is upper left
 0:82      Sequence
 0:82        move second child to first child (temp 4-component vector of float)
 0:82          'txval40' (temp 4-component vector of float)
-0:82          texture (global 4-component vector of float)
+0:82          texture (temp 4-component vector of float)
 0:82            Construct combined texture-sampler (temp samplerCube)
 0:82              'g_tTexcdf4' (uniform textureCube)
 0:82              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -464,7 +464,7 @@ gl_FragCoord origin is upper left
 0:83      Sequence
 0:83        move second child to first child (temp 4-component vector of int)
 0:83          'txval41' (temp 4-component vector of int)
-0:83          texture (global 4-component vector of int)
+0:83          texture (temp 4-component vector of int)
 0:83            Construct combined texture-sampler (temp isamplerCube)
 0:83              'g_tTexcdi4' (uniform itextureCube)
 0:83              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -475,7 +475,7 @@ gl_FragCoord origin is upper left
 0:84      Sequence
 0:84        move second child to first child (temp 4-component vector of uint)
 0:84          'txval42' (temp 4-component vector of uint)
-0:84          texture (global 4-component vector of uint)
+0:84          texture (temp 4-component vector of uint)
 0:84            Construct combined texture-sampler (temp usamplerCube)
 0:84              'g_tTexcdu4' (uniform utextureCube)
 0:84              'g_sSamp' (layout(binding=0 ) uniform sampler)

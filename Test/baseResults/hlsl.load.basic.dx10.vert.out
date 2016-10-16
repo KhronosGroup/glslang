@@ -4,7 +4,7 @@ Shader version: 450
 0:47  Function Definition: main( (temp structure{temp 4-component vector of float Pos})
 0:47    Function Parameters: 
 0:?     Sequence
-0:51      textureFetch (global 4-component vector of float)
+0:51      textureFetch (temp 4-component vector of float)
 0:51        'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:51        vector swizzle (temp int)
 0:51          c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of int)
@@ -21,7 +21,7 @@ Shader version: 450
 0:51              1 (const uint)
 0:51          Constant:
 0:51            1 (const int)
-0:52      textureFetch (global 4-component vector of int)
+0:52      textureFetch (temp 4-component vector of int)
 0:52        'g_tTex1di4' (uniform itexture1D)
 0:52        vector swizzle (temp int)
 0:52          c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of int)
@@ -38,7 +38,7 @@ Shader version: 450
 0:52              1 (const uint)
 0:52          Constant:
 0:52            1 (const int)
-0:53      textureFetch (global 4-component vector of uint)
+0:53      textureFetch (temp 4-component vector of uint)
 0:53        'g_tTex1du4' (uniform utexture1D)
 0:53        vector swizzle (temp int)
 0:53          c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of int)
@@ -55,7 +55,7 @@ Shader version: 450
 0:53              1 (const uint)
 0:53          Constant:
 0:53            1 (const int)
-0:56      textureFetch (global 4-component vector of float)
+0:56      textureFetch (temp 4-component vector of float)
 0:56        'g_tTex2df4' (uniform texture2D)
 0:56        vector swizzle (temp 2-component vector of int)
 0:56          c3: direct index for structure (layout(offset=16 ) uniform 3-component vector of int)
@@ -74,7 +74,7 @@ Shader version: 450
 0:56              2 (const uint)
 0:56          Constant:
 0:56            2 (const int)
-0:57      textureFetch (global 4-component vector of int)
+0:57      textureFetch (temp 4-component vector of int)
 0:57        'g_tTex2di4' (uniform itexture2D)
 0:57        vector swizzle (temp 2-component vector of int)
 0:57          c3: direct index for structure (layout(offset=16 ) uniform 3-component vector of int)
@@ -93,7 +93,7 @@ Shader version: 450
 0:57              2 (const uint)
 0:57          Constant:
 0:57            2 (const int)
-0:58      textureFetch (global 4-component vector of uint)
+0:58      textureFetch (temp 4-component vector of uint)
 0:58        'g_tTex2du4' (uniform utexture2D)
 0:58        vector swizzle (temp 2-component vector of int)
 0:58          c3: direct index for structure (layout(offset=16 ) uniform 3-component vector of int)
@@ -112,7 +112,7 @@ Shader version: 450
 0:58              2 (const uint)
 0:58          Constant:
 0:58            2 (const int)
-0:61      textureFetch (global 4-component vector of float)
+0:61      textureFetch (temp 4-component vector of float)
 0:61        'g_tTex3df4' (uniform texture3D)
 0:61        vector swizzle (temp 3-component vector of int)
 0:61          c4: direct index for structure (layout(offset=32 ) uniform 4-component vector of int)
@@ -133,7 +133,7 @@ Shader version: 450
 0:61              3 (const uint)
 0:61          Constant:
 0:61            3 (const int)
-0:62      textureFetch (global 4-component vector of int)
+0:62      textureFetch (temp 4-component vector of int)
 0:62        'g_tTex3di4' (uniform itexture3D)
 0:62        vector swizzle (temp 3-component vector of int)
 0:62          c4: direct index for structure (layout(offset=32 ) uniform 4-component vector of int)
@@ -154,7 +154,7 @@ Shader version: 450
 0:62              3 (const uint)
 0:62          Constant:
 0:62            3 (const int)
-0:63      textureFetch (global 4-component vector of uint)
+0:63      textureFetch (temp 4-component vector of uint)
 0:63        'g_tTex3du4' (uniform utexture3D)
 0:63        vector swizzle (temp 3-component vector of int)
 0:63          c4: direct index for structure (layout(offset=32 ) uniform 4-component vector of int)
@@ -229,7 +229,7 @@ Shader version: 450
 0:47  Function Definition: main( (temp structure{temp 4-component vector of float Pos})
 0:47    Function Parameters: 
 0:?     Sequence
-0:51      textureFetch (global 4-component vector of float)
+0:51      textureFetch (temp 4-component vector of float)
 0:51        'g_tTex1df4' (layout(binding=0 ) uniform texture1D)
 0:51        vector swizzle (temp int)
 0:51          c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of int)
@@ -246,7 +246,7 @@ Shader version: 450
 0:51              1 (const uint)
 0:51          Constant:
 0:51            1 (const int)
-0:52      textureFetch (global 4-component vector of int)
+0:52      textureFetch (temp 4-component vector of int)
 0:52        'g_tTex1di4' (uniform itexture1D)
 0:52        vector swizzle (temp int)
 0:52          c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of int)
@@ -263,7 +263,7 @@ Shader version: 450
 0:52              1 (const uint)
 0:52          Constant:
 0:52            1 (const int)
-0:53      textureFetch (global 4-component vector of uint)
+0:53      textureFetch (temp 4-component vector of uint)
 0:53        'g_tTex1du4' (uniform utexture1D)
 0:53        vector swizzle (temp int)
 0:53          c2: direct index for structure (layout(offset=8 ) uniform 2-component vector of int)
@@ -280,7 +280,7 @@ Shader version: 450
 0:53              1 (const uint)
 0:53          Constant:
 0:53            1 (const int)
-0:56      textureFetch (global 4-component vector of float)
+0:56      textureFetch (temp 4-component vector of float)
 0:56        'g_tTex2df4' (uniform texture2D)
 0:56        vector swizzle (temp 2-component vector of int)
 0:56          c3: direct index for structure (layout(offset=16 ) uniform 3-component vector of int)
@@ -299,7 +299,7 @@ Shader version: 450
 0:56              2 (const uint)
 0:56          Constant:
 0:56            2 (const int)
-0:57      textureFetch (global 4-component vector of int)
+0:57      textureFetch (temp 4-component vector of int)
 0:57        'g_tTex2di4' (uniform itexture2D)
 0:57        vector swizzle (temp 2-component vector of int)
 0:57          c3: direct index for structure (layout(offset=16 ) uniform 3-component vector of int)
@@ -318,7 +318,7 @@ Shader version: 450
 0:57              2 (const uint)
 0:57          Constant:
 0:57            2 (const int)
-0:58      textureFetch (global 4-component vector of uint)
+0:58      textureFetch (temp 4-component vector of uint)
 0:58        'g_tTex2du4' (uniform utexture2D)
 0:58        vector swizzle (temp 2-component vector of int)
 0:58          c3: direct index for structure (layout(offset=16 ) uniform 3-component vector of int)
@@ -337,7 +337,7 @@ Shader version: 450
 0:58              2 (const uint)
 0:58          Constant:
 0:58            2 (const int)
-0:61      textureFetch (global 4-component vector of float)
+0:61      textureFetch (temp 4-component vector of float)
 0:61        'g_tTex3df4' (uniform texture3D)
 0:61        vector swizzle (temp 3-component vector of int)
 0:61          c4: direct index for structure (layout(offset=32 ) uniform 4-component vector of int)
@@ -358,7 +358,7 @@ Shader version: 450
 0:61              3 (const uint)
 0:61          Constant:
 0:61            3 (const int)
-0:62      textureFetch (global 4-component vector of int)
+0:62      textureFetch (temp 4-component vector of int)
 0:62        'g_tTex3di4' (uniform itexture3D)
 0:62        vector swizzle (temp 3-component vector of int)
 0:62          c4: direct index for structure (layout(offset=32 ) uniform 4-component vector of int)
@@ -379,7 +379,7 @@ Shader version: 450
 0:62              3 (const uint)
 0:62          Constant:
 0:62            3 (const int)
-0:63      textureFetch (global 4-component vector of uint)
+0:63      textureFetch (temp 4-component vector of uint)
 0:63        'g_tTex3du4' (uniform utexture3D)
 0:63        vector swizzle (temp 3-component vector of int)
 0:63          c4: direct index for structure (layout(offset=32 ) uniform 4-component vector of int)
