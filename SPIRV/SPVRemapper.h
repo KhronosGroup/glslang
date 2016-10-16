@@ -75,6 +75,7 @@ public:
 
 #if !defined (use_cpp11)
 #include <cstdio>
+#include <cstdint>
 
 namespace spv {
 class spirvbin_t : public spirvbin_base_t

@@ -4873,7 +4873,7 @@ const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFu
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
     
     // can 'from' convert to 'to'?
-    const auto convertible = [this](const TType& from, const TType& to) {
+    const auto convertible = [this](const TType& from, const TType& to) -> bool {
         if (from == to)
             return true;
         if (from.isArray() || to.isArray() || ! from.sameElementShape(to))
@@ -4884,7 +4884,7 @@ const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFu
     // Is 'to2' a better conversion than 'to1'?
     // Ties should not be considered as better.
     // Assumes 'convertible' already said true.
-    const auto better = [](const TType& from, const TType& to1, const TType& to2) {
+    const auto better = [](const TType& from, const TType& to1, const TType& to2) -> bool {
         // 1. exact match
         if (from == to2)
             return from != to1;

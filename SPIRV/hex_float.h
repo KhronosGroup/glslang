@@ -23,6 +23,19 @@
 #include <limits>
 #include <sstream>
 
+#if defined(_MSC_VER) && _MSC_VER < 1700
+namespace std {
+bool isnan(double f)
+{
+  return ::_isnan(f) != 0;
+}
+bool isinf(double f)
+{
+  return ::_finite(f) == 0;
+}
+}
+#endif
+
 #include "bitutils.h"
 
 namespace spvutils {
@@ -30,7 +43,7 @@ namespace spvutils {
 class Float16 {
  public:
   Float16(uint16_t v) : val(v) {}
-  Float16() = default;
+  Float16() {}
   static bool isNan(const Float16& val) {
     return ((val.val & 0x7C00) == 0x7C00) && ((val.val & 0x3FF) != 0);
   }
@@ -56,12 +69,12 @@ class Float16 {
 // a value is Nan.
 template <typename T>
 struct FloatProxyTraits {
-  using uint_type = void;
+  typedef void uint_type;
 };
 
 template <>
 struct FloatProxyTraits<float> {
-  using uint_type = uint32_t;
+  typedef uint32_t uint_type;
   static bool isNan(float f) { return std::isnan(f); }
   // Returns true if the given value is any kind of infinity.
   static bool isInfinity(float f) { return std::isinf(f); }
@@ -73,7 +86,7 @@ struct FloatProxyTraits<float> {
 
 template <>
 struct FloatProxyTraits<double> {
-  using uint_type = uint64_t;
+  typedef uint64_t uint_type;
   static bool isNan(double f) { return std::isnan(f); }
   // Returns true if the given value is any kind of infinity.
   static bool isInfinity(double f) { return std::isinf(f); }
@@ -85,7 +98,7 @@ struct FloatProxyTraits<double> {
 
 template <>
 struct FloatProxyTraits<Float16> {
-  using uint_type = uint16_t;
+  typedef uint16_t uint_type;
   static bool isNan(Float16 f) { return Float16::isNan(f); }
   // Returns true if the given value is any kind of infinity.
   static bool isInfinity(Float16 f) { return Float16::isInfinity(f); }
@@ -101,11 +114,11 @@ struct FloatProxyTraits<Float16> {
 template <typename T>
 class FloatProxy {
  public:
-  using uint_type = typename FloatProxyTraits<T>::uint_type;
+  typedef typename FloatProxyTraits<T>::uint_type uint_type;
 
   // Since this is to act similar to the normal floats,
   // do not initialize the data by default.
-  FloatProxy() = default;
+  FloatProxy() {}
 
   // Intentionally non-explicit. This is a proxy type so
   // implicit conversions allow us to use it more transparently.
@@ -164,13 +177,13 @@ std::istream& operator>>(std::istream& is, FloatProxy<T>& value) {
 template <typename T>
 struct HexFloatTraits {
   // Integer type that can store this hex-float.
-  using uint_type = void;
+  typedef void uint_type;
   // Signed integer type that can store this hex-float.
-  using int_type = void;
+  typedef void int_type;
   // The numerical type that this HexFloat represents.
-  using underlying_type = void;
+  typedef void underlying_type;
   // The type needed to construct the underlying type.
-  using native_type = void;
+  typedef void native_type;
   // The number of bits that are actually relevant in the uint_type.
   // This allows us to deal with, for example, 24-bit values in a 32-bit
   // integer.
@@ -188,10 +201,10 @@ struct HexFloatTraits {
 // 1 sign bit, 8 exponent bits, 23 fractional bits.
 template <>
 struct HexFloatTraits<FloatProxy<float>> {
-  using uint_type = uint32_t;
-  using int_type = int32_t;
-  using underlying_type = FloatProxy<float>;
-  using native_type = float;
+  typedef uint32_t uint_type;
+  typedef int32_t int_type;
+  typedef FloatProxy<float> underlying_type;
+  typedef float native_type;
   static const uint_type num_used_bits = 32;
   static const uint_type num_exponent_bits = 8;
   static const uint_type num_fraction_bits = 23;
@@ -202,10 +215,10 @@ struct HexFloatTraits<FloatProxy<float>> {
 // 1 sign bit, 11 exponent bits, 52 fractional bits.
 template <>
 struct HexFloatTraits<FloatProxy<double>> {
-  using uint_type = uint64_t;
-  using int_type = int64_t;
-  using underlying_type = FloatProxy<double>;
-  using native_type = double;
+  typedef uint64_t uint_type;
+  typedef int64_t int_type;
+  typedef FloatProxy<double> underlying_type;
+  typedef double native_type;
   static const uint_type num_used_bits = 64;
   static const uint_type num_exponent_bits = 11;
   static const uint_type num_fraction_bits = 52;
@@ -216,22 +229,21 @@ struct HexFloatTraits<FloatProxy<double>> {
 // 1 sign bit, 5 exponent bits, 10 fractional bits.
 template <>
 struct HexFloatTraits<FloatProxy<Float16>> {
-  using uint_type = uint16_t;
-  using int_type = int16_t;
-  using underlying_type = uint16_t;
-  using native_type = uint16_t;
+  typedef uint16_t uint_type;
+  typedef int16_t int_type;
+  typedef uint16_t underlying_type;
+  typedef uint16_t native_type;
   static const uint_type num_used_bits = 16;
   static const uint_type num_exponent_bits = 5;
   static const uint_type num_fraction_bits = 10;
   static const uint_type exponent_bias = 15;
 };
 
-enum class round_direction {
-  kToZero,
-  kToNearestEven,
-  kToPositiveInfinity,
-  kToNegativeInfinity,
-  max = kToNegativeInfinity
+enum round_direction {
+  kRoundToZero,
+  kRoundToNearestEven,
+  kRoundToPositiveInfinity,
+  kRoundToNegativeInfinity
 };
 
 // Template class that houses a floating pointer number.
@@ -240,10 +252,10 @@ enum class round_direction {
 template <typename T, typename Traits = HexFloatTraits<T>>
 class HexFloat {
  public:
-  using uint_type = typename Traits::uint_type;
-  using int_type = typename Traits::int_type;
-  using underlying_type = typename Traits::underlying_type;
-  using native_type = typename Traits::native_type;
+  typedef typename Traits::uint_type uint_type;
+  typedef typename Traits::int_type int_type;
+  typedef typename Traits::underlying_type underlying_type;
+  typedef typename Traits::native_type native_type;
 
   explicit HexFloat(T f) : value_(f) {}
 
@@ -444,33 +456,23 @@ class HexFloat {
   // constant_number < 0? 0: constant_number
   // These convert the negative left-shifts into right shifts.
 
-  template <int_type N, typename enable = void>
-  struct negatable_left_shift {
-    static uint_type val(uint_type val) {
-      return static_cast<uint_type>(val >> -N);
-    }
-  };
+  template <typename int_type>
+  uint_type negatable_left_shift(int_type N, uint_type val)
+  {
+    if(N >= 0)
+      return val << N;
 
-  template <int_type N>
-  struct negatable_left_shift<N, typename std::enable_if<N >= 0>::type> {
-    static uint_type val(uint_type val) {
-      return static_cast<uint_type>(val << N);
-    }
-  };
+    return val >> -N;
+  }
 
-  template <int_type N, typename enable = void>
-  struct negatable_right_shift {
-    static uint_type val(uint_type val) {
-      return static_cast<uint_type>(val << -N);
-    }
-  };
+  template <typename int_type>
+  uint_type negatable_right_shift(int_type N, uint_type val)
+  {
+    if(N >= 0)
+      return val >> N;
 
-  template <int_type N>
-  struct negatable_right_shift<N, typename std::enable_if<N >= 0>::type> {
-    static uint_type val(uint_type val) {
-      return static_cast<uint_type>(val >> N);
-    }
-  };
+    return val << -N;
+  }
 
   // Returns the significand, rounded to fit in a significand in
   // other_T. This is shifted so that the most significant
@@ -479,7 +481,7 @@ class HexFloat {
   template <typename other_T>
   typename other_T::uint_type getRoundedNormalizedSignificand(
       round_direction dir, bool* carry_bit) {
-    using other_uint_type = typename other_T::uint_type;
+    typedef typename other_T::uint_type other_uint_type;
     static const int_type num_throwaway_bits =
         static_cast<int_type>(num_fraction_bits) -
         static_cast<int_type>(other_T::num_fraction_bits);
@@ -487,11 +489,11 @@ class HexFloat {
     static const uint_type last_significant_bit =
         (num_throwaway_bits < 0)
             ? 0
-            : negatable_left_shift<num_throwaway_bits>::val(1u);
+            : negatable_left_shift(num_throwaway_bits, 1u);
     static const uint_type first_rounded_bit =
         (num_throwaway_bits < 1)
             ? 0
-            : negatable_left_shift<num_throwaway_bits - 1>::val(1u);
+            : negatable_left_shift(num_throwaway_bits - 1, 1u);
 
     static const uint_type throwaway_mask_bits =
         num_throwaway_bits > 0 ? num_throwaway_bits : 0;
@@ -513,22 +515,22 @@ class HexFloat {
     // do.
     if ((significand & throwaway_mask) == 0) {
       return static_cast<other_uint_type>(
-          negatable_right_shift<num_throwaway_bits>::val(significand));
+          negatable_right_shift(num_throwaway_bits, significand));
     }
 
     bool round_away_from_zero = false;
     // We actually have to narrow the significand here, so we have to follow the
     // rounding rules.
     switch (dir) {
-      case round_direction::kToZero:
+      case kRoundToZero:
         break;
-      case round_direction::kToPositiveInfinity:
+      case kRoundToPositiveInfinity:
         round_away_from_zero = !isNegative();
         break;
-      case round_direction::kToNegativeInfinity:
+      case kRoundToNegativeInfinity:
         round_away_from_zero = isNegative();
         break;
-      case round_direction::kToNearestEven:
+      case kRoundToNearestEven:
         // Have to round down, round bit is 0
         if ((first_rounded_bit & significand) == 0) {
           break;
@@ -550,11 +552,11 @@ class HexFloat {
 
     if (round_away_from_zero) {
       return static_cast<other_uint_type>(
-          negatable_right_shift<num_throwaway_bits>::val(incrementSignificand(
+          negatable_right_shift(num_throwaway_bits, incrementSignificand(
               significand, last_significant_bit, carry_bit)));
     } else {
       return static_cast<other_uint_type>(
-          negatable_right_shift<num_throwaway_bits>::val(significand));
+          negatable_right_shift(num_throwaway_bits, significand));
     }
   }
 
@@ -608,9 +610,9 @@ class HexFloat {
     if (is_nan) {
       typename other_T::uint_type shifted_significand;
       shifted_significand = static_cast<typename other_T::uint_type>(
-          negatable_left_shift<
+          negatable_left_shift(
               static_cast<int_type>(other_T::num_fraction_bits) -
-              static_cast<int_type>(num_fraction_bits)>::val(significand));
+              static_cast<int_type>(num_fraction_bits), significand));
 
       // We are some sort of Nan. We try to keep the bit-pattern of the Nan
       // as close as possible. If we had to shift off bits so we are 0, then we
@@ -623,9 +625,9 @@ class HexFloat {
     }
 
     bool round_underflow_up =
-        isNegative() ? round_dir == round_direction::kToNegativeInfinity
-                     : round_dir == round_direction::kToPositiveInfinity;
-    using other_int_type = typename other_T::int_type;
+        isNegative() ? round_dir == kRoundToNegativeInfinity
+                     : round_dir == kRoundToPositiveInfinity;
+    typedef typename other_T::int_type other_int_type;
     // setFromSignUnbiasedExponentAndNormalizedSignificand will
     // zero out any underflowing value (but retain the sign).
     other.setFromSignUnbiasedExponentAndNormalizedSignificand(
@@ -664,9 +666,9 @@ inline uint8_t get_nibble_from_character(int character) {
 // Outputs the given HexFloat to the stream.
 template <typename T, typename Traits>
 std::ostream& operator<<(std::ostream& os, const HexFloat<T, Traits>& value) {
-  using HF = HexFloat<T, Traits>;
-  using uint_type = typename HF::uint_type;
-  using int_type = typename HF::int_type;
+  typedef HexFloat<T, Traits> HF;
+  typedef typename HF::uint_type uint_type;
+  typedef typename HF::int_type int_type;
 
   static_assert(HF::num_used_bits != 0,
                 "num_used_bits must be non-zero for a valid float");
@@ -745,7 +747,7 @@ inline bool RejectParseDueToLeadingSign(std::istream& is, bool negate_value,
     if (next_char == '-' || next_char == '+') {
       // Fail the parse.  Emulate standard behaviour by setting the value to
       // the zero value, and set the fail bit on the stream.
-      value = HexFloat<T, Traits>(typename HexFloat<T, Traits>::uint_type{0});
+      value = HexFloat<T, Traits>(typename HexFloat<T, Traits>::uint_type(0));
       is.setstate(std::ios_base::failbit);
       return true;
     }
@@ -777,7 +779,7 @@ inline std::istream& ParseNormalFloat(std::istream& is, bool negate_value,
   value.set_value(val);
   // In the failure case, map -0.0 to 0.0.
   if (is.fail() && value.getUnsignedBits() == 0u) {
-    value = HexFloat<T, Traits>(typename HexFloat<T, Traits>::uint_type{0});
+    value = HexFloat<T, Traits>(typename HexFloat<T, Traits>::uint_type(0));
   }
   if (val.isInfinity()) {
     // Fail the parse.  Emulate standard behaviour by setting the value to
@@ -812,7 +814,7 @@ ParseNormalFloat<FloatProxy<Float16>, HexFloatTraits<FloatProxy<Float16>>>(
 
   // Then convert to 16-bit float, saturating at infinities, and
   // rounding toward zero.
-  float_val.castTo(value, round_direction::kToZero);
+  float_val.castTo(value, kRoundToZero);
 
   // Overflow on 16-bit behaves the same as for 32- and 64-bit: set the
   // fail bit and set the lowest or highest value.

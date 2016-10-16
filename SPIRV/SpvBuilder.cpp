@@ -797,7 +797,7 @@ Id Builder::makeFloat16Constant(float f16, bool specConstant)
 
     spvutils::HexFloat<spvutils::FloatProxy<float>> fVal(f16);
     spvutils::HexFloat<spvutils::FloatProxy<spvutils::Float16>> f16Val(0);
-    fVal.castTo(f16Val, spvutils::round_direction::kToZero);
+    fVal.castTo(f16Val, spvutils::kRoundToZero);
 
     unsigned value = f16Val.value().getAsFloat().get_value();
 
