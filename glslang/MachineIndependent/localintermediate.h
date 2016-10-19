@@ -393,6 +393,9 @@ protected:
     bool userOutputUsed() const;
     static int getBaseAlignmentScalar(const TType&, int& size);
     bool isSpecializationOperation(const TIntermOperator&) const;
+    bool promote(TIntermOperator*);
+    bool promoteUnary(TIntermUnary&);
+    bool promoteBinary(TIntermBinary&);
     
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later
