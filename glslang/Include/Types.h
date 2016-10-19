@@ -598,6 +598,9 @@ public:
         layoutFormat = ElfNone;
 
         layoutPushConstant = false;
+#ifdef NV_EXTENSIONS 
+        layoutOverrideCoverage = false;
+#endif
     }
     bool hasLayout() const
     {
@@ -608,6 +611,9 @@ public:
                hasXfb() ||
                hasFormat() ||
                layoutPushConstant;
+#ifdef NV_EXTENSIONS 
+               layoutOverrideCoverage;
+#endif
     }
     TLayoutMatrix  layoutMatrix  : 3;
     TLayoutPacking layoutPacking : 4;
@@ -650,6 +656,10 @@ public:
     TLayoutFormat layoutFormat                         :  8;
 
     bool layoutPushConstant;
+
+#ifdef NV_EXTENSIONS 
+    bool layoutOverrideCoverage;    // true if layout override_coverage set
+#endif
 
     bool hasUniformLayout() const
     {
@@ -1390,6 +1400,13 @@ public:
         return false;
     }
 
+#ifdef NV_EXTENSIONS 
+    void setLayoutOverrideCoverage(bool b)
+    {
+        qualifier.layoutOverrideCoverage = b;
+    }
+#endif
+
     // Array editing methods.  Array descriptors can be shared across
     // type instances.  This allows all uses of the same array
     // to be updated at once.  E.g., all nodes can be explicitly sized
@@ -1513,6 +1530,12 @@ public:
                     p += snprintf(p, end - p, "constant_id=%d ", qualifier.layoutSpecConstantId);
                 if (qualifier.layoutPushConstant)
                     p += snprintf(p, end - p, "push_constant ");
+
+#ifdef NV_EXTENSIONS 
+                if (qualifier.layoutOverrideCoverage)
+                    p += snprintf(p, end - p, "override_coverage ");
+#endif
+
                 p += snprintf(p, end - p, ") ");
             }
         }

@@ -3436,6 +3436,9 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
          identifier == "gl_BackSecondaryColor"                                                      ||
          identifier == "gl_SecondaryColor"                                                          ||
         (identifier == "gl_Color"               && language == EShLangFragment)                     ||
+#ifdef NV_EXTENSIONS
+         identifier == "gl_SampleMask"                                                              ||
+#endif
          identifier == "gl_TexCoord") {
 
         // Find the existing symbol, if any.
@@ -3516,8 +3519,16 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
                 if (! intermediate.setDepth(publicType.layoutDepth))
                     error(loc, "all redeclarations must use the same depth layout on", "redeclaration", symbol->getName().c_str());
             }
-
         }
+#ifdef NV_EXTENSIONS 
+        else if (identifier == "gl_SampleMask") {
+            if (!qualifier.layoutOverrideCoverage) {
+                error(loc, "redeclaration only allowed for override_coverage layout", "redeclaration", symbol->getName().c_str());
+            }
+            symbol->getWritableType().setLayoutOverrideCoverage(true);
+        }
+#endif
+
         // TODO: semantics quality: separate smooth from nothing declared, then use IsInterpolation for several tests above
 
         return symbol;
@@ -4135,6 +4146,13 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 error(loc, "unknown blend equation", "blend_support", "");
             return;
         }
+#ifdef NV_EXTENSIONS 
+        if (id == "override_coverage") {
+            requireExtensions(loc, 1, &E_GL_NV_sample_mask_override_coverage, "sample mask override coverage");
+            publicType.qualifier.layoutOverrideCoverage = true;
+            return;
+        }
+#endif
     }
     error(loc, "unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4)", id.c_str(), "");
 }
@@ -4440,6 +4458,10 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
 
         if (src.layoutPushConstant)
             dst.layoutPushConstant = true;
+#ifdef NV_EXTENSIONS 
+        if (src.layoutOverrideCoverage)
+            dst.layoutOverrideCoverage = true;
+#endif
     }
 }
 

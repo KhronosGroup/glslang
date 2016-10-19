@@ -194,6 +194,10 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_AMD_gcn_shader]                           = EBhDisable;
 #endif
 
+#ifdef NV_EXTENSIONS 
+    extensionBehavior[E_GL_NV_sample_mask_override_coverage]         = EBhDisable;
+#endif
+
     // AEP
     extensionBehavior[E_GL_ANDROID_extension_pack_es31a]             = EBhDisable;
     extensionBehavior[E_GL_KHR_blend_equation_advanced]              = EBhDisable;
