@@ -1397,13 +1397,13 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 TOperator HlslParseContext::mapAtomicOp(const TSourceLoc& loc, TOperator op, bool isImage)
 {
     switch (op) {
-    case EOpInterlockedAdd:             return isImage ? EOpImageAtomicAdd : EOpAtomicAdd;
-    case EOpInterlockedAnd:             return isImage ? EOpImageAtomicAnd : EOpAtomicAnd;
+    case EOpInterlockedAdd:             return isImage ? EOpImageAtomicAdd      : EOpAtomicAdd;
+    case EOpInterlockedAnd:             return isImage ? EOpImageAtomicAnd      : EOpAtomicAnd;
     case EOpInterlockedCompareExchange: return isImage ? EOpImageAtomicCompSwap : EOpAtomicCompSwap;
-    case EOpInterlockedMax:             return isImage ? EOpImageAtomicMax : EOpAtomicMax;
-    case EOpInterlockedMin:             return isImage ? EOpImageAtomicMin : EOpAtomicMin;
-    case EOpInterlockedOr:              return isImage ? EOpImageAtomicOr : EOpAtomicOr;
-    case EOpInterlockedXor:             return isImage ? EOpImageAtomicXor : EOpAtomicXor;
+    case EOpInterlockedMax:             return isImage ? EOpImageAtomicMax      : EOpAtomicMax;
+    case EOpInterlockedMin:             return isImage ? EOpImageAtomicMin      : EOpAtomicMin;
+    case EOpInterlockedOr:              return isImage ? EOpImageAtomicOr       : EOpAtomicOr;
+    case EOpInterlockedXor:             return isImage ? EOpImageAtomicXor      : EOpAtomicXor;
     case EOpInterlockedExchange:        return isImage ? EOpImageAtomicExchange : EOpAtomicExchange;
     case EOpInterlockedCompareStore:  // TODO: ... 
     default:
@@ -2052,6 +2052,27 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 //
 void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
 {
+    // Helper to find image data for image atomics:
+    // OpImageLoad(image[idx])
+    // We take the image load apart and add its params to the atomic op aggregate node
+    const auto imageAtomicParams = [this, &loc, &node](TIntermAggregate* atomic, TIntermTyped* load) {
+        TIntermAggregate* loadOp = load->getAsAggregate();
+        if (loadOp == nullptr) {
+            error(loc, "unknown image type in atomic operation", "", "");
+            node = nullptr;
+            return;
+        }
+
+        atomic->getSequence().push_back(loadOp->getSequence()[0]);
+        atomic->getSequence().push_back(loadOp->getSequence()[1]);
+    };
+
+    // Return true if this is an imageLoad, which we will change to an image atomic.
+    const auto isImageParam = [](TIntermTyped* image) {
+        TIntermAggregate* imageAggregate = image->getAsAggregate();
+        return imageAggregate != nullptr && imageAggregate->getOp() == EOpImageLoad;
+    };
+
     // HLSL intrinsics can be pass through to native AST opcodes, or decomposed here to existing AST
     // opcodes for compatibility with existing software stacks.
     static const bool decomposeHlslIntrinsics = true;
@@ -2232,27 +2253,43 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
     case EOpInterlockedXor: // ...
     case EOpInterlockedExchange: // always has output arg
         {
-            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();
-            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();
+            TIntermTyped* arg0 = argAggregate->getSequence()[0]->getAsTyped();  // dest
+            TIntermTyped* arg1 = argAggregate->getSequence()[1]->getAsTyped();  // value
+            TIntermTyped* arg2 = nullptr;
 
-            const bool isImage = arg0->getType().isImage();
+            if (argAggregate->getSequence().size() > 2)
+                arg2 = argAggregate->getSequence()[2]->getAsTyped();
+
+            const bool isImage = isImageParam(arg0);
             const TOperator atomicOp = mapAtomicOp(loc, op, isImage);
-
-            if (argAggregate->getSequence().size() > 2) {
-                // optional output param is present.  return value goes to arg2.
-                TIntermTyped* arg2 = argAggregate->getSequence()[2]->getAsTyped();
-
-                TIntermAggregate* atomic = new TIntermAggregate(atomicOp);
-                atomic->getSequence().push_back(arg0);
+            TIntermAggregate* atomic = new TIntermAggregate(atomicOp);
+            atomic->setType(arg0->getType());
+            atomic->getWritableType().getQualifier().makeTemporary();
+            atomic->setLoc(loc);
+ 
+            if (isImage) {
+                // orig_value = imageAtomicOp(image, loc, data)
+                imageAtomicParams(atomic, arg0);
                 atomic->getSequence().push_back(arg1);
-                atomic->setLoc(loc);
-                atomic->setType(arg0->getType());
-                atomic->getWritableType().getQualifier().makeTemporary();
 
-                node = intermediate.addAssign(EOpAssign, arg2, atomic, loc);
+                if (argAggregate->getSequence().size() > 2) {
+                    node = intermediate.addAssign(EOpAssign, arg2, atomic, loc);
+                } else {
+                    node = atomic; // no assignment needed, as there was no out var.
+                }
             } else {
-                // Set the matching operator.  Since output is absent, this is all we need to do.
-                node->getAsAggregate()->setOperator(atomicOp);
+                // Normal memory variable:
+                // arg0 = mem, arg1 = data, arg2(optional,out) = orig_value
+                if (argAggregate->getSequence().size() > 2) {
+                    // optional output param is present.  return value goes to arg2.
+                    atomic->getSequence().push_back(arg0);
+                    atomic->getSequence().push_back(arg1);
+
+                    node = intermediate.addAssign(EOpAssign, arg2, atomic, loc);
+                } else {
+                    // Set the matching operator.  Since output is absent, this is all we need to do.
+                    node->getAsAggregate()->setOperator(atomicOp);
+                }
             }
 
             break;
@@ -2265,15 +2302,20 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             TIntermTyped* arg2 = argAggregate->getSequence()[2]->getAsTyped();  // value
             TIntermTyped* arg3 = argAggregate->getSequence()[3]->getAsTyped();  // orig
 
-            const bool isImage = arg0->getType().isImage();
+            const bool isImage = isImageParam(arg0);
             TIntermAggregate* atomic = new TIntermAggregate(mapAtomicOp(loc, op, isImage));
-            atomic->getSequence().push_back(arg0);
-            atomic->getSequence().push_back(arg1);
-            atomic->getSequence().push_back(arg2);
             atomic->setLoc(loc);
             atomic->setType(arg2->getType());
             atomic->getWritableType().getQualifier().makeTemporary();
 
+            if (isImage) {
+                imageAtomicParams(atomic, arg0);
+            } else {
+                atomic->getSequence().push_back(arg0);
+            }
+
+            atomic->getSequence().push_back(arg1);
+            atomic->getSequence().push_back(arg2);
             node = intermediate.addAssign(EOpAssign, arg3, atomic, loc);
             
             break;
