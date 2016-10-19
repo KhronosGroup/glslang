@@ -261,7 +261,7 @@ const char* DecorationString(int decoration)
     case 4999: return "ExplicitInterpAMD";
 #endif
 #ifdef NV_EXTENSIONS
-    case 5000: return "OverrideCoverageNV";
+    case 5248: return "OverrideCoverageNV";
 #endif
     }
 }
