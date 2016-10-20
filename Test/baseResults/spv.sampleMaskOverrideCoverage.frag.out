@@ -43,3 +43,4 @@ Linked fragment stage:
               15:     14(ptr) AccessChain 11(gl_SampleMask) 12
                               Store 15 13
                               Return
+                              FunctionEnd
