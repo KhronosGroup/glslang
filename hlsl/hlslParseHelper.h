@@ -41,6 +41,8 @@
 
 namespace glslang {
 
+class TAttributeMap; // forward declare
+
 class HlslParseContext : public TParseContextBase {
 public:
     HlslParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins,
@@ -69,7 +71,7 @@ public:
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
     void assignLocations(TVariable& variable);
     TFunction& handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
-    TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&);
+    TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&, const TAttributeMap&);
     void handleFunctionBody(const TSourceLoc&, TFunction&, TIntermNode* functionBody, TIntermNode*& node);
     void remapEntryPointIO(TFunction& function);
     void remapNonEntryPointIO(TFunction& function);
