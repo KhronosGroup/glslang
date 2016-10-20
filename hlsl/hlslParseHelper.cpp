@@ -1496,6 +1496,10 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             constructCoord->getSequence().push_back(arg1);
             constructCoord->setLoc(loc);
 
+            // The input vector should never be less than 2, since there's always a bias.
+            // The max is for safety, and should be a no-op.
+            constructCoord->setType(TType(arg1->getBasicType(), EvqTemporary, std::max(arg1->getVectorSize() - 1, 0)));
+
             TIntermAggregate* tex = new TIntermAggregate(EOpTexture);
             tex->getSequence().push_back(arg0);           // sampler
             tex->getSequence().push_back(constructCoord); // coordinate
@@ -1725,6 +1729,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             if (coordDimWithCmpVal != 5) // cube array shadow is special.
                 coordWithCmp->getSequence().push_back(argCmpVal);
             coordWithCmp->setLoc(loc);
+            coordWithCmp->setType(TType(argCoord->getBasicType(), EvqTemporary, std::min(coordDimWithCmpVal, 4)));
 
             TOperator textureOp = (op == EOpMethodSampleCmpLevelZero ? EOpTextureLod : EOpTexture);
             if (argOffset != nullptr)
