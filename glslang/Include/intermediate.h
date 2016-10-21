@@ -47,8 +47,8 @@
 #define __INTERMEDIATE_H
 
 #if _MSC_VER >= 1900
-	#pragma warning( disable : 4464 )	// relative include path contains '..'
-	#pragma warning( disable : 5026	)	// 'glslang::TIntermUnary': move constructor was implicitly defined as deleted
+    #pragma warning(disable : 4464) // relative include path contains '..'
+    #pragma warning(disable : 5026) // 'glslang::TIntermUnary': move constructor was implicitly defined as deleted
 #endif
 
 #include "../Include/Common.h"
