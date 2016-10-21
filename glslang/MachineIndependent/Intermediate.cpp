@@ -137,8 +137,8 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     // one and promote it to the right type.
     //
     TIntermBinary* node = addBinaryNode(op, left, right, loc);
-    if (! node->promote())
-        return 0;
+    if (! promote(node))
+        return nullptr;
 
     node->updatePrecision();
 
@@ -246,7 +246,7 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
     // build the node
     TIntermBinary* node = addBinaryNode(op, left, right, loc);
 
-    if (! node->promote())
+    if (! promote(node))
         return nullptr;
 
     node->updatePrecision();
@@ -282,6 +282,10 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
 
     switch (op) {
     case EOpLogicalNot:
+        if (source == EShSourceHlsl) {
+            break; // HLSL can promote logical not
+        }
+ 
         if (child->getType().getBasicType() != EbtBool || child->getType().isMatrix() || child->getType().isArray() || child->getType().isVector()) {
             return 0;
         }
@@ -349,8 +353,8 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     //
     TIntermUnary* node = addUnaryNode(op, child, loc);
 
-    if (! node->promote())
-        return 0;
+    if (! promote(node))
+        return nullptr;
 
     node->updatePrecision();
 
@@ -555,6 +559,10 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpAndAssign:
     case EOpInclusiveOrAssign:
     case EOpExclusiveOrAssign:
+    case EOpLogicalNot:
+    case EOpLogicalAnd:
+    case EOpLogicalOr:
+    case EOpLogicalXor:
 
     case EOpFunctionCall:
     case EOpReturn:
@@ -841,6 +849,10 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EOpModAssign:               // ... 
             case EOpReturn:                  // function returns can also perform arbitrary conversions
             case EOpFunctionCall:            // conversion of a calling parameter
+            case EOpLogicalNot:
+            case EOpLogicalAnd:
+            case EOpLogicalOr:
+            case EOpLogicalXor:
                 return true;
             default:
                 break;
@@ -873,6 +885,8 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         case EbtFloat16:
 #endif
             return true;
+        case EbtBool:
+            return (source == EShSourceHlsl);
         default:
             return false;
         }
@@ -1711,18 +1725,46 @@ bool TIntermOperator::isConstructor() const
 }
 
 //
-// Make sure the type of a unary operator is appropriate for its
-// combination of operation and operand type.
+// Make sure the type of an operator is appropriate for its
+// combination of operation and operand type.  This will invoke
+// promoteUnary, promoteBinary, etc as needed.
 //
-// Returns false in nothing makes sense.
+// Returns false if nothing makes sense.
 //
-bool TIntermUnary::promote()
+bool TIntermediate::promote(TIntermOperator* node)
 {
+    if (node == nullptr)
+        return false;
+
+    if (node->getAsUnaryNode())
+        return promoteUnary(*node->getAsUnaryNode());
+
+    if (node->getAsBinaryNode())
+        return promoteBinary(*node->getAsBinaryNode());
+
+    return false;
+}
+
+//
+// See TIntermediate::promote
+//
+bool TIntermediate::promoteUnary(TIntermUnary& node)
+{
+    const TOperator op    = node.getOp();
+    TIntermTyped* operand = node.getOperand();
+
     switch (op) {
     case EOpLogicalNot:
-        if (operand->getBasicType() != EbtBool)
+        // Convert operand to a boolean type
+        if (operand->getBasicType() != EbtBool) {
+            // Add constructor to boolean type. If that fails, we can't do it, so return false.
+            TIntermTyped* converted = convertToBasicType(op, EbtBool, operand);
+            if (converted == nullptr)
+                return false;
 
-            return false;
+            // Use the result of converting the node to a bool.
+            node.setOperand(operand = converted); // also updates stack variable
+        }
         break;
     case EOpBitwiseNot:
         if (operand->getBasicType() != EbtInt &&
@@ -1756,8 +1798,8 @@ bool TIntermUnary::promote()
             return false;
     }
 
-    setType(operand->getType());
-    getWritableType().getQualifier().makeTemporary();
+    node.setType(operand->getType());
+    node.getWritableType().getQualifier().makeTemporary();
 
     return true;
 }
@@ -1774,14 +1816,33 @@ void TIntermUnary::updatePrecision()
     }
 }
 
-//
-// Establishes the type of the resultant operation, as well as
-// makes the operator the correct one for the operands.
-//
-// Returns false if operator can't work on operands.
-//
-bool TIntermBinary::promote()
+// If it is not already, convert this node to the given basic type.
+TIntermTyped* TIntermediate::convertToBasicType(TOperator op, TBasicType basicType, TIntermTyped* node) const
 {
+    if (node == nullptr)
+        return nullptr;
+
+    // It's already this basic type: nothing needs to be done, so use the node directly.
+    if (node->getBasicType() == basicType)
+        return node;
+
+    const TType& type = node->getType();
+    const TType newType(basicType, type.getQualifier().storage,
+                        type.getVectorSize(), type.getMatrixCols(), type.getMatrixRows(), type.isVector());
+
+    // Add constructor to the right vectorness of the right type. If that fails, we can't do it, so return nullptr.
+    return addConversion(op, newType, node);
+}
+
+//
+// See TIntermediate::promote
+//
+bool TIntermediate::promoteBinary(TIntermBinary& node)
+{
+    TOperator     op    = node.getOp();
+    TIntermTyped* left  = node.getLeft();
+    TIntermTyped* right = node.getRight();
+
     // Arrays and structures have to be exact matches.
     if ((left->isArray() || right->isArray() || left->getBasicType() == EbtStruct || right->getBasicType() == EbtStruct)
         && left->getType() != right->getType())
@@ -1789,8 +1850,8 @@ bool TIntermBinary::promote()
 
     // Base assumption:  just make the type the same as the left
     // operand.  Only deviations from this will be coded.
-    setType(left->getType());
-    type.getQualifier().clear();
+    node.setType(left->getType());
+    node.getWritableType().getQualifier().clear();
 
     // Composite and opaque types don't having pending operator changes, e.g.,
     // array, structure, and samplers.  Just establish final type and correctness.
@@ -1803,7 +1864,7 @@ bool TIntermBinary::promote()
                 return false;
             } else {
                 // Promote to conditional
-                setType(TType(EbtBool));
+                node.setType(TType(EbtBool));
             }
 
             return true;
@@ -1831,23 +1892,32 @@ bool TIntermBinary::promote()
         // Relational comparisons need numeric types and will promote to scalar Boolean.
         if (left->getBasicType() == EbtBool)
             return false;
-        setType(TType(EbtBool));
+        node.setType(TType(EbtBool));
         break;
 
     case EOpEqual:
     case EOpNotEqual:
         // All the above comparisons result in a bool (but not the vector compares)
-        setType(TType(EbtBool));
+        node.setType(TType(EbtBool));
         break;
 
     case EOpLogicalAnd:
     case EOpLogicalOr:
     case EOpLogicalXor:
+        if (getSource() == EShSourceHlsl) {
+            TIntermTyped* convertedL = convertToBasicType(op, EbtBool, left);
+            TIntermTyped* convertedR = convertToBasicType(op, EbtBool, right);
+            if (convertedL == nullptr || convertedR == nullptr)
+                return false;
+            node.setLeft(left = convertedL);   // also updates stack variable
+            node.setRight(right = convertedR); // also updates stack variable
+        }
+
         // logical ops operate only on scalar Booleans and will promote to scalar Boolean.
         if (left->getBasicType() != EbtBool || left->isVector() || left->isMatrix())
             return false;
 
-        setType(TType(EbtBool));
+        node.setType(TType(EbtBool));
         break;
 
     case EOpRightShift:
@@ -1864,6 +1934,9 @@ bool TIntermBinary::promote()
     case EOpAndAssign:
     case EOpInclusiveOrAssign:
     case EOpExclusiveOrAssign:
+        if (getSource() == EShSourceHlsl)
+            break;
+
         // Check for integer-only operands.
         if ((left->getBasicType() != EbtInt &&  left->getBasicType() != EbtUint &&
              left->getBasicType() != EbtInt64 &&  left->getBasicType() != EbtUint64) ||
@@ -1960,33 +2033,33 @@ bool TIntermBinary::promote()
             if (left->isVector()) {
                 if (left->getVectorSize() != right->getMatrixRows())
                     return false;
-                op = EOpVectorTimesMatrix;
-                setType(TType(basicType, EvqTemporary, right->getMatrixCols()));
+                node.setOp(op = EOpVectorTimesMatrix);
+                node.setType(TType(basicType, EvqTemporary, right->getMatrixCols()));
             } else {
-                op = EOpMatrixTimesScalar;
-                setType(TType(basicType, EvqTemporary, 0, right->getMatrixCols(), right->getMatrixRows()));
+                node.setOp(op = EOpMatrixTimesScalar);
+                node.setType(TType(basicType, EvqTemporary, 0, right->getMatrixCols(), right->getMatrixRows()));
             }
         } else if (left->isMatrix() && !right->isMatrix()) {
             if (right->isVector()) {
                 if (left->getMatrixCols() != right->getVectorSize())
                     return false;
-                op = EOpMatrixTimesVector;
-                setType(TType(basicType, EvqTemporary, left->getMatrixRows()));
+                node.setOp(op = EOpMatrixTimesVector);
+                node.setType(TType(basicType, EvqTemporary, left->getMatrixRows()));
             } else {
-                op = EOpMatrixTimesScalar;
+                node.setOp(op = EOpMatrixTimesScalar);
             }
         } else if (left->isMatrix() && right->isMatrix()) {
             if (left->getMatrixCols() != right->getMatrixRows())
                 return false;
-            op = EOpMatrixTimesMatrix;
-            setType(TType(basicType, EvqTemporary, 0, right->getMatrixCols(), left->getMatrixRows()));
+            node.setOp(op = EOpMatrixTimesMatrix);
+            node.setType(TType(basicType, EvqTemporary, 0, right->getMatrixCols(), left->getMatrixRows()));
         } else if (! left->isMatrix() && ! right->isMatrix()) {
             if (left->isVector() && right->isVector()) {
                 ; // leave as component product
             } else if (left->isVector() || right->isVector()) {
-                op = EOpVectorTimesScalar;
+                node.setOp(op = EOpVectorTimesScalar);
                 if (right->isVector())
-                    setType(TType(basicType, EvqTemporary, right->getVectorSize()));
+                    node.setType(TType(basicType, EvqTemporary, right->getVectorSize()));
             }
         } else {
             return false;
@@ -1997,7 +2070,7 @@ bool TIntermBinary::promote()
             if (left->isVector()) {
                 if (left->getVectorSize() != right->getMatrixRows() || left->getVectorSize() != right->getMatrixCols())
                     return false;
-                op = EOpVectorTimesMatrixAssign;
+                node.setOp(op = EOpVectorTimesMatrixAssign);
             } else {
                 return false;
             }
@@ -2005,19 +2078,19 @@ bool TIntermBinary::promote()
             if (right->isVector()) {
                 return false;
             } else {
-                op = EOpMatrixTimesScalarAssign;
+                node.setOp(op = EOpMatrixTimesScalarAssign);
             }
         } else if (left->isMatrix() && right->isMatrix()) {
             if (left->getMatrixCols() != left->getMatrixRows() || left->getMatrixCols() != right->getMatrixCols() || left->getMatrixCols() != right->getMatrixRows())
                 return false;
-            op = EOpMatrixTimesMatrixAssign;
+            node.setOp(op = EOpMatrixTimesMatrixAssign);
         } else if (!left->isMatrix() && !right->isMatrix()) {
             if (left->isVector() && right->isVector()) {
                 // leave as component product
             } else if (left->isVector() || right->isVector()) {
                 if (! left->isVector())
                     return false;
-                op = EOpVectorTimesScalarAssign;
+                node.setOp(op = EOpVectorTimesScalarAssign);
             }
         } else {
             return false;
@@ -2051,6 +2124,7 @@ bool TIntermBinary::promote()
     case EOpAndAssign:
     case EOpInclusiveOrAssign:
     case EOpExclusiveOrAssign:
+
         if ((left->isMatrix() && right->isVector()) ||
             (left->isVector() && right->isMatrix()) ||
             left->getBasicType() != right->getBasicType())
@@ -2060,8 +2134,8 @@ bool TIntermBinary::promote()
         if (left->isVector() && right->isVector() && left->getVectorSize() != right->getVectorSize())
             return false;
         if (right->isVector() || right->isMatrix()) {
-            type.shallowCopy(right->getType());
-            type.getQualifier().makeTemporary();
+            node.getWritableType().shallowCopy(right->getType());
+            node.getWritableType().getQualifier().makeTemporary();
         }
         break;
 
@@ -2085,7 +2159,7 @@ bool TIntermBinary::promote()
     case EOpExclusiveOrAssign:
     case EOpLeftShiftAssign:
     case EOpRightShiftAssign:
-        if (getType() != left->getType())
+        if (node.getType() != left->getType())
             return false;
         break;
     default:

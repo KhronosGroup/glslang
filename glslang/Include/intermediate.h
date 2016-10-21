@@ -52,6 +52,8 @@
 
 namespace glslang {
 
+class TIntermediate;
+
 //
 // Operators used by the high-level (parse tree) representation.
 //
@@ -845,7 +847,7 @@ public:
     virtual       TIntermOperator* getAsOperator()       { return this; }
     virtual const TIntermOperator* getAsOperator() const { return this; }
     TOperator getOp() const { return op; }
-    virtual bool promote() { return true; }
+    void setOp(TOperator newOp) { op = newOp; }
     bool modifiesState() const;
     bool isConstructor() const;
     bool isTexture()  const { return op > EOpTextureGuardBegin  && op < EOpTextureGuardEnd; }
@@ -1024,7 +1026,6 @@ public:
     virtual TIntermTyped* getRight() const { return right; }
     virtual       TIntermBinary* getAsBinaryNode()       { return this; }
     virtual const TIntermBinary* getAsBinaryNode() const { return this; }
-    virtual bool promote();
     virtual void updatePrecision();
 protected:
     TIntermTyped* left;
@@ -1044,7 +1045,6 @@ public:
     virtual const TIntermTyped* getOperand() const { return operand; }
     virtual       TIntermUnary* getAsUnaryNode()       { return this; }
     virtual const TIntermUnary* getAsUnaryNode() const { return this; }
-    virtual bool promote();
     virtual void updatePrecision();
 protected:
     TIntermTyped* operand;

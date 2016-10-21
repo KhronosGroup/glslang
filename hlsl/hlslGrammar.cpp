@@ -1935,7 +1935,10 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
         return true;
 
     node = intermediate.addUnaryMath(unaryOp, node, loc);
-    node = parseContext.handleLvalue(loc, "unary operator", node);
+
+    // These unary ops require lvalues
+    if (unaryOp == EOpPreIncrement || unaryOp == EOpPreDecrement)
+        node = parseContext.handleLvalue(loc, "unary operator", node);
 
     return node != nullptr;
 }
