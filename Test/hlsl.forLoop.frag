@@ -2,9 +2,9 @@ float4 PixelShaderFunction(float4 input) : COLOR0
 {
     for (;;) ;
     for (++input; ; ) ;
-    [unroll] for (; input != input; ) {}
-    for (; input != input; ) { return -input; }
-    for (--input; input != input; input += 2) { return -input; }
+    [unroll] for (; any(input != input); ) {}
+    for (; any(input != input); ) { return -input; }
+    for (--input; any(input != input); input += 2) { return -input; }
 	for (;;) if (input.x > 2.0) break;
 	for (;;) if (input.x > 2.0) continue;
 	float ii;

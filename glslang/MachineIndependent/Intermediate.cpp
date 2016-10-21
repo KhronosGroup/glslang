@@ -1892,13 +1892,26 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
         // Relational comparisons need numeric types and will promote to scalar Boolean.
         if (left->getBasicType() == EbtBool)
             return false;
-        node.setType(TType(EbtBool));
+
+        node.setType(TType(EbtBool, EvqTemporary, left->getVectorSize()));
         break;
 
     case EOpEqual:
     case EOpNotEqual:
-        // All the above comparisons result in a bool (but not the vector compares)
-        node.setType(TType(EbtBool));
+        if (getSource() == EShSourceHlsl) {
+            const int resultWidth = std::max(left->getVectorSize(), right->getVectorSize());
+
+            // In HLSL, == or != on vectors means component-wise comparison.
+            if (resultWidth > 1) {
+                op = (op == EOpEqual) ? EOpVectorEqual : EOpVectorNotEqual;
+                node.setOp(op);
+            }
+
+            node.setType(TType(EbtBool, EvqTemporary, resultWidth));
+        } else {
+            // All the above comparisons result in a bool (but not the vector compares)
+            node.setType(TType(EbtBool));
+        }
         break;
 
     case EOpLogicalAnd:
@@ -1973,6 +1986,8 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
 
     case EOpEqual:
     case EOpNotEqual:
+    case EOpVectorEqual:
+    case EOpVectorNotEqual:
 
     case EOpLogicalAnd:
     case EOpLogicalOr:
