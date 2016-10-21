@@ -34,7 +34,7 @@ enum Op;
 static const int GLSLextNVVersion = 100;
 static const int GLSLextNVRevision = 1;
 
-//GL_NV_sample_mask_override_coverage
+//SPV_NV_sample_mask_override_coverage
 const char* const E_SPV_NV_sample_mask_override_coverage = "SPV_NV_sample_mask_override_coverage";
 
 static const Decoration OverrideCoverageNV = static_cast<Decoration>(5248);
