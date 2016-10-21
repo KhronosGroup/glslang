@@ -1,5 +1,7 @@
 spv.aggOps.frag
 Warning, version 450 is not yet complete; most version-specific features are present, but some are missing.
+WARNING: 0:4: '' : all default precisions are highp; use precision statements to quiet warning, e.g.:
+         "precision mediump int; precision highp float;" 
 
 
 Linked fragment stage:
@@ -64,6 +66,11 @@ Linked fragment stage:
                               Decorate 66(ub2) BufferBlock
                               Decorate 68(uName2) DescriptorSet 0
                               Decorate 97(samp2D) DescriptorSet 0
+                              Decorate 101(coord) RelaxedPrecision
+                              Decorate 102 RelaxedPrecision
+                              Decorate 107 RelaxedPrecision
+                              Decorate 108 RelaxedPrecision
+                              Decorate 129 RelaxedPrecision
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

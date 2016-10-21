@@ -41,7 +41,7 @@
 // This is the platform independent interface between an OGL driver
 // and the shading language compiler/linker.
 //
-#include <string.h>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <memory>
@@ -51,6 +51,7 @@
 #include "../../hlsl/hlslParseables.h"
 #include "Scan.h"
 #include "ScanContext.h"
+#include "../../hlsl/hlslScanContext.h"
 
 #include "../Include/ShHandle.h"
 #include "../../OGLCompilersDLL/InitializeDll.h"
@@ -60,6 +61,7 @@
 #define SH_EXPORTING
 #include "../Public/ShaderLang.h"
 #include "reflection.h"
+#include "iomapper.h"
 #include "Initialize.h"
 
 namespace { // anonymous namespace for file-local functions and symbols
@@ -146,6 +148,23 @@ int MapProfileToIndex(EProfile profile)
     return index;
 }
 
+const int SourceCount = 2;
+
+int MapSourceToIndex(EShSource source)
+{
+    int index = 0;
+
+    switch (source) {
+    case EShSourceGlsl: index = 0; break;
+    case EShSourceHlsl: index = 1; break;
+    default:                       break;
+    }
+
+    assert(index < SourceCount);
+
+    return index;
+}
+
 // only one of these needed for non-ES; ES needs 2 for different precision defaults of built-ins
 enum EPrecisionClass {
     EPcGeneral,
@@ -161,8 +180,8 @@ enum EPrecisionClass {
 // Each has a different set of built-ins, and we want to preserve that from
 // compile to compile.
 //
-TSymbolTable* CommonSymbolTable[VersionCount][SpvVersionCount][ProfileCount][EPcCount] = {};
-TSymbolTable* SharedSymbolTables[VersionCount][SpvVersionCount][ProfileCount][EShLangCount] = {};
+TSymbolTable* CommonSymbolTable[VersionCount][SpvVersionCount][ProfileCount][SourceCount][EPcCount] = {};
+TSymbolTable* SharedSymbolTables[VersionCount][SpvVersionCount][ProfileCount][SourceCount][EShLangCount] = {};
 
 TPoolAllocator* PerProcessGPA = 0;
 
@@ -305,7 +324,8 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
     int versionIndex = MapVersionToIndex(version);
     int spvVersionIndex = MapSpvVersionToIndex(spvVersion);
     int profileIndex = MapProfileToIndex(profile);
-    if (CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][EPcGeneral]) {
+    int sourceIndex = MapSourceToIndex(source);
+    if (CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][sourceIndex][EPcGeneral]) {
         glslang::ReleaseGlobalLock();
 
         return;
@@ -333,18 +353,18 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
     // Copy the local symbol tables from the new pool to the global tables using the process-global pool
     for (int precClass = 0; precClass < EPcCount; ++precClass) {
         if (! commonTable[precClass]->isEmpty()) {
-            CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][precClass] = new TSymbolTable;
-            CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][precClass]->copyTable(*commonTable[precClass]);
-            CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][precClass]->readOnly();
+            CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][sourceIndex][precClass] = new TSymbolTable;
+            CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][sourceIndex][precClass]->copyTable(*commonTable[precClass]);
+            CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][sourceIndex][precClass]->readOnly();
         }
     }
     for (int stage = 0; stage < EShLangCount; ++stage) {
         if (! stageTables[stage]->isEmpty()) {
-            SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][stage] = new TSymbolTable;
-            SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][stage]->adoptLevels(*CommonSymbolTable
-                              [versionIndex][spvVersionIndex][profileIndex][CommonIndex(profile, (EShLanguage)stage)]);
-            SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][stage]->copyTable(*stageTables[stage]);
-            SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][stage]->readOnly();
+            SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][sourceIndex][stage] = new TSymbolTable;
+            SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][sourceIndex][stage]->adoptLevels(*CommonSymbolTable
+                              [versionIndex][spvVersionIndex][profileIndex][sourceIndex][CommonIndex(profile, (EShLanguage)stage)]);
+            SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][sourceIndex][stage]->copyTable(*stageTables[stage]);
+            SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][sourceIndex][stage]->readOnly();
         }    
     }
 
@@ -656,6 +676,7 @@ bool ProcessDeferred(
     TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]
                                                   [MapSpvVersionToIndex(spvVersion)]
                                                   [MapProfileToIndex(profile)]
+                                                  [MapSourceToIndex(source)]
                                                   [compiler->getLanguage()];
     
     // Dynamically allocate the symbol table so we can control when it is deallocated WRT the pool.
@@ -676,10 +697,9 @@ bool ProcessDeferred(
     TParseContextBase* parseContext;
     if (source == EShSourceHlsl) {
         parseContext = new HlslParseContext(symbolTable, intermediate, false, version, profile, spvVersion,
-                                             compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
-    }
-    else {
-        intermediate.setEntryPoint("main");
+                                            compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
+    } else {
+        intermediate.setEntryPointName("main");
         parseContext = new TParseContext(symbolTable, intermediate, false, version, profile, spvVersion,
                                          compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
     }
@@ -1030,6 +1050,7 @@ int ShInitialize()
         PerProcessGPA = new TPoolAllocator();
 
     glslang::TScanContext::fillInKeywordMap();
+    glslang::HlslScanContext::fillInKeywordMap();
 
     return 1;
 }
@@ -1092,9 +1113,11 @@ int __fastcall ShFinalize()
     for (int version = 0; version < VersionCount; ++version) {
         for (int spvVersion = 0; spvVersion < SpvVersionCount; ++spvVersion) {
             for (int p = 0; p < ProfileCount; ++p) {
-                for (int lang = 0; lang < EShLangCount; ++lang) {
-                    delete SharedSymbolTables[version][spvVersion][p][lang];
-                    SharedSymbolTables[version][spvVersion][p][lang] = 0;
+                for (int source = 0; source < SourceCount; ++source) {
+                    for (int stage = 0; stage < EShLangCount; ++stage) {
+                        delete SharedSymbolTables[version][spvVersion][p][source][stage];
+                        SharedSymbolTables[version][spvVersion][p][source][stage] = 0;
+                    }
                 }
             }
         }
@@ -1103,9 +1126,11 @@ int __fastcall ShFinalize()
     for (int version = 0; version < VersionCount; ++version) {
         for (int spvVersion = 0; spvVersion < SpvVersionCount; ++spvVersion) {
             for (int p = 0; p < ProfileCount; ++p) {
-                for (int pc = 0; pc < EPcCount; ++pc) {
-                    delete CommonSymbolTable[version][spvVersion][p][pc];
-                    CommonSymbolTable[version][spvVersion][p][pc] = 0;
+                for (int source = 0; source < SourceCount; ++source) {
+                    for (int pc = 0; pc < EPcCount; ++pc) {
+                        delete CommonSymbolTable[version][spvVersion][p][source][pc];
+                        CommonSymbolTable[version][spvVersion][p][source][pc] = 0;
+                    }
                 }
             }
         }
@@ -1118,6 +1143,7 @@ int __fastcall ShFinalize()
     }
 
     glslang::TScanContext::deleteKeywordMap();
+    glslang::HlslScanContext::deleteKeywordMap();
 
     return 1;
 }
@@ -1463,8 +1489,15 @@ void TShader::setStringsWithLengthsAndNames(
 
 void TShader::setEntryPoint(const char* entryPoint)
 {
-    intermediate->setEntryPoint(entryPoint);
+    intermediate->setEntryPointName(entryPoint);
 }
+
+void TShader::setShiftSamplerBinding(unsigned int base) { intermediate->setShiftSamplerBinding(base); }
+void TShader::setShiftTextureBinding(unsigned int base) { intermediate->setShiftTextureBinding(base); }
+void TShader::setShiftUboBinding(unsigned int base)     { intermediate->setShiftUboBinding(base); }
+void TShader::setAutoMapBindings(bool map)              { intermediate->setAutoMapBindings(map); }
+void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlattenUniformArrays(flatten); }
+void TShader::setNoStorageFormat(bool useUnknownFormat) { intermediate->setNoStorageFormat(useUnknownFormat); }
 
 //
 // Turn the shader strings into a parse tree in the TIntermediate.
@@ -1526,7 +1559,7 @@ const char* TShader::getInfoDebugLog()
     return infoSink->debug.c_str();
 }
 
-TProgram::TProgram() : pool(0), reflection(0), linked(false)
+TProgram::TProgram() : pool(0), reflection(0), ioMapper(nullptr), linked(false)
 {
     infoSink = new TInfoSink;
     for (int s = 0; s < EShLangCount; ++s) {
@@ -1662,20 +1695,42 @@ bool TProgram::buildReflection()
     return true;
 }
 
-int TProgram::getNumLiveUniformVariables()           { return reflection->getNumUniforms(); }
-int TProgram::getNumLiveUniformBlocks()              { return reflection->getNumUniformBlocks(); }
-const char* TProgram::getUniformName(int index)      { return reflection->getUniform(index).name.c_str(); }
-const char* TProgram::getUniformBlockName(int index) { return reflection->getUniformBlock(index).name.c_str(); }
-int TProgram::getUniformBlockSize(int index)         { return reflection->getUniformBlock(index).size; }
-int TProgram::getUniformIndex(const char* name)      { return reflection->getIndex(name); }
-int TProgram::getUniformBlockIndex(int index)        { return reflection->getUniform(index).index; }
-int TProgram::getUniformType(int index)              { return reflection->getUniform(index).glDefineType; }
-int TProgram::getUniformBufferOffset(int index)      { return reflection->getUniform(index).offset; }
-int TProgram::getUniformArraySize(int index)         { return reflection->getUniform(index).size; }
-int TProgram::getNumLiveAttributes()                 { return reflection->getNumAttributes(); }
-const char* TProgram::getAttributeName(int index)    { return reflection->getAttribute(index).name.c_str(); }
-int TProgram::getAttributeType(int index)            { return reflection->getAttribute(index).glDefineType; }
+int TProgram::getNumLiveUniformVariables() const             { return reflection->getNumUniforms(); }
+int TProgram::getNumLiveUniformBlocks() const                { return reflection->getNumUniformBlocks(); }
+const char* TProgram::getUniformName(int index) const        { return reflection->getUniform(index).name.c_str(); }
+const char* TProgram::getUniformBlockName(int index) const   { return reflection->getUniformBlock(index).name.c_str(); }
+int TProgram::getUniformBlockSize(int index) const           { return reflection->getUniformBlock(index).size; }
+int TProgram::getUniformIndex(const char* name) const        { return reflection->getIndex(name); }
+int TProgram::getUniformBlockIndex(int index) const          { return reflection->getUniform(index).index; }
+int TProgram::getUniformType(int index) const                { return reflection->getUniform(index).glDefineType; }
+int TProgram::getUniformBufferOffset(int index) const        { return reflection->getUniform(index).offset; }
+int TProgram::getUniformArraySize(int index) const           { return reflection->getUniform(index).size; }
+int TProgram::getNumLiveAttributes() const                   { return reflection->getNumAttributes(); }
+const char* TProgram::getAttributeName(int index) const      { return reflection->getAttribute(index).name.c_str(); }
+int TProgram::getAttributeType(int index) const              { return reflection->getAttribute(index).glDefineType; }
+const TType* TProgram::getUniformTType(int index) const      { return reflection->getUniform(index).getType(); }
+const TType* TProgram::getUniformBlockTType(int index) const { return reflection->getUniformBlock(index).getType(); }
 
 void TProgram::dumpReflection()                      { reflection->dump(); }
+
+//
+// I/O mapping implementation.
+//
+bool TProgram::mapIO()
+{
+    if (! linked || ioMapper)
+        return false;
+
+    ioMapper = new TIoMapper;
+
+    for (int s = 0; s < EShLangCount; ++s) {
+        if (intermediate[s]) {
+            if (! ioMapper->addStage((EShLanguage)s, *intermediate[s], *infoSink))
+                return false;
+        }
+    }
+
+    return true;
+}
 
 } // end namespace glslang

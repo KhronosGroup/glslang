@@ -7,4 +7,5 @@ int4x4 int44;
 
 float1 ShaderFunction(float1 inFloat1, float inScalar) : COLOR0
 {
+    return inFloat1;
 }

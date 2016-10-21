@@ -2,7 +2,7 @@ hlsl.typedef.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:12  Function Definition: ShaderFunction(vf4;i1; (global 4-component vector of float)
+0:4  Function Definition: ShaderFunction(vf4;i1; (temp 4-component vector of float)
 0:4    Function Parameters: 
 0:4      'input' (in 4-component vector of float)
 0:4      'ii' (in int)
@@ -29,7 +29,7 @@ gl_FragCoord origin is upper left
 0:10          component-wise multiply (temp 4-component vector of float)
 0:10            'input' (in 4-component vector of float)
 0:10            'a1' (temp 4-component vector of float)
-0:10          Construct vec4 (global 4-component vector of float)
+0:10          Construct vec4 (uniform 4-component vector of float)
 0:10            Convert int to float (temp float)
 0:10              add (temp int)
 0:10                'i' (temp int)
@@ -43,7 +43,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:12  Function Definition: ShaderFunction(vf4;i1; (global 4-component vector of float)
+0:4  Function Definition: ShaderFunction(vf4;i1; (temp 4-component vector of float)
 0:4    Function Parameters: 
 0:4      'input' (in 4-component vector of float)
 0:4      'ii' (in int)
@@ -70,7 +70,7 @@ gl_FragCoord origin is upper left
 0:10          component-wise multiply (temp 4-component vector of float)
 0:10            'input' (in 4-component vector of float)
 0:10            'a1' (temp 4-component vector of float)
-0:10          Construct vec4 (global 4-component vector of float)
+0:10          Construct vec4 (uniform 4-component vector of float)
 0:10            Convert int to float (temp float)
 0:10              add (temp int)
 0:10                'i' (temp int)
@@ -86,7 +86,6 @@ gl_FragCoord origin is upper left
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "PixelShaderFunction"
                               ExecutionMode 4 OriginUpperLeft
-                              Source HLSL 450
                               Name 4  "PixelShaderFunction"
                               Name 14  "ShaderFunction(vf4;i1;"
                               Name 12  "input"

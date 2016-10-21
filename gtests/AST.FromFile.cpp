@@ -43,7 +43,7 @@ using CompileToAstTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
 TEST_P(CompileToAstTest, FromFile)
 {
-    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::OpenGL,
                             Target::AST);
 }
@@ -78,6 +78,7 @@ INSTANTIATE_TEST_CASE_P(
         "cppSimple.vert",
         "cppIndent.vert",
         "cppNest.vert",
+        "cppBad.vert",
         "cppComplexExpr.vert",
         "badChars.frag",
         "pointCoord.frag",

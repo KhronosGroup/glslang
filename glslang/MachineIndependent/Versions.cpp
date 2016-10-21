@@ -187,6 +187,14 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;
     extensionBehavior[E_GL_GOOGLE_include_directive]                 = EBhDisable;
 
+#ifdef AMD_EXTENSIONS
+    extensionBehavior[E_GL_AMD_shader_ballot]                        = EBhDisable;
+    extensionBehavior[E_GL_AMD_shader_trinary_minmax]                = EBhDisable;
+    extensionBehavior[E_GL_AMD_shader_explicit_vertex_parameter]     = EBhDisable;
+    extensionBehavior[E_GL_AMD_gcn_shader]                           = EBhDisable;
+    extensionBehavior[E_GL_AMD_gpu_shader_half_float]                = EBhDisable;
+#endif
+
     // AEP
     extensionBehavior[E_GL_ANDROID_extension_pack_es31a]             = EBhDisable;
     extensionBehavior[E_GL_KHR_blend_equation_advanced]              = EBhDisable;
@@ -286,6 +294,14 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_sparse_texture_clamp 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             "#define GL_EXT_shader_non_constant_global_initializers 1\n"
+
+#ifdef AMD_EXTENSIONS
+            "#define GL_AMD_shader_ballot 1\n"
+            "#define GL_AMD_shader_trinary_minmax 1\n"
+            "#define GL_AMD_shader_explicit_vertex_parameter 1\n"
+            "#define GL_AMD_gcn_shader 1\n"
+            "#define GL_AMD_gpu_shader_half_float 1\n"
+#endif
             ;
     }
 
@@ -648,6 +664,19 @@ void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
     profileRequires(loc, ECoreProfile, 400, nullptr, op);
     profileRequires(loc, ECompatibilityProfile, 400, nullptr, op);
 }
+
+#ifdef AMD_EXTENSIONS
+// Call for any operation needing GLSL float16 data-type support.
+void TParseVersions::float16Check(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        requireExtensions(loc, 1, &E_GL_AMD_gpu_shader_half_float, "shader half float");
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+        profileRequires(loc, ECoreProfile, 450, nullptr, op);
+        profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
+    }
+}
+#endif
 
 // Call for any operation needing GLSL 64-bit integer data-type support.
 void TParseVersions::int64Check(const TSourceLoc& loc, const char* op, bool builtIn)

@@ -85,11 +85,10 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define snprintf sprintf_s
 #endif
 
-#include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
 
 #include "PpContext.h"
 #include "PpTokens.h"
@@ -145,6 +144,9 @@ void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
     case PpAtomConstUint64:
     case PpAtomConstFloat:
     case PpAtomConstDouble:
+#ifdef AMD_EXTENSIONS
+    case PpAtomConstFloat16:
+#endif
         str = ppToken->name;
         while (*str) {
             lAddByte(pTok, (unsigned char) *str);
@@ -179,20 +181,26 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
     if (ltoken > 127)
         ltoken += 128;
     switch (ltoken) {
-    case '#':        
-        if (lReadByte(pTok) == '#') {
-            parseContext.requireProfile(ppToken->loc, ~EEsProfile, "token pasting (##)");
-            parseContext.profileRequires(ppToken->loc, ~EEsProfile, 130, 0, "token pasting (##)");
-            parseContext.error(ppToken->loc, "token pasting not implemented (internal error)", "##", "");
-            //return PpAtomPaste;
-            return ReadToken(pTok, ppToken);
-        } else
-            lUnreadByte(pTok);
+    case '#':
+        // Check for ##, unless the current # is the last character
+        if (pTok->current < pTok->data.size()) {
+            if (lReadByte(pTok) == '#') {
+                parseContext.requireProfile(ppToken->loc, ~EEsProfile, "token pasting (##)");
+                parseContext.profileRequires(ppToken->loc, ~EEsProfile, 130, 0, "token pasting (##)");
+                parseContext.error(ppToken->loc, "token pasting not implemented (internal error)", "##", "");
+                //return PpAtomPaste;
+                return ReadToken(pTok, ppToken);
+            } else
+                lUnreadByte(pTok);
+        }
         break;
     case PpAtomConstString:
     case PpAtomIdentifier:
     case PpAtomConstFloat:
     case PpAtomConstDouble:
+#ifdef AMD_EXTENSIONS
+    case PpAtomConstFloat16:
+#endif
     case PpAtomConstInt:
     case PpAtomConstUint:
     case PpAtomConstInt64:
@@ -219,20 +227,30 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
             break;
         case PpAtomConstFloat:
         case PpAtomConstDouble:
+#ifdef AMD_EXTENSIONS
+        case PpAtomConstFloat16:
+#endif
             ppToken->dval = atof(ppToken->name);
             break;
         case PpAtomConstInt:
-        case PpAtomConstUint:
             if (len > 0 && tokenText[0] == '0') {
                 if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
-                    ppToken->ival = strtol(ppToken->name, 0, 16);
+                    ppToken->ival = (int)strtol(ppToken->name, 0, 16);
                 else
-                    ppToken->ival = strtol(ppToken->name, 0, 8);
+                    ppToken->ival = (int)strtol(ppToken->name, 0, 8);
             } else
                 ppToken->ival = atoi(ppToken->name);
             break;
+        case PpAtomConstUint:
+            if (len > 0 && tokenText[0] == '0') {
+                if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
+                    ppToken->ival = (int)strtoul(ppToken->name, 0, 16);
+                else
+                    ppToken->ival = (int)strtoul(ppToken->name, 0, 8);
+            } else
+                ppToken->ival = (int)strtoul(ppToken->name, 0, 10);
+            break;
         case PpAtomConstInt64:
-        case PpAtomConstUint64:
             if (len > 0 && tokenText[0] == '0') {
                 if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
                     ppToken->i64val = strtoll(ppToken->name, nullptr, 16);
@@ -240,6 +258,15 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
                     ppToken->i64val = strtoll(ppToken->name, nullptr, 8);
             } else
                 ppToken->i64val = atoll(ppToken->name);
+            break;
+        case PpAtomConstUint64:
+            if (len > 0 && tokenText[0] == '0') {
+                if (len > 1 && (tokenText[1] == 'x' || tokenText[1] == 'X'))
+                    ppToken->i64val = (long long)strtoull(ppToken->name, nullptr, 16);
+                else
+                    ppToken->i64val = (long long)strtoull(ppToken->name, nullptr, 8);
+            } else
+                ppToken->i64val = (long long)strtoull(ppToken->name, 0, 10);
             break;
         }
     }

@@ -18,7 +18,9 @@ Linked vertex stage:
                               Name 8  "i"
                               Name 18  "flag"
                               Name 31  "r"
+                              Decorate 18(flag) RelaxedPrecision
                               Decorate 18(flag) Location 0
+                              Decorate 19 RelaxedPrecision
                               Decorate 31(r) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

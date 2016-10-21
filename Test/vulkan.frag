@@ -73,3 +73,23 @@ void fooTex()
     texture(t2d, vec2(1.0));                 // ERROR, need a sampler, not a pure texture
     imageStore(t2d, ivec2(4, 5), vec4(1.2)); // ERROR, need an image, not a pure texture
 }
+
+precision highp float;
+
+layout(location=0) in vec2 vTexCoord;
+layout(location=0) out vec4 FragColor;
+
+vec4 userTexture(mediump sampler2D samp, vec2 coord)
+{
+    return texture(samp, coord);
+}
+
+bool cond;
+
+void callUserTexture()
+{
+    userTexture(sampler2D(t2d,s), vTexCoord);                            // ERROR, not point of use
+    userTexture((sampler2D(t2d,s)), vTexCoord);                          // ERROR, not point of use
+    userTexture((sampler2D(t2d,s), sampler2D(t2d,s)), vTexCoord);        // ERROR, not point of use
+    userTexture(cond ? sampler2D(t2d,s) : sampler2D(t2d,s), vTexCoord);  // ERROR, no ?:, not point of use
+}

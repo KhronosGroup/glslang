@@ -241,8 +241,10 @@ std::string GetDefaultTBuiltInResourceString()
 void DecodeResourceLimits(TBuiltInResource* resources, char* config)
 {
     const char* delims = " \t\n\r";
+#pragma warning(suppress: 4996)
     const char* token = strtok(config, delims);
     while (token) {
+#pragma warning(suppress: 4996)
         const char* valueStr = strtok(0, delims);
         if (valueStr == 0 || ! (valueStr[0] == '-' || (valueStr[0] >= '0' && valueStr[0] <= '9'))) {
             printf("Error: '%s' bad .conf file.  Each name must be followed by one number.\n", valueStr ? valueStr : "");
@@ -438,6 +440,7 @@ void DecodeResourceLimits(TBuiltInResource* resources, char* config)
         else
             printf("Warning: unrecognized limit (%s) in configuration file.\n", token);
 
+#pragma warning(suppress: 4996)
         token = strtok(0, delims);
     }
 }

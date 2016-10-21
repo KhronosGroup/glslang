@@ -1,7 +1,7 @@
 hlsl.intrinsics.vert
 Shader version: 450
 0:? Sequence
-0:63  Function Definition: VertexShaderFunctionS(f1;f1;f1;u1;u1; (global float)
+0:2  Function Definition: VertexShaderFunctionS(f1;f1;f1;u1;u1; (temp float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:2      'inF1' (in float)
@@ -142,7 +142,7 @@ Shader version: 450
 0:60      Branch: Return with expression
 0:60        Constant:
 0:60          0.000000
-0:69  Function Definition: VertexShaderFunction1(vf1;vf1;vf1; (global 1-component vector of float)
+0:64  Function Definition: VertexShaderFunction1(vf1;vf1;vf1; (temp 1-component vector of float)
 0:64    Function Parameters: 
 0:64      'inF0' (in 1-component vector of float)
 0:64      'inF1' (in 1-component vector of float)
@@ -151,7 +151,7 @@ Shader version: 450
 0:66      Branch: Return with expression
 0:66        Constant:
 0:66          0.000000
-0:139  Function Definition: VertexShaderFunction2(vf2;vf2;vf2;vu2;vu2; (global 2-component vector of float)
+0:70  Function Definition: VertexShaderFunction2(vf2;vf2;vf2;vu2;vu2; (temp 2-component vector of float)
 0:70    Function Parameters: 
 0:70      'inF0' (in 2-component vector of float)
 0:70      'inF1' (in 2-component vector of float)
@@ -317,7 +317,7 @@ Shader version: 450
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:210  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; (global 3-component vector of float)
+0:140  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; (temp 3-component vector of float)
 0:140    Function Parameters: 
 0:140      'inF0' (in 3-component vector of float)
 0:140      'inF1' (in 3-component vector of float)
@@ -489,7 +489,7 @@ Shader version: 450
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:335  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; (global 4-component vector of float)
+0:211  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; (temp 4-component vector of float)
 0:211    Function Parameters: 
 0:211      'inF0' (in 4-component vector of float)
 0:211      'inF1' (in 4-component vector of float)
@@ -681,7 +681,7 @@ Shader version: 450
 0:?           2.000000
 0:?           3.000000
 0:?           4.000000
-0:344  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
+0:336  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; (temp 2X2 matrix of float)
 0:336    Function Parameters: 
 0:336      'inF0' (in 2X2 matrix of float)
 0:336      'inF1' (in 2X2 matrix of float)
@@ -811,7 +811,7 @@ Shader version: 450
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
-0:353  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; (global 3X3 matrix of float)
+0:345  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; (temp 3X3 matrix of float)
 0:345    Function Parameters: 
 0:345      'inF0' (in 3X3 matrix of float)
 0:345      'inF1' (in 3X3 matrix of float)
@@ -946,7 +946,7 @@ Shader version: 450
 0:?           3.000000
 0:?           3.000000
 0:?           3.000000
-0:374  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; (global 4X4 matrix of float)
+0:354  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; (temp 4X4 matrix of float)
 0:354    Function Parameters: 
 0:354      'inF0' (in 4X4 matrix of float)
 0:354      'inF1' (in 4X4 matrix of float)
@@ -1088,7 +1088,7 @@ Shader version: 450
 0:?           4.000000
 0:?           4.000000
 0:?           4.000000
-0:381  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (global void)
+0:377  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (temp void)
 0:377    Function Parameters: 
 0:377      'inF0' (in float)
 0:377      'inF1' (in float)
@@ -1101,20 +1101,20 @@ Shader version: 450
 0:378        move second child to first child (temp float)
 0:378          'r0' (temp float)
 0:378          component-wise multiply (temp float)
-0:378            'inF0' (in float)
 0:378            'inF1' (in float)
+0:378            'inF0' (in float)
 0:378      Sequence
 0:378        move second child to first child (temp 2-component vector of float)
 0:378          'r1' (temp 2-component vector of float)
 0:378          vector-scale (temp 2-component vector of float)
-0:378            'inFV0' (in 2-component vector of float)
 0:378            'inF0' (in float)
+0:378            'inFV0' (in 2-component vector of float)
 0:378      Sequence
 0:378        move second child to first child (temp 2-component vector of float)
 0:378          'r2' (temp 2-component vector of float)
 0:378          vector-scale (temp 2-component vector of float)
-0:378            'inF0' (in float)
 0:378            'inFV0' (in 2-component vector of float)
+0:378            'inF0' (in float)
 0:378      Sequence
 0:378        move second child to first child (temp float)
 0:378          'r3' (temp float)
@@ -1124,34 +1124,34 @@ Shader version: 450
 0:378      Sequence
 0:378        move second child to first child (temp 2-component vector of float)
 0:378          'r4' (temp 2-component vector of float)
-0:378          matrix-times-vector (temp 2-component vector of float)
-0:378            'inFM0' (in 2X2 matrix of float)
-0:378            'inFV0' (in 2-component vector of float)
-0:378      Sequence
-0:378        move second child to first child (temp 2-component vector of float)
-0:378          'r5' (temp 2-component vector of float)
 0:378          vector-times-matrix (temp 2-component vector of float)
 0:378            'inFV0' (in 2-component vector of float)
 0:378            'inFM0' (in 2X2 matrix of float)
 0:378      Sequence
+0:378        move second child to first child (temp 2-component vector of float)
+0:378          'r5' (temp 2-component vector of float)
+0:378          matrix-times-vector (temp 2-component vector of float)
+0:378            'inFM0' (in 2X2 matrix of float)
+0:378            'inFV0' (in 2-component vector of float)
+0:378      Sequence
 0:378        move second child to first child (temp 2X2 matrix of float)
 0:378          'r6' (temp 2X2 matrix of float)
 0:378          matrix-scale (temp 2X2 matrix of float)
-0:378            'inFM0' (in 2X2 matrix of float)
 0:378            'inF0' (in float)
+0:378            'inFM0' (in 2X2 matrix of float)
 0:378      Sequence
 0:378        move second child to first child (temp 2X2 matrix of float)
 0:378          'r7' (temp 2X2 matrix of float)
 0:378          matrix-scale (temp 2X2 matrix of float)
-0:378            'inF0' (in float)
 0:378            'inFM0' (in 2X2 matrix of float)
+0:378            'inF0' (in float)
 0:378      Sequence
 0:378        move second child to first child (temp 2X2 matrix of float)
 0:378          'r8' (temp 2X2 matrix of float)
 0:378          matrix-multiply (temp 2X2 matrix of float)
-0:378            'inFM0' (in 2X2 matrix of float)
 0:378            'inFM1' (in 2X2 matrix of float)
-0:388  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (global void)
+0:378            'inFM0' (in 2X2 matrix of float)
+0:384  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (temp void)
 0:384    Function Parameters: 
 0:384      'inF0' (in float)
 0:384      'inF1' (in float)
@@ -1164,20 +1164,20 @@ Shader version: 450
 0:385        move second child to first child (temp float)
 0:385          'r0' (temp float)
 0:385          component-wise multiply (temp float)
-0:385            'inF0' (in float)
 0:385            'inF1' (in float)
+0:385            'inF0' (in float)
 0:385      Sequence
 0:385        move second child to first child (temp 3-component vector of float)
 0:385          'r1' (temp 3-component vector of float)
 0:385          vector-scale (temp 3-component vector of float)
-0:385            'inFV0' (in 3-component vector of float)
 0:385            'inF0' (in float)
+0:385            'inFV0' (in 3-component vector of float)
 0:385      Sequence
 0:385        move second child to first child (temp 3-component vector of float)
 0:385          'r2' (temp 3-component vector of float)
 0:385          vector-scale (temp 3-component vector of float)
-0:385            'inF0' (in float)
 0:385            'inFV0' (in 3-component vector of float)
+0:385            'inF0' (in float)
 0:385      Sequence
 0:385        move second child to first child (temp float)
 0:385          'r3' (temp float)
@@ -1187,34 +1187,34 @@ Shader version: 450
 0:385      Sequence
 0:385        move second child to first child (temp 3-component vector of float)
 0:385          'r4' (temp 3-component vector of float)
-0:385          matrix-times-vector (temp 3-component vector of float)
-0:385            'inFM0' (in 3X3 matrix of float)
-0:385            'inFV0' (in 3-component vector of float)
-0:385      Sequence
-0:385        move second child to first child (temp 3-component vector of float)
-0:385          'r5' (temp 3-component vector of float)
 0:385          vector-times-matrix (temp 3-component vector of float)
 0:385            'inFV0' (in 3-component vector of float)
 0:385            'inFM0' (in 3X3 matrix of float)
 0:385      Sequence
+0:385        move second child to first child (temp 3-component vector of float)
+0:385          'r5' (temp 3-component vector of float)
+0:385          matrix-times-vector (temp 3-component vector of float)
+0:385            'inFM0' (in 3X3 matrix of float)
+0:385            'inFV0' (in 3-component vector of float)
+0:385      Sequence
 0:385        move second child to first child (temp 3X3 matrix of float)
 0:385          'r6' (temp 3X3 matrix of float)
 0:385          matrix-scale (temp 3X3 matrix of float)
-0:385            'inFM0' (in 3X3 matrix of float)
 0:385            'inF0' (in float)
+0:385            'inFM0' (in 3X3 matrix of float)
 0:385      Sequence
 0:385        move second child to first child (temp 3X3 matrix of float)
 0:385          'r7' (temp 3X3 matrix of float)
 0:385          matrix-scale (temp 3X3 matrix of float)
-0:385            'inF0' (in float)
 0:385            'inFM0' (in 3X3 matrix of float)
+0:385            'inF0' (in float)
 0:385      Sequence
 0:385        move second child to first child (temp 3X3 matrix of float)
 0:385          'r8' (temp 3X3 matrix of float)
 0:385          matrix-multiply (temp 3X3 matrix of float)
-0:385            'inFM0' (in 3X3 matrix of float)
 0:385            'inFM1' (in 3X3 matrix of float)
-0:396  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (global void)
+0:385            'inFM0' (in 3X3 matrix of float)
+0:391  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (temp void)
 0:391    Function Parameters: 
 0:391      'inF0' (in float)
 0:391      'inF1' (in float)
@@ -1227,20 +1227,20 @@ Shader version: 450
 0:392        move second child to first child (temp float)
 0:392          'r0' (temp float)
 0:392          component-wise multiply (temp float)
-0:392            'inF0' (in float)
 0:392            'inF1' (in float)
+0:392            'inF0' (in float)
 0:392      Sequence
 0:392        move second child to first child (temp 4-component vector of float)
 0:392          'r1' (temp 4-component vector of float)
 0:392          vector-scale (temp 4-component vector of float)
-0:392            'inFV0' (in 4-component vector of float)
 0:392            'inF0' (in float)
+0:392            'inFV0' (in 4-component vector of float)
 0:392      Sequence
 0:392        move second child to first child (temp 4-component vector of float)
 0:392          'r2' (temp 4-component vector of float)
 0:392          vector-scale (temp 4-component vector of float)
-0:392            'inF0' (in float)
 0:392            'inFV0' (in 4-component vector of float)
+0:392            'inF0' (in float)
 0:392      Sequence
 0:392        move second child to first child (temp float)
 0:392          'r3' (temp float)
@@ -1250,75 +1250,75 @@ Shader version: 450
 0:392      Sequence
 0:392        move second child to first child (temp 4-component vector of float)
 0:392          'r4' (temp 4-component vector of float)
-0:392          matrix-times-vector (temp 4-component vector of float)
-0:392            'inFM0' (in 4X4 matrix of float)
-0:392            'inFV0' (in 4-component vector of float)
-0:392      Sequence
-0:392        move second child to first child (temp 4-component vector of float)
-0:392          'r5' (temp 4-component vector of float)
 0:392          vector-times-matrix (temp 4-component vector of float)
 0:392            'inFV0' (in 4-component vector of float)
 0:392            'inFM0' (in 4X4 matrix of float)
 0:392      Sequence
+0:392        move second child to first child (temp 4-component vector of float)
+0:392          'r5' (temp 4-component vector of float)
+0:392          matrix-times-vector (temp 4-component vector of float)
+0:392            'inFM0' (in 4X4 matrix of float)
+0:392            'inFV0' (in 4-component vector of float)
+0:392      Sequence
 0:392        move second child to first child (temp 4X4 matrix of float)
 0:392          'r6' (temp 4X4 matrix of float)
 0:392          matrix-scale (temp 4X4 matrix of float)
-0:392            'inFM0' (in 4X4 matrix of float)
 0:392            'inF0' (in float)
+0:392            'inFM0' (in 4X4 matrix of float)
 0:392      Sequence
 0:392        move second child to first child (temp 4X4 matrix of float)
 0:392          'r7' (temp 4X4 matrix of float)
 0:392          matrix-scale (temp 4X4 matrix of float)
-0:392            'inF0' (in float)
 0:392            'inFM0' (in 4X4 matrix of float)
+0:392            'inF0' (in float)
 0:392      Sequence
 0:392        move second child to first child (temp 4X4 matrix of float)
 0:392          'r8' (temp 4X4 matrix of float)
 0:392          matrix-multiply (temp 4X4 matrix of float)
-0:392            'inFM0' (in 4X4 matrix of float)
 0:392            'inFM1' (in 4X4 matrix of float)
-0:420  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf32;mf23;mf33;mf43;mf42; (global void)
+0:392            'inFM0' (in 4X4 matrix of float)
+0:401  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf23;mf32;mf33;mf34;mf24; (temp void)
 0:401    Function Parameters: 
 0:401      'inF0' (in float)
 0:401      'inF1' (in float)
 0:401      'inFV2' (in 2-component vector of float)
 0:401      'inFV3' (in 3-component vector of float)
-0:401      'inFM2x3' (in 3X2 matrix of float)
-0:401      'inFM3x2' (in 2X3 matrix of float)
+0:401      'inFM2x3' (in 2X3 matrix of float)
+0:401      'inFM3x2' (in 3X2 matrix of float)
 0:401      'inFM3x3' (in 3X3 matrix of float)
-0:401      'inFM3x4' (in 4X3 matrix of float)
-0:401      'inFM2x4' (in 4X2 matrix of float)
+0:401      'inFM3x4' (in 3X4 matrix of float)
+0:401      'inFM2x4' (in 2X4 matrix of float)
 0:?     Sequence
 0:402      Sequence
 0:402        move second child to first child (temp float)
 0:402          'r00' (temp float)
 0:402          component-wise multiply (temp float)
-0:402            'inF0' (in float)
 0:402            'inF1' (in float)
+0:402            'inF0' (in float)
 0:403      Sequence
 0:403        move second child to first child (temp 2-component vector of float)
 0:403          'r01' (temp 2-component vector of float)
 0:403          vector-scale (temp 2-component vector of float)
-0:403            'inFV2' (in 2-component vector of float)
 0:403            'inF0' (in float)
+0:403            'inFV2' (in 2-component vector of float)
 0:404      Sequence
 0:404        move second child to first child (temp 3-component vector of float)
 0:404          'r02' (temp 3-component vector of float)
 0:404          vector-scale (temp 3-component vector of float)
-0:404            'inFV3' (in 3-component vector of float)
 0:404            'inF0' (in float)
+0:404            'inFV3' (in 3-component vector of float)
 0:405      Sequence
 0:405        move second child to first child (temp 2-component vector of float)
 0:405          'r03' (temp 2-component vector of float)
 0:405          vector-scale (temp 2-component vector of float)
-0:405            'inF0' (in float)
 0:405            'inFV2' (in 2-component vector of float)
+0:405            'inF0' (in float)
 0:406      Sequence
 0:406        move second child to first child (temp 3-component vector of float)
 0:406          'r04' (temp 3-component vector of float)
 0:406          vector-scale (temp 3-component vector of float)
-0:406            'inF0' (in float)
 0:406            'inFV3' (in 3-component vector of float)
+0:406            'inF0' (in float)
 0:407      Sequence
 0:407        move second child to first child (temp float)
 0:407          'r05' (temp float)
@@ -1334,63 +1334,63 @@ Shader version: 450
 0:409      Sequence
 0:409        move second child to first child (temp 3-component vector of float)
 0:409          'r07' (temp 3-component vector of float)
-0:409          vector-times-matrix (temp 3-component vector of float)
+0:409          matrix-times-vector (temp 3-component vector of float)
+0:409            'inFM2x3' (in 2X3 matrix of float)
 0:409            'inFV2' (in 2-component vector of float)
-0:409            'inFM2x3' (in 3X2 matrix of float)
 0:410      Sequence
 0:410        move second child to first child (temp 2-component vector of float)
 0:410          'r08' (temp 2-component vector of float)
-0:410          vector-times-matrix (temp 2-component vector of float)
+0:410          matrix-times-vector (temp 2-component vector of float)
+0:410            'inFM3x2' (in 3X2 matrix of float)
 0:410            'inFV3' (in 3-component vector of float)
-0:410            'inFM3x2' (in 2X3 matrix of float)
 0:411      Sequence
 0:411        move second child to first child (temp 2-component vector of float)
 0:411          'r09' (temp 2-component vector of float)
-0:411          matrix-times-vector (temp 2-component vector of float)
-0:411            'inFM2x3' (in 3X2 matrix of float)
+0:411          vector-times-matrix (temp 2-component vector of float)
 0:411            'inFV3' (in 3-component vector of float)
+0:411            'inFM2x3' (in 2X3 matrix of float)
 0:412      Sequence
 0:412        move second child to first child (temp 3-component vector of float)
 0:412          'r10' (temp 3-component vector of float)
-0:412          matrix-times-vector (temp 3-component vector of float)
-0:412            'inFM3x2' (in 2X3 matrix of float)
+0:412          vector-times-matrix (temp 3-component vector of float)
 0:412            'inFV2' (in 2-component vector of float)
+0:412            'inFM3x2' (in 3X2 matrix of float)
 0:413      Sequence
-0:413        move second child to first child (temp 3X2 matrix of float)
-0:413          'r11' (temp 3X2 matrix of float)
-0:413          matrix-scale (temp 3X2 matrix of float)
-0:413            'inFM2x3' (in 3X2 matrix of float)
+0:413        move second child to first child (temp 2X3 matrix of float)
+0:413          'r11' (temp 2X3 matrix of float)
+0:413          matrix-scale (temp 2X3 matrix of float)
 0:413            'inF0' (in float)
+0:413            'inFM2x3' (in 2X3 matrix of float)
 0:414      Sequence
-0:414        move second child to first child (temp 2X3 matrix of float)
-0:414          'r12' (temp 2X3 matrix of float)
-0:414          matrix-scale (temp 2X3 matrix of float)
-0:414            'inFM3x2' (in 2X3 matrix of float)
+0:414        move second child to first child (temp 3X2 matrix of float)
+0:414          'r12' (temp 3X2 matrix of float)
+0:414          matrix-scale (temp 3X2 matrix of float)
 0:414            'inF0' (in float)
+0:414            'inFM3x2' (in 3X2 matrix of float)
 0:415      Sequence
 0:415        move second child to first child (temp 2X2 matrix of float)
 0:415          'r13' (temp 2X2 matrix of float)
 0:415          matrix-multiply (temp 2X2 matrix of float)
-0:415            'inFM2x3' (in 3X2 matrix of float)
-0:415            'inFM3x2' (in 2X3 matrix of float)
+0:415            'inFM3x2' (in 3X2 matrix of float)
+0:415            'inFM2x3' (in 2X3 matrix of float)
 0:416      Sequence
-0:416        move second child to first child (temp 3X2 matrix of float)
-0:416          'r14' (temp 3X2 matrix of float)
-0:416          matrix-multiply (temp 3X2 matrix of float)
-0:416            'inFM2x3' (in 3X2 matrix of float)
+0:416        move second child to first child (temp 2X3 matrix of float)
+0:416          'r14' (temp 2X3 matrix of float)
+0:416          matrix-multiply (temp 2X3 matrix of float)
 0:416            'inFM3x3' (in 3X3 matrix of float)
+0:416            'inFM2x3' (in 2X3 matrix of float)
 0:417      Sequence
-0:417        move second child to first child (temp 4X2 matrix of float)
-0:417          'r15' (temp 4X2 matrix of float)
-0:417          matrix-multiply (temp 4X2 matrix of float)
-0:417            'inFM2x3' (in 3X2 matrix of float)
-0:417            'inFM3x4' (in 4X3 matrix of float)
+0:417        move second child to first child (temp 2X4 matrix of float)
+0:417          'r15' (temp 2X4 matrix of float)
+0:417          matrix-multiply (temp 2X4 matrix of float)
+0:417            'inFM3x4' (in 3X4 matrix of float)
+0:417            'inFM2x3' (in 2X3 matrix of float)
 0:418      Sequence
-0:418        move second child to first child (temp 4X3 matrix of float)
-0:418          'r16' (temp 4X3 matrix of float)
-0:418          matrix-multiply (temp 4X3 matrix of float)
-0:418            'inFM3x2' (in 2X3 matrix of float)
-0:418            'inFM2x4' (in 4X2 matrix of float)
+0:418        move second child to first child (temp 3X4 matrix of float)
+0:418          'r16' (temp 3X4 matrix of float)
+0:418          matrix-multiply (temp 3X4 matrix of float)
+0:418            'inFM2x4' (in 2X4 matrix of float)
+0:418            'inFM3x2' (in 3X2 matrix of float)
 0:?   Linker Objects
 
 
@@ -1399,7 +1399,7 @@ Linked vertex stage:
 
 Shader version: 450
 0:? Sequence
-0:63  Function Definition: VertexShaderFunctionS(f1;f1;f1;u1;u1; (global float)
+0:2  Function Definition: VertexShaderFunctionS(f1;f1;f1;u1;u1; (temp float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:2      'inF1' (in float)
@@ -1540,7 +1540,7 @@ Shader version: 450
 0:60      Branch: Return with expression
 0:60        Constant:
 0:60          0.000000
-0:69  Function Definition: VertexShaderFunction1(vf1;vf1;vf1; (global 1-component vector of float)
+0:64  Function Definition: VertexShaderFunction1(vf1;vf1;vf1; (temp 1-component vector of float)
 0:64    Function Parameters: 
 0:64      'inF0' (in 1-component vector of float)
 0:64      'inF1' (in 1-component vector of float)
@@ -1549,7 +1549,7 @@ Shader version: 450
 0:66      Branch: Return with expression
 0:66        Constant:
 0:66          0.000000
-0:139  Function Definition: VertexShaderFunction2(vf2;vf2;vf2;vu2;vu2; (global 2-component vector of float)
+0:70  Function Definition: VertexShaderFunction2(vf2;vf2;vf2;vu2;vu2; (temp 2-component vector of float)
 0:70    Function Parameters: 
 0:70      'inF0' (in 2-component vector of float)
 0:70      'inF1' (in 2-component vector of float)
@@ -1715,7 +1715,7 @@ Shader version: 450
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:210  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; (global 3-component vector of float)
+0:140  Function Definition: VertexShaderFunction3(vf3;vf3;vf3;vu3;vu3; (temp 3-component vector of float)
 0:140    Function Parameters: 
 0:140      'inF0' (in 3-component vector of float)
 0:140      'inF1' (in 3-component vector of float)
@@ -1887,7 +1887,7 @@ Shader version: 450
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:335  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; (global 4-component vector of float)
+0:211  Function Definition: VertexShaderFunction4(vf4;vf4;vf4;vu4;vu4; (temp 4-component vector of float)
 0:211    Function Parameters: 
 0:211      'inF0' (in 4-component vector of float)
 0:211      'inF1' (in 4-component vector of float)
@@ -2079,7 +2079,7 @@ Shader version: 450
 0:?           2.000000
 0:?           3.000000
 0:?           4.000000
-0:344  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; (global 2X2 matrix of float)
+0:336  Function Definition: VertexShaderFunction2x2(mf22;mf22;mf22; (temp 2X2 matrix of float)
 0:336    Function Parameters: 
 0:336      'inF0' (in 2X2 matrix of float)
 0:336      'inF1' (in 2X2 matrix of float)
@@ -2209,7 +2209,7 @@ Shader version: 450
 0:?           2.000000
 0:?           2.000000
 0:?           2.000000
-0:353  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; (global 3X3 matrix of float)
+0:345  Function Definition: VertexShaderFunction3x3(mf33;mf33;mf33; (temp 3X3 matrix of float)
 0:345    Function Parameters: 
 0:345      'inF0' (in 3X3 matrix of float)
 0:345      'inF1' (in 3X3 matrix of float)
@@ -2344,7 +2344,7 @@ Shader version: 450
 0:?           3.000000
 0:?           3.000000
 0:?           3.000000
-0:374  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; (global 4X4 matrix of float)
+0:354  Function Definition: VertexShaderFunction4x4(mf44;mf44;mf44; (temp 4X4 matrix of float)
 0:354    Function Parameters: 
 0:354      'inF0' (in 4X4 matrix of float)
 0:354      'inF1' (in 4X4 matrix of float)
@@ -2486,7 +2486,7 @@ Shader version: 450
 0:?           4.000000
 0:?           4.000000
 0:?           4.000000
-0:381  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (global void)
+0:377  Function Definition: TestGenMul2(f1;f1;vf2;vf2;mf22;mf22; (temp void)
 0:377    Function Parameters: 
 0:377      'inF0' (in float)
 0:377      'inF1' (in float)
@@ -2499,20 +2499,20 @@ Shader version: 450
 0:378        move second child to first child (temp float)
 0:378          'r0' (temp float)
 0:378          component-wise multiply (temp float)
-0:378            'inF0' (in float)
 0:378            'inF1' (in float)
+0:378            'inF0' (in float)
 0:378      Sequence
 0:378        move second child to first child (temp 2-component vector of float)
 0:378          'r1' (temp 2-component vector of float)
 0:378          vector-scale (temp 2-component vector of float)
-0:378            'inFV0' (in 2-component vector of float)
 0:378            'inF0' (in float)
+0:378            'inFV0' (in 2-component vector of float)
 0:378      Sequence
 0:378        move second child to first child (temp 2-component vector of float)
 0:378          'r2' (temp 2-component vector of float)
 0:378          vector-scale (temp 2-component vector of float)
-0:378            'inF0' (in float)
 0:378            'inFV0' (in 2-component vector of float)
+0:378            'inF0' (in float)
 0:378      Sequence
 0:378        move second child to first child (temp float)
 0:378          'r3' (temp float)
@@ -2522,34 +2522,34 @@ Shader version: 450
 0:378      Sequence
 0:378        move second child to first child (temp 2-component vector of float)
 0:378          'r4' (temp 2-component vector of float)
-0:378          matrix-times-vector (temp 2-component vector of float)
-0:378            'inFM0' (in 2X2 matrix of float)
-0:378            'inFV0' (in 2-component vector of float)
-0:378      Sequence
-0:378        move second child to first child (temp 2-component vector of float)
-0:378          'r5' (temp 2-component vector of float)
 0:378          vector-times-matrix (temp 2-component vector of float)
 0:378            'inFV0' (in 2-component vector of float)
 0:378            'inFM0' (in 2X2 matrix of float)
 0:378      Sequence
+0:378        move second child to first child (temp 2-component vector of float)
+0:378          'r5' (temp 2-component vector of float)
+0:378          matrix-times-vector (temp 2-component vector of float)
+0:378            'inFM0' (in 2X2 matrix of float)
+0:378            'inFV0' (in 2-component vector of float)
+0:378      Sequence
 0:378        move second child to first child (temp 2X2 matrix of float)
 0:378          'r6' (temp 2X2 matrix of float)
 0:378          matrix-scale (temp 2X2 matrix of float)
-0:378            'inFM0' (in 2X2 matrix of float)
 0:378            'inF0' (in float)
+0:378            'inFM0' (in 2X2 matrix of float)
 0:378      Sequence
 0:378        move second child to first child (temp 2X2 matrix of float)
 0:378          'r7' (temp 2X2 matrix of float)
 0:378          matrix-scale (temp 2X2 matrix of float)
-0:378            'inF0' (in float)
 0:378            'inFM0' (in 2X2 matrix of float)
+0:378            'inF0' (in float)
 0:378      Sequence
 0:378        move second child to first child (temp 2X2 matrix of float)
 0:378          'r8' (temp 2X2 matrix of float)
 0:378          matrix-multiply (temp 2X2 matrix of float)
-0:378            'inFM0' (in 2X2 matrix of float)
 0:378            'inFM1' (in 2X2 matrix of float)
-0:388  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (global void)
+0:378            'inFM0' (in 2X2 matrix of float)
+0:384  Function Definition: TestGenMul3(f1;f1;vf3;vf3;mf33;mf33; (temp void)
 0:384    Function Parameters: 
 0:384      'inF0' (in float)
 0:384      'inF1' (in float)
@@ -2562,20 +2562,20 @@ Shader version: 450
 0:385        move second child to first child (temp float)
 0:385          'r0' (temp float)
 0:385          component-wise multiply (temp float)
-0:385            'inF0' (in float)
 0:385            'inF1' (in float)
+0:385            'inF0' (in float)
 0:385      Sequence
 0:385        move second child to first child (temp 3-component vector of float)
 0:385          'r1' (temp 3-component vector of float)
 0:385          vector-scale (temp 3-component vector of float)
-0:385            'inFV0' (in 3-component vector of float)
 0:385            'inF0' (in float)
+0:385            'inFV0' (in 3-component vector of float)
 0:385      Sequence
 0:385        move second child to first child (temp 3-component vector of float)
 0:385          'r2' (temp 3-component vector of float)
 0:385          vector-scale (temp 3-component vector of float)
-0:385            'inF0' (in float)
 0:385            'inFV0' (in 3-component vector of float)
+0:385            'inF0' (in float)
 0:385      Sequence
 0:385        move second child to first child (temp float)
 0:385          'r3' (temp float)
@@ -2585,34 +2585,34 @@ Shader version: 450
 0:385      Sequence
 0:385        move second child to first child (temp 3-component vector of float)
 0:385          'r4' (temp 3-component vector of float)
-0:385          matrix-times-vector (temp 3-component vector of float)
-0:385            'inFM0' (in 3X3 matrix of float)
-0:385            'inFV0' (in 3-component vector of float)
-0:385      Sequence
-0:385        move second child to first child (temp 3-component vector of float)
-0:385          'r5' (temp 3-component vector of float)
 0:385          vector-times-matrix (temp 3-component vector of float)
 0:385            'inFV0' (in 3-component vector of float)
 0:385            'inFM0' (in 3X3 matrix of float)
 0:385      Sequence
+0:385        move second child to first child (temp 3-component vector of float)
+0:385          'r5' (temp 3-component vector of float)
+0:385          matrix-times-vector (temp 3-component vector of float)
+0:385            'inFM0' (in 3X3 matrix of float)
+0:385            'inFV0' (in 3-component vector of float)
+0:385      Sequence
 0:385        move second child to first child (temp 3X3 matrix of float)
 0:385          'r6' (temp 3X3 matrix of float)
 0:385          matrix-scale (temp 3X3 matrix of float)
-0:385            'inFM0' (in 3X3 matrix of float)
 0:385            'inF0' (in float)
+0:385            'inFM0' (in 3X3 matrix of float)
 0:385      Sequence
 0:385        move second child to first child (temp 3X3 matrix of float)
 0:385          'r7' (temp 3X3 matrix of float)
 0:385          matrix-scale (temp 3X3 matrix of float)
-0:385            'inF0' (in float)
 0:385            'inFM0' (in 3X3 matrix of float)
+0:385            'inF0' (in float)
 0:385      Sequence
 0:385        move second child to first child (temp 3X3 matrix of float)
 0:385          'r8' (temp 3X3 matrix of float)
 0:385          matrix-multiply (temp 3X3 matrix of float)
-0:385            'inFM0' (in 3X3 matrix of float)
 0:385            'inFM1' (in 3X3 matrix of float)
-0:396  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (global void)
+0:385            'inFM0' (in 3X3 matrix of float)
+0:391  Function Definition: TestGenMul4(f1;f1;vf4;vf4;mf44;mf44; (temp void)
 0:391    Function Parameters: 
 0:391      'inF0' (in float)
 0:391      'inF1' (in float)
@@ -2625,20 +2625,20 @@ Shader version: 450
 0:392        move second child to first child (temp float)
 0:392          'r0' (temp float)
 0:392          component-wise multiply (temp float)
-0:392            'inF0' (in float)
 0:392            'inF1' (in float)
+0:392            'inF0' (in float)
 0:392      Sequence
 0:392        move second child to first child (temp 4-component vector of float)
 0:392          'r1' (temp 4-component vector of float)
 0:392          vector-scale (temp 4-component vector of float)
-0:392            'inFV0' (in 4-component vector of float)
 0:392            'inF0' (in float)
+0:392            'inFV0' (in 4-component vector of float)
 0:392      Sequence
 0:392        move second child to first child (temp 4-component vector of float)
 0:392          'r2' (temp 4-component vector of float)
 0:392          vector-scale (temp 4-component vector of float)
-0:392            'inF0' (in float)
 0:392            'inFV0' (in 4-component vector of float)
+0:392            'inF0' (in float)
 0:392      Sequence
 0:392        move second child to first child (temp float)
 0:392          'r3' (temp float)
@@ -2648,75 +2648,75 @@ Shader version: 450
 0:392      Sequence
 0:392        move second child to first child (temp 4-component vector of float)
 0:392          'r4' (temp 4-component vector of float)
-0:392          matrix-times-vector (temp 4-component vector of float)
-0:392            'inFM0' (in 4X4 matrix of float)
-0:392            'inFV0' (in 4-component vector of float)
-0:392      Sequence
-0:392        move second child to first child (temp 4-component vector of float)
-0:392          'r5' (temp 4-component vector of float)
 0:392          vector-times-matrix (temp 4-component vector of float)
 0:392            'inFV0' (in 4-component vector of float)
 0:392            'inFM0' (in 4X4 matrix of float)
 0:392      Sequence
+0:392        move second child to first child (temp 4-component vector of float)
+0:392          'r5' (temp 4-component vector of float)
+0:392          matrix-times-vector (temp 4-component vector of float)
+0:392            'inFM0' (in 4X4 matrix of float)
+0:392            'inFV0' (in 4-component vector of float)
+0:392      Sequence
 0:392        move second child to first child (temp 4X4 matrix of float)
 0:392          'r6' (temp 4X4 matrix of float)
 0:392          matrix-scale (temp 4X4 matrix of float)
-0:392            'inFM0' (in 4X4 matrix of float)
 0:392            'inF0' (in float)
+0:392            'inFM0' (in 4X4 matrix of float)
 0:392      Sequence
 0:392        move second child to first child (temp 4X4 matrix of float)
 0:392          'r7' (temp 4X4 matrix of float)
 0:392          matrix-scale (temp 4X4 matrix of float)
-0:392            'inF0' (in float)
 0:392            'inFM0' (in 4X4 matrix of float)
+0:392            'inF0' (in float)
 0:392      Sequence
 0:392        move second child to first child (temp 4X4 matrix of float)
 0:392          'r8' (temp 4X4 matrix of float)
 0:392          matrix-multiply (temp 4X4 matrix of float)
-0:392            'inFM0' (in 4X4 matrix of float)
 0:392            'inFM1' (in 4X4 matrix of float)
-0:420  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf32;mf23;mf33;mf43;mf42; (global void)
+0:392            'inFM0' (in 4X4 matrix of float)
+0:401  Function Definition: TestGenMulNxM(f1;f1;vf2;vf3;mf23;mf32;mf33;mf34;mf24; (temp void)
 0:401    Function Parameters: 
 0:401      'inF0' (in float)
 0:401      'inF1' (in float)
 0:401      'inFV2' (in 2-component vector of float)
 0:401      'inFV3' (in 3-component vector of float)
-0:401      'inFM2x3' (in 3X2 matrix of float)
-0:401      'inFM3x2' (in 2X3 matrix of float)
+0:401      'inFM2x3' (in 2X3 matrix of float)
+0:401      'inFM3x2' (in 3X2 matrix of float)
 0:401      'inFM3x3' (in 3X3 matrix of float)
-0:401      'inFM3x4' (in 4X3 matrix of float)
-0:401      'inFM2x4' (in 4X2 matrix of float)
+0:401      'inFM3x4' (in 3X4 matrix of float)
+0:401      'inFM2x4' (in 2X4 matrix of float)
 0:?     Sequence
 0:402      Sequence
 0:402        move second child to first child (temp float)
 0:402          'r00' (temp float)
 0:402          component-wise multiply (temp float)
-0:402            'inF0' (in float)
 0:402            'inF1' (in float)
+0:402            'inF0' (in float)
 0:403      Sequence
 0:403        move second child to first child (temp 2-component vector of float)
 0:403          'r01' (temp 2-component vector of float)
 0:403          vector-scale (temp 2-component vector of float)
-0:403            'inFV2' (in 2-component vector of float)
 0:403            'inF0' (in float)
+0:403            'inFV2' (in 2-component vector of float)
 0:404      Sequence
 0:404        move second child to first child (temp 3-component vector of float)
 0:404          'r02' (temp 3-component vector of float)
 0:404          vector-scale (temp 3-component vector of float)
-0:404            'inFV3' (in 3-component vector of float)
 0:404            'inF0' (in float)
+0:404            'inFV3' (in 3-component vector of float)
 0:405      Sequence
 0:405        move second child to first child (temp 2-component vector of float)
 0:405          'r03' (temp 2-component vector of float)
 0:405          vector-scale (temp 2-component vector of float)
-0:405            'inF0' (in float)
 0:405            'inFV2' (in 2-component vector of float)
+0:405            'inF0' (in float)
 0:406      Sequence
 0:406        move second child to first child (temp 3-component vector of float)
 0:406          'r04' (temp 3-component vector of float)
 0:406          vector-scale (temp 3-component vector of float)
-0:406            'inF0' (in float)
 0:406            'inFV3' (in 3-component vector of float)
+0:406            'inF0' (in float)
 0:407      Sequence
 0:407        move second child to first child (temp float)
 0:407          'r05' (temp float)
@@ -2732,63 +2732,63 @@ Shader version: 450
 0:409      Sequence
 0:409        move second child to first child (temp 3-component vector of float)
 0:409          'r07' (temp 3-component vector of float)
-0:409          vector-times-matrix (temp 3-component vector of float)
+0:409          matrix-times-vector (temp 3-component vector of float)
+0:409            'inFM2x3' (in 2X3 matrix of float)
 0:409            'inFV2' (in 2-component vector of float)
-0:409            'inFM2x3' (in 3X2 matrix of float)
 0:410      Sequence
 0:410        move second child to first child (temp 2-component vector of float)
 0:410          'r08' (temp 2-component vector of float)
-0:410          vector-times-matrix (temp 2-component vector of float)
+0:410          matrix-times-vector (temp 2-component vector of float)
+0:410            'inFM3x2' (in 3X2 matrix of float)
 0:410            'inFV3' (in 3-component vector of float)
-0:410            'inFM3x2' (in 2X3 matrix of float)
 0:411      Sequence
 0:411        move second child to first child (temp 2-component vector of float)
 0:411          'r09' (temp 2-component vector of float)
-0:411          matrix-times-vector (temp 2-component vector of float)
-0:411            'inFM2x3' (in 3X2 matrix of float)
+0:411          vector-times-matrix (temp 2-component vector of float)
 0:411            'inFV3' (in 3-component vector of float)
+0:411            'inFM2x3' (in 2X3 matrix of float)
 0:412      Sequence
 0:412        move second child to first child (temp 3-component vector of float)
 0:412          'r10' (temp 3-component vector of float)
-0:412          matrix-times-vector (temp 3-component vector of float)
-0:412            'inFM3x2' (in 2X3 matrix of float)
+0:412          vector-times-matrix (temp 3-component vector of float)
 0:412            'inFV2' (in 2-component vector of float)
+0:412            'inFM3x2' (in 3X2 matrix of float)
 0:413      Sequence
-0:413        move second child to first child (temp 3X2 matrix of float)
-0:413          'r11' (temp 3X2 matrix of float)
-0:413          matrix-scale (temp 3X2 matrix of float)
-0:413            'inFM2x3' (in 3X2 matrix of float)
+0:413        move second child to first child (temp 2X3 matrix of float)
+0:413          'r11' (temp 2X3 matrix of float)
+0:413          matrix-scale (temp 2X3 matrix of float)
 0:413            'inF0' (in float)
+0:413            'inFM2x3' (in 2X3 matrix of float)
 0:414      Sequence
-0:414        move second child to first child (temp 2X3 matrix of float)
-0:414          'r12' (temp 2X3 matrix of float)
-0:414          matrix-scale (temp 2X3 matrix of float)
-0:414            'inFM3x2' (in 2X3 matrix of float)
+0:414        move second child to first child (temp 3X2 matrix of float)
+0:414          'r12' (temp 3X2 matrix of float)
+0:414          matrix-scale (temp 3X2 matrix of float)
 0:414            'inF0' (in float)
+0:414            'inFM3x2' (in 3X2 matrix of float)
 0:415      Sequence
 0:415        move second child to first child (temp 2X2 matrix of float)
 0:415          'r13' (temp 2X2 matrix of float)
 0:415          matrix-multiply (temp 2X2 matrix of float)
-0:415            'inFM2x3' (in 3X2 matrix of float)
-0:415            'inFM3x2' (in 2X3 matrix of float)
+0:415            'inFM3x2' (in 3X2 matrix of float)
+0:415            'inFM2x3' (in 2X3 matrix of float)
 0:416      Sequence
-0:416        move second child to first child (temp 3X2 matrix of float)
-0:416          'r14' (temp 3X2 matrix of float)
-0:416          matrix-multiply (temp 3X2 matrix of float)
-0:416            'inFM2x3' (in 3X2 matrix of float)
+0:416        move second child to first child (temp 2X3 matrix of float)
+0:416          'r14' (temp 2X3 matrix of float)
+0:416          matrix-multiply (temp 2X3 matrix of float)
 0:416            'inFM3x3' (in 3X3 matrix of float)
+0:416            'inFM2x3' (in 2X3 matrix of float)
 0:417      Sequence
-0:417        move second child to first child (temp 4X2 matrix of float)
-0:417          'r15' (temp 4X2 matrix of float)
-0:417          matrix-multiply (temp 4X2 matrix of float)
-0:417            'inFM2x3' (in 3X2 matrix of float)
-0:417            'inFM3x4' (in 4X3 matrix of float)
+0:417        move second child to first child (temp 2X4 matrix of float)
+0:417          'r15' (temp 2X4 matrix of float)
+0:417          matrix-multiply (temp 2X4 matrix of float)
+0:417            'inFM3x4' (in 3X4 matrix of float)
+0:417            'inFM2x3' (in 2X3 matrix of float)
 0:418      Sequence
-0:418        move second child to first child (temp 4X3 matrix of float)
-0:418          'r16' (temp 4X3 matrix of float)
-0:418          matrix-multiply (temp 4X3 matrix of float)
-0:418            'inFM3x2' (in 2X3 matrix of float)
-0:418            'inFM2x4' (in 4X2 matrix of float)
+0:418        move second child to first child (temp 3X4 matrix of float)
+0:418          'r16' (temp 3X4 matrix of float)
+0:418          matrix-multiply (temp 3X4 matrix of float)
+0:418            'inFM2x4' (in 2X4 matrix of float)
+0:418            'inFM3x2' (in 3X2 matrix of float)
 0:?   Linker Objects
 
 // Module Version 10000
@@ -2799,7 +2799,6 @@ Shader version: 450
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Vertex 4  "VertexShaderFunction"
-                              Source HLSL 450
                               Name 4  "VertexShaderFunction"
                               Name 16  "VertexShaderFunctionS(f1;f1;f1;u1;u1;"
                               Name 11  "inF0"
@@ -2862,7 +2861,7 @@ Shader version: 450
                               Name 106  "inFV1"
                               Name 107  "inFM0"
                               Name 108  "inFM1"
-                              Name 129  "TestGenMulNxM(f1;f1;vf2;vf3;mf32;mf23;mf33;mf43;mf42;"
+                              Name 129  "TestGenMulNxM(f1;f1;vf2;vf3;mf23;mf32;mf33;mf34;mf24;"
                               Name 120  "inF0"
                               Name 121  "inF1"
                               Name 122  "inFV2"
@@ -2958,13 +2957,13 @@ Shader version: 450
               84:             TypeFunction 2 7(ptr) 7(ptr) 25(ptr) 25(ptr) 61(ptr) 61(ptr)
               93:             TypeFunction 2 7(ptr) 7(ptr) 37(ptr) 37(ptr) 69(ptr) 69(ptr)
              102:             TypeFunction 2 7(ptr) 7(ptr) 49(ptr) 49(ptr) 77(ptr) 77(ptr)
-             111:             TypeMatrix 24(fvec2) 3
+             111:             TypeMatrix 36(fvec3) 2
              112:             TypePointer Function 111
-             113:             TypeMatrix 36(fvec3) 2
+             113:             TypeMatrix 24(fvec2) 3
              114:             TypePointer Function 113
-             115:             TypeMatrix 36(fvec3) 4
+             115:             TypeMatrix 48(fvec4) 3
              116:             TypePointer Function 115
-             117:             TypeMatrix 24(fvec2) 4
+             117:             TypeMatrix 48(fvec4) 2
              118:             TypePointer Function 117
              119:             TypeFunction 2 7(ptr) 7(ptr) 25(ptr) 37(ptr) 112(ptr) 114(ptr) 69(ptr) 116(ptr) 118(ptr)
              132:             TypeBool
@@ -3987,40 +3986,40 @@ Shader version: 450
         1086(r6):     61(ptr) Variable Function
         1090(r7):     61(ptr) Variable Function
         1094(r8):     61(ptr) Variable Function
-            1063:    6(float) Load 85(inF0)
-            1064:    6(float) Load 86(inF1)
+            1063:    6(float) Load 86(inF1)
+            1064:    6(float) Load 85(inF0)
             1065:    6(float) FMul 1063 1064
                               Store 1062(r0) 1065
-            1067:   24(fvec2) Load 87(inFV0)
-            1068:    6(float) Load 85(inF0)
-            1069:   24(fvec2) VectorTimesScalar 1067 1068
+            1067:    6(float) Load 85(inF0)
+            1068:   24(fvec2) Load 87(inFV0)
+            1069:   24(fvec2) VectorTimesScalar 1068 1067
                               Store 1066(r1) 1069
-            1071:    6(float) Load 85(inF0)
-            1072:   24(fvec2) Load 87(inFV0)
-            1073:   24(fvec2) VectorTimesScalar 1072 1071
+            1071:   24(fvec2) Load 87(inFV0)
+            1072:    6(float) Load 85(inF0)
+            1073:   24(fvec2) VectorTimesScalar 1071 1072
                               Store 1070(r2) 1073
             1075:   24(fvec2) Load 87(inFV0)
             1076:   24(fvec2) Load 88(inFV1)
             1077:    6(float) Dot 1075 1076
                               Store 1074(r3) 1077
-            1079:          60 Load 89(inFM0)
-            1080:   24(fvec2) Load 87(inFV0)
-            1081:   24(fvec2) MatrixTimesVector 1079 1080
+            1079:   24(fvec2) Load 87(inFV0)
+            1080:          60 Load 89(inFM0)
+            1081:   24(fvec2) VectorTimesMatrix 1079 1080
                               Store 1078(r4) 1081
-            1083:   24(fvec2) Load 87(inFV0)
-            1084:          60 Load 89(inFM0)
-            1085:   24(fvec2) VectorTimesMatrix 1083 1084
+            1083:          60 Load 89(inFM0)
+            1084:   24(fvec2) Load 87(inFV0)
+            1085:   24(fvec2) MatrixTimesVector 1083 1084
                               Store 1082(r5) 1085
-            1087:          60 Load 89(inFM0)
-            1088:    6(float) Load 85(inF0)
-            1089:          60 MatrixTimesScalar 1087 1088
+            1087:    6(float) Load 85(inF0)
+            1088:          60 Load 89(inFM0)
+            1089:          60 MatrixTimesScalar 1088 1087
                               Store 1086(r6) 1089
-            1091:    6(float) Load 85(inF0)
-            1092:          60 Load 89(inFM0)
-            1093:          60 MatrixTimesScalar 1092 1091
+            1091:          60 Load 89(inFM0)
+            1092:    6(float) Load 85(inF0)
+            1093:          60 MatrixTimesScalar 1091 1092
                               Store 1090(r7) 1093
-            1095:          60 Load 89(inFM0)
-            1096:          60 Load 90(inFM1)
+            1095:          60 Load 90(inFM1)
+            1096:          60 Load 89(inFM0)
             1097:          60 MatrixTimesMatrix 1095 1096
                               Store 1094(r8) 1097
                               Return
@@ -4042,40 +4041,40 @@ Shader version: 450
         1122(r6):     69(ptr) Variable Function
         1126(r7):     69(ptr) Variable Function
         1130(r8):     69(ptr) Variable Function
-            1099:    6(float) Load 94(inF0)
-            1100:    6(float) Load 95(inF1)
+            1099:    6(float) Load 95(inF1)
+            1100:    6(float) Load 94(inF0)
             1101:    6(float) FMul 1099 1100
                               Store 1098(r0) 1101
-            1103:   36(fvec3) Load 96(inFV0)
-            1104:    6(float) Load 94(inF0)
-            1105:   36(fvec3) VectorTimesScalar 1103 1104
+            1103:    6(float) Load 94(inF0)
+            1104:   36(fvec3) Load 96(inFV0)
+            1105:   36(fvec3) VectorTimesScalar 1104 1103
                               Store 1102(r1) 1105
-            1107:    6(float) Load 94(inF0)
-            1108:   36(fvec3) Load 96(inFV0)
-            1109:   36(fvec3) VectorTimesScalar 1108 1107
+            1107:   36(fvec3) Load 96(inFV0)
+            1108:    6(float) Load 94(inF0)
+            1109:   36(fvec3) VectorTimesScalar 1107 1108
                               Store 1106(r2) 1109
             1111:   36(fvec3) Load 96(inFV0)
             1112:   36(fvec3) Load 97(inFV1)
             1113:    6(float) Dot 1111 1112
                               Store 1110(r3) 1113
-            1115:          68 Load 98(inFM0)
-            1116:   36(fvec3) Load 96(inFV0)
-            1117:   36(fvec3) MatrixTimesVector 1115 1116
+            1115:   36(fvec3) Load 96(inFV0)
+            1116:          68 Load 98(inFM0)
+            1117:   36(fvec3) VectorTimesMatrix 1115 1116
                               Store 1114(r4) 1117
-            1119:   36(fvec3) Load 96(inFV0)
-            1120:          68 Load 98(inFM0)
-            1121:   36(fvec3) VectorTimesMatrix 1119 1120
+            1119:          68 Load 98(inFM0)
+            1120:   36(fvec3) Load 96(inFV0)
+            1121:   36(fvec3) MatrixTimesVector 1119 1120
                               Store 1118(r5) 1121
-            1123:          68 Load 98(inFM0)
-            1124:    6(float) Load 94(inF0)
-            1125:          68 MatrixTimesScalar 1123 1124
+            1123:    6(float) Load 94(inF0)
+            1124:          68 Load 98(inFM0)
+            1125:          68 MatrixTimesScalar 1124 1123
                               Store 1122(r6) 1125
-            1127:    6(float) Load 94(inF0)
-            1128:          68 Load 98(inFM0)
-            1129:          68 MatrixTimesScalar 1128 1127
+            1127:          68 Load 98(inFM0)
+            1128:    6(float) Load 94(inF0)
+            1129:          68 MatrixTimesScalar 1127 1128
                               Store 1126(r7) 1129
-            1131:          68 Load 98(inFM0)
-            1132:          68 Load 99(inFM1)
+            1131:          68 Load 99(inFM1)
+            1132:          68 Load 98(inFM0)
             1133:          68 MatrixTimesMatrix 1131 1132
                               Store 1130(r8) 1133
                               Return
@@ -4097,45 +4096,45 @@ Shader version: 450
         1158(r6):     77(ptr) Variable Function
         1162(r7):     77(ptr) Variable Function
         1166(r8):     77(ptr) Variable Function
-            1135:    6(float) Load 103(inF0)
-            1136:    6(float) Load 104(inF1)
+            1135:    6(float) Load 104(inF1)
+            1136:    6(float) Load 103(inF0)
             1137:    6(float) FMul 1135 1136
                               Store 1134(r0) 1137
-            1139:   48(fvec4) Load 105(inFV0)
-            1140:    6(float) Load 103(inF0)
-            1141:   48(fvec4) VectorTimesScalar 1139 1140
+            1139:    6(float) Load 103(inF0)
+            1140:   48(fvec4) Load 105(inFV0)
+            1141:   48(fvec4) VectorTimesScalar 1140 1139
                               Store 1138(r1) 1141
-            1143:    6(float) Load 103(inF0)
-            1144:   48(fvec4) Load 105(inFV0)
-            1145:   48(fvec4) VectorTimesScalar 1144 1143
+            1143:   48(fvec4) Load 105(inFV0)
+            1144:    6(float) Load 103(inF0)
+            1145:   48(fvec4) VectorTimesScalar 1143 1144
                               Store 1142(r2) 1145
             1147:   48(fvec4) Load 105(inFV0)
             1148:   48(fvec4) Load 106(inFV1)
             1149:    6(float) Dot 1147 1148
                               Store 1146(r3) 1149
-            1151:          76 Load 107(inFM0)
-            1152:   48(fvec4) Load 105(inFV0)
-            1153:   48(fvec4) MatrixTimesVector 1151 1152
+            1151:   48(fvec4) Load 105(inFV0)
+            1152:          76 Load 107(inFM0)
+            1153:   48(fvec4) VectorTimesMatrix 1151 1152
                               Store 1150(r4) 1153
-            1155:   48(fvec4) Load 105(inFV0)
-            1156:          76 Load 107(inFM0)
-            1157:   48(fvec4) VectorTimesMatrix 1155 1156
+            1155:          76 Load 107(inFM0)
+            1156:   48(fvec4) Load 105(inFV0)
+            1157:   48(fvec4) MatrixTimesVector 1155 1156
                               Store 1154(r5) 1157
-            1159:          76 Load 107(inFM0)
-            1160:    6(float) Load 103(inF0)
-            1161:          76 MatrixTimesScalar 1159 1160
+            1159:    6(float) Load 103(inF0)
+            1160:          76 Load 107(inFM0)
+            1161:          76 MatrixTimesScalar 1160 1159
                               Store 1158(r6) 1161
-            1163:    6(float) Load 103(inF0)
-            1164:          76 Load 107(inFM0)
-            1165:          76 MatrixTimesScalar 1164 1163
+            1163:          76 Load 107(inFM0)
+            1164:    6(float) Load 103(inF0)
+            1165:          76 MatrixTimesScalar 1163 1164
                               Store 1162(r7) 1165
-            1167:          76 Load 107(inFM0)
-            1168:          76 Load 108(inFM1)
+            1167:          76 Load 108(inFM1)
+            1168:          76 Load 107(inFM0)
             1169:          76 MatrixTimesMatrix 1167 1168
                               Store 1166(r8) 1169
                               Return
                               FunctionEnd
-129(TestGenMulNxM(f1;f1;vf2;vf3;mf32;mf23;mf33;mf43;mf42;):           2 Function None 119
+129(TestGenMulNxM(f1;f1;vf2;vf3;mf23;mf32;mf33;mf34;mf24;):           2 Function None 119
        120(inF0):      7(ptr) FunctionParameter
        121(inF1):      7(ptr) FunctionParameter
       122(inFV2):     25(ptr) FunctionParameter
@@ -4163,25 +4162,25 @@ Shader version: 450
        1226(r14):    112(ptr) Variable Function
        1230(r15):    118(ptr) Variable Function
        1234(r16):    116(ptr) Variable Function
-            1171:    6(float) Load 120(inF0)
-            1172:    6(float) Load 121(inF1)
+            1171:    6(float) Load 121(inF1)
+            1172:    6(float) Load 120(inF0)
             1173:    6(float) FMul 1171 1172
                               Store 1170(r00) 1173
-            1175:   24(fvec2) Load 122(inFV2)
-            1176:    6(float) Load 120(inF0)
-            1177:   24(fvec2) VectorTimesScalar 1175 1176
+            1175:    6(float) Load 120(inF0)
+            1176:   24(fvec2) Load 122(inFV2)
+            1177:   24(fvec2) VectorTimesScalar 1176 1175
                               Store 1174(r01) 1177
-            1179:   36(fvec3) Load 123(inFV3)
-            1180:    6(float) Load 120(inF0)
-            1181:   36(fvec3) VectorTimesScalar 1179 1180
+            1179:    6(float) Load 120(inF0)
+            1180:   36(fvec3) Load 123(inFV3)
+            1181:   36(fvec3) VectorTimesScalar 1180 1179
                               Store 1178(r02) 1181
-            1183:    6(float) Load 120(inF0)
-            1184:   24(fvec2) Load 122(inFV2)
-            1185:   24(fvec2) VectorTimesScalar 1184 1183
+            1183:   24(fvec2) Load 122(inFV2)
+            1184:    6(float) Load 120(inF0)
+            1185:   24(fvec2) VectorTimesScalar 1183 1184
                               Store 1182(r03) 1185
-            1187:    6(float) Load 120(inF0)
-            1188:   36(fvec3) Load 123(inFV3)
-            1189:   36(fvec3) VectorTimesScalar 1188 1187
+            1187:   36(fvec3) Load 123(inFV3)
+            1188:    6(float) Load 120(inF0)
+            1189:   36(fvec3) VectorTimesScalar 1187 1188
                               Store 1186(r04) 1189
             1191:   24(fvec2) Load 122(inFV2)
             1192:   24(fvec2) Load 122(inFV2)
@@ -4191,44 +4190,44 @@ Shader version: 450
             1196:   36(fvec3) Load 123(inFV3)
             1197:    6(float) Dot 1195 1196
                               Store 1194(r06) 1197
-            1199:   24(fvec2) Load 122(inFV2)
-            1200:         111 Load 124(inFM2x3)
-            1201:   36(fvec3) VectorTimesMatrix 1199 1200
+            1199:         111 Load 124(inFM2x3)
+            1200:   24(fvec2) Load 122(inFV2)
+            1201:   36(fvec3) MatrixTimesVector 1199 1200
                               Store 1198(r07) 1201
-            1203:   36(fvec3) Load 123(inFV3)
-            1204:         113 Load 125(inFM3x2)
-            1205:   24(fvec2) VectorTimesMatrix 1203 1204
+            1203:         113 Load 125(inFM3x2)
+            1204:   36(fvec3) Load 123(inFV3)
+            1205:   24(fvec2) MatrixTimesVector 1203 1204
                               Store 1202(r08) 1205
-            1207:         111 Load 124(inFM2x3)
-            1208:   36(fvec3) Load 123(inFV3)
-            1209:   24(fvec2) MatrixTimesVector 1207 1208
+            1207:   36(fvec3) Load 123(inFV3)
+            1208:         111 Load 124(inFM2x3)
+            1209:   24(fvec2) VectorTimesMatrix 1207 1208
                               Store 1206(r09) 1209
-            1211:         113 Load 125(inFM3x2)
-            1212:   24(fvec2) Load 122(inFV2)
-            1213:   36(fvec3) MatrixTimesVector 1211 1212
+            1211:   24(fvec2) Load 122(inFV2)
+            1212:         113 Load 125(inFM3x2)
+            1213:   36(fvec3) VectorTimesMatrix 1211 1212
                               Store 1210(r10) 1213
-            1215:         111 Load 124(inFM2x3)
-            1216:    6(float) Load 120(inF0)
-            1217:         111 MatrixTimesScalar 1215 1216
+            1215:    6(float) Load 120(inF0)
+            1216:         111 Load 124(inFM2x3)
+            1217:         111 MatrixTimesScalar 1216 1215
                               Store 1214(r11) 1217
-            1219:         113 Load 125(inFM3x2)
-            1220:    6(float) Load 120(inF0)
-            1221:         113 MatrixTimesScalar 1219 1220
+            1219:    6(float) Load 120(inF0)
+            1220:         113 Load 125(inFM3x2)
+            1221:         113 MatrixTimesScalar 1220 1219
                               Store 1218(r12) 1221
-            1223:         111 Load 124(inFM2x3)
-            1224:         113 Load 125(inFM3x2)
+            1223:         113 Load 125(inFM3x2)
+            1224:         111 Load 124(inFM2x3)
             1225:          60 MatrixTimesMatrix 1223 1224
                               Store 1222(r13) 1225
-            1227:         111 Load 124(inFM2x3)
-            1228:          68 Load 126(inFM3x3)
+            1227:          68 Load 126(inFM3x3)
+            1228:         111 Load 124(inFM2x3)
             1229:         111 MatrixTimesMatrix 1227 1228
                               Store 1226(r14) 1229
-            1231:         111 Load 124(inFM2x3)
-            1232:         115 Load 127(inFM3x4)
+            1231:         115 Load 127(inFM3x4)
+            1232:         111 Load 124(inFM2x3)
             1233:         117 MatrixTimesMatrix 1231 1232
                               Store 1230(r15) 1233
-            1235:         113 Load 125(inFM3x2)
-            1236:         117 Load 128(inFM2x4)
+            1235:         117 Load 128(inFM2x4)
+            1236:         113 Load 125(inFM3x2)
             1237:         115 MatrixTimesMatrix 1235 1236
                               Store 1234(r16) 1237
                               Return

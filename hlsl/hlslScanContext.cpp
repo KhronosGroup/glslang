@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2016 Google, Inc.
+//Copyright (C) 2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -37,7 +38,7 @@
 // HLSL scanning, leveraging the scanning done by the preprocessor.
 //
 
-#include <string.h>
+#include <cstring>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -113,12 +114,17 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["row_major"] =               EHTokRowMajor;
     (*KeywordMap)["column_major"] =            EHTokColumnMajor;
     (*KeywordMap)["packoffset"] =              EHTokPackOffset;
+    (*KeywordMap)["in"] =                      EHTokIn;
+    (*KeywordMap)["out"] =                     EHTokOut;
+    (*KeywordMap)["inout"] =                   EHTokInOut;
+    (*KeywordMap)["layout"] =                  EHTokLayout;
 
     (*KeywordMap)["Buffer"] =                  EHTokBuffer;
     (*KeywordMap)["vector"] =                  EHTokVector;
     (*KeywordMap)["matrix"] =                  EHTokMatrix;
 
     (*KeywordMap)["void"] =                    EHTokVoid;
+    (*KeywordMap)["string"] =                  EHTokString;
     (*KeywordMap)["bool"] =                    EHTokBool;
     (*KeywordMap)["int"] =                     EHTokInt;
     (*KeywordMap)["uint"] =                    EHTokUint;
@@ -249,8 +255,20 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["Texture2DArray"] =          EHTokTexture2darray;
     (*KeywordMap)["Texture3D"] =               EHTokTexture3d;
     (*KeywordMap)["TextureCube"] =             EHTokTextureCube;
+    (*KeywordMap)["TextureCubeArray"] =        EHTokTextureCubearray;
+    (*KeywordMap)["Texture2DMS"] =             EHTokTexture2DMS;
+    (*KeywordMap)["Texture2DMSArray"] =        EHTokTexture2DMSarray;
+    (*KeywordMap)["RWTexture1D"] =             EHTokRWTexture1d;
+    (*KeywordMap)["RWTexture1DArray"] =        EHTokRWTexture1darray;
+    (*KeywordMap)["RWTexture2D"] =             EHTokRWTexture2d;
+    (*KeywordMap)["RWTexture2DArray"] =        EHTokRWTexture2darray;
+    (*KeywordMap)["RWTexture3D"] =             EHTokRWTexture3d;
+    (*KeywordMap)["RWBuffer"] =                EHTokRWBuffer;
+
 
     (*KeywordMap)["struct"] =                  EHTokStruct;
+    (*KeywordMap)["cbuffer"] =                 EHTokCBuffer;
+    (*KeywordMap)["tbuffer"] =                 EHTokTBuffer;
     (*KeywordMap)["typedef"] =                 EHTokTypedef;
 
     (*KeywordMap)["true"] =                    EHTokBoolConstant;
@@ -401,6 +419,11 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
             return token;
         }
 
+        case PpAtomConstString: {
+            parserToken->string = NewPoolTString(ppToken.name);
+            return EHTokStringConstant;
+        }
+
         case EndOfInput:               return EHTokNone;
 
         default:
@@ -445,6 +468,11 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokRowMajor:
     case EHTokColumnMajor:
     case EHTokPackOffset:
+    case EHTokIn:
+    case EHTokOut:
+    case EHTokInOut:
+    case EHTokPrecise:
+    case EHTokLayout:
         return keyword;
 
     // template types
@@ -455,6 +483,7 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
 
     // scalar types
     case EHTokVoid:
+    case EHTokString:
     case EHTokBool:
     case EHTokInt:
     case EHTokUint:
@@ -556,11 +585,23 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokTexture2darray:
     case EHTokTexture3d:
     case EHTokTextureCube:
+    case EHTokTextureCubearray:
+    case EHTokTexture2DMS:
+    case EHTokTexture2DMSarray:
+    case EHTokRWTexture1d:
+    case EHTokRWTexture1darray:
+    case EHTokRWTexture2d:
+    case EHTokRWTexture2darray:
+    case EHTokRWTexture3d:
+    case EHTokRWBuffer:
         return keyword;
 
     // variable, user type, ...
     case EHTokStruct:
     case EHTokTypedef:
+    case EHTokCBuffer:
+    case EHTokTBuffer:
+        return keyword;
 
     case EHTokBoolConstant:
         if (strcmp("true", tokenText) == 0)

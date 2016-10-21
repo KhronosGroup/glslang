@@ -78,12 +78,16 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
     bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
     bool   external : 1;  // GL_OES_EGL_image_external
+    unsigned int vectorSize : 3;  // return vector size.  TODO: support arbitrary types.
 
     bool isImage()       const { return image && dim != EsdSubpass; }
     bool isSubpass()     const { return dim == EsdSubpass; }
     bool isCombined()    const { return combined; }
     bool isPureSampler() const { return sampler; }
     bool isTexture()     const { return !sampler && !image; }
+    bool isShadow()      const { return shadow; }
+    bool isArrayed()     const { return arrayed; }
+    bool isMultiSample() const { return ms; }
 
     void clear()
     {
@@ -96,6 +100,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         combined = false;
         sampler = false;
         external = false;
+        vectorSize = 4;
     }
 
     // make a combined sampler and texture
@@ -161,7 +166,8 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
               image == right.image &&
            combined == right.combined &&
             sampler == right.sampler &&
-           external == right.external;
+           external == right.external &&
+         vectorSize == right.vectorSize;
     }
 
     bool operator!=(const TSampler& right) const
@@ -182,8 +188,6 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         case EbtFloat:               break;
         case EbtInt:  s.append("i"); break;
         case EbtUint: s.append("u"); break;
-        case EbtInt64:  s.append("i64"); break;
-        case EbtUint64: s.append("u64"); break;
         default:  break;  // some compilers want this
         }
         if (image) {
@@ -403,6 +407,9 @@ public:
         smooth       = false;
         flat         = false;
         nopersp      = false;
+#ifdef AMD_EXTENSIONS
+        explicitInterp = false;
+#endif
         patch        = false;
         sample       = false;
         coherent     = false;
@@ -436,6 +443,9 @@ public:
     bool smooth       : 1;
     bool flat         : 1;
     bool nopersp      : 1;
+#ifdef AMD_EXTENSIONS
+    bool explicitInterp : 1;
+#endif
     bool patch        : 1;
     bool sample       : 1;
     bool coherent     : 1;
@@ -451,7 +461,11 @@ public:
     }
     bool isInterpolation() const
     {
+#ifdef AMD_EXTENSIONS
+        return flat || smooth || nopersp || explicitInterp;
+#else
         return flat || smooth || nopersp;
+#endif
     }
     bool isAuxiliary() const
     {
@@ -610,8 +624,8 @@ public:
                  unsigned int layoutSet                 : 7;
     static const unsigned int layoutSetEnd         =   0x3F;
 
-                 unsigned int layoutBinding             : 8;
-    static const unsigned int layoutBindingEnd    =    0xFF;
+                 unsigned int layoutBinding            : 16;
+    static const unsigned int layoutBindingEnd    =  0xFFFF;
 
                  unsigned int layoutIndex              :  8;
     static const unsigned int layoutIndexEnd    =      0xFF;
@@ -1062,7 +1076,7 @@ public:
                                 qualifier.clear();
                                 qualifier.storage = q;
                                 qualifier.precision = p;
-                                assert(p >= 0 && p <= EpqHigh);
+                                assert(p >= EpqNone && p <= EpqHigh);
                             }
     // for turning a TPublicType into a TType, using a shallow copy
     explicit TType(const TPublicType& p) :
@@ -1080,6 +1094,15 @@ public:
                                     typeName = NewPoolTString(p.userDef->getTypeName().c_str());
                                 }
                             }
+    // for construction of sampler types
+    TType(const TSampler& sampler, TStorageQualifier q = EvqUniform, TArraySizes* as = nullptr) :
+        basicType(EbtSampler), vectorSize(1), matrixCols(0), matrixRows(0), vector1(false),
+        arraySizes(as), structure(nullptr), fieldName(nullptr), typeName(nullptr),
+        sampler(sampler)
+    {
+        qualifier.clear();
+        qualifier.storage = q;
+    }
     // to efficiently make a dereferenced type
     // without ever duplicating the outer structure that will be thrown away
     // and using only shallow copy
@@ -1182,7 +1205,7 @@ public:
             typeName = NewPoolTString(copyOf.typeName->c_str());
     }
 
-    TType* clone()
+    TType* clone() const
     {
         TType *newType = new TType();
         newType->deepCopy(*this);
@@ -1255,7 +1278,11 @@ public:
     virtual bool isImplicitlySizedArray() const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage != EvqBuffer; }
     virtual bool isRuntimeSizedArray()    const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage == EvqBuffer; }
     virtual bool isStruct() const { return structure != nullptr; }
+#ifdef AMD_EXTENSIONS
+    virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble || basicType == EbtFloat16; }
+#else
     virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble; }
+#endif
 
     virtual bool isOpaque() const { return basicType == EbtSampler || basicType == EbtAtomicUint; }
 
@@ -1337,6 +1364,9 @@ public:
         case EbtVoid:
         case EbtFloat:
         case EbtDouble:
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16:
+#endif
         case EbtInt:
         case EbtUint:
         case EbtInt64:
@@ -1429,6 +1459,9 @@ public:
         case EbtVoid:              return "void";
         case EbtFloat:             return "float";
         case EbtDouble:            return "double";
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16:           return "float16_t";
+#endif
         case EbtInt:               return "int";
         case EbtUint:              return "uint";
         case EbtInt64:             return "int64_t";
@@ -1507,6 +1540,10 @@ public:
             p += snprintf(p, end - p, "flat ");
         if (qualifier.nopersp)
             p += snprintf(p, end - p, "noperspective ");
+#ifdef AMD_EXTENSIONS
+        if (qualifier.explicitInterp)
+            p += snprintf(p, end - p, "__explicitInterpAMD ");
+#endif
         if (qualifier.patch)
             p += snprintf(p, end - p, "patch ");
         if (qualifier.sample)
@@ -1707,13 +1744,13 @@ protected:
                                // functionality is added.
                                // HLSL does have a 1-component vectors, so this will be true to disambiguate
                                // from a scalar.
-    TSampler sampler;
     TQualifier qualifier;
 
     TArraySizes* arraySizes;    // nullptr unless an array; can be shared across types
     TTypeList* structure;       // nullptr unless this is a struct; can be shared across types
     TString *fieldName;         // for structure field names
     TString *typeName;          // for structure type name
+    TSampler sampler;
 };
 
 } // end namespace glslang

@@ -9,7 +9,7 @@ ERROR: 4 compilation errors.  No code generated.
 Shader version: 450
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
-0:8  Function Definition: PixelShaderFunctionS(f1; (global float)
+0:2  Function Definition: PixelShaderFunctionS(f1; (temp float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:?     Sequence
@@ -19,14 +19,14 @@ ERROR: node is still EOpNull!
 0:5      Branch: Return with expression
 0:5        Constant:
 0:5          0.000000
-0:14  Function Definition: PixelShaderFunction1(vf1; (global 1-component vector of float)
+0:9  Function Definition: PixelShaderFunction1(vf1; (temp 1-component vector of float)
 0:9    Function Parameters: 
 0:9      'inF0' (in 1-component vector of float)
 0:?     Sequence
 0:11      Branch: Return with expression
 0:11        Constant:
 0:11          0.000000
-0:21  Function Definition: PixelShaderFunction2(vf2; (global 2-component vector of float)
+0:15  Function Definition: PixelShaderFunction2(vf2; (temp 2-component vector of float)
 0:15    Function Parameters: 
 0:15      'inF0' (in 2-component vector of float)
 0:?     Sequence
@@ -37,7 +37,7 @@ ERROR: node is still EOpNull!
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:28  Function Definition: PixelShaderFunction3(vf3; (global 3-component vector of float)
+0:22  Function Definition: PixelShaderFunction3(vf3; (temp 3-component vector of float)
 0:22    Function Parameters: 
 0:22      'inF0' (in 3-component vector of float)
 0:?     Sequence
@@ -49,20 +49,25 @@ ERROR: node is still EOpNull!
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:35  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
+0:29  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:29    Function Parameters: 
-0:29      'inF0' (in 4-component vector of float)
+0:29      'inF0' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:30      ERROR: Bad unary op
  (global 4-component vector of uint)
-0:30        'inF0' (in 4-component vector of float)
-0:32      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:30        'inF0' (layout(location=0 ) in 4-component vector of float)
+0:32      Sequence
+0:32        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:?           Constant:
+0:?             1.000000
+0:?             2.000000
+0:?             3.000000
+0:?             4.000000
+0:32        Branch: Return
 0:?   Linker Objects
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:?     'inF0' (layout(location=0 ) in 4-component vector of float)
 
 
 Linked fragment stage:
@@ -71,7 +76,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
-0:8  Function Definition: PixelShaderFunctionS(f1; (global float)
+0:2  Function Definition: PixelShaderFunctionS(f1; (temp float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:?     Sequence
@@ -81,14 +86,14 @@ ERROR: node is still EOpNull!
 0:5      Branch: Return with expression
 0:5        Constant:
 0:5          0.000000
-0:14  Function Definition: PixelShaderFunction1(vf1; (global 1-component vector of float)
+0:9  Function Definition: PixelShaderFunction1(vf1; (temp 1-component vector of float)
 0:9    Function Parameters: 
 0:9      'inF0' (in 1-component vector of float)
 0:?     Sequence
 0:11      Branch: Return with expression
 0:11        Constant:
 0:11          0.000000
-0:21  Function Definition: PixelShaderFunction2(vf2; (global 2-component vector of float)
+0:15  Function Definition: PixelShaderFunction2(vf2; (temp 2-component vector of float)
 0:15    Function Parameters: 
 0:15      'inF0' (in 2-component vector of float)
 0:?     Sequence
@@ -99,7 +104,7 @@ ERROR: node is still EOpNull!
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:28  Function Definition: PixelShaderFunction3(vf3; (global 3-component vector of float)
+0:22  Function Definition: PixelShaderFunction3(vf3; (temp 3-component vector of float)
 0:22    Function Parameters: 
 0:22      'inF0' (in 3-component vector of float)
 0:?     Sequence
@@ -111,19 +116,24 @@ ERROR: node is still EOpNull!
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:35  Function Definition: PixelShaderFunction(vf4; (global 4-component vector of float)
+0:29  Function Definition: PixelShaderFunction(vf4; (temp 4-component vector of float)
 0:29    Function Parameters: 
-0:29      'inF0' (in 4-component vector of float)
+0:29      'inF0' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:30      ERROR: Bad unary op
  (global 4-component vector of uint)
-0:30        'inF0' (in 4-component vector of float)
-0:32      Branch: Return with expression
-0:?         Constant:
-0:?           1.000000
-0:?           2.000000
-0:?           3.000000
-0:?           4.000000
+0:30        'inF0' (layout(location=0 ) in 4-component vector of float)
+0:32      Sequence
+0:32        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:?           Constant:
+0:?             1.000000
+0:?             2.000000
+0:?             3.000000
+0:?             4.000000
+0:32        Branch: Return
 0:?   Linker Objects
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:?     'inF0' (layout(location=0 ) in 4-component vector of float)
 
 SPIR-V is not generated for failed compile or link

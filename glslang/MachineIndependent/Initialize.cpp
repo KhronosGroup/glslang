@@ -85,8 +85,6 @@ TBuiltIns::TBuiltIns()
     prefixes[EbtFloat] =  "";
     prefixes[EbtInt]   = "i";
     prefixes[EbtUint]  = "u";
-    prefixes[EbtInt64]  = "i64";
-    prefixes[EbtUint64] = "u64";
     postfixes[2] = "2";
     postfixes[3] = "3";
     postfixes[4] = "4";
@@ -801,9 +799,99 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec3 notEqual(u64vec3, u64vec3);"
             "bvec4 notEqual(u64vec4, u64vec4);"
 
+#ifdef AMD_EXTENSIONS
+            "int   findLSB(int64_t);"
+            "ivec2 findLSB(i64vec2);"
+            "ivec3 findLSB(i64vec3);"
+            "ivec4 findLSB(i64vec4);"
+
+            "int   findLSB(uint64_t);"
+            "ivec2 findLSB(u64vec2);"
+            "ivec3 findLSB(u64vec3);"
+            "ivec4 findLSB(u64vec4);"
+
+            "int   findMSB(int64_t);"
+            "ivec2 findMSB(i64vec2);"
+            "ivec3 findMSB(i64vec3);"
+            "ivec4 findMSB(i64vec4);"
+
+            "int   findMSB(uint64_t);"
+            "ivec2 findMSB(u64vec2);"
+            "ivec3 findMSB(u64vec3);"
+            "ivec4 findMSB(u64vec4);"
+#endif
             "\n"
         );
     }
+
+#ifdef AMD_EXTENSIONS
+    // GL_AMD_shader_trinary_minmax
+    if (profile != EEsProfile && version >= 430) {
+        commonBuiltins.append(
+            "float min3(float, float, float);"
+            "vec2  min3(vec2,  vec2,  vec2);"
+            "vec3  min3(vec3,  vec3,  vec3);"
+            "vec4  min3(vec4,  vec4,  vec4);"
+
+            "int   min3(int,   int,   int);"
+            "ivec2 min3(ivec2, ivec2, ivec2);"
+            "ivec3 min3(ivec3, ivec3, ivec3);"
+            "ivec4 min3(ivec4, ivec4, ivec4);"
+
+            "uint  min3(uint,  uint,  uint);"
+            "uvec2 min3(uvec2, uvec2, uvec2);"
+            "uvec3 min3(uvec3, uvec3, uvec3);"
+            "uvec4 min3(uvec4, uvec4, uvec4);"
+
+            "float max3(float, float, float);"
+            "vec2  max3(vec2,  vec2,  vec2);"
+            "vec3  max3(vec3,  vec3,  vec3);"
+            "vec4  max3(vec4,  vec4,  vec4);"
+
+            "int   max3(int,   int,   int);"
+            "ivec2 max3(ivec2, ivec2, ivec2);"
+            "ivec3 max3(ivec3, ivec3, ivec3);"
+            "ivec4 max3(ivec4, ivec4, ivec4);"
+
+            "uint  max3(uint,  uint,  uint);"
+            "uvec2 max3(uvec2, uvec2, uvec2);"
+            "uvec3 max3(uvec3, uvec3, uvec3);"
+            "uvec4 max3(uvec4, uvec4, uvec4);"
+
+            "float mid3(float, float, float);"
+            "vec2  mid3(vec2,  vec2,  vec2);"
+            "vec3  mid3(vec3,  vec3,  vec3);"
+            "vec4  mid3(vec4,  vec4,  vec4);"
+
+            "int   mid3(int,   int,   int);"
+            "ivec2 mid3(ivec2, ivec2, ivec2);"
+            "ivec3 mid3(ivec3, ivec3, ivec3);"
+            "ivec4 mid3(ivec4, ivec4, ivec4);"
+
+            "uint  mid3(uint,  uint,  uint);"
+            "uvec2 mid3(uvec2, uvec2, uvec2);"
+            "uvec3 mid3(uvec3, uvec3, uvec3);"
+            "uvec4 mid3(uvec4, uvec4, uvec4);"
+
+            "float16_t min3(float16_t, float16_t, float16_t);"
+            "f16vec2   min3(f16vec2,   f16vec2,   f16vec2);"
+            "f16vec3   min3(f16vec3,   f16vec3,   f16vec3);"
+            "f16vec4   min3(f16vec4,   f16vec4,   f16vec4);"
+
+            "float16_t max3(float16_t, float16_t, float16_t);"
+            "f16vec2   max3(f16vec2,   f16vec2,   f16vec2);"
+            "f16vec3   max3(f16vec3,   f16vec3,   f16vec3);"
+            "f16vec4   max3(f16vec4,   f16vec4,   f16vec4);"
+
+            "float16_t mid3(float16_t, float16_t, float16_t);"
+            "f16vec2   mid3(f16vec2,   f16vec2,   f16vec2);"
+            "f16vec3   mid3(f16vec3,   f16vec3,   f16vec3);"
+            "f16vec4   mid3(f16vec4,   f16vec4,   f16vec4);"
+
+            "\n"
+        );
+    }
+#endif
 
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 430)) {
@@ -859,25 +947,25 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     if ((profile == EEsProfile && version >= 300) ||
         (profile != EEsProfile && version >= 330)) {
         commonBuiltins.append(
-            "highp int   floatBitsToInt(highp float value);"
-            "highp ivec2 floatBitsToInt(highp vec2  value);"
-            "highp ivec3 floatBitsToInt(highp vec3  value);"
-            "highp ivec4 floatBitsToInt(highp vec4  value);"
-                     
-            "highp uint  floatBitsToUint(highp float value);"
-            "highp uvec2 floatBitsToUint(highp vec2  value);"
-            "highp uvec3 floatBitsToUint(highp vec3  value);"
-            "highp uvec4 floatBitsToUint(highp vec4  value);"
+            "int   floatBitsToInt(highp float value);"
+            "ivec2 floatBitsToInt(highp vec2  value);"
+            "ivec3 floatBitsToInt(highp vec3  value);"
+            "ivec4 floatBitsToInt(highp vec4  value);"
 
-            "highp float intBitsToFloat(highp int   value);"
-            "highp vec2  intBitsToFloat(highp ivec2 value);"
-            "highp vec3  intBitsToFloat(highp ivec3 value);"
-            "highp vec4  intBitsToFloat(highp ivec4 value);"
+            "uint  floatBitsToUint(highp float value);"
+            "uvec2 floatBitsToUint(highp vec2  value);"
+            "uvec3 floatBitsToUint(highp vec3  value);"
+            "uvec4 floatBitsToUint(highp vec4  value);"
 
-            "highp float uintBitsToFloat(highp uint  value);"
-            "highp vec2  uintBitsToFloat(highp uvec2 value);"
-            "highp vec3  uintBitsToFloat(highp uvec3 value);"
-            "highp vec4  uintBitsToFloat(highp uvec4 value);"
+            "float intBitsToFloat(highp int   value);"
+            "vec2  intBitsToFloat(highp ivec2 value);"
+            "vec3  intBitsToFloat(highp ivec3 value);"
+            "vec4  intBitsToFloat(highp ivec4 value);"
+
+            "float uintBitsToFloat(highp uint  value);"
+            "vec2  uintBitsToFloat(highp uvec2 value);"
+            "vec3  uintBitsToFloat(highp uvec3 value);"
+            "vec4  uintBitsToFloat(highp uvec4 value);"
 
             "\n");
     }
@@ -905,15 +993,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
-            "highp float frexp(highp float, out highp int);"
-            "highp vec2  frexp(highp vec2,  out highp ivec2);"
-            "highp vec3  frexp(highp vec3,  out highp ivec3);"
-            "highp vec4  frexp(highp vec4,  out highp ivec4);"
+            "float frexp(highp float, out highp int);"
+            "vec2  frexp(highp vec2,  out highp ivec2);"
+            "vec3  frexp(highp vec3,  out highp ivec3);"
+            "vec4  frexp(highp vec4,  out highp ivec4);"
 
-            "highp float ldexp(highp float, highp int);"
-            "highp vec2  ldexp(highp vec2,  highp ivec2);"
-            "highp vec3  ldexp(highp vec3,  highp ivec3);"
-            "highp vec4  ldexp(highp vec4,  highp ivec4);"
+            "float ldexp(highp float, highp int);"
+            "vec2  ldexp(highp vec2,  highp ivec2);"
+            "vec3  ldexp(highp vec3,  highp ivec3);"
+            "vec4  ldexp(highp vec4,  highp ivec4);"
 
             "\n");
     }
@@ -940,7 +1028,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
             "highp uint packUnorm2x16(vec2);"
-            "highp vec2 unpackUnorm2x16(highp uint);"
+                  "vec2 unpackUnorm2x16(highp uint);"
             "\n");
     }
 
@@ -949,18 +1037,37 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         commonBuiltins.append(
             "highp uint packSnorm2x16(vec2);"
             "      vec2 unpackSnorm2x16(highp uint);"
-            "highp uint packHalf2x16(mediump vec2);"
-            "      vec2 unpackHalf2x16(highp uint);"
+            "highp uint packHalf2x16(vec2);"
+            "\n");
+    }
+
+    if (profile == EEsProfile && version >= 300) {
+        commonBuiltins.append(
+            "mediump vec2 unpackHalf2x16(highp uint);"
+            "\n");
+    } else if (profile != EEsProfile && version >= 420) {
+        commonBuiltins.append(
+            "        vec2 unpackHalf2x16(highp uint);"
             "\n");
     }
 
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
-            "highp   uint packSnorm4x8  (mediump vec4);"
-            "        vec4 unpackSnorm4x8(highp   uint);"
-            "highp   uint packUnorm4x8  (mediump vec4);"
-            "        vec4 unpackUnorm4x8(highp   uint);"
+            "highp uint packSnorm4x8(vec4);"
+            "highp uint packUnorm4x8(vec4);"
+            "\n");
+    }
+
+    if (profile == EEsProfile && version >= 310) {
+        commonBuiltins.append(
+            "mediump vec4 unpackSnorm4x8(highp uint);"
+            "mediump vec4 unpackUnorm4x8(highp uint);"
+            "\n");
+    } else if (profile != EEsProfile && version >= 400) {
+        commonBuiltins.append(
+                    "vec4 unpackSnorm4x8(highp uint);"
+                    "vec4 unpackUnorm4x8(highp uint);"
             "\n");
     }
 
@@ -1297,6 +1404,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec3 bitfieldInsert(uvec3 base, uvec3, int, int);"
             "uvec4 bitfieldInsert(uvec4 base, uvec4, int, int);"
 
+            "\n");
+    }
+
+    if (profile != EEsProfile && version >= 400) {
+        commonBuiltins.append(
             "  int findLSB(  int);"
             "ivec2 findLSB(ivec2);"
             "ivec3 findLSB(ivec3);"
@@ -1308,95 +1420,23 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "ivec4 findLSB(uvec4);"
 
             "\n");
-    }
-
-    if (profile != EEsProfile && version >= 400) {
+    } else if (profile == EEsProfile && version >= 310) {
         commonBuiltins.append(
-            " uint uaddCarry( uint,  uint, out  uint carry);"
-            "uvec2 uaddCarry(uvec2, uvec2, out uvec2 carry);"
-            "uvec3 uaddCarry(uvec3, uvec3, out uvec3 carry);"
-            "uvec4 uaddCarry(uvec4, uvec4, out uvec4 carry);"
+            "lowp   int findLSB(  int);"
+            "lowp ivec2 findLSB(ivec2);"
+            "lowp ivec3 findLSB(ivec3);"
+            "lowp ivec4 findLSB(ivec4);"
 
-            " uint usubBorrow( uint,  uint, out  uint borrow);"
-            "uvec2 usubBorrow(uvec2, uvec2, out uvec2 borrow);"
-            "uvec3 usubBorrow(uvec3, uvec3, out uvec3 borrow);"
-            "uvec4 usubBorrow(uvec4, uvec4, out uvec4 borrow);"
-
-            "void umulExtended( uint,  uint, out  uint, out  uint lsb);"
-            "void umulExtended(uvec2, uvec2, out uvec2, out uvec2 lsb);"
-            "void umulExtended(uvec3, uvec3, out uvec3, out uvec3 lsb);"
-            "void umulExtended(uvec4, uvec4, out uvec4, out uvec4 lsb);"
-
-            "void imulExtended(  int,   int, out   int, out   int lsb);"
-            "void imulExtended(ivec2, ivec2, out ivec2, out ivec2 lsb);"
-            "void imulExtended(ivec3, ivec3, out ivec3, out ivec3 lsb);"
-            "void imulExtended(ivec4, ivec4, out ivec4, out ivec4 lsb);"
-
-            "  int bitfieldReverse(  int);"
-            "ivec2 bitfieldReverse(ivec2);"
-            "ivec3 bitfieldReverse(ivec3);"
-            "ivec4 bitfieldReverse(ivec4);"
-
-            " uint bitfieldReverse( uint);"
-            "uvec2 bitfieldReverse(uvec2);"
-            "uvec3 bitfieldReverse(uvec3);"
-            "uvec4 bitfieldReverse(uvec4);"
-
-            "  int bitCount(  int);"
-            "ivec2 bitCount(ivec2);"
-            "ivec3 bitCount(ivec3);"
-            "ivec4 bitCount(ivec4);"
-
-            "  int bitCount( uint);"
-            "ivec2 bitCount(uvec2);"
-            "ivec3 bitCount(uvec3);"
-            "ivec4 bitCount(uvec4);"
-
-            "  int findMSB(  int);"
-            "ivec2 findMSB(ivec2);"
-            "ivec3 findMSB(ivec3);"
-            "ivec4 findMSB(ivec4);"
-
-            "  int findMSB( uint);"
-            "ivec2 findMSB(uvec2);"
-            "ivec3 findMSB(uvec3);"
-            "ivec4 findMSB(uvec4);"
+            "lowp   int findLSB( uint);"
+            "lowp ivec2 findLSB(uvec2);"
+            "lowp ivec3 findLSB(uvec3);"
+            "lowp ivec4 findLSB(uvec4);"
 
             "\n");
     }
 
-    if (profile == EEsProfile && version >= 310) {
+    if (profile != EEsProfile && version >= 400) {
         commonBuiltins.append(
-            "highp  uint uaddCarry(highp  uint, highp  uint, out lowp  uint carry);"
-            "highp uvec2 uaddCarry(highp uvec2, highp uvec2, out lowp uvec2 carry);"
-            "highp uvec3 uaddCarry(highp uvec3, highp uvec3, out lowp uvec3 carry);"
-            "highp uvec4 uaddCarry(highp uvec4, highp uvec4, out lowp uvec4 carry);"
-
-            "highp  uint usubBorrow(highp  uint, highp  uint, out lowp  uint borrow);"
-            "highp uvec2 usubBorrow(highp uvec2, highp uvec2, out lowp uvec2 borrow);"
-            "highp uvec3 usubBorrow(highp uvec3, highp uvec3, out lowp uvec3 borrow);"
-            "highp uvec4 usubBorrow(highp uvec4, highp uvec4, out lowp uvec4 borrow);"
-
-            "void umulExtended(highp  uint, highp  uint, highp out  uint, out highp  uint lsb);"
-            "void umulExtended(highp uvec2, highp uvec2, highp out uvec2, out highp uvec2 lsb);"
-            "void umulExtended(highp uvec3, highp uvec3, highp out uvec3, out highp uvec3 lsb);"
-            "void umulExtended(highp uvec4, highp uvec4, highp out uvec4, out highp uvec4 lsb);"
-
-            "void imulExtended(highp   int, highp   int, highp out   int, out highp   int lsb);"
-            "void imulExtended(highp ivec2, highp ivec2, highp out ivec2, out highp ivec2 lsb);"
-            "void imulExtended(highp ivec3, highp ivec3, highp out ivec3, out highp ivec3 lsb);"
-            "void imulExtended(highp ivec4, highp ivec4, highp out ivec4, out highp ivec4 lsb);"
-
-            "highp   int bitfieldReverse(highp   int);"
-            "highp ivec2 bitfieldReverse(highp ivec2);"
-            "highp ivec3 bitfieldReverse(highp ivec3);"
-            "highp ivec4 bitfieldReverse(highp ivec4);"
-
-            "highp  uint bitfieldReverse(highp  uint);"
-            "highp uvec2 bitfieldReverse(highp uvec2);"
-            "highp uvec3 bitfieldReverse(highp uvec3);"
-            "highp uvec4 bitfieldReverse(highp uvec4);"
-
             "  int bitCount(  int);"
             "ivec2 bitCount(ivec2);"
             "ivec3 bitCount(ivec3);"
@@ -1416,6 +1456,67 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "ivec2 findMSB(highp uvec2);"
             "ivec3 findMSB(highp uvec3);"
             "ivec4 findMSB(highp uvec4);"
+
+            "\n");
+    }
+
+    if ((profile == EEsProfile && version >= 310) ||
+        (profile != EEsProfile && version >= 400)) {
+        commonBuiltins.append(
+            " uint uaddCarry(highp  uint, highp  uint, out lowp  uint carry);"
+            "uvec2 uaddCarry(highp uvec2, highp uvec2, out lowp uvec2 carry);"
+            "uvec3 uaddCarry(highp uvec3, highp uvec3, out lowp uvec3 carry);"
+            "uvec4 uaddCarry(highp uvec4, highp uvec4, out lowp uvec4 carry);"
+
+            " uint usubBorrow(highp  uint, highp  uint, out lowp  uint borrow);"
+            "uvec2 usubBorrow(highp uvec2, highp uvec2, out lowp uvec2 borrow);"
+            "uvec3 usubBorrow(highp uvec3, highp uvec3, out lowp uvec3 borrow);"
+            "uvec4 usubBorrow(highp uvec4, highp uvec4, out lowp uvec4 borrow);"
+
+            "void umulExtended(highp  uint, highp  uint, out highp  uint, out highp  uint lsb);"
+            "void umulExtended(highp uvec2, highp uvec2, out highp uvec2, out highp uvec2 lsb);"
+            "void umulExtended(highp uvec3, highp uvec3, out highp uvec3, out highp uvec3 lsb);"
+            "void umulExtended(highp uvec4, highp uvec4, out highp uvec4, out highp uvec4 lsb);"
+
+            "void imulExtended(highp   int, highp   int, out highp   int, out highp   int lsb);"
+            "void imulExtended(highp ivec2, highp ivec2, out highp ivec2, out highp ivec2 lsb);"
+            "void imulExtended(highp ivec3, highp ivec3, out highp ivec3, out highp ivec3 lsb);"
+            "void imulExtended(highp ivec4, highp ivec4, out highp ivec4, out highp ivec4 lsb);"
+
+            "  int bitfieldReverse(highp   int);"
+            "ivec2 bitfieldReverse(highp ivec2);"
+            "ivec3 bitfieldReverse(highp ivec3);"
+            "ivec4 bitfieldReverse(highp ivec4);"
+
+            " uint bitfieldReverse(highp  uint);"
+            "uvec2 bitfieldReverse(highp uvec2);"
+            "uvec3 bitfieldReverse(highp uvec3);"
+            "uvec4 bitfieldReverse(highp uvec4);"
+
+            "\n");
+    }
+
+    if (profile == EEsProfile && version >= 310) {
+        commonBuiltins.append(
+            "lowp   int bitCount(  int);"
+            "lowp ivec2 bitCount(ivec2);"
+            "lowp ivec3 bitCount(ivec3);"
+            "lowp ivec4 bitCount(ivec4);"
+
+            "lowp   int bitCount( uint);"
+            "lowp ivec2 bitCount(uvec2);"
+            "lowp ivec3 bitCount(uvec3);"
+            "lowp ivec4 bitCount(uvec4);"
+
+            "lowp   int findMSB(highp   int);"
+            "lowp ivec2 findMSB(highp ivec2);"
+            "lowp ivec3 findMSB(highp ivec3);"
+            "lowp ivec4 findMSB(highp ivec4);"
+
+            "lowp   int findMSB(highp  uint);"
+            "lowp ivec2 findMSB(highp uvec2);"
+            "lowp ivec3 findMSB(highp uvec3);"
+            "lowp ivec4 findMSB(highp uvec4);"
             
             "\n");
     }
@@ -1467,6 +1568,509 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
     }
+
+#ifdef AMD_EXTENSIONS
+    // GL_AMD_shader_ballot
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "float minInvocationsAMD(float);"
+            "vec2  minInvocationsAMD(vec2);"
+            "vec3  minInvocationsAMD(vec3);"
+            "vec4  minInvocationsAMD(vec4);"
+
+            "int   minInvocationsAMD(int);"
+            "ivec2 minInvocationsAMD(ivec2);"
+            "ivec3 minInvocationsAMD(ivec3);"
+            "ivec4 minInvocationsAMD(ivec4);"
+
+            "uint  minInvocationsAMD(uint);"
+            "uvec2 minInvocationsAMD(uvec2);"
+            "uvec3 minInvocationsAMD(uvec3);"
+            "uvec4 minInvocationsAMD(uvec4);"
+
+            "float maxInvocationsAMD(float);"
+            "vec2  maxInvocationsAMD(vec2);"
+            "vec3  maxInvocationsAMD(vec3);"
+            "vec4  maxInvocationsAMD(vec4);"
+
+            "int   maxInvocationsAMD(int);"
+            "ivec2 maxInvocationsAMD(ivec2);"
+            "ivec3 maxInvocationsAMD(ivec3);"
+            "ivec4 maxInvocationsAMD(ivec4);"
+
+            "uint  maxInvocationsAMD(uint);"
+            "uvec2 maxInvocationsAMD(uvec2);"
+            "uvec3 maxInvocationsAMD(uvec3);"
+            "uvec4 maxInvocationsAMD(uvec4);"
+
+            "float addInvocationsAMD(float);"
+            "vec2  addInvocationsAMD(vec2);"
+            "vec3  addInvocationsAMD(vec3);"
+            "vec4  addInvocationsAMD(vec4);"
+
+            "int   addInvocationsAMD(int);"
+            "ivec2 addInvocationsAMD(ivec2);"
+            "ivec3 addInvocationsAMD(ivec3);"
+            "ivec4 addInvocationsAMD(ivec4);"
+
+            "uint  addInvocationsAMD(uint);"
+            "uvec2 addInvocationsAMD(uvec2);"
+            "uvec3 addInvocationsAMD(uvec3);"
+            "uvec4 addInvocationsAMD(uvec4);"
+
+            "float minInvocationsNonUniformAMD(float);"
+            "vec2  minInvocationsNonUniformAMD(vec2);"
+            "vec3  minInvocationsNonUniformAMD(vec3);"
+            "vec4  minInvocationsNonUniformAMD(vec4);"
+
+            "int   minInvocationsNonUniformAMD(int);"
+            "ivec2 minInvocationsNonUniformAMD(ivec2);"
+            "ivec3 minInvocationsNonUniformAMD(ivec3);"
+            "ivec4 minInvocationsNonUniformAMD(ivec4);"
+
+            "uint  minInvocationsNonUniformAMD(uint);"
+            "uvec2 minInvocationsNonUniformAMD(uvec2);"
+            "uvec3 minInvocationsNonUniformAMD(uvec3);"
+            "uvec4 minInvocationsNonUniformAMD(uvec4);"
+
+            "float maxInvocationsNonUniformAMD(float);"
+            "vec2  maxInvocationsNonUniformAMD(vec2);"
+            "vec3  maxInvocationsNonUniformAMD(vec3);"
+            "vec4  maxInvocationsNonUniformAMD(vec4);"
+
+            "int   maxInvocationsNonUniformAMD(int);"
+            "ivec2 maxInvocationsNonUniformAMD(ivec2);"
+            "ivec3 maxInvocationsNonUniformAMD(ivec3);"
+            "ivec4 maxInvocationsNonUniformAMD(ivec4);"
+
+            "uint  maxInvocationsNonUniformAMD(uint);"
+            "uvec2 maxInvocationsNonUniformAMD(uvec2);"
+            "uvec3 maxInvocationsNonUniformAMD(uvec3);"
+            "uvec4 maxInvocationsNonUniformAMD(uvec4);"
+
+            "float addInvocationsNonUniformAMD(float);"
+            "vec2  addInvocationsNonUniformAMD(vec2);"
+            "vec3  addInvocationsNonUniformAMD(vec3);"
+            "vec4  addInvocationsNonUniformAMD(vec4);"
+
+            "int   addInvocationsNonUniformAMD(int);"
+            "ivec2 addInvocationsNonUniformAMD(ivec2);"
+            "ivec3 addInvocationsNonUniformAMD(ivec3);"
+            "ivec4 addInvocationsNonUniformAMD(ivec4);"
+
+            "uint  addInvocationsNonUniformAMD(uint);"
+            "uvec2 addInvocationsNonUniformAMD(uvec2);"
+            "uvec3 addInvocationsNonUniformAMD(uvec3);"
+            "uvec4 addInvocationsNonUniformAMD(uvec4);"
+
+            "float swizzleInvocationsAMD(float, uvec4);"
+            "vec2  swizzleInvocationsAMD(vec2,  uvec4);"
+            "vec3  swizzleInvocationsAMD(vec3,  uvec4);"
+            "vec4  swizzleInvocationsAMD(vec4,  uvec4);"
+
+            "int   swizzleInvocationsAMD(int,   uvec4);"
+            "ivec2 swizzleInvocationsAMD(ivec2, uvec4);"
+            "ivec3 swizzleInvocationsAMD(ivec3, uvec4);"
+            "ivec4 swizzleInvocationsAMD(ivec4, uvec4);"
+
+            "uint  swizzleInvocationsAMD(uint,  uvec4);"
+            "uvec2 swizzleInvocationsAMD(uvec2, uvec4);"
+            "uvec3 swizzleInvocationsAMD(uvec3, uvec4);"
+            "uvec4 swizzleInvocationsAMD(uvec4, uvec4);"
+
+            "float swizzleInvocationsMaskedAMD(float, uvec3);"
+            "vec2  swizzleInvocationsMaskedAMD(vec2,  uvec3);"
+            "vec3  swizzleInvocationsMaskedAMD(vec3,  uvec3);"
+            "vec4  swizzleInvocationsMaskedAMD(vec4,  uvec3);"
+
+            "int   swizzleInvocationsMaskedAMD(int,   uvec3);"
+            "ivec2 swizzleInvocationsMaskedAMD(ivec2, uvec3);"
+            "ivec3 swizzleInvocationsMaskedAMD(ivec3, uvec3);"
+            "ivec4 swizzleInvocationsMaskedAMD(ivec4, uvec3);"
+
+            "uint  swizzleInvocationsMaskedAMD(uint,  uvec3);"
+            "uvec2 swizzleInvocationsMaskedAMD(uvec2, uvec3);"
+            "uvec3 swizzleInvocationsMaskedAMD(uvec3, uvec3);"
+            "uvec4 swizzleInvocationsMaskedAMD(uvec4, uvec3);"
+
+            "float writeInvocationAMD(float, float, uint);"
+            "vec2  writeInvocationAMD(vec2,  vec2,  uint);"
+            "vec3  writeInvocationAMD(vec3,  vec3,  uint);"
+            "vec4  writeInvocationAMD(vec4,  vec4,  uint);"
+
+            "int   writeInvocationAMD(int,   int,   uint);"
+            "ivec2 writeInvocationAMD(ivec2, ivec2, uint);"
+            "ivec3 writeInvocationAMD(ivec3, ivec3, uint);"
+            "ivec4 writeInvocationAMD(ivec4, ivec4, uint);"
+
+            "uint  writeInvocationAMD(uint,  uint,  uint);"
+            "uvec2 writeInvocationAMD(uvec2, uvec2, uint);"
+            "uvec3 writeInvocationAMD(uvec3, uvec3, uint);"
+            "uvec4 writeInvocationAMD(uvec4, uvec4, uint);"
+
+            "uint mbcntAMD(uint64_t);"
+
+            "\n");
+    }
+
+    // GL_AMD_gcn_shader
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "float cubeFaceIndexAMD(vec3);"
+            "vec2 cubeFaceCoordAMD(vec3);"
+            "uint64_t timeAMD();"
+
+            "\n");
+    }
+
+    // GL_AMD_gpu_shader_half_float
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "float16_t radians(float16_t);"
+            "f16vec2   radians(f16vec2);"
+            "f16vec3   radians(f16vec3);"
+            "f16vec4   radians(f16vec4);"
+
+            "float16_t degrees(float16_t);"
+            "f16vec2   degrees(f16vec2);"
+            "f16vec3   degrees(f16vec3);"
+            "f16vec4   degrees(f16vec4);"
+
+            "float16_t sin(float16_t);"
+            "f16vec2   sin(f16vec2);"
+            "f16vec3   sin(f16vec3);"
+            "f16vec4   sin(f16vec4);"
+
+            "float16_t cos(float16_t);"
+            "f16vec2   cos(f16vec2);"
+            "f16vec3   cos(f16vec3);"
+            "f16vec4   cos(f16vec4);"
+
+            "float16_t tan(float16_t);"
+            "f16vec2   tan(f16vec2);"
+            "f16vec3   tan(f16vec3);"
+            "f16vec4   tan(f16vec4);"
+
+            "float16_t asin(float16_t);"
+            "f16vec2   asin(f16vec2);"
+            "f16vec3   asin(f16vec3);"
+            "f16vec4   asin(f16vec4);"
+
+            "float16_t acos(float16_t);"
+            "f16vec2   acos(f16vec2);"
+            "f16vec3   acos(f16vec3);"
+            "f16vec4   acos(f16vec4);"
+
+            "float16_t atan(float16_t, float16_t);"
+            "f16vec2   atan(f16vec2,   f16vec2);"
+            "f16vec3   atan(f16vec3,   f16vec3);"
+            "f16vec4   atan(f16vec4,   f16vec4);"
+
+            "float16_t atan(float16_t);"
+            "f16vec2   atan(f16vec2);"
+            "f16vec3   atan(f16vec3);"
+            "f16vec4   atan(f16vec4);"
+
+            "float16_t sinh(float16_t);"
+            "f16vec2   sinh(f16vec2);"
+            "f16vec3   sinh(f16vec3);"
+            "f16vec4   sinh(f16vec4);"
+
+            "float16_t cosh(float16_t);"
+            "f16vec2   cosh(f16vec2);"
+            "f16vec3   cosh(f16vec3);"
+            "f16vec4   cosh(f16vec4);"
+
+            "float16_t tanh(float16_t);"
+            "f16vec2   tanh(f16vec2);"
+            "f16vec3   tanh(f16vec3);"
+            "f16vec4   tanh(f16vec4);"
+
+            "float16_t asinh(float16_t);"
+            "f16vec2   asinh(f16vec2);"
+            "f16vec3   asinh(f16vec3);"
+            "f16vec4   asinh(f16vec4);"
+
+            "float16_t acosh(float16_t);"
+            "f16vec2   acosh(f16vec2);"
+            "f16vec3   acosh(f16vec3);"
+            "f16vec4   acosh(f16vec4);"
+
+            "float16_t atanh(float16_t);"
+            "f16vec2   atanh(f16vec2);"
+            "f16vec3   atanh(f16vec3);"
+            "f16vec4   atanh(f16vec4);"
+
+            "float16_t pow(float16_t, float16_t);"
+            "f16vec2   pow(f16vec2,   f16vec2);"
+            "f16vec3   pow(f16vec3,   f16vec3);"
+            "f16vec4   pow(f16vec4,   f16vec4);"
+
+            "float16_t exp(float16_t);"
+            "f16vec2   exp(f16vec2);"
+            "f16vec3   exp(f16vec3);"
+            "f16vec4   exp(f16vec4);"
+
+            "float16_t log(float16_t);"
+            "f16vec2   log(f16vec2);"
+            "f16vec3   log(f16vec3);"
+            "f16vec4   log(f16vec4);"
+
+            "float16_t exp2(float16_t);"
+            "f16vec2   exp2(f16vec2);"
+            "f16vec3   exp2(f16vec3);"
+            "f16vec4   exp2(f16vec4);"
+
+            "float16_t log2(float16_t);"
+            "f16vec2   log2(f16vec2);"
+            "f16vec3   log2(f16vec3);"
+            "f16vec4   log2(f16vec4);"
+
+            "float16_t sqrt(float16_t);"
+            "f16vec2   sqrt(f16vec2);"
+            "f16vec3   sqrt(f16vec3);"
+            "f16vec4   sqrt(f16vec4);"
+
+            "float16_t inversesqrt(float16_t);"
+            "f16vec2   inversesqrt(f16vec2);"
+            "f16vec3   inversesqrt(f16vec3);"
+            "f16vec4   inversesqrt(f16vec4);"
+
+            "float16_t abs(float16_t);"
+            "f16vec2   abs(f16vec2);"
+            "f16vec3   abs(f16vec3);"
+            "f16vec4   abs(f16vec4);"
+
+            "float16_t sign(float16_t);"
+            "f16vec2   sign(f16vec2);"
+            "f16vec3   sign(f16vec3);"
+            "f16vec4   sign(f16vec4);"
+
+            "float16_t floor(float16_t);"
+            "f16vec2   floor(f16vec2);"
+            "f16vec3   floor(f16vec3);"
+            "f16vec4   floor(f16vec4);"
+
+            "float16_t trunc(float16_t);"
+            "f16vec2   trunc(f16vec2);"
+            "f16vec3   trunc(f16vec3);"
+            "f16vec4   trunc(f16vec4);"
+
+            "float16_t round(float16_t);"
+            "f16vec2   round(f16vec2);"
+            "f16vec3   round(f16vec3);"
+            "f16vec4   round(f16vec4);"
+
+            "float16_t roundEven(float16_t);"
+            "f16vec2   roundEven(f16vec2);"
+            "f16vec3   roundEven(f16vec3);"
+            "f16vec4   roundEven(f16vec4);"
+
+            "float16_t ceil(float16_t);"
+            "f16vec2   ceil(f16vec2);"
+            "f16vec3   ceil(f16vec3);"
+            "f16vec4   ceil(f16vec4);"
+
+            "float16_t fract(float16_t);"
+            "f16vec2   fract(f16vec2);"
+            "f16vec3   fract(f16vec3);"
+            "f16vec4   fract(f16vec4);"
+
+            "float16_t mod(float16_t, float16_t);"
+            "f16vec2   mod(f16vec2,   float16_t);"
+            "f16vec3   mod(f16vec3,   float16_t);"
+            "f16vec4   mod(f16vec4,   float16_t);"
+            "f16vec2   mod(f16vec2,   f16vec2);"
+            "f16vec3   mod(f16vec3,   f16vec3);"
+            "f16vec4   mod(f16vec4,   f16vec4);"
+
+            "float16_t modf(float16_t, out float16_t);"
+            "f16vec2   modf(f16vec2,   out f16vec2);"
+            "f16vec3   modf(f16vec3,   out f16vec3);"
+            "f16vec4   modf(f16vec4,   out f16vec4);"
+
+            "float16_t min(float16_t, float16_t);"
+            "f16vec2   min(f16vec2,   float16_t);"
+            "f16vec3   min(f16vec3,   float16_t);"
+            "f16vec4   min(f16vec4,   float16_t);"
+            "f16vec2   min(f16vec2,   f16vec2);"
+            "f16vec3   min(f16vec3,   f16vec3);"
+            "f16vec4   min(f16vec4,   f16vec4);"
+
+            "float16_t max(float16_t, float16_t);"
+            "f16vec2   max(f16vec2,   float16_t);"
+            "f16vec3   max(f16vec3,   float16_t);"
+            "f16vec4   max(f16vec4,   float16_t);"
+            "f16vec2   max(f16vec2,   f16vec2);"
+            "f16vec3   max(f16vec3,   f16vec3);"
+            "f16vec4   max(f16vec4,   f16vec4);"
+
+            "float16_t clamp(float16_t, float16_t, float16_t);"
+            "f16vec2   clamp(f16vec2,   float16_t, float16_t);"
+            "f16vec3   clamp(f16vec3,   float16_t, float16_t);"
+            "f16vec4   clamp(f16vec4,   float16_t, float16_t);"
+            "f16vec2   clamp(f16vec2,   f16vec2,   f16vec2);"
+            "f16vec3   clamp(f16vec3,   f16vec3,   f16vec3);"
+            "f16vec4   clamp(f16vec4,   f16vec4,   f16vec4);"
+
+            "float16_t mix(float16_t, float16_t, float16_t);"
+            "f16vec2   mix(f16vec2,   f16vec2,   float16_t);"
+            "f16vec3   mix(f16vec3,   f16vec3,   float16_t);"
+            "f16vec4   mix(f16vec4,   f16vec4,   float16_t);"
+            "f16vec2   mix(f16vec2,   f16vec2,   f16vec2);"
+            "f16vec3   mix(f16vec3,   f16vec3,   f16vec3);"
+            "f16vec4   mix(f16vec4,   f16vec4,   f16vec4);"
+            "float16_t mix(float16_t, float16_t, bool);"
+            "f16vec2   mix(f16vec2,   f16vec2,   bvec2);"
+            "f16vec3   mix(f16vec3,   f16vec3,   bvec3);"
+            "f16vec4   mix(f16vec4,   f16vec4,   bvec4);"
+
+            "float16_t step(float16_t, float16_t);"
+            "f16vec2   step(f16vec2,   f16vec2);"
+            "f16vec3   step(f16vec3,   f16vec3);"
+            "f16vec4   step(f16vec4,   f16vec4);"
+            "f16vec2   step(float16_t, f16vec2);"
+            "f16vec3   step(float16_t, f16vec3);"
+            "f16vec4   step(float16_t, f16vec4);"
+
+            "float16_t smoothstep(float16_t, float16_t, float16_t);"
+            "f16vec2   smoothstep(f16vec2,   f16vec2,   f16vec2);"
+            "f16vec3   smoothstep(f16vec3,   f16vec3,   f16vec3);"
+            "f16vec4   smoothstep(f16vec4,   f16vec4,   f16vec4);"
+            "f16vec2   smoothstep(float16_t, float16_t, f16vec2);"
+            "f16vec3   smoothstep(float16_t, float16_t, f16vec3);"
+            "f16vec4   smoothstep(float16_t, float16_t, f16vec4);"
+
+            "bool  isnan(float16_t);"
+            "bvec2 isnan(f16vec2);"
+            "bvec3 isnan(f16vec3);"
+            "bvec4 isnan(f16vec4);"
+
+            "bool  isinf(float16_t);"
+            "bvec2 isinf(f16vec2);"
+            "bvec3 isinf(f16vec3);"
+            "bvec4 isinf(f16vec4);"
+
+            "float16_t fma(float16_t, float16_t, float16_t);"
+            "f16vec2   fma(f16vec2,   f16vec2,   f16vec2);"
+            "f16vec3   fma(f16vec3,   f16vec3,   f16vec3);"
+            "f16vec4   fma(f16vec4,   f16vec4,   f16vec4);"
+
+            "float16_t frexp(float16_t, out int);"
+            "f16vec2   frexp(f16vec2,   out ivec2);"
+            "f16vec3   frexp(f16vec3,   out ivec3);"
+            "f16vec4   frexp(f16vec4,   out ivec4);"
+
+            "float16_t ldexp(float16_t, in int);"
+            "f16vec2   ldexp(f16vec2,   in ivec2);"
+            "f16vec3   ldexp(f16vec3,   in ivec3);"
+            "f16vec4   ldexp(f16vec4,   in ivec4);"
+
+            "uint    packFloat2x16(f16vec2);"
+            "f16vec2 unpackFloat2x16(uint);"
+
+            "float16_t length(float16_t);"
+            "float16_t length(f16vec2);"
+            "float16_t length(f16vec3);"
+            "float16_t length(f16vec4);"
+
+            "float16_t distance(float16_t, float16_t);"
+            "float16_t distance(f16vec2,   f16vec2);"
+            "float16_t distance(f16vec3,   f16vec3);"
+            "float16_t distance(f16vec4,   f16vec4);"
+
+            "float16_t dot(float16_t, float16_t);"
+            "float16_t dot(f16vec2,   f16vec2);"
+            "float16_t dot(f16vec3,   f16vec3);"
+            "float16_t dot(f16vec4,   f16vec4);"
+
+            "f16vec3 cross(f16vec3, f16vec3);"
+
+            "float16_t normalize(float16_t);"
+            "f16vec2   normalize(f16vec2);"
+            "f16vec3   normalize(f16vec3);"
+            "f16vec4   normalize(f16vec4);"
+
+            "float16_t faceforward(float16_t, float16_t, float16_t);"
+            "f16vec2   faceforward(f16vec2,   f16vec2,   f16vec2);"
+            "f16vec3   faceforward(f16vec3,   f16vec3,   f16vec3);"
+            "f16vec4   faceforward(f16vec4,   f16vec4,   f16vec4);"
+
+            "float16_t reflect(float16_t, float16_t);"
+            "f16vec2   reflect(f16vec2,   f16vec2);"
+            "f16vec3   reflect(f16vec3,   f16vec3);"
+            "f16vec4   reflect(f16vec4,   f16vec4);"
+
+            "float16_t refract(float16_t, float16_t, float16_t);"
+            "f16vec2   refract(f16vec2,   f16vec2,   float16_t);"
+            "f16vec3   refract(f16vec3,   f16vec3,   float16_t);"
+            "f16vec4   refract(f16vec4,   f16vec4,   float16_t);"
+
+            "f16mat2   matrixCompMult(f16mat2,   f16mat2);"
+            "f16mat3   matrixCompMult(f16mat3,   f16mat3);"
+            "f16mat4   matrixCompMult(f16mat4,   f16mat4);"
+            "f16mat2x3 matrixCompMult(f16mat2x3, f16mat2x3);"
+            "f16mat2x4 matrixCompMult(f16mat2x4, f16mat2x4);"
+            "f16mat3x2 matrixCompMult(f16mat3x2, f16mat3x2);"
+            "f16mat3x4 matrixCompMult(f16mat3x4, f16mat3x4);"
+            "f16mat4x2 matrixCompMult(f16mat4x2, f16mat4x2);"
+            "f16mat4x3 matrixCompMult(f16mat4x3, f16mat4x3);"
+
+            "f16mat2   outerProduct(f16vec2, f16vec2);"
+            "f16mat3   outerProduct(f16vec3, f16vec3);"
+            "f16mat4   outerProduct(f16vec4, f16vec4);"
+            "f16mat2x3 outerProduct(f16vec3, f16vec2);"
+            "f16mat3x2 outerProduct(f16vec2, f16vec3);"
+            "f16mat2x4 outerProduct(f16vec4, f16vec2);"
+            "f16mat4x2 outerProduct(f16vec2, f16vec4);"
+            "f16mat3x4 outerProduct(f16vec4, f16vec3);"
+            "f16mat4x3 outerProduct(f16vec3, f16vec4);"
+
+            "f16mat2   transpose(f16mat2);"
+            "f16mat3   transpose(f16mat3);"
+            "f16mat4   transpose(f16mat4);"
+            "f16mat2x3 transpose(f16mat3x2);"
+            "f16mat3x2 transpose(f16mat2x3);"
+            "f16mat2x4 transpose(f16mat4x2);"
+            "f16mat4x2 transpose(f16mat2x4);"
+            "f16mat3x4 transpose(f16mat4x3);"
+            "f16mat4x3 transpose(f16mat3x4);"
+
+            "float16_t determinant(f16mat2);"
+            "float16_t determinant(f16mat3);"
+            "float16_t determinant(f16mat4);"
+
+            "f16mat2 inverse(f16mat2);"
+            "f16mat3 inverse(f16mat3);"
+            "f16mat4 inverse(f16mat4);"
+
+            "bvec2 lessThan(f16vec2, f16vec2);"
+            "bvec3 lessThan(f16vec3, f16vec3);"
+            "bvec4 lessThan(f16vec4, f16vec4);"
+
+            "bvec2 lessThanEqual(f16vec2, f16vec2);"
+            "bvec3 lessThanEqual(f16vec3, f16vec3);"
+            "bvec4 lessThanEqual(f16vec4, f16vec4);"
+
+            "bvec2 greaterThan(f16vec2, f16vec2);"
+            "bvec3 greaterThan(f16vec3, f16vec3);"
+            "bvec4 greaterThan(f16vec4, f16vec4);"
+
+            "bvec2 greaterThanEqual(f16vec2, f16vec2);"
+            "bvec3 greaterThanEqual(f16vec3, f16vec3);"
+            "bvec4 greaterThanEqual(f16vec4, f16vec4);"
+
+            "bvec2 equal(f16vec2, f16vec2);"
+            "bvec3 equal(f16vec3, f16vec3);"
+            "bvec4 equal(f16vec4, f16vec4);"
+
+            "bvec2 notEqual(f16vec2, f16vec2);"
+            "bvec3 notEqual(f16vec3, f16vec3);"
+            "bvec4 notEqual(f16vec4, f16vec4);"
+
+            "\n");
+    }
+#endif
 
     //============================================================================
     //
@@ -1712,6 +2316,100 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
     }
+
+#ifdef AMD_EXTENSIONS
+    // GL_AMD_shader_explicit_vertex_parameter
+    if (profile != EEsProfile && version >= 450) {
+        stageBuiltins[EShLangFragment].append(
+            "float interpolateAtVertexAMD(float, uint);"
+            "vec2  interpolateAtVertexAMD(vec2,  uint);"
+            "vec3  interpolateAtVertexAMD(vec3,  uint);"
+            "vec4  interpolateAtVertexAMD(vec4,  uint);"
+
+            "int   interpolateAtVertexAMD(int,   uint);"
+            "ivec2 interpolateAtVertexAMD(ivec2, uint);"
+            "ivec3 interpolateAtVertexAMD(ivec3, uint);"
+            "ivec4 interpolateAtVertexAMD(ivec4, uint);"
+
+            "uint  interpolateAtVertexAMD(uint,  uint);"
+            "uvec2 interpolateAtVertexAMD(uvec2, uint);"
+            "uvec3 interpolateAtVertexAMD(uvec3, uint);"
+            "uvec4 interpolateAtVertexAMD(uvec4, uint);"
+
+            "float16_t interpolateAtVertexAMD(float16_t, uint);"
+            "f16vec2   interpolateAtVertexAMD(f16vec2,   uint);"
+            "f16vec3   interpolateAtVertexAMD(f16vec3,   uint);"
+            "f16vec4   interpolateAtVertexAMD(f16vec4,   uint);"
+
+            "\n");
+    }
+
+    // GL_AMD_gpu_shader_half_float
+    if (profile != EEsProfile && version >= 450) {
+        stageBuiltins[EShLangFragment].append(
+            "float16_t dFdx(float16_t);"
+            "f16vec2   dFdx(f16vec2);"
+            "f16vec3   dFdx(f16vec3);"
+            "f16vec4   dFdx(f16vec4);"
+
+            "float16_t dFdy(float16_t);"
+            "f16vec2   dFdy(f16vec2);"
+            "f16vec3   dFdy(f16vec3);"
+            "f16vec4   dFdy(f16vec4);"
+
+            "float16_t dFdxFine(float16_t);"
+            "f16vec2   dFdxFine(f16vec2);"
+            "f16vec3   dFdxFine(f16vec3);"
+            "f16vec4   dFdxFine(f16vec4);"
+
+            "float16_t dFdyFine(float16_t);"
+            "f16vec2   dFdyFine(f16vec2);"
+            "f16vec3   dFdyFine(f16vec3);"
+            "f16vec4   dFdyFine(f16vec4);"
+
+            "float16_t dFdxCoarse(float16_t);"
+            "f16vec2   dFdxCoarse(f16vec2);"
+            "f16vec3   dFdxCoarse(f16vec3);"
+            "f16vec4   dFdxCoarse(f16vec4);"
+
+            "float16_t dFdyCoarse(float16_t);"
+            "f16vec2   dFdyCoarse(f16vec2);"
+            "f16vec3   dFdyCoarse(f16vec3);"
+            "f16vec4   dFdyCoarse(f16vec4);"
+
+            "float16_t fwidth(float16_t);"
+            "f16vec2   fwidth(f16vec2);"
+            "f16vec3   fwidth(f16vec3);"
+            "f16vec4   fwidth(f16vec4);"
+
+            "float16_t fwidthFine(float16_t);"
+            "f16vec2   fwidthFine(f16vec2);"
+            "f16vec3   fwidthFine(f16vec3);"
+            "f16vec4   fwidthFine(f16vec4);"
+
+            "float16_t fwidthCoarse(float16_t);"
+            "f16vec2   fwidthCoarse(f16vec2);"
+            "f16vec3   fwidthCoarse(f16vec3);"
+            "f16vec4   fwidthCoarse(f16vec4);"
+
+            "float16_t interpolateAtCentroid(float16_t);"
+            "f16vec2   interpolateAtCentroid(f16vec2);"
+            "f16vec3   interpolateAtCentroid(f16vec3);"
+            "f16vec4   interpolateAtCentroid(f16vec4);"
+
+            "float16_t interpolateAtSample(float16_t, int);"
+            "f16vec2   interpolateAtSample(f16vec2,   int);"
+            "f16vec3   interpolateAtSample(f16vec3,   int);"
+            "f16vec4   interpolateAtSample(f16vec4,   int);"
+
+            "float16_t interpolateAtOffset(float16_t, f16vec2);"
+            "f16vec2   interpolateAtOffset(f16vec2,   f16vec2);"
+            "f16vec3   interpolateAtOffset(f16vec3,   f16vec2);"
+            "f16vec4   interpolateAtOffset(f16vec4,   f16vec2);"
+
+            "\n");
+    }
+#endif
 
     //============================================================================
     //
@@ -2332,6 +3030,19 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "in float gl_CullDistance[];"
                 "bool gl_HelperInvocation;"     // needs qualifier fixed later
                 );
+
+#ifdef AMD_EXTENSIONS
+        if (version >= 450)
+            stageBuiltins[EShLangFragment].append(
+                "in vec2 gl_BaryCoordNoPerspAMD;"
+                "in vec2 gl_BaryCoordNoPerspCentroidAMD;"
+                "in vec2 gl_BaryCoordNoPerspSampleAMD;"
+                "in vec2 gl_BaryCoordSmoothAMD;"
+                "in vec2 gl_BaryCoordSmoothCentroidAMD;"
+                "in vec2 gl_BaryCoordSmoothSampleAMD;"
+                "in vec3 gl_BaryCoordPullModelAMD;"
+                );
+#endif
     } else {
         // ES profile
 
@@ -2359,10 +3070,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 );
 
             stageBuiltins[EShLangFragment].append(  // GL_OES_sample_variables
-                "flat lowp    in  int  gl_SampleID;"
-                "     mediump in  vec2 gl_SamplePosition;"
-                "flat highp   in  int  gl_SampleMaskIn[];"
-                "     highp   out int  gl_SampleMask[];"
+                "flat  in lowp     int gl_SampleID;"
+                "      in mediump vec2 gl_SamplePosition;"
+                "flat  in highp    int gl_SampleMaskIn[];"
+                "     out highp    int gl_SampleMask[];"
                 "uniform lowp int gl_NumSamples;"
                 );
         }
@@ -3460,6 +4171,14 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         s.append(builtInConstant);
     }
 
+#ifdef AMD_EXTENSIONS
+    // GL_AMD_gcn_shader
+    if (profile != EEsProfile && version >= 450) {
+        snprintf(builtInConstant, maxSize, "const int gl_SIMDGroupSizeAMD = 64;");
+        s.append(builtInConstant);
+    }
+#endif
+
     s.append("\n");
 }
 
@@ -3575,7 +4294,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("readInvocationARB",      1, &E_GL_ARB_shader_ballot);
             symbolTable.setFunctionExtensions("readFirstInvocationARB", 1, &E_GL_ARB_shader_ballot);
 
-            BuiltInVariable("gl_SubGroupSizeARB",       EbvSubGroupSize,       symbolTable);
             BuiltInVariable("gl_SubGroupInvocationARB", EbvSubGroupInvocation, symbolTable);
             BuiltInVariable("gl_SubGroupEqMaskARB",     EbvSubGroupEqMask,     symbolTable);
             BuiltInVariable("gl_SubGroupGeMaskARB",     EbvSubGroupGeMask,     symbolTable);
@@ -3583,10 +4301,41 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_SubGroupLeMaskARB",     EbvSubGroupLeMask,     symbolTable);
             BuiltInVariable("gl_SubGroupLtMaskARB",     EbvSubGroupLtMask,     symbolTable);
 
+            if (spvVersion.vulkan >= 100)
+                // Treat "gl_SubGroupSizeARB" as shader input instead of uniform for Vulkan
+                SpecialQualifier("gl_SubGroupSizeARB", EvqVaryingIn, EbvSubGroupSize, symbolTable);
+
             symbolTable.setFunctionExtensions("anyInvocationARB",       1, &E_GL_ARB_shader_group_vote);
             symbolTable.setFunctionExtensions("allInvocationsARB",      1, &E_GL_ARB_shader_group_vote);
             symbolTable.setFunctionExtensions("allInvocationsEqualARB", 1, &E_GL_ARB_shader_group_vote);
         }
+
+#ifdef AMD_EXTENSIONS
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("minInvocationsAMD",                1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("maxInvocationsAMD",                1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("addInvocationsAMD",                1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("minInvocationsNonUniformAMD",      1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("maxInvocationsNonUniformAMD",      1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("addInvocationsNonUniformAMD",      1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("swizzleInvocationsAMD",            1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("swizzleInvocationsWithPatternAMD", 1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("writeInvocationAMD",               1, &E_GL_AMD_shader_ballot);
+            symbolTable.setFunctionExtensions("mbcntAMD",                         1, &E_GL_AMD_shader_ballot);
+        }
+
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("min3", 1, &E_GL_AMD_shader_trinary_minmax);
+            symbolTable.setFunctionExtensions("max3", 1, &E_GL_AMD_shader_trinary_minmax);
+            symbolTable.setFunctionExtensions("mid3", 1, &E_GL_AMD_shader_trinary_minmax);
+        }
+
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("cubeFaceIndexAMD", 1, &E_GL_AMD_gcn_shader);
+            symbolTable.setFunctionExtensions("cubeFaceCoordAMD", 1, &E_GL_AMD_gcn_shader);
+            symbolTable.setFunctionExtensions("timeAMD",          1, &E_GL_AMD_gcn_shader);
+        }
+#endif
 
         // Compatibility variables, vertex only
         if (spvVersion.spv == 0) {
@@ -3872,6 +4621,29 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("textureGradOffsetClampARB",          1, &E_GL_ARB_sparse_texture_clamp);
         }
 
+#ifdef AMD_EXTENSIONS
+        // E_GL_AMD_shader_explicit_vertex_parameter
+        if (profile != EEsProfile) {
+            symbolTable.setVariableExtensions("gl_BaryCoordNoPerspAMD",         1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordNoPerspCentroidAMD", 1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordNoPerspSampleAMD",   1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordSmoothAMD",          1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordSmoothCentroidAMD",  1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordSmoothSampleAMD",    1, &E_GL_AMD_shader_explicit_vertex_parameter);
+            symbolTable.setVariableExtensions("gl_BaryCoordPullModelAMD",       1, &E_GL_AMD_shader_explicit_vertex_parameter);
+
+            symbolTable.setFunctionExtensions("interpolateAtVertexAMD",         1, &E_GL_AMD_shader_explicit_vertex_parameter);
+
+            BuiltInVariable("gl_BaryCoordNoPerspAMD",           EbvBaryCoordNoPersp,         symbolTable);
+            BuiltInVariable("gl_BaryCoordNoPerspCentroidAMD",   EbvBaryCoordNoPerspCentroid, symbolTable);
+            BuiltInVariable("gl_BaryCoordNoPerspSampleAMD",     EbvBaryCoordNoPerspSample,   symbolTable);
+            BuiltInVariable("gl_BaryCoordSmoothAMD",            EbvBaryCoordSmooth,          symbolTable);
+            BuiltInVariable("gl_BaryCoordSmoothCentroidAMD",    EbvBaryCoordSmoothCentroid,  symbolTable);
+            BuiltInVariable("gl_BaryCoordSmoothSampleAMD",      EbvBaryCoordSmoothSample,    symbolTable);
+            BuiltInVariable("gl_BaryCoordPullModelAMD",         EbvBaryCoordPullModel,       symbolTable);
+        }
+#endif
+
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &E_GL_EXT_frag_depth);
 
         if (profile == EEsProfile) {
@@ -4028,6 +4800,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("unpackInt2x32",   EOpUnpackInt2x32);
     symbolTable.relateToOperator("packUint2x32",    EOpPackUint2x32);
     symbolTable.relateToOperator("unpackUint2x32",  EOpUnpackUint2x32);
+
+#ifdef AMD_EXTENSIONS
+    symbolTable.relateToOperator("packFloat2x16",   EOpPackFloat2x16);
+    symbolTable.relateToOperator("unpackFloat2x16", EOpUnpackFloat2x16);
+#endif
 
     symbolTable.relateToOperator("length",       EOpLength);
     symbolTable.relateToOperator("distance",     EOpDistance);
@@ -4205,6 +4982,27 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("anyInvocationARB",                EOpAnyInvocation);
             symbolTable.relateToOperator("allInvocationsARB",               EOpAllInvocations);
             symbolTable.relateToOperator("allInvocationsEqualARB",          EOpAllInvocationsEqual);
+
+#ifdef AMD_EXTENSIONS
+            symbolTable.relateToOperator("minInvocationsAMD",               EOpMinInvocations);
+            symbolTable.relateToOperator("maxInvocationsAMD",               EOpMaxInvocations);
+            symbolTable.relateToOperator("addInvocationsAMD",               EOpAddInvocations);
+            symbolTable.relateToOperator("minInvocationsNonUniformAMD",     EOpMinInvocationsNonUniform);
+            symbolTable.relateToOperator("maxInvocationsNonUniformAMD",     EOpMaxInvocationsNonUniform);
+            symbolTable.relateToOperator("addInvocationsNonUniformAMD",     EOpAddInvocationsNonUniform);
+            symbolTable.relateToOperator("swizzleInvocationsAMD",           EOpSwizzleInvocations);
+            symbolTable.relateToOperator("swizzleInvocationsMaskedAMD",     EOpSwizzleInvocationsMasked);
+            symbolTable.relateToOperator("writeInvocationAMD",              EOpWriteInvocation);
+            symbolTable.relateToOperator("mbcntAMD",                        EOpMbcnt);
+
+            symbolTable.relateToOperator("min3",    EOpMin3);
+            symbolTable.relateToOperator("max3",    EOpMax3);
+            symbolTable.relateToOperator("mid3",    EOpMid3);
+
+            symbolTable.relateToOperator("cubeFaceIndexAMD",    EOpCubeFaceIndex);
+            symbolTable.relateToOperator("cubeFaceCoordAMD",    EOpCubeFaceCoord);
+            symbolTable.relateToOperator("timeAMD",             EOpTime);
+#endif
         }
     }
 
@@ -4238,7 +5036,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("interpolateAtCentroid", EOpInterpolateAtCentroid);
         symbolTable.relateToOperator("interpolateAtSample",   EOpInterpolateAtSample);
         symbolTable.relateToOperator("interpolateAtOffset",   EOpInterpolateAtOffset);
+
+#ifdef AMD_EXTENSIONS
+        if (profile != EEsProfile)
+            symbolTable.relateToOperator("interpolateAtVertexAMD", EOpInterpolateAtVertex);
         break;
+#endif
 
     case EShLangCompute:
         symbolTable.relateToOperator("memoryBarrierShared",     EOpMemoryBarrierShared);

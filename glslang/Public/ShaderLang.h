@@ -1,5 +1,7 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+//Copyright (C) 2013-2016 LunarG, Inc.
+//
 //All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
@@ -37,7 +39,7 @@
 #include "../Include/ResourceLimits.h"
 #include "../MachineIndependent/Versions.h"
 
-#include <string.h>
+#include <cstring>
 
 #ifdef _WIN32
 #define C_DECL __cdecl
@@ -100,6 +102,8 @@ typedef enum {
 } EShLanguageMask;
 
 namespace glslang {
+
+class TType;
 
 typedef enum {
     EShSourceNone,
@@ -300,6 +304,12 @@ public:
         const char* const* s, const int* l, const char* const* names, int n);
     void setPreamble(const char* s) { preamble = s; }
     void setEntryPoint(const char* entryPoint);
+    void setShiftSamplerBinding(unsigned int base);
+    void setShiftTextureBinding(unsigned int base);
+    void setShiftUboBinding(unsigned int base);
+    void setAutoMapBindings(bool map);
+    void setFlattenUniformArrays(bool flatten);
+    void setNoStorageFormat(bool useUnknownFormat);
 
     // Interface to #include handlers.
     //
@@ -433,6 +443,7 @@ private:
 };
 
 class TReflection;
+class TIoMapper;
 
 // Make one TProgram per set of shaders that will get linked together.  Add all 
 // the shaders that are to be linked together.  After calling shader.parse()
@@ -455,20 +466,26 @@ public:
 
     // Reflection Interface
     bool buildReflection();                          // call first, to do liveness analysis, index mapping, etc.; returns false on failure
-    int getNumLiveUniformVariables();                // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
-    int getNumLiveUniformBlocks();                   // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
-    const char* getUniformName(int index);           // can be used for "name" part of glGetActiveUniform()
-    const char* getUniformBlockName(int blockIndex); // can be used for glGetActiveUniformBlockName()
-    int getUniformBlockSize(int blockIndex);         // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
-    int getUniformIndex(const char* name);           // can be used for glGetUniformIndices()
-    int getUniformBlockIndex(int index);             // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
-    int getUniformType(int index);                   // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
-    int getUniformBufferOffset(int index);           // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
-    int getUniformArraySize(int index);              // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
-    int getNumLiveAttributes();                      // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
-    const char *getAttributeName(int index);         // can be used for glGetActiveAttrib()
-    int getAttributeType(int index);                 // can be used for glGetActiveAttrib()
+    int getNumLiveUniformVariables() const;                // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
+    int getNumLiveUniformBlocks() const;                   // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
+    const char* getUniformName(int index) const;           // can be used for "name" part of glGetActiveUniform()
+    const char* getUniformBlockName(int blockIndex) const; // can be used for glGetActiveUniformBlockName()
+    int getUniformBlockSize(int blockIndex) const;         // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
+    int getUniformIndex(const char* name) const;           // can be used for glGetUniformIndices()
+    int getUniformBlockIndex(int index) const;             // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
+    int getUniformType(int index) const;                   // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
+    int getUniformBufferOffset(int index) const;           // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
+    int getUniformArraySize(int index) const;              // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
+    int getNumLiveAttributes() const;                      // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
+    const char *getAttributeName(int index) const;         // can be used for glGetActiveAttrib()
+    int getAttributeType(int index) const;                 // can be used for glGetActiveAttrib()
+    const TType* getUniformTType(int index) const;         // returns a TType*
+    const TType* getUniformBlockTType(int index) const;    // returns a TType*    
+
     void dumpReflection();
+
+    // I/O mapping: apply base offsets and map live unbound variables
+    bool mapIO();
 
 protected:
     bool linkStage(EShLanguage, EShMessages);
@@ -479,6 +496,7 @@ protected:
     bool newedIntermediate[EShLangCount];      // track which intermediate were "new" versus reusing a singleton unit in a stage
     TInfoSink* infoSink;
     TReflection* reflection;
+    TIoMapper* ioMapper;
     bool linked;
 
 private:

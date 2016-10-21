@@ -127,6 +127,33 @@ namespace spv {
         }
     }
 
+    // Return the size of a type in 32-bit words.  This currently only
+    // handles ints and floats, and is only invoked by queries which must be
+    // integer types.  If ever needed, it can be generalized.
+    unsigned spirvbin_t::typeSizeInWords(spv::Id id) const
+    {
+        const unsigned typeStart = idPos(id);
+        const spv::Op  opCode    = asOpCode(typeStart);
+
+        switch (opCode) {
+        case spv::OpTypeInt:   // fall through...
+        case spv::OpTypeFloat: return (spv[typeStart+2]+31)/32;
+        default:
+            return 0;
+        }
+    }
+
+    // Looks up the type of a given const or variable ID, and
+    // returns its size in 32-bit words.
+    unsigned spirvbin_t::idTypeSizeInWords(spv::Id id) const
+    {
+        const auto tid_it = idTypeSizeMap.find(id);
+        if (tid_it == idTypeSizeMap.end())
+            error("type size for ID not found");
+
+        return tid_it->second;
+    }
+
     // Is this an opcode we should remove when using --strip?
     bool spirvbin_t::isStripOp(spv::Op opCode) const
     {
@@ -140,6 +167,7 @@ namespace spv {
         }
     }
 
+    // Return true if this opcode is flow control
     bool spirvbin_t::isFlowCtrl(spv::Op opCode) const
     {
         switch (opCode) {
@@ -155,6 +183,7 @@ namespace spv {
         }
     }
 
+    // Return true if this opcode defines a type
     bool spirvbin_t::isTypeOp(spv::Op opCode) const
     {
         switch (opCode) {
@@ -182,6 +211,7 @@ namespace spv {
         }
     }
 
+    // Return true if this opcode defines a constant
     bool spirvbin_t::isConstOp(spv::Op opCode) const
     {
         switch (opCode) {
@@ -324,7 +354,7 @@ namespace spv {
         fnPosDCE.clear();
         fnCalls.clear();
         typeConstPos.clear();
-        typeConstPosR.clear();
+        idPosR.clear();
         entryPoint = spv::NoResult;
         largestNewId = 0;
 
@@ -339,6 +369,25 @@ namespace spv {
                 // remember opcodes we want to strip later
                 if ((options & STRIP) && isStripOp(opCode))
                     stripInst(start);
+
+                unsigned word = start+1;
+                spv::Id  typeId = spv::NoResult;
+
+                if (spv::InstructionDesc[opCode].hasType())
+                    typeId = asId(word++);
+
+                // If there's a result ID, remember the size of its type
+                if (spv::InstructionDesc[opCode].hasResult()) {
+                    const spv::Id resultId = asId(word++);
+                    idPosR[resultId] = start;
+                    
+                    if (typeId != spv::NoResult) {
+                        const unsigned idTypeSize = typeSizeInWords(typeId);
+
+                        if (idTypeSize != 0)
+                            idTypeSizeMap[resultId] = idTypeSize;
+                    }
+                }
 
                 if (opCode == spv::Op::OpName) {
                     const spv::Id    target = asId(start+1);
@@ -363,11 +412,9 @@ namespace spv {
                 } else if (isConstOp(opCode)) {
                     assert(asId(start + 2) != spv::NoResult);
                     typeConstPos.insert(start);
-                    typeConstPosR[asId(start + 2)] = start;
                 } else if (isTypeOp(opCode)) {
                     assert(asId(start + 1) != spv::NoResult);
                     typeConstPos.insert(start);
-                    typeConstPosR[asId(start + 1)] = start;
                 }
 
                 return false;
@@ -436,10 +483,19 @@ namespace spv {
             return nextInst;
         }
 
+        // Circular buffer so we can look back at previous unmapped values during the mapping pass.
+        static const unsigned idBufferSize = 4;
+        spv::Id idBuffer[idBufferSize];
+        unsigned idBufferPos = 0;
+
         // Store IDs from instruction in our map
         for (int op = 0; numOperands > 0; ++op, --numOperands) {
             switch (spv::InstructionDesc[opCode].operands.getClass(op)) {
             case spv::OperandId:
+            case spv::OperandScope:
+            case spv::OperandMemorySemantics:
+                idBuffer[idBufferPos] = asId(word);
+                idBufferPos = (idBufferPos + 1) % idBufferSize;
                 idFn(asId(word++));
                 break;
 
@@ -457,13 +513,25 @@ namespace spv {
                 // word += numOperands;
                 return nextInst;
 
-            case spv::OperandVariableLiteralId:
-                while (numOperands > 0) {
-                    ++word;             // immediate
-                    idFn(asId(word++)); // ID
-                    numOperands -= 2;
+            case spv::OperandVariableLiteralId: {
+                if (opCode == OpSwitch) {
+                    // word-2 is the position of the selector ID.  OpSwitch Literals match its type.
+                    // In case the IDs are currently being remapped, we get the word[-2] ID from
+                    // the circular idBuffer.
+                    const unsigned literalSizePos = (idBufferPos+idBufferSize-2) % idBufferSize;
+                    const unsigned literalSize = idTypeSizeInWords(idBuffer[literalSizePos]);
+                    const unsigned numLiteralIdPairs = (nextInst-word) / (1+literalSize);
+
+                    for (unsigned arg=0; arg<numLiteralIdPairs; ++arg) {
+                        word += literalSize;  // literal
+                        idFn(asId(word++));   // label
+                    }
+                } else {
+                    assert(0); // currentely, only OpSwitch uses OperandVariableLiteralId
                 }
+
                 return nextInst;
+            }
 
             case spv::OperandLiteralString: {
                 const int stringWordCount = literalStringWords(literalString(word));
@@ -500,9 +568,7 @@ namespace spv {
             case spv::OperandSelect:
             case spv::OperandLoop:
             case spv::OperandFunction:
-            case spv::OperandMemorySemantics:
             case spv::OperandMemoryAccess:
-            case spv::OperandScope:
             case spv::OperandGroupOperation:
             case spv::OperandKernelEnqueueFlags:
             case spv::OperandKernelProfilingInfo:
@@ -966,23 +1032,27 @@ namespace spv {
 
         std::unordered_map<spv::Id, int> typeUseCount;
 
-        // Count total type usage
-        process(inst_fn_nop,
-            [&](spv::Id& id) { if (isType[id]) ++typeUseCount[id]; }
-        );
+        // This is not the most efficient algorithm, but this is an offline tool, and
+        // it's easy to write this way.  Can be improved opportunistically if needed.
+        bool changed = true;
+        while (changed) {
+            changed = false;
+            strip();
+            typeUseCount.clear();
 
-        // Remove types from deleted code
-        for (const auto& fn : fnPosDCE)
+            // Count total type usage
             process(inst_fn_nop,
-            [&](spv::Id& id) { if (isType[id]) --typeUseCount[id]; },
-            fn.second.first, fn.second.second);
+                    [&](spv::Id& id) { if (isType[id]) ++typeUseCount[id]; }
+                    );
 
-        // Remove single reference types
-        for (const auto typeStart : typeConstPos) {
-            const spv::Id typeId = asTypeConstId(typeStart);
-            if (typeUseCount[typeId] == 1) {
-                --typeUseCount[typeId];
-                stripInst(typeStart);
+            // Remove single reference types
+            for (const auto typeStart : typeConstPos) {
+                const spv::Id typeId = asTypeConstId(typeStart);
+                if (typeUseCount[typeId] == 1) {
+                    changed = true;
+                    --typeUseCount[typeId];
+                    stripInst(typeStart);
+                }
             }
         }
     }
@@ -1060,12 +1130,12 @@ namespace spv {
     }
 #endif // NOTDEF
 
-    // Return start position in SPV of given type.  error if not found.
-    unsigned spirvbin_t::typePos(spv::Id id) const
+    // Return start position in SPV of given Id.  error if not found.
+    unsigned spirvbin_t::idPos(spv::Id id) const
     {
-        const auto tid_it = typeConstPosR.find(id);
-        if (tid_it == typeConstPosR.end())
-            error("type ID not found");
+        const auto tid_it = idPosR.find(id);
+        if (tid_it == idPosR.end())
+            error("ID not found");
 
         return tid_it->second;
     }
@@ -1083,11 +1153,11 @@ namespace spv {
         case spv::OpTypeInt:          return 3 + (spv[typeStart+3]);
         case spv::OpTypeFloat:        return 5;
         case spv::OpTypeVector:
-            return 6 + hashType(typePos(spv[typeStart+2])) * (spv[typeStart+3] - 1);
+            return 6 + hashType(idPos(spv[typeStart+2])) * (spv[typeStart+3] - 1);
         case spv::OpTypeMatrix:
-            return 30 + hashType(typePos(spv[typeStart+2])) * (spv[typeStart+3] - 1);
+            return 30 + hashType(idPos(spv[typeStart+2])) * (spv[typeStart+3] - 1);
         case spv::OpTypeImage:
-            return 120 + hashType(typePos(spv[typeStart+2])) +
+            return 120 + hashType(idPos(spv[typeStart+2])) +
                 spv[typeStart+3] +            // dimensionality
                 spv[typeStart+4] * 8 * 16 +   // depth
                 spv[typeStart+5] * 4 * 16 +   // arrayed
@@ -1098,24 +1168,24 @@ namespace spv {
         case spv::OpTypeSampledImage:
             return 502;
         case spv::OpTypeArray:
-            return 501 + hashType(typePos(spv[typeStart+2])) * spv[typeStart+3];
+            return 501 + hashType(idPos(spv[typeStart+2])) * spv[typeStart+3];
         case spv::OpTypeRuntimeArray:
-            return 5000  + hashType(typePos(spv[typeStart+2]));
+            return 5000  + hashType(idPos(spv[typeStart+2]));
         case spv::OpTypeStruct:
             {
                 std::uint32_t hash = 10000;
                 for (unsigned w=2; w < wordCount; ++w)
-                    hash += w * hashType(typePos(spv[typeStart+w]));
+                    hash += w * hashType(idPos(spv[typeStart+w]));
                 return hash;
             }
 
         case spv::OpTypeOpaque:         return 6000 + spv[typeStart+2];
-        case spv::OpTypePointer:        return 100000  + hashType(typePos(spv[typeStart+3]));
+        case spv::OpTypePointer:        return 100000  + hashType(idPos(spv[typeStart+3]));
         case spv::OpTypeFunction:
             {
                 std::uint32_t hash = 200000;
                 for (unsigned w=2; w < wordCount; ++w)
-                    hash += w * hashType(typePos(spv[typeStart+w]));
+                    hash += w * hashType(idPos(spv[typeStart+w]));
                 return hash;
             }
 
@@ -1132,14 +1202,14 @@ namespace spv {
         case spv::OpConstantFalse:       return 300008;
         case spv::OpConstantComposite:
             {
-                std::uint32_t hash = 300011 + hashType(typePos(spv[typeStart+1]));
+                std::uint32_t hash = 300011 + hashType(idPos(spv[typeStart+1]));
                 for (unsigned w=3; w < wordCount; ++w)
-                    hash += w * hashType(typePos(spv[typeStart+w]));
+                    hash += w * hashType(idPos(spv[typeStart+w]));
                 return hash;
             }
         case spv::OpConstant:
             {
-                std::uint32_t hash = 400011 + hashType(typePos(spv[typeStart+1]));
+                std::uint32_t hash = 400011 + hashType(idPos(spv[typeStart+1]));
                 for (unsigned w=3; w < wordCount; ++w)
                     hash += w * spv[typeStart+w];
                 return hash;
@@ -1212,19 +1282,19 @@ namespace spv {
         msg(3, 4, std::string("ID bound: ") + std::to_string(bound()));
 
         strip();        // strip out data we decided to eliminate
-
         if (options & OPT_LOADSTORE) optLoadStore();
         if (options & OPT_FWD_LS)    forwardLoadStores();
         if (options & DCE_FUNCS)     dceFuncs();
         if (options & DCE_VARS)      dceVars();
         if (options & DCE_TYPES)     dceTypes();
+        strip();        // strip out data we decided to eliminate
+
         if (options & MAP_TYPES)     mapTypeConst();
         if (options & MAP_NAMES)     mapNames();
         if (options & MAP_FUNCS)     mapFnBodies();
 
         mapRemainder(); // map any unmapped IDs
         applyMap();     // Now remap each shader to the new IDs we've come up with
-        strip();        // strip out data we decided to eliminate
     }
 
     // remap from a memory image

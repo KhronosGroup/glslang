@@ -1,17 +1,17 @@
 
-#define gs     // TODO: define as groupshared when available in the grammar
-gs uint gs_ua;
-gs uint gs_ub;
-gs uint gs_uc;
-gs uint2 gs_ua2;
-gs uint2 gs_ub2;
-gs uint2 gs_uc2;
-gs uint3 gs_ua3;
-gs uint3 gs_ub3;
-gs uint3 gs_uc3;
-gs uint4 gs_ua4;
-gs uint4 gs_ub4;
-gs uint4 gs_uc4;
+
+groupshared uint gs_ua;
+groupshared uint gs_ub;
+groupshared uint gs_uc;
+groupshared uint2 gs_ua2;
+groupshared uint2 gs_ub2;
+groupshared uint2 gs_uc2;
+groupshared uint3 gs_ua3;
+groupshared uint3 gs_ub3;
+groupshared uint3 gs_uc3;
+groupshared uint4 gs_ua4;
+groupshared uint4 gs_ub4;
+groupshared uint4 gs_uc4;
 
 float PixelShaderFunctionS(float inF0, float inF1, float inF2, uint inU0, uint inU1)
 {
@@ -223,6 +223,7 @@ float3 PixelShaderFunction3(float3 inF0, float3 inF1, float3 inF2, uint3 inU0, u
     bool3 r041 = isnan(inF0);
     float3 r042 = ldexp(inF0, inF1);
     float3 r039a = lerp(inF0, inF1, inF2);
+    float3 r039b = lerp(inF0, inF1, 0.3); // test vec,vec,scalar lerp
     float r043 = length(inF0);
     float3 r044 = log(inF0);
     float3 r045 = log10(inF0);
@@ -481,3 +482,12 @@ void TestGenMulNxM(float inF0, float inF1,
     float2x4 r15 = mul(inFM2x3, inFM3x4);
     float3x4 r16 = mul(inFM3x2, inFM2x4);
 }
+
+struct PS_OUTPUT { float4 color : SV_Target0; };
+
+PS_OUTPUT main()
+{
+    PS_OUTPUT ps_output;
+    ps_output.color = 1.0;
+    return ps_output;
+};

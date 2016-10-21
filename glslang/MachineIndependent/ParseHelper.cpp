@@ -39,7 +39,6 @@
 #include "Scan.h"
 
 #include "../OSDependent/osinclude.h"
-#include <stdarg.h>
 #include <algorithm>
 
 #include "preprocessor/PpContext.h"
@@ -55,52 +54,19 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0), statementNestingLevel(0),
             inMain(false), postMainReturn(false), currentFunctionType(nullptr), blockName(nullptr),
             limits(resources.limits), parsingBuiltins(parsingBuiltins),
-            afterEOF(false),
             atomicUintOffsets(nullptr), anyIndexLimits(false)
 {
     // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
     linkage = new TIntermAggregate;
 
-    // set all precision defaults to EpqNone, which is correct for all desktop types
-    // and for ES types that don't have defaults (thus getting an error on use)
-    for (int type = 0; type < EbtNumTypes; ++type)
-        defaultPrecision[type] = EpqNone;
-
-    for (int type = 0; type < maxSamplerIndex; ++type)
-        defaultSamplerPrecision[type] = EpqNone;
-
-    // replace with real precision defaults for those that have them
-    if (profile == EEsProfile) {
-        TSampler sampler;
-        sampler.set(EbtFloat, Esd2D);
-        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
-        sampler.set(EbtFloat, EsdCube);
-        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
-        sampler.set(EbtFloat, Esd2D);
-        sampler.external = true;
-        defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
-
-        // If we are parsing built-in computational variables/functions, it is meaningful to record
-        // whether the built-in has no precision qualifier, as that ambiguity
-        // is used to resolve the precision from the supplied arguments/operands instead.
-        // So, we don't actually want to replace EpqNone with a default precision for built-ins.
-        if (! parsingBuiltins) {
-            switch (language) {
-            case EShLangFragment:
-                defaultPrecision[EbtInt] = EpqMedium;
-                defaultPrecision[EbtUint] = EpqMedium;
-                break;
-            default:
-                defaultPrecision[EbtInt] = EpqHigh;
-                defaultPrecision[EbtUint] = EpqHigh;
-                defaultPrecision[EbtFloat] = EpqHigh;
-                break;
-            }
-        }
-
-        defaultPrecision[EbtSampler] = EpqLow;
-        defaultPrecision[EbtAtomicUint] = EpqHigh;
+    // decide whether precision qualifiers should be ignored or respected
+    if (profile == EEsProfile || spvVersion.vulkan > 0) {
+        precisionManager.respectPrecisionQualifiers();
+        if (! parsingBuiltins && language == EShLangFragment && profile != EEsProfile && spvVersion.vulkan > 0)
+            precisionManager.warnAboutDefaults();
     }
+
+    setPrecisionDefaults();
 
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmColumnMajor;
@@ -129,6 +95,60 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
 TParseContext::~TParseContext()
 {
     delete [] atomicUintOffsets;
+}
+
+// Set up all default precisions as needed by the current environment.
+// Intended just as a TParseContext constructor helper.
+void TParseContext::setPrecisionDefaults()
+{
+    // Set all precision defaults to EpqNone, which is correct for all types
+    // when not obeying precision qualifiers, and correct for types that don't
+    // have defaults (thus getting an error on use) when obeying precision
+    // qualifiers.
+
+    for (int type = 0; type < EbtNumTypes; ++type)
+        defaultPrecision[type] = EpqNone;
+
+    for (int type = 0; type < maxSamplerIndex; ++type)
+        defaultSamplerPrecision[type] = EpqNone;
+
+    // replace with real precision defaults for those that have them
+    if (obeyPrecisionQualifiers()) {
+        if (profile == EEsProfile) {
+            // Most don't have defaults, a few default to lowp.
+            TSampler sampler;
+            sampler.set(EbtFloat, Esd2D);
+            defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+            sampler.set(EbtFloat, EsdCube);
+            defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+            sampler.set(EbtFloat, Esd2D);
+            sampler.external = true;
+            defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
+        } else {
+            // Non-ES profile
+            // All default to highp.
+            for (int type = 0; type < maxSamplerIndex; ++type)
+                defaultSamplerPrecision[type] = EpqHigh;
+        }
+
+        // If we are parsing built-in computational variables/functions, it is meaningful to record
+        // whether the built-in has no precision qualifier, as that ambiguity
+        // is used to resolve the precision from the supplied arguments/operands instead.
+        // So, we don't actually want to replace EpqNone with a default precision for built-ins.
+        if (! parsingBuiltins) {
+            if (profile == EEsProfile && language == EShLangFragment) {
+                defaultPrecision[EbtInt] = EpqMedium;
+                defaultPrecision[EbtUint] = EpqMedium;
+            } else {
+                defaultPrecision[EbtInt] = EpqHigh;
+                defaultPrecision[EbtUint] = EpqHigh;
+                defaultPrecision[EbtFloat] = EpqHigh;
+            }
+        }
+
+        defaultPrecision[EbtSampler] = EpqLow;
+        defaultPrecision[EbtAtomicUint] = EpqHigh;
+    }
 }
 
 void TParseContext::setLimits(const TBuiltInResource& r)
@@ -171,13 +191,15 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& inp
 }
 
 // This is called from bison when it has a parse (syntax) error
+// Note though that to stop cascading errors, we set EOF, which
+// will usually cause a syntax error, so be more accurate that
+// compilation is terminating.
 void TParseContext::parserError(const char* s)
 {
-    if (afterEOF) {
-        if (tokensBeforeEOF == 1)
-            error(getCurrentLoc(), "", "premature end of input", s, "");
-    } else
+    if (! getScanner()->atEndOfInput() || numErrors == 0)
         error(getCurrentLoc(), "", "", s, "");
+    else
+        error(getCurrentLoc(), "compilation terminated", "", "");
 }
 
 void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& tokens)
@@ -253,7 +275,7 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
 //
 bool TParseContext::parseVectorFields(const TSourceLoc& loc, const TString& compString, int vecSize, TVectorFields& fields)
 {
-    fields.num = (int) compString.size();
+    fields.num = (int)compString.size();
     if (fields.num > 4) {
         error(loc, "illegal vector field selection", compString.c_str(), "");
         return false;
@@ -339,81 +361,6 @@ bool TParseContext::parseVectorFields(const TSourceLoc& loc, const TString& comp
     return true;
 }
 
-///////////////////////////////////////////////////////////////////////
-//
-// Errors
-//
-////////////////////////////////////////////////////////////////////////
-
-//
-// Used to output syntax, parsing, and semantic errors.
-//
-
-void TParseContext::outputMessage(const TSourceLoc& loc, const char* szReason,
-                                  const char* szToken,
-                                  const char* szExtraInfoFormat,
-                                  TPrefixType prefix, va_list args)
-{
-    const int maxSize = MaxTokenLength + 200;
-    char szExtraInfo[maxSize];
-
-    safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, args);
-
-    infoSink.info.prefix(prefix);
-    infoSink.info.location(loc);
-    infoSink.info << "'" << szToken <<  "' : " << szReason << " " << szExtraInfo << "\n";
-
-    if (prefix == EPrefixError) {
-        ++numErrors;
-    }
-}
-
-void C_DECL TParseContext::error(const TSourceLoc& loc, const char* szReason, const char* szToken,
-                                 const char* szExtraInfoFormat, ...)
-{
-    if (messages & EShMsgOnlyPreprocessor)
-        return;
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
-    va_end(args);
-
-    if ((messages & EShMsgCascadingErrors) == 0)
-        currentScanner->setEndOfInput();
-}
-
-void C_DECL TParseContext::warn(const TSourceLoc& loc, const char* szReason, const char* szToken,
-                                 const char* szExtraInfoFormat, ...)
-{
-    if (suppressWarnings())
-        return;
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
-    va_end(args);
-}
-
-void C_DECL TParseContext::ppError(const TSourceLoc& loc, const char* szReason, const char* szToken,
-                                 const char* szExtraInfoFormat, ...)
-{
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
-    va_end(args);
-
-    if ((messages & EShMsgCascadingErrors) == 0)
-        currentScanner->setEndOfInput();
-}
-
-void C_DECL TParseContext::ppWarn(const TSourceLoc& loc, const char* szReason, const char* szToken,
-                                 const char* szExtraInfoFormat, ...)
-{
-    va_list args;
-    va_start(args, szExtraInfoFormat);
-    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
-    va_end(args);
-}
-
 //
 // Handle seeing a variable identifier in the grammar.
 //
@@ -434,7 +381,9 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
         // If this is a variable or a block, check it and all it contains, but if this 
         // is a member of an anonymous block, check the whole block, as the whole block
         // will need to be copied up if it contains an implicitly-sized array.
-        if (symbol->getType().containsImplicitlySizedArray() || (symbol->getAsAnonMember() && symbol->getAsAnonMember()->getAnonContainer().getType().containsImplicitlySizedArray()))
+        if (symbol->getType().containsImplicitlySizedArray() ||
+            (symbol->getAsAnonMember() &&
+             symbol->getAsAnonMember()->getAnonContainer().getType().containsImplicitlySizedArray()))
             makeEditable(symbol);
     }
 
@@ -535,7 +484,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
                     // input/output blocks either don't exist or can be variable indexed
                 }
             } else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
-                requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader ouput array");
+                requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader output array");
             else if (base->getBasicType() == EbtSampler && version >= 130) {
                 const char* explanation = "variable indexing sampler array";
                 requireProfile(base->getLoc(), EEsProfile | ECoreProfile | ECompatibilityProfile, explanation);
@@ -617,35 +566,11 @@ void TParseContext::handleIndexLimits(const TSourceLoc& /*loc*/, TIntermTyped* b
 // effect all nodes sharing it.
 void TParseContext::makeEditable(TSymbol*& symbol)
 {
-    // copyUp() does a deep copy of the type.
-    symbol = symbolTable.copyUp(symbol);
+    TParseContextBase::makeEditable(symbol);
 
-    // Also, see if it's tied to IO resizing
+    // See if it's tied to IO resizing
     if (isIoResizeArray(symbol->getType()))
         ioArraySymbolResizeList.push_back(symbol);
-
-    // Also, save it in the AST for linker use.
-    intermediate.addSymbolLinkageNode(linkage, *symbol);
-}
-
-// Return a writable version of the variable 'name'.
-//
-// Return nullptr if 'name' is not found.  This should mean
-// something is seriously wrong (e.g., compiler asking self for
-// built-in that doesn't exist).
-TVariable* TParseContext::getEditableVariable(const char* name)
-{
-    bool builtIn;
-    TSymbol* symbol = symbolTable.find(name, &builtIn);
-    
-    assert(symbol != nullptr);
-    if (symbol == nullptr)
-        return nullptr;
-
-    if (builtIn)
-        makeEditable(symbol);
-
-    return symbol->getAsVariable();
 }
 
 // Return true if this is a geometry shader input array or tessellation control output array.
@@ -761,13 +686,32 @@ void TParseContext::checkIoArrayConsistency(const TSourceLoc& loc, int requiredS
 }
 
 // Handle seeing a binary node with a math operation.
+// Returns nullptr if not semantically allowed.
 TIntermTyped* TParseContext::handleBinaryMath(const TSourceLoc& loc, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right)
 {
     rValueErrorCheck(loc, str, left->getAsTyped());
     rValueErrorCheck(loc, str, right->getAsTyped());
 
-    TIntermTyped* result = intermediate.addBinaryMath(op, left, right, loc);
-    if (! result)
+    bool allowed = true;
+    switch (op) {
+    // TODO: Bring more source language-specific checks up from intermediate.cpp
+    // to the specific parse helpers for that source language.
+    case EOpLessThan:
+    case EOpGreaterThan:
+    case EOpLessThanEqual:
+    case EOpGreaterThanEqual:
+        if (! left->isScalar() || ! right->isScalar())
+            allowed = false;
+        break;
+    default:
+        break;
+    }
+
+    TIntermTyped* result = nullptr;
+    if (allowed)
+        result = intermediate.addBinaryMath(op, left, right, loc);
+
+    if (result == nullptr)
         binaryOpError(loc, str, left->getCompleteString(), right->getCompleteString());
 
     return result;
@@ -850,7 +794,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
                 // Swizzle operations propagate specialization-constantness
                 if (base->getQualifier().isSpecConstant())
                     type.getQualifier().makeSpecConstant();
-                return addConstructor(loc, base, type, mapTypeToConstructorOp(type));
+                return addConstructor(loc, base, type);
             }
         }
 
@@ -865,7 +809,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
                 TString vectorString = field;
                 TIntermTyped* index = intermediate.addSwizzle(fields, loc);
                 result = intermediate.addIndex(EOpVectorSwizzle, base, index, loc);
-                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, (int) vectorString.size()));
+                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, (int)vectorString.size()));
             }
             // Swizzle operations propagate specialization-constantness
             if (base->getType().getQualifier().isSpecConstant())
@@ -994,7 +938,7 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
         error(loc, "can't find function", function.getName().c_str(), "");
     // Note:  'prevDec' could be 'function' if this is the first time we've seen function
     // as it would have just been put in the symbol table.  Otherwise, we're looking up
-    // an earlier occurance.
+    // an earlier occurrence.
 
     if (prevDec && prevDec->isDefined()) {
         // Then this function already has a body.
@@ -1009,18 +953,23 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
         currentFunctionType = new TType(EbtVoid);
     functionReturnsValue = false;
 
-    //
-    // Raise error message if main function takes any parameters or returns anything other than void
-    //
-    if (function.getName() == intermediate.getEntryPoint().c_str()) {
-        if (function.getParamCount() > 0)
-            error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
-        if (function.getType().getBasicType() != EbtVoid)
-            error(loc, "", function.getType().getBasicTypeString().c_str(), "main function cannot return a value");
-        intermediate.addMainCount();
+    // Check for entry point
+    if (function.getName().compare(intermediate.getEntryPointName().c_str()) == 0) {
+        intermediate.setEntryPointMangledName(function.getMangledName().c_str());
+        intermediate.incrementEntryPointCount();
         inMain = true;
     } else
         inMain = false;
+
+    //
+    // Raise error message if main function takes any parameters or returns anything other than void
+    //
+    if (inMain) {
+        if (function.getParamCount() > 0)
+            error(loc, "function cannot take any parameter(s)", function.getName().c_str(), "");
+        if (function.getType().getBasicType() != EbtVoid)
+            error(loc, "", function.getType().getBasicTypeString().c_str(), "entry point cannot return a value");
+    }
 
     //
     // New symbol table scope for body of function plus its arguments
@@ -1078,21 +1027,20 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 {
     TIntermTyped* result = nullptr;
 
-    TOperator op = function->getBuiltInOp();
-    if (op == EOpArrayLength)
+    if (function->getBuiltInOp() == EOpArrayLength)
         result = handleLengthMethod(loc, function, arguments);
-    else if (op != EOpNull) {
+    else if (function->getBuiltInOp() != EOpNull) {
         //
         // Then this should be a constructor.
         // Don't go through the symbol table for constructors.
         // Their parameters will be verified algorithmically.
         //
         TType type(EbtVoid);  // use this to get the type back
-        if (! constructorError(loc, arguments, *function, op, type)) {
+        if (! constructorError(loc, arguments, *function, function->getBuiltInOp(), type)) {
             //
             // It's a constructor, of type 'type'.
             //
-            result = addConstructor(loc, arguments, type, op);
+            result = addConstructor(loc, arguments, type);
             if (result == nullptr)
                 error(loc, "cannot construct with these arguments", type.getCompleteString().c_str(), "");
         }
@@ -1122,7 +1070,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                     // means take 'arguments' itself as the one argument.
                     TIntermNode* arg = fnCandidate->getParamCount() == 1 ? arguments : (aggregate ? aggregate->getSequence()[i] : arguments);
                     TQualifier& formalQualifier = (*fnCandidate)[i].type->getQualifier();
-                    if (formalQualifier.storage == EvqOut || formalQualifier.storage == EvqInOut) {
+                    if (formalQualifier.isParamOutput()) {
                         if (lValueErrorCheck(arguments->getLoc(), "assign", arg->getAsTyped()))
                             error(arguments->getLoc(), "Non-L-value cannot be passed for 'out' or 'inout' parameters.", "out", "");
                     }
@@ -1149,18 +1097,9 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                 addInputArgumentConversions(*fnCandidate, arguments);  // arguments may be modified if it's just a single argument node
             }
 
-            op = fnCandidate->getBuiltInOp();
-            if (builtIn && op != EOpNull) {
+            if (builtIn && fnCandidate->getBuiltInOp() != EOpNull) {
                 // A function call mapped to a built-in operation.
-                checkLocation(loc, op);
-                result = intermediate.addBuiltInFunctionCall(loc, op, fnCandidate->getParamCount() == 1, arguments, fnCandidate->getType());
-                if (result == nullptr)  {
-                    error(arguments->getLoc(), " wrong operand type", "Internal Error",
-                                               "built in unary operator function.  Type: %s",
-                                               static_cast<TIntermTyped*>(arguments)->getCompleteString().c_str());
-                } else if (result->getAsOperator()) {
-                    builtInOpCheck(loc, *fnCandidate, *result->getAsOperator());
-                }
+                result = handleBuiltInFunctionCall(loc, *arguments, *fnCandidate);
             } else {
                 // This is a function call not mapped to built-in operator.
                 // It could still be a built-in function, but only if PureOperatorBuiltins == false.
@@ -1181,6 +1120,8 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
 
                 if (builtIn)
                     nonOpBuiltInCheck(loc, *fnCandidate, *call);
+                else
+                    userFunctionCallCheck(loc, *call);
             }
 
             // Convert 'out' arguments.  If it was a constant folded built-in, it won't be an aggregate anymore.
@@ -1203,6 +1144,117 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
         result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
 
     return result;
+}
+
+TIntermTyped* TParseContext::handleBuiltInFunctionCall(TSourceLoc loc, TIntermNode& arguments,
+                                                       const TFunction& function)
+{
+    checkLocation(loc, function.getBuiltInOp());
+    TIntermTyped *result = intermediate.addBuiltInFunctionCall(loc, function.getBuiltInOp(),
+                                                               function.getParamCount() == 1,
+                                                               &arguments, function.getType());
+    if (obeyPrecisionQualifiers())
+        computeBuiltinPrecisions(*result, function);
+
+    if (result == nullptr)  {
+        error(arguments.getLoc(), " wrong operand type", "Internal Error",
+                                  "built in unary operator function.  Type: %s",
+                                  static_cast<TIntermTyped*>(&arguments)->getCompleteString().c_str());
+    } else if (result->getAsOperator())
+        builtInOpCheck(loc, function, *result->getAsOperator());
+
+    return result;
+}
+
+// "The operation of a built-in function can have a different precision
+// qualification than the precision qualification of the resulting value.
+// These two precision qualifications are established as follows.
+//
+// The precision qualification of the operation of a built-in function is
+// based on the precision qualification of its input arguments and formal
+// parameters:  When a formal parameter specifies a precision qualifier,
+// that is used, otherwise, the precision qualification of the calling
+// argument is used.  The highest precision of these will be the precision
+// qualification of the operation of the built-in function. Generally,
+// this is applied across all arguments to a built-in function, with the
+// exceptions being:
+//   - bitfieldExtract and bitfieldInsert ignore the 'offset' and 'bits'
+//     arguments.
+//   - interpolateAt* functions only look at the 'interpolant' argument.
+//
+// The precision qualification of the result of a built-in function is
+// determined in one of the following ways:
+//
+//   - For the texture sampling, image load, and image store functions,
+//     the precision of the return type matches the precision of the
+//     sampler type
+//
+//   Otherwise:
+//
+//   - For prototypes that do not specify a resulting precision qualifier,
+//     the precision will be the same as the precision of the operation.
+//
+//   - For prototypes that do specify a resulting precision qualifier,
+//     the specified precision qualifier is the precision qualification of
+//     the result."
+//
+void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction& function)
+{
+    TPrecisionQualifier operationPrecision = EpqNone;
+    TPrecisionQualifier resultPrecision = EpqNone;
+
+    TIntermOperator* opNode = node.getAsOperator();
+    if (opNode == nullptr)
+        return;
+
+    if (TIntermUnary* unaryNode = node.getAsUnaryNode()) {
+        operationPrecision = std::max(function[0].type->getQualifier().precision,
+                                      unaryNode->getOperand()->getType().getQualifier().precision);
+        if (function.getType().getBasicType() != EbtBool)
+            resultPrecision = function.getType().getQualifier().precision == EpqNone ? 
+                                        operationPrecision :
+                                        function.getType().getQualifier().precision;
+    } else if (TIntermAggregate* agg = node.getAsAggregate()) {
+        TIntermSequence& sequence = agg->getSequence();
+        int numArgs = (int)sequence.size();
+        switch (agg->getOp()) {
+        case EOpBitfieldExtract:
+            numArgs = 1;
+            break;
+        case EOpBitfieldInsert:
+            numArgs = 2;
+            break;
+        case EOpInterpolateAtCentroid:
+        case EOpInterpolateAtOffset:
+        case EOpInterpolateAtSample:
+            numArgs = 1;
+            break;
+        default:
+            break;
+        }
+        // find the maximum precision from the arguments and parameters
+        for (unsigned int arg = 0; arg < sequence.size(); ++arg) {
+            operationPrecision = std::max(operationPrecision, sequence[arg]->getAsTyped()->getQualifier().precision);
+            operationPrecision = std::max(operationPrecision, function[arg].type->getQualifier().precision);
+        }
+        // compute the result precision
+        if (agg->isSampling() || agg->getOp() == EOpImageLoad || agg->getOp() == EOpImageStore)
+            resultPrecision = sequence[0]->getAsTyped()->getQualifier().precision;
+        else if (function.getType().getBasicType() != EbtBool)
+            resultPrecision = function.getType().getQualifier().precision == EpqNone ? 
+                                        operationPrecision :
+                                        function.getType().getQualifier().precision;
+    }
+
+    // Propagate precision through this node and its children. That algorithm stops
+    // when a precision is found, so start by clearing this subroot precision
+    opNode->getQualifier().precision = EpqNone;
+    if (operationPrecision != EpqNone) {
+        opNode->propagatePrecision(operationPrecision);
+        opNode->setOperationPrecision(operationPrecision);
+    }
+    // Now, set the result precision, which might not match
+    opNode->getQualifier().precision = resultPrecision;
 }
 
 TIntermNode* TParseContext::handleReturnValue(const TSourceLoc& loc, TIntermTyped* value)
@@ -1349,7 +1401,7 @@ TIntermTyped* TParseContext::addOutputArgumentConversions(const TFunction& funct
     // Will there be any output conversions?
     bool outputConversions = false;
     for (int i = 0; i < function.getParamCount(); ++i) {
-        if (*function[i].type != arguments[i]->getAsTyped()->getType() && function[i].type->getQualifier().storage == EvqOut) {
+        if (*function[i].type != arguments[i]->getAsTyped()->getType() && function[i].type->getQualifier().isParamOutput()) {
             outputConversions = true;
             break;
         }
@@ -1430,11 +1482,6 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         arg0 = unaryArg;
     }
     const TIntermSequence& aggArgs = *argp;  // only valid when unaryArg is nullptr
-
-    // built-in texturing functions get their return value precision from the precision of the sampler
-    if (fnCandidate.getType().getQualifier().precision == EpqNone &&
-        fnCandidate.getParamCount() > 0 && fnCandidate[0].type->getBasicType() == EbtSampler)
-        callNode.getQualifier().precision = arg0->getQualifier().precision;
 
     switch (callNode.getOp()) {
     case EOpTextureGather:
@@ -1567,11 +1614,6 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpInterpolateAtCentroid:
     case EOpInterpolateAtSample:
     case EOpInterpolateAtOffset:
-        // "For the interpolateAt* functions, the call will return a precision
-        // qualification matching the precision of the 'interpolant' argument to
-        // the function call."
-        callNode.getQualifier().precision = arg0->getQualifier().precision;
-
         // Make sure the first argument is an interpolant, or an array element of an interpolant
         if (arg0->getType().getQualifier().storage != EvqVaryingIn) {
             // It might still be an array element.
@@ -1724,6 +1766,26 @@ void TParseContext::nonOpBuiltInCheck(const TSourceLoc& loc, const TFunction& fn
 }
 
 //
+// Do any extra checking for a user function call.
+//
+void TParseContext::userFunctionCallCheck(const TSourceLoc& loc, TIntermAggregate& callNode)
+{
+    TIntermSequence& arguments = callNode.getSequence();
+
+    for (int i = 0; i < (int)arguments.size(); ++i)
+        samplerConstructorLocationCheck(loc, "call argument", arguments[i]);
+}
+
+//
+// Emit an error if this is a sampler constructor
+//
+void TParseContext::samplerConstructorLocationCheck(const TSourceLoc& loc, const char* token, TIntermNode* node)
+{
+    if (node->getAsOperator() && node->getAsOperator()->getOp() == EOpConstructTextureSampler)
+        error(loc, "sampler constructor must appear at point of use", token, "");
+}
+
+//
 // Handle seeing a built-in constructor in a grammar production.
 //
 TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPublicType& publicType)
@@ -1736,7 +1798,7 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
         profileRequires(loc, EEsProfile, 300, nullptr, "arrayed constructor");
     }
 
-    TOperator op = mapTypeToConstructorOp(type);
+    TOperator op = intermediate.mapTypeToConstructorOp(type);
 
     if (op == EOpNull) {
         error(loc, "cannot construct this type", type.getBasicString(), "");
@@ -1750,148 +1812,22 @@ TFunction* TParseContext::handleConstructorCall(const TSourceLoc& loc, const TPu
     return new TFunction(&empty, type, op);
 }
 
-//
-// Given a type, find what operation would fully construct it.
-//
-TOperator TParseContext::mapTypeToConstructorOp(const TType& type) const
+// Handle seeing a precision qualifier in the grammar.
+void TParseContext::handlePrecisionQualifier(const TSourceLoc& /*loc*/, TQualifier& qualifier, TPrecisionQualifier precision)
 {
-    TOperator op = EOpNull;
- 
-    switch (type.getBasicType()) {
-    case EbtStruct:
-        op = EOpConstructStruct;
-        break;
-    case EbtSampler:
-        if (type.getSampler().combined)
-            op = EOpConstructTextureSampler;
-        break;
-    case EbtFloat:
-        if (type.isMatrix()) {
-            switch (type.getMatrixCols()) {
-            case 2:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructMat2x2; break;
-                case 3: op = EOpConstructMat2x3; break;
-                case 4: op = EOpConstructMat2x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            case 3:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructMat3x2; break;
-                case 3: op = EOpConstructMat3x3; break;
-                case 4: op = EOpConstructMat3x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            case 4:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructMat4x2; break;
-                case 3: op = EOpConstructMat4x3; break;
-                case 4: op = EOpConstructMat4x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            default: break; // some compilers want this
-            }
-        } else {
-            switch(type.getVectorSize()) {
-            case 1: op = EOpConstructFloat; break;
-            case 2: op = EOpConstructVec2;  break;
-            case 3: op = EOpConstructVec3;  break;
-            case 4: op = EOpConstructVec4;  break;
-            default: break; // some compilers want this
-            }
-        }
-        break;
-    case EbtDouble:
-        if (type.getMatrixCols()) {
-            switch (type.getMatrixCols()) {
-            case 2:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructDMat2x2; break;
-                case 3: op = EOpConstructDMat2x3; break;
-                case 4: op = EOpConstructDMat2x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            case 3:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructDMat3x2; break;
-                case 3: op = EOpConstructDMat3x3; break;
-                case 4: op = EOpConstructDMat3x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            case 4:
-                switch (type.getMatrixRows()) {
-                case 2: op = EOpConstructDMat4x2; break;
-                case 3: op = EOpConstructDMat4x3; break;
-                case 4: op = EOpConstructDMat4x4; break;
-                default: break; // some compilers want this
-                }
-                break;
-            }
-        } else {
-            switch(type.getVectorSize()) {
-            case 1: op = EOpConstructDouble; break;
-            case 2: op = EOpConstructDVec2;  break;
-            case 3: op = EOpConstructDVec3;  break;
-            case 4: op = EOpConstructDVec4;  break;
-            default: break; // some compilers want this
-            }
-        }
-        break;
-    case EbtInt:
-        switch(type.getVectorSize()) {
-        case 1: op = EOpConstructInt;   break;
-        case 2: op = EOpConstructIVec2; break;
-        case 3: op = EOpConstructIVec3; break;
-        case 4: op = EOpConstructIVec4; break;
-        default: break; // some compilers want this
-        }
-        break;
-    case EbtUint:
-        switch(type.getVectorSize()) {
-        case 1: op = EOpConstructUint;  break;
-        case 2: op = EOpConstructUVec2; break;
-        case 3: op = EOpConstructUVec3; break;
-        case 4: op = EOpConstructUVec4; break;
-        default: break; // some compilers want this
-        }
-        break;
-    case EbtInt64:
-        switch(type.getVectorSize()) {
-        case 1: op = EOpConstructInt64;   break;
-        case 2: op = EOpConstructI64Vec2; break;
-        case 3: op = EOpConstructI64Vec3; break;
-        case 4: op = EOpConstructI64Vec4; break;
-        default: break; // some compilers want this
-        }
-        break;
-    case EbtUint64:
-        switch(type.getVectorSize()) {
-        case 1: op = EOpConstructUint64;  break;
-        case 2: op = EOpConstructU64Vec2; break;
-        case 3: op = EOpConstructU64Vec3; break;
-        case 4: op = EOpConstructU64Vec4; break;
-        default: break; // some compilers want this
-        }
-        break;
-    case EbtBool:
-        switch(type.getVectorSize()) {
-        case 1:  op = EOpConstructBool;  break;
-        case 2:  op = EOpConstructBVec2; break;
-        case 3:  op = EOpConstructBVec3; break;
-        case 4:  op = EOpConstructBVec4; break;
-        default: break; // some compilers want this
-        }
-        break;
-    default:
-        break;
-    }
+    if (obeyPrecisionQualifiers())
+        qualifier.precision = precision;
+}
 
-    return op;
+// Check for messages to give on seeing a precision qualifier used in a
+// declaration in the grammar.
+void TParseContext::checkPrecisionQualifier(const TSourceLoc& loc, TPrecisionQualifier)
+{
+    if (precisionManager.shouldWarnAboutDefaults()) {
+        warn(loc, "all default precisions are highp; use precision statements to quiet warning, e.g.:\n"
+                  "         \"precision mediump int; precision highp float;\"", "", "");
+        precisionManager.defaultWarningGiven();
+    }
 }
 
 //
@@ -1966,14 +1902,14 @@ void TParseContext::variableCheck(TIntermTyped*& nodePtr)
 // Both test and if necessary, spit out an error, to see if the node is really
 // an l-value that can be operated on this way.
 //
-// Returns true if the was an error.
+// Returns true if there was an error.
 //
 bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
 {
     TIntermBinary* binaryNode = node->getAsBinaryNode();
 
     if (binaryNode) {
-        bool errorReturn;
+        bool errorReturn = false;
 
         switch(binaryNode->getOp()) {
         case EOpIndexDirect:
@@ -1992,9 +1928,9 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
                 }
             }
 
-            // fall through
+            break; // left node is checked by base class
         case EOpIndexDirectStruct:
-            return lValueErrorCheck(loc, op, binaryNode->getLeft());
+            break; // left node is checked by base class
         case EOpVectorSwizzle:
             errorReturn = lValueErrorCheck(loc, op, binaryNode->getLeft());
             if (!errorReturn) {
@@ -2019,11 +1955,16 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
         default:
             break;
         }
-        error(loc, " l-value required", op, "", "");
 
-        return true;
+        if (errorReturn) {
+            error(loc, " l-value required", op, "", "");
+            return true;
+        }
     }
 
+    // Let the base class check errors
+    if (TParseContextBase::lValueErrorCheck(loc, op, node))
+        return true;
 
     const char* symbol = nullptr;
     TIntermSymbol* symNode = node->getAsSymbolNode();
@@ -2032,19 +1973,12 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
 
     const char* message = nullptr;
     switch (node->getQualifier().storage) {
-    case EvqConst:          message = "can't modify a const";        break;
-    case EvqConstReadOnly:  message = "can't modify a const";        break;
     case EvqVaryingIn:      message = "can't modify shader input";   break;
     case EvqInstanceId:     message = "can't modify gl_InstanceID";  break;
     case EvqVertexId:       message = "can't modify gl_VertexID";    break;
     case EvqFace:           message = "can't modify gl_FrontFace";   break;
     case EvqFragCoord:      message = "can't modify gl_FragCoord";   break;
     case EvqPointCoord:     message = "can't modify gl_PointCoord";  break;
-    case EvqUniform:        message = "can't modify a uniform";      break;
-    case EvqBuffer:
-        if (node->getQualifier().readonly)
-            message = "can't modify a readonly buffer";
-        break;
     case EvqFragDepth:
         intermediate.setDepthReplacing();
         // "In addition, it is an error to statically write to gl_FragDepth in the fragment shader."
@@ -2053,22 +1987,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
         break;
 
     default:
-        //
-        // Type that can't be written to?
-        //
-        switch (node->getBasicType()) {
-        case EbtSampler:
-            message = "can't modify a sampler";
-            break;
-        case EbtAtomicUint:
-            message = "can't modify an atomic_uint";
-            break;
-        case EbtVoid:
-            message = "can't modify void";
-            break;
-        default:
-            break;
-        }
+        break;
     }
 
     if (message == nullptr && binaryNode == nullptr && symNode == nullptr) {
@@ -2076,7 +1995,6 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
 
         return true;
     }
-
 
     //
     // Everything else is okay, no error.
@@ -2098,27 +2016,15 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
 // Test for and give an error if the node can't be read from.
 void TParseContext::rValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
 {
-    if (! node)
-        return;
+    // Let the base class check errors
+    TParseContextBase::rValueErrorCheck(loc, op, node);
 
-    TIntermBinary* binaryNode = node->getAsBinaryNode();
-    if (binaryNode) {
-        switch(binaryNode->getOp()) {
-        case EOpIndexDirect:
-        case EOpIndexIndirect:
-        case EOpIndexDirectStruct:
-        case EOpVectorSwizzle:
-            rValueErrorCheck(loc, op, binaryNode->getLeft());
-        default:
-            break;
-        }
-
-        return;
-    }
-
+#ifdef AMD_EXTENSIONS
     TIntermSymbol* symNode = node->getAsSymbolNode();
-    if (symNode && symNode->getQualifier().writeonly)
-        error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
+    if (!(symNode && symNode->getQualifier().writeonly)) // base class checks
+        if (symNode && symNode->getQualifier().explicitInterp)
+            error(loc, "can't read from explicitly-interpolated object: ", op, symNode->getName().c_str());
+#endif
 }
 
 //
@@ -2665,7 +2571,11 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
         publicType.basicType == EbtDouble)
         profileRequires(loc, EEsProfile, 300, nullptr, "shader input/output");
 
-    if (! qualifier.flat) {
+#ifdef AMD_EXTENSIONS
+    if (! qualifier.flat && ! qualifier.explicitInterp) {
+#else
+    if (!qualifier.flat) {
+#endif
         if (publicType.basicType == EbtInt    || publicType.basicType == EbtUint   ||
             publicType.basicType == EbtInt64  || publicType.basicType == EbtUint64 ||
             publicType.basicType == EbtDouble ||
@@ -2802,7 +2712,11 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
 
     // Multiple interpolation qualifiers (mostly done later by 'individual qualifiers')
     if (src.isInterpolation() && dst.isInterpolation())
+#ifdef AMD_EXTENSIONS
+        error(loc, "can only have one interpolation qualifier (flat, smooth, noperspective, __explicitInterpAMD)", "", "");
+#else
         error(loc, "can only have one interpolation qualifier (flat, smooth, noperspective)", "", "");
+#endif
 
     // Ordering
     if (! force && ((profile != EEsProfile && version < 420) || 
@@ -2858,6 +2772,9 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
     MERGE_SINGLETON(smooth);
     MERGE_SINGLETON(flat);
     MERGE_SINGLETON(nopersp);
+#ifdef AMD_EXTENSIONS
+    MERGE_SINGLETON(explicitInterp);
+#endif
     MERGE_SINGLETON(patch);
     MERGE_SINGLETON(sample);
     MERGE_SINGLETON(coherent);
@@ -2884,8 +2801,11 @@ void TParseContext::setDefaultPrecision(const TSourceLoc& loc, TPublicType& publ
     if (basicType == EbtInt || basicType == EbtFloat) {
         if (publicType.isScalar()) {
             defaultPrecision[basicType] = qualifier;
-            if (basicType == EbtInt)
+            if (basicType == EbtInt) {
                 defaultPrecision[EbtUint] = qualifier;
+                precisionManager.explicitIntDefaultSeen();
+            } else
+                precisionManager.explicitFloatDefaultSeen();
 
             return;  // all is well
         }
@@ -2930,7 +2850,7 @@ void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType ba
 {
     // Built-in symbols are allowed some ambiguous precisions, to be pinned down
     // later by context.
-    if (profile != EEsProfile || parsingBuiltins)
+    if (! obeyPrecisionQualifiers() || parsingBuiltins)
         return;
 
     if (baseType == EbtAtomicUint && qualifier.precision != EpqNone && qualifier.precision != EpqHigh)
@@ -2951,7 +2871,7 @@ void TParseContext::precisionQualifierCheck(const TSourceLoc& loc, TBasicType ba
 
 void TParseContext::parameterTypeCheck(const TSourceLoc& loc, TStorageQualifier qualifier, const TType& type)
 {
-    if ((qualifier == EvqOut || qualifier == EvqInOut) && (type.getBasicType() == EbtSampler || type.getBasicType() == EbtAtomicUint))
+    if ((qualifier == EvqOut || qualifier == EvqInOut) && type.isOpaque())
         error(loc, "samplers and atomic_uints cannot be output parameters", type.getBasicTypeString().c_str(), "");
 }
 
@@ -3175,12 +3095,13 @@ void TParseContext::arrayDimMerge(TType& type, const TArraySizes* sizes)
 //
 void TParseContext::declareArray(const TSourceLoc& loc, TString& identifier, const TType& type, TSymbol*& symbol, bool& newDeclaration)
 {
-    if (! symbol) {
+    if (symbol == nullptr) {
         bool currentScope;
         symbol = symbolTable.find(identifier, nullptr, &currentScope);
 
         if (symbol && builtInName(identifier) && ! symbolTable.atBuiltInLevel()) {
             // bad shader (errors already reported) trying to redeclare a built-in name as an array
+            symbol = nullptr;
             return;
         }
         if (symbol == nullptr || ! currentScope) {
@@ -3213,7 +3134,7 @@ void TParseContext::declareArray(const TSourceLoc& loc, TString& identifier, con
     // Process a redeclaration.
     //
 
-    if (! symbol) {
+    if (symbol == nullptr) {
         error(loc, "array variable name expected", identifier.c_str(), "");
         return;
     }
@@ -3663,7 +3584,7 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
     if (qualifier.invariant)
         error(loc, "cannot use invariant qualifier on a function parameter", "", "");
     if (qualifier.noContraction) {
-        if (qualifier.storage == EvqOut || qualifier.storage == EvqInOut)
+        if (qualifier.isParamOutput())
             type.getQualifier().noContraction = true;
         else
             warn(loc, "qualifier has no effect on non-output parameters", "precise", "");
@@ -4459,12 +4380,17 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         }
         if (qualifier.hasComponent()) {
             // "It is a compile-time error if this sequence of components gets larger than 3."
-            if (qualifier.layoutComponent + type.getVectorSize() > 4)
+            if (qualifier.layoutComponent + type.getVectorSize() * (type.getBasicType() == EbtDouble ? 2 : 1) > 4)
                 error(loc, "type overflows the available 4 components", "component", "");
 
             // "It is a compile-time error to apply the component qualifier to a matrix, a structure, a block, or an array containing any of these."
             if (type.isMatrix() || type.getBasicType() == EbtBlock || type.getBasicType() == EbtStruct)
                 error(loc, "cannot apply to a matrix, structure, or block", "component", "");
+
+            // " It is a compile-time error to use component 1 or 3 as the beginning of a double or dvec2."
+            if (type.getBasicType() == EbtDouble)
+                if (qualifier.layoutComponent & 1)
+                    error(loc, "doubles cannot start on an odd-numbered component", "component", "");
         }
 
         switch (qualifier.storage) {
@@ -4501,6 +4427,11 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         // containing a double, the offset must also be a multiple of 8..."
         if (type.containsBasicType(EbtDouble) && ! IsMultipleOfPow2(qualifier.layoutXfbOffset, 8))
             error(loc, "type contains double; xfb_offset must be a multiple of 8", "xfb_offset", "");
+#ifdef AMD_EXTENSIONS
+        // ..., if applied to an aggregate containing a float16_t, the offset must also be a multiple of 2..."
+        else if (type.containsBasicType(EbtFloat16) && !IsMultipleOfPow2(qualifier.layoutXfbOffset, 2))
+            error(loc, "type contains half float; xfb_offset must be a multiple of 2", "xfb_offset", "");
+#endif
         else if (! IsMultipleOfPow2(qualifier.layoutXfbOffset, 4))
             error(loc, "must be a multiple of size of first component", "xfb_offset", "");
     }
@@ -4519,12 +4450,17 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         // an array of size N, all elements of the array from binding through binding + N - 1 must be within this
         // range."
         //
-        if (type.getBasicType() != EbtSampler && type.getBasicType() != EbtBlock && type.getBasicType() != EbtAtomicUint)
+        if (! type.isOpaque() && type.getBasicType() != EbtBlock)
             error(loc, "requires block, or sampler/image, or atomic-counter type", "binding", "");
         if (type.getBasicType() == EbtSampler) {
             int lastBinding = qualifier.layoutBinding;
-            if (type.isArray())
-                lastBinding += type.getCumulativeArraySize();
+            if (type.isArray()) {
+                if (type.isImplicitlySizedArray()) {
+                    lastBinding += 1;
+                    warn(loc, "assuming array size of one for compile-time checking of binding numbers for implicitly-sized array", "[]", "");
+                } else
+                    lastBinding += type.getCumulativeArraySize();
+            }
             if (lastBinding >= resources.maxCombinedTextureImageUnits)
                 error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
         }
@@ -4599,6 +4535,9 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         case EbtBool:
         case EbtFloat:
         case EbtDouble:
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16:
+#endif
             break;
         default:
             error(loc, "cannot be applied to this type", "constant_id", "");
@@ -4752,8 +4691,18 @@ void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
 
             // Check for overlap
             int numOffsets = 4;
-            if (symbol.getType().isArray())
-                numOffsets *= symbol.getType().getCumulativeArraySize();
+            if (symbol.getType().isArray()) {
+                if (symbol.getType().isExplicitlySizedArray())
+                    numOffsets *= symbol.getType().getCumulativeArraySize();
+                else {
+                    // TODO: functionality: implicitly-sized atomic_uint arrays.
+                    // We don't know the full size until later.  This might
+                    // be a specification problem, will report to Khronos.  For the
+                    // cases that is not true, the rest of the checking would need
+                    // to be done at link time instead of compile time.
+                    warn(loc, "implicitly sized atomic_uint array treated as having one element for tracking the default offset", "atomic_uint", "");
+                }
+            }
             int repeated = intermediate.addUsedOffsets(qualifier.layoutBinding, offset, numOffsets);
             if (repeated >= 0)
                 error(loc, "atomic counters sharing the same offset:", "offset", "%d", repeated);
@@ -4819,10 +4768,10 @@ const TFunction* TParseContext::findFunction120(const TSourceLoc& loc, const TFu
     // more than one function."
 
     const TFunction* candidate = nullptr;
-    TVector<TFunction*> candidateList;
+    TVector<const TFunction*> candidateList;
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
 
-    for (TVector<TFunction*>::const_iterator it = candidateList.begin(); it != candidateList.end(); ++it) {
+    for (auto it = candidateList.begin(); it != candidateList.end(); ++it) {
         const TFunction& function = *(*it);
 
         // to even be a potential match, number of arguments has to match
@@ -4870,10 +4819,100 @@ const TFunction* TParseContext::findFunction120(const TSourceLoc& loc, const TFu
 }
 
 // Function finding algorithm for desktop version 400 and above.
+//
+// "When function calls are resolved, an exact type match for all the arguments
+// is sought. If an exact match is found, all other functions are ignored, and
+// the exact match is used. If no exact match is found, then the implicit
+// conversions in section 4.1.10 Implicit Conversions will be applied to find
+// a match. Mismatched types on input parameters (in or inout or default) must
+// have a conversion from the calling argument type to the formal parameter type.
+// Mismatched types on output parameters (out or inout) must have a conversion
+// from the formal parameter type to the calling argument type.
+//
+// "If implicit conversions can be used to find more than one matching function,
+// a single best-matching function is sought. To determine a best match, the
+// conversions between calling argument and formal parameter types are compared
+// for each function argument and pair of matching functions. After these
+// comparisons are performed, each pair of matching functions are compared.
+// A function declaration A is considered a better match than function
+// declaration B if
+//
+//  * for at least one function argument, the conversion for that argument in A
+//    is better than the corresponding conversion in B; and
+//  * there is no function argument for which the conversion in B is better than
+//    the corresponding conversion in A.
+//
+// "If a single function declaration is considered a better match than every
+// other matching function declaration, it will be used. Otherwise, a
+// compile-time semantic error for an ambiguous overloaded function call occurs.
+//
+// "To determine whether the conversion for a single argument in one match is
+// better than that for another match, the following rules are applied, in order:
+//
+//  1. An exact match is better than a match involving any implicit conversion.
+//  2. A match involving an implicit conversion from float to double is better
+//     than a match involving any other implicit conversion.
+//  3. A match involving an implicit conversion from either int or uint to float
+//     is better than a match involving an implicit conversion from either int
+//     or uint to double.
+//
+// "If none of the rules above apply to a particular pair of conversions, neither
+// conversion is considered better than the other."
+//
 const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFunction& call, bool& builtIn)
 {
-    // TODO: 4.00 functionality: findFunction400()
-    return findFunction120(loc, call, builtIn);
+    // first, look for an exact match
+    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn);
+    if (symbol)
+        return symbol->getAsFunction();
+
+    // no exact match, use the generic selector, parameterized by the GLSL rules
+
+    // create list of candidates to send
+    TVector<const TFunction*> candidateList;
+    symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
+    
+    // can 'from' convert to 'to'?
+    const auto convertible = [this](const TType& from, const TType& to) -> bool {
+        if (from == to)
+            return true;
+        if (from.isArray() || to.isArray() || ! from.sameElementShape(to))
+            return false;
+        return intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType());
+    };
+
+    // Is 'to2' a better conversion than 'to1'?
+    // Ties should not be considered as better.
+    // Assumes 'convertible' already said true.
+    const auto better = [](const TType& from, const TType& to1, const TType& to2) -> bool {
+        // 1. exact match
+        if (from == to2)
+            return from != to1;
+        if (from == to1)
+            return false;
+
+        // 2. float -> double is better
+        if (from.getBasicType() == EbtFloat) {
+            if (to2.getBasicType() == EbtDouble && to1.getBasicType() != EbtDouble)
+                return true;
+        }
+
+        // 3. -> float is better than -> double
+        return to2.getBasicType() == EbtFloat && to1.getBasicType() == EbtDouble;
+    };
+
+    // for ambiguity reporting
+    bool tie = false;
+    
+    // send to the generic selector
+    const TFunction* bestMatch = selectFunction(candidateList, call, convertible, better, tie);
+
+    if (bestMatch == nullptr)
+        error(loc, "no matching overloaded function found", call.getName().c_str(), "");
+    else if (tie)
+        error(loc, "ambiguous best function under implicit type conversion", call.getName().c_str(), "");
+
+    return bestMatch;
 }
 
 // When a declaration includes a type, but not a variable name, it can be 
@@ -4934,7 +4973,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     bool newDeclaration = false;    // true if a new entry gets added to the symbol table
     TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), publicType.shaderQualifiers, newDeclaration);
-    if (! symbol)
+    if (symbol == nullptr)
         reservedErrorCheck(loc, identifier);
 
     inheritGlobalDefaults(type.getQualifier());
@@ -4959,18 +4998,18 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         }
     } else {
         // non-array case
-        if (! symbol)
+        if (symbol == nullptr)
             symbol = declareNonArray(loc, identifier, type, newDeclaration);
         else if (type != symbol->getType())
             error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
     }
 
-    if (! symbol)
+    if (symbol == nullptr)
         return nullptr;
 
     // Deal with initializer
     TIntermNode* initNode = nullptr;
-    if (symbol && initializer) {
+    if (symbol != nullptr && initializer) {
         TVariable* variable = symbol->getAsVariable();
         if (! variable) {
             error(loc, "initializer requires a variable, not a member", identifier.c_str(), "");
@@ -5221,7 +5260,7 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
                 return nullptr;
         }
 
-        return addConstructor(loc, initList, arrayType, mapTypeToConstructorOp(arrayType));
+        return addConstructor(loc, initList, arrayType);
     } else if (type.isStruct()) {
         if (type.getStruct()->size() != initList->getSequence().size()) {
             error(loc, "wrong number of structure members", "initializer list", "");
@@ -5253,8 +5292,14 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
         return nullptr;
     }
 
-    // now that the subtree is processed, process this node
-    return addConstructor(loc, initList, type, mapTypeToConstructorOp(type));
+    // Now that the subtree is processed, process this node as if the
+    // initializer list is a set of arguments to a constructor.
+    TIntermNode* emulatedConstructorArguments;
+    if (initList->getSequence().size() == 1)
+        emulatedConstructorArguments = initList->getSequence()[0];
+    else
+        emulatedConstructorArguments = initList;
+    return addConstructor(loc, emulatedConstructorArguments, type);
 }
 
 //
@@ -5263,13 +5308,14 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
 //
 // Returns nullptr for an error or the constructed node (aggregate or typed) for no error.
 //
-TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* node, const TType& type, TOperator op)
+TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* node, const TType& type)
 {
     if (node == nullptr || node->getAsTyped() == nullptr)
         return nullptr;
     rValueErrorCheck(loc, "constructor", node->getAsTyped());
 
     TIntermAggregate* aggrNode = node->getAsAggregate();
+    TOperator op = intermediate.mapTypeToConstructorOp(type);
 
     // Combined texture-sampler constructors are completely semantic checked
     // in constructorTextureSamplerError()
@@ -5390,6 +5436,24 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructDouble:
         basicOp = EOpConstructDouble;
         break;
+
+#ifdef AMD_EXTENSIONS
+    case EOpConstructF16Vec2:
+    case EOpConstructF16Vec3:
+    case EOpConstructF16Vec4:
+    case EOpConstructF16Mat2x2:
+    case EOpConstructF16Mat2x3:
+    case EOpConstructF16Mat2x4:
+    case EOpConstructF16Mat3x2:
+    case EOpConstructF16Mat3x3:
+    case EOpConstructF16Mat3x4:
+    case EOpConstructF16Mat4x2:
+    case EOpConstructF16Mat4x3:
+    case EOpConstructF16Mat4x4:
+    case EOpConstructFloat16:
+        basicOp = EOpConstructFloat16;
+        break;
+#endif
 
     case EOpConstructIVec2:
     case EOpConstructIVec3:
@@ -5848,16 +5912,23 @@ void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typ
             if (! IsMultipleOfPow2(memberQualifier.layoutOffset, memberAlignment))
                 error(memberLoc, "must be a multiple of the member's alignment", "offset", "");
 
-            // "It is a compile-time error to specify an offset that is smaller than the offset of the previous 
+            // GLSL: "It is a compile-time error to specify an offset that is smaller than the offset of the previous 
             // member in the block or that lies within the previous member of the block"
-            if (memberQualifier.layoutOffset < offset)
-                error(memberLoc, "cannot lie in previous members", "offset", "");
+            if (spvVersion.spv == 0) {
+                if (memberQualifier.layoutOffset < offset)
+                    error(memberLoc, "cannot lie in previous members", "offset", "");
 
-            // "The offset qualifier forces the qualified member to start at or after the specified 
-            // integral-constant expression, which will be its byte offset from the beginning of the buffer. 
-            // "The actual offset of a member is computed as 
-            // follows: If offset was declared, start with that offset, otherwise start with the next available offset."
-            offset = std::max(offset, memberQualifier.layoutOffset);
+                // "The offset qualifier forces the qualified member to start at or after the specified 
+                // integral-constant expression, which will be its byte offset from the beginning of the buffer. 
+                // "The actual offset of a member is computed as 
+                // follows: If offset was declared, start with that offset, otherwise start with the next available offset."
+                offset = std::max(offset, memberQualifier.layoutOffset);
+            } else {
+                // TODO: Vulkan: "It is a compile-time error to have any offset, explicit or assigned,
+                // that lies within another member of the block."
+
+                offset = memberQualifier.layoutOffset;
+            }
         }
 
         // "The actual alignment of a member will be the greater of the specified align alignment and the standard 

@@ -10,10 +10,12 @@ set(SOURCES
     MachineIndependent/glslang.y
     MachineIndependent/glslang_tab.cpp
     MachineIndependent/Constant.cpp
+    MachineIndependent/iomapper.cpp
     MachineIndependent/InfoSink.cpp
     MachineIndependent/Initialize.cpp
     MachineIndependent/IntermTraverse.cpp
     MachineIndependent/Intermediate.cpp
+    MachineIndependent/ParseContextBase.cpp
     MachineIndependent/ParseHelper.cpp
     MachineIndependent/PoolAlloc.cpp
     MachineIndependent/RemoveTree.cpp
@@ -54,6 +56,8 @@ set(HEADERS
     MachineIndependent/glslang_tab.cpp.h
     MachineIndependent/gl_types.h
     MachineIndependent/Initialize.h
+    MachineIndependent/iomapper.h
+    MachineIndependent/LiveTraverser.h
     MachineIndependent/localintermediate.h
     MachineIndependent/ParseHelper.h
     MachineIndependent/reflection.h

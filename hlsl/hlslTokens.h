@@ -1,5 +1,6 @@
 //
 //Copyright (C) 2016 Google, Inc.
+//Copyright (C) 2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -60,6 +61,10 @@ enum EHlslTokenClass {
     EHTokRowMajor,
     EHTokColumnMajor,
     EHTokPackOffset,
+    EHTokIn,
+    EHTokOut,
+    EHTokInOut,
+    EHTokLayout,
 
     // template types
     EHTokBuffer,
@@ -68,6 +73,7 @@ enum EHlslTokenClass {
 
     // scalar types
     EHTokVoid,
+    EHTokString,
     EHTokBool,
     EHTokInt,
     EHTokUint,
@@ -200,11 +206,23 @@ enum EHlslTokenClass {
     EHTokTexture2darray,
     EHTokTexture3d,
     EHTokTextureCube,
+    EHTokTextureCubearray,
+    EHTokTexture2DMS,
+    EHTokTexture2DMSarray,
+    EHTokRWTexture1d,
+    EHTokRWTexture1darray,
+    EHTokRWTexture2d,
+    EHTokRWTexture2darray,
+    EHTokRWTexture3d,
+    EHTokRWBuffer,
+    
 
     // variable, user type, ...
     EHTokIdentifier,
     EHTokTypeName,
     EHTokStruct,
+    EHTokCBuffer,
+    EHTokTBuffer,
     EHTokTypedef,
 
     // constant
@@ -213,6 +231,7 @@ enum EHlslTokenClass {
     EHTokIntConstant,
     EHTokUintConstant,
     EHTokBoolConstant,
+    EHTokStringConstant,
 
     // control flow
     EHTokFor,

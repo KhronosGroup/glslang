@@ -1,4 +1,4 @@
-float4 PixelShaderFunction(float4 input) : COLOR0
+void PixelShaderFunction(float4 input) : COLOR0
 {
     int x;
     x;

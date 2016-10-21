@@ -2,41 +2,41 @@ hlsl.intrinsics.evalfns.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:11  Function Definition: main(f1;vf2;vf3;vf4;vi2; (global void)
+0:3  Function Definition: main(f1;vf2;vf3;vf4;vi2; (temp void)
 0:3    Function Parameters: 
-0:3      'inF1' (in float)
-0:3      'inF2' (in 2-component vector of float)
-0:3      'inF3' (in 3-component vector of float)
-0:3      'inF4' (in 4-component vector of float)
-0:3      'inI2' (in 2-component vector of int)
+0:3      'inF1' (layout(location=0 ) in float)
+0:3      'inF2' (layout(location=1 ) in 2-component vector of float)
+0:3      'inF3' (layout(location=2 ) in 3-component vector of float)
+0:3      'inF4' (layout(location=3 ) in 4-component vector of float)
+0:3      'inI2' (layout(location=4 ) in 2-component vector of int)
 0:?     Sequence
 0:4      interpolateAtOffset (temp float)
-0:4        'inF1' (in float)
+0:4        'inF1' (layout(location=0 ) in float)
 0:?         Constant:
 0:?           -0.500000
 0:?           -0.062500
 0:5      interpolateAtOffset (temp 2-component vector of float)
-0:5        'inF2' (in 2-component vector of float)
+0:5        'inF2' (layout(location=1 ) in 2-component vector of float)
 0:?         Constant:
 0:?           0.000000
 0:?           0.062500
 0:6      interpolateAtOffset (temp 3-component vector of float)
-0:6        'inF3' (in 3-component vector of float)
+0:6        'inF3' (layout(location=2 ) in 3-component vector of float)
 0:?         Constant:
 0:?           0.187500
 0:?           -0.375000
 0:7      interpolateAtOffset (temp 4-component vector of float)
-0:7        'inF4' (in 4-component vector of float)
+0:7        'inF4' (layout(location=3 ) in 4-component vector of float)
 0:?         Constant:
 0:?           0.437500
 0:?           -0.500000
 0:9      interpolateAtOffset (temp float)
-0:9        'inF1' (in float)
+0:9        'inF1' (layout(location=0 ) in float)
 0:9        vector-scale (temp 2-component vector of float)
 0:9          Convert int to float (temp 2-component vector of float)
 0:9            right-shift (temp 2-component vector of int)
 0:9              left-shift (temp 2-component vector of int)
-0:9                'inI2' (in 2-component vector of int)
+0:9                'inI2' (layout(location=4 ) in 2-component vector of int)
 0:9                Constant:
 0:9                  28 (const int)
 0:9              Constant:
@@ -44,6 +44,11 @@ gl_FragCoord origin is upper left
 0:9          Constant:
 0:9            0.062500
 0:?   Linker Objects
+0:?     'inF1' (layout(location=0 ) in float)
+0:?     'inF2' (layout(location=1 ) in 2-component vector of float)
+0:?     'inF3' (layout(location=2 ) in 3-component vector of float)
+0:?     'inF4' (layout(location=3 ) in 4-component vector of float)
+0:?     'inI2' (layout(location=4 ) in 2-component vector of int)
 
 
 Linked fragment stage:
@@ -52,41 +57,41 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:11  Function Definition: main(f1;vf2;vf3;vf4;vi2; (global void)
+0:3  Function Definition: main(f1;vf2;vf3;vf4;vi2; (temp void)
 0:3    Function Parameters: 
-0:3      'inF1' (in float)
-0:3      'inF2' (in 2-component vector of float)
-0:3      'inF3' (in 3-component vector of float)
-0:3      'inF4' (in 4-component vector of float)
-0:3      'inI2' (in 2-component vector of int)
+0:3      'inF1' (layout(location=0 ) in float)
+0:3      'inF2' (layout(location=1 ) in 2-component vector of float)
+0:3      'inF3' (layout(location=2 ) in 3-component vector of float)
+0:3      'inF4' (layout(location=3 ) in 4-component vector of float)
+0:3      'inI2' (layout(location=4 ) in 2-component vector of int)
 0:?     Sequence
 0:4      interpolateAtOffset (temp float)
-0:4        'inF1' (in float)
+0:4        'inF1' (layout(location=0 ) in float)
 0:?         Constant:
 0:?           -0.500000
 0:?           -0.062500
 0:5      interpolateAtOffset (temp 2-component vector of float)
-0:5        'inF2' (in 2-component vector of float)
+0:5        'inF2' (layout(location=1 ) in 2-component vector of float)
 0:?         Constant:
 0:?           0.000000
 0:?           0.062500
 0:6      interpolateAtOffset (temp 3-component vector of float)
-0:6        'inF3' (in 3-component vector of float)
+0:6        'inF3' (layout(location=2 ) in 3-component vector of float)
 0:?         Constant:
 0:?           0.187500
 0:?           -0.375000
 0:7      interpolateAtOffset (temp 4-component vector of float)
-0:7        'inF4' (in 4-component vector of float)
+0:7        'inF4' (layout(location=3 ) in 4-component vector of float)
 0:?         Constant:
 0:?           0.437500
 0:?           -0.500000
 0:9      interpolateAtOffset (temp float)
-0:9        'inF1' (in float)
+0:9        'inF1' (layout(location=0 ) in float)
 0:9        vector-scale (temp 2-component vector of float)
 0:9          Convert int to float (temp 2-component vector of float)
 0:9            right-shift (temp 2-component vector of int)
 0:9              left-shift (temp 2-component vector of int)
-0:9                'inI2' (in 2-component vector of int)
+0:9                'inI2' (layout(location=4 ) in 2-component vector of int)
 0:9                Constant:
 0:9                  28 (const int)
 0:9              Constant:
@@ -94,6 +99,11 @@ gl_FragCoord origin is upper left
 0:9          Constant:
 0:9            0.062500
 0:?   Linker Objects
+0:?     'inF1' (layout(location=0 ) in float)
+0:?     'inF2' (layout(location=1 ) in 2-component vector of float)
+0:?     'inF3' (layout(location=2 ) in 3-component vector of float)
+0:?     'inF4' (layout(location=3 ) in 4-component vector of float)
+0:?     'inI2' (layout(location=4 ) in 2-component vector of int)
 
 // Module Version 10000
 // Generated by (magic number): 80001
@@ -105,13 +115,17 @@ gl_FragCoord origin is upper left
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 8 15 22 29 36
                               ExecutionMode 4 OriginUpperLeft
-                              Source HLSL 450
                               Name 4  "main"
                               Name 8  "inF1"
                               Name 15  "inF2"
                               Name 22  "inF3"
                               Name 29  "inF4"
                               Name 36  "inI2"
+                              Decorate 8(inF1) Location 0
+                              Decorate 15(inF2) Location 1
+                              Decorate 22(inF3) Location 2
+                              Decorate 29(inF4) Location 3
+                              Decorate 36(inI2) Location 4
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -13,12 +13,15 @@ glslang
 
 An OpenGL and OpenGL ES shader front end and validator.
 
-There are two components:
+There are several components:
 
-1. A front-end library for programmatic parsing of GLSL/ESSL into an AST.
+1. A GLSL/ESSL front-end for reference validation and translation of GLSL/ESSL into an AST.
 
-2. A standalone wrapper, `glslangValidator`, that can be used as a shader
-   validation tool.
+2. An HLSL front-end for translation of a broad generic HLL into the AST.
+
+3. A SPIR-V back end for translating the AST to SPIR-V.
+
+4. A standalone wrapper, `glslangValidator`, that can be used as a command-line tool for the above.
 
 How to add a feature protected by a version/extension/stage/profile:  See the
 comment in `glslang/MachineIndependent/Versions.cpp`.
@@ -54,14 +57,24 @@ Building
 
 ### Build steps
 
-#### 1) Check-Out External Projects
+#### 1) Check-Out this project 
 
 ```bash
-cd <the directory glslang was cloned to, External will be a subdirectory>
+cd <parent of where you want glslang to be>
+# If using SSH
+git clone git@github.com:KhronosGroup/glslang.git
+# Or if using HTTPS
+git clone https://github.com/KhronosGroup/glslang.git
+```
+
+#### 2) Check-Out External Projects
+
+```bash
+cd <the directory glslang was cloned to, "External" will be a subdirectory>
 git clone https://github.com/google/googletest.git External/googletest
 ```
 
-#### 2) Configure
+#### 3) Configure
 
 Assume the source directory is `$SOURCE_DIR` and
 the build directory is `$BUILD_DIR`:
@@ -84,7 +97,7 @@ cmake $SOURCE_DIR -DCMAKE_INSTALL_PREFIX=`pwd`/install
 
 The CMake GUI also works for Windows (version 3.4.1 tested).
 
-#### 3) Build and Install
+#### 4) Build and Install
 
 ```bash
 # for Linux:

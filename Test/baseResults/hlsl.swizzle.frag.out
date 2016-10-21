@@ -10,7 +10,7 @@ gl_FragCoord origin is upper left
 0:?         0.500000
 0:?         0.000000
 0:?         1.000000
-0:7  Function Definition: ShaderFunction(vf4; (global 4-component vector of float)
+0:4  Function Definition: ShaderFunction(vf4; (temp 4-component vector of float)
 0:4    Function Parameters: 
 0:4      'input' (in 4-component vector of float)
 0:?     Sequence
@@ -50,7 +50,7 @@ gl_FragCoord origin is upper left
 0:?         0.500000
 0:?         0.000000
 0:?         1.000000
-0:7  Function Definition: ShaderFunction(vf4; (global 4-component vector of float)
+0:4  Function Definition: ShaderFunction(vf4; (temp 4-component vector of float)
 0:4    Function Parameters: 
 0:4      'input' (in 4-component vector of float)
 0:?     Sequence
@@ -84,7 +84,6 @@ gl_FragCoord origin is upper left
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "PixelShaderFunction"
                               ExecutionMode 4 OriginUpperLeft
-                              Source HLSL 450
                               Name 4  "PixelShaderFunction"
                               Name 11  "ShaderFunction(vf4;"
                               Name 10  "input"

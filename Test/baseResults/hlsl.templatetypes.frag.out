@@ -2,7 +2,7 @@ hlsl.templatetypes.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:48  Function Definition: PixelShaderFunction( (global float)
+0:3  Function Definition: PixelShaderFunction( (temp float)
 0:3    Function Parameters: 
 0:?     Sequence
 0:4      Sequence
@@ -192,8 +192,8 @@ gl_FragCoord origin is upper left
 0:?             14.000000
 0:?             15.000000
 0:35      Sequence
-0:35        move second child to first child (temp 3X2 matrix of float)
-0:35          'r61' (temp 3X2 matrix of float)
+0:35        move second child to first child (temp 2X3 matrix of float)
+0:35          'r61' (temp 2X3 matrix of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -202,8 +202,8 @@ gl_FragCoord origin is upper left
 0:?             5.000000
 0:?             6.000000
 0:36      Sequence
-0:36        move second child to first child (temp 2X3 matrix of float)
-0:36          'r62' (temp 2X3 matrix of float)
+0:36        move second child to first child (temp 3X2 matrix of float)
+0:36          'r62' (temp 3X2 matrix of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -212,8 +212,8 @@ gl_FragCoord origin is upper left
 0:?             5.000000
 0:?             6.000000
 0:39      Sequence
-0:39        move second child to first child (temp 2X4 matrix of float)
-0:39          'r65' (temp 2X4 matrix of float)
+0:39        move second child to first child (temp 4X2 matrix of float)
+0:39          'r65' (temp 4X2 matrix of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -224,8 +224,8 @@ gl_FragCoord origin is upper left
 0:?             7.000000
 0:?             8.000000
 0:40      Sequence
-0:40        move second child to first child (temp 3X4 matrix of float)
-0:40          'r66' (temp 3X4 matrix of float)
+0:40        move second child to first child (temp 4X3 matrix of float)
+0:40          'r66' (temp 4X3 matrix of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -239,10 +239,14 @@ gl_FragCoord origin is upper left
 0:?             10.000000
 0:?             11.000000
 0:?             12.000000
-0:45      Branch: Return with expression
-0:45        Constant:
-0:45          0.000000
+0:45      Sequence
+0:45        move second child to first child (temp float)
+0:?           '@entryPointOutput' (layout(location=0 ) out float)
+0:45          Constant:
+0:45            0.000000
+0:45        Branch: Return
 0:?   Linker Objects
+0:?     '@entryPointOutput' (layout(location=0 ) out float)
 
 
 Linked fragment stage:
@@ -251,7 +255,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:48  Function Definition: PixelShaderFunction( (global float)
+0:3  Function Definition: PixelShaderFunction( (temp float)
 0:3    Function Parameters: 
 0:?     Sequence
 0:4      Sequence
@@ -441,8 +445,8 @@ gl_FragCoord origin is upper left
 0:?             14.000000
 0:?             15.000000
 0:35      Sequence
-0:35        move second child to first child (temp 3X2 matrix of float)
-0:35          'r61' (temp 3X2 matrix of float)
+0:35        move second child to first child (temp 2X3 matrix of float)
+0:35          'r61' (temp 2X3 matrix of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -451,8 +455,8 @@ gl_FragCoord origin is upper left
 0:?             5.000000
 0:?             6.000000
 0:36      Sequence
-0:36        move second child to first child (temp 2X3 matrix of float)
-0:36          'r62' (temp 2X3 matrix of float)
+0:36        move second child to first child (temp 3X2 matrix of float)
+0:36          'r62' (temp 3X2 matrix of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -461,8 +465,8 @@ gl_FragCoord origin is upper left
 0:?             5.000000
 0:?             6.000000
 0:39      Sequence
-0:39        move second child to first child (temp 2X4 matrix of float)
-0:39          'r65' (temp 2X4 matrix of float)
+0:39        move second child to first child (temp 4X2 matrix of float)
+0:39          'r65' (temp 4X2 matrix of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -473,8 +477,8 @@ gl_FragCoord origin is upper left
 0:?             7.000000
 0:?             8.000000
 0:40      Sequence
-0:40        move second child to first child (temp 3X4 matrix of float)
-0:40          'r66' (temp 3X4 matrix of float)
+0:40        move second child to first child (temp 4X3 matrix of float)
+0:40          'r66' (temp 4X3 matrix of float)
 0:?           Constant:
 0:?             1.000000
 0:?             2.000000
@@ -488,22 +492,25 @@ gl_FragCoord origin is upper left
 0:?             10.000000
 0:?             11.000000
 0:?             12.000000
-0:45      Branch: Return with expression
-0:45        Constant:
-0:45          0.000000
+0:45      Sequence
+0:45        move second child to first child (temp float)
+0:?           '@entryPointOutput' (layout(location=0 ) out float)
+0:45          Constant:
+0:45            0.000000
+0:45        Branch: Return
 0:?   Linker Objects
+0:?     '@entryPointOutput' (layout(location=0 ) out float)
 
 // Module Version 10000
 // Generated by (magic number): 80001
-// Id's are bound by 145
+// Id's are bound by 148
 
                               Capability Shader
                               Capability Float64
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "PixelShaderFunction"
+                              EntryPoint Fragment 4  "PixelShaderFunction" 146
                               ExecutionMode 4 OriginUpperLeft
-                              Source HLSL 450
                               Name 4  "PixelShaderFunction"
                               Name 9  "r00"
                               Name 15  "r01"
@@ -530,9 +537,11 @@ gl_FragCoord origin is upper left
                               Name 105  "r50"
                               Name 122  "r51"
                               Name 125  "r61"
-                              Name 131  "r62"
+                              Name 130  "r62"
                               Name 136  "r65"
                               Name 141  "r66"
+                              Name 146  "@entryPointOutput"
+                              Decorate 146(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -628,23 +637,26 @@ gl_FragCoord origin is upper left
              119:    6(float) Constant 1097859072
              120:    7(fvec4) ConstantComposite 116 117 118 119
              121:         103 ConstantComposite 107 110 115 120
-             123:             TypeMatrix 46(fvec2) 3
+             123:             TypeMatrix 69(fvec3) 2
              124:             TypePointer Function 123
-             126:   46(fvec2) ConstantComposite 12 13
-             127:   46(fvec2) ConstantComposite 16 108
-             128:         123 ConstantComposite 49 126 127
-             129:             TypeMatrix 69(fvec3) 2
-             130:             TypePointer Function 129
-             132:   69(fvec3) ConstantComposite 13 16 108
-             133:         129 ConstantComposite 72 132
-             134:             TypeMatrix 7(fvec4) 2
+             126:   69(fvec3) ConstantComposite 13 16 108
+             127:         123 ConstantComposite 72 126
+             128:             TypeMatrix 46(fvec2) 3
+             129:             TypePointer Function 128
+             131:   46(fvec2) ConstantComposite 12 13
+             132:   46(fvec2) ConstantComposite 16 108
+             133:         128 ConstantComposite 49 131 132
+             134:             TypeMatrix 46(fvec2) 4
              135:             TypePointer Function 134
-             137:    7(fvec4) ConstantComposite 16 108 109 111
-             138:         134 ConstantComposite 14 137
-             139:             TypeMatrix 7(fvec4) 3
+             137:   46(fvec2) ConstantComposite 109 111
+             138:         134 ConstantComposite 49 131 132 137
+             139:             TypeMatrix 69(fvec3) 4
              140:             TypePointer Function 139
-             142:    7(fvec4) ConstantComposite 112 113 114 116
-             143:         139 ConstantComposite 14 137 142
+             142:   69(fvec3) ConstantComposite 109 111 112
+             143:   69(fvec3) ConstantComposite 113 114 116
+             144:         139 ConstantComposite 72 126 142 143
+             145:             TypePointer Output 6(float)
+146(@entryPointOutput):    145(ptr) Variable Output
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
           9(r00):      8(ptr) Variable Function
@@ -672,7 +684,7 @@ gl_FragCoord origin is upper left
         105(r50):    104(ptr) Variable Function
         122(r51):    104(ptr) Variable Function
         125(r61):    124(ptr) Variable Function
-        131(r62):    130(ptr) Variable Function
+        130(r62):    129(ptr) Variable Function
         136(r65):    135(ptr) Variable Function
         141(r66):    140(ptr) Variable Function
                               Store 9(r00) 14
@@ -699,9 +711,10 @@ gl_FragCoord origin is upper left
                               Store 100(r44) 102
                               Store 105(r50) 121
                               Store 122(r51) 121
-                              Store 125(r61) 128
-                              Store 131(r62) 133
+                              Store 125(r61) 127
+                              Store 130(r62) 133
                               Store 136(r65) 138
-                              Store 141(r66) 143
-                              ReturnValue 106
+                              Store 141(r66) 144
+                              Store 146(@entryPointOutput) 106
+                              Return
                               FunctionEnd

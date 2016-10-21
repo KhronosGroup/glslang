@@ -75,10 +75,11 @@ ERROR: 0:191: '=' :  cannot convert from 'temp float' to 'temp int'
 ERROR: 0:192: 'gl_ClipDistance' : undeclared identifier 
 ERROR: 0:192: 'gl_ClipDistance' :  left of '[' is not of type array, matrix, or vector  
 ERROR: 0:192: 'assign' :  l-value required (can't modify a const)
-ERROR: 0:198: 'token pasting (##)' : not supported for this version or the enabled extensions 
-ERROR: 0:198: '##' : token pasting not implemented (internal error) 
-ERROR: 0:198: '' :  syntax error
-ERROR: 79 compilation errors.  No code generated.
+ERROR: 0:195: 'gl_ModelViewMatrix' : identifiers starting with "gl_" are reserved 
+ERROR: 0:200: 'token pasting (##)' : not supported for this version or the enabled extensions 
+ERROR: 0:200: '##' : token pasting not implemented (internal error) 
+ERROR: 0:200: '' :  syntax error
+ERROR: 80 compilation errors.  No code generated.
 
 
 Shader version: 120

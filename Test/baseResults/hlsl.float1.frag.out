@@ -12,7 +12,7 @@ gl_FragCoord origin is upper left
 0:2      'scalar' (global float)
 0:2      Constant:
 0:2        2.000000
-0:8  Function Definition: ShaderFunction(vf1;f1; (global 1-component vector of float)
+0:5  Function Definition: ShaderFunction(vf1;f1; (temp 1-component vector of float)
 0:5    Function Parameters: 
 0:5      'inFloat1' (in 1-component vector of float)
 0:5      'inScalar' (in float)
@@ -46,7 +46,7 @@ gl_FragCoord origin is upper left
 0:2      'scalar' (global float)
 0:2      Constant:
 0:2        2.000000
-0:8  Function Definition: ShaderFunction(vf1;f1; (global 1-component vector of float)
+0:5  Function Definition: ShaderFunction(vf1;f1; (temp 1-component vector of float)
 0:5    Function Parameters: 
 0:5      'inFloat1' (in 1-component vector of float)
 0:5      'inScalar' (in float)
@@ -72,7 +72,6 @@ gl_FragCoord origin is upper left
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "PixelShaderFunction"
                               ExecutionMode 4 OriginUpperLeft
-                              Source HLSL 450
                               Name 4  "PixelShaderFunction"
                               Name 11  "ShaderFunction(vf1;f1;"
                               Name 9  "inFloat1"

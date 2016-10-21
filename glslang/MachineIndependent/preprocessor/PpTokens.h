@@ -123,9 +123,12 @@ enum EFixedAtoms {
     PpAtomConstUint64,
     PpAtomConstFloat,
     PpAtomConstDouble,
+#ifdef AMD_EXTENSIONS
+    PpAtomConstFloat16,
+#endif
     PpAtomConstString,
 
-    // Indentifiers 
+    // Identifiers 
     PpAtomIdentifier,
 
     // preprocessor "keywords"

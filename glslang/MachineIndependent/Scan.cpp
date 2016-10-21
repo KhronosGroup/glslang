@@ -38,7 +38,7 @@
 // GLSL scanning, leveraging the scanning done by the preprocessor.
 //
 
-#include <string.h>
+#include <cstring>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -55,7 +55,7 @@
 
 // Required to avoid missing prototype warnings for some compilers
 int yylex(YYSTYPE*, glslang::TParseContext&);
-    
+
 namespace glslang {
 
 // read past any white space
@@ -463,6 +463,25 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["u64vec3"] =                 U64VEC3;
     (*KeywordMap)["u64vec4"] =                 U64VEC4;
 
+#ifdef AMD_EXTENSIONS
+    (*KeywordMap)["float16_t"] =               FLOAT16_T;
+    (*KeywordMap)["f16vec2"] =                 F16VEC2;
+    (*KeywordMap)["f16vec3"] =                 F16VEC3;
+    (*KeywordMap)["f16vec4"] =                 F16VEC4;
+    (*KeywordMap)["f16mat2"] =                 F16MAT2;
+    (*KeywordMap)["f16mat3"] =                 F16MAT3;
+    (*KeywordMap)["f16mat4"] =                 F16MAT4;
+    (*KeywordMap)["f16mat2x2"] =               F16MAT2X2;
+    (*KeywordMap)["f16mat2x3"] =               F16MAT2X3;
+    (*KeywordMap)["f16mat2x4"] =               F16MAT2X4;
+    (*KeywordMap)["f16mat3x2"] =               F16MAT3X2;
+    (*KeywordMap)["f16mat3x3"] =               F16MAT3X3;
+    (*KeywordMap)["f16mat3x4"] =               F16MAT3X4;
+    (*KeywordMap)["f16mat4x2"] =               F16MAT4X2;
+    (*KeywordMap)["f16mat4x3"] =               F16MAT4X3;
+    (*KeywordMap)["f16mat4x4"] =               F16MAT4X4;
+#endif
+
     (*KeywordMap)["sampler2D"] =               SAMPLER2D;
     (*KeywordMap)["samplerCube"] =             SAMPLERCUBE;
     (*KeywordMap)["samplerCubeArray"] =        SAMPLERCUBEARRAY;
@@ -553,6 +572,9 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["noperspective"] =           NOPERSPECTIVE;
     (*KeywordMap)["smooth"] =                  SMOOTH;
     (*KeywordMap)["flat"] =                    FLAT;
+#ifdef AMD_EXTENSIONS
+    (*KeywordMap)["__explicitInterpAMD"] =     __EXPLICITINTERPAMD;
+#endif
     (*KeywordMap)["centroid"] =                CENTROID;
     (*KeywordMap)["precise"] =                 PRECISE;
     (*KeywordMap)["invariant"] =               INVARIANT;
@@ -561,7 +583,7 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["superp"] =                  SUPERP;
 
     ReservedSet = new std::unordered_set<const char*, str_hash, str_eq>;
-    
+
     ReservedSet->insert("common");
     ReservedSet->insert("partition");
     ReservedSet->insert("active");
@@ -609,13 +631,15 @@ void TScanContext::deleteKeywordMap()
     ReservedSet = nullptr;
 }
 
+// Called by yylex to get the next token.
+// Returning 0 implies end of input.
 int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 {
     do {
         parserToken = &token;
         TPpToken ppToken;
         tokenText = pp->tokenize(&ppToken);
-        if (tokenText == nullptr)
+        if (tokenText == nullptr || tokenText[0] == 0)
             return 0;
 
         loc = ppToken.loc;
@@ -675,13 +699,16 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 
         case PpAtomDecrement:          return DEC_OP;
         case PpAtomIncrement:          return INC_OP;
-                                   
+
         case PpAtomConstInt:           parserToken->sType.lex.i   = ppToken.ival;       return INTCONSTANT;
         case PpAtomConstUint:          parserToken->sType.lex.i   = ppToken.ival;       return UINTCONSTANT;
         case PpAtomConstInt64:         parserToken->sType.lex.i64 = ppToken.i64val;     return INT64CONSTANT;
         case PpAtomConstUint64:        parserToken->sType.lex.i64 = ppToken.i64val;     return UINT64CONSTANT;
         case PpAtomConstFloat:         parserToken->sType.lex.d   = ppToken.dval;       return FLOATCONSTANT;
         case PpAtomConstDouble:        parserToken->sType.lex.d   = ppToken.dval;       return DOUBLECONSTANT;
+#ifdef AMD_EXTENSIONS
+        case PpAtomConstFloat16:       parserToken->sType.lex.d   = ppToken.dval;       return FLOAT16CONSTANT;
+#endif
         case PpAtomIdentifier:
         {
             int token = tokenizeIdentifier();
@@ -847,7 +874,7 @@ int TScanContext::tokenizeIdentifier()
     case MAT3X4:
     case MAT4X2:
     case MAT4X3:
-    case MAT4X4:        
+    case MAT4X4:
         return matNxM();
 
     case DMAT2:
@@ -933,9 +960,37 @@ int TScanContext::tokenizeIdentifier()
     case U64VEC2:
     case U64VEC3:
     case U64VEC4:
-        if (parseContext.profile != EEsProfile && parseContext.version >= 450)
+        afterType = true;
+        if (parseContext.symbolTable.atBuiltInLevel() || 
+            (parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_int64) &&
+             parseContext.profile != EEsProfile && parseContext.version >= 450))
             return keyword;
         return identifierOrType();
+
+#ifdef AMD_EXTENSIONS
+    case FLOAT16_T:
+    case F16VEC2:
+    case F16VEC3:
+    case F16VEC4:
+    case F16MAT2:
+    case F16MAT3:
+    case F16MAT4:
+    case F16MAT2X2:
+    case F16MAT2X3:
+    case F16MAT2X4:
+    case F16MAT3X2:
+    case F16MAT3X3:
+    case F16MAT3X4:
+    case F16MAT4X2:
+    case F16MAT4X3:
+    case F16MAT4X4:
+        afterType = true;
+        if (parseContext.symbolTable.atBuiltInLevel() ||
+            (parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float) &&
+             parseContext.profile != EEsProfile && parseContext.version >= 450))
+            return keyword;
+        return identifierOrType();
+#endif
 
     case SAMPLERCUBEARRAY:
     case SAMPLERCUBEARRAYSHADOW:
@@ -973,7 +1028,7 @@ int TScanContext::tokenizeIdentifier()
     case USAMPLER2DARRAY:
         afterType = true;
         return nonreservedKeyword(300, 130);
-        
+
     case ISAMPLER2DRECT:
     case USAMPLER2DRECT:
         afterType = true;
@@ -991,7 +1046,7 @@ int TScanContext::tokenizeIdentifier()
         if (parseContext.extensionsTurnedOn(Num_AEP_texture_buffer, AEP_texture_buffer))
             return keyword;
         return es30ReservedFromGLSL(140);
-        
+
     case SAMPLER2DMS:
     case ISAMPLER2DMS:
     case USAMPLER2DMS:
@@ -1110,12 +1165,20 @@ int TScanContext::tokenizeIdentifier()
 
     case NOPERSPECTIVE:
         return es30ReservedFromGLSL(130);
-        
+
     case SMOOTH:
         if ((parseContext.profile == EEsProfile && parseContext.version < 300) ||
             (parseContext.profile != EEsProfile && parseContext.version < 130))
             return identifierOrType();
         return keyword;
+
+#ifdef AMD_EXTENSIONS
+    case __EXPLICITINTERPAMD:
+        if (parseContext.profile != EEsProfile && parseContext.version >= 450 &&
+            parseContext.extensionTurnedOn(E_GL_AMD_shader_explicit_vertex_parameter))
+            return keyword;
+        return identifierOrType();
+#endif
 
     case FLAT:
         if (parseContext.profile == EEsProfile && parseContext.version < 300)
@@ -1161,7 +1224,7 @@ int TScanContext::tokenizeIdentifier()
         bool reserved = parseContext.profile == EEsProfile || parseContext.version >= 130;
         return identifierOrReserved(reserved);
     }
-    
+
     default:
         parseContext.infoSink.info.message(EPrefixInternalError, "Unknown glslang keyword", loc);
         return 0;

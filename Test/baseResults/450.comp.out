@@ -9,7 +9,7 @@ local_size = (1, 1, 1)
 
 Linked compute stage:
 
-ERROR: Linking compute stage: Missing entry point: Each stage requires one "void main()" entry point
+ERROR: Linking compute stage: Missing entry point: Each stage requires one entry point
 
 Shader version: 450
 local_size = (1, 1, 1)

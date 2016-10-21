@@ -4,11 +4,15 @@ layout(constant_id = 200) const float sp_float = 3.1415926;
 layout(constant_id = 201) const int sp_int = 10;
 layout(constant_id = 202) const uint sp_uint = 100;
 layout(constant_id = 203) const int sp_sint = -10;
-
+layout(constant_id = 204) const double sp_double = 2.718281828459;
 
 //
 // Scalars
 //
+
+// float <-> double conversion
+const float float_from_double = float(sp_double);
+const double double_from_float = double(sp_float);
 
 // uint/int <-> bool conversion
 const bool bool_from_int = bool(sp_int);

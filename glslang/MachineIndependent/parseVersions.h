@@ -76,6 +76,9 @@ public:
     virtual void updateExtensionBehavior(int line, const char* const extension, const char* behavior);
     virtual void fullIntegerCheck(const TSourceLoc&, const char* op);
     virtual void doubleCheck(const TSourceLoc&, const char* op);
+#ifdef AMD_EXTENSIONS
+    virtual void float16Check(const TSourceLoc&, const char* op, bool builtIn = false);
+#endif
     virtual void int64Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void spvRemoved(const TSourceLoc&, const char* op);
     virtual void vulkanRemoved(const TSourceLoc&, const char* op);
@@ -119,12 +122,12 @@ public:
     TIntermediate& intermediate; // helper for making and hooking up pieces of the parse tree
 
 protected:
+    TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
     EShMessages messages;        // errors/warnings/rule-sets
     int numErrors;               // number of compile-time errors encountered
     TInputScanner* currentScanner;
 
 private:
-    TMap<TString, TExtensionBehavior> extensionBehavior;    // for each extension string, what its current behavior is set to
     explicit TParseVersions(const TParseVersions&);
     TParseVersions& operator=(const TParseVersions&);
 };

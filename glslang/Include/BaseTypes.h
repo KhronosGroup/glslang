@@ -46,6 +46,9 @@ enum TBasicType {
     EbtVoid,
     EbtFloat,
     EbtDouble,
+#ifdef AMD_EXTENSIONS
+    EbtFloat16,
+#endif
     EbtInt,
     EbtUint,
     EbtInt64,
@@ -55,6 +58,10 @@ enum TBasicType {
     EbtSampler,
     EbtStruct,
     EbtBlock,
+
+    // HLSL types that live only temporarily.
+    EbtString,
+
     EbtNumTypes
 };
 
@@ -186,6 +193,20 @@ enum TBuiltInVariable {
     EbvSamplePosition,
     EbvSampleMask,
     EbvHelperInvocation,
+#ifdef AMD_EXTENSIONS
+    EbvBaryCoordNoPersp,
+    EbvBaryCoordNoPerspCentroid,
+    EbvBaryCoordNoPerspSample,
+    EbvBaryCoordSmooth,
+    EbvBaryCoordSmoothCentroid,
+    EbvBaryCoordSmoothSample,
+    EbvBaryCoordPullModel,
+#endif
+
+    // HLSL built-ins that live only temporarily, until they get remapped
+    // to one of the above.
+    EbvFragDepthGreater,
+    EbvFragDepthLesser,
 
     EbvLast
 };
@@ -286,6 +307,15 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvSamplePosition:       return "SamplePosition";
     case EbvSampleMask:           return "SampleMaskIn";
     case EbvHelperInvocation:     return "HelperInvocation";
+#ifdef AMD_EXTENSIONS
+    case EbvBaryCoordNoPersp:           return "BaryCoordNoPersp";
+    case EbvBaryCoordNoPerspCentroid:   return "BaryCoordNoPerspCentroid";
+    case EbvBaryCoordNoPerspSample:     return "BaryCoordNoPerspSample";
+    case EbvBaryCoordSmooth:            return "BaryCoordSmooth";
+    case EbvBaryCoordSmoothCentroid:    return "BaryCoordSmoothCentroid";
+    case EbvBaryCoordSmoothSample:      return "BaryCoordSmoothSample";
+    case EbvBaryCoordPullModel:         return "BaryCoordPullModel";
+#endif
     default:                      return "unknown built-in variable";
     }
 }
