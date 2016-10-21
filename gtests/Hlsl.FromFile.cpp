@@ -153,6 +153,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.precise.frag", "main"},
         {"hlsl.promote.binary.frag", "main"},
         {"hlsl.promotions.frag", "main"},
+        {"hlsl.rw.atomics.frag", "main"},
         {"hlsl.rw.bracket.frag", "main"},
         {"hlsl.rw.scalar.bracket.frag", "main"},
         {"hlsl.rw.vec2.bracket.frag", "main"},
