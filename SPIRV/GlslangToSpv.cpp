@@ -4133,10 +4133,12 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
         builder.addCapability(spv::CapabilitySubgroupBallotKHR);
     } else {
         builder.addCapability(spv::CapabilityGroups);
+#ifdef AMD_EXTENSIONS
         if (op == glslang::EOpMinInvocationsNonUniform ||
             op == glslang::EOpMaxInvocationsNonUniform ||
             op == glslang::EOpAddInvocationsNonUniform)
             builder.addExtension(spv::E_SPV_AMD_shader_ballot);
+#endif
 
         spvGroupOperands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
 #ifdef AMD_EXTENSIONS
