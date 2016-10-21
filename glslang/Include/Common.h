@@ -81,6 +81,10 @@ inline long long int atoll (const char* str)
     #pragma warning(disable : 4201) // nameless union
 #endif
 
+#if _MSC_VER >= 1900
+    #pragma warning(disable : 4464) // relative include path contains '..'
+#endif
+
 #include <set>
 #include <unordered_set>
 #include <vector>
