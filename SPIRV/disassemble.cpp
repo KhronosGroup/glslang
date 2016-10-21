@@ -482,7 +482,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
 #endif
 #ifdef NV_EXTENSIONS
                 }
-                else if (strcmp(spv::E_GL_NV_sample_mask_override_coverage, name) == 0) {
+                else if (strcmp(spv::E_SPV_NV_sample_mask_override_coverage, name) == 0) {
                     extInstSet = GLSLextNVInst;
 #endif
                 }
@@ -655,7 +655,7 @@ static const char* GLSLextAMDGetDebugNames(const char* name, unsigned entrypoint
 #ifdef NV_EXTENSIONS
 static const char* GLSLextNVGetDebugNames(const char* name, unsigned entrypoint)
 {
-    if (strcmp(name, spv::E_GL_NV_sample_mask_override_coverage) == 0) {
+    if (strcmp(name, spv::E_SPV_NV_sample_mask_override_coverage) == 0) {
         switch (entrypoint) {
         case OverrideCoverageNV:    return "OverrideCoverageNV";
         default:                    return "Bad";
