@@ -481,8 +481,7 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
                     extInstSet = GLSLextAMDInst;
 #endif
 #ifdef NV_EXTENSIONS
-                }
-                else if (strcmp(spv::E_SPV_NV_sample_mask_override_coverage, name) == 0) {
+                } else if (strcmp(spv::E_SPV_NV_sample_mask_override_coverage, name) == 0) {
                     extInstSet = GLSLextNVInst;
 #endif
                 }
