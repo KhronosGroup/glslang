@@ -304,6 +304,10 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_AMD_shader_explicit_vertex_parameter 1\n"
             "#define GL_AMD_gcn_shader 1\n"
 #endif
+
+#ifdef NV_EXTENSIONS 
+            "#define GL_NV_sample_mask_override_coverage 1\n"
+#endif
             ;
     }
 
