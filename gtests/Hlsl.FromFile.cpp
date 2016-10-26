@@ -144,6 +144,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.load.offsetarray.dx10.frag", "main"},
         {"hlsl.logical.unary.frag", "main"},
         {"hlsl.logical.binary.frag", "main"},
+        {"hlsl.logical.binary.vec.frag", "main"},
         {"hlsl.multiEntry.vert", "RealEntrypoint"},
         {"hlsl.multiReturn.frag", "main"},
         {"hlsl.matrixindex.frag", "main"},
