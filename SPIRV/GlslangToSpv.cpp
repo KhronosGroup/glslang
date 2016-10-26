@@ -4004,8 +4004,7 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
     if (op == glslang::EOpBallot || op == glslang::EOpReadFirstInvocation) {
         builder.addExtension(spv::E_SPV_KHR_shader_ballot);
         builder.addCapability(spv::CapabilitySubgroupBallotKHR);
-    }
-    else if (op == glslang::EOpAnyInvocation ||
+    } else if (op == glslang::EOpAnyInvocation ||
              op == glslang::EOpAllInvocations ||
              op == glslang::EOpAllInvocationsEqual) {
         builder.addExtension(spv::E_SPV_KHR_subgroup_vote);
