@@ -163,6 +163,8 @@ bool TOutputTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
     case EOpGreaterThan:      out.debug << "Compare Greater Than";          break;
     case EOpLessThanEqual:    out.debug << "Compare Less Than or Equal";    break;
     case EOpGreaterThanEqual: out.debug << "Compare Greater Than or Equal"; break;
+    case EOpVectorEqual:      out.debug << "Equal";                         break;
+    case EOpVectorNotEqual:   out.debug << "NotEqual";                      break;
 
     case EOpVectorTimesScalar: out.debug << "vector-scale";          break;
     case EOpVectorTimesMatrix: out.debug << "vector-times-matrix";   break;
