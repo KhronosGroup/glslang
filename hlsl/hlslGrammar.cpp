@@ -465,7 +465,7 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type)
         // whatever comes from acceptQualifier.
         assert(qualifier.layoutFormat == ElfNone);
         qualifier.layoutFormat = type.getQualifier().layoutFormat;
-
+        qualifier.precision    = type.getQualifier().precision;
         type.getQualifier() = qualifier;
     }
 
@@ -967,6 +967,14 @@ bool HlslGrammar::acceptTextureType(TType& type)
 // Otherwise, return false, and don't advance
 bool HlslGrammar::acceptType(TType& type)
 {
+    // Basic types for min* types, broken out here in case of future
+    // changes, e.g, to use native halfs.
+    static const TBasicType min16float_bt = EbtFloat;
+    static const TBasicType min10float_bt = EbtFloat;
+    static const TBasicType min16int_bt   = EbtInt;
+    static const TBasicType min12int_bt   = EbtInt;
+    static const TBasicType min16uint_bt  = EbtUint;
+
     switch (peek()) {
     case EHTokVector:
         return acceptVectorTemplateType(type);
@@ -1116,6 +1124,91 @@ bool HlslGrammar::acceptType(TType& type)
         break;
     case EHTokBool4:
         new(&type) TType(EbtBool, EvqTemporary, 4);
+        break;
+
+    case EHTokMin16float:
+        new(&type) TType(min16float_bt, EvqTemporary, EpqMedium);
+        break;
+    case EHTokMin16float1:
+        new(&type) TType(min16float_bt, EvqTemporary, EpqMedium);
+        type.makeVector();
+        break;
+    case EHTokMin16float2:
+        new(&type) TType(min16float_bt, EvqTemporary, EpqMedium, 2);
+        break;
+    case EHTokMin16float3:
+        new(&type) TType(min16float_bt, EvqTemporary, EpqMedium, 3);
+        break;
+    case EHTokMin16float4:
+        new(&type) TType(min16float_bt, EvqTemporary, EpqMedium, 4);
+        break;
+        
+    case EHTokMin10float:
+        new(&type) TType(min10float_bt, EvqTemporary, EpqMedium);
+        break;
+    case EHTokMin10float1:
+        new(&type) TType(min10float_bt, EvqTemporary, EpqMedium);
+        type.makeVector();
+        break;
+    case EHTokMin10float2:
+        new(&type) TType(min10float_bt, EvqTemporary, EpqMedium, 2);
+        break;
+    case EHTokMin10float3:
+        new(&type) TType(min10float_bt, EvqTemporary, EpqMedium, 3);
+        break;
+    case EHTokMin10float4:
+        new(&type) TType(min10float_bt, EvqTemporary, EpqMedium, 4);
+        break;
+        
+    case EHTokMin16int:
+        new(&type) TType(min16int_bt, EvqTemporary, EpqMedium);
+        break;
+    case EHTokMin16int1:
+        new(&type) TType(min16int_bt, EvqTemporary, EpqMedium);
+        type.makeVector();
+        break;
+    case EHTokMin16int2:
+        new(&type) TType(min16int_bt, EvqTemporary, EpqMedium, 2);
+        break;
+    case EHTokMin16int3:
+        new(&type) TType(min16int_bt, EvqTemporary, EpqMedium, 3);
+        break;
+    case EHTokMin16int4:
+        new(&type) TType(min16int_bt, EvqTemporary, EpqMedium, 4);
+        break;
+        
+    case EHTokMin12int:
+        new(&type) TType(min12int_bt, EvqTemporary, EpqMedium);
+        break;
+    case EHTokMin12int1:
+        new(&type) TType(min12int_bt, EvqTemporary, EpqMedium);
+        type.makeVector();
+        break;
+    case EHTokMin12int2:
+        new(&type) TType(min12int_bt, EvqTemporary, EpqMedium, 2);
+        break;
+    case EHTokMin12int3:
+        new(&type) TType(min12int_bt, EvqTemporary, EpqMedium, 3);
+        break;
+    case EHTokMin12int4:
+        new(&type) TType(min12int_bt, EvqTemporary, EpqMedium, 4);
+        break;
+        
+    case EHTokMin16uint:
+        new(&type) TType(min16uint_bt, EvqTemporary, EpqMedium);
+        break;
+    case EHTokMin16uint1:
+        new(&type) TType(min16uint_bt, EvqTemporary, EpqMedium);
+        type.makeVector();
+        break;
+    case EHTokMin16uint2:
+        new(&type) TType(min16uint_bt, EvqTemporary, EpqMedium, 2);
+        break;
+    case EHTokMin16uint3:
+        new(&type) TType(min16uint_bt, EvqTemporary, EpqMedium, 3);
+        break;
+    case EHTokMin16uint4:
+        new(&type) TType(min16uint_bt, EvqTemporary, EpqMedium, 4);
         break;
 
     case EHTokInt1x1:
