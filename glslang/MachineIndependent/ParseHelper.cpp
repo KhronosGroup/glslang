@@ -1216,7 +1216,7 @@ void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction
                                         function.getType().getQualifier().precision;
     } else if (TIntermAggregate* agg = node.getAsAggregate()) {
         TIntermSequence& sequence = agg->getSequence();
-        int numArgs = (int)sequence.size();
+        unsigned int numArgs = (unsigned int)sequence.size();
         switch (agg->getOp()) {
         case EOpBitfieldExtract:
             numArgs = 1;
@@ -1233,7 +1233,7 @@ void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction
             break;
         }
         // find the maximum precision from the arguments and parameters
-        for (unsigned int arg = 0; arg < sequence.size(); ++arg) {
+        for (unsigned int arg = 0; arg < numArgs; ++arg) {
             operationPrecision = std::max(operationPrecision, sequence[arg]->getAsTyped()->getQualifier().precision);
             operationPrecision = std::max(operationPrecision, function[arg].type->getQualifier().precision);
         }
