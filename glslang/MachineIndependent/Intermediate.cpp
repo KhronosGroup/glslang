@@ -797,6 +797,9 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
     case EOpNotEqual:
     case EOpFunctionCall:
     case EOpReturn:
+    case EOpLogicalAnd:
+    case EOpLogicalOr:
+    case EOpLogicalXor:
         break;
     default:
         return node;
@@ -1924,13 +1927,14 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
                 return false;
             node.setLeft(left = convertedL);   // also updates stack variable
             node.setRight(right = convertedR); // also updates stack variable
+        } else {
+            // logical ops operate only on scalar Booleans and will promote to scalar Boolean.
+            if (left->getBasicType() != EbtBool || left->isVector() || left->isMatrix())
+                return false;
         }
 
-        // logical ops operate only on scalar Booleans and will promote to scalar Boolean.
-        if (left->getBasicType() != EbtBool || left->isVector() || left->isMatrix())
-            return false;
+        node.setType(TType(EbtBool, EvqTemporary, left->getVectorSize()));
 
-        node.setType(TType(EbtBool));
         break;
 
     case EOpRightShift:
