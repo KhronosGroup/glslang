@@ -55,7 +55,7 @@ public:
     virtual ~TIoMapper() {}
 
     // grow the reflection stage by stage
-    bool addStage(EShLanguage, TIntermediate&, TInfoSink&);
+    bool addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*);
 };
 
 } // end namespace glslang

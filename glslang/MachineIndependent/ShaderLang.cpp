@@ -1716,7 +1716,7 @@ void TProgram::dumpReflection()                      { reflection->dump(); }
 //
 // I/O mapping implementation.
 //
-bool TProgram::mapIO()
+bool TProgram::mapIO(TIoMapResolver* resolver)
 {
     if (! linked || ioMapper)
         return false;
@@ -1725,7 +1725,7 @@ bool TProgram::mapIO()
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (intermediate[s]) {
-            if (! ioMapper->addStage((EShLanguage)s, *intermediate[s], *infoSink))
+            if (! ioMapper->addStage((EShLanguage)s, *intermediate[s], *infoSink, resolver))
                 return false;
         }
     }
