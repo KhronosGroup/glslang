@@ -154,7 +154,7 @@ TLayoutFormat HlslParseContext::getLayoutFromTxType(const TSourceLoc& loc, const
 {
     const int components = txType.getVectorSize();
 
-    const auto selectFormat = [this,&components](TLayoutFormat v1, TLayoutFormat v2, TLayoutFormat v4) {
+    const auto selectFormat = [this,&components](TLayoutFormat v1, TLayoutFormat v2, TLayoutFormat v4) -> TLayoutFormat {
         if (intermediate.getNoStorageFormat())
             return ElfNone;
 
@@ -260,7 +260,7 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     };
 
     // Helper to complete sequence by adding trailing variable, so we evaluate to the right value.
-    const auto finishSequence = [&](TIntermSymbol* rhsTmp, const TType& derefType) {
+    const auto finishSequence = [&](TIntermSymbol* rhsTmp, const TType& derefType) -> TIntermAggregate* {
         // Add a trailing use of the temp, so the sequence returns the proper value.
         sequence = intermediate.growAggregate(sequence, intermediate.addSymbol(*rhsTmp));
         sequence->setOperator(EOpSequence);
@@ -279,7 +279,7 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     };
 
     // helper to create a temporary variable
-    const auto addTmpVar = [&](const char* name, const TType& derefType) {
+    const auto addTmpVar = [&](const char* name, const TType& derefType) -> TIntermSymbol* {
         TVariable* tmpVar = makeInternalVariable(name, derefType);
         tmpVar->getWritableType().getQualifier().makeTemporary();
         return intermediate.addSymbol(*tmpVar, loc);
@@ -1440,7 +1440,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
     if (!node || !node->getAsOperator())
         return;
 
-    const auto clampReturn = [&loc, &node, this](TIntermTyped* result, const TSampler& sampler) {
+    const auto clampReturn = [&loc, &node, this](TIntermTyped* result, const TSampler& sampler) -> TIntermTyped* {
         // Sampler return must always be a vec4, but we can construct a shorter vector
         result->setType(TType(node->getType().getBasicType(), EvqTemporary, node->getVectorSize()));
 
@@ -2073,7 +2073,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
     };
 
     // Return true if this is an imageLoad, which we will change to an image atomic.
-    const auto isImageParam = [](TIntermTyped* image) {
+    const auto isImageParam = [](TIntermTyped* image) -> bool {
         TIntermAggregate* imageAggregate = image->getAsAggregate();
         return imageAggregate != nullptr && imageAggregate->getOp() == EOpImageLoad;
     };
