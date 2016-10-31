@@ -229,6 +229,48 @@ public:
         }
     }
 
+    // Compiles and links the given source |code| of the given shader,
+    // and renames the entry point to entryPointNameAlt.
+    // Returns a GlslangResult instance containing all the information generated
+    // during the process. If the target includes SPIR-V, also disassembles
+    // the result and returns disassembly text.
+    GlslangResult compileLinkAndRename(
+            const std::string shaderName, const std::string& code,
+            const std::string& entryPointName, const std::string& newEntryPointName,
+            EShMessages controls,
+            bool flattenUniformArrays = false)
+    {
+        const EShLanguage kind = GetShaderStage(GetSuffix(shaderName));
+
+        glslang::TShader shader(kind);
+        shader.setFlattenUniformArrays(flattenUniformArrays);
+        shader.renameEntryPoint(newEntryPointName.c_str());
+
+        bool success = compile(&shader, code, entryPointName, controls);
+
+        glslang::TProgram program;
+        program.addShader(&shader);
+        success &= program.link(controls);
+
+        spv::SpvBuildLogger logger;
+
+        if (success && (controls & EShMsgSpvRules)) {
+            std::vector<uint32_t> spirv_binary;
+            glslang::GlslangToSpv(*program.getIntermediate(kind),
+                                  spirv_binary, &logger);
+
+            std::ostringstream disassembly_stream;
+            spv::Parameterize();
+            spv::Disassemble(disassembly_stream, spirv_binary);
+            return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
+                    program.getInfoLog(), program.getInfoDebugLog(),
+                    logger.getAllMessages(), disassembly_stream.str()};
+        } else {
+            return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
+                    program.getInfoLog(), program.getInfoDebugLog(), "", ""};
+        }
+    }
+
     // Compiles and links the given source |code| of the given shader
     // |stage| into the target under the semantics specified via |controls|.
     // Returns a GlslangResult instance containing all the information generated
@@ -385,6 +427,33 @@ public:
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result = compileAndLink(testName, input, entryPointName, controls);
+
+        // Generate the hybrid output in the way of glslangValidator.
+        std::ostringstream stream;
+        outputResultToStream(&stream, result, controls);
+
+        checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
+                                    expectedOutputFname);
+    }
+
+    void loadFileCompileEntryRename(const std::string& testDir,
+                                    const std::string& testName,
+                                    Source source,
+                                    Semantics semantics,
+                                    Target target,
+                                    const std::string& entryPointName,
+                                    const std::string& newEntryPointName)
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedOutputFname =
+            testDir + "/baseResults/" + testName + ".out";
+        std::string input, expectedOutput;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
+
+        const EShMessages controls = DeriveOptions(source, semantics, target);
+        GlslangResult result = compileLinkAndRename(testName, input, entryPointName, newEntryPointName, controls);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
