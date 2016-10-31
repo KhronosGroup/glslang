@@ -47,6 +47,7 @@ class HlslParseContext : public TParseContextBase {
 public:
     HlslParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins,
                      int version, EProfile, const SpvVersion& spvVersion, EShLanguage, TInfoSink&,
+                     const TString sourceEntryPointName,
                      bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
     virtual ~HlslParseContext();
     void initializeExtensionBehavior();
@@ -165,6 +166,9 @@ public:
     bool handleOutputGeometry(const TSourceLoc&, const TLayoutGeometry& geometry);
     bool handleInputGeometry(const TSourceLoc&, const TLayoutGeometry& geometry);
 
+    // Potentially rename shader entry point function
+    void renameShaderFunction(TString*& name) const;
+
 protected:
     void inheritGlobalDefaults(TQualifier& dst) const;
     TVariable* makeInternalVariable(const char* name, const TType&) const;
@@ -251,6 +255,8 @@ protected:
     TMap<int, TVector<TVariable*>> flattenMap;
     unsigned int nextInLocation;
     unsigned int nextOutLocation;
+
+    TString sourceEntryPointName;
 };
 
 } // end namespace glslang
