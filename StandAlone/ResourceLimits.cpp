@@ -263,7 +263,7 @@ void DecodeResourceLimits(TBuiltInResource* resources, char* config)
             return;
         }
 
-        const int value = std::stoi(valueStr);
+        const int value = std::atoi(valueStr.c_str());
 
         if (tokenStr == "MaxLights")
             resources->maxLights = value;
