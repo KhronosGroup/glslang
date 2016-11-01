@@ -132,7 +132,7 @@ public:
         }
     }
 
-  private:
+private:
     TVarLiveMap&    varLiveList;
 };
 
@@ -174,15 +174,16 @@ struct TResolverAdaptor
       , error(e)
     {
     }
+
     inline void operator()(TVarEntryInfo& ent)
     {
-        bool isValid = resolver.validateBinding(stage, ent.symbol->getName().c_str(), ent.symbol->getType(), ent.live);
+        const bool isValid = resolver.validateBinding(stage, ent.symbol->getName().c_str(), ent.symbol->getType(), ent.live);
         if (isValid) {
             ent.newBinding = resolver.resolveBinding(stage, ent.symbol->getName().c_str(), ent.symbol->getType(), ent.live);
             ent.newSet = resolver.resolveSet(stage, ent.symbol->getName().c_str(), ent.symbol->getType(), ent.live);
 
             if (ent.newBinding != -1) {
-                if (ent.newBinding >= TQualifier::layoutBindingEnd) {
+                if (ent.newBinding >= int(TQualifier::layoutBindingEnd)) {
                     TString err = "mapped binding out of range: " + ent.symbol->getName();
 
                     infoSink.info.message(EPrefixInternalError, err.c_str());
@@ -190,7 +191,7 @@ struct TResolverAdaptor
                 }
             }
             if (ent.newSet != -1) {
-                if (ent.newSet >= TQualifier::layoutSetEnd) {
+                if (ent.newSet >= int(TQualifier::layoutSetEnd)) {
                     TString err = "mapped set out of range: " + ent.symbol->getName();
 
                     infoSink.info.message(EPrefixInternalError, err.c_str());
@@ -203,6 +204,7 @@ struct TResolverAdaptor
             error = true;
         }
     }
+
     EShLanguage     stage;
     TIoMapResolver& resolver;
     TInfoSink&      infoSink;
@@ -218,107 +220,114 @@ struct TResolverAdaptor
  */
 struct TDefaultIoResolver : public glslang::TIoMapResolver
 {
-  int baseSamplerBinding;
-  int baseTextureBinding;
-  int baseUboBinding;
-  bool doAutoMapping;
-  typedef std::vector<int> TSlotSet;
-  typedef std::unordered_map<int, TSlotSet> TSlotSetMap;
-  TSlotSetMap slots;
-  TSlotSet::iterator findSlot(int set, int slot)
-  {
-    return std::lower_bound(slots[set].begin(), slots[set].end(), slot);
-  }
-  bool checkEmpty(int set, int slot)
-  {
-    TSlotSet::iterator at = findSlot(set, slot);
-    return !(at != slots[set].end() && *at == slot);
-  }
-  int reserveSlot(int set, int slot)
-  {
-    TSlotSet::iterator at = findSlot(set, slot);
-    slots[set].insert(at, slot);
-    return slot;
-  }
-  int getFreeSlot(int set, int base)
-  {
-    TSlotSet::iterator at = findSlot(set, base);
-    if (at == slots[set].end())
-      return reserveSlot(set, base);
+    int baseSamplerBinding;
+    int baseTextureBinding;
+    int baseUboBinding;
+    bool doAutoMapping;
+    typedef std::vector<int> TSlotSet;
+    typedef std::unordered_map<int, TSlotSet> TSlotSetMap;
+    TSlotSetMap slots;
 
-    // look in locksteps, if they not match, then there is a free slot
-    for (; at != slots[set].end(); ++at, ++base)
-      if (*at != base)
-        break;
-    return reserveSlot(set, base);
-  }
-  bool validateBinding(EShLanguage stage, const char* /*name*/, const glslang::TType& type, bool /*is_live*/) override
-  {
-    if (type.getQualifier().hasBinding()) {
-      int set;
-      if (type.getQualifier().hasSet())
-        set = type.getQualifier().layoutSet;
-      else
-        set = 0;
-
-      if (type.getBasicType() == glslang::EbtSampler) {
-        const glslang::TSampler& sampler = type.getSampler();
-        if (sampler.isPureSampler())
-          return checkEmpty(set, baseSamplerBinding + type.getQualifier().layoutBinding);
-
-        if (sampler.isTexture())
-          return checkEmpty(set, baseTextureBinding + type.getQualifier().layoutBinding);
-      }
-
-      if (type.getQualifier().isUniformOrBuffer())
-        return checkEmpty(set, baseUboBinding + type.getQualifier().layoutBinding);
-    }
-    return true;
-  }
-  int resolveBinding(EShLanguage stage, const char* /*name*/, const glslang::TType& type, bool is_live) override
-  {
-    int set;
-    if (type.getQualifier().hasSet())
-      set = type.getQualifier().layoutSet;
-    else
-      set = 0;
-
-    if (type.getQualifier().hasBinding()) {
-      if (type.getBasicType() == glslang::EbtSampler) {
-        const glslang::TSampler& sampler = type.getSampler();
-        if (sampler.isPureSampler())
-          return reserveSlot(set, baseSamplerBinding + type.getQualifier().layoutBinding);
-
-        if (sampler.isTexture())
-          return reserveSlot(set, baseTextureBinding + type.getQualifier().layoutBinding);
-      }
-
-      if (type.getQualifier().isUniformOrBuffer())
-        return reserveSlot(set, baseUboBinding + type.getQualifier().layoutBinding);
-    } else if (is_live && doAutoMapping) {
-      // find free slot, the caller did make sure it passes all vars with binding
-        // first and now all are passed that do not have a binding and needs one
-      if (type.getBasicType() == glslang::EbtSampler) {
-        const glslang::TSampler& sampler = type.getSampler();
-        if (sampler.isPureSampler())
-          return getFreeSlot(set, baseSamplerBinding);
-
-        if (sampler.isTexture())
-          return getFreeSlot(set, baseTextureBinding);
-      }
-
-      if (type.getQualifier().isUniformOrBuffer())
-        return getFreeSlot(set, baseUboBinding);
+    TSlotSet::iterator findSlot(int set, int slot)
+    {
+        return std::lower_bound(slots[set].begin(), slots[set].end(), slot);
     }
 
-    return -1;
-  }
-  int resolveSet(EShLanguage /*stage*/, const char* /*name*/, const glslang::TType& type, bool /*is_live*/) override
-  {
-    if (type.getQualifier().hasSet())
-      return type.getQualifier().layoutSet;
-    return 0;
-  }
+    bool checkEmpty(int set, int slot)
+    {
+        TSlotSet::iterator at = findSlot(set, slot);
+        return !(at != slots[set].end() && *at == slot);
+    }
+
+    int reserveSlot(int set, int slot)
+    {
+        TSlotSet::iterator at = findSlot(set, slot);
+        slots[set].insert(at, slot);
+        return slot;
+    }
+
+    int getFreeSlot(int set, int base)
+    {
+        TSlotSet::iterator at = findSlot(set, base);
+        if (at == slots[set].end())
+            return reserveSlot(set, base);
+
+        // look in locksteps, if they not match, then there is a free slot
+        for (; at != slots[set].end(); ++at, ++base)
+            if (*at != base)
+                break;
+        return reserveSlot(set, base);
+    }
+
+    bool validateBinding(EShLanguage /*stage*/, const char* /*name*/, const glslang::TType& type, bool /*is_live*/) override
+    {
+        if (type.getQualifier().hasBinding()) {
+            int set;
+            if (type.getQualifier().hasSet())
+                set = type.getQualifier().layoutSet;
+            else
+                set = 0;
+
+            if (type.getBasicType() == glslang::EbtSampler) {
+                const glslang::TSampler& sampler = type.getSampler();
+                if (sampler.isPureSampler())
+                    return checkEmpty(set, baseSamplerBinding + type.getQualifier().layoutBinding);
+
+                if (sampler.isTexture())
+                    return checkEmpty(set, baseTextureBinding + type.getQualifier().layoutBinding);
+            }
+
+            if (type.getQualifier().isUniformOrBuffer())
+                return checkEmpty(set, baseUboBinding + type.getQualifier().layoutBinding);
+        }
+        return true;
+    }
+
+    int resolveBinding(EShLanguage /*stage*/, const char* /*name*/, const glslang::TType& type, bool is_live) override
+    {
+        int set;
+        if (type.getQualifier().hasSet())
+            set = type.getQualifier().layoutSet;
+        else
+            set = 0;
+
+        if (type.getQualifier().hasBinding()) {
+            if (type.getBasicType() == glslang::EbtSampler) {
+                const glslang::TSampler& sampler = type.getSampler();
+                if (sampler.isPureSampler())
+                    return reserveSlot(set, baseSamplerBinding + type.getQualifier().layoutBinding);
+
+                if (sampler.isTexture())
+                    return reserveSlot(set, baseTextureBinding + type.getQualifier().layoutBinding);
+            }
+
+            if (type.getQualifier().isUniformOrBuffer())
+                return reserveSlot(set, baseUboBinding + type.getQualifier().layoutBinding);
+        } else if (is_live && doAutoMapping) {
+            // find free slot, the caller did make sure it passes all vars with binding
+            // first and now all are passed that do not have a binding and needs one
+            if (type.getBasicType() == glslang::EbtSampler) {
+                const glslang::TSampler& sampler = type.getSampler();
+                if (sampler.isPureSampler())
+                    return getFreeSlot(set, baseSamplerBinding);
+
+                if (sampler.isTexture())
+                    return getFreeSlot(set, baseTextureBinding);
+            }
+
+            if (type.getQualifier().isUniformOrBuffer())
+                return getFreeSlot(set, baseUboBinding);
+        }
+
+        return -1;
+    }
+
+    int resolveSet(EShLanguage /*stage*/, const char* /*name*/, const glslang::TType& type, bool /*is_live*/) override
+    {
+        if (type.getQualifier().hasSet())
+            return type.getQualifier().layoutSet;
+        return 0;
+    }
 };
 
 // Map I/O variables to provided offsets, and make bindings for
@@ -345,12 +354,12 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate &intermediate, TInfoSi
     // if no resolver is provided, use the default resolver with the given shifts and auto map settings
     TDefaultIoResolver defaultResolver;
     if (resolver == NULL) {
-      defaultResolver.baseSamplerBinding = intermediate.getShiftSamplerBinding();
-      defaultResolver.baseTextureBinding = intermediate.getShiftTextureBinding();
-      defaultResolver.baseUboBinding = intermediate.getShiftUboBinding();
-      defaultResolver.doAutoMapping = intermediate.getAutoMapBindings();
+        defaultResolver.baseSamplerBinding = intermediate.getShiftSamplerBinding();
+        defaultResolver.baseTextureBinding = intermediate.getShiftTextureBinding();
+        defaultResolver.baseUboBinding = intermediate.getShiftUboBinding();
+        defaultResolver.doAutoMapping = intermediate.getAutoMapBindings();
 
-      resolver = &defaultResolver;
+        resolver = &defaultResolver;
     }
 
     TVarLiveMap varMap;
@@ -365,6 +374,7 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate &intermediate, TInfoSi
         iter_binding_live.functions.pop_back();
         function->traverse(&iter_binding_live);
     }
+
     // sort entries by priority. see TVarEntryInfo::TOrderByPriority for info.
     std::sort(varMap.begin(), varMap.end(), TVarEntryInfo::TOrderByPriority());
 
@@ -373,11 +383,12 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate &intermediate, TInfoSi
     std::for_each(varMap.begin(), varMap.end(), doResolve);
 
     if (!hadError) {
-      // sort by id again, so we can use lower bound to find entries
-      std::sort(varMap.begin(), varMap.end(), TVarEntryInfo::TOrderById());
-      TVarSetTraverser iter_iomap(intermediate, varMap);
-      root->traverse(&iter_iomap);
+        // sort by id again, so we can use lower bound to find entries
+        std::sort(varMap.begin(), varMap.end(), TVarEntryInfo::TOrderById());
+        TVarSetTraverser iter_iomap(intermediate, varMap);
+        root->traverse(&iter_iomap);
     }
+
     return !hadError;
 }
 
