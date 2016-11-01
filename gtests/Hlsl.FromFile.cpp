@@ -151,6 +151,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.multiReturn.frag", "main"},
         {"hlsl.matrixindex.frag", "main"},
         {"hlsl.numericsuffixes.frag", "main"},
+        {"hlsl.numthreads.comp", "main_aux1"},
         {"hlsl.overload.frag", "PixelShaderFunction"},
         {"hlsl.pp.line.frag", "main"},
         {"hlsl.precise.frag", "main"},

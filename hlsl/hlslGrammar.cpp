@@ -53,6 +53,7 @@
 
 #include "hlslTokens.h"
 #include "hlslGrammar.h"
+#include "hlslAttributes.h"
 
 namespace glslang {
 
@@ -268,6 +269,10 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     node = nullptr;
     bool list = false;
 
+    // attributes
+    TAttributeMap attributes;
+    acceptAttributes(attributes);
+
     // typedef
     bool typedefDecl = acceptTokenClass(EHTokTypedef);
 
@@ -302,7 +307,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
                     parseContext.error(idToken.loc, "function body can't be in a declarator list", "{", "");
                 if (typedefDecl)
                     parseContext.error(idToken.loc, "function body can't be in a typedef", "{", "");
-                return acceptFunctionDefinition(function, node);
+                return acceptFunctionDefinition(function, node, attributes);
             } else {
                 if (typedefDecl)
                     parseContext.error(idToken.loc, "function typedefs not implemented", "{", "");
@@ -1687,13 +1692,13 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 
 // Do the work to create the function definition in addition to
 // parsing the body (compound_statement).
-bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& node)
+bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& node, const TAttributeMap& attributes)
 {
     TFunction& functionDeclarator = parseContext.handleFunctionDeclarator(token.loc, function, false /* not prototype */);
     TSourceLoc loc = token.loc;
 
     // This does a pushScope()
-    node = parseContext.handleFunctionDefinition(loc, functionDeclarator);
+    node = parseContext.handleFunctionDefinition(loc, functionDeclarator, attributes);
 
     // compound_statement
     TIntermNode* functionBody = nullptr;
@@ -2344,7 +2349,8 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
     statement = nullptr;
 
     // attributes
-    acceptAttributes();
+    TAttributeMap attributes;
+    acceptAttributes(attributes);
 
     // attributed_statement
     switch (peek()) {
@@ -2417,42 +2423,68 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
 //      | FLATTEN
 //      | FORCECASE
 //      | CALL
+//      | DOMAIN
+//      | EARLYDEPTHSTENCIL
+//      | INSTANCE
+//      | MAXTESSFACTOR
+//      | OUTPUTCONTROLPOINTS
+//      | OUTPUTTOPOLOGY
+//      | PARTITIONING
+//      | PATCHCONSTANTFUNC
+//      | NUMTHREADS LEFT_PAREN x_size, y_size,z z_size RIGHT_PAREN
 //
-void HlslGrammar::acceptAttributes()
+void HlslGrammar::acceptAttributes(TAttributeMap& attributes)
 {
-    // For now, accept the [ XXX(X) ] syntax, but drop.
+    // For now, accept the [ XXX(X) ] syntax, but drop all but
+    // numthreads, which is used to set the CS local size.
     // TODO: subset to correct set?  Pass on?
     do {
+        HlslToken idToken;
+
         // LEFT_BRACKET?
         if (! acceptTokenClass(EHTokLeftBracket))
             return;
 
         // attribute
-        if (peekTokenClass(EHTokIdentifier)) {
-            // 'token.string' is the attribute
-            advanceToken();
+        if (acceptIdentifier(idToken)) {
+            // 'idToken.string' is the attribute
         } else if (! peekTokenClass(EHTokRightBracket)) {
             expected("identifier");
             advanceToken();
         }
 
-        // (x)
+        TIntermAggregate* literals = nullptr;
+
+        // (x, ...)
         if (acceptTokenClass(EHTokLeftParen)) {
+            literals = new TIntermAggregate;
+
             TIntermTyped* node;
-            if (! acceptLiteral(node))
-                expected("literal");
-            // 'node' has the literal in it
+            bool expectingLiteral = false;
+            
+            while (acceptLiteral(node)) {
+                expectingLiteral = false;
+                literals->getSequence().push_back(node);
+                if (acceptTokenClass(EHTokComma))
+                    expectingLiteral = true;
+            }
+
+            // 'literals' is an aggregate with the literals in it
             if (! acceptTokenClass(EHTokRightParen))
                 expected(")");
+            if (expectingLiteral || literals->getSequence().empty())
+                expected("literal");
         }
 
         // RIGHT_BRACKET
-        if (acceptTokenClass(EHTokRightBracket))
-            continue;
+        if (!acceptTokenClass(EHTokRightBracket)) {
+            expected("]");
+            return;
+        }
 
-        expected("]");
-        return;
-
+        // Add any values we found into the attribute map.  This accepts
+        // (and ignores) values not mapping to a known TAttributeType;
+        attributes.setAttribute(idToken.string, literals);
     } while (true);
 }
 

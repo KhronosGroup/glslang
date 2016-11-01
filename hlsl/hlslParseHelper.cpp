@@ -37,6 +37,7 @@
 #include "hlslParseHelper.h"
 #include "hlslScanContext.h"
 #include "hlslGrammar.h"
+#include "hlslAttributes.h"
 
 #include "../glslang/MachineIndependent/Scan.h"
 #include "../glslang/MachineIndependent/preprocessor/PpContext.h"
@@ -1045,7 +1046,8 @@ TFunction& HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFu
 // Handle seeing the function prototype in front of a function definition in the grammar.  
 // The body is handled after this function returns.
 //
-TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& loc, TFunction& function)
+TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& loc, TFunction& function, 
+                                                             const TAttributeMap& attributes)
 {
     currentCaller = function.getMangledName();
     TSymbol* symbol = symbolTable.find(function.getMangledName());
@@ -1133,6 +1135,15 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     loopNestingLevel = 0;
     controlFlowNestingLevel = 0;
     postMainReturn = false;
+
+    // Handle function attributes
+    const TIntermAggregate* numThreadliterals = attributes[EatNumthreads];
+    if (numThreadliterals != nullptr && inEntryPoint) {
+        const TIntermSequence& sequence = numThreadliterals->getSequence();
+ 
+        for (int lid = 0; lid < int(sequence.size()); ++lid)
+            intermediate.setLocalSize(lid, sequence[lid]->getAsConstantUnion()->getConstArray()[0].getIConst());
+    }
 
     return paramNodes;
 }
