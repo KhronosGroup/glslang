@@ -599,6 +599,7 @@ enum Capability {
     CapabilityStorageImageWriteWithoutFormat = 56,
     CapabilityMultiViewport = 57,
     CapabilityDrawParameters = 4427,
+    CapabilitySubgroupVoteKHR = 4431,
     CapabilityMax = 0x7fffffff,
 };
 
@@ -897,6 +898,9 @@ enum Op {
     OpAtomicFlagTestAndSet = 318,
     OpAtomicFlagClear = 319,
     OpImageSparseRead = 320,
+    OpSubgroupAllKHR = 4428,
+    OpSubgroupAnyKHR = 4429,
+    OpSubgroupAllEqualKHR = 4430,
     OpMax = 0x7fffffff,
 };
 
