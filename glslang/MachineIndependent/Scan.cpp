@@ -637,14 +637,14 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 {
     do {
         parserToken = &token;
-        TPpToken ppToken;
-        tokenText = pp->tokenize(&ppToken);
+        TPpToken ppTokenVar;
+        tokenText = pp->tokenize(&ppTokenVar);
         if (tokenText == nullptr || tokenText[0] == 0)
             return 0;
 
-        loc = ppToken.loc;
+        loc = ppTokenVar.loc;
         parserToken->sType.lex.loc = loc;
-        switch (ppToken.token) {
+        switch (ppTokenVar.token) {
         case ';':  afterType = false;   return SEMICOLON;
         case ',':  afterType = false;   return COMMA;
         case ':':                       return COLON;
@@ -700,27 +700,27 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
         case PpAtomDecrement:          return DEC_OP;
         case PpAtomIncrement:          return INC_OP;
 
-        case PpAtomConstInt:           parserToken->sType.lex.i   = ppToken.ival;       return INTCONSTANT;
-        case PpAtomConstUint:          parserToken->sType.lex.i   = ppToken.ival;       return UINTCONSTANT;
-        case PpAtomConstInt64:         parserToken->sType.lex.i64 = ppToken.i64val;     return INT64CONSTANT;
-        case PpAtomConstUint64:        parserToken->sType.lex.i64 = ppToken.i64val;     return UINT64CONSTANT;
-        case PpAtomConstFloat:         parserToken->sType.lex.d   = ppToken.dval;       return FLOATCONSTANT;
-        case PpAtomConstDouble:        parserToken->sType.lex.d   = ppToken.dval;       return DOUBLECONSTANT;
+        case PpAtomConstInt:           parserToken->sType.lex.i   = ppTokenVar.ival;       return INTCONSTANT;
+        case PpAtomConstUint:          parserToken->sType.lex.i   = ppTokenVar.ival;       return UINTCONSTANT;
+        case PpAtomConstInt64:         parserToken->sType.lex.i64 = ppTokenVar.i64val;     return INT64CONSTANT;
+        case PpAtomConstUint64:        parserToken->sType.lex.i64 = ppTokenVar.i64val;     return UINT64CONSTANT;
+        case PpAtomConstFloat:         parserToken->sType.lex.d   = ppTokenVar.dval;       return FLOATCONSTANT;
+        case PpAtomConstDouble:        parserToken->sType.lex.d   = ppTokenVar.dval;       return DOUBLECONSTANT;
 #ifdef AMD_EXTENSIONS
         case PpAtomConstFloat16:       parserToken->sType.lex.d   = ppToken.dval;       return FLOAT16CONSTANT;
 #endif
         case PpAtomIdentifier:
         {
-            int token = tokenizeIdentifier();
+            int tokenVar = tokenizeIdentifier();
             field = false;
-            return token;
+            return tokenVar;
         }
 
         case EndOfInput:               return 0;
 
         default:
             char buf[2];
-            buf[0] = (char)ppToken.token;
+            buf[0] = (char)ppTokenVar.token;
             buf[1] = 0;
             parseContext.error(loc, "unexpected token", buf, "");
             break;

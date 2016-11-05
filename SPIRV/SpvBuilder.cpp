@@ -1338,20 +1338,20 @@ Id Builder::createFunctionCall(spv::Function* function, std::vector<spv::Id>& ar
 }
 
 // Comments in header
-Id Builder::createRvalueSwizzle(Decoration precision, Id typeId, Id source, std::vector<unsigned>& channels)
+Id Builder::createRvalueSwizzle(Decoration precision, Id typeId, Id sourceIn, std::vector<unsigned>& channels)
 {
     if (channels.size() == 1)
-        return setPrecision(createCompositeExtract(source, typeId, channels.front()), precision);
+        return setPrecision(createCompositeExtract(sourceIn, typeId, channels.front()), precision);
 
     if (generatingOpCodeForSpecConst) {
         std::vector<Id> operands(2);
-        operands[0] = operands[1] = source;
+        operands[0] = operands[1] = sourceIn;
         return setPrecision(createSpecConstantOp(OpVectorShuffle, typeId, operands, channels), precision);
     }
     Instruction* swizzle = new Instruction(getUniqueId(), typeId, OpVectorShuffle);
-    assert(isVector(source));
-    swizzle->addIdOperand(source);
-    swizzle->addIdOperand(source);
+    assert(isVector(sourceIn));
+    swizzle->addIdOperand(sourceIn);
+    swizzle->addIdOperand(sourceIn);
     for (int i = 0; i < (int)channels.size(); ++i)
         swizzle->addImmediateOperand(channels[i]);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(swizzle));
@@ -1360,10 +1360,10 @@ Id Builder::createRvalueSwizzle(Decoration precision, Id typeId, Id source, std:
 }
 
 // Comments in header
-Id Builder::createLvalueSwizzle(Id typeId, Id target, Id source, std::vector<unsigned>& channels)
+Id Builder::createLvalueSwizzle(Id typeId, Id target, Id sourceIn, std::vector<unsigned>& channels)
 {
-    if (channels.size() == 1 && getNumComponents(source) == 1)
-        return createCompositeInsert(source, target, typeId, channels.front());
+    if (channels.size() == 1 && getNumComponents(sourceIn) == 1)
+        return createCompositeInsert(sourceIn, target, typeId, channels.front());
 
     Instruction* swizzle = new Instruction(getUniqueId(), typeId, OpVectorShuffle);
     assert(isVector(target));
@@ -1372,9 +1372,9 @@ Id Builder::createLvalueSwizzle(Id typeId, Id target, Id source, std::vector<uns
         // For dynamic component selection, source does not involve in l-value swizzle
         swizzle->addIdOperand(target);
     else {
-        assert(getNumComponents(source) == (int)channels.size());
-        assert(isVector(source));
-        swizzle->addIdOperand(source);
+        assert(getNumComponents(sourceIn) == (int)channels.size());
+        assert(isVector(sourceIn));
+        swizzle->addIdOperand(sourceIn);
     }
 
     // Set up an identity shuffle from the base value to the result value
@@ -2163,22 +2163,22 @@ void Builder::accessChainStore(Id rvalue)
 
     // If swizzle still exists, it is out-of-order or not full, we must load the target vector,
     // extract and insert elements to perform writeMask and/or swizzle.
-    Id source = NoResult;
+    Id sourceVar = NoResult;
     if (accessChain.swizzle.size()) {
         Id tempBaseId = createLoad(base);
-        source = createLvalueSwizzle(getTypeId(tempBaseId), tempBaseId, rvalue, accessChain.swizzle);
+        sourceVar = createLvalueSwizzle(getTypeId(tempBaseId), tempBaseId, rvalue, accessChain.swizzle);
     }
 
     // dynamic component selection
     if (accessChain.component != NoResult) {
-        Id tempBaseId = (source == NoResult) ? createLoad(base) : source;
-        source = createVectorInsertDynamic(tempBaseId, getTypeId(tempBaseId), rvalue, accessChain.component);
+        Id tempBaseId = (sourceVar == NoResult) ? createLoad(base) : sourceVar;
+        sourceVar = createVectorInsertDynamic(tempBaseId, getTypeId(tempBaseId), rvalue, accessChain.component);
     }
 
-    if (source == NoResult)
-        source = rvalue;
+    if (sourceVar == NoResult)
+        sourceVar = rvalue;
 
-    createStore(source, base);
+    createStore(sourceVar, base);
 }
 
 // Comments in header

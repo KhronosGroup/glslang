@@ -1269,19 +1269,19 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
             else
                 op = glslang::EOpSub;
 
-            spv::Id result = createBinaryOperation(op, precision,
+            spv::Id resultVar = createBinaryOperation(op, precision,
                                                    TranslateNoContractionDecoration(node->getType().getQualifier()),
                                                    convertGlslangToSpvType(node->getType()), operand, one,
                                                    node->getType().getBasicType());
-            assert(result != spv::NoResult);
+            assert(resultVar != spv::NoResult);
 
             // The result of operation is always stored, but conditionally the
             // consumed result.  The consumed result is always an r-value.
-            builder.accessChainStore(result);
+            builder.accessChainStore(resultVar);
             builder.clearAccessChain();
             if (node->getOp() == glslang::EOpPreIncrement ||
                 node->getOp() == glslang::EOpPreDecrement)
-                builder.setAccessChainRValue(result);
+                builder.setAccessChainRValue(resultVar);
             else
                 builder.setAccessChainRValue(operand);
         }
@@ -2218,8 +2218,8 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
             if (qualifier.storage == glslang::EvqBuffer) {
                 std::vector<spv::Decoration> memory;
                 TranslateMemoryDecoration(memberQualifier, memory);
-                for (unsigned int i = 0; i < memory.size(); ++i)
-                    addMemberDecoration(spvType, member, memory[i]);
+                for (unsigned int j = 0; j < memory.size(); ++j)
+                    addMemberDecoration(spvType, member, memory[j]);
             }
 
             // Compute location decoration; tricky based on whether inheritance is at play and
@@ -2870,12 +2870,12 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             spv::Id resultTypeId = builder.makePointer(spv::StorageClassImage, resultType());
             spv::Id pointer = builder.createOp(spv::OpImageTexelPointer, resultTypeId, operands);
 
-            std::vector<spv::Id> operands;
-            operands.push_back(pointer);
+            std::vector<spv::Id> operandsVar;
+            operandsVar.push_back(pointer);
             for (; opIt != arguments.end(); ++opIt)
-                operands.push_back(*opIt);
+                operandsVar.push_back(*opIt);
 
-            return createAtomicOperation(node->getOp(), precision, resultType(), operands, node->getBasicType());
+            return createAtomicOperation(node->getOp(), precision, resultType(), operandsVar, node->getBasicType());
         }
     }
 
@@ -4118,11 +4118,9 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
 // Create group invocation operations.
 spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy)
 {
-    bool isUnsigned = typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64;
 #ifdef AMD_EXTENSIONS
+    bool isUnsigned = typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64;
     bool isFloat = typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble || typeProxy == glslang::EbtFloat16;
-#else
-    bool isFloat = typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble;
 #endif
 
     spv::Op opCode = spv::OpNop;

@@ -105,55 +105,55 @@ TPpContext::MemoryPool* TPpContext::mem_CreatePool(size_t chunksize, unsigned in
     if (chunksize & (align - 1))
         return nullptr;
 
-    MemoryPool *pool = (MemoryPool*)malloc(chunksize);
-    if (! pool)
+    MemoryPool *poolVar = (MemoryPool*)malloc(chunksize);
+    if (!poolVar)
         return nullptr;
 
-    pool->next = 0;
-    pool->chunksize = chunksize;
-    pool->alignmask = (uintptr_t)(align) - 1;  
-    pool->free = ((uintptr_t)(pool + 1) + pool->alignmask) & ~pool->alignmask;
-    pool->end = (uintptr_t)pool + chunksize;
+    poolVar->next = 0;
+    poolVar->chunksize = chunksize;
+    poolVar->alignmask = (uintptr_t)(align) - 1;
+    poolVar->free = ((uintptr_t)(poolVar + 1) + poolVar->alignmask) & ~poolVar->alignmask;
+    poolVar->end = (uintptr_t)poolVar + chunksize;
     
-    return pool;
+    return poolVar;
 }
 
-void TPpContext::mem_FreePool(MemoryPool *pool)
+void TPpContext::mem_FreePool(MemoryPool *poolIn)
 {
     struct chunk *p, *next;
 
-    for (p = (struct chunk *)pool; p; p = next) {
+    for (p = (struct chunk *)poolIn; p; p = next) {
         next = p->next;
         free(p);
     }
 }
 
-void* TPpContext::mem_Alloc(MemoryPool *pool, size_t size)
+void* TPpContext::mem_Alloc(MemoryPool *poolIn, size_t size)
 {
     struct chunk *ch;
-    void *rv = (void *)pool->free;
-    size = (size + pool->alignmask) & ~pool->alignmask;
-    if (size <= 0) size = pool->alignmask;
-    pool->free += size;
-    if (pool->free > pool->end || pool->free < (uintptr_t)rv) {
-        size_t minreq = (size + sizeof(struct chunk) + pool->alignmask) & ~pool->alignmask;
-        pool->free = (uintptr_t)rv;
-        if (minreq >= pool->chunksize) {
+    void *rv = (void *)poolIn->free;
+    size = (size + poolIn->alignmask) & ~poolIn->alignmask;
+    if (size <= 0) size = poolIn->alignmask;
+    poolIn->free += size;
+    if (poolIn->free > poolIn->end || poolIn->free < (uintptr_t)rv) {
+        size_t minreq = (size + sizeof(struct chunk) + poolIn->alignmask) & ~poolIn->alignmask;
+        poolIn->free = (uintptr_t)rv;
+        if (minreq >= poolIn->chunksize) {
             // request size is too big for the chunksize, so allocate it as
             // a single chunk of the right size
             ch = (struct chunk*)malloc(minreq);
             if (! ch)
                 return nullptr;
         } else {
-            ch = (struct chunk*)malloc(pool->chunksize);
+            ch = (struct chunk*)malloc(poolIn->chunksize);
             if (! ch)
                 return nullptr;
-            pool->free = (uintptr_t)ch + minreq;
-            pool->end = (uintptr_t)ch + pool->chunksize;
+            poolIn->free = (uintptr_t)ch + minreq;
+            poolIn->end = (uintptr_t)ch + poolIn->chunksize;
         }
-        ch->next = pool->next;
-        pool->next = ch;
-        rv = (void *)(((uintptr_t)(ch+1) + pool->alignmask) & ~pool->alignmask);
+        ch->next = poolIn->next;
+        poolIn->next = ch;
+        rv = (void *)(((uintptr_t)(ch+1) + poolIn->alignmask) & ~poolIn->alignmask);
     }
     return rv;
 }
