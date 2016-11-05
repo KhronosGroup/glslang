@@ -59,11 +59,11 @@ ERROR: node is still EOpNull!
 0:22                1 (const int)
 0:22        Branch: Return
 0:?   Linker Objects
+0:?     'Color' (layout(location=0 ) out 4-component vector of float)
+0:?     'Depth' (out float FragDepth)
 0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?     'g_tTex2dmsf4' (uniform texture2DMS)
 0:?     'g_tTex2dmsf4a' (uniform texture2DMSArray)
-0:?     'Color' (layout(location=0 ) out 4-component vector of float)
-0:?     'Depth' (out float FragDepth)
 
 
 Linked fragment stage:
@@ -124,10 +124,10 @@ ERROR: node is still EOpNull!
 0:22                1 (const int)
 0:22        Branch: Return
 0:?   Linker Objects
+0:?     'Color' (layout(location=0 ) out 4-component vector of float)
+0:?     'Depth' (out float FragDepth)
 0:?     'g_sSamp' (layout(binding=0 ) uniform sampler)
 0:?     'g_tTex2dmsf4' (uniform texture2DMS)
 0:?     'g_tTex2dmsf4a' (uniform texture2DMSArray)
-0:?     'Color' (layout(location=0 ) out 4-component vector of float)
-0:?     'Depth' (out float FragDepth)
 
 SPIR-V is not generated for failed compile or link

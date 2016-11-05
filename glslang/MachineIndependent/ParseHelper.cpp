@@ -50,15 +50,12 @@ namespace glslang {
 TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
                              int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
                              TInfoSink& infoSink, bool forwardCompatible, EShMessages messages) :
-            TParseContextBase(symbolTable, interm, version, profile, spvVersion, language, infoSink, forwardCompatible, messages), 
+            TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink, forwardCompatible, messages), 
             contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0), statementNestingLevel(0),
             inMain(false), postMainReturn(false), currentFunctionType(nullptr), blockName(nullptr),
-            limits(resources.limits), parsingBuiltins(parsingBuiltins),
+            limits(resources.limits),
             atomicUintOffsets(nullptr), anyIndexLimits(false)
 {
-    // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
-    linkage = new TIntermAggregate;
-
     // decide whether precision qualifiers should be ignored or respected
     if (profile == EEsProfile || spvVersion.vulkan > 0) {
         precisionManager.respectPrecisionQualifiers();
@@ -184,8 +181,8 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& inp
     currentScanner = &input;
     ppContext.setInput(input, versionWillBeError);
     yyparse(this);
-    if (! parsingBuiltins)
-        finalErrorCheck();
+
+    finish();
 
     return numErrors == 0;
 }
@@ -3093,7 +3090,7 @@ void TParseContext::arrayDimMerge(TType& type, const TArraySizes* sizes)
 // Do all the semantic checking for declaring or redeclaring an array, with and
 // without a size, and make the right changes to the symbol table.
 //
-void TParseContext::declareArray(const TSourceLoc& loc, TString& identifier, const TType& type, TSymbol*& symbol, bool& newDeclaration)
+void TParseContext::declareArray(const TSourceLoc& loc, TString& identifier, const TType& type, TSymbol*& symbol)
 {
     if (symbol == nullptr) {
         bool currentScope;
@@ -3111,7 +3108,8 @@ void TParseContext::declareArray(const TSourceLoc& loc, TString& identifier, con
             //
             symbol = new TVariable(&identifier, type);
             symbolTable.insert(*symbol);
-            newDeclaration = true;
+            if (symbolTable.atGlobalLevel())
+                trackLinkageDeferred(*symbol);
 
             if (! symbolTable.atBuiltInLevel()) {
                 if (isIoResizeArray(type)) {
@@ -3271,7 +3269,8 @@ void TParseContext::nonInitConstCheck(const TSourceLoc& loc, TString& identifier
 //
 // Returns a redeclared and type-modified variable if a redeclarated occurred.
 //
-TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TString& identifier, const TQualifier& qualifier, const TShaderQualifiers& publicType, bool& newDeclaration)
+TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TString& identifier,
+                                                 const TQualifier& qualifier, const TShaderQualifiers& publicType)
 {
     if (! builtInName(identifier) || symbolTable.atBuiltInLevel() || ! symbolTable.atGlobalLevel())
         return nullptr;
@@ -3318,11 +3317,8 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
         // If it wasn't at a built-in level, then it's already been redeclared;
         // that is, this is a redeclaration of a redeclaration; reuse that initial
         // redeclaration.  Otherwise, make the new one.
-        if (builtIn) {
-            // Copy the symbol up to make a writable version
+        if (builtIn)
             makeEditable(symbol);
-            newDeclaration = true;
-        }
 
         // Now, modify the type of the copy, as per the type of the current redeclaration.
 
@@ -3540,7 +3536,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
         fixIoArraySize(loc, block->getWritableType());
 
     // Save it in the AST for linker use.
-    intermediate.addSymbolLinkageNode(linkage, *block);
+    trackLinkageDeferred(*block);
 }
 
 void TParseContext::paramCheckFix(const TSourceLoc& loc, const TStorageQualifier& qualifier, TType& type)
@@ -3794,8 +3790,13 @@ void TParseContext::limitCheck(const TSourceLoc& loc, int value, const char* lim
 //
 // Do any additional error checking, etc., once we know the parsing is done.
 //
-void TParseContext::finalErrorCheck()
+void TParseContext::finish()
 {
+    TParseContextBase::finish();
+
+    if (parsingBuiltins)
+        return;
+
     // Check on array indexes for ES 2.0 (version 100) limitations.
     for (size_t i = 0; i < needsIndexLimitationChecking.size(); ++i)
         constantIndexExpressionCheck(needsIndexLimitationChecking[i]);
@@ -4971,8 +4972,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         error(loc, "can only apply depth layout to gl_FragDepth", "layout qualifier", "");
 
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
-    bool newDeclaration = false;    // true if a new entry gets added to the symbol table
-    TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), publicType.shaderQualifiers, newDeclaration);
+    TSymbol* symbol = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), publicType.shaderQualifiers);
     if (symbol == nullptr)
         reservedErrorCheck(loc, identifier);
 
@@ -4990,7 +4990,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         arrayUnsizedCheck(loc, type.getQualifier(), &type.getArraySizes(), initializer != nullptr, false);
 
         if (! arrayQualifierError(loc, type.getQualifier()) && ! arrayError(loc, type))
-            declareArray(loc, identifier, type, symbol, newDeclaration);
+            declareArray(loc, identifier, type, symbol);
 
         if (initializer) {
             profileRequires(loc, ENoProfile, 120, E_GL_3DL_array_objects, "initializer");
@@ -4999,7 +4999,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     } else {
         // non-array case
         if (symbol == nullptr)
-            symbol = declareNonArray(loc, identifier, type, newDeclaration);
+            symbol = declareNonArray(loc, identifier, type);
         else if (type != symbol->getType())
             error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
     }
@@ -5021,10 +5021,6 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     // look for errors in layout qualifier use
     layoutObjectCheck(loc, *symbol);
     fixOffset(loc, *symbol);
-
-    // see if it's a linker-level object to track
-    if (newDeclaration && symbolTable.atGlobalLevel())
-        intermediate.addSymbolLinkageNode(linkage, *symbol);
 
     return initNode;
 }
@@ -5061,20 +5057,22 @@ TVariable* TParseContext::makeInternalVariable(const char* name, const TType& ty
 //
 // Return the successfully declared variable.
 //
-TVariable* TParseContext::declareNonArray(const TSourceLoc& loc, TString& identifier, TType& type, bool& newDeclaration)
+TVariable* TParseContext::declareNonArray(const TSourceLoc& loc, TString& identifier, TType& type)
 {
     // make a new variable
     TVariable* variable = new TVariable(&identifier, type);
 
     ioArrayCheck(loc, type, identifier);
+
     // add variable to symbol table
-    if (! symbolTable.insert(*variable)) {
-        error(loc, "redefinition", variable->getName().c_str(), "");
-        return nullptr;
-    } else {
-        newDeclaration = true;
+    if (symbolTable.insert(*variable)) {
+        if (symbolTable.atGlobalLevel())
+            trackLinkageDeferred(*variable);
         return variable;
     }
+
+    error(loc, "redefinition", variable->getName().c_str(), "");
+    return nullptr;
 }
 
 //
@@ -5731,7 +5729,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         fixIoArraySize(loc, variable.getWritableType());
 
     // Save it in the AST for linker use.
-    intermediate.addSymbolLinkageNode(linkage, variable);
+    trackLinkageDeferred(variable);
 }
 
 // Do all block-declaration checking regarding the combination of in/out/uniform/buffer

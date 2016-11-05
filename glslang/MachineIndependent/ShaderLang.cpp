@@ -947,7 +947,6 @@ struct DoFullParse{
         // Parse the full shader.
         if (! parseContext.parseShaderStrings(ppContext, fullInput, versionWillBeError))
             success = false;
-        intermediate.addSymbolLinkageNodes(parseContext.getLinkage(), parseContext.getLanguage(), symbolTable);
 
         if (success && intermediate.getTreeRoot()) {
             if (optLevel == EShOptNoGeneration)

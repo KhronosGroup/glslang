@@ -56,7 +56,6 @@ Shader version: 130
 0:?     'color' (smooth in 4-component vector of float)
 0:?     'alpha' (smooth in float)
 0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float TexCoord)
-0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float TexCoord)
 0:?     'foo' (smooth in 3-element array of 4-component vector of float)
 
 
@@ -114,7 +113,6 @@ Shader version: 130
 0:?     'texSampler2D' (uniform sampler2D)
 0:?     'color' (smooth in 4-component vector of float)
 0:?     'alpha' (smooth in float)
-0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float TexCoord)
 0:?     'gl_TexCoord' (smooth in 6-element array of 4-component vector of float TexCoord)
 0:?     'foo' (smooth in 3-element array of 4-component vector of float)
 

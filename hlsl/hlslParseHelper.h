@@ -114,7 +114,7 @@ public:
     bool structQualifierErrorCheck(const TSourceLoc&, const TPublicType& pType);
     void mergeQualifiers(TQualifier& dst, const TQualifier& src);
     int computeSamplerTypeIndex(TSampler&);
-    TSymbol* redeclareBuiltinVariable(const TSourceLoc&, const TString&, const TQualifier&, const TShaderQualifiers&, bool& newDeclaration);
+    TSymbol* redeclareBuiltinVariable(const TSourceLoc&, const TString&, const TQualifier&, const TShaderQualifiers&);
     void redeclareBuiltinBlock(const TSourceLoc&, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
     void paramFix(TType& type);
     void specializationCheck(const TSourceLoc&, const TType&, const char* op);
@@ -163,8 +163,8 @@ public:
 protected:
     void inheritGlobalDefaults(TQualifier& dst) const;
     TVariable* makeInternalVariable(const char* name, const TType&) const;
-    TVariable* declareNonArray(const TSourceLoc&, TString& identifier, TType&, bool& newDeclaration);
-    void declareArray(const TSourceLoc&, TString& identifier, const TType&, TSymbol*&, bool& newDeclaration);
+    TVariable* declareNonArray(const TSourceLoc&, TString& identifier, TType&);
+    void declareArray(const TSourceLoc&, TString& identifier, const TType&, TSymbol*&, bool track);
     TIntermNode* executeInitializer(const TSourceLoc&, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(const TSourceLoc&, const TType&, TIntermTyped* initializer);
     TOperator mapAtomicOp(const TSourceLoc& loc, TOperator op, bool isImage);

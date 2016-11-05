@@ -221,16 +221,37 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
         error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
 }
 
+// Add a linkage symbol node for 'symbol', which
+// must have its type fully edited, as this will snapshot the type.
+// It is okay if symbol becomes invalid before finish().
+void TParseContextBase::trackLinkage(TSymbol& symbol)
+{
+    if (!parsingBuiltins)
+        intermediate.addSymbolLinkageNode(linkage, symbol);
+}
+
+// Add 'symbol' to the list of deferred linkage symbols, which
+// are later processed in finish(), at which point the symbol
+// must still be valid.
+// It is okay if the symbol's type will be subsequently edited.
+void TParseContextBase::trackLinkageDeferred(TSymbol& symbol)
+{
+    if (!parsingBuiltins)
+        linkageSymbols.push_back(&symbol);
+}
+
 // Make a shared symbol have a non-shared version that can be edited by the current 
 // compile, such that editing its type will not change the shared version and will
-// effect all nodes sharing it.
+// effect all nodes already sharing it (non-shallow type),
+// or adopting its full type after being edited (shallow type).
 void TParseContextBase::makeEditable(TSymbol*& symbol)
 {
     // copyUp() does a deep copy of the type.
     symbol = symbolTable.copyUp(symbol);
 
-    // Save it in the AST for linker use.
-    intermediate.addSymbolLinkageNode(linkage, *symbol);
+    // Save it (deferred, so it can be edited first) in the AST for linker use.
+    if (symbol)
+        trackLinkageDeferred(*symbol);
 }
 
 // Return a writable version of the variable 'name'.
@@ -242,7 +263,7 @@ TVariable* TParseContextBase::getEditableVariable(const char* name)
 {
     bool builtIn;
     TSymbol* symbol = symbolTable.find(name, &builtIn);
-    
+
     assert(symbol != nullptr);
     if (symbol == nullptr)
         return nullptr;
@@ -434,7 +455,7 @@ bool TParseContextBase::insertGlobalUniformBlock()
         // This is the first request; we need a normal symbol table insert
         inserted = symbolTable.insert(*globalUniformBlock);
         if (inserted)
-            intermediate.addSymbolLinkageNode(linkage, *globalUniformBlock);
+            trackLinkageDeferred(*globalUniformBlock);
     } else if (firstNewMember <= numMembers) {
         // This is a follow-on request; we need to amend the first insert
         inserted = symbolTable.amend(*globalUniformBlock, firstNewMember);
@@ -446,6 +467,16 @@ bool TParseContextBase::insertGlobalUniformBlock()
     }
 
     return inserted;
+}
+
+void TParseContextBase::finish()
+{
+    if (!parsingBuiltins) {
+        // Transfer te linkage symbols to AST nodes
+        for (auto i = linkageSymbols.begin(); i != linkageSymbols.end(); ++i)
+            intermediate.addSymbolLinkageNode(linkage, **i);
+        intermediate.addSymbolLinkageNodes(linkage, getLanguage(), symbolTable);
+    }
 }
 
 } // end namespace glslang

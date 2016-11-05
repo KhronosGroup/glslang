@@ -108,7 +108,6 @@ ERROR: node is still EOpNull!
 0:49        'gl_PrimitiveID' (flat in int PrimitiveID)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float FragCoord)
-0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float FragCoord)
 0:?     'foo' (smooth in 4-component vector of float)
 0:?     's' (smooth in structure{global float f})
 0:?     'patch' (global float)
@@ -227,7 +226,6 @@ ERROR: node is still EOpNull!
 0:49      Branch: Return with expression
 0:49        'gl_PrimitiveID' (flat in int PrimitiveID)
 0:?   Linker Objects
-0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float FragCoord)
 0:?     'gl_FragCoord' (gl_FragCoord 4-component vector of float FragCoord)
 0:?     'foo' (smooth in 4-component vector of float)
 0:?     's' (smooth in structure{global float f})

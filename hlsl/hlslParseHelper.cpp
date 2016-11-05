@@ -48,10 +48,10 @@
 
 namespace glslang {
 
-HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool /*parsingBuiltins*/,
+HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
                                    int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TInfoSink& infoSink,
                                    bool forwardCompatible, EShMessages messages) :
-    TParseContextBase(symbolTable, interm, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
+    TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
     contextPragma(true, false),
     loopNestingLevel(0), annotationNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
     postMainReturn(false),
@@ -59,9 +59,6 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     entryPointOutput(nullptr),
     nextInLocation(0), nextOutLocation(0)
 {
-    // ensure we always have a linkage node, even if empty, to simplify tree topology algorithms
-    linkage = new TIntermAggregate;
-
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;
     globalUniformDefaults.layoutPacking = ElpStd140;
@@ -127,6 +124,8 @@ bool HlslParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& 
         ++numErrors;
         return false;
     }
+
+    finish();
 
     return numErrors == 0;
 }
@@ -950,9 +949,9 @@ void HlslParseContext::flattenArray(const TSourceLoc& loc, const TVariable& vari
             ++binding;
 
         memberVariables.push_back(memberVariable);
-        intermediate.addSymbolLinkageNode(linkage, *memberVariable);
+        trackLinkageDeferred(*memberVariable);
     }
-    
+
     flattenMap[variable.getUniqueId()] = memberVariables;
 }
 
@@ -989,7 +988,7 @@ void HlslParseContext::assignLocations(TVariable& variable)
                     nextOutLocation += intermediate.computeTypeLocationSize(variable.getType());
                 }
             }
-            intermediate.addSymbolLinkageNode(linkage, variable);
+            trackLinkage(variable);
         }
     };
 
@@ -3588,7 +3587,7 @@ void HlslParseContext::arrayDimMerge(TType& type, const TArraySizes* sizes)
 // Do all the semantic checking for declaring or redeclaring an array, with and
 // without a size, and make the right changes to the symbol table.
 //
-void HlslParseContext::declareArray(const TSourceLoc& loc, TString& identifier, const TType& type, TSymbol*& symbol, bool& newDeclaration)
+void HlslParseContext::declareArray(const TSourceLoc& loc, TString& identifier, const TType& type, TSymbol*& symbol, bool track)
 {
     if (! symbol) {
         bool currentScope;
@@ -3605,7 +3604,8 @@ void HlslParseContext::declareArray(const TSourceLoc& loc, TString& identifier, 
             //
             symbol = new TVariable(&identifier, type);
             symbolTable.insert(*symbol);
-            newDeclaration = true;
+            if (track && symbolTable.atGlobalLevel())
+                trackLinkageDeferred(*symbol);
 
             return;
         }
@@ -3627,7 +3627,6 @@ void HlslParseContext::declareArray(const TSourceLoc& loc, TString& identifier, 
 
     // redeclareBuiltinVariable() should have already done the copyUp()
     TType& existingType = symbol->getWritableType();
-
 
     if (existingType.isExplicitlySizedArray()) {
         // be more lenient for input arrays to geometry shaders and tessellation control outputs, where the redeclaration is the same size
@@ -3695,7 +3694,7 @@ void HlslParseContext::updateImplicitArraySize(const TSourceLoc& loc, TIntermNod
 //
 TSymbol* HlslParseContext::redeclareBuiltinVariable(const TSourceLoc& /*loc*/, const TString& identifier,
                                                     const TQualifier& /*qualifier*/,
-                                                    const TShaderQualifiers& /*publicType*/, bool& /*newDeclaration*/)
+                                                    const TShaderQualifiers& /*publicType*/)
 {
     if (! builtInName(identifier) || symbolTable.atBuiltInLevel() || ! symbolTable.atGlobalLevel())
         return nullptr;
@@ -3820,7 +3819,7 @@ void HlslParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& n
     symbolTable.insert(*block);
 
     // Save it in the AST for linker use.
-    intermediate.addSymbolLinkageNode(linkage, *block);
+    trackLinkageDeferred(*block);
 }
 
 void HlslParseContext::paramFix(TType& type)
@@ -4413,8 +4412,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
         return nullptr;
 
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
-    bool newDeclaration = false;    // true if a new entry gets added to the symbol table
-    TSymbol* symbol = nullptr; // = redeclareBuiltinVariable(loc, identifier, type.getQualifier(), parseType.shaderQualifiers, newDeclaration);
+    TSymbol* symbol = nullptr;
 
     inheritGlobalDefaults(type.getQualifier());
 
@@ -4423,14 +4421,14 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
     // Declare the variable
     if (type.isArray()) {
         // array case
-        declareArray(loc, identifier, type, symbol, newDeclaration);
         flattenVar = shouldFlatten(type);
+        declareArray(loc, identifier, type, symbol, !flattenVar);
         if (flattenVar)
             flatten(loc, *symbol->getAsVariable());
     } else {
         // non-array case
         if (! symbol)
-            symbol = declareNonArray(loc, identifier, type, newDeclaration);
+            symbol = declareNonArray(loc, identifier, type);
         else if (type != symbol->getType())
             error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
     }
@@ -4451,13 +4449,6 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
         }
         initNode = executeInitializer(loc, initializer, variable);
     }
-
-    // see if it's a linker-level object to track.  if it's flattened above,
-    // that process added linkage objects for the flattened symbols, we don't
-    // add the aggregate here.
-    if (!flattenVar)
-        if (newDeclaration && symbolTable.atGlobalLevel())
-            intermediate.addSymbolLinkageNode(linkage, *symbol);
 
     return initNode;
 }
@@ -4494,19 +4485,20 @@ TVariable* HlslParseContext::makeInternalVariable(const char* name, const TType&
 //
 // Return the successfully declared variable.
 //
-TVariable* HlslParseContext::declareNonArray(const TSourceLoc& loc, TString& identifier, TType& type, bool& newDeclaration)
+TVariable* HlslParseContext::declareNonArray(const TSourceLoc& loc, TString& identifier, TType& type)
 {
     // make a new variable
     TVariable* variable = new TVariable(&identifier, type);
 
     // add variable to symbol table
-    if (! symbolTable.insert(*variable)) {
-        error(loc, "redefinition", variable->getName().c_str(), "");
-        return nullptr;
-    } else {
-        newDeclaration = true;
+    if (symbolTable.insert(*variable)) {
+        if (symbolTable.atGlobalLevel())
+            trackLinkageDeferred(*variable);
         return variable;
     }
+
+    error(loc, "redefinition", variable->getName().c_str(), "");
+    return nullptr;
 }
 
 //
@@ -5019,7 +5011,7 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     }
 
     // Save it in the AST for linker use.
-    intermediate.addSymbolLinkageNode(linkage, variable);
+    trackLinkageDeferred(variable);
 }
 
 void HlslParseContext::finalizeGlobalUniformBlockLayout(TVariable& block)
