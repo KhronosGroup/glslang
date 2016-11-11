@@ -368,21 +368,22 @@ inline bool IsValid(const char* cname, char retOrder, char retType, char argOrde
     if (dim0 == 1 && (name == "length" || name == "normalize" || name == "reflect" || name == "refract"))
         return false;
 
-    if (UseHlslTypes)
-        return true;
-
-    if (!IsTextureType(argOrder) &&
-        ((isVec && dim0 == 1)            ||  // avoid vec1
-         (isMat && dim0 == 1 && dim1 == 1)))  // avoid mat1x1
+    if (!IsTextureType(argOrder) && ((isVec && dim0 == 1))) // avoid vec1
         return false;
+    
+    // These are GLSL restrictions only:
+    if (!UseHlslTypes) {
+        if (isMat && dim0 == 1 && dim1 == 1)  // avoid mat1x1
+            return false;
 
-    if (isMat && dim1 == 1)  // TODO: avoid mat Nx1 until we find the right GLSL profile
-        return false;
+        if (isMat && dim1 == 1)  // TODO: avoid mat Nx1 until we find the right GLSL profile
+            return false;
 
-    if (name == "GetRenderTargetSamplePosition" ||
-        name == "tex1D" ||
-        name == "tex1Dgrad")
-        return false;
+        if (name == "GetRenderTargetSamplePosition" ||
+            name == "tex1D" ||
+            name == "tex1Dgrad")
+            return false;
+    }
 
     return true;
 }
