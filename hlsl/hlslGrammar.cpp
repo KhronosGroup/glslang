@@ -2453,27 +2453,29 @@ void HlslGrammar::acceptAttributes(TAttributeMap& attributes)
             advanceToken();
         }
 
-        TIntermAggregate* literals = nullptr;
+        TIntermAggregate* expressions = nullptr;
 
         // (x, ...)
         if (acceptTokenClass(EHTokLeftParen)) {
-            literals = new TIntermAggregate;
+            expressions = new TIntermAggregate;
 
             TIntermTyped* node;
-            bool expectingLiteral = false;
+            bool expectingExpression = false;
             
-            while (acceptLiteral(node)) {
-                expectingLiteral = false;
-                literals->getSequence().push_back(node);
+            while (acceptAssignmentExpression(node)) {
+                expectingExpression = false;
+                expressions->getSequence().push_back(node);
                 if (acceptTokenClass(EHTokComma))
-                    expectingLiteral = true;
+                    expectingExpression = true;
             }
 
-            // 'literals' is an aggregate with the literals in it
+            // 'expressions' is an aggregate with the expressions in it
             if (! acceptTokenClass(EHTokRightParen))
                 expected(")");
-            if (expectingLiteral || literals->getSequence().empty())
-                expected("literal");
+
+            // Error for partial or missing expression
+            if (expectingExpression || expressions->getSequence().empty())
+                expected("expression");
         }
 
         // RIGHT_BRACKET
@@ -2484,7 +2486,7 @@ void HlslGrammar::acceptAttributes(TAttributeMap& attributes)
 
         // Add any values we found into the attribute map.  This accepts
         // (and ignores) values not mapping to a known TAttributeType;
-        attributes.setAttribute(idToken.string, literals);
+        attributes.setAttribute(idToken.string, expressions);
     } while (true);
 }
 

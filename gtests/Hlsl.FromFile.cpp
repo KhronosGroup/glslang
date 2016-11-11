@@ -86,6 +86,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.array.multidim.frag", "main"},
         {"hlsl.assoc.frag", "PixelShaderFunction"},
         {"hlsl.attribute.frag", "PixelShaderFunction"},
+        {"hlsl.attribute.expression.comp", "main"},
         {"hlsl.basic.comp", "main"},
         {"hlsl.buffer.frag", "PixelShaderFunction"},
         {"hlsl.calculatelod.dx10.frag", "main"},
