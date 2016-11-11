@@ -14,7 +14,7 @@ ERROR: node is still EOpNull!
 0:2      'inF0' (in float)
 0:?     Sequence
 0:3      ERROR: Bad unary op
- (global uint)
+ (temp uint)
 0:3        'inF0' (in float)
 0:5      Branch: Return with expression
 0:5        Constant:
@@ -31,7 +31,7 @@ ERROR: node is still EOpNull!
 0:15      'inF0' (in 2-component vector of float)
 0:?     Sequence
 0:16      ERROR: Bad unary op
- (global 2-component vector of uint)
+ (temp 2-component vector of uint)
 0:16        'inF0' (in 2-component vector of float)
 0:18      Branch: Return with expression
 0:?         Constant:
@@ -42,7 +42,7 @@ ERROR: node is still EOpNull!
 0:22      'inF0' (in 3-component vector of float)
 0:?     Sequence
 0:23      ERROR: Bad unary op
- (global 3-component vector of uint)
+ (temp 3-component vector of uint)
 0:23        'inF0' (in 3-component vector of float)
 0:25      Branch: Return with expression
 0:?         Constant:
@@ -54,7 +54,7 @@ ERROR: node is still EOpNull!
 0:29      'inF0' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:30      ERROR: Bad unary op
- (global 4-component vector of uint)
+ (temp 4-component vector of uint)
 0:30        'inF0' (layout(location=0 ) in 4-component vector of float)
 0:32      Sequence
 0:32        move second child to first child (temp 4-component vector of float)
@@ -81,7 +81,7 @@ ERROR: node is still EOpNull!
 0:2      'inF0' (in float)
 0:?     Sequence
 0:3      ERROR: Bad unary op
- (global uint)
+ (temp uint)
 0:3        'inF0' (in float)
 0:5      Branch: Return with expression
 0:5        Constant:
@@ -98,7 +98,7 @@ ERROR: node is still EOpNull!
 0:15      'inF0' (in 2-component vector of float)
 0:?     Sequence
 0:16      ERROR: Bad unary op
- (global 2-component vector of uint)
+ (temp 2-component vector of uint)
 0:16        'inF0' (in 2-component vector of float)
 0:18      Branch: Return with expression
 0:?         Constant:
@@ -109,7 +109,7 @@ ERROR: node is still EOpNull!
 0:22      'inF0' (in 3-component vector of float)
 0:?     Sequence
 0:23      ERROR: Bad unary op
- (global 3-component vector of uint)
+ (temp 3-component vector of uint)
 0:23        'inF0' (in 3-component vector of float)
 0:25      Branch: Return with expression
 0:?         Constant:
@@ -121,7 +121,7 @@ ERROR: node is still EOpNull!
 0:29      'inF0' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
 0:30      ERROR: Bad unary op
- (global 4-component vector of uint)
+ (temp 4-component vector of uint)
 0:30        'inF0' (layout(location=0 ) in 4-component vector of float)
 0:32      Sequence
 0:32        move second child to first child (temp 4-component vector of float)

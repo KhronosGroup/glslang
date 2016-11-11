@@ -18,7 +18,7 @@ gl_FragCoord origin is upper left
 0:4        No loop body
 0:5      Loop with condition not tested first
 0:5        Loop Condition
-0:5        all (global bool)
+0:5        all (temp bool)
 0:5          Equal (temp 4-component vector of bool)
 0:5            'input' (layout(location=0 ) in 4-component vector of float)
 0:5            'input' (layout(location=0 ) in 4-component vector of float)
@@ -55,7 +55,7 @@ gl_FragCoord origin is upper left
 0:4        No loop body
 0:5      Loop with condition not tested first
 0:5        Loop Condition
-0:5        all (global bool)
+0:5        all (temp bool)
 0:5          Equal (temp 4-component vector of bool)
 0:5            'input' (layout(location=0 ) in 4-component vector of float)
 0:5            'input' (layout(location=0 ) in 4-component vector of float)

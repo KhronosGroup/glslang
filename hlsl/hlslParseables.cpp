@@ -55,7 +55,7 @@
 
 namespace {  // anonymous namespace functions
 
-const bool UseHlslTypes = false;
+const bool UseHlslTypes = true;
 
 const char* BaseTypeName(const char argOrder, const char* scalarName, const char* vecName, const char* matName)
 {
@@ -246,24 +246,24 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
 
     if (UseHlslTypes) {
         switch (type) {
-        case '-': s += "void";                                            break;
-        case 'F': s += "float";                                           break;
-        case 'D': s += "double";                                          break;
-        case 'I': s += "int";                                             break;
-        case 'U': s += "uint";                                            break;
-        case 'B': s += "bool";                                            break;
-        case 'S': s += "sampler";                                         break;
-        case 's': s += "SamplerComparisonState";                          break;
+        case '-': s += "void";                                break;
+        case 'F': s += "float";                               break;
+        case 'D': s += "double";                              break;
+        case 'I': s += "int";                                 break;
+        case 'U': s += "uint";                                break;
+        case 'B': s += "bool";                                break;
+        case 'S': s += "sampler";                             break;
+        case 's': s += "SamplerComparisonState";              break;
         case 'T': s += ((isBuffer && isImage) ? "RWBuffer" :
                         isBuffer ? "Buffer" : 
-                        isImage  ? "RWTexture" : "Texture");              break;
-        case 'i': s += ((isBuffer && isImage) ? "RWBuffer <int4>" :
-                        isBuffer ? "Buffer <int4>" : 
-                        isImage ? "RWTexture <int4>" : "Texture <int4>"); break;
-        case 'u': s += ((isBuffer && isImage) ? "RWBuffer <uint4>" :
-                        isBuffer ? "Buffer <uint4>" :
-                        isImage ? "RWTexture <uint4>" : "Texture <uint4>");break;
-        default:  s += "UNKNOWN_TYPE";                                    break;
+                        isImage  ? "RWTexture" : "Texture");  break;
+        case 'i': s += ((isBuffer && isImage) ? "RWBuffer" :
+                        isBuffer ? "Buffer" : 
+                        isImage ? "RWTexture" : "Texture");   break;
+        case 'u': s += ((isBuffer && isImage) ? "RWBuffer" :
+                        isBuffer ? "Buffer" :
+                        isImage ? "RWTexture" : "Texture");   break;
+        default:  s += "UNKNOWN_TYPE";                        break;
         }
     } else {
         switch (type) {
@@ -336,30 +336,47 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     if (isArrayed)
         s += "Array";
 
+    // For HLSL, append return type for texture types
+    if (UseHlslTypes) {
+        switch (type) {
+        case 'i': s += "<int4>";   break;
+        case 'u': s += "<uint4>";  break;
+        case 'T': s += "<float4>"; break;
+        default: break;
+        }
+    }
+
     return s;
 }
 
-// TODO: the GLSL parser is currently used to parse HLSL prototypes.  However, many valid HLSL prototypes
+// The GLSL parser can be used to parse a subset of HLSL prototypes.  However, many valid HLSL prototypes
 // are not valid GLSL prototypes.  This rejects the invalid ones.  Thus, there is a single switch below
 // to enable creation of the entire HLSL space.
-inline bool IsValidGlsl(const char* cname, char retOrder, char retType, char argOrder, char argType,
-                        int dim0, int dim1, int dim0Max, int dim1Max)
+inline bool IsValid(const char* cname, char retOrder, char retType, char argOrder, char argType,
+                    int dim0, int dim1, int dim0Max, int dim1Max)
 {
     const bool isVec = dim0Max > 1 || argType == 'V';
     const bool isMat = dim1Max > 1 || argType == 'M';
+
+    if ((isMat && (argType == 'I' || argType == 'U' || argType == 'B')) ||
+        (retOrder == 'M' && (retType == 'I' || retType == 'U' || retType == 'B')))
+        return false;
+
+    const std::string name(cname);
+
+    // these do not have vec1 versions
+    if (dim0 == 1 && (name == "length" || name == "normalize" || name == "reflect" || name == "refract"))
+        return false;
+
+    if (UseHlslTypes)
+        return true;
 
     if (!IsTextureType(argOrder) &&
         ((isVec && dim0 == 1)            ||  // avoid vec1
          (isMat && dim0 == 1 && dim1 == 1)))  // avoid mat1x1
         return false;
 
-    const std::string name(cname);  // for ease of comparison. slow, but temporary, until HLSL parser is online.
-
     if (isMat && dim1 == 1)  // TODO: avoid mat Nx1 until we find the right GLSL profile
-        return false;
-
-    if ((isMat && (argType == 'I' || argType == 'U' || argType == 'B')) ||
-        (retOrder == 'M' && (retType == 'I' || retType == 'U' || retType == 'B')))
         return false;
 
     if (name == "GetRenderTargetSamplePosition" ||
@@ -835,10 +852,6 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0 },
     };
 
-    // Set this to true to avoid generating prototypes that will be invalid for the GLSL parser.
-    // TODO: turn it off (and remove the code) when the HLSL parser can be used to parse builtins.
-    static const bool skipInvalidGlsl = true;
-    
     // Create prototypes for the intrinsics.  TODO: Avoid ranged based for until all compilers can handle it.
     for (int icount = 0; hlslIntrinsics[icount].name; ++icount) {
         const auto& intrinsic = hlslIntrinsics[icount];
@@ -874,8 +887,8 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                             const char* retOrder = intrinsic.retOrder ? intrinsic.retOrder : argOrder;
                             const char* retType  = intrinsic.retType  ? intrinsic.retType  : argType;
 
-                            if (skipInvalidGlsl && !IsValidGlsl(intrinsic.name, *retOrder, *retType, *argOrder, *argType,
-                                                                dim0, dim1, dim0Max, dim1Max))
+                            if (!IsValid(intrinsic.name, *retOrder, *retType, *argOrder, *argType,
+                                         dim0, dim1, dim0Max, dim1Max))
                                 continue;
 
                             // Reject some forms of sample methods that don't exist.

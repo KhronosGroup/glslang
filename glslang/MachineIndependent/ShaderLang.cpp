@@ -216,7 +216,6 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
     
     intermediate.setSource(source);
 
-    source = EShSourceGlsl;
     std::unique_ptr<TParseContextBase> parseContext(CreateParseContext(symbolTable, intermediate, version, profile, source, 
                                                                        language, infoSink, spvVersion, true, EShMsgDefault,
                                                                        true));

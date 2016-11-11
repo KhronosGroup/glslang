@@ -10,7 +10,7 @@ gl_FragCoord origin is upper left
 0:3      Sequence
 0:3        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
-0:3          max (global 4-component vector of float)
+0:3          max (temp 4-component vector of float)
 0:3            'input1' (layout(location=0 ) in 4-component vector of float)
 0:3            'input2' (layout(location=1 ) in 4-component vector of float)
 0:3        Branch: Return
@@ -34,7 +34,7 @@ gl_FragCoord origin is upper left
 0:3      Sequence
 0:3        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
-0:3          max (global 4-component vector of float)
+0:3          max (temp 4-component vector of float)
 0:3            'input1' (layout(location=0 ) in 4-component vector of float)
 0:3            'input2' (layout(location=1 ) in 4-component vector of float)
 0:3        Branch: Return
