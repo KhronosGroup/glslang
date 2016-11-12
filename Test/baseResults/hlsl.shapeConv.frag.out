@@ -82,7 +82,7 @@ gl_FragCoord origin is upper left
 0:19          7.000000
 0:19          7.000000
 0:19        'foo' (temp 3-component vector of float)
-0:21      all (global bool)
+0:21      all (temp bool)
 0:21        Equal (temp 4-component vector of bool)
 0:21          Construct vec4 (temp 4-component vector of float)
 0:21            direct index (temp float)
@@ -90,7 +90,7 @@ gl_FragCoord origin is upper left
 0:21              Constant:
 0:21                0 (const int)
 0:21          'v' (temp 4-component vector of float)
-0:22      any (global bool)
+0:22      any (temp bool)
 0:22        NotEqual (temp 4-component vector of bool)
 0:22          Construct vec4 (temp 4-component vector of float)
 0:22            'f' (in float)
@@ -199,7 +199,7 @@ gl_FragCoord origin is upper left
 0:19          7.000000
 0:19          7.000000
 0:19        'foo' (temp 3-component vector of float)
-0:21      all (global bool)
+0:21      all (temp bool)
 0:21        Equal (temp 4-component vector of bool)
 0:21          Construct vec4 (temp 4-component vector of float)
 0:21            direct index (temp float)
@@ -207,7 +207,7 @@ gl_FragCoord origin is upper left
 0:21              Constant:
 0:21                0 (const int)
 0:21          'v' (temp 4-component vector of float)
-0:22      any (global bool)
+0:22      any (temp bool)
 0:22        NotEqual (temp 4-component vector of bool)
 0:22          Construct vec4 (temp 4-component vector of float)
 0:22            'f' (in float)

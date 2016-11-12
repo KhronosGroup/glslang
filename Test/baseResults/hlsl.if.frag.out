@@ -8,7 +8,7 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:3      Test condition and select (temp void)
 0:3        Condition
-0:3        all (global bool)
+0:3        all (temp bool)
 0:3          Equal (temp 4-component vector of bool)
 0:3            'input' (layout(location=0 ) in 4-component vector of float)
 0:3            'input' (layout(location=0 ) in 4-component vector of float)
@@ -20,7 +20,7 @@ gl_FragCoord origin is upper left
 0:4          Branch: Return
 0:6      Test condition and select (temp void)
 0:6        Condition
-0:6        all (global bool)
+0:6        all (temp bool)
 0:6          Equal (temp 4-component vector of bool)
 0:6            'input' (layout(location=0 ) in 4-component vector of float)
 0:6            'input' (layout(location=0 ) in 4-component vector of float)
@@ -39,21 +39,21 @@ gl_FragCoord origin is upper left
 0:9          Branch: Return
 0:11      Test condition and select (temp void)
 0:11        Condition
-0:11        all (global bool)
+0:11        all (temp bool)
 0:11          Equal (temp 4-component vector of bool)
 0:11            'input' (layout(location=0 ) in 4-component vector of float)
 0:11            'input' (layout(location=0 ) in 4-component vector of float)
 0:11        true case is null
 0:14      Test condition and select (temp void)
 0:14        Condition
-0:14        all (global bool)
+0:14        all (temp bool)
 0:14          Equal (temp 4-component vector of bool)
 0:14            'input' (layout(location=0 ) in 4-component vector of float)
 0:14            'input' (layout(location=0 ) in 4-component vector of float)
 0:14        true case is null
 0:19      Test condition and select (temp void)
 0:19        Condition
-0:19        all (global bool)
+0:19        all (temp bool)
 0:19          Equal (temp 4-component vector of bool)
 0:19            'input' (layout(location=0 ) in 4-component vector of float)
 0:19            'input' (layout(location=0 ) in 4-component vector of float)
@@ -66,7 +66,7 @@ gl_FragCoord origin is upper left
 0:20            Branch: Return
 0:23      Test condition and select (temp void)
 0:23        Condition
-0:23        all (global bool)
+0:23        all (temp bool)
 0:23          Equal (temp 4-component vector of bool)
 0:23            'input' (layout(location=0 ) in 4-component vector of float)
 0:23            'input' (layout(location=0 ) in 4-component vector of float)
@@ -115,7 +115,7 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:3      Test condition and select (temp void)
 0:3        Condition
-0:3        all (global bool)
+0:3        all (temp bool)
 0:3          Equal (temp 4-component vector of bool)
 0:3            'input' (layout(location=0 ) in 4-component vector of float)
 0:3            'input' (layout(location=0 ) in 4-component vector of float)
@@ -127,7 +127,7 @@ gl_FragCoord origin is upper left
 0:4          Branch: Return
 0:6      Test condition and select (temp void)
 0:6        Condition
-0:6        all (global bool)
+0:6        all (temp bool)
 0:6          Equal (temp 4-component vector of bool)
 0:6            'input' (layout(location=0 ) in 4-component vector of float)
 0:6            'input' (layout(location=0 ) in 4-component vector of float)
@@ -146,21 +146,21 @@ gl_FragCoord origin is upper left
 0:9          Branch: Return
 0:11      Test condition and select (temp void)
 0:11        Condition
-0:11        all (global bool)
+0:11        all (temp bool)
 0:11          Equal (temp 4-component vector of bool)
 0:11            'input' (layout(location=0 ) in 4-component vector of float)
 0:11            'input' (layout(location=0 ) in 4-component vector of float)
 0:11        true case is null
 0:14      Test condition and select (temp void)
 0:14        Condition
-0:14        all (global bool)
+0:14        all (temp bool)
 0:14          Equal (temp 4-component vector of bool)
 0:14            'input' (layout(location=0 ) in 4-component vector of float)
 0:14            'input' (layout(location=0 ) in 4-component vector of float)
 0:14        true case is null
 0:19      Test condition and select (temp void)
 0:19        Condition
-0:19        all (global bool)
+0:19        all (temp bool)
 0:19          Equal (temp 4-component vector of bool)
 0:19            'input' (layout(location=0 ) in 4-component vector of float)
 0:19            'input' (layout(location=0 ) in 4-component vector of float)
@@ -173,7 +173,7 @@ gl_FragCoord origin is upper left
 0:20            Branch: Return
 0:23      Test condition and select (temp void)
 0:23        Condition
-0:23        all (global bool)
+0:23        all (temp bool)
 0:23          Equal (temp 4-component vector of bool)
 0:23            'input' (layout(location=0 ) in 4-component vector of float)
 0:23            'input' (layout(location=0 ) in 4-component vector of float)

@@ -132,6 +132,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.intrinsics.negative.comp", "ComputeShaderFunction"},
         {"hlsl.intrinsics.negative.frag", "PixelShaderFunction"},
         {"hlsl.intrinsics.negative.vert", "VertexShaderFunction"},
+        {"hlsl.intrinsics.vec1.frag", "main"},
         {"hlsl.layout.frag", "main"},
         {"hlsl.load.2dms.dx10.frag", "main"},
         {"hlsl.load.array.dx10.frag", "main"},

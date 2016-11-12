@@ -4307,9 +4307,14 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
         if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), EOpFunctionCall))
             return false;
 
+        // Return true if type is a scalar, or a 1-component vector
+        const auto scalarOr1Vec = [this](const TType& t) -> bool {
+            return (t.isScalar() || (t.isVector() && t.getVectorSize() == 1));
+        };
+
         // shapes have to be convertible
-        if ((from.isScalar() && to.isScalar()) ||
-            (from.isScalar() && to.isVector()) ||
+        if ((scalarOr1Vec(from) && scalarOr1Vec(to)) ||
+            (scalarOr1Vec(from) && to.isVector())    ||
             (from.isVector() && to.isVector() && from.getVectorSize() >= to.getVectorSize()))
             return true;
 
