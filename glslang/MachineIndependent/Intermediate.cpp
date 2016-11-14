@@ -814,8 +814,10 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
     TOperator constructorOp = mapTypeToConstructorOp(type);
 
     // scalar -> smeared -> vector, or
+    // vec1 -> scalar, or
     // bigger vector -> smaller vector or scalar
     if ((type.isVector() && node->getType().isScalar()) ||
+        (node->getType().isVector() && node->getVectorSize() == 1 && type.isScalar()) ||
         (node->getVectorSize() > type.getVectorSize() && type.isVector()))
         return setAggregateOperator(makeAggregate(node), constructorOp, type, node->getLoc());
 
