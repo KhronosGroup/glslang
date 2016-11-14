@@ -4328,7 +4328,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
             op = EOpFunctionCall;
 
         // basic types have to be convertible
-        if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), op))
+        if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), op, arg))
             return false;
 
         // shapes have to be convertible

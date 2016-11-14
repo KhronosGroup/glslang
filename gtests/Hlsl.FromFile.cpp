@@ -158,6 +158,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.overload.frag", "PixelShaderFunction"},
         {"hlsl.pp.line.frag", "main"},
         {"hlsl.precise.frag", "main"},
+        {"hlsl.promote.atomic.frag", "main"},
         {"hlsl.promote.binary.frag", "main"},
         {"hlsl.promote.vec1.frag", "main"},
         {"hlsl.promotions.frag", "main"},

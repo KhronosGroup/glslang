@@ -850,7 +850,7 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
 // See if the 'from' type is allowed to be implicitly converted to the
 // 'to' type.  This is not about vector/array/struct, only about basic type.
 //
-bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperator op) const
+bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperator op, int arg) const
 {
     if (profile == EEsProfile || version == 110)
         return false;
@@ -879,6 +879,12 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EOpModAssign:               // ... 
             case EOpReturn:                  // function returns can also perform arbitrary conversions
             case EOpFunctionCall:            // conversion of a calling parameter
+            case EOpLogicalNot:
+            case EOpLogicalAnd:
+            case EOpLogicalOr:
+            case EOpLogicalXor:
+                return true;
+
             case EOpMethodLoad:
             case EOpMethodGetDimensions:
             case EOpMethodSample:
@@ -895,12 +901,21 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EOpMethodGatherCmpGreen:
             case EOpMethodGatherCmpBlue:
             case EOpMethodGatherCmpAlpha:
-            case EOpLogicalNot:
-            case EOpLogicalAnd:
-            case EOpLogicalOr:
-            case EOpLogicalXor:
+            case EOpInterlockedAdd:
+            case EOpInterlockedAnd:
+            case EOpInterlockedCompareExchange:
+            case EOpInterlockedCompareStore:
+            case EOpInterlockedExchange:
+            case EOpInterlockedMax:
+            case EOpInterlockedMin:
+            case EOpInterlockedOr:
+            case EOpInterlockedXor:
+                // We do not promote the destination value, texture, or image type for these ocodes.
+                // Instead, we want to select the right flavor of opcode to start with, and can promote
+                // the other args to match it if need be.  In other words, e.g:
+                // InterlockedAdd(RWBuffer<int>) will always use the int flavor, never the uint flavor.
+                return (arg != 0);
 
-                return true;
             default:
                 break;
             }
