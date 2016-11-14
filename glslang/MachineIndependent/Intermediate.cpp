@@ -879,10 +879,27 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EOpModAssign:               // ... 
             case EOpReturn:                  // function returns can also perform arbitrary conversions
             case EOpFunctionCall:            // conversion of a calling parameter
+            case EOpMethodLoad:
+            case EOpMethodGetDimensions:
+            case EOpMethodSample:
+            case EOpMethodSampleBias:
+            case EOpMethodSampleCmp:
+            case EOpMethodSampleCmpLevelZero:
+            case EOpMethodSampleGrad:
+            case EOpMethodSampleLevel:
+            case EOpMethodGatherRed:
+            case EOpMethodGatherGreen:
+            case EOpMethodGatherBlue:
+            case EOpMethodGatherAlpha:
+            case EOpMethodGatherCmpRed:
+            case EOpMethodGatherCmpGreen:
+            case EOpMethodGatherCmpBlue:
+            case EOpMethodGatherCmpAlpha:
             case EOpLogicalNot:
             case EOpLogicalAnd:
             case EOpLogicalOr:
             case EOpLogicalXor:
+
                 return true;
             default:
                 break;

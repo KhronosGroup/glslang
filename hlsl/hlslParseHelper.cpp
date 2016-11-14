@@ -4315,7 +4315,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
     
     // can 'from' convert to 'to'?
-    const auto convertible = [this](const TType& from, const TType& to) -> bool {
+    const auto convertible = [this](const TType& from, const TType& to, TOperator op, int arg) -> bool {
         if (from == to)
             return true;
 
@@ -4324,8 +4324,11 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
             from.isStruct() || to.isStruct())
             return false;
 
+        if (op == EOpNull)
+            op = EOpFunctionCall;
+
         // basic types have to be convertible
-        if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), EOpFunctionCall))
+        if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), op))
             return false;
 
         // shapes have to be convertible
