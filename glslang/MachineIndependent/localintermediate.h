@@ -144,6 +144,7 @@ public:
         multiStream(false), xfbMode(false),
         shiftSamplerBinding(0),
         shiftTextureBinding(0),
+        shiftImageBinding(0),
         shiftUboBinding(0),
         autoMapBindings(false),
         flattenUniformArrays(false),
@@ -174,6 +175,8 @@ public:
     unsigned int getShiftSamplerBinding() const { return shiftSamplerBinding; }
     void setShiftTextureBinding(unsigned int shift) { shiftTextureBinding = shift; }
     unsigned int getShiftTextureBinding() const { return shiftTextureBinding; }
+    void setShiftImageBinding(unsigned int shift) { shiftImageBinding = shift; }
+    unsigned int getShiftImageBinding() const { return shiftImageBinding; }
     void setShiftUboBinding(unsigned int shift)     { shiftUboBinding = shift; }
     unsigned int getShiftUboBinding()     const { return shiftUboBinding; }
     void setAutoMapBindings(bool map)               { autoMapBindings = map; }
@@ -403,6 +406,7 @@ protected:
     std::string entryPointMangledName;
     unsigned int shiftSamplerBinding;
     unsigned int shiftTextureBinding;
+    unsigned int shiftImageBinding;
     unsigned int shiftUboBinding;
     bool autoMapBindings;
     bool flattenUniformArrays;

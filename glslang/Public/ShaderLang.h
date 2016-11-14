@@ -306,6 +306,7 @@ public:
     void setEntryPoint(const char* entryPoint);
     void setShiftSamplerBinding(unsigned int base);
     void setShiftTextureBinding(unsigned int base);
+    void setShiftImageBinding(unsigned int base);
     void setShiftUboBinding(unsigned int base);
     void setAutoMapBindings(bool map);
     void setFlattenUniformArrays(bool flatten);

@@ -222,6 +222,7 @@ struct TDefaultIoResolver : public glslang::TIoMapResolver
 {
     int baseSamplerBinding;
     int baseTextureBinding;
+    int baseImageBinding;
     int baseUboBinding;
     bool doAutoMapping;
     typedef std::vector<int> TSlotSet;
@@ -294,6 +295,9 @@ struct TDefaultIoResolver : public glslang::TIoMapResolver
         if (type.getQualifier().hasBinding()) {
             if (type.getBasicType() == glslang::EbtSampler) {
                 const glslang::TSampler& sampler = type.getSampler();
+                if (sampler.isImage())
+                    return reserveSlot(set, baseImageBinding + type.getQualifier().layoutBinding);
+
                 if (sampler.isPureSampler())
                     return reserveSlot(set, baseSamplerBinding + type.getQualifier().layoutBinding);
 
@@ -308,6 +312,9 @@ struct TDefaultIoResolver : public glslang::TIoMapResolver
             // first and now all are passed that do not have a binding and needs one
             if (type.getBasicType() == glslang::EbtSampler) {
                 const glslang::TSampler& sampler = type.getSampler();
+                if (sampler.isImage())
+                    return getFreeSlot(set, baseImageBinding);
+
                 if (sampler.isPureSampler())
                     return getFreeSlot(set, baseSamplerBinding);
 
@@ -339,9 +346,10 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate &intermediate, TInfoSi
     // Trivial return if there is nothing to do.
     if (intermediate.getShiftSamplerBinding() == 0 &&
         intermediate.getShiftTextureBinding() == 0 &&
+        intermediate.getShiftImageBinding() == 0 &&
         intermediate.getShiftUboBinding() == 0 &&
         intermediate.getAutoMapBindings() == false &&
-        resolver == NULL)
+        resolver == nullptr)
         return true;
 
     if (intermediate.getNumEntryPoints() != 1 || intermediate.isRecursive())
@@ -353,9 +361,10 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate &intermediate, TInfoSi
 
     // if no resolver is provided, use the default resolver with the given shifts and auto map settings
     TDefaultIoResolver defaultResolver;
-    if (resolver == NULL) {
+    if (resolver == nullptr) {
         defaultResolver.baseSamplerBinding = intermediate.getShiftSamplerBinding();
         defaultResolver.baseTextureBinding = intermediate.getShiftTextureBinding();
+        defaultResolver.baseImageBinding = intermediate.getShiftImageBinding();
         defaultResolver.baseUboBinding = intermediate.getShiftUboBinding();
         defaultResolver.doAutoMapping = intermediate.getAutoMapBindings();
 

@@ -1493,6 +1493,7 @@ void TShader::setEntryPoint(const char* entryPoint)
 
 void TShader::setShiftSamplerBinding(unsigned int base) { intermediate->setShiftSamplerBinding(base); }
 void TShader::setShiftTextureBinding(unsigned int base) { intermediate->setShiftTextureBinding(base); }
+void TShader::setShiftImageBinding(unsigned int base)   { intermediate->setShiftImageBinding(base); }
 void TShader::setShiftUboBinding(unsigned int base)     { intermediate->setShiftUboBinding(base); }
 void TShader::setAutoMapBindings(bool map)              { intermediate->setAutoMapBindings(map); }
 void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlattenUniformArrays(flatten); }

@@ -239,6 +239,7 @@ public:
             const std::string& entryPointName, EShMessages controls,
             int baseSamplerBinding,
             int baseTextureBinding,
+            int baseImageBinding,
             int baseUboBinding,
             bool autoMapBindings,
             bool flattenUniformArrays)
@@ -248,6 +249,7 @@ public:
         glslang::TShader shader(kind);
         shader.setShiftSamplerBinding(baseSamplerBinding);
         shader.setShiftTextureBinding(baseTextureBinding);
+        shader.setShiftImageBinding(baseImageBinding);
         shader.setShiftUboBinding(baseUboBinding);
         shader.setAutoMapBindings(autoMapBindings);
         shader.setFlattenUniformArrays(flattenUniformArrays);
@@ -426,6 +428,7 @@ public:
                                       const std::string& entryPointName,
                                       int baseSamplerBinding,
                                       int baseTextureBinding,
+                                      int baseImageBinding,
                                       int baseUboBinding,
                                       bool autoMapBindings,
                                       bool flattenUniformArrays)
@@ -440,7 +443,7 @@ public:
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result = compileLinkIoMap(testName, input, entryPointName, controls,
-                                                baseSamplerBinding, baseTextureBinding, baseUboBinding,
+                                                baseSamplerBinding, baseTextureBinding, baseImageBinding, baseUboBinding,
                                                 autoMapBindings,
                                                 flattenUniformArrays);
 

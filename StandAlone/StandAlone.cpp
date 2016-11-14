@@ -164,6 +164,7 @@ const char* shaderStageName = nullptr;
 
 std::array<unsigned int, EShLangCount> baseSamplerBinding;
 std::array<unsigned int, EShLangCount> baseTextureBinding;
+std::array<unsigned int, EShLangCount> baseImageBinding;
 std::array<unsigned int, EShLangCount> baseUboBinding;
 
 //
@@ -252,6 +253,7 @@ void ProcessArguments(int argc, char* argv[])
 {
     baseSamplerBinding.fill(0);
     baseTextureBinding.fill(0);
+    baseImageBinding.fill(0);
     baseUboBinding.fill(0);
 
     ExecutableName = argv[0];
@@ -279,6 +281,10 @@ void ProcessArguments(int argc, char* argv[])
                                lowerword == "shift-texture-binding"  ||
                                lowerword == "stb") {
                         ProcessBindingBase(argc, argv, baseTextureBinding);
+                    } else if (lowerword == "shift-image-bindings" ||  // synonyms
+                               lowerword == "shift-image-binding"  ||
+                               lowerword == "sib") {
+                        ProcessBindingBase(argc, argv, baseImageBinding);
                     } else if (lowerword == "shift-ubo-bindings" ||  // synonyms
                                lowerword == "shift-ubo-binding"  ||
                                lowerword == "sub") {
@@ -544,6 +550,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         shader->setShiftSamplerBinding(baseSamplerBinding[compUnit.stage]);
         shader->setShiftTextureBinding(baseTextureBinding[compUnit.stage]);
+        shader->setShiftImageBinding(baseImageBinding[compUnit.stage]);
         shader->setShiftUboBinding(baseUboBinding[compUnit.stage]);
         shader->setFlattenUniformArrays((Options & EOptionFlattenUniformArrays) != 0);
         shader->setNoStorageFormat((Options & EOptionNoStorageFormat) != 0);
@@ -940,6 +947,9 @@ void usage()
            "\n"
            "  --shift-texture-binding [stage] num     set base binding number for textures\n"
            "  --stb [stage] num                       synonym for --shift-texture-binding\n"
+           "\n"
+           "  --shift-image-binding [stage] num       set base binding number for images (uav)\n"
+           "  --sib [stage] num                       synonym for --shift-image-binding\n"
            "\n"
            "  --shift-UBO-binding [stage] num         set base binding number for UBOs\n"
            "  --sub [stage] num                       synonym for --shift-UBO-binding\n"

@@ -45,6 +45,7 @@
 #include "../glslang/OSDependent/osinclude.h"
 
 #include <algorithm>
+#include <cctype>
 
 namespace glslang {
 
@@ -3084,11 +3085,12 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
     }
 
     // TODO: learn what all these really mean and how they interact with regNumber and subComponent
-    switch (desc[0]) {
+    switch (std::tolower(desc[0])) {
     case 'b':
     case 't':
     case 'c':
     case 's':
+    case 'u':
         qualifier.layoutBinding = regNumber + subComponent;
         break;
     default:
