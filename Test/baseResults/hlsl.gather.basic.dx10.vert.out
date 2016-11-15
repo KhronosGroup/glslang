@@ -7,7 +7,7 @@ Shader version: 450
 0:33      Sequence
 0:33        move second child to first child (temp 4-component vector of float)
 0:33          'txval20' (temp 4-component vector of float)
-0:33          textureGather (global 4-component vector of float)
+0:33          textureGather (temp 4-component vector of float)
 0:33            Construct combined texture-sampler (temp sampler2D)
 0:33              'g_tTex2df4' (uniform texture2D)
 0:33              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -17,7 +17,7 @@ Shader version: 450
 0:34      Sequence
 0:34        move second child to first child (temp 4-component vector of int)
 0:34          'txval21' (temp 4-component vector of int)
-0:34          textureGather (global 4-component vector of int)
+0:34          textureGather (temp 4-component vector of int)
 0:34            Construct combined texture-sampler (temp isampler2D)
 0:34              'g_tTex2di4' (uniform itexture2D)
 0:34              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -27,7 +27,7 @@ Shader version: 450
 0:35      Sequence
 0:35        move second child to first child (temp 4-component vector of uint)
 0:35          'txval22' (temp 4-component vector of uint)
-0:35          textureGather (global 4-component vector of uint)
+0:35          textureGather (temp 4-component vector of uint)
 0:35            Construct combined texture-sampler (temp usampler2D)
 0:35              'g_tTex2du4' (uniform utexture2D)
 0:35              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -37,7 +37,7 @@ Shader version: 450
 0:39      Sequence
 0:39        move second child to first child (temp 4-component vector of float)
 0:39          'txval40' (temp 4-component vector of float)
-0:39          textureGather (global 4-component vector of float)
+0:39          textureGather (temp 4-component vector of float)
 0:39            Construct combined texture-sampler (temp samplerCube)
 0:39              'g_tTexcdf4' (uniform textureCube)
 0:39              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -48,7 +48,7 @@ Shader version: 450
 0:40      Sequence
 0:40        move second child to first child (temp 4-component vector of int)
 0:40          'txval41' (temp 4-component vector of int)
-0:40          textureGather (global 4-component vector of int)
+0:40          textureGather (temp 4-component vector of int)
 0:40            Construct combined texture-sampler (temp isamplerCube)
 0:40              'g_tTexcdi4' (uniform itextureCube)
 0:40              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -59,7 +59,7 @@ Shader version: 450
 0:41      Sequence
 0:41        move second child to first child (temp 4-component vector of uint)
 0:41          'txval42' (temp 4-component vector of uint)
-0:41          textureGather (global 4-component vector of uint)
+0:41          textureGather (temp 4-component vector of uint)
 0:41            Construct combined texture-sampler (temp usamplerCube)
 0:41              'g_tTexcdu4' (uniform utextureCube)
 0:41              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -116,7 +116,7 @@ Shader version: 450
 0:33      Sequence
 0:33        move second child to first child (temp 4-component vector of float)
 0:33          'txval20' (temp 4-component vector of float)
-0:33          textureGather (global 4-component vector of float)
+0:33          textureGather (temp 4-component vector of float)
 0:33            Construct combined texture-sampler (temp sampler2D)
 0:33              'g_tTex2df4' (uniform texture2D)
 0:33              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -126,7 +126,7 @@ Shader version: 450
 0:34      Sequence
 0:34        move second child to first child (temp 4-component vector of int)
 0:34          'txval21' (temp 4-component vector of int)
-0:34          textureGather (global 4-component vector of int)
+0:34          textureGather (temp 4-component vector of int)
 0:34            Construct combined texture-sampler (temp isampler2D)
 0:34              'g_tTex2di4' (uniform itexture2D)
 0:34              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -136,7 +136,7 @@ Shader version: 450
 0:35      Sequence
 0:35        move second child to first child (temp 4-component vector of uint)
 0:35          'txval22' (temp 4-component vector of uint)
-0:35          textureGather (global 4-component vector of uint)
+0:35          textureGather (temp 4-component vector of uint)
 0:35            Construct combined texture-sampler (temp usampler2D)
 0:35              'g_tTex2du4' (uniform utexture2D)
 0:35              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -146,7 +146,7 @@ Shader version: 450
 0:39      Sequence
 0:39        move second child to first child (temp 4-component vector of float)
 0:39          'txval40' (temp 4-component vector of float)
-0:39          textureGather (global 4-component vector of float)
+0:39          textureGather (temp 4-component vector of float)
 0:39            Construct combined texture-sampler (temp samplerCube)
 0:39              'g_tTexcdf4' (uniform textureCube)
 0:39              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -157,7 +157,7 @@ Shader version: 450
 0:40      Sequence
 0:40        move second child to first child (temp 4-component vector of int)
 0:40          'txval41' (temp 4-component vector of int)
-0:40          textureGather (global 4-component vector of int)
+0:40          textureGather (temp 4-component vector of int)
 0:40            Construct combined texture-sampler (temp isamplerCube)
 0:40              'g_tTexcdi4' (uniform itextureCube)
 0:40              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -168,7 +168,7 @@ Shader version: 450
 0:41      Sequence
 0:41        move second child to first child (temp 4-component vector of uint)
 0:41          'txval42' (temp 4-component vector of uint)
-0:41          textureGather (global 4-component vector of uint)
+0:41          textureGather (temp 4-component vector of uint)
 0:41            Construct combined texture-sampler (temp usamplerCube)
 0:41              'g_tTexcdu4' (uniform utextureCube)
 0:41              'g_sSamp' (layout(binding=0 ) uniform sampler)

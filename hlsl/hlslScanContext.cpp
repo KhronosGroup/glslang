@@ -180,6 +180,22 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["min16uint3"] =              EHTokMin16uint3;
     (*KeywordMap)["min16uint4"] =              EHTokMin16uint4;
 
+    (*KeywordMap)["bool1x1"] =                 EHTokBool1x1;
+    (*KeywordMap)["bool1x2"] =                 EHTokBool1x2;
+    (*KeywordMap)["bool1x3"] =                 EHTokBool1x3;
+    (*KeywordMap)["bool1x4"] =                 EHTokBool1x4;
+    (*KeywordMap)["bool2x1"] =                 EHTokBool2x1;
+    (*KeywordMap)["bool2x2"] =                 EHTokBool2x2;
+    (*KeywordMap)["bool2x3"] =                 EHTokBool2x3;
+    (*KeywordMap)["bool2x4"] =                 EHTokBool2x4;
+    (*KeywordMap)["bool3x1"] =                 EHTokBool3x1;
+    (*KeywordMap)["bool3x2"] =                 EHTokBool3x2;
+    (*KeywordMap)["bool3x3"] =                 EHTokBool3x3;
+    (*KeywordMap)["bool3x4"] =                 EHTokBool3x4;
+    (*KeywordMap)["bool4x1"] =                 EHTokBool4x1;
+    (*KeywordMap)["bool4x2"] =                 EHTokBool4x2;
+    (*KeywordMap)["bool4x3"] =                 EHTokBool4x3;
+    (*KeywordMap)["bool4x4"] =                 EHTokBool4x4;
     (*KeywordMap)["int1x1"] =                  EHTokInt1x1;
     (*KeywordMap)["int1x2"] =                  EHTokInt1x2;
     (*KeywordMap)["int1x3"] =                  EHTokInt1x3;
@@ -561,6 +577,22 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokMin16uint4:
 
     // matrix types
+    case EHTokBool1x1:
+    case EHTokBool1x2:
+    case EHTokBool1x3:
+    case EHTokBool1x4:
+    case EHTokBool2x1:
+    case EHTokBool2x2:
+    case EHTokBool2x3:
+    case EHTokBool2x4:
+    case EHTokBool3x1:
+    case EHTokBool3x2:
+    case EHTokBool3x3:
+    case EHTokBool3x4:
+    case EHTokBool4x1:
+    case EHTokBool4x2:
+    case EHTokBool4x3:
+    case EHTokBool4x4:
     case EHTokInt1x1:
     case EHTokInt1x2:
     case EHTokInt1x3:
@@ -577,6 +609,22 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokInt4x2:
     case EHTokInt4x3:
     case EHTokInt4x4:
+    case EHTokUint1x1:
+    case EHTokUint1x2:
+    case EHTokUint1x3:
+    case EHTokUint1x4:
+    case EHTokUint2x1:
+    case EHTokUint2x2:
+    case EHTokUint2x3:
+    case EHTokUint2x4:
+    case EHTokUint3x1:
+    case EHTokUint3x2:
+    case EHTokUint3x3:
+    case EHTokUint3x4:
+    case EHTokUint4x1:
+    case EHTokUint4x2:
+    case EHTokUint4x3:
+    case EHTokUint4x4:
     case EHTokFloat1x1:
     case EHTokFloat1x2:
     case EHTokFloat1x3:
