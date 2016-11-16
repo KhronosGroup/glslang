@@ -85,6 +85,19 @@ bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
         return true;
     }
 
+    // Even though "sample" is a keyword (for interpolation modifiers), it IS still accepted as
+    // an identifier.  This appears to be a solitary exception: other interp modifier keywords such
+    // as "linear" or "centroid" NOT valid identifiers.  This code special cases "sample",
+    // so e.g, "int sample;" is accepted.
+    if (peekTokenClass(EHTokSample)) {
+        idToken.string     = NewPoolTString("sample");
+        idToken.tokenClass = EHTokIdentifier;
+        idToken.symbol     = nullptr;
+        idToken.loc        = token.loc;
+        advanceToken();
+        return true;
+    }
+
     return false;
 }
 
