@@ -55,27 +55,29 @@ namespace glslang {
         else if (lowername == "domain")
             return EatDomain;
         else if (lowername == "earlydepthstencil")
-            return EatEarlydepthstencil;
+            return EatEarlyDepthStencil;
         else if (lowername == "fastopt")
-            return EatFastopt;
+            return EatFastOpt;
         else if (lowername == "flatten")
             return EatFlatten;
         else if (lowername == "forcecase")
-            return EatForcecase;
+            return EatForceCase;
         else if (lowername == "instance")
             return EatInstance;
         else if (lowername == "maxtessfactor")
-            return EatMaxtessfactor;
+            return EatMaxTessFactor;
+        else if (lowername == "maxvertexcount")
+            return EatMaxVertexCount;
         else if (lowername == "numthreads")
-            return EatNumthreads;
+            return EatNumThreads;
         else if (lowername == "outputcontrolpoints")
-            return EatOutputcontrolpoints;
+            return EatOutputControlPoints;
         else if (lowername == "outputtopology")
-            return EatOutputtopology;
+            return EatOutputTopology;
         else if (lowername == "partitioning")
             return EatPartitioning;
         else if (lowername == "patchconstantfunc")
-            return EatPatchconstantfunc;
+            return EatPatchConstantFunc;
         else if (lowername == "unroll")
             return EatUnroll;
         else

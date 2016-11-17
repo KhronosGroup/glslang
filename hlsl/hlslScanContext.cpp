@@ -119,6 +119,16 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["inout"] =                   EHTokInOut;
     (*KeywordMap)["layout"] =                  EHTokLayout;
 
+    (*KeywordMap)["point"] =                   EHTokPoint;
+    (*KeywordMap)["line"] =                    EHTokLine;
+    (*KeywordMap)["triangle"] =                EHTokTriangle;
+    (*KeywordMap)["lineadj"] =                 EHTokLineAdj;
+    (*KeywordMap)["triangleadj"] =             EHTokTriangleAdj;
+
+    (*KeywordMap)["PointStream"] =             EHTokPointStream;
+    (*KeywordMap)["LineStream"] =              EHTokLineStream;
+    (*KeywordMap)["TriangleStream"] =          EHTokTriangleStream;
+
     (*KeywordMap)["Buffer"] =                  EHTokBuffer;
     (*KeywordMap)["vector"] =                  EHTokVector;
     (*KeywordMap)["matrix"] =                  EHTokMatrix;
@@ -496,7 +506,20 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokLayout:
         return keyword;
 
-    // template types
+    // primitive types
+    case EHTokPoint:
+    case EHTokLine:
+    case EHTokTriangle:
+    case EHTokLineAdj:
+    case EHTokTriangleAdj:
+        return keyword;
+
+    // stream out types
+    case EHTokPointStream:
+    case EHTokLineStream:
+    case EHTokTriangleStream:
+        return keyword;
+
     case EHTokBuffer:
     case EHTokVector:
     case EHTokMatrix:
