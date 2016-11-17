@@ -3044,7 +3044,7 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
             if (i == 6)
                 lvalue = true;
             break;
-         case glslang::EOpSparseTextureGather:
+        case glslang::EOpSparseTextureGather:
             if ((sampler.shadow && i == 3) || (! sampler.shadow && i == 2))
                 lvalue = true;
             break;
@@ -3053,6 +3053,17 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
             if ((sampler.shadow && i == 4) || (! sampler.shadow && i == 3))
                 lvalue = true;
             break;
+#ifdef AMD_EXTENSIONS
+        case glslang::EOpSparseTextureGatherLod:
+            if (i == 3)
+                lvalue = true;
+            break;
+        case glslang::EOpSparseTextureGatherLodOffset:
+        case glslang::EOpSparseTextureGatherLodOffsets:
+            if (i == 4)
+                lvalue = true;
+            break;
+#endif
         default:
             break;
         }
@@ -3219,10 +3230,22 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // check for bias argument
     bool bias = false;
+#ifdef AMD_EXTENSIONS
+    if (! cracked.lod && ! cracked.grad && ! cracked.fetch && ! cubeCompare) {
+#else
     if (! cracked.lod && ! cracked.gather && ! cracked.grad && ! cracked.fetch && ! cubeCompare) {
+#endif
         int nonBiasArgCount = 2;
+#ifdef AMD_EXTENSIONS
+        if (cracked.gather)
+            ++nonBiasArgCount; // comp argument should be present when bias argument is present
+#endif
         if (cracked.offset)
             ++nonBiasArgCount;
+#ifdef AMD_EXTENSIONS
+        else if (cracked.offsets)
+            ++nonBiasArgCount;
+#endif
         if (cracked.grad)
             nonBiasArgCount += 2;
         if (cracked.lodClamp)
@@ -3240,6 +3263,17 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         if (builder.isSampledImage(params.sampler))
             params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
     }
+
+#ifdef AMD_EXTENSIONS
+    if (cracked.gather) {
+        const auto& sourceExtensions = glslangIntermediate->getRequestedExtensions();
+        if (bias || cracked.lod ||
+            sourceExtensions.find(glslang::E_GL_AMD_texture_gather_bias_lod) != sourceExtensions.end()) {
+            builder.addExtension(spv::E_SPV_AMD_texture_gather_bias_lod);
+            builder.addCapability(spv::OpCapabilityImageGatherBiasLodAMD);
+        }
+    }
+#endif
 
     // set the rest of the arguments
 
@@ -3308,21 +3342,20 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         ++extraArgs;
     }
 
-    // bias
-    if (bias) {
-        params.bias = arguments[2 + extraArgs];
-        ++extraArgs;
-    }
-
     // gather component
     if (cracked.gather && ! sampler.shadow) {
         // default component is 0, if missing, otherwise an argument
         if (2 + extraArgs < (int)arguments.size()) {
             params.component = arguments[2 + extraArgs];
             ++extraArgs;
-        } else {
+        } else
             params.component = builder.makeIntConstant(0);
-        }
+    }
+
+    // bias
+    if (bias) {
+        params.bias = arguments[2 + extraArgs];
+        ++extraArgs;
     }
 
     // projective component (might not to move)

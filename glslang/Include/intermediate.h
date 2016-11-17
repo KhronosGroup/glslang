@@ -567,6 +567,11 @@ enum TOperator {
     EOpTextureOffsetClamp,
     EOpTextureGradClamp,
     EOpTextureGradOffsetClamp,
+#ifdef AMD_EXTENSIONS
+    EOpTextureGatherLod,
+    EOpTextureGatherLodOffset,
+    EOpTextureGatherLodOffsets,
+#endif
 
     EOpSparseTextureGuardBegin,
 
@@ -586,6 +591,11 @@ enum TOperator {
     EOpSparseTextureOffsetClamp,
     EOpSparseTextureGradClamp,
     EOpSparseTextureGradOffsetClamp,
+#ifdef AMD_EXTENSIONS
+    EOpSparseTextureGatherLod,
+    EOpSparseTextureGatherLodOffset,
+    EOpSparseTextureGatherLodOffsets,
+#endif
 
     EOpSparseTextureGuardEnd,
     EOpSamplingGuardEnd,
@@ -1075,6 +1085,25 @@ public:
             cracked.gather = true;
             cracked.offsets = true;
             break;
+#ifdef AMD_EXTENSIONS
+        case EOpTextureGatherLod:
+        case EOpSparseTextureGatherLod:
+            cracked.gather = true;
+            cracked.lod    = true;
+            break;
+        case EOpTextureGatherLodOffset:
+        case EOpSparseTextureGatherLodOffset:
+            cracked.gather = true;
+            cracked.offset = true;
+            cracked.lod    = true;
+            break;
+        case EOpTextureGatherLodOffsets:
+        case EOpSparseTextureGatherLodOffsets:
+            cracked.gather  = true;
+            cracked.offsets = true;
+            cracked.lod     = true;
+            break;
+#endif
         case EOpSubpassLoad:
         case EOpSubpassLoadMS:
             cracked.subpass = true;

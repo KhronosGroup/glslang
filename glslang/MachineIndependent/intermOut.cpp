@@ -390,6 +390,8 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpRcp:                    out.debug << "rcp";                   break;
     case EOpSaturate:               out.debug << "saturate";              break;
 
+    case EOpSparseTexelsResident:   out.debug << "sparseTexelsResident";  break;
+
 #ifdef AMD_EXTENSIONS
     case EOpMinInvocations:             out.debug << "minInvocations";              break;
     case EOpMaxInvocations:             out.debug << "maxInvocations";              break;
@@ -647,6 +649,37 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpTextureGather:              out.debug << "textureGather";         break;
     case EOpTextureGatherOffset:        out.debug << "textureGatherOffset";   break;
     case EOpTextureGatherOffsets:       out.debug << "textureGatherOffsets";  break;
+    case EOpTextureClamp:               out.debug << "textureClamp";          break;
+    case EOpTextureOffsetClamp:         out.debug << "textureOffsetClamp";    break;
+    case EOpTextureGradClamp:           out.debug << "textureGradClamp";      break;
+    case EOpTextureGradOffsetClamp:     out.debug << "textureGradOffsetClamp";  break;
+#ifdef AMD_EXTENSIONS
+    case EOpTextureGatherLod:           out.debug << "textureGatherLod";        break;
+    case EOpTextureGatherLodOffset:     out.debug << "textureGatherLodOffset";  break;
+    case EOpTextureGatherLodOffsets:    out.debug << "textureGatherLodOffsets"; break;
+#endif
+
+    case EOpSparseTexture:                  out.debug << "sparseTexture";                   break;
+    case EOpSparseTextureOffset:            out.debug << "sparseTextureOffset";             break;
+    case EOpSparseTextureLod:               out.debug << "sparseTextureLod";                break;
+    case EOpSparseTextureLodOffset:         out.debug << "sparseTextureLodOffset";          break;
+    case EOpSparseTextureFetch:             out.debug << "sparseTexelFetch";                break;
+    case EOpSparseTextureFetchOffset:       out.debug << "sparseTexelFetchOffset";          break;
+    case EOpSparseTextureGrad:              out.debug << "sparseTextureGrad";               break;
+    case EOpSparseTextureGradOffset:        out.debug << "sparseTextureGradOffset";         break;
+    case EOpSparseTextureGather:            out.debug << "sparseTextureGather";             break;
+    case EOpSparseTextureGatherOffset:      out.debug << "sparseTextureGatherOffset";       break;
+    case EOpSparseTextureGatherOffsets:     out.debug << "sparseTextureGatherOffsets";      break;
+    case EOpSparseImageLoad:                out.debug << "sparseImageLoad";                 break;
+    case EOpSparseTextureClamp:             out.debug << "sparseTextureClamp";              break;
+    case EOpSparseTextureOffsetClamp:       out.debug << "sparseTextureOffsetClamp";        break;
+    case EOpSparseTextureGradClamp:         out.debug << "sparseTextureGradClamp";          break;
+    case EOpSparseTextureGradOffsetClamp:   out.debug << "sparseTextureGradOffsetClam";     break;
+#ifdef AMD_EXTENSIONS
+    case EOpSparseTextureGatherLod:         out.debug << "sparseTextureGatherLod";          break;
+    case EOpSparseTextureGatherLodOffset:   out.debug << "sparseTextureGatherLodOffset";    break;
+    case EOpSparseTextureGatherLodOffsets:  out.debug << "sparseTextureGatherLodOffsets";   break;
+#endif
 
     case EOpAddCarry:                   out.debug << "addCarry";              break;
     case EOpSubBorrow:                  out.debug << "subBorrow";             break;

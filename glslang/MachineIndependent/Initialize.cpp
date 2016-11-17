@@ -3844,6 +3844,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                             else {
                                 addSamplingFunctions(sampler, typeName, version, profile);
                                 addGatherFunctions(sampler, typeName, version, profile);
+
                                 if (spvVersion.vulkan > 0 && sampler.dim == EsdBuffer && sampler.isCombined()) {
                                     // Vulkan wants a textureBuffer to allow texelFetch() --
                                     // a sampled image with no sampler.
@@ -4349,6 +4350,7 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, const TString& typeName, in
                 default:
                     break;
                 }
+
                 if (sparse)
                     s.append("ARB");
                 s.append("(");
@@ -4388,6 +4390,116 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, const TString& typeName, in
             }
         }
     }
+
+#ifdef AMD_EXTENSIONS
+    if (sampler.dim == EsdRect || sampler.shadow)
+        return;
+
+    if (profile == EEsProfile || version < 450)
+        return;
+
+    for (int bias = 0; bias < 2; ++bias) { // loop over presence of bias argument
+
+        for (int lod = 0; lod < 2; ++lod) { // loop over presence of lod argument
+
+            if ((lod && bias) || (lod == 0 && bias == 0))
+                continue;
+
+            for (int offset = 0; offset < 3; ++offset) { // loop over three forms of offset in the call name:  none, Offset, and Offsets
+
+                for (int comp = 0; comp < 2; ++comp) { // loop over presence of comp argument
+
+                    if (comp == 0 && bias)
+                        continue;
+
+                    if (offset > 0 && sampler.dim == EsdCube)
+                        continue;
+
+                    for (int sparse = 0; sparse <= 1; ++sparse) { // loop over "bool" sparse or not
+                        if (sparse && (profile == EEsProfile || version < 450))
+                            continue;
+
+                        TString s;
+
+                        // return type
+                        if (sparse)
+                            s.append("int ");
+                        else {
+                            s.append(prefixes[sampler.type]);
+                            s.append("vec4 ");
+                        }
+
+                        // name
+                        if (sparse)
+                            s.append("sparseTextureGather");
+                        else
+                            s.append("textureGather");
+
+                        if (lod)
+                            s.append("Lod");
+
+                        switch (offset) {
+                        case 1:
+                            s.append("Offset");
+                            break;
+                        case 2:
+                            s.append("Offsets");
+                        default:
+                            break;
+                        }
+
+                        if (lod)
+                            s.append("AMD");
+                        else if (sparse)
+                            s.append("ARB");
+
+                        s.append("(");
+
+                        // sampler type argument
+                        s.append(typeName);
+
+                        // P coordinate argument
+                        s.append(",vec");
+                        int totalDims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0);
+                        s.append(postfixes[totalDims]);
+
+                        // lod argument
+                        if (lod)
+                            s.append(",float");
+
+                        // offset argument
+                        if (offset > 0) {
+                            s.append(",ivec2");
+                            if (offset == 2)
+                                s.append("[4]");
+                        }
+
+                        // texel out (for sparse texture)
+                        if (sparse) {
+                            s.append(",out ");
+                            s.append(prefixes[sampler.type]);
+                            s.append("vec4 ");
+                        }
+
+                        // comp argument
+                        if (comp)
+                            s.append(",int");
+
+                        // bias argument
+                        if (bias)
+                            s.append(",float");
+
+                        s.append(");\n");
+                        if (bias)
+                            stageBuiltins[EShLangFragment].append(s);
+                        else
+                            commonBuiltins.append(s);
+                    }
+                }
+            }
+        }
+    }
+#endif
 }
 
 //
@@ -5366,6 +5478,16 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_BaryCoordSmoothSampleAMD",      EbvBaryCoordSmoothSample,    symbolTable);
             BuiltInVariable("gl_BaryCoordPullModelAMD",         EbvBaryCoordPullModel,       symbolTable);
         }
+
+        // E_GL_AMD_texture_gather_bias_lod
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("textureGatherLodAMD",                1, &E_GL_AMD_texture_gather_bias_lod);
+            symbolTable.setFunctionExtensions("textureGatherLodOffsetAMD",          1, &E_GL_AMD_texture_gather_bias_lod);
+            symbolTable.setFunctionExtensions("textureGatherLodOffsetsAMD",         1, &E_GL_AMD_texture_gather_bias_lod);
+            symbolTable.setFunctionExtensions("sparseTextureGatherLodAMD",          1, &E_GL_AMD_texture_gather_bias_lod);
+            symbolTable.setFunctionExtensions("sparseTextureGatherLodOffsetAMD",    1, &E_GL_AMD_texture_gather_bias_lod);
+            symbolTable.setFunctionExtensions("sparseTextureGatherLodOffsetsAMD",   1, &E_GL_AMD_texture_gather_bias_lod);
+        }
 #endif
 
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &E_GL_EXT_frag_depth);
@@ -5752,6 +5874,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("cubeFaceIndexAMD",    EOpCubeFaceIndex);
             symbolTable.relateToOperator("cubeFaceCoordAMD",    EOpCubeFaceCoord);
             symbolTable.relateToOperator("timeAMD",             EOpTime);
+
+            symbolTable.relateToOperator("textureGatherLodAMD",                 EOpTextureGatherLod);
+            symbolTable.relateToOperator("textureGatherLodOffsetAMD",           EOpTextureGatherLodOffset);
+            symbolTable.relateToOperator("textureGatherLodOffsetsAMD",          EOpTextureGatherLodOffsets);
+            symbolTable.relateToOperator("sparseTextureGatherLodAMD",           EOpSparseTextureGatherLod);
+            symbolTable.relateToOperator("sparseTextureGatherLodOffsetAMD",     EOpSparseTextureGatherLodOffset);
+            symbolTable.relateToOperator("sparseTextureGatherLodOffsetsAMD",    EOpSparseTextureGatherLodOffsets);
 #endif
         }
     }

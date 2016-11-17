@@ -28,11 +28,12 @@
 #define GLSLextAMD_H
 
 enum BuiltIn;
+enum Capability;
 enum Decoration;
 enum Op;
 
 static const int GLSLextAMDVersion = 100;
-static const int GLSLextAMDRevision = 2;
+static const int GLSLextAMDRevision = 3;
 
 // SPV_AMD_shader_ballot
 static const char* const E_SPV_AMD_shader_ballot = "SPV_AMD_shader_ballot";
@@ -112,5 +113,10 @@ enum GcnShaderAMD {
 
 // SPV_AMD_gpu_shader_half_float
 static const char* const E_SPV_AMD_gpu_shader_half_float = "SPV_AMD_gpu_shader_half_float";
+
+// SPV_AMD_texture_gather_bias_lod
+static const char* const E_SPV_AMD_texture_gather_bias_lod = "SPV_AMD_texture_gather_bias_lod";
+
+static const Capability OpCapabilityImageGatherBiasLodAMD = static_cast<Capability>(5009);
 
 #endif  // #ifndef GLSLextAMD_H
