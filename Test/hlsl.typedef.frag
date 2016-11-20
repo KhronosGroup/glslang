@@ -1,6 +1,6 @@
 typedef float4 myVec4;
 
-float4 ShaderFunction(float4 input, int ii) : COLOR0
+float4 PixelShaderFunction(float4 input, int ii) : COLOR0
 {
     typedef int myInt;
     myVec4 a1 = myVec4(1.0);

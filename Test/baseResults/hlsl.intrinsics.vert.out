@@ -3011,6 +3011,7 @@ Shader version: 450
             1059:          76 ConstantComposite 1058 1058 1058 1058
 4(VertexShaderFunction):           2 Function None 3
                5:             Label
+                              Return
                               FunctionEnd
 16(VertexShaderFunctionS(f1;f1;f1;u1;u1;):    6(float) Function None 10
         11(inF0):      7(ptr) FunctionParameter

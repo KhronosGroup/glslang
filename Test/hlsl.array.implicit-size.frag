@@ -22,7 +22,7 @@ struct PS_OUTPUT { float4 color : SV_Target0; };
 // INVALID: function parameters cannot be implicitly sized
 // void BadFunction(int a[]) { }
 
-void main(out PS_OUTPUT ps_output)
+void PixelShaderFunction(out PS_OUTPUT ps_output)
 {
     // local array sized from initializers
     float l_array[] = { 1, 2, 3 };

@@ -4,8 +4,8 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:2  Function Definition: PixelShaderFunction(vf4;f1; (temp 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (in 4-component vector of float)
-0:2      'f' (in float)
+0:2      'input' (layout(location=0 ) in 4-component vector of float)
+0:2      'f' (layout(location=1 ) in float)
 0:?     Sequence
 0:4      move second child to first child (temp 4-component vector of float)
 0:4        'v' (temp 4-component vector of float)
@@ -24,7 +24,7 @@ gl_FragCoord origin is upper left
 0:6      move second child to first child (temp 4-component vector of float)
 0:6        'v' (temp 4-component vector of float)
 0:6        Construct vec4 (temp 4-component vector of float)
-0:6          'f' (in float)
+0:6          'f' (layout(location=1 ) in float)
 0:8      move second child to first child (temp 3-component vector of float)
 0:8        'u' (temp 3-component vector of float)
 0:8        Constant:
@@ -41,7 +41,7 @@ gl_FragCoord origin is upper left
 0:10        'u' (temp 3-component vector of float)
 0:10        Construct vec3 (temp 3-component vector of float)
 0:10          Construct float (temp float)
-0:10            'f' (in float)
+0:10            'f' (layout(location=1 ) in float)
 0:11      Sequence
 0:11        move second child to first child (temp 2-component vector of float)
 0:11          'w' (temp 2-component vector of float)
@@ -93,7 +93,7 @@ gl_FragCoord origin is upper left
 0:22      any (global bool)
 0:22        NotEqual (temp 4-component vector of bool)
 0:22          Construct vec4 (temp 4-component vector of float)
-0:22            'f' (in float)
+0:22            'f' (layout(location=1 ) in float)
 0:22          'v' (temp 4-component vector of float)
 0:26      Compare Equal (temp bool)
 0:26        'f1' (temp 1-component vector of float)
@@ -108,9 +108,15 @@ gl_FragCoord origin is upper left
 0:29      Construct vec3 (temp 3-component vector of float)
 0:29        Construct float (temp float)
 0:29          'f1' (temp 1-component vector of float)
-0:31      Branch: Return with expression
-0:31        'input' (in 4-component vector of float)
+0:31      Sequence
+0:31        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:31          'input' (layout(location=0 ) in 4-component vector of float)
+0:31        Branch: Return
 0:?   Linker Objects
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:?     'input' (layout(location=0 ) in 4-component vector of float)
+0:?     'f' (layout(location=1 ) in float)
 
 
 Linked fragment stage:
@@ -121,8 +127,8 @@ gl_FragCoord origin is upper left
 0:? Sequence
 0:2  Function Definition: PixelShaderFunction(vf4;f1; (temp 4-component vector of float)
 0:2    Function Parameters: 
-0:2      'input' (in 4-component vector of float)
-0:2      'f' (in float)
+0:2      'input' (layout(location=0 ) in 4-component vector of float)
+0:2      'f' (layout(location=1 ) in float)
 0:?     Sequence
 0:4      move second child to first child (temp 4-component vector of float)
 0:4        'v' (temp 4-component vector of float)
@@ -141,7 +147,7 @@ gl_FragCoord origin is upper left
 0:6      move second child to first child (temp 4-component vector of float)
 0:6        'v' (temp 4-component vector of float)
 0:6        Construct vec4 (temp 4-component vector of float)
-0:6          'f' (in float)
+0:6          'f' (layout(location=1 ) in float)
 0:8      move second child to first child (temp 3-component vector of float)
 0:8        'u' (temp 3-component vector of float)
 0:8        Constant:
@@ -158,7 +164,7 @@ gl_FragCoord origin is upper left
 0:10        'u' (temp 3-component vector of float)
 0:10        Construct vec3 (temp 3-component vector of float)
 0:10          Construct float (temp float)
-0:10            'f' (in float)
+0:10            'f' (layout(location=1 ) in float)
 0:11      Sequence
 0:11        move second child to first child (temp 2-component vector of float)
 0:11          'w' (temp 2-component vector of float)
@@ -210,7 +216,7 @@ gl_FragCoord origin is upper left
 0:22      any (global bool)
 0:22        NotEqual (temp 4-component vector of bool)
 0:22          Construct vec4 (temp 4-component vector of float)
-0:22            'f' (in float)
+0:22            'f' (layout(location=1 ) in float)
 0:22          'v' (temp 4-component vector of float)
 0:26      Compare Equal (temp bool)
 0:26        'f1' (temp 1-component vector of float)
@@ -225,9 +231,15 @@ gl_FragCoord origin is upper left
 0:29      Construct vec3 (temp 3-component vector of float)
 0:29        Construct float (temp float)
 0:29          'f1' (temp 1-component vector of float)
-0:31      Branch: Return with expression
-0:31        'input' (in 4-component vector of float)
+0:31      Sequence
+0:31        move second child to first child (temp 4-component vector of float)
+0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:31          'input' (layout(location=0 ) in 4-component vector of float)
+0:31        Branch: Return
 0:?   Linker Objects
+0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
+0:?     'input' (layout(location=0 ) in 4-component vector of float)
+0:?     'f' (layout(location=1 ) in float)
 
 // Module Version 10000
 // Generated by (magic number): 80001
@@ -236,109 +248,113 @@ gl_FragCoord origin is upper left
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "main"
+                              EntryPoint Fragment 4  "PixelShaderFunction" 15 80 82
                               ExecutionMode 4 OriginUpperLeft
-                              Name 4  "main"
-                              Name 13  "PixelShaderFunction(vf4;f1;"
-                              Name 11  "input"
-                              Name 12  "f"
-                              Name 15  "v"
-                              Name 24  "u"
-                              Name 31  "w"
-                              Name 33  "V"
-                              Name 34  "MyVal"
-                              Name 37  "foo"
-                              Name 70  "f1"
+                              Name 4  "PixelShaderFunction"
+                              Name 9  "v"
+                              Name 15  "f"
+                              Name 20  "u"
+                              Name 27  "w"
+                              Name 30  "V"
+                              Name 31  "MyVal"
+                              Name 34  "foo"
+                              Name 67  "f1"
+                              Name 80  "@entryPointOutput"
+                              Name 82  "input"
+                              Decorate 15(f) Location 1
+                              Decorate 80(@entryPointOutput) Location 0
+                              Decorate 82(input) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypePointer Function 7(fvec4)
-               9:             TypePointer Function 6(float)
-              10:             TypeFunction 7(fvec4) 8(ptr) 9(ptr)
-              16:    6(float) Constant 1065353216
-              17:    7(fvec4) ConstantComposite 16 16 16 16
-              18:    6(float) Constant 1073741824
-              19:    7(fvec4) ConstantComposite 18 18 18 18
-              22:             TypeVector 6(float) 3
-              23:             TypePointer Function 22(fvec3)
-              25:   22(fvec3) ConstantComposite 16 16 16
-              26:   22(fvec3) ConstantComposite 18 18 18
-              29:             TypeVector 6(float) 2
-              30:             TypePointer Function 29(fvec2)
-              32:   29(fvec2) ConstantComposite 18 18
-              39:    6(float) Constant 1082130432
-              40:   22(fvec3) ConstantComposite 39 39 39
-              41:             TypeBool
-              42:             TypeVector 41(bool) 3
-              45:    6(float) Constant 1084227584
-              46:   22(fvec3) ConstantComposite 45 45 45
-              48:    6(float) Constant 1086324736
-              49:   22(fvec3) ConstantComposite 48 48 48
-              52:    6(float) Constant 1088421888
-              53:   22(fvec3) ConstantComposite 52 52 52
-              56:             TypeInt 32 0
-              57:     56(int) Constant 0
-              62:             TypeVector 41(bool) 4
-         4(main):           2 Function None 3
+              10:    6(float) Constant 1065353216
+              11:    7(fvec4) ConstantComposite 10 10 10 10
+              12:    6(float) Constant 1073741824
+              13:    7(fvec4) ConstantComposite 12 12 12 12
+              14:             TypePointer Input 6(float)
+           15(f):     14(ptr) Variable Input
+              18:             TypeVector 6(float) 3
+              19:             TypePointer Function 18(fvec3)
+              21:   18(fvec3) ConstantComposite 10 10 10
+              22:   18(fvec3) ConstantComposite 12 12 12
+              25:             TypeVector 6(float) 2
+              26:             TypePointer Function 25(fvec2)
+              28:   25(fvec2) ConstantComposite 12 12
+              29:             TypePointer Function 6(float)
+              36:    6(float) Constant 1082130432
+              37:   18(fvec3) ConstantComposite 36 36 36
+              38:             TypeBool
+              39:             TypeVector 38(bool) 3
+              42:    6(float) Constant 1084227584
+              43:   18(fvec3) ConstantComposite 42 42 42
+              45:    6(float) Constant 1086324736
+              46:   18(fvec3) ConstantComposite 45 45 45
+              49:    6(float) Constant 1088421888
+              50:   18(fvec3) ConstantComposite 49 49 49
+              53:             TypeInt 32 0
+              54:     53(int) Constant 0
+              59:             TypeVector 38(bool) 4
+              79:             TypePointer Output 7(fvec4)
+80(@entryPointOutput):     79(ptr) Variable Output
+              81:             TypePointer Input 7(fvec4)
+       82(input):     81(ptr) Variable Input
+4(PixelShaderFunction):           2 Function None 3
                5:             Label
-                              FunctionEnd
-13(PixelShaderFunction(vf4;f1;):    7(fvec4) Function None 10
-       11(input):      8(ptr) FunctionParameter
-           12(f):      9(ptr) FunctionParameter
-              14:             Label
-           15(v):      8(ptr) Variable Function
-           24(u):     23(ptr) Variable Function
-           31(w):     30(ptr) Variable Function
-           33(V):      9(ptr) Variable Function
-       34(MyVal):     23(ptr) Variable Function
-         37(foo):     23(ptr) Variable Function
-          70(f1):      9(ptr) Variable Function
-                              Store 15(v) 17
-                              Store 15(v) 19
-              20:    6(float) Load 12(f)
-              21:    7(fvec4) CompositeConstruct 20 20 20 20
-                              Store 15(v) 21
-                              Store 24(u) 25
-                              Store 24(u) 26
-              27:    6(float) Load 12(f)
-              28:   22(fvec3) CompositeConstruct 27 27 27
-                              Store 24(u) 28
-                              Store 31(w) 32
-                              Store 33(V) 16
-              35:    6(float) Load 33(V)
-              36:   22(fvec3) CompositeConstruct 35 35 35
-                              Store 34(MyVal) 36
-              38:   22(fvec3) Load 37(foo)
-              43:   42(bvec3) FOrdGreaterThan 38 40
-              44:   22(fvec3) Load 37(foo)
-              47:   42(bvec3) FOrdGreaterThanEqual 44 46
-              50:   22(fvec3) Load 37(foo)
-              51:   42(bvec3) FOrdLessThan 49 50
-              54:   22(fvec3) Load 37(foo)
-              55:   42(bvec3) FOrdLessThanEqual 53 54
-              58:      9(ptr) AccessChain 15(v) 57
-              59:    6(float) Load 58
-              60:    7(fvec4) CompositeConstruct 59 59 59 59
-              61:    7(fvec4) Load 15(v)
-              63:   62(bvec4) FOrdEqual 60 61
-              64:    41(bool) All 63
-              65:    6(float) Load 12(f)
-              66:    7(fvec4) CompositeConstruct 65 65 65 65
-              67:    7(fvec4) Load 15(v)
-              68:   62(bvec4) FOrdNotEqual 66 67
-              69:    41(bool) Any 68
-              71:    6(float) Load 70(f1)
-              72:    7(fvec4) Load 15(v)
+            9(v):      8(ptr) Variable Function
+           20(u):     19(ptr) Variable Function
+           27(w):     26(ptr) Variable Function
+           30(V):     29(ptr) Variable Function
+       31(MyVal):     19(ptr) Variable Function
+         34(foo):     19(ptr) Variable Function
+          67(f1):     29(ptr) Variable Function
+                              Store 9(v) 11
+                              Store 9(v) 13
+              16:    6(float) Load 15(f)
+              17:    7(fvec4) CompositeConstruct 16 16 16 16
+                              Store 9(v) 17
+                              Store 20(u) 21
+                              Store 20(u) 22
+              23:    6(float) Load 15(f)
+              24:   18(fvec3) CompositeConstruct 23 23 23
+                              Store 20(u) 24
+                              Store 27(w) 28
+                              Store 30(V) 10
+              32:    6(float) Load 30(V)
+              33:   18(fvec3) CompositeConstruct 32 32 32
+                              Store 31(MyVal) 33
+              35:   18(fvec3) Load 34(foo)
+              40:   39(bvec3) FOrdGreaterThan 35 37
+              41:   18(fvec3) Load 34(foo)
+              44:   39(bvec3) FOrdGreaterThanEqual 41 43
+              47:   18(fvec3) Load 34(foo)
+              48:   39(bvec3) FOrdLessThan 46 47
+              51:   18(fvec3) Load 34(foo)
+              52:   39(bvec3) FOrdLessThanEqual 50 51
+              55:     29(ptr) AccessChain 9(v) 54
+              56:    6(float) Load 55
+              57:    7(fvec4) CompositeConstruct 56 56 56 56
+              58:    7(fvec4) Load 9(v)
+              60:   59(bvec4) FOrdEqual 57 58
+              61:    38(bool) All 60
+              62:    6(float) Load 15(f)
+              63:    7(fvec4) CompositeConstruct 62 62 62 62
+              64:    7(fvec4) Load 9(v)
+              65:   59(bvec4) FOrdNotEqual 63 64
+              66:    38(bool) Any 65
+              68:    6(float) Load 67(f1)
+              69:    7(fvec4) Load 9(v)
+              70:    6(float) CompositeExtract 69 0
+              71:    38(bool) FOrdEqual 68 70
+              72:    7(fvec4) Load 9(v)
               73:    6(float) CompositeExtract 72 0
-              74:    41(bool) FOrdEqual 71 73
-              75:    7(fvec4) Load 15(v)
-              76:    6(float) CompositeExtract 75 0
-              77:    6(float) Load 70(f1)
-              78:    41(bool) FOrdLessThan 76 77
-              79:    6(float) Load 70(f1)
-              80:    6(float) Load 70(f1)
-              81:   22(fvec3) CompositeConstruct 80 80 80
-              82:    7(fvec4) Load 11(input)
-                              ReturnValue 82
+              74:    6(float) Load 67(f1)
+              75:    38(bool) FOrdLessThan 73 74
+              76:    6(float) Load 67(f1)
+              77:    6(float) Load 67(f1)
+              78:   18(fvec3) CompositeConstruct 77 77 77
+              83:    7(fvec4) Load 82(input)
+                              Store 80(@entryPointOutput) 83
+                              Return
                               FunctionEnd
