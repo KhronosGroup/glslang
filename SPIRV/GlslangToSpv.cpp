@@ -906,17 +906,18 @@ void TGlslangToSpvTraverser::dumpSpv(std::vector<unsigned int>& out)
     for (auto it = iOSet.cbegin(); it != iOSet.cend(); ++it)
         entryPoint->addIdOperand(*it);
 
+	if (!mainTerminated) {
+		spv::Block* lastMainBlock = shaderEntry->getLastBlock();
+		builder.setBuildPoint(lastMainBlock);
+		builder.leaveFunction();
+	}
+
     builder.eliminateDeadDecorations();
     builder.dump(out);
 }
 
 TGlslangToSpvTraverser::~TGlslangToSpvTraverser()
 {
-    if (! mainTerminated) {
-        spv::Block* lastMainBlock = shaderEntry->getLastBlock();
-        builder.setBuildPoint(lastMainBlock);
-        builder.leaveFunction();
-    }
 }
 
 //
