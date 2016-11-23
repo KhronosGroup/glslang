@@ -521,6 +521,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     static const EShLanguageMask EShLangCS     = EShLangAll;
     static const EShLanguageMask EShLangPS     = EShLangAll;
     static const EShLanguageMask EShLangHS     = EShLangAll;
+    static const EShLanguageMask EShLangGS     = EShLangAll;
 
     // This structure encodes the prototype information for each HLSL intrinsic.
     // Because explicit enumeration would be cumbersome, it's procedurally generated.
@@ -850,6 +851,10 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "GatherCmpAlpha",  /* O-4 */        "V4",    nullptr,   "%@,S,V,S,V,,,",  "FIU,s,F,,I,,,",  EShLangAll },
         { "GatherCmpAlpha",  /* O-4, status */"V4",    nullptr,   "%@,S,V,S,V,,,,S","FIU,s,F,,I,,,,U",EShLangAll },
 
+        // geometry methods
+        { "Append",                           "-",     "-",       "-",              "-",              EShLangGS  },
+        { "RestartStrip",                     "-",     "-",       "-",              "-",              EShLangGS  },
+
         // Mark end of list, since we want to avoid a range-based for, as some compilers don't handle it yet.
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0 },
     };
@@ -1154,6 +1159,10 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("GatherCmpGreen",              EOpMethodGatherCmpGreen);
     symbolTable.relateToOperator("GatherCmpBlue",               EOpMethodGatherCmpBlue);
     symbolTable.relateToOperator("GatherCmpAlpha",              EOpMethodGatherCmpAlpha);
+
+    // GS methods
+    symbolTable.relateToOperator("Append",                      EOpMethodAppend);
+    symbolTable.relateToOperator("RestartStrip",                EOpMethodRestartStrip);
 }
 
 //

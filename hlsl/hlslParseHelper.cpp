@@ -758,6 +758,13 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
                 return intermediate.addMethod(base, TType(sampler.type, EvqTemporary, vecSize), &field, loc);
             }
         }
+    } else if (field == "Append" ||
+               field == "RestartStrip") {
+        // These methods only valid on stage in variables
+        // TODO: ... which are stream out types, if there's any way to test that here.
+        if (base->getType().getQualifier().storage == EvqVaryingOut) {
+            return intermediate.addMethod(base, TType(EbtVoid), &field, loc);
+        }
     }
 
     // It's not .length() if we get to here.
@@ -1137,12 +1144,19 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     postMainReturn = false;
 
     // Handle function attributes
-    const TIntermAggregate* numThreadliterals = attributes[EatNumthreads];
-    if (numThreadliterals != nullptr && inEntryPoint) {
-        const TIntermSequence& sequence = numThreadliterals->getSequence();
+    if (inEntryPoint) {
+        const TIntermAggregate* numThreads = attributes[EatNumThreads];
+        if (numThreads != nullptr) {
+            const TIntermSequence& sequence = numThreads->getSequence();
  
-        for (int lid = 0; lid < int(sequence.size()); ++lid)
-            intermediate.setLocalSize(lid, sequence[lid]->getAsConstantUnion()->getConstArray()[0].getIConst());
+            for (int lid = 0; lid < int(sequence.size()); ++lid)
+                intermediate.setLocalSize(lid, sequence[lid]->getAsConstantUnion()->getConstArray()[0].getIConst());
+        }
+
+        const TIntermAggregate* maxVertexCount = attributes[EatMaxVertexCount];
+        if (maxVertexCount != nullptr) {
+            intermediate.setVertices(maxVertexCount->getSequence()[0]->getAsConstantUnion()->getConstArray()[0].getIConst());
+        }
     }
 
     return paramNodes;
@@ -2064,6 +2078,55 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 }
 
 //
+// Decompose geometry shader methods
+//
+void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
+{
+    if (!node || !node->getAsOperator())
+        return;
+
+    const TOperator op  = node->getAsOperator()->getOp();
+    const TIntermAggregate* argAggregate = arguments ? arguments->getAsAggregate() : nullptr;
+
+    switch (op) {
+    case EOpMethodAppend:
+        if (argAggregate) {
+            TIntermAggregate* sequence = nullptr;
+            TIntermAggregate* emit = new TIntermAggregate(EOpEmitVertex);
+
+            emit->setLoc(loc);
+            emit->setType(TType(EbtVoid));
+
+            sequence = intermediate.growAggregate(sequence,
+                                                  intermediate.addAssign(EOpAssign, 
+                                                                         argAggregate->getSequence()[0]->getAsTyped(),
+                                                                         argAggregate->getSequence()[1]->getAsTyped(), loc),
+                                                  loc);
+
+            sequence = intermediate.growAggregate(sequence, emit);
+
+            sequence->setOperator(EOpSequence);
+            sequence->setLoc(loc);
+            sequence->setType(TType(EbtVoid));
+            node = sequence;
+        }
+        break;
+
+    case EOpMethodRestartStrip:
+        {
+            TIntermAggregate* cut = new TIntermAggregate(EOpEndPrimitive);
+            cut->setLoc(loc);
+            cut->setType(TType(EbtVoid));
+            node = cut;
+        }
+        break;
+
+    default:
+        break; // most pass through unchanged
+    }
+}
+
+//
 // Optionally decompose intrinsics to AST opcodes.
 //
 void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
@@ -2546,8 +2609,9 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
                 result = addOutputArgumentConversions(*fnCandidate, *result->getAsAggregate());
             }
 
-            decomposeIntrinsic(loc, result, arguments);      // HLSL->AST intrinsic decompositions
-            decomposeSampleMethods(loc, result, arguments);  // HLSL->AST sample method decompositions
+            decomposeIntrinsic(loc, result, arguments);       // HLSL->AST intrinsic decompositions
+            decomposeSampleMethods(loc, result, arguments);   // HLSL->AST sample method decompositions
+            decomposeGeometryMethods(loc, result, arguments); // HLSL->AST geometry method decompositions
         }
     }
 
@@ -4295,6 +4359,14 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
     TVector<const TFunction*> candidateList;
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
     
+    // These builtin ops can accept any type, so we bypass the argument selection
+    if (candidateList.size() == 1 && builtIn &&
+        (candidateList[0]->getBuiltInOp() == EOpMethodAppend ||
+         candidateList[0]->getBuiltInOp() == EOpMethodRestartStrip)) {
+
+        return candidateList[0];
+    }
+
     // can 'from' convert to 'to'?
     const auto convertible = [this](const TType& from, const TType& to) -> bool {
         if (from == to)
@@ -5203,6 +5275,53 @@ void HlslParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier 
 }
 
 //
+// Update the intermediate for the given input geometry
+//
+bool HlslParseContext::handleInputGeometry(const TSourceLoc& loc, const TLayoutGeometry& geometry)
+{
+    switch (geometry) {
+    case ElgPoints:             // fall through
+    case ElgLines:              // ...
+    case ElgTriangles:          // ...
+    case ElgLinesAdjacency:     // ...
+    case ElgTrianglesAdjacency: // ...
+        if (! intermediate.setInputPrimitive(geometry)) {
+            error(loc, "input primitive geometry redefinition", TQualifier::getGeometryString(geometry), "");
+            return false;
+        }
+        break;
+
+    default:
+        error(loc, "cannot apply to 'in'", TQualifier::getGeometryString(geometry), "");
+        return false;
+    }
+
+    return true;
+}
+
+//
+// Update the intermediate for the given output geometry
+//
+bool HlslParseContext::handleOutputGeometry(const TSourceLoc& loc, const TLayoutGeometry& geometry)
+{
+    switch (geometry) {
+    case ElgPoints:
+    case ElgLineStrip:
+    case ElgTriangleStrip:
+        if (! intermediate.setOutputPrimitive(geometry)) {
+            error(loc, "output primitive geometry redefinition", TQualifier::getGeometryString(geometry), "");
+            return false;
+        }
+        break;
+    default:
+        error(loc, "cannot apply to 'out'", TQualifier::getGeometryString(geometry), "");
+        return false;
+    }
+
+    return true;
+}
+
+//
 // Updating default qualifier for the case of a declaration with just a qualifier,
 // no type, block, or identifier.
 //
@@ -5231,16 +5350,7 @@ void HlslParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, 
                 error(loc, "cannot apply to input", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
             }
         } else if (publicType.qualifier.storage == EvqVaryingOut) {
-            switch (publicType.shaderQualifiers.geometry) {
-            case ElgPoints:
-            case ElgLineStrip:
-            case ElgTriangleStrip:
-                if (! intermediate.setOutputPrimitive(publicType.shaderQualifiers.geometry))
-                    error(loc, "cannot change previously set output primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
-                break;
-            default:
-                error(loc, "cannot apply to 'out'", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
-            }
+            handleOutputGeometry(loc, publicType.shaderQualifiers.geometry);
         } else
             error(loc, "cannot apply to:", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), GetStorageQualifierString(publicType.qualifier.storage));
     }

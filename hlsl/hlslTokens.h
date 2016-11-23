@@ -66,6 +66,18 @@ enum EHlslTokenClass {
     EHTokInOut,
     EHTokLayout,
 
+    // primitive types
+    EHTokPoint,
+    EHTokLine,
+    EHTokTriangle,
+    EHTokLineAdj,
+    EHTokTriangleAdj,
+
+    // stream out types
+    EHTokPointStream,
+    EHTokLineStream,
+    EHTokTriangleStream,
+
     // template types
     EHTokBuffer,
     EHTokVector,
