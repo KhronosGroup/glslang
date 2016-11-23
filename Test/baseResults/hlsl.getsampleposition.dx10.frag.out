@@ -14,7 +14,7 @@ ERROR: node is still EOpNull!
 0:16        move second child to first child (temp 2-component vector of float)
 0:16          'r00' (temp 2-component vector of float)
 0:16          ERROR: Bad aggregation op
- (global 2-component vector of float)
+ (temp 2-component vector of float)
 0:16            'g_tTex2dmsf4' (uniform texture2DMS)
 0:16            Constant:
 0:16              1 (const int)
@@ -22,7 +22,7 @@ ERROR: node is still EOpNull!
 0:17        move second child to first child (temp 2-component vector of float)
 0:17          'r01' (temp 2-component vector of float)
 0:17          ERROR: Bad aggregation op
- (global 2-component vector of float)
+ (temp 2-component vector of float)
 0:17            'g_tTex2dmsf4a' (uniform texture2DMSArray)
 0:17            Constant:
 0:17              2 (const int)
@@ -79,7 +79,7 @@ ERROR: node is still EOpNull!
 0:16        move second child to first child (temp 2-component vector of float)
 0:16          'r00' (temp 2-component vector of float)
 0:16          ERROR: Bad aggregation op
- (global 2-component vector of float)
+ (temp 2-component vector of float)
 0:16            'g_tTex2dmsf4' (uniform texture2DMS)
 0:16            Constant:
 0:16              1 (const int)
@@ -87,7 +87,7 @@ ERROR: node is still EOpNull!
 0:17        move second child to first child (temp 2-component vector of float)
 0:17          'r01' (temp 2-component vector of float)
 0:17          ERROR: Bad aggregation op
- (global 2-component vector of float)
+ (temp 2-component vector of float)
 0:17            'g_tTex2dmsf4a' (uniform texture2DMSArray)
 0:17            Constant:
 0:17              2 (const int)

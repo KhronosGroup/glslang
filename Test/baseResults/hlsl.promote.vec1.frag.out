@@ -13,13 +13,13 @@ gl_FragCoord origin is upper left
 0:8        'f1b' (temp 1-component vector of float)
 0:8        Construct float (temp 1-component vector of float)
 0:8          'f1a' (temp float)
-0:11      step (global 3-component vector of float)
+0:11      step (temp 3-component vector of float)
 0:11        Constant:
 0:11          0.000000
 0:11          0.000000
 0:11          0.000000
 0:11        'f3' (temp 3-component vector of float)
-0:13      sine (global float)
+0:13      sine (temp float)
 0:13        Construct float (in float)
 0:13          'f1b' (temp 1-component vector of float)
 0:15      Sequence
@@ -52,13 +52,13 @@ gl_FragCoord origin is upper left
 0:8        'f1b' (temp 1-component vector of float)
 0:8        Construct float (temp 1-component vector of float)
 0:8          'f1a' (temp float)
-0:11      step (global 3-component vector of float)
+0:11      step (temp 3-component vector of float)
 0:11        Constant:
 0:11          0.000000
 0:11          0.000000
 0:11          0.000000
 0:11        'f3' (temp 3-component vector of float)
-0:13      sine (global float)
+0:13      sine (temp float)
 0:13        Construct float (in float)
 0:13          'f1b' (temp 1-component vector of float)
 0:15      Sequence

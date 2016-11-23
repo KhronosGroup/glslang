@@ -8,7 +8,7 @@ gl_FragCoord origin is upper left
 0:42      Sequence
 0:42        move second child to first child (temp float)
 0:42          'r10' (temp float)
-0:42          textureLod (global float)
+0:42          textureLod (temp float)
 0:42            Construct combined texture-sampler (temp sampler1DArrayShadow)
 0:42              'g_tTex1df4a' (uniform texture1DArray)
 0:42              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -23,7 +23,7 @@ gl_FragCoord origin is upper left
 0:43      Sequence
 0:43        move second child to first child (temp float)
 0:43          'r12' (temp float)
-0:43          textureLod (global float)
+0:43          textureLod (temp float)
 0:43            Construct combined texture-sampler (temp isampler1DArrayShadow)
 0:43              'g_tTex1di4a' (uniform itexture1DArray)
 0:43              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -38,7 +38,7 @@ gl_FragCoord origin is upper left
 0:44      Sequence
 0:44        move second child to first child (temp float)
 0:44          'r14' (temp float)
-0:44          textureLod (global float)
+0:44          textureLod (temp float)
 0:44            Construct combined texture-sampler (temp usampler1DArrayShadow)
 0:44              'g_tTex1du4a' (uniform utexture1DArray)
 0:44              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -53,7 +53,7 @@ gl_FragCoord origin is upper left
 0:47      Sequence
 0:47        move second child to first child (temp float)
 0:47          'r30' (temp float)
-0:47          textureLod (global float)
+0:47          textureLod (temp float)
 0:47            Construct combined texture-sampler (temp sampler2DArrayShadow)
 0:47              'g_tTex2df4a' (uniform texture2DArray)
 0:47              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -69,7 +69,7 @@ gl_FragCoord origin is upper left
 0:48      Sequence
 0:48        move second child to first child (temp float)
 0:48          'r32' (temp float)
-0:48          textureLod (global float)
+0:48          textureLod (temp float)
 0:48            Construct combined texture-sampler (temp isampler2DArrayShadow)
 0:48              'g_tTex2di4a' (uniform itexture2DArray)
 0:48              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -85,7 +85,7 @@ gl_FragCoord origin is upper left
 0:49      Sequence
 0:49        move second child to first child (temp float)
 0:49          'r34' (temp float)
-0:49          textureLod (global float)
+0:49          textureLod (temp float)
 0:49            Construct combined texture-sampler (temp usampler2DArrayShadow)
 0:49              'g_tTex2du4a' (uniform utexture2DArray)
 0:49              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -101,7 +101,7 @@ gl_FragCoord origin is upper left
 0:52      Sequence
 0:52        move second child to first child (temp float)
 0:52          'r60' (temp float)
-0:52          textureLod (global float)
+0:52          textureLod (temp float)
 0:52            Construct combined texture-sampler (temp samplerCubeArrayShadow)
 0:52              'g_tTexcdf4a' (uniform textureCubeArray)
 0:52              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -118,7 +118,7 @@ gl_FragCoord origin is upper left
 0:53      Sequence
 0:53        move second child to first child (temp float)
 0:53          'r62' (temp float)
-0:53          textureLod (global float)
+0:53          textureLod (temp float)
 0:53            Construct combined texture-sampler (temp isamplerCubeArrayShadow)
 0:53              'g_tTexcdi4a' (uniform itextureCubeArray)
 0:53              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -135,7 +135,7 @@ gl_FragCoord origin is upper left
 0:54      Sequence
 0:54        move second child to first child (temp float)
 0:54          'r64' (temp float)
-0:54          textureLod (global float)
+0:54          textureLod (temp float)
 0:54            Construct combined texture-sampler (temp usamplerCubeArrayShadow)
 0:54              'g_tTexcdu4a' (uniform utextureCubeArray)
 0:54              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -220,7 +220,7 @@ gl_FragCoord origin is upper left
 0:42      Sequence
 0:42        move second child to first child (temp float)
 0:42          'r10' (temp float)
-0:42          textureLod (global float)
+0:42          textureLod (temp float)
 0:42            Construct combined texture-sampler (temp sampler1DArrayShadow)
 0:42              'g_tTex1df4a' (uniform texture1DArray)
 0:42              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -235,7 +235,7 @@ gl_FragCoord origin is upper left
 0:43      Sequence
 0:43        move second child to first child (temp float)
 0:43          'r12' (temp float)
-0:43          textureLod (global float)
+0:43          textureLod (temp float)
 0:43            Construct combined texture-sampler (temp isampler1DArrayShadow)
 0:43              'g_tTex1di4a' (uniform itexture1DArray)
 0:43              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -250,7 +250,7 @@ gl_FragCoord origin is upper left
 0:44      Sequence
 0:44        move second child to first child (temp float)
 0:44          'r14' (temp float)
-0:44          textureLod (global float)
+0:44          textureLod (temp float)
 0:44            Construct combined texture-sampler (temp usampler1DArrayShadow)
 0:44              'g_tTex1du4a' (uniform utexture1DArray)
 0:44              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -265,7 +265,7 @@ gl_FragCoord origin is upper left
 0:47      Sequence
 0:47        move second child to first child (temp float)
 0:47          'r30' (temp float)
-0:47          textureLod (global float)
+0:47          textureLod (temp float)
 0:47            Construct combined texture-sampler (temp sampler2DArrayShadow)
 0:47              'g_tTex2df4a' (uniform texture2DArray)
 0:47              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -281,7 +281,7 @@ gl_FragCoord origin is upper left
 0:48      Sequence
 0:48        move second child to first child (temp float)
 0:48          'r32' (temp float)
-0:48          textureLod (global float)
+0:48          textureLod (temp float)
 0:48            Construct combined texture-sampler (temp isampler2DArrayShadow)
 0:48              'g_tTex2di4a' (uniform itexture2DArray)
 0:48              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -297,7 +297,7 @@ gl_FragCoord origin is upper left
 0:49      Sequence
 0:49        move second child to first child (temp float)
 0:49          'r34' (temp float)
-0:49          textureLod (global float)
+0:49          textureLod (temp float)
 0:49            Construct combined texture-sampler (temp usampler2DArrayShadow)
 0:49              'g_tTex2du4a' (uniform utexture2DArray)
 0:49              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -313,7 +313,7 @@ gl_FragCoord origin is upper left
 0:52      Sequence
 0:52        move second child to first child (temp float)
 0:52          'r60' (temp float)
-0:52          textureLod (global float)
+0:52          textureLod (temp float)
 0:52            Construct combined texture-sampler (temp samplerCubeArrayShadow)
 0:52              'g_tTexcdf4a' (uniform textureCubeArray)
 0:52              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -330,7 +330,7 @@ gl_FragCoord origin is upper left
 0:53      Sequence
 0:53        move second child to first child (temp float)
 0:53          'r62' (temp float)
-0:53          textureLod (global float)
+0:53          textureLod (temp float)
 0:53            Construct combined texture-sampler (temp isamplerCubeArrayShadow)
 0:53              'g_tTexcdi4a' (uniform itextureCubeArray)
 0:53              'g_sSamp' (layout(binding=0 ) uniform sampler)
@@ -347,7 +347,7 @@ gl_FragCoord origin is upper left
 0:54      Sequence
 0:54        move second child to first child (temp float)
 0:54          'r64' (temp float)
-0:54          textureLod (global float)
+0:54          textureLod (temp float)
 0:54            Construct combined texture-sampler (temp usamplerCubeArrayShadow)
 0:54              'g_tTexcdu4a' (uniform utextureCubeArray)
 0:54              'g_sSamp' (layout(binding=0 ) uniform sampler)

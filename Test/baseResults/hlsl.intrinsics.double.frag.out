@@ -16,7 +16,7 @@ gl_FragCoord origin is upper left
 0:6      Sequence
 0:6        move second child to first child (temp double)
 0:6          'r00' (temp double)
-0:6          fma (global double)
+0:6          fma (temp double)
 0:6            'inDV1a' (layout(location=0 ) in double)
 0:6            'inDV1b' (layout(location=1 ) in double)
 0:6            'inDV1c' (layout(location=2 ) in double)
@@ -65,7 +65,7 @@ gl_FragCoord origin is upper left
 0:6      Sequence
 0:6        move second child to first child (temp double)
 0:6          'r00' (temp double)
-0:6          fma (global double)
+0:6          fma (temp double)
 0:6            'inDV1a' (layout(location=0 ) in double)
 0:6            'inDV1b' (layout(location=1 ) in double)
 0:6            'inDV1c' (layout(location=2 ) in double)

@@ -19,7 +19,7 @@ gl_FragCoord origin is upper left
 0:?       Sequence
 0:5        Loop with condition tested first
 0:5          Loop Condition
-0:5          any (global bool)
+0:5          any (temp bool)
 0:5            NotEqual (temp 4-component vector of bool)
 0:5              'input' (layout(location=0 ) in 4-component vector of float)
 0:5              'input' (layout(location=0 ) in 4-component vector of float)
@@ -27,7 +27,7 @@ gl_FragCoord origin is upper left
 0:?       Sequence
 0:6        Loop with condition tested first
 0:6          Loop Condition
-0:6          any (global bool)
+0:6          any (temp bool)
 0:6            NotEqual (temp 4-component vector of bool)
 0:6              'input' (layout(location=0 ) in 4-component vector of float)
 0:6              'input' (layout(location=0 ) in 4-component vector of float)
@@ -44,7 +44,7 @@ gl_FragCoord origin is upper left
 0:7          'input' (layout(location=0 ) in 4-component vector of float)
 0:7        Loop with condition tested first
 0:7          Loop Condition
-0:7          any (global bool)
+0:7          any (temp bool)
 0:7            NotEqual (temp 4-component vector of bool)
 0:7              'input' (layout(location=0 ) in 4-component vector of float)
 0:7              'input' (layout(location=0 ) in 4-component vector of float)
@@ -144,7 +144,7 @@ gl_FragCoord origin is upper left
 0:?       Sequence
 0:5        Loop with condition tested first
 0:5          Loop Condition
-0:5          any (global bool)
+0:5          any (temp bool)
 0:5            NotEqual (temp 4-component vector of bool)
 0:5              'input' (layout(location=0 ) in 4-component vector of float)
 0:5              'input' (layout(location=0 ) in 4-component vector of float)
@@ -152,7 +152,7 @@ gl_FragCoord origin is upper left
 0:?       Sequence
 0:6        Loop with condition tested first
 0:6          Loop Condition
-0:6          any (global bool)
+0:6          any (temp bool)
 0:6            NotEqual (temp 4-component vector of bool)
 0:6              'input' (layout(location=0 ) in 4-component vector of float)
 0:6              'input' (layout(location=0 ) in 4-component vector of float)
@@ -169,7 +169,7 @@ gl_FragCoord origin is upper left
 0:7          'input' (layout(location=0 ) in 4-component vector of float)
 0:7        Loop with condition tested first
 0:7          Loop Condition
-0:7          any (global bool)
+0:7          any (temp bool)
 0:7            NotEqual (temp 4-component vector of bool)
 0:7              'input' (layout(location=0 ) in 4-component vector of float)
 0:7              'input' (layout(location=0 ) in 4-component vector of float)
