@@ -5,7 +5,7 @@ float1x2 fmat12;
 double2x3 dmat23;
 int4x4 int44;
 
-float1 ShaderFunction(float1 inFloat1, float inScalar) : COLOR0
+float1 PixelShaderFunction(float1 inFloat1, float inScalar) : COLOR0
 {
     return inFloat1;
 }
