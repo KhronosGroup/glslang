@@ -215,7 +215,7 @@ public:
     TIntermTyped* addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc);
     TIntermTyped* addUnaryMath(TOperator, TIntermTyped* child, TSourceLoc);
     TIntermTyped* addBuiltInFunctionCall(const TSourceLoc& line, TOperator, bool unary, TIntermNode*, const TType& returnType);
-    bool canImplicitlyPromote(TBasicType from, TBasicType to, TOperator op = EOpNull) const;
+    bool canImplicitlyPromote(TBasicType from, TBasicType to, TOperator op = EOpNull, int arg = -1) const;
     TOperator mapTypeToConstructorOp(const TType&) const;
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right);
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right, const TSourceLoc&);
@@ -381,6 +381,7 @@ public:
     int addXfbBufferOffset(const TType&);
     unsigned int computeTypeXfbSize(const TType&, bool& containsDouble) const;
     static int getBaseAlignment(const TType&, int& size, int& stride, bool std140, bool rowMajor);
+    bool promote(TIntermOperator*);
 
 protected:
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TConstUnionArray&, TIntermTyped* subtree, const TSourceLoc&);
@@ -395,10 +396,10 @@ protected:
     bool userOutputUsed() const;
     static int getBaseAlignmentScalar(const TType&, int& size);
     bool isSpecializationOperation(const TIntermOperator&) const;
-    bool promote(TIntermOperator*);
     bool promoteUnary(TIntermUnary&);
     bool promoteBinary(TIntermBinary&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
+    bool promoteAggregate(TIntermAggregate&);
     
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later

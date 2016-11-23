@@ -1,24 +1,41 @@
 hlsl.intrinsics.negative.frag
+ERROR: 0:5: 'asdouble' : no matching overloaded function found 
+ERROR: 0:7: 'countbits' : no matching overloaded function found 
 ERROR: 0:10: 'determinant' : no matching overloaded function found 
-ERROR: 0:12: 'f32tof16' : unimplemented intrinsic: handle natively 
+ERROR: 0:12: 'f16tof32' : no matching overloaded function found 
+ERROR: 0:13: 'firstbithigh' : no matching overloaded function found 
+ERROR: 0:14: 'firstbitlow' : no matching overloaded function found 
 ERROR: 0:28: 'refract' : no matching overloaded function found 
+ERROR: 0:29: 'reversebits' : no matching overloaded function found 
 ERROR: 0:30: 'transpose' : no matching overloaded function found 
 ERROR: 0:39: 'GetRenderTargetSamplePosition' : no matching overloaded function found 
-ERROR: 0:46: 'asdouble' : double2 conversion not implemented 
+ERROR: 0:46: 'asdouble' : no matching overloaded function found 
 ERROR: 0:47: 'CheckAccessFullyMapped' : no matching overloaded function found 
+ERROR: 0:48: 'countbits' : no matching overloaded function found 
 ERROR: 0:49: 'cross' : no matching overloaded function found 
 ERROR: 0:50: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
 ERROR: 0:51: 'determinant' : no matching overloaded function found 
-ERROR: 0:52: 'f32tof16' : unimplemented intrinsic: handle natively 
+ERROR: 0:52: 'f16tof32' : no matching overloaded function found 
+ERROR: 0:53: 'firstbithigh' : no matching overloaded function found 
+ERROR: 0:54: 'firstbitlow' : no matching overloaded function found 
+ERROR: 0:56: 'reversebits' : no matching overloaded function found 
 ERROR: 0:57: 'transpose' : no matching overloaded function found 
 ERROR: 0:64: 'CheckAccessFullyMapped' : no matching overloaded function found 
+ERROR: 0:65: 'countbits' : no matching overloaded function found 
 ERROR: 0:66: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
 ERROR: 0:67: 'determinant' : no matching overloaded function found 
-ERROR: 0:68: 'f32tof16' : unimplemented intrinsic: handle natively 
+ERROR: 0:68: 'f16tof32' : no matching overloaded function found 
+ERROR: 0:69: 'firstbithigh' : no matching overloaded function found 
+ERROR: 0:70: 'firstbitlow' : no matching overloaded function found 
+ERROR: 0:72: 'reversebits' : no matching overloaded function found 
 ERROR: 0:73: 'transpose' : no matching overloaded function found 
 ERROR: 0:81: 'CheckAccessFullyMapped' : no matching overloaded function found 
+ERROR: 0:82: 'countbits' : no matching overloaded function found 
 ERROR: 0:84: 'determinant' : no matching overloaded function found 
-ERROR: 0:85: 'f32tof16' : unimplemented intrinsic: handle natively 
+ERROR: 0:85: 'f16tof32' : no matching overloaded function found 
+ERROR: 0:86: 'firstbithigh' : no matching overloaded function found 
+ERROR: 0:87: 'firstbitlow' : no matching overloaded function found 
+ERROR: 0:89: 'reversebits' : no matching overloaded function found 
 ERROR: 0:90: 'transpose' : no matching overloaded function found 
 ERROR: 0:117: 'countbits' : no matching overloaded function found 
 ERROR: 0:117: 'D3DCOLORtoUBYTE4' : no matching overloaded function found 
@@ -59,7 +76,7 @@ ERROR: 0:133: 'normalize' : no matching overloaded function found
 ERROR: 0:133: 'reflect' : no matching overloaded function found 
 ERROR: 0:133: 'refract' : no matching overloaded function found 
 ERROR: 0:133: 'reversebits' : no matching overloaded function found 
-ERROR: 60 compilation errors.  No code generated.
+ERROR: 77 compilation errors.  No code generated.
 
 
 Shader version: 450
@@ -72,18 +89,13 @@ ERROR: node is still EOpNull!
 0:2      'inF2' (in float)
 0:2      'inI0' (in int)
 0:?     Sequence
-0:5      uint64BitsToDouble (temp double)
-0:5        Construct uvec2 (temp 2-component vector of uint)
-0:5          Convert float to uint (temp uint)
-0:5            'inF0' (in float)
-0:5          Convert float to uint (temp uint)
-0:5            'inF1' (in float)
+0:5      Constant:
+0:5        0.000000
 0:6      Function Call: CheckAccessFullyMapped(u1; (global bool)
 0:6        Constant:
 0:6          3 (const uint)
-0:7      bitCount (global uint)
-0:7        Convert float to uint (temp uint)
-0:7          'inF0' (in float)
+0:7      Constant:
+0:7        0.000000
 0:8      cross-product (global 3-component vector of float)
 0:8        Construct vec3 (in 3-component vector of float)
 0:8          'inF0' (in float)
@@ -94,16 +106,12 @@ ERROR: node is still EOpNull!
 0:9          'inF0' (in float)
 0:10      Constant:
 0:10        0.000000
-0:12      ERROR: Bad unary op
- (global float)
-0:12        Convert float to uint (temp uint)
-0:12          'inF0' (in float)
-0:13      findMSB (global uint)
-0:13        Convert float to uint (temp uint)
-0:13          'inF0' (in float)
-0:14      findLSB (global uint)
-0:14        Convert float to uint (temp uint)
-0:14          'inF0' (in float)
+0:12      Constant:
+0:12        0.000000
+0:13      Constant:
+0:13        0.000000
+0:14      Constant:
+0:14        0.000000
 0:23      length (global float)
 0:23        Construct vec2 (in 2-component vector of float)
 0:23          'inF0' (in float)
@@ -134,9 +142,8 @@ ERROR: node is still EOpNull!
 0:27        'inF2' (in float)
 0:28      Constant:
 0:28        0.000000
-0:29      bitFieldReverse (global uint)
-0:29        Convert float to uint (temp uint)
-0:29          'inF0' (in float)
+0:29      Constant:
+0:29        0.000000
 0:30      Constant:
 0:30        0.000000
 0:32      Branch: Return with expression
@@ -161,36 +168,26 @@ ERROR: node is still EOpNull!
 0:45      'inF2' (in 2-component vector of float)
 0:45      'inI0' (in 2-component vector of int)
 0:?     Sequence
-0:46      ERROR: Bad aggregation op
- (global 2-component vector of double)
-0:46        Convert float to uint (temp 2-component vector of uint)
-0:46          'inF0' (in 2-component vector of float)
-0:46        Convert float to uint (temp 2-component vector of uint)
-0:46          'inF1' (in 2-component vector of float)
+0:46      Constant:
+0:46        0.000000
 0:47      Constant:
 0:47        0.000000
-0:48      bitCount (global 2-component vector of uint)
-0:48        Convert float to uint (temp 2-component vector of uint)
-0:48          'inF0' (in 2-component vector of float)
+0:48      Constant:
+0:48        0.000000
 0:49      Constant:
 0:49        0.000000
 0:50      Constant:
 0:50        0.000000
 0:51      Constant:
 0:51        0.000000
-0:52      ERROR: Bad unary op
- (global 2-component vector of float)
-0:52        Convert float to uint (temp 2-component vector of uint)
-0:52          'inF0' (in 2-component vector of float)
-0:53      findMSB (global 2-component vector of uint)
-0:53        Convert float to uint (temp 2-component vector of uint)
-0:53          'inF0' (in 2-component vector of float)
-0:54      findLSB (global 2-component vector of uint)
-0:54        Convert float to uint (temp 2-component vector of uint)
-0:54          'inF0' (in 2-component vector of float)
-0:56      bitFieldReverse (global 2-component vector of uint)
-0:56        Convert float to uint (temp 2-component vector of uint)
-0:56          'inF0' (in 2-component vector of float)
+0:52      Constant:
+0:52        0.000000
+0:53      Constant:
+0:53        0.000000
+0:54      Constant:
+0:54        0.000000
+0:56      Constant:
+0:56        0.000000
 0:57      Constant:
 0:57        0.000000
 0:59      Branch: Return with expression
@@ -206,26 +203,20 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:64      Constant:
 0:64        0.000000
-0:65      bitCount (global 3-component vector of uint)
-0:65        Convert float to uint (temp 3-component vector of uint)
-0:65          'inF0' (in 3-component vector of float)
+0:65      Constant:
+0:65        0.000000
 0:66      Constant:
 0:66        0.000000
 0:67      Constant:
 0:67        0.000000
-0:68      ERROR: Bad unary op
- (global 3-component vector of float)
-0:68        Convert float to uint (temp 3-component vector of uint)
-0:68          'inF0' (in 3-component vector of float)
-0:69      findMSB (global 3-component vector of uint)
-0:69        Convert float to uint (temp 3-component vector of uint)
-0:69          'inF0' (in 3-component vector of float)
-0:70      findLSB (global 3-component vector of uint)
-0:70        Convert float to uint (temp 3-component vector of uint)
-0:70          'inF0' (in 3-component vector of float)
-0:72      bitFieldReverse (global 3-component vector of uint)
-0:72        Convert float to uint (temp 3-component vector of uint)
-0:72          'inF0' (in 3-component vector of float)
+0:68      Constant:
+0:68        0.000000
+0:69      Constant:
+0:69        0.000000
+0:70      Constant:
+0:70        0.000000
+0:72      Constant:
+0:72        0.000000
 0:73      Constant:
 0:73        0.000000
 0:76      Branch: Return with expression
@@ -242,9 +233,8 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:81      Constant:
 0:81        0.000000
-0:82      bitCount (global 4-component vector of uint)
-0:82        Convert float to uint (temp 4-component vector of uint)
-0:82          'inF0' (layout(location=0 ) in 4-component vector of float)
+0:82      Constant:
+0:82        0.000000
 0:83      cross-product (global 3-component vector of float)
 0:83        Construct vec3 (in 3-component vector of float)
 0:83          'inF0' (layout(location=0 ) in 4-component vector of float)
@@ -252,19 +242,14 @@ ERROR: node is still EOpNull!
 0:83          'inF1' (layout(location=1 ) in 4-component vector of float)
 0:84      Constant:
 0:84        0.000000
-0:85      ERROR: Bad unary op
- (global 4-component vector of float)
-0:85        Convert float to uint (temp 4-component vector of uint)
-0:85          'inF0' (layout(location=0 ) in 4-component vector of float)
-0:86      findMSB (global 4-component vector of uint)
-0:86        Convert float to uint (temp 4-component vector of uint)
-0:86          'inF0' (layout(location=0 ) in 4-component vector of float)
-0:87      findLSB (global 4-component vector of uint)
-0:87        Convert float to uint (temp 4-component vector of uint)
-0:87          'inF0' (layout(location=0 ) in 4-component vector of float)
-0:89      bitFieldReverse (global 4-component vector of uint)
-0:89        Convert float to uint (temp 4-component vector of uint)
-0:89          'inF0' (layout(location=0 ) in 4-component vector of float)
+0:85      Constant:
+0:85        0.000000
+0:86      Constant:
+0:86        0.000000
+0:87      Constant:
+0:87        0.000000
+0:89      Constant:
+0:89        0.000000
 0:90      Constant:
 0:90        0.000000
 0:92      Sequence
@@ -428,18 +413,13 @@ ERROR: node is still EOpNull!
 0:2      'inF2' (in float)
 0:2      'inI0' (in int)
 0:?     Sequence
-0:5      uint64BitsToDouble (temp double)
-0:5        Construct uvec2 (temp 2-component vector of uint)
-0:5          Convert float to uint (temp uint)
-0:5            'inF0' (in float)
-0:5          Convert float to uint (temp uint)
-0:5            'inF1' (in float)
+0:5      Constant:
+0:5        0.000000
 0:6      Function Call: CheckAccessFullyMapped(u1; (global bool)
 0:6        Constant:
 0:6          3 (const uint)
-0:7      bitCount (global uint)
-0:7        Convert float to uint (temp uint)
-0:7          'inF0' (in float)
+0:7      Constant:
+0:7        0.000000
 0:8      cross-product (global 3-component vector of float)
 0:8        Construct vec3 (in 3-component vector of float)
 0:8          'inF0' (in float)
@@ -450,16 +430,12 @@ ERROR: node is still EOpNull!
 0:9          'inF0' (in float)
 0:10      Constant:
 0:10        0.000000
-0:12      ERROR: Bad unary op
- (global float)
-0:12        Convert float to uint (temp uint)
-0:12          'inF0' (in float)
-0:13      findMSB (global uint)
-0:13        Convert float to uint (temp uint)
-0:13          'inF0' (in float)
-0:14      findLSB (global uint)
-0:14        Convert float to uint (temp uint)
-0:14          'inF0' (in float)
+0:12      Constant:
+0:12        0.000000
+0:13      Constant:
+0:13        0.000000
+0:14      Constant:
+0:14        0.000000
 0:23      length (global float)
 0:23        Construct vec2 (in 2-component vector of float)
 0:23          'inF0' (in float)
@@ -490,9 +466,8 @@ ERROR: node is still EOpNull!
 0:27        'inF2' (in float)
 0:28      Constant:
 0:28        0.000000
-0:29      bitFieldReverse (global uint)
-0:29        Convert float to uint (temp uint)
-0:29          'inF0' (in float)
+0:29      Constant:
+0:29        0.000000
 0:30      Constant:
 0:30        0.000000
 0:32      Branch: Return with expression
@@ -517,36 +492,26 @@ ERROR: node is still EOpNull!
 0:45      'inF2' (in 2-component vector of float)
 0:45      'inI0' (in 2-component vector of int)
 0:?     Sequence
-0:46      ERROR: Bad aggregation op
- (global 2-component vector of double)
-0:46        Convert float to uint (temp 2-component vector of uint)
-0:46          'inF0' (in 2-component vector of float)
-0:46        Convert float to uint (temp 2-component vector of uint)
-0:46          'inF1' (in 2-component vector of float)
+0:46      Constant:
+0:46        0.000000
 0:47      Constant:
 0:47        0.000000
-0:48      bitCount (global 2-component vector of uint)
-0:48        Convert float to uint (temp 2-component vector of uint)
-0:48          'inF0' (in 2-component vector of float)
+0:48      Constant:
+0:48        0.000000
 0:49      Constant:
 0:49        0.000000
 0:50      Constant:
 0:50        0.000000
 0:51      Constant:
 0:51        0.000000
-0:52      ERROR: Bad unary op
- (global 2-component vector of float)
-0:52        Convert float to uint (temp 2-component vector of uint)
-0:52          'inF0' (in 2-component vector of float)
-0:53      findMSB (global 2-component vector of uint)
-0:53        Convert float to uint (temp 2-component vector of uint)
-0:53          'inF0' (in 2-component vector of float)
-0:54      findLSB (global 2-component vector of uint)
-0:54        Convert float to uint (temp 2-component vector of uint)
-0:54          'inF0' (in 2-component vector of float)
-0:56      bitFieldReverse (global 2-component vector of uint)
-0:56        Convert float to uint (temp 2-component vector of uint)
-0:56          'inF0' (in 2-component vector of float)
+0:52      Constant:
+0:52        0.000000
+0:53      Constant:
+0:53        0.000000
+0:54      Constant:
+0:54        0.000000
+0:56      Constant:
+0:56        0.000000
 0:57      Constant:
 0:57        0.000000
 0:59      Branch: Return with expression
@@ -562,26 +527,20 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:64      Constant:
 0:64        0.000000
-0:65      bitCount (global 3-component vector of uint)
-0:65        Convert float to uint (temp 3-component vector of uint)
-0:65          'inF0' (in 3-component vector of float)
+0:65      Constant:
+0:65        0.000000
 0:66      Constant:
 0:66        0.000000
 0:67      Constant:
 0:67        0.000000
-0:68      ERROR: Bad unary op
- (global 3-component vector of float)
-0:68        Convert float to uint (temp 3-component vector of uint)
-0:68          'inF0' (in 3-component vector of float)
-0:69      findMSB (global 3-component vector of uint)
-0:69        Convert float to uint (temp 3-component vector of uint)
-0:69          'inF0' (in 3-component vector of float)
-0:70      findLSB (global 3-component vector of uint)
-0:70        Convert float to uint (temp 3-component vector of uint)
-0:70          'inF0' (in 3-component vector of float)
-0:72      bitFieldReverse (global 3-component vector of uint)
-0:72        Convert float to uint (temp 3-component vector of uint)
-0:72          'inF0' (in 3-component vector of float)
+0:68      Constant:
+0:68        0.000000
+0:69      Constant:
+0:69        0.000000
+0:70      Constant:
+0:70        0.000000
+0:72      Constant:
+0:72        0.000000
 0:73      Constant:
 0:73        0.000000
 0:76      Branch: Return with expression
@@ -598,9 +557,8 @@ ERROR: node is still EOpNull!
 0:?     Sequence
 0:81      Constant:
 0:81        0.000000
-0:82      bitCount (global 4-component vector of uint)
-0:82        Convert float to uint (temp 4-component vector of uint)
-0:82          'inF0' (layout(location=0 ) in 4-component vector of float)
+0:82      Constant:
+0:82        0.000000
 0:83      cross-product (global 3-component vector of float)
 0:83        Construct vec3 (in 3-component vector of float)
 0:83          'inF0' (layout(location=0 ) in 4-component vector of float)
@@ -608,19 +566,14 @@ ERROR: node is still EOpNull!
 0:83          'inF1' (layout(location=1 ) in 4-component vector of float)
 0:84      Constant:
 0:84        0.000000
-0:85      ERROR: Bad unary op
- (global 4-component vector of float)
-0:85        Convert float to uint (temp 4-component vector of uint)
-0:85          'inF0' (layout(location=0 ) in 4-component vector of float)
-0:86      findMSB (global 4-component vector of uint)
-0:86        Convert float to uint (temp 4-component vector of uint)
-0:86          'inF0' (layout(location=0 ) in 4-component vector of float)
-0:87      findLSB (global 4-component vector of uint)
-0:87        Convert float to uint (temp 4-component vector of uint)
-0:87          'inF0' (layout(location=0 ) in 4-component vector of float)
-0:89      bitFieldReverse (global 4-component vector of uint)
-0:89        Convert float to uint (temp 4-component vector of uint)
-0:89          'inF0' (layout(location=0 ) in 4-component vector of float)
+0:85      Constant:
+0:85        0.000000
+0:86      Constant:
+0:86        0.000000
+0:87      Constant:
+0:87        0.000000
+0:89      Constant:
+0:89        0.000000
 0:90      Constant:
 0:90        0.000000
 0:92      Sequence
