@@ -118,6 +118,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.getdimensions.rw.dx10.frag", "main"},
         {"hlsl.getdimensions.dx10.vert", "main"},
         {"hlsl.getsampleposition.dx10.frag", "main"},
+        {"hlsl.identifier.sample.frag", "main"},
         {"hlsl.if.frag", "PixelShaderFunction"},
         {"hlsl.inoutquals.frag", "main"},
         {"hlsl.init.frag", "ShaderFunction"},
