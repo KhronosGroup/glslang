@@ -60,6 +60,13 @@ void TIntermediate::error(TInfoSink& infoSink, const char* message)
     ++numErrors;
 }
 
+// Link-time warning.
+void TIntermediate::warn(TInfoSink& infoSink, const char* message)
+{
+    infoSink.info.prefix(EPrefixWarning);
+    infoSink.info << "Linking " << StageName(language) << " stage: " << message << "\n";
+}
+
 // TODO: 4.4 offset/align:  "Two blocks linked together in the same program with the same block 
 // name must have the exact same set of members qualified with offset and their integral-constant 
 // expression values must be the same, or a link-time error results."
@@ -370,8 +377,12 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
 //
 void TIntermediate::finalCheck(TInfoSink& infoSink)
 {
-    if (source == EShSourceGlsl && numEntryPoints < 1)
-        error(infoSink, "Missing entry point: Each stage requires one entry point");
+    if (numEntryPoints < 1) {
+        if (source == EShSourceGlsl)
+            error(infoSink, "Missing entry point: Each stage requires one entry point");
+        else
+            warn(infoSink, "Entry point not found");
+    }
 
     if (numPushConstants > 1)
         error(infoSink, "Only one push_constant block is allowed per stage");

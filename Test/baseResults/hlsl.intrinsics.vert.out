@@ -1396,6 +1396,7 @@ Shader version: 450
 
 Linked vertex stage:
 
+WARNING: Linking vertex stage: Entry point not found
 
 Shader version: 450
 0:? Sequence
