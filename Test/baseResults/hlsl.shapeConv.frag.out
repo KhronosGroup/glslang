@@ -282,6 +282,7 @@ gl_FragCoord origin is upper left
               62:             TypeVector 41(bool) 4
          4(main):           2 Function None 3
                5:             Label
+                              Return
                               FunctionEnd
 13(PixelShaderFunction(vf4;f1;):    7(fvec4) Function None 10
        11(input):      8(ptr) FunctionParameter

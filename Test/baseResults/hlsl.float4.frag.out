@@ -82,6 +82,7 @@ gl_FragCoord origin is upper left
               20:             TypePointer Uniform 7(fvec4)
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
+                              Return
                               FunctionEnd
 11(ShaderFunction(vf4;):    7(fvec4) Function None 9
        10(input):      8(ptr) FunctionParameter

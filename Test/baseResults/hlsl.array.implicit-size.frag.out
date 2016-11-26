@@ -234,6 +234,7 @@ gl_FragCoord origin is upper left
                               Store 18(g_array) 24
                               Store 28(g_array_unused) 31
                               Store 37(g_mystruct) 42
+                              Return
                               FunctionEnd
 12(main(struct-PS_OUTPUT-vf41;):           2 Function None 10
    11(ps_output):      9(ptr) FunctionParameter
