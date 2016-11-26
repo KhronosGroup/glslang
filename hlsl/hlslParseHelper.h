@@ -193,7 +193,7 @@ protected:
     int controlFlowNestingLevel; // 0 if outside all flow control
     TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
     bool inEntryPoint;           // if inside a function, true if the function is the entry point
-    bool postMainReturn;         // if inside a function, true if the function is the entry point and this is after a return statement
+    bool postEntryPointReturn;         // if inside a function, true if the function is the entry point and this is after a return statement
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
     TBuiltInResource resources;

@@ -55,7 +55,7 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
     contextPragma(true, false),
     loopNestingLevel(0), annotationNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
-    postMainReturn(false),
+    postEntryPointReturn(false),
     limits(resources.limits),
     entryPointOutput(nullptr),
     nextInLocation(0), nextOutLocation(0)
@@ -1141,7 +1141,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     intermediate.setAggregateOperator(paramNodes, EOpParameters, TType(EbtVoid), loc);
     loopNestingLevel = 0;
     controlFlowNestingLevel = 0;
-    postMainReturn = false;
+    postEntryPointReturn = false;
 
     // Handle function attributes
     if (inEntryPoint) {

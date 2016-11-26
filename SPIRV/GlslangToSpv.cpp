@@ -182,8 +182,8 @@ protected:
 
     // There is a 1:1 mapping between a spv builder and a module; this is thread safe
     spv::Builder builder;
-    bool inMain;
-    bool mainTerminated;
+    bool inEntryPoint;
+    bool entryPointTerminated;
     bool linkageOnly;                  // true when visiting the set of objects in the AST present only for establishing interface, whether or not they were statically used
     std::set<spv::Id> iOSet;           // all input/output variables from either static use or declaration of interface
     const glslang::TIntermediate* glslangIntermediate;
@@ -769,7 +769,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
     : TIntermTraverser(true, false, true), shaderEntry(nullptr), currentFunction(nullptr),
       sequenceDepth(0), logger(buildLogger),
       builder((glslang::GetKhronosToolId() << 16) | GeneratorVersion, logger),
-      inMain(false), mainTerminated(false), linkageOnly(false),
+      inEntryPoint(false), entryPointTerminated(false), linkageOnly(false),
       glslangIntermediate(glslangIntermediate)
 {
     spv::ExecutionModel executionModel = TranslateExecutionModel(glslangIntermediate->getStage());
@@ -902,7 +902,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
 // Finish creating SPV, after the traversal is complete.
 void TGlslangToSpvTraverser::finishSpv()
 {
-    if (! mainTerminated) {
+    if (! entryPointTerminated) {
         builder.setBuildPoint(shaderEntry->getLastBlock());
         builder.leaveFunction();
     }
@@ -1383,17 +1383,17 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpFunction:
         if (visit == glslang::EvPreVisit) {
             if (isShaderEntryPoint(node)) {
-                inMain = true;
+                inEntryPoint = true;
                 builder.setBuildPoint(shaderEntry->getLastBlock());
                 currentFunction = shaderEntry;
             } else {
                 handleFunctionEntry(node);
             }
         } else {
-            if (inMain)
-                mainTerminated = true;
+            if (inEntryPoint)
+                entryPointTerminated = true;
             builder.leaveFunction();
-            inMain = false;
+            inEntryPoint = false;
         }
 
         return true;
