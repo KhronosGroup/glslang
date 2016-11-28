@@ -2,7 +2,7 @@
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:6: '[]' : only outermost dimension of an array of arrays can be implicitly sized 
 ERROR: 0:14: 'constructor' : constructing non-array constituent from array argument 
-ERROR: 0:15: 'constructior' : array constructor argument not correct type to construct array element 
+ERROR: 0:15: 'constructor' : array constructor argument not correct type to construct array element 
 ERROR: 0:28: '[' :  array index out of range '4'
 ERROR: 0:56: 'constructor' :  cannot convert parameter 2 from 'const 3-element array of 4-component vector of float' to 'temp 2-element array of 4-component vector of float'
 ERROR: 0:60: 'constructor' :  cannot convert parameter 2 from 'const 2-element array of 4-component vector of float' to 'temp 3-element array of 4-component vector of float'

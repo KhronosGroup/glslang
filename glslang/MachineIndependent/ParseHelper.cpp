@@ -2313,7 +2313,7 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
 
             // At least the dimensionalities have to match.
             if (! function[0].type->isArray() || arraySizes.getNumDims() != function[0].type->getArraySizes().getNumDims() + 1) {
-                error(loc, "array constructor argument not correct type to construct array element", "constructior", "");
+                error(loc, "array constructor argument not correct type to construct array element", "constructor", "");
                 return true;
             }
 
