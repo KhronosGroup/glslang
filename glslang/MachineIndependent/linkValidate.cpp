@@ -377,6 +377,9 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
 //
 void TIntermediate::finalCheck(TInfoSink& infoSink)
 {
+    if (getTreeRoot() == nullptr)
+        return;
+
     if (numEntryPoints < 1) {
         if (source == EShSourceGlsl)
             error(infoSink, "Missing entry point: Each stage requires one entry point");
