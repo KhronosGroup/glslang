@@ -17,79 +17,124 @@ gl_FragCoord origin is upper left
 0:9        0.000000
 0:9        0.000000
 0:9        0.000000
-0:12  Function Definition: PixelShaderFunction(vf4; (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:12    Function Parameters: 
-0:12      'input' (layout(location=0 ) in 4-component vector of float)
+0:18  Function Definition: PixelShaderFunction(vf4; (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:18    Function Parameters: 
+0:18      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
-0:13      Sequence
-0:13        move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:13          'o2' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:13          Constant:
-0:13            3 (const int)
-0:13            0.000000
-0:13            false (const bool)
-0:13            0.000000
-0:13            0.000000
-0:13            0.000000
-0:13            0.000000
-0:15      move second child to first child (temp 4-component vector of float)
-0:15        v: direct index for structure (temp 4-component vector of float)
-0:15          'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:15          Constant:
-0:15            3 (const int)
-0:15        vector-scale (temp 4-component vector of float)
-0:15          'gv' (global 4-component vector of float)
-0:15          direct index (temp float)
-0:15            'gfa' (global 3-element array of float)
-0:15            Constant:
-0:15              2 (const int)
-0:16      Sequence
-0:16        move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:16          'o1' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:16          Constant:
-0:16            0 (const int)
-0:16            0.000000
-0:16            false (const bool)
-0:16            0.000000
-0:16            0.000000
-0:16            0.000000
-0:16            0.000000
-0:19      move second child to first child (temp bool)
-0:19        c: direct index for structure (temp bool)
-0:19          'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:19      Sequence
+0:19        move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:19          'o2' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
 0:19          Constant:
-0:19            2 (const int)
-0:19        c: direct index for structure (temp bool)
-0:19          'o1' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:19          Constant:
-0:19            2 (const int)
-0:21      Sequence
-0:21        Sequence
-0:21          move second child to first child (temp int)
+0:19            3 (const int)
+0:19            0.000000
+0:19            false (const bool)
+0:19            0.000000
+0:19            0.000000
+0:19            0.000000
+0:19            0.000000
+0:21      move second child to first child (temp 4-component vector of float)
+0:21        v: direct index for structure (temp 4-component vector of float)
+0:21          'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:21          Constant:
+0:21            3 (const int)
+0:21        vector-scale (temp 4-component vector of float)
+0:21          'gv' (global 4-component vector of float)
+0:21          direct index (temp float)
+0:21            'gfa' (global 3-element array of float)
+0:21            Constant:
+0:21              2 (const int)
+0:22      Sequence
+0:22        move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:22          'o1' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:22          Constant:
+0:22            0 (const int)
+0:22            0.000000
+0:22            false (const bool)
+0:22            0.000000
+0:22            0.000000
+0:22            0.000000
+0:22            0.000000
+0:23      Sequence
+0:23        move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:23          'o3' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:23          Constant:
+0:23            0 (const int)
+0:23            0.000000
+0:23            false (const bool)
+0:23            0.000000
+0:23            0.000000
+0:23            0.000000
+0:23            0.000000
+0:24      move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:24        'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:24        Constant:
+0:24          0 (const int)
+0:24          0.000000
+0:24          false (const bool)
+0:24          0.000000
+0:24          0.000000
+0:24          0.000000
+0:24          0.000000
+0:25      move second child to first child (temp bool)
+0:25        c: direct index for structure (temp bool)
+0:25          'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:25          Constant:
+0:25            2 (const int)
+0:25        c: direct index for structure (temp bool)
+0:25          'o1' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:25          Constant:
+0:25            2 (const int)
+0:26      Sequence
+0:26        move second child to first child (temp structure{temp 4X3 matrix of float m, temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v} os, temp bool b})
+0:26          'nest' (temp structure{temp 4X3 matrix of float m, temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v} os, temp bool b})
+0:26          Constant:
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0 (const int)
+0:26            0.000000
+0:26            false (const bool)
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            false (const bool)
+0:28      Sequence
+0:28        Sequence
+0:28          move second child to first child (temp int)
 0:?             'a' (layout(location=0 ) out int)
-0:21            a: direct index for structure (temp int)
-0:21              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:21              Constant:
-0:21                0 (const int)
-0:21          move second child to first child (temp float)
+0:28            a: direct index for structure (temp int)
+0:28              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:28              Constant:
+0:28                0 (const int)
+0:28          move second child to first child (temp float)
 0:?             'b' (layout(location=1 ) out float)
-0:21            b: direct index for structure (temp float)
-0:21              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:21              Constant:
-0:21                1 (const int)
-0:21          move second child to first child (temp bool)
+0:28            b: direct index for structure (temp float)
+0:28              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:28              Constant:
+0:28                1 (const int)
+0:28          move second child to first child (temp bool)
 0:?             'c' (layout(location=2 ) out bool)
-0:21            c: direct index for structure (temp bool)
-0:21              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:21              Constant:
-0:21                2 (const int)
-0:21          move second child to first child (temp 4-component vector of float)
+0:28            c: direct index for structure (temp bool)
+0:28              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:28              Constant:
+0:28                2 (const int)
+0:28          move second child to first child (temp 4-component vector of float)
 0:?             'v' (layout(location=3 ) out 4-component vector of float)
-0:21            v: direct index for structure (temp 4-component vector of float)
-0:21              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:21              Constant:
-0:21                3 (const int)
-0:21        Branch: Return
+0:28            v: direct index for structure (temp 4-component vector of float)
+0:28              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:28              Constant:
+0:28                3 (const int)
+0:28        Branch: Return
 0:?   Linker Objects
 0:?     'a' (layout(location=0 ) out int)
 0:?     'b' (layout(location=1 ) out float)
@@ -121,79 +166,124 @@ gl_FragCoord origin is upper left
 0:9        0.000000
 0:9        0.000000
 0:9        0.000000
-0:12  Function Definition: PixelShaderFunction(vf4; (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:12    Function Parameters: 
-0:12      'input' (layout(location=0 ) in 4-component vector of float)
+0:18  Function Definition: PixelShaderFunction(vf4; (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:18    Function Parameters: 
+0:18      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
-0:13      Sequence
-0:13        move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:13          'o2' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:13          Constant:
-0:13            3 (const int)
-0:13            0.000000
-0:13            false (const bool)
-0:13            0.000000
-0:13            0.000000
-0:13            0.000000
-0:13            0.000000
-0:15      move second child to first child (temp 4-component vector of float)
-0:15        v: direct index for structure (temp 4-component vector of float)
-0:15          'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:15          Constant:
-0:15            3 (const int)
-0:15        vector-scale (temp 4-component vector of float)
-0:15          'gv' (global 4-component vector of float)
-0:15          direct index (temp float)
-0:15            'gfa' (global 3-element array of float)
-0:15            Constant:
-0:15              2 (const int)
-0:16      Sequence
-0:16        move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:16          'o1' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:16          Constant:
-0:16            0 (const int)
-0:16            0.000000
-0:16            false (const bool)
-0:16            0.000000
-0:16            0.000000
-0:16            0.000000
-0:16            0.000000
-0:19      move second child to first child (temp bool)
-0:19        c: direct index for structure (temp bool)
-0:19          'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:19      Sequence
+0:19        move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:19          'o2' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
 0:19          Constant:
-0:19            2 (const int)
-0:19        c: direct index for structure (temp bool)
-0:19          'o1' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:19          Constant:
-0:19            2 (const int)
-0:21      Sequence
-0:21        Sequence
-0:21          move second child to first child (temp int)
+0:19            3 (const int)
+0:19            0.000000
+0:19            false (const bool)
+0:19            0.000000
+0:19            0.000000
+0:19            0.000000
+0:19            0.000000
+0:21      move second child to first child (temp 4-component vector of float)
+0:21        v: direct index for structure (temp 4-component vector of float)
+0:21          'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:21          Constant:
+0:21            3 (const int)
+0:21        vector-scale (temp 4-component vector of float)
+0:21          'gv' (global 4-component vector of float)
+0:21          direct index (temp float)
+0:21            'gfa' (global 3-element array of float)
+0:21            Constant:
+0:21              2 (const int)
+0:22      Sequence
+0:22        move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:22          'o1' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:22          Constant:
+0:22            0 (const int)
+0:22            0.000000
+0:22            false (const bool)
+0:22            0.000000
+0:22            0.000000
+0:22            0.000000
+0:22            0.000000
+0:23      Sequence
+0:23        move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:23          'o3' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:23          Constant:
+0:23            0 (const int)
+0:23            0.000000
+0:23            false (const bool)
+0:23            0.000000
+0:23            0.000000
+0:23            0.000000
+0:23            0.000000
+0:24      move second child to first child (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:24        'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:24        Constant:
+0:24          0 (const int)
+0:24          0.000000
+0:24          false (const bool)
+0:24          0.000000
+0:24          0.000000
+0:24          0.000000
+0:24          0.000000
+0:25      move second child to first child (temp bool)
+0:25        c: direct index for structure (temp bool)
+0:25          'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:25          Constant:
+0:25            2 (const int)
+0:25        c: direct index for structure (temp bool)
+0:25          'o1' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:25          Constant:
+0:25            2 (const int)
+0:26      Sequence
+0:26        move second child to first child (temp structure{temp 4X3 matrix of float m, temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v} os, temp bool b})
+0:26          'nest' (temp structure{temp 4X3 matrix of float m, temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v} os, temp bool b})
+0:26          Constant:
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0 (const int)
+0:26            0.000000
+0:26            false (const bool)
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            0.000000
+0:26            false (const bool)
+0:28      Sequence
+0:28        Sequence
+0:28          move second child to first child (temp int)
 0:?             'a' (layout(location=0 ) out int)
-0:21            a: direct index for structure (temp int)
-0:21              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:21              Constant:
-0:21                0 (const int)
-0:21          move second child to first child (temp float)
+0:28            a: direct index for structure (temp int)
+0:28              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:28              Constant:
+0:28                0 (const int)
+0:28          move second child to first child (temp float)
 0:?             'b' (layout(location=1 ) out float)
-0:21            b: direct index for structure (temp float)
-0:21              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:21              Constant:
-0:21                1 (const int)
-0:21          move second child to first child (temp bool)
+0:28            b: direct index for structure (temp float)
+0:28              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:28              Constant:
+0:28                1 (const int)
+0:28          move second child to first child (temp bool)
 0:?             'c' (layout(location=2 ) out bool)
-0:21            c: direct index for structure (temp bool)
-0:21              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:21              Constant:
-0:21                2 (const int)
-0:21          move second child to first child (temp 4-component vector of float)
+0:28            c: direct index for structure (temp bool)
+0:28              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:28              Constant:
+0:28                2 (const int)
+0:28          move second child to first child (temp 4-component vector of float)
 0:?             'v' (layout(location=3 ) out 4-component vector of float)
-0:21            v: direct index for structure (temp 4-component vector of float)
-0:21              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
-0:21              Constant:
-0:21                3 (const int)
-0:21        Branch: Return
+0:28            v: direct index for structure (temp 4-component vector of float)
+0:28              'o4' (temp structure{temp int a, temp float b, temp bool c, temp 4-component vector of float v})
+0:28              Constant:
+0:28                3 (const int)
+0:28        Branch: Return
 0:?   Linker Objects
 0:?     'a' (layout(location=0 ) out int)
 0:?     'b' (layout(location=1 ) out float)
@@ -205,12 +295,12 @@ gl_FragCoord origin is upper left
 
 // Module Version 10000
 // Generated by (magic number): 80001
-// Id's are bound by 66
+// Id's are bound by 75
 
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Fragment 4  "PixelShaderFunction" 45 50 56 60 65
+                              EntryPoint Fragment 4  "PixelShaderFunction" 54 59 65 69 74
                               ExecutionMode 4 OriginUpperLeft
                               Name 4  "PixelShaderFunction"
                               Name 9  "gv"
@@ -223,16 +313,22 @@ gl_FragCoord origin is upper left
                               Name 23  "o2"
                               Name 28  "o4"
                               Name 37  "o1"
-                              Name 45  "a"
-                              Name 50  "b"
-                              Name 56  "c"
-                              Name 60  "v"
-                              Name 65  "input"
-                              Decorate 45(a) Location 0
-                              Decorate 50(b) Location 1
-                              Decorate 56(c) Location 2
-                              Decorate 60(v) Location 3
-                              Decorate 65(input) Location 0
+                              Name 40  "o3"
+                              Name 47  "Nest"
+                              MemberName 47(Nest) 0  "m"
+                              MemberName 47(Nest) 1  "os"
+                              MemberName 47(Nest) 2  "b"
+                              Name 49  "nest"
+                              Name 54  "a"
+                              Name 59  "b"
+                              Name 65  "c"
+                              Name 69  "v"
+                              Name 74  "input"
+                              Decorate 54(a) Location 0
+                              Decorate 59(b) Location 1
+                              Decorate 65(c) Location 2
+                              Decorate 69(v) Location 3
+                              Decorate 74(input) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -261,25 +357,34 @@ gl_FragCoord origin is upper left
               35:             TypePointer Function 7(fvec4)
               38:     19(int) Constant 0
               39:    21(outs) ConstantComposite 38 10 25 26
-              40:             TypePointer Function 20(bool)
-              44:             TypePointer Output 19(int)
-           45(a):     44(ptr) Variable Output
-              46:             TypePointer Function 19(int)
-              49:             TypePointer Output 6(float)
-           50(b):     49(ptr) Variable Output
-              51:     19(int) Constant 1
-              52:             TypePointer Function 6(float)
-              55:             TypePointer Output 20(bool)
-           56(c):     55(ptr) Variable Output
-              59:             TypePointer Output 7(fvec4)
-           60(v):     59(ptr) Variable Output
-              64:             TypePointer Input 7(fvec4)
-       65(input):     64(ptr) Variable Input
+              41:             TypePointer Function 20(bool)
+              45:             TypeVector 6(float) 3
+              46:             TypeMatrix 45(fvec3) 4
+        47(Nest):             TypeStruct 46 21(outs) 20(bool)
+              48:             TypePointer Function 47(Nest)
+              50:   45(fvec3) ConstantComposite 10 10 10
+              51:          46 ConstantComposite 50 50 50 50
+              52:    47(Nest) ConstantComposite 51 39 25
+              53:             TypePointer Output 19(int)
+           54(a):     53(ptr) Variable Output
+              55:             TypePointer Function 19(int)
+              58:             TypePointer Output 6(float)
+           59(b):     58(ptr) Variable Output
+              60:     19(int) Constant 1
+              61:             TypePointer Function 6(float)
+              64:             TypePointer Output 20(bool)
+           65(c):     64(ptr) Variable Output
+              68:             TypePointer Output 7(fvec4)
+           69(v):     68(ptr) Variable Output
+              73:             TypePointer Input 7(fvec4)
+       74(input):     73(ptr) Variable Input
 4(PixelShaderFunction):           2 Function None 3
                5:             Label
           23(o2):     22(ptr) Variable Function
           28(o4):     22(ptr) Variable Function
           37(o1):     22(ptr) Variable Function
+          40(o3):     22(ptr) Variable Function
+        49(nest):     48(ptr) Variable Function
                               Store 9(gv) 12
                               Store 17(gfa) 18
                               Store 23(o2) 27
@@ -290,21 +395,24 @@ gl_FragCoord origin is upper left
               36:     35(ptr) AccessChain 28(o4) 24
                               Store 36 34
                               Store 37(o1) 39
-              41:     40(ptr) AccessChain 37(o1) 30
-              42:    20(bool) Load 41
-              43:     40(ptr) AccessChain 28(o4) 30
-                              Store 43 42
-              47:     46(ptr) AccessChain 28(o4) 38
-              48:     19(int) Load 47
-                              Store 45(a) 48
-              53:     52(ptr) AccessChain 28(o4) 51
-              54:    6(float) Load 53
-                              Store 50(b) 54
-              57:     40(ptr) AccessChain 28(o4) 30
-              58:    20(bool) Load 57
-                              Store 56(c) 58
-              61:     35(ptr) AccessChain 28(o4) 24
-              62:    7(fvec4) Load 61
-                              Store 60(v) 62
+                              Store 40(o3) 39
+                              Store 28(o4) 39
+              42:     41(ptr) AccessChain 37(o1) 30
+              43:    20(bool) Load 42
+              44:     41(ptr) AccessChain 28(o4) 30
+                              Store 44 43
+                              Store 49(nest) 52
+              56:     55(ptr) AccessChain 28(o4) 38
+              57:     19(int) Load 56
+                              Store 54(a) 57
+              62:     61(ptr) AccessChain 28(o4) 60
+              63:    6(float) Load 62
+                              Store 59(b) 63
+              66:     41(ptr) AccessChain 28(o4) 30
+              67:    20(bool) Load 66
+                              Store 65(c) 67
+              70:     35(ptr) AccessChain 28(o4) 24
+              71:    7(fvec4) Load 70
+                              Store 69(v) 71
                               Return
                               FunctionEnd

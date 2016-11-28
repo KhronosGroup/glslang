@@ -3285,7 +3285,7 @@ bool HlslParseContext::builtInName(const TString& /*identifier*/)
 //
 // Returns true if there was an error in construction.
 //
-bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* /*node*/, TFunction& function,
+bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, TFunction& function,
                                         TOperator op, TType& type)
 {
     type.shallowCopy(function.getType());
@@ -3411,6 +3411,9 @@ bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* /*no
         return true;
     }
 
+    if (op == EOpConstructStruct && ! type.isArray() && isZeroConstructor(node))
+        return false;
+
     if (op == EOpConstructStruct && ! type.isArray() && (int)type.getStruct()->size() != function.getParamCount()) {
         error(loc, "Number of constructor parameters does not match the number of structure fields", "constructor", "");
         return true;
@@ -3422,9 +3425,13 @@ bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* /*no
         return true;
     }
 
-    // TIntermTyped* typed = node->getAsTyped();
-
     return false;
+}
+
+bool HlslParseContext::isZeroConstructor(const TIntermNode* node)
+{
+    return node->getAsTyped()->isScalar() && node->getAsConstantUnion() &&
+           node->getAsConstantUnion()->getConstArray()[0].getIConst() == 0;
 }
 
 // Verify all the correct semantics for constructing a combined texture/sampler.
@@ -4672,6 +4679,11 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
 // creating a constructor-style initializer, ensuring we get the
 // same form.
 //
+// Returns a node representing an expression for the initializer list expressed
+// as the correct type.
+//
+// Returns nullptr if there is an error.
+//
 TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, const TType& type, TIntermTyped* initializer)
 {
     // Will operate recursively.  Once a subtree is found that is constructor style,
@@ -4807,6 +4819,10 @@ TIntermTyped* HlslParseContext::addConstructor(const TSourceLoc& loc, TIntermNod
 {
     if (node == nullptr || node->getAsTyped() == nullptr)
         return nullptr;
+
+    // Handle the idiom "(struct type)0"
+    if (type.isStruct() && isZeroConstructor(node))
+        return convertInitializerList(loc, type, intermediate.makeAggregate(loc));
 
     TIntermAggregate* aggrNode = node->getAsAggregate();
     TOperator op = intermediate.mapTypeToConstructorOp(type);
