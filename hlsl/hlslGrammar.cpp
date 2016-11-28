@@ -1896,7 +1896,8 @@ bool HlslGrammar::acceptExpression(TIntermTyped*& node)
 }
 
 // initializer
-//      : LEFT_BRACE initializer_list RIGHT_BRACE
+//      : LEFT_BRACE RIGHT_BRACE
+//      | LEFT_BRACE initializer_list RIGHT_BRACE
 //
 // initializer_list
 //      : assignment_expression COMMA assignment_expression COMMA ...
@@ -1907,8 +1908,15 @@ bool HlslGrammar::acceptInitializer(TIntermTyped*& node)
     if (! acceptTokenClass(EHTokLeftBrace))
         return false;
 
-    // initializer_list
+    // RIGHT_BRACE
     TSourceLoc loc = token.loc;
+    if (acceptTokenClass(EHTokRightBrace)) {
+        // a zero-length initializer list
+        node = intermediate.makeAggregate(loc);
+        return true;
+    }
+
+    // initializer_list
     node = nullptr;
     do {
         // assignment_expression

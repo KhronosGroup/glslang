@@ -858,6 +858,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EOpLogicalAnd:
             case EOpLogicalOr:
             case EOpLogicalXor:
+            case EOpConstructStruct:
                 return true;
             default:
                 break;
@@ -1179,6 +1180,17 @@ TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node, const TSourceL
 
     TIntermAggregate* aggNode = new TIntermAggregate;
     aggNode->getSequence().push_back(node);
+    aggNode->setLoc(loc);
+
+    return aggNode;
+}
+
+//
+// Make an aggregate with an empty sequence.
+//
+TIntermAggregate* TIntermediate::makeAggregate(const TSourceLoc& loc)
+{
+    TIntermAggregate* aggNode = new TIntermAggregate;
     aggNode->setLoc(loc);
 
     return aggNode;
