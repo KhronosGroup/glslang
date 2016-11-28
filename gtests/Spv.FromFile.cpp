@@ -52,8 +52,23 @@ struct IoMapData {
     bool flattenUniforms;
 };
 
+struct EntryPointRenameData {
+    const char* fileName;
+    const char* entryPoint;
+    const char* newEntryPointName;
+};
+
 std::string FileNameAsCustomTestSuffixIoMap(
     const ::testing::TestParamInfo<IoMapData>& info) {
+    std::string name = info.param.fileName;
+    // A valid test case suffix cannot have '.' and '-' inside.
+    std::replace(name.begin(), name.end(), '.', '_');
+    std::replace(name.begin(), name.end(), '-', '_');
+    return name;
+}
+
+std::string FileNameAsCustomTestSuffixEP(
+    const ::testing::TestParamInfo<EntryPointRenameData>& info) {
     std::string name = info.param.fileName;
     // A valid test case suffix cannot have '.' and '-' inside.
     std::replace(name.begin(), name.end(), '.', '_');
@@ -68,6 +83,7 @@ using OpenGLSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 using VulkanAstSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 using HlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
 using GlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
+using HlslEpRenameMap = GlslangTest<::testing::TestWithParam<EntryPointRenameData>>;
 #ifdef AMD_EXTENSIONS
 using CompileVulkanToSpirvTestAMD = GlslangTest<::testing::TestWithParam<std::string>>;
 #endif
@@ -142,6 +158,14 @@ TEST_P(GlslIoMap, FromFile)
                                  GetParam().baseUboBinding,
                                  GetParam().autoMapBindings,
                                  GetParam().flattenUniforms);
+}
+
+// entry point renaming test
+TEST_P(HlslEpRenameMap, FromFile)
+{
+    loadFileCompileEntryRename(GlobalTestSettings.testRoot, GetParam().fileName,
+                               Source::HLSL, Semantics::Vulkan,
+                               Target::Spv, GetParam().entryPoint, GetParam().newEntryPointName);
 }
 
 #ifdef AMD_EXTENSIONS
@@ -308,6 +332,15 @@ INSTANTIATE_TEST_CASE_P(
         { "spv.glsl.register.noautoassign.frag", "main", 5, 10, 0, 15, false, false },
     }),
     FileNameAsCustomTestSuffixIoMap
+);
+
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    Hlsl, HlslEpRenameMap,
+    ::testing::ValuesIn(std::vector<EntryPointRenameData>{
+        { "spv.entry.rename.frag", "main", "main_renamed" },
+    }),
+    FileNameAsCustomTestSuffixEP
 );
 
 // clang-format off

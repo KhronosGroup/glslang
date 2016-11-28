@@ -1523,6 +1523,11 @@ void TShader::setEntryPoint(const char* entryPoint)
     intermediate->setEntryPointName(entryPoint);
 }
 
+void TShader::renameEntryPoint(const char* newName)
+{
+    intermediate->renameEntryPoint(newName);
+}
+
 void TShader::setShiftSamplerBinding(unsigned int base) { intermediate->setShiftSamplerBinding(base); }
 void TShader::setShiftTextureBinding(unsigned int base) { intermediate->setShiftTextureBinding(base); }
 void TShader::setShiftImageBinding(unsigned int base)   { intermediate->setShiftImageBinding(base); }

@@ -168,8 +168,16 @@ public:
     EShSource getSource() const { return source; }
     void setEntryPointName(const char* ep) { entryPointName = ep; }
     void setEntryPointMangledName(const char* ep) { entryPointMangledName = ep; }
+    void renameEntryPoint(const char* newName) { newEntryPointName = newName; }
     const std::string& getEntryPointName() const { return entryPointName; }
     const std::string& getEntryPointMangledName() const { return entryPointMangledName; }
+
+    // The entry point can be renamed from the shader text to a new name
+    // provided in the API or command line.  This returns the new name if
+    // it exists, else the entry point.
+    const std::string& getNewEntryPointName() const {
+        return newEntryPointName.empty() ? entryPointName : newEntryPointName;
+    }
 
     void setShiftSamplerBinding(unsigned int shift) { shiftSamplerBinding = shift; }
     unsigned int getShiftSamplerBinding() const { return shiftSamplerBinding; }
@@ -406,6 +414,7 @@ protected:
     EShSource source;            // source language, known a bit later
     std::string entryPointName;
     std::string entryPointMangledName;
+    std::string newEntryPointName;
     unsigned int shiftSamplerBinding;
     unsigned int shiftTextureBinding;
     unsigned int shiftImageBinding;
