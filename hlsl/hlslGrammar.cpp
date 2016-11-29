@@ -389,7 +389,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
                 else if (variableType.getBasicType() == EbtBlock)
                     parseContext.declareBlock(idToken.loc, variableType, idToken.string);
                 else {
-                    if (variableType.getQualifier().storage == EvqUniform && ! variableType.isOpaque()) {
+                    if (variableType.getQualifier().storage == EvqUniform && ! variableType.containsOpaque()) {
                         // this isn't really an individual variable, but a member of the $Global buffer
                         parseContext.growGlobalUniformBlock(idToken.loc, variableType, *idToken.string);
                     } else {
@@ -2215,6 +2215,17 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         return false;
     }
 
+    // This is to guarantee we do this no matter how we get out of the stack frame.
+    // This way there's no bug if an early return forgets to do it.
+    struct tFinalize {
+        tFinalize(HlslParseContext& p) : parseContext(p) { }
+        ~tFinalize() { parseContext.finalizeFlattening(); }
+       HlslParseContext& parseContext;
+    } finalize(parseContext);
+
+    // Reset the flattening accumulation data.  This can be nested, e.g, for [].
+    parseContext.initFlattening();
+
     // Something was found, chain as many postfix operations as exist.
     do {
         TSourceLoc loc = token.loc;
@@ -2248,7 +2259,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
             node = parseContext.handleDotDereference(field.loc, node, *field.string);
 
             // In the event of a method node, we look for an open paren and accept the function call.
-            if (node->getAsMethodNode() != nullptr && peekTokenClass(EHTokLeftParen)) {
+            if (node != nullptr && node->getAsMethodNode() != nullptr && peekTokenClass(EHTokLeftParen)) {
                 if (! acceptFunctionCall(field, node, base)) {
                     expected("function parameters");
                     return false;
