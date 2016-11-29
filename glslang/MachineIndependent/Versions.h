@@ -174,6 +174,7 @@ const char* const E_GL_AMD_texture_gather_bias_lod              = "GL_AMD_textur
 const char* const E_GL_AMD_gpu_shader_int16                     = "GL_AMD_gpu_shader_int16";
 const char* const E_GL_AMD_shader_image_load_store_lod          = "GL_AMD_shader_image_load_store_lod";
 const char* const E_GL_AMD_shader_fragment_mask                 = "GL_AMD_shader_fragment_mask";
+const char* const E_GL_AMD_gpu_shader_half_float_fetch          = "GL_AMD_gpu_shader_half_float_fetch";
 #endif
 
 #ifdef NV_EXTENSIONS
