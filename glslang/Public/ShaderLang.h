@@ -304,6 +304,7 @@ public:
         const char* const* s, const int* l, const char* const* names, int n);
     void setPreamble(const char* s) { preamble = s; }
     void setEntryPoint(const char* entryPoint);
+    void setSourceEntryPoint(const char* sourceEntryPointName);
     void setShiftSamplerBinding(unsigned int base);
     void setShiftTextureBinding(unsigned int base);
     void setShiftImageBinding(unsigned int base);
@@ -436,6 +437,9 @@ protected:
     const char* const* stringNames;
     const char* preamble;
     int numStrings;
+
+    // a function in the source string can be renamed FROM this TO the name given in setEntryPoint.
+    std::string sourceEntryPointName;
 
     friend class TProgram;
 

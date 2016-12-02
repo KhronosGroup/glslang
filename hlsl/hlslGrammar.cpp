@@ -308,8 +308,13 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     // identifier
     HlslToken idToken;
     while (acceptIdentifier(idToken)) {
+        TString* fnName = idToken.string;
+
+        // Potentially rename shader entry point function.  No-op most of the time.
+        parseContext.renameShaderFunction(fnName);
+
         // function_parameters
-        TFunction& function = *new TFunction(idToken.string, declaredType);
+        TFunction& function = *new TFunction(fnName, declaredType);
         if (acceptFunctionParameters(function)) {
             // post_decls
             acceptPostDecls(function.getWritableType().getQualifier());

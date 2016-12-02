@@ -51,6 +51,7 @@ namespace glslang {
 
 HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
                                    int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TInfoSink& infoSink,
+                                   const TString sourceEntryPointName,
                                    bool forwardCompatible, EShMessages messages) :
     TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
     contextPragma(true, false),
@@ -58,7 +59,8 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     postEntryPointReturn(false),
     limits(resources.limits),
     entryPointOutput(nullptr),
-    nextInLocation(0), nextOutLocation(0)
+    nextInLocation(0), nextOutLocation(0),
+    sourceEntryPointName(sourceEntryPointName)
 {
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;
@@ -5537,6 +5539,15 @@ TIntermNode* HlslParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* ex
     switchNode->setLoc(loc);
 
     return switchNode;
+}
+
+// Potentially rename shader entry point function
+void HlslParseContext::renameShaderFunction(TString*& name) const
+{
+    // Replace the entry point name given in the shader with the real entry point name,
+    // if there is a substitution.
+    if (name != nullptr && *name == sourceEntryPointName)
+        name = new TString(intermediate.getEntryPointName().c_str());
 }
 
 } // end namespace glslang
