@@ -2557,7 +2557,7 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         //
         const TFunction* fnCandidate;
         bool builtIn;
-        fnCandidate = findFunction(loc, *function, builtIn);
+        fnCandidate = findFunction(loc, *function, builtIn, arguments);
         if (fnCandidate) {
             // This is a declared function that might map to
             //  - a built-in operator,
@@ -2599,21 +2599,27 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
                 }
             }
 
+            // for decompositions, since we want to operate on the function node, not the aggregate holding
+            // output conversions.
+            const TIntermTyped* fnNode = result; 
+
+            decomposeIntrinsic(loc, result, arguments);       // HLSL->AST intrinsic decompositions
+            decomposeSampleMethods(loc, result, arguments);   // HLSL->AST sample method decompositions
+            decomposeGeometryMethods(loc, result, arguments); // HLSL->AST geometry method decompositions
+
             // Convert 'out' arguments.  If it was a constant folded built-in, it won't be an aggregate anymore.
             // Built-ins with a single argument aren't called with an aggregate, but they also don't have an output.
             // Also, build the qualifier list for user function calls, which are always called with an aggregate.
-            if (result->getAsAggregate()) {
+            // We don't do this is if there has been a decomposition, which will have added its own conversions
+            // for output parameters.
+            if (result == fnNode && result->getAsAggregate()) {
                 TQualifierList& qualifierList = result->getAsAggregate()->getQualifierList();
                 for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
                     TStorageQualifier qual = (*fnCandidate)[i].type->getQualifier().storage;
                     qualifierList.push_back(qual);
                 }
-                result = addOutputArgumentConversions(*fnCandidate, *result->getAsAggregate());
+                result = addOutputArgumentConversions(*fnCandidate, *result->getAsOperator());
             }
-
-            decomposeIntrinsic(loc, result, arguments);       // HLSL->AST intrinsic decompositions
-            decomposeSampleMethods(loc, result, arguments);   // HLSL->AST sample method decompositions
-            decomposeGeometryMethods(loc, result, arguments); // HLSL->AST geometry method decompositions
         }
     }
 
@@ -2726,9 +2732,19 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
 //
 // Returns a node of a subtree that evaluates to the return value of the function.
 //
-TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& function, TIntermAggregate& intermNode)
+TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& function, TIntermOperator& intermNode)
 {
-    TIntermSequence& arguments = intermNode.getSequence();
+    assert (intermNode.getAsAggregate() != nullptr || intermNode.getAsUnaryNode() != nullptr);
+
+    const TSourceLoc& loc = intermNode.getLoc();
+
+    TIntermSequence argSequence; // temp sequence for unary node args
+
+    if (intermNode.getAsUnaryNode())
+        argSequence.push_back(intermNode.getAsUnaryNode()->getOperand());
+
+    TIntermSequence& arguments = argSequence.empty() ? intermNode.getAsAggregate()->getSequence() : argSequence;
+
     const auto needsConversion = [&](int argNum) {
         return function[argNum].type->getQualifier().isParamOutput() &&
                (*function[argNum].type != arguments[argNum]->getAsTyped()->getType() ||
@@ -2761,8 +2777,8 @@ TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& fu
     if (intermNode.getBasicType() != EbtVoid) {
         // do the "tempRet = function(...), " bit from above
         tempRet = makeInternalVariable("tempReturn", intermNode.getType());
-        TIntermSymbol* tempRetNode = intermediate.addSymbol(*tempRet, intermNode.getLoc());
-        conversionTree = intermediate.addAssign(EOpAssign, tempRetNode, &intermNode, intermNode.getLoc());
+        TIntermSymbol* tempRetNode = intermediate.addSymbol(*tempRet, loc);
+        conversionTree = intermediate.addAssign(EOpAssign, tempRetNode, &intermNode, loc);
     } else
         conversionTree = &intermNode;
 
@@ -2777,7 +2793,7 @@ TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& fu
             // Make a temporary for what the function expects the argument to look like.
             TVariable* tempArg = makeInternalVariable("tempArg", *function[i].type);
             tempArg->getWritableType().getQualifier().makeTemporary();
-            TIntermSymbol* tempArgNode = intermediate.addSymbol(*tempArg, intermNode.getLoc());
+            TIntermSymbol* tempArgNode = intermediate.addSymbol(*tempArg, loc);
 
             // This makes the deepest level, the member-wise copy
             TIntermTyped* tempAssign = handleAssign(arguments[i]->getLoc(), EOpAssign, arguments[i]->getAsTyped(), tempArgNode);
@@ -2785,17 +2801,18 @@ TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& fu
             conversionTree = intermediate.growAggregate(conversionTree, tempAssign, arguments[i]->getLoc());
 
             // replace the argument with another node for the same tempArg variable
-            arguments[i] = intermediate.addSymbol(*tempArg, intermNode.getLoc());
+            arguments[i] = intermediate.addSymbol(*tempArg, loc);
         }
     }
 
     // Finalize the tree topology (see bigger comment above).
     if (tempRet) {
         // do the "..., tempRet" bit from above
-        TIntermSymbol* tempRetNode = intermediate.addSymbol(*tempRet, intermNode.getLoc());
-        conversionTree = intermediate.growAggregate(conversionTree, tempRetNode, intermNode.getLoc());
+        TIntermSymbol* tempRetNode = intermediate.addSymbol(*tempRet, loc);
+        conversionTree = intermediate.growAggregate(conversionTree, tempRetNode, loc);
     }
-    conversionTree = intermediate.setAggregateOperator(conversionTree, EOpComma, intermNode.getType(), intermNode.getLoc());
+
+    conversionTree = intermediate.setAggregateOperator(conversionTree, EOpComma, intermNode.getType(), loc);
 
     return conversionTree;
 }
@@ -4348,7 +4365,8 @@ void HlslParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQuali
 //
 // Return the function symbol if found, otherwise nullptr.
 //
-const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFunction& call, bool& builtIn)
+const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFunction& call, bool& builtIn,
+                                                TIntermNode* args)
 {
     // const TFunction* function = nullptr;
 
@@ -4454,9 +4472,81 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
     // send to the generic selector
     const TFunction* bestMatch = selectFunction(candidateList, call, convertible, better, tie);
 
-    if (bestMatch == nullptr)
+    if (bestMatch == nullptr) {
         error(loc, "no matching overloaded function found", call.getName().c_str(), "");
-    else if (tie)
+        return nullptr;
+    }
+
+    // For builtins, we can convert across the arguments.  This will happen in several steps:
+    // Step 1:  If there's an exact match, use it.
+    // Step 2a: Otherwise, get the operator from the best match and promote arguments:
+    // Step 2b: reconstruct the TFunction based on the new arg types
+    // Step 3:  Re-select after type promotion is applied, to find proper candidate.
+    if (builtIn) {
+        // Step 1: If there's an exact match, use it.
+        if (call.getMangledName() == bestMatch->getMangledName())
+            return bestMatch;
+
+        // Step 2a: Otherwise, get the operator from the best match and promote arguments as if we
+        // are that kind of operator.
+        if (args != nullptr) {
+            // The arg list can be a unary node, or an aggregate.  We have to handle both.
+            // We will use the normal promote() facilities, which require an interm node.
+            TIntermOperator* promote = nullptr;
+
+            if (call.getParamCount() == 1) {
+                promote = new TIntermUnary(bestMatch->getBuiltInOp());
+                promote->getAsUnaryNode()->setOperand(args->getAsTyped());
+            } else {
+                promote = new TIntermAggregate(bestMatch->getBuiltInOp());
+                promote->getAsAggregate()->getSequence().swap(args->getAsAggregate()->getSequence());
+            }
+
+            if (! intermediate.promote(promote))
+                return nullptr;
+
+            // Obtain the promoted arg list.
+            if (call.getParamCount() == 1) {
+                args = promote->getAsUnaryNode()->getOperand();
+            } else {
+                promote->getAsAggregate()->getSequence().swap(args->getAsAggregate()->getSequence());
+            }
+        }
+
+        // Step 2b: reconstruct the TFunction based on the new arg types
+        TFunction convertedCall(&call.getName(), call.getType(), call.getBuiltInOp());
+
+        if (args->getAsAggregate()) {
+            // Handle aggregates: put all args into the new function call
+            for (int arg=0; arg<int(args->getAsAggregate()->getSequence().size()); ++arg) {
+                // TODO: But for constness, we could avoid the new & shallowCopy, and use the pointer directly.
+                TParameter param = { 0, new TType };
+                param.type->shallowCopy(args->getAsAggregate()->getSequence()[arg]->getAsTyped()->getType());
+                convertedCall.addParameter(param);
+            }
+        } else if (args->getAsUnaryNode()) {
+            // Handle unaries: put all args into the new function call
+            TParameter param = { 0, new TType };
+            param.type->shallowCopy(args->getAsUnaryNode()->getOperand()->getAsTyped()->getType());
+            convertedCall.addParameter(param);
+        } else if (args->getAsTyped()) {
+            // Handle bare e.g, floats, not in an aggregate.
+            TParameter param = { 0, new TType };
+            param.type->shallowCopy(args->getAsTyped()->getType());
+            convertedCall.addParameter(param);
+        } else {
+            assert(0); // unknown argument list.
+            return nullptr;
+        }
+
+        // Step 3: Re-select after type promotion, to find proper candidate
+        // send to the generic selector
+        bestMatch = selectFunction(candidateList, convertedCall, convertible, better, tie);
+
+        // At this point, there should be no tie.
+    }
+
+    if (tie)
         error(loc, "ambiguous best function under implicit type conversion", call.getName().c_str(), "");
 
     return bestMatch;
