@@ -382,6 +382,7 @@ public:
     int addXfbBufferOffset(const TType&);
     unsigned int computeTypeXfbSize(const TType&, bool& containsDouble) const;
     static int getBaseAlignment(const TType&, int& size, int& stride, bool std140, bool rowMajor);
+    bool promote(TIntermOperator*);
 
 protected:
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TConstUnionArray&, TIntermTyped* subtree, const TSourceLoc&);
@@ -397,10 +398,10 @@ protected:
     bool userOutputUsed() const;
     static int getBaseAlignmentScalar(const TType&, int& size);
     bool isSpecializationOperation(const TIntermOperator&) const;
-    bool promote(TIntermOperator*);
     bool promoteUnary(TIntermUnary&);
     bool promoteBinary(TIntermBinary&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
+    bool promoteAggregate(TIntermAggregate&);
     
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later

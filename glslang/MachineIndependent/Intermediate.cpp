@@ -45,6 +45,7 @@
 #include "propagateNoContraction.h"
 
 #include <cfloat>
+#include <utility>
 
 namespace glslang {
 
@@ -575,6 +576,27 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpDivAssign:
     case EOpModAssign:
 
+    case EOpAtan:
+    case EOpClamp:
+    case EOpCross:
+    case EOpDistance:
+    case EOpDot:
+    case EOpDst:
+    case EOpFaceForward:
+    case EOpFma:
+    case EOpFrexp:
+    case EOpLdexp:
+    case EOpMix:
+    case EOpLit:
+    case EOpMax:
+    case EOpMin:
+    case EOpModf:
+    case EOpPow:
+    case EOpReflect:
+    case EOpRefract:
+    case EOpSmoothStep:
+    case EOpStep:
+
     case EOpSequence:
     case EOpConstructStruct:
 
@@ -833,6 +855,9 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
     if (profile == EEsProfile || version == 110)
         return false;
 
+    if (from == to)
+        return true;
+
     // TODO: Move more policies into language-specific handlers.
     // Some languages allow more general (or potentially, more specific) conversions under some conditions.
     if (source == EShSourceHlsl) {
@@ -902,6 +927,8 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             return version >= 400;
         case EbtUint:
             return true;
+        case EbtBool:
+            return (source == EShSourceHlsl);
         default:
             return false;
         }
@@ -909,6 +936,8 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         switch (from) {
         case EbtInt:
             return true;
+        case EbtBool:
+            return (source == EShSourceHlsl);
         default:
             return false;
         }
@@ -1759,6 +1788,9 @@ bool TIntermediate::promote(TIntermOperator* node)
     if (node->getAsBinaryNode())
         return promoteBinary(*node->getAsBinaryNode());
 
+    if (node->getAsAggregate())
+        return promoteAggregate(*node->getAsAggregate());
+
     return false;
 }
 
@@ -2201,6 +2233,77 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
 
     return true;
 }
+
+//
+// See TIntermediate::promote
+//
+bool TIntermediate::promoteAggregate(TIntermAggregate& node)
+{
+    TOperator op = node.getOp();
+    TIntermSequence& args = node.getSequence();
+    const int numArgs = args.size();
+
+    // Presently, only hlsl does intrinsic promotions.
+    if (getSource() != EShSourceHlsl)
+        return true;
+
+    // set of opcodes that can be promoted in this manner.
+    switch (op) {
+    case EOpAtan:
+    case EOpClamp:
+    case EOpCross:
+    case EOpDistance:
+    case EOpDot:
+    case EOpDst:
+    case EOpFaceForward:
+        // case EOpFindMSB: TODO: ?? 
+        // case EOpFindLSB: TODO: ??
+    case EOpFma:
+    case EOpMod:
+    case EOpFrexp:
+    case EOpLdexp:
+    case EOpMix:
+    case EOpLit:
+    case EOpMax:
+    case EOpMin:
+    case EOpModf:
+        // case EOpGenMul: TODO: ??
+    case EOpPow:
+    case EOpReflect:
+    case EOpRefract:
+    // case EOpSinCos: TODO: ??
+    case EOpSmoothStep:
+    case EOpStep:
+        break;
+    default:
+        return true;
+    }
+
+    // TODO: array and struct behavior
+
+    // Try converting all nodes to the given node's type
+    TIntermSequence convertedArgs(numArgs, nullptr);
+
+    // Try to convert all types to the nonConvArg type.
+    for (int nonConvArg = 0; nonConvArg < numArgs; ++nonConvArg) {
+        // Try converting all args to this arg's type
+        for (int convArg = 0; convArg < numArgs; ++convArg) {
+            convertedArgs[convArg] = addConversion(op, args[nonConvArg]->getAsTyped()->getType(),
+                                                   args[convArg]->getAsTyped());
+        }
+
+        // If we successfully converted all the args, use the result.
+        if (std::all_of(convertedArgs.begin(), convertedArgs.end(),
+                        [](const TIntermNode* node) { return node != nullptr; })) {
+
+            std::swap(args, convertedArgs);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 void TIntermBinary::updatePrecision()
 {
