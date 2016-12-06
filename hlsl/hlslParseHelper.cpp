@@ -4394,8 +4394,10 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
         return candidateList[0];
     }
 
+    bool allowOnlyUpConversions = true;
+
     // can 'from' convert to 'to'?
-    const auto convertible = [this](const TType& from, const TType& to) -> bool {
+    const auto convertible = [&](const TType& from, const TType& to, TOperator op, int arg) -> bool {
         if (from == to)
             return true;
 
@@ -4404,9 +4406,33 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
             from.isStruct() || to.isStruct())
             return false;
 
+        switch (op) {
+        case EOpInterlockedAdd:
+        case EOpInterlockedAnd:
+        case EOpInterlockedCompareExchange:
+        case EOpInterlockedCompareStore:
+        case EOpInterlockedExchange:
+        case EOpInterlockedMax:
+        case EOpInterlockedMin:
+        case EOpInterlockedOr:
+        case EOpInterlockedXor:
+            // We do not promote the texture or image type for these ocodes.  Normally that would not
+            // be an issue because it's a buffer, but we haven't decomposed the opcode yet, and at this
+            // stage it's merely e.g, a basic integer type.
+            // 
+            // Instead, we want to promote other arguments, but stay within the same family.  In other
+            // words, InterlockedAdd(RWBuffer<int>, ...) will always use the int flavor, never the uint flavor,
+            // but it is allowed to promote its other arguments.
+            if (arg == 0)
+                return false;
+        default:
+            break;
+        }
+
         // basic types have to be convertible
-        if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), EOpFunctionCall))
-            return false;
+        if (allowOnlyUpConversions)
+            if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), EOpFunctionCall))
+                return false;
 
         // shapes have to be convertible
         if ((from.isScalarOrVec1() && to.isScalarOrVec1()) ||
@@ -4471,6 +4497,14 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
     
     // send to the generic selector
     const TFunction* bestMatch = selectFunction(candidateList, call, convertible, better, tie);
+
+    if (bestMatch == nullptr) {
+        // If there is nothing selected by allowing only up-conversions (to a larger linearize() value),
+        // we instead try down-conversions, which are valid in HLSL, but not preferred if there are any
+        // upconversions possible.
+        allowOnlyUpConversions = false;
+        bestMatch = selectFunction(candidateList, call, convertible, better, tie);
+    }
 
     if (bestMatch == nullptr) {
         error(loc, "no matching overloaded function found", call.getName().c_str(), "");
