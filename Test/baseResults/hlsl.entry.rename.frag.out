@@ -1,4 +1,4 @@
-../Test/hlsl.entry.rename.frag
+hlsl.entry.rename.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
