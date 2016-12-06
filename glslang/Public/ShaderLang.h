@@ -375,9 +375,7 @@ public:
         // Signals that the parser will no longer use the contents of the
         // specified IncludeResult.
         virtual void releaseInclude(IncludeResult* result) = 0;
-#ifdef __ANDROID__
-        virtual ~Includer() {} // Pacify -Werror=non-virtual-dtor
-#endif
+        virtual ~Includer() {}
     };
 
     // Returns an error message for any #include directive.
