@@ -943,6 +943,7 @@ struct TShaderQualifiers {
         earlyFragmentTests = false;
         layoutDepth = EldNone;
         blendEquation = false;
+        layoutOverrideCoverage = false;
     }
 
     // Merge in characteristics from the 'src' qualifier.  They can override when
