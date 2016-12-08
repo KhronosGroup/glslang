@@ -51,6 +51,7 @@
 #include "../../hlsl/hlslParseables.h"
 #include "Scan.h"
 #include "ScanContext.h"
+#include "../../hlsl/hlslScanContext.h"
 
 #include "../Include/ShHandle.h"
 #include "../../OGLCompilersDLL/InitializeDll.h"
@@ -74,6 +75,28 @@ TBuiltInParseables* CreateBuiltInParseables(TInfoSink& infoSink, EShSource sourc
     case EShSourceGlsl: return new TBuiltIns();              // GLSL builtIns
     case EShSourceHlsl: return new TBuiltInParseablesHlsl(); // HLSL intrinsics
 
+    default:
+        infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
+        return nullptr;
+    }
+}
+
+// Create a language specific version of a parse context.
+TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& intermediate,
+                                      int version, EProfile profile, EShSource source,
+                                      EShLanguage language, TInfoSink& infoSink,
+                                      SpvVersion spvVersion, bool forwardCompatible, EShMessages messages,
+                                      bool parsingBuiltIns, const std::string sourceEntryPointName = "")
+{
+    switch (source) {
+    case EShSourceGlsl:
+        intermediate.setEntryPointName("main");
+        return new TParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
+                                 language, infoSink, forwardCompatible, messages);
+
+    case EShSourceHlsl:
+        return new HlslParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
+                                    language, infoSink, sourceEntryPointName.c_str(), forwardCompatible, messages);
     default:
         infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
         return nullptr;
@@ -187,17 +210,22 @@ TPoolAllocator* PerProcessGPA = 0;
 //
 // Parse and add to the given symbol table the content of the given shader string.
 //
-bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TInfoSink& infoSink, 
-                           TSymbolTable& symbolTable)
+bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
+                           EShSource source, TInfoSink& infoSink, TSymbolTable& symbolTable)
 {
     TIntermediate intermediate(language, version, profile);
     
-    TParseContext parseContext(symbolTable, intermediate, true, version, profile, spvVersion, language, infoSink);
+    intermediate.setSource(source);
+
+    std::unique_ptr<TParseContextBase> parseContext(CreateParseContext(symbolTable, intermediate, version, profile, source, 
+                                                                       language, infoSink, spvVersion, true, EShMsgDefault,
+                                                                       true));
+
     TShader::ForbidInclude includer;
-    TPpContext ppContext(parseContext, "", includer);
-    TScanContext scanContext(parseContext);
-    parseContext.setScanContext(&scanContext);
-    parseContext.setPpContext(&ppContext);
+    TPpContext ppContext(*parseContext, "", includer);
+    TScanContext scanContext(*parseContext);
+    parseContext->setScanContext(&scanContext);
+    parseContext->setPpContext(&ppContext);
     
     //
     // Push the symbol table to give it an initial scope.  This
@@ -216,7 +244,7 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
         return true;
     
     TInputScanner input(1, builtInShaders, builtInLengths);
-    if (! parseContext.parseShaderStrings(ppContext, input) != 0) {
+    if (! parseContext->parseShaderStrings(ppContext, input) != 0) {
         infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
         printf("Unable to parse built-ins\n%s\n", infoSink.info.c_str());
         printf("%s\n", builtInShaders[0]);
@@ -236,10 +264,12 @@ int CommonIndex(EProfile profile, EShLanguage language)
 // To initialize per-stage shared tables, with the common table already complete.
 //
 void InitializeStageSymbolTable(TBuiltInParseables& builtInParseables, int version, EProfile profile, const SpvVersion& spvVersion,
-                                EShLanguage language, TInfoSink& infoSink, TSymbolTable** commonTable, TSymbolTable** symbolTables)
+                                EShLanguage language, EShSource source, TInfoSink& infoSink, TSymbolTable** commonTable,
+                                TSymbolTable** symbolTables)
 {
     (*symbolTables[language]).adoptLevels(*commonTable[CommonIndex(profile, language)]);
-    InitializeSymbolTable(builtInParseables.getStageString(language), version, profile, spvVersion, language, infoSink, *symbolTables[language]);
+    InitializeSymbolTable(builtInParseables.getStageString(language), version, profile, spvVersion, language, source,
+                          infoSink, *symbolTables[language]);
     builtInParseables.identifyBuiltIns(version, profile, spvVersion, language, *symbolTables[language]);
     if (profile == EEsProfile && version >= 300)
         (*symbolTables[language]).setNoBuiltInRedeclarations();
@@ -258,32 +288,40 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
     builtInParseables->initialize(version, profile, spvVersion);
 
     // do the common tables
-    InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, EShLangVertex, infoSink, *commonTable[EPcGeneral]);
+    InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, EShLangVertex, source,
+                          infoSink, *commonTable[EPcGeneral]);
     if (profile == EEsProfile)
-        InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, EShLangFragment, infoSink, *commonTable[EPcFragment]);
+        InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, EShLangFragment, source,
+                              infoSink, *commonTable[EPcFragment]);
 
     // do the per-stage tables
 
     // always have vertex and fragment
-    InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangVertex, infoSink, commonTable, symbolTables);
-    InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangFragment, infoSink, commonTable, symbolTables);
+    InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangVertex, source,
+                               infoSink, commonTable, symbolTables);
+    InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangFragment, source,
+                               infoSink, commonTable, symbolTables);
 
     // check for tessellation
     if ((profile != EEsProfile && version >= 150) ||
         (profile == EEsProfile && version >= 310)) {
-        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTessControl, infoSink, commonTable, symbolTables);
-        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTessEvaluation, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTessControl, source,
+                                   infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTessEvaluation, source,
+                                   infoSink, commonTable, symbolTables);
     }
 
     // check for geometry
     if ((profile != EEsProfile && version >= 150) ||
         (profile == EEsProfile && version >= 310))
-        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangGeometry, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangGeometry, source,
+                                   infoSink, commonTable, symbolTables);
 
     // check for compute
     if ((profile != EEsProfile && version >= 420) ||
         (profile == EEsProfile && version >= 310))
-        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangCompute, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangCompute, source,
+                                   infoSink, commonTable, symbolTables);
 
     return true;
 }
@@ -294,7 +332,7 @@ bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& inf
     std::unique_ptr<TBuiltInParseables> builtInParseables(CreateBuiltInParseables(infoSink, source));
     
     builtInParseables->initialize(*resources, version, profile, spvVersion, language);
-    InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, language, infoSink, symbolTable);
+    InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, language, source, infoSink, symbolTable);
     builtInParseables->identifyBuiltIns(version, profile, spvVersion, language, symbolTable, *resources);
 
     return true;
@@ -578,7 +616,8 @@ bool ProcessDeferred(
     TIntermediate& intermediate, // returned tree, etc.
     ProcessingContext& processingContext,
     bool requireNonempty,
-    TShader::Includer& includer
+    TShader::Includer& includer,
+    const std::string sourceEntryPointName = ""
     )
 {
     if (! InitThread())
@@ -693,15 +732,10 @@ bool ProcessDeferred(
     // Now we can process the full shader under proper symbols and rules.
     //
 
-    TParseContextBase* parseContext;
-    if (source == EShSourceHlsl) {
-        parseContext = new HlslParseContext(symbolTable, intermediate, false, version, profile, spvVersion,
-                                            compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
-    } else {
-        intermediate.setEntryPointName("main");
-        parseContext = new TParseContext(symbolTable, intermediate, false, version, profile, spvVersion,
-                                         compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
-    }
+    TParseContextBase* parseContext = CreateParseContext(symbolTable, intermediate, version, profile, source,
+                                                         compiler->getLanguage(), compiler->infoSink,
+                                                         spvVersion, forwardCompatible, messages, false, sourceEntryPointName);
+
     TPpContext ppContext(*parseContext, names[numPre]? names[numPre]: "", includer);
 
     // only GLSL (bison triggered, really) needs an externally set scan context
@@ -939,14 +973,13 @@ struct DoPreprocessing {
 struct DoFullParse{
   bool operator()(TParseContextBase& parseContext, TPpContext& ppContext,
                   TInputScanner& fullInput, bool versionWillBeError,
-                  TSymbolTable& symbolTable, TIntermediate& intermediate,
+                  TSymbolTable&, TIntermediate& intermediate,
                   EShOptimizationLevel optLevel, EShMessages messages) 
     {
         bool success = true;
         // Parse the full shader.
         if (! parseContext.parseShaderStrings(ppContext, fullInput, versionWillBeError))
             success = false;
-        intermediate.addSymbolLinkageNodes(parseContext.getLinkage(), parseContext.getLanguage(), symbolTable);
 
         if (success && intermediate.getTreeRoot()) {
             if (optLevel == EShOptNoGeneration)
@@ -1022,14 +1055,15 @@ bool CompileDeferred(
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
     TIntermediate& intermediate,// returned tree, etc.
-    TShader::Includer& includer)
+    TShader::Includer& includer,
+    const std::string sourceEntryPointName = "")
 {
     DoFullParse parser;
     return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
                            preamble, optLevel, resources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
                            forwardCompatible, messages, intermediate, parser,
-                           true, includer);
+                           true, includer, sourceEntryPointName);
 }
 
 } // end anonymous namespace for local functions
@@ -1049,6 +1083,7 @@ int ShInitialize()
         PerProcessGPA = new TPoolAllocator();
 
     glslang::TScanContext::fillInKeywordMap();
+    glslang::HlslScanContext::fillInKeywordMap();
 
     return 1;
 }
@@ -1141,6 +1176,7 @@ int __fastcall ShFinalize()
     }
 
     glslang::TScanContext::deleteKeywordMap();
+    glslang::HlslScanContext::deleteKeywordMap();
 
     return 1;
 }
@@ -1445,7 +1481,7 @@ public:
     virtual bool compile(TIntermNode*, int = 0, EProfile = ENoProfile) { return true; }
 };
 
-TShader::TShader(EShLanguage s) 
+TShader::TShader(EShLanguage s)
     : pool(0), stage(s), lengths(nullptr), stringNames(nullptr), preamble("")
 {
     infoSink = new TInfoSink;
@@ -1489,11 +1525,18 @@ void TShader::setEntryPoint(const char* entryPoint)
     intermediate->setEntryPointName(entryPoint);
 }
 
+void TShader::setSourceEntryPoint(const char* name)
+{
+    sourceEntryPointName = name;
+}
+
 void TShader::setShiftSamplerBinding(unsigned int base) { intermediate->setShiftSamplerBinding(base); }
 void TShader::setShiftTextureBinding(unsigned int base) { intermediate->setShiftTextureBinding(base); }
+void TShader::setShiftImageBinding(unsigned int base)   { intermediate->setShiftImageBinding(base); }
 void TShader::setShiftUboBinding(unsigned int base)     { intermediate->setShiftUboBinding(base); }
 void TShader::setAutoMapBindings(bool map)              { intermediate->setAutoMapBindings(map); }
 void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlattenUniformArrays(flatten); }
+void TShader::setNoStorageFormat(bool useUnknownFormat) { intermediate->setNoStorageFormat(useUnknownFormat); }
 
 //
 // Turn the shader strings into a parse tree in the TIntermediate.
@@ -1514,7 +1557,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
     return CompileDeferred(compiler, strings, numStrings, lengths, stringNames,
                            preamble, EShOptNone, builtInResources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
-                           forwardCompatible, messages, *intermediate, includer);
+                           forwardCompatible, messages, *intermediate, includer, sourceEntryPointName);
 }
 
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
@@ -1644,7 +1687,8 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
         newedIntermediate[stage] = true;
     }
 
-    infoSink->info << "\nLinked " << StageName(stage) << " stage:\n\n";
+    if (messages & EShMsgAST)
+        infoSink->info << "\nLinked " << StageName(stage) << " stage:\n\n";
 
     if (stages[stage].size() > 1) {
         std::list<TShader*>::const_iterator it;
@@ -1691,26 +1735,29 @@ bool TProgram::buildReflection()
     return true;
 }
 
-int TProgram::getNumLiveUniformVariables()           { return reflection->getNumUniforms(); }
-int TProgram::getNumLiveUniformBlocks()              { return reflection->getNumUniformBlocks(); }
-const char* TProgram::getUniformName(int index)      { return reflection->getUniform(index).name.c_str(); }
-const char* TProgram::getUniformBlockName(int index) { return reflection->getUniformBlock(index).name.c_str(); }
-int TProgram::getUniformBlockSize(int index)         { return reflection->getUniformBlock(index).size; }
-int TProgram::getUniformIndex(const char* name)      { return reflection->getIndex(name); }
-int TProgram::getUniformBlockIndex(int index)        { return reflection->getUniform(index).index; }
-int TProgram::getUniformType(int index)              { return reflection->getUniform(index).glDefineType; }
-int TProgram::getUniformBufferOffset(int index)      { return reflection->getUniform(index).offset; }
-int TProgram::getUniformArraySize(int index)         { return reflection->getUniform(index).size; }
-int TProgram::getNumLiveAttributes()                 { return reflection->getNumAttributes(); }
-const char* TProgram::getAttributeName(int index)    { return reflection->getAttribute(index).name.c_str(); }
-int TProgram::getAttributeType(int index)            { return reflection->getAttribute(index).glDefineType; }
+int TProgram::getNumLiveUniformVariables() const             { return reflection->getNumUniforms(); }
+int TProgram::getNumLiveUniformBlocks() const                { return reflection->getNumUniformBlocks(); }
+const char* TProgram::getUniformName(int index) const        { return reflection->getUniform(index).name.c_str(); }
+const char* TProgram::getUniformBlockName(int index) const   { return reflection->getUniformBlock(index).name.c_str(); }
+int TProgram::getUniformBlockSize(int index) const           { return reflection->getUniformBlock(index).size; }
+int TProgram::getUniformIndex(const char* name) const        { return reflection->getIndex(name); }
+int TProgram::getUniformBlockIndex(int index) const          { return reflection->getUniform(index).index; }
+int TProgram::getUniformType(int index) const                { return reflection->getUniform(index).glDefineType; }
+int TProgram::getUniformBufferOffset(int index) const        { return reflection->getUniform(index).offset; }
+int TProgram::getUniformArraySize(int index) const           { return reflection->getUniform(index).size; }
+int TProgram::getNumLiveAttributes() const                   { return reflection->getNumAttributes(); }
+const char* TProgram::getAttributeName(int index) const      { return reflection->getAttribute(index).name.c_str(); }
+int TProgram::getAttributeType(int index) const              { return reflection->getAttribute(index).glDefineType; }
+const TType* TProgram::getAttributeTType(int index) const    { return reflection->getAttribute(index).getType(); }
+const TType* TProgram::getUniformTType(int index) const      { return reflection->getUniform(index).getType(); }
+const TType* TProgram::getUniformBlockTType(int index) const { return reflection->getUniformBlock(index).getType(); }
 
 void TProgram::dumpReflection()                      { reflection->dump(); }
 
 //
 // I/O mapping implementation.
 //
-bool TProgram::mapIO()
+bool TProgram::mapIO(TIoMapResolver* resolver)
 {
     if (! linked || ioMapper)
         return false;
@@ -1719,7 +1766,7 @@ bool TProgram::mapIO()
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (intermediate[s]) {
-            if (! ioMapper->addStage((EShLanguage)s, *intermediate[s]))
+            if (! ioMapper->addStage((EShLanguage)s, *intermediate[s], *infoSink, resolver))
                 return false;
         }
     }

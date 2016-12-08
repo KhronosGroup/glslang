@@ -191,6 +191,9 @@ public:
     Id makeUint64Constant(unsigned long long u, bool specConstant = false)  { return makeInt64Constant(makeUintType(64),                     u, specConstant); }
     Id makeFloatConstant(float f, bool specConstant = false);
     Id makeDoubleConstant(double d, bool specConstant = false);
+#ifdef AMD_EXTENSIONS
+    Id makeFloat16Constant(float f16, bool specConstant = false);
+#endif
 
     // Turn the array of constants into a proper spv constant of the requested type.
     Id makeCompositeConstant(Id type, std::vector<Id>& comps, bool specConst = false);
@@ -561,7 +564,7 @@ public:
     Module module;
     Block* buildPoint;
     Id uniqueId;
-    Function* mainFunction;
+    Function* entryPointFunction;
     bool generatingOpCodeForSpecConst;
     AccessChain accessChain;
 

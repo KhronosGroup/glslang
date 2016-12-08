@@ -420,7 +420,6 @@ ERROR: node is still EOpNull!
 0:?     'concall' (const float)
 0:?       0.295520
 0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float TexCoord)
-0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float TexCoord)
 0:?     'c' (uniform int)
 0:?     'x' (in 2-component vector of int)
 0:?     'v2a' (in 2-component vector of float)
@@ -771,7 +770,6 @@ ERROR: node is still EOpNull!
 0:?       3.400000
 0:?     'concall' (const float)
 0:?       0.295520
-0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float TexCoord)
 0:?     'gl_TexCoord' (smooth out 35-element array of 4-component vector of float TexCoord)
 0:?     'c' (uniform int)
 0:?     'x' (in 2-component vector of int)

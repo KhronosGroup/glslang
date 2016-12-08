@@ -119,13 +119,14 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %expect 1     // One shift reduce conflict because of if | else
 
 %token <lex> ATTRIBUTE VARYING
-%token <lex> CONST BOOL FLOAT DOUBLE INT UINT INT64_T UINT64_T
+%token <lex> CONST BOOL FLOAT DOUBLE INT UINT INT64_T UINT64_T FLOAT16_T
 %token <lex> BREAK CONTINUE DO ELSE FOR IF DISCARD RETURN SWITCH CASE DEFAULT SUBROUTINE
 %token <lex> BVEC2 BVEC3 BVEC4 IVEC2 IVEC3 IVEC4 I64VEC2 I64VEC3 I64VEC4 UVEC2 UVEC3 UVEC4 U64VEC2 U64VEC3 U64VEC4 VEC2 VEC3 VEC4
 %token <lex> MAT2 MAT3 MAT4 CENTROID IN OUT INOUT
 %token <lex> UNIFORM PATCH SAMPLE BUFFER SHARED
 %token <lex> COHERENT VOLATILE RESTRICT READONLY WRITEONLY
 %token <lex> DVEC2 DVEC3 DVEC4 DMAT2 DMAT3 DMAT4
+%token <lex> F16VEC2 F16VEC3 F16VEC4 F16MAT2 F16MAT3 F16MAT4
 %token <lex> NOPERSPECTIVE FLAT SMOOTH LAYOUT __EXPLICITINTERPAMD
 
 %token <lex> MAT2X2 MAT2X3 MAT2X4
@@ -134,6 +135,9 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> DMAT2X2 DMAT2X3 DMAT2X4
 %token <lex> DMAT3X2 DMAT3X3 DMAT3X4
 %token <lex> DMAT4X2 DMAT4X3 DMAT4X4
+%token <lex> F16MAT2X2 F16MAT2X3 F16MAT2X4
+%token <lex> F16MAT3X2 F16MAT3X3 F16MAT3X4
+%token <lex> F16MAT4X2 F16MAT4X3 F16MAT4X4
 %token <lex> ATOMIC_UINT
 
 // combined image/sampler
@@ -182,7 +186,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> STRUCT VOID WHILE
 
 %token <lex> IDENTIFIER TYPE_NAME
-%token <lex> FLOATCONSTANT DOUBLECONSTANT INTCONSTANT UINTCONSTANT INT64CONSTANT UINT64CONSTANT BOOLCONSTANT
+%token <lex> FLOATCONSTANT DOUBLECONSTANT INTCONSTANT UINTCONSTANT INT64CONSTANT UINT64CONSTANT BOOLCONSTANT FLOAT16CONSTANT
 %token <lex> LEFT_OP RIGHT_OP
 %token <lex> INC_OP DEC_OP LE_OP GE_OP EQ_OP NE_OP
 %token <lex> AND_OP OR_OP XOR_OP MUL_ASSIGN DIV_ASSIGN ADD_ASSIGN
@@ -273,6 +277,12 @@ primary_expression
     | DOUBLECONSTANT {
         parseContext.doubleCheck($1.loc, "double literal");
         $$ = parseContext.intermediate.addConstantUnion($1.d, EbtDouble, $1.loc, true);
+    }
+    | FLOAT16CONSTANT {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float literal");
+        $$ = parseContext.intermediate.addConstantUnion($1.d, EbtFloat16, $1.loc, true);
+#endif
     }
     | BOOLCONSTANT {
         $$ = parseContext.intermediate.addConstantUnion($1.b, $1.loc, true);
@@ -1324,6 +1334,13 @@ type_specifier_nonarray
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
     }
+    | FLOAT16_T {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+#endif
+    }
     | INT {
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt;
@@ -1379,6 +1396,30 @@ type_specifier_nonarray
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setVector(4);
+    }
+    | F16VEC2 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setVector(2);
+#endif
+    }
+    | F16VEC3 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setVector(3);
+#endif
+    }
+    | F16VEC4 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setVector(4);
+#endif
     }
     | BVEC2 {
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
@@ -1595,6 +1636,102 @@ type_specifier_nonarray
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(4, 4);
+    }
+    | F16MAT2 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(2, 2);
+#endif
+    }
+    | F16MAT3 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(3, 3);
+#endif
+    }
+    | F16MAT4 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(4, 4);
+#endif
+    }
+    | F16MAT2X2 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(2, 2);
+#endif
+    }
+    | F16MAT2X3 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(2, 3);
+#endif
+    }
+    | F16MAT2X4 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(2, 4);
+#endif
+    }
+    | F16MAT3X2 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(3, 2);
+#endif
+    }
+    | F16MAT3X3 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(3, 3);
+#endif
+    }
+    | F16MAT3X4 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(3, 4);
+#endif
+    }
+    | F16MAT4X2 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(4, 2);
+#endif
+    }
+    | F16MAT4X3 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(4, 3);
+#endif
+    }
+    | F16MAT4X4 {
+#ifdef AMD_EXTENSIONS
+        parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
+        $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
+        $$.basicType = EbtFloat16;
+        $$.setMatrix(4, 4);
+#endif
     }
     | ATOMIC_UINT {
         parseContext.vulkanRemoved($1.loc, "atomic counter types");

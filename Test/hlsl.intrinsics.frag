@@ -1,17 +1,17 @@
 
-#define gs     // TODO: define as groupshared when available in the grammar
-gs uint gs_ua;
-gs uint gs_ub;
-gs uint gs_uc;
-gs uint2 gs_ua2;
-gs uint2 gs_ub2;
-gs uint2 gs_uc2;
-gs uint3 gs_ua3;
-gs uint3 gs_ub3;
-gs uint3 gs_uc3;
-gs uint4 gs_ua4;
-gs uint4 gs_ub4;
-gs uint4 gs_uc4;
+
+groupshared uint gs_ua;
+groupshared uint gs_ub;
+groupshared uint gs_uc;
+groupshared uint2 gs_ua2;
+groupshared uint2 gs_ub2;
+groupshared uint2 gs_uc2;
+groupshared uint3 gs_ua3;
+groupshared uint3 gs_ub3;
+groupshared uint3 gs_uc3;
+groupshared uint4 gs_ua4;
+groupshared uint4 gs_ub4;
+groupshared uint4 gs_uc4;
 
 float PixelShaderFunctionS(float inF0, float inF1, float inF2, uint inU0, uint inU1)
 {
@@ -33,7 +33,7 @@ float PixelShaderFunctionS(float inF0, float inF1, float inF2, uint inU0, uint i
     clip(inF0);
     float r014 = cos(inF0);
     float r015 = cosh(inF0);
-    uint r016 = countbits(7);
+    int r016 = countbits(7);
     float r017 = ddx(inF0);
     float r018 = ddx_coarse(inF0);
     float r019 = ddx_fine(inF0);
@@ -111,7 +111,7 @@ float2 PixelShaderFunction2(float2 inF0, float2 inF1, float2 inF2, uint2 inU0, u
     clip(inF0);
     float2 r013 = cos(inF0);
     float2 r015 = cosh(inF0);
-    uint2 r016 = countbits(int2(7,3));
+    int2 r016 = countbits(int2(7,3));
     float2 r017 = ddx(inF0);
     float2 r018 = ddx_coarse(inF0);
     float2 r019 = ddx_fine(inF0);

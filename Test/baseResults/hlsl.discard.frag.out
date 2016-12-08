@@ -2,7 +2,7 @@ hlsl.discard.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:2  Function Definition: foo(f1; (global void)
+0:2  Function Definition: foo(f1; (temp void)
 0:2    Function Parameters: 
 0:2      'f' (in float)
 0:?     Sequence
@@ -14,11 +14,11 @@ gl_FragCoord origin is upper left
 0:3            1.000000
 0:3        true case
 0:4        Branch: Kill
-0:8  Function Definition: PixelShaderFunction(vf4; (global void)
+0:8  Function Definition: PixelShaderFunction(vf4; (temp void)
 0:8    Function Parameters: 
 0:8      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
-0:9      Function Call: foo(f1; (global void)
+0:9      Function Call: foo(f1; (temp void)
 0:9        direct index (temp float)
 0:9          'input' (layout(location=0 ) in 4-component vector of float)
 0:9          Constant:
@@ -49,7 +49,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:2  Function Definition: foo(f1; (global void)
+0:2  Function Definition: foo(f1; (temp void)
 0:2    Function Parameters: 
 0:2      'f' (in float)
 0:?     Sequence
@@ -61,11 +61,11 @@ gl_FragCoord origin is upper left
 0:3            1.000000
 0:3        true case
 0:4        Branch: Kill
-0:8  Function Definition: PixelShaderFunction(vf4; (global void)
+0:8  Function Definition: PixelShaderFunction(vf4; (temp void)
 0:8    Function Parameters: 
 0:8      'input' (layout(location=0 ) in 4-component vector of float)
 0:?     Sequence
-0:9      Function Call: foo(f1; (global void)
+0:9      Function Call: foo(f1; (temp void)
 0:9        direct index (temp float)
 0:9          'input' (layout(location=0 ) in 4-component vector of float)
 0:9          Constant:

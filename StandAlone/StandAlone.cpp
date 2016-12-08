@@ -82,6 +82,7 @@ enum TOptions {
     EOptionCascadingErrors    = (1 << 18),
     EOptionAutoMapBindings    = (1 << 19),
     EOptionFlattenUniformArrays = (1 << 20),
+    EOptionNoStorageFormat    = (1 << 21),
 };
 
 //
@@ -159,10 +160,12 @@ int Options = 0;
 const char* ExecutableName = nullptr;
 const char* binaryFileName = nullptr;
 const char* entryPointName = nullptr;
+const char* sourceEntryPointName = nullptr;
 const char* shaderStageName = nullptr;
 
 std::array<unsigned int, EShLangCount> baseSamplerBinding;
 std::array<unsigned int, EShLangCount> baseTextureBinding;
+std::array<unsigned int, EShLangCount> baseImageBinding;
 std::array<unsigned int, EShLangCount> baseUboBinding;
 
 //
@@ -251,6 +254,7 @@ void ProcessArguments(int argc, char* argv[])
 {
     baseSamplerBinding.fill(0);
     baseTextureBinding.fill(0);
+    baseImageBinding.fill(0);
     baseUboBinding.fill(0);
 
     ExecutableName = argv[0];
@@ -278,6 +282,10 @@ void ProcessArguments(int argc, char* argv[])
                                lowerword == "shift-texture-binding"  ||
                                lowerword == "stb") {
                         ProcessBindingBase(argc, argv, baseTextureBinding);
+                    } else if (lowerword == "shift-image-bindings" ||  // synonyms
+                               lowerword == "shift-image-binding"  ||
+                               lowerword == "sib") {
+                        ProcessBindingBase(argc, argv, baseImageBinding);
                     } else if (lowerword == "shift-ubo-bindings" ||  // synonyms
                                lowerword == "shift-ubo-binding"  ||
                                lowerword == "sub") {
@@ -290,6 +298,18 @@ void ProcessArguments(int argc, char* argv[])
                                lowerword == "flatten-uniform-array"  ||
                                lowerword == "fua") {
                         Options |= EOptionFlattenUniformArrays;
+                    } else if (lowerword == "no-storage-format" || // synonyms
+                               lowerword == "nsf") {
+                        Options |= EOptionNoStorageFormat;
+                    } else if (lowerword == "source-entrypoint" || // synonyms
+                               lowerword == "sep") {
+                        sourceEntryPointName = argv[1];
+                        if (argc > 0) {
+                            argc--;
+                            argv++;
+                        } else
+                            Error("no <entry-point> provided for --source-entrypoint");
+                        break;
                     } else {
                         usage();
                     }
@@ -537,11 +557,15 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         shader->setStringsWithLengthsAndNames(compUnit.text, NULL, compUnit.fileNameList, 1);
         if (entryPointName) // HLSL todo: this needs to be tracked per compUnits
             shader->setEntryPoint(entryPointName);
+        if (sourceEntryPointName)
+            shader->setSourceEntryPoint(sourceEntryPointName);
 
         shader->setShiftSamplerBinding(baseSamplerBinding[compUnit.stage]);
         shader->setShiftTextureBinding(baseTextureBinding[compUnit.stage]);
+        shader->setShiftImageBinding(baseImageBinding[compUnit.stage]);
         shader->setShiftUboBinding(baseUboBinding[compUnit.stage]);
         shader->setFlattenUniformArrays((Options & EOptionFlattenUniformArrays) != 0);
+        shader->setNoStorageFormat((Options & EOptionNoStorageFormat) != 0);
 
         if (Options & EOptionAutoMapBindings)
             shader->setAutoMapBindings(true);
@@ -584,6 +608,12 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
     if (! (Options & EOptionOutputPreprocessed) && ! program.link(messages))
         LinkFailed = true;
 
+    // Map IO
+    if (Options & EOptionSpv) {
+        if (!program.mapIO())
+            LinkFailed = true;
+    }
+    
     // Report
     if (! (Options & EOptionSuppressInfolog) &&
         ! (Options & EOptionMemoryLeakMode)) {
@@ -591,10 +621,6 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         PutsIfNonEmpty(program.getInfoDebugLog());
     }
 
-    // Map IO
-    if (Options & EOptionSpv)
-        program.mapIO();
-    
     // Reflect
     if (Options & EOptionDumpReflection) {
         program.buildReflection();
@@ -666,11 +692,11 @@ void CompileAndLinkShaderFiles()
     // they are all getting linked together.)
     glslang::TWorkItem* workItem;
     while (Worklist.remove(workItem)) {
-        ShaderCompUnit compUnit = {
+        ShaderCompUnit compUnit(
             FindLanguage(workItem->name),
             workItem->name,
             ReadFileData(workItem->name.c_str())
-        };
+        );
 
         if (! compUnit.text) {
             usage();
@@ -934,6 +960,9 @@ void usage()
            "  --shift-texture-binding [stage] num     set base binding number for textures\n"
            "  --stb [stage] num                       synonym for --shift-texture-binding\n"
            "\n"
+           "  --shift-image-binding [stage] num       set base binding number for images (uav)\n"
+           "  --sib [stage] num                       synonym for --shift-image-binding\n"
+           "\n"
            "  --shift-UBO-binding [stage] num         set base binding number for UBOs\n"
            "  --sub [stage] num                       synonym for --shift-UBO-binding\n"
            "\n"
@@ -941,8 +970,14 @@ void usage()
            "                                          explicit bindings.\n"
            "  --amb                                   synonym for --auto-map-bindings\n"
            "\n"
-           "  --flatten-uniform-arrays                flatten uniform array references to scalars\n"
+           "  --flatten-uniform-arrays                flatten uniform texture & sampler arrays to scalars\n"
            "  --fua                                   synonym for --flatten-uniform-arrays\n"
+           "\n"
+           "  --no-storage-format                     use Unknown image format\n"
+           "  --nsf                                   synonym for --no-storage-format\n"
+           "\n"
+           "  --source-entrypoint name                the given shader source function is renamed to be the entry point given in -e\n"
+           "  --sep                                   synonym for --source-entrypoint\n"
            );
 
     exit(EFailUsage);

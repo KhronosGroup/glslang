@@ -54,14 +54,6 @@
 #include "Initializer.h"
 #include "Settings.h"
 
-// We need CMake to provide us the absolute path to the directory containing
-// test files, so we are certain to find those files no matter where the test
-// harness binary is generated. This provides out-of-source build capability.
-#ifndef GLSLANG_TEST_DIRECTORY
-#error \
-    "GLSLANG_TEST_DIRECTORY needs to be defined for gtest to locate test files."
-#endif
-
 namespace glslangtest {
 
 // This function is used to provide custom test name suffixes based on the
@@ -247,6 +239,7 @@ public:
             const std::string& entryPointName, EShMessages controls,
             int baseSamplerBinding,
             int baseTextureBinding,
+            int baseImageBinding,
             int baseUboBinding,
             bool autoMapBindings,
             bool flattenUniformArrays)
@@ -256,6 +249,7 @@ public:
         glslang::TShader shader(kind);
         shader.setShiftSamplerBinding(baseSamplerBinding);
         shader.setShiftTextureBinding(baseTextureBinding);
+        shader.setShiftImageBinding(baseImageBinding);
         shader.setShiftUboBinding(baseUboBinding);
         shader.setAutoMapBindings(autoMapBindings);
         shader.setFlattenUniformArrays(flattenUniformArrays);
@@ -434,6 +428,7 @@ public:
                                       const std::string& entryPointName,
                                       int baseSamplerBinding,
                                       int baseTextureBinding,
+                                      int baseImageBinding,
                                       int baseUboBinding,
                                       bool autoMapBindings,
                                       bool flattenUniformArrays)
@@ -448,7 +443,7 @@ public:
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result = compileLinkIoMap(testName, input, entryPointName, controls,
-                                                baseSamplerBinding, baseTextureBinding, baseUboBinding,
+                                                baseSamplerBinding, baseTextureBinding, baseImageBinding, baseUboBinding,
                                                 autoMapBindings,
                                                 flattenUniformArrays);
 

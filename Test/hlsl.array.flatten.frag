@@ -23,7 +23,7 @@ float4 TestFn2(Texture1D l_tex[3], SamplerState l_samp[3])
     return l_tex[2].Sample(l_samp[2], 0.2);
 }
 
-int not_flattened_a[5] = { 1, 2, 3, 4, 5 };
+static int not_flattened_a[5] = { 1, 2, 3, 4, 5 };
 
 struct PS_OUTPUT { float4 color : SV_Target0; };
 

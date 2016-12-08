@@ -1,15 +1,15 @@
-uint gs_ua;
-uint gs_ub;
-uint gs_uc;
-uint2 gs_ua2;
-uint2 gs_ub2;
-uint2 gs_uc2;
-uint3 gs_ua3;
-uint3 gs_ub3;
-uint3 gs_uc3;
-uint4 gs_ua4;
-uint4 gs_ub4;
-uint4 gs_uc4;
+static uint gs_ua;
+static uint gs_ub;
+static uint gs_uc;
+static uint2 gs_ua2;
+static uint2 gs_ub2;
+static uint2 gs_uc2;
+static uint3 gs_ua3;
+static uint3 gs_ub3;
+static uint3 gs_uc3;
+static uint4 gs_ua4;
+static uint4 gs_ub4;
+static uint4 gs_uc4;
 
 float VertexShaderFunctionS(float inF0, float inF1, float inF2, int inI0)
 {

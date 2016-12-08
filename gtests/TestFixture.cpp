@@ -74,7 +74,7 @@ EShMessages DeriveOptions(Source source, Semantics semantics, Target target)
         case Source::GLSL:
             break;
         case Source::HLSL:
-            result = EShMsgReadHlsl;
+            result = static_cast<EShMessages>(result | EShMsgReadHlsl);
             break;
     }
 

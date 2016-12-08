@@ -46,6 +46,10 @@
 
 #include "SpvBuilder.h"
 
+#ifdef AMD_EXTENSIONS
+    #include "hex_float.h"
+#endif
+
 #ifndef _WIN32
     #include <cstdio>
 #endif
@@ -60,7 +64,7 @@ Builder::Builder(unsigned int magicNumber, SpvBuildLogger* buildLogger) :
     builderNumber(magicNumber),
     buildPoint(0),
     uniqueId(0),
-    mainFunction(0),
+    entryPointFunction(0),
     generatingOpCodeForSpecConst(false),
     logger(buildLogger)
 {
@@ -785,6 +789,36 @@ Id Builder::makeDoubleConstant(double d, bool specConstant)
     return c->getResultId();
 }
 
+#ifdef AMD_EXTENSIONS
+Id Builder::makeFloat16Constant(float f16, bool specConstant)
+{
+    Op opcode = specConstant ? OpSpecConstant : OpConstant;
+    Id typeId = makeFloatType(16);
+
+    spvutils::HexFloat<spvutils::FloatProxy<float>> fVal(f16);
+    spvutils::HexFloat<spvutils::FloatProxy<spvutils::Float16>> f16Val(0);
+    fVal.castTo(f16Val, spvutils::kRoundToZero);
+
+    unsigned value = f16Val.value().getAsFloat().get_value();
+
+    // See if we already made it. Applies only to regular constants, because specialization constants
+    // must remain distinct for the purpose of applying a SpecId decoration.
+    if (!specConstant) {
+        Id existing = findScalarConstant(OpTypeFloat, opcode, typeId, value);
+        if (existing)
+            return existing;
+    }
+
+    Instruction* c = new Instruction(getUniqueId(), typeId, opcode);
+    c->addImmediateOperand(value);
+    constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(c));
+    groupedConstants[OpTypeFloat].push_back(c);
+    module.mapInstruction(c);
+
+    return c->getResultId();
+}
+#endif
+
 Id Builder::findCompositeConstant(Op typeClass, std::vector<Id>& comps) const
 {
     Instruction* constant = 0;
@@ -933,15 +967,15 @@ void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decorat
 // Comments in header
 Function* Builder::makeEntryPoint(const char* entryPoint)
 {
-    assert(! mainFunction);
+    assert(! entryPointFunction);
 
     Block* entry;
     std::vector<Id> params;
     std::vector<Decoration> precisions;
 
-    mainFunction = makeFunctionEntry(NoPrecision, makeVoidType(), entryPoint, params, precisions, &entry);
+    entryPointFunction = makeFunctionEntry(NoPrecision, makeVoidType(), entryPoint, params, precisions, &entry);
 
-    return mainFunction;
+    return entryPointFunction;
 }
 
 // Comments in header
