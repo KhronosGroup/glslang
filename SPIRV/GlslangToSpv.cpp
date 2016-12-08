@@ -436,17 +436,6 @@ spv::Decoration TranslateNoContractionDecoration(const glslang::TQualifier& qual
         return spv::DecorationMax;
 }
 
-#ifdef NV_EXTENSIONS 
-// Vendor specific decorations
-spv::Decoration TranslateVendorDecoration(const glslang::TQualifier& qualifier)
-{
-    // GL_NV_sample_mask_override_coverage extension
-    if (qualifier.layoutOverrideCoverage)
-        return (spv::Decoration)spv::OverrideCoverageNV;
-    else
-        return (spv::Decoration)spv::DecorationMax;
-}
-#endif
 
 // Translate a glslang built-in variable to a SPIR-V built in decoration.  Also generate
 // associated capabilities when required.  For some built-in variables, a capability
@@ -4582,8 +4571,12 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
 
 #ifdef NV_EXTENSIONS 
     if (builtIn == spv::BuiltInSampleMask) {
-        spv::Decoration decoration =
-            TranslateVendorDecoration(symbol->getType().getQualifier());
+          spv::Decoration decoration;
+          // GL_NV_sample_mask_override_coverage extension
+          if (glslangIntermediate->getLayoutOverrideCoverage())
+              decoration = (spv::Decoration)spv::OverrideCoverageNV;
+          else
+              decoration = (spv::Decoration)spv::DecorationMax;
         addDecoration(id, decoration);
         if (decoration != spv::DecorationMax) {
             builder.addExtension(spv::E_SPV_NV_sample_mask_override_coverage);

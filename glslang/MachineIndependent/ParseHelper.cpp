@@ -3522,10 +3522,10 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
         }
 #ifdef NV_EXTENSIONS 
         else if (identifier == "gl_SampleMask") {
-            if (!qualifier.layoutOverrideCoverage) {
+            if (!publicType.layoutOverrideCoverage) {
                 error(loc, "redeclaration only allowed for override_coverage layout", "redeclaration", symbol->getName().c_str());
             }
-            symbol->getWritableType().setLayoutOverrideCoverage(true);
+            intermediate.setLayoutOverrideCoverage();
         }
 #endif
 
@@ -4149,7 +4149,7 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 #ifdef NV_EXTENSIONS 
         if (id == "override_coverage") {
             requireExtensions(loc, 1, &E_GL_NV_sample_mask_override_coverage, "sample mask override coverage");
-            publicType.qualifier.layoutOverrideCoverage = true;
+            publicType.shaderQualifiers.layoutOverrideCoverage = true;
             return;
         }
 #endif
@@ -4458,10 +4458,6 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
 
         if (src.layoutPushConstant)
             dst.layoutPushConstant = true;
-#ifdef NV_EXTENSIONS 
-        if (src.layoutOverrideCoverage)
-            dst.layoutOverrideCoverage = true;
-#endif
     }
 }
 
