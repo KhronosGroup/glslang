@@ -204,6 +204,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.shapeConvRet.frag", "main"},
         {"hlsl.stringtoken.frag", "main"},
         {"hlsl.string.frag", "main"},
+        {"hlsl.structarray.flatten.frag", "main"},
+        {"hlsl.structarray.flatten.geom", "main"},
         {"hlsl.structin.vert", "main"},
         {"hlsl.intrinsics.vert", "VertexShaderFunction"},
         {"hlsl.matType.frag", "PixelShaderFunction"},
