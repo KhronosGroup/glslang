@@ -67,7 +67,9 @@ struct TVectorFields {
 // by TIntermediate.
 //
 
-// Used for detecting recursion:  A "call" is a pair: <caller, callee>.
+// Used for call-graph algorithms for detecting recursion, missing bodies, and dead bodies.
+// A "call" is a pair: <caller, callee>.
+// There can be duplicates. General assumption is the list is small.
 struct TCall {
     TCall(const TString& pCaller, const TString& pCallee) : caller(pCaller), callee(pCallee) { }
     TString caller;
@@ -75,6 +77,7 @@ struct TCall {
     bool visited;
     bool currentPath;
     bool errorGiven;
+    int calleeBodyPosition;
 };
 
 // A generic 1-D range.
@@ -401,6 +404,7 @@ protected:
     void mergeImplicitArraySizes(TType&, const TType&);
     void mergeErrorCheck(TInfoSink&, const TIntermSymbol&, const TIntermSymbol&, bool crossStage);
     void checkCallGraphCycles(TInfoSink&);
+    void checkCallGraphBodies(TInfoSink&);
     void inOutLocationCheck(TInfoSink&);
     TIntermSequence& findLinkerObjects() const;
     bool userOutputUsed() const;
