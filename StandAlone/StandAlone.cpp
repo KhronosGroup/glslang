@@ -60,29 +60,30 @@ extern "C" {
 
 // Command-line options
 enum TOptions {
-    EOptionNone               = 0,
-    EOptionIntermediate       = (1 <<  0),
-    EOptionSuppressInfolog    = (1 <<  1),
-    EOptionMemoryLeakMode     = (1 <<  2),
-    EOptionRelaxedErrors      = (1 <<  3),
-    EOptionGiveWarnings       = (1 <<  4),
-    EOptionLinkProgram        = (1 <<  5),
-    EOptionMultiThreaded      = (1 <<  6),
-    EOptionDumpConfig         = (1 <<  7),
-    EOptionDumpReflection     = (1 <<  8),
-    EOptionSuppressWarnings   = (1 <<  9),
-    EOptionDumpVersions       = (1 << 10),
-    EOptionSpv                = (1 << 11),
-    EOptionHumanReadableSpv   = (1 << 12),
-    EOptionVulkanRules        = (1 << 13),
-    EOptionDefaultDesktop     = (1 << 14),
-    EOptionOutputPreprocessed = (1 << 15),
-    EOptionOutputHexadecimal  = (1 << 16),
-    EOptionReadHlsl           = (1 << 17),
-    EOptionCascadingErrors    = (1 << 18),
-    EOptionAutoMapBindings    = (1 << 19),
+    EOptionNone                 = 0,
+    EOptionIntermediate         = (1 <<  0),
+    EOptionSuppressInfolog      = (1 <<  1),
+    EOptionMemoryLeakMode       = (1 <<  2),
+    EOptionRelaxedErrors        = (1 <<  3),
+    EOptionGiveWarnings         = (1 <<  4),
+    EOptionLinkProgram          = (1 <<  5),
+    EOptionMultiThreaded        = (1 <<  6),
+    EOptionDumpConfig           = (1 <<  7),
+    EOptionDumpReflection       = (1 <<  8),
+    EOptionSuppressWarnings     = (1 <<  9),
+    EOptionDumpVersions         = (1 << 10),
+    EOptionSpv                  = (1 << 11),
+    EOptionHumanReadableSpv     = (1 << 12),
+    EOptionVulkanRules          = (1 << 13),
+    EOptionDefaultDesktop       = (1 << 14),
+    EOptionOutputPreprocessed   = (1 << 15),
+    EOptionOutputHexadecimal    = (1 << 16),
+    EOptionReadHlsl             = (1 << 17),
+    EOptionCascadingErrors      = (1 << 18),
+    EOptionAutoMapBindings      = (1 << 19),
     EOptionFlattenUniformArrays = (1 << 20),
-    EOptionNoStorageFormat    = (1 << 21),
+    EOptionNoStorageFormat      = (1 << 21),
+    EOptionKeepUncalled         = (1 << 22),
 };
 
 //
@@ -310,6 +311,9 @@ void ProcessArguments(int argc, char* argv[])
                         } else
                             Error("no <entry-point> provided for --source-entrypoint");
                         break;
+                    } else if (lowerword == "keep-uncalled" || // synonyms
+                               lowerword == "ku") {
+                        Options |= EOptionKeepUncalled;
                     } else {
                         usage();
                     }
@@ -459,6 +463,8 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgReadHlsl);
     if (Options & EOptionCascadingErrors)
         messages = (EShMessages)(messages | EShMsgCascadingErrors);
+    if (Options & EOptionKeepUncalled)
+        messages = (EShMessages)(messages | EShMsgKeepUncalled);
 }
 
 //
@@ -978,6 +984,9 @@ void usage()
            "\n"
            "  --source-entrypoint name                the given shader source function is renamed to be the entry point given in -e\n"
            "  --sep                                   synonym for --source-entrypoint\n"
+           "\n"
+           "  --keep-uncalled                         don't eliminate uncalled functions when linking\n"
+           "  --ku                                    synonym for --keep-uncalled\n"
            );
 
     exit(EFailUsage);
