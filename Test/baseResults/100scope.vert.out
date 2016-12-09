@@ -128,6 +128,8 @@ ERROR: node is still EOpNull!
 
 Linked vertex stage:
 
+ERROR: Linking vertex stage: No function definition (body) found: 
+    g(
 
 Shader version: 100
 ERROR: node is still EOpNull!

@@ -94,7 +94,7 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
 
     if (originUpperLeft != unit.originUpperLeft || pixelCenterInteger != unit.pixelCenterInteger)
-        error(infoSink, "gl_FragCoord redeclarations must match across shaders\n");
+        error(infoSink, "gl_FragCoord redeclarations must match across shaders");
 
     if (! earlyFragmentTests)
         earlyFragmentTests = unit.earlyFragmentTests;
@@ -390,8 +390,9 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
     if (numPushConstants > 1)
         error(infoSink, "Only one push_constant block is allowed per stage");
 
-    // recursion checking
+    // recursion and missing body checking
     checkCallGraphCycles(infoSink);
+    checkCallGraphBodies(infoSink);
 
     // overlap/alias/missing I/O, etc.
     inOutLocationCheck(infoSink);
@@ -502,7 +503,7 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
 //
 void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
 {
-    // Reset everything, once.
+    // Clear fields we'll use for this.
     for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
         call->visited = false;
         call->currentPath = false;
@@ -575,6 +576,69 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
         }  // end while, meaning nothing left to process in this subtree
 
     } while (newRoot);  // redundant loop check; should always exit via the 'break' above
+}
+
+//
+// See which functions are reachable from the entry point and which have bodies.
+// Reachable ones with missing bodies are errors.
+//
+void TIntermediate::checkCallGraphBodies(TInfoSink& infoSink)
+{
+    // Clear fields we'll use for this.
+    for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
+        call->visited = false;
+        call->calleeBodyPosition = -1;
+    }
+    
+    // The top level of the AST includes function definitions (bodies).
+    // Compare these to function calls in the call graph.
+    // We'll end up knowing which have bodies, and if so,
+    // how to map the call-graph node to the location in the AST.
+    TIntermSequence &functionSequence = getTreeRoot()->getAsAggregate()->getSequence();
+    for (int f = 0; f < (int)functionSequence.size(); ++f) {
+        glslang::TIntermAggregate* node = functionSequence[f]->getAsAggregate();
+        if (node && (node->getOp() == glslang::EOpFunction)) {
+            for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
+                if (call->callee == node->getName())
+                    call->calleeBodyPosition = f;
+            }
+        }
+    }
+
+    // Start call-graph traversal by visiting the entry point nodes.
+    for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
+        if (call->caller.compare(getEntryPointMangledName().c_str()) == 0)
+            call->visited = true;
+    }
+
+    // Propagate 'visited' through the call-graph to every part of the graph it
+    // can reach (seeded with the entry-point setting above).
+    bool changed;
+    do {
+        changed = false;
+        for (auto call1 = callGraph.begin(); call1 != callGraph.end(); ++call1) {
+            if (call1->visited) {
+                for (TGraph::iterator call2 = callGraph.begin(); call2 != callGraph.end(); ++call2) {
+                    if (! call2->visited) {
+                        if (call1->callee == call2->caller) {
+                            changed = true;
+                            call2->visited = true;
+                        }
+                    }
+                }
+            }
+        }
+    } while (changed);
+
+    // Any call-graph node set to visited but without a callee body is an error.
+    for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
+        if (call->visited) {
+            if (call->calleeBodyPosition == -1) {
+                error(infoSink, "No function definition (body) found: ");
+                infoSink.info << "    " << call->callee << "\n";
+            }
+        }
+    }
 }
 
 //
