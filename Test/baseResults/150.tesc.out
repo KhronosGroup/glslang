@@ -910,8 +910,10 @@ ERROR: node is still EOpNull!
 
 Linked tessellation control stage:
 
+ERROR: Linking tessellation control stage: can't handle multiple entry points per stage
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
+ERROR: Linking tessellation control stage: can't handle multiple entry points per stage
 ERROR: Linking tessellation control stage: Contradictory layout vertices values
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
@@ -921,6 +923,7 @@ ERROR: Linking tessellation control stage: Types must match:
     gl_out: "out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance}" versus "out implicitly-sized array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance}"
 ERROR: Linking tessellation control stage: Types must match:
     outa: "global 4-element array of int" versus "global 1-element array of int"
+ERROR: Linking tessellation control stage: can't handle multiple entry points per stage
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
 ERROR: Linking tessellation control stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
@@ -934,8 +937,10 @@ ERROR: Linking tessellation control stage: Types must match:
 
 Linked tessellation evaluation stage:
 
+ERROR: Linking tessellation evaluation stage: can't handle multiple entry points per stage
 ERROR: Linking tessellation evaluation stage: Multiple function bodies in multiple compilation units for the same signature in the same stage:
     main(
+ERROR: Linking tessellation evaluation stage: can't handle multiple entry points per stage
 ERROR: Linking tessellation evaluation stage: Contradictory input layout primitives
 ERROR: Linking tessellation evaluation stage: Contradictory input vertex spacing
 ERROR: Linking tessellation evaluation stage: Contradictory triangle ordering
