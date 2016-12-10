@@ -85,11 +85,13 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     if (unit.getNumEntryPoints() > 0) {
         if (getNumEntryPoints() > 0)
             error(infoSink, "can't handle multiple entry points per stage");
-        else
-            entryPointName = unit.entryPointName;
+        else {
+            entryPointName = unit.getEntryPointName();
+            entryPointMangledName = unit.getEntryPointMangledName();
+        }
     }
-    numEntryPoints += unit.numEntryPoints;
-    numErrors += unit.numErrors;
+    numEntryPoints += unit.getNumEntryPoints();
+    numErrors += unit.getNumErrors();
     numPushConstants += unit.numPushConstants;
     callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
 
