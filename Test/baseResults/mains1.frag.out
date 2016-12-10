@@ -58,10 +58,6 @@ max_vertices = -1
 input primitive = none
 output primitive = points
 ERROR: node is still EOpNull!
-0:3  Function Definition: foo( (global void)
-0:3    Function Parameters: 
-0:3  Function Definition: bar( (global void)
-0:3    Function Parameters: 
 0:?   Linker Objects
 Shader version: 110
 0:? Sequence

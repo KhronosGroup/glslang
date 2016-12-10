@@ -377,7 +377,7 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
 //
 // Also, lock in defaults of things not set, including array sizes.
 //
-void TIntermediate::finalCheck(TInfoSink& infoSink)
+void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
 {
     if (getTreeRoot() == nullptr)
         return;
@@ -394,7 +394,7 @@ void TIntermediate::finalCheck(TInfoSink& infoSink)
 
     // recursion and missing body checking
     checkCallGraphCycles(infoSink);
-    checkCallGraphBodies(infoSink);
+    checkCallGraphBodies(infoSink, keepUncalled);
 
     // overlap/alias/missing I/O, etc.
     inOutLocationCheck(infoSink);
@@ -583,23 +583,27 @@ void TIntermediate::checkCallGraphCycles(TInfoSink& infoSink)
 //
 // See which functions are reachable from the entry point and which have bodies.
 // Reachable ones with missing bodies are errors.
+// Unreachable bodies are dead code.
 //
-void TIntermediate::checkCallGraphBodies(TInfoSink& infoSink)
+void TIntermediate::checkCallGraphBodies(TInfoSink& infoSink, bool keepUncalled)
 {
     // Clear fields we'll use for this.
     for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
         call->visited = false;
         call->calleeBodyPosition = -1;
     }
-    
+
     // The top level of the AST includes function definitions (bodies).
     // Compare these to function calls in the call graph.
     // We'll end up knowing which have bodies, and if so,
     // how to map the call-graph node to the location in the AST.
     TIntermSequence &functionSequence = getTreeRoot()->getAsAggregate()->getSequence();
+    std::vector<bool> reachable(functionSequence.size(), true); // so that non-functions are reachable
     for (int f = 0; f < (int)functionSequence.size(); ++f) {
         glslang::TIntermAggregate* node = functionSequence[f]->getAsAggregate();
         if (node && (node->getOp() == glslang::EOpFunction)) {
+            if (node->getName().compare(getEntryPointMangledName().c_str()) != 0)
+                reachable[f] = false; // so that function bodies are unreachable, until proven otherwise
             for (TGraph::iterator call = callGraph.begin(); call != callGraph.end(); ++call) {
                 if (call->callee == node->getName())
                     call->calleeBodyPosition = f;
@@ -638,8 +642,20 @@ void TIntermediate::checkCallGraphBodies(TInfoSink& infoSink)
             if (call->calleeBodyPosition == -1) {
                 error(infoSink, "No function definition (body) found: ");
                 infoSink.info << "    " << call->callee << "\n";
-            }
+            } else
+                reachable[call->calleeBodyPosition] = true;
         }
+    }
+
+    // Bodies in the AST not reached by the call graph are dead;
+    // clear them out, since they can't be reached and also can't
+    // be translated further due to possibility of being ill defined.
+    if (! keepUncalled) {
+        for (int f = 0; f < (int)functionSequence.size(); ++f) {
+            if (! reachable[f])
+                functionSequence[f] = nullptr;
+        }
+        functionSequence.erase(std::remove(functionSequence.begin(), functionSequence.end(), nullptr), functionSequence.end());
     }
 }
 

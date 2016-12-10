@@ -69,25 +69,6 @@ Shader version: 450
 0:4    Function Parameters: 
 0:4    Sequence
 0:4      Function Call: bar( (global void)
-0:8  Function Definition: C(i1;i1; (global void)
-0:8    Function Parameters: 
-0:8      '' (in int)
-0:8      '' (in int)
-0:10  Function Definition: A( (global void)
-0:10    Function Parameters: 
-0:10    Sequence
-0:10      Function Call: B( (global void)
-0:10      Function Call: C(i1; (global void)
-0:10        Constant:
-0:10          1 (const int)
-0:10      Function Call: C(b1; (global void)
-0:10        Constant:
-0:10          true (const bool)
-0:10      Function Call: C(i1;i1; (global void)
-0:10        Constant:
-0:10          1 (const int)
-0:10        Constant:
-0:10          2 (const int)
 0:12  Function Definition: main( (global void)
 0:12    Function Parameters: 
 0:14    Sequence
