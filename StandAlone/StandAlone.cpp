@@ -83,7 +83,7 @@ enum TOptions {
     EOptionAutoMapBindings      = (1 << 19),
     EOptionFlattenUniformArrays = (1 << 20),
     EOptionNoStorageFormat      = (1 << 21),
-    EOptionKeepUncalled         = (1 << 21),
+    EOptionKeepUncalled         = (1 << 22),
 };
 
 //
