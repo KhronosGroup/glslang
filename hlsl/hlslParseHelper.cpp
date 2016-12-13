@@ -957,13 +957,13 @@ int HlslParseContext::addFlattenedMember(const TSourceLoc& loc,
         if (flattenData.nextBinding != TQualifier::layoutBindingEnd)
             memberVariable->getWritableType().getQualifier().layoutBinding = flattenData.nextBinding++;
 
-        flattenData.offsets.push_back(flattenData.members.size());
+        flattenData.offsets.push_back(static_cast<int>(flattenData.members.size()));
         flattenData.members.push_back(memberVariable);
 
         if (track)
             trackLinkageDeferred(*memberVariable);
 
-        return flattenData.offsets.size()-1; // location of the member reference
+        return static_cast<int>(flattenData.offsets.size())-1; // location of the member reference
     } else {
         // Further recursion required
         return flatten(loc, variable, type, flattenData, memberName);
@@ -985,7 +985,7 @@ int HlslParseContext::flattenStruct(const TSourceLoc& loc, const TVariable& vari
     auto members = *type.getStruct();
 
     // Reserve space for this tree level.
-    int start = flattenData.offsets.size();
+    int start = static_cast<int>(flattenData.offsets.size());
     int pos   = start;
     flattenData.offsets.resize(int(pos + members.size()), -1);
 
@@ -1022,7 +1022,7 @@ int HlslParseContext::flattenArray(const TSourceLoc& loc, const TVariable& varia
         name = variable.getName();
 
     // Reserve space for this tree level.
-    int start = flattenData.offsets.size();
+    int start = static_cast<int>(flattenData.offsets.size());
     int pos   = start;
     flattenData.offsets.resize(int(pos + size), -1);
 
@@ -4977,7 +4977,7 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
         return addConstructor(loc, initList, arrayType);
     } else if (type.isStruct()) {
         // lengthen list to be long enough
-        lengthenList(loc, initList->getSequence(), type.getStruct()->size());
+        lengthenList(loc, initList->getSequence(), static_cast<int>(type.getStruct()->size()));
 
         if (type.getStruct()->size() != initList->getSequence().size()) {
             error(loc, "wrong number of structure members", "initializer list", "");
