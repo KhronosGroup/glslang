@@ -185,6 +185,9 @@ protected:
 
     void inheritGlobalDefaults(TQualifier& dst) const;
     TVariable* makeInternalVariable(const char* name, const TType&) const;
+    TVariable* makeInternalVariable(const TString& name, const TType& type) const {
+        return makeInternalVariable(name.c_str(), type);
+    }
     TVariable* declareNonArray(const TSourceLoc&, TString& identifier, TType&, bool track);
     void declareArray(const TSourceLoc&, TString& identifier, const TType&, TSymbol*&, bool track);
     TIntermNode* executeInitializer(const TSourceLoc&, TIntermTyped* initializer, TVariable* variable);
@@ -197,7 +200,7 @@ protected:
 
     // Array and struct flattening
     bool shouldFlatten(const TType& type) const;
-    TIntermTyped* flattenAccess(const TSourceLoc&, TIntermTyped* base, int member);
+    TIntermTyped* flattenAccess(TIntermTyped* base, int member);
     bool shouldFlattenIO(const TType&) const;
     bool shouldFlattenUniform(const TType&) const;
     bool wasFlattened(const TIntermTyped* node) const;
@@ -205,10 +208,28 @@ protected:
     int  addFlattenedMember(const TSourceLoc& loc, const TVariable&, const TType&, TFlattenData&, const TString& name, bool track);
     bool isFinalFlattening(const TType& type) const { return !(type.isStruct() || type.isArray()); }
 
+    // Structure splitting (splits interstage builtin types into its own struct)
+    bool shouldSplit(const TSourceLoc& loc, const TType&);
+    TIntermTyped* splitAccess(const TSourceLoc& loc, TIntermTyped*& base, int& member);
+    TType& split(TType& type);
+    void split(TIntermTyped*);
+    void split(const TVariable&);
+    bool wasSplit(const TIntermTyped* node) const;
+    bool wasSplit(int id) const { return splitIoVars.find(id) != splitIoVars.end(); }
+    TVariable* getSplitIoVar(const TIntermTyped* node) const;
+    TVariable* getSplitIoVar(const TVariable* var) const;
+    TVariable* getSplitIoVar(int id) const;
+    void addInterstageIoToLinkage();
+
     void flatten(const TSourceLoc& loc, const TVariable& variable);
     int flatten(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
     int flattenStruct(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
     int flattenArray(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
+
+    // Type sanitization: return existing sanitized (temporary) type if there is one, else make new one.
+    TType* sanitizeType(TType*);
+
+    void finish(); // post-processing
 
     // Current state of parsing
     struct TPragma contextPragma;
@@ -274,6 +295,14 @@ protected:
     TMap<int, TFlattenData> flattenMap;
     TVector<int> flattenLevel;  // nested postfix operator level for flattening
     TVector<int> flattenOffset; // cumulative offset for flattening
+
+    // Sanitized type map.  During declarations we use the sanitized form of the type
+    // if it exists.
+    TMap<const TTypeList*, TType*> sanitizedTypeMap;
+
+    // Structure splitting data:
+    TMap<TBuiltInVariable, TVariable*> interstageIo; // new structure created for interstage IO from user structs.
+    TMap<int, TVariable*>              splitIoVars;  // individual flattened variables
 
     unsigned int nextInLocation;
     unsigned int nextOutLocation;

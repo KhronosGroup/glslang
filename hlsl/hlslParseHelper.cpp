@@ -658,7 +658,7 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
             if (index->getQualifier().storage != EvqConst)
                 error(loc, "Invalid variable index to flattened uniform array", base->getAsSymbolNode()->getName().c_str(), "");
 
-            result = flattenAccess(loc, base, indexValue);
+            result = flattenAccess(base, indexValue);
             flattened = (result != base);
         } else {
             if (index->getQualifier().storage == EvqConst) {
@@ -834,15 +834,21 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
             }
         }
         if (fieldFound) {
-            if (base->getAsSymbolNode() && (wasFlattened(base) || shouldFlatten(base->getType())))
-                result = flattenAccess(loc, base, member);
-            else {
-                if (base->getType().getQualifier().storage == EvqConst)
-                    result = intermediate.foldDereference(base, member, loc);
-                else {
-                    TIntermTyped* index = intermediate.addConstantUnion(member, loc);
-                    result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
-                    result->setType(*(*fields)[member].type);
+            if (base->getAsSymbolNode() && (wasFlattened(base) || shouldFlatten(base->getType()))) {
+                result = flattenAccess(base, member);
+            } else {
+                // Update the base and member to access if this was a split structure.
+                result = splitAccess(loc, base, member);
+                fields = base->getType().getStruct();
+
+                if (result == nullptr) {
+                    if (base->getType().getQualifier().storage == EvqConst)
+                        result = intermediate.foldDereference(base, member, loc);
+                    else {
+                        TIntermTyped* index = intermediate.addConstantUnion(member, loc);
+                        result = intermediate.addIndex(EOpIndexDirectStruct, base, index, loc);
+                        result->setType(*(*fields)[member].type);
+                    }
                 }
             }
         } else
@@ -851,6 +857,82 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
         error(loc, "does not apply to this type:", field.c_str(), base->getType().getCompleteString().c_str());
 
     return result;
+}
+
+// Determine whether we should split this structure
+bool HlslParseContext::shouldSplit(const TSourceLoc& loc, const TType& type)
+{
+    if (! inEntryPoint)
+        return false;
+
+    const TStorageQualifier qualifier = type.getQualifier().storage;
+
+    if (type.containsInterstageIO() && type.containsStructure())
+        error(loc, "structure splitting not yet supported on nested structures", "", "");
+
+    // If it contains interstage IO, but not ONLY interstage IO, split the struct.
+    return (type.containsInterstageIO() && !type.containsOnlyInterstageIO()) &&
+        (qualifier == EvqVaryingIn || qualifier == EvqVaryingOut);
+}
+
+// Split the type of the node into two structs:
+//   1. interstage IO
+//   2. everything else
+// IO members are put into the ioStruct.  The type is modified to remove them.
+void HlslParseContext::split(TIntermTyped* node)
+{
+    if (node == nullptr)
+        return;
+
+    TIntermSymbol* symNode = node->getAsSymbolNode();
+
+    if (symNode == nullptr)
+        return;
+
+    // Create a new variable:
+    splitIoVars[symNode->getId()] = makeInternalVariable(symNode->getName(), split(*symNode->getType().clone()));
+}
+
+// Split the type of the variable into two structs:
+void HlslParseContext::split(const TVariable& variable)
+{
+    const TType& type = variable.getType();
+
+    // Create a new variable:
+    splitIoVars[variable.getUniqueId()] = makeInternalVariable(variable.getName(), split(*type.clone()));
+}
+
+// Recursive implementation of split(const TVariable& variable).
+// Returns reference to the modified type.
+TType& HlslParseContext::split(TType& type)
+{
+    // We can ignore arrayness: it's uninvolved.
+    if (type.isStruct()) {
+        TTypeList* userStructure = type.getWritableStruct();
+ 
+        // Get iterator to (now at end) set of iterstage IO members
+        const auto firstIo = std::stable_partition(userStructure->begin(), userStructure->end(),
+                                                   [](const TTypeLoc& t) {return !t.type->isInterstageIO();});
+
+        // Move these to the IO.
+        for (auto ioType = firstIo; ioType != userStructure->end(); ++ioType) {
+            const TType& memberType = *ioType->type;
+            TVariable* ioVar = makeInternalVariable(memberType.getFieldName(), memberType);
+
+            // Merge qualifier from the user structure
+            mergeQualifiers(ioVar->getWritableType().getQualifier(), type.getQualifier());
+            interstageIo[memberType.getQualifier().builtIn] = ioVar;
+        }
+
+        // Erase the IO vars from the user structure.
+        userStructure->erase(firstIo, userStructure->end());
+
+        // Recurse further into the members.
+        for (unsigned int i = 0; i < userStructure->size(); ++i)
+            split(*(*userStructure)[i].type);
+    }
+
+    return type;
 }
 
 // Determine whether we should flatten an arbitrary type.
@@ -868,9 +950,16 @@ bool HlslParseContext::shouldFlattenIO(const TType& type) const
 
     const TStorageQualifier qualifier = type.getQualifier().storage;
 
-    return type.isStruct() &&
-           (qualifier == EvqVaryingIn ||
-            qualifier == EvqVaryingOut);
+    if (!type.isStruct())
+        return false;
+
+    // Regardless of stage, we flatten IO structs containing only interstage IO,
+    // to avoid degenerate structure splitting.
+    if (type.containsOnlyInterstageIO())
+        return true;
+
+    return ((language == EShLangVertex   && qualifier == EvqVaryingIn) ||
+            (language == EShLangFragment && qualifier == EvqVaryingOut));
 }
 
 // Is this a uniform array which should be flattened?
@@ -891,7 +980,7 @@ void HlslParseContext::flatten(const TSourceLoc& loc, const TVariable& variable)
     // emplace gives back a pair whose .first is an iterator to the item...
     auto entry = flattenMap.emplace(variable.getUniqueId(), 
                                     TFlattenData(type.getQualifier().layoutBinding));
-        
+
     // ... and the item is a map pair, so first->second is the TFlattenData itself.
     flatten(loc, variable, type, entry.first->second, "");
 }
@@ -926,11 +1015,11 @@ void HlslParseContext::flatten(const TSourceLoc& loc, const TVariable& variable)
 int HlslParseContext::flatten(const TSourceLoc& loc, const TVariable& variable, const TType& type,
                               TFlattenData& flattenData, TString name)
 {
-    // TODO: when struct splitting is in place we can remove this restriction.
+    // This should be handled by structure splitting, not flattening.
     if (language == EShLangGeometry) {
         const TType derefType(type, 0);
         if (!isFinalFlattening(derefType) && type.getQualifier().storage == EvqVaryingIn)
-            error(loc, "recursive type not yet supported in GS input", variable.getName().c_str(), "");
+            error(loc, "recursive type not supported in GS input", variable.getName().c_str(), "");
     }
 
     // If something is an arrayed struct, the array flattener will recursively call flatten()
@@ -953,7 +1042,7 @@ int HlslParseContext::addFlattenedMember(const TSourceLoc& loc,
 {
     if (isFinalFlattening(type)) {
         // This is as far as we flatten.  Insert the variable.
-        TVariable* memberVariable = makeInternalVariable(memberName.c_str(), type);
+        TVariable* memberVariable = makeInternalVariable(memberName, type);
         mergeQualifiers(memberVariable->getWritableType().getQualifier(), variable.getType().getQualifier());
 
         if (flattenData.nextBinding != TQualifier::layoutBindingEnd)
@@ -1043,16 +1132,22 @@ int HlslParseContext::flattenArray(const TSourceLoc& loc, const TVariable& varia
 // Return true if we have flattened this node.
 bool HlslParseContext::wasFlattened(const TIntermTyped* node) const
 {
-    return node != nullptr &&
-        node->getAsSymbolNode() != nullptr &&
+    return node != nullptr && node->getAsSymbolNode() != nullptr &&
         wasFlattened(node->getAsSymbolNode()->getId());
+}
+
+// Return true if we have split this structure
+bool HlslParseContext::wasSplit(const TIntermTyped* node) const
+{
+    return node != nullptr && node->getAsSymbolNode() != nullptr &&
+        wasSplit(node->getAsSymbolNode()->getId());
 }
 
 
 // Turn an access into an aggregate that was flattened to instead be
 // an access to the individual variable the member was flattened to.
 // Assumes shouldFlatten() or equivalent was called first.
-TIntermTyped* HlslParseContext::flattenAccess(const TSourceLoc&, TIntermTyped* base, int member)
+TIntermTyped* HlslParseContext::flattenAccess(TIntermTyped* base, int member)
 {
     const TType dereferencedType(base->getType(), member);  // dereferenced type
 
@@ -1075,6 +1170,75 @@ TIntermTyped* HlslParseContext::flattenAccess(const TSourceLoc&, TIntermTyped* b
         // If this is not the final flattening, accumulate the position and return
         // an object of the partially dereferenced type.
         return new TIntermSymbol(symbolNode.getId(), "flattenShadow", dereferencedType);
+    }
+}
+
+// Find and return the split IO TVariable for id, or nullptr if none.
+TVariable* HlslParseContext::getSplitIoVar(int id) const
+{
+    const auto splitIoVar = splitIoVars.find(id);
+
+    if (splitIoVar == splitIoVars.end())
+        return nullptr;
+
+    return splitIoVar->second;
+}
+
+// Find and return the split IO TVariable for variable, or nullptr if none.
+TVariable* HlslParseContext::getSplitIoVar(const TVariable* var) const
+{
+    if (var == nullptr)
+        return nullptr;
+
+    return getSplitIoVar(var->getUniqueId());
+}
+
+// Find and return the split IO TVariable for symbol in this node, or nullptr if none.
+TVariable* HlslParseContext::getSplitIoVar(const TIntermTyped* node) const
+{
+    if (node == nullptr)
+        return nullptr;
+
+    const TIntermSymbol* symbolNode = node->getAsSymbolNode();
+
+    if (symbolNode == nullptr)
+        return nullptr;
+
+    return getSplitIoVar(symbolNode->getId());
+}
+
+
+// Turn an access into an aggregate that was split to instead be
+// an access to either the modified variable, or one of the split
+// member variables.
+TIntermTyped* HlslParseContext::splitAccess(const TSourceLoc& loc, TIntermTyped*& base, int& member)
+{
+    // nothing to do
+    if (base == nullptr || base->getAsSymbolNode() == nullptr)
+        return nullptr;
+
+    const TVariable* splitIoVar = getSplitIoVar(base);
+
+    if (splitIoVar == nullptr)
+        return nullptr;
+
+    const TTypeList& members = *base->getType().getStruct();
+
+    if (members[member].type->isInterstageIO()) {
+        // It's one of the interstage IO variables we split out.
+        return intermediate.addSymbol(*interstageIo[members[member].type->getQualifier().builtIn], loc);
+    } else {
+        // It's not an IO variable.  Find the equivalent index into the new variable.
+        base = intermediate.addSymbol(*splitIoVar, loc);
+
+        int newMember = 0;
+        for (int m=0; m<member; ++m)
+            if (!members[m].type->isInterstageIO())
+                ++newMember;
+
+        member = newMember;
+
+        return nullptr;
     }
 }
 
@@ -1105,8 +1269,11 @@ void HlslParseContext::assignLocations(TVariable& variable)
         auto& memberList = flattenMap[variable.getUniqueId()].members;
         for (auto member = memberList.begin(); member != memberList.end(); ++member)
             assignLocation(**member);
-    } else
+    } else if (wasSplit(variable.getUniqueId())) {
+        assignLocation(*getSplitIoVar(&variable));
+    } else {
         assignLocation(variable);
+    }
 }
 
 //
@@ -1150,6 +1317,25 @@ TFunction& HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFu
     return function;
 }
 
+
+// Add interstage IO variables to the linkage in canonical order.
+void HlslParseContext::addInterstageIoToLinkage()
+{
+    if (inEntryPoint) {
+        std::vector<TBuiltInVariable> io;
+        io.reserve(interstageIo.size());
+
+        for (auto ioVar = interstageIo.begin(); ioVar != interstageIo.end(); ++ioVar)
+            io.push_back(ioVar->first);
+
+        // Our canonical order is the TBuiltInVariable value order.
+        std::sort(io.begin(), io.end());
+
+        for (int ioVar = 0; ioVar < int(io.size()); ++ioVar)
+            trackLinkageDeferred(*interstageIo[io[ioVar]]);
+    }
+}
+
 //
 // Handle seeing the function prototype in front of a function definition in the grammar.  
 // The body is handled after this function returns.
@@ -1188,6 +1374,8 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
         if (entryPointOutput) {
             if (shouldFlatten(entryPointOutput->getType()))
                 flatten(loc, *entryPointOutput);
+            if (shouldSplit(loc, entryPointOutput->getType()))
+                split(*entryPointOutput);
             assignLocations(*entryPointOutput);
         }
     } else
@@ -1215,7 +1403,15 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     for (int i = 0; i < function.getParamCount(); i++) {
         TParameter& param = function[i];
         if (param.name != nullptr) {
-            TVariable *variable = new TVariable(param.name, *param.type);
+            TType* sanitizedType;
+
+            // If we're not in the entry point, parameters are sanitized types.
+            if (inEntryPoint)
+                sanitizedType = param.type;
+            else
+                sanitizedType = sanitizeType(param.type);
+
+            TVariable *variable = new TVariable(param.name, *sanitizedType);
 
             // Insert the parameters with name in the symbol table.
             if (! symbolTable.insert(*variable))
@@ -1225,6 +1421,8 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
                 if (inEntryPoint) {
                     if (shouldFlatten(*param.type))
                         flatten(loc, *variable);
+                    if (shouldSplit(loc, *param.type))
+                        split(*variable);
                     assignLocations(*variable);
                 }
 
@@ -1239,6 +1437,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
         } else
             paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(*param.type, loc), loc);
     }
+
     intermediate.setAggregateOperator(paramNodes, EOpParameters, TType(EbtVoid), loc);
     loopNestingLevel = 0;
     controlFlowNestingLevel = 0;
@@ -1373,10 +1572,12 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
         return intermediate.addBranch(EOpReturn, value, loc);
 }
 
-void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermTyped*& arguments, TIntermTyped* newArg)
+void HlslParseContext::handleFunctionArgument(TFunction* function,
+                                              TIntermTyped*& arguments, TIntermTyped* newArg)
 {
     TParameter param = { 0, new TType };
     param.type->shallowCopy(newArg->getType());
+
     function->addParameter(param);
     if (arguments)
         arguments = intermediate.growAggregate(arguments, newArg);
@@ -1392,14 +1593,15 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     if (left == nullptr || right == nullptr)
         return nullptr;
 
-    const auto mustFlatten = [&](const TIntermTyped& node) {
-        return wasFlattened(&node) && node.getAsSymbolNode() &&
-               flattenMap.find(node.getAsSymbolNode()->getId()) != flattenMap.end();
-    };
+    const bool splitLeft    = wasSplit(left);
+    const bool splitRight   = wasSplit(right);
 
-    const bool flattenLeft = mustFlatten(*left);
-    const bool flattenRight = mustFlatten(*right);
-    if (! flattenLeft && ! flattenRight)
+    const bool flattenLeft  = wasFlattened(left);
+    const bool flattenRight = wasFlattened(right);
+
+    // OK to do a single assign if both are split, or both are unsplit.  But if one is and the other
+    // isn't, we fall back to a memberwise copy.
+    if (! flattenLeft && ! flattenRight && !splitLeft && !splitRight)
         return intermediate.addAssign(op, left, right, loc);
 
     TIntermAggregate* assignList = nullptr;
@@ -1456,11 +1658,15 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
     int memberIdx = 0;
 
-    const auto getMember = [&](bool flatten, TIntermTyped* node,
+    const auto getMember = [&](bool flatten, bool split, TIntermTyped* node,
                                const TVector<TVariable*>& memberVariables, int member,
                                TOperator op, const TType& memberType) -> TIntermTyped * {
         TIntermTyped* subTree;
-        if (flatten && isFinalFlattening(memberType)) {
+
+        if (split && memberType.isInterstageIO()) {
+            // copy from interstage IO variable if needed
+            subTree = intermediate.addSymbol(*interstageIo.find(memberType.getQualifier().builtIn)->second);
+        } else if (flatten && isFinalFlattening(memberType)) {
             subTree = intermediate.addSymbol(*memberVariables[memberIdx++]);
         } else {
             subTree = intermediate.addIndex(op, node, intermediate.addConstantUnion(member, loc), loc);
@@ -1469,6 +1675,21 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
         return subTree;
     };
+
+    // Use the proper RHS node: a new symbol from a TVariable, copy
+    // of an TIntermSymbol node, or sometimes the right node directly.
+    right = rhsTempVar   ? intermediate.addSymbol(*rhsTempVar, loc) :
+            cloneSymNode ? intermediate.addSymbol(*cloneSymNode) :
+            right;
+
+    TIntermTyped* leftVar  = left;
+    TIntermTyped* rightVar = right;
+    // If either left or right was a split structure, use the split form when reading and writing
+    if (splitLeft)
+        leftVar = intermediate.addSymbol(*getSplitIoVar(left), loc);
+
+    if (splitRight)
+        rightVar = intermediate.addSymbol(*getSplitIoVar(right), loc);
 
     // Cannot use auto here, because this is recursive, and auto can't work out the type without seeing the
     // whole thing.  So, we'll resort to an explicit type via std::function.
@@ -1483,9 +1704,9 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
             for (int element=0; element < left->getType().getOuterArraySize(); ++element) {
                     // Add a new AST symbol node if we have a temp variable holding a complex RHS.
-                TIntermTyped* subRight = getMember(flattenRight, right, *rightVariables, element,
+                TIntermTyped* subRight = getMember(flattenRight, splitRight, right, *rightVariables, element,
                                                    EOpIndexDirect, dereferencedType);
-                TIntermTyped* subLeft = getMember(flattenLeft, left, *leftVariables, element,
+                TIntermTyped* subLeft = getMember(flattenLeft, splitLeft, left, *leftVariables, element,
                                                   EOpIndexDirect, dereferencedType);
 
                 if (isFinalFlattening(dereferencedType))
@@ -1495,18 +1716,32 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
             }
         } else if (left->getType().isStruct()) {
             // struct case
-            const auto& members = *left->getType().getStruct();
+            const auto& membersL = *left->getType().getStruct();
+            const auto& membersR = *right->getType().getStruct();
 
-            for (int member = 0; member < (int)members.size(); ++member) {
-                TIntermTyped* subRight = getMember(flattenRight, right, *rightVariables, member,
-                                                   EOpIndexDirectStruct, *members[member].type);
-                TIntermTyped* subLeft = getMember(flattenLeft, left, *leftVariables, member,
-                                                  EOpIndexDirectStruct, *members[member].type);
+            // These track the members in the split structures corresponding to the same in the unsplit structures.
+            int memberL = 0;
+            int memberR = 0;
 
-                if (isFinalFlattening(*members[member].type))
-                    assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc), loc);
-                else
+            for (int member = 0; member < int(membersL.size()); ++member) {
+                const TType& typeL = *membersL[member].type;
+                const TType& typeR = *membersR[member].type;
+
+                TIntermTyped* subLeft = getMember(flattenLeft, splitLeft, leftVar, *leftVariables,
+                                                   memberL, EOpIndexDirectStruct, typeL);
+                TIntermTyped* subRight = getMember(flattenRight, splitRight, rightVar, *rightVariables,
+                                                   memberR, EOpIndexDirectStruct, typeR);
+
+                if (!isFinalFlattening(typeL)) {
+                    // TODO: if we're not flattening, that means we got here because of struct splitting, and 
+                    // we could copy whole sub-structures at once as long as they do not contain interstage IO themselves.
                     traverse(subLeft, subRight);
+                } else {
+                    assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc), loc);
+                }
+
+                memberL += (typeL.isInterstageIO() ? 0 : 1);
+                memberR += (typeR.isInterstageIO() ? 0 : 1);
             }
         } else {
             assert(0);  // we should never be called on a non-flattenable thing, because
@@ -1514,12 +1749,6 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         }
 
     };
-
-    // Use the proper RHS node: a new symbol from a TVariable, copy
-    // of an TIntermSymbol node, or sometimes the right node directly.
-    right = rhsTempVar   ? intermediate.addSymbol(*rhsTempVar, loc) :
-            cloneSymNode ? intermediate.addSymbol(*cloneSymNode) :
-            right;
 
     // This makes the whole assignment, recursing through subtypes as needed.
     traverse(left, right);
@@ -2214,9 +2443,9 @@ void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTy
             emit->setType(TType(EbtVoid));
 
             sequence = intermediate.growAggregate(sequence,
-                                                  intermediate.addAssign(EOpAssign, 
-                                                                         argAggregate->getSequence()[0]->getAsTyped(),
-                                                                         argAggregate->getSequence()[1]->getAsTyped(), loc),
+                                                  handleAssign(loc, EOpAssign, 
+                                                               argAggregate->getSequence()[0]->getAsTyped(),
+                                                               argAggregate->getSequence()[1]->getAsTyped()),
                                                   loc);
 
             sequence = intermediate.growAggregate(sequence, emit);
@@ -2819,7 +3048,7 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
             else
                 error(arg->getLoc(), "cannot convert input argument, argument", "", "%d", i);
         } else {
-            if (wasFlattened(arg)) {
+            if (wasFlattened(arg) || wasSplit(arg)) {
                 // Will make a two-level subtree.
                 // The deepest will copy member-by-member to build the structure to pass.
                 // The level above that will be a two-operand EOpComma sequence that follows the copy by the
@@ -4720,6 +4949,35 @@ void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier
         error(loc, "name already defined", "typedef", identifier.c_str());
 }
 
+// Type sanitization: return existing sanitized (temporary) type if there is one, else make new one.
+TType* HlslParseContext::sanitizeType(TType* type)
+{
+    // We only do this for structs.
+    if (!type->isStruct())
+        return type;
+
+    // Type sanitization: if this is declaring a variable of a type that contains
+    // interstage IO, we want to make it a temporary.
+    const auto sanitizedTypeIter = sanitizedTypeMap.find(type->getStruct());
+
+    if (sanitizedTypeIter != sanitizedTypeMap.end()) {
+        // We've sanitized this before.  Use that one.
+        return sanitizedTypeIter->second;
+    } else {
+        if (type->containsInterstageIO()) {
+            // This means the type contains interstage IO, but we've never encountered it before.
+            // Copy it, sanitize it, and remember it in the sanitizedTypeMap
+            TType* sanitizedType = type->clone();
+            sanitizedType->makeTemporary();
+            sanitizedTypeMap[type->getStruct()] = sanitizedType;
+            return sanitizedType;
+        } else {
+            // This means the type has no interstage IO, so we can use it as is.
+            return type;
+        }
+    }
+}
+
 //
 // Do everything necessary to handle a variable (non-block) declaration.
 // Either redeclaring a variable, or making a new one, updating the symbol
@@ -4742,21 +5000,29 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
     inheritGlobalDefaults(type.getQualifier());
 
     const bool flattenVar = shouldFlatten(type);
+    const bool splitVar   = shouldSplit(loc, type);
+
+    // Type sanitization: if this is declaring a variable of a type that contains
+    // interstage IO, we want to make it a temporary.
+    TType* sanitizedType = sanitizeType(&type);
 
     // Declare the variable
     if (type.isArray()) {
         // array case
-        declareArray(loc, identifier, type, symbol, !flattenVar);
+        declareArray(loc, identifier, *sanitizedType, symbol, !flattenVar);
     } else {
         // non-array case
         if (! symbol)
-            symbol = declareNonArray(loc, identifier, type, !flattenVar);
+            symbol = declareNonArray(loc, identifier, *sanitizedType, !flattenVar);
         else if (type != symbol->getType())
             error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
     }
 
     if (flattenVar)
         flatten(loc, *symbol->getAsVariable());
+
+    if (splitVar)
+        split(*symbol->getAsVariable());
 
     if (! symbol)
         return nullptr;
@@ -5791,5 +6057,14 @@ void HlslParseContext::renameShaderFunction(TString*& name) const
     if (name != nullptr && *name == sourceEntryPointName)
         name = new TString(intermediate.getEntryPointName().c_str());
 }
+
+// post-processing
+void HlslParseContext::finish()
+{
+    addInterstageIoToLinkage();
+
+    TParseContextBase::finish();
+}
+
 
 } // end namespace glslang
