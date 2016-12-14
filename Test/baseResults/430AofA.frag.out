@@ -766,34 +766,6 @@ ERROR: node is still EOpNull!
 0:84          5.000000
 0:85      Function Call: foo(f1[5][7]; (global 4-element array of 7-element array of float)
 0:85        'u' (temp 5-element array of 7-element array of float)
-0:88  Function Definition: foo3( (global void)
-0:88    Function Parameters: 
-0:?     Sequence
-0:91      Constant:
-0:91        1 (const int)
-0:92      move second child to first child (temp float)
-0:92        direct index (temp float)
-0:92          direct index (temp 7-element array of float)
-0:92            direct index (temp 5-element array of 7-element array of float)
-0:92              'resize1' (temp 3-element array of 5-element array of 7-element array of float)
-0:92              Constant:
-0:92                1 (const int)
-0:92            Constant:
-0:92              4 (const int)
-0:92          Constant:
-0:92            5 (const int)
-0:92        Constant:
-0:92          2.000000
-0:93      Constant:
-0:93        1 (const int)
-0:95      Constant:
-0:95        3 (const int)
-0:96      Constant:
-0:96        5 (const int)
-0:97      Constant:
-0:97        7 (const int)
-0:98      Constant:
-0:98        0.000000
 0:?   Linker Objects
 0:?     'many' (global 1-element array of 2-element array of 3-element array of 4-element array of 5-element array of 6-element array of float)
 0:?     'gu' (global 1-element array of 7-element array of float)
