@@ -2144,7 +2144,8 @@ void Builder::accessChainPushSwizzle(std::vector<unsigned>& swizzle, Id preSwizz
         std::vector<unsigned> oldSwizzle = accessChain.swizzle;
         accessChain.swizzle.resize(0);
         for (unsigned int i = 0; i < swizzle.size(); ++i) {
-            accessChain.swizzle.push_back(oldSwizzle[swizzle[i]]);
+            if (swizzle[i] < oldSwizzle.size())
+                accessChain.swizzle.push_back(oldSwizzle[swizzle[i]]);
         }
     } else
         accessChain.swizzle = swizzle;
