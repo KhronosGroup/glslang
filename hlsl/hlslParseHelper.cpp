@@ -579,8 +579,10 @@ TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, TSymbol* s
         }
 
         // Recovery, if it wasn't found or was not a variable.
-        if (! variable)
+        if (! variable) {
+            error(loc, "unknown variable", string->c_str(), "");
             variable = new TVariable(string, TType(EbtVoid));
+        }
 
         if (variable->getType().getQualifier().isFrontEndConstant())
             node = intermediate.addConstantUnion(variable->getConstArray(), variable->getType(), loc);
@@ -2781,7 +2783,7 @@ TIntermTyped* HlslParseContext::handleLengthMethod(const TSourceLoc& loc, TFunct
 //
 // Add any needed implicit conversions for function-call arguments to input parameters.
 //
-void HlslParseContext::addInputArgumentConversions(const TFunction& function, TIntermNode*& arguments) const
+void HlslParseContext::addInputArgumentConversions(const TFunction& function, TIntermNode*& arguments)
 {
     TIntermAggregate* aggregate = arguments->getAsAggregate();
     const auto setArg = [&](int argNum, TIntermNode* arg) {
@@ -2809,9 +2811,13 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
         if (*function[i].type != arg->getType()) {
             // In-qualified arguments just need an extra node added above the argument to
             // convert to the correct type.
-            arg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
-            arg = intermediate.addShapeConversion(EOpFunctionCall, *function[i].type, arg);
-            setArg(i, arg);
+            TIntermTyped* convArg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
+            if (convArg != nullptr)
+                convArg = intermediate.addShapeConversion(EOpFunctionCall, *function[i].type, convArg);
+            if (convArg != nullptr)
+                setArg(i, convArg);
+            else
+                error(arg->getLoc(), "cannot convert input argument, argument", "", "%d", i);
         } else {
             if (wasFlattened(arg)) {
                 // Will make a two-level subtree.
