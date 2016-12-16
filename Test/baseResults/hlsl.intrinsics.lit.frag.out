@@ -2,7 +2,7 @@ hlsl.intrinsics.lit.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:2  Function Definition: PixelShaderFunction(f1;f1;f1; (global void)
+0:2  Function Definition: PixelShaderFunction(f1;f1;f1; (temp void)
 0:2    Function Parameters: 
 0:2      'n_dot_l' (layout(location=0 ) in float)
 0:2      'n_dot_h' (layout(location=1 ) in float)
@@ -47,7 +47,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:2  Function Definition: PixelShaderFunction(f1;f1;f1; (global void)
+0:2  Function Definition: PixelShaderFunction(f1;f1;f1; (temp void)
 0:2    Function Parameters: 
 0:2      'n_dot_l' (layout(location=0 ) in float)
 0:2      'n_dot_h' (layout(location=1 ) in float)

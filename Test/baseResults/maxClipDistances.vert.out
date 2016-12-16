@@ -5,7 +5,6 @@ Shader version: 130
 0:5    Function Parameters: 
 0:?   Linker Objects
 0:?     'gl_ClipDistance' (smooth out 8-element array of float ClipDistance)
-0:?     'gl_ClipDistance' (smooth out 8-element array of float ClipDistance)
 0:?     'gl_VertexID' (gl_VertexId int VertexId)
 
 
@@ -17,7 +16,6 @@ Shader version: 130
 0:5  Function Definition: main( (global void)
 0:5    Function Parameters: 
 0:?   Linker Objects
-0:?     'gl_ClipDistance' (smooth out 8-element array of float ClipDistance)
 0:?     'gl_ClipDistance' (smooth out 8-element array of float ClipDistance)
 0:?     'gl_VertexID' (gl_VertexId int VertexId)
 

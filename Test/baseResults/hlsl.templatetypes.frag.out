@@ -2,7 +2,7 @@ hlsl.templatetypes.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:3  Function Definition: PixelShaderFunction( (global float)
+0:3  Function Definition: PixelShaderFunction( (temp float)
 0:3    Function Parameters: 
 0:?     Sequence
 0:4      Sequence
@@ -255,7 +255,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:3  Function Definition: PixelShaderFunction( (global float)
+0:3  Function Definition: PixelShaderFunction( (temp float)
 0:3    Function Parameters: 
 0:?     Sequence
 0:4      Sequence

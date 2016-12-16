@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.11)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-option(ENABLE_AMD_EXTENSIONS "Enables support of AMD-specific extensions" OFF)
+option(ENABLE_AMD_EXTENSIONS "Enables support of AMD-specific extensions" ON)
 
 enable_testing()
 

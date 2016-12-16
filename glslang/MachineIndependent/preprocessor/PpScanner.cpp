@@ -117,6 +117,10 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     int declen;
     int str_len;
     int isDouble = 0;
+#ifdef AMD_EXTENSIONS
+    int isFloat16 = 0;
+    bool enableFloat16 = parseContext.version >= 450 && parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float);
+#endif
 
     declen = 0;
 
@@ -200,6 +204,28 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                     len = 1,str_len=1;
                 }
             }
+#ifdef AMD_EXTENSIONS
+        } else if (enableFloat16 && (ch == 'h' || ch == 'H')) {
+            parseContext.float16Check(ppToken->loc, "half floating-point suffix");
+            if (!HasDecimalOrExponent)
+                parseContext.ppError(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
+            int ch2 = getChar();
+            if (ch2 != 'f' && ch2 != 'F') {
+                ungetChar();
+                ungetChar();
+            }
+            else {
+                if (len < MaxTokenLength) {
+                    str[len++] = (char)ch;
+                    str[len++] = (char)ch2;
+                    isFloat16 = 1;
+                }
+                else {
+                    parseContext.ppError(ppToken->loc, "float literal too long", "", "");
+                    len = 1, str_len = 1;
+                }
+            }
+#endif
         } else if (ch == 'f' || ch == 'F') {
             parseContext.profileRequires(ppToken->loc,  EEsProfile, 300, nullptr, "floating-point suffix");
             if (! parseContext.relaxedErrors())
@@ -222,6 +248,10 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
 
     if (isDouble)
         return PpAtomConstDouble;
+#ifdef AMD_EXTENSIONS
+    else if (isFloat16)
+        return PpAtomConstFloat16;
+#endif
     else
         return PpAtomConstFloat;
 }
@@ -744,6 +774,9 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
         case PpAtomConstInt64:
         case PpAtomConstUint64:
         case PpAtomConstDouble:
+#ifdef AMD_EXTENSIONS
+        case PpAtomConstFloat16:
+#endif
             tokenString = ppToken->name;
             break;
         case PpAtomConstString:

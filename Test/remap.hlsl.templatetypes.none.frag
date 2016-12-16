@@ -1,5 +1,5 @@
 
-float4 main(float4 input) : COLOR0
+float main(float4 input) : COLOR0
 {
     vector r00 = float4(1,2,3,4);  // vector means float4
     float4 r01 = vector(2,3,4,5);  // vector means float4

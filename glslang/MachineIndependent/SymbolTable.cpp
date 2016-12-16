@@ -60,6 +60,9 @@ void TType::buildMangledName(TString& mangledName)
     switch (basicType) {
     case EbtFloat:              mangledName += 'f';      break;
     case EbtDouble:             mangledName += 'd';      break;
+#ifdef AMD_EXTENSIONS
+    case EbtFloat16:            mangledName += "f16";    break;
+#endif
     case EbtInt:                mangledName += 'i';      break;
     case EbtUint:               mangledName += 'u';      break;
     case EbtInt64:              mangledName += "i64";    break;

@@ -54,14 +54,6 @@
 #include "Initializer.h"
 #include "Settings.h"
 
-// We need CMake to provide us the absolute path to the directory containing
-// test files, so we are certain to find those files no matter where the test
-// harness binary is generated. This provides out-of-source build capability.
-#ifndef GLSLANG_TEST_DIRECTORY
-#error \
-    "GLSLANG_TEST_DIRECTORY needs to be defined for gtest to locate test files."
-#endif
-
 namespace glslangtest {
 
 // This function is used to provide custom test name suffixes based on the
@@ -204,11 +196,14 @@ public:
     // the result and returns disassembly text.
     GlslangResult compileAndLink(
             const std::string shaderName, const std::string& code,
-            const std::string& entryPointName, EShMessages controls)
+            const std::string& entryPointName, EShMessages controls,
+            bool flattenUniformArrays = false)
     {
         const EShLanguage kind = GetShaderStage(GetSuffix(shaderName));
 
         glslang::TShader shader(kind);
+        shader.setFlattenUniformArrays(flattenUniformArrays);
+
         bool success = compile(&shader, code, entryPointName, controls);
 
         glslang::TProgram program;
@@ -244,16 +239,20 @@ public:
             const std::string& entryPointName, EShMessages controls,
             int baseSamplerBinding,
             int baseTextureBinding,
+            int baseImageBinding,
             int baseUboBinding,
-            bool autoMapBindings)
+            bool autoMapBindings,
+            bool flattenUniformArrays)
     {
         const EShLanguage kind = GetShaderStage(GetSuffix(shaderName));
 
         glslang::TShader shader(kind);
         shader.setShiftSamplerBinding(baseSamplerBinding);
         shader.setShiftTextureBinding(baseTextureBinding);
+        shader.setShiftImageBinding(baseImageBinding);
         shader.setShiftUboBinding(baseUboBinding);
         shader.setAutoMapBindings(autoMapBindings);
+        shader.setFlattenUniformArrays(flattenUniformArrays);
 
         bool success = compile(&shader, code, entryPointName, controls);
 
@@ -395,6 +394,32 @@ public:
                                     expectedOutputFname);
     }
 
+    void loadFileCompileFlattenUniformsAndCheck(const std::string& testDir,
+                                                const std::string& testName,
+                                                Source source,
+                                                Semantics semantics,
+                                                Target target,
+                                                const std::string& entryPointName="")
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedOutputFname =
+            testDir + "/baseResults/" + testName + ".out";
+        std::string input, expectedOutput;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
+
+        const EShMessages controls = DeriveOptions(source, semantics, target);
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, true);
+
+        // Generate the hybrid output in the way of glslangValidator.
+        std::ostringstream stream;
+        outputResultToStream(&stream, result, controls);
+
+        checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
+                                    expectedOutputFname);
+    }
+
     void loadFileCompileIoMapAndCheck(const std::string& testDir,
                                       const std::string& testName,
                                       Source source,
@@ -403,8 +428,10 @@ public:
                                       const std::string& entryPointName,
                                       int baseSamplerBinding,
                                       int baseTextureBinding,
+                                      int baseImageBinding,
                                       int baseUboBinding,
-                                      bool autoMapBindings)
+                                      bool autoMapBindings,
+                                      bool flattenUniformArrays)
     {
         const std::string inputFname = testDir + "/" + testName;
         const std::string expectedOutputFname =
@@ -416,8 +443,9 @@ public:
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result = compileLinkIoMap(testName, input, entryPointName, controls,
-                                                baseSamplerBinding, baseTextureBinding, baseUboBinding,
-                                                autoMapBindings);
+                                                baseSamplerBinding, baseTextureBinding, baseImageBinding, baseUboBinding,
+                                                autoMapBindings,
+                                                flattenUniformArrays);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
