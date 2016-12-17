@@ -472,7 +472,7 @@ bool TParseContextBase::insertGlobalUniformBlock()
 void TParseContextBase::finish()
 {
     if (!parsingBuiltins) {
-        // Transfer te linkage symbols to AST nodes
+        // Transfer the linkage symbols to AST nodes
         for (auto i = linkageSymbols.begin(); i != linkageSymbols.end(); ++i)
             intermediate.addSymbolLinkageNode(linkage, **i);
         intermediate.addSymbolLinkageNodes(linkage, getLanguage(), symbolTable);
