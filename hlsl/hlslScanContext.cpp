@@ -393,14 +393,14 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
 {
     do {
         parserToken = &token;
-        TPpToken ppToken;
-        tokenText = ppContext.tokenize(&ppToken);
+        TPpToken ppTokenVar;
+        tokenText = ppContext.tokenize(&ppTokenVar);
         if (tokenText == nullptr)
             return EHTokNone;
 
-        loc = ppToken.loc;
+        loc = ppTokenVar.loc;
         parserToken->loc = loc;
-        switch (ppToken.token) {
+        switch (ppTokenVar.token) {
         case ';':                       return EHTokSemicolon;
         case ',':                       return EHTokComma;
         case ':':                       return EHTokColon;
@@ -456,18 +456,18 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
         case PpAtomDecrement:          return EHTokDecOp;
         case PpAtomIncrement:          return EHTokIncOp;
 
-        case PpAtomConstInt:           parserToken->i = ppToken.ival;       return EHTokIntConstant;
-        case PpAtomConstUint:          parserToken->i = ppToken.ival;       return EHTokUintConstant;
-        case PpAtomConstFloat:         parserToken->d = ppToken.dval;       return EHTokFloatConstant;
-        case PpAtomConstDouble:        parserToken->d = ppToken.dval;       return EHTokDoubleConstant;
+        case PpAtomConstInt:           parserToken->i = ppTokenVar.ival;       return EHTokIntConstant;
+        case PpAtomConstUint:          parserToken->i = ppTokenVar.ival;       return EHTokUintConstant;
+        case PpAtomConstFloat:         parserToken->d = ppTokenVar.dval;       return EHTokFloatConstant;
+        case PpAtomConstDouble:        parserToken->d = ppTokenVar.dval;       return EHTokDoubleConstant;
         case PpAtomIdentifier:
         {
-            EHlslTokenClass token = tokenizeIdentifier();
-            return token;
+            EHlslTokenClass tokenVar = tokenizeIdentifier();
+            return tokenVar;
         }
 
         case PpAtomConstString: {
-            parserToken->string = NewPoolTString(ppToken.name);
+            parserToken->string = NewPoolTString(ppTokenVar.name);
             return EHTokStringConstant;
         }
 
@@ -475,7 +475,7 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
 
         default:
             char buf[2];
-            buf[0] = (char)ppToken.token;
+            buf[0] = (char)ppTokenVar.token;
             buf[1] = 0;
             parseContext.error(loc, "unexpected token", buf, "");
             break;

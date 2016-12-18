@@ -113,13 +113,13 @@ void HlslParseContext::setLimits(const TBuiltInResource& r)
 //
 // Returns true for successful acceptance of the shader, false if any errors.
 //
-bool HlslParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& input, bool versionWillBeError)
+bool HlslParseContext::parseShaderStrings(TPpContext& ppContextIn, TInputScanner& input, bool versionWillBeError)
 {
     currentScanner = &input;
-    ppContext.setInput(input, versionWillBeError);
+    ppContextIn.setInput(input, versionWillBeError);
 
-    HlslScanContext scanContext(*this, ppContext);
-    HlslGrammar grammar(scanContext, *this);
+    HlslScanContext scanContextVar(*this, ppContextIn);
+    HlslGrammar grammar(scanContextVar, *this);
     if (!grammar.parse()) {
         // Print a message formated such that if you click on the message it will take you right to
         // the line through most UIs.
@@ -3264,10 +3264,10 @@ void HlslParseContext::handlePackOffset(const TSourceLoc& loc, TQualifier& quali
 // 'profile' points to the shader_profile part, or nullptr if not present.
 // 'desc' is the type# part.
 //
-void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifier, const glslang::TString* profile,
+void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifier, const glslang::TString* profileIn,
                                       const glslang::TString& desc, int subComponent, const glslang::TString* spaceDesc)
 {
-    if (profile != nullptr)
+    if (profileIn != nullptr)
         warn(loc, "ignoring shader_profile", "register", "");
 
     if (desc.size() < 1) {

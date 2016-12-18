@@ -176,10 +176,10 @@ void TParseContext::setLimits(const TBuiltInResource& r)
 //
 // Returns true for successful acceptance of the shader, false if any errors.
 //
-bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& input, bool versionWillBeError)
+bool TParseContext::parseShaderStrings(TPpContext& ppContextIn, TInputScanner& input, bool versionWillBeError)
 {
     currentScanner = &input;
-    ppContext.setInput(input, versionWillBeError);
+    ppContextIn.setInput(input, versionWillBeError);
     yyparse(this);
 
     finish();
@@ -3395,14 +3395,14 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
 // Either redeclare the requested block, or give an error message why it can't be done.
 //
 // TODO: functionality: explicitly sizing members of redeclared blocks is not giving them an explicit size
-void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newTypeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes)
+void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newTypeList, const TString& blockNameIn, const TString* instanceName, TArraySizes* arraySizes)
 {
     const char* feature = "built-in block redeclaration";
     profileRequires(loc, EEsProfile, 0, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, feature);
     profileRequires(loc, ~EEsProfile, 410, E_GL_ARB_separate_shader_objects, feature);
 
-    if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment") {
-        error(loc, "cannot redeclare block: ", "block declaration", blockName.c_str());
+    if (blockNameIn != "gl_PerVertex" && blockNameIn != "gl_PerFragment") {
+        error(loc, "cannot redeclare block: ", "block declaration", blockNameIn.c_str());
         return;
     }
 
@@ -3432,7 +3432,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     // Built-in blocks cannot be redeclared more than once, which if happened,
     // we'd be finding the already redeclared one here, rather than the built in.
     if (! builtIn) {
-        error(loc, "can only redeclare a built-in block once, and before any use", blockName.c_str(), "");
+        error(loc, "can only redeclare a built-in block once, and before any use", blockNameIn.c_str(), "");
         return;
     }
 
@@ -3512,14 +3512,14 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     }
 
     if (numOriginalMembersFound < newTypeList.size())
-        error(loc, "block redeclaration has extra members", blockName.c_str(), "");
+        error(loc, "block redeclaration has extra members", blockNameIn.c_str(), "");
     if (type.isArray() != (arraySizes != nullptr))
-        error(loc, "cannot change arrayness of redeclared block", blockName.c_str(), "");
+        error(loc, "cannot change arrayness of redeclared block", blockNameIn.c_str(), "");
     else if (type.isArray()) {
         if (type.isExplicitlySizedArray() && arraySizes->getOuterSize() == UnsizedArraySize)
-            error(loc, "block already declared with size, can't redeclare as implicitly-sized", blockName.c_str(), "");
+            error(loc, "block already declared with size, can't redeclare as implicitly-sized", blockNameIn.c_str(), "");
         else if (type.isExplicitlySizedArray() && type.getArraySizes() != *arraySizes)
-            error(loc, "cannot change array size of redeclared block", blockName.c_str(), "");
+            error(loc, "cannot change array size of redeclared block", blockNameIn.c_str(), "");
         else if (type.isImplicitlySizedArray() && arraySizes->getOuterSize() != UnsizedArraySize)
             type.changeOuterArraySize(arraySizes->getOuterSize());
     }
@@ -4041,17 +4041,17 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         // "offset" can be for either
         //  - uniform offsets
         //  - atomic_uint offsets
-        const char* feature = "offset";
-        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
+        const char* featureVar = "offset";
+        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, featureVar);
         const char* exts[2] = { E_GL_ARB_enhanced_layouts, E_GL_ARB_shader_atomic_counters };
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 2, exts, feature);
-        profileRequires(loc, EEsProfile, 310, nullptr, feature);
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 2, exts, featureVar);
+        profileRequires(loc, EEsProfile, 310, nullptr, featureVar);
         publicType.qualifier.layoutOffset = value;
         return;
     } else if (id == "align") {
-        const char* feature = "uniform buffer-member align";
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts, feature);
+        const char* featureVar = "uniform buffer-member align";
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, featureVar);
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts, featureVar);
         // "The specified alignment must be a power of 2, or a compile-time error results."
         if (! IsPow2(value))
             error(loc, "must be a power of 2", "align", "");
@@ -4097,10 +4097,10 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         // capturing mode and hence responsible for describing the transform feedback 
         // setup."
         intermediate.setXfbMode();
-        const char* feature = "transform feedback qualifier";
-        requireStage(loc, (EShLanguageMask)(EShLangVertexMask | EShLangGeometryMask | EShLangTessControlMask | EShLangTessEvaluationMask), feature);
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts, feature);
+        const char* featureVar = "transform feedback qualifier";
+        requireStage(loc, (EShLanguageMask)(EShLangVertexMask | EShLangGeometryMask | EShLangTessControlMask | EShLangTessEvaluationMask), featureVar);
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, featureVar);
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts, featureVar);
         if (id == "xfb_buffer") {
             // "It is a compile-time error to specify an *xfb_buffer* that is greater than
             // the implementation-dependent constant gl_MaxTransformFeedbackBuffers."

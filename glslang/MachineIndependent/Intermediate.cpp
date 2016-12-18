@@ -1503,7 +1503,7 @@ bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/)
     return true;
 }
 
-void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage language, TSymbolTable& symbolTable)
+void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage languageIn, TSymbolTable& symbolTable)
 {
     // Add top-level nodes for declarations that must be checked cross
     // compilation unit by a linker, yet might not have been referenced
@@ -1526,7 +1526,7 @@ void TIntermediate::addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguag
     //    addSymbolLinkageNode(root, symbolTable, "gl_ModelViewProjectionMatrix");
     //}
 
-    if (language == EShLangVertex) {
+    if (languageIn == EShLangVertex) {
         // the names won't be found in the symbol table unless the versions are right,
         // so version logic does not need to be repeated here
         addSymbolLinkageNode(linkage, symbolTable, "gl_VertexID");

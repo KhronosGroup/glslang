@@ -2767,8 +2767,8 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
         }
 
         // LEFT_PAREN condition RIGHT_PAREN
-        TIntermTyped* condition;
-        if (! acceptParenExpression(condition))
+        TIntermTyped* conditionVar;
+        if (! acceptParenExpression(conditionVar))
             return false;
 
         if (! acceptTokenClass(EHTokSemicolon))
@@ -2776,7 +2776,7 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
 
         parseContext.unnestLooping();
 
-        statement = intermediate.addLoop(statement, condition, 0, false, loc);
+        statement = intermediate.addLoop(statement, conditionVar, 0, false, loc);
 
         return true;
 

@@ -115,10 +115,10 @@ public:
 
     virtual bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false) = 0;
 
-    virtual void notifyVersion(int line, int version, const char* type_string)
+    virtual void notifyVersion(int line, int versionIn, const char* type_string)
     {
         if (versionCallback)
-            versionCallback(line, version, type_string);
+            versionCallback(line, versionIn, type_string);
     }
     virtual void notifyErrorDirective(int line, const char* error_message)
     {
