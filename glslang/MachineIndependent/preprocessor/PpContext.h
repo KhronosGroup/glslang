@@ -92,17 +92,18 @@ namespace glslang {
 
 class TPpToken {
 public:
-    TPpToken() : token(0), space(false), ival(0), dval(0.0), atom(0)
+    TPpToken() : token(0), space(false), ival(0), dval(0.0), i64val(0), atom(0)
     {
         loc.init(); 
         name[0] = 0;
     }
 
+    // This is used for comparing macro definitions, so checks what is relevant for that.
     bool operator==(const TPpToken& right)
     {
-        return token == right.token && atom == right.atom &&
-               ival == right.ival && dval == right.dval &&
-               strcmp(name, right.name) == 0;
+        return token == right.token && space == right.space &&
+               ival == right.ival && dval == right.dval && i64val == right.i64val &&
+               strncmp(name, right.name, MaxTokenLength) == 0;
     }
     bool operator!=(const TPpToken& right) { return ! operator==(right); }
 
