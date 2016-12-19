@@ -129,6 +129,7 @@ public:
     void setPreamble(const char* preamble, size_t length);
 
     const char* tokenize(TPpToken* ppToken);
+    int tokenPaste(TPpToken&);
 
     class tInput {
     public:
@@ -138,6 +139,8 @@ public:
         virtual int scan(TPpToken*) = 0;
         virtual int getch() = 0;
         virtual void ungetch() = 0;
+        virtual bool peekPasting() { return false; }          // true when about to see ##
+        virtual bool endOfReplacementList() { return false; } // true when at the end of a macro replacement list (RHS of #define)
 
         // Will be called when we start reading tokens from this instance
         virtual void notifyActivated() {}
@@ -235,6 +238,8 @@ protected:
     }
     int  getChar() { return inputStack.back()->getch(); }
     void ungetChar() { inputStack.back()->ungetch(); }
+    bool peekPasting() { return !inputStack.empty() && inputStack.back()->peekPasting(); }
+    bool endOfReplacementList() { return inputStack.empty() || inputStack.back()->endOfReplacementList(); }
 
     static const int maxMacroArgs = 64;
     static const int maxIfNesting = 64;
@@ -245,18 +250,29 @@ protected:
 
     class tMacroInput : public tInput {
     public:
-        tMacroInput(TPpContext* pp) : tInput(pp) { }
+        tMacroInput(TPpContext* pp) : tInput(pp), prepaste(false), postpaste(false) { }
         virtual ~tMacroInput()
         {
             for (size_t i = 0; i < args.size(); ++i)
                 delete args[i];
+            for (size_t i = 0; i < expandedArgs.size(); ++i)
+                delete expandedArgs[i];
         }
 
         virtual int scan(TPpToken*);
         virtual int getch() { assert(0); return EndOfInput; }
         virtual void ungetch() { assert(0); }
+        bool peekPasting() override { return prepaste; }
+        bool endOfReplacementList() override { return mac->body->current >= mac->body->data.size(); }
+
         MacroSymbol *mac;
         TVector<TokenStream*> args;
+        TVector<TokenStream*> expandedArgs;
+
+    protected:
+        bool peekMacPasting();
+        bool prepaste;         // true if we are just before ##
+        bool postpaste;        // true if we are right after ##
     };
 
     class tMarkerInput : public tInput {
@@ -329,17 +345,19 @@ protected:
     void RecordToken(TokenStream* pTok, int token, TPpToken* ppToken);
     void RewindTokenStream(TokenStream *pTok);
     int ReadToken(TokenStream* pTok, TPpToken* ppToken);
-    void pushTokenStreamInput(TokenStream *ts);
+    void pushTokenStreamInput(TokenStream *ts, bool pasting = false);
     void UngetToken(int token, TPpToken* ppToken);
     
     class tTokenInput : public tInput {
     public:
-        tTokenInput(TPpContext* pp, TokenStream* t) : tInput(pp), tokens(t) { }
+        tTokenInput(TPpContext* pp, TokenStream* t, bool prepasting) : tInput(pp), tokens(t), lastTokenPastes(prepasting) { }
         virtual int scan(TPpToken *);
         virtual int getch() { assert(0); return EndOfInput; }
         virtual void ungetch() { assert(0); }
+        virtual bool peekPasting() override;
     protected:
         TokenStream *tokens;
+        bool lastTokenPastes;     // true if the last token in the input is to be pasted, rather than consumed as a token
     };
 
     class tUngotTokenInput : public tInput {

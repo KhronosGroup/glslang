@@ -160,7 +160,7 @@ void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
 }
 
 /*
-* Reset a token stream in preperation for reading.
+* Reset a token stream in preparation for reading.
 */
 void TPpContext::RewindTokenStream(TokenStream *pTok)
 {
@@ -187,9 +187,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
             if (lReadByte(pTok) == '#') {
                 parseContext.requireProfile(ppToken->loc, ~EEsProfile, "token pasting (##)");
                 parseContext.profileRequires(ppToken->loc, ~EEsProfile, 130, 0, "token pasting (##)");
-                parseContext.error(ppToken->loc, "token pasting not implemented (internal error)", "##", "");
-                //return PpAtomPaste;
-                return ReadToken(pTok, ppToken);
+                ltoken = PpAtomPaste;
             } else
                 lUnreadByte(pTok);
         }
@@ -279,9 +277,34 @@ int TPpContext::tTokenInput::scan(TPpToken* ppToken)
     return pp->ReadToken(tokens, ppToken);
 }
 
-void TPpContext::pushTokenStreamInput(TokenStream* ts)
+// We are pasting if the entire macro is preceding a pasting operator
+// (lastTokenPastes) and we are also on the last token.
+bool TPpContext::tTokenInput::peekPasting()
 {
-    pushInput(new tTokenInput(this, ts));
+    if (! lastTokenPastes)
+        return false;
+    // Getting here means the last token will be pasted.
+
+    // Are we at the last non-whitespace token?
+    size_t savePos = tokens->current;
+    bool moreTokens = false;
+    do {
+        int byte = pp->lReadByte(tokens);
+        if (byte == EndOfInput)
+            break;
+        if (byte != ' ') {
+            moreTokens = true;
+            break;
+        }
+    } while (true);
+    tokens->current = savePos;
+
+    return !moreTokens;
+}
+
+void TPpContext::pushTokenStreamInput(TokenStream* ts, bool prepasting)
+{
+    pushInput(new tTokenInput(this, ts, prepasting));
     RewindTokenStream(ts);
 }
 
