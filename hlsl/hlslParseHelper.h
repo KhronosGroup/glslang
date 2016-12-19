@@ -209,9 +209,10 @@ protected:
     bool isFinalFlattening(const TType& type) const { return !(type.isStruct() || type.isArray()); }
 
     // Structure splitting (splits interstage builtin types into its own struct)
-    bool shouldSplit(const TSourceLoc& loc, const TType&);
-    TIntermTyped* splitAccess(const TSourceLoc& loc, TIntermTyped*& base, int& member);
-    TType& split(TType& type);
+    bool shouldSplit(const TType&);
+    TIntermTyped* splitAccessStruct(const TSourceLoc& loc, TIntermTyped*& base, int& member);
+    void splitAccessArray(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index);
+    TType& split(TType& type, TString name, const TType* outerStructType = nullptr);
     void split(TIntermTyped*);
     void split(const TVariable&);
     bool wasSplit(const TIntermTyped* node) const;
@@ -301,8 +302,32 @@ protected:
     TMap<const TTypeList*, TType*> sanitizedTypeMap;
 
     // Structure splitting data:
-    TMap<TBuiltInVariable, TVariable*> interstageIo; // new structure created for interstage IO from user structs.
-    TMap<int, TVariable*>              splitIoVars;  // individual flattened variables
+    TMap<int, TVariable*>              splitIoVars;  // variables with the builtin interstage IO removed, indexed by unique ID.
+
+    // The builtin interstage IO map considers e.g, EvqPosition on input and output separately, so that we
+    // can build the linkage correctly if position appears on both sides.  Otherwise, multiple positions
+    // are considered identical.
+    struct tInterstageIoData {
+        tInterstageIoData(const TType& memberType, const TType& storageType) :
+            builtIn(memberType.getQualifier().builtIn),
+            storage(storageType.getQualifier().storage) { }
+
+        TBuiltInVariable  builtIn;
+        TStorageQualifier storage;
+
+        // ordering for maps
+        bool operator<(const tInterstageIoData d) const {
+            return (builtIn != d.builtIn) ? (builtIn < d.builtIn) : (storage < d.storage);
+        }
+    };
+
+    TMap<tInterstageIoData, TVariable*> interstageBuiltInIo; // individual builtin interstage IO vars, inxed by builtin type.
+
+    // We have to move array references to structs containing builtin interstage IO to the split variables.
+    // This is only handled for one level.  This stores the index, because we'll need it in the future, since
+    // unlike normal array references, here the index happens before we discover what it applies to.
+    TIntermTyped* builtInIoIndex;
+    TIntermTyped* builtInIoBase;
 
     unsigned int nextInLocation;
     unsigned int nextOutLocation;

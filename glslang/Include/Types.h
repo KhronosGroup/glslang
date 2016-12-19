@@ -1320,7 +1320,7 @@ public:
     virtual bool isSubpass() const { return basicType == EbtSampler && getSampler().isSubpass(); }
 
     // Return true if this is interstage IO
-    virtual bool isInterstageIO() const
+    virtual bool isBuiltInInterstageIO() const
     {
         switch (getQualifier().builtIn) {
         case EbvPosition:
@@ -1401,28 +1401,28 @@ public:
     }
 
     // Recursively checks if the type contains an interstage IO builtin
-    virtual bool containsInterstageIO() const
+    virtual bool containsBuiltInInterstageIO() const
     {
-        if (isInterstageIO())
+        if (isBuiltInInterstageIO())
             return true;
 
         if (! structure)
             return false;
         for (unsigned int i = 0; i < structure->size(); ++i) {
-            if ((*structure)[i].type->containsInterstageIO())
+            if ((*structure)[i].type->containsBuiltInInterstageIO())
                 return true;
         }
         return false;
     }
 
     // Recursively checks whether a struct contains only interstage IO
-    virtual bool containsOnlyInterstageIO() const
+    virtual bool containsOnlyBuiltInInterstageIO() const
     {
         if (! structure)
-            return isInterstageIO();
+            return isBuiltInInterstageIO();
 
         for (unsigned int i = 0; i < structure->size(); ++i) {
-            if (!(*structure)[i].type->containsOnlyInterstageIO())
+            if (!(*structure)[i].type->containsOnlyBuiltInInterstageIO())
                 return false;
         }
         return true;
