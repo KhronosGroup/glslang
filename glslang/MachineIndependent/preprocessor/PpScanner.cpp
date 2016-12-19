@@ -739,6 +739,11 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
     for(;;) {
         token = scanToken(ppToken);
         ppToken->token = token;
+
+        // Handle token-pasting logic
+        token = tokenPaste(*ppToken);
+        ppToken->token = token;
+
         if (token == EndOfInput) {
             missingEndifCheck();
             return nullptr;
@@ -798,6 +803,47 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
         if (tokenString)
             return tokenString;
     }
+}
+
+//
+// Do all token-pasting related combining of two pasted tokens when getting a
+// stream of tokens from a replacement list. Degenerates to no processing if a
+// replacement list is not the source of the token stream.
+//
+int TPpContext::tokenPaste(TPpToken& ppToken)
+{
+    // starting with ## is illegal, skip to next token
+    if (ppToken.token == PpAtomPaste) {
+        parseContext.ppError(ppToken.loc, "unexpected location", "##", "");
+        ppToken.token = scanToken(&ppToken);
+    }
+
+    // ## can be chained, process all in the chain at once
+    while (peekPasting()) {
+        TPpToken pastedPpToken;
+
+        // next token has to be ##
+        pastedPpToken.token = scanToken(&pastedPpToken);
+        assert(pastedPpToken.token == PpAtomPaste);
+
+        if (endOfReplacementList()) {
+            parseContext.ppError(ppToken.loc, "unexpected location; end of replacement list", "##", "");
+            break;
+        }
+
+        // get the token after the ##
+        scanToken(&pastedPpToken);
+
+        // combine the tokens
+        if (strlen(ppToken.name) + strlen(pastedPpToken.name) > MaxTokenLength)
+            parseContext.ppError(ppToken.loc, "combined tokens are too long", "##", "");
+        strncat(ppToken.name, pastedPpToken.name, MaxTokenLength - strlen(ppToken.name));
+        ppToken.atom = LookUpAddString(ppToken.name);
+        if (ppToken.token != PpAtomIdentifier)
+            parseContext.ppError(ppToken.loc, "only supported for preprocessing identifiers", "##", "");
+    }
+
+    return ppToken.token;
 }
 
 // Checks if we've seen balanced #if...#endif
