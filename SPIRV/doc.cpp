@@ -51,6 +51,9 @@ namespace spv {
 #ifdef AMD_EXTENSIONS
         #include "GLSL.ext.AMD.h"
 #endif
+#ifdef NV_EXTENSIONS
+        #include "GLSL.ext.NV.h"
+#endif
     }
 }
 
@@ -255,6 +258,9 @@ const char* DecorationString(int decoration)
 
 #ifdef AMD_EXTENSIONS
     case 4999: return "ExplicitInterpAMD";
+#endif
+#ifdef NV_EXTENSIONS
+    case 5248: return "OverrideCoverageNV";
 #endif
     }
 }
