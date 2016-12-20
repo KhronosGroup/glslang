@@ -47,6 +47,9 @@ namespace spv {
 #ifdef AMD_EXTENSIONS
     #include "GLSL.ext.AMD.h"
 #endif
+#ifdef NV_EXTENSIONS
+    #include "GLSL.ext.NV.h"
+#endif
 }
 
 // Glslang includes
@@ -435,6 +438,7 @@ spv::Decoration TranslateNoContractionDecoration(const glslang::TQualifier& qual
     else
         return spv::DecorationMax;
 }
+
 
 // Translate a glslang built-in variable to a SPIR-V built in decoration.  Also generate
 // associated capabilities when required.  For some built-in variables, a capability
@@ -4720,6 +4724,21 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     spv::BuiltIn builtIn = TranslateBuiltInDecoration(symbol->getQualifier().builtIn, false);
     if (builtIn != spv::BuiltInMax)
         addDecoration(id, spv::DecorationBuiltIn, (int)builtIn);
+
+#ifdef NV_EXTENSIONS 
+    if (builtIn == spv::BuiltInSampleMask) {
+          spv::Decoration decoration;
+          // GL_NV_sample_mask_override_coverage extension
+          if (glslangIntermediate->getLayoutOverrideCoverage())
+              decoration = (spv::Decoration)spv::OverrideCoverageNV;
+          else
+              decoration = (spv::Decoration)spv::DecorationMax;
+        addDecoration(id, decoration);
+        if (decoration != spv::DecorationMax) {
+            builder.addExtension(spv::E_SPV_NV_sample_mask_override_coverage);
+        }
+    }
+#endif
 
     return id;
 }
