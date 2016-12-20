@@ -95,32 +95,32 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace glslang {
 
-void TPpContext::lAddByte(TokenStream *fTok, unsigned char fVal)
+void TPpContext::lAddByte(TokenStream& fTok, unsigned char fVal)
 {
-    fTok->data.push_back(fVal);
+    fTok.data.push_back(fVal);
 }
 
 /*
 * Get the next byte from a stream.
 */
-int TPpContext::lReadByte(TokenStream *pTok)
+int TPpContext::lReadByte(TokenStream& pTok)
 {
-    if (pTok->current < pTok->data.size())
-        return pTok->data[pTok->current++];
+    if (pTok.current < pTok.data.size())
+        return pTok.data[pTok.current++];
     else
         return EndOfInput;
 }
 
-void TPpContext::lUnreadByte(TokenStream *pTok)
+void TPpContext::lUnreadByte(TokenStream& pTok)
 {
-    if (pTok->current > 0)
-        --pTok->current;
+    if (pTok.current > 0)
+        --pTok.current;
 }
 
 /*
 * Add a token to the end of a list for later playback.
 */
-void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
+void TPpContext::RecordToken(TokenStream& pTok, int token, TPpToken* ppToken)
 {
     const char* s;
     char* str = NULL;
@@ -162,15 +162,15 @@ void TPpContext::RecordToken(TokenStream *pTok, int token, TPpToken* ppToken)
 /*
 * Reset a token stream in preparation for reading.
 */
-void TPpContext::RewindTokenStream(TokenStream *pTok)
+void TPpContext::RewindTokenStream(TokenStream& pTok)
 {
-    pTok->current = 0;
+    pTok.current = 0;
 }
 
 /*
 * Read the next token from a token stream (not the source stream, but stream used to hold a tokenized macro).
 */
-int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
+int TPpContext::ReadToken(TokenStream& pTok, TPpToken *ppToken)
 {
     char* tokenText = ppToken->name;
     int ltoken, len;
@@ -183,7 +183,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
     switch (ltoken) {
     case '#':
         // Check for ##, unless the current # is the last character
-        if (pTok->current < pTok->data.size()) {
+        if (pTok.current < pTok.data.size()) {
             if (lReadByte(pTok) == '#') {
                 parseContext.requireProfile(ppToken->loc, ~EEsProfile, "token pasting (##)");
                 parseContext.profileRequires(ppToken->loc, ~EEsProfile, 130, 0, "token pasting (##)");
@@ -274,7 +274,7 @@ int TPpContext::ReadToken(TokenStream *pTok, TPpToken *ppToken)
 
 int TPpContext::tTokenInput::scan(TPpToken* ppToken)
 {
-    return pp->ReadToken(tokens, ppToken);
+    return pp->ReadToken(*tokens, ppToken);
 }
 
 // We are pasting if the entire macro is preceding a pasting operator
@@ -289,7 +289,7 @@ bool TPpContext::tTokenInput::peekPasting()
     size_t savePos = tokens->current;
     bool moreTokens = false;
     do {
-        int byte = pp->lReadByte(tokens);
+        int byte = pp->lReadByte(*tokens);
         if (byte == EndOfInput)
             break;
         if (byte != ' ') {
@@ -302,9 +302,9 @@ bool TPpContext::tTokenInput::peekPasting()
     return !moreTokens;
 }
 
-void TPpContext::pushTokenStreamInput(TokenStream* ts, bool prepasting)
+void TPpContext::pushTokenStreamInput(TokenStream& ts, bool prepasting)
 {
-    pushInput(new tTokenInput(this, ts, prepasting));
+    pushInput(new tTokenInput(this, &ts, prepasting));
     RewindTokenStream(ts);
 }
 

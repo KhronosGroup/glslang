@@ -172,39 +172,27 @@ public:
         size_t current;
     };
 
-    struct MemoryPool {
-        struct chunk        *next;
-        uintptr_t           free, end;
-        size_t              chunksize;
-        uintptr_t           alignmask;
-    };
-
     //
     // From Pp.cpp
     //
 
     struct MacroSymbol {
-        MacroSymbol() : argc(0), args(0), body(0), busy(0), undef(0) { }
-        int argc;
-        int *args;
-        TokenStream *body;
-        unsigned busy:1;
-        unsigned undef:1;
+        MacroSymbol() : emptyArgs(0), busy(0), undef(0) { }
+        TVector<int> args;
+        TokenStream body;
+        unsigned emptyArgs : 1;
+        unsigned busy      : 1;
+        unsigned undef     : 1;
     };
 
-    struct Symbol {
-        int atom;
-        MacroSymbol mac;
-    };
-
-    struct SymbolList {
-        struct SymbolList_Rec *next;
-        Symbol *symb;
-    };
-
-    MemoryPool *pool;
-    typedef TMap<int, Symbol*> TSymbolMap;
-    TSymbolMap symbols; // this has light use... just defined macros
+    typedef TMap<int, MacroSymbol> TSymbolMap;
+    TSymbolMap macroDefs;  // map atoms to macro definitions
+    MacroSymbol* lookupMacroDef(int atom)
+    {
+        auto existingMacroIt = macroDefs.find(atom);
+        return (existingMacroIt == macroDefs.end()) ? nullptr : &(existingMacroIt->second);
+    }
+    void addMacroDef(int atom, MacroSymbol& macroDef) { macroDefs[atom] = macroDef; }
 
 protected:
     TPpContext(TPpContext&);
@@ -242,7 +230,6 @@ protected:
     bool peekPasting() { return !inputStack.empty() && inputStack.back()->peekPasting(); }
     bool endOfReplacementList() { return inputStack.empty() || inputStack.back()->endOfReplacementList(); }
 
-    static const int maxMacroArgs = 64;
     static const int maxIfNesting = 64;
 
     int ifdepth;                  // current #if-#else-#endif nesting in the cpp.c file (pre-processor)    
@@ -264,7 +251,7 @@ protected:
         virtual int getch() { assert(0); return EndOfInput; }
         virtual void ungetch() { assert(0); }
         bool peekPasting() override { return prepaste; }
-        bool endOfReplacementList() override { return mac->body->current >= mac->body->data.size(); }
+        bool endOfReplacementList() override { return mac->body.current >= mac->body.data.size(); }
 
         MacroSymbol *mac;
         TVector<TokenStream*> args;
@@ -311,7 +298,6 @@ protected:
     // Used to obtain #include content.
     TShader::Includer& includer;
 
-    int InitCPP();
     int CPPdefine(TPpToken * ppToken);
     int CPPundef(TPpToken * ppToken);
     int CPPelse(int matchelse, TPpToken * ppToken);
@@ -327,27 +313,20 @@ protected:
     int CPPversion(TPpToken * ppToken);
     int CPPextension(TPpToken * ppToken);
     int readCPPline(TPpToken * ppToken);
-    TokenStream* PrescanMacroArg(TokenStream *a, TPpToken * ppToken, bool newLineOkay);
+    TokenStream* PrescanMacroArg(TokenStream&, TPpToken*, bool newLineOkay);
     int MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool newLineOkay);
-
-    //
-    // from PpSymbols.cpp
-    //
-    Symbol *NewSymbol(int name);
-    Symbol *AddSymbol(int atom);
-    Symbol *LookUpSymbol(int atom);
 
     //
     // From PpTokens.cpp
     //
-    void lAddByte(TokenStream *fTok, unsigned char fVal);
-    int lReadByte(TokenStream *pTok);
-    void lUnreadByte(TokenStream *pTok);
-    void RecordToken(TokenStream* pTok, int token, TPpToken* ppToken);
-    void RewindTokenStream(TokenStream *pTok);
-    int ReadToken(TokenStream* pTok, TPpToken* ppToken);
-    void pushTokenStreamInput(TokenStream *ts, bool pasting = false);
-    void UngetToken(int token, TPpToken* ppToken);
+    void lAddByte(TokenStream&, unsigned char fVal);
+    int lReadByte(TokenStream&);
+    void lUnreadByte(TokenStream&);
+    void RecordToken(TokenStream&, int token, TPpToken* ppToken);
+    void RewindTokenStream(TokenStream&);
+    int ReadToken(TokenStream&, TPpToken*);
+    void pushTokenStreamInput(TokenStream&, bool pasting = false);
+    void UngetToken(int token, TPpToken*);
     
     class tTokenInput : public tInput {
     public:
@@ -357,7 +336,7 @@ protected:
         virtual void ungetch() { assert(0); }
         virtual bool peekPasting() override;
     protected:
-        TokenStream *tokens;
+        TokenStream* tokens;
         bool lastTokenPastes;     // true if the last token in the input is to be pasted, rather than consumed as a token
     };
 
@@ -535,7 +514,6 @@ protected:
         tStringInput stringInput;
     };
 
-    int InitScanner();
     int ScanFromString(char* s);
     void missingEndifCheck();
     int lFloatConst(int len, int ch, TPpToken* ppToken);
@@ -576,14 +554,6 @@ protected:
     void AddAtomFixed(const char* s, int atom);
     int LookUpAddString(const char* s);
     const char* GetAtomString(int atom);
-
-    //
-    // From PpMemory.cpp
-    //
-    MemoryPool *mem_CreatePool(size_t chunksize, unsigned align);
-    void mem_FreePool(MemoryPool*);
-    void *mem_Alloc(MemoryPool* p, size_t size);
-    int mem_AddCleanup(MemoryPool* p, void (*fn)(void *, void*), void* arg1, void* arg2);
 };
 
 } // end namespace glslang
