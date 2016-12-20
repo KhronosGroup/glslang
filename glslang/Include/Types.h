@@ -599,6 +599,9 @@ public:
         layoutFormat = ElfNone;
 
         layoutPushConstant = false;
+#ifdef NV_EXTENSIONS
+        layoutPassthrough = false;
+#endif
     }
     bool hasLayout() const
     {
@@ -651,6 +654,10 @@ public:
     TLayoutFormat layoutFormat                         :  8;
 
     bool layoutPushConstant;
+
+#ifdef NV_EXTENSIONS
+    bool layoutPassthrough;
+#endif
 
     bool hasUniformLayout() const
     {
@@ -1536,6 +1543,12 @@ public:
                     p += snprintf(p, end - p, "constant_id=%d ", qualifier.layoutSpecConstantId);
                 if (qualifier.layoutPushConstant)
                     p += snprintf(p, end - p, "push_constant ");
+
+#ifdef NV_EXTENSIONS
+                if (qualifier.layoutPassthrough)
+                    p += snprintf(p, end - p, "passthrough ");
+#endif
+
 
                 p += snprintf(p, end - p, ") ");
             }

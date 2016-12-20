@@ -261,6 +261,7 @@ const char* DecorationString(int decoration)
 #endif
 #ifdef NV_EXTENSIONS
     case 5248: return "OverrideCoverageNV";
+    case 5250: return "PassthroughNV";
 #endif
     }
 }
@@ -818,6 +819,11 @@ const char* CapabilityString(int info)
 
     case 4423: return "SubgroupBallotKHR";
     case 4427: return "DrawParameters";
+
+#ifdef NV_EXTENSIONS
+    case 5251: return "GeometryShaderPassthroughNV";
+#endif
+
     }
 }
 

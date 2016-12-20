@@ -216,6 +216,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.forwardFun.frag",
         "spv.functionCall.frag",
         "spv.functionSemantics.frag",
+        "spv.GeometryShaderPassthrough.geom",
         "spv.interpOps.frag",
         "spv.int64.frag",
         "spv.layoutNested.vert",

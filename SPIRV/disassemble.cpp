@@ -481,7 +481,8 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
                     extInstSet = GLSLextAMDInst;
 #endif
 #ifdef NV_EXTENSIONS
-                } else if (strcmp(spv::E_SPV_NV_sample_mask_override_coverage, name) == 0) {
+                }else if (strcmp(spv::E_SPV_NV_sample_mask_override_coverage, name) == 0 ||
+                          strcmp(spv::E_SPV_NV_geometry_shader_passthrough, name) == 0) {
                     extInstSet = GLSLextNVInst;
 #endif
                 }
@@ -654,10 +655,13 @@ static const char* GLSLextAMDGetDebugNames(const char* name, unsigned entrypoint
 #ifdef NV_EXTENSIONS
 static const char* GLSLextNVGetDebugNames(const char* name, unsigned entrypoint)
 {
-    if (strcmp(name, spv::E_SPV_NV_sample_mask_override_coverage) == 0) {
+    if (strcmp(name, spv::E_SPV_NV_sample_mask_override_coverage) == 0 ||
+        strcmp(name, spv::E_SPV_NV_geometry_shader_passthrough) == 0) {
         switch (entrypoint) {
-        case OverrideCoverageNV:    return "OverrideCoverageNV";
-        default:                    return "Bad";
+        case OverrideCoverageNV:          return "OverrideCoverageNV";
+        case PassthroughNV:               return "PassthroughNV";
+        case GeometryShaderPassthroughNV: return "GeometryShaderPassthroughNV";
+        default:                          return "Bad";
         }
     }
     return "Bad";
