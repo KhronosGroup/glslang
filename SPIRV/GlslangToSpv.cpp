@@ -4131,7 +4131,8 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
     spv::Op opCode = spv::OpNop;
 
     std::vector<spv::Id> spvGroupOperands;
-    if (op == glslang::EOpBallot || op == glslang::EOpReadFirstInvocation) {
+    if (op == glslang::EOpBallot || op == glslang::EOpReadFirstInvocation ||
+        op == glslang::EOpReadInvocation) {
         builder.addExtension(spv::E_SPV_KHR_shader_ballot);
         builder.addCapability(spv::CapabilitySubgroupBallotKHR);
     } else {
@@ -4171,7 +4172,7 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
     }
 
     case glslang::EOpReadInvocation:
-        opCode = spv::OpGroupBroadcast;
+        opCode = spv::OpSubgroupReadInvocationKHR;
         if (builder.isVectorType(typeId))
             return CreateInvocationsVectorOperation(opCode, typeId, operands);
         break;
@@ -4283,13 +4284,15 @@ spv::Id TGlslangToSpvTraverser::CreateInvocationsVectorOperation(spv::Op op, spv
     assert(op == spv::OpGroupFMin || op == spv::OpGroupUMin || op == spv::OpGroupSMin ||
            op == spv::OpGroupFMax || op == spv::OpGroupUMax || op == spv::OpGroupSMax ||
            op == spv::OpGroupFAdd || op == spv::OpGroupIAdd || op == spv::OpGroupBroadcast ||
+           op == spv::OpSubgroupReadInvocationKHR ||
            op == spv::OpGroupFMinNonUniformAMD || op == spv::OpGroupUMinNonUniformAMD || op == spv::OpGroupSMinNonUniformAMD ||
            op == spv::OpGroupFMaxNonUniformAMD || op == spv::OpGroupUMaxNonUniformAMD || op == spv::OpGroupSMaxNonUniformAMD ||
            op == spv::OpGroupFAddNonUniformAMD || op == spv::OpGroupIAddNonUniformAMD);
 #else
     assert(op == spv::OpGroupFMin || op == spv::OpGroupUMin || op == spv::OpGroupSMin ||
            op == spv::OpGroupFMax || op == spv::OpGroupUMax || op == spv::OpGroupSMax ||
-           op == spv::OpGroupFAdd || op == spv::OpGroupIAdd || op == spv::OpGroupBroadcast);
+           op == spv::OpGroupFAdd || op == spv::OpGroupIAdd || op == spv::OpGroupBroadcast ||
+           op == spv::OpSubgroupReadInvocationKHR);
 #endif
 
     // Handle group invocation operations scalar by scalar.
@@ -4309,13 +4312,16 @@ spv::Id TGlslangToSpvTraverser::CreateInvocationsVectorOperation(spv::Op op, spv
         std::vector<unsigned int> indexes;
         indexes.push_back(comp);
         spv::Id scalar = builder.createCompositeExtract(operands[0], scalarType, indexes);
-
         std::vector<spv::Id> spvGroupOperands;
-        spvGroupOperands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
-        if (op == spv::OpGroupBroadcast) {
+        if (op == spv::OpSubgroupReadInvocationKHR) {
+            spvGroupOperands.push_back(scalar);
+            spvGroupOperands.push_back(operands[1]);
+        } else if (op == spv::OpGroupBroadcast) {
+            spvGroupOperands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
             spvGroupOperands.push_back(scalar);
             spvGroupOperands.push_back(operands[1]);
         } else {
+            spvGroupOperands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
             spvGroupOperands.push_back(spv::GroupOperationReduce);
             spvGroupOperands.push_back(scalar);
         }

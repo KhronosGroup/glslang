@@ -1152,6 +1152,7 @@ const char* OpcodeString(int op)
 
     case 4421: return "OpSubgroupBallotKHR";
     case 4422: return "OpSubgroupFirstInvocationKHR";
+    case 4432: return "OpSubgroupReadInvocationKHR";
 
 #ifdef AMD_EXTENSIONS
     case 5000: return "OpGroupIAddNonUniformAMD";
@@ -2763,6 +2764,10 @@ void Parameterize()
     InstructionDesc[OpSubgroupBallotKHR].operands.push(OperandId, "'Predicate'");
 
     InstructionDesc[OpSubgroupFirstInvocationKHR].operands.push(OperandId, "'Value'");
+
+    InstructionDesc[OpSubgroupReadInvocationKHR].capabilities.push_back(CapabilityGroups);
+    InstructionDesc[OpSubgroupReadInvocationKHR].operands.push(OperandId, "'Value'");
+    InstructionDesc[OpSubgroupReadInvocationKHR].operands.push(OperandId, "'Index'");
 
 #ifdef AMD_EXTENSIONS
     InstructionDesc[OpGroupIAddNonUniformAMD].capabilities.push_back(CapabilityGroups);
