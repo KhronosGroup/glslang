@@ -920,6 +920,10 @@ struct TShaderQualifiers {
     TLayoutDepth layoutDepth;
     bool blendEquation;       // true if any blend equation was specified
 
+#ifdef NV_EXTENSIONS 
+    bool layoutOverrideCoverage;    // true if layout override_coverage set
+#endif 
+
     void init()
     {
         geometry = ElgNone;
@@ -939,6 +943,9 @@ struct TShaderQualifiers {
         earlyFragmentTests = false;
         layoutDepth = EldNone;
         blendEquation = false;
+#ifdef NV_EXTENSIONS 
+        layoutOverrideCoverage = false;
+#endif
     }
 
     // Merge in characteristics from the 'src' qualifier.  They can override when
@@ -975,6 +982,10 @@ struct TShaderQualifiers {
             layoutDepth = src.layoutDepth;
         if (src.blendEquation)
             blendEquation = src.blendEquation;
+#ifdef NV_EXTENSIONS 
+        if (src.layoutOverrideCoverage)
+            layoutOverrideCoverage = src.layoutOverrideCoverage;
+#endif 
     }
 };
 
@@ -1525,6 +1536,7 @@ public:
                     p += snprintf(p, end - p, "constant_id=%d ", qualifier.layoutSpecConstantId);
                 if (qualifier.layoutPushConstant)
                     p += snprintf(p, end - p, "push_constant ");
+
                 p += snprintf(p, end - p, ") ");
             }
         }

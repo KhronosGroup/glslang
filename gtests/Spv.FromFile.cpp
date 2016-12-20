@@ -240,6 +240,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.precision.frag",
         "spv.prepost.frag",
         "spv.qualifiers.vert",
+        "spv.sampleMaskOverrideCoverage.frag",
         "spv.shaderBallot.comp",
         "spv.shaderDrawParams.vert",
         "spv.shaderGroupVote.comp",
