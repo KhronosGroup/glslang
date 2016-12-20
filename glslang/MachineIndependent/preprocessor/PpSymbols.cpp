@@ -75,20 +75,3 @@ NVIDIA SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY OF CONTRACT,
 TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
 NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 \****************************************************************************/
-//
-// symbols.c
-//
-
-#include <cassert>
-#include <cstdlib>
-#include <cstring>
-
-#include "PpContext.h"
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////// Symbol Table Variables: ///////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace glslang {
-
-} // end namespace glslang

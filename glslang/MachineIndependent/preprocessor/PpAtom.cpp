@@ -76,10 +76,6 @@ TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
 NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 \****************************************************************************/
 
-//
-// atom.c
-//
-
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <cassert>
@@ -167,7 +163,7 @@ int TPpContext::LookUpAddString(const char* s)
 }
 
 //
-// Map an already created atom to its string.
+// Lookup up mapping of atom -> string.
 //
 const char* TPpContext::GetAtomString(int atom)
 {
@@ -180,7 +176,9 @@ const char* TPpContext::GetAtomString(int atom)
 }
 
 //
-// Add forced mapping of string to atom.
+// Add mappings:
+//  - string -> atom
+//  - atom -> string
 //
 void TPpContext::AddAtomFixed(const char* s, int atom)
 {

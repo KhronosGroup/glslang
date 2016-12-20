@@ -129,8 +129,8 @@ public:
 
     void setPreamble(const char* preamble, size_t length);
 
-    const char* tokenize(TPpToken* ppToken);
-    int tokenPaste(TPpToken&);
+    const char* tokenize(TPpToken& ppToken);
+    int tokenPaste(int token, TPpToken&);
 
     class tInput {
     public:
@@ -314,7 +314,7 @@ protected:
     int CPPextension(TPpToken * ppToken);
     int readCPPline(TPpToken * ppToken);
     TokenStream* PrescanMacroArg(TokenStream&, TPpToken*, bool newLineOkay);
-    int MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool newLineOkay);
+    int MacroExpand(TPpToken* ppToken, bool expandUndef, bool newLineOkay);
 
     //
     // From PpTokens.cpp
@@ -537,6 +537,9 @@ protected:
     }
 
     bool inComment;
+    std::string rootFileName;
+    std::stack<TShader::Includer::IncludeResult*> includeStack;
+    std::string currentSourceFile;
 
     //
     // From PpAtom.cpp
@@ -546,9 +549,6 @@ protected:
 
     TAtomMap atomMap;
     TStringMap stringMap;
-    std::stack<TShader::Includer::IncludeResult*> includeStack;
-    std::string currentSourceFile;
-    std::string rootFileName;
     int nextAtom;
     void InitAtomTable();
     void AddAtomFixed(const char* s, int atom);

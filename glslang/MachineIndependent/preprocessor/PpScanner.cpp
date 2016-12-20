@@ -75,9 +75,6 @@ NVIDIA SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY OF CONTRACT,
 TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
 NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 \****************************************************************************/
-//
-// scanner.c
-//
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -721,17 +718,14 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 // Return string pointer to next token.
 // Return 0 when no more tokens.
 //
-const char* TPpContext::tokenize(TPpToken* ppToken)
+const char* TPpContext::tokenize(TPpToken& ppToken)
 {
-    int token = '\n';
-
     for(;;) {
-        token = scanToken(ppToken);
-        ppToken->token = token;
+        int token = scanToken(&ppToken);
 
         // Handle token-pasting logic
-        token = tokenPaste(*ppToken);
-        ppToken->token = token;
+        token = tokenPaste(token, ppToken);
+        ppToken.token = token;
 
         if (token == EndOfInput) {
             missingEndifCheck();
@@ -739,14 +733,14 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
         }
         if (token == '#') {
             if (previous_token == '\n') {
-                token = readCPPline(ppToken);
+                token = readCPPline(&ppToken);
                 if (token == EndOfInput) {
                     missingEndifCheck();
                     return nullptr;
                 }
                 continue;
             } else {
-                parseContext.ppError(ppToken->loc, "preprocessor directive cannot be preceded by another token", "#", "");
+                parseContext.ppError(ppToken.loc, "preprocessor directive cannot be preceded by another token", "#", "");
                 return nullptr;
             }
         }
@@ -756,7 +750,7 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
             continue;
 
         // expand macros
-        if (token == PpAtomIdentifier && MacroExpand(ppToken->atom, ppToken, false, true) != 0)
+        if (token == PpAtomIdentifier && MacroExpand(&ppToken, false, true) != 0)
             continue;
 
         const char* tokenString = nullptr;
@@ -771,18 +765,18 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
 #ifdef AMD_EXTENSIONS
         case PpAtomConstFloat16:
 #endif
-            tokenString = ppToken->name;
+            tokenString = ppToken.name;
             break;
         case PpAtomConstString:
             if (parseContext.intermediate.getSource() == EShSourceHlsl) {
                 // HLSL allows string literals.
-                tokenString = ppToken->name;
+                tokenString = ppToken.name;
             } else {
-                parseContext.ppError(ppToken->loc, "string literals not supported", "\"\"", "");
+                parseContext.ppError(ppToken.loc, "string literals not supported", "\"\"", "");
             }
             break;
         case '\'':
-            parseContext.ppError(ppToken->loc, "character literals not supported", "\'", "");
+            parseContext.ppError(ppToken.loc, "character literals not supported", "\'", "");
             break;
         default:
             tokenString = GetAtomString(token);
@@ -799,21 +793,23 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
 // stream of tokens from a replacement list. Degenerates to no processing if a
 // replacement list is not the source of the token stream.
 //
-int TPpContext::tokenPaste(TPpToken& ppToken)
+int TPpContext::tokenPaste(int token, TPpToken& ppToken)
 {
     // starting with ## is illegal, skip to next token
-    if (ppToken.token == PpAtomPaste) {
+    if (token == PpAtomPaste) {
         parseContext.ppError(ppToken.loc, "unexpected location", "##", "");
-        ppToken.token = scanToken(&ppToken);
+        return scanToken(&ppToken);
     }
+
+    int resultToken = token; // "foo" pasted with "35" is an identifier, not a number
 
     // ## can be chained, process all in the chain at once
     while (peekPasting()) {
         TPpToken pastedPpToken;
 
         // next token has to be ##
-        pastedPpToken.token = scanToken(&pastedPpToken);
-        assert(pastedPpToken.token == PpAtomPaste);
+        token = scanToken(&pastedPpToken);
+        assert(token == PpAtomPaste);
 
         if (endOfReplacementList()) {
             parseContext.ppError(ppToken.loc, "unexpected location; end of replacement list", "##", "");
@@ -821,18 +817,18 @@ int TPpContext::tokenPaste(TPpToken& ppToken)
         }
 
         // get the token after the ##
-        scanToken(&pastedPpToken);
+        token = scanToken(&pastedPpToken);
 
         // combine the tokens
+        if (resultToken != PpAtomIdentifier)
+            parseContext.ppError(ppToken.loc, "only supported for preprocessing identifiers", "##", "");
         if (strlen(ppToken.name) + strlen(pastedPpToken.name) > MaxTokenLength)
             parseContext.ppError(ppToken.loc, "combined tokens are too long", "##", "");
         strncat(ppToken.name, pastedPpToken.name, MaxTokenLength - strlen(ppToken.name));
         ppToken.atom = LookUpAddString(ppToken.name);
-        if (ppToken.token != PpAtomIdentifier)
-            parseContext.ppError(ppToken.loc, "only supported for preprocessing identifiers", "##", "");
     }
 
-    return ppToken.token;
+    return resultToken;
 }
 
 // Checks if we've seen balanced #if...#endif

@@ -638,7 +638,7 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
     do {
         parserToken = &token;
         TPpToken ppToken;
-        tokenText = pp->tokenize(&ppToken);
+        tokenText = pp->tokenize(ppToken);
         if (tokenText == nullptr || tokenText[0] == 0)
             return 0;
 

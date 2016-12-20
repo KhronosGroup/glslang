@@ -394,7 +394,7 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
     do {
         parserToken = &token;
         TPpToken ppToken;
-        tokenText = ppContext.tokenize(&ppToken);
+        tokenText = ppContext.tokenize(ppToken);
         if (tokenText == nullptr)
             return EHTokNone;
 

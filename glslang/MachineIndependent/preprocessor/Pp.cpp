@@ -75,9 +75,6 @@ NVIDIA SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY OF CONTRACT,
 TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
 NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 \****************************************************************************/
-//
-// cpp.c
-//
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -107,7 +104,7 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
         parseContext.reservedPpErrorCheck(ppToken->loc, ppToken->name, "#define");
     }
 
-    // save the original atom
+    // save the original macro name
     const int defAtom = ppToken->atom;
 
     // gather parameters to the macro, between (...)
@@ -219,7 +216,6 @@ int TPpContext::CPPundef(TPpToken* ppToken)
 */
 int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
 {
-    int atom;
     int depth = 0;
     int token = scanToken(ppToken);
 
@@ -238,7 +234,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
         if ((token = scanToken(ppToken)) != PpAtomIdentifier)
             continue;
 
-        atom = ppToken->atom;
+        int atom = ppToken->atom;
         if (atom == PpAtomIf || atom == PpAtomIfdef || atom == PpAtomIfndef) {
             depth++; 
             ifdepth++; 
@@ -501,7 +497,7 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
 int TPpContext::evalToToken(int token, bool shortCircuit, int& res, bool& err, TPpToken* ppToken)
 {
     while (token == PpAtomIdentifier && ppToken->atom != PpAtomDefined) {
-        int macroReturn = MacroExpand(ppToken->atom, ppToken, true, false);
+        int macroReturn = MacroExpand(ppToken, true, false);
         if (macroReturn == 0) {
             parseContext.ppError(ppToken->loc, "can't evaluate expression", "preprocessor evaluation", "");
             err = true;
@@ -932,7 +928,7 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream& arg, TPpToken*
     pushInput(new tMarkerInput(this));
     pushTokenStreamInput(arg);
     while ((token = scanToken(ppToken)) != tMarkerInput::marker) {
-        if (token == PpAtomIdentifier && MacroExpand(ppToken->atom, ppToken, false, newLineOkay) != 0)
+        if (token == PpAtomIdentifier && MacroExpand(ppToken, false, newLineOkay) != 0)
             continue;
         RecordToken(*expandedArg, token, ppToken);
     }
@@ -1047,17 +1043,17 @@ int TPpContext::tZeroInput::scan(TPpToken* ppToken)
 }
 
 //
-// Check an identifier (atom) to see if it is a macro that should be expanded.
+// Check a token to see if it is a macro that should be expanded.
 // If it is, and defined, push a tInput that will produce the appropriate expansion
 // and return 1.
 // If it is, but undefined, and expandUndef is requested, push a tInput that will 
 // expand to 0 and return -1.
 // Otherwise, return 0 to indicate no expansion, which is not necessarily an error.
 //
-int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool newLineOkay)
+int TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, bool newLineOkay)
 {
     ppToken->space = false;
-    switch (atom) {
+    switch (ppToken->atom) {
     case PpAtomLineMacro:
         ppToken->ival = parseContext.getCurrentLoc().line;
         snprintf(ppToken->name, sizeof(ppToken->name), "%d", ppToken->ival);
@@ -1083,7 +1079,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
         break;
     }
 
-    MacroSymbol* macro = lookupMacroDef(atom);
+    MacroSymbol* macro = lookupMacroDef(ppToken->atom);
     int token;
     int depth = 0;
 
@@ -1105,6 +1101,7 @@ int TPpContext::MacroExpand(int atom, TPpToken* ppToken, bool expandUndef, bool 
 
     TSourceLoc loc = ppToken->loc;  // in case we go to the next line before discovering the error
     in->mac = macro;
+    int atom = ppToken->atom;
     if (macro->args.size() > 0 || macro->emptyArgs) {
         token = scanToken(ppToken);
         if (newLineOkay) {
