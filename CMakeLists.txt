@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.11)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 option(ENABLE_AMD_EXTENSIONS "Enables support of AMD-specific extensions" ON)
+option(ENABLE_GLSLANG_BINARIES "Builds glslangValidator and spirv-remap" ON)
 
 enable_testing()
 
@@ -52,7 +53,9 @@ add_subdirectory(External)
 
 add_subdirectory(glslang)
 add_subdirectory(OGLCompilersDLL)
-add_subdirectory(StandAlone)
+if(ENABLE_GLSLANG_BINARIES)
+	add_subdirectory(StandAlone)
+endif()
 add_subdirectory(SPIRV)
 add_subdirectory(hlsl)
 add_subdirectory(gtests)
