@@ -1,26 +1,26 @@
 float4 PixelShaderFunction(float4 input) : COLOR0
 {
-    if (input == input)
+    if (all(input == input))
         return input;
 
-    if (input == input)
+    if (all(input == input))
         return input;
     else
         return -input;
 
-    if (input == input)
+    if (all(input == input))
         ;
 
-    if (input == input)
+    if (all(input == input))
         ;
     else
         ;
 
-    [flatten] if (input == input) {
+    [flatten] if (all(input == input)) {
         return input;
     }
 
-    if (input == input) {
+    if (all(input == input)) {
         return input;
     } else {
         return -input;

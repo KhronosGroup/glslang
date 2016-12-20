@@ -2,7 +2,7 @@ hlsl.shapeConv.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:2  Function Definition: PixelShaderFunction(vf4;f1; (global 4-component vector of float)
+0:2  Function Definition: PixelShaderFunction(vf4;f1; (temp 4-component vector of float)
 0:2    Function Parameters: 
 0:2      'input' (in 4-component vector of float)
 0:2      'f' (in float)
@@ -58,41 +58,43 @@ gl_FragCoord origin is upper left
 0:13          'MyVal' (temp 3-component vector of float)
 0:13          Construct vec3 (temp 3-component vector of float)
 0:13            'V' (temp float)
-0:16      Compare Greater Than (temp bool)
+0:16      Compare Greater Than (temp 3-component vector of bool)
 0:16        'foo' (temp 3-component vector of float)
 0:16        Constant:
 0:16          4.000000
 0:16          4.000000
 0:16          4.000000
-0:17      Compare Greater Than or Equal (temp bool)
+0:17      Compare Greater Than or Equal (temp 3-component vector of bool)
 0:17        'foo' (temp 3-component vector of float)
 0:17        Constant:
 0:17          5.000000
 0:17          5.000000
 0:17          5.000000
-0:18      Compare Less Than (temp bool)
+0:18      Compare Less Than (temp 3-component vector of bool)
 0:18        Constant:
 0:18          6.000000
 0:18          6.000000
 0:18          6.000000
 0:18        'foo' (temp 3-component vector of float)
-0:19      Compare Less Than or Equal (temp bool)
+0:19      Compare Less Than or Equal (temp 3-component vector of bool)
 0:19        Constant:
 0:19          7.000000
 0:19          7.000000
 0:19          7.000000
 0:19        'foo' (temp 3-component vector of float)
-0:21      Compare Equal (temp bool)
-0:21        Construct vec4 (temp 4-component vector of float)
-0:21          direct index (temp float)
-0:21            'v' (temp 4-component vector of float)
-0:21            Constant:
-0:21              0 (const int)
-0:21        'v' (temp 4-component vector of float)
-0:22      Compare Not Equal (temp bool)
-0:22        Construct vec4 (temp 4-component vector of float)
-0:22          'f' (in float)
-0:22        'v' (temp 4-component vector of float)
+0:21      all (temp bool)
+0:21        Equal (temp 4-component vector of bool)
+0:21          Construct vec4 (temp 4-component vector of float)
+0:21            direct index (temp float)
+0:21              'v' (temp 4-component vector of float)
+0:21              Constant:
+0:21                0 (const int)
+0:21          'v' (temp 4-component vector of float)
+0:22      any (temp bool)
+0:22        NotEqual (temp 4-component vector of bool)
+0:22          Construct vec4 (temp 4-component vector of float)
+0:22            'f' (in float)
+0:22          'v' (temp 4-component vector of float)
 0:26      Compare Equal (temp bool)
 0:26        'f1' (temp 1-component vector of float)
 0:26        Construct float (temp 1-component vector of float)
@@ -113,11 +115,12 @@ gl_FragCoord origin is upper left
 
 Linked fragment stage:
 
+WARNING: Linking fragment stage: Entry point not found
 
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:2  Function Definition: PixelShaderFunction(vf4;f1; (global 4-component vector of float)
+0:2  Function Definition: PixelShaderFunction(vf4;f1; (temp 4-component vector of float)
 0:2    Function Parameters: 
 0:2      'input' (in 4-component vector of float)
 0:2      'f' (in float)
@@ -173,41 +176,43 @@ gl_FragCoord origin is upper left
 0:13          'MyVal' (temp 3-component vector of float)
 0:13          Construct vec3 (temp 3-component vector of float)
 0:13            'V' (temp float)
-0:16      Compare Greater Than (temp bool)
+0:16      Compare Greater Than (temp 3-component vector of bool)
 0:16        'foo' (temp 3-component vector of float)
 0:16        Constant:
 0:16          4.000000
 0:16          4.000000
 0:16          4.000000
-0:17      Compare Greater Than or Equal (temp bool)
+0:17      Compare Greater Than or Equal (temp 3-component vector of bool)
 0:17        'foo' (temp 3-component vector of float)
 0:17        Constant:
 0:17          5.000000
 0:17          5.000000
 0:17          5.000000
-0:18      Compare Less Than (temp bool)
+0:18      Compare Less Than (temp 3-component vector of bool)
 0:18        Constant:
 0:18          6.000000
 0:18          6.000000
 0:18          6.000000
 0:18        'foo' (temp 3-component vector of float)
-0:19      Compare Less Than or Equal (temp bool)
+0:19      Compare Less Than or Equal (temp 3-component vector of bool)
 0:19        Constant:
 0:19          7.000000
 0:19          7.000000
 0:19          7.000000
 0:19        'foo' (temp 3-component vector of float)
-0:21      Compare Equal (temp bool)
-0:21        Construct vec4 (temp 4-component vector of float)
-0:21          direct index (temp float)
-0:21            'v' (temp 4-component vector of float)
-0:21            Constant:
-0:21              0 (const int)
-0:21        'v' (temp 4-component vector of float)
-0:22      Compare Not Equal (temp bool)
-0:22        Construct vec4 (temp 4-component vector of float)
-0:22          'f' (in float)
-0:22        'v' (temp 4-component vector of float)
+0:21      all (temp bool)
+0:21        Equal (temp 4-component vector of bool)
+0:21          Construct vec4 (temp 4-component vector of float)
+0:21            direct index (temp float)
+0:21              'v' (temp 4-component vector of float)
+0:21              Constant:
+0:21                0 (const int)
+0:21          'v' (temp 4-component vector of float)
+0:22      any (temp bool)
+0:22        NotEqual (temp 4-component vector of bool)
+0:22          Construct vec4 (temp 4-component vector of float)
+0:22            'f' (in float)
+0:22          'v' (temp 4-component vector of float)
 0:26      Compare Equal (temp bool)
 0:26        'f1' (temp 1-component vector of float)
 0:26        Construct float (temp 1-component vector of float)
@@ -227,7 +232,7 @@ gl_FragCoord origin is upper left
 
 // Module Version 10000
 // Generated by (magic number): 80001
-// Id's are bound by 84
+// Id's are bound by 85
 
                               Capability Shader
                1:             ExtInstImport  "GLSL.std.450"
@@ -244,7 +249,7 @@ gl_FragCoord origin is upper left
                               Name 33  "V"
                               Name 34  "MyVal"
                               Name 37  "foo"
-                              Name 69  "f1"
+                              Name 70  "f1"
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -266,17 +271,19 @@ gl_FragCoord origin is upper left
               39:    6(float) Constant 1082130432
               40:   22(fvec3) ConstantComposite 39 39 39
               41:             TypeBool
-              44:    6(float) Constant 1084227584
-              45:   22(fvec3) ConstantComposite 44 44 44
-              47:    6(float) Constant 1086324736
-              48:   22(fvec3) ConstantComposite 47 47 47
-              51:    6(float) Constant 1088421888
-              52:   22(fvec3) ConstantComposite 51 51 51
-              55:             TypeInt 32 0
-              56:     55(int) Constant 0
-              61:             TypeVector 41(bool) 4
+              42:             TypeVector 41(bool) 3
+              45:    6(float) Constant 1084227584
+              46:   22(fvec3) ConstantComposite 45 45 45
+              48:    6(float) Constant 1086324736
+              49:   22(fvec3) ConstantComposite 48 48 48
+              52:    6(float) Constant 1088421888
+              53:   22(fvec3) ConstantComposite 52 52 52
+              56:             TypeInt 32 0
+              57:     56(int) Constant 0
+              62:             TypeVector 41(bool) 4
          4(main):           2 Function None 3
                5:             Label
+                              Return
                               FunctionEnd
 13(PixelShaderFunction(vf4;f1;):    7(fvec4) Function None 10
        11(input):      8(ptr) FunctionParameter
@@ -288,7 +295,7 @@ gl_FragCoord origin is upper left
            33(V):      9(ptr) Variable Function
        34(MyVal):     23(ptr) Variable Function
          37(foo):     23(ptr) Variable Function
-          69(f1):      9(ptr) Variable Function
+          70(f1):      9(ptr) Variable Function
                               Store 15(v) 17
                               Store 15(v) 19
               20:    6(float) Load 12(f)
@@ -305,35 +312,35 @@ gl_FragCoord origin is upper left
               36:   22(fvec3) CompositeConstruct 35 35 35
                               Store 34(MyVal) 36
               38:   22(fvec3) Load 37(foo)
-              42:    41(bool) FOrdGreaterThan 38 40
-              43:   22(fvec3) Load 37(foo)
-              46:    41(bool) FOrdGreaterThanEqual 43 45
-              49:   22(fvec3) Load 37(foo)
-              50:    41(bool) FOrdLessThan 48 49
-              53:   22(fvec3) Load 37(foo)
-              54:    41(bool) FOrdLessThanEqual 52 53
-              57:      9(ptr) AccessChain 15(v) 56
-              58:    6(float) Load 57
-              59:    7(fvec4) CompositeConstruct 58 58 58 58
-              60:    7(fvec4) Load 15(v)
-              62:   61(bvec4) FOrdEqual 59 60
-              63:    41(bool) All 62
-              64:    6(float) Load 12(f)
-              65:    7(fvec4) CompositeConstruct 64 64 64 64
-              66:    7(fvec4) Load 15(v)
-              67:   61(bvec4) FOrdNotEqual 65 66
-              68:    41(bool) Any 67
-              70:    6(float) Load 69(f1)
-              71:    7(fvec4) Load 15(v)
-              72:    6(float) CompositeExtract 71 0
-              73:    41(bool) FOrdEqual 70 72
-              74:    7(fvec4) Load 15(v)
-              75:    6(float) CompositeExtract 74 0
-              76:    6(float) Load 69(f1)
-              77:    41(bool) FOrdLessThan 75 76
-              78:    6(float) Load 69(f1)
-              79:    6(float) Load 69(f1)
-              80:   22(fvec3) CompositeConstruct 79 79 79
-              81:    7(fvec4) Load 11(input)
-                              ReturnValue 81
+              43:   42(bvec3) FOrdGreaterThan 38 40
+              44:   22(fvec3) Load 37(foo)
+              47:   42(bvec3) FOrdGreaterThanEqual 44 46
+              50:   22(fvec3) Load 37(foo)
+              51:   42(bvec3) FOrdLessThan 49 50
+              54:   22(fvec3) Load 37(foo)
+              55:   42(bvec3) FOrdLessThanEqual 53 54
+              58:      9(ptr) AccessChain 15(v) 57
+              59:    6(float) Load 58
+              60:    7(fvec4) CompositeConstruct 59 59 59 59
+              61:    7(fvec4) Load 15(v)
+              63:   62(bvec4) FOrdEqual 60 61
+              64:    41(bool) All 63
+              65:    6(float) Load 12(f)
+              66:    7(fvec4) CompositeConstruct 65 65 65 65
+              67:    7(fvec4) Load 15(v)
+              68:   62(bvec4) FOrdNotEqual 66 67
+              69:    41(bool) Any 68
+              71:    6(float) Load 70(f1)
+              72:    7(fvec4) Load 15(v)
+              73:    6(float) CompositeExtract 72 0
+              74:    41(bool) FOrdEqual 71 73
+              75:    7(fvec4) Load 15(v)
+              76:    6(float) CompositeExtract 75 0
+              77:    6(float) Load 70(f1)
+              78:    41(bool) FOrdLessThan 76 77
+              79:    6(float) Load 70(f1)
+              80:    6(float) Load 70(f1)
+              81:   22(fvec3) CompositeConstruct 80 80 80
+              82:    7(fvec4) Load 11(input)
+                              ReturnValue 82
                               FunctionEnd

@@ -33,6 +33,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -49,9 +50,19 @@ int main(int argc, char** argv)
     glslangtest::GlobalTestSettings.initializer = initializer.get();
 
     for (int i = 1; i < argc; ++i) {
-        if (!strncmp("--update-mode", argv[i], 13)) {
+        if (std::string("--update-mode") == argv[i]) {
             glslangtest::GlobalTestSettings.updateMode = true;
-            break;
+        }
+        if (std::string("--test-root") == argv[i]) {
+            // Allow the user set the tets root directory.  This is useful
+            // for testing with files from another source tree.
+            if (i + 1 < argc) {
+                glslangtest::GlobalTestSettings.testRoot = argv[i + 1];
+                i++;
+            } else {
+                printf("error: --test-root requires an argument\n");
+                return 1;
+            }
         }
     }
 

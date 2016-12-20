@@ -53,6 +53,7 @@
 
 #include "hlslTokens.h"
 #include "hlslGrammar.h"
+#include "hlslAttributes.h"
 
 namespace glslang {
 
@@ -80,6 +81,20 @@ bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
 {
     if (peekTokenClass(EHTokIdentifier)) {
         idToken = token;
+        advanceToken();
+        return true;
+    }
+
+    // Even though "sample" is a keyword (for interpolation modifiers), it IS still accepted as
+    // an identifier.  This appears to be a solitary exception: other interp modifier keywords such
+    // as "linear" or "centroid" NOT valid identifiers.  This code special cases "sample",
+    // so e.g, "int sample;" is accepted.
+    if (peekTokenClass(EHTokSample)) {
+        token.string     = NewPoolTString("sample");
+        token.tokenClass = EHTokIdentifier;
+        token.symbol     = nullptr;
+
+        idToken          = token;
         advanceToken();
         return true;
     }
@@ -268,10 +283,14 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     node = nullptr;
     bool list = false;
 
+    // attributes
+    TAttributeMap attributes;
+    acceptAttributes(attributes);
+
     // typedef
     bool typedefDecl = acceptTokenClass(EHTokTypedef);
 
-    TType type;
+    TType declaredType;
 
     // DX9 sampler declaration use a different syntax
     // DX9 shaders need to run through HLSL compiler (fxc) via a back compat mode, it isn't going to
@@ -280,29 +299,23 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
     // As such, the sampler keyword in D3D10+ turns into an automatic sampler type, and is commonly used
     // For that reason, this line is commented out 
 
-   // if (acceptSamplerDeclarationDX9(type))
+   // if (acceptSamplerDeclarationDX9(declaredType))
    //     return true;
 
     // fully_specified_type
-    if (! acceptFullySpecifiedType(type))
+    if (! acceptFullySpecifiedType(declaredType))
         return false;
-
-    if (type.getQualifier().storage == EvqTemporary && parseContext.symbolTable.atGlobalLevel()) {
-        if (type.getBasicType() == EbtSampler) {
-            // Sampler/textures are uniform by default (if no explicit qualifier is present) in
-            // HLSL.  This line silently converts samplers *explicitly* declared static to uniform,
-            // which is incorrect but harmless.
-            type.getQualifier().storage = EvqUniform; 
-        } else {
-            type.getQualifier().storage = EvqGlobal;
-        }
-    }
 
     // identifier
     HlslToken idToken;
     while (acceptIdentifier(idToken)) {
+        TString* fnName = idToken.string;
+
+        // Potentially rename shader entry point function.  No-op most of the time.
+        parseContext.renameShaderFunction(fnName);
+
         // function_parameters
-        TFunction& function = *new TFunction(idToken.string, type);
+        TFunction& function = *new TFunction(fnName, declaredType);
         if (acceptFunctionParameters(function)) {
             // post_decls
             acceptPostDecls(function.getWritableType().getQualifier());
@@ -313,27 +326,48 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
                     parseContext.error(idToken.loc, "function body can't be in a declarator list", "{", "");
                 if (typedefDecl)
                     parseContext.error(idToken.loc, "function body can't be in a typedef", "{", "");
-                return acceptFunctionDefinition(function, node);
+                return acceptFunctionDefinition(function, node, attributes);
             } else {
                 if (typedefDecl)
                     parseContext.error(idToken.loc, "function typedefs not implemented", "{", "");
                 parseContext.handleFunctionDeclarator(idToken.loc, function, true);
             }
         } else {
-            // a variable declaration
+            // A variable declaration. Fix the storage qualifier if it's a global.
+            if (declaredType.getQualifier().storage == EvqTemporary && parseContext.symbolTable.atGlobalLevel())
+                declaredType.getQualifier().storage = EvqUniform;
 
-            // array_specifier
+            // We can handle multiple variables per type declaration, so 
+            // the number of types can expand when arrayness is different.
+            TType variableType;
+            variableType.shallowCopy(declaredType);
+
+            // recognize array_specifier
             TArraySizes* arraySizes = nullptr;
             acceptArraySpecifier(arraySizes);
 
+            // Fix arrayness in the variableType
+            if (declaredType.isImplicitlySizedArray()) {
+                // Because "int[] a = int[2](...), b = int[3](...)" makes two arrays a and b
+                // of different sizes, for this case sharing the shallow copy of arrayness
+                // with the parseType oversubscribes it, so get a deep copy of the arrayness.
+                variableType.newArraySizes(declaredType.getArraySizes());
+            }
+            if (arraySizes || variableType.isArray()) {
+                // In the most general case, arrayness is potentially coming both from the
+                // declared type and from the variable: "int[] a[];" or just one or the other.
+                // Merge it all to the variableType, so all arrayness is part of the variableType.
+                parseContext.arrayDimMerge(variableType, arraySizes);
+            }
+
             // samplers accept immediate sampler state
-            if (type.getBasicType() == EbtSampler) {
+            if (variableType.getBasicType() == EbtSampler) {
                 if (! acceptSamplerState())
                     return false;
             }
 
             // post_decls
-            acceptPostDecls(type.getQualifier());
+            acceptPostDecls(variableType.getQualifier());
 
             // EQUAL assignment_expression
             TIntermTyped* expressionNode = nullptr;
@@ -346,18 +380,29 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node)
                 }
             }
 
-            if (typedefDecl)
-                parseContext.declareTypedef(idToken.loc, *idToken.string, type, arraySizes);
-            else if (type.getBasicType() == EbtBlock)
-                parseContext.declareBlock(idToken.loc, type, idToken.string);
-            else {
-                // Declare the variable and add any initializer code to the AST.
-                // The top-level node is always made into an aggregate, as that's
-                // historically how the AST has been.
-                node = intermediate.growAggregate(node,
-                                                  parseContext.declareVariable(idToken.loc, *idToken.string, type,
-                                                                               arraySizes, expressionNode),
-                                                  idToken.loc);
+            // Hand off the actual declaration
+
+            // TODO: things scoped within an annotation need their own name space;
+            // TODO: strings are not yet handled.
+            if (variableType.getBasicType() != EbtString && parseContext.getAnnotationNestingLevel() == 0) {
+                if (typedefDecl)
+                    parseContext.declareTypedef(idToken.loc, *idToken.string, variableType);
+                else if (variableType.getBasicType() == EbtBlock)
+                    parseContext.declareBlock(idToken.loc, variableType, idToken.string);
+                else {
+                    if (variableType.getQualifier().storage == EvqUniform && ! variableType.containsOpaque()) {
+                        // this isn't really an individual variable, but a member of the $Global buffer
+                        parseContext.growGlobalUniformBlock(idToken.loc, variableType, *idToken.string);
+                    } else {
+                        // Declare the variable and add any initializer code to the AST.
+                        // The top-level node is always made into an aggregate, as that's
+                        // historically how the AST has been.
+                        node = intermediate.growAggregate(node,
+                                                          parseContext.declareVariable(idToken.loc, *idToken.string, variableType,
+                                                                                       expressionNode),
+                                                          idToken.loc);
+                    }
+                }
             }
         }
 
@@ -412,7 +457,7 @@ bool HlslGrammar::acceptControlDeclaration(TIntermNode*& node)
         return false;
     }
 
-    node = parseContext.declareVariable(idToken.loc, *idToken.string, type, 0, expressionNode);
+    node = parseContext.declareVariable(idToken.loc, *idToken.string, type, expressionNode);
 
     return true;
 }
@@ -431,16 +476,34 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type)
     TSourceLoc loc = token.loc;
 
     // type_specifier
-    if (! acceptType(type))
+    if (! acceptType(type)) {
+        // If this is not a type, we may have inadvertently gone down a wrong path
+        // py parsing "sample", which can be treated like either an identifier or a
+        // qualifier.  Back it out, if we did.
+        if (qualifier.sample)
+            recedeToken();
+
         return false;
+    }
     if (type.getBasicType() == EbtBlock) {
         // the type was a block, which set some parts of the qualifier
         parseContext.mergeQualifiers(type.getQualifier(), qualifier);
         // further, it can create an anonymous instance of the block
         if (peekTokenClass(EHTokSemicolon))
             parseContext.declareBlock(loc, type);
-    } else
-        type.getQualifier() = qualifier;
+    } else {
+        // Some qualifiers are set when parsing the type.  Merge those with
+        // whatever comes from acceptQualifier.
+        assert(qualifier.layoutFormat == ElfNone);
+
+        qualifier.layoutFormat = type.getQualifier().layoutFormat;
+        qualifier.precision    = type.getQualifier().precision;
+
+        if (type.getQualifier().storage == EvqVaryingOut)
+            qualifier.storage      = type.getQualifier().storage;
+
+        type.getQualifier()    = qualifier;
+    }
 
     return true;
 }
@@ -455,7 +518,7 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
     do {
         switch (peek()) {
         case EHTokStatic:
-            // normal glslang default
+            qualifier.storage = parseContext.symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
             break;
         case EHTokExtern:
             // TODO: no meaning in glslang?
@@ -491,10 +554,10 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
             qualifier.sample = true;
             break;
         case EHTokRowMajor:
-            qualifier.layoutMatrix = ElmRowMajor;
+            qualifier.layoutMatrix = ElmColumnMajor;
             break;
         case EHTokColumnMajor:
-            qualifier.layoutMatrix = ElmColumnMajor;
+            qualifier.layoutMatrix = ElmRowMajor;
             break;
         case EHTokPrecise:
             qualifier.noContraction = true;
@@ -512,6 +575,35 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
             if (! acceptLayoutQualifierList(qualifier))
                 return false;
             continue;
+
+        // GS geometries: these are specified on stage input variables, and are an error (not verified here)
+        // for output variables.
+        case EHTokPoint:
+            qualifier.storage = EvqIn;
+            if (!parseContext.handleInputGeometry(token.loc, ElgPoints))
+                return false;
+            break;
+        case EHTokLine:
+            qualifier.storage = EvqIn;
+            if (!parseContext.handleInputGeometry(token.loc, ElgLines))
+                return false;
+            break;
+        case EHTokTriangle:
+            qualifier.storage = EvqIn;
+            if (!parseContext.handleInputGeometry(token.loc, ElgTriangles))
+                return false;
+            break;
+        case EHTokLineAdj:
+            qualifier.storage = EvqIn;
+            if (!parseContext.handleInputGeometry(token.loc, ElgLinesAdjacency))
+                return false;
+            break; 
+        case EHTokTriangleAdj:
+            qualifier.storage = EvqIn;
+            if (!parseContext.handleInputGeometry(token.loc, ElgTrianglesAdjacency))
+                return false;
+            break; 
+            
         default:
             return true;
         }
@@ -576,7 +668,7 @@ bool HlslGrammar::acceptLayoutQualifierList(TQualifier& qualifier)
 //      | UINT
 //      | BOOL
 //
-bool HlslGrammar::acceptTemplateType(TBasicType& basicType)
+bool HlslGrammar::acceptTemplateVecMatBasicType(TBasicType& basicType)
 {
     switch (peek()) {
     case EHTokFloat:
@@ -620,7 +712,7 @@ bool HlslGrammar::acceptVectorTemplateType(TType& type)
     }
 
     TBasicType basicType;
-    if (! acceptTemplateType(basicType)) {
+    if (! acceptTemplateVecMatBasicType(basicType)) {
         expected("scalar type");
         return false;
     }
@@ -672,7 +764,7 @@ bool HlslGrammar::acceptMatrixTemplateType(TType& type)
     }
 
     TBasicType basicType;
-    if (! acceptTemplateType(basicType)) {
+    if (! acceptTemplateVecMatBasicType(basicType)) {
         expected("scalar type");
         return false;
     }
@@ -721,6 +813,56 @@ bool HlslGrammar::acceptMatrixTemplateType(TType& type)
     return true;
 }
 
+// layout_geometry
+//      : LINESTREAM
+//      | POINTSTREAM
+//      | TRIANGLESTREAM
+//
+bool HlslGrammar::acceptOutputPrimitiveGeometry(TLayoutGeometry& geometry)
+{
+    // read geometry type
+    const EHlslTokenClass geometryType = peek();
+
+    switch (geometryType) {
+    case EHTokPointStream:    geometry = ElgPoints;        break;
+    case EHTokLineStream:     geometry = ElgLineStrip;     break;
+    case EHTokTriangleStream: geometry = ElgTriangleStrip; break;
+    default:
+        return false;  // not a layout geometry
+    }
+
+    advanceToken();  // consume the layout keyword
+    return true;
+}
+
+// stream_out_template_type
+//      : output_primitive_geometry_type LEFT_ANGLE type RIGHT_ANGLE
+//
+bool HlslGrammar::acceptStreamOutTemplateType(TType& type, TLayoutGeometry& geometry)
+{
+    geometry = ElgNone;
+
+    if (! acceptOutputPrimitiveGeometry(geometry))
+        return false;
+
+    if (! acceptTokenClass(EHTokLeftAngle))
+        return false;
+    
+    if (! acceptType(type)) {
+        expected("stream output type");
+        return false;
+    }
+
+    type.getQualifier().storage = EvqVaryingOut;
+
+    if (! acceptTokenClass(EHTokRightAngle)) {
+        expected("right angle bracket");
+        return false;
+    }
+
+    return true;
+}
+    
 // annotations
 //      : LEFT_ANGLE declaration SEMI_COLON ... declaration SEMICOLON RIGHT_ANGLE
 //
@@ -806,6 +948,13 @@ bool HlslGrammar::acceptSamplerType(TType& type)
 //      | TEXTURECUBEARRAY
 //      | TEXTURE2DMS
 //      | TEXTURE2DMSARRAY
+//      | RWBUFFER
+//      | RWTEXTURE1D
+//      | RWTEXTURE1DARRAY
+//      | RWTEXTURE2D
+//      | RWTEXTURE2DARRAY
+//      | RWTEXTURE3D
+
 bool HlslGrammar::acceptTextureType(TType& type)
 {
     const EHlslTokenClass textureType = peek();
@@ -813,6 +962,7 @@ bool HlslGrammar::acceptTextureType(TType& type)
     TSamplerDim dim = EsdNone;
     bool array = false;
     bool ms    = false;
+    bool image = false;
 
     switch (textureType) {
     case EHTokBuffer:            dim = EsdBuffer;                      break;
@@ -825,6 +975,12 @@ bool HlslGrammar::acceptTextureType(TType& type)
     case EHTokTextureCubearray:  dim = EsdCube; array = true;          break;
     case EHTokTexture2DMS:       dim = Esd2D; ms = true;               break;
     case EHTokTexture2DMSarray:  dim = Esd2D; array = true; ms = true; break;
+    case EHTokRWBuffer:          dim = EsdBuffer; image=true;          break;
+    case EHTokRWTexture1d:       dim = Esd1D; array=false; image=true; break;
+    case EHTokRWTexture1darray:  dim = Esd1D; array=true;  image=true; break;
+    case EHTokRWTexture2d:       dim = Esd2D; array=false; image=true; break;
+    case EHTokRWTexture2darray:  dim = Esd2D; array=true;  image=true; break;
+    case EHTokRWTexture3d:       dim = Esd3D; array=false; image=true; break;
     default:
         return false;  // not a texture declaration
     }
@@ -835,7 +991,7 @@ bool HlslGrammar::acceptTextureType(TType& type)
     
     TIntermTyped* msCount = nullptr;
 
-    // texture type: required for multisample types!
+    // texture type: required for multisample types and RWBuffer/RWTextures!
     if (acceptTokenClass(EHTokLeftAngle)) {
         if (! acceptType(txType)) {
             expected("scalar or vector type");
@@ -866,12 +1022,6 @@ bool HlslGrammar::acceptTextureType(TType& type)
             return false;
         }
 
-        if (txType.getVectorSize() != 1 && txType.getVectorSize() != 4) {
-            // TODO: handle vec2/3 types
-            expected("vector size not yet supported in texture type");
-            return false;
-        }
-
         if (ms && acceptTokenClass(EHTokComma)) {
             // read sample count for multisample types, if given
             if (! peekTokenClass(EHTokIntConstant)) {
@@ -890,22 +1040,38 @@ bool HlslGrammar::acceptTextureType(TType& type)
     } else if (ms) {
         expected("texture type for multisample");
         return false;
+    } else if (image) {
+        expected("type for RWTexture/RWBuffer");
+        return false;
     }
 
     TArraySizes* arraySizes = nullptr;
-    const bool shadow = txType.isScalar() || (txType.isVector() && txType.getVectorSize() == 1);
+    const bool shadow = false; // declared on the sampler
 
     TSampler sampler;
+    TLayoutFormat format = ElfNone;
 
-    // Buffers are combined.
-    if (dim == EsdBuffer) {
+    // Buffer, RWBuffer and RWTexture (images) require a TLayoutFormat.  We handle only a limit set.
+    if (image || dim == EsdBuffer)
+        format = parseContext.getLayoutFromTxType(token.loc, txType);
+
+    // Non-image Buffers are combined
+    if (dim == EsdBuffer && !image) {
         sampler.set(txType.getBasicType(), dim, array);
     } else {
         // DX10 textures are separated.  TODO: DX9.
-        sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms);
+        if (image) {
+            sampler.setImage(txType.getBasicType(), dim, array, shadow, ms);
+        } else {
+            sampler.setTexture(txType.getBasicType(), dim, array, shadow, ms);
+        }
     }
+
+    // Remember the declared vector size.
+    sampler.vectorSize = txType.getVectorSize();
     
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));
+    type.getQualifier().layoutFormat = format;
 
     return true;
 }
@@ -916,6 +1082,14 @@ bool HlslGrammar::acceptTextureType(TType& type)
 // Otherwise, return false, and don't advance
 bool HlslGrammar::acceptType(TType& type)
 {
+    // Basic types for min* types, broken out here in case of future
+    // changes, e.g, to use native halfs.
+    static const TBasicType min16float_bt = EbtFloat;
+    static const TBasicType min10float_bt = EbtFloat;
+    static const TBasicType min16int_bt   = EbtInt;
+    static const TBasicType min12int_bt   = EbtInt;
+    static const TBasicType min16uint_bt  = EbtUint;
+
     switch (peek()) {
     case EHTokVector:
         return acceptVectorTemplateType(type);
@@ -924,6 +1098,20 @@ bool HlslGrammar::acceptType(TType& type)
     case EHTokMatrix:
         return acceptMatrixTemplateType(type);
         break;
+
+    case EHTokPointStream:            // fall through
+    case EHTokLineStream:             // ...
+    case EHTokTriangleStream:         // ...
+        {
+            TLayoutGeometry geometry;
+            if (! acceptStreamOutTemplateType(type, geometry))
+                return false;
+
+            if (! parseContext.handleOutputGeometry(token.loc, geometry))
+                return false;
+            
+            return true;
+        }
 
     case EHTokSampler:                // fall through
     case EHTokSampler1d:              // ...
@@ -945,6 +1133,12 @@ bool HlslGrammar::acceptType(TType& type)
     case EHTokTextureCubearray:       // ...
     case EHTokTexture2DMS:            // ...
     case EHTokTexture2DMSarray:       // ...
+    case EHTokRWTexture1d:            // ...
+    case EHTokRWTexture1darray:       // ...
+    case EHTokRWTexture2d:            // ...
+    case EHTokRWTexture2darray:       // ...
+    case EHTokRWTexture3d:            // ...
+    case EHTokRWBuffer:               // ...
         return acceptTextureType(type);
         break;
 
@@ -1059,6 +1253,91 @@ bool HlslGrammar::acceptType(TType& type)
         break;
     case EHTokBool4:
         new(&type) TType(EbtBool, EvqTemporary, 4);
+        break;
+
+    case EHTokMin16float:
+        new(&type) TType(min16float_bt, EvqTemporary, EpqMedium);
+        break;
+    case EHTokMin16float1:
+        new(&type) TType(min16float_bt, EvqTemporary, EpqMedium);
+        type.makeVector();
+        break;
+    case EHTokMin16float2:
+        new(&type) TType(min16float_bt, EvqTemporary, EpqMedium, 2);
+        break;
+    case EHTokMin16float3:
+        new(&type) TType(min16float_bt, EvqTemporary, EpqMedium, 3);
+        break;
+    case EHTokMin16float4:
+        new(&type) TType(min16float_bt, EvqTemporary, EpqMedium, 4);
+        break;
+        
+    case EHTokMin10float:
+        new(&type) TType(min10float_bt, EvqTemporary, EpqMedium);
+        break;
+    case EHTokMin10float1:
+        new(&type) TType(min10float_bt, EvqTemporary, EpqMedium);
+        type.makeVector();
+        break;
+    case EHTokMin10float2:
+        new(&type) TType(min10float_bt, EvqTemporary, EpqMedium, 2);
+        break;
+    case EHTokMin10float3:
+        new(&type) TType(min10float_bt, EvqTemporary, EpqMedium, 3);
+        break;
+    case EHTokMin10float4:
+        new(&type) TType(min10float_bt, EvqTemporary, EpqMedium, 4);
+        break;
+        
+    case EHTokMin16int:
+        new(&type) TType(min16int_bt, EvqTemporary, EpqMedium);
+        break;
+    case EHTokMin16int1:
+        new(&type) TType(min16int_bt, EvqTemporary, EpqMedium);
+        type.makeVector();
+        break;
+    case EHTokMin16int2:
+        new(&type) TType(min16int_bt, EvqTemporary, EpqMedium, 2);
+        break;
+    case EHTokMin16int3:
+        new(&type) TType(min16int_bt, EvqTemporary, EpqMedium, 3);
+        break;
+    case EHTokMin16int4:
+        new(&type) TType(min16int_bt, EvqTemporary, EpqMedium, 4);
+        break;
+        
+    case EHTokMin12int:
+        new(&type) TType(min12int_bt, EvqTemporary, EpqMedium);
+        break;
+    case EHTokMin12int1:
+        new(&type) TType(min12int_bt, EvqTemporary, EpqMedium);
+        type.makeVector();
+        break;
+    case EHTokMin12int2:
+        new(&type) TType(min12int_bt, EvqTemporary, EpqMedium, 2);
+        break;
+    case EHTokMin12int3:
+        new(&type) TType(min12int_bt, EvqTemporary, EpqMedium, 3);
+        break;
+    case EHTokMin12int4:
+        new(&type) TType(min12int_bt, EvqTemporary, EpqMedium, 4);
+        break;
+        
+    case EHTokMin16uint:
+        new(&type) TType(min16uint_bt, EvqTemporary, EpqMedium);
+        break;
+    case EHTokMin16uint1:
+        new(&type) TType(min16uint_bt, EvqTemporary, EpqMedium);
+        type.makeVector();
+        break;
+    case EHTokMin16uint2:
+        new(&type) TType(min16uint_bt, EvqTemporary, EpqMedium, 2);
+        break;
+    case EHTokMin16uint3:
+        new(&type) TType(min16uint_bt, EvqTemporary, EpqMedium, 3);
+        break;
+    case EHTokMin16uint4:
+        new(&type) TType(min16uint_bt, EvqTemporary, EpqMedium, 4);
         break;
 
     case EHTokInt1x1:
@@ -1515,8 +1794,14 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
     // array_specifier
     TArraySizes* arraySizes = nullptr;
     acceptArraySpecifier(arraySizes);
-    if (arraySizes)
+    if (arraySizes) {
+        if (arraySizes->isImplicit()) {
+            parseContext.error(token.loc, "function parameter array cannot be implicitly sized", "", "");
+            return false;
+        }
+
         type->newArraySizes(*arraySizes);
+    }
 
     // post_decls
     acceptPostDecls(type->getQualifier());
@@ -1531,13 +1816,13 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 
 // Do the work to create the function definition in addition to
 // parsing the body (compound_statement).
-bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& node)
+bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& node, const TAttributeMap& attributes)
 {
     TFunction& functionDeclarator = parseContext.handleFunctionDeclarator(token.loc, function, false /* not prototype */);
     TSourceLoc loc = token.loc;
 
     // This does a pushScope()
-    node = parseContext.handleFunctionDefinition(loc, functionDeclarator);
+    node = parseContext.handleFunctionDefinition(loc, functionDeclarator, attributes);
 
     // compound_statement
     TIntermNode* functionBody = nullptr;
@@ -1624,7 +1909,8 @@ bool HlslGrammar::acceptExpression(TIntermTyped*& node)
 }
 
 // initializer
-//      : LEFT_BRACE initializer_list RIGHT_BRACE
+//      : LEFT_BRACE RIGHT_BRACE
+//      | LEFT_BRACE initializer_list RIGHT_BRACE
 //
 // initializer_list
 //      : assignment_expression COMMA assignment_expression COMMA ...
@@ -1635,8 +1921,15 @@ bool HlslGrammar::acceptInitializer(TIntermTyped*& node)
     if (! acceptTokenClass(EHTokLeftBrace))
         return false;
 
-    // initializer_list
+    // RIGHT_BRACE
     TSourceLoc loc = token.loc;
+    if (acceptTokenClass(EHTokRightBrace)) {
+        // a zero-length initializer list
+        node = intermediate.makeAggregate(loc);
+        return true;
+    }
+
+    // initializer_list
     node = nullptr;
     do {
         // assignment_expression
@@ -1707,6 +2000,8 @@ bool HlslGrammar::acceptAssignmentExpression(TIntermTyped*& node)
     }
 
     node = parseContext.handleAssign(loc, assignOp, node, rightNode);
+    node = parseContext.handleLvalue(loc, "assign", node);
+
     if (node == nullptr) {
         parseContext.error(loc, "could not create assignment", "", "");
         return false;
@@ -1871,6 +2166,10 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
 
     node = intermediate.addUnaryMath(unaryOp, node, loc);
 
+    // These unary ops require lvalues
+    if (unaryOp == EOpPreIncrement || unaryOp == EOpPreDecrement)
+        node = parseContext.handleLvalue(loc, "unary operator", node);
+
     return node != nullptr;
 }
 
@@ -1912,7 +2211,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
     } else if (acceptIdentifier(idToken)) {
         // identifier or function_call name
         if (! peekTokenClass(EHTokLeftParen)) {
-            node = parseContext.handleVariable(idToken.loc, idToken.symbol, token.string);
+            node = parseContext.handleVariable(idToken.loc, idToken.symbol, idToken.string);
         } else if (acceptFunctionCall(idToken, node)) {
             // function_call (nothing else to do yet)
         } else {
@@ -1923,6 +2222,20 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         // nothing found, can't post operate
         return false;
     }
+
+    // This is to guarantee we do this no matter how we get out of the stack frame.
+    // This way there's no bug if an early return forgets to do it.
+    struct tFinalize {
+        tFinalize(HlslParseContext& p) : parseContext(p) { }
+        ~tFinalize() { parseContext.finalizeFlattening(); }
+       HlslParseContext& parseContext;
+    } finalize(parseContext);
+
+    // Initialize the flattening accumulation data, so we can track data across multiple bracket or
+    // dot operators.  This can also be nested, e.g, for [], so we have to track each nesting
+    // level: hence the init and finalize.  Even though in practice these must be
+    // constants, they are parsed no matter what.
+    parseContext.initFlattening();
 
     // Something was found, chain as many postfix operations as exist.
     do {
@@ -1957,7 +2270,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
             node = parseContext.handleDotDereference(field.loc, node, *field.string);
 
             // In the event of a method node, we look for an open paren and accept the function call.
-            if (node->getAsMethodNode() != nullptr && peekTokenClass(EHTokLeftParen)) {
+            if (node != nullptr && node->getAsMethodNode() != nullptr && peekTokenClass(EHTokLeftParen)) {
                 if (! acceptFunctionCall(field, node, base)) {
                     expected("function parameters");
                     return false;
@@ -1985,6 +2298,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         case EOpPostDecrement:
             // DEC_OP
             node = intermediate.addUnaryMath(postOp, node, loc);
+            node = parseContext.handleLvalue(loc, "unary operator", node);
             break;
         default:
             assert(0);
@@ -2181,7 +2495,8 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
     statement = nullptr;
 
     // attributes
-    acceptAttributes();
+    TAttributeMap attributes;
+    acceptAttributes(attributes);
 
     // attributed_statement
     switch (peek()) {
@@ -2254,42 +2569,70 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
 //      | FLATTEN
 //      | FORCECASE
 //      | CALL
+//      | DOMAIN
+//      | EARLYDEPTHSTENCIL
+//      | INSTANCE
+//      | MAXTESSFACTOR
+//      | OUTPUTCONTROLPOINTS
+//      | OUTPUTTOPOLOGY
+//      | PARTITIONING
+//      | PATCHCONSTANTFUNC
+//      | NUMTHREADS LEFT_PAREN x_size, y_size,z z_size RIGHT_PAREN
 //
-void HlslGrammar::acceptAttributes()
+void HlslGrammar::acceptAttributes(TAttributeMap& attributes)
 {
-    // For now, accept the [ XXX(X) ] syntax, but drop.
+    // For now, accept the [ XXX(X) ] syntax, but drop all but
+    // numthreads, which is used to set the CS local size.
     // TODO: subset to correct set?  Pass on?
     do {
+        HlslToken idToken;
+
         // LEFT_BRACKET?
         if (! acceptTokenClass(EHTokLeftBracket))
             return;
 
         // attribute
-        if (peekTokenClass(EHTokIdentifier)) {
-            // 'token.string' is the attribute
-            advanceToken();
+        if (acceptIdentifier(idToken)) {
+            // 'idToken.string' is the attribute
         } else if (! peekTokenClass(EHTokRightBracket)) {
             expected("identifier");
             advanceToken();
         }
 
-        // (x)
+        TIntermAggregate* expressions = nullptr;
+
+        // (x, ...)
         if (acceptTokenClass(EHTokLeftParen)) {
+            expressions = new TIntermAggregate;
+
             TIntermTyped* node;
-            if (! acceptLiteral(node))
-                expected("literal");
-            // 'node' has the literal in it
+            bool expectingExpression = false;
+            
+            while (acceptAssignmentExpression(node)) {
+                expectingExpression = false;
+                expressions->getSequence().push_back(node);
+                if (acceptTokenClass(EHTokComma))
+                    expectingExpression = true;
+            }
+
+            // 'expressions' is an aggregate with the expressions in it
             if (! acceptTokenClass(EHTokRightParen))
                 expected(")");
+
+            // Error for partial or missing expression
+            if (expectingExpression || expressions->getSequence().empty())
+                expected("expression");
         }
 
         // RIGHT_BRACKET
-        if (acceptTokenClass(EHTokRightBracket))
-            continue;
+        if (!acceptTokenClass(EHTokRightBracket)) {
+            expected("]");
+            return;
+        }
 
-        expected("]");
-        return;
-
+        // Add any values we found into the attribute map.  This accepts
+        // (and ignores) values not mapping to a known TAttributeType;
+        attributes.setAttribute(idToken.string, expressions);
     } while (true);
 }
 
@@ -2600,31 +2943,41 @@ bool HlslGrammar::acceptDefaultLabel(TIntermNode*& statement)
 }
 
 // array_specifier
-//      : LEFT_BRACKET integer_expression RGHT_BRACKET post_decls // optional
+//      : LEFT_BRACKET integer_expression RGHT_BRACKET ... // optional
+//      : LEFT_BRACKET RGHT_BRACKET // optional
 //
 void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
 {
     arraySizes = nullptr;
 
-    if (! acceptTokenClass(EHTokLeftBracket))
+    // Early-out if there aren't any array dimensions
+    if (!peekTokenClass(EHTokLeftBracket))
         return;
 
-    TSourceLoc loc = token.loc;
-    TIntermTyped* sizeExpr;
-    if (! acceptAssignmentExpression(sizeExpr)) {
-        expected("array-sizing expression");
-        return;
-    }
-
-    if (! acceptTokenClass(EHTokRightBracket)) {
-        expected("]");
-        return;
-    }
-
-    TArraySize arraySize;
-    parseContext.arraySizeCheck(loc, sizeExpr, arraySize);
+    // If we get here, we have at least one array dimension.  This will track the sizes we find.
     arraySizes = new TArraySizes;
-    arraySizes->addInnerSize(arraySize);
+
+    // Collect each array dimension.
+    while (acceptTokenClass(EHTokLeftBracket)) {
+        TSourceLoc loc = token.loc;
+        TIntermTyped* sizeExpr = nullptr;
+
+        // Array sizing expression is optional.  If ommitted, array will be later sized by initializer list.
+        const bool hasArraySize = acceptAssignmentExpression(sizeExpr);
+
+        if (! acceptTokenClass(EHTokRightBracket)) {
+            expected("]");
+            return;
+        }
+
+        if (hasArraySize) {
+            TArraySize arraySize;
+            parseContext.arraySizeCheck(loc, sizeExpr, arraySize);
+            arraySizes->addInnerSize(arraySize);
+        } else {
+            arraySizes->addInnerSize(0);  // sized by initializers.
+        }
+    }
 }
 
 // post_decls

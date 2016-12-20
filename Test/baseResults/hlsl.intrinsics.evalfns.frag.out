@@ -2,7 +2,7 @@ hlsl.intrinsics.evalfns.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:3  Function Definition: main(f1;vf2;vf3;vf4;vi2; (global void)
+0:3  Function Definition: main(f1;vf2;vf3;vf4;vi2; (temp void)
 0:3    Function Parameters: 
 0:3      'inF1' (layout(location=0 ) in float)
 0:3      'inF2' (layout(location=1 ) in 2-component vector of float)
@@ -57,7 +57,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:3  Function Definition: main(f1;vf2;vf3;vf4;vi2; (global void)
+0:3  Function Definition: main(f1;vf2;vf3;vf4;vi2; (temp void)
 0:3    Function Parameters: 
 0:3      'inF1' (layout(location=0 ) in float)
 0:3      'inF2' (layout(location=1 ) in 2-component vector of float)

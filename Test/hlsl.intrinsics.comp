@@ -1,17 +1,17 @@
 
-#define gs     // TODO: define as groupshared when available in the grammar
-gs uint gs_ua;
-gs uint gs_ub;
-gs uint gs_uc;
-gs uint2 gs_ua2;
-gs uint2 gs_ub2;
-gs uint2 gs_uc2;
-gs uint3 gs_ua3;
-gs uint3 gs_ub3;
-gs uint3 gs_uc3;
-gs uint4 gs_ua4;
-gs uint4 gs_ub4;
-gs uint4 gs_uc4;
+
+groupshared uint gs_ua;
+groupshared uint gs_ub;
+groupshared uint gs_uc;
+groupshared uint2 gs_ua2;
+groupshared uint2 gs_ub2;
+groupshared uint2 gs_uc2;
+groupshared uint3 gs_ua3;
+groupshared uint3 gs_ub3;
+groupshared uint3 gs_uc3;
+groupshared uint4 gs_ua4;
+groupshared uint4 gs_ub4;
+groupshared uint4 gs_uc4;
 
 float ComputeShaderFunctionS(float inF0, float inF1, float inF2, uint inU0, uint inU1)
 {

@@ -1,6 +1,6 @@
 //
 //Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2013 LunarG, Inc.
+//Copyright (C) 2013-2016 LunarG, Inc.
 //
 //All rights reserved.
 //
@@ -48,7 +48,9 @@
 #include "../SPIRV/disassemble.h"
 #include <cstring>
 #include <cstdlib>
+#include <cctype>
 #include <cmath>
+#include <array>
 
 #include "../glslang/OSDependent/osinclude.h"
 
@@ -58,26 +60,30 @@ extern "C" {
 
 // Command-line options
 enum TOptions {
-    EOptionNone               = 0,
-    EOptionIntermediate       = (1 <<  0),
-    EOptionSuppressInfolog    = (1 <<  1),
-    EOptionMemoryLeakMode     = (1 <<  2),
-    EOptionRelaxedErrors      = (1 <<  3),
-    EOptionGiveWarnings       = (1 <<  4),
-    EOptionLinkProgram        = (1 <<  5),
-    EOptionMultiThreaded      = (1 <<  6),
-    EOptionDumpConfig         = (1 <<  7),
-    EOptionDumpReflection     = (1 <<  8),
-    EOptionSuppressWarnings   = (1 <<  9),
-    EOptionDumpVersions       = (1 << 10),
-    EOptionSpv                = (1 << 11),
-    EOptionHumanReadableSpv   = (1 << 12),
-    EOptionVulkanRules        = (1 << 13),
-    EOptionDefaultDesktop     = (1 << 14),
-    EOptionOutputPreprocessed = (1 << 15),
-    EOptionOutputHexadecimal  = (1 << 16),
-    EOptionReadHlsl           = (1 << 17),
-    EOptionCascadingErrors    = (1 << 18),
+    EOptionNone                 = 0,
+    EOptionIntermediate         = (1 <<  0),
+    EOptionSuppressInfolog      = (1 <<  1),
+    EOptionMemoryLeakMode       = (1 <<  2),
+    EOptionRelaxedErrors        = (1 <<  3),
+    EOptionGiveWarnings         = (1 <<  4),
+    EOptionLinkProgram          = (1 <<  5),
+    EOptionMultiThreaded        = (1 <<  6),
+    EOptionDumpConfig           = (1 <<  7),
+    EOptionDumpReflection       = (1 <<  8),
+    EOptionSuppressWarnings     = (1 <<  9),
+    EOptionDumpVersions         = (1 << 10),
+    EOptionSpv                  = (1 << 11),
+    EOptionHumanReadableSpv     = (1 << 12),
+    EOptionVulkanRules          = (1 << 13),
+    EOptionDefaultDesktop       = (1 << 14),
+    EOptionOutputPreprocessed   = (1 << 15),
+    EOptionOutputHexadecimal    = (1 << 16),
+    EOptionReadHlsl             = (1 << 17),
+    EOptionCascadingErrors      = (1 << 18),
+    EOptionAutoMapBindings      = (1 << 19),
+    EOptionFlattenUniformArrays = (1 << 20),
+    EOptionNoStorageFormat      = (1 << 21),
+    EOptionKeepUncalled         = (1 << 22),
 };
 
 //
@@ -96,7 +102,7 @@ enum TFailCode {
 //
 // Forward declarations.
 //
-EShLanguage FindLanguage(const std::string& name);
+EShLanguage FindLanguage(const std::string& name, bool parseSuffix=true);
 void CompileFile(const char* fileName, ShHandle);
 void usage();
 void FreeFileData(char** data);
@@ -155,7 +161,13 @@ int Options = 0;
 const char* ExecutableName = nullptr;
 const char* binaryFileName = nullptr;
 const char* entryPointName = nullptr;
+const char* sourceEntryPointName = nullptr;
 const char* shaderStageName = nullptr;
+
+std::array<unsigned int, EShLangCount> baseSamplerBinding;
+std::array<unsigned int, EShLangCount> baseTextureBinding;
+std::array<unsigned int, EShLangCount> baseImageBinding;
+std::array<unsigned int, EShLangCount> baseUboBinding;
 
 //
 // Create the default name for saving a binary if -o is not provided.
@@ -205,6 +217,35 @@ void Error(const char* message)
 }
 
 //
+// Process an optional binding base of the form:
+//   --argname [stage] base
+// Where stage is one of the forms accepted by FindLanguage, and base is an integer
+//
+void ProcessBindingBase(int& argc, char**& argv, std::array<unsigned int, EShLangCount>& base)
+{
+    if (argc < 2)
+        usage();
+
+    if (!isdigit(argv[1][0])) {
+        if (argc < 3) // this form needs one more argument
+            usage();
+    
+        // Parse form: --argname stage base
+        const EShLanguage lang = FindLanguage(argv[1], false);
+        base[lang] = atoi(argv[2]);
+        argc-= 2;
+        argv+= 2;
+    } else {
+        // Parse form: --argname base
+        for (int lang=0; lang<EShLangCount; ++lang)
+            base[lang] = atoi(argv[1]);
+
+        argc--;
+        argv++;
+    }
+}
+
+//
 // Do all command-line argument parsing.  This includes building up the work-items
 // to be processed later, and saving all the command-line options.
 //
@@ -212,6 +253,11 @@ void Error(const char* message)
 //
 void ProcessArguments(int argc, char* argv[])
 {
+    baseSamplerBinding.fill(0);
+    baseTextureBinding.fill(0);
+    baseImageBinding.fill(0);
+    baseUboBinding.fill(0);
+
     ExecutableName = argv[0];
     NumWorkItems = argc;  // will include some empties where the '-' options were, but it doesn't matter, they'll be 0
     Work = new glslang::TWorkItem*[NumWorkItems];
@@ -223,6 +269,56 @@ void ProcessArguments(int argc, char* argv[])
     for (; argc >= 1; argc--, argv++) {
         if (argv[0][0] == '-') {
             switch (argv[0][1]) {
+            case '-':
+                {
+                    std::string lowerword(argv[0]+2);
+                    std::transform(lowerword.begin(), lowerword.end(), lowerword.begin(), ::tolower);
+
+                    // handle --word style options
+                    if (lowerword == "shift-sampler-bindings" || // synonyms
+                        lowerword == "shift-sampler-binding"  ||
+                        lowerword == "ssb") {
+                        ProcessBindingBase(argc, argv, baseSamplerBinding);
+                    } else if (lowerword == "shift-texture-bindings" ||  // synonyms
+                               lowerword == "shift-texture-binding"  ||
+                               lowerword == "stb") {
+                        ProcessBindingBase(argc, argv, baseTextureBinding);
+                    } else if (lowerword == "shift-image-bindings" ||  // synonyms
+                               lowerword == "shift-image-binding"  ||
+                               lowerword == "sib") {
+                        ProcessBindingBase(argc, argv, baseImageBinding);
+                    } else if (lowerword == "shift-ubo-bindings" ||  // synonyms
+                               lowerword == "shift-ubo-binding"  ||
+                               lowerword == "sub") {
+                        ProcessBindingBase(argc, argv, baseUboBinding);
+                    } else if (lowerword == "auto-map-bindings" ||  // synonyms
+                               lowerword == "auto-map-binding"  || 
+                               lowerword == "amb") {
+                        Options |= EOptionAutoMapBindings;
+                    } else if (lowerword == "flatten-uniform-arrays" || // synonyms
+                               lowerword == "flatten-uniform-array"  ||
+                               lowerword == "fua") {
+                        Options |= EOptionFlattenUniformArrays;
+                    } else if (lowerword == "no-storage-format" || // synonyms
+                               lowerword == "nsf") {
+                        Options |= EOptionNoStorageFormat;
+                    } else if (lowerword == "source-entrypoint" || // synonyms
+                               lowerword == "sep") {
+                        sourceEntryPointName = argv[1];
+                        if (argc > 0) {
+                            argc--;
+                            argv++;
+                        } else
+                            Error("no <entry-point> provided for --source-entrypoint");
+                        break;
+                    } else if (lowerword == "keep-uncalled" || // synonyms
+                               lowerword == "ku") {
+                        Options |= EOptionKeepUncalled;
+                    } else {
+                        usage();
+                    }
+                }
+                break;
             case 'H':
                 Options |= EOptionHumanReadableSpv;
                 if ((Options & EOptionSpv) == 0) {
@@ -340,6 +436,10 @@ void ProcessArguments(int argc, char* argv[])
     // -o or -x makes no sense if there is no target binary
     if (binaryFileName && (Options & EOptionSpv) == 0)
         Error("no binary generation requested (e.g., -V)");
+
+    if ((Options & EOptionFlattenUniformArrays) != 0 &&
+        (Options & EOptionReadHlsl) == 0)
+        Error("uniform array flattening only valid when compiling HLSL source.");
 }
 
 //
@@ -363,6 +463,8 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgReadHlsl);
     if (Options & EOptionCascadingErrors)
         messages = (EShMessages)(messages | EShMsgCascadingErrors);
+    if (Options & EOptionKeepUncalled)
+        messages = (EShMessages)(messages | EShMsgKeepUncalled);
 }
 
 //
@@ -461,6 +563,19 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         shader->setStringsWithLengthsAndNames(compUnit.text, NULL, compUnit.fileNameList, 1);
         if (entryPointName) // HLSL todo: this needs to be tracked per compUnits
             shader->setEntryPoint(entryPointName);
+        if (sourceEntryPointName)
+            shader->setSourceEntryPoint(sourceEntryPointName);
+
+        shader->setShiftSamplerBinding(baseSamplerBinding[compUnit.stage]);
+        shader->setShiftTextureBinding(baseTextureBinding[compUnit.stage]);
+        shader->setShiftImageBinding(baseImageBinding[compUnit.stage]);
+        shader->setShiftUboBinding(baseUboBinding[compUnit.stage]);
+        shader->setFlattenUniformArrays((Options & EOptionFlattenUniformArrays) != 0);
+        shader->setNoStorageFormat((Options & EOptionNoStorageFormat) != 0);
+
+        if (Options & EOptionAutoMapBindings)
+            shader->setAutoMapBindings(true);
+                
         shaders.push_back(shader);
 
         const int defaultVersion = Options & EOptionDefaultDesktop? 110: 100;
@@ -499,6 +614,12 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
     if (! (Options & EOptionOutputPreprocessed) && ! program.link(messages))
         LinkFailed = true;
 
+    // Map IO
+    if (Options & EOptionSpv) {
+        if (!program.mapIO())
+            LinkFailed = true;
+    }
+    
     // Report
     if (! (Options & EOptionSuppressInfolog) &&
         ! (Options & EOptionMemoryLeakMode)) {
@@ -577,11 +698,11 @@ void CompileAndLinkShaderFiles()
     // they are all getting linked together.)
     glslang::TWorkItem* workItem;
     while (Worklist.remove(workItem)) {
-        ShaderCompUnit compUnit = {
+        ShaderCompUnit compUnit(
             FindLanguage(workItem->name),
             workItem->name,
             ReadFileData(workItem->name.c_str())
-        };
+        );
 
         if (! compUnit.text) {
             usage();
@@ -705,15 +826,22 @@ int C_DECL main(int argc, char* argv[])
 //   .frag = fragment
 //   .comp = compute
 //
-EShLanguage FindLanguage(const std::string& name)
+EShLanguage FindLanguage(const std::string& name, bool parseSuffix)
 {
-    size_t ext = name.rfind('.');
-    if (ext == std::string::npos) {
-        usage();
-        return EShLangVertex;
+    size_t ext = 0;
+
+    // Search for a suffix on a filename: e.g, "myfile.frag".  If given
+    // the suffix directly, we skip looking the '.'
+    if (parseSuffix) {
+        ext = name.rfind('.');
+        if (ext == std::string::npos) {
+            usage();
+            return EShLangVertex;
+        }
+        ++ext;
     }
 
-    std::string suffix = name.substr(ext + 1, std::string::npos);
+    std::string suffix = name.substr(ext, std::string::npos);
     if (shaderStageName)
         suffix = shaderStageName;
 
@@ -831,6 +959,34 @@ void usage()
            "  -v          print version strings\n"
            "  -w          suppress warnings (except as required by #extension : warn)\n"
            "  -x          save 32-bit hexadecimal numbers as text, requires a binary option (e.g., -V)\n"
+           "\n"
+           "  --shift-sampler-binding [stage] num     set base binding number for samplers\n"
+           "  --ssb [stage] num                       synonym for --shift-sampler-binding\n"
+           "\n"
+           "  --shift-texture-binding [stage] num     set base binding number for textures\n"
+           "  --stb [stage] num                       synonym for --shift-texture-binding\n"
+           "\n"
+           "  --shift-image-binding [stage] num       set base binding number for images (uav)\n"
+           "  --sib [stage] num                       synonym for --shift-image-binding\n"
+           "\n"
+           "  --shift-UBO-binding [stage] num         set base binding number for UBOs\n"
+           "  --sub [stage] num                       synonym for --shift-UBO-binding\n"
+           "\n"
+           "  --auto-map-bindings                     automatically bind uniform variables without\n"
+           "                                          explicit bindings.\n"
+           "  --amb                                   synonym for --auto-map-bindings\n"
+           "\n"
+           "  --flatten-uniform-arrays                flatten uniform texture & sampler arrays to scalars\n"
+           "  --fua                                   synonym for --flatten-uniform-arrays\n"
+           "\n"
+           "  --no-storage-format                     use Unknown image format\n"
+           "  --nsf                                   synonym for --no-storage-format\n"
+           "\n"
+           "  --source-entrypoint name                the given shader source function is renamed to be the entry point given in -e\n"
+           "  --sep                                   synonym for --source-entrypoint\n"
+           "\n"
+           "  --keep-uncalled                         don't eliminate uncalled functions when linking\n"
+           "  --ku                                    synonym for --keep-uncalled\n"
            );
 
     exit(EFailUsage);

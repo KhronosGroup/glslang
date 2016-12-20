@@ -36,11 +36,243 @@
 
 // Implement the TParseContextBase class.
 
+#include <cstdarg>
+
 #include "ParseHelper.h"
 
 extern int yyparse(glslang::TParseContext*);
 
 namespace glslang {
+
+//
+// Used to output syntax, parsing, and semantic errors.
+//
+
+void TParseContextBase::outputMessage(const TSourceLoc& loc, const char* szReason,
+                                      const char* szToken,
+                                      const char* szExtraInfoFormat,
+                                      TPrefixType prefix, va_list args)
+{
+    const int maxSize = MaxTokenLength + 200;
+    char szExtraInfo[maxSize];
+
+    safe_vsprintf(szExtraInfo, maxSize, szExtraInfoFormat, args);
+
+    infoSink.info.prefix(prefix);
+    infoSink.info.location(loc);
+    infoSink.info << "'" << szToken <<  "' : " << szReason << " " << szExtraInfo << "\n";
+
+    if (prefix == EPrefixError) {
+        ++numErrors;
+    }
+}
+
+void C_DECL TParseContextBase::error(const TSourceLoc& loc, const char* szReason, const char* szToken,
+                                     const char* szExtraInfoFormat, ...)
+{
+    if (messages & EShMsgOnlyPreprocessor)
+        return;
+    va_list args;
+    va_start(args, szExtraInfoFormat);
+    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
+    va_end(args);
+
+    if ((messages & EShMsgCascadingErrors) == 0)
+        currentScanner->setEndOfInput();
+}
+
+void C_DECL TParseContextBase::warn(const TSourceLoc& loc, const char* szReason, const char* szToken,
+                                    const char* szExtraInfoFormat, ...)
+{
+    if (suppressWarnings())
+        return;
+    va_list args;
+    va_start(args, szExtraInfoFormat);
+    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
+    va_end(args);
+}
+
+void C_DECL TParseContextBase::ppError(const TSourceLoc& loc, const char* szReason, const char* szToken,
+                                       const char* szExtraInfoFormat, ...)
+{
+    va_list args;
+    va_start(args, szExtraInfoFormat);
+    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixError, args);
+    va_end(args);
+
+    if ((messages & EShMsgCascadingErrors) == 0)
+        currentScanner->setEndOfInput();
+}
+
+void C_DECL TParseContextBase::ppWarn(const TSourceLoc& loc, const char* szReason, const char* szToken,
+                                      const char* szExtraInfoFormat, ...)
+{
+    va_list args;
+    va_start(args, szExtraInfoFormat);
+    outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
+    va_end(args);
+}
+
+//
+// Both test and if necessary, spit out an error, to see if the node is really
+// an l-value that can be operated on this way.
+//
+// Returns true if there was an error.
+//
+bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
+{
+    TIntermBinary* binaryNode = node->getAsBinaryNode();
+
+    if (binaryNode) {
+        switch(binaryNode->getOp()) {
+        case EOpIndexDirect:
+        case EOpIndexIndirect:     // fall through
+        case EOpIndexDirectStruct: // fall through
+        case EOpVectorSwizzle:
+            return lValueErrorCheck(loc, op, binaryNode->getLeft());
+        default:
+            break;
+        }
+        error(loc, " l-value required", op, "", "");
+
+        return true;
+    }
+
+    const char* symbol = nullptr;
+    TIntermSymbol* symNode = node->getAsSymbolNode();
+    if (symNode != nullptr)
+        symbol = symNode->getName().c_str();
+
+    const char* message = nullptr;
+    switch (node->getQualifier().storage) {
+    case EvqConst:          message = "can't modify a const";        break;
+    case EvqConstReadOnly:  message = "can't modify a const";        break;
+    case EvqUniform:        message = "can't modify a uniform";      break;
+    case EvqBuffer:
+        if (node->getQualifier().readonly)
+            message = "can't modify a readonly buffer";
+        break;
+
+    default:
+        //
+        // Type that can't be written to?
+        //
+        switch (node->getBasicType()) {
+        case EbtSampler:
+            message = "can't modify a sampler";
+            break;
+        case EbtAtomicUint:
+            message = "can't modify an atomic_uint";
+            break;
+        case EbtVoid:
+            message = "can't modify void";
+            break;
+        default:
+            break;
+        }
+    }
+
+    if (message == nullptr && binaryNode == nullptr && symNode == nullptr) {
+        error(loc, " l-value required", op, "", "");
+
+        return true;
+    }
+
+    //
+    // Everything else is okay, no error.
+    //
+    if (message == nullptr)
+        return false;
+
+    //
+    // If we get here, we have an error and a message.
+    //
+    if (symNode)
+        error(loc, " l-value required", op, "\"%s\" (%s)", symbol, message);
+    else
+        error(loc, " l-value required", op, "(%s)", message);
+
+    return true;
+}
+
+// Test for and give an error if the node can't be read from.
+void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, TIntermTyped* node)
+{
+    if (! node)
+        return;
+
+    TIntermBinary* binaryNode = node->getAsBinaryNode();
+    if (binaryNode) {
+        switch(binaryNode->getOp()) {
+        case EOpIndexDirect:
+        case EOpIndexIndirect:
+        case EOpIndexDirectStruct:
+        case EOpVectorSwizzle:
+            rValueErrorCheck(loc, op, binaryNode->getLeft());
+        default:
+            break;
+        }
+
+        return;
+    }
+
+    TIntermSymbol* symNode = node->getAsSymbolNode();
+    if (symNode && symNode->getQualifier().writeonly)
+        error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
+}
+
+// Add a linkage symbol node for 'symbol', which
+// must have its type fully edited, as this will snapshot the type.
+// It is okay if symbol becomes invalid before finish().
+void TParseContextBase::trackLinkage(TSymbol& symbol)
+{
+    if (!parsingBuiltins)
+        intermediate.addSymbolLinkageNode(linkage, symbol);
+}
+
+// Add 'symbol' to the list of deferred linkage symbols, which
+// are later processed in finish(), at which point the symbol
+// must still be valid.
+// It is okay if the symbol's type will be subsequently edited.
+void TParseContextBase::trackLinkageDeferred(TSymbol& symbol)
+{
+    if (!parsingBuiltins)
+        linkageSymbols.push_back(&symbol);
+}
+
+// Make a shared symbol have a non-shared version that can be edited by the current 
+// compile, such that editing its type will not change the shared version and will
+// effect all nodes already sharing it (non-shallow type),
+// or adopting its full type after being edited (shallow type).
+void TParseContextBase::makeEditable(TSymbol*& symbol)
+{
+    // copyUp() does a deep copy of the type.
+    symbol = symbolTable.copyUp(symbol);
+
+    // Save it (deferred, so it can be edited first) in the AST for linker use.
+    if (symbol)
+        trackLinkageDeferred(*symbol);
+}
+
+// Return a writable version of the variable 'name'.
+//
+// Return nullptr if 'name' is not found.  This should mean
+// something is seriously wrong (e.g., compiler asking self for
+// built-in that doesn't exist).
+TVariable* TParseContextBase::getEditableVariable(const char* name)
+{
+    bool builtIn;
+    TSymbol* symbol = symbolTable.find(name, &builtIn);
+
+    assert(symbol != nullptr);
+    if (symbol == nullptr)
+        return nullptr;
+
+    if (builtIn)
+        makeEditable(symbol);
+
+    return symbol->getAsVariable();
+}
 
 // Select the best matching function for 'call' from 'candidateList'.
 //
@@ -72,7 +304,7 @@ namespace glslang {
 const TFunction* TParseContextBase::selectFunction(
     const TVector<const TFunction*> candidateList,
     const TFunction& call,
-    std::function<bool(const TType& from, const TType& to)> convertible,
+    std::function<bool(const TType& from, const TType& to, TOperator op, int arg)> convertible,
     std::function<bool(const TType& from, const TType& to1, const TType& to2)> better,
     /* output */ bool& tie)
 {
@@ -124,13 +356,13 @@ const TFunction* TParseContextBase::selectFunction(
         bool viable = true;
         for (int param = 0; param < candidate.getParamCount(); ++param) {
             if (candidate[param].type->getQualifier().isParamInput()) {
-                if (! convertible(*call[param].type, *candidate[param].type)) {
+                if (! convertible(*call[param].type, *candidate[param].type, candidate.getBuiltInOp(), param)) {
                     viable = false;
                     break;
                 }
             }
             if (candidate[param].type->getQualifier().isParamOutput()) {
-                if (! convertible(*candidate[param].type, *call[param].type)) {
+                if (! convertible(*candidate[param].type, *call[param].type, candidate.getBuiltInOp(), param)) {
                     viable = false;
                     break;
                 }
@@ -150,7 +382,7 @@ const TFunction* TParseContextBase::selectFunction(
         return viableCandidates.front();
 
     // 4. find best...
-    auto betterParam = [&call, &better](const TFunction& can1, const TFunction& can2){
+    auto betterParam = [&call, &better](const TFunction& can1, const TFunction& can2) -> bool {
         // is call -> can2 better than call -> can1 for any parameter
         bool hasBetterParam = false;
         for (int param = 0; param < call.getParamCount(); ++param) {
@@ -179,6 +411,72 @@ const TFunction* TParseContextBase::selectFunction(
     }
 
     return incumbent;
+}
+
+//
+// Make the passed-in variable information become a member of the
+// global uniform block.  If this doesn't exist yet, make it.
+//
+void TParseContextBase::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName)
+{
+    // make the global block, if not yet made
+    if (globalUniformBlock == nullptr) {
+        TString& blockName = *NewPoolTString(getGlobalUniformBlockName());
+        TQualifier blockQualifier;
+        blockQualifier.clear();
+        blockQualifier.storage = EvqUniform;
+        TType blockType(new TTypeList, blockName, blockQualifier);
+        TString* instanceName = NewPoolTString("");
+        globalUniformBlock = new TVariable(instanceName, blockType, true);
+        firstNewMember = 0;
+    }
+
+    // add the requested member as a member to the block
+    TType* type = new TType;
+    type->shallowCopy(memberType);
+    type->setFieldName(memberName);
+    TTypeLoc typeLoc = {type, loc};
+    globalUniformBlock->getType().getWritableStruct()->push_back(typeLoc);
+}
+
+//
+// Insert into the symbol table the global uniform block created in
+// growGlobalUniformBlock(). The variables added as members won't be
+// found unless this is done.
+//
+bool TParseContextBase::insertGlobalUniformBlock()
+{
+    if (globalUniformBlock == nullptr)
+        return true;
+
+    int numMembers = (int)globalUniformBlock->getType().getStruct()->size();
+    bool inserted = false;
+    if (firstNewMember == 0) {
+        // This is the first request; we need a normal symbol table insert
+        inserted = symbolTable.insert(*globalUniformBlock);
+        if (inserted)
+            trackLinkageDeferred(*globalUniformBlock);
+    } else if (firstNewMember <= numMembers) {
+        // This is a follow-on request; we need to amend the first insert
+        inserted = symbolTable.amend(*globalUniformBlock, firstNewMember);
+    }
+
+    if (inserted) {
+        finalizeGlobalUniformBlockLayout(*globalUniformBlock);
+        firstNewMember = numMembers;
+    }
+
+    return inserted;
+}
+
+void TParseContextBase::finish()
+{
+    if (!parsingBuiltins) {
+        // Transfer the linkage symbols to AST nodes
+        for (auto i = linkageSymbols.begin(); i != linkageSymbols.end(); ++i)
+            intermediate.addSymbolLinkageNode(linkage, **i);
+        intermediate.addSymbolLinkageNodes(linkage, getLanguage(), symbolTable);
+    }
 }
 
 } // end namespace glslang

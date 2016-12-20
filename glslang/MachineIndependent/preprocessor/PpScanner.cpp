@@ -117,6 +117,10 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     int declen;
     int str_len;
     int isDouble = 0;
+#ifdef AMD_EXTENSIONS
+    int isFloat16 = 0;
+    bool enableFloat16 = parseContext.version >= 450 && parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float);
+#endif
 
     declen = 0;
 
@@ -200,6 +204,28 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                     len = 1,str_len=1;
                 }
             }
+#ifdef AMD_EXTENSIONS
+        } else if (enableFloat16 && (ch == 'h' || ch == 'H')) {
+            parseContext.float16Check(ppToken->loc, "half floating-point suffix");
+            if (!HasDecimalOrExponent)
+                parseContext.ppError(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
+            int ch2 = getChar();
+            if (ch2 != 'f' && ch2 != 'F') {
+                ungetChar();
+                ungetChar();
+            }
+            else {
+                if (len < MaxTokenLength) {
+                    str[len++] = (char)ch;
+                    str[len++] = (char)ch2;
+                    isFloat16 = 1;
+                }
+                else {
+                    parseContext.ppError(ppToken->loc, "float literal too long", "", "");
+                    len = 1, str_len = 1;
+                }
+            }
+#endif
         } else if (ch == 'f' || ch == 'F') {
             parseContext.profileRequires(ppToken->loc,  EEsProfile, 300, nullptr, "floating-point suffix");
             if (! parseContext.relaxedErrors())
@@ -222,6 +248,10 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
 
     if (isDouble)
         return PpAtomConstDouble;
+#ifdef AMD_EXTENSIONS
+    else if (isFloat16)
+        return PpAtomConstFloat16;
+#endif
     else
         return PpAtomConstFloat;
 }
@@ -709,6 +739,11 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
     for(;;) {
         token = scanToken(ppToken);
         ppToken->token = token;
+
+        // Handle token-pasting logic
+        token = tokenPaste(*ppToken);
+        ppToken->token = token;
+
         if (token == EndOfInput) {
             missingEndifCheck();
             return nullptr;
@@ -744,6 +779,9 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
         case PpAtomConstInt64:
         case PpAtomConstUint64:
         case PpAtomConstDouble:
+#ifdef AMD_EXTENSIONS
+        case PpAtomConstFloat16:
+#endif
             tokenString = ppToken->name;
             break;
         case PpAtomConstString:
@@ -765,6 +803,47 @@ const char* TPpContext::tokenize(TPpToken* ppToken)
         if (tokenString)
             return tokenString;
     }
+}
+
+//
+// Do all token-pasting related combining of two pasted tokens when getting a
+// stream of tokens from a replacement list. Degenerates to no processing if a
+// replacement list is not the source of the token stream.
+//
+int TPpContext::tokenPaste(TPpToken& ppToken)
+{
+    // starting with ## is illegal, skip to next token
+    if (ppToken.token == PpAtomPaste) {
+        parseContext.ppError(ppToken.loc, "unexpected location", "##", "");
+        ppToken.token = scanToken(&ppToken);
+    }
+
+    // ## can be chained, process all in the chain at once
+    while (peekPasting()) {
+        TPpToken pastedPpToken;
+
+        // next token has to be ##
+        pastedPpToken.token = scanToken(&pastedPpToken);
+        assert(pastedPpToken.token == PpAtomPaste);
+
+        if (endOfReplacementList()) {
+            parseContext.ppError(ppToken.loc, "unexpected location; end of replacement list", "##", "");
+            break;
+        }
+
+        // get the token after the ##
+        scanToken(&pastedPpToken);
+
+        // combine the tokens
+        if (strlen(ppToken.name) + strlen(pastedPpToken.name) > MaxTokenLength)
+            parseContext.ppError(ppToken.loc, "combined tokens are too long", "##", "");
+        strncat(ppToken.name, pastedPpToken.name, MaxTokenLength - strlen(ppToken.name));
+        ppToken.atom = LookUpAddString(ppToken.name);
+        if (ppToken.token != PpAtomIdentifier)
+            parseContext.ppError(ppToken.loc, "only supported for preprocessing identifiers", "##", "");
+    }
+
+    return ppToken.token;
 }
 
 // Checks if we've seen balanced #if...#endif

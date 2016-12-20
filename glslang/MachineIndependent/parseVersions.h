@@ -76,6 +76,9 @@ public:
     virtual void updateExtensionBehavior(int line, const char* const extension, const char* behavior);
     virtual void fullIntegerCheck(const TSourceLoc&, const char* op);
     virtual void doubleCheck(const TSourceLoc&, const char* op);
+#ifdef AMD_EXTENSIONS
+    virtual void float16Check(const TSourceLoc&, const char* op, bool builtIn = false);
+#endif
     virtual void int64Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void spvRemoved(const TSourceLoc&, const char* op);
     virtual void vulkanRemoved(const TSourceLoc&, const char* op);
@@ -107,6 +110,7 @@ public:
     void getPreamble(std::string&);
     bool relaxedErrors()    const { return (messages & EShMsgRelaxedErrors) != 0; }
     bool suppressWarnings() const { return (messages & EShMsgSuppressWarnings) != 0; }
+    bool isReadingHLSL()    const { return (messages & EShMsgReadHlsl) == EShMsgReadHlsl; }
 
     TInfoSink& infoSink;
 

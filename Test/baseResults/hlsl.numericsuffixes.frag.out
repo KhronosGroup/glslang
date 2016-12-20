@@ -2,7 +2,7 @@ hlsl.numericsuffixes.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:5  Function Definition: main( (global structure{temp 4-component vector of float color})
+0:5  Function Definition: main( (temp structure{temp 4-component vector of float color})
 0:5    Function Parameters: 
 0:?     Sequence
 0:7      Sequence
@@ -58,8 +58,8 @@ gl_FragCoord origin is upper left
 0:18        Construct vec4 (temp 4-component vector of float)
 0:18          Convert int to float (temp float)
 0:18            'r07' (temp int)
-0:?       Sequence
-0:?         Sequence
+0:19      Sequence
+0:19        Sequence
 0:19          move second child to first child (temp 4-component vector of float)
 0:?             'color' (layout(location=0 ) out 4-component vector of float)
 0:19            color: direct index for structure (temp 4-component vector of float)
@@ -77,7 +77,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:5  Function Definition: main( (global structure{temp 4-component vector of float color})
+0:5  Function Definition: main( (temp structure{temp 4-component vector of float color})
 0:5    Function Parameters: 
 0:?     Sequence
 0:7      Sequence
@@ -133,8 +133,8 @@ gl_FragCoord origin is upper left
 0:18        Construct vec4 (temp 4-component vector of float)
 0:18          Convert int to float (temp float)
 0:18            'r07' (temp int)
-0:?       Sequence
-0:?         Sequence
+0:19      Sequence
+0:19        Sequence
 0:19          move second child to first child (temp 4-component vector of float)
 0:?             'color' (layout(location=0 ) out 4-component vector of float)
 0:19            color: direct index for structure (temp 4-component vector of float)

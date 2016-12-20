@@ -20,6 +20,10 @@ tbuffer tbufName : register(b8) {
     float f5  : packoffset(c4.z);
     float f6  : packoffset(c);
     float f7;
+                 float3x4 m1;
+       row_major float3x4 m2;
+    column_major float3x4 m3;
+                 float3x4 m4;
 };
 
 float4 PixelShaderFunction(float4 input) : COLOR0

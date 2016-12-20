@@ -43,7 +43,7 @@ using CompileToAstTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
 TEST_P(CompileToAstTest, FromFile)
 {
-    loadFileCompileAndCheck(GLSLANG_TEST_DIRECTORY, GetParam(),
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
                             Source::GLSL, Semantics::OpenGL,
                             Target::AST);
 }
@@ -178,6 +178,7 @@ INSTANTIATE_TEST_CASE_P(
         "syntaxError.frag",
         "test.frag",
         "texture.frag",
+        "tokenPaste.vert",
         "types.frag",
         "uniformArray.frag",
         "variableArrayIndex.frag",

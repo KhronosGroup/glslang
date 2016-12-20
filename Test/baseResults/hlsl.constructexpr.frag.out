@@ -2,7 +2,7 @@ hlsl.constructexpr.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:4  Function Definition: main( (global structure{temp 4-component vector of float color})
+0:4  Function Definition: main( (temp structure{temp 4-component vector of float color})
 0:4    Function Parameters: 
 0:?     Sequence
 0:6      Constant:
@@ -34,8 +34,8 @@ gl_FragCoord origin is upper left
 0:15          1.000000
 0:15          1.000000
 0:15          1.000000
-0:?       Sequence
-0:?         Sequence
+0:16      Sequence
+0:16        Sequence
 0:16          move second child to first child (temp 4-component vector of float)
 0:?             'color' (layout(location=0 ) out 4-component vector of float)
 0:16            color: direct index for structure (temp 4-component vector of float)
@@ -53,7 +53,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:4  Function Definition: main( (global structure{temp 4-component vector of float color})
+0:4  Function Definition: main( (temp structure{temp 4-component vector of float color})
 0:4    Function Parameters: 
 0:?     Sequence
 0:6      Constant:
@@ -85,8 +85,8 @@ gl_FragCoord origin is upper left
 0:15          1.000000
 0:15          1.000000
 0:15          1.000000
-0:?       Sequence
-0:?         Sequence
+0:16      Sequence
+0:16        Sequence
 0:16          move second child to first child (temp 4-component vector of float)
 0:?             'color' (layout(location=0 ) out 4-component vector of float)
 0:16            color: direct index for structure (temp 4-component vector of float)
