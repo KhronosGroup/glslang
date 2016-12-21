@@ -115,6 +115,62 @@ public:
     char   name[MaxTokenLength + 1];
 };
 
+class TStringAtomMap {
+//
+// Implementation is in PpAtom.cpp
+//
+// Maintain a bi-directional mapping between relevant preprocessor strings and
+// "atoms" which a unique integers (small, contiguous, not hash-like) per string.
+//
+public:
+    TStringAtomMap();
+
+    // Map string -> atom.
+    // Return 0 if no existing string.
+    int getAtom(const char* s) const
+    {
+        auto it = atomMap.find(s);
+        return it == atomMap.end() ? 0 : it->second;
+    }
+
+    // Map a new or existing string -> atom, inventing a new atom if necessary.
+    int getAddAtom(const char* s)
+    {
+        int atom = getAtom(s);
+        if (atom == 0) {
+            atom = nextAtom++;
+            addAtomFixed(s, atom);
+        }
+        return atom;
+    }
+
+    // Map atom -> string.
+    const char* getString(int atom) const { return stringMap[atom]->c_str(); }
+
+protected:
+    TStringAtomMap(TStringAtomMap&);
+    TStringAtomMap& operator=(TStringAtomMap&);
+
+    TUnorderedMap<TString, int> atomMap;
+    TVector<const TString*> stringMap;    // these point into the TString in atomMap
+    int nextAtom;
+
+    // Bad source characters can lead to bad atoms, so gracefully handle those by
+    // pre-filling the table with them (to avoid if tests later).
+    TString badToken;
+
+    // Add bi-directional mappings:
+    //  - string -> atom
+    //  - atom -> string
+    void addAtomFixed(const char* s, int atom)
+    {
+        auto it = atomMap.insert(std::pair<TString, int>(s, atom)).first;
+        if (stringMap.size() < (size_t)atom + 1)
+            stringMap.resize(atom + 100, &badToken);
+        stringMap[atom] = &it->first;
+    }
+};
+
 class TInputScanner;
 
 // This class is the result of turning a huge pile of C code communicating through globals
@@ -196,6 +252,7 @@ protected:
     TPpContext(TPpContext&);
     TPpContext& operator=(TPpContext&);
 
+    TStringAtomMap atomStrings;
     char*   preamble;               // string to parse, all before line 1 of string 0, it is 0 if no preamble
     int     preambleLength;
     char**  strings;                // official strings of shader, starting a string 0 line 1
@@ -538,21 +595,6 @@ protected:
     std::string rootFileName;
     std::stack<TShader::Includer::IncludeResult*> includeStack;
     std::string currentSourceFile;
-
-    //
-    // From PpAtom.cpp
-    //
-    typedef TUnorderedMap<TString, int> TAtomMap;
-    typedef TVector<const TString*> TStringMap;
-
-    TAtomMap atomMap;
-    TStringMap stringMap;
-    int nextAtom;
-    void InitAtomTable();
-    void AddAtomFixed(const char* s, int atom);
-    int LookUpString(const char* s);
-    int LookUpAddString(const char* s);
-    const char* GetAtomString(int atom);
 };
 
 } // end namespace glslang

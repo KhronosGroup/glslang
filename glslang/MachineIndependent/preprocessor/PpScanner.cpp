@@ -774,7 +774,7 @@ int TPpContext::tokenize(TPpToken& ppToken)
             parseContext.ppError(ppToken.loc, "character literals not supported", "\'", "");
             continue;
         default:
-            strcpy(ppToken.name, GetAtomString(token));
+            strcpy(ppToken.name, atomStrings.getString(token));
             break;
         }
 
@@ -836,8 +836,8 @@ int TPpContext::tokenPaste(int token, TPpToken& ppToken)
         case PpAtomAnd:
         case PpAtomOr:
         case PpAtomXor:
-            strcpy(ppToken.name, GetAtomString(resultToken));
-            strcpy(pastedPpToken.name, GetAtomString(token));
+            strcpy(ppToken.name, atomStrings.getString(resultToken));
+            strcpy(pastedPpToken.name, atomStrings.getString(token));
             break;
         default:
             parseContext.ppError(ppToken.loc, "not supported for these tokens", "##", "");
@@ -853,7 +853,7 @@ int TPpContext::tokenPaste(int token, TPpToken& ppToken)
 
         // correct the kind of token we are making, if needed (identifiers stay identifiers)
         if (resultToken != PpAtomIdentifier) {
-            int newToken = LookUpString(ppToken.name);
+            int newToken = atomStrings.getAtom(ppToken.name);
             if (newToken > 0)
                 resultToken = newToken;
             else

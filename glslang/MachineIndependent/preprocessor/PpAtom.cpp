@@ -150,61 +150,12 @@ const struct {
 namespace glslang {
 
 //
-// Map an existing string to an atom.
-//
-// Return 0 if no existing string.
-//
-int TPpContext::LookUpString(const char* s)
-{
-    auto it = atomMap.find(s);
-    return it == atomMap.end() ? 0 : it->second;
-}
-
-//
-// Map a new or existing string to an atom, inventing a new atom if necessary.
-//
-int TPpContext::LookUpAddString(const char* s)
-{
-    int atom = LookUpString(s);
-    if (atom == 0) {
-        atom = nextAtom++;
-        AddAtomFixed(s, atom);
-    }
-
-    return atom;
-}
-
-//
-// Lookup up mapping of atom -> string.
-//
-const char* TPpContext::GetAtomString(int atom)
-{
-    if ((size_t)atom >= stringMap.size())
-        return "<bad token>";
-
-    const TString* atomString = stringMap[atom];
-
-    return atomString ? atomString->c_str() : "<bad token>";
-}
-
-//
-// Add mappings:
-//  - string -> atom
-//  - atom -> string
-//
-void TPpContext::AddAtomFixed(const char* s, int atom)
-{
-    auto it = atomMap.insert(std::pair<TString, int>(s, atom)).first;
-    if (stringMap.size() < (size_t)atom + 1)
-        stringMap.resize(atom + 100, 0);
-    stringMap[atom] = &it->first;
-}
-
-//
 // Initialize the atom table.
 //
-void TPpContext::InitAtomTable()
+TStringAtomMap::TStringAtomMap()
 {
+    badToken.assign("<bad token>");
+
     // Add single character tokens to the atom table:
     const char* s = "~!%^&*()-+=|,.<>/?;:[]{}#\\";
     char t[2];
@@ -212,13 +163,13 @@ void TPpContext::InitAtomTable()
     t[1] = '\0';
     while (*s) {
         t[0] = *s;
-        AddAtomFixed(t, s[0]);
+        addAtomFixed(t, s[0]);
         s++;
     }
 
     // Add multiple character scanner tokens :
     for (size_t ii = 0; ii < sizeof(tokens)/sizeof(tokens[0]); ii++)
-        AddAtomFixed(tokens[ii].str, tokens[ii].val);
+        addAtomFixed(tokens[ii].str, tokens[ii].val);
 
     nextAtom = PpAtomLast;
 }

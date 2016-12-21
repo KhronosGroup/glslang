@@ -87,8 +87,6 @@ TPpContext::TPpContext(TParseContextBase& pc, const std::string& rootFileName, T
     rootFileName(rootFileName),
     currentSourceFile(rootFileName)
 {
-    InitAtomTable(); 
-
     ifdepth = 0;
     for (elsetracker = 0; elsetracker < maxIfNesting; elsetracker++)
         elseSeen[elsetracker] = false;
