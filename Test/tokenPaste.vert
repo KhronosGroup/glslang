@@ -50,3 +50,21 @@ float simplePaste(ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF01234567
 
 // non-identifiers
 int a = simplePaste(11,12);
+
+// operators
+#define MAKE_OP(L, R) L ## R
+const int aop = 10;
+const int bop = 4;
+int cop = aop MAKE_OP(<, <) bop;
+bool dop = aop MAKE_OP(!,=) bop;
+
+#define MAKE_OP3(L, M, R) L ## M ## R
+
+void foo()
+{
+    int e = 16;
+    e MAKE_OP3(>,>,=) 2;
+
+    // recovery from bad op
+    bool f = e MAKE_OP(>,!) 5;
+}

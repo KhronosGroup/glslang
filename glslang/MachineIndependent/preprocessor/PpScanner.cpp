@@ -813,12 +813,52 @@ int TPpContext::tokenPaste(int token, TPpToken& ppToken)
         // get the token after the ##
         token = scanToken(&pastedPpToken);
 
+        // get the token text
+        switch (resultToken) {
+        case PpAtomIdentifier:
+            // already have the correct text in token.names
+            break;
+        case '=':
+        case '!':
+        case '-':
+        case '~':
+        case '+':
+        case '*':
+        case '/':
+        case '%':
+        case '<':
+        case '>':
+        case '|':
+        case '^':
+        case '&':
+        case PpAtomRight:
+        case PpAtomLeft:
+        case PpAtomAnd:
+        case PpAtomOr:
+        case PpAtomXor:
+            strcpy(ppToken.name, GetAtomString(resultToken));
+            strcpy(pastedPpToken.name, GetAtomString(token));
+            break;
+        default:
+            parseContext.ppError(ppToken.loc, "not supported for these tokens", "##", "");
+            return resultToken;
+        }
+
         // combine the tokens
-        if (resultToken != PpAtomIdentifier)
-            parseContext.ppError(ppToken.loc, "only supported for preprocessing identifiers", "##", "");
-        if (strlen(ppToken.name) + strlen(pastedPpToken.name) > MaxTokenLength)
+        if (strlen(ppToken.name) + strlen(pastedPpToken.name) > MaxTokenLength) {
             parseContext.ppError(ppToken.loc, "combined tokens are too long", "##", "");
+            return resultToken;
+        }
         strncat(ppToken.name, pastedPpToken.name, MaxTokenLength - strlen(ppToken.name));
+
+        // correct the kind of token we are making, if needed (identifiers stay identifiers)
+        if (resultToken != PpAtomIdentifier) {
+            int newToken = LookUpString(ppToken.name);
+            if (newToken > 0)
+                resultToken = newToken;
+            else
+                parseContext.ppError(ppToken.loc, "combined token is invalid", "##", "");
+        }
     }
 
     return resultToken;
