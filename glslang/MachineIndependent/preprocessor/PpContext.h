@@ -245,9 +245,9 @@ protected:
                 delete expandedArgs[i];
         }
 
-        virtual int scan(TPpToken*);
-        virtual int getch() { assert(0); return EndOfInput; }
-        virtual void ungetch() { assert(0); }
+        virtual int scan(TPpToken*) override;
+        virtual int getch() override { assert(0); return EndOfInput; }
+        virtual void ungetch() override { assert(0); }
         bool peekPasting() override { return prepaste; }
         bool endOfReplacementList() override { return mac->body.current >= mac->body.data.size(); }
 
@@ -264,7 +264,7 @@ protected:
     class tMarkerInput : public tInput {
     public:
         tMarkerInput(TPpContext* pp) : tInput(pp) { }
-        virtual int scan(TPpToken*)
+        virtual int scan(TPpToken*) override
         {
             if (done)
                 return EndOfInput;
@@ -272,17 +272,17 @@ protected:
 
             return marker;
         }
-        virtual int getch() { assert(0); return EndOfInput; }
-        virtual void ungetch() { assert(0); }
+        virtual int getch() override { assert(0); return EndOfInput; }
+        virtual void ungetch() override { assert(0); }
         static const int marker = -3;
     };
 
     class tZeroInput : public tInput {
     public:
         tZeroInput(TPpContext* pp) : tInput(pp) { }
-        virtual int scan(TPpToken*);
-        virtual int getch() { assert(0); return EndOfInput; }
-        virtual void ungetch() { assert(0); }
+        virtual int scan(TPpToken*) override;
+        virtual int getch() override { assert(0); return EndOfInput; }
+        virtual void ungetch() override { assert(0); }
     };
 
     std::vector<tInput*> inputStack;
@@ -329,9 +329,9 @@ protected:
     class tTokenInput : public tInput {
     public:
         tTokenInput(TPpContext* pp, TokenStream* t, bool prepasting) : tInput(pp), tokens(t), lastTokenPastes(prepasting) { }
-        virtual int scan(TPpToken *);
-        virtual int getch() { assert(0); return EndOfInput; }
-        virtual void ungetch() { assert(0); }
+        virtual int scan(TPpToken *) override;
+        virtual int getch() override { assert(0); return EndOfInput; }
+        virtual void ungetch() override { assert(0); }
         virtual bool peekPasting() override;
     protected:
         TokenStream* tokens;
@@ -341,9 +341,9 @@ protected:
     class tUngotTokenInput : public tInput {
     public:
         tUngotTokenInput(TPpContext* pp, int t, TPpToken* p) : tInput(pp), token(t), lval(*p) { }
-        virtual int scan(TPpToken *);
-        virtual int getch() { assert(0); return EndOfInput; }
-        virtual void ungetch() { assert(0); }
+        virtual int scan(TPpToken *) override;
+        virtual int getch() override { assert(0); return EndOfInput; }
+        virtual void ungetch() override { assert(0); }
     protected:
         int token;
         TPpToken lval;
@@ -355,12 +355,12 @@ protected:
     class tStringInput : public tInput {
     public:
         tStringInput(TPpContext* pp, TInputScanner& i) : tInput(pp), input(&i) { }
-        virtual int scan(TPpToken*);
+        virtual int scan(TPpToken*) override;
 
         // Scanner used to get source stream characters.
         //  - Escaped newlines are handled here, invisibly to the caller.
         //  - All forms of newline are handled, and turned into just a '\n'.
-        int getch()
+        int getch() override
         {
             int ch = input->get();
 
@@ -398,7 +398,7 @@ protected:
         // handled here, invisibly to the caller, meaning have to undo exactly
         // what getch() above does (e.g., don't leave things in the middle of a
         // sequence of escaped newlines).
-        void ungetch()
+        void ungetch() override
         {
             input->unget();
 
