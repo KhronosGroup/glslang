@@ -430,11 +430,11 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
             parseContext.error(loc, "illegal use of escape character", "\\", "");
             break;
 
-        case PpAtomAdd:                return EHTokAddAssign;
-        case PpAtomSub:                return EHTokSubAssign;
-        case PpAtomMul:                return EHTokMulAssign;
-        case PpAtomDiv:                return EHTokDivAssign;
-        case PpAtomMod:                return EHTokModAssign;
+        case PPAtomAddAssign:          return EHTokAddAssign;
+        case PPAtomSubAssign:          return EHTokSubAssign;
+        case PPAtomMulAssign:          return EHTokMulAssign;
+        case PPAtomDivAssign:          return EHTokDivAssign;
+        case PPAtomModAssign:          return EHTokModAssign;
 
         case PpAtomRight:              return EHTokRightOp;
         case PpAtomLeft:               return EHTokLeftOp;

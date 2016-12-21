@@ -94,11 +94,12 @@ const struct {
     const char* str;
 } tokens[] = {
 
-    { PpAtomAdd,            "+=" },
-    { PpAtomSub,            "-=" },
-    { PpAtomMul,            "*=" },
-    { PpAtomDiv,            "/=" },
-    { PpAtomMod,            "%=" },
+    { PPAtomAddAssign,      "+=" },
+    { PPAtomSubAssign,      "-=" },
+    { PPAtomMulAssign,      "*=" },
+    { PPAtomDivAssign,      "/=" },
+    { PPAtomModAssign,      "%=" },
+
     { PpAtomRight,          ">>" },
     { PpAtomLeft,           "<<" },
     { PpAtomAnd,            "&&" },

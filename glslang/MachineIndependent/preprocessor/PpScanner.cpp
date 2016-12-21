@@ -529,7 +529,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             if (ch == '-') {
                 return PpAtomDecrement;
             } else if (ch == '=') {
-                return PpAtomSub;
+                return PPAtomSubAssign;
             } else {
                 ungetch();
                 return '-';
@@ -539,7 +539,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             if (ch == '+') {
                 return PpAtomIncrement;
             } else if (ch == '=') {
-                return PpAtomAdd;
+                return PPAtomAddAssign;
             } else {
                 ungetch();
                 return '+';
@@ -547,7 +547,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case '*':
             ch = getch();
             if (ch == '=') {
-                return PpAtomMul;
+                return PPAtomMulAssign;
             } else {
                 ungetch();
                 return '*';
@@ -555,7 +555,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case '%':
             ch = getch();
             if (ch == '=') {
-                return PpAtomMod;
+                return PPAtomModAssign;
             } else {
                 ungetch();
                 return '%';
@@ -681,7 +681,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 // loop again to get the next token...
                 break;
             } else if (ch == '=') {
-                return PpAtomDiv;
+                return PPAtomDivAssign;
             } else {
                 ungetch();
                 return '/';
