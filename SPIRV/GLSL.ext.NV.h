@@ -32,11 +32,18 @@ enum Decoration;
 enum Op;
 
 static const int GLSLextNVVersion = 100;
-static const int GLSLextNVRevision = 1;
+static const int GLSLextNVRevision = 2;
 
 //SPV_NV_sample_mask_override_coverage
 const char* const E_SPV_NV_sample_mask_override_coverage = "SPV_NV_sample_mask_override_coverage";
 
 static const Decoration OverrideCoverageNV = static_cast<Decoration>(5248);
 
+
+//SPV_NV_geometry_shader_passthrough
+const char* const E_SPV_NV_geometry_shader_passthrough = "SPV_NV_geometry_shader_passthrough";
+
+static const Decoration PassthroughNV = static_cast<Decoration>(5250);
+
+static const Capability GeometryShaderPassthroughNV = static_cast<Capability>(5251);
 #endif  // #ifndef GLSLextNV_H

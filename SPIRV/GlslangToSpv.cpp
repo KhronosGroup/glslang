@@ -4738,6 +4738,11 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
             builder.addExtension(spv::E_SPV_NV_sample_mask_override_coverage);
         }
     }
+    if (symbol->getQualifier().layoutPassthrough) {
+        addDecoration(id, spv::PassthroughNV);
+        builder.addCapability(spv::GeometryShaderPassthroughNV);
+        builder.addExtension(spv::E_SPV_NV_geometry_shader_passthrough);
+    }
 #endif
 
     return id;
