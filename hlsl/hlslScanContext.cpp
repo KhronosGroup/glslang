@@ -394,13 +394,14 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
     do {
         parserToken = &token;
         TPpToken ppToken;
-        tokenText = ppContext.tokenize(ppToken);
-        if (tokenText == nullptr)
+        int token = ppContext.tokenize(ppToken);
+        if (token == EndOfInput)
             return EHTokNone;
 
+        tokenText = ppToken.name;
         loc = ppToken.loc;
         parserToken->loc = loc;
-        switch (ppToken.token) {
+        switch (token) {
         case ';':                       return EHTokSemicolon;
         case ',':                       return EHTokComma;
         case ':':                       return EHTokColon;
@@ -467,7 +468,7 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
         }
 
         case PpAtomConstString: {
-            parserToken->string = NewPoolTString(ppToken.name);
+            parserToken->string = NewPoolTString(tokenText);
             return EHTokStringConstant;
         }
 
@@ -475,7 +476,7 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
 
         default:
             char buf[2];
-            buf[0] = (char)ppToken.token;
+            buf[0] = (char)token;
             buf[1] = 0;
             parseContext.error(loc, "unexpected token", buf, "");
             break;

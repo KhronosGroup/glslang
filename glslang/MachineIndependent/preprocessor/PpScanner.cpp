@@ -715,33 +715,31 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 // The main functional entry point into the preprocessor, which will
 // scan the source strings to figure out and return the next processing token.
 //
-// Return string pointer to next token.
-// Return 0 when no more tokens.
+// Return the token, or EndOfInput when no more tokens.
 //
-const char* TPpContext::tokenize(TPpToken& ppToken)
+int TPpContext::tokenize(TPpToken& ppToken)
 {
     for(;;) {
         int token = scanToken(&ppToken);
 
         // Handle token-pasting logic
         token = tokenPaste(token, ppToken);
-        ppToken.token = token;
 
         if (token == EndOfInput) {
             missingEndifCheck();
-            return nullptr;
+            return EndOfInput;
         }
         if (token == '#') {
             if (previous_token == '\n') {
                 token = readCPPline(&ppToken);
                 if (token == EndOfInput) {
                     missingEndifCheck();
-                    return nullptr;
+                    return EndOfInput;
                 }
                 continue;
             } else {
                 parseContext.ppError(ppToken.loc, "preprocessor directive cannot be preceded by another token", "#", "");
-                return nullptr;
+                return EndOfInput;
             }
         }
         previous_token = token;
@@ -753,7 +751,6 @@ const char* TPpContext::tokenize(TPpToken& ppToken)
         if (token == PpAtomIdentifier && MacroExpand(&ppToken, false, true) != 0)
             continue;
 
-        const char* tokenString = nullptr;
         switch (token) {
         case PpAtomIdentifier:
         case PpAtomConstInt:
@@ -765,26 +762,25 @@ const char* TPpContext::tokenize(TPpToken& ppToken)
 #ifdef AMD_EXTENSIONS
         case PpAtomConstFloat16:
 #endif
-            tokenString = ppToken.name;
+            if (ppToken.name[0] == '\0')
+                continue;
             break;
         case PpAtomConstString:
-            if (parseContext.intermediate.getSource() == EShSourceHlsl) {
+            if (parseContext.intermediate.getSource() != EShSourceHlsl) {
                 // HLSL allows string literals.
-                tokenString = ppToken.name;
-            } else {
                 parseContext.ppError(ppToken.loc, "string literals not supported", "\"\"", "");
+                continue;
             }
             break;
         case '\'':
             parseContext.ppError(ppToken.loc, "character literals not supported", "\'", "");
-            break;
+            continue;
         default:
-            tokenString = GetAtomString(token);
+            strcpy(ppToken.name, GetAtomString(token));
             break;
         }
 
-        if (tokenString)
-            return tokenString;
+        return token;
     }
 }
 

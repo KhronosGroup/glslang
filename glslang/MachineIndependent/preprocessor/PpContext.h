@@ -92,7 +92,7 @@ namespace glslang {
 
 class TPpToken {
 public:
-    TPpToken() : token(0), space(false), ival(0), dval(0.0), i64val(0), atom(0)
+    TPpToken() : space(false), ival(0), dval(0.0), i64val(0), atom(0)
     {
         loc.init(); 
         name[0] = 0;
@@ -101,14 +101,13 @@ public:
     // This is used for comparing macro definitions, so checks what is relevant for that.
     bool operator==(const TPpToken& right)
     {
-        return token == right.token && space == right.space &&
+        return space == right.space &&
                ival == right.ival && dval == right.dval && i64val == right.i64val &&
                strncmp(name, right.name, MaxTokenLength) == 0;
     }
     bool operator!=(const TPpToken& right) { return ! operator==(right); }
 
     TSourceLoc loc;
-    int    token;
     bool   space;  // true if a space (for white space or a removed comment) should also be recognized, in front of the token returned
     int    ival;
     double dval;
@@ -129,7 +128,7 @@ public:
 
     void setPreamble(const char* preamble, size_t length);
 
-    const char* tokenize(TPpToken& ppToken);
+    int tokenize(TPpToken& ppToken);
     int tokenPaste(int token, TPpToken&);
 
     class tInput {

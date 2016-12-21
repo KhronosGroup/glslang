@@ -638,13 +638,14 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
     do {
         parserToken = &token;
         TPpToken ppToken;
-        tokenText = pp->tokenize(ppToken);
-        if (tokenText == nullptr || tokenText[0] == 0)
+        int token = pp->tokenize(ppToken);
+        if (token == EndOfInput)
             return 0;
 
+        tokenText = ppToken.name;
         loc = ppToken.loc;
         parserToken->sType.lex.loc = loc;
-        switch (ppToken.token) {
+        switch (token) {
         case ';':  afterType = false;   return SEMICOLON;
         case ',':  afterType = false;   return COMMA;
         case ':':                       return COLON;
@@ -720,7 +721,7 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 
         default:
             char buf[2];
-            buf[0] = (char)ppToken.token;
+            buf[0] = token;
             buf[1] = 0;
             parseContext.error(loc, "unexpected token", buf, "");
             break;

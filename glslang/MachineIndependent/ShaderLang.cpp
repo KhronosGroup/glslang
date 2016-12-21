@@ -931,7 +931,11 @@ struct DoPreprocessing {
         });
 
         int lastToken = EndOfInput; // lastToken records the last token processed.
-        while (const char* tok = ppContext.tokenize(ppToken)) {
+        do {
+            int token = ppContext.tokenize(ppToken);
+            if (token == EndOfInput)
+                break;
+
             bool isNewString = lineSync.syncToMostRecentString();
             bool isNewLine = lineSync.syncToLine(ppToken.loc.line);
 
@@ -946,14 +950,14 @@ struct DoPreprocessing {
             // and also not around special tokens. This helps with readability
             // and consistency.
             if (!isNewString && !isNewLine && lastToken != EndOfInput &&
-                (unNeededSpaceTokens.find((char)ppToken.token) == std::string::npos) &&
+                (unNeededSpaceTokens.find((char)token) == std::string::npos) &&
                 (unNeededSpaceTokens.find((char)lastToken) == std::string::npos) &&
-                (noSpaceBeforeTokens.find((char)ppToken.token) == std::string::npos)) {
+                (noSpaceBeforeTokens.find((char)token) == std::string::npos)) {
                 outputStream << " ";
             }
-            lastToken = ppToken.token;
-            outputStream << tok;
-        }
+            lastToken = token;
+            outputStream << ppToken.name;
+        } while (true);
         outputStream << std::endl;
         *outputString = outputStream.str();
 
