@@ -134,7 +134,6 @@ enum EFixedAtoms {
     // preprocessor "keywords"
 
     PpAtomDefine,
-    PpAtomDefined,
     PpAtomUndef,
 
     PpAtomIf,

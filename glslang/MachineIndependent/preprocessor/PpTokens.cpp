@@ -218,7 +218,6 @@ int TPpContext::ReadToken(TokenStream& pTok, TPpToken *ppToken)
 
         switch (ltoken) {
         case PpAtomIdentifier:
-            ppToken->atom = LookUpAddString(ppToken->name);
             break;
         case PpAtomConstString:
             break;

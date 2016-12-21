@@ -92,7 +92,7 @@ namespace glslang {
 
 class TPpToken {
 public:
-    TPpToken() : space(false), ival(0), dval(0.0), i64val(0), atom(0)
+    TPpToken() : space(false), ival(0), dval(0.0), i64val(0)
     {
         loc.init(); 
         name[0] = 0;
@@ -112,7 +112,6 @@ public:
     int    ival;
     double dval;
     long long i64val;
-    int    atom;
     char   name[MaxTokenLength + 1];
 };
 
@@ -551,6 +550,7 @@ protected:
     int nextAtom;
     void InitAtomTable();
     void AddAtomFixed(const char* s, int atom);
+    int LookUpString(const char* s);
     int LookUpAddString(const char* s);
     const char* GetAtomString(int atom);
 };

@@ -247,7 +247,6 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
 //
 int TPpContext::tStringInput::scan(TPpToken* ppToken)
 {
-    char* tokenText = ppToken->name;
     int AlreadyComplained = 0;
     int len = 0;
     int ch = 0;
@@ -286,7 +285,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
         case 'z':
             do {
                 if (len < MaxTokenLength) {
-                    tokenText[len++] = (char)ch;
+                    ppToken->name[len++] = (char)ch;
                     ch = getch();
                 } else {
                     if (! AlreadyComplained) {
@@ -304,9 +303,8 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             if (len == 0)
                 continue;
 
-            tokenText[len] = '\0';
+            ppToken->name[len] = '\0';
             ungetch();
-            ppToken->atom = pp->LookUpAddString(tokenText);
             return PpAtomIdentifier;
         case '0':
             ppToken->name[len++] = (char)ch;
@@ -693,13 +691,13 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
             ch = getch();
             while (ch != '"' && ch != '\n' && ch != EndOfInput) {
                 if (len < MaxTokenLength) {
-                    tokenText[len] = (char)ch;
+                    ppToken->name[len] = (char)ch;
                     len++;
                     ch = getch();
                 } else
                     break;
             };
-            tokenText[len] = '\0';
+            ppToken->name[len] = '\0';
             if (ch != '"') {
                 ungetch();
                 pp->parseContext.ppError(ppToken->loc, "End of line in string", "string", "");
@@ -821,7 +819,6 @@ int TPpContext::tokenPaste(int token, TPpToken& ppToken)
         if (strlen(ppToken.name) + strlen(pastedPpToken.name) > MaxTokenLength)
             parseContext.ppError(ppToken.loc, "combined tokens are too long", "##", "");
         strncat(ppToken.name, pastedPpToken.name, MaxTokenLength - strlen(ppToken.name));
-        ppToken.atom = LookUpAddString(ppToken.name);
     }
 
     return resultToken;

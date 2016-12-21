@@ -120,7 +120,6 @@ const struct {
     { PpAtomIncrement,      "++" },
 
     { PpAtomDefine,         "define" },
-    { PpAtomDefined,        "defined" },
     { PpAtomUndef,          "undef" },
     { PpAtomIf,             "if" },
     { PpAtomElif,           "elif" },
@@ -150,16 +149,28 @@ const struct {
 namespace glslang {
 
 //
+// Map an existing string to an atom.
+//
+// Return 0 if no existing string.
+//
+int TPpContext::LookUpString(const char* s)
+{
+    auto it = atomMap.find(s);
+    return it == atomMap.end() ? 0 : it->second;
+}
+
+//
 // Map a new or existing string to an atom, inventing a new atom if necessary.
 //
 int TPpContext::LookUpAddString(const char* s)
 {
-    auto it = atomMap.find(s);
-    if (it == atomMap.end()) {
-        AddAtomFixed(s, nextAtom);
-        return nextAtom++;
-    } else
-        return it->second;
+    int atom = LookUpString(s);
+    if (atom == 0) {
+        atom = nextAtom++;
+        AddAtomFixed(s, atom);
+    }
+
+    return atom;
 }
 
 //
