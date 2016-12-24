@@ -1,6 +1,10 @@
 hlsl.intrinsics.negative.frag
 ERROR: 0:10: 'determinant' : no matching overloaded function found 
 ERROR: 0:12: 'f32tof16' : unimplemented intrinsic: handle natively 
+ERROR: 0:23: 'length' : ambiguous best function under implicit type conversion 
+ERROR: 0:25: 'normalize' : ambiguous best function under implicit type conversion 
+ERROR: 0:26: 'reflect' : ambiguous best function under implicit type conversion 
+ERROR: 0:27: 'refract' : ambiguous best function under implicit type conversion 
 ERROR: 0:28: 'refract' : no matching overloaded function found 
 ERROR: 0:30: 'transpose' : no matching overloaded function found 
 ERROR: 0:39: 'GetRenderTargetSamplePosition' : no matching overloaded function found 
@@ -59,7 +63,7 @@ ERROR: 0:133: 'normalize' : no matching overloaded function found
 ERROR: 0:133: 'reflect' : no matching overloaded function found 
 ERROR: 0:133: 'refract' : no matching overloaded function found 
 ERROR: 0:133: 'reversebits' : no matching overloaded function found 
-ERROR: 60 compilation errors.  No code generated.
+ERROR: 64 compilation errors.  No code generated.
 
 
 Shader version: 450
