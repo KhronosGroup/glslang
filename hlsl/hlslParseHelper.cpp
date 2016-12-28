@@ -47,6 +47,7 @@
 #include <algorithm>
 #include <functional>
 #include <cctype>
+#include <array>
 
 namespace glslang {
 
@@ -144,6 +145,12 @@ bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
         return false;
 
     const TIntermAggregate* lhsAsAggregate = node->getAsAggregate();
+    const TIntermBinary* lhsAsBinary = node->getAsBinaryNode();
+
+    // If it's a swizzled/indexed aggregate, look at the left node instead.
+    if (lhsAsBinary != nullptr &&
+        (lhsAsBinary->getOp() == EOpVectorSwizzle || lhsAsBinary->getOp() == EOpIndexDirect))
+        lhsAsAggregate = lhsAsBinary->getLeft()->getAsAggregate();
 
     if (lhsAsAggregate != nullptr && lhsAsAggregate->getOp() == EOpImageLoad)
         return true;
@@ -282,14 +289,59 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                                               loc);
     };
 
+    // Return true if swizzle or index writes all components of the given variable.
+    const auto writesAllComponents = [&](TIntermSymbol* var, TIntermBinary* swizzle) -> bool {
+        if (swizzle == nullptr)  // not a swizzle or index
+            return true;
+
+        // Track which components are being set.
+        std::array<bool, 4> compIsSet;
+        compIsSet.fill(false);
+
+        const TIntermConstantUnion* asConst     = swizzle->getRight()->getAsConstantUnion();
+        const TIntermAggregate*     asAggregate = swizzle->getRight()->getAsAggregate();
+
+        // This could be either a direct index, or a swizzle.
+        if (asConst) {
+            compIsSet[asConst->getConstArray()[0].getIConst()] = true;
+        } else if (asAggregate) {
+            const TIntermSequence& seq = asAggregate->getSequence();
+            for (int comp=0; comp<int(seq.size()); ++comp)
+                compIsSet[seq[comp]->getAsConstantUnion()->getConstArray()[0].getIConst()] = true;
+        } else {
+            assert(0);
+        }
+
+        // Return true if all components are being set by the index or swizzle
+        return std::all_of(compIsSet.begin(), compIsSet.begin() + var->getType().getVectorSize(),
+                           [](bool isSet) { return isSet; } );
+    };
+
     // helper to create a temporary variable
     const auto addTmpVar = [&](const char* name, const TType& derefType) -> TIntermSymbol* {
         TVariable* tmpVar = makeInternalVariable(name, derefType);
         tmpVar->getWritableType().getQualifier().makeTemporary();
         return intermediate.addSymbol(*tmpVar, loc);
     };
-    
+
+    // Create swizzle matching input swizzle
+    const auto addSwizzle = [&](TIntermSymbol* var, TIntermBinary* swizzle) -> TIntermTyped* {
+        if (swizzle)
+            return intermediate.addBinaryNode(swizzle->getOp(), var, swizzle->getRight(), loc, swizzle->getType());
+        else
+            return var;
+    };
+
+    TIntermBinary*    lhsAsBinary    = lhs->getAsBinaryNode();
     TIntermAggregate* lhsAsAggregate = lhs->getAsAggregate();
+    bool lhsIsSwizzle = false;
+
+    // If it's a swizzled L-value, remember the swizzle, and use the LHS.
+    if (lhsAsBinary != nullptr && (lhsAsBinary->getOp() == EOpVectorSwizzle || lhsAsBinary->getOp() == EOpIndexDirect)) {
+        lhsAsAggregate = lhsAsBinary->getLeft()->getAsAggregate();
+        lhsIsSwizzle = true;
+    }
+    
     TIntermTyped* object = lhsAsAggregate->getSequence()[0]->getAsTyped();
     TIntermTyped* coord  = lhsAsAggregate->getSequence()[1]->getAsTyped();
 
@@ -336,15 +388,25 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                 //   OpSequence
                 //      coordtmp = load's param1
                 //      rhsTmp = OpImageLoad(object, coordTmp)
-                //      rhsTmp op= rhs
+                //      rhsTmp op = rhs
                 //      OpImageStore(object, coordTmp, rhsTmp)
                 //      rhsTmp
+                //
+                // If the lvalue is swizzled, we apply that when writing the temp variable, like so:
+                //    ...
+                //    rhsTmp.some_swizzle = ...
+                // For partial writes, an error is generated.
 
                 TIntermSymbol* rhsTmp = rhs->getAsSymbolNode();
                 TIntermTyped* coordTmp = coord;
  
-                if (rhsTmp == nullptr || isModifyOp) {
+                if (rhsTmp == nullptr || isModifyOp || lhsIsSwizzle) {
                     rhsTmp = addTmpVar("storeTemp", objDerefType);
+
+                    // Partial updates not yet supported
+                    if (!writesAllComponents(rhsTmp, lhsAsBinary)) {
+                        error(loc, "unimplemented: partial image updates", "", "");
+                    }
 
                     // Assign storeTemp = rhs
                     if (isModifyOp) {
@@ -355,7 +417,7 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                     }
 
                     // rhsTmp op= rhs.
-                    makeBinary(assignOp, intermediate.addSymbol(*rhsTmp), rhs);
+                    makeBinary(assignOp, addSwizzle(intermediate.addSymbol(*rhsTmp), lhsAsBinary), rhs);
                 }
                 
                 makeStore(object, coordTmp, rhsTmp);         // add a store
