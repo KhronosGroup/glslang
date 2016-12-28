@@ -2669,6 +2669,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    // GL_KHX_device_group
+    if (profile != EEsProfile) {
+        commonBuiltins.append("uniform int gl_DeviceIndexKHR;");
+    }
+
     //printf("%s\n", commonBuiltins.c_str());
     //printf("%s\n", stageBuiltins[EShLangFragment].c_str());
 }
@@ -4228,6 +4233,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("imageAtomicXor",      1, &E_GL_OES_shader_image_atomic);
             symbolTable.setFunctionExtensions("imageAtomicExchange", 1, &E_GL_OES_shader_image_atomic);
             symbolTable.setFunctionExtensions("imageAtomicCompSwap", 1, &E_GL_OES_shader_image_atomic);
+        }
+
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("gl_DeviceIndexKHR",  1, &E_GL_KHX_device_group);
+            BuiltInVariable("gl_DeviceIndexKHR", EbvDeviceIndex, symbolTable);
         }
         break;
 

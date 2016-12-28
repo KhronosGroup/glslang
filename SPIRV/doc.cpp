@@ -321,6 +321,7 @@ const char* BuiltInString(int builtIn)
     case 4418: return "SubgroupGtMaskKHR";
     case 4419: return "SubgroupLeMaskKHR";
     case 4420: return "SubgroupLtMaskKHR";
+    case 4438: return "DeviceIndex";
 
 #ifdef AMD_EXTENSIONS
     case 4992: return "BaryCoordNoPerspAMD";
@@ -813,6 +814,7 @@ const char* CapabilityString(int info)
 
     case 4423: return "SubgroupBallotKHR";
     case 4431: return "SubgroupVoteKHR";
+    case 4437: return "DeviceGroup";
     }
 }
 

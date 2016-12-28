@@ -37,6 +37,7 @@ static const int GLSLextKHRRevision = 1;
 // SPV_KHR_shader_ballot
 static const char* const E_SPV_KHR_shader_ballot        = "SPV_KHR_shader_ballot";
 static const char* const E_SPV_KHR_subgroup_vote        = "SPV_KHR_subgroup_vote";
+static const char* const E_SPV_KHR_device_group         = "SPV_KHR_device_group";
 
 static const BuiltIn BuiltInSubgroupEqMaskKHR           = static_cast<BuiltIn>(4416);
 static const BuiltIn BuiltInSubgroupGeMaskKHR           = static_cast<BuiltIn>(4417);

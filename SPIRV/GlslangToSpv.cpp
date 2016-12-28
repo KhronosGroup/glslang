@@ -574,6 +574,12 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvBaryCoordSmoothSample:     return spv::BuiltInBaryCoordSmoothSampleAMD;
     case glslang::EbvBaryCoordPullModel:        return spv::BuiltInBaryCoordPullModelAMD;
 #endif
+
+    case glslang::EbvDeviceIndex:
+        builder.addExtension(spv::E_SPV_KHR_device_group);
+        builder.addCapability(spv::CapabilityDeviceGroup);
+        return spv::BuiltinDeviceIndex;
+
     default:                               return spv::BuiltInMax;
     }
 }
