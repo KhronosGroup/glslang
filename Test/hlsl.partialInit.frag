@@ -31,3 +31,6 @@ outs PixelShaderFunction(float4 input) : COLOR0
 
     return o4;
 }
+
+static const float2 cgf2a[3];
+static const int ci;

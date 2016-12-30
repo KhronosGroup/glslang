@@ -3255,7 +3255,7 @@ bool TParseContext::lineDirectiveShouldSetNextLine() const
 void TParseContext::nonInitConstCheck(const TSourceLoc& loc, TString& identifier, TType& type)
 {
     //
-    // Make the qualifier make sense, given that there is an initializer.
+    // Make the qualifier make sense, given that there is not an initializer.
     //
     if (type.getQualifier().storage == EvqConst ||
         type.getQualifier().storage == EvqConstReadOnly) {
@@ -5007,7 +5007,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     if (voidErrorCheck(loc, identifier, type.getBasicType()))
         return nullptr;
 
-    if (initializer)        
+    if (initializer)
         rValueErrorCheck(loc, "initializer", initializer);
     else
         nonInitConstCheck(loc, identifier, type);

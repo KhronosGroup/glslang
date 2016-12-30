@@ -183,6 +183,7 @@ protected:
         int                 nextBinding; // next binding to use.
     };
 
+    void fixConstInit(const TSourceLoc&, TString& identifier, TType& type, TIntermTyped*& initializer);
     void inheritGlobalDefaults(TQualifier& dst) const;
     TVariable* makeInternalVariable(const char* name, const TType&) const;
     TVariable* declareNonArray(const TSourceLoc&, TString& identifier, TType&, bool track);

@@ -3893,6 +3893,23 @@ void HlslParseContext::updateImplicitArraySize(const TSourceLoc& loc, TIntermNod
 }
 
 //
+// Enforce non-initializer type/qualifier rules.
+//
+void HlslParseContext::fixConstInit(const TSourceLoc& loc, TString& identifier, TType& type, TIntermTyped*& initializer)
+{
+    //
+    // Make the qualifier make sense, given that there is an initializer.
+    //
+    if (initializer == nullptr) {
+        if (type.getQualifier().storage == EvqConst ||
+            type.getQualifier().storage == EvqConstReadOnly) {
+            initializer = intermediate.makeAggregate(loc);
+            warn(loc, "variable with qualifier 'const' not initialized; zero initializing", identifier.c_str(), "");
+        }
+    }
+}
+
+//
 // See if the identifier is a built-in symbol that can be redeclared, and if so,
 // copy the symbol table's read-only built-in variable to the current
 // global level, where it can be modified based on the passed in type.
@@ -4735,6 +4752,9 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
 {
     if (voidErrorCheck(loc, identifier, type.getBasicType()))
         return nullptr;
+
+    // make const and initialization consistent
+    fixConstInit(loc, identifier, type, initializer);
 
     // Check for redeclaration of built-ins and/or attempting to declare a reserved name
     TSymbol* symbol = nullptr;
