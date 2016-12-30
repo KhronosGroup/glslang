@@ -4960,12 +4960,16 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
         // edit array sizes to fill in unsized dimensions
         if (type.isImplicitlySizedArray())
             arrayType.changeOuterArraySize((int)initList->getSequence().size());
-        TIntermTyped* firstInit = initList->getSequence()[0]->getAsTyped();
-        if (arrayType.isArrayOfArrays() && firstInit->getType().isArray() &&
-            arrayType.getArraySizes().getNumDims() == firstInit->getType().getArraySizes()->getNumDims() + 1) {
-            for (int d = 1; d < arrayType.getArraySizes().getNumDims(); ++d) {
-                if (arrayType.getArraySizes().getDimSize(d) == UnsizedArraySize)
-                    arrayType.getArraySizes().setDimSize(d, firstInit->getType().getArraySizes()->getDimSize(d - 1));
+
+        // set unsized array dimensions that can be derived from the initializer's first element
+        if (arrayType.isArrayOfArrays() && initList->getSequence().size() > 0) {
+            TIntermTyped* firstInit = initList->getSequence()[0]->getAsTyped();
+            if (firstInit->getType().isArray() &&
+                arrayType.getArraySizes().getNumDims() == firstInit->getType().getArraySizes()->getNumDims() + 1) {
+                for (int d = 1; d < arrayType.getArraySizes().getNumDims(); ++d) {
+                    if (arrayType.getArraySizes().getDimSize(d) == UnsizedArraySize)
+                        arrayType.getArraySizes().setDimSize(d, firstInit->getType().getArraySizes()->getDimSize(d - 1));
+                }
             }
         }
 
@@ -5024,6 +5028,9 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
             return nullptr;
         }
     } else if (type.isScalar()) {
+        // lengthen list to be long enough
+        lengthenList(loc, initList->getSequence(), 1);
+
         if ((int)initList->getSequence().size() != 1) {
             error(loc, "scalar expected one element:", "initializer list", type.getCompleteString().c_str());
             return nullptr;

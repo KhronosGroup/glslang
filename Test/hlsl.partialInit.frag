@@ -25,5 +25,9 @@ outs PixelShaderFunction(float4 input) : COLOR0
     o4.c = o1.c;
     Nest nest = (Nest)0;
 
+    float2 gf2a[4] = { };
+    int cgi = { };
+    o4.b = gf2a[2].y * cgi;
+
     return o4;
 }
