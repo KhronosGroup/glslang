@@ -3195,7 +3195,7 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
     else if (semanticUpperCase == "SV_GSINSTANCEID")
         qualifier.builtIn = EbvInvocationId;
     else if (semanticUpperCase == "SV_DISPATCHTHREADID")
-        qualifier.builtIn = EbvLocalInvocationId;
+        qualifier.builtIn = EbvGlobalInvocationId;
     else if (semanticUpperCase == "SV_GROUPTHREADID")
         qualifier.builtIn = EbvLocalInvocationId;
     else if (semanticUpperCase == "SV_GROUPID")
