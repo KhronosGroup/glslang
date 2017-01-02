@@ -242,6 +242,7 @@ gl_FragCoord origin is upper left
 0:84          'storeTemp' (temp 2-component vector of float)
 0:84          Constant:
 0:84            3.000000
+0:84            3.000000
 0:84        imageStore (temp void)
 0:84          'g_tTex1df2' (layout(rg32f ) uniform image1D)
 0:84          'coordTemp' (temp int)
@@ -262,6 +263,7 @@ gl_FragCoord origin is upper left
 0:85        add second child into first child (temp 2-component vector of float)
 0:85          'storeTemp' (temp 2-component vector of float)
 0:85          Constant:
+0:85            4.000000
 0:85            4.000000
 0:85        imageStore (temp void)
 0:85          'g_tTex1df2' (layout(rg32f ) uniform image1D)
@@ -1095,6 +1097,7 @@ gl_FragCoord origin is upper left
 0:84          'storeTemp' (temp 2-component vector of float)
 0:84          Constant:
 0:84            3.000000
+0:84            3.000000
 0:84        imageStore (temp void)
 0:84          'g_tTex1df2' (layout(rg32f ) uniform image1D)
 0:84          'coordTemp' (temp int)
@@ -1115,6 +1118,7 @@ gl_FragCoord origin is upper left
 0:85        add second child into first child (temp 2-component vector of float)
 0:85          'storeTemp' (temp 2-component vector of float)
 0:85          Constant:
+0:85            4.000000
 0:85            4.000000
 0:85        imageStore (temp void)
 0:85          'g_tTex1df2' (layout(rg32f ) uniform image1D)
@@ -1938,7 +1942,9 @@ gl_FragCoord origin is upper left
              178:             TypePointer Function 6(int)
              186:   20(float) Constant 1073741824
              200:   20(float) Constant 1077936128
+             201:   21(fvec2) ConstantComposite 200 200
              214:   20(float) Constant 1082130432
+             215:   21(fvec2) ConstantComposite 214 214
              254:      6(int) Constant 65535
              268:      6(int) Constant 61680
              312:      6(int) Constant 5
@@ -2160,9 +2166,8 @@ gl_FragCoord origin is upper left
              198:      6(int) Load 193(coordTemp)
              199:   21(fvec2) ImageRead 197 198
                               Store 196(storeTemp) 199
-             201:   21(fvec2) Load 196(storeTemp)
-             202:   21(fvec2) CompositeConstruct 200 200
-             203:   21(fvec2) FSub 201 202
+             202:   21(fvec2) Load 196(storeTemp)
+             203:   21(fvec2) FSub 202 201
                               Store 196(storeTemp) 203
              204:          69 Load 71(g_tTex1df2)
              205:      6(int) Load 193(coordTemp)
@@ -2175,9 +2180,8 @@ gl_FragCoord origin is upper left
              212:      6(int) Load 207(coordTemp)
              213:   21(fvec2) ImageRead 211 212
                               Store 210(storeTemp) 213
-             215:   21(fvec2) Load 210(storeTemp)
-             216:   21(fvec2) CompositeConstruct 214 214
-             217:   21(fvec2) FAdd 215 216
+             216:   21(fvec2) Load 210(storeTemp)
+             217:   21(fvec2) FAdd 216 215
                               Store 210(storeTemp) 217
              218:          69 Load 71(g_tTex1df2)
              219:      6(int) Load 207(coordTemp)

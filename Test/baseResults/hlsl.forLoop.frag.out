@@ -61,6 +61,9 @@ gl_FragCoord origin is upper left
 0:7            'input' (layout(location=0 ) in 4-component vector of float)
 0:7            Constant:
 0:7              2.000000
+0:7              2.000000
+0:7              2.000000
+0:7              2.000000
 0:?       Sequence
 0:8        Loop with condition tested first
 0:8          No loop condition
@@ -186,6 +189,9 @@ gl_FragCoord origin is upper left
 0:7            'input' (layout(location=0 ) in 4-component vector of float)
 0:7            Constant:
 0:7              2.000000
+0:7              2.000000
+0:7              2.000000
+0:7              2.000000
 0:?       Sequence
 0:8        Loop with condition tested first
 0:8          No loop condition
@@ -273,6 +279,7 @@ gl_FragCoord origin is upper left
               42:             TypePointer Output 11(fvec4)
 43(@entryPointOutput):     42(ptr) Variable Output
               62:   10(float) Constant 1073741824
+              63:   11(fvec4) ConstantComposite 62 62 62 62
               70:             TypeInt 32 0
               71:     70(int) Constant 0
               72:             TypePointer Input 10(float)
@@ -362,9 +369,8 @@ gl_FragCoord origin is upper left
                                 Store 43(@entryPointOutput) 60
                                 Return
               53:               Label
-              63:   11(fvec4)   Load 13(input)
-              64:   11(fvec4)   CompositeConstruct 62 62 62 62
-              65:   11(fvec4)   FAdd 63 64
+              64:   11(fvec4)   Load 13(input)
+              65:   11(fvec4)   FAdd 64 63
                                 Store 13(input) 65
                                 Branch 50
               52:             Label

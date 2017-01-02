@@ -65,6 +65,9 @@ gl_FragCoord origin is upper left
 0:28                    'input' (layout(location=0 ) in 4-component vector of float)
 0:28                    Constant:
 0:28                      2.000000
+0:28                      2.000000
+0:28                      2.000000
+0:28                      2.000000
 0:29                  Branch: Break
 0:30                case:  with expression
 0:30                  Constant:
@@ -74,6 +77,9 @@ gl_FragCoord origin is upper left
 0:31                    'input' (layout(location=0 ) in 4-component vector of float)
 0:31                    Constant:
 0:31                      3.000000
+0:31                      3.000000
+0:31                      3.000000
+0:31                      3.000000
 0:32                  Branch: Break
 0:34            Branch: Break
 0:35          default: 
@@ -81,6 +87,9 @@ gl_FragCoord origin is upper left
 0:36            add second child into first child (temp 4-component vector of float)
 0:36              'input' (layout(location=0 ) in 4-component vector of float)
 0:36              Constant:
+0:36                4.000000
+0:36                4.000000
+0:36                4.000000
 0:36                4.000000
 0:39      switch
 0:39      condition
@@ -200,6 +209,9 @@ gl_FragCoord origin is upper left
 0:28                    'input' (layout(location=0 ) in 4-component vector of float)
 0:28                    Constant:
 0:28                      2.000000
+0:28                      2.000000
+0:28                      2.000000
+0:28                      2.000000
 0:29                  Branch: Break
 0:30                case:  with expression
 0:30                  Constant:
@@ -209,6 +221,9 @@ gl_FragCoord origin is upper left
 0:31                    'input' (layout(location=0 ) in 4-component vector of float)
 0:31                    Constant:
 0:31                      3.000000
+0:31                      3.000000
+0:31                      3.000000
+0:31                      3.000000
 0:32                  Branch: Break
 0:34            Branch: Break
 0:35          default: 
@@ -216,6 +231,9 @@ gl_FragCoord origin is upper left
 0:36            add second child into first child (temp 4-component vector of float)
 0:36              'input' (layout(location=0 ) in 4-component vector of float)
 0:36              Constant:
+0:36                4.000000
+0:36                4.000000
+0:36                4.000000
 0:36                4.000000
 0:39      switch
 0:39      condition
@@ -295,8 +313,11 @@ gl_FragCoord origin is upper left
               23:   18(float) Constant 1065353216
            41(d):      7(ptr) Variable Input
               46:   18(float) Constant 1073741824
+              47:   19(fvec4) ConstantComposite 46 46 46 46
               51:   18(float) Constant 1077936128
+              52:   19(fvec4) ConstantComposite 51 51 51 51
               58:   18(float) Constant 1082130432
+              59:   19(fvec4) ConstantComposite 58 58 58 58
               80:             TypePointer Output 19(fvec4)
 81(@entryPointOutput):     80(ptr) Variable Output
 4(PixelShaderFunction):           2 Function None 3
@@ -331,9 +352,8 @@ gl_FragCoord origin is upper left
                                      case 1: 33
                                      case 2: 34
               35:               Label
-              59:   19(fvec4)   Load 21(input)
-              60:   19(fvec4)   CompositeConstruct 58 58 58 58
-              61:   19(fvec4)   FAdd 59 60
+              60:   19(fvec4)   Load 21(input)
+              61:   19(fvec4)   FAdd 60 59
                                 Store 21(input) 61
                                 Branch 36
               33:               Label
@@ -349,15 +369,13 @@ gl_FragCoord origin is upper left
                                        case 2: 43
                                        case 3: 44
               43:                 Label
-              47:   19(fvec4)     Load 21(input)
-              48:   19(fvec4)     CompositeConstruct 46 46 46 46
-              49:   19(fvec4)     FAdd 47 48
+              48:   19(fvec4)     Load 21(input)
+              49:   19(fvec4)     FAdd 48 47
                                   Store 21(input) 49
                                   Branch 45
               44:                 Label
-              52:   19(fvec4)     Load 21(input)
-              53:   19(fvec4)     CompositeConstruct 51 51 51 51
-              54:   19(fvec4)     FAdd 52 53
+              53:   19(fvec4)     Load 21(input)
+              54:   19(fvec4)     FAdd 53 52
                                   Store 21(input) 54
                                   Branch 45
               45:               Label
