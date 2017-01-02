@@ -4303,7 +4303,7 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
                 qualifier.layoutXfbOffset = value;
             return;
         } else if (id == "xfb_stride") {
-            // "The resulting stride (implicit or explicit), when divided by 4, must be less than or equal to the 
+            // "The resulting stride (implicit or explicit), when divided by 4, must be less than or equal to the
             // implementation-dependent constant gl_MaxTransformFeedbackInterleavedComponents."
             if (value > 4 * resources.maxTransformFeedbackInterleavedComponents)
                 error(loc, "1/4 stride is too large:", id.c_str(), "gl_MaxTransformFeedbackInterleavedComponents is %d", resources.maxTransformFeedbackInterleavedComponents);
@@ -4560,6 +4560,39 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
             // but it is allowed to promote its other arguments.
             if (arg == 0)
                 return false;
+            break;
+        case EOpMethodSample:
+        case EOpMethodSampleBias:
+        case EOpMethodSampleCmp:
+        case EOpMethodSampleCmpLevelZero:
+        case EOpMethodSampleGrad:
+        case EOpMethodSampleLevel:
+        case EOpMethodLoad:
+        case EOpMethodGetDimensions:
+        case EOpMethodGetSamplePosition:
+        case EOpMethodGather:
+        case EOpMethodCalculateLevelOfDetail:
+        case EOpMethodCalculateLevelOfDetailUnclamped:
+        case EOpMethodGatherRed:
+        case EOpMethodGatherGreen:
+        case EOpMethodGatherBlue:
+        case EOpMethodGatherAlpha:
+        case EOpMethodGatherCmp:
+        case EOpMethodGatherCmpRed:
+        case EOpMethodGatherCmpGreen:
+        case EOpMethodGatherCmpBlue:
+        case EOpMethodGatherCmpAlpha:
+        case EOpMethodAppend:
+        case EOpMethodRestartStrip:
+            // those are method calls, the object type can not be changed
+            // they are equal if the dim and type match (is dim sufficient?)
+            if (arg == 0)
+                return from.getSampler().type == to.getSampler().type &&
+                       from.getSampler().arrayed == to.getSampler().arrayed &&
+                       from.getSampler().shadow == to.getSampler().shadow &&
+                       from.getSampler().ms == to.getSampler().ms &&
+                       from.getSampler().dim == to.getSampler().dim;
+            break;
         default:
             break;
         }
@@ -5424,7 +5457,7 @@ void HlslParseContext::finalizeGlobalUniformBlockLayout(TVariable& block)
 // declared in increasing order."
 void HlslParseContext::fixBlockLocations(const TSourceLoc& loc, TQualifier& qualifier, TTypeList& typeList, bool memberWithLocation, bool memberWithoutLocation)
 {
-    // "If a block has no block-level location layout qualifier, it is required that either all or none of its members 
+    // "If a block has no block-level location layout qualifier, it is required that either all or none of its members
     // have a location layout qualifier, or a compile-time error results."
     if (! qualifier.hasLocation() && memberWithLocation && memberWithoutLocation)
         error(loc, "either the block needs a location, or all members need a location, or no members have a location", "location", "");
@@ -5530,7 +5563,7 @@ void HlslParseContext::fixBlockUniformOffsets(const TQualifier& qualifier, TType
             offset = std::max(offset, memberQualifier.layoutOffset);
         }
 
-        // "The actual alignment of a member will be the greater of the specified align alignment and the standard 
+        // "The actual alignment of a member will be the greater of the specified align alignment and the standard
         // (e.g., std140) base alignment for the member's type."
         if (memberQualifier.hasAlign())
             memberAlignment = std::max(memberAlignment, memberQualifier.layoutAlign);
