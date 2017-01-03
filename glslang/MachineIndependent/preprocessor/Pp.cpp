@@ -934,12 +934,20 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream& arg, TPpToken*
     TokenStream* expandedArg = new TokenStream;
     pushInput(new tMarkerInput(this));
     pushTokenStreamInput(arg);
-    while ((token = scanToken(ppToken)) != tMarkerInput::marker) {
+    while ((token = scanToken(ppToken)) != tMarkerInput::marker && token != EndOfInput) {
         if (token == PpAtomIdentifier && MacroExpand(ppToken, false, newLineOkay) != 0)
             continue;
         RecordToken(*expandedArg, token, ppToken);
     }
-    popInput();
+
+    if (token == EndOfInput) {
+        // MacroExpand ate the marker, so had bad input, recover
+        delete expandedArg;
+        expandedArg = nullptr;
+    } else {
+        // remove the marker
+        popInput();
+    }
 
     return expandedArg;
 }
@@ -1133,7 +1141,7 @@ int TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, bool newLineOka
             depth = 0;
             while (1) {
                 token = scanToken(ppToken);
-                if (token == EndOfInput) {
+                if (token == EndOfInput || token == tMarkerInput::marker) {
                     parseContext.ppError(loc, "End of input in macro", "macro expansion", atomStrings.getString(macroAtom));
                     delete in;
                     return 0;
