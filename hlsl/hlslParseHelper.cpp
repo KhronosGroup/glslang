@@ -2629,6 +2629,27 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             break;
         }
 
+    case EOpD3DCOLORtoUBYTE4:
+        {
+            // ivec4 ( x.zyxw * 255.001953 );
+            TIntermTyped* arg0 = node->getAsUnaryNode()->getOperand();
+            TVectorFields fields(2,1,0,3);
+            TIntermTyped* swizzleIdx = intermediate.addSwizzle(fields, loc);
+            TIntermTyped* swizzled = intermediate.addIndex(EOpVectorSwizzle, arg0, swizzleIdx, loc);
+            swizzled->setType(arg0->getType());
+            swizzled->getWritableType().getQualifier().makeTemporary();
+
+            TIntermTyped* conversion = intermediate.addConstantUnion(255.001953f, EbtFloat, loc, true);
+            TIntermTyped* rangeConverted = handleBinaryMath(loc, "mul", EOpMul, conversion, swizzled);
+            rangeConverted->setType(arg0->getType());
+            rangeConverted->getWritableType().getQualifier().makeTemporary();
+
+            node = intermediate.addConversion(EOpConstructInt, TType(EbtInt, EvqTemporary, 4), rangeConverted);
+            node->setLoc(loc);
+            node->setType(TType(EbtInt, EvqTemporary, 4));
+            break;
+        }
+
     default:
         break; // most pass through unchanged
     }

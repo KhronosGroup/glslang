@@ -1022,7 +1022,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("cosh",                        EOpCosh);
     symbolTable.relateToOperator("countbits",                   EOpBitCount);
     symbolTable.relateToOperator("cross",                       EOpCross);
-    // symbolTable.relateToOperator("D3DCOLORtoUBYTE4",            EOpD3DCOLORtoUBYTE4);
+    symbolTable.relateToOperator("D3DCOLORtoUBYTE4",            EOpD3DCOLORtoUBYTE4);
     symbolTable.relateToOperator("ddx",                         EOpDPdx);
     symbolTable.relateToOperator("ddx_coarse",                  EOpDPdxCoarse);
     symbolTable.relateToOperator("ddx_fine",                    EOpDPdxFine);
