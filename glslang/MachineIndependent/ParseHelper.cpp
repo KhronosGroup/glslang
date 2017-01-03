@@ -2502,7 +2502,6 @@ void TParseContext::atomicUintCheck(const TSourceLoc& loc, const TType& type, co
 
 void TParseContext::transparentCheck(const TSourceLoc& loc, const TType& type, const TString& /*identifier*/)
 {
-    // double standard due to gl_NumSamples
     if (parsingBuiltins)
         return;
 
