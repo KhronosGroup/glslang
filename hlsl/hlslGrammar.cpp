@@ -1776,9 +1776,55 @@ bool HlslGrammar::acceptFunctionParameters(TFunction& function)
     return true;
 }
 
+
+// default_parameter_declaration
+//      : EQUAL conditional_expression
+//      : EQUAL initializer
+bool HlslGrammar::acceptDefaultParameterDeclaration(const TType& type, TIntermTyped*& node)
+{
+    node = nullptr;
+
+    // Valid not to have a default_parameter_declaration
+    if (!acceptTokenClass(EHTokAssign))
+        return true;
+
+    if (!acceptConditionalExpression(node)) {
+        if (!acceptInitializer(node))
+            return false;
+
+        // For initializer lists, we have to const-fold into a constructor for the type, so build
+        // that.
+        TFunction* constructor = parseContext.handleConstructorCall(token.loc, type);
+        if (constructor == nullptr)  // cannot construct
+            return false;
+
+        TIntermTyped* arguments = nullptr;
+        for (int i=0; i<int(node->getAsAggregate()->getSequence().size()); i++)
+            parseContext.handleFunctionArgument(constructor, arguments, node->getAsAggregate()->getSequence()[i]->getAsTyped());
+        
+        node = parseContext.handleFunctionCall(token.loc, constructor, node);
+    }
+
+    // If this is simply a constant, we can use it directly.
+    if (node->getAsConstantUnion())
+        return true;
+
+    // Otherwise, it has to be const-foldable.
+    TIntermTyped* origNode = node;
+
+    node = intermediate.fold(node->getAsAggregate());
+
+    if (node != nullptr && origNode != node)
+        return true;
+
+    parseContext.error(token.loc, "invalid default parameter value", "", "");
+
+    return false;
+}
+
 // parameter_declaration
-//      : fully_specified_type post_decls
-//      | fully_specified_type identifier array_specifier post_decls
+//      : fully_specified_type post_decls [ = default_parameter_declaration ]
+//      | fully_specified_type identifier array_specifier post_decls [ = default_parameter_declaration ]
 //
 bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 {
@@ -1806,9 +1852,19 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
     // post_decls
     acceptPostDecls(type->getQualifier());
 
+    TIntermTyped* defaultValue;
+    if (!acceptDefaultParameterDeclaration(*type, defaultValue))
+        return false;
+
     parseContext.paramFix(*type);
 
-    TParameter param = { idToken.string, type };
+    // If any prior parameters have default values, all the parameters after that must as well.
+    if (defaultValue == nullptr && function.getDefaultParamCount() > 0) {
+        parseContext.error(idToken.loc, "invalid parameter after default value parameters", idToken.string->c_str(), "");
+        return false;
+    }
+
+    TParameter param = { idToken.string, type, defaultValue };
     function.addParameter(param);
 
     return true;

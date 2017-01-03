@@ -160,6 +160,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.numericsuffixes.frag", "main"},
         {"hlsl.numthreads.comp", "main_aux1"},
         {"hlsl.overload.frag", "PixelShaderFunction"},
+        {"hlsl.params.default.frag", "main"},
+        {"hlsl.params.default.negative.frag", "main"},
         {"hlsl.partialInit.frag", "PixelShaderFunction"},
         {"hlsl.pp.line.frag", "main"},
         {"hlsl.precise.frag", "main"},

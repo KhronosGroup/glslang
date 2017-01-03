@@ -1375,7 +1375,7 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
 
 void HlslParseContext::handleFunctionArgument(TFunction* function, TIntermTyped*& arguments, TIntermTyped* newArg)
 {
-    TParameter param = { 0, new TType };
+    TParameter param = { 0, new TType, nullptr };
     param.type->shallowCopy(newArg->getType());
     function->addParameter(param);
     if (arguments)
@@ -2643,7 +2643,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
 //  - user function
 //  - subroutine call (not implemented yet)
 //
-TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction* function, TIntermNode* arguments)
+TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction* function, TIntermTyped* arguments)
 {
     TIntermTyped* result = nullptr;
 
@@ -2783,10 +2783,10 @@ TIntermTyped* HlslParseContext::handleLengthMethod(const TSourceLoc& loc, TFunct
 //
 // Add any needed implicit conversions for function-call arguments to input parameters.
 //
-void HlslParseContext::addInputArgumentConversions(const TFunction& function, TIntermNode*& arguments)
+void HlslParseContext::addInputArgumentConversions(const TFunction& function, TIntermTyped*& arguments)
 {
     TIntermAggregate* aggregate = arguments->getAsAggregate();
-    const auto setArg = [&](int argNum, TIntermNode* arg) {
+    const auto setArg = [&](int argNum, TIntermTyped* arg) {
         if (function.getParamCount() == 1)
             arguments = arg;
         else {
@@ -4500,8 +4500,8 @@ void HlslParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQuali
 //
 // Return the function symbol if found, otherwise nullptr.
 //
-const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFunction& call, bool& builtIn,
-                                                TIntermNode* args)
+const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction& call, bool& builtIn,
+                                                TIntermTyped*& args)
 {
     // const TFunction* function = nullptr;
 
@@ -4600,6 +4600,22 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
                 return false;
         }
 
+        // Handle sampler betterness: An exact sampler match beats a non-exact match.
+        // (If we just looked at basic type, all EbtSamplers would look the same).
+        // If any type is not a sampler, just use the linearize function below.
+        if (from.getBasicType() == EbtSampler && to1.getBasicType() == EbtSampler && to2.getBasicType() == EbtSampler) {
+            // We can ignore the vector size in the comparison.
+            TSampler to1Sampler = to1.getSampler();
+            TSampler to2Sampler = to2.getSampler();
+
+            to1Sampler.vectorSize = to2Sampler.vectorSize = from.getSampler().vectorSize;
+
+            if (from.getSampler() == to2Sampler)
+                return from.getSampler() != to1Sampler;
+            if (from.getSampler() == to1Sampler)
+                return false;
+        }
+
         // Might or might not be changing shape, which means basic type might
         // or might not match, so within that, the question is how big a
         // basic-type conversion is being done.
@@ -4689,18 +4705,18 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
             // Handle aggregates: put all args into the new function call
             for (int arg=0; arg<int(args->getAsAggregate()->getSequence().size()); ++arg) {
                 // TODO: But for constness, we could avoid the new & shallowCopy, and use the pointer directly.
-                TParameter param = { 0, new TType };
+                TParameter param = { 0, new TType, nullptr };
                 param.type->shallowCopy(args->getAsAggregate()->getSequence()[arg]->getAsTyped()->getType());
                 convertedCall.addParameter(param);
             }
         } else if (args->getAsUnaryNode()) {
             // Handle unaries: put all args into the new function call
-            TParameter param = { 0, new TType };
+            TParameter param = { 0, new TType, nullptr };
             param.type->shallowCopy(args->getAsUnaryNode()->getOperand()->getAsTyped()->getType());
             convertedCall.addParameter(param);
         } else if (args->getAsTyped()) {
             // Handle bare e.g, floats, not in an aggregate.
-            TParameter param = { 0, new TType };
+            TParameter param = { 0, new TType, nullptr };
             param.type->shallowCopy(args->getAsTyped()->getType());
             convertedCall.addParameter(param);
         } else {
@@ -4717,6 +4733,13 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, const TFu
 
     if (tie)
         error(loc, "ambiguous best function under implicit type conversion", call.getName().c_str(), "");
+
+    // Append default parameter values if needed
+    if (!tie && bestMatch != nullptr) {
+        for (int defParam = call.getParamCount(); defParam < bestMatch->getParamCount(); ++defParam) {
+            handleFunctionArgument(&call, args, (*bestMatch)[defParam].defaultValue);
+        }
+    }
 
     return bestMatch;
 }

@@ -586,7 +586,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "DeviceMemoryBarrier",              nullptr, nullptr,   "-",              "-",             EShLangPSCS },
         { "DeviceMemoryBarrierWithGroupSync", nullptr, nullptr,   "-",              "-",             EShLangCS },
         { "distance",                         "S",     "F",       "V,",             "F,",            EShLangAll },
-        { "dot",                              "S",     nullptr,   "V,",             "FI,",           EShLangAll },
+        { "dot",                              "S",     nullptr,   "SV,",            "FI,",           EShLangAll },
         { "dst",                              nullptr, nullptr,   "V4,",            "F,",            EShLangAll },
         // { "errorf",                           "-",     "-",       "",             "",             EShLangAll }, TODO: varargs
         { "EvaluateAttributeAtCentroid",      nullptr, nullptr,   "SVM",            "F",             EShLangPS },
