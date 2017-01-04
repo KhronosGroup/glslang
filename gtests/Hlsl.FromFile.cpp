@@ -230,6 +230,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.swizzle.frag", "PixelShaderFunction"},
         {"hlsl.templatetypes.frag", "PixelShaderFunction"},
         {"hlsl.tx.bracket.frag", "main"},
+        {"hlsl.type.half.frag", "main"},
+        {"hlsl.type.identifier.frag", "main"},
         {"hlsl.typedef.frag", "PixelShaderFunction"},
         {"hlsl.whileLoop.frag", "PixelShaderFunction"},
         {"hlsl.void.frag", "PixelShaderFunction"},
