@@ -392,6 +392,7 @@ public:
 
     void clear()
     {
+        semanticName = nullptr;
         precision = EpqNone;
         invariant = false;
         noContraction = false;
@@ -401,6 +402,7 @@ public:
     // drop qualifiers that don't belong in a temporary variable
     void makeTemporary()
     {
+        semanticName = nullptr;
         storage = EvqTemporary;
         builtIn = EbvNone;
         clearInterstage();
@@ -445,10 +447,17 @@ public:
     // If A, then nothing should change, if B, then everything should change, but this is half way.
     void makePartialTemporary()
     {
+        semanticName = nullptr;
         storage      = EvqTemporary;
         specConstant = false;
     }
 
+    bool hasSemantic() const
+    {
+      return semanticName != nullptr;
+    }
+
+    const char*         semanticName;
     TStorageQualifier   storage   : 6;
     TBuiltInVariable    builtIn   : 8;
     TPrecisionQualifier precision : 3;

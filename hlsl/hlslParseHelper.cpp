@@ -3808,6 +3808,7 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
     // Also, in DX10 if a SV value is present as the input of a stage, but isn't appropriate for that
     // stage, it would just be ignored as it is likely there as part of an output struct from one stage
     // to the next
+    qualifier.semanticName = intermediate.addSemanticName(semanticUpperCase);
 
     bool bParseDX9 = false;
     if (bParseDX9) {
