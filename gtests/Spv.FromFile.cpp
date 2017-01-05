@@ -191,6 +191,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.dataOutIndirect.vert",
         "spv.deepRvalue.frag",
         "spv.depthOut.frag",
+        "spv.deviceGroup.frag",
         "spv.discard-dce.frag",
         "spv.doWhileLoop.frag",
         "spv.drawParams.vert",
