@@ -391,7 +391,7 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                 //   OpSequence
                 //      coordtmp = load's param1
                 //      rhsTmp = OpImageLoad(object, coordTmp)
-                //      rhsTmp op = rhs
+                //      rhsTmp op= rhs
                 //      OpImageStore(object, coordTmp, rhsTmp)
                 //      rhsTmp
                 //
@@ -1073,7 +1073,7 @@ void HlslParseContext::flatten(const TSourceLoc& loc, const TVariable& variable)
 // location in this linear sequence.
 //
 // If the tree was N-ary, that can be directly calculated.  However, we are dealing with
-// arbitrary numbers - peraps a struct of 7 members containing an array of 3.  Thus, we must
+// arbitrary numbers - perhaps a struct of 7 members containing an array of 3.  Thus, we must
 // build a data structure to allow the sequence of bracket and dot operators on arrays and
 // structs to arrive at the proper member.
 //
@@ -5528,9 +5528,8 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
         emulatedConstructorArguments = initList->getSequence()[0];
     else
         emulatedConstructorArguments = initList;
-    TIntermTyped* constructor = addConstructor(loc, emulatedConstructorArguments, type);
 
-    return constructor;
+    return addConstructor(loc, emulatedConstructorArguments, type);
 }
 
 // Lengthen list to be long enough to cover any gap from the current list size

@@ -2256,8 +2256,8 @@ bool TIntermediate::promoteAggregate(TIntermAggregate& node)
     case EOpDot:
     case EOpDst:
     case EOpFaceForward:
-        // case EOpFindMSB: TODO: ?? 
-        // case EOpFindLSB: TODO: ??
+    // case EOpFindMSB: TODO:
+    // case EOpFindLSB: TODO:
     case EOpFma:
     case EOpMod:
     case EOpFrexp:
@@ -2267,11 +2267,11 @@ bool TIntermediate::promoteAggregate(TIntermAggregate& node)
     case EOpMax:
     case EOpMin:
     case EOpModf:
-        // case EOpGenMul: TODO: ??
+    // case EOpGenMul: TODO:
     case EOpPow:
     case EOpReflect:
     case EOpRefract:
-    // case EOpSinCos: TODO: ??
+    // case EOpSinCos: TODO:
     case EOpSmoothStep:
     case EOpStep:
         break;
