@@ -593,37 +593,42 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
 
     // Make a copy of the name because it will be overwritten by the next token scan.
     const std::string filename = ppToken->name;
+
+    // See if the directive was well formed
     token = scanToken(ppToken);
     if (token != '\n') {
         if (token == EndOfInput)
             parseContext.ppError(ppToken->loc, "expected newline after header name:", "#include", "%s", filename.c_str());
         else
             parseContext.ppError(ppToken->loc, "extra content after header name:", "#include", "%s", filename.c_str());
-    } else {
-        TShader::Includer::IncludeResult* res = includer.include(filename.c_str(), includeType, currentSourceFile.c_str(), includeStack.size() + 1);
-        if (res && !res->file_name.empty()) {
-            if (res->file_data && res->file_length) {
-                const bool forNextLine = parseContext.lineDirectiveShouldSetNextLine();
-                std::ostringstream prologue;
-                std::ostringstream epilogue;
-                prologue << "#line " << forNextLine << " " << "\"" << res->file_name << "\"\n";
-                epilogue << (res->file_data[res->file_length - 1] == '\n'? "" : "\n") << "#line " << directiveLoc.line + forNextLine << " " << directiveLoc.getStringNameOrNum() << "\n";
-                pushInput(new TokenizableIncludeFile(directiveLoc, prologue.str(), res, epilogue.str(), this));
-            }
-            // At EOF, there's no "current" location anymore.
-            if (token != EndOfInput)
-                parseContext.setCurrentColumn(0);
-            // Don't accidentally return EndOfInput, which will end all preprocessing.
-            return '\n';
+        return token;
+    }
+
+    // Process well-formed directive
+    TShader::Includer::IncludeResult* res = includer.include(filename.c_str(), includeType, currentSourceFile.c_str(),
+                                                             includeStack.size() + 1);
+    if (res && !res->file_name.empty()) {
+        if (res->file_data && res->file_length) {
+            // path for processing one or more tokens from an included header, hand off 'res'
+            const bool forNextLine = parseContext.lineDirectiveShouldSetNextLine();
+            std::ostringstream prologue;
+            std::ostringstream epilogue;
+            prologue << "#line " << forNextLine << " " << "\"" << res->file_name << "\"\n";
+            epilogue << (res->file_data[res->file_length - 1] == '\n'? "" : "\n") <<
+                "#line " << directiveLoc.line + forNextLine << " " << directiveLoc.getStringNameOrNum() << "\n";
+            pushInput(new TokenizableIncludeFile(directiveLoc, prologue.str(), res, epilogue.str(), this));
+            parseContext.setCurrentColumn(0);
         } else {
-            std::string message =
-                res ? std::string(res->file_data, res->file_length)
-                    : std::string("Could not process include directive");
-            parseContext.ppError(directiveLoc, message.c_str(), "#include", "for header name: %s", filename.c_str());
-            if (res) {
-                includer.releaseInclude(res);
-            }
+            // things are okay, but there is nothing to process
+            includer.releaseInclude(res);
         }
+    } else {
+        // error path, clean up
+        std::string message =
+            res ? std::string(res->file_data, res->file_length)
+                : std::string("Could not process include directive");
+        parseContext.ppError(directiveLoc, message.c_str(), "#include", "for header name: %s", filename.c_str());
+        includer.releaseInclude(res);
     }
 
     return token;
