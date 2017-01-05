@@ -155,7 +155,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
             return folded;
     }
 
-    // If either is a specialization constant, while the other is 
+    // If either is a specialization constant, while the other is
     // a constant (or specialization constant), the result is still
     // a specialization constant, if the operation is an allowed
     // specialization-constant operation.
@@ -192,7 +192,7 @@ TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TI
     node->setType(type);
     return node;
 }
-    
+
 //
 // Low level: add unary node (no promotions or other argument modifications)
 //
@@ -286,7 +286,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
         if (source == EShSourceHlsl) {
             break; // HLSL can promote logical not
         }
- 
+
         if (child->getType().getBasicType() != EbtBool || child->getType().isMatrix() || child->getType().isArray() || child->getType().isVector()) {
             return nullptr;
         }
@@ -474,7 +474,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
 
         // samplers can get assigned via a sampler constructor
         // (well, not yet, but code in the rest of this function is ready for it)
-        if (node->getBasicType() == EbtSampler && op == EOpAssign && 
+        if (node->getBasicType() == EbtSampler && op == EOpAssign &&
             node->getAsOperator() != nullptr && node->getAsOperator()->getOp() == EOpConstructTextureSampler)
             break;
 
@@ -808,6 +808,7 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
         return node;
     }
 
+    bool allowScalarToVector = true;
     // some operations don't do this
     switch (op) {
     case EOpAssign:
@@ -823,6 +824,10 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
     case EOpLogicalOr:
     case EOpLogicalXor:
         break;
+    case EOpMul:
+    case EOpDiv:
+        allowScalarToVector = false;
+        break;
     default:
         return node;
     }
@@ -836,9 +841,9 @@ TIntermTyped* TIntermediate::addShapeConversion(TOperator op, const TType& type,
     TOperator constructorOp = mapTypeToConstructorOp(type);
 
     // scalar -> smeared -> vector, or
-    // vec1 -> scalar, or
-    // bigger vector -> smaller vector or scalar
-    if ((type.isVector() && node->getType().isScalar()) ||
+    // vector -> scalar, or
+    // bigger vector -> smaller vector
+    if ((type.isVector() && node->getType().isScalar() && allowScalarToVector) ||
         (node->getType().isVector() && node->getVectorSize() == 1 && type.isScalar()) ||
         (node->getVectorSize() > type.getVectorSize() && type.isVector()))
         return setAggregateOperator(makeAggregate(node), constructorOp, type, node->getLoc());
@@ -867,16 +872,16 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         if (fromConvertable && toConvertable) {
             switch (op) {
             case EOpAndAssign:               // assignments can perform arbitrary conversions
-            case EOpInclusiveOrAssign:       // ... 
-            case EOpExclusiveOrAssign:       // ... 
-            case EOpAssign:                  // ... 
-            case EOpAddAssign:               // ... 
-            case EOpSubAssign:               // ... 
-            case EOpMulAssign:               // ... 
-            case EOpVectorTimesScalarAssign: // ... 
-            case EOpMatrixTimesScalarAssign: // ... 
-            case EOpDivAssign:               // ... 
-            case EOpModAssign:               // ... 
+            case EOpInclusiveOrAssign:       // ...
+            case EOpExclusiveOrAssign:       // ...
+            case EOpAssign:                  // ...
+            case EOpAddAssign:               // ...
+            case EOpSubAssign:               // ...
+            case EOpMulAssign:               // ...
+            case EOpVectorTimesScalarAssign: // ...
+            case EOpMatrixTimesScalarAssign: // ...
+            case EOpDivAssign:               // ...
+            case EOpModAssign:               // ...
             case EOpReturn:                  // function returns can also perform arbitrary conversions
             case EOpFunctionCall:            // conversion of a calling parameter
             case EOpLogicalNot:
@@ -2256,7 +2261,7 @@ bool TIntermediate::promoteAggregate(TIntermAggregate& node)
     case EOpDot:
     case EOpDst:
     case EOpFaceForward:
-        // case EOpFindMSB: TODO: ?? 
+        // case EOpFindMSB: TODO: ??
         // case EOpFindLSB: TODO: ??
     case EOpFma:
     case EOpMod:
