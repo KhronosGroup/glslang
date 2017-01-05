@@ -86,7 +86,8 @@ TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& 
                                       int version, EProfile profile, EShSource source,
                                       EShLanguage language, TInfoSink& infoSink,
                                       SpvVersion spvVersion, bool forwardCompatible, EShMessages messages,
-                                      bool parsingBuiltIns, const std::string sourceEntryPointName = "")
+                                      bool parsingBuiltIns, const std::string sourceEntryPointName = "",
+                                      TSemanticResolver* semanticResolver = nullptr )
 {
     switch (source) {
     case EShSourceGlsl:
@@ -96,7 +97,8 @@ TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& 
 
     case EShSourceHlsl:
         return new HlslParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
-                                    language, infoSink, sourceEntryPointName.c_str(), forwardCompatible, messages);
+                                    language, infoSink, sourceEntryPointName.c_str(), forwardCompatible, messages,
+                                    semanticResolver);
     default:
         infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
         return nullptr;
@@ -617,7 +619,8 @@ bool ProcessDeferred(
     ProcessingContext& processingContext,
     bool requireNonempty,
     TShader::Includer& includer,
-    const std::string sourceEntryPointName = ""
+    const std::string sourceEntryPointName = "",
+    TSemanticResolver* semanticResolver = nullptr
     )
 {
     if (! InitThread())
@@ -732,9 +735,14 @@ bool ProcessDeferred(
     // Now we can process the full shader under proper symbols and rules.
     //
 
+    TDefaultSemanticResolver defaultSemanticResolver(false);
+    if (!semanticResolver)
+      semanticResolver = &defaultSemanticResolver;
+
     TParseContextBase* parseContext = CreateParseContext(symbolTable, intermediate, version, profile, source,
                                                          compiler->getLanguage(), compiler->infoSink,
-                                                         spvVersion, forwardCompatible, messages, false, sourceEntryPointName);
+                                                         spvVersion, forwardCompatible, messages, false, sourceEntryPointName,
+                                                         semanticResolver);
 
     TPpContext ppContext(*parseContext, names[numPre]? names[numPre]: "", includer);
 
@@ -1059,14 +1067,15 @@ bool CompileDeferred(
     EShMessages messages,       // warnings/errors/AST; things to print out
     TIntermediate& intermediate,// returned tree, etc.
     TShader::Includer& includer,
-    const std::string sourceEntryPointName = "")
+    const std::string sourceEntryPointName = "",
+    TSemanticResolver* semanticResolver = nullptr)
 {
     DoFullParse parser;
     return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
                            preamble, optLevel, resources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
                            forwardCompatible, messages, intermediate, parser,
-                           true, includer, sourceEntryPointName);
+                           true, includer, sourceEntryPointName, semanticResolver);
 }
 
 } // end anonymous namespace for local functions
@@ -1545,7 +1554,7 @@ void TShader::setNoStorageFormat(bool useUnknownFormat) { intermediate->setNoSto
 // Returns true for success.
 //
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-                    bool forwardCompatible, EShMessages messages, Includer& includer)
+                    bool forwardCompatible, EShMessages messages, Includer& includer, TSemanticResolver* semanticResolver)
 {
     if (! InitThread())
         return false;

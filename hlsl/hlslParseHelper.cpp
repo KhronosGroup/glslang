@@ -53,8 +53,8 @@ namespace glslang {
 
 HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
                                    int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TInfoSink& infoSink,
-                                   const TString sourceEntryPointName,
-                                   bool forwardCompatible, EShMessages messages) :
+                                   const TString sourceEntryPointName, bool forwardCompatible, EShMessages messages,
+                                   TSemanticResolver* semanticResolver) :
     TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
     contextPragma(true, false),
     loopNestingLevel(0), annotationNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
@@ -65,7 +65,8 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     builtInIoIndex(nullptr),
     builtInIoBase(nullptr),
     nextInLocation(0), nextOutLocation(0),
-    sourceEntryPointName(sourceEntryPointName)
+    sourceEntryPointName(sourceEntryPointName),
+    semanticResolver(semanticResolver)
 {
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;
@@ -3493,110 +3494,26 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
 
     TString semanticUpperCase = semantic;
     std::transform(semanticUpperCase.begin(), semanticUpperCase.end(), semanticUpperCase.begin(), ::toupper);
-    // in DX9, all outputs had to have a semantic associated with them, that was either consumed
-    // by the system or was a specific register assignment
-    // in DX10+, only semantics with the SV_ prefix have any meaning beyond decoration
-    // Fxc will only accept DX9 style semantics in compat mode
-    // Also, in DX10 if a SV value is present as the input of a stage, but isn't appropriate for that
-    // stage, it would just be ignored as it is likely there as part of an output struct from one stage
-    // to the next
 
-    bool bParseDX9 = false;
-    if (bParseDX9) {
-        if (semanticUpperCase == "PSIZE")
-            qualifier.builtIn = EbvPointSize;
-        else if (semantic == "FOG")
-            qualifier.builtIn = EbvFogFragCoord;
-        else if (semanticUpperCase == "DEPTH")
-            qualifier.builtIn = EbvFragDepth;
-        else if (semanticUpperCase == "VFACE")
-            qualifier.builtIn = EbvFace;
-        else if (semanticUpperCase == "VPOS")
-            qualifier.builtIn = EbvFragCoord;
+    if (semanticResolver) {
+        if (semanticResolver->validateSemanticUsage(language, semanticUpperCase.c_str())) {
+            qualifier.builtIn = semanticResolver->translateSemanticToBuiltIn(language, semanticUpperCase.c_str());
+
+            int loc = semanticResolver->translateSemanticToLocation(language, semanticUpperCase.c_str());
+            if (loc >= 0)
+                qualifier.layoutLocation = loc;
+
+            int comp = semanticResolver->tranlsateSemanticToComponent(language, semanticUpperCase.c_str());
+            if (comp >= 0)
+                qualifier.layoutComponent = comp;
+
+            int index = semanticResolver->tranlsateSemanticToIndex(language, semanticUpperCase.c_str());
+            if (index >= 0)
+                qualifier.layoutIndex = index;
+        } else {
+            error(loc, "invalid semantic name", semanticUpperCase.c_str(), "");
+        }
     }
-
-    // SV Position has a different meaning in vertex vs fragment
-    if (semanticUpperCase == "SV_POSITION" && language != EShLangFragment)
-        qualifier.builtIn = EbvPosition;
-    else if (semanticUpperCase == "SV_POSITION" && language == EShLangFragment)
-        qualifier.builtIn = EbvFragCoord;
-    else if (semanticUpperCase == "SV_CLIPDISTANCE")
-        qualifier.builtIn = EbvClipDistance;
-    else if (semanticUpperCase == "SV_CULLDISTANCE")
-        qualifier.builtIn = EbvCullDistance;
-    else if (semanticUpperCase == "SV_VERTEXID")
-        qualifier.builtIn = EbvVertexIndex;
-    else if (semanticUpperCase == "SV_VIEWPORTARRAYINDEX")
-        qualifier.builtIn = EbvViewportIndex;
-    else if (semanticUpperCase == "SV_TESSFACTOR")
-        qualifier.builtIn = EbvTessLevelOuter;
-
-    // Targets are defined 0-7
-    else if (semanticUpperCase == "SV_TARGET") {
-        qualifier.builtIn = EbvNone;
-        // qualifier.layoutLocation = 0;
-    } else if (semanticUpperCase == "SV_TARGET0") {
-        qualifier.builtIn = EbvNone;
-        // qualifier.layoutLocation = 0;
-    } else if (semanticUpperCase == "SV_TARGET1") {
-        qualifier.builtIn = EbvNone;
-        // qualifier.layoutLocation = 1;
-    } else if (semanticUpperCase == "SV_TARGET2") {
-        qualifier.builtIn = EbvNone;
-        // qualifier.layoutLocation = 2;
-    } else if (semanticUpperCase == "SV_TARGET3") {
-        qualifier.builtIn = EbvNone;
-        // qualifier.layoutLocation = 3;
-    } else if (semanticUpperCase == "SV_TARGET4") {
-        qualifier.builtIn = EbvNone;
-        // qualifier.layoutLocation = 4;
-    } else if (semanticUpperCase == "SV_TARGET5") {
-        qualifier.builtIn = EbvNone;
-        // qualifier.layoutLocation = 5;
-    } else if (semanticUpperCase == "SV_TARGET6") {
-        qualifier.builtIn = EbvNone;
-        // qualifier.layoutLocation = 6;
-    } else if (semanticUpperCase == "SV_TARGET7") {
-        qualifier.builtIn = EbvNone;
-        // qualifier.layoutLocation = 7;
-    } else if (semanticUpperCase == "SV_SAMPLEINDEX")
-        qualifier.builtIn = EbvSampleId;
-    else if (semanticUpperCase == "SV_RENDERTARGETARRAYINDEX")
-        qualifier.builtIn = EbvLayer;
-    else if (semanticUpperCase == "SV_PRIMITIVEID")
-        qualifier.builtIn = EbvPrimitiveId;
-    else if (semanticUpperCase == "SV_OUTPUTCONTROLPOINTID")
-        qualifier.builtIn = EbvInvocationId;
-    else if (semanticUpperCase == "SV_ISFRONTFACE")
-        qualifier.builtIn = EbvFace;
-    else if (semanticUpperCase == "SV_INSTANCEID")
-        qualifier.builtIn = EbvInstanceIndex;
-    else if (semanticUpperCase == "SV_INSIDETESSFACTOR")
-        qualifier.builtIn = EbvTessLevelInner;
-    else if (semanticUpperCase == "SV_GSINSTANCEID")
-        qualifier.builtIn = EbvInvocationId;
-    else if (semanticUpperCase == "SV_DISPATCHTHREADID")
-        qualifier.builtIn = EbvGlobalInvocationId;
-    else if (semanticUpperCase == "SV_GROUPTHREADID")
-        qualifier.builtIn = EbvLocalInvocationId;
-    else if (semanticUpperCase == "SV_GROUPID")
-        qualifier.builtIn = EbvWorkGroupId;
-    else if (semanticUpperCase == "SV_DOMAINLOCATION")
-        qualifier.builtIn = EbvTessCoord;
-    else if (semanticUpperCase == "SV_DEPTH")
-        qualifier.builtIn = EbvFragDepth;
-    else if( semanticUpperCase == "SV_COVERAGE")
-        qualifier.builtIn = EbvSampleMask;
-
-    // TODO, these need to get refined to be more specific
-    else if( semanticUpperCase == "SV_DEPTHGREATEREQUAL")
-        qualifier.builtIn = EbvFragDepthGreater;
-    else if( semanticUpperCase == "SV_DEPTHLESSEQUAL")
-        qualifier.builtIn = EbvFragDepthLesser;
-    else if( semanticUpperCase == "SV_STENCILREF")
-        error(loc, "unimplemented; need ARB_shader_stencil_export", "SV_STENCILREF", "");
-    else if( semanticUpperCase == "SV_GROUPINDEX")
-        error(loc, "unimplemented", "SV_GROUPINDEX", "");
 }
 
 //

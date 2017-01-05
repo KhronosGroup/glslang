@@ -37,6 +37,7 @@
 #define _COMPILER_INTERFACE_INCLUDED_
 
 #include "../Include/ResourceLimits.h"
+#include "../Include/BaseTypes.h"
 #include "../MachineIndependent/Versions.h"
 
 #include <cstring>
@@ -284,6 +285,144 @@ bool InitializeProcess();
 // Call once per process to tear down everything
 void FinalizeProcess();
 
+// Sematic resolver for HLSL parsing.
+// See TDefaultSemanticResolver for default implementation.
+class TSemanticResolver {
+public:
+    // Should return true if the given semantic name is valid for the given stage.
+    virtual bool validateSemanticUsage(EShLanguage stage, const char* name) = 0;
+    // Should return the apporiate TBuiltInVariable value for the given semantic name and
+    // stage combination. Use EbvNone for a non builtin variable that needs a location
+    // and component index.
+    virtual TBuiltInVariable translateSemanticToBuiltIn(EShLanguage stage, const char* name) = 0;
+    // Should return 0 >= if the semantic name and stage combination needs a explicit location.
+    // Return -1 if no location definition is needed/allowed.
+    virtual int translateSemanticToLocation(EShLanguage stage, const char* name) = 0;
+    // Should return 0 >= if the semantic name and stage combination needs a explicit component index.
+    // Return -1 if no component index definition is needed/allowed.
+    virtual int tranlsateSemanticToComponent(EShLanguage stage, const char* name) = 0;
+    // Should return 0 >= if the semantic name and stage combination needs a color index.
+    // Return -1 if no color index is needed/allowed.
+    virtual int tranlsateSemanticToIndex(EShLanguage stage, const char* name) = 0;
+};
+
+// Default implementation of the semantic resolver
+// This resolver is used if no resolver is provided by
+// the user.
+// This resolver is provided here as a basis for the user
+// defined resolver to avoid reiplementing the default
+// behavior.
+class TDefaultSemanticResolver
+    : public TSemanticResolver {
+    struct BuildInSemanticInfo
+    {
+        const char*       name;
+        TBuiltInVariable  builtIn;
+    };
+    const BuildInSemanticInfo* getInfo(EShLanguage stage, const char* name)
+    {
+        static const BuildInSemanticInfo d3d9CompatTable[] =
+        {
+            { "PSIZE", EbvPointSize },
+            { "FOG", EbvFogFragCoord },
+            { "DEPTH", EbvFragDepth },
+            { "VFACE", EbvFace },
+            { "VPOS", EbvFragCoord },
+            { nullptr, EbvNone }
+        };
+
+        if (isD3D9Mode) {
+            for ( const BuildInSemanticInfo* entry = d3d9CompatTable; entry->name; ++entry)
+                if (!strcmp(name, entry->name))
+                    return entry;
+        }
+
+        if (stage == EShLangFragment) {
+            static const BuildInSemanticInfo fragmentPos = { "SV_POSITION", EbvFragCoord };
+            if (!strcmp(name, fragmentPos.name))
+                return &fragmentPos;
+        } else {
+            static const BuildInSemanticInfo otherPos = { "SV_POSITION", EbvPosition };
+            if (!strcmp(name, otherPos.name))
+                return &otherPos;
+        }
+
+        static const BuildInSemanticInfo allOtherBuiltIns[] =
+        {
+            { "SV_CLIPDISTANCE", EbvClipDistance },
+            { "SV_CULLDISTANCE", EbvCullDistance },
+            { "SV_VERTEXID", EbvVertexIndex },
+            { "SV_VIEWPORTARRAYINDEX", EbvViewportIndex },
+            { "SV_TESSFACTOR", EbvTessLevelOuter },
+            { "SV_TARGET", EbvNone },
+            { "SV_TARGET0", EbvNone },
+            { "SV_TARGET1", EbvNone },
+            { "SV_TARGET2", EbvNone },
+            { "SV_TARGET3", EbvNone },
+            { "SV_TARGET4", EbvNone },
+            { "SV_TARGET5", EbvNone },
+            { "SV_TARGET6", EbvNone },
+            { "SV_TARGET7", EbvNone },
+            { "SV_SAMPLEINDEX", EbvSampleId },
+            { "SV_RENDERTARGETARRAYINDEX", EbvLayer },
+            { "SV_PRIMITIVEID", EbvPrimitiveId },
+            { "SV_OUTPUTCONTROLPOINTID", EbvInvocationId },
+            { "SV_ISFRONTFACE", EbvFace },
+            { "SV_INSTANCEID", EbvInstanceIndex },
+            { "SV_INSIDETESSFACTOR", EbvTessLevelInner },
+            { "SV_GSINSTANCEID", EbvInvocationId },
+            { "SV_DISPATCHTHREADID", EbvGlobalInvocationId },
+            { "SV_GROUPTHREADID", EbvLocalInvocationId },
+            { "SV_GROUPID", EbvWorkGroupId },
+            { "SV_DOMAINLOCATION", EbvTessCoord },
+            { "SV_DEPTH", EbvFragDepth },
+            { "SV_COVERAGE", EbvSampleMask },
+            { "SV_DEPTHGREATEREQUAL", EbvFragDepthGreater },
+            { "SV_DEPTHLESSEQUAL", EbvFragDepthLesser },
+            //{ "SV_STENCILREF", not implemented },
+            //{ "SV_GROUPINDEX", not implemented },
+            { nullptr, EbvNone }
+        };
+        for (const BuildInSemanticInfo* entry = allOtherBuiltIns; entry->name; ++entry)
+            if (!strcmp(name, entry->name))
+                return entry;
+
+        return nullptr;
+    }
+
+    bool isD3D9Mode;
+  public:
+    TDefaultSemanticResolver(bool d3d_9 = false)
+      : isD3D9Mode(d3d_9)
+    {
+    }
+
+    bool validateSemanticUsage(EShLanguage stage, const char* name) override
+    {
+        //return getInfo(stage, name) != NULL;
+        return true;
+    }
+    TBuiltInVariable translateSemanticToBuiltIn(EShLanguage stage, const char* name) override
+    {
+        const BuildInSemanticInfo* info = getInfo(stage, name);
+        if (info)
+            return info->builtIn;
+        return EbvNone;
+    }
+    int translateSemanticToLocation(EShLanguage stage, const char* name) override
+    {
+        return -1;
+    }
+    int tranlsateSemanticToComponent(EShLanguage stage, const char* name) override
+    {
+        return -1;
+    }
+    int tranlsateSemanticToIndex(EShLanguage stage, const char* name) override
+    {
+        return -1;
+    }
+};
+
 // Make one TShader per shader that you will link into a program.  Then provide
 // the shader through setStrings() or setStringsWithLengths(), then call parse(),
 // then query the info logs.
@@ -394,14 +533,14 @@ public:
     };
 
     bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-               bool forwardCompatible, EShMessages messages)
+               bool forwardCompatible, EShMessages messages, TSemanticResolver* semanticResolver = nullptr)
     {
         TShader::ForbidInclude includer;
-        return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer);
+        return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer, semanticResolver);
     }
 
     bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-               bool forwardCompatible, EShMessages, Includer&);
+               bool forwardCompatible, EShMessages, Includer&, TSemanticResolver* = nullptr);
 
     // Equivalent to parse() without a default profile and without forcing defaults.
     // Provided for backwards compatibility.
@@ -521,7 +660,7 @@ public:
     // I/O mapping: apply base offsets and map live unbound variables
     // If resolver is not provided it uses the previous approach
     // and respects auto assignment and offsets.
-    bool mapIO(TIoMapResolver* resolver = NULL);
+    bool mapIO(TIoMapResolver* resolver = nullptr);
 
 protected:
     bool linkStage(EShLanguage, EShMessages);

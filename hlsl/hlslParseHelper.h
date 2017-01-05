@@ -48,7 +48,8 @@ public:
     HlslParseContext(TSymbolTable&, TIntermediate&, bool parsingBuiltins,
                      int version, EProfile, const SpvVersion& spvVersion, EShLanguage, TInfoSink&,
                      const TString sourceEntryPointName,
-                     bool forwardCompatible = false, EShMessages messages = EShMsgDefault);
+                     bool forwardCompatible = false, EShMessages messages = EShMsgDefault,
+                     TSemanticResolver* semanticResolver = nullptr);
     virtual ~HlslParseContext();
     void initializeExtensionBehavior() override;
 
@@ -334,6 +335,8 @@ protected:
     unsigned int nextOutLocation;
 
     TString sourceEntryPointName;
+
+    TSemanticResolver* semanticResolver;
 };
 
 } // end namespace glslang
