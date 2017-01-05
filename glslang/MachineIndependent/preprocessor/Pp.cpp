@@ -596,9 +596,9 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
     token = scanToken(ppToken);
     if (token != '\n') {
         if (token == EndOfInput)
-            parseContext.ppError(ppToken->loc, "expected newline", "#include", "");
+            parseContext.ppError(ppToken->loc, "expected newline after header name:", "#include", "%s", filename.c_str());
         else
-            parseContext.ppError(ppToken->loc, "extra content after header name", "#include", "");
+            parseContext.ppError(ppToken->loc, "extra content after header name:", "#include", "%s", filename.c_str());
     } else {
         TShader::Includer::IncludeResult* res = includer.include(filename.c_str(), includeType, currentSourceFile.c_str(), includeStack.size() + 1);
         if (res && !res->file_name.empty()) {
@@ -619,7 +619,7 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
             std::string message =
                 res ? std::string(res->file_data, res->file_length)
                     : std::string("Could not process include directive");
-            parseContext.ppError(directiveLoc, message.c_str(), "#include", "");
+            parseContext.ppError(directiveLoc, message.c_str(), "#include", "for header name: %s", filename.c_str());
             if (res) {
                 includer.releaseInclude(res);
             }
