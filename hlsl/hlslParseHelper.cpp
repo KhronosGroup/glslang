@@ -1,12 +1,12 @@
 //
-//Copyright (C) 2016 Google, Inc.
-//Copyright (C) 2016 LunarG, Inc.
+// Copyright (C) 2016 Google, Inc.
+// Copyright (C) 2016 LunarG, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -20,18 +20,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 
 #include "hlslParseHelper.h"
@@ -3515,7 +3515,7 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
             qualifier.builtIn = EbvFragCoord;
     }
 
-    //SV Position has a different meaning in vertex vs fragment
+    // SV Position has a different meaning in vertex vs fragment
     if (semanticUpperCase == "SV_POSITION" && language != EShLangFragment)
         qualifier.builtIn = EbvPosition;
     else if (semanticUpperCase == "SV_POSITION" && language == EShLangFragment)
@@ -3531,34 +3531,34 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
     else if (semanticUpperCase == "SV_TESSFACTOR")
         qualifier.builtIn = EbvTessLevelOuter;
 
-    //Targets are defined 0-7
+    // Targets are defined 0-7
     else if (semanticUpperCase == "SV_TARGET") {
         qualifier.builtIn = EbvNone;
-        //qualifier.layoutLocation = 0;
+        // qualifier.layoutLocation = 0;
     } else if (semanticUpperCase == "SV_TARGET0") {
         qualifier.builtIn = EbvNone;
-        //qualifier.layoutLocation = 0;
+        // qualifier.layoutLocation = 0;
     } else if (semanticUpperCase == "SV_TARGET1") {
         qualifier.builtIn = EbvNone;
-        //qualifier.layoutLocation = 1;
+        // qualifier.layoutLocation = 1;
     } else if (semanticUpperCase == "SV_TARGET2") {
         qualifier.builtIn = EbvNone;
-        //qualifier.layoutLocation = 2;
+        // qualifier.layoutLocation = 2;
     } else if (semanticUpperCase == "SV_TARGET3") {
         qualifier.builtIn = EbvNone;
-        //qualifier.layoutLocation = 3;
+        // qualifier.layoutLocation = 3;
     } else if (semanticUpperCase == "SV_TARGET4") {
         qualifier.builtIn = EbvNone;
-        //qualifier.layoutLocation = 4;
+        // qualifier.layoutLocation = 4;
     } else if (semanticUpperCase == "SV_TARGET5") {
         qualifier.builtIn = EbvNone;
-        //qualifier.layoutLocation = 5;
+        // qualifier.layoutLocation = 5;
     } else if (semanticUpperCase == "SV_TARGET6") {
         qualifier.builtIn = EbvNone;
-        //qualifier.layoutLocation = 6;
+        // qualifier.layoutLocation = 6;
     } else if (semanticUpperCase == "SV_TARGET7") {
         qualifier.builtIn = EbvNone;
-        //qualifier.layoutLocation = 7;
+        // qualifier.layoutLocation = 7;
     } else if (semanticUpperCase == "SV_SAMPLEINDEX")
         qualifier.builtIn = EbvSampleId;
     else if (semanticUpperCase == "SV_RENDERTARGETARRAYINDEX")
@@ -3588,7 +3588,7 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
     else if( semanticUpperCase == "SV_COVERAGE")
         qualifier.builtIn = EbvSampleMask;
 
-    //TODO, these need to get refined to be more specific
+    // TODO, these need to get refined to be more specific
     else if( semanticUpperCase == "SV_DEPTHGREATEREQUAL")
         qualifier.builtIn = EbvFragDepthGreater;
     else if( semanticUpperCase == "SV_DEPTHLESSEQUAL")
@@ -4475,38 +4475,38 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
     }
     if (language == EShLangGeometry || language == EShLangTessEvaluation) {
         if (id == TQualifier::getGeometryString(ElgTriangles)) {
-            //publicType.shaderQualifiers.geometry = ElgTriangles;
+            // publicType.shaderQualifiers.geometry = ElgTriangles;
             warn(loc, "ignored", id.c_str(), "");
             return;
         }
         if (language == EShLangGeometry) {
             if (id == TQualifier::getGeometryString(ElgPoints)) {
-                //publicType.shaderQualifiers.geometry = ElgPoints;
+                // publicType.shaderQualifiers.geometry = ElgPoints;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgLineStrip)) {
-                //publicType.shaderQualifiers.geometry = ElgLineStrip;
+                // publicType.shaderQualifiers.geometry = ElgLineStrip;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgLines)) {
-                //publicType.shaderQualifiers.geometry = ElgLines;
+                // publicType.shaderQualifiers.geometry = ElgLines;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgLinesAdjacency)) {
-                //publicType.shaderQualifiers.geometry = ElgLinesAdjacency;
+                // publicType.shaderQualifiers.geometry = ElgLinesAdjacency;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgTrianglesAdjacency)) {
-                //publicType.shaderQualifiers.geometry = ElgTrianglesAdjacency;
+                // publicType.shaderQualifiers.geometry = ElgTrianglesAdjacency;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgTriangleStrip)) {
-                //publicType.shaderQualifiers.geometry = ElgTriangleStrip;
+                // publicType.shaderQualifiers.geometry = ElgTriangleStrip;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
@@ -4515,53 +4515,53 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
 
             // input primitive
             if (id == TQualifier::getGeometryString(ElgTriangles)) {
-                //publicType.shaderQualifiers.geometry = ElgTriangles;
+                // publicType.shaderQualifiers.geometry = ElgTriangles;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgQuads)) {
-                //publicType.shaderQualifiers.geometry = ElgQuads;
+                // publicType.shaderQualifiers.geometry = ElgQuads;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgIsolines)) {
-                //publicType.shaderQualifiers.geometry = ElgIsolines;
+                // publicType.shaderQualifiers.geometry = ElgIsolines;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
 
             // vertex spacing
             if (id == TQualifier::getVertexSpacingString(EvsEqual)) {
-                //publicType.shaderQualifiers.spacing = EvsEqual;
+                // publicType.shaderQualifiers.spacing = EvsEqual;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == TQualifier::getVertexSpacingString(EvsFractionalEven)) {
-                //publicType.shaderQualifiers.spacing = EvsFractionalEven;
+                // publicType.shaderQualifiers.spacing = EvsFractionalEven;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == TQualifier::getVertexSpacingString(EvsFractionalOdd)) {
-                //publicType.shaderQualifiers.spacing = EvsFractionalOdd;
+                // publicType.shaderQualifiers.spacing = EvsFractionalOdd;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
 
             // triangle order
             if (id == TQualifier::getVertexOrderString(EvoCw)) {
-                //publicType.shaderQualifiers.order = EvoCw;
+                // publicType.shaderQualifiers.order = EvoCw;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == TQualifier::getVertexOrderString(EvoCcw)) {
-                //publicType.shaderQualifiers.order = EvoCcw;
+                // publicType.shaderQualifiers.order = EvoCcw;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
 
             // point mode
             if (id == "point_mode") {
-                //publicType.shaderQualifiers.pointMode = true;
+                // publicType.shaderQualifiers.pointMode = true;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
@@ -4569,23 +4569,23 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
     }
     if (language == EShLangFragment) {
         if (id == "origin_upper_left") {
-            //publicType.shaderQualifiers.originUpperLeft = true;
+            // publicType.shaderQualifiers.originUpperLeft = true;
             warn(loc, "ignored", id.c_str(), "");
             return;
         }
         if (id == "pixel_center_integer") {
-            //publicType.shaderQualifiers.pixelCenterInteger = true;
+            // publicType.shaderQualifiers.pixelCenterInteger = true;
             warn(loc, "ignored", id.c_str(), "");
             return;
         }
         if (id == "early_fragment_tests") {
-            //publicType.shaderQualifiers.earlyFragmentTests = true;
+            // publicType.shaderQualifiers.earlyFragmentTests = true;
             warn(loc, "ignored", id.c_str(), "");
             return;
         }
         for (TLayoutDepth depth = (TLayoutDepth)(EldNone + 1); depth < EldCount; depth = (TLayoutDepth)(depth + 1)) {
             if (id == TQualifier::getLayoutDepthString(depth)) {
-                //publicType.shaderQualifiers.layoutDepth = depth;
+                // publicType.shaderQualifiers.layoutDepth = depth;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
@@ -4596,7 +4596,7 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
                 if (id == TQualifier::getBlendEquationString(be)) {
                     requireExtensions(loc, 1, &E_GL_KHR_blend_equation_advanced, "blend equation");
                     intermediate.addBlendEquation(be);
-                    //publicType.shaderQualifiers.blendEquation = true;
+                    // publicType.shaderQualifiers.blendEquation = true;
                     warn(loc, "ignored", id.c_str(), "");
                     found = true;
                     break;
@@ -4615,7 +4615,7 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
 void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qualifier, TString& id, const TIntermTyped* node)
 {
     const char* feature = "layout-id value";
-    //const char* nonLiteralFeature = "non-literal layout-id value";
+    // const char* nonLiteralFeature = "non-literal layout-id value";
 
     integerCheck(node, feature);
     const TIntermConstantUnion* constUnion = node->getAsConstantUnion();
@@ -4725,7 +4725,7 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
             if (value == 0)
                 error(loc, "must be greater than 0", "vertices", "");
             else
-                //publicType.shaderQualifiers.vertices = value;
+                // publicType.shaderQualifiers.vertices = value;
                 warn(loc, "ignored", id.c_str(), "");
             return;
         }
@@ -4739,12 +4739,12 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
             if (value == 0)
                 error(loc, "must be at least 1", "invocations", "");
             else
-                //publicType.shaderQualifiers.invocations = value;
+                // publicType.shaderQualifiers.invocations = value;
                 warn(loc, "ignored", id.c_str(), "");
             return;
         }
         if (id == "max_vertices") {
-            //publicType.shaderQualifiers.vertices = value;
+            // publicType.shaderQualifiers.vertices = value;
             warn(loc, "ignored", id.c_str(), "");
             if (value > resources.maxGeometryOutputVertices)
                 error(loc, "too large, must be less than gl_MaxGeometryOutputVertices", "max_vertices", "");
@@ -4766,33 +4766,33 @@ void HlslParseContext::setLayoutQualifier(const TSourceLoc& loc, TQualifier& qua
     case EShLangCompute:
         if (id.compare(0, 11, "local_size_") == 0) {
             if (id == "local_size_x") {
-                //publicType.shaderQualifiers.localSize[0] = value;
+                // publicType.shaderQualifiers.localSize[0] = value;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == "local_size_y") {
-                //publicType.shaderQualifiers.localSize[1] = value;
+                // publicType.shaderQualifiers.localSize[1] = value;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (id == "local_size_z") {
-                //publicType.shaderQualifiers.localSize[2] = value;
+                // publicType.shaderQualifiers.localSize[2] = value;
                 warn(loc, "ignored", id.c_str(), "");
                 return;
             }
             if (spvVersion.spv != 0) {
                 if (id == "local_size_x_id") {
-                    //publicType.shaderQualifiers.localSizeSpecId[0] = value;
+                    // publicType.shaderQualifiers.localSizeSpecId[0] = value;
                     warn(loc, "ignored", id.c_str(), "");
                     return;
                 }
                 if (id == "local_size_y_id") {
-                    //publicType.shaderQualifiers.localSizeSpecId[1] = value;
+                    // publicType.shaderQualifiers.localSizeSpecId[1] = value;
                     warn(loc, "ignored", id.c_str(), "");
                     return;
                 }
                 if (id == "local_size_z_id") {
-                    //publicType.shaderQualifiers.localSizeSpecId[2] = value;
+                    // publicType.shaderQualifiers.localSizeSpecId[2] = value;
                     warn(loc, "ignored", id.c_str(), "");
                     return;
                 }
@@ -5758,7 +5758,7 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
 
     // This might be a redeclaration of a built-in block.  If so, redeclareBuiltinBlock() will
     // do all the rest.
-    //if (! symbolTable.atBuiltInLevel() && builtInName(*blockName)) {
+    // if (! symbolTable.atBuiltInLevel() && builtInName(*blockName)) {
     //    redeclareBuiltinBlock(loc, typeList, *blockName, instanceName, arraySizes);
     //    return;
     //}
