@@ -63,7 +63,6 @@
 // there wasn't exactly one entry point.
 //
 
-   
 namespace glslang {
 
 //
@@ -354,7 +353,6 @@ public:
 
         return blockIndex;
     }
-
 
     // Are we at a level in a dereference chain at which individual active uniform queries are made?
     bool isReflectionGranularity(const TType& type)
@@ -693,7 +691,6 @@ void TReflectionTraverser::visitSymbol(TIntermSymbol* base)
     if (intermediate.getStage() == EShLangVertex && base->getQualifier().isPipeInput())
         addAttribute(*base);
 }
-
 
 //
 // Implement TReflection methods.

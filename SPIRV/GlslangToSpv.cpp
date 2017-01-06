@@ -439,7 +439,6 @@ spv::Decoration TranslateNoContractionDecoration(const glslang::TQualifier& qual
         return spv::DecorationMax;
 }
 
-
 // Translate a glslang built-in variable to a SPIR-V built in decoration.  Also generate
 // associated capabilities when required.  For some built-in variables, a capability
 // is generated only when using the variable in an executable instruction, but not when
@@ -1633,7 +1632,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
                 // Does it need a swizzle inversion?  If so, evaluation is inverted;
                 // operate first on the swizzle base, then apply the swizzle.
-                if (glslangOperands[0]->getAsOperator() && 
+                if (glslangOperands[0]->getAsOperator() &&
                     glslangOperands[0]->getAsOperator()->getOp() == glslang::EOpVectorSwizzle)
                     invertedType = convertGlslangToSpvType(glslangOperands[0]->getAsBinaryNode()->getLeft()->getType());
             }
@@ -1960,7 +1959,7 @@ spv::Id TGlslangToSpvTraverser::getSampledType(const glslang::TSampler& sampler)
 // is applied.
 spv::Id TGlslangToSpvTraverser::getInvertedSwizzleType(const glslang::TIntermTyped& node)
 {
-    if (node.getAsOperator() && 
+    if (node.getAsOperator() &&
         node.getAsOperator()->getOp() == glslang::EOpVectorSwizzle)
         return convertGlslangToSpvType(node.getAsBinaryNode()->getLeft()->getType());
     else
@@ -2138,7 +2137,6 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
 
     return spvType;
 }
-
 
 // Do full recursive conversion of a glslang structure (or block) type to a SPIR-V Id.
 // explicitLayout can be kept the same throughout the hierarchical recursive walk.
@@ -3012,7 +3010,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
         // copy the projective coordinate if we have to
         if (projTargetComp != projSourceComp) {
-            spv::Id projComp = builder.createCompositeExtract(params.coords, 
+            spv::Id projComp = builder.createCompositeExtract(params.coords,
                                                               builder.getScalarTypeId(builder.getTypeId(params.coords)),
                                                               projSourceComp);
             params.coords = builder.createCompositeInsert(projComp, params.coords,
@@ -4731,7 +4729,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     if (builtIn != spv::BuiltInMax)
         addDecoration(id, spv::DecorationBuiltIn, (int)builtIn);
 
-#ifdef NV_EXTENSIONS 
+#ifdef NV_EXTENSIONS
     if (builtIn == spv::BuiltInSampleMask) {
           spv::Decoration decoration;
           // GL_NV_sample_mask_override_coverage extension

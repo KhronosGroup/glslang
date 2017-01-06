@@ -99,7 +99,7 @@ TOperator HlslOpMap::preUnary(EHlslTokenClass op)
     case EHTokDash:       return EOpNegative;
     case EHTokBang:       return EOpLogicalNot;
     case EHTokTilde:      return EOpBitwiseNot;
-    
+
     case EHTokIncOp:      return EOpPreIncrement;
     case EHTokDecOp:      return EOpPreDecrement;
 
@@ -114,7 +114,7 @@ TOperator HlslOpMap::postUnary(EHlslTokenClass op)
     switch (op) {
     case EHTokDot:         return EOpIndexDirectStruct;
     case EHTokLeftBracket: return EOpIndexIndirect;
-    
+
     case EHTokIncOp:       return EOpPostIncrement;
     case EHTokDecOp:       return EOpPostDecrement;
 

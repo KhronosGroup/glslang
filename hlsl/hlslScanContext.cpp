@@ -52,7 +52,7 @@
 // preprocessor includes
 #include "../glslang/MachineIndependent/preprocessor/PpContext.h"
 #include "../glslang/MachineIndependent/preprocessor/PpTokens.h"
-    
+
 namespace {
 
 struct str_eq
@@ -142,7 +142,7 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["half"] =                    EHTokHalf;
     (*KeywordMap)["float"] =                   EHTokFloat;
     (*KeywordMap)["double"] =                  EHTokDouble;
-    (*KeywordMap)["min16float"] =              EHTokMin16float; 
+    (*KeywordMap)["min16float"] =              EHTokMin16float;
     (*KeywordMap)["min10float"] =              EHTokMin10float;
     (*KeywordMap)["min16int"] =                EHTokMin16int;
     (*KeywordMap)["min12int"] =                EHTokMin12int;
@@ -316,7 +316,6 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["RWTexture3D"] =             EHTokRWTexture3d;
     (*KeywordMap)["RWBuffer"] =                EHTokRWBuffer;
 
-
     (*KeywordMap)["struct"] =                  EHTokStruct;
     (*KeywordMap)["cbuffer"] =                 EHTokCBuffer;
     (*KeywordMap)["tbuffer"] =                 EHTokTBuffer;
@@ -340,7 +339,7 @@ void HlslScanContext::fillInKeywordMap()
 
     // TODO: get correct set here
     ReservedSet = new std::unordered_set<const char*, str_hash, str_eq>;
-    
+
     ReservedSet->insert("auto");
     ReservedSet->insert("catch");
     ReservedSet->insert("char");

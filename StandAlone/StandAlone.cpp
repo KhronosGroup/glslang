@@ -229,7 +229,7 @@ void ProcessBindingBase(int& argc, char**& argv, std::array<unsigned int, EShLan
     if (!isdigit(argv[1][0])) {
         if (argc < 3) // this form needs one more argument
             usage();
-    
+
         // Parse form: --argname stage base
         const EShLanguage lang = FindLanguage(argv[1], false);
         base[lang] = atoi(argv[2]);
@@ -265,7 +265,7 @@ void ProcessArguments(int argc, char* argv[])
         Work[w] = 0;
 
     argc--;
-    argv++;    
+    argv++;
     for (; argc >= 1; argc--, argv++) {
         if (argv[0][0] == '-') {
             switch (argv[0][1]) {
@@ -292,7 +292,7 @@ void ProcessArguments(int argc, char* argv[])
                                lowerword == "sub") {
                         ProcessBindingBase(argc, argv, baseUboBinding);
                     } else if (lowerword == "auto-map-bindings" ||  // synonyms
-                               lowerword == "auto-map-binding"  || 
+                               lowerword == "auto-map-binding"  ||
                                lowerword == "amb") {
                         Options |= EOptionAutoMapBindings;
                     } else if (lowerword == "flatten-uniform-arrays" || // synonyms
@@ -575,7 +575,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         if (Options & EOptionAutoMapBindings)
             shader->setAutoMapBindings(true);
-                
+
         shaders.push_back(shader);
 
         const int defaultVersion = Options & EOptionDefaultDesktop? 110: 100;
@@ -619,7 +619,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         if (!program.mapIO())
             LinkFailed = true;
     }
-    
+
     // Report
     if (! (Options & EOptionSuppressInfolog) &&
         ! (Options & EOptionMemoryLeakMode)) {
@@ -863,7 +863,7 @@ EShLanguage FindLanguage(const std::string& name, bool parseSuffix)
 }
 
 //
-// Read a file's data into a string, and compile it using the old interface ShCompile, 
+// Read a file's data into a string, and compile it using the old interface ShCompile,
 // for non-linkable results.
 //
 void CompileFile(const char* fileName, ShHandle compiler)
@@ -887,13 +887,13 @@ void CompileFile(const char* fileName, ShHandle compiler)
 
     EShMessages messages = EShMsgDefault;
     SetMessageOptions(messages);
-    
+
     for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
         for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
             //ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
             ret = ShCompile(compiler, shaderStrings, NumShaderStrings, nullptr, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
-            //const char* multi[12] = { "# ve", "rsion", " 300 e", "s", "\n#err", 
-            //                         "or should be l", "ine 1", "string 5\n", "float glo", "bal", 
+            //const char* multi[12] = { "# ve", "rsion", " 300 e", "s", "\n#err",
+            //                         "or should be l", "ine 1", "string 5\n", "float glo", "bal",
             //                         ";\n#error should be line 2\n void main() {", "global = 2.3;}" };
             //const char* multi[7] = { "/", "/", "\\", "\n", "\n", "#", "version 300 es" };
             //ret = ShCompile(compiler, multi, 7, nullptr, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
@@ -1024,7 +1024,7 @@ int fopen_s(
 //
 //   Malloc a string of sufficient size and read a string into it.
 //
-char** ReadFileData(const char* fileName) 
+char** ReadFileData(const char* fileName)
 {
     FILE *in = nullptr;
     int errorCode = fopen_s(&in, fileName, "r");
@@ -1035,7 +1035,7 @@ char** ReadFileData(const char* fileName)
 
     if (errorCode || in == nullptr)
         Error("unable to open input file");
-    
+
     while (fgetc(in) != EOF)
         count++;
 
@@ -1080,7 +1080,7 @@ char** ReadFileData(const char* fileName)
                break;
             }
             len = count;
-        }  
+        }
         ++i;
     }
 

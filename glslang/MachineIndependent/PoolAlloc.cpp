@@ -44,14 +44,14 @@ OS_TLSIndex PoolIndex;
 
 void InitializeMemoryPools()
 {
-    TThreadMemoryPools* pools = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));    
+    TThreadMemoryPools* pools = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
     if (pools)
         return;
 
     TPoolAllocator *threadPoolAllocator = new TPoolAllocator();
 
     TThreadMemoryPools* threadData = new TThreadMemoryPools();
-    
+
     threadData->threadPoolAllocator = threadPoolAllocator;
 
     OS_SetTLSValue(PoolIndex, threadData);
@@ -60,12 +60,12 @@ void InitializeMemoryPools()
 void FreeGlobalPools()
 {
     // Release the allocated memory for this thread.
-    TThreadMemoryPools* globalPools = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));    
+    TThreadMemoryPools* globalPools = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
     if (! globalPools)
         return;
 
     GetThreadPoolAllocator().popAll();
-    delete &GetThreadPoolAllocator();       
+    delete &GetThreadPoolAllocator();
     delete globalPools;
 }
 
@@ -102,7 +102,7 @@ void SetThreadPoolAllocator(TPoolAllocator& poolAllocator)
 // Implement the functionality of the TPoolAllocator class, which
 // is documented in PoolAlloc.h.
 //
-TPoolAllocator::TPoolAllocator(int growthIncrement, int allocationAlignment) : 
+TPoolAllocator::TPoolAllocator(int growthIncrement, int allocationAlignment) :
     pageSize(growthIncrement),
     alignment(allocationAlignment),
     freeList(0),
@@ -206,13 +206,12 @@ void TAllocation::checkGuardBlock(unsigned char*, unsigned char, const char*) co
 #endif
 }
 
-
 void TPoolAllocator::push()
 {
     tAllocState state = { currentPageOffset, inUseList };
 
     stack.push_back(state);
-        
+
     //
     // Indicate there is no current page to allocate from.
     //
@@ -237,7 +236,7 @@ void TPoolAllocator::pop()
     while (inUseList != page) {
         // invoke destructor to free allocation list
         inUseList->~tHeader();
-        
+
         tHeader* nextInUse = inUseList->nextPage;
         if (inUseList->pageCount > 1)
             delete [] reinterpret_cast<char*>(inUseList);
@@ -269,7 +268,7 @@ void* TPoolAllocator::allocate(size_t numBytes)
     // size including guard blocks.  In release build,
     // guardBlockSize=0 and this all gets optimized away.
     size_t allocationSize = TAllocation::allocationSize(numBytes);
-    
+
     //
     // Just keep some interesting statistics.
     //
@@ -327,13 +326,12 @@ void* TPoolAllocator::allocate(size_t numBytes)
     // Use placement-new to initialize header
     new(memory) tHeader(inUseList, 1);
     inUseList = memory;
-    
+
     unsigned char* ret = reinterpret_cast<unsigned char*>(inUseList) + headerSkip;
     currentPageOffset = (headerSkip + allocationSize + alignmentMask) & ~alignmentMask;
 
     return initializeAllocation(inUseList, ret, numBytes);
 }
-
 
 //
 // Check all allocations in a list for damage by calling check on each.

@@ -421,7 +421,7 @@ public:
         clearLayout();
     }
 
-    // Drop just the storage qualification, which perhaps should 
+    // Drop just the storage qualification, which perhaps should
     // never be done, as it is fundamentally inconsistent, but need to
     // explore what downstream consumers need.
     // E.g., in a deference, it is an inconsistency between:
@@ -927,9 +927,9 @@ struct TShaderQualifiers {
     TLayoutDepth layoutDepth;
     bool blendEquation;       // true if any blend equation was specified
 
-#ifdef NV_EXTENSIONS 
+#ifdef NV_EXTENSIONS
     bool layoutOverrideCoverage;    // true if layout override_coverage set
-#endif 
+#endif
 
     void init()
     {
@@ -950,7 +950,7 @@ struct TShaderQualifiers {
         earlyFragmentTests = false;
         layoutDepth = EldNone;
         blendEquation = false;
-#ifdef NV_EXTENSIONS 
+#ifdef NV_EXTENSIONS
         layoutOverrideCoverage = false;
 #endif
     }
@@ -989,10 +989,10 @@ struct TShaderQualifiers {
             layoutDepth = src.layoutDepth;
         if (src.blendEquation)
             blendEquation = src.blendEquation;
-#ifdef NV_EXTENSIONS 
+#ifdef NV_EXTENSIONS
         if (src.layoutOverrideCoverage)
             layoutOverrideCoverage = src.layoutOverrideCoverage;
-#endif 
+#endif
     }
 };
 
@@ -1085,7 +1085,7 @@ public:
                                 qualifier.storage = q;
                             }
     // for explicit precision qualifier
-    TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0, 
+    TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0,
           bool isVector = false) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), vector1(isVector && vs == 1),
                             arraySizes(nullptr), structure(nullptr), fieldName(nullptr), typeName(nullptr)
@@ -1332,7 +1332,7 @@ public:
             return false;
         }
     }
- 
+
     // Recursively checks if the type contains the given basic type
     virtual bool containsBasicType(TBasicType checkType) const
     {
@@ -1600,7 +1600,6 @@ public:
                 if (qualifier.layoutPassthrough)
                     p += snprintf(p, end - p, "passthrough ");
 #endif
-
 
                 p += snprintf(p, end - p, ") ");
             }

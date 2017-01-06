@@ -77,7 +77,6 @@ OS_TLSIndex OS_AllocTLSIndex()
     return ToGenericTLSIndex(dwIndex);
 }
 
-
 bool OS_SetTLSValue(OS_TLSIndex nIndex, void *lpvValue)
 {
     if (nIndex == OS_INVALID_TLS_INDEX) {

@@ -240,7 +240,7 @@ void TParseContextBase::trackLinkageDeferred(TSymbol& symbol)
         linkageSymbols.push_back(&symbol);
 }
 
-// Make a shared symbol have a non-shared version that can be edited by the current 
+// Make a shared symbol have a non-shared version that can be edited by the current
 // compile, such that editing its type will not change the shared version and will
 // effect all nodes already sharing it (non-shallow type),
 // or adopting its full type after being edited (shallow type).
@@ -308,20 +308,20 @@ const TFunction* TParseContextBase::selectFunction(
     std::function<bool(const TType& from, const TType& to1, const TType& to2)> better,
     /* output */ bool& tie)
 {
-// 
+//
 // Operation
-// 
+//
 // 1. Prune the input list of candidates down to a list of viable candidates,
 // where each viable candidate has
-// 
+//
 //  * at least as many parameters as there are calling arguments, with any
 //    remaining parameters being optional or having default values
 //  * each parameter is true under convertible(A, B), where A is the calling
 //    type for in and B is the formal type, and in addition, for out B is the
 //    calling type and A is the formal type
-// 
+//
 // 2. If there are no viable candidates, return with no match.
-// 
+//
 // 3. If there is only one viable candidate, it is the best match.
 //
 // 4. If there are multiple viable candidates, select the first viable candidate
@@ -329,7 +329,7 @@ const TFunction* TParseContextBase::selectFunction(
 // that candidate is better (bullets below), make it the incumbent. Repeat, with
 // a linear walk through the viable candidate list. The final incumbent will be
 // returned as the best match. A viable candidate is better than the incumbent if
-// 
+//
 //  * it has a function argument with a better(...) conversion than the incumbent,
 //    for all directions needed by in and out
 //  * the incumbent has no argument with a better(...) conversion then the
@@ -408,7 +408,7 @@ const TFunction* TParseContextBase::selectFunction(
         }
         return true;
     };
-    
+
     const TFunction* incumbent = viableCandidates.front();
     for (auto it = viableCandidates.begin() + 1; it != viableCandidates.end(); ++it) {
         const TFunction& candidate = *(*it);
@@ -421,7 +421,7 @@ const TFunction* TParseContextBase::selectFunction(
         if (incumbent == *it)
             continue;
         const TFunction& candidate = *(*it);
-        
+
         // In the case of default parameters, it may have an identical initial set, which is
         // also ambiguous
         if (betterParam(*incumbent, candidate) || equivalentParams(*incumbent, candidate))

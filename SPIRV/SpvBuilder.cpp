@@ -79,7 +79,7 @@ Id Builder::import(const char* name)
 {
     Instruction* import = new Instruction(getUniqueId(), NoType, OpExtInstImport);
     import->addStringOperand(name);
-    
+
     imports.push_back(std::unique_ptr<Instruction>(import));
     return import->getResultId();
 }
@@ -246,7 +246,7 @@ Id Builder::makeStructResultType(Id type0, Id type1)
         type = groupedTypes[OpTypeStruct][t];
         if (type->getNumOperands() != 2)
             continue;
-        if (type->getIdOperand(0) != type0 || 
+        if (type->getIdOperand(0) != type0 ||
             type->getIdOperand(1) != type1)
             continue;
         return type->getResultId();
@@ -628,7 +628,7 @@ Id Builder::findScalarConstant(Op typeClass, Op opcode, Id typeId, unsigned v1, 
 bool Builder::isConstantOpCode(Op opcode) const
 {
     switch (opcode) {
-    case OpUndef: 
+    case OpUndef:
     case OpConstantTrue:
     case OpConstantFalse:
     case OpConstant:
@@ -1935,7 +1935,6 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
             }
         }
     }
-
 
     // Step 2:  Construct a matrix from that array.
     // First make the column vectors, then make the matrix.

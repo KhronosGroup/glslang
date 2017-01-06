@@ -142,13 +142,13 @@ void TInputScanner::consumeWhitespaceComment(bool& foundNonSpaceTab)
 {
     do {
         consumeWhiteSpace(foundNonSpaceTab);
- 
+
         // if not starting a comment now, then done
         int c = peek();
         if (c != '/' || c == EndOfInput)
             return;
 
-        // skip potential comment 
+        // skip potential comment
         foundNonSpaceTab = true;
         if (! consumeComment())
             return;
@@ -199,10 +199,10 @@ bool TInputScanner::scanVersion(int& version, EProfile& profile, bool& notFirstT
         }
         lookingInMiddle = true;
 
-        // Nominal start, skipping the desktop allowed comments and white space, but tracking if 
+        // Nominal start, skipping the desktop allowed comments and white space, but tracking if
         // something else was found for ES:
         consumeWhitespaceComment(foundNonSpaceTab);
-        if (foundNonSpaceTab) 
+        if (foundNonSpaceTab)
             versionNotFirst = true;
 
         // "#"
@@ -802,7 +802,7 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case BUFFER:
-        if ((parseContext.profile == EEsProfile && parseContext.version < 310) || 
+        if ((parseContext.profile == EEsProfile && parseContext.version < 310) ||
             (parseContext.profile != EEsProfile && parseContext.version < 430))
             return identifierOrType();
         return keyword;
@@ -962,7 +962,7 @@ int TScanContext::tokenizeIdentifier()
     case U64VEC3:
     case U64VEC4:
         afterType = true;
-        if (parseContext.symbolTable.atBuiltInLevel() || 
+        if (parseContext.symbolTable.atBuiltInLevel() ||
             (parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_int64) &&
              parseContext.profile != EEsProfile && parseContext.version >= 450))
             return keyword;
@@ -1194,7 +1194,7 @@ int TScanContext::tokenizeIdentifier()
         return keyword;
 
     case PRECISE:
-        if ((parseContext.profile == EEsProfile && parseContext.extensionsTurnedOn(Num_AEP_gpu_shader5, AEP_gpu_shader5)) || 
+        if ((parseContext.profile == EEsProfile && parseContext.extensionsTurnedOn(Num_AEP_gpu_shader5, AEP_gpu_shader5)) ||
             (parseContext.profile != EEsProfile && parseContext.version >= 400))
             return keyword;
         if (parseContext.profile == EEsProfile && parseContext.version == 310) {
@@ -1356,7 +1356,7 @@ int TScanContext::dMat()
 
 int TScanContext::firstGenerationImage(bool inEs310)
 {
-    if (parseContext.symbolTable.atBuiltInLevel() || 
+    if (parseContext.symbolTable.atBuiltInLevel() ||
         (parseContext.profile != EEsProfile && (parseContext.version >= 420 || parseContext.extensionTurnedOn(E_GL_ARB_shader_image_load_store))) ||
         (inEs310 && parseContext.profile == EEsProfile && parseContext.version >= 310))
         return keyword;
@@ -1381,8 +1381,8 @@ int TScanContext::secondGenerationImage()
         return keyword;
     }
 
-    if (parseContext.symbolTable.atBuiltInLevel() || 
-        (parseContext.profile != EEsProfile && 
+    if (parseContext.symbolTable.atBuiltInLevel() ||
+        (parseContext.profile != EEsProfile &&
          (parseContext.version >= 420 || parseContext.extensionTurnedOn(E_GL_ARB_shader_image_load_store))))
         return keyword;
 

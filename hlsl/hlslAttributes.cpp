@@ -95,7 +95,7 @@ namespace glslang {
 
         if (attr != EatNone)
             attributes[attr] = value;
- 
+
         return attr;
     }
 
@@ -106,5 +106,5 @@ namespace glslang {
 
         return (entry == attributes.end()) ? nullptr : entry->second;
     }
-    
+
 } // end namespace glslang

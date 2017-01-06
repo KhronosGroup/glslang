@@ -143,8 +143,8 @@ namespace {
             << " [--map (all|types|names|funcs)]"
             << " [--dce (all|types|funcs)]"
             << " [--opt (all|loadstore)]"
-            << " [--strip-all | --strip all | -s]" 
-            << " [--do-everything]" 
+            << " [--strip-all | --strip all | -s]"
+            << " [--do-everything]"
             << " --input | -i file1 [file2...] --output|-o DESTDIR"
             << std::endl;
 
@@ -310,7 +310,6 @@ namespace {
     }
 
 } // namespace
-
 
 int main(int argc, char** argv)
 {

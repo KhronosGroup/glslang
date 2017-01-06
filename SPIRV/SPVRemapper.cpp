@@ -103,10 +103,10 @@ namespace spv {
 
         switch (opCode) {
         case spv::OpTypeVector:       // fall through
-        case spv::OpTypeMatrix:       // ... 
-        case spv::OpTypeSampler:      // ... 
-        case spv::OpTypeArray:        // ... 
-        case spv::OpTypeRuntimeArray: // ... 
+        case spv::OpTypeMatrix:       // ...
+        case spv::OpTypeSampler:      // ...
+        case spv::OpTypeArray:        // ...
+        case spv::OpTypeRuntimeArray: // ...
         case spv::OpTypePipe:         return range_t(2, 3);
         case spv::OpTypeStruct:       // fall through
         case spv::OpTypeFunction:     return range_t(2, maxCount);
@@ -286,7 +286,6 @@ namespace spv {
         return literal;
     }
 
-
     void spirvbin_t::applyMap()
     {
         msg(3, 2, std::string("Applying map: "));
@@ -299,7 +298,6 @@ namespace spv {
             }
         );
     }
-
 
     // Find free IDs for anything we haven't mapped
     void spirvbin_t::mapRemainder()
@@ -355,7 +353,7 @@ namespace spv {
                     if (idPosR.find(asId(start+1)) == idPosR.end())
                         stripInst(start);
                     break;
-                default: 
+                default:
                     break; // leave it alone
                 }
 
@@ -399,7 +397,7 @@ namespace spv {
                 if (spv::InstructionDesc[opCode].hasResult()) {
                     const spv::Id resultId = asId(word++);
                     idPosR[resultId] = start;
-                    
+
                     if (typeId != spv::NoResult) {
                         const unsigned idTypeSize = typeSizeInWords(typeId);
 
@@ -461,7 +459,6 @@ namespace spv {
         if (schemaNum() != 0)
             error("bad schema, must be 0");
     }
-
 
     int spirvbin_t::processInstruction(unsigned word, instfn_t instFn, idfn_t idFn)
     {
@@ -902,7 +899,7 @@ namespace spv {
             },
 
             // If local var id used anywhere else, don't eliminate
-            [&](spv::Id& id) { 
+            [&](spv::Id& id) {
                 if (fnLocalVars.count(id) > 0) {
                     fnLocalVars.erase(id);
                     idMap.erase(id);
@@ -1079,7 +1076,6 @@ namespace spv {
         }
     }
 
-
 #ifdef NOTDEF
     bool spirvbin_t::matchType(const spirvbin_t::globaltypes_t& globalTypes, spv::Id lt, spv::Id gt) const
     {
@@ -1138,7 +1134,6 @@ namespace spv {
         default:                      return cmpLiteral() && cmpConst() && cmpSubType();
         }
     }
-
 
     // Look for an equivalent type in the globalTypes map
     spv::Id spirvbin_t::findType(const spirvbin_t::globaltypes_t& globalTypes, spv::Id lt) const
@@ -1260,7 +1255,6 @@ namespace spv {
                 localId(resId, nextUnusedId(hashval % softTypeIdLimit + firstMappedID));
         }
     }
-
 
     // Strip a single binary by removing ranges given in stripRange
     void spirvbin_t::strip()

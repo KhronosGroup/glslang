@@ -83,7 +83,7 @@ protected:
 // check binary operations for those modifying the loop index
 bool TInductiveTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 {
-    if (node->modifiesState() && node->getLeft()->getAsSymbolNode() && 
+    if (node->modifiesState() && node->getLeft()->getAsSymbolNode() &&
                                  node->getLeft()->getAsSymbolNode()->getId() == loopId) {
         bad = true;
         badLoc = node->getLoc();
@@ -95,7 +95,7 @@ bool TInductiveTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 // check unary operations for those modifying the loop index
 bool TInductiveTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 {
-    if (node->modifiesState() && node->getOperand()->getAsSymbolNode() && 
+    if (node->modifiesState() && node->getOperand()->getAsSymbolNode() &&
                                  node->getOperand()->getAsSymbolNode()->getId() == loopId) {
         bad = true;
         badLoc = node->getLoc();
@@ -145,7 +145,7 @@ void TParseContext::inductiveLoopBodyCheck(TIntermNode* body, int loopId, TSymbo
 //
 // The "constant-index-expression" tranverser.
 //
-// Just look at things that can form an index.  
+// Just look at things that can form an index.
 //
 
 class TIndexTraverser : public TIntermTraverser {

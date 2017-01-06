@@ -66,7 +66,7 @@ std::string to_string(const T& val) {
 #if defined(_MSC_VER) && _MSC_VER < 1700
 inline long long int strtoll (const char* str, char** endptr, int base)
 {
-  return _strtoi64(str, endptr, base); 
+  return _strtoi64(str, endptr, base);
 }
 inline unsigned long long int strtoull (const char* str, char** endptr, int base)
 {
@@ -178,7 +178,7 @@ public:
 template <class T> class TList  : public std::list<T, pool_allocator<T> > {
 };
 
-template <class K, class D, class CMP = std::less<K> > 
+template <class K, class D, class CMP = std::less<K> >
 class TMap : public std::map<K, D, CMP, pool_allocator<std::pair<K const, D> > > {
 };
 
@@ -212,14 +212,14 @@ inline const TString String(const int i, const int base = 10)
 inline const TString String(const int i, const int /*base*/ = 10)
 {
     char text[16];     // 32 bit ints are at most 10 digits in base 10
-    
+
     // we assume base 10 for all cases
     snprintf(text, sizeof(text), "%d", i);
 
     return text;
 }
 #endif
-    
+
 struct TSourceLoc {
     void init() { name = nullptr; string = 0; line = 0; column = 0; }
     // Returns the name if it exists. Otherwise, returns the string number.

@@ -251,7 +251,6 @@ enum EHlslTokenClass {
     EHTokRWTexture2darray,
     EHTokRWTexture3d,
     EHTokRWBuffer,
-    
 
     // variable, user type, ...
     EHTokIdentifier,
