@@ -360,9 +360,11 @@ public:
         // Resolves an inclusion request by name, current source name,
         // and include depth.
         // On success, returns an IncludeResult containing the resolved name
-        // and content of the include.  On failure, returns an IncludeResult
+        // and content of the include.
+        // On failure, returns a nullptr, or an IncludeResult
         // with an empty string for the headerName and error details in the
-        // header field.  The Includer retains ownership of the contents
+        // header field.
+        // The Includer retains ownership of the contents
         // of the returned IncludeResult value, and those contents must
         // remain valid until the releaseInclude method is called on that
         // IncludeResult object.
@@ -385,14 +387,20 @@ public:
 
         // Signals that the parser will no longer use the contents of the
         // specified IncludeResult.
-        virtual void releaseInclude(IncludeResult* result) { }
+        virtual void releaseInclude(IncludeResult*) = 0;
         virtual ~Includer() {}
+    };
+
+    // Fail all Includer searches
+    class ForbidIncluder : public Includer {
+    public:
+        virtual void releaseInclude(IncludeResult*) override { }
     };
 
     bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                bool forwardCompatible, EShMessages messages)
     {
-        TShader::Includer includer;
+        TShader::ForbidIncluder includer;
         return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer);
     }
 

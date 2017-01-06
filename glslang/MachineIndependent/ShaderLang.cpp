@@ -221,7 +221,7 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
                                                                        language, infoSink, spvVersion, true, EShMsgDefault,
                                                                        true));
 
-    TShader::Includer includer;
+    TShader::ForbidIncluder includer;
     TPpContext ppContext(*parseContext, "", includer);
     TScanContext scanContext(*parseContext);
     parseContext->setScanContext(&scanContext);
@@ -1217,7 +1217,7 @@ int ShCompile(
     compiler->infoSink.debug.erase();
 
     TIntermediate intermediate(compiler->getLanguage());
-    TShader::Includer includer;
+    TShader::ForbidIncluder includer;
     bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, nullptr,
                                    "", optLevel, resources, defaultVersion, ENoProfile, false,
                                    forwardCompatible, messages, intermediate, includer);

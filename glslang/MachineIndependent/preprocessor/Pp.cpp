@@ -576,12 +576,12 @@ int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
 int TPpContext::CPPinclude(TPpToken* ppToken)
 {
     const TSourceLoc directiveLoc = ppToken->loc;
-    bool addLocalSearch = true; // to additionally include the extra "" paths
+    bool startWithLocalSearch = true; // to additionally include the extra "" paths
     int token = scanToken(ppToken);
 
     // handle <header-name>-style #include
     if (token == '<') {
-        addLocalSearch = false;
+        startWithLocalSearch = false;
         token = scanHeaderName(ppToken, '>');
     }
     // otherwise ppToken already has the header name and it was "header-name" style
@@ -609,7 +609,7 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
     // Find the inclusion, first look in "Local" ("") paths, if requested,
     // otherwise, only search the "System" (<>) paths.
     TShader::Includer::IncludeResult* res = nullptr;
-    if (addLocalSearch)
+    if (startWithLocalSearch)
         res = includer.includeLocal(filename.c_str(), currentSourceFile.c_str(), includeStack.size() + 1);
     if (! res || res->headerName.empty()) {
         includer.releaseInclude(res);
