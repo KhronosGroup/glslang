@@ -339,22 +339,22 @@ public:
         // An IncludeResult contains the resolved name and content of a source
         // inclusion.
         struct IncludeResult {
-            IncludeResult(const std::string& file_name, const char* const file_data, const size_t file_length, void* user_data) :
-                file_name(file_name), file_data(file_data), file_length(file_length), user_data(user_data) { }
+            IncludeResult(const std::string& headerName, const char* const headerData, const size_t headerLength, void* userData) :
+                headerName(headerName), headerData(headerData), headerLength(headerLength), userData(userData) { }
             // For a successful inclusion, the fully resolved name of the requested
             // include.  For example, in a file system-based includer, full resolution
             // should convert a relative path name into an absolute path name.
             // For a failed inclusion, this is an empty string.
-            const std::string file_name;
+            const std::string headerName;
             // The content and byte length of the requested inclusion.  The
             // Includer producing this IncludeResult retains ownership of the
             // storage.
-            // For a failed inclusion, the file_data
+            // For a failed inclusion, the header
             // field points to a string containing error details.
-            const char* const file_data;
-            const size_t file_length;
+            const char* const headerData;
+            const size_t headerLength;
             // Include resolver's context.
-            void* user_data;
+            void* userData;
         protected:
             IncludeResult& operator=(const IncludeResult&);
             IncludeResult();
@@ -364,15 +364,15 @@ public:
         // and include depth.
         // On success, returns an IncludeResult containing the resolved name
         // and content of the include.  On failure, returns an IncludeResult
-        // with an empty string for the file_name and error details in the
-        // file_data field.  The Includer retains ownership of the contents
+        // with an empty string for the headerName and error details in the
+        // header field.  The Includer retains ownership of the contents
         // of the returned IncludeResult value, and those contents must
         // remain valid until the releaseInclude method is called on that
         // IncludeResult object.
-        virtual IncludeResult* include(const char* requested_source,
+        virtual IncludeResult* include(const char* headerName,
                                       IncludeType type,
-                                      const char* requesting_source,
-                                      size_t inclusion_depth) = 0;
+                                      const char* includerName,
+                                      size_t inclusionDepth) = 0;
         // Signals that the parser will no longer use the contents of the
         // specified IncludeResult.
         virtual void releaseInclude(IncludeResult* result) = 0;
