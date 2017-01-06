@@ -331,11 +331,6 @@ public:
     // release the IncludeResult object.
     class Includer {
     public:
-        typedef enum {
-          EIncludeRelative, // For #include "something"
-          EIncludeStandard  // Reserved. For #include <something>
-        } IncludeType;
-
         // An IncludeResult contains the resolved name and content of a source
         // inclusion.
         struct IncludeResult {
@@ -360,7 +355,9 @@ public:
             IncludeResult();
         };
 
-        // Resolves an inclusion request by name, type, current source name,
+        // For both include methods below:
+        //
+        // Resolves an inclusion request by name, current source name,
         // and include depth.
         // On success, returns an IncludeResult containing the resolved name
         // and content of the include.  On failure, returns an IncludeResult
@@ -369,34 +366,33 @@ public:
         // of the returned IncludeResult value, and those contents must
         // remain valid until the releaseInclude method is called on that
         // IncludeResult object.
-        virtual IncludeResult* include(const char* headerName,
-                                      IncludeType type,
-                                      const char* includerName,
-                                      size_t inclusionDepth) = 0;
+        //
+        // Note "local" vs. "system" is not an "either/or": "local" is an
+        // extra thing to do over "system". Both might get called, as per
+        // the C++ specification.
+
+        // For the "system" or <>-style includes; search the "system" paths.
+        virtual IncludeResult* includeSystem(const char* headerName,
+                                             const char* includerName,
+                                             size_t inclusionDepth) { return nullptr; }
+
+        // For the "local"-only aspect of a "" include. Should not search in the
+        // "system" paths, because on returning a failure, the parser will
+        // call includeSystem() to look in the "system" locations.
+        virtual IncludeResult* includeLocal(const char* headerName,
+                                            const char* includerName,
+                                            size_t inclusionDepth) { return nullptr; }
+
         // Signals that the parser will no longer use the contents of the
         // specified IncludeResult.
-        virtual void releaseInclude(IncludeResult* result) = 0;
+        virtual void releaseInclude(IncludeResult* result) { }
         virtual ~Includer() {}
-    };
-
-    // Returns an error message for any #include directive.
-    class ForbidInclude : public Includer {
-    public:
-        IncludeResult* include(const char*, IncludeType, const char*, size_t) override
-        {
-            const char* unexpected_include = "unexpected include directive";
-            return new IncludeResult(std::string(""), unexpected_include, strlen(unexpected_include), nullptr);
-        }
-        virtual void releaseInclude(IncludeResult* result) override
-        {
-            delete result;
-        }
     };
 
     bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                bool forwardCompatible, EShMessages messages)
     {
-        TShader::ForbidInclude includer;
+        TShader::Includer includer;
         return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer);
     }
 
