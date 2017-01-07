@@ -423,6 +423,7 @@ enum BuiltIn {
     BuiltInBaseVertex = 4424,
     BuiltInBaseInstance = 4425,
     BuiltInDrawIndex = 4426,
+    BuiltinDeviceIndex = 4438,
     BuiltinViewIndex = 4440,
     BuiltInMax = 0x7fffffff,
 };
@@ -601,6 +602,7 @@ enum Capability {
     CapabilityMultiViewport = 57,
     CapabilityDrawParameters = 4427,
     CapabilitySubgroupVoteKHR = 4431,
+    CapabilityDeviceGroup = 4437,
     CapabilityMultiView = 4439,
     CapabilityMax = 0x7fffffff,
 };

@@ -131,7 +131,8 @@ const char* const E_GL_ARB_sparse_texture_clamp         = "GL_ARB_sparse_texture
 
 const char* const E_GL_EXT_shader_non_constant_global_initializers = "GL_EXT_shader_non_constant_global_initializers";
 
-
+// KHX extensions
+const char* const E_GL_KHX_device_group                 = "GL_KHX_device_group";
 const char* const E_GL_KHX_multiview                    = "GL_KHX_multiview";
 
 // #line and #include
