@@ -37,6 +37,8 @@
 #ifndef _BASICTYPES_INCLUDED_
 #define _BASICTYPES_INCLUDED_
 
+#include <functional>
+
 namespace glslang {
 
 //
@@ -351,5 +353,12 @@ __inline const char* GetPrecisionQualifierString(TPrecisionQualifier p)
 }
 
 } // end namespace glslang
+
+// Allow TBuiltInVariable in unordered containers.
+namespace std {
+    template<> struct hash<glslang::TBuiltInVariable> {
+        std::size_t operator()(const glslang::TBuiltInVariable v) const { return std::hash<unsigned>()(unsigned(v)); }
+    };
+}
 
 #endif // _BASICTYPES_INCLUDED_
