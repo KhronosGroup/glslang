@@ -2669,6 +2669,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    if (profile != EEsProfile) {
+        commonBuiltins.append("uniform int gl_ViewIndexKHR;");
+    }
+
     //printf("%s\n", commonBuiltins.c_str());
     //printf("%s\n", stageBuiltins[EShLangFragment].c_str());
 }
@@ -4228,6 +4232,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("imageAtomicXor",      1, &E_GL_OES_shader_image_atomic);
             symbolTable.setFunctionExtensions("imageAtomicExchange", 1, &E_GL_OES_shader_image_atomic);
             symbolTable.setFunctionExtensions("imageAtomicCompSwap", 1, &E_GL_OES_shader_image_atomic);
+        }
+
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("gl_ViewIndexKHR", 1, &E_GL_KHX_multiview);
+            BuiltInVariable("gl_ViewIndexKHR", EbvViewIndex, symbolTable);
         }
         break;
 
