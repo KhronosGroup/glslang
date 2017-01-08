@@ -231,7 +231,7 @@ protected:
     // Type sanitization: return existing sanitized (temporary) type if there is one, else make new one.
     TType* sanitizeType(TType*);
 
-    void finish(); // post-processing
+    void finish() override; // post-processing
 
     // Current state of parsing
     struct TPragma contextPragma;
