@@ -112,6 +112,7 @@ class spirvbin_t : public spirvbin_base_t
 {
 public:
    spirvbin_t(int verbose = 0) : entryPoint(spv::NoResult), largestNewId(0), verbose(verbose) { }
+   virtual ~spirvbin_t() { }
 
    // remap on an existing binary in memory
    void remap(std::vector<std::uint32_t>& spv, std::uint32_t opts = DO_EVERYTHING);

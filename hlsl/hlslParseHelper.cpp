@@ -58,14 +58,14 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
     contextPragma(true, false),
     loopNestingLevel(0), annotationNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
+    inEntryPoint(false),
     postEntryPointReturn(false),
     limits(resources.limits),
-    inEntryPoint(false),
     entryPointOutput(nullptr),
-    nextInLocation(0), nextOutLocation(0),
-    sourceEntryPointName(sourceEntryPointName),
     builtInIoIndex(nullptr),
-    builtInIoBase(nullptr)
+    builtInIoBase(nullptr),
+    nextInLocation(0), nextOutLocation(0),
+    sourceEntryPointName(sourceEntryPointName)
 {
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;

@@ -56,8 +56,8 @@ class TReflectionTraverser;
 class TObjectReflection {
 public:
     TObjectReflection(const TString& pName, const TType& pType, int pOffset, int pGLDefineType, int pSize, int pIndex) :
-        name(pName), type(pType.clone()),
-        offset(pOffset), glDefineType(pGLDefineType), size(pSize), index(pIndex) { }
+        name(pName), offset(pOffset),
+        glDefineType(pGLDefineType), size(pSize), index(pIndex), type(pType.clone()) { }
 
     void dump() const {
         printf("%s: offset %d, type %x, size %d, index %d, binding %d\n",
@@ -81,7 +81,7 @@ protected:
         return type->getQualifier().layoutBinding;
     }
 
-    TObjectReflection() : type(nullptr), offset(-1), glDefineType(-1), size(-1), index(-1) { }
+    TObjectReflection() : offset(-1), glDefineType(-1), size(-1), index(-1), type(nullptr) { }
 
     const TType* type;
 };
