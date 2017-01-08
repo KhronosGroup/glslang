@@ -1,11 +1,11 @@
 //
-//Copyright (C) 2014-2015 LunarG, Inc.
+// Copyright (C) 2014-2015 LunarG, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -19,18 +19,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 
 //
 // Disassembler for SPIR-V.
@@ -54,6 +54,10 @@ namespace spv {
 #ifdef AMD_EXTENSIONS
         #include "GLSL.ext.AMD.h"
 #endif
+
+#ifdef NV_EXTENSIONS
+        #include "GLSL.ext.NV.h"
+#endif
     }
 }
 const char* GlslStd450DebugNames[spv::GLSLstd450Count];
@@ -62,6 +66,10 @@ namespace spv {
 
 #ifdef AMD_EXTENSIONS
 static const char* GLSLextAMDGetDebugNames(const char*, unsigned);
+#endif
+
+#ifdef NV_EXTENSIONS
+static const char* GLSLextNVGetDebugNames(const char*, unsigned);
 #endif
 
 static void Kill(std::ostream& out, const char* message)
@@ -73,9 +81,15 @@ static void Kill(std::ostream& out, const char* message)
 // used to identify the extended instruction library imported when printing
 enum ExtInstSet {
     GLSL450Inst,
+
 #ifdef AMD_EXTENSIONS
     GLSLextAMDInst,
 #endif
+
+#ifdef NV_EXTENSIONS
+    GLSLextNVInst,
+#endif
+
     OpenCLExtInst,
 };
 
@@ -470,6 +484,11 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
                            strcmp(spv::E_SPV_AMD_gcn_shader, name) == 0) {
                     extInstSet = GLSLextAMDInst;
 #endif
+#ifdef NV_EXTENSIONS
+                }else if (strcmp(spv::E_SPV_NV_sample_mask_override_coverage, name) == 0 ||
+                          strcmp(spv::E_SPV_NV_geometry_shader_passthrough, name) == 0) {
+                    extInstSet = GLSLextNVInst;
+#endif
                 }
                 unsigned entrypoint = stream[word - 1];
                 if (extInstSet == GLSL450Inst) {
@@ -479,6 +498,11 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
 #ifdef AMD_EXTENSIONS
                 } else if (extInstSet == GLSLextAMDInst) {
                     out << "(" << GLSLextAMDGetDebugNames(name, entrypoint) << ")";
+#endif
+#ifdef NV_EXTENSIONS
+                }
+                else if (extInstSet == GLSLextNVInst) {
+                    out << "(" << GLSLextNVGetDebugNames(name, entrypoint) << ")";
 #endif
                 }
             }
@@ -627,6 +651,22 @@ static const char* GLSLextAMDGetDebugNames(const char* name, unsigned entrypoint
         }
     }
 
+    return "Bad";
+}
+#endif
+
+#ifdef NV_EXTENSIONS
+static const char* GLSLextNVGetDebugNames(const char* name, unsigned entrypoint)
+{
+    if (strcmp(name, spv::E_SPV_NV_sample_mask_override_coverage) == 0 ||
+        strcmp(name, spv::E_SPV_NV_geometry_shader_passthrough) == 0) {
+        switch (entrypoint) {
+        case OverrideCoverageNV:          return "OverrideCoverageNV";
+        case PassthroughNV:               return "PassthroughNV";
+        case GeometryShaderPassthroughNV: return "GeometryShaderPassthroughNV";
+        default:                          return "Bad";
+        }
+    }
     return "Bad";
 }
 #endif

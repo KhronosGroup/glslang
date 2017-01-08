@@ -2,7 +2,7 @@ hlsl.intrinsics.negative.comp
 Shader version: 450
 local_size = (1, 1, 1)
 0:? Sequence
-0:2  Function Definition: ComputeShaderFunctionS(f1;f1;f1;i1; (global float)
+0:2  Function Definition: ComputeShaderFunctionS(f1;f1;f1;i1; (temp float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:2      'inF1' (in float)
@@ -12,7 +12,7 @@ local_size = (1, 1, 1)
 0:53      Branch: Return with expression
 0:53        Constant:
 0:53          0.000000
-0:57  Function Definition: ComputeShaderFunction1(vf1;vf1;vf1;vi1; (global 1-component vector of float)
+0:57  Function Definition: ComputeShaderFunction1(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:57    Function Parameters: 
 0:57      'inF0' (in 1-component vector of float)
 0:57      'inF1' (in 1-component vector of float)
@@ -22,7 +22,7 @@ local_size = (1, 1, 1)
 0:62      Branch: Return with expression
 0:62        Constant:
 0:62          0.000000
-0:66  Function Definition: ComputeShaderFunction2(vf2;vf2;vf2;vi2; (global 2-component vector of float)
+0:66  Function Definition: ComputeShaderFunction2(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
 0:66    Function Parameters: 
 0:66      'inF0' (in 2-component vector of float)
 0:66      'inF1' (in 2-component vector of float)
@@ -33,7 +33,7 @@ local_size = (1, 1, 1)
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:113  Function Definition: ComputeShaderFunction3(vf3;vf3;vf3;vi3; (global 3-component vector of float)
+0:113  Function Definition: ComputeShaderFunction3(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
 0:113    Function Parameters: 
 0:113      'inF0' (in 3-component vector of float)
 0:113      'inF1' (in 3-component vector of float)
@@ -45,7 +45,7 @@ local_size = (1, 1, 1)
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:158  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
+0:158  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
 0:158    Function Parameters: 
 0:158      'inF0' (layout(location=0 ) in 4-component vector of float)
 0:158      'inF1' (layout(location=1 ) in 4-component vector of float)
@@ -75,7 +75,7 @@ Linked compute stage:
 Shader version: 450
 local_size = (1, 1, 1)
 0:? Sequence
-0:2  Function Definition: ComputeShaderFunctionS(f1;f1;f1;i1; (global float)
+0:2  Function Definition: ComputeShaderFunctionS(f1;f1;f1;i1; (temp float)
 0:2    Function Parameters: 
 0:2      'inF0' (in float)
 0:2      'inF1' (in float)
@@ -85,7 +85,7 @@ local_size = (1, 1, 1)
 0:53      Branch: Return with expression
 0:53        Constant:
 0:53          0.000000
-0:57  Function Definition: ComputeShaderFunction1(vf1;vf1;vf1;vi1; (global 1-component vector of float)
+0:57  Function Definition: ComputeShaderFunction1(vf1;vf1;vf1;vi1; (temp 1-component vector of float)
 0:57    Function Parameters: 
 0:57      'inF0' (in 1-component vector of float)
 0:57      'inF1' (in 1-component vector of float)
@@ -95,7 +95,7 @@ local_size = (1, 1, 1)
 0:62      Branch: Return with expression
 0:62        Constant:
 0:62          0.000000
-0:66  Function Definition: ComputeShaderFunction2(vf2;vf2;vf2;vi2; (global 2-component vector of float)
+0:66  Function Definition: ComputeShaderFunction2(vf2;vf2;vf2;vi2; (temp 2-component vector of float)
 0:66    Function Parameters: 
 0:66      'inF0' (in 2-component vector of float)
 0:66      'inF1' (in 2-component vector of float)
@@ -106,7 +106,7 @@ local_size = (1, 1, 1)
 0:?         Constant:
 0:?           1.000000
 0:?           2.000000
-0:113  Function Definition: ComputeShaderFunction3(vf3;vf3;vf3;vi3; (global 3-component vector of float)
+0:113  Function Definition: ComputeShaderFunction3(vf3;vf3;vf3;vi3; (temp 3-component vector of float)
 0:113    Function Parameters: 
 0:113      'inF0' (in 3-component vector of float)
 0:113      'inF1' (in 3-component vector of float)
@@ -118,7 +118,7 @@ local_size = (1, 1, 1)
 0:?           1.000000
 0:?           2.000000
 0:?           3.000000
-0:158  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (global 4-component vector of float)
+0:158  Function Definition: ComputeShaderFunction(vf4;vf4;vf4;vi4; (temp 4-component vector of float)
 0:158    Function Parameters: 
 0:158      'inF0' (layout(location=0 ) in 4-component vector of float)
 0:158      'inF1' (layout(location=1 ) in 4-component vector of float)

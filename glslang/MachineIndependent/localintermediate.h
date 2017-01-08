@@ -1,11 +1,11 @@
 //
-//Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2016 LunarG, Inc.
-//All rights reserved.
+// Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+// Copyright (C) 2016 LunarG, Inc.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -19,18 +19,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 
 #ifndef _LOCAL_INTERMEDIATE_INCLUDED_
@@ -67,7 +67,9 @@ struct TVectorFields {
 // by TIntermediate.
 //
 
-// Used for detecting recursion:  A "call" is a pair: <caller, callee>.
+// Used for call-graph algorithms for detecting recursion, missing bodies, and dead bodies.
+// A "call" is a pair: <caller, callee>.
+// There can be duplicates. General assumption is the list is small.
 struct TCall {
     TCall(const TString& pCaller, const TString& pCallee) : caller(pCaller), callee(pCallee) { }
     TString caller;
@@ -75,12 +77,13 @@ struct TCall {
     bool visited;
     bool currentPath;
     bool errorGiven;
+    int calleeBodyPosition;
 };
 
 // A generic 1-D range.
 struct TRange {
     TRange(int start, int last) : start(start), last(last) { }
-    bool overlap(const TRange& rhs) const 
+    bool overlap(const TRange& rhs) const
     {
         return last >= rhs.start && start <= rhs.last;
     }
@@ -144,9 +147,15 @@ public:
         multiStream(false), xfbMode(false),
         shiftSamplerBinding(0),
         shiftTextureBinding(0),
+        shiftImageBinding(0),
         shiftUboBinding(0),
         autoMapBindings(false),
-        flattenUniformArrays(false)
+        flattenUniformArrays(false),
+#ifdef NV_EXTENSIONS
+        layoutOverrideCoverage(false),
+        geoPassthroughEXT(false),
+#endif
+        useUnknownFormat(false)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -173,12 +182,16 @@ public:
     unsigned int getShiftSamplerBinding() const { return shiftSamplerBinding; }
     void setShiftTextureBinding(unsigned int shift) { shiftTextureBinding = shift; }
     unsigned int getShiftTextureBinding() const { return shiftTextureBinding; }
+    void setShiftImageBinding(unsigned int shift) { shiftImageBinding = shift; }
+    unsigned int getShiftImageBinding() const { return shiftImageBinding; }
     void setShiftUboBinding(unsigned int shift)     { shiftUboBinding = shift; }
     unsigned int getShiftUboBinding()     const { return shiftUboBinding; }
     void setAutoMapBindings(bool map)               { autoMapBindings = map; }
     bool getAutoMapBindings()             const { return autoMapBindings; }
     void setFlattenUniformArrays(bool flatten)      { flattenUniformArrays = flatten; }
     bool getFlattenUniformArrays()        const { return flattenUniformArrays; }
+    void setNoStorageFormat(bool b)             { useUnknownFormat = b; }
+    bool getNoStorageFormat()             const { return useUnknownFormat; }
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -201,6 +214,7 @@ public:
     TIntermSymbol* addSymbol(const TVariable&);
     TIntermSymbol* addSymbol(const TVariable&, const TSourceLoc&);
     TIntermSymbol* addSymbol(const TType&, const TSourceLoc&);
+    TIntermSymbol* addSymbol(const TIntermSymbol&);
     TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*) const;
     TIntermTyped* addShapeConversion(TOperator, const TType&, TIntermTyped*);
     TIntermTyped* addBinaryMath(TOperator, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
@@ -214,6 +228,7 @@ public:
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right, const TSourceLoc&);
     TIntermAggregate* makeAggregate(TIntermNode* node);
     TIntermAggregate* makeAggregate(TIntermNode* node, const TSourceLoc&);
+    TIntermAggregate* makeAggregate(const TSourceLoc&);
     TIntermTyped* setAggregateOperator(TIntermNode*, TOperator, const TType& type, TSourceLoc);
     bool areAllChildConst(TIntermAggregate* aggrNode);
     TIntermNode*  addSelection(TIntermTyped* cond, TIntermNodePair code, const TSourceLoc&);
@@ -235,6 +250,16 @@ public:
     TIntermBranch* addBranch(TOperator, TIntermTyped*, const TSourceLoc&);
     TIntermTyped* addSwizzle(TVectorFields&, const TSourceLoc&);
 
+    // Low level functions to add nodes (no conversions or other higher level transformations)
+    // If a type is provided, the node's type will be set to it.
+    TIntermBinary* addBinaryNode(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc) const;
+    TIntermBinary* addBinaryNode(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc, const TType&) const;
+    TIntermUnary* addUnaryNode(TOperator op, TIntermTyped* child, TSourceLoc) const;
+    TIntermUnary* addUnaryNode(TOperator op, TIntermTyped* child, TSourceLoc, const TType&) const;
+
+    // Add conversion from node's type to given basic type.
+    TIntermTyped* convertToBasicType(TOperator op, TBasicType basicType, TIntermTyped* node) const;
+
     // Constant folding (in Constant.cpp)
     TIntermTyped* fold(TIntermAggregate* aggrNode);
     TIntermTyped* foldConstructor(TIntermAggregate* aggrNode);
@@ -246,10 +271,9 @@ public:
 
     // Linkage related
     void addSymbolLinkageNodes(TIntermAggregate*& linkage, EShLanguage, TSymbolTable&);
-    void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, const TSymbol&);
 
-    bool setInvocations(int i) 
+    bool setInvocations(int i)
     {
         if (invocations != TQualifier::layoutNotSet)
             return invocations == i;
@@ -291,7 +315,7 @@ public:
     TVertexOrder getVertexOrder() const { return vertexOrder; }
     void setPointMode() { pointMode = true; }
     bool getPointMode() const { return pointMode; }
-    
+
     bool setLocalSize(int dim, int size)
     {
         if (localSize[dim] > 1)
@@ -344,7 +368,7 @@ public:
 
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);
-    void finalCheck(TInfoSink&);
+    void finalCheck(TInfoSink&, bool keepUncalled);
 
     void addIoAccessed(const TString& name) { ioAccessed.insert(name); }
     bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
@@ -365,20 +389,34 @@ public:
     int addXfbBufferOffset(const TType&);
     unsigned int computeTypeXfbSize(const TType&, bool& containsDouble) const;
     static int getBaseAlignment(const TType&, int& size, int& stride, bool std140, bool rowMajor);
+    bool promote(TIntermOperator*);
+
+#ifdef NV_EXTENSIONS
+    void setLayoutOverrideCoverage() { layoutOverrideCoverage = true; }
+    bool getLayoutOverrideCoverage() const { return layoutOverrideCoverage; }
+    void setGeoPassthroughEXT() { geoPassthroughEXT = true; }
+    bool getGeoPassthroughEXT() const { return geoPassthroughEXT; }
+#endif
 
 protected:
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TConstUnionArray&, TIntermTyped* subtree, const TSourceLoc&);
     void error(TInfoSink& infoSink, const char*);
+    void warn(TInfoSink& infoSink, const char*);
     void mergeBodies(TInfoSink&, TIntermSequence& globals, const TIntermSequence& unitGlobals);
     void mergeLinkerObjects(TInfoSink&, TIntermSequence& linkerObjects, const TIntermSequence& unitLinkerObjects);
     void mergeImplicitArraySizes(TType&, const TType&);
     void mergeErrorCheck(TInfoSink&, const TIntermSymbol&, const TIntermSymbol&, bool crossStage);
     void checkCallGraphCycles(TInfoSink&);
+    void checkCallGraphBodies(TInfoSink&, bool keepUncalled);
     void inOutLocationCheck(TInfoSink&);
     TIntermSequence& findLinkerObjects() const;
     bool userOutputUsed() const;
     static int getBaseAlignmentScalar(const TType&, int& size);
     bool isSpecializationOperation(const TIntermOperator&) const;
+    bool promoteUnary(TIntermUnary&);
+    bool promoteBinary(TIntermBinary&);
+    void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
+    bool promoteAggregate(TIntermAggregate&);
 
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later
@@ -386,9 +424,11 @@ protected:
     std::string entryPointMangledName;
     unsigned int shiftSamplerBinding;
     unsigned int shiftTextureBinding;
+    unsigned int shiftImageBinding;
     unsigned int shiftUboBinding;
     bool autoMapBindings;
     bool flattenUniformArrays;
+    bool useUnknownFormat;
 
     EProfile profile;
     int version;
@@ -417,6 +457,11 @@ protected:
     int blendEquations;        // an 'or'ing of masks of shifts of TBlendEquationShift
     bool xfbMode;
     bool multiStream;
+
+#ifdef NV_EXTENSIONS
+    bool layoutOverrideCoverage;
+    bool geoPassthroughEXT;
+#endif
 
     typedef std::list<TCall> TGraph;
     TGraph callGraph;

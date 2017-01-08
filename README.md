@@ -18,7 +18,10 @@ Building
 
 ```bash
 cd <parent of where you want glslang to be>
-git clone git@github.com:KhronosGroup/glslang.git
+# If using SSH
+git clone git@gitlab.khronos.org:GLSL/glslang.git
+# Or if using HTTPS
+git clone https://gitlab.khronos.org/GLSL/glslang.git
 ```
 
 #### 2) Check-Out External Projects

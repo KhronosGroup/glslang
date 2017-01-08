@@ -18,8 +18,8 @@ float4 PixelShaderFunction(float4 input, float f) : COLOR0
     6.0 < foo;
     7.0 <= foo;
 
-    v.x == v;
-    f != v;
+    all(v.x == v);
+    any(f != v);
 
     float1 f1;
 

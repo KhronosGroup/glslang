@@ -1,12 +1,12 @@
 //
-//Copyright (C) 2016 Google, Inc.
-//Copyright (C) 2016 LunarG, Inc.
+// Copyright (C) 2016 Google, Inc.
+// Copyright (C) 2016 LunarG, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -20,18 +20,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 
 //
@@ -52,7 +52,7 @@
 // preprocessor includes
 #include "../glslang/MachineIndependent/preprocessor/PpContext.h"
 #include "../glslang/MachineIndependent/preprocessor/PpTokens.h"
-    
+
 namespace {
 
 struct str_eq
@@ -119,6 +119,16 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["inout"] =                   EHTokInOut;
     (*KeywordMap)["layout"] =                  EHTokLayout;
 
+    (*KeywordMap)["point"] =                   EHTokPoint;
+    (*KeywordMap)["line"] =                    EHTokLine;
+    (*KeywordMap)["triangle"] =                EHTokTriangle;
+    (*KeywordMap)["lineadj"] =                 EHTokLineAdj;
+    (*KeywordMap)["triangleadj"] =             EHTokTriangleAdj;
+
+    (*KeywordMap)["PointStream"] =             EHTokPointStream;
+    (*KeywordMap)["LineStream"] =              EHTokLineStream;
+    (*KeywordMap)["TriangleStream"] =          EHTokTriangleStream;
+
     (*KeywordMap)["Buffer"] =                  EHTokBuffer;
     (*KeywordMap)["vector"] =                  EHTokVector;
     (*KeywordMap)["matrix"] =                  EHTokMatrix;
@@ -132,11 +142,11 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["half"] =                    EHTokHalf;
     (*KeywordMap)["float"] =                   EHTokFloat;
     (*KeywordMap)["double"] =                  EHTokDouble;
-    (*KeywordMap)["min16float"] =              EHTokMin16float; 
+    (*KeywordMap)["min16float"] =              EHTokMin16float;
     (*KeywordMap)["min10float"] =              EHTokMin10float;
     (*KeywordMap)["min16int"] =                EHTokMin16int;
     (*KeywordMap)["min12int"] =                EHTokMin12int;
-    (*KeywordMap)["min16uint"] =               EHTokMin16int;
+    (*KeywordMap)["min16uint"] =               EHTokMin16uint;
 
     (*KeywordMap)["bool1"] =                   EHTokBool1;
     (*KeywordMap)["bool2"] =                   EHTokBool2;
@@ -159,6 +169,47 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["uint3"] =                   EHTokUint3;
     (*KeywordMap)["uint4"] =                   EHTokUint4;
 
+    (*KeywordMap)["half1"] =                   EHTokHalf1;
+    (*KeywordMap)["half2"] =                   EHTokHalf2;
+    (*KeywordMap)["half3"] =                   EHTokHalf3;
+    (*KeywordMap)["half4"] =                   EHTokHalf4;
+    (*KeywordMap)["min16float1"] =             EHTokMin16float1;
+    (*KeywordMap)["min16float2"] =             EHTokMin16float2;
+    (*KeywordMap)["min16float3"] =             EHTokMin16float3;
+    (*KeywordMap)["min16float4"] =             EHTokMin16float4;
+    (*KeywordMap)["min10float1"] =             EHTokMin10float1;
+    (*KeywordMap)["min10float2"] =             EHTokMin10float2;
+    (*KeywordMap)["min10float3"] =             EHTokMin10float3;
+    (*KeywordMap)["min10float4"] =             EHTokMin10float4;
+    (*KeywordMap)["min16int1"] =               EHTokMin16int1;
+    (*KeywordMap)["min16int2"] =               EHTokMin16int2;
+    (*KeywordMap)["min16int3"] =               EHTokMin16int3;
+    (*KeywordMap)["min16int4"] =               EHTokMin16int4;
+    (*KeywordMap)["min12int1"] =               EHTokMin12int1;
+    (*KeywordMap)["min12int2"] =               EHTokMin12int2;
+    (*KeywordMap)["min12int3"] =               EHTokMin12int3;
+    (*KeywordMap)["min12int4"] =               EHTokMin12int4;
+    (*KeywordMap)["min16uint1"] =              EHTokMin16uint1;
+    (*KeywordMap)["min16uint2"] =              EHTokMin16uint2;
+    (*KeywordMap)["min16uint3"] =              EHTokMin16uint3;
+    (*KeywordMap)["min16uint4"] =              EHTokMin16uint4;
+
+    (*KeywordMap)["bool1x1"] =                 EHTokBool1x1;
+    (*KeywordMap)["bool1x2"] =                 EHTokBool1x2;
+    (*KeywordMap)["bool1x3"] =                 EHTokBool1x3;
+    (*KeywordMap)["bool1x4"] =                 EHTokBool1x4;
+    (*KeywordMap)["bool2x1"] =                 EHTokBool2x1;
+    (*KeywordMap)["bool2x2"] =                 EHTokBool2x2;
+    (*KeywordMap)["bool2x3"] =                 EHTokBool2x3;
+    (*KeywordMap)["bool2x4"] =                 EHTokBool2x4;
+    (*KeywordMap)["bool3x1"] =                 EHTokBool3x1;
+    (*KeywordMap)["bool3x2"] =                 EHTokBool3x2;
+    (*KeywordMap)["bool3x3"] =                 EHTokBool3x3;
+    (*KeywordMap)["bool3x4"] =                 EHTokBool3x4;
+    (*KeywordMap)["bool4x1"] =                 EHTokBool4x1;
+    (*KeywordMap)["bool4x2"] =                 EHTokBool4x2;
+    (*KeywordMap)["bool4x3"] =                 EHTokBool4x3;
+    (*KeywordMap)["bool4x4"] =                 EHTokBool4x4;
     (*KeywordMap)["int1x1"] =                  EHTokInt1x1;
     (*KeywordMap)["int1x2"] =                  EHTokInt1x2;
     (*KeywordMap)["int1x3"] =                  EHTokInt1x3;
@@ -258,6 +309,12 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["TextureCubeArray"] =        EHTokTextureCubearray;
     (*KeywordMap)["Texture2DMS"] =             EHTokTexture2DMS;
     (*KeywordMap)["Texture2DMSArray"] =        EHTokTexture2DMSarray;
+    (*KeywordMap)["RWTexture1D"] =             EHTokRWTexture1d;
+    (*KeywordMap)["RWTexture1DArray"] =        EHTokRWTexture1darray;
+    (*KeywordMap)["RWTexture2D"] =             EHTokRWTexture2d;
+    (*KeywordMap)["RWTexture2DArray"] =        EHTokRWTexture2darray;
+    (*KeywordMap)["RWTexture3D"] =             EHTokRWTexture3d;
+    (*KeywordMap)["RWBuffer"] =                EHTokRWBuffer;
 
     (*KeywordMap)["struct"] =                  EHTokStruct;
     (*KeywordMap)["cbuffer"] =                 EHTokCBuffer;
@@ -282,7 +339,7 @@ void HlslScanContext::fillInKeywordMap()
 
     // TODO: get correct set here
     ReservedSet = new std::unordered_set<const char*, str_hash, str_eq>;
-    
+
     ReservedSet->insert("auto");
     ReservedSet->insert("catch");
     ReservedSet->insert("char");
@@ -340,13 +397,14 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
     do {
         parserToken = &token;
         TPpToken ppToken;
-        tokenText = ppContext.tokenize(&ppToken);
-        if (tokenText == nullptr)
+        int token = ppContext.tokenize(ppToken);
+        if (token == EndOfInput)
             return EHTokNone;
 
+        tokenText = ppToken.name;
         loc = ppToken.loc;
         parserToken->loc = loc;
-        switch (ppToken.token) {
+        switch (token) {
         case ';':                       return EHTokSemicolon;
         case ',':                       return EHTokComma;
         case ':':                       return EHTokColon;
@@ -375,11 +433,11 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
             parseContext.error(loc, "illegal use of escape character", "\\", "");
             break;
 
-        case PpAtomAdd:                return EHTokAddAssign;
-        case PpAtomSub:                return EHTokSubAssign;
-        case PpAtomMul:                return EHTokMulAssign;
-        case PpAtomDiv:                return EHTokDivAssign;
-        case PpAtomMod:                return EHTokModAssign;
+        case PPAtomAddAssign:          return EHTokAddAssign;
+        case PPAtomSubAssign:          return EHTokSubAssign;
+        case PPAtomMulAssign:          return EHTokMulAssign;
+        case PPAtomDivAssign:          return EHTokDivAssign;
+        case PPAtomModAssign:          return EHTokModAssign;
 
         case PpAtomRight:              return EHTokRightOp;
         case PpAtomLeft:               return EHTokLeftOp;
@@ -413,7 +471,7 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
         }
 
         case PpAtomConstString: {
-            parserToken->string = NewPoolTString(ppToken.name);
+            parserToken->string = NewPoolTString(tokenText);
             return EHTokStringConstant;
         }
 
@@ -421,7 +479,7 @@ EHlslTokenClass HlslScanContext::tokenizeClass(HlslToken& token)
 
         default:
             char buf[2];
-            buf[0] = (char)ppToken.token;
+            buf[0] = (char)token;
             buf[1] = 0;
             parseContext.error(loc, "unexpected token", buf, "");
             break;
@@ -468,7 +526,20 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokLayout:
         return keyword;
 
-    // template types
+    // primitive types
+    case EHTokPoint:
+    case EHTokLine:
+    case EHTokTriangle:
+    case EHTokLineAdj:
+    case EHTokTriangleAdj:
+        return keyword;
+
+    // stream out types
+    case EHTokPointStream:
+    case EHTokLineStream:
+    case EHTokTriangleStream:
+        return keyword;
+
     case EHTokBuffer:
     case EHTokVector:
     case EHTokMatrix:
@@ -511,8 +582,48 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokUint2:
     case EHTokUint3:
     case EHTokUint4:
+    case EHTokHalf1:
+    case EHTokHalf2:
+    case EHTokHalf3:
+    case EHTokHalf4:
+    case EHTokMin16float1:
+    case EHTokMin16float2:
+    case EHTokMin16float3:
+    case EHTokMin16float4:
+    case EHTokMin10float1:
+    case EHTokMin10float2:
+    case EHTokMin10float3:
+    case EHTokMin10float4:
+    case EHTokMin16int1:
+    case EHTokMin16int2:
+    case EHTokMin16int3:
+    case EHTokMin16int4:
+    case EHTokMin12int1:
+    case EHTokMin12int2:
+    case EHTokMin12int3:
+    case EHTokMin12int4:
+    case EHTokMin16uint1:
+    case EHTokMin16uint2:
+    case EHTokMin16uint3:
+    case EHTokMin16uint4:
 
     // matrix types
+    case EHTokBool1x1:
+    case EHTokBool1x2:
+    case EHTokBool1x3:
+    case EHTokBool1x4:
+    case EHTokBool2x1:
+    case EHTokBool2x2:
+    case EHTokBool2x3:
+    case EHTokBool2x4:
+    case EHTokBool3x1:
+    case EHTokBool3x2:
+    case EHTokBool3x3:
+    case EHTokBool3x4:
+    case EHTokBool4x1:
+    case EHTokBool4x2:
+    case EHTokBool4x3:
+    case EHTokBool4x4:
     case EHTokInt1x1:
     case EHTokInt1x2:
     case EHTokInt1x3:
@@ -529,6 +640,22 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokInt4x2:
     case EHTokInt4x3:
     case EHTokInt4x4:
+    case EHTokUint1x1:
+    case EHTokUint1x2:
+    case EHTokUint1x3:
+    case EHTokUint1x4:
+    case EHTokUint2x1:
+    case EHTokUint2x2:
+    case EHTokUint2x3:
+    case EHTokUint2x4:
+    case EHTokUint3x1:
+    case EHTokUint3x2:
+    case EHTokUint3x3:
+    case EHTokUint3x4:
+    case EHTokUint4x1:
+    case EHTokUint4x2:
+    case EHTokUint4x3:
+    case EHTokUint4x4:
     case EHTokFloat1x1:
     case EHTokFloat1x2:
     case EHTokFloat1x3:
@@ -581,6 +708,12 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokTextureCubearray:
     case EHTokTexture2DMS:
     case EHTokTexture2DMSarray:
+    case EHTokRWTexture1d:
+    case EHTokRWTexture1darray:
+    case EHTokRWTexture2d:
+    case EHTokRWTexture2darray:
+    case EHTokRWTexture3d:
+    case EHTokRWBuffer:
         return keyword;
 
     // variable, user type, ...

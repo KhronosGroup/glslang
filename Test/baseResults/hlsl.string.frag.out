@@ -2,7 +2,7 @@ hlsl.string.frag
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:10  Function Definition: main(f1; (global float)
+0:10  Function Definition: main(f1; (temp float)
 0:10    Function Parameters: 
 0:10      'f' (layout(location=0 ) in float)
 0:?     Sequence
@@ -22,7 +22,7 @@ Linked fragment stage:
 Shader version: 450
 gl_FragCoord origin is upper left
 0:? Sequence
-0:10  Function Definition: main(f1; (global float)
+0:10  Function Definition: main(f1; (temp float)
 0:10    Function Parameters: 
 0:10      'f' (layout(location=0 ) in float)
 0:?     Sequence

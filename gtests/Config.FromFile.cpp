@@ -54,8 +54,8 @@ TEST_P(ConfigTest, FromFile)
 
     // Get the contents for input shader and limit configurations.
     std::string shaderContents, configContents;
-    tryLoadFile(GLSLANG_TEST_DIRECTORY "/" + testCase.input, "input", &shaderContents);
-    tryLoadFile(GLSLANG_TEST_DIRECTORY "/" + testCase.config, "limits config", &configContents);
+    tryLoadFile(GlobalTestSettings.testRoot + "/" + testCase.input, "input", &shaderContents);
+    tryLoadFile(GlobalTestSettings.testRoot + "/" + testCase.config, "limits config", &configContents);
 
     // Decode limit configurations.
     TBuiltInResource resources = {};
@@ -86,7 +86,7 @@ TEST_P(ConfigTest, FromFile)
 
     // Check with expected results.
     const std::string expectedOutputFname =
-        GLSLANG_TEST_DIRECTORY "/baseResults/" + testCase.output;
+        GlobalTestSettings.testRoot + "/baseResults/" + testCase.output;
     std::string expectedOutput;
     tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 

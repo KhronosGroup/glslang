@@ -60,17 +60,17 @@ std::string FileNameAsCustomTestSuffix(
 
 using RemapTest = GlslangTest<::testing::TestWithParam<RemapTestArgs>>;
 
-// Remapping SPIR-V modules. 
+// Remapping SPIR-V modules.
 TEST_P(RemapTest, FromFile)
 {
     if (GetSuffix(GetParam().fileName) == "spv") {
-        loadFileRemapAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
+        loadFileRemapAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
                               GetParam().sourceLanguage,
                               Semantics::Vulkan,
                               Target::Spv,
                               GetParam().remapOpts);
     } else {
-        loadFileCompileRemapAndCheck(GLSLANG_TEST_DIRECTORY, GetParam().fileName,
+        loadFileCompileRemapAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
                                      GetParam().sourceLanguage,
                                      Semantics::Vulkan,
                                      Target::Spv,

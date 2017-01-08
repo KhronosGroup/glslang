@@ -1,13 +1,13 @@
 //
-//Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2013-2016 LunarG, Inc.
-//Copyright (C) 2015-2016 Google, Inc.
+// Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+// Copyright (C) 2013-2016 LunarG, Inc.
+// Copyright (C) 2015-2016 Google, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -21,18 +21,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 
 //
@@ -51,6 +51,7 @@
 #include "../../hlsl/hlslParseables.h"
 #include "Scan.h"
 #include "ScanContext.h"
+#include "../../hlsl/hlslScanContext.h"
 
 #include "../Include/ShHandle.h"
 #include "../../OGLCompilersDLL/InitializeDll.h"
@@ -74,6 +75,28 @@ TBuiltInParseables* CreateBuiltInParseables(TInfoSink& infoSink, EShSource sourc
     case EShSourceGlsl: return new TBuiltIns();              // GLSL builtIns
     case EShSourceHlsl: return new TBuiltInParseablesHlsl(); // HLSL intrinsics
 
+    default:
+        infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
+        return nullptr;
+    }
+}
+
+// Create a language specific version of a parse context.
+TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& intermediate,
+                                      int version, EProfile profile, EShSource source,
+                                      EShLanguage language, TInfoSink& infoSink,
+                                      SpvVersion spvVersion, bool forwardCompatible, EShMessages messages,
+                                      bool parsingBuiltIns, const std::string sourceEntryPointName = "")
+{
+    switch (source) {
+    case EShSourceGlsl:
+        intermediate.setEntryPointName("main");
+        return new TParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
+                                 language, infoSink, forwardCompatible, messages);
+
+    case EShSourceHlsl:
+        return new HlslParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
+                                    language, infoSink, sourceEntryPointName.c_str(), forwardCompatible, messages);
     default:
         infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
         return nullptr;
@@ -171,11 +194,11 @@ enum EPrecisionClass {
     EPcCount
 };
 
-// A process-global symbol table per version per profile for built-ins common 
-// to multiple stages (languages), and a process-global symbol table per version 
+// A process-global symbol table per version per profile for built-ins common
+// to multiple stages (languages), and a process-global symbol table per version
 // per profile per stage for built-ins unique to each stage.  They will be sparsely
 // populated, so they will only be generated as needed.
-// 
+//
 // Each has a different set of built-ins, and we want to preserve that from
 // compile to compile.
 //
@@ -187,18 +210,23 @@ TPoolAllocator* PerProcessGPA = 0;
 //
 // Parse and add to the given symbol table the content of the given shader string.
 //
-bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TInfoSink& infoSink, 
-                           TSymbolTable& symbolTable)
+bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
+                           EShSource source, TInfoSink& infoSink, TSymbolTable& symbolTable)
 {
     TIntermediate intermediate(language, version, profile);
-    
-    TParseContext parseContext(symbolTable, intermediate, true, version, profile, spvVersion, language, infoSink);
-    TShader::ForbidInclude includer;
-    TPpContext ppContext(parseContext, "", includer);
-    TScanContext scanContext(parseContext);
-    parseContext.setScanContext(&scanContext);
-    parseContext.setPpContext(&ppContext);
-    
+
+    intermediate.setSource(source);
+
+    std::unique_ptr<TParseContextBase> parseContext(CreateParseContext(symbolTable, intermediate, version, profile, source,
+                                                                       language, infoSink, spvVersion, true, EShMsgDefault,
+                                                                       true));
+
+    TShader::ForbidIncluder includer;
+    TPpContext ppContext(*parseContext, "", includer);
+    TScanContext scanContext(*parseContext);
+    parseContext->setScanContext(&scanContext);
+    parseContext->setPpContext(&ppContext);
+
     //
     // Push the symbol table to give it an initial scope.  This
     // push should not have a corresponding pop, so that built-ins
@@ -214,9 +242,9 @@ bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profil
 
     if (builtInLengths[0] == 0)
         return true;
-    
+
     TInputScanner input(1, builtInShaders, builtInLengths);
-    if (! parseContext.parseShaderStrings(ppContext, input) != 0) {
+    if (! parseContext->parseShaderStrings(ppContext, input) != 0) {
         infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
         printf("Unable to parse built-ins\n%s\n", infoSink.info.c_str());
         printf("%s\n", builtInShaders[0]);
@@ -236,10 +264,12 @@ int CommonIndex(EProfile profile, EShLanguage language)
 // To initialize per-stage shared tables, with the common table already complete.
 //
 void InitializeStageSymbolTable(TBuiltInParseables& builtInParseables, int version, EProfile profile, const SpvVersion& spvVersion,
-                                EShLanguage language, TInfoSink& infoSink, TSymbolTable** commonTable, TSymbolTable** symbolTables)
+                                EShLanguage language, EShSource source, TInfoSink& infoSink, TSymbolTable** commonTable,
+                                TSymbolTable** symbolTables)
 {
     (*symbolTables[language]).adoptLevels(*commonTable[CommonIndex(profile, language)]);
-    InitializeSymbolTable(builtInParseables.getStageString(language), version, profile, spvVersion, language, infoSink, *symbolTables[language]);
+    InitializeSymbolTable(builtInParseables.getStageString(language), version, profile, spvVersion, language, source,
+                          infoSink, *symbolTables[language]);
     builtInParseables.identifyBuiltIns(version, profile, spvVersion, language, *symbolTables[language]);
     if (profile == EEsProfile && version >= 300)
         (*symbolTables[language]).setNoBuiltInRedeclarations();
@@ -258,32 +288,40 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
     builtInParseables->initialize(version, profile, spvVersion);
 
     // do the common tables
-    InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, EShLangVertex, infoSink, *commonTable[EPcGeneral]);
+    InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, EShLangVertex, source,
+                          infoSink, *commonTable[EPcGeneral]);
     if (profile == EEsProfile)
-        InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, EShLangFragment, infoSink, *commonTable[EPcFragment]);
+        InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, EShLangFragment, source,
+                              infoSink, *commonTable[EPcFragment]);
 
     // do the per-stage tables
 
     // always have vertex and fragment
-    InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangVertex, infoSink, commonTable, symbolTables);
-    InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangFragment, infoSink, commonTable, symbolTables);
+    InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangVertex, source,
+                               infoSink, commonTable, symbolTables);
+    InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangFragment, source,
+                               infoSink, commonTable, symbolTables);
 
     // check for tessellation
     if ((profile != EEsProfile && version >= 150) ||
         (profile == EEsProfile && version >= 310)) {
-        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTessControl, infoSink, commonTable, symbolTables);
-        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTessEvaluation, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTessControl, source,
+                                   infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTessEvaluation, source,
+                                   infoSink, commonTable, symbolTables);
     }
 
     // check for geometry
     if ((profile != EEsProfile && version >= 150) ||
         (profile == EEsProfile && version >= 310))
-        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangGeometry, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangGeometry, source,
+                                   infoSink, commonTable, symbolTables);
 
     // check for compute
     if ((profile != EEsProfile && version >= 420) ||
         (profile == EEsProfile && version >= 310))
-        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangCompute, infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangCompute, source,
+                                   infoSink, commonTable, symbolTables);
 
     return true;
 }
@@ -292,16 +330,16 @@ bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& inf
                                EProfile profile, const SpvVersion& spvVersion, EShLanguage language, EShSource source)
 {
     std::unique_ptr<TBuiltInParseables> builtInParseables(CreateBuiltInParseables(infoSink, source));
-    
+
     builtInParseables->initialize(*resources, version, profile, spvVersion, language);
-    InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, language, infoSink, symbolTable);
+    InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, language, source, infoSink, symbolTable);
     builtInParseables->identifyBuiltIns(version, profile, spvVersion, language, symbolTable, *resources);
 
     return true;
 }
 
 //
-// To do this on the fly, we want to leave the current state of our thread's 
+// To do this on the fly, we want to leave the current state of our thread's
 // pool allocator intact, so:
 //  - Switch to a new pool for parsing the built-ins
 //  - Do the parsing, which builds the symbol table, using the new pool
@@ -364,7 +402,7 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
                               [versionIndex][spvVersionIndex][profileIndex][sourceIndex][CommonIndex(profile, (EShLanguage)stage)]);
             SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][sourceIndex][stage]->copyTable(*stageTables[stage]);
             SharedSymbolTables[versionIndex][spvVersionIndex][profileIndex][sourceIndex][stage]->readOnly();
-        }    
+        }
     }
 
     // Clean up the local tables before deleting the pool they used.
@@ -433,7 +471,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
                     profile = ECoreProfile;
                 else
                     profile = ENoProfile;
-            } 
+            }
             // else: typical desktop case... e.g., "#version 410 core"
         }
     }
@@ -578,7 +616,8 @@ bool ProcessDeferred(
     TIntermediate& intermediate, // returned tree, etc.
     ProcessingContext& processingContext,
     bool requireNonempty,
-    TShader::Includer& includer
+    TShader::Includer& includer,
+    const std::string sourceEntryPointName = ""
     )
 {
     if (! InitThread())
@@ -589,7 +628,7 @@ bool ProcessDeferred(
 
     if (numStrings == 0)
         return true;
-    
+
     // Move to length-based strings, rather than null-terminated strings.
     // Also, add strings to include the preamble and to ensure the shader is not null,
     // which lets the grammar accept what was a null (post preprocessing) shader.
@@ -671,37 +710,32 @@ bool ProcessDeferred(
     if (spvVersion.vulkan >= 100)
         intermediate.setOriginUpperLeft();
     SetupBuiltinSymbolTable(version, profile, spvVersion, source);
-    
+
     TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]
                                                   [MapSpvVersionToIndex(spvVersion)]
                                                   [MapProfileToIndex(profile)]
                                                   [MapSourceToIndex(source)]
                                                   [compiler->getLanguage()];
-    
+
     // Dynamically allocate the symbol table so we can control when it is deallocated WRT the pool.
     TSymbolTable* symbolTableMemory = new TSymbolTable;
     TSymbolTable& symbolTable = *symbolTableMemory;
     if (cachedTable)
         symbolTable.adoptLevels(*cachedTable);
-    
+
     // Add built-in symbols that are potentially context dependent;
     // they get popped again further down.
     AddContextSpecificSymbols(resources, compiler->infoSink, symbolTable, version, profile, spvVersion,
                               compiler->getLanguage(), source);
-    
+
     //
     // Now we can process the full shader under proper symbols and rules.
     //
 
-    TParseContextBase* parseContext;
-    if (source == EShSourceHlsl) {
-        parseContext = new HlslParseContext(symbolTable, intermediate, false, version, profile, spvVersion,
-                                            compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
-    } else {
-        intermediate.setEntryPointName("main");
-        parseContext = new TParseContext(symbolTable, intermediate, false, version, profile, spvVersion,
-                                         compiler->getLanguage(), compiler->infoSink, forwardCompatible, messages);
-    }
+    TParseContextBase* parseContext = CreateParseContext(symbolTable, intermediate, version, profile, source,
+                                                         compiler->getLanguage(), compiler->infoSink,
+                                                         spvVersion, forwardCompatible, messages, false, sourceEntryPointName);
+
     TPpContext ppContext(*parseContext, names[numPre]? names[numPre]: "", includer);
 
     // only GLSL (bison triggered, really) needs an externally set scan context
@@ -720,7 +754,7 @@ bool ProcessDeferred(
     }
 
     parseContext->initializeExtensionBehavior();
-    
+
     // Fill in the strings as outlined above.
     std::string preamble;
     parseContext->getPreamble(preamble);
@@ -834,7 +868,7 @@ struct DoPreprocessing {
         // This is a list of tokens that do not require a space before or after.
         static const std::string unNeededSpaceTokens = ";()[]";
         static const std::string noSpaceBeforeTokens = ",";
-        glslang::TPpToken token;
+        glslang::TPpToken ppToken;
 
         parseContext.setScanner(&input);
         ppContext.setInput(input, versionWillBeError);
@@ -897,29 +931,33 @@ struct DoPreprocessing {
         });
 
         int lastToken = EndOfInput; // lastToken records the last token processed.
-        while (const char* tok = ppContext.tokenize(&token)) {
+        do {
+            int token = ppContext.tokenize(ppToken);
+            if (token == EndOfInput)
+                break;
+
             bool isNewString = lineSync.syncToMostRecentString();
-            bool isNewLine = lineSync.syncToLine(token.loc.line);
+            bool isNewLine = lineSync.syncToLine(ppToken.loc.line);
 
             if (isNewLine) {
                 // Don't emit whitespace onto empty lines.
                 // Copy any whitespace characters at the start of a line
                 // from the input to the output.
-                outputStream << std::string(token.loc.column - 1, ' ');
+                outputStream << std::string(ppToken.loc.column - 1, ' ');
             }
 
             // Output a space in between tokens, but not at the start of a line,
             // and also not around special tokens. This helps with readability
             // and consistency.
             if (!isNewString && !isNewLine && lastToken != EndOfInput &&
-                (unNeededSpaceTokens.find((char)token.token) == std::string::npos) &&
+                (unNeededSpaceTokens.find((char)token) == std::string::npos) &&
                 (unNeededSpaceTokens.find((char)lastToken) == std::string::npos) &&
-                (noSpaceBeforeTokens.find((char)token.token) == std::string::npos)) {
+                (noSpaceBeforeTokens.find((char)token) == std::string::npos)) {
                 outputStream << " ";
             }
-            lastToken = token.token;
-            outputStream << tok;
-        }
+            lastToken = token;
+            outputStream << ppToken.name;
+        } while (true);
         outputStream << std::endl;
         *outputString = outputStream.str();
 
@@ -939,14 +977,13 @@ struct DoPreprocessing {
 struct DoFullParse{
   bool operator()(TParseContextBase& parseContext, TPpContext& ppContext,
                   TInputScanner& fullInput, bool versionWillBeError,
-                  TSymbolTable& symbolTable, TIntermediate& intermediate,
-                  EShOptimizationLevel optLevel, EShMessages messages) 
+                  TSymbolTable&, TIntermediate& intermediate,
+                  EShOptimizationLevel optLevel, EShMessages messages)
     {
         bool success = true;
         // Parse the full shader.
         if (! parseContext.parseShaderStrings(ppContext, fullInput, versionWillBeError))
             success = false;
-        intermediate.addSymbolLinkageNodes(parseContext.getLinkage(), parseContext.getLanguage(), symbolTable);
 
         if (success && intermediate.getTreeRoot()) {
             if (optLevel == EShOptNoGeneration)
@@ -995,7 +1032,6 @@ bool PreprocessDeferred(
                            false, includer);
 }
 
-
 //
 // do a partial compile on the given strings for a single compilation unit
 // for a potential deferred link into a single stage (and deferred full compile of that
@@ -1004,7 +1040,7 @@ bool PreprocessDeferred(
 // all preprocessing, parsing, semantic checks, etc. for a single compilation unit
 // are done here.
 //
-// return:  the tree and other information is filled into the intermediate argument, 
+// return:  the tree and other information is filled into the intermediate argument,
 //          and true is returned by the function for success.
 //
 bool CompileDeferred(
@@ -1022,18 +1058,18 @@ bool CompileDeferred(
     bool forwardCompatible,     // give errors for use of deprecated features
     EShMessages messages,       // warnings/errors/AST; things to print out
     TIntermediate& intermediate,// returned tree, etc.
-    TShader::Includer& includer)
+    TShader::Includer& includer,
+    const std::string sourceEntryPointName = "")
 {
     DoFullParse parser;
     return ProcessDeferred(compiler, shaderStrings, numStrings, inputLengths, stringNames,
                            preamble, optLevel, resources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
                            forwardCompatible, messages, intermediate, parser,
-                           true, includer);
+                           true, includer, sourceEntryPointName);
 }
 
 } // end anonymous namespace for local functions
-
 
 //
 // ShInitialize() should be called exactly once per process, not per thread.
@@ -1049,6 +1085,7 @@ int ShInitialize()
         PerProcessGPA = new TPoolAllocator();
 
     glslang::TScanContext::fillInKeywordMap();
+    glslang::HlslScanContext::fillInKeywordMap();
 
     return 1;
 }
@@ -1064,7 +1101,7 @@ ShHandle ShConstructCompiler(const EShLanguage language, int debugOptions)
         return 0;
 
     TShHandleBase* base = static_cast<TShHandleBase*>(ConstructCompiler(language, debugOptions));
-    
+
     return reinterpret_cast<void*>(base);
 }
 
@@ -1141,6 +1178,7 @@ int __fastcall ShFinalize()
     }
 
     glslang::TScanContext::deleteKeywordMap();
+    glslang::HlslScanContext::deleteKeywordMap();
 
     return 1;
 }
@@ -1179,7 +1217,7 @@ int ShCompile(
     compiler->infoSink.debug.erase();
 
     TIntermediate intermediate(compiler->getLanguage());
-    TShader::ForbidInclude includer;
+    TShader::ForbidIncluder includer;
     bool success = CompileDeferred(compiler, shaderStrings, numStrings, inputLengths, nullptr,
                                    "", optLevel, resources, defaultVersion, ENoProfile, false,
                                    forwardCompatible, messages, intermediate, includer);
@@ -1224,8 +1262,7 @@ int ShLinkExt(
         }
         if (base->getAsCompiler())
             cObjects.push_back(base->getAsCompiler());
-    
-    
+
         if (cObjects[i] == 0)
             return 0;
     }
@@ -1241,7 +1278,7 @@ int ShLinkExt(
     for (int i = 0; i < numHandles; ++i) {
         if (cObjects[i]->getAsCompiler()) {
             if (! cObjects[i]->getAsCompiler()->linkable()) {
-                linker->infoSink.info.message(EPrefixError, "Not all shaders have valid object code.");                
+                linker->infoSink.info.message(EPrefixError, "Not all shaders have valid object code.");
                 return 0;
             }
         }
@@ -1300,7 +1337,7 @@ const void* ShGetExecutable(const ShHandle handle)
         return 0;
 
     TShHandleBase* base = reinterpret_cast<TShHandleBase*>(handle);
-    
+
     TLinker* linker = static_cast<TLinker*>(base->getAsLinker());
     if (linker == 0)
         return 0;
@@ -1317,7 +1354,7 @@ const void* ShGetExecutable(const ShHandle handle)
 // success or failure.
 //
 int ShSetVirtualAttributeBindings(const ShHandle handle, const ShBindingTable* table)
-{    
+{
     if (!InitThread())
         return 0;
 
@@ -1329,7 +1366,7 @@ int ShSetVirtualAttributeBindings(const ShHandle handle, const ShBindingTable* t
 
     if (linker == 0)
         return 0;
-   
+
     linker->setAppAttributeBindings(table);
 
     return 1;
@@ -1406,7 +1443,7 @@ int ShGetUniformLocation(const ShHandle handle, const char* name)
 //
 // Below is a new alternate C++ interface that might potentially replace the above
 // opaque handle-based interface.
-//    
+//
 // See more detailed comment in ShaderLang.h
 //
 
@@ -1445,7 +1482,7 @@ public:
     virtual bool compile(TIntermNode*, int = 0, EProfile = ENoProfile) { return true; }
 };
 
-TShader::TShader(EShLanguage s) 
+TShader::TShader(EShLanguage s)
     : pool(0), stage(s), lengths(nullptr), stringNames(nullptr), preamble("")
 {
     infoSink = new TInfoSink;
@@ -1489,11 +1526,18 @@ void TShader::setEntryPoint(const char* entryPoint)
     intermediate->setEntryPointName(entryPoint);
 }
 
+void TShader::setSourceEntryPoint(const char* name)
+{
+    sourceEntryPointName = name;
+}
+
 void TShader::setShiftSamplerBinding(unsigned int base) { intermediate->setShiftSamplerBinding(base); }
 void TShader::setShiftTextureBinding(unsigned int base) { intermediate->setShiftTextureBinding(base); }
+void TShader::setShiftImageBinding(unsigned int base)   { intermediate->setShiftImageBinding(base); }
 void TShader::setShiftUboBinding(unsigned int base)     { intermediate->setShiftUboBinding(base); }
 void TShader::setAutoMapBindings(bool map)              { intermediate->setAutoMapBindings(map); }
 void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlattenUniformArrays(flatten); }
+void TShader::setNoStorageFormat(bool useUnknownFormat) { intermediate->setNoStorageFormat(useUnknownFormat); }
 
 //
 // Turn the shader strings into a parse tree in the TIntermediate.
@@ -1505,7 +1549,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
 {
     if (! InitThread())
         return false;
-    
+
     pool = new TPoolAllocator();
     SetThreadPoolAllocator(*pool);
     if (! preamble)
@@ -1514,7 +1558,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
     return CompileDeferred(compiler, strings, numStrings, lengths, stringNames,
                            preamble, EShOptNone, builtInResources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
-                           forwardCompatible, messages, *intermediate, includer);
+                           forwardCompatible, messages, *intermediate, includer, sourceEntryPointName);
 }
 
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
@@ -1589,7 +1633,7 @@ bool TProgram::link(EShMessages messages)
     linked = true;
 
     bool error = false;
-    
+
     pool = new TPoolAllocator();
     SetThreadPoolAllocator(*pool);
 
@@ -1644,7 +1688,8 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
         newedIntermediate[stage] = true;
     }
 
-    infoSink->info << "\nLinked " << StageName(stage) << " stage:\n\n";
+    if (messages & EShMsgAST)
+        infoSink->info << "\nLinked " << StageName(stage) << " stage:\n\n";
 
     if (stages[stage].size() > 1) {
         std::list<TShader*>::const_iterator it;
@@ -1652,7 +1697,7 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
             intermediate[stage]->merge(*infoSink, *(*it)->intermediate);
     }
 
-    intermediate[stage]->finalCheck(*infoSink);
+    intermediate[stage]->finalCheck(*infoSink, (messages & EShMsgKeepUncalled) != 0);
 
     if (messages & EShMsgAST)
         intermediate[stage]->output(*infoSink, true);
@@ -1675,7 +1720,7 @@ const char* TProgram::getInfoDebugLog()
 //
 
 bool TProgram::buildReflection()
-{    
+{
     if (! linked || reflection)
         return false;
 
@@ -1691,26 +1736,29 @@ bool TProgram::buildReflection()
     return true;
 }
 
-int TProgram::getNumLiveUniformVariables()           { return reflection->getNumUniforms(); }
-int TProgram::getNumLiveUniformBlocks()              { return reflection->getNumUniformBlocks(); }
-const char* TProgram::getUniformName(int index)      { return reflection->getUniform(index).name.c_str(); }
-const char* TProgram::getUniformBlockName(int index) { return reflection->getUniformBlock(index).name.c_str(); }
-int TProgram::getUniformBlockSize(int index)         { return reflection->getUniformBlock(index).size; }
-int TProgram::getUniformIndex(const char* name)      { return reflection->getIndex(name); }
-int TProgram::getUniformBlockIndex(int index)        { return reflection->getUniform(index).index; }
-int TProgram::getUniformType(int index)              { return reflection->getUniform(index).glDefineType; }
-int TProgram::getUniformBufferOffset(int index)      { return reflection->getUniform(index).offset; }
-int TProgram::getUniformArraySize(int index)         { return reflection->getUniform(index).size; }
-int TProgram::getNumLiveAttributes()                 { return reflection->getNumAttributes(); }
-const char* TProgram::getAttributeName(int index)    { return reflection->getAttribute(index).name.c_str(); }
-int TProgram::getAttributeType(int index)            { return reflection->getAttribute(index).glDefineType; }
+int TProgram::getNumLiveUniformVariables() const             { return reflection->getNumUniforms(); }
+int TProgram::getNumLiveUniformBlocks() const                { return reflection->getNumUniformBlocks(); }
+const char* TProgram::getUniformName(int index) const        { return reflection->getUniform(index).name.c_str(); }
+const char* TProgram::getUniformBlockName(int index) const   { return reflection->getUniformBlock(index).name.c_str(); }
+int TProgram::getUniformBlockSize(int index) const           { return reflection->getUniformBlock(index).size; }
+int TProgram::getUniformIndex(const char* name) const        { return reflection->getIndex(name); }
+int TProgram::getUniformBlockIndex(int index) const          { return reflection->getUniform(index).index; }
+int TProgram::getUniformType(int index) const                { return reflection->getUniform(index).glDefineType; }
+int TProgram::getUniformBufferOffset(int index) const        { return reflection->getUniform(index).offset; }
+int TProgram::getUniformArraySize(int index) const           { return reflection->getUniform(index).size; }
+int TProgram::getNumLiveAttributes() const                   { return reflection->getNumAttributes(); }
+const char* TProgram::getAttributeName(int index) const      { return reflection->getAttribute(index).name.c_str(); }
+int TProgram::getAttributeType(int index) const              { return reflection->getAttribute(index).glDefineType; }
+const TType* TProgram::getAttributeTType(int index) const    { return reflection->getAttribute(index).getType(); }
+const TType* TProgram::getUniformTType(int index) const      { return reflection->getUniform(index).getType(); }
+const TType* TProgram::getUniformBlockTType(int index) const { return reflection->getUniformBlock(index).getType(); }
 
 void TProgram::dumpReflection()                      { reflection->dump(); }
 
 //
 // I/O mapping implementation.
 //
-bool TProgram::mapIO()
+bool TProgram::mapIO(TIoMapResolver* resolver)
 {
     if (! linked || ioMapper)
         return false;
@@ -1719,7 +1767,7 @@ bool TProgram::mapIO()
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (intermediate[s]) {
-            if (! ioMapper->addStage((EShLanguage)s, *intermediate[s]))
+            if (! ioMapper->addStage((EShLanguage)s, *intermediate[s], *infoSink, resolver))
                 return false;
         }
     }

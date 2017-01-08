@@ -1,12 +1,12 @@
 //
-//Copyright (C) 2016 Google, Inc.
-//Copyright (C) 2016 LunarG, Inc.
+// Copyright (C) 2016 Google, Inc.
+// Copyright (C) 2016 LunarG, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -20,18 +20,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 
 #ifndef HLSLGRAMMAR_H_
@@ -42,6 +42,8 @@
 #include "hlslTokenStream.h"
 
 namespace glslang {
+
+    class TAttributeMap; // forward declare
 
     // Should just be the grammar aspect of HLSL.
     // Described in more detail in hlslGrammar.cpp.
@@ -70,9 +72,11 @@ namespace glslang {
         bool acceptQualifier(TQualifier&);
         bool acceptLayoutQualifierList(TQualifier&);
         bool acceptType(TType&);
-        bool acceptTemplateType(TBasicType&);
+        bool acceptTemplateVecMatBasicType(TBasicType&);
         bool acceptVectorTemplateType(TType&);
         bool acceptMatrixTemplateType(TType&);
+        bool acceptStreamOutTemplateType(TType&, TLayoutGeometry&);
+        bool acceptOutputPrimitiveGeometry(TLayoutGeometry&);
         bool acceptAnnotations(TQualifier&);
         bool acceptSamplerType(TType&);
         bool acceptTextureType(TType&);
@@ -80,7 +84,7 @@ namespace glslang {
         bool acceptStructDeclarationList(TTypeList*&);
         bool acceptFunctionParameters(TFunction&);
         bool acceptParameterDeclaration(TFunction&);
-        bool acceptFunctionDefinition(TFunction&, TIntermNode*&);
+        bool acceptFunctionDefinition(TFunction&, TIntermNode*&, const TAttributeMap&);
         bool acceptParenExpression(TIntermTyped*&);
         bool acceptExpression(TIntermTyped*&);
         bool acceptInitializer(TIntermTyped*&);
@@ -98,7 +102,7 @@ namespace glslang {
         bool acceptScopedStatement(TIntermNode*&);
         bool acceptScopedCompoundStatement(TIntermNode*&);
         bool acceptNestedStatement(TIntermNode*&);
-        void acceptAttributes();
+        void acceptAttributes(TAttributeMap&);
         bool acceptSelectionStatement(TIntermNode*&);
         bool acceptSwitchStatement(TIntermNode*&);
         bool acceptIterationStatement(TIntermNode*&);
@@ -107,6 +111,7 @@ namespace glslang {
         bool acceptDefaultLabel(TIntermNode*&);
         void acceptArraySpecifier(TArraySizes*&);
         void acceptPostDecls(TQualifier&);
+        bool acceptDefaultParameterDeclaration(const TType&, TIntermTyped*&);
 
         HlslParseContext& parseContext;  // state of parsing and helper functions for building the intermediate
         TIntermediate& intermediate;     // the final product, the intermediate representation, includes the AST

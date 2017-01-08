@@ -1,11 +1,11 @@
 //
-//Copyright (C) 2015 LunarG, Inc.
+// Copyright (C) 2015 LunarG, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -19,18 +19,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 
 #include "SPVRemapper.h"
@@ -103,10 +103,10 @@ namespace spv {
 
         switch (opCode) {
         case spv::OpTypeVector:       // fall through
-        case spv::OpTypeMatrix:       // ... 
-        case spv::OpTypeSampler:      // ... 
-        case spv::OpTypeArray:        // ... 
-        case spv::OpTypeRuntimeArray: // ... 
+        case spv::OpTypeMatrix:       // ...
+        case spv::OpTypeSampler:      // ...
+        case spv::OpTypeArray:        // ...
+        case spv::OpTypeRuntimeArray: // ...
         case spv::OpTypePipe:         return range_t(2, 3);
         case spv::OpTypeStruct:       // fall through
         case spv::OpTypeFunction:     return range_t(2, maxCount);
@@ -286,7 +286,6 @@ namespace spv {
         return literal;
     }
 
-
     void spirvbin_t::applyMap()
     {
         msg(3, 2, std::string("Applying map: "));
@@ -299,7 +298,6 @@ namespace spv {
             }
         );
     }
-
 
     // Find free IDs for anything we haven't mapped
     void spirvbin_t::mapRemainder()
@@ -327,12 +325,10 @@ namespace spv {
         bound(maxBound); // reset header ID bound to as big as it now needs to be
     }
 
+    // Mark debug instructions for stripping
     void spirvbin_t::stripDebug()
     {
-        if ((options & STRIP) == 0)
-            return;
-
-        // build local Id and name maps
+        // Strip instructions in the stripOp set: debug info.
         process(
             [&](spv::Op opCode, unsigned start) {
                 // remember opcodes we want to strip later
@@ -343,6 +339,32 @@ namespace spv {
             op_fn_nop);
     }
 
+    // Mark instructions that refer to now-removed IDs for stripping
+    void spirvbin_t::stripDeadRefs()
+    {
+        process(
+            [&](spv::Op opCode, unsigned start) {
+                // strip opcodes pointing to removed data
+                switch (opCode) {
+                case spv::OpName:
+                case spv::OpMemberName:
+                case spv::OpDecorate:
+                case spv::OpMemberDecorate:
+                    if (idPosR.find(asId(start+1)) == idPosR.end())
+                        stripInst(start);
+                    break;
+                default:
+                    break; // leave it alone
+                }
+
+                return true;
+            },
+            op_fn_nop);
+
+        strip();
+    }
+
+    // Update local maps of ID, type, etc positions
     void spirvbin_t::buildLocalMaps()
     {
         msg(2, 2, std::string("build local maps: "));
@@ -351,7 +373,6 @@ namespace spv {
         idMapL.clear();
 //      preserve nameMap, so we don't clear that.
         fnPos.clear();
-        fnPosDCE.clear();
         fnCalls.clear();
         typeConstPos.clear();
         idPosR.clear();
@@ -366,10 +387,6 @@ namespace spv {
         // build local Id and name maps
         process(
             [&](spv::Op opCode, unsigned start) {
-                // remember opcodes we want to strip later
-                if ((options & STRIP) && isStripOp(opCode))
-                    stripInst(start);
-
                 unsigned word = start+1;
                 spv::Id  typeId = spv::NoResult;
 
@@ -442,7 +459,6 @@ namespace spv {
         if (schemaNum() != 0)
             error("bad schema, must be 0");
     }
-
 
     int spirvbin_t::processInstruction(unsigned word, instfn_t instFn, idfn_t idFn)
     {
@@ -883,7 +899,7 @@ namespace spv {
             },
 
             // If local var id used anywhere else, don't eliminate
-            [&](spv::Id& id) { 
+            [&](spv::Id& id) {
                 if (fnLocalVars.count(id) > 0) {
                     fnLocalVars.erase(id);
                     idMap.erase(id);
@@ -957,7 +973,6 @@ namespace spv {
                 if (call_it == fnCalls.end() || call_it->second == 0) {
                     changed = true;
                     stripRange.push_back(fn->second);
-                    fnPosDCE.insert(*fn);
 
                     // decrease counts of called functions
                     process(
@@ -1011,11 +1026,15 @@ namespace spv {
         // Remove single-use function variables + associated decorations and names
         process(
             [&](spv::Op opCode, unsigned start) {
-                if ((opCode == spv::OpVariable && varUseCount[asId(start+2)] == 1)  ||
-                    (opCode == spv::OpDecorate && varUseCount[asId(start+1)] == 1)  ||
-                    (opCode == spv::OpName     && varUseCount[asId(start+1)] == 1)) {
-                        stripInst(start);
-                }
+                spv::Id id = spv::NoResult;
+                if (opCode == spv::OpVariable)
+                    id = asId(start+2);
+                if (opCode == spv::OpDecorate || opCode == spv::OpName)
+                    id = asId(start+1);
+
+                if (id != spv::NoResult && varUseCount[id] == 1)
+                    stripInst(start);
+
                 return true;
             },
             op_fn_nop);
@@ -1056,7 +1075,6 @@ namespace spv {
             }
         }
     }
-
 
 #ifdef NOTDEF
     bool spirvbin_t::matchType(const spirvbin_t::globaltypes_t& globalTypes, spv::Id lt, spv::Id gt) const
@@ -1116,7 +1134,6 @@ namespace spv {
         default:                      return cmpLiteral() && cmpConst() && cmpSubType();
         }
     }
-
 
     // Look for an equivalent type in the globalTypes map
     spv::Id spirvbin_t::findType(const spirvbin_t::globaltypes_t& globalTypes, spv::Id lt) const
@@ -1239,7 +1256,6 @@ namespace spv {
         }
     }
 
-
     // Strip a single binary by removing ranges given in stripRange
     void spirvbin_t::strip()
     {
@@ -1276,25 +1292,31 @@ namespace spv {
         // Set up opcode tables from SpvDoc
         spv::Parameterize();
 
-        validate();  // validate header
-        buildLocalMaps();
+        validate();       // validate header
+        buildLocalMaps(); // build ID maps
 
         msg(3, 4, std::string("ID bound: ") + std::to_string(bound()));
 
+        if (options & STRIP)         stripDebug();
         strip();        // strip out data we decided to eliminate
         if (options & OPT_LOADSTORE) optLoadStore();
         if (options & OPT_FWD_LS)    forwardLoadStores();
         if (options & DCE_FUNCS)     dceFuncs();
         if (options & DCE_VARS)      dceVars();
         if (options & DCE_TYPES)     dceTypes();
-        strip();        // strip out data we decided to eliminate
+
+        strip();         // strip out data we decided to eliminate
+        stripDeadRefs(); // remove references to things we DCEed
+        // after the last strip, we must clean any debug info referring to now-deleted data
 
         if (options & MAP_TYPES)     mapTypeConst();
         if (options & MAP_NAMES)     mapNames();
         if (options & MAP_FUNCS)     mapFnBodies();
 
-        mapRemainder(); // map any unmapped IDs
-        applyMap();     // Now remap each shader to the new IDs we've come up with
+        if (options & MAP_ALL) {
+            mapRemainder(); // map any unmapped IDs
+            applyMap();     // Now remap each shader to the new IDs we've come up with
+        }
     }
 
     // remap from a memory image

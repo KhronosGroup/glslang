@@ -1,11 +1,11 @@
 //
-//Copyright (C) 2013-2016 LunarG, Inc.
+// Copyright (C) 2013-2016 LunarG, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -19,18 +19,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 
 #include "../Include/Common.h"
@@ -63,7 +63,6 @@
 // there wasn't exactly one entry point.
 //
 
-   
 namespace glslang {
 
 //
@@ -109,7 +108,7 @@ public:
             TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
             if (it == reflection.nameToIndex.end()) {
                 reflection.nameToIndex[name] = (int)reflection.indexToAttribute.size();
-                reflection.indexToAttribute.push_back(TObjectReflection(name, 0, mapToGlType(type), 0, 0));
+                reflection.indexToAttribute.push_back(TObjectReflection(name, type, 0, mapToGlType(type), 0, 0));
             }
         }
     }
@@ -245,7 +244,8 @@ public:
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
         if (it == reflection.nameToIndex.end()) {
             reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
-            reflection.indexToUniform.push_back(TObjectReflection(name, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+            reflection.indexToUniform.push_back(TObjectReflection(name, *terminalType, offset, mapToGlType(*terminalType),
+                                                                  arraySize, blockIndex));
         } else if (arraySize > 1) {
             int& reflectedArraySize = reflection.indexToUniform[it->second].size;
             reflectedArraySize = std::max(arraySize, reflectedArraySize);
@@ -296,12 +296,18 @@ public:
         if (block) {
             offset = 0;
             anonymous = IsAnonymous(base->getName());
+
+            const TString& blockName = base->getType().getTypeName();
+
             if (base->getType().isArray()) {
+                TType derefType(base->getType(), 0);
+
                 assert(! anonymous);
                 for (int e = 0; e < base->getType().getCumulativeArraySize(); ++e)
-                    blockIndex = addBlockName(base->getType().getTypeName() + "[" + String(e) + "]", getBlockSize(base->getType()));
+                    blockIndex = addBlockName(blockName + "[" + String(e) + "]", derefType,
+                                              getBlockSize(base->getType()));
             } else
-                blockIndex = addBlockName(base->getType().getTypeName(), getBlockSize(base->getType()));
+                blockIndex = addBlockName(blockName, base->getType(), getBlockSize(base->getType()));
         }
 
         // Process the dereference chain, backward, accumulating the pieces for later forward traversal.
@@ -334,20 +340,19 @@ public:
         blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize);
     }
 
-    int addBlockName(const TString& name, int size)
+    int addBlockName(const TString& name, const TType& type, int size)
     {
         int blockIndex;
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
         if (reflection.nameToIndex.find(name) == reflection.nameToIndex.end()) {
             blockIndex = (int)reflection.indexToUniformBlock.size();
             reflection.nameToIndex[name] = blockIndex;
-            reflection.indexToUniformBlock.push_back(TObjectReflection(name, -1, -1, size, -1));
+            reflection.indexToUniformBlock.push_back(TObjectReflection(name, type, -1, -1, size, -1));
         } else
             blockIndex = it->second;
 
         return blockIndex;
     }
-
 
     // Are we at a level in a dereference chain at which individual active uniform queries are made?
     bool isReflectionGranularity(const TType& type)
@@ -529,6 +534,9 @@ public:
             switch (type.getBasicType()) {
             case EbtFloat:      return GL_FLOAT_VEC2                  + offset;
             case EbtDouble:     return GL_DOUBLE_VEC2                 + offset;
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:    return GL_FLOAT16_VEC2_NV             + offset;
+#endif
             case EbtInt:        return GL_INT_VEC2                    + offset;
             case EbtUint:       return GL_UNSIGNED_INT_VEC2           + offset;
             case EbtInt64:      return GL_INT64_ARB                   + offset;
@@ -588,6 +596,32 @@ public:
                     default:   return 0;
                     }
                 }
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:
+                switch (type.getMatrixCols()) {
+                case 2:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_FLOAT16_MAT2_AMD;
+                    case 3:    return GL_FLOAT16_MAT2x3_AMD;
+                    case 4:    return GL_FLOAT16_MAT2x4_AMD;
+                    default:   return 0;
+                    }
+                case 3:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_FLOAT16_MAT3x2_AMD;
+                    case 3:    return GL_FLOAT16_MAT3_AMD;
+                    case 4:    return GL_FLOAT16_MAT3x4_AMD;
+                    default:   return 0;
+                    }
+                case 4:
+                    switch (type.getMatrixRows()) {
+                    case 2:    return GL_FLOAT16_MAT4x2_AMD;
+                    case 3:    return GL_FLOAT16_MAT4x3_AMD;
+                    case 4:    return GL_FLOAT16_MAT4_AMD;
+                    default:   return 0;
+                    }
+                }
+#endif
             default:
                 return 0;
             }
@@ -596,6 +630,9 @@ public:
             switch (type.getBasicType()) {
             case EbtFloat:      return GL_FLOAT;
             case EbtDouble:     return GL_DOUBLE;
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:    return GL_FLOAT16_NV;
+#endif
             case EbtInt:        return GL_INT;
             case EbtUint:       return GL_UNSIGNED_INT;
             case EbtInt64:      return GL_INT64_ARB;
@@ -655,7 +692,6 @@ void TReflectionTraverser::visitSymbol(TIntermSymbol* base)
         addAttribute(*base);
 }
 
-
 //
 // Implement TReflection methods.
 //
@@ -700,10 +736,10 @@ void TReflection::dump()
         indexToAttribute[i].dump();
     printf("\n");
 
-    //printf("Live names\n");
-    //for (TNameToIndex::const_iterator it = nameToIndex.begin(); it != nameToIndex.end(); ++it)
+    // printf("Live names\n");
+    // for (TNameToIndex::const_iterator it = nameToIndex.begin(); it != nameToIndex.end(); ++it)
     //    printf("%s: %d\n", it->first.c_str(), it->second);
-    //printf("\n");
+    // printf("\n");
 }
 
 } // end namespace glslang

@@ -14,6 +14,7 @@ if (TARGET gmock)
     ${CMAKE_CURRENT_SOURCE_DIR}/AST.FromFile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/BuiltInResource.FromFile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Config.FromFile.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/HexFloat.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Hlsl.FromFile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Link.FromFile.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Pp.FromFile.cpp
@@ -28,8 +29,12 @@ if (TARGET gmock)
   install(TARGETS glslangtests
         RUNTIME DESTINATION bin)
 
+  set(GLSLANG_TEST_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../Test")
+  # Supply a default test root directory, so that manual testing
+  # doesn't have to specify the --test-root option in the normal
+  # case that you want to use the tests from the same source tree.
   target_compile_definitions(glslangtests
-    PRIVATE GLSLANG_TEST_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/../Test")
+    PRIVATE GLSLANG_TEST_DIRECTORY="${GLSLANG_TEST_DIRECTORY}")
   target_include_directories(glslangtests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}
@@ -38,5 +43,6 @@ if (TARGET gmock)
   target_link_libraries(glslangtests PRIVATE
     SPVRemapper glslang OSDependent OGLCompiler HLSL glslang
     SPIRV glslang-default-resource-limits gmock)
-  add_test(NAME glslang-gtests COMMAND glslangtests)
+  add_test(NAME glslang-gtests
+	   COMMAND glslangtests --test-root "${GLSLANG_TEST_DIRECTORY}")
 endif()

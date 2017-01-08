@@ -1,12 +1,12 @@
 //
-//Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2012-2016 LunarG, Inc.
+// Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+// Copyright (C) 2012-2016 LunarG, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -20,18 +20,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 
 #include "localintermediate.h"
@@ -163,6 +163,8 @@ bool TOutputTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
     case EOpGreaterThan:      out.debug << "Compare Greater Than";          break;
     case EOpLessThanEqual:    out.debug << "Compare Less Than or Equal";    break;
     case EOpGreaterThanEqual: out.debug << "Compare Greater Than or Equal"; break;
+    case EOpVectorEqual:      out.debug << "Equal";                         break;
+    case EOpVectorNotEqual:   out.debug << "NotEqual";                      break;
 
     case EOpVectorTimesScalar: out.debug << "vector-scale";          break;
     case EOpVectorTimesMatrix: out.debug << "vector-times-matrix";   break;
@@ -304,6 +306,11 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpPackUint2x32:     out.debug << "packUint2x32";       break;
     case EOpUnpackUint2x32:   out.debug << "unpackUint2x32";     break;
 
+#ifdef AMD_EXTENSIONS
+    case EOpPackFloat2x16:    out.debug << "packFloat2x16";      break;
+    case EOpUnpackFloat2x16:  out.debug << "unpackFloat2x16";    break;
+#endif
+
     case EOpLength:         out.debug << "length";               break;
     case EOpNormalize:      out.debug << "normalize";            break;
     case EOpDPdx:           out.debug << "dPdx";                 break;
@@ -373,6 +380,21 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 
     case EOpCubeFaceIndex:          out.debug << "cubeFaceIndex";         break;
     case EOpCubeFaceCoord:          out.debug << "cubeFaceCoord";         break;
+
+    case EOpConvBoolToFloat16:      out.debug << "Convert bool to float16";     break;
+    case EOpConvIntToFloat16:       out.debug << "Convert int to float16";      break;
+    case EOpConvUintToFloat16:      out.debug << "Convert uint to float16";     break;
+    case EOpConvFloatToFloat16:     out.debug << "Convert float to float16";    break;
+    case EOpConvDoubleToFloat16:    out.debug << "Convert double to float16";   break;
+    case EOpConvInt64ToFloat16:     out.debug << "Convert int64 to float16";    break;
+    case EOpConvUint64ToFloat16:    out.debug << "Convert uint64 to float16";   break;
+    case EOpConvFloat16ToBool:      out.debug << "Convert float16 to bool";     break;
+    case EOpConvFloat16ToInt:       out.debug << "Convert float16 to int";      break;
+    case EOpConvFloat16ToUint:      out.debug << "Convert float16 to uint";     break;
+    case EOpConvFloat16ToFloat:     out.debug << "Convert float16 to float";    break;
+    case EOpConvFloat16ToDouble:    out.debug << "Convert float16 to double";   break;
+    case EOpConvFloat16ToInt64:     out.debug << "Convert float16 to int64";    break;
+    case EOpConvFloat16ToUint64:    out.debug << "Convert float16 to uint64";   break;
 #endif
 
     default: out.debug.message(EPrefixError, "Bad unary op");
@@ -447,6 +469,21 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpConstructDMat4x2: out.debug << "Construct dmat4x2"; break;
     case EOpConstructDMat4x3: out.debug << "Construct dmat4x3"; break;
     case EOpConstructDMat4x4: out.debug << "Construct dmat4";   break;
+#ifdef AMD_EXTENSIONS
+    case EOpConstructFloat16:   out.debug << "Construct float16_t"; break;
+    case EOpConstructF16Vec2:   out.debug << "Construct f16vec2";   break;
+    case EOpConstructF16Vec3:   out.debug << "Construct f16vec3";   break;
+    case EOpConstructF16Vec4:   out.debug << "Construct f16vec4";   break;
+    case EOpConstructF16Mat2x2: out.debug << "Construct f16mat2";   break;
+    case EOpConstructF16Mat2x3: out.debug << "Construct f16mat2x3"; break;
+    case EOpConstructF16Mat2x4: out.debug << "Construct f16mat2x4"; break;
+    case EOpConstructF16Mat3x2: out.debug << "Construct f16mat3x2"; break;
+    case EOpConstructF16Mat3x3: out.debug << "Construct f16mat3";   break;
+    case EOpConstructF16Mat3x4: out.debug << "Construct f16mat3x4"; break;
+    case EOpConstructF16Mat4x2: out.debug << "Construct f16mat4x2"; break;
+    case EOpConstructF16Mat4x3: out.debug << "Construct f16mat4x3"; break;
+    case EOpConstructF16Mat4x4: out.debug << "Construct f16mat4";   break;
+#endif
     case EOpConstructStruct:  out.debug << "Construct structure";  break;
     case EOpConstructTextureSampler: out.debug << "Construct combined texture-sampler"; break;
 
@@ -636,6 +673,9 @@ static void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const 
             break;
         case EbtFloat:
         case EbtDouble:
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16:
+#endif
             {
                 const double value = constUnion[i].getDConst();
                 // Print infinity in a portable way, for test stability.

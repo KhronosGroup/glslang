@@ -1,4 +1,5 @@
 set(SOURCES
+    hlslAttributes.cpp
     hlslParseHelper.cpp
     hlslScanContext.cpp
     hlslOpMap.cpp
@@ -6,7 +7,8 @@ set(SOURCES
     hlslGrammar.cpp
     hlslParseables.cpp)
 
-set(HEADERS
+  set(HEADERS
+    hlslAttributes.h
     hlslParseHelper.h
     hlslTokens.h
     hlslScanContext.h

@@ -1,10 +1,12 @@
 //
-//Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//All rights reserved.
+// Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+// Copyright (C) 2013-2016 LunarG, Inc.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -18,18 +20,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 #ifndef _COMPILER_INTERFACE_INCLUDED_
 #define _COMPILER_INTERFACE_INCLUDED_
@@ -101,6 +103,8 @@ typedef enum {
 
 namespace glslang {
 
+class TType;
+
 typedef enum {
     EShSourceNone,
     EShSourceGlsl,
@@ -142,6 +146,7 @@ enum EShMessages {
     EShMsgOnlyPreprocessor = (1 << 5),  // only print out errors produced by the preprocessor
     EShMsgReadHlsl         = (1 << 6),  // use HLSL parsing rules and semantics
     EShMsgCascadingErrors  = (1 << 7),  // get cascading errors; risks error-recovery issues, instead of an early exit
+    EShMsgKeepUncalled     = (1 << 8),  // for testing, don't eliminate uncalled functions
 };
 
 //
@@ -160,9 +165,9 @@ typedef struct {
 
 //
 // ShHandle held by but opaque to the driver.  It is allocated,
-// managed, and de-allocated by the compiler/linker. It's contents 
+// managed, and de-allocated by the compiler/linker. It's contents
 // are defined by and used by the compiler and linker.  For example,
-// symbol table information and object code passed from the compiler 
+// symbol table information and object code passed from the compiler
 // to the linker can be stored where ShHandle points.
 //
 // If handle creation fails, 0 will be returned.
@@ -182,7 +187,7 @@ SH_IMPORT_EXPORT void ShDestruct(ShHandle);
 // The return value of ShCompile is boolean, non-zero indicating
 // success.
 //
-// The info-log should be written by ShCompile into 
+// The info-log should be written by ShCompile into
 // ShHandle, so it can answer future queries.
 //
 SH_IMPORT_EXPORT int ShCompile(
@@ -246,8 +251,8 @@ SH_IMPORT_EXPORT int ShGetUniformLocation(const ShHandle uniformMap, const char*
 // -----------------------------------
 //
 // Below is a new alternate C++ interface that might potentially replace the above
-// opaque handle-based interface.  
-//    
+// opaque handle-based interface.
+//
 // The below is further designed to handle multiple compilation units per stage, where
 // the intermediate results, including the parse tree, are preserved until link time,
 // rather than the above interface which is designed to have each compilation unit
@@ -300,11 +305,14 @@ public:
         const char* const* s, const int* l, const char* const* names, int n);
     void setPreamble(const char* s) { preamble = s; }
     void setEntryPoint(const char* entryPoint);
+    void setSourceEntryPoint(const char* sourceEntryPointName);
     void setShiftSamplerBinding(unsigned int base);
     void setShiftTextureBinding(unsigned int base);
+    void setShiftImageBinding(unsigned int base);
     void setShiftUboBinding(unsigned int base);
     void setAutoMapBindings(bool map);
     void setFlattenUniformArrays(bool flatten);
+    void setNoStorageFormat(bool useUnknownFormat);
 
     // Interface to #include handlers.
     //
@@ -323,74 +331,76 @@ public:
     // release the IncludeResult object.
     class Includer {
     public:
-        typedef enum {
-          EIncludeRelative, // For #include "something"
-          EIncludeStandard  // Reserved. For #include <something>
-        } IncludeType;
-
         // An IncludeResult contains the resolved name and content of a source
         // inclusion.
         struct IncludeResult {
-            IncludeResult(const std::string& file_name, const char* const file_data, const size_t file_length, void* user_data) :
-                file_name(file_name), file_data(file_data), file_length(file_length), user_data(user_data) { }
+            IncludeResult(const std::string& headerName, const char* const headerData, const size_t headerLength, void* userData) :
+                headerName(headerName), headerData(headerData), headerLength(headerLength), userData(userData) { }
             // For a successful inclusion, the fully resolved name of the requested
             // include.  For example, in a file system-based includer, full resolution
             // should convert a relative path name into an absolute path name.
             // For a failed inclusion, this is an empty string.
-            const std::string file_name;
+            const std::string headerName;
             // The content and byte length of the requested inclusion.  The
             // Includer producing this IncludeResult retains ownership of the
             // storage.
-            // For a failed inclusion, the file_data
+            // For a failed inclusion, the header
             // field points to a string containing error details.
-            const char* const file_data;
-            const size_t file_length;
+            const char* const headerData;
+            const size_t headerLength;
             // Include resolver's context.
-            void* user_data;
+            void* userData;
         protected:
             IncludeResult& operator=(const IncludeResult&);
             IncludeResult();
         };
 
-        // Resolves an inclusion request by name, type, current source name,
+        // For both include methods below:
+        //
+        // Resolves an inclusion request by name, current source name,
         // and include depth.
         // On success, returns an IncludeResult containing the resolved name
-        // and content of the include.  On failure, returns an IncludeResult
-        // with an empty string for the file_name and error details in the
-        // file_data field.  The Includer retains ownership of the contents
+        // and content of the include.
+        // On failure, returns a nullptr, or an IncludeResult
+        // with an empty string for the headerName and error details in the
+        // header field.
+        // The Includer retains ownership of the contents
         // of the returned IncludeResult value, and those contents must
         // remain valid until the releaseInclude method is called on that
         // IncludeResult object.
-        virtual IncludeResult* include(const char* requested_source,
-                                      IncludeType type,
-                                      const char* requesting_source,
-                                      size_t inclusion_depth) = 0;
+        //
+        // Note "local" vs. "system" is not an "either/or": "local" is an
+        // extra thing to do over "system". Both might get called, as per
+        // the C++ specification.
+
+        // For the "system" or <>-style includes; search the "system" paths.
+        virtual IncludeResult* includeSystem(const char* headerName,
+                                             const char* includerName,
+                                             size_t inclusionDepth) { return nullptr; }
+
+        // For the "local"-only aspect of a "" include. Should not search in the
+        // "system" paths, because on returning a failure, the parser will
+        // call includeSystem() to look in the "system" locations.
+        virtual IncludeResult* includeLocal(const char* headerName,
+                                            const char* includerName,
+                                            size_t inclusionDepth) { return nullptr; }
+
         // Signals that the parser will no longer use the contents of the
         // specified IncludeResult.
-        virtual void releaseInclude(IncludeResult* result) = 0;
-#ifdef __ANDROID__
-        virtual ~Includer() {} // Pacify -Werror=non-virtual-dtor
-#endif
+        virtual void releaseInclude(IncludeResult*) = 0;
+        virtual ~Includer() {}
     };
 
-    // Returns an error message for any #include directive.
-    class ForbidInclude : public Includer {
+    // Fail all Includer searches
+    class ForbidIncluder : public Includer {
     public:
-        IncludeResult* include(const char*, IncludeType, const char*, size_t) override
-        {
-            const char* unexpected_include = "unexpected include directive";
-            return new IncludeResult(std::string(""), unexpected_include, strlen(unexpected_include), nullptr);
-        }
-        virtual void releaseInclude(IncludeResult* result) override
-        {
-            delete result;
-        }
+        virtual void releaseInclude(IncludeResult*) override { }
     };
 
     bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                bool forwardCompatible, EShMessages messages)
     {
-        TShader::ForbidInclude includer;
+        TShader::ForbidIncluder includer;
         return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer);
     }
 
@@ -431,6 +441,9 @@ protected:
     const char* preamble;
     int numStrings;
 
+    // a function in the source string can be renamed FROM this TO the name given in setEntryPoint.
+    std::string sourceEntryPointName;
+
     friend class TProgram;
 
 private:
@@ -440,7 +453,36 @@ private:
 class TReflection;
 class TIoMapper;
 
-// Make one TProgram per set of shaders that will get linked together.  Add all 
+// Allows to customize the binding layout after linking.
+// All used uniform variables will invoke at least validateBinding.
+// If validateBinding returned true then the other resolveBinding
+// and resolveSet are invoked to resolve the binding and descriptor
+// set index respectively.
+// Invocations happen in a particular order:
+// 1) var with binding and set already defined
+// 2) var with binding but no set defined
+// 3) var with set but no binding defined
+// 4) var with no binding and no set defined
+//
+// NOTE: that still limit checks are applied to bindings and sets
+// and may result in an error.
+class TIoMapResolver
+{
+public:
+  virtual ~TIoMapResolver() {}
+
+  // Should return true if the resulting/current binding would be ok.
+  // Basic idea is to do aliasing binding checks with this.
+  virtual bool validateBinding(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
+  // Should return a value >= 0 if the current binding should be overridden.
+  // Return -1 if the current binding (including no binding) should be kept.
+  virtual int resolveBinding(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
+  // Should return a value >= 0 if the current set should be overriden.
+  // Return -1 if the current set (including no set) should be kept.
+  virtual int resolveSet(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
+};
+
+// Make one TProgram per set of shaders that will get linked together.  Add all
 // the shaders that are to be linked together.  After calling shader.parse()
 // for all shaders, call link().
 //
@@ -461,23 +503,29 @@ public:
 
     // Reflection Interface
     bool buildReflection();                          // call first, to do liveness analysis, index mapping, etc.; returns false on failure
-    int getNumLiveUniformVariables();                // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
-    int getNumLiveUniformBlocks();                   // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
-    const char* getUniformName(int index);           // can be used for "name" part of glGetActiveUniform()
-    const char* getUniformBlockName(int blockIndex); // can be used for glGetActiveUniformBlockName()
-    int getUniformBlockSize(int blockIndex);         // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
-    int getUniformIndex(const char* name);           // can be used for glGetUniformIndices()
-    int getUniformBlockIndex(int index);             // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
-    int getUniformType(int index);                   // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
-    int getUniformBufferOffset(int index);           // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
-    int getUniformArraySize(int index);              // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
-    int getNumLiveAttributes();                      // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
-    const char *getAttributeName(int index);         // can be used for glGetActiveAttrib()
-    int getAttributeType(int index);                 // can be used for glGetActiveAttrib()
+    int getNumLiveUniformVariables() const;                // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
+    int getNumLiveUniformBlocks() const;                   // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
+    const char* getUniformName(int index) const;           // can be used for "name" part of glGetActiveUniform()
+    const char* getUniformBlockName(int blockIndex) const; // can be used for glGetActiveUniformBlockName()
+    int getUniformBlockSize(int blockIndex) const;         // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
+    int getUniformIndex(const char* name) const;           // can be used for glGetUniformIndices()
+    int getUniformBlockIndex(int index) const;             // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
+    int getUniformType(int index) const;                   // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
+    int getUniformBufferOffset(int index) const;           // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
+    int getUniformArraySize(int index) const;              // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
+    int getNumLiveAttributes() const;                      // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
+    const char *getAttributeName(int index) const;         // can be used for glGetActiveAttrib()
+    int getAttributeType(int index) const;                 // can be used for glGetActiveAttrib()
+    const TType* getUniformTType(int index) const;         // returns a TType*
+    const TType* getUniformBlockTType(int index) const;    // returns a TType*
+    const TType* getAttributeTType(int index) const;       // returns a TType*
+
     void dumpReflection();
 
     // I/O mapping: apply base offsets and map live unbound variables
-    bool mapIO();
+    // If resolver is not provided it uses the previous approach
+    // and respects auto assignment and offsets.
+    bool mapIO(TIoMapResolver* resolver = NULL);
 
 protected:
     bool linkStage(EShLanguage, EShMessages);

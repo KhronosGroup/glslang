@@ -259,5 +259,7 @@ void main()
     uo = u % i;
     foo23();
     doubles();
+
+    int id = gl_PrimitiveID;
 }
 

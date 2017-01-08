@@ -40,15 +40,7 @@ static const char* const E_SPV_KHR_subgroup_vote        = "SPV_KHR_subgroup_vote
 static const char* const E_SPV_KHR_device_group         = "SPV_KHR_device_group";
 static const char* const E_SPV_KHR_multiview            = "SPV_KHR_multiview";
 
-static const BuiltIn BuiltInSubgroupEqMaskKHR           = static_cast<BuiltIn>(4416);
-static const BuiltIn BuiltInSubgroupGeMaskKHR           = static_cast<BuiltIn>(4417);
-static const BuiltIn BuiltInSubgroupGtMaskKHR           = static_cast<BuiltIn>(4418);
-static const BuiltIn BuiltInSubgroupLeMaskKHR           = static_cast<BuiltIn>(4419);
-static const BuiltIn BuiltInSubgroupLtMaskKHR           = static_cast<BuiltIn>(4420);
-
-static const Op OpSubgroupBallotKHR                     = static_cast<Op>(4421);
-static const Op OpSubgroupFirstInvocationKHR            = static_cast<Op>(4422);
-
-static const Capability CapabilitySubgroupBallotKHR     = static_cast<Capability>(4423);
+// SPV_KHR_shader_draw_parameters
+static const char* const E_SPV_KHR_shader_draw_parameters       = "SPV_KHR_shader_draw_parameters";
 
 #endif  // #ifndef GLSLextKHR_H

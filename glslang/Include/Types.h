@@ -1,13 +1,13 @@
 //
-//Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
-//Copyright (C) 2012-2016 LunarG, Inc.
-//Copyright (C) 2015-2016 Google, Inc.
+// Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
+// Copyright (C) 2012-2016 LunarG, Inc.
+// Copyright (C) 2015-2016 Google, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -21,18 +21,18 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 
 #ifndef _TYPES_INCLUDED
@@ -78,6 +78,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
     bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
     bool   external : 1;  // GL_OES_EGL_image_external
+    unsigned int vectorSize : 3;  // return vector size.  TODO: support arbitrary types.
 
     bool isImage()       const { return image && dim != EsdSubpass; }
     bool isSubpass()     const { return dim == EsdSubpass; }
@@ -99,6 +100,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         combined = false;
         sampler = false;
         external = false;
+        vectorSize = 4;
     }
 
     // make a combined sampler and texture
@@ -164,7 +166,8 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
               image == right.image &&
            combined == right.combined &&
             sampler == right.sampler &&
-           external == right.external;
+           external == right.external &&
+         vectorSize == right.vectorSize;
     }
 
     bool operator!=(const TSampler& right) const
@@ -420,7 +423,7 @@ public:
         clearLayout();
     }
 
-    // Drop just the storage qualification, which perhaps should 
+    // Drop just the storage qualification, which perhaps should
     // never be done, as it is fundamentally inconsistent, but need to
     // explore what downstream consumers need.
     // E.g., in a deference, it is an inconsistency between:
@@ -598,6 +601,9 @@ public:
         layoutFormat = ElfNone;
 
         layoutPushConstant = false;
+#ifdef NV_EXTENSIONS
+        layoutPassthrough = false;
+#endif
     }
     bool hasLayout() const
     {
@@ -623,8 +629,8 @@ public:
                  unsigned int layoutSet                 : 7;
     static const unsigned int layoutSetEnd         =   0x3F;
 
-                 unsigned int layoutBinding             : 8;
-    static const unsigned int layoutBindingEnd    =    0xFF;
+                 unsigned int layoutBinding            : 16;
+    static const unsigned int layoutBindingEnd    =  0xFFFF;
 
                  unsigned int layoutIndex              :  8;
     static const unsigned int layoutIndexEnd    =      0xFF;
@@ -650,6 +656,10 @@ public:
     TLayoutFormat layoutFormat                         :  8;
 
     bool layoutPushConstant;
+
+#ifdef NV_EXTENSIONS
+    bool layoutPassthrough;
+#endif
 
     bool hasUniformLayout() const
     {
@@ -919,6 +929,10 @@ struct TShaderQualifiers {
     TLayoutDepth layoutDepth;
     bool blendEquation;       // true if any blend equation was specified
 
+#ifdef NV_EXTENSIONS
+    bool layoutOverrideCoverage;    // true if layout override_coverage set
+#endif
+
     void init()
     {
         geometry = ElgNone;
@@ -938,6 +952,9 @@ struct TShaderQualifiers {
         earlyFragmentTests = false;
         layoutDepth = EldNone;
         blendEquation = false;
+#ifdef NV_EXTENSIONS
+        layoutOverrideCoverage = false;
+#endif
     }
 
     // Merge in characteristics from the 'src' qualifier.  They can override when
@@ -974,6 +991,10 @@ struct TShaderQualifiers {
             layoutDepth = src.layoutDepth;
         if (src.blendEquation)
             blendEquation = src.blendEquation;
+#ifdef NV_EXTENSIONS
+        if (src.layoutOverrideCoverage)
+            layoutOverrideCoverage = src.layoutOverrideCoverage;
+#endif
     }
 };
 
@@ -1066,7 +1087,7 @@ public:
                                 qualifier.storage = q;
                             }
     // for explicit precision qualifier
-    TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0, 
+    TType(TBasicType t, TStorageQualifier q, TPrecisionQualifier p, int vs = 1, int mc = 0, int mr = 0,
           bool isVector = false) :
                             basicType(t), vectorSize(vs), matrixCols(mc), matrixRows(mr), vector1(isVector && vs == 1),
                             arraySizes(nullptr), structure(nullptr), fieldName(nullptr), typeName(nullptr)
@@ -1204,7 +1225,17 @@ public:
             typeName = NewPoolTString(copyOf.typeName->c_str());
     }
 
-    TType* clone()
+    // Recursively make temporary
+    void makeTemporary()
+    {
+        getQualifier().makeTemporary();
+
+        if (isStruct())
+            for (unsigned int i = 0; i < structure->size(); ++i)
+                (*structure)[i].type->makeTemporary();
+    }
+
+    TType* clone() const
     {
         TType *newType = new TType();
         newType->deepCopy(*this);
@@ -1270,6 +1301,7 @@ public:
     virtual       TArraySizes& getArraySizes()       { assert(arraySizes != nullptr); return *arraySizes; }
 
     virtual bool isScalar() const { return ! isVector() && ! isMatrix() && ! isStruct() && ! isArray(); }
+    virtual bool isScalarOrVec1() const { return isScalar() || vector1; }
     virtual bool isVector() const { return vectorSize > 1 || vector1; }
     virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray()  const { return arraySizes != nullptr; }
@@ -1277,13 +1309,31 @@ public:
     virtual bool isImplicitlySizedArray() const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage != EvqBuffer; }
     virtual bool isRuntimeSizedArray()    const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage == EvqBuffer; }
     virtual bool isStruct() const { return structure != nullptr; }
+#ifdef AMD_EXTENSIONS
+    virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble || basicType == EbtFloat16; }
+#else
     virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble; }
+#endif
 
     virtual bool isOpaque() const { return basicType == EbtSampler || basicType == EbtAtomicUint; }
 
     // "Image" is a superset of "Subpass"
     virtual bool isImage() const   { return basicType == EbtSampler && getSampler().isImage(); }
     virtual bool isSubpass() const { return basicType == EbtSampler && getSampler().isSubpass(); }
+
+    // Return true if this is interstage IO
+    virtual bool isBuiltInInterstageIO() const
+    {
+        switch (getQualifier().builtIn) {
+        case EbvPosition:
+        case EbvPointSize:
+        case EbvClipDistance:
+        case EbvCullDistance:
+            return true;
+        default:
+            return false;
+        }
+    }
 
     // Recursively checks if the type contains the given basic type
     virtual bool containsBasicType(TBasicType checkType) const
@@ -1352,6 +1402,34 @@ public:
         return false;
     }
 
+    // Recursively checks if the type contains an interstage IO builtin
+    virtual bool containsBuiltInInterstageIO() const
+    {
+        if (isBuiltInInterstageIO())
+            return true;
+
+        if (! structure)
+            return false;
+        for (unsigned int i = 0; i < structure->size(); ++i) {
+            if ((*structure)[i].type->containsBuiltInInterstageIO())
+                return true;
+        }
+        return false;
+    }
+
+    // Recursively checks whether a struct contains only interstage IO
+    virtual bool containsOnlyBuiltInInterstageIO() const
+    {
+        if (! structure)
+            return isBuiltInInterstageIO();
+
+        for (unsigned int i = 0; i < structure->size(); ++i) {
+            if (!(*structure)[i].type->containsOnlyBuiltInInterstageIO())
+                return false;
+        }
+        return true;
+    }
+
     virtual bool containsNonOpaque() const
     {
         // list all non-opaque types
@@ -1359,6 +1437,9 @@ public:
         case EbtVoid:
         case EbtFloat:
         case EbtDouble:
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16:
+#endif
         case EbtInt:
         case EbtUint:
         case EbtInt64:
@@ -1451,6 +1532,9 @@ public:
         case EbtVoid:              return "void";
         case EbtFloat:             return "float";
         case EbtDouble:            return "double";
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16:           return "float16_t";
+#endif
         case EbtInt:               return "int";
         case EbtUint:              return "uint";
         case EbtInt64:             return "int64_t";
@@ -1513,6 +1597,12 @@ public:
                     p += snprintf(p, end - p, "constant_id=%d ", qualifier.layoutSpecConstantId);
                 if (qualifier.layoutPushConstant)
                     p += snprintf(p, end - p, "push_constant ");
+
+#ifdef NV_EXTENSIONS
+                if (qualifier.layoutPassthrough)
+                    p += snprintf(p, end - p, "passthrough ");
+#endif
+
                 p += snprintf(p, end - p, ") ");
             }
         }

@@ -1,11 +1,11 @@
 //
-//Copyright (C) 2016 LunarG, Inc.
+// Copyright (C) 2016 LunarG, Inc.
 //
-//All rights reserved.
+// All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without
-//modification, are permitted provided that the following conditions
-//are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
 //
 //    Redistributions of source code must retain the above copyright
 //    notice, this list of conditions and the following disclaimer.
@@ -19,22 +19,22 @@
 //    contributors may be used to endorse or promote products derived
 //    from this software without specific prior written permission.
 //
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-//"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-//LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-//FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-//COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-//BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-//CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-//LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-//POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 //
 
 //
-// Create strings that declare built-in definitions, add built-ins programmatically 
+// Create strings that declare built-in definitions, add built-ins programmatically
 // that cannot be expressed in the strings, and establish mappings between
 // built-in functions and operators.
 //
@@ -55,7 +55,7 @@
 
 namespace {  // anonymous namespace functions
 
-const bool UseHlslTypes = false;
+const bool UseHlslTypes = true;
 
 const char* BaseTypeName(const char argOrder, const char* scalarName, const char* vecName, const char* matName)
 {
@@ -67,20 +67,21 @@ const char* BaseTypeName(const char argOrder, const char* scalarName, const char
     }
 }
 
-bool IsSamplerType(const char argType)     { return argType == 'S' || argType == 's'; }
-bool IsTextureArrayed(const char argOrder) { return argOrder == '@' || argOrder == '&'; }
-bool IsTextureMS(const char argOrder)      { return argOrder == '$' || argOrder == '&'; }
-bool IsBuffer(const char argOrder)         { return argOrder == '*'; }
+bool IsSamplerType(const char argType) { return argType == 'S' || argType == 's'; }
+bool IsArrayed(const char argOrder)    { return argOrder == '@' || argOrder == '&' || argOrder == '#'; }
+bool IsTextureMS(const char argOrder)  { return argOrder == '$' || argOrder == '&'; }
+bool IsBuffer(const char argOrder)     { return argOrder == '*' || argOrder == '~'; }
+bool IsImage(const char argOrder)      { return argOrder == '!' || argOrder == '#' || argOrder == '~'; }
 bool IsTextureType(const char argOrder)
 {
-    return argOrder == '%' || argOrder == '@' || IsTextureMS(argOrder) || IsBuffer(argOrder);
+    return argOrder == '%' || argOrder == '@' || IsTextureMS(argOrder) || IsBuffer(argOrder) | IsImage(argOrder);
 }
 
 // Reject certain combinations that are illegal sample methods.  For example,
 // 3D arrays.
 bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim0)
 {
-    const bool isArrayed = IsTextureArrayed(*argOrder);
+    const bool isArrayed = IsArrayed(*argOrder);
     const bool isMS      = IsTextureMS(*argOrder);
     const bool isBuffer  = IsBuffer(*argOrder);
 
@@ -101,14 +102,14 @@ bool IsIllegalSample(const glslang::TString& name, const char* argOrder, int dim
             return true;
     }
 
-    const bool isGather = 
-        (name == "Gather" || 
+    const bool isGather =
+        (name == "Gather" ||
          name == "GatherRed" ||
-         name == "GatherGreen" || 
+         name == "GatherGreen" ||
          name == "GatherBlue"  ||
          name == "GatherAlpha");
 
-    const bool isGatherCmp = 
+    const bool isGatherCmp =
         (name == "GatherCmpRed"   ||
          name == "GatherCmpGreen" ||
          name == "GatherCmpBlue"  ||
@@ -153,9 +154,9 @@ int CoordinateArgPos(const glslang::TString& name, bool isTexture)
 }
 
 // Some texture methods use an addition coordinate dimension for the mip
-bool HasMipInCoord(const glslang::TString& name, bool isMS, bool isBuffer)
+bool HasMipInCoord(const glslang::TString& name, bool isMS, bool isBuffer, bool isImage)
 {
-    return name == "Load" && !isMS && !isBuffer;
+    return name == "Load" && !isMS && !isBuffer && !isImage;
 }
 
 // LOD calculations don't pass the array level in the coordinate.
@@ -173,7 +174,7 @@ const char* IoParam(glslang::TString& s, const char* nthArgOrder)
     } else if (*nthArgOrder == '<') {    // input params
         ++nthArgOrder;
         s.append("in ");
-    } 
+    }
 
     return nthArgOrder;
 }
@@ -194,9 +195,8 @@ inline bool IsEndOfArg(const char* arg)
     return arg == nullptr || *arg == '\0' || *arg == ',';
 }
 
-
 // If this is a fixed vector size, such as V3, return the size.  Else return 0.
-int FixedVecSize(const char* arg) 
+int FixedVecSize(const char* arg)
 {
     while (!IsEndOfArg(arg)) {
         if (isdigit(*arg))
@@ -206,7 +206,6 @@ int FixedVecSize(const char* arg)
 
     return 0; // none found.
 }
-
 
 // Create and return a type name.  This is done in GLSL, not HLSL conventions, until such
 // time as builtins are parsed using the HLSL parser.
@@ -219,15 +218,16 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
 {
     const bool isTranspose = (argOrder[0] == '^');
     const bool isTexture   = IsTextureType(argOrder[0]);
-    const bool isArrayed   = IsTextureArrayed(argOrder[0]);
+    const bool isArrayed   = IsArrayed(argOrder[0]);
     const bool isSampler   = IsSamplerType(argType[0]);
     const bool isMS        = IsTextureMS(argOrder[0]);
     const bool isBuffer    = IsBuffer(argOrder[0]);
+    const bool isImage     = IsImage(argOrder[0]);
 
     char type  = *argType;
 
     if (isTranspose) {  // Take transpose of matrix dimensions
-        std::swap(dim0, dim1); 
+        std::swap(dim0, dim1);
     } else if (isTexture) {
         if (type == 'F')       // map base type to texture of that type.
             type = 'T';        // e.g, int -> itexture, uint -> utexture, etc.
@@ -243,20 +243,25 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     char order = *argOrder;
 
     if (UseHlslTypes) {
-        // TODO: handle sub-vec4 returns
         switch (type) {
-        case '-': s += "void";                                            break;
-        case 'F': s += "float";                                           break;
-        case 'D': s += "double";                                          break;
-        case 'I': s += "int";                                             break;
-        case 'U': s += "uint";                                            break;
-        case 'B': s += "bool";                                            break;
-        case 'S': s += "sampler";                                         break;
-        case 's': s += "SamplerComparisonState";                          break;
-        case 'T': s += (isBuffer ? "Buffer" : "Texture");                 break;
-        case 'i': s += (isBuffer ? "Buffer <int4>" : "Texture <int4>");   break;
-        case 'u': s += (isBuffer ? "Buffer <uint4>" : "Texture <uint4>"); break;
-        default:  s += "UNKNOWN_TYPE";                                    break;
+        case '-': s += "void";                                break;
+        case 'F': s += "float";                               break;
+        case 'D': s += "double";                              break;
+        case 'I': s += "int";                                 break;
+        case 'U': s += "uint";                                break;
+        case 'B': s += "bool";                                break;
+        case 'S': s += "sampler";                             break;
+        case 's': s += "SamplerComparisonState";              break;
+        case 'T': s += ((isBuffer && isImage) ? "RWBuffer" :
+                        isBuffer ? "Buffer" :
+                        isImage  ? "RWTexture" : "Texture");  break;
+        case 'i': s += ((isBuffer && isImage) ? "RWBuffer" :
+                        isBuffer ? "Buffer" :
+                        isImage ? "RWTexture" : "Texture");   break;
+        case 'u': s += ((isBuffer && isImage) ? "RWBuffer" :
+                        isBuffer ? "Buffer" :
+                        isImage ? "RWTexture" : "Texture");   break;
+        default:  s += "UNKNOWN_TYPE";                        break;
         }
     } else {
         switch (type) {
@@ -274,7 +279,10 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
             if (type != 'T') // create itexture, utexture, etc
                 s += type;
 
-            s += (isBuffer ? "samplerBuffer" : "texture");
+            s += ((isImage && isBuffer) ? "imageBuffer"   :
+                  isImage               ? "image"         :
+                  isBuffer              ? "samplerBuffer" :
+                  "texture");
             break;
 
         default:  s += "UNKNOWN_TYPE"; break;
@@ -312,7 +320,7 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
         case 'V':
             s += ('0' + char(dim0));
             break;
-        case 'M': 
+        case 'M':
             s += ('0' + char(dim0));
             s += 'x';
             s += ('0' + char(dim1));
@@ -326,40 +334,58 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
     if (isArrayed)
         s += "Array";
 
+    // For HLSL, append return type for texture types
+    if (UseHlslTypes) {
+        switch (type) {
+        case 'i': s += "<int4>";   break;
+        case 'u': s += "<uint4>";  break;
+        case 'T': s += "<float4>"; break;
+        default: break;
+        }
+    }
+
     return s;
 }
 
-// TODO: the GLSL parser is currently used to parse HLSL prototypes.  However, many valid HLSL prototypes
+// The GLSL parser can be used to parse a subset of HLSL prototypes.  However, many valid HLSL prototypes
 // are not valid GLSL prototypes.  This rejects the invalid ones.  Thus, there is a single switch below
 // to enable creation of the entire HLSL space.
-inline bool IsValidGlsl(const char* cname, char retOrder, char retType, char argOrder, char argType,
-                        int dim0, int dim1, int dim0Max, int dim1Max)
+inline bool IsValid(const char* cname, char retOrder, char retType, char argOrder, char argType, int dim0, int dim1)
 {
-    const bool isVec = dim0Max > 1 || argType == 'V';
-    const bool isMat = dim1Max > 1 || argType == 'M';
+    const bool isVec = (argOrder == 'V');
+    const bool isMat = (argOrder == 'M');
 
-    if (!IsTextureType(argOrder) &&
-        ((isVec && dim0 == 1)            ||  // avoid vec1
-         (isMat && dim0 == 1 && dim1 == 1)))  // avoid mat1x1
+    const std::string name(cname);
+
+    // these do not have vec1 versions
+    if (dim0 == 1 && (name == "length" || name == "normalize" || name == "reflect" || name == "refract"))
         return false;
 
-    const std::string name(cname);  // for ease of comparison. slow, but temporary, until HLSL parser is online.
-
-    if (isMat && dim1 == 1)  // TODO: avoid mat Nx1 until we find the right GLSL profile
+    if (!IsTextureType(argOrder) && (isVec && dim0 == 1)) // avoid vec1
         return false;
 
-    if ((isMat && (argType == 'I' || argType == 'U' || argType == 'B')) ||
-        (retOrder == 'M' && (retType == 'I' || retType == 'U' || retType == 'B')))
-        return false;
+    if (UseHlslTypes) {
+        // NO further restrictions for HLSL
+    } else {
+        // GLSL parser restrictions
+        if ((isMat && (argType == 'I' || argType == 'U' || argType == 'B')) ||
+            (retOrder == 'M' && (retType == 'I' || retType == 'U' || retType == 'B')))
+            return false;
 
-    if (name == "GetRenderTargetSamplePosition" ||
-        name == "tex1D" ||
-        name == "tex1Dgrad")
-        return false;
+        if (isMat && dim0 == 1 && dim1 == 1)  // avoid mat1x1
+            return false;
+
+        if (isMat && dim1 == 1)  // TODO: avoid mat Nx1 until we find the right GLSL profile
+            return false;
+
+        if (name == "GetRenderTargetSamplePosition" ||
+            name == "tex1D" ||
+            name == "tex1Dgrad")
+            return false;
+    }
 
     return true;
 }
-
 
 // return position of end of argument specifier
 inline const char* FindEndOfArg(const char* arg)
@@ -395,7 +421,7 @@ inline void FindVectorMatrixBounds(const char* argOrder, int fixedVecSize, int& 
     if (fixedVecSize > 0) // handle fixed sized vectors
         dim0Min = dim0Max = fixedVecSize;
 }
-    
+
 } // end anonymous namespace
 
 namespace glslang {
@@ -403,7 +429,6 @@ namespace glslang {
 TBuiltInParseablesHlsl::TBuiltInParseablesHlsl()
 {
 }
-
 
 //
 // Handle creation of mat*mat specially, since it doesn't fall conveniently out of
@@ -447,7 +472,6 @@ void TBuiltInParseablesHlsl::createMatTimesMat()
 
             s.append(");\n");                               // close paren
 
-
             // Create V*M
             AppendTypeName(s, "V", "F", xCols, 1);          // add return type
             s.append(" ");                                  // space between type and name
@@ -479,7 +503,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     // needed for furture validation.  For now, they are commented out, and set below
     // to EShLangAll, to allow any intrinsic to be used in any shader, which is legal
     // if it is not called.
-    // 
+    //
     // static const EShLanguageMask EShLangPSCS   = EShLanguageMask(EShLangFragmentMask | EShLangComputeMask);
     // static const EShLanguageMask EShLangVSPSGS = EShLanguageMask(EShLangVertexMask | EShLangFragmentMask | EShLangGeometryMask);
     // static const EShLanguageMask EShLangCS     = EShLangComputeMask;
@@ -492,6 +516,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     static const EShLanguageMask EShLangCS     = EShLangAll;
     static const EShLanguageMask EShLangPS     = EShLangAll;
     static const EShLanguageMask EShLangHS     = EShLangAll;
+    static const EShLanguageMask EShLangGS     = EShLangAll;
 
     // This structure encodes the prototype information for each HLSL intrinsic.
     // Because explicit enumeration would be cumbersome, it's procedurally generated.
@@ -507,6 +532,9 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     // '@' as first letter of order creates arrayed texture of given type
     // '$' / '&' as first letter of order creates 2DMS / 2DMSArray textures
     // '*' as first letter of order creates buffer object
+    // '!' as first letter of order creates image object
+    // '#' as first letter of order creates arrayed image object
+    // '~' as first letter of order creates an image buffer object
 
     static const struct {
         const char*   name;      // intrinsic name
@@ -521,12 +549,12 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "abort",                            nullptr, nullptr,   "-",              "-",             EShLangAll },
         { "abs",                              nullptr, nullptr,   "SVM",            "DFUI",          EShLangAll },
         { "acos",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll },
-        { "all",                              "S",    "B",        "SVM",            "BFI",           EShLangAll },
+        { "all",                              "S",    "B",        "SVM",            "BFIU",          EShLangAll },
         { "AllMemoryBarrier",                 nullptr, nullptr,   "-",              "-",             EShLangCS },
         { "AllMemoryBarrierWithGroupSync",    nullptr, nullptr,   "-",              "-",             EShLangCS },
-        { "any",                              "S",     "B",       "SVM",            "BFI",           EShLangAll },
-        { "asdouble",                         "S",     "D",       "S,",             "U,",            EShLangAll },
-        { "asdouble",                         "V2",    "D",       "V2,",            "U,",            EShLangAll },
+        { "any",                              "S",     "B",       "SVM",            "BFIU",          EShLangAll },
+        { "asdouble",                         "S",     "D",       "S,",             "UI,",           EShLangAll },
+        { "asdouble",                         "V2",    "D",       "V2,",            "UI,",           EShLangAll },
         { "asfloat",                          nullptr, "F",       "SVM",            "BFIU",          EShLangAll },
         { "asin",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "asint",                            nullptr, "I",       "SVM",            "FU",            EShLangAll },
@@ -539,7 +567,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "clip",                             "-",     "-",       "SVM",            "F",             EShLangPS },
         { "cos",                              nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "cosh",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll },
-        { "countbits",                        nullptr, nullptr,   "SV",             "U",             EShLangAll },
+        { "countbits",                        nullptr, nullptr,   "SV",             "UI",            EShLangAll },
         { "cross",                            nullptr, nullptr,   "V3,",            "F,",            EShLangAll },
         { "D3DCOLORtoUBYTE4",                 "V4",    "I",       "V4",             "F",             EShLangAll },
         { "ddx",                              nullptr, nullptr,   "SVM",            "F",             EShLangPS },
@@ -553,7 +581,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "DeviceMemoryBarrier",              nullptr, nullptr,   "-",              "-",             EShLangPSCS },
         { "DeviceMemoryBarrierWithGroupSync", nullptr, nullptr,   "-",              "-",             EShLangCS },
         { "distance",                         "S",     "F",       "V,",             "F,",            EShLangAll },
-        { "dot",                              "S",     nullptr,   "V,",             "FI,",           EShLangAll },
+        { "dot",                              "S",     nullptr,   "SV,",            "FI,",           EShLangAll },
         { "dst",                              nullptr, nullptr,   "V4,",            "F,",            EShLangAll },
         // { "errorf",                           "-",     "-",       "",             "",             EShLangAll }, TODO: varargs
         { "EvaluateAttributeAtCentroid",      nullptr, nullptr,   "SVM",            "F",             EShLangPS },
@@ -603,9 +631,9 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "log10",                            nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "log2",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "mad",                              nullptr, nullptr,   "SVM,,",          "DFUI,,",        EShLangAll },
-        { "max",                              nullptr, nullptr,   "SVM,",           "FI,",           EShLangAll },
-        { "min",                              nullptr, nullptr,   "SVM,",           "FI,",           EShLangAll },
-        { "modf",                             nullptr, nullptr,   "SVM,>",          "FI,",           EShLangAll },
+        { "max",                              nullptr, nullptr,   "SVM,",           "FIU,",          EShLangAll },
+        { "min",                              nullptr, nullptr,   "SVM,",           "FIU,",          EShLangAll },
+        { "modf",                             nullptr, nullptr,   "SVM,>",          "FIU,",          EShLangAll },
         { "msad4",                            "V4",    "U",       "S,V2,V4",        "U,,",           EShLangAll },
         { "mul",                              "S",     nullptr,   "S,S",            "FI,",           EShLangAll },
         { "mul",                              "V",     nullptr,   "S,V",            "FI,",           EShLangAll },
@@ -632,7 +660,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "rcp",                              nullptr, nullptr,   "SVM",            "FD",            EShLangAll },
         { "reflect",                          nullptr, nullptr,   "V,",             "F,",            EShLangAll },
         { "refract",                          nullptr, nullptr,   "V,V,S",          "F,,",           EShLangAll },
-        { "reversebits",                      nullptr, nullptr,   "SV",             "U",             EShLangAll },
+        { "reversebits",                      nullptr, nullptr,   "SV",             "UI",            EShLangAll },
         { "round",                            nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "rsqrt",                            nullptr, nullptr,   "SVM",            "F",             EShLangAll },
         { "saturate",                         nullptr, nullptr ,  "SVM",            "F",             EShLangAll },
@@ -669,7 +697,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "texCUBEgrad",                      "V4",    "F",       "V4,V3,,",        "S,F,,",         EShLangPS },
         { "texCUBElod",                       "V4",    "F",       "V4,",            "S,F",           EShLangPS },
         { "texCUBEproj",                      "V4",    "F",       "V4,",            "S,F",           EShLangPS },
-        { "transpose",                        "^M",    nullptr,   "M",              "F",             EShLangAll },
+        { "transpose",                        "^M",    nullptr,   "M",              "FUIB",          EShLangAll },
         { "trunc",                            nullptr, nullptr,   "SVM",            "F",             EShLangAll },
 
         // Texture object methods.  Return type can be overridden by shader declaration.
@@ -694,10 +722,15 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "SampleLevel",        /*!O*/        "V4",    nullptr,   "%@,S,V,S",       "FIU,S,F,",      EShLangAll },
         { "SampleLevel",        /* O*/        "V4",    nullptr,   "%@,S,V,S,V",     "FIU,S,F,,I",    EShLangAll },
 
-        { "Load",               /*!O*/        "V4",    nullptr,   "%@*,V",          "FIU,I",         EShLangAll },
+        { "Load",               /*!O*/        "V4",    nullptr,   "%@,V",           "FIU,I",         EShLangAll },
         { "Load",               /* O*/        "V4",    nullptr,   "%@,V,V",         "FIU,I,I",       EShLangAll },
         { "Load", /* +sampleidex*/            "V4",    nullptr,   "$&,V,S",         "FIU,I,I",       EShLangAll },
         { "Load", /* +samplindex, offset*/    "V4",    nullptr,   "$&,V,S,V",       "FIU,I,I,I",     EShLangAll },
+
+        // RWTexture loads
+        { "Load",                             "V4",    nullptr,   "!#,V",           "FIU,I",         EShLangAll },
+        // (RW)Buffer loads
+        { "Load",                             "V4",    nullptr,   "~*1,V",          "FIU,I",         EShLangAll },
 
         { "Gather",             /*!O*/        "V4",    nullptr,   "%@,S,V",         "FIU,S,F",       EShLangAll },
         { "Gather",             /* O*/        "V4",    nullptr,   "%@,S,V,V",       "FIU,S,F,I",     EShLangAll },
@@ -707,39 +740,39 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
 
         { "GetSamplePosition",                "V2",    "F",       "$&2,S",          "FUI,I",         EShLangVSPSGS },
 
-        // 
+        //
         // UINT Width
         // UINT MipLevel, UINT Width, UINT NumberOfLevels
-        { "GetDimensions",   /* 1D */         "-",     "-",       "%1,>S",          "FUI,U",         EShLangAll },
-        { "GetDimensions",   /* 1D */         "-",     "-",       "%1,>S",          "FUI,F",         EShLangAll },
+        { "GetDimensions",   /* 1D */         "-",     "-",       "%!~1,>S",        "FUI,U",         EShLangAll },
+        { "GetDimensions",   /* 1D */         "-",     "-",       "%!~1,>S",        "FUI,F",         EShLangAll },
         { "GetDimensions",   /* 1D */         "-",     "-",       "%1,S,>S,",       "FUI,U,,",       EShLangAll },
         { "GetDimensions",   /* 1D */         "-",     "-",       "%1,S,>S,",       "FUI,U,F,",      EShLangAll },
 
         // UINT Width, UINT Elements
         // UINT MipLevel, UINT Width, UINT Elements, UINT NumberOfLevels
-        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@1,>S,",         "FUI,U,",        EShLangAll },
-        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@1,>S,",         "FUI,F,",        EShLangAll },
+        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@#1,>S,",        "FUI,U,",        EShLangAll },
+        { "GetDimensions",   /* 1DArray */    "-",     "-",       "@#1,>S,",        "FUI,F,",        EShLangAll },
         { "GetDimensions",   /* 1DArray */    "-",     "-",       "@1,S,>S,,",      "FUI,U,,,",      EShLangAll },
         { "GetDimensions",   /* 1DArray */    "-",     "-",       "@1,S,>S,,",      "FUI,U,F,,",     EShLangAll },
 
         // UINT Width, UINT Height
         // UINT MipLevel, UINT Width, UINT Height, UINT NumberOfLevels
-        { "GetDimensions",   /* 2D */         "-",     "-",       "%2,>S,",         "FUI,U,",        EShLangAll },
-        { "GetDimensions",   /* 2D */         "-",     "-",       "%2,>S,",         "FUI,F,",        EShLangAll },
+        { "GetDimensions",   /* 2D */         "-",     "-",       "%!2,>S,",        "FUI,U,",        EShLangAll },
+        { "GetDimensions",   /* 2D */         "-",     "-",       "%!2,>S,",        "FUI,F,",        EShLangAll },
         { "GetDimensions",   /* 2D */         "-",     "-",       "%2,S,>S,,",      "FUI,U,,,",      EShLangAll },
         { "GetDimensions",   /* 2D */         "-",     "-",       "%2,S,>S,,",      "FUI,U,F,,",     EShLangAll },
 
         // UINT Width, UINT Height, UINT Elements
         // UINT MipLevel, UINT Width, UINT Height, UINT Elements, UINT NumberOfLevels
-        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@2,>S,,",        "FUI,U,,",       EShLangAll },
-        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@2,>S,,",        "FUI,F,F,F",     EShLangAll },
+        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@#2,>S,,",       "FUI,U,,",       EShLangAll },
+        { "GetDimensions",   /* 2DArray */    "-",     "-",       "@#2,>S,,",       "FUI,F,F,F",     EShLangAll },
         { "GetDimensions",   /* 2DArray */    "-",     "-",       "@2,S,>S,,,",     "FUI,U,,,,",     EShLangAll },
         { "GetDimensions",   /* 2DArray */    "-",     "-",       "@2,S,>S,,,",     "FUI,U,F,,,",    EShLangAll },
 
         // UINT Width, UINT Height, UINT Depth
         // UINT MipLevel, UINT Width, UINT Height, UINT Depth, UINT NumberOfLevels
-        { "GetDimensions",   /* 3D */         "-",     "-",       "%3,>S,,",        "FUI,U,,",       EShLangAll },
-        { "GetDimensions",   /* 3D */         "-",     "-",       "%3,>S,,",        "FUI,F,,",       EShLangAll },
+        { "GetDimensions",   /* 3D */         "-",     "-",       "%!3,>S,,",       "FUI,U,,",       EShLangAll },
+        { "GetDimensions",   /* 3D */         "-",     "-",       "%!3,>S,,",       "FUI,F,,",       EShLangAll },
         { "GetDimensions",   /* 3D */         "-",     "-",       "%3,S,>S,,,",     "FUI,U,,,,",     EShLangAll },
         { "GetDimensions",   /* 3D */         "-",     "-",       "%3,S,>S,,,",     "FUI,U,F,,,",    EShLangAll },
 
@@ -813,16 +846,14 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "GatherCmpAlpha",  /* O-4 */        "V4",    nullptr,   "%@,S,V,S,V,,,",  "FIU,s,F,,I,,,",  EShLangAll },
         { "GatherCmpAlpha",  /* O-4, status */"V4",    nullptr,   "%@,S,V,S,V,,,,S","FIU,s,F,,I,,,,U",EShLangAll },
 
-        // TODO: Cmp forms
+        // geometry methods
+        { "Append",                           "-",     "-",       "-",              "-",              EShLangGS  },
+        { "RestartStrip",                     "-",     "-",       "-",              "-",              EShLangGS  },
 
         // Mark end of list, since we want to avoid a range-based for, as some compilers don't handle it yet.
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0 },
     };
 
-    // Set this to true to avoid generating prototypes that will be invalid for the GLSL parser.
-    // TODO: turn it off (and remove the code) when the HLSL parser can be used to parse builtins.
-    static const bool skipInvalidGlsl = true;
-    
     // Create prototypes for the intrinsics.  TODO: Avoid ranged based for until all compilers can handle it.
     for (int icount = 0; hlslIntrinsics[icount].name; ++icount) {
         const auto& intrinsic = hlslIntrinsics[icount];
@@ -836,10 +867,11 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
 
             for (const char* argOrder = intrinsic.argOrder; !IsEndOfArg(argOrder); ++argOrder) { // for each order...
                 const bool isTexture   = IsTextureType(*argOrder);
-                const bool isArrayed   = IsTextureArrayed(*argOrder);
+                const bool isArrayed   = IsArrayed(*argOrder);
                 const bool isMS        = IsTextureMS(*argOrder);
                 const bool isBuffer    = IsBuffer(*argOrder);
-                const bool mipInCoord  = HasMipInCoord(intrinsic.name, isMS, isBuffer);
+                const bool isImage     = IsImage(*argOrder);
+                const bool mipInCoord  = HasMipInCoord(intrinsic.name, isMS, isBuffer, isImage);
                 const int fixedVecSize = FixedVecSize(argOrder);
                 const int coordArg     = CoordinateArgPos(intrinsic.name, isTexture);
 
@@ -857,8 +889,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                             const char* retOrder = intrinsic.retOrder ? intrinsic.retOrder : argOrder;
                             const char* retType  = intrinsic.retType  ? intrinsic.retType  : argType;
 
-                            if (skipInvalidGlsl && !IsValidGlsl(intrinsic.name, *retOrder, *retType, *argOrder, *argType,
-                                                                dim0, dim1, dim0Max, dim1Max))
+                            if (!IsValid(intrinsic.name, *retOrder, *retType, *argOrder, *argType, dim0, dim1))
                                 continue;
 
                             // Reject some forms of sample methods that don't exist.
@@ -911,7 +942,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
 
                                 AppendTypeName(s, nthArgOrder, nthArgType, argDim0, dim1); // Add arguments
                             }
-                            
+
                             s.append(");\n");            // close paren and trailing semicolon
                         } // dim 1 loop
                     } // dim 0 loop
@@ -920,10 +951,10 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                 // skip over special characters
                 if (isTexture && isalpha(argOrder[1]))
                     ++argOrder;
-                if (isdigit(argOrder[1]))  
+                if (isdigit(argOrder[1]))
                     ++argOrder;
             } // arg order loop
-            
+
             if (intrinsic.stage == EShLangAll) // common builtins are only added once.
                 break;
         }
@@ -951,7 +982,6 @@ void TBuiltInParseablesHlsl::initialize(const TBuiltInResource& /*resources*/, i
                                         const SpvVersion& /*spvVersion*/, EShLanguage /*language*/)
 {
 }
-
 
 //
 // Finish adding/processing context-independent built-in symbols.
@@ -986,7 +1016,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("cosh",                        EOpCosh);
     symbolTable.relateToOperator("countbits",                   EOpBitCount);
     symbolTable.relateToOperator("cross",                       EOpCross);
-    // symbolTable.relateToOperator("D3DCOLORtoUBYTE4",            EOpD3DCOLORtoUBYTE4);
+    symbolTable.relateToOperator("D3DCOLORtoUBYTE4",            EOpD3DCOLORtoUBYTE4);
     symbolTable.relateToOperator("ddx",                         EOpDPdx);
     symbolTable.relateToOperator("ddx_coarse",                  EOpDPdxCoarse);
     symbolTable.relateToOperator("ddx_fine",                    EOpDPdxFine);
@@ -1123,11 +1153,15 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("GatherCmpGreen",              EOpMethodGatherCmpGreen);
     symbolTable.relateToOperator("GatherCmpBlue",               EOpMethodGatherCmpBlue);
     symbolTable.relateToOperator("GatherCmpAlpha",              EOpMethodGatherCmpAlpha);
+
+    // GS methods
+    symbolTable.relateToOperator("Append",                      EOpMethodAppend);
+    symbolTable.relateToOperator("RestartStrip",                EOpMethodRestartStrip);
 }
 
 //
 // Add context-dependent (resource-specific) built-ins not handled by the above.  These
-// would be ones that need to be programmatically added because they cannot 
+// would be ones that need to be programmatically added because they cannot
 // be added by simple text strings.  For these, also
 // 1) Map built-in functions to operators, for those that will turn into an operation node
 //    instead of remaining a function call.
@@ -1138,6 +1172,5 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
                                               TSymbolTable& /*symbolTable*/, const TBuiltInResource& /*resources*/)
 {
 }
-
 
 } // end namespace glslang
