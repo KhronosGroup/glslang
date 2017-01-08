@@ -139,22 +139,22 @@ class TVariable;
 class TIntermediate {
 public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) :
-        source(EShSourceNone), language(l), profile(p), version(v), treeRoot(0),
+        language(l), source(EShSourceNone), profile(p), version(v), treeRoot(0),
         numEntryPoints(0), numErrors(0), numPushConstants(0), recursive(false),
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet), inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),
         vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), depthLayout(EldNone), depthReplacing(false), blendEquations(0),
-        multiStream(false), xfbMode(false),
+        xfbMode(false), multiStream(false),
+#ifdef NV_EXTENSIONS
+        layoutOverrideCoverage(false),
+        geoPassthroughEXT(false),
+#endif
         shiftSamplerBinding(0),
         shiftTextureBinding(0),
         shiftImageBinding(0),
         shiftUboBinding(0),
         autoMapBindings(false),
         flattenUniformArrays(false),
-#ifdef NV_EXTENSIONS
-        layoutOverrideCoverage(false),
-        geoPassthroughEXT(false),
-#endif
         useUnknownFormat(false)
     {
         localSize[0] = 1;
@@ -422,13 +422,6 @@ protected:
     EShSource source;            // source language, known a bit later
     std::string entryPointName;
     std::string entryPointMangledName;
-    unsigned int shiftSamplerBinding;
-    unsigned int shiftTextureBinding;
-    unsigned int shiftImageBinding;
-    unsigned int shiftUboBinding;
-    bool autoMapBindings;
-    bool flattenUniformArrays;
-    bool useUnknownFormat;
 
     EProfile profile;
     int version;
@@ -462,6 +455,14 @@ protected:
     bool layoutOverrideCoverage;
     bool geoPassthroughEXT;
 #endif
+
+    unsigned int shiftSamplerBinding;
+    unsigned int shiftTextureBinding;
+    unsigned int shiftImageBinding;
+    unsigned int shiftUboBinding;
+    bool autoMapBindings;
+    bool flattenUniformArrays;
+    bool useUnknownFormat;
 
     typedef std::list<TCall> TGraph;
     TGraph callGraph;

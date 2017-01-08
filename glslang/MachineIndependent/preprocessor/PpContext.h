@@ -500,8 +500,8 @@ protected:
                           TPpContext* pp)
             : tInput(pp),
               prologue_(prologue),
-              includedFile_(includedFile),
               epilogue_(epilogue),
+              includedFile_(includedFile),
               scanner(3, strings, lengths, names, 0, 0, true),
               prevScanner(nullptr),
               stringInput(pp, scanner)
