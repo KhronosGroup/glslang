@@ -50,7 +50,7 @@
 #include "Scan.h"
 #include "ScanContext.h"
 
-#ifndef DISABLE_HLSL
+#ifdef ENABLE_HLSL
 #include "../../hlsl/hlslParseHelper.h"
 #include "../../hlsl/hlslParseables.h"
 #include "../../hlsl/hlslScanContext.h"
@@ -76,7 +76,7 @@ TBuiltInParseables* CreateBuiltInParseables(TInfoSink& infoSink, EShSource sourc
 {
     switch (source) {
     case EShSourceGlsl: return new TBuiltIns();              // GLSL builtIns
-#ifndef DISABLE_HLSL
+#ifdef ENABLE_HLSL
     case EShSourceHlsl: return new TBuiltInParseablesHlsl(); // HLSL intrinsics
 #endif
 
@@ -93,7 +93,7 @@ TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& 
                                       SpvVersion spvVersion, bool forwardCompatible, EShMessages messages,
                                       bool parsingBuiltIns, const std::string sourceEntryPointName = "")
 {
-#ifdef DISABLE_HLSL
+#ifndef ENABLE_HLSL
     (void)sourceEntryPointName; // Unused argument.
 #endif
 
@@ -103,7 +103,7 @@ TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& 
         return new TParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
                                  language, infoSink, forwardCompatible, messages);
 
-#ifndef DISABLE_HLSL
+#ifdef ENABLE_HLSL
     case EShSourceHlsl:
         return new HlslParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
                                     language, infoSink, sourceEntryPointName.c_str(), forwardCompatible, messages);
@@ -1096,7 +1096,7 @@ int ShInitialize()
         PerProcessGPA = new TPoolAllocator();
 
     glslang::TScanContext::fillInKeywordMap();
-#ifndef DISABLE_HLSL
+#ifdef ENABLE_HLSL
     glslang::HlslScanContext::fillInKeywordMap();
 #endif
 
@@ -1191,7 +1191,7 @@ int __fastcall ShFinalize()
     }
 
     glslang::TScanContext::deleteKeywordMap();
-#ifndef DISABLE_HLSL
+#ifdef ENABLE_HLSL
     glslang::HlslScanContext::deleteKeywordMap();
 #endif
 
