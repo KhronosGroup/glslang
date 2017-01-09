@@ -22,10 +22,13 @@ set(LIBRARIES
     glslang
     OGLCompiler
     OSDependent
-    HLSL
     SPIRV
     SPVRemapper
     glslang-default-resource-limits)
+
+if(NOT DISABLE_HLSL)
+    set(LIBRARIES ${LIBRARIES} HLSL)
+endif()
 
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)

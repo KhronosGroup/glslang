@@ -47,11 +47,14 @@
 #include <memory>
 #include "SymbolTable.h"
 #include "ParseHelper.h"
-#include "../../hlsl/hlslParseHelper.h"
-#include "../../hlsl/hlslParseables.h"
 #include "Scan.h"
 #include "ScanContext.h"
+
+#ifndef DISABLE_HLSL
+#include "../../hlsl/hlslParseHelper.h"
+#include "../../hlsl/hlslParseables.h"
 #include "../../hlsl/hlslScanContext.h"
+#endif
 
 #include "../Include/ShHandle.h"
 #include "../../OGLCompilersDLL/InitializeDll.h"
@@ -73,7 +76,9 @@ TBuiltInParseables* CreateBuiltInParseables(TInfoSink& infoSink, EShSource sourc
 {
     switch (source) {
     case EShSourceGlsl: return new TBuiltIns();              // GLSL builtIns
+#ifndef DISABLE_HLSL
     case EShSourceHlsl: return new TBuiltInParseablesHlsl(); // HLSL intrinsics
+#endif
 
     default:
         infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
@@ -88,15 +93,21 @@ TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& 
                                       SpvVersion spvVersion, bool forwardCompatible, EShMessages messages,
                                       bool parsingBuiltIns, const std::string sourceEntryPointName = "")
 {
+#ifdef DISABLE_HLSL
+    (void)sourceEntryPointName; // Unused argument.
+#endif
+
     switch (source) {
     case EShSourceGlsl:
         intermediate.setEntryPointName("main");
         return new TParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
                                  language, infoSink, forwardCompatible, messages);
 
+#ifndef DISABLE_HLSL
     case EShSourceHlsl:
         return new HlslParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
                                     language, infoSink, sourceEntryPointName.c_str(), forwardCompatible, messages);
+#endif
     default:
         infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
         return nullptr;
@@ -1085,7 +1096,9 @@ int ShInitialize()
         PerProcessGPA = new TPoolAllocator();
 
     glslang::TScanContext::fillInKeywordMap();
+#ifndef DISABLE_HLSL
     glslang::HlslScanContext::fillInKeywordMap();
+#endif
 
     return 1;
 }
@@ -1178,7 +1191,9 @@ int __fastcall ShFinalize()
     }
 
     glslang::TScanContext::deleteKeywordMap();
+#ifndef DISABLE_HLSL
     glslang::HlslScanContext::deleteKeywordMap();
+#endif
 
     return 1;
 }

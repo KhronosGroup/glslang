@@ -6,6 +6,8 @@ option(ENABLE_GLSLANG_BINARIES "Builds glslangValidator and spirv-remap" ON)
 
 option(ENABLE_NV_EXTENSIONS "Enables support of Nvidia-specific extensions" ON)
 
+option(DISABLE_HLSL "Disables HLSL input support" OFF)
+
 enable_testing()
 
 set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "prefix")
@@ -19,6 +21,10 @@ endif(ENABLE_AMD_EXTENSIONS)
 if(ENABLE_NV_EXTENSIONS)
     add_definitions(-DNV_EXTENSIONS)
 endif(ENABLE_NV_EXTENSIONS)
+
+if(DISABLE_HLSL)
+    add_definitions(-DDISABLE_HLSL)
+endif(DISABLE_HLSL)
 
 if(WIN32)
     set(CMAKE_DEBUG_POSTFIX "d")
@@ -63,5 +69,7 @@ if(ENABLE_GLSLANG_BINARIES)
 	add_subdirectory(StandAlone)
 endif()
 add_subdirectory(SPIRV)
-add_subdirectory(hlsl)
+if(NOT DISABLE_HLSL)
+    add_subdirectory(hlsl)
+endif()
 add_subdirectory(gtests)
