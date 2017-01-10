@@ -197,11 +197,13 @@ public:
     GlslangResult compileAndLink(
             const std::string shaderName, const std::string& code,
             const std::string& entryPointName, EShMessages controls,
-            bool flattenUniformArrays = false)
+            bool flattenUniformArrays = false,
+            EShTextureSamplerMergeMode textureSamplerMergeMode = EShTexSampMergeModeNone)
     {
         const EShLanguage kind = GetShaderStage(GetSuffix(shaderName));
 
         glslang::TShader shader(kind);
+        shader.setTextureSamplerMergeMode(textureSamplerMergeMode);
         shader.setFlattenUniformArrays(flattenUniformArrays);
 
         bool success = compile(&shader, code, entryPointName, controls);
@@ -560,6 +562,32 @@ public:
                                     expectedOutputFname);
         checkEqAndUpdateIfRequested(expectedError, error,
                                     expectedErrorFname);
+    }
+
+    void loadFileCompileDropSamplersUpgradeTexturesAndCheck(const std::string& testDir,
+        const std::string& testName,
+        Source source,
+        Semantics semantics,
+        Target target,
+        const std::string& entryPointName = "")
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedOutputFname =
+            testDir + "/baseResults/" + testName + ".out";
+        std::string input, expectedOutput;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
+
+        const EShMessages controls = DeriveOptions(source, semantics, target);
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, false, EShTexSampMergeModeRemoveSamplerUpgradeTexture);
+
+        // Generate the hybrid output in the way of glslangValidator.
+        std::ostringstream stream;
+        outputResultToStream(&stream, result, controls);
+
+        checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
+            expectedOutputFname);
     }
 
 private:

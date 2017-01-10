@@ -149,6 +149,20 @@ enum EShMessages {
     EShMsgKeepUncalled     = (1 << 8),  // for testing, don't eliminate uncalled functions
 };
 
+typedef enum {
+    // Default, do nothing
+    EShTexSampMergeModeNone,
+    // Simple mode,
+    // Removes all samplers and upgrades all pure textures into sampled textures
+    // Changes all functions and function calls too
+    EShTexSampMergeModeRemoveSamplerUpgradeTexture,
+    // Merges sampler and textures together but with some limitations:
+    // - only done if one unique combination of sampler and texture is used
+    // - no rewrite of functions for now
+    // - arrays can not be combined for now
+    EShTexSampMergeModeMergeOnly
+} EShTextureSamplerMergeMode;
+
 //
 // Build a table for bindings.  This can be used for locating
 // attributes, uniforms, globals, etc., as needed.
@@ -313,6 +327,7 @@ public:
     void setAutoMapBindings(bool map);
     void setFlattenUniformArrays(bool flatten);
     void setNoStorageFormat(bool useUnknownFormat);
+    void setTextureSamplerMergeMode(EShTextureSamplerMergeMode mode);
 
     // Interface to #include handlers.
     //

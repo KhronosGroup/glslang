@@ -176,7 +176,8 @@ public:
         shiftUboBinding(0),
         autoMapBindings(false),
         flattenUniformArrays(false),
-        useUnknownFormat(false)
+        useUnknownFormat(false),
+        textureSamplerMergeMode(EShTexSampMergeModeNone)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -213,6 +214,8 @@ public:
     bool getFlattenUniformArrays()        const { return flattenUniformArrays; }
     void setNoStorageFormat(bool b)             { useUnknownFormat = b; }
     bool getNoStorageFormat()             const { return useUnknownFormat; }
+    void setTextureSamplerMergeMode(EShTextureSamplerMergeMode mode) { textureSamplerMergeMode = mode; }
+    EShTextureSamplerMergeMode getTextureSamplerMergeMode() { return textureSamplerMergeMode; }
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -440,6 +443,7 @@ protected:
     bool promoteAggregate(TIntermAggregate&);
     void pushSelector(TIntermSequence&, const TVectorSelector&, const TSourceLoc&);
     void pushSelector(TIntermSequence&, const TMatrixSelector&, const TSourceLoc&);
+    void combineTextureSamplers(TIntermNode* root);
 
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later
@@ -486,6 +490,7 @@ protected:
     bool autoMapBindings;
     bool flattenUniformArrays;
     bool useUnknownFormat;
+    EShTextureSamplerMergeMode textureSamplerMergeMode;
 
     typedef std::list<TCall> TGraph;
     TGraph callGraph;
