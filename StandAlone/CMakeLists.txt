@@ -28,7 +28,7 @@ set(LIBRARIES
 
 if(ENABLE_HLSL)
     set(LIBRARIES ${LIBRARIES} HLSL)
-endif()
+endif(ENABLE_HLSL)
 
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)
