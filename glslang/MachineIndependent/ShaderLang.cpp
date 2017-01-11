@@ -296,6 +296,9 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
 {
     std::unique_ptr<TBuiltInParseables> builtInParseables(CreateBuiltInParseables(infoSink, source));
 
+    if (builtInParseables == nullptr)
+        return false;
+
     builtInParseables->initialize(version, profile, spvVersion);
 
     // do the common tables
@@ -341,6 +344,9 @@ bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& inf
                                EProfile profile, const SpvVersion& spvVersion, EShLanguage language, EShSource source)
 {
     std::unique_ptr<TBuiltInParseables> builtInParseables(CreateBuiltInParseables(infoSink, source));
+
+    if (builtInParseables == nullptr)
+        return false;
 
     builtInParseables->initialize(*resources, version, profile, spvVersion, language);
     InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, language, source, infoSink, symbolTable);
@@ -736,8 +742,9 @@ bool ProcessDeferred(
 
     // Add built-in symbols that are potentially context dependent;
     // they get popped again further down.
-    AddContextSpecificSymbols(resources, compiler->infoSink, symbolTable, version, profile, spvVersion,
-                              compiler->getLanguage(), source);
+    if (! AddContextSpecificSymbols(resources, compiler->infoSink, symbolTable, version, profile, spvVersion,
+                                    compiler->getLanguage(), source))
+        return false;
 
     //
     // Now we can process the full shader under proper symbols and rules.
