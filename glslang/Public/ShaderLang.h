@@ -331,72 +331,76 @@ public:
     // release the IncludeResult object.
     class Includer {
     public:
-        typedef enum {
-          EIncludeRelative, // For #include "something"
-          EIncludeStandard  // Reserved. For #include <something>
-        } IncludeType;
-
         // An IncludeResult contains the resolved name and content of a source
         // inclusion.
         struct IncludeResult {
-            IncludeResult(const std::string& file_name, const char* const file_data, const size_t file_length, void* user_data) :
-                file_name(file_name), file_data(file_data), file_length(file_length), user_data(user_data) { }
+            IncludeResult(const std::string& headerName, const char* const headerData, const size_t headerLength, void* userData) :
+                headerName(headerName), headerData(headerData), headerLength(headerLength), userData(userData) { }
             // For a successful inclusion, the fully resolved name of the requested
             // include.  For example, in a file system-based includer, full resolution
             // should convert a relative path name into an absolute path name.
             // For a failed inclusion, this is an empty string.
-            const std::string file_name;
+            const std::string headerName;
             // The content and byte length of the requested inclusion.  The
             // Includer producing this IncludeResult retains ownership of the
             // storage.
-            // For a failed inclusion, the file_data
+            // For a failed inclusion, the header
             // field points to a string containing error details.
-            const char* const file_data;
-            const size_t file_length;
+            const char* const headerData;
+            const size_t headerLength;
             // Include resolver's context.
-            void* user_data;
+            void* userData;
         protected:
             IncludeResult& operator=(const IncludeResult&);
             IncludeResult();
         };
 
-        // Resolves an inclusion request by name, type, current source name,
+        // For both include methods below:
+        //
+        // Resolves an inclusion request by name, current source name,
         // and include depth.
         // On success, returns an IncludeResult containing the resolved name
-        // and content of the include.  On failure, returns an IncludeResult
-        // with an empty string for the file_name and error details in the
-        // file_data field.  The Includer retains ownership of the contents
+        // and content of the include.
+        // On failure, returns a nullptr, or an IncludeResult
+        // with an empty string for the headerName and error details in the
+        // header field.
+        // The Includer retains ownership of the contents
         // of the returned IncludeResult value, and those contents must
         // remain valid until the releaseInclude method is called on that
         // IncludeResult object.
-        virtual IncludeResult* include(const char* requested_source,
-                                      IncludeType type,
-                                      const char* requesting_source,
-                                      size_t inclusion_depth) = 0;
+        //
+        // Note "local" vs. "system" is not an "either/or": "local" is an
+        // extra thing to do over "system". Both might get called, as per
+        // the C++ specification.
+
+        // For the "system" or <>-style includes; search the "system" paths.
+        virtual IncludeResult* includeSystem(const char* headerName,
+                                             const char* includerName,
+                                             size_t inclusionDepth) { return nullptr; }
+
+        // For the "local"-only aspect of a "" include. Should not search in the
+        // "system" paths, because on returning a failure, the parser will
+        // call includeSystem() to look in the "system" locations.
+        virtual IncludeResult* includeLocal(const char* headerName,
+                                            const char* includerName,
+                                            size_t inclusionDepth) { return nullptr; }
+
         // Signals that the parser will no longer use the contents of the
         // specified IncludeResult.
-        virtual void releaseInclude(IncludeResult* result) = 0;
+        virtual void releaseInclude(IncludeResult*) = 0;
         virtual ~Includer() {}
     };
 
-    // Returns an error message for any #include directive.
-    class ForbidInclude : public Includer {
+    // Fail all Includer searches
+    class ForbidIncluder : public Includer {
     public:
-        IncludeResult* include(const char*, IncludeType, const char*, size_t) override
-        {
-            const char* unexpected_include = "unexpected include directive";
-            return new IncludeResult(std::string(""), unexpected_include, strlen(unexpected_include), nullptr);
-        }
-        virtual void releaseInclude(IncludeResult* result) override
-        {
-            delete result;
-        }
+        virtual void releaseInclude(IncludeResult*) override { }
     };
 
     bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                bool forwardCompatible, EShMessages messages)
     {
-        TShader::ForbidInclude includer;
+        TShader::ForbidIncluder includer;
         return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer);
     }
 

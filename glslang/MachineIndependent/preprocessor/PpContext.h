@@ -507,11 +507,11 @@ protected:
               stringInput(pp, scanner)
         {
               strings[0] = prologue_.data();
-              strings[1] = includedFile_->file_data;
+              strings[1] = includedFile_->headerData;
               strings[2] = epilogue_.data();
 
               lengths[0] = prologue_.size();
-              lengths[1] = includedFile_->file_length;
+              lengths[1] = includedFile_->headerLength;
               lengths[2] = epilogue_.size();
 
               scanner.setLine(startLoc.line);
@@ -552,7 +552,7 @@ protected:
         // Points to the IncludeResult that this TokenizableIncludeFile represents.
         TShader::Includer::IncludeResult* includedFile_;
 
-        // Will point to prologue_, includedFile_->file_data and epilogue_
+        // Will point to prologue_, includedFile_->headerData and epilogue_
         // This is passed to scanner constructor.
         // These do not own the storage and it must remain valid until this
         // object has been destroyed.
@@ -576,7 +576,7 @@ protected:
 
     void push_include(TShader::Includer::IncludeResult* result)
     {
-        currentSourceFile = result->file_name;
+        currentSourceFile = result->headerName;
         includeStack.push(result);
     }
 
@@ -588,7 +588,7 @@ protected:
         if (includeStack.empty()) {
             currentSourceFile = rootFileName;
         } else {
-            currentSourceFile = includeStack.top()->file_name;
+            currentSourceFile = includeStack.top()->headerName;
         }
     }
 

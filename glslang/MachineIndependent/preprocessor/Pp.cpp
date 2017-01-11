@@ -576,12 +576,12 @@ int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
 int TPpContext::CPPinclude(TPpToken* ppToken)
 {
     const TSourceLoc directiveLoc = ppToken->loc;
-    TShader::Includer::IncludeType includeType = TShader::Includer::EIncludeRelative;
+    bool startWithLocalSearch = true; // to additionally include the extra "" paths
     int token = scanToken(ppToken);
 
     // handle <header-name>-style #include
     if (token == '<') {
-        includeType = TShader::Includer::EIncludeStandard;
+        startWithLocalSearch = false;
         token = scanHeaderName(ppToken, '>');
     }
     // otherwise ppToken already has the header name and it was "header-name" style
@@ -605,16 +605,26 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
     }
 
     // Process well-formed directive
-    TShader::Includer::IncludeResult* res = includer.include(filename.c_str(), includeType, currentSourceFile.c_str(),
-                                                             includeStack.size() + 1);
-    if (res && !res->file_name.empty()) {
-        if (res->file_data && res->file_length) {
+
+    // Find the inclusion, first look in "Local" ("") paths, if requested,
+    // otherwise, only search the "System" (<>) paths.
+    TShader::Includer::IncludeResult* res = nullptr;
+    if (startWithLocalSearch)
+        res = includer.includeLocal(filename.c_str(), currentSourceFile.c_str(), includeStack.size() + 1);
+    if (! res || res->headerName.empty()) {
+        includer.releaseInclude(res);
+        res = includer.includeSystem(filename.c_str(), currentSourceFile.c_str(), includeStack.size() + 1);
+    }
+
+    // Process the results
+    if (res && !res->headerName.empty()) {
+        if (res->headerData && res->headerLength) {
             // path for processing one or more tokens from an included header, hand off 'res'
             const bool forNextLine = parseContext.lineDirectiveShouldSetNextLine();
             std::ostringstream prologue;
             std::ostringstream epilogue;
-            prologue << "#line " << forNextLine << " " << "\"" << res->file_name << "\"\n";
-            epilogue << (res->file_data[res->file_length - 1] == '\n'? "" : "\n") <<
+            prologue << "#line " << forNextLine << " " << "\"" << res->headerName << "\"\n";
+            epilogue << (res->headerData[res->headerLength - 1] == '\n'? "" : "\n") <<
                 "#line " << directiveLoc.line + forNextLine << " " << directiveLoc.getStringNameOrNum() << "\n";
             pushInput(new TokenizableIncludeFile(directiveLoc, prologue.str(), res, epilogue.str(), this));
             // There's no "current" location anymore.
@@ -626,7 +636,7 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
     } else {
         // error path, clean up
         std::string message =
-            res ? std::string(res->file_data, res->file_length)
+            res ? std::string(res->headerData, res->headerLength)
                 : std::string("Could not process include directive");
         parseContext.ppError(directiveLoc, message.c_str(), "#include", "for header name: %s", filename.c_str());
         includer.releaseInclude(res);
