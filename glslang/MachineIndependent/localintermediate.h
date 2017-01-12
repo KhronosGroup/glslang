@@ -62,6 +62,32 @@ struct TVectorFields {
     int num;
 };
 
+class TMatrixComponents {
+public:
+    static const int maxMatrixComponents = 4;
+    struct tMatrixComponent {
+        int coord1;  // stay agnostic about column/row; this is parse order
+        int coord2;
+    };
+
+    TMatrixComponents() : size_(0) { }
+    void push_back(tMatrixComponent comp)
+    {
+        if (size_ < maxMatrixComponents)
+            components[size_++] = comp;
+    }
+    int size() const { return size_; }
+    tMatrixComponent get(int i) const
+    {
+        assert(i < maxMatrixComponents);
+        return components[i];
+    }
+
+private:
+    int size_;
+    tMatrixComponent components[4];
+};
+
 //
 // Some helper structures for TIntermediate.  Their contents are encapsulated
 // by TIntermediate.

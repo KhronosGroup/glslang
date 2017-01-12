@@ -521,78 +521,162 @@ bool HlslParseContext::parseVectorFields(const TSourceLoc& loc, const TString& c
         estpq,
     } fieldSet[4];
 
-        for (int i = 0; i < fields.num; ++i) {
-            switch (compString[i])  {
-            case 'x':
-                fields.offsets[i] = 0;
-                fieldSet[i] = exyzw;
-                break;
-            case 'r':
-                fields.offsets[i] = 0;
-                fieldSet[i] = ergba;
-                break;
-            case 's':
-                fields.offsets[i] = 0;
-                fieldSet[i] = estpq;
-                break;
-            case 'y':
-                fields.offsets[i] = 1;
-                fieldSet[i] = exyzw;
-                break;
-            case 'g':
-                fields.offsets[i] = 1;
-                fieldSet[i] = ergba;
-                break;
-            case 't':
-                fields.offsets[i] = 1;
-                fieldSet[i] = estpq;
-                break;
-            case 'z':
-                fields.offsets[i] = 2;
-                fieldSet[i] = exyzw;
-                break;
-            case 'b':
-                fields.offsets[i] = 2;
-                fieldSet[i] = ergba;
-                break;
-            case 'p':
-                fields.offsets[i] = 2;
-                fieldSet[i] = estpq;
-                break;
+    for (int i = 0; i < fields.num; ++i) {
+        switch (compString[i])  {
+        case 'x':
+            fields.offsets[i] = 0;
+            fieldSet[i] = exyzw;
+            break;
+        case 'r':
+            fields.offsets[i] = 0;
+            fieldSet[i] = ergba;
+            break;
+        case 's':
+            fields.offsets[i] = 0;
+            fieldSet[i] = estpq;
+            break;
+        case 'y':
+            fields.offsets[i] = 1;
+            fieldSet[i] = exyzw;
+            break;
+        case 'g':
+            fields.offsets[i] = 1;
+            fieldSet[i] = ergba;
+            break;
+        case 't':
+            fields.offsets[i] = 1;
+            fieldSet[i] = estpq;
+            break;
+        case 'z':
+            fields.offsets[i] = 2;
+            fieldSet[i] = exyzw;
+            break;
+        case 'b':
+            fields.offsets[i] = 2;
+            fieldSet[i] = ergba;
+            break;
+        case 'p':
+            fields.offsets[i] = 2;
+            fieldSet[i] = estpq;
+            break;
 
-            case 'w':
-                fields.offsets[i] = 3;
-                fieldSet[i] = exyzw;
-                break;
-            case 'a':
-                fields.offsets[i] = 3;
-                fieldSet[i] = ergba;
-                break;
-            case 'q':
-                fields.offsets[i] = 3;
-                fieldSet[i] = estpq;
-                break;
-            default:
-                error(loc, "illegal vector field selection", compString.c_str(), "");
+        case 'w':
+            fields.offsets[i] = 3;
+            fieldSet[i] = exyzw;
+            break;
+        case 'a':
+            fields.offsets[i] = 3;
+            fieldSet[i] = ergba;
+            break;
+        case 'q':
+            fields.offsets[i] = 3;
+            fieldSet[i] = estpq;
+            break;
+        default:
+            error(loc, "illegal vector field selection", compString.c_str(), "");
+            return false;
+        }
+    }
+
+    for (int i = 0; i < fields.num; ++i) {
+        if (fields.offsets[i] >= vecSize) {
+            error(loc, "vector field selection out of range", compString.c_str(), "");
+            return false;
+        }
+
+        if (i > 0) {
+            if (fieldSet[i] != fieldSet[i - 1]) {
+                error(loc, "illegal - vector component fields not from the same set", compString.c_str(), "");
                 return false;
             }
         }
+    }
 
-        for (int i = 0; i < fields.num; ++i) {
-            if (fields.offsets[i] >= vecSize) {
-                error(loc, "vector field selection out of range", compString.c_str(), "");
+    return true;
+}
+
+//
+// Look at a '.' field selector string and change it into components
+// for a matrix. There are two types:
+//
+//   _21    second row, first column (one based)
+//   _m21   third row, second column (zero based)
+//
+// Returns true if there is no error.
+//
+bool HlslParseContext::parseMatrixComponents(const TSourceLoc& loc, const TString& fields, int cols, int rows,
+                                             TMatrixComponents& components)
+{
+    int startPos[TMatrixComponents::maxMatrixComponents];
+    int numComps = 0;
+    TString compString = fields;
+
+    // Find where each component starts,
+    // recording the first character position after the '_'.
+    for (size_t c = 0; c < compString.size(); ++c) {
+        if (compString[c] == '_') {
+            if (numComps >= TMatrixComponents::maxMatrixComponents) {
+                error(loc, "matrix component swizzle has too many components", compString.c_str(), "");
                 return false;
             }
-
-            if (i > 0) {
-                if (fieldSet[i] != fieldSet[i - 1]) {
-                    error(loc, "illegal - vector component fields not from the same set", compString.c_str(), "");
-                    return false;
-                }
+            if (c > compString.size() - 3 ||
+                    ((compString[c+1] == 'm' || compString[c+1] == 'M') && c > compString.size() - 4)) {
+                error(loc, "matrix component swizzle missing", compString.c_str(), "");
+                return false;
             }
+            startPos[numComps++] = c + 1;
         }
+    }
 
-        return true;
+    // Process each component
+    for (int i = 0; i < numComps; ++i) {
+        int pos = startPos[i];
+        int bias = -1;
+        if (compString[pos] == 'm' || compString[pos] == 'M') {
+            bias = 0;
+            ++pos;
+        }
+        TMatrixComponents::tMatrixComponent comp;
+        comp.coord1 = compString[pos+0] - '0' + bias;
+        comp.coord2 = compString[pos+1] - '0' + bias;
+        if (comp.coord1 < 0 || comp.coord1 >= cols) {
+            error(loc, "matrix row component out of range", compString.c_str(), "");
+            return false;
+        }
+        if (comp.coord2 < 0 || comp.coord2 >= rows) {
+            error(loc, "matrix column component out of range", compString.c_str(), "");
+            return false;
+        }
+        components.push_back(comp);
+    }
+
+    return true;
+}
+
+// If the 'comps' express a column of a matrix,
+// return the column.  Column means the first coords all match.
+//
+// Otherwise, return -1.
+//
+int HlslParseContext::getMatrixComponentsColumn(int rows, const TMatrixComponents& comps)
+{
+    int col = -1;
+
+    // right number of comps?
+    if (comps.size() != rows)
+        return -1;
+
+    // all comps in the same column?
+    // rows in order?
+    col = comps.get(0).coord1;
+    for (int i = 0; i < rows; ++i) {
+        if (col != comps.get(i).coord1)
+            return -1;
+        if (i != comps.get(i).coord2)
+            return -1;
+    }
+
+    return col;
 }
 
 //
@@ -886,6 +970,40 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
                 TIntermTyped* index = intermediate.addSwizzle(fields, loc);
                 result = intermediate.addIndex(EOpVectorSwizzle, base, index, loc);
                 result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, (int)vectorString.size()));
+            }
+        }
+    } else if (base->isMatrix()) {
+        TMatrixComponents comps;
+        if (! parseMatrixComponents(loc, field, base->getMatrixCols(), base->getMatrixRows(), comps))
+            return result;
+
+        if (comps.size() == 1) {
+            // Representable by m[c][r]
+            if (base->getType().getQualifier().storage == EvqConst) {
+                result = intermediate.foldDereference(base, comps.get(0).coord1, loc);
+                result = intermediate.foldDereference(result, comps.get(1).coord2, loc);
+            } else {
+                result = intermediate.addIndex(EOpIndexDirect, base, intermediate.addConstantUnion(comps.get(0).coord1, loc), loc);
+                TType dereferencedCol(base->getType(), 0);
+                result->setType(dereferencedCol);
+                result = intermediate.addIndex(EOpIndexDirect, result, intermediate.addConstantUnion(comps.get(0).coord2, loc), loc);
+                TType dereferenced(dereferencedCol, 0);
+                result->setType(dereferenced);
+            }
+        } else {
+            int column = getMatrixComponentsColumn(base->getMatrixRows(), comps);
+            if (column >= 0) {
+                // Representable by m[c]
+                if (base->getType().getQualifier().storage == EvqConst)
+                    result = intermediate.foldDereference(base, column, loc);
+                else {
+                    result = intermediate.addIndex(EOpIndexDirect, base, intermediate.addConstantUnion(column, loc), loc);
+                    TType dereferenced(base->getType(), 0);
+                    result->setType(dereferenced);
+                }
+            } else {
+                // general case, not a column, not a single component
+                error(loc, "arbitrary matrix component selection not supported", field.c_str(), "");
             }
         }
     } else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
