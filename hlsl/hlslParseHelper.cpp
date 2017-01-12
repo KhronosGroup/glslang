@@ -933,7 +933,7 @@ bool HlslParseContext::shouldSplit(const TType& type)
     const TStorageQualifier qualifier = type.getQualifier().storage;
 
     // If it contains interstage IO, but not ONLY interstage IO, split the struct.
-    return type.isStruct() && type.containsBuiltInInterstageIO() &&
+    return type.isStruct() && type.containsBuiltInInterstageIO(language) &&
         (qualifier == EvqVaryingIn || qualifier == EvqVaryingOut);
 }
 
@@ -990,13 +990,13 @@ TType& HlslParseContext::split(TType& type, TString name, const TType* outerStru
 
         // Get iterator to (now at end) set of builtin iterstage IO members
         const auto firstIo = std::stable_partition(userStructure->begin(), userStructure->end(),
-                                                   [](const TTypeLoc& t) {return !t.type->isBuiltInInterstageIO();});
+                                                   [this](const TTypeLoc& t) {return !t.type->isBuiltInInterstageIO(language);});
 
         // Move those to the builtin IO.  However, we also propagate arrayness (just one level is handled
         // now) to this variable.
         for (auto ioType = firstIo; ioType != userStructure->end(); ++ioType) {
             const TType& memberType = *ioType->type;
-            TVariable* ioVar = makeInternalVariable(name + (name.empty() ? "" : ".") + memberType.getFieldName(), memberType);
+            TVariable* ioVar = makeInternalVariable(name + (name.empty() ? "" : "_") + memberType.getFieldName(), memberType);
 
             if (arraySizes)
                 ioVar->getWritableType().newArraySizes(*arraySizes);
@@ -1013,7 +1013,7 @@ TType& HlslParseContext::split(TType& type, TString name, const TType* outerStru
         // Recurse further into the members.
         for (unsigned int i = 0; i < userStructure->size(); ++i)
             split(*(*userStructure)[i].type,
-                  name + (name.empty() ? "" : ".") + (*userStructure)[i].type->getFieldName(),
+                  name + (name.empty() ? "" : "_") + (*userStructure)[i].type->getFieldName(),
                   outerStructType);
     }
 
@@ -1320,7 +1320,7 @@ TIntermTyped* HlslParseContext::splitAccessStruct(const TSourceLoc& loc, TInterm
 
     const TType& memberType = *members[member].type;
 
-    if (memberType.isBuiltInInterstageIO()) {
+    if (memberType.isBuiltInInterstageIO(language)) {
         // It's one of the interstage IO variables we split off.
         TIntermTyped* builtIn = intermediate.addSymbol(*interstageBuiltInIo[tInterstageIoData(memberType, base->getType())], loc);
 
@@ -1344,7 +1344,7 @@ TIntermTyped* HlslParseContext::splitAccessStruct(const TSourceLoc& loc, TInterm
 
         int newMember = 0;
         for (int m=0; m<member; ++m)
-            if (!members[m].type->isBuiltInInterstageIO())
+            if (!members[m].type->isBuiltInInterstageIO(language))
                 ++newMember;
 
         member = newMember;
@@ -1437,6 +1437,9 @@ TFunction& HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFu
 // Add interstage IO variables to the linkage in canonical order.
 void HlslParseContext::addInterstageIoToLinkage()
 {
+    TSourceLoc loc;
+    loc.init();
+
     std::vector<tInterstageIoData> io;
     io.reserve(interstageBuiltInIo.size());
 
@@ -1446,8 +1449,75 @@ void HlslParseContext::addInterstageIoToLinkage()
     // Our canonical order is the TBuiltInVariable numeric order.
     std::sort(io.begin(), io.end());
 
-    for (int idx = 0; idx < int(io.size()); ++idx)
-        trackLinkageDeferred(*interstageBuiltInIo[io[idx]]);
+    // We have to (potentially) track two IO blocks, one in, one out.  E.g, a GS may have a
+    // PerVertex block in both directions, possibly with different members.
+    static const TStorageQualifier ioType[2] = { EvqVaryingIn, EvqVaryingOut };
+    static const char* blockName[2] = { "PerVertex_in", "PerVertex_out" };
+
+    TTypeList*   ioBlockTypes[2] = { nullptr, nullptr };
+    TArraySizes* ioBlockArray[2] = { nullptr, nullptr };
+
+    for (int idx = 0; idx < int(io.size()); ++idx) {
+        TVariable* var = interstageBuiltInIo[io[idx]];
+
+        // Add the loose interstage IO to the linkage
+        if (var->getType().isLooseAndBuiltIn(language))
+            trackLinkageDeferred(*var);
+
+        // Add the PerVertex interstage IO to the IO block
+        if (var->getType().isPerVertexAndBuiltIn(language)) {
+            int blockId = 0;
+            switch (var->getType().getQualifier().storage) {
+            case EvqVaryingIn:  blockId = 0; break;
+            case EvqVaryingOut: blockId = 1; break;
+            default: assert(0 && "Invalid storage qualifier");
+            }
+
+            // Lazy creation of type list only if we end up needing it.
+            if (ioBlockTypes[blockId] == nullptr)
+                ioBlockTypes[blockId] = new TTypeList();
+
+            TTypeLoc member = { new TType(EbtVoid), loc };
+            member.type->shallowCopy(var->getType());
+            member.type->setFieldName(var->getName());
+
+            // We may have collected these from different parts of different structures.  If their
+            // array dimensions are not the same, we don't know what to do, so issue an error.
+            if (member.type->isArray()) {
+                if (ioBlockArray[blockId] == nullptr) {
+                    ioBlockArray[blockId] = &member.type->getArraySizes();
+                } else  {
+                    if (*ioBlockArray[blockId] != member.type->getArraySizes())
+                        error(loc, "PerVertex block array dimension mismatch", "", "");
+                }
+                member.type->clearArraySizes();
+            }
+
+            ioBlockTypes[blockId]->push_back(member);
+        }
+    }
+
+    // If there were PerVertex items, add the block to the linkage.  Handle in and out separately.
+    for (int blockId = 0; blockId <= 1; ++blockId) {
+        if (ioBlockTypes[blockId] != nullptr) {
+            const TString* instanceName = NewPoolTString(blockName[blockId]);
+            TQualifier     blockQualifier;
+
+            blockQualifier.clear();
+            blockQualifier.storage = ioType[blockId];
+
+            TType blockType(ioBlockTypes[blockId], *instanceName, blockQualifier);
+
+            if (ioBlockArray[blockId] != nullptr)
+                blockType.newArraySizes(*ioBlockArray[blockId]);
+
+            TVariable* ioBlock = new TVariable(instanceName, blockType);
+            if (!symbolTable.insert(*ioBlock))
+                error(loc, "block instance name redefinition", ioBlock->getName().c_str(), "");
+            else
+                trackLinkageDeferred(*ioBlock);
+        }
+    }
 }
 
 //
@@ -1786,7 +1856,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         const TOperator op = node->getType().isArray() ? EOpIndexDirect : EOpIndexDirectStruct;
         const TType derefType(node->getType(), member);
 
-        if (split && derefType.isBuiltInInterstageIO()) {
+        if (split && derefType.isBuiltInInterstageIO(language)) {
             // copy from interstage IO builtin if needed
             subTree = intermediate.addSymbol(*interstageBuiltInIo.find(tInterstageIoData(derefType, outer->getType()))->second);
         } else if (flattened && isFinalFlattening(derefType)) {
@@ -1855,14 +1925,14 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 // recurse into it if there's something for splitting to do.  That can save a lot of AST verbosity for
                 // a bunch of memberwise copies.
                 if (isFinalFlattening(typeL) || (!isFlattenLeft && !isFlattenRight &&
-                                                 !typeL.containsBuiltInInterstageIO() && !typeR.containsBuiltInInterstageIO())) {
+                                                 !typeL.containsBuiltInInterstageIO(language) && !typeR.containsBuiltInInterstageIO(language))) {
                     assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subSplitLeft, subSplitRight, loc), loc);
                 } else {
                     traverse(subLeft, subRight, subSplitLeft, subSplitRight);
                 }
 
-                memberL += (typeL.isBuiltInInterstageIO() ? 0 : 1);
-                memberR += (typeR.isBuiltInInterstageIO() ? 0 : 1);
+                memberL += (typeL.isBuiltInInterstageIO(language) ? 0 : 1);
+                memberR += (typeR.isBuiltInInterstageIO(language) ? 0 : 1);
             }
         } else {
             assert(0);  // we should never be called on a non-flattenable thing, because
@@ -5163,7 +5233,7 @@ TType* HlslParseContext::sanitizeType(TType* type)
             sanitizedType->clearArraySizes();
         return sanitizedType;
     } else {
-        if (type->containsBuiltInInterstageIO()) {
+        if (type->containsBuiltInInterstageIO(language)) {
             // This means the type contains interstage IO, but we've never encountered it before.
             // Copy it, sanitize it, and remember it in the sanitizedTypeMap
             TType* sanitizedType = type->clone();
