@@ -5194,6 +5194,39 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             // but it is allowed to promote its other arguments.
             if (arg == 0)
                 return false;
+            break;
+        case EOpMethodSample:
+        case EOpMethodSampleBias:
+        case EOpMethodSampleCmp:
+        case EOpMethodSampleCmpLevelZero:
+        case EOpMethodSampleGrad:
+        case EOpMethodSampleLevel:
+        case EOpMethodLoad:
+        case EOpMethodGetDimensions:
+        case EOpMethodGetSamplePosition:
+        case EOpMethodGather:
+        case EOpMethodCalculateLevelOfDetail:
+        case EOpMethodCalculateLevelOfDetailUnclamped:
+        case EOpMethodGatherRed:
+        case EOpMethodGatherGreen:
+        case EOpMethodGatherBlue:
+        case EOpMethodGatherAlpha:
+        case EOpMethodGatherCmp:
+        case EOpMethodGatherCmpRed:
+        case EOpMethodGatherCmpGreen:
+        case EOpMethodGatherCmpBlue:
+        case EOpMethodGatherCmpAlpha:
+        case EOpMethodAppend:
+        case EOpMethodRestartStrip:
+            // those are method calls, the object type can not be changed
+            // they are equal if the dim and type match (is dim sufficient?)
+            if (arg == 0)
+                return from.getSampler().type == to.getSampler().type &&
+                       from.getSampler().arrayed == to.getSampler().arrayed &&
+                       from.getSampler().shadow == to.getSampler().shadow &&
+                       from.getSampler().ms == to.getSampler().ms &&
+                       from.getSampler().dim == to.getSampler().dim;
+            break;
         default:
             break;
         }
