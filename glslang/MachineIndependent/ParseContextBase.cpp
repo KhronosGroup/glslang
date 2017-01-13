@@ -129,6 +129,7 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
         case EOpIndexIndirect:     // fall through
         case EOpIndexDirectStruct: // fall through
         case EOpVectorSwizzle:
+        case EOpMatrixSwizzle:
             return lValueErrorCheck(loc, op, binaryNode->getLeft());
         default:
             break;
@@ -208,6 +209,7 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
         case EOpIndexIndirect:
         case EOpIndexDirectStruct:
         case EOpVectorSwizzle:
+        case EOpMatrixSwizzle:
             rValueErrorCheck(loc, op, binaryNode->getLeft());
         default:
             break;

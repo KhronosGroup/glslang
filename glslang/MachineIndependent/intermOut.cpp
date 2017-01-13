@@ -146,6 +146,7 @@ bool TOutputTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
         out.debug << (*node->getLeft()->getType().getStruct())[node->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst()].type->getFieldName();
         out.debug << ": direct index for structure";      break;
     case EOpVectorSwizzle: out.debug << "vector swizzle"; break;
+    case EOpMatrixSwizzle: out.debug << "matrix swizzle"; break;
 
     case EOpAdd:    out.debug << "add";                     break;
     case EOpSub:    out.debug << "subtract";                break;

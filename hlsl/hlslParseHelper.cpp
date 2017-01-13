@@ -966,10 +966,9 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
                 result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
                 result->setType(TType(base->getBasicType(), EvqTemporary));
             } else {
-                TString vectorString = field;
                 TIntermTyped* index = intermediate.addSwizzle(fields, loc);
                 result = intermediate.addIndex(EOpVectorSwizzle, base, index, loc);
-                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, (int)vectorString.size()));
+                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, fields.num));
             }
         }
     } else if (base->isMatrix()) {
@@ -979,7 +978,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
 
         if (comps.size() == 1) {
             // Representable by m[c][r]
-            if (base->getType().getQualifier().storage == EvqConst) {
+            if (base->getType().getQualifier().isFrontEndConstant()) {
                 result = intermediate.foldDereference(base, comps.get(0).coord1, loc);
                 result = intermediate.foldDereference(result, comps.get(1).coord2, loc);
             } else {
@@ -994,7 +993,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
             int column = getMatrixComponentsColumn(base->getMatrixRows(), comps);
             if (column >= 0) {
                 // Representable by m[c]
-                if (base->getType().getQualifier().storage == EvqConst)
+                if (base->getType().getQualifier().isFrontEndConstant())
                     result = intermediate.foldDereference(base, column, loc);
                 else {
                     result = intermediate.addIndex(EOpIndexDirect, base, intermediate.addConstantUnion(column, loc), loc);
@@ -1003,8 +1002,10 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
                 }
             } else {
                 // general case, not a column, not a single component
-                error(loc, "arbitrary matrix component selection not supported", field.c_str(), "");
-            }
+                TIntermTyped* index = intermediate.addSwizzle(comps, loc);
+                result = intermediate.addIndex(EOpMatrixSwizzle, base, index, loc);
+                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, comps.size()));
+           }
         }
     } else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
         const TTypeList* fields = base->getType().getStruct();
@@ -1888,12 +1889,18 @@ void HlslParseContext::handleFunctionArgument(TFunction* function,
 }
 
 // Some simple source assignments need to be flattened to a sequence
-// of AST assignments.  Catch these and flatten, otherwise, pass through
+// of AST assignments. Catch these and flatten, otherwise, pass through
 // to intermediate.addAssign().
-TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op, TIntermTyped* left, TIntermTyped* right) const
+//
+// Also, assignment to matrix swizzles requires multiple component assignments,
+// intercept those as well.
+TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op, TIntermTyped* left, TIntermTyped* right)
 {
     if (left == nullptr || right == nullptr)
         return nullptr;
+
+    if (left->getAsOperator() && left->getAsOperator()->getOp() == EOpMatrixSwizzle)
+        return handleAssignToMatrixSwizzle(loc, op, left, right);
 
     const bool isSplitLeft    = wasSplit(left);
     const bool isSplitRight   = wasSplit(right);
@@ -1902,7 +1909,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     const bool isFlattenRight = wasFlattened(right);
 
     // OK to do a single assign if both are split, or both are unsplit.  But if one is and the other
-    // isn't, we fall back to a memberwise copy.
+    // isn't, we fall back to a member-wise copy.
     if (! isFlattenLeft && ! isFlattenRight && !isSplitLeft && !isSplitRight)
         return intermediate.addAssign(op, left, right, loc);
 
@@ -2077,6 +2084,65 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     assignList->setOperator(EOpSequence);
 
     return assignList;
+}
+
+// An assignment to matrix swizzle must be decomposed into individual assignments.
+// These must be selected component-wise from the RHS and stored component-wise
+// into the LHS.
+TIntermTyped* HlslParseContext::handleAssignToMatrixSwizzle(const TSourceLoc& loc, TOperator op, TIntermTyped* left, TIntermTyped* right)
+{
+    assert(left->getAsOperator() && left->getAsOperator()->getOp() == EOpMatrixSwizzle);
+
+    if (op != EOpAssign)
+        error(loc, "only simple assignment to non-simple matrix swizzle is supported", "assign", "");
+
+    // isolate the matrix and swizzle nodes
+    TIntermTyped* matrix = left->getAsBinaryNode()->getLeft()->getAsTyped();
+    const TIntermSequence& swizzle = left->getAsBinaryNode()->getRight()->getAsAggregate()->getSequence();
+
+    // if the RHS isn't already a simple vector, let's store into one
+    TIntermSymbol* vector = right->getAsSymbolNode();
+    TIntermTyped* vectorAssign = nullptr;
+    if (vector == nullptr) {
+        // create a new intermediate vector variable to assign to
+        TType vectorType(matrix->getBasicType(), EvqTemporary, matrix->getQualifier().precision, swizzle.size()/2);
+        vector = intermediate.addSymbol(*makeInternalVariable("intermVec", vectorType), loc);
+
+        // assign the right to the new vector
+        vectorAssign = handleAssign(loc, op, vector, right);
+    }
+
+    // Assign the vector components to the matrix components.
+    // Store this as a sequence, so a single aggregate node represents this
+    // entire operation.
+    TIntermAggregate* result = intermediate.makeAggregate(vectorAssign);
+    TType columnType(matrix->getType(), 0);
+    TType componentType(columnType, 0);
+    TType indexType(EbtInt);
+    for (int i = 0; i < (int)swizzle.size(); i += 2) {
+        // the right component, single index into the RHS vector
+        TIntermTyped* rightComp = intermediate.addIndex(EOpIndexDirect, vector,
+                                    intermediate.addConstantUnion(i/2, loc), loc);
+
+        // the left component, double index into the LHS matrix
+        TIntermTyped* leftComp = intermediate.addIndex(EOpIndexDirect, matrix,
+                                    intermediate.addConstantUnion(swizzle[i]->getAsConstantUnion()->getConstArray(),
+                                                                  indexType, loc),
+                                    loc);
+        leftComp->setType(columnType);
+        leftComp = intermediate.addIndex(EOpIndexDirect, leftComp,
+                                    intermediate.addConstantUnion(swizzle[i+1]->getAsConstantUnion()->getConstArray(),
+                                                                  indexType, loc),
+                                    loc);
+        leftComp->setType(componentType);
+
+        // Add the assignment to the aggregate
+        result = intermediate.growAggregate(result, intermediate.addAssign(op, leftComp, rightComp, loc));
+    }
+
+    result->setOp(EOpSequence);
+
+    return result;
 }
 
 //

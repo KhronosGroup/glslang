@@ -1408,6 +1408,26 @@ TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, const TSourceLoc&
     return node;
 }
 
+// A matrix swizzle is a sequence of nodes, 2N long, where N is the
+// number of components in the swizzle, alternating col,row, col,row, ...
+TIntermTyped* TIntermediate::addSwizzle(TMatrixComponents& comps, const TSourceLoc& loc)
+{
+    TIntermAggregate* node = new TIntermAggregate(EOpSequence);
+
+    node->setLoc(loc);
+    TIntermConstantUnion* constIntNode;
+    TIntermSequence &sequenceVector = node->getSequence();
+
+    for (int i = 0; i < comps.size(); i++) {
+        constIntNode = addConstantUnion(comps.get(i).coord1, loc);
+        sequenceVector.push_back(constIntNode);
+        constIntNode = addConstantUnion(comps.get(i).coord2, loc);
+        sequenceVector.push_back(constIntNode);
+    }
+
+    return node;
+}
+
 //
 // Follow the left branches down to the root of an l-value
 // expression (just "." and []).
@@ -1425,10 +1445,10 @@ const TIntermTyped* TIntermediate::findLValueBase(const TIntermTyped* node, bool
         if (binary == nullptr)
             return node;
         TOperator op = binary->getOp();
-        if (op != EOpIndexDirect && op != EOpIndexIndirect && op != EOpIndexDirectStruct && op != EOpVectorSwizzle)
+        if (op != EOpIndexDirect && op != EOpIndexIndirect && op != EOpIndexDirectStruct && op != EOpVectorSwizzle && op != EOpMatrixSwizzle)
             return nullptr;
         if (! swizzleOkay) {
-            if (op == EOpVectorSwizzle)
+            if (op == EOpVectorSwizzle || op == EOpMatrixSwizzle)
                 return nullptr;
             if ((op == EOpIndexDirect || op == EOpIndexIndirect) &&
                 (binary->getLeft()->getType().isVector() || binary->getLeft()->getType().isScalar()) &&

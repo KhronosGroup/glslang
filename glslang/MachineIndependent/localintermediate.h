@@ -275,6 +275,7 @@ public:
     TIntermBranch* addBranch(TOperator, const TSourceLoc&);
     TIntermBranch* addBranch(TOperator, TIntermTyped*, const TSourceLoc&);
     TIntermTyped* addSwizzle(TVectorFields&, const TSourceLoc&);
+    TIntermTyped* addSwizzle(TMatrixComponents&, const TSourceLoc&);
 
     // Low level functions to add nodes (no conversions or other higher level transformations)
     // If a type is provided, the node's type will be set to it.

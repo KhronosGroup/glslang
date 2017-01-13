@@ -626,6 +626,9 @@ enum TOperator {
     // geometry methods
     EOpMethodAppend,                     // Geometry shader methods
     EOpMethodRestartStrip,               // ...
+
+    // matrix
+    EOpMatrixSwizzle,                    // select multiple matrix components (non-column)
 };
 
 class TIntermTraverser;
