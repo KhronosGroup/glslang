@@ -54,15 +54,16 @@ struct TMatrixSelector {
 
 typedef int TVectorSelector;
 
+const int MaxSwizzleSelectors = 4;
+
 template<typename selectorType>
 class TSwizzleSelectors {
 public:
-    static const int maxSelectors = 4;
     TSwizzleSelectors() : size_(0) { }
 
     void push_back(selectorType comp)
     {
-        if (size_ < maxSelectors)
+        if (size_ < MaxSwizzleSelectors)
             components[size_++] = comp;
     }
     void resize(int s)
@@ -73,13 +74,13 @@ public:
     int size() const { return size_; }
     selectorType operator[](int i) const
     {
-        assert(i < maxSelectors);
+        assert(i < MaxSwizzleSelectors);
         return components[i];
     }
     
 private:
     int size_;
-    selectorType components[maxSelectors];
+    selectorType components[MaxSwizzleSelectors];
 };
 
 //

@@ -513,7 +513,7 @@ void HlslParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString
 bool HlslParseContext::parseMatrixSwizzleSelector(const TSourceLoc& loc, const TString& fields, int cols, int rows,
                                                   TSwizzleSelectors<TMatrixSelector>& components)
 {
-    int startPos[TSwizzleSelectors<TVectorSelector>::maxSelectors];
+    int startPos[MaxSwizzleSelectors];
     int numComps = 0;
     TString compString = fields;
 
@@ -521,7 +521,7 @@ bool HlslParseContext::parseMatrixSwizzleSelector(const TSourceLoc& loc, const T
     // recording the first character position after the '_'.
     for (size_t c = 0; c < compString.size(); ++c) {
         if (compString[c] == '_') {
-            if (numComps >= TSwizzleSelectors<TVectorSelector>::maxSelectors) {
+            if (numComps >= MaxSwizzleSelectors) {
                 error(loc, "matrix component swizzle has too many components", compString.c_str(), "");
                 return false;
             }

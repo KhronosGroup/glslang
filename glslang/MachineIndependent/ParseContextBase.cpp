@@ -443,7 +443,7 @@ void TParseContextBase::parseSwizzleSelector(const TSourceLoc& loc, const TStrin
                                              TSwizzleSelectors<TVectorSelector>& selector)
 {
     // Too long?
-    if (compString.size() > TSwizzleSelectors<TVectorSelector>::maxSelectors)
+    if (compString.size() > MaxSwizzleSelectors)
         error(loc, "vector swizzle too long", compString.c_str(), "");
 
     // Use this to test that all swizzle characters are from the same swizzle-namespace-set
@@ -451,10 +451,10 @@ void TParseContextBase::parseSwizzleSelector(const TSourceLoc& loc, const TStrin
         exyzw,
         ergba,
         estpq,
-    } fieldSet[TSwizzleSelectors<TVectorSelector>::maxSelectors];
+    } fieldSet[MaxSwizzleSelectors];
 
     // Decode the swizzle string.
-    int size = std::min(TSwizzleSelectors<TVectorSelector>::maxSelectors, (int)compString.size());
+    int size = std::min(MaxSwizzleSelectors, (int)compString.size());
     for (int i = 0; i < size; ++i) {
         switch (compString[i])  {
         case 'x':
