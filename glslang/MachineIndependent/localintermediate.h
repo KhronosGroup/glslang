@@ -47,45 +47,39 @@ class TInfoSink;
 
 namespace glslang {
 
-struct TVectorFields {
-    TVectorFields() { }
-
-    TVectorFields(int c0, int c1, int c2, int c3) : num(4)
-    {
-        offsets[0] = c0;
-        offsets[1] = c1;
-        offsets[2] = c2;
-        offsets[3] = c3;
-    }
-
-    int offsets[4];
-    int num;
+struct TMatrixSelector {
+    int coord1;  // stay agnostic about column/row; this is parse order
+    int coord2;
 };
 
-class TMatrixComponents {
-public:
-    static const int maxMatrixComponents = 4;
-    struct tMatrixComponent {
-        int coord1;  // stay agnostic about column/row; this is parse order
-        int coord2;
-    };
+typedef int TVectorSelector;
 
-    TMatrixComponents() : size_(0) { }
-    void push_back(tMatrixComponent comp)
+template<typename selectorType>
+class TSwizzleSelectors {
+public:
+    static const int maxSelectors = 4;
+    TSwizzleSelectors() : size_(0) { }
+
+    void push_back(selectorType comp)
     {
-        if (size_ < maxMatrixComponents)
+        if (size_ < maxSelectors)
             components[size_++] = comp;
     }
-    int size() const { return size_; }
-    tMatrixComponent get(int i) const
+    void resize(int s)
     {
-        assert(i < maxMatrixComponents);
+        assert(s <= size_);
+        size_ = s;
+    }
+    int size() const { return size_; }
+    selectorType operator[](int i) const
+    {
+        assert(i < maxSelectors);
         return components[i];
     }
-
+    
 private:
     int size_;
-    tMatrixComponent components[4];
+    selectorType components[maxSelectors];
 };
 
 //
@@ -274,8 +268,7 @@ public:
     TIntermAggregate* addForLoop(TIntermNode*, TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, const TSourceLoc&);
     TIntermBranch* addBranch(TOperator, const TSourceLoc&);
     TIntermBranch* addBranch(TOperator, TIntermTyped*, const TSourceLoc&);
-    TIntermTyped* addSwizzle(TVectorFields&, const TSourceLoc&);
-    TIntermTyped* addSwizzle(TMatrixComponents&, const TSourceLoc&);
+    template<typename selectorType> TIntermTyped* addSwizzle(TSwizzleSelectors<selectorType>&, const TSourceLoc&);
 
     // Low level functions to add nodes (no conversions or other higher level transformations)
     // If a type is provided, the node's type will be set to it.
@@ -291,7 +284,7 @@ public:
     TIntermTyped* fold(TIntermAggregate* aggrNode);
     TIntermTyped* foldConstructor(TIntermAggregate* aggrNode);
     TIntermTyped* foldDereference(TIntermTyped* node, int index, const TSourceLoc&);
-    TIntermTyped* foldSwizzle(TIntermTyped* node, TVectorFields& fields, const TSourceLoc&);
+    TIntermTyped* foldSwizzle(TIntermTyped* node, TSwizzleSelectors<TVectorSelector>& fields, const TSourceLoc&);
 
     // Tree ops
     static const TIntermTyped* findLValueBase(const TIntermTyped*, bool swizzleOkay);
@@ -444,6 +437,8 @@ protected:
     bool promoteBinary(TIntermBinary&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
     bool promoteAggregate(TIntermAggregate&);
+    void pushSelector(TIntermSequence&, const TVectorSelector&, const TSourceLoc&);
+    void pushSelector(TIntermSequence&, const TMatrixSelector&, const TSourceLoc&);
 
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later

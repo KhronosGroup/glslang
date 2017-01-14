@@ -97,9 +97,8 @@ public:
 
     TIntermAggregate* handleSamplerTextureCombine(const TSourceLoc& loc, TIntermTyped* argTex, TIntermTyped* argSampler);
 
-    bool parseVectorFields(const TSourceLoc&, const TString&, int vecSize, TVectorFields&);
-    bool parseMatrixComponents(const TSourceLoc&, const TString&, int cols, int rows, TMatrixComponents&);
-    int getMatrixComponentsColumn(int rows, const TMatrixComponents&);
+    bool parseMatrixSwizzleSelector(const TSourceLoc&, const TString&, int cols, int rows, TSwizzleSelectors<TMatrixSelector>&);
+    int getMatrixComponentsColumn(int rows, const TSwizzleSelectors<TMatrixSelector>&);
     void assignError(const TSourceLoc&, const char* op, TString left, TString right);
     void unaryOpError(const TSourceLoc&, const char* op, TString operand);
     void binaryOpError(const TSourceLoc&, const char* op, TString left, TString right);

@@ -1392,38 +1392,35 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(double d, TBasicType baseT
     return addConstantUnion(unionArray, TType(baseType, EvqConst), loc, literal);
 }
 
-TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, const TSourceLoc& loc)
+// Put vector swizzle selectors onto the given sequence
+void TIntermediate::pushSelector(TIntermSequence& sequence, const TVectorSelector& selector, const TSourceLoc& loc)
 {
-    TIntermAggregate* node = new TIntermAggregate(EOpSequence);
-
-    node->setLoc(loc);
-    TIntermConstantUnion* constIntNode;
-    TIntermSequence &sequenceVector = node->getSequence();
-
-    for (int i = 0; i < fields.num; i++) {
-        constIntNode = addConstantUnion(fields.offsets[i], loc);
-        sequenceVector.push_back(constIntNode);
-    }
-
-    return node;
+    TIntermConstantUnion* constIntNode = addConstantUnion(selector, loc);
+    sequence.push_back(constIntNode);
 }
 
-// A matrix swizzle is a sequence of nodes, 2N long, where N is the
-// number of components in the swizzle, alternating col,row, col,row, ...
-TIntermTyped* TIntermediate::addSwizzle(TMatrixComponents& comps, const TSourceLoc& loc)
+// Put matrix swizzle selectors onto the given sequence
+void TIntermediate::pushSelector(TIntermSequence& sequence, const TMatrixSelector& selector, const TSourceLoc& loc)
+{
+    TIntermConstantUnion* constIntNode = addConstantUnion(selector.coord1, loc);
+    sequence.push_back(constIntNode);
+    constIntNode = addConstantUnion(selector.coord2, loc);
+    sequence.push_back(constIntNode);
+}
+
+// Make an aggregate node that has a sequence of all selectors.
+template TIntermTyped* TIntermediate::addSwizzle<TVectorSelector>(TSwizzleSelectors<TVectorSelector>& selector, const TSourceLoc& loc);
+template TIntermTyped* TIntermediate::addSwizzle<TMatrixSelector>(TSwizzleSelectors<TMatrixSelector>& selector, const TSourceLoc& loc);
+template<typename selectorType>
+TIntermTyped* TIntermediate::addSwizzle(TSwizzleSelectors<selectorType>& selector, const TSourceLoc& loc)
 {
     TIntermAggregate* node = new TIntermAggregate(EOpSequence);
 
     node->setLoc(loc);
-    TIntermConstantUnion* constIntNode;
     TIntermSequence &sequenceVector = node->getSequence();
 
-    for (int i = 0; i < comps.size(); i++) {
-        constIntNode = addConstantUnion(comps.get(i).coord1, loc);
-        sequenceVector.push_back(constIntNode);
-        constIntNode = addConstantUnion(comps.get(i).coord2, loc);
-        sequenceVector.push_back(constIntNode);
-    }
+    for (int i = 0; i < selector.size(); i++)
+        pushSelector(sequenceVector, selector[i], loc);
 
     return node;
 }

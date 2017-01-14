@@ -502,101 +502,7 @@ void HlslParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString
 }
 
 //
-// Look at a '.' field selector string and change it into offsets
-// for a vector or scalar
-//
-// Returns true if there is no error.
-//
-bool HlslParseContext::parseVectorFields(const TSourceLoc& loc, const TString& compString, int vecSize, TVectorFields& fields)
-{
-    fields.num = (int)compString.size();
-    if (fields.num > 4) {
-        error(loc, "illegal vector field selection", compString.c_str(), "");
-        return false;
-    }
-
-    enum {
-        exyzw,
-        ergba,
-        estpq,
-    } fieldSet[4];
-
-    for (int i = 0; i < fields.num; ++i) {
-        switch (compString[i])  {
-        case 'x':
-            fields.offsets[i] = 0;
-            fieldSet[i] = exyzw;
-            break;
-        case 'r':
-            fields.offsets[i] = 0;
-            fieldSet[i] = ergba;
-            break;
-        case 's':
-            fields.offsets[i] = 0;
-            fieldSet[i] = estpq;
-            break;
-        case 'y':
-            fields.offsets[i] = 1;
-            fieldSet[i] = exyzw;
-            break;
-        case 'g':
-            fields.offsets[i] = 1;
-            fieldSet[i] = ergba;
-            break;
-        case 't':
-            fields.offsets[i] = 1;
-            fieldSet[i] = estpq;
-            break;
-        case 'z':
-            fields.offsets[i] = 2;
-            fieldSet[i] = exyzw;
-            break;
-        case 'b':
-            fields.offsets[i] = 2;
-            fieldSet[i] = ergba;
-            break;
-        case 'p':
-            fields.offsets[i] = 2;
-            fieldSet[i] = estpq;
-            break;
-
-        case 'w':
-            fields.offsets[i] = 3;
-            fieldSet[i] = exyzw;
-            break;
-        case 'a':
-            fields.offsets[i] = 3;
-            fieldSet[i] = ergba;
-            break;
-        case 'q':
-            fields.offsets[i] = 3;
-            fieldSet[i] = estpq;
-            break;
-        default:
-            error(loc, "illegal vector field selection", compString.c_str(), "");
-            return false;
-        }
-    }
-
-    for (int i = 0; i < fields.num; ++i) {
-        if (fields.offsets[i] >= vecSize) {
-            error(loc, "vector field selection out of range", compString.c_str(), "");
-            return false;
-        }
-
-        if (i > 0) {
-            if (fieldSet[i] != fieldSet[i - 1]) {
-                error(loc, "illegal - vector component fields not from the same set", compString.c_str(), "");
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
-//
-// Look at a '.' field selector string and change it into components
+// Look at a '.' matrix selector string and change it into components
 // for a matrix. There are two types:
 //
 //   _21    second row, first column (one based)
@@ -604,10 +510,10 @@ bool HlslParseContext::parseVectorFields(const TSourceLoc& loc, const TString& c
 //
 // Returns true if there is no error.
 //
-bool HlslParseContext::parseMatrixComponents(const TSourceLoc& loc, const TString& fields, int cols, int rows,
-                                             TMatrixComponents& components)
+bool HlslParseContext::parseMatrixSwizzleSelector(const TSourceLoc& loc, const TString& fields, int cols, int rows,
+                                                  TSwizzleSelectors<TMatrixSelector>& components)
 {
-    int startPos[TMatrixComponents::maxMatrixComponents];
+    int startPos[TSwizzleSelectors<TVectorSelector>::maxSelectors];
     int numComps = 0;
     TString compString = fields;
 
@@ -615,7 +521,7 @@ bool HlslParseContext::parseMatrixComponents(const TSourceLoc& loc, const TStrin
     // recording the first character position after the '_'.
     for (size_t c = 0; c < compString.size(); ++c) {
         if (compString[c] == '_') {
-            if (numComps >= TMatrixComponents::maxMatrixComponents) {
+            if (numComps >= TSwizzleSelectors<TVectorSelector>::maxSelectors) {
                 error(loc, "matrix component swizzle has too many components", compString.c_str(), "");
                 return false;
             }
@@ -636,7 +542,7 @@ bool HlslParseContext::parseMatrixComponents(const TSourceLoc& loc, const TStrin
             bias = 0;
             ++pos;
         }
-        TMatrixComponents::tMatrixComponent comp;
+        TMatrixSelector comp;
         comp.coord1 = compString[pos+0] - '0' + bias;
         comp.coord2 = compString[pos+1] - '0' + bias;
         if (comp.coord1 < 0 || comp.coord1 >= cols) {
@@ -658,21 +564,21 @@ bool HlslParseContext::parseMatrixComponents(const TSourceLoc& loc, const TStrin
 //
 // Otherwise, return -1.
 //
-int HlslParseContext::getMatrixComponentsColumn(int rows, const TMatrixComponents& comps)
+int HlslParseContext::getMatrixComponentsColumn(int rows, const TSwizzleSelectors<TMatrixSelector>& selector)
 {
     int col = -1;
 
     // right number of comps?
-    if (comps.size() != rows)
+    if (selector.size() != rows)
         return -1;
 
     // all comps in the same column?
     // rows in order?
-    col = comps.get(0).coord1;
+    col = selector[0].coord1;
     for (int i = 0; i < rows; ++i) {
-        if (col != comps.get(i).coord1)
+        if (col != selector[i].coord1)
             return -1;
-        if (i != comps.get(i).coord2)
+        if (i != selector[i].coord2)
             return -1;
     }
 
@@ -934,63 +840,60 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
 
     TIntermTyped* result = base;
     if (base->isVector() || base->isScalar()) {
-        TVectorFields fields;
-        if (! parseVectorFields(loc, field, base->getVectorSize(), fields)) {
-            fields.num = 1;
-            fields.offsets[0] = 0;
-        }
+        TSwizzleSelectors<TVectorSelector> selectors;
+        parseSwizzleSelector(loc, field, base->getVectorSize(), selectors);
 
         if (base->isScalar()) {
-            if (fields.num == 1)
+            if (selectors.size() == 1)
                 return result;
             else {
-                TType type(base->getBasicType(), EvqTemporary, fields.num);
+                TType type(base->getBasicType(), EvqTemporary, selectors.size());
                 return addConstructor(loc, base, type);
             }
         }
         if (base->getVectorSize() == 1) {
             TType scalarType(base->getBasicType(), EvqTemporary, 1);
-            if (fields.num == 1)
+            if (selectors.size() == 1)
                 return addConstructor(loc, base, scalarType);
             else {
-                TType vectorType(base->getBasicType(), EvqTemporary, fields.num);
+                TType vectorType(base->getBasicType(), EvqTemporary, selectors.size());
                 return addConstructor(loc, addConstructor(loc, base, scalarType), vectorType);
             }
         }
 
         if (base->getType().getQualifier().isFrontEndConstant())
-            result = intermediate.foldSwizzle(base, fields, loc);
+            result = intermediate.foldSwizzle(base, selectors, loc);
         else {
-            if (fields.num == 1) {
-                TIntermTyped* index = intermediate.addConstantUnion(fields.offsets[0], loc);
+            if (selectors.size() == 1) {
+                TIntermTyped* index = intermediate.addConstantUnion(selectors[0], loc);
                 result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
                 result->setType(TType(base->getBasicType(), EvqTemporary));
             } else {
-                TIntermTyped* index = intermediate.addSwizzle(fields, loc);
+                TIntermTyped* index = intermediate.addSwizzle(selectors, loc);
                 result = intermediate.addIndex(EOpVectorSwizzle, base, index, loc);
-                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, fields.num));
+                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, selectors.size()));
             }
         }
     } else if (base->isMatrix()) {
-        TMatrixComponents comps;
-        if (! parseMatrixComponents(loc, field, base->getMatrixCols(), base->getMatrixRows(), comps))
+        TSwizzleSelectors<TMatrixSelector> selectors;
+        if (! parseMatrixSwizzleSelector(loc, field, base->getMatrixCols(), base->getMatrixRows(), selectors))
             return result;
 
-        if (comps.size() == 1) {
+        if (selectors.size() == 1) {
             // Representable by m[c][r]
             if (base->getType().getQualifier().isFrontEndConstant()) {
-                result = intermediate.foldDereference(base, comps.get(0).coord1, loc);
-                result = intermediate.foldDereference(result, comps.get(1).coord2, loc);
+                result = intermediate.foldDereference(base, selectors[0].coord1, loc);
+                result = intermediate.foldDereference(result, selectors[0].coord2, loc);
             } else {
-                result = intermediate.addIndex(EOpIndexDirect, base, intermediate.addConstantUnion(comps.get(0).coord1, loc), loc);
+                result = intermediate.addIndex(EOpIndexDirect, base, intermediate.addConstantUnion(selectors[0].coord1, loc), loc);
                 TType dereferencedCol(base->getType(), 0);
                 result->setType(dereferencedCol);
-                result = intermediate.addIndex(EOpIndexDirect, result, intermediate.addConstantUnion(comps.get(0).coord2, loc), loc);
+                result = intermediate.addIndex(EOpIndexDirect, result, intermediate.addConstantUnion(selectors[0].coord2, loc), loc);
                 TType dereferenced(dereferencedCol, 0);
                 result->setType(dereferenced);
             }
         } else {
-            int column = getMatrixComponentsColumn(base->getMatrixRows(), comps);
+            int column = getMatrixComponentsColumn(base->getMatrixRows(), selectors);
             if (column >= 0) {
                 // Representable by m[c]
                 if (base->getType().getQualifier().isFrontEndConstant())
@@ -1002,9 +905,9 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
                 }
             } else {
                 // general case, not a column, not a single component
-                TIntermTyped* index = intermediate.addSwizzle(comps, loc);
+                TIntermTyped* index = intermediate.addSwizzle(selectors, loc);
                 result = intermediate.addIndex(EOpMatrixSwizzle, base, index, loc);
-                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, comps.size()));
+                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, selectors.size()));
            }
         }
     } else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
@@ -2535,14 +2438,16 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 coordSwizzle = argCoord;
             } else {
                 // Extract coordinate
-                TVectorFields coordFields(0,1,2,3);
-                coordFields.num = argCoord->getType().getVectorSize() - (isMS ? 0 : 1);
+                int swizzleSize = argCoord->getType().getVectorSize() - (isMS ? 0 : 1);
+                TSwizzleSelectors<TVectorSelector> coordFields;
+                for (int i = 0; i < swizzleSize; ++i)
+                    coordFields.push_back(i);
                 TIntermTyped* coordIdx = intermediate.addSwizzle(coordFields, loc);
                 coordSwizzle = intermediate.addIndex(EOpVectorSwizzle, argCoord, coordIdx, loc);
-                coordSwizzle->setType(TType(coordBaseType, EvqTemporary, coordFields.num));
+                coordSwizzle->setType(TType(coordBaseType, EvqTemporary, coordFields.size()));
 
                 // Extract LOD
-                TIntermTyped* lodIdx = intermediate.addConstantUnion(coordFields.num, loc, true);
+                TIntermTyped* lodIdx = intermediate.addConstantUnion(coordFields.size(), loc, true);
                 lodComponent = intermediate.addIndex(EOpIndexDirect, argCoord, lodIdx, loc);
                 lodComponent->setType(TType(coordBaseType, EvqTemporary, 1));
             }
@@ -3248,8 +3153,12 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
         {
             // ivec4 ( x.zyxw * 255.001953 );
             TIntermTyped* arg0 = node->getAsUnaryNode()->getOperand();
-            TVectorFields fields(2,1,0,3);
-            TIntermTyped* swizzleIdx = intermediate.addSwizzle(fields, loc);
+            TSwizzleSelectors<TVectorSelector> selectors;
+            selectors.push_back(2);
+            selectors.push_back(1);
+            selectors.push_back(0);
+            selectors.push_back(3);
+            TIntermTyped* swizzleIdx = intermediate.addSwizzle(selectors, loc);
             TIntermTyped* swizzled = intermediate.addIndex(EOpVectorSwizzle, arg0, swizzleIdx, loc);
             swizzled->setType(arg0->getType());
             swizzled->getWritableType().getQualifier().makeTemporary();
