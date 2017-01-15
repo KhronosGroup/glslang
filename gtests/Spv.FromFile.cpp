@@ -71,6 +71,8 @@ using GlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
 #ifdef AMD_EXTENSIONS
 using CompileVulkanToSpirvTestAMD = GlslangTest<::testing::TestWithParam<std::string>>;
 #endif
+using VulkanYFlip = GlslangTest<::testing::TestWithParam<std::string>>;
+using VulkanYFlipWithSpec = GlslangTest<::testing::TestWithParam<std::string>>;
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
@@ -154,6 +156,22 @@ TEST_P(CompileVulkanToSpirvTestAMD, FromFile)
                             Target::Spv);
 }
 #endif
+
+// GLSL-level Vulkan semantics test that need to see the AST for validation.
+TEST_P(VulkanYFlip, FromFile)
+{
+    loadFileCompileWithYFlipAndCheck(GlobalTestSettings.testRoot, GetParam(),
+        Source::GLSL, Semantics::Vulkan,
+        Target::BothASTAndSpv);
+}
+
+// GLSL-level Vulkan semantics test that need to see the AST for validation.
+TEST_P(VulkanYFlipWithSpec, FromFile)
+{
+    loadFileCompileWithYFlipWithSpecAndCheck(GlobalTestSettings.testRoot, GetParam(),
+        Source::GLSL, Semantics::Vulkan,
+        Target::BothASTAndSpv);
+}
 
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
@@ -362,6 +380,22 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 #endif
+
+INSTANTIATE_TEST_CASE_P(
+    Glsl, VulkanYFlip,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "vulkan.yflip.simple.vert",
+    })),
+    FileNameAsCustomTestSuffix
+);
+
+INSTANTIATE_TEST_CASE_P(
+    Glsl, VulkanYFlipWithSpec,
+    ::testing::ValuesIn(std::vector<std::string>({
+        "vulkan.yflip.spc.simple.vert",
+    })),
+    FileNameAsCustomTestSuffix
+);
 // clang-format on
 
 }  // anonymous namespace

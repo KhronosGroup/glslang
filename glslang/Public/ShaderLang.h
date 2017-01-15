@@ -149,6 +149,15 @@ enum EShMessages {
     EShMsgKeepUncalled     = (1 << 8),  // for testing, don't eliminate uncalled functions
 };
 
+typedef enum {
+    // Does nothing
+    EShVkCoordFlipNone,
+    // On vertex shader all writes to gl_Position are modified to write vec4(src.x, -src.y, src.z, .w out)
+    EShVkCoordFlipYStatic,
+    // On vertex shader all writes to gl_Position are modified to write vec4(src.x, (specConstantTrue? -src.y : src.y), src.z, src.w) out
+    EShVkCoordFlipYSpecConstant,
+} EShVulkanCoordFlipMode;
+
 //
 // Build a table for bindings.  This can be used for locating
 // attributes, uniforms, globals, etc., as needed.
@@ -313,6 +322,8 @@ public:
     void setAutoMapBindings(bool map);
     void setFlattenUniformArrays(bool flatten);
     void setNoStorageFormat(bool useUnknownFormat);
+    void setVulkanCoordFlipMode(EShVulkanCoordFlipMode mode);
+    void setVulkanCoordFlipSpecConstantId(unsigned int id);
 
     // Interface to #include handlers.
     //

@@ -176,7 +176,9 @@ public:
         shiftUboBinding(0),
         autoMapBindings(false),
         flattenUniformArrays(false),
-        useUnknownFormat(false)
+        useUnknownFormat(false),
+        yFlipMode(EShVkCoordFlipNone)
+        
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -188,7 +190,7 @@ public:
     }
     void setLimits(const TBuiltInResource& r) { resources = r; }
 
-    bool postProcess(TIntermNode*, EShLanguage);
+    bool postProcess(TIntermNode*, EShLanguage, TSymbolTable&);
     void output(TInfoSink&, bool tree);
     void removeTree();
 
@@ -213,6 +215,10 @@ public:
     bool getFlattenUniformArrays()        const { return flattenUniformArrays; }
     void setNoStorageFormat(bool b)             { useUnknownFormat = b; }
     bool getNoStorageFormat()             const { return useUnknownFormat; }
+    void setVulkanCoordFlipMode(EShVulkanCoordFlipMode mode) { yFlipMode = mode; }
+    EShVulkanCoordFlipMode setVulkanCoordFlipMode() { return yFlipMode; }
+    void setVulkanCoordFlipSpecConstantId(unsigned int id) { yFlipConstantId = id; addUsedConstantId(id); }
+    unsigned int setVulkanCoordFlipSpecConstantId() { return yFlipConstantId; }
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -440,6 +446,7 @@ protected:
     bool promoteAggregate(TIntermAggregate&);
     void pushSelector(TIntermSequence&, const TVectorSelector&, const TSourceLoc&);
     void pushSelector(TIntermSequence&, const TMatrixSelector&, const TSourceLoc&);
+    void updatePositionAssignments(TIntermNode* node, TSymbolTable& symbolTable);
 
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later
@@ -486,6 +493,8 @@ protected:
     bool autoMapBindings;
     bool flattenUniformArrays;
     bool useUnknownFormat;
+    EShVulkanCoordFlipMode yFlipMode;
+    unsigned int yFlipConstantId;
 
     typedef std::list<TCall> TGraph;
     TGraph callGraph;

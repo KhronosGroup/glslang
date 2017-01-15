@@ -197,12 +197,22 @@ public:
     GlslangResult compileAndLink(
             const std::string shaderName, const std::string& code,
             const std::string& entryPointName, EShMessages controls,
-            bool flattenUniformArrays = false)
+            bool flattenUniformArrays = false,
+            bool flip_y = false,
+            unsigned int flip_y_spec = -1)
     {
         const EShLanguage kind = GetShaderStage(GetSuffix(shaderName));
 
         glslang::TShader shader(kind);
         shader.setFlattenUniformArrays(flattenUniformArrays);
+        if (flip_y) {
+            if (flip_y_spec == -1) {
+                shader.setVulkanCoordFlipMode(EShVkCoordFlipYStatic);
+            } else {
+                shader.setVulkanCoordFlipMode(EShVkCoordFlipYSpecConstant);
+                shader.setVulkanCoordFlipSpecConstantId(flip_y_spec);
+            }
+        }
 
         bool success = compile(&shader, code, entryPointName, controls);
 
@@ -392,6 +402,58 @@ public:
 
         checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
                                     expectedOutputFname);
+    }
+
+    void loadFileCompileWithYFlipAndCheck(const std::string& testDir,
+        const std::string& testName,
+        Source source,
+        Semantics semantics,
+        Target target,
+        const std::string& entryPointName = "")
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedOutputFname =
+            testDir + "/baseResults/" + testName + ".out";
+        std::string input, expectedOutput;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
+
+        const EShMessages controls = DeriveOptions(source, semantics, target);
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, false, true);
+
+        // Generate the hybrid output in the way of glslangValidator.
+        std::ostringstream stream;
+        outputResultToStream(&stream, result, controls);
+
+        checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
+            expectedOutputFname);
+    }
+
+    void loadFileCompileWithYFlipWithSpecAndCheck(const std::string& testDir,
+        const std::string& testName,
+        Source source,
+        Semantics semantics,
+        Target target,
+        const std::string& entryPointName = "")
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedOutputFname =
+            testDir + "/baseResults/" + testName + ".out";
+        std::string input, expectedOutput;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
+
+        const EShMessages controls = DeriveOptions(source, semantics, target);
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, false, true, 2);
+
+        // Generate the hybrid output in the way of glslangValidator.
+        std::ostringstream stream;
+        outputResultToStream(&stream, result, controls);
+
+        checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
+            expectedOutputFname);
     }
 
     void loadFileCompileFlattenUniformsAndCheck(const std::string& testDir,
