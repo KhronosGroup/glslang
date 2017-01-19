@@ -72,10 +72,10 @@ public:
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
     void assignLocations(TVariable& variable);
     TFunction& handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
-    TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&, const TAttributeMap&);
-    void transformEntryPoint(const TSourceLoc&, TFunction&, const TAttributeMap&);
+    TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&, const TAttributeMap&, TIntermNode*& entryPointTree);
+    TIntermNode* transformEntryPoint(const TSourceLoc&, TFunction&, const TAttributeMap&);
     void handleFunctionBody(const TSourceLoc&, TFunction&, TIntermNode* functionBody, TIntermNode*& node);
-    void remapEntryPointIO(TFunction& function);
+    void remapEntryPointIO(const TFunction& function, TVariable*& returnValue, TVector<TVariable*>& inputs, TVector<TVariable*>& outputs);
     void remapNonEntryPointIO(TFunction& function);
     TIntermNode* handleReturnValue(const TSourceLoc&, TIntermTyped*);
     void handleFunctionArgument(TFunction*, TIntermTyped*& arguments, TIntermTyped* newArg);
@@ -203,9 +203,7 @@ protected:
     bool shouldConvertLValue(const TIntermNode*) const;
 
     // Array and struct flattening
-    bool shouldFlatten(const TType& type) const;
     TIntermTyped* flattenAccess(TIntermTyped* base, int member);
-    bool shouldFlattenIO(const TType&) const;
     bool shouldFlattenUniform(const TType&) const;
     bool wasFlattened(const TIntermTyped* node) const;
     bool wasFlattened(int id) const { return flattenMap.find(id) != flattenMap.end(); }
@@ -213,7 +211,6 @@ protected:
     bool isFinalFlattening(const TType& type) const { return !(type.isStruct() || type.isArray()); }
 
     // Structure splitting (splits interstage builtin types into its own struct)
-    bool shouldSplit(const TType&);
     TIntermTyped* splitAccessStruct(const TSourceLoc& loc, TIntermTyped*& base, int& member);
     void splitAccessArray(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index);
     TType& split(TType& type, TString name, const TType* outerStructType = nullptr);
@@ -243,7 +240,6 @@ protected:
     int structNestingLevel;      // 0 if outside blocks and structures
     int controlFlowNestingLevel; // 0 if outside all flow control
     TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
-    bool inEntryPoint;           // if inside a function, true if the function is the entry point
     bool postEntryPointReturn;         // if inside a function, true if the function is the entry point and this is after a return statement
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
     bool functionReturnsValue;   // true if a non-void function has a return
@@ -261,7 +257,6 @@ protected:
     TString currentCaller;        // name of last function body entered (not valid when at global scope)
     TIdSetType inductiveLoopIds;
     TVector<TIntermTyped*> needsIndexLimitationChecking;
-    TVariable* entryPointOutput;
 
     //
     // Geometry shader input arrays:
