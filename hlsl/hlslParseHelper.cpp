@@ -1840,10 +1840,6 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     // If the RHS is a simple symbol node, we'll copy it for each member.
     TIntermSymbol* cloneSymNode = nullptr;
 
-    // Array structs are not yet handled in flattening.  (Compilation error upstream, so
-    // this should never fire).
-    assert(!(left->getType().isStruct() && left->getType().isArray()));
-
     int memberCount = 0;
 
     // Track how many items there are to copy.
@@ -1934,10 +1930,13 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 TIntermTyped* subLeft  = getMember(true,  left,  element, left, element);
                 TIntermTyped* subRight = getMember(false, right, element, right, element);
 
+                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left,  element, splitLeft, element) : subLeft;
+                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, element, splitRight, element) : subRight; 
+
                 if (isFinalFlattening(dereferencedType))
                     assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc), loc);
                 else
-                    traverse(subLeft, subRight, splitLeft, splitRight);
+                    traverse(subLeft, subRight, subSplitLeft, subSplitRight);
             }
         } else if (left->getType().isStruct()) {
             // struct case
