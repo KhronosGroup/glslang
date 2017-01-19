@@ -4989,7 +4989,7 @@ void TParseContext::inheritGlobalDefaults(TQualifier& dst) const
 //
 TVariable* TParseContext::makeInternalVariable(const char* name, const TType& type) const
 {
-    TString* nameString = new TString(name);
+    TString* nameString = NewPoolTString(name);
     TVariable* variable = new TVariable(nameString, type);
     symbolTable.makeInternalVariable(*variable);
 

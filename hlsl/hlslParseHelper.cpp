@@ -5474,7 +5474,7 @@ void HlslParseContext::inheritGlobalDefaults(TQualifier& dst) const
 //
 TVariable* HlslParseContext::makeInternalVariable(const char* name, const TType& type) const
 {
-    TString* nameString = new TString(name);
+    TString* nameString = NewPoolTString(name);
     TVariable* variable = new TVariable(nameString, type);
     symbolTable.makeInternalVariable(*variable);
 
@@ -6481,7 +6481,7 @@ void HlslParseContext::renameShaderFunction(TString*& name) const
     // Replace the entry point name given in the shader with the real entry point name,
     // if there is a substitution.
     if (name != nullptr && *name == sourceEntryPointName)
-        name = new TString(intermediate.getEntryPointName().c_str());
+        name = NewPoolTString(intermediate.getEntryPointName().c_str());
 }
 
 // post-processing
