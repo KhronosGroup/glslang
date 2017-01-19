@@ -79,9 +79,7 @@ public:
             symbolTable(symbolTable),
             parsingBuiltins(parsingBuiltins), scanContext(nullptr), ppContext(nullptr),
             globalUniformBlock(nullptr)
-    {
-        linkage = new TIntermAggregate;
-    }
+    { }
     virtual ~TParseContextBase() { }
 
     virtual void C_DECL   error(const TSourceLoc&, const char* szReason, const char* szToken,
@@ -183,13 +181,9 @@ protected:
                                const char* szExtraInfoFormat, TPrefixType prefix,
                                va_list args);
     virtual void trackLinkage(TSymbol& symbol);
-    virtual void trackLinkageDeferred(TSymbol& symbol);
     virtual void makeEditable(TSymbol*&);
     virtual TVariable* getEditableVariable(const char* name);
     virtual void finish();
-
-private:
-    TIntermAggregate* linkage;
 };
 
 //

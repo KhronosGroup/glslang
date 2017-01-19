@@ -58,10 +58,8 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
     contextPragma(true, false),
     loopNestingLevel(0), annotationNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
-    inEntryPoint(false),
     postEntryPointReturn(false),
     limits(resources.limits),
-    entryPointOutput(nullptr),
     builtInIoIndex(nullptr),
     builtInIoBase(nullptr),
     nextInLocation(0), nextOutLocation(0),
@@ -709,7 +707,7 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
     else {
         // at least one of base and index is variable...
 
-        if (base->getAsSymbolNode() && (wasFlattened(base) || shouldFlatten(base->getType()))) {
+        if (base->getAsSymbolNode() && (wasFlattened(base) || shouldFlattenUniform(base->getType()))) {
             if (index->getQualifier().storage != EvqConst)
                 error(loc, "Invalid variable index to flattened array", base->getAsSymbolNode()->getName().c_str(), "");
 
@@ -921,7 +919,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
             }
         }
         if (fieldFound) {
-            if (base->getAsSymbolNode() && (wasFlattened(base) || shouldFlatten(base->getType()))) {
+            if (base->getAsSymbolNode() && (wasFlattened(base) || shouldFlattenUniform(base->getType()))) {
                 result = flattenAccess(base, member);
             } else {
                 // Update the base and member to access if this was a split structure.
@@ -944,19 +942,6 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
         error(loc, "does not apply to this type:", field.c_str(), base->getType().getCompleteString().c_str());
 
     return result;
-}
-
-// Determine whether we should split this type
-bool HlslParseContext::shouldSplit(const TType& type)
-{
-    if (! inEntryPoint)
-        return false;
-
-    const TStorageQualifier qualifier = type.getQualifier().storage;
-
-    // If it contains interstage IO, but not ONLY interstage IO, split the struct.
-    return type.isStruct() && type.containsBuiltInInterstageIO(language) &&
-        (qualifier == EvqVaryingIn || qualifier == EvqVaryingOut);
 }
 
 // Split the type of the given node into two structs:
@@ -984,7 +969,7 @@ void HlslParseContext::split(const TVariable& variable)
 {
     const TType& type = variable.getType();
 
-    TString name = (&variable == entryPointOutput) ? "" : variable.getName();
+    TString name = variable.getName();
 
     // Create a new variable:
     TType& splitType = split(*type.clone(), name);
@@ -1010,7 +995,7 @@ TType& HlslParseContext::split(TType& type, TString name, const TType* outerStru
     if (type.isStruct()) {
         TTypeList* userStructure = type.getWritableStruct();
 
-        // Get iterator to (now at end) set of builtin iterstage IO members
+        // Get iterator to (now at end) set of builtin interstage IO members
         const auto firstIo = std::stable_partition(userStructure->begin(), userStructure->end(),
                                                    [this](const TTypeLoc& t) {return !t.type->isBuiltInInterstageIO(language);});
 
@@ -1042,35 +1027,13 @@ TType& HlslParseContext::split(TType& type, TString name, const TType* outerStru
     return type;
 }
 
-// Determine whether we should flatten an arbitrary type.
-bool HlslParseContext::shouldFlatten(const TType& type) const
-{
-    return shouldFlattenIO(type) || shouldFlattenUniform(type);
-}
-
-// Is this an IO variable that can't be passed down the stack?
-// E.g., pipeline inputs to the vertex stage and outputs from the fragment stage.
-bool HlslParseContext::shouldFlattenIO(const TType& type) const
-{
-    if (! inEntryPoint)
-        return false;
-
-    const TStorageQualifier qualifier = type.getQualifier().storage;
-
-    if (!type.isStruct())
-        return false;
-
-    return ((language == EShLangVertex   && qualifier == EvqVaryingIn) ||
-            (language == EShLangFragment && qualifier == EvqVaryingOut));
-}
-
 // Is this a uniform array which should be flattened?
 bool HlslParseContext::shouldFlattenUniform(const TType& type) const
 {
     const TStorageQualifier qualifier = type.getQualifier().storage;
 
-    return ((type.isArray() && intermediate.getFlattenUniformArrays()) || type.isStruct()) &&
-        qualifier == EvqUniform &&
+    return qualifier == EvqUniform &&
+        ((type.isArray() && intermediate.getFlattenUniformArrays()) || type.isStruct()) &&
         type.containsOpaque();
 }
 
@@ -1146,7 +1109,7 @@ int HlslParseContext::addFlattenedMember(const TSourceLoc& loc,
         flattenData.members.push_back(memberVariable);
 
         if (track)
-            trackLinkageDeferred(*memberVariable);
+            trackLinkage(*memberVariable);
 
         return static_cast<int>(flattenData.offsets.size())-1; // location of the member reference
     } else {
@@ -1483,7 +1446,7 @@ void HlslParseContext::addInterstageIoToLinkage()
 
         // Add the loose interstage IO to the linkage
         if (var->getType().isLooseAndBuiltIn(language))
-            trackLinkageDeferred(*var);
+            trackLinkage(*var);
 
         // Add the PerVertex interstage IO to the IO block
         if (var->getType().isPerVertexAndBuiltIn(language)) {
@@ -1536,7 +1499,7 @@ void HlslParseContext::addInterstageIoToLinkage()
             if (!symbolTable.insert(*ioBlock))
                 error(loc, "block instance name redefinition", ioBlock->getName().c_str(), "");
             else
-                trackLinkageDeferred(*ioBlock);
+                trackLinkage(*ioBlock);
         }
     }
 }
@@ -1546,7 +1509,7 @@ void HlslParseContext::addInterstageIoToLinkage()
 // The body is handled after this function returns.
 //
 TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& loc, TFunction& function,
-                                                             const TAttributeMap& attributes)
+                                                             const TAttributeMap& attributes, TIntermNode*& entryPointTree)
 {
     currentCaller = function.getMangledName();
     TSymbol* symbol = symbolTable.find(function.getMangledName());
@@ -1573,7 +1536,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
 
     // Entry points need different I/O and other handling, transform it so the
     // rest of this function doesn't care.
-    transformEntryPoint(loc, function, attributes);
+    entryPointTree = transformEntryPoint(loc, function, attributes);
 
     // Insert the $Global constant buffer.
     // TODO: this design fails if new members are declared between function definitions.
@@ -1597,29 +1560,12 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     for (int i = 0; i < function.getParamCount(); i++) {
         TParameter& param = function[i];
         if (param.name != nullptr) {
-            TType* sanitizedType;
-
-            // If we're not in the entry point, parameters are sanitized types.
-            if (inEntryPoint)
-                sanitizedType = param.type;
-            else
-                sanitizedType = sanitizeType(param.type);
-
-            TVariable *variable = new TVariable(param.name, *sanitizedType);
+            TVariable *variable = new TVariable(param.name, *param.type);
 
             // Insert the parameters with name in the symbol table.
             if (! symbolTable.insert(*variable))
                 error(loc, "redefinition", variable->getName().c_str(), "");
             else {
-                // get IO straightened out
-                if (inEntryPoint) {
-                    if (shouldFlatten(*param.type))
-                        flatten(loc, *variable);
-                    if (shouldSplit(*param.type))
-                        split(*variable);
-                    assignLocations(*variable);
-                }
-
                 // Transfer ownership of name pointer to symbol table.
                 param.name = nullptr;
 
@@ -1641,33 +1587,46 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
 }
 
 //
-// Do all special handling for the entry point.
+// Do all special handling for the entry point, including wrapping
+// the shader's entry point with the official entry point that will call it.
 //
-void HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunction& function, const TAttributeMap& attributes)
+// The following:
+//
+//    retType shaderEntryPoint(args...) // shader declared entry point
+//    { body }
+//
+// Becomes
+//
+//    out retType ret;
+//    in iargs<that are input>...;
+//    out oargs<that are output> ...;
+//
+//    void shaderEntryPoint()    // synthesized, but official, entry point
+//    {
+//        args<that are input> = iargs...;
+//        ret = @shaderEntryPoint(args...);
+//        oargs = args<that are output>...;
+//    }
+//
+// The symbol table will still map the original entry point name to the
+// the modified function and it's new name:
+//
+//    symbol table:  shaderEntryPoint  ->   @shaderEntryPoint
+//
+// Returns nullptr if no entry-point tree was built, otherwise, returns
+// a subtree that creates the entry point.
+//
+TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunction& userFunction, const TAttributeMap& attributes)
 {
-    inEntryPoint = function.getName().compare(intermediate.getEntryPointName().c_str()) == 0;
-
-    if (!inEntryPoint) {
-        remapNonEntryPointIO(function);
-        return;
+    // if we aren't in the entry point, fix the IO as such and exit
+    if (userFunction.getName().compare(intermediate.getEntryPointName().c_str()) != 0) {
+        remapNonEntryPointIO(userFunction);
+        return nullptr;
     }
 
     // entry point logic...
 
-    intermediate.setEntryPointMangledName(function.getMangledName().c_str());
-    intermediate.incrementEntryPointCount();
-
-    // Handle parameters and return value
-    remapEntryPointIO(function);
-    if (entryPointOutput) {
-        if (shouldFlatten(entryPointOutput->getType()))
-            flatten(loc, *entryPointOutput);
-        if (shouldSplit(entryPointOutput->getType()))
-            split(*entryPointOutput);
-        assignLocations(*entryPointOutput);
-    }
-
-    // Handle function attributes
+    // Handle entry-point function attributes
     const TIntermAggregate* numThreads = attributes[EatNumThreads];
     if (numThreads != nullptr) {
         const TIntermSequence& sequence = numThreads->getSequence();
@@ -1678,6 +1637,99 @@ void HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunction& fun
     const TIntermAggregate* maxVertexCount = attributes[EatMaxVertexCount];
     if (maxVertexCount != nullptr)
         intermediate.setVertices(maxVertexCount->getSequence()[0]->getAsConstantUnion()->getConstArray()[0].getIConst());
+
+    // Move parameters and return value to shader in/out
+    TVariable* entryPointOutput; // gets created in remapEntryPointIO
+    TVector<TVariable*> inputs;
+    TVector<TVariable*> outputs;
+    remapEntryPointIO(userFunction, entryPointOutput, inputs, outputs);
+
+    // Further this return/in/out transform by flattening, splitting, and assigning locations
+    const auto makeVariableInOut = [&](TVariable& variable) {
+        if (variable.getType().isStruct()) {
+            const TStorageQualifier qualifier = variable.getType().getQualifier().storage;
+            // struct inputs to the vertex stage and outputs from the fragment stage must be flattened
+            if ((language == EShLangVertex   && qualifier == EvqVaryingIn) ||
+                (language == EShLangFragment && qualifier == EvqVaryingOut))
+                flatten(loc, variable);
+            // Mixture of IO and non-IO must be split
+            else if (variable.getType().containsBuiltInInterstageIO(language))
+                split(variable);
+        }
+        assignLocations(variable);
+    };
+    if (entryPointOutput)
+        makeVariableInOut(*entryPointOutput);
+    for (auto it = inputs.begin(); it != inputs.end(); ++it)
+        makeVariableInOut(*(*it));
+    for (auto it = outputs.begin(); it != outputs.end(); ++it)
+        makeVariableInOut(*(*it));
+
+    // Synthesize the call
+
+    pushScope(); // matches the one in handleFunctionBody()
+
+    // new signature
+    TType voidType(EbtVoid);
+    TFunction synthEntryPoint(&userFunction.getName(), voidType);
+    TIntermAggregate* synthParams = new TIntermAggregate();
+    intermediate.setAggregateOperator(synthParams, EOpParameters, voidType, loc);
+    intermediate.setEntryPointMangledName(synthEntryPoint.getMangledName().c_str());
+    intermediate.incrementEntryPointCount();
+    TFunction callee(&userFunction.getName(), voidType); // call based on old name, which is still in the symbol table
+
+    // change original name
+    userFunction.addPrefix("@");                         // change the name in the function, but not in the symbol table
+
+    // Copy inputs (shader-in -> calling arg), while building up the call node
+    TVector<TVariable*> argVars;
+    TIntermAggregate* synthBody = new TIntermAggregate();
+    auto inputIt = inputs.begin();
+    TIntermTyped* callingArgs = nullptr;
+    for (int i = 0; i < userFunction.getParamCount(); i++) {
+        TParameter& param = userFunction[i];
+        argVars.push_back(makeInternalVariable(*param.name, *param.type));
+        argVars.back()->getWritableType().getQualifier().makeTemporary();
+        TIntermSymbol* arg = intermediate.addSymbol(*argVars.back());
+        handleFunctionArgument(&callee, callingArgs, arg);
+        if (param.type->getQualifier().isParamInput()) {
+            intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign, arg,
+                                                               intermediate.addSymbol(**inputIt)));
+            inputIt++;
+        }
+    }
+
+    // Call
+    currentCaller = synthEntryPoint.getMangledName();
+    TIntermTyped* callReturn = handleFunctionCall(loc, &callee, callingArgs);
+    currentCaller = userFunction.getMangledName();
+
+    // Return value
+    if (entryPointOutput)
+        intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign,
+                                                           intermediate.addSymbol(*entryPointOutput), callReturn));
+    else
+        intermediate.growAggregate(synthBody, callReturn);
+
+    // Output copies
+    auto outputIt = outputs.begin();
+    for (int i = 0; i < userFunction.getParamCount(); i++) {
+        TParameter& param = userFunction[i];
+        if (param.type->getQualifier().isParamOutput()) {
+            intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign,
+                                                               intermediate.addSymbol(**outputIt),
+                                                               intermediate.addSymbol(*argVars[i])));
+            outputIt++;
+        }
+    }
+
+    // Put the pieces together to form a full function subtree
+    // for the synthesized entry point.
+    synthBody->setOperator(EOpSequence);
+    TIntermNode* synthFunctionDef = synthParams;
+    handleFunctionBody(loc, synthEntryPoint, synthBody, synthFunctionDef);
+
+    return synthFunctionDef;
 }
 
 void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& function, TIntermNode* functionBody, TIntermNode*& node)
@@ -1695,10 +1747,9 @@ void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& func
 // AST I/O is done through shader globals declared in the 'in' or 'out'
 // storage class.  An HLSL entry point has a return value, input parameters
 // and output parameters.  These need to get remapped to the AST I/O.
-void HlslParseContext::remapEntryPointIO(TFunction& function)
+void HlslParseContext::remapEntryPointIO(const TFunction& function, TVariable*& returnValue,
+    TVector<TVariable*>& inputs, TVector<TVariable*>& outputs)
 {
-    // Will auto-assign locations here to the inputs/outputs defined by the entry point
-
     const auto remapType = [&](TType& type) {
         const auto remapBuiltInType = [&](TType& type) {
             switch (type.getQualifier().builtIn) {
@@ -1718,22 +1769,33 @@ void HlslParseContext::remapEntryPointIO(TFunction& function)
         if (type.isStruct()) {
             auto members = *type.getStruct();
             for (auto member = members.begin(); member != members.end(); ++member)
-                remapBuiltInType(*member->type);
+                remapBuiltInType(*member->type);  // TODO: lack-of-recursion structure depth problem
         }
     };
 
     // return value is actually a shader-scoped output (out)
-    if (function.getType().getBasicType() != EbtVoid) {
-        entryPointOutput = makeInternalVariable("@entryPointOutput", function.getType());
-        entryPointOutput->getWritableType().getQualifier().storage = EvqVaryingOut;
-        remapType(function.getWritableType());
+    if (function.getType().getBasicType() == EbtVoid)
+        returnValue = nullptr;
+    else {
+        returnValue = makeInternalVariable("@entryPointOutput", function.getType());
+        returnValue->getWritableType().getQualifier().storage = EvqVaryingOut;
+        remapType(returnValue->getWritableType());
     }
 
     // parameters are actually shader-scoped inputs and outputs (in or out)
     for (int i = 0; i < function.getParamCount(); i++) {
         TType& paramType = *function[i].type;
-        paramType.getQualifier().storage = paramType.getQualifier().isParamInput() ? EvqVaryingIn : EvqVaryingOut;
-        remapType(paramType);
+        if (paramType.getQualifier().isParamInput()) {
+            TVariable* argAsGlobal = makeInternalVariable(*function[i].name, paramType);
+            argAsGlobal->getWritableType().getQualifier().storage = EvqVaryingIn;
+            inputs.push_back(argAsGlobal);
+        }
+        if (paramType.getQualifier().isParamOutput()) {
+            TVariable* argAsGlobal = makeInternalVariable(*function[i].name, paramType);
+            argAsGlobal->getWritableType().getQualifier().storage = EvqVaryingOut;
+            outputs.push_back(argAsGlobal);
+            remapType(argAsGlobal->getWritableType());
+        }
     }
 }
 
@@ -1771,23 +1833,7 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
         }
     }
 
-    // The entry point needs to send any return value to the entry-point output instead.
-    // So, a subtree is built up, as a two-part sequence, with the first part being an
-    // assignment subtree, and the second part being a return with no value.
-    //
-    // Otherwise, for a non entry point, just return a return statement.
-    if (inEntryPoint) {
-        assert(entryPointOutput != nullptr); // should have been error tested at the beginning
-        TIntermSymbol* left = new TIntermSymbol(entryPointOutput->getUniqueId(), entryPointOutput->getName(),
-                                                entryPointOutput->getType());
-        TIntermNode* returnSequence = handleAssign(loc, EOpAssign, left, value);
-        returnSequence = intermediate.makeAggregate(returnSequence);
-        returnSequence = intermediate.growAggregate(returnSequence, intermediate.addBranch(EOpReturn, loc), loc);
-        returnSequence->getAsAggregate()->setOperator(EOpSequence);
-
-        return returnSequence;
-    } else
-        return intermediate.addBranch(EOpReturn, value, loc);
+    return intermediate.addBranch(EOpReturn, value, loc);
 }
 
 void HlslParseContext::handleFunctionArgument(TFunction* function,
@@ -4369,7 +4415,7 @@ void HlslParseContext::declareArray(const TSourceLoc& loc, TString& identifier, 
             symbol = new TVariable(&identifier, type);
             symbolTable.insert(*symbol);
             if (track && symbolTable.atGlobalLevel())
-                trackLinkageDeferred(*symbol);
+                trackLinkage(*symbol);
 
             return;
         }
@@ -4600,7 +4646,7 @@ void HlslParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& n
     symbolTable.insert(*block);
 
     // Save it in the AST for linker use.
-    trackLinkageDeferred(*block);
+    trackLinkage(*block);
 }
 
 void HlslParseContext::paramFix(TType& type)
@@ -5408,8 +5454,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
 
     inheritGlobalDefaults(type.getQualifier());
 
-    const bool flattenVar = shouldFlatten(type);
-    const bool splitVar   = shouldSplit(type);
+    const bool flattenVar = shouldFlattenUniform(type);
 
     // Type sanitization: if this is declaring a variable of a type that contains
     // interstage IO, we want to make it a temporary.
@@ -5429,9 +5474,6 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
 
     if (flattenVar)
         flatten(loc, *symbol->getAsVariable());
-
-    if (splitVar)
-        split(*symbol->getAsVariable());
 
     if (! symbol)
         return nullptr;
@@ -5493,7 +5535,7 @@ TVariable* HlslParseContext::declareNonArray(const TSourceLoc& loc, TString& ide
     // add variable to symbol table
     if (symbolTable.insert(*variable)) {
         if (track && symbolTable.atGlobalLevel())
-            trackLinkageDeferred(*variable);
+            trackLinkage(*variable);
         return variable;
     }
 
@@ -6068,7 +6110,7 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     }
 
     // Save it in the AST for linker use.
-    trackLinkageDeferred(variable);
+    trackLinkage(variable);
 }
 
 void HlslParseContext::finalizeGlobalUniformBlockLayout(TVariable& block)
