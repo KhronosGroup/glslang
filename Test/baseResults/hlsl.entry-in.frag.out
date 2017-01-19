@@ -60,11 +60,11 @@ gl_FragCoord origin is upper left
 0:17        move second child to first child (temp float)
 0:17          'ret2' (temp float)
 0:17          Function Call: fun(struct-InParam-vf2-vf4-vi21; (temp float)
-0:17            Comma (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:17            Comma (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:17              Sequence
 0:17                move second child to first child (temp 2-component vector of float)
 0:17                  v: direct index for structure (temp 2-component vector of float)
-0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:17                    Constant:
 0:17                      0 (const int)
 0:17                  v: direct index for structure (temp 2-component vector of float)
@@ -72,21 +72,21 @@ gl_FragCoord origin is upper left
 0:17                    Constant:
 0:17                      0 (const int)
 0:17                move second child to first child (temp 4-component vector of float)
-0:17                  fragCoord: direct index for structure (temp 4-component vector of float FragCoord)
-0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:17                  fragCoord: direct index for structure (temp 4-component vector of float)
+0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:17                    Constant:
 0:17                      1 (const int)
 0:?                   'i_fragCoord' (in 4-component vector of float FragCoord)
 0:17                move second child to first child (temp 2-component vector of int)
 0:17                  i2: direct index for structure (temp 2-component vector of int)
-0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:17                    Constant:
 0:17                      2 (const int)
 0:17                  i2: direct index for structure (temp 2-component vector of int)
 0:17                    'i' (layout(location=0 ) in structure{temp 2-component vector of float v, temp 2-component vector of int i2})
 0:17                    Constant:
 0:17                      1 (const int)
-0:17              'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:17              'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:19      Sequence
 0:19        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
@@ -169,11 +169,11 @@ gl_FragCoord origin is upper left
 0:17        move second child to first child (temp float)
 0:17          'ret2' (temp float)
 0:17          Function Call: fun(struct-InParam-vf2-vf4-vi21; (temp float)
-0:17            Comma (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:17            Comma (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:17              Sequence
 0:17                move second child to first child (temp 2-component vector of float)
 0:17                  v: direct index for structure (temp 2-component vector of float)
-0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:17                    Constant:
 0:17                      0 (const int)
 0:17                  v: direct index for structure (temp 2-component vector of float)
@@ -181,21 +181,21 @@ gl_FragCoord origin is upper left
 0:17                    Constant:
 0:17                      0 (const int)
 0:17                move second child to first child (temp 4-component vector of float)
-0:17                  fragCoord: direct index for structure (temp 4-component vector of float FragCoord)
-0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:17                  fragCoord: direct index for structure (temp 4-component vector of float)
+0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:17                    Constant:
 0:17                      1 (const int)
 0:?                   'i_fragCoord' (in 4-component vector of float FragCoord)
 0:17                move second child to first child (temp 2-component vector of int)
 0:17                  i2: direct index for structure (temp 2-component vector of int)
-0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:17                    'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:17                    Constant:
 0:17                      2 (const int)
 0:17                  i2: direct index for structure (temp 2-component vector of int)
 0:17                    'i' (layout(location=0 ) in structure{temp 2-component vector of float v, temp 2-component vector of int i2})
 0:17                    Constant:
 0:17                      1 (const int)
-0:17              'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float FragCoord fragCoord, temp 2-component vector of int i2})
+0:17              'aggShadow' (temp structure{temp 2-component vector of float v, temp 4-component vector of float fragCoord, temp 2-component vector of int i2})
 0:19      Sequence
 0:19        move second child to first child (temp 4-component vector of float)
 0:?           '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
@@ -247,7 +247,6 @@ gl_FragCoord origin is upper left
                               Name 70  "@entryPointOutput"
                               Decorate 33(i) Location 0
                               Decorate 40(i_fragCoord) BuiltIn FragCoord
-                              MemberDecorate 55(InParam) 1 BuiltIn FragCoord
                               Decorate 70(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
