@@ -236,4 +236,8 @@ spv.loopsArtificial.frag
              141:    7(fvec4) Load 9(color)
                               Store 140(gl_FragColor) 141
                               Return
+              49:             Label
+                              Branch 44
+             118:             Label
+                              Branch 114
                               FunctionEnd

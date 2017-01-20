@@ -199,6 +199,9 @@ Warning, version 400 is not yet complete; most version-specific features are pre
                               Store 30(sum) 58
               59:      6(int) Load 30(sum)
                               ReturnValue 59
+              60:             Label
+              61:      6(int) Undef
+                              ReturnValue 61
                               FunctionEnd
 25(foo2(f1;vf3;i1;):      6(int) Function None 21
            22(a):     18(ptr) FunctionParameter
@@ -214,6 +217,9 @@ Warning, version 400 is not yet complete; most version-specific features are pre
               71:   17(float) FMul 66 70
               72:      6(int) ConvertFToS 71
                               ReturnValue 72
+              73:             Label
+              74:      6(int) Undef
+                              ReturnValue 74
                               FunctionEnd
        28(foo3():      6(int) Function None 27
               29:             Label
@@ -225,4 +231,11 @@ Warning, version 400 is not yet complete; most version-specific features are pre
                                 Kill
               82:             Label
                               ReturnValue 86
+              83:             Label
+                              ReturnValue 84
+              85:             Label
+                              Branch 82
+              87:             Label
+              88:      6(int) Undef
+                              ReturnValue 88
                               FunctionEnd

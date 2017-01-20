@@ -123,4 +123,6 @@ spv.discard-dce.frag
               83:    7(fvec4) Load 15(color)
                               Store 59(gl_FragColor) 83
                               Return
+              69:             Label
+                              Branch 49
                               FunctionEnd

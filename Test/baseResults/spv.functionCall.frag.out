@@ -88,6 +88,9 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
               30:    6(float) Load 29
               31:    6(float) FAdd 27 30
                               ReturnValue 31
+              32:             Label
+              33:    6(float) Undef
+                              ReturnValue 33
                               FunctionEnd
         13(bar():           2 Function None 3
               14:             Label
@@ -106,6 +109,10 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
               41:             Label
               47:    6(float) Undef
                               ReturnValue 47
+              43:             Label
+                              Branch 41
+              46:             Label
+                              Branch 41
                               FunctionEnd
 18(missingReturn():    6(float) Function None 15
               19:             Label
@@ -120,4 +127,6 @@ WARNING: 0:5: varying deprecated in version 130; may be removed in future releas
               51:             Label
               55:    6(float) Undef
                               ReturnValue 55
+              54:             Label
+                              Branch 51
                               FunctionEnd

@@ -64,4 +64,12 @@ Warning, version 310 is not yet complete; most version-specific features are pre
               37:     33(ptr) AccessChain 20 21 32
                               Store 37 36
                               Return
+              15:             Label
+                              Branch 11
+              26:             Label
+                              Branch 12
+              27:             Label
+                              Branch 13
+              28:             Label
+                              Branch 14
                               FunctionEnd

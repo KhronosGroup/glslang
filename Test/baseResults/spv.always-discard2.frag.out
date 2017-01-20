@@ -59,4 +59,8 @@ spv.always-discard2.frag
               35:    6(float) FSub 34 10
                               Store 30(y) 35
                               Kill
+              36:             Label
+              39:    7(fvec4) Load 15(color)
+                              Store 38(gl_FragColor) 39
+                              Return
                               FunctionEnd

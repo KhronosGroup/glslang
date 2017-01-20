@@ -40,4 +40,8 @@ Warning, version 450 is not yet complete; most version-specific features are pre
                                 Return
               21:             Label
                               Return
+              22:             Label
+                              Branch 21
+              24:             Label
+                              Branch 21
                               FunctionEnd

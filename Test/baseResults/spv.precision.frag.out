@@ -219,6 +219,9 @@ Warning, version 310 is not yet complete; most version-specific features are pre
               24:   21(fvec4) Load 23(highfin)
               25:    9(fvec2) VectorShuffle 24 24 0 1
                               ReturnValue 25
+              26:             Label
+              27:    9(fvec2) Undef
+                              ReturnValue 27
                               FunctionEnd
 19(boolfun(vb2;):    14(bool) Function None 17
          18(bv2):     16(ptr) FunctionParameter
@@ -227,4 +230,7 @@ Warning, version 310 is not yet complete; most version-specific features are pre
               32:   15(bvec2) LogicalEqual 28 31
               33:    14(bool) All 32
                               ReturnValue 33
+              34:             Label
+              35:    14(bool) Undef
+                              ReturnValue 35
                               FunctionEnd

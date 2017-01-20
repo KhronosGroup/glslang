@@ -80,4 +80,10 @@ Warning, version 310 is not yet complete; most version-specific features are pre
               12:             Label
                               Store 43(G) 44
                               Return
+              28:             Label
+                              Store 29(C) 20
+                              Branch 26
+              37:             Label
+                              Store 38(E) 20
+                              Branch 35
                               FunctionEnd

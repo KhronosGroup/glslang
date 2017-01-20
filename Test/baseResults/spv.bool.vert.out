@@ -87,4 +87,7 @@ Warning, version 450 is not yet complete; most version-specific features are pre
               12:     6(bool) Load 9(b)
               14:     6(bool) LogicalNotEqual 12 13
                               ReturnValue 14
+              15:             Label
+              16:     6(bool) Undef
+                              ReturnValue 16
                               FunctionEnd

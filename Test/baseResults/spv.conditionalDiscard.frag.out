@@ -56,4 +56,6 @@ Warning, version 400 is not yet complete; most version-specific features are pre
               35:    7(fvec4) Load 9(v)
                               Store 34(gl_FragColor) 35
                               Return
+              32:             Label
+                              Branch 31
                               FunctionEnd

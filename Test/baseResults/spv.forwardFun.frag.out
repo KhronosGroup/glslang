@@ -100,6 +100,10 @@ spv.forwardFun.frag
               42:             Label
               48:    8(float) Undef
                               ReturnValue 48
+              44:             Label
+                              Branch 42
+              47:             Label
+                              Branch 42
                               FunctionEnd
     16(foo(vf4;):    8(float) Function None 14
          15(bar):     13(ptr) FunctionParameter
@@ -110,4 +114,7 @@ spv.forwardFun.frag
               55:    8(float) Load 54
               56:    8(float) FAdd 52 55
                               ReturnValue 56
+              57:             Label
+              58:    8(float) Undef
+                              ReturnValue 58
                               FunctionEnd
