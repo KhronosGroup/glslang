@@ -1515,6 +1515,7 @@ bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/)
 
     // Propagate 'noContraction' label in backward from 'precise' variables.
     glslang::PropagateNoContraction(*this);
+    combineTextureSamplers(root);
 
     return true;
 }
@@ -2637,6 +2638,315 @@ void TIntermAggregate::addToPragmaTable(const TPragmaTable& pTable)
     assert(!pragmaTable);
     pragmaTable = new TPragmaTable();
     *pragmaTable = pTable;
+}
+
+typedef std::vector<TIntermSymbol*> TIntermSymbolVector;
+typedef std::vector<TIntermAggregate*> TIntermAggregateVector;
+
+class LinkerObjectGatherTraverser
+  : public TIntermTraverser
+{
+public:
+  LinkerObjectGatherTraverser(TIntermSymbolVector& symbols)
+    :symbols(symbols)
+  {
+  }
+
+  bool visitAggregate(TVisit, TIntermAggregate* ag) override
+  {
+    if (ag->getOp() == EOpLinkerObjects)
+    {
+      TIntermSequence& seq = ag->getSequence();
+
+      for (TIntermSequence::const_iterator at = seq.begin(); at != seq.end(); ++at)
+      {
+        TIntermSymbol* symbol = (*at)->getAsSymbolNode();
+        if (!symbol)
+          continue;
+
+
+        if (symbol->getType().getBasicType() == EbtSampler)
+            // only capture not combined and no image types
+            if (!symbol->getType().getSampler().isCombined() &&
+                !symbol->getType().getSampler().isImage())
+                symbols.push_back(symbol);
+        
+      }
+      return false;
+    }
+    return true;
+  }
+
+private:
+  TIntermSymbolVector&    symbols;
+};
+
+class ConstructorGatherTraverser
+  : public TIntermTraverser
+{
+public:
+  ConstructorGatherTraverser(TIntermAggregateVector& list, const TIntermSymbolVector& symbols)
+    : foundList(list)
+    , symbols(symbols)
+  {
+  }
+
+  bool visitAggregate(TVisit, TIntermAggregate* ag) override
+  {
+    TIntermSequence& seq = ag->getSequence();
+    if (seq.empty())
+      return true;
+    TIntermAggregate* constructor = seq[0]->getAsAggregate();
+    if (!constructor)
+      return true;
+    if (constructor->getOp() == EOpConstructTextureSampler)
+    {
+      TIntermSequence& cSeq = constructor->getSequence();
+      TIntermSymbol* tex = cSeq[0]->getAsSymbolNode();
+      TIntermSymbol* smp = cSeq[1]->getAsSymbolNode();
+      bool texIsGlobal = false;
+      bool sampIsGlobal = false;
+      if (!tex)
+      {
+        // array access
+      }
+      else
+      {
+        TIntermSymbolVector::const_iterator at = std::find_if(symbols.begin(), symbols.end(), [=] (TIntermSymbol* sym)
+        {
+          return sym->getId() == tex->getId();
+        });
+        texIsGlobal = at != symbols.end();
+      }
+      if (!smp) {
+          //array acces
+      } else {
+          TIntermSymbolVector::const_iterator at = std::find_if(symbols.begin(), symbols.end(), [=](TIntermSymbol* sym) {
+              return sym->getId() == smp->getId();
+          });
+          sampIsGlobal = at != symbols.end();
+      }
+      if (texIsGlobal || sampIsGlobal)
+        foundList.push_back(ag);
+    }
+    return true;
+  }
+
+private:
+  TIntermAggregateVector&     foundList;
+  const TIntermSymbolVector&  symbols;
+};
+
+class VariablePatchTraverser
+  : public TIntermTraverser
+{
+public:
+  VariablePatchTraverser(const TIntermAggregateVector& patchList)
+    : patchList(patchList)
+  {
+  }
+
+  void visitSymbol(TIntermSymbol* symb) override
+  {
+    std::find_if(patchList.begin(), patchList.end(), [=] (TIntermAggregate* ag) mutable
+    {
+      if (ag->getSequence()[0]->getAsAggregate()->getSequence()[0]->getAsSymbolNode()->getId() == symb->getId())
+      {
+        symb->getWritableType().getSampler().combined = 1;
+        symb->getWritableType().getSampler().shadow = ag->getSequence()[0]->getAsAggregate()->getSequence()[1]->getAsSymbolNode()->getType().getSampler().shadow;
+        return true;
+      }
+      return false;
+    });
+  }
+
+private:
+  const TIntermAggregateVector& patchList;
+};
+
+class VariableRemoveTraverser
+  : public TIntermTraverser
+{
+public:
+  VariableRemoveTraverser(const TIntermAggregateVector& patchList)
+    : patchList(patchList)
+  {
+  }
+
+  bool visitAggregate(TVisit, TIntermAggregate* ag) override
+  {
+    if (ag->getOp() == EOpLinkerObjects)
+    {
+      TIntermSequence& seq = ag->getSequence();
+
+      TIntermSequence::const_iterator newEnd = std::remove_if(seq.begin(), seq.end(), [=] (TIntermNode* node)
+      {
+        TIntermSymbol* symbol = node->getAsSymbolNode();
+        if (!symbol)
+          return false;
+
+        TIntermAggregateVector::const_iterator at = std::find_if(patchList.begin(), patchList.end(), [=] (TIntermAggregate* ag)
+        {
+          TIntermAggregate* constructor = ag->getSequence()[0]->getAsAggregate();
+          TIntermSequence& constructorSeq = constructor->getSequence();
+          TIntermSymbol* sampler = constructorSeq[1]->getAsSymbolNode();
+          if (!sampler)
+            return false;
+          return sampler->getId() == symbol->getId();
+        });
+
+        return (at != patchList.end());
+      });
+
+      seq.erase(newEnd, seq.end());
+
+      return false;
+    }
+    return true;
+  }
+
+private:
+  const TIntermAggregateVector& patchList;
+};
+
+class UpgradeTraverser
+    : public TIntermTraverser
+{
+public:
+    bool visitAggregate(TVisit, TIntermAggregate* ag) override
+    {
+        TIntermSequence& seq = ag->getSequence();
+        // remove pure sampler variables
+        TIntermSequence::const_iterator newEnd = std::remove_if(seq.begin(), seq.end(), [=](TIntermNode* node)
+        {
+            TIntermSymbol* symbol = node->getAsSymbolNode();
+            if (!symbol)
+                return false;
+
+            return (symbol->getBasicType() == EbtSampler && symbol->getType().getSampler().isPureSampler());
+        });
+        seq.erase(newEnd, seq.end());
+        // replace constructors with sampler/textures
+        // update textures into sampled textures
+        std::for_each(seq.begin(), seq.end(), [=](TIntermNode*& node)
+        {
+            TIntermSymbol* symbol = node->getAsSymbolNode();
+            if (!symbol) {
+                TIntermAggregate *constructor = node->getAsAggregate();
+                if (constructor && constructor->getOp() == EOpConstructTextureSampler) {
+                    if(!constructor->getSequence().empty())
+                        node = constructor->getSequence()[0];
+                }
+            } else if (symbol->getBasicType() == EbtSampler && symbol->getType().getSampler().isTexture()) {
+                symbol->getWritableType().getSampler().combined = true;
+            }
+        });
+        return true;
+    }
+};
+
+void TIntermediate::combineTextureSamplers(TIntermNode* root)
+{
+    if (textureSamplerMergeMode == EShTexSampMergeModeRemoveSamplerUpgradeTexture) {
+        UpgradeTraverser upgrader;
+        root->traverse(&upgrader);
+    } else if (textureSamplerMergeMode == EShTexSampMergeModeMergeOnly) {
+
+        // TODO:
+        // - gather all places that use EOpConstructTextureSampler
+        //   can only constructed at the location where it is used
+        // - check if only one sampler/texture combo is used
+        //   and throw out constructors that do not match
+        // - patch sampler to be texture/sampler combo
+        // - replace constructor with sampler
+
+        // gather all linker object samplers, we can only merge those
+        TIntermSymbolVector symbols;
+        LinkerObjectGatherTraverser linkerObjectGather(symbols);
+        root->traverse(&linkerObjectGather);
+
+        // has to be at least 2 or there is nothing to merge
+        if (symbols.size() > 1) {
+            // gather all the areas where a sampled image is constructed
+            TIntermAggregateVector locations;
+            ConstructorGatherTraverser locationGather(locations, symbols);
+            root->traverse(&locationGather);
+
+            // filter out combinations that can not be merged
+            size_t i = 0;
+            while (i < locations.size())
+            {
+                TIntermAggregate* base = locations[i]->getSequence()[0]->getAsAggregate();
+                TIntermSequence& baseSeq = base->getSequence();
+                TIntermSymbol* basetTexture = baseSeq[0]->getAsSymbolNode();
+                TIntermSymbol* baseSampler = baseSeq[1]->getAsSymbolNode();
+                bool remove = false;
+                // currently only works with direct values, no arrays and such
+                if (!basetTexture || !baseSampler)
+                    remove = true;
+                for (size_t j = i + 1; j < locations.size() && !remove; ++j)
+                {
+                    TIntermAggregate* compare = locations[j]->getSequence()[0]->getAsAggregate();
+                    TIntermSequence& compareSeq = compare->getSequence();
+                    TIntermSymbol* compareTexture = compareSeq[0]->getAsSymbolNode();
+                    TIntermSymbol* compareSampler = compareSeq[1]->getAsSymbolNode();
+                    int match = 0;
+                    if (compareTexture && basetTexture)
+                        match |= compareTexture->getId() == basetTexture->getId();
+                    if (compareSampler && baseSampler)
+                        match |= (compareSampler->getId() == baseSampler->getId()) << 1;
+                    // its ok to either match all (1|2) or none(0)
+                    if ((match & 1) == ((match >> 1) & 1))
+                        continue;
+                    // at least one combination makes merging not posible, so remove all combinations
+                    remove = true;
+                }
+
+                if (remove)
+                {
+                    TIntermAggregateVector::const_iterator newEnd = std::remove_if(locations.begin(), locations.end(), [=](TIntermAggregate* ent)
+                    {
+                        TIntermAggregate* compare = ent->getSequence()[0]->getAsAggregate();
+                        TIntermSequence& compareSeq = compare->getSequence();
+                        TIntermSymbol* compareTexture = compareSeq[0]->getAsSymbolNode();
+                        TIntermSymbol* compareSampler = compareSeq[1]->getAsSymbolNode();
+                        // remove stuff that has some sort of array access for now
+                        if (!compareTexture || !compareSampler)
+                            return true;
+                        bool match = false;
+                        if (compareTexture && basetTexture)
+                            match |= compareTexture->getId() == basetTexture->getId();
+                        if (compareSampler && baseSampler)
+                            match |= compareSampler->getId() == baseSampler->getId();
+                        return match;
+                    });
+                    locations.erase(newEnd, locations.end());
+                    i = 0;
+                }
+                else
+                    ++i;
+            }
+
+            if (!locations.empty())
+            {
+                // remove no longer needed sampler objects
+                VariableRemoveTraverser variableRemover(locations);
+                root->traverse(&variableRemover);
+
+                // patch variables
+                VariablePatchTraverser variablePatch(locations);
+                root->traverse(&variablePatch);
+
+                // patch locations
+                for (auto at = locations.begin(); at != locations.end(); ++at)
+                {
+                    TIntermAggregate* user = *at;
+                    TIntermAggregate* constructor = user->getSequence()[0]->getAsAggregate();
+                    user->getSequence()[0] = constructor->getSequence()[0];
+                }
+            }
+        }
+    }
 }
 
 } // end namespace glslang

@@ -71,6 +71,7 @@ using GlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
 #ifdef AMD_EXTENSIONS
 using CompileVulkanToSpirvTestAMD = GlslangTest<::testing::TestWithParam<std::string>>;
 #endif
+using CompileDropSamplersUpgradeTextures = GlslangTest<::testing::TestWithParam<std::string>>;
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
@@ -154,6 +155,15 @@ TEST_P(CompileVulkanToSpirvTestAMD, FromFile)
                             Target::Spv);
 }
 #endif
+
+// Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
+// generate SPIR-V.
+TEST_P(CompileDropSamplersUpgradeTextures, FromFile)
+{
+    loadFileCompileDropSamplersUpgradeTexturesAndCheck(GlobalTestSettings.testRoot, GetParam(),
+                                                    Source::GLSL, Semantics::Vulkan,
+                                                    Target::Spv);
+}
 
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
@@ -363,6 +373,18 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 #endif
+
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    Glsl, CompileDropSamplersUpgradeTextures,
+    ::testing::ValuesIn(std::vector<std::string>({
+        // Test looping constructs.
+        // No tests yet for making sure break and continue from a nested loop
+        // goes to the innermost target.
+        "spv.textureSamplerMerge.frag",
+    })),
+    FileNameAsCustomTestSuffix
+);
 // clang-format on
 
 }  // anonymous namespace
