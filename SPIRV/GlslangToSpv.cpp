@@ -4198,6 +4198,8 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
             groupOperation = spv::GroupOperationExclusiveScan;
             spvGroupOperands.push_back(groupOperation);
             break;
+        default:
+            break;
         }
 #endif
     }
