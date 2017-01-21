@@ -1503,7 +1503,7 @@ TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TIntermTyped* expres
 // This is to be executed after the final root is put on top by the parsing
 // process.
 //
-bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/)
+bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/, TSymbolTable& symbolTable)
 {
     if (root == nullptr)
         return true;
@@ -1515,6 +1515,7 @@ bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/)
 
     // Propagate 'noContraction' label in backward from 'precise' variables.
     glslang::PropagateNoContraction(*this);
+    updatePositionAssignments(root, symbolTable);
 
     return true;
 }
@@ -2637,6 +2638,142 @@ void TIntermAggregate::addToPragmaTable(const TPragmaTable& pTable)
     assert(!pragmaTable);
     pragmaTable = new TPragmaTable();
     *pragmaTable = pTable;
+}
+
+typedef std::vector<TVector<TIntermNode *>> TIntermBinaryVector;
+
+class PosAssignFinder : public TIntermTraverser
+{
+public:
+    PosAssignFinder(TIntermBinaryVector& v) : list(v) {}
+
+    bool visitBinary(TVisit, TIntermBinary* op) override
+    {
+        TIntermTyped* typed;
+        switch (op->getOp()) {
+        case EOpAssign:
+            typed = op->getLeft()->getAsTyped();
+            if (typed) {
+                if (typed->getType().getQualifier().builtIn == EbvPosition) {
+                    list.push_back(path);
+                    list.back().push_back(op);
+                }
+            }
+            break;
+        }
+        return true;
+    }
+
+private:
+    TIntermBinaryVector&    list;
+};
+
+void TIntermediate::updatePositionAssignments(TIntermNode* node, TSymbolTable& symbolTable)
+{
+    if (language != EShLangVertex)
+        return;
+
+    if (yFlipMode == EShVkCoordFlipNone)
+        return;
+
+    TIntermSymbol* specConstant = nullptr;
+    if (yFlipMode == EShVkCoordFlipYSpecConstant) {
+        TString specConstantName = "@yflip";
+        TType specConstantType(EbtBool);
+        specConstantType.getQualifier().makeSpecConstant();
+        specConstantType.getQualifier().layoutSpecConstantId = yFlipConstantId;
+        TVariable* specConstantVar = new TVariable(&specConstantName, specConstantType);
+        symbolTable.insert(*specConstantVar);
+        specConstant = addSymbol(*specConstantVar);
+    }
+
+    TIntermBinaryVector list;
+    PosAssignFinder finder(list);
+    node->traverse(&finder);
+
+    std::for_each(list.begin(), list.end(), [=, &symbolTable](const TVector<TIntermNode *>& path) {
+        TIntermBinary* op = path.back()->getAsBinaryNode();
+        TIntermSymbol* symb = op->getRight()->getAsSymbolNode();
+        TIntermBinary* bin = op->getRight()->getAsBinaryNode();
+        TIntermAggregate* agr = op->getRight()->getAsAggregate();
+        TIntermTyped* source = nullptr;
+        if (symb || (bin && (bin->getOp() >= EOpIndexDirect && bin->getOp() <= EOpIndexDirectStruct))) {
+            // either a symbol directly or a array/struct indexing into a symbol
+            if (symb)
+                source = symb;
+            else
+                source = bin;
+        } else if(agr && agr->getOp() == EOpConstructVec4) {
+            TIntermSequence& seq = agr->getSequence();
+            TIntermTyped* get[4];
+            int componentsDone = 0;
+            // split arbitary number of parameters into getX, getY, getZ, getW
+            for (TIntermSequence::const_iterator at = seq.begin(); at != seq.end(); ++at) {
+                TIntermTyped* typed = (*at)->getAsTyped();
+                const TType& type = typed->getType();
+                if (type.isVector()) {
+                    if (componentsDone < 2) {
+                        for (int i = 0; i < type.getVectorSize(); ++i, ++componentsDone) {
+                            TIntermTyped* index = addConstantUnion(i, op->getLoc(), true);
+                            get[componentsDone] = addIndex(EOpIndexDirect, typed, index, op->getLoc());
+                        }
+                    } else {
+                        // keep vec2 for zw as is
+                        get[componentsDone++] = typed;
+                    }
+                } else {
+                    get[componentsDone++] = typed;
+                }
+            }
+            // scalar to vector constructor, replicate them
+            if (componentsDone == 1) {
+                std::fill(get + 1, get + 4, get[0]);
+                componentsDone = 4;
+            }
+            TIntermTyped* extractY = get[1];
+            get[1] = addUnaryMath(EOpNegative, extractY, op->getLoc());
+            if (specConstant) {
+                get[1] = addSelection(specConstant, extractY, get[1], op->getLoc());
+            }
+            seq.resize(componentsDone);
+            std::copy(get, get + componentsDone, seq.begin());
+        } else {
+            // a expression, copy the result into a temp and copy it over to the temp
+            TString tempName = "@yflipTemp";
+            TVariable* tempVar = new TVariable(&tempName, op->getType());
+            symbolTable.insert(*tempVar);
+            source = addSymbol(*tempVar);
+            // insert copy to temp before op into the block above it
+            TIntermAggregate* block = path[path.size() - 2]->getAsAggregate();
+            TIntermSequence& seq = block->getSequence();
+            for (TIntermSequence::const_iterator at = seq.begin(); at != seq.end(); ++at) {
+                if ((*at)->getAsBinaryNode() == op) {
+                    seq.insert(at, addAssign(EOpAssign, source, op->getRight(), op->getLoc()));
+                    break;
+                }
+            }
+        }
+
+        if (source) {
+            TIntermTyped* indexX = addConstantUnion(0, op->getLoc(), true);
+            TIntermTyped* indexY = addConstantUnion(1, op->getLoc(), true);
+            TIntermTyped* indexZ = addConstantUnion(2, op->getLoc(), true);
+            TIntermTyped* indexW = addConstantUnion(3, op->getLoc(), true);
+            TIntermTyped* getX = addIndex(EOpIndexDirect, source, indexX, op->getLoc());
+            TIntermTyped* extractY = addIndex(EOpIndexDirect, source, indexY, op->getLoc());
+            TIntermTyped* getY = addUnaryMath(EOpNegative, extractY, op->getLoc());
+            if (specConstant) {
+                getY = addSelection(specConstant, extractY, getY, op->getLoc());
+            }
+            TIntermTyped* getZ = addIndex(EOpIndexDirect, source, indexZ, op->getLoc());
+            TIntermTyped* getW = addIndex(EOpIndexDirect, source, indexW, op->getLoc());
+            TIntermTyped* constructor = growAggregate(getX, getY);
+            constructor = growAggregate(constructor, getZ);
+            constructor = growAggregate(constructor, getW);
+            constructor = setAggregateOperator(constructor, EOpConstructVec4, op->getType(), op->getLoc());
+            op->setRight(constructor);
+        }
+    });
 }
 
 } // end namespace glslang
