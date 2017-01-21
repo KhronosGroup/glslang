@@ -82,6 +82,10 @@ set(HEADERS
 
 add_library(glslang STATIC ${BISON_GLSLParser_OUTPUT_SOURCE} ${SOURCES} ${HEADERS})
 set_property(TARGET glslang PROPERTY FOLDER glslang)
+target_link_libraries(glslang OGLCompiler OSDependent)
+if(ENABLE_HLSL)
+	target_link_libraries(glslang HLSL)
+endif()
 
 if(WIN32)
     source_group("Public" REGULAR_EXPRESSION "Public/*")
