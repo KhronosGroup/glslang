@@ -4203,7 +4203,7 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
 
                                         // Add to the per-language set of built-ins
 
-                                        if (bias)
+                                        if (bias || lodClamp)
                                             stageBuiltins[EShLangFragment].append(s);
                                         else
                                             commonBuiltins.append(s);
