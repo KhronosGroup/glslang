@@ -401,7 +401,20 @@ public:
     // drop qualifiers that don't belong in a temporary variable
     void makeTemporary()
     {
+        makeNonIo();
         storage      = EvqTemporary;
+        specConstant = false;
+        coherent     = false;
+        volatil      = false;
+        restrict     = false;
+        readonly     = false;
+        writeonly    = false;
+    }
+
+    // Remove IO related data from qualifier.
+    void makeNonIo()
+    {
+        // This preserves the storage type
         builtIn      = EbvNone;
         centroid     = false;
         smooth       = false;
@@ -412,13 +425,16 @@ public:
 #endif
         patch        = false;
         sample       = false;
-        coherent     = false;
-        volatil      = false;
-        restrict     = false;
-        readonly     = false;
-        writeonly    = false;
-        specConstant = false;
         clearLayout();
+    }
+
+    // Return true if there is data which would be scrubbed by makeNonIo
+    bool hasIoData() const
+    {
+        return builtIn != EbvNone ||
+            hasLayout()           ||
+            isInterpolation()     ||
+            isAuxiliary();
     }
 
     // Drop just the storage qualification, which perhaps should
@@ -1209,6 +1225,30 @@ public:
         deepCopy(copyOf, copied);
     }
 
+    // Return true if type (recursively) contains IO data.
+    bool hasIoData() const
+    {
+        if (getQualifier().hasIoData())
+            return true;
+
+        if (isStruct())
+            for (unsigned int i = 0; i < structure->size(); ++i)
+                if ((*structure)[i].type->hasIoData())
+                    return true;
+
+        return false;
+    }
+
+    // Remove IO related data from type
+    void makeNonIo()
+    {
+        getQualifier().makeNonIo();
+
+        if (isStruct())
+            for (unsigned int i = 0; i < structure->size(); ++i)
+                (*structure)[i].type->makeNonIo();
+    }
+
     // Recursively make temporary
     void makeTemporary()
     {
@@ -1701,6 +1741,7 @@ public:
     const char* getBuiltInVariableString() const { return GetBuiltInVariableString(qualifier.builtIn); }
     const char* getPrecisionQualifierString() const { return GetPrecisionQualifierString(qualifier.precision); }
     const TTypeList* getStruct() const { return structure; }
+    void setStruct(TTypeList* s) { structure = s; }
     TTypeList* getWritableStruct() const { return structure; }  // This should only be used when known to not be sharing with other threads
 
     int computeNumComponents() const

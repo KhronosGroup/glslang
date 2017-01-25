@@ -1803,15 +1803,13 @@ void HlslParseContext::remapEntryPointIO(const TFunction& function, TVariable*& 
 // declares entry point IO built-ins, but these have to be undone.
 void HlslParseContext::remapNonEntryPointIO(TFunction& function)
 {
-    const auto remapBuiltInType = [&](TType& type) { type.getQualifier().builtIn = EbvNone; };
-
     // return value
     if (function.getType().getBasicType() != EbtVoid)
-        remapBuiltInType(function.getWritableType());
+        makeNonIoType(&function.getWritableType());
 
     // parameters
     for (int i = 0; i < function.getParamCount(); i++)
-        remapBuiltInType(*function[i].type);
+        makeNonIoType(function[i].type);
 }
 
 // Handle function returns, including type conversions to the function return type
@@ -5393,41 +5391,43 @@ void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier
         error(loc, "name already defined", "typedef", identifier.c_str());
 }
 
-// Type sanitization: return existing sanitized (temporary) type if there is one, else make new one.
-TType* HlslParseContext::sanitizeType(TType* type)
+// Create a non-IO type from an IO type.  If there is no IO data, this
+// returns the input type unmodified.  Otherwise, it modifies the type
+// in place, and returns a pointer to it.
+TType* HlslParseContext::makeNonIoType(TType* type)
 {
-    // We only do this for structs.
+    // early out if there's nothing to do: prevents introduction of unneeded types.
+    if (!type->hasIoData())
+        return type;
+
+    type->getQualifier().makeNonIo();  // Sanitize the qualifier.
+
+    // Nothing more to do if there is no deep structure.
     if (!type->isStruct())
         return type;
 
-    // Type sanitization: if this is declaring a variable of a type that contains
-    // interstage IO, we want to make it a temporary.
-    const auto sanitizedTypeIter = sanitizedTypeMap.find(type->getStruct());
+    const auto typeIter = nonIoTypeMap.find(type->getStruct());
 
-    if (sanitizedTypeIter != sanitizedTypeMap.end()) {
-        // We've sanitized this before.  Use that one.
-        TType* sanitizedType = new TType();
-        sanitizedType->shallowCopy(*sanitizedTypeIter->second);
-
-        // Arrayness is not part of the sanitized type.  Use the input type's arrayness.
-        if (type->isArray())
-            sanitizedType->newArraySizes(type->getArraySizes());
-        else
-            sanitizedType->clearArraySizes();
-        return sanitizedType;
+    if (typeIter != nonIoTypeMap.end()) {
+        // reuse deep structure if we have sanitized it before, but we must preserve
+        // our unique shallow structure, which may not be shared with other users of
+        // the deep copy.  Create a new type with the sanitized qualifier, and the
+        // shared deep structure
+        type->setStruct(typeIter->second); // share already sanitized deep structure.
     } else {
-        if (type->containsBuiltInInterstageIO(language)) {
-            // This means the type contains interstage IO, but we've never encountered it before.
-            // Copy it, sanitize it, and remember it in the sanitizedTypeMap
-            TType* sanitizedType = type->clone();
-            sanitizedType->makeTemporary();
-            sanitizedTypeMap[type->getStruct()] = sanitizedType;
-            return sanitizedType;
-        } else {
-            // This means the type has no interstage IO, so we can use it as is.
-            return type;
-        }
-    }
+        // The type contains interstage IO, but we've never encountered it before.
+        // Copy it, scrub data we don't want for an non-IO type, and remember it in the nonIoTypeMap
+
+        TType nonIoType;
+        nonIoType.deepCopy(*type);
+        nonIoType.makeNonIo();
+
+        // remember the new deep structure in a map, so we can share it in the future.
+        nonIoTypeMap[type->getStruct()] = nonIoType.getWritableStruct();
+        type->shallowCopy(nonIoType);   // we modify the input type in place
+     }
+
+    return type;
 }
 
 //
@@ -5456,18 +5456,23 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
 
     const bool flattenVar = shouldFlattenUniform(type);
 
-    // Type sanitization: if this is declaring a variable of a type that contains
-    // interstage IO, we want to make it a temporary.
-    TType* sanitizedType = sanitizeType(&type);
+    // make non-IO version of type
+    switch (type.getQualifier().storage) {
+    case EvqGlobal:
+    case EvqTemporary:
+        makeNonIoType(&type);
+    default:
+        break;
+    }
 
     // Declare the variable
     if (type.isArray()) {
         // array case
-        declareArray(loc, identifier, *sanitizedType, symbol, !flattenVar);
+        declareArray(loc, identifier, type, symbol, !flattenVar);
     } else {
         // non-array case
         if (! symbol)
-            symbol = declareNonArray(loc, identifier, *sanitizedType, !flattenVar);
+            symbol = declareNonArray(loc, identifier, type, !flattenVar);
         else if (type != symbol->getType())
             error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
     }

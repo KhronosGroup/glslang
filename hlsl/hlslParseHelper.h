@@ -228,8 +228,9 @@ protected:
     int flattenStruct(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
     int flattenArray(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
 
-    // Type sanitization: return existing sanitized (temporary) type if there is one, else make new one.
-    TType* sanitizeType(TType*);
+    // Create a non-IO type from an IO type.  If there is no IO data, this returns the input type unmodified.
+    // Otherwise, it modifies the type in place, and returns a pointer to it.
+    TType* makeNonIoType(TType*);
 
     void finish() override; // post-processing
 
@@ -296,9 +297,9 @@ protected:
     TVector<int> flattenLevel;  // nested postfix operator level for flattening
     TVector<int> flattenOffset; // cumulative offset for flattening
 
-    // Sanitized type map.  During declarations we use the sanitized form of the type
-    // if it exists.
-    TMap<const TTypeList*, TType*> sanitizedTypeMap;
+    // Sanitized type map.  If the same type is sanitized again, we want to reuse it.
+    // We cannot index by the TType: the map is typelist to typelist.
+    TMap<const TTypeList*, TTypeList*> nonIoTypeMap;
 
     // Structure splitting data:
     TMap<int, TVariable*>              splitIoVars;  // variables with the builtin interstage IO removed, indexed by unique ID.
