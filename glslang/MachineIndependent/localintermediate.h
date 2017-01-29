@@ -440,6 +440,7 @@ protected:
     bool promoteAggregate(TIntermAggregate&);
     void pushSelector(TIntermSequence&, const TVectorSelector&, const TSourceLoc&);
     void pushSelector(TIntermSequence&, const TMatrixSelector&, const TSourceLoc&);
+    bool specConstantPropagates(const TIntermTyped&, const TIntermTyped&);
 
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later

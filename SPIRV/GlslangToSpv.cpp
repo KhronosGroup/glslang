@@ -1775,7 +1775,7 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
 
         // return true if a single operand to ? : is okay for OpSelect
         const auto operandOkay = [](glslang::TIntermTyped* node) {
-            return node->getAsSymbolNode() || node->getAsConstantUnion();
+            return node->getAsSymbolNode() || node->getType().getQualifier().isConstant();
         };
 
         return operandOkay(node->getTrueBlock() ->getAsTyped()) &&
@@ -1799,6 +1799,10 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
     // Try for OpSelect
 
     if (selectPolicy()) {
+        SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+        if (node->getType().getQualifier().isSpecConstant())
+            spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
+
         handleAsOpSelect();
         return false;
     }
