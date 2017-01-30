@@ -53,3 +53,5 @@ endif(WIN32)
 
 install(TARGETS SPIRV SPVRemapper
         ARCHIVE DESTINATION lib)
+
+install(FILES ${HEADERS} ${SPVREMAP_HEADERS} DESTINATION include/SPIRV/)

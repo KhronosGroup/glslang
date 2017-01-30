@@ -97,3 +97,8 @@ endif(WIN32)
 
 install(TARGETS glslang 
         ARCHIVE DESTINATION lib)
+
+foreach(file ${HEADERS})
+    get_filename_component(dir ${file} DIRECTORY)
+    install(FILES ${file} DESTINATION include/glslang/${dir})
+endforeach()
