@@ -1202,30 +1202,11 @@ public:
         typeName = copyOf.typeName;
     }
 
+    // Make complete copy of the whole type graph rooted at 'copyOf'.
     void deepCopy(const TType& copyOf)
     {
-        shallowCopy(copyOf);
-
-        if (copyOf.arraySizes) {
-            arraySizes = new TArraySizes;
-            *arraySizes = *copyOf.arraySizes;
-        }
-
-        if (copyOf.structure) {
-            structure = new TTypeList;
-            for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
-                TTypeLoc typeLoc;
-                typeLoc.loc = (*copyOf.structure)[i].loc;
-                typeLoc.type = new TType();
-                typeLoc.type->deepCopy(*(*copyOf.structure)[i].type);
-                structure->push_back(typeLoc);
-            }
-        }
-
-        if (copyOf.fieldName)
-            fieldName = NewPoolTString(copyOf.fieldName->c_str());
-        if (copyOf.typeName)
-            typeName = NewPoolTString(copyOf.typeName->c_str());
+        TUnorderedMap<TTypeList*,TTypeList*> copied;  // to enable copying a type graph as a graph, not a tree
+        deepCopy(copyOf, copied);
     }
 
     // Recursively make temporary
@@ -1829,6 +1810,42 @@ protected:
     // Require consumer to pick between deep copy and shallow copy.
     TType(const TType& type);
     TType& operator=(const TType& type);
+
+    // Recursively copy a type graph, while preserving the graph-like
+    // quality. That is, don't make more than one copy of a structure that
+    // gets reused multiple times in the type graph.
+    void deepCopy(const TType& copyOf, TUnorderedMap<TTypeList*,TTypeList*>& copiedMap)
+    {
+        shallowCopy(copyOf);
+
+        if (copyOf.arraySizes) {
+            arraySizes = new TArraySizes;
+            *arraySizes = *copyOf.arraySizes;
+        }
+
+        if (copyOf.structure) {
+            auto prevCopy = copiedMap.find(copyOf.structure);
+            if (prevCopy != copiedMap.end())
+                structure = prevCopy->second;
+            else {
+                structure = new TTypeList;
+                copiedMap[copyOf.structure] = structure;
+                for (unsigned int i = 0; i < copyOf.structure->size(); ++i) {
+                    TTypeLoc typeLoc;
+                    typeLoc.loc = (*copyOf.structure)[i].loc;
+                    typeLoc.type = new TType();
+                    typeLoc.type->deepCopy(*(*copyOf.structure)[i].type, copiedMap);
+                    structure->push_back(typeLoc);
+                }
+            }
+        }
+
+        if (copyOf.fieldName)
+            fieldName = NewPoolTString(copyOf.fieldName->c_str());
+        if (copyOf.typeName)
+            typeName = NewPoolTString(copyOf.typeName->c_str());
+    }
+
 
     void buildMangledName(TString&);
 
