@@ -7,8 +7,8 @@ output primitive = triangle_strip
 0:? Sequence
 0:24  Function Definition: @main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111; (temp void)
 0:24    Function Parameters: 
-0:24      'tin' (in 3-element array of structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
-0:24      'ts' (out structure{temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
+0:24      'tin' (in 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:24      'ts' (out structure{temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
 0:?     Sequence
 0:27      move second child to first child (temp 4-component vector of float)
 0:27        pos: direct index for structure (temp 4-component vector of float)
@@ -35,8 +35,8 @@ output primitive = triangle_strip
 0:?           5.000000
 0:?           6.000000
 0:30      Sequence
-0:30        move second child to first child (temp structure{temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
-0:30          'ts' (out structure{temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
+0:30        move second child to first child (temp structure{temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
+0:30          'ts' (out structure{temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
 0:30          'o' (temp structure{temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
 0:30        EmitVertex (temp void)
 0:24  Function Definition: main( (temp void)
@@ -45,8 +45,8 @@ output primitive = triangle_strip
 0:24      Sequence
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
-0:24            direct index (temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
-0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
 0:24              Constant:
 0:24                0 (const int)
 0:24            Constant:
@@ -60,8 +60,8 @@ output primitive = triangle_strip
 0:24              0 (const int)
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
-0:24            direct index (temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
-0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
 0:24              Constant:
 0:24                1 (const int)
 0:24            Constant:
@@ -75,8 +75,8 @@ output primitive = triangle_strip
 0:24              0 (const int)
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
-0:24            direct index (temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
-0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
 0:24              Constant:
 0:24                2 (const int)
 0:24            Constant:
@@ -89,8 +89,8 @@ output primitive = triangle_strip
 0:24            Constant:
 0:24              0 (const int)
 0:24      Function Call: @main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111; (temp void)
-0:?         'tin' (temp 3-element array of structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
-0:?         'ts' (temp structure{temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
+0:?         'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?         'ts' (temp structure{temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
 0:?   Linker Objects
 0:?     'tin' (layout(location=0 ) in 3-element array of structure{temp 2-component vector of float tc})
 0:?     'PerVertex_in' (in 3-element array of block{in 4-component vector of float Position tin_pos})
@@ -107,8 +107,8 @@ output primitive = triangle_strip
 0:? Sequence
 0:24  Function Definition: @main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111; (temp void)
 0:24    Function Parameters: 
-0:24      'tin' (in 3-element array of structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
-0:24      'ts' (out structure{temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
+0:24      'tin' (in 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:24      'ts' (out structure{temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
 0:?     Sequence
 0:27      move second child to first child (temp 4-component vector of float)
 0:27        pos: direct index for structure (temp 4-component vector of float)
@@ -135,8 +135,8 @@ output primitive = triangle_strip
 0:?           5.000000
 0:?           6.000000
 0:30      Sequence
-0:30        move second child to first child (temp structure{temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
-0:30          'ts' (out structure{temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
+0:30        move second child to first child (temp structure{temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
+0:30          'ts' (out structure{temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
 0:30          'o' (temp structure{temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
 0:30        EmitVertex (temp void)
 0:24  Function Definition: main( (temp void)
@@ -145,8 +145,8 @@ output primitive = triangle_strip
 0:24      Sequence
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
-0:24            direct index (temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
-0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
 0:24              Constant:
 0:24                0 (const int)
 0:24            Constant:
@@ -160,8 +160,8 @@ output primitive = triangle_strip
 0:24              0 (const int)
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
-0:24            direct index (temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
-0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
 0:24              Constant:
 0:24                1 (const int)
 0:24            Constant:
@@ -175,8 +175,8 @@ output primitive = triangle_strip
 0:24              0 (const int)
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
-0:24            direct index (temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
-0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
 0:24              Constant:
 0:24                2 (const int)
 0:24            Constant:
@@ -189,20 +189,20 @@ output primitive = triangle_strip
 0:24            Constant:
 0:24              0 (const int)
 0:24      Function Call: @main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111; (temp void)
-0:?         'tin' (temp 3-element array of structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc})
-0:?         'ts' (temp structure{temp structure{temp 4-component vector of float Position pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
+0:?         'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?         'ts' (temp structure{temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc} psIn, temp structure{temp 2-element array of float m0_array, temp int m1} contains_no_builtin_io})
 0:?   Linker Objects
 0:?     'tin' (layout(location=0 ) in 3-element array of structure{temp 2-component vector of float tc})
 0:?     'PerVertex_in' (in 3-element array of block{in 4-component vector of float Position tin_pos})
 
 // Module Version 10000
 // Generated by (magic number): 80001
-// Id's are bound by 86
+// Id's are bound by 67
 
                               Capability Geometry
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Geometry 4  "main" 65 85
+                              EntryPoint Geometry 4  "main" 46 66
                               ExecutionMode 4 Triangles
                               ExecutionMode 4 Invocations 1
                               ExecutionMode 4 OutputTriangleStrip
@@ -211,39 +211,32 @@ output primitive = triangle_strip
                               Name 9  "PS_IN"
                               MemberName 9(PS_IN) 0  "pos"
                               MemberName 9(PS_IN) 1  "tc"
-                              Name 17  "STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO"
-                              MemberName 17(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO) 0  "m0_array"
-                              MemberName 17(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO) 1  "m1"
-                              Name 18  "GS_OUT"
-                              MemberName 18(GS_OUT) 0  "psIn"
-                              MemberName 18(GS_OUT) 1  "contains_no_builtin_io"
-                              Name 23  "@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;"
-                              Name 21  "tin"
-                              Name 22  "ts"
-                              Name 25  "PS_IN"
-                              MemberName 25(PS_IN) 0  "pos"
-                              MemberName 25(PS_IN) 1  "tc"
-                              Name 26  "STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO"
-                              MemberName 26(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO) 0  "m0_array"
-                              MemberName 26(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO) 1  "m1"
-                              Name 27  "GS_OUT"
-                              MemberName 27(GS_OUT) 0  "psIn"
-                              MemberName 27(GS_OUT) 1  "contains_no_builtin_io"
-                              Name 29  "o"
-                              Name 61  "tin"
-                              Name 62  "PS_IN"
-                              MemberName 62(PS_IN) 0  "tc"
-                              Name 65  "tin"
-                              Name 77  "ts"
-                              Name 78  "param"
-                              Name 80  "param"
-                              Name 82  "PerVertex_in"
-                              MemberName 82(PerVertex_in) 0  "tin_pos"
-                              Name 85  "PerVertex_in"
-                              MemberDecorate 9(PS_IN) 0 BuiltIn Position
-                              Decorate 65(tin) Location 0
-                              MemberDecorate 82(PerVertex_in) 0 BuiltIn Position
-                              Decorate 82(PerVertex_in) Block
+                              Name 14  "PS_IN"
+                              MemberName 14(PS_IN) 0  "pos"
+                              MemberName 14(PS_IN) 1  "tc"
+                              Name 18  "STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO"
+                              MemberName 18(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO) 0  "m0_array"
+                              MemberName 18(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO) 1  "m1"
+                              Name 19  "GS_OUT"
+                              MemberName 19(GS_OUT) 0  "psIn"
+                              MemberName 19(GS_OUT) 1  "contains_no_builtin_io"
+                              Name 24  "@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;"
+                              Name 22  "tin"
+                              Name 23  "ts"
+                              Name 26  "o"
+                              Name 42  "tin"
+                              Name 43  "PS_IN"
+                              MemberName 43(PS_IN) 0  "tc"
+                              Name 46  "tin"
+                              Name 58  "ts"
+                              Name 59  "param"
+                              Name 61  "param"
+                              Name 63  "PerVertex_in"
+                              MemberName 63(PerVertex_in) 0  "tin_pos"
+                              Name 66  "PerVertex_in"
+                              Decorate 46(tin) Location 0
+                              MemberDecorate 63(PerVertex_in) 0 BuiltIn Position
+                              Decorate 63(PerVertex_in) Block
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -254,92 +247,70 @@ output primitive = triangle_strip
               11:     10(int) Constant 3
               12:             TypeArray 9(PS_IN) 11
               13:             TypePointer Function 12
-              14:     10(int) Constant 2
-              15:             TypeArray 6(float) 14
-              16:             TypeInt 32 1
-17(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO):             TypeStruct 15 16(int)
-      18(GS_OUT):             TypeStruct 9(PS_IN) 17(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO)
-              19:             TypePointer Function 18(GS_OUT)
-              20:             TypeFunction 2 13(ptr) 19(ptr)
-       25(PS_IN):             TypeStruct 7(fvec4) 8(fvec2)
-26(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO):             TypeStruct 15 16(int)
-      27(GS_OUT):             TypeStruct 25(PS_IN) 26(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO)
-              28:             TypePointer Function 27(GS_OUT)
-              30:     16(int) Constant 0
-              31:    6(float) Constant 1065353216
-              32:    6(float) Constant 1073741824
-              33:    6(float) Constant 1077936128
-              34:    6(float) Constant 1082130432
-              35:    7(fvec4) ConstantComposite 31 32 33 34
-              36:             TypePointer Function 7(fvec4)
-              38:     16(int) Constant 1
-              39:    6(float) Constant 1084227584
-              40:    6(float) Constant 1086324736
-              41:    8(fvec2) ConstantComposite 39 40
-              42:             TypePointer Function 8(fvec2)
-              46:             TypePointer Function 9(PS_IN)
-              53:             TypePointer Function 17(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO)
-              56:             TypePointer Function 15
-              59:             TypePointer Function 16(int)
-       62(PS_IN):             TypeStruct 8(fvec2)
-              63:             TypeArray 62(PS_IN) 11
-              64:             TypePointer Input 63
-         65(tin):     64(ptr) Variable Input
-              66:             TypePointer Input 8(fvec2)
-              73:     16(int) Constant 2
-82(PerVertex_in):             TypeStruct 7(fvec4)
-              83:             TypeArray 82(PerVertex_in) 11
-              84:             TypePointer Input 83
-85(PerVertex_in):     84(ptr) Variable Input
+       14(PS_IN):             TypeStruct 7(fvec4) 8(fvec2)
+              15:     10(int) Constant 2
+              16:             TypeArray 6(float) 15
+              17:             TypeInt 32 1
+18(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO):             TypeStruct 16 17(int)
+      19(GS_OUT):             TypeStruct 14(PS_IN) 18(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO)
+              20:             TypePointer Function 19(GS_OUT)
+              21:             TypeFunction 2 13(ptr) 20(ptr)
+              27:     17(int) Constant 0
+              28:    6(float) Constant 1065353216
+              29:    6(float) Constant 1073741824
+              30:    6(float) Constant 1077936128
+              31:    6(float) Constant 1082130432
+              32:    7(fvec4) ConstantComposite 28 29 30 31
+              33:             TypePointer Function 7(fvec4)
+              35:     17(int) Constant 1
+              36:    6(float) Constant 1084227584
+              37:    6(float) Constant 1086324736
+              38:    8(fvec2) ConstantComposite 36 37
+              39:             TypePointer Function 8(fvec2)
+       43(PS_IN):             TypeStruct 8(fvec2)
+              44:             TypeArray 43(PS_IN) 11
+              45:             TypePointer Input 44
+         46(tin):     45(ptr) Variable Input
+              47:             TypePointer Input 8(fvec2)
+              54:     17(int) Constant 2
+63(PerVertex_in):             TypeStruct 7(fvec4)
+              64:             TypeArray 63(PerVertex_in) 11
+              65:             TypePointer Input 64
+66(PerVertex_in):     65(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
-         61(tin):     13(ptr) Variable Function
-          77(ts):     19(ptr) Variable Function
-       78(param):     13(ptr) Variable Function
-       80(param):     19(ptr) Variable Function
-              67:     66(ptr) AccessChain 65(tin) 30 30
-              68:    8(fvec2) Load 67
-              69:     42(ptr) AccessChain 61(tin) 30 38
-                              Store 69 68
-              70:     66(ptr) AccessChain 65(tin) 38 30
-              71:    8(fvec2) Load 70
-              72:     42(ptr) AccessChain 61(tin) 38 38
-                              Store 72 71
-              74:     66(ptr) AccessChain 65(tin) 73 30
-              75:    8(fvec2) Load 74
-              76:     42(ptr) AccessChain 61(tin) 73 38
-                              Store 76 75
-              79:          12 Load 61(tin)
-                              Store 78(param) 79
-              81:           2 FunctionCall 23(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;) 78(param) 80(param)
+         42(tin):     13(ptr) Variable Function
+          58(ts):     20(ptr) Variable Function
+       59(param):     13(ptr) Variable Function
+       61(param):     20(ptr) Variable Function
+              48:     47(ptr) AccessChain 46(tin) 27 27
+              49:    8(fvec2) Load 48
+              50:     39(ptr) AccessChain 42(tin) 27 35
+                              Store 50 49
+              51:     47(ptr) AccessChain 46(tin) 35 27
+              52:    8(fvec2) Load 51
+              53:     39(ptr) AccessChain 42(tin) 35 35
+                              Store 53 52
+              55:     47(ptr) AccessChain 46(tin) 54 27
+              56:    8(fvec2) Load 55
+              57:     39(ptr) AccessChain 42(tin) 54 35
+                              Store 57 56
+              60:          12 Load 42(tin)
+                              Store 59(param) 60
+              62:           2 FunctionCall 24(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;) 59(param) 61(param)
                               Return
                               FunctionEnd
-23(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;):           2 Function None 20
-         21(tin):     13(ptr) FunctionParameter
-          22(ts):     19(ptr) FunctionParameter
-              24:             Label
-           29(o):     28(ptr) Variable Function
-              37:     36(ptr) AccessChain 29(o) 30 30
-                              Store 37 35
-              43:     42(ptr) AccessChain 29(o) 30 38
-                              Store 43 41
-              44:  27(GS_OUT) Load 29(o)
-              45:   25(PS_IN) CompositeExtract 44 0
-              47:     46(ptr) AccessChain 22(ts) 30
-              48:    7(fvec4) CompositeExtract 45 0
-              49:     36(ptr) AccessChain 47 30
-                              Store 49 48
-              50:    8(fvec2) CompositeExtract 45 1
-              51:     42(ptr) AccessChain 47 38
-                              Store 51 50
-              52:26(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO) CompositeExtract 44 1
-              54:     53(ptr) AccessChain 22(ts) 38
-              55:          15 CompositeExtract 52 0
-              57:     56(ptr) AccessChain 54 30
-                              Store 57 55
-              58:     16(int) CompositeExtract 52 1
-              60:     59(ptr) AccessChain 54 38
-                              Store 60 58
+24(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;):           2 Function None 21
+         22(tin):     13(ptr) FunctionParameter
+          23(ts):     20(ptr) FunctionParameter
+              25:             Label
+           26(o):     20(ptr) Variable Function
+              34:     33(ptr) AccessChain 26(o) 27 27
+                              Store 34 32
+              40:     39(ptr) AccessChain 26(o) 27 35
+                              Store 40 38
+              41:  19(GS_OUT) Load 26(o)
+                              Store 23(ts) 41
                               EmitVertex
                               Return
                               FunctionEnd

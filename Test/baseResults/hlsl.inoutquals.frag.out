@@ -20,8 +20,8 @@ gl_FragCoord origin is upper left
 0:11          -1.000000
 0:15  Function Definition: @main(vf4;i1; (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:15    Function Parameters: 
-0:15      'inpos' (noperspective in 4-component vector of float FragCoord)
-0:15      'sampleMask' (out int SampleMaskIn)
+0:15      'inpos' (in 4-component vector of float)
+0:15      'sampleMask' (out int)
 0:?     Sequence
 0:18      Sequence
 0:18        move second child to first child (temp float)
@@ -53,7 +53,7 @@ gl_FragCoord origin is upper left
 0:22          Constant:
 0:22            1 (const int)
 0:22        direct index (temp float)
-0:22          'inpos' (noperspective in 4-component vector of float FragCoord)
+0:22          'inpos' (in 4-component vector of float)
 0:22          Constant:
 0:22            3 (const int)
 0:24      Branch: Return with expression
@@ -116,8 +116,8 @@ gl_FragCoord origin is upper left
 0:11          -1.000000
 0:15  Function Definition: @main(vf4;i1; (temp structure{temp 4-component vector of float Color, temp float Depth})
 0:15    Function Parameters: 
-0:15      'inpos' (noperspective in 4-component vector of float FragCoord)
-0:15      'sampleMask' (out int SampleMaskIn)
+0:15      'inpos' (in 4-component vector of float)
+0:15      'sampleMask' (out int)
 0:?     Sequence
 0:18      Sequence
 0:18        move second child to first child (temp float)
@@ -149,7 +149,7 @@ gl_FragCoord origin is upper left
 0:22          Constant:
 0:22            1 (const int)
 0:22        direct index (temp float)
-0:22          'inpos' (noperspective in 4-component vector of float FragCoord)
+0:22          'inpos' (in 4-component vector of float)
 0:22          Constant:
 0:22            3 (const int)
 0:24      Branch: Return with expression

@@ -1,7 +1,7 @@
 hlsl.structin.vert
 Shader version: 450
 0:? Sequence
-0:8  Function Definition: @main(vf4;struct-VI-vf4[2]-vu2-vf41;vf4; (temp structure Position{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
+0:8  Function Definition: @main(vf4;struct-VI-vf4[2]-vu2-vf41;vf4; (temp structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
 0:8    Function Parameters: 
 0:8      'd' (in 4-component vector of float)
 0:8      'vi' (in structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
@@ -86,7 +86,7 @@ Shader version: 450
 0:8      Sequence
 0:8        move second child to first child (temp structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
 0:8          'flattenTemp' (temp structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
-0:8          Function Call: @main(vf4;struct-VI-vf4[2]-vu2-vf41;vf4; (temp structure Position{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
+0:8          Function Call: @main(vf4;struct-VI-vf4[2]-vu2-vf41;vf4; (temp structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
 0:?             'd' (temp 4-component vector of float)
 0:?             'vi' (temp structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
 0:?             'e' (temp 4-component vector of float)
@@ -134,7 +134,7 @@ Linked vertex stage:
 
 Shader version: 450
 0:? Sequence
-0:8  Function Definition: @main(vf4;struct-VI-vf4[2]-vu2-vf41;vf4; (temp structure Position{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
+0:8  Function Definition: @main(vf4;struct-VI-vf4[2]-vu2-vf41;vf4; (temp structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
 0:8    Function Parameters: 
 0:8      'd' (in 4-component vector of float)
 0:8      'vi' (in structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
@@ -219,7 +219,7 @@ Shader version: 450
 0:8      Sequence
 0:8        move second child to first child (temp structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
 0:8          'flattenTemp' (temp structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
-0:8          Function Call: @main(vf4;struct-VI-vf4[2]-vu2-vf41;vf4; (temp structure Position{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
+0:8          Function Call: @main(vf4;struct-VI-vf4[2]-vu2-vf41;vf4; (temp structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
 0:?             'd' (temp 4-component vector of float)
 0:?             'vi' (temp structure{temp 2-element array of 4-component vector of float m, temp 2-component vector of uint coord, temp 4-component vector of float b})
 0:?             'e' (temp 4-component vector of float)
