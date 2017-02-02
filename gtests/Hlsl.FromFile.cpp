@@ -214,7 +214,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.struct.split.assign.frag", "main"},
         {"hlsl.struct.split.call.vert", "main"},
         {"hlsl.struct.split.nested.geom", "main"},
-        //{"hlsl.struct.split.trivial.geom", "main"},
+        {"hlsl.struct.split.trivial.geom", "main"},
         {"hlsl.struct.split.trivial.vert", "main"},
         {"hlsl.structarray.flatten.frag", "main"},
         {"hlsl.structarray.flatten.geom", "main"},
