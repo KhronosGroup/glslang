@@ -1095,8 +1095,8 @@ int HlslParseContext::flatten(const TSourceLoc& loc, const TVariable& variable, 
 // Add a single flattened member to the flattened data being tracked for the composite
 // Returns true for the final flattening level.
 int HlslParseContext::addFlattenedMember(const TSourceLoc& loc,
-                                          const TVariable& variable, const TType& type, TFlattenData& flattenData,
-                                          const TString& memberName, bool track)
+                                         const TVariable& variable, const TType& type, TFlattenData& flattenData,
+                                         const TString& memberName, bool track)
 {
     if (isFinalFlattening(type)) {
         // This is as far as we flatten.  Insert the variable.
@@ -1122,12 +1122,9 @@ int HlslParseContext::addFlattenedMember(const TSourceLoc& loc,
 // Figure out the mapping between an aggregate's top members and an
 // equivalent set of individual variables.
 //
-// N.B. Erases memory of I/O-related annotations in the original type's member,
-//      effecting a transfer of this information to the flattened variable form.
-//
 // Assumes shouldFlatten() or equivalent was called first.
 int HlslParseContext::flattenStruct(const TSourceLoc& loc, const TVariable& variable, const TType& type,
-                                     TFlattenData& flattenData, TString name)
+                                    TFlattenData& flattenData, TString name)
 {
     assert(type.isStruct());
 
@@ -1144,9 +1141,6 @@ int HlslParseContext::flattenStruct(const TSourceLoc& loc, const TVariable& vari
 
         const int mpos = addFlattenedMember(loc, variable, dereferencedType, flattenData, memberName, false);
         flattenData.offsets[pos++] = mpos;
-
-        // N.B. Erase I/O-related annotations from the source-type member.
-        dereferencedType.getQualifier().makeTemporary();
     }
 
     return start;
@@ -1644,6 +1638,8 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     TVector<TVariable*> inputs;
     TVector<TVariable*> outputs;
     remapEntryPointIO(userFunction, entryPointOutput, inputs, outputs);
+    // Once the parameters are moved to shader I/O, they should be non-I/O
+    remapNonEntryPointIO(userFunction);
 
     // Further this return/in/out transform by flattening, splitting, and assigning locations
     const auto makeVariableInOut = [&](TVariable& variable) {
@@ -1806,11 +1802,11 @@ void HlslParseContext::remapNonEntryPointIO(TFunction& function)
 {
     // return value
     if (function.getType().getBasicType() != EbtVoid)
-        makeNonIoType(&function.getWritableType());
+        makeTypeNonIo(&function.getWritableType());
 
     // parameters
     for (int i = 0; i < function.getParamCount(); i++)
-        makeNonIoType(function[i].type);
+        makeTypeNonIo(function[i].type);
 }
 
 // Handle function returns, including type conversions to the function return type
@@ -5392,20 +5388,20 @@ void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier
         error(loc, "name already defined", "typedef", identifier.c_str());
 }
 
-// Create a non-IO type from an IO type.  If there is no IO data, this
-// returns the input type unmodified.  Otherwise, it modifies the type
-// in place, and returns a pointer to it.
-TType* HlslParseContext::makeNonIoType(TType* type)
+// Create a non-IO type from an IO type.  If there is no IO data,
+// the input type is unmodified.  Otherwise, it modifies the type
+// in place.
+void HlslParseContext::makeTypeNonIo(TType* type)
 {
     // early out if there's nothing to do: prevents introduction of unneeded types.
     if (!type->hasIoData())
-        return type;
+        return;
 
     type->getQualifier().makeNonIo();  // Sanitize the qualifier.
 
     // Nothing more to do if there is no deep structure.
     if (!type->isStruct())
-        return type;
+        return;
 
     const auto typeIter = nonIoTypeMap.find(type->getStruct());
 
@@ -5427,8 +5423,6 @@ TType* HlslParseContext::makeNonIoType(TType* type)
         nonIoTypeMap[type->getStruct()] = nonIoType.getWritableStruct();
         type->shallowCopy(nonIoType);   // we modify the input type in place
      }
-
-    return type;
 }
 
 //
@@ -5461,7 +5455,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
     switch (type.getQualifier().storage) {
     case EvqGlobal:
     case EvqTemporary:
-        makeNonIoType(&type);
+        makeTypeNonIo(&type);
     default:
         break;
     }

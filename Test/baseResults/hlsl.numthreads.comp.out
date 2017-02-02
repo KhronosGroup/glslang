@@ -7,7 +7,7 @@ local_size = (4, 4, 2)
 0:4      'tid' (in 3-component vector of uint)
 0:9  Function Definition: @main_aux1(vu3; (temp void)
 0:9    Function Parameters: 
-0:9      'tid' (in 3-component vector of uint GlobalInvocationID)
+0:9      'tid' (in 3-component vector of uint)
 0:9  Function Definition: main_aux1( (temp void)
 0:9    Function Parameters: 
 0:?     Sequence
@@ -31,7 +31,7 @@ local_size = (4, 4, 2)
 0:4      'tid' (in 3-component vector of uint)
 0:9  Function Definition: @main_aux1(vu3; (temp void)
 0:9    Function Parameters: 
-0:9      'tid' (in 3-component vector of uint GlobalInvocationID)
+0:9      'tid' (in 3-component vector of uint)
 0:9  Function Definition: main_aux1( (temp void)
 0:9    Function Parameters: 
 0:?     Sequence

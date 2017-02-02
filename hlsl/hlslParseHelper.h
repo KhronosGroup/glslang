@@ -230,7 +230,7 @@ protected:
 
     // Create a non-IO type from an IO type.  If there is no IO data, this returns the input type unmodified.
     // Otherwise, it modifies the type in place, and returns a pointer to it.
-    TType* makeNonIoType(TType*);
+    void makeTypeNonIo(TType*);
 
     void finish() override; // post-processing
 
