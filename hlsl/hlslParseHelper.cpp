@@ -3380,7 +3380,9 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
                 // The deepest will copy member-by-member to build the structure to pass.
                 // The level above that will be a two-operand EOpComma sequence that follows the copy by the
                 // object itself.
-                TVariable* internalAggregate = makeInternalVariable("aggShadow", *function[i].type);
+                TType *sanitizedType = sanitizeType(function[i].type->clone());
+                
+                TVariable* internalAggregate = makeInternalVariable("aggShadow", *sanitizedType);
                 internalAggregate->getWritableType().getQualifier().makeTemporary();
                 TIntermSymbol* internalSymbolNode = new TIntermSymbol(internalAggregate->getUniqueId(),
                                                                       internalAggregate->getName(),
