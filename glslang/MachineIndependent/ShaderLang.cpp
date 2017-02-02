@@ -1632,6 +1632,7 @@ TProgram::TProgram() : pool(0), reflection(0), ioMapper(nullptr), linked(false)
 
 TProgram::~TProgram()
 {
+    delete ioMapper;
     delete infoSink;
     delete reflection;
 
