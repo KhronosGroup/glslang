@@ -81,12 +81,19 @@ public:
         type = EbtBool;
     }
 
+    void setSConst(const TString* s)
+    {
+        sConst = s;
+        type = EbtString;
+    }
+
     int                getIConst() const   { return iConst; }
     unsigned int       getUConst() const   { return uConst; }
     long long          getI64Const() const { return i64Const; }
     unsigned long long getU64Const() const { return u64Const; }
     double             getDConst() const   { return dConst; }
     bool               getBConst() const   { return bConst; }
+    const TString*     getSConst() const   { return sConst; }
 
     bool operator==(const int i) const
     {
@@ -136,6 +143,22 @@ public:
         return false;
     }
 
+    bool operator==(const TString& s) const
+    {
+        if (s == *sConst)
+            return true;
+
+        return false;
+    }
+
+    bool operator==(const char* s) const
+    {
+        if (*sConst == s)
+            return true;
+
+        return false;
+    }
+
     bool operator==(const TConstUnion& constant) const
     {
         if (constant.type != type)
@@ -169,6 +192,11 @@ public:
             break;
         case EbtBool:
             if (constant.bConst == bConst)
+                return true;
+
+            break;
+        case EbtString:
+            if (*constant.sConst == *sConst)
                 return true;
 
             break;
@@ -209,6 +237,11 @@ public:
         return !operator==(b);
     }
 
+    bool operator!=(const TString& s) const
+    {
+        return !operator==(s);
+    }
+
     bool operator!=(const TConstUnion& constant) const
     {
         return !operator==(constant);
@@ -243,6 +276,12 @@ public:
                 return true;
 
             return false;
+        case EbtString:
+            if (*sConst > *constant.sConst)
+                return true;
+
+            return false;
+                
         default:
             assert(false && "Default missing");
             return false;
@@ -275,6 +314,11 @@ public:
             return false;
         case EbtDouble:
             if (dConst < constant.dConst)
+                return true;
+
+            return false;
+        case EbtString:
+            if (*sConst < *constant.sConst)
                 return true;
 
             return false;
@@ -532,6 +576,7 @@ private:
         unsigned long long u64Const;    // used for u64vec, scalar uint64s
         bool               bConst;      // used for bvec, scalar bools
         double             dConst;      // used for vec, dvec, mat, dmat, scalar floats and doubles
+        const TString*     sConst;      // string constant
     };
 
     TBasicType type;

@@ -395,6 +395,7 @@ public:
         precision = EpqNone;
         invariant = false;
         noContraction = false;
+        builtInOrig  = EbvNone;
         makeTemporary();
     }
 
@@ -436,6 +437,7 @@ public:
 
     TStorageQualifier   storage   : 6;
     TBuiltInVariable    builtIn   : 8;
+    TBuiltInVariable    builtInOrig : 8;  // original TBuiltInVariable, before type sanitization
     TPrecisionQualifier precision : 3;
     bool invariant    : 1; // require canonical treatment for cross-shader invariance
     bool noContraction: 1; // prevent contraction and reassociation, e.g., for 'precise' keyword, and expressions it affects

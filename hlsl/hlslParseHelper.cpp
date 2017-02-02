@@ -48,6 +48,7 @@
 #include <functional>
 #include <cctype>
 #include <array>
+#include <unordered_set>
 
 namespace glslang {
 
@@ -65,7 +66,11 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     builtInIoIndex(nullptr),
     builtInIoBase(nullptr),
     nextInLocation(0), nextOutLocation(0),
-    sourceEntryPointName(sourceEntryPointName)
+    sourceEntryPointName(sourceEntryPointName),
+    entryPointFunction(nullptr),
+    entryPointFunctionBody(nullptr),
+    entryPointReturnSeq(nullptr),
+    multipleReturns(false)
 {
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;
@@ -1020,6 +1025,9 @@ TType& HlslParseContext::split(TType& type, TString name, const TType* outerStru
             const TType& memberType = *ioType->type;
             TVariable* ioVar = makeInternalVariable(name + (name.empty() ? "" : "_") + memberType.getFieldName(), memberType);
 
+            if (type.isArray())
+                arraySizes = &type.getArraySizes();
+
             if (arraySizes)
                 ioVar->getWritableType().newArraySizes(*arraySizes);
 
@@ -1374,6 +1382,17 @@ TIntermTyped* HlslParseContext::splitAccessStruct(const TSourceLoc& loc, TInterm
     }
 }
 
+// Pass through to base class after remembering builtin mappings.
+void HlslParseContext::trackLinkage(TVariable& variable)
+{
+    TBuiltInVariable biType = variable.getType().getQualifier().builtIn;
+    if (biType != EbvNone)
+        builtInLinkageSymbols[biType] = variable.clone();
+
+    TParseContextBase::trackLinkage(variable);
+}
+
+
 // Variables that correspond to the user-interface in and out of a stage
 // (not the built-in interface) are assigned locations and
 // registered as a linkage node (part of the stage's external interface).
@@ -1393,6 +1412,7 @@ void HlslParseContext::assignLocations(TVariable& variable)
                     nextOutLocation += intermediate.computeTypeLocationSize(variable.getType());
                 }
             }
+                
             trackLinkage(variable);
         }
     };
@@ -1620,9 +1640,6 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
                     assignLocations(*variable);
                 }
 
-                // Transfer ownership of name pointer to symbol table.
-                param.name = nullptr;
-
                 // Add the parameter to the AST
                 paramNodes = intermediate.growAggregate(paramNodes,
                                                         intermediate.addSymbol(*variable, loc),
@@ -1652,6 +1669,8 @@ void HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunction& fun
         return;
     }
 
+    entryPointFunction = &function;
+
     // entry point logic...
 
     intermediate.setEntryPointMangledName(function.getMangledName().c_str());
@@ -1675,9 +1694,128 @@ void HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunction& fun
         for (int lid = 0; lid < int(sequence.size()); ++lid)
             intermediate.setLocalSize(lid, sequence[lid]->getAsConstantUnion()->getConstArray()[0].getIConst());
     }
+
+    // MaxVertexCount
     const TIntermAggregate* maxVertexCount = attributes[EatMaxVertexCount];
-    if (maxVertexCount != nullptr)
-        intermediate.setVertices(maxVertexCount->getSequence()[0]->getAsConstantUnion()->getConstArray()[0].getIConst());
+    if (maxVertexCount != nullptr) {
+        if (! intermediate.setVertices(maxVertexCount->getSequence()[0]->getAsConstantUnion()->getConstArray()[0].getIConst())) {
+            error(loc, "cannot change previously set maxvertexcount attribute", "", "");
+        }
+    }
+
+    // Handle [patchconstantfunction("...")]
+    const TIntermAggregate* pcfAttr = attributes[EatPatchConstantFunc]; 
+    if (pcfAttr != nullptr) {
+        const TConstUnion& pcfName = pcfAttr->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
+
+        if (pcfName.getType() != EbtString) {
+            error(loc, "invalid patch constant function", "", "");
+        } else {
+            patchConstantFunctionName = *pcfName.getSConst();
+        }
+    }
+
+    // Handle [domain("...")]
+    const TIntermAggregate* domainAttr = attributes[EatDomain]; 
+    if (domainAttr != nullptr) {
+        const TConstUnion& domainType = domainAttr->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
+        if (domainType.getType() != EbtString) {
+            error(loc, "invalid domain", "", "");
+        } else {
+            TString domainStr = *domainType.getSConst();
+            std::transform(domainStr.begin(), domainStr.end(), domainStr.begin(), ::tolower);
+
+            TLayoutGeometry domain = ElgNone;
+
+            if (domainStr == "tri") {
+                domain = ElgTriangles;
+            } else if (domainStr == "quad") {
+                domain = ElgQuads;
+            } else if (domainStr == "isoline") {
+                domain = ElgIsolines;
+            } else {
+                error(loc, "unsupported domain type", domainStr.c_str(), "");
+            }
+
+            if (! intermediate.setInputPrimitive(domain)) {
+                error(loc, "cannot change previously set domain", TQualifier::getGeometryString(domain), "");
+            }
+        }
+    }
+
+    // Handle [outputtoplogy("...")]
+    const TIntermAggregate* topologyAttr = attributes[EatOutputTopology];
+    if (topologyAttr != nullptr) {
+        const TConstUnion& topoType = topologyAttr->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
+        if (topoType.getType() != EbtString) {
+            error(loc, "invalid outputtoplogy", "", "");
+        } else {
+            TString topologyStr = *topoType.getSConst();
+            std::transform(topologyStr.begin(), topologyStr.end(), topologyStr.begin(), ::tolower);
+
+            TVertexOrder topology = EvoNone;
+                
+            if (topologyStr == "point") {
+                topology = EvoNone;
+            } else if (topologyStr == "line") {
+                topology = EvoNone;
+            } else if (topologyStr == "triangle_cw") {
+                topology = EvoCw;
+            } else if (topologyStr == "triangle_ccw") {
+                topology = EvoCcw;
+            } else {
+                error(loc, "unsupported outputtoplogy type", topologyStr.c_str(), "");
+            }
+
+            if (topology != EvoNone) {
+                if (! intermediate.setVertexOrder(topology)) {
+                    error(loc, "cannot change previously set outputtopology", TQualifier::getVertexOrderString(topology), "");
+                }
+            }
+        }
+    }
+
+    // Handle [partitioning("...")]
+    const TIntermAggregate* partitionAttr = attributes[EatPartitioning]; 
+    if (partitionAttr != nullptr) {
+        const TConstUnion& partType = partitionAttr->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
+        if (partType.getType() != EbtString) {
+            error(loc, "invalid partitioning", "", "");
+        } else {
+            TString partitionStr = *partType.getSConst();
+            std::transform(partitionStr.begin(), partitionStr.end(), partitionStr.begin(), ::tolower);
+
+            TVertexSpacing partitioning = EvsNone;
+                
+            if (partitionStr == "integer") {
+                partitioning = EvsEqual;
+            } else if (partitionStr == "fractional_even") {
+                partitioning = EvsFractionalEven;
+            } else if (partitionStr == "fractional_odd") {
+                partitioning = EvsFractionalOdd;
+                //} else if (partition == "pow2") { // TODO: currently nothing to map this to.
+            } else {
+                error(loc, "unsupported partitioning type", partitionStr.c_str(), "");
+            }
+
+            if (! intermediate.setVertexSpacing(partitioning))
+                error(loc, "cannot change previously set partitioning", TQualifier::getVertexSpacingString(partitioning), "");
+        }
+    }
+
+    // Handle [outputcontrolpoints("...")]
+    const TIntermAggregate* outputControlPoints = attributes[EatOutputControlPoints]; 
+    if (outputControlPoints != nullptr) {
+        const TConstUnion& ctrlPointConst = outputControlPoints->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
+        if (ctrlPointConst.getType() != EbtInt) {
+            error(loc, "invalid outputcontrolpoints", "", "");
+        } else {
+            const int ctrlPoints = ctrlPointConst.getIConst();
+            if (! intermediate.setVertices(ctrlPoints)) {
+                error(loc, "cannot change previously set outputcontrolpoints attribute", "", "");
+            }
+        }
+    }
 }
 
 void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& function, TIntermNode* functionBody, TIntermNode*& node)
@@ -1690,6 +1828,9 @@ void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& func
 
     if (function.getType().getBasicType() != EbtVoid && ! functionReturnsValue)
         error(loc, "function does not return a value:", "", function.getName().c_str());
+
+    if (inEntryPoint)
+        entryPointFunctionBody = functionBody;
 }
 
 // AST I/O is done through shader globals declared in the 'in' or 'out'
@@ -1741,7 +1882,10 @@ void HlslParseContext::remapEntryPointIO(TFunction& function)
 // declares entry point IO built-ins, but these have to be undone.
 void HlslParseContext::remapNonEntryPointIO(TFunction& function)
 {
-    const auto remapBuiltInType = [&](TType& type) { type.getQualifier().builtIn = EbvNone; };
+    const auto remapBuiltInType = [&](TType& type) {
+        type.getQualifier().builtInOrig = type.getQualifier().builtIn;
+        type.getQualifier().builtIn = EbvNone; 
+    };
 
     // return value
     if (function.getType().getBasicType() != EbtVoid)
@@ -1784,6 +1928,10 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
         returnSequence = intermediate.makeAggregate(returnSequence);
         returnSequence = intermediate.growAggregate(returnSequence, intermediate.addBranch(EOpReturn, loc), loc);
         returnSequence->getAsAggregate()->setOperator(EOpSequence);
+
+        if (entryPointReturnSeq != nullptr)   // TODO: *** remove when function wrapping is available
+            multipleReturns = true;
+        entryPointReturnSeq = returnSequence; // TODO: *** remove when function wrapping is available
 
         return returnSequence;
     } else
@@ -1895,6 +2043,13 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         if (split && derefType.isBuiltInInterstageIO(language)) {
             // copy from interstage IO builtin if needed
             subTree = intermediate.addSymbol(*interstageBuiltInIo[tInterstageIoData(derefType, outer->getType())]);
+
+            if (subTree->getType().isArray() && op == EOpIndexDirect) {
+                const TType splitDerefType(node->getType(), splitMember);
+                subTree = intermediate.addIndex(op, splitNode, intermediate.addConstantUnion(splitMember, loc), loc);
+                subTree->setType(splitDerefType);
+            }
+
         } else if (flattened && isFinalFlattening(derefType)) {
             subTree = intermediate.addSymbol(*flatVariables[memberIdx++]);
         } else {
@@ -6482,9 +6637,262 @@ void HlslParseContext::renameShaderFunction(TString*& name) const
         name = NewPoolTString(intermediate.getEntryPointName().c_str());
 }
 
+// Add patch constant function invocation
+void HlslParseContext::addPatchConstantInvocation()
+{
+    TSourceLoc loc;
+    loc.init();
+
+    // There's no patch constant function, or we're not a HS
+    if (patchConstantFunctionName.empty() || language != EShLangTessControl)
+        return;
+
+    if (multipleReturns) {
+        // TODO: *** remove when function wrapping is available
+        error(loc, "unimplemented: patch constant functions with multi-return entry point", patchConstantFunctionName.c_str(), "");
+        return;
+    }
+    
+    if (symbolTable.isFunctionNameVariable(patchConstantFunctionName)) {
+        error(loc, "can't use variable in patch constant function", patchConstantFunctionName.c_str(), "");
+        return;
+    }
+
+    const TString mangledName = patchConstantFunctionName + "(";
+
+    // Search for candidate:
+
+    // create list of candidates
+    TVector<const TFunction*> candidateList;
+    bool builtIn;
+    symbolTable.findFunctionNameList(mangledName, candidateList, builtIn);
+    
+    // We have to have one and only one.
+    if (candidateList.empty()) {
+        error(loc, "patch constant function not found", patchConstantFunctionName.c_str(), "");
+        return;
+    }
+
+    // Based on directed experiments, it appears that if there are overloaded patchconstantfunctions,
+    // HLSL picks the last one in shader source order.  Since that isn't yet implemented here, error
+    // out if there is more than one candidate.
+    if (candidateList.size() > 1) {
+        error(loc, "ambiguous patch constant function", patchConstantFunctionName.c_str(), "");
+        return;
+    }
+
+    const auto findBuiltIns = [&](const TFunction& function, std::unordered_set<TBuiltInVariable>& builtIns) {
+        for (int p=0; p<function.getParamCount(); ++p)
+            if (function[p].type->getQualifier().builtInOrig != EbvNone)
+                builtIns.insert(function[p].type->getQualifier().builtInOrig);
+            else
+                builtIns.insert(function[p].type->getQualifier().builtIn);
+    };
+
+    const auto addToLinkage = [&](const TType& type, const TString* name, TIntermSymbol** symbolNode) {
+        if (name == nullptr) {
+            error(loc, "unable to locate patch function parameter name", "", "");
+            return;
+        } else {
+            TVariable& variable = *new TVariable(name, type);
+            if (! symbolTable.insert(variable)) {
+                error(loc, "unable to declare patch constant function interface variable", name->c_str(), "");
+                return;
+            }
+
+            globalQualifierFix(loc, variable.getWritableType().getQualifier());
+
+            if (symbolNode != nullptr)
+                *symbolNode = intermediate.addSymbol(variable);
+
+            trackLinkage(variable);
+        }
+    };
+
+    const auto findLinkageSymbol = [this](TBuiltInVariable biType) -> TIntermSymbol* {
+        const auto it = builtInLinkageSymbols.find(biType);
+        if (it == builtInLinkageSymbols.end())  // if it wasn't declared by the user, return nullptr
+            return nullptr;
+
+        return intermediate.addSymbol(*it->second);
+    };
+    
+    // We will:
+    // 1. Union the interfaces, and create builtins for anything present in the PCF and
+    //    originally declared as a builtin variable that isn't present in the entry point.
+    // 2. (TODO: pending function wrapping) Wrap the call to the entry point to handle multiple returns.
+    // 3. Add a barrier to the end of the entry point (or its replacement)
+    // 4. Synthesizes a call to the patchconstfunction inside an if test for invocation id == 0
+    //    using builtin variables from either main, or the ones we created.  Matching is based on
+    //    builtin type.
+    // 5. Copy the return value (if any) from the PCF to a non-sanitized variable that contains
+    //    the proper outputs.  In case this may involve multiple copies, such as for an arrayed
+    //    variable, a temporary copy of the PCF output is created to avoid multiple indirections
+    //    into a complex R-value.
+
+    // Our patch constant function.
+    // TODO: CODE REVIEW REQUEST: 
+    TFunction& patchConstantFunction = const_cast<TFunction&>(*candidateList[0]);
+
+    std::unordered_set<TBuiltInVariable> pcfBuiltIns;  // patch constant function builtins
+    std::unordered_set<TBuiltInVariable> epfBuiltIns;  // entry point function builtins
+
+    assert(entryPointFunction);
+
+    findBuiltIns(patchConstantFunction, pcfBuiltIns);
+    findBuiltIns(*entryPointFunction,   epfBuiltIns);
+
+    // Patchconstantfunction can contain only builtin qualified variables.  (Technically, only HS inputs,
+    // but this test is less assertive than that).
+    if (pcfBuiltIns.count(EbvNone) != 0) {
+        error(loc, "patch constant function invalid parameter", "", "");
+        return;
+    }
+
+    // Find the set of builtins in the PCF that are not present in the entry point.
+    std::unordered_set<TBuiltInVariable> notInEntryPoint;
+
+    notInEntryPoint = pcfBuiltIns;
+
+    for (auto bi : epfBuiltIns) // std::set_difference not usable on unordered containers
+        notInEntryPoint.erase(bi);
+
+    // Now we'll add those to the entry and to the linkage.
+    const int pcfParamCount = patchConstantFunction.getParamCount();
+    for (int p=0; p<pcfParamCount; ++p) {
+        TType* paramType = patchConstantFunction[p].type->clone();
+        const TBuiltInVariable biType = paramType->getQualifier().builtInOrig;
+
+        // Use the original declaration type for the linkage
+        paramType->getQualifier().builtIn = biType;
+
+        if (notInEntryPoint.count(biType) == 1)
+            addToLinkage(*paramType, patchConstantFunction[p].name, nullptr);
+    }
+
+    TIntermSymbol* invocationIdSym = findLinkageSymbol(EbvInvocationId);
+
+    // If we didn't find it because the shader made one, add our own.
+    if (invocationIdSym == nullptr) {
+        TType invocationIdType(EbtUint, EvqIn, 1);
+        TString* invocationIdName = NewPoolTString("InvocationId");
+        invocationIdType.getQualifier().builtIn = EbvInvocationId;
+        addToLinkage(invocationIdType, invocationIdName, &invocationIdSym);
+    }
+
+    assert(invocationIdSym);
+
+    // Create arguments for synthesis of patchconstantfunction invocation
+    // TODO: input structs
+    TIntermTyped* arguments = nullptr;
+    for (int p=0; p<pcfParamCount; ++p) {
+        if (patchConstantFunction[p].type->isArray() ||
+            patchConstantFunction[p].type->isStruct()) {
+            error(loc, "unimplemented array or variable in patch constant function signature", "", "");
+            return;
+        }
+        
+        // find which builtin it is
+        const TBuiltInVariable biType = patchConstantFunction[p].type->getQualifier().builtInOrig;
+
+        TIntermSymbol* builtIn = findLinkageSymbol(biType);
+        
+        if (builtIn == nullptr) {
+            error(loc, "unable to find patch constant function builtin variable", "", "");
+            return;
+        }
+
+        if (pcfParamCount == 1)
+            arguments = builtIn;
+        else
+            arguments = intermediate.growAggregate(arguments, builtIn);
+    }
+
+    // Create a function call to the patchconstantfunction
+    if (arguments)
+        addInputArgumentConversions(patchConstantFunction, arguments);
+
+    // Synthetic call.
+    TIntermTyped* callToPCF = intermediate.setAggregateOperator(arguments, EOpFunctionCall, patchConstantFunction.getType(), loc);
+    {
+        callToPCF->getAsAggregate()->setUserDefined();
+        callToPCF->getAsAggregate()->setName(patchConstantFunction.getMangledName());
+        intermediate.addToCallGraph(infoSink, entryPointFunction->getMangledName(), patchConstantFunction.getMangledName());
+
+        if (callToPCF->getAsAggregate()) {
+            TQualifierList& qualifierList = callToPCF->getAsAggregate()->getQualifierList();
+            for (int i = 0; i < patchConstantFunction.getParamCount(); ++i) {
+                TStorageQualifier qual = patchConstantFunction[i].type->getQualifier().storage;
+                qualifierList.push_back(qual);
+            }
+            callToPCF = addOutputArgumentConversions(patchConstantFunction, *callToPCF->getAsOperator());
+        }
+    }
+
+    TIntermSequence& returnSeq = entryPointReturnSeq->getAsAggregate()->getSequence();
+
+    // Return sequence: copy PCF result to a temporary, then to shader output variable.
+    if (callToPCF->getBasicType() != EbtVoid) {
+        // const TType* retType = sanitizeType(patchConstantFunction.getType().clone());
+        const TType* retType = &patchConstantFunction.getType();
+
+        TVariable* pcfOutput = makeInternalVariable("@patchConstantOutput", *retType);
+        pcfOutput->getWritableType().getQualifier().storage = EvqVaryingOut;
+
+        TIntermSymbol* pcfRetNode = intermediate.addSymbol(*pcfOutput, loc);
+
+        inEntryPoint = true; // TODO: remove when main wrapping is in place
+
+        if (shouldFlatten(pcfOutput->getType()))
+            flatten(loc, *pcfOutput);
+        if (shouldSplit(pcfOutput->getType()))
+            split(*pcfOutput);
+
+        inEntryPoint = false; // TODO: remove when main wrapping is in place
+
+        // The call to the PCF is a complex R-value: we want to store it in a temp to avoid
+        // repeated calls to the PCF:
+        TVariable* pcfCallResult = makeInternalVariable("@patchConstantResult", *sanitizeType(retType->clone()));
+        pcfCallResult->getWritableType().getQualifier().makeTemporary();
+        TIntermSymbol* pcfResultVar = intermediate.addSymbol(*pcfCallResult, loc);
+        sanitizeType(&callToPCF->getWritableType());
+        TIntermNode* pcfResultAssign = intermediate.addAssign(EOpAssign, pcfResultVar, callToPCF, loc);
+
+        TIntermNode* pcfResultToOut = handleAssign(loc, EOpAssign, pcfRetNode, intermediate.addSymbol(*pcfCallResult, loc));
+
+        TIntermTyped* pcfAggregate = nullptr;
+        pcfAggregate = intermediate.growAggregate(pcfAggregate, pcfResultAssign);
+        pcfAggregate = intermediate.growAggregate(pcfAggregate, pcfResultToOut);
+        pcfAggregate = intermediate.setAggregateOperator(pcfAggregate, EOpSequence, *retType, loc);
+
+        callToPCF = pcfAggregate;
+    }
+    
+    // Add test on invocation ID
+    TIntermTyped* zero = intermediate.addConstantUnion(0, loc, true);
+    TIntermTyped* cmp =  intermediate.addBinaryNode(EOpEqual, invocationIdSym, zero, loc, TType(EbtBool));
+
+    // Create if statement
+    TIntermTyped* invocationIdTest = new TIntermSelection(cmp, callToPCF, nullptr);
+    invocationIdTest->setLoc(loc);
+
+    // Insert the test and call into the end of the function
+    assert(entryPointReturnSeq);
+
+    // add our test sequence before the return.
+    returnSeq.insert(returnSeq.begin(), invocationIdTest);
+    
+    // add barrier before the test
+    TIntermTyped* barrier = new TIntermAggregate(EOpBarrier);
+    barrier->setLoc(loc);
+    barrier->setType(TType(EbtVoid));
+    returnSeq.insert(returnSeq.begin(), barrier);
+}
+
 // post-processing
 void HlslParseContext::finish()
 {
+    addPatchConstantInvocation();
     addInterstageIoToLinkage();
 
     TParseContextBase::finish();

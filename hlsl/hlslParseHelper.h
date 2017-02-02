@@ -225,11 +225,16 @@ protected:
     TVariable* getSplitIoVar(const TVariable* var) const;
     TVariable* getSplitIoVar(int id) const;
     void addInterstageIoToLinkage();
+    void addPatchConstantInvocation();
 
     void flatten(const TSourceLoc& loc, const TVariable& variable);
     int flatten(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
     int flattenStruct(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
     int flattenArray(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
+
+    // Pass through to base class after remembering builtin mappings.
+    using TParseContextBase::trackLinkage;
+    void trackLinkage(TVariable& variable);
 
     // Type sanitization: return existing sanitized (temporary) type if there is one, else make new one.
     TType* sanitizeType(TType*);
@@ -325,7 +330,7 @@ protected:
         }
     };
 
-    TMap<tInterstageIoData, TVariable*> interstageBuiltInIo; // individual builtin interstage IO vars, inxed by builtin type.
+    TMap<tInterstageIoData, TVariable*> interstageBuiltInIo; // individual builtin interstage IO vars, indexed by builtin type.
 
     // We have to move array references to structs containing builtin interstage IO to the split variables.
     // This is only handled for one level.  This stores the index, because we'll need it in the future, since
@@ -336,7 +341,15 @@ protected:
     unsigned int nextInLocation;
     unsigned int nextOutLocation;
 
-    TString sourceEntryPointName;
+    TString    sourceEntryPointName;
+    TFunction* entryPointFunction;
+    TIntermNode* entryPointFunctionBody;
+    TIntermNode* entryPointReturnSeq; // TODO: *** remove when function wrapping is available
+    bool         multipleReturns;     // TODO: *** remove when function wrapping is available
+
+    TString patchConstantFunctionName; // hull shader patch constant function name, from function level attribute.
+    TMap<TBuiltInVariable, TVariable*> builtInLinkageSymbols; // used for tessellation, finding declared builtins
+
 };
 
 } // end namespace glslang
