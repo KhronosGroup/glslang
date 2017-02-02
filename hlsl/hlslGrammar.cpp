@@ -1758,6 +1758,16 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList)
 
             acceptPostDecls(member.type->getQualifier());
 
+            // EQUAL assignment_expression
+            if (acceptTokenClass(EHTokAssign)) {
+                parseContext.warn(idToken.loc, "struct-member initializers ignored", "typedef", "");
+                TIntermTyped* expressionNode = nullptr;
+                if (! acceptAssignmentExpression(expressionNode)) {
+                    expected("initializer");
+                    return false;
+                }
+            }
+
             // success on seeing the SEMICOLON coming up
             if (peekTokenClass(EHTokSemicolon))
                 break;
