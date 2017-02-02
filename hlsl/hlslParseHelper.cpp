@@ -1918,6 +1918,11 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
     int memberIdx = 0;
 
+    // When dealing with split arrayed structures of builtins, the arrayness is moved to the extracted builtin
+    // variables, which is awkward when copying between split and unsplit structures.  This variable tracks
+    // array indirections so they can be percolated from outer structs to inner variables.
+    std::vector <int> arrayElement;
+
     // We track the outer-most aggregate, so that we can use its storage class later.
     const TIntermTyped* outerLeft  = left;
     const TIntermTyped* outerRight = right;
@@ -1934,7 +1939,14 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
         if (split && derefType.isBuiltInInterstageIO(language)) {
             // copy from interstage IO builtin if needed
-            subTree = intermediate.addSymbol(*interstageBuiltInIo[tInterstageIoData(derefType, outer->getType())]);
+            subTree = intermediate.addSymbol(*interstageBuiltInIo.find(tInterstageIoData(derefType, outer->getType()))->second);
+
+            // Arrayness of builtIn symbols isn't handled by the normal recursion: it's been extracted and moved to the builtin.
+            if (subTree->getType().isArray() && !arrayElement.empty()) {
+                const TType splitDerefType(subTree->getType(), arrayElement.back());
+                subTree = intermediate.addIndex(EOpIndexDirect, subTree, intermediate.addConstantUnion(arrayElement.back(), loc), loc);
+                subTree->setType(splitDerefType);
+            }
         } else if (flattened && isFinalFlattening(derefType)) {
             subTree = intermediate.addSymbol(*flatVariables[memberIdx++]);
         } else {
@@ -1965,17 +1977,21 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
             // array case
             for (int element=0; element < left->getType().getOuterArraySize(); ++element) {
-                    // Add a new AST symbol node if we have a temp variable holding a complex RHS.
+                // Add a new AST symbol node if we have a temp variable holding a complex RHS.
                 TIntermTyped* subLeft  = getMember(true,  left,  element, left, element);
                 TIntermTyped* subRight = getMember(false, right, element, right, element);
 
                 TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left,  element, splitLeft, element) : subLeft;
                 TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, element, splitRight, element) : subRight; 
 
+                arrayElement.push_back(element);
+
                 if (isFinalFlattening(dereferencedType))
                     assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc), loc);
                 else
                     traverse(subLeft, subRight, subSplitLeft, subSplitRight);
+
+                arrayElement.pop_back();
             }
         } else if (left->getType().isStruct()) {
             // struct case
