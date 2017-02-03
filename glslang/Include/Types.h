@@ -1216,7 +1216,7 @@ public:
     // Make complete copy of the whole type graph rooted at 'copyOf'.
     void deepCopy(const TType& copyOf)
     {
-        TUnorderedMap<TTypeList*,TTypeList*> copied;  // to enable copying a type graph as a graph, not a tree
+        TMap<TTypeList*,TTypeList*> copied;  // to enable copying a type graph as a graph, not a tree
         deepCopy(copyOf, copied);
     }
 
@@ -1840,7 +1840,7 @@ protected:
     // Recursively copy a type graph, while preserving the graph-like
     // quality. That is, don't make more than one copy of a structure that
     // gets reused multiple times in the type graph.
-    void deepCopy(const TType& copyOf, TUnorderedMap<TTypeList*,TTypeList*>& copiedMap)
+    void deepCopy(const TType& copyOf, TMap<TTypeList*,TTypeList*>& copiedMap)
     {
         shallowCopy(copyOf);
 
