@@ -159,6 +159,12 @@ bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
     return false;
 }
 
+void HlslParseContext::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName)
+{
+    makeTypeNonIo(&memberType);  //?? losing offsets is okay?
+    TParseContextBase::growGlobalUniformBlock(loc, memberType, memberName);
+}
+
 //
 // Return a TLayoutFormat corresponding to the given texture type.
 //
