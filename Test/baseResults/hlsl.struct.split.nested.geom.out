@@ -43,6 +43,18 @@ output primitive = triangle_strip
 0:24    Function Parameters: 
 0:?     Sequence
 0:24      Sequence
+0:24        move second child to first child (temp 4-component vector of float)
+0:24          pos: direct index for structure (temp 4-component vector of float)
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:24              Constant:
+0:24                0 (const int)
+0:24            Constant:
+0:24              0 (const int)
+0:24          direct index (in 4-component vector of float Position)
+0:?             'tin_pos' (in 3-element array of 4-component vector of float Position)
+0:24            Constant:
+0:24              0 (const int)
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
 0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
@@ -58,6 +70,18 @@ output primitive = triangle_strip
 0:24                0 (const int)
 0:24            Constant:
 0:24              0 (const int)
+0:24        move second child to first child (temp 4-component vector of float)
+0:24          pos: direct index for structure (temp 4-component vector of float)
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:24              Constant:
+0:24                1 (const int)
+0:24            Constant:
+0:24              0 (const int)
+0:24          direct index (in 4-component vector of float Position)
+0:?             'tin_pos' (in 3-element array of 4-component vector of float Position)
+0:24            Constant:
+0:24              1 (const int)
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
 0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
@@ -73,6 +97,18 @@ output primitive = triangle_strip
 0:24                1 (const int)
 0:24            Constant:
 0:24              0 (const int)
+0:24        move second child to first child (temp 4-component vector of float)
+0:24          pos: direct index for structure (temp 4-component vector of float)
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:24              Constant:
+0:24                2 (const int)
+0:24            Constant:
+0:24              0 (const int)
+0:24          direct index (in 4-component vector of float Position)
+0:?             'tin_pos' (in 3-element array of 4-component vector of float Position)
+0:24            Constant:
+0:24              2 (const int)
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
 0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
@@ -143,6 +179,18 @@ output primitive = triangle_strip
 0:24    Function Parameters: 
 0:?     Sequence
 0:24      Sequence
+0:24        move second child to first child (temp 4-component vector of float)
+0:24          pos: direct index for structure (temp 4-component vector of float)
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:24              Constant:
+0:24                0 (const int)
+0:24            Constant:
+0:24              0 (const int)
+0:24          direct index (in 4-component vector of float Position)
+0:?             'tin_pos' (in 3-element array of 4-component vector of float Position)
+0:24            Constant:
+0:24              0 (const int)
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
 0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
@@ -158,6 +206,18 @@ output primitive = triangle_strip
 0:24                0 (const int)
 0:24            Constant:
 0:24              0 (const int)
+0:24        move second child to first child (temp 4-component vector of float)
+0:24          pos: direct index for structure (temp 4-component vector of float)
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:24              Constant:
+0:24                1 (const int)
+0:24            Constant:
+0:24              0 (const int)
+0:24          direct index (in 4-component vector of float Position)
+0:?             'tin_pos' (in 3-element array of 4-component vector of float Position)
+0:24            Constant:
+0:24              1 (const int)
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
 0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
@@ -173,6 +233,18 @@ output primitive = triangle_strip
 0:24                1 (const int)
 0:24            Constant:
 0:24              0 (const int)
+0:24        move second child to first child (temp 4-component vector of float)
+0:24          pos: direct index for structure (temp 4-component vector of float)
+0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:?               'tin' (temp 3-element array of structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
+0:24              Constant:
+0:24                2 (const int)
+0:24            Constant:
+0:24              0 (const int)
+0:24          direct index (in 4-component vector of float Position)
+0:?             'tin_pos' (in 3-element array of 4-component vector of float Position)
+0:24            Constant:
+0:24              2 (const int)
 0:24        move second child to first child (temp 2-component vector of float)
 0:24          tc: direct index for structure (temp 2-component vector of float)
 0:24            direct index (temp structure{temp 4-component vector of float pos, temp 2-component vector of float tc})
@@ -197,12 +269,12 @@ output primitive = triangle_strip
 
 // Module Version 10000
 // Generated by (magic number): 80001
-// Id's are bound by 67
+// Id's are bound by 80
 
                               Capability Geometry
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint Geometry 4  "main" 46 66
+                              EntryPoint Geometry 4  "main" 45 53 79
                               ExecutionMode 4 Triangles
                               ExecutionMode 4 Invocations 1
                               ExecutionMode 4 OutputTriangleStrip
@@ -225,18 +297,20 @@ output primitive = triangle_strip
                               Name 23  "ts"
                               Name 26  "o"
                               Name 42  "tin"
-                              Name 43  "PS_IN"
-                              MemberName 43(PS_IN) 0  "tc"
-                              Name 46  "tin"
-                              Name 58  "ts"
-                              Name 59  "param"
-                              Name 61  "param"
-                              Name 63  "PerVertex_in"
-                              MemberName 63(PerVertex_in) 0  "tin_pos"
-                              Name 66  "PerVertex_in"
-                              Decorate 46(tin) Location 0
-                              MemberDecorate 63(PerVertex_in) 0 BuiltIn Position
-                              Decorate 63(PerVertex_in) Block
+                              Name 45  "tin_pos"
+                              Name 50  "PS_IN"
+                              MemberName 50(PS_IN) 0  "tc"
+                              Name 53  "tin"
+                              Name 71  "ts"
+                              Name 72  "param"
+                              Name 74  "param"
+                              Name 76  "PerVertex_in"
+                              MemberName 76(PerVertex_in) 0  "tin_pos"
+                              Name 79  "PerVertex_in"
+                              Decorate 45(tin_pos) BuiltIn Position
+                              Decorate 53(tin) Location 0
+                              MemberDecorate 76(PerVertex_in) 0 BuiltIn Position
+                              Decorate 76(PerVertex_in) Block
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -267,37 +341,53 @@ output primitive = triangle_strip
               37:    6(float) Constant 1086324736
               38:    8(fvec2) ConstantComposite 36 37
               39:             TypePointer Function 8(fvec2)
-       43(PS_IN):             TypeStruct 8(fvec2)
-              44:             TypeArray 43(PS_IN) 11
-              45:             TypePointer Input 44
-         46(tin):     45(ptr) Variable Input
-              47:             TypePointer Input 8(fvec2)
-              54:     17(int) Constant 2
-63(PerVertex_in):             TypeStruct 7(fvec4)
-              64:             TypeArray 63(PerVertex_in) 11
-              65:             TypePointer Input 64
-66(PerVertex_in):     65(ptr) Variable Input
+              43:             TypeArray 7(fvec4) 11
+              44:             TypePointer Input 43
+     45(tin_pos):     44(ptr) Variable Input
+              46:             TypePointer Input 7(fvec4)
+       50(PS_IN):             TypeStruct 8(fvec2)
+              51:             TypeArray 50(PS_IN) 11
+              52:             TypePointer Input 51
+         53(tin):     52(ptr) Variable Input
+              54:             TypePointer Input 8(fvec2)
+              64:     17(int) Constant 2
+76(PerVertex_in):             TypeStruct 7(fvec4)
+              77:             TypeArray 76(PerVertex_in) 11
+              78:             TypePointer Input 77
+79(PerVertex_in):     78(ptr) Variable Input
          4(main):           2 Function None 3
                5:             Label
          42(tin):     13(ptr) Variable Function
-          58(ts):     20(ptr) Variable Function
-       59(param):     13(ptr) Variable Function
-       61(param):     20(ptr) Variable Function
-              48:     47(ptr) AccessChain 46(tin) 27 27
-              49:    8(fvec2) Load 48
-              50:     39(ptr) AccessChain 42(tin) 27 35
-                              Store 50 49
-              51:     47(ptr) AccessChain 46(tin) 35 27
-              52:    8(fvec2) Load 51
-              53:     39(ptr) AccessChain 42(tin) 35 35
-                              Store 53 52
-              55:     47(ptr) AccessChain 46(tin) 54 27
+          71(ts):     20(ptr) Variable Function
+       72(param):     13(ptr) Variable Function
+       74(param):     20(ptr) Variable Function
+              47:     46(ptr) AccessChain 45(tin_pos) 27
+              48:    7(fvec4) Load 47
+              49:     33(ptr) AccessChain 42(tin) 27 27
+                              Store 49 48
+              55:     54(ptr) AccessChain 53(tin) 27 27
               56:    8(fvec2) Load 55
-              57:     39(ptr) AccessChain 42(tin) 54 35
+              57:     39(ptr) AccessChain 42(tin) 27 35
                               Store 57 56
-              60:          12 Load 42(tin)
-                              Store 59(param) 60
-              62:           2 FunctionCall 24(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;) 59(param) 61(param)
+              58:     46(ptr) AccessChain 45(tin_pos) 35
+              59:    7(fvec4) Load 58
+              60:     33(ptr) AccessChain 42(tin) 35 27
+                              Store 60 59
+              61:     54(ptr) AccessChain 53(tin) 35 27
+              62:    8(fvec2) Load 61
+              63:     39(ptr) AccessChain 42(tin) 35 35
+                              Store 63 62
+              65:     46(ptr) AccessChain 45(tin_pos) 64
+              66:    7(fvec4) Load 65
+              67:     33(ptr) AccessChain 42(tin) 64 27
+                              Store 67 66
+              68:     54(ptr) AccessChain 53(tin) 64 27
+              69:    8(fvec2) Load 68
+              70:     39(ptr) AccessChain 42(tin) 64 35
+                              Store 70 69
+              73:          12 Load 42(tin)
+                              Store 72(param) 73
+              75:           2 FunctionCall 24(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;) 72(param) 74(param)
                               Return
                               FunctionEnd
 24(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;):           2 Function None 21
