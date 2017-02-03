@@ -1430,72 +1430,12 @@ void HlslParseContext::addInterstageIoToLinkage()
 
     // We have to (potentially) track two IO blocks, one in, one out.  E.g, a GS may have a
     // PerVertex block in both directions, possibly with different members.
-    static const TStorageQualifier ioType[2] = { EvqVaryingIn, EvqVaryingOut };
-    static const char* blockName[2] = { "PerVertex_in", "PerVertex_out" };
-
-    TTypeList*   ioBlockTypes[2] = { nullptr, nullptr };
-    TArraySizes* ioBlockArray[2] = { nullptr, nullptr };
-
     for (int idx = 0; idx < int(io.size()); ++idx) {
         TVariable* var = interstageBuiltInIo[io[idx]];
 
         // Add the loose interstage IO to the linkage
         if (var->getType().isLooseAndBuiltIn(language))
             trackLinkage(*var);
-
-        // Add the PerVertex interstage IO to the IO block
-        if (var->getType().isPerVertexAndBuiltIn(language)) {
-            int blockId = 0;
-            switch (var->getType().getQualifier().storage) {
-            case EvqVaryingIn:  blockId = 0; break;
-            case EvqVaryingOut: blockId = 1; break;
-            default: assert(0 && "Invalid storage qualifier");
-            }
-
-            // Lazy creation of type list only if we end up needing it.
-            if (ioBlockTypes[blockId] == nullptr)
-                ioBlockTypes[blockId] = new TTypeList();
-
-            TTypeLoc member = { new TType(EbtVoid), loc };
-            member.type->shallowCopy(var->getType());
-            member.type->setFieldName(var->getName());
-
-            // We may have collected these from different parts of different structures.  If their
-            // array dimensions are not the same, we don't know what to do, so issue an error.
-            if (member.type->isArray()) {
-                if (ioBlockArray[blockId] == nullptr) {
-                    ioBlockArray[blockId] = &member.type->getArraySizes();
-                } else  {
-                    if (*ioBlockArray[blockId] != member.type->getArraySizes())
-                        error(loc, "PerVertex block array dimension mismatch", "", "");
-                }
-                member.type->clearArraySizes();
-            }
-
-            ioBlockTypes[blockId]->push_back(member);
-        }
-    }
-
-    // If there were PerVertex items, add the block to the linkage.  Handle in and out separately.
-    for (int blockId = 0; blockId <= 1; ++blockId) {
-        if (ioBlockTypes[blockId] != nullptr) {
-            const TString* instanceName = NewPoolTString(blockName[blockId]);
-            TQualifier     blockQualifier;
-
-            blockQualifier.clear();
-            blockQualifier.storage = ioType[blockId];
-
-            TType blockType(ioBlockTypes[blockId], *instanceName, blockQualifier);
-
-            if (ioBlockArray[blockId] != nullptr)
-                blockType.newArraySizes(*ioBlockArray[blockId]);
-
-            TVariable* ioBlock = new TVariable(instanceName, blockType);
-            if (!symbolTable.insert(*ioBlock))
-                error(loc, "block instance name redefinition", ioBlock->getName().c_str(), "");
-            else
-                trackLinkage(*ioBlock);
-        }
     }
 }
 
