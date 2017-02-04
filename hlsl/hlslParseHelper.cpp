@@ -161,7 +161,7 @@ bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
 
 void HlslParseContext::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName)
 {
-    makeTypeNonIo(&memberType);  //?? losing offsets is okay?
+    memberType.getQualifier().makeNonIo();  //?? losing offsets is okay?
     TParseContextBase::growGlobalUniformBlock(loc, memberType, memberName);
 }
 
@@ -1583,8 +1583,6 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     TVector<TVariable*> inputs;
     TVector<TVariable*> outputs;
     remapEntryPointIO(userFunction, entryPointOutput, inputs, outputs);
-    // Once the parameters are moved to shader I/O, they should be non-I/O
-    remapNonEntryPointIO(userFunction);
 
     // Further this return/in/out transform by flattening, splitting, and assigning locations
     const auto makeVariableInOut = [&](TVariable& variable) {
@@ -1689,54 +1687,67 @@ void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& func
 // AST I/O is done through shader globals declared in the 'in' or 'out'
 // storage class.  An HLSL entry point has a return value, input parameters
 // and output parameters.  These need to get remapped to the AST I/O.
-void HlslParseContext::remapEntryPointIO(const TFunction& function, TVariable*& returnValue,
+void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& returnValue,
     TVector<TVariable*>& inputs, TVector<TVariable*>& outputs)
 {
-    const auto remapType = [&](TType& type) {
-        const auto remapBuiltInType = [&](TType& type) {
-            switch (type.getQualifier().builtIn) {
-            case EbvFragDepthGreater:
-                intermediate.setDepth(EldGreater);
-                type.getQualifier().builtIn = EbvFragDepth;
-                break;
-            case EbvFragDepthLesser:
-                intermediate.setDepth(EldLess);
-                type.getQualifier().builtIn = EbvFragDepth;
-                break;
-            default:
-                break;
+    const auto makeIoVariable = [this](const char* name, TType& type) {
+        const auto remapType = [&](TType& type) {
+            const auto remapBuiltInType = [&](TType& type) {
+                switch (type.getQualifier().builtIn) {
+                case EbvFragDepthGreater:
+                    intermediate.setDepth(EldGreater);
+                    type.getQualifier().builtIn = EbvFragDepth;
+                    break;
+                case EbvFragDepthLesser:
+                    intermediate.setDepth(EldLess);
+                    type.getQualifier().builtIn = EbvFragDepth;
+                    break;
+                default:
+                    break;
+                }
+            };
+            remapBuiltInType(type);
+            if (type.isStruct()) {
+                auto& members = *type.getStruct();
+                for (auto member = members.begin(); member != members.end(); ++member)
+                    remapBuiltInType(*member->type);  // TODO: lack-of-recursion structure depth problem
             }
         };
-        remapBuiltInType(type);
-        if (type.isStruct()) {
-            auto members = *type.getStruct();
-            for (auto member = members.begin(); member != members.end(); ++member)
-                remapBuiltInType(*member->type);  // TODO: lack-of-recursion structure depth problem
+
+        TVariable* ioVariable = makeInternalVariable(name, type);
+        // We might have already lost the IO-aspect of the deep parts of this type,
+        // get them back and also make them if that hadn't been done yet.
+        // (The shallow part of IO is already safely copied into the return value.)
+        type.getQualifier().makeNonIo();
+        if (type.getStruct() != nullptr) {
+            auto newList = ioTypeMap.find(ioVariable->getType().getStruct());
+            if (newList != ioTypeMap.end())
+                ioVariable->getWritableType().setStruct(newList->second);
         }
+        remapType(ioVariable->getWritableType());
+        return ioVariable;
     };
 
     // return value is actually a shader-scoped output (out)
     if (function.getType().getBasicType() == EbtVoid)
         returnValue = nullptr;
     else {
-        returnValue = makeInternalVariable("@entryPointOutput", function.getType());
+        returnValue = makeIoVariable("@entryPointOutput", function.getWritableType());
         returnValue->getWritableType().getQualifier().storage = EvqVaryingOut;
-        remapType(returnValue->getWritableType());
     }
 
     // parameters are actually shader-scoped inputs and outputs (in or out)
     for (int i = 0; i < function.getParamCount(); i++) {
         TType& paramType = *function[i].type;
         if (paramType.getQualifier().isParamInput()) {
-            TVariable* argAsGlobal = makeInternalVariable(*function[i].name, paramType);
+            TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType);
             argAsGlobal->getWritableType().getQualifier().storage = EvqVaryingIn;
             inputs.push_back(argAsGlobal);
         }
         if (paramType.getQualifier().isParamOutput()) {
-            TVariable* argAsGlobal = makeInternalVariable(*function[i].name, paramType);
+            TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType);
             argAsGlobal->getWritableType().getQualifier().storage = EvqVaryingOut;
             outputs.push_back(argAsGlobal);
-            remapType(argAsGlobal->getWritableType());
         }
     }
 }
@@ -1747,11 +1758,11 @@ void HlslParseContext::remapNonEntryPointIO(TFunction& function)
 {
     // return value
     if (function.getType().getBasicType() != EbtVoid)
-        makeTypeNonIo(&function.getWritableType());
+        function.getWritableType().getQualifier().makeNonIo();
 
     // parameters
     for (int i = 0; i < function.getParamCount(); i++)
-        makeTypeNonIo(function[i].type);
+        function[i].type->getQualifier().makeNonIo();
 }
 
 // Handle function returns, including type conversions to the function return type
@@ -5349,41 +5360,59 @@ void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier
         error(loc, "name already defined", "typedef", identifier.c_str());
 }
 
-// Create a non-IO type from an IO type.  If there is no IO data,
-// the input type is unmodified.  Otherwise, it modifies the type
-// in place.
-void HlslParseContext::makeTypeNonIo(TType* type)
+// Do everything necessary to handle a struct declaration, including
+// making IO aliases because HLSL allows mixed IO in a struct that specializes
+// based on the usage (input, output, uniform, none).
+void HlslParseContext::declareStruct(const TSourceLoc& loc, TString& structName, TType& type)
 {
-    // early out if there's nothing to do: prevents introduction of unneeded types.
-    if (!type->hasIoData())
+    // If it was named, which means the type can be reused later, add
+    // it to the symbol table.  (Unless it's a block, in which
+    // case the name is not a type.)
+    if (type.getBasicType() == EbtBlock || structName.size() == 0)
         return;
 
-    type->getQualifier().makeNonIo();  // Sanitize the qualifier.
+    TVariable* userTypeDef = new TVariable(&structName, type, true);
+    if (! symbolTable.insert(*userTypeDef)) {
+        error(loc, "redefinition", structName.c_str(), "struct");
+        return;
+    }
 
-    // Nothing more to do if there is no deep structure.
-    if (!type->isStruct())
+    // See if we need IO aliases for the structure typeList
+
+    bool hasIo = false;
+    for (auto member = type.getStruct()->begin(); member != type.getStruct()->end(); ++member) {
+        if (member->type->getQualifier().hasIoData()) {
+            hasIo = true;
+            break;
+        }
+        if (member->type->isStruct()) {
+            if (ioTypeMap.find(member->type->getStruct()) != ioTypeMap.end()) {
+                hasIo = true;
+                break;
+            }
+        }
+    }
+    if (!hasIo)
         return;
 
-    const auto typeIter = nonIoTypeMap.find(type->getStruct());
+    // We have IO involved.
 
-    if (typeIter != nonIoTypeMap.end()) {
-        // reuse deep structure if we have sanitized it before, but we must preserve
-        // our unique shallow structure, which may not be shared with other users of
-        // the deep copy.  Create a new type with the sanitized qualifier, and the
-        // shared deep structure
-        type->setStruct(typeIter->second); // share already sanitized deep structure.
-    } else {
-        // The type contains interstage IO, but we've never encountered it before.
-        // Copy it, scrub data we don't want for an non-IO type, and remember it in the nonIoTypeMap
-
-        TType nonIoType;
-        nonIoType.deepCopy(*type);
-        nonIoType.makeNonIo();
-
-        // remember the new deep structure in a map, so we can share it in the future.
-        nonIoTypeMap[type->getStruct()] = nonIoType.getWritableStruct();
-        type->shallowCopy(nonIoType);   // we modify the input type in place
-     }
+    // Make a pure typeList for the symbol table, and cache side copies of IO versions.
+    TTypeList* newList = new TTypeList;
+    for (auto member = type.getStruct()->begin(); member != type.getStruct()->end(); ++member) {
+        TType* memberType = new TType;
+        memberType->shallowCopy(*member->type);
+        TTypeLoc newMember = { memberType, member->loc };
+        if (member->type->isStruct()) {
+            // swap in an IO child if there is one
+            auto it = ioTypeMap.find(member->type->getStruct());
+            if (it != ioTypeMap.end())
+                newMember.type->setStruct(it->second);
+        }
+        newList->push_back(newMember);
+        member->type->getQualifier().makeNonIo();
+    }
+    ioTypeMap[type.getStruct()] = newList;
 }
 
 //
@@ -5416,7 +5445,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
     switch (type.getQualifier().storage) {
     case EvqGlobal:
     case EvqTemporary:
-        makeTypeNonIo(&type);
+        type.getQualifier().makeNonIo();
     default:
         break;
     }

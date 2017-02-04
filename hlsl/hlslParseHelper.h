@@ -75,7 +75,7 @@ public:
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&, const TAttributeMap&, TIntermNode*& entryPointTree);
     TIntermNode* transformEntryPoint(const TSourceLoc&, TFunction&, const TAttributeMap&);
     void handleFunctionBody(const TSourceLoc&, TFunction&, TIntermNode* functionBody, TIntermNode*& node);
-    void remapEntryPointIO(const TFunction& function, TVariable*& returnValue, TVector<TVariable*>& inputs, TVector<TVariable*>& outputs);
+    void remapEntryPointIO(TFunction& function, TVariable*& returnValue, TVector<TVariable*>& inputs, TVector<TVariable*>& outputs);
     void remapNonEntryPointIO(TFunction& function);
     TIntermNode* handleReturnValue(const TSourceLoc&, TIntermTyped*);
     void handleFunctionArgument(TFunction*, TIntermTyped*& arguments, TIntermTyped* newArg);
@@ -131,6 +131,7 @@ public:
 
     const TFunction* findFunction(const TSourceLoc& loc, TFunction& call, bool& builtIn, TIntermTyped*& args);
     void declareTypedef(const TSourceLoc&, TString& identifier, const TType&, TArraySizes* typeArray = 0);
+    void declareStruct(const TSourceLoc&, TString& structName, TType&);
     TIntermNode* declareVariable(const TSourceLoc&, TString& identifier, TType&, TIntermTyped* initializer = 0);
     void lengthenList(const TSourceLoc&, TIntermSequence& list, int size);
     TIntermTyped* addConstructor(const TSourceLoc&, TIntermNode*, const TType&);
@@ -230,10 +231,6 @@ protected:
     int flattenStruct(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
     int flattenArray(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
 
-    // Create a non-IO type from an IO type.  If there is no IO data, this returns the input type unmodified.
-    // Otherwise, it modifies the type in place, and returns a pointer to it.
-    void makeTypeNonIo(TType*);
-
     void finish() override; // post-processing
 
     // Current state of parsing
@@ -299,9 +296,8 @@ protected:
     TVector<int> flattenLevel;  // nested postfix operator level for flattening
     TVector<int> flattenOffset; // cumulative offset for flattening
 
-    // Sanitized type map.  If the same type is sanitized again, we want to reuse it.
-    // We cannot index by the TType: the map is typelist to typelist.
-    TMap<const TTypeList*, TTypeList*> nonIoTypeMap;
+    // IO-type map.
+    TMap<const TTypeList*, TTypeList*> ioTypeMap;
 
     // Structure splitting data:
     TMap<int, TVariable*>              splitIoVars;  // variables with the builtin interstage IO removed, indexed by unique ID.

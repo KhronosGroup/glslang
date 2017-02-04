@@ -412,7 +412,7 @@ public:
     }
 
     // Remove IO related data from qualifier.
-    void makeNonIo()
+    void makeNonIo()  //?? remove?
     {
         // This preserves the storage type
         builtIn      = EbvNone;
@@ -429,7 +429,7 @@ public:
     }
 
     // Return true if there is data which would be scrubbed by makeNonIo
-    bool hasIoData() const
+    bool hasIoData() const // ?? remove?
     {
         return builtIn != EbvNone ||
             hasLayout()           ||
@@ -626,7 +626,6 @@ public:
     {
         return hasUniformLayout() ||
                hasAnyLocation() ||
-               hasBinding() ||
                hasStream() ||
                hasXfb() ||
                hasFormat() ||
@@ -1221,32 +1220,8 @@ public:
     // Make complete copy of the whole type graph rooted at 'copyOf'.
     void deepCopy(const TType& copyOf)
     {
-        TMap<TTypeList*,TTypeList*> copied;  // to enable copying a type graph as a graph, not a tree
+        TMap<TTypeList*,TTypeList*> copied;  // to enable copying a type graph as a graph, not a tree  //?? turn off again?
         deepCopy(copyOf, copied);
-    }
-
-    // Return true if type (recursively) contains IO data.
-    bool hasIoData() const
-    {
-        if (getQualifier().hasIoData())
-            return true;
-
-        if (isStruct())
-            for (unsigned int i = 0; i < structure->size(); ++i)
-                if ((*structure)[i].type->hasIoData())
-                    return true;
-
-        return false;
-    }
-
-    // Remove IO related data from type
-    void makeNonIo()
-    {
-        getQualifier().makeNonIo();
-
-        if (isStruct())
-            for (unsigned int i = 0; i < structure->size(); ++i)
-                (*structure)[i].type->makeNonIo();
     }
 
     // Recursively make temporary

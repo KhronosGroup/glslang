@@ -1708,14 +1708,7 @@ bool HlslGrammar::acceptStruct(TType& type)
         new(&type) TType(typeList, structName, postDeclQualifier); // sets EbtBlock
     }
 
-    // If it was named, which means the type can be reused later, add
-    // it to the symbol table.  (Unless it's a block, in which
-    // case the name is not a type.)
-    if (type.getBasicType() != EbtBlock && structName.size() > 0) {
-        TVariable* userTypeDef = new TVariable(&structName, type, true);
-        if (! parseContext.symbolTable.insert(*userTypeDef))
-            parseContext.error(token.loc, "redefinition", structName.c_str(), "struct");
-    }
+    parseContext.declareStruct(token.loc, structName, type);
 
     return true;
 }
