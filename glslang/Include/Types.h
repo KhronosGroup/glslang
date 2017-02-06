@@ -401,21 +401,16 @@ public:
     // drop qualifiers that don't belong in a temporary variable
     void makeTemporary()
     {
-        makeNonIo();
-        storage      = EvqTemporary;
+        storage = EvqTemporary;
+        builtIn = EbvNone;
+        clearInterstage();
+        clearMemory();
         specConstant = false;
-        coherent     = false;
-        volatil      = false;
-        restrict     = false;
-        readonly     = false;
-        writeonly    = false;
+        clearLayout();
     }
 
-    // Remove IO related data from qualifier.
-    void makeNonIo()  //?? remove?
+    void clearInterstage()
     {
-        // This preserves the storage type
-        builtIn      = EbvNone;
         centroid     = false;
         smooth       = false;
         flat         = false;
@@ -425,16 +420,15 @@ public:
 #endif
         patch        = false;
         sample       = false;
-        clearLayout();
     }
 
-    // Return true if there is data which would be scrubbed by makeNonIo
-    bool hasIoData() const // ?? remove?
+    void clearMemory()
     {
-        return builtIn != EbvNone ||
-            hasLayout()           ||
-            isInterpolation()     ||
-            isAuxiliary();
+        coherent     = false;
+        volatil      = false;
+        restrict     = false;
+        readonly     = false;
+        writeonly    = false;
     }
 
     // Drop just the storage qualification, which perhaps should
@@ -591,37 +585,43 @@ public:
     }
 
     // Implementing an embedded layout-qualifier class here, since C++ can't have a real class bitfield
-    void clearLayout()
+    void clearLayout()  // all layout
     {
-        layoutMatrix = ElmNone;
-        layoutPacking = ElpNone;
-        layoutOffset = layoutNotSet;
-        layoutAlign = layoutNotSet;
-
-        layoutLocation = layoutLocationEnd;
-        layoutComponent = layoutComponentEnd;
-        layoutSet = layoutSetEnd;
-        layoutBinding = layoutBindingEnd;
-        layoutIndex = layoutIndexEnd;
-
-        layoutStream = layoutStreamEnd;
-
-        layoutXfbBuffer = layoutXfbBufferEnd;
-        layoutXfbStride = layoutXfbStrideEnd;
-        layoutXfbOffset = layoutXfbOffsetEnd;
-        layoutAttachment = layoutAttachmentEnd;
-        layoutSpecConstantId = layoutSpecConstantIdEnd;
-
-        layoutFormat = ElfNone;
+        clearUniformLayout();
 
         layoutPushConstant = false;
 #ifdef NV_EXTENSIONS
         layoutPassthrough = false;
         layoutViewportRelative = false;
-        // -2048 as the default vaule indicating layoutSecondaryViewportRelative is not set
+        // -2048 as the default value indicating layoutSecondaryViewportRelative is not set
         layoutSecondaryViewportRelativeOffset = -2048;
 #endif
+
+        clearInterstageLayout();
+
+        layoutSpecConstantId = layoutSpecConstantIdEnd;
+
+        layoutFormat = ElfNone;
     }
+    void clearInterstageLayout()
+    {
+        layoutLocation = layoutLocationEnd;
+        layoutComponent = layoutComponentEnd;
+        layoutIndex = layoutIndexEnd;
+        clearStreamLayout();
+        clearXfbLayout();
+    }
+    void clearStreamLayout()
+    {
+        layoutStream = layoutStreamEnd;
+    }
+    void clearXfbLayout()
+    {
+        layoutXfbBuffer = layoutXfbBufferEnd;
+        layoutXfbStride = layoutXfbStrideEnd;
+        layoutXfbOffset = layoutXfbOffsetEnd;
+    }
+
     bool hasLayout() const
     {
         return hasUniformLayout() ||
@@ -685,8 +685,21 @@ public:
                hasPacking() ||
                hasOffset() ||
                hasBinding() ||
+               hasSet() ||
                hasAlign();
     }
+    void clearUniformLayout() // only uniform specific
+    {
+        layoutMatrix = ElmNone;
+        layoutPacking = ElpNone;
+        layoutOffset = layoutNotSet;
+        layoutAlign = layoutNotSet;
+
+        layoutSet = layoutSetEnd;
+        layoutBinding = layoutBindingEnd;
+        layoutAttachment = layoutAttachmentEnd;
+    }
+
     bool hasMatrix() const
     {
         return layoutMatrix != ElmNone;
@@ -1220,7 +1233,7 @@ public:
     // Make complete copy of the whole type graph rooted at 'copyOf'.
     void deepCopy(const TType& copyOf)
     {
-        TMap<TTypeList*,TTypeList*> copied;  // to enable copying a type graph as a graph, not a tree  //?? turn off again?
+        TMap<TTypeList*,TTypeList*> copied;  // to enable copying a type graph as a graph, not a tree
         deepCopy(copyOf, copied);
     }
 

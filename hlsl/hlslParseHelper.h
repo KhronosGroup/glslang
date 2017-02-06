@@ -231,6 +231,17 @@ protected:
     int flattenStruct(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
     int flattenArray(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
 
+    bool hasUniform(const TQualifier& qualifier) const;
+    void clearUniform(TQualifier& qualifier);
+    bool isInputBuiltIn(const TQualifier& qualifier) const;
+    bool hasInput(const TQualifier& qualifier) const;
+    void correctOutput(TQualifier& qualifier);
+    bool isOutputBuiltIn(const TQualifier& qualifier) const;
+    bool hasOutput(const TQualifier& qualifier) const;
+    void correctInput(TQualifier& qualifier);
+    void correctUniform(TQualifier& qualifier);
+    void clearUniformInputOutput(TQualifier& qualifier);
+
     void finish() override; // post-processing
 
     // Current state of parsing
@@ -296,8 +307,15 @@ protected:
     TVector<int> flattenLevel;  // nested postfix operator level for flattening
     TVector<int> flattenOffset; // cumulative offset for flattening
 
-    // IO-type map.
-    TMap<const TTypeList*, TTypeList*> ioTypeMap;
+    // IO-type map. Maps a pure symbol-table form of a structure-member list into
+    // each of the (up to) three kinds of IO, as each as different allowed decorations,
+    // but HLSL allows mixing all in the same structure.
+    struct tIoKinds {
+        TTypeList* input;
+        TTypeList* output;
+        TTypeList* uniform;
+    };
+    TMap<const TTypeList*, tIoKinds> ioTypeMap;
 
     // Structure splitting data:
     TMap<int, TVariable*>              splitIoVars;  // variables with the builtin interstage IO removed, indexed by unique ID.
@@ -319,7 +337,7 @@ protected:
         }
     };
 
-    TMap<tInterstageIoData, TVariable*> interstageBuiltInIo; // individual builtin interstage IO vars, inxed by builtin type.
+    TMap<tInterstageIoData, TVariable*> interstageBuiltInIo; // individual builtin interstage IO vars, indexed by builtin type.
 
     // We have to move array references to structs containing builtin interstage IO to the split variables.
     // This is only handled for one level.  This stores the index, because we'll need it in the future, since

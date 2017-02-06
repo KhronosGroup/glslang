@@ -161,7 +161,7 @@ bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
 
 void HlslParseContext::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName)
 {
-    memberType.getQualifier().makeNonIo();  //?? losing offsets is okay?
+    correctUniform(memberType.getQualifier());
     TParseContextBase::growGlobalUniformBlock(loc, memberType, memberName);
 }
 
@@ -1690,63 +1690,43 @@ void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& func
 void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& returnValue,
     TVector<TVariable*>& inputs, TVector<TVariable*>& outputs)
 {
-    const auto makeIoVariable = [this](const char* name, TType& type) {
-        const auto remapType = [&](TType& type) {
-            const auto remapBuiltInType = [&](TType& type) {
-                switch (type.getQualifier().builtIn) {
-                case EbvFragDepthGreater:
-                    intermediate.setDepth(EldGreater);
-                    type.getQualifier().builtIn = EbvFragDepth;
-                    break;
-                case EbvFragDepthLesser:
-                    intermediate.setDepth(EldLess);
-                    type.getQualifier().builtIn = EbvFragDepth;
-                    break;
-                default:
-                    break;
-                }
-            };
-            remapBuiltInType(type);
-            if (type.isStruct()) {
-                auto& members = *type.getStruct();
-                for (auto member = members.begin(); member != members.end(); ++member)
-                    remapBuiltInType(*member->type);  // TODO: lack-of-recursion structure depth problem
-            }
-        };
-
+    // Do the actual work to make a type be a shader input or output variable,
+    // and clear the original to be non-IO (for use as a normal function parameter/return).
+    const auto makeIoVariable = [this](const char* name, TType& type, TStorageQualifier storage) {
         TVariable* ioVariable = makeInternalVariable(name, type);
-        // We might have already lost the IO-aspect of the deep parts of this type,
-        // get them back and also make them if that hadn't been done yet.
-        // (The shallow part of IO is already safely copied into the return value.)
-        type.getQualifier().makeNonIo();
+        clearUniformInputOutput(type.getQualifier());
         if (type.getStruct() != nullptr) {
-            auto newList = ioTypeMap.find(ioVariable->getType().getStruct());
-            if (newList != ioTypeMap.end())
-                ioVariable->getWritableType().setStruct(newList->second);
+            auto newLists = ioTypeMap.find(ioVariable->getType().getStruct());
+            if (newLists != ioTypeMap.end()) {
+                if (storage == EvqVaryingIn && newLists->second.input)
+                    ioVariable->getWritableType().setStruct(newLists->second.input);
+                else if (storage == EvqVaryingOut && newLists->second.output)
+                    ioVariable->getWritableType().setStruct(newLists->second.output);
+            }
         }
-        remapType(ioVariable->getWritableType());
+        if (storage == EvqVaryingIn)
+            correctInput(ioVariable->getWritableType().getQualifier());
+        else
+            correctOutput(ioVariable->getWritableType().getQualifier());
+        ioVariable->getWritableType().getQualifier().storage = storage;
         return ioVariable;
     };
 
     // return value is actually a shader-scoped output (out)
     if (function.getType().getBasicType() == EbtVoid)
         returnValue = nullptr;
-    else {
-        returnValue = makeIoVariable("@entryPointOutput", function.getWritableType());
-        returnValue->getWritableType().getQualifier().storage = EvqVaryingOut;
-    }
+    else
+        returnValue = makeIoVariable("@entryPointOutput", function.getWritableType(), EvqVaryingOut);
 
     // parameters are actually shader-scoped inputs and outputs (in or out)
     for (int i = 0; i < function.getParamCount(); i++) {
         TType& paramType = *function[i].type;
         if (paramType.getQualifier().isParamInput()) {
-            TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType);
-            argAsGlobal->getWritableType().getQualifier().storage = EvqVaryingIn;
+            TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingIn);
             inputs.push_back(argAsGlobal);
         }
         if (paramType.getQualifier().isParamOutput()) {
-            TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType);
-            argAsGlobal->getWritableType().getQualifier().storage = EvqVaryingOut;
+            TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingOut);
             outputs.push_back(argAsGlobal);
         }
     }
@@ -1758,11 +1738,11 @@ void HlslParseContext::remapNonEntryPointIO(TFunction& function)
 {
     // return value
     if (function.getType().getBasicType() != EbtVoid)
-        function.getWritableType().getQualifier().makeNonIo();
+        clearUniformInputOutput(function.getWritableType().getQualifier());
 
     // parameters
     for (int i = 0; i < function.getParamCount(); i++)
-        function[i].type->getQualifier().makeNonIo();
+        clearUniformInputOutput(function[i].type->getQualifier());
 }
 
 // Handle function returns, including type conversions to the function return type
@@ -5379,40 +5359,81 @@ void HlslParseContext::declareStruct(const TSourceLoc& loc, TString& structName,
 
     // See if we need IO aliases for the structure typeList
 
-    bool hasIo = false;
+    const auto condAlloc = [](bool pred, TTypeList*& list) {
+        if (pred && list == nullptr)
+            list = new TTypeList;
+    };
+
+    tIoKinds newLists = { nullptr, nullptr, nullptr }; // allocate for each kind found
     for (auto member = type.getStruct()->begin(); member != type.getStruct()->end(); ++member) {
-        if (member->type->getQualifier().hasIoData()) {
-            hasIo = true;
-            break;
-        }
+        condAlloc(hasUniform(member->type->getQualifier()), newLists.uniform);
+        condAlloc(  hasInput(member->type->getQualifier()), newLists.input);
+        condAlloc( hasOutput(member->type->getQualifier()), newLists.output);
+
         if (member->type->isStruct()) {
-            if (ioTypeMap.find(member->type->getStruct()) != ioTypeMap.end()) {
-                hasIo = true;
-                break;
+            auto it = ioTypeMap.find(member->type->getStruct());
+            if (it != ioTypeMap.end()) {
+                condAlloc(it->second.uniform != nullptr, newLists.uniform);
+                condAlloc(it->second.input   != nullptr, newLists.input);
+                condAlloc(it->second.output  != nullptr, newLists.output);
             }
         }
     }
-    if (!hasIo)
+    if (newLists.uniform == nullptr &&
+        newLists.input   == nullptr &&
+        newLists.output  == nullptr)
         return;
 
     // We have IO involved.
 
     // Make a pure typeList for the symbol table, and cache side copies of IO versions.
-    TTypeList* newList = new TTypeList;
     for (auto member = type.getStruct()->begin(); member != type.getStruct()->end(); ++member) {
-        TType* memberType = new TType;
-        memberType->shallowCopy(*member->type);
-        TTypeLoc newMember = { memberType, member->loc };
+        const auto inheritStruct = [&](TTypeList* s, TTypeLoc& ioMember) {
+            if (s != nullptr) {
+                ioMember.type = new TType;
+                ioMember.type->shallowCopy(*member->type);
+                ioMember.type->setStruct(s);
+            }
+        };
+        const auto newMember = [&](TTypeLoc& m) {
+            if (m.type == nullptr) {
+                m.type = new TType;
+                m.type->shallowCopy(*member->type);
+            }
+        };
+
+        TTypeLoc newUniformMember = { nullptr, member->loc };
+        TTypeLoc newInputMember   = { nullptr, member->loc };
+        TTypeLoc newOutputMember  = { nullptr, member->loc };
         if (member->type->isStruct()) {
             // swap in an IO child if there is one
             auto it = ioTypeMap.find(member->type->getStruct());
-            if (it != ioTypeMap.end())
-                newMember.type->setStruct(it->second);
+            if (it != ioTypeMap.end()) {
+                inheritStruct(it->second.uniform, newUniformMember);
+                inheritStruct(it->second.input,   newInputMember);
+                inheritStruct(it->second.output,  newOutputMember);
+            }
         }
-        newList->push_back(newMember);
-        member->type->getQualifier().makeNonIo();
+        if (newLists.uniform) {
+            newMember(newUniformMember);
+            correctUniform(newUniformMember.type->getQualifier());
+            newLists.uniform->push_back(newUniformMember);
+        }
+        if (newLists.input) {
+            newMember(newInputMember);
+            correctInput(newInputMember.type->getQualifier());
+            newLists.input->push_back(newInputMember);
+        }
+        if (newLists.output) {
+            newMember(newOutputMember);
+            correctOutput(newOutputMember.type->getQualifier());
+            newLists.output->push_back(newOutputMember);
+        }
+
+        // make original pure
+        clearUniformInputOutput(member->type->getQualifier());
     }
-    ioTypeMap[type.getStruct()] = newList;
+    ioTypeMap[type.getStruct()] = newLists;
 }
 
 //
@@ -5441,11 +5462,16 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
 
     const bool flattenVar = shouldFlattenUniform(type);
 
-    // make non-IO version of type
+    // correct IO in the type
     switch (type.getQualifier().storage) {
     case EvqGlobal:
     case EvqTemporary:
-        type.getQualifier().makeNonIo();
+        clearUniformInputOutput(type.getQualifier());
+        break;
+    case EvqUniform:
+    case EvqBuffer:
+        correctUniform(type.getQualifier());
+        break;
     default:
         break;
     }
@@ -6512,6 +6538,187 @@ void HlslParseContext::renameShaderFunction(TString*& name) const
     // if there is a substitution.
     if (name != nullptr && *name == sourceEntryPointName)
         name = NewPoolTString(intermediate.getEntryPointName().c_str());
+}
+
+// Return true if this has uniform-interface like decorations.
+bool HlslParseContext::hasUniform(const TQualifier& qualifier) const
+{
+    return qualifier.hasUniformLayout() ||
+           qualifier.layoutPushConstant;
+}
+
+// Potentially not the opposite of hasUniform(), as if some characteristic is
+// ever used for more than one thing (e.g., uniform or input), hasUniform() should
+// say it exists, but clearUniform() should leave it in place.
+void HlslParseContext::clearUniform(TQualifier& qualifier)
+{
+    qualifier.clearUniformLayout();
+    qualifier.layoutPushConstant = false;
+}
+
+// Return false if builtIn by itself doesn't force this qualifier to be an input qualifier.
+bool HlslParseContext::isInputBuiltIn(const TQualifier& qualifier) const
+{
+    switch (qualifier.builtIn) {
+    case EbvPosition:
+    case EbvPointSize:
+        return language != EShLangVertex && language != EShLangCompute && language != EShLangFragment;
+    case EbvClipDistance:
+    case EbvCullDistance:
+        return language != EShLangVertex && language != EShLangCompute;
+    case EbvFragCoord:
+    case EbvFace:
+    case EbvHelperInvocation:
+    case EbvLayer:
+    case EbvPointCoord:
+    case EbvSampleId:
+    case EbvSampleMask:
+    case EbvSamplePosition:
+    case EbvViewportIndex:
+        return language == EShLangFragment;
+    case EbvGlobalInvocationId:
+    case EbvLocalInvocationIndex:
+    case EbvLocalInvocationId:
+    case EbvNumWorkGroups:
+    case EbvWorkGroupId:
+    case EbvWorkGroupSize:
+        return language == EShLangCompute;
+    case EbvInvocationId:
+        return language == EShLangTessControl || language == EShLangTessEvaluation || language == EShLangGeometry;
+    case EbvPatchVertices:
+        return language == EShLangTessControl || language == EShLangTessEvaluation;
+    case EbvInstanceId:
+    case EbvInstanceIndex:
+    case EbvVertexId:
+    case EbvVertexIndex:
+        return language == EShLangVertex;
+    case EbvPrimitiveId:
+        return language == EShLangGeometry || language == EShLangFragment;
+    case EbvTessLevelInner:
+    case EbvTessLevelOuter:
+        return language == EShLangTessEvaluation;
+    default:
+        return false;
+    }
+}
+
+// Return true if there are decorations to preserve for input-like storage,
+// except for builtIn.
+bool HlslParseContext::hasInput(const TQualifier& qualifier) const
+{
+    if (qualifier.hasAnyLocation())
+        return true;
+
+    if (language != EShLangVertex && language != EShLangCompute &&
+        (qualifier.isInterpolation() || qualifier.isAuxiliary()))
+        return true;
+
+    if (isInputBuiltIn(qualifier))
+        return true;
+
+    return false;
+}
+
+// Return false if builtIn by itself doesn't force this qualifier to be an output qualifier.
+bool HlslParseContext::isOutputBuiltIn(const TQualifier& qualifier) const
+{
+    switch (qualifier.builtIn) {
+    case EbvPosition:
+    case EbvPointSize:
+    case EbvClipVertex:
+    case EbvClipDistance:
+    case EbvCullDistance:
+        return language != EShLangFragment && language != EShLangCompute;
+    case EbvFragDepth:
+    case EbvSampleMask:
+        return language == EShLangFragment;
+    case EbvLayer:
+    case EbvViewportIndex:
+        return language == EShLangGeometry;
+    case EbvPrimitiveId:
+        return language == EShLangGeometry || language == EShLangTessControl || language == EShLangTessEvaluation;
+    case EbvTessLevelInner:
+    case EbvTessLevelOuter:
+        return language == EShLangTessControl;
+    default:
+        return false;
+    }
+}
+
+// Return true if there are decorations to preserve for output-like storage,
+// except for builtIn.
+bool HlslParseContext::hasOutput(const TQualifier& qualifier) const
+{
+    if (qualifier.hasAnyLocation())
+        return true;
+
+    if (language != EShLangFragment && language != EShLangCompute &&
+        (qualifier.hasXfb() || qualifier.isInterpolation() || qualifier.isAuxiliary()))
+        return true;
+
+    if (language == EShLangGeometry && qualifier.hasStream())
+        return true;
+
+    if (isOutputBuiltIn(qualifier))
+        return true;
+
+    return false;
+}
+
+// Make the IO decorations etc. be appropriate only for an input interface.
+void HlslParseContext::correctInput(TQualifier& qualifier)
+{
+    clearUniform(qualifier);
+    if (language == EShLangVertex)
+        qualifier.clearInterstage();
+    qualifier.clearStreamLayout();
+    qualifier.clearXfbLayout();
+
+    if (! isInputBuiltIn(qualifier))
+        qualifier.builtIn = EbvNone;
+}
+
+// Make the IO decorations etc. be appropriate only for an output interface.
+void HlslParseContext::correctOutput(TQualifier& qualifier)
+{
+    clearUniform(qualifier);
+    if (language == EShLangFragment)
+        qualifier.clearInterstage();
+    if (language != EShLangGeometry)
+        qualifier.clearStreamLayout();
+    if (language == EShLangFragment)
+        qualifier.clearXfbLayout();
+
+    switch (qualifier.builtIn) {
+    case EbvFragDepthGreater:
+        intermediate.setDepth(EldGreater);
+        qualifier.builtIn = EbvFragDepth;
+        break;
+    case EbvFragDepthLesser:
+        intermediate.setDepth(EldLess);
+        qualifier.builtIn = EbvFragDepth;
+        break;
+    default:
+        break;
+    }
+
+    if (! isOutputBuiltIn(qualifier))
+        qualifier.builtIn = EbvNone;
+}
+
+// Make the IO decorations etc. be appropriate only for uniform type interfaces.
+void HlslParseContext::correctUniform(TQualifier& qualifier)
+{
+    qualifier.builtIn = EbvNone;
+    qualifier.clearInterstage();
+    qualifier.clearInterstageLayout();
+}
+
+// Clear out all IO/Uniform stuff, so this has nothing to do with being an IO interface.
+void HlslParseContext::clearUniformInputOutput(TQualifier& qualifier)
+{
+    clearUniform(qualifier);
+    correctUniform(qualifier);
 }
 
 // post-processing

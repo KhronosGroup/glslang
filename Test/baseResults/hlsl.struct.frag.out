@@ -38,7 +38,7 @@ gl_FragCoord origin is upper left
 0:34            Constant:
 0:34              0 (const int)
 0:34          a: direct index for structure (smooth temp 4-component vector of float)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              0 (const int)
 0:34        move second child to first child (temp bool)
@@ -47,7 +47,7 @@ gl_FragCoord origin is upper left
 0:34            Constant:
 0:34              1 (const int)
 0:34          b: direct index for structure (flat temp bool)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              1 (const int)
 0:34        move second child to first child (temp 1-component vector of float)
@@ -56,7 +56,7 @@ gl_FragCoord origin is upper left
 0:34            Constant:
 0:34              2 (const int)
 0:34          c: direct index for structure (centroid noperspective temp 1-component vector of float)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              2 (const int)
 0:34        move second child to first child (temp 2-component vector of float)
@@ -65,7 +65,7 @@ gl_FragCoord origin is upper left
 0:34            Constant:
 0:34              3 (const int)
 0:34          d: direct index for structure (centroid sample temp 2-component vector of float)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              3 (const int)
 0:34        move second child to first child (temp bool)
@@ -79,8 +79,8 @@ gl_FragCoord origin is upper left
 0:?             's' (temp structure{temp 4-component vector of float a, temp bool b, temp 1-component vector of float c, temp 2-component vector of float d, temp bool ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              5 (const int)
-0:34          ff2: direct index for structure (layout(offset=4 ) temp bool)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34          ff2: direct index for structure (temp bool)
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              4 (const int)
 0:34        move second child to first child (temp bool)
@@ -88,8 +88,8 @@ gl_FragCoord origin is upper left
 0:?             's' (temp structure{temp 4-component vector of float a, temp bool b, temp 1-component vector of float c, temp 2-component vector of float d, temp bool ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              6 (const int)
-0:34          ff3: direct index for structure (layout(binding=0 offset=4 ) temp bool)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34          ff3: direct index for structure (temp bool)
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              5 (const int)
 0:34        move second child to first child (temp 4-component vector of float)
@@ -97,8 +97,8 @@ gl_FragCoord origin is upper left
 0:?             's' (temp structure{temp 4-component vector of float a, temp bool b, temp 1-component vector of float c, temp 2-component vector of float d, temp bool ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              7 (const int)
-0:34          ff4: direct index for structure (layout(binding=0 offset=4 ) temp 4-component vector of float)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34          ff4: direct index for structure (temp 4-component vector of float)
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              6 (const int)
 0:34      move second child to first child (temp 4-component vector of float)
@@ -110,8 +110,8 @@ gl_FragCoord origin is upper left
 0:?     's2' (global structure{temp 4-component vector of float i})
 0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'input' (layout(location=0 ) in 4-component vector of float)
-0:?     's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
-0:?     'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d} s1, layout(offset=48 ) uniform float ff5, layout(offset=52 ) uniform float ff6})
+0:?     's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
+0:?     'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d} s1, layout(binding=5 offset=1620 ) uniform float ff5, layout(binding=8 offset=1636 ) uniform float ff6})
 0:?     's_ff1' (in bool Face)
 
 
@@ -153,7 +153,7 @@ gl_FragCoord origin is upper left
 0:34            Constant:
 0:34              0 (const int)
 0:34          a: direct index for structure (smooth temp 4-component vector of float)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              0 (const int)
 0:34        move second child to first child (temp bool)
@@ -162,7 +162,7 @@ gl_FragCoord origin is upper left
 0:34            Constant:
 0:34              1 (const int)
 0:34          b: direct index for structure (flat temp bool)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              1 (const int)
 0:34        move second child to first child (temp 1-component vector of float)
@@ -171,7 +171,7 @@ gl_FragCoord origin is upper left
 0:34            Constant:
 0:34              2 (const int)
 0:34          c: direct index for structure (centroid noperspective temp 1-component vector of float)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              2 (const int)
 0:34        move second child to first child (temp 2-component vector of float)
@@ -180,7 +180,7 @@ gl_FragCoord origin is upper left
 0:34            Constant:
 0:34              3 (const int)
 0:34          d: direct index for structure (centroid sample temp 2-component vector of float)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              3 (const int)
 0:34        move second child to first child (temp bool)
@@ -194,8 +194,8 @@ gl_FragCoord origin is upper left
 0:?             's' (temp structure{temp 4-component vector of float a, temp bool b, temp 1-component vector of float c, temp 2-component vector of float d, temp bool ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              5 (const int)
-0:34          ff2: direct index for structure (layout(offset=4 ) temp bool)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34          ff2: direct index for structure (temp bool)
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              4 (const int)
 0:34        move second child to first child (temp bool)
@@ -203,8 +203,8 @@ gl_FragCoord origin is upper left
 0:?             's' (temp structure{temp 4-component vector of float a, temp bool b, temp 1-component vector of float c, temp 2-component vector of float d, temp bool ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              6 (const int)
-0:34          ff3: direct index for structure (layout(binding=0 offset=4 ) temp bool)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34          ff3: direct index for structure (temp bool)
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              5 (const int)
 0:34        move second child to first child (temp 4-component vector of float)
@@ -212,8 +212,8 @@ gl_FragCoord origin is upper left
 0:?             's' (temp structure{temp 4-component vector of float a, temp bool b, temp 1-component vector of float c, temp 2-component vector of float d, temp bool ff1, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              7 (const int)
-0:34          ff4: direct index for structure (layout(binding=0 offset=4 ) temp 4-component vector of float)
-0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
+0:34          ff4: direct index for structure (temp 4-component vector of float)
+0:34            's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
 0:34            Constant:
 0:34              6 (const int)
 0:34      move second child to first child (temp 4-component vector of float)
@@ -225,8 +225,8 @@ gl_FragCoord origin is upper left
 0:?     's2' (global structure{temp 4-component vector of float i})
 0:?     '@entryPointOutput' (layout(location=0 ) out 4-component vector of float)
 0:?     'input' (layout(location=0 ) in 4-component vector of float)
-0:?     's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, layout(offset=4 ) temp bool ff2, layout(binding=0 offset=4 ) temp bool ff3, layout(binding=0 offset=4 ) temp 4-component vector of float ff4})
-0:?     'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d} s1, layout(offset=48 ) uniform float ff5, layout(offset=52 ) uniform float ff6})
+0:?     's' (layout(location=1 ) in structure{smooth temp 4-component vector of float a, flat temp bool b, centroid noperspective temp 1-component vector of float c, centroid sample temp 2-component vector of float d, temp bool ff2, temp bool ff3, temp 4-component vector of float ff4})
+0:?     'anon@0' (layout(row_major std140 ) uniform block{layout(offset=0 ) uniform structure{temp bool b, temp bool c, temp 4-component vector of float a, temp 4-component vector of float d} s1, layout(binding=5 offset=1620 ) uniform float ff5, layout(binding=8 offset=1636 ) uniform float ff6})
 0:?     's_ff1' (in bool Face)
 
 // Module Version 10000
@@ -292,8 +292,8 @@ gl_FragCoord origin is upper left
                               MemberDecorate 93(myS) 2 Offset 16
                               MemberDecorate 93(myS) 3 Offset 32
                               MemberDecorate 94($Global) 0 Offset 0
-                              MemberDecorate 94($Global) 1 Offset 48
-                              MemberDecorate 94($Global) 2 Offset 52
+                              MemberDecorate 94($Global) 1 Offset 1620
+                              MemberDecorate 94($Global) 2 Offset 1636
                               Decorate 94($Global) Block
                               Decorate 96 DescriptorSet 0
                2:             TypeVoid
