@@ -139,7 +139,7 @@ public:
     // TODO: This could perhaps get its own object, but the current design doesn't work
     // yet when new uniform variables are declared between function definitions, so
     // this is pending getting a fully functional design.
-    virtual void growGlobalUniformBlock(TSourceLoc&, TType&, TString& memberName);
+    virtual void growGlobalUniformBlock(TSourceLoc&, TType&, TString& memberName, TTypeList* typeList = nullptr);
     virtual bool insertGlobalUniformBlock();
 
     virtual bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*);

@@ -159,10 +159,16 @@ bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
     return false;
 }
 
-void HlslParseContext::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName)
+void HlslParseContext::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName, TTypeList* newTypeList)
 {
+    newTypeList = nullptr;
     correctUniform(memberType.getQualifier());
-    TParseContextBase::growGlobalUniformBlock(loc, memberType, memberName);
+    if (memberType.isStruct()) {
+        auto it = ioTypeMap.find(memberType.getStruct());
+        if (it != ioTypeMap.end() && it->second.uniform)
+            newTypeList = it->second.uniform;
+    }
+    TParseContextBase::growGlobalUniformBlock(loc, memberType, memberName, newTypeList);
 }
 
 //
@@ -5381,8 +5387,12 @@ void HlslParseContext::declareStruct(const TSourceLoc& loc, TString& structName,
     }
     if (newLists.uniform == nullptr &&
         newLists.input   == nullptr &&
-        newLists.output  == nullptr)
+        newLists.output  == nullptr) {
+        // Won't do any IO caching, clear up the type and get out now.
+        for (auto member = type.getStruct()->begin(); member != type.getStruct()->end(); ++member)
+            clearUniformInputOutput(member->type->getQualifier());
         return;
+    }
 
     // We have IO involved.
 
@@ -5471,6 +5481,11 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& i
     case EvqUniform:
     case EvqBuffer:
         correctUniform(type.getQualifier());
+        if (type.isStruct()) {
+            auto it = ioTypeMap.find(type.getStruct());
+            if (it != ioTypeMap.end())
+                type.setStruct(it->second.uniform);
+        }
         break;
     default:
         break;
@@ -6011,6 +6026,22 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
 {
     assert(type.getWritableStruct() != nullptr);
 
+    // Clean up top-level decorations that don't belong.
+    switch (type.getQualifier().storage) {
+    case EvqUniform:
+    case EvqBuffer:
+        correctUniform(type.getQualifier());
+        break;
+    case EvqVaryingIn:
+        correctInput(type.getQualifier());
+        break;
+    case EvqVaryingOut:
+        correctOutput(type.getQualifier());
+        break;
+    default:
+        break;
+    }
+
     TTypeList& typeList = *type.getWritableStruct();
     // fix and check for member storage qualifiers and types that don't belong within a block
     for (unsigned int member = 0; member < typeList.size(); ++member) {
@@ -6019,6 +6050,31 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
         const TSourceLoc& memberLoc = typeList[member].loc;
         globalQualifierFix(memberLoc, memberQualifier);
         memberQualifier.storage = type.getQualifier().storage;
+
+        if (memberType.isStruct()) {
+            // clean up and pick up the right set of decorations
+            auto it = ioTypeMap.find(memberType.getStruct());
+            switch (type.getQualifier().storage) {
+            case EvqUniform:
+            case EvqBuffer:
+                correctUniform(type.getQualifier());
+                if (it != ioTypeMap.end() && it->second.uniform)
+                    type.setStruct(it->second.uniform);
+                break;
+            case EvqVaryingIn:
+                correctInput(type.getQualifier());
+                if (it != ioTypeMap.end() && it->second.input)
+                    type.setStruct(it->second.input);
+                break;
+            case EvqVaryingOut:
+                correctOutput(type.getQualifier());
+                if (it != ioTypeMap.end() && it->second.output)
+                    type.setStruct(it->second.output);
+                break;
+            default:
+                break;
+            }
+        }
     }
 
     // This might be a redeclaration of a built-in block.  If so, redeclareBuiltinBlock() will
@@ -6602,15 +6658,16 @@ bool HlslParseContext::isInputBuiltIn(const TQualifier& qualifier) const
     }
 }
 
-// Return true if there are decorations to preserve for input-like storage,
-// except for builtIn.
+// Return true if there are decorations to preserve for input-like storage.
 bool HlslParseContext::hasInput(const TQualifier& qualifier) const
 {
     if (qualifier.hasAnyLocation())
         return true;
 
-    if (language != EShLangVertex && language != EShLangCompute &&
-        (qualifier.isInterpolation() || qualifier.isAuxiliary()))
+    if (language == EShLangFragment && (qualifier.isInterpolation() || qualifier.centroid || qualifier.sample))
+        return true;
+
+    if (language == EShLangTessEvaluation && qualifier.patch)
         return true;
 
     if (isInputBuiltIn(qualifier))
@@ -6630,6 +6687,8 @@ bool HlslParseContext::isOutputBuiltIn(const TQualifier& qualifier) const
     case EbvCullDistance:
         return language != EShLangFragment && language != EShLangCompute;
     case EbvFragDepth:
+    case EbvFragDepthGreater:
+    case EbvFragDepthLesser:
     case EbvSampleMask:
         return language == EShLangFragment;
     case EbvLayer:
@@ -6645,15 +6704,16 @@ bool HlslParseContext::isOutputBuiltIn(const TQualifier& qualifier) const
     }
 }
 
-// Return true if there are decorations to preserve for output-like storage,
-// except for builtIn.
+// Return true if there are decorations to preserve for output-like storage.
 bool HlslParseContext::hasOutput(const TQualifier& qualifier) const
 {
     if (qualifier.hasAnyLocation())
         return true;
 
-    if (language != EShLangFragment && language != EShLangCompute &&
-        (qualifier.hasXfb() || qualifier.isInterpolation() || qualifier.isAuxiliary()))
+    if (language != EShLangFragment && language != EShLangCompute && qualifier.hasXfb())
+        return true;
+
+    if (language == EShLangTessControl && qualifier.patch)
         return true;
 
     if (language == EShLangGeometry && qualifier.hasStream())
@@ -6671,6 +6731,13 @@ void HlslParseContext::correctInput(TQualifier& qualifier)
     clearUniform(qualifier);
     if (language == EShLangVertex)
         qualifier.clearInterstage();
+    if (language != EShLangTessEvaluation)
+        qualifier.patch = false;
+    if (language != EShLangFragment) {
+        qualifier.clearInterpolation();
+        qualifier.sample = false;
+    }
+
     qualifier.clearStreamLayout();
     qualifier.clearXfbLayout();
 
@@ -6688,6 +6755,8 @@ void HlslParseContext::correctOutput(TQualifier& qualifier)
         qualifier.clearStreamLayout();
     if (language == EShLangFragment)
         qualifier.clearXfbLayout();
+    if (language != EShLangTessControl)
+        qualifier.patch = false;
 
     switch (qualifier.builtIn) {
     case EbvFragDepthGreater:

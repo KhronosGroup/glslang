@@ -219,6 +219,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.structarray.flatten.frag", "main"},
         {"hlsl.structarray.flatten.geom", "main"},
         {"hlsl.structin.vert", "main"},
+        {"hlsl.structIoFourWay.frag", "main"},
         {"hlsl.intrinsics.vert", "VertexShaderFunction"},
         {"hlsl.matType.frag", "PixelShaderFunction"},
         {"hlsl.matType.bool.frag", "main"},

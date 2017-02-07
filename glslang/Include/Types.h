@@ -411,6 +411,13 @@ public:
 
     void clearInterstage()
     {
+        clearInterpolation();
+        patch = false;
+        sample = false;
+    }
+
+    void clearInterpolation()
+    {
         centroid     = false;
         smooth       = false;
         flat         = false;
@@ -418,8 +425,6 @@ public:
 #ifdef AMD_EXTENSIONS
         explicitInterp = false;
 #endif
-        patch        = false;
-        sample       = false;
     }
 
     void clearMemory()

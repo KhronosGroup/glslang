@@ -284,6 +284,10 @@ gl_FragCoord origin is upper left
                               MemberName 94($Global) 2  "ff6"
                               Name 96  ""
                               Decorate 43(input) Location 0
+                              MemberDecorate 46(IN_S) 1 Flat
+                              MemberDecorate 46(IN_S) 2 NoPerspective
+                              MemberDecorate 46(IN_S) 2 Centroid
+                              MemberDecorate 46(IN_S) 3 Centroid
                               Decorate 48(s) Location 1
                               Decorate 71(s_ff1) BuiltIn FrontFacing
                               Decorate 86(@entryPointOutput) Location 0

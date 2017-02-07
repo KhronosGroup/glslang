@@ -530,7 +530,7 @@ void TParseContextBase::parseSwizzleSelector(const TSourceLoc& loc, const TStrin
 // Make the passed-in variable information become a member of the
 // global uniform block.  If this doesn't exist yet, make it.
 //
-void TParseContextBase::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName)
+void TParseContextBase::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName, TTypeList* typeList)
 {
     // make the global block, if not yet made
     if (globalUniformBlock == nullptr) {
@@ -548,6 +548,8 @@ void TParseContextBase::growGlobalUniformBlock(TSourceLoc& loc, TType& memberTyp
     TType* type = new TType;
     type->shallowCopy(memberType);
     type->setFieldName(memberName);
+    if (typeList)
+        type->setStruct(typeList);
     TTypeLoc typeLoc = {type, loc};
     globalUniformBlock->getType().getWritableStruct()->push_back(typeLoc);
 }
