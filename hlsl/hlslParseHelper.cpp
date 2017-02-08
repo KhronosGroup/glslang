@@ -5336,12 +5336,9 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
 // 'parseType' is the type part of the declaration (to the left)
 // 'arraySizes' is the arrayness tagged on the identifier (to the right)
 //
-void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier, const TType& parseType, TArraySizes* /*arraySizes*/)
+void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier, const TType& parseType)
 {
-    TType type;
-    type.deepCopy(parseType);
-
-    TVariable* typeSymbol = new TVariable(&identifier, type, true);
+    TVariable* typeSymbol = new TVariable(&identifier, parseType, true);
     if (! symbolTable.insert(*typeSymbol))
         error(loc, "name already defined", "typedef", identifier.c_str());
 }

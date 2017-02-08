@@ -130,7 +130,7 @@ public:
     void checkNoShaderLayouts(const TSourceLoc&, const TShaderQualifiers&);
 
     const TFunction* findFunction(const TSourceLoc& loc, TFunction& call, bool& builtIn, TIntermTyped*& args);
-    void declareTypedef(const TSourceLoc&, TString& identifier, const TType&, TArraySizes* typeArray = 0);
+    void declareTypedef(const TSourceLoc&, TString& identifier, const TType&);
     void declareStruct(const TSourceLoc&, TString& structName, TType&);
     TIntermNode* declareVariable(const TSourceLoc&, TString& identifier, TType&, TIntermTyped* initializer = 0);
     void lengthenList(const TSourceLoc&, TIntermSequence& list, int size);
