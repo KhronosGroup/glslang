@@ -87,6 +87,12 @@ public:
 
     virtual const TString& getName() const { return *name; }
     virtual void changeName(const TString* newName) { name = newName; }
+    virtual void addPrefix(const char* prefix)
+    {
+        TString newName(prefix);
+        newName.append(*name);
+        changeName(NewPoolTString(newName.c_str()));
+    }
     virtual const TString& getMangledName() const { return getName(); }
     virtual TFunction* getAsFunction() { return 0; }
     virtual const TFunction* getAsFunction() const { return 0; }
@@ -231,6 +237,11 @@ public:
 
         if (p.defaultValue != nullptr)
             defaultParamCount++;
+    }
+    virtual void addPrefix(const char* prefix) override
+    {
+        TSymbol::addPrefix(prefix);
+        mangledName.insert(0, prefix);
     }
 
     virtual const TString& getMangledName() const { return mangledName; }
