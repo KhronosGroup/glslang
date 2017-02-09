@@ -2333,9 +2333,10 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
     struct tFinalize {
         tFinalize(HlslParseContext& p) : parseContext(p) { }
         ~tFinalize() { parseContext.finalizeFlattening(); }
-       HlslParseContext& parseContext;
+        HlslParseContext& parseContext;
     private:
-        tFinalize& operator=(tFinalize&) { }
+        const tFinalize& operator=(const tFinalize& f);
+        tFinalize(const tFinalize& f);
     } finalize(parseContext);
 
     // Initialize the flattening accumulation data, so we can track data across multiple bracket or
