@@ -979,25 +979,13 @@ int TPpContext::scanHeaderName(TPpToken* ppToken, char delimit)
 // Returns nullptr if no expanded argument is created.
 TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream& arg, TPpToken* ppToken, bool newLineOkay)
 {
-    // pre-check, to see if anything in the argument needs to be expanded,
-    // to see if we can kick out early
-    int token;
-    RewindTokenStream(arg);
-    do {
-        token = ReadToken(arg, ppToken);
-        if (token == PpAtomIdentifier && lookupMacroDef(atomStrings.getAtom(ppToken->name)) != nullptr)
-            break;
-    } while (token != EndOfInput);
-
-    // if nothing needs to be expanded, kick out early
-    if (token == EndOfInput)
-        return nullptr;
-
     // expand the argument
     TokenStream* expandedArg = new TokenStream;
     pushInput(new tMarkerInput(this));
     pushTokenStreamInput(arg);
+    int token;
     while ((token = scanToken(ppToken)) != tMarkerInput::marker && token != EndOfInput) {
+        token = tokenPaste(token, *ppToken);
         if (token == PpAtomIdentifier && MacroExpand(ppToken, false, newLineOkay) != 0)
             continue;
         RecordToken(*expandedArg, token, ppToken);
@@ -1263,7 +1251,7 @@ int TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, bool newLineOka
         }
 
         // We need both expanded and non-expanded forms of the argument, for whether or
-        // not token pasting is in play.
+        // not token pasting will be applied later when the argument is consumed next to ##.
         for (size_t i = 0; i < in->mac->args.size(); i++)
             in->expandedArgs[i] = PrescanMacroArg(*in->args[i], ppToken, newLineOkay);
     }

@@ -275,19 +275,37 @@ int TPpContext::tTokenInput::scan(TPpToken* ppToken)
     return pp->ReadToken(*tokens, ppToken);
 }
 
-// We are pasting if the entire macro is preceding a pasting operator
-// (lastTokenPastes) and we are also on the last token.
+// We are pasting if
+//   1. we are preceding a pasting operator within this stream
+// or
+//   2. the entire macro is preceding a pasting operator (lastTokenPastes)
+//      and we are also on the last token
 bool TPpContext::tTokenInput::peekPasting()
 {
+    // 1. preceding ##?
+
+    size_t savePos = tokens->current;
+    int byte;
+    // skip white space
+    do {
+        byte = pp->lReadByte(*tokens);
+    } while (byte == ' ');
+    bool pasting = (byte == ((PpAtomPaste & 0x7f) + 0x80));
+    tokens->current = savePos;
+    if (pasting)
+        return true;
+
+    // 2. last token and we've been told after this there will be a ##
+
     if (! lastTokenPastes)
         return false;
-    // Getting here means the last token will be pasted.
+    // Getting here means the last token will be pasted, after this
 
     // Are we at the last non-whitespace token?
-    size_t savePos = tokens->current;
+    savePos = tokens->current;
     bool moreTokens = false;
     do {
-        int byte = pp->lReadByte(*tokens);
+        byte = pp->lReadByte(*tokens);
         if (byte == EndOfInput)
             break;
         if (byte != ' ') {
