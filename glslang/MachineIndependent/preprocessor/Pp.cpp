@@ -1076,16 +1076,16 @@ bool TPpContext::tMacroInput::peekMacPasting()
     size_t savePos = mac->body.current;
 
     // skip white-space
-    int ltoken;
+    int subtoken;
     do {
-        ltoken = pp->lReadByte(mac->body);
-    } while (ltoken == ' ');
+        subtoken = pp->getSubtoken(mac->body);
+    } while (subtoken == ' ');
 
     // check for ##
     bool pasting = false;
-    if (ltoken == '#') {
-        ltoken = pp->lReadByte(mac->body);
-        if (ltoken == '#')
+    if (subtoken == '#') {
+        subtoken = pp->getSubtoken(mac->body);
+        if (subtoken == '#')
             pasting = true;
     }
 

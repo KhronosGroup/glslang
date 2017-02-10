@@ -375,9 +375,9 @@ protected:
     //
     // From PpTokens.cpp
     //
-    void lAddByte(TokenStream&, unsigned char fVal);
-    int lReadByte(TokenStream&);
-    void lUnreadByte(TokenStream&);
+    void putSubtoken(TokenStream&, int fVal);
+    int getSubtoken(TokenStream&);
+    void ungetSubtoken(TokenStream&);
     void RecordToken(TokenStream&, int token, TPpToken* ppToken);
     void RewindTokenStream(TokenStream&);
     int ReadToken(TokenStream&, TPpToken*);
