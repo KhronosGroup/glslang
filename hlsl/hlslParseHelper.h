@@ -225,6 +225,7 @@ protected:
     TVariable* getSplitIoVar(const TVariable* var) const;
     TVariable* getSplitIoVar(int id) const;
     void addInterstageIoToLinkage();
+    void addPatchConstantInvocation();
 
     void flatten(const TSourceLoc& loc, const TVariable& variable);
     int flatten(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
@@ -241,6 +242,10 @@ protected:
     void correctInput(TQualifier& qualifier);
     void correctUniform(TQualifier& qualifier);
     void clearUniformInputOutput(TQualifier& qualifier);
+
+    // Pass through to base class after remembering builtin mappings.
+    using TParseContextBase::trackLinkage;
+    void trackLinkage(TSymbol& variable) override;
 
     void finish() override; // post-processing
 
@@ -324,6 +329,9 @@ protected:
     // can build the linkage correctly if position appears on both sides.  Otherwise, multiple positions
     // are considered identical.
     struct tInterstageIoData {
+        tInterstageIoData(TBuiltInVariable bi, TStorageQualifier q) :
+            builtIn(bi), storage(q) { }
+
         tInterstageIoData(const TType& memberType, const TType& storageType) :
             builtIn(memberType.getQualifier().builtIn),
             storage(storageType.getQualifier().storage) { }
@@ -348,7 +356,13 @@ protected:
     unsigned int nextInLocation;
     unsigned int nextOutLocation;
 
-    TString sourceEntryPointName;
+    TString    sourceEntryPointName;
+    TFunction* entryPointFunction;
+    TIntermNode* entryPointFunctionBody;
+
+    TString patchConstantFunctionName; // hull shader patch constant function name, from function level attribute.
+    TMap<TBuiltInVariable, TSymbol*> builtInLinkageSymbols; // used for tessellation, finding declared builtins
+
 };
 
 } // end namespace glslang

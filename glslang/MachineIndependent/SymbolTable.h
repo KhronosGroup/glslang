@@ -198,6 +198,7 @@ struct TParameter {
     TString *name;
     TType* type;
     TIntermTyped* defaultValue;
+    TBuiltInVariable declaredBuiltIn;
     void copyParam(const TParameter& param)
     {
         if (param.name)
@@ -206,6 +207,7 @@ struct TParameter {
             name = 0;
         type = param.type->clone();
         defaultValue = param.defaultValue;
+        declaredBuiltIn = param.declaredBuiltIn;
     }
 };
 
@@ -222,7 +224,11 @@ public:
         TSymbol(name),
         mangledName(*name + '('),
         op(tOp),
-        defined(false), prototyped(false), defaultParamCount(0) { returnType.shallowCopy(retType); }
+        defined(false), prototyped(false), defaultParamCount(0)
+    {
+        returnType.shallowCopy(retType);
+        declaredBuiltIn = retType.getQualifier().builtIn;
+    }
     virtual TFunction* clone() const;
     virtual ~TFunction();
 
@@ -232,6 +238,7 @@ public:
     virtual void addParameter(TParameter& p)
     {
         assert(writable);
+        p.declaredBuiltIn = p.type->getQualifier().builtIn;
         parameters.push_back(p);
         p.type->appendMangledName(mangledName);
 
@@ -246,6 +253,7 @@ public:
 
     virtual const TString& getMangledName() const { return mangledName; }
     virtual const TType& getType() const { return returnType; }
+    virtual TBuiltInVariable getDeclaredBuiltInType() const { return declaredBuiltIn; }
     virtual TType& getWritableType() { return returnType; }
     virtual void relateToOperator(TOperator o) { assert(writable); op = o; }
     virtual TOperator getBuiltInOp() const { return op; }
@@ -273,6 +281,8 @@ protected:
     typedef TVector<TParameter> TParamList;
     TParamList parameters;
     TType returnType;
+    TBuiltInVariable declaredBuiltIn;
+
     TString mangledName;
     TOperator op;
     bool defined;
