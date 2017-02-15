@@ -303,20 +303,18 @@ void ProcessArguments(int argc, char* argv[])
                     } else if (lowerword == "no-storage-format" || // synonyms
                                lowerword == "nsf") {
                         Options |= EOptionNoStorageFormat;
-					}
-					else if (lowerword == "variable-name" || // synonyms
-						lowerword == "vn") {
-						Options |= EOptionOutputHexadecimal;
-						variableName = argv[1];
-						if (argc > 0) {
-							argc--;
-							argv++;
-						}
-						else
-							Error("no <C-variable-name> provided for --variable-name");
-						break;
-					}
-					else if (lowerword == "source-entrypoint" || // synonyms
+                    } else if (lowerword == "variable-name" || // synonyms
+                        lowerword == "vn") {
+                        Options |= EOptionOutputHexadecimal;
+                        variableName = argv[1];
+                        if (argc > 0) {
+                            argc--;
+                            argv++;
+                        } else
+                            Error("no <C-variable-name> provided for --variable-name");
+                        break;
+                    }
+                    else if (lowerword == "source-entrypoint" || // synonyms
                                lowerword == "sep") {
                         sourceEntryPointName = argv[1];
                         if (argc > 0) {
