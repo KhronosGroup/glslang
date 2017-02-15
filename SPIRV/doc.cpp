@@ -344,6 +344,8 @@ const char* BuiltInString(int builtIn)
     case 5253: return "ViewportMaskNV";
     case 5257: return "SecondaryPositionNV";
     case 5258: return "SecondaryViewportMaskNV";
+    case 5260: return "PositionPerViewNV";
+    case 5261: return "ViewportMaskPerViewNV";
 #endif
     }
 }
