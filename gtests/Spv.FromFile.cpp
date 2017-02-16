@@ -71,6 +71,9 @@ using GlslIoMap = GlslangTest<::testing::TestWithParam<IoMapData>>;
 #ifdef AMD_EXTENSIONS
 using CompileVulkanToSpirvTestAMD = GlslangTest<::testing::TestWithParam<std::string>>;
 #endif
+#ifdef NV_EXTENSIONS
+using CompileVulkanToSpirvTestNV = GlslangTest<::testing::TestWithParam<std::string>>;
+#endif
 
 // Compiling GLSL to SPIR-V under Vulkan semantics. Expected to successfully
 // generate SPIR-V.
@@ -155,6 +158,17 @@ TEST_P(CompileVulkanToSpirvTestAMD, FromFile)
 }
 #endif
 
+#ifdef NV_EXTENSIONS
+// Compiling GLSL to SPIR-V under Vulkan semantics (AMD extensions enabled).
+// Expected to successfully generate SPIR-V.
+TEST_P(CompileVulkanToSpirvTestNV, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
+        Source::GLSL, Semantics::Vulkan,
+        Target::Spv);
+}
+#endif
+
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
     Glsl, CompileVulkanToSpirvTest,
@@ -220,8 +234,8 @@ INSTANTIATE_TEST_CASE_P(
         "spv.functionSemantics.frag",
         "spv.GeometryShaderPassthrough.geom",
         "spv.int64.frag",
-        "spv.intOps.vert",
         "spv.interpOps.frag",
+        "spv.intOps.vert",
         "spv.layoutNested.vert",
         "spv.length.frag",
         "spv.localAggregates.frag",
@@ -361,8 +375,26 @@ INSTANTIATE_TEST_CASE_P(
     Glsl, CompileVulkanToSpirvTestAMD,
     ::testing::ValuesIn(std::vector<std::string>({
         "spv.float16.frag",
+        "spv.shaderBallotAMD.comp"
     })),
     FileNameAsCustomTestSuffix
+);
+#endif
+
+#ifdef NV_EXTENSIONS
+INSTANTIATE_TEST_CASE_P(
+    Glsl, CompileVulkanToSpirvTestNV,
+    ::testing::ValuesIn(std::vector<std::string>({
+    "spv.sampleMaskOverrideCoverage.frag",
+    "spv.GeometryShaderPassthrough.geom",
+    "spv.viewportArray2.vert",
+    "spv.viewportArray2.tesc",
+    "spv.stereoViewRendering.vert",
+    "spv.stereoViewRendering.tesc",
+    "spv.multiviewPerViewAttributes.vert",
+    "spv.multiviewPerViewAttributes.tesc",
+})),
+FileNameAsCustomTestSuffix
 );
 #endif
 // clang-format on

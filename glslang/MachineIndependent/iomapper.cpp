@@ -168,8 +168,8 @@ public:
 struct TResolverAdaptor
 {
     TResolverAdaptor(EShLanguage s, TIoMapResolver& r, TInfoSink& i, bool& e)
-      : resolver(r)
-      , stage(s)
+      : stage(s)
+      , resolver(r)
       , infoSink(i)
       , error(e)
     {
@@ -209,6 +209,9 @@ struct TResolverAdaptor
     TIoMapResolver& resolver;
     TInfoSink&      infoSink;
     bool&           error;
+
+private:
+    TResolverAdaptor& operator=(TResolverAdaptor&);
 };
 
 /*

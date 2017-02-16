@@ -258,106 +258,6 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
     }
 }
 
-///////////////////////////////////////////////////////////////////////
-//
-// Sub- vector and matrix fields
-//
-////////////////////////////////////////////////////////////////////////
-
-//
-// Look at a '.' field selector string and change it into offsets
-// for a vector or scalar
-//
-// Returns true if there is no error.
-//
-bool TParseContext::parseVectorFields(const TSourceLoc& loc, const TString& compString, int vecSize, TVectorFields& fields)
-{
-    fields.num = (int)compString.size();
-    if (fields.num > 4) {
-        error(loc, "illegal vector field selection", compString.c_str(), "");
-        return false;
-    }
-
-    enum {
-        exyzw,
-        ergba,
-        estpq,
-    } fieldSet[4];
-
-    for (int i = 0; i < fields.num; ++i) {
-        switch (compString[i])  {
-        case 'x':
-            fields.offsets[i] = 0;
-            fieldSet[i] = exyzw;
-            break;
-        case 'r':
-            fields.offsets[i] = 0;
-            fieldSet[i] = ergba;
-            break;
-        case 's':
-            fields.offsets[i] = 0;
-            fieldSet[i] = estpq;
-            break;
-        case 'y':
-            fields.offsets[i] = 1;
-            fieldSet[i] = exyzw;
-            break;
-        case 'g':
-            fields.offsets[i] = 1;
-            fieldSet[i] = ergba;
-            break;
-        case 't':
-            fields.offsets[i] = 1;
-            fieldSet[i] = estpq;
-            break;
-        case 'z':
-            fields.offsets[i] = 2;
-            fieldSet[i] = exyzw;
-            break;
-        case 'b':
-            fields.offsets[i] = 2;
-            fieldSet[i] = ergba;
-            break;
-        case 'p':
-            fields.offsets[i] = 2;
-            fieldSet[i] = estpq;
-            break;
-
-        case 'w':
-            fields.offsets[i] = 3;
-            fieldSet[i] = exyzw;
-            break;
-        case 'a':
-            fields.offsets[i] = 3;
-            fieldSet[i] = ergba;
-            break;
-        case 'q':
-            fields.offsets[i] = 3;
-            fieldSet[i] = estpq;
-            break;
-        default:
-            error(loc, "illegal vector field selection", compString.c_str(), "");
-            return false;
-        }
-    }
-
-    for (int i = 0; i < fields.num; ++i) {
-        if (fields.offsets[i] >= vecSize) {
-            error(loc, "vector field selection out of range",  compString.c_str(), "");
-            return false;
-        }
-
-        if (i > 0) {
-            if (fieldSet[i] != fieldSet[i-1]) {
-                error(loc, "illegal - vector component fields not from the same set", compString.c_str(), "");
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
 //
 // Handle seeing a variable identifier in the grammar.
 //
@@ -781,17 +681,14 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
             profileRequires(loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, dotFeature);
         }
 
-        TVectorFields fields;
-        if (! parseVectorFields(loc, field, base->getVectorSize(), fields)) {
-            fields.num = 1;
-            fields.offsets[0] = 0;
-        }
+        TSwizzleSelectors<TVectorSelector> selectors;
+        parseSwizzleSelector(loc, field, base->getVectorSize(), selectors);
 
         if (base->isScalar()) {
-            if (fields.num == 1)
+            if (selectors.size() == 1)
                 return result;
             else {
-                TType type(base->getBasicType(), EvqTemporary, fields.num);
+                TType type(base->getBasicType(), EvqTemporary, selectors.size());
                 // Swizzle operations propagate specialization-constantness
                 if (base->getQualifier().isSpecConstant())
                     type.getQualifier().makeSpecConstant();
@@ -800,17 +697,16 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
         }
 
         if (base->getType().getQualifier().isFrontEndConstant())
-            result = intermediate.foldSwizzle(base, fields, loc);
+            result = intermediate.foldSwizzle(base, selectors, loc);
         else {
-            if (fields.num == 1) {
-                TIntermTyped* index = intermediate.addConstantUnion(fields.offsets[0], loc);
+            if (selectors.size() == 1) {
+                TIntermTyped* index = intermediate.addConstantUnion(selectors[0], loc);
                 result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
                 result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision));
             } else {
-                TString vectorString = field;
-                TIntermTyped* index = intermediate.addSwizzle(fields, loc);
+                TIntermTyped* index = intermediate.addSwizzle(selectors, loc);
                 result = intermediate.addIndex(EOpVectorSwizzle, base, index, loc);
-                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, (int)vectorString.size()));
+                result->setType(TType(base->getBasicType(), EvqTemporary, base->getType().getQualifier().precision, selectors.size()));
             }
             // Swizzle operations propagate specialization-constantness
             if (base->getType().getQualifier().isSpecConstant())
@@ -3113,7 +3009,7 @@ void TParseContext::declareArray(const TSourceLoc& loc, TString& identifier, con
             symbol = new TVariable(&identifier, type);
             symbolTable.insert(*symbol);
             if (symbolTable.atGlobalLevel())
-                trackLinkageDeferred(*symbol);
+                trackLinkage(*symbol);
 
             if (! symbolTable.atBuiltInLevel()) {
                 if (isIoResizeArray(type)) {
@@ -3309,6 +3205,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
         (identifier == "gl_Color"               && language == EShLangFragment)                     ||
 #ifdef NV_EXTENSIONS
          identifier == "gl_SampleMask"                                                              ||
+         identifier == "gl_Layer"                                                                   ||
 #endif
          identifier == "gl_TexCoord") {
 
@@ -3394,6 +3291,12 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
                 error(loc, "redeclaration only allowed for override_coverage layout", "redeclaration", symbol->getName().c_str());
             }
             intermediate.setLayoutOverrideCoverage();
+        }
+        else if (identifier == "gl_Layer") {
+            if (!qualifier.layoutViewportRelative && qualifier.layoutSecondaryViewportRelativeOffset == -2048)
+                error(loc, "redeclaration only allowed for viewport_relative or secondary_view_offset layout", "redeclaration", symbol->getName().c_str());
+            symbolQualifier.layoutViewportRelative = qualifier.layoutViewportRelative;
+            symbolQualifier.layoutSecondaryViewportRelativeOffset = qualifier.layoutSecondaryViewportRelativeOffset;
         }
 #endif
 
@@ -3521,6 +3424,14 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
             oldType.getQualifier().flat = newType.getQualifier().flat;
             oldType.getQualifier().nopersp = newType.getQualifier().nopersp;
 
+#ifdef NV_EXTENSIONS
+            if (member->type->getFieldName() == "gl_Layer") {
+                if (!newType.getQualifier().layoutViewportRelative && newType.getQualifier().layoutSecondaryViewportRelativeOffset == -2048)
+                    error(loc, "redeclaration only allowed for viewport_relative or secondary_view_offset layout", "redeclaration", member->type->getFieldName().c_str());
+                oldType.getQualifier().layoutViewportRelative = newType.getQualifier().layoutViewportRelative;
+                oldType.getQualifier().layoutSecondaryViewportRelativeOffset = newType.getQualifier().layoutSecondaryViewportRelativeOffset;
+            }
+#endif
             if (oldType.isImplicitlySizedArray() && newType.isExplicitlySizedArray())
                 oldType.changeOuterArraySize(newType.getOuterArraySize());
 
@@ -3565,7 +3476,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
         fixIoArraySize(loc, block->getWritableType());
 
     // Save it in the AST for linker use.
-    trackLinkageDeferred(*block);
+    trackLinkage(*block);
 }
 
 void TParseContext::paramCheckFix(const TSourceLoc& loc, const TStorageQualifier& qualifier, TType& type)
@@ -4047,8 +3958,20 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             publicType.shaderQualifiers.layoutOverrideCoverage = true;
             return;
         }
-#endif
     }
+    if (language == EShLangVertex ||
+        language == EShLangTessControl ||
+        language == EShLangTessEvaluation ||
+        language == EShLangGeometry ) {
+        if (id == "viewport_relative") {
+            requireExtensions(loc, 1, &E_GL_NV_viewport_array2, "view port array2");
+            publicType.qualifier.layoutViewportRelative = true;
+            return;
+        }
+    }
+#else
+    }
+#endif
     error(loc, "unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4)", id.c_str(), "");
 }
 
@@ -4085,16 +4008,20 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         //  - uniform offsets
         //  - atomic_uint offsets
         const char* feature = "offset";
-        requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
-        const char* exts[2] = { E_GL_ARB_enhanced_layouts, E_GL_ARB_shader_atomic_counters };
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 2, exts, feature);
-        profileRequires(loc, EEsProfile, 310, nullptr, feature);
+        if (spvVersion.spv == 0) {
+            requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
+            const char* exts[2] = { E_GL_ARB_enhanced_layouts, E_GL_ARB_shader_atomic_counters };
+            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 420, 2, exts, feature);
+            profileRequires(loc, EEsProfile, 310, nullptr, feature);
+        }
         publicType.qualifier.layoutOffset = value;
         return;
     } else if (id == "align") {
         const char* feature = "uniform buffer-member align";
-        requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
-        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts, feature);
+        if (spvVersion.spv == 0) {
+            requireProfile(loc, ECoreProfile | ECompatibilityProfile, feature);
+            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts, feature);
+        }
         // "The specified alignment must be a power of 2, or a compile-time error results."
         if (! IsPow2(value))
             error(loc, "must be a power of 2", "align", "");
@@ -4193,6 +4120,19 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         }
         return;
     }
+
+#if NV_EXTENSIONS
+    if (language == EShLangVertex ||
+        language == EShLangTessControl ||
+        language == EShLangTessEvaluation ||
+        language == EShLangGeometry) {
+        if (id == "secondary_view_offset") {
+            requireExtensions(loc, 1, &E_GL_NV_stereo_view_rendering, "stereo view rendering");
+            publicType.qualifier.layoutSecondaryViewportRelativeOffset = value;
+            return;
+        }
+    }
+#endif
 
     switch (language) {
     case EShLangVertex:
@@ -4357,6 +4297,10 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
 #ifdef NV_EXTENSIONS
         if (src.layoutPassthrough)
             dst.layoutPassthrough = true;
+        if (src.layoutViewportRelative)
+            dst.layoutViewportRelative = true;
+        if (src.layoutSecondaryViewportRelativeOffset != -2048)
+            dst.layoutSecondaryViewportRelativeOffset = src.layoutSecondaryViewportRelativeOffset;
 #endif
     }
 }
@@ -5093,7 +5037,7 @@ void TParseContext::inheritGlobalDefaults(TQualifier& dst) const
 //
 TVariable* TParseContext::makeInternalVariable(const char* name, const TType& type) const
 {
-    TString* nameString = new TString(name);
+    TString* nameString = NewPoolTString(name);
     TVariable* variable = new TVariable(nameString, type);
     symbolTable.makeInternalVariable(*variable);
 
@@ -5116,7 +5060,7 @@ TVariable* TParseContext::declareNonArray(const TSourceLoc& loc, TString& identi
     // add variable to symbol table
     if (symbolTable.insert(*variable)) {
         if (symbolTable.atGlobalLevel())
-            trackLinkageDeferred(*variable);
+            trackLinkage(*variable);
         return variable;
     }
 
@@ -5606,8 +5550,10 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         if (memberType.isArray())
             arrayUnsizedCheck(memberLoc, currentBlockQualifier, &memberType.getArraySizes(), false, member == typeList.size() - 1);
         if (memberQualifier.hasOffset()) {
-            requireProfile(memberLoc, ~EEsProfile, "offset on block member");
-            profileRequires(memberLoc, ~EEsProfile, 440, E_GL_ARB_enhanced_layouts, "offset on block member");
+            if (spvVersion.spv == 0) {
+                requireProfile(memberLoc, ~EEsProfile, "offset on block member");
+                profileRequires(memberLoc, ~EEsProfile, 440, E_GL_ARB_enhanced_layouts, "offset on block member");
+            }
         }
 
         if (memberType.containsOpaque())
@@ -5778,7 +5724,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         fixIoArraySize(loc, variable.getWritableType());
 
     // Save it in the AST for linker use.
-    trackLinkageDeferred(variable);
+    trackLinkage(variable);
 }
 
 // Do all block-declaration checking regarding the combination of in/out/uniform/buffer

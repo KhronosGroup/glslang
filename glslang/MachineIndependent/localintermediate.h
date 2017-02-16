@@ -47,19 +47,40 @@ class TInfoSink;
 
 namespace glslang {
 
-struct TVectorFields {
-    TVectorFields() { }
+struct TMatrixSelector {
+    int coord1;  // stay agnostic about column/row; this is parse order
+    int coord2;
+};
 
-    TVectorFields(int c0, int c1, int c2, int c3) : num(4)
+typedef int TVectorSelector;
+
+const int MaxSwizzleSelectors = 4;
+
+template<typename selectorType>
+class TSwizzleSelectors {
+public:
+    TSwizzleSelectors() : size_(0) { }
+
+    void push_back(selectorType comp)
     {
-        offsets[0] = c0;
-        offsets[1] = c1;
-        offsets[2] = c2;
-        offsets[3] = c3;
+        if (size_ < MaxSwizzleSelectors)
+            components[size_++] = comp;
     }
-
-    int offsets[4];
-    int num;
+    void resize(int s)
+    {
+        assert(s <= size_);
+        size_ = s;
+    }
+    int size() const { return size_; }
+    selectorType operator[](int i) const
+    {
+        assert(i < MaxSwizzleSelectors);
+        return components[i];
+    }
+    
+private:
+    int size_;
+    selectorType components[MaxSwizzleSelectors];
 };
 
 //
@@ -139,22 +160,22 @@ class TVariable;
 class TIntermediate {
 public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) :
-        source(EShSourceNone), language(l), profile(p), version(v), treeRoot(0),
+        language(l), source(EShSourceNone), profile(p), version(v), treeRoot(0),
         numEntryPoints(0), numErrors(0), numPushConstants(0), recursive(false),
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet), inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),
         vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false), depthLayout(EldNone), depthReplacing(false), blendEquations(0),
-        multiStream(false), xfbMode(false),
+        xfbMode(false), multiStream(false),
+#ifdef NV_EXTENSIONS
+        layoutOverrideCoverage(false),
+        geoPassthroughEXT(false),
+#endif
         shiftSamplerBinding(0),
         shiftTextureBinding(0),
         shiftImageBinding(0),
         shiftUboBinding(0),
         autoMapBindings(false),
         flattenUniformArrays(false),
-#ifdef NV_EXTENSIONS
-        layoutOverrideCoverage(false),
-        geoPassthroughEXT(false),
-#endif
         useUnknownFormat(false)
     {
         localSize[0] = 1;
@@ -231,7 +252,7 @@ public:
     TIntermAggregate* makeAggregate(const TSourceLoc&);
     TIntermTyped* setAggregateOperator(TIntermNode*, TOperator, const TType& type, TSourceLoc);
     bool areAllChildConst(TIntermAggregate* aggrNode);
-    TIntermNode*  addSelection(TIntermTyped* cond, TIntermNodePair code, const TSourceLoc&);
+    TIntermTyped* addSelection(TIntermTyped* cond, TIntermNodePair code, const TSourceLoc&);
     TIntermTyped* addSelection(TIntermTyped* cond, TIntermTyped* trueBlock, TIntermTyped* falseBlock, const TSourceLoc&);
     TIntermTyped* addComma(TIntermTyped* left, TIntermTyped* right, const TSourceLoc&);
     TIntermTyped* addMethod(TIntermTyped*, const TType&, const TString*, const TSourceLoc&);
@@ -242,13 +263,14 @@ public:
     TIntermConstantUnion* addConstantUnion(unsigned long long, const TSourceLoc&, bool literal = false) const;
     TIntermConstantUnion* addConstantUnion(bool, const TSourceLoc&, bool literal = false) const;
     TIntermConstantUnion* addConstantUnion(double, TBasicType, const TSourceLoc&, bool literal = false) const;
+    TIntermConstantUnion* addConstantUnion(const TString*, const TSourceLoc&, bool literal = false) const;
     TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) const;
     bool parseConstTree(TIntermNode*, TConstUnionArray, TOperator, const TType&, bool singleConstantParam = false);
     TIntermLoop* addLoop(TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, const TSourceLoc&);
     TIntermAggregate* addForLoop(TIntermNode*, TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, const TSourceLoc&);
     TIntermBranch* addBranch(TOperator, const TSourceLoc&);
     TIntermBranch* addBranch(TOperator, TIntermTyped*, const TSourceLoc&);
-    TIntermTyped* addSwizzle(TVectorFields&, const TSourceLoc&);
+    template<typename selectorType> TIntermTyped* addSwizzle(TSwizzleSelectors<selectorType>&, const TSourceLoc&);
 
     // Low level functions to add nodes (no conversions or other higher level transformations)
     // If a type is provided, the node's type will be set to it.
@@ -264,7 +286,7 @@ public:
     TIntermTyped* fold(TIntermAggregate* aggrNode);
     TIntermTyped* foldConstructor(TIntermAggregate* aggrNode);
     TIntermTyped* foldDereference(TIntermTyped* node, int index, const TSourceLoc&);
-    TIntermTyped* foldSwizzle(TIntermTyped* node, TVectorFields& fields, const TSourceLoc&);
+    TIntermTyped* foldSwizzle(TIntermTyped* node, TSwizzleSelectors<TVectorSelector>& fields, const TSourceLoc&);
 
     // Tree ops
     static const TIntermTyped* findLValueBase(const TIntermTyped*, bool swizzleOkay);
@@ -417,18 +439,14 @@ protected:
     bool promoteBinary(TIntermBinary&);
     void addSymbolLinkageNode(TIntermAggregate*& linkage, TSymbolTable&, const TString&);
     bool promoteAggregate(TIntermAggregate&);
+    void pushSelector(TIntermSequence&, const TVectorSelector&, const TSourceLoc&);
+    void pushSelector(TIntermSequence&, const TMatrixSelector&, const TSourceLoc&);
+    bool specConstantPropagates(const TIntermTyped&, const TIntermTyped&);
 
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later
     std::string entryPointName;
     std::string entryPointMangledName;
-    unsigned int shiftSamplerBinding;
-    unsigned int shiftTextureBinding;
-    unsigned int shiftImageBinding;
-    unsigned int shiftUboBinding;
-    bool autoMapBindings;
-    bool flattenUniformArrays;
-    bool useUnknownFormat;
 
     EProfile profile;
     int version;
@@ -462,6 +480,14 @@ protected:
     bool layoutOverrideCoverage;
     bool geoPassthroughEXT;
 #endif
+
+    unsigned int shiftSamplerBinding;
+    unsigned int shiftTextureBinding;
+    unsigned int shiftImageBinding;
+    unsigned int shiftUboBinding;
+    bool autoMapBindings;
+    bool flattenUniformArrays;
+    bool useUnknownFormat;
 
     typedef std::list<TCall> TGraph;
     TGraph callGraph;

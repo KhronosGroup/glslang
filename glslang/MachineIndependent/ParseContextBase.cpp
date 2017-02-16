@@ -129,6 +129,7 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
         case EOpIndexIndirect:     // fall through
         case EOpIndexDirectStruct: // fall through
         case EOpVectorSwizzle:
+        case EOpMatrixSwizzle:
             return lValueErrorCheck(loc, op, binaryNode->getLeft());
         default:
             break;
@@ -208,6 +209,7 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
         case EOpIndexIndirect:
         case EOpIndexDirectStruct:
         case EOpVectorSwizzle:
+        case EOpMatrixSwizzle:
             rValueErrorCheck(loc, op, binaryNode->getLeft());
         default:
             break;
@@ -221,20 +223,11 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
         error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
 }
 
-// Add a linkage symbol node for 'symbol', which
-// must have its type fully edited, as this will snapshot the type.
-// It is okay if symbol becomes invalid before finish().
-void TParseContextBase::trackLinkage(TSymbol& symbol)
-{
-    if (!parsingBuiltins)
-        intermediate.addSymbolLinkageNode(linkage, symbol);
-}
-
 // Add 'symbol' to the list of deferred linkage symbols, which
 // are later processed in finish(), at which point the symbol
 // must still be valid.
 // It is okay if the symbol's type will be subsequently edited.
-void TParseContextBase::trackLinkageDeferred(TSymbol& symbol)
+void TParseContextBase::trackLinkage(TSymbol& symbol)
 {
     if (!parsingBuiltins)
         linkageSymbols.push_back(&symbol);
@@ -251,7 +244,7 @@ void TParseContextBase::makeEditable(TSymbol*& symbol)
 
     // Save it (deferred, so it can be edited first) in the AST for linker use.
     if (symbol)
-        trackLinkageDeferred(*symbol);
+        trackLinkage(*symbol);
 }
 
 // Return a writable version of the variable 'name'.
@@ -432,10 +425,112 @@ const TFunction* TParseContextBase::selectFunction(
 }
 
 //
+// Look at a '.' field selector string and change it into numerical selectors
+// for a vector or scalar.
+//
+// Always return some form of swizzle, so the result is always usable.
+//
+void TParseContextBase::parseSwizzleSelector(const TSourceLoc& loc, const TString& compString, int vecSize,
+                                             TSwizzleSelectors<TVectorSelector>& selector)
+{
+    // Too long?
+    if (compString.size() > MaxSwizzleSelectors)
+        error(loc, "vector swizzle too long", compString.c_str(), "");
+
+    // Use this to test that all swizzle characters are from the same swizzle-namespace-set
+    enum {
+        exyzw,
+        ergba,
+        estpq,
+    } fieldSet[MaxSwizzleSelectors];
+
+    // Decode the swizzle string.
+    int size = std::min(MaxSwizzleSelectors, (int)compString.size());
+    for (int i = 0; i < size; ++i) {
+        switch (compString[i])  {
+        case 'x':
+            selector.push_back(0);
+            fieldSet[i] = exyzw;
+            break;
+        case 'r':
+            selector.push_back(0);
+            fieldSet[i] = ergba;
+            break;
+        case 's':
+            selector.push_back(0);
+            fieldSet[i] = estpq;
+            break;
+
+        case 'y':
+            selector.push_back(1);
+            fieldSet[i] = exyzw;
+            break;
+        case 'g':
+            selector.push_back(1);
+            fieldSet[i] = ergba;
+            break;
+        case 't':
+            selector.push_back(1);
+            fieldSet[i] = estpq;
+            break;
+
+        case 'z':
+            selector.push_back(2);
+            fieldSet[i] = exyzw;
+            break;
+        case 'b':
+            selector.push_back(2);
+            fieldSet[i] = ergba;
+            break;
+        case 'p':
+            selector.push_back(2);
+            fieldSet[i] = estpq;
+            break;
+
+        case 'w':
+            selector.push_back(3);
+            fieldSet[i] = exyzw;
+            break;
+        case 'a':
+            selector.push_back(3);
+            fieldSet[i] = ergba;
+            break;
+        case 'q':
+            selector.push_back(3);
+            fieldSet[i] = estpq;
+            break;
+
+        default:
+            error(loc, "unknown swizzle selection", compString.c_str(), "");
+            break;
+        }
+    }
+
+    // Additional error checking.
+    for (int i = 0; i < selector.size(); ++i) {
+        if (selector[i] >= vecSize) {
+            error(loc, "vector swizzle selection out of range",  compString.c_str(), "");
+            selector.resize(i);
+            break;
+        }
+
+        if (i > 0 && fieldSet[i] != fieldSet[i-1]) {
+            error(loc, "vector swizzle selectors not from the same set", compString.c_str(), "");
+            selector.resize(i);
+            break;
+        }
+    }
+
+    // Ensure it is valid.
+    if (selector.size() == 0)
+        selector.push_back(0);
+}
+
+//
 // Make the passed-in variable information become a member of the
 // global uniform block.  If this doesn't exist yet, make it.
 //
-void TParseContextBase::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName)
+void TParseContextBase::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName, TTypeList* typeList)
 {
     // make the global block, if not yet made
     if (globalUniformBlock == nullptr) {
@@ -453,6 +548,8 @@ void TParseContextBase::growGlobalUniformBlock(TSourceLoc& loc, TType& memberTyp
     TType* type = new TType;
     type->shallowCopy(memberType);
     type->setFieldName(memberName);
+    if (typeList)
+        type->setStruct(typeList);
     TTypeLoc typeLoc = {type, loc};
     globalUniformBlock->getType().getWritableStruct()->push_back(typeLoc);
 }
@@ -473,7 +570,7 @@ bool TParseContextBase::insertGlobalUniformBlock()
         // This is the first request; we need a normal symbol table insert
         inserted = symbolTable.insert(*globalUniformBlock);
         if (inserted)
-            trackLinkageDeferred(*globalUniformBlock);
+            trackLinkage(*globalUniformBlock);
     } else if (firstNewMember <= numMembers) {
         // This is a follow-on request; we need to amend the first insert
         inserted = symbolTable.amend(*globalUniformBlock, firstNewMember);
@@ -489,12 +586,14 @@ bool TParseContextBase::insertGlobalUniformBlock()
 
 void TParseContextBase::finish()
 {
-    if (!parsingBuiltins) {
-        // Transfer the linkage symbols to AST nodes
-        for (auto i = linkageSymbols.begin(); i != linkageSymbols.end(); ++i)
-            intermediate.addSymbolLinkageNode(linkage, **i);
-        intermediate.addSymbolLinkageNodes(linkage, getLanguage(), symbolTable);
-    }
+    if (parsingBuiltins)
+        return;
+
+    // Transfer the linkage symbols to AST nodes
+    TIntermAggregate* linkage = new TIntermAggregate;
+    for (auto i = linkageSymbols.begin(); i != linkageSymbols.end(); ++i)
+        intermediate.addSymbolLinkageNode(linkage, **i);
+    intermediate.addSymbolLinkageNodes(linkage, getLanguage(), symbolTable);
 }
 
 } // end namespace glslang

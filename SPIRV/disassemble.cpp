@@ -486,7 +486,9 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
 #endif
 #ifdef NV_EXTENSIONS
                 }else if (strcmp(spv::E_SPV_NV_sample_mask_override_coverage, name) == 0 ||
-                          strcmp(spv::E_SPV_NV_geometry_shader_passthrough, name) == 0) {
+                          strcmp(spv::E_SPV_NV_geometry_shader_passthrough, name) == 0 ||
+                          strcmp(spv::E_SPV_NV_viewport_array2, name) == 0 ||
+                          strcmp(spv::E_SPV_NVX_multiview_per_view_attributes, name) == 0) {
                     extInstSet = GLSLextNVInst;
 #endif
                 }
@@ -659,12 +661,25 @@ static const char* GLSLextAMDGetDebugNames(const char* name, unsigned entrypoint
 static const char* GLSLextNVGetDebugNames(const char* name, unsigned entrypoint)
 {
     if (strcmp(name, spv::E_SPV_NV_sample_mask_override_coverage) == 0 ||
-        strcmp(name, spv::E_SPV_NV_geometry_shader_passthrough) == 0) {
+        strcmp(name, spv::E_SPV_NV_geometry_shader_passthrough) == 0 ||
+        strcmp(name, spv::E_ARB_shader_viewport_layer_array) == 0 ||
+        strcmp(name, spv::E_SPV_NV_viewport_array2) == 0 ||
+        strcmp(spv::E_SPV_NVX_multiview_per_view_attributes, name) == 0) {
         switch (entrypoint) {
-        case OverrideCoverageNV:          return "OverrideCoverageNV";
-        case PassthroughNV:               return "PassthroughNV";
-        case GeometryShaderPassthroughNV: return "GeometryShaderPassthroughNV";
-        default:                          return "Bad";
+        case DecorationOverrideCoverageNV:          return "OverrideCoverageNV";
+        case DecorationPassthroughNV:               return "PassthroughNV";
+        case CapabilityGeometryShaderPassthroughNV: return "GeometryShaderPassthroughNV";
+        case DecorationViewportRelativeNV:          return "ViewportRelativeNV";
+        case BuiltInViewportMaskNV:                 return "ViewportMaskNV";
+        case CapabilityShaderViewportMaskNV:        return "ShaderViewportMaskNV";
+        case DecorationSecondaryViewportRelativeNV: return "SecondaryViewportRelativeNV";
+        case BuiltInSecondaryPositionNV:            return "SecondaryPositionNV";
+        case BuiltInSecondaryViewportMaskNV:        return "SecondaryViewportMaskNV";
+        case CapabilityShaderStereoViewNV:          return "ShaderStereoViewNV";
+        case BuiltInPositionPerViewNV:              return "PositionPerViewNV";
+        case BuiltInViewportMaskPerViewNV:          return "ViewportMaskPerViewNV";
+        case CapabilityPerViewAttributesNV:         return "PerViewAttributesNV";
+        default:                                    return "Bad";
         }
     }
     return "Bad";

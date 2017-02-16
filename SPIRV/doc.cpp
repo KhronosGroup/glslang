@@ -263,6 +263,8 @@ const char* DecorationString(int decoration)
 #ifdef NV_EXTENSIONS
     case 5248: return "OverrideCoverageNV";
     case 5250: return "PassthroughNV";
+    case 5252: return "ViewportRelativeNV";
+    case 5256: return "SecondaryViewportRelativeNV";
 #endif
     }
 }
@@ -336,6 +338,14 @@ const char* BuiltInString(int builtIn)
     case 4996: return "BaryCoordSmoothCentroidAMD";
     case 4997: return "BaryCoordSmoothSampleAMD";
     case 4998: return "BaryCoordPullModelAMD";
+#endif
+
+#ifdef NV_EXTENSIONS
+    case 5253: return "ViewportMaskNV";
+    case 5257: return "SecondaryPositionNV";
+    case 5258: return "SecondaryViewportMaskNV";
+    case 5260: return "PositionPerViewNV";
+    case 5261: return "ViewportMaskPerViewNV";
 #endif
 
     case BuiltInCeiling:
@@ -819,11 +829,15 @@ const char* CapabilityString(int info)
     case 4423: return "SubgroupBallotKHR";
     case 4427: return "DrawParameters";
     case 4431: return "SubgroupVoteKHR";
+
     case 4437: return "DeviceGroup";
     case 4439: return "MultiView";
 
 #ifdef NV_EXTENSIONS
     case 5251: return "GeometryShaderPassthroughNV";
+    case 5254: return "ShaderViewportIndexLayerNV";
+    case 5255: return "ShaderViewportMaskNV";
+    case 5259: return "ShaderStereoViewNV";
 #endif
 
     case CapabilityCeiling:
