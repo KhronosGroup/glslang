@@ -3887,6 +3887,8 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
         qualifier.builtIn = EbvGlobalInvocationId;
     else if (semanticUpperCase == "SV_GROUPTHREADID")
         qualifier.builtIn = EbvLocalInvocationId;
+    else if (semanticUpperCase == "SV_GROUPINDEX")
+        qualifier.builtIn = EbvLocalInvocationIndex;
     else if (semanticUpperCase == "SV_GROUPID")
         qualifier.builtIn = EbvWorkGroupId;
     else if (semanticUpperCase == "SV_DOMAINLOCATION")
@@ -3903,8 +3905,6 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, con
         qualifier.builtIn = EbvFragDepthLesser;
     else if( semanticUpperCase == "SV_STENCILREF")
         error(loc, "unimplemented; need ARB_shader_stencil_export", "SV_STENCILREF", "");
-    else if( semanticUpperCase == "SV_GROUPINDEX")
-        error(loc, "unimplemented", "SV_GROUPINDEX", "");
 }
 
 //
