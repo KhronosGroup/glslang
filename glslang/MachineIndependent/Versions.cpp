@@ -201,6 +201,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_shader_viewport_layer_array]          = EBhDisable;
     extensionBehavior[E_GL_NV_viewport_array2]                       = EBhDisable;
     extensionBehavior[E_GL_NV_stereo_view_rendering]                 = EBhDisable;
+    extensionBehavior[E_GL_NVX_multiview_per_view_attributes]        = EBhDisable;
 #endif
 
     // AEP
