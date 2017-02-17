@@ -543,7 +543,7 @@ bool HlslParseContext::parseMatrixSwizzleSelector(const TSourceLoc& loc, const T
                 error(loc, "matrix component swizzle missing", compString.c_str(), "");
                 return false;
             }
-            startPos[numComps++] = c + 1;
+            startPos[numComps++] = (int)c + 1;
         }
     }
 
@@ -2153,7 +2153,7 @@ TIntermTyped* HlslParseContext::handleAssignToMatrixSwizzle(const TSourceLoc& lo
     TIntermTyped* vectorAssign = nullptr;
     if (vector == nullptr) {
         // create a new intermediate vector variable to assign to
-        TType vectorType(matrix->getBasicType(), EvqTemporary, matrix->getQualifier().precision, swizzle.size()/2);
+        TType vectorType(matrix->getBasicType(), EvqTemporary, matrix->getQualifier().precision, (int)swizzle.size()/2);
         vector = intermediate.addSymbol(*makeInternalVariable("intermVec", vectorType), loc);
 
         // assign the right to the new vector
