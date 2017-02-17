@@ -5327,11 +5327,15 @@ void OutputSpvBin(const std::vector<unsigned int>& spirv, const char* baseName)
 }
 
 // Write SPIR-V out to a text file with 32-bit hexadecimal words
-void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName)
+void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, const char* varName)
 {
     std::ofstream out;
     out.open(baseName, std::ios::binary | std::ios::out);
     out << "\t// " GLSLANG_REVISION " " GLSLANG_DATE << std::endl;
+    if (varName != nullptr) {
+        out << "\t #pragma once" << std::endl;
+        out << "const uint32_t " << varName << "[] = {" << std::endl;
+    }
     const int WORDS_PER_LINE = 8;
     for (int i = 0; i < (int)spirv.size(); i += WORDS_PER_LINE) {
         out << "\t";
@@ -5343,6 +5347,9 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName)
             }
         }
         out << std::endl;
+    }
+    if (varName != nullptr) {
+        out << "};";
     }
     out.close();
 }
