@@ -662,7 +662,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     if (! (Options & EOptionMemoryLeakMode)) {
                         printf("%s", logger.getAllMessages().c_str());
                         if (Options & EOptionOutputHexadecimal) {
-							glslang::OutputSpvHex(spirv, GetBinaryName((EShLanguage)stage), variableName);
+                            glslang::OutputSpvHex(spirv, GetBinaryName((EShLanguage)stage), variableName);
                         } else {
                             glslang::OutputSpvBin(spirv, GetBinaryName((EShLanguage)stage));
                         }
@@ -999,8 +999,8 @@ void usage()
            "\n"
            "  --keep-uncalled                         don't eliminate uncalled functions when linking\n"
            "  --ku                                    synonym for --keep-uncalled\n"
-		   "  --variable-name <name>                  Creates a C header file that contains a uint32_t array named <name> initialized with the shader binary code.\n"
-		   "  --vn <name>                             synonym for --variable-name <name>.\n"
+           "  --variable-name <name>                  Creates a C header file that contains a uint32_t array named <name> initialized with the shader binary code.\n"
+           "  --vn <name>                             synonym for --variable-name <name>.\n"
            );
 
     exit(EFailUsage);

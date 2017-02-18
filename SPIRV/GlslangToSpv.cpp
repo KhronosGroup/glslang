@@ -5319,6 +5319,8 @@ void OutputSpvBin(const std::vector<unsigned int>& spirv, const char* baseName)
 {
     std::ofstream out;
     out.open(baseName, std::ios::binary | std::ios::out);
+    if (out.fail())
+        printf("ERROR: Failed to open file: %s\n", baseName);
     for (int i = 0; i < (int)spirv.size(); ++i) {
         unsigned int word = spirv[i];
         out.write((const char*)&word, 4);
@@ -5331,6 +5333,8 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, 
 {
     std::ofstream out;
     out.open(baseName, std::ios::binary | std::ios::out);
+    if (out.fail())
+        printf("ERROR: Failed to open file: %s\n", baseName);
     out << "\t// " GLSLANG_REVISION " " GLSLANG_DATE << std::endl;
     if (varName != nullptr) {
         out << "\t #pragma once" << std::endl;
