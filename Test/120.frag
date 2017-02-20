@@ -244,3 +244,39 @@ void voidTernary()
 	b ? foo121111() : 4;  // ERROR
 	b ? 3 : foo12111();   // ERROR
 }
+
+#extension GL_EXT_texture_array : enable
+
+uniform sampler1DArray s1DA;
+uniform sampler2DArray s2DA;
+uniform sampler1DArrayShadow s1DAS;
+uniform sampler2DArrayShadow s2DAS;
+
+void foo3434()
+{
+    float f;
+    vec2 v2;
+    vec3 v3;
+    vec4 v4;
+
+    v4 = texture1DArray(s1DA, v2);
+    v4 = texture2DArray(s2DA, v3);
+    v4 = shadow1DArray(s1DAS, v3);
+    v4 = shadow2DArray(s2DAS, v4);
+
+    v4 = texture1DArray(s1DA, v2, f);
+    v4 = texture2DArray(s2DA, v3, f);
+    v4 = shadow1DArray(s1DAS, v3, f);
+    v4 = shadow2DArray(s2DAS, v4, f);
+
+    // GL_ARB_shader_texture_lod is enabled above.
+    v4 = texture1DArrayLod(s1DA, v2, f);
+    v4 = texture2DArrayLod(s2DA, v3, f);
+    v4 = shadow1DArrayLod(s1DAS, v3, f);
+    v4 = shadow2DArrayLod(s2DAS, v4, f);
+
+    v3 = texture1DArray(s1DA, v2); // ERROR
+    v4 = texture2DArray(s1DA, v3); // ERROR
+    v4 = shadow1DArray(s1DA, v3); // ERROR
+    v4 = shadow2DArray(s2DAS, v3); // ERROR
+}

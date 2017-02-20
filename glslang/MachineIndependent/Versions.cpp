@@ -156,6 +156,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_OES_EGL_image_external]           = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_texture_lod]           = EBhDisable;
 
+    extensionBehavior[E_GL_EXT_texture_array]                = EBhDisable;
     extensionBehavior[E_GL_ARB_texture_rectangle]            = EBhDisable;
     extensionBehavior[E_GL_3DL_array_objects]                = EBhDisable;
     extensionBehavior[E_GL_ARB_shading_language_420pack]     = EBhDisable;
@@ -280,6 +281,7 @@ void TParseVersions::getPreamble(std::string& preamble)
     } else {
         preamble =
             "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
+            "#define GL_EXT_texture_array 1\n"
             "#define GL_ARB_texture_rectangle 1\n"
             "#define GL_ARB_shading_language_420pack 1\n"
             "#define GL_ARB_texture_gather 1\n"

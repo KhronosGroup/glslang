@@ -1317,6 +1317,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 shadow2DRect(sampler2DRectShadow, vec3);"     // GL_ARB_texture_rectangle, caught by keyword check
                 "vec4 shadow2DRectProj(sampler2DRectShadow, vec4);" // GL_ARB_texture_rectangle, caught by keyword check
 
+                "vec4 texture1DArray(sampler1DArray, vec2);"      // GL_EXT_texture_array
+                "vec4 texture2DArray(sampler2DArray, vec3);"      // GL_EXT_texture_array
+                "vec4 shadow1DArray(sampler1DArrayShadow, vec3);" // GL_EXT_texture_array
+                "vec4 shadow2DArray(sampler2DArrayShadow, vec4);" // GL_EXT_texture_array
+
                 "\n");
         }
     }
@@ -2681,6 +2686,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 shadow2DRectGradARB( sampler2DRectShadow, vec3, vec2, vec2);"    // GL_ARB_shader_texture_lod
                 "vec4 shadow2DRectProjGradARB(sampler2DRectShadow, vec4, vec2, vec2);" // GL_ARB_shader_texture_lod
 
+                "vec4 texture1DArrayLod(sampler1DArray, vec2, float);"                 // GL_EXT_texture_array
+                "vec4 texture2DArrayLod(sampler2DArray, vec3, float);"                 // GL_EXT_texture_array
+                "vec4 shadow1DArrayLod(sampler1DArrayShadow, vec3, float);"            // GL_EXT_texture_array
+                "vec4 shadow2DArrayLod(sampler2DArrayShadow, vec4, float);"            // GL_EXT_texture_array
+
                 "\n");
         }
     }
@@ -2764,7 +2774,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "vec4 shadow2D(sampler2DShadow, vec3, float);"
             "vec4 shadow1DProj(sampler1DShadow, vec4, float);"
             "vec4 shadow2DProj(sampler2DShadow, vec4, float);"
-
+            "vec4 texture1DArray(sampler1DArray, vec2, float);"      // GL_EXT_texture_array
+            "vec4 texture2DArray(sampler2DArray, vec3, float);"      // GL_EXT_texture_array
+            "vec4 shadow1DArray(sampler1DArrayShadow, vec3, float);" // GL_EXT_texture_array
+            "vec4 shadow2DArray(sampler2DArrayShadow, vec4, float);" // GL_EXT_texture_array
             "\n");
     }
     if (spvVersion.spv == 0 && profile == EEsProfile) {
@@ -5002,6 +5015,19 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
         }
 
+        // E_GL_EXT_texture_array
+        if (profile != EEsProfile && spvVersion.spv == 0) {
+            symbolTable.setFunctionExtensions("texture1DArray",    1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("texture2DArray",    1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("shadow1DArray",     1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("shadow2DArray",     1, &E_GL_EXT_texture_array);
+
+            symbolTable.setFunctionExtensions("texture1DArrayLod", 1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("texture2DArrayLod", 1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("shadow1DArrayLod",  1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("shadow2DArrayLod",  1, &E_GL_EXT_texture_array);
+        }
+
         // Fall through
 
     case EShLangTessControl:
@@ -5213,6 +5239,25 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("texture2DRectProjGradARB", 1, &E_GL_ARB_shader_texture_lod);
             symbolTable.setFunctionExtensions("shadow2DRectGradARB",      1, &E_GL_ARB_shader_texture_lod);
             symbolTable.setFunctionExtensions("shadow2DRectProjGradARB",  1, &E_GL_ARB_shader_texture_lod);
+        }
+
+		// E_GL_EXT_texture_array
+        if (profile != EEsProfile && spvVersion.spv == 0) {
+            int nLodExtensions = 2;
+            const char *lodExtensions[] = {E_GL_EXT_texture_array, E_GL_ARB_shader_texture_lod};
+
+            if (version >= 130)
+                nLodExtensions = 1;
+
+            symbolTable.setFunctionExtensions("texture1DArray",    1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("texture2DArray",    1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("shadow1DArray",     1, &E_GL_EXT_texture_array);
+            symbolTable.setFunctionExtensions("shadow2DArray",     1, &E_GL_EXT_texture_array);
+
+            symbolTable.setFunctionExtensions("texture1DArrayLod", nLodExtensions, lodExtensions);
+            symbolTable.setFunctionExtensions("texture2DArrayLod", nLodExtensions, lodExtensions);
+            symbolTable.setFunctionExtensions("shadow1DArrayLod",  nLodExtensions, lodExtensions);
+            symbolTable.setFunctionExtensions("shadow2DArrayLod",  nLodExtensions, lodExtensions);
         }
 
         // E_GL_ARB_shader_image_load_store
@@ -5572,6 +5617,15 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("texture2DLodEXT",          EOpTextureLod);
             symbolTable.relateToOperator("texture2DProjLod",         EOpTextureProjLod);
             symbolTable.relateToOperator("texture2DProjLodEXT",      EOpTextureProjLod);
+
+            symbolTable.relateToOperator("texture1DArray",           EOpTexture);
+            symbolTable.relateToOperator("texture2DArray",           EOpTexture);
+            symbolTable.relateToOperator("shadow1DArray",            EOpTexture);
+            symbolTable.relateToOperator("shadow2DArray",            EOpTexture);
+            symbolTable.relateToOperator("texture1DArrayLod",        EOpTextureLod);
+            symbolTable.relateToOperator("texture2DArrayLod",        EOpTextureLod);
+            symbolTable.relateToOperator("shadow1DArrayLod",         EOpTextureLod);
+            symbolTable.relateToOperator("shadow2DArrayLod",         EOpTextureLod);
 
             symbolTable.relateToOperator("texture3D",                EOpTexture);
             symbolTable.relateToOperator("texture3DGradARB",         EOpTextureGrad);

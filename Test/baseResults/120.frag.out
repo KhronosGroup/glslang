@@ -52,12 +52,20 @@ ERROR: 0:209: 'assign' :  cannot convert from 'const float' to 'temp 4-component
 ERROR: 0:212: 'sampler2DRect' : Reserved word. 
 ERROR: 0:244: ':' :  wrong operand types: no operation ':' exists that takes a left-hand operand of type 'global void' and a right operand of type 'const int' (or there is no acceptable conversion)
 ERROR: 0:245: ':' :  wrong operand types: no operation ':' exists that takes a left-hand operand of type 'const int' and a right operand of type 'global void' (or there is no acceptable conversion)
-ERROR: 53 compilation errors.  No code generated.
+ERROR: 0:278: 'assign' :  cannot convert from 'global 4-component vector of float' to 'temp 3-component vector of float'
+ERROR: 0:279: 'texture2DArray' : no matching overloaded function found 
+ERROR: 0:279: 'assign' :  cannot convert from 'const float' to 'temp 4-component vector of float'
+ERROR: 0:280: 'shadow1DArray' : no matching overloaded function found 
+ERROR: 0:280: 'assign' :  cannot convert from 'const float' to 'temp 4-component vector of float'
+ERROR: 0:281: 'shadow2DArray' : no matching overloaded function found 
+ERROR: 0:281: 'assign' :  cannot convert from 'const float' to 'temp 4-component vector of float'
+ERROR: 60 compilation errors.  No code generated.
 
 
 Shader version: 120
 Requested GL_ARB_shader_texture_lod
 Requested GL_ARB_texture_rectangle
+Requested GL_EXT_texture_array
 ERROR: node is still EOpNull!
 0:21  Function Definition: main( (global void)
 0:21    Function Parameters: 
@@ -616,6 +624,81 @@ ERROR: node is still EOpNull!
 0:244      Constant:
 0:244        4 (const int)
 0:245      Function Call: foo12111( (global void)
+0:255  Function Definition: foo3434( (global void)
+0:255    Function Parameters: 
+0:?     Sequence
+0:262      move second child to first child (temp 4-component vector of float)
+0:262        'v4' (temp 4-component vector of float)
+0:262        texture (global 4-component vector of float)
+0:262          's1DA' (uniform sampler1DArray)
+0:262          'v2' (temp 2-component vector of float)
+0:263      move second child to first child (temp 4-component vector of float)
+0:263        'v4' (temp 4-component vector of float)
+0:263        texture (global 4-component vector of float)
+0:263          's2DA' (uniform sampler2DArray)
+0:263          'v3' (temp 3-component vector of float)
+0:264      move second child to first child (temp 4-component vector of float)
+0:264        'v4' (temp 4-component vector of float)
+0:264        texture (global 4-component vector of float)
+0:264          's1DAS' (uniform sampler1DArrayShadow)
+0:264          'v3' (temp 3-component vector of float)
+0:265      move second child to first child (temp 4-component vector of float)
+0:265        'v4' (temp 4-component vector of float)
+0:265        texture (global 4-component vector of float)
+0:265          's2DAS' (uniform sampler2DArrayShadow)
+0:265          'v4' (temp 4-component vector of float)
+0:267      move second child to first child (temp 4-component vector of float)
+0:267        'v4' (temp 4-component vector of float)
+0:267        texture (global 4-component vector of float)
+0:267          's1DA' (uniform sampler1DArray)
+0:267          'v2' (temp 2-component vector of float)
+0:267          'f' (temp float)
+0:268      move second child to first child (temp 4-component vector of float)
+0:268        'v4' (temp 4-component vector of float)
+0:268        texture (global 4-component vector of float)
+0:268          's2DA' (uniform sampler2DArray)
+0:268          'v3' (temp 3-component vector of float)
+0:268          'f' (temp float)
+0:269      move second child to first child (temp 4-component vector of float)
+0:269        'v4' (temp 4-component vector of float)
+0:269        texture (global 4-component vector of float)
+0:269          's1DAS' (uniform sampler1DArrayShadow)
+0:269          'v3' (temp 3-component vector of float)
+0:269          'f' (temp float)
+0:270      move second child to first child (temp 4-component vector of float)
+0:270        'v4' (temp 4-component vector of float)
+0:270        texture (global 4-component vector of float)
+0:270          's2DAS' (uniform sampler2DArrayShadow)
+0:270          'v4' (temp 4-component vector of float)
+0:270          'f' (temp float)
+0:273      move second child to first child (temp 4-component vector of float)
+0:273        'v4' (temp 4-component vector of float)
+0:273        textureLod (global 4-component vector of float)
+0:273          's1DA' (uniform sampler1DArray)
+0:273          'v2' (temp 2-component vector of float)
+0:273          'f' (temp float)
+0:274      move second child to first child (temp 4-component vector of float)
+0:274        'v4' (temp 4-component vector of float)
+0:274        textureLod (global 4-component vector of float)
+0:274          's2DA' (uniform sampler2DArray)
+0:274          'v3' (temp 3-component vector of float)
+0:274          'f' (temp float)
+0:275      move second child to first child (temp 4-component vector of float)
+0:275        'v4' (temp 4-component vector of float)
+0:275        textureLod (global 4-component vector of float)
+0:275          's1DAS' (uniform sampler1DArrayShadow)
+0:275          'v3' (temp 3-component vector of float)
+0:275          'f' (temp float)
+0:276      move second child to first child (temp 4-component vector of float)
+0:276        'v4' (temp 4-component vector of float)
+0:276        textureLod (global 4-component vector of float)
+0:276          's2DAS' (uniform sampler2DArrayShadow)
+0:276          'v4' (temp 4-component vector of float)
+0:276          'f' (temp float)
+0:278      'v3' (temp 3-component vector of float)
+0:279      'v4' (temp 4-component vector of float)
+0:280      'v4' (temp 4-component vector of float)
+0:281      'v4' (temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'lowp' (global float)
 0:?     'mediump' (global float)
@@ -645,6 +728,10 @@ ERROR: node is still EOpNull!
 0:?     's2DRbad' (uniform sampler2DRect)
 0:?     's2DR' (uniform sampler2DRect)
 0:?     's2DRS' (uniform sampler2DRectShadow)
+0:?     's1DA' (uniform sampler1DArray)
+0:?     's2DA' (uniform sampler2DArray)
+0:?     's1DAS' (uniform sampler1DArrayShadow)
+0:?     's2DAS' (uniform sampler2DArrayShadow)
 
 
 Linked fragment stage:
@@ -655,6 +742,7 @@ ERROR: Linking fragment stage: Recursion detected:
 Shader version: 120
 Requested GL_ARB_shader_texture_lod
 Requested GL_ARB_texture_rectangle
+Requested GL_EXT_texture_array
 ERROR: node is still EOpNull!
 0:92  Function Definition: main(i1; (global void)
 0:92    Function Parameters: 
@@ -688,4 +776,8 @@ ERROR: node is still EOpNull!
 0:?     's2DRbad' (uniform sampler2DRect)
 0:?     's2DR' (uniform sampler2DRect)
 0:?     's2DRS' (uniform sampler2DRectShadow)
+0:?     's1DA' (uniform sampler1DArray)
+0:?     's2DA' (uniform sampler2DArray)
+0:?     's1DAS' (uniform sampler1DArrayShadow)
+0:?     's2DAS' (uniform sampler2DArrayShadow)
 
