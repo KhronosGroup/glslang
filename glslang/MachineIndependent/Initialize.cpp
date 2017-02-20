@@ -5015,19 +5015,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
         }
 
-        // E_GL_EXT_texture_array
-        if (profile != EEsProfile && spvVersion.spv == 0) {
-            symbolTable.setFunctionExtensions("texture1DArray",    1, &E_GL_EXT_texture_array);
-            symbolTable.setFunctionExtensions("texture2DArray",    1, &E_GL_EXT_texture_array);
-            symbolTable.setFunctionExtensions("shadow1DArray",     1, &E_GL_EXT_texture_array);
-            symbolTable.setFunctionExtensions("shadow2DArray",     1, &E_GL_EXT_texture_array);
-
-            symbolTable.setFunctionExtensions("texture1DArrayLod", 1, &E_GL_EXT_texture_array);
-            symbolTable.setFunctionExtensions("texture2DArrayLod", 1, &E_GL_EXT_texture_array);
-            symbolTable.setFunctionExtensions("shadow1DArrayLod",  1, &E_GL_EXT_texture_array);
-            symbolTable.setFunctionExtensions("shadow2DArrayLod",  1, &E_GL_EXT_texture_array);
-        }
-
         // Fall through
 
     case EShLangTessControl:
