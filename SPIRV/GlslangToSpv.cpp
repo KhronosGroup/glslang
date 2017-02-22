@@ -472,12 +472,12 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     //
     case glslang::EbvClipDistance:
         if (!memberDeclaration)
-        builder.addCapability(spv::CapabilityClipDistance);
+            builder.addCapability(spv::CapabilityClipDistance);
         return spv::BuiltInClipDistance;
 
     case glslang::EbvCullDistance:
         if (!memberDeclaration)
-        builder.addCapability(spv::CapabilityCullDistance);
+            builder.addCapability(spv::CapabilityCullDistance);
         return spv::BuiltInCullDistance;
 
     case glslang::EbvViewportIndex:
@@ -635,23 +635,32 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilityShaderViewportMaskNV);
         return spv::BuiltInViewportMaskNV;
     case glslang::EbvSecondaryPositionNV:
-        builder.addExtension(spv::E_SPV_NV_stereo_view_rendering);
-        builder.addCapability(spv::CapabilityShaderStereoViewNV);
+        if (!memberDeclaration) {
+            builder.addExtension(spv::E_SPV_NV_stereo_view_rendering);
+            builder.addCapability(spv::CapabilityShaderStereoViewNV);
+        }
         return spv::BuiltInSecondaryPositionNV;
     case glslang::EbvSecondaryViewportMaskNV:
-        builder.addExtension(spv::E_SPV_NV_stereo_view_rendering);
-        builder.addCapability(spv::CapabilityShaderStereoViewNV);
+        if (!memberDeclaration) {
+            builder.addExtension(spv::E_SPV_NV_stereo_view_rendering);
+            builder.addCapability(spv::CapabilityShaderStereoViewNV);
+        }
         return spv::BuiltInSecondaryViewportMaskNV;
     case glslang::EbvPositionPerViewNV:
-        builder.addExtension(spv::E_SPV_NVX_multiview_per_view_attributes);
-        builder.addCapability(spv::CapabilityPerViewAttributesNV);
+        if (!memberDeclaration) {
+            builder.addExtension(spv::E_SPV_NVX_multiview_per_view_attributes);
+            builder.addCapability(spv::CapabilityPerViewAttributesNV);
+        }
         return spv::BuiltInPositionPerViewNV;
     case glslang::EbvViewportMaskPerViewNV:
-        builder.addExtension(spv::E_SPV_NVX_multiview_per_view_attributes);
-        builder.addCapability(spv::CapabilityPerViewAttributesNV);
+        if (!memberDeclaration) {
+            builder.addExtension(spv::E_SPV_NVX_multiview_per_view_attributes);
+            builder.addCapability(spv::CapabilityPerViewAttributesNV);
+        }
         return spv::BuiltInViewportMaskPerViewNV;
 #endif 
-    default:                               return spv::BuiltInMax;
+    default:
+        return spv::BuiltInMax;
     }
 }
 
