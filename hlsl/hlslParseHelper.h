@@ -180,6 +180,9 @@ public:
     void initFlattening() { flattenLevel.push_back(0); flattenOffset.push_back(0); }
     void finalizeFlattening() { flattenLevel.pop_back(); flattenOffset.pop_back(); }
 
+    // Share struct buffer deep types
+    void shareStructBufferType(TType&);
+
 protected:
     struct TFlattenData {
         TFlattenData() : nextBinding(TQualifier::layoutBindingEnd) { }
@@ -247,6 +250,14 @@ protected:
     // Test method names
     bool isSamplerMethod(const TString& name) const;
     bool isStructBufferMethod(const TString& name) const;
+
+    TType* getStructBufferContentType(const TType& type) const;
+    bool isStructBufferType(const TType& type) const { return getStructBufferContentType(type) != nullptr; }
+    TIntermTyped* indexStructBufferContent(const TSourceLoc& loc, TIntermTyped* buffer) const;
+
+    // Return true if this type is a reference.  This is not currently a type method in case that's
+    // a language specific answer.
+    bool isReference(const TType& type) const { return isStructBufferType(type); }
 
     // Pass through to base class after remembering builtin mappings.
     using TParseContextBase::trackLinkage;
@@ -329,6 +340,9 @@ protected:
 
     // Structure splitting data:
     TMap<int, TVariable*>              splitIoVars;  // variables with the builtin interstage IO removed, indexed by unique ID.
+
+    // Structuredbuffer shared types.  Typically there are only a few.
+    TVector<TType*> structBufferTypes;
 
     // The builtin interstage IO map considers e.g, EvqPosition on input and output separately, so that we
     // can build the linkage correctly if position appears on both sides.  Otherwise, multiple positions

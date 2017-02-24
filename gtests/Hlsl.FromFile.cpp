@@ -225,6 +225,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.structbuffer.atomics.frag", "main"},
         {"hlsl.structbuffer.byte.frag", "main"},
         {"hlsl.structbuffer.coherent.frag", "main"},
+        {"hlsl.structbuffer.fn.frag", "main"},
         {"hlsl.structbuffer.rw.frag", "main"},
         {"hlsl.structbuffer.rwbyte.frag", "main"},
         {"hlsl.structin.vert", "main"},
