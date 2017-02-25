@@ -4499,8 +4499,11 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                 }
             }
         }
-    } else if (type.isImage() && ! qualifier.writeonly)
-        error(loc, "image variables not declared 'writeonly' must have a format layout qualifier", "", "");
+    } else if (type.isImage() && ! qualifier.writeonly) {
+        const char *explanation = "image variables declared 'writeonly' without a format layout qualifier";
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, explanation);
+        profileRequires(loc, ECoreProfile | ECompatibilityProfile, 0, E_GL_EXT_shader_image_load_formatted, explanation);
+    }
 
     if (qualifier.layoutPushConstant && type.getBasicType() != EbtBlock)
         error(loc, "can only be used with a block", "push_constant", "");
