@@ -631,12 +631,12 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvDeviceIndex:
         builder.addExtension(spv::E_SPV_KHR_device_group);
         builder.addCapability(spv::CapabilityDeviceGroup);
-        return spv::BuiltinDeviceIndex;
+        return spv::BuiltInDeviceIndex;
 
     case glslang::EbvViewIndex:
         builder.addExtension(spv::E_SPV_KHR_multiview);
         builder.addCapability(spv::CapabilityMultiView);
-        return spv::BuiltinViewIndex;
+        return spv::BuiltInViewIndex;
 
 #ifdef NV_EXTENSIONS
     case glslang::EbvViewportMaskNV:

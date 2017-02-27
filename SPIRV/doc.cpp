@@ -344,8 +344,8 @@ const char* BuiltInString(int builtIn)
     case 5253: return "ViewportMaskNV";
     case 5257: return "SecondaryPositionNV";
     case 5258: return "SecondaryViewportMaskNV";
-    case 5260: return "PositionPerViewNV";
-    case 5261: return "ViewportMaskPerViewNV";
+    case 5261: return "PositionPerViewNV";
+    case 5262: return "ViewportMaskPerViewNV";
 #endif
 
     case BuiltInCeiling:
@@ -838,7 +838,7 @@ const char* CapabilityString(int info)
     case 5254: return "ShaderViewportIndexLayerNV";
     case 5255: return "ShaderViewportMaskNV";
     case 5259: return "ShaderStereoViewNV";
-    case 5262: return "PerViewAttributesNV";
+    case 5260: return "PerViewAttributesNV";
 #endif
 
     case CapabilityCeiling:
