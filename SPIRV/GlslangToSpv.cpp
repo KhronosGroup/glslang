@@ -628,6 +628,16 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         return spv::BuiltInBaryCoordPullModelAMD;
 #endif
 
+    case glslang::EbvDeviceIndex:
+        builder.addExtension(spv::E_SPV_KHR_device_group);
+        builder.addCapability(spv::CapabilityDeviceGroup);
+        return spv::BuiltinDeviceIndex;
+
+    case glslang::EbvViewIndex:
+        builder.addExtension(spv::E_SPV_KHR_multiview);
+        builder.addCapability(spv::CapabilityMultiView);
+        return spv::BuiltinViewIndex;
+
 #ifdef NV_EXTENSIONS
     case glslang::EbvViewportMaskNV:
         builder.addExtension(spv::E_SPV_NV_viewport_array2);

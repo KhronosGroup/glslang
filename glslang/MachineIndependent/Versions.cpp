@@ -232,6 +232,10 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_OES_tessellation_point_size]  = EBhDisable;
     extensionBehavior[E_GL_OES_texture_buffer]           = EBhDisable;
     extensionBehavior[E_GL_OES_texture_cube_map_array]   = EBhDisable;
+
+    // KHX extensions
+    extensionBehavior[E_GL_KHX_device_group]             = EBhDisable;
+    extensionBehavior[E_GL_KHX_multiview]                = EBhDisable;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,

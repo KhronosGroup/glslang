@@ -428,6 +428,8 @@ enum BuiltIn {
     BuiltInBaseVertex = 4424,
     BuiltInBaseInstance = 4425,
     BuiltInDrawIndex = 4426,
+    BuiltinDeviceIndex = 4438,
+    BuiltinViewIndex = 4440,
     BuiltInMax = 0x7fffffff,
 };
 
@@ -606,6 +608,8 @@ enum Capability {
     CapabilitySubgroupBallotKHR = 4423,
     CapabilityDrawParameters = 4427,
     CapabilitySubgroupVoteKHR = 4431,
+    CapabilityDeviceGroup = 4437,
+    CapabilityMultiView = 4439,
     CapabilityMax = 0x7fffffff,
 };
 
@@ -906,10 +910,10 @@ enum Op {
     OpImageSparseRead = 320,
     OpSubgroupBallotKHR = 4421,
     OpSubgroupFirstInvocationKHR = 4422,
-    OpSubgroupReadInvocationKHR = 4432,
     OpSubgroupAllKHR = 4428,
     OpSubgroupAnyKHR = 4429,
     OpSubgroupAllEqualKHR = 4430,
+    OpSubgroupReadInvocationKHR = 4432,
     OpMax = 0x7fffffff,
 };
 
