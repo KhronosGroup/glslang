@@ -3564,10 +3564,107 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
         }
 
     case EOpF16tof32:
+        {
+            // input uvecN with low 16 bits of each component holding a float16.  convert to float32.
+            TIntermTyped* argValue = node->getAsUnaryNode()->getOperand();
+            TIntermTyped* zero = intermediate.addConstantUnion(0.0, EbtFloat, loc, true);
+            const int vecSize = argValue->getType().getVectorSize();
+
+            TOperator constructOp = EOpNull;
+            switch (vecSize) {
+            case 1: constructOp = EOpNull;          break; // direct use, no construct needed
+            case 2: constructOp = EOpConstructVec2; break;
+            case 3: constructOp = EOpConstructVec3; break;
+            case 4: constructOp = EOpConstructVec4; break;
+            default: assert(0); break;
+            }
+
+            // For scalar case, we don't need to construct another type.
+            TIntermAggregate* result = (vecSize > 1) ? new TIntermAggregate(constructOp) : nullptr;
+
+            if (result) {
+                result->setType(TType(EbtFloat, EvqTemporary, vecSize));
+                result->setLoc(loc);
+            }
+
+            for (int idx = 0; idx < vecSize; ++idx) {
+                TIntermTyped* idxConst = intermediate.addConstantUnion(idx, loc, true);
+                TIntermTyped* component = argValue->getType().isVector() ? 
+                    intermediate.addIndex(EOpIndexDirect, argValue, idxConst, loc) : argValue;
+
+                if (component != argValue)
+                    component->setType(TType(argValue->getBasicType(), EvqTemporary));
+
+                TIntermTyped* unpackOp  = new TIntermUnary(EOpUnpackHalf2x16);
+                unpackOp->setType(TType(EbtFloat, EvqTemporary, 2));
+                unpackOp->getAsUnaryNode()->setOperand(component);
+                unpackOp->setLoc(loc);
+
+                TIntermTyped* lowOrder  = intermediate.addIndex(EOpIndexDirect, unpackOp, zero, loc);
+                
+                if (result != nullptr) {
+                    result->getSequence().push_back(lowOrder);
+                    node = result;
+                } else {
+                    node = lowOrder;
+                }
+            }
+            
+            break;
+        }
+
     case EOpF32tof16:
         {
-            // Temporary until decomposition is available.
-            error(loc, "unimplemented intrinsic: handle natively", "f32tof16", "");
+            // input floatN converted to 16 bit float in low order bits of each component of uintN
+            TIntermTyped* argValue = node->getAsUnaryNode()->getOperand();
+
+            TIntermTyped* zero = intermediate.addConstantUnion(0.0, EbtFloat, loc, true);
+            const int vecSize = argValue->getType().getVectorSize();
+
+            TOperator constructOp = EOpNull;
+            switch (vecSize) {
+            case 1: constructOp = EOpNull;           break; // direct use, no construct needed
+            case 2: constructOp = EOpConstructUVec2; break;
+            case 3: constructOp = EOpConstructUVec3; break;
+            case 4: constructOp = EOpConstructUVec4; break;
+            default: assert(0); break;
+            }
+
+            // For scalar case, we don't need to construct another type.
+            TIntermAggregate* result = (vecSize > 1) ? new TIntermAggregate(constructOp) : nullptr;
+
+            if (result) {
+                result->setType(TType(EbtUint, EvqTemporary, vecSize));
+                result->setLoc(loc);
+            }
+
+            for (int idx = 0; idx < vecSize; ++idx) {
+                TIntermTyped* idxConst = intermediate.addConstantUnion(idx, loc, true);
+                TIntermTyped* component = argValue->getType().isVector() ? 
+                    intermediate.addIndex(EOpIndexDirect, argValue, idxConst, loc) : argValue;
+
+                if (component != argValue)
+                    component->setType(TType(argValue->getBasicType(), EvqTemporary));
+
+                TIntermAggregate* vec2ComponentAndZero = new TIntermAggregate(EOpConstructVec2);
+                vec2ComponentAndZero->getSequence().push_back(component);
+                vec2ComponentAndZero->getSequence().push_back(zero);
+                vec2ComponentAndZero->setType(TType(EbtFloat, EvqTemporary, 2));
+                vec2ComponentAndZero->setLoc(loc);
+                
+                TIntermTyped* packOp = new TIntermUnary(EOpPackHalf2x16);
+                packOp->getAsUnaryNode()->setOperand(vec2ComponentAndZero);
+                packOp->setLoc(loc);
+                packOp->setType(TType(EbtUint, EvqTemporary));
+
+                if (result != nullptr) {
+                    result->getSequence().push_back(packOp);
+                    node = result;
+                } else {
+                    node = packOp;
+                }
+            }
+
             break;
         }
 
