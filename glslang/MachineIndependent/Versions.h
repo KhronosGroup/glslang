@@ -130,6 +130,7 @@ const char* const E_GL_ARB_sparse_texture_clamp         = "GL_ARB_sparse_texture
 // const char* const E_GL_ARB_cull_distance            = "GL_ARB_cull_distance";  // present for 4.5, but need extension control over block members
 
 const char* const E_GL_EXT_shader_non_constant_global_initializers = "GL_EXT_shader_non_constant_global_initializers";
+const char* const E_GL_EXT_shader_image_load_formatted = "GL_EXT_shader_image_load_formatted";
 
 // KHX extensions
 const char* const E_GL_KHX_device_group                 = "GL_KHX_device_group";

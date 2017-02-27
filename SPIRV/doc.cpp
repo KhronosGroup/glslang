@@ -838,6 +838,7 @@ const char* CapabilityString(int info)
     case 5254: return "ShaderViewportIndexLayerNV";
     case 5255: return "ShaderViewportMaskNV";
     case 5259: return "ShaderStereoViewNV";
+    case 5262: return "PerViewAttributesNV";
 #endif
 
     case CapabilityCeiling:
@@ -1172,8 +1173,8 @@ const char* OpcodeString(int op)
 
     case 4421: return "OpSubgroupBallotKHR";
     case 4422: return "OpSubgroupFirstInvocationKHR";
-    case 4428: return "OpSubgroupAnyKHR";
-    case 4429: return "OpSubgroupAllKHR";
+    case 4428: return "OpSubgroupAllKHR";
+    case 4429: return "OpSubgroupAnyKHR";
     case 4430: return "OpSubgroupAllEqualKHR";
     case 4432: return "OpSubgroupReadInvocationKHR";
 
