@@ -112,7 +112,7 @@ ERROR: node is still EOpNull!
 0:12          Convert float to uint (temp uint)
 0:12            'inF0' (in float)
 0:12        Constant:
-0:12          0.000000
+0:12          0 (const int)
 0:13      findMSB (temp uint)
 0:13        Convert float to uint (temp uint)
 0:13          'inF0' (in float)
@@ -202,7 +202,7 @@ ERROR: node is still EOpNull!
 0:52              Constant:
 0:52                0 (const int)
 0:52          Constant:
-0:52            0.000000
+0:52            0 (const int)
 0:52        direct index (temp float)
 0:52          unpackHalf2x16 (temp 2-component vector of float)
 0:52            direct index (temp uint)
@@ -211,7 +211,7 @@ ERROR: node is still EOpNull!
 0:52              Constant:
 0:52                1 (const int)
 0:52          Constant:
-0:52            0.000000
+0:52            0 (const int)
 0:53      findMSB (temp 2-component vector of uint)
 0:53        Convert float to uint (temp 2-component vector of uint)
 0:53          'inF0' (in 2-component vector of float)
@@ -252,7 +252,7 @@ ERROR: node is still EOpNull!
 0:68              Constant:
 0:68                0 (const int)
 0:68          Constant:
-0:68            0.000000
+0:68            0 (const int)
 0:68        direct index (temp float)
 0:68          unpackHalf2x16 (temp 2-component vector of float)
 0:68            direct index (temp uint)
@@ -261,7 +261,7 @@ ERROR: node is still EOpNull!
 0:68              Constant:
 0:68                1 (const int)
 0:68          Constant:
-0:68            0.000000
+0:68            0 (const int)
 0:68        direct index (temp float)
 0:68          unpackHalf2x16 (temp 2-component vector of float)
 0:68            direct index (temp uint)
@@ -270,7 +270,7 @@ ERROR: node is still EOpNull!
 0:68              Constant:
 0:68                2 (const int)
 0:68          Constant:
-0:68            0.000000
+0:68            0 (const int)
 0:69      findMSB (temp 3-component vector of uint)
 0:69        Convert float to uint (temp 3-component vector of uint)
 0:69          'inF0' (in 3-component vector of float)
@@ -315,7 +315,7 @@ ERROR: node is still EOpNull!
 0:85              Constant:
 0:85                0 (const int)
 0:85          Constant:
-0:85            0.000000
+0:85            0 (const int)
 0:85        direct index (temp float)
 0:85          unpackHalf2x16 (temp 2-component vector of float)
 0:85            direct index (temp uint)
@@ -324,7 +324,7 @@ ERROR: node is still EOpNull!
 0:85              Constant:
 0:85                1 (const int)
 0:85          Constant:
-0:85            0.000000
+0:85            0 (const int)
 0:85        direct index (temp float)
 0:85          unpackHalf2x16 (temp 2-component vector of float)
 0:85            direct index (temp uint)
@@ -333,7 +333,7 @@ ERROR: node is still EOpNull!
 0:85              Constant:
 0:85                2 (const int)
 0:85          Constant:
-0:85            0.000000
+0:85            0 (const int)
 0:85        direct index (temp float)
 0:85          unpackHalf2x16 (temp 2-component vector of float)
 0:85            direct index (temp uint)
@@ -342,7 +342,7 @@ ERROR: node is still EOpNull!
 0:85              Constant:
 0:85                3 (const int)
 0:85          Constant:
-0:85            0.000000
+0:85            0 (const int)
 0:86      findMSB (temp 4-component vector of uint)
 0:86        Convert float to uint (temp 4-component vector of uint)
 0:86          'inF0' (in 4-component vector of float)
@@ -574,7 +574,7 @@ ERROR: node is still EOpNull!
 0:12          Convert float to uint (temp uint)
 0:12            'inF0' (in float)
 0:12        Constant:
-0:12          0.000000
+0:12          0 (const int)
 0:13      findMSB (temp uint)
 0:13        Convert float to uint (temp uint)
 0:13          'inF0' (in float)
@@ -664,7 +664,7 @@ ERROR: node is still EOpNull!
 0:52              Constant:
 0:52                0 (const int)
 0:52          Constant:
-0:52            0.000000
+0:52            0 (const int)
 0:52        direct index (temp float)
 0:52          unpackHalf2x16 (temp 2-component vector of float)
 0:52            direct index (temp uint)
@@ -673,7 +673,7 @@ ERROR: node is still EOpNull!
 0:52              Constant:
 0:52                1 (const int)
 0:52          Constant:
-0:52            0.000000
+0:52            0 (const int)
 0:53      findMSB (temp 2-component vector of uint)
 0:53        Convert float to uint (temp 2-component vector of uint)
 0:53          'inF0' (in 2-component vector of float)
@@ -714,7 +714,7 @@ ERROR: node is still EOpNull!
 0:68              Constant:
 0:68                0 (const int)
 0:68          Constant:
-0:68            0.000000
+0:68            0 (const int)
 0:68        direct index (temp float)
 0:68          unpackHalf2x16 (temp 2-component vector of float)
 0:68            direct index (temp uint)
@@ -723,7 +723,7 @@ ERROR: node is still EOpNull!
 0:68              Constant:
 0:68                1 (const int)
 0:68          Constant:
-0:68            0.000000
+0:68            0 (const int)
 0:68        direct index (temp float)
 0:68          unpackHalf2x16 (temp 2-component vector of float)
 0:68            direct index (temp uint)
@@ -732,7 +732,7 @@ ERROR: node is still EOpNull!
 0:68              Constant:
 0:68                2 (const int)
 0:68          Constant:
-0:68            0.000000
+0:68            0 (const int)
 0:69      findMSB (temp 3-component vector of uint)
 0:69        Convert float to uint (temp 3-component vector of uint)
 0:69          'inF0' (in 3-component vector of float)
@@ -777,7 +777,7 @@ ERROR: node is still EOpNull!
 0:85              Constant:
 0:85                0 (const int)
 0:85          Constant:
-0:85            0.000000
+0:85            0 (const int)
 0:85        direct index (temp float)
 0:85          unpackHalf2x16 (temp 2-component vector of float)
 0:85            direct index (temp uint)
@@ -786,7 +786,7 @@ ERROR: node is still EOpNull!
 0:85              Constant:
 0:85                1 (const int)
 0:85          Constant:
-0:85            0.000000
+0:85            0 (const int)
 0:85        direct index (temp float)
 0:85          unpackHalf2x16 (temp 2-component vector of float)
 0:85            direct index (temp uint)
@@ -795,7 +795,7 @@ ERROR: node is still EOpNull!
 0:85              Constant:
 0:85                2 (const int)
 0:85          Constant:
-0:85            0.000000
+0:85            0 (const int)
 0:85        direct index (temp float)
 0:85          unpackHalf2x16 (temp 2-component vector of float)
 0:85            direct index (temp uint)
@@ -804,7 +804,7 @@ ERROR: node is still EOpNull!
 0:85              Constant:
 0:85                3 (const int)
 0:85          Constant:
-0:85            0.000000
+0:85            0 (const int)
 0:86      findMSB (temp 4-component vector of uint)
 0:86        Convert float to uint (temp 4-component vector of uint)
 0:86          'inF0' (in 4-component vector of float)

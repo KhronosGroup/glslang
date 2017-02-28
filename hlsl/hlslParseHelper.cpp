@@ -3587,7 +3587,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
         {
             // input uvecN with low 16 bits of each component holding a float16.  convert to float32.
             TIntermTyped* argValue = node->getAsUnaryNode()->getOperand();
-            TIntermTyped* zero = intermediate.addConstantUnion(0.0, EbtFloat, loc, true);
+            TIntermTyped* zero = intermediate.addConstantUnion(0, loc, true);
             const int vecSize = argValue->getType().getVectorSize();
 
             TOperator constructOp = EOpNull;
