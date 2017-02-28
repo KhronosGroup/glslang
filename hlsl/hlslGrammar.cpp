@@ -406,36 +406,13 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& node, TIntermNode*& node2)
                 }
             }
 
-            TString* blockName = idToken.string;
-
-            // For structbuffers, we couldn't create the block type while accepting the
-            // template type, because we need the identifier name.  Now that we have that,
-            // we can create the buffer type.
-            // TODO: how to determine this without looking for implicit array sizes?
-            if (variableType.getBasicType() == EbtBlock) {
-                const int memberCount = variableType.getStruct()->size();
-                assert(memberCount > 0);
-
-                TType* contentType = (*variableType.getStruct())[memberCount-1].type;
-                
-                // Set the field name and qualifier from the declaration, now that we know it.
-                if (contentType->isRuntimeSizedArray()) {
-                    contentType->getQualifier() = variableType.getQualifier();
-                    blockName     = nullptr;        // this will be an anonymous block...
-                    contentType->setFieldName(*idToken.string); // field name is declaration name
-                    variableType.setTypeName(*idToken.string);
-                }
-            }
-
-            // Hand off the actual declaration
-
             // TODO: things scoped within an annotation need their own name space;
             // TODO: strings are not yet handled.
             if (variableType.getBasicType() != EbtString && parseContext.getAnnotationNestingLevel() == 0) {
                 if (typedefDecl)
                     parseContext.declareTypedef(idToken.loc, *idToken.string, variableType);
                 else if (variableType.getBasicType() == EbtBlock)
-                    parseContext.declareBlock(idToken.loc, variableType, blockName);
+                    parseContext.declareBlock(idToken.loc, variableType, idToken.string);
                 else {
                     if (variableType.getQualifier().storage == EvqUniform && ! variableType.containsOpaque()) {
                         // this isn't really an individual variable, but a member of the $Global buffer
@@ -1888,18 +1865,26 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
     TArraySizes unsizedArray;
     unsizedArray.addInnerSize(UnsizedArraySize);
     templateType->newArraySizes(unsizedArray);
-    templateType->getQualifier().storage = storage;
-    templateType->getQualifier().readonly = readonly;
+
+    // field name is canonical for all structbuffers
+    templateType->setFieldName("@data");
 
     // Create block type.  TODO: hidden internal uint member when needed
+
     TTypeList* blockStruct = new TTypeList;
     TTypeLoc  member = { templateType, token.loc };
     blockStruct->push_back(member);
 
+    // This is the type of the buffer block (SSBO)
     TType blockType(blockStruct, "", templateType->getQualifier());
 
-    // It's not until we see the name during declaration that we can set the
-    // field name.  That happens in HlslGrammar::acceptDeclaration.
+    blockType.getQualifier().storage = storage;
+    blockType.getQualifier().readonly = readonly;
+
+    // We may have created an equivalent type before, in which case we should use its
+    // deep structure.
+    parseContext.shareStructBufferType(blockType);
+
     type.shallowCopy(blockType);
 
     return true;
