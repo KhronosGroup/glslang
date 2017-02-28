@@ -1052,7 +1052,7 @@ int TPpContext::tMacroInput::scan(TPpToken* ppToken)
     // TODO: preprocessor:  properly handle whitespace (or lack of it) between tokens when expanding
     if (token == PpAtomIdentifier) {
         int i;
-        for (i = mac->args.size() - 1; i >= 0; i--)
+        for (i = (int)mac->args.size() - 1; i >= 0; i--)
             if (strcmp(pp->atomStrings.getString(mac->args[i]), ppToken->name) == 0)
                 break;
         if (i >= 0) {
