@@ -687,7 +687,7 @@ void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
 }
 
 #ifdef AMD_EXTENSIONS
-// Call for any operation needing GLSL float16 data-type support.
+// Call for any operation needing float16 data-type support.
 void TParseVersions::float16Check(const TSourceLoc& loc, const char* op, bool builtIn)
 {
     if (!builtIn) {
