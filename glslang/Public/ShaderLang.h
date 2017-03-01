@@ -190,13 +190,16 @@ SH_IMPORT_EXPORT void ShDestruct(ShHandle);
 // The info-log should be written by ShCompile into
 // ShHandle, so it can answer future queries.
 //
+// You can put all your shader content inside shaderStrings[0] and
+// set numStrings to 1 or you can split it into several strings.
+//
 SH_IMPORT_EXPORT int ShCompile(
-    const ShHandle,
-    const char* const shaderStrings[],
-    const int numStrings,
-    const int* lengths,
-    const EShOptimizationLevel,
-    const TBuiltInResource *resources,
+    const ShHandle,                      // compiler object
+    const char* const shaderStrings[],   // shader splitted in numStrings part
+    const int numStrings,                // length of shaderStrings
+    const int* lengths,                  // list of lengths (corresponding to each shaderStrings), can be NULL to use \0
+    const EShOptimizationLevel,          // optimization level
+    const TBuiltInResource *resources,   // resources limit for the compilation
     int debugOptions,
     int defaultVersion = 110,            // use 100 for ES environment, overridden by #version in shader
     bool forwardCompatible = false,      // give errors for use of deprecated features
