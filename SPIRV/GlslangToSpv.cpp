@@ -1789,7 +1789,8 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
     // Crucially, side effects must be avoided, and there are performance trade-offs.
     // Return true if good idea (and safe) for OpSelect, false otherwise.
     const auto selectPolicy = [&]() -> bool {
-        if (node->getBasicType() == glslang::EbtVoid)
+        if ((!node->getType().isScalar() && !node->getType().isVector()) ||
+            node->getBasicType() == glslang::EbtVoid)
             return false;
 
         if (node->getTrueBlock()  == nullptr ||
