@@ -986,6 +986,8 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream& arg, TPpToken*
     int token;
     while ((token = scanToken(ppToken)) != tMarkerInput::marker && token != EndOfInput) {
         token = tokenPaste(token, *ppToken);
+        if (token == tMarkerInput::marker || token == EndOfInput)
+            break;
         if (token == PpAtomIdentifier && MacroExpand(ppToken, false, newLineOkay) != 0)
             continue;
         expandedArg->putToken(token, ppToken);
