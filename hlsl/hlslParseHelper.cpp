@@ -2452,7 +2452,7 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
 
     case EOpMethodGetDimensions:
         {
-            const int numArgs = argAggregate->getSequence().size();
+            const int numArgs = (int)argAggregate->getSequence().size();
             TIntermTyped* argNumItems = argAggregate->getSequence()[1]->getAsTyped();  // out num items
             TIntermTyped* argStride   = numArgs > 2 ? argAggregate->getSequence()[2]->getAsTyped() : nullptr;  // out stride
 
@@ -3754,7 +3754,7 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         // Find it in the symbol table.
         //
         const TFunction* fnCandidate = nullptr;
-        bool builtIn;
+        bool builtIn = false;
 
         // TODO: this needs improvement: there's no way at present to look up a signature in
         // the symbol table for an arbitrary type.  This is a temporary hack until that ability exists.
