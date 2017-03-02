@@ -133,6 +133,7 @@ public:
     const TFunction* findFunction(const TSourceLoc& loc, TFunction& call, bool& builtIn, TIntermTyped*& args);
     void declareTypedef(const TSourceLoc&, TString& identifier, const TType&);
     void declareStruct(const TSourceLoc&, TString& structName, TType&);
+    TSymbol* lookupUserType(const TString&, TType&);
     TIntermNode* declareVariable(const TSourceLoc&, TString& identifier, TType&, TIntermTyped* initializer = 0);
     void lengthenList(const TSourceLoc&, TIntermSequence& list, int size);
     TIntermTyped* addConstructor(const TSourceLoc&, TIntermNode*, const TType&);

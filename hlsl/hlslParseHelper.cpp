@@ -6098,6 +6098,19 @@ void HlslParseContext::declareStruct(const TSourceLoc& loc, TString& structName,
     ioTypeMap[type.getStruct()] = newLists;
 }
 
+// Lookup a user-type by name.
+// If found, fill in the type and return the defining symbol.
+// If not found, return nullptr.
+TSymbol* HlslParseContext::lookupUserType(const TString& typeName, TType& type)
+{
+    TSymbol* symbol = symbolTable.find(typeName);
+    if (symbol && symbol->getAsVariable() && symbol->getAsVariable()->isUserType()) {
+        type.shallowCopy(symbol->getType());
+        return symbol;
+    } else
+        return nullptr;
+}
+
 //
 // Do everything necessary to handle a variable (non-block) declaration.
 // Either redeclaring a variable, or making a new one, updating the symbol
