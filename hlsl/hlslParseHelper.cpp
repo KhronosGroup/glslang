@@ -5178,7 +5178,7 @@ TType* HlslParseContext::getStructBufferContentType(const TType& type) const
     if (type.getBasicType() != EbtBlock)
         return nullptr;
 
-    const int memberCount = type.getStruct()->size();
+    const int memberCount = (int)type.getStruct()->size();
     assert(memberCount > 0);
 
     TType* contentType = (*type.getStruct())[memberCount-1].type;
