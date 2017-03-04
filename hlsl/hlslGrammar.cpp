@@ -1259,6 +1259,7 @@ bool HlslGrammar::acceptType(TType& type)
         return acceptStructBufferType(type);
         break;
 
+    case EHTokClass:
     case EHTokStruct:
     case EHTokCBuffer:
     case EHTokTBuffer:
@@ -1732,6 +1733,7 @@ bool HlslGrammar::acceptType(TType& type)
 //
 // struct_type
 //      : STRUCT
+//      | CLASS
 //      | CBUFFER
 //      | TBUFFER
 //
@@ -1747,8 +1749,9 @@ bool HlslGrammar::acceptStruct(TType& type)
     // TBUFFER
     else if (acceptTokenClass(EHTokTBuffer))
         storageQualifier = EvqBuffer;
+    // CLASS
     // STRUCT
-    else if (! acceptTokenClass(EHTokStruct))
+    else if (! acceptTokenClass(EHTokClass) && ! acceptTokenClass(EHTokStruct))
         return false;
 
     // IDENTIFIER
