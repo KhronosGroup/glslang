@@ -3702,8 +3702,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     if (profile != EEsProfile) {
-        commonBuiltins.append("uniform int gl_ViewIndexKHR;");
-        commonBuiltins.append("uniform int gl_DeviceIndexKHR;");  // GL_KHX_device_group
+        commonBuiltins.append("uniform int gl_ViewIndex;");
+        commonBuiltins.append("uniform int gl_DeviceIndex;");  // GL_EXT_device_group
     }
 
     // printf("%s\n", commonBuiltins.c_str());
@@ -5318,10 +5318,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         if (profile != EEsProfile) {
-            symbolTable.setFunctionExtensions("gl_DeviceIndexKHR",  1, &E_GL_KHX_device_group);
-            BuiltInVariable("gl_DeviceIndexKHR", EbvDeviceIndex, symbolTable);
-            symbolTable.setFunctionExtensions("gl_ViewIndexKHR", 1, &E_GL_KHX_multiview);
-            BuiltInVariable("gl_ViewIndexKHR", EbvViewIndex, symbolTable);
+            symbolTable.setFunctionExtensions("gl_DeviceIndex",  1, &E_GL_EXT_device_group);
+            BuiltInVariable("gl_DeviceIndex", EbvDeviceIndex, symbolTable);
+            symbolTable.setFunctionExtensions("gl_ViewIndex", 1, &E_GL_EXT_multiview);
+            BuiltInVariable("gl_ViewIndex", EbvViewIndex, symbolTable);
         }
         break;
 

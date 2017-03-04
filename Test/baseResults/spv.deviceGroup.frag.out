@@ -13,11 +13,11 @@ Warning, version 450 is not yet complete; most version-specific features are pre
                               EntryPoint Fragment 4  "main" 9
                               ExecutionMode 4 OriginUpperLeft
                               Source GLSL 450
-                              SourceExtension  "GL_KHX_device_group"
+                              SourceExtension  "GL_EXT_device_group"
                               Name 4  "main"
                               Name 9  "color"
-                              Name 12  "gl_DeviceIndexKHR"
-                              Decorate 12(gl_DeviceIndexKHR) BuiltIn DeviceIndex
+                              Name 12  "gl_DeviceIndex"
+                              Decorate 12(gl_DeviceIndex) BuiltIn DeviceIndex
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
@@ -26,11 +26,11 @@ Warning, version 450 is not yet complete; most version-specific features are pre
         9(color):      8(ptr) Variable Output
               10:             TypeInt 32 1
               11:             TypePointer UniformConstant 10(int)
-12(gl_DeviceIndexKHR):     11(ptr) Variable UniformConstant
+12(gl_DeviceIndex):     11(ptr) Variable UniformConstant
               15:    6(float) Constant 0
          4(main):           2 Function None 3
                5:             Label
-              13:     10(int) Load 12(gl_DeviceIndexKHR)
+              13:     10(int) Load 12(gl_DeviceIndex)
               14:    6(float) ConvertSToF 13
               16:    7(fvec4) CompositeConstruct 14 15 15 15
                               Store 9(color) 16
