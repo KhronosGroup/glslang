@@ -1874,6 +1874,7 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
     TArraySizes unsizedArray;
     unsizedArray.addInnerSize(UnsizedArraySize);
     templateType->newArraySizes(unsizedArray);
+    templateType->getQualifier().storage = storage;
 
     // field name is canonical for all structbuffers
     templateType->setFieldName("@data");
