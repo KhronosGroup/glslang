@@ -469,6 +469,12 @@ bool HlslGrammar::acceptControlDeclaration(TIntermNode*& node)
     if (! acceptFullySpecifiedType(type))
         return false;
 
+    // filter out type casts
+    if (peekTokenClass(EHTokLeftParen)) {
+        recedeToken();
+        return false;
+    }
+
     // identifier
     HlslToken idToken;
     if (! acceptIdentifier(idToken)) {
@@ -3259,7 +3265,7 @@ void HlslGrammar::acceptArraySpecifier(TArraySizes*& arraySizes)
         TSourceLoc loc = token.loc;
         TIntermTyped* sizeExpr = nullptr;
 
-        // Array sizing expression is optional.  If ommitted, array will be later sized by initializer list.
+        // Array sizing expression is optional.  If omitted, array will be later sized by initializer list.
         const bool hasArraySize = acceptAssignmentExpression(sizeExpr);
 
         if (! acceptTokenClass(EHTokRightBracket)) {
