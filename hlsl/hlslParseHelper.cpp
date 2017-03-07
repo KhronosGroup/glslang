@@ -5223,10 +5223,6 @@ void HlslParseContext::shareStructBufferType(TType& type)
         return compareQualifiers(lhs, rhs) && lhs == rhs;
     };
 
-    // TString typeName;
-    // type.appendMangledName(typeName);
-    // type.setTypeName(typeName);
-
     // This is an exhaustive O(N) search, but real world shaders have
     // only a small number of these.
     for (int idx = 0; idx < int(structBufferTypes.size()); ++idx) {
@@ -5241,8 +5237,6 @@ void HlslParseContext::shareStructBufferType(TType& type)
     TType* typeCopy = new TType;
     typeCopy->shallowCopy(type);
     structBufferTypes.push_back(typeCopy);
-
-    // structBuffTypes.push_back(type.getWritableStruct());
 }
 
 void HlslParseContext::paramFix(TType& type)
