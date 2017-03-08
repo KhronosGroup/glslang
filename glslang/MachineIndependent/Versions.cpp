@@ -1,6 +1,7 @@
 //
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2012-2013 LunarG, Inc.
+// Copyright (C) 2017 ARM Limited.
 //
 // All rights reserved.
 //
@@ -246,6 +247,15 @@ void TParseVersions::initializeExtensionBehavior()
     // EXT extensions
     extensionBehavior[E_GL_EXT_device_group]             = EBhDisable;
     extensionBehavior[E_GL_EXT_multiview]                = EBhDisable;
+
+    extensionBehavior[E_GL_KHX_shader_explicit_arithmetic_types]         = EBhDisable;
+    extensionBehavior[E_GL_KHX_shader_explicit_arithmetic_types_int8]    = EBhDisable;
+    extensionBehavior[E_GL_KHX_shader_explicit_arithmetic_types_int16]   = EBhDisable;
+    extensionBehavior[E_GL_KHX_shader_explicit_arithmetic_types_int32]   = EBhDisable;
+    extensionBehavior[E_GL_KHX_shader_explicit_arithmetic_types_int64]   = EBhDisable;
+    extensionBehavior[E_GL_KHX_shader_explicit_arithmetic_types_float16] = EBhDisable;
+    extensionBehavior[E_GL_KHX_shader_explicit_arithmetic_types_float32] = EBhDisable;
+    extensionBehavior[E_GL_KHX_shader_explicit_arithmetic_types_float64] = EBhDisable;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -346,6 +356,14 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_NV_geometry_shader_passthrough 1\n"
             "#define GL_NV_viewport_array2 1\n"
 #endif
+            "#define GL_KHX_shader_explicit_arithmetic_types 1\n"
+            "#define GL_KHX_shader_explicit_arithmetic_types_int8 1\n"
+            "#define GL_KHX_shader_explicit_arithmetic_types_int16 1\n"
+            "#define GL_KHX_shader_explicit_arithmetic_types_int32 1\n"
+            "#define GL_KHX_shader_explicit_arithmetic_types_int64 1\n"
+            "#define GL_KHX_shader_explicit_arithmetic_types_float16 1\n"
+            "#define GL_KHX_shader_explicit_arithmetic_types_float32 1\n"
+            "#define GL_KHX_shader_explicit_arithmetic_types_float64 1\n"
             ;
 
         if (version >= 150) {
@@ -359,7 +377,7 @@ void TParseVersions::getPreamble(std::string& preamble)
 
     if ((profile != EEsProfile && version >= 140) ||
         (profile == EEsProfile && version >= 310)) {
-        preamble += 
+        preamble +=
             "#define GL_EXT_device_group 1\n"
             "#define GL_EXT_multiview 1\n"
             ;
@@ -745,35 +763,103 @@ void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
     profileRequires(loc, ECompatibilityProfile, 400, nullptr, op);
 }
 
-#ifdef AMD_EXTENSIONS
-// Call for any operation needing GLSL 16-bit integer data-type support.
-void TParseVersions::int16Check(const TSourceLoc& loc, const char* op, bool builtIn)
+// Call for any operation needing GLSL float16 data-type support.
+void TParseVersions::float16Check(const TSourceLoc& loc, const char* op, bool builtIn)
 {
-    if (! builtIn) {
-        requireExtensions(loc, 1, &E_GL_AMD_gpu_shader_int16, "shader int16");
+    if (!builtIn) {
+#if AMD_EXTENSIONS
+        const char* const extensions[3] = {E_GL_AMD_gpu_shader_half_float,
+                                           E_GL_KHX_shader_explicit_arithmetic_types,
+                                           E_GL_KHX_shader_explicit_arithmetic_types_float16};
+
+#else
+        const char* const extensions[2] = {E_GL_KHX_shader_explicit_arithmetic_types,
+                                           E_GL_KHX_shader_explicit_arithmetic_types_float16};
+#endif
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, "explicit types");
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
         profileRequires(loc, ECoreProfile, 450, nullptr, op);
         profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
     }
 }
 
-// Call for any operation needing GLSL float16 data-type support.
-void TParseVersions::float16Check(const TSourceLoc& loc, const char* op, bool builtIn)
+// Call for any operation needing GLSL float32 data-type support.
+void TParseVersions::explicitFloat32Check(const TSourceLoc& loc, const char* op, bool builtIn)
 {
-    if (! builtIn) {
-        requireExtensions(loc, 1, &E_GL_AMD_gpu_shader_half_float, "shader half float");
+    if (!builtIn) {
+        const char* const extensions[2] = {E_GL_KHX_shader_explicit_arithmetic_types,
+                                           E_GL_KHX_shader_explicit_arithmetic_types_float32};
+        requireExtensions(loc, 2, extensions, "explicit types");
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
         profileRequires(loc, ECoreProfile, 450, nullptr, op);
         profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
     }
 }
+// Call for any operation needing GLSL float32 data-type support.
+void TParseVersions::explicitFloat64Check(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (!builtIn) {
+        const char* const extensions[2] = {E_GL_KHX_shader_explicit_arithmetic_types,
+                                           E_GL_KHX_shader_explicit_arithmetic_types_float64};
+        requireExtensions(loc, 2, extensions, "explicit types");
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+        profileRequires(loc, ECoreProfile, 450, nullptr, op);
+        profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
+    }
+}
+// Call for any operation needing GLSL explicit int8 data-type support.
+void TParseVersions::explicitInt8Check(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (! builtIn) {
+        const char* const extensions[2] = {E_GL_KHX_shader_explicit_arithmetic_types,
+                                           E_GL_KHX_shader_explicit_arithmetic_types_int8};
+        requireExtensions(loc, 2, extensions, "explicit types");
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+        profileRequires(loc, ECoreProfile, 450, nullptr, op);
+        profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
+    }
+}
+
+// Call for any operation needing GLSL explicit int16 data-type support.
+void TParseVersions::explicitInt16Check(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (! builtIn) {
+#if AMD_EXTENSIONS
+	const char* const extensions[3] = {E_GL_AMD_gpu_shader_int16,
+                                           E_GL_KHX_shader_explicit_arithmetic_types,
+                                           E_GL_KHX_shader_explicit_arithmetic_types_int16};
+#else
+        const char* const extensions[2] = {E_GL_KHX_shader_explicit_arithmetic_types,
+                                           E_GL_KHX_shader_explicit_arithmetic_types_int16};
 #endif
+        requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, "explicit types");
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+        profileRequires(loc, ECoreProfile, 450, nullptr, op);
+        profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
+    }
+}
+
+// Call for any operation needing GLSL explicit int32 data-type support.
+void TParseVersions::explicitInt32Check(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (! builtIn) {
+        const char* const extensions[2] = {E_GL_KHX_shader_explicit_arithmetic_types,
+                                           E_GL_KHX_shader_explicit_arithmetic_types_int32};
+        requireExtensions(loc, 2, extensions, "explicit types");
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+        profileRequires(loc, ECoreProfile, 450, nullptr, op);
+        profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
+    }
+}
 
 // Call for any operation needing GLSL 64-bit integer data-type support.
 void TParseVersions::int64Check(const TSourceLoc& loc, const char* op, bool builtIn)
 {
     if (! builtIn) {
-        requireExtensions(loc, 1, &E_GL_ARB_gpu_shader_int64, "shader int64");
+        const char* const extensions[3] = {E_GL_ARB_gpu_shader_int64,
+                                           E_GL_KHX_shader_explicit_arithmetic_types,
+                                           E_GL_KHX_shader_explicit_arithmetic_types_int64};
+        requireExtensions(loc, 3, extensions, "shader int64");
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
         profileRequires(loc, ECoreProfile, 450, nullptr, op);
         profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);

@@ -2,6 +2,7 @@
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2012-2016 LunarG, Inc.
 // Copyright (C) 2015-2016 Google, Inc.
+// Copyright (C) 2017 ARM Limited.
 //
 // All rights reserved.
 //
@@ -187,9 +188,15 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         }
 
         switch (type) {
-        case EbtFloat:               break;
-        case EbtInt:  s.append("i"); break;
-        case EbtUint: s.append("u"); break;
+        case EbtFloat:                   break;
+        case EbtInt8:   s.append("i8");  break;
+        case EbtUint16: s.append("u8");  break;
+        case EbtInt16:  s.append("i16"); break;
+        case EbtUint8:  s.append("u16"); break;
+        case EbtInt:    s.append("i");   break;
+        case EbtUint:   s.append("u");   break;
+        case EbtInt64:  s.append("i64"); break;
+        case EbtUint64: s.append("u64"); break;
         default:  break;  // some compilers want this
         }
         if (image) {
@@ -1333,11 +1340,7 @@ public:
     virtual bool isImplicitlySizedArray() const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage != EvqBuffer; }
     virtual bool isRuntimeSizedArray()    const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage == EvqBuffer; }
     virtual bool isStruct() const { return structure != nullptr; }
-#ifdef AMD_EXTENSIONS
     virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble || basicType == EbtFloat16; }
-#else
-    virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble; }
-#endif
     virtual bool isIntegerDomain() const
     {
         switch (basicType) {
@@ -1345,10 +1348,8 @@ public:
         case EbtUint:
         case EbtInt64:
         case EbtUint64:
-#ifdef AMD_EXTENSIONS
         case EbtInt16:
         case EbtUint16:
-#endif
         case EbtAtomicUint:
             return true;
         default:
@@ -1401,9 +1402,9 @@ public:
 
         return !isPerVertexAndBuiltIn(language);
     }
-    
+
     // return true if this type contains any subtype which satisfies the given predicate.
-    template <typename P> 
+    template <typename P>
     bool contains(P predicate) const
     {
         if (predicate(this))
@@ -1456,17 +1457,15 @@ public:
             case EbtVoid:
             case EbtFloat:
             case EbtDouble:
-#ifdef AMD_EXTENSIONS
             case EbtFloat16:
-#endif
+            case EbtInt8:
+            case EbtUint8:
+            case EbtInt16:
+            case EbtUint16:
             case EbtInt:
             case EbtUint:
             case EbtInt64:
             case EbtUint64:
-#ifdef AMD_EXTENSIONS
-            case EbtInt16:
-            case EbtUint16:
-#endif
             case EbtBool:
                 return true;
             default:
@@ -1543,17 +1542,15 @@ public:
         case EbtVoid:              return "void";
         case EbtFloat:             return "float";
         case EbtDouble:            return "double";
-#ifdef AMD_EXTENSIONS
         case EbtFloat16:           return "float16_t";
-#endif
+        case EbtInt8:              return "int8_t";
+        case EbtUint8:             return "uint8_t";
+        case EbtInt16:             return "int16_t";
+        case EbtUint16:            return "uint16_t";
         case EbtInt:               return "int";
         case EbtUint:              return "uint";
         case EbtInt64:             return "int64_t";
         case EbtUint64:            return "uint64_t";
-#ifdef AMD_EXTENSIONS
-        case EbtInt16:             return "int16_t";
-        case EbtUint16:            return "uint16_t";
-#endif
         case EbtBool:              return "bool";
         case EbtAtomicUint:        return "atomic_uint";
         case EbtSampler:           return "sampler/image";

@@ -1,6 +1,7 @@
 //
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2013 LunarG, Inc.
+// Copyright (C) 2017 ARM Limited.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -107,13 +108,16 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     bool acceptFloat16 = parseContext.intermediate.getSource() == EShSourceHlsl;
     bool isFloat16 = false;
     bool requireHF = false;
+    if (
 #ifdef AMD_EXTENSIONS
-    if (parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float)) {
+        parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float) ||
+#endif
+        parseContext.extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types) ||
+        parseContext.extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_float16)) {
         acceptFloat16 = true;
         generateFloat16 = true;
         requireHF = true;
     }
-#endif
 
     const auto saveName = [&](int ch) {
         if (len <= MaxTokenLength)
@@ -197,10 +201,8 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
             isDouble = 1;
         }
     } else if (acceptFloat16 && (ch == 'h' || ch == 'H')) {
-#ifdef AMD_EXTENSIONS
         if (generateFloat16)
             parseContext.float16Check(ppToken->loc, "half floating-point suffix");
-#endif
         if (!HasDecimalOrExponent)
             parseContext.ppError(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
         if (requireHF) {
@@ -333,15 +335,27 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
     int ch = 0;
     int ii = 0;
     unsigned long long ival = 0;
-    bool enableInt64 = pp->parseContext.version >= 450 && pp->parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_int64);
+    bool enableInt64 = pp->parseContext.version >= 450 &&
+                      (pp->parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_int64) ||
+                       pp->parseContext.extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types) ||
+                       pp->parseContext.extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_int64));
+    bool enableInt16 = pp->parseContext.version >= 450 &&
+                       (
 #ifdef AMD_EXTENSIONS
-    bool enableInt16 = pp->parseContext.version >= 450 && pp->parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_int16);
+                       pp->parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_int16) ||
 #endif
+                       pp->parseContext.extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types) ||
+                       pp->parseContext.extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_int16));
     bool acceptHalf = pp->parseContext.intermediate.getSource() == EShSourceHlsl;
+    if (pp->parseContext.version >= 450 &&
+        (
 #ifdef AMD_EXTENSIONS
-    if (pp->parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float))
-        acceptHalf = true;
+         pp->parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float) ||
 #endif
+         pp->parseContext.extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types) ||
+         pp->parseContext.extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_float16))) {
+        acceptHalf = true;
+    }
 
     const auto floatingPointChar = [&](int ch) { return ch == '.' || ch == 'e' || ch == 'E' ||
                                                                      ch == 'f' || ch == 'F' ||
@@ -409,9 +423,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 
                 bool isUnsigned = false;
                 bool isInt64 = false;
-#ifdef AMD_EXTENSIONS
                 bool isInt16 = false;
-#endif
                 ppToken->name[len++] = (char)ch;
                 ch = getch();
                 if ((ch >= '0' && ch <= '9') ||
@@ -452,15 +464,13 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 
                     if (enableInt64) {
                         int nextCh = getch();
-                        if ((ch == 'u' && nextCh == 'l') || (ch == 'U' && nextCh == 'L')) {
+                        if ((ch == 'u' || ch == 'U') && (nextCh == 'l' || nextCh == 'L')) {
                             if (len < MaxTokenLength)
                                 ppToken->name[len++] = (char)nextCh;
                             isInt64 = true;
                         } else
                             ungetch();
                     }
-
-#ifdef AMD_EXTENSIONS
                     if (enableInt16) {
                         int nextCh = getch();
                         if ((ch == 'u' && nextCh == 's') || (ch == 'U' && nextCh == 'S')) {
@@ -470,17 +480,14 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         } else
                             ungetch();
                     }
-#endif
                 } else if (enableInt64 && (ch == 'l' || ch == 'L')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt64 = true;
-#ifdef AMD_EXTENSIONS
                 } else if (enableInt16 && (ch == 's' || ch == 'S')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
-#endif
                 } else
                     ungetch();
                 ppToken->name[len] = '\0';
@@ -488,11 +495,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 if (isInt64) {
                     ppToken->i64val = ival;
                     return isUnsigned ? PpAtomConstUint64 : PpAtomConstInt64;
-#ifdef AMD_EXTENSIONS
                 } else if (isInt16) {
                     ppToken->ival = (int)ival;
                     return isUnsigned ? PpAtomConstUint16 : PpAtomConstInt16;
-#endif
                 } else {
                     ppToken->ival = (int)ival;
                     return isUnsigned ? PpAtomConstUint : PpAtomConstInt;
@@ -502,9 +507,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 
                 bool isUnsigned = false;
                 bool isInt64 = false;
-#ifdef AMD_EXTENSIONS
                 bool isInt16 = false;
-#endif
                 bool octalOverflow = false;
                 bool nonOctal = false;
                 ival = 0;
@@ -552,7 +555,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 
                     if (enableInt64) {
                         int nextCh = getch();
-                        if ((ch == 'u' && nextCh == 'l') || (ch == 'U' && nextCh == 'L')) {
+                        if ((ch == 'u' || ch == 'U') && (nextCh == 'l' || nextCh == 'L')) {
                             if (len < MaxTokenLength)
                                 ppToken->name[len++] = (char)nextCh;
                             isInt64 = true;
@@ -560,7 +563,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                             ungetch();
                     }
 
-#ifdef AMD_EXTENSIONS
                     if (enableInt16) {
                         int nextCh = getch();
                         if ((ch == 'u' && nextCh == 's') || (ch == 'U' && nextCh == 'S')) {
@@ -570,17 +572,14 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         } else
                             ungetch();
                     }
-#endif
                 } else if (enableInt64 && (ch == 'l' || ch == 'L')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt64 = true;
-#ifdef AMD_EXTENSIONS
                 } else if (enableInt16 && (ch == 's' || ch == 'S')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
-#endif
                 } else
                     ungetch();
                 ppToken->name[len] = '\0';
@@ -591,11 +590,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 if (isInt64) {
                     ppToken->i64val = ival;
                     return isUnsigned ? PpAtomConstUint64 : PpAtomConstInt64;
-#ifdef AMD_EXTENSIONS
                 } else if (isInt16) {
                     ppToken->ival = (int)ival;
                     return isUnsigned ? PpAtomConstUint16 : PpAtomConstInt16;
-#endif
                 } else {
                     ppToken->ival = (int)ival;
                     return isUnsigned ? PpAtomConstUint : PpAtomConstInt;
@@ -622,9 +619,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 int numericLen = len;
                 bool isUnsigned = false;
                 bool isInt64 = false;
-#ifdef AMD_EXTENSIONS
                 bool isInt16 = false;
-#endif
                 if (ch == 'u' || ch == 'U') {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
@@ -632,7 +627,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 
                     if (enableInt64) {
                         int nextCh = getch();
-                        if ((ch == 'u' && nextCh == 'l') || (ch == 'U' && nextCh == 'L')) {
+                        if ((ch == 'u' || ch == 'U') && (nextCh == 'l' || nextCh == 'L')) {
                             if (len < MaxTokenLength)
                                 ppToken->name[len++] = (char)nextCh;
                             isInt64 = true;
@@ -640,7 +635,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                             ungetch();
                     }
 
-#ifdef AMD_EXTENSIONS
                     if (enableInt16) {
                         int nextCh = getch();
                         if ((ch == 'u' && nextCh == 's') || (ch == 'U' && nextCh == 'S')) {
@@ -650,17 +644,14 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         } else
                             ungetch();
                     }
-#endif
-                } else if (enableInt64 && (ch == 'l' || ch == 'L')) {
+               } else if (enableInt64 && (ch == 'l' || ch == 'L')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt64 = true;
-#ifdef AMD_EXTENSIONS
                 } else if (enableInt16 && (ch == 's' || ch == 'S')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
-#endif
                 } else
                     ungetch();
 
@@ -670,19 +661,15 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 const unsigned remainderMaxInt = 0xFFFFFFFFu - 10 * oneTenthMaxInt;
                 const unsigned long long oneTenthMaxInt64  = 0xFFFFFFFFFFFFFFFFull / 10;
                 const unsigned long long remainderMaxInt64 = 0xFFFFFFFFFFFFFFFFull - 10 * oneTenthMaxInt64;
-#ifdef AMD_EXTENSIONS
                 const unsigned short oneTenthMaxInt16  = 0xFFFFu / 10;
                 const unsigned short remainderMaxInt16 = 0xFFFFu - 10 * oneTenthMaxInt16;
-#endif
                 for (int i = 0; i < numericLen; i++) {
                     ch = ppToken->name[i] - '0';
                     bool overflow = false;
                     if (isInt64)
                         overflow = (ival > oneTenthMaxInt64 || (ival == oneTenthMaxInt64 && (unsigned long long)ch > remainderMaxInt64));
-#ifdef AMD_EXTENSIONS
                     else if (isInt16)
                         overflow = (ival > oneTenthMaxInt16 || (ival == oneTenthMaxInt16 && (unsigned short)ch > remainderMaxInt16));
-#endif
                     else
                         overflow = (ival > oneTenthMaxInt || (ival == oneTenthMaxInt && (unsigned)ch > remainderMaxInt));
                     if (overflow) {
@@ -696,11 +683,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 if (isInt64) {
                     ppToken->i64val = ival;
                     return isUnsigned ? PpAtomConstUint64 : PpAtomConstInt64;
-#ifdef AMD_EXTENSIONS
                 } else if (isInt16) {
                     ppToken->ival = (int)ival;
                     return isUnsigned ? PpAtomConstUint16 : PpAtomConstInt16;
-#endif
                 } else {
                     ppToken->ival = (int)ival;
                     return isUnsigned ? PpAtomConstUint : PpAtomConstInt;
@@ -950,14 +935,10 @@ int TPpContext::tokenize(TPpToken& ppToken)
         case PpAtomConstFloat:
         case PpAtomConstInt64:
         case PpAtomConstUint64:
-#ifdef AMD_EXTENSIONS
         case PpAtomConstInt16:
         case PpAtomConstUint16:
-#endif
         case PpAtomConstDouble:
-#ifdef AMD_EXTENSIONS
         case PpAtomConstFloat16:
-#endif
             if (ppToken.name[0] == '\0')
                 continue;
             break;

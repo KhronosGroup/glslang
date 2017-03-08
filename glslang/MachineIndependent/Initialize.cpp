@@ -2,6 +2,7 @@
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2012-2016 LunarG, Inc.
 // Copyright (C) 2015-2016 Google, Inc.
+// Copyright (C) 2017 ARM Limited.
 //
 // All rights reserved.
 //
@@ -83,6 +84,10 @@ TBuiltIns::TBuiltIns()
     // Set up textual representations for making all the permutations
     // of texturing/imaging functions.
     prefixes[EbtFloat] =  "";
+    prefixes[EbtInt8]  = "i8";
+    prefixes[EbtUint8] = "u8";
+    prefixes[EbtInt16]  = "i16";
+    prefixes[EbtUint16] = "u16";
     prefixes[EbtInt]   = "i";
     prefixes[EbtUint]  = "u";
     postfixes[2] = "2";
@@ -799,7 +804,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec3 notEqual(u64vec3, u64vec3);"
             "bvec4 notEqual(u64vec4, u64vec4);"
 
-#ifdef AMD_EXTENSIONS
             "int   findLSB(int64_t);"
             "ivec2 findLSB(i64vec2);"
             "ivec3 findLSB(i64vec3);"
@@ -819,7 +823,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "ivec2 findMSB(u64vec2);"
             "ivec3 findMSB(u64vec3);"
             "ivec4 findMSB(u64vec4);"
-#endif
+
             "\n"
         );
     }
@@ -2986,8 +2990,9 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
     }
+#endif
 
-    // GL_AMD_gpu_shader_half_float
+    // GL_AMD_gpu_shader_half_float/Explicit types
     if (profile != EEsProfile && version >= 450) {
         commonBuiltins.append(
             "float16_t radians(float16_t);"
@@ -3334,10 +3339,168 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
     }
-
-    // GL_AMD_gpu_shader_int16
+    // Explicit types
     if (profile != EEsProfile && version >= 450) {
         commonBuiltins.append(
+            "int8_t abs(int8_t);"
+            "i8vec2 abs(i8vec2);"
+            "i8vec3 abs(i8vec3);"
+            "i8vec4 abs(i8vec4);"
+
+            "int8_t sign(int8_t);"
+            "i8vec2 sign(i8vec2);"
+            "i8vec3 sign(i8vec3);"
+            "i8vec4 sign(i8vec4);"
+
+            "int8_t min(int8_t x, int8_t y);"
+            "i8vec2 min(i8vec2 x, int8_t y);"
+            "i8vec3 min(i8vec3 x, int8_t y);"
+            "i8vec4 min(i8vec4 x, int8_t y);"
+            "i8vec2 min(i8vec2 x, i8vec2 y);"
+            "i8vec3 min(i8vec3 x, i8vec3 y);"
+            "i8vec4 min(i8vec4 x, i8vec4 y);"
+
+            "uint8_t min(uint8_t x, uint8_t y);"
+            "u8vec2 min(u8vec2 x, uint8_t y);"
+            "u8vec3 min(u8vec3 x, uint8_t y);"
+            "u8vec4 min(u8vec4 x, uint8_t y);"
+            "u8vec2 min(u8vec2 x, u8vec2 y);"
+            "u8vec3 min(u8vec3 x, u8vec3 y);"
+            "u8vec4 min(u8vec4 x, u8vec4 y);"
+
+            "int8_t max(int8_t x, int8_t y);"
+            "i8vec2 max(i8vec2 x, int8_t y);"
+            "i8vec3 max(i8vec3 x, int8_t y);"
+            "i8vec4 max(i8vec4 x, int8_t y);"
+            "i8vec2 max(i8vec2 x, i8vec2 y);"
+            "i8vec3 max(i8vec3 x, i8vec3 y);"
+            "i8vec4 max(i8vec4 x, i8vec4 y);"
+
+            "uint8_t max(uint8_t x, uint8_t y);"
+            "u8vec2 max(u8vec2 x, uint8_t y);"
+            "u8vec3 max(u8vec3 x, uint8_t y);"
+            "u8vec4 max(u8vec4 x, uint8_t y);"
+            "u8vec2 max(u8vec2 x, u8vec2 y);"
+            "u8vec3 max(u8vec3 x, u8vec3 y);"
+            "u8vec4 max(u8vec4 x, u8vec4 y);"
+
+            "int8_t    clamp(int8_t x, int8_t minVal, int8_t maxVal);"
+            "i8vec2  clamp(i8vec2  x, int8_t minVal, int8_t maxVal);"
+            "i8vec3  clamp(i8vec3  x, int8_t minVal, int8_t maxVal);"
+            "i8vec4  clamp(i8vec4  x, int8_t minVal, int8_t maxVal);"
+            "i8vec2  clamp(i8vec2  x, i8vec2  minVal, i8vec2  maxVal);"
+            "i8vec3  clamp(i8vec3  x, i8vec3  minVal, i8vec3  maxVal);"
+            "i8vec4  clamp(i8vec4  x, i8vec4  minVal, i8vec4  maxVal);"
+
+            "uint8_t   clamp(uint8_t x, uint8_t minVal, uint8_t maxVal);"
+            "u8vec2  clamp(u8vec2  x, uint8_t minVal, uint8_t maxVal);"
+            "u8vec3  clamp(u8vec3  x, uint8_t minVal, uint8_t maxVal);"
+            "u8vec4  clamp(u8vec4  x, uint8_t minVal, uint8_t maxVal);"
+            "u8vec2  clamp(u8vec2  x, u8vec2  minVal, u8vec2  maxVal);"
+            "u8vec3  clamp(u8vec3  x, u8vec3  minVal, u8vec3  maxVal);"
+            "u8vec4  clamp(u8vec4  x, u8vec4  minVal, u8vec4  maxVal);"
+
+            "int8_t  mix(int8_t,  int8_t,  bool);"
+            "i8vec2  mix(i8vec2,  i8vec2,  bvec2);"
+            "i8vec3  mix(i8vec3,  i8vec3,  bvec3);"
+            "i8vec4  mix(i8vec4,  i8vec4,  bvec4);"
+            "uint8_t mix(uint8_t, uint8_t, bool);"
+            "u8vec2  mix(u8vec2,  u8vec2,  bvec2);"
+            "u8vec3  mix(u8vec3,  u8vec3,  bvec3);"
+            "u8vec4  mix(u8vec4,  u8vec4,  bvec4);"
+
+            "bvec2 lessThan(i8vec2, i8vec2);"
+            "bvec3 lessThan(i8vec3, i8vec3);"
+            "bvec4 lessThan(i8vec4, i8vec4);"
+            "bvec2 lessThan(u8vec2, u8vec2);"
+            "bvec3 lessThan(u8vec3, u8vec3);"
+            "bvec4 lessThan(u8vec4, u8vec4);"
+
+            "bvec2 lessThanEqual(i8vec2, i8vec2);"
+            "bvec3 lessThanEqual(i8vec3, i8vec3);"
+            "bvec4 lessThanEqual(i8vec4, i8vec4);"
+            "bvec2 lessThanEqual(u8vec2, u8vec2);"
+            "bvec3 lessThanEqual(u8vec3, u8vec3);"
+            "bvec4 lessThanEqual(u8vec4, u8vec4);"
+
+            "bvec2 greaterThan(i8vec2, i8vec2);"
+            "bvec3 greaterThan(i8vec3, i8vec3);"
+            "bvec4 greaterThan(i8vec4, i8vec4);"
+            "bvec2 greaterThan(u8vec2, u8vec2);"
+            "bvec3 greaterThan(u8vec3, u8vec3);"
+            "bvec4 greaterThan(u8vec4, u8vec4);"
+
+            "bvec2 greaterThanEqual(i8vec2, i8vec2);"
+            "bvec3 greaterThanEqual(i8vec3, i8vec3);"
+            "bvec4 greaterThanEqual(i8vec4, i8vec4);"
+            "bvec2 greaterThanEqual(u8vec2, u8vec2);"
+            "bvec3 greaterThanEqual(u8vec3, u8vec3);"
+            "bvec4 greaterThanEqual(u8vec4, u8vec4);"
+
+            "bvec2 equal(i8vec2, i8vec2);"
+            "bvec3 equal(i8vec3, i8vec3);"
+            "bvec4 equal(i8vec4, i8vec4);"
+            "bvec2 equal(u8vec2, u8vec2);"
+            "bvec3 equal(u8vec3, u8vec3);"
+            "bvec4 equal(u8vec4, u8vec4);"
+
+            "bvec2 notEqual(i8vec2, i8vec2);"
+            "bvec3 notEqual(i8vec3, i8vec3);"
+            "bvec4 notEqual(i8vec4, i8vec4);"
+            "bvec2 notEqual(u8vec2, u8vec2);"
+            "bvec3 notEqual(u8vec3, u8vec3);"
+            "bvec4 notEqual(u8vec4, u8vec4);"
+
+            "  int8_t bitfieldExtract(  int8_t, int8_t, int8_t);"
+            "i8vec2 bitfieldExtract(i8vec2, int8_t, int8_t);"
+            "i8vec3 bitfieldExtract(i8vec3, int8_t, int8_t);"
+            "i8vec4 bitfieldExtract(i8vec4, int8_t, int8_t);"
+
+            " uint8_t bitfieldExtract( uint8_t, int8_t, int8_t);"
+            "u8vec2 bitfieldExtract(u8vec2, int8_t, int8_t);"
+            "u8vec3 bitfieldExtract(u8vec3, int8_t, int8_t);"
+            "u8vec4 bitfieldExtract(u8vec4, int8_t, int8_t);"
+
+            "  int8_t bitfieldInsert(  int8_t base,   int8_t, int8_t, int8_t);"
+            "i8vec2 bitfieldInsert(i8vec2 base, i8vec2, int8_t, int8_t);"
+            "i8vec3 bitfieldInsert(i8vec3 base, i8vec3, int8_t, int8_t);"
+            "i8vec4 bitfieldInsert(i8vec4 base, i8vec4, int8_t, int8_t);"
+
+            " uint8_t bitfieldInsert( uint8_t base,  uint8_t, int8_t, int8_t);"
+            "u8vec2 bitfieldInsert(u8vec2 base, u8vec2, int8_t, int8_t);"
+            "u8vec3 bitfieldInsert(u8vec3 base, u8vec3, int8_t, int8_t);"
+            "u8vec4 bitfieldInsert(u8vec4 base, u8vec4, int8_t, int8_t);"
+
+            "  int8_t bitCount(  int8_t);"
+            "i8vec2 bitCount(i8vec2);"
+            "i8vec3 bitCount(i8vec3);"
+            "i8vec4 bitCount(i8vec4);"
+
+            "  int8_t bitCount( uint8_t);"
+            "i8vec2 bitCount(u8vec2);"
+            "i8vec3 bitCount(u8vec3);"
+            "i8vec4 bitCount(u8vec4);"
+
+            "  int8_t findLSB(  int8_t);"
+            "i8vec2 findLSB(i8vec2);"
+            "i8vec3 findLSB(i8vec3);"
+            "i8vec4 findLSB(i8vec4);"
+
+            "  int8_t findLSB( uint8_t);"
+            "i8vec2 findLSB(u8vec2);"
+            "i8vec3 findLSB(u8vec3);"
+            "i8vec4 findLSB(u8vec4);"
+
+            "  int8_t findMSB(  int8_t);"
+            "i8vec2 findMSB(i8vec2);"
+            "i8vec3 findMSB(i8vec3);"
+            "i8vec4 findMSB(i8vec4);"
+
+            "  int8_t findMSB( uint8_t);"
+            "i8vec2 findMSB(u8vec2);"
+            "i8vec3 findMSB(u8vec3);"
+            "i8vec4 findMSB(u8vec4);"
+
             "int16_t abs(int16_t);"
             "i16vec2 abs(i16vec2);"
             "i16vec3 abs(i16vec3);"
@@ -3348,50 +3511,53 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "i16vec3 sign(i16vec3);"
             "i16vec4 sign(i16vec4);"
 
-            "int16_t  min(int16_t,  int16_t);"
-            "i16vec2  min(i16vec2,  int16_t);"
-            "i16vec3  min(i16vec3,  int16_t);"
-            "i16vec4  min(i16vec4,  int16_t);"
-            "i16vec2  min(i16vec2,  i16vec2);"
-            "i16vec3  min(i16vec3,  i16vec3);"
-            "i16vec4  min(i16vec4,  i16vec4);"
-            "uint16_t min(uint16_t, uint16_t);"
-            "u16vec2  min(u16vec2,  uint16_t);"
-            "u16vec3  min(u16vec3,  uint16_t);"
-            "u16vec4  min(u16vec4,  uint16_t);"
-            "u16vec2  min(u16vec2,  u16vec2);"
-            "u16vec3  min(u16vec3,  u16vec3);"
-            "u16vec4  min(u16vec4,  u16vec4);"
+            "int16_t min(int16_t x, int16_t y);"
+            "i16vec2 min(i16vec2 x, int16_t y);"
+            "i16vec3 min(i16vec3 x, int16_t y);"
+            "i16vec4 min(i16vec4 x, int16_t y);"
+            "i16vec2 min(i16vec2 x, i16vec2 y);"
+            "i16vec3 min(i16vec3 x, i16vec3 y);"
+            "i16vec4 min(i16vec4 x, i16vec4 y);"
 
-            "int16_t  max(int16_t,  int16_t);"
-            "i16vec2  max(i16vec2,  int16_t);"
-            "i16vec3  max(i16vec3,  int16_t);"
-            "i16vec4  max(i16vec4,  int16_t);"
-            "i16vec2  max(i16vec2,  i16vec2);"
-            "i16vec3  max(i16vec3,  i16vec3);"
-            "i16vec4  max(i16vec4,  i16vec4);"
-            "uint16_t max(uint16_t, uint16_t);"
-            "u16vec2  max(u16vec2,  uint16_t);"
-            "u16vec3  max(u16vec3,  uint16_t);"
-            "u16vec4  max(u16vec4,  uint16_t);"
-            "u16vec2  max(u16vec2,  u16vec2);"
-            "u16vec3  max(u16vec3,  u16vec3);"
-            "u16vec4  max(u16vec4,  u16vec4);"
+            "uint16_t min(uint16_t x, uint16_t y);"
+            "u16vec2 min(u16vec2 x, uint16_t y);"
+            "u16vec3 min(u16vec3 x, uint16_t y);"
+            "u16vec4 min(u16vec4 x, uint16_t y);"
+            "u16vec2 min(u16vec2 x, u16vec2 y);"
+            "u16vec3 min(u16vec3 x, u16vec3 y);"
+            "u16vec4 min(u16vec4 x, u16vec4 y);"
 
-            "int16_t  clamp(int16_t,  int16_t,  int16_t);"
-            "i16vec2  clamp(i16vec2,  int16_t,  int16_t);"
-            "i16vec3  clamp(i16vec3,  int16_t,  int16_t);"
-            "i16vec4  clamp(i16vec4,  int16_t,  int16_t);"
-            "i16vec2  clamp(i16vec2,  i16vec2,  i16vec2);"
-            "i16vec3  clamp(i16vec3,  i16vec3,  i16vec3);"
-            "i16vec4  clamp(i16vec4,  i16vec4,  i16vec4);"
-            "uint16_t clamp(uint16_t, uint16_t, uint16_t);"
-            "u16vec2  clamp(u16vec2,  uint16_t, uint16_t);"
-            "u16vec3  clamp(u16vec3,  uint16_t, uint16_t);"
-            "u16vec4  clamp(u16vec4,  uint16_t, uint16_t);"
-            "u16vec2  clamp(u16vec2,  u16vec2,  u16vec2);"
-            "u16vec3  clamp(u16vec3,  u16vec3,  u16vec3);"
-            "u16vec4  clamp(u16vec4,  u16vec4,  u16vec4);"
+            "int16_t max(int16_t x, int16_t y);"
+            "i16vec2 max(i16vec2 x, int16_t y);"
+            "i16vec3 max(i16vec3 x, int16_t y);"
+            "i16vec4 max(i16vec4 x, int16_t y);"
+            "i16vec2 max(i16vec2 x, i16vec2 y);"
+            "i16vec3 max(i16vec3 x, i16vec3 y);"
+            "i16vec4 max(i16vec4 x, i16vec4 y);"
+
+            "uint16_t max(uint16_t x, uint16_t y);"
+            "u16vec2 max(u16vec2 x, uint16_t y);"
+            "u16vec3 max(u16vec3 x, uint16_t y);"
+            "u16vec4 max(u16vec4 x, uint16_t y);"
+            "u16vec2 max(u16vec2 x, u16vec2 y);"
+            "u16vec3 max(u16vec3 x, u16vec3 y);"
+            "u16vec4 max(u16vec4 x, u16vec4 y);"
+
+            "int16_t    clamp(int16_t x, int16_t minVal, int16_t maxVal);"
+            "i16vec2  clamp(i16vec2  x, int16_t minVal, int16_t maxVal);"
+            "i16vec3  clamp(i16vec3  x, int16_t minVal, int16_t maxVal);"
+            "i16vec4  clamp(i16vec4  x, int16_t minVal, int16_t maxVal);"
+            "i16vec2  clamp(i16vec2  x, i16vec2  minVal, i16vec2  maxVal);"
+            "i16vec3  clamp(i16vec3  x, i16vec3  minVal, i16vec3  maxVal);"
+            "i16vec4  clamp(i16vec4  x, i16vec4  minVal, i16vec4  maxVal);"
+
+            "uint16_t   clamp(uint16_t x, uint16_t minVal, uint16_t maxVal);"
+            "u16vec2  clamp(u16vec2  x, uint16_t minVal, uint16_t maxVal);"
+            "u16vec3  clamp(u16vec3  x, uint16_t minVal, uint16_t maxVal);"
+            "u16vec4  clamp(u16vec4  x, uint16_t minVal, uint16_t maxVal);"
+            "u16vec2  clamp(u16vec2  x, u16vec2  minVal, u16vec2  maxVal);"
+            "u16vec3  clamp(u16vec3  x, u16vec3  minVal, u16vec3  maxVal);"
+            "u16vec4  clamp(u16vec4  x, u16vec4  minVal, u16vec4  maxVal);"
 
             "int16_t  mix(int16_t,  int16_t,  bool);"
             "i16vec2  mix(i16vec2,  i16vec2,  bvec2);"
@@ -3412,6 +3578,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   ldexp(f16vec3,   i16vec3);"
             "f16vec4   ldexp(f16vec4,   i16vec4);"
 
+            "int16_t halfBitsToInt16(float16_t);"
+            "i16vec2 halfBitsToInt16(f16vec2);"
+            "i16vec3 halhBitsToInt16(f16vec3);"
+            "i16vec4 halfBitsToInt16(f16vec4);"
+
+            "uint16_t halfBitsToUint16(float16_t);"
+            "u16vec2  halfBitsToUint16(f16vec2);"
+            "u16vec3  halfBitsToUint16(f16vec3);"
+            "u16vec4  halfBitsToUint16(f16vec4);"
+
             "int16_t float16BitsToInt16(float16_t);"
             "i16vec2 float16BitsToInt16(f16vec2);"
             "i16vec3 float16BitsToInt16(f16vec3);"
@@ -3431,6 +3607,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec2   uint16BitsToFloat16(u16vec2);"
             "f16vec3   uint16BitsToFloat16(u16vec3);"
             "f16vec4   uint16BitsToFloat16(u16vec4);"
+
+            "float16_t int16BitsToHalf(int16_t);"
+            "f16vec2   int16BitsToHalf(i16vec2);"
+            "f16vec3   int16BitsToHalf(i16vec3);"
+            "f16vec4   int16BitsToHalf(i16vec4);"
+
+            "float16_t uint16BitsToHalf(uint16_t);"
+            "f16vec2   uint16BitsToHalf(u16vec2);"
+            "f16vec3   uint16BitsToHalf(u16vec3);"
+            "f16vec4   uint16BitsToHalf(u16vec4);"
 
             "int      packInt2x16(i16vec2);"
             "uint     packUint2x16(u16vec2);"
@@ -3483,9 +3669,244 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec3 notEqual(u16vec3, u16vec3);"
             "bvec4 notEqual(u16vec4, u16vec4);"
 
+            "  int16_t bitfieldExtract(  int16_t, int16_t, int16_t);"
+            "i16vec2 bitfieldExtract(i16vec2, int16_t, int16_t);"
+            "i16vec3 bitfieldExtract(i16vec3, int16_t, int16_t);"
+            "i16vec4 bitfieldExtract(i16vec4, int16_t, int16_t);"
+
+            " uint16_t bitfieldExtract( uint16_t, int16_t, int16_t);"
+            "u16vec2 bitfieldExtract(u16vec2, int16_t, int16_t);"
+            "u16vec3 bitfieldExtract(u16vec3, int16_t, int16_t);"
+            "u16vec4 bitfieldExtract(u16vec4, int16_t, int16_t);"
+
+            "  int16_t bitfieldInsert(  int16_t base,   int16_t, int16_t, int16_t);"
+            "i16vec2 bitfieldInsert(i16vec2 base, i16vec2, int16_t, int16_t);"
+            "i16vec3 bitfieldInsert(i16vec3 base, i16vec3, int16_t, int16_t);"
+            "i16vec4 bitfieldInsert(i16vec4 base, i16vec4, int16_t, int16_t);"
+
+            " uint16_t bitfieldInsert( uint16_t base,  uint16_t, int16_t, int16_t);"
+            "u16vec2 bitfieldInsert(u16vec2 base, u16vec2, int16_t, int16_t);"
+            "u16vec3 bitfieldInsert(u16vec3 base, u16vec3, int16_t, int16_t);"
+            "u16vec4 bitfieldInsert(u16vec4 base, u16vec4, int16_t, int16_t);"
+
+            "  int16_t bitCount(  int16_t);"
+            "i16vec2 bitCount(i16vec2);"
+            "i16vec3 bitCount(i16vec3);"
+            "i16vec4 bitCount(i16vec4);"
+
+            "  int16_t bitCount( uint16_t);"
+            "i16vec2 bitCount(u16vec2);"
+            "i16vec3 bitCount(u16vec3);"
+            "i16vec4 bitCount(u16vec4);"
+
+            "  int16_t findLSB(  int16_t);"
+            "i16vec2 findLSB(i16vec2);"
+            "i16vec3 findLSB(i16vec3);"
+            "i16vec4 findLSB(i16vec4);"
+
+            "  int16_t findLSB( uint16_t);"
+            "i16vec2 findLSB(u16vec2);"
+            "i16vec3 findLSB(u16vec3);"
+            "i16vec4 findLSB(u16vec4);"
+
+            "  int16_t findMSB(  int16_t);"
+            "i16vec2 findMSB(i16vec2);"
+            "i16vec3 findMSB(i16vec3);"
+            "i16vec4 findMSB(i16vec4);"
+
+            "  int16_t findMSB( uint16_t);"
+            "i16vec2 findMSB(u16vec2);"
+            "i16vec3 findMSB(u16vec3);"
+            "i16vec4 findMSB(u16vec4);"
+
+            "int16_t  pack16(i8vec2);"
+            "uint16_t pack16(u8vec2);"
+            "int32_t  pack32(i8vec4);"
+            "uint32_t pack32(u8vec4);"
+            "int32_t  pack32(i16vec2);"
+            "uint32_t pack32(u16vec2);"
+            "int64_t  pack64(i16vec4);"
+            "uint64_t pack64(u16vec4);"
+            "int64_t  pack64(i32vec2);"
+            "uint64_t pack64(u32vec2);"
+
+            "i8vec2   unpack8(int16_t);"
+            "u8vec2   unpack8(uint16_t);"
+            "i8vec4   unpack8(int32_t);"
+            "u8vec4   unpack8(uint32_t);"
+            "i16vec2  unpack16(int32_t);"
+            "u16vec2  unpack16(uint32_t);"
+            "i16vec4  unpack16(int64_t);"
+            "u16vec4  unpack16(uint64_t);"
+            "i32vec2  unpack32(int64_t);"
+            "u32vec2  unpack32(uint64_t);"
+
+            "float64_t radians(float64_t);"
+            "f64vec2   radians(f64vec2);"
+            "f64vec3   radians(f64vec3);"
+            "f64vec4   radians(f64vec4);"
+
+            "float64_t degrees(float64_t);"
+            "f64vec2   degrees(f64vec2);"
+            "f64vec3   degrees(f64vec3);"
+            "f64vec4   degrees(f64vec4);"
+
+            "float64_t sin(float64_t);"
+            "f64vec2   sin(f64vec2);"
+            "f64vec3   sin(f64vec3);"
+            "f64vec4   sin(f64vec4);"
+
+            "float64_t cos(float64_t);"
+            "f64vec2   cos(f64vec2);"
+            "f64vec3   cos(f64vec3);"
+            "f64vec4   cos(f64vec4);"
+
+            "float64_t tan(float64_t);"
+            "f64vec2   tan(f64vec2);"
+            "f64vec3   tan(f64vec3);"
+            "f64vec4   tan(f64vec4);"
+
+            "float64_t asin(float64_t);"
+            "f64vec2   asin(f64vec2);"
+            "f64vec3   asin(f64vec3);"
+            "f64vec4   asin(f64vec4);"
+
+            "float64_t acos(float64_t);"
+            "f64vec2   acos(f64vec2);"
+            "f64vec3   acos(f64vec3);"
+            "f64vec4   acos(f64vec4);"
+
+            "float64_t atan(float64_t, float64_t);"
+            "f64vec2   atan(f64vec2,   f64vec2);"
+            "f64vec3   atan(f64vec3,   f64vec3);"
+            "f64vec4   atan(f64vec4,   f64vec4);"
+
+            "float64_t atan(float64_t);"
+            "f64vec2   atan(f64vec2);"
+            "f64vec3   atan(f64vec3);"
+            "f64vec4   atan(f64vec4);"
+
+            "float64_t sinh(float64_t);"
+            "f64vec2   sinh(f64vec2);"
+            "f64vec3   sinh(f64vec3);"
+            "f64vec4   sinh(f64vec4);"
+
+            "float64_t cosh(float64_t);"
+            "f64vec2   cosh(f64vec2);"
+            "f64vec3   cosh(f64vec3);"
+            "f64vec4   cosh(f64vec4);"
+
+            "float64_t tanh(float64_t);"
+            "f64vec2   tanh(f64vec2);"
+            "f64vec3   tanh(f64vec3);"
+            "f64vec4   tanh(f64vec4);"
+
+            "float64_t asinh(float64_t);"
+            "f64vec2   asinh(f64vec2);"
+            "f64vec3   asinh(f64vec3);"
+            "f64vec4   asinh(f64vec4);"
+
+            "float64_t acosh(float64_t);"
+            "f64vec2   acosh(f64vec2);"
+            "f64vec3   acosh(f64vec3);"
+            "f64vec4   acosh(f64vec4);"
+
+            "float64_t atanh(float64_t);"
+            "f64vec2   atanh(f64vec2);"
+            "f64vec3   atanh(f64vec3);"
+            "f64vec4   atanh(f64vec4);"
+
+            "float64_t pow(float64_t, float64_t);"
+            "f64vec2   pow(f64vec2,   f64vec2);"
+            "f64vec3   pow(f64vec3,   f64vec3);"
+            "f64vec4   pow(f64vec4,   f64vec4);"
+
+            "float64_t exp(float64_t);"
+            "f64vec2   exp(f64vec2);"
+            "f64vec3   exp(f64vec3);"
+            "f64vec4   exp(f64vec4);"
+
+            "float64_t log(float64_t);"
+            "f64vec2   log(f64vec2);"
+            "f64vec3   log(f64vec3);"
+            "f64vec4   log(f64vec4);"
+
+            "float64_t exp2(float64_t);"
+            "f64vec2   exp2(f64vec2);"
+            "f64vec3   exp2(f64vec3);"
+            "f64vec4   exp2(f64vec4);"
+
+            "float64_t log2(float64_t);"
+            "f64vec2   log2(f64vec2);"
+            "f64vec3   log2(f64vec3);"
+            "f64vec4   log2(f64vec4);"
             "\n");
+        }
+        if (profile != EEsProfile && version >= 450) {
+            stageBuiltins[EShLangFragment].append(
+                "float64_t dFdx(float64_t);"
+                "f64vec2   dFdx(f64vec2);"
+                "f64vec3   dFdx(f64vec3);"
+                "f64vec4   dFdx(f64vec4);"
+
+                "float64_t dFdy(float64_t);"
+                "f64vec2   dFdy(f64vec2);"
+                "f64vec3   dFdy(f64vec3);"
+                "f64vec4   dFdy(f64vec4);"
+
+                "float64_t dFdxFine(float64_t);"
+                "f64vec2   dFdxFine(f64vec2);"
+                "f64vec3   dFdxFine(f64vec3);"
+                "f64vec4   dFdxFine(f64vec4);"
+
+                "float64_t dFdyFine(float64_t);"
+                "f64vec2   dFdyFine(f64vec2);"
+                "f64vec3   dFdyFine(f64vec3);"
+                "f64vec4   dFdyFine(f64vec4);"
+
+                "float64_t dFdxCoarse(float64_t);"
+                "f64vec2   dFdxCoarse(f64vec2);"
+                "f64vec3   dFdxCoarse(f64vec3);"
+                "f64vec4   dFdxCoarse(f64vec4);"
+
+                "float64_t dFdyCoarse(float64_t);"
+                "f64vec2   dFdyCoarse(f64vec2);"
+                "f64vec3   dFdyCoarse(f64vec3);"
+                "f64vec4   dFdyCoarse(f64vec4);"
+
+                "float64_t fwidth(float64_t);"
+                "f64vec2   fwidth(f64vec2);"
+                "f64vec3   fwidth(f64vec3);"
+                "f64vec4   fwidth(f64vec4);"
+
+                "float64_t fwidthFine(float64_t);"
+                "f64vec2   fwidthFine(f64vec2);"
+                "f64vec3   fwidthFine(f64vec3);"
+                "f64vec4   fwidthFine(f64vec4);"
+
+                "float64_t fwidthCoarse(float64_t);"
+                "f64vec2   fwidthCoarse(f64vec2);"
+                "f64vec3   fwidthCoarse(f64vec3);"
+                "f64vec4   fwidthCoarse(f64vec4);"
+
+                "float64_t interpolateAtCentroid(float64_t);"
+                "f64vec2   interpolateAtCentroid(f64vec2);"
+                "f64vec3   interpolateAtCentroid(f64vec3);"
+                "f64vec4   interpolateAtCentroid(f64vec4);"
+
+                "float64_t interpolateAtSample(float64_t, int);"
+                "f64vec2   interpolateAtSample(f64vec2,   int);"
+                "f64vec3   interpolateAtSample(f64vec3,   int);"
+                "f64vec4   interpolateAtSample(f64vec4,   int);"
+
+                "float64_t interpolateAtOffset(float64_t, f64vec2);"
+                "f64vec2   interpolateAtOffset(f64vec2,   f64vec2);"
+                "f64vec3   interpolateAtOffset(f64vec3,   f64vec2);"
+                "f64vec4   interpolateAtOffset(f64vec4,   f64vec2);"
+
+                "\n");
+
     }
-#endif
 
     //============================================================================
     //
@@ -6741,12 +7162,15 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("doubleBitsToUint64", EOpDoubleBitsToUint64);
     symbolTable.relateToOperator("int64BitsToDouble",  EOpInt64BitsToDouble);
     symbolTable.relateToOperator("uint64BitsToDouble", EOpUint64BitsToDouble);
-#ifdef AMD_EXTENSIONS
+    symbolTable.relateToOperator("halfBitsToInt16",  EOpFloat16BitsToInt16);
+    symbolTable.relateToOperator("halfBitsToUint16", EOpFloat16BitsToUint16);
     symbolTable.relateToOperator("float16BitsToInt16",  EOpFloat16BitsToInt16);
     symbolTable.relateToOperator("float16BitsToUint16", EOpFloat16BitsToUint16);
     symbolTable.relateToOperator("int16BitsToFloat16",  EOpInt16BitsToFloat16);
     symbolTable.relateToOperator("uint16BitsToFloat16", EOpUint16BitsToFloat16);
-#endif
+
+    symbolTable.relateToOperator("int16BitsToHalf",  EOpInt16BitsToFloat16);
+    symbolTable.relateToOperator("uint16BitsToHalf", EOpUint16BitsToFloat16);
 
     symbolTable.relateToOperator("packSnorm2x16",   EOpPackSnorm2x16);
     symbolTable.relateToOperator("unpackSnorm2x16", EOpUnpackSnorm2x16);
@@ -6769,7 +7193,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("packUint2x32",    EOpPackUint2x32);
     symbolTable.relateToOperator("unpackUint2x32",  EOpUnpackUint2x32);
 
-#ifdef AMD_EXTENSIONS
     symbolTable.relateToOperator("packInt2x16",     EOpPackInt2x16);
     symbolTable.relateToOperator("unpackInt2x16",   EOpUnpackInt2x16);
     symbolTable.relateToOperator("packUint2x16",    EOpPackUint2x16);
@@ -6779,10 +7202,16 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("unpackInt4x16",   EOpUnpackInt4x16);
     symbolTable.relateToOperator("packUint4x16",    EOpPackUint4x16);
     symbolTable.relateToOperator("unpackUint4x16",  EOpUnpackUint4x16);
-
     symbolTable.relateToOperator("packFloat2x16",   EOpPackFloat2x16);
     symbolTable.relateToOperator("unpackFloat2x16", EOpUnpackFloat2x16);
-#endif
+
+    symbolTable.relateToOperator("pack16",          EOpPack16);
+    symbolTable.relateToOperator("pack32",          EOpPack32);
+    symbolTable.relateToOperator("pack64",          EOpPack64);
+
+    symbolTable.relateToOperator("unpack32",        EOpUnpack32);
+    symbolTable.relateToOperator("unpack16",        EOpUnpack16);
+    symbolTable.relateToOperator("unpack8",         EOpUnpack8);
 
     symbolTable.relateToOperator("length",       EOpLength);
     symbolTable.relateToOperator("distance",     EOpDistance);

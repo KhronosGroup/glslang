@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2016 Google, Inc.
+// Copyright (C) 2017 ARM Limited.
 //
 // All rights reserved.
 //
@@ -77,11 +78,13 @@ public:
     virtual void updateExtensionBehavior(int line, const char* const extension, const char* behavior);
     virtual void fullIntegerCheck(const TSourceLoc&, const char* op);
     virtual void doubleCheck(const TSourceLoc&, const char* op);
-#ifdef AMD_EXTENSIONS
-    virtual void int16Check(const TSourceLoc& loc, const char* op, bool builtIn = false);
     virtual void float16Check(const TSourceLoc&, const char* op, bool builtIn = false);
-#endif
     virtual void int64Check(const TSourceLoc&, const char* op, bool builtIn = false);
+    virtual void explicitInt8Check(const TSourceLoc&, const char* op, bool builtIn = false);
+    virtual void explicitInt16Check(const TSourceLoc&, const char* op, bool builtIn = false);
+    virtual void explicitInt32Check(const TSourceLoc&, const char* op, bool builtIn = false);
+    virtual void explicitFloat32Check(const TSourceLoc&, const char* op, bool builtIn = false);
+    virtual void explicitFloat64Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void spvRemoved(const TSourceLoc&, const char* op);
     virtual void vulkanRemoved(const TSourceLoc&, const char* op);
     virtual void requireVulkan(const TSourceLoc&, const char* op);
