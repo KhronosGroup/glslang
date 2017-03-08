@@ -1521,6 +1521,8 @@ void HlslParseContext::addInterstageIoToLinkage()
 // Handle seeing the function prototype in front of a function definition in the grammar.
 // The body is handled after this function returns.
 //
+// Returns an aggregate of parameter-symbol nodes.
+//
 TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& loc, TFunction& function,
                                                              const TAttributeMap& attributes, TIntermNode*& entryPointTree)
 {
