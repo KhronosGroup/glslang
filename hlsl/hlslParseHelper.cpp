@@ -2703,6 +2703,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             const TSampler& sampler = texType.getSampler();
             const TSamplerDim dim = sampler.dim;
             const bool isImage = sampler.isImage();
+            const bool isMs = sampler.isMultiSample();
             const int numArgs = (int)argAggregate->getSequence().size();
 
             int numDims = 0;
@@ -2713,6 +2714,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             case Esd3D:     numDims = 3; break; // W, H, D
             case EsdCube:   numDims = 2; break; // W, H (cube)
             case EsdBuffer: numDims = 1; break; // W (buffers)
+            case EsdRect:   numDims = 2; break; // W, H (rect)
             default:
                 assert(0 && "unhandled texture dimension");
             }
@@ -2721,17 +2723,31 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             if (sampler.isArrayed())
                 ++numDims;
 
-            // Establish whether we're querying mip levels
-            const bool mipQuery = (numArgs > (numDims + 1)) && (!sampler.isMultiSample());
+            // Establish whether the method itself is querying mip levels.  This can be false even
+            // if the underlying query requires a MIP level, due to the available HLSL method overloads.
+            const bool mipQuery = (numArgs > (numDims + 1 + (isMs ? 1 : 0)));
+
+            // Establish whether we must use the LOD form of query (even if the method did not supply a mip level to query).
+            // True if:
+            //   1. 1D/2D/3D/Cube AND multisample==0 AND NOT image (those can be sent to the non-LOD query)
+            // or,
+            //   2. There is a LOD (because the non-LOD query cannot be used in that case, per spec)
+            const bool mipRequired =
+                ((dim == Esd1D || dim == Esd2D || dim == Esd3D || dim == EsdCube) && !isMs && !isImage) || // 1...
+                mipQuery; // 2...
 
             // AST assumes integer return.  Will be converted to float if required.
             TIntermAggregate* sizeQuery = new TIntermAggregate(isImage ? EOpImageQuerySize : EOpTextureQuerySize);
             sizeQuery->getSequence().push_back(argTex);
-            // If we're querying an explicit LOD, add the LOD, which is always arg #1
-            if (mipQuery) {
-                TIntermTyped* queryLod = argAggregate->getSequence()[1]->getAsTyped();
+
+            // If we're building an LOD query, add the LOD.
+            if (mipRequired) {
+                // If the base HLSL query had no MIP level given, use level 0.
+                TIntermTyped* queryLod = mipQuery ? argAggregate->getSequence()[1]->getAsTyped() :
+                    intermediate.addConstantUnion(0, loc, true);
                 sizeQuery->getSequence().push_back(queryLod);
             }
+
             sizeQuery->setType(TType(EbtUint, EvqTemporary, numDims));
             sizeQuery->setLoc(loc);
 

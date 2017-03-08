@@ -364,6 +364,8 @@ gl_FragCoord origin is upper left
 0:70          'sizeQueryTemp' (temp uint)
 0:70          textureSize (temp uint)
 0:70            'g_tTex1df4' (uniform texture1D)
+0:70            Constant:
+0:70              0 (const int)
 0:70        move second child to first child (temp int)
 0:70          'WidthI' (temp int)
 0:70          Convert uint to int (temp int)
@@ -808,6 +810,8 @@ gl_FragCoord origin is upper left
 0:70          'sizeQueryTemp' (temp uint)
 0:70          textureSize (temp uint)
 0:70            'g_tTex1df4' (uniform texture1D)
+0:70            Constant:
+0:70              0 (const int)
 0:70        move second child to first child (temp int)
 0:70          'WidthI' (temp int)
 0:70          Convert uint to int (temp int)
@@ -1284,7 +1288,7 @@ gl_FragCoord origin is upper left
              276:    6(float) CompositeExtract 275 0
                               Store 268(r51) 276
              281:         278 Load 280(g_tTex1df4)
-             282:     14(int) ImageQuerySize 281
+             282:     14(int) ImageQuerySizeLod 281 53
                               Store 277(sizeQueryTemp) 282
              284:     15(int) Load 277(sizeQueryTemp)
              285:     14(int) Bitcast 284
