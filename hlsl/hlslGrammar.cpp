@@ -3401,7 +3401,7 @@ bool HlslGrammar::acceptPostDecls(TQualifier& qualifier)
                 parseContext.handleRegister(registerDesc.loc, qualifier, profile.string, *registerDesc.string, subComponent, spaceDesc.string);
             } else {
                 // semantic, in idToken.string
-                parseContext.handleSemantic(idToken.loc, qualifier, *idToken.string);
+                parseContext.handleSemantic(idToken.loc, qualifier, mapSemantic(*idToken.string));
             }
         } else if (peekTokenClass(EHTokLeftAngle)) {
             found = true;

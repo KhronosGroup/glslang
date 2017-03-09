@@ -240,6 +240,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.max.frag", "PixelShaderFunction"},
         {"hlsl.precedence.frag", "PixelShaderFunction"},
         {"hlsl.precedence2.frag", "PixelShaderFunction"},
+        {"hlsl.semantic.geom", "main"},
+        {"hlsl.semantic.vert", "main"},
         {"hlsl.scope.frag", "PixelShaderFunction"},
         {"hlsl.sin.frag", "PixelShaderFunction"},
         {"hlsl.struct.frag", "PixelShaderFunction"},
