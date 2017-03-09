@@ -3043,8 +3043,10 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             // For now, we have nothing to map the component-wise comparison forms
             // to, because neither GLSL nor SPIR-V has such an opcode.  Issue an
             // unimplemented error instead.  Most of the machinery is here if that
-            // should ever become available.
-            if (cmpValues) {
+            // should ever become available.  However, red can be passed through
+            // to OpImageDrefGather.  G/B/A cannot, because that opcode does not
+            // accept a component.
+            if (cmpValues != 0 && op != EOpMethodGatherCmpRed) {
                 error(loc, "unimplemented: component-level gather compare", "", "");
                 return;
             }
@@ -3125,7 +3127,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             }
 
             // Add comparison value if we have one
-            if (argTex->getType().getSampler().isShadow())
+            if (argCmp != nullptr)
                 txgather->getSequence().push_back(argCmp);
 
             // Add offset (either 1, or an array of 4) if we have one
