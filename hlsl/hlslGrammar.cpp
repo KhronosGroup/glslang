@@ -2489,6 +2489,7 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
 //      | function_call
 //      | postfix_expression LEFT_BRACKET integer_expression RIGHT_BRACKET
 //      | postfix_expression DOT IDENTIFIER
+//      | postfix_expression DOT IDENTIFIER arguments
 //      | postfix_expression INC_OP
 //      | postfix_expression DEC_OP
 //
@@ -2570,23 +2571,29 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         case EOpIndexDirectStruct:
         {
             // DOT IDENTIFIER
-            // includes swizzles and struct members
+            // includes swizzles, member variables, and member functions
             HlslToken field;
             if (! acceptIdentifier(field)) {
                 expected("swizzle or member");
                 return false;
             }
 
-            TIntermTyped* base = node; // preserve for method function calls
-            node = parseContext.handleDotDereference(field.loc, node, *field.string);
+            if (peekTokenClass(EHTokLeftParen)) {
+                // member function
+                TIntermTyped* thisNode = node;
+                node = parseContext.handleBuiltInMethod(field.loc, node, *field.string);
+                if (node == nullptr) {
+                    expected("built-in method");
+                    return false;
+                }
 
-            // In the event of a method node, we look for an open paren and accept the function call.
-            if (node != nullptr && node->getAsMethodNode() != nullptr && peekTokenClass(EHTokLeftParen)) {
-                if (! acceptFunctionCall(field, node, base)) {
+                // arguments
+                if (! acceptFunctionCall(field, node, thisNode)) {
                     expected("function parameters");
                     return false;
                 }
-            }
+            } else
+                node = parseContext.handleDotDereference(field.loc, node, *field.string);
 
             break;
         }

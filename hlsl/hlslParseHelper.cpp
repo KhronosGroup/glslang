@@ -862,46 +862,17 @@ bool HlslParseContext::isStructBufferMethod(const TString& name) const
 }
 
 //
-// Handle seeing a base.field dereference in the grammar.
+// Handle seeing a base.field dereference in the grammar, where 'field' is a
+// swizzle or member variable.
 //
 TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TIntermTyped* base, const TString& field)
 {
     variableCheck(base);
 
-    //
-    // methods can't be resolved until we later see the function-calling syntax.
-    // Save away the name in the AST for now.  Processing is completed in
-    // handleLengthMethod(), etc.
-    //
-    if (field == "length") {
-        return intermediate.addMethod(base, TType(EbtInt), &field, loc);
-    } else if (isSamplerMethod(field) && base->getType().getBasicType() == EbtSampler) {
-        // If it's not a method on a sampler object, we fall through to let other objects have a go.
-        const TSampler& sampler = base->getType().getSampler();
-        if (! sampler.isPureSampler()) {
-            const int vecSize = sampler.isShadow() ? 1 : 4; // TODO: handle arbitrary sample return sizes
-            return intermediate.addMethod(base, TType(sampler.type, EvqTemporary, vecSize), &field, loc);
-        }
-    } else if (isStructBufferType(base->getType())) {
-        TType retType(base->getType(), 0);
-        return intermediate.addMethod(base, retType, &field, loc);
-    } else if (field == "Append" ||
-               field == "RestartStrip") {
-        // We cannot check the type here: it may be sanitized if we're not compiling a geometry shader, but
-        // the code is around in the shader source.
-        return intermediate.addMethod(base, TType(EbtVoid), &field, loc);
-    }
-
-    // It's not .length() if we get to here.
-
     if (base->isArray()) {
         error(loc, "cannot apply to an array:", ".", field.c_str());
-
         return base;
     }
-
-    // It's neither an array nor .length() if we get here,
-    // leaving swizzles and struct/block dereferences.
 
     TIntermTyped* result = base;
     if (base->isVector() || base->isScalar()) {
@@ -1009,6 +980,43 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
         error(loc, "does not apply to this type:", field.c_str(), base->getType().getCompleteString().c_str());
 
     return result;
+}
+
+//
+// Handle seeing a base.field dereference in the grammar, where 'field' is a
+// built-in method.
+//
+// Return nullptr if 'field' is not a built-in method.
+//
+TIntermTyped* HlslParseContext::handleBuiltInMethod(const TSourceLoc& loc, TIntermTyped* base, const TString& field)
+{
+    variableCheck(base);
+
+    //
+    // methods can't be resolved until we later see the function-calling syntax.
+    // Save away the name in the AST for now.  Processing is completed in
+    // handleLengthMethod(), etc.
+    //
+    if (field == "length") {
+        return intermediate.addMethod(base, TType(EbtInt), &field, loc);
+    } else if (isSamplerMethod(field) && base->getType().getBasicType() == EbtSampler) {
+        // If it's not a method on a sampler object, we fall through to let other objects have a go.
+        const TSampler& sampler = base->getType().getSampler();
+        if (! sampler.isPureSampler()) {
+            const int vecSize = sampler.isShadow() ? 1 : 4; // TODO: handle arbitrary sample return sizes
+            return intermediate.addMethod(base, TType(sampler.type, EvqTemporary, vecSize), &field, loc);
+        }
+    } else if (isStructBufferType(base->getType())) {
+        TType retType(base->getType(), 0);
+        return intermediate.addMethod(base, retType, &field, loc);
+    } else if (field == "Append" ||
+               field == "RestartStrip") {
+        // We cannot check the type here: it may be sanitized if we're not compiling a geometry shader, but
+        // the code is around in the shader source.
+        return intermediate.addMethod(base, TType(EbtVoid), &field, loc);
+    }
+
+    return nullptr;
 }
 
 // Split the type of the given node into two structs:
