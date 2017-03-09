@@ -984,7 +984,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
 
 //
 // Handle seeing a base.field dereference in the grammar, where 'field' is a
-// built-in method.
+// built-in method name.
 //
 // Return nullptr if 'field' is not a built-in method.
 //
@@ -993,13 +993,10 @@ TIntermTyped* HlslParseContext::handleBuiltInMethod(const TSourceLoc& loc, TInte
     variableCheck(base);
 
     //
-    // methods can't be resolved until we later see the function-calling syntax.
-    // Save away the name in the AST for now.  Processing is completed in
-    // handleLengthMethod(), etc.
+    // Methods can't be resolved until we finish seeing the function-calling syntax.
+    // Save away the name in the AST for now.
     //
-    if (field == "length") {
-        return intermediate.addMethod(base, TType(EbtInt), &field, loc);
-    } else if (isSamplerMethod(field) && base->getType().getBasicType() == EbtSampler) {
+    if (isSamplerMethod(field) && base->getType().getBasicType() == EbtSampler) {
         // If it's not a method on a sampler object, we fall through to let other objects have a go.
         const TSampler& sampler = base->getType().getSampler();
         if (! sampler.isPureSampler()) {
@@ -3758,9 +3755,7 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
     TIntermTyped* result = nullptr;
 
     TOperator op = function->getBuiltInOp();
-    if (op == EOpArrayLength)
-        result = handleLengthMethod(loc, function, arguments);
-    else if (op != EOpNull) {
+    if (op != EOpNull) {
         //
         // Then this should be a constructor.
         // Don't go through the symbol table for constructors.
@@ -3872,41 +3867,6 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
 
     return result;
-}
-
-// Finish processing object.length(). This started earlier in handleDotDereference(), where
-// the ".length" part was recognized and semantically checked, and finished here where the
-// function syntax "()" is recognized.
-//
-// Return resulting tree node.
-TIntermTyped* HlslParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction* function, TIntermNode* intermNode)
-{
-    int length = 0;
-
-    if (function->getParamCount() > 0)
-        error(loc, "method does not accept any arguments", function->getName().c_str(), "");
-    else {
-        const TType& type = intermNode->getAsTyped()->getType();
-        if (type.isArray()) {
-            if (type.isRuntimeSizedArray()) {
-                // Create a unary op and let the back end handle it
-                return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, TType(EbtInt));
-            } else
-                length = type.getOuterArraySize();
-        } else if (type.isMatrix())
-            length = type.getMatrixCols();
-        else if (type.isVector())
-            length = type.getVectorSize();
-        else {
-            // we should not get here, because earlier semantic checking should have prevented this path
-            error(loc, ".length()", "unexpected use of .length()", "");
-        }
-    }
-
-    if (length == 0)
-        length = 1;
-
-    return intermediate.addConstantUnion(length, loc);
 }
 
 //
