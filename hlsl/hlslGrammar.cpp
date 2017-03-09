@@ -326,14 +326,20 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
     HlslToken idToken;
     TIntermAggregate* initializers = nullptr;
     while (acceptIdentifier(idToken)) {
-        TString* fnName = idToken.string;
+        if (peekTokenClass(EHTokLeftParen)) {
+            // looks like function parameters
+            TString* fnName = idToken.string;
 
-        // Potentially rename shader entry point function.  No-op most of the time.
-        parseContext.renameShaderFunction(fnName);
+            // Potentially rename shader entry point function.  No-op most of the time.
+            parseContext.renameShaderFunction(fnName);
 
-        // function_parameters
-        TFunction& function = *new TFunction(fnName, declaredType);
-        if (acceptFunctionParameters(function)) {
+            // function_parameters
+            TFunction& function = *new TFunction(fnName, declaredType);
+            if (!acceptFunctionParameters(function)) {
+                expected("function parameter list");
+                return false;
+            }
+
             // post_decls
             acceptPostDecls(function.getWritableType().getQualifier());
 
