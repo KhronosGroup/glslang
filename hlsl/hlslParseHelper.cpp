@@ -1892,7 +1892,7 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
 {
     // Do the actual work to make a type be a shader input or output variable,
     // and clear the original to be non-IO (for use as a normal function parameter/return).
-    const auto makeIoVariable = [this](const char* name, TType& type, TStorageQualifier storage) {
+    const auto makeIoVariable = [this](const char* name, TType& type, TStorageQualifier storage) -> TVariable* {
         TVariable* ioVariable = makeInternalVariable(name, type);
         clearUniformInputOutput(type.getQualifier());
         if (type.getStruct() != nullptr) {
@@ -2078,7 +2078,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
         if (split && derefType.isBuiltInInterstageIO(language)) {
             // copy from interstage IO builtin if needed
-            subTree = intermediate.addSymbol(*interstageBuiltInIo.find(tInterstageIoData(derefType, outer->getType()))->second);
+            subTree = intermediate.addSymbol(*interstageBuiltInIo.find(HlslParseContext::tInterstageIoData(derefType, outer->getType()))->second);
 
             // Arrayness of builtIn symbols isn't handled by the normal recursion: it's been extracted and moved to the builtin.
             if (subTree->getType().isArray() && !arrayElement.empty()) {
@@ -7473,9 +7473,9 @@ void HlslParseContext::addPatchConstantInvocation()
             const TStorageQualifier storage = function[p].type->getQualifier().storage;
 
             if (function[p].declaredBuiltIn != EbvNone)
-                builtIns.insert(tInterstageIoData(function[p].declaredBuiltIn, storage));
+                builtIns.insert(HlslParseContext::tInterstageIoData(function[p].declaredBuiltIn, storage));
             else
-                builtIns.insert(tInterstageIoData(function[p].type->getQualifier().builtIn, storage));
+                builtIns.insert(HlslParseContext::tInterstageIoData(function[p].type->getQualifier().builtIn, storage));
         }
     };
 
@@ -7561,8 +7561,9 @@ void HlslParseContext::addPatchConstantInvocation()
 
         notInEntryPoint = pcfBuiltIns;
 
-        for (auto bi : epfBuiltIns) // std::set_difference not usable on unordered containers
-            notInEntryPoint.erase(bi);
+        // std::set_difference not usable on unordered containers
+        for (auto bi = epfBuiltIns.begin(); bi != epfBuiltIns.end(); ++bi)
+            notInEntryPoint.erase(*bi);
 
         // Now we'll add those to the entry and to the linkage.
         for (int p=0; p<pcfParamCount; ++p) {
