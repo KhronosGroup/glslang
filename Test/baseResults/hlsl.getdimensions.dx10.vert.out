@@ -186,17 +186,17 @@ Shader version: 450
 29(NumberOfLevelsU):     13(ptr) Variable Function
        33(vsout):     32(ptr) Variable Function
               18:          15 Load 17(g_tTex1df4)
-              21:     19(int) ImageQuerySizeLod 18 20
+              21:     12(int) ImageQuerySizeLod 18 20
                               Store 14(sizeQueryTemp) 21
               23:     12(int) Load 14(sizeQueryTemp)
                               Store 22(WidthU) 23
               25:          15 Load 17(g_tTex1df4)
-              27:     19(int) ImageQuerySizeLod 25 26
+              27:     12(int) ImageQuerySizeLod 25 26
                               Store 24(sizeQueryTemp) 27
               28:     12(int) Load 24(sizeQueryTemp)
                               Store 22(WidthU) 28
               30:          15 Load 17(g_tTex1df4)
-              31:     19(int) ImageQueryLevels 30
+              31:     12(int) ImageQueryLevels 30
                               Store 29(NumberOfLevelsU) 31
               37:     36(ptr) AccessChain 33(vsout) 20
                               Store 37 35
