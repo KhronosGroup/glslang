@@ -1444,12 +1444,7 @@ void HlslParseContext::assignLocations(TVariable& variable)
             assignLocation(**member);
     } else if (wasSplit(variable.getUniqueId())) {
         TVariable* splitIoVar = getSplitIoVar(&variable);
-        const TTypeList* structure = splitIoVar->getType().getStruct();
-        // Struct splitting can produce empty structures if the only members of the
-        // struct were builtin interstage IO types.  Only assign locations if it
-        // isn't a struct, or is a non-empty struct.
-        if (structure == nullptr || !structure->empty())
-            assignLocation(*splitIoVar);
+        assignLocation(*splitIoVar);
     } else {
         assignLocation(variable);
     }
