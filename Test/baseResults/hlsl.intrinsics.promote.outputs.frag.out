@@ -314,37 +314,37 @@ gl_FragCoord origin is upper left
               23:    6(float) Load 22
               26:    6(float) ExtInst 1(GLSL.std.450) 43(FClamp) 23 24 25
               32:          29 Load 31(g_tTex1df4)
-              34:     12(int) ImageQuerySizeLod 32 33
+              34:     13(int) ImageQuerySizeLod 32 33
                               Store 28(sizeQueryTemp) 34
               37:     13(int) Load 28(sizeQueryTemp)
               38:     12(int) Bitcast 37
                               Store 36(WidthI) 38
               40:          29 Load 31(g_tTex1df4)
-              42:     12(int) ImageQuerySizeLod 40 41
+              42:     13(int) ImageQuerySizeLod 40 41
                               Store 39(sizeQueryTemp) 42
               43:     13(int) Load 39(sizeQueryTemp)
               44:     12(int) Bitcast 43
                               Store 36(WidthI) 44
               46:          29 Load 31(g_tTex1df4)
-              47:     12(int) ImageQueryLevels 46
+              47:     13(int) ImageQueryLevels 46
                               Store 45(NumberOfLevelsU) 47
               49:          29 Load 31(g_tTex1df4)
-              50:     12(int) ImageQuerySizeLod 49 41
+              50:     13(int) ImageQuerySizeLod 49 41
                               Store 48(sizeQueryTemp) 50
               52:     13(int) Load 48(sizeQueryTemp)
                               Store 51(WidthU) 52
               54:          29 Load 31(g_tTex1df4)
-              55:     12(int) ImageQueryLevels 54
+              55:     13(int) ImageQueryLevels 54
               56:     12(int) Bitcast 55
                               Store 53(NumberOfLevelsI) 56
               58:          29 Load 31(g_tTex1df4)
-              59:     12(int) ImageQuerySizeLod 58 41
+              59:     13(int) ImageQuerySizeLod 58 41
                               Store 57(sizeQueryTemp) 59
               60:     13(int) Load 57(sizeQueryTemp)
               61:     12(int) Bitcast 60
                               Store 36(WidthI) 61
               62:          29 Load 31(g_tTex1df4)
-              63:     12(int) ImageQueryLevels 62
+              63:     13(int) ImageQueryLevels 62
               64:     12(int) Bitcast 63
                               Store 53(NumberOfLevelsI) 64
               69:     68(ptr) AccessChain 66(ps_output) 33
