@@ -805,36 +805,6 @@ TIntermTyped* HlslParseContext::handleUnaryMath(const TSourceLoc& loc, const cha
 
     return childNode;
 }
-
-//
-// Return true if the name is a sampler method
-//
-bool HlslParseContext::isSamplerMethod(const TString& name) const
-{
-    return
-        name == "CalculateLevelOfDetail"          ||
-        name == "CalculateLevelOfDetailUnclamped" ||
-        name == "Gather"                          ||
-        name == "GatherRed"                       ||
-        name == "GatherGreen"                     ||
-        name == "GatherBlue"                      ||
-        name == "GatherAlpha"                     ||
-        name == "GatherCmp"                       ||
-        name == "GatherCmpRed"                    ||
-        name == "GatherCmpGreen"                  ||
-        name == "GatherCmpBlue"                   ||
-        name == "GatherCmpAlpha"                  ||
-        name == "GetDimensions"                   ||
-        name == "GetSamplePosition"               ||
-        name == "Load"                            ||
-        name == "Sample"                          ||
-        name == "SampleBias"                      ||
-        name == "SampleCmp"                       ||
-        name == "SampleCmpLevelZero"              ||
-        name == "SampleGrad"                      ||
-        name == "SampleLevel";
-}
-
 //
 // Return true if the name is a struct buffer method
 //
@@ -983,37 +953,24 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
 }
 
 //
-// Handle seeing a base.field dereference in the grammar, where 'field' is a
-// built-in method name.
+// Return true if the field should be treated as a built-in method.
+// Return false otherwise.
 //
-// Return nullptr if 'field' is not a built-in method.
-//
-TIntermTyped* HlslParseContext::handleBuiltInMethod(const TSourceLoc& loc, TIntermTyped* base, const TString& field)
+bool HlslParseContext::isBuiltInMethod(const TSourceLoc& loc, TIntermTyped* base, const TString& field)
 {
     variableCheck(base);
 
-    //
-    // Methods can't be resolved until we finish seeing the function-calling syntax.
-    // Save away the name in the AST for now.
-    //
-    if (isSamplerMethod(field) && base->getType().getBasicType() == EbtSampler) {
-        // If it's not a method on a sampler object, we fall through to let other objects have a go.
-        const TSampler& sampler = base->getType().getSampler();
-        if (! sampler.isPureSampler()) {
-            const int vecSize = sampler.isShadow() ? 1 : 4; // TODO: handle arbitrary sample return sizes
-            return intermediate.addMethod(base, TType(sampler.type, EvqTemporary, vecSize), &field, loc);
-        }
-    } else if (isStructBufferType(base->getType())) {
-        TType retType(base->getType(), 0);
-        return intermediate.addMethod(base, retType, &field, loc);
+    if (base->getType().getBasicType() == EbtSampler) {
+        return true;
+    } else if (isStructBufferType(base->getType()) && isStructBufferMethod(field)) {
+        return true;
     } else if (field == "Append" ||
                field == "RestartStrip") {
         // We cannot check the type here: it may be sanitized if we're not compiling a geometry shader, but
         // the code is around in the shader source.
-        return intermediate.addMethod(base, TType(EbtVoid), &field, loc);
-    }
-
-    return nullptr;
+        return true;
+    } else
+        return false;
 }
 
 // Split the type of the given node into two structs:

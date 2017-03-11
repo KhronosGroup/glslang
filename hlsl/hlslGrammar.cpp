@@ -2581,11 +2581,6 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
             if (peekTokenClass(EHTokLeftParen)) {
                 // member function
                 TIntermTyped* thisNode = node;
-                node = parseContext.handleBuiltInMethod(field.loc, node, *field.string);
-                if (node == nullptr) {
-                    expected("built-in method");
-                    return false;
-                }
 
                 // arguments
                 if (! acceptFunctionCall(field, node, thisNode)) {
@@ -2660,20 +2655,25 @@ bool HlslGrammar::acceptConstructor(TIntermTyped*& node)
 // function_call
 //      : [idToken] arguments
 //
-bool HlslGrammar::acceptFunctionCall(HlslToken idToken, TIntermTyped*& node, TIntermTyped* base)
+bool HlslGrammar::acceptFunctionCall(HlslToken callToken, TIntermTyped*& node, TIntermTyped* base)
 {
     // arguments
-    TFunction* function = new TFunction(idToken.string, TType(EbtVoid));
+    TFunction* function = new TFunction(callToken.string, TType(EbtVoid));
     TIntermTyped* arguments = nullptr;
 
-    // methods have an implicit first argument of the calling object.
-    if (base != nullptr)
+    // member functions have an implicit first argument of the calling object.
+    if (base != nullptr) {
+        if (! parseContext.isBuiltInMethod(callToken.loc, node, *callToken.string)) {
+            expected("built-in method");
+            return false;
+        }
         parseContext.handleFunctionArgument(function, arguments, base);
+    }
 
     if (! acceptArguments(function, arguments))
         return false;
 
-    node = parseContext.handleFunctionCall(idToken.loc, function, arguments);
+    node = parseContext.handleFunctionCall(callToken.loc, function, arguments);
 
     return true;
 }
