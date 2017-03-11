@@ -298,7 +298,7 @@ bool HlslGrammar::acceptSamplerDeclarationDX9(TType& /*type*/)
 //
 bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
 {
-    bool list = false;
+    bool declarator_list = false; // true when processing comma separation
 
     // attributes
     TAttributeMap attributes;
@@ -319,7 +319,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
     //     return true;
 
     // fully_specified_type
-    if (! acceptFullySpecifiedType(declaredType))
+    if (! acceptFullySpecifiedType(declaredType, nodeList))
         return false;
 
     // identifier
@@ -345,7 +345,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
 
             // compound_statement (function body definition) or just a prototype?
             if (peekTokenClass(EHTokLeftBrace)) {
-                if (list)
+                if (declarator_list)
                     parseContext.error(idToken.loc, "function body can't be in a declarator list", "{", "");
                 if (typedefDecl)
                     parseContext.error(idToken.loc, "function body can't be in a typedef", "{", "");
@@ -427,7 +427,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
         }
 
         if (acceptTokenClass(EHTokComma)) {
-            list = true;
+            declarator_list = true;
             continue;
         }
     };
@@ -508,6 +508,11 @@ bool HlslGrammar::acceptControlDeclaration(TIntermNode*& node)
 //
 bool HlslGrammar::acceptFullySpecifiedType(TType& type)
 {
+    TIntermNode* nodeList = nullptr;
+    return acceptFullySpecifiedType(type, nodeList);
+}
+bool HlslGrammar::acceptFullySpecifiedType(TType& type, TIntermNode*& nodeList)
+{
     // type_qualifier
     TQualifier qualifier;
     qualifier.clear();
@@ -516,7 +521,7 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type)
     TSourceLoc loc = token.loc;
 
     // type_specifier
-    if (! acceptType(type)) {
+    if (! acceptType(type, nodeList)) {
         // If this is not a type, we may have inadvertently gone down a wrong path
         // by parsing "sample", which can be treated like either an identifier or a
         // qualifier.  Back it out, if we did.
@@ -1188,6 +1193,11 @@ bool HlslGrammar::acceptTextureType(TType& type)
 // Otherwise, return false, and don't advance
 bool HlslGrammar::acceptType(TType& type)
 {
+    TIntermNode* nodeList = nullptr;
+    return acceptType(type, nodeList);
+}
+bool HlslGrammar::acceptType(TType& type, TIntermNode*& nodeList)
+{
     // Basic types for min* types, broken out here in case of future
     // changes, e.g, to use native halfs.
     static const TBasicType min16float_bt = EbtFloat;
@@ -1271,7 +1281,7 @@ bool HlslGrammar::acceptType(TType& type)
     case EHTokStruct:
     case EHTokCBuffer:
     case EHTokTBuffer:
-        return acceptStruct(type);
+        return acceptStruct(type, nodeList);
 
     case EHTokIdentifier:
         // An identifier could be for a user-defined type.
@@ -1745,7 +1755,7 @@ bool HlslGrammar::acceptType(TType& type)
 //      | CBUFFER
 //      | TBUFFER
 //
-bool HlslGrammar::acceptStruct(TType& type)
+bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
 {
     // This storage qualifier will tell us whether it's an AST
     // block type or just a generic structure type.
@@ -1788,7 +1798,7 @@ bool HlslGrammar::acceptStruct(TType& type)
 
     // struct_declaration_list
     TTypeList* typeList;
-    if (! acceptStructDeclarationList(typeList)) {
+    if (! acceptStructDeclarationList(typeList, nodeList, structName)) {
         expected("struct member declarations");
         return false;
     }
@@ -1913,12 +1923,14 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
 //
 // struct_declaration
 //      : fully_specified_type struct_declarator COMMA struct_declarator ...
+//      | fully_specified_type IDENTIFIER function_parameters post_decls compound_statement // member-function definition
 //
 // struct_declarator
 //      : IDENTIFIER post_decls
 //      | IDENTIFIER array_specifier post_decls
+//      | IDENTIFIER function_parameters post_decls                                         // member-function prototype
 //
-bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList)
+bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*& nodeList, const TString& typeName)
 {
     typeList = new TTypeList();
     HlslToken idToken;
@@ -1929,51 +1941,66 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList)
             return true;
 
         // struct_declaration
+    
+        bool declarator_list = false;
 
         // fully_specified_type
         TType memberType;
-        if (! acceptFullySpecifiedType(memberType)) {
+        if (! acceptFullySpecifiedType(memberType, nodeList)) {
             expected("member type");
             return false;
         }
 
         // struct_declarator COMMA struct_declarator ...
+        bool functionDefinitionAccepted = false;
         do {
             if (! acceptIdentifier(idToken)) {
                 expected("member name");
                 return false;
             }
 
-            // add it to the list of members
-            TTypeLoc member = { new TType(EbtVoid), token.loc };
-            member.type->shallowCopy(memberType);
-            member.type->setFieldName(*idToken.string);
-            typeList->push_back(member);
+            if (peekTokenClass(EHTokLeftParen)) {
+                // function_parameters
+                if (!declarator_list) {
+                    functionDefinitionAccepted = acceptMemberFunctionDefinition(nodeList, typeName, memberType, *idToken.string);
+                    if (functionDefinitionAccepted)
+                        break;
+                }
+                expected("member-function definition");
+                return false;
+            } else {
+                // add it to the list of members
+                TTypeLoc member = { new TType(EbtVoid), token.loc };
+                member.type->shallowCopy(memberType);
+                member.type->setFieldName(*idToken.string);
+                typeList->push_back(member);
 
-            // array_specifier
-            TArraySizes* arraySizes = nullptr;
-            acceptArraySpecifier(arraySizes);
-            if (arraySizes)
-                typeList->back().type->newArraySizes(*arraySizes);
+                // array_specifier
+                TArraySizes* arraySizes = nullptr;
+                acceptArraySpecifier(arraySizes);
+                if (arraySizes)
+                    typeList->back().type->newArraySizes(*arraySizes);
 
-            acceptPostDecls(member.type->getQualifier());
+                acceptPostDecls(member.type->getQualifier());
 
-            // EQUAL assignment_expression
-            if (acceptTokenClass(EHTokAssign)) {
-                parseContext.warn(idToken.loc, "struct-member initializers ignored", "typedef", "");
-                TIntermTyped* expressionNode = nullptr;
-                if (! acceptAssignmentExpression(expressionNode)) {
-                    expected("initializer");
-                    return false;
+                // EQUAL assignment_expression
+                if (acceptTokenClass(EHTokAssign)) {
+                    parseContext.warn(idToken.loc, "struct-member initializers ignored", "typedef", "");
+                    TIntermTyped* expressionNode = nullptr;
+                    if (! acceptAssignmentExpression(expressionNode)) {
+                        expected("initializer");
+                        return false;
+                    }
                 }
             }
-
             // success on seeing the SEMICOLON coming up
             if (peekTokenClass(EHTokSemicolon))
                 break;
 
             // COMMA
-            if (! acceptTokenClass(EHTokComma)) {
+            if (acceptTokenClass(EHTokComma))
+                declarator_list = true;
+            else {
                 expected(",");
                 return false;
             }
@@ -1981,12 +2008,49 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList)
         } while (true);
 
         // SEMI_COLON
-        if (! acceptTokenClass(EHTokSemicolon)) {
+        if (! functionDefinitionAccepted && ! acceptTokenClass(EHTokSemicolon)) {
             expected(";");
             return false;
         }
 
     } while (true);
+}
+
+// member_function_definition
+//    | function_parameters post_decls compound_statement
+//
+// Expects type to have EvqGlobal for a static member and
+// EvqTemporary for non-static member.
+bool HlslGrammar::acceptMemberFunctionDefinition(TIntermNode*& nodeList, const TString& typeName,
+                                                 const TType& type, const TString& memberName)
+{
+    // watch early returns...
+    parseContext.pushThis(typeName);
+    bool accepted = false;
+
+    TString* functionName = parseContext.getFullMemberFunctionName(memberName, type.getQualifier().storage == EvqGlobal);
+    TFunction& function = *new TFunction(functionName, type);
+
+    // function_parameters
+    if (acceptFunctionParameters(function)) {
+        // post_decls
+        acceptPostDecls(function.getWritableType().getQualifier());
+
+        // compound_statement (function body definition)
+        if (peekTokenClass(EHTokLeftBrace)) {
+            if (function.getType().getQualifier().storage != EvqGlobal) {
+                expected("only static member functions are accepted");
+                return false;
+            }
+
+            TAttributeMap attributes;
+            accepted = acceptFunctionDefinition(function, nodeList, attributes);
+        }
+    } else
+        expected("function parameter list");
+
+    parseContext.popThis();
+    return accepted;
 }
 
 // function_parameters
@@ -2133,6 +2197,7 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
     if (! acceptCompoundStatement(functionBody))
         return false;
 
+    // this does a popScope()
     parseContext.handleFunctionBody(loc, functionDeclarator, functionBody, functionNode);
 
     // Hook up the 1 or 2 function definitions.
@@ -2490,16 +2555,20 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
 //      | postfix_expression LEFT_BRACKET integer_expression RIGHT_BRACKET
 //      | postfix_expression DOT IDENTIFIER
 //      | postfix_expression DOT IDENTIFIER arguments
+//      | postfix_expression COLONCOLON IDENTIFIER arguments
 //      | postfix_expression INC_OP
 //      | postfix_expression DEC_OP
 //
 bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
 {
     // Not implemented as self-recursive:
-    // The logical "right recursion" is done with an loop at the end
+    // The logical "right recursion" is done with a loop at the end
 
     // idToken will pick up either a variable or a function name in a function call
     HlslToken idToken;
+
+    // scopeBase will pick up the type symbol on the left of '::'
+    TSymbol* scopeBase = nullptr;
 
     // Find something before the postfix operations, as they can't operate
     // on nothing.  So, no "return true", they fall through, only "return false".
@@ -2518,8 +2587,15 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
     } else if (acceptConstructor(node)) {
         // constructor (nothing else to do yet)
     } else if (acceptIdentifier(idToken)) {
-        // identifier or function_call name
-        if (! peekTokenClass(EHTokLeftParen)) {
+        // user-type, identifier, or function name
+        if (peekTokenClass(EHTokColonColon)) {
+            TType type;
+            scopeBase = parseContext.lookupUserType(*idToken.string, type);
+            if (scopeBase == nullptr) {
+                expected("type left of ::");
+                return false;
+            }
+        } else if (! peekTokenClass(EHTokLeftParen)) {
             node = parseContext.handleVariable(idToken.loc, idToken.symbol, idToken.string);
         } else if (acceptFunctionCall(idToken, node)) {
             // function_call (nothing else to do yet)
@@ -2560,6 +2636,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         case EOpIndexIndirect:
         case EOpPostIncrement:
         case EOpPostDecrement:
+        case EOpScoping:
             advanceToken();
             break;
         default:
@@ -2568,6 +2645,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
 
         // We have a valid post-unary operator, process it.
         switch (postOp) {
+        case EOpScoping:
         case EOpIndexDirectStruct:
         {
             // DOT IDENTIFIER
@@ -2583,7 +2661,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
                 TIntermTyped* thisNode = node;
 
                 // arguments
-                if (! acceptFunctionCall(field, node, thisNode)) {
+                if (! acceptFunctionCall(field, node, thisNode, scopeBase)) {
                     expected("function parameters");
                     return false;
                 }
@@ -2655,24 +2733,38 @@ bool HlslGrammar::acceptConstructor(TIntermTyped*& node)
 // function_call
 //      : [idToken] arguments
 //
-bool HlslGrammar::acceptFunctionCall(HlslToken callToken, TIntermTyped*& node, TIntermTyped* base)
+bool HlslGrammar::acceptFunctionCall(HlslToken callToken, TIntermTyped*& node, TIntermTyped* baseObject,
+                                     const TSymbol* baseType)
 {
-    // arguments
-    TFunction* function = new TFunction(callToken.string, TType(EbtVoid));
-    TIntermTyped* arguments = nullptr;
-
-    // member functions have an implicit first argument of the calling object.
-    if (base != nullptr) {
-        if (! parseContext.isBuiltInMethod(callToken.loc, node, *callToken.string)) {
-            expected("built-in method");
-            return false;
+    // name
+    TString* functionName = nullptr;
+    if ((baseObject == nullptr && baseType == nullptr)
+        || parseContext.isBuiltInMethod(callToken.loc, baseObject, *callToken.string))
+        functionName = callToken.string;
+    else {
+        functionName = NewPoolTString("");
+        if (baseObject != nullptr) {
+            functionName->append(baseObject->getType().getTypeName().c_str());
+            functionName->append(".");
+        } else if (baseType != nullptr) {
+            functionName->append(baseType->getType().getTypeName());
+            functionName->append("::");
         }
-        parseContext.handleFunctionArgument(function, arguments, base);
+        functionName->append(*callToken.string);
     }
 
+    // function
+    TFunction* function = new TFunction(functionName, TType(EbtVoid));
+
+    // arguments
+    // Non-static member functions have an implicit first argument of the base object.
+    TIntermTyped* arguments = nullptr;
+    if (baseObject != nullptr)
+        parseContext.handleFunctionArgument(function, arguments, baseObject);
     if (! acceptArguments(function, arguments))
         return false;
 
+    // call
     node = parseContext.handleFunctionCall(callToken.loc, function, arguments);
 
     return true;

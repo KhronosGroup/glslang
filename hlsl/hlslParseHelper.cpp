@@ -958,6 +958,9 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
 //
 bool HlslParseContext::isBuiltInMethod(const TSourceLoc& loc, TIntermTyped* base, const TString& field)
 {
+    if (base == nullptr)
+        return false;
+
     variableCheck(base);
 
     if (base->getType().getBasicType() == EbtSampler) {
@@ -7084,6 +7087,49 @@ TIntermNode* HlslParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* ex
     switchNode->setLoc(loc);
 
     return switchNode;
+}
+
+// Track levels of class/struct nesting with a prefix string using
+// the type names separated by the scoping operator. E.g., two levels
+// would look like:
+//
+//   outer::inner
+//
+// The string is empty when at normal global level.
+//
+void HlslParseContext::pushThis(const TString& typeName)
+{
+    // make new type prefix
+    TString newPrefix;
+    if (currentTypePrefix.size() > 0) {
+        newPrefix = currentTypePrefix.back();
+        newPrefix.append("::");
+    }
+    newPrefix.append(typeName);
+    currentTypePrefix.push_back(newPrefix);
+}
+
+// Opposite of pushThis(), see above
+void HlslParseContext::popThis()
+{
+    currentTypePrefix.pop_back();
+}
+
+// Use the class/struct nesting string to create a global name for
+// a member of a class/struct.  Static members use "::" for the final
+// step, while non-static members use ".".
+TString* HlslParseContext::getFullMemberFunctionName(const TString& memberName, bool isStatic) const
+{
+    TString* name = NewPoolTString("");
+    if (currentTypePrefix.size() > 0)
+        name->append(currentTypePrefix.back());
+    if (isStatic)
+        name->append("::");
+    else
+        name->append(".");
+    name->append(memberName);
+
+    return name;
 }
 
 // Potentially rename shader entry point function

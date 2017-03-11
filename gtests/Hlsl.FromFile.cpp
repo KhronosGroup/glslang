@@ -212,6 +212,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.semicolons.frag", "main"},
         {"hlsl.shapeConv.frag", "main"},
         {"hlsl.shapeConvRet.frag", "main"},
+        {"hlsl.staticMemberFunction.frag", "main"},
         {"hlsl.stringtoken.frag", "main"},
         {"hlsl.string.frag", "main"},
         {"hlsl.struct.split-1.vert", "main"},

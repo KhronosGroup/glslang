@@ -160,6 +160,10 @@ public:
     void pushScope()         { symbolTable.push(); }
     void popScope()          { symbolTable.pop(0); }
 
+    void pushThis(const TString& name);
+    void popThis();
+    TString* getFullMemberFunctionName(const TString& name, bool isStatic) const;
+
     void pushSwitchSequence(TIntermSequence* sequence) { switchSequenceStack.push_back(sequence); }
     void popSwitchSequence() { switchSequenceStack.pop_back(); }
 
@@ -382,6 +386,7 @@ protected:
     TString patchConstantFunctionName; // hull shader patch constant function name, from function level attribute.
     TMap<TBuiltInVariable, TSymbol*> builtInLinkageSymbols; // used for tessellation, finding declared builtins
 
+    TVector<TString> currentTypePrefix;
 };
 
 } // end namespace glslang

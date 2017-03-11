@@ -267,7 +267,6 @@ enum EHlslTokenClass {
 
     // variable, user type, ...
     EHTokIdentifier,
-    EHTokTypeName,
     EHTokClass,
     EHTokStruct,
     EHTokCBuffer,
