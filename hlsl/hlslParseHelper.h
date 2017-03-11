@@ -70,7 +70,7 @@ public:
     TIntermTyped* handleBinaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleUnaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* childNode);
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
-    TIntermTyped* handleBuiltInMethod(const TSourceLoc&, TIntermTyped* base, const TString& field);
+    bool isBuiltInMethod(const TSourceLoc&, TIntermTyped* base, const TString& field);
     void assignLocations(TVariable& variable);
     TFunction& handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&, const TAttributeMap&, TIntermNode*& entryPointTree);
@@ -159,6 +159,10 @@ public:
     int getAnnotationNestingLevel() { return annotationNestingLevel; }
     void pushScope()         { symbolTable.push(); }
     void popScope()          { symbolTable.pop(0); }
+
+    void pushThis(const TString& name);
+    void popThis();
+    TString* getFullMemberFunctionName(const TString& name, bool isStatic) const;
 
     void pushSwitchSequence(TIntermSequence* sequence) { switchSequenceStack.push_back(sequence); }
     void popSwitchSequence() { switchSequenceStack.pop_back(); }
@@ -249,7 +253,6 @@ protected:
     void clearUniformInputOutput(TQualifier& qualifier);
 
     // Test method names
-    bool isSamplerMethod(const TString& name) const;
     bool isStructBufferMethod(const TString& name) const;
 
     TType* getStructBufferContentType(const TType& type) const;
@@ -383,6 +386,7 @@ protected:
     TString patchConstantFunctionName; // hull shader patch constant function name, from function level attribute.
     TMap<TBuiltInVariable, TSymbol*> builtInLinkageSymbols; // used for tessellation, finding declared builtins
 
+    TVector<TString> currentTypePrefix;
 };
 
 } // end namespace glslang
