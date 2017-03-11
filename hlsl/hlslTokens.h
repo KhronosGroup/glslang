@@ -328,6 +328,7 @@ enum EHlslTokenClass {
     EHTokDot,
     EHTokComma,
     EHTokColon,
+    EHTokColonColon,
     EHTokSemicolon,
     EHTokBang,
     EHTokDash,
