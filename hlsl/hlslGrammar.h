@@ -43,7 +43,8 @@
 
 namespace glslang {
 
-    class TAttributeMap; // forward declare
+    class TAttributeMap;
+    class TFunctionDeclarator;
 
     // Should just be the grammar aspect of HLSL.
     // Described in more detail in hlslGrammar.cpp.
@@ -91,7 +92,8 @@ namespace glslang {
                                             const TType&, const TString& memberName);
         bool acceptFunctionParameters(TFunction&);
         bool acceptParameterDeclaration(TFunction&);
-        bool acceptFunctionDefinition(TFunction&, TIntermNode*& nodeList, const TAttributeMap&);
+        bool acceptFunctionDefinition(TFunctionDeclarator&, TIntermNode*& nodeList);
+        bool acceptFunctionBody(TFunctionDeclarator& declarator, TIntermNode*& nodeList);
         bool acceptParenExpression(TIntermTyped*&);
         bool acceptExpression(TIntermTyped*&);
         bool acceptInitializer(TIntermTyped*&);

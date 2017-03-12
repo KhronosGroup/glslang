@@ -301,8 +301,8 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
     bool declarator_list = false; // true when processing comma separation
 
     // attributes
-    TAttributeMap attributes;
-    acceptAttributes(attributes);
+    TFunctionDeclarator declarator;
+    acceptAttributes(declarator.attributes);
 
     // typedef
     bool typedefDecl = acceptTokenClass(EHTokTypedef);
@@ -334,26 +334,27 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
             parseContext.renameShaderFunction(fnName);
 
             // function_parameters
-            TFunction& function = *new TFunction(fnName, declaredType);
-            if (!acceptFunctionParameters(function)) {
+            declarator.function = new TFunction(fnName, declaredType);
+            if (!acceptFunctionParameters(*declarator.function)) {
                 expected("function parameter list");
                 return false;
             }
 
             // post_decls
-            acceptPostDecls(function.getWritableType().getQualifier());
+            acceptPostDecls(declarator.function->getWritableType().getQualifier());
 
             // compound_statement (function body definition) or just a prototype?
+            declarator.loc = token.loc;
             if (peekTokenClass(EHTokLeftBrace)) {
                 if (declarator_list)
                     parseContext.error(idToken.loc, "function body can't be in a declarator list", "{", "");
                 if (typedefDecl)
                     parseContext.error(idToken.loc, "function body can't be in a typedef", "{", "");
-                return acceptFunctionDefinition(function, nodeList, attributes);
+                return acceptFunctionDefinition(declarator, nodeList);
             } else {
                 if (typedefDecl)
                     parseContext.error(idToken.loc, "function typedefs not implemented", "{", "");
-                parseContext.handleFunctionDeclarator(idToken.loc, function, true);
+                parseContext.handleFunctionDeclarator(declarator.loc, *declarator.function, true);
             }
         } else {
             // A variable declaration. Fix the storage qualifier if it's a global.
@@ -1962,7 +1963,8 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*
             if (peekTokenClass(EHTokLeftParen)) {
                 // function_parameters
                 if (!declarator_list) {
-                    functionDefinitionAccepted = acceptMemberFunctionDefinition(nodeList, typeName, memberType, *idToken.string);
+                    functionDefinitionAccepted = acceptMemberFunctionDefinition(nodeList, typeName, memberType,
+                                                                                *idToken.string);
                     if (functionDefinitionAccepted)
                         break;
                 }
@@ -2029,22 +2031,23 @@ bool HlslGrammar::acceptMemberFunctionDefinition(TIntermNode*& nodeList, const T
     bool accepted = false;
 
     TString* functionName = parseContext.getFullMemberFunctionName(memberName, type.getQualifier().storage == EvqGlobal);
-    TFunction& function = *new TFunction(functionName, type);
+    TFunctionDeclarator declarator;
+    declarator.function = new TFunction(functionName, type);
 
     // function_parameters
-    if (acceptFunctionParameters(function)) {
+    if (acceptFunctionParameters(*declarator.function)) {
         // post_decls
-        acceptPostDecls(function.getWritableType().getQualifier());
+        acceptPostDecls(declarator.function->getWritableType().getQualifier());
 
         // compound_statement (function body definition)
         if (peekTokenClass(EHTokLeftBrace)) {
-            if (function.getType().getQualifier().storage != EvqGlobal) {
+            if (declarator.function->getType().getQualifier().storage != EvqGlobal) {
                 expected("only static member functions are accepted");
                 return false;
             }
 
-            TAttributeMap attributes;
-            accepted = acceptFunctionDefinition(function, nodeList, attributes);
+            declarator.loc = token.loc;
+            accepted = acceptFunctionDefinition(declarator, nodeList);
         }
     } else
         expected("function parameter list");
@@ -2180,17 +2183,21 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
 
 // Do the work to create the function definition in addition to
 // parsing the body (compound_statement).
-bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& nodeList, const TAttributeMap& attributes)
+bool HlslGrammar::acceptFunctionDefinition(TFunctionDeclarator& declarator, TIntermNode*& nodeList)
 {
-    TFunction& functionDeclarator = parseContext.handleFunctionDeclarator(token.loc, function, false /* not prototype */);
-    TSourceLoc loc = token.loc;
+    parseContext.handleFunctionDeclarator(declarator.loc, *declarator.function, false /* not prototype */);
 
-    // we might get back and entry-point
+    return acceptFunctionBody(declarator, nodeList);
+}
+
+bool HlslGrammar::acceptFunctionBody(TFunctionDeclarator& declarator, TIntermNode*& nodeList)
+{
+    // we might get back an entry-point
     TIntermNode* entryPointNode = nullptr;
 
     // This does a pushScope()
-    TIntermNode* functionNode = parseContext.handleFunctionDefinition(loc, functionDeclarator, attributes,
-                                                                      entryPointNode);
+    TIntermNode* functionNode = parseContext.handleFunctionDefinition(declarator.loc, *declarator.function,
+                                                                      declarator.attributes, entryPointNode);
 
     // compound_statement
     TIntermNode* functionBody = nullptr;
@@ -2198,7 +2205,7 @@ bool HlslGrammar::acceptFunctionDefinition(TFunction& function, TIntermNode*& no
         return false;
 
     // this does a popScope()
-    parseContext.handleFunctionBody(loc, functionDeclarator, functionBody, functionNode);
+    parseContext.handleFunctionBody(declarator.loc, *declarator.function, functionBody, functionNode);
 
     // Hook up the 1 or 2 function definitions.
     nodeList = intermediate.growAggregate(nodeList, functionNode);

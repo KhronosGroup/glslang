@@ -1414,7 +1414,7 @@ void HlslParseContext::assignLocations(TVariable& variable)
 // Handle seeing a function declarator in the grammar.  This is the precursor
 // to recognizing a function prototype or function definition.
 //
-TFunction& HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunction& function, bool prototype)
+void HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunction& function, bool prototype)
 {
     //
     // Multiple declarations of the same function name are allowed.
@@ -1442,13 +1442,6 @@ TFunction& HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFu
     // other forms of name collisions.
     if (! symbolTable.insert(function))
         error(loc, "function name is redeclaration of existing name", function.getName().c_str(), "");
-
-    //
-    // If this is a redeclaration, it could also be a definition,
-    // in which case, we need to use the parameter names from this one, and not the one that's
-    // being redeclared.  So, pass back this declaration, not the one in the symbol table.
-    //
-    return function;
 }
 
 // Add interstage IO variables to the linkage in canonical order.
