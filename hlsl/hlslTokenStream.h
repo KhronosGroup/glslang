@@ -54,6 +54,9 @@ namespace glslang {
         bool peekTokenClass(EHlslTokenClass) const;
         glslang::TBuiltInVariable mapSemantic(const TString& semantic) { return scanner.mapSemantic(semantic); }
 
+        void pushTokenStream(const TVector<HlslToken>* tokens);
+        void popTokenStream();
+
     protected:
         HlslToken token;                  // the token we are currently looking at, but have not yet accepted
 
@@ -61,7 +64,10 @@ namespace glslang {
         HlslTokenStream();
         HlslTokenStream& operator=(const HlslTokenStream&);
 
-        HlslScanContext& scanner;         // lexical scanner, to get next token
+        HlslScanContext& scanner;         // lexical scanner, to get next token from source file
+        TVector<const TVector<HlslToken>*> tokenStreamStack; // for getting the next token from an existing vector of tokens
+        TVector<int> tokenPosition;
+        TVector<HlslToken> currentTokenStack;
 
         // This is the number of tokens we can recedeToken() over.
         static const int tokenBufferSize = 2;
