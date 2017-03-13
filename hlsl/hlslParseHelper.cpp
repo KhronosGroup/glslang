@@ -3082,7 +3082,9 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             if (argOffset != nullptr)
                 txgather->getSequence().push_back(argOffset);
 
-            txgather->getSequence().push_back(argChannel);
+            // Add channel value if the sampler is not shadow
+            if (! argSamp->getType().getSampler().isShadow())
+                txgather->getSequence().push_back(argChannel);
 
             txgather->setType(node->getType());
             txgather->setLoc(loc);
