@@ -81,10 +81,14 @@ ERROR: 0:227: 'input block' : not supported in this stage: compute
 ERROR: 0:231: 'output block' : not supported in this stage: compute
 WARNING: 0:235: 't__' : identifiers containing consecutive underscores ("__") are reserved 
 WARNING: 0:238: '#define' : names containing consecutive underscores are reserved: __D
-ERROR: 79 compilation errors.  No code generated.
+ERROR: 0:244: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: 0:245: 'gl_ViewIndex' : undeclared identifier 
+ERROR: 0:255: 'gl_ViewIndex' : undeclared identifier 
+ERROR: 82 compilation errors.  No code generated.
 
 
 Shader version: 310
+Requested GL_EXT_device_group
 local_size = (2, 1, 4096)
 ERROR: node is still EOpNull!
 0:27  Function Definition: main( (global void)
@@ -443,6 +447,16 @@ ERROR: node is still EOpNull!
 0:224            0 (const int)
 0:224        Constant:
 0:224          2 (const int)
+0:242  Function Definition: devi( (global void)
+0:242    Function Parameters: 
+0:244    Sequence
+0:244      'gl_DeviceIndex' (in highp int DeviceIndex)
+0:245      'gl_ViewIndex' (temp float)
+0:252  Function Definition: devie( (global void)
+0:252    Function Parameters: 
+0:254    Sequence
+0:254      'gl_DeviceIndex' (in highp int DeviceIndex)
+0:255      'gl_ViewIndex' (temp float)
 0:?   Linker Objects
 0:?     'gl_WorkGroupSize' (const highp 3-component vector of uint WorkGroupSize)
 0:?       2 (const uint)
@@ -512,6 +526,7 @@ Linked compute stage:
 
 
 Shader version: 310
+Requested GL_EXT_device_group
 local_size = (2, 1, 4096)
 ERROR: node is still EOpNull!
 0:27  Function Definition: main( (global void)

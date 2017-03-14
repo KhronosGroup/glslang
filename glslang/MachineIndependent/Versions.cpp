@@ -334,6 +334,14 @@ void TParseVersions::getPreamble(std::string& preamble)
         }
     }
 
+    if ((profile != EEsProfile && version >= 140) ||
+        (profile == EEsProfile && version >= 310)) {
+        preamble += 
+            "#define GL_EXT_device_group 1\n"
+            "#define GL_EXT_multiview 1\n"
+            ;
+    }
+
     // #line and #include
     preamble +=
             "#define GL_GOOGLE_cpp_style_line_directive 1\n"

@@ -133,10 +133,14 @@ ERROR: 0:427: 'blend equation' : can only apply to a standalone qualifier
 ERROR: 0:428: 'blend equation' : can only apply to a standalone qualifier 
 ERROR: 0:429: 'blend_support' : unknown blend equation 
 ERROR: 0:431: 'fragment-shader array-of-array output' : not supported with this profile: es
-ERROR: 125 compilation errors.  No code generated.
+ERROR: 0:435: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: 0:436: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
+ERROR: 127 compilation errors.  No code generated.
 
 
 Shader version: 310
+Requested GL_EXT_device_group
+Requested GL_EXT_multiview
 Requested GL_EXT_shader_io_blocks
 Requested GL_EXT_texture_cube_map_array
 Requested GL_KHR_blend_equation_advanced
@@ -916,6 +920,16 @@ ERROR: node is still EOpNull!
 0:428  Function Definition: blendFoo(vf3; (global void)
 0:428    Function Parameters: 
 0:428      'v' (in mediump 3-component vector of float)
+0:433  Function Definition: devi( (global void)
+0:433    Function Parameters: 
+0:435    Sequence
+0:435      'gl_DeviceIndex' (flat in highp int DeviceIndex)
+0:436      'gl_ViewIndex' (flat in highp int ViewIndex)
+0:447  Function Definition: devie( (global void)
+0:447    Function Parameters: 
+0:449    Sequence
+0:449      'gl_DeviceIndex' (flat in highp int DeviceIndex)
+0:450      'gl_ViewIndex' (flat in highp int ViewIndex)
 0:?   Linker Objects
 0:?     'gl_FragCoord' (smooth in mediump 4-component vector of float)
 0:?     'v3' (layout(location=2 ) smooth in mediump 3-component vector of float)
@@ -1017,6 +1031,8 @@ Linked fragment stage:
 ERROR: Linking fragment stage: when more than one fragment shader output, all must have location qualifiers
 
 Shader version: 310
+Requested GL_EXT_device_group
+Requested GL_EXT_multiview
 Requested GL_EXT_shader_io_blocks
 Requested GL_EXT_texture_cube_map_array
 Requested GL_KHR_blend_equation_advanced

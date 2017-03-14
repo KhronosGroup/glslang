@@ -30,11 +30,15 @@ ERROR: 0:86: '[]' : tessellation input array size must be gl_MaxPatchVertices or
 ERROR: 0:96: 'location' : overlapping use of location 24
 ERROR: 0:99: 'location' : overlapping use of location 24
 ERROR: 0:101: 'gl_TessLevelOuter' : identifiers starting with "gl_" are reserved 
-ERROR: 30 compilation errors.  No code generated.
+ERROR: 0:109: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: 0:110: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
+ERROR: 32 compilation errors.  No code generated.
 
 
 Shader version: 400
 Requested GL_ARB_separate_shader_objects
+Requested GL_EXT_device_group
+Requested GL_EXT_multiview
 input primitive = quads
 vertex spacing = fractional_odd_spacing
 triangle order = cw
@@ -130,6 +134,16 @@ ERROR: node is still EOpNull!
 0:44          Constant:
 0:44            2 (const int)
 0:44        'cd' (temp float)
+0:107  Function Definition: devi( (global void)
+0:107    Function Parameters: 
+0:109    Sequence
+0:109      'gl_DeviceIndex' (in int DeviceIndex)
+0:110      'gl_ViewIndex' (in int ViewIndex)
+0:121  Function Definition: devie( (global void)
+0:121    Function Parameters: 
+0:123    Sequence
+0:123      'gl_DeviceIndex' (in int DeviceIndex)
+0:124      'gl_ViewIndex' (in int ViewIndex)
 0:?   Linker Objects
 0:?     'patchIn' (patch in 4-component vector of float)
 0:?     'patchOut' (patch out 4-component vector of float)
@@ -160,6 +174,8 @@ Linked tessellation evaluation stage:
 
 Shader version: 400
 Requested GL_ARB_separate_shader_objects
+Requested GL_EXT_device_group
+Requested GL_EXT_multiview
 input primitive = quads
 vertex spacing = fractional_odd_spacing
 triangle order = cw

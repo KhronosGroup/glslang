@@ -21,11 +21,15 @@ ERROR: 0:87: 'location' : overlapping use of location 4
 ERROR: 0:104: '' : precise qualifier must appear first 
 ERROR: 0:105: '' : precise qualifier must appear first 
 ERROR: 0:105: '' : precise qualifier must appear first 
-ERROR: 21 compilation errors.  No code generated.
+ERROR: 0:109: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: 0:110: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
+ERROR: 23 compilation errors.  No code generated.
 
 
 Shader version: 400
 Requested GL_ARB_separate_shader_objects
+Requested GL_EXT_device_group
+Requested GL_EXT_multiview
 vertices = 4
 ERROR: node is still EOpNull!
 0:13  Function Definition: main( (global void)
@@ -197,6 +201,16 @@ ERROR: node is still EOpNull!
 0:97          'd' (noContraction temp double)
 0:97          'd' (noContraction temp double)
 0:97          'd' (noContraction temp double)
+0:107  Function Definition: devi( (global void)
+0:107    Function Parameters: 
+0:109    Sequence
+0:109      'gl_DeviceIndex' (in int DeviceIndex)
+0:110      'gl_ViewIndex' (in int ViewIndex)
+0:121  Function Definition: devie( (global void)
+0:121    Function Parameters: 
+0:123    Sequence
+0:123      'gl_DeviceIndex' (in int DeviceIndex)
+0:124      'gl_ViewIndex' (in int ViewIndex)
 0:?   Linker Objects
 0:?     'gl_out' (out 4-element array of block{out 4-component vector of float Position gl_Position, out float PointSize gl_PointSize, out implicitly-sized array of float ClipDistance gl_ClipDistance})
 0:?     'outa' (global 4-element array of int)
@@ -222,6 +236,8 @@ Linked tessellation control stage:
 
 Shader version: 400
 Requested GL_ARB_separate_shader_objects
+Requested GL_EXT_device_group
+Requested GL_EXT_multiview
 vertices = 4
 ERROR: node is still EOpNull!
 0:13  Function Definition: main( (global void)
