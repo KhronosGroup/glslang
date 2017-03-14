@@ -3702,8 +3702,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     if (profile != EEsProfile) {
-        commonBuiltins.append("in int gl_ViewIndex;");
-        commonBuiltins.append("in int gl_DeviceIndex;");  // GL_EXT_device_group
+        commonBuiltins.append("uniform int gl_ViewIndex;");
+        commonBuiltins.append("uniform int gl_DeviceIndex;");  // GL_EXT_device_group
     }
 
     // printf("%s\n", commonBuiltins.c_str());
