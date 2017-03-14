@@ -324,6 +324,14 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_NV_viewport_array2 1\n"
 #endif
             ;
+
+        if (version >= 150) {
+            // define GL_core_profile and GL_compatibility_profile
+            preamble += "#define GL_core_profile 1\n";
+
+            if (profile == ECompatibilityProfile)
+                preamble += "#define GL_compatibility_profile 1\n";
+        }
     }
 
     // #line and #include
@@ -331,19 +339,6 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_GOOGLE_cpp_style_line_directive 1\n"
             "#define GL_GOOGLE_include_directive 1\n"
             ;
-
-    if (version >= 150) {
-        // define GL_core_profile and GL_compatibility_profile
-        preamble +=
-                "#define GL_core_profile 1\n"
-                ;
-
-        if (profile == ECompatibilityProfile) {
-            preamble +=
-                    "#define GL_compatibility_profile 1\n"
-                    ;
-        }
-    }
 
     // #define VULKAN XXXX
     const int numberBufSize = 12;
