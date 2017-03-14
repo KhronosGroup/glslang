@@ -38,7 +38,8 @@ vertices = 3
 0:?           Constant:
 0:?             0 (const int)
 0:?         true case
-0:?         Function Call: PCF( ( temp void)
+0:?         Sequence
+0:?           Function Call: PCF( ( temp void)
 0:33  Function Definition: PCF( ( temp void)
 0:33    Function Parameters: 
 0:?   Linker Objects
@@ -89,7 +90,8 @@ vertices = 3
 0:?           Constant:
 0:?             0 (const int)
 0:?         true case
-0:?         Function Call: PCF( ( temp void)
+0:?         Sequence
+0:?           Function Call: PCF( ( temp void)
 0:33  Function Definition: PCF( ( temp void)
 0:33    Function Parameters: 
 0:?   Linker Objects
