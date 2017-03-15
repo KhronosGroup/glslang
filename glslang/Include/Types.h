@@ -403,6 +403,7 @@ public:
     // drop qualifiers that don't belong in a temporary variable
     void makeTemporary()
     {
+        semanticName = nullptr;
         storage = EvqTemporary;
         builtIn = EbvNone;
         clearInterstage();
@@ -451,6 +452,7 @@ public:
         specConstant = false;
     }
 
+    const char*         semanticName;
     TStorageQualifier   storage   : 6;
     TBuiltInVariable    builtIn   : 8;
     TPrecisionQualifier precision : 3;

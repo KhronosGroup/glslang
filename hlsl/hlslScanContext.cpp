@@ -467,12 +467,9 @@ void HlslScanContext::tokenize(HlslToken& token)
     token.tokenClass = tokenClass;
 }
 
-glslang::TBuiltInVariable HlslScanContext::mapSemantic(const TString& semantic)
+glslang::TBuiltInVariable HlslScanContext::mapSemantic(const char* upperCase)
 {
-    TString semanticUpperCase = semantic;
-    std::transform(semanticUpperCase.begin(), semanticUpperCase.end(), semanticUpperCase.begin(), ::toupper);
-
-    auto it = SemanticMap->find(semanticUpperCase.c_str());
+    auto it = SemanticMap->find(upperCase);
     if (it != SemanticMap->end())
         return it->second;
     else

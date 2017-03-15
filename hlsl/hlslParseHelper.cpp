@@ -4144,7 +4144,7 @@ TFunction* HlslParseContext::handleConstructorCall(const TSourceLoc& loc, const 
 // Handle seeing a "COLON semantic" at the end of a type declaration,
 // by updating the type according to the semantic.
 //
-void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, TBuiltInVariable builtIn)
+void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, TBuiltInVariable builtIn, const TString& upperCase)
 {
     // adjust for stage in/out
 
@@ -4161,6 +4161,7 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, TBu
     }
 
     qualifier.builtIn = builtIn;
+    qualifier.semanticName = intermediate.addSemanticName(upperCase);
 }
 
 //
