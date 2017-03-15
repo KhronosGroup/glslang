@@ -119,6 +119,7 @@ void HlslScanContext::fillInKeywordMap()
     (*KeywordMap)["inout"] =                   EHTokInOut;
     (*KeywordMap)["layout"] =                  EHTokLayout;
     (*KeywordMap)["globallycoherent"] =        EHTokGloballyCoherent;
+    (*KeywordMap)["inline"] =                  EHTokInline;
 
     (*KeywordMap)["point"] =                   EHTokPoint;
     (*KeywordMap)["line"] =                    EHTokLine;
@@ -616,6 +617,7 @@ EHlslTokenClass HlslScanContext::tokenizeIdentifier()
     case EHTokPrecise:
     case EHTokLayout:
     case EHTokGloballyCoherent:
+    case EHTokInline:
         return keyword;
 
     // primitive types

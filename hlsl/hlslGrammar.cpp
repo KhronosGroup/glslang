@@ -627,6 +627,9 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
         case EHTokGloballyCoherent:
             qualifier.coherent = true;
             break;
+        case EHTokInline:
+            // TODO: map this to SPIR-V function control
+            break;
 
         // GS geometries: these are specified on stage input variables, and are an error (not verified here)
         // for output variables.
