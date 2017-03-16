@@ -52,7 +52,7 @@ namespace glslang {
         bool acceptTokenClass(EHlslTokenClass);
         EHlslTokenClass peek() const;
         bool peekTokenClass(EHlslTokenClass) const;
-        glslang::TBuiltInVariable mapSemantic(const TString& semantic) { return scanner.mapSemantic(semantic); }
+        glslang::TBuiltInVariable mapSemantic(const char* upperCase) { return scanner.mapSemantic(upperCase); }
 
         void pushTokenStream(const TVector<HlslToken>* tokens);
         void popTokenStream();

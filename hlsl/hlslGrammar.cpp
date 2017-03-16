@@ -627,6 +627,9 @@ bool HlslGrammar::acceptQualifier(TQualifier& qualifier)
         case EHTokGloballyCoherent:
             qualifier.coherent = true;
             break;
+        case EHTokInline:
+            // TODO: map this to SPIR-V function control
+            break;
 
         // GS geometries: these are specified on stage input variables, and are an error (not verified here)
         // for output variables.
@@ -3528,7 +3531,9 @@ bool HlslGrammar::acceptPostDecls(TQualifier& qualifier)
                 parseContext.handleRegister(registerDesc.loc, qualifier, profile.string, *registerDesc.string, subComponent, spaceDesc.string);
             } else {
                 // semantic, in idToken.string
-                parseContext.handleSemantic(idToken.loc, qualifier, mapSemantic(*idToken.string));
+                TString semanticUpperCase = *idToken.string;
+                std::transform(semanticUpperCase.begin(), semanticUpperCase.end(), semanticUpperCase.begin(), ::toupper);
+                parseContext.handleSemantic(idToken.loc, qualifier, mapSemantic(semanticUpperCase.c_str()), semanticUpperCase);
             }
         } else if (peekTokenClass(EHTokLeftAngle)) {
             found = true;
