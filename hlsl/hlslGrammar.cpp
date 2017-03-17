@@ -1079,24 +1079,25 @@ bool HlslGrammar::acceptTextureType(TType& type)
     bool array = false;
     bool ms    = false;
     bool image = false;
+    bool readonly = false;
 
     switch (textureType) {
-    case EHTokBuffer:            dim = EsdBuffer;                      break;
-    case EHTokTexture1d:         dim = Esd1D;                          break;
-    case EHTokTexture1darray:    dim = Esd1D; array = true;            break;
-    case EHTokTexture2d:         dim = Esd2D;                          break;
-    case EHTokTexture2darray:    dim = Esd2D; array = true;            break;
-    case EHTokTexture3d:         dim = Esd3D;                          break;
-    case EHTokTextureCube:       dim = EsdCube;                        break;
-    case EHTokTextureCubearray:  dim = EsdCube; array = true;          break;
-    case EHTokTexture2DMS:       dim = Esd2D; ms = true;               break;
-    case EHTokTexture2DMSarray:  dim = Esd2D; array = true; ms = true; break;
-    case EHTokRWBuffer:          dim = EsdBuffer; image=true;          break;
-    case EHTokRWTexture1d:       dim = Esd1D; array=false; image=true; break;
-    case EHTokRWTexture1darray:  dim = Esd1D; array=true;  image=true; break;
-    case EHTokRWTexture2d:       dim = Esd2D; array=false; image=true; break;
-    case EHTokRWTexture2darray:  dim = Esd2D; array=true;  image=true; break;
-    case EHTokRWTexture3d:       dim = Esd3D; array=false; image=true; break;
+    case EHTokTexture1d:         dim = Esd1D;                                break;
+    case EHTokTexture1darray:    dim = Esd1D; array = true;                  break;
+    case EHTokTexture2d:         dim = Esd2D;                                break;
+    case EHTokTexture2darray:    dim = Esd2D; array = true;                  break;
+    case EHTokTexture3d:         dim = Esd3D;                                break;
+    case EHTokTextureCube:       dim = EsdCube;                              break;
+    case EHTokTextureCubearray:  dim = EsdCube; array = true;                break;
+    case EHTokTexture2DMS:       dim = Esd2D; ms = true;                     break;
+    case EHTokTexture2DMSarray:  dim = Esd2D; array = true; ms = true;       break;
+    case EHTokBuffer:            dim = EsdBuffer; readonly=true; image=true; break;
+    case EHTokRWBuffer:          dim = EsdBuffer; image=true;                break;
+    case EHTokRWTexture1d:       dim = Esd1D; array=false; image=true;       break;
+    case EHTokRWTexture1darray:  dim = Esd1D; array=true;  image=true;       break;
+    case EHTokRWTexture2d:       dim = Esd2D; array=false; image=true;       break;
+    case EHTokRWTexture2darray:  dim = Esd2D; array=true;  image=true;       break;
+    case EHTokRWTexture3d:       dim = Esd3D; array=false; image=true;       break;
     default:
         return false;  // not a texture declaration
     }
@@ -1156,7 +1157,7 @@ bool HlslGrammar::acceptTextureType(TType& type)
     } else if (ms) {
         expected("texture type for multisample");
         return false;
-    } else if (image) {
+    } else if (image && !readonly) {
         expected("type for RWTexture/RWBuffer");
         return false;
     }
@@ -1188,6 +1189,9 @@ bool HlslGrammar::acceptTextureType(TType& type)
 
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));
     type.getQualifier().layoutFormat = format;
+
+    // TODO: this is not being passed through to the SPIR-V OpTypeImage access qualifier.
+    type.getQualifier().readonly = readonly;
 
     return true;
 }
