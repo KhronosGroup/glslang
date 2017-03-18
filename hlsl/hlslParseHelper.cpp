@@ -1047,6 +1047,8 @@ TType& HlslParseContext::split(TType& type, TString name, const TType* outerStru
             if (arraySizes)
                 ioVar->getWritableType().newArraySizes(*arraySizes);
 
+            fixBuiltInArrayType(ioVar->getWritableType());
+
             interstageBuiltInIo[tInterstageIoData(memberType, *outerStructType)] = ioVar;
 
             // Merge qualifier from the user structure
@@ -1380,6 +1382,34 @@ void HlslParseContext::trackLinkage(TSymbol& symbol)
     TParseContextBase::trackLinkage(symbol);
 }
 
+
+// Some types require fixed array sizes in SPIR-V, but can be scalars or
+// arrays of sizes SPIR-V doesn't allow.  For example, tessellation factors.
+// This creates the right size.  A conversion is performed when the internal
+// type is copied to or from the external
+void HlslParseContext::fixBuiltInArrayType(TType& type)
+{
+    int requiredSize = 0;
+
+    switch (type.getQualifier().builtIn) {
+    case EbvTessLevelOuter: requiredSize = 4; break;
+    case EbvTessLevelInner: requiredSize = 2; break;
+    case EbvClipDistance:   // TODO: ...
+    case EbvCullDistance:   // TODO: ...
+    default:
+        return;
+    }
+
+    if (type.isArray()) {
+        // Already an array.  Fix the size.
+        type.changeOuterArraySize(requiredSize);
+    } else {
+        // it wasn't an array, but needs to be.
+        TArraySizes arraySizes;
+        arraySizes.addInnerSize(requiredSize);
+        type.newArraySizes(arraySizes);
+    }
+}
 
 // Variables that correspond to the user-interface in and out of a stage
 // (not the built-in interface) are assigned locations and
@@ -2031,7 +2061,11 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         const bool split          = isLeft ? isSplitLeft : isSplitRight;
         const TIntermTyped* outer = isLeft ? outerLeft   : outerRight;
         const TVector<TVariable*>& flatVariables      = isLeft ? *leftVariables : *rightVariables;
-        const TOperator op = node->getType().isArray() ? EOpIndexDirect : EOpIndexDirectStruct;
+
+        // Index operator if it's an aggregate, else EOpNull
+        const TOperator op = node->getType().isArray()  ? EOpIndexDirect : 
+                             node->getType().isStruct() ? EOpIndexDirectStruct : EOpNull;
+
         const TType derefType(node->getType(), member);
 
         if (split && derefType.isBuiltInInterstageIO(language)) {
@@ -2047,10 +2081,14 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         } else if (flattened && isFinalFlattening(derefType)) {
             subTree = intermediate.addSymbol(*flatVariables[memberIdx++]);
         } else {
-            const TType splitDerefType(splitNode->getType(), splitMember);
+            if (op == EOpNull) {
+                subTree = splitNode;
+            } else {
+                const TType splitDerefType(splitNode->getType(), splitMember);
 
-            subTree = intermediate.addIndex(op, splitNode, intermediate.addConstantUnion(splitMember, loc), loc);
-            subTree->setType(splitDerefType);
+                subTree = intermediate.addIndex(op, splitNode, intermediate.addConstantUnion(splitMember, loc), loc);
+                subTree->setType(splitDerefType);
+            }
         }
 
         return subTree;
@@ -2069,11 +2107,15 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         // If we get here, we are assigning to or from a whole array or struct that must be
         // flattened, so have to do member-by-member assignment:
 
-        if (left->getType().isArray()) {
-            const TType dereferencedType(left->getType(), 0);
+        if (left->getType().isArray() || right->getType().isArray()) {
+            const int elementsL = left->getType().isArray() ? left->getType().getOuterArraySize() : 1;
+            const int elementsR = right->getType().isArray() ? right->getType().getOuterArraySize() : 1;
+
+            // The arrays may not be the same size, e.g, if the size has been forced for EbvTessLevelInner or Outer.
+            const int elementsToCopy = std::min(elementsL, elementsR);
 
             // array case
-            for (int element=0; element < left->getType().getOuterArraySize(); ++element) {
+            for (int element=0; element < elementsToCopy; ++element) {
                 arrayElement.push_back(element);
 
                 // Add a new AST symbol node if we have a temp variable holding a complex RHS.
@@ -2083,10 +2125,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left,  element, splitLeft, element) : subLeft;
                 TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, element, splitRight, element) : subRight; 
 
-                if (isFinalFlattening(dereferencedType))
-                    assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subLeft, subRight, loc), loc);
-                else
-                    traverse(subLeft, subRight, subSplitLeft, subSplitRight);
+                traverse(subLeft, subRight, subSplitLeft, subSplitRight);
 
                 arrayElement.pop_back();
             }
@@ -2120,8 +2159,8 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 // subtree here IFF it does not itself contain any interstage built-in IO variables, so we only have to
                 // recurse into it if there's something for splitting to do.  That can save a lot of AST verbosity for
                 // a bunch of memberwise copies.
-                if (isFinalFlattening(typeL) || (!isFlattenLeft && !isFlattenRight &&
-                                                 !typeL.containsBuiltInInterstageIO(language) && !typeR.containsBuiltInInterstageIO(language))) {
+                if ((!isFlattenLeft && !isFlattenRight &&
+                     !typeL.containsBuiltInInterstageIO(language) && !typeR.containsBuiltInInterstageIO(language))) {
                     assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subSplitLeft, subSplitRight, loc), loc);
                 } else {
                     traverse(subLeft, subRight, subSplitLeft, subSplitRight);
@@ -2131,8 +2170,8 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 memberR += (typeR.isBuiltInInterstageIO(language) ? 0 : 1);
             }
         } else {
-            assert(0);  // we should never be called on a non-flattenable thing, because
-                        // that case bails out above to a simple copy.
+            // Member copy
+            assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, left, right, loc), loc);
         }
 
     };

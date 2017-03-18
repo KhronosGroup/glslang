@@ -9,8 +9,8 @@ struct hs_in_t
 
 struct hs_pcf_t
 {
-    float tfactor[3] : SV_TessFactor;
-    float flInFactor : SV_InsideTessFactor;
+    float tfactor[3] : SV_TessFactor; // must turn into a size 4 array in SPIR-V
+    float flInFactor : SV_InsideTessFactor; // must turn into a size 2 array in SPIR-V
 }; 
 
 struct hs_out_t
