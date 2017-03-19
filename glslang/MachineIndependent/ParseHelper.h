@@ -145,6 +145,8 @@ public:
     virtual bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*);
     virtual void rValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*);
 
+    const char* const scopeMangler = "::";
+
 protected:
     TParseContextBase(TParseContextBase&);
     TParseContextBase& operator=(TParseContextBase&);

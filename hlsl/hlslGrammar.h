@@ -87,10 +87,10 @@ namespace glslang {
         bool acceptTextureType(TType&);
         bool acceptStructBufferType(TType&);
         bool acceptStruct(TType&, TIntermNode*& nodeList);
-        bool acceptStructDeclarationList(TTypeList*&, TIntermNode*& nodeList, const TString& typeName);
-        bool acceptMemberFunctionDefinition(TIntermNode*& nodeList, const TString& typeName,
-                                            const TType&, const TString& memberName, TFunctionDeclarator&,
-                                            TVector<HlslToken>* deferredTokens);
+        bool acceptStructDeclarationList(TTypeList*&, TIntermNode*& nodeList, const TString& typeName,
+                                         TVector<TFunctionDeclarator>&);
+        bool acceptMemberFunctionDefinition(TIntermNode*& nodeList, const TType&, const TString& memberName,
+                                            TFunctionDeclarator&);
         bool acceptFunctionParameters(TFunction&);
         bool acceptParameterDeclaration(TFunction&);
         bool acceptFunctionDefinition(TFunctionDeclarator&, TIntermNode*& nodeList, TVector<HlslToken>* deferredTokens);

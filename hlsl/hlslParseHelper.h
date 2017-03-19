@@ -160,9 +160,10 @@ public:
     void pushScope()         { symbolTable.push(); }
     void popScope()          { symbolTable.pop(0); }
 
-    void pushThis(const TString& name);
-    void popThis();
-    TString* getFullMemberFunctionName(const TString& name, bool isStatic) const;
+    void pushNamespace(const TString& name);
+    void popNamespace();
+    TString* getFullNamespaceName(const TString& localName) const;
+    void addScopeMangler(TString&);
 
     void pushSwitchSequence(TIntermSequence* sequence) { switchSequenceStack.push_back(sequence); }
     void popSwitchSequence() { switchSequenceStack.pop_back(); }
