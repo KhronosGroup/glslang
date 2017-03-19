@@ -50,7 +50,7 @@ namespace glslang {
 //
 // Recursively generate mangled names.
 //
-void TType::buildMangledName(TString& mangledName)
+void TType::buildMangledName(TString& mangledName) const
 {
     if (isMatrix())
         mangledName += 'm';
@@ -299,6 +299,7 @@ TFunction::TFunction(const TFunction& copyOf) : TSymbol(copyOf)
     op = copyOf.op;
     defined = copyOf.defined;
     prototyped = copyOf.prototyped;
+    implicitThis = copyOf.implicitThis;
     defaultParamCount = copyOf.defaultParamCount;
 }
 

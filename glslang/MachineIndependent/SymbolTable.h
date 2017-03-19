@@ -219,12 +219,12 @@ public:
     explicit TFunction(TOperator o) :
         TSymbol(0),
         op(o),
-        defined(false), prototyped(false), defaultParamCount(0) { }
+        defined(false), prototyped(false), implicitThis(false), defaultParamCount(0) { }
     TFunction(const TString *name, const TType& retType, TOperator tOp = EOpNull) :
         TSymbol(name),
         mangledName(*name + '('),
         op(tOp),
-        defined(false), prototyped(false), defaultParamCount(0)
+        defined(false), prototyped(false), implicitThis(false), defaultParamCount(0)
     {
         returnType.shallowCopy(retType);
         declaredBuiltIn = retType.getQualifier().builtIn;
@@ -235,6 +235,9 @@ public:
     virtual TFunction* getAsFunction() override { return this; }
     virtual const TFunction* getAsFunction() const override { return this; }
 
+    // Install 'p' as the (non-'this') last parameter.
+    // Non-'this' parameters are reflected in both the list of parameters and the
+    // mangled name.
     virtual void addParameter(TParameter& p)
     {
         assert(writable);
@@ -245,6 +248,16 @@ public:
         if (p.defaultValue != nullptr)
             defaultParamCount++;
     }
+
+    // Install 'this' as the first parameter.
+    // 'this' is reflected in the list of parameters, but not the mangled name.
+    virtual void addThisParameter(TType& type)
+    {
+        TParameter p = { NewPoolTString("this"), new TType, nullptr };
+        p.type->shallowCopy(type);
+        parameters.insert(parameters.begin(), p);
+    }
+
     virtual void addPrefix(const char* prefix) override
     {
         TSymbol::addPrefix(prefix);
@@ -261,6 +274,8 @@ public:
     virtual bool isDefined() const { return defined; }
     virtual void setPrototyped() { assert(writable); prototyped = true; }
     virtual bool isPrototyped() const { return prototyped; }
+    virtual void setImplicitThis() { assert(writable); implicitThis = true; }
+    virtual bool hasImplicitThis() const { return implicitThis; }
 
     // Return total number of parameters
     virtual int getParamCount() const { return static_cast<int>(parameters.size()); }
@@ -287,6 +302,7 @@ protected:
     TOperator op;
     bool defined;
     bool prototyped;
+    bool implicitThis;
     int  defaultParamCount;
 };
 

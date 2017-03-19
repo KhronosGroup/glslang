@@ -2794,8 +2794,10 @@ bool HlslGrammar::acceptFunctionCall(HlslToken callToken, TIntermTyped*& node, T
 
     // arguments
     TIntermTyped* arguments = nullptr;
-    if (baseObject != nullptr)
+    if (baseObject != nullptr) {
+        // Non-static member functions have an implicit first argument of the base object.
         parseContext.handleFunctionArgument(function, arguments, baseObject);
+    }
     if (! acceptArguments(function, arguments))
         return false;
 
