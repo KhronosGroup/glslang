@@ -1419,15 +1419,24 @@ void HlslParseContext::fixBuiltInArrayType(TType& type)
 void HlslParseContext::assignLocations(TVariable& variable)
 {
     const auto assignLocation = [&](TVariable& variable) {
-        const TQualifier& qualifier = variable.getType().getQualifier();
+        const TType& type = variable.getType();
+        const TQualifier& qualifier = type.getQualifier();
         if (qualifier.storage == EvqVaryingIn || qualifier.storage == EvqVaryingOut) {
             if (qualifier.builtIn == EbvNone) {
+                // Strip off the outer array dimension for those having an extra one.
+                int size;
+                if (type.isArray() && qualifier.isArrayedIo(language)) {
+                    TType elementType(type, 0);
+                    size = intermediate.computeTypeLocationSize(elementType);
+                } else
+                    size = intermediate.computeTypeLocationSize(type);
+
                 if (qualifier.storage == EvqVaryingIn) {
                     variable.getWritableType().getQualifier().layoutLocation = nextInLocation;
-                    nextInLocation += intermediate.computeTypeLocationSize(variable.getType());
+                    nextInLocation += size;
                 } else {
                     variable.getWritableType().getQualifier().layoutLocation = nextOutLocation;
-                    nextOutLocation += intermediate.computeTypeLocationSize(variable.getType());
+                    nextOutLocation += size;
                 }
             }
 
@@ -1892,10 +1901,14 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
                     ioVariable->getWritableType().setStruct(newLists->second.output);
             }
         }
-        if (storage == EvqVaryingIn)
+        if (storage == EvqVaryingIn) {
             correctInput(ioVariable->getWritableType().getQualifier());
-        else
+            if (language == EShLangTessEvaluation)
+                if (!ioVariable->getType().isArray())
+                    ioVariable->getWritableType().getQualifier().patch = true;
+        } else {
             correctOutput(ioVariable->getWritableType().getQualifier());
+        }
         ioVariable->getWritableType().getQualifier().storage = storage;
         return ioVariable;
     };
@@ -4211,6 +4224,10 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, TBu
         break;
     case EbvStencilRef:
         error(loc, "unimplemented; need ARB_shader_stencil_export", "SV_STENCILREF", "");
+        break;
+    case EbvTessLevelInner:
+    case EbvTessLevelOuter:
+        qualifier.patch = true;
         break;
     default:
         break;
@@ -7253,6 +7270,8 @@ bool HlslParseContext::isInputBuiltIn(const TQualifier& qualifier) const
         return language == EShLangGeometry || language == EShLangFragment;
     case EbvTessLevelInner:
     case EbvTessLevelOuter:
+        return language == EShLangTessEvaluation;
+    case EbvTessCoord:
         return language == EShLangTessEvaluation;
     default:
         return false;
