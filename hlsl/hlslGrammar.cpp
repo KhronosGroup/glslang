@@ -545,6 +545,10 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type, TIntermNode*& nodeList)
         qualifier.layoutFormat = type.getQualifier().layoutFormat;
         qualifier.precision    = type.getQualifier().precision;
 
+        // Propagate sampler readonly qualifier for buffers
+        if (type.getBasicType() == EbtSampler)
+            qualifier.readonly = type.getQualifier().readonly;
+
         if (type.getQualifier().storage == EvqVaryingOut ||
             type.getQualifier().storage == EvqBuffer) {
             qualifier.storage      = type.getQualifier().storage;
@@ -1188,9 +1192,8 @@ bool HlslGrammar::acceptTextureType(TType& type)
     sampler.vectorSize = txType.getVectorSize();
 
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));
-    type.getQualifier().layoutFormat = format;
 
-    // TODO: this is not being passed through to the SPIR-V OpTypeImage access qualifier.
+    type.getQualifier().layoutFormat = format;
     type.getQualifier().readonly = readonly;
 
     return true;

@@ -342,7 +342,7 @@ gl_FragCoord origin is upper left
 0:51          'r50' ( temp float)
 0:51          Construct float ( temp float)
 0:?             imageLoad ( temp 4-component vector of float)
-0:51              'g_tTexbfs' (layout( r32f) uniform imageBuffer)
+0:51              'g_tTexbfs' (layout( r32f) readonly uniform imageBuffer)
 0:51              Convert uint to int ( temp int)
 0:51                upos: direct index for structure (layout( offset=48) uniform uint)
 0:51                  'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int i, layout( offset=4) uniform uint u, layout( offset=8) uniform float f, layout( offset=12) uniform bool b, layout( offset=16) uniform 2-component vector of int i2, layout( offset=24) uniform 2-component vector of uint u2, layout( offset=32) uniform 2-component vector of float f2, layout( offset=40) uniform 2-component vector of bool b2, layout( offset=48) uniform uint upos, layout( offset=52) uniform float fpos})
@@ -353,7 +353,7 @@ gl_FragCoord origin is upper left
 0:52          'r51' ( temp float)
 0:52          Construct float ( temp float)
 0:?             imageLoad ( temp 4-component vector of float)
-0:52              'g_tTexbfs' (layout( r32f) uniform imageBuffer)
+0:52              'g_tTexbfs' (layout( r32f) readonly uniform imageBuffer)
 0:52              Convert float to int ( temp int)
 0:52                fpos: direct index for structure (layout( offset=52) uniform float)
 0:52                  'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int i, layout( offset=4) uniform uint u, layout( offset=8) uniform float f, layout( offset=12) uniform bool b, layout( offset=16) uniform 2-component vector of int i2, layout( offset=24) uniform 2-component vector of uint u2, layout( offset=32) uniform 2-component vector of float f2, layout( offset=40) uniform 2-component vector of bool b2, layout( offset=48) uniform uint upos, layout( offset=52) uniform float fpos})
@@ -436,7 +436,7 @@ gl_FragCoord origin is upper left
 0:20            Constant:
 0:20              0 (const int)
 0:?   Linker Objects
-0:?     'g_tTexbfs' (layout( r32f) uniform imageBuffer)
+0:?     'g_tTexbfs' (layout( r32f) readonly uniform imageBuffer)
 0:?     'g_tTex1df4' ( uniform texture1D)
 0:?     'color' (layout( location=0) out 4-component vector of float)
 0:?     'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int i, layout( offset=4) uniform uint u, layout( offset=8) uniform float f, layout( offset=12) uniform bool b, layout( offset=16) uniform 2-component vector of int i2, layout( offset=24) uniform 2-component vector of uint u2, layout( offset=32) uniform 2-component vector of float f2, layout( offset=40) uniform 2-component vector of bool b2, layout( offset=48) uniform uint upos, layout( offset=52) uniform float fpos})
@@ -788,7 +788,7 @@ gl_FragCoord origin is upper left
 0:51          'r50' ( temp float)
 0:51          Construct float ( temp float)
 0:?             imageLoad ( temp 4-component vector of float)
-0:51              'g_tTexbfs' (layout( r32f) uniform imageBuffer)
+0:51              'g_tTexbfs' (layout( r32f) readonly uniform imageBuffer)
 0:51              Convert uint to int ( temp int)
 0:51                upos: direct index for structure (layout( offset=48) uniform uint)
 0:51                  'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int i, layout( offset=4) uniform uint u, layout( offset=8) uniform float f, layout( offset=12) uniform bool b, layout( offset=16) uniform 2-component vector of int i2, layout( offset=24) uniform 2-component vector of uint u2, layout( offset=32) uniform 2-component vector of float f2, layout( offset=40) uniform 2-component vector of bool b2, layout( offset=48) uniform uint upos, layout( offset=52) uniform float fpos})
@@ -799,7 +799,7 @@ gl_FragCoord origin is upper left
 0:52          'r51' ( temp float)
 0:52          Construct float ( temp float)
 0:?             imageLoad ( temp 4-component vector of float)
-0:52              'g_tTexbfs' (layout( r32f) uniform imageBuffer)
+0:52              'g_tTexbfs' (layout( r32f) readonly uniform imageBuffer)
 0:52              Convert float to int ( temp int)
 0:52                fpos: direct index for structure (layout( offset=52) uniform float)
 0:52                  'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int i, layout( offset=4) uniform uint u, layout( offset=8) uniform float f, layout( offset=12) uniform bool b, layout( offset=16) uniform 2-component vector of int i2, layout( offset=24) uniform 2-component vector of uint u2, layout( offset=32) uniform 2-component vector of float f2, layout( offset=40) uniform 2-component vector of bool b2, layout( offset=48) uniform uint upos, layout( offset=52) uniform float fpos})
@@ -882,7 +882,7 @@ gl_FragCoord origin is upper left
 0:20            Constant:
 0:20              0 (const int)
 0:?   Linker Objects
-0:?     'g_tTexbfs' (layout( r32f) uniform imageBuffer)
+0:?     'g_tTexbfs' (layout( r32f) readonly uniform imageBuffer)
 0:?     'g_tTex1df4' ( uniform texture1D)
 0:?     'color' (layout( location=0) out 4-component vector of float)
 0:?     'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int i, layout( offset=4) uniform uint u, layout( offset=8) uniform float f, layout( offset=12) uniform bool b, layout( offset=16) uniform 2-component vector of int i2, layout( offset=24) uniform 2-component vector of uint u2, layout( offset=32) uniform 2-component vector of float f2, layout( offset=40) uniform 2-component vector of bool b2, layout( offset=48) uniform uint upos, layout( offset=52) uniform float fpos})
@@ -964,6 +964,7 @@ gl_FragCoord origin is upper left
                               Decorate 19($Global) Block
                               Decorate 21 DescriptorSet 0
                               Decorate 258(g_tTexbfs) DescriptorSet 0
+                              Decorate 258(g_tTexbfs) NonWritable
                               Decorate 277(g_tTex1df4) DescriptorSet 0
                               Decorate 319(color) Location 0
                2:             TypeVoid
