@@ -164,6 +164,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.multiEntry.vert", "RealEntrypoint"},
         {"hlsl.multiReturn.frag", "main"},
         {"hlsl.matrixindex.frag", "main"},
+        {"hlsl.nonstaticMemberFunction.frag", "main"},
         {"hlsl.numericsuffixes.frag", "main"},
         {"hlsl.numthreads.comp", "main_aux1"},
         {"hlsl.overload.frag", "PixelShaderFunction"},

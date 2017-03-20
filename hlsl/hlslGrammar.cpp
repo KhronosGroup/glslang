@@ -1831,6 +1831,15 @@ bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
 
     parseContext.declareStruct(token.loc, structName, type);
 
+    // For member functions: now that we know the type of 'this', go back and
+    // - add their implicit argument with 'this' (not to the mangling, just the argument list)
+    // - parse the functions, their tokens were saved for deferred parsing (now)
+    for (int b = 0; b < (int)functionDeclarators.size(); ++b) {
+        // update signature
+        if (functionDeclarators[b].function->hasImplicitThis())
+            functionDeclarators[b].function->addThisParameter(type);
+    }
+
     // All member functions get parsed inside the class/struct namespace and with the
     // class/struct members in a symbol-table level.
     parseContext.pushNamespace(structName);
@@ -2059,6 +2068,8 @@ bool HlslGrammar::acceptMemberFunctionDefinition(TIntermNode*& nodeList, const T
 
     TString* functionName = parseContext.getFullNamespaceName(memberName);
     declarator.function = new TFunction(functionName, type);
+    if (type.getQualifier().storage == EvqTemporary)
+        declarator.function->setImplicitThis();
 
     // function_parameters
     if (acceptFunctionParameters(*declarator.function)) {
@@ -2067,11 +2078,6 @@ bool HlslGrammar::acceptMemberFunctionDefinition(TIntermNode*& nodeList, const T
 
         // compound_statement (function body definition)
         if (peekTokenClass(EHTokLeftBrace)) {
-            if (declarator.function->getType().getQualifier().storage != EvqGlobal) {
-                expected("only static member functions are accepted");
-                return false;
-            }
-
             declarator.loc = token.loc;
             declarator.body = new TVector<HlslToken>;
             accepted = acceptFunctionDefinition(declarator, nodeList, declarator.body);
@@ -2221,7 +2227,7 @@ bool HlslGrammar::acceptFunctionDefinition(TFunctionDeclarator& declarator, TInt
     if (deferredTokens)
         return captureBlockTokens(*deferredTokens);
     else
-    return acceptFunctionBody(declarator, nodeList);
+        return acceptFunctionBody(declarator, nodeList);
 }
 
 bool HlslGrammar::acceptFunctionBody(TFunctionDeclarator& declarator, TIntermNode*& nodeList)
@@ -2609,7 +2615,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
     HlslToken idToken;
 
     // scopeBase will pick up the type symbol on the left of '::'
-    TSymbol* scopeBase = nullptr;
+    TSymbol* scope = nullptr;
 
     // Find something before the postfix operations, as they can't operate
     // on nothing.  So, no "return true", they fall through, only "return false".
@@ -2631,8 +2637,8 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         // user-type, identifier, or function name
         if (peekTokenClass(EHTokColonColon)) {
             TType type;
-            scopeBase = parseContext.lookupUserType(*idToken.string, type);
-            if (scopeBase == nullptr) {
+            scope = parseContext.lookupUserType(*idToken.string, type);
+            if (scope == nullptr) {
                 expected("type left of ::");
                 return false;
             }
@@ -2702,7 +2708,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
                 TIntermTyped* thisNode = node;
 
                 // arguments
-                if (! acceptFunctionCall(field, node, thisNode, scopeBase)) {
+                if (! acceptFunctionCall(field, node, thisNode, scope)) {
                     expected("function parameters");
                     return false;
                 }
@@ -2775,16 +2781,21 @@ bool HlslGrammar::acceptConstructor(TIntermTyped*& node)
 //      : [idToken] arguments
 //
 bool HlslGrammar::acceptFunctionCall(HlslToken callToken, TIntermTyped*& node, TIntermTyped* baseObject,
-                                     const TSymbol* baseType)
+                                     const TSymbol* scope)
 {
     // name
     TString* functionName = nullptr;
-    if ((baseObject == nullptr && baseType == nullptr)
-        || parseContext.isBuiltInMethod(callToken.loc, baseObject, *callToken.string))
+    if ((baseObject == nullptr && scope == nullptr) ||
+        parseContext.isBuiltInMethod(callToken.loc, baseObject, *callToken.string)) {
+        // Built-in methods are not in the symbol table as methods, but as global functions
+        // taking an explicit 'this' as the first argument.
         functionName = callToken.string;
-    else {
+    } else {
         functionName = NewPoolTString("");
-        functionName->append(baseType->getType().getTypeName());
+        if (baseObject != nullptr)
+            functionName->append(baseObject->getType().getTypeName());
+        else if (scope != nullptr)
+            functionName->append(scope->getType().getTypeName());
         parseContext.addScopeMangler(*functionName);
         functionName->append(*callToken.string);
     }

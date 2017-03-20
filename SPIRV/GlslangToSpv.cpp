@@ -2747,7 +2747,8 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
             const glslang::TType& paramType = parameters[p]->getAsTyped()->getType();
             spv::Id typeId = convertGlslangToSpvType(paramType);
             if (paramType.containsOpaque() ||
-                (paramType.getBasicType() == glslang::EbtBlock && paramType.getQualifier().storage == glslang::EvqBuffer))
+                (paramType.getBasicType() == glslang::EbtBlock &&
+                 paramType.getQualifier().storage == glslang::EvqBuffer))
                 typeId = builder.makePointer(TranslateStorageClass(paramType), typeId);
             else if (paramType.getQualifier().storage != glslang::EvqConstReadOnly)
                 typeId = builder.makePointer(spv::StorageClassFunction, typeId);
