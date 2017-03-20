@@ -390,6 +390,12 @@ protected:
     TVector<TString> currentTypePrefix;
 };
 
+// This is the prefix we use for builtin methods to avoid namespace collisions with
+// global scope user functions.
+// TODO: this would be better as a nonparseable character, but that would
+// require changing the scanner.
+#define BUILTIN_PREFIX "__BI_"
+
 } // end namespace glslang
 
 #endif // HLSL_PARSE_INCLUDED_
