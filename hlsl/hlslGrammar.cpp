@@ -2792,11 +2792,13 @@ bool HlslGrammar::acceptFunctionCall(HlslToken callToken, TIntermTyped*& node, T
 {
     // name
     TString* functionName = nullptr;
-    if ((baseObject == nullptr && scope == nullptr) ||
-        parseContext.isBuiltInMethod(callToken.loc, baseObject, *callToken.string)) {
+    if ((baseObject == nullptr && scope == nullptr)) {
+        functionName = callToken.string;
+    } else if (parseContext.isBuiltInMethod(callToken.loc, baseObject, *callToken.string)) {
         // Built-in methods are not in the symbol table as methods, but as global functions
         // taking an explicit 'this' as the first argument.
-        functionName = callToken.string;
+        functionName = NewPoolTString(BUILTIN_PREFIX);
+        functionName->append(*callToken.string);
     } else {
         functionName = NewPoolTString("");
         if (baseObject != nullptr)

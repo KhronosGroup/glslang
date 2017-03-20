@@ -956,7 +956,7 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
 // Return true if the field should be treated as a built-in method.
 // Return false otherwise.
 //
-bool HlslParseContext::isBuiltInMethod(const TSourceLoc& loc, TIntermTyped* base, const TString& field)
+bool HlslParseContext::isBuiltInMethod(const TSourceLoc&, TIntermTyped* base, const TString& field)
 {
     if (base == nullptr)
         return false;
@@ -3734,7 +3734,10 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         // It will have false positives, since it doesn't check arg counts or types.
         if (arguments && arguments->getAsAggregate()) {
             if (isStructBufferType(arguments->getAsAggregate()->getSequence()[0]->getAsTyped()->getType())) {
-                if (isStructBufferMethod(function->getName())) {
+                static const int methodPrefixSize = sizeof(BUILTIN_PREFIX)-1;
+
+                if (function->getName().length() > methodPrefixSize &&
+                    isStructBufferMethod(function->getName().substr(methodPrefixSize))) {
                     const TString mangle = function->getName() + "(";
                     TSymbol* symbol = symbolTable.find(mangle, &builtIn);
 
