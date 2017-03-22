@@ -160,6 +160,13 @@ public:
     void pushScope()         { symbolTable.push(); }
     void popScope()          { symbolTable.pop(0); }
 
+    void pushThisScope(const TType&);
+    void popThisScope()      { symbolTable.pop(0); }
+
+    void pushImplicitThis(TVariable* thisParameter) { implicitThisStack.push_back(thisParameter); }
+    void popImplicitThis() { implicitThisStack.pop_back(); }
+    TVariable* getImplicitThis(int thisDepth) const { return implicitThisStack[implicitThisStack.size() - thisDepth]; }
+
     void pushNamespace(const TString& name);
     void popNamespace();
     TString* getFullNamespaceName(const TString& localName) const;
@@ -387,7 +394,8 @@ protected:
     TString patchConstantFunctionName; // hull shader patch constant function name, from function level attribute.
     TMap<TBuiltInVariable, TSymbol*> builtInLinkageSymbols; // used for tessellation, finding declared builtins
 
-    TVector<TString> currentTypePrefix;
+    TVector<TString> currentTypePrefix;      // current scoping prefix for nested structures
+    TVector<TVariable*> implicitThisStack;   // currently active 'this' variables for nested structures
 };
 
 // This is the prefix we use for builtin methods to avoid namespace collisions with

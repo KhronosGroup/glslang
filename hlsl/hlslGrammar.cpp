@@ -1842,12 +1842,13 @@ bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
     for (int b = 0; b < (int)functionDeclarators.size(); ++b) {
         // update signature
         if (functionDeclarators[b].function->hasImplicitThis())
-            functionDeclarators[b].function->addThisParameter(type);
+            functionDeclarators[b].function->addThisParameter(type, intermediate.implicitThisName);
     }
 
     // All member functions get parsed inside the class/struct namespace and with the
     // class/struct members in a symbol-table level.
     parseContext.pushNamespace(structName);
+    parseContext.pushThisScope(type);
     bool deferredSuccess = true;
     for (int b = 0; b < (int)functionDeclarators.size() && deferredSuccess; ++b) {
         // parse body
@@ -1856,6 +1857,7 @@ bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
             deferredSuccess = false;
         popTokenStream();
     }
+    parseContext.popThisScope();
     parseContext.popNamespace();
 
     return deferredSuccess;
@@ -2075,6 +2077,8 @@ bool HlslGrammar::acceptMemberFunctionDefinition(TIntermNode*& nodeList, const T
     declarator.function = new TFunction(functionName, type);
     if (type.getQualifier().storage == EvqTemporary)
         declarator.function->setImplicitThis();
+    else
+        declarator.function->setIllegalImplicitThis();
 
     // function_parameters
     if (acceptFunctionParameters(*declarator.function)) {
