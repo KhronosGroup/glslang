@@ -1538,15 +1538,14 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
             TVariable *variable = new TVariable(param.name, *param.type);
 
             if (i == 0 && function.hasImplicitThis()) {
-                // 'this' members are already in a symbol-table level,
-                // and we need to know what function parameter to map them to
+                // Anonymous 'this' members are already in a symbol-table level,
+                // and we need to know what function parameter to map them to.
                 symbolTable.makeInternalVariable(*variable);
                 pushImplicitThis(variable);
-            } else {
-                // Insert the parameters with name in the symbol table.
-                if (! symbolTable.insert(*variable))
-                    error(loc, "redefinition", variable->getName().c_str(), "");
             }
+            // Insert the parameters with name in the symbol table.
+            if (! symbolTable.insert(*variable))
+                error(loc, "redefinition", variable->getName().c_str(), "");
             // Add the parameter to the AST
             paramNodes = intermediate.growAggregate(paramNodes,
                                                     intermediate.addSymbol(*variable, loc),

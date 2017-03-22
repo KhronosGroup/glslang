@@ -235,6 +235,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.structin.vert", "main"},
         {"hlsl.structIoFourWay.frag", "main"},
         {"hlsl.structStructName.frag", "main"},
+        {"hlsl.this.frag", "main"},
         {"hlsl.intrinsics.vert", "VertexShaderFunction"},
         {"hlsl.matType.frag", "PixelShaderFunction"},
         {"hlsl.matType.bool.frag", "main"},

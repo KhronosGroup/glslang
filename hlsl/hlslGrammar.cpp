@@ -75,15 +75,32 @@ void HlslGrammar::unimplemented(const char* error)
     parseContext.error(token.loc, "Unimplemented", error, "");
 }
 
+// IDENTIFIER
+// THIS
+// type that can be used as IDENTIFIER
+//
 // Only process the next token if it is an identifier.
 // Return true if it was an identifier.
 bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
 {
+    // IDENTIFIER
     if (peekTokenClass(EHTokIdentifier)) {
         idToken = token;
         advanceToken();
         return true;
     }
+
+    // THIS
+    // -> maps to the IDENTIFIER spelled with the internal special name for 'this'
+    if (peekTokenClass(EHTokThis)) {
+        idToken = token;
+        advanceToken();
+        idToken.tokenClass = EHTokIdentifier;
+        idToken.string = NewPoolTString(intermediate.implicitThisName);
+        return true;
+    }
+
+    // type that can be used as IDENTIFIER
 
     // Even though "sample", "bool", "float", etc keywords (for types, interpolation modifiers),
     // they ARE still accepted as identifiers.  This is not a dense space: e.g, "void" is not a
