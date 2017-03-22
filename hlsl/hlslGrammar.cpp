@@ -109,7 +109,6 @@ bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
 
     token.string     = idString;
     token.tokenClass = EHTokIdentifier;
-    token.symbol     = nullptr;
     idToken          = token;
 
     advanceToken();
@@ -1298,8 +1297,7 @@ bool HlslGrammar::acceptType(TType& type, TIntermNode*& nodeList)
         // An identifier could be for a user-defined type.
         // Note we cache the symbol table lookup, to save for a later rule
         // when this is not a type.
-        token.symbol = parseContext.lookupUserType(*token.string, type);
-        if (token.symbol != nullptr) {
+        if (parseContext.lookupUserType(*token.string, type) != nullptr) {
             advanceToken();
             return true;
         } else
@@ -2650,7 +2648,7 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
                 return false;
             }
         } else if (! peekTokenClass(EHTokLeftParen)) {
-            node = parseContext.handleVariable(idToken.loc, idToken.symbol, idToken.string);
+            node = parseContext.handleVariable(idToken.loc, idToken.string);
         } else if (acceptFunctionCall(idToken, node)) {
             // function_call (nothing else to do yet)
         } else {
