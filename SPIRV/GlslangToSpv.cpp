@@ -869,14 +869,20 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
         builder.addCapability(spv::CapabilityShader);
         break;
 
+    case EShLangTessEvaluation:
     case EShLangTessControl:
         builder.addCapability(spv::CapabilityTessellation);
-        builder.addExecutionMode(shaderEntry, spv::ExecutionModeOutputVertices, glslangIntermediate->getVertices());
-        break;
 
-    case EShLangTessEvaluation:
-        builder.addCapability(spv::CapabilityTessellation);
-        switch (glslangIntermediate->getInputPrimitive()) {
+        glslang::TLayoutGeometry primitive;
+
+        if (glslangIntermediate->getStage() == EShLangTessControl) {
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeOutputVertices, glslangIntermediate->getVertices());
+            primitive = glslangIntermediate->getOutputPrimitive();
+        } else {
+            primitive = glslangIntermediate->getInputPrimitive();
+        }
+
+        switch (primitive) {
         case glslang::ElgTriangles:           mode = spv::ExecutionModeTriangles;     break;
         case glslang::ElgQuads:               mode = spv::ExecutionModeQuads;         break;
         case glslang::ElgIsolines:            mode = spv::ExecutionModeIsolines;      break;

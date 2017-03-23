@@ -1386,7 +1386,7 @@ void HlslParseContext::trackLinkage(TSymbol& symbol)
 // Some types require fixed array sizes in SPIR-V, but can be scalars or
 // arrays of sizes SPIR-V doesn't allow.  For example, tessellation factors.
 // This creates the right size.  A conversion is performed when the internal
-// type is copied to or from the external
+// type is copied to or from the external type.
 void HlslParseContext::fixBuiltInArrayType(TType& type)
 {
     int requiredSize = 0;
@@ -1600,7 +1600,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
 
 
 // Handle all [attrib] attribute for the shader entry point
-void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, TFunction& userFunction, const TAttributeMap& attributes)
+void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const TAttributeMap& attributes)
 {
     // Handle entry-point function attributes
     const TIntermAggregate* numThreads = attributes[EatNumThreads];
@@ -1779,7 +1779,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     entryPointFunction = &userFunction; // needed in finish()
 
     // Handle entry point attributes
-    handleEntryPointAttributes(loc, userFunction, attributes);
+    handleEntryPointAttributes(loc, attributes);
 
     // entry point logic...
 
@@ -1853,6 +1853,9 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     if (entryPointOutput) {
         TIntermTyped* returnAssign;
 
+        // For hull shaders, the wrapped entry point return value is written to
+        // an array element as indexed by invocation ID, which we might have to make up.
+        // This is required to match SPIR-V semantics.
         if (language == EShLangTessControl) {
             TIntermSymbol* invocationIdSym = findLinkageSymbol(EbvInvocationId);
 

@@ -80,7 +80,7 @@ public:
     void handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&, const TAttributeMap&, TIntermNode*& entryPointTree);
     TIntermNode* transformEntryPoint(const TSourceLoc&, TFunction&, const TAttributeMap&);
-    void handleEntryPointAttributes(const TSourceLoc&, TFunction&, const TAttributeMap&);
+    void handleEntryPointAttributes(const TSourceLoc&, const TAttributeMap&);
     void handleFunctionBody(const TSourceLoc&, TFunction&, TIntermNode* functionBody, TIntermNode*& node);
     void remapEntryPointIO(TFunction& function, TVariable*& returnValue, TVector<TVariable*>& inputs, TVector<TVariable*>& outputs);
     void remapNonEntryPointIO(TFunction& function);
