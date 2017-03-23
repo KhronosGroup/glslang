@@ -1513,11 +1513,6 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     // rest of this function doesn't care.
     entryPointTree = transformEntryPoint(loc, function, attributes);
 
-    // Insert the $Global constant buffer.
-    // TODO: this design fails if new members are declared between function definitions.
-    if (! insertGlobalUniformBlock())
-        error(loc, "failed to insert the global constant buffer", "uniform", "");
-
     //
     // New symbol table scope for body of function plus its arguments
     //
@@ -6699,13 +6694,6 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
 
     // Save it in the AST for linker use.
     trackLinkage(variable);
-}
-
-void HlslParseContext::finalizeGlobalUniformBlockLayout(TVariable& block)
-{
-    block.getWritableType().getQualifier().layoutPacking = ElpStd140;
-    block.getWritableType().getQualifier().layoutMatrix = ElmRowMajor;
-    fixBlockUniformOffsets(block.getType().getQualifier(), *block.getWritableType().getWritableStruct());
 }
 
 //

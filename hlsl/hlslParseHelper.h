@@ -54,7 +54,12 @@ public:
 
     void setLimits(const TBuiltInResource&) override;
     bool parseShaderStrings(TPpContext&, TInputScanner& input, bool versionWillBeError = false) override;
-    virtual const char* getGlobalUniformBlockName() override { return "$Global"; }
+    virtual const char* getGlobalUniformBlockName() const override { return "$Global"; }
+    virtual void setUniformBlockDefaults(TType& block) const override
+    {
+        block.getQualifier().layoutPacking = ElpStd140;
+        block.getQualifier().layoutMatrix = ElmRowMajor;
+    }
 
     void reservedPpErrorCheck(const TSourceLoc&, const char* /*name*/, const char* /*op*/) override { }
     bool lineContinuationCheck(const TSourceLoc&, bool /*endOfComment*/) override { return true; }
@@ -140,7 +145,6 @@ public:
     TIntermTyped* constructAggregate(TIntermNode*, const TType&, int, const TSourceLoc&);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, const TSourceLoc&, bool subset);
     void declareBlock(const TSourceLoc&, TType&, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
-    void finalizeGlobalUniformBlockLayout(TVariable& block) override;
     void fixBlockLocations(const TSourceLoc&, TQualifier&, TTypeList&, bool memberWithLocation, bool memberWithoutLocation);
     void fixBlockXfbOffsets(TQualifier&, TTypeList&);
     void fixBlockUniformOffsets(const TQualifier&, TTypeList&);

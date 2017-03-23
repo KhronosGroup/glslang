@@ -10,8 +10,8 @@ gl_FragCoord origin is upper left
 0:28          'r00' ( temp 4-component vector of float)
 0:28          imageLoad ( temp 4-component vector of float)
 0:28            'g_tTexbf4' (layout( rgba32f) readonly uniform imageBuffer)
-0:28            c1: direct index for structure (layout( offset=0) uniform int)
-0:28              'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int c1, layout( offset=8) uniform 2-component vector of int c2, layout( offset=16) uniform 3-component vector of int c3, layout( offset=32) uniform 4-component vector of int c4, layout( offset=48) uniform int o1, layout( offset=56) uniform 2-component vector of int o2, layout( offset=64) uniform 3-component vector of int o3, layout( offset=80) uniform 4-component vector of int o4})
+0:28            c1: direct index for structure ( uniform int)
+0:28              'anon@0' (layout( row_major std140) uniform block{ uniform int c1,  uniform 2-component vector of int c2,  uniform 3-component vector of int c3,  uniform 4-component vector of int c4,  uniform int o1,  uniform 2-component vector of int o2,  uniform 3-component vector of int o3,  uniform 4-component vector of int o4})
 0:28              Constant:
 0:28                0 (const uint)
 0:29      Sequence
@@ -19,8 +19,8 @@ gl_FragCoord origin is upper left
 0:29          'r01' ( temp 4-component vector of int)
 0:29          imageLoad ( temp 4-component vector of int)
 0:29            'g_tTexbi4' (layout( rgba32i) readonly uniform iimageBuffer)
-0:29            c1: direct index for structure (layout( offset=0) uniform int)
-0:29              'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int c1, layout( offset=8) uniform 2-component vector of int c2, layout( offset=16) uniform 3-component vector of int c3, layout( offset=32) uniform 4-component vector of int c4, layout( offset=48) uniform int o1, layout( offset=56) uniform 2-component vector of int o2, layout( offset=64) uniform 3-component vector of int o3, layout( offset=80) uniform 4-component vector of int o4})
+0:29            c1: direct index for structure ( uniform int)
+0:29              'anon@0' (layout( row_major std140) uniform block{ uniform int c1,  uniform 2-component vector of int c2,  uniform 3-component vector of int c3,  uniform 4-component vector of int c4,  uniform int o1,  uniform 2-component vector of int o2,  uniform 3-component vector of int o3,  uniform 4-component vector of int o4})
 0:29              Constant:
 0:29                0 (const uint)
 0:30      Sequence
@@ -28,8 +28,8 @@ gl_FragCoord origin is upper left
 0:30          'r02' ( temp 4-component vector of uint)
 0:30          imageLoad ( temp 4-component vector of uint)
 0:30            'g_tTexbu4' (layout( rgba32ui) readonly uniform uimageBuffer)
-0:30            c1: direct index for structure (layout( offset=0) uniform int)
-0:30              'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int c1, layout( offset=8) uniform 2-component vector of int c2, layout( offset=16) uniform 3-component vector of int c3, layout( offset=32) uniform 4-component vector of int c4, layout( offset=48) uniform int o1, layout( offset=56) uniform 2-component vector of int o2, layout( offset=64) uniform 3-component vector of int o3, layout( offset=80) uniform 4-component vector of int o4})
+0:30            c1: direct index for structure ( uniform int)
+0:30              'anon@0' (layout( row_major std140) uniform block{ uniform int c1,  uniform 2-component vector of int c2,  uniform 3-component vector of int c3,  uniform 4-component vector of int c4,  uniform int o1,  uniform 2-component vector of int o2,  uniform 3-component vector of int o3,  uniform 4-component vector of int o4})
 0:30              Constant:
 0:30                0 (const uint)
 0:34      move second child to first child ( temp 4-component vector of float)
@@ -75,9 +75,9 @@ gl_FragCoord origin is upper left
 0:?     'g_tTexbf4' (layout( rgba32f) readonly uniform imageBuffer)
 0:?     'g_tTexbi4' (layout( rgba32i) readonly uniform iimageBuffer)
 0:?     'g_tTexbu4' (layout( rgba32ui) readonly uniform uimageBuffer)
+0:?     'anon@0' (layout( row_major std140) uniform block{ uniform int c1,  uniform 2-component vector of int c2,  uniform 3-component vector of int c3,  uniform 4-component vector of int c4,  uniform int o1,  uniform 2-component vector of int o2,  uniform 3-component vector of int o3,  uniform 4-component vector of int o4})
 0:?     'Color' (layout( location=0) out 4-component vector of float)
 0:?     'Depth' ( out float FragDepth)
-0:?     'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int c1, layout( offset=8) uniform 2-component vector of int c2, layout( offset=16) uniform 3-component vector of int c3, layout( offset=32) uniform 4-component vector of int c4, layout( offset=48) uniform int o1, layout( offset=56) uniform 2-component vector of int o2, layout( offset=64) uniform 3-component vector of int o3, layout( offset=80) uniform 4-component vector of int o4})
 
 
 Linked fragment stage:
@@ -94,8 +94,8 @@ gl_FragCoord origin is upper left
 0:28          'r00' ( temp 4-component vector of float)
 0:28          imageLoad ( temp 4-component vector of float)
 0:28            'g_tTexbf4' (layout( rgba32f) readonly uniform imageBuffer)
-0:28            c1: direct index for structure (layout( offset=0) uniform int)
-0:28              'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int c1, layout( offset=8) uniform 2-component vector of int c2, layout( offset=16) uniform 3-component vector of int c3, layout( offset=32) uniform 4-component vector of int c4, layout( offset=48) uniform int o1, layout( offset=56) uniform 2-component vector of int o2, layout( offset=64) uniform 3-component vector of int o3, layout( offset=80) uniform 4-component vector of int o4})
+0:28            c1: direct index for structure ( uniform int)
+0:28              'anon@0' (layout( row_major std140) uniform block{ uniform int c1,  uniform 2-component vector of int c2,  uniform 3-component vector of int c3,  uniform 4-component vector of int c4,  uniform int o1,  uniform 2-component vector of int o2,  uniform 3-component vector of int o3,  uniform 4-component vector of int o4})
 0:28              Constant:
 0:28                0 (const uint)
 0:29      Sequence
@@ -103,8 +103,8 @@ gl_FragCoord origin is upper left
 0:29          'r01' ( temp 4-component vector of int)
 0:29          imageLoad ( temp 4-component vector of int)
 0:29            'g_tTexbi4' (layout( rgba32i) readonly uniform iimageBuffer)
-0:29            c1: direct index for structure (layout( offset=0) uniform int)
-0:29              'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int c1, layout( offset=8) uniform 2-component vector of int c2, layout( offset=16) uniform 3-component vector of int c3, layout( offset=32) uniform 4-component vector of int c4, layout( offset=48) uniform int o1, layout( offset=56) uniform 2-component vector of int o2, layout( offset=64) uniform 3-component vector of int o3, layout( offset=80) uniform 4-component vector of int o4})
+0:29            c1: direct index for structure ( uniform int)
+0:29              'anon@0' (layout( row_major std140) uniform block{ uniform int c1,  uniform 2-component vector of int c2,  uniform 3-component vector of int c3,  uniform 4-component vector of int c4,  uniform int o1,  uniform 2-component vector of int o2,  uniform 3-component vector of int o3,  uniform 4-component vector of int o4})
 0:29              Constant:
 0:29                0 (const uint)
 0:30      Sequence
@@ -112,8 +112,8 @@ gl_FragCoord origin is upper left
 0:30          'r02' ( temp 4-component vector of uint)
 0:30          imageLoad ( temp 4-component vector of uint)
 0:30            'g_tTexbu4' (layout( rgba32ui) readonly uniform uimageBuffer)
-0:30            c1: direct index for structure (layout( offset=0) uniform int)
-0:30              'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int c1, layout( offset=8) uniform 2-component vector of int c2, layout( offset=16) uniform 3-component vector of int c3, layout( offset=32) uniform 4-component vector of int c4, layout( offset=48) uniform int o1, layout( offset=56) uniform 2-component vector of int o2, layout( offset=64) uniform 3-component vector of int o3, layout( offset=80) uniform 4-component vector of int o4})
+0:30            c1: direct index for structure ( uniform int)
+0:30              'anon@0' (layout( row_major std140) uniform block{ uniform int c1,  uniform 2-component vector of int c2,  uniform 3-component vector of int c3,  uniform 4-component vector of int c4,  uniform int o1,  uniform 2-component vector of int o2,  uniform 3-component vector of int o3,  uniform 4-component vector of int o4})
 0:30              Constant:
 0:30                0 (const uint)
 0:34      move second child to first child ( temp 4-component vector of float)
@@ -159,9 +159,9 @@ gl_FragCoord origin is upper left
 0:?     'g_tTexbf4' (layout( rgba32f) readonly uniform imageBuffer)
 0:?     'g_tTexbi4' (layout( rgba32i) readonly uniform iimageBuffer)
 0:?     'g_tTexbu4' (layout( rgba32ui) readonly uniform uimageBuffer)
+0:?     'anon@0' (layout( row_major std140) uniform block{ uniform int c1,  uniform 2-component vector of int c2,  uniform 3-component vector of int c3,  uniform 4-component vector of int c4,  uniform int o1,  uniform 2-component vector of int o2,  uniform 3-component vector of int o3,  uniform 4-component vector of int o4})
 0:?     'Color' (layout( location=0) out 4-component vector of float)
 0:?     'Depth' ( out float FragDepth)
-0:?     'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform int c1, layout( offset=8) uniform 2-component vector of int c2, layout( offset=16) uniform 3-component vector of int c3, layout( offset=32) uniform 4-component vector of int c4, layout( offset=48) uniform int o1, layout( offset=56) uniform 2-component vector of int o2, layout( offset=64) uniform 3-component vector of int o3, layout( offset=80) uniform 4-component vector of int o4})
 
 // Module Version 10000
 // Generated by (magic number): 80001
