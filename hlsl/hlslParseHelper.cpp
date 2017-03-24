@@ -2100,6 +2100,10 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
             int memberL = 0;
             int memberR = 0;
 
+            // Handle empty structure assignment
+            if (int(membersL.size()) == 0 && int(membersR.size()) == 0)
+                assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, left, right, loc), loc);
+
             for (int member = 0; member < int(membersL.size()); ++member) {
                 const TType& typeL = *membersL[member].type;
                 const TType& typeR = *membersR[member].type;
