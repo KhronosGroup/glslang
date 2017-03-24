@@ -724,6 +724,7 @@ int TPpContext::CPPerror(TPpToken* ppToken)
         if (token == PpAtomConstInt   || token == PpAtomConstUint   ||
             token == PpAtomConstInt64 || token == PpAtomConstUint64 ||
 #ifdef AMD_EXTENSIONS
+            token == PpAtomConstInt16 || token == PpAtomConstUint16 ||
             token == PpAtomConstFloat16 ||
 #endif
             token == PpAtomConstFloat || token == PpAtomConstDouble) {
@@ -758,6 +759,10 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
         case PpAtomConstUint:
         case PpAtomConstInt64:
         case PpAtomConstUint64:
+#ifdef AMD_EXTENSIONS
+        case PpAtomConstInt16:
+        case PpAtomConstUint16:
+#endif
         case PpAtomConstFloat:
         case PpAtomConstDouble:
 #ifdef AMD_EXTENSIONS
