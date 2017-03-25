@@ -2,5 +2,5 @@
 // For the version, it uses the latest git tag followed by the number of commits.
 // For the date, it uses the current date (when then script is run).
 
-#define GLSLANG_REVISION "Overload400-PrecQual.1932"
-#define GLSLANG_DATE "23-Mar-2017"
+#define GLSLANG_REVISION "Overload400-PrecQual.1933"
+#define GLSLANG_DATE "24-Mar-2017"
