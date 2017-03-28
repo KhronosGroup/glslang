@@ -1829,7 +1829,7 @@ bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
     TVector<TFunctionDeclarator> functionDeclarators;
 
     parseContext.pushNamespace(structName);
-    bool acceptedList = acceptStructDeclarationList(typeList, nodeList, structName, functionDeclarators);
+    bool acceptedList = acceptStructDeclarationList(typeList, nodeList, functionDeclarators);
     parseContext.popNamespace();
 
     if (! acceptedList) {
@@ -1988,7 +1988,7 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
 //      | IDENTIFIER array_specifier post_decls
 //      | IDENTIFIER function_parameters post_decls                                         // member-function prototype
 //
-bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*& nodeList, const TString& typeName,
+bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*& nodeList,
                                               TVector<TFunctionDeclarator>& declarators)
 {
     typeList = new TTypeList();

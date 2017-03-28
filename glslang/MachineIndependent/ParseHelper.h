@@ -174,7 +174,7 @@ protected:
     int firstNewMember;              // the index of the first member not yet inserted into the symbol table
     // override this to set the language-specific name
     virtual const char* getGlobalUniformBlockName() const { return ""; }
-    virtual void setUniformBlockDefaults(TType& block) const { }
+    virtual void setUniformBlockDefaults(TType&) const { }
     virtual void finalizeGlobalUniformBlockLayout(TVariable&) { }
     virtual void outputMessage(const TSourceLoc&, const char* szReason, const char* szToken,
                                const char* szExtraInfoFormat, TPrefixType prefix,

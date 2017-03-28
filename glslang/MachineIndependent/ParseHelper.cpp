@@ -5770,7 +5770,7 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
 }
 
 // Do all block-declaration checking regarding its qualifiers.
-void TParseContext::blockQualifierCheck(const TSourceLoc& loc, const TQualifier& qualifier, bool instanceName)
+void TParseContext::blockQualifierCheck(const TSourceLoc& loc, const TQualifier& qualifier, bool /*instanceName*/)
 {
     // The 4.5 specification says:
     //
