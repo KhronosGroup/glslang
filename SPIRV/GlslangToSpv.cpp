@@ -2272,10 +2272,19 @@ bool TGlslangToSpvTraverser::filterMember(const glslang::TType& member)
 {
     auto& extensions = glslangIntermediate->getRequestedExtensions();
 
+    if (member.getFieldName() == "gl_ViewportMask" &&
+        extensions.find("GL_NV_viewport_array2") == extensions.end())
+        return true;
+    if (member.getFieldName() == "gl_SecondaryViewportMaskNV" &&
+        extensions.find("GL_NV_stereo_view_rendering") == extensions.end())
+        return true;
     if (member.getFieldName() == "gl_SecondaryPositionNV" &&
         extensions.find("GL_NV_stereo_view_rendering") == extensions.end())
         return true;
     if (member.getFieldName() == "gl_PositionPerViewNV" &&
+        extensions.find("GL_NVX_multiview_per_view_attributes") == extensions.end())
+        return true;
+    if (member.getFieldName() == "gl_ViewportMaskPerViewNV" &&
         extensions.find("GL_NVX_multiview_per_view_attributes") == extensions.end())
         return true;
 
