@@ -344,7 +344,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
     while (acceptIdentifier(idToken)) {
         if (peekTokenClass(EHTokLeftParen)) {
             // looks like function parameters
-            TString* fnName = idToken.string;
+            const TString* fnName = idToken.string;
 
             // Potentially rename shader entry point function.  No-op most of the time.
             parseContext.renameShaderFunction(fnName);
@@ -2090,7 +2090,8 @@ bool HlslGrammar::acceptMemberFunctionDefinition(TIntermNode*& nodeList, const T
 {
     bool accepted = false;
 
-    TString* functionName = parseContext.getFullNamespaceName(memberName);
+    const TString* functionName = &memberName;
+    parseContext.getFullNamespaceName(functionName);
     declarator.function = new TFunction(functionName, type);
     if (type.getQualifier().storage == EvqTemporary)
         declarator.function->setImplicitThis();

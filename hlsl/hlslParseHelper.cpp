@@ -162,7 +162,7 @@ bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
     return false;
 }
 
-void HlslParseContext::growGlobalUniformBlock(TSourceLoc& loc, TType& memberType, TString& memberName, TTypeList* newTypeList)
+void HlslParseContext::growGlobalUniformBlock(const TSourceLoc& loc, TType& memberType, const TString& memberName, TTypeList* newTypeList)
 {
     newTypeList = nullptr;
     correctUniform(memberType.getQualifier());
@@ -4759,7 +4759,7 @@ void HlslParseContext::arrayDimMerge(TType& type, const TArraySizes* sizes)
 // Do all the semantic checking for declaring or redeclaring an array, with and
 // without a size, and make the right changes to the symbol table.
 //
-void HlslParseContext::declareArray(const TSourceLoc& loc, TString& identifier, const TType& type, TSymbol*& symbol, bool track)
+void HlslParseContext::declareArray(const TSourceLoc& loc, const TString& identifier, const TType& type, TSymbol*& symbol, bool track)
 {
     if (! symbol) {
         bool currentScope;
@@ -4857,7 +4857,7 @@ void HlslParseContext::updateImplicitArraySize(const TSourceLoc& loc, TIntermNod
 //
 // Enforce non-initializer type/qualifier rules.
 //
-void HlslParseContext::fixConstInit(const TSourceLoc& loc, TString& identifier, TType& type, TIntermTyped*& initializer)
+void HlslParseContext::fixConstInit(const TSourceLoc& loc, const TString& identifier, TType& type, TIntermTyped*& initializer)
 {
     //
     // Make the qualifier make sense, given that there is an initializer.
@@ -5846,7 +5846,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
 // 'parseType' is the type part of the declaration (to the left)
 // 'arraySizes' is the arrayness tagged on the identifier (to the right)
 //
-void HlslParseContext::declareTypedef(const TSourceLoc& loc, TString& identifier, const TType& parseType)
+void HlslParseContext::declareTypedef(const TSourceLoc& loc, const TString& identifier, const TType& parseType)
 {
     TVariable* typeSymbol = new TVariable(&identifier, parseType, true);
     if (! symbolTable.insert(*typeSymbol))
@@ -5977,7 +5977,7 @@ TSymbol* HlslParseContext::lookupUserType(const TString& typeName, TType& type)
 // 'parseType' is the type part of the declaration (to the left)
 // 'arraySizes' is the arrayness tagged on the identifier (to the right)
 //
-TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, TString& identifier, TType& type, TIntermTyped* initializer)
+TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, const TString& identifier, TType& type, TIntermTyped* initializer)
 {
     if (voidErrorCheck(loc, identifier, type.getBasicType()))
         return nullptr;
@@ -6079,7 +6079,7 @@ TVariable* HlslParseContext::makeInternalVariable(const char* name, const TType&
 //
 // Return the successfully declared variable.
 //
-TVariable* HlslParseContext::declareNonArray(const TSourceLoc& loc, TString& identifier, TType& type, bool track)
+TVariable* HlslParseContext::declareNonArray(const TSourceLoc& loc, const TString& identifier, const TType& type, bool track)
 {
     // make a new variable
     TVariable* variable = new TVariable(&identifier, type);
@@ -7132,15 +7132,15 @@ void HlslParseContext::popNamespace()
 
 // Use the class/struct nesting string to create a global name for
 // a member of a class/struct.
-TString* HlslParseContext::getFullNamespaceName(const TString& localName) const
+void HlslParseContext::getFullNamespaceName(const TString*& name) const
 {
-    TString* name = NewPoolTString("");
-    if (currentTypePrefix.size() > 0)
-        name->append(currentTypePrefix.back());
-    name->append(scopeMangler);
-    name->append(localName);
+    if (currentTypePrefix.size() == 0)
+        return;
 
-    return name;
+    TString* fullName = NewPoolTString(currentTypePrefix.back().c_str());
+    fullName->append(scopeMangler);
+    fullName->append(*name);
+    name = fullName;
 }
 
 // Helper function to add the namespace scope mangling syntax to a string.
@@ -7150,7 +7150,7 @@ void HlslParseContext::addScopeMangler(TString& name)
 }
 
 // Potentially rename shader entry point function
-void HlslParseContext::renameShaderFunction(TString*& name) const
+void HlslParseContext::renameShaderFunction(const TString*& name) const
 {
     // Replace the entry point name given in the shader with the real entry point name,
     // if there is a substitution.
