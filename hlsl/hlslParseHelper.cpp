@@ -66,7 +66,8 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     nextInLocation(0), nextOutLocation(0),
     sourceEntryPointName(sourceEntryPointName),
     entryPointFunction(nullptr),
-    entryPointFunctionBody(nullptr)
+    entryPointFunctionBody(nullptr),
+    gsStreamOutput(nullptr)
 {
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;
@@ -1852,11 +1853,15 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     TIntermAggregate* synthBody = new TIntermAggregate();
     auto inputIt = inputs.begin();
     TIntermTyped* callingArgs = nullptr;
+
     for (int i = 0; i < userFunction.getParamCount(); i++) {
         TParameter& param = userFunction[i];
         argVars.push_back(makeInternalVariable(*param.name, *param.type));
+
         argVars.back()->getWritableType().getQualifier().makeTemporary();
+
         TIntermSymbol* arg = intermediate.addSymbol(*argVars.back());
+
         handleFunctionArgument(&callee, callingArgs, arg);
         if (param.type->getQualifier().isParamInput()) {
             intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign, arg,
@@ -1911,10 +1916,20 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     auto outputIt = outputs.begin();
     for (int i = 0; i < userFunction.getParamCount(); i++) {
         TParameter& param = userFunction[i];
+
+        // GS outputs are via emit, so we do not copy them here.
         if (param.type->getQualifier().isParamOutput()) {
-            intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign,
-                                                               intermediate.addSymbol(**outputIt),
-                                                               intermediate.addSymbol(*argVars[i])));
+            if (param.declaredBuiltIn == EbvGsOutputStream) {
+                // GS output stream does not assign outputs here: it's the Append() method
+                // which writes to the output, probably multiple times separated by Emit.
+                // We merely remember the output to use, here.
+                gsStreamOutput = *outputIt;
+            } else {
+                intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign,
+                                                                   intermediate.addSymbol(**outputIt),
+                                                                   intermediate.addSymbol(*argVars[i])));
+            }
+
             outputIt++;
         }
     }
@@ -3301,9 +3316,15 @@ void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTy
             emit->setLoc(loc);
             emit->setType(TType(EbtVoid));
 
+            // find the matching output
+            if (gsStreamOutput == nullptr) {
+                error(loc, "unable to find output symbol for Append()", "", "");
+                return;
+            }
+
             sequence = intermediate.growAggregate(sequence,
                                                   handleAssign(loc, EOpAssign,
-                                                               argAggregate->getSequence()[0]->getAsTyped(),
+                                                               intermediate.addSymbol(*gsStreamOutput, loc),
                                                                argAggregate->getSequence()[1]->getAsTyped()),
                                                   loc);
 
