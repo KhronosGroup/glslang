@@ -1823,7 +1823,15 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
         node->getFalseBlock()->traverse(this);
         spv::Id falseValue = accessChainLoad(node->getTrueBlock()->getAsTyped()->getType());
 
-        spv::Id select = builder.createTriOp(spv::OpSelect, convertGlslangToSpvType(node->getType()), condition, trueValue, falseValue);
+        // smear condition to vector, if necessary (AST is always scalar)
+        if (builder.isVector(trueValue))
+            condition = builder.smearScalar(spv::NoPrecision, condition, 
+                                            builder.makeVectorType(builder.makeBoolType(),
+                                                                   builder.getNumComponents(trueValue)));
+
+        spv::Id select = builder.createTriOp(spv::OpSelect,
+                                             convertGlslangToSpvType(node->getType()), condition,
+                                                                     trueValue, falseValue);
         builder.clearAccessChain();
         builder.setAccessChainRValue(select);
     };
