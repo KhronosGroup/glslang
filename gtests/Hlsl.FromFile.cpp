@@ -161,6 +161,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.logical.unary.frag", "main"},
         {"hlsl.logical.binary.frag", "main"},
         {"hlsl.logical.binary.vec.frag", "main"},
+        {"hlsl.namespace.frag", "main"},
         {"hlsl.matNx1.frag", "main"},
         {"hlsl.matrixSwizzle.vert", "ShaderFunction"},
         {"hlsl.mintypes.frag", "main"},

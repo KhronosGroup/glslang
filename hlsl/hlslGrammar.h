@@ -65,6 +65,7 @@ namespace glslang {
         void unimplemented(const char*);
         bool acceptIdentifier(HlslToken&);
         bool acceptCompilationUnit();
+        bool acceptDeclarationList(TIntermNode*&);
         bool acceptDeclaration(TIntermNode*&);
         bool acceptControlDeclaration(TIntermNode*& node);
         bool acceptSamplerDeclarationDX9(TType&);
@@ -103,8 +104,7 @@ namespace glslang {
         bool acceptUnaryExpression(TIntermTyped*&);
         bool acceptPostfixExpression(TIntermTyped*&);
         bool acceptConstructor(TIntermTyped*&);
-        bool acceptFunctionCall(HlslToken, TIntermTyped*&, TIntermTyped* objectBase = nullptr,
-                                const TSymbol* scope = nullptr);
+        bool acceptFunctionCall(const TSourceLoc&, TString& name, TIntermTyped*&, TIntermTyped* objectBase);
         bool acceptArguments(TFunction*, TIntermTyped*&);
         bool acceptLiteral(TIntermTyped*&);
         bool acceptCompoundStatement(TIntermNode*&);
