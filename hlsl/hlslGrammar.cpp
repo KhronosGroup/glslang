@@ -611,10 +611,6 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type, TIntermNode*& nodeList)
         qualifier.layoutFormat = type.getQualifier().layoutFormat;
         qualifier.precision    = type.getQualifier().precision;
 
-        // Propagate sampler readonly qualifier for buffers
-        if (type.getBasicType() == EbtSampler)
-            qualifier.readonly = type.getQualifier().readonly;
-
         if (type.getQualifier().storage == EvqVaryingOut ||
             type.getQualifier().storage == EvqBuffer) {
             qualifier.storage      = type.getQualifier().storage;
@@ -1149,25 +1145,24 @@ bool HlslGrammar::acceptTextureType(TType& type)
     bool array = false;
     bool ms    = false;
     bool image = false;
-    bool readonly = false;
 
     switch (textureType) {
-    case EHTokTexture1d:         dim = Esd1D;                                break;
-    case EHTokTexture1darray:    dim = Esd1D; array = true;                  break;
-    case EHTokTexture2d:         dim = Esd2D;                                break;
-    case EHTokTexture2darray:    dim = Esd2D; array = true;                  break;
-    case EHTokTexture3d:         dim = Esd3D;                                break;
-    case EHTokTextureCube:       dim = EsdCube;                              break;
-    case EHTokTextureCubearray:  dim = EsdCube; array = true;                break;
-    case EHTokTexture2DMS:       dim = Esd2D; ms = true;                     break;
-    case EHTokTexture2DMSarray:  dim = Esd2D; array = true; ms = true;       break;
-    case EHTokBuffer:            dim = EsdBuffer; readonly=true; image=true; break;
-    case EHTokRWBuffer:          dim = EsdBuffer; image=true;                break;
-    case EHTokRWTexture1d:       dim = Esd1D; array=false; image=true;       break;
-    case EHTokRWTexture1darray:  dim = Esd1D; array=true;  image=true;       break;
-    case EHTokRWTexture2d:       dim = Esd2D; array=false; image=true;       break;
-    case EHTokRWTexture2darray:  dim = Esd2D; array=true;  image=true;       break;
-    case EHTokRWTexture3d:       dim = Esd3D; array=false; image=true;       break;
+    case EHTokBuffer:            dim = EsdBuffer;                      break;
+    case EHTokTexture1d:         dim = Esd1D;                          break;
+    case EHTokTexture1darray:    dim = Esd1D; array = true;            break;
+    case EHTokTexture2d:         dim = Esd2D;                          break;
+    case EHTokTexture2darray:    dim = Esd2D; array = true;            break;
+    case EHTokTexture3d:         dim = Esd3D;                          break;
+    case EHTokTextureCube:       dim = EsdCube;                        break;
+    case EHTokTextureCubearray:  dim = EsdCube; array = true;          break;
+    case EHTokTexture2DMS:       dim = Esd2D; ms = true;               break;
+    case EHTokTexture2DMSarray:  dim = Esd2D; array = true; ms = true; break;
+    case EHTokRWBuffer:          dim = EsdBuffer; image=true;          break;
+    case EHTokRWTexture1d:       dim = Esd1D; array=false; image=true; break;
+    case EHTokRWTexture1darray:  dim = Esd1D; array=true;  image=true; break;
+    case EHTokRWTexture2d:       dim = Esd2D; array=false; image=true; break;
+    case EHTokRWTexture2darray:  dim = Esd2D; array=true;  image=true; break;
+    case EHTokRWTexture3d:       dim = Esd3D; array=false; image=true; break;
     default:
         return false;  // not a texture declaration
     }
@@ -1227,7 +1222,7 @@ bool HlslGrammar::acceptTextureType(TType& type)
     } else if (ms) {
         expected("texture type for multisample");
         return false;
-    } else if (image && !readonly) {
+    } else if (image) {
         expected("type for RWTexture/RWBuffer");
         return false;
     }
@@ -1258,9 +1253,7 @@ bool HlslGrammar::acceptTextureType(TType& type)
     sampler.vectorSize = txType.getVectorSize();
 
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));
-
     type.getQualifier().layoutFormat = format;
-    type.getQualifier().readonly = readonly;
 
     return true;
 }
