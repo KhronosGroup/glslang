@@ -1145,9 +1145,10 @@ bool HlslGrammar::acceptTextureType(TType& type)
     bool array = false;
     bool ms    = false;
     bool image = false;
+    bool combined = true;
 
     switch (textureType) {
-    case EHTokBuffer:            dim = EsdBuffer;                      break;
+    case EHTokBuffer:            dim = EsdBuffer; combined = false;    break;
     case EHTokTexture1d:         dim = Esd1D;                          break;
     case EHTokTexture1darray:    dim = Esd1D; array = true;            break;
     case EHTokTexture2d:         dim = Esd2D;                          break;
@@ -1251,6 +1252,10 @@ bool HlslGrammar::acceptTextureType(TType& type)
 
     // Remember the declared vector size.
     sampler.vectorSize = txType.getVectorSize();
+
+    // Force uncombined, if necessary
+    if (!combined)
+        sampler.combined = false;
 
     type.shallowCopy(TType(sampler, EvqUniform, arraySizes));
     type.getQualifier().layoutFormat = format;
