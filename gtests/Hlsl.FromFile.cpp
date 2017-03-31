@@ -93,6 +93,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.calculatelod.dx10.frag", "main"},
         {"hlsl.calculatelodunclamped.dx10.frag", "main"},
         {"hlsl.cast.frag", "PixelShaderFunction"},
+        {"hlsl.clip.frag", "main"},
         {"hlsl.comparison.vec.frag", "main"},
         {"hlsl.conditional.frag", "PixelShaderFunction"},
         {"hlsl.constructexpr.frag", "main"},
