@@ -2272,6 +2272,9 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     if (argAggregate == nullptr)
         return;
 
+    if (argAggregate->getSequence().empty())
+        return;
+
     // Buffer is the object upon which method is called, so always arg 0
     TIntermTyped* bufferObj = argAggregate->getSequence()[0]->getAsTyped();
 
@@ -3747,7 +3750,9 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         // the symbol table for an arbitrary type.  This is a temporary hack until that ability exists.
         // It will have false positives, since it doesn't check arg counts or types.
         if (arguments && arguments->getAsAggregate()) {
-            if (isStructBufferType(arguments->getAsAggregate()->getSequence()[0]->getAsTyped()->getType())) {
+            const TIntermSequence& sequence = arguments->getAsAggregate()->getSequence();
+
+            if (!sequence.empty() && isStructBufferType(sequence[0]->getAsTyped()->getType())) {
                 static const int methodPrefixSize = sizeof(BUILTIN_PREFIX)-1;
 
                 if (function->getName().length() > methodPrefixSize &&
