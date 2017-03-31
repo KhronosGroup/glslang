@@ -80,6 +80,7 @@ public:
     void handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&, const TAttributeMap&, TIntermNode*& entryPointTree);
     TIntermNode* transformEntryPoint(const TSourceLoc&, TFunction&, const TAttributeMap&);
+    void handleEntryPointAttributes(const TSourceLoc&, const TAttributeMap&);
     void handleFunctionBody(const TSourceLoc&, TFunction&, TIntermNode* functionBody, TIntermNode*& node);
     void remapEntryPointIO(TFunction& function, TVariable*& returnValue, TVector<TVariable*>& inputs, TVector<TVariable*>& outputs);
     void remapNonEntryPointIO(TFunction& function);
@@ -247,6 +248,8 @@ protected:
     void addInterstageIoToLinkage();
     void addPatchConstantInvocation();
 
+    void fixBuiltInArrayType(TType&);
+
     void flatten(const TSourceLoc& loc, const TVariable& variable);
     int flatten(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
     int flattenStruct(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);
@@ -279,6 +282,9 @@ protected:
     void trackLinkage(TSymbol& variable) override;
 
     void finish() override; // post-processing
+
+    // Linkage symbol helpers
+    TIntermSymbol* findLinkageSymbol(TBuiltInVariable biType) const;
 
     // Current state of parsing
     struct TPragma contextPragma;
