@@ -101,7 +101,7 @@ public:
                           const glslang::TString* component);
     void handleRegister(const TSourceLoc&, TQualifier&, const glslang::TString* profile, const glslang::TString& desc,
                         int subComponent, const glslang::TString*);
-
+    TIntermTyped* convertConditionalExpression(const TSourceLoc&, TIntermTyped*);
     TIntermAggregate* handleSamplerTextureCombine(const TSourceLoc& loc, TIntermTyped* argTex, TIntermTyped* argSampler);
 
     bool parseMatrixSwizzleSelector(const TSourceLoc&, const TString&, int cols, int rows, TSwizzleSelectors<TMatrixSelector>&);
@@ -120,7 +120,6 @@ public:
     void structArrayCheck(const TSourceLoc&, const TType& structure);
     void arrayDimMerge(TType& type, const TArraySizes* sizes);
     bool voidErrorCheck(const TSourceLoc&, const TString&, TBasicType);
-    void boolCheck(const TSourceLoc&, const TIntermTyped*);
     void globalQualifierFix(const TSourceLoc&, TQualifier&);
     bool structQualifierErrorCheck(const TSourceLoc&, const TPublicType& pType);
     void mergeQualifiers(TQualifier& dst, const TQualifier& src);

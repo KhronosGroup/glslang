@@ -127,6 +127,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.hull.void.tesc", "main"},
         {"hlsl.identifier.sample.frag", "main"},
         {"hlsl.if.frag", "PixelShaderFunction"},
+        {"hlsl.implicitBool.frag", "main"},
         {"hlsl.inoutquals.frag", "main"},
         {"hlsl.init.frag", "ShaderFunction"},
         {"hlsl.init2.frag", "main"},

@@ -2527,6 +2527,10 @@ bool HlslGrammar::acceptConditionalExpression(TIntermTyped*& node)
     if (! acceptTokenClass(EHTokQuestion))
         return true;
 
+    node = parseContext.convertConditionalExpression(token.loc, node);
+    if (node == nullptr)
+        return false;
+
     TIntermTyped* trueNode = nullptr;
     if (! acceptExpression(trueNode)) {
         expected("expression after ?");
@@ -3197,6 +3201,9 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement)
     TIntermTyped* condition;
     if (! acceptParenExpression(condition))
         return false;
+    condition = parseContext.convertConditionalExpression(loc, condition);
+    if (condition == nullptr)
+        return false;
 
     // create the child statements
     TIntermNodePair thenElse = { nullptr, nullptr };
@@ -3280,6 +3287,9 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
         // LEFT_PAREN condition RIGHT_PAREN
         if (! acceptParenExpression(condition))
             return false;
+        condition = parseContext.convertConditionalExpression(loc, condition);
+        if (condition == nullptr)
+            return false;
 
         // statement
         if (! acceptScopedStatement(statement)) {
@@ -3319,6 +3329,9 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
         TIntermTyped* condition;
         if (! acceptParenExpression(condition))
             return false;
+        condition = parseContext.convertConditionalExpression(loc, condition);
+        if (condition == nullptr)
+            return false;
 
         if (! acceptTokenClass(EHTokSemicolon))
             expected(";");
@@ -3356,6 +3369,11 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
         acceptExpression(condition);
         if (! acceptTokenClass(EHTokSemicolon))
             expected(";");
+        if (condition != nullptr) {
+            condition = parseContext.convertConditionalExpression(loc, condition);
+            if (condition == nullptr)
+                return false;
+        }
 
         // iterator SEMI_COLON
         TIntermTyped* iterator = nullptr;

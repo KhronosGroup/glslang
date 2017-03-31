@@ -4285,6 +4285,18 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
     }
 }
 
+// Convert to a scalar boolean, or if not allowed by HLSL semantics,
+// report an error and return nullptr.
+TIntermTyped* HlslParseContext::convertConditionalExpression(const TSourceLoc& loc, TIntermTyped* condition)
+{
+    if (!condition->getType().isScalarOrVec1()) {
+        error(loc, "requires a scalar", "conditional expression", "");
+        return nullptr;
+    }
+
+    return intermediate.addConversion(EOpConstructBool, TType(EbtBool), condition);
+}
+
 //
 // Same error message for all places assignments don't work.
 //
@@ -4605,13 +4617,6 @@ bool HlslParseContext::voidErrorCheck(const TSourceLoc& loc, const TString& iden
     }
 
     return false;
-}
-
-// Checks to see if the node (for the expression) contains a scalar boolean expression or not
-void HlslParseContext::boolCheck(const TSourceLoc& loc, const TIntermTyped* type)
-{
-    if (type->getBasicType() != EbtBool || type->isArray() || type->isMatrix() || type->isVector())
-        error(loc, "boolean expression expected", "", "");
 }
 
 //
