@@ -220,6 +220,8 @@ enum TBuiltInVariable {
     EbvFragDepthLesser,
     EbvStencilRef,
     EbvGsOutputStream,
+    EbvOutputPatch,
+    EbvInputPatch,
 
     EbvLast
 };
