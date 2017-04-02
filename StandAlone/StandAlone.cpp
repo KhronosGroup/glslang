@@ -151,13 +151,6 @@ void ProcessConfigFile()
         delete[] config;
 }
 
-// thread-safe list of shaders to asynchronously grab and compile
-glslang::TWorklist Worklist;
-
-// array of unique places to leave the shader names and infologs for the asynchronous compiles
-glslang::TWorkItem** Work = 0;
-int NumWorkItems = 0;
-
 int Options = 0;
 const char* ExecutableName = nullptr;
 const char* binaryFileName = nullptr;
@@ -254,7 +247,7 @@ void ProcessBindingBase(int& argc, char**& argv, std::array<unsigned int, EShLan
 //
 // Does not return (it exits) if command-line is fatally flawed.
 //
-void ProcessArguments(int argc, char* argv[])
+void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>> &workItems, int argc, char *argv[])
 {
     baseSamplerBinding.fill(0);
     baseTextureBinding.fill(0);
@@ -263,10 +256,7 @@ void ProcessArguments(int argc, char* argv[])
     baseSsboBinding.fill(0);
 
     ExecutableName = argv[0];
-    NumWorkItems = argc;  // will include some empties where the '-' options were, but it doesn't matter, they'll be 0
-    Work = new glslang::TWorkItem*[NumWorkItems];
-    for (int w = 0; w < NumWorkItems; ++w)
-        Work[w] = 0;
+    workItems.reserve(argc);
 
     argc--;
     argv++;
@@ -439,8 +429,7 @@ void ProcessArguments(int argc, char* argv[])
         } else {
             std::string name(argv[0]);
             if (! SetConfigFile(name)) {
-                Work[argc] = new glslang::TWorkItem(name);
-                Worklist.add(Work[argc]);
+                workItems.emplace_back(new glslang::TWorkItem(name));
             }
         }
     }
@@ -488,10 +477,10 @@ void SetMessageOptions(EShMessages& messages)
 //
 // Return 0 for failure, 1 for success.
 //
-void CompileShaders()
+void CompileShaders(glslang::TWorklist& worklist)
 {
     glslang::TWorkItem* workItem;
-    while (Worklist.remove(workItem)) {
+    while (worklist.remove(workItem)) {
         ShHandle compiler = ShConstructCompiler(FindLanguage(workItem->name), Options);
         if (compiler == 0)
             return;
@@ -702,7 +691,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 // performance and memory testing, the actual compile/link can be put in
 // a loop, independent of processing the work items and file IO.
 //
-void CompileAndLinkShaderFiles()
+void CompileAndLinkShaderFiles(glslang::TWorklist& Worklist)
 {
     std::vector<ShaderCompUnit> compUnits;
 
@@ -744,11 +733,19 @@ void CompileAndLinkShaderFiles()
 
 int C_DECL main(int argc, char* argv[])
 {
-    ProcessArguments(argc, argv);
+    // array of unique places to leave the shader names and infologs for the asynchronous compiles
+    std::vector<std::unique_ptr<glslang::TWorkItem>> workItems;
+    ProcessArguments(workItems, argc, argv);
+
+    glslang::TWorklist workList;
+    std::for_each(workItems.begin(), workItems.end(), [&workList](std::unique_ptr<glslang::TWorkItem> &item) {
+        assert(item);
+        workList.add(item.get());
+    });
 
     if (Options & EOptionDumpConfig) {
         printf("%s", glslang::GetDefaultTBuiltInResourceString().c_str());
-        if (Worklist.empty())
+        if (workList.empty())
             return ESuccess;
     }
 
@@ -763,11 +760,11 @@ int C_DECL main(int argc, char* argv[])
         printf("Khronos Tool ID %d\n", glslang::GetKhronosToolId());
         printf("GL_KHR_vulkan_glsl version %d\n", 100);
         printf("ARB_GL_gl_spirv version %d\n", 100);
-        if (Worklist.empty())
+        if (workList.empty())
             return ESuccess;
     }
 
-    if (Worklist.empty()) {
+    if (workList.empty()) {
         usage();
     }
 
@@ -781,17 +778,12 @@ int C_DECL main(int argc, char* argv[])
     if (Options & EOptionLinkProgram ||
         Options & EOptionOutputPreprocessed) {
         glslang::InitializeProcess();
-        CompileAndLinkShaderFiles();
+        CompileAndLinkShaderFiles(workList);
         glslang::FinalizeProcess();
-        for (int w = 0; w < NumWorkItems; ++w) {
-          if (Work[w]) {
-            delete Work[w];
-          }
-        }
     } else {
         ShInitialize();
 
-        bool printShaderNames = Worklist.size() > 1;
+        bool printShaderNames = workList.size() > 1;
 
         if (Options & EOptionMultiThreaded)
         {
@@ -799,7 +791,7 @@ int C_DECL main(int argc, char* argv[])
             const unsigned int numThreads = std::min<unsigned int>(threads.size(), std::thread::hardware_concurrency());
             for (unsigned int t = 0; t < numThreads; ++t)
             {
-                threads[t] = std::thread(CompileShaders);
+                threads[t] = std::thread(CompileShaders, std::ref(workList));
                 if (threads[t].get_id() == std::thread::id())
                 {
                     printf("Failed to create thread\n");
@@ -809,22 +801,19 @@ int C_DECL main(int argc, char* argv[])
 
             std::for_each(threads.begin(), threads.begin() + numThreads, [](std::thread &t) { t.join(); });
         } else
-            CompileShaders();
+            CompileShaders(workList);
 
         // Print out all the resulting infologs
-        for (int w = 0; w < NumWorkItems; ++w) {
-            if (Work[w]) {
-                if (printShaderNames || Work[w]->results.size() > 0)
-                    PutsIfNonEmpty(Work[w]->name.c_str());
-                PutsIfNonEmpty(Work[w]->results.c_str());
-                delete Work[w];
+        for (size_t w = 0; w < workItems.size(); ++w) {
+            if (workItems[w]) {
+                if (printShaderNames || workItems[w]->results.size() > 0)
+                    PutsIfNonEmpty(workItems[w]->name.c_str());
+                PutsIfNonEmpty(workItems[w]->results.c_str());
             }
         }
 
         ShFinalize();
     }
-
-    delete[] Work;
 
     if (CompileFailed)
         return EFailCompile;
