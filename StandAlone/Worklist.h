@@ -35,8 +35,8 @@
 #ifndef WORKLIST_H_INCLUDED
 #define WORKLIST_H_INCLUDED
 
-#include "../glslang/OSDependent/osinclude.h"
 #include <list>
+#include <mutex>
 #include <string>
 
 namespace glslang {
@@ -57,23 +57,18 @@ public:
 
     void add(TWorkItem *item)
     {
-        GetGlobalLock();
-
+        std::lock_guard<std::mutex> guard(mutex);
         worklist.push_back(item);
-
-        ReleaseGlobalLock();
     }
 
     bool remove(TWorkItem *&item)
     {
-        GetGlobalLock();
+        std::lock_guard<std::mutex> guard(mutex);
 
         if (worklist.empty())
             return false;
         item = worklist.front();
         worklist.pop_front();
-
-        ReleaseGlobalLock();
 
         return true;
     }
@@ -84,6 +79,7 @@ public:
 
 protected:
     std::list<TWorkItem *> worklist;
+    std::mutex mutex;
 };
 
 } // end namespace glslang
