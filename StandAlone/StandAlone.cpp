@@ -51,6 +51,7 @@
 #include <cctype>
 #include <cmath>
 #include <array>
+#include <thread>
 
 #include "../glslang/OSDependent/osinclude.h"
 
@@ -420,9 +421,7 @@ void ProcessArguments(int argc, char* argv[])
                 Options |= EOptionSuppressInfolog;
                 break;
             case 't':
-                #ifdef _WIN32
-                    Options |= EOptionMultiThreaded;
-                #endif
+                Options |= EOptionMultiThreaded;
                 break;
             case 'v':
                 Options |= EOptionDumpVersions;
@@ -489,13 +488,13 @@ void SetMessageOptions(EShMessages& messages)
 //
 // Return 0 for failure, 1 for success.
 //
-unsigned int CompileShaders(void*)
+void CompileShaders()
 {
     glslang::TWorkItem* workItem;
     while (Worklist.remove(workItem)) {
         ShHandle compiler = ShConstructCompiler(FindLanguage(workItem->name), Options);
         if (compiler == 0)
-            return 0;
+            return;
 
         CompileFile(workItem->name.c_str(), compiler);
 
@@ -504,8 +503,6 @@ unsigned int CompileShaders(void*)
 
         ShDestruct(compiler);
     }
-
-    return 0;
 }
 
 // Outputs the given string, but only if it is non-null and non-empty.
@@ -796,19 +793,23 @@ int C_DECL main(int argc, char* argv[])
 
         bool printShaderNames = Worklist.size() > 1;
 
-        if (Options & EOptionMultiThreaded) {
-            const int NumThreads = 16;
-            void* threads[NumThreads];
-            for (int t = 0; t < NumThreads; ++t) {
-                threads[t] = glslang::OS_CreateThread(&CompileShaders);
-                if (! threads[t]) {
+        if (Options & EOptionMultiThreaded)
+        {
+            std::array<std::thread, 32> threads;
+            const unsigned int numThreads = std::min<unsigned int>(threads.size(), std::thread::hardware_concurrency());
+            for (unsigned int t = 0; t < numThreads; ++t)
+            {
+                threads[t] = std::thread(CompileShaders);
+                if (threads[t].get_id() == std::thread::id())
+                {
                     printf("Failed to create thread\n");
                     return EFailThreadCreate;
                 }
             }
-            glslang::OS_WaitForAllThreads(threads, NumThreads);
+
+            std::for_each(threads.begin(), threads.begin() + numThreads, [](std::thread &t) { t.join(); });
         } else
-            CompileShaders(0);
+            CompileShaders();
 
         // Print out all the resulting infologs
         for (int w = 0; w < NumWorkItems; ++w) {
