@@ -36,62 +36,55 @@
 #define WORKLIST_H_INCLUDED
 
 #include "../glslang/OSDependent/osinclude.h"
-#include <string>
 #include <list>
+#include <string>
 
 namespace glslang {
 
-    class TWorkItem {
-    public:
-        TWorkItem() { }
-        explicit TWorkItem(const std::string& s) :
-            name(s) { }
-        std::string name;
-        std::string results;
-        std::string resultsIndex;
-    };
+class TWorkItem {
+public:
+    TWorkItem() {}
+    explicit TWorkItem(const std::string &s) : name(s) {}
+    std::string name;
+    std::string results;
+    std::string resultsIndex;
+};
 
-    class TWorklist {
-    public:
-        TWorklist() { }
-        virtual ~TWorklist() { }
+class TWorklist {
+public:
+    TWorklist() {}
+    virtual ~TWorklist() {}
 
-        void add(TWorkItem* item)
-        {
-            GetGlobalLock();
+    void add(TWorkItem *item)
+    {
+        GetGlobalLock();
 
-            worklist.push_back(item);
+        worklist.push_back(item);
 
-            ReleaseGlobalLock();
-        }
+        ReleaseGlobalLock();
+    }
 
-        bool remove(TWorkItem*& item)
-        {
-            GetGlobalLock();
+    bool remove(TWorkItem *&item)
+    {
+        GetGlobalLock();
 
-            if (worklist.empty())
-                return false;
-            item = worklist.front();
-            worklist.pop_front();
+        if (worklist.empty())
+            return false;
+        item = worklist.front();
+        worklist.pop_front();
 
-            ReleaseGlobalLock();
+        ReleaseGlobalLock();
 
-            return true;
-        }
+        return true;
+    }
 
-        int size()
-        {
-            return (int)worklist.size();
-        }
+    int size() { return (int)worklist.size(); }
 
-        bool empty()
-        {
-            return worklist.empty();
-        }
+    bool empty() { return worklist.empty(); }
 
-    protected:
-        std::list<TWorkItem*> worklist;
-    };
+protected:
+    std::list<TWorkItem *> worklist;
+};
 
 } // end namespace glslang
 
