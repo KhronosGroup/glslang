@@ -124,6 +124,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.getdimensions.dx10.vert", "main"},
         {"hlsl.getsampleposition.dx10.frag", "main"},
         {"hlsl.domain.1.tese", "main"},
+        {"hlsl.domain.2.tese", "main"},
         {"hlsl.hull.1.tesc", "main"},
         {"hlsl.hull.2.tesc", "main"},
         {"hlsl.hull.void.tesc", "main"},

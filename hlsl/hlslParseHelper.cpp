@@ -1770,6 +1770,15 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
 //
 TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunction& userFunction, const TAttributeMap& attributes)
 {
+    // Return true if this is a tessellation patch constant function input to a domain shader.
+    const auto isDsPcfInput = [this](const TType& type) {
+        return language == EShLangTessEvaluation &&
+        type.contains([](const TType* t) {
+                return t->getQualifier().builtIn == EbvTessLevelOuter ||
+                t->getQualifier().builtIn == EbvTessLevelInner;
+            });
+    };
+
     // if we aren't in the entry point, fix the IO as such and exit
     if (userFunction.getName().compare(intermediate.getEntryPointName().c_str()) != 0) {
         remapNonEntryPointIO(userFunction);
@@ -1806,9 +1815,21 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     if (entryPointOutput)
         makeVariableInOut(*entryPointOutput);
     for (auto it = inputs.begin(); it != inputs.end(); ++it)
-        makeVariableInOut(*(*it));
+        if (!isDsPcfInput((*it)->getType()))  // skip domain shader PCF input (see comment below)
+            makeVariableInOut(*(*it));
     for (auto it = outputs.begin(); it != outputs.end(); ++it)
         makeVariableInOut(*(*it));
+
+    // In the domain shader, PCF input must be at the end of the linkage.  That's because in the
+    // hull shader there is no ordering: the output comes from the separate PCF, which does not
+    // participate in the argument list.  That is always put at the end of the HS linkage, so the
+    // input side of the DS must match.  The argument may be in any position in the DS argument list
+    // however, so this ensures the linkage is built in the correct order regardless of argument order.
+    if (language == EShLangTessEvaluation) {
+        for (auto it = inputs.begin(); it != inputs.end(); ++it)
+            if (isDsPcfInput((*it)->getType()))  // skip domain shader PCF input (see comment below)
+                makeVariableInOut(*(*it));
+    }
 
     // Synthesize the call
 
