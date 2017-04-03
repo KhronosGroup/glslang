@@ -405,6 +405,8 @@ protected:
 
     TVector<TString> currentTypePrefix;      // current scoping prefix for nested structures
     TVector<TVariable*> implicitThisStack;   // currently active 'this' variables for nested structures
+
+    TVariable* gsStreamOutput;               // geometry shader stream outputs, for emit (Append method)
 };
 
 // This is the prefix we use for builtin methods to avoid namespace collisions with

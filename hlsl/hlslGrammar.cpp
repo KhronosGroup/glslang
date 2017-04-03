@@ -611,11 +611,14 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type, TIntermNode*& nodeList)
         qualifier.layoutFormat = type.getQualifier().layoutFormat;
         qualifier.precision    = type.getQualifier().precision;
 
-        if (type.getQualifier().storage == EvqVaryingOut ||
+        if (type.getQualifier().storage == EvqOut ||
             type.getQualifier().storage == EvqBuffer) {
             qualifier.storage      = type.getQualifier().storage;
             qualifier.readonly     = type.getQualifier().readonly;
         }
+
+        if (type.getQualifier().builtIn != EbvNone)
+            qualifier.builtIn = type.getQualifier().builtIn;
 
         type.getQualifier()    = qualifier;
     }
@@ -1035,7 +1038,8 @@ bool HlslGrammar::acceptStreamOutTemplateType(TType& type, TLayoutGeometry& geom
         return false;
     }
 
-    type.getQualifier().storage = EvqVaryingOut;
+    type.getQualifier().storage = EvqOut;
+    type.getQualifier().builtIn = EbvGsOutputStream;
 
     if (! acceptTokenClass(EHTokRightAngle)) {
         expected("right angle bracket");
