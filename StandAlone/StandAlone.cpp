@@ -51,6 +51,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 #include <thread>
 
 #include "../glslang/OSDependent/osinclude.h"
