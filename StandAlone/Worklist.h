@@ -35,63 +35,52 @@
 #ifndef WORKLIST_H_INCLUDED
 #define WORKLIST_H_INCLUDED
 
-#include "../glslang/OSDependent/osinclude.h"
-#include <string>
 #include <list>
+#include <mutex>
+#include <string>
 
 namespace glslang {
 
-    class TWorkItem {
-    public:
-        TWorkItem() { }
-        explicit TWorkItem(const std::string& s) :
-            name(s) { }
-        std::string name;
-        std::string results;
-        std::string resultsIndex;
-    };
+class TWorkItem {
+public:
+    TWorkItem() {}
+    explicit TWorkItem(const std::string &s) : name(s) {}
+    std::string name;
+    std::string results;
+    std::string resultsIndex;
+};
 
-    class TWorklist {
-    public:
-        TWorklist() { }
-        virtual ~TWorklist() { }
+class TWorklist {
+public:
+    TWorklist() {}
+    virtual ~TWorklist() {}
 
-        void add(TWorkItem* item)
-        {
-            GetGlobalLock();
+    void add(TWorkItem *item)
+    {
+        std::lock_guard<std::mutex> guard(mutex);
+        worklist.push_back(item);
+    }
 
-            worklist.push_back(item);
+    bool remove(TWorkItem *&item)
+    {
+        std::lock_guard<std::mutex> guard(mutex);
 
-            ReleaseGlobalLock();
-        }
+        if (worklist.empty())
+            return false;
+        item = worklist.front();
+        worklist.pop_front();
 
-        bool remove(TWorkItem*& item)
-        {
-            GetGlobalLock();
+        return true;
+    }
 
-            if (worklist.empty())
-                return false;
-            item = worklist.front();
-            worklist.pop_front();
+    int size() { return (int)worklist.size(); }
 
-            ReleaseGlobalLock();
+    bool empty() { return worklist.empty(); }
 
-            return true;
-        }
-
-        int size()
-        {
-            return (int)worklist.size();
-        }
-
-        bool empty()
-        {
-            return worklist.empty();
-        }
-
-    protected:
-        std::list<TWorkItem*> worklist;
-    };
+protected:
+    std::list<TWorkItem *> worklist;
+    std::mutex mutex;
+};
 
 } // end namespace glslang
 
