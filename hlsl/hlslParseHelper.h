@@ -96,7 +96,7 @@ public:
     void addInputArgumentConversions(const TFunction&, TIntermTyped*&);
     TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermOperator&);
     void builtInOpCheck(const TSourceLoc&, const TFunction&, TIntermOperator&);
-    TFunction* handleConstructorCall(const TSourceLoc&, const TType&);
+    TFunction* makeConstructorCall(const TSourceLoc&, const TType&);
     void handleSemantic(TSourceLoc, TQualifier&, TBuiltInVariable, const TString& upperCase);
     void handlePackOffset(const TSourceLoc&, TQualifier&, const glslang::TString& location,
                           const glslang::TString* component);
@@ -141,7 +141,8 @@ public:
     TSymbol* lookupUserType(const TString&, TType&);
     TIntermNode* declareVariable(const TSourceLoc&, const TString& identifier, TType&, TIntermTyped* initializer = 0);
     void lengthenList(const TSourceLoc&, TIntermSequence& list, int size);
-    TIntermTyped* addConstructor(const TSourceLoc&, TIntermNode*, const TType&);
+    TIntermTyped* handleConstructor(const TSourceLoc&, TIntermTyped*, const TType&);
+    TIntermTyped* addConstructor(const TSourceLoc&, TIntermTyped*, const TType&);
     TIntermTyped* constructAggregate(TIntermNode*, const TType&, int, const TSourceLoc&);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, const TSourceLoc&, bool subset);
     void declareBlock(const TSourceLoc&, TType&, const TString* instanceName = 0, TArraySizes* arraySizes = 0);

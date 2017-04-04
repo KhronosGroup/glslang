@@ -3897,7 +3897,7 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
             //
             // It's a constructor, of type 'type'.
             //
-            result = addConstructor(loc, arguments, type);
+            result = handleConstructor(loc, arguments, type);
             if (result == nullptr)
                 error(loc, "cannot construct with these arguments", type.getCompleteString().c_str(), "");
         }
@@ -4308,9 +4308,13 @@ void HlslParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fn
 }
 
 //
-// Handle seeing a built-in constructor in a grammar production.
+// Handle seeing something in a grammar production that can be done by calling
+// a constructor.
 //
-TFunction* HlslParseContext::handleConstructorCall(const TSourceLoc& loc, const TType& type)
+// The constructor still must be "handled" by handleFunctionCall(), which will
+// then call handleConstructor().
+//
+TFunction* HlslParseContext::makeConstructorCall(const TSourceLoc& loc, const TType& type)
 {
     TOperator op = intermediate.mapTypeToConstructorOp(type);
 
@@ -6495,9 +6499,9 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
 
     // Now that the subtree is processed, process this node as if the
     // initializer list is a set of arguments to a constructor.
-    TIntermNode* emulatedConstructorArguments;
+    TIntermTyped* emulatedConstructorArguments;
     if (initList->getSequence().size() == 1)
-        emulatedConstructorArguments = initList->getSequence()[0];
+        emulatedConstructorArguments = initList->getSequence()[0]->getAsTyped();
     else
         emulatedConstructorArguments = initList;
 
@@ -6519,15 +6523,26 @@ void HlslParseContext::lengthenList(const TSourceLoc& loc, TIntermSequence& list
 //
 // Returns nullptr for an error or the constructed node (aggregate or typed) for no error.
 //
-TIntermTyped* HlslParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* node, const TType& type)
+TIntermTyped* HlslParseContext::handleConstructor(const TSourceLoc& loc, TIntermTyped* node, const TType& type)
 {
-    if (node == nullptr || node->getAsTyped() == nullptr)
+    if (node == nullptr)
         return nullptr;
 
     // Handle the idiom "(struct type)0"
+    // Sequences (in an aggregate) for initialization are not yet tagged with
+    // an operator or type, so it is too early to ask if they are scalars.
     if (type.isStruct() && isZeroConstructor(node))
         return convertInitializerList(loc, type, intermediate.makeAggregate(loc));
 
+    return addConstructor(loc, node, type);
+}
+
+// Add a constructor, either from the grammar, or other programmatic reasons.
+//
+// Return nullptr if it can't be done.
+//
+TIntermTyped* HlslParseContext::addConstructor(const TSourceLoc& loc, TIntermTyped* node, const TType& type)
+{
     TIntermAggregate* aggrNode = node->getAsAggregate();
     TOperator op = intermediate.mapTypeToConstructorOp(type);
 
@@ -6565,7 +6580,7 @@ TIntermTyped* HlslParseContext::addConstructor(const TSourceLoc& loc, TIntermNod
         else if (op == EOpConstructStruct)
             newNode = constructAggregate(node, *(*memberTypes).type, 1, node->getLoc());
         else
-            newNode = constructBuiltIn(type, op, node->getAsTyped(), node->getLoc(), false);
+            newNode = constructBuiltIn(type, op, node, node->getLoc(), false);
 
         if (newNode && (type.isArray() || op == EOpConstructStruct))
             newNode = intermediate.setAggregateOperator(newNode, EOpConstructStruct, type, loc);

@@ -2219,7 +2219,7 @@ bool HlslGrammar::acceptDefaultParameterDeclaration(const TType& type, TIntermTy
 
         // For initializer lists, we have to const-fold into a constructor for the type, so build
         // that.
-        TFunction* constructor = parseContext.handleConstructorCall(token.loc, type);
+        TFunction* constructor = parseContext.makeConstructorCall(token.loc, type);
         if (constructor == nullptr)  // cannot construct
             return false;
 
@@ -2628,7 +2628,7 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
                     return false;
 
                 // Hook it up like a constructor
-                TFunction* constructorFunction = parseContext.handleConstructorCall(loc, castType);
+                TFunction* constructorFunction = parseContext.makeConstructorCall(loc, castType);
                 if (constructorFunction == nullptr) {
                     expected("type that can be constructed");
                     return false;
@@ -2841,7 +2841,7 @@ bool HlslGrammar::acceptConstructor(TIntermTyped*& node)
     // type
     TType type;
     if (acceptType(type)) {
-        TFunction* constructorFunction = parseContext.handleConstructorCall(token.loc, type);
+        TFunction* constructorFunction = parseContext.makeConstructorCall(token.loc, type);
         if (constructorFunction == nullptr)
             return false;
 
