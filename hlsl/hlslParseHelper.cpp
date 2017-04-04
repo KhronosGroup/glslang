@@ -3860,6 +3860,48 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             break;
         }
 
+    case EOpIsFinite:
+        {
+            // Since OPIsFinite in SPIR-V is only supported with the Kernel capability, we translate
+            // it to !isnan && !isinf
+
+            TIntermTyped* arg0 = node->getAsUnaryNode()->getOperand();
+
+            // We'll make a temporary in case the RHS is cmoplex
+            TVariable* tempArg = makeInternalVariable("@finitetmp", arg0->getType());
+            tempArg->getWritableType().getQualifier().makeTemporary();
+
+            TIntermTyped* tmpArgAssign = intermediate.addAssign(EOpAssign,
+                                                                intermediate.addSymbol(*tempArg, loc),
+                                                                arg0, loc);
+
+            TIntermAggregate* compoundStatement = intermediate.makeAggregate(tmpArgAssign, loc);
+
+            TIntermTyped* isnan = handleUnaryMath(loc, "isnan", EOpIsNan, intermediate.addSymbol(*tempArg, loc));
+            isnan->setType(TType(EbtBool));
+
+            TIntermTyped* notnan = handleUnaryMath(loc, "!", EOpLogicalNot, isnan);
+            notnan->setType(TType(EbtBool));
+
+            TIntermTyped* isinf = handleUnaryMath(loc, "isinf", EOpIsInf, intermediate.addSymbol(*tempArg, loc));
+            isinf->setType(TType(EbtBool));
+
+            TIntermTyped* notinf = handleUnaryMath(loc, "!", EOpLogicalNot, isinf);
+            notinf->setType(TType(EbtBool));
+            
+            TIntermTyped* andNode = handleBinaryMath(loc, "and", EOpLogicalAnd, notnan, notinf);
+            andNode->setType(TType(EbtBool));
+
+            compoundStatement = intermediate.growAggregate(compoundStatement, andNode);
+            compoundStatement->setOperator(EOpSequence);
+            compoundStatement->setLoc(loc);
+            compoundStatement->setType(TType(EbtVoid));
+
+            node = compoundStatement;
+
+            break;
+        }
+        
     default:
         break; // most pass through unchanged
     }
