@@ -335,13 +335,6 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                            [](bool isSet) { return isSet; } );
     };
 
-    // helper to create a temporary variable
-    const auto addTmpVar = [&](const char* name, const TType& derefType) -> TIntermSymbol* {
-        TVariable* tmpVar = makeInternalVariable(name, derefType);
-        tmpVar->getWritableType().getQualifier().makeTemporary();
-        return intermediate.addSymbol(*tmpVar, loc);
-    };
-
     // Create swizzle matching input swizzle
     const auto addSwizzle = [&](TIntermSymbol* var, TIntermBinary* swizzle) -> TIntermTyped* {
         if (swizzle)
@@ -419,7 +412,7 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                 TIntermTyped* coordTmp = coord;
 
                 if (rhsTmp == nullptr || isModifyOp || lhsIsSwizzle) {
-                    rhsTmp = addTmpVar("storeTemp", objDerefType);
+                    rhsTmp = makeInternalVariableNode(loc, "storeTemp", objDerefType);
 
                     // Partial updates not yet supported
                     if (!writesAllComponents(rhsTmp, lhsAsBinary)) {
@@ -429,7 +422,7 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                     // Assign storeTemp = rhs
                     if (isModifyOp) {
                         // We have to make a temp var for the coordinate, to avoid evaluating it twice.
-                        coordTmp = addTmpVar("coordTemp", coord->getType());
+                        coordTmp = makeInternalVariableNode(loc, "coordTemp", coord->getType());
                         makeBinary(EOpAssign, coordTmp, coord); // coordtmp = load[param1]
                         makeLoad(rhsTmp, object, coordTmp, objDerefType); // rhsTmp = OpImageLoad(object, coordTmp)
                     }
@@ -462,8 +455,8 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                 //      OpImageStore(object, coordTmp, rhsTmp)
                 //      rhsTmp
 
-                TIntermSymbol* rhsTmp = addTmpVar("storeTemp", objDerefType);
-                TIntermTyped* coordTmp = addTmpVar("coordTemp", coord->getType());
+                TIntermSymbol* rhsTmp = makeInternalVariableNode(loc, "storeTemp", objDerefType);
+                TIntermTyped* coordTmp = makeInternalVariableNode(loc, "coordTemp", coord->getType());
 
                 makeBinary(EOpAssign, coordTmp, coord);           // coordtmp = load[param1]
                 makeLoad(rhsTmp, object, coordTmp, objDerefType); // rhsTmp = OpImageLoad(object, coordTmp)
@@ -483,9 +476,9 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
                 //      rhsTmp2 op
                 //      OpImageStore(object, coordTmp, rhsTmp2)
                 //      rhsTmp1 (pre-op value)
-                TIntermSymbol* rhsTmp1 = addTmpVar("storeTempPre",  objDerefType);
-                TIntermSymbol* rhsTmp2 = addTmpVar("storeTempPost", objDerefType);
-                TIntermTyped* coordTmp = addTmpVar("coordTemp", coord->getType());
+                TIntermSymbol* rhsTmp1 = makeInternalVariableNode(loc, "storeTempPre",  objDerefType);
+                TIntermSymbol* rhsTmp2 = makeInternalVariableNode(loc, "storeTempPost", objDerefType);
+                TIntermTyped* coordTmp = makeInternalVariableNode(loc, "coordTemp", coord->getType());
 
                 makeBinary(EOpAssign, coordTmp, coord);            // coordtmp = load[param1]
                 makeLoad(rhsTmp1, object, coordTmp, objDerefType); // rhsTmp1 = OpImageLoad(object, coordTmp)
@@ -4739,7 +4732,7 @@ bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node
         return true;
     }
 
-    if (op == EOpConstructStruct && ! type.isArray() && isZeroConstructor(node))
+    if (op == EOpConstructStruct && ! type.isArray() && isScalarConstructor(node))
         return false;
 
     if (op == EOpConstructStruct && ! type.isArray() && (int)type.getStruct()->size() != function.getParamCount()) {
@@ -4756,10 +4749,21 @@ bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node
     return false;
 }
 
-bool HlslParseContext::isZeroConstructor(const TIntermNode* node)
+// See if 'node', in the context of constructing aggregates, is a scalar argument
+// to a constructor.
+//
+bool HlslParseContext::isScalarConstructor(const TIntermNode* node)
 {
-    return node->getAsTyped()->isScalar() && node->getAsConstantUnion() &&
-           node->getAsConstantUnion()->getConstArray()[0].getIConst() == 0;
+    // Obviously, it must be a scalar, but an aggregate node might not be fully
+    // completed yet: holding a sequence of initializers under an aggregate
+    // would not yet be typed, so don't check it's type.  This corresponds to
+    // the aggregate operator also not being set yet. (An aggregate operation
+    // that legitimately yields a scalar will have a getOp() of that operator,
+    // not EOpNull.)
+
+    return node->getAsTyped() != nullptr &&
+           node->getAsTyped()->isScalar() &&
+           (node->getAsAggregate() == nullptr || node->getAsAggregate()->getOp() != EOpNull);
 }
 
 // Verify all the correct semantics for constructing a combined texture/sampler.
@@ -6295,6 +6299,15 @@ TVariable* HlslParseContext::makeInternalVariable(const char* name, const TType&
     return variable;
 }
 
+// Make a symbol node holding a new internal temporary variable.
+TIntermSymbol* HlslParseContext::makeInternalVariableNode(const TSourceLoc& loc, const char* name, const TType& type) const
+{
+    TVariable* tmpVar = makeInternalVariable(name, type);
+    tmpVar->getWritableType().getQualifier().makeTemporary();
+
+    return intermediate.addSymbol(*tmpVar, loc);
+}
+
 //
 // Declare a non-array variable, the main point being there is no redeclaration
 // for resizing allowed.
@@ -6345,7 +6358,7 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
     skeletalType.shallowCopy(variable->getType());
     skeletalType.getQualifier().makeTemporary();
     if (initializer->getAsAggregate() && initializer->getAsAggregate()->getOp() == EOpNull)
-        initializer = convertInitializerList(loc, skeletalType, initializer);
+        initializer = convertInitializerList(loc, skeletalType, initializer, nullptr);
     if (! initializer) {
         // error recovery; don't leave const without constant values
         if (qualifier == EvqConst)
@@ -6427,7 +6440,8 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
 //
 // Returns nullptr if there is an error.
 //
-TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, const TType& type, TIntermTyped* initializer)
+TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, const TType& type,
+                                                       TIntermTyped* initializer, TIntermTyped* scalarInit)
 {
     // Will operate recursively.  Once a subtree is found that is constructor style,
     // everything below it is already good: Only the "top part" of the initializer
@@ -6473,12 +6487,12 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
         }
 
         // lengthen list to be long enough
-        lengthenList(loc, initList->getSequence(), arrayType.getOuterArraySize());
+        lengthenList(loc, initList->getSequence(), arrayType.getOuterArraySize(), scalarInit);
 
         // recursively process each element
         TType elementType(arrayType, 0); // dereferenced type
         for (int i = 0; i < arrayType.getOuterArraySize(); ++i) {
-            initList->getSequence()[i] = convertInitializerList(loc, elementType, initList->getSequence()[i]->getAsTyped());
+            initList->getSequence()[i] = convertInitializerList(loc, elementType, initList->getSequence()[i]->getAsTyped(), scalarInit);
             if (initList->getSequence()[i] == nullptr)
                 return nullptr;
         }
@@ -6486,14 +6500,14 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
         return addConstructor(loc, initList, arrayType);
     } else if (type.isStruct()) {
         // lengthen list to be long enough
-        lengthenList(loc, initList->getSequence(), static_cast<int>(type.getStruct()->size()));
+        lengthenList(loc, initList->getSequence(), static_cast<int>(type.getStruct()->size()), scalarInit);
 
         if (type.getStruct()->size() != initList->getSequence().size()) {
             error(loc, "wrong number of structure members", "initializer list", "");
             return nullptr;
         }
         for (size_t i = 0; i < type.getStruct()->size(); ++i) {
-            initList->getSequence()[i] = convertInitializerList(loc, *(*type.getStruct())[i].type, initList->getSequence()[i]->getAsTyped());
+            initList->getSequence()[i] = convertInitializerList(loc, *(*type.getStruct())[i].type, initList->getSequence()[i]->getAsTyped(), scalarInit);
             if (initList->getSequence()[i] == nullptr)
                 return nullptr;
         }
@@ -6504,7 +6518,7 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
             // a constructor; no further processing needed.
         } else {
             // lengthen list to be long enough
-            lengthenList(loc, initList->getSequence(), type.getMatrixCols());
+            lengthenList(loc, initList->getSequence(), type.getMatrixCols(), scalarInit);
 
             if (type.getMatrixCols() != (int)initList->getSequence().size()) {
                 error(loc, "wrong number of matrix columns:", "initializer list", type.getCompleteString().c_str());
@@ -6512,14 +6526,14 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
             }
             TType vectorType(type, 0); // dereferenced type
             for (int i = 0; i < type.getMatrixCols(); ++i) {
-                initList->getSequence()[i] = convertInitializerList(loc, vectorType, initList->getSequence()[i]->getAsTyped());
+                initList->getSequence()[i] = convertInitializerList(loc, vectorType, initList->getSequence()[i]->getAsTyped(), scalarInit);
                 if (initList->getSequence()[i] == nullptr)
                     return nullptr;
             }
         }
     } else if (type.isVector()) {
         // lengthen list to be long enough
-        lengthenList(loc, initList->getSequence(), type.getVectorSize());
+        lengthenList(loc, initList->getSequence(), type.getVectorSize(), scalarInit);
 
         // error check; we're at bottom, so work is finished below
         if (type.getVectorSize() != (int)initList->getSequence().size()) {
@@ -6528,7 +6542,7 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
         }
     } else if (type.isScalar()) {
         // lengthen list to be long enough
-        lengthenList(loc, initList->getSequence(), 1);
+        lengthenList(loc, initList->getSequence(), 1, scalarInit);
 
         if ((int)initList->getSequence().size() != 1) {
             error(loc, "scalar expected one element:", "initializer list", type.getCompleteString().c_str());
@@ -6553,10 +6567,21 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
 // Lengthen list to be long enough to cover any gap from the current list size
 // to 'size'. If the list is longer, do nothing.
 // The value to lengthen with is the default for short lists.
-void HlslParseContext::lengthenList(const TSourceLoc& loc, TIntermSequence& list, int size)
+//
+// By default, lists that are too short due to lack of initializers initialize to zero.
+// Alternatively, it could be a scalar initializer for a structure. Both cases are handled,
+// based on whether something is passed in as 'scalarInit'.
+//
+// 'scalarInit' must be safe to use each time this is called (no side effects replication).
+//
+void HlslParseContext::lengthenList(const TSourceLoc& loc, TIntermSequence& list, int size, TIntermTyped* scalarInit)
 {
-    for (int c = (int)list.size(); c < size; ++c)
-        list.push_back(intermediate.addConstantUnion(0, loc));
+    for (int c = (int)list.size(); c < size; ++c) {
+        if (scalarInit == nullptr)
+            list.push_back(intermediate.addConstantUnion(0, loc));
+        else
+            list.push_back(scalarInit);
+    }
 }
 
 //
@@ -6570,11 +6595,23 @@ TIntermTyped* HlslParseContext::handleConstructor(const TSourceLoc& loc, TInterm
     if (node == nullptr)
         return nullptr;
 
-    // Handle the idiom "(struct type)0"
-    // Sequences (in an aggregate) for initialization are not yet tagged with
-    // an operator or type, so it is too early to ask if they are scalars.
-    if (type.isStruct() && isZeroConstructor(node))
-        return convertInitializerList(loc, type, intermediate.makeAggregate(loc));
+    // Handle the idiom "(struct type)<scalar value>"
+    if (type.isStruct() && isScalarConstructor(node)) {
+        // 'node' will almost always get used multiple times, so should not be used directly,
+        // it would create a DAG instead of a tree, which might be okay (would
+        // like to formalize that for constants and symbols), but if it has
+        // side effects, they would get executed multiple times, which is not okay.
+        if (node->getAsConstantUnion() == nullptr && node->getAsSymbolNode() == nullptr) {
+            TIntermAggregate* seq = intermediate.makeAggregate(loc);
+            TIntermSymbol* copy = makeInternalVariableNode(loc, "scalarCopy", node->getType());
+            seq = intermediate.growAggregate(seq, intermediate.addBinaryNode(EOpAssign, copy, node, loc));
+            seq = intermediate.growAggregate(seq, convertInitializerList(loc, type, intermediate.makeAggregate(loc), copy));
+            seq->setOp(EOpComma);
+            seq->setType(type);
+            return seq;
+        } else
+            return convertInitializerList(loc, type, intermediate.makeAggregate(loc), node);
+    }
 
     return addConstructor(loc, node, type);
 }

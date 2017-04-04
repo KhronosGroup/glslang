@@ -3,4 +3,4 @@
 // For the date, it uses the current date (when then script is run).
 
 #define GLSLANG_REVISION "Overload400-PrecQual.1971"
-#define GLSLANG_DATE "03-Apr-2017"
+#define GLSLANG_DATE "04-Apr-2017"
