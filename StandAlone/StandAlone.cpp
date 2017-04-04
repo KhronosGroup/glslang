@@ -476,8 +476,6 @@ void SetMessageOptions(EShMessages& messages)
 //
 // Thread entry point, for non-linking asynchronous mode.
 //
-// Return 0 for failure, 1 for success.
-//
 void CompileShaders(glslang::TWorklist& worklist)
 {
     glslang::TWorkItem* workItem;
@@ -788,9 +786,8 @@ int C_DECL main(int argc, char* argv[])
 
         if (Options & EOptionMultiThreaded)
         {
-            std::array<std::thread, 32> threads;
-            const unsigned int numThreads = std::min<unsigned int>(threads.size(), std::thread::hardware_concurrency());
-            for (unsigned int t = 0; t < numThreads; ++t)
+            std::array<std::thread, 16> threads;
+            for (unsigned int t = 0; t < threads.size(); ++t)
             {
                 threads[t] = std::thread(CompileShaders, std::ref(workList));
                 if (threads[t].get_id() == std::thread::id())
@@ -800,7 +797,7 @@ int C_DECL main(int argc, char* argv[])
                 }
             }
 
-            std::for_each(threads.begin(), threads.begin() + numThreads, [](std::thread& t) { t.join(); });
+            std::for_each(threads.begin(), threads.end(), [](std::thread& t) { t.join(); });
         } else
             CompileShaders(workList);
 
