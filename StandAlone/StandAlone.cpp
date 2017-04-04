@@ -51,6 +51,7 @@
 #include <cctype>
 #include <cmath>
 #include <array>
+#include <memory>
 #include <thread>
 
 #include "../glslang/OSDependent/osinclude.h"
