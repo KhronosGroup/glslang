@@ -67,7 +67,8 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     sourceEntryPointName(sourceEntryPointName),
     entryPointFunction(nullptr),
     entryPointFunctionBody(nullptr),
-    gsStreamOutput(nullptr)
+    gsStreamOutput(nullptr),
+    inputPatch(nullptr)
 {
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;
@@ -1377,6 +1378,7 @@ TIntermTyped* HlslParseContext::splitAccessStruct(const TSourceLoc& loc, TInterm
 void HlslParseContext::trackLinkage(TSymbol& symbol)
 {
     TBuiltInVariable biType = symbol.getType().getQualifier().builtIn;
+
     if (biType != EbvNone)
         builtInLinkageSymbols[biType] = symbol.clone();
 
@@ -1811,6 +1813,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
             else if (variable.getType().containsBuiltInInterstageIO(language))
                 split(variable);
         }
+
         assignLocations(variable);
     };
     if (entryPointOutput)
@@ -1988,6 +1991,7 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
             correctOutput(ioVariable->getWritableType().getQualifier());
         }
         ioVariable->getWritableType().getQualifier().storage = storage;
+
         return ioVariable;
     };
 
@@ -2022,6 +2026,9 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
         if (paramType.getQualifier().isParamInput()) {
             TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingIn);
             inputs.push_back(argAsGlobal);
+
+            if (function[i].declaredBuiltIn == EbvInputPatch)
+                inputPatch = argAsGlobal;
         }
         if (paramType.getQualifier().isParamOutput()) {
             TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingOut);
@@ -7574,7 +7581,10 @@ void HlslParseContext::addPatchConstantInvocation()
     // Look for builtin variables in a function's parameter list.
     const auto findBuiltIns = [&](const TFunction& function, std::set<tInterstageIoData>& builtIns) {
         for (int p=0; p<function.getParamCount(); ++p) {
-            const TStorageQualifier storage = function[p].type->getQualifier().storage;
+            TStorageQualifier storage = function[p].type->getQualifier().storage;
+
+            if (storage == EvqConstReadOnly) // treated identically to input
+                storage = EvqIn;
 
             if (function[p].declaredBuiltIn != EbvNone)
                 builtIns.insert(HlslParseContext::tInterstageIoData(function[p].declaredBuiltIn, storage));
@@ -7605,9 +7615,11 @@ void HlslParseContext::addPatchConstantInvocation()
         }
     };
 
-    const auto isPerCtrlPt = [this](const TType& type) {
-        // TODO: this is not sufficient to reject all such cases in malformed shaders.
-        return type.isArray() && !type.isRuntimeSizedArray();
+    const auto isOutputPatch = [this](TFunction& patchConstantFunction, int param) {
+        const TType& type = *patchConstantFunction[param].type;
+        const TBuiltInVariable biType = patchConstantFunction[param].declaredBuiltIn;
+
+        return type.isArray() && !type.isRuntimeSizedArray() && biType == EbvOutputPatch;
     };
     
     // We will perform these steps.  Each is in a scoped block for separation: they could
@@ -7636,7 +7648,7 @@ void HlslParseContext::addPatchConstantInvocation()
     TIntermSymbol* invocationIdSym = findLinkageSymbol(EbvInvocationId);
     TIntermSequence& epBodySeq = entryPointFunctionBody->getAsAggregate()->getSequence();
 
-    int perCtrlPtParam = -1; // -1 means there isn't one.
+    int outPatchParam = -1; // -1 means there isn't one.
 
     // ================ Step 1A: Union Interfaces ================
     // Our patch constant function.
@@ -7662,25 +7674,37 @@ void HlslParseContext::addPatchConstantInvocation()
         // Now we'll add those to the entry and to the linkage.
         for (int p=0; p<pcfParamCount; ++p) {
             const TBuiltInVariable biType   = patchConstantFunction[p].declaredBuiltIn;
-            const TStorageQualifier storage = patchConstantFunction[p].type->getQualifier().storage;
+            TStorageQualifier storage = patchConstantFunction[p].type->getQualifier().storage;
 
-            // Track whether there is any per control point input
-            if (isPerCtrlPt(*patchConstantFunction[p].type)) {
-                if (perCtrlPtParam >= 0) {
-                    // Presently we only support one per ctrl pt input. TODO: does HLSL even allow multiple?
-                    error(loc, "unimplemented: multiple per control point inputs to patch constant function", "", "");
+            // Track whether there is an output patch param
+            if (isOutputPatch(patchConstantFunction, p)) {
+                if (outPatchParam >= 0) {
+                    // Presently we only support one per ctrl pt input.
+                    error(loc, "unimplemented: multiple output patches in patch constant function", "", "");
                     return;
                 }
-                perCtrlPtParam = p;
+                outPatchParam = p;
             }
 
             if (biType != EbvNone) {
                 TType* paramType = patchConstantFunction[p].type->clone();
-                // Use the original declaration type for the linkage
-                paramType->getQualifier().builtIn = biType;
 
-                if (notInEntryPoint.count(tInterstageIoData(biType, storage)) == 1)
-                    addToLinkage(*paramType, patchConstantFunction[p].name, nullptr);
+                if (storage == EvqConstReadOnly) // treated identically to input
+                    storage = EvqIn;
+
+                // Presently, the only non-builtin we support is InputPatch, which is treated as
+                // a pseudo-builtin.
+                if (biType == EbvInputPatch) {
+                    builtInLinkageSymbols[biType] = inputPatch;
+                } else if (biType == EbvOutputPatch) {
+                    // Nothing...
+                } else {
+                    // Use the original declaration type for the linkage
+                    paramType->getQualifier().builtIn = biType;
+
+                    if (notInEntryPoint.count(tInterstageIoData(biType, storage)) == 1)
+                        addToLinkage(*paramType, patchConstantFunction[p].name, nullptr);
+                }
             }
         }
 
@@ -7703,18 +7727,12 @@ void HlslParseContext::addPatchConstantInvocation()
     // TODO: handle struct or array inputs
     {
         for (int p=0; p<pcfParamCount; ++p) {
-            if ((patchConstantFunction[p].type->isArray() && !isPerCtrlPt(*patchConstantFunction[p].type)) ||
-                (!patchConstantFunction[p].type->isArray() && patchConstantFunction[p].type->isStruct())) {
-                error(loc, "unimplemented array or variable in patch constant function signature", "", "");
-                return;
-            }
-        
             TIntermSymbol* inputArg = nullptr;
 
-            if (p == perCtrlPtParam) {
+            if (p == outPatchParam) {
                 if (perCtrlPtVar == nullptr) {
-                    perCtrlPtVar = makeInternalVariable(*patchConstantFunction[perCtrlPtParam].name,
-                                                        *patchConstantFunction[perCtrlPtParam].type);
+                    perCtrlPtVar = makeInternalVariable(*patchConstantFunction[outPatchParam].name,
+                                                        *patchConstantFunction[outPatchParam].type);
 
                     perCtrlPtVar->getWritableType().getQualifier().makeTemporary();
                 }
@@ -7724,7 +7742,7 @@ void HlslParseContext::addPatchConstantInvocation()
                 const TBuiltInVariable biType = patchConstantFunction[p].declaredBuiltIn;
                 
                 inputArg = findLinkageSymbol(biType);
-        
+
                 if (inputArg == nullptr) {
                     error(loc, "unable to find patch constant function builtin variable", "", "");
                     return;
@@ -7769,9 +7787,9 @@ void HlslParseContext::addPatchConstantInvocation()
     // invocations of the entry point to build up an array, or (TODO:) use a yet
     // unavailable extension to look across the SIMD lanes.  This is the former
     // as a placeholder for the latter.
-    if (perCtrlPtParam >= 0) {
+    if (outPatchParam >= 0) {
         // We must introduce a local temp variable of the type wanted by the PCF input.
-        const int arraySize = patchConstantFunction[perCtrlPtParam].type->getOuterArraySize();
+        const int arraySize = patchConstantFunction[outPatchParam].type->getOuterArraySize();
 
         if (entryPointFunction->getType().getBasicType() == EbtVoid) {
             error(loc, "entry point must return a value for use with patch constant function", "", "");
