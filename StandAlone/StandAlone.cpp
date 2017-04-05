@@ -86,6 +86,7 @@ enum TOptions {
     EOptionFlattenUniformArrays = (1 << 20),
     EOptionNoStorageFormat      = (1 << 21),
     EOptionKeepUncalled         = (1 << 22),
+    EOptionHlslOffsets          = (1 << 23),
 };
 
 //
@@ -311,8 +312,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         } else
                             Error("no <C-variable-name> provided for --variable-name");
                         break;
-                    }
-                    else if (lowerword == "source-entrypoint" || // synonyms
+                    } else if (lowerword == "source-entrypoint" || // synonyms
                                lowerword == "sep") {
                         sourceEntryPointName = argv[1];
                         if (argc > 0) {
@@ -324,6 +324,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                     } else if (lowerword == "keep-uncalled" || // synonyms
                                lowerword == "ku") {
                         Options |= EOptionKeepUncalled;
+                    } else if (lowerword == "hlsl-offsets") {
+                        Options |= EOptionHlslOffsets;
                     } else {
                         usage();
                     }
@@ -471,6 +473,8 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgCascadingErrors);
     if (Options & EOptionKeepUncalled)
         messages = (EShMessages)(messages | EShMsgKeepUncalled);
+    if (Options & EOptionHlslOffsets)
+        messages = (EShMessages)(messages | EShMsgHlslOffsets);
 }
 
 //
@@ -998,8 +1002,13 @@ void usage()
            "\n"
            "  --keep-uncalled                         don't eliminate uncalled functions when linking\n"
            "  --ku                                    synonym for --keep-uncalled\n"
-           "  --variable-name <name>                  Creates a C header file that contains a uint32_t array named <name> initialized with the shader binary code.\n"
-           "  --vn <name>                             synonym for --variable-name <name>.\n"
+           "\n"
+           "  --variable-name <name>                  Creates a C header file that contains a uint32_t array named <name>\n"
+           "                                          initialized with the shader binary code.\n"
+           "  --vn <name>                             synonym for --variable-name <name>\n"
+           "\n"
+           "  --hlsl-offsets                          Allow block offsets to follow HLSL rules instead of GLSL rules.\n"
+           "                                          Works independently of source language.\n"
            );
 
     exit(EFailUsage);

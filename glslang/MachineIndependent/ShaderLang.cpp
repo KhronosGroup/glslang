@@ -726,6 +726,8 @@ bool ProcessDeferred(
     intermediate.setSpv(spvVersion);
     if (spvVersion.vulkan >= 100)
         intermediate.setOriginUpperLeft();
+    if (messages & EShMsgHlslOffsets) // source-language independent
+        intermediate.setHlslOffsets();
     SetupBuiltinSymbolTable(version, profile, spvVersion, source);
 
     TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]

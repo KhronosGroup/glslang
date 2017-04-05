@@ -2728,7 +2728,23 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& /*structTy
     int memberSize;
     int dummyStride;
     int memberAlignment = glslangIntermediate->getBaseAlignment(memberType, memberSize, dummyStride, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
+
+    // Adjust alignment for HLSL rules
+    if (glslangIntermediate->usingHlslOFfsets() &&
+        ! memberType.isArray() && memberType.isVector()) {
+        int dummySize;
+        int componentAlignment = glslangIntermediate->getBaseAlignmentScalar(memberType, dummySize);
+        if (componentAlignment <= 4)
+            memberAlignment = componentAlignment;
+    }
+
+    // Bump up to member alignment
     glslang::RoundToPow2(currentOffset, memberAlignment);
+
+    // Bump up to vec4 if there is a bad straddle
+    if (glslangIntermediate->improperStraddle(memberType, memberSize, currentOffset))
+        glslang::RoundToPow2(currentOffset, 16);
+
     nextOffset = currentOffset + memberSize;
 }
 
