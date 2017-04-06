@@ -250,7 +250,7 @@ protected:
     void addInterstageIoToLinkage();
     void addPatchConstantInvocation();
 
-    void fixBuiltInArrayType(TType&);
+    void fixBuiltInIoType(TType&);
 
     void flatten(const TSourceLoc& loc, const TVariable& variable);
     int flatten(const TSourceLoc& loc, const TVariable& variable, const TType&, TFlattenData&, TString name);

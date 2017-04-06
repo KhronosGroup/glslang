@@ -1042,7 +1042,7 @@ TType& HlslParseContext::split(TType& type, TString name, const TType* outerStru
             if (arraySizes)
                 ioVar->getWritableType().newArraySizes(*arraySizes);
 
-            fixBuiltInArrayType(ioVar->getWritableType());
+            fixBuiltInIoType(ioVar->getWritableType());
 
             interstageBuiltInIo[tInterstageIoData(memberType, *outerStructType)] = ioVar;
 
@@ -1382,28 +1382,44 @@ void HlslParseContext::trackLinkage(TSymbol& symbol)
 // Some types require fixed array sizes in SPIR-V, but can be scalars or
 // arrays of sizes SPIR-V doesn't allow.  For example, tessellation factors.
 // This creates the right size.  A conversion is performed when the internal
-// type is copied to or from the external type.
-void HlslParseContext::fixBuiltInArrayType(TType& type)
+// type is copied to or from the external type.  This corrects the externally
+// facing input or output type to abide downstream semantics.
+void HlslParseContext::fixBuiltInIoType(TType& type)
 {
-    int requiredSize = 0;
+    int requiredArraySize = 0;
 
     switch (type.getQualifier().builtIn) {
-    case EbvTessLevelOuter: requiredSize = 4; break;
-    case EbvTessLevelInner: requiredSize = 2; break;
+    case EbvTessLevelOuter: requiredArraySize = 4; break;
+    case EbvTessLevelInner: requiredArraySize = 2; break;
     case EbvClipDistance:   // TODO: ...
     case EbvCullDistance:   // TODO: ...
+        return;
+    case EbvTessCoord:
+        {
+            // tesscoord is always a vec3 for the IO variable, no matter the shader's
+            // declared vector size.
+            TType tessCoordType(type.getBasicType(), type.getQualifier().storage, 3);
+
+            tessCoordType.getQualifier() = type.getQualifier();
+            type.shallowCopy(tessCoordType);
+
+            break;
+        }
     default:
         return;
     }
 
-    if (type.isArray()) {
-        // Already an array.  Fix the size.
-        type.changeOuterArraySize(requiredSize);
-    } else {
-        // it wasn't an array, but needs to be.
-        TArraySizes arraySizes;
-        arraySizes.addInnerSize(requiredSize);
-        type.newArraySizes(arraySizes);
+    // Alter or set array size as needed.
+    if (requiredArraySize > 0) {
+        if (type.isArray()) {
+            // Already an array.  Fix the size.
+            type.changeOuterArraySize(requiredArraySize);
+        } else {
+            // it wasn't an array, but needs to be.
+            TArraySizes arraySizes;
+            arraySizes.addInnerSize(requiredArraySize);
+            type.newArraySizes(arraySizes);
+        }
     }
 }
 
@@ -1984,6 +2000,8 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
             correctOutput(ioVariable->getWritableType().getQualifier());
         }
         ioVariable->getWritableType().getQualifier().storage = storage;
+
+        fixBuiltInIoType(ioVariable->getWritableType());
 
         return ioVariable;
     };
