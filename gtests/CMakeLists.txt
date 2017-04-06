@@ -43,7 +43,7 @@ if (TARGET gmock)
     ${gtest_SOURCE_DIR}/include)
 
   set(LIBRARIES
-      SPVRemapper glslang OSDependent OGLCompiler glslang
+      SPVRemapper glslang OSDependent glslang
       SPIRV glslang-default-resource-limits)
   if(ENABLE_HLSL)
     set(LIBRARIES ${LIBRARIES} HLSL)

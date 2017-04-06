@@ -63,6 +63,7 @@
 
 #include <cstddef>
 #include <cstring>
+#include <memory>
 #include <vector>
 
 namespace glslang {
@@ -258,7 +259,7 @@ struct TThreadMemoryPools
     TPoolAllocator* threadPoolAllocator;
 };
 
-void SetThreadPoolAllocator(TPoolAllocator& poolAllocator);
+std::unique_ptr< TPoolAllocator > SetThreadPoolAllocator(std::unique_ptr<TPoolAllocator>&& poolAllocator);
 
 //
 // This STL compatible allocator is intended to be used as the allocator

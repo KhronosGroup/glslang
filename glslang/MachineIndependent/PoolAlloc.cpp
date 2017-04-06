@@ -38,64 +38,59 @@
 #include "../Include/InitializeGlobals.h"
 #include "../OSDependent/osinclude.h"
 
+#include <cassert>
+
 namespace glslang {
 
-OS_TLSIndex PoolIndex;
+// MSC version 2013 and Apple clang versions older than 8 do not support this C++11 feature so
+// we use their own extension. These extensions only works with POD types, fine for now.
+// Once it is not needed to support this compiler then we can change the the TPoolAllocator is
+// initialized. For instance having a unique_ptr instead of raw pointer and doing lazy
+// initialization, then the Initialize/FreeMemoryPools function can be removed.
 
-void InitializeMemoryPools()
+#if defined _MSC_VER && _MSC_VER <= 1800 // MSVC 2013 specific code.
+    #define ATTRIBUTE_TLS __declspec(thread)
+#elif defined __APPLE__ && __APPLE_CC__ < 800038 // Apple  XCode < 8.0 specific code.
+    #define ATTRIBUTE_TLS __thread
+#else
+    #define ATTRIBUTE_TLS thread_local // standard C++11 code.
+#endif
+
+static ATTRIBUTE_TLS TThreadMemoryPools pools{nullptr};
+
+
+bool InitializeMemoryPools()
 {
-    TThreadMemoryPools* pools = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
-    if (pools)
-        return;
+    if (!pools.threadPoolAllocator)
+    {
+        pools.threadPoolAllocator = new TPoolAllocator();
+    }
 
-    TPoolAllocator *threadPoolAllocator = new TPoolAllocator();
-
-    TThreadMemoryPools* threadData = new TThreadMemoryPools();
-
-    threadData->threadPoolAllocator = threadPoolAllocator;
-
-    OS_SetTLSValue(PoolIndex, threadData);
+    return pools.threadPoolAllocator != nullptr;
 }
 
-void FreeGlobalPools()
+void FreeMemoryPools()
 {
     // Release the allocated memory for this thread.
-    TThreadMemoryPools* globalPools = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
-    if (! globalPools)
-        return;
-
-    GetThreadPoolAllocator().popAll();
-    delete &GetThreadPoolAllocator();
-    delete globalPools;
-}
-
-bool InitializePoolIndex()
-{
-    // Allocate a TLS index.
-    if ((PoolIndex = OS_AllocTLSIndex()) == OS_INVALID_TLS_INDEX)
-        return false;
-
-    return true;
-}
-
-void FreePoolIndex()
-{
-    // Release the TLS index.
-    OS_FreeTLSIndex(PoolIndex);
+    if (pools.threadPoolAllocator)
+    {
+        delete pools.threadPoolAllocator;
+        pools.threadPoolAllocator = nullptr;
+    }
 }
 
 TPoolAllocator& GetThreadPoolAllocator()
 {
-    TThreadMemoryPools* threadData = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
-
-    return *threadData->threadPoolAllocator;
+    assert(pools.threadPoolAllocator);
+    return *pools.threadPoolAllocator;
 }
 
-void SetThreadPoolAllocator(TPoolAllocator& poolAllocator)
+std::unique_ptr<TPoolAllocator> SetThreadPoolAllocator(std::unique_ptr<TPoolAllocator>&& poolAllocator)
 {
-    TThreadMemoryPools* threadData = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
-
-    threadData->threadPoolAllocator = &poolAllocator;
+    assert(poolAllocator);
+    std::unique_ptr<TPoolAllocator> current_allocator(pools.threadPoolAllocator);
+    pools.threadPoolAllocator = poolAllocator.release();
+    return current_allocator;
 }
 
 //
@@ -149,6 +144,8 @@ TPoolAllocator::TPoolAllocator(int growthIncrement, int allocationAlignment) :
 
 TPoolAllocator::~TPoolAllocator()
 {
+    popAll();
+
     while (inUseList) {
         tHeader* next = inUseList->nextPage;
         inUseList->~tHeader();

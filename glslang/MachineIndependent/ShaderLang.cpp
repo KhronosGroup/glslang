@@ -45,10 +45,14 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <mutex>
+
 #include "SymbolTable.h"
 #include "ParseHelper.h"
 #include "Scan.h"
 #include "ScanContext.h"
+
+#include "../OSDependent/osinclude.h"
 
 #ifdef ENABLE_HLSL
 #include "../../hlsl/hlslParseHelper.h"
@@ -56,8 +60,8 @@
 #include "../../hlsl/hlslScanContext.h"
 #endif
 
+#include "../Include/InitializeGlobals.h"
 #include "../Include/ShHandle.h"
-#include "../../OGLCompilersDLL/InitializeDll.h"
 
 #include "preprocessor/PpContext.h"
 
@@ -216,7 +220,8 @@ enum EPrecisionClass {
 TSymbolTable* CommonSymbolTable[VersionCount][SpvVersionCount][ProfileCount][SourceCount][EPcCount] = {};
 TSymbolTable* SharedSymbolTables[VersionCount][SpvVersionCount][ProfileCount][SourceCount][EShLangCount] = {};
 
-TPoolAllocator* PerProcessGPA = 0;
+static std::mutex mutexSetupBuiltinSymbolTable;
+static std::unique_ptr<TPoolAllocator> PerProcessGPA;
 
 //
 // Parse and add to the given symbol table the content of the given shader string.
@@ -372,7 +377,7 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
     TInfoSink infoSink;
 
     // Make sure only one thread tries to do this at a time
-    glslang::GetGlobalLock();
+    std::lock_guard<std::mutex> guard(mutexSetupBuiltinSymbolTable);
 
     // See if it's already been done for this version/profile combination
     int versionIndex = MapVersionToIndex(version);
@@ -380,15 +385,11 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
     int profileIndex = MapProfileToIndex(profile);
     int sourceIndex = MapSourceToIndex(source);
     if (CommonSymbolTable[versionIndex][spvVersionIndex][profileIndex][sourceIndex][EPcGeneral]) {
-        glslang::ReleaseGlobalLock();
-
         return;
     }
 
     // Switch to a new pool
-    TPoolAllocator& previousAllocator = GetThreadPoolAllocator();
-    TPoolAllocator* builtInPoolAllocator = new TPoolAllocator();
-    SetThreadPoolAllocator(*builtInPoolAllocator);
+    auto previousAllocator = SetThreadPoolAllocator(std::unique_ptr<TPoolAllocator>(new TPoolAllocator));
 
     // Dynamically allocate the local symbol tables so we can control when they are deallocated WRT when the pool is popped.
     TSymbolTable* commonTable[EPcCount];
@@ -402,7 +403,8 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
     InitializeSymbolTables(infoSink, commonTable, stageTables, version, profile, spvVersion, source);
 
     // Switch to the process-global pool
-    SetThreadPoolAllocator(*PerProcessGPA);
+    assert(PerProcessGPA);
+    previousAllocator = SetThreadPoolAllocator(std::move(PerProcessGPA));
 
     // Copy the local symbol tables from the new pool to the global tables using the process-global pool
     for (int precClass = 0; precClass < EPcCount; ++precClass) {
@@ -428,10 +430,10 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
     for (int stage = 0; stage < EShLangCount; ++stage)
         delete stageTables[stage];
 
-    delete builtInPoolAllocator;
-    SetThreadPoolAllocator(previousAllocator);
-
-    glslang::ReleaseGlobalLock();
+    // Restore the original pool and get back the global pool.
+    assert(previousAllocator);
+    PerProcessGPA = SetThreadPoolAllocator(std::move(previousAllocator));
+    assert(PerProcessGPA);
 }
 
 // Return true if the shader was correctly specified for version/profile/stage.
@@ -637,7 +639,7 @@ bool ProcessDeferred(
     const std::string sourceEntryPointName = ""
     )
 {
-    if (! InitThread())
+    if (!InitializeMemoryPools())
         return false;
 
     // This must be undone (.pop()) by the caller, after it finishes consuming the created tree.
@@ -1096,13 +1098,11 @@ bool CompileDeferred(
 //
 int ShInitialize()
 {
-    glslang::InitGlobalLock();
-
-    if (! InitProcess())
+    if (!glslang::InitializeMemoryPools())
         return 0;
 
     if (! PerProcessGPA)
-        PerProcessGPA = new TPoolAllocator();
+        PerProcessGPA.reset(new TPoolAllocator());
 
     glslang::TScanContext::fillInKeywordMap();
 #ifdef ENABLE_HLSL
@@ -1119,7 +1119,7 @@ int ShInitialize()
 
 ShHandle ShConstructCompiler(const EShLanguage language, int debugOptions)
 {
-    if (!InitThread())
+    if (!glslang::InitializeMemoryPools())
         return 0;
 
     TShHandleBase* base = static_cast<TShHandleBase*>(ConstructCompiler(language, debugOptions));
@@ -1129,7 +1129,7 @@ ShHandle ShConstructCompiler(const EShLanguage language, int debugOptions)
 
 ShHandle ShConstructLinker(const EShExecutable executable, int debugOptions)
 {
-    if (!InitThread())
+    if (!glslang::InitializeMemoryPools())
         return 0;
 
     TShHandleBase* base = static_cast<TShHandleBase*>(ConstructLinker(executable, debugOptions));
@@ -1139,7 +1139,7 @@ ShHandle ShConstructLinker(const EShExecutable executable, int debugOptions)
 
 ShHandle ShConstructUniformMap()
 {
-    if (!InitThread())
+    if (!glslang::InitializeMemoryPools())
         return 0;
 
     TShHandleBase* base = static_cast<TShHandleBase*>(ConstructUniformMap());
@@ -1193,16 +1193,14 @@ int __fastcall ShFinalize()
         }
     }
 
-    if (PerProcessGPA) {
-        PerProcessGPA->popAll();
-        delete PerProcessGPA;
-        PerProcessGPA = 0;
-    }
+    PerProcessGPA.reset();
 
     glslang::TScanContext::deleteKeywordMap();
 #ifdef ENABLE_HLSL
     glslang::HlslScanContext::deleteKeywordMap();
 #endif
+
+    glslang::FreeMemoryPools();
 
     return 1;
 }
@@ -1328,7 +1326,7 @@ void ShSetEncryptionMethod(ShHandle handle)
 //
 const char* ShGetInfoLog(const ShHandle handle)
 {
-    if (!InitThread())
+    if (!glslang::InitializeMemoryPools())
         return 0;
 
     if (handle == 0)
@@ -1354,7 +1352,7 @@ const char* ShGetInfoLog(const ShHandle handle)
 //
 const void* ShGetExecutable(const ShHandle handle)
 {
-    if (!InitThread())
+    if (!glslang::InitializeMemoryPools())
         return 0;
 
     if (handle == 0)
@@ -1379,7 +1377,7 @@ const void* ShGetExecutable(const ShHandle handle)
 //
 int ShSetVirtualAttributeBindings(const ShHandle handle, const ShBindingTable* table)
 {
-    if (!InitThread())
+    if (!glslang::InitializeMemoryPools())
         return 0;
 
     if (handle == 0)
@@ -1401,7 +1399,7 @@ int ShSetVirtualAttributeBindings(const ShHandle handle, const ShBindingTable* t
 //
 int ShSetFixedAttributeBindings(const ShHandle handle, const ShBindingTable* table)
 {
-    if (!InitThread())
+    if (!glslang::InitializeMemoryPools())
         return 0;
 
     if (handle == 0)
@@ -1422,7 +1420,7 @@ int ShSetFixedAttributeBindings(const ShHandle handle, const ShBindingTable* tab
 //
 int ShExcludeAttributes(const ShHandle handle, int *attributes, int count)
 {
-    if (!InitThread())
+    if (!glslang::InitializeMemoryPools())
         return 0;
 
     if (handle == 0)
@@ -1446,7 +1444,7 @@ int ShExcludeAttributes(const ShHandle handle, int *attributes, int count)
 //
 int ShGetUniformLocation(const ShHandle handle, const char* name)
 {
-    if (!InitThread())
+    if (!glslang::InitializeMemoryPools())
         return 0;
 
     if (handle == 0)
@@ -1507,7 +1505,7 @@ public:
 };
 
 TShader::TShader(EShLanguage s)
-    : pool(0), stage(s), lengths(nullptr), stringNames(nullptr), preamble("")
+    : stage(s), lengths(nullptr), stringNames(nullptr), preamble("")
 {
     infoSink = new TInfoSink;
     compiler = new TDeferredCompiler(stage, *infoSink);
@@ -1519,7 +1517,6 @@ TShader::~TShader()
     delete infoSink;
     delete compiler;
     delete intermediate;
-    delete pool;
 }
 
 void TShader::setStrings(const char* const* s, int n)
@@ -1572,18 +1569,18 @@ void TShader::setNoStorageFormat(bool useUnknownFormat) { intermediate->setNoSto
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                     bool forwardCompatible, EShMessages messages, Includer& includer)
 {
-    if (! InitThread())
-        return false;
-
-    pool = new TPoolAllocator();
-    SetThreadPoolAllocator(*pool);
+    auto previous = SetThreadPoolAllocator(std::unique_ptr<TPoolAllocator>(new TPoolAllocator()));
     if (! preamble)
         preamble = "";
 
-    return CompileDeferred(compiler, strings, numStrings, lengths, stringNames,
+    const bool res = CompileDeferred(compiler, strings, numStrings, lengths, stringNames,
                            preamble, EShOptNone, builtInResources, defaultVersion,
                            defaultProfile, forceDefaultVersionAndProfile,
                            forwardCompatible, messages, *intermediate, includer, sourceEntryPointName);
+
+    pool = SetThreadPoolAllocator(std::move(previous));
+
+    return res;
 }
 
 bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
@@ -1600,18 +1597,18 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
                          std::string* output_string,
                          Includer& includer)
 {
-    if (! InitThread())
-        return false;
-
-    pool = new TPoolAllocator();
-    SetThreadPoolAllocator(*pool);
+    auto previous = SetThreadPoolAllocator(std::unique_ptr<TPoolAllocator>(new TPoolAllocator()));
     if (! preamble)
         preamble = "";
 
-    return PreprocessDeferred(compiler, strings, numStrings, lengths, stringNames, preamble,
+    const bool res = PreprocessDeferred(compiler, strings, numStrings, lengths, stringNames, preamble,
                               EShOptNone, builtInResources, defaultVersion,
                               defaultProfile, forceDefaultVersionAndProfile,
                               forwardCompatible, message, includer, *intermediate, output_string);
+
+    pool = SetThreadPoolAllocator(std::move(previous));
+
+    return res;
 }
 
 const char* TShader::getInfoLog()
@@ -1624,7 +1621,7 @@ const char* TShader::getInfoDebugLog()
     return infoSink->debug.c_str();
 }
 
-TProgram::TProgram() : pool(0), reflection(0), ioMapper(nullptr), linked(false)
+TProgram::TProgram() : reflection(0), ioMapper(nullptr), linked(false)
 {
     infoSink = new TInfoSink;
     for (int s = 0; s < EShLangCount; ++s) {
@@ -1642,8 +1639,6 @@ TProgram::~TProgram()
     for (int s = 0; s < EShLangCount; ++s)
         if (newedIntermediate[s])
             delete intermediate[s];
-
-    delete pool;
 }
 
 //
@@ -1660,13 +1655,14 @@ bool TProgram::link(EShMessages messages)
 
     bool error = false;
 
-    pool = new TPoolAllocator();
-    SetThreadPoolAllocator(*pool);
+    auto previous = SetThreadPoolAllocator(std::unique_ptr<TPoolAllocator>(new TPoolAllocator()));
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (! linkStage((EShLanguage)s, messages))
             error = true;
     }
+
+    pool = SetThreadPoolAllocator(std::move(previous));
 
     // TODO: Link: cross-stage error checking
 

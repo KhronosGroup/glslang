@@ -255,6 +255,7 @@ SH_IMPORT_EXPORT int ShGetUniformLocation(const ShHandle uniformMap, const char*
 //
 
 #include <list>
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -415,7 +416,7 @@ public:
     EShLanguage getStage() const { return stage; }
 
 protected:
-    TPoolAllocator* pool;
+    std::unique_ptr<TPoolAllocator> pool;
     EShLanguage stage;
     TCompiler* compiler;
     TIntermediate* intermediate;
@@ -539,7 +540,7 @@ public:
 protected:
     bool linkStage(EShLanguage, EShMessages);
 
-    TPoolAllocator* pool;
+    std::unique_ptr<TPoolAllocator> pool;
     std::list<TShader*> stages[EShLangCount];
     TIntermediate* intermediate[EShLangCount];
     bool newedIntermediate[EShLangCount];      // track which intermediate were "new" versus reusing a singleton unit in a stage

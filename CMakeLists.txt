@@ -66,7 +66,6 @@ endfunction(glslang_set_link_args)
 add_subdirectory(External)
 
 add_subdirectory(glslang)
-add_subdirectory(OGLCompilersDLL)
 if(ENABLE_GLSLANG_BINARIES)
 	add_subdirectory(StandAlone)
 endif()
