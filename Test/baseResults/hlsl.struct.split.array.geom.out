@@ -1,5 +1,5 @@
 hlsl.struct.split.array.geom
-Shader version: 450
+Shader version: 500
 invocations = -1
 max_vertices = 4
 input primitive = points
@@ -78,7 +78,7 @@ output primitive = triangle_strip
 Linked geometry stage:
 
 
-Shader version: 450
+Shader version: 500
 invocations = 1
 max_vertices = 4
 input primitive = points
@@ -165,6 +165,7 @@ output primitive = triangle_strip
                               ExecutionMode 4 Invocations 1
                               ExecutionMode 4 OutputTriangleStrip
                               ExecutionMode 4 OutputVertices 4
+                              Source HLSL 500
                               Name 4  "main"
                               Name 14  "PSInput"
                               MemberName 14(PSInput) 0  "Pos"

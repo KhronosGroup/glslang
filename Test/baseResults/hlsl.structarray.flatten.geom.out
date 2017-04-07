@@ -1,5 +1,5 @@
 hlsl.structarray.flatten.geom
-Shader version: 450
+Shader version: 500
 invocations = -1
 max_vertices = 4
 input primitive = lines
@@ -90,7 +90,7 @@ output primitive = triangle_strip
 Linked geometry stage:
 
 
-Shader version: 450
+Shader version: 500
 invocations = 1
 max_vertices = 4
 input primitive = lines
@@ -189,6 +189,7 @@ output primitive = triangle_strip
                               ExecutionMode 4 Invocations 1
                               ExecutionMode 4 OutputTriangleStrip
                               ExecutionMode 4 OutputVertices 4
+                              Source HLSL 500
                               Name 4  "main"
                               Name 9  "VertexData"
                               MemberName 9(VertexData) 0  "position"

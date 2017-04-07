@@ -1,5 +1,5 @@
 hlsl.scalarCast.vert
-Shader version: 450
+Shader version: 500
 0:? Sequence
 0:5  Function Definition: r0( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
 0:5    Function Parameters: 
@@ -164,7 +164,7 @@ Shader version: 450
 Linked vertex stage:
 
 
-Shader version: 450
+Shader version: 500
 0:? Sequence
 0:5  Function Definition: r0( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
 0:5    Function Parameters: 
@@ -333,6 +333,7 @@ Shader version: 450
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Vertex 4  "main" 108 116
+                              Source HLSL 500
                               Name 4  "main"
                               Name 9  "VertexOut"
                               MemberName 9(VertexOut) 0  "position"

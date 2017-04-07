@@ -1,5 +1,5 @@
 hlsl.semantic.geom
-Shader version: 450
+Shader version: 500
 invocations = -1
 max_vertices = 4
 input primitive = triangles
@@ -67,7 +67,7 @@ output primitive = line_strip
 Linked geometry stage:
 
 
-Shader version: 450
+Shader version: 500
 invocations = 1
 max_vertices = 4
 input primitive = triangles
@@ -146,6 +146,7 @@ output primitive = line_strip
                               ExecutionMode 4 Invocations 1
                               ExecutionMode 4 OutputLineStrip
                               ExecutionMode 4 OutputVertices 4
+                              Source HLSL 500
                               Name 4  "main"
                               Name 12  "S"
                               MemberName 12(S) 0  "clip0"

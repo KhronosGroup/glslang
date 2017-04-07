@@ -1,5 +1,5 @@
 hlsl.struct.split.nested.geom
-Shader version: 450
+Shader version: 500
 invocations = -1
 max_vertices = 3
 input primitive = triangles
@@ -166,7 +166,7 @@ output primitive = triangle_strip
 Linked geometry stage:
 
 
-Shader version: 450
+Shader version: 500
 invocations = 1
 max_vertices = 3
 input primitive = triangles
@@ -341,6 +341,7 @@ output primitive = triangle_strip
                               ExecutionMode 4 Invocations 1
                               ExecutionMode 4 OutputTriangleStrip
                               ExecutionMode 4 OutputVertices 3
+                              Source HLSL 500
                               Name 4  "main"
                               Name 9  "PS_IN"
                               MemberName 9(PS_IN) 0  "pos"

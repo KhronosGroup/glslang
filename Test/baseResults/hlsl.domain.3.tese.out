@@ -1,5 +1,5 @@
 hlsl.domain.3.tese
-Shader version: 450
+Shader version: 500
 input primitive = isolines
 vertex spacing = none
 triangle order = none
@@ -120,7 +120,7 @@ triangle order = none
 Linked tessellation evaluation stage:
 
 
-Shader version: 450
+Shader version: 500
 input primitive = isolines
 vertex spacing = none
 triangle order = none
@@ -246,6 +246,7 @@ triangle order = none
                               MemoryModel Logical GLSL450
                               EntryPoint TessellationEvaluation 4  "main" 54 58 67 81 86 95
                               ExecutionMode 4 Isolines
+                              Source HLSL 500
                               Name 4  "main"
                               Name 9  "ds_in_t"
                               MemberName 9(ds_in_t) 0  "pos"

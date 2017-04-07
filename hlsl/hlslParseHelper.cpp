@@ -6424,7 +6424,7 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
         return nullptr;
     }
 
-    // Const variables require a constant initializer, depending on version
+    // Const variables require a constant initializer
     if (qualifier == EvqConst) {
         if (initializer->getType().getQualifier().storage != EvqConst) {
             variable->getWritableType().getQualifier().storage = EvqConstReadOnly;
