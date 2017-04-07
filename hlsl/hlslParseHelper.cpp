@@ -722,6 +722,18 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
     if (result != nullptr)
         return result;  // it was handled as an operator[]
 
+    const TBasicType indexBasicType = index->getType().getBasicType();
+
+    // Cast index to unsigned integer if it isn't one.
+    if (indexBasicType != EbtInt && indexBasicType != EbtUint &&
+        indexBasicType != EbtInt64 && indexBasicType != EbtUint64)
+        index = intermediate.addConversion(EOpConstructUint, TType(EbtUint), index);
+
+    if (index == nullptr) {
+        error(loc, " unknown undex type ", "", "");
+        return nullptr;
+    }
+
     bool flattened = false;
     int indexValue = 0;
     if (index->getQualifier().storage == EvqConst) {

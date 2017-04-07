@@ -171,6 +171,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.logicalConvert.frag", "main"},
         {"hlsl.logical.unary.frag", "main"},
         {"hlsl.namespace.frag", "main"},
+        {"hlsl.nonint-index.frag", "main"},
         {"hlsl.matNx1.frag", "main"},
         {"hlsl.matrixSwizzle.vert", "ShaderFunction"},
         {"hlsl.mintypes.frag", "main"},
