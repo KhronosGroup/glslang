@@ -2816,6 +2816,8 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
             }
             advanceToken();
             node = parseContext.handleBracketDereference(indexNode->getLoc(), node, indexNode);
+            if (node == nullptr)
+                return false;
             break;
         }
         case EOpPostIncrement:
