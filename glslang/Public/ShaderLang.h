@@ -467,25 +467,25 @@ class TIoMapResolver
 public:
   virtual ~TIoMapResolver() {}
 
-  // Should return true if the resulting/current binding would be ok.
+  // Should return true if the resulting/current binding would be okay.
   // Basic idea is to do aliasing binding checks with this.
   virtual bool validateBinding(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
   // Should return a value >= 0 if the current binding should be overridden.
   // Return -1 if the current binding (including no binding) should be kept.
   virtual int resolveBinding(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
-  // Should return a value >= 0 if the current set should be overriden.
+  // Should return a value >= 0 if the current set should be overridden.
   // Return -1 if the current set (including no set) should be kept.
   virtual int resolveSet(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
-  // Should return true if the resuling/current setup would be ok.
+  // Should return true if the resulting/current setup would be okay.
   // Basic idea is to do aliasing checks and reject invalid semantic names.
   virtual bool validateInOut(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
-  // Should return a value >= 0 if the current location should be overriden.
+  // Should return a value >= 0 if the current location should be overridden.
   // Return -1 if the current location (including no location) should be kept.
   virtual int resolveInOutLocation(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
-  // Should return a value >= 0 if the current component index should be overriden.
+  // Should return a value >= 0 if the current component index should be overridden.
   // Return -1 if the current component index (including no index) should be kept.
   virtual int resolveInOutComponent(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
-  // Should return a value >= 0 if the current color index should be overriden.
+  // Should return a value >= 0 if the current color index should be overridden.
   // Return -1 if the current color index (including no index) should be kept.
   virtual int resolveInOutIndex(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
 };
