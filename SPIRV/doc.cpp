@@ -833,6 +833,11 @@ const char* CapabilityString(int info)
     case 4437: return "DeviceGroup";
     case 4439: return "MultiView";
 
+    case 4433: return "StorageUniformBufferBlock16";
+    case 4434: return "StorageUniform16";
+    case 4435: return "StoragePushConstant16";
+    case 4436: return "StorageInputOutput16";
+
 #ifdef NV_EXTENSIONS
     case 5251: return "GeometryShaderPassthroughNV";
     case 5254: return "ShaderViewportIndexLayerNV";
