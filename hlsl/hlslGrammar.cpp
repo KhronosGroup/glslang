@@ -475,9 +475,10 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
             if (variableType.getBasicType() != EbtString && parseContext.getAnnotationNestingLevel() == 0) {
                 if (typedefDecl)
                     parseContext.declareTypedef(idToken.loc, *fullName, variableType);
-                else if (variableType.getBasicType() == EbtBlock)
+                else if (variableType.getBasicType() == EbtBlock) {
                     parseContext.declareBlock(idToken.loc, variableType, fullName);
-                else {
+                    parseContext.declareStructBufferCounter(idToken.loc, variableType, *fullName);
+                } else {
                     if (variableType.getQualifier().storage == EvqUniform && ! variableType.containsOpaque()) {
                         // this isn't really an individual variable, but a member of the $Global buffer
                         parseContext.growGlobalUniformBlock(idToken.loc, variableType, *fullName);
@@ -1955,24 +1956,29 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
     bool readonly = false;
 
     TStorageQualifier storage = EvqBuffer;
+    TBuiltInVariable  builtinType = EbvNone;
 
     switch (structBuffType) {
     case EHTokAppendStructuredBuffer:
-        unimplemented("AppendStructuredBuffer");
-        return false;
+        builtinType = EbvAppendConsume;
+        break;
     case EHTokByteAddressBuffer:
         hasTemplateType = false;
         readonly = true;
+        builtinType = EbvByteAddressBuffer;
         break;
     case EHTokConsumeStructuredBuffer:
-        unimplemented("ConsumeStructuredBuffer");
-        return false;
+        builtinType = EbvAppendConsume;
+        break;
     case EHTokRWByteAddressBuffer:
         hasTemplateType = false;
+        builtinType = EbvRWByteAddressBuffer;
         break;
     case EHTokRWStructuredBuffer:
+        builtinType = EbvRWStructuredBuffer;
         break;
     case EHTokStructuredBuffer:
+        builtinType = EbvStructuredBuffer;
         readonly = true;
         break;
     default:
@@ -2014,8 +2020,6 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
     // field name is canonical for all structbuffers
     templateType->setFieldName("@data");
 
-    // Create block type.  TODO: hidden internal uint member when needed
-
     TTypeList* blockStruct = new TTypeList;
     TTypeLoc  member = { templateType, token.loc };
     blockStruct->push_back(member);
@@ -2025,6 +2029,7 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
 
     blockType.getQualifier().storage = storage;
     blockType.getQualifier().readonly = readonly;
+    blockType.getQualifier().builtIn = builtinType;
 
     // We may have created an equivalent type before, in which case we should use its
     // deep structure.
