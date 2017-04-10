@@ -3907,25 +3907,27 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
 
             TIntermAggregate* compoundStatement = intermediate.makeAggregate(tmpArgAssign, loc);
 
+            const TType boolType(EbtBool, EvqTemporary, arg0->getVectorSize(), arg0->getMatrixCols(), arg0->getMatrixRows());
+
             TIntermTyped* isnan = handleUnaryMath(loc, "isnan", EOpIsNan, intermediate.addSymbol(*tempArg, loc));
-            isnan->setType(TType(EbtBool));
+            isnan->setType(boolType);
 
             TIntermTyped* notnan = handleUnaryMath(loc, "!", EOpLogicalNot, isnan);
-            notnan->setType(TType(EbtBool));
+            notnan->setType(boolType);
 
             TIntermTyped* isinf = handleUnaryMath(loc, "isinf", EOpIsInf, intermediate.addSymbol(*tempArg, loc));
-            isinf->setType(TType(EbtBool));
+            isinf->setType(boolType);
 
             TIntermTyped* notinf = handleUnaryMath(loc, "!", EOpLogicalNot, isinf);
-            notinf->setType(TType(EbtBool));
+            notinf->setType(boolType);
             
             TIntermTyped* andNode = handleBinaryMath(loc, "and", EOpLogicalAnd, notnan, notinf);
-            andNode->setType(TType(EbtBool));
+            andNode->setType(boolType);
 
             compoundStatement = intermediate.growAggregate(compoundStatement, andNode);
             compoundStatement->setOperator(EOpSequence);
             compoundStatement->setLoc(loc);
-            compoundStatement->setType(TType(EbtVoid));
+            compoundStatement->setType(boolType);
 
             node = compoundStatement;
 
