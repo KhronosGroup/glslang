@@ -245,6 +245,82 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
         return PpAtomConstFloat;
 }
 
+// Recognize a character literal.
+//
+// The first ' has already been accepted, read the rest, through the closing '.
+//
+// Always returns PpAtomConstInt.
+//
+int TPpContext::characterLiteral(TPpToken* ppToken)
+{
+    ppToken->name[0] = 0;
+    ppToken->ival = 0;
+
+    if (parseContext.intermediate.getSource() != EShSourceHlsl) {
+        // illegal, except in macro definition, for which case we report the character
+        return '\'';
+    }
+
+    int ch = getChar();
+    switch (ch) {
+    case '\'':
+        // As empty sequence:  ''
+        parseContext.ppError(ppToken->loc, "unexpected", "\'", "");
+        return PpAtomConstInt;
+    case '\\':
+        // As escape sequence:  '\XXX'
+        switch (ch = getChar()) {
+        case 'a':
+            ppToken->ival = 7;
+            break;
+        case 'b':
+            ppToken->ival = 8;
+            break;
+        case 't':
+            ppToken->ival = 9;
+            break;
+        case 'n':
+            ppToken->ival = 10;
+            break;
+        case 'v':
+            ppToken->ival = 11;
+            break;
+        case 'f':
+            ppToken->ival = 12;
+            break;
+        case 'r':
+            ppToken->ival = 13;
+            break;
+        case 'x':
+        case '0':
+            parseContext.ppError(ppToken->loc, "octal and hex sequences not supported", "\\", "");
+            break;
+        default:
+            // This catches '\'', '\"', '\?', etc.
+            // Also, things like '\C' mean the same thing as 'C'
+            // (after the above cases are filtered out).
+            ppToken->ival = ch;
+            break;
+        }
+        break;
+    default:
+        ppToken->ival = ch;
+        break;
+    }
+    ppToken->name[0] = (char)ppToken->ival;
+    ppToken->name[1] = '\0';
+    ch = getChar();
+    if (ch != '\'') {
+        parseContext.ppError(ppToken->loc, "expected", "\'", "");
+        // Look ahead for a closing '
+        do {
+            ch = getChar();
+        } while (ch != '\'' && ch != EndOfInput && ch != '\n');
+    }
+
+    return PpAtomConstInt;
+}
+
 //
 // Scanner used to tokenize source stream.
 //
@@ -701,6 +777,8 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 return '/';
             }
             break;
+        case '\'':
+            return pp->characterLiteral(ppToken);
         case '"':
             // TODO: If this gets enhanced to handle escape sequences, or
             // anything that is different than what #include needs, then

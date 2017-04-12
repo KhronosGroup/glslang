@@ -588,6 +588,7 @@ protected:
     int ScanFromString(char* s);
     void missingEndifCheck();
     int lFloatConst(int len, int ch, TPpToken* ppToken);
+    int characterLiteral(TPpToken* ppToken);
 
     void push_include(TShader::Includer::IncludeResult* result)
     {
