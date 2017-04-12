@@ -4536,7 +4536,7 @@ TIntermTyped* HlslParseContext::convertConditionalExpression(const TSourceLoc& l
         return nullptr;
     }
 
-    return intermediate.addConversion(EOpConstructBool, TType(EbtBool), condition);
+    return intermediate.addConversion(EOpConstructBool, TType(EbtBool, EvqTemporary, condition->getVectorSize()), condition);
 }
 
 //
