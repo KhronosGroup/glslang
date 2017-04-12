@@ -124,6 +124,35 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
         HasDecimalOrExponent = true;
         saveName(ch);
         ch = getChar();
+
+        // 1.#INF or -1.#INF
+        if (ch == '#') {
+            if ((len <  2) ||
+                (len == 2 && ppToken->name[0] != '1') ||
+                (len == 3 && ppToken->name[1] != '1' && !(ppToken->name[0] == '-' || ppToken->name[0] == '+')) ||
+                (len >  3))
+                parseContext.ppError(ppToken->loc, "unexpected use of", "#", "");
+            else {
+                // we have 1.# or -1.# or +1.#, check for 'INF'
+                if ((ch = getChar()) != 'I' ||
+                    (ch = getChar()) != 'N' ||
+                    (ch = getChar()) != 'F')
+                    parseContext.ppError(ppToken->loc, "expected 'INF'", "#", "");
+                else {
+                    // we have [+-].#INF, and we are targeting IEEE 754, so wrap it up:
+                    saveName('I');
+                    saveName('N');
+                    saveName('F');
+                    ppToken->name[len] = '\0';
+                    if (ppToken->name[0] == '-')
+                        ppToken->i64val = 0xfff0000000000000; // -Infinity
+                    else
+                        ppToken->i64val = 0x7ff0000000000000; // +Infinity
+                    return PpAtomConstFloat;
+                }
+            }
+        }
+
         while (ch >= '0' && ch <= '9') {
             saveName(ch);
             ch = getChar();
