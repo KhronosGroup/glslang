@@ -6438,7 +6438,10 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
         // Compile-time tagging of the variable with its constant value...
 
         initializer = intermediate.addConversion(EOpAssign, variable->getType(), initializer);
-        if (! initializer || ! initializer->getAsConstantUnion() || variable->getType() != initializer->getType()) {
+        if (initializer != nullptr && variable->getType() != initializer->getType())
+            initializer = intermediate.addShapeConversion(EOpAssign, variable->getType(), initializer);
+        if (initializer == nullptr || !initializer->getAsConstantUnion() ||
+                                      variable->getType() != initializer->getType()) {
             error(loc, "non-matching or non-convertible constant type for const initializer",
                 variable->getType().getStorageQualifierString(), "");
             variable->getWritableType().getQualifier().storage = EvqTemporary;
