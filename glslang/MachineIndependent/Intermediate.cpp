@@ -1271,7 +1271,8 @@ TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, const TType& type, 
 //
 // For "?:" test nodes.  There are three children; a condition,
 // a true path, and a false path.  The two paths are specified
-// as separate parameters.
+// as separate parameters. For vector 'cond', the true and false
+// are not paths, but vectors to mix.
 //
 // Specialization constant operations include
 //     - The ternary operator ( ? : )
@@ -1304,10 +1305,30 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     if (falseBlock->getType() != trueBlock->getType())
         return nullptr;
 
-    //
-    // See if all the operands are constant, then fold it otherwise not.
-    //
+    // Handle a vector condition as a mix
+    if (!cond->getType().isScalarOrVec1()) {
+        TType targetVectorType(trueBlock->getType().getBasicType(), EvqTemporary,
+                               cond->getType().getVectorSize());
+        // smear true/false operations if needed
+        if (trueBlock->getType().isScalarOrVec1())
+            trueBlock = addShapeConversion(EOpAssign, targetVectorType, trueBlock);
+        if (falseBlock->getType().isScalarOrVec1())
+            falseBlock = addShapeConversion(EOpAssign, targetVectorType, falseBlock);
 
+        // make the mix operation
+        TIntermAggregate* mix = makeAggregate(loc);
+        mix = growAggregate(mix, falseBlock);
+        mix = growAggregate(mix, trueBlock);
+        mix = growAggregate(mix, cond);
+        mix->setType(targetVectorType);
+        mix->setOp(EOpMix);
+
+        return mix;
+    }
+
+    // Now have a scalar condition...
+
+    // Eliminate the selection when the condition is a scalar and all operands are constant.
     if (cond->getAsConstantUnion() && trueBlock->getAsConstantUnion() && falseBlock->getAsConstantUnion()) {
         if (cond->getAsConstantUnion()->getConstArray()[0].getBConst())
             return trueBlock;

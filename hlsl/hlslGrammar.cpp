@@ -2536,7 +2536,7 @@ bool HlslGrammar::acceptConditionalExpression(TIntermTyped*& node)
     if (! acceptTokenClass(EHTokQuestion))
         return true;
 
-    node = parseContext.convertConditionalExpression(token.loc, node);
+    node = parseContext.convertConditionalExpression(token.loc, node, false);
     if (node == nullptr)
         return false;
 

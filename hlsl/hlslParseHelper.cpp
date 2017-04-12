@@ -4529,9 +4529,9 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
 
 // Convert to a scalar boolean, or if not allowed by HLSL semantics,
 // report an error and return nullptr.
-TIntermTyped* HlslParseContext::convertConditionalExpression(const TSourceLoc& loc, TIntermTyped* condition)
+TIntermTyped* HlslParseContext::convertConditionalExpression(const TSourceLoc& loc, TIntermTyped* condition, bool mustBeScalar)
 {
-    if (!condition->getType().isScalarOrVec1()) {
+    if (mustBeScalar && !condition->getType().isScalarOrVec1()) {
         error(loc, "requires a scalar", "conditional expression", "");
         return nullptr;
     }

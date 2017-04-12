@@ -6,8 +6,8 @@ float f;
 
 float4 vectorCond()
 {
-    return f4;   //    return (c4 ? t4 : f4) +
-//           (c4 ? t  : f );
+    return (c4 ? t4 : f4) +
+           (c4 ? t  : f );
 }
 
 float4 PixelShaderFunction(float4 input) : COLOR0
