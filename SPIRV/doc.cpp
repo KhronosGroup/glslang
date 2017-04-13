@@ -68,9 +68,9 @@ namespace spv {
 // Also, the ceilings are declared next to these, to help keep them in sync.
 // Ceilings should be
 //  - one more than the maximum value an enumerant takes on, for non-mask enumerants
-//    (for non-sparse enums, this is the number of enumurants)
+//    (for non-sparse enums, this is the number of enumerants)
 //  - the number of bits consumed by the set of masks
-//    (for non-sparse mask enums, this is the number of enumurants)
+//    (for non-sparse mask enums, this is the number of enumerants)
 //
 
 const int SourceLanguageCeiling = 6; // HLSL todo: need official enumerant
@@ -344,8 +344,8 @@ const char* BuiltInString(int builtIn)
     case 5253: return "ViewportMaskNV";
     case 5257: return "SecondaryPositionNV";
     case 5258: return "SecondaryViewportMaskNV";
-    case 5260: return "PositionPerViewNV";
-    case 5261: return "ViewportMaskPerViewNV";
+    case 5261: return "PositionPerViewNV";
+    case 5262: return "ViewportMaskPerViewNV";
 #endif
 
     case BuiltInCeiling:
@@ -833,12 +833,17 @@ const char* CapabilityString(int info)
     case 4437: return "DeviceGroup";
     case 4439: return "MultiView";
 
+    case 4433: return "StorageUniformBufferBlock16";
+    case 4434: return "StorageUniform16";
+    case 4435: return "StoragePushConstant16";
+    case 4436: return "StorageInputOutput16";
+
 #ifdef NV_EXTENSIONS
     case 5251: return "GeometryShaderPassthroughNV";
     case 5254: return "ShaderViewportIndexLayerNV";
     case 5255: return "ShaderViewportMaskNV";
     case 5259: return "ShaderStereoViewNV";
-    case 5262: return "PerViewAttributesNV";
+    case 5260: return "PerViewAttributesNV";
 #endif
 
     case CapabilityCeiling:

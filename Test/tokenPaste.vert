@@ -77,3 +77,10 @@ uniform M_OUTER(argPaste);
 #define M_NEST2(q) int q ## suff
 #define M_OUTER2(p) M_NEST2(p ## 20)
 uniform M_OUTER2(argPaste);
+
+#define rec(x)##
+rec(rec())
+
+#define bax(bay)
+#define baz bax(/##)
+baz

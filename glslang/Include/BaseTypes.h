@@ -218,6 +218,10 @@ enum TBuiltInVariable {
     // to one of the above.
     EbvFragDepthGreater,
     EbvFragDepthLesser,
+    EbvStencilRef,
+    EbvGsOutputStream,
+    EbvOutputPatch,
+    EbvInputPatch,
 
     EbvLast
 };
@@ -327,6 +331,10 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvBaryCoordSmoothSample:      return "BaryCoordSmoothSample";
     case EbvBaryCoordPullModel:         return "BaryCoordPullModel";
 #endif
+
+    case EbvViewIndex:                  return "ViewIndex";
+    case EbvDeviceIndex:                return "DeviceIndex";
+
 #ifdef NV_EXTENSIONS
     case EbvViewportMaskNV:             return "ViewportMaskNV";
     case EbvSecondaryPositionNV:        return "SecondaryPositionNV";

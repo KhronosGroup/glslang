@@ -101,9 +101,16 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
 {
     bool HasDecimalOrExponent = false;
     int isDouble = 0;
+    bool generateFloat16 = false;
+    bool acceptFloat16 = parseContext.intermediate.getSource() == EShSourceHlsl;
+    bool isFloat16 = false;
+    bool requireHF = false;
 #ifdef AMD_EXTENSIONS
-    int isFloat16 = 0;
-    bool enableFloat16 = parseContext.version >= 450 && parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float);
+    if (parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float)) {
+        acceptFloat16 = true;
+        generateFloat16 = true;
+        requireHF = true;
+    }
 #endif
 
     const auto saveName = [&](int ch) {
@@ -117,6 +124,35 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
         HasDecimalOrExponent = true;
         saveName(ch);
         ch = getChar();
+
+        // 1.#INF or -1.#INF
+        if (ch == '#') {
+            if ((len <  2) ||
+                (len == 2 && ppToken->name[0] != '1') ||
+                (len == 3 && ppToken->name[1] != '1' && !(ppToken->name[0] == '-' || ppToken->name[0] == '+')) ||
+                (len >  3))
+                parseContext.ppError(ppToken->loc, "unexpected use of", "#", "");
+            else {
+                // we have 1.# or -1.# or +1.#, check for 'INF'
+                if ((ch = getChar()) != 'I' ||
+                    (ch = getChar()) != 'N' ||
+                    (ch = getChar()) != 'F')
+                    parseContext.ppError(ppToken->loc, "expected 'INF'", "#", "");
+                else {
+                    // we have [+-].#INF, and we are targeting IEEE 754, so wrap it up:
+                    saveName('I');
+                    saveName('N');
+                    saveName('F');
+                    ppToken->name[len] = '\0';
+                    if (ppToken->name[0] == '-')
+                        ppToken->i64val = 0xfff0000000000000; // -Infinity
+                    else
+                        ppToken->i64val = 0x7ff0000000000000; // +Infinity
+                    return PpAtomConstFloat;
+                }
+            }
+        }
+
         while (ch >= '0' && ch <= '9') {
             saveName(ch);
             ch = getChar();
@@ -158,21 +194,27 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
             saveName(ch2);
             isDouble = 1;
         }
+    } else if (acceptFloat16 && (ch == 'h' || ch == 'H')) {
 #ifdef AMD_EXTENSIONS
-    } else if (enableFloat16 && (ch == 'h' || ch == 'H')) {
-        parseContext.float16Check(ppToken->loc, "half floating-point suffix");
+        if (generateFloat16)
+            parseContext.float16Check(ppToken->loc, "half floating-point suffix");
+#endif
         if (!HasDecimalOrExponent)
             parseContext.ppError(ppToken->loc, "float literal needs a decimal point or exponent", "", "");
-        int ch2 = getChar();
-        if (ch2 != 'f' && ch2 != 'F') {
-            ungetChar();
-            ungetChar();
+        if (requireHF) {
+            int ch2 = getChar();
+            if (ch2 != 'f' && ch2 != 'F') {
+                ungetChar();
+                ungetChar();
+            } else {
+                saveName(ch);
+                saveName(ch2);
+                isFloat16 = generateFloat16;
+            }
         } else {
             saveName(ch);
-            saveName(ch2);
-            isFloat16 = 1;
+            isFloat16 = generateFloat16;
         }
-#endif
     } else if (ch == 'f' || ch == 'F') {
         parseContext.profileRequires(ppToken->loc,  EEsProfile, 300, nullptr, "floating-point suffix");
         if (! parseContext.relaxedErrors())
@@ -197,12 +239,86 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     // Return the right token type
     if (isDouble)
         return PpAtomConstDouble;
-#ifdef AMD_EXTENSIONS
     else if (isFloat16)
         return PpAtomConstFloat16;
-#endif
     else
         return PpAtomConstFloat;
+}
+
+// Recognize a character literal.
+//
+// The first ' has already been accepted, read the rest, through the closing '.
+//
+// Always returns PpAtomConstInt.
+//
+int TPpContext::characterLiteral(TPpToken* ppToken)
+{
+    ppToken->name[0] = 0;
+    ppToken->ival = 0;
+
+    if (parseContext.intermediate.getSource() != EShSourceHlsl) {
+        // illegal, except in macro definition, for which case we report the character
+        return '\'';
+    }
+
+    int ch = getChar();
+    switch (ch) {
+    case '\'':
+        // As empty sequence:  ''
+        parseContext.ppError(ppToken->loc, "unexpected", "\'", "");
+        return PpAtomConstInt;
+    case '\\':
+        // As escape sequence:  '\XXX'
+        switch (ch = getChar()) {
+        case 'a':
+            ppToken->ival = 7;
+            break;
+        case 'b':
+            ppToken->ival = 8;
+            break;
+        case 't':
+            ppToken->ival = 9;
+            break;
+        case 'n':
+            ppToken->ival = 10;
+            break;
+        case 'v':
+            ppToken->ival = 11;
+            break;
+        case 'f':
+            ppToken->ival = 12;
+            break;
+        case 'r':
+            ppToken->ival = 13;
+            break;
+        case 'x':
+        case '0':
+            parseContext.ppError(ppToken->loc, "octal and hex sequences not supported", "\\", "");
+            break;
+        default:
+            // This catches '\'', '\"', '\?', etc.
+            // Also, things like '\C' mean the same thing as 'C'
+            // (after the above cases are filtered out).
+            ppToken->ival = ch;
+            break;
+        }
+        break;
+    default:
+        ppToken->ival = ch;
+        break;
+    }
+    ppToken->name[0] = (char)ppToken->ival;
+    ppToken->name[1] = '\0';
+    ch = getChar();
+    if (ch != '\'') {
+        parseContext.ppError(ppToken->loc, "expected", "\'", "");
+        // Look ahead for a closing '
+        do {
+            ch = getChar();
+        } while (ch != '\'' && ch != EndOfInput && ch != '\n');
+    }
+
+    return PpAtomConstInt;
 }
 
 //
@@ -216,6 +332,15 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
     int ii = 0;
     unsigned long long ival = 0;
     bool enableInt64 = pp->parseContext.version >= 450 && pp->parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_int64);
+    bool acceptHalf = pp->parseContext.intermediate.getSource() == EShSourceHlsl;
+#ifdef AMD_EXTENSIONS
+    if (pp->parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float))
+        acceptHalf = true;
+#endif
+
+    const auto floatingPointChar = [&](int ch) { return ch == '.' || ch == 'e' || ch == 'E' ||
+                                                                     ch == 'f' || ch == 'F' ||
+                                                     (acceptHalf && (ch == 'h' || ch == 'H')); };
 
     ppToken->ival = 0;
     ppToken->i64val = 0;
@@ -380,7 +505,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ch = getch();
                     } while (ch >= '0' && ch <= '9');
                 }
-                if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'E' || ch == 'F')
+                if (floatingPointChar(ch))
                     return pp->lFloatConst(len, ch, ppToken);
 
                 // wasn't a float, so must be octal...
@@ -435,9 +560,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 }
                 ch = getch();
             } while (ch >= '0' && ch <= '9');
-            if (ch == '.' || ch == 'e' || ch == 'f' || ch == 'E' || ch == 'F') {
+            if (floatingPointChar(ch))
                 return pp->lFloatConst(len, ch, ppToken);
-            } else {
+            else {
                 // Finish handling signed and unsigned integers
                 int numericLen = len;
                 bool isUnsigned = false;
@@ -652,6 +777,8 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 return '/';
             }
             break;
+        case '\'':
+            return pp->characterLiteral(ppToken);
         case '"':
             // TODO: If this gets enhanced to handle escape sequences, or
             // anything that is different than what #include needs, then
@@ -671,6 +798,12 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 pp->parseContext.ppError(ppToken->loc, "End of line in string", "string", "");
             }
             return PpAtomConstString;
+        case ':':
+            ch = getch();
+            if (ch == ':')
+                return PpAtomColonColon;
+            ungetch();
+            return ':';
         }
 
         ch = getch();
@@ -773,6 +906,7 @@ int TPpContext::tokenPaste(int token, TPpToken& ppToken)
         token = scanToken(&pastedPpToken);
         assert(token == PpAtomPaste);
 
+        // This covers end of macro expansion
         if (endOfReplacementList()) {
             parseContext.ppError(ppToken.loc, "unexpected location; end of replacement list", "##", "");
             break;
@@ -780,6 +914,12 @@ int TPpContext::tokenPaste(int token, TPpToken& ppToken)
 
         // get the token after the ##
         token = scanToken(&pastedPpToken);
+
+        // This covers end of argument expansion
+        if (token == tMarkerInput::marker) {
+            parseContext.ppError(ppToken.loc, "unexpected location; end of argument", "##", "");
+            break;
+        }
 
         // get the token text
         switch (resultToken) {

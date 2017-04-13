@@ -356,12 +356,12 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     node->updatePrecision();
 
     // If it's a (non-specialization) constant, it must be folded.
-    if (child->getAsConstantUnion())
-        return child->getAsConstantUnion()->fold(op, node->getType());
+    if (node->getOperand()->getAsConstantUnion())
+        return node->getOperand()->getAsConstantUnion()->fold(op, node->getType());
 
     // If it's a specialization constant, the result is too,
     // if the operation is allowed for specialization constants.
-    if (child->getType().getQualifier().isSpecConstant() && isSpecializationOperation(*node))
+    if (node->getOperand()->getType().getQualifier().isSpecConstant() && isSpecializationOperation(*node))
         node->getWritableType().getQualifier().makeSpecConstant();
 
     return node;
@@ -623,7 +623,10 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
              node->getType().getBasicType() == EbtUint64))
 
             return node;
-        else
+        else if (source == EShSourceHlsl && node->getType().getBasicType() == EbtBool) {
+            promoteTo = type.getBasicType();
+            break;
+        } else
             return nullptr;
 
     default:
@@ -781,12 +784,6 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     if (node->getType().getQualifier().isSpecConstant() && isSpecializationOperation(*newNode))
         newNode->getWritableType().getQualifier().makeSpecConstant();
 
-    // TODO: it seems that some unary folding operations should occur here, but are not
-
-    // Propagate specialization-constant-ness, if allowed
-    if (node->getType().getQualifier().isSpecConstant() && isSpecializationOperation(*newNode))
-        newNode->getWritableType().getQualifier().makeSpecConstant();
-
     return newNode;
 }
 
@@ -926,7 +923,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
     case EbtUint:
         switch (from) {
         case EbtInt:
-            return version >= 400;
+            return version >= 400 || (source == EShSourceHlsl);
         case EbtUint:
             return true;
         case EbtBool:
@@ -1164,15 +1161,15 @@ TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* r
         return nullptr;
 
     TIntermAggregate* aggNode = nullptr;
-    if (left)
+    if (left != nullptr)
         aggNode = left->getAsAggregate();
-    if (! aggNode || aggNode->getOp() != EOpNull) {
+    if (aggNode == nullptr || aggNode->getOp() != EOpNull) {
         aggNode = new TIntermAggregate;
-        if (left)
+        if (left != nullptr)
             aggNode->getSequence().push_back(left);
     }
 
-    if (right)
+    if (right != nullptr)
         aggNode->getSequence().push_back(right);
 
     return aggNode;
@@ -1277,7 +1274,8 @@ TIntermTyped* TIntermediate::addMethod(TIntermTyped* object, const TType& type, 
 //
 // For "?:" test nodes.  There are three children; a condition,
 // a true path, and a false path.  The two paths are specified
-// as separate parameters.
+// as separate parameters. For vector 'cond', the true and false
+// are not paths, but vectors to mix.
 //
 // Specialization constant operations include
 //     - The ternary operator ( ? : )
@@ -1310,10 +1308,30 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     if (falseBlock->getType() != trueBlock->getType())
         return nullptr;
 
-    //
-    // See if all the operands are constant, then fold it otherwise not.
-    //
+    // Handle a vector condition as a mix
+    if (!cond->getType().isScalarOrVec1()) {
+        TType targetVectorType(trueBlock->getType().getBasicType(), EvqTemporary,
+                               cond->getType().getVectorSize());
+        // smear true/false operations if needed
+        if (trueBlock->getType().isScalarOrVec1())
+            trueBlock = addShapeConversion(EOpAssign, targetVectorType, trueBlock);
+        if (falseBlock->getType().isScalarOrVec1())
+            falseBlock = addShapeConversion(EOpAssign, targetVectorType, falseBlock);
 
+        // make the mix operation
+        TIntermAggregate* mix = makeAggregate(loc);
+        mix = growAggregate(mix, falseBlock);
+        mix = growAggregate(mix, trueBlock);
+        mix = growAggregate(mix, cond);
+        mix->setType(targetVectorType);
+        mix->setOp(EOpMix);
+
+        return mix;
+    }
+
+    // Now have a scalar condition...
+
+    // Eliminate the selection when the condition is a scalar and all operands are constant.
     if (cond->getAsConstantUnion() && trueBlock->getAsConstantUnion() && falseBlock->getAsConstantUnion()) {
         if (cond->getAsConstantUnion()->getConstArray()[0].getBConst())
             return trueBlock;
@@ -1972,6 +1990,42 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
     //
     // We now have only scalars, vectors, and matrices to worry about.
     //
+
+    // HLSL implicitly promotes bool -> int for numeric operations.
+    // (Implicit conversions to make the operands match each other's types were already done.)
+    if (getSource() == EShSourceHlsl &&
+        (left->getBasicType() == EbtBool || right->getBasicType() == EbtBool)) {
+        switch (op) {
+        case EOpLessThan:
+        case EOpGreaterThan:
+        case EOpLessThanEqual:
+        case EOpGreaterThanEqual:
+
+        case EOpRightShift:
+        case EOpLeftShift:
+
+        case EOpMod:
+
+        case EOpAnd:
+        case EOpInclusiveOr:
+        case EOpExclusiveOr:
+
+        case EOpAdd:
+        case EOpSub:
+        case EOpDiv:
+        case EOpMul:
+            left = addConversion(op, TType(EbtInt, EvqTemporary, left->getVectorSize()), left);
+            right = addConversion(op, TType(EbtInt, EvqTemporary, right->getVectorSize()), right);
+            if (left == nullptr || right == nullptr)
+                return false;
+            node.setLeft(left);
+            node.setRight(right);
+            break;
+
+        default:
+            break;
+        }
+    }
 
     // Do general type checks against individual operands (comparing left and right is coming up, checking mixed shapes after that)
     switch (op) {

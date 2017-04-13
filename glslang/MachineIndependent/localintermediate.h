@@ -177,7 +177,8 @@ public:
         shiftSsboBinding(0),
         autoMapBindings(false),
         flattenUniformArrays(false),
-        useUnknownFormat(false)
+        useUnknownFormat(false),
+        hlslOffsets(false)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -216,6 +217,8 @@ public:
     bool getFlattenUniformArrays()        const { return flattenUniformArrays; }
     void setNoStorageFormat(bool b)             { useUnknownFormat = b; }
     bool getNoStorageFormat()             const { return useUnknownFormat; }
+    void setHlslOffsets()         { hlslOffsets = true; }
+    bool usingHlslOFfsets() const { return hlslOffsets; }
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -413,7 +416,9 @@ public:
     }
     int addXfbBufferOffset(const TType&);
     unsigned int computeTypeXfbSize(const TType&, bool& containsDouble) const;
+    static int getBaseAlignmentScalar(const TType&, int& size);
     static int getBaseAlignment(const TType&, int& size, int& stride, bool std140, bool rowMajor);
+    static bool improperStraddle(const TType& type, int size, int offset);
     bool promote(TIntermOperator*);
 
 #ifdef NV_EXTENSIONS
@@ -422,6 +427,13 @@ public:
     void setGeoPassthroughEXT() { geoPassthroughEXT = true; }
     bool getGeoPassthroughEXT() const { return geoPassthroughEXT; }
 #endif
+
+    const char* addSemanticName(const TString& name)
+    {
+        return semanticNameSet.insert(name).first->c_str();
+    }
+
+    const char* const implicitThisName = "@this";
 
 protected:
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TConstUnionArray&, TIntermTyped* subtree, const TSourceLoc&);
@@ -436,7 +448,6 @@ protected:
     void inOutLocationCheck(TInfoSink&);
     TIntermSequence& findLinkerObjects() const;
     bool userOutputUsed() const;
-    static int getBaseAlignmentScalar(const TType&, int& size);
     bool isSpecializationOperation(const TIntermOperator&) const;
     bool promoteUnary(TIntermUnary&);
     bool promoteBinary(TIntermBinary&);
@@ -492,6 +503,7 @@ protected:
     bool autoMapBindings;
     bool flattenUniformArrays;
     bool useUnknownFormat;
+    bool hlslOffsets;
 
     typedef std::list<TCall> TGraph;
     TGraph callGraph;
@@ -501,6 +513,7 @@ protected:
     std::vector<TOffsetRange> usedAtomics;  // sets of bindings used by atomic counters
     std::vector<TXfbBuffer> xfbBuffers;     // all the data we need to track per xfb buffer
     std::unordered_set<int> usedConstantId; // specialization constant ids used
+    std::set<TString> semanticNameSet;
 
 private:
     void operator=(TIntermediate&); // prevent assignments

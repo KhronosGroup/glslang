@@ -117,6 +117,8 @@ enum EFixedAtoms {
     PpAtomDecrement,
     PpAtomIncrement,
 
+    PpAtomColonColon,
+
     PpAtomPaste,
 
     // Constants
@@ -127,9 +129,7 @@ enum EFixedAtoms {
     PpAtomConstUint64,
     PpAtomConstFloat,
     PpAtomConstDouble,
-#ifdef AMD_EXTENSIONS
     PpAtomConstFloat16,
-#endif
     PpAtomConstString,
 
     // Identifiers

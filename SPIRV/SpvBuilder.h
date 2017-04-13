@@ -134,6 +134,9 @@ public:
     bool isSampledImage(Id resultId) const { return isSampledImageType(getTypeId(resultId)); }
 
     bool isBoolType(Id typeId)         const { return groupedTypes[OpTypeBool].size() > 0 && typeId == groupedTypes[OpTypeBool].back()->getResultId(); }
+    bool isIntType(Id typeId)          const { return getTypeClass(typeId) == OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) != 0; }
+    bool isUintType(Id typeId)         const { return getTypeClass(typeId) == OpTypeInt && module.getInstruction(typeId)->getImmediateOperand(1) == 0; }
+    bool isFloatType(Id typeId)        const { return getTypeClass(typeId) == OpTypeFloat; }
     bool isPointerType(Id typeId)      const { return getTypeClass(typeId) == OpTypePointer; }
     bool isScalarType(Id typeId)       const { return getTypeClass(typeId) == OpTypeFloat  || getTypeClass(typeId) == OpTypeInt || getTypeClass(typeId) == OpTypeBool; }
     bool isVectorType(Id typeId)       const { return getTypeClass(typeId) == OpTypeVector; }
@@ -152,6 +155,13 @@ public:
     bool isSpecConstant(Id resultId) const { return isSpecConstantOpCode(getOpCode(resultId)); }
     unsigned int getConstantScalar(Id resultId) const { return module.getInstruction(resultId)->getImmediateOperand(0); }
     StorageClass getStorageClass(Id resultId) const { return getTypeStorageClass(getTypeId(resultId)); }
+
+    int getScalarTypeWidth(Id typeId) const
+    {
+        Id scalarTypeId = getScalarTypeId(typeId);
+        assert(getTypeClass(scalarTypeId) == OpTypeInt || getTypeClass(scalarTypeId) == OpTypeFloat);
+        return module.getInstruction(scalarTypeId)->getImmediateOperand(0);
+    }
 
     int getTypeNumColumns(Id typeId) const
     {
@@ -335,7 +345,7 @@ public:
 
     // Emit the OpTextureQuery* instruction that was passed in.
     // Figure out the right return value and type, and return it.
-    Id createTextureQueryCall(Op, const TextureParameters&);
+    Id createTextureQueryCall(Op, const TextureParameters&, bool isUnsignedResult);
 
     Id createSamplePositionCall(Decoration precision, Id, Id);
 

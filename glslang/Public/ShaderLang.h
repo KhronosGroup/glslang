@@ -147,6 +147,7 @@ enum EShMessages {
     EShMsgReadHlsl         = (1 << 6),  // use HLSL parsing rules and semantics
     EShMsgCascadingErrors  = (1 << 7),  // get cascading errors; risks error-recovery issues, instead of an early exit
     EShMsgKeepUncalled     = (1 << 8),  // for testing, don't eliminate uncalled functions
+    EShMsgHlslOffsets      = (1 << 9),  // allow block offsets to follow HLSL rules instead of GLSL rules
 };
 
 //
@@ -202,14 +203,6 @@ SH_IMPORT_EXPORT int ShCompile(
     bool forwardCompatible = false,      // give errors for use of deprecated features
     EShMessages messages = EShMsgDefault // warnings and errors
     );
-
-SH_IMPORT_EXPORT int ShLink(
-    const ShHandle,               // linker object
-    const ShHandle h[],           // compiler objects to link together
-    const int numHandles,
-    ShHandle uniformMap,          // updated with new uniforms
-    short int** uniformsAccessed,  // returned with indexes of uniforms accessed
-    int* numUniformsAccessed);
 
 SH_IMPORT_EXPORT int ShLinkExt(
     const ShHandle,               // linker object
@@ -460,10 +453,12 @@ class TIoMapper;
 // and resolveSet are invoked to resolve the binding and descriptor
 // set index respectively.
 // Invocations happen in a particular order:
-// 1) var with binding and set already defined
-// 2) var with binding but no set defined
-// 3) var with set but no binding defined
-// 4) var with no binding and no set defined
+// 1) all shader inputs
+// 2) all shader outputs
+// 3) all uniforms with binding and set already defined
+// 4) all uniforms with binding but no set defined
+// 5) all uniforms with set but no binding defined
+// 6) all uniforms with no binding and no set defined
 //
 // NOTE: that still limit checks are applied to bindings and sets
 // and may result in an error.
@@ -472,15 +467,27 @@ class TIoMapResolver
 public:
   virtual ~TIoMapResolver() {}
 
-  // Should return true if the resulting/current binding would be ok.
+  // Should return true if the resulting/current binding would be okay.
   // Basic idea is to do aliasing binding checks with this.
   virtual bool validateBinding(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
   // Should return a value >= 0 if the current binding should be overridden.
   // Return -1 if the current binding (including no binding) should be kept.
   virtual int resolveBinding(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
-  // Should return a value >= 0 if the current set should be overriden.
+  // Should return a value >= 0 if the current set should be overridden.
   // Return -1 if the current set (including no set) should be kept.
   virtual int resolveSet(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
+  // Should return true if the resulting/current setup would be okay.
+  // Basic idea is to do aliasing checks and reject invalid semantic names.
+  virtual bool validateInOut(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
+  // Should return a value >= 0 if the current location should be overridden.
+  // Return -1 if the current location (including no location) should be kept.
+  virtual int resolveInOutLocation(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
+  // Should return a value >= 0 if the current component index should be overridden.
+  // Return -1 if the current component index (including no index) should be kept.
+  virtual int resolveInOutComponent(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
+  // Should return a value >= 0 if the current color index should be overridden.
+  // Return -1 if the current color index (including no index) should be kept.
+  virtual int resolveInOutIndex(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
 };
 
 // Make one TProgram per set of shaders that will get linked together.  Add all

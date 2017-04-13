@@ -175,7 +175,7 @@ bool TInputScanner::scanVersion(int& version, EProfile& profile, bool& notFirstT
 
     bool versionNotFirst = false;  // means not first WRT comments and white space, nothing more
     notFirstToken = false;         // means not first WRT to real tokens
-    version = 0;  // means not found
+    version = 0;                   // means not found
     profile = ENoProfile;
 
     bool foundNonSpaceTab = false;
@@ -700,6 +700,10 @@ int TScanContext::tokenize(TPpContext* pp, TParserToken& token)
 
         case PpAtomDecrement:          return DEC_OP;
         case PpAtomIncrement:          return INC_OP;
+
+        case PpAtomColonColon:
+            parseContext.error(loc, "not supported", "::", "");
+            break;
 
         case PpAtomConstInt:           parserToken->sType.lex.i   = ppToken.ival;       return INTCONSTANT;
         case PpAtomConstUint:          parserToken->sType.lex.i   = ppToken.ival;       return UINTCONSTANT;

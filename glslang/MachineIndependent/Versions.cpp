@@ -233,9 +233,9 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_OES_texture_buffer]           = EBhDisable;
     extensionBehavior[E_GL_OES_texture_cube_map_array]   = EBhDisable;
 
-    // KHX extensions
-    extensionBehavior[E_GL_KHX_device_group]             = EBhDisable;
-    extensionBehavior[E_GL_KHX_multiview]                = EBhDisable;
+    // EXT extensions
+    extensionBehavior[E_GL_EXT_device_group]             = EBhDisable;
+    extensionBehavior[E_GL_EXT_multiview]                = EBhDisable;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -323,6 +323,22 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_NV_geometry_shader_passthrough 1\n"
             "#define GL_NV_viewport_array2 1\n"
 #endif
+            ;
+
+        if (version >= 150) {
+            // define GL_core_profile and GL_compatibility_profile
+            preamble += "#define GL_core_profile 1\n";
+
+            if (profile == ECompatibilityProfile)
+                preamble += "#define GL_compatibility_profile 1\n";
+        }
+    }
+
+    if ((profile != EEsProfile && version >= 140) ||
+        (profile == EEsProfile && version >= 310)) {
+        preamble += 
+            "#define GL_EXT_device_group 1\n"
+            "#define GL_EXT_multiview 1\n"
             ;
     }
 
@@ -687,7 +703,7 @@ void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
 }
 
 #ifdef AMD_EXTENSIONS
-// Call for any operation needing GLSL float16 data-type support.
+// Call for any operation needing float16 data-type support.
 void TParseVersions::float16Check(const TSourceLoc& loc, const char* op, bool builtIn)
 {
     if (!builtIn) {

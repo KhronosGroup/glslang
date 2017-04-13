@@ -51,6 +51,8 @@
 #include <cctype>
 #include <cmath>
 #include <array>
+#include <memory>
+#include <thread>
 
 #include "../glslang/OSDependent/osinclude.h"
 
@@ -84,6 +86,7 @@ enum TOptions {
     EOptionFlattenUniformArrays = (1 << 20),
     EOptionNoStorageFormat      = (1 << 21),
     EOptionKeepUncalled         = (1 << 22),
+    EOptionHlslOffsets          = (1 << 23),
 };
 
 //
@@ -149,13 +152,6 @@ void ProcessConfigFile()
     else
         delete[] config;
 }
-
-// thread-safe list of shaders to asynchronously grab and compile
-glslang::TWorklist Worklist;
-
-// array of unique places to leave the shader names and infologs for the asynchronous compiles
-glslang::TWorkItem** Work = 0;
-int NumWorkItems = 0;
 
 int Options = 0;
 const char* ExecutableName = nullptr;
@@ -253,7 +249,7 @@ void ProcessBindingBase(int& argc, char**& argv, std::array<unsigned int, EShLan
 //
 // Does not return (it exits) if command-line is fatally flawed.
 //
-void ProcessArguments(int argc, char* argv[])
+void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItems, int argc, char* argv[])
 {
     baseSamplerBinding.fill(0);
     baseTextureBinding.fill(0);
@@ -262,10 +258,7 @@ void ProcessArguments(int argc, char* argv[])
     baseSsboBinding.fill(0);
 
     ExecutableName = argv[0];
-    NumWorkItems = argc;  // will include some empties where the '-' options were, but it doesn't matter, they'll be 0
-    Work = new glslang::TWorkItem*[NumWorkItems];
-    for (int w = 0; w < NumWorkItems; ++w)
-        Work[w] = 0;
+    workItems.reserve(argc);
 
     argc--;
     argv++;
@@ -319,8 +312,7 @@ void ProcessArguments(int argc, char* argv[])
                         } else
                             Error("no <C-variable-name> provided for --variable-name");
                         break;
-                    }
-                    else if (lowerword == "source-entrypoint" || // synonyms
+                    } else if (lowerword == "source-entrypoint" || // synonyms
                                lowerword == "sep") {
                         sourceEntryPointName = argv[1];
                         if (argc > 0) {
@@ -332,6 +324,8 @@ void ProcessArguments(int argc, char* argv[])
                     } else if (lowerword == "keep-uncalled" || // synonyms
                                lowerword == "ku") {
                         Options |= EOptionKeepUncalled;
+                    } else if (lowerword == "hlsl-offsets") {
+                        Options |= EOptionHlslOffsets;
                     } else {
                         usage();
                     }
@@ -356,8 +350,7 @@ void ProcessArguments(int argc, char* argv[])
                 if (argc > 0) {
                     argc--;
                     argv++;
-                }
-                else
+                } else
                     Error("no <stage> specified for -S");
                 break;
             case 'G':
@@ -421,9 +414,7 @@ void ProcessArguments(int argc, char* argv[])
                 Options |= EOptionSuppressInfolog;
                 break;
             case 't':
-                #ifdef _WIN32
-                    Options |= EOptionMultiThreaded;
-                #endif
+                Options |= EOptionMultiThreaded;
                 break;
             case 'v':
                 Options |= EOptionDumpVersions;
@@ -441,8 +432,7 @@ void ProcessArguments(int argc, char* argv[])
         } else {
             std::string name(argv[0]);
             if (! SetConfigFile(name)) {
-                Work[argc] = new glslang::TWorkItem(name);
-                Worklist.add(Work[argc]);
+                workItems.push_back(std::unique_ptr<glslang::TWorkItem>(new glslang::TWorkItem(name)));
             }
         }
     }
@@ -483,20 +473,20 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgCascadingErrors);
     if (Options & EOptionKeepUncalled)
         messages = (EShMessages)(messages | EShMsgKeepUncalled);
+    if (Options & EOptionHlslOffsets)
+        messages = (EShMessages)(messages | EShMsgHlslOffsets);
 }
 
 //
 // Thread entry point, for non-linking asynchronous mode.
 //
-// Return 0 for failure, 1 for success.
-//
-unsigned int CompileShaders(void*)
+void CompileShaders(glslang::TWorklist& worklist)
 {
     glslang::TWorkItem* workItem;
-    while (Worklist.remove(workItem)) {
+    while (worklist.remove(workItem)) {
         ShHandle compiler = ShConstructCompiler(FindLanguage(workItem->name), Options);
         if (compiler == 0)
-            return 0;
+            return;
 
         CompileFile(workItem->name.c_str(), compiler);
 
@@ -505,8 +495,6 @@ unsigned int CompileShaders(void*)
 
         ShDestruct(compiler);
     }
-
-    return 0;
 }
 
 // Outputs the given string, but only if it is non-null and non-empty.
@@ -533,14 +521,14 @@ struct ShaderCompUnit {
     EShLanguage stage;
     std::string fileName;
     char** text;             // memory owned/managed externally
-    const char*  fileNameList[1];
+    const char* fileNameList[1];
 
     // Need to have a special constructors to adjust the fileNameList, since back end needs a list of ptrs
     ShaderCompUnit(EShLanguage istage, std::string &ifileName, char** itext)
     {
         stage = istage;
         fileName = ifileName;
-        text    = itext;
+        text = itext;
         fileNameList[0] = fileName.c_str();
     }
 
@@ -706,7 +694,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 // performance and memory testing, the actual compile/link can be put in
 // a loop, independent of processing the work items and file IO.
 //
-void CompileAndLinkShaderFiles()
+void CompileAndLinkShaderFiles(glslang::TWorklist& Worklist)
 {
     std::vector<ShaderCompUnit> compUnits;
 
@@ -748,11 +736,19 @@ void CompileAndLinkShaderFiles()
 
 int C_DECL main(int argc, char* argv[])
 {
-    ProcessArguments(argc, argv);
+    // array of unique places to leave the shader names and infologs for the asynchronous compiles
+    std::vector<std::unique_ptr<glslang::TWorkItem>> workItems;
+    ProcessArguments(workItems, argc, argv);
+
+    glslang::TWorklist workList;
+    std::for_each(workItems.begin(), workItems.end(), [&workList](std::unique_ptr<glslang::TWorkItem>& item) {
+        assert(item);
+        workList.add(item.get());
+    });
 
     if (Options & EOptionDumpConfig) {
         printf("%s", glslang::GetDefaultTBuiltInResourceString().c_str());
-        if (Worklist.empty())
+        if (workList.empty())
             return ESuccess;
     }
 
@@ -767,11 +763,11 @@ int C_DECL main(int argc, char* argv[])
         printf("Khronos Tool ID %d\n", glslang::GetKhronosToolId());
         printf("GL_KHR_vulkan_glsl version %d\n", 100);
         printf("ARB_GL_gl_spirv version %d\n", 100);
-        if (Worklist.empty())
+        if (workList.empty())
             return ESuccess;
     }
 
-    if (Worklist.empty()) {
+    if (workList.empty()) {
         usage();
     }
 
@@ -785,46 +781,41 @@ int C_DECL main(int argc, char* argv[])
     if (Options & EOptionLinkProgram ||
         Options & EOptionOutputPreprocessed) {
         glslang::InitializeProcess();
-        CompileAndLinkShaderFiles();
+        CompileAndLinkShaderFiles(workList);
         glslang::FinalizeProcess();
-        for (int w = 0; w < NumWorkItems; ++w) {
-          if (Work[w]) {
-            delete Work[w];
-          }
-        }
     } else {
         ShInitialize();
 
-        bool printShaderNames = Worklist.size() > 1;
+        bool printShaderNames = workList.size() > 1;
 
-        if (Options & EOptionMultiThreaded) {
-            const int NumThreads = 16;
-            void* threads[NumThreads];
-            for (int t = 0; t < NumThreads; ++t) {
-                threads[t] = glslang::OS_CreateThread(&CompileShaders);
-                if (! threads[t]) {
+        if (Options & EOptionMultiThreaded)
+        {
+            std::array<std::thread, 16> threads;
+            for (unsigned int t = 0; t < threads.size(); ++t)
+            {
+                threads[t] = std::thread(CompileShaders, std::ref(workList));
+                if (threads[t].get_id() == std::thread::id())
+                {
                     printf("Failed to create thread\n");
                     return EFailThreadCreate;
                 }
             }
-            glslang::OS_WaitForAllThreads(threads, NumThreads);
+
+            std::for_each(threads.begin(), threads.end(), [](std::thread& t) { t.join(); });
         } else
-            CompileShaders(0);
+            CompileShaders(workList);
 
         // Print out all the resulting infologs
-        for (int w = 0; w < NumWorkItems; ++w) {
-            if (Work[w]) {
-                if (printShaderNames || Work[w]->results.size() > 0)
-                    PutsIfNonEmpty(Work[w]->name.c_str());
-                PutsIfNonEmpty(Work[w]->results.c_str());
-                delete Work[w];
+        for (size_t w = 0; w < workItems.size(); ++w) {
+            if (workItems[w]) {
+                if (printShaderNames || workItems[w]->results.size() > 0)
+                    PutsIfNonEmpty(workItems[w]->name.c_str());
+                PutsIfNonEmpty(workItems[w]->results.c_str());
             }
         }
 
         ShFinalize();
     }
-
-    delete[] Work;
 
     if (CompileFailed)
         return EFailCompile;
@@ -848,21 +839,23 @@ int C_DECL main(int argc, char* argv[])
 EShLanguage FindLanguage(const std::string& name, bool parseSuffix)
 {
     size_t ext = 0;
+    std::string suffix;
 
-    // Search for a suffix on a filename: e.g, "myfile.frag".  If given
-    // the suffix directly, we skip looking the '.'
-    if (parseSuffix) {
-        ext = name.rfind('.');
-        if (ext == std::string::npos) {
-            usage();
-            return EShLangVertex;
-        }
-        ++ext;
-    }
-
-    std::string suffix = name.substr(ext, std::string::npos);
     if (shaderStageName)
         suffix = shaderStageName;
+    else {
+        // Search for a suffix on a filename: e.g, "myfile.frag".  If given
+        // the suffix directly, we skip looking for the '.'
+        if (parseSuffix) {
+            ext = name.rfind('.');
+            if (ext == std::string::npos) {
+                usage();
+                return EShLangVertex;
+            }
+            ++ext;
+        }
+        suffix = name.substr(ext, std::string::npos);
+    }
 
     if (suffix == "vert")
         return EShLangVertex;
@@ -957,8 +950,8 @@ void usage()
            "  -H          print human readable form of SPIR-V; turns on -V\n"
            "  -E          print pre-processed GLSL; cannot be used with -l;\n"
            "              errors will appear on stderr.\n"
-           "  -S <stage>  uses explicit stage specified, rather then the file extension.\n"
-           "              valid choices are vert, tesc, tese, geom, frag, or comp\n"
+           "  -S <stage>  uses specified stage rather than parsing the file extension\n"
+           "              valid choices for <stage> are vert, tesc, tese, geom, frag, or comp\n"
            "  -c          configuration dump;\n"
            "              creates the default configuration file (redirect to a .conf file)\n"
            "  -C          cascading errors; risks crashes from accumulation of error recoveries\n"
@@ -1009,8 +1002,13 @@ void usage()
            "\n"
            "  --keep-uncalled                         don't eliminate uncalled functions when linking\n"
            "  --ku                                    synonym for --keep-uncalled\n"
-           "  --variable-name <name>                  Creates a C header file that contains a uint32_t array named <name> initialized with the shader binary code.\n"
-           "  --vn <name>                             synonym for --variable-name <name>.\n"
+           "\n"
+           "  --variable-name <name>                  Creates a C header file that contains a uint32_t array named <name>\n"
+           "                                          initialized with the shader binary code.\n"
+           "  --vn <name>                             synonym for --variable-name <name>\n"
+           "\n"
+           "  --hlsl-offsets                          Allow block offsets to follow HLSL rules instead of GLSL rules.\n"
+           "                                          Works independently of source language.\n"
            );
 
     exit(EFailUsage);

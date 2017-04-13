@@ -3125,6 +3125,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    if ((profile != EEsProfile && version >= 140) ||
+        (profile == EEsProfile && version >= 310)) {
+        stageBuiltins[EShLangCompute].append(
+            "in highp int gl_DeviceIndex;"     // GL_EXT_device_group
+            "\n");
+    }
+
     //============================================================================
     //
     // Define the interface to the vertex shader.
@@ -3249,11 +3256,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangVertex].append(
                 "out int gl_ViewportIndex;"
                 "out int gl_Layer;"
-                "out int gl_ViewportMask[];"
-                "out int gl_SecondaryViewportMaskNV[];"
-                "out vec4 gl_SecondaryPositionNV;"
-                "out vec4 gl_PositionPerViewNV[];"
-                "out int  gl_ViewportMaskPerViewNV[];"
+                "out int gl_ViewportMask[];"             // GL_NV_viewport_array2
+                "out int gl_SecondaryViewportMaskNV[];"  // GL_NV_stereo_view_rendering
+                "out vec4 gl_SecondaryPositionNV;"       // GL_NV_stereo_view_rendering
+                "out vec4 gl_PositionPerViewNV[];"       // GL_NVX_multiview_per_view_attributes
+                "out int  gl_ViewportMaskPerViewNV[];"   // GL_NVX_multiview_per_view_attributes
                 );
 #endif
 
@@ -3290,6 +3297,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         }
     }
 
+    if ((profile != EEsProfile && version >= 140) ||
+        (profile == EEsProfile && version >= 310)) {
+        stageBuiltins[EShLangVertex].append(
+            "in highp int gl_DeviceIndex;"     // GL_EXT_device_group
+            "in highp int gl_ViewIndex;"       // GL_EXT_multiview
+            "\n");
+    }
+
+
     //============================================================================
     //
     // Define the interface to the geometry shader.
@@ -3317,8 +3333,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangGeometry].append(
                 "float gl_CullDistance[];"
 #ifdef NV_EXTENSIONS
-                "vec4 gl_SecondaryPositionNV;"
-                "vec4 gl_PositionPerViewNV[];"
+                "vec4 gl_SecondaryPositionNV;"   // GL_NV_stereo_view_rendering
+                "vec4 gl_PositionPerViewNV[];"   // GL_NVX_multiview_per_view_attributes
 #endif
                 );
         stageBuiltins[EShLangGeometry].append(
@@ -3368,11 +3384,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 #ifdef NV_EXTENSIONS
         if (version >= 450)
             stageBuiltins[EShLangGeometry].append(
-                "out int gl_ViewportMask[];"
-                "out int gl_SecondaryViewportMaskNV[];"
-                "out vec4 gl_SecondaryPositionNV;"
-                "out vec4 gl_PositionPerViewNV[];"
-                "out int  gl_ViewportMaskPerViewNV[];"
+                "out int gl_ViewportMask[];"               // GL_NV_viewport_array2
+                "out int gl_SecondaryViewportMaskNV[];"    // GL_NV_stereo_view_rendering
+                "out vec4 gl_SecondaryPositionNV;"         // GL_NV_stereo_view_rendering
+                "out vec4 gl_PositionPerViewNV[];"         // GL_NVX_multiview_per_view_attributes
+                "out int  gl_ViewportMaskPerViewNV[];"     // GL_NVX_multiview_per_view_attributes
             );
 #endif
 
@@ -3396,6 +3412,14 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "out highp int gl_Layer;"
             "\n"
             );
+    }
+
+    if ((profile != EEsProfile && version >= 140) ||
+        (profile == EEsProfile && version >= 310)) {
+        stageBuiltins[EShLangGeometry].append(
+            "in highp int gl_DeviceIndex;"     // GL_EXT_device_group
+            "in highp int gl_ViewIndex;"       // GL_EXT_multiview
+            "\n");
     }
 
     //============================================================================
@@ -3434,11 +3458,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 #ifdef NV_EXTENSIONS
                 "int  gl_ViewportIndex;"
                 "int  gl_Layer;"
-                "int  gl_ViewportMask[];"
-                "vec4 gl_SecondaryPositionNV;"
-                "int  gl_SecondaryViewportMaskNV[];"
-                "vec4 gl_PositionPerViewNV[];"
-                "int  gl_ViewportMaskPerViewNV[];"
+                "int  gl_ViewportMask[];"             // GL_NV_viewport_array2
+                "vec4 gl_SecondaryPositionNV;"        // GL_NV_stereo_view_rendering
+                "int  gl_SecondaryViewportMaskNV[];"  // GL_NV_stereo_view_rendering
+                "vec4 gl_PositionPerViewNV[];"        // GL_NVX_multiview_per_view_attributes
+                "int  gl_ViewportMaskPerViewNV[];"    // GL_NVX_multiview_per_view_attributes
 #endif
                 );
         stageBuiltins[EShLangTessControl].append(
@@ -3466,6 +3490,14 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "patch out highp float gl_TessLevelOuter[4];"
             "patch out highp float gl_TessLevelInner[2];"
             "patch out highp vec4 gl_BoundingBoxOES[2];"
+            "\n");
+    }
+
+    if ((profile != EEsProfile && version >= 140) ||
+        (profile == EEsProfile && version >= 310)) {
+        stageBuiltins[EShLangTessControl].append(
+            "in highp int gl_DeviceIndex;"     // GL_EXT_device_group
+            "in highp int gl_ViewIndex;"       // GL_EXT_multiview
             "\n");
     }
 
@@ -3515,11 +3547,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangTessEvaluation].append(
                 "out int  gl_ViewportIndex;"
                 "out int  gl_Layer;"
-                "out int  gl_ViewportMask[];"
-                "out vec4 gl_SecondaryPositionNV;"
-                "out int  gl_SecondaryViewportMaskNV[];"
-                "out vec4 gl_PositionPerViewNV[];"
-                "out int  gl_ViewportMaskPerViewNV[];"
+                "out int  gl_ViewportMask[];"             // GL_NV_viewport_array2
+                "out vec4 gl_SecondaryPositionNV;"        // GL_NV_stereo_view_rendering
+                "out int  gl_SecondaryViewportMaskNV[];"  // GL_NV_stereo_view_rendering
+                "out vec4 gl_PositionPerViewNV[];"        // GL_NVX_multiview_per_view_attributes
+                "out int  gl_ViewportMaskPerViewNV[];"    // GL_NVX_multiview_per_view_attributes
                 );
 #endif
 
@@ -3541,6 +3573,14 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             );
         stageBuiltins[EShLangTessEvaluation].append(
             "};"
+            "\n");
+    }
+
+    if ((profile != EEsProfile && version >= 140) ||
+        (profile == EEsProfile && version >= 310)) {
+        stageBuiltins[EShLangTessEvaluation].append(
+            "in highp int gl_DeviceIndex;"     // GL_EXT_device_group
+            "in highp int gl_ViewIndex;"       // GL_EXT_multiview
             "\n");
     }
 
@@ -3701,9 +3741,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-    if (profile != EEsProfile) {
-        commonBuiltins.append("uniform int gl_ViewIndexKHR;");
-        commonBuiltins.append("uniform int gl_DeviceIndexKHR;");  // GL_KHX_device_group
+    if ((profile != EEsProfile && version >= 140) ||
+        (profile == EEsProfile && version >= 310)) {
+        stageBuiltins[EShLangFragment].append(
+            "flat in highp int gl_DeviceIndex;"     // GL_EXT_device_group
+            "flat in highp int gl_ViewIndex;"       // GL_EXT_multiview
+            "\n");
     }
 
     // printf("%s\n", commonBuiltins.c_str());
@@ -4462,8 +4505,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                         "highp vec4 gl_Position;"
                         "highp float gl_PointSize;"
 #ifdef NV_EXTENSIONS
-                        "highp vec4 gl_SecondaryPositionNV;"
-                        "highp vec4 gl_PositionPerViewNV[];"
+                        "highp vec4 gl_SecondaryPositionNV;"  // GL_NV_stereo_view_rendering
+                        "highp vec4 gl_PositionPerViewNV[];"  // GL_NVX_multiview_per_view_attributes
 #endif
                     "} gl_in[gl_MaxPatchVertices];"
                     "\n");
@@ -4652,8 +4695,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                     s.append(
                         "float gl_CullDistance[];"
 #ifdef NV_EXTENSIONS
-                        "vec4 gl_SecondaryPositionNV;"
-                        "vec4 gl_PositionPerViewNV[];"
+                        "vec4 gl_SecondaryPositionNV;"  // GL_NV_stereo_view_rendering
+                        "vec4 gl_PositionPerViewNV[];"  // GL_NVX_multiview_per_view_attributes
 #endif
                        );
                 s.append(
@@ -5120,6 +5163,14 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         //        symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
         //}
 
+        if ((profile != EEsProfile && version >= 140) ||
+            (profile == EEsProfile && version >= 310)) {
+            symbolTable.setVariableExtensions("gl_DeviceIndex",  1, &E_GL_EXT_device_group);
+            BuiltInVariable("gl_DeviceIndex", EbvDeviceIndex, symbolTable);
+            symbolTable.setVariableExtensions("gl_ViewIndex", 1, &E_GL_EXT_multiview);
+            BuiltInVariable("gl_ViewIndex", EbvViewIndex, symbolTable);
+        }
+
         break;
 
     case EShLangFragment:
@@ -5317,12 +5368,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("imageAtomicCompSwap", 1, &E_GL_OES_shader_image_atomic);
         }
 
-        if (profile != EEsProfile) {
-            symbolTable.setFunctionExtensions("gl_DeviceIndexKHR",  1, &E_GL_KHX_device_group);
-            BuiltInVariable("gl_DeviceIndexKHR", EbvDeviceIndex, symbolTable);
-            symbolTable.setFunctionExtensions("gl_ViewIndexKHR", 1, &E_GL_KHX_multiview);
-            BuiltInVariable("gl_ViewIndexKHR", EbvViewIndex, symbolTable);
-        }
+        symbolTable.setVariableExtensions("gl_DeviceIndex",  1, &E_GL_EXT_device_group);
+        BuiltInVariable("gl_DeviceIndex", EbvDeviceIndex, symbolTable);
+        symbolTable.setVariableExtensions("gl_ViewIndex", 1, &E_GL_EXT_multiview);
+        BuiltInVariable("gl_ViewIndex", EbvViewIndex, symbolTable);
         break;
 
     case EShLangCompute:
@@ -5356,6 +5405,15 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("memoryBarrierShared",        1, &E_GL_ARB_compute_shader);
             symbolTable.setFunctionExtensions("groupMemoryBarrier",         1, &E_GL_ARB_compute_shader);
         }
+
+        if ((profile != EEsProfile && version >= 140) ||
+            (profile == EEsProfile && version >= 310)) {
+            symbolTable.setVariableExtensions("gl_DeviceIndex",  1, &E_GL_EXT_device_group);
+            BuiltInVariable("gl_DeviceIndex", EbvDeviceIndex, symbolTable);
+            symbolTable.setVariableExtensions("gl_ViewIndex", 1, &E_GL_EXT_multiview);
+            BuiltInVariable("gl_ViewIndex", EbvViewIndex, symbolTable);
+        }
+
         break;
 
     default:
