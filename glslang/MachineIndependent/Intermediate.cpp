@@ -623,7 +623,10 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
              node->getType().getBasicType() == EbtUint64))
 
             return node;
-        else
+        else if (source == EShSourceHlsl && node->getType().getBasicType() == EbtBool) {
+            promoteTo = type.getBasicType();
+            break;
+        } else
             return nullptr;
 
     default:
@@ -1987,6 +1990,42 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
     //
     // We now have only scalars, vectors, and matrices to worry about.
     //
+
+    // HLSL implicitly promotes bool -> int for numeric operations.
+    // (Implicit conversions to make the operands match each other's types were already done.)
+    if (getSource() == EShSourceHlsl &&
+        (left->getBasicType() == EbtBool || right->getBasicType() == EbtBool)) {
+        switch (op) {
+        case EOpLessThan:
+        case EOpGreaterThan:
+        case EOpLessThanEqual:
+        case EOpGreaterThanEqual:
+
+        case EOpRightShift:
+        case EOpLeftShift:
+
+        case EOpMod:
+
+        case EOpAnd:
+        case EOpInclusiveOr:
+        case EOpExclusiveOr:
+
+        case EOpAdd:
+        case EOpSub:
+        case EOpDiv:
+        case EOpMul:
+            left = addConversion(op, TType(EbtInt, EvqTemporary, left->getVectorSize()), left);
+            right = addConversion(op, TType(EbtInt, EvqTemporary, right->getVectorSize()), right);
+            if (left == nullptr || right == nullptr)
+                return false;
+            node.setLeft(left);
+            node.setRight(right);
+            break;
+
+        default:
+            break;
+        }
+    }
 
     // Do general type checks against individual operands (comparing left and right is coming up, checking mixed shapes after that)
     switch (op) {

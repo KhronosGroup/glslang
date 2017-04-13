@@ -89,6 +89,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.attribute.expression.comp", "main"},
         {"hlsl.basic.comp", "main"},
         {"hlsl.basic.geom", "main"},
+        {"hlsl.boolConv.vert", "main"},
         {"hlsl.buffer.frag", "PixelShaderFunction"},
         {"hlsl.calculatelod.dx10.frag", "main"},
         {"hlsl.calculatelodunclamped.dx10.frag", "main"},
