@@ -2454,7 +2454,7 @@ bool HlslParseContext::hasStructBuffCounter(const TString& name) const
     case EbvRWStructuredBuffer:  // ...
         return true;
     default:
-        return false; // other builtin types do not have.
+        return false; // the other structuredbfufer types do not have a counter.
     }
 }
 
@@ -2533,6 +2533,35 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
         bufferObj = arguments->getAsSymbolNode();
     }
 
+    if (bufferObj == nullptr || bufferObj->getAsSymbolNode() == nullptr)
+        return;
+
+    TString bufferName(bufferObj->getAsSymbolNode()->getName());
+
+    const auto bivIt = structBufferBuiltIn.find(bufferName);
+    if (bivIt == structBufferBuiltIn.end())
+        return;
+
+    const TBuiltInVariable builtInType = bivIt->second;
+
+    // Some methods require a hidden internal counter, obtained via getStructBufferCounter().
+    // This lambda adds something to it and returns the old value.
+    const auto incDecCounter = [&](int incval) -> TIntermTyped* {
+        TIntermTyped* incrementValue = intermediate.addConstantUnion(incval, loc, true);
+        TIntermTyped* counter = getStructBufferCounter(loc, bufferObj); // obtain the counter member
+
+        if (counter == nullptr)
+            return nullptr;
+
+        TIntermAggregate* counterIncrement = new TIntermAggregate(EOpAtomicAdd);
+        counterIncrement->setType(TType(EbtUint, EvqTemporary));
+        counterIncrement->setLoc(loc);
+        counterIncrement->getSequence().push_back(counter);
+        counterIncrement->getSequence().push_back(incrementValue);
+
+        return counterIncrement;
+    };
+
     // Index to obtain the runtime sized array out of the buffer.
     TIntermTyped* argArray = indexStructBufferContent(loc, bufferObj);
     if (argArray == nullptr)
@@ -2545,7 +2574,9 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
 
             // Byte address buffers index in bytes (only multiples of 4 permitted... not so much a byte address
             // buffer then, but that's what it calls itself.
-            const bool isByteAddressBuffer = (argArray->getBasicType() == EbtUint);
+            const bool isByteAddressBuffer = (builtInType == EbvByteAddressBuffer || 
+                                              builtInType == EbvRWByteAddressBuffer);
+
             if (isByteAddressBuffer)
                 argIndex = intermediate.addBinaryNode(EOpRightShift, argIndex, intermediate.addConstantUnion(2, loc, true),
                                                       loc, TType(EbtInt));
@@ -2746,28 +2777,50 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
         }
         break;
 
-
     case EOpMethodIncrementCounter:
+        {
+            node = incDecCounter(1);
+            break;
+        }
+
     case EOpMethodDecrementCounter:
         {
-            // These methods require a hidden internal counter, obtained via getStructBufferCounter()
-            TIntermTyped* incrementValue = intermediate.addConstantUnion(op == EOpMethodIncrementCounter ? 1 : -1, loc, true);
-            TIntermTyped* counter = getStructBufferCounter(loc, bufferObj); // obtain the counter member
-
-            node = incrementValue;
-
-            if (counter == nullptr)
-                break;
-
-            TIntermAggregate* counterIncrement = new TIntermAggregate(EOpAtomicAdd);
-            counterIncrement->setType(TType(EbtUint, EvqTemporary));
-            counterIncrement->setLoc(loc);
-            counterIncrement->getSequence().push_back(counter);
-            counterIncrement->getSequence().push_back(incrementValue);
-
-            node = counterIncrement;
+            TIntermTyped* preIncValue = incDecCounter(-1); // result is original value
+            node = intermediate.addBinaryNode(EOpAdd, preIncValue, intermediate.addConstantUnion(-1, loc, true), loc,
+                                              preIncValue->getType());
+            break;
         }
-       break;
+
+    case EOpMethodAppend:
+        {
+            TIntermTyped* oldCounter = incDecCounter(1);
+
+            TIntermTyped* lValue = intermediate.addIndex(EOpIndexIndirect, argArray, oldCounter, loc);
+            TIntermTyped* rValue = argAggregate->getSequence()[1]->getAsTyped();
+
+            const TType derefType(argArray->getType(), 0);
+            lValue->setType(derefType);
+
+            node = intermediate.addAssign(EOpAssign, lValue, rValue, loc); 
+            node->setType(TType(EbtVoid)); // Append is a void return type
+
+            break;
+        }
+
+    case EOpMethodConsume:
+        {
+            TIntermTyped* oldCounter = incDecCounter(-1);
+
+            TIntermTyped* newCounter = intermediate.addBinaryNode(EOpAdd, oldCounter, intermediate.addConstantUnion(-1, loc, true), loc,
+                                                        oldCounter->getType());
+
+            node = intermediate.addIndex(EOpIndexIndirect, argArray, newCounter, loc);
+
+            const TType derefType(argArray->getType(), 0);
+            node->setType(derefType);
+
+            break;
+        }
 
     default:
         break; // most pass through unchanged
@@ -5954,7 +6007,9 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
         (candidateList[0]->getBuiltInOp() == EOpMethodAppend ||
          candidateList[0]->getBuiltInOp() == EOpMethodRestartStrip ||
          candidateList[0]->getBuiltInOp() == EOpMethodIncrementCounter ||
-         candidateList[0]->getBuiltInOp() == EOpMethodDecrementCounter)) {
+         candidateList[0]->getBuiltInOp() == EOpMethodDecrementCounter ||
+         candidateList[0]->getBuiltInOp() == EOpMethodAppend ||
+         candidateList[0]->getBuiltInOp() == EOpMethodConsume)) {
         return candidateList[0];
     }
 

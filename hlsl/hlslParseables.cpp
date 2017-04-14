@@ -873,6 +873,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "InterlockedXor",                   nullptr, nullptr,   "-",              "-",              EShLangAll,   true },
         { "IncrementCounter",                 nullptr, nullptr,   "-",              "-",              EShLangAll,   true },
         { "DecrementCounter",                 nullptr, nullptr,   "-",              "-",              EShLangAll,   true },
+        { "Consume",                          nullptr, nullptr,   "-",              "-",              EShLangAll,   true },
 
         // Mark end of list, since we want to avoid a range-based for, as some compilers don't handle it yet.
         { nullptr,                            nullptr, nullptr,   nullptr,      nullptr,  0, false },
@@ -1184,7 +1185,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator(BUILTIN_PREFIX "Store4",                      EOpMethodStore4);
     symbolTable.relateToOperator(BUILTIN_PREFIX "IncrementCounter",            EOpMethodIncrementCounter);
     symbolTable.relateToOperator(BUILTIN_PREFIX "DecrementCounter",            EOpMethodDecrementCounter);
-    symbolTable.relateToOperator(BUILTIN_PREFIX "Append",                      EOpMethodAppend);
+    // Append is also a GS method: we don't add it twice
     symbolTable.relateToOperator(BUILTIN_PREFIX "Consume",                     EOpMethodConsume);
 
     symbolTable.relateToOperator(BUILTIN_PREFIX "InterlockedAdd",              EOpInterlockedAdd);
