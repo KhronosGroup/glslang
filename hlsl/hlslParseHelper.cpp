@@ -2801,8 +2801,7 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
             const TType derefType(argArray->getType(), 0);
             lValue->setType(derefType);
 
-            node = intermediate.addAssign(EOpAssign, lValue, rValue, loc); 
-            node->setType(TType(EbtVoid)); // Append is a void return type
+            node = intermediate.addAssign(EOpAssign, lValue, rValue, loc);
 
             break;
         }
