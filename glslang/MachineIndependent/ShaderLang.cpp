@@ -1559,8 +1559,11 @@ void TShader::setShiftSamplerBinding(unsigned int base) { intermediate->setShift
 void TShader::setShiftTextureBinding(unsigned int base) { intermediate->setShiftTextureBinding(base); }
 void TShader::setShiftImageBinding(unsigned int base)   { intermediate->setShiftImageBinding(base); }
 void TShader::setShiftUboBinding(unsigned int base)     { intermediate->setShiftUboBinding(base); }
+void TShader::setShiftCbufferBinding(unsigned int base) { intermediate->setShiftUboBinding(base); }
+void TShader::setShiftUavBinding(unsigned int base)     { intermediate->setShiftUavBinding(base); }
 void TShader::setShiftSsboBinding(unsigned int base)    { intermediate->setShiftSsboBinding(base); }
 void TShader::setAutoMapBindings(bool map)              { intermediate->setAutoMapBindings(map); }
+void TShader::setHlslIoMapping(bool hlslIoMap)          { intermediate->setHlslIoMapping(hlslIoMap); }
 void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlattenUniformArrays(flatten); }
 void TShader::setNoStorageFormat(bool useUnknownFormat) { intermediate->setNoStorageFormat(useUnknownFormat); }
 
