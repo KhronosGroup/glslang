@@ -163,6 +163,7 @@ protected:
     spv::Id createAtomicOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy);
     spv::Id createInvocationsOperation(glslang::TOperator op, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy);
     spv::Id CreateInvocationsVectorOperation(spv::Op op, spv::GroupOperation groupOperation, spv::Id typeId, std::vector<spv::Id>& operands);
+    spv::Id createSubgroupOperation(glslang::TOperator op, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy);
     spv::Id createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy);
     spv::Id createNoArgOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId);
     spv::Id getSymbolId(const glslang::TIntermSymbol* node);
@@ -602,6 +603,46 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilitySubgroupBallotKHR);
         return spv::BuiltInSubgroupLtMaskKHR;
 
+    case glslang::EbvNumSubgroups:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        return spv::BuiltInNumSubgroups;
+
+    case glslang::EbvSubgroupID:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        return spv::BuiltInSubgroupId;
+
+    case glslang::EbvSubgroupSize2:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        return spv::BuiltInSubgroupSize;
+
+    case glslang::EbvSubgroupInvocation2:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        return spv::BuiltInSubgroupLocalInvocationId;
+
+    case glslang::EbvSubgroupEqMask2:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformBallot);
+        return spv::BuiltInSubgroupEqMask;
+
+    case glslang::EbvSubgroupGeMask2:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformBallot);
+        return spv::BuiltInSubgroupGeMask;
+
+    case glslang::EbvSubgroupGtMask2:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformBallot);
+        return spv::BuiltInSubgroupGtMask;
+
+    case glslang::EbvSubgroupLeMask2:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformBallot);
+        return spv::BuiltInSubgroupLeMask;
+
+    case glslang::EbvSubgroupLtMask2:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformBallot);
+        return spv::BuiltInSubgroupLtMask;
 #ifdef AMD_EXTENSIONS
     case glslang::EbvBaryCoordNoPersp:
         builder.addExtension(spv::E_SPV_AMD_shader_explicit_vertex_parameter);
@@ -1638,6 +1679,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpGroupMemoryBarrierWithGroupSync:
     case glslang::EOpWorkgroupMemoryBarrier:
     case glslang::EOpWorkgroupMemoryBarrierWithGroupSync:
+    case glslang::EOpSubgroupBarrier:
+    case glslang::EOpSubgroupMemoryBarrier:
+    case glslang::EOpSubgroupMemoryBarrierBuffer:
+    case glslang::EOpSubgroupMemoryBarrierImage:
+    case glslang::EOpSubgroupMemoryBarrierShared:
         noReturnValue = true;
         // These all have 0 operands and will naturally finish up in the code below for 0 operands
         break;
@@ -4012,7 +4058,45 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, spv:
         operands.push_back(operand);
         return createInvocationsOperation(op, typeId, operands, typeProxy);
     }
-
+    case glslang::EOpSubgroupAll:
+    case glslang::EOpSubgroupAny:
+    case glslang::EOpSubgroupAllEqual:
+    case glslang::EOpSubgroupBroadcastFirst:
+    case glslang::EOpSubgroupBallot:
+    case glslang::EOpSubgroupInverseBallot:
+    case glslang::EOpSubgroupBallotBitCount:
+    case glslang::EOpSubgroupBallotInclusiveBitCount:
+    case glslang::EOpSubgroupBallotExclusiveBitCount:
+    case glslang::EOpSubgroupBallotFindLSB:
+    case glslang::EOpSubgroupBallotFindMSB:
+    case glslang::EOpSubgroupAdd:
+    case glslang::EOpSubgroupMul:
+    case glslang::EOpSubgroupMin:
+    case glslang::EOpSubgroupMax:
+    case glslang::EOpSubgroupAnd:
+    case glslang::EOpSubgroupOr:
+    case glslang::EOpSubgroupXor:
+    case glslang::EOpSubgroupInclusiveAdd:
+    case glslang::EOpSubgroupInclusiveMul:
+    case glslang::EOpSubgroupInclusiveMin:
+    case glslang::EOpSubgroupInclusiveMax:
+    case glslang::EOpSubgroupInclusiveAnd:
+    case glslang::EOpSubgroupInclusiveOr:
+    case glslang::EOpSubgroupInclusiveXor:
+    case glslang::EOpSubgroupExclusiveAdd:
+    case glslang::EOpSubgroupExclusiveMul:
+    case glslang::EOpSubgroupExclusiveMin:
+    case glslang::EOpSubgroupExclusiveMax:
+    case glslang::EOpSubgroupExclusiveAnd:
+    case glslang::EOpSubgroupExclusiveOr:
+    case glslang::EOpSubgroupExclusiveXor:
+    case glslang::EOpSubgroupQuadSwapHorizontal:
+    case glslang::EOpSubgroupQuadSwapVertical:
+    case glslang::EOpSubgroupQuadSwapDiagonal: {
+        std::vector<spv::Id> operands;
+        operands.push_back(operand);
+        return createSubgroupOperation(op, typeId, operands, typeProxy);
+    }
 #ifdef AMD_EXTENSIONS
     case glslang::EOpMbcnt:
         extBuiltins = getExtBuiltins(spv::E_SPV_AMD_shader_ballot);
@@ -4651,6 +4735,259 @@ spv::Id TGlslangToSpvTraverser::CreateInvocationsVectorOperation(spv::Op op, spv
     return builder.createCompositeConstruct(typeId, results);
 }
 
+// Create subgroup invocation operations.
+spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy)
+{
+    // Add the required capabilities.
+    switch (op) {
+    case glslang::EOpSubgroupElect:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        break;
+    case glslang::EOpSubgroupAll:
+    case glslang::EOpSubgroupAny:
+    case glslang::EOpSubgroupAllEqual:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformVote);
+        break;
+    case glslang::EOpSubgroupBroadcast:
+    case glslang::EOpSubgroupBroadcastFirst:
+    case glslang::EOpSubgroupBallot:
+    case glslang::EOpSubgroupInverseBallot:
+    case glslang::EOpSubgroupBallotBitExtract:
+    case glslang::EOpSubgroupBallotBitCount:
+    case glslang::EOpSubgroupBallotInclusiveBitCount:
+    case glslang::EOpSubgroupBallotExclusiveBitCount:
+    case glslang::EOpSubgroupBallotFindLSB:
+    case glslang::EOpSubgroupBallotFindMSB:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformBallot);
+        break;
+    case glslang::EOpSubgroupShuffle:
+    case glslang::EOpSubgroupShuffleXor:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformShuffle);
+        break;
+    case glslang::EOpSubgroupShuffleUp:
+    case glslang::EOpSubgroupShuffleDown:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformShuffleRelative);
+        break;
+    case glslang::EOpSubgroupAdd:
+    case glslang::EOpSubgroupMul:
+    case glslang::EOpSubgroupMin:
+    case glslang::EOpSubgroupMax:
+    case glslang::EOpSubgroupAnd:
+    case glslang::EOpSubgroupOr:
+    case glslang::EOpSubgroupXor:
+    case glslang::EOpSubgroupInclusiveAdd:
+    case glslang::EOpSubgroupInclusiveMul:
+    case glslang::EOpSubgroupInclusiveMin:
+    case glslang::EOpSubgroupInclusiveMax:
+    case glslang::EOpSubgroupInclusiveAnd:
+    case glslang::EOpSubgroupInclusiveOr:
+    case glslang::EOpSubgroupInclusiveXor:
+    case glslang::EOpSubgroupExclusiveAdd:
+    case glslang::EOpSubgroupExclusiveMul:
+    case glslang::EOpSubgroupExclusiveMin:
+    case glslang::EOpSubgroupExclusiveMax:
+    case glslang::EOpSubgroupExclusiveAnd:
+    case glslang::EOpSubgroupExclusiveOr:
+    case glslang::EOpSubgroupExclusiveXor:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformArithmetic);
+        break;
+    case glslang::EOpSubgroupClusteredAdd:
+    case glslang::EOpSubgroupClusteredMul:
+    case glslang::EOpSubgroupClusteredMin:
+    case glslang::EOpSubgroupClusteredMax:
+    case glslang::EOpSubgroupClusteredAnd:
+    case glslang::EOpSubgroupClusteredOr:
+    case glslang::EOpSubgroupClusteredXor:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformClustered);
+        break;
+    case glslang::EOpSubgroupQuadBroadcast:
+    case glslang::EOpSubgroupQuadSwapHorizontal:
+    case glslang::EOpSubgroupQuadSwapVertical:
+    case glslang::EOpSubgroupQuadSwapDiagonal:
+        builder.addCapability(spv::CapabilityGroupNonUniform);
+        builder.addCapability(spv::CapabilityGroupNonUniformQuad);
+        break;
+    default: assert(0 && "Unhandled subgroup operation!");
+    }
+
+    const bool isUnsigned = typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64;
+    const bool isFloat = typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble || typeProxy == glslang::EbtFloat16;
+    const bool isBool = typeProxy == glslang::EbtBool;
+
+    spv::Op opCode = spv::OpNop;
+
+    // Figure out which opcode to use.
+    switch (op) {
+    case glslang::EOpSubgroupElect:                   opCode = spv::OpGroupNonUniformElect; break;
+    case glslang::EOpSubgroupAll:                     opCode = spv::OpGroupNonUniformAll; break;
+    case glslang::EOpSubgroupAny:                     opCode = spv::OpGroupNonUniformAny; break;
+    case glslang::EOpSubgroupAllEqual:                opCode = spv::OpGroupNonUniformAllEqual; break;
+    case glslang::EOpSubgroupBroadcast:               opCode = spv::OpGroupNonUniformBroadcast; break;
+    case glslang::EOpSubgroupBroadcastFirst:          opCode = spv::OpGroupNonUniformBroadcastFirst; break;
+    case glslang::EOpSubgroupBallot:                  opCode = spv::OpGroupNonUniformBallot; break;
+    case glslang::EOpSubgroupInverseBallot:           opCode = spv::OpGroupNonUniformInverseBallot; break;
+    case glslang::EOpSubgroupBallotBitExtract:        opCode = spv::OpGroupNonUniformBallotBitExtract; break;
+    case glslang::EOpSubgroupBallotBitCount:
+    case glslang::EOpSubgroupBallotInclusiveBitCount:
+    case glslang::EOpSubgroupBallotExclusiveBitCount: opCode = spv::OpGroupNonUniformBallotBitCount; break;
+    case glslang::EOpSubgroupBallotFindLSB:           opCode = spv::OpGroupNonUniformBallotFindLSB; break;
+    case glslang::EOpSubgroupBallotFindMSB:           opCode = spv::OpGroupNonUniformBallotFindMSB; break;
+    case glslang::EOpSubgroupShuffle:                 opCode = spv::OpGroupNonUniformShuffle; break;
+    case glslang::EOpSubgroupShuffleXor:              opCode = spv::OpGroupNonUniformShuffleXor; break;
+    case glslang::EOpSubgroupShuffleUp:               opCode = spv::OpGroupNonUniformShuffleUp; break;
+    case glslang::EOpSubgroupShuffleDown:             opCode = spv::OpGroupNonUniformShuffleDown; break;
+    case glslang::EOpSubgroupAdd:
+    case glslang::EOpSubgroupInclusiveAdd:
+    case glslang::EOpSubgroupExclusiveAdd:
+    case glslang::EOpSubgroupClusteredAdd:
+        if (isFloat) {
+            opCode = spv::OpGroupNonUniformFAdd;
+        } else {
+            opCode = spv::OpGroupNonUniformIAdd;
+        }
+        break;
+    case glslang::EOpSubgroupMul:
+    case glslang::EOpSubgroupInclusiveMul:
+    case glslang::EOpSubgroupExclusiveMul:
+    case glslang::EOpSubgroupClusteredMul:
+        if (isFloat) {
+            opCode = spv::OpGroupNonUniformFMul;
+        } else {
+            opCode = spv::OpGroupNonUniformIMul;
+        }
+        break;
+    case glslang::EOpSubgroupMin:
+    case glslang::EOpSubgroupInclusiveMin:
+    case glslang::EOpSubgroupExclusiveMin:
+    case glslang::EOpSubgroupClusteredMin:
+        if (isFloat) {
+            opCode = spv::OpGroupNonUniformFMin;
+        } else if (isUnsigned) {
+            opCode = spv::OpGroupNonUniformUMin;
+        } else {
+            opCode = spv::OpGroupNonUniformSMin;
+        }
+        break;
+    case glslang::EOpSubgroupMax:
+    case glslang::EOpSubgroupInclusiveMax:
+    case glslang::EOpSubgroupExclusiveMax:
+    case glslang::EOpSubgroupClusteredMax:
+        if (isFloat) {
+            opCode = spv::OpGroupNonUniformFMax;
+        } else if (isUnsigned) {
+            opCode = spv::OpGroupNonUniformUMax;
+        } else {
+            opCode = spv::OpGroupNonUniformSMax;
+        }
+        break;
+    case glslang::EOpSubgroupAnd:
+    case glslang::EOpSubgroupInclusiveAnd:
+    case glslang::EOpSubgroupExclusiveAnd:
+    case glslang::EOpSubgroupClusteredAnd:
+        if (isBool) {
+            opCode = spv::OpGroupNonUniformLogicalAnd;
+        } else {
+            opCode = spv::OpGroupNonUniformBitwiseAnd;
+        }
+        break;
+    case glslang::EOpSubgroupOr:
+    case glslang::EOpSubgroupInclusiveOr:
+    case glslang::EOpSubgroupExclusiveOr:
+    case glslang::EOpSubgroupClusteredOr:
+        if (isBool) {
+            opCode = spv::OpGroupNonUniformLogicalOr;
+        } else {
+            opCode = spv::OpGroupNonUniformBitwiseOr;
+        }
+        break;
+    case glslang::EOpSubgroupXor:
+    case glslang::EOpSubgroupInclusiveXor:
+    case glslang::EOpSubgroupExclusiveXor:
+    case glslang::EOpSubgroupClusteredXor:
+        if (isBool) {
+            opCode = spv::OpGroupNonUniformLogicalXor;
+        } else {
+            opCode = spv::OpGroupNonUniformBitwiseXor;
+        }
+        break;
+    case glslang::EOpSubgroupQuadBroadcast:      opCode = spv::OpGroupNonUniformQuadBroadcast; break;
+    case glslang::EOpSubgroupQuadSwapHorizontal:
+    case glslang::EOpSubgroupQuadSwapVertical:
+    case glslang::EOpSubgroupQuadSwapDiagonal:   opCode = spv::OpGroupNonUniformQuadSwap; break;
+    default: assert(0 && "Unhandled subgroup operation!");
+    }
+
+    std::vector<spv::Id> spvGroupOperands;
+
+    // Every operation begins with the Execution Scope operand.
+    spvGroupOperands.push_back(builder.makeUintConstant(spv::ScopeSubgroup));
+
+    // Next, for all operations that use a Group Operation, push that as an operand.
+    switch (op) {
+    default: break;
+    case glslang::EOpSubgroupBallotBitCount:
+    case glslang::EOpSubgroupAdd:
+    case glslang::EOpSubgroupMul:
+    case glslang::EOpSubgroupMin:
+    case glslang::EOpSubgroupMax:
+    case glslang::EOpSubgroupAnd:
+    case glslang::EOpSubgroupOr:
+    case glslang::EOpSubgroupXor:
+        spvGroupOperands.push_back(spv::GroupOperationReduce);
+        break;
+    case glslang::EOpSubgroupBallotInclusiveBitCount:
+    case glslang::EOpSubgroupInclusiveAdd:
+    case glslang::EOpSubgroupInclusiveMul:
+    case glslang::EOpSubgroupInclusiveMin:
+    case glslang::EOpSubgroupInclusiveMax:
+    case glslang::EOpSubgroupInclusiveAnd:
+    case glslang::EOpSubgroupInclusiveOr:
+    case glslang::EOpSubgroupInclusiveXor:
+        spvGroupOperands.push_back(spv::GroupOperationInclusiveScan);
+        break;
+    case glslang::EOpSubgroupBallotExclusiveBitCount:
+    case glslang::EOpSubgroupExclusiveAdd:
+    case glslang::EOpSubgroupExclusiveMul:
+    case glslang::EOpSubgroupExclusiveMin:
+    case glslang::EOpSubgroupExclusiveMax:
+    case glslang::EOpSubgroupExclusiveAnd:
+    case glslang::EOpSubgroupExclusiveOr:
+    case glslang::EOpSubgroupExclusiveXor:
+        spvGroupOperands.push_back(spv::GroupOperationExclusiveScan);
+        break;
+    case glslang::EOpSubgroupClusteredAdd:
+    case glslang::EOpSubgroupClusteredMul:
+    case glslang::EOpSubgroupClusteredMin:
+    case glslang::EOpSubgroupClusteredMax:
+    case glslang::EOpSubgroupClusteredAnd:
+    case glslang::EOpSubgroupClusteredOr:
+    case glslang::EOpSubgroupClusteredXor:
+        spvGroupOperands.push_back(spv::GroupOperationClusteredReduce);
+        break;
+    }
+
+    // Push back the operands next.
+    for (auto opIt : operands) {
+        spvGroupOperands.push_back(opIt);
+    }
+
+    // Some opcodes have additional operands.
+    switch (op) {
+    default: break;
+    case glslang::EOpSubgroupQuadSwapHorizontal: spvGroupOperands.push_back(builder.makeUintConstant(0)); break;
+    case glslang::EOpSubgroupQuadSwapVertical:   spvGroupOperands.push_back(builder.makeUintConstant(1)); break;
+    case glslang::EOpSubgroupQuadSwapDiagonal:   spvGroupOperands.push_back(builder.makeUintConstant(2)); break;
+    }
+
+    return builder.createOp(opCode, typeId, spvGroupOperands);
+}
+
 spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy)
 {
     bool isUnsigned = typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64;
@@ -4814,6 +5151,22 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
 
     case glslang::EOpReadInvocation:
         return createInvocationsOperation(op, typeId, operands, typeProxy);
+
+    case glslang::EOpSubgroupBroadcast:
+    case glslang::EOpSubgroupBallotBitExtract:
+    case glslang::EOpSubgroupShuffle:
+    case glslang::EOpSubgroupShuffleXor:
+    case glslang::EOpSubgroupShuffleUp:
+    case glslang::EOpSubgroupShuffleDown:
+    case glslang::EOpSubgroupClusteredAdd:
+    case glslang::EOpSubgroupClusteredMul:
+    case glslang::EOpSubgroupClusteredMin:
+    case glslang::EOpSubgroupClusteredMax:
+    case glslang::EOpSubgroupClusteredAnd:
+    case glslang::EOpSubgroupClusteredOr:
+    case glslang::EOpSubgroupClusteredXor:
+    case glslang::EOpSubgroupQuadBroadcast:
+        return createSubgroupOperation(op, typeId, operands, typeProxy);
 
 #ifdef AMD_EXTENSIONS
     case glslang::EOpSwizzleInvocations:
@@ -4982,6 +5335,25 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         // Control barrier with non-"None" semantic is also a memory barrier.
         builder.createControlBarrier(spv::ScopeWorkgroup, spv::ScopeWorkgroup, spv::MemorySemanticsWorkgroupMemoryMask);
         return 0;
+    case glslang::EOpSubgroupBarrier:
+        builder.createControlBarrier(spv::ScopeSubgroup, spv::ScopeDevice, spv::MemorySemanticsMaskNone);
+        return spv::NoResult;
+    case glslang::EOpSubgroupMemoryBarrier:
+        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsAllMemory);
+        return spv::NoResult;
+    case glslang::EOpSubgroupMemoryBarrierBuffer:
+        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsUniformMemoryMask);
+        return spv::NoResult;
+    case glslang::EOpSubgroupMemoryBarrierImage:
+        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsImageMemoryMask);
+        return spv::NoResult;
+    case glslang::EOpSubgroupMemoryBarrierShared:
+        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsWorkgroupMemoryMask);
+        return spv::NoResult;
+    case glslang::EOpSubgroupElect: {
+        std::vector<spv::Id> operands;
+        return createSubgroupOperation(op, typeId, operands, glslang::EbtVoid);
+    }
 #ifdef AMD_EXTENSIONS
     case glslang::EOpTime:
     {

@@ -384,6 +384,57 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpAllInvocations:         out.debug << "allInvocations";        break;
     case EOpAllInvocationsEqual:    out.debug << "allInvocationsEqual";   break;
 
+    case EOpSubgroupElect:                   out.debug << "subgroupElect";                   break;
+    case EOpSubgroupAll:                     out.debug << "subgroupAll";                     break;
+    case EOpSubgroupAny:                     out.debug << "subgroupAny";                     break;
+    case EOpSubgroupAllEqual:                out.debug << "subgroupAllEqual";                break;
+    case EOpSubgroupBroadcast:               out.debug << "subgroupBroadcast";               break;
+    case EOpSubgroupBroadcastFirst:          out.debug << "subgroupBroadcastFirst";          break;
+    case EOpSubgroupBallot:                  out.debug << "subgroupBallot";                  break;
+    case EOpSubgroupInverseBallot:           out.debug << "subgroupInverseBallot";           break;
+    case EOpSubgroupBallotBitExtract:        out.debug << "subgroupBallotBitExtract";        break;
+    case EOpSubgroupBallotBitCount:          out.debug << "subgroupBallotBitCount";          break;
+    case EOpSubgroupBallotInclusiveBitCount: out.debug << "subgroupBallotInclusiveBitCount"; break;
+    case EOpSubgroupBallotExclusiveBitCount: out.debug << "subgroupBallotExclusiveBitCount"; break;
+    case EOpSubgroupBallotFindLSB:           out.debug << "subgroupBallotFindLSB";           break;
+    case EOpSubgroupBallotFindMSB:           out.debug << "subgroupBallotFindMSB";           break;
+    case EOpSubgroupShuffle:                 out.debug << "subgroupShuffle";                 break;
+    case EOpSubgroupShuffleXor:              out.debug << "subgroupShuffleXor";              break;
+    case EOpSubgroupShuffleUp:               out.debug << "subgroupShuffleUp";               break;
+    case EOpSubgroupShuffleDown:             out.debug << "subgroupShuffleDown";             break;
+    case EOpSubgroupAdd:                     out.debug << "subgroupAdd";                     break;
+    case EOpSubgroupMul:                     out.debug << "subgroupMul";                     break;
+    case EOpSubgroupMin:                     out.debug << "subgroupMin";                     break;
+    case EOpSubgroupMax:                     out.debug << "subgroupMax";                     break;
+    case EOpSubgroupAnd:                     out.debug << "subgroupAnd";                     break;
+    case EOpSubgroupOr:                      out.debug << "subgroupOr";                      break;
+    case EOpSubgroupXor:                     out.debug << "subgroupXor";                     break;
+    case EOpSubgroupInclusiveAdd:            out.debug << "subgroupInclusiveAdd";            break;
+    case EOpSubgroupInclusiveMul:            out.debug << "subgroupInclusiveMul";            break;
+    case EOpSubgroupInclusiveMin:            out.debug << "subgroupInclusiveMin";            break;
+    case EOpSubgroupInclusiveMax:            out.debug << "subgroupInclusiveMax";            break;
+    case EOpSubgroupInclusiveAnd:            out.debug << "subgroupInclusiveAnd";            break;
+    case EOpSubgroupInclusiveOr:             out.debug << "subgroupInclusiveOr";             break;
+    case EOpSubgroupInclusiveXor:            out.debug << "subgroupInclusiveXor";            break;
+    case EOpSubgroupExclusiveAdd:            out.debug << "subgroupExclusiveAdd";            break;
+    case EOpSubgroupExclusiveMul:            out.debug << "subgroupExclusiveMul";            break;
+    case EOpSubgroupExclusiveMin:            out.debug << "subgroupExclusiveMin";            break;
+    case EOpSubgroupExclusiveMax:            out.debug << "subgroupExclusiveMax";            break;
+    case EOpSubgroupExclusiveAnd:            out.debug << "subgroupExclusiveAnd";            break;
+    case EOpSubgroupExclusiveOr:             out.debug << "subgroupExclusiveOr";             break;
+    case EOpSubgroupExclusiveXor:            out.debug << "subgroupExclusiveXor";            break;
+    case EOpSubgroupClusteredAdd:            out.debug << "subgroupClusteredAdd";            break;
+    case EOpSubgroupClusteredMul:            out.debug << "subgroupClusteredMul";            break;
+    case EOpSubgroupClusteredMin:            out.debug << "subgroupClusteredMin";            break;
+    case EOpSubgroupClusteredMax:            out.debug << "subgroupClusteredMax";            break;
+    case EOpSubgroupClusteredAnd:            out.debug << "subgroupClusteredAnd";            break;
+    case EOpSubgroupClusteredOr:             out.debug << "subgroupClusteredOr";             break;
+    case EOpSubgroupClusteredXor:            out.debug << "subgroupClusteredXor";            break;
+    case EOpSubgroupQuadBroadcast:           out.debug << "subgroupQuadBroadcast";           break;
+    case EOpSubgroupQuadSwapHorizontal:      out.debug << "subgroupQuadSwapHorizontal";      break;
+    case EOpSubgroupQuadSwapVertical:        out.debug << "subgroupQuadSwapVertical";        break;
+    case EOpSubgroupQuadSwapDiagonal:        out.debug << "subgroupQuadSwapDiagonal";        break;
+
     case EOpClip:                   out.debug << "clip";                  break;
     case EOpIsFinite:               out.debug << "isfinite";              break;
     case EOpLog10:                  out.debug << "log10";                 break;
@@ -645,6 +696,12 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpGroupMemoryBarrierWithGroupSync: out.debug << "GroupMemoryBarrierWithGroupSync"; break;
     case EOpWorkgroupMemoryBarrier:           out.debug << "WorkgroupMemoryBarrier";           break;
     case EOpWorkgroupMemoryBarrierWithGroupSync: out.debug << "WorkgroupMemoryBarrierWithGroupSync"; break;
+
+    case EOpSubgroupBarrier:                 out.debug << "subgroupBarrier";                 break;
+    case EOpSubgroupMemoryBarrier:           out.debug << "subgroupMemoryBarrier";           break;
+    case EOpSubgroupMemoryBarrierBuffer:     out.debug << "subgroupMemoryBarrierBuffer";     break;
+    case EOpSubgroupMemoryBarrierImage:      out.debug << "subgroupMemoryBarrierImage";      break;
+    case EOpSubgroupMemoryBarrierShared:     out.debug << "subgroupMemoryBarrierShared";     break;
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }

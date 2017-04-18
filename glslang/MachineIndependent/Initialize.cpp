@@ -1571,6 +1571,695 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    // GL_KHR_shader_subgroup
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "void subgroupBarrier();"
+            "void subgroupMemoryBarrier();"
+            "void subgroupMemoryBarrierBuffer();"
+            "void subgroupMemoryBarrierImage();"
+            "bool subgroupElect();"
+
+            "bool   subgroupAll(bool value);"
+            "bool   subgroupAny(bool value);"
+
+            "bool   subgroupAllEqual(float value);"
+            "bool   subgroupAllEqual(vec2 value);"
+            "bool   subgroupAllEqual(vec3 value);"
+            "bool   subgroupAllEqual(vec4 value);"
+            "bool   subgroupAllEqual(int value);"
+            "bool   subgroupAllEqual(ivec2 value);"
+            "bool   subgroupAllEqual(ivec3 value);"
+            "bool   subgroupAllEqual(ivec4 value);"
+            "bool   subgroupAllEqual(uint value);"
+            "bool   subgroupAllEqual(uvec2 value);"
+            "bool   subgroupAllEqual(uvec3 value);"
+            "bool   subgroupAllEqual(uvec4 value);"
+            "bool   subgroupAllEqual(bool value);"
+            "bool   subgroupAllEqual(bvec2 value);"
+            "bool   subgroupAllEqual(bvec3 value);"
+            "bool   subgroupAllEqual(bvec4 value);"
+            "bool   subgroupAllEqual(double value);"
+            "bool   subgroupAllEqual(dvec2 value);"
+            "bool   subgroupAllEqual(dvec3 value);"
+            "bool   subgroupAllEqual(dvec4 value);"
+
+            "float  subgroupBroadcast(float value,  uint id);"
+            "vec2   subgroupBroadcast(vec2 value,  uint id);"
+            "vec3   subgroupBroadcast(vec3 value,  uint id);"
+            "vec4   subgroupBroadcast(vec4 value,  uint id);"
+            "int    subgroupBroadcast(int value, uint id);"
+            "ivec2  subgroupBroadcast(ivec2 value, uint id);"
+            "ivec3  subgroupBroadcast(ivec3 value, uint id);"
+            "ivec4  subgroupBroadcast(ivec4 value, uint id);"
+            "uint   subgroupBroadcast(uint value, uint id);"
+            "uvec2  subgroupBroadcast(uvec2 value, uint id);"
+            "uvec3  subgroupBroadcast(uvec3 value, uint id);"
+            "uvec4  subgroupBroadcast(uvec4 value, uint id);"
+            "bool   subgroupBroadcast(bool value, uint id);"
+            "bvec2  subgroupBroadcast(bvec2 value, uint id);"
+            "bvec3  subgroupBroadcast(bvec3 value, uint id);"
+            "bvec4  subgroupBroadcast(bvec4 value, uint id);"
+            "double subgroupBroadcast(double value, uint id);"
+            "dvec2  subgroupBroadcast(dvec2 value, uint id);"
+            "dvec3  subgroupBroadcast(dvec3 value, uint id);"
+            "dvec4  subgroupBroadcast(dvec4 value, uint id);"
+
+            "float  subgroupBroadcastFirst(float value);"
+            "vec2   subgroupBroadcastFirst(vec2 value);"
+            "vec3   subgroupBroadcastFirst(vec3 value);"
+            "vec4   subgroupBroadcastFirst(vec4 value);"
+            "int    subgroupBroadcastFirst(int value);"
+            "ivec2  subgroupBroadcastFirst(ivec2 value);"
+            "ivec3  subgroupBroadcastFirst(ivec3 value);"
+            "ivec4  subgroupBroadcastFirst(ivec4 value);"
+            "uint   subgroupBroadcastFirst(uint value);"
+            "uvec2  subgroupBroadcastFirst(uvec2 value);"
+            "uvec3  subgroupBroadcastFirst(uvec3 value);"
+            "uvec4  subgroupBroadcastFirst(uvec4 value);"
+            "bool   subgroupBroadcastFirst(bool value);"
+            "bvec2  subgroupBroadcastFirst(bvec2 value);"
+            "bvec3  subgroupBroadcastFirst(bvec3 value);"
+            "bvec4  subgroupBroadcastFirst(bvec4 value);"
+            "double subgroupBroadcastFirst(double value);"
+            "dvec2  subgroupBroadcastFirst(dvec2 value);"
+            "dvec3  subgroupBroadcastFirst(dvec3 value);"
+            "dvec4  subgroupBroadcastFirst(dvec4 value);"
+
+            "uvec4  subgroupBallot(bool value);"
+            "bool   subgroupInverseBallot(uvec4 value);"
+            "bool   subgroupBallotBitExtract(uvec4 value, uint index);"
+            "uint   subgroupBallotBitCount(uvec4 value);"
+            "uint   subgroupBallotInclusiveBitCount(uvec4 value);"
+            "uint   subgroupBallotExclusiveBitCount(uvec4 value);"
+            "uint   subgroupBallotFindLSB(uvec4 value);"
+            "uint   subgroupBallotFindMSB(uvec4 value);"
+
+            "float  subgroupShuffle(float value,  uint id);"
+            "vec2   subgroupShuffle(vec2 value,  uint id);"
+            "vec3   subgroupShuffle(vec3 value,  uint id);"
+            "vec4   subgroupShuffle(vec4 value,  uint id);"
+            "int    subgroupShuffle(int value, uint id);"
+            "ivec2  subgroupShuffle(ivec2 value, uint id);"
+            "ivec3  subgroupShuffle(ivec3 value, uint id);"
+            "ivec4  subgroupShuffle(ivec4 value, uint id);"
+            "uint   subgroupShuffle(uint value, uint id);"
+            "uvec2  subgroupShuffle(uvec2 value, uint id);"
+            "uvec3  subgroupShuffle(uvec3 value, uint id);"
+            "uvec4  subgroupShuffle(uvec4 value, uint id);"
+            "bool   subgroupShuffle(bool value, uint id);"
+            "bvec2  subgroupShuffle(bvec2 value, uint id);"
+            "bvec3  subgroupShuffle(bvec3 value, uint id);"
+            "bvec4  subgroupShuffle(bvec4 value, uint id);"
+            "double subgroupShuffle(double value, uint id);"
+            "dvec2  subgroupShuffle(dvec2 value, uint id);"
+            "dvec3  subgroupShuffle(dvec3 value, uint id);"
+            "dvec4  subgroupShuffle(dvec4 value, uint id);"
+
+            "float  subgroupShuffleXor(float value,  uint mask);"
+            "vec2   subgroupShuffleXor(vec2 value,  uint mask);"
+            "vec3   subgroupShuffleXor(vec3 value,  uint mask);"
+            "vec4   subgroupShuffleXor(vec4 value,  uint mask);"
+            "int    subgroupShuffleXor(int value, uint mask);"
+            "ivec2  subgroupShuffleXor(ivec2 value, uint mask);"
+            "ivec3  subgroupShuffleXor(ivec3 value, uint mask);"
+            "ivec4  subgroupShuffleXor(ivec4 value, uint mask);"
+            "uint   subgroupShuffleXor(uint value, uint mask);"
+            "uvec2  subgroupShuffleXor(uvec2 value, uint mask);"
+            "uvec3  subgroupShuffleXor(uvec3 value, uint mask);"
+            "uvec4  subgroupShuffleXor(uvec4 value, uint mask);"
+            "bool   subgroupShuffleXor(bool value, uint mask);"
+            "bvec2  subgroupShuffleXor(bvec2 value, uint mask);"
+            "bvec3  subgroupShuffleXor(bvec3 value, uint mask);"
+            "bvec4  subgroupShuffleXor(bvec4 value, uint mask);"
+            "double subgroupShuffleXor(double value, uint mask);"
+            "dvec2  subgroupShuffleXor(dvec2 value, uint mask);"
+            "dvec3  subgroupShuffleXor(dvec3 value, uint mask);"
+            "dvec4  subgroupShuffleXor(dvec4 value, uint mask);"
+
+            "float  subgroupShuffleUp(float value,  uint delta);"
+            "vec2   subgroupShuffleUp(vec2 value,  uint delta);"
+            "vec3   subgroupShuffleUp(vec3 value,  uint delta);"
+            "vec4   subgroupShuffleUp(vec4 value,  uint delta);"
+            "int    subgroupShuffleUp(int value, uint delta);"
+            "ivec2  subgroupShuffleUp(ivec2 value, uint delta);"
+            "ivec3  subgroupShuffleUp(ivec3 value, uint delta);"
+            "ivec4  subgroupShuffleUp(ivec4 value, uint delta);"
+            "uint   subgroupShuffleUp(uint value, uint delta);"
+            "uvec2  subgroupShuffleUp(uvec2 value, uint delta);"
+            "uvec3  subgroupShuffleUp(uvec3 value, uint delta);"
+            "uvec4  subgroupShuffleUp(uvec4 value, uint delta);"
+            "bool   subgroupShuffleUp(bool value, uint delta);"
+            "bvec2  subgroupShuffleUp(bvec2 value, uint delta);"
+            "bvec3  subgroupShuffleUp(bvec3 value, uint delta);"
+            "bvec4  subgroupShuffleUp(bvec4 value, uint delta);"
+            "double subgroupShuffleUp(double value, uint delta);"
+            "dvec2  subgroupShuffleUp(dvec2 value, uint delta);"
+            "dvec3  subgroupShuffleUp(dvec3 value, uint delta);"
+            "dvec4  subgroupShuffleUp(dvec4 value, uint delta);"
+
+            "float  subgroupShuffleDown(float value,  uint delta);"
+            "vec2   subgroupShuffleDown(vec2 value,  uint delta);"
+            "vec3   subgroupShuffleDown(vec3 value,  uint delta);"
+            "vec4   subgroupShuffleDown(vec4 value,  uint delta);"
+            "int    subgroupShuffleDown(int value, uint delta);"
+            "ivec2  subgroupShuffleDown(ivec2 value, uint delta);"
+            "ivec3  subgroupShuffleDown(ivec3 value, uint delta);"
+            "ivec4  subgroupShuffleDown(ivec4 value, uint delta);"
+            "uint   subgroupShuffleDown(uint value, uint delta);"
+            "uvec2  subgroupShuffleDown(uvec2 value, uint delta);"
+            "uvec3  subgroupShuffleDown(uvec3 value, uint delta);"
+            "uvec4  subgroupShuffleDown(uvec4 value, uint delta);"
+            "bool   subgroupShuffleDown(bool value, uint delta);"
+            "bvec2  subgroupShuffleDown(bvec2 value, uint delta);"
+            "bvec3  subgroupShuffleDown(bvec3 value, uint delta);"
+            "bvec4  subgroupShuffleDown(bvec4 value, uint delta);"
+            "double subgroupShuffleDown(double value, uint delta);"
+            "dvec2  subgroupShuffleDown(dvec2 value, uint delta);"
+            "dvec3  subgroupShuffleDown(dvec3 value, uint delta);"
+            "dvec4  subgroupShuffleDown(dvec4 value, uint delta);"
+
+            "float  subgroupAdd(float value);"
+            "vec2   subgroupAdd(vec2 value);"
+            "vec3   subgroupAdd(vec3 value);"
+            "vec4   subgroupAdd(vec4 value);"
+            "int    subgroupAdd(int value);"
+            "ivec2  subgroupAdd(ivec2 value);"
+            "ivec3  subgroupAdd(ivec3 value);"
+            "ivec4  subgroupAdd(ivec4 value);"
+            "uint   subgroupAdd(uint value);"
+            "uvec2  subgroupAdd(uvec2 value);"
+            "uvec3  subgroupAdd(uvec3 value);"
+            "uvec4  subgroupAdd(uvec4 value);"
+            "double subgroupAdd(double value);"
+            "dvec2  subgroupAdd(dvec2 value);"
+            "dvec3  subgroupAdd(dvec3 value);"
+            "dvec4  subgroupAdd(dvec4 value);"
+
+            "float  subgroupMul(float value);"
+            "vec2   subgroupMul(vec2 value);"
+            "vec3   subgroupMul(vec3 value);"
+            "vec4   subgroupMul(vec4 value);"
+            "int    subgroupMul(int value);"
+            "ivec2  subgroupMul(ivec2 value);"
+            "ivec3  subgroupMul(ivec3 value);"
+            "ivec4  subgroupMul(ivec4 value);"
+            "uint   subgroupMul(uint value);"
+            "uvec2  subgroupMul(uvec2 value);"
+            "uvec3  subgroupMul(uvec3 value);"
+            "uvec4  subgroupMul(uvec4 value);"
+            "double subgroupMul(double value);"
+            "dvec2  subgroupMul(dvec2 value);"
+            "dvec3  subgroupMul(dvec3 value);"
+            "dvec4  subgroupMul(dvec4 value);"
+
+            "float  subgroupMin(float value);"
+            "vec2   subgroupMin(vec2 value);"
+            "vec3   subgroupMin(vec3 value);"
+            "vec4   subgroupMin(vec4 value);"
+            "int    subgroupMin(int value);"
+            "ivec2  subgroupMin(ivec2 value);"
+            "ivec3  subgroupMin(ivec3 value);"
+            "ivec4  subgroupMin(ivec4 value);"
+            "uint   subgroupMin(uint value);"
+            "uvec2  subgroupMin(uvec2 value);"
+            "uvec3  subgroupMin(uvec3 value);"
+            "uvec4  subgroupMin(uvec4 value);"
+            "double subgroupMin(double value);"
+            "dvec2  subgroupMin(dvec2 value);"
+            "dvec3  subgroupMin(dvec3 value);"
+            "dvec4  subgroupMin(dvec4 value);"
+
+            "float  subgroupMax(float value);"
+            "vec2   subgroupMax(vec2 value);"
+            "vec3   subgroupMax(vec3 value);"
+            "vec4   subgroupMax(vec4 value);"
+            "int    subgroupMax(int value);"
+            "ivec2  subgroupMax(ivec2 value);"
+            "ivec3  subgroupMax(ivec3 value);"
+            "ivec4  subgroupMax(ivec4 value);"
+            "uint   subgroupMax(uint value);"
+            "uvec2  subgroupMax(uvec2 value);"
+            "uvec3  subgroupMax(uvec3 value);"
+            "uvec4  subgroupMax(uvec4 value);"
+            "double subgroupMax(double value);"
+            "dvec2  subgroupMax(dvec2 value);"
+            "dvec3  subgroupMax(dvec3 value);"
+            "dvec4  subgroupMax(dvec4 value);"
+
+            "int    subgroupAnd(int value);"
+            "ivec2  subgroupAnd(ivec2 value);"
+            "ivec3  subgroupAnd(ivec3 value);"
+            "ivec4  subgroupAnd(ivec4 value);"
+            "uint   subgroupAnd(uint value);"
+            "uvec2  subgroupAnd(uvec2 value);"
+            "uvec3  subgroupAnd(uvec3 value);"
+            "uvec4  subgroupAnd(uvec4 value);"
+            "bool   subgroupAnd(bool value);"
+            "bvec2  subgroupAnd(bvec2 value);"
+            "bvec3  subgroupAnd(bvec3 value);"
+            "bvec4  subgroupAnd(bvec4 value);"
+
+            "int    subgroupOr(int value);"
+            "ivec2  subgroupOr(ivec2 value);"
+            "ivec3  subgroupOr(ivec3 value);"
+            "ivec4  subgroupOr(ivec4 value);"
+            "uint   subgroupOr(uint value);"
+            "uvec2  subgroupOr(uvec2 value);"
+            "uvec3  subgroupOr(uvec3 value);"
+            "uvec4  subgroupOr(uvec4 value);"
+            "bool   subgroupOr(bool value);"
+            "bvec2  subgroupOr(bvec2 value);"
+            "bvec3  subgroupOr(bvec3 value);"
+            "bvec4  subgroupOr(bvec4 value);"
+
+            "int    subgroupXor(int value);"
+            "ivec2  subgroupXor(ivec2 value);"
+            "ivec3  subgroupXor(ivec3 value);"
+            "ivec4  subgroupXor(ivec4 value);"
+            "uint   subgroupXor(uint value);"
+            "uvec2  subgroupXor(uvec2 value);"
+            "uvec3  subgroupXor(uvec3 value);"
+            "uvec4  subgroupXor(uvec4 value);"
+            "bool   subgroupXor(bool value);"
+            "bvec2  subgroupXor(bvec2 value);"
+            "bvec3  subgroupXor(bvec3 value);"
+            "bvec4  subgroupXor(bvec4 value);"
+
+            "float  subgroupInclusiveAdd(float value);"
+            "vec2   subgroupInclusiveAdd(vec2 value);"
+            "vec3   subgroupInclusiveAdd(vec3 value);"
+            "vec4   subgroupInclusiveAdd(vec4 value);"
+            "int    subgroupInclusiveAdd(int value);"
+            "ivec2  subgroupInclusiveAdd(ivec2 value);"
+            "ivec3  subgroupInclusiveAdd(ivec3 value);"
+            "ivec4  subgroupInclusiveAdd(ivec4 value);"
+            "uint   subgroupInclusiveAdd(uint value);"
+            "uvec2  subgroupInclusiveAdd(uvec2 value);"
+            "uvec3  subgroupInclusiveAdd(uvec3 value);"
+            "uvec4  subgroupInclusiveAdd(uvec4 value);"
+            "double subgroupInclusiveAdd(double value);"
+            "dvec2  subgroupInclusiveAdd(dvec2 value);"
+            "dvec3  subgroupInclusiveAdd(dvec3 value);"
+            "dvec4  subgroupInclusiveAdd(dvec4 value);"
+
+            "float  subgroupInclusiveMul(float value);"
+            "vec2   subgroupInclusiveMul(vec2 value);"
+            "vec3   subgroupInclusiveMul(vec3 value);"
+            "vec4   subgroupInclusiveMul(vec4 value);"
+            "int    subgroupInclusiveMul(int value);"
+            "ivec2  subgroupInclusiveMul(ivec2 value);"
+            "ivec3  subgroupInclusiveMul(ivec3 value);"
+            "ivec4  subgroupInclusiveMul(ivec4 value);"
+            "uint   subgroupInclusiveMul(uint value);"
+            "uvec2  subgroupInclusiveMul(uvec2 value);"
+            "uvec3  subgroupInclusiveMul(uvec3 value);"
+            "uvec4  subgroupInclusiveMul(uvec4 value);"
+            "double subgroupInclusiveMul(double value);"
+            "dvec2  subgroupInclusiveMul(dvec2 value);"
+            "dvec3  subgroupInclusiveMul(dvec3 value);"
+            "dvec4  subgroupInclusiveMul(dvec4 value);"
+
+            "float  subgroupInclusiveMin(float value);"
+            "vec2   subgroupInclusiveMin(vec2 value);"
+            "vec3   subgroupInclusiveMin(vec3 value);"
+            "vec4   subgroupInclusiveMin(vec4 value);"
+            "int    subgroupInclusiveMin(int value);"
+            "ivec2  subgroupInclusiveMin(ivec2 value);"
+            "ivec3  subgroupInclusiveMin(ivec3 value);"
+            "ivec4  subgroupInclusiveMin(ivec4 value);"
+            "uint   subgroupInclusiveMin(uint value);"
+            "uvec2  subgroupInclusiveMin(uvec2 value);"
+            "uvec3  subgroupInclusiveMin(uvec3 value);"
+            "uvec4  subgroupInclusiveMin(uvec4 value);"
+            "double subgroupInclusiveMin(double value);"
+            "dvec2  subgroupInclusiveMin(dvec2 value);"
+            "dvec3  subgroupInclusiveMin(dvec3 value);"
+            "dvec4  subgroupInclusiveMin(dvec4 value);"
+
+            "float  subgroupInclusiveMax(float value);"
+            "vec2   subgroupInclusiveMax(vec2 value);"
+            "vec3   subgroupInclusiveMax(vec3 value);"
+            "vec4   subgroupInclusiveMax(vec4 value);"
+            "int    subgroupInclusiveMax(int value);"
+            "ivec2  subgroupInclusiveMax(ivec2 value);"
+            "ivec3  subgroupInclusiveMax(ivec3 value);"
+            "ivec4  subgroupInclusiveMax(ivec4 value);"
+            "uint   subgroupInclusiveMax(uint value);"
+            "uvec2  subgroupInclusiveMax(uvec2 value);"
+            "uvec3  subgroupInclusiveMax(uvec3 value);"
+            "uvec4  subgroupInclusiveMax(uvec4 value);"
+            "double subgroupInclusiveMax(double value);"
+            "dvec2  subgroupInclusiveMax(dvec2 value);"
+            "dvec3  subgroupInclusiveMax(dvec3 value);"
+            "dvec4  subgroupInclusiveMax(dvec4 value);"
+
+            "int    subgroupInclusiveAnd(int value);"
+            "ivec2  subgroupInclusiveAnd(ivec2 value);"
+            "ivec3  subgroupInclusiveAnd(ivec3 value);"
+            "ivec4  subgroupInclusiveAnd(ivec4 value);"
+            "uint   subgroupInclusiveAnd(uint value);"
+            "uvec2  subgroupInclusiveAnd(uvec2 value);"
+            "uvec3  subgroupInclusiveAnd(uvec3 value);"
+            "uvec4  subgroupInclusiveAnd(uvec4 value);"
+            "bool   subgroupInclusiveAnd(bool value);"
+            "bvec2  subgroupInclusiveAnd(bvec2 value);"
+            "bvec3  subgroupInclusiveAnd(bvec3 value);"
+            "bvec4  subgroupInclusiveAnd(bvec4 value);"
+
+            "int    subgroupInclusiveOr(int value);"
+            "ivec2  subgroupInclusiveOr(ivec2 value);"
+            "ivec3  subgroupInclusiveOr(ivec3 value);"
+            "ivec4  subgroupInclusiveOr(ivec4 value);"
+            "uint   subgroupInclusiveOr(uint value);"
+            "uvec2  subgroupInclusiveOr(uvec2 value);"
+            "uvec3  subgroupInclusiveOr(uvec3 value);"
+            "uvec4  subgroupInclusiveOr(uvec4 value);"
+            "bool   subgroupInclusiveOr(bool value);"
+            "bvec2  subgroupInclusiveOr(bvec2 value);"
+            "bvec3  subgroupInclusiveOr(bvec3 value);"
+            "bvec4  subgroupInclusiveOr(bvec4 value);"
+
+            "int    subgroupInclusiveXor(int value);"
+            "ivec2  subgroupInclusiveXor(ivec2 value);"
+            "ivec3  subgroupInclusiveXor(ivec3 value);"
+            "ivec4  subgroupInclusiveXor(ivec4 value);"
+            "uint   subgroupInclusiveXor(uint value);"
+            "uvec2  subgroupInclusiveXor(uvec2 value);"
+            "uvec3  subgroupInclusiveXor(uvec3 value);"
+            "uvec4  subgroupInclusiveXor(uvec4 value);"
+            "bool   subgroupInclusiveXor(bool value);"
+            "bvec2  subgroupInclusiveXor(bvec2 value);"
+            "bvec3  subgroupInclusiveXor(bvec3 value);"
+            "bvec4  subgroupInclusiveXor(bvec4 value);"
+
+            "float  subgroupExclusiveAdd(float value);"
+            "vec2   subgroupExclusiveAdd(vec2 value);"
+            "vec3   subgroupExclusiveAdd(vec3 value);"
+            "vec4   subgroupExclusiveAdd(vec4 value);"
+            "int    subgroupExclusiveAdd(int value);"
+            "ivec2  subgroupExclusiveAdd(ivec2 value);"
+            "ivec3  subgroupExclusiveAdd(ivec3 value);"
+            "ivec4  subgroupExclusiveAdd(ivec4 value);"
+            "uint   subgroupExclusiveAdd(uint value);"
+            "uvec2  subgroupExclusiveAdd(uvec2 value);"
+            "uvec3  subgroupExclusiveAdd(uvec3 value);"
+            "uvec4  subgroupExclusiveAdd(uvec4 value);"
+            "double subgroupExclusiveAdd(double value);"
+            "dvec2  subgroupExclusiveAdd(dvec2 value);"
+            "dvec3  subgroupExclusiveAdd(dvec3 value);"
+            "dvec4  subgroupExclusiveAdd(dvec4 value);"
+
+            "float  subgroupExclusiveMul(float value);"
+            "vec2   subgroupExclusiveMul(vec2 value);"
+            "vec3   subgroupExclusiveMul(vec3 value);"
+            "vec4   subgroupExclusiveMul(vec4 value);"
+            "int    subgroupExclusiveMul(int value);"
+            "ivec2  subgroupExclusiveMul(ivec2 value);"
+            "ivec3  subgroupExclusiveMul(ivec3 value);"
+            "ivec4  subgroupExclusiveMul(ivec4 value);"
+            "uint   subgroupExclusiveMul(uint value);"
+            "uvec2  subgroupExclusiveMul(uvec2 value);"
+            "uvec3  subgroupExclusiveMul(uvec3 value);"
+            "uvec4  subgroupExclusiveMul(uvec4 value);"
+            "double subgroupExclusiveMul(double value);"
+            "dvec2  subgroupExclusiveMul(dvec2 value);"
+            "dvec3  subgroupExclusiveMul(dvec3 value);"
+            "dvec4  subgroupExclusiveMul(dvec4 value);"
+
+            "float  subgroupExclusiveMin(float value);"
+            "vec2   subgroupExclusiveMin(vec2 value);"
+            "vec3   subgroupExclusiveMin(vec3 value);"
+            "vec4   subgroupExclusiveMin(vec4 value);"
+            "int    subgroupExclusiveMin(int value);"
+            "ivec2  subgroupExclusiveMin(ivec2 value);"
+            "ivec3  subgroupExclusiveMin(ivec3 value);"
+            "ivec4  subgroupExclusiveMin(ivec4 value);"
+            "uint   subgroupExclusiveMin(uint value);"
+            "uvec2  subgroupExclusiveMin(uvec2 value);"
+            "uvec3  subgroupExclusiveMin(uvec3 value);"
+            "uvec4  subgroupExclusiveMin(uvec4 value);"
+            "double subgroupExclusiveMin(double value);"
+            "dvec2  subgroupExclusiveMin(dvec2 value);"
+            "dvec3  subgroupExclusiveMin(dvec3 value);"
+            "dvec4  subgroupExclusiveMin(dvec4 value);"
+
+            "float  subgroupExclusiveMax(float value);"
+            "vec2   subgroupExclusiveMax(vec2 value);"
+            "vec3   subgroupExclusiveMax(vec3 value);"
+            "vec4   subgroupExclusiveMax(vec4 value);"
+            "int    subgroupExclusiveMax(int value);"
+            "ivec2  subgroupExclusiveMax(ivec2 value);"
+            "ivec3  subgroupExclusiveMax(ivec3 value);"
+            "ivec4  subgroupExclusiveMax(ivec4 value);"
+            "uint   subgroupExclusiveMax(uint value);"
+            "uvec2  subgroupExclusiveMax(uvec2 value);"
+            "uvec3  subgroupExclusiveMax(uvec3 value);"
+            "uvec4  subgroupExclusiveMax(uvec4 value);"
+            "double subgroupExclusiveMax(double value);"
+            "dvec2  subgroupExclusiveMax(dvec2 value);"
+            "dvec3  subgroupExclusiveMax(dvec3 value);"
+            "dvec4  subgroupExclusiveMax(dvec4 value);"
+
+            "int    subgroupExclusiveAnd(int value);"
+            "ivec2  subgroupExclusiveAnd(ivec2 value);"
+            "ivec3  subgroupExclusiveAnd(ivec3 value);"
+            "ivec4  subgroupExclusiveAnd(ivec4 value);"
+            "uint   subgroupExclusiveAnd(uint value);"
+            "uvec2  subgroupExclusiveAnd(uvec2 value);"
+            "uvec3  subgroupExclusiveAnd(uvec3 value);"
+            "uvec4  subgroupExclusiveAnd(uvec4 value);"
+            "bool   subgroupExclusiveAnd(bool value);"
+            "bvec2  subgroupExclusiveAnd(bvec2 value);"
+            "bvec3  subgroupExclusiveAnd(bvec3 value);"
+            "bvec4  subgroupExclusiveAnd(bvec4 value);"
+
+            "int    subgroupExclusiveOr(int value);"
+            "ivec2  subgroupExclusiveOr(ivec2 value);"
+            "ivec3  subgroupExclusiveOr(ivec3 value);"
+            "ivec4  subgroupExclusiveOr(ivec4 value);"
+            "uint   subgroupExclusiveOr(uint value);"
+            "uvec2  subgroupExclusiveOr(uvec2 value);"
+            "uvec3  subgroupExclusiveOr(uvec3 value);"
+            "uvec4  subgroupExclusiveOr(uvec4 value);"
+            "bool   subgroupExclusiveOr(bool value);"
+            "bvec2  subgroupExclusiveOr(bvec2 value);"
+            "bvec3  subgroupExclusiveOr(bvec3 value);"
+            "bvec4  subgroupExclusiveOr(bvec4 value);"
+
+            "int    subgroupExclusiveXor(int value);"
+            "ivec2  subgroupExclusiveXor(ivec2 value);"
+            "ivec3  subgroupExclusiveXor(ivec3 value);"
+            "ivec4  subgroupExclusiveXor(ivec4 value);"
+            "uint   subgroupExclusiveXor(uint value);"
+            "uvec2  subgroupExclusiveXor(uvec2 value);"
+            "uvec3  subgroupExclusiveXor(uvec3 value);"
+            "uvec4  subgroupExclusiveXor(uvec4 value);"
+            "bool   subgroupExclusiveXor(bool value);"
+            "bvec2  subgroupExclusiveXor(bvec2 value);"
+            "bvec3  subgroupExclusiveXor(bvec3 value);"
+            "bvec4  subgroupExclusiveXor(bvec4 value);"
+
+            "float  subgroupClusteredAdd(float value,  uint clusterSize);"
+            "vec2   subgroupClusteredAdd(vec2 value,  uint clusterSize);"
+            "vec3   subgroupClusteredAdd(vec3 value,  uint clusterSize);"
+            "vec4   subgroupClusteredAdd(vec4 value,  uint clusterSize);"
+            "int    subgroupClusteredAdd(int value, uint clusterSize);"
+            "ivec2  subgroupClusteredAdd(ivec2 value, uint clusterSize);"
+            "ivec3  subgroupClusteredAdd(ivec3 value, uint clusterSize);"
+            "ivec4  subgroupClusteredAdd(ivec4 value, uint clusterSize);"
+            "uint   subgroupClusteredAdd(uint value, uint clusterSize);"
+            "uvec2  subgroupClusteredAdd(uvec2 value, uint clusterSize);"
+            "uvec3  subgroupClusteredAdd(uvec3 value, uint clusterSize);"
+            "uvec4  subgroupClusteredAdd(uvec4 value, uint clusterSize);"
+            "double subgroupClusteredAdd(double value, uint clusterSize);"
+            "dvec2  subgroupClusteredAdd(dvec2 value, uint clusterSize);"
+            "dvec3  subgroupClusteredAdd(dvec3 value, uint clusterSize);"
+            "dvec4  subgroupClusteredAdd(dvec4 value, uint clusterSize);"
+
+            "float  subgroupClusteredMul(float value,  uint clusterSize);"
+            "vec2   subgroupClusteredMul(vec2 value,  uint clusterSize);"
+            "vec3   subgroupClusteredMul(vec3 value,  uint clusterSize);"
+            "vec4   subgroupClusteredMul(vec4 value,  uint clusterSize);"
+            "int    subgroupClusteredMul(int value, uint clusterSize);"
+            "ivec2  subgroupClusteredMul(ivec2 value, uint clusterSize);"
+            "ivec3  subgroupClusteredMul(ivec3 value, uint clusterSize);"
+            "ivec4  subgroupClusteredMul(ivec4 value, uint clusterSize);"
+            "uint   subgroupClusteredMul(uint value, uint clusterSize);"
+            "uvec2  subgroupClusteredMul(uvec2 value, uint clusterSize);"
+            "uvec3  subgroupClusteredMul(uvec3 value, uint clusterSize);"
+            "uvec4  subgroupClusteredMul(uvec4 value, uint clusterSize);"
+            "double subgroupClusteredMul(double value, uint clusterSize);"
+            "dvec2  subgroupClusteredMul(dvec2 value, uint clusterSize);"
+            "dvec3  subgroupClusteredMul(dvec3 value, uint clusterSize);"
+            "dvec4  subgroupClusteredMul(dvec4 value, uint clusterSize);"
+
+            "float  subgroupClusteredMin(float value,  uint clusterSize);"
+            "vec2   subgroupClusteredMin(vec2 value,  uint clusterSize);"
+            "vec3   subgroupClusteredMin(vec3 value,  uint clusterSize);"
+            "vec4   subgroupClusteredMin(vec4 value,  uint clusterSize);"
+            "int    subgroupClusteredMin(int value, uint clusterSize);"
+            "ivec2  subgroupClusteredMin(ivec2 value, uint clusterSize);"
+            "ivec3  subgroupClusteredMin(ivec3 value, uint clusterSize);"
+            "ivec4  subgroupClusteredMin(ivec4 value, uint clusterSize);"
+            "uint   subgroupClusteredMin(uint value, uint clusterSize);"
+            "uvec2  subgroupClusteredMin(uvec2 value, uint clusterSize);"
+            "uvec3  subgroupClusteredMin(uvec3 value, uint clusterSize);"
+            "uvec4  subgroupClusteredMin(uvec4 value, uint clusterSize);"
+            "double subgroupClusteredMin(double value, uint clusterSize);"
+            "dvec2  subgroupClusteredMin(dvec2 value, uint clusterSize);"
+            "dvec3  subgroupClusteredMin(dvec3 value, uint clusterSize);"
+            "dvec4  subgroupClusteredMin(dvec4 value, uint clusterSize);"
+
+            "float  subgroupClusteredMax(float value,  uint clusterSize);"
+            "vec2   subgroupClusteredMax(vec2 value,  uint clusterSize);"
+            "vec3   subgroupClusteredMax(vec3 value,  uint clusterSize);"
+            "vec4   subgroupClusteredMax(vec4 value,  uint clusterSize);"
+            "int    subgroupClusteredMax(int value, uint clusterSize);"
+            "ivec2  subgroupClusteredMax(ivec2 value, uint clusterSize);"
+            "ivec3  subgroupClusteredMax(ivec3 value, uint clusterSize);"
+            "ivec4  subgroupClusteredMax(ivec4 value, uint clusterSize);"
+            "uint   subgroupClusteredMax(uint value, uint clusterSize);"
+            "uvec2  subgroupClusteredMax(uvec2 value, uint clusterSize);"
+            "uvec3  subgroupClusteredMax(uvec3 value, uint clusterSize);"
+            "uvec4  subgroupClusteredMax(uvec4 value, uint clusterSize);"
+            "double subgroupClusteredMax(double value, uint clusterSize);"
+            "dvec2  subgroupClusteredMax(dvec2 value, uint clusterSize);"
+            "dvec3  subgroupClusteredMax(dvec3 value, uint clusterSize);"
+            "dvec4  subgroupClusteredMax(dvec4 value, uint clusterSize);"
+
+            "int    subgroupClusteredAnd(int value, uint clusterSize);"
+            "ivec2  subgroupClusteredAnd(ivec2 value, uint clusterSize);"
+            "ivec3  subgroupClusteredAnd(ivec3 value, uint clusterSize);"
+            "ivec4  subgroupClusteredAnd(ivec4 value, uint clusterSize);"
+            "uint   subgroupClusteredAnd(uint value, uint clusterSize);"
+            "uvec2  subgroupClusteredAnd(uvec2 value, uint clusterSize);"
+            "uvec3  subgroupClusteredAnd(uvec3 value, uint clusterSize);"
+            "uvec4  subgroupClusteredAnd(uvec4 value, uint clusterSize);"
+            "bool   subgroupClusteredAnd(bool value, uint clusterSize);"
+            "bvec2  subgroupClusteredAnd(bvec2 value, uint clusterSize);"
+            "bvec3  subgroupClusteredAnd(bvec3 value, uint clusterSize);"
+            "bvec4  subgroupClusteredAnd(bvec4 value, uint clusterSize);"
+
+            "int    subgroupClusteredOr(int value, uint clusterSize);"
+            "ivec2  subgroupClusteredOr(ivec2 value, uint clusterSize);"
+            "ivec3  subgroupClusteredOr(ivec3 value, uint clusterSize);"
+            "ivec4  subgroupClusteredOr(ivec4 value, uint clusterSize);"
+            "uint   subgroupClusteredOr(uint value, uint clusterSize);"
+            "uvec2  subgroupClusteredOr(uvec2 value, uint clusterSize);"
+            "uvec3  subgroupClusteredOr(uvec3 value, uint clusterSize);"
+            "uvec4  subgroupClusteredOr(uvec4 value, uint clusterSize);"
+            "bool   subgroupClusteredOr(bool value, uint clusterSize);"
+            "bvec2  subgroupClusteredOr(bvec2 value, uint clusterSize);"
+            "bvec3  subgroupClusteredOr(bvec3 value, uint clusterSize);"
+            "bvec4  subgroupClusteredOr(bvec4 value, uint clusterSize);"
+
+            "int    subgroupClusteredXor(int value, uint clusterSize);"
+            "ivec2  subgroupClusteredXor(ivec2 value, uint clusterSize);"
+            "ivec3  subgroupClusteredXor(ivec3 value, uint clusterSize);"
+            "ivec4  subgroupClusteredXor(ivec4 value, uint clusterSize);"
+            "uint   subgroupClusteredXor(uint value, uint clusterSize);"
+            "uvec2  subgroupClusteredXor(uvec2 value, uint clusterSize);"
+            "uvec3  subgroupClusteredXor(uvec3 value, uint clusterSize);"
+            "uvec4  subgroupClusteredXor(uvec4 value, uint clusterSize);"
+            "bool   subgroupClusteredXor(bool value, uint clusterSize);"
+            "bvec2  subgroupClusteredXor(bvec2 value, uint clusterSize);"
+            "bvec3  subgroupClusteredXor(bvec3 value, uint clusterSize);"
+            "bvec4  subgroupClusteredXor(bvec4 value, uint clusterSize);"
+
+            "float  subgroupQuadBroadcast(float value,  uint id);"
+            "vec2   subgroupQuadBroadcast(vec2 value,  uint id);"
+            "vec3   subgroupQuadBroadcast(vec3 value,  uint id);"
+            "vec4   subgroupQuadBroadcast(vec4 value,  uint id);"
+            "int    subgroupQuadBroadcast(int value, uint id);"
+            "ivec2  subgroupQuadBroadcast(ivec2 value, uint id);"
+            "ivec3  subgroupQuadBroadcast(ivec3 value, uint id);"
+            "ivec4  subgroupQuadBroadcast(ivec4 value, uint id);"
+            "uint   subgroupQuadBroadcast(uint value, uint id);"
+            "uvec2  subgroupQuadBroadcast(uvec2 value, uint id);"
+            "uvec3  subgroupQuadBroadcast(uvec3 value, uint id);"
+            "uvec4  subgroupQuadBroadcast(uvec4 value, uint id);"
+            "bool   subgroupQuadBroadcast(bool value, uint id);"
+            "bvec2  subgroupQuadBroadcast(bvec2 value, uint id);"
+            "bvec3  subgroupQuadBroadcast(bvec3 value, uint id);"
+            "bvec4  subgroupQuadBroadcast(bvec4 value, uint id);"
+            "double subgroupQuadBroadcast(double value, uint id);"
+            "dvec2  subgroupQuadBroadcast(dvec2 value, uint id);"
+            "dvec3  subgroupQuadBroadcast(dvec3 value, uint id);"
+            "dvec4  subgroupQuadBroadcast(dvec4 value, uint id);"
+
+            "float  subgroupQuadSwapHorizontal(float value);"
+            "vec2   subgroupQuadSwapHorizontal(vec2 value);"
+            "vec3   subgroupQuadSwapHorizontal(vec3 value);"
+            "vec4   subgroupQuadSwapHorizontal(vec4 value);"
+            "int    subgroupQuadSwapHorizontal(int value);"
+            "ivec2  subgroupQuadSwapHorizontal(ivec2 value);"
+            "ivec3  subgroupQuadSwapHorizontal(ivec3 value);"
+            "ivec4  subgroupQuadSwapHorizontal(ivec4 value);"
+            "uint   subgroupQuadSwapHorizontal(uint value);"
+            "uvec2  subgroupQuadSwapHorizontal(uvec2 value);"
+            "uvec3  subgroupQuadSwapHorizontal(uvec3 value);"
+            "uvec4  subgroupQuadSwapHorizontal(uvec4 value);"
+            "bool   subgroupQuadSwapHorizontal(bool value);"
+            "bvec2  subgroupQuadSwapHorizontal(bvec2 value);"
+            "bvec3  subgroupQuadSwapHorizontal(bvec3 value);"
+            "bvec4  subgroupQuadSwapHorizontal(bvec4 value);"
+            "double subgroupQuadSwapHorizontal(double value);"
+            "dvec2  subgroupQuadSwapHorizontal(dvec2 value);"
+            "dvec3  subgroupQuadSwapHorizontal(dvec3 value);"
+            "dvec4  subgroupQuadSwapHorizontal(dvec4 value);"
+
+            "float  subgroupQuadSwapVertical(float value);"
+            "vec2   subgroupQuadSwapVertical(vec2 value);"
+            "vec3   subgroupQuadSwapVertical(vec3 value);"
+            "vec4   subgroupQuadSwapVertical(vec4 value);"
+            "int    subgroupQuadSwapVertical(int value);"
+            "ivec2  subgroupQuadSwapVertical(ivec2 value);"
+            "ivec3  subgroupQuadSwapVertical(ivec3 value);"
+            "ivec4  subgroupQuadSwapVertical(ivec4 value);"
+            "uint   subgroupQuadSwapVertical(uint value);"
+            "uvec2  subgroupQuadSwapVertical(uvec2 value);"
+            "uvec3  subgroupQuadSwapVertical(uvec3 value);"
+            "uvec4  subgroupQuadSwapVertical(uvec4 value);"
+            "bool   subgroupQuadSwapVertical(bool value);"
+            "bvec2  subgroupQuadSwapVertical(bvec2 value);"
+            "bvec3  subgroupQuadSwapVertical(bvec3 value);"
+            "bvec4  subgroupQuadSwapVertical(bvec4 value);"
+            "double subgroupQuadSwapVertical(double value);"
+            "dvec2  subgroupQuadSwapVertical(dvec2 value);"
+            "dvec3  subgroupQuadSwapVertical(dvec3 value);"
+            "dvec4  subgroupQuadSwapVertical(dvec4 value);"
+
+            "float  subgroupQuadSwapDiagonal(float value);"
+            "vec2   subgroupQuadSwapDiagonal(vec2 value);"
+            "vec3   subgroupQuadSwapDiagonal(vec3 value);"
+            "vec4   subgroupQuadSwapDiagonal(vec4 value);"
+            "int    subgroupQuadSwapDiagonal(int value);"
+            "ivec2  subgroupQuadSwapDiagonal(ivec2 value);"
+            "ivec3  subgroupQuadSwapDiagonal(ivec3 value);"
+            "ivec4  subgroupQuadSwapDiagonal(ivec4 value);"
+            "uint   subgroupQuadSwapDiagonal(uint value);"
+            "uvec2  subgroupQuadSwapDiagonal(uvec2 value);"
+            "uvec3  subgroupQuadSwapDiagonal(uvec3 value);"
+            "uvec4  subgroupQuadSwapDiagonal(uvec4 value);"
+            "bool   subgroupQuadSwapDiagonal(bool value);"
+            "bvec2  subgroupQuadSwapDiagonal(bvec2 value);"
+            "bvec3  subgroupQuadSwapDiagonal(bvec3 value);"
+            "bvec4  subgroupQuadSwapDiagonal(bvec4 value);"
+            "double subgroupQuadSwapDiagonal(double value);"
+            "dvec2  subgroupQuadSwapDiagonal(dvec2 value);"
+            "dvec3  subgroupQuadSwapDiagonal(dvec3 value);"
+            "dvec4  subgroupQuadSwapDiagonal(dvec4 value);"
+
+            "\n");
+
+        stageBuiltins[EShLangCompute].append(
+            "void subgroupMemoryBarrierShared();"
+
+            "\n"
+            );
+    }
+
 #ifdef AMD_EXTENSIONS
     // GL_AMD_shader_ballot
     if (profile != EEsProfile && version >= 450) {
@@ -3749,6 +4438,26 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    // GL_KHR_shader_subgroup
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "mediump in uint  gl_SubgroupSize;"
+            "mediump in uint  gl_SubgroupInvocationID;"
+            "highp   in uvec4 gl_SubgroupEqMask;"
+            "highp   in uvec4 gl_SubgroupGeMask;"
+            "highp   in uvec4 gl_SubgroupGtMask;"
+            "highp   in uvec4 gl_SubgroupLeMask;"
+            "highp   in uvec4 gl_SubgroupLtMask;"
+
+            "\n");
+
+        stageBuiltins[EShLangCompute].append(
+            "highp   in uint  gl_NumSubgroups;"
+            "highp   in uint  gl_SubgroupID;"
+
+            "\n");
+    }
+
     // printf("%s\n", commonBuiltins.c_str());
     // printf("%s\n", stageBuiltins[EShLangFragment].c_str());
 }
@@ -4962,6 +5671,78 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("anyInvocationARB",       1, &E_GL_ARB_shader_group_vote);
             symbolTable.setFunctionExtensions("allInvocationsARB",      1, &E_GL_ARB_shader_group_vote);
             symbolTable.setFunctionExtensions("allInvocationsEqualARB", 1, &E_GL_ARB_shader_group_vote);
+
+            // GL_KHR_shader_subgroup
+            symbolTable.setVariableExtensions("gl_SubgroupSize",         1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setVariableExtensions("gl_SubgroupInvocationID", 1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setVariableExtensions("gl_SubgroupEqMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupGeMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupGtMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupLeMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupLtMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+
+            BuiltInVariable("gl_SubgroupSize",         EbvSubgroupSize2,       symbolTable);
+            BuiltInVariable("gl_SubgroupInvocationID", EbvSubgroupInvocation2, symbolTable);
+            BuiltInVariable("gl_SubgroupEqMask",       EbvSubgroupEqMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupGeMask",       EbvSubgroupGeMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupGtMask",       EbvSubgroupGtMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupLeMask",       EbvSubgroupLeMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupLtMask",       EbvSubgroupLtMask2,     symbolTable);
+
+            symbolTable.setFunctionExtensions("subgroupBarrier",                 1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setFunctionExtensions("subgroupMemoryBarrier",           1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setFunctionExtensions("subgroupMemoryBarrierBuffer",     1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setFunctionExtensions("subgroupMemoryBarrierImage",      1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setFunctionExtensions("subgroupElect",                   1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setFunctionExtensions("subgroupAll",                     1, &E_GL_KHR_shader_subgroup_vote);
+            symbolTable.setFunctionExtensions("subgroupAny",                     1, &E_GL_KHR_shader_subgroup_vote);
+            symbolTable.setFunctionExtensions("subgroupAllEqual",                1, &E_GL_KHR_shader_subgroup_vote);
+            symbolTable.setFunctionExtensions("subgroupBroadcast",               1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setFunctionExtensions("subgroupBroadcastFirst",          1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setFunctionExtensions("subgroupBallot",                  1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setFunctionExtensions("subgroupInverseBallot",           1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setFunctionExtensions("subgroupBallotBitExtract",        1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setFunctionExtensions("subgroupBallotBitCount",          1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setFunctionExtensions("subgroupBallotInclusiveBitCount", 1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setFunctionExtensions("subgroupBallotExclusiveBitCount", 1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setFunctionExtensions("subgroupBallotFindLSB",           1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setFunctionExtensions("subgroupBallotFindMSB",           1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setFunctionExtensions("subgroupShuffle",                 1, &E_GL_KHR_shader_subgroup_shuffle);
+            symbolTable.setFunctionExtensions("subgroupShuffleXor",              1, &E_GL_KHR_shader_subgroup_shuffle);
+            symbolTable.setFunctionExtensions("subgroupShuffleUp",               1, &E_GL_KHR_shader_subgroup_shuffle_relative);
+            symbolTable.setFunctionExtensions("subgroupShuffleDown",             1, &E_GL_KHR_shader_subgroup_shuffle_relative);
+            symbolTable.setFunctionExtensions("subgroupAdd",                     1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupMul",                     1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupMin",                     1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupMax",                     1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupAnd",                     1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupOr",                      1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupXor",                     1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupInclusiveAdd",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupInclusiveMul",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupInclusiveMin",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupInclusiveMax",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupInclusiveAnd",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupInclusiveOr",             1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupInclusiveXor",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupExclusiveAdd",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupExclusiveMul",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupExclusiveMin",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupExclusiveMax",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupExclusiveAnd",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupExclusiveOr",             1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupExclusiveXor",            1, &E_GL_KHR_shader_subgroup_arithmetic);
+            symbolTable.setFunctionExtensions("subgroupClusteredAdd",            1, &E_GL_KHR_shader_subgroup_clustered);
+            symbolTable.setFunctionExtensions("subgroupClusteredMul",            1, &E_GL_KHR_shader_subgroup_clustered);
+            symbolTable.setFunctionExtensions("subgroupClusteredMin",            1, &E_GL_KHR_shader_subgroup_clustered);
+            symbolTable.setFunctionExtensions("subgroupClusteredMax",            1, &E_GL_KHR_shader_subgroup_clustered);
+            symbolTable.setFunctionExtensions("subgroupClusteredAnd",            1, &E_GL_KHR_shader_subgroup_clustered);
+            symbolTable.setFunctionExtensions("subgroupClusteredOr",             1, &E_GL_KHR_shader_subgroup_clustered);
+            symbolTable.setFunctionExtensions("subgroupClusteredXor",            1, &E_GL_KHR_shader_subgroup_clustered);
+            symbolTable.setFunctionExtensions("subgroupQuadBroadcast",           1, &E_GL_KHR_shader_subgroup_quad);
+            symbolTable.setFunctionExtensions("subgroupQuadSwapHorizontal",      1, &E_GL_KHR_shader_subgroup_quad);
+            symbolTable.setFunctionExtensions("subgroupQuadSwapVertical",        1, &E_GL_KHR_shader_subgroup_quad);
+            symbolTable.setFunctionExtensions("subgroupQuadSwapDiagonal",        1, &E_GL_KHR_shader_subgroup_quad);
         }
 
 #ifdef AMD_EXTENSIONS
@@ -5414,6 +6195,16 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_ViewIndex", EbvViewIndex, symbolTable);
         }
 
+        if (profile != EEsProfile) {
+            // GL_KHR_shader_subgroup
+            symbolTable.setVariableExtensions("gl_NumSubgroups", 1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setVariableExtensions("gl_SubgroupID",   1, &E_GL_KHR_shader_subgroup_basic);
+
+            BuiltInVariable("gl_NumSubgroups", EbvNumSubgroups, symbolTable);
+            BuiltInVariable("gl_SubgroupID",   EbvSubgroupID,   symbolTable);
+
+            symbolTable.setFunctionExtensions("subgroupMemoryBarrierShared", 1, &E_GL_KHR_shader_subgroup_basic);
+        }
         break;
 
     default:
@@ -5703,6 +6494,62 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("allInvocationsARB",               EOpAllInvocations);
             symbolTable.relateToOperator("allInvocationsEqualARB",          EOpAllInvocationsEqual);
 
+            // GL_KHR_shader_subgroup
+            symbolTable.relateToOperator("subgroupBarrier",                 EOpSubgroupBarrier);
+            symbolTable.relateToOperator("subgroupMemoryBarrier",           EOpSubgroupMemoryBarrier);
+            symbolTable.relateToOperator("subgroupMemoryBarrierBuffer",     EOpSubgroupMemoryBarrierBuffer);
+            symbolTable.relateToOperator("subgroupMemoryBarrierImage",      EOpSubgroupMemoryBarrierImage);
+            symbolTable.relateToOperator("subgroupElect",                   EOpSubgroupElect);
+            symbolTable.relateToOperator("subgroupAll",                     EOpSubgroupAll);
+            symbolTable.relateToOperator("subgroupAny",                     EOpSubgroupAny);
+            symbolTable.relateToOperator("subgroupAllEqual",                EOpSubgroupAllEqual);
+            symbolTable.relateToOperator("subgroupBroadcast",               EOpSubgroupBroadcast);
+            symbolTable.relateToOperator("subgroupBroadcastFirst",          EOpSubgroupBroadcastFirst);
+            symbolTable.relateToOperator("subgroupBallot",                  EOpSubgroupBallot);
+            symbolTable.relateToOperator("subgroupInverseBallot",           EOpSubgroupInverseBallot);
+            symbolTable.relateToOperator("subgroupBallotBitExtract",        EOpSubgroupBallotBitExtract);
+            symbolTable.relateToOperator("subgroupBallotBitCount",          EOpSubgroupBallotBitCount);
+            symbolTable.relateToOperator("subgroupBallotInclusiveBitCount", EOpSubgroupBallotInclusiveBitCount);
+            symbolTable.relateToOperator("subgroupBallotExclusiveBitCount", EOpSubgroupBallotExclusiveBitCount);
+            symbolTable.relateToOperator("subgroupBallotFindLSB",           EOpSubgroupBallotFindLSB);
+            symbolTable.relateToOperator("subgroupBallotFindMSB",           EOpSubgroupBallotFindMSB);
+            symbolTable.relateToOperator("subgroupShuffle",                 EOpSubgroupShuffle);
+            symbolTable.relateToOperator("subgroupShuffleXor",              EOpSubgroupShuffleXor);
+            symbolTable.relateToOperator("subgroupShuffleUp",               EOpSubgroupShuffleUp);
+            symbolTable.relateToOperator("subgroupShuffleDown",             EOpSubgroupShuffleDown);
+            symbolTable.relateToOperator("subgroupAdd",                     EOpSubgroupAdd);
+            symbolTable.relateToOperator("subgroupMul",                     EOpSubgroupMul);
+            symbolTable.relateToOperator("subgroupMin",                     EOpSubgroupMin);
+            symbolTable.relateToOperator("subgroupMax",                     EOpSubgroupMax);
+            symbolTable.relateToOperator("subgroupAnd",                     EOpSubgroupAnd);
+            symbolTable.relateToOperator("subgroupOr",                      EOpSubgroupOr);
+            symbolTable.relateToOperator("subgroupXor",                     EOpSubgroupXor);
+            symbolTable.relateToOperator("subgroupInclusiveAdd",            EOpSubgroupInclusiveAdd);
+            symbolTable.relateToOperator("subgroupInclusiveMul",            EOpSubgroupInclusiveMul);
+            symbolTable.relateToOperator("subgroupInclusiveMin",            EOpSubgroupInclusiveMin);
+            symbolTable.relateToOperator("subgroupInclusiveMax",            EOpSubgroupInclusiveMax);
+            symbolTable.relateToOperator("subgroupInclusiveAnd",            EOpSubgroupInclusiveAnd);
+            symbolTable.relateToOperator("subgroupInclusiveOr",             EOpSubgroupInclusiveOr);
+            symbolTable.relateToOperator("subgroupInclusiveXor",            EOpSubgroupInclusiveXor);
+            symbolTable.relateToOperator("subgroupExclusiveAdd",            EOpSubgroupExclusiveAdd);
+            symbolTable.relateToOperator("subgroupExclusiveMul",            EOpSubgroupExclusiveMul);
+            symbolTable.relateToOperator("subgroupExclusiveMin",            EOpSubgroupExclusiveMin);
+            symbolTable.relateToOperator("subgroupExclusiveMax",            EOpSubgroupExclusiveMax);
+            symbolTable.relateToOperator("subgroupExclusiveAnd",            EOpSubgroupExclusiveAnd);
+            symbolTable.relateToOperator("subgroupExclusiveOr",             EOpSubgroupExclusiveOr);
+            symbolTable.relateToOperator("subgroupExclusiveXor",            EOpSubgroupExclusiveXor);
+            symbolTable.relateToOperator("subgroupClusteredAdd",            EOpSubgroupClusteredAdd);
+            symbolTable.relateToOperator("subgroupClusteredMul",            EOpSubgroupClusteredMul);
+            symbolTable.relateToOperator("subgroupClusteredMin",            EOpSubgroupClusteredMin);
+            symbolTable.relateToOperator("subgroupClusteredMax",            EOpSubgroupClusteredMax);
+            symbolTable.relateToOperator("subgroupClusteredAnd",            EOpSubgroupClusteredAnd);
+            symbolTable.relateToOperator("subgroupClusteredOr",             EOpSubgroupClusteredOr);
+            symbolTable.relateToOperator("subgroupClusteredXor",            EOpSubgroupClusteredXor);
+            symbolTable.relateToOperator("subgroupQuadBroadcast",           EOpSubgroupQuadBroadcast);
+            symbolTable.relateToOperator("subgroupQuadSwapHorizontal",      EOpSubgroupQuadSwapHorizontal);
+            symbolTable.relateToOperator("subgroupQuadSwapVertical",        EOpSubgroupQuadSwapVertical);
+            symbolTable.relateToOperator("subgroupQuadSwapDiagonal",        EOpSubgroupQuadSwapDiagonal);
+
 #ifdef AMD_EXTENSIONS
             symbolTable.relateToOperator("minInvocationsAMD",                           EOpMinInvocations);
             symbolTable.relateToOperator("maxInvocationsAMD",                           EOpMaxInvocations);
@@ -5776,8 +6623,9 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 #endif
 
     case EShLangCompute:
-        symbolTable.relateToOperator("memoryBarrierShared",     EOpMemoryBarrierShared);
-        symbolTable.relateToOperator("groupMemoryBarrier",      EOpGroupMemoryBarrier);
+        symbolTable.relateToOperator("memoryBarrierShared",         EOpMemoryBarrierShared);
+        symbolTable.relateToOperator("groupMemoryBarrier",          EOpGroupMemoryBarrier);
+        symbolTable.relateToOperator("subgroupMemoryBarrierShared", EOpSubgroupMemoryBarrierShared);
         break;
 
     default:

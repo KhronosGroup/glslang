@@ -46,12 +46,12 @@ namespace spv {
 
 typedef unsigned int Id;
 
-#define SPV_VERSION 0x10000
-#define SPV_REVISION 10
+#define SPV_VERSION 0x10200
+#define SPV_REVISION 1
 
 static const unsigned int MagicNumber = 0x07230203;
-static const unsigned int Version = 0x00010000;
-static const unsigned int Revision = 10;
+static const unsigned int Version = 0x00010200;
+static const unsigned int Revision = 1;
 static const unsigned int OpCodeMask = 0xffff;
 static const unsigned int WordCountShift = 16;
 
@@ -122,6 +122,15 @@ enum ExecutionMode {
     ExecutionModeOutputTriangleStrip = 29,
     ExecutionModeVecTypeHint = 30,
     ExecutionModeContractionOff = 31,
+    ExecutionModeInitializer = 33,
+    ExecutionModeFinalizer = 34,
+    ExecutionModeSubgroupSize = 35,
+    ExecutionModeSubgroupsPerWorkgroup = 36,
+    ExecutionModeSubgroupsPerWorkgroupId = 37,
+    ExecutionModeLocalSizeId = 38,
+    ExecutionModeLocalSizeHintId = 39,
+    ExecutionModeInvocationsId = 40,
+    ExecutionModeOutputVerticesId = 41,
     ExecutionModeMax = 0x7fffffff,
 };
 
@@ -376,10 +385,23 @@ enum Decoration {
     DecorationNoContraction = 42,
     DecorationInputAttachmentIndex = 43,
     DecorationAlignment = 44,
+    DecorationMaxByteOffset = 45,
+    DecorationAlignmentId = 46,
+    DecorationMaxByteOffsetId = 47,
+    DecorationArrayStrideId = 48,
+    DecorationMatrixStrideId = 49,
+    DecorationStreamId = 50,
+    DecorationLocationId = 51,
+    DecorationIndexId = 52,
+    DecorationBindingId = 53,
+    DecorationDescriptorSetId = 54,
+    DecorationOffsetId = 55,
+    DecorationInputAttachmentIndexId = 56,
     DecorationOverrideCoverageNV = 5248,
     DecorationPassthroughNV = 5250,
     DecorationViewportRelativeNV = 5252,
     DecorationSecondaryViewportRelativeNV = 5256,
+    DecorationSecondaryViewportRelativeIdNV = 5263,
     DecorationMax = 0x7fffffff,
 };
 
@@ -425,10 +447,15 @@ enum BuiltIn {
     BuiltInSubgroupLocalInvocationId = 41,
     BuiltInVertexIndex = 42,
     BuiltInInstanceIndex = 43,
+    BuiltInSubgroupEqMask = 4416,
     BuiltInSubgroupEqMaskKHR = 4416,
+    BuiltInSubgroupGeMask = 4417,
     BuiltInSubgroupGeMaskKHR = 4417,
+    BuiltInSubgroupGtMask = 4418,
     BuiltInSubgroupGtMaskKHR = 4418,
+    BuiltInSubgroupLeMask = 4419,
     BuiltInSubgroupLeMaskKHR = 4419,
+    BuiltInSubgroupLtMask = 4420,
     BuiltInSubgroupLtMaskKHR = 4420,
     BuiltInBaseVertex = 4424,
     BuiltInBaseInstance = 4425,
@@ -458,6 +485,8 @@ enum SelectionControlMask {
 enum LoopControlShift {
     LoopControlUnrollShift = 0,
     LoopControlDontUnrollShift = 1,
+    LoopControlDependencyInfiniteShift = 2,
+    LoopControlDependencyLengthShift = 3,
     LoopControlMax = 0x7fffffff,
 };
 
@@ -465,6 +494,8 @@ enum LoopControlMask {
     LoopControlMaskNone = 0,
     LoopControlUnrollMask = 0x00000001,
     LoopControlDontUnrollMask = 0x00000002,
+    LoopControlDependencyInfiniteMask = 0x00000004,
+    LoopControlDependencyLengthMask = 0x00000008,
 };
 
 enum FunctionControlShift {
@@ -538,6 +569,7 @@ enum GroupOperation {
     GroupOperationReduce = 0,
     GroupOperationInclusiveScan = 1,
     GroupOperationExclusiveScan = 2,
+    GroupOperationClusteredReduce = 3,
     GroupOperationMax = 0x7fffffff,
 };
 
@@ -615,6 +647,17 @@ enum Capability {
     CapabilityStorageImageReadWithoutFormat = 55,
     CapabilityStorageImageWriteWithoutFormat = 56,
     CapabilityMultiViewport = 57,
+    CapabilitySubgroupDispatch = 58,
+    CapabilityNamedBarrier = 59,
+    CapabilityPipeStorage = 60,
+    CapabilityGroupNonUniform = 61,
+    CapabilityGroupNonUniformVote = 62,
+    CapabilityGroupNonUniformArithmetic = 63,
+    CapabilityGroupNonUniformBallot = 64,
+    CapabilityGroupNonUniformShuffle = 65,
+    CapabilityGroupNonUniformShuffleRelative = 66,
+    CapabilityGroupNonUniformClustered = 67,
+    CapabilityGroupNonUniformQuad = 68,
     CapabilitySubgroupBallotKHR = 4423,
     CapabilityDrawParameters = 4427,
     CapabilitySubgroupVoteKHR = 4431,
@@ -932,6 +975,52 @@ enum Op {
     OpAtomicFlagTestAndSet = 318,
     OpAtomicFlagClear = 319,
     OpImageSparseRead = 320,
+    OpSizeOf = 321,
+    OpTypePipeStorage = 322,
+    OpConstantPipeStorage = 323,
+    OpCreatePipeFromPipeStorage = 324,
+    OpGetKernelLocalSizeForSubgroupCount = 325,
+    OpGetKernelMaxNumSubgroups = 326,
+    OpTypeNamedBarrier = 327,
+    OpNamedBarrierInitialize = 328,
+    OpMemoryNamedBarrier = 329,
+    OpModuleProcessed = 330,
+    OpExecutionModeId = 331,
+    OpDecorateId = 332,
+    OpGroupNonUniformElect = 333,
+    OpGroupNonUniformAll = 334,
+    OpGroupNonUniformAny = 335,
+    OpGroupNonUniformAllEqual = 336,
+    OpGroupNonUniformBroadcast = 337,
+    OpGroupNonUniformBroadcastFirst = 338,
+    OpGroupNonUniformBallot = 339,
+    OpGroupNonUniformInverseBallot = 340,
+    OpGroupNonUniformBallotBitExtract = 341,
+    OpGroupNonUniformBallotBitCount = 342,
+    OpGroupNonUniformBallotFindLSB = 343,
+    OpGroupNonUniformBallotFindMSB = 344,
+    OpGroupNonUniformShuffle = 345,
+    OpGroupNonUniformShuffleXor = 346,
+    OpGroupNonUniformShuffleUp = 347,
+    OpGroupNonUniformShuffleDown = 348,
+    OpGroupNonUniformIAdd = 349,
+    OpGroupNonUniformFAdd = 350,
+    OpGroupNonUniformIMul = 351,
+    OpGroupNonUniformFMul = 352,
+    OpGroupNonUniformSMin = 353,
+    OpGroupNonUniformUMin = 354,
+    OpGroupNonUniformFMin = 355,
+    OpGroupNonUniformSMax = 356,
+    OpGroupNonUniformUMax = 357,
+    OpGroupNonUniformFMax = 358,
+    OpGroupNonUniformBitwiseAnd = 359,
+    OpGroupNonUniformBitwiseOr = 360,
+    OpGroupNonUniformBitwiseXor = 361,
+    OpGroupNonUniformLogicalAnd = 362,
+    OpGroupNonUniformLogicalOr = 363,
+    OpGroupNonUniformLogicalXor = 364,
+    OpGroupNonUniformQuadBroadcast = 365,
+    OpGroupNonUniformQuadSwap = 366,
     OpSubgroupBallotKHR = 4421,
     OpSubgroupFirstInvocationKHR = 4422,
     OpSubgroupAllKHR = 4428,
