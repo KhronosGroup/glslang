@@ -2087,7 +2087,7 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
     } else if (*currentFunctionType != value->getType()) {
         value = intermediate.addConversion(EOpReturn, *currentFunctionType, value);
         if (value && *currentFunctionType != value->getType())
-            value = intermediate.addShapeConversion(EOpReturn, *currentFunctionType, value);
+            value = intermediate.addUniShapeConversion(EOpReturn, *currentFunctionType, value);
         if (value == nullptr) {
             error(loc, "type does not match, or is not convertible to, the function's return type", "return", "");
             return value;
@@ -4105,7 +4105,7 @@ void HlslParseContext::addInputArgumentConversions(const TFunction& function, TI
             // convert to the correct type.
             TIntermTyped* convArg = intermediate.addConversion(EOpFunctionCall, *function[i].type, arg);
             if (convArg != nullptr)
-                convArg = intermediate.addShapeConversion(EOpFunctionCall, *function[i].type, convArg);
+                convArg = intermediate.addUniShapeConversion(EOpFunctionCall, *function[i].type, convArg);
             if (convArg != nullptr)
                 setArg(i, convArg);
             else
@@ -6439,7 +6439,7 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
 
         initializer = intermediate.addConversion(EOpAssign, variable->getType(), initializer);
         if (initializer != nullptr && variable->getType() != initializer->getType())
-            initializer = intermediate.addShapeConversion(EOpAssign, variable->getType(), initializer);
+            initializer = intermediate.addUniShapeConversion(EOpAssign, variable->getType(), initializer);
         if (initializer == nullptr || !initializer->getAsConstantUnion() ||
                                       variable->getType() != initializer->getType()) {
             error(loc, "non-matching or non-convertible constant type for const initializer",
