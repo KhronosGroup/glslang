@@ -251,6 +251,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.structbuffer.coherent.frag", "main"},
         {"hlsl.structbuffer.incdec.frag", "main"},
         {"hlsl.structbuffer.fn.frag", "main"},
+        {"hlsl.structbuffer.fn2.comp", "main"},
         {"hlsl.structbuffer.rw.frag", "main"},
         {"hlsl.structbuffer.rwbyte.frag", "main"},
         {"hlsl.structin.vert", "main"},

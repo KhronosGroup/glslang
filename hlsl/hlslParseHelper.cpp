@@ -1612,6 +1612,8 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
             paramNodes = intermediate.growAggregate(paramNodes,
                                                     intermediate.addSymbol(*variable, loc),
                                                     loc);
+
+            // TODO: for struct buffers with counters, pass counter buffer as hidden parameter
         } else
             paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(*param.type, loc), loc);
     }
@@ -2536,13 +2538,7 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     if (bufferObj == nullptr || bufferObj->getAsSymbolNode() == nullptr)
         return;
 
-    TString bufferName(bufferObj->getAsSymbolNode()->getName());
-
-    const auto bivIt = structBufferBuiltIn.find(bufferName);
-    if (bivIt == structBufferBuiltIn.end())
-        return;
-
-    const TBuiltInVariable builtInType = bivIt->second;
+    const TString bufferName(bufferObj->getAsSymbolNode()->getName());
 
     // Some methods require a hidden internal counter, obtained via getStructBufferCounter().
     // This lambda adds something to it and returns the old value.
@@ -2572,10 +2568,21 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
         {
             TIntermTyped* argIndex = argAggregate->getSequence()[1]->getAsTyped();  // index
 
+            const auto bivIt = structBufferBuiltIn.find(bufferName);
+
+            const TBuiltInVariable builtInType = (bivIt != structBufferBuiltIn.end()) ? bivIt->second : EbvNone;
+
+            const TType& bufferType = bufferObj->getType();
+
             // Byte address buffers index in bytes (only multiples of 4 permitted... not so much a byte address
             // buffer then, but that's what it calls itself.
-            const bool isByteAddressBuffer = (builtInType == EbvByteAddressBuffer || 
-                                              builtInType == EbvRWByteAddressBuffer);
+            // TODO: it would be easier to track the declared (pre-sanitized) builtInType in the TType.
+            //       If/when that happens, this should be simplified to look *only* at the builtin type.
+            const bool isByteAddressBuffer = (builtInType == EbvByteAddressBuffer   || 
+                                              builtInType == EbvRWByteAddressBuffer ||
+                                              (builtInType == EbvNone && !bufferType.isVector() &&
+                                               bufferType.getBasicType() == EbtUint));
+                
 
             if (isByteAddressBuffer)
                 argIndex = intermediate.addBinaryNode(EOpRightShift, argIndex, intermediate.addConstantUnion(2, loc, true),
@@ -4141,6 +4148,8 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
                 arg0 = arguments->getAsSymbolNode();
 
             if (arg0 != nullptr && isStructBufferType(arg0->getType())) {
+                // TODO: for struct buffers with counters, pass counter buffer as hidden parameter
+
                 static const int methodPrefixSize = sizeof(BUILTIN_PREFIX)-1;
 
                 if (function->getName().length() > methodPrefixSize &&
