@@ -173,7 +173,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
             isFloat16 = 1;
         }
 #endif
-    } else if (ch == 'f' || ch == 'F' || ch == 'h' || ch == 'H') {
+    } else if (ch == 'f' || ch == 'F') {
         parseContext.profileRequires(ppToken->loc,  EEsProfile, 300, nullptr, "floating-point suffix");
         if (! parseContext.relaxedErrors())
             parseContext.profileRequires(ppToken->loc, ~EEsProfile, 120, nullptr, "floating-point suffix");
