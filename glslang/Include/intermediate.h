@@ -183,6 +183,7 @@ enum TOperator {
     EOpVectorSwizzle,
 
     EOpMethod,
+    EOpScoping,
 
     //
     // Built-in functions mapped to operators
@@ -632,6 +633,10 @@ enum TOperator {
     EOpMethodStore2,                     // ...
     EOpMethodStore3,                     // ...
     EOpMethodStore4,                     // ...
+    EOpMethodIncrementCounter,           // ...
+    EOpMethodDecrementCounter,           // ...
+    // EOpMethodAppend is defined for geo shaders below
+    EOpMethodConsume,
 
     // SM5 texture methods
     EOpMethodGatherRed,                  // These are covered under the above EOpMethodSample comment about
