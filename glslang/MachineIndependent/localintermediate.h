@@ -178,7 +178,8 @@ public:
         autoMapBindings(false),
         flattenUniformArrays(false),
         useUnknownFormat(false),
-        hlslOffsets(false)
+        hlslOffsets(false),
+        useStorageBuffer(false)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -219,6 +220,8 @@ public:
     bool getNoStorageFormat()             const { return useUnknownFormat; }
     void setHlslOffsets()         { hlslOffsets = true; }
     bool usingHlslOFfsets() const { return hlslOffsets; }
+    void setUseStorageBuffer() { useStorageBuffer = true; }
+    bool usingStorageBuffer() const { return useStorageBuffer; }
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -506,6 +509,7 @@ protected:
     bool flattenUniformArrays;
     bool useUnknownFormat;
     bool hlslOffsets;
+    bool useStorageBuffer;
 
     typedef std::list<TCall> TGraph;
     TGraph callGraph;
