@@ -1,5 +1,5 @@
 hlsl.multiEntry.vert
-Shader version: 450
+Shader version: 500
 0:? Sequence
 0:4  Function Definition: FakeEntrypoint(u1; ( temp 4-component vector of float)
 0:4    Function Parameters: 
@@ -36,7 +36,7 @@ Shader version: 450
 Linked vertex stage:
 
 
-Shader version: 450
+Shader version: 500
 0:? Sequence
 0:4  Function Definition: FakeEntrypoint(u1; ( temp 4-component vector of float)
 0:4    Function Parameters: 
@@ -78,6 +78,7 @@ Shader version: 450
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Vertex 4  "RealEntrypoint" 34 37
+                              Source HLSL 500
                               Name 4  "RealEntrypoint"
                               Name 12  "FakeEntrypoint(u1;"
                               Name 11  "Index"

@@ -68,9 +68,9 @@ namespace spv {
 // Also, the ceilings are declared next to these, to help keep them in sync.
 // Ceilings should be
 //  - one more than the maximum value an enumerant takes on, for non-mask enumerants
-//    (for non-sparse enums, this is the number of enumurants)
+//    (for non-sparse enums, this is the number of enumerants)
 //  - the number of bits consumed by the set of masks
-//    (for non-sparse mask enums, this is the number of enumurants)
+//    (for non-sparse mask enums, this is the number of enumerants)
 //
 
 const int SourceLanguageCeiling = 6; // HLSL todo: need official enumerant
@@ -180,7 +180,7 @@ const char* ExecutionModeString(int mode)
     }
 }
 
-const int StorageClassCeiling = 12;
+const int StorageClassCeiling = 13;
 
 const char* StorageClassString(int StorageClass)
 {
@@ -197,6 +197,7 @@ const char* StorageClassString(int StorageClass)
     case 9:  return "PushConstant";
     case 10: return "AtomicCounter";
     case 11: return "Image";
+    case 12: return "StorageBuffer";
 
     case StorageClassCeiling:
     default: return "Bad";
@@ -829,6 +830,11 @@ const char* CapabilityString(int info)
     case 4423: return "SubgroupBallotKHR";
     case 4427: return "DrawParameters";
     case 4431: return "SubgroupVoteKHR";
+
+    case 4433: return "StorageUniformBufferBlock16";
+    case 4434: return "StorageUniform16";
+    case 4435: return "StoragePushConstant16";
+    case 4436: return "StorageInputOutput16";
 
     case 4437: return "DeviceGroup";
     case 4439: return "MultiView";
