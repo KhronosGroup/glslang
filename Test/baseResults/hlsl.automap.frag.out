@@ -15,6 +15,7 @@ u4: offset -1, type 9051, size 1, index -1, binding 44
 u5.@data: offset 0, type 1405, size 0, index 2, binding -1
 u6.@data: offset 0, type 1406, size 1, index 3, binding -1
 cb1: offset 0, type 1404, size 1, index 4, binding -1
+tb1: offset 0, type 1404, size 1, index 5, binding -1
 
 Uniform block reflection:
 t4: offset -1, type ffffffff, size 0, index -1, binding 14
@@ -22,6 +23,7 @@ t5: offset -1, type ffffffff, size 0, index -1, binding 15
 u5: offset -1, type ffffffff, size 0, index -1, binding 45
 u6: offset -1, type ffffffff, size 0, index -1, binding 46
 cb: offset -1, type ffffffff, size 4, index -1, binding 51
+tb: offset -1, type ffffffff, size 4, index -1, binding 17
 
 Vertex attribute reflection:
 

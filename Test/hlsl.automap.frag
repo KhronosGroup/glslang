@@ -24,9 +24,9 @@ cbuffer cb : register(b1) {
     int cb1;
 };
 
-// tbuffer tb : register(t7) {
-//     int tb1;
-// };
+tbuffer tb : register(t7) {
+    int tb1;
+};
 
 float4 main() : SV_Target0
 {
@@ -47,11 +47,11 @@ float4 main() : SV_Target0
     u4[0];
     u5.Load(0);
     u6[0];
-    u7[0];
-    u8[0];
+    u7;
+    u8;
 
     cb1;
-    // tb1; TODO: wrong type?
+    tb1;
 
     return 0;
 }
