@@ -3328,17 +3328,11 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement)
     case EHTokDo:
         parseContext.nestLooping();
 
-        if (! acceptTokenClass(EHTokLeftBrace))
-            expected("{");
-
         // statement
-        if (! peekTokenClass(EHTokRightBrace) && ! acceptScopedStatement(statement)) {
+        if (! acceptScopedStatement(statement)) {
             expected("do sub-statement");
             return false;
         }
-
-        if (! acceptTokenClass(EHTokRightBrace))
-            expected("}");
 
         // WHILE
         if (! acceptTokenClass(EHTokWhile)) {
