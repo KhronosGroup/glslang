@@ -222,7 +222,7 @@ spv::SourceLanguage TranslateSourceLanguage(glslang::EShSource source, EProfile 
             return spv::SourceLanguageUnknown;
         }
     case glslang::EShSourceHlsl:
-        return spv::SourceLanguageHLSL;
+        return spv::SourceLanguageUnknown;
     default:
         return spv::SourceLanguageUnknown;
     }
