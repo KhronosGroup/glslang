@@ -713,26 +713,37 @@ TIntermTyped* HlslParseContext::handleBracketOperator(const TSourceLoc& loc, TIn
 }
 
 //
+// Cast index value to a uint if it isn't already (for operator[], load indexes, etc)
+TIntermTyped* HlslParseContext::makeIntegerIndex(TIntermTyped* index)
+{
+    const TBasicType indexBasicType = index->getType().getBasicType();
+    const int vecSize = index->getType().getVectorSize();
+
+    // We can use int types directly as the index
+    if (indexBasicType == EbtInt || indexBasicType == EbtUint ||
+        indexBasicType == EbtInt64 || indexBasicType == EbtUint64)
+        return index;
+
+    // Cast index to unsigned integer if it isn't one.
+    return intermediate.addConversion(EOpConstructUint, TType(EbtUint, EvqTemporary, vecSize), index);
+}
+
+//
 // Handle seeing a base[index] dereference in the grammar.
 //
 TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index)
 {
-    TIntermTyped* result = handleBracketOperator(loc, base, index);
-
-    if (result != nullptr)
-        return result;  // it was handled as an operator[]
-
-    const TBasicType indexBasicType = index->getType().getBasicType();
-
-    // Cast index to unsigned integer if it isn't one.
-    if (indexBasicType != EbtInt && indexBasicType != EbtUint &&
-        indexBasicType != EbtInt64 && indexBasicType != EbtUint64)
-        index = intermediate.addConversion(EOpConstructUint, TType(EbtUint), index);
+    index = makeIntegerIndex(index);
 
     if (index == nullptr) {
         error(loc, " unknown undex type ", "", "");
         return nullptr;
     }
+
+    TIntermTyped* result = handleBracketOperator(loc, base, index);
+
+    if (result != nullptr)
+        return result;  // it was handled as an operator[]
 
     bool flattened = false;
     int indexValue = 0;
@@ -1612,6 +1623,8 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
             paramNodes = intermediate.growAggregate(paramNodes,
                                                     intermediate.addSymbol(*variable, loc),
                                                     loc);
+
+            // TODO: for struct buffers with counters, pass counter buffer as hidden parameter
         } else
             paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(*param.type, loc), loc);
     }
@@ -2536,13 +2549,7 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     if (bufferObj == nullptr || bufferObj->getAsSymbolNode() == nullptr)
         return;
 
-    TString bufferName(bufferObj->getAsSymbolNode()->getName());
-
-    const auto bivIt = structBufferBuiltIn.find(bufferName);
-    if (bivIt == structBufferBuiltIn.end())
-        return;
-
-    const TBuiltInVariable builtInType = bivIt->second;
+    const TString bufferName(bufferObj->getAsSymbolNode()->getName());
 
     // Some methods require a hidden internal counter, obtained via getStructBufferCounter().
     // This lambda adds something to it and returns the old value.
@@ -2570,12 +2577,23 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     switch (op) {
     case EOpMethodLoad:
         {
-            TIntermTyped* argIndex = argAggregate->getSequence()[1]->getAsTyped();  // index
+            TIntermTyped* argIndex = makeIntegerIndex(argAggregate->getSequence()[1]->getAsTyped());  // index
+
+            const auto bivIt = structBufferBuiltIn.find(bufferName);
+
+            const TBuiltInVariable builtInType = (bivIt != structBufferBuiltIn.end()) ? bivIt->second : EbvNone;
+
+            const TType& bufferType = bufferObj->getType();
 
             // Byte address buffers index in bytes (only multiples of 4 permitted... not so much a byte address
             // buffer then, but that's what it calls itself.
-            const bool isByteAddressBuffer = (builtInType == EbvByteAddressBuffer || 
-                                              builtInType == EbvRWByteAddressBuffer);
+            // TODO: it would be easier to track the declared (pre-sanitized) builtInType in the TType.
+            //       If/when that happens, this should be simplified to look *only* at the builtin type.
+            const bool isByteAddressBuffer = (builtInType == EbvByteAddressBuffer   || 
+                                              builtInType == EbvRWByteAddressBuffer ||
+                                              (builtInType == EbvNone && !bufferType.isVector() &&
+                                               bufferType.getBasicType() == EbtUint));
+                
 
             if (isByteAddressBuffer)
                 argIndex = intermediate.addBinaryNode(EOpRightShift, argIndex, intermediate.addConstantUnion(2, loc, true),
@@ -2596,7 +2614,7 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     case EOpMethodLoad3:
     case EOpMethodLoad4:
         {
-            TIntermTyped* argIndex = argAggregate->getSequence()[1]->getAsTyped();  // index
+            TIntermTyped* argIndex = makeIntegerIndex(argAggregate->getSequence()[1]->getAsTyped());  // index
 
             TOperator constructOp = EOpNull;
             int size = 0;
@@ -2654,7 +2672,7 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     case EOpMethodStore3:
     case EOpMethodStore4:
         {
-            TIntermTyped* argIndex = argAggregate->getSequence()[1]->getAsTyped();  // address
+            TIntermTyped* argIndex = makeIntegerIndex(argAggregate->getSequence()[1]->getAsTyped());  // index
             TIntermTyped* argValue = argAggregate->getSequence()[2]->getAsTyped();  // value
 
             // Index into the array to find the item being loaded.
@@ -2761,7 +2779,7 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
 
             TIntermSequence& sequence = argAggregate->getSequence();
 
-            TIntermTyped* argIndex     = sequence[1]->getAsTyped();  // index
+            TIntermTyped* argIndex     = makeIntegerIndex(sequence[1]->getAsTyped());  // index
             argIndex = intermediate.addBinaryNode(EOpRightShift, argIndex, intermediate.addConstantUnion(2, loc, true),
                                                   loc, TType(EbtInt));
 
@@ -4141,6 +4159,8 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
                 arg0 = arguments->getAsSymbolNode();
 
             if (arg0 != nullptr && isStructBufferType(arg0->getType())) {
+                // TODO: for struct buffers with counters, pass counter buffer as hidden parameter
+
                 static const int methodPrefixSize = sizeof(BUILTIN_PREFIX)-1;
 
                 if (function->getName().length() > methodPrefixSize &&

@@ -836,6 +836,9 @@ TIntermTyped* TIntermediate::addUniShapeConversion(TOperator op, const TType& ty
     case EOpAssign:
         break;
 
+    case EOpMix:
+        break;
+
     default:
         return node;
     }
@@ -911,6 +914,8 @@ void TIntermediate::addBiShapeConversion(TOperator op, TIntermTyped*& lhsNode, T
     case EOpAnd:
     case EOpInclusiveOr:
     case EOpExclusiveOr:
+
+    case EOpMix:
         break;
 
     default:
@@ -1422,19 +1427,17 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
             return nullptr;
     }
 
-    // After conversion, types have to match.
-    if (falseBlock->getType() != trueBlock->getType())
-        return nullptr;
-
     // Handle a vector condition as a mix
     if (!cond->getType().isScalarOrVec1()) {
         TType targetVectorType(trueBlock->getType().getBasicType(), EvqTemporary,
                                cond->getType().getVectorSize());
-        // smear true/false operations if needed
-        if (trueBlock->getType().isScalarOrVec1())
-            trueBlock = addShapeConversion(targetVectorType, trueBlock);
-        if (falseBlock->getType().isScalarOrVec1())
-            falseBlock = addShapeConversion(targetVectorType, falseBlock);
+        // smear true/false operands as needed
+        trueBlock = addUniShapeConversion(EOpMix, targetVectorType, trueBlock);
+        falseBlock = addUniShapeConversion(EOpMix, targetVectorType, falseBlock);
+
+        // After conversion, types have to match.
+        if (falseBlock->getType() != trueBlock->getType())
+            return nullptr;
 
         // make the mix operation
         TIntermAggregate* mix = makeAggregate(loc);
@@ -1448,6 +1451,13 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     }
 
     // Now have a scalar condition...
+
+    // Convert true and false expressions to matching types
+    addBiShapeConversion(EOpMix, trueBlock, falseBlock);
+
+    // After conversion, types have to match.
+    if (falseBlock->getType() != trueBlock->getType())
+        return nullptr;
 
     // Eliminate the selection when the condition is a scalar and all operands are constant.
     if (cond->getAsConstantUnion() && trueBlock->getAsConstantUnion() && falseBlock->getAsConstantUnion()) {

@@ -1846,13 +1846,16 @@ bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
     // This storage qualifier will tell us whether it's an AST
     // block type or just a generic structure type.
     TStorageQualifier storageQualifier = EvqTemporary;
+    bool readonly = false;
 
     // CBUFFER
-    if (acceptTokenClass(EHTokCBuffer))
+    if (acceptTokenClass(EHTokCBuffer)) {
         storageQualifier = EvqUniform;
     // TBUFFER
-    else if (acceptTokenClass(EHTokTBuffer))
+    } else if (acceptTokenClass(EHTokTBuffer)) {
         storageQualifier = EvqBuffer;
+        readonly = true;
+    }
     // CLASS
     // STRUCT
     else if (! acceptTokenClass(EHTokClass) && ! acceptTokenClass(EHTokStruct))
@@ -1908,6 +1911,7 @@ bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
         new(&type) TType(typeList, structName);
     else {
         postDeclQualifier.storage = storageQualifier;
+        postDeclQualifier.readonly = readonly;
         new(&type) TType(typeList, structName, postDeclQualifier); // sets EbtBlock
     }
 

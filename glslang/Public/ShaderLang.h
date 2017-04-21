@@ -303,8 +303,11 @@ public:
     void setShiftTextureBinding(unsigned int base);
     void setShiftImageBinding(unsigned int base);
     void setShiftUboBinding(unsigned int base);
+    void setShiftUavBinding(unsigned int base);
+    void setShiftCbufferBinding(unsigned int base); // synonym for setShiftUboBinding
     void setShiftSsboBinding(unsigned int base);
     void setAutoMapBindings(bool map);
+    void setHlslIoMapping(bool hlslIoMap);
     void setFlattenUniformArrays(bool flatten);
     void setNoStorageFormat(bool useUnknownFormat);
 
