@@ -250,6 +250,7 @@ protected:
     TVariable* getSplitIoVar(int id) const;
     void addInterstageIoToLinkage();
     void addPatchConstantInvocation();
+    TIntermTyped* makeIntegerIndex(TIntermTyped*);
 
     void fixBuiltInIoType(TType&);
 

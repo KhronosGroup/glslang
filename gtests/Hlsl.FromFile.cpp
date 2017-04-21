@@ -249,6 +249,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.structbuffer.atomics.frag", "main"},
         {"hlsl.structbuffer.byte.frag", "main"},
         {"hlsl.structbuffer.coherent.frag", "main"},
+        {"hlsl.structbuffer.floatidx.comp", "main"},
         {"hlsl.structbuffer.incdec.frag", "main"},
         {"hlsl.structbuffer.fn.frag", "main"},
         {"hlsl.structbuffer.rw.frag", "main"},
