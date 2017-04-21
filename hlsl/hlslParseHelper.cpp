@@ -61,14 +61,14 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     loopNestingLevel(0), annotationNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
     postEntryPointReturn(false),
     limits(resources.limits),
+    inputPatch(nullptr),
     builtInIoIndex(nullptr),
     builtInIoBase(nullptr),
     nextInLocation(0), nextOutLocation(0),
     sourceEntryPointName(sourceEntryPointName),
     entryPointFunction(nullptr),
     entryPointFunctionBody(nullptr),
-    gsStreamOutput(nullptr),
-    inputPatch(nullptr)
+    gsStreamOutput(nullptr)
 {
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;
