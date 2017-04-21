@@ -3144,6 +3144,18 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             TIntermTyped* argCmpVal = argAggregate->getSequence()[3]->getAsTyped();
             TIntermTyped* argOffset = nullptr;
 
+            // Sampler argument should be a sampler.
+            if (argSamp->getType().getBasicType() != EbtSampler) {
+                error(loc, "expected: sampler type", "", "");
+                return;
+            }
+
+            // Sampler should be a SamplerComparisonState
+            if (! argSamp->getType().getSampler().isShadow()) {
+                error(loc, "expected: SamplerComparisonState", "", "");
+                return;
+            }
+
             // optional offset value
             if (argAggregate->getSequence().size() > 4)
                 argOffset = argAggregate->getSequence()[4]->getAsTyped();
@@ -3380,6 +3392,18 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             bool hasStatus     = (argSize == (5+cmpValues) || argSize == (8+cmpValues));
             bool hasOffset1    = false;
             bool hasOffset4    = false;
+
+            // Sampler argument should be a sampler.
+            if (argSamp->getType().getBasicType() != EbtSampler) {
+                error(loc, "expected: sampler type", "", "");
+                return;
+            }
+
+            // Cmp forms require SamplerComparisonState
+            if (cmpValues > 0 && ! argSamp->getType().getSampler().isShadow()) {
+                error(loc, "expected: SamplerComparisonState", "", "");
+                return;
+            }
 
             // Only 2D forms can have offsets.  Discover if we have 0, 1 or 4 offsets.
             if (dim == Esd2D) {
