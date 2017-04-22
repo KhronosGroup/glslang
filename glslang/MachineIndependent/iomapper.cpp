@@ -204,8 +204,8 @@ public:
 struct TResolverUniformAdaptor
 {
     TResolverUniformAdaptor(EShLanguage s, TIoMapResolver& r, TInfoSink& i, bool& e, TIntermediate& interm)
-      : resolver(r)
-      , stage(s)
+      : stage(s)
+      , resolver(r)
       , infoSink(i)
       , error(e)
       , intermediate(interm)
@@ -260,8 +260,8 @@ private:
 struct TResolverInOutAdaptor
 {
     TResolverInOutAdaptor(EShLanguage s, TIoMapResolver& r, TInfoSink& i, bool& e, TIntermediate& interm)
-      : resolver(r)
-      , stage(s)
+      : stage(s)
+      , resolver(r)
       , infoSink(i)
       , error(e)
       , intermediate(interm)
