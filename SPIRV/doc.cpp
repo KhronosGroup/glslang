@@ -180,7 +180,7 @@ const char* ExecutionModeString(int mode)
     }
 }
 
-const int StorageClassCeiling = 12;
+const int StorageClassCeiling = 13;
 
 const char* StorageClassString(int StorageClass)
 {
@@ -197,6 +197,7 @@ const char* StorageClassString(int StorageClass)
     case 9:  return "PushConstant";
     case 10: return "AtomicCounter";
     case 11: return "Image";
+    case 12: return "StorageBuffer";
 
     case StorageClassCeiling:
     default: return "Bad";
@@ -830,13 +831,13 @@ const char* CapabilityString(int info)
     case 4427: return "DrawParameters";
     case 4431: return "SubgroupVoteKHR";
 
-    case 4437: return "DeviceGroup";
-    case 4439: return "MultiView";
-
     case 4433: return "StorageUniformBufferBlock16";
     case 4434: return "StorageUniform16";
     case 4435: return "StoragePushConstant16";
     case 4436: return "StorageInputOutput16";
+
+    case 4437: return "DeviceGroup";
+    case 4439: return "MultiView";
 
 #ifdef NV_EXTENSIONS
     case 5251: return "GeometryShaderPassthroughNV";
