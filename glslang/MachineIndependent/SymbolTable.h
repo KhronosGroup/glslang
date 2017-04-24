@@ -198,7 +198,6 @@ struct TParameter {
     TString *name;
     TType* type;
     TIntermTyped* defaultValue;
-    TBuiltInVariable declaredBuiltIn;
     void copyParam(const TParameter& param)
     {
         if (param.name)
@@ -207,8 +206,8 @@ struct TParameter {
             name = 0;
         type = param.type->clone();
         defaultValue = param.defaultValue;
-        declaredBuiltIn = param.declaredBuiltIn;
     }
+    TBuiltInVariable getDeclaredBuiltIn() const { return type->getQualifier().declaredBuiltIn; }
 };
 
 //
@@ -241,7 +240,6 @@ public:
     virtual void addParameter(TParameter& p)
     {
         assert(writable);
-        p.declaredBuiltIn = p.type->getQualifier().builtIn;
         parameters.push_back(p);
         p.type->appendMangledName(mangledName);
 
