@@ -532,6 +532,7 @@ u – for unordered access views (UAV)
 
 b – for constant buffer views (CBV)
    CBUFFER
+   CONSTANTBUFFER
  ********************************************************************************/
 struct TDefaultHlslIoResolver : public TDefaultIoResolverBase
 {
