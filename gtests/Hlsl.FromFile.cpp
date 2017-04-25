@@ -98,6 +98,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.clip.frag", "main"},
         {"hlsl.comparison.vec.frag", "main"},
         {"hlsl.conditional.frag", "PixelShaderFunction"},
+        {"hlsl.constantbuffer.frag", "main"},
         {"hlsl.constructexpr.frag", "main"},
         {"hlsl.depthGreater.frag", "PixelShaderFunction"},
         {"hlsl.depthLess.frag", "PixelShaderFunction"},
