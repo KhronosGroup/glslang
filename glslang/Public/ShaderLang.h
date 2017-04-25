@@ -135,6 +135,14 @@ typedef enum {
 } EShOptimizationLevel;
 
 //
+// Texture and Sampler transformation mode.
+//
+typedef enum {
+    EShTexSampTransKeep,   // keep textures and samplers as is (default)
+    EShTexSampTransUpgradeTextureRemoveSampler,  // change texture w/o embeded sampler into sampled texture and throw away all samplers
+} EShTextureSamplerTransformMode;
+
+//
 // Message choices for what errors and warnings are given.
 //
 enum EShMessages {
@@ -313,6 +321,7 @@ public:
     void setHlslIoMapping(bool hlslIoMap);
     void setFlattenUniformArrays(bool flatten);
     void setNoStorageFormat(bool useUnknownFormat);
+    void setTextureSamplerTransformMode(EShTextureSamplerTransformMode mode);
 
     // Interface to #include handlers.
     //
