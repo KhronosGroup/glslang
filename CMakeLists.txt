@@ -15,6 +15,9 @@ option(ENABLE_HLSL "Enables HLSL input support" ON)
 
 project(glslang)
 
+# make testing optional
+include(CTest)
+
 if(ENABLE_AMD_EXTENSIONS)
     add_definitions(-DAMD_EXTENSIONS)
 endif(ENABLE_AMD_EXTENSIONS)
