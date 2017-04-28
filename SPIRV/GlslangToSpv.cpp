@@ -4817,7 +4817,7 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     }
 
     const bool isUnsigned = typeProxy == glslang::EbtUint || typeProxy == glslang::EbtUint64;
-    const bool isFloat = typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble || typeProxy == glslang::EbtFloat16;
+    const bool isFloat = typeProxy == glslang::EbtFloat || typeProxy == glslang::EbtDouble;
     const bool isBool = typeProxy == glslang::EbtBool;
 
     spv::Op opCode = spv::OpNop;
