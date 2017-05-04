@@ -122,6 +122,7 @@ protected:
     spv::Decoration TranslateAuxiliaryStorageDecoration(const glslang::TQualifier& qualifier);
     spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool memberDeclaration);
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
+    spv::LoopControlMask TranslateLoopControl(glslang::TLoopControl) const;
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
     spv::Id getInvertedSwizzleType(const glslang::TIntermTyped&);
@@ -764,6 +765,18 @@ spv::ImageFormat TGlslangToSpvTraverser::TranslateImageFormat(const glslang::TTy
     case glslang::ElfR16ui:         return spv::ImageFormatR16ui;
     case glslang::ElfR8ui:          return spv::ImageFormatR8ui;
     default:                        return spv::ImageFormatMax;
+    }
+}
+
+spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(glslang::TLoopControl loopControl) const
+{
+    switch (loopControl) {
+    case glslang::ELoopControlNone:       return spv::LoopControlMaskNone;
+    case glslang::ELoopControlUnroll:     return spv::LoopControlUnrollMask;
+    case glslang::ELoopControlDontUnroll: return spv::LoopControlDontUnrollMask;
+    // TODO: DependencyInfinite
+    // TODO: DependencyLength
+    default:                              return spv::LoopControlMaskNone;
     }
 }
 
@@ -1960,6 +1973,12 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
 {
     auto blocks = builder.makeNewLoop();
     builder.createBranch(&blocks.head);
+
+    // Loop control:
+    const spv::LoopControlMask control = TranslateLoopControl(node->getLoopControl());
+
+    // TODO: dependency length
+
     // Spec requires back edges to target header blocks, and every header block
     // must dominate its merge block.  Make a header block first to ensure these
     // conditions are met.  By definition, it will contain OpLoopMerge, followed
@@ -1967,7 +1986,7 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
     // instructions in it, since the body/test may have arbitrary instructions,
     // including merges of its own.
     builder.setBuildPoint(&blocks.head);
-    builder.createLoopMerge(&blocks.merge, &blocks.continue_target, spv::LoopControlMaskNone);
+    builder.createLoopMerge(&blocks.merge, &blocks.continue_target, control);
     if (node->testFirst() && node->getTest()) {
         spv::Block& test = builder.makeNewBlock();
         builder.createBranch(&test);
