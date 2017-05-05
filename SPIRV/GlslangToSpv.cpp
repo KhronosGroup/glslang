@@ -123,6 +123,7 @@ protected:
     spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool memberDeclaration);
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
     spv::LoopControlMask TranslateLoopControl(glslang::TLoopControl) const;
+    spv::StorageClass TranslateStorageClass(const glslang::TType&);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
     spv::Id getInvertedSwizzleType(const glslang::TIntermTyped&);
@@ -242,39 +243,6 @@ spv::ExecutionModel TranslateExecutionModel(EShLanguage stage)
     default:
         assert(0);
         return spv::ExecutionModelFragment;
-    }
-}
-
-// Translate glslang type to SPIR-V storage class.
-spv::StorageClass TranslateStorageClass(const glslang::TType& type, bool useStorageBuffer)
-{
-    if (type.getQualifier().isPipeInput())
-        return spv::StorageClassInput;
-    else if (type.getQualifier().isPipeOutput())
-        return spv::StorageClassOutput;
-    else if (type.getBasicType() == glslang::EbtAtomicUint)
-        return spv::StorageClassAtomicCounter;
-    else if (type.containsOpaque())
-        return spv::StorageClassUniformConstant;
-    else if (useStorageBuffer && type.getQualifier().storage == glslang::EvqBuffer)
-        return spv::StorageClassStorageBuffer;
-    else if (type.getQualifier().isUniformOrBuffer()) {
-        if (type.getQualifier().layoutPushConstant)
-            return spv::StorageClassPushConstant;
-        if (type.getBasicType() == glslang::EbtBlock)
-            return spv::StorageClassUniform;
-        else
-            return spv::StorageClassUniformConstant;
-    } else {
-        switch (type.getQualifier().storage) {
-        case glslang::EvqShared:        return spv::StorageClassWorkgroup;  break;
-        case glslang::EvqGlobal:        return spv::StorageClassPrivate;
-        case glslang::EvqConstReadOnly: return spv::StorageClassFunction;
-        case glslang::EvqTemporary:     return spv::StorageClassFunction;
-        default:
-            assert(0);
-            return spv::StorageClassFunction;
-        }
     }
 }
 
@@ -777,6 +745,40 @@ spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(glslang::TLoop
     // TODO: DependencyInfinite
     // TODO: DependencyLength
     default:                              return spv::LoopControlMaskNone;
+    }
+}
+
+// Translate glslang type to SPIR-V storage class.
+spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::TType& type)
+{
+    if (type.getQualifier().isPipeInput())
+        return spv::StorageClassInput;
+    else if (type.getQualifier().isPipeOutput())
+        return spv::StorageClassOutput;
+    else if (type.getBasicType() == glslang::EbtAtomicUint)
+        return spv::StorageClassAtomicCounter;
+    else if (type.containsOpaque())
+        return spv::StorageClassUniformConstant;
+    else if (glslangIntermediate->usingStorageBuffer() && type.getQualifier().storage == glslang::EvqBuffer) {
+        builder.addExtension(spv::E_SPV_KHR_storage_buffer_storage_class);
+        return spv::StorageClassStorageBuffer;
+    } else if (type.getQualifier().isUniformOrBuffer()) {
+        if (type.getQualifier().layoutPushConstant)
+            return spv::StorageClassPushConstant;
+        if (type.getBasicType() == glslang::EbtBlock)
+            return spv::StorageClassUniform;
+        else
+            return spv::StorageClassUniformConstant;
+    } else {
+        switch (type.getQualifier().storage) {
+        case glslang::EvqShared:        return spv::StorageClassWorkgroup;  break;
+        case glslang::EvqGlobal:        return spv::StorageClassPrivate;
+        case glslang::EvqConstReadOnly: return spv::StorageClassFunction;
+        case glslang::EvqTemporary:     return spv::StorageClassFunction;
+        default:
+            assert(0);
+            return spv::StorageClassFunction;
+        }
     }
 }
 
@@ -2092,7 +2094,7 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
     }
 
     // Now, handle actual variables
-    spv::StorageClass storageClass = TranslateStorageClass(node->getType(), glslangIntermediate->usingStorageBuffer());
+    spv::StorageClass storageClass = TranslateStorageClass(node->getType());
     spv::Id spvType = convertGlslangToSpvType(node->getType());
 
 #ifdef AMD_EXTENSIONS
@@ -2855,7 +2857,7 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
                 (paramType.getBasicType() == glslang::EbtBlock &&
                  paramType.getQualifier().storage == glslang::EvqBuffer) ||  // SSBO
                 (p == 0 && implicitThis))                                    // implicit 'this'
-                typeId = builder.makePointer(TranslateStorageClass(paramType, glslangIntermediate->usingStorageBuffer()), typeId);
+                typeId = builder.makePointer(TranslateStorageClass(paramType), typeId);
             else if (paramType.getQualifier().storage != glslang::EvqConstReadOnly)
                 typeId = builder.makePointer(spv::StorageClassFunction, typeId);
             else
