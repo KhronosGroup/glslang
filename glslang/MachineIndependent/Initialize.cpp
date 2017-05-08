@@ -3844,6 +3844,15 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                             else {
                                 addSamplingFunctions(sampler, typeName, version, profile);
                                 addGatherFunctions(sampler, typeName, version, profile);
+                                if (spvVersion.vulkan > 0 && sampler.dim == EsdBuffer && sampler.isCombined()) {
+                                    // Vulkan wants a textureBuffer to allow texelFetch() --
+                                    // a sampled image with no sampler.
+                                    // So, add sampling functions for both the
+                                    // samplerBuffer and textureBuffer types.
+                                    sampler.setTexture(sampler.type, sampler.dim, sampler.arrayed, sampler.shadow,
+                                                       sampler.ms);
+                                    addSamplingFunctions(sampler, sampler.getString(), version, profile);
+                                }
                             }
                         }
                     }
