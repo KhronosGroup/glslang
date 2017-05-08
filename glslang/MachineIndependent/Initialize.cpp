@@ -3851,7 +3851,8 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                                     // samplerBuffer and textureBuffer types.
                                     sampler.setTexture(sampler.type, sampler.dim, sampler.arrayed, sampler.shadow,
                                                        sampler.ms);
-                                    addSamplingFunctions(sampler, sampler.getString(), version, profile);
+                                    typeName = sampler.getString();
+                                    addSamplingFunctions(sampler, typeName, version, profile);
                                 }
                             }
                         }
