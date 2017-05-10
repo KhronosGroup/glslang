@@ -35,7 +35,9 @@
 //
 
 // this only applies to the standalone wrapper, not the front end in general
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include "ResourceLimits.h"
 #include "Worklist.h"
