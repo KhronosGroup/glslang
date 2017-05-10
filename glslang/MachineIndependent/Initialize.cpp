@@ -3851,8 +3851,8 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                                     // samplerBuffer and textureBuffer types.
                                     sampler.setTexture(sampler.type, sampler.dim, sampler.arrayed, sampler.shadow,
                                                        sampler.ms);
-                                    typeName = sampler.getString();
-                                    addSamplingFunctions(sampler, typeName, version, profile);
+                                    TString textureTypeName = sampler.getString();
+                                    addSamplingFunctions(sampler, textureTypeName, version, profile);
                                 }
                             }
                         }
@@ -3877,7 +3877,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
 //
 // Add all the query functions for the given type.
 //
-void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
+void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int version, EProfile profile)
 {
     if (sampler.image && ((profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 430)))
         return;
@@ -3954,7 +3954,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, TString& typeName, int versi
 //
 // Add all the image access functions for the given type.
 //
-void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
+void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int version, EProfile profile)
 {
     int dims = dimMap[sampler.dim];
     // most things with an array add a dimension, except for cubemaps
@@ -4047,7 +4047,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, TString& typeName, int versi
 //
 // Add all the subpass access functions for the given type.
 //
-void TBuiltIns::addSubpassSampling(TSampler sampler, TString& typeName, int /*version*/, EProfile /*profile*/)
+void TBuiltIns::addSubpassSampling(TSampler sampler, const TString& typeName, int /*version*/, EProfile /*profile*/)
 {
     stageBuiltins[EShLangFragment].append(prefixes[sampler.type]);
     stageBuiltins[EShLangFragment].append("vec4 subpassLoad");
@@ -4064,7 +4064,7 @@ void TBuiltIns::addSubpassSampling(TSampler sampler, TString& typeName, int /*ve
 //
 // Add all the texture lookup functions for the given type.
 //
-void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
+void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, int version, EProfile profile)
 {
     //
     // texturing
@@ -4294,7 +4294,7 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, TString& typeName, int ve
 //
 // Add all the texture gather functions for the given type.
 //
-void TBuiltIns::addGatherFunctions(TSampler sampler, TString& typeName, int version, EProfile profile)
+void TBuiltIns::addGatherFunctions(TSampler sampler, const TString& typeName, int version, EProfile profile)
 {
     switch (sampler.dim) {
     case Esd2D:
