@@ -4821,6 +4821,7 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
     }
 
     // TODO: learn what all these really mean and how they interact with regNumber and subComponent
+    std::vector<std::string> resourceInfo = intermediate.getResourceSetBinding();
     switch (std::tolower(desc[0])) {
     case 'b':
     case 't':
@@ -4828,6 +4829,13 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
     case 's':
     case 'u':
         qualifier.layoutBinding = regNumber + subComponent;
+        for (auto it = resourceInfo.cbegin(); it != resourceInfo.cend(); it = it + 3) {
+            if (strcmp(desc.c_str(), it[0].c_str()) == 0) {
+                qualifier.layoutSet = atoi(it[1].c_str());
+                qualifier.layoutBinding = atoi(it[2].c_str()) + subComponent;
+                break;
+            }
+        }
         break;
     default:
         warn(loc, "ignoring unrecognized register type", "register", "%c", desc[0]);
@@ -7567,6 +7575,20 @@ bool HlslParseContext::handleOutputGeometry(const TSourceLoc& loc, const TLayout
 
     return true;
 }
+
+//
+// Loop hints
+//
+TLoopControl HlslParseContext::handleLoopControl(const TAttributeMap& attributes) const
+{
+    if (attributes.contains(EatUnroll))
+        return ELoopControlUnroll;
+    else if (attributes.contains(EatLoop))
+        return ELoopControlDontUnroll;
+    else
+        return ELoopControlNone;
+}
+
 
 //
 // Updating default qualifier for the case of a declaration with just a qualifier,
