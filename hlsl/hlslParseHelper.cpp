@@ -4821,13 +4821,25 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
     }
 
     // TODO: learn what all these really mean and how they interact with regNumber and subComponent
+    std::vector<std::string> resourceInfo = intermediate.getResourceSetBinding();
     switch (std::tolower(desc[0])) {
     case 'b':
     case 't':
     case 'c':
     case 's':
     case 'u':
-        qualifier.layoutBinding = regNumber + subComponent;
+        if(!resourceInfo.empty()) {
+            for (auto it = resourceInfo.cbegin(); it != resourceInfo.cend(); it = it + 3) {
+                if(strcmp(desc.c_str(), it[0].c_str()) == 0) {
+                    qualifier.layoutSet = atoi(it[1].c_str());
+                    qualifier.layoutBinding = atoi(it[2].c_str()) + subComponent;
+                    break;
+                }
+            }
+        }
+        else {
+            qualifier.layoutBinding = regNumber + subComponent;
+        }
         break;
     default:
         warn(loc, "ignoring unrecognized register type", "register", "%c", desc[0]);

@@ -287,6 +287,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.typedef.frag", "PixelShaderFunction"},
         {"hlsl.whileLoop.frag", "PixelShaderFunction"},
         {"hlsl.void.frag", "PixelShaderFunction"},
+        {"hlsl.multiDescriptorSet.frag", "main"},
     }),
     FileNameAsCustomTestSuffix
 );
