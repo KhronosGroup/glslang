@@ -246,7 +246,7 @@ namespace spv {
 
     spv::Id spirvbin_t::localId(spv::Id id, spv::Id newId)
     {
-        assert(id != spv::NoResult && newId != spv::NoResult);
+        //assert(id != spv::NoResult && newId != spv::NoResult);
 
         if (id >= idMapL.size())
             idMapL.resize(id+1, unused);

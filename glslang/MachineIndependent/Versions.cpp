@@ -663,8 +663,7 @@ void TParseVersions::updateExtensionBehavior(int line, const char* extension, co
         updateExtensionBehavior(line, "GL_OES_shader_io_blocks", behaviorString);
     else if (strcmp(extension, "GL_GOOGLE_include_directive") == 0)
         updateExtensionBehavior(line, "GL_GOOGLE_cpp_style_line_directive", behaviorString);
-    else if (strcmp(extension, "GL_GOOGLE_include_directive") == 0)
-        updateExtensionBehavior(line, "GL_GOOGLE_cpp_style_line_directive", behaviorString);
+    // subgroup_* to subgroup_basic
     else if (strcmp(extension, "GL_KHR_shader_subgroup_vote") == 0)
         updateExtensionBehavior(line, "GL_KHR_shader_subgroup_basic", behaviorString);
     else if (strcmp(extension, "GL_KHR_shader_subgroup_arithmetic") == 0)
