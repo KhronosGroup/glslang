@@ -677,19 +677,30 @@ TIntermTyped* HlslParseContext::handleBracketOperator(const TSourceLoc& loc, TIn
     if (base->getType().getBasicType() == EbtSampler && !base->isArray()) {
         const TSampler& sampler = base->getType().getSampler();
         if (sampler.isImage() || sampler.isTexture()) {
-            TIntermAggregate* load = new TIntermAggregate(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
+            if (! mipsOperatorMipArg.empty() && mipsOperatorMipArg.back().mipLevel == nullptr) {
+                // The first operator[] to a .mips[] sequence is the mip level.  We'll remember it.
+                mipsOperatorMipArg.back().mipLevel = index;
+                return base;  // next [] index is to the same base.
+            } else {
+                TIntermAggregate* load = new TIntermAggregate(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
 
-            load->setType(TType(sampler.type, EvqTemporary, sampler.vectorSize));
-            load->setLoc(loc);
-            load->getSequence().push_back(base);
-            load->getSequence().push_back(index);
+                load->setType(TType(sampler.type, EvqTemporary, sampler.vectorSize));
+                load->setLoc(loc);
+                load->getSequence().push_back(base);
+                load->getSequence().push_back(index);
 
-            // Textures need a MIP.  First indirection is always to mip 0.  If there's another, we'll add it
-            // later.
-            if (sampler.isTexture())
-                load->getSequence().push_back(intermediate.addConstantUnion(0, loc, true));
+                // Textures need a MIP.  If we saw one go by, use it.  Otherwise, use zero.
+                if (sampler.isTexture()) {
+                    if (! mipsOperatorMipArg.empty()) {
+                        load->getSequence().push_back(mipsOperatorMipArg.back().mipLevel);
+                        mipsOperatorMipArg.pop_back();
+                    } else {
+                        load->getSequence().push_back(intermediate.addConstantUnion(0, loc, true));
+                    }
+                }
 
-            return load;
+                return load;
+            }
         }
     }
 
@@ -874,7 +885,21 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
     }
 
     TIntermTyped* result = base;
-    if (base->isVector() || base->isScalar()) {
+
+    if (base->getType().getBasicType() == EbtSampler) {
+        // Handle .mips[mipid][pos] operation on textures
+        const TSampler& sampler = base->getType().getSampler();
+        if (sampler.isTexture() && field == "mips") {
+            // Push a null to signify that we expect a mip level under operator[] next.
+            mipsOperatorMipArg.push_back(tMipsOperatorData(loc, nullptr));
+            // Keep 'result' pointing to 'base', since we expect an operator[] to go by next.
+        } else {
+            if (field == "mips")
+                error(loc, "unexpected texture type for .mips[][] operator:", base->getType().getCompleteString().c_str(), "");
+            else
+                error(loc, "unexpected operator on texture type:", field.c_str(), base->getType().getCompleteString().c_str());
+        }
+    } else if (base->isVector() || base->isScalar()) {
         TSwizzleSelectors<TVectorSelector> selectors;
         parseSwizzleSelector(loc, field, base->getVectorSize(), selectors);
 
@@ -8426,6 +8451,12 @@ void HlslParseContext::removeUnusedStructBufferCounters()
 // post-processing
 void HlslParseContext::finish()
 {
+    // Error check: There was a dangling .mips operator.  These are not nested constructs in the grammar, so
+    // cannot be detected there.  This is not strictly needed in a non-validating parser; it's just helpful.
+    if (! mipsOperatorMipArg.empty()) {
+        error(mipsOperatorMipArg.back().loc, "unterminated mips operator:", "", "");
+    }
+
     removeUnusedStructBufferCounters();
     addPatchConstantInvocation();
     addInterstageIoToLinkage();
