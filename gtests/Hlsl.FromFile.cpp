@@ -109,6 +109,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.emptystruct.init.vert", "main"},
         {"hlsl.entry-in.frag", "PixelShaderFunction"},
         {"hlsl.entry-out.frag", "PixelShaderFunction"},
+        {"hlsl.fraggeom.frag", "main"},
         {"hlsl.float1.frag", "PixelShaderFunction"},
         {"hlsl.float4.frag", "PixelShaderFunction"},
         {"hlsl.flatten.return.frag", "main"},

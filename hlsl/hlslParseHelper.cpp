@@ -3660,6 +3660,12 @@ void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTy
     switch (op) {
     case EOpMethodAppend:
         if (argAggregate) {
+            // Don't emit these for non-GS stage, since we won't have the gsStreamOutput symbol.
+            if (language != EShLangGeometry) {
+                node = nullptr;
+                return;
+            }
+
             TIntermAggregate* sequence = nullptr;
             TIntermAggregate* emit = new TIntermAggregate(EOpEmitVertex);
 
@@ -3689,6 +3695,12 @@ void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTy
 
     case EOpMethodRestartStrip:
         {
+            // Don't emit these for non-GS stage, since we won't have the gsStreamOutput symbol.
+            if (language != EShLangGeometry) {
+                node = nullptr;
+                return;
+            }
+
             TIntermAggregate* cut = new TIntermAggregate(EOpEndPrimitive);
             cut->setLoc(loc);
             cut->setType(TType(EbtVoid));
