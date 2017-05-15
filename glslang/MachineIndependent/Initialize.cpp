@@ -6496,7 +6496,42 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("allInvocationsARB",               EOpAllInvocations);
             symbolTable.relateToOperator("allInvocationsEqualARB",          EOpAllInvocationsEqual);
 
-            // GL_KHR_shader_subgroup
+#ifdef AMD_EXTENSIONS
+            symbolTable.relateToOperator("minInvocationsAMD",                           EOpMinInvocations);
+            symbolTable.relateToOperator("maxInvocationsAMD",                           EOpMaxInvocations);
+            symbolTable.relateToOperator("addInvocationsAMD",                           EOpAddInvocations);
+            symbolTable.relateToOperator("minInvocationsNonUniformAMD",                 EOpMinInvocationsNonUniform);
+            symbolTable.relateToOperator("maxInvocationsNonUniformAMD",                 EOpMaxInvocationsNonUniform);
+            symbolTable.relateToOperator("addInvocationsNonUniformAMD",                 EOpAddInvocationsNonUniform);
+            symbolTable.relateToOperator("minInvocationsInclusiveScanAMD",              EOpMinInvocationsInclusiveScan);
+            symbolTable.relateToOperator("maxInvocationsInclusiveScanAMD",              EOpMaxInvocationsInclusiveScan);
+            symbolTable.relateToOperator("addInvocationsInclusiveScanAMD",              EOpAddInvocationsInclusiveScan);
+            symbolTable.relateToOperator("minInvocationsInclusiveScanNonUniformAMD",    EOpMinInvocationsInclusiveScanNonUniform);
+            symbolTable.relateToOperator("maxInvocationsInclusiveScanNonUniformAMD",    EOpMaxInvocationsInclusiveScanNonUniform);
+            symbolTable.relateToOperator("addInvocationsInclusiveScanNonUniformAMD",    EOpAddInvocationsInclusiveScanNonUniform);
+            symbolTable.relateToOperator("minInvocationsExclusiveScanAMD",              EOpMinInvocationsExclusiveScan);
+            symbolTable.relateToOperator("maxInvocationsExclusiveScanAMD",              EOpMaxInvocationsExclusiveScan);
+            symbolTable.relateToOperator("addInvocationsExclusiveScanAMD",              EOpAddInvocationsExclusiveScan);
+            symbolTable.relateToOperator("minInvocationsExclusiveScanNonUniformAMD",    EOpMinInvocationsExclusiveScanNonUniform);
+            symbolTable.relateToOperator("maxInvocationsExclusiveScanNonUniformAMD",    EOpMaxInvocationsExclusiveScanNonUniform);
+            symbolTable.relateToOperator("addInvocationsExclusiveScanNonUniformAMD",    EOpAddInvocationsExclusiveScanNonUniform);
+            symbolTable.relateToOperator("swizzleInvocationsAMD",                       EOpSwizzleInvocations);
+            symbolTable.relateToOperator("swizzleInvocationsMaskedAMD",                 EOpSwizzleInvocationsMasked);
+            symbolTable.relateToOperator("writeInvocationAMD",                          EOpWriteInvocation);
+            symbolTable.relateToOperator("mbcntAMD",                                    EOpMbcnt);
+
+            symbolTable.relateToOperator("min3",    EOpMin3);
+            symbolTable.relateToOperator("max3",    EOpMax3);
+            symbolTable.relateToOperator("mid3",    EOpMid3);
+
+            symbolTable.relateToOperator("cubeFaceIndexAMD",    EOpCubeFaceIndex);
+            symbolTable.relateToOperator("cubeFaceCoordAMD",    EOpCubeFaceCoord);
+            symbolTable.relateToOperator("timeAMD",             EOpTime);
+#endif
+        }
+
+        // GL_KHR_shader_subgroup
+        if (spvVersion.vulkan >= 100) {
             symbolTable.relateToOperator("subgroupBarrier",                 EOpSubgroupBarrier);
             symbolTable.relateToOperator("subgroupMemoryBarrier",           EOpSubgroupMemoryBarrier);
             symbolTable.relateToOperator("subgroupMemoryBarrierBuffer",     EOpSubgroupMemoryBarrierBuffer);
@@ -6551,39 +6586,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("subgroupQuadSwapHorizontal",      EOpSubgroupQuadSwapHorizontal);
             symbolTable.relateToOperator("subgroupQuadSwapVertical",        EOpSubgroupQuadSwapVertical);
             symbolTable.relateToOperator("subgroupQuadSwapDiagonal",        EOpSubgroupQuadSwapDiagonal);
-
-#ifdef AMD_EXTENSIONS
-            symbolTable.relateToOperator("minInvocationsAMD",                           EOpMinInvocations);
-            symbolTable.relateToOperator("maxInvocationsAMD",                           EOpMaxInvocations);
-            symbolTable.relateToOperator("addInvocationsAMD",                           EOpAddInvocations);
-            symbolTable.relateToOperator("minInvocationsNonUniformAMD",                 EOpMinInvocationsNonUniform);
-            symbolTable.relateToOperator("maxInvocationsNonUniformAMD",                 EOpMaxInvocationsNonUniform);
-            symbolTable.relateToOperator("addInvocationsNonUniformAMD",                 EOpAddInvocationsNonUniform);
-            symbolTable.relateToOperator("minInvocationsInclusiveScanAMD",              EOpMinInvocationsInclusiveScan);
-            symbolTable.relateToOperator("maxInvocationsInclusiveScanAMD",              EOpMaxInvocationsInclusiveScan);
-            symbolTable.relateToOperator("addInvocationsInclusiveScanAMD",              EOpAddInvocationsInclusiveScan);
-            symbolTable.relateToOperator("minInvocationsInclusiveScanNonUniformAMD",    EOpMinInvocationsInclusiveScanNonUniform);
-            symbolTable.relateToOperator("maxInvocationsInclusiveScanNonUniformAMD",    EOpMaxInvocationsInclusiveScanNonUniform);
-            symbolTable.relateToOperator("addInvocationsInclusiveScanNonUniformAMD",    EOpAddInvocationsInclusiveScanNonUniform);
-            symbolTable.relateToOperator("minInvocationsExclusiveScanAMD",              EOpMinInvocationsExclusiveScan);
-            symbolTable.relateToOperator("maxInvocationsExclusiveScanAMD",              EOpMaxInvocationsExclusiveScan);
-            symbolTable.relateToOperator("addInvocationsExclusiveScanAMD",              EOpAddInvocationsExclusiveScan);
-            symbolTable.relateToOperator("minInvocationsExclusiveScanNonUniformAMD",    EOpMinInvocationsExclusiveScanNonUniform);
-            symbolTable.relateToOperator("maxInvocationsExclusiveScanNonUniformAMD",    EOpMaxInvocationsExclusiveScanNonUniform);
-            symbolTable.relateToOperator("addInvocationsExclusiveScanNonUniformAMD",    EOpAddInvocationsExclusiveScanNonUniform);
-            symbolTable.relateToOperator("swizzleInvocationsAMD",                       EOpSwizzleInvocations);
-            symbolTable.relateToOperator("swizzleInvocationsMaskedAMD",                 EOpSwizzleInvocationsMasked);
-            symbolTable.relateToOperator("writeInvocationAMD",                          EOpWriteInvocation);
-            symbolTable.relateToOperator("mbcntAMD",                                    EOpMbcnt);
-
-            symbolTable.relateToOperator("min3",    EOpMin3);
-            symbolTable.relateToOperator("max3",    EOpMax3);
-            symbolTable.relateToOperator("mid3",    EOpMid3);
-
-            symbolTable.relateToOperator("cubeFaceIndexAMD",    EOpCubeFaceIndex);
-            symbolTable.relateToOperator("cubeFaceCoordAMD",    EOpCubeFaceCoord);
-            symbolTable.relateToOperator("timeAMD",             EOpTime);
-#endif
         }
     }
 
