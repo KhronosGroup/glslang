@@ -429,6 +429,17 @@ protected:
     TVector<TVariable*> implicitThisStack;   // currently active 'this' variables for nested structures
 
     TVariable* gsStreamOutput;               // geometry shader stream outputs, for emit (Append method)
+
+    // This tracks the first (mip level) argument to the .mips[][] operator.  Since this can be nested as
+    // in tx.mips[tx.mips[0][1].x][2], we need a stack.  We also track the TSourceLoc for error reporting 
+    // purposes.
+    struct tMipsOperatorData {
+        tMipsOperatorData(TSourceLoc l, TIntermTyped* m) : loc(l), mipLevel(m) { }
+        TSourceLoc loc;
+        TIntermTyped* mipLevel;
+    };
+
+    TVector<tMipsOperatorData> mipsOperatorMipArg;
 };
 
 // This is the prefix we use for builtin methods to avoid namespace collisions with
