@@ -128,6 +128,14 @@ const char* const E_GL_ARB_shader_ballot                = "GL_ARB_shader_ballot"
 const char* const E_GL_ARB_sparse_texture2              = "GL_ARB_sparse_texture2";
 const char* const E_GL_ARB_sparse_texture_clamp         = "GL_ARB_sparse_texture_clamp";
 // const char* const E_GL_ARB_cull_distance            = "GL_ARB_cull_distance";  // present for 4.5, but need extension control over block members
+const char* const E_GL_KHR_shader_subgroup_basic            = "GL_KHR_shader_subgroup_basic";
+const char* const E_GL_KHR_shader_subgroup_vote             = "GL_KHR_shader_subgroup_vote";
+const char* const E_GL_KHR_shader_subgroup_arithmetic       = "GL_KHR_shader_subgroup_arithmetic";
+const char* const E_GL_KHR_shader_subgroup_ballot           = "GL_KHR_shader_subgroup_ballot";
+const char* const E_GL_KHR_shader_subgroup_shuffle          = "GL_KHR_shader_subgroup_shuffle";
+const char* const E_GL_KHR_shader_subgroup_shuffle_relative = "GL_KHR_shader_subgroup_shuffle_relative";
+const char* const E_GL_KHR_shader_subgroup_clustered        = "GL_KHR_shader_subgroup_clustered";
+const char* const E_GL_KHR_shader_subgroup_quad             = "GL_KHR_shader_subgroup_quad";
 
 const char* const E_GL_EXT_shader_non_constant_global_initializers = "GL_EXT_shader_non_constant_global_initializers";
 const char* const E_GL_EXT_shader_image_load_formatted = "GL_EXT_shader_image_load_formatted";

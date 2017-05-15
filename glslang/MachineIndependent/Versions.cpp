@@ -180,6 +180,14 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_sparse_texture2]              = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture_clamp]         = EBhDisable;
 //    extensionBehavior[E_GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
+    extensionBehavior[E_GL_KHR_shader_subgroup_basic]            = EBhDisable;
+    extensionBehavior[E_GL_KHR_shader_subgroup_vote]             = EBhDisable;
+    extensionBehavior[E_GL_KHR_shader_subgroup_arithmetic]       = EBhDisable;
+    extensionBehavior[E_GL_KHR_shader_subgroup_ballot]           = EBhDisable;
+    extensionBehavior[E_GL_KHR_shader_subgroup_shuffle]          = EBhDisable;
+    extensionBehavior[E_GL_KHR_shader_subgroup_shuffle_relative] = EBhDisable;
+    extensionBehavior[E_GL_KHR_shader_subgroup_clustered]        = EBhDisable;
+    extensionBehavior[E_GL_KHR_shader_subgroup_quad]             = EBhDisable;
 
     extensionBehavior[E_GL_EXT_shader_non_constant_global_initializers] = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_image_load_formatted]  = EBhDisable;
@@ -309,6 +317,16 @@ void TParseVersions::getPreamble(std::string& preamble)
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
             "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             "#define GL_EXT_shader_image_load_formatted 1\n"
+
+            // GL_KHR_shader_subgroup
+            "#define GL_KHR_shader_subgroup_basic 1\n"
+            "#define GL_KHR_shader_subgroup_vote 1\n"
+            "#define GL_KHR_shader_subgroup_arithmetic 1\n"
+            "#define GL_KHR_shader_subgroup_ballot 1\n"
+            "#define GL_KHR_shader_subgroup_shuffle 1\n"
+            "#define GL_KHR_shader_subgroup_shuffle_relative 1\n"
+            "#define GL_KHR_shader_subgroup_clustered 1\n"
+            "#define GL_KHR_shader_subgroup_quad 1\n"
 
 #ifdef AMD_EXTENSIONS
             "#define GL_AMD_shader_ballot 1\n"
@@ -645,6 +663,21 @@ void TParseVersions::updateExtensionBehavior(int line, const char* extension, co
         updateExtensionBehavior(line, "GL_OES_shader_io_blocks", behaviorString);
     else if (strcmp(extension, "GL_GOOGLE_include_directive") == 0)
         updateExtensionBehavior(line, "GL_GOOGLE_cpp_style_line_directive", behaviorString);
+    // subgroup_* to subgroup_basic
+    else if (strcmp(extension, "GL_KHR_shader_subgroup_vote") == 0)
+        updateExtensionBehavior(line, "GL_KHR_shader_subgroup_basic", behaviorString);
+    else if (strcmp(extension, "GL_KHR_shader_subgroup_arithmetic") == 0)
+        updateExtensionBehavior(line, "GL_KHR_shader_subgroup_basic", behaviorString);
+    else if (strcmp(extension, "GL_KHR_shader_subgroup_ballot") == 0)
+        updateExtensionBehavior(line, "GL_KHR_shader_subgroup_basic", behaviorString);
+    else if (strcmp(extension, "GL_KHR_shader_subgroup_shuffle") == 0)
+        updateExtensionBehavior(line, "GL_KHR_shader_subgroup_basic", behaviorString);
+    else if (strcmp(extension, "GL_KHR_shader_subgroup_shuffle_relative") == 0)
+        updateExtensionBehavior(line, "GL_KHR_shader_subgroup_basic", behaviorString);
+    else if (strcmp(extension, "GL_KHR_shader_subgroup_clustered") == 0)
+        updateExtensionBehavior(line, "GL_KHR_shader_subgroup_basic", behaviorString);
+    else if (strcmp(extension, "GL_KHR_shader_subgroup_quad") == 0)
+        updateExtensionBehavior(line, "GL_KHR_shader_subgroup_basic", behaviorString);
 }
 
 void TParseVersions::updateExtensionBehavior(const char* extension, TExtensionBehavior behavior)

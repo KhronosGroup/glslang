@@ -306,6 +306,14 @@ INSTANTIATE_TEST_CASE_P(
         "spv.storageBuffer.vert",
         "spv.precise.tese",
         "spv.precise.tesc",
+        "spv.subgroupBasic.comp",
+        "spv.subgroupVote.comp",
+        "spv.subgroupBallot.comp",
+        "spv.subgroupShuffle.comp",
+        "spv.subgroupShuffleRelative.comp",
+        "spv.subgroupArithmetic.comp",
+        "spv.subgroupClustered.comp",
+        "spv.subgroupQuad.comp",
     })),
     FileNameAsCustomTestSuffix
 );
