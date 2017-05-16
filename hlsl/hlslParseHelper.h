@@ -289,7 +289,7 @@ protected:
     bool isReference(const TType& type) const { return isStructBufferType(type); }
 
     // Return true if this a buffer type that has an associated counter buffer.
-    bool hasStructBuffCounter(const TString& name) const;
+    bool hasStructBuffCounter(const TType&) const;
 
     // Finalization step: remove unused buffer blocks from linkage (we don't know until the
     // shader is entirely compiled)
@@ -383,7 +383,6 @@ protected:
     // Structuredbuffer shared types.  Typically there are only a few.
     TVector<TType*> structBufferTypes;
     
-    TMap<TString, TBuiltInVariable> structBufferBuiltIn;
     TMap<TString, bool> structBufferCounter;
 
     // The builtin interstage IO map considers e.g, EvqPosition on input and output separately, so that we

@@ -1985,7 +1985,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
 
         // GS outputs are via emit, so we do not copy them here.
         if (param.type->getQualifier().isParamOutput()) {
-            if (param.declaredBuiltIn == EbvGsOutputStream) {
+            if (param.getDeclaredBuiltIn() == EbvGsOutputStream) {
                 // GS output stream does not assign outputs here: it's the Append() method
                 // which writes to the output, probably multiple times separated by Emit.
                 // We merely remember the output to use, here.
@@ -2092,7 +2092,7 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
             TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingIn);
             inputs.push_back(argAsGlobal);
 
-            if (function[i].declaredBuiltIn == EbvInputPatch)
+            if (function[i].getDeclaredBuiltIn() == EbvInputPatch)
                 inputPatch = argAsGlobal;
         }
         if (paramType.getQualifier().isParamOutput()) {
@@ -2481,13 +2481,9 @@ TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc
 }
 
 // Return true if this a buffer type that has an associated counter buffer.
-bool HlslParseContext::hasStructBuffCounter(const TString& name) const
+bool HlslParseContext::hasStructBuffCounter(const TType& type) const
 {
-    const auto bivIt = structBufferBuiltIn.find(name);
-    if (bivIt == structBufferBuiltIn.end())
-        return false;
-
-    switch (bivIt->second) {
+    switch (type.getQualifier().declaredBuiltIn) {
     case EbvAppendConsume:       // fall through...
     case EbvRWStructuredBuffer:  // ...
         return true;
@@ -2503,7 +2499,7 @@ void HlslParseContext::declareStructBufferCounter(const TSourceLoc& loc, const T
     if (! isStructBufferType(bufferType))
         return;
 
-    if (! hasStructBuffCounter(name))
+    if (! hasStructBuffCounter(bufferType))
         return;
 
     // Counter type
@@ -2574,8 +2570,6 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     if (bufferObj == nullptr || bufferObj->getAsSymbolNode() == nullptr)
         return;
 
-    const TString bufferName(bufferObj->getAsSymbolNode()->getName());
-
     // Some methods require a hidden internal counter, obtained via getStructBufferCounter().
     // This lambda adds something to it and returns the old value.
     const auto incDecCounter = [&](int incval) -> TIntermTyped* {
@@ -2604,20 +2598,14 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
         {
             TIntermTyped* argIndex = makeIntegerIndex(argAggregate->getSequence()[1]->getAsTyped());  // index
 
-            const auto bivIt = structBufferBuiltIn.find(bufferName);
-
-            const TBuiltInVariable builtInType = (bivIt != structBufferBuiltIn.end()) ? bivIt->second : EbvNone;
-
             const TType& bufferType = bufferObj->getType();
+
+            const TBuiltInVariable builtInType = bufferType.getQualifier().declaredBuiltIn;
 
             // Byte address buffers index in bytes (only multiples of 4 permitted... not so much a byte address
             // buffer then, but that's what it calls itself.
-            // TODO: it would be easier to track the declared (pre-sanitized) builtInType in the TType.
-            //       If/when that happens, this should be simplified to look *only* at the builtin type.
             const bool isByteAddressBuffer = (builtInType == EbvByteAddressBuffer   || 
-                                              builtInType == EbvRWByteAddressBuffer ||
-                                              (builtInType == EbvNone && !bufferType.isVector() &&
-                                               bufferType.getBasicType() == EbtUint));
+                                              builtInType == EbvRWByteAddressBuffer);
                 
 
             if (isByteAddressBuffer)
@@ -7234,10 +7222,6 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     switch (type.getQualifier().storage) {
     case EvqUniform:
     case EvqBuffer:
-        // remember pre-sanitized builtin type
-        if (type.getQualifier().storage == EvqBuffer && instanceName != nullptr)
-            structBufferBuiltIn[*instanceName] = type.getQualifier().builtIn;
-
         correctUniform(type.getQualifier());
         break;
     case EvqVaryingIn:
@@ -8043,6 +8027,9 @@ void HlslParseContext::correctOutput(TQualifier& qualifier)
 // Make the IO decorations etc. be appropriate only for uniform type interfaces.
 void HlslParseContext::correctUniform(TQualifier& qualifier)
 {
+    if (qualifier.declaredBuiltIn == EbvNone)
+        qualifier.declaredBuiltIn = qualifier.builtIn;
+
     qualifier.builtIn = EbvNone;
     qualifier.clearInterstage();
     qualifier.clearInterstageLayout();
@@ -8111,8 +8098,8 @@ void HlslParseContext::addPatchConstantInvocation()
             if (storage == EvqConstReadOnly) // treated identically to input
                 storage = EvqIn;
 
-            if (function[p].declaredBuiltIn != EbvNone)
-                builtIns.insert(HlslParseContext::tInterstageIoData(function[p].declaredBuiltIn, storage));
+            if (function[p].getDeclaredBuiltIn() != EbvNone)
+                builtIns.insert(HlslParseContext::tInterstageIoData(function[p].getDeclaredBuiltIn(), storage));
             else
                 builtIns.insert(HlslParseContext::tInterstageIoData(function[p].type->getQualifier().builtIn, storage));
         }
@@ -8142,7 +8129,7 @@ void HlslParseContext::addPatchConstantInvocation()
 
     const auto isOutputPatch = [this](TFunction& patchConstantFunction, int param) {
         const TType& type = *patchConstantFunction[param].type;
-        const TBuiltInVariable biType = patchConstantFunction[param].declaredBuiltIn;
+        const TBuiltInVariable biType = patchConstantFunction[param].getDeclaredBuiltIn();
 
         return type.isArray() && !type.isRuntimeSizedArray() && biType == EbvOutputPatch;
     };
@@ -8198,7 +8185,7 @@ void HlslParseContext::addPatchConstantInvocation()
 
         // Now we'll add those to the entry and to the linkage.
         for (int p=0; p<pcfParamCount; ++p) {
-            const TBuiltInVariable biType   = patchConstantFunction[p].declaredBuiltIn;
+            const TBuiltInVariable biType   = patchConstantFunction[p].getDeclaredBuiltIn();
             TStorageQualifier storage = patchConstantFunction[p].type->getQualifier().storage;
 
             // Track whether there is an output patch param
@@ -8264,7 +8251,7 @@ void HlslParseContext::addPatchConstantInvocation()
                 inputArg = intermediate.addSymbol(*perCtrlPtVar, loc);
             } else {
                 // find which builtin it is
-                const TBuiltInVariable biType = patchConstantFunction[p].declaredBuiltIn;
+                const TBuiltInVariable biType = patchConstantFunction[p].getDeclaredBuiltIn();
                 
                 inputArg = findLinkageSymbol(biType);
 
@@ -8345,7 +8332,7 @@ void HlslParseContext::addPatchConstantInvocation()
 
                 if (paramType.getQualifier().isParamInput())  {
                     TIntermTyped* arg = nullptr;
-                    if ((*entryPointFunction)[i].declaredBuiltIn == EbvInvocationId) {
+                    if ((*entryPointFunction)[i].getDeclaredBuiltIn() == EbvInvocationId) {
                         // substitute invocation ID with the array element ID
                         arg = intermediate.addConstantUnion(cpt, loc);
                     } else {
