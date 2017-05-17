@@ -4319,6 +4319,7 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         //
         const TFunction* fnCandidate = nullptr;
         bool builtIn = false;
+        int thisDepth = 0;
 
         // TODO: this needs improvement: there's no way at present to look up a signature in
         // the symbol table for an arbitrary type.  This is a temporary hack until that ability exists.
@@ -4351,7 +4352,7 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         }
 
         if (fnCandidate == nullptr)
-            fnCandidate = findFunction(loc, *function, builtIn, arguments);
+            fnCandidate = findFunction(loc, *function, builtIn, thisDepth, arguments);
 
         if (fnCandidate) {
             // This is a declared function that might map to
@@ -4362,6 +4363,18 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
             // Error check for a function requiring specific extensions present.
             if (builtIn && fnCandidate->getNumExtensions())
                 requireExtensions(loc, fnCandidate->getNumExtensions(), fnCandidate->getExtensions(), fnCandidate->getName().c_str());
+
+            // turn an implicit member-function resolution into an explicit call
+            TString callerName;
+            if (thisDepth == 0)
+                callerName = fnCandidate->getMangledName();
+            else {
+                // get the explicit (full) name of the function
+                callerName = currentTypePrefix[currentTypePrefix.size() - thisDepth];
+                callerName += fnCandidate->getMangledName();
+                // insert the implicit calling argument
+                pushFrontArguments(intermediate.addSymbol(*getImplicitThis(thisDepth)), arguments);
+            }
 
             // Convert 'in' arguments
             if (arguments)
@@ -4383,14 +4396,14 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
                 // It could still be a built-in function, but only if PureOperatorBuiltins == false.
                 result = intermediate.setAggregateOperator(arguments, EOpFunctionCall, fnCandidate->getType(), loc);
                 TIntermAggregate* call = result->getAsAggregate();
-                call->setName(fnCandidate->getMangledName());
+                call->setName(callerName);
 
                 // this is how we know whether the given function is a built-in function or a user-defined function
                 // if builtIn == false, it's a userDefined -> could be an overloaded built-in function also
                 // if builtIn == true, it's definitely a built-in function with EOpNull
                 if (! builtIn) {
                     call->setUserDefined();
-                    intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
+                    intermediate.addToCallGraph(infoSink, currentCaller, callerName);
                 }
             }
 
@@ -4425,6 +4438,19 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
 
     return result;
+}
+
+// An initial argument list is difficult: it can be null, or a single node,
+// or an aggregate if more than one argument.  Add one to the front, maintaining
+// this lack of uniformity.
+void HlslParseContext::pushFrontArguments(TIntermTyped* front, TIntermTyped*& arguments)
+{
+    if (arguments == nullptr)
+        arguments = front;
+    else if (arguments->getAsAggregate() != nullptr)
+        arguments->getAsAggregate()->getSequence().insert(arguments->getAsAggregate()->getSequence().begin(), front);
+    else
+        arguments = intermediate.growAggregate(front, arguments);
 }
 
 //
@@ -6184,18 +6210,17 @@ void HlslParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQuali
 //
 // Return the function symbol if found, otherwise nullptr.
 //
-const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction& call, bool& builtIn,
+const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction& call, bool& builtIn, int& thisDepth,
                                                 TIntermTyped*& args)
 {
-    // const TFunction* function = nullptr;
-
     if (symbolTable.isFunctionNameVariable(call.getName())) {
         error(loc, "can't use function syntax on variable", call.getName().c_str(), "");
         return nullptr;
     }
 
     // first, look for an exact match
-    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn);
+    bool dummyScope;
+    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn, &dummyScope, &thisDepth);
     if (symbol)
         return symbol->getAsFunction();
 
@@ -6205,7 +6230,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
     TVector<const TFunction*> candidateList;
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
 
-    // These builtin ops can accept any type, so we bypass the argument selection
+    // These built-in ops can accept any type, so we bypass the argument selection
     if (candidateList.size() == 1 && builtIn &&
         (candidateList[0]->getBuiltInOp() == EOpMethodAppend ||
          candidateList[0]->getBuiltInOp() == EOpMethodRestartStrip ||
@@ -7782,11 +7807,23 @@ TIntermNode* HlslParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* ex
 
 // Make a new symbol-table level that is made out of the members of a structure.
 // This should be done as an anonymous struct (name is "") so that the symbol table
-// finds the members with on explicit reference to a 'this' variable.
-void HlslParseContext::pushThisScope(const TType& thisStruct)
+// finds the members with no explicit reference to a 'this' variable.
+void HlslParseContext::pushThisScope(const TType& thisStruct, const TVector<TFunctionDeclarator>& functionDeclarators)
 {
+    // member variables
     TVariable& thisVariable = *new TVariable(NewPoolTString(""), thisStruct);
     symbolTable.pushThis(thisVariable);
+
+    // member functions
+    for (auto it = functionDeclarators.begin(); it != functionDeclarators.end(); ++it) {
+        // member should have a prefix matching currentTypePrefix.back()
+        // but, symbol lookup within the class scope will just use the
+        // unprefixed name. Hence, there are two: one fully prefixed and
+        // one with no prefix.
+        TFunction& member = *it->function->clone();
+        member.removePrefix(currentTypePrefix.back());
+        symbolTable.insert(member);
+    }
 }
 
 // Track levels of class/struct/namespace nesting with a prefix string using
@@ -7801,11 +7838,10 @@ void HlslParseContext::pushNamespace(const TString& typeName)
 {
     // make new type prefix
     TString newPrefix;
-    if (currentTypePrefix.size() > 0) {
+    if (currentTypePrefix.size() > 0)
         newPrefix = currentTypePrefix.back();
-        newPrefix.append(scopeMangler);
-    }
     newPrefix.append(typeName);
+    newPrefix.append(scopeMangler);
     currentTypePrefix.push_back(newPrefix);
 }
 
@@ -7823,7 +7859,6 @@ void HlslParseContext::getFullNamespaceName(const TString*& name) const
         return;
 
     TString* fullName = NewPoolTString(currentTypePrefix.back().c_str());
-    fullName->append(scopeMangler);
     fullName->append(*name);
     name = fullName;
 }
