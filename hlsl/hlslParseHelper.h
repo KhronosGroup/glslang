@@ -277,6 +277,7 @@ protected:
 
     // Test method names
     bool isStructBufferMethod(const TString& name) const;
+    void counterBufferType(const TSourceLoc& loc, TType& type);
 
     // Return standard sample position array
     TIntermConstantUnion* getSamplePosArray(int count);
@@ -285,6 +286,9 @@ protected:
     bool isStructBufferType(const TType& type) const { return getStructBufferContentType(type) != nullptr; }
     TIntermTyped* indexStructBufferContent(const TSourceLoc& loc, TIntermTyped* buffer) const;
     TIntermTyped* getStructBufferCounter(const TSourceLoc& loc, TIntermTyped* buffer);
+    TString getStructBuffCounterName(const TString&) const;
+    void addStructBuffArguments(const TSourceLoc& loc, TIntermAggregate*&);
+    void addStructBufferHiddenCounterParam(const TSourceLoc& loc, TParameter&, TIntermAggregate*&);
 
     // Return true if this type is a reference.  This is not currently a type method in case that's
     // a language specific answer.

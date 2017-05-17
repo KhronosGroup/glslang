@@ -256,6 +256,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.structarray.flatten.geom", "main"},
         {"hlsl.structbuffer.frag", "main"},
         {"hlsl.structbuffer.append.frag", "main"},
+        {"hlsl.structbuffer.append.fn.frag", "main"},
         {"hlsl.structbuffer.atomics.frag", "main"},
         {"hlsl.structbuffer.byte.frag", "main"},
         {"hlsl.structbuffer.coherent.frag", "main"},

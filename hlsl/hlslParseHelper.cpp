@@ -1580,6 +1580,28 @@ void HlslParseContext::addInterstageIoToLinkage()
     }
 }
 
+// For struct buffers with counters, we must pass the counter buffer as hidden parameter.
+// This adds the hidden parameter to the parameter list in 'paramNodes' if needed.
+// Otherwise, it's a no-op
+void HlslParseContext::addStructBufferHiddenCounterParam(const TSourceLoc& loc, TParameter& param, TIntermAggregate*& paramNodes)
+{
+    if (! hasStructBuffCounter(*param.type))
+        return;
+
+    const TString counterBlockName(getStructBuffCounterName(*param.name));
+
+    TType counterType;
+    counterBufferType(loc, counterType);
+    TVariable *variable = makeInternalVariable(counterBlockName, counterType);
+
+    if (! symbolTable.insert(*variable))
+        error(loc, "redefinition", variable->getName().c_str(), "");
+
+    paramNodes = intermediate.growAggregate(paramNodes,
+                                            intermediate.addSymbol(*variable, loc),
+                                            loc);
+}
+
 //
 // Handle seeing the function prototype in front of a function definition in the grammar.
 // The body is handled after this function returns.
@@ -1649,7 +1671,8 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
                                                     intermediate.addSymbol(*variable, loc),
                                                     loc);
 
-            // TODO: for struct buffers with counters, pass counter buffer as hidden parameter
+            // Add hidden parameter for struct buffer counters, if needed.
+            addStructBufferHiddenCounterParam(loc, param, paramNodes);
         } else
             paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(*param.type, loc), loc);
     }
@@ -2492,6 +2515,29 @@ bool HlslParseContext::hasStructBuffCounter(const TType& type) const
     }
 }
 
+void HlslParseContext::counterBufferType(const TSourceLoc& loc, TType& type)
+{
+    // Counter type
+    TType* counterType = new TType(EbtInt, EvqBuffer);
+    counterType->setFieldName("@count");
+
+    TTypeList* blockStruct = new TTypeList;
+    TTypeLoc  member = { counterType, loc };
+    blockStruct->push_back(member);
+
+    TType blockType(blockStruct, "", counterType->getQualifier());
+    blockType.getQualifier().storage = EvqBuffer;
+
+    type.shallowCopy(blockType);
+    shareStructBufferType(type);
+}
+
+// knowledge of how to construct block name, in one place instead of N places.
+TString HlslParseContext::getStructBuffCounterName(const TString& blockName) const
+{
+    return blockName + "@count";
+}
+
 // declare counter for a structured buffer type
 void HlslParseContext::declareStructBufferCounter(const TSourceLoc& loc, const TType& bufferType, const TString& name)
 {
@@ -2502,21 +2548,13 @@ void HlslParseContext::declareStructBufferCounter(const TSourceLoc& loc, const T
     if (! hasStructBuffCounter(bufferType))
         return;
 
-    // Counter type
-    TType* counterType = new TType(EbtInt, EvqBuffer);
-    counterType->setFieldName("@count");
+    TType blockType;
+    counterBufferType(loc, blockType);
 
-    TTypeList* blockStruct = new TTypeList;
-    TTypeLoc  member = { counterType, loc };
-    blockStruct->push_back(member);
+    TString* blockName = new TString(getStructBuffCounterName(name));
 
-    TString* blockName = new TString(name);
-    *blockName += "@count";
-
+    // Counter buffer does not have its own counter buffer.  TODO: there should be a better way to track this.
     structBufferCounter[*blockName] = false;
-
-    TType blockType(blockStruct, "", counterType->getQualifier());
-    blockType.getQualifier().storage = EvqBuffer;
 
     shareStructBufferType(blockType);
     declareBlock(loc, blockType, blockName);
@@ -2529,13 +2567,12 @@ TIntermTyped* HlslParseContext::getStructBufferCounter(const TSourceLoc& loc, TI
     if (buffer == nullptr || ! isStructBufferType(buffer->getType()))
         return nullptr;
 
-    TString blockName(buffer->getAsSymbolNode()->getName());
-    blockName += "@count";
+    const TString counterBlockName(getStructBuffCounterName(buffer->getAsSymbolNode()->getName()));
 
     // Mark the counter as being used
-    structBufferCounter[blockName] = true;
+    structBufferCounter[counterBlockName] = true;
 
-    TIntermTyped* counterVar = handleVariable(loc, &blockName);  // find the block structure
+    TIntermTyped* counterVar = handleVariable(loc, &counterBlockName);  // find the block structure
     TIntermTyped* index = intermediate.addConstantUnion(0, loc); // index to counter inside block struct
 
     TIntermTyped* counterMember = intermediate.addIndex(EOpIndexDirectStruct, counterVar, index, loc);
@@ -4321,6 +4358,8 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         bool builtIn = false;
         int thisDepth = 0;
 
+        TIntermAggregate* aggregate = arguments ? arguments->getAsAggregate() : nullptr;
+
         // TODO: this needs improvement: there's no way at present to look up a signature in
         // the symbol table for an arbitrary type.  This is a temporary hack until that ability exists.
         // It will have false positives, since it doesn't check arg counts or types.
@@ -4330,14 +4369,12 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
 
             TIntermTyped* arg0 = nullptr;
 
-            if (arguments->getAsAggregate() && arguments->getAsAggregate()->getSequence().size() > 0)
-                arg0 = arguments->getAsAggregate()->getSequence()[0]->getAsTyped();
+            if (aggregate && aggregate->getSequence().size() > 0)
+                arg0 = aggregate->getSequence()[0]->getAsTyped();
             else if (arguments->getAsSymbolNode())
                 arg0 = arguments->getAsSymbolNode();
 
             if (arg0 != nullptr && isStructBufferType(arg0->getType())) {
-                // TODO: for struct buffers with counters, pass counter buffer as hidden parameter
-
                 static const int methodPrefixSize = sizeof(BUILTIN_PREFIX)-1;
 
                 if (function->getName().length() > methodPrefixSize &&
@@ -4379,6 +4416,11 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
             // Convert 'in' arguments
             if (arguments)
                 addInputArgumentConversions(*fnCandidate, arguments);
+
+            // If any argument is a pass-by-reference struct buffer with an associated counter
+            // buffer, we have to add another hidden parameter for that counter.
+            if (aggregate && !builtIn)
+                addStructBuffArguments(loc, aggregate);
 
             op = fnCandidate->getBuiltInOp();
             if (builtIn && op != EOpNull) {
@@ -4426,7 +4468,12 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
                 for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
                     TStorageQualifier qual = (*fnCandidate)[i].type->getQualifier().storage;
                     qualifierList.push_back(qual);
+
+                    // add counter buffer argument qualifier
+                    if (hasStructBuffCounter(*(*fnCandidate)[i].type))
+                        qualifierList.push_back(qual);
                 }
+
                 result = addOutputArgumentConversions(*fnCandidate, *result->getAsOperator());
             }
         }
@@ -4607,6 +4654,55 @@ TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& fu
 
     return conversionTree;
 }
+
+//
+// Add any needed "hidden" counter buffer arguments for function calls.
+//
+// Modifies the 'aggregate' argument if needed.  Otherwise, is no-op.
+//
+void HlslParseContext::addStructBuffArguments(const TSourceLoc& loc, TIntermAggregate*& aggregate)
+{
+    // See if there are any SB types with counters.
+    const bool hasStructBuffArg =
+        std::any_of(aggregate->getSequence().begin(),
+                    aggregate->getSequence().end(),
+                    [this](const TIntermNode* node) {
+                        return (node->getAsTyped() != nullptr) && hasStructBuffCounter(node->getAsTyped()->getType());
+                    });
+
+    // Nothing to do, if we didn't find one.
+    if (! hasStructBuffArg)
+        return;
+
+    TIntermSequence argsWithCounterBuffers;
+
+    for (int param=0; param<int(aggregate->getSequence().size()); ++param) {
+        argsWithCounterBuffers.push_back(aggregate->getSequence()[param]);
+
+        if (hasStructBuffCounter(aggregate->getSequence()[param]->getAsTyped()->getType())) {
+            const TIntermSymbol* blockSym = aggregate->getSequence()[param]->getAsSymbolNode();
+            if (blockSym != nullptr) {
+                TType counterType;
+                counterBufferType(loc, counterType);
+
+                const TString counterBlockName(getStructBuffCounterName(blockSym->getName()));
+
+                TVariable* variable = makeInternalVariable(counterBlockName, counterType);
+
+                // Mark this buffer as requiring a counter block.  TODO: there should be a better
+                // way to track it.
+                structBufferCounter[counterBlockName] = true;
+
+                TIntermSymbol* sym = intermediate.addSymbol(*variable, loc);
+                argsWithCounterBuffers.push_back(sym);
+            }
+        }
+    }
+
+    // Swap with the temp list we've built up.
+    aggregate->getSequence().swap(argsWithCounterBuffers);
+}
+
 
 //
 // Do additional checking of built-in function calls that is not caught
@@ -5766,6 +5862,7 @@ void HlslParseContext::paramFix(TType& type)
             bufferQualifier.storage = type.getQualifier().storage;
             bufferQualifier.readonly = type.getQualifier().readonly;
             bufferQualifier.coherent = type.getQualifier().coherent;
+            bufferQualifier.declaredBuiltIn = type.getQualifier().declaredBuiltIn;
             type.getQualifier() = bufferQualifier;
             break;
         }
