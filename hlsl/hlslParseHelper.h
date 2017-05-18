@@ -42,6 +42,7 @@
 namespace glslang {
 
 class TAttributeMap; // forward declare
+class TFunctionDeclarator;
 
 class HlslParseContext : public TParseContextBase {
 public:
@@ -93,6 +94,7 @@ public:
     void decomposeSampleMethods(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     void decomposeStructBufferMethods(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     void decomposeGeometryMethods(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
+    void pushFrontArguments(TIntermTyped* front, TIntermTyped*& arguments);
     void addInputArgumentConversions(const TFunction&, TIntermTyped*&);
     TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermOperator&);
     void builtInOpCheck(const TSourceLoc&, const TFunction&, TIntermOperator&);
@@ -135,7 +137,7 @@ public:
     void mergeObjectLayoutQualifiers(TQualifier& dest, const TQualifier& src, bool inheritOnly);
     void checkNoShaderLayouts(const TSourceLoc&, const TShaderQualifiers&);
 
-    const TFunction* findFunction(const TSourceLoc& loc, TFunction& call, bool& builtIn, TIntermTyped*& args);
+    const TFunction* findFunction(const TSourceLoc& loc, TFunction& call, bool& builtIn, int& thisDepth, TIntermTyped*& args);
     void declareTypedef(const TSourceLoc&, const TString& identifier, const TType&);
     void declareStruct(const TSourceLoc&, TString& structName, TType&);
     TSymbol* lookupUserType(const TString&, TType&);
@@ -166,7 +168,7 @@ public:
     void pushScope()         { symbolTable.push(); }
     void popScope()          { symbolTable.pop(0); }
 
-    void pushThisScope(const TType&);
+    void pushThisScope(const TType&, const TVector<TFunctionDeclarator>&);
     void popThisScope()      { symbolTable.pop(0); }
 
     void pushImplicitThis(TVariable* thisParameter) { implicitThisStack.push_back(thisParameter); }
@@ -275,6 +277,7 @@ protected:
 
     // Test method names
     bool isStructBufferMethod(const TString& name) const;
+    void counterBufferType(const TSourceLoc& loc, TType& type);
 
     // Return standard sample position array
     TIntermConstantUnion* getSamplePosArray(int count);
@@ -283,13 +286,16 @@ protected:
     bool isStructBufferType(const TType& type) const { return getStructBufferContentType(type) != nullptr; }
     TIntermTyped* indexStructBufferContent(const TSourceLoc& loc, TIntermTyped* buffer) const;
     TIntermTyped* getStructBufferCounter(const TSourceLoc& loc, TIntermTyped* buffer);
+    TString getStructBuffCounterName(const TString&) const;
+    void addStructBuffArguments(const TSourceLoc& loc, TIntermAggregate*&);
+    void addStructBufferHiddenCounterParam(const TSourceLoc& loc, TParameter&, TIntermAggregate*&);
 
     // Return true if this type is a reference.  This is not currently a type method in case that's
     // a language specific answer.
     bool isReference(const TType& type) const { return isStructBufferType(type); }
 
     // Return true if this a buffer type that has an associated counter buffer.
-    bool hasStructBuffCounter(const TString& name) const;
+    bool hasStructBuffCounter(const TType&) const;
 
     // Finalization step: remove unused buffer blocks from linkage (we don't know until the
     // shader is entirely compiled)
@@ -383,7 +389,6 @@ protected:
     // Structuredbuffer shared types.  Typically there are only a few.
     TVector<TType*> structBufferTypes;
     
-    TMap<TString, TBuiltInVariable> structBufferBuiltIn;
     TMap<TString, bool> structBufferCounter;
 
     // The builtin interstage IO map considers e.g, EvqPosition on input and output separately, so that we
