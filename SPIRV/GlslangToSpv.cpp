@@ -2603,11 +2603,9 @@ void TGlslangToSpvTraverser::accessChainStore(const glslang::TType& type, spv::I
             spv::Id bvecType = builder.makeVectorType(builder.makeBoolType(), vecSize);
             if (nominalTypeId != bvecType) {
                 // keep these outside arguments, for determinant order-of-evaluation
-                spv::Id one = builder.makeUintConstant(1);
-                spv::Id zero = builder.makeUintConstant(0);
-                rvalue = builder.createTriOp(spv::OpSelect, nominalTypeId, rvalue,
-                                             makeSmearedConstant(one, vecSize),
-                                             makeSmearedConstant(zero, vecSize));
+                spv::Id one = makeSmearedConstant(builder.makeUintConstant(1), vecSize);
+                spv::Id zero = makeSmearedConstant(builder.makeUintConstant(0), vecSize);
+                rvalue = builder.createTriOp(spv::OpSelect, nominalTypeId, rvalue, one, zero);
             } else if (builder.getTypeId(rvalue) != bvecType)
                 rvalue = builder.createBinOp(spv::OpINotEqual, bvecType, rvalue,
                                              makeSmearedConstant(builder.makeUintConstant(0), vecSize));
