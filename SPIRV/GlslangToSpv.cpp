@@ -2590,20 +2590,25 @@ void TGlslangToSpvTraverser::accessChainStore(const glslang::TType& type, spv::I
         if (builder.isScalarType(nominalTypeId)) {
             // Conversion for bool
             spv::Id boolType = builder.makeBoolType();
-            if (nominalTypeId != boolType)
-                rvalue = builder.createTriOp(spv::OpSelect, nominalTypeId, rvalue, builder.makeUintConstant(1),
-                                                                                   builder.makeUintConstant(0));
-            else if (builder.getTypeId(rvalue) != boolType)
+            if (nominalTypeId != boolType) {
+                // keep these outside arguments, for determinant order-of-evaluation
+                spv::Id one = builder.makeUintConstant(1);
+                spv::Id zero = builder.makeUintConstant(0);
+                rvalue = builder.createTriOp(spv::OpSelect, nominalTypeId, rvalue, one, zero);
+            } else if (builder.getTypeId(rvalue) != boolType)
                 rvalue = builder.createBinOp(spv::OpINotEqual, boolType, rvalue, builder.makeUintConstant(0));
         } else if (builder.isVectorType(nominalTypeId)) {
             // Conversion for bvec
             int vecSize = builder.getNumTypeComponents(nominalTypeId);
             spv::Id bvecType = builder.makeVectorType(builder.makeBoolType(), vecSize);
-            if (nominalTypeId != bvecType)
+            if (nominalTypeId != bvecType) {
+                // keep these outside arguments, for determinant order-of-evaluation
+                spv::Id one = builder.makeUintConstant(1);
+                spv::Id zero = builder.makeUintConstant(0);
                 rvalue = builder.createTriOp(spv::OpSelect, nominalTypeId, rvalue,
-                                             makeSmearedConstant(builder.makeUintConstant(1), vecSize),
-                                             makeSmearedConstant(builder.makeUintConstant(0), vecSize));
-            else if (builder.getTypeId(rvalue) != bvecType)
+                                             makeSmearedConstant(one, vecSize),
+                                             makeSmearedConstant(zero, vecSize));
+            } else if (builder.getTypeId(rvalue) != bvecType)
                 rvalue = builder.createBinOp(spv::OpINotEqual, bvecType, rvalue,
                                              makeSmearedConstant(builder.makeUintConstant(0), vecSize));
         }
