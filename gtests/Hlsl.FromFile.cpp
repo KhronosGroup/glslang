@@ -287,6 +287,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.swizzle.frag", "PixelShaderFunction"},
         {"hlsl.templatetypes.frag", "PixelShaderFunction"},
         {"hlsl.tx.bracket.frag", "main"},
+        {"hlsl.tx.overload.frag", "main"},
         {"hlsl.type.half.frag", "main"},
         {"hlsl.type.identifier.frag", "main"},
         {"hlsl.typeGraphCopy.vert", "main"},
