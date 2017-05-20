@@ -5356,12 +5356,18 @@ bool TGlslangToSpvTraverser::isTrivialLeaf(const glslang::TIntermTyped* node)
 }
 
 // A node is trivial if it is a single operation with no side effects.
-// Error on the side of saying non-trivial.
+// Vector results seem ill-defined, currently classifying them as trivial too,
+// to avoid scalar bool-based control-flow logic.
+// Otherwise, error on the side of saying non-trivial.
 // Return true if trivial.
 bool TGlslangToSpvTraverser::isTrivial(const glslang::TIntermTyped* node)
 {
     if (node == nullptr)
         return false;
+
+    // count vectors as trivial
+    if (node->getType().isVector())
+        return true;
 
     // symbols and constants are trivial
     if (isTrivialLeaf(node))
