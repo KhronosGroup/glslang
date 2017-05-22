@@ -54,7 +54,7 @@ int main(int argc, char** argv)
             glslangtest::GlobalTestSettings.updateMode = true;
         }
         if (std::string("--test-root") == argv[i]) {
-            // Allow the user set the tets root directory.  This is useful
+            // Allow the user set the test root directory.  This is useful
             // for testing with files from another source tree.
             if (i + 1 < argc) {
                 glslangtest::GlobalTestSettings.testRoot = argv[i + 1];

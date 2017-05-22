@@ -1,0 +1,68 @@
+hlsl.waveordered2.comp
+ERROR: 0:7: 'GlobalOrderedCountIncrement' : GlobalOrderedCountIncrement() unsupported 
+ERROR: 1 compilation errors.  No code generated.
+
+
+Shader version: 500
+local_size = (32, 16, 1)
+ERROR: node is still EOpNull!
+0:5  Function Definition: @CSMain( ( temp void)
+0:5    Function Parameters: 
+0:?     Sequence
+0:6      Sequence
+0:6        move second child to first child ( temp uint)
+0:6          'i' ( temp uint)
+0:6          Constant:
+0:6            42 (const uint)
+0:7      move second child to first child ( temp uint)
+0:7        indirect index (layout( row_major std430) buffer uint)
+0:7          @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of uint)
+0:7            'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of uint @data})
+0:7            Constant:
+0:7              0 (const uint)
+0:7          ERROR: Bad unary op
+ ( temp uint)
+0:7            'i' ( temp uint)
+0:7        Constant:
+0:7          1 (const uint)
+0:5  Function Definition: CSMain( ( temp void)
+0:5    Function Parameters: 
+0:?     Sequence
+0:5      Function Call: @CSMain( ( temp void)
+0:?   Linker Objects
+0:?     'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of uint @data})
+
+
+Linked compute stage:
+
+
+Shader version: 500
+local_size = (32, 16, 1)
+ERROR: node is still EOpNull!
+0:5  Function Definition: @CSMain( ( temp void)
+0:5    Function Parameters: 
+0:?     Sequence
+0:6      Sequence
+0:6        move second child to first child ( temp uint)
+0:6          'i' ( temp uint)
+0:6          Constant:
+0:6            42 (const uint)
+0:7      move second child to first child ( temp uint)
+0:7        indirect index (layout( row_major std430) buffer uint)
+0:7          @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of uint)
+0:7            'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of uint @data})
+0:7            Constant:
+0:7              0 (const uint)
+0:7          ERROR: Bad unary op
+ ( temp uint)
+0:7            'i' ( temp uint)
+0:7        Constant:
+0:7          1 (const uint)
+0:5  Function Definition: CSMain( ( temp void)
+0:5    Function Parameters: 
+0:?     Sequence
+0:5      Function Call: @CSMain( ( temp void)
+0:?   Linker Objects
+0:?     'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of uint @data})
+
+SPIR-V is not generated for failed compile or link

@@ -1,0 +1,123 @@
+struct Types
+{
+	uint4 u;
+	int4 i;
+	float4 f;
+	double4 d;
+};
+
+RWStructuredBuffer<Types> data;
+
+[numthreads(32, 16, 1)]
+void CSMain(uint3 dti : SV_DispatchThreadID)
+{
+	data[dti.x].u = WaveAllSum(data[dti.x].u);
+	data[dti.x].u.x = WaveAllSum(data[dti.x].u.x);
+	data[dti.x].u.xy = WaveAllSum(data[dti.x].u.xy);
+	data[dti.x].u.xyz = WaveAllSum(data[dti.x].u.xyz);
+
+	data[dti.x].i = WaveAllSum(data[dti.x].i);
+	data[dti.x].i.x = WaveAllSum(data[dti.x].i.x);
+	data[dti.x].i.xy = WaveAllSum(data[dti.x].i.xy);
+	data[dti.x].i.xyz = WaveAllSum(data[dti.x].i.xyz);
+
+	data[dti.x].f = WaveAllSum(data[dti.x].f);
+	data[dti.x].f.x = WaveAllSum(data[dti.x].f.x);
+	data[dti.x].f.xy = WaveAllSum(data[dti.x].f.xy);
+	data[dti.x].f.xyz = WaveAllSum(data[dti.x].f.xyz);
+
+	data[dti.x].d = WaveAllSum(data[dti.x].d);
+	data[dti.x].d.x = WaveAllSum(data[dti.x].d.x);
+	data[dti.x].d.xy = WaveAllSum(data[dti.x].d.xy);
+	data[dti.x].d.xyz = WaveAllSum(data[dti.x].d.xyz);
+
+	data[dti.x].u = WaveAllProduct(data[dti.x].u);
+	data[dti.x].u.x = WaveAllProduct(data[dti.x].u.x);
+	data[dti.x].u.xy = WaveAllProduct(data[dti.x].u.xy);
+	data[dti.x].u.xyz = WaveAllProduct(data[dti.x].u.xyz);
+
+	data[dti.x].i = WaveAllProduct(data[dti.x].i);
+	data[dti.x].i.x = WaveAllProduct(data[dti.x].i.x);
+	data[dti.x].i.xy = WaveAllProduct(data[dti.x].i.xy);
+	data[dti.x].i.xyz = WaveAllProduct(data[dti.x].i.xyz);
+
+	data[dti.x].f = WaveAllProduct(data[dti.x].f);
+	data[dti.x].f.x = WaveAllProduct(data[dti.x].f.x);
+	data[dti.x].f.xy = WaveAllProduct(data[dti.x].f.xy);
+	data[dti.x].f.xyz = WaveAllProduct(data[dti.x].f.xyz);
+
+	data[dti.x].d = WaveAllProduct(data[dti.x].d);
+	data[dti.x].d.x = WaveAllProduct(data[dti.x].d.x);
+	data[dti.x].d.xy = WaveAllProduct(data[dti.x].d.xy);
+	data[dti.x].d.xyz = WaveAllProduct(data[dti.x].d.xyz);
+
+	data[dti.x].u = WaveAllMin(data[dti.x].u);
+	data[dti.x].u.x = WaveAllMin(data[dti.x].u.x);
+	data[dti.x].u.xy = WaveAllMin(data[dti.x].u.xy);
+	data[dti.x].u.xyz = WaveAllMin(data[dti.x].u.xyz);
+
+	data[dti.x].i = WaveAllMin(data[dti.x].i);
+	data[dti.x].i.x = WaveAllMin(data[dti.x].i.x);
+	data[dti.x].i.xy = WaveAllMin(data[dti.x].i.xy);
+	data[dti.x].i.xyz = WaveAllMin(data[dti.x].i.xyz);
+
+	data[dti.x].f = WaveAllMin(data[dti.x].f);
+	data[dti.x].f.x = WaveAllMin(data[dti.x].f.x);
+	data[dti.x].f.xy = WaveAllMin(data[dti.x].f.xy);
+	data[dti.x].f.xyz = WaveAllMin(data[dti.x].f.xyz);
+
+	data[dti.x].d = WaveAllMin(data[dti.x].d);
+	data[dti.x].d.x = WaveAllMin(data[dti.x].d.x);
+	data[dti.x].d.xy = WaveAllMin(data[dti.x].d.xy);
+	data[dti.x].d.xyz = WaveAllMin(data[dti.x].d.xyz);
+
+	data[dti.x].u = WaveAllMax(data[dti.x].u);
+	data[dti.x].u.x = WaveAllMax(data[dti.x].u.x);
+	data[dti.x].u.xy = WaveAllMax(data[dti.x].u.xy);
+	data[dti.x].u.xyz = WaveAllMax(data[dti.x].u.xyz);
+
+	data[dti.x].i = WaveAllMax(data[dti.x].i);
+	data[dti.x].i.x = WaveAllMax(data[dti.x].i.x);
+	data[dti.x].i.xy = WaveAllMax(data[dti.x].i.xy);
+	data[dti.x].i.xyz = WaveAllMax(data[dti.x].i.xyz);
+
+	data[dti.x].f = WaveAllMax(data[dti.x].f);
+	data[dti.x].f.x = WaveAllMax(data[dti.x].f.x);
+	data[dti.x].f.xy = WaveAllMax(data[dti.x].f.xy);
+	data[dti.x].f.xyz = WaveAllMax(data[dti.x].f.xyz);
+
+	data[dti.x].d = WaveAllMax(data[dti.x].d);
+	data[dti.x].d.x = WaveAllMax(data[dti.x].d.x);
+	data[dti.x].d.xy = WaveAllMax(data[dti.x].d.xy);
+	data[dti.x].d.xyz = WaveAllMax(data[dti.x].d.xyz);
+
+	data[dti.x].u = WaveAllBitAnd(data[dti.x].u);
+	data[dti.x].u.x = WaveAllBitAnd(data[dti.x].u.x);
+	data[dti.x].u.xy = WaveAllBitAnd(data[dti.x].u.xy);
+	data[dti.x].u.xyz = WaveAllBitAnd(data[dti.x].u.xyz);
+
+	data[dti.x].i = WaveAllBitAnd(data[dti.x].i);
+	data[dti.x].i.x = WaveAllBitAnd(data[dti.x].i.x);
+	data[dti.x].i.xy = WaveAllBitAnd(data[dti.x].i.xy);
+	data[dti.x].i.xyz = WaveAllBitAnd(data[dti.x].i.xyz);
+
+	data[dti.x].u = WaveAllBitOr(data[dti.x].u);
+	data[dti.x].u.x = WaveAllBitOr(data[dti.x].u.x);
+	data[dti.x].u.xy = WaveAllBitOr(data[dti.x].u.xy);
+	data[dti.x].u.xyz = WaveAllBitOr(data[dti.x].u.xyz);
+
+	data[dti.x].i = WaveAllBitOr(data[dti.x].i);
+	data[dti.x].i.x = WaveAllBitOr(data[dti.x].i.x);
+	data[dti.x].i.xy = WaveAllBitOr(data[dti.x].i.xy);
+	data[dti.x].i.xyz = WaveAllBitOr(data[dti.x].i.xyz);
+
+	data[dti.x].u = WaveAllBitXor(data[dti.x].u);
+	data[dti.x].u.x = WaveAllBitXor(data[dti.x].u.x);
+	data[dti.x].u.xy = WaveAllBitXor(data[dti.x].u.xy);
+	data[dti.x].u.xyz = WaveAllBitXor(data[dti.x].u.xyz);
+
+	data[dti.x].i = WaveAllBitXor(data[dti.x].i);
+	data[dti.x].i.x = WaveAllBitXor(data[dti.x].i.x);
+	data[dti.x].i.xy = WaveAllBitXor(data[dti.x].i.xy);
+	data[dti.x].i.xyz = WaveAllBitXor(data[dti.x].i.xyz);
+}
