@@ -107,6 +107,17 @@ $EXE -g -H spv.debugInfo.frag > $TARGETDIR/spv.debugInfo.frag.out
 diff -b $BASEDIR/spv.debugInfo.frag.out $TARGETDIR/spv.debugInfo.frag.out || HASERROR=1
 
 #
+# Testing Includer
+#
+echo Testing Includer
+$EXE -D -e main -H ../Test/hlsl.include.vert > $TARGETDIR/hlsl.include.vert.out
+diff -b $BASEDIR/hlsl.include.vert.out $TARGETDIR/hlsl.include.vert.out || HASERROR=1
+$EXE -D -e main -H hlsl.includeNegative.vert > $TARGETDIR/hlsl.includeNegative.vert.out
+diff -b $BASEDIR/hlsl.includeNegative.vert.out $TARGETDIR/hlsl.includeNegative.vert.out || HASERROR=1
+$EXE -l -i include.vert > $TARGETDIR/include.vert.out
+diff -b $BASEDIR/include.vert.out $TARGETDIR/include.vert.out || HASERROR=1
+
+#
 # Final checking
 #
 if [ $HASERROR -eq 0 ]

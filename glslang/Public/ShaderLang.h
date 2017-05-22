@@ -407,6 +407,9 @@ public:
         virtual void releaseInclude(IncludeResult*) override { }
     };
 
+    bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
+               bool forwardCompatible, EShMessages, Includer&);
+
     bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                bool forwardCompatible, EShMessages messages)
     {
@@ -414,12 +417,18 @@ public:
         return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer);
     }
 
-    bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-               bool forwardCompatible, EShMessages, Includer&);
-
     // Equivalent to parse() without a default profile and without forcing defaults.
-    // Provided for backwards compatibility.
-    bool parse(const TBuiltInResource*, int defaultVersion, bool forwardCompatible, EShMessages);
+    bool parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
+    {
+        return parse(builtInResources, defaultVersion, ENoProfile, false, forwardCompatible, messages);
+    }
+
+    bool parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages,
+               Includer& includer)
+    {
+        return parse(builtInResources, defaultVersion, ENoProfile, false, forwardCompatible, messages, includer);
+    }
+
     bool preprocess(const TBuiltInResource* builtInResources,
                     int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                     bool forwardCompatible, EShMessages message, std::string* outputString,

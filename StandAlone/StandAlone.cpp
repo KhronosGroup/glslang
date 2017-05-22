@@ -41,6 +41,7 @@
 
 #include "ResourceLimits.h"
 #include "Worklist.h"
+#include "DirStackFileIncluder.h"
 #include "./../glslang/Include/ShHandle.h"
 #include "./../glslang/Include/revision.h"
 #include "./../glslang/Public/ShaderLang.h"
@@ -48,6 +49,7 @@
 #include "../SPIRV/GLSL.std.450.h"
 #include "../SPIRV/doc.h"
 #include "../SPIRV/disassemble.h"
+
 #include <cstring>
 #include <cstdlib>
 #include <cctype>
@@ -665,9 +667,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         const int defaultVersion = Options & EOptionDefaultDesktop? 110: 100;
 
+        DirStackFileIncluder includer;
         if (Options & EOptionOutputPreprocessed) {
             std::string str;
-            glslang::TShader::ForbidIncluder includer;
             if (shader->preprocess(&Resources, defaultVersion, ENoProfile, false, false,
                                    messages, &str, includer)) {
                 PutsIfNonEmpty(str.c_str());
@@ -678,7 +680,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
             StderrIfNonEmpty(shader->getInfoDebugLog());
             continue;
         }
-        if (! shader->parse(&Resources, defaultVersion, false, messages))
+        if (! shader->parse(&Resources, defaultVersion, false, messages, includer))
             CompileFailed = true;
 
         program.addShader(shader);
