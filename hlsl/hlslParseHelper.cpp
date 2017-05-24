@@ -2988,13 +2988,19 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
     const TOperator op  = node->getAsOperator()->getOp();
     const TIntermAggregate* argAggregate = arguments ? arguments->getAsAggregate() : nullptr;
 
-    // Bail out if not a sampler method
+    // Bail out if not a sampler method.
+    // Note though this is odd to do before checking the op, because the op
+    // could be something that takes the arguments, and the function in question
+    // takes the result of the op.  So, this is not the final word.
     if (arguments != nullptr) {
-        if ((argAggregate != nullptr && argAggregate->getSequence()[0]->getAsTyped()->getBasicType() != EbtSampler))
-            return;
-
-        if (argAggregate == nullptr && arguments->getAsTyped()->getBasicType() != EbtSampler)
-            return;
+        if (argAggregate == nullptr) {
+            if (arguments->getAsTyped()->getBasicType() != EbtSampler)
+                return;
+        } else {
+            if (argAggregate->getSequence().size() == 0 ||
+                argAggregate->getSequence()[0]->getAsTyped()->getBasicType() != EbtSampler)
+                return;
+        }
     }
 
     switch (op) {

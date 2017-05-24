@@ -131,6 +131,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.domain.1.tese", "main"},
         {"hlsl.domain.2.tese", "main"},
         {"hlsl.domain.3.tese", "main"},
+        {"hlsl.function.frag", "main"},
         {"hlsl.hull.1.tesc", "main"},
         {"hlsl.hull.2.tesc", "main"},
         {"hlsl.hull.void.tesc", "main"},
