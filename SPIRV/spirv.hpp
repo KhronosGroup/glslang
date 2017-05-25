@@ -46,11 +46,11 @@ namespace spv {
 
 typedef unsigned int Id;
 
-#define SPV_VERSION 0x10000
+#define SPV_VERSION 0x10200
 #define SPV_REVISION 1
 
 static const unsigned int MagicNumber = 0x07230203;
-static const unsigned int Version = 0x00010000;
+static const unsigned int Version = 0x00010200;
 static const unsigned int Revision = 1;
 static const unsigned int OpCodeMask = 0xffff;
 static const unsigned int WordCountShift = 16;
