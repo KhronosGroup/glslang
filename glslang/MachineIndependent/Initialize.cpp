@@ -1599,10 +1599,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bool   subgroupAllEqual(bvec2);\n"
             "bool   subgroupAllEqual(bvec3);\n"
             "bool   subgroupAllEqual(bvec4);\n"
-            "bool   subgroupAllEqual(double);\n"
-            "bool   subgroupAllEqual(dvec2);\n"
-            "bool   subgroupAllEqual(dvec3);\n"
-            "bool   subgroupAllEqual(dvec4);\n"
 
             "float  subgroupBroadcast(float, uint);\n"
             "vec2   subgroupBroadcast(vec2, uint);\n"
@@ -1620,10 +1616,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupBroadcast(bvec2, uint);\n"
             "bvec3  subgroupBroadcast(bvec3, uint);\n"
             "bvec4  subgroupBroadcast(bvec4, uint);\n"
-            "double subgroupBroadcast(double, uint);\n"
-            "dvec2  subgroupBroadcast(dvec2, uint);\n"
-            "dvec3  subgroupBroadcast(dvec3, uint);\n"
-            "dvec4  subgroupBroadcast(dvec4, uint);\n"
 
             "float  subgroupBroadcastFirst(float);\n"
             "vec2   subgroupBroadcastFirst(vec2);\n"
@@ -1641,10 +1633,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupBroadcastFirst(bvec2);\n"
             "bvec3  subgroupBroadcastFirst(bvec3);\n"
             "bvec4  subgroupBroadcastFirst(bvec4);\n"
-            "double subgroupBroadcastFirst(double);\n"
-            "dvec2  subgroupBroadcastFirst(dvec2);\n"
-            "dvec3  subgroupBroadcastFirst(dvec3);\n"
-            "dvec4  subgroupBroadcastFirst(dvec4);\n"
 
             "uvec4  subgroupBallot(bool);\n"
             "bool   subgroupInverseBallot(uvec4);\n"
@@ -1671,10 +1659,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupShuffle(bvec2, uint);\n"
             "bvec3  subgroupShuffle(bvec3, uint);\n"
             "bvec4  subgroupShuffle(bvec4, uint);\n"
-            "double subgroupShuffle(double, uint);\n"
-            "dvec2  subgroupShuffle(dvec2, uint);\n"
-            "dvec3  subgroupShuffle(dvec3, uint);\n"
-            "dvec4  subgroupShuffle(dvec4, uint);\n"
 
             "float  subgroupShuffleXor(float, uint);\n"
             "vec2   subgroupShuffleXor(vec2, uint);\n"
@@ -1692,10 +1676,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupShuffleXor(bvec2, uint);\n"
             "bvec3  subgroupShuffleXor(bvec3, uint);\n"
             "bvec4  subgroupShuffleXor(bvec4, uint);\n"
-            "double subgroupShuffleXor(double, uint);\n"
-            "dvec2  subgroupShuffleXor(dvec2, uint);\n"
-            "dvec3  subgroupShuffleXor(dvec3, uint);\n"
-            "dvec4  subgroupShuffleXor(dvec4, uint);\n"
 
             "float  subgroupShuffleUp(float, uint delta);\n"
             "vec2   subgroupShuffleUp(vec2, uint delta);\n"
@@ -1713,10 +1693,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupShuffleUp(bvec2, uint delta);\n"
             "bvec3  subgroupShuffleUp(bvec3, uint delta);\n"
             "bvec4  subgroupShuffleUp(bvec4, uint delta);\n"
-            "double subgroupShuffleUp(double, uint delta);\n"
-            "dvec2  subgroupShuffleUp(dvec2, uint delta);\n"
-            "dvec3  subgroupShuffleUp(dvec3, uint delta);\n"
-            "dvec4  subgroupShuffleUp(dvec4, uint delta);\n"
 
             "float  subgroupShuffleDown(float, uint delta);\n"
             "vec2   subgroupShuffleDown(vec2, uint delta);\n"
@@ -1734,10 +1710,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupShuffleDown(bvec2, uint delta);\n"
             "bvec3  subgroupShuffleDown(bvec3, uint delta);\n"
             "bvec4  subgroupShuffleDown(bvec4, uint delta);\n"
-            "double subgroupShuffleDown(double, uint delta);\n"
-            "dvec2  subgroupShuffleDown(dvec2, uint delta);\n"
-            "dvec3  subgroupShuffleDown(dvec3, uint delta);\n"
-            "dvec4  subgroupShuffleDown(dvec4, uint delta);\n"
 
             "float  subgroupAdd(float);\n"
             "vec2   subgroupAdd(vec2);\n"
@@ -1751,10 +1723,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupAdd(uvec2);\n"
             "uvec3  subgroupAdd(uvec3);\n"
             "uvec4  subgroupAdd(uvec4);\n"
-            "double subgroupAdd(double);\n"
-            "dvec2  subgroupAdd(dvec2);\n"
-            "dvec3  subgroupAdd(dvec3);\n"
-            "dvec4  subgroupAdd(dvec4);\n"
 
             "float  subgroupMul(float);\n"
             "vec2   subgroupMul(vec2);\n"
@@ -1768,10 +1736,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupMul(uvec2);\n"
             "uvec3  subgroupMul(uvec3);\n"
             "uvec4  subgroupMul(uvec4);\n"
-            "double subgroupMul(double);\n"
-            "dvec2  subgroupMul(dvec2);\n"
-            "dvec3  subgroupMul(dvec3);\n"
-            "dvec4  subgroupMul(dvec4);\n"
 
             "float  subgroupMin(float);\n"
             "vec2   subgroupMin(vec2);\n"
@@ -1785,10 +1749,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupMin(uvec2);\n"
             "uvec3  subgroupMin(uvec3);\n"
             "uvec4  subgroupMin(uvec4);\n"
-            "double subgroupMin(double);\n"
-            "dvec2  subgroupMin(dvec2);\n"
-            "dvec3  subgroupMin(dvec3);\n"
-            "dvec4  subgroupMin(dvec4);\n"
 
             "float  subgroupMax(float);\n"
             "vec2   subgroupMax(vec2);\n"
@@ -1802,10 +1762,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupMax(uvec2);\n"
             "uvec3  subgroupMax(uvec3);\n"
             "uvec4  subgroupMax(uvec4);\n"
-            "double subgroupMax(double);\n"
-            "dvec2  subgroupMax(dvec2);\n"
-            "dvec3  subgroupMax(dvec3);\n"
-            "dvec4  subgroupMax(dvec4);\n"
 
             "int    subgroupAnd(int);\n"
             "ivec2  subgroupAnd(ivec2);\n"
@@ -1858,10 +1814,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupInclusiveAdd(uvec2);\n"
             "uvec3  subgroupInclusiveAdd(uvec3);\n"
             "uvec4  subgroupInclusiveAdd(uvec4);\n"
-            "double subgroupInclusiveAdd(double);\n"
-            "dvec2  subgroupInclusiveAdd(dvec2);\n"
-            "dvec3  subgroupInclusiveAdd(dvec3);\n"
-            "dvec4  subgroupInclusiveAdd(dvec4);\n"
 
             "float  subgroupInclusiveMul(float);\n"
             "vec2   subgroupInclusiveMul(vec2);\n"
@@ -1875,10 +1827,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupInclusiveMul(uvec2);\n"
             "uvec3  subgroupInclusiveMul(uvec3);\n"
             "uvec4  subgroupInclusiveMul(uvec4);\n"
-            "double subgroupInclusiveMul(double);\n"
-            "dvec2  subgroupInclusiveMul(dvec2);\n"
-            "dvec3  subgroupInclusiveMul(dvec3);\n"
-            "dvec4  subgroupInclusiveMul(dvec4);\n"
 
             "float  subgroupInclusiveMin(float);\n"
             "vec2   subgroupInclusiveMin(vec2);\n"
@@ -1892,10 +1840,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupInclusiveMin(uvec2);\n"
             "uvec3  subgroupInclusiveMin(uvec3);\n"
             "uvec4  subgroupInclusiveMin(uvec4);\n"
-            "double subgroupInclusiveMin(double);\n"
-            "dvec2  subgroupInclusiveMin(dvec2);\n"
-            "dvec3  subgroupInclusiveMin(dvec3);\n"
-            "dvec4  subgroupInclusiveMin(dvec4);\n"
 
             "float  subgroupInclusiveMax(float);\n"
             "vec2   subgroupInclusiveMax(vec2);\n"
@@ -1909,10 +1853,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupInclusiveMax(uvec2);\n"
             "uvec3  subgroupInclusiveMax(uvec3);\n"
             "uvec4  subgroupInclusiveMax(uvec4);\n"
-            "double subgroupInclusiveMax(double);\n"
-            "dvec2  subgroupInclusiveMax(dvec2);\n"
-            "dvec3  subgroupInclusiveMax(dvec3);\n"
-            "dvec4  subgroupInclusiveMax(dvec4);\n"
 
             "int    subgroupInclusiveAnd(int);\n"
             "ivec2  subgroupInclusiveAnd(ivec2);\n"
@@ -1965,10 +1905,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupExclusiveAdd(uvec2);\n"
             "uvec3  subgroupExclusiveAdd(uvec3);\n"
             "uvec4  subgroupExclusiveAdd(uvec4);\n"
-            "double subgroupExclusiveAdd(double);\n"
-            "dvec2  subgroupExclusiveAdd(dvec2);\n"
-            "dvec3  subgroupExclusiveAdd(dvec3);\n"
-            "dvec4  subgroupExclusiveAdd(dvec4);\n"
 
             "float  subgroupExclusiveMul(float);\n"
             "vec2   subgroupExclusiveMul(vec2);\n"
@@ -1982,10 +1918,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupExclusiveMul(uvec2);\n"
             "uvec3  subgroupExclusiveMul(uvec3);\n"
             "uvec4  subgroupExclusiveMul(uvec4);\n"
-            "double subgroupExclusiveMul(double);\n"
-            "dvec2  subgroupExclusiveMul(dvec2);\n"
-            "dvec3  subgroupExclusiveMul(dvec3);\n"
-            "dvec4  subgroupExclusiveMul(dvec4);\n"
 
             "float  subgroupExclusiveMin(float);\n"
             "vec2   subgroupExclusiveMin(vec2);\n"
@@ -1999,10 +1931,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupExclusiveMin(uvec2);\n"
             "uvec3  subgroupExclusiveMin(uvec3);\n"
             "uvec4  subgroupExclusiveMin(uvec4);\n"
-            "double subgroupExclusiveMin(double);\n"
-            "dvec2  subgroupExclusiveMin(dvec2);\n"
-            "dvec3  subgroupExclusiveMin(dvec3);\n"
-            "dvec4  subgroupExclusiveMin(dvec4);\n"
 
             "float  subgroupExclusiveMax(float);\n"
             "vec2   subgroupExclusiveMax(vec2);\n"
@@ -2016,10 +1944,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupExclusiveMax(uvec2);\n"
             "uvec3  subgroupExclusiveMax(uvec3);\n"
             "uvec4  subgroupExclusiveMax(uvec4);\n"
-            "double subgroupExclusiveMax(double);\n"
-            "dvec2  subgroupExclusiveMax(dvec2);\n"
-            "dvec3  subgroupExclusiveMax(dvec3);\n"
-            "dvec4  subgroupExclusiveMax(dvec4);\n"
 
             "int    subgroupExclusiveAnd(int);\n"
             "ivec2  subgroupExclusiveAnd(ivec2);\n"
@@ -2072,10 +1996,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupClusteredAdd(uvec2, uint);\n"
             "uvec3  subgroupClusteredAdd(uvec3, uint);\n"
             "uvec4  subgroupClusteredAdd(uvec4, uint);\n"
-            "double subgroupClusteredAdd(double, uint);\n"
-            "dvec2  subgroupClusteredAdd(dvec2, uint);\n"
-            "dvec3  subgroupClusteredAdd(dvec3, uint);\n"
-            "dvec4  subgroupClusteredAdd(dvec4, uint);\n"
 
             "float  subgroupClusteredMul(float, uint);\n"
             "vec2   subgroupClusteredMul(vec2, uint);\n"
@@ -2089,10 +2009,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupClusteredMul(uvec2, uint);\n"
             "uvec3  subgroupClusteredMul(uvec3, uint);\n"
             "uvec4  subgroupClusteredMul(uvec4, uint);\n"
-            "double subgroupClusteredMul(double, uint);\n"
-            "dvec2  subgroupClusteredMul(dvec2, uint);\n"
-            "dvec3  subgroupClusteredMul(dvec3, uint);\n"
-            "dvec4  subgroupClusteredMul(dvec4, uint);\n"
 
             "float  subgroupClusteredMin(float, uint);\n"
             "vec2   subgroupClusteredMin(vec2, uint);\n"
@@ -2106,10 +2022,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupClusteredMin(uvec2, uint);\n"
             "uvec3  subgroupClusteredMin(uvec3, uint);\n"
             "uvec4  subgroupClusteredMin(uvec4, uint);\n"
-            "double subgroupClusteredMin(double, uint);\n"
-            "dvec2  subgroupClusteredMin(dvec2, uint);\n"
-            "dvec3  subgroupClusteredMin(dvec3, uint);\n"
-            "dvec4  subgroupClusteredMin(dvec4, uint);\n"
 
             "float  subgroupClusteredMax(float, uint);\n"
             "vec2   subgroupClusteredMax(vec2, uint);\n"
@@ -2123,10 +2035,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "uvec2  subgroupClusteredMax(uvec2, uint);\n"
             "uvec3  subgroupClusteredMax(uvec3, uint);\n"
             "uvec4  subgroupClusteredMax(uvec4, uint);\n"
-            "double subgroupClusteredMax(double, uint);\n"
-            "dvec2  subgroupClusteredMax(dvec2, uint);\n"
-            "dvec3  subgroupClusteredMax(dvec3, uint);\n"
-            "dvec4  subgroupClusteredMax(dvec4, uint);\n"
 
             "int    subgroupClusteredAnd(int, uint);\n"
             "ivec2  subgroupClusteredAnd(ivec2, uint);\n"
@@ -2183,10 +2091,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupQuadBroadcast(bvec2, uint);\n"
             "bvec3  subgroupQuadBroadcast(bvec3, uint);\n"
             "bvec4  subgroupQuadBroadcast(bvec4, uint);\n"
-            "double subgroupQuadBroadcast(double, uint);\n"
-            "dvec2  subgroupQuadBroadcast(dvec2, uint);\n"
-            "dvec3  subgroupQuadBroadcast(dvec3, uint);\n"
-            "dvec4  subgroupQuadBroadcast(dvec4, uint);\n"
 
             "float  subgroupQuadSwapHorizontal(float);\n"
             "vec2   subgroupQuadSwapHorizontal(vec2);\n"
@@ -2204,10 +2108,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupQuadSwapHorizontal(bvec2);\n"
             "bvec3  subgroupQuadSwapHorizontal(bvec3);\n"
             "bvec4  subgroupQuadSwapHorizontal(bvec4);\n"
-            "double subgroupQuadSwapHorizontal(double);\n"
-            "dvec2  subgroupQuadSwapHorizontal(dvec2);\n"
-            "dvec3  subgroupQuadSwapHorizontal(dvec3);\n"
-            "dvec4  subgroupQuadSwapHorizontal(dvec4);\n"
 
             "float  subgroupQuadSwapVertical(float);\n"
             "vec2   subgroupQuadSwapVertical(vec2);\n"
@@ -2225,10 +2125,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupQuadSwapVertical(bvec2);\n"
             "bvec3  subgroupQuadSwapVertical(bvec3);\n"
             "bvec4  subgroupQuadSwapVertical(bvec4);\n"
-            "double subgroupQuadSwapVertical(double);\n"
-            "dvec2  subgroupQuadSwapVertical(dvec2);\n"
-            "dvec3  subgroupQuadSwapVertical(dvec3);\n"
-            "dvec4  subgroupQuadSwapVertical(dvec4);\n"
 
             "float  subgroupQuadSwapDiagonal(float);\n"
             "vec2   subgroupQuadSwapDiagonal(vec2);\n"
@@ -2246,12 +2142,148 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupQuadSwapDiagonal(bvec2);\n"
             "bvec3  subgroupQuadSwapDiagonal(bvec3);\n"
             "bvec4  subgroupQuadSwapDiagonal(bvec4);\n"
-            "double subgroupQuadSwapDiagonal(double);\n"
-            "dvec2  subgroupQuadSwapDiagonal(dvec2);\n"
-            "dvec3  subgroupQuadSwapDiagonal(dvec3);\n"
-            "dvec4  subgroupQuadSwapDiagonal(dvec4);\n"
 
             "\n");
+
+        if (profile != EEsProfile && version >= 400) {
+            commonBuiltins.append(
+                "bool   subgroupAllEqual(double);\n"
+                "bool   subgroupAllEqual(dvec2);\n"
+                "bool   subgroupAllEqual(dvec3);\n"
+                "bool   subgroupAllEqual(dvec4);\n"
+
+                "double subgroupBroadcast(double, uint);\n"
+                "dvec2  subgroupBroadcast(dvec2, uint);\n"
+                "dvec3  subgroupBroadcast(dvec3, uint);\n"
+                "dvec4  subgroupBroadcast(dvec4, uint);\n"
+
+                "double subgroupBroadcastFirst(double);\n"
+                "dvec2  subgroupBroadcastFirst(dvec2);\n"
+                "dvec3  subgroupBroadcastFirst(dvec3);\n"
+                "dvec4  subgroupBroadcastFirst(dvec4);\n"
+
+                "double subgroupShuffle(double, uint);\n"
+                "dvec2  subgroupShuffle(dvec2, uint);\n"
+                "dvec3  subgroupShuffle(dvec3, uint);\n"
+                "dvec4  subgroupShuffle(dvec4, uint);\n"
+
+                "double subgroupShuffleXor(double, uint);\n"
+                "dvec2  subgroupShuffleXor(dvec2, uint);\n"
+                "dvec3  subgroupShuffleXor(dvec3, uint);\n"
+                "dvec4  subgroupShuffleXor(dvec4, uint);\n"
+
+                "double subgroupShuffleUp(double, uint delta);\n"
+                "dvec2  subgroupShuffleUp(dvec2, uint delta);\n"
+                "dvec3  subgroupShuffleUp(dvec3, uint delta);\n"
+                "dvec4  subgroupShuffleUp(dvec4, uint delta);\n"
+
+                "double subgroupShuffleDown(double, uint delta);\n"
+                "dvec2  subgroupShuffleDown(dvec2, uint delta);\n"
+                "dvec3  subgroupShuffleDown(dvec3, uint delta);\n"
+                "dvec4  subgroupShuffleDown(dvec4, uint delta);\n"
+
+                "double subgroupAdd(double);\n"
+                "dvec2  subgroupAdd(dvec2);\n"
+                "dvec3  subgroupAdd(dvec3);\n"
+                "dvec4  subgroupAdd(dvec4);\n"
+
+                "double subgroupMul(double);\n"
+                "dvec2  subgroupMul(dvec2);\n"
+                "dvec3  subgroupMul(dvec3);\n"
+                "dvec4  subgroupMul(dvec4);\n"
+
+                "double subgroupMin(double);\n"
+                "dvec2  subgroupMin(dvec2);\n"
+                "dvec3  subgroupMin(dvec3);\n"
+                "dvec4  subgroupMin(dvec4);\n"
+
+                "double subgroupMax(double);\n"
+                "dvec2  subgroupMax(dvec2);\n"
+                "dvec3  subgroupMax(dvec3);\n"
+                "dvec4  subgroupMax(dvec4);\n"
+
+                "double subgroupInclusiveAdd(double);\n"
+                "dvec2  subgroupInclusiveAdd(dvec2);\n"
+                "dvec3  subgroupInclusiveAdd(dvec3);\n"
+                "dvec4  subgroupInclusiveAdd(dvec4);\n"
+
+                "double subgroupInclusiveMul(double);\n"
+                "dvec2  subgroupInclusiveMul(dvec2);\n"
+                "dvec3  subgroupInclusiveMul(dvec3);\n"
+                "dvec4  subgroupInclusiveMul(dvec4);\n"
+
+                "double subgroupInclusiveMin(double);\n"
+                "dvec2  subgroupInclusiveMin(dvec2);\n"
+                "dvec3  subgroupInclusiveMin(dvec3);\n"
+                "dvec4  subgroupInclusiveMin(dvec4);\n"
+
+                "double subgroupInclusiveMax(double);\n"
+                "dvec2  subgroupInclusiveMax(dvec2);\n"
+                "dvec3  subgroupInclusiveMax(dvec3);\n"
+                "dvec4  subgroupInclusiveMax(dvec4);\n"
+
+                "double subgroupExclusiveAdd(double);\n"
+                "dvec2  subgroupExclusiveAdd(dvec2);\n"
+                "dvec3  subgroupExclusiveAdd(dvec3);\n"
+                "dvec4  subgroupExclusiveAdd(dvec4);\n"
+
+                "double subgroupExclusiveMul(double);\n"
+                "dvec2  subgroupExclusiveMul(dvec2);\n"
+                "dvec3  subgroupExclusiveMul(dvec3);\n"
+                "dvec4  subgroupExclusiveMul(dvec4);\n"
+
+                "double subgroupExclusiveMin(double);\n"
+                "dvec2  subgroupExclusiveMin(dvec2);\n"
+                "dvec3  subgroupExclusiveMin(dvec3);\n"
+                "dvec4  subgroupExclusiveMin(dvec4);\n"
+
+                "double subgroupExclusiveMax(double);\n"
+                "dvec2  subgroupExclusiveMax(dvec2);\n"
+                "dvec3  subgroupExclusiveMax(dvec3);\n"
+                "dvec4  subgroupExclusiveMax(dvec4);\n"
+
+                "double subgroupClusteredAdd(double, uint);\n"
+                "dvec2  subgroupClusteredAdd(dvec2, uint);\n"
+                "dvec3  subgroupClusteredAdd(dvec3, uint);\n"
+                "dvec4  subgroupClusteredAdd(dvec4, uint);\n"
+
+                "double subgroupClusteredMul(double, uint);\n"
+                "dvec2  subgroupClusteredMul(dvec2, uint);\n"
+                "dvec3  subgroupClusteredMul(dvec3, uint);\n"
+                "dvec4  subgroupClusteredMul(dvec4, uint);\n"
+
+                "double subgroupClusteredMin(double, uint);\n"
+                "dvec2  subgroupClusteredMin(dvec2, uint);\n"
+                "dvec3  subgroupClusteredMin(dvec3, uint);\n"
+                "dvec4  subgroupClusteredMin(dvec4, uint);\n"
+
+                "double subgroupClusteredMax(double, uint);\n"
+                "dvec2  subgroupClusteredMax(dvec2, uint);\n"
+                "dvec3  subgroupClusteredMax(dvec3, uint);\n"
+                "dvec4  subgroupClusteredMax(dvec4, uint);\n"
+
+                "double subgroupQuadBroadcast(double, uint);\n"
+                "dvec2  subgroupQuadBroadcast(dvec2, uint);\n"
+                "dvec3  subgroupQuadBroadcast(dvec3, uint);\n"
+                "dvec4  subgroupQuadBroadcast(dvec4, uint);\n"
+
+                "double subgroupQuadSwapHorizontal(double);\n"
+                "dvec2  subgroupQuadSwapHorizontal(dvec2);\n"
+                "dvec3  subgroupQuadSwapHorizontal(dvec3);\n"
+                "dvec4  subgroupQuadSwapHorizontal(dvec4);\n"
+
+                "double subgroupQuadSwapVertical(double);\n"
+                "dvec2  subgroupQuadSwapVertical(dvec2);\n"
+                "dvec3  subgroupQuadSwapVertical(dvec3);\n"
+                "dvec4  subgroupQuadSwapVertical(dvec4);\n"
+
+                "double subgroupQuadSwapDiagonal(double);\n"
+                "dvec2  subgroupQuadSwapDiagonal(dvec2);\n"
+                "dvec3  subgroupQuadSwapDiagonal(dvec3);\n"
+                "dvec4  subgroupQuadSwapDiagonal(dvec4);\n"
+
+                "\n");
+            }
 
         stageBuiltins[EShLangCompute].append(
             "void subgroupMemoryBarrierShared();"
