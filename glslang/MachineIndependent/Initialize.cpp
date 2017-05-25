@@ -4449,17 +4449,30 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
     // GL_ARB_shader_ballot
     if (profile != EEsProfile && version >= 450) {
-        commonBuiltins.append(
+        const char* ballotDecls = 
             "uniform uint gl_SubGroupSizeARB;"
-
             "in uint     gl_SubGroupInvocationARB;"
             "in uint64_t gl_SubGroupEqMaskARB;"
             "in uint64_t gl_SubGroupGeMaskARB;"
             "in uint64_t gl_SubGroupGtMaskARB;"
             "in uint64_t gl_SubGroupLeMaskARB;"
             "in uint64_t gl_SubGroupLtMaskARB;"
-
-            "\n");
+            "\n";
+        const char* fragmentBallotDecls = 
+            "uniform uint gl_SubGroupSizeARB;"
+            "flat in uint     gl_SubGroupInvocationARB;"
+            "flat in uint64_t gl_SubGroupEqMaskARB;"
+            "flat in uint64_t gl_SubGroupGeMaskARB;"
+            "flat in uint64_t gl_SubGroupGtMaskARB;"
+            "flat in uint64_t gl_SubGroupLeMaskARB;"
+            "flat in uint64_t gl_SubGroupLtMaskARB;"
+            "\n";
+        stageBuiltins[EShLangVertex]        .append(ballotDecls);
+        stageBuiltins[EShLangTessControl]   .append(ballotDecls);
+        stageBuiltins[EShLangTessEvaluation].append(ballotDecls);
+        stageBuiltins[EShLangGeometry]      .append(ballotDecls);
+        stageBuiltins[EShLangCompute]       .append(ballotDecls);
+        stageBuiltins[EShLangFragment]      .append(fragmentBallotDecls);
     }
 
     if ((profile != EEsProfile && version >= 140) ||
@@ -4472,21 +4485,34 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
     // GL_KHR_shader_subgroup
     if (spvVersion.vulkan >= 100) {
-        commonBuiltins.append(
-            "mediump in uint  gl_SubgroupSize;"
-            "mediump in uint  gl_SubgroupInvocationID;"
-            "highp   in uvec4 gl_SubgroupEqMask;"
-            "highp   in uvec4 gl_SubgroupGeMask;"
-            "highp   in uvec4 gl_SubgroupGtMask;"
-            "highp   in uvec4 gl_SubgroupLeMask;"
-            "highp   in uvec4 gl_SubgroupLtMask;"
-
-            "\n");
+        const char* ballotDecls = 
+            "in mediump uint  gl_SubgroupSize;"
+            "in mediump uint  gl_SubgroupInvocationID;"
+            "in highp   uvec4 gl_SubgroupEqMask;"
+            "in highp   uvec4 gl_SubgroupGeMask;"
+            "in highp   uvec4 gl_SubgroupGtMask;"
+            "in highp   uvec4 gl_SubgroupLeMask;"
+            "in highp   uvec4 gl_SubgroupLtMask;"
+            "\n";
+        const char* fragmentBallotDecls = 
+            "flat in mediump uint  gl_SubgroupSize;"
+            "flat in mediump uint  gl_SubgroupInvocationID;"
+            "flat in highp   uvec4 gl_SubgroupEqMask;"
+            "flat in highp   uvec4 gl_SubgroupGeMask;"
+            "flat in highp   uvec4 gl_SubgroupGtMask;"
+            "flat in highp   uvec4 gl_SubgroupLeMask;"
+            "flat in highp   uvec4 gl_SubgroupLtMask;"
+            "\n";
+        stageBuiltins[EShLangVertex]        .append(ballotDecls);
+        stageBuiltins[EShLangTessControl]   .append(ballotDecls);
+        stageBuiltins[EShLangTessEvaluation].append(ballotDecls);
+        stageBuiltins[EShLangGeometry]      .append(ballotDecls);
+        stageBuiltins[EShLangCompute]       .append(ballotDecls);
+        stageBuiltins[EShLangFragment]      .append(fragmentBallotDecls);
 
         stageBuiltins[EShLangCompute].append(
             "highp   in uint  gl_NumSubgroups;"
             "highp   in uint  gl_SubgroupID;"
-
             "\n");
     }
 
@@ -5676,6 +5702,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_DrawIDARB",       EbvDrawId,       symbolTable);
         }
 
+        // GL_ARB_shader_ballot
         if (profile != EEsProfile) {
             symbolTable.setVariableExtensions("gl_SubGroupSizeARB",       1, &E_GL_ARB_shader_ballot);
             symbolTable.setVariableExtensions("gl_SubGroupInvocationARB", 1, &E_GL_ARB_shader_ballot);
@@ -5699,10 +5726,31 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             if (spvVersion.vulkan >= 100)
                 // Treat "gl_SubGroupSizeARB" as shader input instead of uniform for Vulkan
                 SpecialQualifier("gl_SubGroupSizeARB", EvqVaryingIn, EbvSubGroupSize, symbolTable);
+            else
+                BuiltInVariable("gl_SubGroupSizeARB", EbvSubGroupSize, symbolTable);
 
             symbolTable.setFunctionExtensions("anyInvocationARB",       1, &E_GL_ARB_shader_group_vote);
             symbolTable.setFunctionExtensions("allInvocationsARB",      1, &E_GL_ARB_shader_group_vote);
             symbolTable.setFunctionExtensions("allInvocationsEqualARB", 1, &E_GL_ARB_shader_group_vote);
+        }
+
+        // GL_KHR_shader_subgroup
+        if (spvVersion.vulkan >= 100) {
+            symbolTable.setVariableExtensions("gl_SubgroupSize",         1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setVariableExtensions("gl_SubgroupInvocationID", 1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setVariableExtensions("gl_SubgroupEqMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupGeMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupGtMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupLeMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupLtMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+
+            BuiltInVariable("gl_SubgroupSize",         EbvSubgroupSize2,       symbolTable);
+            BuiltInVariable("gl_SubgroupInvocationID", EbvSubgroupInvocation2, symbolTable);
+            BuiltInVariable("gl_SubgroupEqMask",       EbvSubgroupEqMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupGeMask",       EbvSubgroupGeMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupGtMask",       EbvSubgroupGtMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupLeMask",       EbvSubgroupLeMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupLtMask",       EbvSubgroupLtMask2,     symbolTable);
         }
 
 #ifdef AMD_EXTENSIONS
@@ -6114,6 +6162,30 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.setVariableExtensions("gl_ViewIndex", 1, &E_GL_EXT_multiview);
         BuiltInVariable("gl_ViewIndex", EbvViewIndex, symbolTable);
 
+        // GL_ARB_shader_ballot
+        if (profile != EEsProfile) {
+            symbolTable.setVariableExtensions("gl_SubGroupSizeARB",       1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupInvocationARB", 1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupEqMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupGeMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupGtMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupLeMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupLtMaskARB",     1, &E_GL_ARB_shader_ballot);
+
+            BuiltInVariable("gl_SubGroupInvocationARB", EbvSubGroupInvocation, symbolTable);
+            BuiltInVariable("gl_SubGroupEqMaskARB",     EbvSubGroupEqMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupGeMaskARB",     EbvSubGroupGeMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupGtMaskARB",     EbvSubGroupGtMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupLeMaskARB",     EbvSubGroupLeMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupLtMaskARB",     EbvSubGroupLtMask,     symbolTable);
+
+            if (spvVersion.vulkan >= 100)
+                // Treat "gl_SubGroupSizeARB" as shader input instead of uniform for Vulkan
+                SpecialQualifier("gl_SubGroupSizeARB", EvqVaryingIn, EbvSubGroupSize, symbolTable);
+            else
+                BuiltInVariable("gl_SubGroupSizeARB", EbvSubGroupSize, symbolTable);
+        }
+
         // GL_KHR_shader_subgroup
         if (spvVersion.vulkan >= 100) {
             symbolTable.setVariableExtensions("gl_SubgroupSize",         1, &E_GL_KHR_shader_subgroup_basic);
@@ -6219,6 +6291,49 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("memoryBarrierImage",         1, &E_GL_ARB_compute_shader);
             symbolTable.setFunctionExtensions("memoryBarrierShared",        1, &E_GL_ARB_compute_shader);
             symbolTable.setFunctionExtensions("groupMemoryBarrier",         1, &E_GL_ARB_compute_shader);
+        }
+
+        // GL_ARB_shader_ballot
+        if (profile != EEsProfile) {
+            symbolTable.setVariableExtensions("gl_SubGroupSizeARB",       1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupInvocationARB", 1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupEqMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupGeMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupGtMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupLeMaskARB",     1, &E_GL_ARB_shader_ballot);
+            symbolTable.setVariableExtensions("gl_SubGroupLtMaskARB",     1, &E_GL_ARB_shader_ballot);
+
+            BuiltInVariable("gl_SubGroupInvocationARB", EbvSubGroupInvocation, symbolTable);
+            BuiltInVariable("gl_SubGroupEqMaskARB",     EbvSubGroupEqMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupGeMaskARB",     EbvSubGroupGeMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupGtMaskARB",     EbvSubGroupGtMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupLeMaskARB",     EbvSubGroupLeMask,     symbolTable);
+            BuiltInVariable("gl_SubGroupLtMaskARB",     EbvSubGroupLtMask,     symbolTable);
+
+            if (spvVersion.vulkan >= 100)
+                // Treat "gl_SubGroupSizeARB" as shader input instead of uniform for Vulkan
+                SpecialQualifier("gl_SubGroupSizeARB", EvqVaryingIn, EbvSubGroupSize, symbolTable);
+            else
+                BuiltInVariable("gl_SubGroupSizeARB", EbvSubGroupSize, symbolTable);
+        }
+
+        // GL_ARB_shader_ballot
+        if (spvVersion.vulkan >= 100) {
+            symbolTable.setVariableExtensions("gl_SubgroupSize",         1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setVariableExtensions("gl_SubgroupInvocationID", 1, &E_GL_KHR_shader_subgroup_basic);
+            symbolTable.setVariableExtensions("gl_SubgroupEqMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupGeMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupGtMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupLeMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+            symbolTable.setVariableExtensions("gl_SubgroupLtMask",       1, &E_GL_KHR_shader_subgroup_ballot);
+
+            BuiltInVariable("gl_SubgroupSize",         EbvSubgroupSize2,       symbolTable);
+            BuiltInVariable("gl_SubgroupInvocationID", EbvSubgroupInvocation2, symbolTable);
+            BuiltInVariable("gl_SubgroupEqMask",       EbvSubgroupEqMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupGeMask",       EbvSubgroupGeMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupGtMask",       EbvSubgroupGtMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupLeMask",       EbvSubgroupLeMask2,     symbolTable);
+            BuiltInVariable("gl_SubgroupLtMask",       EbvSubgroupLtMask2,     symbolTable);
         }
 
         if ((profile != EEsProfile && version >= 140) ||
