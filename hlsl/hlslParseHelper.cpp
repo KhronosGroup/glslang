@@ -677,19 +677,30 @@ TIntermTyped* HlslParseContext::handleBracketOperator(const TSourceLoc& loc, TIn
     if (base->getType().getBasicType() == EbtSampler && !base->isArray()) {
         const TSampler& sampler = base->getType().getSampler();
         if (sampler.isImage() || sampler.isTexture()) {
-            TIntermAggregate* load = new TIntermAggregate(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
+            if (! mipsOperatorMipArg.empty() && mipsOperatorMipArg.back().mipLevel == nullptr) {
+                // The first operator[] to a .mips[] sequence is the mip level.  We'll remember it.
+                mipsOperatorMipArg.back().mipLevel = index;
+                return base;  // next [] index is to the same base.
+            } else {
+                TIntermAggregate* load = new TIntermAggregate(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
 
-            load->setType(TType(sampler.type, EvqTemporary, sampler.vectorSize));
-            load->setLoc(loc);
-            load->getSequence().push_back(base);
-            load->getSequence().push_back(index);
+                load->setType(TType(sampler.type, EvqTemporary, sampler.vectorSize));
+                load->setLoc(loc);
+                load->getSequence().push_back(base);
+                load->getSequence().push_back(index);
 
-            // Textures need a MIP.  First indirection is always to mip 0.  If there's another, we'll add it
-            // later.
-            if (sampler.isTexture())
-                load->getSequence().push_back(intermediate.addConstantUnion(0, loc, true));
+                // Textures need a MIP.  If we saw one go by, use it.  Otherwise, use zero.
+                if (sampler.isTexture()) {
+                    if (! mipsOperatorMipArg.empty()) {
+                        load->getSequence().push_back(mipsOperatorMipArg.back().mipLevel);
+                        mipsOperatorMipArg.pop_back();
+                    } else {
+                        load->getSequence().push_back(intermediate.addConstantUnion(0, loc, true));
+                    }
+                }
 
-            return load;
+                return load;
+            }
         }
     }
 
@@ -874,7 +885,21 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
     }
 
     TIntermTyped* result = base;
-    if (base->isVector() || base->isScalar()) {
+
+    if (base->getType().getBasicType() == EbtSampler) {
+        // Handle .mips[mipid][pos] operation on textures
+        const TSampler& sampler = base->getType().getSampler();
+        if (sampler.isTexture() && field == "mips") {
+            // Push a null to signify that we expect a mip level under operator[] next.
+            mipsOperatorMipArg.push_back(tMipsOperatorData(loc, nullptr));
+            // Keep 'result' pointing to 'base', since we expect an operator[] to go by next.
+        } else {
+            if (field == "mips")
+                error(loc, "unexpected texture type for .mips[][] operator:", base->getType().getCompleteString().c_str(), "");
+            else
+                error(loc, "unexpected operator on texture type:", field.c_str(), base->getType().getCompleteString().c_str());
+        }
+    } else if (base->isVector() || base->isScalar()) {
         TSwizzleSelectors<TVectorSelector> selectors;
         parseSwizzleSelector(loc, field, base->getVectorSize(), selectors);
 
@@ -1555,6 +1580,28 @@ void HlslParseContext::addInterstageIoToLinkage()
     }
 }
 
+// For struct buffers with counters, we must pass the counter buffer as hidden parameter.
+// This adds the hidden parameter to the parameter list in 'paramNodes' if needed.
+// Otherwise, it's a no-op
+void HlslParseContext::addStructBufferHiddenCounterParam(const TSourceLoc& loc, TParameter& param, TIntermAggregate*& paramNodes)
+{
+    if (! hasStructBuffCounter(*param.type))
+        return;
+
+    const TString counterBlockName(getStructBuffCounterName(*param.name));
+
+    TType counterType;
+    counterBufferType(loc, counterType);
+    TVariable *variable = makeInternalVariable(counterBlockName, counterType);
+
+    if (! symbolTable.insert(*variable))
+        error(loc, "redefinition", variable->getName().c_str(), "");
+
+    paramNodes = intermediate.growAggregate(paramNodes,
+                                            intermediate.addSymbol(*variable, loc),
+                                            loc);
+}
+
 //
 // Handle seeing the function prototype in front of a function definition in the grammar.
 // The body is handled after this function returns.
@@ -1624,7 +1671,8 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
                                                     intermediate.addSymbol(*variable, loc),
                                                     loc);
 
-            // TODO: for struct buffers with counters, pass counter buffer as hidden parameter
+            // Add hidden parameter for struct buffer counters, if needed.
+            addStructBufferHiddenCounterParam(loc, param, paramNodes);
         } else
             paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(*param.type, loc), loc);
     }
@@ -1960,7 +2008,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
 
         // GS outputs are via emit, so we do not copy them here.
         if (param.type->getQualifier().isParamOutput()) {
-            if (param.declaredBuiltIn == EbvGsOutputStream) {
+            if (param.getDeclaredBuiltIn() == EbvGsOutputStream) {
                 // GS output stream does not assign outputs here: it's the Append() method
                 // which writes to the output, probably multiple times separated by Emit.
                 // We merely remember the output to use, here.
@@ -2067,7 +2115,7 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
             TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingIn);
             inputs.push_back(argAsGlobal);
 
-            if (function[i].declaredBuiltIn == EbvInputPatch)
+            if (function[i].getDeclaredBuiltIn() == EbvInputPatch)
                 inputPatch = argAsGlobal;
         }
         if (paramType.getQualifier().isParamOutput()) {
@@ -2456,19 +2504,38 @@ TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc
 }
 
 // Return true if this a buffer type that has an associated counter buffer.
-bool HlslParseContext::hasStructBuffCounter(const TString& name) const
+bool HlslParseContext::hasStructBuffCounter(const TType& type) const
 {
-    const auto bivIt = structBufferBuiltIn.find(name);
-    if (bivIt == structBufferBuiltIn.end())
-        return false;
-
-    switch (bivIt->second) {
+    switch (type.getQualifier().declaredBuiltIn) {
     case EbvAppendConsume:       // fall through...
     case EbvRWStructuredBuffer:  // ...
         return true;
     default:
         return false; // the other structuredbfufer types do not have a counter.
     }
+}
+
+void HlslParseContext::counterBufferType(const TSourceLoc& loc, TType& type)
+{
+    // Counter type
+    TType* counterType = new TType(EbtInt, EvqBuffer);
+    counterType->setFieldName("@count");
+
+    TTypeList* blockStruct = new TTypeList;
+    TTypeLoc  member = { counterType, loc };
+    blockStruct->push_back(member);
+
+    TType blockType(blockStruct, "", counterType->getQualifier());
+    blockType.getQualifier().storage = EvqBuffer;
+
+    type.shallowCopy(blockType);
+    shareStructBufferType(type);
+}
+
+// knowledge of how to construct block name, in one place instead of N places.
+TString HlslParseContext::getStructBuffCounterName(const TString& blockName) const
+{
+    return blockName + "@count";
 }
 
 // declare counter for a structured buffer type
@@ -2478,24 +2545,16 @@ void HlslParseContext::declareStructBufferCounter(const TSourceLoc& loc, const T
     if (! isStructBufferType(bufferType))
         return;
 
-    if (! hasStructBuffCounter(name))
+    if (! hasStructBuffCounter(bufferType))
         return;
 
-    // Counter type
-    TType* counterType = new TType(EbtInt, EvqBuffer);
-    counterType->setFieldName("@count");
+    TType blockType;
+    counterBufferType(loc, blockType);
 
-    TTypeList* blockStruct = new TTypeList;
-    TTypeLoc  member = { counterType, loc };
-    blockStruct->push_back(member);
+    TString* blockName = new TString(getStructBuffCounterName(name));
 
-    TString* blockName = new TString(name);
-    *blockName += "@count";
-
+    // Counter buffer does not have its own counter buffer.  TODO: there should be a better way to track this.
     structBufferCounter[*blockName] = false;
-
-    TType blockType(blockStruct, "", counterType->getQualifier());
-    blockType.getQualifier().storage = EvqBuffer;
 
     shareStructBufferType(blockType);
     declareBlock(loc, blockType, blockName);
@@ -2508,13 +2567,12 @@ TIntermTyped* HlslParseContext::getStructBufferCounter(const TSourceLoc& loc, TI
     if (buffer == nullptr || ! isStructBufferType(buffer->getType()))
         return nullptr;
 
-    TString blockName(buffer->getAsSymbolNode()->getName());
-    blockName += "@count";
+    const TString counterBlockName(getStructBuffCounterName(buffer->getAsSymbolNode()->getName()));
 
     // Mark the counter as being used
-    structBufferCounter[blockName] = true;
+    structBufferCounter[counterBlockName] = true;
 
-    TIntermTyped* counterVar = handleVariable(loc, &blockName);  // find the block structure
+    TIntermTyped* counterVar = handleVariable(loc, &counterBlockName);  // find the block structure
     TIntermTyped* index = intermediate.addConstantUnion(0, loc); // index to counter inside block struct
 
     TIntermTyped* counterMember = intermediate.addIndex(EOpIndexDirectStruct, counterVar, index, loc);
@@ -2549,8 +2607,6 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     if (bufferObj == nullptr || bufferObj->getAsSymbolNode() == nullptr)
         return;
 
-    const TString bufferName(bufferObj->getAsSymbolNode()->getName());
-
     // Some methods require a hidden internal counter, obtained via getStructBufferCounter().
     // This lambda adds something to it and returns the old value.
     const auto incDecCounter = [&](int incval) -> TIntermTyped* {
@@ -2579,20 +2635,14 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
         {
             TIntermTyped* argIndex = makeIntegerIndex(argAggregate->getSequence()[1]->getAsTyped());  // index
 
-            const auto bivIt = structBufferBuiltIn.find(bufferName);
-
-            const TBuiltInVariable builtInType = (bivIt != structBufferBuiltIn.end()) ? bivIt->second : EbvNone;
-
             const TType& bufferType = bufferObj->getType();
+
+            const TBuiltInVariable builtInType = bufferType.getQualifier().declaredBuiltIn;
 
             // Byte address buffers index in bytes (only multiples of 4 permitted... not so much a byte address
             // buffer then, but that's what it calls itself.
-            // TODO: it would be easier to track the declared (pre-sanitized) builtInType in the TType.
-            //       If/when that happens, this should be simplified to look *only* at the builtin type.
             const bool isByteAddressBuffer = (builtInType == EbvByteAddressBuffer   || 
-                                              builtInType == EbvRWByteAddressBuffer ||
-                                              (builtInType == EbvNone && !bufferType.isVector() &&
-                                               bufferType.getBasicType() == EbtUint));
+                                              builtInType == EbvRWByteAddressBuffer);
                 
 
             if (isByteAddressBuffer)
@@ -2843,7 +2893,73 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
         break; // most pass through unchanged
     }
 }
+
+// Create array of standard sample positions for given sample count.
+// TODO: remove when a real method to query sample pos exists in SPIR-V.
+TIntermConstantUnion* HlslParseContext::getSamplePosArray(int count)
+{
+    struct tSamplePos { float x, y; };
+
+    static const tSamplePos pos1[] = {
+        { 0.0/16.0,  0.0/16.0 },
+    };
+
+    // standard sample positions for 2, 4, 8, and 16 samples.
+    static const tSamplePos pos2[] = {
+        { 4.0/16.0,  4.0/16.0 }, {-4.0/16.0, -4.0/16.0 },
+    };
+
+    static const tSamplePos pos4[] = {
+        {-2.0/16.0, -6.0/16.0 }, { 6.0/16.0, -2.0/16.0 }, {-6.0/16.0,  2.0/16.0 }, { 2.0/16.0,  6.0/16.0 },
+    };
+
+    static const tSamplePos pos8[] = {
+        { 1.0/16.0, -3.0/16.0 }, {-1.0/16.0,  3.0/16.0 }, { 5.0/16.0,  1.0/16.0 }, {-3.0/16.0, -5.0/16.0 },
+        {-5.0/16.0,  5.0/16.0 }, {-7.0/16.0, -1.0/16.0 }, { 3.0/16.0,  7.0/16.0 }, { 7.0/16.0, -7.0/16.0 },
+    };
+
+    static const tSamplePos pos16[] = {
+        { 1.0/16.0,  1.0/16.0 }, {-1.0/16.0, -3.0/16.0 }, {-3.0/16.0,  2.0/16.0 }, { 4.0/16.0, -1.0/16.0 },
+        {-5.0/16.0, -2.0/16.0 }, { 2.0/16.0,  5.0/16.0 }, { 5.0/16.0,  3.0/16.0 }, { 3.0/16.0, -5.0/16.0 },
+        {-2.0/16.0,  6.0/16.0 }, { 0.0/16.0, -7.0/16.0 }, {-4.0/16.0, -6.0/16.0 }, {-6.0/16.0,  4.0/16.0 },
+        {-8.0/16.0,  0.0/16.0 }, { 7.0/16.0, -4.0/16.0 }, { 6.0/16.0,  7.0/16.0 }, {-7.0/16.0, -8.0/16.0 },
+    };
+
+    const tSamplePos* sampleLoc = nullptr;
+    int numSamples = count;
+
+    switch (count) {
+    case 2:  sampleLoc = pos2;  break;
+    case 4:  sampleLoc = pos4;  break;
+    case 8:  sampleLoc = pos8;  break;
+    case 16: sampleLoc = pos16; break;
+    default:
+        sampleLoc = pos1;
+        numSamples = 1;
+    }
+
+    TConstUnionArray* values = new TConstUnionArray(numSamples*2);
     
+    for (int pos=0; pos<count; ++pos) {
+        TConstUnion x, y;
+        x.setDConst(sampleLoc[pos].x);
+        y.setDConst(sampleLoc[pos].y);
+
+        (*values)[pos*2+0] = x;
+        (*values)[pos*2+1] = y;
+    }
+
+    TType retType(EbtFloat, EvqConst, 2);
+
+    if (numSamples != 1) {
+        TArraySizes arraySizes;
+        arraySizes.addInnerSize(numSamples);
+        retType.newArraySizes(arraySizes);
+    }
+
+    return new TIntermConstantUnion(*values, retType);
+}
+
 //
 // Decompose DX9 and DX10 sample intrinsics & object methods into AST
 //
@@ -2872,13 +2988,19 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
     const TOperator op  = node->getAsOperator()->getOp();
     const TIntermAggregate* argAggregate = arguments ? arguments->getAsAggregate() : nullptr;
 
-    // Bail out if not a sampler method
+    // Bail out if not a sampler method.
+    // Note though this is odd to do before checking the op, because the op
+    // could be something that takes the arguments, and the function in question
+    // takes the result of the op.  So, this is not the final word.
     if (arguments != nullptr) {
-        if ((argAggregate != nullptr && argAggregate->getSequence()[0]->getAsTyped()->getBasicType() != EbtSampler))
-            return;
-
-        if (argAggregate == nullptr && arguments->getAsTyped()->getBasicType() != EbtSampler)
-            return;
+        if (argAggregate == nullptr) {
+            if (arguments->getAsTyped()->getBasicType() != EbtSampler)
+                return;
+        } else {
+            if (argAggregate->getSequence().size() == 0 ||
+                argAggregate->getSequence()[0]->getAsTyped()->getBasicType() != EbtSampler)
+                return;
+        }
     }
 
     switch (op) {
@@ -3510,7 +3632,68 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 
     case EOpMethodGetSamplePosition:
         {
-            error(loc, "unimplemented: GetSamplePosition", "", "");
+            // TODO: this entire decomposition exists because there is not yet a way to query
+            // the sample position directly through SPIR-V.  Instead, we return fixed sample
+            // positions for common cases.  *** If the sample positions are set differently,
+            // this will be wrong. ***
+
+            TIntermTyped* argTex     = argAggregate->getSequence()[0]->getAsTyped();
+            TIntermTyped* argSampIdx = argAggregate->getSequence()[1]->getAsTyped();
+
+            TIntermAggregate* samplesQuery = new TIntermAggregate(EOpImageQuerySamples);
+            samplesQuery->getSequence().push_back(argTex);
+            samplesQuery->setType(TType(EbtUint, EvqTemporary, 1));
+            samplesQuery->setLoc(loc);
+
+            TIntermAggregate* compoundStatement = nullptr;
+
+            TVariable* outSampleCount = makeInternalVariable("@sampleCount", TType(EbtUint));
+            outSampleCount->getWritableType().getQualifier().makeTemporary();
+            TIntermTyped* compAssign = intermediate.addAssign(EOpAssign, intermediate.addSymbol(*outSampleCount, loc),
+                                                              samplesQuery, loc);
+            compoundStatement = intermediate.growAggregate(compoundStatement, compAssign);
+
+            TIntermTyped* idxtest[4];
+
+            // Create tests against 2, 4, 8, and 16 sample values
+            int count = 0;
+            for (int val = 2; val <= 16; val *= 2)
+                idxtest[count++] =
+                    intermediate.addBinaryNode(EOpEqual, 
+                                               intermediate.addSymbol(*outSampleCount, loc),
+                                               intermediate.addConstantUnion(val, loc),
+                                               loc, TType(EbtBool));
+
+            const TOperator idxOp = (argSampIdx->getQualifier().storage == EvqConst) ? EOpIndexDirect : EOpIndexIndirect;
+            
+            // Create index ops into position arrays given sample index.
+            // TODO: should it be clamped?
+            TIntermTyped* index[4];
+            count = 0;
+            for (int val = 2; val <= 16; val *= 2) {
+                index[count] = intermediate.addIndex(idxOp, getSamplePosArray(val), argSampIdx, loc);
+                index[count++]->setType(TType(EbtFloat, EvqTemporary, 2));
+            }
+
+            // Create expression as:
+            // (sampleCount == 2)  ? pos2[idx] :
+            // (sampleCount == 4)  ? pos4[idx] :
+            // (sampleCount == 8)  ? pos8[idx] :
+            // (sampleCount == 16) ? pos16[idx] : float2(0,0);
+            TIntermTyped* test = 
+                intermediate.addSelection(idxtest[0], index[0], 
+                    intermediate.addSelection(idxtest[1], index[1], 
+                        intermediate.addSelection(idxtest[2], index[2],
+                            intermediate.addSelection(idxtest[3], index[3], 
+                                                      getSamplePosArray(1), loc), loc), loc), loc);
+                                         
+            compoundStatement = intermediate.growAggregate(compoundStatement, test);
+            compoundStatement->setOperator(EOpSequence);
+            compoundStatement->setLoc(loc);
+            compoundStatement->setType(TType(EbtFloat, EvqTemporary, 2));
+
+            node = compoundStatement;
+
             break;
         }
 
@@ -3533,6 +3716,12 @@ void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTy
     switch (op) {
     case EOpMethodAppend:
         if (argAggregate) {
+            // Don't emit these for non-GS stage, since we won't have the gsStreamOutput symbol.
+            if (language != EShLangGeometry) {
+                node = nullptr;
+                return;
+            }
+
             TIntermAggregate* sequence = nullptr;
             TIntermAggregate* emit = new TIntermAggregate(EOpEmitVertex);
 
@@ -3562,6 +3751,12 @@ void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTy
 
     case EOpMethodRestartStrip:
         {
+            // Don't emit these for non-GS stage, since we won't have the gsStreamOutput symbol.
+            if (language != EShLangGeometry) {
+                node = nullptr;
+                return;
+            }
+
             TIntermAggregate* cut = new TIntermAggregate(EOpEndPrimitive);
             cut->setLoc(loc);
             cut->setType(TType(EbtVoid));
@@ -4280,6 +4475,9 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         //
         const TFunction* fnCandidate = nullptr;
         bool builtIn = false;
+        int thisDepth = 0;
+
+        TIntermAggregate* aggregate = arguments ? arguments->getAsAggregate() : nullptr;
 
         // TODO: this needs improvement: there's no way at present to look up a signature in
         // the symbol table for an arbitrary type.  This is a temporary hack until that ability exists.
@@ -4290,14 +4488,12 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
 
             TIntermTyped* arg0 = nullptr;
 
-            if (arguments->getAsAggregate() && arguments->getAsAggregate()->getSequence().size() > 0)
-                arg0 = arguments->getAsAggregate()->getSequence()[0]->getAsTyped();
+            if (aggregate && aggregate->getSequence().size() > 0)
+                arg0 = aggregate->getSequence()[0]->getAsTyped();
             else if (arguments->getAsSymbolNode())
                 arg0 = arguments->getAsSymbolNode();
 
             if (arg0 != nullptr && isStructBufferType(arg0->getType())) {
-                // TODO: for struct buffers with counters, pass counter buffer as hidden parameter
-
                 static const int methodPrefixSize = sizeof(BUILTIN_PREFIX)-1;
 
                 if (function->getName().length() > methodPrefixSize &&
@@ -4312,7 +4508,7 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         }
 
         if (fnCandidate == nullptr)
-            fnCandidate = findFunction(loc, *function, builtIn, arguments);
+            fnCandidate = findFunction(loc, *function, builtIn, thisDepth, arguments);
 
         if (fnCandidate) {
             // This is a declared function that might map to
@@ -4324,9 +4520,26 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
             if (builtIn && fnCandidate->getNumExtensions())
                 requireExtensions(loc, fnCandidate->getNumExtensions(), fnCandidate->getExtensions(), fnCandidate->getName().c_str());
 
+            // turn an implicit member-function resolution into an explicit call
+            TString callerName;
+            if (thisDepth == 0)
+                callerName = fnCandidate->getMangledName();
+            else {
+                // get the explicit (full) name of the function
+                callerName = currentTypePrefix[currentTypePrefix.size() - thisDepth];
+                callerName += fnCandidate->getMangledName();
+                // insert the implicit calling argument
+                pushFrontArguments(intermediate.addSymbol(*getImplicitThis(thisDepth)), arguments);
+            }
+
             // Convert 'in' arguments
             if (arguments)
                 addInputArgumentConversions(*fnCandidate, arguments);
+
+            // If any argument is a pass-by-reference struct buffer with an associated counter
+            // buffer, we have to add another hidden parameter for that counter.
+            if (aggregate && !builtIn)
+                addStructBuffArguments(loc, aggregate);
 
             op = fnCandidate->getBuiltInOp();
             if (builtIn && op != EOpNull) {
@@ -4344,14 +4557,14 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
                 // It could still be a built-in function, but only if PureOperatorBuiltins == false.
                 result = intermediate.setAggregateOperator(arguments, EOpFunctionCall, fnCandidate->getType(), loc);
                 TIntermAggregate* call = result->getAsAggregate();
-                call->setName(fnCandidate->getMangledName());
+                call->setName(callerName);
 
                 // this is how we know whether the given function is a built-in function or a user-defined function
                 // if builtIn == false, it's a userDefined -> could be an overloaded built-in function also
                 // if builtIn == true, it's definitely a built-in function with EOpNull
                 if (! builtIn) {
                     call->setUserDefined();
-                    intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
+                    intermediate.addToCallGraph(infoSink, currentCaller, callerName);
                 }
             }
 
@@ -4374,7 +4587,12 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
                 for (int i = 0; i < fnCandidate->getParamCount(); ++i) {
                     TStorageQualifier qual = (*fnCandidate)[i].type->getQualifier().storage;
                     qualifierList.push_back(qual);
+
+                    // add counter buffer argument qualifier
+                    if (hasStructBuffCounter(*(*fnCandidate)[i].type))
+                        qualifierList.push_back(qual);
                 }
+
                 result = addOutputArgumentConversions(*fnCandidate, *result->getAsOperator());
             }
         }
@@ -4386,6 +4604,19 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
         result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
 
     return result;
+}
+
+// An initial argument list is difficult: it can be null, or a single node,
+// or an aggregate if more than one argument.  Add one to the front, maintaining
+// this lack of uniformity.
+void HlslParseContext::pushFrontArguments(TIntermTyped* front, TIntermTyped*& arguments)
+{
+    if (arguments == nullptr)
+        arguments = front;
+    else if (arguments->getAsAggregate() != nullptr)
+        arguments->getAsAggregate()->getSequence().insert(arguments->getAsAggregate()->getSequence().begin(), front);
+    else
+        arguments = intermediate.growAggregate(front, arguments);
 }
 
 //
@@ -4542,6 +4773,55 @@ TIntermTyped* HlslParseContext::addOutputArgumentConversions(const TFunction& fu
 
     return conversionTree;
 }
+
+//
+// Add any needed "hidden" counter buffer arguments for function calls.
+//
+// Modifies the 'aggregate' argument if needed.  Otherwise, is no-op.
+//
+void HlslParseContext::addStructBuffArguments(const TSourceLoc& loc, TIntermAggregate*& aggregate)
+{
+    // See if there are any SB types with counters.
+    const bool hasStructBuffArg =
+        std::any_of(aggregate->getSequence().begin(),
+                    aggregate->getSequence().end(),
+                    [this](const TIntermNode* node) {
+                        return (node->getAsTyped() != nullptr) && hasStructBuffCounter(node->getAsTyped()->getType());
+                    });
+
+    // Nothing to do, if we didn't find one.
+    if (! hasStructBuffArg)
+        return;
+
+    TIntermSequence argsWithCounterBuffers;
+
+    for (int param=0; param<int(aggregate->getSequence().size()); ++param) {
+        argsWithCounterBuffers.push_back(aggregate->getSequence()[param]);
+
+        if (hasStructBuffCounter(aggregate->getSequence()[param]->getAsTyped()->getType())) {
+            const TIntermSymbol* blockSym = aggregate->getSequence()[param]->getAsSymbolNode();
+            if (blockSym != nullptr) {
+                TType counterType;
+                counterBufferType(loc, counterType);
+
+                const TString counterBlockName(getStructBuffCounterName(blockSym->getName()));
+
+                TVariable* variable = makeInternalVariable(counterBlockName, counterType);
+
+                // Mark this buffer as requiring a counter block.  TODO: there should be a better
+                // way to track it.
+                structBufferCounter[counterBlockName] = true;
+
+                TIntermSymbol* sym = intermediate.addSymbol(*variable, loc);
+                argsWithCounterBuffers.push_back(sym);
+            }
+        }
+    }
+
+    // Swap with the temp list we've built up.
+    aggregate->getSequence().swap(argsWithCounterBuffers);
+}
+
 
 //
 // Do additional checking of built-in function calls that is not caught
@@ -4807,6 +5087,7 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
     }
 
     // TODO: learn what all these really mean and how they interact with regNumber and subComponent
+    std::vector<std::string> resourceInfo = intermediate.getResourceSetBinding();
     switch (std::tolower(desc[0])) {
     case 'b':
     case 't':
@@ -4814,6 +5095,13 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
     case 's':
     case 'u':
         qualifier.layoutBinding = regNumber + subComponent;
+        for (auto it = resourceInfo.cbegin(); it != resourceInfo.cend(); it = it + 3) {
+            if (strcmp(desc.c_str(), it[0].c_str()) == 0) {
+                qualifier.layoutSet = atoi(it[1].c_str());
+                qualifier.layoutBinding = atoi(it[2].c_str()) + subComponent;
+                break;
+            }
+        }
         break;
     default:
         warn(loc, "ignoring unrecognized register type", "register", "%c", desc[0]);
@@ -4981,6 +5269,33 @@ bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node
     case EOpConstructDMat4x2:
     case EOpConstructDMat4x3:
     case EOpConstructDMat4x4:
+    case EOpConstructIMat2x2:
+    case EOpConstructIMat2x3:
+    case EOpConstructIMat2x4:
+    case EOpConstructIMat3x2:
+    case EOpConstructIMat3x3:
+    case EOpConstructIMat3x4:
+    case EOpConstructIMat4x2:
+    case EOpConstructIMat4x3:
+    case EOpConstructIMat4x4:
+    case EOpConstructUMat2x2:
+    case EOpConstructUMat2x3:
+    case EOpConstructUMat2x4:
+    case EOpConstructUMat3x2:
+    case EOpConstructUMat3x3:
+    case EOpConstructUMat3x4:
+    case EOpConstructUMat4x2:
+    case EOpConstructUMat4x3:
+    case EOpConstructUMat4x4:
+    case EOpConstructBMat2x2:
+    case EOpConstructBMat2x3:
+    case EOpConstructBMat2x4:
+    case EOpConstructBMat3x2:
+    case EOpConstructBMat3x3:
+    case EOpConstructBMat3x4:
+    case EOpConstructBMat4x2:
+    case EOpConstructBMat4x3:
+    case EOpConstructBMat4x4:
         constructingMatrix = true;
         break;
     default:
@@ -5693,6 +6008,7 @@ void HlslParseContext::paramFix(TType& type)
             bufferQualifier.storage = type.getQualifier().storage;
             bufferQualifier.readonly = type.getQualifier().readonly;
             bufferQualifier.coherent = type.getQualifier().coherent;
+            bufferQualifier.declaredBuiltIn = type.getQualifier().declaredBuiltIn;
             type.getQualifier() = bufferQualifier;
             break;
         }
@@ -6137,18 +6453,17 @@ void HlslParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQuali
 //
 // Return the function symbol if found, otherwise nullptr.
 //
-const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction& call, bool& builtIn,
+const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction& call, bool& builtIn, int& thisDepth,
                                                 TIntermTyped*& args)
 {
-    // const TFunction* function = nullptr;
-
     if (symbolTable.isFunctionNameVariable(call.getName())) {
         error(loc, "can't use function syntax on variable", call.getName().c_str(), "");
         return nullptr;
     }
 
     // first, look for an exact match
-    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn);
+    bool dummyScope;
+    TSymbol* symbol = symbolTable.find(call.getMangledName(), &builtIn, &dummyScope, &thisDepth);
     if (symbol)
         return symbol->getAsFunction();
 
@@ -6158,7 +6473,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
     TVector<const TFunction*> candidateList;
     symbolTable.findFunctionNameList(call.getMangledName(), candidateList, builtIn);
 
-    // These builtin ops can accept any type, so we bypass the argument selection
+    // These built-in ops can accept any type, so we bypass the argument selection
     if (candidateList.size() == 1 && builtIn &&
         (candidateList[0]->getBuiltInOp() == EOpMethodAppend ||
          candidateList[0]->getBuiltInOp() == EOpMethodRestartStrip ||
@@ -7105,6 +7420,15 @@ TIntermTyped* HlslParseContext::constructBuiltIn(const TType& type, TOperator op
     case EOpConstructIVec2:
     case EOpConstructIVec3:
     case EOpConstructIVec4:
+    case EOpConstructIMat2x2:
+    case EOpConstructIMat2x3:
+    case EOpConstructIMat2x4:
+    case EOpConstructIMat3x2:
+    case EOpConstructIMat3x3:
+    case EOpConstructIMat3x4:
+    case EOpConstructIMat4x2:
+    case EOpConstructIMat4x3:
+    case EOpConstructIMat4x4:
     case EOpConstructInt:
         basicOp = EOpConstructInt;
         break;
@@ -7112,6 +7436,15 @@ TIntermTyped* HlslParseContext::constructBuiltIn(const TType& type, TOperator op
     case EOpConstructUVec2:
     case EOpConstructUVec3:
     case EOpConstructUVec4:
+    case EOpConstructUMat2x2:
+    case EOpConstructUMat2x3:
+    case EOpConstructUMat2x4:
+    case EOpConstructUMat3x2:
+    case EOpConstructUMat3x3:
+    case EOpConstructUMat3x4:
+    case EOpConstructUMat4x2:
+    case EOpConstructUMat4x3:
+    case EOpConstructUMat4x4:
     case EOpConstructUint:
         basicOp = EOpConstructUint;
         break;
@@ -7119,6 +7452,15 @@ TIntermTyped* HlslParseContext::constructBuiltIn(const TType& type, TOperator op
     case EOpConstructBVec2:
     case EOpConstructBVec3:
     case EOpConstructBVec4:
+    case EOpConstructBMat2x2:
+    case EOpConstructBMat2x3:
+    case EOpConstructBMat2x4:
+    case EOpConstructBMat3x2:
+    case EOpConstructBMat3x3:
+    case EOpConstructBMat3x4:
+    case EOpConstructBMat4x2:
+    case EOpConstructBMat4x3:
+    case EOpConstructBMat4x4:
     case EOpConstructBool:
         basicOp = EOpConstructBool;
         break;
@@ -7175,10 +7517,6 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     switch (type.getQualifier().storage) {
     case EvqUniform:
     case EvqBuffer:
-        // remember pre-sanitized builtin type
-        if (type.getQualifier().storage == EvqBuffer && instanceName != nullptr)
-            structBufferBuiltIn[*instanceName] = type.getQualifier().builtIn;
-
         correctUniform(type.getQualifier());
         break;
     case EvqVaryingIn:
@@ -7555,6 +7893,20 @@ bool HlslParseContext::handleOutputGeometry(const TSourceLoc& loc, const TLayout
 }
 
 //
+// Loop hints
+//
+TLoopControl HlslParseContext::handleLoopControl(const TAttributeMap& attributes) const
+{
+    if (attributes.contains(EatUnroll))
+        return ELoopControlUnroll;
+    else if (attributes.contains(EatLoop))
+        return ELoopControlDontUnroll;
+    else
+        return ELoopControlNone;
+}
+
+
+//
 // Updating default qualifier for the case of a declaration with just a qualifier,
 // no type, block, or identifier.
 //
@@ -7725,11 +8077,23 @@ TIntermNode* HlslParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* ex
 
 // Make a new symbol-table level that is made out of the members of a structure.
 // This should be done as an anonymous struct (name is "") so that the symbol table
-// finds the members with on explicit reference to a 'this' variable.
-void HlslParseContext::pushThisScope(const TType& thisStruct)
+// finds the members with no explicit reference to a 'this' variable.
+void HlslParseContext::pushThisScope(const TType& thisStruct, const TVector<TFunctionDeclarator>& functionDeclarators)
 {
+    // member variables
     TVariable& thisVariable = *new TVariable(NewPoolTString(""), thisStruct);
     symbolTable.pushThis(thisVariable);
+
+    // member functions
+    for (auto it = functionDeclarators.begin(); it != functionDeclarators.end(); ++it) {
+        // member should have a prefix matching currentTypePrefix.back()
+        // but, symbol lookup within the class scope will just use the
+        // unprefixed name. Hence, there are two: one fully prefixed and
+        // one with no prefix.
+        TFunction& member = *it->function->clone();
+        member.removePrefix(currentTypePrefix.back());
+        symbolTable.insert(member);
+    }
 }
 
 // Track levels of class/struct/namespace nesting with a prefix string using
@@ -7744,11 +8108,10 @@ void HlslParseContext::pushNamespace(const TString& typeName)
 {
     // make new type prefix
     TString newPrefix;
-    if (currentTypePrefix.size() > 0) {
+    if (currentTypePrefix.size() > 0)
         newPrefix = currentTypePrefix.back();
-        newPrefix.append(scopeMangler);
-    }
     newPrefix.append(typeName);
+    newPrefix.append(scopeMangler);
     currentTypePrefix.push_back(newPrefix);
 }
 
@@ -7766,7 +8129,6 @@ void HlslParseContext::getFullNamespaceName(const TString*& name) const
         return;
 
     TString* fullName = NewPoolTString(currentTypePrefix.back().c_str());
-    fullName->append(scopeMangler);
     fullName->append(*name);
     name = fullName;
 }
@@ -7970,6 +8332,9 @@ void HlslParseContext::correctOutput(TQualifier& qualifier)
 // Make the IO decorations etc. be appropriate only for uniform type interfaces.
 void HlslParseContext::correctUniform(TQualifier& qualifier)
 {
+    if (qualifier.declaredBuiltIn == EbvNone)
+        qualifier.declaredBuiltIn = qualifier.builtIn;
+
     qualifier.builtIn = EbvNone;
     qualifier.clearInterstage();
     qualifier.clearInterstageLayout();
@@ -8038,8 +8403,8 @@ void HlslParseContext::addPatchConstantInvocation()
             if (storage == EvqConstReadOnly) // treated identically to input
                 storage = EvqIn;
 
-            if (function[p].declaredBuiltIn != EbvNone)
-                builtIns.insert(HlslParseContext::tInterstageIoData(function[p].declaredBuiltIn, storage));
+            if (function[p].getDeclaredBuiltIn() != EbvNone)
+                builtIns.insert(HlslParseContext::tInterstageIoData(function[p].getDeclaredBuiltIn(), storage));
             else
                 builtIns.insert(HlslParseContext::tInterstageIoData(function[p].type->getQualifier().builtIn, storage));
         }
@@ -8069,7 +8434,7 @@ void HlslParseContext::addPatchConstantInvocation()
 
     const auto isOutputPatch = [this](TFunction& patchConstantFunction, int param) {
         const TType& type = *patchConstantFunction[param].type;
-        const TBuiltInVariable biType = patchConstantFunction[param].declaredBuiltIn;
+        const TBuiltInVariable biType = patchConstantFunction[param].getDeclaredBuiltIn();
 
         return type.isArray() && !type.isRuntimeSizedArray() && biType == EbvOutputPatch;
     };
@@ -8125,7 +8490,7 @@ void HlslParseContext::addPatchConstantInvocation()
 
         // Now we'll add those to the entry and to the linkage.
         for (int p=0; p<pcfParamCount; ++p) {
-            const TBuiltInVariable biType   = patchConstantFunction[p].declaredBuiltIn;
+            const TBuiltInVariable biType   = patchConstantFunction[p].getDeclaredBuiltIn();
             TStorageQualifier storage = patchConstantFunction[p].type->getQualifier().storage;
 
             // Track whether there is an output patch param
@@ -8191,7 +8556,7 @@ void HlslParseContext::addPatchConstantInvocation()
                 inputArg = intermediate.addSymbol(*perCtrlPtVar, loc);
             } else {
                 // find which builtin it is
-                const TBuiltInVariable biType = patchConstantFunction[p].declaredBuiltIn;
+                const TBuiltInVariable biType = patchConstantFunction[p].getDeclaredBuiltIn();
                 
                 inputArg = findLinkageSymbol(biType);
 
@@ -8272,7 +8637,7 @@ void HlslParseContext::addPatchConstantInvocation()
 
                 if (paramType.getQualifier().isParamInput())  {
                     TIntermTyped* arg = nullptr;
-                    if ((*entryPointFunction)[i].declaredBuiltIn == EbvInvocationId) {
+                    if ((*entryPointFunction)[i].getDeclaredBuiltIn() == EbvInvocationId) {
                         // substitute invocation ID with the array element ID
                         arg = intermediate.addConstantUnion(cpt, loc);
                     } else {
@@ -8378,6 +8743,12 @@ void HlslParseContext::removeUnusedStructBufferCounters()
 // post-processing
 void HlslParseContext::finish()
 {
+    // Error check: There was a dangling .mips operator.  These are not nested constructs in the grammar, so
+    // cannot be detected there.  This is not strictly needed in a non-validating parser; it's just helpful.
+    if (! mipsOperatorMipArg.empty()) {
+        error(mipsOperatorMipArg.back().loc, "unterminated mips operator:", "", "");
+    }
+
     removeUnusedStructBufferCounters();
     addPatchConstantInvocation();
     addInterstageIoToLinkage();

@@ -492,6 +492,33 @@ enum TOperator {
     EOpConstructDMat4x2,
     EOpConstructDMat4x3,
     EOpConstructDMat4x4,
+    EOpConstructIMat2x2,
+    EOpConstructIMat2x3,
+    EOpConstructIMat2x4,
+    EOpConstructIMat3x2,
+    EOpConstructIMat3x3,
+    EOpConstructIMat3x4,
+    EOpConstructIMat4x2,
+    EOpConstructIMat4x3,
+    EOpConstructIMat4x4,
+    EOpConstructUMat2x2,
+    EOpConstructUMat2x3,
+    EOpConstructUMat2x4,
+    EOpConstructUMat3x2,
+    EOpConstructUMat3x3,
+    EOpConstructUMat3x4,
+    EOpConstructUMat4x2,
+    EOpConstructUMat4x3,
+    EOpConstructUMat4x4,
+    EOpConstructBMat2x2,
+    EOpConstructBMat2x3,
+    EOpConstructBMat2x4,
+    EOpConstructBMat3x2,
+    EOpConstructBMat3x3,
+    EOpConstructBMat3x4,
+    EOpConstructBMat4x2,
+    EOpConstructBMat4x3,
+    EOpConstructBMat4x4,
 #ifdef AMD_EXTENSIONS
     EOpConstructFloat16,
     EOpConstructF16Vec2,
@@ -823,6 +850,15 @@ protected:
 };
 
 //
+// Loop control hints
+//
+enum TLoopControl {
+    ELoopControlNone,
+    ELoopControlUnroll,
+    ELoopControlDontUnroll,
+};
+
+//
 // Handle for, do-while, and while loops.
 //
 class TIntermLoop : public TIntermNode {
@@ -831,17 +867,25 @@ public:
         body(aBody),
         test(aTest),
         terminal(aTerminal),
-        first(testFirst) { }
+        first(testFirst),
+        control(ELoopControlNone)
+    { }
+
     virtual void traverse(TIntermTraverser*);
     TIntermNode*  getBody() const { return body; }
     TIntermTyped* getTest() const { return test; }
     TIntermTyped* getTerminal() const { return terminal; }
     bool testFirst() const { return first; }
+
+    void setLoopControl(TLoopControl c) { control = c; }
+    TLoopControl getLoopControl() const { return control; }
+
 protected:
     TIntermNode* body;       // code to loop over
     TIntermTyped* test;      // exit condition associated with loop, could be 0 for 'for' loops
     TIntermTyped* terminal;  // exists for for-loops
     bool first;              // true for while and for, not for do-while
+    TLoopControl control;    // loop control hint
 };
 
 //

@@ -177,6 +177,7 @@ public:
         shiftSsboBinding(0),
         shiftUavBinding(0),
         autoMapBindings(false),
+        autoMapLocations(false),
         flattenUniformArrays(false),
         useUnknownFormat(false),
         hlslOffsets(false),
@@ -216,9 +217,13 @@ public:
     unsigned int getShiftSsboBinding()  const { return shiftSsboBinding; }
     void setShiftUavBinding(unsigned int shift) { shiftUavBinding = shift; }
     unsigned int getShiftUavBinding()  const { return shiftUavBinding; }
-    void setAutoMapBindings(bool map)               { autoMapBindings = map; }
+    void setResourceSetBinding(const std::vector<std::string>& shift) { resourceSetBinding = shift; }
+    const std::vector<std::string>& getResourceSetBinding() const { return resourceSetBinding; }
+    void setAutoMapBindings(bool map)           { autoMapBindings = map; }
     bool getAutoMapBindings()             const { return autoMapBindings; }
-    void setFlattenUniformArrays(bool flatten)      { flattenUniformArrays = flatten; }
+    void setAutoMapLocations(bool map)          { autoMapLocations = map; }
+    bool getAutoMapLocations()            const { return autoMapLocations; }
+    void setFlattenUniformArrays(bool flatten)  { flattenUniformArrays = flatten; }
     bool getFlattenUniformArrays()        const { return flattenUniformArrays; }
     void setNoStorageFormat(bool b)             { useUnknownFormat = b; }
     bool getNoStorageFormat()             const { return useUnknownFormat; }
@@ -283,8 +288,8 @@ public:
     TIntermConstantUnion* addConstantUnion(const TString*, const TSourceLoc&, bool literal = false) const;
     TIntermTyped* promoteConstantUnion(TBasicType, TIntermConstantUnion*) const;
     bool parseConstTree(TIntermNode*, TConstUnionArray, TOperator, const TType&, bool singleConstantParam = false);
-    TIntermLoop* addLoop(TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, const TSourceLoc&);
-    TIntermAggregate* addForLoop(TIntermNode*, TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, const TSourceLoc&);
+    TIntermLoop* addLoop(TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, const TSourceLoc&, TLoopControl = ELoopControlNone);
+    TIntermAggregate* addForLoop(TIntermNode*, TIntermNode*, TIntermTyped*, TIntermTyped*, bool testFirst, const TSourceLoc&, TLoopControl = ELoopControlNone);
     TIntermBranch* addBranch(TOperator, const TSourceLoc&);
     TIntermBranch* addBranch(TOperator, TIntermTyped*, const TSourceLoc&);
     template<typename selectorType> TIntermTyped* addSwizzle(TSwizzleSelectors<selectorType>&, const TSourceLoc&);
@@ -512,7 +517,9 @@ protected:
     unsigned int shiftUboBinding;
     unsigned int shiftSsboBinding;
     unsigned int shiftUavBinding;
+    std::vector<std::string> resourceSetBinding;
     bool autoMapBindings;
+    bool autoMapLocations;
     bool flattenUniformArrays;
     bool useUnknownFormat;
     bool hlslOffsets;

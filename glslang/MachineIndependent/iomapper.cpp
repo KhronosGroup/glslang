@@ -201,6 +201,40 @@ public:
     const TVarLiveMap&    uniformList;
 };
 
+struct TNotifyUniformAdaptor
+{
+    EShLanguage stage;
+    TIoMapResolver& resolver;
+    inline TNotifyUniformAdaptor(EShLanguage s, TIoMapResolver& r)
+      : stage(s)
+      , resolver(r)
+    {
+    }
+    inline void operator()(TVarEntryInfo& ent)
+    {
+        resolver.notifyBinding(stage, ent.symbol->getName().c_str(), ent.symbol->getType(), ent.live);
+    }
+private:
+    TNotifyUniformAdaptor& operator=(TNotifyUniformAdaptor&);
+};
+
+struct TNotifyInOutAdaptor
+{
+    EShLanguage stage;
+    TIoMapResolver& resolver;
+    inline TNotifyInOutAdaptor(EShLanguage s, TIoMapResolver& r)
+      : stage(s)
+      , resolver(r)
+    {
+    }
+    inline void operator()(TVarEntryInfo& ent)
+    {
+        resolver.notifyInOut(stage, ent.symbol->getName().c_str(), ent.symbol->getType(), ent.live);
+    }
+private:
+    TNotifyInOutAdaptor& operator=(TNotifyInOutAdaptor&);
+};
+
 struct TResolverUniformAdaptor
 {
     TResolverUniformAdaptor(EShLanguage s, TIoMapResolver& r, TInfoSink& i, bool& e, TIntermediate& interm)
@@ -319,7 +353,9 @@ struct TDefaultIoResolverBase : public glslang::TIoMapResolver
     int baseUboBinding;
     int baseSsboBinding;
     int baseUavBinding;
-    bool doAutoMapping;
+    std::vector<std::string> baseResourceSetBinding;
+    bool doAutoBindingMapping;
+    bool doAutoLocationMapping;
     typedef std::vector<int> TSlotSet;
     typedef std::unordered_map<int, TSlotSet> TSlotSetMap;
     TSlotSetMap slots;
@@ -370,9 +406,19 @@ struct TDefaultIoResolverBase : public glslang::TIoMapResolver
     {
         return true;
     }
-    int resolveInOutLocation(EShLanguage /*stage*/, const char* /*name*/, const TType& /*type*/, bool /*is_live*/) override
+    int resolveInOutLocation(EShLanguage /*stage*/, const char* /*name*/, const TType& type, bool /*is_live*/) override
     {
-        return -1;
+        if (!doAutoLocationMapping || type.getQualifier().hasLocation())
+            return -1;
+
+        // Placeholder.
+        // TODO: It would be nice to flesh this out using 
+        // intermediate->computeTypeLocationSize(type), or functions that call it like
+        // intermediate->addUsedLocation()
+        // These in turn would want the intermediate, which is not available here, but
+        // is available in many places, and a lot of copying from it could be saved if
+        // it were just available.
+        return 0;
     }
     int resolveInOutComponent(EShLanguage /*stage*/, const char* /*name*/, const TType& /*type*/, bool /*is_live*/) override
     {
@@ -382,6 +428,10 @@ struct TDefaultIoResolverBase : public glslang::TIoMapResolver
     {
         return -1;
     }
+
+    void notifyBinding(EShLanguage, const char* /*name*/, const TType&, bool /*is_live*/) override {}
+    void notifyInOut(EShLanguage, const char* /*name*/, const TType&, bool /*is_live*/) override {}
+    void endNotifications() override {}
 
 protected:
     static int getLayoutSet(const glslang::TType& type) {
@@ -458,7 +508,7 @@ struct TDefaultIoResolver : public TDefaultIoResolverBase
 
             if (isUboType(type))
                 return reserveSlot(set, baseUboBinding + type.getQualifier().layoutBinding);
-        } else if (is_live && doAutoMapping) {
+        } else if (is_live && doAutoBindingMapping) {
             // find free slot, the caller did make sure it passes all vars with binding
             // first and now all are passed that do not have a binding and needs one
 
@@ -532,6 +582,7 @@ u – for unordered access views (UAV)
 
 b – for constant buffer views (CBV)
    CBUFFER
+   CONSTANTBUFFER
  ********************************************************************************/
 struct TDefaultHlslIoResolver : public TDefaultIoResolverBase
 {
@@ -571,7 +622,7 @@ struct TDefaultHlslIoResolver : public TDefaultIoResolverBase
 
             if (isUboType(type))
                 return reserveSlot(set, baseUboBinding + type.getQualifier().layoutBinding);
-        } else if (is_live && doAutoMapping) {
+        } else if (is_live && doAutoBindingMapping) {
             // find free slot, the caller did make sure it passes all vars with binding
             // first and now all are passed that do not have a binding and needs one
 
@@ -621,7 +672,9 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate &intermediate, TInfoSi
         intermediate.getShiftUboBinding() == 0 &&
         intermediate.getShiftSsboBinding() == 0 &&
         intermediate.getShiftUavBinding() == 0 &&
+        intermediate.getResourceSetBinding().empty() &&
         intermediate.getAutoMapBindings() == false &&
+        intermediate.getAutoMapLocations() == false &&
         resolver == nullptr)
         return true;
 
@@ -651,7 +704,9 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate &intermediate, TInfoSi
         resolverBase->baseUboBinding = intermediate.getShiftUboBinding();
         resolverBase->baseSsboBinding = intermediate.getShiftSsboBinding();
         resolverBase->baseUavBinding = intermediate.getShiftUavBinding();
-        resolverBase->doAutoMapping = intermediate.getAutoMapBindings();
+        resolverBase->baseResourceSetBinding = intermediate.getResourceSetBinding();
+        resolverBase->doAutoBindingMapping = intermediate.getAutoMapBindings();
+        resolverBase->doAutoLocationMapping = intermediate.getAutoMapLocations();
 
         resolver = resolverBase;
     }
@@ -673,8 +728,14 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate &intermediate, TInfoSi
     std::sort(uniformVarMap.begin(), uniformVarMap.end(), TVarEntryInfo::TOrderByPriority());
 
     bool hadError = false;
+    TNotifyInOutAdaptor inOutNotify(stage, *resolver);
+    TNotifyUniformAdaptor uniformNotify(stage, *resolver);
     TResolverUniformAdaptor uniformResolve(stage, *resolver, infoSink, hadError, intermediate);
     TResolverInOutAdaptor inOutResolve(stage, *resolver, infoSink, hadError, intermediate);
+    std::for_each(inVarMap.begin(), inVarMap.end(), inOutNotify);
+    std::for_each(outVarMap.begin(), outVarMap.end(), inOutNotify);
+    std::for_each(uniformVarMap.begin(), uniformVarMap.end(), uniformNotify);
+    resolver->endNotifications();
     std::for_each(inVarMap.begin(), inVarMap.end(), inOutResolve);
     std::for_each(outVarMap.begin(), outVarMap.end(), inOutResolve);
     std::for_each(uniformVarMap.begin(), uniformVarMap.end(), uniformResolve);

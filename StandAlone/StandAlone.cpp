@@ -35,7 +35,9 @@
 //
 
 // this only applies to the standalone wrapper, not the front end in general
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include "ResourceLimits.h"
 #include "Worklist.h"
@@ -88,6 +90,7 @@ enum TOptions {
     EOptionKeepUncalled         = (1 << 22),
     EOptionHlslOffsets          = (1 << 23),
     EOptionHlslIoMapping        = (1 << 24),
+    EOptionAutoMapLocations     = (1 << 25),
 };
 
 //
@@ -168,6 +171,7 @@ std::array<unsigned int, EShLangCount> baseImageBinding;
 std::array<unsigned int, EShLangCount> baseUboBinding;
 std::array<unsigned int, EShLangCount> baseSsboBinding;
 std::array<unsigned int, EShLangCount> baseUavBinding;
+std::array<std::vector<std::string>, EShLangCount> baseResourceSetBinding;
 
 //
 // Create the default name for saving a binary if -o is not provided.
@@ -245,6 +249,45 @@ void ProcessBindingBase(int& argc, char**& argv, std::array<unsigned int, EShLan
     }
 }
 
+void ProcessResourceSetBindingBase(int& argc, char**& argv, std::array<std::vector<std::string>, EShLangCount>& base)
+{
+    if (argc < 2)
+        usage();
+
+    if (!isdigit(argv[1][0])) {
+        if (argc < 5) // this form needs one more argument
+            usage();
+
+        // Parse form: --argname stage base
+        const EShLanguage lang = FindLanguage(argv[1], false);
+
+        base[lang].push_back(argv[2]);
+        base[lang].push_back(argv[3]);
+        base[lang].push_back(argv[4]);
+        argc-= 4;
+        argv+= 4;
+        while(argv[1] != NULL) {
+            if(argv[1][0] != '-') {
+                base[lang].push_back(argv[1]);
+                base[lang].push_back(argv[2]);
+                base[lang].push_back(argv[3]);
+                argc-= 3;
+                argv+= 3;
+            }
+            else {
+                break;
+            }
+        }
+    } else {
+        // Parse form: --argname base
+        for (int lang=0; lang<EShLangCount; ++lang)
+            base[lang].push_back(argv[1]);
+
+        argc--;
+        argv++;
+    }
+}
+
 //
 // Do all command-line argument parsing.  This includes building up the work-items
 // to be processed later, and saving all the command-line options.
@@ -297,6 +340,10 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                lowerword == "shift-ssbo-binding"  ||
                                lowerword == "sbb") {
                         ProcessBindingBase(argc, argv, baseSsboBinding);
+                    } else if (lowerword == "resource-set-bindings" ||  // synonyms
+                               lowerword == "resource-set-binding"  ||
+                               lowerword == "rsb") {
+                        ProcessResourceSetBindingBase(argc, argv, baseResourceSetBinding);
                     } else if (lowerword == "shift-uav-bindings" ||  // synonyms
                                lowerword == "shift-uav-binding"  ||
                                lowerword == "suavb") {
@@ -340,6 +387,9 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                lowerword == "hlsl-iomapper" ||
                                lowerword == "hlsl-iomapping") {
                         Options |= EOptionHlslIoMapping;
+                    } else if (lowerword == "auto-map-locations" || // synonyms
+                               lowerword == "aml") {
+                        Options |= EOptionAutoMapLocations;
                     } else {
                         usage();
                     }
@@ -594,12 +644,16 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         shader->setShiftUavBinding(baseUavBinding[compUnit.stage]);
         shader->setFlattenUniformArrays((Options & EOptionFlattenUniformArrays) != 0);
         shader->setNoStorageFormat((Options & EOptionNoStorageFormat) != 0);
+        shader->setResourceSetBinding(baseResourceSetBinding[compUnit.stage]);
 
         if (Options & EOptionHlslIoMapping)
             shader->setHlslIoMapping(true);
 
         if (Options & EOptionAutoMapBindings)
             shader->setAutoMapBindings(true);
+
+        if (Options & EOptionAutoMapLocations)
+            shader->setAutoMapLocations(true);
 
         shaders.push_back(shader);
 
@@ -1006,12 +1060,20 @@ void usage()
            "  --shift-ssbo-binding [stage] num        set base binding number for SSBOs\n"
            "  --sbb [stage] num                       synonym for --shift-ssbo-binding\n"
            "\n"
+           "  --resource-set-binding [stage] num      set descriptor set and binding number for resources\n"
+           "  --rsb [stage] type set binding          synonym for --resource-set-binding\n"
+           "\n"
            "  --shift-uav-binding [stage] num         set base binding number for UAVs\n"
            "  --suavb [stage] num                     synonym for --shift-uav-binding\n"
            "\n"
            "  --auto-map-bindings                     automatically bind uniform variables without\n"
            "                                          explicit bindings.\n"
            "  --amb                                   synonym for --auto-map-bindings\n"
+           "\n"
+           "  --auto-map-locations                    automatically locate input/output lacking 'location'\n"
+           "                                          (fragile, not cross stage: recommend explicit\n"
+           "                                          'location' use in shader)\n"
+           "  --aml                                   synonym for --auto-map-locations\n"
            "\n"
            "  --flatten-uniform-arrays                flatten uniform texture & sampler arrays to scalars\n"
            "  --fua                                   synonym for --flatten-uniform-arrays\n"
