@@ -100,6 +100,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.conditional.frag", "PixelShaderFunction"},
         {"hlsl.constantbuffer.frag", "main"},
         {"hlsl.constructexpr.frag", "main"},
+        {"hlsl.constructimat.frag", "main"},
         {"hlsl.depthGreater.frag", "PixelShaderFunction"},
         {"hlsl.depthLess.frag", "PixelShaderFunction"},
         {"hlsl.discard.frag", "PixelShaderFunction"},
