@@ -1,0 +1,86 @@
+hlsl.waveordered.frag
+ERROR: 0:3: 'WaveGetOrderedIndex' : WaveGetOrderedIndex() unsupported in a pixel/fragment shader 
+ERROR: 1 compilation errors.  No code generated.
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+ERROR: node is still EOpNull!
+0:2  Function Definition: @PixelShaderFunction( ( temp 4-component vector of float)
+0:2    Function Parameters: 
+0:?     Sequence
+0:3      Test condition and select ( temp void)
+0:3        Condition
+0:3        Compare Equal ( temp bool)
+0:3          Constant:
+0:3            0 (const uint)
+0:3          ERROR: Bad aggregation op
+ ( temp uint)
+0:3        true case
+0:?         Sequence
+0:5          Branch: Return with expression
+0:?             Constant:
+0:?               1.000000
+0:?               2.000000
+0:?               3.000000
+0:?               4.000000
+0:3        false case
+0:?         Sequence
+0:9          Branch: Return with expression
+0:?             Constant:
+0:?               4.000000
+0:?               3.000000
+0:?               2.000000
+0:?               1.000000
+0:2  Function Definition: PixelShaderFunction( ( temp void)
+0:2    Function Parameters: 
+0:?     Sequence
+0:2      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:2        Function Call: @PixelShaderFunction( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+ERROR: node is still EOpNull!
+0:2  Function Definition: @PixelShaderFunction( ( temp 4-component vector of float)
+0:2    Function Parameters: 
+0:?     Sequence
+0:3      Test condition and select ( temp void)
+0:3        Condition
+0:3        Compare Equal ( temp bool)
+0:3          Constant:
+0:3            0 (const uint)
+0:3          ERROR: Bad aggregation op
+ ( temp uint)
+0:3        true case
+0:?         Sequence
+0:5          Branch: Return with expression
+0:?             Constant:
+0:?               1.000000
+0:?               2.000000
+0:?               3.000000
+0:?               4.000000
+0:3        false case
+0:?         Sequence
+0:9          Branch: Return with expression
+0:?             Constant:
+0:?               4.000000
+0:?               3.000000
+0:?               2.000000
+0:?               1.000000
+0:2  Function Definition: PixelShaderFunction( ( temp void)
+0:2    Function Parameters: 
+0:?     Sequence
+0:2      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:2        Function Call: @PixelShaderFunction( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+SPIR-V is not generated for failed compile or link

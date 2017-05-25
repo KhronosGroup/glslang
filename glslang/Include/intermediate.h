@@ -711,6 +711,14 @@ enum TOperator {
 
     // matrix
     EOpMatrixSwizzle,                    // select multiple matrix components (non-column)
+
+    // SM6 wave ops
+    EOpWaveGetLaneCount,                 // Will decompose to gl_SubgroupSize.
+    EOpWaveGetLaneIndex,                 // Will decompose to gl_SubgroupInvocationID.
+    EOpWaveIsHelperLane,                 // Will decompose to gl_HelperInvocation.
+    EOpWaveBallot,                       // Will decompose to subgroupBallot.
+    EOpWaveGetOrderedIndex,              // Will decompose to an equation containing gl_SubgroupID.
+    EOpGlobalOrderedCountIncrement,      // Will nice error.
 };
 
 class TIntermTraverser;

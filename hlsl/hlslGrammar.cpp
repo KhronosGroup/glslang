@@ -1457,6 +1457,10 @@ bool HlslGrammar::acceptType(TType& type, TIntermNode*& nodeList)
         new(&type) TType(EbtUint, EvqTemporary, 4);
         break;
 
+    case EHTokUint64:
+        new(&type) TType(EbtUint64);
+        break;
+
     case EHTokBool:
         new(&type) TType(EbtBool);
         break;
