@@ -59,6 +59,7 @@ namespace spv {
 Builder::Builder(unsigned int magicNumber, SpvBuildLogger* buildLogger) :
     source(SourceLanguageUnknown),
     sourceVersion(0),
+    sourceFileStringId(NoResult),
     addressModel(AddressingModelLogical),
     memoryModel(MemoryModelGLSL450),
     builderNumber(magicNumber),
@@ -2411,12 +2412,8 @@ void Builder::dump(std::vector<unsigned int>& out) const
     dumpInstructions(out, executionModes);
 
     // Debug instructions
-    if (source != SourceLanguageUnknown) {
-        Instruction sourceInst(0, 0, OpSource);
-        sourceInst.addImmediateOperand(source);
-        sourceInst.addImmediateOperand(sourceVersion);
-        sourceInst.dump(out);
-    }
+    dumpInstructions(out, strings);
+    dumpSourceInstructions(out);
     for (int e = 0; e < (int)sourceExtensions.size(); ++e) {
         Instruction sourceExtInst(0, 0, OpSourceExtension);
         sourceExtInst.addStringOperand(sourceExtensions[e]);
@@ -2572,6 +2569,48 @@ void Builder::createConditionalBranch(Id condition, Block* thenBlock, Block* els
     buildPoint->addInstruction(std::unique_ptr<Instruction>(branch));
     thenBlock->addPredecessor(buildPoint);
     elseBlock->addPredecessor(buildPoint);
+}
+
+// OpSource
+// [OpSourceContinued]
+// ...
+void Builder::dumpSourceInstructions(std::vector<unsigned int>& out) const
+{
+    const int maxWordCount = 0xFFFF;
+    const int opSourceWordCount = 4;
+    const int nonNullBytesPerInstruction = 4 * (maxWordCount - opSourceWordCount) - 1;
+
+    if (source != SourceLanguageUnknown) {
+        // OpSource Language Version File Source
+        Instruction sourceInst(NoResult, NoType, OpSource);
+        sourceInst.addImmediateOperand(source);
+        sourceInst.addImmediateOperand(sourceVersion);
+        // File operand
+        if (sourceFileStringId != NoResult) {
+            sourceInst.addIdOperand(sourceFileStringId);
+            // Source operand
+            if (sourceText.size() > 0) {
+                int nextByte = 0;
+                std::string subString;
+                while ((int)sourceText.size() - nextByte > 0) {
+                    subString = sourceText.substr(nextByte, nonNullBytesPerInstruction);
+                    if (nextByte == 0) {
+                        // OpSource
+                        sourceInst.addStringOperand(subString.c_str());
+                        sourceInst.dump(out);
+                    } else {
+                        // OpSourcContinued
+                        Instruction sourceContinuedInst(OpSourceContinued);
+                        sourceContinuedInst.addStringOperand(subString.c_str());
+                        sourceContinuedInst.dump(out);
+                    }
+                    nextByte += nonNullBytesPerInstruction;
+                }
+            } else
+                sourceInst.dump(out);
+        } else
+            sourceInst.dump(out);
+    }
 }
 
 void Builder::dumpInstructions(std::vector<unsigned int>& out, const std::vector<std::unique_ptr<Instruction> >& instructions) const

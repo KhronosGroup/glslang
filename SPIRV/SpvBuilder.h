@@ -70,6 +70,14 @@ public:
         source = lang;
         sourceVersion = version;
     }
+    void setSourceFile(const std::string& file)
+    {
+        Instruction* fileString = new Instruction(getUniqueId(), NoType, OpString);
+        fileString->addStringOperand(file.c_str());
+        sourceFileStringId = fileString->getResultId();
+        strings.push_back(std::unique_ptr<Instruction>(fileString));
+    }
+    void setSourceText(const std::string& text) { sourceText = text; }
     void addSourceExtension(const char* ext) { sourceExtensions.push_back(ext); }
     void addExtension(const char* ext) { extensions.insert(ext); }
     Id import(const char*);
@@ -561,10 +569,13 @@ public:
     void simplifyAccessChainSwizzle();
     void createAndSetNoPredecessorBlock(const char*);
     void createSelectionMerge(Block* mergeBlock, unsigned int control);
+    void dumpSourceInstructions(std::vector<unsigned int>&) const;
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<std::unique_ptr<Instruction> >&) const;
 
     SourceLanguage source;
     int sourceVersion;
+    spv::Id sourceFileStringId;
+    std::string sourceText;
     std::set<std::string> extensions;
     std::vector<const char*> sourceExtensions;
     AddressingModel addressModel;
@@ -579,6 +590,7 @@ public:
     AccessChain accessChain;
 
     // special blocks of instructions for output
+    std::vector<std::unique_ptr<Instruction> > strings;
     std::vector<std::unique_ptr<Instruction> > imports;
     std::vector<std::unique_ptr<Instruction> > entryPoints;
     std::vector<std::unique_ptr<Instruction> > executionModes;
@@ -599,7 +611,7 @@ public:
     // Our loop stack.
     std::stack<LoopBlocks> loops;
 
-    // The stream for outputing warnings and errors.
+    // The stream for outputting warnings and errors.
     SpvBuildLogger* logger;
 };  // end Builder class
 

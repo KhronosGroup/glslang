@@ -728,6 +728,11 @@ bool ProcessDeferred(
         intermediate.setOriginUpperLeft();
     if ((messages & EShMsgHlslOffsets) || (messages & EShMsgReadHlsl))
         intermediate.setHlslOffsets();
+    if (messages & EShMsgDebugInfo) {
+        intermediate.setSourceFile(names[numPre]);
+        for (int s = 0; s < numStrings; ++s)
+            intermediate.addSourceText(strings[numPre]);
+    }
     SetupBuiltinSymbolTable(version, profile, spvVersion, source);
 
     TSymbolTable* cachedTable = SharedSymbolTables[MapVersionToIndex(version)]

@@ -101,7 +101,7 @@ private:
 //
 class TGlslangToSpvTraverser : public glslang::TIntermTraverser {
 public:
-    TGlslangToSpvTraverser(const glslang::TIntermediate*, spv::SpvBuildLogger* logger);
+    TGlslangToSpvTraverser(const glslang::TIntermediate*, spv::SpvBuildLogger* logger, glslang::SpvOptions& options);
     virtual ~TGlslangToSpvTraverser() { }
 
     bool visitAggregate(glslang::TVisit, glslang::TIntermAggregate*);
@@ -179,6 +179,7 @@ protected:
     spv::Id createShortCircuit(glslang::TOperator, glslang::TIntermTyped& left, glslang::TIntermTyped& right);
     spv::Id getExtBuiltins(const char* name);
 
+    glslang::SpvOptions& options;
     spv::Function* shaderEntry;
     spv::Function* currentFunction;
     spv::Instruction* entryPoint;
@@ -851,8 +852,11 @@ bool HasNonLayoutQualifiers(const glslang::TType& type, const glslang::TQualifie
 // Implement the TGlslangToSpvTraverser class.
 //
 
-TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* glslangIntermediate, spv::SpvBuildLogger* buildLogger)
-    : TIntermTraverser(true, false, true), shaderEntry(nullptr), currentFunction(nullptr),
+TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* glslangIntermediate,
+                                               spv::SpvBuildLogger* buildLogger, glslang::SpvOptions& options)
+    : TIntermTraverser(true, false, true),
+      options(options),
+      shaderEntry(nullptr), currentFunction(nullptr),
       sequenceDepth(0), logger(buildLogger),
       builder((glslang::GetKhronosToolId() << 16) | GeneratorVersion, logger),
       inEntryPoint(false), entryPointTerminated(false), linkageOnly(false),
@@ -862,6 +866,10 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
 
     builder.clearAccessChain();
     builder.setSource(TranslateSourceLanguage(glslangIntermediate->getSource(), glslangIntermediate->getProfile()), glslangIntermediate->getVersion());
+    if (options.generateDebugInfo) {
+        builder.setSourceFile(glslangIntermediate->getSourceFile());
+        builder.setSourceText(glslangIntermediate->getSourceText());
+    }
     stdBuiltins = builder.import("GLSL.std.450");
     builder.setMemoryModel(spv::AddressingModelLogical, spv::MemoryModelGLSL450);
     shaderEntry = builder.makeEntryPoint(glslangIntermediate->getEntryPointName().c_str());
@@ -5561,22 +5569,27 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, 
 //
 // Set up the glslang traversal
 //
-void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv)
+void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv, SpvOptions* options)
 {
     spv::SpvBuildLogger logger;
-    GlslangToSpv(intermediate, spirv, &logger);
+    GlslangToSpv(intermediate, spirv, &logger, options);
 }
 
-void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv, spv::SpvBuildLogger* logger)
+void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv,
+                  spv::SpvBuildLogger* logger, SpvOptions* options)
 {
     TIntermNode* root = intermediate.getTreeRoot();
 
     if (root == 0)
         return;
 
+    glslang::SpvOptions defaultOptions;
+    if (options == nullptr)
+        options = &defaultOptions;
+
     glslang::GetThreadPoolAllocator().push();
 
-    TGlslangToSpvTraverser it(&intermediate, logger);
+    TGlslangToSpvTraverser it(&intermediate, logger, *options);
     root->traverse(&it);
     it.finishSpv();
     it.dumpSpv(spirv);

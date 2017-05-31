@@ -451,6 +451,11 @@ public:
         return semanticNameSet.insert(name).first->c_str();
     }
 
+    void setSourceFile(const char* file) { sourceFile = file; }
+    const std::string& getSourceFile() const { return sourceFile; }
+    void addSourceText(const char* text) { sourceText = sourceText + text; }
+    const std::string& getSourceText() const { return sourceText; }
+
     const char* const implicitThisName = "@this";
 
 protected:
@@ -540,6 +545,10 @@ protected:
     std::set<TString> semanticNameSet;
 
     EShTextureSamplerTransformMode textureSamplerTransformMode;
+
+    // source code of shader, useful as part of debug information
+    std::string sourceFile;
+    std::string sourceText;
 
 private:
     void operator=(TIntermediate&); // prevent assignments
