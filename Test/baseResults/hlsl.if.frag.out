@@ -1,4 +1,4 @@
-hlsl.if.frag
+../Test/hlsl.if.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

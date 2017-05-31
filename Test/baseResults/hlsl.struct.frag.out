@@ -1,7 +1,7 @@
-hlsl.struct.frag
-WARNING: 0:26: 'register' : ignoring shader_profile 
-WARNING: 0:27: 'register' : ignoring shader_profile 
-WARNING: 0:30: 'register' : ignoring shader_profile 
+../Test/hlsl.struct.frag
+WARNING: ../Test/hlsl.struct.frag:26: 'register' : ignoring shader_profile 
+WARNING: ../Test/hlsl.struct.frag:27: 'register' : ignoring shader_profile 
+WARNING: ../Test/hlsl.struct.frag:30: 'register' : ignoring shader_profile 
 
 Shader version: 500
 gl_FragCoord origin is upper left

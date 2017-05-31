@@ -1,25 +1,25 @@
-300scope.vert
-ERROR: 0:5: 'a' : redefinition 
-ERROR: 0:17: 'b' : function name is redeclaration of existing name 
-ERROR: 0:20: 'c' : redefinition 
-ERROR: 0:22: 'f' : redefinition 
-ERROR: 0:23: 'tan' : redefinition 
-ERROR: 0:24: 'redefinition of built-in function' : not supported with this profile: es
-ERROR: 0:24: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 1
-ERROR: 0:24: 'sin' : function name is redeclaration of existing name 
-ERROR: 0:25: 'redefinition of built-in function' : not supported with this profile: es
-ERROR: 0:25: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 1
-ERROR: 0:25: 'cos' : function name is redeclaration of existing name 
-ERROR: 0:25: 'cos' : function already has a body 
-ERROR: 0:27: 'return' : void function cannot return a value 
-ERROR: 0:29: 'radians' : function name is redeclaration of existing name 
-ERROR: 0:29: 'radians' : can't find function 
-ERROR: 0:31: 'return' : void function cannot return a value 
-ERROR: 0:38: 'local function declaration' : not supported with this profile: es
-ERROR: 0:43: 'sin' : can't use function syntax on variable 
-ERROR: 0:57: 'z' : undeclared identifier 
-ERROR: 0:57: 'z' : redefinition 
-ERROR: 0:73: 'degrees' : can't use function syntax on variable 
+../Test/300scope.vert
+ERROR: ../Test/300scope.vert:5: 'a' : redefinition 
+ERROR: ../Test/300scope.vert:17: 'b' : function name is redeclaration of existing name 
+ERROR: ../Test/300scope.vert:20: 'c' : redefinition 
+ERROR: ../Test/300scope.vert:22: 'f' : redefinition 
+ERROR: ../Test/300scope.vert:23: 'tan' : redefinition 
+ERROR: ../Test/300scope.vert:24: 'redefinition of built-in function' : not supported with this profile: es
+ERROR: ../Test/300scope.vert:24: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 1
+ERROR: ../Test/300scope.vert:24: 'sin' : function name is redeclaration of existing name 
+ERROR: ../Test/300scope.vert:25: 'redefinition of built-in function' : not supported with this profile: es
+ERROR: ../Test/300scope.vert:25: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 1
+ERROR: ../Test/300scope.vert:25: 'cos' : function name is redeclaration of existing name 
+ERROR: ../Test/300scope.vert:25: 'cos' : function already has a body 
+ERROR: ../Test/300scope.vert:27: 'return' : void function cannot return a value 
+ERROR: ../Test/300scope.vert:29: 'radians' : function name is redeclaration of existing name 
+ERROR: ../Test/300scope.vert:29: 'radians' : can't find function 
+ERROR: ../Test/300scope.vert:31: 'return' : void function cannot return a value 
+ERROR: ../Test/300scope.vert:38: 'local function declaration' : not supported with this profile: es
+ERROR: ../Test/300scope.vert:43: 'sin' : can't use function syntax on variable 
+ERROR: ../Test/300scope.vert:57: 'z' : undeclared identifier 
+ERROR: ../Test/300scope.vert:57: 'z' : redefinition 
+ERROR: ../Test/300scope.vert:73: 'degrees' : can't use function syntax on variable 
 ERROR: 21 compilation errors.  No code generated.
 
 

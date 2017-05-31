@@ -1,4 +1,4 @@
-spv.image.frag
+../Test/spv.image.frag
 Warning, version 450 is not yet complete; most version-specific features are present, but some are missing.
 
 // Module Version 10000

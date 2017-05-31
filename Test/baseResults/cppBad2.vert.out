@@ -1,6 +1,6 @@
-cppBad2.vert
-ERROR: 0:3: 'macro expansion' : End of input in macro b
-ERROR: 0:3: '' : compilation terminated 
+../Test/cppBad2.vert
+ERROR: ../Test/cppBad2.vert:3: 'macro expansion' : End of input in macro b
+ERROR: ../Test/cppBad2.vert:3: '' : compilation terminated 
 ERROR: 2 compilation errors.  No code generated.
 
 

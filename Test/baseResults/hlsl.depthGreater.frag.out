@@ -1,4 +1,4 @@
-hlsl.depthGreater.frag
+../Test/hlsl.depthGreater.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 using depth_greater

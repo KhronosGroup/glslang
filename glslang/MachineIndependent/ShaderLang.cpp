@@ -756,7 +756,7 @@ bool ProcessDeferred(
                                                          compiler->getLanguage(), compiler->infoSink,
                                                          spvVersion, forwardCompatible, messages, false, sourceEntryPointName);
 
-    TPpContext ppContext(*parseContext, names[numPre]? names[numPre]: "", includer);
+    TPpContext ppContext(*parseContext, names[numPre] ? names[numPre] : "", includer);
 
     // only GLSL (bison triggered, really) needs an externally set scan context
     glslang::TScanContext scanContext(*parseContext);

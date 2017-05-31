@@ -1,4 +1,4 @@
-hlsl.gather.basic.dx10.vert
+../Test/hlsl.gather.basic.dx10.vert
 Shader version: 500
 0:? Sequence
 0:28  Function Definition: @main( ( temp structure{ temp 4-component vector of float Pos})

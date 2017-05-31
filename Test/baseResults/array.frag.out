@@ -1,30 +1,30 @@
-array.frag
-ERROR: 0:21: '[' :  array index out of range '2'
-ERROR: 0:27: '[' :  array must be redeclared with a size before being indexed with a variable
-ERROR: 0:30: 'assign' :  cannot convert from ' global 4-element array of float' to ' global 5-element array of float'
-ERROR: 0:31: 'assign' :  cannot convert from ' global 4-element array of float' to ' global implicitly-sized array of float'
-ERROR: 0:33: 'foo' : no matching overloaded function found 
-ERROR: 0:42: '[' :  array index out of range '5'
-ERROR: 0:45: '[' :  array index out of range '1000'
-ERROR: 0:46: '[' :  index out of range '-1'
-ERROR: 0:52: '[' :  array index out of range '2'
-ERROR: 0:54: 'const' : non-matching or non-convertible constant type for const initializer 
-ERROR: 0:56: '=' :  cannot convert from ' const 2-element array of int' to ' temp 3-element array of int'
-ERROR: 0:57: '[]' : scalar integer expression required 
-ERROR: 0:57: '[' :  index out of range '-858993459'
-ERROR: 0:58: '[]' : scalar integer expression required 
-ERROR: 0:61: '' : array size required 
-ERROR: 0:62: '' : array size required 
-ERROR: 0:63: '' : array size required 
-ERROR: 0:66: '=' :  cannot convert from ' temp 3-component vector of float' to ' global float'
-ERROR: 0:76: 'bar' : no matching overloaded function found 
-ERROR: 0:79: '' : array size required 
-ERROR: 0:84: 'return' : type does not match, or is not convertible to, the function's return type 
-ERROR: 0:93: 'length' :  array must be declared with a size before using this method
-ERROR: 0:101: '[' :  array index out of range '5'
-ERROR: 0:104: 'constructor' : array constructor must have at least one argument 
-ERROR: 0:104: '=' :  cannot convert from ' const float' to ' global implicitly-sized array of int'
-ERROR: 0:106: 'constructor' : array argument must be sized 
+../Test/array.frag
+ERROR: ../Test/array.frag:21: '[' :  array index out of range '2'
+ERROR: ../Test/array.frag:27: '[' :  array must be redeclared with a size before being indexed with a variable
+ERROR: ../Test/array.frag:30: 'assign' :  cannot convert from ' global 4-element array of float' to ' global 5-element array of float'
+ERROR: ../Test/array.frag:31: 'assign' :  cannot convert from ' global 4-element array of float' to ' global implicitly-sized array of float'
+ERROR: ../Test/array.frag:33: 'foo' : no matching overloaded function found 
+ERROR: ../Test/array.frag:42: '[' :  array index out of range '5'
+ERROR: ../Test/array.frag:45: '[' :  array index out of range '1000'
+ERROR: ../Test/array.frag:46: '[' :  index out of range '-1'
+ERROR: ../Test/array.frag:52: '[' :  array index out of range '2'
+ERROR: ../Test/array.frag:54: 'const' : non-matching or non-convertible constant type for const initializer 
+ERROR: ../Test/array.frag:56: '=' :  cannot convert from ' const 2-element array of int' to ' temp 3-element array of int'
+ERROR: ../Test/array.frag:57: '[]' : scalar integer expression required 
+ERROR: ../Test/array.frag:57: '[' :  index out of range '-858993459'
+ERROR: ../Test/array.frag:58: '[]' : scalar integer expression required 
+ERROR: ../Test/array.frag:61: '' : array size required 
+ERROR: ../Test/array.frag:62: '' : array size required 
+ERROR: ../Test/array.frag:63: '' : array size required 
+ERROR: ../Test/array.frag:66: '=' :  cannot convert from ' temp 3-component vector of float' to ' global float'
+ERROR: ../Test/array.frag:76: 'bar' : no matching overloaded function found 
+ERROR: ../Test/array.frag:79: '' : array size required 
+ERROR: ../Test/array.frag:84: 'return' : type does not match, or is not convertible to, the function's return type 
+ERROR: ../Test/array.frag:93: 'length' :  array must be declared with a size before using this method
+ERROR: ../Test/array.frag:101: '[' :  array index out of range '5'
+ERROR: ../Test/array.frag:104: 'constructor' : array constructor must have at least one argument 
+ERROR: ../Test/array.frag:104: '=' :  cannot convert from ' const float' to ' global implicitly-sized array of int'
+ERROR: ../Test/array.frag:106: 'constructor' : array argument must be sized 
 ERROR: 26 compilation errors.  No code generated.
 
 

@@ -1,4 +1,4 @@
-hlsl.intrinsic.frexp.frag
+../Test/hlsl.intrinsic.frexp.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

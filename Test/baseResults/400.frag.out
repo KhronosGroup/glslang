@@ -1,40 +1,40 @@
-400.frag
+../Test/400.frag
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:18: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
-ERROR: 0:22: 'textureGatherOffset(...)' : must be a compile-time constant: component argument
-ERROR: 0:23: 'textureGatherOffset(...)' : must be 0, 1, 2, or 3: component argument
-ERROR: 0:30: 'location qualifier on input' : not supported for this version or the enabled extensions 
-ERROR: 0:38: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
-ERROR: 0:40: 'redeclaration' : cannot apply layout qualifier to gl_Color
-ERROR: 0:41: 'redeclaration' : cannot change qualification of gl_ClipDistance
-ERROR: 0:43: 'gl_FragCoord' : cannot redeclare after use 
-ERROR: 0:51: 'texel offset' : argument must be compile-time constant 
-ERROR: 0:53: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:53: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:57: 'patch' : not supported in this stage: fragment
-ERROR: 0:58: 'patch' : not supported in this stage: fragment
-ERROR: 0:58: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
-ERROR: 0:73: 'dFdxFine' : required extension not requested: GL_ARB_derivative_control
-ERROR: 0:74: 'dFdyCoarse' : required extension not requested: GL_ARB_derivative_control
-ERROR: 0:75: 'fwidthCoarse' : required extension not requested: GL_ARB_derivative_control
-ERROR: 0:75: 'fwidthFine' : required extension not requested: GL_ARB_derivative_control
-ERROR: 0:104: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
-ERROR: 0:123: 'interpolateAtCentroid' : no matching overloaded function found 
-ERROR: 0:125: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:127: 'interpolateAtSample' : no matching overloaded function found 
-ERROR: 0:132: 'interpolateAtOffset' : no matching overloaded function found 
-ERROR: 0:134: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:135: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:136: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:139: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:140: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:183: 'textureQueryLod' : no matching overloaded function found 
-ERROR: 0:183: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
-ERROR: 0:184: 'textureQueryLod' : no matching overloaded function found 
-ERROR: 0:184: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
-ERROR: 0:197: '' :  syntax error, unexpected PRECISE, expecting IDENTIFIER
+ERROR: ../Test/400.frag:18: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
+ERROR: ../Test/400.frag:22: 'textureGatherOffset(...)' : must be a compile-time constant: component argument
+ERROR: ../Test/400.frag:23: 'textureGatherOffset(...)' : must be 0, 1, 2, or 3: component argument
+ERROR: ../Test/400.frag:30: 'location qualifier on input' : not supported for this version or the enabled extensions 
+ERROR: ../Test/400.frag:38: 'location qualifier on uniform or buffer' : not supported for this version or the enabled extensions 
+ERROR: ../Test/400.frag:40: 'redeclaration' : cannot apply layout qualifier to gl_Color
+ERROR: ../Test/400.frag:41: 'redeclaration' : cannot change qualification of gl_ClipDistance
+ERROR: ../Test/400.frag:43: 'gl_FragCoord' : cannot redeclare after use 
+ERROR: ../Test/400.frag:51: 'texel offset' : argument must be compile-time constant 
+ERROR: ../Test/400.frag:53: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: ../Test/400.frag:53: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: ../Test/400.frag:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: ../Test/400.frag:54: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: ../Test/400.frag:57: 'patch' : not supported in this stage: fragment
+ERROR: ../Test/400.frag:58: 'patch' : not supported in this stage: fragment
+ERROR: ../Test/400.frag:58: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
+ERROR: ../Test/400.frag:73: 'dFdxFine' : required extension not requested: GL_ARB_derivative_control
+ERROR: ../Test/400.frag:74: 'dFdyCoarse' : required extension not requested: GL_ARB_derivative_control
+ERROR: ../Test/400.frag:75: 'fwidthCoarse' : required extension not requested: GL_ARB_derivative_control
+ERROR: ../Test/400.frag:75: 'fwidthFine' : required extension not requested: GL_ARB_derivative_control
+ERROR: ../Test/400.frag:104: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
+ERROR: ../Test/400.frag:123: 'interpolateAtCentroid' : no matching overloaded function found 
+ERROR: ../Test/400.frag:125: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
+ERROR: ../Test/400.frag:127: 'interpolateAtSample' : no matching overloaded function found 
+ERROR: ../Test/400.frag:132: 'interpolateAtOffset' : no matching overloaded function found 
+ERROR: ../Test/400.frag:134: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: ../Test/400.frag:135: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: ../Test/400.frag:136: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: ../Test/400.frag:139: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
+ERROR: ../Test/400.frag:140: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
+ERROR: ../Test/400.frag:183: 'textureQueryLod' : no matching overloaded function found 
+ERROR: ../Test/400.frag:183: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
+ERROR: ../Test/400.frag:184: 'textureQueryLod' : no matching overloaded function found 
+ERROR: ../Test/400.frag:184: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
+ERROR: ../Test/400.frag:197: '' :  syntax error, unexpected PRECISE, expecting IDENTIFIER
 ERROR: 35 compilation errors.  No code generated.
 
 

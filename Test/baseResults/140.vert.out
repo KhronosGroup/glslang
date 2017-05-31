@@ -1,16 +1,16 @@
-140.vert
-ERROR: 0:23: 'gl_Position' : identifiers starting with "gl_" are reserved 
-ERROR: 0:25: 'location' : not supported for this version or the enabled extensions 
-ERROR: 0:25: 'location qualifier on input' : not supported for this version or the enabled extensions 
-ERROR: 0:34: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Position
-ERROR: 0:34: 'redeclaration' : cannot change interpolation qualification of gl_Position
-ERROR: 0:35: 'redeclaration' : cannot change the type of gl_Position
-ERROR: 0:38: 'gl_ClipVertex' : cannot redeclare after use 
-ERROR: 0:39: 'gl_FogFragCoord' : cannot redeclare after use 
-ERROR: 0:51: 'texelFetch' : no matching overloaded function found 
-ERROR: 0:53: 'texture' : no matching overloaded function found 
-ERROR: 0:63: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
-ERROR: 0:64: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
+../Test/140.vert
+ERROR: ../Test/140.vert:23: 'gl_Position' : identifiers starting with "gl_" are reserved 
+ERROR: ../Test/140.vert:25: 'location' : not supported for this version or the enabled extensions 
+ERROR: ../Test/140.vert:25: 'location qualifier on input' : not supported for this version or the enabled extensions 
+ERROR: ../Test/140.vert:34: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Position
+ERROR: ../Test/140.vert:34: 'redeclaration' : cannot change interpolation qualification of gl_Position
+ERROR: ../Test/140.vert:35: 'redeclaration' : cannot change the type of gl_Position
+ERROR: ../Test/140.vert:38: 'gl_ClipVertex' : cannot redeclare after use 
+ERROR: ../Test/140.vert:39: 'gl_FogFragCoord' : cannot redeclare after use 
+ERROR: ../Test/140.vert:51: 'texelFetch' : no matching overloaded function found 
+ERROR: ../Test/140.vert:53: 'texture' : no matching overloaded function found 
+ERROR: ../Test/140.vert:63: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: ../Test/140.vert:64: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
 ERROR: 12 compilation errors.  No code generated.
 
 

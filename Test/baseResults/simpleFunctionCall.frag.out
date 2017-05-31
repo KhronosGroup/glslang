@@ -1,5 +1,5 @@
-simpleFunctionCall.frag
-WARNING: 0:4: varying deprecated in version 130; may be removed in future release
+../Test/simpleFunctionCall.frag
+WARNING: ../Test/simpleFunctionCall.frag:4: varying deprecated in version 130; may be removed in future release
 
 Shader version: 150
 0:? Sequence

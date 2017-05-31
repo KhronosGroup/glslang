@@ -1,4 +1,4 @@
-hlsl.semantic.geom
+../Test/hlsl.semantic.geom
 Shader version: 500
 invocations = -1
 max_vertices = 4

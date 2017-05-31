@@ -1,4 +1,4 @@
-hlsl.boolConv.vert
+../Test/hlsl.boolConv.vert
 Shader version: 500
 0:? Sequence
 0:1  Sequence

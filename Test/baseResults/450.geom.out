@@ -1,7 +1,7 @@
-450.geom
+../Test/450.geom
 Warning, version 450 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:15: '[' :  array index out of range '3'
-ERROR: 0:15: 'gl_Position' : no such field in structure 
+ERROR: ../Test/450.geom:15: '[' :  array index out of range '3'
+ERROR: ../Test/450.geom:15: 'gl_Position' : no such field in structure 
 ERROR: 2 compilation errors.  No code generated.
 
 

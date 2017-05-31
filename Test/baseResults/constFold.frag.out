@@ -1,11 +1,11 @@
-constFold.frag
+../Test/constFold.frag
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:109: '[' :  index out of range '-1'
-ERROR: 0:110: '[' :  vector index out of range '4'
-ERROR: 0:111: '[' :  index out of range '-2'
-ERROR: 0:112: '[' :  index out of range '-1'
-ERROR: 0:113: '[' :  vector index out of range '3'
-ERROR: 0:114: '[' :  matrix index out of range '3'
+ERROR: ../Test/constFold.frag:109: '[' :  index out of range '-1'
+ERROR: ../Test/constFold.frag:110: '[' :  vector index out of range '4'
+ERROR: ../Test/constFold.frag:111: '[' :  index out of range '-2'
+ERROR: ../Test/constFold.frag:112: '[' :  index out of range '-1'
+ERROR: ../Test/constFold.frag:113: '[' :  vector index out of range '3'
+ERROR: ../Test/constFold.frag:114: '[' :  matrix index out of range '3'
 ERROR: 6 compilation errors.  No code generated.
 
 

@@ -1,21 +1,21 @@
-430.comp
+../Test/430.comp
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:4: 'local_size' : cannot change previously set size 
-ERROR: 0:5: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
-ERROR: 0:43: 'in' : global storage input qualifier cannot be used in a compute shader 
-ERROR: 0:43: 'location qualifier on input' : not supported in this stage: compute
-ERROR: 0:44: 'in' : global storage input qualifier cannot be used in a compute shader 
-ERROR: 0:45: 'out' : global storage output qualifier cannot be used in a compute shader 
-ERROR: 0:48: 'shared' : cannot apply layout qualifiers to a shared variable 
-ERROR: 0:48: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
-ERROR: 0:49: 'shared' :  cannot initialize this type of qualifier  
-ERROR: 0:51: 'local_size' : can only apply to 'in' 
-ERROR: 0:51: 'local_size' : can only apply to 'in' 
-ERROR: 0:51: 'local_size' : can only apply to 'in' 
-ERROR: 0:65: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
-ERROR: 0:77: '=' :  cannot convert from ' temp double' to ' temp int'
-ERROR: 0:81: 'input block' : not supported in this stage: compute
-ERROR: 0:85: 'output block' : not supported in this stage: compute
+ERROR: ../Test/430.comp:4: 'local_size' : cannot change previously set size 
+ERROR: ../Test/430.comp:5: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
+ERROR: ../Test/430.comp:43: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: ../Test/430.comp:43: 'location qualifier on input' : not supported in this stage: compute
+ERROR: ../Test/430.comp:44: 'in' : global storage input qualifier cannot be used in a compute shader 
+ERROR: ../Test/430.comp:45: 'out' : global storage output qualifier cannot be used in a compute shader 
+ERROR: ../Test/430.comp:48: 'shared' : cannot apply layout qualifiers to a shared variable 
+ERROR: ../Test/430.comp:48: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
+ERROR: ../Test/430.comp:49: 'shared' :  cannot initialize this type of qualifier  
+ERROR: ../Test/430.comp:51: 'local_size' : can only apply to 'in' 
+ERROR: ../Test/430.comp:51: 'local_size' : can only apply to 'in' 
+ERROR: ../Test/430.comp:51: 'local_size' : can only apply to 'in' 
+ERROR: ../Test/430.comp:65: 'assign' :  l-value required "ro" (can't modify a readonly buffer)
+ERROR: ../Test/430.comp:77: '=' :  cannot convert from ' temp double' to ' temp int'
+ERROR: ../Test/430.comp:81: 'input block' : not supported in this stage: compute
+ERROR: ../Test/430.comp:85: 'output block' : not supported in this stage: compute
 ERROR: 16 compilation errors.  No code generated.
 
 

@@ -1,13 +1,13 @@
-hlsl.calculatelodunclamped.dx10.frag
-ERROR: 0:28: '' : unimplemented: CalculateLevelOfDetailUnclamped 
-ERROR: 0:29: '' : unimplemented: CalculateLevelOfDetailUnclamped 
-ERROR: 0:30: '' : unimplemented: CalculateLevelOfDetailUnclamped 
-ERROR: 0:32: '' : unimplemented: CalculateLevelOfDetailUnclamped 
-ERROR: 0:33: '' : unimplemented: CalculateLevelOfDetailUnclamped 
-ERROR: 0:34: '' : unimplemented: CalculateLevelOfDetailUnclamped 
-ERROR: 0:36: '' : unimplemented: CalculateLevelOfDetailUnclamped 
-ERROR: 0:37: '' : unimplemented: CalculateLevelOfDetailUnclamped 
-ERROR: 0:38: '' : unimplemented: CalculateLevelOfDetailUnclamped 
+../Test/hlsl.calculatelodunclamped.dx10.frag
+ERROR: ../Test/hlsl.calculatelodunclamped.dx10.frag:28: '' : unimplemented: CalculateLevelOfDetailUnclamped 
+ERROR: ../Test/hlsl.calculatelodunclamped.dx10.frag:29: '' : unimplemented: CalculateLevelOfDetailUnclamped 
+ERROR: ../Test/hlsl.calculatelodunclamped.dx10.frag:30: '' : unimplemented: CalculateLevelOfDetailUnclamped 
+ERROR: ../Test/hlsl.calculatelodunclamped.dx10.frag:32: '' : unimplemented: CalculateLevelOfDetailUnclamped 
+ERROR: ../Test/hlsl.calculatelodunclamped.dx10.frag:33: '' : unimplemented: CalculateLevelOfDetailUnclamped 
+ERROR: ../Test/hlsl.calculatelodunclamped.dx10.frag:34: '' : unimplemented: CalculateLevelOfDetailUnclamped 
+ERROR: ../Test/hlsl.calculatelodunclamped.dx10.frag:36: '' : unimplemented: CalculateLevelOfDetailUnclamped 
+ERROR: ../Test/hlsl.calculatelodunclamped.dx10.frag:37: '' : unimplemented: CalculateLevelOfDetailUnclamped 
+ERROR: ../Test/hlsl.calculatelodunclamped.dx10.frag:38: '' : unimplemented: CalculateLevelOfDetailUnclamped 
 ERROR: 9 compilation errors.  No code generated.
 
 

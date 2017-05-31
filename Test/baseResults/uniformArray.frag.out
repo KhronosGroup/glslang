@@ -1,4 +1,4 @@
-uniformArray.frag
+../Test/uniformArray.frag
 Shader version: 130
 0:? Sequence
 0:7  Function Definition: main( ( global void)

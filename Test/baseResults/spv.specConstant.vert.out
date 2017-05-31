@@ -1,4 +1,4 @@
-spv.specConstant.vert
+../Test/spv.specConstant.vert
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
 
 // Module Version 10000

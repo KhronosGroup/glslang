@@ -1,4 +1,4 @@
-hlsl.charLit.vert
+../Test/hlsl.charLit.vert
 Shader version: 500
 0:? Sequence
 0:2  Function Definition: @main( ( temp 4-component vector of float)

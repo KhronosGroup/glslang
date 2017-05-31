@@ -1,4 +1,4 @@
-hlsl.tx.bracket.frag
+../Test/hlsl.tx.bracket.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

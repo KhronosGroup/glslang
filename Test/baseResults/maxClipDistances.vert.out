@@ -1,4 +1,4 @@
-maxClipDistances.vert
+../Test/maxClipDistances.vert
 Shader version: 130
 0:? Sequence
 0:5  Function Definition: main( ( global void)

@@ -1,5 +1,5 @@
-loops.frag
-WARNING: 0:14: varying deprecated in version 130; may be removed in future release
+../Test/loops.frag
+WARNING: ../Test/loops.frag:14: varying deprecated in version 130; may be removed in future release
 
 Shader version: 130
 0:? Sequence

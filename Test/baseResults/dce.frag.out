@@ -1,4 +1,4 @@
-dce.frag
+../Test/dce.frag
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
 
 Shader version: 400

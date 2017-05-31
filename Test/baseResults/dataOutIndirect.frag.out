@@ -1,5 +1,5 @@
-dataOutIndirect.frag
-WARNING: 0:3: varying deprecated in version 130; may be removed in future release
+../Test/dataOutIndirect.frag
+WARNING: ../Test/dataOutIndirect.frag:3: varying deprecated in version 130; may be removed in future release
 
 Shader version: 130
 0:? Sequence

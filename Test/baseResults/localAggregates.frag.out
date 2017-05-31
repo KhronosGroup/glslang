@@ -1,6 +1,6 @@
-localAggregates.frag
-WARNING: 0:4: varying deprecated in version 130; may be removed in future release
-WARNING: 0:5: varying deprecated in version 130; may be removed in future release
+../Test/localAggregates.frag
+WARNING: ../Test/localAggregates.frag:4: varying deprecated in version 130; may be removed in future release
+WARNING: ../Test/localAggregates.frag:5: varying deprecated in version 130; may be removed in future release
 
 Shader version: 130
 0:? Sequence

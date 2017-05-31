@@ -1,4 +1,4 @@
-hlsl.structin.vert
+../Test/hlsl.structin.vert
 Shader version: 500
 0:? Sequence
 0:8  Function Definition: @main(vf4;struct-VI-vf4[2]-vu2-vf41;vf4; ( temp structure{ temp 2-element array of 4-component vector of float m,  temp 2-component vector of uint coord,  temp 4-component vector of float b})

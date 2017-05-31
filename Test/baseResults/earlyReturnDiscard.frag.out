@@ -1,4 +1,4 @@
-earlyReturnDiscard.frag
+../Test/earlyReturnDiscard.frag
 Shader version: 110
 0:? Sequence
 0:19  Function Definition: main( ( global void)

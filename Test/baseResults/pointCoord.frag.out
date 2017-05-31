@@ -1,4 +1,4 @@
-pointCoord.frag
+../Test/pointCoord.frag
 Shader version: 100
 0:? Sequence
 0:5  Function Definition: main( ( global void)

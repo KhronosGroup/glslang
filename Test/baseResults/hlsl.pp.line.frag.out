@@ -1,4 +1,4 @@
-hlsl.pp.line.frag
+../Test/hlsl.pp.line.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

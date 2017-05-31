@@ -1,4 +1,4 @@
-hlsl.basic.geom
+../Test/hlsl.basic.geom
 Shader version: 500
 invocations = -1
 max_vertices = 4

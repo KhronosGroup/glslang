@@ -31,7 +31,7 @@ if(BUILD_TESTING)
         install(TARGETS glslangtests
                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-        set(GLSLANG_TEST_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../Test")
+        set(GLSLANG_TEST_DIRECTORY "../Test")
         # Supply a default test root directory, so that manual testing
         # doesn't have to specify the --test-root option in the normal
         # case that you want to use the tests from the same source tree.

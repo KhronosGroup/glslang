@@ -1,23 +1,23 @@
-300layout.vert
-ERROR: 0:7: 'vertex input arrays' : not supported with this profile: es
-ERROR: 0:8: 'in' : cannot be a structure or array 
-ERROR: 0:8: 'vertex input arrays' : not supported with this profile: es
-ERROR: 0:8: 'location' : overlapping use of location 10
-ERROR: 0:12: 'layout' : cannot specify matrix layout on a variable declaration 
-ERROR: 0:12: 'layout' : cannot specify packing on a variable declaration 
-ERROR: 0:19: 'badf' : member of uniform or buffer block cannot have an auxiliary or interpolation qualifier 
-ERROR: 0:20: 'badg' : member storage qualifier cannot contradict block storage qualifier 
-ERROR: 0:21: 'bad1' : member of block cannot have a packing layout qualifier 
-ERROR: 0:22: 'bad2' : member of block cannot have a packing layout qualifier 
-ERROR: 0:23: 'bad3' : member of block cannot have a packing layout qualifier 
-ERROR: 0:31: 'T3' : nameless block contains a member that already has a name at global scope 
-ERROR: 0:38: 'vertex output block' : not supported for this version or the enabled extensions 
-ERROR: 0:42: 'location qualifier on output' : not supported in this stage: vertex
-ERROR: 0:42: 'location qualifier on output' : not supported for this version or the enabled extensions 
-ERROR: 0:50: 'shared' : not supported for this version or the enabled extensions 
-ERROR: 0:50: 'shared' : not supported in this stage: vertex
-ERROR: 0:54: 'layout' : cannot specify packing on a variable declaration 
-ERROR: 0:57: 'location' : overlapping use of location 40
+../Test/300layout.vert
+ERROR: ../Test/300layout.vert:7: 'vertex input arrays' : not supported with this profile: es
+ERROR: ../Test/300layout.vert:8: 'in' : cannot be a structure or array 
+ERROR: ../Test/300layout.vert:8: 'vertex input arrays' : not supported with this profile: es
+ERROR: ../Test/300layout.vert:8: 'location' : overlapping use of location 10
+ERROR: ../Test/300layout.vert:12: 'layout' : cannot specify matrix layout on a variable declaration 
+ERROR: ../Test/300layout.vert:12: 'layout' : cannot specify packing on a variable declaration 
+ERROR: ../Test/300layout.vert:19: 'badf' : member of uniform or buffer block cannot have an auxiliary or interpolation qualifier 
+ERROR: ../Test/300layout.vert:20: 'badg' : member storage qualifier cannot contradict block storage qualifier 
+ERROR: ../Test/300layout.vert:21: 'bad1' : member of block cannot have a packing layout qualifier 
+ERROR: ../Test/300layout.vert:22: 'bad2' : member of block cannot have a packing layout qualifier 
+ERROR: ../Test/300layout.vert:23: 'bad3' : member of block cannot have a packing layout qualifier 
+ERROR: ../Test/300layout.vert:31: 'T3' : nameless block contains a member that already has a name at global scope 
+ERROR: ../Test/300layout.vert:38: 'vertex output block' : not supported for this version or the enabled extensions 
+ERROR: ../Test/300layout.vert:42: 'location qualifier on output' : not supported in this stage: vertex
+ERROR: ../Test/300layout.vert:42: 'location qualifier on output' : not supported for this version or the enabled extensions 
+ERROR: ../Test/300layout.vert:50: 'shared' : not supported for this version or the enabled extensions 
+ERROR: ../Test/300layout.vert:50: 'shared' : not supported in this stage: vertex
+ERROR: ../Test/300layout.vert:54: 'layout' : cannot specify packing on a variable declaration 
+ERROR: ../Test/300layout.vert:57: 'location' : overlapping use of location 40
 ERROR: 19 compilation errors.  No code generated.
 
 
