@@ -1,34 +1,34 @@
-130.frag
-ERROR: 0:25: 'textureGather(...)' : not supported for this version or the enabled extensions 
-ERROR: 0:35: 'redeclaration' : cannot change the type of gl_Color
-ERROR: 0:38: 'gl_Color' : redeclaring non-array as array 
-ERROR: 0:39: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Color
-WARNING: 0:45: extension GL_ARB_texture_gather is being used for textureGather(...)
-ERROR: 0:62: '<' :  wrong operand types: no operation '<' exists that takes a left-hand operand of type ' temp 3-component vector of bool' and a right operand of type ' temp 3-component vector of bool' (or there is no acceptable conversion)
-ERROR: 0:63: '>' :  wrong operand types: no operation '>' exists that takes a left-hand operand of type ' temp 3-component vector of uint' and a right operand of type ' temp 3-component vector of uint' (or there is no acceptable conversion)
-ERROR: 0:64: '>=' :  wrong operand types: no operation '>=' exists that takes a left-hand operand of type ' const 2-component vector of uint' and a right operand of type ' const 2-component vector of uint' (or there is no acceptable conversion)
-ERROR: 0:80: 'textureGatherOffset' : no matching overloaded function found 
-ERROR: 0:80: 'assign' :  cannot convert from ' const float' to ' temp 4-component vector of float'
-ERROR: 0:81: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
-ERROR: 0:84: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
-ERROR: 0:85: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
-WARNING: 0:88: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
-ERROR: 0:120: 'line continuation' : not supported for this version or the enabled extensions 
-ERROR: 0:126: 'uniform block' : not supported for this version or the enabled extensions 
-ERROR: 0:140: 'length' : does not operate on this type:  temp bool
-ERROR: 0:140: 'boolb' : can't use function syntax on variable 
-ERROR: 0:141: 'length' : does not operate on this type:  temp float
-ERROR: 0:141: '' : function call, method, or subroutine call expected 
-ERROR: 0:141: '' : no matching overloaded function found 
-ERROR: 0:142: 'length' : incomplete method syntax 
-ERROR: 0:143: 'length' : method does not accept any arguments 
-ERROR: 0:146: 'gl_FogFragCoord' : identifiers starting with "gl_" are reserved 
-ERROR: 0:151: 'int' : must be qualified as flat in
-ERROR: 0:151: 'redeclaration' : cannot change the type of gl_FogFragCoord
-ERROR: 0:153: 'early_fragment_tests' : not supported for this version or the enabled extensions 
-ERROR: 0:154: 'image load store' : not supported for this version or the enabled extensions 
-ERROR: 0:154: 'iimage2D' : Reserved word. 
-ERROR: 0:169: 'early_fragment_tests' : can only apply to 'in' 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:25: 'textureGather(...)' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:35: 'redeclaration' : cannot change the type of gl_Color
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:38: 'gl_Color' : redeclaring non-array as array 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:39: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_Color
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:45: extension GL_ARB_texture_gather is being used for textureGather(...)
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:62: '<' :  wrong operand types: no operation '<' exists that takes a left-hand operand of type ' temp 3-component vector of bool' and a right operand of type ' temp 3-component vector of bool' (or there is no acceptable conversion)
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:63: '>' :  wrong operand types: no operation '>' exists that takes a left-hand operand of type ' temp 3-component vector of uint' and a right operand of type ' temp 3-component vector of uint' (or there is no acceptable conversion)
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:64: '>=' :  wrong operand types: no operation '>=' exists that takes a left-hand operand of type ' const 2-component vector of uint' and a right operand of type ' const 2-component vector of uint' (or there is no acceptable conversion)
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:80: 'textureGatherOffset' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:80: 'assign' :  cannot convert from ' const float' to ' temp 4-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:81: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:84: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:85: 'textureGatherOffset(...)' : not supported for this version or the enabled extensions 
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:88: '#extension' : extension is only partially supported: GL_ARB_gpu_shader5
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:120: 'line continuation' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:126: 'uniform block' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:140: 'length' : does not operate on this type:  temp bool
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:140: 'boolb' : can't use function syntax on variable 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:141: 'length' : does not operate on this type:  temp float
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:141: '' : function call, method, or subroutine call expected 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:141: '' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:142: 'length' : incomplete method syntax 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:143: 'length' : method does not accept any arguments 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:146: 'gl_FogFragCoord' : identifiers starting with "gl_" are reserved 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:151: 'int' : must be qualified as flat in
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:151: 'redeclaration' : cannot change the type of gl_FogFragCoord
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:153: 'early_fragment_tests' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:154: 'image load store' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:154: 'iimage2D' : Reserved word. 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.frag:169: 'early_fragment_tests' : can only apply to 'in' 
 ERROR: 28 compilation errors.  No code generated.
 
 

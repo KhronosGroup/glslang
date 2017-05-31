@@ -1,5 +1,5 @@
-hlsl.sample.basic.dx10.frag
-WARNING: 0:4: 'immediate sampler state' : unimplemented 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.sample.basic.dx10.frag
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.sample.basic.dx10.frag:4: 'immediate sampler state' : unimplemented 
 
 Shader version: 500
 gl_FragCoord origin is upper left

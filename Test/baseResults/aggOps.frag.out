@@ -1,6 +1,6 @@
-aggOps.frag
-WARNING: 0:4: varying deprecated in version 130; may be removed in future release
-WARNING: 0:6: varying deprecated in version 130; may be removed in future release
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/aggOps.frag
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/aggOps.frag:4: varying deprecated in version 130; may be removed in future release
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/aggOps.frag:6: varying deprecated in version 130; may be removed in future release
 
 Shader version: 130
 0:? Sequence

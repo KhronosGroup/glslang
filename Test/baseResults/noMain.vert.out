@@ -8,7 +8,7 @@ Shader version: 300
 0:?     'gl_InstanceID' ( gl_InstanceId highp int InstanceId)
 
 mains.frag
-ERROR: 0:7: 'main' : function already has a body 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/mains.frag:7: 'main' : function already has a body 
 ERROR: 1 compilation errors.  No code generated.
 
 

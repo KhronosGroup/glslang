@@ -1,4 +1,4 @@
-hlsl.attribute.expression.comp
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.attribute.expression.comp
 Shader version: 500
 local_size = (4, 6, 8)
 0:? Sequence

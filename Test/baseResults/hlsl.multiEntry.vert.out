@@ -1,4 +1,4 @@
-hlsl.multiEntry.vert
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.multiEntry.vert
 Shader version: 500
 0:? Sequence
 0:4  Function Definition: FakeEntrypoint(u1; ( temp 4-component vector of float)

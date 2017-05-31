@@ -1,4 +1,4 @@
-hlsl.typeGraphCopy.vert
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.typeGraphCopy.vert
 Shader version: 500
 0:? Sequence
 0:22  Function Definition: @main( ( temp float)

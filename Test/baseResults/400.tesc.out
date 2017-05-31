@@ -1,28 +1,28 @@
-400.tesc
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:6: 'quads' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:7: 'ccw' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:8: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:10: 'patch' : can only use on output in tessellation-control shader 
-ERROR: 0:39: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:41: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:46: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:51: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:54: '' : tessellation control barrier() cannot be placed within flow control 
-ERROR: 0:61: '' : tessellation control barrier() cannot be placed after a return from main() 
-ERROR: 0:64: 'vertices' : can only apply to 'out' 
-ERROR: 0:65: 'vertices' : cannot change previously set layout value 
-ERROR: 0:69: '[' :  array index out of range '4'
-ERROR: 0:71: '' : tessellation control barrier() must be in main() 
-ERROR: 0:74: 'in' : type must be an array: ina
-ERROR: 0:76: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
-ERROR: 0:83: 'location' : overlapping use of location 4
-ERROR: 0:87: 'location' : overlapping use of location 4
-ERROR: 0:104: '' : precise qualifier must appear first 
-ERROR: 0:105: '' : precise qualifier must appear first 
-ERROR: 0:105: '' : precise qualifier must appear first 
-ERROR: 0:109: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
-ERROR: 0:110: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:6: 'quads' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:7: 'ccw' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:8: 'fractional_even_spacing' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:10: 'patch' : can only use on output in tessellation-control shader 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:39: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:41: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:46: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:51: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:54: '' : tessellation control barrier() cannot be placed within flow control 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:61: '' : tessellation control barrier() cannot be placed after a return from main() 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:64: 'vertices' : can only apply to 'out' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:65: 'vertices' : cannot change previously set layout value 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:69: '[' :  array index out of range '4'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:71: '' : tessellation control barrier() must be in main() 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:74: 'in' : type must be an array: ina
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:76: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:83: 'location' : overlapping use of location 4
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:87: 'location' : overlapping use of location 4
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:104: '' : precise qualifier must appear first 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:105: '' : precise qualifier must appear first 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:105: '' : precise qualifier must appear first 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:109: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tesc:110: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
 ERROR: 23 compilation errors.  No code generated.
 
 

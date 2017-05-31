@@ -1,54 +1,54 @@
-cppComplexExpr.vert
-ERROR: 0:46: 'xyxwx' : vector swizzle too long 
-ERROR: 0:46: 'xyxwx' : vector swizzle too long 
-ERROR: 0:46: 'return' : cannot convert return value to function return type 
-WARNING: 0:46: 'return' : type conversion on return values was not explicitly allowed until version 420 
-ERROR: 0:66: '#define' : Macro redefined; different substitutions: BIG
-ERROR: 0:81: 'preprocessor evaluation' : bad expression 
-ERROR: 0:81: '#if' : unexpected tokens following directive 
-ERROR: 0:82: '#error' : good macro  
-ERROR: 0:87: 'macro expansion' : End of line in macro substitution: foobar
-ERROR: 0:88: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 0:88: 'preprocessor evaluation' : bad expression 
-ERROR: 0:88: '#if' : unexpected tokens following directive 
-ERROR: 0:92: 'macro expansion' : End of line in macro substitution: foobar
-ERROR: 0:93: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 0:93: 'preprocessor evaluation' : bad expression 
-ERROR: 0:93: '#if' : unexpected tokens following directive 
-ERROR: 0:99: 'macro expansion' : End of line in macro substitution: foobar
-ERROR: 0:100: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 0:100: 'preprocessor evaluation' : bad expression 
-ERROR: 0:100: '#if' : unexpected tokens following directive 
-ERROR: 0:101: 'macro expansion' : End of line in macro substitution: foobar
-ERROR: 0:102: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 0:102: 'preprocessor evaluation' : bad expression 
-ERROR: 0:102: '#if' : unexpected tokens following directive 
-ERROR: 0:108: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
-ERROR: 0:111: '#error' : good 0  
-ERROR: 0:115: '#error' : good 1  
-ERROR: 0:120: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
-ERROR: 0:123: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
-ERROR: 0:129: '#error' : good 1  
-ERROR: 0:133: '#error' : good 3  
-ERROR: 0:139: '#error' : good 4  
-ERROR: 0:144: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
-ERROR: 0:153: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
-ERROR: 0:156: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
-ERROR: 0:159: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
-ERROR: 0:3000: '#error' : line of this error should be 3000  
-ERROR: 0:3002: '#define' : predefined names can't be (un)defined: __LINE__
-ERROR: 0:3003: '#define' : predefined names can't be (un)defined: __FILE__
-ERROR: 0:3004: '#define' : predefined names can't be (un)defined: __VERSION__
-ERROR: 0:3005: '#define' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
-ERROR: 0:3006: '#undef' : predefined names can't be (un)defined: __LINE__
-ERROR: 0:3007: '#undef' : predefined names can't be (un)defined: __FILE__
-ERROR: 0:3008: '#undef' : predefined names can't be (un)defined: __VERSION__
-ERROR: 0:3009: '#undef' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
-ERROR: 0:4000: 'preprocessor evaluation' : division by 0 
-ERROR: 0:0: 'preprocessor evaluation' : division by 0 
-ERROR: 0:3: 'preprocessor evaluation' : bad expression 
-ERROR: 0:3: 'preprocessor evaluation' : division by 0 
-ERROR: 0:10001: '' : missing #endif 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:46: 'xyxwx' : vector swizzle too long 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:46: 'xyxwx' : vector swizzle too long 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:46: 'return' : cannot convert return value to function return type 
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:46: 'return' : type conversion on return values was not explicitly allowed until version 420 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:66: '#define' : Macro redefined; different substitutions: BIG
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:81: 'preprocessor evaluation' : bad expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:81: '#if' : unexpected tokens following directive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:82: '#error' : good macro  
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:87: 'macro expansion' : End of line in macro substitution: foobar
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:88: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:88: 'preprocessor evaluation' : bad expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:88: '#if' : unexpected tokens following directive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:92: 'macro expansion' : End of line in macro substitution: foobar
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:93: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:93: 'preprocessor evaluation' : bad expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:93: '#if' : unexpected tokens following directive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:99: 'macro expansion' : End of line in macro substitution: foobar
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:100: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:100: 'preprocessor evaluation' : bad expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:100: '#if' : unexpected tokens following directive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:101: 'macro expansion' : End of line in macro substitution: foobar
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:102: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:102: 'preprocessor evaluation' : bad expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:102: '#if' : unexpected tokens following directive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:108: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:111: '#error' : good 0  
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:115: '#error' : good 1  
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:120: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:123: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:129: '#error' : good 1  
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:133: '#error' : good 3  
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:139: '#error' : good 4  
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:144: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:153: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:156: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:159: 'preprocessor evaluation' : undefined macro in expression not allowed in es profile UNDEF2
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3000: '#error' : line of this error should be 3000  
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3002: '#define' : predefined names can't be (un)defined: __LINE__
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3003: '#define' : predefined names can't be (un)defined: __FILE__
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3004: '#define' : predefined names can't be (un)defined: __VERSION__
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3005: '#define' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3006: '#undef' : predefined names can't be (un)defined: __LINE__
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3007: '#undef' : predefined names can't be (un)defined: __FILE__
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3008: '#undef' : predefined names can't be (un)defined: __VERSION__
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3009: '#undef' : names beginning with "GL_" can't be (un)defined: GL_SOME_EXTENSION
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:4000: 'preprocessor evaluation' : division by 0 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:0: 'preprocessor evaluation' : division by 0 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3: 'preprocessor evaluation' : bad expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:3: 'preprocessor evaluation' : division by 0 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppComplexExpr.vert:10001: '' : missing #endif 
 ERROR: 49 compilation errors.  No code generated.
 
 

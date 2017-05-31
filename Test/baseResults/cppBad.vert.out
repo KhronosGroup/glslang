@@ -1,10 +1,10 @@
-cppBad.vert
-ERROR: 0:2: 'preprocessor evaluation' : bad expression 
-ERROR: 0:2: '#if' : unexpected tokens following directive 
-ERROR: 0:5: 'string' : End of line in string 
-ERROR: 0:5: 'macro expansion' : expected '(' following n
-ERROR: 0:5: '""' : string literals not supported 
-ERROR: 0:5: '' :  syntax error, unexpected INT, expecting COMMA or SEMICOLON
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppBad.vert
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppBad.vert:2: 'preprocessor evaluation' : bad expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppBad.vert:2: '#if' : unexpected tokens following directive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppBad.vert:5: 'string' : End of line in string 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppBad.vert:5: 'macro expansion' : expected '(' following n
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppBad.vert:5: '""' : string literals not supported 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/cppBad.vert:5: '' :  syntax error, unexpected INT, expecting COMMA or SEMICOLON
 ERROR: 6 compilation errors.  No code generated.
 
 

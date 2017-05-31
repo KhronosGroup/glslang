@@ -1,5 +1,5 @@
-spv.structAssignment.frag
-WARNING: 0:6: '' : all default precisions are highp; use precision statements to quiet warning, e.g.:
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/spv.structAssignment.frag
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/spv.structAssignment.frag:6: '' : all default precisions are highp; use precision statements to quiet warning, e.g.:
          "precision mediump int; precision highp float;" 
 
 // Module Version 10000

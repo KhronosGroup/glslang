@@ -1,4 +1,4 @@
-hlsl.numthreads.comp
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.numthreads.comp
 Shader version: 500
 local_size = (4, 4, 2)
 0:? Sequence

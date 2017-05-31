@@ -55,12 +55,12 @@ TEST_P(LinkTest, FromFile)
     std::vector<std::unique_ptr<glslang::TShader>> shaders;
     for (size_t i = 0; i < fileCount; ++i) {
         std::string contents;
-        tryLoadFile(GlobalTestSettings.testRoot + "/" + fileNames[i],
-                    "input", &contents);
+        std::string path = GlobalTestSettings.testRoot + "/" + fileNames[i];
+        tryLoadFile(path, "input", &contents);
         shaders.emplace_back(
                 new glslang::TShader(GetShaderStage(GetSuffix(fileNames[i]))));
         auto* shader = shaders.back().get();
-        compile(shader, contents, "", controls);
+        compile(path, shader, contents, "", controls);
         result.shaderResults.push_back(
             {fileNames[i], shader->getInfoLog(), shader->getInfoDebugLog()});
     }

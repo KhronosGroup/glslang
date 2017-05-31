@@ -1,140 +1,140 @@
-310.frag
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag
 Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:2: 'float' : type requires declaration of default precision qualifier 
-ERROR: 0:8: 'origin_upper_left' : not supported with this profile: es
-ERROR: 0:8: 'pixel_center_integer' : not supported with this profile: es
-ERROR: 0:8: 'gl_FragCoord' : identifiers starting with "gl_" are reserved 
-ERROR: 0:11: 'location' : overlapping use of location 2
-ERROR: 0:15: 'usampler2DRect' : Reserved word. 
-ERROR: 0:15: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:23: 'variable indexing sampler array' : not supported for this version or the enabled extensions 
-ERROR: 0:27: 'textureGatherOffsets' : no matching overloaded function found 
-ERROR: 0:27: '=' :  cannot convert from ' const float' to ' temp mediump 4-component vector of uint'
-ERROR: 0:30: 'textureGatherOffset(...)' : must be a compile-time constant: component argument
-ERROR: 0:31: 'textureGatherOffset(...)' : must be 0, 1, 2, or 3: component argument
-ERROR: 0:34: 'non-constant offset argument' : not supported for this version or the enabled extensions 
-ERROR: 0:42: 'texel offset' : argument must be compile-time constant 
-ERROR: 0:44: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:44: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:45: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:45: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
-ERROR: 0:66: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:66: 'image variables declared 'writeonly' without a format layout qualifier' : not supported with this profile: es
-ERROR: 0:67: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:67: 'image variables declared 'writeonly' without a format layout qualifier' : not supported with this profile: es
-ERROR: 0:68: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:68: 'image variables declared 'writeonly' without a format layout qualifier' : not supported with this profile: es
-ERROR: 0:69: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:69: 'image variables declared 'writeonly' without a format layout qualifier' : not supported with this profile: es
-ERROR: 0:73: 'binding' : requires block, or sampler/image, or atomic-counter type 
-ERROR: 0:77: 'location' : location is too large 
-ERROR: 0:81: 'location' : too large for fragment output 
-ERROR: 0:82: 'location' : too large for fragment output 
-ERROR: 0:82: 'location' : overlapping use of location 40
-ERROR: 0:83: 'non-literal layout-id value' : not supported with this profile: es
-ERROR: 0:83: 'layout-id value' : cannot be negative 
-ERROR: 0:96: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:110: 'out' : cannot be bool 
-ERROR: 0:111: 'image2D' : sampler/image types can only be used in uniform variables or function parameters: imageOut
-ERROR: 0:111: 'image variables declared 'writeonly' without a format layout qualifier' : not supported with this profile: es
-ERROR: 0:112: 'out' : cannot be a matrix 
-ERROR: 0:114: 'in' : cannot be bool 
-ERROR: 0:115: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: ino
-ERROR: 0:117: 'fragment-shader array-of-array input' : not supported with this profile: es
-ERROR: 0:120: 'fragment-shader array-of-struct input' : not supported with this profile: es
-ERROR: 0:121: 'fragment-shader array-of-struct input' : not supported with this profile: es
-ERROR: 0:123: 'fragment-shader struct input containing an array' : not supported with this profile: es
-ERROR: 0:125: 'fragment-shader struct input containing structure' : not supported with this profile: es
-ERROR: 0:133: 'output block' : not supported in this stage: fragment
-ERROR: 0:138: '' : cannot nest a structure definition inside a structure or block 
-ERROR: 0:146: 'location' : overlapping use of location 13
-ERROR: 0:148: 'inbname2' : Cannot reuse block name within the same interface: in
-ERROR: 0:153: 'badmember' : nameless block contains a member that already has a name at global scope 
-ERROR: 0:157: 'inbname' : redefinition 
-ERROR: 0:159: 'vAnon' : redefinition 
-ERROR: 0:173: 'origin_upper_left' : not supported with this profile: es
-ERROR: 0:173: 'pixel_center_integer' : not supported with this profile: es
-ERROR: 0:173: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
-ERROR: 0:177: 'depth layout qualifier' : not supported with this profile: es
-ERROR: 0:181: 'assign' :  l-value required "gl_FragDepth" (can't modify gl_FragDepth if using early_fragment_tests)
-ERROR: 0:182: 'gl_Layer' : required extension not requested: Possible extensions include:
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:2: 'float' : type requires declaration of default precision qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:8: 'origin_upper_left' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:8: 'pixel_center_integer' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:8: 'gl_FragCoord' : identifiers starting with "gl_" are reserved 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:11: 'location' : overlapping use of location 2
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:15: 'usampler2DRect' : Reserved word. 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:15: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:23: 'variable indexing sampler array' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:27: 'textureGatherOffsets' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:27: '=' :  cannot convert from ' const float' to ' temp mediump 4-component vector of uint'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:30: 'textureGatherOffset(...)' : must be a compile-time constant: component argument
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:31: 'textureGatherOffset(...)' : must be 0, 1, 2, or 3: component argument
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:34: 'non-constant offset argument' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:42: 'texel offset' : argument must be compile-time constant 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:44: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:44: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:45: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:45: 'texel offset' : value is out of range: [gl_MinProgramTexelOffset, gl_MaxProgramTexelOffset]
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:66: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:66: 'image variables declared 'writeonly' without a format layout qualifier' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:67: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:67: 'image variables declared 'writeonly' without a format layout qualifier' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:68: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:68: 'image variables declared 'writeonly' without a format layout qualifier' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:69: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:69: 'image variables declared 'writeonly' without a format layout qualifier' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:73: 'binding' : requires block, or sampler/image, or atomic-counter type 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:77: 'location' : location is too large 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:81: 'location' : too large for fragment output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:82: 'location' : too large for fragment output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:82: 'location' : overlapping use of location 40
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:83: 'non-literal layout-id value' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:83: 'layout-id value' : cannot be negative 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:96: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:110: 'out' : cannot be bool 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:111: 'image2D' : sampler/image types can only be used in uniform variables or function parameters: imageOut
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:111: 'image variables declared 'writeonly' without a format layout qualifier' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:112: 'out' : cannot be a matrix 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:114: 'in' : cannot be bool 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:115: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: ino
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:117: 'fragment-shader array-of-array input' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:120: 'fragment-shader array-of-struct input' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:121: 'fragment-shader array-of-struct input' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:123: 'fragment-shader struct input containing an array' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:125: 'fragment-shader struct input containing structure' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:133: 'output block' : not supported in this stage: fragment
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:138: '' : cannot nest a structure definition inside a structure or block 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:146: 'location' : overlapping use of location 13
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:148: 'inbname2' : Cannot reuse block name within the same interface: in
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:153: 'badmember' : nameless block contains a member that already has a name at global scope 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:157: 'inbname' : redefinition 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:159: 'vAnon' : redefinition 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:173: 'origin_upper_left' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:173: 'pixel_center_integer' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:173: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:177: 'depth layout qualifier' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:181: 'assign' :  l-value required "gl_FragDepth" (can't modify gl_FragDepth if using early_fragment_tests)
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:182: 'gl_Layer' : required extension not requested: Possible extensions include:
 GL_EXT_geometry_shader
 GL_OES_geometry_shader
-ERROR: 0:183: 'gl_PrimitiveID' : required extension not requested: Possible extensions include:
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:183: 'gl_PrimitiveID' : required extension not requested: Possible extensions include:
 GL_EXT_geometry_shader
 GL_OES_geometry_shader
-ERROR: 0:209: 'precise' : Reserved word. 
-ERROR: 0:209: 'precise' : not supported for this version or the enabled extensions 
-ERROR: 0:210: 'fma' : required extension not requested: Possible extensions include:
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:209: 'precise' : Reserved word. 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:209: 'precise' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:210: 'fma' : required extension not requested: Possible extensions include:
 GL_EXT_gpu_shader5
 GL_OES_gpu_shader5
-ERROR: 0:211: 'non-constant offset argument' : not supported for this version or the enabled extensions 
-ERROR: 0:212: 'textureGatherOffsets' : required extension not requested: Possible extensions include:
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:211: 'non-constant offset argument' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:212: 'textureGatherOffsets' : required extension not requested: Possible extensions include:
 GL_EXT_gpu_shader5
 GL_OES_gpu_shader5
-ERROR: 0:223: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
-ERROR: 0:257: 'gl_SampleID' : required extension not requested: GL_OES_sample_variables
-ERROR: 0:258: 'gl_SamplePosition' : required extension not requested: GL_OES_sample_variables
-ERROR: 0:259: 'gl_SampleMaskIn' : required extension not requested: GL_OES_sample_variables
-ERROR: 0:260: 'gl_SampleMask' : required extension not requested: GL_OES_sample_variables
-ERROR: 0:261: 'gl_NumSamples' : required extension not requested: GL_OES_sample_variables
-ERROR: 0:289: 'imageAtomicAdd' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:290: 'imageAtomicAdd' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:291: 'imageAtomicMin' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:292: 'imageAtomicMin' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:293: 'imageAtomicMax' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:294: 'imageAtomicMax' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:295: 'imageAtomicAnd' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:296: 'imageAtomicAnd' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:297: 'imageAtomicOr' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:298: 'imageAtomicOr' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:299: 'imageAtomicXor' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:300: 'imageAtomicXor' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:301: 'imageAtomicExchange' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:302: 'imageAtomicExchange' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:303: 'imageAtomicExchange' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:304: 'imageAtomicCompSwap' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:305: 'imageAtomicCompSwap' : required extension not requested: GL_OES_shader_image_atomic
-ERROR: 0:312: 'rgba32f' : format requires readonly or writeonly memory qualifier 
-ERROR: 0:313: 'rgba8ui' : format requires readonly or writeonly memory qualifier 
-ERROR: 0:314: 'rgba16i' : format requires readonly or writeonly memory qualifier 
-ERROR: 0:340: 'imageAtomicMax' : only supported on image with format r32i or r32ui 
-ERROR: 0:341: 'imageAtomicMax' : only supported on image with format r32i or r32ui 
-ERROR: 0:342: 'imageAtomicExchange' : only supported on image with format r32f 
-ERROR: 0:345: 'sample' : Reserved word. 
-ERROR: 0:346: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
-ERROR: 0:347: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
-ERROR: 0:348: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
-ERROR: 0:349: 'noperspective' : Reserved word. 
-ERROR: 0:349: 'noperspective' : not supported with this profile: es
-ERROR: 0:349: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
-ERROR: 0:355: 'interpolateAtCentroid' : required extension not requested: GL_OES_shader_multisample_interpolation
-ERROR: 0:356: 'interpolateAtSample' : required extension not requested: GL_OES_shader_multisample_interpolation
-ERROR: 0:357: 'interpolateAtOffset' : required extension not requested: GL_OES_shader_multisample_interpolation
-ERROR: 0:365: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
-ERROR: 0:380: 'interpolateAtCentroid' : no matching overloaded function found 
-ERROR: 0:380: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
-ERROR: 0:382: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:384: 'interpolateAtSample' : no matching overloaded function found 
-ERROR: 0:384: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
-ERROR: 0:386: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:389: 'interpolateAtOffset' : no matching overloaded function found 
-ERROR: 0:389: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
-ERROR: 0:391: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:392: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:396: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:397: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
-ERROR: 0:400: 'blend equation' : required extension not requested: GL_KHR_blend_equation_advanced
-ERROR: 0:423: 'blend equation' : can only apply to 'out' 
-ERROR: 0:424: 'blend equation' : can only apply to a standalone qualifier 
-ERROR: 0:425: 'blend equation' : can only apply to a standalone qualifier 
-ERROR: 0:426: 'blend equation' : can only apply to a standalone qualifier 
-ERROR: 0:427: 'blend equation' : can only apply to a standalone qualifier 
-ERROR: 0:428: 'blend equation' : can only apply to a standalone qualifier 
-ERROR: 0:429: 'blend_support' : unknown blend equation 
-ERROR: 0:431: 'fragment-shader array-of-array output' : not supported with this profile: es
-ERROR: 0:435: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
-ERROR: 0:436: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:223: 'textureGatherOffsets(...)' : must be a compile-time constant: offsets argument
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:257: 'gl_SampleID' : required extension not requested: GL_OES_sample_variables
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:258: 'gl_SamplePosition' : required extension not requested: GL_OES_sample_variables
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:259: 'gl_SampleMaskIn' : required extension not requested: GL_OES_sample_variables
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:260: 'gl_SampleMask' : required extension not requested: GL_OES_sample_variables
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:261: 'gl_NumSamples' : required extension not requested: GL_OES_sample_variables
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:289: 'imageAtomicAdd' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:290: 'imageAtomicAdd' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:291: 'imageAtomicMin' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:292: 'imageAtomicMin' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:293: 'imageAtomicMax' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:294: 'imageAtomicMax' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:295: 'imageAtomicAnd' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:296: 'imageAtomicAnd' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:297: 'imageAtomicOr' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:298: 'imageAtomicOr' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:299: 'imageAtomicXor' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:300: 'imageAtomicXor' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:301: 'imageAtomicExchange' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:302: 'imageAtomicExchange' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:303: 'imageAtomicExchange' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:304: 'imageAtomicCompSwap' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:305: 'imageAtomicCompSwap' : required extension not requested: GL_OES_shader_image_atomic
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:312: 'rgba32f' : format requires readonly or writeonly memory qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:313: 'rgba8ui' : format requires readonly or writeonly memory qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:314: 'rgba16i' : format requires readonly or writeonly memory qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:340: 'imageAtomicMax' : only supported on image with format r32i or r32ui 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:341: 'imageAtomicMax' : only supported on image with format r32i or r32ui 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:342: 'imageAtomicExchange' : only supported on image with format r32f 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:345: 'sample' : Reserved word. 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:346: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:347: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:348: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:349: 'noperspective' : Reserved word. 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:349: 'noperspective' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:349: 'flat/smooth/noperspective' : can't use interpolation qualifier on a fragment output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:355: 'interpolateAtCentroid' : required extension not requested: GL_OES_shader_multisample_interpolation
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:356: 'interpolateAtSample' : required extension not requested: GL_OES_shader_multisample_interpolation
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:357: 'interpolateAtOffset' : required extension not requested: GL_OES_shader_multisample_interpolation
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:365: 'centroid/sample/patch' : can't use auxiliary qualifier on a fragment output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:380: 'interpolateAtCentroid' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:380: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:382: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:384: 'interpolateAtSample' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:384: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:386: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:389: 'interpolateAtOffset' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:389: 'assign' :  cannot convert from ' const float' to ' temp mediump 3-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:391: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:392: 'interpolateAtOffset' : first argument must be an interpolant, or interpolant-array element 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:396: 'interpolateAtCentroid' : first argument must be an interpolant, or interpolant-array element 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:397: 'interpolateAtSample' : first argument must be an interpolant, or interpolant-array element 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:400: 'blend equation' : required extension not requested: GL_KHR_blend_equation_advanced
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:423: 'blend equation' : can only apply to 'out' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:424: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:425: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:426: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:427: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:428: 'blend equation' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:429: 'blend_support' : unknown blend equation 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:431: 'fragment-shader array-of-array output' : not supported with this profile: es
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:435: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/310.frag:436: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
 ERROR: 127 compilation errors.  No code generated.
 
 

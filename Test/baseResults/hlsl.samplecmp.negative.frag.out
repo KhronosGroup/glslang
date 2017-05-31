@@ -1,5 +1,5 @@
-hlsl.samplecmp.negative.frag
-ERROR: 0:9: '' : expected: SamplerComparisonState 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.samplecmp.negative.frag
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.samplecmp.negative.frag:9: '' : expected: SamplerComparisonState 
 ERROR: 1 compilation errors.  No code generated.
 
 

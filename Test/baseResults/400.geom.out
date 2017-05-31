@@ -1,28 +1,28 @@
-400.geom
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:12: 'invocations' : can only apply to a standalone qualifier 
-ERROR: 0:20: 'patch' : not supported in this stage: geometry
-ERROR: 0:20: 'gl_PointSize' : cannot add layout to redeclared block member 
-ERROR: 0:20: 'gl_PointSize' : cannot add patch to redeclared block member 
-ERROR: 0:25: 'length' :  array must first be sized by a redeclaration or layout qualifier
-ERROR: 0:36: 'length' :  array must first be sized by a redeclaration or layout qualifier
-ERROR: 0:40: 'triangles' : inconsistent input primitive for array size of colorBad
-ERROR: 0:44: 'triangles' : inconsistent input primitive for array size of colorbad2
-ERROR: 0:56: 'location' : overlapping use of location 4
-ERROR: 0:58: 'patch' : not supported in this stage: geometry
-ERROR: 0:59: 'patch' : not supported in this stage: geometry
-ERROR: 0:61: 'in' : type must be an array: scalar
-ERROR: 0:63: 'invocations' : can only apply to 'in' 
-ERROR: 0:64: 'max_vertices' : can only apply to 'out' 
-ERROR: 0:65: 'max_vertices' : can only apply to 'out' 
-ERROR: 0:65: 'invocations' : can only apply to 'in' 
-ERROR: 0:67: 'in' : type must be an array: inbls
-ERROR: 0:71: 'triangles' : inconsistent input primitive for array size of inbla
-ERROR: 0:103: 'index' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:115: 'textureQueryLod' : no matching overloaded function found 
-ERROR: 0:115: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
-ERROR: 0:116: 'textureQueryLod' : no matching overloaded function found 
-ERROR: 0:116: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:12: 'invocations' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:20: 'patch' : not supported in this stage: geometry
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:20: 'gl_PointSize' : cannot add layout to redeclared block member 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:20: 'gl_PointSize' : cannot add patch to redeclared block member 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:25: 'length' :  array must first be sized by a redeclaration or layout qualifier
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:36: 'length' :  array must first be sized by a redeclaration or layout qualifier
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:40: 'triangles' : inconsistent input primitive for array size of colorBad
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:44: 'triangles' : inconsistent input primitive for array size of colorbad2
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:56: 'location' : overlapping use of location 4
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:58: 'patch' : not supported in this stage: geometry
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:59: 'patch' : not supported in this stage: geometry
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:61: 'in' : type must be an array: scalar
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:63: 'invocations' : can only apply to 'in' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:64: 'max_vertices' : can only apply to 'out' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:65: 'max_vertices' : can only apply to 'out' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:65: 'invocations' : can only apply to 'in' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:67: 'in' : type must be an array: inbls
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:71: 'triangles' : inconsistent input primitive for array size of inbla
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:103: 'index' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:115: 'textureQueryLod' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:115: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:116: 'textureQueryLod' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.geom:116: 'assign' :  cannot convert from ' const float' to ' temp 2-component vector of float'
 ERROR: 23 compilation errors.  No code generated.
 
 

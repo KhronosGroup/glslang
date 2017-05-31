@@ -1,25 +1,25 @@
-430AofA.frag
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:6: '[]' : only outermost dimension of an array of arrays can be implicitly sized 
-ERROR: 0:14: 'constructor' : constructing non-array constituent from array argument 
-ERROR: 0:15: 'constructor' : array constructor argument not correct type to construct array element 
-ERROR: 0:28: '[' :  array index out of range '4'
-ERROR: 0:56: 'constructor' :  cannot convert parameter 2 from ' const 3-element array of 4-component vector of float' to ' temp 2-element array of 4-component vector of float'
-ERROR: 0:60: 'constructor' :  cannot convert parameter 2 from ' const 2-element array of 4-component vector of float' to ' temp 3-element array of 4-component vector of float'
-ERROR: 0:64: '=' :  cannot convert from ' const 3-element array of 2-element array of 4-component vector of float' to ' temp 4-element array of 2-element array of 4-component vector of float'
-ERROR: 0:70: 'assign' :  cannot convert from ' global 4-element array of 7-element array of float' to ' global 5-element array of 7-element array of float'
-ERROR: 0:71: 'assign' :  cannot convert from ' global 4-element array of 7-element array of float' to ' global implicitly-sized array of 7-element array of float'
-ERROR: 0:73: 'foo' : no matching overloaded function found 
-ERROR: 0:78: '==' :  wrong operand types: no operation '==' exists that takes a left-hand operand of type ' global 4-element array of 7-element array of float' and a right operand of type ' global 5-element array of 7-element array of float' (or there is no acceptable conversion)
-ERROR: 0:84: '[' :  array index out of range '5'
-ERROR: 0:91: 'length' :  array must be declared with a size before using this method
-ERROR: 0:93: 'length' :  array must be declared with a size before using this method
-ERROR: 0:98: 'length' : does not operate on this type:  temp float
-ERROR: 0:98: '' : function call, method, or subroutine call expected 
-ERROR: 0:98: '' : no matching overloaded function found 
-ERROR: 0:101: 'resize2' : redeclaration of array with a different array dimensions or sizes 
-ERROR: 0:104: 'resize3' : redeclaration of array with a different array dimensions or sizes 
-ERROR: 0:107: 'resize4' : redeclaration of array with a different element type 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:6: '[]' : only outermost dimension of an array of arrays can be implicitly sized 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:14: 'constructor' : constructing non-array constituent from array argument 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:15: 'constructor' : array constructor argument not correct type to construct array element 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:28: '[' :  array index out of range '4'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:56: 'constructor' :  cannot convert parameter 2 from ' const 3-element array of 4-component vector of float' to ' temp 2-element array of 4-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:60: 'constructor' :  cannot convert parameter 2 from ' const 2-element array of 4-component vector of float' to ' temp 3-element array of 4-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:64: '=' :  cannot convert from ' const 3-element array of 2-element array of 4-component vector of float' to ' temp 4-element array of 2-element array of 4-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:70: 'assign' :  cannot convert from ' global 4-element array of 7-element array of float' to ' global 5-element array of 7-element array of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:71: 'assign' :  cannot convert from ' global 4-element array of 7-element array of float' to ' global implicitly-sized array of 7-element array of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:73: 'foo' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:78: '==' :  wrong operand types: no operation '==' exists that takes a left-hand operand of type ' global 4-element array of 7-element array of float' and a right operand of type ' global 5-element array of 7-element array of float' (or there is no acceptable conversion)
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:84: '[' :  array index out of range '5'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:91: 'length' :  array must be declared with a size before using this method
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:93: 'length' :  array must be declared with a size before using this method
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:98: 'length' : does not operate on this type:  temp float
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:98: '' : function call, method, or subroutine call expected 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:98: '' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:101: 'resize2' : redeclaration of array with a different array dimensions or sizes 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:104: 'resize3' : redeclaration of array with a different array dimensions or sizes 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430AofA.frag:107: 'resize4' : redeclaration of array with a different element type 
 ERROR: 20 compilation errors.  No code generated.
 
 

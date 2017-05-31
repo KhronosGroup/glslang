@@ -1,4 +1,4 @@
-hlsl.inf.vert
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.inf.vert
 Shader version: 500
 0:? Sequence
 0:2  Function Definition: @main( ( temp 4-component vector of float)

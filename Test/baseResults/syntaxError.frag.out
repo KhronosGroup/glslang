@@ -1,6 +1,6 @@
-syntaxError.frag
-ERROR: 0:9: 'vec5' : undeclared identifier 
-ERROR: 0:9: '' :  syntax error, unexpected IDENTIFIER, expecting COMMA or SEMICOLON
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/syntaxError.frag
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/syntaxError.frag:9: 'vec5' : undeclared identifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/syntaxError.frag:9: '' :  syntax error, unexpected IDENTIFIER, expecting COMMA or SEMICOLON
 ERROR: 2 compilation errors.  No code generated.
 
 

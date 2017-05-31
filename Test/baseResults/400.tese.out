@@ -1,37 +1,37 @@
-400.tese
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:3: 'vertices' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:5: 'triangles' : cannot change previously set input primitive 
-ERROR: 0:6: 'isolines' : cannot change previously set input primitive 
-ERROR: 0:8: 'ccw' : cannot change previously set vertex order 
-ERROR: 0:12: 'equal_spacing' : cannot change previously set vertex spacing 
-ERROR: 0:13: 'fractional_even_spacing' : cannot change previously set vertex spacing 
-ERROR: 0:18: 'patch' : can only use on input in tessellation-evaluation shader 
-ERROR: 0:22: 'barrier' : no matching overloaded function found 
-ERROR: 0:47: 'patch' : cannot use interpolation qualifiers with patch 
-ERROR: 0:48: 'patch' : cannot use interpolation qualifiers with patch 
-ERROR: 0:49: 'patch' : cannot use interpolation qualifiers with patch 
-ERROR: 0:50: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
-ERROR: 0:54: 'gl_PerVertex' : block already declared with size, can't redeclare as implicitly-sized 
-ERROR: 0:59: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
-ERROR: 0:64: 'quads' : cannot apply to 'out' 
-ERROR: 0:64: 'cw' : can only apply to 'in' 
-ERROR: 0:65: 'triangles' : cannot apply to 'out' 
-ERROR: 0:66: 'isolines' : cannot apply to 'out' 
-ERROR: 0:67: 'cw' : can only apply to 'in' 
-ERROR: 0:68: 'fractional_odd_spacing' : can only apply to 'in' 
-ERROR: 0:69: 'equal_spacing' : can only apply to 'in' 
-ERROR: 0:70: 'fractional_even_spacing' : can only apply to 'in' 
-ERROR: 0:71: 'point_mode' : can only apply to 'in' 
-ERROR: 0:73: 'in' : type must be an array: ina
-ERROR: 0:75: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
-ERROR: 0:78: 'in' : type must be an array: bla
-ERROR: 0:86: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
-ERROR: 0:96: 'location' : overlapping use of location 24
-ERROR: 0:99: 'location' : overlapping use of location 24
-ERROR: 0:101: 'gl_TessLevelOuter' : identifiers starting with "gl_" are reserved 
-ERROR: 0:109: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
-ERROR: 0:110: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:3: 'vertices' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:5: 'triangles' : cannot change previously set input primitive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:6: 'isolines' : cannot change previously set input primitive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:8: 'ccw' : cannot change previously set vertex order 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:12: 'equal_spacing' : cannot change previously set vertex spacing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:13: 'fractional_even_spacing' : cannot change previously set vertex spacing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:18: 'patch' : can only use on input in tessellation-evaluation shader 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:22: 'barrier' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:47: 'patch' : cannot use interpolation qualifiers with patch 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:48: 'patch' : cannot use interpolation qualifiers with patch 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:49: 'patch' : cannot use interpolation qualifiers with patch 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:50: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:54: 'gl_PerVertex' : block already declared with size, can't redeclare as implicitly-sized 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:59: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:64: 'quads' : cannot apply to 'out' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:64: 'cw' : can only apply to 'in' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:65: 'triangles' : cannot apply to 'out' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:66: 'isolines' : cannot apply to 'out' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:67: 'cw' : can only apply to 'in' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:68: 'fractional_odd_spacing' : can only apply to 'in' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:69: 'equal_spacing' : can only apply to 'in' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:70: 'fractional_even_spacing' : can only apply to 'in' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:71: 'point_mode' : can only apply to 'in' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:73: 'in' : type must be an array: ina
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:75: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:78: 'in' : type must be an array: bla
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:86: '[]' : tessellation input array size must be gl_MaxPatchVertices or implicitly sized 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:96: 'location' : overlapping use of location 24
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:99: 'location' : overlapping use of location 24
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:101: 'gl_TessLevelOuter' : identifiers starting with "gl_" are reserved 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:109: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/400.tese:110: 'gl_ViewIndex' : required extension not requested: GL_EXT_multiview
 ERROR: 32 compilation errors.  No code generated.
 
 

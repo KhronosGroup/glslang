@@ -1,23 +1,23 @@
-switch.frag
-ERROR: 0:11: 'switch' : condition must be a scalar integer expression 
-ERROR: 0:14: 'switch' : condition must be a scalar integer expression 
-ERROR: 0:21: 'switch' : last case/default label not followed by statements 
-ERROR: 0:28: 'switch' : cannot have statements before first case/default label 
-ERROR: 0:43: 'default' : duplicate label 
-ERROR: 0:63: 'case' : duplicated value 
-ERROR: 0:65: 'case' : scalar integer expression required 
-ERROR: 0:67: 'case' : constant expression required 
-ERROR: 0:89: '' : break statement only allowed in switch and loops 
-ERROR: 0:99: 'case' : cannot be nested inside control flow 
-ERROR: 0:104: 'case' : cannot be nested inside control flow 
-ERROR: 0:108: 'case' : cannot be nested inside control flow 
-ERROR: 0:115: 'default' : cannot be nested inside control flow 
-ERROR: 0:119: 'case' : cannot appear outside switch statement 
-ERROR: 0:120: 'default' : cannot appear outside switch statement 
-ERROR: 0:126: 'onlyInSwitch' : undeclared identifier 
-ERROR: 0:128: 'switch' : last case/default label not followed by statements 
-ERROR: 0:140: 'nestedX' : undeclared identifier 
-ERROR: 0:157: 'nestedZ' : undeclared identifier 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:11: 'switch' : condition must be a scalar integer expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:14: 'switch' : condition must be a scalar integer expression 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:21: 'switch' : last case/default label not followed by statements 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:28: 'switch' : cannot have statements before first case/default label 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:43: 'default' : duplicate label 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:63: 'case' : duplicated value 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:65: 'case' : scalar integer expression required 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:67: 'case' : constant expression required 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:89: '' : break statement only allowed in switch and loops 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:99: 'case' : cannot be nested inside control flow 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:104: 'case' : cannot be nested inside control flow 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:108: 'case' : cannot be nested inside control flow 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:115: 'default' : cannot be nested inside control flow 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:119: 'case' : cannot appear outside switch statement 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:120: 'default' : cannot appear outside switch statement 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:126: 'onlyInSwitch' : undeclared identifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:128: 'switch' : last case/default label not followed by statements 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:140: 'nestedX' : undeclared identifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/switch.frag:157: 'nestedZ' : undeclared identifier 
 ERROR: 19 compilation errors.  No code generated.
 
 
