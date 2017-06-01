@@ -60,6 +60,8 @@ Builder::Builder(unsigned int magicNumber, SpvBuildLogger* buildLogger) :
     source(SourceLanguageUnknown),
     sourceVersion(0),
     sourceFileStringId(NoResult),
+    currentLine(0),
+    emitOpLines(false),
     addressModel(AddressingModelLogical),
     memoryModel(MemoryModelGLSL450),
     builderNumber(magicNumber),
@@ -83,6 +85,26 @@ Id Builder::import(const char* name)
 
     imports.push_back(std::unique_ptr<Instruction>(import));
     return import->getResultId();
+}
+
+// Emit an OpLine if we've been asked to emit OpLines and the line number
+// has changed since the last time, and is a valid line number.
+void Builder::setLine(int lineNum)
+{
+    if (lineNum != 0 && lineNum != currentLine) {
+        currentLine = lineNum;
+        if (emitOpLines)
+            addLine(sourceFileStringId, currentLine, 0);
+    }
+}
+
+void Builder::addLine(Id fileName, int lineNum, int column)
+{
+    Instruction* line = new Instruction(OpLine);
+    line->addIdOperand(fileName);
+    line->addImmediateOperand(lineNum);
+    line->addImmediateOperand(column);
+    buildPoint->addInstruction(std::unique_ptr<Instruction>(line));
 }
 
 // For creating new groupedTypes (will return old type if the requested one was already made).
@@ -927,17 +949,6 @@ void Builder::addMemberName(Id id, int memberNumber, const char* string)
     name->addStringOperand(string);
 
     names.push_back(std::unique_ptr<Instruction>(name));
-}
-
-void Builder::addLine(Id target, Id fileName, int lineNum, int column)
-{
-    Instruction* line = new Instruction(OpLine);
-    line->addIdOperand(target);
-    line->addIdOperand(fileName);
-    line->addImmediateOperand(lineNum);
-    line->addImmediateOperand(column);
-
-    lines.push_back(std::unique_ptr<Instruction>(line));
 }
 
 void Builder::addDecoration(Id id, Decoration decoration, int num)

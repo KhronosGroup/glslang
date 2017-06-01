@@ -79,6 +79,7 @@ public:
     }
     void setSourceText(const std::string& text) { sourceText = text; }
     void addSourceExtension(const char* ext) { sourceExtensions.push_back(ext); }
+    void setEmitOpLines() { emitOpLines = true; }
     void addExtension(const char* ext) { extensions.insert(ext); }
     Id import(const char*);
     void setMemoryModel(spv::AddressingModel addr, spv::MemoryModel mem)
@@ -99,6 +100,12 @@ public:
         uniqueId += numIds;
         return id;
     }
+
+    // Log the current line, and if different than the last one,
+    // issue a new OpLine, using the current file name.
+    void setLine(int line);
+    // Low-level OpLine. See setLine() for a layered helper.
+    void addLine(Id fileName, int line, int column);
 
     // For creating new types (will return old type if the requested one was already made).
     Id makeVoidType();
@@ -221,7 +228,6 @@ public:
     void addExecutionMode(Function*, ExecutionMode mode, int value1 = -1, int value2 = -1, int value3 = -1);
     void addName(Id, const char* name);
     void addMemberName(Id, int member, const char* name);
-    void addLine(Id target, Id fileName, int line, int column);
     void addDecoration(Id, Decoration, int num = -1);
     void addMemberDecoration(Id, unsigned int member, Decoration, int num = -1);
 
@@ -576,6 +582,8 @@ public:
     int sourceVersion;
     spv::Id sourceFileStringId;
     std::string sourceText;
+    int currentLine;
+    bool emitOpLines;
     std::set<std::string> extensions;
     std::vector<const char*> sourceExtensions;
     AddressingModel addressModel;
