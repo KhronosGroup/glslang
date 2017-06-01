@@ -1607,11 +1607,6 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
                            forwardCompatible, messages, *intermediate, includer, sourceEntryPointName);
 }
 
-bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
-{
-    return parse(builtInResources, defaultVersion, ENoProfile, false, forwardCompatible, messages);
-}
-
 // Fill in a string with the result of preprocessing ShaderStrings
 // Returns true if all extensions, pragmas and version strings were valid.
 bool TShader::preprocess(const TBuiltInResource* builtInResources,
