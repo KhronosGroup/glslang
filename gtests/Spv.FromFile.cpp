@@ -330,6 +330,7 @@ INSTANTIATE_TEST_CASE_P(
         { "spv.register.autoassign-2.frag", "main", 5, 10, 0, 15, 30, true, true },
         { "spv.buffer.autoassign.frag", "main", 5, 10, 0, 15, 30, true, true },
         { "spv.ssbo.autoassign.frag", "main", 5, 10, 0, 15, 30, true, true },
+        { "spv.ssboAlias.frag", "main", 0, 0, 0, 0, 83, true, false },
         { "spv.rw.autoassign.frag", "main", 5, 10, 20, 15, 30, true, true },
         { "spv.register.autoassign.rangetest.frag", "main", 
                 glslang::TQualifier::layoutBindingEnd-2,
