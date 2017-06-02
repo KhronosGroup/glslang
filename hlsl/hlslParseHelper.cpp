@@ -147,7 +147,7 @@ bool HlslParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& 
 //
 bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
 {
-    if (node == nullptr)
+    if (node == nullptr || node->getAsTyped() == nullptr)
         return false;
 
     const TIntermAggregate* lhsAsAggregate = node->getAsAggregate();
@@ -157,8 +157,12 @@ bool HlslParseContext::shouldConvertLValue(const TIntermNode* node) const
     if (lhsAsBinary != nullptr &&
         (lhsAsBinary->getOp() == EOpVectorSwizzle || lhsAsBinary->getOp() == EOpIndexDirect))
         lhsAsAggregate = lhsAsBinary->getLeft()->getAsAggregate();
-
     if (lhsAsAggregate != nullptr && lhsAsAggregate->getOp() == EOpImageLoad)
+        return true;
+
+    // If it's a syntactic write to a sampler, we will use that to establish
+    // a compile-time alias.
+    if (node->getAsTyped()->getBasicType() == EbtSampler)
         return true;
 
     return false;
@@ -233,7 +237,7 @@ bool HlslParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, T
 //
 // Most things are passed through unmodified, except for error checking.
 //
-TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* op, TIntermTyped* node)
+TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* op, TIntermTyped*& node)
 {
     if (node == nullptr)
         return nullptr;
@@ -255,6 +259,10 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     }
 
     // *** If we get here, we're going to apply some conversion to an l-value.
+
+    // Spin off sampler aliasing
+    if (node->getAsTyped()->getBasicType() == EbtSampler)
+        return handleSamplerLvalue(loc, op, node);
 
     // Helper to create a load.
     const auto makeLoad = [&](TIntermSymbol* rhsTmp, TIntermTyped* object, TIntermTyped* coord, const TType& derefType) {
@@ -496,6 +504,42 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
     if (lhs)
         if (lValueErrorCheck(loc, op, lhs))
             return nullptr;
+
+    return node;
+}
+
+// Deal with sampler aliasing: turning assignments into aliases
+TIntermTyped* HlslParseContext::handleSamplerLvalue(const TSourceLoc& loc, const char* op, TIntermTyped*& node)
+{
+    // Can only alias an assignment:  "s1 = s2"
+    TIntermBinary* binary = node->getAsBinaryNode();
+    if (binary == nullptr || node->getAsOperator()->getOp() != EOpAssign ||
+        binary->getLeft() ->getAsSymbolNode() == nullptr ||
+        binary->getRight()->getAsSymbolNode() == nullptr) {
+        error(loc, "can't modify sampler", op, "");
+        return node;
+    }
+
+    // Best is if we are aliasing a flattened struct member "S.s1 = s2",
+    // in which case we want to update the flattening information with the alias,
+    // making everything else work seamlessly.
+    TIntermSymbol* left = binary->getLeft()->getAsSymbolNode();
+    TIntermSymbol* right = binary->getRight()->getAsSymbolNode();
+    for (auto fit = flattenMap.begin(); fit != flattenMap.end(); ++fit) {
+        for (auto mit = fit->second.members.begin(); mit != fit->second.members.end(); ++mit) {
+            if ((*mit)->getUniqueId() == left->getId()) {
+                // found it: update with alias to the existing variable, and don't emit any code
+                (*mit) = new TVariable(&right->getName(), right->getType());
+                (*mit)->setUniqueId(right->getId());
+                // replace node (rest of compiler expects either an error or code to generate)
+                // with pointless access
+                node = binary->getRight();
+                return node;
+            }
+        }
+    }
+
+    warn(loc, "could not create alias for sampler", op, "");
 
     return node;
 }
@@ -1284,7 +1328,7 @@ bool HlslParseContext::wasSplit(const TIntermTyped* node) const
 // Turn an access into an aggregate that was flattened to instead be
 // an access to the individual variable the member was flattened to.
 // Assumes shouldFlatten() or equivalent was called first.
-// Also assumes that initFlattening() and finalizeFlattening() bracket usage.
+// Also assumes that initFlattening() and finalizeFlattening() bracket the usage.
 TIntermTyped* HlslParseContext::flattenAccess(TIntermTyped* base, int member)
 {
     const TType dereferencedType(base->getType(), member);  // dereferenced type

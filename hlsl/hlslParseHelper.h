@@ -187,7 +187,8 @@ public:
     virtual void growGlobalUniformBlock(const TSourceLoc&, TType&, const TString& memberName, TTypeList* typeList = nullptr) override;
 
     // Apply L-value conversions.  E.g, turning a write to a RWTexture into an ImageStore.
-    TIntermTyped* handleLvalue(const TSourceLoc&, const char* op, TIntermTyped* node);
+    TIntermTyped* handleLvalue(const TSourceLoc&, const char* op, TIntermTyped*& node);
+    TIntermTyped* handleSamplerLvalue(const TSourceLoc&, const char* op, TIntermTyped*& node);
     bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
 
     TLayoutFormat getLayoutFromTxType(const TSourceLoc&, const TType&);
