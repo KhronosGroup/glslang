@@ -235,7 +235,11 @@ struct TSourceLoc {
     int column;
 };
 
-typedef TMap<TString, TString> TPragmaTable;
+class TPragmaTable : TMap<TString, TString> {
+public:
+	POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
+};
+
 
 const int MaxTokenLength = 1024;
 
