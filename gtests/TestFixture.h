@@ -175,15 +175,18 @@ public:
     // Compiles and the given source |code| of the given shader |stage| into
     // the target under the semantics conveyed via |controls|. Returns true
     // and modifies |shader| on success.
-    bool compile(glslang::TShader* shader, const std::string& code,
+    bool compile(const std::string& shaderName,
+                 glslang::TShader* shader, const std::string& code,
                  const std::string& entryPointName, EShMessages controls,
                  const TBuiltInResource* resources=nullptr)
     {
         const char* shaderStrings = code.data();
+        const char* shaderNames = shaderName.c_str();
         const int shaderLengths = static_cast<int>(code.size());
 
-        shader->setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
-        if (!entryPointName.empty()) shader->setEntryPoint(entryPointName.c_str());
+        shader->setStringsWithLengthsAndNames(&shaderStrings, &shaderLengths, &shaderNames, 1);
+        if (!entryPointName.empty())
+            shader->setEntryPoint(entryPointName.c_str());
         return shader->parse(
                 (resources ? resources : &glslang::DefaultTBuiltInResource),
                 defaultVersion, isForwardCompatible, controls);
@@ -195,7 +198,7 @@ public:
     // during the process. If the target includes SPIR-V, also disassembles
     // the result and returns disassembly text.
     GlslangResult compileAndLink(
-            const std::string shaderName, const std::string& code,
+            const std::string& shaderName, const std::string& code,
             const std::string& entryPointName, EShMessages controls,
             bool flattenUniformArrays = false,
             EShTextureSamplerTransformMode texSampTransMode = EShTexSampTransKeep)
@@ -207,7 +210,7 @@ public:
         shader.setTextureSamplerTransformMode(texSampTransMode);
         shader.setFlattenUniformArrays(flattenUniformArrays);
 
-        bool success = compile(&shader, code, entryPointName, controls);
+        bool success = compile(shaderName, &shader, code, entryPointName, controls);
 
         glslang::TProgram program;
         program.addShader(&shader);
@@ -260,7 +263,7 @@ public:
         shader.setAutoMapLocations(true);
         shader.setFlattenUniformArrays(flattenUniformArrays);
 
-        bool success = compile(&shader, code, entryPointName, controls);
+        bool success = compile(shaderName, &shader, code, entryPointName, controls);
 
         glslang::TProgram program;
         program.addShader(&shader);
@@ -301,7 +304,7 @@ public:
         glslang::TShader shader(kind);
         shader.setAutoMapLocations(true);
 
-        bool success = compile(&shader, code, entryPointName, controls);
+        bool success = compile(shaderName, &shader, code, entryPointName, controls);
 
         glslang::TProgram program;
         program.addShader(&shader);
@@ -392,7 +395,7 @@ public:
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
-        GlslangResult result = compileAndLink(testName, input, entryPointName, controls);
+        GlslangResult result = compileAndLink(inputFname, input, entryPointName, controls);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
@@ -418,7 +421,7 @@ public:
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
-        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, true);
+        GlslangResult result = compileAndLink(inputFname, input, entryPointName, controls, true);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
@@ -451,7 +454,7 @@ public:
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
-        GlslangResult result = compileLinkIoMap(testName, input, entryPointName, controls,
+        GlslangResult result = compileLinkIoMap(inputFname, input, entryPointName, controls,
                                                 baseSamplerBinding, baseTextureBinding, baseImageBinding,
                                                 baseUboBinding, baseSsboBinding,
                                                 autoMapBindings,
@@ -587,7 +590,7 @@ public:
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
-        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, false, EShTexSampTransUpgradeTextureRemoveSampler);
+        GlslangResult result = compileAndLink(inputFname, input, entryPointName, controls, false, EShTexSampTransUpgradeTextureRemoveSampler);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;

@@ -1,4 +1,4 @@
-hlsl.hull.2.tesc
+../Test/hlsl.hull.2.tesc
 Shader version: 500
 vertices = 4
 vertex spacing = equal_spacing

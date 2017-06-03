@@ -1,4 +1,4 @@
-hlsl.structbuffer.byte.frag
+../Test/hlsl.structbuffer.byte.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

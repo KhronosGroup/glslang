@@ -1,4 +1,4 @@
-hlsl.matType.int.frag
+../Test/hlsl.matType.int.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

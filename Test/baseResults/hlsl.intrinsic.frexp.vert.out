@@ -1,4 +1,4 @@
-hlsl.intrinsic.frexp.vert
+../Test/hlsl.intrinsic.frexp.vert
 Shader version: 500
 0:? Sequence
 0:2  Function Definition: VertexShaderFunctionS(f1;f1; ( temp float)

@@ -1,4 +1,4 @@
-whileLoop.frag
+../Test/whileLoop.frag
 Shader version: 110
 0:? Sequence
 0:7  Function Definition: main( ( global void)

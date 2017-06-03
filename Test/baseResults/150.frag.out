@@ -1,8 +1,8 @@
-150.frag
-ERROR: 0:4: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
-ERROR: 0:5: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
-ERROR: 0:6: 'layout qualifier' : can only apply origin_upper_left and pixel_center_origin to gl_FragCoord 
-ERROR: 0:14: 'gl_FragCoord' : cannot redeclare after use 
+../Test/150.frag
+ERROR: ../Test/150.frag:4: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: ../Test/150.frag:5: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: ../Test/150.frag:6: 'layout qualifier' : can only apply origin_upper_left and pixel_center_origin to gl_FragCoord 
+ERROR: ../Test/150.frag:14: 'gl_FragCoord' : cannot redeclare after use 
 ERROR: 4 compilation errors.  No code generated.
 
 

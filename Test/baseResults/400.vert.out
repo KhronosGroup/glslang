@@ -1,18 +1,18 @@
-400.vert
+../Test/400.vert
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:3: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
-ERROR: 0:4: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
-ERROR: 0:5: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
-ERROR: 0:70: 'foo3' : no matching overloaded function found 
-ERROR: 0:76: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:77: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:78: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:81: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:82: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:83: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:86: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:87: 'foo3' : ambiguous best function under implicit type conversion 
-ERROR: 0:88: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: ../Test/400.vert:3: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
+ERROR: ../Test/400.vert:4: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
+ERROR: ../Test/400.vert:5: 'vertex-shader `double` type input' : not supported for this version or the enabled extensions 
+ERROR: ../Test/400.vert:70: 'foo3' : no matching overloaded function found 
+ERROR: ../Test/400.vert:76: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: ../Test/400.vert:77: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: ../Test/400.vert:78: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: ../Test/400.vert:81: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: ../Test/400.vert:82: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: ../Test/400.vert:83: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: ../Test/400.vert:86: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: ../Test/400.vert:87: 'foo3' : ambiguous best function under implicit type conversion 
+ERROR: ../Test/400.vert:88: 'foo3' : ambiguous best function under implicit type conversion 
 ERROR: 13 compilation errors.  No code generated.
 
 

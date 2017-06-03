@@ -1,17 +1,17 @@
-numeral.frag
+../Test/numeral.frag
 Warning, version 400 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:14: '' : octal literal digit too large 
-ERROR: 0:15: '' : octal literal digit too large 
-ERROR: 0:16: '' : octal literal digit too large 
-ERROR: 0:17: '' : octal literal too big 
-ERROR: 0:18: '' : octal literal too big 
-ERROR: 0:23: '' : octal literal digit too large 
-ERROR: 0:24: '' : octal literal digit too large 
-ERROR: 0:49: '' : bad digit in hexadecimal literal 
-ERROR: 0:50: '' : hexadecimal literal too big 
-ERROR: 0:88: '' : float literal needs a decimal point or exponent 
-ERROR: 0:98: '' : numeric literal too big 
-ERROR: 0:101: '' : numeric literal too big 
+ERROR: ../Test/numeral.frag:14: '' : octal literal digit too large 
+ERROR: ../Test/numeral.frag:15: '' : octal literal digit too large 
+ERROR: ../Test/numeral.frag:16: '' : octal literal digit too large 
+ERROR: ../Test/numeral.frag:17: '' : octal literal too big 
+ERROR: ../Test/numeral.frag:18: '' : octal literal too big 
+ERROR: ../Test/numeral.frag:23: '' : octal literal digit too large 
+ERROR: ../Test/numeral.frag:24: '' : octal literal digit too large 
+ERROR: ../Test/numeral.frag:49: '' : bad digit in hexadecimal literal 
+ERROR: ../Test/numeral.frag:50: '' : hexadecimal literal too big 
+ERROR: ../Test/numeral.frag:88: '' : float literal needs a decimal point or exponent 
+ERROR: ../Test/numeral.frag:98: '' : numeric literal too big 
+ERROR: ../Test/numeral.frag:101: '' : numeric literal too big 
 ERROR: 12 compilation errors.  No code generated.
 
 

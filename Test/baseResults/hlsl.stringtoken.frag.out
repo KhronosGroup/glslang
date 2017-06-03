@@ -1,4 +1,4 @@
-hlsl.stringtoken.frag
+../Test/hlsl.stringtoken.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

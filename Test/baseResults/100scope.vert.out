@@ -1,18 +1,18 @@
-100scope.vert
-ERROR: 0:5: 'a' : redefinition 
-ERROR: 0:17: 'b' : function name is redeclaration of existing name 
-ERROR: 0:20: 'c' : redefinition 
-ERROR: 0:22: 'f' : redefinition 
-ERROR: 0:24: 'redefinition of built-in function' : not supported with this profile: es
-ERROR: 0:24: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 1
-ERROR: 0:25: 'redefinition of built-in function' : not supported with this profile: es
-ERROR: 0:25: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 1
-ERROR: 0:38: 'local function declaration' : not supported with this profile: es
-ERROR: 0:43: 'sin' : can't use function syntax on variable 
-ERROR: 0:57: 'z' : undeclared identifier 
-ERROR: 0:57: 'z' : redefinition 
-ERROR: 0:73: 'degrees' : can't use function syntax on variable 
-ERROR: 0:76: 'vertex-shader struct output' : not supported for this version or the enabled extensions 
+../Test/100scope.vert
+ERROR: ../Test/100scope.vert:5: 'a' : redefinition 
+ERROR: ../Test/100scope.vert:17: 'b' : function name is redeclaration of existing name 
+ERROR: ../Test/100scope.vert:20: 'c' : redefinition 
+ERROR: ../Test/100scope.vert:22: 'f' : redefinition 
+ERROR: ../Test/100scope.vert:24: 'redefinition of built-in function' : not supported with this profile: es
+ERROR: ../Test/100scope.vert:24: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 1
+ERROR: ../Test/100scope.vert:25: 'redefinition of built-in function' : not supported with this profile: es
+ERROR: ../Test/100scope.vert:25: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 1
+ERROR: ../Test/100scope.vert:38: 'local function declaration' : not supported with this profile: es
+ERROR: ../Test/100scope.vert:43: 'sin' : can't use function syntax on variable 
+ERROR: ../Test/100scope.vert:57: 'z' : undeclared identifier 
+ERROR: ../Test/100scope.vert:57: 'z' : redefinition 
+ERROR: ../Test/100scope.vert:73: 'degrees' : can't use function syntax on variable 
+ERROR: ../Test/100scope.vert:76: 'vertex-shader struct output' : not supported for this version or the enabled extensions 
 ERROR: 14 compilation errors.  No code generated.
 
 

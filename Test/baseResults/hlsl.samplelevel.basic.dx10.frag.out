@@ -1,4 +1,4 @@
-hlsl.samplelevel.basic.dx10.frag
+../Test/hlsl.samplelevel.basic.dx10.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

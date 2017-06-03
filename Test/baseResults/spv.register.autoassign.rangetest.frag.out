@@ -1,4 +1,4 @@
-spv.register.autoassign.rangetest.frag
+../Test/spv.register.autoassign.rangetest.frag
 INTERNAL ERROR: mapped binding out of range: g_tSamp
 INTERNAL ERROR: mapped binding out of range: g_tScene
 

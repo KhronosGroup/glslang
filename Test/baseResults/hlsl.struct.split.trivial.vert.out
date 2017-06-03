@@ -1,4 +1,4 @@
-hlsl.struct.split.trivial.vert
+../Test/hlsl.struct.split.trivial.vert
 Shader version: 500
 0:? Sequence
 0:16  Function Definition: @main(struct-VS_INPUT-vf41;vf4; ( temp structure{ temp 4-component vector of float Pos})

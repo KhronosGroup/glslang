@@ -1,48 +1,48 @@
-300.vert
-ERROR: 0:8: 'varying' : Reserved word. 
-ERROR: 0:8: 'varying' : no longer supported in es profile; removed in version 300
-ERROR: 0:9: 'vertex input arrays' : not supported with this profile: es
-ERROR: 0:10: '' : precision qualifier must appear as last qualifier 
-ERROR: 0:11: '' : invariant qualifier must appear before interpolation, storage, and precision qualifiers  
-ERROR: 0:12: '' : Auxiliary qualifiers (centroid, patch, and sample) must appear before storage and precision qualifiers 
-ERROR: 0:12: '' : vertex input cannot be further qualified 
-ERROR: 0:13: '' : interpolation qualifiers must appear before storage and precision qualifiers 
-ERROR: 0:14: '' : in/out must appear before const 
-ERROR: 0:15: '' : precision qualifier must appear as last qualifier 
-ERROR: 0:16: '' : can only have one interpolation qualifier (flat, smooth, noperspective, __explicitInterpAMD) 
-ERROR: 0:17: 'sample' : Reserved word. 
-ERROR: 0:17: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
-ERROR: 0:18: 'uniform' : too many storage qualifiers 
-ERROR: 0:56: '#error' : GL_ES is set  
-ERROR: 0:62: '' : array size required 
-ERROR: 0:63: '' : array size required 
-ERROR: 0:64: '' : array size required 
-ERROR: 0:65: '' : array size required 
-ERROR: 0:67: '' : array size required 
-ERROR: 0:76: 'invariant' : cannot change qualification after use 
-ERROR: 0:78: 'invariant' : can only apply to an output 
-ERROR: 0:88: 'ub2' : Cannot reuse block name within the same interface: uniform
-ERROR: 0:92: 'ub2' : Cannot reuse block name within the same interface: uniform
-ERROR: 0:96: 'ub2' : Cannot reuse block name within the same interface: uniform
-ERROR: 0:104: 'ub3' : Cannot reuse block name within the same interface: uniform
-ERROR: 0:121: 'textureSize' : no matching overloaded function found 
-ERROR: 0:123: 'textureSize' : no matching overloaded function found 
-ERROR: 0:125: 'texture' : no matching overloaded function found 
-ERROR: 0:127: 'textureProjOffset' : no matching overloaded function found 
-ERROR: 0:132: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 2
-ERROR: 0:135: 'in' : overloaded functions must have the same parameter storage qualifiers for argument 2
-ERROR: 0:146: '' : array size required 
-ERROR: 0:147: '' : array size required 
-ERROR: 0:148: '' : array size required 
-ERROR: 0:149: 'float' : cannot apply precision statement to this type; use 'float', 'int' or a sampler type 
-ERROR: 0:168: 'Binst' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
-ERROR: 0:169: 'Bblock' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
-ERROR: 0:170: 'Bfoo' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
-ERROR: 0:172: 'std430' : not supported for this version or the enabled extensions 
-ERROR: 0:172: 'std430' : requires the 'buffer' storage qualifier 
-ERROR: 0:175: '' : array size required 
-ERROR: 0:185: 'assign' :  cannot convert from ' temp 4-element array of highp float' to ' temp 3-element array of highp float'
-ERROR: 0:186: 'assign' :  cannot convert from ' temp 3-element array of highp float' to ' temp 4-element array of highp float'
+../Test/300.vert
+ERROR: ../Test/300.vert:8: 'varying' : Reserved word. 
+ERROR: ../Test/300.vert:8: 'varying' : no longer supported in es profile; removed in version 300
+ERROR: ../Test/300.vert:9: 'vertex input arrays' : not supported with this profile: es
+ERROR: ../Test/300.vert:10: '' : precision qualifier must appear as last qualifier 
+ERROR: ../Test/300.vert:11: '' : invariant qualifier must appear before interpolation, storage, and precision qualifiers  
+ERROR: ../Test/300.vert:12: '' : Auxiliary qualifiers (centroid, patch, and sample) must appear before storage and precision qualifiers 
+ERROR: ../Test/300.vert:12: '' : vertex input cannot be further qualified 
+ERROR: ../Test/300.vert:13: '' : interpolation qualifiers must appear before storage and precision qualifiers 
+ERROR: ../Test/300.vert:14: '' : in/out must appear before const 
+ERROR: ../Test/300.vert:15: '' : precision qualifier must appear as last qualifier 
+ERROR: ../Test/300.vert:16: '' : can only have one interpolation qualifier (flat, smooth, noperspective, __explicitInterpAMD) 
+ERROR: ../Test/300.vert:17: 'sample' : Reserved word. 
+ERROR: ../Test/300.vert:17: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
+ERROR: ../Test/300.vert:18: 'uniform' : too many storage qualifiers 
+ERROR: ../Test/300.vert:56: '#error' : GL_ES is set  
+ERROR: ../Test/300.vert:62: '' : array size required 
+ERROR: ../Test/300.vert:63: '' : array size required 
+ERROR: ../Test/300.vert:64: '' : array size required 
+ERROR: ../Test/300.vert:65: '' : array size required 
+ERROR: ../Test/300.vert:67: '' : array size required 
+ERROR: ../Test/300.vert:76: 'invariant' : cannot change qualification after use 
+ERROR: ../Test/300.vert:78: 'invariant' : can only apply to an output 
+ERROR: ../Test/300.vert:88: 'ub2' : Cannot reuse block name within the same interface: uniform
+ERROR: ../Test/300.vert:92: 'ub2' : Cannot reuse block name within the same interface: uniform
+ERROR: ../Test/300.vert:96: 'ub2' : Cannot reuse block name within the same interface: uniform
+ERROR: ../Test/300.vert:104: 'ub3' : Cannot reuse block name within the same interface: uniform
+ERROR: ../Test/300.vert:121: 'textureSize' : no matching overloaded function found 
+ERROR: ../Test/300.vert:123: 'textureSize' : no matching overloaded function found 
+ERROR: ../Test/300.vert:125: 'texture' : no matching overloaded function found 
+ERROR: ../Test/300.vert:127: 'textureProjOffset' : no matching overloaded function found 
+ERROR: ../Test/300.vert:132: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 2
+ERROR: ../Test/300.vert:135: 'in' : overloaded functions must have the same parameter storage qualifiers for argument 2
+ERROR: ../Test/300.vert:146: '' : array size required 
+ERROR: ../Test/300.vert:147: '' : array size required 
+ERROR: ../Test/300.vert:148: '' : array size required 
+ERROR: ../Test/300.vert:149: 'float' : cannot apply precision statement to this type; use 'float', 'int' or a sampler type 
+ERROR: ../Test/300.vert:168: 'Binst' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
+ERROR: ../Test/300.vert:169: 'Bblock' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
+ERROR: ../Test/300.vert:170: 'Bfoo' : cannot add storage, auxiliary, memory, interpolation, layout, or precision qualifier to an existing variable 
+ERROR: ../Test/300.vert:172: 'std430' : not supported for this version or the enabled extensions 
+ERROR: ../Test/300.vert:172: 'std430' : requires the 'buffer' storage qualifier 
+ERROR: ../Test/300.vert:175: '' : array size required 
+ERROR: ../Test/300.vert:185: 'assign' :  cannot convert from ' temp 4-element array of highp float' to ' temp 3-element array of highp float'
+ERROR: ../Test/300.vert:186: 'assign' :  cannot convert from ' temp 3-element array of highp float' to ' temp 4-element array of highp float'
 ERROR: 44 compilation errors.  No code generated.
 
 

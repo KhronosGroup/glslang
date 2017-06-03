@@ -1,7 +1,7 @@
-110scope.vert
-ERROR: 0:5: 'a' : redefinition 
-ERROR: 0:57: 'z' : undeclared identifier 
-ERROR: 0:57: 'z' : redefinition 
+../Test/110scope.vert
+ERROR: ../Test/110scope.vert:5: 'a' : redefinition 
+ERROR: ../Test/110scope.vert:57: 'z' : undeclared identifier 
+ERROR: ../Test/110scope.vert:57: 'z' : redefinition 
 ERROR: 3 compilation errors.  No code generated.
 
 

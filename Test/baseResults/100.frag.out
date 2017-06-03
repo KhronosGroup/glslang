@@ -1,90 +1,90 @@
-100.frag
-ERROR: 0:3: '{ } style initializers' : not supported with this profile: es
-ERROR: 0:3: 'initializer' : not supported for this version or the enabled extensions 
-ERROR: 0:3: 'array initializer' : not supported for this version or the enabled extensions 
-ERROR: 0:4: '#version' : must occur first in shader 
-ERROR: 0:7: 'attribute' : not supported in this stage: fragment
-ERROR: 0:7: 'float' : type requires declaration of default precision qualifier 
-ERROR: 0:9: '=' :  cannot convert from ' const int' to ' global mediump float'
-ERROR: 0:11: 'uniform block' : not supported for this version or the enabled extensions 
-ERROR: 0:19: 'foo' : no matching overloaded function found 
-ERROR: 0:20: 'bit shift left' : not supported for this version or the enabled extensions 
-ERROR: 0:21: 'bit shift right' : not supported for this version or the enabled extensions 
-ERROR: 0:22: 'array comparison' : not supported for this version or the enabled extensions 
-ERROR: 0:24: 'bitwise and' : not supported for this version or the enabled extensions 
-ERROR: 0:25: '%' : not supported for this version or the enabled extensions 
-ERROR: 0:26: 'bitwise inclusive or' : not supported for this version or the enabled extensions 
-ERROR: 0:27: 'bit-shift right assign' : not supported for this version or the enabled extensions 
-ERROR: 0:28: 'bit-shift left assign' : not supported for this version or the enabled extensions 
-ERROR: 0:29: '%=' : not supported for this version or the enabled extensions 
-ERROR: 0:36: 'array assignment' : not supported for this version or the enabled extensions 
-ERROR: 0:37: 'array comparison' : not supported for this version or the enabled extensions 
-ERROR: 0:38: 'array comparison' : not supported for this version or the enabled extensions 
-ERROR: 0:40: 'switch' : Reserved word. 
-ERROR: 0:40: 'switch statements' : not supported for this version or the enabled extensions 
-ERROR: 0:45: '' : array size required 
-ERROR: 0:47: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+../Test/100.frag
+ERROR: ../Test/100.frag:3: '{ } style initializers' : not supported with this profile: es
+ERROR: ../Test/100.frag:3: 'initializer' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:3: 'array initializer' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:4: '#version' : must occur first in shader 
+ERROR: ../Test/100.frag:7: 'attribute' : not supported in this stage: fragment
+ERROR: ../Test/100.frag:7: 'float' : type requires declaration of default precision qualifier 
+ERROR: ../Test/100.frag:9: '=' :  cannot convert from ' const int' to ' global mediump float'
+ERROR: ../Test/100.frag:11: 'uniform block' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:19: 'foo' : no matching overloaded function found 
+ERROR: ../Test/100.frag:20: 'bit shift left' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:21: 'bit shift right' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:22: 'array comparison' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:24: 'bitwise and' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:25: '%' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:26: 'bitwise inclusive or' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:27: 'bit-shift right assign' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:28: 'bit-shift left assign' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:29: '%=' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:36: 'array assignment' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:37: 'array comparison' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:38: 'array comparison' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:40: 'switch' : Reserved word. 
+ERROR: ../Test/100.frag:40: 'switch statements' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:45: '' : array size required 
+ERROR: ../Test/100.frag:47: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:49: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+ERROR: ../Test/100.frag:49: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:50: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+ERROR: ../Test/100.frag:50: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:56: 'invariant' : not allowed in nested scope 
-ERROR: 0:56: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+ERROR: ../Test/100.frag:56: 'invariant' : not allowed in nested scope 
+ERROR: ../Test/100.frag:56: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:57: 'invariant' : not allowed in nested scope 
-ERROR: 0:57: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+ERROR: ../Test/100.frag:57: 'invariant' : not allowed in nested scope 
+ERROR: ../Test/100.frag:57: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:59: 'invariant' : not allowed in nested scope 
-ERROR: 0:59: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+ERROR: ../Test/100.frag:59: 'invariant' : not allowed in nested scope 
+ERROR: ../Test/100.frag:59: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:63: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+ERROR: ../Test/100.frag:63: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:64: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+ERROR: ../Test/100.frag:64: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:66: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: glob2D
-ERROR: 0:69: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: v2D
-ERROR: 0:71: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: vary2D
-ERROR: 0:75: 'in for stage inputs' : not supported for this version or the enabled extensions 
-ERROR: 0:77: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
+ERROR: ../Test/100.frag:66: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: glob2D
+ERROR: ../Test/100.frag:69: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: v2D
+ERROR: ../Test/100.frag:71: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: vary2D
+ERROR: ../Test/100.frag:75: 'in for stage inputs' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:77: 'invariant' : can only apply to an output, or to an input in a non-vertex stage
  
-ERROR: 0:75: 'g' : cannot use storage or interpolation qualifiers on structure members 
-ERROR: 0:76: 'h' : cannot use storage or interpolation qualifiers on structure members 
-ERROR: 0:77: 'i' : cannot use invariant qualifier on structure members 
-ERROR: 0:80: 'sampler3D' : Reserved word. 
-ERROR: 0:80: 'sampler/image' : type requires declaration of default precision qualifier 
-ERROR: 0:91: 'dFdx' : required extension not requested: GL_OES_standard_derivatives
-ERROR: 0:92: 'dFdy' : required extension not requested: GL_OES_standard_derivatives
-ERROR: 0:93: 'fwidth' : required extension not requested: GL_OES_standard_derivatives
-ERROR: 0:103: 'gl_FragDepth' : undeclared identifier 
-ERROR: 0:104: 'gl_FragDepthEXT' : required extension not requested: GL_EXT_frag_depth
-ERROR: 0:111: 'gl_FragDepth' : undeclared identifier 
-ERROR: 0:134: 'texture3D' : no matching overloaded function found 
-ERROR: 0:135: 'texture2DProjLod' : no matching overloaded function found 
-ERROR: 0:137: 'bitwise not' : not supported for this version or the enabled extensions 
-ERROR: 0:138: 'bitwise inclusive or' : not supported for this version or the enabled extensions 
-ERROR: 0:139: 'bitwise and' : not supported for this version or the enabled extensions 
-ERROR: 0:145: 'a' : redefinition 
-ERROR: 0:147: 'texture2DProjGradEXT' : required extension not requested: GL_EXT_shader_texture_lod
-ERROR: 0:151: 'floating-point suffix' : not supported for this version or the enabled extensions 
-ERROR: 0:152: 'floating-point suffix' : not supported for this version or the enabled extensions 
-ERROR: 0:167: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 2
-ERROR: 0:170: 'multiple prototypes for same function' : not supported for this version or the enabled extensions 
-ERROR: 0:177: 'multiple prototypes for same function' : not supported for this version or the enabled extensions 
-ERROR: 0:179: 'fragment-shader struct input' : not supported for this version or the enabled extensions 
-ERROR: 0:183: 'v' : illegal use of type 'void' 
-ERROR: 0:184: 'void' : cannot be an argument type except for '(void)' 
-ERROR: 0:185: 'v' : illegal use of type 'void' 
-ERROR: 0:185: 'void' : cannot be an argument type except for '(void)' 
-ERROR: 0:190: '.' : cannot apply to an array: y
-ERROR: 0:191: '.' : cannot apply to an array: zy
-ERROR: 0:192: '.' : cannot apply to an array: nothing
-ERROR: 0:193: '.length' : not supported for this version or the enabled extensions 
-ERROR: 0:194: '.' : cannot apply to an array: method
-ERROR: 0:194: 'a' : can't use function syntax on variable 
-ERROR: 0:214: 'non-constant global initializer (needs GL_EXT_shader_non_constant_global_initializers)' : not supported for this version or the enabled extensions 
-ERROR: 0:3000: '#error' : line of this error should be 3000  
-ERROR: 0:3002: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
+ERROR: ../Test/100.frag:75: 'g' : cannot use storage or interpolation qualifiers on structure members 
+ERROR: ../Test/100.frag:76: 'h' : cannot use storage or interpolation qualifiers on structure members 
+ERROR: ../Test/100.frag:77: 'i' : cannot use invariant qualifier on structure members 
+ERROR: ../Test/100.frag:80: 'sampler3D' : Reserved word. 
+ERROR: ../Test/100.frag:80: 'sampler/image' : type requires declaration of default precision qualifier 
+ERROR: ../Test/100.frag:91: 'dFdx' : required extension not requested: GL_OES_standard_derivatives
+ERROR: ../Test/100.frag:92: 'dFdy' : required extension not requested: GL_OES_standard_derivatives
+ERROR: ../Test/100.frag:93: 'fwidth' : required extension not requested: GL_OES_standard_derivatives
+ERROR: ../Test/100.frag:103: 'gl_FragDepth' : undeclared identifier 
+ERROR: ../Test/100.frag:104: 'gl_FragDepthEXT' : required extension not requested: GL_EXT_frag_depth
+ERROR: ../Test/100.frag:111: 'gl_FragDepth' : undeclared identifier 
+ERROR: ../Test/100.frag:134: 'texture3D' : no matching overloaded function found 
+ERROR: ../Test/100.frag:135: 'texture2DProjLod' : no matching overloaded function found 
+ERROR: ../Test/100.frag:137: 'bitwise not' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:138: 'bitwise inclusive or' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:139: 'bitwise and' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:145: 'a' : redefinition 
+ERROR: ../Test/100.frag:147: 'texture2DProjGradEXT' : required extension not requested: GL_EXT_shader_texture_lod
+ERROR: ../Test/100.frag:151: 'floating-point suffix' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:152: 'floating-point suffix' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:167: 'highp' : overloaded functions must have the same parameter precision qualifiers for argument 2
+ERROR: ../Test/100.frag:170: 'multiple prototypes for same function' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:177: 'multiple prototypes for same function' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:179: 'fragment-shader struct input' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:183: 'v' : illegal use of type 'void' 
+ERROR: ../Test/100.frag:184: 'void' : cannot be an argument type except for '(void)' 
+ERROR: ../Test/100.frag:185: 'v' : illegal use of type 'void' 
+ERROR: ../Test/100.frag:185: 'void' : cannot be an argument type except for '(void)' 
+ERROR: ../Test/100.frag:190: '.' : cannot apply to an array: y
+ERROR: ../Test/100.frag:191: '.' : cannot apply to an array: zy
+ERROR: ../Test/100.frag:192: '.' : cannot apply to an array: nothing
+ERROR: ../Test/100.frag:193: '.length' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:194: '.' : cannot apply to an array: method
+ERROR: ../Test/100.frag:194: 'a' : can't use function syntax on variable 
+ERROR: ../Test/100.frag:214: 'non-constant global initializer (needs GL_EXT_shader_non_constant_global_initializers)' : not supported for this version or the enabled extensions 
+ERROR: ../Test/100.frag:3000: '#error' : line of this error should be 3000  
+ERROR: ../Test/100.frag:3002: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
 ERROR: 77 compilation errors.  No code generated.
 
 

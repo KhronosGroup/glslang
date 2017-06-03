@@ -1,4 +1,4 @@
-hlsl.intrinsics.barriers.comp
+../Test/hlsl.intrinsics.barriers.comp
 Shader version: 500
 local_size = (1, 1, 1)
 0:? Sequence

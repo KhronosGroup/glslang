@@ -1,4 +1,4 @@
-hlsl.array.implicit-size.frag
+../Test/hlsl.array.implicit-size.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

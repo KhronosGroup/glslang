@@ -1,38 +1,38 @@
-specExamples.vert
+../Test/specExamples.vert
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:29: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
-ERROR: 0:31: 'triangles' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:31: 'invocations' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:33: 'lines' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:35: 'triangle_strip' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:35: 'max_vertices' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:36: 'max_vertices' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:37: 'triangle_strip' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
-ERROR: 0:41: 'stream' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:43: 'stream' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:45: 'stream' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:46: 'stream' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:47: 'stream' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:50: 'stream' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:55: 'stream' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:80: 's17' : redefinition 
-ERROR: 0:85: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
-ERROR: 0:87: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
-ERROR: 0:89: 'binding' : atomic_uint binding is too large 
-ERROR: 0:91: 'bar' : redefinition 
-ERROR: 0:92: 'atomic_uint' : layout(binding=X) is required 
-ERROR: 0:94: 'a2' : redefinition 
-ERROR: 0:95: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
-ERROR: 0:96: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
-ERROR: 0:97: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
-ERROR: 0:106: '' : vertex input cannot be further qualified 
-ERROR: 0:106: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
-ERROR: 0:112: 'ColorIvn' : identifier not previously declared 
-ERROR: 0:132: 'shared' : not supported in this stage: vertex
-ERROR: 0:134: '' : function does not return a value: funcA
-ERROR: 0:136: '' : function does not return a value: funcB
-ERROR: 0:153: '' : function does not return a value: func3
-ERROR: 0:170: 'coherent' : argument cannot drop memory qualifier when passed to formal parameter 
+ERROR: ../Test/specExamples.vert:29: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
+ERROR: ../Test/specExamples.vert:31: 'triangles' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: ../Test/specExamples.vert:31: 'invocations' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.vert:33: 'lines' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: ../Test/specExamples.vert:35: 'triangle_strip' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: ../Test/specExamples.vert:35: 'max_vertices' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.vert:36: 'max_vertices' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.vert:37: 'triangle_strip' : unrecognized layout identifier, or qualifier requires assignment (e.g., binding = 4) 
+ERROR: ../Test/specExamples.vert:41: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.vert:43: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.vert:45: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.vert:46: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.vert:47: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.vert:50: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.vert:55: 'stream' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.vert:80: 's17' : redefinition 
+ERROR: ../Test/specExamples.vert:85: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: ../Test/specExamples.vert:87: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: ../Test/specExamples.vert:89: 'binding' : atomic_uint binding is too large 
+ERROR: ../Test/specExamples.vert:91: 'bar' : redefinition 
+ERROR: ../Test/specExamples.vert:92: 'atomic_uint' : layout(binding=X) is required 
+ERROR: ../Test/specExamples.vert:94: 'a2' : redefinition 
+ERROR: ../Test/specExamples.vert:95: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: ../Test/specExamples.vert:96: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: ../Test/specExamples.vert:97: 'binding' : atomic_uint binding is too large; see gl_MaxAtomicCounterBindings 
+ERROR: ../Test/specExamples.vert:106: '' : vertex input cannot be further qualified 
+ERROR: ../Test/specExamples.vert:106: 'redeclaration' : cannot change storage, memory, or auxiliary qualification of gl_FrontColor
+ERROR: ../Test/specExamples.vert:112: 'ColorIvn' : identifier not previously declared 
+ERROR: ../Test/specExamples.vert:132: 'shared' : not supported in this stage: vertex
+ERROR: ../Test/specExamples.vert:134: '' : function does not return a value: funcA
+ERROR: ../Test/specExamples.vert:136: '' : function does not return a value: funcB
+ERROR: ../Test/specExamples.vert:153: '' : function does not return a value: func3
+ERROR: ../Test/specExamples.vert:170: 'coherent' : argument cannot drop memory qualifier when passed to formal parameter 
 ERROR: 33 compilation errors.  No code generated.
 
 

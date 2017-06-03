@@ -1,5 +1,5 @@
-hlsl.mip.negative2.frag
-ERROR: 0:5: 'r' : unexpected operator on texture type:  uniform texture2D
+../Test/hlsl.mip.negative2.frag
+ERROR: ../Test/hlsl.mip.negative2.frag:5: 'r' : unexpected operator on texture type:  uniform texture2D
 ERROR: 1 compilation errors.  No code generated.
 
 

@@ -1,8 +1,8 @@
-varyingArray.frag
-WARNING: 0:3: varying deprecated in version 130; may be removed in future release
-WARNING: 0:4: varying deprecated in version 130; may be removed in future release
-WARNING: 0:6: varying deprecated in version 130; may be removed in future release
-WARNING: 0:8: varying deprecated in version 130; may be removed in future release
+../Test/varyingArray.frag
+WARNING: ../Test/varyingArray.frag:3: varying deprecated in version 130; may be removed in future release
+WARNING: ../Test/varyingArray.frag:4: varying deprecated in version 130; may be removed in future release
+WARNING: ../Test/varyingArray.frag:6: varying deprecated in version 130; may be removed in future release
+WARNING: ../Test/varyingArray.frag:8: varying deprecated in version 130; may be removed in future release
 
 Shader version: 130
 0:? Sequence

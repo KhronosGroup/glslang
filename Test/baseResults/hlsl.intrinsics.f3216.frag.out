@@ -1,4 +1,4 @@
-hlsl.intrinsics.f3216.frag
+../Test/hlsl.intrinsics.f3216.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

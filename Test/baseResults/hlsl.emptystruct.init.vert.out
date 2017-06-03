@@ -1,5 +1,5 @@
-hlsl.emptystruct.init.vert
-WARNING: 0:3: 'Test_Empty' : variable with qualifier 'const' not initialized; zero initializing 
+../Test/hlsl.emptystruct.init.vert
+WARNING: ../Test/hlsl.emptystruct.init.vert:3: 'Test_Empty' : variable with qualifier 'const' not initialized; zero initializing 
 
 Shader version: 500
 0:? Sequence

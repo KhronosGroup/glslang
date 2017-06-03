@@ -1,4 +1,4 @@
-test.frag
+../Test/test.frag
 Shader version: 110
 0:? Sequence
 0:13  Function Definition: main( ( global void)

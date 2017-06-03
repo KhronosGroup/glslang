@@ -1,25 +1,25 @@
-lineContinuation.vert
-WARNING: 0:3: 'line continuation' : used at end of comment; the following line is still part of the comment 
-ERROR: 0:6: '#error' : e1  
-ERROR: 0:11: '#error' : e2  
-ERROR: 0:18: '#error' : e3  
-ERROR: 0:42: '\' : illegal use of escape character 
-ERROR: 0:43: '@' : unexpected token 
-ERROR: 0:44: '$' : unexpected token 
-ERROR: 0:45: '\' : illegal use of escape character 
-ERROR: 0:47: '\' : illegal use of escape character 
-ERROR: 0:48: '\' : illegal use of escape character 
-ERROR: 0:49: '$' : unexpected token 
-ERROR: 0:50: '@' : unexpected token 
-ERROR: 0:55: '#error' : good continuation  
-WARNING: 0:62: 'line continuation' : used at end of comment; the following line is still part of the comment 
-ERROR: 0:111: 'macro expansion' : End of line in macro substitution: FOOM
-ERROR: 0:112: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 0:112: '#if' : unexpected tokens following directive 
-ERROR: 0:117: 'macro expansion' : End of line in macro substitution: FOOM
-ERROR: 0:118: 'preprocessor evaluation' : can't evaluate expression 
-ERROR: 0:118: '#if' : unexpected tokens following directive 
-ERROR: 0:150: '' :  syntax error, unexpected EQUAL
+../Test/lineContinuation.vert
+WARNING: ../Test/lineContinuation.vert:3: 'line continuation' : used at end of comment; the following line is still part of the comment 
+ERROR: ../Test/lineContinuation.vert:6: '#error' : e1  
+ERROR: ../Test/lineContinuation.vert:11: '#error' : e2  
+ERROR: ../Test/lineContinuation.vert:18: '#error' : e3  
+ERROR: ../Test/lineContinuation.vert:42: '\' : illegal use of escape character 
+ERROR: ../Test/lineContinuation.vert:43: '@' : unexpected token 
+ERROR: ../Test/lineContinuation.vert:44: '$' : unexpected token 
+ERROR: ../Test/lineContinuation.vert:45: '\' : illegal use of escape character 
+ERROR: ../Test/lineContinuation.vert:47: '\' : illegal use of escape character 
+ERROR: ../Test/lineContinuation.vert:48: '\' : illegal use of escape character 
+ERROR: ../Test/lineContinuation.vert:49: '$' : unexpected token 
+ERROR: ../Test/lineContinuation.vert:50: '@' : unexpected token 
+ERROR: ../Test/lineContinuation.vert:55: '#error' : good continuation  
+WARNING: ../Test/lineContinuation.vert:62: 'line continuation' : used at end of comment; the following line is still part of the comment 
+ERROR: ../Test/lineContinuation.vert:111: 'macro expansion' : End of line in macro substitution: FOOM
+ERROR: ../Test/lineContinuation.vert:112: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: ../Test/lineContinuation.vert:112: '#if' : unexpected tokens following directive 
+ERROR: ../Test/lineContinuation.vert:117: 'macro expansion' : End of line in macro substitution: FOOM
+ERROR: ../Test/lineContinuation.vert:118: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: ../Test/lineContinuation.vert:118: '#if' : unexpected tokens following directive 
+ERROR: ../Test/lineContinuation.vert:150: '' :  syntax error, unexpected EQUAL
 ERROR: 19 compilation errors.  No code generated.
 
 

@@ -54,7 +54,8 @@ TEST_P(ConfigTest, FromFile)
 
     // Get the contents for input shader and limit configurations.
     std::string shaderContents, configContents;
-    tryLoadFile(GlobalTestSettings.testRoot + "/" + testCase.input, "input", &shaderContents);
+    std::string path = GlobalTestSettings.testRoot + "/" + testCase.input;
+    tryLoadFile(path, "input", &shaderContents);
     tryLoadFile(GlobalTestSettings.testRoot + "/" + testCase.config, "limits config", &configContents);
 
     // Decode limit configurations.
@@ -70,9 +71,9 @@ TEST_P(ConfigTest, FromFile)
 
     // Compile the shader.
     glslang::TShader shader(GetShaderStage(GetSuffix(testCase.input)));
-    compile(&shader, shaderContents, "", testCase.controls, &resources);
+    compile(path, &shader, shaderContents, "", testCase.controls, &resources);
     result.shaderResults.push_back(
-        {testCase.input, shader.getInfoLog(), shader.getInfoDebugLog()});
+        {path, shader.getInfoLog(), shader.getInfoDebugLog()});
 
     // Link the shader.
     glslang::TProgram program;

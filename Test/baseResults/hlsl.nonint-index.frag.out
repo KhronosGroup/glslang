@@ -1,4 +1,4 @@
-hlsl.nonint-index.frag
+../Test/hlsl.nonint-index.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

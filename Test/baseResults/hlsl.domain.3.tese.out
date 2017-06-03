@@ -1,4 +1,4 @@
-hlsl.domain.3.tese
+../Test/hlsl.domain.3.tese
 Shader version: 500
 input primitive = isolines
 vertex spacing = none

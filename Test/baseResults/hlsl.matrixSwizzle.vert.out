@@ -1,4 +1,4 @@
-hlsl.matrixSwizzle.vert
+../Test/hlsl.matrixSwizzle.vert
 Shader version: 500
 0:? Sequence
 0:2  Function Definition: @ShaderFunction(f1; ( temp void)

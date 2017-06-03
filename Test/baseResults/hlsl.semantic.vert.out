@@ -1,4 +1,4 @@
-hlsl.semantic.vert
+../Test/hlsl.semantic.vert
 Shader version: 500
 0:? Sequence
 0:12  Function Definition: @main(struct-S-f1-f1-f1-f1-f1-f1-i11; ( temp structure{ temp float clip,  temp float clip0,  temp float clip7,  temp float cull,  temp float cull2,  temp float cull5,  temp int ii})

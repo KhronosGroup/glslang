@@ -1,4 +1,4 @@
-hlsl.struct.split.trivial.geom
+../Test/hlsl.struct.split.trivial.geom
 Shader version: 500
 invocations = -1
 max_vertices = 3

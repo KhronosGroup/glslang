@@ -1,4 +1,4 @@
-hlsl.domain.1.tese
+../Test/hlsl.domain.1.tese
 Shader version: 500
 input primitive = triangles
 vertex spacing = none

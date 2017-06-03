@@ -1,4 +1,4 @@
-hlsl.hull.void.tesc
+../Test/hlsl.hull.void.tesc
 Shader version: 500
 vertices = 3
 vertex spacing = fractional_even_spacing

@@ -1,4 +1,4 @@
-hlsl.struct.split.call.vert
+../Test/hlsl.struct.split.call.vert
 Shader version: 500
 0:? Sequence
 0:17  Function Definition: Fn1(struct-VS_INPUT-i1-vf4-i11;struct-VS_OUTPUT-i1-vf4-i11; ( temp void)

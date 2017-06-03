@@ -1,4 +1,4 @@
-hlsl.typeGraphCopy.vert
+../Test/hlsl.typeGraphCopy.vert
 Shader version: 500
 0:? Sequence
 0:22  Function Definition: @main( ( temp float)

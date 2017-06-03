@@ -1,4 +1,4 @@
-hlsl.intrinsics.d3dcolortoubyte4.frag
+../Test/hlsl.intrinsics.d3dcolortoubyte4.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

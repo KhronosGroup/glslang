@@ -1,4 +1,4 @@
-hlsl.structbuffer.fn2.comp
+../Test/hlsl.structbuffer.fn2.comp
 Shader version: 500
 local_size = (256, 1, 1)
 0:? Sequence

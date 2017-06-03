@@ -1,43 +1,43 @@
-specExamples.frag
+../Test/specExamples.frag
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:6: '=' :  cannot convert from ' const uint' to ' global int'
-ERROR: 0:20: '' : numeric literal too big 
-ERROR: 0:21: '' : hexadecimal literal too big 
-ERROR: 0:37: 'view' : redefinition 
-ERROR: 0:63: 'invariant' : can only apply to an output 
-ERROR: 0:68: 'lightPosition' : redefinition 
-ERROR: 0:75: 'Atten' : member storage qualifier cannot contradict block storage qualifier 
-ERROR: 0:87: 'Color' : redefinition 
-ERROR: 0:92: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
-ERROR: 0:93: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
-ERROR: 0:99: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:99: 'local_size_y' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:100: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
-ERROR: 0:102: 'color' : redefinition 
-ERROR: 0:112: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
-ERROR: 0:118: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
-ERROR: 0:121: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
-ERROR: 0:172: 'x' : undeclared identifier 
-ERROR: 0:172: '[]' : scalar integer expression required 
-ERROR: 0:175: 'x' : undeclared identifier 
-ERROR: 0:175: '[]' : scalar integer expression required 
-ERROR: 0:175: 'b' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:175: 'a' : vector swizzle selection out of range 
-ERROR: 0:175: 'length' : does not operate on this type:  const float
-ERROR: 0:175: '' : function call, method, or subroutine call expected 
-ERROR: 0:175: '' : no matching overloaded function found 
-ERROR: 0:178: '[]' : scalar integer expression required 
-ERROR: 0:178: 's' : undeclared identifier 
-ERROR: 0:178: 's' :  left of '[' is not of type array, matrix, or vector  
-ERROR: 0:178: 'a' : vector swizzle selection out of range 
-ERROR: 0:178: 'length' : does not operate on this type:  const float
-ERROR: 0:178: '' : function call, method, or subroutine call expected 
-ERROR: 0:178: '' : no matching overloaded function found 
-ERROR: 0:198: 'e' : redefinition 
-ERROR: 0:226: 'in' : not allowed in nested scope 
-ERROR: 0:227: 'in' : not allowed in nested scope 
-ERROR: 0:228: 'in' : not allowed in nested scope 
-ERROR: 0:232: 'out' : not allowed in nested scope 
+ERROR: ../Test/specExamples.frag:6: '=' :  cannot convert from ' const uint' to ' global int'
+ERROR: ../Test/specExamples.frag:20: '' : numeric literal too big 
+ERROR: ../Test/specExamples.frag:21: '' : hexadecimal literal too big 
+ERROR: ../Test/specExamples.frag:37: 'view' : redefinition 
+ERROR: ../Test/specExamples.frag:63: 'invariant' : can only apply to an output 
+ERROR: ../Test/specExamples.frag:68: 'lightPosition' : redefinition 
+ERROR: ../Test/specExamples.frag:75: 'Atten' : member storage qualifier cannot contradict block storage qualifier 
+ERROR: ../Test/specExamples.frag:87: 'Color' : redefinition 
+ERROR: ../Test/specExamples.frag:92: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: ../Test/specExamples.frag:93: 'redeclaration' : cannot redeclare with different qualification: gl_FragCoord
+ERROR: ../Test/specExamples.frag:99: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.frag:99: 'local_size_y' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.frag:100: 'local_size_x' : there is no such layout identifier for this stage taking an assigned value 
+ERROR: ../Test/specExamples.frag:102: 'color' : redefinition 
+ERROR: ../Test/specExamples.frag:112: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
+ERROR: ../Test/specExamples.frag:118: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
+ERROR: ../Test/specExamples.frag:121: 'redeclaration' : all redeclarations must use the same depth layout on gl_FragDepth
+ERROR: ../Test/specExamples.frag:172: 'x' : undeclared identifier 
+ERROR: ../Test/specExamples.frag:172: '[]' : scalar integer expression required 
+ERROR: ../Test/specExamples.frag:175: 'x' : undeclared identifier 
+ERROR: ../Test/specExamples.frag:175: '[]' : scalar integer expression required 
+ERROR: ../Test/specExamples.frag:175: 'b' :  left of '[' is not of type array, matrix, or vector  
+ERROR: ../Test/specExamples.frag:175: 'a' : vector swizzle selection out of range 
+ERROR: ../Test/specExamples.frag:175: 'length' : does not operate on this type:  const float
+ERROR: ../Test/specExamples.frag:175: '' : function call, method, or subroutine call expected 
+ERROR: ../Test/specExamples.frag:175: '' : no matching overloaded function found 
+ERROR: ../Test/specExamples.frag:178: '[]' : scalar integer expression required 
+ERROR: ../Test/specExamples.frag:178: 's' : undeclared identifier 
+ERROR: ../Test/specExamples.frag:178: 's' :  left of '[' is not of type array, matrix, or vector  
+ERROR: ../Test/specExamples.frag:178: 'a' : vector swizzle selection out of range 
+ERROR: ../Test/specExamples.frag:178: 'length' : does not operate on this type:  const float
+ERROR: ../Test/specExamples.frag:178: '' : function call, method, or subroutine call expected 
+ERROR: ../Test/specExamples.frag:178: '' : no matching overloaded function found 
+ERROR: ../Test/specExamples.frag:198: 'e' : redefinition 
+ERROR: ../Test/specExamples.frag:226: 'in' : not allowed in nested scope 
+ERROR: ../Test/specExamples.frag:227: 'in' : not allowed in nested scope 
+ERROR: ../Test/specExamples.frag:228: 'in' : not allowed in nested scope 
+ERROR: ../Test/specExamples.frag:232: 'out' : not allowed in nested scope 
 ERROR: 38 compilation errors.  No code generated.
 
 

@@ -1,4 +1,4 @@
-forwardRef.frag
+../Test/forwardRef.frag
 Shader version: 110
 0:? Sequence
 0:11  Function Definition: main( ( global void)
