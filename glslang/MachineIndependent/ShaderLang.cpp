@@ -1502,7 +1502,7 @@ bool InitializeProcess()
 
 void FinalizeProcess()
 {
-    ShFinalize();
+    DetachProcess();
 }
 
 class TDeferredCompiler : public TCompiler {
