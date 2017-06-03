@@ -1,6 +1,6 @@
-hlsl.function.frag
-ERROR: 0:24: 'fun1' : unknown variable 
-ERROR: 0:24: 'return' : type does not match, or is not convertible to, the function's return type 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.function.frag
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.function.frag:24: 'fun1' : unknown variable 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.function.frag:24: 'return' : type does not match, or is not convertible to, the function's return type 
 ERROR: 2 compilation errors.  No code generated.
 
 

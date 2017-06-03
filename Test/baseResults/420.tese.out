@@ -1,18 +1,18 @@
-420.tese
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese
 Warning, version 420 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:7: '=' :  cannot convert from ' const 3-element array of float' to ' global 2-element array of float'
-ERROR: 0:8: 'initializer list' : wrong vector size (or rows in a matrix column):  temp 2-component vector of float
-ERROR: 0:9: 'initializer list' : wrong number of matrix columns:  temp 3X3 matrix of float
-ERROR: 0:10: 'initializer list' : wrong number of matrix columns:  temp 2X2 matrix of float
-ERROR: 0:25: 'initializer list' : wrong number of structure members 
-ERROR: 0:27: '=' :  cannot convert from ' const bool' to ' global int'
-ERROR: 0:28: 'constructor' :  cannot convert parameter 2 from ' const float' to ' temp 4-component vector of float'
-ERROR: 0:29: 'constructor' :  cannot convert parameter 2 from ' const 2X2 matrix of float' to ' const 4-component vector of float'
-ERROR: 0:29: ' const 2-element array of 4-component vector of float' : cannot construct with these arguments 
-ERROR: 0:29: '=' :  cannot convert from ' const float' to ' global 2-element array of 4-component vector of float'
-ERROR: 0:30: 'initializer list' : wrong number of matrix columns:  temp 4X2 matrix of float
-ERROR: 0:40: 'constructor' :  cannot convert parameter 1 from ' temp float' to ' temp structure{ global float s,  global float t}'
-ERROR: 0:70: 'initializer list' : wrong number of structure members 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:7: '=' :  cannot convert from ' const 3-element array of float' to ' global 2-element array of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:8: 'initializer list' : wrong vector size (or rows in a matrix column):  temp 2-component vector of float
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:9: 'initializer list' : wrong number of matrix columns:  temp 3X3 matrix of float
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:10: 'initializer list' : wrong number of matrix columns:  temp 2X2 matrix of float
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:25: 'initializer list' : wrong number of structure members 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:27: '=' :  cannot convert from ' const bool' to ' global int'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:28: 'constructor' :  cannot convert parameter 2 from ' const float' to ' temp 4-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:29: 'constructor' :  cannot convert parameter 2 from ' const 2X2 matrix of float' to ' const 4-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:29: ' const 2-element array of 4-component vector of float' : cannot construct with these arguments 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:29: '=' :  cannot convert from ' const float' to ' global 2-element array of 4-component vector of float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:30: 'initializer list' : wrong number of matrix columns:  temp 4X2 matrix of float
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:40: 'constructor' :  cannot convert parameter 1 from ' temp float' to ' temp structure{ global float s,  global float t}'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/420.tese:70: 'initializer list' : wrong number of structure members 
 ERROR: 13 compilation errors.  No code generated.
 
 

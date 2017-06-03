@@ -1,6 +1,6 @@
-vulkan.comp
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/vulkan.comp
 Warning, version 450 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:5: 'local_size' : cannot change previously set size 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/vulkan.comp:5: 'local_size' : cannot change previously set size 
 ERROR: 1 compilation errors.  No code generated.
 
 

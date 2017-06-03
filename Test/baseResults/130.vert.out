@@ -1,8 +1,8 @@
-130.vert
-ERROR: 0:59: 'gl_InstanceID' : undeclared identifier 
-ERROR: 0:59: '=' :  cannot convert from ' temp float' to ' temp int'
-ERROR: 0:61: 'texelFetch' : no matching overloaded function found 
-ERROR: 0:61: 'assign' :  cannot convert from ' const float' to ' temp int'
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.vert
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.vert:59: 'gl_InstanceID' : undeclared identifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.vert:59: '=' :  cannot convert from ' temp float' to ' temp int'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.vert:61: 'texelFetch' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/130.vert:61: 'assign' :  cannot convert from ' const float' to ' temp int'
 ERROR: 4 compilation errors.  No code generated.
 
 

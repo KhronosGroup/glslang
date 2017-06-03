@@ -1,5 +1,5 @@
-hlsl.mip.negative.frag
-ERROR: 0:5: '' : unterminated mips operator: 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.mip.negative.frag
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.mip.negative.frag:5: '' : unterminated mips operator: 
 ERROR: 1 compilation errors.  No code generated.
 
 

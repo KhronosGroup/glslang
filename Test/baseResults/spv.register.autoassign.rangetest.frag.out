@@ -1,4 +1,4 @@
-spv.register.autoassign.rangetest.frag
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/spv.register.autoassign.rangetest.frag
 INTERNAL ERROR: mapped binding out of range: g_tSamp
 INTERNAL ERROR: mapped binding out of range: g_tScene
 

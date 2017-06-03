@@ -1,4 +1,4 @@
-hlsl.intrinsics.vert
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.intrinsics.vert
 Shader version: 500
 0:? Sequence
 0:2  Function Definition: VertexShaderFunctionS(f1;f1;f1;u1;u1; ( temp float)

@@ -1,4 +1,4 @@
-hlsl.intrinsics.negative.vert
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.intrinsics.negative.vert
 Shader version: 500
 0:? Sequence
 0:15  Function Definition: VertexShaderFunctionS(f1;f1;f1;i1; ( temp float)

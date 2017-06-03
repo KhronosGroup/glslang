@@ -1,4 +1,4 @@
-hlsl.load.basic.dx10.vert
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.load.basic.dx10.vert
 Shader version: 500
 0:? Sequence
 0:47  Function Definition: @main( ( temp structure{ temp 4-component vector of float Pos})

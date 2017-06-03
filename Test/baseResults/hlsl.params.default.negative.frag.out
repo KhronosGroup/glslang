@@ -1,8 +1,8 @@
-hlsl.params.default.negative.frag
-ERROR: 0:27: '' : invalid default parameter value 
-ERROR: 0:32: 'p1' : invalid parameter after default value parameters 
-ERROR: 0:40: 'fn1' : ambiguous best function under implicit type conversion 
-ERROR: 0:47: 'fn2' : ambiguous best function under implicit type conversion 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.params.default.negative.frag
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.params.default.negative.frag:27: '' : invalid default parameter value 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.params.default.negative.frag:32: 'p1' : invalid parameter after default value parameters 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.params.default.negative.frag:40: 'fn1' : ambiguous best function under implicit type conversion 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.params.default.negative.frag:47: 'fn2' : ambiguous best function under implicit type conversion 
 ERROR: 4 compilation errors.  No code generated.
 
 

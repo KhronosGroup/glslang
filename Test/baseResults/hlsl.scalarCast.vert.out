@@ -1,4 +1,4 @@
-hlsl.scalarCast.vert
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.scalarCast.vert
 Shader version: 500
 0:? Sequence
 0:5  Function Definition: r0( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})

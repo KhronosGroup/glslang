@@ -1,39 +1,39 @@
-150.geom
-ERROR: 0:15: 'fromVertex' : block instance name redefinition 
-ERROR: 0:19: 'fromVertex' : redefinition 
-ERROR: 0:21: 'fooC' : block instance name redefinition 
-ERROR: 0:29: 'EmitStreamVertex' : no matching overloaded function found 
-ERROR: 0:30: 'EndStreamPrimitive' : no matching overloaded function found 
-ERROR: 0:44: 'stream' : can only be used on an output 
-ERROR: 0:45: 'stream' : can only be used on an output 
-ERROR: 0:46: 'stream' : can only be used on an output 
-ERROR: 0:47: 'stream' : can only be used on an output 
-ERROR: 0:47: 'stream' : can only be used on an output 
-ERROR: 0:60: 'stream' : member cannot contradict block 
-ERROR: 0:66: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
-ERROR: 0:66: 'max_vertices' : cannot change previously set layout value 
-ERROR: 0:67: 'max_vertices' : can only apply to a standalone qualifier 
-ERROR: 0:72: 'points' : cannot change previously set output primitive 
-ERROR: 0:73: 'points' : cannot change previously set output primitive 
-ERROR: 0:74: 'triangle_strip' : cannot apply to input 
-ERROR: 0:75: 'triangle_strip' : cannot apply to: uniform
-ERROR: 0:76: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:77: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:78: 'invocations' : not supported for this version or the enabled extensions 
-ERROR: 0:78: 'invocations' : can only apply to a standalone qualifier 
-ERROR: 0:80: 'invocations' : not supported for this version or the enabled extensions 
-ERROR: 0:80: 'invocations' : can only apply to a standalone qualifier 
-ERROR: 0:81: 'max_vertices' : can only apply to a standalone qualifier 
-ERROR: 0:82: 'triangle_strip' : can only apply to a standalone qualifier 
-ERROR: 0:85: 'lines' : cannot apply to 'out' 
-ERROR: 0:87: 'triangles' : cannot change previously set input primitive 
-ERROR: 0:88: 'triangles_adjacency' : cannot change previously set input primitive 
-ERROR: 0:89: 'invocations' : not supported for this version or the enabled extensions 
-ERROR: 0:92: 'stream' : member cannot contradict block 
-ERROR: 0:92: 'stream' : can only be used on an output 
-ERROR: 0:129: 'gl_ViewportIndex' : required extension not requested: GL_ARB_viewport_array
-ERROR: 0:129: 'gl_MaxViewports' : required extension not requested: GL_ARB_viewport_array
-ERROR: 0:139: 'gl_ViewportIndex' : identifiers starting with "gl_" are reserved 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:15: 'fromVertex' : block instance name redefinition 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:19: 'fromVertex' : redefinition 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:21: 'fooC' : block instance name redefinition 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:29: 'EmitStreamVertex' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:30: 'EndStreamPrimitive' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:44: 'stream' : can only be used on an output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:45: 'stream' : can only be used on an output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:46: 'stream' : can only be used on an output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:47: 'stream' : can only be used on an output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:47: 'stream' : can only be used on an output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:60: 'stream' : member cannot contradict block 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:66: 'max_vertices' : too large, must be less than gl_MaxGeometryOutputVertices 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:66: 'max_vertices' : cannot change previously set layout value 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:67: 'max_vertices' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:72: 'points' : cannot change previously set output primitive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:73: 'points' : cannot change previously set output primitive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:74: 'triangle_strip' : cannot apply to input 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:75: 'triangle_strip' : cannot apply to: uniform
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:76: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:77: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:78: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:78: 'invocations' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:80: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:80: 'invocations' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:81: 'max_vertices' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:82: 'triangle_strip' : can only apply to a standalone qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:85: 'lines' : cannot apply to 'out' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:87: 'triangles' : cannot change previously set input primitive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:88: 'triangles_adjacency' : cannot change previously set input primitive 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:89: 'invocations' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:92: 'stream' : member cannot contradict block 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:92: 'stream' : can only be used on an output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:129: 'gl_ViewportIndex' : required extension not requested: GL_ARB_viewport_array
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:129: 'gl_MaxViewports' : required extension not requested: GL_ARB_viewport_array
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.geom:139: 'gl_ViewportIndex' : identifiers starting with "gl_" are reserved 
 ERROR: 35 compilation errors.  No code generated.
 
 

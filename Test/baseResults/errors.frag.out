@@ -1,6 +1,6 @@
-errors.frag
-ERROR: 0:1: 'main' : function cannot take any parameter(s) 
-ERROR: 0:1: 'int' :  entry point cannot return a value
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/errors.frag
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/errors.frag:1: 'main' : function cannot take any parameter(s) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/errors.frag:1: 'int' :  entry point cannot return a value
 ERROR: 2 compilation errors.  No code generated.
 
 

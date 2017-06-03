@@ -1,7 +1,7 @@
-110scope.vert
-ERROR: 0:5: 'a' : redefinition 
-ERROR: 0:57: 'z' : undeclared identifier 
-ERROR: 0:57: 'z' : redefinition 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/110scope.vert
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/110scope.vert:5: 'a' : redefinition 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/110scope.vert:57: 'z' : undeclared identifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/110scope.vert:57: 'z' : redefinition 
 ERROR: 3 compilation errors.  No code generated.
 
 

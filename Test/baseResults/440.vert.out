@@ -1,59 +1,59 @@
-440.vert
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert
 Warning, version 440 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:8: 'component' : type overflows the available 4 components 
-ERROR: 0:15: 'component' : component is too large 
-ERROR: 0:23: 'location' : overlapping use of location 4
-ERROR: 0:26: 'location' : overlapping use of location 2
-ERROR: 0:31: 'location' : overlapping use of location 15
-ERROR: 0:32: 'location' : overlapping use of location 10
-ERROR: 0:37: 'location' : overlapping use of location 20
-ERROR: 0:39: 'component' : type overflows the available 4 components 
-ERROR: 0:40: 'component' : type overflows the available 4 components 
-ERROR: 0:42: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:43: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:44: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:46: 'component' : must specify 'location' to use 'component' 
-ERROR: 0:52: 'location' : overlapping use of location 40
-ERROR: 0:54: 'component' : type overflows the available 4 components 
-ERROR: 0:55: 'component' : type overflows the available 4 components 
-ERROR: 0:57: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:58: 'component' : cannot apply to a matrix, structure, or block 
-ERROR: 0:61: 'location/component/index' : cannot declare a default, use a full declaration 
-ERROR: 0:66: 'component' : doubles cannot start on an odd-numbered component 
-ERROR: 0:67: 'component' : type overflows the available 4 components 
-ERROR: 0:71: 'location' : overlapping use of location 55
-ERROR: 0:75: 'location' : overlapping use of location 57
-ERROR: 0:78: 'location' : overlapping use of location 59
-ERROR: 0:95: 'xfb layout qualifier' : can only be used on an output 
-ERROR: 0:101: 'xfb_offset' : cannot declare a default, use a full declaration 
-ERROR: 0:111: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
-ERROR: 0:116: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
-ERROR: 0:116: 'xfb_offset' : overlapping offsets at offset 32 in buffer 3
-ERROR: 0:117: 'xfb_offset' : overlapping offsets at offset 0 in buffer 2
-ERROR: 0:119: 'xfb_offset' : overlapping offsets at offset 24 in buffer 2
-ERROR: 0:122: 'xfb_stride' : all stride settings must match for xfb buffer 15
-ERROR: 0:126: 'xfb_offset' : overlapping offsets at offset 4 in buffer 1
-ERROR: 0:128: 'xfb_stride' : all stride settings must match for xfb buffer 3
-ERROR: 0:129: 'xfb_stride' : all stride settings must match for xfb buffer 3
-ERROR: 0:133: 'xfb_stride' : all stride settings must match for xfb buffer 3
-ERROR: 0:131: 'xfb_stride' : all stride settings must match for xfb buffer 3
-ERROR: 0:152: 'xfb_offset' : overlapping offsets at offset 64 in buffer 0
-ERROR: 0:157: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 0:158: 'xfb_offset' : must be a multiple of size of first component 
-ERROR: 0:159: 'xfb_offset' : type contains double; xfb_offset must be a multiple of 8 
-ERROR: 0:161: 'xfb_offset' : must be a multiple of size of first component 
-ERROR: 0:162: 'xfb_offset' : type contains double; xfb_offset must be a multiple of 8 
-ERROR: 0:166: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 0:169: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 0:169: 'xfb_stride' : 1/4 stride is too large: gl_MaxTransformFeedbackInterleavedComponents is 64
-ERROR: 0:171: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
-ERROR: 0:179: 'gl_BaseVertexARB' : required extension not requested: GL_ARB_shader_draw_parameters
-ERROR: 0:179: 'gl_BaseInstanceARB' : required extension not requested: GL_ARB_shader_draw_parameters
-ERROR: 0:179: 'gl_DrawIDARB' : required extension not requested: GL_ARB_shader_draw_parameters
-ERROR: 0:187: 'assign' :  l-value required "gl_BaseVertexARB" (can't modify shader input)
-ERROR: 0:188: 'assign' :  l-value required "gl_BaseInstanceARB" (can't modify shader input)
-ERROR: 0:189: 'assign' :  l-value required "gl_DrawIDARB" (can't modify shader input)
-ERROR: 0:190: 'glBaseInstanceARB' : undeclared identifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:8: 'component' : type overflows the available 4 components 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:15: 'component' : component is too large 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:23: 'location' : overlapping use of location 4
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:26: 'location' : overlapping use of location 2
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:31: 'location' : overlapping use of location 15
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:32: 'location' : overlapping use of location 10
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:37: 'location' : overlapping use of location 20
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:39: 'component' : type overflows the available 4 components 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:40: 'component' : type overflows the available 4 components 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:42: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:43: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:44: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:46: 'component' : must specify 'location' to use 'component' 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:52: 'location' : overlapping use of location 40
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:54: 'component' : type overflows the available 4 components 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:55: 'component' : type overflows the available 4 components 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:57: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:58: 'component' : cannot apply to a matrix, structure, or block 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:61: 'location/component/index' : cannot declare a default, use a full declaration 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:66: 'component' : doubles cannot start on an odd-numbered component 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:67: 'component' : type overflows the available 4 components 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:71: 'location' : overlapping use of location 55
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:75: 'location' : overlapping use of location 57
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:78: 'location' : overlapping use of location 59
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:95: 'xfb layout qualifier' : can only be used on an output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:101: 'xfb_offset' : cannot declare a default, use a full declaration 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:111: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:116: 'xfb_buffer' : member cannot contradict block (or what block inherited from global) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:116: 'xfb_offset' : overlapping offsets at offset 32 in buffer 3
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:117: 'xfb_offset' : overlapping offsets at offset 0 in buffer 2
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:119: 'xfb_offset' : overlapping offsets at offset 24 in buffer 2
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:122: 'xfb_stride' : all stride settings must match for xfb buffer 15
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:126: 'xfb_offset' : overlapping offsets at offset 4 in buffer 1
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:128: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:129: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:133: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:131: 'xfb_stride' : all stride settings must match for xfb buffer 3
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:152: 'xfb_offset' : overlapping offsets at offset 64 in buffer 0
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:157: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:158: 'xfb_offset' : must be a multiple of size of first component 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:159: 'xfb_offset' : type contains double; xfb_offset must be a multiple of 8 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:161: 'xfb_offset' : must be a multiple of size of first component 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:162: 'xfb_offset' : type contains double; xfb_offset must be a multiple of 8 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:166: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:169: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:169: 'xfb_stride' : 1/4 stride is too large: gl_MaxTransformFeedbackInterleavedComponents is 64
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:171: 'xfb_buffer' : buffer is too large: gl_MaxTransformFeedbackBuffers is 4
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:179: 'gl_BaseVertexARB' : required extension not requested: GL_ARB_shader_draw_parameters
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:179: 'gl_BaseInstanceARB' : required extension not requested: GL_ARB_shader_draw_parameters
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:179: 'gl_DrawIDARB' : required extension not requested: GL_ARB_shader_draw_parameters
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:187: 'assign' :  l-value required "gl_BaseVertexARB" (can't modify shader input)
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:188: 'assign' :  l-value required "gl_BaseInstanceARB" (can't modify shader input)
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:189: 'assign' :  l-value required "gl_DrawIDARB" (can't modify shader input)
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.vert:190: 'glBaseInstanceARB' : undeclared identifier 
 ERROR: 54 compilation errors.  No code generated.
 
 

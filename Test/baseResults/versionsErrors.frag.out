@@ -1,8 +1,8 @@
-versionsErrors.frag
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/versionsErrors.frag
 ERROR: #version: versions before 150 do not allow a profile token
-ERROR: 0:38: 'attribute' : not supported in this stage: fragment
-ERROR: 0:40: 'sampler2DRect' : Reserved word. 
-ERROR: 0:44: 'floating-point suffix' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/versionsErrors.frag:38: 'attribute' : not supported in this stage: fragment
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/versionsErrors.frag:40: 'sampler2DRect' : Reserved word. 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/versionsErrors.frag:44: 'floating-point suffix' : not supported for this version or the enabled extensions 
 ERROR: 4 compilation errors.  No code generated.
 
 

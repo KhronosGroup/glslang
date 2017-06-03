@@ -1,6 +1,6 @@
-hlsl.init.frag
-WARNING: 0:40: 'typedef' : struct-member initializers ignored 
-WARNING: 0:40: 'typedef' : struct-member initializers ignored 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.init.frag
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.init.frag:40: 'typedef' : struct-member initializers ignored 
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.init.frag:40: 'typedef' : struct-member initializers ignored 
 
 Shader version: 500
 gl_FragCoord origin is upper left

@@ -1,54 +1,54 @@
-440.frag
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag
 Warning, version 440 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:11: 'location' : overlapping use of location 4
-ERROR: 0:13: 'component' : type overflows the available 4 components 
-ERROR: 0:22: 'location' : fragment outputs sharing the same location must be the same basic type 30
-ERROR: 0:24: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
-ERROR: 0:25: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
-ERROR: 0:26: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
-ERROR: 0:29: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:30: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:30: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:31: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:31: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:33: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:34: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:34: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:35: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
-ERROR: 0:35: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:37: 'offset' : only applies to block members, not blocks 
-ERROR: 0:38: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:38: 'offset' : only applies to block members, not blocks 
-ERROR: 0:39: 'output block' : not supported in this stage: fragment
-ERROR: 0:39: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:39: 'offset' : only applies to block members, not blocks 
-ERROR: 0:42: 'align' : can only be used with std140 or std430 layout packing 
-ERROR: 0:43: 'align' : can only be used with std140 or std430 layout packing 
-ERROR: 0:43: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:44: 'output block' : not supported in this stage: fragment
-ERROR: 0:44: 'align' : can only be used with std140 or std430 layout packing 
-ERROR: 0:44: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:46: 'offset' : cannot specify on a variable declaration 
-ERROR: 0:47: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:48: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:50: 'align' : cannot specify on a variable declaration 
-ERROR: 0:51: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:52: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:54: 'layout' : matrix or packing qualifiers can only be used on a uniform or buffer 
-ERROR: 0:55: 'layout' : cannot specify packing on a variable declaration 
-ERROR: 0:57: 'align' : must be a power of 2 
-ERROR: 0:58: 'offset/align' : can only be used with std140 or std430 layout packing 
-ERROR: 0:62: 'offset/align' : can only be used with std140 or std430 layout packing 
-ERROR: 0:63: 'offset/align' : can only be used with std140 or std430 layout packing 
-ERROR: 0:62: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:63: 'layout' : offset/align can only be used on a uniform or buffer 
-ERROR: 0:84: 'align' : must be a power of 2 
-ERROR: 0:83: 'offset' : cannot lie in previous members 
-ERROR: 0:85: 'offset' : must be a multiple of the member's alignment 
-ERROR: 0:103: 'align' : must be a power of 2 
-ERROR: 0:105: 'align' : must be a power of 2 
-ERROR: 0:102: 'offset' : cannot lie in previous members 
-ERROR: 0:104: 'offset' : must be a multiple of the member's alignment 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:11: 'location' : overlapping use of location 4
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:13: 'component' : type overflows the available 4 components 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:22: 'location' : fragment outputs sharing the same location must be the same basic type 30
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:24: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:25: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:26: 'qualifier' : cannot use auxiliary, memory, interpolation, or precision qualifier in a default qualifier declaration (declaration with no type) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:29: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:30: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:30: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:31: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:31: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:33: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:34: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:34: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:35: 'layout qualifier' : cannot use offset or align qualifiers in a default qualifier declaration (declaration with no type) 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:35: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:37: 'offset' : only applies to block members, not blocks 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:38: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:38: 'offset' : only applies to block members, not blocks 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:39: 'output block' : not supported in this stage: fragment
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:39: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:39: 'offset' : only applies to block members, not blocks 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:42: 'align' : can only be used with std140 or std430 layout packing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:43: 'align' : can only be used with std140 or std430 layout packing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:43: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:44: 'output block' : not supported in this stage: fragment
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:44: 'align' : can only be used with std140 or std430 layout packing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:44: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:46: 'offset' : cannot specify on a variable declaration 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:47: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:48: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:50: 'align' : cannot specify on a variable declaration 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:51: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:52: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:54: 'layout' : matrix or packing qualifiers can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:55: 'layout' : cannot specify packing on a variable declaration 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:57: 'align' : must be a power of 2 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:58: 'offset/align' : can only be used with std140 or std430 layout packing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:62: 'offset/align' : can only be used with std140 or std430 layout packing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:63: 'offset/align' : can only be used with std140 or std430 layout packing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:62: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:63: 'layout' : offset/align can only be used on a uniform or buffer 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:84: 'align' : must be a power of 2 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:83: 'offset' : cannot lie in previous members 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:85: 'offset' : must be a multiple of the member's alignment 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:103: 'align' : must be a power of 2 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:105: 'align' : must be a power of 2 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:102: 'offset' : cannot lie in previous members 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/440.frag:104: 'offset' : must be a multiple of the member's alignment 
 ERROR: 49 compilation errors.  No code generated.
 
 

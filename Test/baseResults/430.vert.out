@@ -1,69 +1,69 @@
-430.vert
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert
 Warning, version 430 is not yet complete; most version-specific features are present, but some are missing.
-ERROR: 0:3: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
-ERROR: 0:7: 'input block' : not supported in this stage: vertex
-ERROR: 0:7: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
-ERROR: 0:8: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
-ERROR: 0:23: 'invariant' : can only apply to an output 
-ERROR: 0:21: 'g' : cannot use storage or interpolation qualifiers on structure members 
-ERROR: 0:22: 'h' : cannot use storage or interpolation qualifiers on structure members 
-ERROR: 0:23: 'i' : cannot use invariant qualifier on structure members 
-ERROR: 0:24: 'j' : cannot use memory qualifiers on structure members 
-ERROR: 0:25: 'm3' : cannot use layout qualifiers on structure members 
-ERROR: 0:28: '' : cannot use invariant qualifier on a function parameter 
-ERROR: 0:30: '' : cannot use layout qualifiers on a function parameter 
-ERROR: 0:31: '' : cannot use auxiliary or interpolation qualifiers on a function parameter 
-ERROR: 0:42: 'location' : overlapping use of location 53
-ERROR: 0:47: 'gl_ClipDistance array size' : must be less than or equal to gl_MaxClipDistances (8)
-ERROR: 0:51: 'start' : undeclared identifier 
-ERROR: 0:51: '' : constant expression required 
-ERROR: 0:51: 'layout-id value' : scalar integer expression required 
-ERROR: 0:53: 'input block' : not supported in this stage: vertex
-ERROR: 0:54: 'location on block member' : not supported for this version or the enabled extensions 
-ERROR: 0:57: 'input block' : not supported in this stage: vertex
-ERROR: 0:58: 'location on block member' : not supported for this version or the enabled extensions 
-ERROR: 0:59: 'location on block member' : not supported for this version or the enabled extensions 
-ERROR: 0:62: 'uniform buffer-member align' : not supported for this version or the enabled extensions 
-ERROR: 0:64: 'uniform buffer-member align' : not supported for this version or the enabled extensions 
-ERROR: 0:65: 'uniform buffer-member align' : not supported for this version or the enabled extensions 
-ERROR: 0:65: 'offset on block member' : not supported for this version or the enabled extensions 
-ERROR: 0:66: 'offset on block member' : not supported for this version or the enabled extensions 
-ERROR: 0:64: 'align' : can only be used with std140 or std430 layout packing 
-ERROR: 0:65: 'offset/align' : can only be used with std140 or std430 layout packing 
-ERROR: 0:66: 'offset/align' : can only be used with std140 or std430 layout packing 
-ERROR: 0:71: 'offset on block member' : not supported for this version or the enabled extensions 
-ERROR: 0:74: 'gl_MaxTransformFeedbackBuffers' : required extension not requested: GL_ARB_enhanced_layouts
-ERROR: 0:75: 'gl_MaxTransformFeedbackInterleavedComponents' : required extension not requested: GL_ARB_enhanced_layouts
-ERROR: 0:78: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:81: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:81: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:83: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:83: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:83: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:84: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:84: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:86: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:86: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:86: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:92: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
-ERROR: 0:117: 'input block' : not supported in this stage: vertex
-ERROR: 0:123: 'input block' : not supported in this stage: vertex
-ERROR: 0:146: 'shared' : not supported in this stage: vertex
-ERROR: 0:150: 'barrier' : no matching overloaded function found 
-ERROR: 0:154: 'memoryBarrierShared' : no matching overloaded function found 
-ERROR: 0:156: 'groupMemoryBarrier' : no matching overloaded function found 
-ERROR: 0:159: 'buffer' : buffers can be declared only as blocks 
-ERROR: 0:168: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
-ERROR: 0:169: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
-ERROR: 0:170: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
-ERROR: 0:171: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
-ERROR: 0:221: 'textureQueryLevels' : no matching overloaded function found 
-ERROR: 0:221: 'assign' :  cannot convert from ' const float' to ' temp int'
-ERROR: 0:222: 'textureQueryLevels' : no matching overloaded function found 
-ERROR: 0:222: 'assign' :  cannot convert from ' const float' to ' temp int'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:3: 'location' : can only apply to uniform, buffer, in, or out storage qualifiers 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:7: 'input block' : not supported in this stage: vertex
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:7: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:8: 'location qualifier on in/out block' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:23: 'invariant' : can only apply to an output 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:21: 'g' : cannot use storage or interpolation qualifiers on structure members 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:22: 'h' : cannot use storage or interpolation qualifiers on structure members 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:23: 'i' : cannot use invariant qualifier on structure members 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:24: 'j' : cannot use memory qualifiers on structure members 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:25: 'm3' : cannot use layout qualifiers on structure members 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:28: '' : cannot use invariant qualifier on a function parameter 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:30: '' : cannot use layout qualifiers on a function parameter 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:31: '' : cannot use auxiliary or interpolation qualifiers on a function parameter 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:42: 'location' : overlapping use of location 53
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:47: 'gl_ClipDistance array size' : must be less than or equal to gl_MaxClipDistances (8)
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:51: 'start' : undeclared identifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:51: '' : constant expression required 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:51: 'layout-id value' : scalar integer expression required 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:53: 'input block' : not supported in this stage: vertex
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:54: 'location on block member' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:57: 'input block' : not supported in this stage: vertex
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:58: 'location on block member' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:59: 'location on block member' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:62: 'uniform buffer-member align' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:64: 'uniform buffer-member align' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:65: 'uniform buffer-member align' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:65: 'offset on block member' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:66: 'offset on block member' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:64: 'align' : can only be used with std140 or std430 layout packing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:65: 'offset/align' : can only be used with std140 or std430 layout packing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:66: 'offset/align' : can only be used with std140 or std430 layout packing 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:71: 'offset on block member' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:74: 'gl_MaxTransformFeedbackBuffers' : required extension not requested: GL_ARB_enhanced_layouts
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:75: 'gl_MaxTransformFeedbackInterleavedComponents' : required extension not requested: GL_ARB_enhanced_layouts
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:78: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:81: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:81: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:83: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:83: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:83: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:84: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:84: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:86: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:86: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:86: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:92: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:93: 'transform feedback qualifier' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:117: 'input block' : not supported in this stage: vertex
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:123: 'input block' : not supported in this stage: vertex
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:146: 'shared' : not supported in this stage: vertex
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:150: 'barrier' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:154: 'memoryBarrierShared' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:156: 'groupMemoryBarrier' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:159: 'buffer' : buffers can be declared only as blocks 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:168: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:169: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:170: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:171: 'textureSamples and imageSamples' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:221: 'textureQueryLevels' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:221: 'assign' :  cannot convert from ' const float' to ' temp int'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:222: 'textureQueryLevels' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/430.vert:222: 'assign' :  cannot convert from ' const float' to ' temp int'
 ERROR: 64 compilation errors.  No code generated.
 
 

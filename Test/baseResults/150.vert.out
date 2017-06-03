@@ -1,6 +1,6 @@
-150.vert
-ERROR: 0:26: 'a' : cannot redeclare a user-block member array 
-ERROR: 0:3001: '#error' : line of this error should be 3001  
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.vert
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.vert:26: 'a' : cannot redeclare a user-block member array 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/150.vert:3001: '#error' : line of this error should be 3001  
 ERROR: 2 compilation errors.  No code generated.
 
 

@@ -1,7 +1,7 @@
-hlsl.struct.frag
-WARNING: 0:26: 'register' : ignoring shader_profile 
-WARNING: 0:27: 'register' : ignoring shader_profile 
-WARNING: 0:30: 'register' : ignoring shader_profile 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.struct.frag
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.struct.frag:26: 'register' : ignoring shader_profile 
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.struct.frag:27: 'register' : ignoring shader_profile 
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.struct.frag:30: 'register' : ignoring shader_profile 
 
 Shader version: 500
 gl_FragCoord origin is upper left

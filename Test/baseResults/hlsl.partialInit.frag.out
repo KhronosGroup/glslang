@@ -1,6 +1,6 @@
-hlsl.partialInit.frag
-WARNING: 0:35: 'cgf2a' : variable with qualifier 'const' not initialized; zero initializing 
-WARNING: 0:36: 'ci' : variable with qualifier 'const' not initialized; zero initializing 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.partialInit.frag
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.partialInit.frag:35: 'cgf2a' : variable with qualifier 'const' not initialized; zero initializing 
+WARNING: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.partialInit.frag:36: 'ci' : variable with qualifier 'const' not initialized; zero initializing 
 
 Shader version: 500
 gl_FragCoord origin is upper left

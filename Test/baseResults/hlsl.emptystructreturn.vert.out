@@ -1,4 +1,4 @@
-hlsl.emptystructreturn.vert
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/hlsl.emptystructreturn.vert
 Shader version: 500
 0:? Sequence
 0:10  Function Definition: @main(struct-vs_in1; ( temp structure{})

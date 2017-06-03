@@ -1,26 +1,26 @@
-array100.frag
-ERROR: 0:3: 'float' : type requires declaration of default precision qualifier 
-ERROR: 0:3: '' : array size required 
-ERROR: 0:9: 'arrayed type' : not supported for this version or the enabled extensions 
-ERROR: 0:9: 'arrayed type' : not supported for this version or the enabled extensions 
-ERROR: 0:9: 'array in function return type' : not supported for this version or the enabled extensions 
-ERROR: 0:11: 'arrayed constructor' : not supported for this version or the enabled extensions 
-ERROR: 0:21: '[' :  array index out of range '2'
-ERROR: 0:24: 'array assignment' : not supported for this version or the enabled extensions 
-ERROR: 0:25: 'array assignment' : not supported for this version or the enabled extensions 
-ERROR: 0:25: 'assign' :  cannot convert from ' global 4-element array of mediump float' to ' global 5-element array of mediump float'
-ERROR: 0:26: 'array assignment' : not supported for this version or the enabled extensions 
-ERROR: 0:26: 'assign' :  cannot convert from ' global 4-element array of mediump float' to ' global implicitly-sized array of mediump float'
-ERROR: 0:28: 'foo' : no matching overloaded function found 
-ERROR: 0:31: 'arrayed constructor' : not supported for this version or the enabled extensions 
-ERROR: 0:31: 'array comparison' : not supported for this version or the enabled extensions 
-ERROR: 0:35: '[' :  array index out of range '5'
-ERROR: 0:38: '[' :  array index out of range '1000'
-ERROR: 0:39: '[' :  index out of range '-1'
-ERROR: 0:53: 'array in function return type' : not supported for this version or the enabled extensions 
-ERROR: 0:66: 'array assignment' : not supported for this version or the enabled extensions 
-ERROR: 0:68: 'array assignment' : not supported for this version or the enabled extensions 
-ERROR: 0:69: 'array initializer' : not supported for this version or the enabled extensions 
+C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:3: 'float' : type requires declaration of default precision qualifier 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:3: '' : array size required 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:9: 'arrayed type' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:9: 'arrayed type' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:9: 'array in function return type' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:11: 'arrayed constructor' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:21: '[' :  array index out of range '2'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:24: 'array assignment' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:25: 'array assignment' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:25: 'assign' :  cannot convert from ' global 4-element array of mediump float' to ' global 5-element array of mediump float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:26: 'array assignment' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:26: 'assign' :  cannot convert from ' global 4-element array of mediump float' to ' global implicitly-sized array of mediump float'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:28: 'foo' : no matching overloaded function found 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:31: 'arrayed constructor' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:31: 'array comparison' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:35: '[' :  array index out of range '5'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:38: '[' :  array index out of range '1000'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:39: '[' :  index out of range '-1'
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:53: 'array in function return type' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:66: 'array assignment' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:68: 'array assignment' : not supported for this version or the enabled extensions 
+ERROR: C:/cygwin64/home/john/GitHub/glslang/gtests/../Test/array100.frag:69: 'array initializer' : not supported for this version or the enabled extensions 
 ERROR: 22 compilation errors.  No code generated.
 
 
