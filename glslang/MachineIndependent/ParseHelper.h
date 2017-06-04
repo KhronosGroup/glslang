@@ -338,6 +338,7 @@ public:
     void setLayoutQualifier(const TSourceLoc&, TPublicType&, TString&, const TIntermTyped*);
     void mergeObjectLayoutQualifiers(TQualifier& dest, const TQualifier& src, bool inheritOnly);
     void layoutObjectCheck(const TSourceLoc&, const TSymbol&);
+    void layoutMemberLocationArrayCheck(const TSourceLoc&, bool memberWithLocation, TArraySizes* arraySizes);
     void layoutTypeCheck(const TSourceLoc&, const TType&);
     void layoutQualifierCheck(const TSourceLoc&, const TQualifier&);
     void checkNoShaderLayouts(const TSourceLoc&, const TShaderQualifiers&);

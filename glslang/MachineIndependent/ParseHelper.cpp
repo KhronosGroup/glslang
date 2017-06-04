@@ -4391,6 +4391,22 @@ void TParseContext::layoutObjectCheck(const TSourceLoc& loc, const TSymbol& symb
     }
 }
 
+// "For some blocks declared as arrays, the location can only be applied at the block level:
+// When a block is declared as an array where additional locations are needed for each member
+// for each block array element, it is a compile-time error to specify locations on the block
+// members.  That is, when locations would be under specified by applying them on block members,
+// they are not allowed on block members.  For arrayed interfaces (those generally having an
+// extra level of arrayness due to interface expansion), the outer array is stripped before
+// applying this rule."
+void TParseContext::layoutMemberLocationArrayCheck(const TSourceLoc& loc, bool memberWithLocation, TArraySizes* arraySizes)
+{
+    if (memberWithLocation && arraySizes != nullptr) {
+        if (arraySizes->getNumDims() > (currentBlockQualifier.isArrayedIo(language) ? 1 : 0))
+            error(loc, "cannot use in a block array where new locations are needed for each block element",
+                       "location", "");
+    }
+}
+
 // Do layout error checking with respect to a type.
 void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
 {
@@ -5692,6 +5708,8 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         mergeQualifiers(memberLoc, newMemberQualification, memberQualifier, false);
         memberQualifier = newMemberQualification;
     }
+
+    layoutMemberLocationArrayCheck(loc, memberWithLocation, arraySizes);
 
     // Process the members
     fixBlockLocations(loc, currentBlockQualifier, typeList, memberWithLocation, memberWithoutLocation);

@@ -54,3 +54,12 @@ float cull(int i)
 {
     return (i >= 6) ? gl_CullDistance[5] : gl_CullDistance[i];
 }
+
+layout(location = 6) in bName1 {
+    float f;
+    layout(location = 7) float g;
+} bInst1;
+layout(location = 8) in bName2 {
+    float f;
+    layout(location = 9) float g;  // ERROR, location on array
+} bInst2[3];
