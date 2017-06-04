@@ -33,8 +33,8 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'gl_in' ( in 32-element array of block{ in 3-element array of float CullDistance gl_CullDistance})
 0:?     'gl_out' ( out 4-element array of block{ out 3-element array of float CullDistance gl_CullDistance})
-0:?     'bInst1' ( out 2-element array of block{layout( location=4 component=0) out float f, layout( location=5) out float g})
-0:?     'bInst2' ( out 2-element array of 3-element array of block{layout( location=6 component=0) out float f, layout( location=7) out float g})
+0:?     'bInst1' ( out 2-element array of block{layout( location=4) out float f, layout( location=5) out float g})
+0:?     'bInst2' ( out 2-element array of 3-element array of block{layout( location=6) out float f, layout( location=7) out float g})
 
 
 Linked tessellation control stage:
@@ -70,6 +70,6 @@ ERROR: node is still EOpNull!
 0:?   Linker Objects
 0:?     'gl_in' ( in 32-element array of block{ in 3-element array of float CullDistance gl_CullDistance})
 0:?     'gl_out' ( out 4-element array of block{ out 3-element array of float CullDistance gl_CullDistance})
-0:?     'bInst1' ( out 2-element array of block{layout( location=4 component=0) out float f, layout( location=5) out float g})
-0:?     'bInst2' ( out 2-element array of 3-element array of block{layout( location=6 component=0) out float f, layout( location=7) out float g})
+0:?     'bInst1' ( out 2-element array of block{layout( location=4) out float f, layout( location=5) out float g})
+0:?     'bInst2' ( out 2-element array of 3-element array of block{layout( location=6) out float f, layout( location=7) out float g})
 

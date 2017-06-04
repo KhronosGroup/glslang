@@ -58,8 +58,9 @@ float cull(int i)
 layout(location = 6) in bName1 {
     float f;
     layout(location = 7) float g;
+    mat4 m;
 } bInst1;
-layout(location = 8) in bName2 {
+layout(location = 12) in bName2 {
     float f;
-    layout(location = 9) float g;  // ERROR, location on array
+    layout(location = 13) float g;  // ERROR, location on array
 } bInst2[3];

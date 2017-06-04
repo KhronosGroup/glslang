@@ -5893,7 +5893,7 @@ void TParseContext::fixBlockLocations(const TSourceLoc& loc, TQualifier& qualifi
                     if (nextLocation >= (int)TQualifier::layoutLocationEnd)
                         error(memberLoc, "location is too large", "location", "");
                     memberQualifier.layoutLocation = nextLocation;
-                    memberQualifier.layoutComponent = 0;
+                    memberQualifier.layoutComponent = TQualifier::layoutComponentEnd;
                 }
                 nextLocation = memberQualifier.layoutLocation + intermediate.computeTypeLocationSize(*typeList[member].type);
             }
