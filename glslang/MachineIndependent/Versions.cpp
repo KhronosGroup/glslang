@@ -500,6 +500,11 @@ void TParseVersions::requireNotRemoved(const TSourceLoc& loc, int profileMask, i
     }
 }
 
+void TParseVersions::unimplemented(const TSourceLoc& loc, const char* featureDesc)
+{
+    error(loc, "feature not yet implemented", featureDesc, "");
+}
+
 // Returns true if at least one of the extensions in the extensions parameter is requested. Otherwise, returns false.
 // Warns appropriately if the requested behavior of an extension is "warn".
 bool TParseVersions::checkExtensionsRequested(const TSourceLoc& loc, int numExtensions, const char* const extensions[], const char* featureDesc)

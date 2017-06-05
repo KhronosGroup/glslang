@@ -1,5 +1,4 @@
 310.frag
-Warning, version 310 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:2: 'float' : type requires declaration of default precision qualifier 
 ERROR: 0:8: 'origin_upper_left' : not supported with this profile: es
 ERROR: 0:8: 'pixel_center_integer' : not supported with this profile: es

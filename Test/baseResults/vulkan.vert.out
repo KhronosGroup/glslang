@@ -1,5 +1,4 @@
 vulkan.vert
-Warning, version 450 is not yet complete; most version-specific features are present, but some are missing.
 ERROR: 0:3: 'subpass input' : not supported in this stage: vertex
 ERROR: 0:4: 'subpass input' : not supported in this stage: vertex
 ERROR: 0:5: 'subpass input' : not supported in this stage: vertex

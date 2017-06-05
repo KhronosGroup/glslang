@@ -68,6 +68,7 @@ public:
     virtual void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);
     virtual void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc);
     virtual void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc);
+    virtual void unimplemented(const TSourceLoc&, const char* featureDesc);
     virtual void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
     virtual void ppRequireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
     virtual TExtensionBehavior getExtensionBehavior(const char*);
