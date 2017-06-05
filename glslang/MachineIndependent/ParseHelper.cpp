@@ -1442,8 +1442,55 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                 error(loc, "must be a compile-time constant:", feature, "component argument");
         }
 
+#ifdef AMD_EXTENSIONS
+        bool bias = false;
+        if (callNode.getOp() == EOpTextureGather)
+            bias = fnCandidate.getParamCount() > 3;
+        else if (callNode.getOp() == EOpTextureGatherOffset ||
+                 callNode.getOp() == EOpTextureGatherOffsets)
+            bias = fnCandidate.getParamCount() > 4;
+
+        if (bias) {
+            featureString = fnCandidate.getName() + "with bias argument";
+            feature = featureString.c_str();
+            profileRequires(loc, ~EEsProfile, 450, nullptr, feature);
+            requireExtensions(loc, 1, &E_GL_AMD_texture_gather_bias_lod, feature);
+        }
+#endif
+
         break;
     }
+
+#ifdef AMD_EXTENSIONS
+    case EOpSparseTextureGather:
+    case EOpSparseTextureGatherOffset:
+    case EOpSparseTextureGatherOffsets:
+    {
+        bool bias = false;
+        if (callNode.getOp() == EOpSparseTextureGather)
+            bias = fnCandidate.getParamCount() > 4;
+        else if (callNode.getOp() == EOpSparseTextureGatherOffset ||
+                 callNode.getOp() == EOpSparseTextureGatherOffsets)
+            bias = fnCandidate.getParamCount() > 5;
+
+        if (bias) {
+            TString featureString = fnCandidate.getName() + "with bias argument";
+            const char* feature = featureString.c_str();
+            profileRequires(loc, ~EEsProfile, 450, nullptr, feature);
+            requireExtensions(loc, 1, &E_GL_AMD_texture_gather_bias_lod, feature);
+        }
+
+        break;
+    }
+
+    case EOpSparseTextureGatherLod:
+    case EOpSparseTextureGatherLodOffset:
+    case EOpSparseTextureGatherLodOffsets:
+    {
+        requireExtensions(loc, 1, &E_GL_ARB_sparse_texture2, fnCandidate.getName().c_str());
+        break;
+    }
+#endif
 
     case EOpTextureOffset:
     case EOpTextureFetchOffset:

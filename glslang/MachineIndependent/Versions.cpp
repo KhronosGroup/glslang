@@ -194,6 +194,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_AMD_shader_explicit_vertex_parameter]     = EBhDisable;
     extensionBehavior[E_GL_AMD_gcn_shader]                           = EBhDisable;
     extensionBehavior[E_GL_AMD_gpu_shader_half_float]                = EBhDisable;
+    extensionBehavior[E_GL_AMD_texture_gather_bias_lod]              = EBhDisable;
 #endif
 
 #ifdef NV_EXTENSIONS
@@ -316,6 +317,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_AMD_shader_explicit_vertex_parameter 1\n"
             "#define GL_AMD_gcn_shader 1\n"
             "#define GL_AMD_gpu_shader_half_float 1\n"
+            "#define GL_AMD_texture_gather_bias_lod 1\n"
 #endif
 
 #ifdef NV_EXTENSIONS
