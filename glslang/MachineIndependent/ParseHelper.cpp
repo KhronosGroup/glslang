@@ -1451,8 +1451,8 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             bias = fnCandidate.getParamCount() > 4;
 
         if (bias) {
-            featureString = fnCandidate.getName() + "with bias argument";
-            feature = featureString.c_str();
+            TString biasFeatureString = fnCandidate.getName() + "with bias argument";
+            const char* feature = biasFeatureString.c_str();
             profileRequires(loc, ~EEsProfile, 450, nullptr, feature);
             requireExtensions(loc, 1, &E_GL_AMD_texture_gather_bias_lod, feature);
         }
