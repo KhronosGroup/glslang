@@ -3039,6 +3039,37 @@ bool HlslGrammar::acceptLiteral(TIntermTyped*& node)
     return true;
 }
 
+// simple_statement
+//      : SEMICOLON
+//      | declaration_statement
+//      | expression SEMICOLON
+//
+bool HlslGrammar::acceptSimpleStatement(TIntermNode*& statement)
+{
+    // SEMICOLON
+    if (acceptTokenClass(EHTokSemicolon))
+        return true;
+
+    // declaration
+    if (acceptDeclaration(statement))
+        return true;
+
+    // expression
+    TIntermTyped* node;
+    if (acceptExpression(node))
+        statement = node;
+    else
+        return false;
+
+    // SEMICOLON (following an expression)
+    if (acceptTokenClass(EHTokSemicolon))
+        return true;
+    else {
+        expected(";");
+        return false;
+    }
+}
+
 // compound_statement
 //      : LEFT_CURLY statement statement ... RIGHT_CURLY
 //
@@ -3096,12 +3127,11 @@ bool HlslGrammar::acceptScopedCompoundStatement(TIntermNode*& statement)
 //
 // attributed_statement
 //      : compound_statement
-//      | SEMICOLON
-//      | expression SEMICOLON
-//      | declaration_statement
+//      | simple_statement
 //      | selection_statement
 //      | switch_statement
 //      | case_label
+//      | default_label
 //      | iteration_statement
 //      | jump_statement
 //
@@ -3140,33 +3170,13 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
     case EHTokDefault:
         return acceptDefaultLabel(statement);
 
-    case EHTokSemicolon:
-        return acceptTokenClass(EHTokSemicolon);
-
     case EHTokRightBrace:
         // Performance: not strictly necessary, but stops a bunch of hunting early,
         // and is how sequences of statements end.
         return false;
 
     default:
-        {
-            // declaration
-            if (acceptDeclaration(statement))
-                return true;
-
-            // expression
-            TIntermTyped* node;
-            if (acceptExpression(node))
-                statement = node;
-            else
-                return false;
-
-            // SEMICOLON (following an expression)
-            if (! acceptTokenClass(EHTokSemicolon)) {
-                expected(";");
-                return false;
-            }
-        }
+        return acceptSimpleStatement(statement);
     }
 
     return true;
@@ -3420,14 +3430,8 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
 
         // initializer
         TIntermNode* initNode = nullptr;
-        if (! acceptControlDeclaration(initNode)) {
-            TIntermTyped* initExpr = nullptr;
-            acceptExpression(initExpr);
-            initNode = initExpr;
-        }
-        // SEMI_COLON
-        if (! acceptTokenClass(EHTokSemicolon))
-            expected(";");
+        if (! acceptSimpleStatement(initNode))
+            expected("for-loop initializer statement");
 
         parseContext.nestLooping();
 

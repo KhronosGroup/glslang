@@ -1735,8 +1735,13 @@ TIntermAggregate* TIntermediate::addForLoop(TIntermNode* body, TIntermNode* init
     node->setLoc(loc);
     node->setLoopControl(control);
 
-    // make a sequence of the initializer and statement
-    TIntermAggregate* loopSequence = makeAggregate(initializer, loc);
+    // make a sequence of the initializer and statement, but try to reuse the
+    // aggregate already created for whatever is in the initializer, if there is one
+    TIntermAggregate* loopSequence = (initializer == nullptr ||
+                                      initializer->getAsAggregate() == nullptr) ? makeAggregate(initializer, loc)
+                                                                                : initializer->getAsAggregate();
+    if (loopSequence != nullptr && loopSequence->getOp() == EOpSequence)
+        loopSequence->setOp(EOpNull);
     loopSequence = growAggregate(loopSequence, node);
     loopSequence->setOperator(EOpSequence);
 
