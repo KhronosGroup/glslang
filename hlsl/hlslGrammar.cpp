@@ -111,6 +111,22 @@ bool HlslGrammar::acceptIdentifier(HlslToken& idToken)
     switch (peek()) {
     case EHTokSample:     idString = NewPoolTString("sample");     break;
     case EHTokHalf:       idString = NewPoolTString("half");       break;
+    case EHTokHalf1x1:    idString = NewPoolTString("half1x1");    break;
+    case EHTokHalf1x2:    idString = NewPoolTString("half1x2");    break;
+    case EHTokHalf1x3:    idString = NewPoolTString("half1x3");    break;
+    case EHTokHalf1x4:    idString = NewPoolTString("half1x4");    break;
+    case EHTokHalf2x1:    idString = NewPoolTString("half2x1");    break;
+    case EHTokHalf2x2:    idString = NewPoolTString("half2x2");    break;
+    case EHTokHalf2x3:    idString = NewPoolTString("half2x3");    break;
+    case EHTokHalf2x4:    idString = NewPoolTString("half2x4");    break;
+    case EHTokHalf3x1:    idString = NewPoolTString("half3x1");    break;
+    case EHTokHalf3x2:    idString = NewPoolTString("half3x2");    break;
+    case EHTokHalf3x3:    idString = NewPoolTString("half3x3");    break;
+    case EHTokHalf3x4:    idString = NewPoolTString("half3x4");    break;
+    case EHTokHalf4x1:    idString = NewPoolTString("half4x1");    break;
+    case EHTokHalf4x2:    idString = NewPoolTString("half4x2");    break;
+    case EHTokHalf4x3:    idString = NewPoolTString("half4x3");    break;
+    case EHTokHalf4x4:    idString = NewPoolTString("half4x4");    break;
     case EHTokBool:       idString = NewPoolTString("bool");       break;
     case EHTokFloat:      idString = NewPoolTString("float");      break;
     case EHTokDouble:     idString = NewPoolTString("double");     break;
@@ -1479,20 +1495,20 @@ bool HlslGrammar::acceptType(TType& type, TIntermNode*& nodeList)
         break;
 
     case EHTokHalf:
-        new(&type) TType(half_bt, EvqTemporary, EpqMedium);
+        new(&type) TType(half_bt, EvqTemporary);
         break;
     case EHTokHalf1:
-        new(&type) TType(half_bt, EvqTemporary, EpqMedium);
+        new(&type) TType(half_bt, EvqTemporary);
         type.makeVector();
         break;
     case EHTokHalf2:
-        new(&type) TType(half_bt, EvqTemporary, EpqMedium, 2);
+        new(&type) TType(half_bt, EvqTemporary, 2);
         break;
     case EHTokHalf3:
-        new(&type) TType(half_bt, EvqTemporary, EpqMedium, 3);
+        new(&type) TType(half_bt, EvqTemporary, 3);
         break;
     case EHTokHalf4:
-        new(&type) TType(half_bt, EvqTemporary, EpqMedium, 4);
+        new(&type) TType(half_bt, EvqTemporary, 4);
         break;
 
     case EHTokMin16float:
@@ -1774,6 +1790,55 @@ bool HlslGrammar::acceptType(TType& type, TIntermNode*& nodeList)
         break;
     case EHTokFloat4x4:
         new(&type) TType(EbtFloat, EvqTemporary, 0, 4, 4);
+        break;
+
+    case EHTokHalf1x1:
+        new(&type) TType(half_bt, EvqTemporary, 0, 1, 1);
+        break;
+    case EHTokHalf1x2:
+        new(&type) TType(half_bt, EvqTemporary, 0, 1, 2);
+        break;
+    case EHTokHalf1x3:
+        new(&type) TType(half_bt, EvqTemporary, 0, 1, 3);
+        break;
+    case EHTokHalf1x4:
+        new(&type) TType(half_bt, EvqTemporary, 0, 1, 4);
+        break;
+    case EHTokHalf2x1:
+        new(&type) TType(half_bt, EvqTemporary, 0, 2, 1);
+        break;
+    case EHTokHalf2x2:
+        new(&type) TType(half_bt, EvqTemporary, 0, 2, 2);
+        break;
+    case EHTokHalf2x3:
+        new(&type) TType(half_bt, EvqTemporary, 0, 2, 3);
+        break;
+    case EHTokHalf2x4:
+        new(&type) TType(half_bt, EvqTemporary, 0, 2, 4);
+        break;
+    case EHTokHalf3x1:
+        new(&type) TType(half_bt, EvqTemporary, 0, 3, 1);
+        break;
+    case EHTokHalf3x2:
+        new(&type) TType(half_bt, EvqTemporary, 0, 3, 2);
+        break;
+    case EHTokHalf3x3:
+        new(&type) TType(half_bt, EvqTemporary, 0, 3, 3);
+        break;
+    case EHTokHalf3x4:
+        new(&type) TType(half_bt, EvqTemporary, 0, 3, 4);
+        break;
+    case EHTokHalf4x1:
+        new(&type) TType(half_bt, EvqTemporary, 0, 4, 1);
+        break;
+    case EHTokHalf4x2:
+        new(&type) TType(half_bt, EvqTemporary, 0, 4, 2);
+        break;
+    case EHTokHalf4x3:
+        new(&type) TType(half_bt, EvqTemporary, 0, 4, 3);
+        break;
+    case EHTokHalf4x4:
+        new(&type) TType(half_bt, EvqTemporary, 0, 4, 4);
         break;
 
     case EHTokDouble1x1:
