@@ -518,7 +518,7 @@ TIntermTyped* HlslParseContext::handleSamplerLvalue(const TSourceLoc& loc, const
     }
 
     if (controlFlowNestingLevel > 0)
-        error(loc, "can't alias sampler in control flow", op, "");
+        warn(loc, "sampler or image aliased under control flow; consumption must be in same path", op, "");
 
     // Best is if we are aliasing a flattened struct member "S.s1 = s2",
     // in which case we want to update the flattening information with the alias,

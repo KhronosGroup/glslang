@@ -2594,6 +2594,8 @@ bool HlslGrammar::acceptConditionalExpression(TIntermTyped*& node)
     if (node == nullptr)
         return false;
 
+    ++parseContext.controlFlowNestingLevel;  // this only needs to work right if no errors
+
     TIntermTyped* trueNode = nullptr;
     if (! acceptExpression(trueNode)) {
         expected("expression after ?");
@@ -2611,6 +2613,8 @@ bool HlslGrammar::acceptConditionalExpression(TIntermTyped*& node)
         expected("expression after :");
         return false;
     }
+
+    --parseContext.controlFlowNestingLevel;
 
     node = intermediate.addSelection(node, trueNode, falseNode, loc);
 
@@ -3288,6 +3292,8 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement)
     // create the child statements
     TIntermNodePair thenElse = { nullptr, nullptr };
 
+    ++parseContext.controlFlowNestingLevel;  // this only needs to work right if no errors
+
     // then statement
     if (! acceptScopedStatement(thenElse.node1)) {
         expected("then statement");
@@ -3306,6 +3312,7 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement)
     // Put the pieces together
     statement = intermediate.addSelection(condition, thenElse, loc);
     parseContext.popScope();
+    --parseContext.controlFlowNestingLevel;
 
     return true;
 }
@@ -3330,7 +3337,11 @@ bool HlslGrammar::acceptSwitchStatement(TIntermNode*& statement)
 
     // compound_statement
     parseContext.pushSwitchSequence(new TIntermSequence);
+
+    ++parseContext.controlFlowNestingLevel;
     bool statementOkay = acceptCompoundStatement(statement);
+    --parseContext.controlFlowNestingLevel;
+
     if (statementOkay)
         statement = parseContext.addSwitch(loc, switchExpression, statement ? statement->getAsAggregate() : nullptr);
 
@@ -3363,8 +3374,9 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
     case EHTokWhile:
         // so that something declared in the condition is scoped to the lifetime
         // of the while sub-statement
-        parseContext.pushScope();
+        parseContext.pushScope();  // this only needs to work right if no errors
         parseContext.nestLooping();
+        ++parseContext.controlFlowNestingLevel;
 
         // LEFT_PAREN condition RIGHT_PAREN
         if (! acceptParenExpression(condition))
@@ -3381,13 +3393,15 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
 
         parseContext.unnestLooping();
         parseContext.popScope();
+        --parseContext.controlFlowNestingLevel;
 
         statement = intermediate.addLoop(statement, condition, nullptr, true, loc, control);
 
         return true;
 
     case EHTokDo:
-        parseContext.nestLooping();
+        parseContext.nestLooping();  // this only needs to work right if no errors
+        ++parseContext.controlFlowNestingLevel;
 
         // statement
         if (! acceptScopedStatement(statement)) {
@@ -3413,6 +3427,7 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
             expected(";");
 
         parseContext.unnestLooping();
+        --parseContext.controlFlowNestingLevel;
 
         statement = intermediate.addLoop(statement, condition, 0, false, loc, control);
 
@@ -3433,7 +3448,8 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
         if (! acceptSimpleStatement(initNode))
             expected("for-loop initializer statement");
 
-        parseContext.nestLooping();
+        parseContext.nestLooping();  // this only needs to work right if no errors
+        ++parseContext.controlFlowNestingLevel;
 
         // condition SEMI_COLON
         acceptExpression(condition);
@@ -3461,6 +3477,7 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
 
         parseContext.popScope();
         parseContext.unnestLooping();
+        --parseContext.controlFlowNestingLevel;
 
         return true;
     }
