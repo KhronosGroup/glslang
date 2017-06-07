@@ -7704,7 +7704,7 @@ yyreduce:
         if (parseContext.currentFunctionType->getBasicType() != EbtVoid)
             parseContext.error((yyvsp[-1].lex).loc, "non-void function must return a value", "return", "");
         if (parseContext.inMain)
-            parseContext.postMainReturn = true;
+            parseContext.postEntryPointReturn = true;
     }
 #line 7710 "MachineIndependent/glslang_tab.cpp" /* yacc.c:1646  */
     break;

@@ -51,8 +51,8 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
                              int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
                              TInfoSink& infoSink, bool forwardCompatible, EShMessages messages) :
             TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
-            contextPragma(true, false), loopNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0), statementNestingLevel(0),
-            inMain(false), postMainReturn(false), currentFunctionType(nullptr), blockName(nullptr),
+            inMain(false),
+            blockName(nullptr),
             limits(resources.limits),
             atomicUintOffsets(nullptr), anyIndexLimits(false)
 {
@@ -912,7 +912,7 @@ TIntermAggregate* TParseContext::handleFunctionDefinition(const TSourceLoc& loc,
     loopNestingLevel = 0;
     statementNestingLevel = 0;
     controlFlowNestingLevel = 0;
-    postMainReturn = false;
+    postEntryPointReturn = false;
 
     return paramNodes;
 }
@@ -1193,7 +1193,7 @@ void TParseContext::checkLocation(const TSourceLoc& loc, TOperator op)
                 error(loc, "tessellation control barrier() cannot be placed within flow control", "", "");
             if (! inMain)
                 error(loc, "tessellation control barrier() must be in main()", "", "");
-            else if (postMainReturn)
+            else if (postEntryPointReturn)
                 error(loc, "tessellation control barrier() cannot be placed after a return from main()", "", "");
         }
         break;

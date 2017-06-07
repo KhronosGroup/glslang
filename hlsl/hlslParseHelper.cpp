@@ -57,10 +57,7 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
                                    const TString sourceEntryPointName,
                                    bool forwardCompatible, EShMessages messages) :
     TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
-    contextPragma(true, false),
-    loopNestingLevel(0), annotationNestingLevel(0), structNestingLevel(0), controlFlowNestingLevel(0),
-    postEntryPointReturn(false),
-    limits(resources.limits),
+    annotationNestingLevel(0),
     inputPatch(nullptr),
     builtInIoIndex(nullptr),
     builtInIoBase(nullptr),
@@ -519,6 +516,9 @@ TIntermTyped* HlslParseContext::handleSamplerLvalue(const TSourceLoc& loc, const
         error(loc, "can't modify sampler", op, "");
         return node;
     }
+
+    if (controlFlowNestingLevel > 0)
+        error(loc, "can't alias sampler in control flow", op, "");
 
     // Best is if we are aliasing a flattened struct member "S.s1 = s2",
     // in which case we want to update the flattening information with the alias,

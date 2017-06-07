@@ -2777,7 +2777,7 @@ jump_statement
         if (parseContext.currentFunctionType->getBasicType() != EbtVoid)
             parseContext.error($1.loc, "non-void function must return a value", "return", "");
         if (parseContext.inMain)
-            parseContext.postMainReturn = true;
+            parseContext.postEntryPointReturn = true;
     }
     | RETURN expression SEMICOLON {
         $$ = parseContext.handleReturnValue($1.loc, $2);
