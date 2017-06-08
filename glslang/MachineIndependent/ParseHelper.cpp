@@ -4794,12 +4794,8 @@ void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
                 if (symbol.getType().isExplicitlySizedArray())
                     numOffsets *= symbol.getType().getCumulativeArraySize();
                 else {
-                    // TODO: functionality: implicitly-sized atomic_uint arrays.
-                    // We don't know the full size until later.  This might
-                    // be a specification problem, will report to Khronos.  For the
-                    // cases that is not true, the rest of the checking would need
-                    // to be done at link time instead of compile time.
-                    warn(loc, "implicitly sized atomic_uint array treated as having one element for tracking the default offset", "atomic_uint", "");
+                    // "It is a compile-time error to declare an unsized array of atomic_uint."
+                    error(loc, "array must be explicitly sized", "atomic_uint", "");
                 }
             }
             int repeated = intermediate.addUsedOffsets(qualifier.layoutBinding, offset, numOffsets);
