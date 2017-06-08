@@ -2970,7 +2970,7 @@ void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& q
     if (initializer)
         return;
 
-    // No environment lets any non-outer-dimension that's to be implicitly sized
+    // No environment allows any non-outer-dimension to be implicitly sized
     if (arraySizes->isInnerImplicit())
         error(loc, "only outermost dimension of an array of arrays can be implicitly sized", "[]", "");
 
@@ -4602,7 +4602,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
             }
         }
     } else if (type.isImage() && ! qualifier.writeonly) {
-        const char *explanation = "image variables declared 'writeonly' without a format layout qualifier";
+        const char *explanation = "image variables not declared 'writeonly' and without a format layout qualifier";
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, explanation);
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 0, E_GL_EXT_shader_image_load_formatted, explanation);
     }
