@@ -2958,7 +2958,7 @@ void TParseContext::structArrayCheck(const TSourceLoc& /*loc*/, const TType& typ
     }
 }
 
-void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& qualifier, const TArraySizes* arraySizes, bool initializer, bool lastMember)
+void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qualifier, const TArraySizes* arraySizes, bool initializer, bool lastMember)
 {
     assert(arraySizes);
 
@@ -2973,6 +2973,9 @@ void TParseContext::arrayUnsizedCheck(const TSourceLoc& loc, const TQualifier& q
     // No environment allows any non-outer-dimension to be implicitly sized
     if (arraySizes->isInnerImplicit())
         error(loc, "only outermost dimension of an array of arrays can be implicitly sized", "[]", "");
+
+    if (arraySizes->isInnerSpecialization())
+        error(loc, "only outermost dimension of an array of arrays can be a specialization constant", "[]", "");
 
     // desktop always allows outer-dimension-unsized variable arrays,
     if (profile != EEsProfile)
@@ -5081,7 +5084,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         arrayDimMerge(type, arraySizes);
 
         // Check that implicit sizing is only where allowed.
-        arrayUnsizedCheck(loc, type.getQualifier(), &type.getArraySizes(), initializer != nullptr, false);
+        arraySizesCheck(loc, type.getQualifier(), &type.getArraySizes(), initializer != nullptr, false);
 
         if (! arrayQualifierError(loc, type.getQualifier()) && ! arrayError(loc, type))
             declareArray(loc, identifier, type, symbol);
@@ -5633,7 +5636,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     blockStageIoCheck(loc, currentBlockQualifier);
     blockQualifierCheck(loc, currentBlockQualifier, instanceName != nullptr);
     if (arraySizes) {
-        arrayUnsizedCheck(loc, currentBlockQualifier, arraySizes, false, false);
+        arraySizesCheck(loc, currentBlockQualifier, arraySizes, false, false);
         arrayDimCheck(loc, arraySizes, 0);
         if (arraySizes->getNumDims() > 1)
             requireProfile(loc, ~EEsProfile, "array-of-array of block");
@@ -5651,7 +5654,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         if ((currentBlockQualifier.storage == EvqUniform || currentBlockQualifier.storage == EvqBuffer) && (memberQualifier.isInterpolation() || memberQualifier.isAuxiliary()))
             error(memberLoc, "member of uniform or buffer block cannot have an auxiliary or interpolation qualifier", memberType.getFieldName().c_str(), "");
         if (memberType.isArray())
-            arrayUnsizedCheck(memberLoc, currentBlockQualifier, &memberType.getArraySizes(), false, member == typeList.size() - 1);
+            arraySizesCheck(memberLoc, currentBlockQualifier, &memberType.getArraySizes(), false, member == typeList.size() - 1);
         if (memberQualifier.hasOffset()) {
             if (spvVersion.spv == 0) {
                 requireProfile(memberLoc, ~EEsProfile, "offset on block member");

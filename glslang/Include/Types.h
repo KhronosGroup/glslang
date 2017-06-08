@@ -1460,7 +1460,7 @@ public:
 
     virtual bool containsSpecializationSize() const
     {
-        return contains([](const TType* t) { return t->isArray() && t->arraySizes->containsNode(); } );
+        return contains([](const TType* t) { return t->isArray() && t->arraySizes->isOuterSpecialization(); } );
     }
 
     // Array editing methods.  Array descriptors can be shared across
