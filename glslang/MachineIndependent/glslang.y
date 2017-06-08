@@ -1231,6 +1231,7 @@ storage_qualifier
         $$.qualifier.storage = EvqBuffer;
     }
     | SHARED {
+        parseContext.globalCheck($1.loc, "shared");
         parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 430, E_GL_ARB_compute_shader, "shared");
         parseContext.profileRequires($1.loc, EEsProfile, 310, 0, "shared");
         parseContext.requireStage($1.loc, EShLangCompute, "shared");
