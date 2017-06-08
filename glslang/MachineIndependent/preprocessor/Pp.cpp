@@ -393,7 +393,7 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
     TSourceLoc loc = ppToken->loc;  // because we sometimes read the newline before reporting the error
     if (token == PpAtomIdentifier) {
         if (strcmp("defined", ppToken->name) == 0) {
-            if (isMacroInput()) {
+            if (! parseContext.isReadingHLSL() && isMacroInput()) {
                 if (parseContext.relaxedErrors())
                     parseContext.ppWarn(ppToken->loc, "nonportable when expanded from macros for preprocessor expression",
                                                       "defined", "");
