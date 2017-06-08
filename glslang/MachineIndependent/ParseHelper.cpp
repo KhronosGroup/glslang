@@ -4314,7 +4314,6 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
 // This is also true for overriding layout-qualifier-names, where one
 // overrides the other (e.g., row_major vs. column_major); only the last
 // occurrence has any effect."
-//
 void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifier& src, bool inheritOnly)
 {
     if (src.hasMatrix())
