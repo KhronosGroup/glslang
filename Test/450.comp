@@ -1,1 +1,2 @@
 #version 450 core
+layout(local_size_x = 0) in; // ERROR, 0 not allowed

@@ -1,7 +1,11 @@
 450.comp
+ERROR: 0:2: 'local_size_x' : must be at least 1 
+ERROR: 1 compilation errors.  No code generated.
+
+
 Shader version: 450
 local_size = (1, 1, 1)
-0:? Sequence
+ERROR: node is still EOpNull!
 0:?   Linker Objects
 
 
@@ -11,6 +15,6 @@ ERROR: Linking compute stage: Missing entry point: Each stage requires one entry
 
 Shader version: 450
 local_size = (1, 1, 1)
-0:? Sequence
+ERROR: node is still EOpNull!
 0:?   Linker Objects
 

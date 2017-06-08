@@ -1,6 +1,7 @@
 310.comp
 ERROR: 0:4: 'local_size' : cannot change previously set size 
 ERROR: 0:5: 'local_size' : too large; see gl_MaxComputeWorkGroupSize 
+ERROR: 0:7: 'local_size_y' : must be at least 1 
 ERROR: 0:23: '' : array size required 
 ERROR: 0:39: 'in' : global storage input qualifier cannot be used in a compute shader 
 ERROR: 0:39: 'location qualifier on input' : not supported in this stage: compute
@@ -83,7 +84,7 @@ WARNING: 0:238: '#define' : names containing consecutive underscores are reserve
 ERROR: 0:244: 'gl_DeviceIndex' : required extension not requested: GL_EXT_device_group
 ERROR: 0:245: 'gl_ViewIndex' : undeclared identifier 
 ERROR: 0:255: 'gl_ViewIndex' : undeclared identifier 
-ERROR: 82 compilation errors.  No code generated.
+ERROR: 83 compilation errors.  No code generated.
 
 
 Shader version: 310
