@@ -195,6 +195,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_AMD_gcn_shader]                           = EBhDisable;
     extensionBehavior[E_GL_AMD_gpu_shader_half_float]                = EBhDisable;
     extensionBehavior[E_GL_AMD_texture_gather_bias_lod]              = EBhDisable;
+    extensionBehavior[E_GL_AMD_gpu_shader_int16]                     = EBhDisable;
 #endif
 
 #ifdef NV_EXTENSIONS
@@ -318,6 +319,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_AMD_gcn_shader 1\n"
             "#define GL_AMD_gpu_shader_half_float 1\n"
             "#define GL_AMD_texture_gather_bias_lod 1\n"
+            "#define GL_AMD_gpu_shader_int16 1\n"
 #endif
 
 #ifdef NV_EXTENSIONS
@@ -710,10 +712,21 @@ void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
 }
 
 #ifdef AMD_EXTENSIONS
-// Call for any operation needing float16 data-type support.
+// Call for any operation needing GLSL 16-bit integer data-type support.
+void TParseVersions::int16Check(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (! builtIn) {
+        requireExtensions(loc, 1, &E_GL_AMD_gpu_shader_int16, "shader int16");
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+        profileRequires(loc, ECoreProfile, 450, nullptr, op);
+        profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
+    }
+}
+
+// Call for any operation needing GLSL float16 data-type support.
 void TParseVersions::float16Check(const TSourceLoc& loc, const char* op, bool builtIn)
 {
-    if (!builtIn) {
+    if (! builtIn) {
         requireExtensions(loc, 1, &E_GL_AMD_gpu_shader_half_float, "shader half float");
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
         profileRequires(loc, ECoreProfile, 450, nullptr, op);

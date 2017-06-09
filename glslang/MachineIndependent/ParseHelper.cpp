@@ -2220,6 +2220,10 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
             case EOpConstructUint:
             case EOpConstructInt64:
             case EOpConstructUint64:
+#ifdef AMD_EXTENSIONS
+            case EOpConstructInt16:
+            case EOpConstructUint16:
+#endif
             case EOpConstructBool:
             case EOpConstructBVec2:
             case EOpConstructBVec3:
@@ -2236,6 +2240,14 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
             case EOpConstructU64Vec2:
             case EOpConstructU64Vec3:
             case EOpConstructU64Vec4:
+#ifdef AMD_EXTENSIONS
+            case EOpConstructI16Vec2:
+            case EOpConstructI16Vec3:
+            case EOpConstructI16Vec4:
+            case EOpConstructU16Vec2:
+            case EOpConstructU16Vec3:
+            case EOpConstructU16Vec4:
+#endif
                 // This was the list of valid ones, if they aren't converting from float
                 // and aren't making an array.
                 makeSpecConst = ! floatArgument && ! type.isArray();
@@ -2528,6 +2540,9 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
     }
 
     if (publicType.basicType == EbtInt   || publicType.basicType == EbtUint   ||
+#ifdef AMD_EXTENSIONS
+        publicType.basicType == EbtInt16 || publicType.basicType == EbtUint16 ||
+#endif
         publicType.basicType == EbtInt64 || publicType.basicType == EbtUint64 ||
         publicType.basicType == EbtDouble)
         profileRequires(loc, EEsProfile, 300, nullptr, "shader input/output");
@@ -2538,6 +2553,9 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
     if (!qualifier.flat) {
 #endif
         if (publicType.basicType == EbtInt    || publicType.basicType == EbtUint   ||
+#ifdef AMD_EXTENSIONS
+            publicType.basicType == EbtInt16  || publicType.basicType == EbtUint16 ||
+#endif
             publicType.basicType == EbtInt64  || publicType.basicType == EbtUint64 ||
             publicType.basicType == EbtDouble ||
             (publicType.userDef && (publicType.userDef->containsBasicType(EbtInt)    ||
@@ -4634,6 +4652,10 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         case EbtUint:
         case EbtInt64:
         case EbtUint64:
+#ifdef AMD_EXTENSIONS
+        case EbtInt16:
+        case EbtUint16:
+#endif
         case EbtBool:
         case EbtFloat:
         case EbtDouble:
@@ -5579,6 +5601,22 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructUint64:
         basicOp = EOpConstructUint64;
         break;
+
+#ifdef AMD_EXTENSIONS
+    case EOpConstructI16Vec2:
+    case EOpConstructI16Vec3:
+    case EOpConstructI16Vec4:
+    case EOpConstructInt16:
+        basicOp = EOpConstructInt16;
+        break;
+
+    case EOpConstructU16Vec2:
+    case EOpConstructU16Vec3:
+    case EOpConstructU16Vec4:
+    case EOpConstructUint16:
+        basicOp = EOpConstructUint16;
+        break;
+#endif
 
     case EOpConstructBVec2:
     case EOpConstructBVec3:
