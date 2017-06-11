@@ -279,6 +279,9 @@ void foo3434()
     v4 = texture2DArray(s1DA, v3); // ERROR
     v4 = shadow1DArray(s1DA, v3); // ERROR
     v4 = shadow2DArray(s2DAS, v3); // ERROR
+
+    v4 = texture1DArray(s1D, v2); // ERROR
+    v4 = texture2DArray(s2D, v3); // ERROR
 }
 
 float halfFloat1 = 1.0h;   // syntax ERROR

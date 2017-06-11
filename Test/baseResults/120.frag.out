@@ -59,8 +59,12 @@ ERROR: 0:280: 'shadow1DArray' : no matching overloaded function found
 ERROR: 0:280: 'assign' :  cannot convert from ' const float' to ' temp 4-component vector of float'
 ERROR: 0:281: 'shadow2DArray' : no matching overloaded function found 
 ERROR: 0:281: 'assign' :  cannot convert from ' const float' to ' temp 4-component vector of float'
-ERROR: 0:284: '' :  syntax error, unexpected IDENTIFIER, expecting COMMA or SEMICOLON
-ERROR: 61 compilation errors.  No code generated.
+ERROR: 0:283: 'texture1DArray' : no matching overloaded function found 
+ERROR: 0:283: 'assign' :  cannot convert from ' const float' to ' temp 4-component vector of float'
+ERROR: 0:284: 'texture2DArray' : no matching overloaded function found 
+ERROR: 0:284: 'assign' :  cannot convert from ' const float' to ' temp 4-component vector of float'
+ERROR: 0:287: '' :  syntax error, unexpected IDENTIFIER, expecting COMMA or SEMICOLON
+ERROR: 65 compilation errors.  No code generated.
 
 
 Shader version: 120
@@ -700,6 +704,8 @@ ERROR: node is still EOpNull!
 0:279      'v4' ( temp 4-component vector of float)
 0:280      'v4' ( temp 4-component vector of float)
 0:281      'v4' ( temp 4-component vector of float)
+0:283      'v4' ( temp 4-component vector of float)
+0:284      'v4' ( temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'lowp' ( global float)
 0:?     'mediump' ( global float)

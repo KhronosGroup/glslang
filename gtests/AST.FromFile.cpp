@@ -64,6 +64,7 @@ INSTANTIATE_TEST_CASE_P(
         "100.frag",
         "120.vert",
         "120.frag",
+        "120texarray.frag",
         "130.vert",
         "130.frag",
         "140.vert",

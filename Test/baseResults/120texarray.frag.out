@@ -1,0 +1,21 @@
+120texarray.frag
+ERROR: 0:9: '' :  syntax error, unexpected IDENTIFIER, expecting LEFT_BRACE or COMMA or SEMICOLON
+ERROR: 1 compilation errors.  No code generated.
+
+
+Shader version: 120
+ERROR: node is still EOpNull!
+0:5  Function Definition: main( ( global void)
+0:5    Function Parameters: 
+0:?   Linker Objects
+
+
+Linked fragment stage:
+
+
+Shader version: 120
+ERROR: node is still EOpNull!
+0:5  Function Definition: main( ( global void)
+0:5    Function Parameters: 
+0:?   Linker Objects
+
