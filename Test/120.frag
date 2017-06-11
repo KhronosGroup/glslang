@@ -280,3 +280,5 @@ void foo3434()
     v4 = shadow1DArray(s1DA, v3); // ERROR
     v4 = shadow2DArray(s2DAS, v3); // ERROR
 }
+
+float halfFloat1 = 1.0h;   // syntax ERROR

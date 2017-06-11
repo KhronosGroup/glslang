@@ -1,14 +1,12 @@
 add_library(glslang-default-resource-limits
-    ${CMAKE_CURRENT_SOURCE_DIR}/ResourceLimits.cpp
-)
-set_property(TARGET glslang-default-resource-limits PROPERTY FOLDER glslang)
+            ${CMAKE_CURRENT_SOURCE_DIR}/ResourceLimits.cpp)
+set_property(TARGET glslang-default-resource-limits PROPERTY FOLDER glslang POSITION_INDEPENDENT_CODE ON)
 
 target_include_directories(glslang-default-resource-limits
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-    PUBLIC ${PROJECT_SOURCE_DIR}
-)
+                           PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+                           PUBLIC ${PROJECT_SOURCE_DIR})
 
-set(SOURCES StandAlone.cpp)
+set(SOURCES StandAlone.cpp DirStackFileIncluder.h)
 set(REMAPPER_SOURCES spirv-remap.cpp)
 
 add_executable(glslangValidator ${SOURCES})
@@ -23,7 +21,6 @@ set(LIBRARIES
     SPIRV
     SPVRemapper
     glslang-default-resource-limits)
-
 
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)
@@ -41,7 +38,7 @@ if(WIN32)
 endif(WIN32)
 
 install(TARGETS glslangValidator
-        RUNTIME DESTINATION bin)
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 install(TARGETS spirv-remap
-        RUNTIME DESTINATION bin)
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
