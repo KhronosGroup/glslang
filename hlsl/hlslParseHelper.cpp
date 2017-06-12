@@ -1165,7 +1165,7 @@ bool HlslParseContext::shouldFlatten(const TType& type) const
     const TStorageQualifier qualifier = type.getQualifier().storage;
 
     return (qualifier == EvqUniform && type.isArray() && intermediate.getFlattenUniformArrays()) ||
-           type.isStruct() && type.containsOpaque();
+           (type.isStruct() && type.containsOpaque());
 }
 
 // Top level variable flattening: construct data
