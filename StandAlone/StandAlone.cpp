@@ -115,17 +115,13 @@ enum TFailCode {
 EShLanguage FindLanguage(const std::string& name, bool parseSuffix=true);
 void CompileFile(const char* fileName, ShHandle);
 void usage();
-void FreeFileData(char** data);
-char** ReadFileData(const char* fileName);
+char* ReadFileData(const char* fileName);
+void FreeFileData(char* data);
 void InfoLogMsg(const char* msg, const char* name, const int num);
 
 // Globally track if any compile or link failure.
 bool CompileFailed = false;
 bool LinkFailed = false;
-
-// Use to test breaking up a single shader file into multiple strings.
-// Set in ReadFileData().
-int NumShaderStrings;
 
 TBuiltInResource Resources;
 std::string ConfigFile;
@@ -135,29 +131,13 @@ std::string ConfigFile;
 //
 void ProcessConfigFile()
 {
-    char** configStrings = 0;
-    char* config = 0;
-    if (ConfigFile.size() > 0) {
-        configStrings = ReadFileData(ConfigFile.c_str());
-        if (configStrings)
-            config = *configStrings;
-        else {
-            printf("Error opening configuration file; will instead use the default configuration\n");
-            usage();
-        }
-    }
-
-    if (config == 0) {
+    if (ConfigFile.size() == 0)
         Resources = glslang::DefaultTBuiltInResource;
-        return;
+    else {
+        char* configString = ReadFileData(ConfigFile.c_str());
+        glslang::DecodeResourceLimits(&Resources,  configString);
+        FreeFileData(configString);
     }
-
-    glslang::DecodeResourceLimits(&Resources,  config);
-
-    if (configStrings)
-        FreeFileData(configStrings);
-    else
-        delete[] config;
 }
 
 int Options = 0;
@@ -594,36 +574,41 @@ void PutsIfNonEmpty(const char* str)
 // This prevents erroneous newlines from appearing.
 void StderrIfNonEmpty(const char* str)
 {
-    if (str && str[0]) {
-      fprintf(stderr, "%s\n", str);
-    }
+    if (str && str[0])
+        fprintf(stderr, "%s\n", str);
 }
 
 // Simple bundling of what makes a compilation unit for ease in passing around,
 // and separation of handling file IO versus API (programmatic) compilation.
 struct ShaderCompUnit {
     EShLanguage stage;
-    std::string fileName;
-    char** text;             // memory owned/managed externally
-    const char* fileNameList[1];
+    static const int maxCount = 1;
+    int count;                          // live number of strings/names
+    char* text[maxCount];               // memory owned/managed externally
+    std::string fileName[maxCount];     // hold's the memory, but...
+    const char* fileNameList[maxCount]; // downstream interface wants pointers
 
-    // Need to have a special constructors to adjust the fileNameList, since back end needs a list of ptrs
-    ShaderCompUnit(EShLanguage istage, std::string &ifileName, char** itext)
-    {
-        stage = istage;
-        fileName = ifileName;
-        text = itext;
-        fileNameList[0] = fileName.c_str();
-    }
+    ShaderCompUnit(EShLanguage stage) : stage(stage), count(0) { }
 
-    ShaderCompUnit(const ShaderCompUnit &rhs)
+    ShaderCompUnit(const ShaderCompUnit& rhs)
     {
         stage = rhs.stage;
-        fileName = rhs.fileName;
-        text = rhs.text;
-        fileNameList[0] = fileName.c_str();
+        count = rhs.count;
+        for (int i = 0; i < count; ++i) {
+            fileName[i] = rhs.fileName[i];
+            text[i] = rhs.text[i];
+            fileNameList[i] = rhs.fileName[i].c_str();
+        }
     }
 
+    void addString(std::string& ifileName, char* itext)
+    {
+        assert(count < maxCount);
+        fileName[count] = ifileName;
+        text[count] = itext;
+        fileNameList[count] = fileName[count].c_str();
+        ++count;
+    }
 };
 
 //
@@ -650,7 +635,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
     for (auto it = compUnits.cbegin(); it != compUnits.cend(); ++it) {
         const auto &compUnit = *it;
         glslang::TShader* shader = new glslang::TShader(compUnit.stage);
-        shader->setStringsWithLengthsAndNames(compUnit.text, NULL, compUnit.fileNameList, 1);
+        shader->setStringsWithLengthsAndNames(compUnit.text, NULL, compUnit.fileNameList, compUnit.count);
         if (entryPointName) // HLSL todo: this needs to be tracked per compUnits
             shader->setEntryPoint(entryPointName);
         if (sourceEntryPointName)
@@ -701,7 +686,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         if (! (Options & EOptionSuppressInfolog) &&
             ! (Options & EOptionMemoryLeakMode)) {
-            PutsIfNonEmpty(compUnit.fileName.c_str());
+            PutsIfNonEmpty(compUnit.fileName[0].c_str());
             PutsIfNonEmpty(shader->getInfoLog());
             PutsIfNonEmpty(shader->getInfoDebugLog());
         }
@@ -802,17 +787,11 @@ void CompileAndLinkShaderFiles(glslang::TWorklist& Worklist)
     // they are all getting linked together.)
     glslang::TWorkItem* workItem;
     while (Worklist.remove(workItem)) {
-        ShaderCompUnit compUnit(
-            FindLanguage(workItem->name),
-            workItem->name,
-            ReadFileData(workItem->name.c_str())
-        );
-
-        if (! compUnit.text) {
+        ShaderCompUnit compUnit(FindLanguage(workItem->name));
+        char* fileText = ReadFileData(workItem->name.c_str());
+        if (fileText == nullptr)
             usage();
-            return;
-        }
-
+        compUnit.addString(workItem->name, fileText);
         compUnits.push_back(compUnit);
     }
 
@@ -828,7 +807,7 @@ void CompileAndLinkShaderFiles(glslang::TWorklist& Worklist)
     }
 
     for (auto it = compUnits.begin(); it != compUnits.end(); ++it)
-        FreeFileData(it->text);
+        FreeFileData(it->text[0]);
 }
 
 int C_DECL main(int argc, char* argv[])
@@ -978,21 +957,11 @@ EShLanguage FindLanguage(const std::string& name, bool parseSuffix)
 void CompileFile(const char* fileName, ShHandle compiler)
 {
     int ret = 0;
-    char** shaderStrings = ReadFileData(fileName);
-    if (! shaderStrings) {
-        usage();
-    }
-
-    int* lengths = new int[NumShaderStrings];
+    char* shaderString = ReadFileData(fileName);
 
     // move to length-based strings, rather than null-terminated strings
-    for (int s = 0; s < NumShaderStrings; ++s)
-        lengths[s] = (int)strlen(shaderStrings[s]);
-
-    if (! shaderStrings) {
-        CompileFailed = true;
-        return;
-    }
+    int* lengths = new int[1];
+    lengths[0] = (int)strlen(shaderString);
 
     EShMessages messages = EShMsgDefault;
     SetMessageOptions(messages);
@@ -1000,7 +969,7 @@ void CompileFile(const char* fileName, ShHandle compiler)
     for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
         for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
             // ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
-            ret = ShCompile(compiler, shaderStrings, NumShaderStrings, nullptr, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
+            ret = ShCompile(compiler, &shaderString, 1, nullptr, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
             // const char* multi[12] = { "# ve", "rsion", " 300 e", "s", "\n#err",
             //                         "or should be l", "ine 1", "string 5\n", "float glo", "bal",
             //                         ";\n#error should be line 2\n void main() {", "global = 2.3;}" };
@@ -1013,7 +982,7 @@ void CompileFile(const char* fileName, ShHandle compiler)
     }
 
     delete [] lengths;
-    FreeFileData(shaderStrings);
+    FreeFileData(shaderString);
 
     if (ret == 0)
         CompileFailed = true;
@@ -1144,76 +1113,33 @@ int fopen_s(
 //
 //   Malloc a string of sufficient size and read a string into it.
 //
-char** ReadFileData(const char* fileName)
+char* ReadFileData(const char* fileName)
 {
     FILE *in = nullptr;
     int errorCode = fopen_s(&in, fileName, "r");
-
-    int count = 0;
-    const int maxSourceStrings = 5;  // for testing splitting shader/tokens across multiple strings
-    char** return_data = (char**)malloc(sizeof(char *) * (maxSourceStrings+1)); // freed in FreeFileData()
-
     if (errorCode || in == nullptr)
         Error("unable to open input file");
 
+    int count = 0;
     while (fgetc(in) != EOF)
         count++;
 
     fseek(in, 0, SEEK_SET);
 
-    char *fdata = (char*)malloc(count+2); // freed before return of this function
-    if (! fdata)
-        Error("can't allocate memory");
-
-    if ((int)fread(fdata, 1, count, in) != count) {
-        free(fdata);
+    char* return_data = (char*)malloc(count + 1);  // freed in FreeFileData()
+    if ((int)fread(return_data, 1, count, in) != count) {
+        free(return_data);
         Error("can't read input file");
     }
 
-    fdata[count] = '\0';
+    return_data[count] = '\0';
     fclose(in);
-
-    if (count == 0) {
-        // recover from empty file
-        return_data[0] = (char*)malloc(count+2);  // freed in FreeFileData()
-        return_data[0][0]='\0';
-        NumShaderStrings = 0;
-        free(fdata);
-
-        return return_data;
-    } else
-        NumShaderStrings = 1;  // Set to larger than 1 for testing multiple strings
-
-    // compute how to split up the file into multiple strings, for testing multiple strings
-    int len = (int)(ceil)((float)count/(float)NumShaderStrings);
-    int ptr_len = 0;
-    int i = 0;
-    while (count > 0) {
-        return_data[i] = (char*)malloc(len + 2);  // freed in FreeFileData()
-        memcpy(return_data[i], fdata + ptr_len, len);
-        return_data[i][len] = '\0';
-        count -= len;
-        ptr_len += len;
-        if (count < len) {
-            if (count == 0) {
-               NumShaderStrings = i + 1;
-               break;
-            }
-            len = count;
-        }
-        ++i;
-    }
-
-    free(fdata);
 
     return return_data;
 }
 
-void FreeFileData(char** data)
+void FreeFileData(char* data)
 {
-    for(int i = 0; i < NumShaderStrings; i++)
-        free(data[i]);
-
     free(data);
 }
 
