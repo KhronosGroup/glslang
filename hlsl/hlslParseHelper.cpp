@@ -6616,6 +6616,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
         // shapes have to be convertible
         if ((from.isScalarOrVec1() && to.isScalarOrVec1()) ||
             (from.isScalarOrVec1() && to.isVector())    ||
+            (from.isScalarOrVec1() && to.isMatrix())    ||
             (from.isVector() && to.isVector() && from.getVectorSize() >= to.getVectorSize()))
             return true;
 
@@ -7393,8 +7394,15 @@ TIntermTyped* HlslParseContext::addConstructor(const TSourceLoc& loc, TIntermTyp
             newNode = constructAggregate(node, elementType, 1, node->getLoc());
         else if (op == EOpConstructStruct)
             newNode = constructAggregate(node, *(*memberTypes).type, 1, node->getLoc());
-        else
+        else {
+            // shape conversion for matrix constructor from scalar.  HLSL semantics are: scalar
+            // is replicated into every element of the matrix (not just the diagnonal), so
+            // that is handled specially here.
+            if (type.isMatrix() && node->getType().isScalarOrVec1())
+                node = intermediate.addShapeConversion(type, node);
+
             newNode = constructBuiltIn(type, op, node, node->getLoc(), false);
+        }
 
         if (newNode && (type.isArray() || op == EOpConstructStruct))
             newNode = intermediate.setAggregateOperator(newNode, EOpConstructStruct, type, loc);
