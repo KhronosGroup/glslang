@@ -310,6 +310,14 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
     ExecutableName = argv[0];
     workItems.reserve(argc);
 
+    const auto getStringOperand = [&](const char* desc) {
+        if (argv[0][2] == 0) {
+            printf("%s must immediately follow option (no spaces)\n", desc);
+            exit(EFailUsage);
+        }
+        return argv[0] + 2;
+    };
+
     argc--;
     argv++;
     for (; argc >= 1; argc--, argv++) {
@@ -321,18 +329,49 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                     std::transform(lowerword.begin(), lowerword.end(), lowerword.begin(), ::tolower);
 
                     // handle --word style options
-                    if (lowerword == "shift-sampler-bindings" || // synonyms
-                        lowerword == "shift-sampler-binding"  ||
-                        lowerword == "ssb") {
-                        ProcessBindingBase(argc, argv, baseSamplerBinding);
-                    } else if (lowerword == "shift-texture-bindings" ||  // synonyms
-                               lowerword == "shift-texture-binding"  ||
-                               lowerword == "stb") {
-                        ProcessBindingBase(argc, argv, baseTextureBinding);
+                    if (lowerword == "auto-map-bindings" ||  // synonyms
+                               lowerword == "auto-map-binding"  ||
+                               lowerword == "amb") {
+                        Options |= EOptionAutoMapBindings;
+                    } else if (lowerword == "auto-map-locations" || // synonyms
+                               lowerword == "aml") {
+                        Options |= EOptionAutoMapLocations;
+                    } else if (lowerword == "flatten-uniform-arrays" || // synonyms
+                               lowerword == "flatten-uniform-array"  ||
+                               lowerword == "fua") {
+                        Options |= EOptionFlattenUniformArrays;
+                    } else if (lowerword == "hlsl-offsets") {
+                        Options |= EOptionHlslOffsets;
+                    } else if (lowerword == "hlsl-iomap" ||
+                               lowerword == "hlsl-iomapper" ||
+                               lowerword == "hlsl-iomapping") {
+                        Options |= EOptionHlslIoMapping;
+                    } else if (lowerword == "keep-uncalled" || // synonyms
+                               lowerword == "ku") {
+                        Options |= EOptionKeepUncalled;
+                    } else if (lowerword == "no-storage-format" || // synonyms
+                               lowerword == "nsf") {
+                        Options |= EOptionNoStorageFormat;
+                    } else if (lowerword == "resource-set-bindings" ||  // synonyms
+                               lowerword == "resource-set-binding"  ||
+                               lowerword == "rsb") {
+                        ProcessResourceSetBindingBase(argc, argv, baseResourceSetBinding);
                     } else if (lowerword == "shift-image-bindings" ||  // synonyms
                                lowerword == "shift-image-binding"  ||
                                lowerword == "sib") {
                         ProcessBindingBase(argc, argv, baseImageBinding);
+                    } else if (lowerword == "shift-sampler-bindings" || // synonyms
+                        lowerword == "shift-sampler-binding"  ||
+                        lowerword == "ssb") {
+                        ProcessBindingBase(argc, argv, baseSamplerBinding);
+                    } else if (lowerword == "shift-uav-bindings" ||  // synonyms
+                               lowerword == "shift-uav-binding"  ||
+                               lowerword == "suavb") {
+                        ProcessBindingBase(argc, argv, baseUavBinding);
+                    } else if (lowerword == "shift-texture-bindings" ||  // synonyms
+                               lowerword == "shift-texture-binding"  ||
+                               lowerword == "stb") {
+                        ProcessBindingBase(argc, argv, baseTextureBinding);
                     } else if (lowerword == "shift-ubo-bindings" ||  // synonyms
                                lowerword == "shift-ubo-binding"  ||
                                lowerword == "shift-cbuffer-bindings" ||
@@ -344,25 +383,15 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                lowerword == "shift-ssbo-binding"  ||
                                lowerword == "sbb") {
                         ProcessBindingBase(argc, argv, baseSsboBinding);
-                    } else if (lowerword == "resource-set-bindings" ||  // synonyms
-                               lowerword == "resource-set-binding"  ||
-                               lowerword == "rsb") {
-                        ProcessResourceSetBindingBase(argc, argv, baseResourceSetBinding);
-                    } else if (lowerword == "shift-uav-bindings" ||  // synonyms
-                               lowerword == "shift-uav-binding"  ||
-                               lowerword == "suavb") {
-                        ProcessBindingBase(argc, argv, baseUavBinding);
-                    } else if (lowerword == "auto-map-bindings" ||  // synonyms
-                               lowerword == "auto-map-binding"  ||
-                               lowerword == "amb") {
-                        Options |= EOptionAutoMapBindings;
-                    } else if (lowerword == "flatten-uniform-arrays" || // synonyms
-                               lowerword == "flatten-uniform-array"  ||
-                               lowerword == "fua") {
-                        Options |= EOptionFlattenUniformArrays;
-                    } else if (lowerword == "no-storage-format" || // synonyms
-                               lowerword == "nsf") {
-                        Options |= EOptionNoStorageFormat;
+                    } else if (lowerword == "source-entrypoint" || // synonyms
+                               lowerword == "sep") {
+                        sourceEntryPointName = argv[1];
+                        if (argc > 0) {
+                            argc--;
+                            argv++;
+                        } else
+                            Error("no <entry-point> provided for --source-entrypoint");
+                        break;
                     } else if (lowerword == "variable-name" || // synonyms
                         lowerword == "vn") {
                         Options |= EOptionOutputHexadecimal;
@@ -373,31 +402,25 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         } else
                             Error("no <C-variable-name> provided for --variable-name");
                         break;
-                    } else if (lowerword == "source-entrypoint" || // synonyms
-                               lowerword == "sep") {
-                        sourceEntryPointName = argv[1];
-                        if (argc > 0) {
-                            argc--;
-                            argv++;
-                        } else
-                            Error("no <entry-point> provided for --source-entrypoint");
-                        break;
-                    } else if (lowerword == "keep-uncalled" || // synonyms
-                               lowerword == "ku") {
-                        Options |= EOptionKeepUncalled;
-                    } else if (lowerword == "hlsl-offsets") {
-                        Options |= EOptionHlslOffsets;
-                    } else if (lowerword == "hlsl-iomap" ||
-                               lowerword == "hlsl-iomapper" ||
-                               lowerword == "hlsl-iomapping") {
-                        Options |= EOptionHlslIoMapping;
-                    } else if (lowerword == "auto-map-locations" || // synonyms
-                               lowerword == "aml") {
-                        Options |= EOptionAutoMapLocations;
                     } else {
                         usage();
                     }
                 }
+                break;
+            case 'C':
+                Options |= EOptionCascadingErrors;
+                break;
+            case 'D':
+                Options |= EOptionReadHlsl;
+                break;
+            case 'E':
+                Options |= EOptionOutputPreprocessed;
+                break;
+            case 'G':
+                Options |= EOptionSpv;
+                Options |= EOptionLinkProgram;
+                // undo a -H default to Vulkan
+                Options &= ~EOptionVulkanRules;
                 break;
             case 'H':
                 Options |= EOptionHumanReadableSpv;
@@ -409,16 +432,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 }
                 break;
             case 'I':
-                if (argv[0][2] == 0) {
-                    printf("include path must immediately follow (no spaces) -I\n");
-                    exit(EFailUsage);
-                }
-                IncludeDirectoryList.push_back(argv[0]+2);
-                break;
-            case 'V':
-                Options |= EOptionSpv;
-                Options |= EOptionVulkanRules;
-                Options |= EOptionLinkProgram;
+                IncludeDirectoryList.push_back(getStringOperand("-I include path"));
                 break;
             case 'S':
                 shaderStageName = argv[1];
@@ -428,26 +442,16 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 } else
                     Error("no <stage> specified for -S");
                 break;
-            case 'G':
+            case 'V':
                 Options |= EOptionSpv;
+                Options |= EOptionVulkanRules;
                 Options |= EOptionLinkProgram;
-                // undo a -H default to Vulkan
-                Options &= ~EOptionVulkanRules;
-                break;
-            case 'E':
-                Options |= EOptionOutputPreprocessed;
                 break;
             case 'c':
                 Options |= EOptionDumpConfig;
                 break;
-            case 'C':
-                Options |= EOptionCascadingErrors;
-                break;
             case 'd':
                 Options |= EOptionDefaultDesktop;
-                break;
-            case 'D':
-                Options |= EOptionReadHlsl;
                 break;
             case 'e':
                 // HLSL todo: entry point handle needs much more sophistication.
@@ -1022,8 +1026,8 @@ void usage()
 {
     printf("Usage: glslangValidator [option]... [file]...\n"
            "\n"
-           "Where: each 'file' ends in .<stage>, where <stage> is one of\n"
-           "    .conf   to provide an optional config file that replaces the default configuration\n"
+           "'file' can end in .<stage> for auto-stage classification, where <stage> is:\n"
+           "    .conf   to provide a config file that replaces the default configuration\n"
            "            (see -c option below for generating a template)\n"
            "    .vert   for a vertex shader\n"
            "    .tesc   for a tessellation control shader\n"
@@ -1032,27 +1036,24 @@ void usage()
            "    .frag   for a fragment shader\n"
            "    .comp   for a compute shader\n"
            "\n"
-           "Compilation warnings and errors will be printed to stdout.\n"
-           "\n"
-           "To get other information, use one of the following options:\n"
-           "Each option must be specified separately.\n"
-           "  -V          create SPIR-V binary, under Vulkan semantics; turns on -l;\n"
-           "              default file name is <stage>.spv (-o overrides this)\n"
+           "Options:\n"
+           "  -C          cascading errors; risk crash from accumulation of error recoveries\n"
+           "  -D          input is HLSL\n"
+           "  -E          print pre-processed GLSL; cannot be used with -l;\n"
+           "              errors will appear on stderr.\n"
            "  -G          create SPIR-V binary, under OpenGL semantics; turns on -l;\n"
            "              default file name is <stage>.spv (-o overrides this)\n"
            "  -H          print human readable form of SPIR-V; turns on -V\n"
            "  -I<dir>     add dir to the include search path; includer's directory\n"
            "              is searched first, followed by left-to-right order of -I\n"
-           "  -E          print pre-processed GLSL; cannot be used with -l;\n"
-           "              errors will appear on stderr.\n"
            "  -S <stage>  uses specified stage rather than parsing the file extension\n"
-           "              valid choices for <stage> are vert, tesc, tese, geom, frag, or comp\n"
+           "              choices for <stage> are vert, tesc, tese, geom, frag, or comp\n"
+           "  -V          create SPIR-V binary, under Vulkan semantics; turns on -l;\n"
+           "              default file name is <stage>.spv (-o overrides this)\n"
            "  -c          configuration dump;\n"
            "              creates the default configuration file (redirect to a .conf file)\n"
-           "  -C          cascading errors; risks crashes from accumulation of error recoveries\n"
            "  -d          default to desktop (#version 110) when there is no shader #version\n"
            "              (default is ES version 100)\n"
-           "  -D          input is HLSL\n"
            "  -e          specify entry-point name\n"
            "  -g          generate debug information\n"
            "  -h          print this usage message\n"
@@ -1066,59 +1067,46 @@ void usage()
            "  -t          multi-threaded mode\n"
            "  -v          print version strings\n"
            "  -w          suppress warnings (except as required by #extension : warn)\n"
-           "  -x          save 32-bit hexadecimal numbers as text, requires a binary option (e.g., -V)\n"
+           "  -x          save binary output as text-based 32-bit hexadecimal numbers\n"
+           "  --auto-map-bindings                  automatically bind uniform variables\n"
+           "                                       without explicit bindings.\n"
+           "  --amb                                synonym for --auto-map-bindings\n"
+           "  --auto-map-locations                 automatically locate input/output lacking\n"
+           "                                       'location'\n (fragile, not cross stage)\n"
+           "  --aml                                synonym for --auto-map-locations\n"
+           "  --flatten-uniform-arrays             flatten uniform texture/sampler arrays to\n"
+           "                                       scalars\n"
+           "  --fua                                synonym for --flatten-uniform-arrays\n"
            "\n"
-           "  --shift-sampler-binding [stage] num     set base binding number for samplers\n"
-           "  --ssb [stage] num                       synonym for --shift-sampler-binding\n"
-           "\n"
-           "  --shift-texture-binding [stage] num     set base binding number for textures\n"
-           "  --stb [stage] num                       synonym for --shift-texture-binding\n"
-           "\n"
-           "  --shift-image-binding [stage] num       set base binding number for images (uav)\n"
-           "  --sib [stage] num                       synonym for --shift-image-binding\n"
-           "\n"
-           "  --shift-UBO-binding [stage] num         set base binding number for UBOs\n"
-           "  --shift-cbuffer-binding [stage] num     synonym for --shift-UBO-binding\n"
-           "  --sub [stage] num                       synonym for --shift-UBO-binding\n"
-           "\n"
-           "  --shift-ssbo-binding [stage] num        set base binding number for SSBOs\n"
-           "  --sbb [stage] num                       synonym for --shift-ssbo-binding\n"
-           "\n"
-           "  --resource-set-binding [stage] num      set descriptor set and binding number for resources\n"
-           "  --rsb [stage] type set binding          synonym for --resource-set-binding\n"
-           "\n"
-           "  --shift-uav-binding [stage] num         set base binding number for UAVs\n"
-           "  --suavb [stage] num                     synonym for --shift-uav-binding\n"
-           "\n"
-           "  --auto-map-bindings                     automatically bind uniform variables without\n"
-           "                                          explicit bindings.\n"
-           "  --amb                                   synonym for --auto-map-bindings\n"
-           "\n"
-           "  --auto-map-locations                    automatically locate input/output lacking 'location'\n"
-           "                                          (fragile, not cross stage: recommend explicit\n"
-           "                                          'location' use in shader)\n"
-           "  --aml                                   synonym for --auto-map-locations\n"
-           "\n"
-           "  --flatten-uniform-arrays                flatten uniform texture & sampler arrays to scalars\n"
-           "  --fua                                   synonym for --flatten-uniform-arrays\n"
-           "\n"
-           "  --no-storage-format                     use Unknown image format\n"
-           "  --nsf                                   synonym for --no-storage-format\n"
-           "\n"
-           "  --source-entrypoint name                the given shader source function is renamed to be the entry point given in -e\n"
-           "  --sep                                   synonym for --source-entrypoint\n"
-           "\n"
-           "  --keep-uncalled                         don't eliminate uncalled functions when linking\n"
-           "  --ku                                    synonym for --keep-uncalled\n"
-           "\n"
-           "  --variable-name <name>                  Creates a C header file that contains a uint32_t array named <name>\n"
-           "                                          initialized with the shader binary code.\n"
-           "  --vn <name>                             synonym for --variable-name <name>\n"
-           "\n"
-           "  --hlsl-offsets                          Allow block offsets to follow HLSL rules instead of GLSL rules.\n"
-           "                                          Works independently of source language.\n"
-           "\n"
-           "  --hlsl-iomap                            Perform IO mapping in HLSL register space.\n"
+           "  --hlsl-offsets                       Allow block offsets to follow HLSL rules\n"
+           "                                       Works independently of source language\n"
+           "  --hlsl-iomap                         Perform IO mapping in HLSL register space\n"
+           "  --keep-uncalled                      don't eliminate uncalled functions\n"
+           "  --ku                                 synonym for --keep-uncalled\n"
+           "  --no-storage-format                  use Unknown image format\n"
+           "  --nsf                                synonym for --no-storage-format\n"
+           "  --resource-set-binding [stage] num   descriptor set and binding for resources\n"
+           "  --rsb [stage] type set binding       synonym for --resource-set-binding\n"
+           "  --shift-image-binding [stage] num    base binding number for images (uav)\n"
+           "  --sib [stage] num                    synonym for --shift-image-binding\n"
+           "  --shift-sampler-binding [stage] num  base binding number for samplers\n"
+           "  --ssb [stage] num                    synonym for --shift-sampler-binding\n"
+           "  --shift-ssbo-binding [stage] num     base binding number for SSBOs\n"
+           "  --sbb [stage] num                    synonym for --shift-ssbo-binding\n"
+           "  --shift-texture-binding [stage] num  base binding number for textures\n"
+           "  --stb [stage] num                    synonym for --shift-texture-binding\n"
+           "  --shift-uav-binding [stage] num      base binding number for UAVs\n"
+           "  --suavb [stage] num                  synonym for --shift-uav-binding\n"
+           "  --shift-UBO-binding [stage] num      base binding number for UBOs\n"
+           "  --shift-cbuffer-binding [stage] num  synonym for --shift-UBO-binding\n"
+           "  --sub [stage] num                    synonym for --shift-UBO-binding\n"
+           "  --source-entrypoint name             the given shader source function is\n"
+           "                                       renamed to be the entry point given in -e\n"
+           "  --sep                                synonym for --source-entrypoint\n"
+           "  --variable-name <name>               Creates a C header file that contains a\n"
+           "                                       uint32_t array named <name>\n"
+           "                                       initialized with the shader binary code.\n"
+           "  --vn <name>                          synonym for --variable-name <name>\n"
            );
 
     exit(EFailUsage);
