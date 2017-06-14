@@ -2732,9 +2732,14 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
     if (acceptTokenClass(EHTokLeftParen)) {
         TType castType;
         if (acceptType(castType)) {
+            // recognize any array_specifier as part of the type
+            TArraySizes* arraySizes = nullptr;
+            acceptArraySpecifier(arraySizes);
+            if (arraySizes != nullptr)
+                castType.newArraySizes(*arraySizes);
+            TSourceLoc loc = token.loc;
             if (acceptTokenClass(EHTokRightParen)) {
                 // We've matched "(type)" now, get the expression to cast
-                TSourceLoc loc = token.loc;
                 if (! acceptUnaryExpression(node))
                     return false;
 
@@ -2754,6 +2759,11 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
                 // the '(int' part.  We must back up twice.
                 recedeToken();
                 recedeToken();
+
+                // Note, there are no array constructors like
+                //   (float[2](...))
+                if (arraySizes != nullptr)
+                    parseContext.error(loc, "parenthesized array constructor not allowed", "([]())", "", "");
             }
         } else {
             // This isn't a type cast, but it still started "(", so if it is a
