@@ -3294,7 +3294,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         if (bias || cracked.lod ||
             sourceExtensions.find(glslang::E_GL_AMD_texture_gather_bias_lod) != sourceExtensions.end()) {
             builder.addExtension(spv::E_SPV_AMD_texture_gather_bias_lod);
-            builder.addCapability(spv::OpCapabilityImageGatherBiasLodAMD);
+            builder.addCapability(spv::CapabilityImageGatherBiasLodAMD);
         }
     }
 #endif
