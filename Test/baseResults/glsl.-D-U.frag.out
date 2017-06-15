@@ -17,6 +17,10 @@ Shader version: 450
 0:24        'color' (layout( location=0) out 4-component vector of float)
 0:24        Constant:
 0:24          3.000000
+0:28      vector scale second child into first child ( temp 4-component vector of float)
+0:28        'color' (layout( location=0) out 4-component vector of float)
+0:28        Constant:
+0:28          400.000000
 0:?   Linker Objects
 0:?     'color' (layout( location=0) out 4-component vector of float)
 
@@ -42,6 +46,10 @@ Shader version: 450
 0:24        'color' (layout( location=0) out 4-component vector of float)
 0:24        Constant:
 0:24          3.000000
+0:28      vector scale second child into first child ( temp 4-component vector of float)
+0:28        'color' (layout( location=0) out 4-component vector of float)
+0:28        Constant:
+0:28          400.000000
 0:?   Linker Objects
 0:?     'color' (layout( location=0) out 4-component vector of float)
 
