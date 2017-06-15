@@ -157,6 +157,53 @@ std::array<unsigned int, EShLangCount> baseSsboBinding;
 std::array<unsigned int, EShLangCount> baseUavBinding;
 std::array<std::vector<std::string>, EShLangCount> baseResourceSetBinding;
 
+
+// Add things like "#define ..." to a preamble to use in the beginning of the shader.
+class TPreamble {
+public:
+    TPreamble() { }
+
+    bool isSet() const { return text.size() > 0; }
+    const char* get() const { return text.c_str(); }
+
+    // #define...
+    void addDef(std::string def)
+    {
+        text.append("#define ");
+        fixLine(def);
+
+        // The first "=" needs to turn into a space
+        int equal = def.find_first_of("=");
+        if (equal != def.npos)
+            def[equal] = ' ';
+
+        text.append(def);
+        text.append("\n");
+    }
+
+    // #undef...
+    void addUndef(std::string undef)
+    {
+        text.append("#undef ");
+        fixLine(undef);
+        text.append(undef);
+        text.append("\n");
+    }
+
+protected:
+    void fixLine(std::string& line)
+    {
+        // Can't go past a newline in the line
+        int end = line.find_first_of("\n");
+        if (end != line.npos)
+            line = line.substr(0, end);
+    }
+
+    std::string text;  // contents of preamble
+};
+
+TPreamble UserPreamble;
+
 //
 // Create the default name for saving a binary if -o is not provided.
 //
@@ -391,7 +438,10 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 Options |= EOptionCascadingErrors;
                 break;
             case 'D':
-                Options |= EOptionReadHlsl;
+                if (argv[0][2] == 0)
+                    Options |= EOptionReadHlsl;
+                else
+                    UserPreamble.addDef(getStringOperand("-D<macro> macro name"));
                 break;
             case 'E':
                 Options |= EOptionOutputPreprocessed;
@@ -412,7 +462,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 }
                 break;
             case 'I':
-                IncludeDirectoryList.push_back(getStringOperand("-I include path"));
+                IncludeDirectoryList.push_back(getStringOperand("-I<dir> include path"));
                 break;
             case 'S':
                 shaderStageName = argv[1];
@@ -421,6 +471,9 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                     argv++;
                 } else
                     Error("no <stage> specified for -S");
+                break;
+            case 'U':
+                UserPreamble.addUndef(getStringOperand("-U<macro>: macro name"));
                 break;
             case 'V':
                 Options |= EOptionSpv;
@@ -584,7 +637,7 @@ struct ShaderCompUnit {
     EShLanguage stage;
     static const int maxCount = 1;
     int count;                          // live number of strings/names
-    char* text[maxCount];               // memory owned/managed externally
+    const char* text[maxCount];         // memory owned/managed externally
     std::string fileName[maxCount];     // hold's the memory, but...
     const char* fileNameList[maxCount]; // downstream interface wants pointers
 
@@ -601,7 +654,7 @@ struct ShaderCompUnit {
         }
     }
 
-    void addString(std::string& ifileName, char* itext)
+    void addString(std::string& ifileName, const char* itext)
     {
         assert(count < maxCount);
         fileName[count] = ifileName;
@@ -640,6 +693,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
             shader->setEntryPoint(entryPointName);
         if (sourceEntryPointName)
             shader->setSourceEntryPoint(sourceEntryPointName);
+        if (UserPreamble.isSet())
+            shader->setPreamble(UserPreamble.get());
 
         shader->setShiftSamplerBinding(baseSamplerBinding[compUnit.stage]);
         shader->setShiftTextureBinding(baseTextureBinding[compUnit.stage]);
@@ -806,8 +861,10 @@ void CompileAndLinkShaderFiles(glslang::TWorklist& Worklist)
             glslang::OS_DumpMemoryCounters();
     }
 
+    // free memory from ReadFileData, which got stored in a const char*
+    // as the first string above
     for (auto it = compUnits.begin(); it != compUnits.end(); ++it)
-        FreeFileData(it->text[0]);
+        FreeFileData(const_cast<char*>(it->text[0]));
 }
 
 int C_DECL main(int argc, char* argv[])
@@ -966,6 +1023,9 @@ void CompileFile(const char* fileName, ShHandle compiler)
     EShMessages messages = EShMsgDefault;
     SetMessageOptions(messages);
 
+    if (UserPreamble.isSet())
+        Error("-D and -U options require -l (linking)\n");
+
     for (int i = 0; i < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++i) {
         for (int j = 0; j < ((Options & EOptionMemoryLeakMode) ? 100 : 1); ++j) {
             // ret = ShCompile(compiler, shaderStrings, NumShaderStrings, lengths, EShOptNone, &Resources, Options, (Options & EOptionDefaultDesktop) ? 110 : 100, false, messages);
@@ -1008,6 +1068,8 @@ void usage()
            "Options:\n"
            "  -C          cascading errors; risk crash from accumulation of error recoveries\n"
            "  -D          input is HLSL\n"
+           "  -D<macro=def>\n"
+           "  -D<macro>   define a pre-processor macro\n"
            "  -E          print pre-processed GLSL; cannot be used with -l;\n"
            "              errors will appear on stderr.\n"
            "  -G          create SPIR-V binary, under OpenGL semantics; turns on -l;\n"
@@ -1017,6 +1079,7 @@ void usage()
            "              is searched first, followed by left-to-right order of -I\n"
            "  -S <stage>  uses specified stage rather than parsing the file extension\n"
            "              choices for <stage> are vert, tesc, tese, geom, frag, or comp\n"
+           "  -U<macro>   undefine a pre-precossor macro\n"
            "  -V          create SPIR-V binary, under Vulkan semantics; turns on -l;\n"
            "              default file name is <stage>.spv (-o overrides this)\n"
            "  -c          configuration dump;\n"
