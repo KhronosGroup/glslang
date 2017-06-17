@@ -26,7 +26,11 @@ tbuffer tbufName : register(b8) {
                  float3x4 m4;
 }  // no semicolon is okay
 
+float func0(float c) {
+    return c;
+}
+
 float4 PixelShaderFunction(float4 input) : COLOR0
 {
-    return input + v1 + v2 + v3 + v4;
+    return (input + v1 + v2 + v3 + v4) * func0(1.0f);
 }
