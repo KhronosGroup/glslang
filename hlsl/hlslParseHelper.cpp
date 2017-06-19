@@ -693,7 +693,7 @@ TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, const TStr
         }
 
         // Recovery, if it wasn't found or was not a variable.
-        if (! variable) {
+        if (variable == nullptr) {
             error(loc, "unknown variable", string->c_str(), "");
             variable = new TVariable(string, TType(EbtVoid));
         }
@@ -867,7 +867,7 @@ void HlslParseContext::checkIndex(const TSourceLoc& /*loc*/, const TType& /*type
 TIntermTyped* HlslParseContext::handleBinaryMath(const TSourceLoc& loc, const char* str, TOperator op, TIntermTyped* left, TIntermTyped* right)
 {
     TIntermTyped* result = intermediate.addBinaryMath(op, left, right, loc);
-    if (! result)
+    if (result == nullptr)
         binaryOpError(loc, str, left->getCompleteString(), right->getCompleteString());
 
     return result;
@@ -1664,7 +1664,7 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     TSymbol* symbol = symbolTable.find(function.getMangledName());
     TFunction* prevDec = symbol ? symbol->getAsFunction() : nullptr;
 
-    if (! prevDec)
+    if (prevDec == nullptr)
         error(loc, "can't find function", function.getName().c_str(), "");
     // Note:  'prevDec' could be 'function' if this is the first time we've seen function
     // as it would have just been put in the symbol table.  Otherwise, we're looking up
@@ -3031,7 +3031,7 @@ TIntermConstantUnion* HlslParseContext::getSamplePosArray(int count)
 //
 void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
 {
-    if (!node || !node->getAsOperator())
+    if (node == nullptr || !node->getAsOperator())
         return;
 
     const auto clampReturn = [&loc, &node, this](TIntermTyped* result, const TSampler& sampler) -> TIntermTyped* {
@@ -3773,7 +3773,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
 //
 void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTyped*& node, TIntermNode* arguments)
 {
-    if (!node || !node->getAsOperator())
+    if (node == nullptr || !node->getAsOperator())
         return;
 
     const TOperator op  = node->getAsOperator()->getOp();
@@ -4967,7 +4967,7 @@ void HlslParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fn
         }
 
         if (arg > 0) {
-            if (! aggArgs[arg]->getAsConstantUnion())
+            if (aggArgs[arg]->getAsConstantUnion() == nullptr)
                 error(loc, "argument must be compile-time constant", "texel offset", "");
             else {
                 const TType& type = aggArgs[arg]->getAsTyped()->getType();
@@ -5706,7 +5706,7 @@ void HlslParseContext::arrayDimMerge(TType& type, const TArraySizes* sizes)
 //
 void HlslParseContext::declareArray(const TSourceLoc& loc, const TString& identifier, const TType& type, TSymbol*& symbol, bool track)
 {
-    if (! symbol) {
+    if (symbol == nullptr) {
         bool currentScope;
         symbol = symbolTable.find(identifier, nullptr, &currentScope);
 
@@ -5737,7 +5737,7 @@ void HlslParseContext::declareArray(const TSourceLoc& loc, const TString& identi
     // Process a redeclaration.
     //
 
-    if (! symbol) {
+    if (symbol == nullptr) {
         error(loc, "array variable name expected", identifier.c_str(), "");
         return;
     }
@@ -5856,7 +5856,7 @@ void HlslParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& n
     // If the block was not found, this must be a version/profile/stage
     // that doesn't have it, or the instance name is wrong.
     const char* errorName = instanceName ? instanceName->c_str() : newTypeList.front().type->getFieldName().c_str();
-    if (! block) {
+    if (block == nullptr) {
         error(loc, "no declaration found for redeclaration", errorName, "");
         return;
     }
@@ -6967,7 +6967,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, const TStr
         declareArray(loc, identifier, type, symbol, !flattenVar);
     } else {
         // non-array case
-        if (! symbol)
+        if (symbol == nullptr)
             symbol = declareNonArray(loc, identifier, type, !flattenVar);
         else if (type != symbol->getType())
             error(loc, "cannot change the type of", "redeclaration", symbol->getName().c_str());
@@ -6976,7 +6976,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, const TStr
     if (flattenVar)
         flatten(loc, *symbol->getAsVariable());
 
-    if (! symbol)
+    if (symbol == nullptr)
         return nullptr;
 
     // Deal with initializer
@@ -6986,7 +6986,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, const TStr
             error(loc, "flattened array with initializer list unsupported", identifier.c_str(), "");
 
         TVariable* variable = symbol->getAsVariable();
-        if (! variable) {
+        if (variable == nullptr) {
             error(loc, "initializer requires a variable, not a member", identifier.c_str(), "");
             return nullptr;
         }
@@ -7082,7 +7082,7 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
     skeletalType.getQualifier().makeTemporary();
     if (initializer->getAsAggregate() && initializer->getAsAggregate()->getOp() == EOpNull)
         initializer = convertInitializerList(loc, skeletalType, initializer, nullptr);
-    if (! initializer) {
+    if (initializer == nullptr) {
         // error recovery; don't leave const without constant values
         if (qualifier == EvqConst)
             variable->getWritableType().getQualifier().storage = EvqTemporary;
@@ -7145,7 +7145,7 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
         specializationCheck(loc, initializer->getType(), "initializer");
         TIntermSymbol* intermSymbol = intermediate.addSymbol(*variable, loc);
         TIntermNode* initNode = handleAssign(loc, EOpAssign, intermSymbol, initializer);
-        if (! initNode)
+        if (initNode == nullptr)
             assignError(loc, "=", intermSymbol->getCompleteString(), initializer->getCompleteString());
 
         return initNode;
@@ -7175,7 +7175,7 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
 
     // see if we have bottomed out in the tree within the initializer-list part
     TIntermAggregate* initList = initializer->getAsAggregate();
-    if (! initList || initList->getOp() != EOpNull) {
+    if (initList == nullptr || initList->getOp() != EOpNull) {
         // We don't have a list, but if it's a scalar and the 'type' is a
         // composite, we need to lengthen below to make it useful.
         // Otherwise, this is an already formed object to initialize with.
@@ -7643,7 +7643,7 @@ TIntermTyped* HlslParseContext::constructAggregate(TIntermNode* node, const TTyp
 {
     // Handle cases that map more 1:1 between constructor arguments and constructed.
     TIntermTyped* converted = intermediate.addConversion(EOpConstructStruct, type, node->getAsTyped());
-    if (! converted || converted->getType() != type) {
+    if (converted == nullptr || converted->getType() != type) {
         error(loc, "", "constructor", "cannot convert parameter %d from '%s' to '%s'", paramCount,
             node->getAsTyped()->getType().getCompleteString().c_str(), type.getCompleteString().c_str());
 
@@ -7796,7 +7796,7 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
 
     // Add the variable, as anonymous or named instanceName.
     // Make an anonymous variable if no name was provided.
-    if (! instanceName)
+    if (instanceName == nullptr)
         instanceName = NewPoolTString("");
 
     TVariable& variable = *new TVariable(instanceName, blockType);
@@ -7946,7 +7946,7 @@ void HlslParseContext::fixBlockUniformOffsets(const TQualifier& qualifier, TType
 void HlslParseContext::addQualifierToExisting(const TSourceLoc& loc, TQualifier qualifier, const TString& identifier)
 {
     TSymbol* symbol = symbolTable.find(identifier);
-    if (! symbol) {
+    if (symbol == nullptr) {
         error(loc, "identifier not previously declared", identifier.c_str(), "");
         return;
     }
