@@ -296,7 +296,8 @@ bool HlslGrammar::acceptSamplerDeclarationDX9(TType& /*type*/)
 
 // declaration
 //      : sampler_declaration_dx9 post_decls SEMICOLON
-//      | fully_specified_type declarator_list SEMICOLON(optional for cbuffer/tbuffer)
+//      | fully_specified_type                           // for cbuffer/tbuffer
+//      | fully_specified_type declarator_list SEMICOLON // for non cbuffer/tbuffer
 //      | fully_specified_type identifier function_parameters post_decls compound_statement  // function definition
 //      | fully_specified_type identifier sampler_state post_decls compound_statement        // sampler definition
 //      | typedef declaration
@@ -374,7 +375,9 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
     if (! acceptFullySpecifiedType(declaredType, nodeList))
         return false;
 
-    // identifier
+    // declarator_list
+    //    : declarator
+    //         : identifier
     HlslToken idToken;
     TIntermAggregate* initializers = nullptr;
     while (acceptIdentifier(idToken)) {
@@ -483,11 +486,10 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
             }
         }
 
-        if (acceptTokenClass(EHTokComma)) {
+        // COMMA
+        if (acceptTokenClass(EHTokComma))
             declarator_list = true;
-            continue;
         }
-    };
 
     // The top-level initializer node is a sequence.
     if (initializers != nullptr)
@@ -1901,18 +1903,19 @@ bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
     TStorageQualifier storageQualifier = EvqTemporary;
     bool readonly = false;
 
-    // CBUFFER
     if (acceptTokenClass(EHTokCBuffer)) {
+    // CBUFFER
         storageQualifier = EvqUniform;
-    // TBUFFER
     } else if (acceptTokenClass(EHTokTBuffer)) {
+    // TBUFFER
         storageQualifier = EvqBuffer;
         readonly = true;
-    }
-    // CLASS
-    // STRUCT
-    else if (! acceptTokenClass(EHTokClass) && ! acceptTokenClass(EHTokStruct))
+    } else if (! acceptTokenClass(EHTokClass) && ! acceptTokenClass(EHTokStruct)) {
+        // Neither CLASS nor STRUCT
         return false;
+    }
+
+    // Now known to be one of CBUFFER, TBUFFER, CLASS, or STRUCT
 
     // IDENTIFIER
     TString structName = "";
