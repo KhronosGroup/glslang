@@ -1,15 +1,15 @@
 cbuffer buf1 {
     float4 v1;
-};
+}; // extraneous ;
 
 tbuffer buf2 {
     float4 v2;
-};
+}; // extraneous ;
 
 cbuffer cbufName {
     float4 v3 : packoffset(c0);
     int i3    : packoffset(c1.y);
-} // no semicolon is okay
+}
 
 tbuffer tbufName : register(t8) {
     float4 v4 : packoffset(c1);
@@ -24,9 +24,14 @@ tbuffer tbufName : register(t8) {
        row_major float3x4 m2 : packoffset(c11);
     column_major float3x4 m3 : packoffset(c15);
                  float3x4 m4 : packoffset(c19);
-}  // no semicolon is okay
+}
+
+float foo() // float looks like identifier, but can't be part of tbuffer
+{
+    return 1.0;
+}
 
 float4 PixelShaderFunction(float4 input : SV_POSITION) : SV_TARGET0
 {
-    return input + v1 + v2 + v3 + v4;
+    return (input + v1 + v2 + v3 + v4) * foo();
 }

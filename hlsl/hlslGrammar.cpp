@@ -371,9 +371,15 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
     // if (acceptSamplerDeclarationDX9(declaredType))
     //     return true;
 
+    bool forbidDeclarators = (peekTokenClass(EHTokCBuffer) || peekTokenClass(EHTokTBuffer));
     // fully_specified_type
     if (! acceptFullySpecifiedType(declaredType, nodeList))
         return false;
+
+    // cbuffer and tbuffer end with the closing '}'.
+    // No semicolon is included.
+    if (forbidDeclarators)
+        return true;
 
     // declarator_list
     //    : declarator
@@ -489,7 +495,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
         // COMMA
         if (acceptTokenClass(EHTokComma))
             declarator_list = true;
-        }
+    }
 
     // The top-level initializer node is a sequence.
     if (initializers != nullptr)
@@ -501,18 +507,15 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
     else
         nodeList = initializers;
 
-    // SEMICOLON(optional for cbuffer/tbuffer)
+    // SEMICOLON
     if (! acceptTokenClass(EHTokSemicolon)) {
+        // This may have been a false detection of what appeared to be a declaration, but
+        // was actually an assignment such as "float = 4", where "float" is an identifier.
+        // We put the token back to let further parsing happen for cases where that may
+        // happen.  This errors on the side of caution, and mostly triggers the error.
         if (peek() == EHTokAssign || peek() == EHTokLeftBracket || peek() == EHTokDot || peek() == EHTokComma) {
-            // This may have been a false detection of what appeared to be a declaration, but
-            // was actually an assignment such as "float = 4", where "float" is an identifier.
-            // We put the token back to let further parsing happen for cases where that may
-            // happen.  This errors on the side of caution, and mostly triggers the error.
             recedeToken();
             return false;
-        } else if (declaredType.getBasicType() == EbtBlock) {
-            // cbuffer, et. al. (but not struct) don't have an ending semicolon
-            return true;
         } else {
             expected(";");
             return false;
@@ -1904,10 +1907,10 @@ bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
     bool readonly = false;
 
     if (acceptTokenClass(EHTokCBuffer)) {
-    // CBUFFER
+        // CBUFFER
         storageQualifier = EvqUniform;
     } else if (acceptTokenClass(EHTokTBuffer)) {
-    // TBUFFER
+        // TBUFFER
         storageQualifier = EvqBuffer;
         readonly = true;
     } else if (! acceptTokenClass(EHTokClass) && ! acceptTokenClass(EHTokStruct)) {
