@@ -791,7 +791,7 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
     index = makeIntegerIndex(index);
 
     if (index == nullptr) {
-        error(loc, " unknown undex type ", "", "");
+        error(loc, " unknown index type ", "", "");
         return nullptr;
     }
 
@@ -1554,11 +1554,20 @@ void HlslParseContext::assignToInterface(TVariable& variable)
                     nextOutLocation += size;
                 }
             }
-            // Going into the fragment stage, integer-based stuff must be flat/nointerpolation
-            if (type.isIntegerDomain() && qualifier.builtIn == EbvNone &&
-                    qualifier.storage == EvqVaryingIn && language == EShLangFragment) {
-                qualifier.clearInterpolation();
-                qualifier.flat = true;
+            if (qualifier.storage == EvqVaryingIn && language == EShLangFragment) {
+                // Going into the fragment stage, integer-based stuff must be flat/nointerpolation
+                const auto fixQualifier = [](TType& type) {
+                    if (type.getQualifier().builtIn == EbvNone &&
+                        (type.isIntegerDomain() || type.getBasicType() == EbtBool)) {
+                        type.getQualifier().clearInterpolation();
+                        type.getQualifier().flat = true;
+                    }
+                };
+                if (type.isStruct())
+                    for (auto mem = (*type.getStruct()).begin(); mem != (*type.getStruct()).end(); ++mem)
+                        fixQualifier(*mem->type);
+                else
+                    fixQualifier(type);
             }
             trackLinkage(variable);
         }

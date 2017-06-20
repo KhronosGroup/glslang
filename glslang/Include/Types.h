@@ -1349,7 +1349,6 @@ public:
         case EbtInt16:
         case EbtUint16:
 #endif
-        case EbtBool:
         case EbtAtomicUint:
             return true;
         default:
@@ -1469,9 +1468,9 @@ public:
             case EbtUint16:
 #endif
             case EbtBool:
-            return true;
+                return true;
             default:
-            return false;
+                return false;
             }
         };
 
