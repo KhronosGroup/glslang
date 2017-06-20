@@ -1525,15 +1525,17 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
 }
 
 // Variables that correspond to the user-interface in and out of a stage
-// (not the built-in interface) are assigned locations and
-// registered as a linkage node (part of the stage's external interface).
-//
+// (not the built-in interface) are
+//  - assigned locations
+//  - corrected for interpolation
+//     * non-floating point values must be nointerpolation
+//  - registered as a linkage node (part of the stage's external interface).
 // Assumes it is called in the order in which locations should be assigned.
-void HlslParseContext::assignLocations(TVariable& variable)
+void HlslParseContext::assignToInterface(TVariable& variable)
 {
     const auto assignLocation = [&](TVariable& variable) {
-        const TType& type = variable.getType();
-        const TQualifier& qualifier = type.getQualifier();
+        TType& type = variable.getWritableType();
+        TQualifier& qualifier = type.getQualifier();
         if (qualifier.storage == EvqVaryingIn || qualifier.storage == EvqVaryingOut) {
             if (qualifier.builtIn == EbvNone) {
                 // Strip off the outer array dimension for those having an extra one.
@@ -1552,7 +1554,12 @@ void HlslParseContext::assignLocations(TVariable& variable)
                     nextOutLocation += size;
                 }
             }
-
+            // Going into the fragment stage, integer-based stuff must be flat/nointerpolation
+            if (type.isIntegerDomain() && qualifier.builtIn == EbvNone &&
+                    qualifier.storage == EvqVaryingIn && language == EShLangFragment) {
+                qualifier.clearInterpolation();
+                qualifier.flat = true;
+            }
             trackLinkage(variable);
         }
     };
@@ -1914,9 +1921,11 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
 //        ret = @shaderEntryPoint(args...);
 //        oargs = args<that are output>...;
 //    }
+//    retType @shaderEntryPoint(args...)
+//    { body }
 //
 // The symbol table will still map the original entry point name to the
-// the modified function and it's new name:
+// the modified function and its new name:
 //
 //    symbol table:  shaderEntryPoint  ->   @shaderEntryPoint
 //
@@ -1966,7 +1975,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
                 split(variable);
         }
 
-        assignLocations(variable);
+        assignToInterface(variable);
     };
     if (entryPointOutput)
         makeVariableInOut(*entryPointOutput);
@@ -2012,11 +2021,8 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     for (int i = 0; i < userFunction.getParamCount(); i++) {
         TParameter& param = userFunction[i];
         argVars.push_back(makeInternalVariable(*param.name, *param.type));
-
         argVars.back()->getWritableType().getQualifier().makeTemporary();
-
         TIntermSymbol* arg = intermediate.addSymbol(*argVars.back());
-
         handleFunctionArgument(&callee, callingArgs, arg);
         if (param.type->getQualifier().isParamInput()) {
             intermediate.growAggregate(synthBody, handleAssign(loc, EOpAssign, arg,
@@ -2062,7 +2068,6 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
         } else {
             returnAssign = handleAssign(loc, EOpAssign, intermediate.addSymbol(*entryPointOutput), callReturn);
         }
-        
         intermediate.growAggregate(synthBody, returnAssign);
     } else
         intermediate.growAggregate(synthBody, callReturn);
@@ -8835,7 +8840,7 @@ void HlslParseContext::addPatchConstantInvocation()
         if (pcfOutput->getType().containsBuiltInInterstageIO(language))
             split(*pcfOutput);
 
-        assignLocations(*pcfOutput);
+        assignToInterface(*pcfOutput);
 
         TIntermSymbol* pcfOutputSym = intermediate.addSymbol(*pcfOutput, loc);
 
