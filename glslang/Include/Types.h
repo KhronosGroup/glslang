@@ -1352,6 +1352,8 @@ public:
         case EbtBool:
         case EbtAtomicUint:
             return true;
+        default:
+            break;
         }
         return false;
     }
