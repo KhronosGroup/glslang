@@ -1527,8 +1527,6 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
 // Variables that correspond to the user-interface in and out of a stage
 // (not the built-in interface) are
 //  - assigned locations
-//  - corrected for interpolation
-//     * non-floating point values must be nointerpolation
 //  - registered as a linkage node (part of the stage's external interface).
 // Assumes it is called in the order in which locations should be assigned.
 void HlslParseContext::assignToInterface(TVariable& variable)
@@ -1553,21 +1551,6 @@ void HlslParseContext::assignToInterface(TVariable& variable)
                     variable.getWritableType().getQualifier().layoutLocation = nextOutLocation;
                     nextOutLocation += size;
                 }
-            }
-            if (qualifier.storage == EvqVaryingIn && language == EShLangFragment) {
-                // Going into the fragment stage, integer-based stuff must be flat/nointerpolation
-                const auto fixQualifier = [](TType& type) {
-                    if (type.getQualifier().builtIn == EbvNone &&
-                        (type.isIntegerDomain() || type.getBasicType() == EbtBool)) {
-                        type.getQualifier().clearInterpolation();
-                        type.getQualifier().flat = true;
-                    }
-                };
-                if (type.isStruct())
-                    for (auto mem = (*type.getStruct()).begin(); mem != (*type.getStruct()).end(); ++mem)
-                        fixQualifier(*mem->type);
-                else
-                    fixQualifier(type);
             }
             trackLinkage(variable);
         }
@@ -2134,12 +2117,63 @@ void HlslParseContext::handleFunctionBody(const TSourceLoc& loc, TFunction& func
 void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& returnValue,
     TVector<TVariable*>& inputs, TVector<TVariable*>& outputs)
 {
+    // We might have in input structure type with no decorations that caused it
+    // to look like an input type, yet it has (e.g.) interpolation types that
+    // must be modified that turn it into an input type.
+    // Hence, a missing ioTypeMap for 'input' might need to be synthesized.
+    const auto synthesizeEditedInput = [this](TType& type) {
+        // True if a type needs to be 'flat'
+        const auto needsFlat = [](const TType& type) {
+            return type.containsBasicType(EbtInt) ||
+                    type.containsBasicType(EbtUint) ||
+                    type.containsBasicType(EbtInt64) ||
+                    type.containsBasicType(EbtUint64) ||
+                    type.containsBasicType(EbtBool) ||
+                    type.containsBasicType(EbtDouble);
+        };
+
+        if (language == EShLangFragment && needsFlat(type)) {
+            if (type.isStruct()) {
+                TTypeList* finalList = nullptr;
+                auto it = ioTypeMap.find(type.getStruct());
+                if (it == ioTypeMap.end() || it->second.input == nullptr) {
+                    // Getting here means we have no input struct, but we need one.
+                    auto list = new TTypeList;
+                    for (auto member = type.getStruct()->begin(); member != type.getStruct()->end(); ++member) {
+                        TType* newType = new TType;
+                        newType->shallowCopy(*member->type);
+                        TTypeLoc typeLoc = { newType, member->loc };
+                        list->push_back(typeLoc);
+                    }
+                    // install the new input type
+                    if (it == ioTypeMap.end()) {
+                        tIoKinds newLists = { list, nullptr, nullptr };
+                        ioTypeMap[type.getStruct()] = newLists;
+                    } else
+                        it->second.input = list;
+                    finalList = list;
+                } else
+                    finalList = it->second.input;
+                // edit for 'flat'
+                for (auto member = finalList->begin(); member != finalList->end(); ++member) {
+                    if (needsFlat(*member->type)) {
+                        member->type->getQualifier().clearInterpolation();
+                        member->type->getQualifier().flat = true;
+                    }
+                }
+            } else {
+                type.getQualifier().clearInterpolation();
+                type.getQualifier().flat = true;
+            }
+        }
+    };
+
     // Do the actual work to make a type be a shader input or output variable,
     // and clear the original to be non-IO (for use as a normal function parameter/return).
     const auto makeIoVariable = [this](const char* name, TType& type, TStorageQualifier storage) -> TVariable* {
         TVariable* ioVariable = makeInternalVariable(name, type);
         clearUniformInputOutput(type.getQualifier());
-        if (type.getStruct() != nullptr) {
+        if (type.isStruct()) {
             auto newLists = ioTypeMap.find(ioVariable->getType().getStruct());
             if (newLists != ioTypeMap.end()) {
                 if (storage == EvqVaryingIn && newLists->second.input)
@@ -2192,6 +2226,7 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
     for (int i = 0; i < function.getParamCount(); i++) {
         TType& paramType = *function[i].type;
         if (paramType.getQualifier().isParamInput()) {
+            synthesizeEditedInput(paramType);
             TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingIn);
             inputs.push_back(argAsGlobal);
 
