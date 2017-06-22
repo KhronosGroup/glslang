@@ -64,6 +64,11 @@ int main(int argc, char** argv)
                 return 1;
             }
         }
+        if (std::string("--help") == argv[i]) {
+            printf("\nExtra options:\n\n");
+            printf("  --update-mode\n      Update the golden results for the tests.\n");
+            printf("  --test-root <arg>\n      Specify the test root directory (useful for testing with\n      files from another source tree).\n");
+        }
     }
 
     const int result = RUN_ALL_TESTS();
