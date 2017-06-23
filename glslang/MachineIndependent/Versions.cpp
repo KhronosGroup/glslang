@@ -355,9 +355,9 @@ void TParseVersions::getPreamble(std::string& preamble)
     // #define VULKAN XXXX
     const int numberBufSize = 12;
     char numberBuf[numberBufSize];
-    if (spvVersion.vulkan > 0) {
+    if (spvVersion.vulkanGlsl > 0) {
         preamble += "#define VULKAN ";
-        snprintf(numberBuf, numberBufSize, "%d", spvVersion.vulkan);
+        snprintf(numberBuf, numberBufSize, "%d", spvVersion.vulkanGlsl);
         preamble += numberBuf;
         preamble += "\n";
     }

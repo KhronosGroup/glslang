@@ -72,14 +72,19 @@ inline const char* ProfileName(EProfile profile)
 }
 
 //
-// SPIR-V has versions for multiple things; tie them together.
-// 0 means a target or rule set is not enabled.
+// What source rules, validation rules, target language, etc. are needed
+// desired for SPIR-V?
+//
+// 0 means a target or rule set is not enabled (ignore rules from that entity).
+// Non-0 means to apply semantic rules arising from that version of its rule set.
+// The union of all requested rule sets will be applied.
 //
 struct SpvVersion {
-    SpvVersion() : spv(0), vulkan(0), openGl(0) {}
-    unsigned int spv; // the version of the targeted SPIR-V, as defined by SPIR-V in word 1 of the SPIR-V binary header
-    int vulkan;       // the version of semantics for Vulkan; e.g., for GLSL from KHR_vulkan_glsl "#define VULKAN"
-    int openGl;       // the version of semantics for OpenGL; e.g., for GLSL from KHR_vulkan_glsl "#define GL_SPIRV"
+    SpvVersion() : spv(0), vulkanGlsl(0), vulkan(0), openGl(0) {}
+    unsigned int spv; // the version of SPIR-V to target, as defined by "word 1" of the SPIR-V binary header
+    int vulkanGlsl;   // the version of GLSL semantics for Vulkan, from GL_KHR_vulkan_glsl, for "#define VULKAN XXX"
+    int vulkan;       // the version of Vulkan, for which SPIR-V execution environment rules to use (100 means 1.0)
+    int openGl;       // the version of GLSL semantics for OpenGL, from GL_ARB_gl_spirv, for "#define GL_SPIRV XXX"
 };
 
 //

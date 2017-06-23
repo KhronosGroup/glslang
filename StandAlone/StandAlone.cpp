@@ -715,9 +715,27 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         if (Options & EOptionAutoMapLocations)
             shader->setAutoMapLocations(true);
 
+        // Set up the environment, some subsettings take precedence over earlier
+        // ways of setting things.
+        if (Options & EOptionSpv) {
+            if (Options & EOptionVulkanRules) {
+                shader->setEnvInput((Options & EOptionReadHlsl) ? glslang::EShSourceHlsl
+                                                                : glslang::EShSourceGlsl,
+                                        compUnit.stage, glslang::EShClientVulkan, 100);
+                shader->setEnvClient(glslang::EShClientVulkan, 100);
+                shader->setEnvTarget(glslang::EshTargetSpv, 0x00001000);
+            } else {
+                shader->setEnvInput((Options & EOptionReadHlsl) ? glslang::EShSourceHlsl
+                                                                : glslang::EShSourceGlsl,
+                                        compUnit.stage, glslang::EShClientOpenGL, 100);
+                shader->setEnvClient(glslang::EShClientOpenGL, 450);
+                shader->setEnvTarget(glslang::EshTargetSpv, 0x00001000);
+            }
+        }
+
         shaders.push_back(shader);
 
-        const int defaultVersion = Options & EOptionDefaultDesktop? 110: 100;
+        const int defaultVersion = Options & EOptionDefaultDesktop ? 110 : 100;
 
         DirStackFileIncluder includer;
         std::for_each(IncludeDirectoryList.rbegin(), IncludeDirectoryList.rend(), [&includer](const std::string& dir) {
