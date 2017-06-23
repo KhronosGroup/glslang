@@ -157,7 +157,6 @@ std::array<unsigned int, EShLangCount> baseSsboBinding;
 std::array<unsigned int, EShLangCount> baseUavBinding;
 std::array<std::vector<std::string>, EShLangCount> baseResourceSetBinding;
 
-
 // Add things like "#define ..." to a preamble to use in the beginning of the shader.
 class TPreamble {
 public:
@@ -337,6 +336,14 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
     ExecutableName = argv[0];
     workItems.reserve(argc);
 
+    const auto bumpArg = [&]() {
+        if (argc > 0) {
+            argc--;
+            argv++;
+        }
+    };
+
+    // read a string directly attached to a single-letter option
     const auto getStringOperand = [&](const char* desc) {
         if (argv[0][2] == 0) {
             printf("%s must immediately follow option (no spaces)\n", desc);
@@ -345,9 +352,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
         return argv[0] + 2;
     };
 
-    argc--;
-    argv++;
-    for (; argc >= 1; argc--, argv++) {
+    for (bumpArg(); argc >= 1; bumpArg()) {
         if (argv[0][0] == '-') {
             switch (argv[0][1]) {
             case '-':
@@ -412,22 +417,18 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         ProcessBindingBase(argc, argv, baseSsboBinding);
                     } else if (lowerword == "source-entrypoint" || // synonyms
                                lowerword == "sep") {
-                        sourceEntryPointName = argv[1];
-                        if (argc > 0) {
-                            argc--;
-                            argv++;
-                        } else
+                        if (argc <= 1)
                             Error("no <entry-point> provided for --source-entrypoint");
+                        sourceEntryPointName = argv[1];
+                        bumpArg();
                         break;
                     } else if (lowerword == "variable-name" || // synonyms
                         lowerword == "vn") {
                         Options |= EOptionOutputHexadecimal;
-                        variableName = argv[1];
-                        if (argc > 0) {
-                            argc--;
-                            argv++;
-                        } else
+                        if (argc <= 1)
                             Error("no <C-variable-name> provided for --variable-name");
+                        variableName = argv[1];
+                        bumpArg();
                         break;
                     } else {
                         usage();
@@ -465,12 +466,10 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 IncludeDirectoryList.push_back(getStringOperand("-I<dir> include path"));
                 break;
             case 'S':
-                shaderStageName = argv[1];
-                if (argc > 0) {
-                    argc--;
-                    argv++;
-                } else
+                if (argc <= 1)
                     Error("no <stage> specified for -S");
+                shaderStageName = argv[1];
+                bumpArg();
                 break;
             case 'U':
                 UserPreamble.addUndef(getStringOperand("-U<macro>: macro name"));
@@ -490,11 +489,9 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 // HLSL todo: entry point handle needs much more sophistication.
                 // This is okay for one compilation unit with one entry point.
                 entryPointName = argv[1];
-                if (argc > 0) {
-                    argc--;
-                    argv++;
-                } else
+                if (argc <= 1)
                     Error("no <entry-point> provided for -e");
+                bumpArg();
                 break;
             case 'g':
                 Options |= EOptionDebug;
@@ -512,12 +509,10 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 Options |= EOptionMemoryLeakMode;
                 break;
             case 'o':
-                binaryFileName = argv[1];
-                if (argc > 0) {
-                    argc--;
-                    argv++;
-                } else
+                if (argc <= 1)
                     Error("no <file> provided for -o");
+                binaryFileName = argv[1];
+                bumpArg();
                 break;
             case 'q':
                 Options |= EOptionDumpReflection;
@@ -1122,12 +1117,11 @@ void usage()
            "                                       without explicit bindings.\n"
            "  --amb                                synonym for --auto-map-bindings\n"
            "  --auto-map-locations                 automatically locate input/output lacking\n"
-           "                                       'location'\n (fragile, not cross stage)\n"
+           "                                       'location' (fragile, not cross stage)\n"
            "  --aml                                synonym for --auto-map-locations\n"
            "  --flatten-uniform-arrays             flatten uniform texture/sampler arrays to\n"
            "                                       scalars\n"
            "  --fua                                synonym for --flatten-uniform-arrays\n"
-           "\n"
            "  --hlsl-offsets                       Allow block offsets to follow HLSL rules\n"
            "                                       Works independently of source language\n"
            "  --hlsl-iomap                         Perform IO mapping in HLSL register space\n"
