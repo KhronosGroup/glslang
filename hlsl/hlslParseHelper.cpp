@@ -1492,9 +1492,25 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
     switch (type.getQualifier().builtIn) {
     case EbvTessLevelOuter: requiredArraySize = 4; break;
     case EbvTessLevelInner: requiredArraySize = 2; break;
-    case EbvClipDistance:   // TODO: ...
-    case EbvCullDistance:   // TODO: ...
-        return;
+
+    case EbvClipDistance:
+    case EbvCullDistance:
+        {
+            // ClipDistance and CullDistance are handled specially in the entry point output 
+            // copy algorithm, because they may need to be unpacked from components of vectors
+            // (or a scalar) into a float array.  Here, we make the array the right size and type,
+            // which is the number of components per vector times the array size (or 1 if not
+            // an array).  The copy itself is handled in assignClipCullDistance().
+            requiredArraySize = type.getVectorSize() * (type.isArray() ? type.getOuterArraySize() : 1);
+
+            TType clipCullType(EbtFloat, type.getQualifier().storage, 1);
+
+            clipCullType.getQualifier() = type.getQualifier();
+            type.shallowCopy(clipCullType);
+
+            break;
+        }
+
     case EbvTessCoord:
         {
             // tesscoord is always a vec3 for the IO variable, no matter the shader's
@@ -2290,6 +2306,88 @@ void HlslParseContext::handleFunctionArgument(TFunction* function,
         arguments = newArg;
 }
 
+// Clip and cull distance require special handling due to a semantic mismatch.  In HLSL,
+// these can be float scalar, float vector, or arrays of float scalar or float vector.
+// In SPIR-V, they are arrays of scalar floats in all cases.  We must copy individual components
+// (e.g, both x and y components of a float2) out into the destination float array.
+//
+// The values are assigned to sequential members of the output array.  The inner dimension
+// is vector components.  The outer dimension is array elements.
+TIntermAggregate* HlslParseContext::assignClipCullDistance(const TSourceLoc& loc, TOperator op,
+                                                           TIntermTyped* left, TIntermTyped* right)
+{
+    // ***
+    // TODO: this does not yet handle the index coming from the semantic's ID, as in SV_ClipDistance[012345...]
+    // ***
+
+    // left has got to be an array of scalar floats, per SPIR-V semantics.
+    // fixBuiltInIoType() should have handled that upstream.
+    assert(left->getType().isArray());
+    assert(left->getType().getVectorSize() == 1);
+    assert(left->getType().getBasicType() == EbtFloat);
+
+    // array sizes, or 1 if it's not an array:
+    const int lhsArraySize = (left->getType().isArray() ? left->getType().getOuterArraySize() : 1);
+    const int rhsArraySize = (right->getType().isArray() ? right->getType().getOuterArraySize() : 1);
+    // vector sizes:
+    const int lhsVectorSize = left->getType().getVectorSize();
+    const int rhsVectorSize = right->getType().getVectorSize();
+
+    // We may be creating multiple sub-assignments.  This is an aggregate to hold them.
+    // TODO: it would be possible to be clever sometimes and avoid the sequence node if not needed.
+    TIntermAggregate* assignList = nullptr;
+
+    // If the types are homomorphic, use a simple assign.  No need to mess about with 
+    // individual components.
+    if (left->getType().isArray() == right->getType().isArray() &&
+        lhsArraySize == rhsArraySize &&
+        lhsVectorSize == rhsVectorSize) {
+        assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, left, right, loc));
+        assignList->setOperator(EOpSequence);
+        return assignList;
+    }
+
+    // We are going to copy each component of the right (per array element if indicated) to sequential
+    // array elements of the left.  This tracks the lhs element we're writing to as we go along.
+    int lhsArrayPos = 0;
+
+    // Loop through every component of every element of the RHS, and copy to LHS elements in turn.
+    for (int rhsArrayPos = 0; rhsArrayPos < rhsArraySize; ++rhsArrayPos) {
+        for (int rhsComponent = 0; rhsComponent < rhsVectorSize; ++rhsComponent) {
+            // LHS array member to write to:
+            TIntermTyped* lhsMember = intermediate.addIndex(EOpIndexDirect, left,
+                                                            intermediate.addConstantUnion(lhsArrayPos++, loc), loc);
+
+            TIntermTyped* rhsMember = right;
+
+            // If right is an array, extract the element of interest
+            if (right->getType().isArray()) {
+                const TType derefType(rhsMember->getType(), 0);
+                rhsMember = intermediate.addIndex(EOpIndexDirect, rhsMember,
+                                                  intermediate.addConstantUnion(rhsArrayPos, loc), loc);
+                rhsMember->setType(derefType);
+            }
+
+            // If right is a vector, extract the component of interest.
+            if (right->getType().isVector()) {
+                const TType derefType(rhsMember->getType(), 0);
+                rhsMember = intermediate.addIndex(EOpIndexDirect, rhsMember,
+                                                  intermediate.addConstantUnion(rhsComponent, loc), loc);
+                rhsMember->setType(derefType);
+            }
+
+            // Assign: to the proper lhs member.
+            assignList = intermediate.growAggregate(assignList,
+                                                    intermediate.addAssign(op, lhsMember, rhsMember, loc));
+        }
+    }
+
+    assert(assignList != nullptr);
+    assignList->setOperator(EOpSequence);
+
+    return assignList;
+}
+
 // Some simple source assignments need to be flattened to a sequence
 // of AST assignments. Catch these and flatten, otherwise, pass through
 // to intermediate.addAssign().
@@ -2312,8 +2410,14 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
     // OK to do a single assign if both are split, or both are unsplit.  But if one is and the other
     // isn't, we fall back to a member-wise copy.
-    if (! isFlattenLeft && ! isFlattenRight && !isSplitLeft && !isSplitRight)
+    if (! isFlattenLeft && ! isFlattenRight && !isSplitLeft && !isSplitRight) {
+        // Clip and cull distance requires more processing.  See comment above assignClipCullDistance.
+        const TBuiltInVariable leftBuiltIn = left->getType().getQualifier().builtIn;
+        if (leftBuiltIn == EbvClipDistance || leftBuiltIn == EbvCullDistance)
+            return assignClipCullDistance(loc, op, left, right);
+
         return intermediate.addAssign(op, left, right, loc);
+    }
 
     TIntermAggregate* assignList = nullptr;
     const TVector<TVariable*>* leftVariables = nullptr;
@@ -2474,13 +2578,21 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left,  member, splitLeft, memberL) : subLeft;
                 TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, member, splitRight, memberR) : subRight;
 
-                // If this is the final flattening (no nested types below to flatten) we'll copy the member, else
-                // recurse into the type hierarchy.  However, if splitting the struct, that means we can copy a whole
-                // subtree here IFF it does not itself contain any interstage built-in IO variables, so we only have to
-                // recurse into it if there's something for splitting to do.  That can save a lot of AST verbosity for
-                // a bunch of memberwise copies.
-                if ((!isFlattenLeft && !isFlattenRight &&
-                     !typeL.containsBuiltInInterstageIO(language) && !typeR.containsBuiltInInterstageIO(language))) {
+                const TBuiltInVariable leftBuiltIn = subSplitLeft->getType().getQualifier().builtIn;
+
+                if (leftBuiltIn == EbvClipDistance || leftBuiltIn == EbvCullDistance) {
+
+                    // Clip and cull distance builtin assignment is complex in its own right, and is handled in
+                    // a separate function dedicated to that task.  See comment above assignClipCullDistance;
+                    assignList = intermediate.growAggregate(assignList, assignClipCullDistance(loc, op, subSplitLeft, subSplitRight), loc);
+                } else if ((!isFlattenLeft && !isFlattenRight &&
+                            !typeL.containsBuiltInInterstageIO(language) && !typeR.containsBuiltInInterstageIO(language))) {
+                    // If this is the final flattening (no nested types below to flatten) we'll copy the member, else
+                    // recurse into the type hierarchy.  However, if splitting the struct, that means we can copy a whole
+                    // subtree here IFF it does not itself contain any interstage built-in IO variables, so we only have to
+                    // recurse into it if there's something for splitting to do.  That can save a lot of AST verbosity for
+                    // a bunch of memberwise copies.
+
                     assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subSplitLeft, subSplitRight, loc), loc);
                 } else {
                     traverse(subLeft, subRight, subSplitLeft, subSplitRight);
