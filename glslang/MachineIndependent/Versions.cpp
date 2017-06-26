@@ -155,7 +155,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_frag_depth]                   = EBhDisable;
     extensionBehavior[E_GL_OES_EGL_image_external]           = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_texture_lod]           = EBhDisable;
-
+    extensionBehavior[E_GL_EXT_shadow_samplers]              = EBhDisable;
     extensionBehavior[E_GL_ARB_texture_rectangle]            = EBhDisable;
     extensionBehavior[E_GL_3DL_array_objects]                = EBhDisable;
     extensionBehavior[E_GL_ARB_shading_language_420pack]     = EBhDisable;
@@ -253,6 +253,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_frag_depth 1\n"
             "#define GL_OES_EGL_image_external 1\n"
             "#define GL_EXT_shader_texture_lod 1\n"
+            "#define GL_EXT_shadow_samplers 1\n"
 
             // AEP
             "#define GL_ANDROID_extension_pack_es31a 1\n"
