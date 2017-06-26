@@ -466,6 +466,9 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                             if (strcmp(argv[1], "vulkan1.0") == 0) {
                                 setVulkanSpv();
                                 VulkanClientVersion = 100;
+                            } else if (strcmp(argv[1], "vulkan1.1") == 0) {
+                                setVulkanSpv();
+                                VulkanClientVersion = 110;
                             } else if (strcmp(argv[1], "opengl") == 0) {
                                 setOpenGlSpv();
                                 OpenGLClientVersion = 450;
