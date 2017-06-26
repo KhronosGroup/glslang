@@ -1833,35 +1833,41 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
         }
     }
 
-    // Handle [outputtoplogy("...")]
+    // Handle [outputtopology("...")]
     const TIntermAggregate* topologyAttr = attributes[EatOutputTopology];
     if (topologyAttr != nullptr) {
         const TConstUnion& topoType = topologyAttr->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
         if (topoType.getType() != EbtString) {
-            error(loc, "invalid outputtoplogy", "", "");
+            error(loc, "invalid outputtopology", "", "");
         } else {
             TString topologyStr = *topoType.getSConst();
             std::transform(topologyStr.begin(), topologyStr.end(), topologyStr.begin(), ::tolower);
 
-            TVertexOrder topology = EvoNone;
-                
+            TVertexOrder vertexOrder = EvoNone;
+            TLayoutGeometry primitive = ElgNone;
+
             if (topologyStr == "point") {
-                topology = EvoNone;
+                intermediate.setPointMode();
             } else if (topologyStr == "line") {
-                topology = EvoNone;
+                primitive = ElgIsolines;
             } else if (topologyStr == "triangle_cw") {
-                topology = EvoCw;
+                vertexOrder = EvoCw;
+                primitive = ElgTriangles;
             } else if (topologyStr == "triangle_ccw") {
-                topology = EvoCcw;
+                vertexOrder = EvoCcw;
+                primitive = ElgTriangles;
             } else {
-                error(loc, "unsupported outputtoplogy type", topologyStr.c_str(), "");
+                error(loc, "unsupported outputtopology type", topologyStr.c_str(), "");
             }
 
-            if (topology != EvoNone) {
-                if (! intermediate.setVertexOrder(topology)) {
-                    error(loc, "cannot change previously set outputtopology", TQualifier::getVertexOrderString(topology), "");
+            if (vertexOrder != EvoNone) {
+                if (! intermediate.setVertexOrder(vertexOrder)) {
+                    error(loc, "cannot change previously set outputtopology",
+                          TQualifier::getVertexOrderString(vertexOrder), "");
                 }
             }
+            if (primitive != ElgNone)
+                intermediate.setOutputPrimitive(primitive);
         }
     }
 

@@ -143,6 +143,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.function.frag", "main"},
         {"hlsl.hull.1.tesc", "main"},
         {"hlsl.hull.2.tesc", "main"},
+        {"hlsl.hull.3.tesc", "main"},
         {"hlsl.hull.void.tesc", "main"},
         {"hlsl.hull.ctrlpt-1.tesc", "main"},
         {"hlsl.hull.ctrlpt-2.tesc", "main"},
