@@ -77,7 +77,7 @@ public:
     TIntermTyped* handleUnaryMath(const TSourceLoc&, const char* str, TOperator op, TIntermTyped* childNode);
     TIntermTyped* handleDotDereference(const TSourceLoc&, TIntermTyped* base, const TString& field);
     bool isBuiltInMethod(const TSourceLoc&, TIntermTyped* base, const TString& field);
-    void assignLocations(TVariable& variable);
+    void assignToInterface(TVariable& variable);
     void handleFunctionDeclarator(const TSourceLoc&, TFunction& function, bool prototype);
     TIntermAggregate* handleFunctionDefinition(const TSourceLoc&, TFunction&, const TAttributeMap&, TIntermNode*& entryPointTree);
     TIntermNode* transformEntryPoint(const TSourceLoc&, TFunction&, const TAttributeMap&);
@@ -90,12 +90,14 @@ public:
     TIntermTyped* handleAssign(const TSourceLoc&, TOperator, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleAssignToMatrixSwizzle(const TSourceLoc&, TOperator, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleFunctionCall(const TSourceLoc&, TFunction*, TIntermTyped*);
+    TIntermAggregate* assignClipCullDistance(const TSourceLoc&, TOperator, TIntermTyped* left, TIntermTyped* right);
     void decomposeIntrinsic(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     void decomposeSampleMethods(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     void decomposeStructBufferMethods(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     void decomposeGeometryMethods(const TSourceLoc&, TIntermTyped*& node, TIntermNode* arguments);
     void pushFrontArguments(TIntermTyped* front, TIntermTyped*& arguments);
     void addInputArgumentConversions(const TFunction&, TIntermTyped*&);
+    void expandArguments(const TSourceLoc&, const TFunction&, TIntermTyped*&);
     TIntermTyped* addOutputArgumentConversions(const TFunction&, TIntermOperator&);
     void builtInOpCheck(const TSourceLoc&, const TFunction&, TIntermOperator&);
     TFunction* makeConstructorCall(const TSourceLoc&, const TType&);
@@ -145,6 +147,7 @@ public:
     void lengthenList(const TSourceLoc&, TIntermSequence& list, int size, TIntermTyped* scalarInit);
     TIntermTyped* handleConstructor(const TSourceLoc&, TIntermTyped*, const TType&);
     TIntermTyped* addConstructor(const TSourceLoc&, TIntermTyped*, const TType&);
+    TIntermTyped* convertArray(TIntermTyped*, const TType&);
     TIntermTyped* constructAggregate(TIntermNode*, const TType&, int, const TSourceLoc&);
     TIntermTyped* constructBuiltIn(const TType&, TOperator, TIntermTyped*, const TSourceLoc&, bool subset);
     void declareBlock(const TSourceLoc&, TType&, const TString* instanceName = 0, TArraySizes* arraySizes = 0);
@@ -186,7 +189,8 @@ public:
     virtual void growGlobalUniformBlock(const TSourceLoc&, TType&, const TString& memberName, TTypeList* typeList = nullptr) override;
 
     // Apply L-value conversions.  E.g, turning a write to a RWTexture into an ImageStore.
-    TIntermTyped* handleLvalue(const TSourceLoc&, const char* op, TIntermTyped* node);
+    TIntermTyped* handleLvalue(const TSourceLoc&, const char* op, TIntermTyped*& node);
+    TIntermTyped* handleSamplerLvalue(const TSourceLoc&, const char* op, TIntermTyped*& node);
     bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
 
     TLayoutFormat getLayoutFromTxType(const TSourceLoc&, const TType&);
@@ -236,13 +240,14 @@ protected:
 
     // Array and struct flattening
     TIntermTyped* flattenAccess(TIntermTyped* base, int member);
-    bool shouldFlattenUniform(const TType&) const;
+    TIntermTyped* flattenAccess(int uniqueId, int member, const TType&);
+    bool shouldFlatten(const TType&) const;
     bool wasFlattened(const TIntermTyped* node) const;
     bool wasFlattened(int id) const { return flattenMap.find(id) != flattenMap.end(); }
     int  addFlattenedMember(const TSourceLoc& loc, const TVariable&, const TType&, TFlattenData&, const TString& name, bool track);
     bool isFinalFlattening(const TType& type) const { return !(type.isStruct() || type.isArray()); }
 
-    // Structure splitting (splits interstage builtin types into its own struct)
+    // Structure splitting (splits interstage built-in types into its own struct)
     TIntermTyped* splitAccessStruct(const TSourceLoc& loc, TIntermTyped*& base, int& member);
     void splitAccessArray(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index);
     TType& split(TType& type, TString name, const TType* outerStructType = nullptr);
@@ -311,17 +316,7 @@ protected:
     TIntermSymbol* findLinkageSymbol(TBuiltInVariable biType) const;
 
     // Current state of parsing
-    struct TPragma contextPragma;
-    int loopNestingLevel;        // 0 if outside all loops
     int annotationNestingLevel;  // 0 if outside all annotations
-    int structNestingLevel;      // 0 if outside blocks and structures
-    int controlFlowNestingLevel; // 0 if outside all flow control
-    TList<TIntermSequence*> switchSequenceStack;  // case, node, case, case, node, ...; ensure only one node between cases;   stack of them for nesting
-    bool postEntryPointReturn;         // if inside a function, true if the function is the entry point and this is after a return statement
-    const TType* currentFunctionType;  // the return type of the function that's currently being parsed
-    bool functionReturnsValue;   // true if a non-void function has a return
-    TBuiltInResource resources;
-    TLimits& limits;
 
     HlslParseContext(HlslParseContext&);
     HlslParseContext& operator=(HlslParseContext&);

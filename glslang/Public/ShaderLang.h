@@ -110,7 +110,44 @@ typedef enum {
     EShSourceNone,
     EShSourceGlsl,
     EShSourceHlsl,
-} EShSource;          // if EShLanguage were EShStage, this could be EShLanguage instead
+} EShSource;                  // if EShLanguage were EShStage, this could be EShLanguage instead
+
+typedef enum {
+    EShClientNone,
+    EShClientVulkan,
+    EShClientOpenGL,
+} EShClient;
+
+typedef enum {
+    EShTargetNone,
+    EshTargetSpv,
+} EShTargetLanguage;
+
+struct TInputLanguage {
+    EShSource languageFamily; // redundant information with other input, this one overrides when not EShSourceNone
+    EShLanguage stage;        // redundant information with other input, this one overrides when not EShSourceNone
+    EShClient dialect;
+    int dialectVersion;       // version of client's language definition, not the client (when not EShClientNone)
+};
+
+struct TClient {
+    EShClient client;
+    int version;              // version of client itself (not the client's input dialect)
+};
+
+struct TTarget {
+    EShTargetLanguage language;
+    unsigned int version;     // the version to target, if SPIR-V, defined by "word 1" of the SPIR-V binary header
+};
+
+// All source/client/target versions and settings.
+// Can override previous methods of setting, when items are set here.
+// Expected to grow, as more are added, rather than growing parameter lists.
+struct TEnvironment {
+    TInputLanguage input;     // definition of the input language
+    TClient client;           // what client is the overall compilation being done for?
+    TTarget target;           // what to generate
+};
 
 const char* StageName(EShLanguage);
 
@@ -135,6 +172,14 @@ typedef enum {
 } EShOptimizationLevel;
 
 //
+// Texture and Sampler transformation mode.
+//
+typedef enum {
+    EShTexSampTransKeep,   // keep textures and samplers as is (default)
+    EShTexSampTransUpgradeTextureRemoveSampler,  // change texture w/o embeded sampler into sampled texture and throw away all samplers
+} EShTextureSamplerTransformMode;
+
+//
 // Message choices for what errors and warnings are given.
 //
 enum EShMessages {
@@ -149,6 +194,7 @@ enum EShMessages {
     EShMsgCascadingErrors  = (1 << 7),  // get cascading errors; risks error-recovery issues, instead of an early exit
     EShMsgKeepUncalled     = (1 << 8),  // for testing, don't eliminate uncalled functions
     EShMsgHlslOffsets      = (1 << 9),  // allow block offsets to follow HLSL rules instead of GLSL rules
+    EShMsgDebugInfo        = (1 << 10), // save debug information
 };
 
 //
@@ -313,6 +359,26 @@ public:
     void setHlslIoMapping(bool hlslIoMap);
     void setFlattenUniformArrays(bool flatten);
     void setNoStorageFormat(bool useUnknownFormat);
+    void setTextureSamplerTransformMode(EShTextureSamplerTransformMode mode);
+
+    // For setting up the environment (initialized in the constructor):
+    void setEnvInput(EShSource lang, EShLanguage stage, EShClient client, int version)
+    {
+        environment.input.languageFamily = lang;
+        environment.input.stage = stage;
+        environment.input.dialect = client;
+        environment.input.dialectVersion = version;
+    }
+    void setEnvClient(EShClient client, int version)
+    {
+        environment.client.client = client;
+        environment.client.version = version;
+    }
+    void setEnvTarget(EShTargetLanguage lang, unsigned int version)
+    {
+        environment.target.language = lang;
+        environment.target.version = version;
+    }
 
     // Interface to #include handlers.
     //
@@ -397,6 +463,9 @@ public:
         virtual void releaseInclude(IncludeResult*) override { }
     };
 
+    bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
+               bool forwardCompatible, EShMessages, Includer&);
+
     bool parse(const TBuiltInResource* res, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                bool forwardCompatible, EShMessages messages)
     {
@@ -404,12 +473,18 @@ public:
         return parse(res, defaultVersion, defaultProfile, forceDefaultVersionAndProfile, forwardCompatible, messages, includer);
     }
 
-    bool parse(const TBuiltInResource*, int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
-               bool forwardCompatible, EShMessages, Includer&);
-
     // Equivalent to parse() without a default profile and without forcing defaults.
-    // Provided for backwards compatibility.
-    bool parse(const TBuiltInResource*, int defaultVersion, bool forwardCompatible, EShMessages);
+    bool parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages)
+    {
+        return parse(builtInResources, defaultVersion, ENoProfile, false, forwardCompatible, messages);
+    }
+
+    bool parse(const TBuiltInResource* builtInResources, int defaultVersion, bool forwardCompatible, EShMessages messages,
+               Includer& includer)
+    {
+        return parse(builtInResources, defaultVersion, ENoProfile, false, forwardCompatible, messages, includer);
+    }
+
     bool preprocess(const TBuiltInResource* builtInResources,
                     int defaultVersion, EProfile defaultProfile, bool forceDefaultVersionAndProfile,
                     bool forwardCompatible, EShMessages message, std::string* outputString,
@@ -443,6 +518,8 @@ protected:
 
     // a function in the source string can be renamed FROM this TO the name given in setEntryPoint.
     std::string sourceEntryPointName;
+
+    TEnvironment environment;
 
     friend class TProgram;
 

@@ -72,14 +72,19 @@ inline const char* ProfileName(EProfile profile)
 }
 
 //
-// SPIR-V has versions for multiple things; tie them together.
-// 0 means a target or rule set is not enabled.
+// What source rules, validation rules, target language, etc. are needed
+// desired for SPIR-V?
+//
+// 0 means a target or rule set is not enabled (ignore rules from that entity).
+// Non-0 means to apply semantic rules arising from that version of its rule set.
+// The union of all requested rule sets will be applied.
 //
 struct SpvVersion {
-    SpvVersion() : spv(0), vulkan(0), openGl(0) {}
-    unsigned int spv; // the version of the targeted SPIR-V, as defined by SPIR-V in word 1 of the SPIR-V binary header
-    int vulkan;       // the version of semantics for Vulkan; e.g., for GLSL from KHR_vulkan_glsl "#define VULKAN"
-    int openGl;       // the version of semantics for OpenGL; e.g., for GLSL from KHR_vulkan_glsl "#define GL_SPIRV"
+    SpvVersion() : spv(0), vulkanGlsl(0), vulkan(0), openGl(0) {}
+    unsigned int spv; // the version of SPIR-V to target, as defined by "word 1" of the SPIR-V binary header
+    int vulkanGlsl;   // the version of GLSL semantics for Vulkan, from GL_KHR_vulkan_glsl, for "#define VULKAN XXX"
+    int vulkan;       // the version of Vulkan, for which SPIR-V execution environment rules to use (100 means 1.0)
+    int openGl;       // the version of GLSL semantics for OpenGL, from GL_ARB_gl_spirv, for "#define GL_SPIRV XXX"
 };
 
 //
@@ -103,6 +108,7 @@ const char* const E_GL_OES_standard_derivatives         = "GL_OES_standard_deriv
 const char* const E_GL_EXT_frag_depth                   = "GL_EXT_frag_depth";
 const char* const E_GL_OES_EGL_image_external           = "GL_OES_EGL_image_external";
 const char* const E_GL_EXT_shader_texture_lod           = "GL_EXT_shader_texture_lod";
+const char* const E_GL_EXT_shadow_samplers              = "GL_EXT_shadow_samplers";
 
 const char* const E_GL_ARB_texture_rectangle            = "GL_ARB_texture_rectangle";
 const char* const E_GL_3DL_array_objects                = "GL_3DL_array_objects";
@@ -154,7 +160,10 @@ const char* const E_GL_AMD_shader_trinary_minmax                = "GL_AMD_shader
 const char* const E_GL_AMD_shader_explicit_vertex_parameter     = "GL_AMD_shader_explicit_vertex_parameter";
 const char* const E_GL_AMD_gcn_shader                           = "GL_AMD_gcn_shader";
 const char* const E_GL_AMD_gpu_shader_half_float                = "GL_AMD_gpu_shader_half_float";
+const char* const E_GL_AMD_texture_gather_bias_lod              = "GL_AMD_texture_gather_bias_lod";
+const char* const E_GL_AMD_gpu_shader_int16                     = "GL_AMD_gpu_shader_int16";
 #endif
+
 #ifdef NV_EXTENSIONS
 
 const char* const E_GL_NV_sample_mask_override_coverage         = "GL_NV_sample_mask_override_coverage";

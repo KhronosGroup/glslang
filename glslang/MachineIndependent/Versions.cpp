@@ -155,7 +155,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_frag_depth]                   = EBhDisable;
     extensionBehavior[E_GL_OES_EGL_image_external]           = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_texture_lod]           = EBhDisable;
-
+    extensionBehavior[E_GL_EXT_shadow_samplers]              = EBhDisable;
     extensionBehavior[E_GL_ARB_texture_rectangle]            = EBhDisable;
     extensionBehavior[E_GL_3DL_array_objects]                = EBhDisable;
     extensionBehavior[E_GL_ARB_shading_language_420pack]     = EBhDisable;
@@ -202,6 +202,8 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_AMD_shader_explicit_vertex_parameter]     = EBhDisable;
     extensionBehavior[E_GL_AMD_gcn_shader]                           = EBhDisable;
     extensionBehavior[E_GL_AMD_gpu_shader_half_float]                = EBhDisable;
+    extensionBehavior[E_GL_AMD_texture_gather_bias_lod]              = EBhDisable;
+    extensionBehavior[E_GL_AMD_gpu_shader_int16]                     = EBhDisable;
 #endif
 
 #ifdef NV_EXTENSIONS
@@ -259,6 +261,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_frag_depth 1\n"
             "#define GL_OES_EGL_image_external 1\n"
             "#define GL_EXT_shader_texture_lod 1\n"
+            "#define GL_EXT_shadow_samplers 1\n"
 
             // AEP
             "#define GL_ANDROID_extension_pack_es31a 1\n"
@@ -334,6 +337,8 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_AMD_shader_explicit_vertex_parameter 1\n"
             "#define GL_AMD_gcn_shader 1\n"
             "#define GL_AMD_gpu_shader_half_float 1\n"
+            "#define GL_AMD_texture_gather_bias_lod 1\n"
+            "#define GL_AMD_gpu_shader_int16 1\n"
 #endif
 
 #ifdef NV_EXTENSIONS
@@ -369,9 +374,9 @@ void TParseVersions::getPreamble(std::string& preamble)
     // #define VULKAN XXXX
     const int numberBufSize = 12;
     char numberBuf[numberBufSize];
-    if (spvVersion.vulkan > 0) {
+    if (spvVersion.vulkanGlsl > 0) {
         preamble += "#define VULKAN ";
-        snprintf(numberBuf, numberBufSize, "%d", spvVersion.vulkan);
+        snprintf(numberBuf, numberBufSize, "%d", spvVersion.vulkanGlsl);
         preamble += numberBuf;
         preamble += "\n";
     }
@@ -514,6 +519,11 @@ void TParseVersions::requireNotRemoved(const TSourceLoc& loc, int profileMask, i
             error(loc, "no longer supported in", featureDesc, buf);
         }
     }
+}
+
+void TParseVersions::unimplemented(const TSourceLoc& loc, const char* featureDesc)
+{
+    error(loc, "feature not yet implemented", featureDesc, "");
 }
 
 // Returns true if at least one of the extensions in the extensions parameter is requested. Otherwise, returns false.
@@ -736,10 +746,21 @@ void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
 }
 
 #ifdef AMD_EXTENSIONS
-// Call for any operation needing float16 data-type support.
+// Call for any operation needing GLSL 16-bit integer data-type support.
+void TParseVersions::int16Check(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (! builtIn) {
+        requireExtensions(loc, 1, &E_GL_AMD_gpu_shader_int16, "shader int16");
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+        profileRequires(loc, ECoreProfile, 450, nullptr, op);
+        profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
+    }
+}
+
+// Call for any operation needing GLSL float16 data-type support.
 void TParseVersions::float16Check(const TSourceLoc& loc, const char* op, bool builtIn)
 {
-    if (!builtIn) {
+    if (! builtIn) {
         requireExtensions(loc, 1, &E_GL_AMD_gpu_shader_half_float, "shader half float");
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
         profileRequires(loc, ECoreProfile, 450, nullptr, op);

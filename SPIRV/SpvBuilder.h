@@ -70,7 +70,16 @@ public:
         source = lang;
         sourceVersion = version;
     }
+    void setSourceFile(const std::string& file)
+    {
+        Instruction* fileString = new Instruction(getUniqueId(), NoType, OpString);
+        fileString->addStringOperand(file.c_str());
+        sourceFileStringId = fileString->getResultId();
+        strings.push_back(std::unique_ptr<Instruction>(fileString));
+    }
+    void setSourceText(const std::string& text) { sourceText = text; }
     void addSourceExtension(const char* ext) { sourceExtensions.push_back(ext); }
+    void setEmitOpLines() { emitOpLines = true; }
     void addExtension(const char* ext) { extensions.insert(ext); }
     Id import(const char*);
     void setMemoryModel(spv::AddressingModel addr, spv::MemoryModel mem)
@@ -91,6 +100,12 @@ public:
         uniqueId += numIds;
         return id;
     }
+
+    // Log the current line, and if different than the last one,
+    // issue a new OpLine, using the current file name.
+    void setLine(int line);
+    // Low-level OpLine. See setLine() for a layered helper.
+    void addLine(Id fileName, int line, int column);
 
     // For creating new types (will return old type if the requested one was already made).
     Id makeVoidType();
@@ -199,6 +214,10 @@ public:
     Id makeUintConstant(unsigned u, bool specConstant = false)   { return makeIntConstant(makeUintType(32),           u, specConstant); }
     Id makeInt64Constant(long long i, bool specConstant = false)            { return makeInt64Constant(makeIntType(64),  (unsigned long long)i, specConstant); }
     Id makeUint64Constant(unsigned long long u, bool specConstant = false)  { return makeInt64Constant(makeUintType(64),                     u, specConstant); }
+#ifdef AMD_EXTENSIONS
+    Id makeInt16Constant(short i, bool specConstant = false)        { return makeIntConstant(makeIntType(16),      (unsigned)((unsigned short)i), specConstant); }
+    Id makeUint16Constant(unsigned short u, bool specConstant = false)  { return makeIntConstant(makeUintType(16), (unsigned)u, specConstant); }
+#endif
     Id makeFloatConstant(float f, bool specConstant = false);
     Id makeDoubleConstant(double d, bool specConstant = false);
 #ifdef AMD_EXTENSIONS
@@ -213,7 +232,6 @@ public:
     void addExecutionMode(Function*, ExecutionMode mode, int value1 = -1, int value2 = -1, int value3 = -1);
     void addName(Id, const char* name);
     void addMemberName(Id, int member, const char* name);
-    void addLine(Id target, Id fileName, int line, int column);
     void addDecoration(Id, Decoration, int num = -1);
     void addMemberDecoration(Id, unsigned int member, Decoration, int num = -1);
 
@@ -561,10 +579,15 @@ public:
     void simplifyAccessChainSwizzle();
     void createAndSetNoPredecessorBlock(const char*);
     void createSelectionMerge(Block* mergeBlock, unsigned int control);
+    void dumpSourceInstructions(std::vector<unsigned int>&) const;
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<std::unique_ptr<Instruction> >&) const;
 
     SourceLanguage source;
     int sourceVersion;
+    spv::Id sourceFileStringId;
+    std::string sourceText;
+    int currentLine;
+    bool emitOpLines;
     std::set<std::string> extensions;
     std::vector<const char*> sourceExtensions;
     AddressingModel addressModel;
@@ -579,6 +602,7 @@ public:
     AccessChain accessChain;
 
     // special blocks of instructions for output
+    std::vector<std::unique_ptr<Instruction> > strings;
     std::vector<std::unique_ptr<Instruction> > imports;
     std::vector<std::unique_ptr<Instruction> > entryPoints;
     std::vector<std::unique_ptr<Instruction> > executionModes;
@@ -599,7 +623,7 @@ public:
     // Our loop stack.
     std::stack<LoopBlocks> loops;
 
-    // The stream for outputing warnings and errors.
+    // The stream for outputting warnings and errors.
     SpvBuildLogger* logger;
 };  // end Builder class
 
