@@ -50,7 +50,8 @@ namespace glslang {
 TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
                              int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
                              TInfoSink& infoSink, bool forwardCompatible, EShMessages messages) :
-            TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink, forwardCompatible, messages),
+            TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language,
+                              infoSink, forwardCompatible, messages),
             inMain(false),
             blockName(nullptr),
             limits(resources.limits),
