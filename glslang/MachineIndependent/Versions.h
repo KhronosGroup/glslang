@@ -103,6 +103,7 @@ const char* const E_GL_OES_standard_derivatives         = "GL_OES_standard_deriv
 const char* const E_GL_EXT_frag_depth                   = "GL_EXT_frag_depth";
 const char* const E_GL_OES_EGL_image_external           = "GL_OES_EGL_image_external";
 const char* const E_GL_EXT_shader_texture_lod           = "GL_EXT_shader_texture_lod";
+const char* const E_GL_EXT_shadow_samplers              = "GL_EXT_shadow_samplers";
 
 const char* const E_GL_ARB_texture_rectangle            = "GL_ARB_texture_rectangle";
 const char* const E_GL_3DL_array_objects                = "GL_3DL_array_objects";

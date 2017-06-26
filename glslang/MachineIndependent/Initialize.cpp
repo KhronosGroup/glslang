@@ -1333,6 +1333,9 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "vec4 texture2DProjGradEXT(sampler2D, vec4, vec2, vec2);"  // GL_EXT_shader_texture_lod
                 "vec4 textureCubeGradEXT(samplerCube, vec3, vec3, vec3);"  // GL_EXT_shader_texture_lod
 
+                "float shadow2DEXT(sampler2DShadow, vec3);"     // GL_EXT_shadow_samplers
+                "float shadow2DProjEXT(sampler2DShadow, vec4);" // GL_EXT_shadow_samplers
+
                 "\n");
         }
     }
@@ -5324,6 +5327,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
         }
 
+        if (profile == EEsProfile) {
+            symbolTable.setFunctionExtensions("shadow2DEXT",        1, &E_GL_EXT_shadow_samplers);
+            symbolTable.setFunctionExtensions("shadow2DProjEXT",    1, &E_GL_EXT_shadow_samplers);
+        }
+
         // Fall through
 
     case EShLangTessControl:
@@ -5661,6 +5669,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_DeviceIndex", EbvDeviceIndex, symbolTable);
         symbolTable.setVariableExtensions("gl_ViewIndex", 1, &E_GL_EXT_multiview);
         BuiltInVariable("gl_ViewIndex", EbvViewIndex, symbolTable);
+
+        if (profile == EEsProfile) {
+            symbolTable.setFunctionExtensions("shadow2DEXT",        1, &E_GL_EXT_shadow_samplers);
+            symbolTable.setFunctionExtensions("shadow2DProjEXT",    1, &E_GL_EXT_shadow_samplers);
+        }
         break;
 
     case EShLangCompute:
@@ -6047,6 +6060,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("sparseTextureGatherLodOffsetAMD",     EOpSparseTextureGatherLodOffset);
             symbolTable.relateToOperator("sparseTextureGatherLodOffsetsAMD",    EOpSparseTextureGatherLodOffsets);
 #endif
+        }
+        if (profile == EEsProfile) {
+            symbolTable.relateToOperator("shadow2DEXT",              EOpTexture);
+            symbolTable.relateToOperator("shadow2DProjEXT",          EOpTextureProj);
         }
     }
 
