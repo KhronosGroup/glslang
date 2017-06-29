@@ -5788,22 +5788,26 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, 
 // Write SPIR-V out to a text file with a VkShaderModuleCreateInfo structure
 void OutputSpvMod(const std::vector<unsigned int>& spirv, const char* baseName, const char* varName)
 {
+    static const char *hexs = "0123456789ABCDEF";
+
     std::ofstream out;
     out.open(baseName, std::ios::binary | std::ios::out);
     if (out.fail())
         printf("ERROR: Failed to open file: %s\n", baseName);
-    out << "// " GLSLANG_REVISION " " GLSLANG_DATE << std::endl;
+    out << "// " GLSLANG_REVISION " " GLSLANG_DATE << "\n";
 
     int spirvByteSize = (int)spirv.size()*sizeof(unsigned int);
     if (varName != nullptr) {
-        out << "\n#pragma once" << std::endl;
-        out << "\n#include <vulkan/vulkan.h>\n" << std::endl;
-        out << "const VkShaderModuleCreateInfo " << varName << " = {" << std::endl;
-        out << "  VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO," << std::endl;       // sType
-        out << "  VK_NULL_HANDLE," << std::endl;                                    // pNext
-        out << "  0," << std::endl;                                                 // flags
-        out << "  " << spirvByteSize << "," << std::endl;                           // codeSize
-        out << "  (uint32_t*)\"";                                                   // pCode (beginning)
+        out << "\n#pragma once\n\n"
+               "const VkShaderModuleCreateInfo " << varName << " = {\n"
+               "  VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,\n"        // sType
+               "  VK_NULL_HANDLE,\n"                                     // pNext
+               "  0,\n"                                                  // flags
+               "  " << spirvByteSize << ",\n"                            // codeSize
+               "  (uint32_t*)\"";                                        // pCode (beginning)
+    }
+    else {
+        out << "             \"";
     }
 
     const uint8_t *data = (const uint8_t*)spirv.data();
@@ -5814,11 +5818,13 @@ void OutputSpvMod(const std::vector<unsigned int>& spirv, const char* baseName, 
             out << "\"\n             \"";
             l = WORDS_PER_LINE;
         }
-        out << "\\x" << std::hex << std::setw(2) << std::setfill('0') << uint32_t(data[i]);
+        const uint8_t byte = data[i];
+        out << "\\x" << hexs[byte>>4] << hexs[byte&0xF];
     }
+    out << "\"";
 
     if (varName != nullptr) {
-        out << "\"\n};\n";                                                             // pCode (end)+closing structure
+        out << "\n};\n";                                                 // pCode (end)+closing structure
     }
     out.close();
 }

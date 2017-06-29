@@ -1232,7 +1232,7 @@ void usage()
            "  --vn <name>                          synonym for --variable-name <name>\n"
            "  --shader-module-name <name>          Creates a C header file that contains a\n"
            "                                       VkShaderModuleCreateInfo structure named\n"
-           "                                        <name> initialized with the shader binary\n"
+           "                                       <name> initialized with the shader binary\n"
            "                                       code and the size.\n"
            "  --smn <name>                         synonym for --shader-module-name <name>\n"
            );
