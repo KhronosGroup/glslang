@@ -2870,23 +2870,6 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         return false;
     }
 
-    // This is to guarantee we do this no matter how we get out of the stack frame.
-    // This way there's no bug if an early return forgets to do it.
-    struct tFinalize {
-        tFinalize(HlslParseContext& p) : parseContext(p) { }
-        ~tFinalize() { parseContext.finalizeFlattening(); }
-        HlslParseContext& parseContext;
-    private:
-        const tFinalize& operator=(const tFinalize&) { return *this; }
-        tFinalize(const tFinalize& f) : parseContext(f.parseContext) { }
-    } finalize(parseContext);
-
-    // Initialize the flattening accumulation data, so we can track data across multiple bracket or
-    // dot operators.  This can also be nested, e.g, for [], so we have to track each nesting
-    // level: hence the init and finalize.  Even though in practice these must be
-    // constants, they are parsed no matter what.
-    parseContext.initFlattening();
-
     // Something was found, chain as many postfix operations as exist.
     do {
         TSourceLoc loc = token.loc;

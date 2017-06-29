@@ -1348,11 +1348,11 @@ TIntermTyped* HlslParseContext::flattenAccess(TIntermTyped* base, int member)
     const TType dereferencedType(base->getType(), member);  // dereferenced type
     const TIntermSymbol& symbolNode = *base->getAsSymbolNode();
 
-    TIntermTyped* flattened = flattenAccess(symbolNode.getId(), member, dereferencedType);
+    TIntermTyped* flattened = flattenAccess(symbolNode.getId(), member, dereferencedType, symbolNode.getFlattenSubset());
 
     return flattened ? flattened : base;
 }
-TIntermTyped* HlslParseContext::flattenAccess(int uniqueId, int member, const TType& dereferencedType)
+TIntermTyped* HlslParseContext::flattenAccess(int uniqueId, int member, const TType& dereferencedType, int subset)
 {
     const auto flattenData = flattenMap.find(uniqueId);
 
@@ -1360,18 +1360,24 @@ TIntermTyped* HlslParseContext::flattenAccess(int uniqueId, int member, const TT
         return nullptr;
 
     // Calculate new cumulative offset from the packed tree
-    flattenOffset.back() = flattenData->second.offsets[flattenOffset.back() + member];
+    int newSubset = flattenData->second.offsets[subset >= 0 ? subset + member : member];
 
+    TIntermSymbol* subsetSymbol;
     if (isFinalFlattening(dereferencedType)) {
         // Finished flattening: create symbol for variable
-        member = flattenData->second.offsets[flattenOffset.back()];
+        member = flattenData->second.offsets[newSubset];
         const TVariable* memberVariable = flattenData->second.members[member];
-        return intermediate.addSymbol(*memberVariable);
+        subsetSymbol = intermediate.addSymbol(*memberVariable);
+        subsetSymbol->setFlattenSubset(-1);
     } else {
+
         // If this is not the final flattening, accumulate the position and return
         // an object of the partially dereferenced type.
-        return new TIntermSymbol(uniqueId, "flattenShadow", dereferencedType);
+        subsetSymbol = new TIntermSymbol(uniqueId, "flattenShadow", dereferencedType);
+        subsetSymbol->setFlattenSubset(newSubset);
     }
+
+    return subsetSymbol;
 }
 
 // Find and return the split IO TVariable for id, or nullptr if none.
@@ -1753,11 +1759,9 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
                 flatten(loc, *variable);
                 const TTypeList* structure = variable->getType().getStruct();
                 for (int mem = 0; mem < (int)structure->size(); ++mem) {
-                    initFlattening();
                     paramNodes = intermediate.growAggregate(paramNodes,
                                                             flattenAccess(variable->getUniqueId(), mem, *(*structure)[mem].type),
                                                             loc);
-                    finalizeFlattening();
                 }
             } else {
                 // Add the parameter to the AST
@@ -4908,11 +4912,8 @@ void HlslParseContext::expandArguments(const TSourceLoc& loc, const TFunction& f
         if (wasFlattened(arg) && shouldFlatten(*function[param].type)) {
             // Need to pass the structure members instead of the structure.
             TVector<TIntermTyped*> memberArgs;
-            for (int memb = 0; memb < (int)arg->getType().getStruct()->size(); ++memb) {
-                initFlattening();
+            for (int memb = 0; memb < (int)arg->getType().getStruct()->size(); ++memb)
                 memberArgs.push_back(flattenAccess(arg, memb));
-                finalizeFlattening();
-            }
             setArgList(param + functionParamNumberOffset, memberArgs);
         }
     }
