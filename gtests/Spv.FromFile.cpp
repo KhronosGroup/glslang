@@ -278,6 +278,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.shaderBallot.comp",
         "spv.shaderDrawParams.vert",
         "spv.shaderGroupVote.comp",
+        "spv.shaderStencilExport.frag",
         "spv.shiftOps.frag",
         "spv.simpleFunctionCall.frag",
         "spv.simpleMat.vert",

@@ -3753,6 +3753,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangFragment].append(
                 "vec2 gl_PointCoord;"  // needs qualifier fixed later
                 );
+        if (version >= 140)
+            stageBuiltins[EShLangFragment].append(
+                "out int gl_FragStencilRefARB;"
+                );
         if (IncludeLegacy(version, profile, spvVersion) || (! ForwardCompatibility && version < 420))
             stageBuiltins[EShLangFragment].append(
                 "vec4 gl_FragColor;"   // needs qualifier fixed later
@@ -5472,6 +5476,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_ClipDistance",    EbvClipDistance,   symbolTable);
         BuiltInVariable("gl_CullDistance",    EbvCullDistance,   symbolTable);
         BuiltInVariable("gl_PrimitiveID",     EbvPrimitiveId,    symbolTable);
+
+        if (profile != EEsProfile && version >= 140) {
+            symbolTable.setVariableExtensions("gl_FragStencilRefARB", 1, &E_GL_ARB_shader_stencil_export);
+            BuiltInVariable("gl_FragStencilRefARB", EbvFragStencilRef, symbolTable);
+        }
 
         if ((profile != EEsProfile && version >= 400) ||
             (profile == EEsProfile && version >= 310)) {
