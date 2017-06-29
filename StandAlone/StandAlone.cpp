@@ -94,7 +94,7 @@ enum TOptions {
     EOptionHlslIoMapping        = (1 << 24),
     EOptionAutoMapLocations     = (1 << 25),
     EOptionDebug                = (1 << 26),
-    EOptionOutputShaderModule   = (1 << 27),
+    EOptionOutputVkShaderModule = (1 << 27),
 };
 
 //
@@ -482,9 +482,9 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         variableName = argv[1];
                         bumpArg();
                         break;
-                    } else if (lowerword == "shader-module-name" || // synonyms
-                        lowerword == "smn") {
-                        Options |= EOptionOutputShaderModule;
+                    } else if (lowerword == "vk-shader-module-name" || // synonyms
+                        lowerword == "vksmn") {
+                        Options |= EOptionOutputVkShaderModule;
                         if (argc <= 1)
                             Error("no <C-variable-name> provided for --shader-module-name");
                         variableName = argv[1];
@@ -618,7 +618,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
         Error("uniform array flattening only valid when compiling HLSL source.");
 
     // --shader-module-name must be used with -V
-    if ((Options & EOptionOutputShaderModule) != 0 &&
+    if ((Options & EOptionOutputVkShaderModule) != 0 &&
         (Options & EOptionVulkanRules) == 0)
         Error("can't output a VkShaderModuleCreateInfo without using Vulkan semantics.");
 }
@@ -869,7 +869,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     // memory/perf testing, as it's not internal to programmatic use.
                     if (! (Options & EOptionMemoryLeakMode)) {
                         printf("%s", logger.getAllMessages().c_str());
-                        if (Options & EOptionOutputShaderModule) {
+                        if (Options & EOptionOutputVkShaderModule) {
                             glslang::OutputSpvMod(spirv, GetBinaryName((EShLanguage)stage), variableName);
                         } else if (Options & EOptionOutputHexadecimal) {
                             glslang::OutputSpvHex(spirv, GetBinaryName((EShLanguage)stage), variableName);
@@ -1230,11 +1230,11 @@ void usage()
            "                                       uint32_t array named <name>\n"
            "                                       initialized with the shader binary code.\n"
            "  --vn <name>                          synonym for --variable-name <name>\n"
-           "  --shader-module-name <name>          Creates a C header file that contains a\n"
+           "  --vk-shader-module-name <name>       Creates a C header file that contains a\n"
            "                                       VkShaderModuleCreateInfo structure named\n"
            "                                       <name> initialized with the shader binary\n"
            "                                       code and the size.\n"
-           "  --smn <name>                         synonym for --shader-module-name <name>\n"
+           "  --vksmn <name>                       synonym for --shader-module-name <name>\n"
            );
 
     exit(EFailUsage);
