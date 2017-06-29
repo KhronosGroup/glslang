@@ -59,5 +59,6 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
                   spv::SpvBuildLogger* logger, SpvOptions* options = nullptr);
 void OutputSpvBin(const std::vector<unsigned int>& spirv, const char* baseName);
 void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, const char* varName);
+void OutputSpvMod(const std::vector<unsigned int>& spirv, const char* baseName, const char* varName);
 
 }

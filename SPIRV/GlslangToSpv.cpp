@@ -643,7 +643,7 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
             builder.addCapability(spv::CapabilityPerViewAttributesNV);
         }
         return spv::BuiltInViewportMaskPerViewNV;
-#endif 
+#endif
     default:
         return spv::BuiltInMax;
     }
@@ -1909,7 +1909,7 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
 
         // smear condition to vector, if necessary (AST is always scalar)
         if (builder.isVector(trueValue))
-            condition = builder.smearScalar(spv::NoPrecision, condition, 
+            condition = builder.smearScalar(spv::NoPrecision, condition,
                                             builder.makeVectorType(builder.makeBoolType(),
                                                                    builder.getNumComponents(trueValue)));
 
@@ -5781,6 +5781,44 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, 
     }
     if (varName != nullptr) {
         out << "};";
+    }
+    out.close();
+}
+
+// Write SPIR-V out to a text file with a VkShaderModuleCreateInfo structure
+void OutputSpvMod(const std::vector<unsigned int>& spirv, const char* baseName, const char* varName)
+{
+    std::ofstream out;
+    out.open(baseName, std::ios::binary | std::ios::out);
+    if (out.fail())
+        printf("ERROR: Failed to open file: %s\n", baseName);
+    out << "// " GLSLANG_REVISION " " GLSLANG_DATE << std::endl;
+
+    int spirvByteSize = (int)spirv.size()*sizeof(unsigned int);
+    if (varName != nullptr) {
+        out << "\n#pragma once" << std::endl;
+        out << "\n#include <vulkan/vulkan.h>\n" << std::endl;
+        out << "const VkShaderModuleCreateInfo " << varName << " = {" << std::endl;
+        out << "  VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO," << std::endl;       // sType
+        out << "  VK_NULL_HANDLE," << std::endl;                                    // pNext
+        out << "  0," << std::endl;                                                 // flags
+        out << "  " << spirvByteSize << "," << std::endl;                           // codeSize
+        out << "  (uint32_t*)\"";                                                   // pCode (beginning)
+    }
+
+    const uint8_t *data = (const uint8_t*)spirv.data();
+    const int WORDS_PER_LINE = 16;
+
+    for (int i = 0, l = WORDS_PER_LINE; i < spirvByteSize; ++i, --l) {
+        if (l == 0) {
+            out << "\"\n             \"";
+            l = WORDS_PER_LINE;
+        }
+        out << "\\x" << std::hex << std::setw(2) << std::setfill('0') << uint32_t(data[i]);
+    }
+
+    if (varName != nullptr) {
+        out << "\"\n};\n";                                                             // pCode (end)+closing structure
     }
     out.close();
 }
