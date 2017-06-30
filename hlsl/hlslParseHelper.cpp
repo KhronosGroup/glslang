@@ -2482,7 +2482,8 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 TIntermTyped* noFlattenRHS = intermediate.addSymbol(*rhsTempVar, loc);
 
                 // Add this to the aggregate being built.
-                assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, noFlattenRHS, right, loc), loc);
+                assignList = intermediate.growAggregate(assignList,
+                                                        intermediate.addAssign(op, noFlattenRHS, right, loc), loc);
             }
         }
     }
@@ -2498,7 +2499,8 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     const TIntermTyped* outerLeft  = left;
     const TIntermTyped* outerRight = right;
 
-    const auto getMember = [&](bool isLeft, TIntermTyped* node, int member, TIntermTyped* splitNode, int splitMember) -> TIntermTyped * {
+    const auto getMember = [&](bool isLeft, TIntermTyped* node, int member, TIntermTyped* splitNode, int splitMember)
+                           -> TIntermTyped * {
         TIntermTyped* subTree;
 
         const bool flattened      = isLeft ? isFlattenLeft : isFlattenRight;
@@ -2514,12 +2516,15 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
         if (split && derefType.isBuiltInInterstageIO(language)) {
             // copy from interstage IO builtin if needed
-            subTree = intermediate.addSymbol(*interstageBuiltInIo.find(HlslParseContext::tInterstageIoData(derefType, outer->getType()))->second);
+            subTree = intermediate.addSymbol(*interstageBuiltInIo.find(
+                                             HlslParseContext::tInterstageIoData(derefType, outer->getType()))->second);
 
-            // Arrayness of builtIn symbols isn't handled by the normal recursion: it's been extracted and moved to the builtin.
+            // Arrayness of builtIn symbols isn't handled by the normal recursion:
+            // it's been extracted and moved to the builtin.
             if (subTree->getType().isArray() && !arrayElement.empty()) {
                 const TType splitDerefType(subTree->getType(), arrayElement.back());
-                subTree = intermediate.addIndex(EOpIndexDirect, subTree, intermediate.addConstantUnion(arrayElement.back(), loc), loc);
+                subTree = intermediate.addIndex(EOpIndexDirect, subTree,
+                                                intermediate.addConstantUnion(arrayElement.back(), loc), loc);
                 subTree->setType(splitDerefType);
             }
         } else if (flattened && isFinalFlattening(derefType)) {
@@ -2540,8 +2545,8 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
     // Use the proper RHS node: a new symbol from a TVariable, copy
     // of an TIntermSymbol node, or sometimes the right node directly.
-    right = rhsTempVar   ? intermediate.addSymbol(*rhsTempVar, loc) :
-            cloneSymNode ? intermediate.addSymbol(*cloneSymNode) :
+    right = rhsTempVar != nullptr   ? intermediate.addSymbol(*rhsTempVar, loc) :
+            cloneSymNode != nullptr ? intermediate.addSymbol(*cloneSymNode) :
             right;
 
     // Cannot use auto here, because this is recursive, and auto can't work out the type without seeing the
@@ -2566,8 +2571,10 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 TIntermTyped* subLeft  = getMember(true,  left,  element, left, element);
                 TIntermTyped* subRight = getMember(false, right, element, right, element);
 
-                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left,  element, splitLeft, element) : subLeft;
-                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, element, splitRight, element) : subRight; 
+                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left,  element, splitLeft, element)
+                                                           : subLeft;
+                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, element, splitRight, element)
+                                                           : subRight;
 
                 traverse(subLeft, subRight, subSplitLeft, subSplitRight);
 
@@ -2595,8 +2602,10 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 TIntermTyped* subRight = getMember(false, right, member, right, member);
 
                 // If there is no splitting, use the same values to avoid inefficiency.
-                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left,  member, splitLeft, memberL) : subLeft;
-                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, member, splitRight, memberR) : subRight;
+                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left,  member, splitLeft, memberL)
+                                                           : subLeft;
+                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, member, splitRight, memberR)
+                                                           : subRight;
 
                 const TBuiltInVariable leftBuiltIn = subSplitLeft->getType().getQualifier().builtIn;
 
@@ -2604,16 +2613,22 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
                     // Clip and cull distance builtin assignment is complex in its own right, and is handled in
                     // a separate function dedicated to that task.  See comment above assignClipCullDistance;
-                    assignList = intermediate.growAggregate(assignList, assignClipCullDistance(loc, op, subSplitLeft, subSplitRight), loc);
-                } else if ((!isFlattenLeft && !isFlattenRight &&
-                            !typeL.containsBuiltInInterstageIO(language) && !typeR.containsBuiltInInterstageIO(language))) {
-                    // If this is the final flattening (no nested types below to flatten) we'll copy the member, else
-                    // recurse into the type hierarchy.  However, if splitting the struct, that means we can copy a whole
-                    // subtree here IFF it does not itself contain any interstage built-in IO variables, so we only have to
-                    // recurse into it if there's something for splitting to do.  That can save a lot of AST verbosity for
+                    assignList = intermediate.growAggregate(assignList, assignClipCullDistance(loc, op, subSplitLeft,
+                                                                                               subSplitRight), loc);
+                } else if (!isFlattenLeft && !isFlattenRight &&
+                           !typeL.containsBuiltInInterstageIO(language) &&
+                           !typeR.containsBuiltInInterstageIO(language)) {
+                    // If this is the final flattening (no nested types below to flatten)
+                    // we'll copy the member, else recurse into the type hierarchy.
+                    // However, if splitting the struct, that means we can copy a whole
+                    // subtree here IFF it does not itself contain any interstage built-in
+                    // IO variables, so we only have to recurse into it if there's something
+                    // for splitting to do.  That can save a lot of AST verbosity for
                     // a bunch of memberwise copies.
 
-                    assignList = intermediate.growAggregate(assignList, intermediate.addAssign(op, subSplitLeft, subSplitRight, loc), loc);
+                    assignList = intermediate.growAggregate(assignList,
+                                                            intermediate.addAssign(op, subSplitLeft, subSplitRight, loc),
+                                                            loc);
                 } else {
                     traverse(subLeft, subRight, subSplitLeft, subSplitRight);
                 }
