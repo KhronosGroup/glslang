@@ -143,6 +143,13 @@ const char* const E_GL_EXT_shader_image_load_formatted = "GL_EXT_shader_image_lo
 const char* const E_GL_EXT_device_group                 = "GL_EXT_device_group";
 const char* const E_GL_EXT_multiview                    = "GL_EXT_multiview";
 
+// OVR extensions
+const char* const E_GL_OVR_multiview                    = "GL_OVR_multiview";
+const char* const E_GL_OVR_multiview2                   = "GL_OVR_multiview2";
+
+const char* const OVR_multiview_EXTs[] = { E_GL_OVR_multiview, E_GL_OVR_multiview2 };
+const int Num_OVR_multiview_EXTs = sizeof(OVR_multiview_EXTs) / sizeof(OVR_multiview_EXTs[0]);
+
 // #line and #include
 const char* const E_GL_GOOGLE_cpp_style_line_directive          = "GL_GOOGLE_cpp_style_line_directive";
 const char* const E_GL_GOOGLE_include_directive                 = "GL_GOOGLE_include_directive";

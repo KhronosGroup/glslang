@@ -239,6 +239,10 @@ void TParseVersions::initializeExtensionBehavior()
     // EXT extensions
     extensionBehavior[E_GL_EXT_device_group]             = EBhDisable;
     extensionBehavior[E_GL_EXT_multiview]                = EBhDisable;
+
+    // OVR extensions
+    extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
+    extensionBehavior[E_GL_OVR_multiview2]               = EBhDisable;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -343,9 +347,16 @@ void TParseVersions::getPreamble(std::string& preamble)
 
     if ((profile != EEsProfile && version >= 140) ||
         (profile == EEsProfile && version >= 310)) {
-        preamble += 
+        preamble +=
             "#define GL_EXT_device_group 1\n"
             "#define GL_EXT_multiview 1\n"
+            ;
+    }
+
+    if (version >= 300 /* both ES and non-ES */) {
+        preamble +=
+            "#define GL_OVR_multiview 1\n"
+            "#define GL_OVR_multiview2 1\n"
             ;
     }
 
