@@ -4015,6 +4015,14 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             publicType.shaderQualifiers.earlyFragmentTests = true;
             return;
         }
+        if (id == "post_depth_coverage") {
+            requireExtensions(loc, Num_post_depth_coverageEXTs, post_depth_coverageEXTs, "post depth coverage");
+            if (extensionTurnedOn(E_GL_ARB_post_depth_coverage)) {
+                publicType.shaderQualifiers.earlyFragmentTests = true;
+            }
+            publicType.shaderQualifiers.postDepthCoverage = true;
+            return;
+        }
         for (TLayoutDepth depth = (TLayoutDepth)(EldNone + 1); depth < EldCount; depth = (TLayoutDepth)(depth+1)) {
             if (id == TQualifier::getLayoutDepthString(depth)) {
                 requireProfile(loc, ECoreProfile | ECompatibilityProfile, "depth layout qualifier");
@@ -4788,6 +4796,8 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
         error(loc, message, "invocations", "");
     if (shaderQualifiers.earlyFragmentTests)
         error(loc, message, "early_fragment_tests", "");
+    if (shaderQualifiers.postDepthCoverage)
+        error(loc, message, "post_depth_coverage", "");
     for (int i = 0; i < 3; ++i) {
         if (shaderQualifiers.localSize[i] > 1)
             error(loc, message, "local_size", "");
@@ -6281,6 +6291,12 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             intermediate.setEarlyFragmentTests();
         else
             error(loc, "can only apply to 'in'", "early_fragment_tests", "");
+    }
+    if (publicType.shaderQualifiers.postDepthCoverage) {
+        if (publicType.qualifier.storage == EvqVaryingIn)
+            intermediate.setPostDepthCoverage();
+        else
+            error(loc, "can only apply to 'in'", "post_coverage_coverage", "");
     }
     if (publicType.shaderQualifiers.blendEquation) {
         if (publicType.qualifier.storage != EvqVaryingOut)
