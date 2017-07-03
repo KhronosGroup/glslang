@@ -970,6 +970,7 @@ struct TShaderQualifiers {
     bool earlyFragmentTests;  // fragment input
     TLayoutDepth layoutDepth;
     bool blendEquation;       // true if any blend equation was specified
+    int numViews;             // multiview extenstions
 
 #ifdef NV_EXTENSIONS
     bool layoutOverrideCoverage;    // true if layout override_coverage set
@@ -994,6 +995,7 @@ struct TShaderQualifiers {
         earlyFragmentTests = false;
         layoutDepth = EldNone;
         blendEquation = false;
+        numViews = TQualifier::layoutNotSet;
 #ifdef NV_EXTENSIONS
         layoutOverrideCoverage = false;
 #endif
@@ -1033,6 +1035,8 @@ struct TShaderQualifiers {
             layoutDepth = src.layoutDepth;
         if (src.blendEquation)
             blendEquation = src.blendEquation;
+        if (src.numViews != TQualifier::layoutNotSet)
+            numViews = src.numViews;
 #ifdef NV_EXTENSIONS
         if (src.layoutOverrideCoverage)
             layoutOverrideCoverage = src.layoutOverrideCoverage;
