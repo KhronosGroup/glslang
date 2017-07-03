@@ -486,7 +486,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         lowerword == "vksmn") {
                         Options |= EOptionOutputVkShaderModule;
                         if (argc <= 1)
-                            Error("no <C-variable-name> provided for --shader-module-name");
+                            Error("no <C-variable-name> provided for --vk-shader-module-name");
                         variableName = argv[1];
                         bumpArg();
                         break;
@@ -617,7 +617,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
         (Options & EOptionReadHlsl) == 0)
         Error("uniform array flattening only valid when compiling HLSL source.");
 
-    // --shader-module-name must be used with -V
+    // --vk-shader-module-name must be used with -V
     if ((Options & EOptionOutputVkShaderModule) != 0 &&
         (Options & EOptionVulkanRules) == 0)
         Error("can't output a VkShaderModuleCreateInfo without using Vulkan semantics.");
@@ -1234,7 +1234,7 @@ void usage()
            "                                       VkShaderModuleCreateInfo structure named\n"
            "                                       <name> initialized with the shader binary\n"
            "                                       code and the size.\n"
-           "  --vksmn <name>                       synonym for --shader-module-name <name>\n"
+           "  --vksmn <name>                       synonym for --vk-shader-module-name <name>\n"
            );
 
     exit(EFailUsage);
