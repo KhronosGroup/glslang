@@ -93,10 +93,14 @@ if(WIN32)
     source_group("MachineIndependent\\Preprocessor" REGULAR_EXPRESSION "MachineIndependent/preprocessor/*")
 endif(WIN32)
 
-install(TARGETS glslang
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if(ENABLE_GLSLANG_INSTALL)
+    install(TARGETS glslang
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif(ENABLE_GLSLANG_INSTALL)
 
-foreach(file ${HEADERS})
-    get_filename_component(dir ${file} DIRECTORY)
-    install(FILES ${file} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/${dir})
-endforeach()
+if(ENABLE_GLSLANG_INSTALL)
+    foreach(file ${HEADERS})
+        get_filename_component(dir ${file} DIRECTORY)
+        install(FILES ${file} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/glslang/${dir})
+    endforeach()
+endif(ENABLE_GLSLANG_INSTALL)
