@@ -3186,6 +3186,11 @@ bool TIntermediate::specConstantPropagates(const TIntermTyped& node1, const TInt
 }
 
 struct TextureUpgradeAndSamplerRemovalTransform : public TIntermTraverser {
+    void visitSymbol(TIntermSymbol* symbol) override {
+        if (symbol->getBasicType() == EbtSampler && symbol->getType().getSampler().isTexture()) {
+            symbol->getWritableType().getSampler().combined = true;
+        }
+    }
     bool visitAggregate(TVisit, TIntermAggregate* ag) override {
         using namespace std;
         TIntermSequence& seq = ag->getSequence();
@@ -3199,17 +3204,11 @@ struct TextureUpgradeAndSamplerRemovalTransform : public TIntermTraverser {
         });
         seq.erase(newEnd, seq.end());
         // replace constructors with sampler/textures
-        // update textures into sampled textures
         for_each(seq.begin(), seq.end(), [](TIntermNode*& node) {
-            TIntermSymbol* symbol = node->getAsSymbolNode();
-            if (!symbol) {
-                TIntermAggregate *constructor = node->getAsAggregate();
-                if (constructor && constructor->getOp() == EOpConstructTextureSampler) {
-                    if (!constructor->getSequence().empty())
-                        node = constructor->getSequence()[0];
-                }
-            } else if (symbol->getBasicType() == EbtSampler && symbol->getType().getSampler().isTexture()) {
-                symbol->getWritableType().getSampler().combined = true;
+            TIntermAggregate *constructor = node->getAsAggregate();
+            if (constructor && constructor->getOp() == EOpConstructTextureSampler) {
+                if (!constructor->getSequence().empty())
+                    node = constructor->getSequence()[0];
             }
         });
         return true;
