@@ -13,5 +13,7 @@ if(WIN32)
     source_group("Source" FILES ${SOURCES})
 endif(WIN32)
 
-install(TARGETS OSDependent
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if(ENABLE_GLSLANG_INSTALL)
+    install(TARGETS OSDependent
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif(ENABLE_GLSLANG_INSTALL)
