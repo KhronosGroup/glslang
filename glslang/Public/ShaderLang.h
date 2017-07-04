@@ -583,7 +583,13 @@ public:
   // Notification of a in or out variable
   virtual void notifyInOut(EShLanguage stage, const char* name, const TType& type, bool is_live) = 0;
   // Called by mapIO when it has finished the notify pass
-  virtual void endNotifications() = 0;
+  virtual void endNotifications(EShLanguage stage) = 0;
+  // Called by mapIO when it starts its notify pass for the given stage
+  virtual void beginNotifications(EShLanguage stage) = 0;
+  // Called by mipIO when it starts its resolve pass for the given stage
+  virtual void beginResolve(EShLanguage stage) = 0;
+  // Called by mapIO when it has finished the resolve pass
+  virtual void endResolve(EShLanguage stage) = 0;
 };
 
 // Make one TProgram per set of shaders that will get linked together.  Add all
