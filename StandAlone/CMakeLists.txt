@@ -37,8 +37,10 @@ if(WIN32)
     source_group("Source" FILES ${SOURCES})
 endif(WIN32)
 
-install(TARGETS glslangValidator
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+if(ENABLE_GLSLANG_INSTALL)
+    install(TARGETS glslangValidator
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(TARGETS spirv-remap
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS spirv-remap
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif(ENABLE_GLSLANG_INSTALL)
