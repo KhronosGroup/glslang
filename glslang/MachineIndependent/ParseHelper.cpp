@@ -4206,6 +4206,11 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         }
         return;
     }
+    if (id == "num_views") {
+        requireExtensions(loc, Num_OVR_multiview_EXTs, OVR_multiview_EXTs, "num_views");
+        publicType.shaderQualifiers.numViews = value;
+        return;
+    }
 
 #if NV_EXTENSIONS
     if (language == EShLangVertex ||
@@ -4804,6 +4809,8 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
     }
     if (shaderQualifiers.blendEquation)
         error(loc, message, "blend equation", "");
+    if (shaderQualifiers.numViews != TQualifier::layoutNotSet)
+        error(loc, message, "num_views", "");
 }
 
 // Correct and/or advance an object's offset layout qualifier.
