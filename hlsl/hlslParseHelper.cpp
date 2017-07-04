@@ -8274,6 +8274,19 @@ bool HlslParseContext::handleOutputGeometry(const TSourceLoc& loc, const TLayout
 }
 
 //
+// Selection hints
+//
+TSelectionControl HlslParseContext::handleSelectionControl(const TAttributeMap& attributes) const
+{
+    if (attributes.contains(EatFlatten))
+        return ESelectionControlFlatten;
+    else if (attributes.contains(EatBranch))
+        return ESelectionControlDontFlatten;
+    else
+        return ESelectionControlNone;
+}
+
+//
 // Loop hints
 //
 TLoopControl HlslParseContext::handleLoopControl(const TAttributeMap& attributes) const
@@ -8285,7 +8298,6 @@ TLoopControl HlslParseContext::handleLoopControl(const TAttributeMap& attributes
     else
         return ELoopControlNone;
 }
-
 
 //
 // Updating default qualifier for the case of a declaration with just a qualifier,
@@ -8425,7 +8437,7 @@ void HlslParseContext::wrapupSwitchSubsequence(TIntermAggregate* statements, TIn
 // Turn the top-level node sequence built up of wrapupSwitchSubsequence
 // into a switch node.
 //
-TIntermNode* HlslParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* expression, TIntermAggregate* lastStatements)
+TIntermNode* HlslParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* expression, TIntermAggregate* lastStatements, TSelectionControl control)
 {
     wrapupSwitchSubsequence(lastStatements, nullptr);
 
@@ -8452,6 +8464,7 @@ TIntermNode* HlslParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* ex
 
     TIntermSwitch* switchNode = new TIntermSwitch(expression, body);
     switchNode->setLoc(loc);
+    switchNode->setSelectionControl(control);
 
     return switchNode;
 }

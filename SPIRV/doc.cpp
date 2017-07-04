@@ -637,13 +637,15 @@ const char* SelectControlString(int cont)
     }
 }
 
-const int LoopControlCeiling = 2;
+const int LoopControlCeiling = 4;
 
 const char* LoopControlString(int cont)
 {
     switch (cont) {
     case 0:  return "Unroll";
     case 1:  return "DontUnroll";
+    case 2:  return "DependencyInfinite";
+    case 3:  return "DependencyLength";
 
     case LoopControlCeiling:
     default: return "Bad";

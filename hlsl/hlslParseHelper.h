@@ -159,7 +159,7 @@ public:
     void addQualifierToExisting(const TSourceLoc&, TQualifier, TIdentifierList&);
     void updateStandaloneQualifierDefaults(const TSourceLoc&, const TPublicType&);
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
-    TIntermNode* addSwitch(const TSourceLoc&, TIntermTyped* expression, TIntermAggregate* body);
+    TIntermNode* addSwitch(const TSourceLoc&, TIntermTyped* expression, TIntermAggregate* body, TSelectionControl control);
 
     void updateImplicitArraySize(const TSourceLoc&, TIntermNode*, int index);
 
@@ -197,6 +197,9 @@ public:
 
     bool handleOutputGeometry(const TSourceLoc&, const TLayoutGeometry& geometry);
     bool handleInputGeometry(const TSourceLoc&, const TLayoutGeometry& geometry);
+
+    // Determine selection control from attributes
+    TSelectionControl handleSelectionControl(const TAttributeMap& attributes) const;
 
     // Determine loop control from attributes
     TLoopControl handleLoopControl(const TAttributeMap& attributes) const;
