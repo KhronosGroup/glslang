@@ -4101,6 +4101,28 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             break;
         }
 
+    case EOpAny: // fall through
+    case EOpAll:
+        {
+            TIntermTyped* typedArg = arguments->getAsTyped();
+
+            // HLSL allows float/etc types here, and the SPIR-V opcode requires a bool.
+            // We'll convert here.  Note that for efficiency, we could add a smarter
+            // decomposition for some type cases, e.g, maybe by decomposing a dot product.
+            if (typedArg->getType().getBasicType() != EbtBool) {
+                const TType boolType(EbtBool, EvqTemporary,
+                                     typedArg->getVectorSize(),
+                                     typedArg->getMatrixCols(),
+                                     typedArg->getMatrixRows(),
+                                     typedArg->isVector());
+
+                typedArg = intermediate.addConversion(EOpConstructBool, boolType, typedArg);
+                node->getAsUnaryNode()->setOperand(typedArg);
+            }
+
+            break;
+        }
+
     case EOpSaturate:
         {
             // saturate(a) -> clamp(a,0,1)
