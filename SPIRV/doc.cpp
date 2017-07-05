@@ -844,6 +844,7 @@ const char* CapabilityString(int info)
 
 #ifdef AMD_EXTENSIONS
     case 5009: return "ImageGatherBiasLodAMD";
+    case 5015: return "ImageReadWriteLodAMD";
 #endif
 
     case 4445: return "AtomicStorageOps";

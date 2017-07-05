@@ -1452,7 +1452,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.setAccessChainRValue(result);
 
         return false;
+#ifdef AMD_EXTENSIONS
+    } else if (node->getOp() == glslang::EOpImageStore || node->getOp() == glslang::EOpImageStoreLod) {
+#else
     } else if (node->getOp() == glslang::EOpImageStore) {
+#endif
         // "imageStore" is a special case, which has no result
         return false;
     }
@@ -3136,6 +3140,10 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
             if (i == 4)
                 lvalue = true;
             break;
+        case glslang::EOpSparseImageLoadLod:
+            if (i == 3)
+                lvalue = true;
+            break;
 #endif
         default:
             break;
@@ -3238,26 +3246,55 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
 
         operands.push_back(*(opIt++));
+#ifdef AMD_EXTENSIONS
+        if (node->getOp() == glslang::EOpImageLoad || node->getOp() == glslang::EOpImageLoadLod) {
+#else
         if (node->getOp() == glslang::EOpImageLoad) {
+#endif
             if (sampler.ms) {
                 operands.push_back(spv::ImageOperandsSampleMask);
                 operands.push_back(*opIt);
+#ifdef AMD_EXTENSIONS
+            } else if (cracked.lod) {
+                builder.addExtension(spv::E_SPV_AMD_shader_image_load_store_lod);
+                builder.addCapability(spv::CapabilityImageReadWriteLodAMD);
+
+                operands.push_back(spv::ImageOperandsLodMask);
+                operands.push_back(*opIt);
+#endif
             }
             if (builder.getImageTypeFormat(builder.getImageType(operands.front())) == spv::ImageFormatUnknown)
                 builder.addCapability(spv::CapabilityStorageImageReadWithoutFormat);
             return builder.createOp(spv::OpImageRead, resultType(), operands);
+#ifdef AMD_EXTENSIONS
+        } else if (node->getOp() == glslang::EOpImageStore || node->getOp() == glslang::EOpImageStoreLod) {
+#else
         } else if (node->getOp() == glslang::EOpImageStore) {
+#endif
             if (sampler.ms) {
                 operands.push_back(*(opIt + 1));
                 operands.push_back(spv::ImageOperandsSampleMask);
                 operands.push_back(*opIt);
+#ifdef AMD_EXTENSIONS
+            } else if (cracked.lod) {
+                builder.addExtension(spv::E_SPV_AMD_shader_image_load_store_lod);
+                builder.addCapability(spv::CapabilityImageReadWriteLodAMD);
+
+                operands.push_back(*(opIt + 1));
+                operands.push_back(spv::ImageOperandsLodMask);
+                operands.push_back(*opIt);
+#endif
             } else
                 operands.push_back(*opIt);
             builder.createNoResultOp(spv::OpImageWrite, operands);
             if (builder.getImageTypeFormat(builder.getImageType(operands.front())) == spv::ImageFormatUnknown)
                 builder.addCapability(spv::CapabilityStorageImageWriteWithoutFormat);
             return spv::NoResult;
+#ifdef AMD_EXTENSIONS
+        } else if (node->getOp() == glslang::EOpSparseImageLoad || node->getOp() == glslang::EOpSparseImageLoadLod) {
+#else
         } else if (node->getOp() == glslang::EOpSparseImageLoad) {
+#endif
             builder.addCapability(spv::CapabilitySparseResidency);
             if (builder.getImageTypeFormat(builder.getImageType(operands.front())) == spv::ImageFormatUnknown)
                 builder.addCapability(spv::CapabilityStorageImageReadWithoutFormat);
@@ -3265,6 +3302,14 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             if (sampler.ms) {
                 operands.push_back(spv::ImageOperandsSampleMask);
                 operands.push_back(*opIt++);
+#ifdef AMD_EXTENSIONS
+            } else if (cracked.lod) {
+                builder.addExtension(spv::E_SPV_AMD_shader_image_load_store_lod);
+                builder.addCapability(spv::CapabilityImageReadWriteLodAMD);
+
+                operands.push_back(spv::ImageOperandsLodMask);
+                operands.push_back(*opIt++);
+#endif
             }
 
             // Create the return type that was a special structure
