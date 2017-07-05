@@ -175,6 +175,7 @@ const char* ExecutionModeString(int mode)
     case 31: return "ContractionOff";
     case 32: return "Bad";
 
+    case 4446:  return "PostDepthCoverage";
     case ExecutionModeCeiling:
     default: return "Bad";
     }
@@ -843,6 +844,7 @@ const char* CapabilityString(int info)
     case 5009: return "ImageGatherBiasLodAMD";
 #endif
 
+    case 4447: return "SampleMaskPostDepthCoverage";
 #ifdef NV_EXTENSIONS
     case 5251: return "GeometryShaderPassthroughNV";
     case 5254: return "ShaderViewportIndexLayerNV";

@@ -968,6 +968,7 @@ struct TShaderQualifiers {
     int localSize[3];         // compute shader
     int localSizeSpecId[3];   // compute shader specialization id for gl_WorkGroupSize
     bool earlyFragmentTests;  // fragment input
+    bool postDepthCoverage;   // fragment input
     TLayoutDepth layoutDepth;
     bool blendEquation;       // true if any blend equation was specified
     int numViews;             // multiview extenstions
@@ -993,6 +994,7 @@ struct TShaderQualifiers {
         localSizeSpecId[1] = TQualifier::layoutNotSet;
         localSizeSpecId[2] = TQualifier::layoutNotSet;
         earlyFragmentTests = false;
+        postDepthCoverage = false;
         layoutDepth = EldNone;
         blendEquation = false;
         numViews = TQualifier::layoutNotSet;
@@ -1031,6 +1033,8 @@ struct TShaderQualifiers {
         }
         if (src.earlyFragmentTests)
             earlyFragmentTests = true;
+        if (src.postDepthCoverage)
+            postDepthCoverage = true;
         if (src.layoutDepth)
             layoutDepth = src.layoutDepth;
         if (src.blendEquation)
