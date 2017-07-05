@@ -201,7 +201,9 @@ public:
             bool flattenUniformArrays = false,
             EShTextureSamplerTransformMode texSampTransMode = EShTexSampTransKeep,
             bool enableOptimizer = false,
-            bool automap = true)
+            bool automap = true,
+            EShHlslBufferWithCounterMode atomicCounterMode = EShHlslBufferWithCounterSeparateBuffer,
+            int embeddedCounterPayloadOffset = 256)
     {
         const EShLanguage stage = GetShaderStage(GetSuffix(shaderName));
 
@@ -230,6 +232,9 @@ public:
                 shader.setEnvTarget(glslang::EshTargetSpv, glslang::EShTargetSpv_1_0);
             }
         }
+
+        shader.setHlslBufferWithCounterMode(atomicCounterMode);
+        shader.setHlslBufferWithCounterEmbeddedPayloadOffset(embeddedCounterPayloadOffset);
 
         bool success = compile(&shader, code, entryPointName, controls);
 
@@ -630,6 +635,41 @@ public:
         GlslangResult result = compileAndLink(testName, input, entryPointName, controls,
                                               glslang::EShTargetVulkan_1_0, false,
                                               EShTexSampTransUpgradeTextureRemoveSampler);
+
+        // Generate the hybrid output in the way of glslangValidator.
+        std::ostringstream stream;
+        outputResultToStream(&stream, result, controls);
+
+        checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
+                                    expectedOutputFname);
+    }
+    
+    void loadFileCompileAndCheckWithAtomicCounterMode(const std::string& testDir,
+                                                      const std::string& testName,
+                                                      Source source,
+                                                      Semantics semantics,
+                                                      glslang::EShTargetClientVersion clientTargetVersion,
+                                                      Target target,
+                                                      bool automap = true,
+                                                      const std::string& entryPointName="",
+                                                      const std::string& baseDir="/baseResults/",
+                                                      const bool enableOptimizer = false,
+                                                      EShHlslBufferWithCounterMode atomicCounterMode = EShHlslBufferWithCounterSeparateBuffer,
+                                                      int embeddedCounterPayloadOffset = 256)
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedOutputFname =
+            testDir + baseDir + testName + ".out";
+        std::string input, expectedOutput;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
+
+        EShMessages controls = DeriveOptions(source, semantics, target);
+        if (enableOptimizer)
+            controls = static_cast<EShMessages>(controls & ~EShMsgHlslLegalization);
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, clientTargetVersion, false,
+                                              EShTexSampTransKeep, enableOptimizer, automap, atomicCounterMode, embeddedCounterPayloadOffset);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;

@@ -1,0 +1,318 @@
+hlsl.structbuffer.floatidx.comp
+Shader version: 500
+local_size = (1, 1, 1)
+0:? Sequence
+0:13  Function Definition: @main(vu3; ( temp void)
+0:13    Function Parameters: 
+0:13      'nThreadId' ( in 3-component vector of uint)
+0:?     Sequence
+0:14      Sequence
+0:14        move second child to first child ( temp structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:14          'data' ( temp structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:14          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:14            @data: direct index for structure (layout( row_major std430) buffer unsized 1-element array of structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:14              'csb' (layout( binding=1 row_major std430) buffer block{ buffer uint @count, layout( row_major std430 offset=256) buffer unsized 1-element array of structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId} @data})
+0:14              Constant:
+0:14                1 (const uint)
+0:14            add ( temp uint)
+0:14              AtomicAdd ( temp uint)
+0:14                @count: direct index for structure ( temp uint)
+0:14                  'csb' (layout( binding=1 row_major std430) buffer block{ buffer uint @count, layout( row_major std430 offset=256) buffer unsized 1-element array of structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId} @data})
+0:14                  Constant:
+0:14                    0 (const int)
+0:14                Constant:
+0:14                  4294967295 (const uint)
+0:14              Constant:
+0:14                -1 (const int)
+0:15      Sequence
+0:15        move second child to first child ( temp 2-component vector of float)
+0:15          'coord' ( temp 2-component vector of float)
+0:15          Convert uint to float ( temp 2-component vector of float)
+0:15            vector swizzle ( temp 2-component vector of uint)
+0:15              threadId: direct index for structure ( temp 2-component vector of uint)
+0:15                'data' ( temp structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:15                Constant:
+0:15                  1 (const int)
+0:15              Sequence
+0:15                Constant:
+0:15                  0 (const int)
+0:15                Constant:
+0:15                  1 (const int)
+0:16      Sequence
+0:16        move second child to first child ( temp 4-component vector of float)
+0:16          'storeTemp' ( temp 4-component vector of float)
+0:16          color: direct index for structure ( temp 4-component vector of float)
+0:16            'data' ( temp structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:16            Constant:
+0:16              0 (const int)
+0:16        imageStore ( temp void)
+0:16          'outtx' (layout( rgba32f) uniform image2D)
+0:16          Convert float to uint ( temp 2-component vector of uint)
+0:16            'coord' ( temp 2-component vector of float)
+0:16          'storeTemp' ( temp 4-component vector of float)
+0:16        'storeTemp' ( temp 4-component vector of float)
+0:18      move second child to first child ( temp 4-component vector of float)
+0:18        indirect index (layout( row_major std430) buffer 4-component vector of float)
+0:18          @data: direct index for structure (layout( row_major std430) buffer unsized 1-element array of 4-component vector of float)
+0:18            'rwsb' (layout( row_major std430) buffer block{layout( row_major std430) buffer unsized 1-element array of 4-component vector of float @data})
+0:18            Constant:
+0:18              0 (const uint)
+0:18          Convert float to uint ( temp uint)
+0:18            direct index ( temp float)
+0:18              'coord' ( temp 2-component vector of float)
+0:18              Constant:
+0:18                0 (const int)
+0:18        indirect index (layout( row_major std430) buffer 4-component vector of float)
+0:18          @data: direct index for structure (layout( row_major std430) buffer unsized 1-element array of 4-component vector of float)
+0:18            'rwsb' (layout( row_major std430) buffer block{layout( row_major std430) buffer unsized 1-element array of 4-component vector of float @data})
+0:18            Constant:
+0:18              0 (const uint)
+0:18          Convert float to uint ( temp uint)
+0:18            direct index ( temp float)
+0:18              'coord' ( temp 2-component vector of float)
+0:18              Constant:
+0:18                1 (const int)
+0:13  Function Definition: main( ( temp void)
+0:13    Function Parameters: 
+0:?     Sequence
+0:13      move second child to first child ( temp 3-component vector of uint)
+0:?         'nThreadId' ( temp 3-component vector of uint)
+0:?         'nThreadId' ( in 3-component vector of uint GlobalInvocationID)
+0:13      Function Call: @main(vu3; ( temp void)
+0:?         'nThreadId' ( temp 3-component vector of uint)
+0:?   Linker Objects
+0:?     'outtx' (layout( rgba32f) uniform image2D)
+0:?     'csb' (layout( binding=1 row_major std430) buffer block{ buffer uint @count, layout( row_major std430 offset=256) buffer unsized 1-element array of structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId} @data})
+0:?     'rwsb' (layout( row_major std430) buffer block{layout( row_major std430) buffer unsized 1-element array of 4-component vector of float @data})
+0:?     'nThreadId' ( in 3-component vector of uint GlobalInvocationID)
+
+
+Linked compute stage:
+
+
+Shader version: 500
+local_size = (1, 1, 1)
+0:? Sequence
+0:13  Function Definition: @main(vu3; ( temp void)
+0:13    Function Parameters: 
+0:13      'nThreadId' ( in 3-component vector of uint)
+0:?     Sequence
+0:14      Sequence
+0:14        move second child to first child ( temp structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:14          'data' ( temp structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:14          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:14            @data: direct index for structure (layout( row_major std430) buffer unsized 1-element array of structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:14              'csb' (layout( binding=1 row_major std430) buffer block{ buffer uint @count, layout( row_major std430 offset=256) buffer unsized 1-element array of structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId} @data})
+0:14              Constant:
+0:14                1 (const uint)
+0:14            add ( temp uint)
+0:14              AtomicAdd ( temp uint)
+0:14                @count: direct index for structure ( temp uint)
+0:14                  'csb' (layout( binding=1 row_major std430) buffer block{ buffer uint @count, layout( row_major std430 offset=256) buffer unsized 1-element array of structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId} @data})
+0:14                  Constant:
+0:14                    0 (const int)
+0:14                Constant:
+0:14                  4294967295 (const uint)
+0:14              Constant:
+0:14                -1 (const int)
+0:15      Sequence
+0:15        move second child to first child ( temp 2-component vector of float)
+0:15          'coord' ( temp 2-component vector of float)
+0:15          Convert uint to float ( temp 2-component vector of float)
+0:15            vector swizzle ( temp 2-component vector of uint)
+0:15              threadId: direct index for structure ( temp 2-component vector of uint)
+0:15                'data' ( temp structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:15                Constant:
+0:15                  1 (const int)
+0:15              Sequence
+0:15                Constant:
+0:15                  0 (const int)
+0:15                Constant:
+0:15                  1 (const int)
+0:16      Sequence
+0:16        move second child to first child ( temp 4-component vector of float)
+0:16          'storeTemp' ( temp 4-component vector of float)
+0:16          color: direct index for structure ( temp 4-component vector of float)
+0:16            'data' ( temp structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId})
+0:16            Constant:
+0:16              0 (const int)
+0:16        imageStore ( temp void)
+0:16          'outtx' (layout( rgba32f) uniform image2D)
+0:16          Convert float to uint ( temp 2-component vector of uint)
+0:16            'coord' ( temp 2-component vector of float)
+0:16          'storeTemp' ( temp 4-component vector of float)
+0:16        'storeTemp' ( temp 4-component vector of float)
+0:18      move second child to first child ( temp 4-component vector of float)
+0:18        indirect index (layout( row_major std430) buffer 4-component vector of float)
+0:18          @data: direct index for structure (layout( row_major std430) buffer unsized 1-element array of 4-component vector of float)
+0:18            'rwsb' (layout( row_major std430) buffer block{layout( row_major std430) buffer unsized 1-element array of 4-component vector of float @data})
+0:18            Constant:
+0:18              0 (const uint)
+0:18          Convert float to uint ( temp uint)
+0:18            direct index ( temp float)
+0:18              'coord' ( temp 2-component vector of float)
+0:18              Constant:
+0:18                0 (const int)
+0:18        indirect index (layout( row_major std430) buffer 4-component vector of float)
+0:18          @data: direct index for structure (layout( row_major std430) buffer unsized 1-element array of 4-component vector of float)
+0:18            'rwsb' (layout( row_major std430) buffer block{layout( row_major std430) buffer unsized 1-element array of 4-component vector of float @data})
+0:18            Constant:
+0:18              0 (const uint)
+0:18          Convert float to uint ( temp uint)
+0:18            direct index ( temp float)
+0:18              'coord' ( temp 2-component vector of float)
+0:18              Constant:
+0:18                1 (const int)
+0:13  Function Definition: main( ( temp void)
+0:13    Function Parameters: 
+0:?     Sequence
+0:13      move second child to first child ( temp 3-component vector of uint)
+0:?         'nThreadId' ( temp 3-component vector of uint)
+0:?         'nThreadId' ( in 3-component vector of uint GlobalInvocationID)
+0:13      Function Call: @main(vu3; ( temp void)
+0:?         'nThreadId' ( temp 3-component vector of uint)
+0:?   Linker Objects
+0:?     'outtx' (layout( rgba32f) uniform image2D)
+0:?     'csb' (layout( binding=1 row_major std430) buffer block{ buffer uint @count, layout( row_major std430 offset=256) buffer unsized 1-element array of structure{ temp 4-component vector of float color,  temp 2-component vector of uint threadId} @data})
+0:?     'rwsb' (layout( row_major std430) buffer block{layout( row_major std430) buffer unsized 1-element array of 4-component vector of float @data})
+0:?     'nThreadId' ( in 3-component vector of uint GlobalInvocationID)
+
+// Module Version 10000
+// Generated by (magic number): 80007
+// Id's are bound by 82
+
+                              Capability Shader
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint GLCompute 4  "main" 77
+                              ExecutionMode 4 LocalSize 1 1 1
+                              Source HLSL 500
+                              Name 4  "main"
+                              Name 11  "@main(vu3;"
+                              Name 10  "nThreadId"
+                              Name 16  "sb_t"
+                              MemberName 16(sb_t) 0  "color"
+                              MemberName 16(sb_t) 1  "threadId"
+                              Name 18  "data"
+                              Name 19  "sb_t"
+                              MemberName 19(sb_t) 0  "color"
+                              MemberName 19(sb_t) 1  "threadId"
+                              Name 21  "csb"
+                              MemberName 21(csb) 0  "@count"
+                              MemberName 21(csb) 1  "@data"
+                              Name 23  "csb"
+                              Name 46  "coord"
+                              Name 50  "storeTemp"
+                              Name 55  "outtx"
+                              Name 61  "rwsb"
+                              MemberName 61(rwsb) 0  "@data"
+                              Name 63  "rwsb"
+                              Name 75  "nThreadId"
+                              Name 77  "nThreadId"
+                              Name 79  "param"
+                              MemberDecorate 19(sb_t) 0 Offset 0
+                              MemberDecorate 19(sb_t) 1 Offset 16
+                              Decorate 20 ArrayStride 32
+                              MemberDecorate 21(csb) 0 Offset 0
+                              MemberDecorate 21(csb) 1 Offset 256
+                              Decorate 21(csb) BufferBlock
+                              Decorate 23(csb) DescriptorSet 0
+                              Decorate 23(csb) Binding 1
+                              Decorate 55(outtx) DescriptorSet 0
+                              Decorate 60 ArrayStride 16
+                              MemberDecorate 61(rwsb) 0 Offset 0
+                              Decorate 61(rwsb) BufferBlock
+                              Decorate 63(rwsb) DescriptorSet 0
+                              Decorate 77(nThreadId) BuiltIn GlobalInvocationId
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeInt 32 0
+               7:             TypeVector 6(int) 3
+               8:             TypePointer Function 7(ivec3)
+               9:             TypeFunction 2 8(ptr)
+              13:             TypeFloat 32
+              14:             TypeVector 13(float) 4
+              15:             TypeVector 6(int) 2
+        16(sb_t):             TypeStruct 14(fvec4) 15(ivec2)
+              17:             TypePointer Function 16(sb_t)
+        19(sb_t):             TypeStruct 14(fvec4) 15(ivec2)
+              20:             TypeRuntimeArray 19(sb_t)
+         21(csb):             TypeStruct 6(int) 20
+              22:             TypePointer Uniform 21(csb)
+         23(csb):     22(ptr) Variable Uniform
+              24:             TypeInt 32 1
+              25:     24(int) Constant 1
+              26:     24(int) Constant 0
+              27:             TypePointer Uniform 6(int)
+              29:      6(int) Constant 4294967295
+              30:      6(int) Constant 1
+              31:      6(int) Constant 0
+              33:     24(int) Constant 4294967295
+              35:             TypePointer Uniform 19(sb_t)
+              39:             TypePointer Function 14(fvec4)
+              42:             TypePointer Function 15(ivec2)
+              44:             TypeVector 13(float) 2
+              45:             TypePointer Function 44(fvec2)
+              53:             TypeImage 13(float) 2D nonsampled format:Rgba32f
+              54:             TypePointer UniformConstant 53
+       55(outtx):     54(ptr) Variable UniformConstant
+              60:             TypeRuntimeArray 14(fvec4)
+        61(rwsb):             TypeStruct 60
+              62:             TypePointer Uniform 61(rwsb)
+        63(rwsb):     62(ptr) Variable Uniform
+              64:             TypePointer Function 13(float)
+              71:             TypePointer Uniform 14(fvec4)
+              76:             TypePointer Input 7(ivec3)
+   77(nThreadId):     76(ptr) Variable Input
+         4(main):           2 Function None 3
+               5:             Label
+   75(nThreadId):      8(ptr) Variable Function
+       79(param):      8(ptr) Variable Function
+              78:    7(ivec3) Load 77(nThreadId)
+                              Store 75(nThreadId) 78
+              80:    7(ivec3) Load 75(nThreadId)
+                              Store 79(param) 80
+              81:           2 FunctionCall 11(@main(vu3;) 79(param)
+                              Return
+                              FunctionEnd
+  11(@main(vu3;):           2 Function None 9
+   10(nThreadId):      8(ptr) FunctionParameter
+              12:             Label
+        18(data):     17(ptr) Variable Function
+       46(coord):     45(ptr) Variable Function
+   50(storeTemp):     39(ptr) Variable Function
+              28:     27(ptr) AccessChain 23(csb) 26
+              32:      6(int) AtomicIAdd 28 30 31 29
+              34:      6(int) IAdd 32 33
+              36:     35(ptr) AccessChain 23(csb) 25 34
+              37:    19(sb_t) Load 36
+              38:   14(fvec4) CompositeExtract 37 0
+              40:     39(ptr) AccessChain 18(data) 26
+                              Store 40 38
+              41:   15(ivec2) CompositeExtract 37 1
+              43:     42(ptr) AccessChain 18(data) 25
+                              Store 43 41
+              47:     42(ptr) AccessChain 18(data) 25
+              48:   15(ivec2) Load 47
+              49:   44(fvec2) ConvertUToF 48
+                              Store 46(coord) 49
+              51:     39(ptr) AccessChain 18(data) 26
+              52:   14(fvec4) Load 51
+                              Store 50(storeTemp) 52
+              56:          53 Load 55(outtx)
+              57:   44(fvec2) Load 46(coord)
+              58:   15(ivec2) ConvertFToU 57
+              59:   14(fvec4) Load 50(storeTemp)
+                              ImageWrite 56 58 59
+              65:     64(ptr) AccessChain 46(coord) 31
+              66:   13(float) Load 65
+              67:      6(int) ConvertFToU 66
+              68:     64(ptr) AccessChain 46(coord) 30
+              69:   13(float) Load 68
+              70:      6(int) ConvertFToU 69
+              72:     71(ptr) AccessChain 63(rwsb) 26 70
+              73:   14(fvec4) Load 72
+              74:     71(ptr) AccessChain 63(rwsb) 26 67
+                              Store 74 73
+                              Return
+                              FunctionEnd

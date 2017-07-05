@@ -218,6 +218,28 @@ typedef enum {
 } EShTextureSamplerTransformMode;
 
 //
+// Modes to control placement of atomic counters for HLSL specefic
+// append and consume rw buffers
+//
+typedef enum {
+    EShHlslBufferWithCounterSeparateBuffer,  // creates a new buffer that holds the atomic counter (default)
+    EShHlslBufferWithCounterSimpleAtomic,    // creates a new atomic integer variable that acts as the counter
+    // This mode figures out which structured buffer needs an atomic counter and embeds it into its
+    // storage buffer block as the first member variable. If an offset other than 0 is set, then
+    // all member variables are adjusted accordingly. Default offset is 256 as it is the best compromise to support
+    // as many vulkan devices as possible.
+    // NOTE:
+    // - This mode may produce invalid results if the same function is called with buffers that might
+    //   contain counters and buffers that might not contain counters, currently there are no new overloaded
+    //   functions generated for either case (when possible).
+    // - Append and Consume buffers will always have embeded counters independend of real need.
+    // - Buffer aliases work as expected, if one of the aliasing buffers has a counter, all will have a counter
+    //   to match the memory layout.
+    // - In some cases resulting spir-v may contains some unused types.
+    EShHlslBufferWithCounterEmbedded,
+} EShHlslBufferWithCounterMode;
+
+//
 // Message choices for what errors and warnings are given.
 //
 enum EShMessages {
@@ -423,6 +445,10 @@ public:
     void setFlattenUniformArrays(bool flatten);
     void setNoStorageFormat(bool useUnknownFormat);
     void setTextureSamplerTransformMode(EShTextureSamplerTransformMode mode);
+    void setHlslBufferWithCounterMode(EShHlslBufferWithCounterMode mode);
+    // used by EShHlslBufferWithCounterEmbedded to add additional
+    // offset after the embedded counter to the data of the buffer (default is 256)
+    void setHlslBufferWithCounterEmbeddedPayloadOffset(int bytes);
 
     // For setting up the environment (cleared to nothingness in the constructor).
     // These must be called so that parsing is done for the right source language and

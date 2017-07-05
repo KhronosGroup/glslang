@@ -3610,7 +3610,7 @@ bool TGlslangToSpvTraverser::originalParam(glslang::TStorageQualifier qualifier,
     if (implicitThisParam)                                                                     // implicit this
         return true;
     if (glslangIntermediate->getSource() == glslang::EShSourceHlsl)
-        return paramType.getBasicType() == glslang::EbtBlock;
+        return paramType.getBasicType() == glslang::EbtBlock || paramType.getBasicType() == glslang::EbtAtomicUint;
     return paramType.containsOpaque() ||                                                       // sampler, etc.
            (paramType.getBasicType() == glslang::EbtBlock && qualifier == glslang::EvqBuffer); // SSBO
 }

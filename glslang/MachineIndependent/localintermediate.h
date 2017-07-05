@@ -253,7 +253,9 @@ public:
         textureSamplerTransformMode(EShTexSampTransKeep),
         needToLegalize(false),
         binaryDoubleOutput(false),
-        uniformLocationBase(0)
+        uniformLocationBase(0),
+        hlslBufferWithCounterMode(EShHlslBufferWithCounterSeparateBuffer),
+        hlslBufferWithCounterPayloadOffset(256)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -397,6 +399,10 @@ public:
     }
 
     void setTextureSamplerTransformMode(EShTextureSamplerTransformMode mode) { textureSamplerTransformMode = mode; }
+    void setHlslBufferWithCounterMode(EShHlslBufferWithCounterMode mode) { hlslBufferWithCounterMode = mode; }
+    EShHlslBufferWithCounterMode getHlslBufferWithCounterMode() const { return hlslBufferWithCounterMode; }
+    void setHlslBufferWithCounterEmbeddedPayloadOffset(int bytes) { hlslBufferWithCounterPayloadOffset = bytes; }
+    int getHlslBufferWithCounterEmbeddedPayloadOffset() const { return hlslBufferWithCounterPayloadOffset; }
 
     void setVersion(int v) { version = v; }
     int getVersion() const { return version; }
@@ -806,6 +812,8 @@ protected:
     std::set<TString> semanticNameSet;
 
     EShTextureSamplerTransformMode textureSamplerTransformMode;
+    EShHlslBufferWithCounterMode hlslBufferWithCounterMode;
+    int hlslBufferWithCounterPayloadOffset;
 
     // source code of shader, useful as part of debug information
     std::string sourceFile;

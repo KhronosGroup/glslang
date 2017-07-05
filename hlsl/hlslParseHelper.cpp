@@ -1615,7 +1615,7 @@ void HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunction
 void HlslParseContext::addStructBufferHiddenCounterParam(const TSourceLoc& loc, TParameter& param,
                                                          TIntermAggregate*& paramNodes)
 {
-    if (! hasStructBuffCounter(*param.type))
+    if (!hasStructBuffCounter(*param.type))
         return;
 
     const TString counterBlockName(intermediate.addCounterBufferName(*param.name));
@@ -1624,12 +1624,10 @@ void HlslParseContext::addStructBufferHiddenCounterParam(const TSourceLoc& loc, 
     counterBufferType(loc, counterType);
     TVariable *variable = makeInternalVariable(counterBlockName, counterType);
 
-    if (! symbolTable.insert(*variable))
+    if (!symbolTable.insert(*variable))
         error(loc, "redefinition", variable->getName().c_str(), "");
 
-    paramNodes = intermediate.growAggregate(paramNodes,
-                                            intermediate.addSymbol(*variable, loc),
-                                            loc);
+    paramNodes = intermediate.growAggregate(paramNodes, intermediate.addSymbol(*variable, loc), loc);
 }
 
 //
@@ -3180,61 +3178,73 @@ bool HlslParseContext::hasStructBuffCounter(const TType& type) const
 
 void HlslParseContext::counterBufferType(const TSourceLoc& loc, TType& type)
 {
-    // Counter type
-    TType* counterType = new TType(EbtUint, EvqBuffer);
-    counterType->setFieldName(intermediate.implicitCounterName);
+    if (intermediate.getHlslBufferWithCounterMode() == EShHlslBufferWithCounterSimpleAtomic) {
+        // Counter type
+        TType counterType(EbtAtomicUint, EvqUniform);
+        type.shallowCopy(counterType);
+    } else {
+        // Counter type
+        TType *counterType = new TType(EbtUint, EvqBuffer);
+        counterType->setFieldName(intermediate.implicitCounterName);
 
-    TTypeList* blockStruct = new TTypeList;
-    TTypeLoc  member = { counterType, loc };
-    blockStruct->push_back(member);
+        TTypeList *blockStruct = new TTypeList;
+        TTypeLoc member = {counterType, loc};
+        blockStruct->push_back(member);
 
-    TType blockType(blockStruct, "", counterType->getQualifier());
-    blockType.getQualifier().storage = EvqBuffer;
+        TType blockType(blockStruct, "", counterType->getQualifier());
+        blockType.getQualifier().storage = EvqBuffer;
 
-    type.shallowCopy(blockType);
-    shareStructBufferType(type);
+        type.shallowCopy(blockType);
+        shareStructBufferType(type);
+    }
 }
 
 // declare counter for a structured buffer type
 void HlslParseContext::declareStructBufferCounter(const TSourceLoc& loc, const TType& bufferType, const TString& name)
 {
     // Bail out if not a struct buffer
-    if (! isStructBufferType(bufferType))
+    if (!isStructBufferType(bufferType))
         return;
 
-    if (! hasStructBuffCounter(bufferType))
+    if (!hasStructBuffCounter(bufferType))
         return;
 
-    TType blockType;
-    counterBufferType(loc, blockType);
-
-    TString* blockName = new TString(intermediate.addCounterBufferName(name));
+    TString *counterName = new TString(intermediate.addCounterBufferName(name));
 
     // Counter buffer is not yet in use
-    structBufferCounter[*blockName] = false;
+    structBufferCounter[*counterName] = false;
 
-    shareStructBufferType(blockType);
-    declareBlock(loc, blockType, blockName);
+    TType counterType;
+    counterBufferType(loc, counterType);
+    if (intermediate.getHlslBufferWithCounterMode() == EShHlslBufferWithCounterSimpleAtomic) {
+        declareVariable(loc, *counterName, counterType);
+    } else {
+        shareStructBufferType(counterType);
+        declareBlock(loc, counterType, counterName);
+    }
 }
 
 // return the counter that goes with a given structuredbuffer
 TIntermTyped* HlslParseContext::getStructBufferCounter(const TSourceLoc& loc, TIntermTyped* buffer)
 {
     // Bail out if not a struct buffer
-    if (buffer == nullptr || ! isStructBufferType(buffer->getType()))
+    if (buffer == nullptr || !isStructBufferType(buffer->getType()))
         return nullptr;
 
     const TString counterBlockName(intermediate.addCounterBufferName(buffer->getAsSymbolNode()->getName()));
-
     // Mark the counter as being used
     structBufferCounter[counterBlockName] = true;
 
-    TIntermTyped* counterVar = handleVariable(loc, &counterBlockName);  // find the block structure
-    TIntermTyped* index = intermediate.addConstantUnion(0, loc); // index to counter inside block struct
+    TIntermTyped *counterVar = handleVariable(loc, &counterBlockName); // find the block structure
 
-    TIntermTyped* counterMember = intermediate.addIndex(EOpIndexDirectStruct, counterVar, index, loc);
-    counterMember->setType(TType(EbtUint));
-    return counterMember;
+    if (intermediate.getHlslBufferWithCounterMode() != EShHlslBufferWithCounterSimpleAtomic) {
+        TIntermTyped *index = intermediate.addConstantUnion(0, loc); // index to counter inside block struct
+
+        TIntermTyped *counterMember = intermediate.addIndex(EOpIndexDirectStruct, counterVar, index, loc);
+        counterMember->setType(TType(EbtUint));
+        return counterMember;
+    }
+    return counterVar;
 }
 
 //
@@ -3266,19 +3276,36 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     // Some methods require a hidden internal counter, obtained via getStructBufferCounter().
     // This lambda adds something to it and returns the old value.
     const auto incDecCounter = [&](int incval) -> TIntermTyped* {
-        TIntermTyped* incrementValue = intermediate.addConstantUnion(static_cast<unsigned int>(incval), loc, true);
         TIntermTyped* counter = getStructBufferCounter(loc, bufferObj); // obtain the counter member
 
         if (counter == nullptr)
             return nullptr;
 
-        TIntermAggregate* counterIncrement = new TIntermAggregate(EOpAtomicAdd);
-        counterIncrement->setType(TType(EbtUint, EvqTemporary));
-        counterIncrement->setLoc(loc);
-        counterIncrement->getSequence().push_back(counter);
-        counterIncrement->getSequence().push_back(incrementValue);
-
-        return counterIncrement;
+        if (intermediate.getHlslBufferWithCounterMode() == EShHlslBufferWithCounterSimpleAtomic) {
+            TIntermUnary* counterIncrement = nullptr;
+            if (incval == 1) {
+                counterIncrement = new TIntermUnary(EOpAtomicCounterIncrement);
+            } else if (incval == -1) {
+                counterIncrement = new TIntermUnary(EOpAtomicCounterDecrement);
+            }
+            if (counterIncrement)
+            {
+                counterIncrement->setType(TType(EbtUint, EvqTemporary));
+                counterIncrement->setLoc(loc);
+                counterIncrement->setOperand(counter);
+            }
+            return counterIncrement;
+        }
+        else
+        {
+            TIntermTyped* incrementValue = intermediate.addConstantUnion(static_cast<unsigned int>(incval), loc, true);
+            TIntermAggregate *counterIncrement = new TIntermAggregate(EOpAtomicAdd);
+            counterIncrement->setType(TType(EbtUint, EvqTemporary));
+            counterIncrement->setLoc(loc);
+            counterIncrement->getSequence().push_back(counter);
+            counterIncrement->getSequence().push_back(incrementValue);
+            return counterIncrement;
+        }
     };
 
     // Index to obtain the runtime sized array out of the buffer.
@@ -9844,18 +9871,473 @@ void HlslParseContext::addPatchConstantInvocation()
     epBodySeq.insert(epBodySeq.end(), invocationIdTest);
 }
 
+struct BufferWithCounterInfo {
+    // name w/o counter
+    TString name;
+    TIntermAggregate *function = nullptr;
+    TVector<TIntermSymbol *> bufferDefinitions;
+    TVector<TIntermSymbol *> counterDefinitions;
+    TVector<TIntermBinary *> bufferAccess;
+    TVector<TIntermBinary *> counterAccess;
+    TVector<TIntermAggregate *> consumers;
+    bool forceCounter = false;
+};
+
+// This discovers all r/w struct buffers (including append and consume)
+// and records their definitions and uses.
+struct DiscoverStructuredBufferWithCounters : public TIntermTraverser {
+    const char *counterPostFix;
+    int counterPostFixLength;
+    DiscoverStructuredBufferWithCounters(const char *counterPostFix)
+        : counterPostFix(counterPostFix), counterPostFixLength(int(strlen(counterPostFix))) {}
+
+    TVector<BufferWithCounterInfo> buffersWithCounters;
+    TIntermAggregate *activeFunction = nullptr;
+
+    // returns pointer to info and if the symbol is the counter (true) or the buffer it self(false)
+    std::pair<BufferWithCounterInfo *, bool> findInfo(TIntermSymbol *symbol)
+    {
+        auto &type = symbol->getType();
+        auto &qualifier = type.getQualifier();
+        auto name = symbol->getName();
+        auto postFixAt = name.find(counterPostFix);
+        bool isCounterBuffer = postFixAt != TString::npos;
+        bool forceCounter = false;
+        switch (qualifier.declaredBuiltIn) {
+        default:
+            return std::make_pair(nullptr, false);
+        // only valid types that could use a counter
+        case EbvNone: // counter is of type none
+            if (!isCounterBuffer)
+                return std::make_pair(nullptr, false);
+        case EbvRWStructuredBuffer:
+        case EbvRWByteAddressBuffer:
+            break;
+        case EbvAppendConsume:
+            forceCounter = true;
+            break;
+        }
+        name = name.substr(0, postFixAt);
+        auto ref = std::find_if(buffersWithCounters.begin(), buffersWithCounters.end(),
+                                [&](const BufferWithCounterInfo &info) {
+                                    if (info.function != activeFunction)
+                                        return false;
+
+                                    if (!isCounterBuffer) {
+                                        if (!info.bufferDefinitions.empty())
+                                            return info.bufferDefinitions.front()->getId() == symbol->getId();
+                                    } else {
+                                        if (!info.counterDefinitions.empty())
+                                            return info.counterDefinitions.front()->getId() == symbol->getId();
+                                    }
+                                    return info.name == name;
+                                });
+        BufferWithCounterInfo *result = nullptr;
+        if (ref != buffersWithCounters.end())
+            result = &*ref;
+        else
+        {
+            ref = std::find_if(buffersWithCounters.begin(), buffersWithCounters.end(),
+                               [&](const BufferWithCounterInfo &info) {
+                                   // only globals
+                                   if (info.function)
+                                       return false;
+
+                                   if (!isCounterBuffer) {
+                                       if (!info.bufferDefinitions.empty())
+                                           return info.bufferDefinitions.front()->getId() == symbol->getId();
+                                   } else {
+                                       if (!info.counterDefinitions.empty())
+                                           return info.counterDefinitions.front()->getId() == symbol->getId();
+                                   }
+                                   return info.name == name;
+                               });
+            if (ref != buffersWithCounters.end())
+                result = &*ref;
+            else
+                result = &newGlobal(name);
+        }
+
+        result->forceCounter = result->forceCounter || forceCounter;
+
+        return std::make_pair(result, isCounterBuffer);
+    }
+
+    void registerFunctionParam(TIntermAggregate *function, TIntermSymbol *symbol)
+    {
+        auto &type = symbol->getType();
+        auto &qualifier = type.getQualifier();
+        auto name = symbol->getName();
+        auto postFixAt = name.find(counterPostFix);
+        bool isCounterBuffer = postFixAt != TString::npos;
+        bool forceCounter = false;
+        switch (qualifier.declaredBuiltIn) {
+        default:
+            return;
+            // only valid types that could use a counter
+        case EbvNone: // counter is of type none
+            if (!isCounterBuffer)
+                return;
+        case EbvAppendConsume:
+            forceCounter = true;
+        case EbvRWStructuredBuffer:
+        case EbvRWByteAddressBuffer:
+            break;
+        }
+        name = name.substr(0, postFixAt);
+        auto ref = std::find_if(buffersWithCounters.begin(), buffersWithCounters.end(),
+                                [&](const BufferWithCounterInfo &info) {
+                                    if (info.function != activeFunction)
+                                        return false;
+
+                                    if (!isCounterBuffer) {
+                                        if (!info.bufferDefinitions.empty())
+                                            return info.bufferDefinitions.front()->getId() == symbol->getId();
+                                    } else {
+                                        if (!info.counterDefinitions.empty())
+                                            return info.counterDefinitions.front()->getId() == symbol->getId();
+                                    }
+                                    return info.name == name;
+                                });
+        if (ref == buffersWithCounters.end()) {
+            BufferWithCounterInfo newInfo;
+            newInfo.forceCounter = forceCounter;
+            newInfo.name = name;
+            newInfo.function = function;
+            if (!isCounterBuffer)
+                newInfo.bufferDefinitions.push_back(symbol);
+            else
+                newInfo.counterDefinitions.push_back(symbol);
+
+            buffersWithCounters.push_back(newInfo);
+        }
+    }
+
+    void addCallParam(TIntermAggregate *callsite, size_t param)
+    {
+        auto symbol = callsite->getSequence()[param]->getAsSymbolNode();
+        if (!symbol)
+            return;
+
+        auto info = findInfo(symbol);
+        if (!info.first)
+            return;
+
+        auto ref = std::find(info.first->consumers.begin(), info.first->consumers.end(), callsite);
+        if (ref == info.first->consumers.end()) {
+            info.first->consumers.push_back(callsite);
+        }
+    }
+
+    BufferWithCounterInfo &newGlobal(const TString &name)
+    {
+        BufferWithCounterInfo newInfo;
+        newInfo.name = name;
+        buffersWithCounters.push_back(newInfo);
+        return buffersWithCounters.back();
+    }
+
+    void visitSymbol(TIntermSymbol *symbol) override
+    {
+        auto find = findInfo(symbol);
+        if (find.first) {
+            if (find.second) {
+                find.first->counterDefinitions.push_back(symbol);
+            } else {
+                find.first->bufferDefinitions.push_back(symbol);
+            }
+        }
+    }
+
+    void onIndexing(TIntermBinary *bin)
+    {
+        auto symbol = bin->getLeft()->getAsSymbolNode();
+        if (!symbol)
+            return;
+        auto find = findInfo(symbol);
+        if (find.first) {
+            if (find.second) {
+                find.first->counterAccess.push_back(bin);
+            } else {
+                find.first->bufferAccess.push_back(bin);
+            }
+        }
+    }
+
+    bool visitBinary(TVisit, TIntermBinary *bin) override
+    {
+        switch (bin->getOp()) {
+        case EOpIndexDirect:
+        case EOpIndexIndirect:
+        case EOpIndexDirectStruct:
+            onIndexing(bin);
+            break;
+        default:
+            break;
+        }
+        return true;
+    }
+
+    bool visitAggregate(TVisit, TIntermAggregate *ag) override
+    {
+        using namespace std;
+        TIntermSequence &seq = ag->getSequence();
+        if (ag->getOp() == EOpFunction && !seq.empty()) {
+            activeFunction = ag;
+            for (auto &&mayBeParams : ag->getSequence()) {
+                auto params = mayBeParams->getAsAggregate();
+                if (params && params->getOp() == EOpParameters) {
+                    for (size_t i = 0; i < params->getSequence().size(); ++i) {
+                        auto node = params->getSequence()[i];
+                        auto symbol = node->getAsSymbolNode();
+                        registerFunctionParam(ag, symbol);
+                    }
+                    break;
+                }
+            }
+        } else if (ag->getOp() == EOpFunctionCall) {
+            for (size_t i = 0; i < ag->getSequence().size(); ++i)
+                addCallParam(ag, i);
+        }
+
+        return true;
+    }
+};
+
+class TypePatcher {
+    TMap<const TTypeList *, TTypeList *> structRemap;
+    TMap<const TType *, TType *> typeRemap;
+    TIntermediate &intermediate;
+
+    TTypeList *remapStruct(const TTypeList *strct, const TSourceLoc &loc)
+    {
+        auto &newStruct = structRemap[strct];
+        if (!newStruct) {
+            newStruct = new TTypeList;
+            TTypeLoc counterType;
+            counterType.loc = loc;
+            counterType.type = new TType(EbtUint, EvqBuffer);
+            counterType.type->setFieldName(intermediate.implicitCounterName);
+            newStruct->push_back(counterType);
+
+            if (intermediate.getHlslBufferWithCounterEmbeddedPayloadOffset() > 0 && !strct->empty()) {
+                auto at = strct->begin();
+                if (at != strct->end()) {
+                    TType *newMemberType = new TType;
+                    newMemberType->shallowCopy(*at->type);
+                    auto &qualifier = newMemberType->getQualifier();
+                    if (qualifier.hasOffset())
+                        qualifier.layoutOffset += intermediate.getHlslBufferWithCounterEmbeddedPayloadOffset();
+                    else
+                        qualifier.layoutOffset = intermediate.getHlslBufferWithCounterEmbeddedPayloadOffset();
+                    auto newMember = *at;
+                    newMember.type = newMemberType;
+                    newStruct->push_back(newMember);
+                    ++at;
+                }
+                for (; at != strct->end(); ++at) {
+                    if (at->type->getQualifier().layoutOffset >= 0) {
+                        TType *newMemberType = new TType;
+                        newMemberType->shallowCopy(*at->type);
+                        auto &qualifier = newMemberType->getQualifier();
+                        qualifier.layoutOffset += intermediate.getHlslBufferWithCounterEmbeddedPayloadOffset();
+                        auto newMember = *at;
+                        newMember.type = newMemberType;
+                        newStruct->push_back(newMember);
+                    } else {
+                        newStruct->push_back(*at);
+                    }
+                }
+            } else {
+                newStruct->insert(newStruct->end(), strct->begin(), strct->end());
+            }
+            structRemap[newStruct] = newStruct;
+        }
+        return newStruct;
+    };
+
+public:
+    TypePatcher(TIntermediate &intermediate) : intermediate(intermediate) {}
+
+    TType &operator()(const TType *type, const TSourceLoc &loc)
+    {
+        auto &newType = typeRemap[type];
+        if (!newType) {
+            newType = new TType;
+            newType->shallowCopy(*type);
+            newType->setStruct(remapStruct(newType->getStruct(), loc));
+            typeRemap[newType] = newType;
+        }
+        return *newType;
+    };
+};
+
 // Finalization step: remove unused buffer blocks from linkage (we don't know until the
 // shader is entirely compiled).
 // Preserve order of remaining symbols.
 void HlslParseContext::removeUnusedStructBufferCounters()
 {
-    const auto endIt = std::remove_if(linkageSymbols.begin(), linkageSymbols.end(),
-                                      [this](const TSymbol* sym) {
-                                          const auto sbcIt = structBufferCounter.find(sym->getName());
-                                          return sbcIt != structBufferCounter.end() && !sbcIt->second;
-                                      });
+    // never used any structure buffer, can skip this stuff
+    if (structBufferCounter.empty())
+        return;
 
-    linkageSymbols.erase(endIt, linkageSymbols.end());
+
+    if (intermediate.getHlslBufferWithCounterMode() == EShHlslBufferWithCounterEmbedded) {
+        auto root = intermediate.getTreeRoot();
+
+        DiscoverStructuredBufferWithCounters bufferDB(intermediate.implicitCounterName);
+        root->traverse(&bufferDB);
+
+        // propagate the force counter down the line to all aliases, als as we are at it, we make sure
+        // that 'forceCounter' is set if the buffer needs a counter for any reason
+        for (auto sbufRef = bufferDB.buffersWithCounters.begin(); sbufRef != bufferDB.buffersWithCounters.end();
+             ++sbufRef) {
+            // if we have a counter then force counter our selfs
+            sbufRef->forceCounter = sbufRef->forceCounter || !sbufRef->counterAccess.empty();
+            auto &sbufQualifier = sbufRef->bufferDefinitions.front()->getType().getQualifier();
+            // if we have no fixed binding, then we can't alias
+            if (!sbufQualifier.hasBinding())
+              continue;
+            auto aliasSbufRef = sbufRef;
+            for (;;) {
+                aliasSbufRef =
+                    std::find_if(aliasSbufRef + 1, bufferDB.buffersWithCounters.end(),
+                                 [sbufRef, &sbufQualifier](const BufferWithCounterInfo &other) {
+                                     // looking for alias by comparing binding location and set
+                                     auto &lq = other.bufferDefinitions.front()->getType().getQualifier();
+                                     // no binding, can't alias
+                                     if (!lq.hasBinding())
+                                         return false;
+                                     // set is optional here, so simple compare should be ok
+                                     return (lq.layoutBinding == sbufQualifier.layoutBinding) && (lq.layoutSet == sbufQualifier.layoutSet);
+                                 });
+                if (aliasSbufRef == bufferDB.buffersWithCounters.end())
+                    break;
+                // update our selfs from alias (may set us to true)
+                sbufRef->forceCounter =
+                    sbufRef->forceCounter || !aliasSbufRef->counterAccess.empty() || aliasSbufRef->forceCounter;
+                // update alias from our selfs (may set alias to true)
+                aliasSbufRef->forceCounter = aliasSbufRef->forceCounter || sbufRef->forceCounter;
+            }
+        }
+
+        // This stores original type to modified type mapping, so that we only update types
+        // and structs that we do not know yet. Otherwise reuse the remapped type again.
+        // Without this the spir-v output produces duplicated types (which is invalid).
+        TypePatcher patchType(intermediate);
+
+        // with the data at hand, we can now start patch everything
+        for (auto &&sbuf : bufferDB.buffersWithCounters) {
+            // either set because it is a append or consume buffer, or by alias search above
+            if (!sbuf.forceCounter)
+                continue;
+
+            if (sbuf.function) {
+                // remove counter from function def
+                // callers to this are fixed automatically later with the input variable update
+                for (auto &&e : sbuf.function->getSequence()) {
+                    auto ag = e->getAsAggregate();
+                    if (ag && ag->getOp() == EOpParameters) {
+                        auto &paramList = ag->getSequence();
+                        auto newEnd = std::remove_if(paramList.begin(), paramList.end(), [&](TIntermNode *node) {
+                            return node->getAsSymbolNode()->getId() == sbuf.counterDefinitions.front()->getId();
+                        });
+                        paramList.erase(newEnd, paramList.end());
+                        break;
+                    }
+                }
+            }
+
+            if (sbuf.forceCounter) {
+                // patch all buffer def types
+                for (auto &&bufferDef : sbuf.bufferDefinitions) {
+                    bufferDef->setType(patchType(&bufferDef->getType(), bufferDef->getLoc()));
+                }
+
+                // patch all buffer access
+                for (auto &&bufferAccess : sbuf.bufferAccess) {
+                    auto index = bufferAccess->getRight()->getAsConstantUnion();
+                    assert(index);
+                    if (index) {
+                        TSourceLoc loc;
+                        bufferAccess->setRight(index->fold(EOpAdd, intermediate.addConstantUnion(1u, loc)));
+                    }
+                }
+
+                auto baseDef = sbuf.bufferDefinitions.front();
+
+                // check linkage symbols, we recreate a matching symbol with the updated type
+                // and throw away the old symbol
+                for (auto &&linkageSymbol : linkageSymbols) {
+                    if (linkageSymbol->getUniqueId() == baseDef->getId()) {
+                        auto id = linkageSymbol->getUniqueId();
+                        linkageSymbol = new TVariable(&linkageSymbol->getName(),
+                                                      patchType(&linkageSymbol->getType(), TSourceLoc()),
+                                                      linkageSymbol->getAsVariable()->isUserType());
+                        linkageSymbol->setUniqueId(id);
+                    } else {
+                        // also need to alias check
+                        auto &linkageSymbolQualifier = linkageSymbol->getType().getQualifier();
+                        auto &typeQualifier = baseDef->getType().getQualifier();
+                        if (linkageSymbolQualifier.hasBinding()) {
+                            if (typeQualifier.hasBinding()) {
+                                if ((linkageSymbolQualifier.layoutBinding == typeQualifier.layoutBinding) &&
+                                    (linkageSymbolQualifier.layoutSet == typeQualifier.layoutSet)) {
+                                    // is alias
+                                    auto id = linkageSymbol->getUniqueId();
+                                    linkageSymbol = new TVariable(&linkageSymbol->getName(),
+                                                                  patchType(&linkageSymbol->getType(), TSourceLoc()),
+                                                                  linkageSymbol->getAsVariable()->isUserType());
+                                    linkageSymbol->setUniqueId(id);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // patch all buffer counter access
+                for (auto &&bufferCounterAccess : sbuf.counterAccess) {
+                    bufferCounterAccess->setLeft(intermediate.addSymbol(*baseDef));
+                }
+            }
+
+            if (!sbuf.consumers.empty()) {
+                auto counterBaseDef = sbuf.counterDefinitions.front();
+                // patch all buffer counter consumptions (function calls that take the buffer as parameter)
+                for (auto &&bufferCounterCunsumption : sbuf.consumers) {
+                    auto &paramList = bufferCounterCunsumption->getSequence();
+                    auto &paramQualifierList = bufferCounterCunsumption->getQualifierList();
+                    for (;;) {
+                        auto ref = std::find_if(paramList.begin(), paramList.end(), [=](TIntermNode *node) {
+                            auto symbol = node->getAsSymbolNode();
+                            if (!symbol)
+                                return false;
+                            return symbol->getId() == counterBaseDef->getId();
+                        });
+                        if (ref == paramList.end())
+                            break;
+
+                        paramQualifierList.erase(paramQualifierList.begin() + (ref - paramList.begin()));
+                        paramList.erase(ref);
+                    }
+                }
+            }
+        }
+
+        const auto endIt = std::remove_if(linkageSymbols.begin(), linkageSymbols.end(), [this](const TSymbol *sym) {
+            return structBufferCounter.find(sym->getName()) != structBufferCounter.end();
+        });
+
+        linkageSymbols.erase(endIt, linkageSymbols.end());
+    } else {
+
+        const auto endIt = std::remove_if(linkageSymbols.begin(), linkageSymbols.end(), [this](const TSymbol *sym) {
+            const auto sbcIt = structBufferCounter.find(sym->getName());
+            return sbcIt != structBufferCounter.end() && !sbcIt->second;
+        });
+
+        linkageSymbols.erase(endIt, linkageSymbols.end());
+    }
 }
 
 // Finalization step: patch texture shadow modes to match samplers they were combined with

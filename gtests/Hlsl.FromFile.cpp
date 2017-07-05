@@ -61,6 +61,8 @@ using HlslCompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointP
 using HlslVulkan1_1CompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslCompileAndFlattenTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+using HlslAtomicCounterTestSeparateAtomic = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+using HlslAtomicCounterTestEmbeded = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 
 // Compiling HLSL to pre-legalized SPIR-V under Vulkan semantics. Expected
 // to successfully generate both AST and SPIR-V.
@@ -93,6 +95,22 @@ TEST_P(HlslLegalizeTest, FromFile)
                             Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
                             Target::Spv, true, GetParam().entryPoint,
                             "/baseLegalResults/", true);
+}
+
+TEST_P(HlslAtomicCounterTestSeparateAtomic, FromFile)
+{
+  loadFileCompileAndCheckWithAtomicCounterMode(GlobalTestSettings.testRoot, GetParam().fileName,
+                                               Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
+                                               Target::BothASTAndSpv, true, GetParam().entryPoint,
+                                               "/baseAtomicCounter/", true, EShHlslBufferWithCounterSimpleAtomic);
+}
+
+TEST_P(HlslAtomicCounterTestEmbeded, FromFile)
+{
+  loadFileCompileAndCheckWithAtomicCounterMode(GlobalTestSettings.testRoot, GetParam().fileName,
+                                               Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
+                                               Target::BothASTAndSpv, true, GetParam().entryPoint,
+                                               "/baseEmbeddedCounter/", true, EShHlslBufferWithCounterEmbedded);
 }
 
 // clang-format off
@@ -435,6 +453,61 @@ INSTANTIATE_TEST_CASE_P(
 );
 // clang-format on
 #endif
+
+
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    ToSpirv, HlslAtomicCounterTestSeparateAtomic,
+    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
+        {"hlsl.getdimensions.rw.dx10.frag", "main"},
+        {"hlsl.load.rwbuffer.dx10.frag", "main"},
+        {"hlsl.promote.atomic.frag", "main"},
+        {"hlsl.rw.atomics.frag", "main"},
+        {"hlsl.rw.register.frag", "main"},
+        {"hlsl.rw.swizzle.frag", "main"},
+        {"hlsl.structbuffer.fn2.comp", "main"},
+        {"hlsl.structbuffer.append.fn.frag", "main"},
+        {"hlsl.structbuffer.append.frag", "main"},
+        {"hlsl.structbuffer.floatidx.comp", "main"},
+        {"hlsl.structbuffer.frag", "main"},
+        {"hlsl.structbuffer.atomics.frag", "main"},
+        {"hlsl.structbuffer.byte.frag", "main"},
+        {"hlsl.structbuffer.coherent.frag", "main"},
+        {"hlsl.structbuffer.incdec.frag", "main"},
+        {"hlsl.structbuffer.fn.frag", "main"},
+        {"hlsl.structbuffer.rw.frag", "main"},
+        {"hlsl.structbuffer.rwbyte.frag", "main"}
+    }),
+    FileNameAsCustomTestSuffix
+);
+// clang-format on
+
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    ToSpirv, HlslAtomicCounterTestEmbeded,
+    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
+        {"hlsl.getdimensions.rw.dx10.frag", "main"},
+        {"hlsl.load.rwbuffer.dx10.frag", "main"},
+        {"hlsl.promote.atomic.frag", "main"},
+        {"hlsl.rw.atomics.frag", "main"},
+        {"hlsl.rw.register.frag", "main"},
+        {"hlsl.rw.swizzle.frag", "main"},
+        {"hlsl.structbuffer.fn2.comp", "main"},
+        {"hlsl.structbuffer.append.fn.frag", "main"},
+        {"hlsl.structbuffer.append.frag", "main"},
+        {"hlsl.structbuffer.floatidx.comp", "main"},
+        {"hlsl.structbuffer.frag", "main"},
+        {"hlsl.structbuffer.atomics.frag", "main"},
+        {"hlsl.structbuffer.byte.frag", "main"},
+        {"hlsl.structbuffer.coherent.frag", "main"},
+        {"hlsl.structbuffer.incdec.frag", "main"},
+        {"hlsl.structbuffer.fn.frag", "main"},
+        {"hlsl.structbuffer.rw.frag", "main"},
+        {"hlsl.structbuffer.rwbyte.frag", "main"}
+    }),
+    FileNameAsCustomTestSuffix
+);
+// clang-format on
 
 }  // anonymous namespace
 }  // namespace glslangtest

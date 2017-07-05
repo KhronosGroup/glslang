@@ -1775,6 +1775,8 @@ void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlatt
 void TShader::setNoStorageFormat(bool useUnknownFormat) { intermediate->setNoStorageFormat(useUnknownFormat); }
 void TShader::setResourceSetBinding(const std::vector<std::string>& base)   { intermediate->setResourceSetBinding(base); }
 void TShader::setTextureSamplerTransformMode(EShTextureSamplerTransformMode mode) { intermediate->setTextureSamplerTransformMode(mode); }
+void TShader::setHlslBufferWithCounterMode(EShHlslBufferWithCounterMode mode) { intermediate->setHlslBufferWithCounterMode(mode); }
+void TShader::setHlslBufferWithCounterEmbeddedPayloadOffset(int bytes) { intermediate->setHlslBufferWithCounterEmbeddedPayloadOffset(bytes); }
 
 //
 // Turn the shader strings into a parse tree in the TIntermediate.
