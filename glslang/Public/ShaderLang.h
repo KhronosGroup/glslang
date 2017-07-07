@@ -362,10 +362,10 @@ public:
     void setTextureSamplerTransformMode(EShTextureSamplerTransformMode mode);
 
     // For setting up the environment (initialized in the constructor):
-    void setEnvInput(EShSource lang, EShLanguage stage, EShClient client, int version)
+    void setEnvInput(EShSource lang, EShLanguage envStage, EShClient client, int version)
     {
         environment.input.languageFamily = lang;
-        environment.input.stage = stage;
+        environment.input.stage = envStage;
         environment.input.dialect = client;
         environment.input.dialectVersion = version;
     }
