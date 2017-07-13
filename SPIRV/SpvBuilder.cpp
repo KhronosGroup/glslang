@@ -466,7 +466,7 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
     }
 
     if (ms) {
-        if (arrayed)
+        if (arrayed && ! (sampled == 1))
             addCapability(CapabilityImageMSArray);
         if (! sampled)
             addCapability(CapabilityStorageImageMultisample);
