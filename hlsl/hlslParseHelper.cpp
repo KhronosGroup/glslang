@@ -7165,6 +7165,21 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, const TStr
     if (voidErrorCheck(loc, identifier, type.getBasicType()))
         return nullptr;
 
+    // Global consts with initializers that are non-const act like EvqGlobal in HLSL.
+    // This test is implicitly recursive, because initializers propagate constness
+    // up the aggregate node tree during creation.  E.g, for:
+    //    { { 1, 2 }, { 3, 4 } }
+    // the initializer list is marked EvqConst at the top node, and remains so here.  However:
+    //    { 1, { myvar, 2 }, 3 }
+    // is not a const intializer, and still becomes EvqGlobal here.
+
+    const bool nonConstInitializer = (initializer != nullptr && initializer->getQualifier().storage != EvqConst);
+
+    if (type.getQualifier().storage == EvqConst && symbolTable.atGlobalLevel() && nonConstInitializer) {
+        // Force to global
+        type.getQualifier().storage = EvqGlobal;
+    }
+
     // make const and initialization consistent
     fixConstInit(loc, identifier, type, initializer);
 
@@ -7342,11 +7357,6 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
     // Uniform and global consts require a constant initializer
     if (qualifier == EvqUniform && initializer->getType().getQualifier().storage != EvqConst) {
         error(loc, "uniform initializers must be constant", "=", "'%s'", variable->getType().getCompleteString().c_str());
-        variable->getWritableType().getQualifier().storage = EvqTemporary;
-        return nullptr;
-    }
-    if (qualifier == EvqConst && symbolTable.atGlobalLevel() && initializer->getType().getQualifier().storage != EvqConst) {
-        error(loc, "global const initializers must be constant", "=", "'%s'", variable->getType().getCompleteString().c_str());
         variable->getWritableType().getQualifier().storage = EvqTemporary;
         return nullptr;
     }
