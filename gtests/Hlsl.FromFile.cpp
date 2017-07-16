@@ -122,6 +122,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.float4.frag", "PixelShaderFunction"},
         {"hlsl.flatten.return.frag", "main"},
         {"hlsl.flattenOpaque.frag", "main"},
+        {"hlsl.flattenOpaqueInit.vert", "main"},
+        {"hlsl.flattenOpaqueInitMix.vert", "main"},
         {"hlsl.forLoop.frag", "PixelShaderFunction"},
         {"hlsl.gather.array.dx10.frag", "main"},
         {"hlsl.gather.basic.dx10.frag", "main"},
