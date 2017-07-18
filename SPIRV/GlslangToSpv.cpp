@@ -2918,6 +2918,7 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
         spv::Decoration paramPrecision = TranslatePrecisionDecoration(type);
         if (paramPrecision != spv::NoPrecision)
             decorations.push_back(paramPrecision);
+        TranslateMemoryDecoration(type.getQualifier(), decorations);
     };
 
     for (int f = 0; f < (int)glslFunctions.size(); ++f) {
