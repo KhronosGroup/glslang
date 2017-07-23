@@ -1,7 +1,7 @@
 //
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2013-2016 LunarG, Inc.
-// Copyright (C) 2015-2016 Google, Inc.
+// Copyright (C) 2015-2017 Google, Inc.
 //
 // All rights reserved.
 //
@@ -138,7 +138,8 @@ int MapVersionToIndex(int version)
     case 440: index = 12; break;
     case 310: index = 13; break;
     case 450: index = 14; break;
-    default:              break;
+    case 500: index =  0; break; // HLSL
+    default:  assert(0);  break;
     }
 
     assert(index < VersionCount);
@@ -447,7 +448,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
         return correct;
     }
 
-    // Get a good version...
+    // Get a version...
     if (version == 0) {
         version = defaultVersion;
         // infoSink.info.message(EPrefixWarning, "#version: statement missing; use #version on first line of shader");
@@ -491,6 +492,40 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
             }
             // else: typical desktop case... e.g., "#version 410 core"
         }
+    }
+
+    // Fix version...
+    switch (version) {
+    // ES versions
+    case 100: break;
+    case 300: break;
+    case 310: break;
+
+    // desktop versions
+    case 110: break;
+    case 120: break;
+    case 130: break;
+    case 140: break;
+    case 150: break;
+    case 330: break;
+    case 400: break;
+    case 410: break;
+    case 420: break;
+    case 430: break;
+    case 440: break;
+    case 450: break;
+
+    // unknown version
+    default:
+        correct = false;
+        infoSink.info.message(EPrefixError, "version not supported");
+        if (profile == EEsProfile)
+            version = 310;
+        else {
+            version = 450;
+            profile = ECoreProfile;
+        }
+        break;
     }
 
     // Correct for stage type...

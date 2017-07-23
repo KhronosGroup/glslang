@@ -136,6 +136,7 @@ INSTANTIATE_TEST_CASE_P(
         "430.vert",
         "430.comp",
         "430AofA.frag",
+        "435.vert",
         "440.vert",
         "440.frag",
         "450.vert",
