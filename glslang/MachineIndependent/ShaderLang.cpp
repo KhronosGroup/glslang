@@ -116,7 +116,7 @@ TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& 
 
 // Local mapping functions for making arrays of symbol tables....
 
-const int VersionCount = 15;  // index range in MapVersionToIndex
+const int VersionCount = 16;  // index range in MapVersionToIndex
 
 int MapVersionToIndex(int version)
 {
@@ -139,6 +139,7 @@ int MapVersionToIndex(int version)
     case 310: index = 13; break;
     case 450: index = 14; break;
     case 500: index =  0; break; // HLSL
+    case 320: index = 15; break;
     default:  assert(0);  break;
     }
 
@@ -456,9 +457,9 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
 
     // Get a good profile...
     if (profile == ENoProfile) {
-        if (version == 300 || version == 310) {
+        if (version == 300 || version == 310 || version == 320) {
             correct = false;
-            infoSink.info.message(EPrefixError, "#version: versions 300 and 310 require specifying the 'es' profile");
+            infoSink.info.message(EPrefixError, "#version: versions 300, 310, and 320 require specifying the 'es' profile");
             profile = EEsProfile;
         } else if (version == 100)
             profile = EEsProfile;
@@ -475,16 +476,16 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
                 profile = EEsProfile;
             else
                 profile = ENoProfile;
-        } else if (version == 300 || version == 310) {
+        } else if (version == 300 || version == 310 || version == 320) {
             if (profile != EEsProfile) {
                 correct = false;
-                infoSink.info.message(EPrefixError, "#version: versions 300 and 310 support only the es profile");
+                infoSink.info.message(EPrefixError, "#version: versions 300, 310, and 320 support only the es profile");
             }
             profile = EEsProfile;
         } else {
             if (profile == EEsProfile) {
                 correct = false;
-                infoSink.info.message(EPrefixError, "#version: only version 300 and 310 support the es profile");
+                infoSink.info.message(EPrefixError, "#version: only version 300, 310, and 320 support the es profile");
                 if (version >= FirstProfileVersion)
                     profile = ECoreProfile;
                 else
@@ -500,6 +501,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     case 100: break;
     case 300: break;
     case 310: break;
+    case 320: break;
 
     // desktop versions
     case 110: break;
