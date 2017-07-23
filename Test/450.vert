@@ -26,3 +26,4 @@ void foo()
 {
     SS::f;
 }
+; // ERROR: no extraneous semicolons

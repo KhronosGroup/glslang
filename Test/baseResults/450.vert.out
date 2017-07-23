@@ -2,7 +2,8 @@
 ERROR: 0:12: 'out' : cannot be bool 
 ERROR: 0:13: 'sampler2D' : sampler/image types can only be used in uniform variables or function parameters: outo
 ERROR: 0:27: '::' : not supported 
-ERROR: 3 compilation errors.  No code generated.
+ERROR: 0:29: 'extraneous semicolon' : not supported for this version or the enabled extensions 
+ERROR: 4 compilation errors.  No code generated.
 
 
 Shader version: 450
