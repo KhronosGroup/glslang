@@ -1375,9 +1375,23 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         if ((profile != EEsProfile && version >= 300) ||
             (profile == EEsProfile && version >= 310)) {
             commonBuiltins.append(
-                "uint atomicCounterIncrement(atomic_uint x);"
-                "uint atomicCounterDecrement(atomic_uint x);"
-                "uint atomicCounter(atomic_uint x);"
+                "uint atomicCounterIncrement(atomic_uint);"
+                "uint atomicCounterDecrement(atomic_uint);"
+                "uint atomicCounter(atomic_uint);"
+
+                "\n");
+        }
+        if (profile != EEsProfile && version >= 460) {
+            commonBuiltins.append(
+                "uint atomicCounterAdd(atomic_uint, uint);"
+                "uint atomicCounterSubtract(atomic_uint, uint);"
+                "uint atomicCounterMin(atomic_uint, uint);"
+                "uint atomicCounterMax(atomic_uint, uint);"
+                "uint atomicCounterAnd(atomic_uint, uint);"
+                "uint atomicCounterOr(atomic_uint, uint);"
+                "uint atomicCounterXor(atomic_uint, uint);"
+                "uint atomicCounterExchange(atomic_uint, uint);"
+                "uint atomicCounterCompSwap(atomic_uint, uint, uint);"
 
                 "\n");
         }
@@ -5908,6 +5922,18 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("atomicCounterIncrement", EOpAtomicCounterIncrement);
     symbolTable.relateToOperator("atomicCounterDecrement", EOpAtomicCounterDecrement);
     symbolTable.relateToOperator("atomicCounter",          EOpAtomicCounter);
+
+    if (profile != EEsProfile && version >= 460) {
+        symbolTable.relateToOperator("atomicCounterAdd",      EOpAtomicCounterAdd);
+        symbolTable.relateToOperator("atomicCounterSubtract", EOpAtomicCounterSubtract);
+        symbolTable.relateToOperator("atomicCounterMin",      EOpAtomicCounterMin);
+        symbolTable.relateToOperator("atomicCounterMax",      EOpAtomicCounterMax);
+        symbolTable.relateToOperator("atomicCounterAnd",      EOpAtomicCounterAnd);
+        symbolTable.relateToOperator("atomicCounterOr",       EOpAtomicCounterOr);
+        symbolTable.relateToOperator("atomicCounterXor",      EOpAtomicCounterXor);
+        symbolTable.relateToOperator("atomicCounterExchange", EOpAtomicCounterExchange);
+        symbolTable.relateToOperator("atomicCounterCompSwap", EOpAtomicCounterCompSwap);
+    }
 
     symbolTable.relateToOperator("fma",               EOpFma);
     symbolTable.relateToOperator("frexp",             EOpFrexp);
