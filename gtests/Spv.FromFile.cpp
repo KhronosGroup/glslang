@@ -361,6 +361,7 @@ INSTANTIATE_TEST_CASE_P(
     Glsl, CompileOpenGLToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
         "spv.460.frag",
+        "spv.460.vert",
         "spv.atomic.comp",
         "spv.glFragColor.frag",
         "spv.specConst.vert",

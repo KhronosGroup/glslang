@@ -3416,6 +3416,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "in int gl_DrawIDARB;"
                 );
         }
+        if (version >= 460) {
+            stageBuiltins[EShLangVertex].append(
+                "in int gl_BaseVertex;"
+                "in int gl_BaseInstance;"
+                "in int gl_DrawID;"
+                );
+        }
 
 #ifdef NV_EXTENSIONS
         if (version >= 450)
@@ -5230,16 +5237,19 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     switch(language) {
     case EShLangVertex:
         if (profile != EEsProfile) {
-            symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
-            symbolTable.setVariableExtensions("gl_BaseInstanceARB", 1, &E_GL_ARB_shader_draw_parameters);
-            symbolTable.setVariableExtensions("gl_DrawIDARB",       1, &E_GL_ARB_shader_draw_parameters);
-
-            BuiltInVariable("gl_BaseVertexARB",   EbvBaseVertex,   symbolTable);
-            BuiltInVariable("gl_BaseInstanceARB", EbvBaseInstance, symbolTable);
-            BuiltInVariable("gl_DrawIDARB",       EbvDrawId,       symbolTable);
-        }
-
-        if (profile != EEsProfile) {
+            if (version >= 440) {
+                symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
+                symbolTable.setVariableExtensions("gl_BaseInstanceARB", 1, &E_GL_ARB_shader_draw_parameters);
+                symbolTable.setVariableExtensions("gl_DrawIDARB",       1, &E_GL_ARB_shader_draw_parameters);
+                BuiltInVariable("gl_BaseVertexARB",   EbvBaseVertex,   symbolTable);
+                BuiltInVariable("gl_BaseInstanceARB", EbvBaseInstance, symbolTable);
+                BuiltInVariable("gl_DrawIDARB",       EbvDrawId,       symbolTable);
+            }
+            if (version >= 460) {
+                BuiltInVariable("gl_BaseVertex",   EbvBaseVertex,   symbolTable);
+                BuiltInVariable("gl_BaseInstance", EbvBaseInstance, symbolTable);
+                BuiltInVariable("gl_DrawID",       EbvDrawId,       symbolTable);
+            }
             symbolTable.setVariableExtensions("gl_SubGroupSizeARB",       1, &E_GL_ARB_shader_ballot);
             symbolTable.setVariableExtensions("gl_SubGroupInvocationARB", 1, &E_GL_ARB_shader_ballot);
             symbolTable.setVariableExtensions("gl_SubGroupEqMaskARB",     1, &E_GL_ARB_shader_ballot);

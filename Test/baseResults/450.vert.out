@@ -11,8 +11,12 @@ ERROR: 0:36: 'atomicCounterOr' : no matching overloaded function found
 ERROR: 0:37: 'atomicCounterXor' : no matching overloaded function found 
 ERROR: 0:38: 'atomicCounterExchange' : no matching overloaded function found 
 ERROR: 0:39: 'atomicCounterCompSwap' : no matching overloaded function found 
-ERROR: 0:41: 'extraneous semicolon' : not supported for this version or the enabled extensions 
-ERROR: 13 compilation errors.  No code generated.
+ERROR: 0:41: 'gl_BaseVertex' : undeclared identifier 
+ERROR: 0:41: 'gl_BaseInstance' : undeclared identifier 
+ERROR: 0:41: 'gl_DrawID' : undeclared identifier 
+ERROR: 0:41: '=' :  cannot convert from ' temp float' to ' temp int'
+ERROR: 0:43: 'extraneous semicolon' : not supported for this version or the enabled extensions 
+ERROR: 17 compilation errors.  No code generated.
 
 
 Shader version: 450
