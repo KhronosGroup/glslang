@@ -39,5 +39,10 @@ void foo()
     atomicCounterCompSwap(aui, ui, ui);  // ERROR, need 4.6
 
     int a = gl_BaseVertex + gl_BaseInstance + gl_DrawID; // ERROR, need 4.6
+
+    bool b1;
+    anyInvocation(b1);        // ERROR, need 4.6
+    allInvocations(b1);       // ERROR, need 4.6
+    allInvocationsEqual(b1);  // ERROR, need 4.6
 }
 ; // ERROR: no extraneous semicolons

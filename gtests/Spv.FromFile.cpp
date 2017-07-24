@@ -362,6 +362,7 @@ INSTANTIATE_TEST_CASE_P(
     ::testing::ValuesIn(std::vector<std::string>({
         "spv.460.frag",
         "spv.460.vert",
+        "spv.460.comp",
         "spv.atomic.comp",
         "spv.glFragColor.frag",
         "spv.specConst.vert",

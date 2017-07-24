@@ -15,8 +15,11 @@ ERROR: 0:41: 'gl_BaseVertex' : undeclared identifier
 ERROR: 0:41: 'gl_BaseInstance' : undeclared identifier 
 ERROR: 0:41: 'gl_DrawID' : undeclared identifier 
 ERROR: 0:41: '=' :  cannot convert from ' temp float' to ' temp int'
-ERROR: 0:43: 'extraneous semicolon' : not supported for this version or the enabled extensions 
-ERROR: 17 compilation errors.  No code generated.
+ERROR: 0:44: 'anyInvocation' : no matching overloaded function found 
+ERROR: 0:45: 'allInvocations' : no matching overloaded function found 
+ERROR: 0:46: 'allInvocationsEqual' : no matching overloaded function found 
+ERROR: 0:48: 'extraneous semicolon' : not supported for this version or the enabled extensions 
+ERROR: 20 compilation errors.  No code generated.
 
 
 Shader version: 450
@@ -55,6 +58,12 @@ ERROR: node is still EOpNull!
 0:38        0.000000
 0:39      Constant:
 0:39        0.000000
+0:44      Constant:
+0:44        0.000000
+0:45      Constant:
+0:45        0.000000
+0:46      Constant:
+0:46        0.000000
 0:?   Linker Objects
 0:?     'anon@0' ( out block{ out 3-element array of float CullDistance gl_CullDistance})
 0:?     'outb' ( smooth out bool)

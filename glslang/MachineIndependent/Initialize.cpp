@@ -1576,12 +1576,21 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-        // GL_ARB_shader_group_vote
+    // GL_ARB_shader_group_vote
     if (profile != EEsProfile && version >= 430) {
         commonBuiltins.append(
             "bool anyInvocationARB(bool);"
             "bool allInvocationsARB(bool);"
             "bool allInvocationsEqualARB(bool);"
+
+            "\n");
+    }
+
+    if (profile != EEsProfile && version >= 460) {
+        commonBuiltins.append(
+            "bool anyInvocation(bool);"
+            "bool allInvocations(bool);"
+            "bool allInvocationsEqual(bool);"
 
             "\n");
     }
@@ -5273,9 +5282,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
                 // Treat "gl_SubGroupSizeARB" as shader input instead of uniform for Vulkan
                 SpecialQualifier("gl_SubGroupSizeARB", EvqVaryingIn, EbvSubGroupSize, symbolTable);
 
-            symbolTable.setFunctionExtensions("anyInvocationARB",       1, &E_GL_ARB_shader_group_vote);
-            symbolTable.setFunctionExtensions("allInvocationsARB",      1, &E_GL_ARB_shader_group_vote);
-            symbolTable.setFunctionExtensions("allInvocationsEqualARB", 1, &E_GL_ARB_shader_group_vote);
+            if (version >= 430) {
+                symbolTable.setFunctionExtensions("anyInvocationARB",       1, &E_GL_ARB_shader_group_vote);
+                symbolTable.setFunctionExtensions("allInvocationsARB",      1, &E_GL_ARB_shader_group_vote);
+                symbolTable.setFunctionExtensions("allInvocationsEqualARB", 1, &E_GL_ARB_shader_group_vote);
+            }
         }
 
 #ifdef AMD_EXTENSIONS
@@ -6087,10 +6098,16 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("readInvocationARB",               EOpReadInvocation);
             symbolTable.relateToOperator("readFirstInvocationARB",          EOpReadFirstInvocation);
 
-            symbolTable.relateToOperator("anyInvocationARB",                EOpAnyInvocation);
-            symbolTable.relateToOperator("allInvocationsARB",               EOpAllInvocations);
-            symbolTable.relateToOperator("allInvocationsEqualARB",          EOpAllInvocationsEqual);
-
+            if (version >= 430) {
+                symbolTable.relateToOperator("anyInvocationARB",            EOpAnyInvocation);
+                symbolTable.relateToOperator("allInvocationsARB",           EOpAllInvocations);
+                symbolTable.relateToOperator("allInvocationsEqualARB",      EOpAllInvocationsEqual);
+            }
+            if (version >= 460) {
+                symbolTable.relateToOperator("anyInvocation",               EOpAnyInvocation);
+                symbolTable.relateToOperator("allInvocations",              EOpAllInvocations);
+                symbolTable.relateToOperator("allInvocationsEqual",         EOpAllInvocationsEqual);
+            }
 #ifdef AMD_EXTENSIONS
             symbolTable.relateToOperator("minInvocationsAMD",                           EOpMinInvocations);
             symbolTable.relateToOperator("maxInvocationsAMD",                           EOpMaxInvocations);
