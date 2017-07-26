@@ -65,7 +65,9 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     sourceEntryPointName(sourceEntryPointName),
     entryPointFunction(nullptr),
     entryPointFunctionBody(nullptr),
-    gsStreamOutput(nullptr)
+    gsStreamOutput(nullptr),
+    clipDistanceOutput(nullptr),
+    cullDistanceOutput(nullptr)
 {
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;
@@ -77,6 +79,9 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
 
     globalInputDefaults.clear();
     globalOutputDefaults.clear();
+
+    clipSemanticNSize.fill(0);
+    cullSemanticNSize.fill(0);
 
     // "Shaders in the transform
     // feedback capturing mode have an initial global default of
@@ -1513,6 +1518,12 @@ void HlslParseContext::trackLinkage(TSymbol& symbol)
 }
 
 
+// Returns true if the builtin is a clip or cull distance variable.
+bool HlslParseContext::isClipOrCullDistance(TBuiltInVariable builtIn)
+{
+    return builtIn == EbvClipDistance || builtIn == EbvCullDistance;
+}
+
 // Some types require fixed array sizes in SPIR-V, but can be scalars or
 // arrays of sizes SPIR-V doesn't allow.  For example, tessellation factors.
 // This creates the right size.  A conversion is performed when the internal
@@ -1526,24 +1537,6 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
     case EbvTessLevelOuter: requiredArraySize = 4; break;
     case EbvTessLevelInner: requiredArraySize = 2; break;
 
-    case EbvClipDistance:
-    case EbvCullDistance:
-        {
-            // ClipDistance and CullDistance are handled specially in the entry point output 
-            // copy algorithm, because they may need to be unpacked from components of vectors
-            // (or a scalar) into a float array.  Here, we make the array the right size and type,
-            // which is the number of components per vector times the array size (or 1 if not
-            // an array).  The copy itself is handled in assignClipCullDistance().
-            requiredArraySize = type.getVectorSize() * (type.isArray() ? type.getOuterArraySize() : 1);
-
-            TType clipCullType(EbtFloat, type.getQualifier().storage, 1);
-
-            clipCullType.getQualifier() = type.getQualifier();
-            type.shallowCopy(clipCullType);
-
-            break;
-        }
-
     case EbvTessCoord:
         {
             // tesscoord is always a vec3 for the IO variable, no matter the shader's
@@ -1556,6 +1549,14 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
             break;
         }
     default:
+        if (isClipOrCullDistance(type)) {
+            if (type.getQualifier().builtIn == EbvClipDistance) {
+                clipSemanticNSize[type.getQualifier().layoutLocation] = type.getVectorSize();
+            } else {
+                cullSemanticNSize[type.getQualifier().layoutLocation] = type.getVectorSize();
+            }
+        }
+
         return;
     }
 
@@ -2020,7 +2021,11 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
                 split(variable);
         }
 
-        assignToInterface(variable);
+        // For clip and cull distance, multiple output variables potentially get merged
+        // into one in assignClipCullDistance.  That code in assignClipCullDistance
+        // handles the interface logic, so we avoid it here in that case.
+        if (!isClipOrCullDistance(variable.getType()))
+            assignToInterface(variable);
     };
     if (entryPointOutput != nullptr)
         makeVariableInOut(*entryPointOutput);
@@ -2350,25 +2355,104 @@ void HlslParseContext::handleFunctionArgument(TFunction* function,
 //
 // The values are assigned to sequential members of the output array.  The inner dimension
 // is vector components.  The outer dimension is array elements.
-TIntermAggregate* HlslParseContext::assignClipCullDistance(const TSourceLoc& loc, TOperator op,
+TIntermAggregate* HlslParseContext::assignClipCullDistance(const TSourceLoc& loc, TOperator op, int semanticId,
                                                            TIntermTyped* left, TIntermTyped* right)
 {
-    // ***
-    // TODO: this does not yet handle the index coming from the semantic's ID, as in SV_ClipDistance[012345...]
-    // ***
+    TVariable** clipCullVar = nullptr;
+
+    const TBuiltInVariable builtInType = left->getQualifier().builtIn;
+
+    // array sizes, or 1 if it's not an array:
+    const int rhsArraySize = (right->getType().isArray() ? right->getType().getOuterArraySize() : 1);
+    // vector sizes:
+    const int rhsVectorSize = right->getType().getVectorSize();
+
+    decltype(clipSemanticNSize)* semanticNSize = nullptr;
+
+    // Refer to either the clip or the cull distance, depending on semantic.
+    switch (builtInType) {
+    case EbvClipDistance:
+        clipCullVar = &clipDistanceOutput;
+        semanticNSize = &clipSemanticNSize;
+        break;
+    case EbvCullDistance:
+        clipCullVar = &cullDistanceOutput;
+        semanticNSize = &cullSemanticNSize;
+        break;
+
+    // called invalidly: we expected a clip or a cull distance.
+    // static compile time problem: should not happen.
+    default: assert(0); return nullptr;
+    }
+
+    // This is the offset in the destination array of a given semantic's data
+    std::array<int, maxClipCullRegs> semanticOffset;
+
+    // Calculate offset of variable of semantic N in destination array
+    int arrayLoc = 0;
+    int vecItems = 0;
+
+    for (int x = 0; x < maxClipCullRegs; ++x) {
+        // See if we overflowed the vec4 packing
+        if ((vecItems + (*semanticNSize)[x]) > 4) {
+            arrayLoc = (arrayLoc + 3) & (~0x3); // round up to next multiple of 4
+            vecItems = 0;
+        }
+
+        semanticOffset[x] = arrayLoc;
+        vecItems += (*semanticNSize)[x];
+        arrayLoc += (*semanticNSize)[x];
+    }
+        
+
+    // If we haven't created the output arleady, create it now.
+    if (*clipCullVar == nullptr) {
+        // ClipDistance and CullDistance are handled specially in the entry point output 
+        // copy algorithm, because they may need to be unpacked from components of vectors
+        // (or a scalar) into a float array.  Here, we make the array the right size and type,
+        // which depends on the incoming data, which has several potential dimensions:
+        //    Semantic ID
+        //    vector size
+        //    array size
+        // Of those, semantic ID and array size cannot appear simultaneously.
+
+        const int requiredArraySize = arrayLoc * rhsArraySize;
+
+        TType clipCullType(EbtFloat, left->getType().getQualifier().storage, 1);
+        clipCullType.getQualifier() = left->getType().getQualifier();
+
+        // Create required array dimension
+        TArraySizes arraySizes;
+        arraySizes.addInnerSize(requiredArraySize);
+        clipCullType.newArraySizes(arraySizes);
+
+        // Obtain symbol name: we'll use that for the symbol we introduce.
+        TIntermSymbol* sym = left->getAsSymbolNode();
+        assert(sym != nullptr);
+
+        // We are moving the semantic ID from the layout location, so it is no longer needed or
+        // desired there.
+        clipCullType.getQualifier().layoutLocation = TQualifier::layoutLocationEnd;
+
+        // Create variable and track its linkage
+        *clipCullVar = makeInternalVariable(sym->getName().c_str(), clipCullType);
+
+        trackLinkage(**clipCullVar);
+    }
+
+    // Create symbol for the clip or cull variable.
+    left = intermediate.addSymbol(**clipCullVar);
+
+    // array sizes, or 1 if it's not an array:
+    const int lhsArraySize = (left->getType().isArray() ? left->getType().getOuterArraySize() : 1);
+    // vector sizes:
+    const int lhsVectorSize = left->getType().getVectorSize();
 
     // left has got to be an array of scalar floats, per SPIR-V semantics.
     // fixBuiltInIoType() should have handled that upstream.
     assert(left->getType().isArray());
     assert(left->getType().getVectorSize() == 1);
     assert(left->getType().getBasicType() == EbtFloat);
-
-    // array sizes, or 1 if it's not an array:
-    const int lhsArraySize = (left->getType().isArray() ? left->getType().getOuterArraySize() : 1);
-    const int rhsArraySize = (right->getType().isArray() ? right->getType().getOuterArraySize() : 1);
-    // vector sizes:
-    const int lhsVectorSize = left->getType().getVectorSize();
-    const int rhsVectorSize = right->getType().getVectorSize();
 
     // We may be creating multiple sub-assignments.  This is an aggregate to hold them.
     // TODO: it would be possible to be clever sometimes and avoid the sequence node if not needed.
@@ -2386,7 +2470,8 @@ TIntermAggregate* HlslParseContext::assignClipCullDistance(const TSourceLoc& loc
 
     // We are going to copy each component of the right (per array element if indicated) to sequential
     // array elements of the left.  This tracks the lhs element we're writing to as we go along.
-    int lhsArrayPos = 0;
+    // We may be starting in the middle - e.g, for a non-zero semantic ID calculated above.
+    int lhsArrayPos = semanticOffset[semanticId];
 
     // Loop through every component of every element of the RHS, and copy to LHS elements in turn.
     for (int rhsArrayPos = 0; rhsArrayPos < rhsArraySize; ++rhsArrayPos) {
@@ -2477,9 +2562,10 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     // isn't, we fall back to a member-wise copy.
     if (! isFlattenLeft && ! isFlattenRight && !isSplitLeft && !isSplitRight) {
         // Clip and cull distance requires more processing.  See comment above assignClipCullDistance.
-        const TBuiltInVariable leftBuiltIn = left->getType().getQualifier().builtIn;
-        if (leftBuiltIn == EbvClipDistance || leftBuiltIn == EbvCullDistance)
-            return assignClipCullDistance(loc, op, left, right);
+        if (isClipOrCullDistance(left->getType())) {
+            const int semanticId = left->getType().getQualifier().layoutLocation;
+            return assignClipCullDistance(loc, op, semanticId, left, right);
+        }
 
         return intermediate.addAssign(op, left, right, loc);
     }
@@ -2652,14 +2738,20 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, member, splitRight, memberR)
                                                            : subRight;
 
-                const TBuiltInVariable leftBuiltIn = subSplitLeft->getType().getQualifier().builtIn;
-
-                if (leftBuiltIn == EbvClipDistance || leftBuiltIn == EbvCullDistance) {
-
+                if (isClipOrCullDistance(subSplitLeft->getType())) {
                     // Clip and cull distance builtin assignment is complex in its own right, and is handled in
                     // a separate function dedicated to that task.  See comment above assignClipCullDistance;
-                    assignList = intermediate.growAggregate(assignList, assignClipCullDistance(loc, op, subSplitLeft,
-                                                                                               subSplitRight), loc);
+
+                    // Since all clip/cull semantics boil down to the same builtin type, we need to get the
+                    // semantic ID from the dereferenced type's layout location, to avoid an N-1 mapping.
+                    const TType derefType(left->getType(), member);
+                    const int semanticId = derefType.getQualifier().layoutLocation;
+
+                    TIntermAggregate* clipCullAssign = assignClipCullDistance(loc, op, semanticId,
+                                                                              subSplitLeft, subSplitRight);
+
+                    assignList = intermediate.growAggregate(assignList, clipCullAssign, loc);
+
                 } else if (!isFlattenLeft && !isFlattenRight &&
                            !typeL.containsBuiltInInterstageIO(language) &&
                            !typeR.containsBuiltInInterstageIO(language)) {
@@ -5307,11 +5399,23 @@ TFunction* HlslParseContext::makeConstructorCall(const TSourceLoc& loc, const TT
 void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, TBuiltInVariable builtIn,
                                       const TString& upperCase)
 {
-    const auto getSemanticNumber = [](const TString& semantic) -> unsigned int {
+    // Parse and return semantic number.  If limit is 0, it will be ignored.  Otherwise, if the parsed
+    // semantic number is >= limit, errorMsg is issued and 0 is returned.
+    // TODO: it would be nicer if limit and errorMsg had default parameters, but some compilers don't yet
+    // accept those in lambda functions.
+    const auto getSemanticNumber = [this, loc](const TString& semantic, unsigned int limit, const char* errorMsg) -> unsigned int {
         size_t pos = semantic.find_last_not_of("0123456789");
         if (pos == std::string::npos)
             return 0u;
-        return (unsigned int)atoi(semantic.c_str() + pos + 1);
+
+        unsigned int semanticNum = (unsigned int)atoi(semantic.c_str() + pos + 1);
+
+        if (limit != 0 && semanticNum >= limit) {
+            error(loc, errorMsg, semantic.c_str(), "");
+            return 0u;
+        }
+
+        return semanticNum;
     };
 
     switch(builtIn) {
@@ -5319,8 +5423,14 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, TBu
         // Get location numbers from fragment outputs, instead of
         // auto-assigning them.
         if (language == EShLangFragment && upperCase.compare(0, 9, "SV_TARGET") == 0) {
-            qualifier.layoutLocation = getSemanticNumber(upperCase);
+            qualifier.layoutLocation = getSemanticNumber(upperCase, 0, nullptr);
             nextOutLocation = std::max(nextOutLocation, qualifier.layoutLocation + 1u);
+        } else if (upperCase.compare(0, 15, "SV_CLIPDISTANCE") == 0) {
+            builtIn = EbvClipDistance;
+            qualifier.layoutLocation = getSemanticNumber(upperCase, maxClipCullRegs, "invalid clip semantic");
+        } else if (upperCase.compare(0, 15, "SV_CULLDISTANCE") == 0) {
+            builtIn = EbvCullDistance;
+            qualifier.layoutLocation = getSemanticNumber(upperCase, maxClipCullRegs, "invalid cull semantic");
         }
         break;
     case EbvPosition:
@@ -8747,6 +8857,9 @@ void HlslParseContext::correctInput(TQualifier& qualifier)
         qualifier.clearInterpolation();
         qualifier.sample = false;
     }
+
+    if (isClipOrCullDistance(qualifier))
+        qualifier.layoutLocation = TQualifier::layoutLocationEnd;
 
     qualifier.clearStreamLayout();
     qualifier.clearXfbLayout();
