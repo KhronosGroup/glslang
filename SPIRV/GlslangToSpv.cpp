@@ -2531,7 +2531,9 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
             }
             addMemberDecoration(spvType, member, TranslateInvariantDecoration(memberQualifier));
 
-            if (qualifier.storage == glslang::EvqBuffer) {
+            if (type.getBasicType() == glslang::EbtBlock &&
+                qualifier.storage == glslang::EvqBuffer) {
+                // Add memory decorations only to top-level members of shader storage block
                 std::vector<spv::Decoration> memory;
                 TranslateMemoryDecoration(memberQualifier, memory);
                 for (unsigned int i = 0; i < memory.size(); ++i)
