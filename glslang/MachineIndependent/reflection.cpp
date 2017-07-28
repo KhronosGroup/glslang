@@ -181,7 +181,7 @@ public:
             switch (visitNode->getOp()) {
             case EOpIndexIndirect:
                 // Visit all the indices of this array, and for each one add on the remaining dereferencing
-                for (int i = 0; i < visitNode->getLeft()->getType().getOuterArraySize(); ++i) {
+                for (int i = 0; i < std::max(visitNode->getLeft()->getType().getOuterArraySize(), 1); ++i) {
                     TString newBaseName = name;
                     if (baseType.getBasicType() != EbtBlock)
                         newBaseName.append(TString("[") + String(i) + "]");
@@ -216,7 +216,7 @@ public:
             if (terminalType->isArray()) {
                 // Visit all the indices of this array, and for each one,
                 // fully explode the remaining aggregate to dereference
-                for (int i = 0; i < terminalType->getOuterArraySize(); ++i) {
+                for (int i = 0; i < std::max(terminalType->getOuterArraySize(), 1); ++i) {
                     TString newBaseName = name;
                     newBaseName.append(TString("[") + String(i) + "]");
                     TType derefType(*terminalType, 0);
