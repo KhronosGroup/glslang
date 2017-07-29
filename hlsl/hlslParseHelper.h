@@ -374,7 +374,6 @@ protected:
     TVector<TSymbol*> ioArraySymbolResizeList;
 
     TMap<int, TFlattenData> flattenMap;
-    TVector<int> flattenLevel;  // nested postfix operator level for flattening
 
     // IO-type map. Maps a pure symbol-table form of a structure-member list into
     // each of the (up to) three kinds of IO, as each as different allowed decorations,
