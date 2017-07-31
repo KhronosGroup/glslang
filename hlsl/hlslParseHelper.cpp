@@ -370,7 +370,8 @@ TIntermTyped* HlslParseContext::handleLvalue(const TSourceLoc& loc, const char* 
 
     const TSampler& texSampler = object->getType().getSampler();
 
-    const TType objDerefType(texSampler.type, EvqTemporary, texSampler.vectorSize);
+    TType objDerefType;
+    texSampler.getReturnType(objDerefType);
 
     if (nodeAsBinary) {
         TIntermTyped* rhs = nodeAsBinary->getRight();
@@ -749,7 +750,10 @@ TIntermTyped* HlslParseContext::handleBracketOperator(const TSourceLoc& loc, TIn
             } else {
                 TIntermAggregate* load = new TIntermAggregate(sampler.isImage() ? EOpImageLoad : EOpTextureFetch);
 
-                load->setType(TType(sampler.type, EvqTemporary, sampler.vectorSize));
+                TType sampReturnType;
+                sampler.getReturnType(sampReturnType);
+
+                load->setType(sampReturnType);
                 load->setLoc(loc);
                 load->getSequence().push_back(base);
                 load->getSequence().push_back(index);
@@ -3272,13 +3276,14 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
         // Sampler return must always be a vec4, but we can construct a shorter vector
         result->setType(TType(node->getType().getBasicType(), EvqTemporary, node->getVectorSize()));
 
-        if (sampler.vectorSize < (unsigned)node->getVectorSize()) {
+        TType retType;
+        sampler.getReturnType(retType);
+
+        if (retType.getVectorSize() < node->getVectorSize()) {
             // Too many components.  Construct shorter vector from it.
-            const TType clampedType(result->getType().getBasicType(), EvqTemporary, sampler.vectorSize);
+            const TOperator op = intermediate.mapTypeToConstructorOp(retType);
 
-            const TOperator op = intermediate.mapTypeToConstructorOp(clampedType);
-
-            result = constructBuiltIn(clampedType, op, result, loc, false);
+            result = constructBuiltIn(retType, op, result, loc, false);
         }
 
         result->setLoc(loc);
@@ -6972,7 +6977,8 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             TSampler to1Sampler = to1.getSampler();
             TSampler to2Sampler = to2.getSampler();
 
-            to1Sampler.vectorSize = to2Sampler.vectorSize = from.getSampler().vectorSize;
+            to1Sampler.copyReturnType(from.getSampler());
+            to2Sampler.copyReturnType(from.getSampler());
 
             if (from.getSampler() == to2Sampler)
                 return from.getSampler() != to1Sampler;

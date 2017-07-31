@@ -1257,7 +1257,10 @@ bool HlslGrammar::acceptTextureType(TType& type)
     }
 
     // Remember the declared vector size.
-    sampler.vectorSize = txType.getVectorSize();
+    if (!sampler.setReturnType(txType)) {
+        parseContext.error(token.loc, "invalid texture template type", "", "");
+        return false;
+    }
 
     // Force uncombined, if necessary
     if (!combined)
