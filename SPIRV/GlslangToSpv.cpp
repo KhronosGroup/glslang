@@ -2531,7 +2531,9 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
             }
             addMemberDecoration(spvType, member, TranslateInvariantDecoration(memberQualifier));
 
-            if (qualifier.storage == glslang::EvqBuffer) {
+            if (type.getBasicType() == glslang::EbtBlock &&
+                qualifier.storage == glslang::EvqBuffer) {
+                // Add memory decorations only to top-level members of shader storage block
                 std::vector<spv::Decoration> memory;
                 TranslateMemoryDecoration(memberQualifier, memory);
                 for (unsigned int i = 0; i < memory.size(); ++i)
@@ -2822,7 +2824,7 @@ int TGlslangToSpvTraverser::getMatrixStride(const glslang::TType& matrixType, gl
 // 'currentOffset' should be passed in already initialized, ready to modify, and reflecting
 // the migration of data from nextOffset -> currentOffset.  It should be -1 on the first call.
 // -1 means a non-forced member offset (no decoration needed).
-void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& /*structType*/, const glslang::TType& memberType, int& currentOffset, int& nextOffset,
+void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& structType, const glslang::TType& memberType, int& currentOffset, int& nextOffset,
                                                 glslang::TLayoutPacking explicitLayout, glslang::TLayoutMatrix matrixLayout)
 {
     // this will get a positive value when deemed necessary
@@ -2856,8 +2858,12 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& /*structTy
     int memberAlignment = glslangIntermediate->getBaseAlignment(memberType, memberSize, dummyStride, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
 
     // Adjust alignment for HLSL rules
+    // TODO: make this consistent in early phases of code:
+    //       adjusting this late means inconsistencies with earlier code, which for reflection is an issue
+    // Until reflection is brought in sync with these adjustments, don't apply to $Global,
+    // which is the most likely to rely on reflection, and least likely to rely implicit layouts
     if (glslangIntermediate->usingHlslOFfsets() &&
-        ! memberType.isArray() && memberType.isVector()) {
+        ! memberType.isArray() && memberType.isVector() && structType.getTypeName().compare("$Global") != 0) {
         int dummySize;
         int componentAlignment = glslangIntermediate->getBaseAlignmentScalar(memberType, dummySize);
         if (componentAlignment <= 4)
@@ -2910,6 +2916,13 @@ bool TGlslangToSpvTraverser::isShaderEntryPoint(const glslang::TIntermAggregate*
 // Make all the functions, skeletally, without actually visiting their bodies.
 void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslFunctions)
 {
+    const auto getParamDecorations = [](std::vector<spv::Decoration>& decorations, const glslang::TType& type) {
+        spv::Decoration paramPrecision = TranslatePrecisionDecoration(type);
+        if (paramPrecision != spv::NoPrecision)
+            decorations.push_back(paramPrecision);
+        TranslateMemoryDecoration(type.getQualifier(), decorations);
+    };
+
     for (int f = 0; f < (int)glslFunctions.size(); ++f) {
         glslang::TIntermAggregate* glslFunction = glslFunctions[f]->getAsAggregate();
         if (! glslFunction || glslFunction->getOp() != glslang::EOpFunction || isShaderEntryPoint(glslFunction))
@@ -2930,11 +2943,13 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
         //   GLSL has copy-in/copy-out semantics.  They can be handled though with a pointer to a copy.
 
         std::vector<spv::Id> paramTypes;
-        std::vector<spv::Decoration> paramPrecisions;
+        std::vector<std::vector<spv::Decoration>> paramDecorations; // list of decorations per parameter
         glslang::TIntermSequence& parameters = glslFunction->getSequence()[0]->getAsAggregate()->getSequence();
 
-        bool implicitThis = (int)parameters.size() > 0 && parameters[0]->getAsSymbolNode()->getName() == glslangIntermediate->implicitThisName;
+        bool implicitThis = (int)parameters.size() > 0 && parameters[0]->getAsSymbolNode()->getName() ==
+                                                          glslangIntermediate->implicitThisName;
 
+        paramDecorations.resize(parameters.size());
         for (int p = 0; p < (int)parameters.size(); ++p) {
             const glslang::TType& paramType = parameters[p]->getAsTyped()->getType();
             spv::Id typeId = convertGlslangToSpvType(paramType);
@@ -2948,14 +2963,15 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
                 typeId = builder.makePointer(spv::StorageClassFunction, typeId);
             else
                 rValueParameters.insert(parameters[p]->getAsSymbolNode()->getId());
-            paramPrecisions.push_back(TranslatePrecisionDecoration(paramType));
+            getParamDecorations(paramDecorations[p], paramType);
             paramTypes.push_back(typeId);
         }
 
         spv::Block* functionBlock;
         spv::Function *function = builder.makeFunctionEntry(TranslatePrecisionDecoration(glslFunction->getType()),
                                                             convertGlslangToSpvType(glslFunction->getType()),
-                                                            glslFunction->getName().c_str(), paramTypes, paramPrecisions, &functionBlock);
+                                                            glslFunction->getName().c_str(), paramTypes,
+                                                            paramDecorations, &functionBlock);
         if (implicitThis)
             function->setImplicitThis();
 
@@ -3331,7 +3347,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // lod
     if (cracked.lod) {
-        params.lod = arguments[2];
+        params.lod = arguments[2 + extraArgs];
         ++extraArgs;
     } else if (glslangIntermediate->getStage() != EShLangFragment) {
         // we need to invent the default lod for an explicit lod instruction for a non-fragment stage
@@ -3340,7 +3356,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // multisample
     if (sampler.ms) {
-        params.sample = arguments[2]; // For MS, "sample" should be specified
+        params.sample = arguments[2 + extraArgs]; // For MS, "sample" should be specified
         ++extraArgs;
     }
 
