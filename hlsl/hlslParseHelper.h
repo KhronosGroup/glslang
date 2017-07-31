@@ -213,6 +213,12 @@ public:
     // Share struct buffer deep types
     void shareStructBufferType(TType&);
 
+    // Set texture return type of the given sampler.  Returns success (not all types are valid).
+    bool setTextureReturnType(TSampler& sampler, const TType& retType, const TSourceLoc& loc);
+
+    // Obtain the sampler return type of the given sampler in retType.
+    void getTextureReturnType(const TSampler& sampler, TType& retType) const;
+
 protected:
     struct TFlattenData {
         TFlattenData() : nextBinding(TQualifier::layoutBindingEnd),
@@ -388,6 +394,10 @@ protected:
 
     // Structuredbuffer shared types.  Typically there are only a few.
     TVector<TType*> structBufferTypes;
+
+    // This tracks texture sample user structure return types.  Only a limited number are supported, as
+    // may fit in TSampler::structReturnIndex.
+    TVector<TTypeList*> textureReturnStruct;
     
     TMap<TString, bool> structBufferCounter;
 

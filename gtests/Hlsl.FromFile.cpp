@@ -291,6 +291,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.structIoFourWay.frag", "main"},
         {"hlsl.structStructName.frag", "main"},
         {"hlsl.synthesizeInput.frag", "main"},
+        {"hlsl.texture.struct.frag", "main"},
         {"hlsl.texture.subvec4.frag", "main"},
         {"hlsl.this.frag", "main"},
         {"hlsl.intrinsics.vert", "VertexShaderFunction"},
