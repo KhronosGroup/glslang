@@ -133,7 +133,10 @@ const char* const E_GL_ARB_gpu_shader_int64             = "GL_ARB_gpu_shader_int
 const char* const E_GL_ARB_shader_ballot                = "GL_ARB_shader_ballot";
 const char* const E_GL_ARB_sparse_texture2              = "GL_ARB_sparse_texture2";
 const char* const E_GL_ARB_sparse_texture_clamp         = "GL_ARB_sparse_texture_clamp";
+const char* const E_GL_ARB_shader_stencil_export        = "GL_ARB_shader_stencil_export";
 // const char* const E_GL_ARB_cull_distance            = "GL_ARB_cull_distance";  // present for 4.5, but need extension control over block members
+const char* const E_GL_ARB_post_depth_coverage          = "GL_ARB_post_depth_coverage";
+
 const char* const E_GL_KHR_shader_subgroup_basic            = "GL_KHR_shader_subgroup_basic";
 const char* const E_GL_KHR_shader_subgroup_vote             = "GL_KHR_shader_subgroup_vote";
 const char* const E_GL_KHR_shader_subgroup_arithmetic       = "GL_KHR_shader_subgroup_arithmetic";
@@ -149,6 +152,19 @@ const char* const E_GL_EXT_shader_image_load_formatted = "GL_EXT_shader_image_lo
 // EXT extensions
 const char* const E_GL_EXT_device_group                 = "GL_EXT_device_group";
 const char* const E_GL_EXT_multiview                    = "GL_EXT_multiview";
+const char* const E_GL_EXT_post_depth_coverage          = "GL_EXT_post_depth_coverage";
+
+// Arrays of extensions for the above viewportEXTs duplications
+
+const char* const post_depth_coverageEXTs[] = { E_GL_ARB_post_depth_coverage, E_GL_EXT_post_depth_coverage };
+const int Num_post_depth_coverageEXTs = sizeof(post_depth_coverageEXTs) / sizeof(post_depth_coverageEXTs[0]);
+
+// OVR extensions
+const char* const E_GL_OVR_multiview                    = "GL_OVR_multiview";
+const char* const E_GL_OVR_multiview2                   = "GL_OVR_multiview2";
+
+const char* const OVR_multiview_EXTs[] = { E_GL_OVR_multiview, E_GL_OVR_multiview2 };
+const int Num_OVR_multiview_EXTs = sizeof(OVR_multiview_EXTs) / sizeof(OVR_multiview_EXTs[0]);
 
 // #line and #include
 const char* const E_GL_GOOGLE_cpp_style_line_directive          = "GL_GOOGLE_cpp_style_line_directive";

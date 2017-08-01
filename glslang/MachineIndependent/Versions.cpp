@@ -179,7 +179,10 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_shader_ballot]                = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture2]              = EBhDisable;
     extensionBehavior[E_GL_ARB_sparse_texture_clamp]         = EBhDisable;
+    extensionBehavior[E_GL_ARB_shader_stencil_export]        = EBhDisable;
 //    extensionBehavior[E_GL_ARB_cull_distance]                = EBhDisable;    // present for 4.5, but need extension control over block members
+    extensionBehavior[E_GL_ARB_post_depth_coverage]          = EBhDisable;
+
     extensionBehavior[E_GL_KHR_shader_subgroup_basic]            = EBhDisable;
     extensionBehavior[E_GL_KHR_shader_subgroup_vote]             = EBhDisable;
     extensionBehavior[E_GL_KHR_shader_subgroup_arithmetic]       = EBhDisable;
@@ -190,7 +193,8 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_KHR_shader_subgroup_quad]             = EBhDisable;
 
     extensionBehavior[E_GL_EXT_shader_non_constant_global_initializers] = EBhDisable;
-    extensionBehavior[E_GL_EXT_shader_image_load_formatted]  = EBhDisable;
+    extensionBehavior[E_GL_EXT_shader_image_load_formatted]             = EBhDisable;
+    extensionBehavior[E_GL_EXT_post_depth_coverage]                     = EBhDisable;
 
     // #line and #include
     extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;
@@ -246,6 +250,10 @@ void TParseVersions::initializeExtensionBehavior()
     // EXT extensions
     extensionBehavior[E_GL_EXT_device_group]             = EBhDisable;
     extensionBehavior[E_GL_EXT_multiview]                = EBhDisable;
+
+    // OVR extensions
+    extensionBehavior[E_GL_OVR_multiview]                = EBhDisable;
+    extensionBehavior[E_GL_OVR_multiview2]               = EBhDisable;
 }
 
 // Get code that is not part of a shared symbol table, is specific to this shader,
@@ -317,9 +325,12 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_ARB_shader_ballot 1\n"
             "#define GL_ARB_sparse_texture2 1\n"
             "#define GL_ARB_sparse_texture_clamp 1\n"
+            "#define GL_ARB_shader_stencil_export 1\n"
 //            "#define GL_ARB_cull_distance 1\n"    // present for 4.5, but need extension control over block members
+            "#define GL_ARB_post_depth_coverage 1\n"
             "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             "#define GL_EXT_shader_image_load_formatted 1\n"
+            "#define GL_EXT_post_depth_coverage 1\n"
 
             // GL_KHR_shader_subgroup
             "#define GL_KHR_shader_subgroup_basic 1\n"
@@ -359,9 +370,16 @@ void TParseVersions::getPreamble(std::string& preamble)
 
     if ((profile != EEsProfile && version >= 140) ||
         (profile == EEsProfile && version >= 310)) {
-        preamble += 
+        preamble +=
             "#define GL_EXT_device_group 1\n"
             "#define GL_EXT_multiview 1\n"
+            ;
+    }
+
+    if (version >= 300 /* both ES and non-ES */) {
+        preamble +=
+            "#define GL_OVR_multiview 1\n"
+            "#define GL_OVR_multiview2 1\n"
             ;
     }
 

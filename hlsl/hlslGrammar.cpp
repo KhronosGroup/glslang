@@ -2557,7 +2557,18 @@ bool HlslGrammar::acceptInitializer(TIntermTyped*& node)
             expected("assignment expression in initializer list");
             return false;
         }
+
+        const bool firstNode = (node == nullptr);
+
         node = intermediate.growAggregate(node, expr, loc);
+
+        // If every sub-node in the list has qualifier EvqConst, the returned node becomes
+        // EvqConst.  Otherwise, it becomes EvqTemporary. That doesn't happen with e.g.
+        // EvqIn or EvqPosition, since the collection isn't EvqPosition if all the members are.
+        if (firstNode && expr->getQualifier().storage == EvqConst)
+            node->getQualifier().storage = EvqConst;
+        else if (expr->getQualifier().storage != EvqConst)
+            node->getQualifier().storage = EvqTemporary;
 
         // COMMA
         if (acceptTokenClass(EHTokComma)) {
@@ -2873,23 +2884,6 @@ bool HlslGrammar::acceptPostfixExpression(TIntermTyped*& node)
         // nothing found, can't post operate
         return false;
     }
-
-    // This is to guarantee we do this no matter how we get out of the stack frame.
-    // This way there's no bug if an early return forgets to do it.
-    struct tFinalize {
-        tFinalize(HlslParseContext& p) : parseContext(p) { }
-        ~tFinalize() { parseContext.finalizeFlattening(); }
-        HlslParseContext& parseContext;
-    private:
-        const tFinalize& operator=(const tFinalize&) { return *this; }
-        tFinalize(const tFinalize& f) : parseContext(f.parseContext) { }
-    } finalize(parseContext);
-
-    // Initialize the flattening accumulation data, so we can track data across multiple bracket or
-    // dot operators.  This can also be nested, e.g, for [], so we have to track each nesting
-    // level: hence the init and finalize.  Even though in practice these must be
-    // constants, they are parsed no matter what.
-    parseContext.initFlattening();
 
     // Something was found, chain as many postfix operations as exist.
     do {
@@ -3222,10 +3216,10 @@ bool HlslGrammar::acceptStatement(TIntermNode*& statement)
         return acceptScopedCompoundStatement(statement);
 
     case EHTokIf:
-        return acceptSelectionStatement(statement);
+        return acceptSelectionStatement(statement, attributes);
 
     case EHTokSwitch:
-        return acceptSwitchStatement(statement);
+        return acceptSwitchStatement(statement, attributes);
 
     case EHTokFor:
     case EHTokDo:
@@ -3338,9 +3332,11 @@ void HlslGrammar::acceptAttributes(TAttributeMap& attributes)
 //      : IF LEFT_PAREN expression RIGHT_PAREN statement
 //      : IF LEFT_PAREN expression RIGHT_PAREN statement ELSE statement
 //
-bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement)
+bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement, const TAttributeMap& attributes)
 {
     TSourceLoc loc = token.loc;
+
+    const TSelectionControl control = parseContext.handleSelectionControl(attributes);
 
     // IF
     if (! acceptTokenClass(EHTokIf))
@@ -3379,7 +3375,7 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement)
     }
 
     // Put the pieces together
-    statement = intermediate.addSelection(condition, thenElse, loc);
+    statement = intermediate.addSelection(condition, thenElse, loc, control);
     parseContext.popScope();
     --parseContext.controlFlowNestingLevel;
 
@@ -3389,10 +3385,13 @@ bool HlslGrammar::acceptSelectionStatement(TIntermNode*& statement)
 // switch_statement
 //      : SWITCH LEFT_PAREN expression RIGHT_PAREN compound_statement
 //
-bool HlslGrammar::acceptSwitchStatement(TIntermNode*& statement)
+bool HlslGrammar::acceptSwitchStatement(TIntermNode*& statement, const TAttributeMap& attributes)
 {
     // SWITCH
     TSourceLoc loc = token.loc;
+
+    const TSelectionControl control = parseContext.handleSelectionControl(attributes);
+
     if (! acceptTokenClass(EHTokSwitch))
         return false;
 
@@ -3412,7 +3411,7 @@ bool HlslGrammar::acceptSwitchStatement(TIntermNode*& statement)
     --parseContext.controlFlowNestingLevel;
 
     if (statementOkay)
-        statement = parseContext.addSwitch(loc, switchExpression, statement ? statement->getAsAggregate() : nullptr);
+        statement = parseContext.addSwitch(loc, switchExpression, statement ? statement->getAsAggregate() : nullptr, control);
 
     parseContext.popSwitchSequence();
     parseContext.popScope();

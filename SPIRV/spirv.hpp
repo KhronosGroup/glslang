@@ -52,6 +52,7 @@ typedef unsigned int Id;
 static const unsigned int MagicNumber = 0x07230203;
 static const unsigned int Version = 0x00010200;
 static const unsigned int Revision = 1;
+
 static const unsigned int OpCodeMask = 0xffff;
 static const unsigned int WordCountShift = 16;
 
@@ -131,6 +132,7 @@ enum ExecutionMode {
     ExecutionModeLocalSizeHintId = 39,
     ExecutionModeInvocationsId = 40,
     ExecutionModeOutputVerticesId = 41,
+    ExecutionModePostDepthCoverage = 4446,
     ExecutionModeMax = 0x7fffffff,
 };
 
@@ -397,6 +399,7 @@ enum Decoration {
     DecorationDescriptorSetId = 54,
     DecorationOffsetId = 55,
     DecorationInputAttachmentIndexId = 56,
+    DecorationExplicitInterpAMD = 4999,
     DecorationOverrideCoverageNV = 5248,
     DecorationPassthroughNV = 5250,
     DecorationViewportRelativeNV = 5252,
@@ -462,6 +465,13 @@ enum BuiltIn {
     BuiltInDrawIndex = 4426,
     BuiltInDeviceIndex = 4438,
     BuiltInViewIndex = 4440,
+    BuiltInBaryCoordNoPerspAMD = 4992,
+    BuiltInBaryCoordNoPerspCentroidAMD = 4993,
+    BuiltInBaryCoordNoPerspSampleAMD = 4994,
+    BuiltInBaryCoordSmoothAMD = 4995,
+    BuiltInBaryCoordSmoothCentroidAMD = 4996,
+    BuiltInBaryCoordSmoothSampleAMD = 4997,
+    BuiltInBaryCoordPullModelAMD = 4998,
     BuiltInViewportMaskNV = 5253,
     BuiltInSecondaryPositionNV = 5257,
     BuiltInSecondaryViewportMaskNV = 5258,
@@ -671,6 +681,9 @@ enum Capability {
     CapabilityMultiView = 4439,
     CapabilityVariablePointersStorageBuffer = 4441,
     CapabilityVariablePointers = 4442,
+    CapabilityAtomicStorageOps = 4445,
+    CapabilitySampleMaskPostDepthCoverage = 4447,
+    CapabilityImageGatherBiasLodAMD = 5009,
     CapabilitySampleMaskOverrideCoverageNV = 5249,
     CapabilityGeometryShaderPassthroughNV = 5251,
     CapabilityShaderViewportIndexLayerNV = 5254,
@@ -1027,6 +1040,14 @@ enum Op {
     OpSubgroupAnyKHR = 4429,
     OpSubgroupAllEqualKHR = 4430,
     OpSubgroupReadInvocationKHR = 4432,
+    OpGroupIAddNonUniformAMD = 5000,
+    OpGroupFAddNonUniformAMD = 5001,
+    OpGroupFMinNonUniformAMD = 5002,
+    OpGroupUMinNonUniformAMD = 5003,
+    OpGroupSMinNonUniformAMD = 5004,
+    OpGroupFMaxNonUniformAMD = 5005,
+    OpGroupUMaxNonUniformAMD = 5006,
+    OpGroupSMaxNonUniformAMD = 5007,
     OpMax = 0x7fffffff,
 };
 

@@ -1375,9 +1375,23 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         if ((profile != EEsProfile && version >= 300) ||
             (profile == EEsProfile && version >= 310)) {
             commonBuiltins.append(
-                "uint atomicCounterIncrement(atomic_uint x);"
-                "uint atomicCounterDecrement(atomic_uint x);"
-                "uint atomicCounter(atomic_uint x);"
+                "uint atomicCounterIncrement(atomic_uint);"
+                "uint atomicCounterDecrement(atomic_uint);"
+                "uint atomicCounter(atomic_uint);"
+
+                "\n");
+        }
+        if (profile != EEsProfile && version >= 460) {
+            commonBuiltins.append(
+                "uint atomicCounterAdd(atomic_uint, uint);"
+                "uint atomicCounterSubtract(atomic_uint, uint);"
+                "uint atomicCounterMin(atomic_uint, uint);"
+                "uint atomicCounterMax(atomic_uint, uint);"
+                "uint atomicCounterAnd(atomic_uint, uint);"
+                "uint atomicCounterOr(atomic_uint, uint);"
+                "uint atomicCounterXor(atomic_uint, uint);"
+                "uint atomicCounterExchange(atomic_uint, uint);"
+                "uint atomicCounterCompSwap(atomic_uint, uint, uint);"
 
                 "\n");
         }
@@ -1562,7 +1576,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-        // GL_ARB_shader_group_vote
+    // GL_ARB_shader_group_vote
     if (profile != EEsProfile && version >= 430) {
         commonBuiltins.append(
             "bool anyInvocationARB(bool);"
@@ -2291,6 +2305,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n"
             );
+    }
+
+    if (profile != EEsProfile && version >= 460) {
+        commonBuiltins.append(
+            "bool anyInvocation(bool);"
+            "bool allInvocations(bool);"
+            "bool allInvocationsEqual(bool);"
+
+            "\n");
     }
 
 #ifdef AMD_EXTENSIONS
@@ -4123,6 +4146,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "in int gl_DrawIDARB;"
                 );
         }
+        if (version >= 460) {
+            stageBuiltins[EShLangVertex].append(
+                "in int gl_BaseVertex;"
+                "in int gl_BaseInstance;"
+                "in int gl_DrawID;"
+                );
+        }
 
 #ifdef NV_EXTENSIONS
         if (version >= 450)
@@ -4175,6 +4205,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangVertex].append(
             "in highp int gl_DeviceIndex;"     // GL_EXT_device_group
             "in highp int gl_ViewIndex;"       // GL_EXT_multiview
+            "\n");
+    }
+
+    if (version >= 300 /* both ES and non-ES */) {
+        stageBuiltins[EShLangVertex].append(
+            "in highp uint gl_ViewID_OVR;"     // GL_OVR_multiview, GL_OVR_multiview2
             "\n");
     }
 
@@ -4474,6 +4510,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangFragment].append(
                 "vec2 gl_PointCoord;"  // needs qualifier fixed later
                 );
+        if (version >= 140)
+            stageBuiltins[EShLangFragment].append(
+                "out int gl_FragStencilRefARB;"
+                );
         if (IncludeLegacy(version, profile, spvVersion) || (! ForwardCompatibility && version < 420))
             stageBuiltins[EShLangFragment].append(
                 "vec4 gl_FragColor;"   // needs qualifier fixed later
@@ -4665,6 +4705,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangCompute].append(
             "highp   in uint  gl_NumSubgroups;"
             "highp   in uint  gl_SubgroupID;"
+            "\n");
+    }
+
+    if (version >= 300 /* both ES and non-ES */) {
+        stageBuiltins[EShLangFragment].append(
+            "flat in highp uint gl_ViewID_OVR;"     // GL_OVR_multiview, GL_OVR_multiview2
             "\n");
     }
 
@@ -5978,6 +6024,19 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
         // GL_ARB_shader_ballot
         if (profile != EEsProfile) {
+            if (version >= 440) {
+                symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
+                symbolTable.setVariableExtensions("gl_BaseInstanceARB", 1, &E_GL_ARB_shader_draw_parameters);
+                symbolTable.setVariableExtensions("gl_DrawIDARB",       1, &E_GL_ARB_shader_draw_parameters);
+                BuiltInVariable("gl_BaseVertexARB",   EbvBaseVertex,   symbolTable);
+                BuiltInVariable("gl_BaseInstanceARB", EbvBaseInstance, symbolTable);
+                BuiltInVariable("gl_DrawIDARB",       EbvDrawId,       symbolTable);
+            }
+            if (version >= 460) {
+                BuiltInVariable("gl_BaseVertex",   EbvBaseVertex,   symbolTable);
+                BuiltInVariable("gl_BaseInstance", EbvBaseInstance, symbolTable);
+                BuiltInVariable("gl_DrawID",       EbvDrawId,       symbolTable);
+            }
             symbolTable.setVariableExtensions("gl_SubGroupSizeARB",       1, &E_GL_ARB_shader_ballot);
             symbolTable.setVariableExtensions("gl_SubGroupInvocationARB", 1, &E_GL_ARB_shader_ballot);
             symbolTable.setVariableExtensions("gl_SubGroupEqMaskARB",     1, &E_GL_ARB_shader_ballot);
@@ -6003,9 +6062,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             else
                 BuiltInVariable("gl_SubGroupSizeARB", EbvSubGroupSize, symbolTable);
 
-            symbolTable.setFunctionExtensions("anyInvocationARB",       1, &E_GL_ARB_shader_group_vote);
-            symbolTable.setFunctionExtensions("allInvocationsARB",      1, &E_GL_ARB_shader_group_vote);
-            symbolTable.setFunctionExtensions("allInvocationsEqualARB", 1, &E_GL_ARB_shader_group_vote);
+            if (version >= 430) {
+                symbolTable.setFunctionExtensions("anyInvocationARB",       1, &E_GL_ARB_shader_group_vote);
+                symbolTable.setFunctionExtensions("allInvocationsARB",      1, &E_GL_ARB_shader_group_vote);
+                symbolTable.setFunctionExtensions("allInvocationsEqualARB", 1, &E_GL_ARB_shader_group_vote);
+            }
         }
 
 #ifdef AMD_EXTENSIONS
@@ -6070,13 +6131,14 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
                 symbolTable.setFunctionExtensions("texture2DGradEXT",     1, &E_GL_EXT_shader_texture_lod);
                 symbolTable.setFunctionExtensions("texture2DProjGradEXT", 1, &E_GL_EXT_shader_texture_lod);
                 symbolTable.setFunctionExtensions("textureCubeGradEXT",   1, &E_GL_EXT_shader_texture_lod);
-                symbolTable.setFunctionExtensions("textureGatherOffsets", Num_AEP_gpu_shader5, AEP_gpu_shader5);
+                if (version == 310)
+                    symbolTable.setFunctionExtensions("textureGatherOffsets", Num_AEP_gpu_shader5, AEP_gpu_shader5);
             }
-            if (version >= 310)
+            if (version == 310)
                 symbolTable.setFunctionExtensions("fma", Num_AEP_gpu_shader5, AEP_gpu_shader5);
         }
 
-        if (profile == EEsProfile) {
+        if (profile == EEsProfile && version < 320) {
             symbolTable.setFunctionExtensions("imageAtomicAdd",      1, &E_GL_OES_shader_image_atomic);
             symbolTable.setFunctionExtensions("imageAtomicMin",      1, &E_GL_OES_shader_image_atomic);
             symbolTable.setFunctionExtensions("imageAtomicMax",      1, &E_GL_OES_shader_image_atomic);
@@ -6097,6 +6159,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
         }
 
+        if (version >= 300 /* both ES and non-ES */) {
+            symbolTable.setVariableExtensions("gl_ViewID_OVR", Num_OVR_multiview_EXTs, OVR_multiview_EXTs);
+            BuiltInVariable("gl_ViewID_OVR", EbvViewIndex, symbolTable);
+        }
+
         if (profile == EEsProfile) {
             symbolTable.setFunctionExtensions("shadow2DEXT",        1, &E_GL_EXT_shadow_samplers);
             symbolTable.setFunctionExtensions("shadow2DProjEXT",    1, &E_GL_EXT_shadow_samplers);
@@ -6106,8 +6173,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     case EShLangTessControl:
         if (profile == EEsProfile && version >= 310) {
-            symbolTable.setVariableExtensions("gl_BoundingBoxOES", Num_AEP_primitive_bounding_box, AEP_primitive_bounding_box);
             BuiltInVariable("gl_BoundingBoxOES", EbvBoundingBox, symbolTable);
+            if (version < 320)
+                symbolTable.setVariableExtensions("gl_BoundingBoxOES", Num_AEP_primitive_bounding_box,
+                                                  AEP_primitive_bounding_box);
         }
 
         // Fall through
@@ -6262,13 +6331,18 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_CullDistance",    EbvCullDistance,   symbolTable);
         BuiltInVariable("gl_PrimitiveID",     EbvPrimitiveId,    symbolTable);
 
+        if (profile != EEsProfile && version >= 140) {
+            symbolTable.setVariableExtensions("gl_FragStencilRefARB", 1, &E_GL_ARB_shader_stencil_export);
+            BuiltInVariable("gl_FragStencilRefARB", EbvFragStencilRef, symbolTable);
+        }
+
         if ((profile != EEsProfile && version >= 400) ||
             (profile == EEsProfile && version >= 310)) {
             BuiltInVariable("gl_SampleID",        EbvSampleId,       symbolTable);
             BuiltInVariable("gl_SamplePosition",  EbvSamplePosition, symbolTable);
             BuiltInVariable("gl_SampleMaskIn",    EbvSampleMask,     symbolTable);
             BuiltInVariable("gl_SampleMask",      EbvSampleMask,     symbolTable);
-            if (profile == EEsProfile) {
+            if (profile == EEsProfile && version < 320) {
                 symbolTable.setVariableExtensions("gl_SampleID",       1, &E_GL_OES_sample_variables);
                 symbolTable.setVariableExtensions("gl_SamplePosition", 1, &E_GL_OES_sample_variables);
                 symbolTable.setVariableExtensions("gl_SampleMaskIn",   1, &E_GL_OES_sample_variables);
@@ -6302,14 +6376,15 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
                 symbolTable.setFunctionExtensions("texture2DGradEXT",     1, &E_GL_EXT_shader_texture_lod);
                 symbolTable.setFunctionExtensions("texture2DProjGradEXT", 1, &E_GL_EXT_shader_texture_lod);
                 symbolTable.setFunctionExtensions("textureCubeGradEXT",   1, &E_GL_EXT_shader_texture_lod);
-                symbolTable.setFunctionExtensions("textureGatherOffsets", Num_AEP_gpu_shader5, AEP_gpu_shader5);
+                if (version < 320)
+                    symbolTable.setFunctionExtensions("textureGatherOffsets", Num_AEP_gpu_shader5, AEP_gpu_shader5);
             }
             if (version == 100) {
                 symbolTable.setFunctionExtensions("dFdx",   1, &E_GL_OES_standard_derivatives);
                 symbolTable.setFunctionExtensions("dFdy",   1, &E_GL_OES_standard_derivatives);
                 symbolTable.setFunctionExtensions("fwidth", 1, &E_GL_OES_standard_derivatives);
             }
-            if (version >= 310) {
+            if (version == 310) {
                 symbolTable.setFunctionExtensions("fma", Num_AEP_gpu_shader5, AEP_gpu_shader5);
                 symbolTable.setFunctionExtensions("interpolateAtCentroid", 1, &E_GL_OES_shader_multisample_interpolation);
                 symbolTable.setFunctionExtensions("interpolateAtSample",   1, &E_GL_OES_shader_multisample_interpolation);
@@ -6438,12 +6513,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &E_GL_EXT_frag_depth);
 
-        if (profile == EEsProfile) {
+        if (profile == EEsProfile && version < 320) {
             symbolTable.setVariableExtensions("gl_PrimitiveID",  Num_AEP_geometry_shader, AEP_geometry_shader);
             symbolTable.setVariableExtensions("gl_Layer",        Num_AEP_geometry_shader, AEP_geometry_shader);
         }
 
-        if (profile == EEsProfile) {
+        if (profile == EEsProfile && version < 320) {
             symbolTable.setFunctionExtensions("imageAtomicAdd",      1, &E_GL_OES_shader_image_atomic);
             symbolTable.setFunctionExtensions("imageAtomicMin",      1, &E_GL_OES_shader_image_atomic);
             symbolTable.setFunctionExtensions("imageAtomicMax",      1, &E_GL_OES_shader_image_atomic);
@@ -6458,6 +6533,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_DeviceIndex", EbvDeviceIndex, symbolTable);
         symbolTable.setVariableExtensions("gl_ViewIndex", 1, &E_GL_EXT_multiview);
         BuiltInVariable("gl_ViewIndex", EbvViewIndex, symbolTable);
+        if (version >= 300 /* both ES and non-ES */) {
+            symbolTable.setVariableExtensions("gl_ViewID_OVR", Num_OVR_multiview_EXTs, OVR_multiview_EXTs);
+            BuiltInVariable("gl_ViewID_OVR", EbvViewIndex, symbolTable);
+        }
 
         // GL_ARB_shader_ballot
         if (profile != EEsProfile) {
@@ -6815,6 +6894,18 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("atomicCounterDecrement", EOpAtomicCounterDecrement);
     symbolTable.relateToOperator("atomicCounter",          EOpAtomicCounter);
 
+    if (profile != EEsProfile && version >= 460) {
+        symbolTable.relateToOperator("atomicCounterAdd",      EOpAtomicCounterAdd);
+        symbolTable.relateToOperator("atomicCounterSubtract", EOpAtomicCounterSubtract);
+        symbolTable.relateToOperator("atomicCounterMin",      EOpAtomicCounterMin);
+        symbolTable.relateToOperator("atomicCounterMax",      EOpAtomicCounterMax);
+        symbolTable.relateToOperator("atomicCounterAnd",      EOpAtomicCounterAnd);
+        symbolTable.relateToOperator("atomicCounterOr",       EOpAtomicCounterOr);
+        symbolTable.relateToOperator("atomicCounterXor",      EOpAtomicCounterXor);
+        symbolTable.relateToOperator("atomicCounterExchange", EOpAtomicCounterExchange);
+        symbolTable.relateToOperator("atomicCounterCompSwap", EOpAtomicCounterCompSwap);
+    }
+
     symbolTable.relateToOperator("fma",               EOpFma);
     symbolTable.relateToOperator("frexp",             EOpFrexp);
     symbolTable.relateToOperator("ldexp",             EOpLdexp);
@@ -6957,10 +7048,16 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("readInvocationARB",               EOpReadInvocation);
             symbolTable.relateToOperator("readFirstInvocationARB",          EOpReadFirstInvocation);
 
-            symbolTable.relateToOperator("anyInvocationARB",                EOpAnyInvocation);
-            symbolTable.relateToOperator("allInvocationsARB",               EOpAllInvocations);
-            symbolTable.relateToOperator("allInvocationsEqualARB",          EOpAllInvocationsEqual);
-
+            if (version >= 430) {
+                symbolTable.relateToOperator("anyInvocationARB",            EOpAnyInvocation);
+                symbolTable.relateToOperator("allInvocationsARB",           EOpAllInvocations);
+                symbolTable.relateToOperator("allInvocationsEqualARB",      EOpAllInvocationsEqual);
+            }
+            if (version >= 460) {
+                symbolTable.relateToOperator("anyInvocation",               EOpAnyInvocation);
+                symbolTable.relateToOperator("allInvocations",              EOpAllInvocations);
+                symbolTable.relateToOperator("allInvocationsEqual",         EOpAllInvocationsEqual);
+            }
 #ifdef AMD_EXTENSIONS
             symbolTable.relateToOperator("minInvocationsAMD",                           EOpMinInvocations);
             symbolTable.relateToOperator("maxInvocationsAMD",                           EOpMaxInvocations);

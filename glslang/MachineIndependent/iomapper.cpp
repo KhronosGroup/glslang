@@ -404,6 +404,11 @@ struct TDefaultIoResolverBase : public glslang::TIoMapResolver
     {
         if (type.getQualifier().hasSet())
             return type.getQualifier().layoutSet;
+
+        // If a command line or API option requested a single descriptor set, use that (if not overrided by spaceN)
+        if (baseResourceSetBinding.size() == 1)
+            return atoi(baseResourceSetBinding[0].c_str());
+
         return 0;
     }
 
@@ -413,8 +418,21 @@ struct TDefaultIoResolverBase : public glslang::TIoMapResolver
     }
     int resolveInOutLocation(EShLanguage /*stage*/, const char* /*name*/, const TType& type, bool /*is_live*/) override
     {
-        if (!doAutoLocationMapping || type.getQualifier().hasLocation())
+        // kick out of not doing this
+        if (!doAutoLocationMapping)
             return -1;
+
+        // no locations added if already present, or a built-in variable
+        if (type.getQualifier().hasLocation() || type.getQualifier().builtIn != EbvNone)
+            return -1;
+
+        // no locations on blocks of built-in variables
+        if (type.isStruct()) {
+            if (type.getStruct()->size() < 1)
+                return -1;
+            if ((*type.getStruct())[0].type->getQualifier().builtIn != EbvNone)
+                return -1;
+        }
 
         // Placeholder.
         // TODO: It would be nice to flesh this out using 
@@ -436,7 +454,10 @@ struct TDefaultIoResolverBase : public glslang::TIoMapResolver
 
     void notifyBinding(EShLanguage, const char* /*name*/, const TType&, bool /*is_live*/) override {}
     void notifyInOut(EShLanguage, const char* /*name*/, const TType&, bool /*is_live*/) override {}
-    void endNotifications() override {}
+    void endNotifications(EShLanguage) override {}
+    void beginNotifications(EShLanguage) override {}
+    void beginResolve(EShLanguage) override {}
+    void endResolve(EShLanguage) override {}
 
 protected:
     static int getLayoutSet(const glslang::TType& type) {
@@ -704,13 +725,16 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate &intermediate, TInfoSi
     TNotifyUniformAdaptor uniformNotify(stage, *resolver);
     TResolverUniformAdaptor uniformResolve(stage, *resolver, infoSink, hadError, intermediate);
     TResolverInOutAdaptor inOutResolve(stage, *resolver, infoSink, hadError, intermediate);
+    resolver->beginNotifications(stage);
     std::for_each(inVarMap.begin(), inVarMap.end(), inOutNotify);
     std::for_each(outVarMap.begin(), outVarMap.end(), inOutNotify);
     std::for_each(uniformVarMap.begin(), uniformVarMap.end(), uniformNotify);
-    resolver->endNotifications();
+    resolver->endNotifications(stage);
+    resolver->beginResolve(stage);
     std::for_each(inVarMap.begin(), inVarMap.end(), inOutResolve);
     std::for_each(outVarMap.begin(), outVarMap.end(), inOutResolve);
     std::for_each(uniformVarMap.begin(), uniformVarMap.end(), uniformResolve);
+    resolver->endResolve(stage);
 
     if (!hadError) {
         // sort by id again, so we can use lower bound to find entries

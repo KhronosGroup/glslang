@@ -733,6 +733,16 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpAtomicExchange:             out.debug << "AtomicExchange";        break;
     case EOpAtomicCompSwap:             out.debug << "AtomicCompSwap";        break;
 
+    case EOpAtomicCounterAdd:           out.debug << "AtomicCounterAdd";      break;
+    case EOpAtomicCounterSubtract:      out.debug << "AtomicCounterSubtract"; break;
+    case EOpAtomicCounterMin:           out.debug << "AtomicCounterMin";      break;
+    case EOpAtomicCounterMax:           out.debug << "AtomicCounterMax";      break;
+    case EOpAtomicCounterAnd:           out.debug << "AtomicCounterAnd";      break;
+    case EOpAtomicCounterOr:            out.debug << "AtomicCounterOr";       break;
+    case EOpAtomicCounterXor:           out.debug << "AtomicCounterXor";      break;
+    case EOpAtomicCounterExchange:      out.debug << "AtomicCounterExchange"; break;
+    case EOpAtomicCounterCompSwap:      out.debug << "AtomicCounterCompSwap"; break;
+
     case EOpImageQuerySize:             out.debug << "imageQuerySize";        break;
     case EOpImageQuerySamples:          out.debug << "imageQuerySamples";     break;
     case EOpImageLoad:                  out.debug << "imageLoad";             break;
@@ -1192,6 +1202,8 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
             infoSink.debug << "gl_FragCoord origin is upper left\n";
         if (earlyFragmentTests)
             infoSink.debug << "using early_fragment_tests\n";
+        if (postDepthCoverage)
+            infoSink.debug << "using post_depth_coverage\n";
         if (depthLayout != EldNone)
             infoSink.debug << "using " << TQualifier::getLayoutDepthString(depthLayout) << "\n";
         if (blendEquations != 0) {

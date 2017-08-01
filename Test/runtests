@@ -45,6 +45,11 @@ echo Comparing single thread to multithread for all tests in current directory..
 $EXE -i -C *.vert *.geom *.frag *.tes* *.comp > singleThread.out
 $EXE -i -C *.vert *.geom *.frag *.tes* *.comp -t > multiThread.out
 diff singleThread.out multiThread.out || HASERROR=1
+if [ $HASERROR -eq 0 ]
+then
+    rm singleThread.out
+    rm multiThread.out
+fi
 
 #
 # entry point renaming tests
@@ -92,12 +97,20 @@ echo Configuring HLSL descriptor set and binding number manually
 $EXE -V -D -e main -H hlsl.multiDescriptorSet.frag --rsb frag t0 0 0 t1 1 0 s0 0 1 s1 1 1 b0 2 0 b1 2 1 b2 2 2 > $TARGETDIR/hlsl.multiDescriptorSet.frag.out
 diff -b $BASEDIR/hlsl.multiDescriptorSet.frag.out $TARGETDIR/hlsl.multiDescriptorSet.frag.out || HASERROR=1
 
+$EXE -V -D -e main -H hlsl.explicitDescriptorSet.frag --hlsl-iomap --amb --ssb 10 --stb 20 --rsb 4 > $TARGETDIR/hlsl.explicitDescriptorSet.frag.out
+diff -b $BASEDIR/hlsl.explicitDescriptorSet.frag.out $TARGETDIR/hlsl.explicitDescriptorSet.frag.out || HASERROR=1
+
+$EXE -V -D -e main -H hlsl.explicitDescriptorSet.frag --hlsl-iomap --amb --ssb 10 --stb 20 --rsb frag 3 > $TARGETDIR/hlsl.explicitDescriptorSet-2.frag.out
+diff -b $BASEDIR/hlsl.explicitDescriptorSet-2.frag.out $TARGETDIR/hlsl.explicitDescriptorSet-2.frag.out || HASERROR=1
+
 #
 # Testing location error
 #
 echo Testing SPV no location
 $EXE -V -C spv.noLocation.vert > $TARGETDIR/spv.noLocation.vert.out
 diff -b $BASEDIR/spv.noLocation.vert.out $TARGETDIR/spv.noLocation.vert.out || HASERROR=1
+$EXE -H --aml spv.noBuiltInLoc.vert > $TARGETDIR/spv.noBuiltInLoc.vert.out
+diff -b $BASEDIR/spv.noBuiltInLoc.vert.out $TARGETDIR/spv.noBuiltInLoc.vert.out || HASERROR=1
 
 #
 # Testing debug information
@@ -147,5 +160,7 @@ then
 else
     echo Tests Failed.
 fi
+
+rm -f comp.spv frag.spv geom.spv tesc.spv tese.spv vert.spv
 
 exit $HASERROR
