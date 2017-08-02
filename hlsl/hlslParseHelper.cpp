@@ -1126,39 +1126,32 @@ TType& HlslParseContext::split(TType& type, TString name, const TType* outerStru
     // We can ignore arrayness: it's uninvolved.
     if (type.isStruct()) {
         TTypeList* userStructure = type.getWritableStruct();
+        for (auto ioType = userStructure->begin(); ioType != userStructure->end(); ) {
+            if (ioType->type->getQualifier().builtIn != EbvNone) {
+                // split out built-in interstage IO
+                const TType& memberType = *ioType->type;
+                TVariable* ioVar = makeInternalVariable(name + (name.empty() ? "" : "_") + memberType.getFieldName(),
+                                                        memberType);
 
-        // Get iterator to (now at end) set of built-in interstage IO members
-        const auto firstIo = std::stable_partition(userStructure->begin(), userStructure->end(),
-                                                   [this](const TTypeLoc& t) {
-            return !t.type->isBuiltInInterstageIO(language);
-        });
+                if (arraySizes)
+                    ioVar->getWritableType().newArraySizes(*arraySizes);
 
-        // Move those to the built-in IO.  However, we also propagate arrayness (just one level is handled
-        // now) to this variable.
-        for (auto ioType = firstIo; ioType != userStructure->end(); ++ioType) {
-            const TType& memberType = *ioType->type;
-            TVariable* ioVar = makeInternalVariable(name + (name.empty() ? "" : "_") + memberType.getFieldName(),
-                                                    memberType);
+                fixBuiltInIoType(ioVar->getWritableType());
 
-            if (arraySizes)
-                ioVar->getWritableType().newArraySizes(*arraySizes);
+                interstageBuiltInIo[tInterstageIoData(memberType, *outerStructType)] = ioVar;
 
-            fixBuiltInIoType(ioVar->getWritableType());
+                // Merge qualifier from the user structure
+                mergeQualifiers(ioVar->getWritableType().getQualifier(), outerStructType->getQualifier());
 
-            interstageBuiltInIo[tInterstageIoData(memberType, *outerStructType)] = ioVar;
-
-            // Merge qualifier from the user structure
-            mergeQualifiers(ioVar->getWritableType().getQualifier(), outerStructType->getQualifier());
+                // Erase the IO vars from the user structure.
+                ioType = userStructure->erase(ioType);
+            } else {
+                split(*ioType->type,
+                      name + (name.empty() ? "" : "_") + ioType->type->getFieldName(),
+                      outerStructType);
+                ++ioType;
+            }
         }
-
-        // Erase the IO vars from the user structure.
-        userStructure->erase(firstIo, userStructure->end());
-
-        // Recurse further into the members.
-        for (unsigned int i = 0; i < userStructure->size(); ++i)
-            split(*(*userStructure)[i].type,
-                  name + (name.empty() ? "" : "_") + (*userStructure)[i].type->getFieldName(),
-                  outerStructType);
     }
 
     return type;
@@ -1556,7 +1549,7 @@ void HlslParseContext::addInterstageIoToLinkage()
         TVariable* var = interstageBuiltInIo[io[idx]];
 
         // Add the loose interstage IO to the linkage
-        if (var->getType().isLooseAndBuiltIn(language))
+        if (! var->getType().isPerVertexBuiltIn(language))
             trackLinkage(*var);
     }
 }
@@ -1906,8 +1899,8 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
             if ((language == EShLangVertex   && qualifier == EvqVaryingIn) ||
                 (language == EShLangFragment && qualifier == EvqVaryingOut))
                 flatten(variable);
-            // Structs contain interstage IO must be split
-            else if (variable.getType().containsBuiltInInterstageIO(language))
+            // Structs containing built-ins must be split
+            else if (variable.getType().containsBuiltIn())
                 split(variable);
         }
 
@@ -2530,7 +2523,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
         TIntermTyped* subTree;
         const TType derefType(node->getType(), member);
-        if (split && derefType.isBuiltInInterstageIO(language)) {
+        if (split && derefType.isBuiltIn()) {
             // copy from interstage IO built-in if needed
             const TIntermTyped* outer = isLeft ? outerLeft : outerRight;
             subTree = intermediate.addSymbol(*interstageBuiltInIo.find(
@@ -2644,8 +2637,8 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                     assignList = intermediate.growAggregate(assignList, clipCullAssign, loc);
 
                 } else if (!isFlattenLeft && !isFlattenRight &&
-                           !typeL.containsBuiltInInterstageIO(language) &&
-                           !typeR.containsBuiltInInterstageIO(language)) {
+                           !typeL.containsBuiltIn() &&
+                           !typeR.containsBuiltIn()) {
                     // If this is the final flattening (no nested types below to flatten)
                     // we'll copy the member, else recurse into the type hierarchy.
                     // However, if splitting the struct, that means we can copy a whole
@@ -2661,8 +2654,8 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                     traverse(subLeft, subRight, subSplitLeft, subSplitRight);
                 }
 
-                memberL += (typeL.isBuiltInInterstageIO(language) ? 0 : 1);
-                memberR += (typeR.isBuiltInInterstageIO(language) ? 0 : 1);
+                memberL += (typeL.isBuiltIn() ? 0 : 1);
+                memberR += (typeR.isBuiltIn() ? 0 : 1);
             }
         } else {
             // Member copy
@@ -9197,7 +9190,7 @@ void HlslParseContext::addPatchConstantInvocation()
         TVariable* pcfOutput = makeInternalVariable("@patchConstantOutput", outType);
         pcfOutput->getWritableType().getQualifier().storage = EvqVaryingOut;
 
-        if (pcfOutput->getType().containsBuiltInInterstageIO(language))
+        if (pcfOutput->getType().containsBuiltIn())
             split(*pcfOutput);
 
         assignToInterface(*pcfOutput);
