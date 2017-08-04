@@ -1138,7 +1138,9 @@ TType& HlslParseContext::split(TType& type, TString name, const TType* outerStru
 
                 fixBuiltInIoType(ioVar->getWritableType());
 
-                interstageBuiltInIo[tInterstageIoData(memberType, *outerStructType)] = ioVar;
+                splitBuiltIns[tInterstageIoData(memberType, *outerStructType)] = ioVar;
+                if (!isClipOrCullDistance(ioVar->getType()))
+                    trackLinkage(*ioVar);
 
                 // Merge qualifier from the user structure
                 mergeQualifiers(ioVar->getWritableType().getQualifier(), outerStructType->getQualifier());
@@ -1388,7 +1390,7 @@ void HlslParseContext::trackLinkage(TSymbol& symbol)
     TBuiltInVariable biType = symbol.getType().getQualifier().builtIn;
 
     if (biType != EbvNone)
-        builtInLinkageSymbols[biType] = symbol.clone();
+        builtInTessLinkageSymbols[biType] = symbol.clone();
 
     TParseContextBase::trackLinkage(symbol);
 }
@@ -1528,32 +1530,6 @@ void HlslParseContext::handleFunctionDeclarator(const TSourceLoc& loc, TFunction
     // other forms of name collisions.
     if (! symbolTable.insert(function))
         error(loc, "function name is redeclaration of existing name", function.getName().c_str(), "");
-}
-
-// Finalization step: Add interstage IO variables to the linkage in canonical order.
-void HlslParseContext::addInterstageIoToLinkage()
-{
-    TSourceLoc loc;
-    loc.init();
-
-    std::vector<tInterstageIoData> io;
-    io.reserve(interstageBuiltInIo.size());
-
-    for (auto ioVar = interstageBuiltInIo.begin(); ioVar != interstageBuiltInIo.end(); ++ioVar)
-        io.push_back(ioVar->first);
-
-    // Our canonical order is the TBuiltInVariable numeric order.
-    std::sort(io.begin(), io.end());
-
-    // We have to (potentially) track two IO blocks, one in, one out.  E.g, a GS may have a
-    // PerVertex block in both directions, possibly with different members.
-    for (int idx = 0; idx < int(io.size()); ++idx) {
-        TVariable* var = interstageBuiltInIo[io[idx]];
-
-        // Add the loose interstage IO to the linkage
-        if (! var->getType().isPerVertexBuiltIn(language))
-            trackLinkage(*var);
-    }
 }
 
 // For struct buffers with counters, we must pass the counter buffer as hidden parameter.
@@ -1983,7 +1959,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
         // an array element as indexed by invocation ID, which we might have to make up.
         // This is required to match SPIR-V semantics.
         if (language == EShLangTessControl) {
-            TIntermSymbol* invocationIdSym = findLinkageSymbol(EbvInvocationId);
+            TIntermSymbol* invocationIdSym = findTessLinkageSymbol(EbvInvocationId);
 
             // If there is no user declared invocation ID, we must make one.
             if (invocationIdSym == nullptr) {
@@ -2532,7 +2508,7 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         if (split && derefType.isBuiltIn()) {
             // copy from interstage IO built-in if needed
             const TIntermTyped* outer = isLeft ? outerLeft : outerRight;
-            subTree = intermediate.addSymbol(*interstageBuiltInIo.find(
+            subTree = intermediate.addSymbol(*splitBuiltIns.find(
                                              HlslParseContext::tInterstageIoData(derefType, outer->getType()))->second);
 
             // Arrayness of builtIn symbols isn't handled by the normal recursion:
@@ -8859,11 +8835,11 @@ void HlslParseContext::clearUniformInputOutput(TQualifier& qualifier)
 }
 
 
-// Return a symbol for the linkage variable of the given TBuiltInVariable type
-TIntermSymbol* HlslParseContext::findLinkageSymbol(TBuiltInVariable biType) const
+// Return a symbol for the tessellation linkage variable of the given TBuiltInVariable type
+TIntermSymbol* HlslParseContext::findTessLinkageSymbol(TBuiltInVariable biType) const
 {
-    const auto it = builtInLinkageSymbols.find(biType);
-    if (it == builtInLinkageSymbols.end())  // if it wasn't declared by the user, return nullptr
+    const auto it = builtInTessLinkageSymbols.find(biType);
+    if (it == builtInTessLinkageSymbols.end())  // if it wasn't declared by the user, return nullptr
         return nullptr;
 
     return intermediate.addSymbol(*it->second->getAsVariable());
@@ -8973,7 +8949,7 @@ void HlslParseContext::addPatchConstantInvocation()
 
     TFunction& patchConstantFunction = const_cast<TFunction&>(*candidateList[0]);
     const int pcfParamCount = patchConstantFunction.getParamCount();
-    TIntermSymbol* invocationIdSym = findLinkageSymbol(EbvInvocationId);
+    TIntermSymbol* invocationIdSym = findTessLinkageSymbol(EbvInvocationId);
     TIntermSequence& epBodySeq = entryPointFunctionBody->getAsAggregate()->getSequence();
 
     int outPatchParam = -1; // -1 means there isn't one.
@@ -9023,7 +8999,7 @@ void HlslParseContext::addPatchConstantInvocation()
                 // Presently, the only non-built-in we support is InputPatch, which is treated as
                 // a pseudo-built-in.
                 if (biType == EbvInputPatch) {
-                    builtInLinkageSymbols[biType] = inputPatch;
+                    builtInTessLinkageSymbols[biType] = inputPatch;
                 } else if (biType == EbvOutputPatch) {
                     // Nothing...
                 } else {
@@ -9069,7 +9045,7 @@ void HlslParseContext::addPatchConstantInvocation()
                 // find which built-in it is
                 const TBuiltInVariable biType = patchConstantFunction[p].getDeclaredBuiltIn();
                 
-                inputArg = findLinkageSymbol(biType);
+                inputArg = findTessLinkageSymbol(biType);
 
                 if (inputArg == nullptr) {
                     error(loc, "unable to find patch constant function built-in variable", "", "");
@@ -9263,7 +9239,6 @@ void HlslParseContext::finish()
 
     removeUnusedStructBufferCounters();
     addPatchConstantInvocation();
-    addInterstageIoToLinkage();
 
     TParseContextBase::finish();
 }

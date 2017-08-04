@@ -260,7 +260,6 @@ protected:
     TVariable* getSplitIoVar(const TIntermTyped* node) const;
     TVariable* getSplitIoVar(const TVariable* var) const;
     TVariable* getSplitIoVar(int id) const;
-    void addInterstageIoToLinkage();
     void addPatchConstantInvocation();
     TIntermTyped* makeIntegerIndex(TIntermTyped*);
 
@@ -312,14 +311,14 @@ protected:
     static bool isClipOrCullDistance(const TQualifier& qual) { return isClipOrCullDistance(qual.builtIn); }
     static bool isClipOrCullDistance(const TType& type) { return isClipOrCullDistance(type.getQualifier()); }
 
-    // Pass through to base class after remembering builtin mappings.
+    // Pass through to base class after remembering built-in mappings.
     using TParseContextBase::trackLinkage;
     void trackLinkage(TSymbol& variable) override;
 
     void finish() override; // post-processing
 
     // Linkage symbol helpers
-    TIntermSymbol* findLinkageSymbol(TBuiltInVariable biType) const;
+    TIntermSymbol* findTessLinkageSymbol(TBuiltInVariable biType) const;
 
     // Current state of parsing
     int annotationNestingLevel;  // 0 if outside all annotations
@@ -383,14 +382,14 @@ protected:
     TMap<const TTypeList*, tIoKinds> ioTypeMap;
 
     // Structure splitting data:
-    TMap<int, TVariable*>              splitIoVars;  // variables with the builtin interstage IO removed, indexed by unique ID.
+    TMap<int, TVariable*> splitIoVars;  // variables with the built-in interstage IO removed, indexed by unique ID.
 
     // Structuredbuffer shared types.  Typically there are only a few.
     TVector<TType*> structBufferTypes;
     
     TMap<TString, bool> structBufferCounter;
 
-    // The builtin interstage IO map considers e.g, EvqPosition on input and output separately, so that we
+    // The built-in interstage IO map considers e.g, EvqPosition on input and output separately, so that we
     // can build the linkage correctly if position appears on both sides.  Otherwise, multiple positions
     // are considered identical.
     struct tInterstageIoData {
@@ -410,7 +409,7 @@ protected:
         }
     };
 
-    TMap<tInterstageIoData, TVariable*> interstageBuiltInIo; // individual builtin interstage IO vars, indexed by builtin type.
+    TMap<tInterstageIoData, TVariable*> splitBuiltIns; // split built-ins, indexed by built-in type.
     TVariable* inputPatch;
 
     unsigned int nextInLocation;
@@ -421,7 +420,7 @@ protected:
     TIntermNode* entryPointFunctionBody;
 
     TString patchConstantFunctionName; // hull shader patch constant function name, from function level attribute.
-    TMap<TBuiltInVariable, TSymbol*> builtInLinkageSymbols; // used for tessellation, finding declared builtins
+    TMap<TBuiltInVariable, TSymbol*> builtInTessLinkageSymbols; // used for tessellation, finding declared built-ins
 
     TVector<TString> currentTypePrefix;      // current scoping prefix for nested structures
     TVector<TVariable*> implicitThisStack;   // currently active 'this' variables for nested structures
@@ -447,7 +446,7 @@ protected:
     TVector<tMipsOperatorData> mipsOperatorMipArg;
 };
 
-// This is the prefix we use for builtin methods to avoid namespace collisions with
+// This is the prefix we use for built-in methods to avoid namespace collisions with
 // global scope user functions.
 // TODO: this would be better as a nonparseable character, but that would
 // require changing the scanner.

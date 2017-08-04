@@ -84,6 +84,7 @@ output primitive = triangle_strip
 0:?         'outStream' ( temp structure{ temp 4-component vector of float position,  temp 4-component vector of float color,  temp 2-component vector of float uv})
 0:?   Linker Objects
 0:?     'vin' (layout( location=0) in 2-element array of structure{ temp 4-component vector of float position,  temp 4-component vector of float color,  temp 2-component vector of float uv})
+0:?     'outStream_position' ( out 4-component vector of float Position)
 0:?     'outStream' (layout( location=0) out structure{ temp 4-component vector of float color,  temp 2-component vector of float uv})
 
 
@@ -175,6 +176,7 @@ output primitive = triangle_strip
 0:?         'outStream' ( temp structure{ temp 4-component vector of float position,  temp 4-component vector of float color,  temp 2-component vector of float uv})
 0:?   Linker Objects
 0:?     'vin' (layout( location=0) in 2-element array of structure{ temp 4-component vector of float position,  temp 4-component vector of float color,  temp 2-component vector of float uv})
+0:?     'outStream_position' ( out 4-component vector of float Position)
 0:?     'outStream' (layout( location=0) out structure{ temp 4-component vector of float color,  temp 2-component vector of float uv})
 
 // Module Version 10000

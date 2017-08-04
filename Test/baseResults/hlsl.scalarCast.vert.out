@@ -158,6 +158,7 @@ Shader version: 500
 0:29            Constant:
 0:29              1 (const int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_position' ( out 4-component vector of float Position)
 0:?     '@entryPointOutput' (layout( location=0) out structure{ temp 2-component vector of float texCoord})
 
 
@@ -323,6 +324,7 @@ Shader version: 500
 0:29            Constant:
 0:29              1 (const int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_position' ( out 4-component vector of float Position)
 0:?     '@entryPointOutput' (layout( location=0) out structure{ temp 2-component vector of float texCoord})
 
 // Module Version 10000

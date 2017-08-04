@@ -91,6 +91,7 @@ Shader version: 500
 0:7              3 (const int)
 0:?           'clip1' ( temp float)
 0:?   Linker Objects
+0:?     '@entryPointOutput_Position' ( out 4-component vector of float Position)
 0:?     'clip0' ( out 4-element array of float ClipDistance)
 
 
@@ -189,6 +190,7 @@ Shader version: 500
 0:7              3 (const int)
 0:?           'clip1' ( temp float)
 0:?   Linker Objects
+0:?     '@entryPointOutput_Position' ( out 4-component vector of float Position)
 0:?     'clip0' ( out 4-element array of float ClipDistance)
 
 // Module Version 10000

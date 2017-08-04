@@ -42,6 +42,7 @@ Shader version: 500
 0:16            Constant:
 0:16              0 (const int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_Pos' ( out 4-component vector of float Position)
 0:?     'Pos_in' (layout( location=0) in 4-component vector of float)
 0:?     'Pos_loose' (layout( location=1) in 4-component vector of float)
 
@@ -92,6 +93,7 @@ Shader version: 500
 0:16            Constant:
 0:16              0 (const int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_Pos' ( out 4-component vector of float Position)
 0:?     'Pos_in' (layout( location=0) in 4-component vector of float)
 0:?     'Pos_loose' (layout( location=1) in 4-component vector of float)
 

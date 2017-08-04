@@ -150,6 +150,7 @@ Shader version: 500
 0:8            Constant:
 0:8              2 (const int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_coord' ( out 4-component vector of float Position)
 0:?     '@entryPointOutput' (layout( location=0) out structure{ temp 2-element array of 4-component vector of float m,  smooth temp 4-component vector of float b})
 0:?     'd' (layout( location=0) in 4-component vector of float)
 0:?     'm[0]' (layout( location=1) in 4-component vector of float)
@@ -315,6 +316,7 @@ Shader version: 500
 0:8            Constant:
 0:8              2 (const int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_coord' ( out 4-component vector of float Position)
 0:?     '@entryPointOutput' (layout( location=0) out structure{ temp 2-element array of 4-component vector of float m,  smooth temp 4-component vector of float b})
 0:?     'd' (layout( location=0) in 4-component vector of float)
 0:?     'm[0]' (layout( location=1) in 4-component vector of float)

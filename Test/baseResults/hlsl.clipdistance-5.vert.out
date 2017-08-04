@@ -152,6 +152,7 @@ Shader version: 500
 0:11              Constant:
 0:11                1 (const int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_Position' ( out 4-component vector of float Position)
 0:?     'Position' (layout( location=0) in 4-component vector of float)
 0:?     '@entryPointOutput_ClipRect' ( out 4-element array of float ClipDistance)
 
@@ -312,6 +313,7 @@ Shader version: 500
 0:11              Constant:
 0:11                1 (const int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_Position' ( out 4-component vector of float Position)
 0:?     'Position' (layout( location=0) in 4-component vector of float)
 0:?     '@entryPointOutput_ClipRect' ( out 4-element array of float ClipDistance)
 

@@ -195,7 +195,9 @@ output primitive = triangle_strip
 0:?         'tin' ( temp 3-element array of structure{ temp 4-component vector of float pos,  temp 2-component vector of float tc})
 0:?         'ts' ( temp structure{ temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float tc} psIn,  temp structure{ temp 2-element array of float m0_array,  temp int m1} contains_no_builtin_io})
 0:?   Linker Objects
+0:?     'tin_pos' ( in 3-element array of 4-component vector of float Position)
 0:?     'tin' (layout( location=0) in 3-element array of structure{ temp 2-component vector of float tc})
+0:?     'ts_psIn_pos' ( out 4-component vector of float Position)
 0:?     'ts' (layout( location=0) out structure{ temp structure{ temp 2-component vector of float tc} psIn,  temp structure{ temp 2-element array of float m0_array,  temp int m1} contains_no_builtin_io})
 
 
@@ -398,7 +400,9 @@ output primitive = triangle_strip
 0:?         'tin' ( temp 3-element array of structure{ temp 4-component vector of float pos,  temp 2-component vector of float tc})
 0:?         'ts' ( temp structure{ temp structure{ temp 4-component vector of float pos,  temp 2-component vector of float tc} psIn,  temp structure{ temp 2-element array of float m0_array,  temp int m1} contains_no_builtin_io})
 0:?   Linker Objects
+0:?     'tin_pos' ( in 3-element array of 4-component vector of float Position)
 0:?     'tin' (layout( location=0) in 3-element array of structure{ temp 2-component vector of float tc})
+0:?     'ts_psIn_pos' ( out 4-component vector of float Position)
 0:?     'ts' (layout( location=0) out structure{ temp structure{ temp 2-component vector of float tc} psIn,  temp structure{ temp 2-element array of float m0_array,  temp int m1} contains_no_builtin_io})
 
 // Module Version 10000

@@ -103,6 +103,7 @@ Shader version: 500
 0:22            Constant:
 0:22              2 (const int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_Pos_out' ( out 4-component vector of float Position)
 0:?     '@entryPointOutput' (layout( location=0) out structure{ temp int x0_out,  temp int x1_out})
 0:?     'x0_in' (layout( location=0) in int)
 0:?     'Pos_in' (layout( location=1) in 4-component vector of float)
@@ -216,6 +217,7 @@ Shader version: 500
 0:22            Constant:
 0:22              2 (const int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_Pos_out' ( out 4-component vector of float Position)
 0:?     '@entryPointOutput' (layout( location=0) out structure{ temp int x0_out,  temp int x1_out})
 0:?     'x0_in' (layout( location=0) in int)
 0:?     'Pos_in' (layout( location=1) in 4-component vector of float)
