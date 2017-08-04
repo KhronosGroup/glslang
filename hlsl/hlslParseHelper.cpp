@@ -1459,26 +1459,28 @@ void HlslParseContext::assignToInterface(TVariable& variable)
 {
     const auto assignLocation = [&](TVariable& variable) {
         TType& type = variable.getWritableType();
-        TQualifier& qualifier = type.getQualifier();
-        if (qualifier.storage == EvqVaryingIn || qualifier.storage == EvqVaryingOut) {
-            if (qualifier.builtIn == EbvNone && !qualifier.hasLocation()) {
-                // Strip off the outer array dimension for those having an extra one.
-                int size;
-                if (type.isArray() && qualifier.isArrayedIo(language)) {
-                    TType elementType(type, 0);
-                    size = intermediate.computeTypeLocationSize(elementType);
-                } else
-                    size = intermediate.computeTypeLocationSize(type);
+        if (!type.isStruct() || type.getStruct()->size() > 0) {
+            TQualifier& qualifier = type.getQualifier();
+            if (qualifier.storage == EvqVaryingIn || qualifier.storage == EvqVaryingOut) {
+                if (qualifier.builtIn == EbvNone && !qualifier.hasLocation()) {
+                    // Strip off the outer array dimension for those having an extra one.
+                    int size;
+                    if (type.isArray() && qualifier.isArrayedIo(language)) {
+                        TType elementType(type, 0);
+                        size = intermediate.computeTypeLocationSize(elementType);
+                    } else
+                        size = intermediate.computeTypeLocationSize(type);
 
-                if (qualifier.storage == EvqVaryingIn) {
-                    variable.getWritableType().getQualifier().layoutLocation = nextInLocation;
-                    nextInLocation += size;
-                } else {
-                    variable.getWritableType().getQualifier().layoutLocation = nextOutLocation;
-                    nextOutLocation += size;
+                    if (qualifier.storage == EvqVaryingIn) {
+                        variable.getWritableType().getQualifier().layoutLocation = nextInLocation;
+                        nextInLocation += size;
+                    } else {
+                        variable.getWritableType().getQualifier().layoutLocation = nextOutLocation;
+                        nextOutLocation += size;
+                    }
                 }
+                trackLinkage(variable);
             }
-            trackLinkage(variable);
         }
     };
 
@@ -1868,7 +1870,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
         return language == EShLangTessEvaluation &&
         type.contains([](const TType* t) {
                 return t->getQualifier().builtIn == EbvTessLevelOuter ||
-                t->getQualifier().builtIn == EbvTessLevelInner;
+                       t->getQualifier().builtIn == EbvTessLevelInner;
             });
     };
 
