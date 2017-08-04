@@ -6013,17 +6013,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     switch(language) {
     case EShLangVertex:
         if (profile != EEsProfile) {
-            symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
-            symbolTable.setVariableExtensions("gl_BaseInstanceARB", 1, &E_GL_ARB_shader_draw_parameters);
-            symbolTable.setVariableExtensions("gl_DrawIDARB",       1, &E_GL_ARB_shader_draw_parameters);
-
-            BuiltInVariable("gl_BaseVertexARB",   EbvBaseVertex,   symbolTable);
-            BuiltInVariable("gl_BaseInstanceARB", EbvBaseInstance, symbolTable);
-            BuiltInVariable("gl_DrawIDARB",       EbvDrawId,       symbolTable);
-        }
-
-        // GL_ARB_shader_ballot
-        if (profile != EEsProfile) {
             if (version >= 440) {
                 symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
                 symbolTable.setVariableExtensions("gl_BaseInstanceARB", 1, &E_GL_ARB_shader_draw_parameters);
