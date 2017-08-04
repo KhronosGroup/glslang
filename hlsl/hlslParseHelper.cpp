@@ -1904,6 +1904,10 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
             // Structs containing built-ins must be split
             else if (variable.getType().containsBuiltIn())
                 split(variable);
+            else if (!variable.getType().getQualifier().isArrayedIo(language))
+                flatten(variable);
+            //else
+                // TODO: unify split and flatten, so all paths can create flattened I/O
         }
 
         // For clip and cull distance, multiple output variables potentially get merged
@@ -1915,7 +1919,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     if (entryPointOutput != nullptr)
         makeVariableInOut(*entryPointOutput);
     for (auto it = inputs.begin(); it != inputs.end(); ++it)
-        if (!isDsPcfInput((*it)->getType()))  // skip domain shader PCF input (see comment below)
+        if (!isDsPcfInput((*it)->getType()))  // wait until the end for PCF input (see comment below)
             makeVariableInOut(*(*it));
     for (auto it = outputs.begin(); it != outputs.end(); ++it)
         makeVariableInOut(*(*it));
@@ -1927,7 +1931,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     // however, so this ensures the linkage is built in the correct order regardless of argument order.
     if (language == EShLangTessEvaluation) {
         for (auto it = inputs.begin(); it != inputs.end(); ++it)
-            if (isDsPcfInput((*it)->getType()))  // skip domain shader PCF input (see comment below)
+            if (isDsPcfInput((*it)->getType()))
                 makeVariableInOut(*(*it));
     }
 
