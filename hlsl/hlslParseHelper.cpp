@@ -8010,17 +8010,17 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
             case EvqBuffer:
                 correctUniform(type.getQualifier());
                 if (it != ioTypeMap.end() && it->second.uniform)
-                    type.setStruct(it->second.uniform);
+                    memberType.setStruct(it->second.uniform);
                 break;
             case EvqVaryingIn:
                 correctInput(type.getQualifier());
                 if (it != ioTypeMap.end() && it->second.input)
-                    type.setStruct(it->second.input);
+                    memberType.setStruct(it->second.input);
                 break;
             case EvqVaryingOut:
                 correctOutput(type.getQualifier());
                 if (it != ioTypeMap.end() && it->second.output)
-                    type.setStruct(it->second.output);
+                    memberType.setStruct(it->second.output);
                 break;
             default:
                 break;
