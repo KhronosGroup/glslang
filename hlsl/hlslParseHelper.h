@@ -133,7 +133,6 @@ public:
     void mergeQualifiers(TQualifier& dst, const TQualifier& src);
     int computeSamplerTypeIndex(TSampler&);
     TSymbol* redeclareBuiltinVariable(const TSourceLoc&, const TString&, const TQualifier&, const TShaderQualifiers&);
-    void redeclareBuiltinBlock(const TSourceLoc&, TTypeList& typeList, const TString& blockName, const TString* instanceName, TArraySizes* arraySizes);
     void paramFix(TType& type);
     void specializationCheck(const TSourceLoc&, const TType&, const char* op);
 
@@ -256,19 +255,17 @@ protected:
     TType& split(TType& type, TString name, const TType* outerStructType = nullptr);
     void split(const TVariable&);
     bool wasSplit(const TIntermTyped* node) const;
-    bool wasSplit(int id) const { return splitIoVars.find(id) != splitIoVars.end(); }
-    TVariable* getSplitIoVar(const TIntermTyped* node) const;
-    TVariable* getSplitIoVar(const TVariable* var) const;
-    TVariable* getSplitIoVar(int id) const;
+    bool wasSplit(int id) const { return splitNonIoVars.find(id) != splitNonIoVars.end(); }
+    TVariable* getSplitNonIoVar(int id) const;
     void addPatchConstantInvocation();
     TIntermTyped* makeIntegerIndex(TIntermTyped*);
 
     void fixBuiltInIoType(TType&);
 
-    void flatten(const TVariable& variable);
-    int flatten(const TVariable& variable, const TType&, TFlattenData&, TString name);
-    int flattenStruct(const TVariable& variable, const TType&, TFlattenData&, TString name);
-    int flattenArray(const TVariable& variable, const TType&, TFlattenData&, TString name);
+    void flatten(const TVariable& variable, bool linkage);
+    int flatten(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage);
+    int flattenStruct(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage);
+    int flattenArray(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage);
 
     bool hasUniform(const TQualifier& qualifier) const;
     void clearUniform(TQualifier& qualifier);
@@ -382,7 +379,7 @@ protected:
     TMap<const TTypeList*, tIoKinds> ioTypeMap;
 
     // Structure splitting data:
-    TMap<int, TVariable*> splitIoVars;  // variables with the built-in interstage IO removed, indexed by unique ID.
+    TMap<int, TVariable*> splitNonIoVars;  // variables with the built-in interstage IO removed, indexed by unique ID.
 
     // Structuredbuffer shared types.  Typically there are only a few.
     TVector<TType*> structBufferTypes;

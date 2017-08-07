@@ -81,6 +81,9 @@ gl_FragCoord origin is upper left
 0:35        Function Call: @main( ( temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'tex' ( uniform texture2D)
+0:?     's2D' ( uniform sampler)
+0:?     's2D' ( uniform sampler)
+0:?     'tex' ( uniform texture2D)
 0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
 
 
@@ -168,6 +171,9 @@ gl_FragCoord origin is upper left
 0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
 0:35        Function Call: @main( ( temp 4-component vector of float)
 0:?   Linker Objects
+0:?     'tex' ( uniform texture2D)
+0:?     's2D' ( uniform sampler)
+0:?     's2D' ( uniform sampler)
 0:?     'tex' ( uniform texture2D)
 0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
 
