@@ -195,6 +195,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.logicalConvert.frag", "main"},
         {"hlsl.logical.unary.frag", "main"},
         {"hlsl.loopattr.frag", "main"},
+        {"hlsl.matpack-pragma.frag", "main"},
         {"hlsl.mip.operator.frag", "main"},
         {"hlsl.mip.negative.frag", "main"},
         {"hlsl.mip.negative2.frag", "main"},

@@ -572,6 +572,28 @@ void HlslParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString
 
     if (tokens.size() == 0)
         return;
+
+    // These pragmas are case insensitive in HLSL, so we'll compare in lower case.
+    TVector<TString> lowerTokens = tokens;
+
+    for (auto it = lowerTokens.begin(); it != lowerTokens.end(); ++it)
+        std::transform(it->begin(), it->end(), it->begin(), ::tolower);
+
+    // Handle pack_matrix
+    if (tokens.size() == 4 && lowerTokens[0] == "pack_matrix" && tokens[1] == "(" && tokens[3] == ")") {
+        // Note that HLSL semantic order is Mrc, not Mcr like SPIR-V, so we reverse the sense.
+        // Row major becomes column major and vice versa.
+
+        if (lowerTokens[2] == "row_major") {
+            globalUniformDefaults.layoutMatrix = globalBufferDefaults.layoutMatrix = ElmColumnMajor;
+        } else if (lowerTokens[2] == "column_major") {
+            globalUniformDefaults.layoutMatrix = globalBufferDefaults.layoutMatrix = ElmRowMajor;
+        } else {
+            // unknown majorness strings are treated as (HLSL column major)==(SPIR-V row major)
+            warn(loc, "unknown pack_matrix pragma value", tokens[2].c_str(), "");
+            globalUniformDefaults.layoutMatrix = globalBufferDefaults.layoutMatrix = ElmRowMajor;
+        }
+    }
 }
 
 //
@@ -7049,6 +7071,11 @@ void HlslParseContext::declareStruct(const TSourceLoc& loc, TString& structName,
         }
         if (newLists.uniform) {
             newMember(newUniformMember);
+
+            // inherit default matrix layout (changeable via #pragma pack_matrix), if none given.
+            if (member->type->isMatrix() && member->type->getQualifier().layoutMatrix == ElmNone)
+                newUniformMember.type->getQualifier().layoutMatrix = globalUniformDefaults.layoutMatrix;
+
             correctUniform(newUniformMember.type->getQualifier());
             newLists.uniform->push_back(newUniformMember);
         }
