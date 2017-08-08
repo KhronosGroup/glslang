@@ -1121,58 +1121,51 @@ bool HlslParseContext::isBuiltInMethod(const TSourceLoc&, TIntermTyped* base, co
         return false;
 }
 
+// Independently establish a built-in that is a member of a structure.
+// 'arraySizes' are what's desired for the independent built-in, whatever
+// the higher-level source/expression of them was.
+void HlslParseContext::splitBuiltIn(const TString& baseName, const TType& memberType, const TArraySizes* arraySizes,
+                                    const TQualifier& outerQualifier)
+{
+    TVariable* ioVar = makeInternalVariable(baseName + (baseName.empty() ? "" : "_") + memberType.getFieldName(), memberType);
+
+    if (arraySizes)
+        ioVar->getWritableType().newArraySizes(*arraySizes);
+
+    fixBuiltInIoType(ioVar->getWritableType());
+
+    splitBuiltIns[tInterstageIoData(memberType.getQualifier().builtIn, outerQualifier.storage)] = ioVar;
+    if (!isClipOrCullDistance(ioVar->getType()))
+        trackLinkage(*ioVar);
+
+    // Merge qualifier from the user structure
+    mergeQualifiers(ioVar->getWritableType().getQualifier(), outerQualifier);
+}
+
 // Split a type into
 //   1. a struct of non-I/O members
-//   2. a collection of flattened I/O variables
+//   2. a collection of independent I/O variables
 void HlslParseContext::split(const TVariable& variable)
 {
     // Create a new variable:
-    TType& splitType = split(*variable.getType().clone(), variable.getName());
+    const TType& clonedType = *variable.getType().clone();
+    const TType& splitType = split(clonedType, variable.getName(), clonedType.getQualifier());
     splitNonIoVars[variable.getUniqueId()] = makeInternalVariable(variable.getName(), splitType);
 }
 
 // Recursive implementation of split().
 // Returns reference to the modified type.
-TType& HlslParseContext::split(TType& type, TString name, const TType* outerStructType)
+const TType& HlslParseContext::split(const TType& type, const TString& name, const TQualifier& outerQualifier)
 {
-    const TArraySizes* arraySizes = nullptr;
-
-    // At the outer-most scope, remember the struct type so we can examine its storage class
-    // at deeper levels.
-    if (outerStructType == nullptr)
-        outerStructType = &type;
-
-    if (type.isArray())
-        arraySizes = &type.getArraySizes();
-
-    // We can ignore arrayness: it's uninvolved.
     if (type.isStruct()) {
         TTypeList* userStructure = type.getWritableStruct();
         for (auto ioType = userStructure->begin(); ioType != userStructure->end(); ) {
-            if (ioType->type->getQualifier().builtIn != EbvNone) {
-                // split out built-in interstage IO
-                const TType& memberType = *ioType->type;
-                TVariable* ioVar = makeInternalVariable(name + (name.empty() ? "" : "_") + memberType.getFieldName(),
-                                                        memberType);
-
-                if (arraySizes)
-                    ioVar->getWritableType().newArraySizes(*arraySizes);
-
-                fixBuiltInIoType(ioVar->getWritableType());
-
-                splitBuiltIns[tInterstageIoData(memberType, *outerStructType)] = ioVar;
-                if (!isClipOrCullDistance(ioVar->getType()))
-                    trackLinkage(*ioVar);
-
-                // Merge qualifier from the user structure
-                mergeQualifiers(ioVar->getWritableType().getQualifier(), outerStructType->getQualifier());
-
-                // Erase the IO vars from the user structure.
+            if (ioType->type->isBuiltIn()) {
+                // move out the built-in
+                splitBuiltIn(name, *ioType->type, type.getArraySizes(), outerQualifier);
                 ioType = userStructure->erase(ioType);
             } else {
-                split(*ioType->type,
-                      name + (name.empty() ? "" : "_") + ioType->type->getFieldName(),
-                      outerStructType);
+                split(*ioType->type, name + (name.empty() ? "" : "_") + ioType->type->getFieldName(), outerQualifier);
                 ++ioType;
             }
         }
@@ -1258,10 +1251,9 @@ int HlslParseContext::addFlattenedMember(const TVariable& variable, const TType&
         if (flattenData.nextBinding != TQualifier::layoutBindingEnd)
             memberVariable->getWritableType().getQualifier().layoutBinding = flattenData.nextBinding++;
 
-        if (memberVariable->getType().getQualifier().builtIn == EbvNone) {
+        if (!memberVariable->getType().isBuiltIn()) {
             // inherited locations must be auto bumped, not replicated
-            if (flattenData.nextLocation != TQualifier::layoutLocationEnd &&
-                memberVariable->getType().getQualifier().builtIn == EbvNone) {
+            if (flattenData.nextLocation != TQualifier::layoutLocationEnd) {
                 memberVariable->getWritableType().getQualifier().layoutLocation = flattenData.nextLocation;
                 flattenData.nextLocation += intermediate.computeTypeLocationSize(memberVariable->getType());
                 nextOutLocation = std::max(nextOutLocation, flattenData.nextLocation);
@@ -2530,8 +2522,10 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         if (split && derefType.isBuiltIn()) {
             // copy from interstage IO built-in if needed
             const TIntermTyped* outer = isLeft ? outerLeft : outerRight;
-            subTree = intermediate.addSymbol(*splitBuiltIns.find(
-                                             HlslParseContext::tInterstageIoData(derefType, outer->getType()))->second);
+            subTree = intermediate.addSymbol(
+                        *splitBuiltIns.find(HlslParseContext::tInterstageIoData(
+                                                derefType.getQualifier().builtIn,
+                                                outer->getType().getQualifier().storage))->second);
 
             // Arrayness of builtIn symbols isn't handled by the normal recursion:
             // it's been extracted and moved to the built-in.

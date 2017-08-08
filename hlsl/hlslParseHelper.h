@@ -252,8 +252,9 @@ protected:
     bool isFinalFlattening(const TType& type) const { return !(type.isStruct() || type.isArray()); }
 
     // Structure splitting (splits interstage built-in types into its own struct)
-    TType& split(TType& type, TString name, const TType* outerStructType = nullptr);
     void split(const TVariable&);
+    void splitBuiltIn(const TString& baseName, const TType& memberType, const TArraySizes*, const TQualifier&);
+    const TType& split(const TType& type, const TString& name, const TQualifier&);
     bool wasSplit(const TIntermTyped* node) const;
     bool wasSplit(int id) const { return splitNonIoVars.find(id) != splitNonIoVars.end(); }
     TVariable* getSplitNonIoVar(int id) const;
@@ -392,10 +393,6 @@ protected:
     struct tInterstageIoData {
         tInterstageIoData(TBuiltInVariable bi, TStorageQualifier q) :
             builtIn(bi), storage(q) { }
-
-        tInterstageIoData(const TType& memberType, const TType& storageType) :
-            builtIn(memberType.getQualifier().builtIn),
-            storage(storageType.getQualifier().storage) { }
 
         TBuiltInVariable  builtIn;
         TStorageQualifier storage;
