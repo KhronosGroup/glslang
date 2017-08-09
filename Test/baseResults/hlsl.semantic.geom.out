@@ -13,7 +13,7 @@ output primitive = line_strip
 0:15      Sequence
 0:15        Sequence
 0:15          move second child to first child ( temp float)
-0:?             'OutputStream_clip0' ( out float Position)
+0:?             'OutputStream.clip0' ( out float Position)
 0:15            clip0: direct index for structure ( temp float)
 0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
 0:15              Constant:
@@ -21,7 +21,7 @@ output primitive = line_strip
 0:?           Sequence
 0:15            move second child to first child ( temp float)
 0:15              direct index ( temp float)
-0:?                 'OutputStream_clip0' ( out 1-element array of float ClipDistance)
+0:?                 'OutputStream.clip0' ( out 1-element array of float ClipDistance)
 0:15                Constant:
 0:15                  0 (const int)
 0:15              clip0: direct index for structure ( temp float)
@@ -31,7 +31,7 @@ output primitive = line_strip
 0:?           Sequence
 0:15            move second child to first child ( temp float)
 0:15              direct index ( temp float)
-0:?                 'OutputStream_cull0' ( out 1-element array of float CullDistance)
+0:?                 'OutputStream.cull0' ( out 1-element array of float CullDistance)
 0:15                Constant:
 0:15                  0 (const int)
 0:15              cull0: direct index for structure ( temp float)
@@ -39,13 +39,13 @@ output primitive = line_strip
 0:15                Constant:
 0:15                  2 (const int)
 0:15          move second child to first child ( temp uint)
-0:?             'OutputStream_vpai' ( out uint ViewportIndex)
+0:?             'OutputStream.vpai' ( out uint ViewportIndex)
 0:15            vpai: direct index for structure ( temp uint)
 0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
 0:15              Constant:
 0:15                3 (const int)
 0:15          move second child to first child ( temp uint)
-0:?             'OutputStream_rtai' ( out uint Layer)
+0:?             'OutputStream.rtai' ( out uint Layer)
 0:15            rtai: direct index for structure ( temp uint)
 0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
 0:15              Constant:
@@ -71,12 +71,12 @@ output primitive = line_strip
 0:?         'OutputStream' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
 0:?   Linker Objects
 0:?     'VertexID' (layout( location=0) in 3-element array of uint)
-0:?     'OutputStream_clip0' ( out float Position)
-0:?     'OutputStream_vpai' ( out uint ViewportIndex)
-0:?     'OutputStream_rtai' ( out uint Layer)
+0:?     'OutputStream.clip0' ( out float Position)
+0:?     'OutputStream.vpai' ( out uint ViewportIndex)
+0:?     'OutputStream.rtai' ( out uint Layer)
 0:?     'OutputStream' (layout( location=0) out structure{ temp int ii})
-0:?     'OutputStream_clip0' ( out 1-element array of float ClipDistance)
-0:?     'OutputStream_cull0' ( out 1-element array of float CullDistance)
+0:?     'OutputStream.clip0' ( out 1-element array of float ClipDistance)
+0:?     'OutputStream.cull0' ( out 1-element array of float CullDistance)
 
 
 Linked geometry stage:
@@ -96,7 +96,7 @@ output primitive = line_strip
 0:15      Sequence
 0:15        Sequence
 0:15          move second child to first child ( temp float)
-0:?             'OutputStream_clip0' ( out float Position)
+0:?             'OutputStream.clip0' ( out float Position)
 0:15            clip0: direct index for structure ( temp float)
 0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
 0:15              Constant:
@@ -104,7 +104,7 @@ output primitive = line_strip
 0:?           Sequence
 0:15            move second child to first child ( temp float)
 0:15              direct index ( temp float)
-0:?                 'OutputStream_clip0' ( out 1-element array of float ClipDistance)
+0:?                 'OutputStream.clip0' ( out 1-element array of float ClipDistance)
 0:15                Constant:
 0:15                  0 (const int)
 0:15              clip0: direct index for structure ( temp float)
@@ -114,7 +114,7 @@ output primitive = line_strip
 0:?           Sequence
 0:15            move second child to first child ( temp float)
 0:15              direct index ( temp float)
-0:?                 'OutputStream_cull0' ( out 1-element array of float CullDistance)
+0:?                 'OutputStream.cull0' ( out 1-element array of float CullDistance)
 0:15                Constant:
 0:15                  0 (const int)
 0:15              cull0: direct index for structure ( temp float)
@@ -122,13 +122,13 @@ output primitive = line_strip
 0:15                Constant:
 0:15                  2 (const int)
 0:15          move second child to first child ( temp uint)
-0:?             'OutputStream_vpai' ( out uint ViewportIndex)
+0:?             'OutputStream.vpai' ( out uint ViewportIndex)
 0:15            vpai: direct index for structure ( temp uint)
 0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
 0:15              Constant:
 0:15                3 (const int)
 0:15          move second child to first child ( temp uint)
-0:?             'OutputStream_rtai' ( out uint Layer)
+0:?             'OutputStream.rtai' ( out uint Layer)
 0:15            rtai: direct index for structure ( temp uint)
 0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
 0:15              Constant:
@@ -154,12 +154,12 @@ output primitive = line_strip
 0:?         'OutputStream' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
 0:?   Linker Objects
 0:?     'VertexID' (layout( location=0) in 3-element array of uint)
-0:?     'OutputStream_clip0' ( out float Position)
-0:?     'OutputStream_vpai' ( out uint ViewportIndex)
-0:?     'OutputStream_rtai' ( out uint Layer)
+0:?     'OutputStream.clip0' ( out float Position)
+0:?     'OutputStream.vpai' ( out uint ViewportIndex)
+0:?     'OutputStream.rtai' ( out uint Layer)
 0:?     'OutputStream' (layout( location=0) out structure{ temp int ii})
-0:?     'OutputStream_clip0' ( out 1-element array of float ClipDistance)
-0:?     'OutputStream_cull0' ( out 1-element array of float CullDistance)
+0:?     'OutputStream.clip0' ( out 1-element array of float ClipDistance)
+0:?     'OutputStream.cull0' ( out 1-element array of float CullDistance)
 
 // Module Version 10000
 // Generated by (magic number): 80001
@@ -188,12 +188,12 @@ output primitive = line_strip
                               Name 17  "@main(u1[3];struct-S-f1-f1-f1-u1-u1-i11;"
                               Name 15  "VertexID"
                               Name 16  "OutputStream"
-                              Name 20  "OutputStream_clip0"
+                              Name 20  "OutputStream.clip0"
                               Name 21  "s"
-                              Name 29  "OutputStream_clip0"
-                              Name 34  "OutputStream_cull0"
-                              Name 40  "OutputStream_vpai"
-                              Name 45  "OutputStream_rtai"
+                              Name 29  "OutputStream.clip0"
+                              Name 34  "OutputStream.cull0"
+                              Name 40  "OutputStream.vpai"
+                              Name 45  "OutputStream.rtai"
                               Name 49  "S"
                               MemberName 49(S) 0  "ii"
                               Name 51  "OutputStream"
@@ -202,11 +202,11 @@ output primitive = line_strip
                               Name 62  "OutputStream"
                               Name 63  "param"
                               Name 65  "param"
-                              Decorate 20(OutputStream_clip0) BuiltIn Position
-                              Decorate 29(OutputStream_clip0) BuiltIn ClipDistance
-                              Decorate 34(OutputStream_cull0) BuiltIn CullDistance
-                              Decorate 40(OutputStream_vpai) BuiltIn ViewportIndex
-                              Decorate 45(OutputStream_rtai) BuiltIn Layer
+                              Decorate 20(OutputStream.clip0) BuiltIn Position
+                              Decorate 29(OutputStream.clip0) BuiltIn ClipDistance
+                              Decorate 34(OutputStream.cull0) BuiltIn CullDistance
+                              Decorate 40(OutputStream.vpai) BuiltIn ViewportIndex
+                              Decorate 45(OutputStream.rtai) BuiltIn Layer
                               Decorate 51(OutputStream) Location 0
                               Decorate 60(VertexID) Location 0
                2:             TypeVoid
@@ -221,21 +221,21 @@ output primitive = line_strip
               13:             TypePointer Function 12(S)
               14:             TypeFunction 2 9(ptr) 13(ptr)
               19:             TypePointer Output 10(float)
-20(OutputStream_clip0):     19(ptr) Variable Output
+20(OutputStream.clip0):     19(ptr) Variable Output
               22:     11(int) Constant 0
               23:             TypePointer Function 10(float)
               26:      6(int) Constant 1
               27:             TypeArray 10(float) 26
               28:             TypePointer Output 27
-29(OutputStream_clip0):     28(ptr) Variable Output
+29(OutputStream.clip0):     28(ptr) Variable Output
               30:     11(int) Constant 1
-34(OutputStream_cull0):     28(ptr) Variable Output
+34(OutputStream.cull0):     28(ptr) Variable Output
               35:     11(int) Constant 2
               39:             TypePointer Output 6(int)
-40(OutputStream_vpai):     39(ptr) Variable Output
+40(OutputStream.vpai):     39(ptr) Variable Output
               41:     11(int) Constant 3
               42:             TypePointer Function 6(int)
-45(OutputStream_rtai):     39(ptr) Variable Output
+45(OutputStream.rtai):     39(ptr) Variable Output
               46:     11(int) Constant 4
            49(S):             TypeStruct 11(int)
               50:             TypePointer Output 49(S)
@@ -267,21 +267,21 @@ output primitive = line_strip
            21(s):     13(ptr) Variable Function
               24:     23(ptr) AccessChain 21(s) 22
               25:   10(float) Load 24
-                              Store 20(OutputStream_clip0) 25
+                              Store 20(OutputStream.clip0) 25
               31:     23(ptr) AccessChain 21(s) 30
               32:   10(float) Load 31
-              33:     19(ptr) AccessChain 29(OutputStream_clip0) 22
+              33:     19(ptr) AccessChain 29(OutputStream.clip0) 22
                               Store 33 32
               36:     23(ptr) AccessChain 21(s) 35
               37:   10(float) Load 36
-              38:     19(ptr) AccessChain 34(OutputStream_cull0) 22
+              38:     19(ptr) AccessChain 34(OutputStream.cull0) 22
                               Store 38 37
               43:     42(ptr) AccessChain 21(s) 41
               44:      6(int) Load 43
-                              Store 40(OutputStream_vpai) 44
+                              Store 40(OutputStream.vpai) 44
               47:     42(ptr) AccessChain 21(s) 46
               48:      6(int) Load 47
-                              Store 45(OutputStream_rtai) 48
+                              Store 45(OutputStream.rtai) 48
               54:     53(ptr) AccessChain 21(s) 52
               55:     11(int) Load 54
               57:     56(ptr) AccessChain 51(OutputStream) 22

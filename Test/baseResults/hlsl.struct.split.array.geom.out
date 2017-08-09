@@ -72,7 +72,7 @@ output primitive = triangle_strip
 0:?         'OutputStream' ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
 0:?   Linker Objects
 0:?     'v' (layout( location=0) in 1-element array of uint)
-0:?     'OutputStream_Pos' ( out 4-component vector of float Position)
+0:?     'OutputStream.Pos' ( out 4-component vector of float Position)
 0:?     'OutputStream' (layout( location=0) out structure{ temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
 
 
@@ -152,7 +152,7 @@ output primitive = triangle_strip
 0:?         'OutputStream' ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
 0:?   Linker Objects
 0:?     'v' (layout( location=0) in 1-element array of uint)
-0:?     'OutputStream_Pos' ( out 4-component vector of float Position)
+0:?     'OutputStream.Pos' ( out 4-component vector of float Position)
 0:?     'OutputStream' (layout( location=0) out structure{ temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
 
 // Module Version 10000
@@ -186,14 +186,14 @@ output primitive = triangle_strip
                               Name 68  "OutputStream"
                               Name 69  "param"
                               Name 71  "param"
-                              Name 75  "OutputStream_Pos"
+                              Name 75  "OutputStream.Pos"
                               Name 76  "PSInput"
                               MemberName 76(PSInput) 0  "TexCoord"
                               MemberName 76(PSInput) 1  "TerrainPos"
                               MemberName 76(PSInput) 2  "VertexID"
                               Name 78  "OutputStream"
                               Decorate 66(v) Location 0
-                              Decorate 75(OutputStream_Pos) BuiltIn Position
+                              Decorate 75(OutputStream.Pos) BuiltIn Position
                               Decorate 78(OutputStream) Location 0
                2:             TypeVoid
                3:             TypeFunction 2
@@ -228,7 +228,7 @@ output primitive = triangle_strip
               65:             TypePointer Input 8
            66(v):     65(ptr) Variable Input
               74:             TypePointer Output 11(fvec4)
-75(OutputStream_Pos):     74(ptr) Variable Output
+75(OutputStream.Pos):     74(ptr) Variable Output
      76(PSInput):             TypeStruct 12(fvec2) 13(fvec3) 6(int)
               77:             TypePointer Output 76(PSInput)
 78(OutputStream):     77(ptr) Variable Output

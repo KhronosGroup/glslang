@@ -1136,8 +1136,7 @@ void HlslParseContext::splitBuiltIn(const TString& baseName, const TType& member
             splitBuiltIns.end())
             return;
 
-    TVariable* ioVar = makeInternalVariable(baseName + (baseName.empty() ? "" : "_") + memberType.getFieldName(),
-                                            memberType);
+    TVariable* ioVar = makeInternalVariable(baseName + "." + memberType.getFieldName(), memberType);
 
     if (arraySizes != nullptr && !memberType.isArray())
         ioVar->getWritableType().newArraySizes(*arraySizes);
@@ -1177,7 +1176,7 @@ const TType& HlslParseContext::split(const TType& type, const TString& name, con
                 splitBuiltIn(name, *ioType->type, type.getArraySizes(), outerQualifier);
                 ioType = userStructure->erase(ioType);
             } else {
-                split(*ioType->type, name + (name.empty() ? "" : "_") + ioType->type->getFieldName(), outerQualifier);
+                split(*ioType->type, name + "." + ioType->type->getFieldName(), outerQualifier);
                 ++ioType;
             }
         }
@@ -1209,7 +1208,7 @@ void HlslParseContext::flatten(const TVariable& variable, bool linkage)
                                                                type.getQualifier().layoutLocation)));
 
     // the item is a map pair, so first->second is the TFlattenData itself.
-    flatten(variable, type, entry.first->second, "", linkage, type.getQualifier(), nullptr);
+    flatten(variable, type, entry.first->second, variable.getName(), linkage, type.getQualifier(), nullptr);
 }
 
 // Recursively flatten the given variable at the provided type, building the flattenData as we go.
@@ -1319,10 +1318,9 @@ int HlslParseContext::flattenStruct(const TVariable& variable, const TType& type
         if (dereferencedType.isBuiltIn())
             splitBuiltIn(variable.getName(), dereferencedType, builtInArraySizes, outerQualifier);
         else {
-            const TString memberName = name + (name.empty() ? "" : ".") + dereferencedType.getFieldName();
-
-            const int mpos = addFlattenedMember(variable, dereferencedType, flattenData, memberName, linkage,
-                                                outerQualifier,
+            const int mpos = addFlattenedMember(variable, dereferencedType, flattenData,
+                                                name + "." + dereferencedType.getFieldName(),
+                                                linkage, outerQualifier,
                                                 builtInArraySizes == nullptr && dereferencedType.isArray()
                                                                        ? &dereferencedType.getArraySizes()
                                                                        : builtInArraySizes);
