@@ -1127,9 +1127,19 @@ bool HlslParseContext::isBuiltInMethod(const TSourceLoc&, TIntermTyped* base, co
 void HlslParseContext::splitBuiltIn(const TString& baseName, const TType& memberType, const TArraySizes* arraySizes,
                                     const TQualifier& outerQualifier)
 {
-    TVariable* ioVar = makeInternalVariable(baseName + (baseName.empty() ? "" : "_") + memberType.getFieldName(), memberType);
+    // Because of arrays of structs, we might be asked more than once,
+    // but the arraySizes passed in should have captured the whole thing
+    // the first time.
+    // However, clip/cull rely on multiple updates.
+    if (!isClipOrCullDistance(memberType))
+        if (splitBuiltIns.find(tInterstageIoData(memberType.getQualifier().builtIn, outerQualifier.storage)) !=
+            splitBuiltIns.end())
+            return;
 
-    if (arraySizes)
+    TVariable* ioVar = makeInternalVariable(baseName + (baseName.empty() ? "" : "_") + memberType.getFieldName(),
+                                            memberType);
+
+    if (arraySizes != nullptr && !memberType.isArray())
         ioVar->getWritableType().newArraySizes(*arraySizes);
 
     fixBuiltInIoType(ioVar->getWritableType());
@@ -1140,6 +1150,8 @@ void HlslParseContext::splitBuiltIn(const TString& baseName, const TType& member
 
     // Merge qualifier from the user structure
     mergeQualifiers(ioVar->getWritableType().getQualifier(), outerQualifier);
+    // But, not location, we're losing that
+    ioVar->getWritableType().getQualifier().layoutLocation = TQualifier::layoutLocationEnd;
 }
 
 // Split a type into
@@ -1188,12 +1200,16 @@ void HlslParseContext::flatten(const TVariable& variable, bool linkage)
 {
     const TType& type = variable.getType();
 
+    // If it's a standalone built-in, there is nothing to flatten
+    if (type.isBuiltIn() && !type.isStruct())
+        return;
+
     auto entry = flattenMap.insert(std::make_pair(variable.getUniqueId(),
                                                   TFlattenData(type.getQualifier().layoutBinding,
                                                                type.getQualifier().layoutLocation)));
 
     // the item is a map pair, so first->second is the TFlattenData itself.
-    flatten(variable, type, entry.first->second, "", linkage);
+    flatten(variable, type, entry.first->second, "", linkage, type.getQualifier(), nullptr);
 }
 
 // Recursively flatten the given variable at the provided type, building the flattenData as we go.
@@ -1224,14 +1240,16 @@ void HlslParseContext::flatten(const TVariable& variable, bool linkage)
 // so the 4th flattened member in traversal order is ours.
 //
 int HlslParseContext::flatten(const TVariable& variable, const TType& type,
-                              TFlattenData& flattenData, TString name, bool linkage)
+                              TFlattenData& flattenData, TString name, bool linkage,
+                              const TQualifier& outerQualifier,
+                              const TArraySizes* builtInArraySizes)
 {
     // If something is an arrayed struct, the array flattener will recursively call flatten()
     // to then flatten the struct, so this is an "if else": we don't do both.
     if (type.isArray())
-        return flattenArray(variable, type, flattenData, name, linkage);
+        return flattenArray(variable, type, flattenData, name, linkage, outerQualifier);
     else if (type.isStruct())
-        return flattenStruct(variable, type, flattenData, name, linkage);
+        return flattenStruct(variable, type, flattenData, name, linkage, outerQualifier, builtInArraySizes);
     else {
         assert(0); // should never happen
         return -1;
@@ -1241,7 +1259,9 @@ int HlslParseContext::flatten(const TVariable& variable, const TType& type,
 // Add a single flattened member to the flattened data being tracked for the composite
 // Returns true for the final flattening level.
 int HlslParseContext::addFlattenedMember(const TVariable& variable, const TType& type, TFlattenData& flattenData,
-                                         const TString& memberName, bool linkage)
+                                         const TString& memberName, bool linkage,
+                                         const TQualifier& outerQualifier,
+                                         const TArraySizes* builtInArraySizes)
 {
     if (isFinalFlattening(type)) {
         // This is as far as we flatten.  Insert the variable.
@@ -1272,7 +1292,7 @@ int HlslParseContext::addFlattenedMember(const TVariable& variable, const TType&
         return static_cast<int>(flattenData.offsets.size()) - 1; // location of the member reference
     } else {
         // Further recursion required
-        return flatten(variable, type, flattenData, memberName, linkage);
+        return flatten(variable, type, flattenData, memberName, linkage, outerQualifier, builtInArraySizes);
     }
 }
 
@@ -1281,7 +1301,9 @@ int HlslParseContext::addFlattenedMember(const TVariable& variable, const TType&
 //
 // Assumes shouldFlatten() or equivalent was called first.
 int HlslParseContext::flattenStruct(const TVariable& variable, const TType& type,
-                                    TFlattenData& flattenData, TString name, bool linkage)
+                                    TFlattenData& flattenData, TString name, bool linkage,
+                                    const TQualifier& outerQualifier,
+                                    const TArraySizes* builtInArraySizes)
 {
     assert(type.isStruct());
 
@@ -1289,15 +1311,23 @@ int HlslParseContext::flattenStruct(const TVariable& variable, const TType& type
 
     // Reserve space for this tree level.
     int start = static_cast<int>(flattenData.offsets.size());
-    int pos   = start;
+    int pos = start;
     flattenData.offsets.resize(int(pos + members.size()), -1);
 
     for (int member = 0; member < (int)members.size(); ++member) {
         TType& dereferencedType = *members[member].type;
-        const TString memberName = name + (name.empty() ? "" : ".") + dereferencedType.getFieldName();
+        if (dereferencedType.isBuiltIn())
+            splitBuiltIn(variable.getName(), dereferencedType, builtInArraySizes, outerQualifier);
+        else {
+            const TString memberName = name + (name.empty() ? "" : ".") + dereferencedType.getFieldName();
 
-        const int mpos = addFlattenedMember(variable, dereferencedType, flattenData, memberName, linkage);
-        flattenData.offsets[pos++] = mpos;
+            const int mpos = addFlattenedMember(variable, dereferencedType, flattenData, memberName, linkage,
+                                                outerQualifier,
+                                                builtInArraySizes == nullptr && dereferencedType.isArray()
+                                                                       ? &dereferencedType.getArraySizes()
+                                                                       : builtInArraySizes);
+            flattenData.offsets[pos++] = mpos;
+        }
     }
 
     return start;
@@ -1308,7 +1338,8 @@ int HlslParseContext::flattenStruct(const TVariable& variable, const TType& type
 //
 // Assumes shouldFlatten() or equivalent was called first.
 int HlslParseContext::flattenArray(const TVariable& variable, const TType& type,
-                                   TFlattenData& flattenData, TString name, bool linkage)
+                                   TFlattenData& flattenData, TString name, bool linkage,
+                                   const TQualifier& outerQualifier)
 {
     assert(type.isArray() && !type.isImplicitlySizedArray());
 
@@ -1327,7 +1358,8 @@ int HlslParseContext::flattenArray(const TVariable& variable, const TType& type,
         char elementNumBuf[20];  // sufficient for MAXINT
         snprintf(elementNumBuf, sizeof(elementNumBuf)-1, "[%d]", element);
         const int mpos = addFlattenedMember(variable, dereferencedType, flattenData,
-                                            name + elementNumBuf, linkage);
+                                            name + elementNumBuf, linkage, outerQualifier,
+                                            type.getArraySizes());
 
         flattenData.offsets[pos++] = mpos;
     }
@@ -2519,13 +2551,18 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
         TIntermTyped* subTree;
         const TType derefType(node->getType(), member);
-        if (split && derefType.isBuiltIn()) {
-            // copy from interstage IO built-in if needed
+        const TVariable* builtInVar = nullptr;
+        if ((flattened || split) && derefType.isBuiltIn()) {
             const TIntermTyped* outer = isLeft ? outerLeft : outerRight;
-            subTree = intermediate.addSymbol(
-                        *splitBuiltIns.find(HlslParseContext::tInterstageIoData(
-                                                derefType.getQualifier().builtIn,
-                                                outer->getType().getQualifier().storage))->second);
+            auto splitPair = splitBuiltIns.find(HlslParseContext::tInterstageIoData(
+                                                   derefType.getQualifier().builtIn,
+                                                   outer->getType().getQualifier().storage));
+            if (splitPair != splitBuiltIns.end())
+                builtInVar = splitPair->second;
+        }
+        if (builtInVar != nullptr) {
+            // copy from interstage IO built-in if needed
+            subTree = intermediate.addSymbol(*builtInVar);
 
             // Arrayness of builtIn symbols isn't handled by the normal recursion:
             // it's been extracted and moved to the built-in.

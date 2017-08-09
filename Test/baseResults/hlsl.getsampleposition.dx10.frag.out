@@ -273,7 +273,7 @@ gl_FragCoord origin is upper left
 0:13            Constant:
 0:13              0 (const int)
 0:13        move second child to first child ( temp float)
-0:?           'Depth' ( out float FragDepth)
+0:?           '@entryPointOutput_Depth' ( out float FragDepth)
 0:13          Depth: direct index for structure ( temp float)
 0:13            'flattenTemp' ( temp structure{ temp 4-component vector of float Color,  temp float Depth})
 0:13            Constant:
@@ -282,8 +282,8 @@ gl_FragCoord origin is upper left
 0:?     'g_sSamp' (layout( binding=0) uniform sampler)
 0:?     'g_tTex2dmsf4' ( uniform texture2DMS)
 0:?     'g_tTex2dmsf4a' ( uniform texture2DMSArray)
+0:?     '@entryPointOutput_Depth' ( out float FragDepth)
 0:?     'Color' (layout( location=0) out 4-component vector of float)
-0:?     'Depth' ( out float FragDepth)
 0:?     'sample' (layout( location=0) flat in int)
 
 
@@ -564,7 +564,7 @@ gl_FragCoord origin is upper left
 0:13            Constant:
 0:13              0 (const int)
 0:13        move second child to first child ( temp float)
-0:?           'Depth' ( out float FragDepth)
+0:?           '@entryPointOutput_Depth' ( out float FragDepth)
 0:13          Depth: direct index for structure ( temp float)
 0:13            'flattenTemp' ( temp structure{ temp 4-component vector of float Color,  temp float Depth})
 0:13            Constant:
@@ -573,8 +573,8 @@ gl_FragCoord origin is upper left
 0:?     'g_sSamp' (layout( binding=0) uniform sampler)
 0:?     'g_tTex2dmsf4' ( uniform texture2DMS)
 0:?     'g_tTex2dmsf4a' ( uniform texture2DMSArray)
+0:?     '@entryPointOutput_Depth' ( out float FragDepth)
 0:?     'Color' (layout( location=0) out 4-component vector of float)
-0:?     'Depth' ( out float FragDepth)
 0:?     'sample' (layout( location=0) flat in int)
 
 // Module Version 10000
@@ -615,14 +615,14 @@ gl_FragCoord origin is upper left
                               Name 206  "flattenTemp"
                               Name 207  "param"
                               Name 211  "Color"
-                              Name 215  "Depth"
+                              Name 215  "@entryPointOutput_Depth"
                               Name 220  "g_sSamp"
                               Decorate 23(g_tTex2dmsf4) DescriptorSet 0
                               Decorate 142(g_tTex2dmsf4a) DescriptorSet 0
                               Decorate 204(sample) Flat
                               Decorate 204(sample) Location 0
                               Decorate 211(Color) Location 0
-                              Decorate 215(Depth) BuiltIn FragDepth
+                              Decorate 215(@entryPointOutput_Depth) BuiltIn FragDepth
                               Decorate 220(g_sSamp) DescriptorSet 0
                               Decorate 220(g_sSamp) Binding 0
                2:             TypeVoid
@@ -723,7 +723,7 @@ gl_FragCoord origin is upper left
              210:             TypePointer Output 9(fvec4)
       211(Color):    210(ptr) Variable Output
              214:             TypePointer Output 8(float)
-      215(Depth):    214(ptr) Variable Output
+215(@entryPointOutput_Depth):    214(ptr) Variable Output
              218:             TypeSampler
              219:             TypePointer UniformConstant 218
     220(g_sSamp):    219(ptr) Variable UniformConstant
@@ -743,7 +743,7 @@ gl_FragCoord origin is upper left
                               Store 211(Color) 213
              216:    197(ptr) AccessChain 206(flattenTemp) 196
              217:    8(float) Load 216
-                              Store 215(Depth) 217
+                              Store 215(@entryPointOutput_Depth) 217
                               Return
                               FunctionEnd
    13(@main(i1;):10(PS_OUTPUT) Function None 11

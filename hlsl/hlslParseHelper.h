@@ -248,7 +248,8 @@ protected:
     bool shouldFlatten(const TType&) const;
     bool wasFlattened(const TIntermTyped* node) const;
     bool wasFlattened(int id) const { return flattenMap.find(id) != flattenMap.end(); }
-    int  addFlattenedMember(const TVariable&, const TType&, TFlattenData&, const TString& name, bool track);
+    int  addFlattenedMember(const TVariable&, const TType&, TFlattenData&, const TString& name, bool linkage,
+                            const TQualifier& outerQualifier, const TArraySizes* builtInArraySizes);
     bool isFinalFlattening(const TType& type) const { return !(type.isStruct() || type.isArray()); }
 
     // Structure splitting (splits interstage built-in types into its own struct)
@@ -264,9 +265,12 @@ protected:
     void fixBuiltInIoType(TType&);
 
     void flatten(const TVariable& variable, bool linkage);
-    int flatten(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage);
-    int flattenStruct(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage);
-    int flattenArray(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage);
+    int flatten(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage,
+                const TQualifier& outerQualifier, const TArraySizes* builtInArraySizes);
+    int flattenStruct(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage,
+                      const TQualifier& outerQualifier, const TArraySizes* builtInArraySizes);
+    int flattenArray(const TVariable& variable, const TType&, TFlattenData&, TString name, bool linkage,
+                     const TQualifier& outerQualifier);
 
     bool hasUniform(const TQualifier& qualifier) const;
     void clearUniform(TQualifier& qualifier);

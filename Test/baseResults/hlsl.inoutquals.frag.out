@@ -86,7 +86,7 @@ gl_FragCoord origin is upper left
 0:16            Constant:
 0:16              0 (const int)
 0:16        move second child to first child ( temp float)
-0:?           'Depth' ( out float FragDepth)
+0:?           '@entryPointOutput_Depth' ( out float FragDepth)
 0:16          Depth: direct index for structure ( temp float)
 0:16            'flattenTemp' ( temp structure{ temp 4-component vector of float Color,  temp float Depth})
 0:16            Constant:
@@ -95,8 +95,8 @@ gl_FragCoord origin is upper left
 0:?         'sampleMask' ( out int SampleMaskIn)
 0:?         'sampleMask' ( temp int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_Depth' ( out float FragDepth)
 0:?     'Color' (layout( location=0) out 4-component vector of float)
-0:?     'Depth' ( out float FragDepth)
 0:?     'inpos' ( noperspective in 4-component vector of float FragCoord)
 0:?     'sampleMask' ( out int SampleMaskIn)
 
@@ -191,7 +191,7 @@ gl_FragCoord origin is upper left
 0:16            Constant:
 0:16              0 (const int)
 0:16        move second child to first child ( temp float)
-0:?           'Depth' ( out float FragDepth)
+0:?           '@entryPointOutput_Depth' ( out float FragDepth)
 0:16          Depth: direct index for structure ( temp float)
 0:16            'flattenTemp' ( temp structure{ temp 4-component vector of float Color,  temp float Depth})
 0:16            Constant:
@@ -200,8 +200,8 @@ gl_FragCoord origin is upper left
 0:?         'sampleMask' ( out int SampleMaskIn)
 0:?         'sampleMask' ( temp int)
 0:?   Linker Objects
+0:?     '@entryPointOutput_Depth' ( out float FragDepth)
 0:?     'Color' (layout( location=0) out 4-component vector of float)
-0:?     'Depth' ( out float FragDepth)
 0:?     'inpos' ( noperspective in 4-component vector of float FragCoord)
 0:?     'sampleMask' ( out int SampleMaskIn)
 
@@ -243,12 +243,12 @@ gl_FragCoord origin is upper left
                               Name 72  "param"
                               Name 74  "param"
                               Name 78  "Color"
-                              Name 82  "Depth"
+                              Name 82  "@entryPointOutput_Depth"
                               Name 86  "sampleMask"
                               Decorate 68(inpos) NoPerspective
                               Decorate 68(inpos) BuiltIn FragCoord
                               Decorate 78(Color) Location 0
-                              Decorate 82(Depth) BuiltIn FragDepth
+                              Decorate 82(@entryPointOutput_Depth) BuiltIn FragDepth
                               Decorate 86(sampleMask) BuiltIn SampleMask
                2:             TypeVoid
                3:             TypeFunction 2
@@ -275,7 +275,7 @@ gl_FragCoord origin is upper left
               77:             TypePointer Output 15(fvec4)
        78(Color):     77(ptr) Variable Output
               81:             TypePointer Output 6(float)
-       82(Depth):     81(ptr) Variable Output
+82(@entryPointOutput_Depth):     81(ptr) Variable Output
               85:             TypePointer Output 17(int)
   86(sampleMask):     85(ptr) Variable Output
          4(main):           2 Function None 3
@@ -298,7 +298,7 @@ gl_FragCoord origin is upper left
                               Store 78(Color) 80
               83:      7(ptr) AccessChain 70(flattenTemp) 59
               84:    6(float) Load 83
-                              Store 82(Depth) 84
+                              Store 82(@entryPointOutput_Depth) 84
               87:     17(int) Load 71(sampleMask)
                               Store 86(sampleMask) 87
                               Return

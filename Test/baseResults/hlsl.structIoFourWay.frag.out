@@ -55,7 +55,7 @@ using depth_greater
 0:15            Constant:
 0:15              1 (const int)
 0:15        move second child to first child ( temp float)
-0:?           'd' ( out float FragDepth)
+0:?           '@entryPointOutput_d' ( out float FragDepth)
 0:15          d: direct index for structure ( temp float)
 0:15            'flattenTemp' ( temp structure{ temp float f,  temp float g,  temp float d,  temp 4-component vector of float normal})
 0:15            Constant:
@@ -69,9 +69,9 @@ using depth_greater
 0:?   Linker Objects
 0:?     'anon@0' (layout( row_major std140) uniform block{ uniform structure{layout( offset=68) temp float f,  temp float g,  temp float d,  temp 4-component vector of float normal} s})
 0:?     'anon@1' (layout( row_major std140) uniform block{layout( row_major std140 offset=88) uniform structure{layout( offset=68) temp float f,  temp float g,  temp float d,  temp 4-component vector of float normal} t})
+0:?     '@entryPointOutput_d' ( out float FragDepth)
 0:?     'f' (layout( location=0) out float)
 0:?     'g' (layout( location=1) out float)
-0:?     'd' ( out float FragDepth)
 0:?     'normal' (layout( location=2) out 4-component vector of float)
 0:?     'f' (layout( location=0) in float)
 0:?     'g' (layout( location=1) centroid in float)
@@ -138,7 +138,7 @@ using depth_greater
 0:15            Constant:
 0:15              1 (const int)
 0:15        move second child to first child ( temp float)
-0:?           'd' ( out float FragDepth)
+0:?           '@entryPointOutput_d' ( out float FragDepth)
 0:15          d: direct index for structure ( temp float)
 0:15            'flattenTemp' ( temp structure{ temp float f,  temp float g,  temp float d,  temp 4-component vector of float normal})
 0:15            Constant:
@@ -152,9 +152,9 @@ using depth_greater
 0:?   Linker Objects
 0:?     'anon@0' (layout( row_major std140) uniform block{ uniform structure{layout( offset=68) temp float f,  temp float g,  temp float d,  temp 4-component vector of float normal} s})
 0:?     'anon@1' (layout( row_major std140) uniform block{layout( row_major std140 offset=88) uniform structure{layout( offset=68) temp float f,  temp float g,  temp float d,  temp 4-component vector of float normal} t})
+0:?     '@entryPointOutput_d' ( out float FragDepth)
 0:?     'f' (layout( location=0) out float)
 0:?     'g' (layout( location=1) out float)
-0:?     'd' ( out float FragDepth)
 0:?     'normal' (layout( location=2) out 4-component vector of float)
 0:?     'f' (layout( location=0) in float)
 0:?     'g' (layout( location=1) centroid in float)
@@ -190,7 +190,7 @@ using depth_greater
                               Name 41  "param"
                               Name 45  "f"
                               Name 48  "g"
-                              Name 51  "d"
+                              Name 51  "@entryPointOutput_d"
                               Name 55  "normal"
                               Name 58  "T"
                               MemberName 58(T) 0  "f"
@@ -210,7 +210,7 @@ using depth_greater
                               Decorate 36(normal) Location 3
                               Decorate 45(f) Location 0
                               Decorate 48(g) Location 1
-                              Decorate 51(d) BuiltIn FragDepth
+                              Decorate 51(@entryPointOutput_d) BuiltIn FragDepth
                               Decorate 55(normal) Location 2
                               MemberDecorate 58(T) 0 Offset 68
                               MemberDecorate 58(T) 1 Offset 72
@@ -245,7 +245,7 @@ using depth_greater
               44:             TypePointer Output 6(float)
            45(f):     44(ptr) Variable Output
            48(g):     44(ptr) Variable Output
-           51(d):     44(ptr) Variable Output
+51(@entryPointOutput_d):     44(ptr) Variable Output
               54:             TypePointer Output 7(fvec4)
       55(normal):     54(ptr) Variable Output
            58(T):             TypeStruct 6(float) 6(float) 6(float) 7(fvec4)
@@ -284,7 +284,7 @@ using depth_greater
                               Store 48(g) 50
               52:     24(ptr) AccessChain 40(flattenTemp) 30
               53:    6(float) Load 52
-                              Store 51(d) 53
+                              Store 51(@entryPointOutput_d) 53
               56:     38(ptr) AccessChain 40(flattenTemp) 34
               57:    7(fvec4) Load 56
                               Store 55(normal) 57

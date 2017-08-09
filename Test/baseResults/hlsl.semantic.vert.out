@@ -40,7 +40,7 @@ Shader version: 500
 0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
 0:10            Constant:
 0:10              4 (const int)
-0:?           'ii' ( in int InstanceIndex)
+0:?           'ins_ii' ( in int InstanceIndex)
 0:10      Sequence
 0:10        move second child to first child ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
 0:10          'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
@@ -97,11 +97,11 @@ Shader version: 500
 0:10              4 (const int)
 0:?   Linker Objects
 0:?     '@entryPointOutput' (layout( location=0) out structure{ temp int ii})
+0:?     'ins_ii' ( in int InstanceIndex)
 0:?     'clip0' (layout( location=0) in float)
 0:?     'clip1' (layout( location=1) in float)
 0:?     'cull0' (layout( location=2) in float)
 0:?     'cull1' (layout( location=3) in float)
-0:?     'ii' ( in int InstanceIndex)
 0:?     '@entryPointOutput_clip1' ( out 2-element array of float ClipDistance)
 0:?     '@entryPointOutput_cull1' ( out 2-element array of float CullDistance)
 
@@ -150,7 +150,7 @@ Shader version: 500
 0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
 0:10            Constant:
 0:10              4 (const int)
-0:?           'ii' ( in int InstanceIndex)
+0:?           'ins_ii' ( in int InstanceIndex)
 0:10      Sequence
 0:10        move second child to first child ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
 0:10          'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
@@ -207,11 +207,11 @@ Shader version: 500
 0:10              4 (const int)
 0:?   Linker Objects
 0:?     '@entryPointOutput' (layout( location=0) out structure{ temp int ii})
+0:?     'ins_ii' ( in int InstanceIndex)
 0:?     'clip0' (layout( location=0) in float)
 0:?     'clip1' (layout( location=1) in float)
 0:?     'cull0' (layout( location=2) in float)
 0:?     'cull1' (layout( location=3) in float)
-0:?     'ii' ( in int InstanceIndex)
 0:?     '@entryPointOutput_clip1' ( out 2-element array of float ClipDistance)
 0:?     '@entryPointOutput_cull1' ( out 2-element array of float CullDistance)
 
@@ -241,7 +241,7 @@ Shader version: 500
                               Name 26  "clip1"
                               Name 30  "cull0"
                               Name 34  "cull1"
-                              Name 39  "ii"
+                              Name 39  "ins_ii"
                               Name 43  "flattenTemp"
                               Name 44  "param"
                               Name 51  "@entryPointOutput_clip1"
@@ -253,7 +253,7 @@ Shader version: 500
                               Decorate 26(clip1) Location 1
                               Decorate 30(cull0) Location 2
                               Decorate 34(cull1) Location 3
-                              Decorate 39(ii) BuiltIn InstanceIndex
+                              Decorate 39(ins_ii) BuiltIn InstanceIndex
                               Decorate 51(@entryPointOutput_clip1) BuiltIn ClipDistance
                               Decorate 59(@entryPointOutput_cull1) BuiltIn CullDistance
                               Decorate 68(@entryPointOutput) Location 0
@@ -276,7 +276,7 @@ Shader version: 500
        34(cull1):     20(ptr) Variable Input
               37:      7(int) Constant 4
               38:             TypePointer Input 7(int)
-          39(ii):     38(ptr) Variable Input
+      39(ins_ii):     38(ptr) Variable Input
               41:             TypePointer Function 7(int)
               47:             TypeInt 32 0
               48:     47(int) Constant 2
@@ -306,7 +306,7 @@ Shader version: 500
               35:    6(float) Load 34(cull1)
               36:     23(ptr) AccessChain 18(ins) 33
                               Store 36 35
-              40:      7(int) Load 39(ii)
+              40:      7(int) Load 39(ins_ii)
               42:     41(ptr) AccessChain 18(ins) 37
                               Store 42 40
               45:        8(S) Load 18(ins)
