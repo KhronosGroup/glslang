@@ -104,7 +104,7 @@ void TType::buildMangledName(TString& mangledName) const
         default: break; // some compilers want this
         }
 
-        switch (sampler.vectorSize) {
+        switch (sampler.getVectorSize()) {
         case 1: mangledName += "1"; break;
         case 2: mangledName += "2"; break;
         case 3: mangledName += "3"; break;

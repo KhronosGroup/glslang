@@ -70,6 +70,8 @@ enum TSamplerDim {
     EsdNumDims
 };
 
+class TType;
+
 struct TSampler {   // misnomer now; includes images, textures without sampler, and textures with sampler
     TBasicType type : 8;  // type returned by sampler
     TSamplerDim dim : 8;
@@ -80,7 +82,24 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
     bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
     bool   external : 1;  // GL_OES_EGL_image_external
-    unsigned int vectorSize : 3;  // return vector size.  TODO: support arbitrary types.
+    bool   isStruct : 1;  // true if the return type is a structure.  (it might be a struct of 1 member).
+
+    // Return the sampler return type in retType.
+    void getReturnType(TType& retType) const;
+
+    // Set texture return type.  Returns success (not all types are valid).
+    bool setReturnType(const TType& retType);
+
+    // Copy return type from another TSampler.
+    void copyReturnType(const TSampler& samp) {
+        vectorSize = samp.vectorSize;
+    }
+
+    // Obtain vector size.  Must be a vector return type.
+    unsigned getVectorSize() const {
+        assert(!isStructRet());
+        return getMemberComponents(0);
+    }
 
     bool isImage()       const { return image && dim != EsdSubpass; }
     bool isSubpass()     const { return dim == EsdSubpass; }
@@ -90,6 +109,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool isShadow()      const { return shadow; }
     bool isArrayed()     const { return arrayed; }
     bool isMultiSample() const { return ms; }
+    bool isStructRet()   const { return isStruct; }
 
     void clear()
     {
@@ -102,7 +122,11 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         combined = false;
         sampler = false;
         external = false;
-        vectorSize = 4;
+        isStruct = false;
+
+        // by default, returns a single vec4;
+        vectorSize = 0;
+        setMemberComponents(0, 4);
     }
 
     // make a combined sampler and texture
@@ -169,7 +193,8 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
            combined == right.combined &&
             sampler == right.sampler &&
            external == right.external &&
-         vectorSize == right.vectorSize;
+         vectorSize == right.vectorSize &&
+           isStruct == right.isStruct;
     }
 
     bool operator!=(const TSampler& right) const
@@ -225,12 +250,34 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
 
         return s;
     }
+
+protected:
+    // Some languages support structures of a common basic type, where the total vector size of all
+    // structure members must be <=4.  Storing a whole type here would be very heavy.  This bitfield
+    // encodes the sizes of up to 4 structure components of up to 4-components each.
+    static const unsigned bitsPerMember = 3;  // each member can be vector dimensions in [0..4]
+    static const unsigned maxMember = 4;      // sampler can return up to 4 vector members
+    static const unsigned memberMask = (1<<bitsPerMember) - 1;
+
+    unsigned int vectorSize : (bitsPerMember * maxMember);  // bitfield for vector member sizes
+
+    // Encapsulate getting members' vector sizes packed into the vectorSize bitfield.
+    unsigned int getMemberComponents(unsigned int member) const {
+        assert(member < maxMember);
+        return (vectorSize >> (member * bitsPerMember)) & memberMask;
+    }
+
+    // Encapsulate setting members' vector sizes packed into the vectorSize bitfield.
+    void setMemberComponents(unsigned int member, unsigned int size) {
+        assert(member < maxMember && size <= 4);
+        vectorSize &= ~(memberMask << (member * bitsPerMember));  // clear old bitfield
+        vectorSize |= (size << (member * bitsPerMember));         // insert new value
+    }
 };
 
 //
 // Need to have association of line numbers to types in a list for building structs.
 //
-class TType;
 struct TTypeLoc {
     TType* type;
     TSourceLoc loc;
@@ -1895,6 +1942,68 @@ protected:
     TString *typeName;          // for structure type name
     TSampler sampler;
 };
+
+// Obtain sampler return type in retType.  It is synthesized, not stored directly, to save space.
+// The definition must be here, after the TType definition is available.
+inline void TSampler::getReturnType(TType& retType) const
+{
+    if (isStructRet()) {
+        // struct return type
+        assert(0);
+    } else {
+        // vector return type
+        const TType resultType(type, EvqTemporary, getMemberComponents(0));
+        retType.shallowCopy(resultType);
+    }
+}
+
+// Set sampler return type.  It is stored encoded in a small bitfield, not directly, to save space.
+inline bool TSampler::setReturnType(const TType& retType)
+{
+    vectorSize = 0;
+
+    // cannot be these things.
+    if (retType.isArray() || retType.isOpaque())
+        return false;
+
+    if (retType.isStruct()) {
+        // structure type:
+        isStruct = true;
+
+        // We must have <= 4 total components, all of the same basic type.
+        unsigned totalComponents = 0;
+
+        const TTypeList* members = retType.getStruct();
+
+        if (members->size() > 4) // too many structure members;
+            return false;
+
+        for (unsigned m = 0; m < members->size(); ++m) {
+            // Check for bad member types
+            if (!(*members)[m].type->isScalar() && !(*members)[m].type->isVector())
+                return false;
+
+            const unsigned memberVectorSize = (*members)[m].type->getVectorSize();
+            totalComponents += memberVectorSize;
+
+            if (totalComponents > 4)  // too many total member components
+                return false;
+
+            // All members must be of a common basic type
+            if ((*members)[m].type->getBasicType() != (*members)[0].type->getBasicType())
+                return false;
+
+            setMemberComponents(m, memberVectorSize);
+        }
+    } else {
+        // non-structure type:
+        isStruct = false;
+        setMemberComponents(0, retType.getVectorSize());
+    }
+
+    return true;
+}
+
 
 } // end namespace glslang
 
