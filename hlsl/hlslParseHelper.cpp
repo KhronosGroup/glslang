@@ -1484,11 +1484,7 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
 
     // Alter or set array size as needed.
     if (requiredArraySize > 0) {
-        if (type.isArray()) {
-            // Already an array.  Fix the size.
-            type.changeOuterArraySize(requiredArraySize);
-        } else {
-            // it wasn't an array, but needs to be.
+        if (!type.isArray() || type.getOuterArraySize() != requiredArraySize) {
             TArraySizes arraySizes;
             arraySizes.addInnerSize(requiredArraySize);
             type.newArraySizes(arraySizes);
