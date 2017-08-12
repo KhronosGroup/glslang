@@ -1365,51 +1365,12 @@ public:
         return false;
     }
     virtual bool isOpaque() const { return basicType == EbtSampler || basicType == EbtAtomicUint; }
+    virtual bool isBuiltIn() const { return getQualifier().builtIn != EbvNone; }
 
     // "Image" is a superset of "Subpass"
     virtual bool isImage() const   { return basicType == EbtSampler && getSampler().isImage(); }
     virtual bool isSubpass() const { return basicType == EbtSampler && getSampler().isSubpass(); }
 
-    virtual bool isBuiltInInterstageIO(EShLanguage language) const
-    {
-        return isPerVertexAndBuiltIn(language) || isLooseAndBuiltIn(language);
-    }
-
-    // Return true if this is an interstage IO builtin
-    virtual bool isPerVertexAndBuiltIn(EShLanguage language) const
-    {
-        if (language == EShLangFragment)
-            return false;
-
-        // Any non-fragment stage
-        switch (getQualifier().builtIn) {
-        case EbvPosition:
-        case EbvPointSize:
-        case EbvClipDistance:
-        case EbvCullDistance:
-#ifdef NV_EXTENSIONS
-        case EbvLayer:
-        case EbvViewportMaskNV:
-        case EbvSecondaryPositionNV:
-        case EbvSecondaryViewportMaskNV:
-        case EbvPositionPerViewNV:
-        case EbvViewportMaskPerViewNV:
-#endif
-            return true;
-        default:
-            return false;
-        }
-    }
-
-    // Return true if this is a loose builtin
-    virtual bool isLooseAndBuiltIn(EShLanguage language) const
-    {
-        if (getQualifier().builtIn == EbvNone)
-            return false;
-
-        return !isPerVertexAndBuiltIn(language);
-    }
-    
     // return true if this type contains any subtype which satisfies the given predicate.
     template <typename P> 
     bool contains(P predicate) const
@@ -1451,10 +1412,10 @@ public:
         return contains([](const TType* t) { return t->isOpaque(); } );
     }
 
-    // Recursively checks if the type contains an interstage IO builtin
-    virtual bool containsBuiltInInterstageIO(EShLanguage language) const
+    // Recursively checks if the type contains a built-in variable
+    virtual bool containsBuiltIn() const
     {
-        return contains([language](const TType* t) { return t->isBuiltInInterstageIO(language); } );
+        return contains([](const TType* t) { return t->isBuiltIn(); } );
     }
 
     virtual bool containsNonOpaque() const
