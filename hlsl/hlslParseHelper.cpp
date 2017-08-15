@@ -1270,16 +1270,16 @@ int HlslParseContext::addFlattenedMember(const TVariable& variable, const TType&
         if (flattenData.nextBinding != TQualifier::layoutBindingEnd)
             memberVariable->getWritableType().getQualifier().layoutBinding = flattenData.nextBinding++;
 
-        if (!memberVariable->getType().isBuiltIn()) {
+        if (memberVariable->getType().isBuiltIn()) {
+            // inherited locations are nonsensical for built-ins (TODO: what if semantic had a number)
+            memberVariable->getWritableType().getQualifier().layoutLocation = TQualifier::layoutLocationEnd;
+        } else {
             // inherited locations must be auto bumped, not replicated
             if (flattenData.nextLocation != TQualifier::layoutLocationEnd) {
                 memberVariable->getWritableType().getQualifier().layoutLocation = flattenData.nextLocation;
                 flattenData.nextLocation += intermediate.computeTypeLocationSize(memberVariable->getType());
                 nextOutLocation = std::max(nextOutLocation, flattenData.nextLocation);
             }
-        } else {
-            // inherited locations are nonsensical for built-ins
-            memberVariable->getWritableType().getQualifier().layoutLocation = TQualifier::layoutLocationEnd;
         }
 
         flattenData.offsets.push_back(static_cast<int>(flattenData.members.size()));
@@ -1484,11 +1484,7 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
 
     // Alter or set array size as needed.
     if (requiredArraySize > 0) {
-        if (type.isArray()) {
-            // Already an array.  Fix the size.
-            type.changeOuterArraySize(requiredArraySize);
-        } else {
-            // it wasn't an array, but needs to be.
+        if (!type.isArray() || type.getOuterArraySize() != requiredArraySize) {
             TArraySizes arraySizes;
             arraySizes.addInnerSize(requiredArraySize);
             type.newArraySizes(arraySizes);
@@ -1916,19 +1912,15 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     // Further this return/in/out transform by flattening, splitting, and assigning locations
     const auto makeVariableInOut = [&](TVariable& variable) {
         if (variable.getType().isStruct()) {
-            const TStorageQualifier qualifier = variable.getType().getQualifier().storage;
-            // struct inputs to the vertex stage and outputs from the fragment stage must be flattened
-            if ((language == EShLangVertex   && qualifier == EvqVaryingIn) ||
-                (language == EShLangFragment && qualifier == EvqVaryingOut))
+            if (variable.getType().getQualifier().isArrayedIo(language)) {
+                if (variable.getType().containsBuiltIn())
+                    split(variable);
+            } else
                 flatten(variable, false /* don't track linkage here, it will be tracked in assignToInterface() */);
-            // Structs containing built-ins must be split
-            else if (variable.getType().containsBuiltIn())
-                split(variable);
-            else if (!variable.getType().getQualifier().isArrayedIo(language))
-                flatten(variable, false);
-            //else
-                // TODO: unify split and flatten, so all paths can create flattened I/O
         }
+        // TODO: flatten arrays too
+        // TODO: flatten everything in I/O
+        // TODO: replace all split with flatten, make all paths can create flattened I/O, then split code can be removed
 
         // For clip and cull distance, multiple output variables potentially get merged
         // into one in assignClipCullDistance.  That code in assignClipCullDistance
@@ -8698,6 +8690,7 @@ void HlslParseContext::correctInput(TQualifier& qualifier)
         qualifier.sample = false;
     }
 
+    // TODO: handle clip/cull on the input side; this doesn't work, see overwrite of .layoutLocation later
     if (isClipOrCullDistance(qualifier))
         qualifier.layoutLocation = TQualifier::layoutLocationEnd;
 
