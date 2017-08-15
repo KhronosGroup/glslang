@@ -2416,17 +2416,23 @@ TIntermAggregate* HlslParseContext::assignClipCullDistance(const TSourceLoc& loc
 // and possibly contains opaque values, such that the initializer should never exist
 // as emitted code, because even creating the initializer would write opaques.
 //
-// Decompose this into individual member-wise assignments, which themselves are
-// expected to then not exist for opaque types, because they will turn into aliases.
+// If possible, decompose this into individual member-wise assignments, which themselves
+// are expected to then not exist for opaque types, because they will turn into aliases.
 //
 // Return a node that contains the non-aliased assignments that must continue to exist.
-TIntermAggregate* HlslParseContext::executeFlattenedInitializer(const TSourceLoc& loc, TIntermSymbol* symbol,
-                                                                const TIntermAggregate& initializer)
+TIntermTyped* HlslParseContext::executeFlattenedInitializer(const TSourceLoc& loc, TIntermSymbol* symbol,
+                                                            TIntermAggregate& initializer)
 {
+    // We need individual RHS initializers per member to do this
+    const TTypeList* typeList = symbol->getType().getStruct();
+    if (typeList == nullptr || initializer.getSequence().size() != typeList->size()) {
+        warn(loc, "cannot do member-wise aliasing for opaque members with this initializer", "=", "");
+        return handleAssign(loc, EOpAssign, symbol, &initializer);
+    }
+
     TIntermAggregate* initList = nullptr;
     // synthesize an access to each member, and then an assignment to it
-    const TTypeList& typeList = *symbol->getType().getStruct();
-    for (int member = 0; member < (int)typeList.size(); ++member) {
+    for (int member = 0; member < (int)typeList->size(); ++member) {
         TIntermTyped* memberInitializer = initializer.getSequence()[member]->getAsTyped();
         TIntermTyped* flattenedMember = flattenAccess(symbol, member);
         if (flattenedMember->getType().containsOpaque())
