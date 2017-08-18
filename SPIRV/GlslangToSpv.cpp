@@ -2465,6 +2465,10 @@ bool TGlslangToSpvTraverser::filterMember(const glslang::TType& member)
     if (member.getFieldName() == "gl_ViewportMaskPerViewNV" &&
         extensions.find("GL_NVX_multiview_per_view_attributes") == extensions.end())
         return true;
+    if ((member.getFieldName() == "gl_ViewportIndex" || member.getFieldName() == "gl_Layer") &&
+        extensions.find(glslang::E_GL_ARB_shader_viewport_layer_array) == extensions.end() &&
+        extensions.find(glslang::E_GL_NV_viewport_array2) == extensions.end())
+        return true;
 
     return false;
 };
