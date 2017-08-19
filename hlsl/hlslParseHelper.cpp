@@ -2239,7 +2239,7 @@ TIntermNode* HlslParseContext::handleReturnValue(const TSourceLoc& loc, TIntermT
         value = intermediate.addConversion(EOpReturn, *currentFunctionType, value);
         if (value && *currentFunctionType != value->getType())
             value = intermediate.addUniShapeConversion(EOpReturn, *currentFunctionType, value);
-        if (value == nullptr) {
+        if (value == nullptr || *currentFunctionType != value->getType()) {
             error(loc, "type does not match, or is not convertible to, the function's return type", "return", "");
             return value;
         }
