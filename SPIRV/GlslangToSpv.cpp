@@ -2467,7 +2467,7 @@ bool TGlslangToSpvTraverser::filterMember(const glslang::TType& member)
         return true;
     if ((member.getFieldName() == "gl_ViewportIndex" || member.getFieldName() == "gl_Layer") &&
         extensions.find(glslang::E_GL_ARB_shader_viewport_layer_array) == extensions.end() &&
-        extensions.find(glslang::E_GL_NV_viewport_array2) == extensions.end())
+        extensions.find("GL_NV_viewport_array2") == extensions.end())
         return true;
 
     return false;
