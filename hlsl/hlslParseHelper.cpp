@@ -911,8 +911,20 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
     return result;
 }
 
-void HlslParseContext::checkIndex(const TSourceLoc& /*loc*/, const TType& /*type*/, int& /*index*/)
+void HlslParseContext::checkIndex(const TSourceLoc& loc, const TType& type, int& index)
 {
+    bool out = false;
+    if (type.isArray()) {
+        if (type.isExplicitlySizedArray() && index >= type.getOuterArraySize())
+            out = true;
+    } else if (type.isVector()) {
+        if (index >= type.getVectorSize())
+            out = true;
+    }
+
+    if (out)
+        error(loc, " index out of bounds ", "[]", "");
+
     // HLSL todo: any rules for index fixups?
 }
 
