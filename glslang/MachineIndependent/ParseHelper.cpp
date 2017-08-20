@@ -5474,7 +5474,7 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
 
     bool singleArg;
     if (aggrNode) {
-        if (aggrNode->getOp() != EOpNull || aggrNode->getSequence().size() == 1)
+        if (aggrNode->getOp() != EOpNull)
             singleArg = true;
         else
             singleArg = false;
