@@ -7750,7 +7750,7 @@ TIntermTyped* HlslParseContext::addConstructor(const TSourceLoc& loc, TIntermTyp
     bool singleArg;
     TIntermAggregate* aggrNode = node->getAsAggregate();
     if (aggrNode != nullptr) {
-        if (aggrNode->getOp() != EOpNull || aggrNode->getSequence().size() == 1)
+        if (aggrNode->getOp() != EOpNull)
             singleArg = true;
         else
             singleArg = false;
