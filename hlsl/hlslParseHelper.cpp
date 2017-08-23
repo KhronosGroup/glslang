@@ -6354,6 +6354,7 @@ void HlslParseContext::paramFix(TType& type)
         type.getQualifier().storage = EvqConstReadOnly;
         break;
     case EvqGlobal:
+    case EvqUniform:
     case EvqTemporary:
         type.getQualifier().storage = EvqIn;
         break;
