@@ -28,13 +28,13 @@ Shader version: 500
 0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
 0:10            Constant:
 0:10              2 (const int)
-0:?           'ins.cull0' (layout( location=2) in float)
+0:?           'ins.cull0' (layout( location=0) in float)
 0:10        move second child to first child ( temp float)
 0:10          cull1: direct index for structure ( temp float)
 0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
 0:10            Constant:
 0:10              3 (const int)
-0:?           'ins.cull1' (layout( location=3) in float)
+0:?           'ins.cull1' (layout( location=1) in float)
 0:10        move second child to first child ( temp int)
 0:10          ii: direct index for structure ( temp int)
 0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
@@ -97,8 +97,8 @@ Shader version: 500
 0:?     'ins.ii' ( in int InstanceIndex)
 0:?     'ins.clip0' (layout( location=0) in float)
 0:?     'ins.clip1' (layout( location=1) in float)
-0:?     'ins.cull0' (layout( location=2) in float)
-0:?     'ins.cull1' (layout( location=3) in float)
+0:?     'ins.cull0' (layout( location=0) in float)
+0:?     'ins.cull1' (layout( location=1) in float)
 0:?     '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance)
 0:?     '@entryPointOutput.cull1' ( out 2-element array of float CullDistance)
 
@@ -135,13 +135,13 @@ Shader version: 500
 0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
 0:10            Constant:
 0:10              2 (const int)
-0:?           'ins.cull0' (layout( location=2) in float)
+0:?           'ins.cull0' (layout( location=0) in float)
 0:10        move second child to first child ( temp float)
 0:10          cull1: direct index for structure ( temp float)
 0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
 0:10            Constant:
 0:10              3 (const int)
-0:?           'ins.cull1' (layout( location=3) in float)
+0:?           'ins.cull1' (layout( location=1) in float)
 0:10        move second child to first child ( temp int)
 0:10          ii: direct index for structure ( temp int)
 0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
@@ -204,8 +204,8 @@ Shader version: 500
 0:?     'ins.ii' ( in int InstanceIndex)
 0:?     'ins.clip0' (layout( location=0) in float)
 0:?     'ins.clip1' (layout( location=1) in float)
-0:?     'ins.cull0' (layout( location=2) in float)
-0:?     'ins.cull1' (layout( location=3) in float)
+0:?     'ins.cull0' (layout( location=0) in float)
+0:?     'ins.cull1' (layout( location=1) in float)
 0:?     '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance)
 0:?     '@entryPointOutput.cull1' ( out 2-element array of float CullDistance)
 
@@ -243,8 +243,8 @@ Shader version: 500
                               Name 67  "@entryPointOutput.ii"
                               Decorate 21(ins.clip0) Location 0
                               Decorate 26(ins.clip1) Location 1
-                              Decorate 30(ins.cull0) Location 2
-                              Decorate 34(ins.cull1) Location 3
+                              Decorate 30(ins.cull0) Location 0
+                              Decorate 34(ins.cull1) Location 1
                               Decorate 39(ins.ii) BuiltIn InstanceIndex
                               Decorate 51(@entryPointOutput.clip1) BuiltIn ClipDistance
                               Decorate 59(@entryPointOutput.cull1) BuiltIn CullDistance
