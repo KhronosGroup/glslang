@@ -47,16 +47,16 @@ ERROR: node is still EOpNull!
 0:19        Function Call: fun4(u1;u1; ( temp 4-component vector of float)
 0:19          'entityId' ( temp uint)
 0:19          'entityId' ( temp uint)
-0:23  Function Definition: @main( ( temp int)
+0:23  Function Definition: @main( ( temp int : SV_TARGET)
 0:23    Function Parameters: 
 0:23  Function Definition: main( ( temp void)
 0:23    Function Parameters: 
 0:?     Sequence
 0:23      move second child to first child ( temp int)
-0:?         '@entryPointOutput' (layout( location=0) out int)
-0:23        Function Call: @main( ( temp int)
+0:?         '@entryPointOutput' (layout( location=0) out int : SV_TARGET)
+0:23        Function Call: @main( ( temp int : SV_TARGET)
 0:?   Linker Objects
-0:?     '@entryPointOutput' (layout( location=0) out int)
+0:?     '@entryPointOutput' (layout( location=0) out int : SV_TARGET)
 
 
 Linked fragment stage:
@@ -105,15 +105,15 @@ ERROR: node is still EOpNull!
 0:19        Function Call: fun4(u1;u1; ( temp 4-component vector of float)
 0:19          'entityId' ( temp uint)
 0:19          'entityId' ( temp uint)
-0:23  Function Definition: @main( ( temp int)
+0:23  Function Definition: @main( ( temp int : SV_TARGET)
 0:23    Function Parameters: 
 0:23  Function Definition: main( ( temp void)
 0:23    Function Parameters: 
 0:?     Sequence
 0:23      move second child to first child ( temp int)
-0:?         '@entryPointOutput' (layout( location=0) out int)
-0:23        Function Call: @main( ( temp int)
+0:?         '@entryPointOutput' (layout( location=0) out int : SV_TARGET)
+0:23        Function Call: @main( ( temp int : SV_TARGET)
 0:?   Linker Objects
-0:?     '@entryPointOutput' (layout( location=0) out int)
+0:?     '@entryPointOutput' (layout( location=0) out int : SV_TARGET)
 
 SPIR-V is not generated for failed compile or link

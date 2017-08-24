@@ -2,19 +2,19 @@ hlsl.synthesizeInput.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:7  Function Definition: @main(struct-PSInput-f1-u11; ( temp 4-component vector of float)
+0:7  Function Definition: @main(struct-PSInput-f1-u11; ( temp 4-component vector of float : SV_TARGET)
 0:7    Function Parameters: 
-0:7      'input' ( in structure{ temp float interp,  temp uint no_interp})
+0:7      'input' ( in structure{ temp float interp,  temp uint no_interp} : INPUT)
 0:?     Sequence
 0:8      Branch: Return with expression
 0:?         Construct vec4 ( temp 4-component vector of float)
 0:8          Convert uint to float ( temp float)
 0:8            no_interp: direct index for structure ( temp uint)
-0:8              'input' ( in structure{ temp float interp,  temp uint no_interp})
+0:8              'input' ( in structure{ temp float interp,  temp uint no_interp} : INPUT)
 0:8              Constant:
 0:8                1 (const int)
 0:8          interp: direct index for structure ( temp float)
-0:8            'input' ( in structure{ temp float interp,  temp uint no_interp})
+0:8            'input' ( in structure{ temp float interp,  temp uint no_interp} : INPUT)
 0:8            Constant:
 0:8              0 (const int)
 0:8          Constant:
@@ -38,11 +38,11 @@ gl_FragCoord origin is upper left
 0:7              1 (const int)
 0:?           'input.no_interp' (layout( location=1) flat in uint)
 0:7      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:7        Function Call: @main(struct-PSInput-f1-u11; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET)
+0:7        Function Call: @main(struct-PSInput-f1-u11; ( temp 4-component vector of float : SV_TARGET)
 0:?           'input' ( temp structure{ temp float interp,  temp uint no_interp})
 0:?   Linker Objects
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET)
 0:?     'input.interp' (layout( location=0) in float)
 0:?     'input.no_interp' (layout( location=1) flat in uint)
 
@@ -53,19 +53,19 @@ Linked fragment stage:
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:7  Function Definition: @main(struct-PSInput-f1-u11; ( temp 4-component vector of float)
+0:7  Function Definition: @main(struct-PSInput-f1-u11; ( temp 4-component vector of float : SV_TARGET)
 0:7    Function Parameters: 
-0:7      'input' ( in structure{ temp float interp,  temp uint no_interp})
+0:7      'input' ( in structure{ temp float interp,  temp uint no_interp} : INPUT)
 0:?     Sequence
 0:8      Branch: Return with expression
 0:?         Construct vec4 ( temp 4-component vector of float)
 0:8          Convert uint to float ( temp float)
 0:8            no_interp: direct index for structure ( temp uint)
-0:8              'input' ( in structure{ temp float interp,  temp uint no_interp})
+0:8              'input' ( in structure{ temp float interp,  temp uint no_interp} : INPUT)
 0:8              Constant:
 0:8                1 (const int)
 0:8          interp: direct index for structure ( temp float)
-0:8            'input' ( in structure{ temp float interp,  temp uint no_interp})
+0:8            'input' ( in structure{ temp float interp,  temp uint no_interp} : INPUT)
 0:8            Constant:
 0:8              0 (const int)
 0:8          Constant:
@@ -89,11 +89,11 @@ gl_FragCoord origin is upper left
 0:7              1 (const int)
 0:?           'input.no_interp' (layout( location=1) flat in uint)
 0:7      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:7        Function Call: @main(struct-PSInput-f1-u11; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET)
+0:7        Function Call: @main(struct-PSInput-f1-u11; ( temp 4-component vector of float : SV_TARGET)
 0:?           'input' ( temp structure{ temp float interp,  temp uint no_interp})
 0:?   Linker Objects
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET)
 0:?     'input.interp' (layout( location=0) in float)
 0:?     'input.no_interp' (layout( location=1) flat in uint)
 

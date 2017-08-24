@@ -30,7 +30,7 @@ gl_FragCoord origin is upper left
 0:6          Constant:
 0:6            1 (const uint)
 0:6        'si' ( in int)
-0:9  Function Definition: type1::memFun(vf4; ( temp 4-component vector of float)
+0:9  Function Definition: type1::memFun(vf4; ( temp 4-component vector of float : SV_POSITION)
 0:9    Function Parameters: 
 0:9      '@this' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:9      'a' ( in 4-component vector of float)
@@ -48,7 +48,7 @@ gl_FragCoord origin is upper left
 0:10            '@this' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:10            Constant:
 0:10              0 (const uint)
-0:13  Function Definition: type1::memFun(i1; ( temp int)
+0:13  Function Definition: type1::memFun(i1; ( temp int : SV_POSITION)
 0:13    Function Parameters: 
 0:13      '@this' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:13      'a' ( in int)
@@ -80,7 +80,7 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:23      Branch: Return with expression
 0:23        'i' ( global 2-component vector of float)
-0:27  Function Definition: @main( ( temp 4-component vector of float)
+0:27  Function Definition: @main( ( temp 4-component vector of float : SV_TARGET0)
 0:27    Function Parameters: 
 0:?     Sequence
 0:29      Function Call: type1::setmem(vf4; ( temp void)
@@ -104,7 +104,7 @@ gl_FragCoord origin is upper left
 0:?             1.000000
 0:32      add second child into first child ( temp 4-component vector of float)
 0:32        'f4' ( temp 4-component vector of float)
-0:32        Function Call: type1::memFun(vf4; ( temp 4-component vector of float)
+0:32        Function Call: type1::memFun(vf4; ( temp 4-component vector of float : SV_POSITION)
 0:32          'test' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:?           Constant:
 0:?             5.000000
@@ -114,7 +114,7 @@ gl_FragCoord origin is upper left
 0:33      add second child into first child ( temp 4-component vector of float)
 0:33        'f4' ( temp 4-component vector of float)
 0:33        Convert int to float ( temp float)
-0:33          Function Call: type1::memFun(i1; ( temp int)
+0:33          Function Call: type1::memFun(i1; ( temp int : SV_POSITION)
 0:33            'test' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:33            Constant:
 0:33              7 (const int)
@@ -124,12 +124,12 @@ gl_FragCoord origin is upper left
 0:27    Function Parameters: 
 0:?     Sequence
 0:27      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:27        Function Call: @main( ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:27        Function Call: @main( ( temp 4-component vector of float : SV_TARGET0)
 0:?   Linker Objects
 0:?     'i' ( global 2-component vector of float)
 0:?     'j' ( global 2-component vector of float)
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
 
 
 Linked fragment stage:
@@ -166,7 +166,7 @@ gl_FragCoord origin is upper left
 0:6          Constant:
 0:6            1 (const uint)
 0:6        'si' ( in int)
-0:9  Function Definition: type1::memFun(vf4; ( temp 4-component vector of float)
+0:9  Function Definition: type1::memFun(vf4; ( temp 4-component vector of float : SV_POSITION)
 0:9    Function Parameters: 
 0:9      '@this' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:9      'a' ( in 4-component vector of float)
@@ -184,7 +184,7 @@ gl_FragCoord origin is upper left
 0:10            '@this' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:10            Constant:
 0:10              0 (const uint)
-0:13  Function Definition: type1::memFun(i1; ( temp int)
+0:13  Function Definition: type1::memFun(i1; ( temp int : SV_POSITION)
 0:13    Function Parameters: 
 0:13      '@this' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:13      'a' ( in int)
@@ -216,7 +216,7 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:23      Branch: Return with expression
 0:23        'i' ( global 2-component vector of float)
-0:27  Function Definition: @main( ( temp 4-component vector of float)
+0:27  Function Definition: @main( ( temp 4-component vector of float : SV_TARGET0)
 0:27    Function Parameters: 
 0:?     Sequence
 0:29      Function Call: type1::setmem(vf4; ( temp void)
@@ -240,7 +240,7 @@ gl_FragCoord origin is upper left
 0:?             1.000000
 0:32      add second child into first child ( temp 4-component vector of float)
 0:32        'f4' ( temp 4-component vector of float)
-0:32        Function Call: type1::memFun(vf4; ( temp 4-component vector of float)
+0:32        Function Call: type1::memFun(vf4; ( temp 4-component vector of float : SV_POSITION)
 0:32          'test' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:?           Constant:
 0:?             5.000000
@@ -250,7 +250,7 @@ gl_FragCoord origin is upper left
 0:33      add second child into first child ( temp 4-component vector of float)
 0:33        'f4' ( temp 4-component vector of float)
 0:33        Convert int to float ( temp float)
-0:33          Function Call: type1::memFun(i1; ( temp int)
+0:33          Function Call: type1::memFun(i1; ( temp int : SV_POSITION)
 0:33            'test' ( temp structure{ temp 4-component vector of float memVar,  temp int i})
 0:33            Constant:
 0:33              7 (const int)
@@ -260,12 +260,12 @@ gl_FragCoord origin is upper left
 0:27    Function Parameters: 
 0:?     Sequence
 0:27      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:27        Function Call: @main( ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:27        Function Call: @main( ( temp 4-component vector of float : SV_TARGET0)
 0:?   Linker Objects
 0:?     'i' ( global 2-component vector of float)
 0:?     'j' ( global 2-component vector of float)
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
 
 // Module Version 10000
 // Generated by (magic number): 80001

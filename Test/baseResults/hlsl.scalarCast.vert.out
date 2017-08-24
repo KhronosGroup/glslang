@@ -1,7 +1,7 @@
 hlsl.scalarCast.vert
 Shader version: 500
 0:? Sequence
-0:5  Function Definition: r0( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:5  Function Definition: r0( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:5    Function Parameters: 
 0:?     Sequence
 0:7      Branch: Return with expression
@@ -12,7 +12,7 @@ Shader version: 500
 0:7          2.000000
 0:7          2.000000
 0:7          2.000000
-0:9  Function Definition: r1( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:9  Function Definition: r1( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:9    Function Parameters: 
 0:?     Sequence
 0:11      Branch: Return with expression
@@ -23,7 +23,7 @@ Shader version: 500
 0:11          3.000000
 0:11          3.000000
 0:11          3.000000
-0:13  Function Definition: r2( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:13  Function Definition: r2( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:13    Function Parameters: 
 0:?     Sequence
 0:15      Branch: Return with expression
@@ -34,7 +34,7 @@ Shader version: 500
 0:15          0.909297
 0:15          0.909297
 0:15          0.909297
-0:17  Function Definition: r3( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:17  Function Definition: r3( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:17    Function Parameters: 
 0:?     Sequence
 0:18      Sequence
@@ -43,16 +43,16 @@ Shader version: 500
 0:18          Constant:
 0:18            2.000000
 0:19      Branch: Return with expression
-0:19        Construct structure ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:19          Construct vec4 ( temp 4-component vector of float)
+0:19        Construct structure ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:19          Construct vec4 ( temp 4-component vector of float : SV_POSITION)
 0:19            'f' ( temp float)
 0:19            'f' ( temp float)
 0:19            'f' ( temp float)
 0:19            'f' ( temp float)
-0:19          Construct vec2 ( temp 2-component vector of float)
+0:19          Construct vec2 ( temp 2-component vector of float : TEXCOORD)
 0:19            'f' ( temp float)
 0:19            'f' ( temp float)
-0:21  Function Definition: r4( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:21  Function Definition: r4( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:21    Function Parameters: 
 0:?     Sequence
 0:22      Sequence
@@ -61,23 +61,23 @@ Shader version: 500
 0:22          Constant:
 0:22            2.000000
 0:23      Branch: Return with expression
-0:23        Comma ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:23        Comma ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:23          move second child to first child ( temp float)
 0:23            'scalarCopy' ( temp float)
 0:23            add ( temp float)
 0:23              'f' ( temp float)
 0:23              Constant:
 0:23                1.000000
-0:23          Construct structure ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:23            Construct vec4 ( temp 4-component vector of float)
+0:23          Construct structure ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:23            Construct vec4 ( temp 4-component vector of float : SV_POSITION)
 0:23              'scalarCopy' ( temp float)
 0:23              'scalarCopy' ( temp float)
 0:23              'scalarCopy' ( temp float)
 0:23              'scalarCopy' ( temp float)
-0:23            Construct vec2 ( temp 2-component vector of float)
+0:23            Construct vec2 ( temp 2-component vector of float : TEXCOORD)
 0:23              'scalarCopy' ( temp float)
 0:23              'scalarCopy' ( temp float)
-0:25  Function Definition: r5( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:25  Function Definition: r5( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:25    Function Parameters: 
 0:?     Sequence
 0:26      Sequence
@@ -86,47 +86,47 @@ Shader version: 500
 0:26          Constant:
 0:26            2.000000
 0:27      Branch: Return with expression
-0:27        Comma ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:27        Comma ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:27          move second child to first child ( temp float)
 0:27            'scalarCopy' ( temp float)
 0:27            sine ( temp float)
 0:27              'f' ( temp float)
-0:27          Construct structure ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:27            Construct vec4 ( temp 4-component vector of float)
+0:27          Construct structure ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:27            Construct vec4 ( temp 4-component vector of float : SV_POSITION)
 0:27              'scalarCopy' ( temp float)
 0:27              'scalarCopy' ( temp float)
 0:27              'scalarCopy' ( temp float)
 0:27              'scalarCopy' ( temp float)
-0:27            Construct vec2 ( temp 2-component vector of float)
+0:27            Construct vec2 ( temp 2-component vector of float : TEXCOORD)
 0:27              'scalarCopy' ( temp float)
 0:27              'scalarCopy' ( temp float)
-0:29  Function Definition: @main( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:29  Function Definition: @main( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:29    Function Parameters: 
 0:?     Sequence
 0:30      Sequence
-0:30        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:30          'v0' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:30          Function Call: r0( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:30        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:30          'v0' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:30          Function Call: r0( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:31      Sequence
-0:31        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:31          'v1' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:31          Function Call: r1( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:31        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:31          'v1' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:31          Function Call: r1( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:32      Sequence
-0:32        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:32          'v2' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:32          Function Call: r2( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:32        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:32          'v2' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:32          Function Call: r2( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:33      Sequence
-0:33        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:33          'v3' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:33          Function Call: r3( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:33        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:33          'v3' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:33          Function Call: r3( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:34      Sequence
-0:34        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:34          'v4' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:34          Function Call: r4( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:34        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:34          'v4' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:34          Function Call: r4( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:35      Sequence
-0:35        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:35          'v5' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:35          Function Call: r5( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:35        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:35          'v5' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:35          Function Call: r5( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:36      Branch: Return with expression
 0:36        Constant:
 0:36          1.000000
@@ -139,24 +139,24 @@ Shader version: 500
 0:29    Function Parameters: 
 0:?     Sequence
 0:29      Sequence
-0:29        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:29          'flattenTemp' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:29          Function Call: @main( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:29        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:29          'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:29          Function Call: @main( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:29        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.position' ( out 4-component vector of float Position)
-0:29          position: direct index for structure ( temp 4-component vector of float)
-0:29            'flattenTemp' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:?           '@entryPointOutput.position' ( out 4-component vector of float Position : SV_POSITION)
+0:29          position: direct index for structure ( temp 4-component vector of float : SV_POSITION)
+0:29            'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:29            Constant:
 0:29              0 (const int)
 0:29        move second child to first child ( temp 2-component vector of float)
-0:?           '@entryPointOutput.texCoord' (layout( location=0) out 2-component vector of float)
-0:29          texCoord: direct index for structure ( temp 2-component vector of float)
-0:29            'flattenTemp' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:?           '@entryPointOutput.texCoord' (layout( location=0) out 2-component vector of float : TEXCOORD)
+0:29          texCoord: direct index for structure ( temp 2-component vector of float : TEXCOORD)
+0:29            'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:29            Constant:
 0:29              1 (const int)
 0:?   Linker Objects
-0:?     '@entryPointOutput.position' ( out 4-component vector of float Position)
-0:?     '@entryPointOutput.texCoord' (layout( location=0) out 2-component vector of float)
+0:?     '@entryPointOutput.position' ( out 4-component vector of float Position : SV_POSITION)
+0:?     '@entryPointOutput.texCoord' (layout( location=0) out 2-component vector of float : TEXCOORD)
 
 
 Linked vertex stage:
@@ -164,7 +164,7 @@ Linked vertex stage:
 
 Shader version: 500
 0:? Sequence
-0:5  Function Definition: r0( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:5  Function Definition: r0( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:5    Function Parameters: 
 0:?     Sequence
 0:7      Branch: Return with expression
@@ -175,7 +175,7 @@ Shader version: 500
 0:7          2.000000
 0:7          2.000000
 0:7          2.000000
-0:9  Function Definition: r1( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:9  Function Definition: r1( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:9    Function Parameters: 
 0:?     Sequence
 0:11      Branch: Return with expression
@@ -186,7 +186,7 @@ Shader version: 500
 0:11          3.000000
 0:11          3.000000
 0:11          3.000000
-0:13  Function Definition: r2( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:13  Function Definition: r2( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:13    Function Parameters: 
 0:?     Sequence
 0:15      Branch: Return with expression
@@ -197,7 +197,7 @@ Shader version: 500
 0:15          0.909297
 0:15          0.909297
 0:15          0.909297
-0:17  Function Definition: r3( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:17  Function Definition: r3( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:17    Function Parameters: 
 0:?     Sequence
 0:18      Sequence
@@ -206,16 +206,16 @@ Shader version: 500
 0:18          Constant:
 0:18            2.000000
 0:19      Branch: Return with expression
-0:19        Construct structure ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:19          Construct vec4 ( temp 4-component vector of float)
+0:19        Construct structure ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:19          Construct vec4 ( temp 4-component vector of float : SV_POSITION)
 0:19            'f' ( temp float)
 0:19            'f' ( temp float)
 0:19            'f' ( temp float)
 0:19            'f' ( temp float)
-0:19          Construct vec2 ( temp 2-component vector of float)
+0:19          Construct vec2 ( temp 2-component vector of float : TEXCOORD)
 0:19            'f' ( temp float)
 0:19            'f' ( temp float)
-0:21  Function Definition: r4( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:21  Function Definition: r4( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:21    Function Parameters: 
 0:?     Sequence
 0:22      Sequence
@@ -224,23 +224,23 @@ Shader version: 500
 0:22          Constant:
 0:22            2.000000
 0:23      Branch: Return with expression
-0:23        Comma ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:23        Comma ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:23          move second child to first child ( temp float)
 0:23            'scalarCopy' ( temp float)
 0:23            add ( temp float)
 0:23              'f' ( temp float)
 0:23              Constant:
 0:23                1.000000
-0:23          Construct structure ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:23            Construct vec4 ( temp 4-component vector of float)
+0:23          Construct structure ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:23            Construct vec4 ( temp 4-component vector of float : SV_POSITION)
 0:23              'scalarCopy' ( temp float)
 0:23              'scalarCopy' ( temp float)
 0:23              'scalarCopy' ( temp float)
 0:23              'scalarCopy' ( temp float)
-0:23            Construct vec2 ( temp 2-component vector of float)
+0:23            Construct vec2 ( temp 2-component vector of float : TEXCOORD)
 0:23              'scalarCopy' ( temp float)
 0:23              'scalarCopy' ( temp float)
-0:25  Function Definition: r5( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:25  Function Definition: r5( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:25    Function Parameters: 
 0:?     Sequence
 0:26      Sequence
@@ -249,47 +249,47 @@ Shader version: 500
 0:26          Constant:
 0:26            2.000000
 0:27      Branch: Return with expression
-0:27        Comma ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:27        Comma ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:27          move second child to first child ( temp float)
 0:27            'scalarCopy' ( temp float)
 0:27            sine ( temp float)
 0:27              'f' ( temp float)
-0:27          Construct structure ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:27            Construct vec4 ( temp 4-component vector of float)
+0:27          Construct structure ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:27            Construct vec4 ( temp 4-component vector of float : SV_POSITION)
 0:27              'scalarCopy' ( temp float)
 0:27              'scalarCopy' ( temp float)
 0:27              'scalarCopy' ( temp float)
 0:27              'scalarCopy' ( temp float)
-0:27            Construct vec2 ( temp 2-component vector of float)
+0:27            Construct vec2 ( temp 2-component vector of float : TEXCOORD)
 0:27              'scalarCopy' ( temp float)
 0:27              'scalarCopy' ( temp float)
-0:29  Function Definition: @main( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:29  Function Definition: @main( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:29    Function Parameters: 
 0:?     Sequence
 0:30      Sequence
-0:30        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:30          'v0' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:30          Function Call: r0( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:30        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:30          'v0' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:30          Function Call: r0( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:31      Sequence
-0:31        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:31          'v1' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:31          Function Call: r1( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:31        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:31          'v1' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:31          Function Call: r1( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:32      Sequence
-0:32        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:32          'v2' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:32          Function Call: r2( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:32        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:32          'v2' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:32          Function Call: r2( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:33      Sequence
-0:33        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:33          'v3' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:33          Function Call: r3( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:33        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:33          'v3' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:33          Function Call: r3( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:34      Sequence
-0:34        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:34          'v4' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:34          Function Call: r4( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:34        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:34          'v4' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:34          Function Call: r4( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:35      Sequence
-0:35        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:35          'v5' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:35          Function Call: r5( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:35        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:35          'v5' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:35          Function Call: r5( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:36      Branch: Return with expression
 0:36        Constant:
 0:36          1.000000
@@ -302,24 +302,24 @@ Shader version: 500
 0:29    Function Parameters: 
 0:?     Sequence
 0:29      Sequence
-0:29        move second child to first child ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:29          'flattenTemp' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
-0:29          Function Call: @main( ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:29        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:29          'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
+0:29          Function Call: @main( ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:29        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.position' ( out 4-component vector of float Position)
-0:29          position: direct index for structure ( temp 4-component vector of float)
-0:29            'flattenTemp' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:?           '@entryPointOutput.position' ( out 4-component vector of float Position : SV_POSITION)
+0:29          position: direct index for structure ( temp 4-component vector of float : SV_POSITION)
+0:29            'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:29            Constant:
 0:29              0 (const int)
 0:29        move second child to first child ( temp 2-component vector of float)
-0:?           '@entryPointOutput.texCoord' (layout( location=0) out 2-component vector of float)
-0:29          texCoord: direct index for structure ( temp 2-component vector of float)
-0:29            'flattenTemp' ( temp structure{ temp 4-component vector of float position,  temp 2-component vector of float texCoord})
+0:?           '@entryPointOutput.texCoord' (layout( location=0) out 2-component vector of float : TEXCOORD)
+0:29          texCoord: direct index for structure ( temp 2-component vector of float : TEXCOORD)
+0:29            'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION position,  temp 2-component vector of float : TEXCOORD texCoord})
 0:29            Constant:
 0:29              1 (const int)
 0:?   Linker Objects
-0:?     '@entryPointOutput.position' ( out 4-component vector of float Position)
-0:?     '@entryPointOutput.texCoord' (layout( location=0) out 2-component vector of float)
+0:?     '@entryPointOutput.position' ( out 4-component vector of float Position : SV_POSITION)
+0:?     '@entryPointOutput.texCoord' (layout( location=0) out 2-component vector of float : TEXCOORD)
 
 // Module Version 10000
 // Generated by (magic number): 80001

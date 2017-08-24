@@ -2,7 +2,7 @@ hlsl.intrinsics.evalfns.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:3  Function Definition: @main(f1;vf2;vf3;vf4;vi2; ( temp void)
+0:3  Function Definition: @main(f1;vf2;vf3;vf4;vi2; ( temp void : COLOR)
 0:3    Function Parameters: 
 0:3      'inF1' ( in float)
 0:3      'inF2' ( in 2-component vector of float)
@@ -61,7 +61,7 @@ gl_FragCoord origin is upper left
 0:3      move second child to first child ( temp 2-component vector of int)
 0:?         'inI2' ( temp 2-component vector of int)
 0:?         'inI2' (layout( location=4) flat in 2-component vector of int)
-0:3      Function Call: @main(f1;vf2;vf3;vf4;vi2; ( temp void)
+0:3      Function Call: @main(f1;vf2;vf3;vf4;vi2; ( temp void : COLOR)
 0:?         'inF1' ( temp float)
 0:?         'inF2' ( temp 2-component vector of float)
 0:?         'inF3' ( temp 3-component vector of float)
@@ -81,7 +81,7 @@ Linked fragment stage:
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:3  Function Definition: @main(f1;vf2;vf3;vf4;vi2; ( temp void)
+0:3  Function Definition: @main(f1;vf2;vf3;vf4;vi2; ( temp void : COLOR)
 0:3    Function Parameters: 
 0:3      'inF1' ( in float)
 0:3      'inF2' ( in 2-component vector of float)
@@ -140,7 +140,7 @@ gl_FragCoord origin is upper left
 0:3      move second child to first child ( temp 2-component vector of int)
 0:?         'inI2' ( temp 2-component vector of int)
 0:?         'inI2' (layout( location=4) flat in 2-component vector of int)
-0:3      Function Call: @main(f1;vf2;vf3;vf4;vi2; ( temp void)
+0:3      Function Call: @main(f1;vf2;vf3;vf4;vi2; ( temp void : COLOR)
 0:?         'inF1' ( temp float)
 0:?         'inF2' ( temp 2-component vector of float)
 0:?         'inF3' ( temp 3-component vector of float)

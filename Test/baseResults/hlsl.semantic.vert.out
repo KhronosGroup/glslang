@@ -1,106 +1,106 @@
 hlsl.semantic.vert
 Shader version: 500
 0:? Sequence
-0:10  Function Definition: @main(struct-S-f1-f1-f1-f1-i11; ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10  Function Definition: @main(struct-S-f1-f1-f1-f1-i11; ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10    Function Parameters: 
-0:10      'ins' ( in structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10      'ins' ( in structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:?     Sequence
 0:12      Branch: Return with expression
-0:12        's' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:12        's' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10  Function Definition: main( ( temp void)
 0:10    Function Parameters: 
 0:?     Sequence
 0:10      Sequence
 0:10        move second child to first child ( temp float)
-0:10          clip0: direct index for structure ( temp float)
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10          clip0: direct index for structure ( temp float : SV_CLIPDISTANCE0)
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              0 (const int)
-0:?           'ins.clip0' (layout( location=0) in float)
+0:?           'ins.clip0' (layout( location=0) in float : SV_CLIPDISTANCE0)
 0:10        move second child to first child ( temp float)
-0:10          clip1: direct index for structure ( temp float)
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10          clip1: direct index for structure ( temp float : SV_CLIPDISTANCE1)
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              1 (const int)
-0:?           'ins.clip1' (layout( location=1) in float)
+0:?           'ins.clip1' (layout( location=1) in float : SV_CLIPDISTANCE1)
 0:10        move second child to first child ( temp float)
-0:10          cull0: direct index for structure ( temp float)
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10          cull0: direct index for structure ( temp float : SV_CULLDISTANCE0)
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              2 (const int)
-0:?           'ins.cull0' (layout( location=2) in float)
+0:?           'ins.cull0' (layout( location=2) in float : SV_CULLDISTANCE0)
 0:10        move second child to first child ( temp float)
-0:10          cull1: direct index for structure ( temp float)
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10          cull1: direct index for structure ( temp float : SV_CULLDISTANCE1)
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              3 (const int)
-0:?           'ins.cull1' (layout( location=3) in float)
+0:?           'ins.cull1' (layout( location=3) in float : SV_CULLDISTANCE1)
 0:10        move second child to first child ( temp int)
-0:10          ii: direct index for structure ( temp int)
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10          ii: direct index for structure ( temp int : SV_INSTANCEID)
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              4 (const int)
-0:?           'ins.ii' ( in int InstanceIndex)
+0:?           'ins.ii' ( in int InstanceIndex : SV_INSTANCEID)
 0:10      Sequence
-0:10        move second child to first child ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
-0:10          'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
-0:10          Function Call: @main(struct-S-f1-f1-f1-f1-i11; ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10        move second child to first child ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
+0:10          'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
+0:10          Function Call: @main(struct-S-f1-f1-f1-f1-i11; ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:?         Sequence
 0:10          move second child to first child ( temp float)
 0:10            direct index ( temp float)
-0:?               '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance)
+0:?               '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance : SV_CLIPDISTANCE1)
 0:10              Constant:
 0:10                0 (const int)
-0:10            clip0: direct index for structure ( temp float)
-0:10              'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10            clip0: direct index for structure ( temp float : SV_CLIPDISTANCE0)
+0:10              'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10              Constant:
 0:10                0 (const int)
 0:?         Sequence
 0:10          move second child to first child ( temp float)
 0:10            direct index ( temp float)
-0:?               '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance)
+0:?               '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance : SV_CLIPDISTANCE1)
 0:10              Constant:
 0:10                1 (const int)
-0:10            clip1: direct index for structure ( temp float)
-0:10              'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10            clip1: direct index for structure ( temp float : SV_CLIPDISTANCE1)
+0:10              'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10              Constant:
 0:10                1 (const int)
 0:?         Sequence
 0:10          move second child to first child ( temp float)
 0:10            direct index ( temp float)
-0:?               '@entryPointOutput.cull1' ( out 2-element array of float CullDistance)
+0:?               '@entryPointOutput.cull1' ( out 2-element array of float CullDistance : SV_CULLDISTANCE1)
 0:10              Constant:
 0:10                0 (const int)
-0:10            cull0: direct index for structure ( temp float)
-0:10              'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10            cull0: direct index for structure ( temp float : SV_CULLDISTANCE0)
+0:10              'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10              Constant:
 0:10                2 (const int)
 0:?         Sequence
 0:10          move second child to first child ( temp float)
 0:10            direct index ( temp float)
-0:?               '@entryPointOutput.cull1' ( out 2-element array of float CullDistance)
+0:?               '@entryPointOutput.cull1' ( out 2-element array of float CullDistance : SV_CULLDISTANCE1)
 0:10              Constant:
 0:10                1 (const int)
-0:10            cull1: direct index for structure ( temp float)
-0:10              'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10            cull1: direct index for structure ( temp float : SV_CULLDISTANCE1)
+0:10              'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10              Constant:
 0:10                3 (const int)
 0:10        move second child to first child ( temp int)
-0:?           '@entryPointOutput.ii' (layout( location=0) out int)
-0:10          ii: direct index for structure ( temp int)
-0:10            'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:?           '@entryPointOutput.ii' (layout( location=0) out int : SV_INSTANCEID)
+0:10          ii: direct index for structure ( temp int : SV_INSTANCEID)
+0:10            'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              4 (const int)
 0:?   Linker Objects
-0:?     '@entryPointOutput.ii' (layout( location=0) out int)
-0:?     'ins.ii' ( in int InstanceIndex)
-0:?     'ins.clip0' (layout( location=0) in float)
-0:?     'ins.clip1' (layout( location=1) in float)
-0:?     'ins.cull0' (layout( location=2) in float)
-0:?     'ins.cull1' (layout( location=3) in float)
-0:?     '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance)
-0:?     '@entryPointOutput.cull1' ( out 2-element array of float CullDistance)
+0:?     '@entryPointOutput.ii' (layout( location=0) out int : SV_INSTANCEID)
+0:?     'ins.ii' ( in int InstanceIndex : SV_INSTANCEID)
+0:?     'ins.clip0' (layout( location=0) in float : SV_CLIPDISTANCE0)
+0:?     'ins.clip1' (layout( location=1) in float : SV_CLIPDISTANCE1)
+0:?     'ins.cull0' (layout( location=2) in float : SV_CULLDISTANCE0)
+0:?     'ins.cull1' (layout( location=3) in float : SV_CULLDISTANCE1)
+0:?     '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance : SV_CLIPDISTANCE1)
+0:?     '@entryPointOutput.cull1' ( out 2-element array of float CullDistance : SV_CULLDISTANCE1)
 
 
 Linked vertex stage:
@@ -108,106 +108,106 @@ Linked vertex stage:
 
 Shader version: 500
 0:? Sequence
-0:10  Function Definition: @main(struct-S-f1-f1-f1-f1-i11; ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10  Function Definition: @main(struct-S-f1-f1-f1-f1-i11; ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10    Function Parameters: 
-0:10      'ins' ( in structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10      'ins' ( in structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:?     Sequence
 0:12      Branch: Return with expression
-0:12        's' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:12        's' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10  Function Definition: main( ( temp void)
 0:10    Function Parameters: 
 0:?     Sequence
 0:10      Sequence
 0:10        move second child to first child ( temp float)
-0:10          clip0: direct index for structure ( temp float)
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10          clip0: direct index for structure ( temp float : SV_CLIPDISTANCE0)
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              0 (const int)
-0:?           'ins.clip0' (layout( location=0) in float)
+0:?           'ins.clip0' (layout( location=0) in float : SV_CLIPDISTANCE0)
 0:10        move second child to first child ( temp float)
-0:10          clip1: direct index for structure ( temp float)
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10          clip1: direct index for structure ( temp float : SV_CLIPDISTANCE1)
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              1 (const int)
-0:?           'ins.clip1' (layout( location=1) in float)
+0:?           'ins.clip1' (layout( location=1) in float : SV_CLIPDISTANCE1)
 0:10        move second child to first child ( temp float)
-0:10          cull0: direct index for structure ( temp float)
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10          cull0: direct index for structure ( temp float : SV_CULLDISTANCE0)
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              2 (const int)
-0:?           'ins.cull0' (layout( location=2) in float)
+0:?           'ins.cull0' (layout( location=2) in float : SV_CULLDISTANCE0)
 0:10        move second child to first child ( temp float)
-0:10          cull1: direct index for structure ( temp float)
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10          cull1: direct index for structure ( temp float : SV_CULLDISTANCE1)
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              3 (const int)
-0:?           'ins.cull1' (layout( location=3) in float)
+0:?           'ins.cull1' (layout( location=3) in float : SV_CULLDISTANCE1)
 0:10        move second child to first child ( temp int)
-0:10          ii: direct index for structure ( temp int)
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10          ii: direct index for structure ( temp int : SV_INSTANCEID)
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              4 (const int)
-0:?           'ins.ii' ( in int InstanceIndex)
+0:?           'ins.ii' ( in int InstanceIndex : SV_INSTANCEID)
 0:10      Sequence
-0:10        move second child to first child ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
-0:10          'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
-0:10          Function Call: @main(struct-S-f1-f1-f1-f1-i11; ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
-0:?             'ins' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10        move second child to first child ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
+0:10          'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
+0:10          Function Call: @main(struct-S-f1-f1-f1-f1-i11; ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
+0:?             'ins' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:?         Sequence
 0:10          move second child to first child ( temp float)
 0:10            direct index ( temp float)
-0:?               '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance)
+0:?               '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance : SV_CLIPDISTANCE1)
 0:10              Constant:
 0:10                0 (const int)
-0:10            clip0: direct index for structure ( temp float)
-0:10              'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10            clip0: direct index for structure ( temp float : SV_CLIPDISTANCE0)
+0:10              'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10              Constant:
 0:10                0 (const int)
 0:?         Sequence
 0:10          move second child to first child ( temp float)
 0:10            direct index ( temp float)
-0:?               '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance)
+0:?               '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance : SV_CLIPDISTANCE1)
 0:10              Constant:
 0:10                1 (const int)
-0:10            clip1: direct index for structure ( temp float)
-0:10              'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10            clip1: direct index for structure ( temp float : SV_CLIPDISTANCE1)
+0:10              'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10              Constant:
 0:10                1 (const int)
 0:?         Sequence
 0:10          move second child to first child ( temp float)
 0:10            direct index ( temp float)
-0:?               '@entryPointOutput.cull1' ( out 2-element array of float CullDistance)
+0:?               '@entryPointOutput.cull1' ( out 2-element array of float CullDistance : SV_CULLDISTANCE1)
 0:10              Constant:
 0:10                0 (const int)
-0:10            cull0: direct index for structure ( temp float)
-0:10              'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10            cull0: direct index for structure ( temp float : SV_CULLDISTANCE0)
+0:10              'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10              Constant:
 0:10                2 (const int)
 0:?         Sequence
 0:10          move second child to first child ( temp float)
 0:10            direct index ( temp float)
-0:?               '@entryPointOutput.cull1' ( out 2-element array of float CullDistance)
+0:?               '@entryPointOutput.cull1' ( out 2-element array of float CullDistance : SV_CULLDISTANCE1)
 0:10              Constant:
 0:10                1 (const int)
-0:10            cull1: direct index for structure ( temp float)
-0:10              'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:10            cull1: direct index for structure ( temp float : SV_CULLDISTANCE1)
+0:10              'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10              Constant:
 0:10                3 (const int)
 0:10        move second child to first child ( temp int)
-0:?           '@entryPointOutput.ii' (layout( location=0) out int)
-0:10          ii: direct index for structure ( temp int)
-0:10            'flattenTemp' ( temp structure{ temp float clip0,  temp float clip1,  temp float cull0,  temp float cull1,  temp int ii})
+0:?           '@entryPointOutput.ii' (layout( location=0) out int : SV_INSTANCEID)
+0:10          ii: direct index for structure ( temp int : SV_INSTANCEID)
+0:10            'flattenTemp' ( temp structure{ temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CLIPDISTANCE1 clip1,  temp float : SV_CULLDISTANCE0 cull0,  temp float : SV_CULLDISTANCE1 cull1,  temp int : SV_INSTANCEID ii})
 0:10            Constant:
 0:10              4 (const int)
 0:?   Linker Objects
-0:?     '@entryPointOutput.ii' (layout( location=0) out int)
-0:?     'ins.ii' ( in int InstanceIndex)
-0:?     'ins.clip0' (layout( location=0) in float)
-0:?     'ins.clip1' (layout( location=1) in float)
-0:?     'ins.cull0' (layout( location=2) in float)
-0:?     'ins.cull1' (layout( location=3) in float)
-0:?     '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance)
-0:?     '@entryPointOutput.cull1' ( out 2-element array of float CullDistance)
+0:?     '@entryPointOutput.ii' (layout( location=0) out int : SV_INSTANCEID)
+0:?     'ins.ii' ( in int InstanceIndex : SV_INSTANCEID)
+0:?     'ins.clip0' (layout( location=0) in float : SV_CLIPDISTANCE0)
+0:?     'ins.clip1' (layout( location=1) in float : SV_CLIPDISTANCE1)
+0:?     'ins.cull0' (layout( location=2) in float : SV_CULLDISTANCE0)
+0:?     'ins.cull1' (layout( location=3) in float : SV_CULLDISTANCE1)
+0:?     '@entryPointOutput.clip1' ( out 2-element array of float ClipDistance : SV_CLIPDISTANCE1)
+0:?     '@entryPointOutput.cull1' ( out 2-element array of float CullDistance : SV_CULLDISTANCE1)
 
 // Module Version 10000
 // Generated by (magic number): 80001

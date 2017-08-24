@@ -2,9 +2,9 @@ hlsl.structbuffer.rwbyte.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:5  Function Definition: @main(u1; ( temp 4-component vector of float)
+0:5  Function Definition: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:5    Function Parameters: 
-0:5      'pos' ( in uint)
+0:5      'pos' ( in uint : FOO)
 0:?     Sequence
 0:7      Sequence
 0:7        move second child to first child ( temp uint)
@@ -18,7 +18,7 @@ gl_FragCoord origin is upper left
 0:9        move second child to first child ( temp int)
 0:9          'byteAddrTemp' ( temp int)
 0:9          right-shift ( temp int)
-0:9            'pos' ( in uint)
+0:9            'pos' ( in uint : FOO)
 0:9            Constant:
 0:9              2 (const int)
 0:9        move second child to first child ( temp float)
@@ -35,14 +35,14 @@ gl_FragCoord origin is upper left
 0:9                Constant:
 0:9                  0 (const uint)
 0:9              right-shift ( temp int)
-0:9                'pos' ( in uint)
+0:9                'pos' ( in uint : FOO)
 0:9                Constant:
 0:9                  2 (const int)
 0:?       Sequence
 0:10        move second child to first child ( temp int)
 0:10          'byteAddrTemp' ( temp int)
 0:10          right-shift ( temp int)
-0:10            'pos' ( in uint)
+0:10            'pos' ( in uint : FOO)
 0:10            Constant:
 0:10              2 (const int)
 0:10        move second child to first child ( temp float)
@@ -57,7 +57,7 @@ gl_FragCoord origin is upper left
 0:10              move second child to first child ( temp int)
 0:10                'byteAddrTemp' ( temp int)
 0:10                right-shift ( temp int)
-0:10                  'pos' ( in uint)
+0:10                  'pos' ( in uint : FOO)
 0:10                  Constant:
 0:10                    2 (const int)
 0:?               Construct vec2 ( temp 2-component vector of uint)
@@ -93,7 +93,7 @@ gl_FragCoord origin is upper left
 0:10              move second child to first child ( temp int)
 0:10                'byteAddrTemp' ( temp int)
 0:10                right-shift ( temp int)
-0:10                  'pos' ( in uint)
+0:10                  'pos' ( in uint : FOO)
 0:10                  Constant:
 0:10                    2 (const int)
 0:?               Construct vec2 ( temp 2-component vector of uint)
@@ -118,7 +118,7 @@ gl_FragCoord origin is upper left
 0:11        move second child to first child ( temp int)
 0:11          'byteAddrTemp' ( temp int)
 0:11          right-shift ( temp int)
-0:11            'pos' ( in uint)
+0:11            'pos' ( in uint : FOO)
 0:11            Constant:
 0:11              2 (const int)
 0:11        move second child to first child ( temp float)
@@ -133,7 +133,7 @@ gl_FragCoord origin is upper left
 0:11              move second child to first child ( temp int)
 0:11                'byteAddrTemp' ( temp int)
 0:11                right-shift ( temp int)
-0:11                  'pos' ( in uint)
+0:11                  'pos' ( in uint : FOO)
 0:11                  Constant:
 0:11                    2 (const int)
 0:?               Construct vec3 ( temp 3-component vector of uint)
@@ -178,7 +178,7 @@ gl_FragCoord origin is upper left
 0:11              move second child to first child ( temp int)
 0:11                'byteAddrTemp' ( temp int)
 0:11                right-shift ( temp int)
-0:11                  'pos' ( in uint)
+0:11                  'pos' ( in uint : FOO)
 0:11                  Constant:
 0:11                    2 (const int)
 0:?               Construct vec3 ( temp 3-component vector of uint)
@@ -223,7 +223,7 @@ gl_FragCoord origin is upper left
 0:11              move second child to first child ( temp int)
 0:11                'byteAddrTemp' ( temp int)
 0:11                right-shift ( temp int)
-0:11                  'pos' ( in uint)
+0:11                  'pos' ( in uint : FOO)
 0:11                  Constant:
 0:11                    2 (const int)
 0:?               Construct vec3 ( temp 3-component vector of uint)
@@ -257,7 +257,7 @@ gl_FragCoord origin is upper left
 0:12        move second child to first child ( temp int)
 0:12          'byteAddrTemp' ( temp int)
 0:12          right-shift ( temp int)
-0:12            'pos' ( in uint)
+0:12            'pos' ( in uint : FOO)
 0:12            Constant:
 0:12              2 (const int)
 0:12        move second child to first child ( temp float)
@@ -272,7 +272,7 @@ gl_FragCoord origin is upper left
 0:12              move second child to first child ( temp int)
 0:12                'byteAddrTemp' ( temp int)
 0:12                right-shift ( temp int)
-0:12                  'pos' ( in uint)
+0:12                  'pos' ( in uint : FOO)
 0:12                  Constant:
 0:12                    2 (const int)
 0:?               Construct vec4 ( temp 4-component vector of uint)
@@ -326,7 +326,7 @@ gl_FragCoord origin is upper left
 0:12              move second child to first child ( temp int)
 0:12                'byteAddrTemp' ( temp int)
 0:12                right-shift ( temp int)
-0:12                  'pos' ( in uint)
+0:12                  'pos' ( in uint : FOO)
 0:12                  Constant:
 0:12                    2 (const int)
 0:?               Construct vec4 ( temp 4-component vector of uint)
@@ -380,7 +380,7 @@ gl_FragCoord origin is upper left
 0:12              move second child to first child ( temp int)
 0:12                'byteAddrTemp' ( temp int)
 0:12                right-shift ( temp int)
-0:12                  'pos' ( in uint)
+0:12                  'pos' ( in uint : FOO)
 0:12                  Constant:
 0:12                    2 (const int)
 0:?               Construct vec4 ( temp 4-component vector of uint)
@@ -434,7 +434,7 @@ gl_FragCoord origin is upper left
 0:12              move second child to first child ( temp int)
 0:12                'byteAddrTemp' ( temp int)
 0:12                right-shift ( temp int)
-0:12                  'pos' ( in uint)
+0:12                  'pos' ( in uint : FOO)
 0:12                  Constant:
 0:12                    2 (const int)
 0:?               Construct vec4 ( temp 4-component vector of uint)
@@ -474,7 +474,7 @@ gl_FragCoord origin is upper left
 0:12            Constant:
 0:12              3 (const int)
 0:14      Branch: Return with expression
-0:14        Construct vec4 ( temp 4-component vector of float)
+0:14        Construct vec4 ( temp 4-component vector of float : SV_TARGET0)
 0:14          Convert uint to float ( temp float)
 0:14            indirect index (layout( row_major std430) buffer uint)
 0:14              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of uint)
@@ -482,7 +482,7 @@ gl_FragCoord origin is upper left
 0:14                Constant:
 0:14                  0 (const uint)
 0:14              right-shift ( temp int)
-0:14                'pos' ( in uint)
+0:14                'pos' ( in uint : FOO)
 0:14                Constant:
 0:14                  2 (const int)
 0:5  Function Definition: main( ( temp void)
@@ -490,15 +490,15 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:5      move second child to first child ( temp uint)
 0:?         'pos' ( temp uint)
-0:?         'pos' (layout( location=0) flat in uint)
+0:?         'pos' (layout( location=0) flat in uint : FOO)
 0:5      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:5        Function Call: @main(u1; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:5        Function Call: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:?           'pos' ( temp uint)
 0:?   Linker Objects
 0:?     'sbuf' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of uint @data})
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:?     'pos' (layout( location=0) flat in uint)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:?     'pos' (layout( location=0) flat in uint : FOO)
 
 
 Linked fragment stage:
@@ -507,9 +507,9 @@ Linked fragment stage:
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:5  Function Definition: @main(u1; ( temp 4-component vector of float)
+0:5  Function Definition: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:5    Function Parameters: 
-0:5      'pos' ( in uint)
+0:5      'pos' ( in uint : FOO)
 0:?     Sequence
 0:7      Sequence
 0:7        move second child to first child ( temp uint)
@@ -523,7 +523,7 @@ gl_FragCoord origin is upper left
 0:9        move second child to first child ( temp int)
 0:9          'byteAddrTemp' ( temp int)
 0:9          right-shift ( temp int)
-0:9            'pos' ( in uint)
+0:9            'pos' ( in uint : FOO)
 0:9            Constant:
 0:9              2 (const int)
 0:9        move second child to first child ( temp float)
@@ -540,14 +540,14 @@ gl_FragCoord origin is upper left
 0:9                Constant:
 0:9                  0 (const uint)
 0:9              right-shift ( temp int)
-0:9                'pos' ( in uint)
+0:9                'pos' ( in uint : FOO)
 0:9                Constant:
 0:9                  2 (const int)
 0:?       Sequence
 0:10        move second child to first child ( temp int)
 0:10          'byteAddrTemp' ( temp int)
 0:10          right-shift ( temp int)
-0:10            'pos' ( in uint)
+0:10            'pos' ( in uint : FOO)
 0:10            Constant:
 0:10              2 (const int)
 0:10        move second child to first child ( temp float)
@@ -562,7 +562,7 @@ gl_FragCoord origin is upper left
 0:10              move second child to first child ( temp int)
 0:10                'byteAddrTemp' ( temp int)
 0:10                right-shift ( temp int)
-0:10                  'pos' ( in uint)
+0:10                  'pos' ( in uint : FOO)
 0:10                  Constant:
 0:10                    2 (const int)
 0:?               Construct vec2 ( temp 2-component vector of uint)
@@ -598,7 +598,7 @@ gl_FragCoord origin is upper left
 0:10              move second child to first child ( temp int)
 0:10                'byteAddrTemp' ( temp int)
 0:10                right-shift ( temp int)
-0:10                  'pos' ( in uint)
+0:10                  'pos' ( in uint : FOO)
 0:10                  Constant:
 0:10                    2 (const int)
 0:?               Construct vec2 ( temp 2-component vector of uint)
@@ -623,7 +623,7 @@ gl_FragCoord origin is upper left
 0:11        move second child to first child ( temp int)
 0:11          'byteAddrTemp' ( temp int)
 0:11          right-shift ( temp int)
-0:11            'pos' ( in uint)
+0:11            'pos' ( in uint : FOO)
 0:11            Constant:
 0:11              2 (const int)
 0:11        move second child to first child ( temp float)
@@ -638,7 +638,7 @@ gl_FragCoord origin is upper left
 0:11              move second child to first child ( temp int)
 0:11                'byteAddrTemp' ( temp int)
 0:11                right-shift ( temp int)
-0:11                  'pos' ( in uint)
+0:11                  'pos' ( in uint : FOO)
 0:11                  Constant:
 0:11                    2 (const int)
 0:?               Construct vec3 ( temp 3-component vector of uint)
@@ -683,7 +683,7 @@ gl_FragCoord origin is upper left
 0:11              move second child to first child ( temp int)
 0:11                'byteAddrTemp' ( temp int)
 0:11                right-shift ( temp int)
-0:11                  'pos' ( in uint)
+0:11                  'pos' ( in uint : FOO)
 0:11                  Constant:
 0:11                    2 (const int)
 0:?               Construct vec3 ( temp 3-component vector of uint)
@@ -728,7 +728,7 @@ gl_FragCoord origin is upper left
 0:11              move second child to first child ( temp int)
 0:11                'byteAddrTemp' ( temp int)
 0:11                right-shift ( temp int)
-0:11                  'pos' ( in uint)
+0:11                  'pos' ( in uint : FOO)
 0:11                  Constant:
 0:11                    2 (const int)
 0:?               Construct vec3 ( temp 3-component vector of uint)
@@ -762,7 +762,7 @@ gl_FragCoord origin is upper left
 0:12        move second child to first child ( temp int)
 0:12          'byteAddrTemp' ( temp int)
 0:12          right-shift ( temp int)
-0:12            'pos' ( in uint)
+0:12            'pos' ( in uint : FOO)
 0:12            Constant:
 0:12              2 (const int)
 0:12        move second child to first child ( temp float)
@@ -777,7 +777,7 @@ gl_FragCoord origin is upper left
 0:12              move second child to first child ( temp int)
 0:12                'byteAddrTemp' ( temp int)
 0:12                right-shift ( temp int)
-0:12                  'pos' ( in uint)
+0:12                  'pos' ( in uint : FOO)
 0:12                  Constant:
 0:12                    2 (const int)
 0:?               Construct vec4 ( temp 4-component vector of uint)
@@ -831,7 +831,7 @@ gl_FragCoord origin is upper left
 0:12              move second child to first child ( temp int)
 0:12                'byteAddrTemp' ( temp int)
 0:12                right-shift ( temp int)
-0:12                  'pos' ( in uint)
+0:12                  'pos' ( in uint : FOO)
 0:12                  Constant:
 0:12                    2 (const int)
 0:?               Construct vec4 ( temp 4-component vector of uint)
@@ -885,7 +885,7 @@ gl_FragCoord origin is upper left
 0:12              move second child to first child ( temp int)
 0:12                'byteAddrTemp' ( temp int)
 0:12                right-shift ( temp int)
-0:12                  'pos' ( in uint)
+0:12                  'pos' ( in uint : FOO)
 0:12                  Constant:
 0:12                    2 (const int)
 0:?               Construct vec4 ( temp 4-component vector of uint)
@@ -939,7 +939,7 @@ gl_FragCoord origin is upper left
 0:12              move second child to first child ( temp int)
 0:12                'byteAddrTemp' ( temp int)
 0:12                right-shift ( temp int)
-0:12                  'pos' ( in uint)
+0:12                  'pos' ( in uint : FOO)
 0:12                  Constant:
 0:12                    2 (const int)
 0:?               Construct vec4 ( temp 4-component vector of uint)
@@ -979,7 +979,7 @@ gl_FragCoord origin is upper left
 0:12            Constant:
 0:12              3 (const int)
 0:14      Branch: Return with expression
-0:14        Construct vec4 ( temp 4-component vector of float)
+0:14        Construct vec4 ( temp 4-component vector of float : SV_TARGET0)
 0:14          Convert uint to float ( temp float)
 0:14            indirect index (layout( row_major std430) buffer uint)
 0:14              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of uint)
@@ -987,7 +987,7 @@ gl_FragCoord origin is upper left
 0:14                Constant:
 0:14                  0 (const uint)
 0:14              right-shift ( temp int)
-0:14                'pos' ( in uint)
+0:14                'pos' ( in uint : FOO)
 0:14                Constant:
 0:14                  2 (const int)
 0:5  Function Definition: main( ( temp void)
@@ -995,15 +995,15 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:5      move second child to first child ( temp uint)
 0:?         'pos' ( temp uint)
-0:?         'pos' (layout( location=0) flat in uint)
+0:?         'pos' (layout( location=0) flat in uint : FOO)
 0:5      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:5        Function Call: @main(u1; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:5        Function Call: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:?           'pos' ( temp uint)
 0:?   Linker Objects
 0:?     'sbuf' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of uint @data})
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:?     'pos' (layout( location=0) flat in uint)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:?     'pos' (layout( location=0) flat in uint : FOO)
 
 // Module Version 10000
 // Generated by (magic number): 80001

@@ -12,9 +12,9 @@ gl_FragCoord origin is upper left
 0:2      'scalar' ( global float)
 0:2      Constant:
 0:2        2.000000
-0:5  Function Definition: ShaderFunction(vf1;f1; ( temp 1-component vector of float)
+0:5  Function Definition: ShaderFunction(vf1;f1; ( temp 1-component vector of float : COLOR0)
 0:5    Function Parameters: 
-0:5      'inFloat1' ( in 1-component vector of float)
+0:5      'inFloat1' ( in 1-component vector of float : COLOR)
 0:5      'inScalar' ( in float)
 0:?     Sequence
 0:6      Branch: Return with expression
@@ -23,7 +23,7 @@ gl_FragCoord origin is upper left
 0:6            'f1' ( global 1-component vector of float)
 0:6            'scalar' ( global float)
 0:6          vector-scale ( temp 1-component vector of float)
-0:6            'inFloat1' ( in 1-component vector of float)
+0:6            'inFloat1' ( in 1-component vector of float : COLOR)
 0:6            'inScalar' ( in float)
 0:?   Linker Objects
 0:?     'f1' ( global 1-component vector of float)
@@ -47,9 +47,9 @@ gl_FragCoord origin is upper left
 0:2      'scalar' ( global float)
 0:2      Constant:
 0:2        2.000000
-0:5  Function Definition: ShaderFunction(vf1;f1; ( temp 1-component vector of float)
+0:5  Function Definition: ShaderFunction(vf1;f1; ( temp 1-component vector of float : COLOR0)
 0:5    Function Parameters: 
-0:5      'inFloat1' ( in 1-component vector of float)
+0:5      'inFloat1' ( in 1-component vector of float : COLOR)
 0:5      'inScalar' ( in float)
 0:?     Sequence
 0:6      Branch: Return with expression
@@ -58,7 +58,7 @@ gl_FragCoord origin is upper left
 0:6            'f1' ( global 1-component vector of float)
 0:6            'scalar' ( global float)
 0:6          vector-scale ( temp 1-component vector of float)
-0:6            'inFloat1' ( in 1-component vector of float)
+0:6            'inFloat1' ( in 1-component vector of float : COLOR)
 0:6            'inScalar' ( in float)
 0:?   Linker Objects
 0:?     'f1' ( global 1-component vector of float)

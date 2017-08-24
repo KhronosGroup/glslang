@@ -2,7 +2,7 @@ hlsl.typedef.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:4  Function Definition: ShaderFunction(vf4;i1; ( temp 4-component vector of float)
+0:4  Function Definition: ShaderFunction(vf4;i1; ( temp 4-component vector of float : COLOR0)
 0:4    Function Parameters: 
 0:4      'input' ( in 4-component vector of float)
 0:4      'ii' ( in int)
@@ -44,7 +44,7 @@ WARNING: Linking fragment stage: Entry point not found
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:4  Function Definition: ShaderFunction(vf4;i1; ( temp 4-component vector of float)
+0:4  Function Definition: ShaderFunction(vf4;i1; ( temp 4-component vector of float : COLOR0)
 0:4    Function Parameters: 
 0:4      'input' ( in 4-component vector of float)
 0:4      'ii' ( in int)

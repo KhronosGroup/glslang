@@ -2,7 +2,7 @@ hlsl.intrinsics.promote.down.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:15  Function Definition: @main( ( temp structure{ temp 4-component vector of float color})
+0:15  Function Definition: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:15    Function Parameters: 
 0:?     Sequence
 0:16      Sequence
@@ -24,8 +24,8 @@ gl_FragCoord origin is upper left
 0:17                Constant:
 0:17                  6 (const uint)
 0:20      move second child to first child ( temp 4-component vector of float)
-0:20        color: direct index for structure ( temp 4-component vector of float)
-0:20          'ps_output' ( temp structure{ temp 4-component vector of float color})
+0:20        color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:20          'ps_output' ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:20          Constant:
 0:20            0 (const int)
 0:?         Constant:
@@ -34,20 +34,20 @@ gl_FragCoord origin is upper left
 0:?           0.000000
 0:?           0.000000
 0:21      Branch: Return with expression
-0:21        'ps_output' ( temp structure{ temp 4-component vector of float color})
+0:21        'ps_output' ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:15  Function Definition: main( ( temp void)
 0:15    Function Parameters: 
 0:?     Sequence
 0:15      Sequence
 0:15        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.color' (layout( location=0) out 4-component vector of float)
-0:15          color: direct index for structure ( temp 4-component vector of float)
-0:15            Function Call: @main( ( temp structure{ temp 4-component vector of float color})
+0:?           '@entryPointOutput.color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:15          color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:15            Function Call: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:15            Constant:
 0:15              0 (const int)
 0:?   Linker Objects
 0:?     'anon@0' (layout( row_major std140) uniform block{ uniform int i,  uniform uint u,  uniform float f,  uniform bool b,  uniform 2-component vector of int i2,  uniform 2-component vector of uint u2,  uniform 2-component vector of float f2,  uniform 2-component vector of bool b2})
-0:?     '@entryPointOutput.color' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput.color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
 
 
 Linked fragment stage:
@@ -56,7 +56,7 @@ Linked fragment stage:
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:15  Function Definition: @main( ( temp structure{ temp 4-component vector of float color})
+0:15  Function Definition: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:15    Function Parameters: 
 0:?     Sequence
 0:16      Sequence
@@ -78,8 +78,8 @@ gl_FragCoord origin is upper left
 0:17                Constant:
 0:17                  6 (const uint)
 0:20      move second child to first child ( temp 4-component vector of float)
-0:20        color: direct index for structure ( temp 4-component vector of float)
-0:20          'ps_output' ( temp structure{ temp 4-component vector of float color})
+0:20        color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:20          'ps_output' ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:20          Constant:
 0:20            0 (const int)
 0:?         Constant:
@@ -88,20 +88,20 @@ gl_FragCoord origin is upper left
 0:?           0.000000
 0:?           0.000000
 0:21      Branch: Return with expression
-0:21        'ps_output' ( temp structure{ temp 4-component vector of float color})
+0:21        'ps_output' ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:15  Function Definition: main( ( temp void)
 0:15    Function Parameters: 
 0:?     Sequence
 0:15      Sequence
 0:15        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.color' (layout( location=0) out 4-component vector of float)
-0:15          color: direct index for structure ( temp 4-component vector of float)
-0:15            Function Call: @main( ( temp structure{ temp 4-component vector of float color})
+0:?           '@entryPointOutput.color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:15          color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:15            Function Call: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:15            Constant:
 0:15              0 (const int)
 0:?   Linker Objects
 0:?     'anon@0' (layout( row_major std140) uniform block{ uniform int i,  uniform uint u,  uniform float f,  uniform bool b,  uniform 2-component vector of int i2,  uniform 2-component vector of uint u2,  uniform 2-component vector of float f2,  uniform 2-component vector of bool b2})
-0:?     '@entryPointOutput.color' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput.color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
 
 // Module Version 10000
 // Generated by (magic number): 80001
