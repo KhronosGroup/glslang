@@ -1731,6 +1731,11 @@ public:
             appendStr("}");
         }
 
+        if (qualifier.semanticName) {
+            appendStr(" : ");
+            appendStr(qualifier.semanticName);
+        }
+
         return typeString;
     }
 

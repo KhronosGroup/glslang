@@ -6,7 +6,7 @@ ERROR: 1 compilation errors.  No code generated.
 Shader version: 500
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
-0:6  Function Definition: @main( ( temp 4-component vector of float)
+0:6  Function Definition: @main( ( temp 4-component vector of float : SV_TARGET0)
 0:6    Function Parameters: 
 0:?     Sequence
 0:7      ERROR: Bad aggregation op
@@ -31,12 +31,12 @@ ERROR: node is still EOpNull!
 0:6    Function Parameters: 
 0:?     Sequence
 0:6      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:6        Function Call: @main( ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:6        Function Call: @main( ( temp 4-component vector of float : SV_TARGET0)
 0:?   Linker Objects
 0:?     'g_shadowTex' ( uniform texture2D)
 0:?     'g_shadowSampler' ( uniform sampler)
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
 
 
 Linked fragment stage:
@@ -45,7 +45,7 @@ Linked fragment stage:
 Shader version: 500
 gl_FragCoord origin is upper left
 ERROR: node is still EOpNull!
-0:6  Function Definition: @main( ( temp 4-component vector of float)
+0:6  Function Definition: @main( ( temp 4-component vector of float : SV_TARGET0)
 0:6    Function Parameters: 
 0:?     Sequence
 0:7      ERROR: Bad aggregation op
@@ -70,11 +70,11 @@ ERROR: node is still EOpNull!
 0:6    Function Parameters: 
 0:?     Sequence
 0:6      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:6        Function Call: @main( ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:6        Function Call: @main( ( temp 4-component vector of float : SV_TARGET0)
 0:?   Linker Objects
 0:?     'g_shadowTex' ( uniform texture2D)
 0:?     'g_shadowSampler' ( uniform sampler)
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
 
 SPIR-V is not generated for failed compile or link

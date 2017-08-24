@@ -2,9 +2,9 @@ hlsl.structbuffer.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:12  Function Definition: @main(u1; ( temp 4-component vector of float)
+0:12  Function Definition: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:12    Function Parameters: 
-0:12      'pos' ( in uint)
+0:12      'pos' ( in uint : FOO)
 0:?     Sequence
 0:13      Sequence
 0:13        move second child to first child ( temp structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2})
@@ -14,7 +14,7 @@ gl_FragCoord origin is upper left
 0:13              'sbuf' (layout( binding=10 row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2} @data})
 0:13              Constant:
 0:13                0 (const uint)
-0:13            'pos' ( in uint)
+0:13            'pos' ( in uint : FOO)
 0:17      Sequence
 0:17        move second child to first child ( temp uint)
 0:17          'size' ( temp uint)
@@ -35,7 +35,7 @@ gl_FragCoord origin is upper left
 0:19              'sbuf' (layout( binding=10 row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2} @data})
 0:19              Constant:
 0:19                0 (const uint)
-0:19            'pos' ( in uint)
+0:19            'pos' ( in uint : FOO)
 0:19          Constant:
 0:19            1 (const int)
 0:19        true case
@@ -48,7 +48,7 @@ gl_FragCoord origin is upper left
 0:20                    'sbuf' (layout( binding=10 row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2} @data})
 0:20                    Constant:
 0:20                      0 (const uint)
-0:20                  'pos' ( in uint)
+0:20                  'pos' ( in uint : FOO)
 0:20                Constant:
 0:20                  0 (const int)
 0:20              indirect index (layout( row_major std430) buffer float)
@@ -56,12 +56,12 @@ gl_FragCoord origin is upper left
 0:20                  'sbuf2' (layout( row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of float @data})
 0:20                  Constant:
 0:20                    0 (const uint)
-0:20                'pos' ( in uint)
+0:20                'pos' ( in uint : FOO)
 0:20            Constant:
 0:20              0.000000
 0:19        false case
 0:22        Branch: Return with expression
-0:22          Construct vec4 ( temp 4-component vector of float)
+0:22          Construct vec4 ( temp 4-component vector of float : SV_TARGET0)
 0:22            add ( temp float)
 0:22              add ( temp float)
 0:22                direct index ( temp float)
@@ -80,16 +80,16 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:12      move second child to first child ( temp uint)
 0:?         'pos' ( temp uint)
-0:?         'pos' (layout( location=0) flat in uint)
+0:?         'pos' (layout( location=0) flat in uint : FOO)
 0:12      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:12        Function Call: @main(u1; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:12        Function Call: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:?           'pos' ( temp uint)
 0:?   Linker Objects
 0:?     'sbuf' (layout( binding=10 row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2} @data})
 0:?     'sbuf2' (layout( row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of float @data})
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:?     'pos' (layout( location=0) flat in uint)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:?     'pos' (layout( location=0) flat in uint : FOO)
 
 
 Linked fragment stage:
@@ -98,9 +98,9 @@ Linked fragment stage:
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:12  Function Definition: @main(u1; ( temp 4-component vector of float)
+0:12  Function Definition: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:12    Function Parameters: 
-0:12      'pos' ( in uint)
+0:12      'pos' ( in uint : FOO)
 0:?     Sequence
 0:13      Sequence
 0:13        move second child to first child ( temp structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2})
@@ -110,7 +110,7 @@ gl_FragCoord origin is upper left
 0:13              'sbuf' (layout( binding=10 row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2} @data})
 0:13              Constant:
 0:13                0 (const uint)
-0:13            'pos' ( in uint)
+0:13            'pos' ( in uint : FOO)
 0:17      Sequence
 0:17        move second child to first child ( temp uint)
 0:17          'size' ( temp uint)
@@ -131,7 +131,7 @@ gl_FragCoord origin is upper left
 0:19              'sbuf' (layout( binding=10 row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2} @data})
 0:19              Constant:
 0:19                0 (const uint)
-0:19            'pos' ( in uint)
+0:19            'pos' ( in uint : FOO)
 0:19          Constant:
 0:19            1 (const int)
 0:19        true case
@@ -144,7 +144,7 @@ gl_FragCoord origin is upper left
 0:20                    'sbuf' (layout( binding=10 row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2} @data})
 0:20                    Constant:
 0:20                      0 (const uint)
-0:20                  'pos' ( in uint)
+0:20                  'pos' ( in uint : FOO)
 0:20                Constant:
 0:20                  0 (const int)
 0:20              indirect index (layout( row_major std430) buffer float)
@@ -152,12 +152,12 @@ gl_FragCoord origin is upper left
 0:20                  'sbuf2' (layout( row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of float @data})
 0:20                  Constant:
 0:20                    0 (const uint)
-0:20                'pos' ( in uint)
+0:20                'pos' ( in uint : FOO)
 0:20            Constant:
 0:20              0.000000
 0:19        false case
 0:22        Branch: Return with expression
-0:22          Construct vec4 ( temp 4-component vector of float)
+0:22          Construct vec4 ( temp 4-component vector of float : SV_TARGET0)
 0:22            add ( temp float)
 0:22              add ( temp float)
 0:22                direct index ( temp float)
@@ -176,16 +176,16 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:12      move second child to first child ( temp uint)
 0:?         'pos' ( temp uint)
-0:?         'pos' (layout( location=0) flat in uint)
+0:?         'pos' (layout( location=0) flat in uint : FOO)
 0:12      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:12        Function Call: @main(u1; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:12        Function Call: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:?           'pos' ( temp uint)
 0:?   Linker Objects
 0:?     'sbuf' (layout( binding=10 row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 3-component vector of float color,  temp bool test,  temp bool test2} @data})
 0:?     'sbuf2' (layout( row_major std430) readonly buffer block{layout( row_major std430) buffer implicitly-sized array of float @data})
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:?     'pos' (layout( location=0) flat in uint)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:?     'pos' (layout( location=0) flat in uint : FOO)
 
 // Module Version 10000
 // Generated by (magic number): 80001

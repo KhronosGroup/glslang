@@ -1,14 +1,14 @@
 hlsl.clipdistance-9.vert
 Shader version: 500
 0:? Sequence
-0:7  Function Definition: @main(vf3;f1; ( temp structure{ temp 4-component vector of float Position})
+0:7  Function Definition: @main(vf3;f1; ( temp structure{ temp 4-component vector of float : SV_POSITION Position})
 0:7    Function Parameters: 
-0:7      'clip0' ( out 3-component vector of float)
-0:7      'clip1' ( out float)
+0:7      'clip0' ( out 3-component vector of float : SV_CLIPDISTANCE0)
+0:7      'clip1' ( out float : SV_CLIPDISTANCE1)
 0:?     Sequence
 0:9      move second child to first child ( temp 4-component vector of float)
-0:9        Position: direct index for structure ( temp 4-component vector of float)
-0:9          'Output' ( temp structure{ temp 4-component vector of float Position})
+0:9        Position: direct index for structure ( temp 4-component vector of float : SV_POSITION)
+0:9          'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position})
 0:9          Constant:
 0:9            0 (const int)
 0:9        Constant:
@@ -18,39 +18,39 @@ Shader version: 500
 0:9          0.000000
 0:11      move second child to first child ( temp float)
 0:11        direct index ( temp float)
-0:11          'clip0' ( out 3-component vector of float)
+0:11          'clip0' ( out 3-component vector of float : SV_CLIPDISTANCE0)
 0:11          Constant:
 0:11            0 (const int)
 0:11        Constant:
 0:11          0.000000
 0:12      move second child to first child ( temp float)
 0:12        direct index ( temp float)
-0:12          'clip0' ( out 3-component vector of float)
+0:12          'clip0' ( out 3-component vector of float : SV_CLIPDISTANCE0)
 0:12          Constant:
 0:12            1 (const int)
 0:12        Constant:
 0:12          1.000000
 0:13      move second child to first child ( temp float)
 0:13        direct index ( temp float)
-0:13          'clip0' ( out 3-component vector of float)
+0:13          'clip0' ( out 3-component vector of float : SV_CLIPDISTANCE0)
 0:13          Constant:
 0:13            2 (const int)
 0:13        Constant:
 0:13          2.000000
 0:16      move second child to first child ( temp float)
-0:16        'clip1' ( out float)
+0:16        'clip1' ( out float : SV_CLIPDISTANCE1)
 0:16        Constant:
 0:16          3.000000
 0:18      Branch: Return with expression
-0:18        'Output' ( temp structure{ temp 4-component vector of float Position})
+0:18        'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position})
 0:7  Function Definition: main( ( temp void)
 0:7    Function Parameters: 
 0:?     Sequence
 0:7      Sequence
 0:7        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.Position' ( out 4-component vector of float Position)
-0:7          Position: direct index for structure ( temp 4-component vector of float)
-0:7            Function Call: @main(vf3;f1; ( temp structure{ temp 4-component vector of float Position})
+0:?           '@entryPointOutput.Position' ( out 4-component vector of float Position : SV_POSITION)
+0:7          Position: direct index for structure ( temp 4-component vector of float : SV_POSITION)
+0:7            Function Call: @main(vf3;f1; ( temp structure{ temp 4-component vector of float : SV_POSITION Position})
 0:?               'clip0' ( temp 3-component vector of float)
 0:?               'clip1' ( temp float)
 0:7            Constant:
@@ -58,7 +58,7 @@ Shader version: 500
 0:?       Sequence
 0:7        move second child to first child ( temp float)
 0:7          direct index ( temp float)
-0:?             'clip0' ( out 4-element array of float ClipDistance)
+0:?             'clip0' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:7            Constant:
 0:7              0 (const int)
 0:7          direct index ( temp float)
@@ -67,7 +67,7 @@ Shader version: 500
 0:7              0 (const int)
 0:7        move second child to first child ( temp float)
 0:7          direct index ( temp float)
-0:?             'clip0' ( out 4-element array of float ClipDistance)
+0:?             'clip0' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:7            Constant:
 0:7              1 (const int)
 0:7          direct index ( temp float)
@@ -76,7 +76,7 @@ Shader version: 500
 0:7              1 (const int)
 0:7        move second child to first child ( temp float)
 0:7          direct index ( temp float)
-0:?             'clip0' ( out 4-element array of float ClipDistance)
+0:?             'clip0' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:7            Constant:
 0:7              2 (const int)
 0:7          direct index ( temp float)
@@ -86,13 +86,13 @@ Shader version: 500
 0:?       Sequence
 0:7        move second child to first child ( temp float)
 0:7          direct index ( temp float)
-0:?             'clip0' ( out 4-element array of float ClipDistance)
+0:?             'clip0' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:7            Constant:
 0:7              3 (const int)
 0:?           'clip1' ( temp float)
 0:?   Linker Objects
-0:?     '@entryPointOutput.Position' ( out 4-component vector of float Position)
-0:?     'clip0' ( out 4-element array of float ClipDistance)
+0:?     '@entryPointOutput.Position' ( out 4-component vector of float Position : SV_POSITION)
+0:?     'clip0' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 
 
 Linked vertex stage:
@@ -100,14 +100,14 @@ Linked vertex stage:
 
 Shader version: 500
 0:? Sequence
-0:7  Function Definition: @main(vf3;f1; ( temp structure{ temp 4-component vector of float Position})
+0:7  Function Definition: @main(vf3;f1; ( temp structure{ temp 4-component vector of float : SV_POSITION Position})
 0:7    Function Parameters: 
-0:7      'clip0' ( out 3-component vector of float)
-0:7      'clip1' ( out float)
+0:7      'clip0' ( out 3-component vector of float : SV_CLIPDISTANCE0)
+0:7      'clip1' ( out float : SV_CLIPDISTANCE1)
 0:?     Sequence
 0:9      move second child to first child ( temp 4-component vector of float)
-0:9        Position: direct index for structure ( temp 4-component vector of float)
-0:9          'Output' ( temp structure{ temp 4-component vector of float Position})
+0:9        Position: direct index for structure ( temp 4-component vector of float : SV_POSITION)
+0:9          'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position})
 0:9          Constant:
 0:9            0 (const int)
 0:9        Constant:
@@ -117,39 +117,39 @@ Shader version: 500
 0:9          0.000000
 0:11      move second child to first child ( temp float)
 0:11        direct index ( temp float)
-0:11          'clip0' ( out 3-component vector of float)
+0:11          'clip0' ( out 3-component vector of float : SV_CLIPDISTANCE0)
 0:11          Constant:
 0:11            0 (const int)
 0:11        Constant:
 0:11          0.000000
 0:12      move second child to first child ( temp float)
 0:12        direct index ( temp float)
-0:12          'clip0' ( out 3-component vector of float)
+0:12          'clip0' ( out 3-component vector of float : SV_CLIPDISTANCE0)
 0:12          Constant:
 0:12            1 (const int)
 0:12        Constant:
 0:12          1.000000
 0:13      move second child to first child ( temp float)
 0:13        direct index ( temp float)
-0:13          'clip0' ( out 3-component vector of float)
+0:13          'clip0' ( out 3-component vector of float : SV_CLIPDISTANCE0)
 0:13          Constant:
 0:13            2 (const int)
 0:13        Constant:
 0:13          2.000000
 0:16      move second child to first child ( temp float)
-0:16        'clip1' ( out float)
+0:16        'clip1' ( out float : SV_CLIPDISTANCE1)
 0:16        Constant:
 0:16          3.000000
 0:18      Branch: Return with expression
-0:18        'Output' ( temp structure{ temp 4-component vector of float Position})
+0:18        'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position})
 0:7  Function Definition: main( ( temp void)
 0:7    Function Parameters: 
 0:?     Sequence
 0:7      Sequence
 0:7        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.Position' ( out 4-component vector of float Position)
-0:7          Position: direct index for structure ( temp 4-component vector of float)
-0:7            Function Call: @main(vf3;f1; ( temp structure{ temp 4-component vector of float Position})
+0:?           '@entryPointOutput.Position' ( out 4-component vector of float Position : SV_POSITION)
+0:7          Position: direct index for structure ( temp 4-component vector of float : SV_POSITION)
+0:7            Function Call: @main(vf3;f1; ( temp structure{ temp 4-component vector of float : SV_POSITION Position})
 0:?               'clip0' ( temp 3-component vector of float)
 0:?               'clip1' ( temp float)
 0:7            Constant:
@@ -157,7 +157,7 @@ Shader version: 500
 0:?       Sequence
 0:7        move second child to first child ( temp float)
 0:7          direct index ( temp float)
-0:?             'clip0' ( out 4-element array of float ClipDistance)
+0:?             'clip0' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:7            Constant:
 0:7              0 (const int)
 0:7          direct index ( temp float)
@@ -166,7 +166,7 @@ Shader version: 500
 0:7              0 (const int)
 0:7        move second child to first child ( temp float)
 0:7          direct index ( temp float)
-0:?             'clip0' ( out 4-element array of float ClipDistance)
+0:?             'clip0' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:7            Constant:
 0:7              1 (const int)
 0:7          direct index ( temp float)
@@ -175,7 +175,7 @@ Shader version: 500
 0:7              1 (const int)
 0:7        move second child to first child ( temp float)
 0:7          direct index ( temp float)
-0:?             'clip0' ( out 4-element array of float ClipDistance)
+0:?             'clip0' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:7            Constant:
 0:7              2 (const int)
 0:7          direct index ( temp float)
@@ -185,13 +185,13 @@ Shader version: 500
 0:?       Sequence
 0:7        move second child to first child ( temp float)
 0:7          direct index ( temp float)
-0:?             'clip0' ( out 4-element array of float ClipDistance)
+0:?             'clip0' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:7            Constant:
 0:7              3 (const int)
 0:?           'clip1' ( temp float)
 0:?   Linker Objects
-0:?     '@entryPointOutput.Position' ( out 4-component vector of float Position)
-0:?     'clip0' ( out 4-element array of float ClipDistance)
+0:?     '@entryPointOutput.Position' ( out 4-component vector of float Position : SV_POSITION)
+0:?     'clip0' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 
 // Module Version 10000
 // Generated by (magic number): 80001

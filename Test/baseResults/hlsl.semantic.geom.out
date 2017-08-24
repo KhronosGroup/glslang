@@ -7,53 +7,53 @@ output primitive = line_strip
 0:? Sequence
 0:13  Function Definition: @main(u1[3];struct-S-f1-f1-f1-u1-u1-i11; ( temp void)
 0:13    Function Parameters: 
-0:13      'VertexID' ( in 3-element array of uint)
-0:13      'OutputStream' ( out structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:13      'VertexID' ( in 3-element array of uint : VERTEXID)
+0:13      'OutputStream' ( out structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:?     Sequence
 0:15      Sequence
 0:15        Sequence
 0:15          move second child to first child ( temp float)
-0:?             'OutputStream.clip0' ( out float Position)
-0:15            clip0: direct index for structure ( temp float)
-0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:?             'OutputStream.clip0' ( out float Position : SV_POSITION)
+0:15            clip0: direct index for structure ( temp float : SV_POSITION)
+0:15              's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15              Constant:
 0:15                0 (const int)
 0:?           Sequence
 0:15            move second child to first child ( temp float)
 0:15              direct index ( temp float)
-0:?                 'OutputStream.clip0' ( out 1-element array of float ClipDistance)
+0:?                 'OutputStream.clip0' ( out 1-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:15                Constant:
 0:15                  0 (const int)
-0:15              clip0: direct index for structure ( temp float)
-0:15                's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:15              clip0: direct index for structure ( temp float : SV_CLIPDISTANCE0)
+0:15                's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15                Constant:
 0:15                  1 (const int)
 0:?           Sequence
 0:15            move second child to first child ( temp float)
 0:15              direct index ( temp float)
-0:?                 'OutputStream.cull0' ( out 1-element array of float CullDistance)
+0:?                 'OutputStream.cull0' ( out 1-element array of float CullDistance : SV_CULLDISTANCE0)
 0:15                Constant:
 0:15                  0 (const int)
-0:15              cull0: direct index for structure ( temp float)
-0:15                's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:15              cull0: direct index for structure ( temp float : SV_CULLDISTANCE0)
+0:15                's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15                Constant:
 0:15                  2 (const int)
 0:15          move second child to first child ( temp uint)
-0:?             'OutputStream.vpai' ( out uint ViewportIndex)
-0:15            vpai: direct index for structure ( temp uint)
-0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:?             'OutputStream.vpai' ( out uint ViewportIndex : SV_VIEWPORTARRAYINDEX)
+0:15            vpai: direct index for structure ( temp uint : SV_VIEWPORTARRAYINDEX)
+0:15              's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15              Constant:
 0:15                3 (const int)
 0:15          move second child to first child ( temp uint)
-0:?             'OutputStream.rtai' ( out uint Layer)
-0:15            rtai: direct index for structure ( temp uint)
-0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:?             'OutputStream.rtai' ( out uint Layer : SV_RENDERTARGETARRAYINDEX)
+0:15            rtai: direct index for structure ( temp uint : SV_RENDERTARGETARRAYINDEX)
+0:15              's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15              Constant:
 0:15                4 (const int)
 0:15          move second child to first child ( temp int)
-0:?             'OutputStream.ii' (layout( location=0) out int)
-0:15            ii: direct index for structure ( temp int)
-0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:?             'OutputStream.ii' (layout( location=0) out int : SV_INSTANCEID)
+0:15            ii: direct index for structure ( temp int : SV_INSTANCEID)
+0:15              's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15              Constant:
 0:15                5 (const int)
 0:15        EmitVertex ( temp void)
@@ -62,18 +62,18 @@ output primitive = line_strip
 0:?     Sequence
 0:13      move second child to first child ( temp 3-element array of uint)
 0:?         'VertexID' ( temp 3-element array of uint)
-0:?         'VertexID' (layout( location=0) in 3-element array of uint)
+0:?         'VertexID' (layout( location=0) in 3-element array of uint : VERTEXID)
 0:13      Function Call: @main(u1[3];struct-S-f1-f1-f1-u1-u1-i11; ( temp void)
 0:?         'VertexID' ( temp 3-element array of uint)
-0:?         'OutputStream' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:?         'OutputStream' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:?   Linker Objects
-0:?     'VertexID' (layout( location=0) in 3-element array of uint)
-0:?     'OutputStream.clip0' ( out float Position)
-0:?     'OutputStream.vpai' ( out uint ViewportIndex)
-0:?     'OutputStream.rtai' ( out uint Layer)
-0:?     'OutputStream.ii' (layout( location=0) out int)
-0:?     'OutputStream.clip0' ( out 1-element array of float ClipDistance)
-0:?     'OutputStream.cull0' ( out 1-element array of float CullDistance)
+0:?     'VertexID' (layout( location=0) in 3-element array of uint : VERTEXID)
+0:?     'OutputStream.clip0' ( out float Position : SV_POSITION)
+0:?     'OutputStream.vpai' ( out uint ViewportIndex : SV_VIEWPORTARRAYINDEX)
+0:?     'OutputStream.rtai' ( out uint Layer : SV_RENDERTARGETARRAYINDEX)
+0:?     'OutputStream.ii' (layout( location=0) out int : SV_INSTANCEID)
+0:?     'OutputStream.clip0' ( out 1-element array of float ClipDistance : SV_CLIPDISTANCE0)
+0:?     'OutputStream.cull0' ( out 1-element array of float CullDistance : SV_CULLDISTANCE0)
 
 
 Linked geometry stage:
@@ -87,53 +87,53 @@ output primitive = line_strip
 0:? Sequence
 0:13  Function Definition: @main(u1[3];struct-S-f1-f1-f1-u1-u1-i11; ( temp void)
 0:13    Function Parameters: 
-0:13      'VertexID' ( in 3-element array of uint)
-0:13      'OutputStream' ( out structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:13      'VertexID' ( in 3-element array of uint : VERTEXID)
+0:13      'OutputStream' ( out structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:?     Sequence
 0:15      Sequence
 0:15        Sequence
 0:15          move second child to first child ( temp float)
-0:?             'OutputStream.clip0' ( out float Position)
-0:15            clip0: direct index for structure ( temp float)
-0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:?             'OutputStream.clip0' ( out float Position : SV_POSITION)
+0:15            clip0: direct index for structure ( temp float : SV_POSITION)
+0:15              's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15              Constant:
 0:15                0 (const int)
 0:?           Sequence
 0:15            move second child to first child ( temp float)
 0:15              direct index ( temp float)
-0:?                 'OutputStream.clip0' ( out 1-element array of float ClipDistance)
+0:?                 'OutputStream.clip0' ( out 1-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:15                Constant:
 0:15                  0 (const int)
-0:15              clip0: direct index for structure ( temp float)
-0:15                's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:15              clip0: direct index for structure ( temp float : SV_CLIPDISTANCE0)
+0:15                's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15                Constant:
 0:15                  1 (const int)
 0:?           Sequence
 0:15            move second child to first child ( temp float)
 0:15              direct index ( temp float)
-0:?                 'OutputStream.cull0' ( out 1-element array of float CullDistance)
+0:?                 'OutputStream.cull0' ( out 1-element array of float CullDistance : SV_CULLDISTANCE0)
 0:15                Constant:
 0:15                  0 (const int)
-0:15              cull0: direct index for structure ( temp float)
-0:15                's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:15              cull0: direct index for structure ( temp float : SV_CULLDISTANCE0)
+0:15                's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15                Constant:
 0:15                  2 (const int)
 0:15          move second child to first child ( temp uint)
-0:?             'OutputStream.vpai' ( out uint ViewportIndex)
-0:15            vpai: direct index for structure ( temp uint)
-0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:?             'OutputStream.vpai' ( out uint ViewportIndex : SV_VIEWPORTARRAYINDEX)
+0:15            vpai: direct index for structure ( temp uint : SV_VIEWPORTARRAYINDEX)
+0:15              's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15              Constant:
 0:15                3 (const int)
 0:15          move second child to first child ( temp uint)
-0:?             'OutputStream.rtai' ( out uint Layer)
-0:15            rtai: direct index for structure ( temp uint)
-0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:?             'OutputStream.rtai' ( out uint Layer : SV_RENDERTARGETARRAYINDEX)
+0:15            rtai: direct index for structure ( temp uint : SV_RENDERTARGETARRAYINDEX)
+0:15              's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15              Constant:
 0:15                4 (const int)
 0:15          move second child to first child ( temp int)
-0:?             'OutputStream.ii' (layout( location=0) out int)
-0:15            ii: direct index for structure ( temp int)
-0:15              's' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:?             'OutputStream.ii' (layout( location=0) out int : SV_INSTANCEID)
+0:15            ii: direct index for structure ( temp int : SV_INSTANCEID)
+0:15              's' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:15              Constant:
 0:15                5 (const int)
 0:15        EmitVertex ( temp void)
@@ -142,18 +142,18 @@ output primitive = line_strip
 0:?     Sequence
 0:13      move second child to first child ( temp 3-element array of uint)
 0:?         'VertexID' ( temp 3-element array of uint)
-0:?         'VertexID' (layout( location=0) in 3-element array of uint)
+0:?         'VertexID' (layout( location=0) in 3-element array of uint : VERTEXID)
 0:13      Function Call: @main(u1[3];struct-S-f1-f1-f1-u1-u1-i11; ( temp void)
 0:?         'VertexID' ( temp 3-element array of uint)
-0:?         'OutputStream' ( temp structure{ temp float clip0,  temp float clip0,  temp float cull0,  temp uint vpai,  temp uint rtai,  temp int ii})
+0:?         'OutputStream' ( temp structure{ temp float : SV_POSITION clip0,  temp float : SV_CLIPDISTANCE0 clip0,  temp float : SV_CULLDISTANCE0 cull0,  temp uint : SV_VIEWPORTARRAYINDEX vpai,  temp uint : SV_RENDERTARGETARRAYINDEX rtai,  temp int : SV_INSTANCEID ii})
 0:?   Linker Objects
-0:?     'VertexID' (layout( location=0) in 3-element array of uint)
-0:?     'OutputStream.clip0' ( out float Position)
-0:?     'OutputStream.vpai' ( out uint ViewportIndex)
-0:?     'OutputStream.rtai' ( out uint Layer)
-0:?     'OutputStream.ii' (layout( location=0) out int)
-0:?     'OutputStream.clip0' ( out 1-element array of float ClipDistance)
-0:?     'OutputStream.cull0' ( out 1-element array of float CullDistance)
+0:?     'VertexID' (layout( location=0) in 3-element array of uint : VERTEXID)
+0:?     'OutputStream.clip0' ( out float Position : SV_POSITION)
+0:?     'OutputStream.vpai' ( out uint ViewportIndex : SV_VIEWPORTARRAYINDEX)
+0:?     'OutputStream.rtai' ( out uint Layer : SV_RENDERTARGETARRAYINDEX)
+0:?     'OutputStream.ii' (layout( location=0) out int : SV_INSTANCEID)
+0:?     'OutputStream.clip0' ( out 1-element array of float ClipDistance : SV_CLIPDISTANCE0)
+0:?     'OutputStream.cull0' ( out 1-element array of float CullDistance : SV_CULLDISTANCE0)
 
 // Module Version 10000
 // Generated by (magic number): 80001

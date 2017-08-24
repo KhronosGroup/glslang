@@ -1,13 +1,13 @@
 hlsl.clipdistance-5.vert
 Shader version: 500
 0:? Sequence
-0:11  Function Definition: @main(struct-VS_INPUT-vf41; ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:11  Function Definition: @main(struct-VS_INPUT-vf41; ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11    Function Parameters: 
-0:11      'v' ( const (read only) structure{ temp 4-component vector of float Position})
+0:11      'v' ( const (read only) structure{ temp 4-component vector of float : POSITION Position})
 0:?     Sequence
 0:13      move second child to first child ( temp 4-component vector of float)
-0:13        Position: direct index for structure ( temp 4-component vector of float)
-0:13          'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:13        Position: direct index for structure ( temp 4-component vector of float : SV_POSITION)
+0:13          'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:13          Constant:
 0:13            0 (const int)
 0:13        Constant:
@@ -17,9 +17,9 @@ Shader version: 500
 0:13          0.000000
 0:15      move second child to first child ( temp float)
 0:15        direct index ( temp float)
-0:15          direct index ( temp 2-component vector of float)
-0:15            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:15              'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:15          direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:15            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:15              'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:15              Constant:
 0:15                1 (const int)
 0:15            Constant:
@@ -30,9 +30,9 @@ Shader version: 500
 0:15          1.000000
 0:16      move second child to first child ( temp float)
 0:16        direct index ( temp float)
-0:16          direct index ( temp 2-component vector of float)
-0:16            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:16              'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:16          direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:16            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:16              'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:16              Constant:
 0:16                1 (const int)
 0:16            Constant:
@@ -43,9 +43,9 @@ Shader version: 500
 0:16          2.000000
 0:17      move second child to first child ( temp float)
 0:17        direct index ( temp float)
-0:17          direct index ( temp 2-component vector of float)
-0:17            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:17              'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:17          direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:17            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:17              'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:17              Constant:
 0:17                1 (const int)
 0:17            Constant:
@@ -56,9 +56,9 @@ Shader version: 500
 0:17          3.000000
 0:18      move second child to first child ( temp float)
 0:18        direct index ( temp float)
-0:18          direct index ( temp 2-component vector of float)
-0:18            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:18              'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:18          direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:18            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:18              'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:18              Constant:
 0:18                1 (const int)
 0:18            Constant:
@@ -68,38 +68,38 @@ Shader version: 500
 0:18        Constant:
 0:18          4.000000
 0:20      Branch: Return with expression
-0:20        'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:20        'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11  Function Definition: main( ( temp void)
 0:11    Function Parameters: 
 0:?     Sequence
 0:11      Sequence
 0:11        move second child to first child ( temp 4-component vector of float)
-0:11          Position: direct index for structure ( temp 4-component vector of float)
-0:?             'v' ( temp structure{ temp 4-component vector of float Position})
+0:11          Position: direct index for structure ( temp 4-component vector of float : POSITION)
+0:?             'v' ( temp structure{ temp 4-component vector of float : POSITION Position})
 0:11            Constant:
 0:11              0 (const int)
-0:?           'v.Position' (layout( location=0) in 4-component vector of float)
+0:?           'v.Position' (layout( location=0) in 4-component vector of float : POSITION)
 0:11      Sequence
-0:11        move second child to first child ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
-0:11          'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
-0:11          Function Call: @main(struct-VS_INPUT-vf41; ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
-0:?             'v' ( temp structure{ temp 4-component vector of float Position})
+0:11        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
+0:11          'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
+0:11          Function Call: @main(struct-VS_INPUT-vf41; ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
+0:?             'v' ( temp structure{ temp 4-component vector of float : POSITION Position})
 0:11        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.Position' ( out 4-component vector of float Position)
-0:11          Position: direct index for structure ( temp 4-component vector of float)
-0:11            'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:?           '@entryPointOutput.Position' ( out 4-component vector of float Position : SV_POSITION)
+0:11          Position: direct index for structure ( temp 4-component vector of float : SV_POSITION)
+0:11            'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11            Constant:
 0:11              0 (const int)
 0:?         Sequence
 0:11          move second child to first child ( temp float)
 0:11            direct index ( temp float)
-0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance)
+0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:11              Constant:
 0:11                0 (const int)
-0:11            direct index ( temp float)
-0:11              direct index ( temp 2-component vector of float)
-0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:11            direct index ( temp float : SV_CLIPDISTANCE0)
+0:11              direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11                  Constant:
 0:11                    1 (const int)
 0:11                Constant:
@@ -108,13 +108,13 @@ Shader version: 500
 0:11                0 (const int)
 0:11          move second child to first child ( temp float)
 0:11            direct index ( temp float)
-0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance)
+0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:11              Constant:
 0:11                1 (const int)
-0:11            direct index ( temp float)
-0:11              direct index ( temp 2-component vector of float)
-0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:11            direct index ( temp float : SV_CLIPDISTANCE0)
+0:11              direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11                  Constant:
 0:11                    1 (const int)
 0:11                Constant:
@@ -123,13 +123,13 @@ Shader version: 500
 0:11                1 (const int)
 0:11          move second child to first child ( temp float)
 0:11            direct index ( temp float)
-0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance)
+0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:11              Constant:
 0:11                2 (const int)
-0:11            direct index ( temp float)
-0:11              direct index ( temp 2-component vector of float)
-0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:11            direct index ( temp float : SV_CLIPDISTANCE0)
+0:11              direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11                  Constant:
 0:11                    1 (const int)
 0:11                Constant:
@@ -138,13 +138,13 @@ Shader version: 500
 0:11                0 (const int)
 0:11          move second child to first child ( temp float)
 0:11            direct index ( temp float)
-0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance)
+0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:11              Constant:
 0:11                3 (const int)
-0:11            direct index ( temp float)
-0:11              direct index ( temp 2-component vector of float)
-0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:11            direct index ( temp float : SV_CLIPDISTANCE0)
+0:11              direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11                  Constant:
 0:11                    1 (const int)
 0:11                Constant:
@@ -152,9 +152,9 @@ Shader version: 500
 0:11              Constant:
 0:11                1 (const int)
 0:?   Linker Objects
-0:?     '@entryPointOutput.Position' ( out 4-component vector of float Position)
-0:?     'v.Position' (layout( location=0) in 4-component vector of float)
-0:?     '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance)
+0:?     '@entryPointOutput.Position' ( out 4-component vector of float Position : SV_POSITION)
+0:?     'v.Position' (layout( location=0) in 4-component vector of float : POSITION)
+0:?     '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 
 
 Linked vertex stage:
@@ -162,13 +162,13 @@ Linked vertex stage:
 
 Shader version: 500
 0:? Sequence
-0:11  Function Definition: @main(struct-VS_INPUT-vf41; ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:11  Function Definition: @main(struct-VS_INPUT-vf41; ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11    Function Parameters: 
-0:11      'v' ( const (read only) structure{ temp 4-component vector of float Position})
+0:11      'v' ( const (read only) structure{ temp 4-component vector of float : POSITION Position})
 0:?     Sequence
 0:13      move second child to first child ( temp 4-component vector of float)
-0:13        Position: direct index for structure ( temp 4-component vector of float)
-0:13          'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:13        Position: direct index for structure ( temp 4-component vector of float : SV_POSITION)
+0:13          'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:13          Constant:
 0:13            0 (const int)
 0:13        Constant:
@@ -178,9 +178,9 @@ Shader version: 500
 0:13          0.000000
 0:15      move second child to first child ( temp float)
 0:15        direct index ( temp float)
-0:15          direct index ( temp 2-component vector of float)
-0:15            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:15              'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:15          direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:15            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:15              'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:15              Constant:
 0:15                1 (const int)
 0:15            Constant:
@@ -191,9 +191,9 @@ Shader version: 500
 0:15          1.000000
 0:16      move second child to first child ( temp float)
 0:16        direct index ( temp float)
-0:16          direct index ( temp 2-component vector of float)
-0:16            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:16              'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:16          direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:16            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:16              'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:16              Constant:
 0:16                1 (const int)
 0:16            Constant:
@@ -204,9 +204,9 @@ Shader version: 500
 0:16          2.000000
 0:17      move second child to first child ( temp float)
 0:17        direct index ( temp float)
-0:17          direct index ( temp 2-component vector of float)
-0:17            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:17              'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:17          direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:17            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:17              'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:17              Constant:
 0:17                1 (const int)
 0:17            Constant:
@@ -217,9 +217,9 @@ Shader version: 500
 0:17          3.000000
 0:18      move second child to first child ( temp float)
 0:18        direct index ( temp float)
-0:18          direct index ( temp 2-component vector of float)
-0:18            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:18              'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:18          direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:18            ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:18              'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:18              Constant:
 0:18                1 (const int)
 0:18            Constant:
@@ -229,38 +229,38 @@ Shader version: 500
 0:18        Constant:
 0:18          4.000000
 0:20      Branch: Return with expression
-0:20        'Output' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:20        'Output' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11  Function Definition: main( ( temp void)
 0:11    Function Parameters: 
 0:?     Sequence
 0:11      Sequence
 0:11        move second child to first child ( temp 4-component vector of float)
-0:11          Position: direct index for structure ( temp 4-component vector of float)
-0:?             'v' ( temp structure{ temp 4-component vector of float Position})
+0:11          Position: direct index for structure ( temp 4-component vector of float : POSITION)
+0:?             'v' ( temp structure{ temp 4-component vector of float : POSITION Position})
 0:11            Constant:
 0:11              0 (const int)
-0:?           'v.Position' (layout( location=0) in 4-component vector of float)
+0:?           'v.Position' (layout( location=0) in 4-component vector of float : POSITION)
 0:11      Sequence
-0:11        move second child to first child ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
-0:11          'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
-0:11          Function Call: @main(struct-VS_INPUT-vf41; ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
-0:?             'v' ( temp structure{ temp 4-component vector of float Position})
+0:11        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
+0:11          'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
+0:11          Function Call: @main(struct-VS_INPUT-vf41; ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
+0:?             'v' ( temp structure{ temp 4-component vector of float : POSITION Position})
 0:11        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.Position' ( out 4-component vector of float Position)
-0:11          Position: direct index for structure ( temp 4-component vector of float)
-0:11            'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:?           '@entryPointOutput.Position' ( out 4-component vector of float Position : SV_POSITION)
+0:11          Position: direct index for structure ( temp 4-component vector of float : SV_POSITION)
+0:11            'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11            Constant:
 0:11              0 (const int)
 0:?         Sequence
 0:11          move second child to first child ( temp float)
 0:11            direct index ( temp float)
-0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance)
+0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:11              Constant:
 0:11                0 (const int)
-0:11            direct index ( temp float)
-0:11              direct index ( temp 2-component vector of float)
-0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:11            direct index ( temp float : SV_CLIPDISTANCE0)
+0:11              direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11                  Constant:
 0:11                    1 (const int)
 0:11                Constant:
@@ -269,13 +269,13 @@ Shader version: 500
 0:11                0 (const int)
 0:11          move second child to first child ( temp float)
 0:11            direct index ( temp float)
-0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance)
+0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:11              Constant:
 0:11                1 (const int)
-0:11            direct index ( temp float)
-0:11              direct index ( temp 2-component vector of float)
-0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:11            direct index ( temp float : SV_CLIPDISTANCE0)
+0:11              direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11                  Constant:
 0:11                    1 (const int)
 0:11                Constant:
@@ -284,13 +284,13 @@ Shader version: 500
 0:11                1 (const int)
 0:11          move second child to first child ( temp float)
 0:11            direct index ( temp float)
-0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance)
+0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:11              Constant:
 0:11                2 (const int)
-0:11            direct index ( temp float)
-0:11              direct index ( temp 2-component vector of float)
-0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:11            direct index ( temp float : SV_CLIPDISTANCE0)
+0:11              direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11                  Constant:
 0:11                    1 (const int)
 0:11                Constant:
@@ -299,13 +299,13 @@ Shader version: 500
 0:11                0 (const int)
 0:11          move second child to first child ( temp float)
 0:11            direct index ( temp float)
-0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance)
+0:?               '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 0:11              Constant:
 0:11                3 (const int)
-0:11            direct index ( temp float)
-0:11              direct index ( temp 2-component vector of float)
-0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float)
-0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float Position,  temp 2-element array of 2-component vector of float ClipRect})
+0:11            direct index ( temp float : SV_CLIPDISTANCE0)
+0:11              direct index ( temp 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                ClipRect: direct index for structure ( temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0)
+0:11                  'flattenTemp' ( temp structure{ temp 4-component vector of float : SV_POSITION Position,  temp 2-element array of 2-component vector of float : SV_CLIPDISTANCE0 ClipRect})
 0:11                  Constant:
 0:11                    1 (const int)
 0:11                Constant:
@@ -313,9 +313,9 @@ Shader version: 500
 0:11              Constant:
 0:11                1 (const int)
 0:?   Linker Objects
-0:?     '@entryPointOutput.Position' ( out 4-component vector of float Position)
-0:?     'v.Position' (layout( location=0) in 4-component vector of float)
-0:?     '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance)
+0:?     '@entryPointOutput.Position' ( out 4-component vector of float Position : SV_POSITION)
+0:?     'v.Position' (layout( location=0) in 4-component vector of float : POSITION)
+0:?     '@entryPointOutput.ClipRect' ( out 4-element array of float ClipDistance : SV_CLIPDISTANCE0)
 
 // Module Version 10000
 // Generated by (magic number): 80001

@@ -2,7 +2,7 @@ hlsl.precedence.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:7  Function Definition: @PixelShaderFunction(vf4;vf4;vf4;vf4; ( temp 4-component vector of float)
+0:7  Function Definition: @PixelShaderFunction(vf4;vf4;vf4;vf4; ( temp 4-component vector of float : COLOR0)
 0:7    Function Parameters: 
 0:7      'a1' ( in 4-component vector of float)
 0:7      'a2' ( in 4-component vector of float)
@@ -58,14 +58,14 @@ gl_FragCoord origin is upper left
 0:?         'a4' ( temp 4-component vector of float)
 0:?         'a4' (layout( location=3) in 4-component vector of float)
 0:7      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:7        Function Call: @PixelShaderFunction(vf4;vf4;vf4;vf4; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
+0:7        Function Call: @PixelShaderFunction(vf4;vf4;vf4;vf4; ( temp 4-component vector of float : COLOR0)
 0:?           'a1' ( temp 4-component vector of float)
 0:?           'a2' ( temp 4-component vector of float)
 0:?           'a3' ( temp 4-component vector of float)
 0:?           'a4' ( temp 4-component vector of float)
 0:?   Linker Objects
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
 0:?     'a1' (layout( location=0) in 4-component vector of float)
 0:?     'a2' (layout( location=1) in 4-component vector of float)
 0:?     'a3' (layout( location=2) in 4-component vector of float)
@@ -78,7 +78,7 @@ Linked fragment stage:
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:7  Function Definition: @PixelShaderFunction(vf4;vf4;vf4;vf4; ( temp 4-component vector of float)
+0:7  Function Definition: @PixelShaderFunction(vf4;vf4;vf4;vf4; ( temp 4-component vector of float : COLOR0)
 0:7    Function Parameters: 
 0:7      'a1' ( in 4-component vector of float)
 0:7      'a2' ( in 4-component vector of float)
@@ -134,14 +134,14 @@ gl_FragCoord origin is upper left
 0:?         'a4' ( temp 4-component vector of float)
 0:?         'a4' (layout( location=3) in 4-component vector of float)
 0:7      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:7        Function Call: @PixelShaderFunction(vf4;vf4;vf4;vf4; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
+0:7        Function Call: @PixelShaderFunction(vf4;vf4;vf4;vf4; ( temp 4-component vector of float : COLOR0)
 0:?           'a1' ( temp 4-component vector of float)
 0:?           'a2' ( temp 4-component vector of float)
 0:?           'a3' ( temp 4-component vector of float)
 0:?           'a4' ( temp 4-component vector of float)
 0:?   Linker Objects
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
 0:?     'a1' (layout( location=0) in 4-component vector of float)
 0:?     'a2' (layout( location=1) in 4-component vector of float)
 0:?     'a3' (layout( location=2) in 4-component vector of float)

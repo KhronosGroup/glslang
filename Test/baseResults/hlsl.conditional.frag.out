@@ -118,7 +118,7 @@ gl_FragCoord origin is upper left
 0:23          'src1' ( in 2-component vector of float)
 0:23          'src0' ( in 2-component vector of float)
 0:23          'cnd' ( in 2-component vector of bool)
-0:27  Function Definition: @PixelShaderFunction(vf4; ( temp 4-component vector of float)
+0:27  Function Definition: @PixelShaderFunction(vf4; ( temp 4-component vector of float : COLOR0)
 0:27    Function Parameters: 
 0:27      'input' ( in 4-component vector of float)
 0:?     Sequence
@@ -250,12 +250,12 @@ gl_FragCoord origin is upper left
 0:?         'input' ( temp 4-component vector of float)
 0:?         'input' (layout( location=0) in 4-component vector of float)
 0:27      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:27        Function Call: @PixelShaderFunction(vf4; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
+0:27        Function Call: @PixelShaderFunction(vf4; ( temp 4-component vector of float : COLOR0)
 0:?           'input' ( temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'anon@0' (layout( row_major std140) uniform block{ uniform 4-component vector of float c4,  uniform 4-component vector of float t4,  uniform 4-component vector of float f4,  uniform float t,  uniform float f})
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
 0:?     'input' (layout( location=0) in 4-component vector of float)
 
 
@@ -381,7 +381,7 @@ gl_FragCoord origin is upper left
 0:23          'src1' ( in 2-component vector of float)
 0:23          'src0' ( in 2-component vector of float)
 0:23          'cnd' ( in 2-component vector of bool)
-0:27  Function Definition: @PixelShaderFunction(vf4; ( temp 4-component vector of float)
+0:27  Function Definition: @PixelShaderFunction(vf4; ( temp 4-component vector of float : COLOR0)
 0:27    Function Parameters: 
 0:27      'input' ( in 4-component vector of float)
 0:?     Sequence
@@ -513,12 +513,12 @@ gl_FragCoord origin is upper left
 0:?         'input' ( temp 4-component vector of float)
 0:?         'input' (layout( location=0) in 4-component vector of float)
 0:27      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:27        Function Call: @PixelShaderFunction(vf4; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
+0:27        Function Call: @PixelShaderFunction(vf4; ( temp 4-component vector of float : COLOR0)
 0:?           'input' ( temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'anon@0' (layout( row_major std140) uniform block{ uniform 4-component vector of float c4,  uniform 4-component vector of float t4,  uniform 4-component vector of float f4,  uniform float t,  uniform float f})
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
 0:?     'input' (layout( location=0) in 4-component vector of float)
 
 // Module Version 10000

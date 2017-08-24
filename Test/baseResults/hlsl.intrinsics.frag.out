@@ -2732,12 +2732,12 @@ gl_FragCoord origin is upper left
 0:478          matrix-multiply ( temp 3X4 matrix of float)
 0:478            'inFM2x4' ( in 2X4 matrix of float)
 0:478            'inFM3x2' ( in 3X2 matrix of float)
-0:484  Function Definition: @main( ( temp structure{ temp 4-component vector of float color})
+0:484  Function Definition: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:484    Function Parameters: 
 0:?     Sequence
 0:486      move second child to first child ( temp 4-component vector of float)
-0:486        color: direct index for structure ( temp 4-component vector of float)
-0:486          'ps_output' ( temp structure{ temp 4-component vector of float color})
+0:486        color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:486          'ps_output' ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:486          Constant:
 0:486            0 (const int)
 0:486        Constant:
@@ -2746,15 +2746,15 @@ gl_FragCoord origin is upper left
 0:486          1.000000
 0:486          1.000000
 0:487      Branch: Return with expression
-0:487        'ps_output' ( temp structure{ temp 4-component vector of float color})
+0:487        'ps_output' ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:484  Function Definition: main( ( temp void)
 0:484    Function Parameters: 
 0:?     Sequence
 0:484      Sequence
 0:484        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.color' (layout( location=0) out 4-component vector of float)
-0:484          color: direct index for structure ( temp 4-component vector of float)
-0:484            Function Call: @main( ( temp structure{ temp 4-component vector of float color})
+0:?           '@entryPointOutput.color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:484          color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:484            Function Call: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:484            Constant:
 0:484              0 (const int)
 0:?   Linker Objects
@@ -2770,7 +2770,7 @@ gl_FragCoord origin is upper left
 0:?     'gs_ua4' ( shared 4-component vector of uint)
 0:?     'gs_ub4' ( shared 4-component vector of uint)
 0:?     'gs_uc4' ( shared 4-component vector of uint)
-0:?     '@entryPointOutput.color' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput.color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
 
 
 Linked fragment stage:
@@ -5509,12 +5509,12 @@ gl_FragCoord origin is upper left
 0:478          matrix-multiply ( temp 3X4 matrix of float)
 0:478            'inFM2x4' ( in 2X4 matrix of float)
 0:478            'inFM3x2' ( in 3X2 matrix of float)
-0:484  Function Definition: @main( ( temp structure{ temp 4-component vector of float color})
+0:484  Function Definition: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:484    Function Parameters: 
 0:?     Sequence
 0:486      move second child to first child ( temp 4-component vector of float)
-0:486        color: direct index for structure ( temp 4-component vector of float)
-0:486          'ps_output' ( temp structure{ temp 4-component vector of float color})
+0:486        color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:486          'ps_output' ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:486          Constant:
 0:486            0 (const int)
 0:486        Constant:
@@ -5523,15 +5523,15 @@ gl_FragCoord origin is upper left
 0:486          1.000000
 0:486          1.000000
 0:487      Branch: Return with expression
-0:487        'ps_output' ( temp structure{ temp 4-component vector of float color})
+0:487        'ps_output' ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:484  Function Definition: main( ( temp void)
 0:484    Function Parameters: 
 0:?     Sequence
 0:484      Sequence
 0:484        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.color' (layout( location=0) out 4-component vector of float)
-0:484          color: direct index for structure ( temp 4-component vector of float)
-0:484            Function Call: @main( ( temp structure{ temp 4-component vector of float color})
+0:?           '@entryPointOutput.color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:484          color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:484            Function Call: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 color})
 0:484            Constant:
 0:484              0 (const int)
 0:?   Linker Objects
@@ -5547,7 +5547,7 @@ gl_FragCoord origin is upper left
 0:?     'gs_ua4' ( shared 4-component vector of uint)
 0:?     'gs_ub4' ( shared 4-component vector of uint)
 0:?     'gs_uc4' ( shared 4-component vector of uint)
-0:?     '@entryPointOutput.color' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput.color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
 
 // Module Version 10000
 // Generated by (magic number): 80001

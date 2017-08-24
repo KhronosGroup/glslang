@@ -22,7 +22,7 @@ gl_FragCoord origin is upper left
 0:9        Constant:
 0:9          7 (const int)
 0:9          7 (const int)
-0:13  Function Definition: @PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21; ( temp 4-component vector of float)
+0:13  Function Definition: @PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21; ( temp 4-component vector of float : COLOR0)
 0:13    Function Parameters: 
 0:13      'input' ( in 4-component vector of float)
 0:13      'out1' ( out 4-component vector of float)
@@ -75,8 +75,8 @@ gl_FragCoord origin is upper left
 0:?         'input' ( temp 4-component vector of float)
 0:?         'input' (layout( location=0) in 4-component vector of float)
 0:13      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:13        Function Call: @PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
+0:13        Function Call: @PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21; ( temp 4-component vector of float : COLOR0)
 0:?           'input' ( temp 4-component vector of float)
 0:?           'out1' ( temp 4-component vector of float)
 0:?           'out2' ( temp structure{ temp 2-component vector of float v,  temp 2-component vector of int i})
@@ -111,7 +111,7 @@ gl_FragCoord origin is upper left
 0:13            Constant:
 0:13              1 (const int)
 0:?   Linker Objects
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
 0:?     'input' (layout( location=0) in 4-component vector of float)
 0:?     'out1' (layout( location=1) out 4-component vector of float)
 0:?     'out2.v' (layout( location=2) out 2-component vector of float)
@@ -146,7 +146,7 @@ gl_FragCoord origin is upper left
 0:9        Constant:
 0:9          7 (const int)
 0:9          7 (const int)
-0:13  Function Definition: @PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21; ( temp 4-component vector of float)
+0:13  Function Definition: @PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21; ( temp 4-component vector of float : COLOR0)
 0:13    Function Parameters: 
 0:13      'input' ( in 4-component vector of float)
 0:13      'out1' ( out 4-component vector of float)
@@ -199,8 +199,8 @@ gl_FragCoord origin is upper left
 0:?         'input' ( temp 4-component vector of float)
 0:?         'input' (layout( location=0) in 4-component vector of float)
 0:13      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:13        Function Call: @PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
+0:13        Function Call: @PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21; ( temp 4-component vector of float : COLOR0)
 0:?           'input' ( temp 4-component vector of float)
 0:?           'out1' ( temp 4-component vector of float)
 0:?           'out2' ( temp structure{ temp 2-component vector of float v,  temp 2-component vector of int i})
@@ -235,7 +235,7 @@ gl_FragCoord origin is upper left
 0:13            Constant:
 0:13              1 (const int)
 0:?   Linker Objects
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : COLOR0)
 0:?     'input' (layout( location=0) in 4-component vector of float)
 0:?     'out1' (layout( location=1) out 4-component vector of float)
 0:?     'out2.v' (layout( location=2) out 2-component vector of float)

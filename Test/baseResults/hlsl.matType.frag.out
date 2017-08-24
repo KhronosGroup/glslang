@@ -2,7 +2,7 @@ hlsl.matType.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:9  Function Definition: ShaderFunction(vf1;f1; ( temp 1-component vector of float)
+0:9  Function Definition: ShaderFunction(vf1;f1; ( temp 1-component vector of float : COLOR0)
 0:9    Function Parameters: 
 0:9      'inFloat1' ( in 1-component vector of float)
 0:9      'inScalar' ( in float)
@@ -20,7 +20,7 @@ WARNING: Linking fragment stage: Entry point not found
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:9  Function Definition: ShaderFunction(vf1;f1; ( temp 1-component vector of float)
+0:9  Function Definition: ShaderFunction(vf1;f1; ( temp 1-component vector of float : COLOR0)
 0:9    Function Parameters: 
 0:9      'inFloat1' ( in 1-component vector of float)
 0:9      'inScalar' ( in float)

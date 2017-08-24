@@ -2,7 +2,7 @@ hlsl.rw.atomics.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:45  Function Definition: @main( ( temp structure{ temp 4-component vector of float Color})
+0:45  Function Definition: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 Color})
 0:45    Function Parameters: 
 0:?     Sequence
 0:50      imageAtomicAdd ( temp int)
@@ -1926,8 +1926,8 @@ gl_FragCoord origin is upper left
 0:239            Constant:
 0:239              0 (const uint)
 0:242      move second child to first child ( temp 4-component vector of float)
-0:242        Color: direct index for structure ( temp 4-component vector of float)
-0:242          'psout' ( temp structure{ temp 4-component vector of float Color})
+0:242        Color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:242          'psout' ( temp structure{ temp 4-component vector of float : SV_TARGET0 Color})
 0:242          Constant:
 0:242            0 (const int)
 0:242        Constant:
@@ -1936,15 +1936,15 @@ gl_FragCoord origin is upper left
 0:242          1.000000
 0:242          1.000000
 0:243      Branch: Return with expression
-0:243        'psout' ( temp structure{ temp 4-component vector of float Color})
+0:243        'psout' ( temp structure{ temp 4-component vector of float : SV_TARGET0 Color})
 0:45  Function Definition: main( ( temp void)
 0:45    Function Parameters: 
 0:?     Sequence
 0:45      Sequence
 0:45        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.Color' (layout( location=0) out 4-component vector of float)
-0:45          Color: direct index for structure ( temp 4-component vector of float)
-0:45            Function Call: @main( ( temp structure{ temp 4-component vector of float Color})
+0:?           '@entryPointOutput.Color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:45          Color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:45            Function Call: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 Color})
 0:45            Constant:
 0:45              0 (const int)
 0:?   Linker Objects
@@ -1968,7 +1968,7 @@ gl_FragCoord origin is upper left
 0:?     'g_tBuffI' (layout( r32i) uniform iimageBuffer)
 0:?     'g_tBuffU' (layout( r32ui) uniform uimageBuffer)
 0:?     'anon@0' (layout( row_major std140) uniform block{ uniform uint u1,  uniform 2-component vector of uint u2,  uniform 3-component vector of uint u3,  uniform uint u1b,  uniform uint u1c,  uniform int i1,  uniform 2-component vector of int i2,  uniform 3-component vector of int i3,  uniform int i1b,  uniform int i1c})
-0:?     '@entryPointOutput.Color' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput.Color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
 
 
 Linked fragment stage:
@@ -1977,7 +1977,7 @@ Linked fragment stage:
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:45  Function Definition: @main( ( temp structure{ temp 4-component vector of float Color})
+0:45  Function Definition: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 Color})
 0:45    Function Parameters: 
 0:?     Sequence
 0:50      imageAtomicAdd ( temp int)
@@ -3901,8 +3901,8 @@ gl_FragCoord origin is upper left
 0:239            Constant:
 0:239              0 (const uint)
 0:242      move second child to first child ( temp 4-component vector of float)
-0:242        Color: direct index for structure ( temp 4-component vector of float)
-0:242          'psout' ( temp structure{ temp 4-component vector of float Color})
+0:242        Color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:242          'psout' ( temp structure{ temp 4-component vector of float : SV_TARGET0 Color})
 0:242          Constant:
 0:242            0 (const int)
 0:242        Constant:
@@ -3911,15 +3911,15 @@ gl_FragCoord origin is upper left
 0:242          1.000000
 0:242          1.000000
 0:243      Branch: Return with expression
-0:243        'psout' ( temp structure{ temp 4-component vector of float Color})
+0:243        'psout' ( temp structure{ temp 4-component vector of float : SV_TARGET0 Color})
 0:45  Function Definition: main( ( temp void)
 0:45    Function Parameters: 
 0:?     Sequence
 0:45      Sequence
 0:45        move second child to first child ( temp 4-component vector of float)
-0:?           '@entryPointOutput.Color' (layout( location=0) out 4-component vector of float)
-0:45          Color: direct index for structure ( temp 4-component vector of float)
-0:45            Function Call: @main( ( temp structure{ temp 4-component vector of float Color})
+0:?           '@entryPointOutput.Color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:45          Color: direct index for structure ( temp 4-component vector of float : SV_TARGET0)
+0:45            Function Call: @main( ( temp structure{ temp 4-component vector of float : SV_TARGET0 Color})
 0:45            Constant:
 0:45              0 (const int)
 0:?   Linker Objects
@@ -3943,7 +3943,7 @@ gl_FragCoord origin is upper left
 0:?     'g_tBuffI' (layout( r32i) uniform iimageBuffer)
 0:?     'g_tBuffU' (layout( r32ui) uniform uimageBuffer)
 0:?     'anon@0' (layout( row_major std140) uniform block{ uniform uint u1,  uniform 2-component vector of uint u2,  uniform 3-component vector of uint u3,  uniform uint u1b,  uniform uint u1c,  uniform int i1,  uniform 2-component vector of int i2,  uniform 3-component vector of int i3,  uniform int i1b,  uniform int i1c})
-0:?     '@entryPointOutput.Color' (layout( location=0) out 4-component vector of float)
+0:?     '@entryPointOutput.Color' (layout( location=0) out 4-component vector of float : SV_TARGET0)
 
 // Module Version 10000
 // Generated by (magic number): 80001

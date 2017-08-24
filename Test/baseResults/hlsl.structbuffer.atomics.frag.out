@@ -2,9 +2,9 @@ hlsl.structbuffer.atomics.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:5  Function Definition: @main(u1; ( temp 4-component vector of float)
+0:5  Function Definition: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:5    Function Parameters: 
-0:5      'pos' ( in uint)
+0:5      'pos' ( in uint : FOO)
 0:?     Sequence
 0:8      AtomicAdd ( temp void)
 0:8        indirect index (layout( row_major std430) buffer uint)
@@ -208,7 +208,7 @@ gl_FragCoord origin is upper left
 0:22          Constant:
 0:22            1 (const int)
 0:24      Branch: Return with expression
-0:24        Construct vec4 ( temp 4-component vector of float)
+0:24        Construct vec4 ( temp 4-component vector of float : SV_TARGET0)
 0:24          Convert uint to float ( temp float)
 0:24            indirect index (layout( row_major std430) buffer uint)
 0:24              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of uint)
@@ -216,7 +216,7 @@ gl_FragCoord origin is upper left
 0:24                Constant:
 0:24                  0 (const uint)
 0:24              right-shift ( temp int)
-0:24                'pos' ( in uint)
+0:24                'pos' ( in uint : FOO)
 0:24                Constant:
 0:24                  2 (const int)
 0:5  Function Definition: main( ( temp void)
@@ -224,15 +224,15 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:5      move second child to first child ( temp uint)
 0:?         'pos' ( temp uint)
-0:?         'pos' (layout( location=0) flat in uint)
+0:?         'pos' (layout( location=0) flat in uint : FOO)
 0:5      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:5        Function Call: @main(u1; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:5        Function Call: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:?           'pos' ( temp uint)
 0:?   Linker Objects
 0:?     'sbuf' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of uint @data})
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:?     'pos' (layout( location=0) flat in uint)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:?     'pos' (layout( location=0) flat in uint : FOO)
 
 
 Linked fragment stage:
@@ -241,9 +241,9 @@ Linked fragment stage:
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:5  Function Definition: @main(u1; ( temp 4-component vector of float)
+0:5  Function Definition: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:5    Function Parameters: 
-0:5      'pos' ( in uint)
+0:5      'pos' ( in uint : FOO)
 0:?     Sequence
 0:8      AtomicAdd ( temp void)
 0:8        indirect index (layout( row_major std430) buffer uint)
@@ -447,7 +447,7 @@ gl_FragCoord origin is upper left
 0:22          Constant:
 0:22            1 (const int)
 0:24      Branch: Return with expression
-0:24        Construct vec4 ( temp 4-component vector of float)
+0:24        Construct vec4 ( temp 4-component vector of float : SV_TARGET0)
 0:24          Convert uint to float ( temp float)
 0:24            indirect index (layout( row_major std430) buffer uint)
 0:24              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of uint)
@@ -455,7 +455,7 @@ gl_FragCoord origin is upper left
 0:24                Constant:
 0:24                  0 (const uint)
 0:24              right-shift ( temp int)
-0:24                'pos' ( in uint)
+0:24                'pos' ( in uint : FOO)
 0:24                Constant:
 0:24                  2 (const int)
 0:5  Function Definition: main( ( temp void)
@@ -463,15 +463,15 @@ gl_FragCoord origin is upper left
 0:?     Sequence
 0:5      move second child to first child ( temp uint)
 0:?         'pos' ( temp uint)
-0:?         'pos' (layout( location=0) flat in uint)
+0:?         'pos' (layout( location=0) flat in uint : FOO)
 0:5      move second child to first child ( temp 4-component vector of float)
-0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:5        Function Call: @main(u1; ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:5        Function Call: @main(u1; ( temp 4-component vector of float : SV_TARGET0)
 0:?           'pos' ( temp uint)
 0:?   Linker Objects
 0:?     'sbuf' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of uint @data})
-0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
-0:?     'pos' (layout( location=0) flat in uint)
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float : SV_TARGET0)
+0:?     'pos' (layout( location=0) flat in uint : FOO)
 
 // Module Version 10000
 // Generated by (magic number): 80001

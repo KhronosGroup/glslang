@@ -2,7 +2,7 @@ hlsl.attribute.frag
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:2  Function Definition: @PixelShaderFunction(vf4; ( temp void)
+0:2  Function Definition: @PixelShaderFunction(vf4; ( temp void : COLOR0)
 0:2    Function Parameters: 
 0:2      'input' ( in 4-component vector of float)
 0:?     Sequence
@@ -17,7 +17,7 @@ gl_FragCoord origin is upper left
 0:2      move second child to first child ( temp 4-component vector of float)
 0:?         'input' ( temp 4-component vector of float)
 0:?         'input' (layout( location=0) in 4-component vector of float)
-0:2      Function Call: @PixelShaderFunction(vf4; ( temp void)
+0:2      Function Call: @PixelShaderFunction(vf4; ( temp void : COLOR0)
 0:?         'input' ( temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'input' (layout( location=0) in 4-component vector of float)
@@ -29,7 +29,7 @@ Linked fragment stage:
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
-0:2  Function Definition: @PixelShaderFunction(vf4; ( temp void)
+0:2  Function Definition: @PixelShaderFunction(vf4; ( temp void : COLOR0)
 0:2    Function Parameters: 
 0:2      'input' ( in 4-component vector of float)
 0:?     Sequence
@@ -44,7 +44,7 @@ gl_FragCoord origin is upper left
 0:2      move second child to first child ( temp 4-component vector of float)
 0:?         'input' ( temp 4-component vector of float)
 0:?         'input' (layout( location=0) in 4-component vector of float)
-0:2      Function Call: @PixelShaderFunction(vf4; ( temp void)
+0:2      Function Call: @PixelShaderFunction(vf4; ( temp void : COLOR0)
 0:?         'input' ( temp 4-component vector of float)
 0:?   Linker Objects
 0:?     'input' (layout( location=0) in 4-component vector of float)

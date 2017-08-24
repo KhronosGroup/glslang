@@ -7,12 +7,12 @@ output primitive = triangle_strip
 0:? Sequence
 0:13  Function Definition: @main(u1[1];struct-PSInput-vf4-vf2-vf3-u11; ( temp void)
 0:13    Function Parameters: 
-0:13      'v' ( in 1-element array of uint)
-0:13      'OutputStream' ( out structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
+0:13      'v' ( in 1-element array of uint : VERTEXID)
+0:13      'OutputStream' ( out structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
 0:?     Sequence
 0:16      Sequence
-0:16        move second child to first child ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
-0:16          'Out' ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
+0:16        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
+0:16          'Out' ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
 0:16          Constant:
 0:16            0.000000
 0:16            0.000000
@@ -48,13 +48,13 @@ output primitive = triangle_strip
 0:19                Constant:
 0:19                  2 (const int)
 0:19              Loop Body
-0:20              move second child to first child ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
-0:20                indirect index ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
-0:20                  indirect index ( temp 3-element array of structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
-0:20                    'Verts' ( temp 2-element array of 3-element array of structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
+0:20              move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
+0:20                indirect index ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
+0:20                  indirect index ( temp 3-element array of structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
+0:20                    'Verts' ( temp 2-element array of 3-element array of structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
 0:20                    'x' ( temp int)
 0:20                  'y' ( temp int)
-0:20                'Out' ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
+0:20                'Out' ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
 0:19              Loop Terminal Expression
 0:19              Pre-Increment ( temp int)
 0:19                'y' ( temp int)
@@ -66,16 +66,16 @@ output primitive = triangle_strip
 0:?     Sequence
 0:13      move second child to first child ( temp 1-element array of uint)
 0:?         'v' ( temp 1-element array of uint)
-0:?         'v' (layout( location=0) in 1-element array of uint)
+0:?         'v' (layout( location=0) in 1-element array of uint : VERTEXID)
 0:13      Function Call: @main(u1[1];struct-PSInput-vf4-vf2-vf3-u11; ( temp void)
 0:?         'v' ( temp 1-element array of uint)
-0:?         'OutputStream' ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
+0:?         'OutputStream' ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
 0:?   Linker Objects
-0:?     'v' (layout( location=0) in 1-element array of uint)
-0:?     'OutputStream.Pos' ( out 4-component vector of float Position)
-0:?     'OutputStream.TexCoord' (layout( location=0) out 2-component vector of float)
-0:?     'OutputStream.TerrainPos' (layout( location=1) out 3-component vector of float)
-0:?     'OutputStream.VertexID' (layout( location=2) out uint)
+0:?     'v' (layout( location=0) in 1-element array of uint : VERTEXID)
+0:?     'OutputStream.Pos' ( out 4-component vector of float Position : SV_POSITION)
+0:?     'OutputStream.TexCoord' (layout( location=0) out 2-component vector of float : TEXCOORD)
+0:?     'OutputStream.TerrainPos' (layout( location=1) out 3-component vector of float : TERRAINPOS)
+0:?     'OutputStream.VertexID' (layout( location=2) out uint : VERTEXID)
 
 
 Linked geometry stage:
@@ -89,12 +89,12 @@ output primitive = triangle_strip
 0:? Sequence
 0:13  Function Definition: @main(u1[1];struct-PSInput-vf4-vf2-vf3-u11; ( temp void)
 0:13    Function Parameters: 
-0:13      'v' ( in 1-element array of uint)
-0:13      'OutputStream' ( out structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
+0:13      'v' ( in 1-element array of uint : VERTEXID)
+0:13      'OutputStream' ( out structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
 0:?     Sequence
 0:16      Sequence
-0:16        move second child to first child ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
-0:16          'Out' ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
+0:16        move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
+0:16          'Out' ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
 0:16          Constant:
 0:16            0.000000
 0:16            0.000000
@@ -130,13 +130,13 @@ output primitive = triangle_strip
 0:19                Constant:
 0:19                  2 (const int)
 0:19              Loop Body
-0:20              move second child to first child ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
-0:20                indirect index ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
-0:20                  indirect index ( temp 3-element array of structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
-0:20                    'Verts' ( temp 2-element array of 3-element array of structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
+0:20              move second child to first child ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
+0:20                indirect index ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
+0:20                  indirect index ( temp 3-element array of structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
+0:20                    'Verts' ( temp 2-element array of 3-element array of structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
 0:20                    'x' ( temp int)
 0:20                  'y' ( temp int)
-0:20                'Out' ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
+0:20                'Out' ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
 0:19              Loop Terminal Expression
 0:19              Pre-Increment ( temp int)
 0:19                'y' ( temp int)
@@ -148,16 +148,16 @@ output primitive = triangle_strip
 0:?     Sequence
 0:13      move second child to first child ( temp 1-element array of uint)
 0:?         'v' ( temp 1-element array of uint)
-0:?         'v' (layout( location=0) in 1-element array of uint)
+0:?         'v' (layout( location=0) in 1-element array of uint : VERTEXID)
 0:13      Function Call: @main(u1[1];struct-PSInput-vf4-vf2-vf3-u11; ( temp void)
 0:?         'v' ( temp 1-element array of uint)
-0:?         'OutputStream' ( temp structure{ temp 4-component vector of float Pos,  temp 2-component vector of float TexCoord,  temp 3-component vector of float TerrainPos,  temp uint VertexID})
+0:?         'OutputStream' ( temp structure{ temp 4-component vector of float : SV_POSITION Pos,  temp 2-component vector of float : TEXCOORD TexCoord,  temp 3-component vector of float : TERRAINPOS TerrainPos,  temp uint : VERTEXID VertexID})
 0:?   Linker Objects
-0:?     'v' (layout( location=0) in 1-element array of uint)
-0:?     'OutputStream.Pos' ( out 4-component vector of float Position)
-0:?     'OutputStream.TexCoord' (layout( location=0) out 2-component vector of float)
-0:?     'OutputStream.TerrainPos' (layout( location=1) out 3-component vector of float)
-0:?     'OutputStream.VertexID' (layout( location=2) out uint)
+0:?     'v' (layout( location=0) in 1-element array of uint : VERTEXID)
+0:?     'OutputStream.Pos' ( out 4-component vector of float Position : SV_POSITION)
+0:?     'OutputStream.TexCoord' (layout( location=0) out 2-component vector of float : TEXCOORD)
+0:?     'OutputStream.TerrainPos' (layout( location=1) out 3-component vector of float : TERRAINPOS)
+0:?     'OutputStream.VertexID' (layout( location=2) out uint : VERTEXID)
 
 // Module Version 10000
 // Generated by (magic number): 80001
