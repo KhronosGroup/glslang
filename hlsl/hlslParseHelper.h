@@ -435,8 +435,8 @@ protected:
 
     TVariable* gsStreamOutput;               // geometry shader stream outputs, for emit (Append method)
 
-    TVariable* clipDistanceOutput;           // synthesized clip distance output variable (shader might have >1)
-    TVariable* cullDistanceOutput;           // synthesized cull distance output variable (shader might have >1)
+    TVariable* clipDistanceVariable;         // synthesized clip distance variable (shader might have >1)
+    TVariable* cullDistanceVariable;         // synthesized cull distance variable (shader might have >1)
 
     static const int maxClipCullRegs = 2;
     std::array<int, maxClipCullRegs> clipSemanticNSize; // vector, indexed by clip semantic ID
