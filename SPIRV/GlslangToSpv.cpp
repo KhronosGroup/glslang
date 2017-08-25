@@ -881,11 +881,30 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* gls
     spv::ExecutionModel executionModel = TranslateExecutionModel(glslangIntermediate->getStage());
 
     builder.clearAccessChain();
-    builder.setSource(TranslateSourceLanguage(glslangIntermediate->getSource(), glslangIntermediate->getProfile()), glslangIntermediate->getVersion());
+    builder.setSource(TranslateSourceLanguage(glslangIntermediate->getSource(), glslangIntermediate->getProfile()),
+                      glslangIntermediate->getVersion());
+
     if (options.generateDebugInfo) {
-        builder.setSourceFile(glslangIntermediate->getSourceFile());
-        builder.setSourceText(glslangIntermediate->getSourceText());
         builder.setEmitOpLines();
+        builder.setSourceFile(glslangIntermediate->getSourceFile());
+
+        // Set the source shader's text. If for SPV version 1.0, include
+        // a preamble in comments stating the OpModuleProcessed instructions.
+        // Otherwise, emit those as actual instructions.
+        std::string text;
+        const std::vector<std::string>& processes = glslangIntermediate->getProcesses();
+        for (int p = 0; p < (int)processes.size(); ++p) {
+            if (glslangIntermediate->getSpv().spv < 0x00010100) {
+                text.append("// OpModuleProcessed ");
+                text.append(processes[p]);
+                text.append("\n");
+            } else
+                builder.addModuleProcessed(processes[p]);
+        }
+        if (glslangIntermediate->getSpv().spv < 0x00010100 && (int)processes.size() > 0)
+            text.append("#line 1\n");
+        text.append(glslangIntermediate->getSourceText());
+        builder.setSourceText(text);
     }
     stdBuiltins = builder.import("GLSL.std.450");
     builder.setMemoryModel(spv::AddressingModelLogical, spv::MemoryModelGLSL450);
