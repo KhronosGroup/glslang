@@ -455,15 +455,13 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvViewportIndex:
         if (!memberDeclaration) {
             builder.addCapability(spv::CapabilityMultiViewport);
-#ifdef NV_EXTENSIONS
             if (glslangIntermediate->getStage() == EShLangVertex ||
                 glslangIntermediate->getStage() == EShLangTessControl ||
                 glslangIntermediate->getStage() == EShLangTessEvaluation) {
 
-                builder.addExtension(spv::E_SPV_NV_viewport_array2);
-                builder.addCapability(spv::CapabilityShaderViewportIndexLayerNV);
+                builder.addExtension(spv::E_SPV_EXT_shader_viewport_index_layer);
+                builder.addCapability(spv::CapabilityShaderViewportIndexLayerEXT);
             }
-#endif
         }
         return spv::BuiltInViewportIndex;
 
@@ -482,15 +480,13 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvLayer:
         if (!memberDeclaration) {
             builder.addCapability(spv::CapabilityGeometry);
-#ifdef NV_EXTENSIONS
             if (glslangIntermediate->getStage() == EShLangVertex ||
                 glslangIntermediate->getStage() == EShLangTessControl ||
                 glslangIntermediate->getStage() == EShLangTessEvaluation) {
 
-                builder.addExtension(spv::E_SPV_NV_viewport_array2);
-                builder.addCapability(spv::CapabilityShaderViewportIndexLayerNV);
+                builder.addExtension(spv::E_SPV_EXT_shader_viewport_index_layer);
+                builder.addCapability(spv::CapabilityShaderViewportIndexLayerEXT);
             }
-#endif
         }
 
         return spv::BuiltInLayer;
@@ -5494,14 +5490,12 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
     else if (builtIn == spv::BuiltInLayer) {
         // SPV_NV_viewport_array2 extension
-        if (symbol->getQualifier().layoutViewportRelative)
-        {
+        if (symbol->getQualifier().layoutViewportRelative) {
             addDecoration(id, (spv::Decoration)spv::DecorationViewportRelativeNV);
             builder.addCapability(spv::CapabilityShaderViewportMaskNV);
             builder.addExtension(spv::E_SPV_NV_viewport_array2);
         }
-        if(symbol->getQualifier().layoutSecondaryViewportRelativeOffset != -2048)
-        {
+        if (symbol->getQualifier().layoutSecondaryViewportRelativeOffset != -2048) {
             addDecoration(id, (spv::Decoration)spv::DecorationSecondaryViewportRelativeNV, symbol->getQualifier().layoutSecondaryViewportRelativeOffset);
             builder.addCapability(spv::CapabilityShaderStereoViewNV);
             builder.addExtension(spv::E_SPV_NV_stereo_view_rendering);
