@@ -2412,9 +2412,15 @@ TIntermAggregate* HlslParseContext::assignClipCullDistance(const TSourceLoc& loc
     // Loop through every component of every element of the internal, and copy to or from the matching external.
     for (int internalArrayPos = 0; internalArrayPos < internalNodeArraySize; ++internalArrayPos) {
         for (int internalComponent = 0; internalComponent < internalNodeVectorSize; ++internalComponent) {
+            TIntermTyped* clipCullMember = clipCullSym;
+
             // array member to read from / write to:
-            TIntermTyped* clipCullMember = intermediate.addIndex(EOpIndexDirect, clipCullSym,
-                                                            intermediate.addConstantUnion(clipCullArrayPos++, loc), loc);
+            {
+                const TType derefType(clipCullMember->getType(), 0);
+                clipCullMember = intermediate.addIndex(EOpIndexDirect, clipCullMember,
+                                                       intermediate.addConstantUnion(clipCullArrayPos++, loc), loc);
+                clipCullMember->setType(derefType);
+            }
 
             TIntermTyped* internalMember = internalNode;
 
