@@ -5095,7 +5095,7 @@ void HlslParseContext::expandArguments(const TSourceLoc& loc, const TFunction& f
     const auto setArgList = [&](int paramNum, const TVector<TIntermTyped*>& args) {
         if (args.size() == 1)
             setArg(paramNum, args.front());
-        else {
+        else if (args.size() > 1) {
             if (function.getParamCount() + functionParamNumberOffset == 1) {
                 arguments = intermediate.makeAggregate(args.front());
                 std::for_each(args.begin() + 1, args.end(), 
@@ -5106,8 +5106,8 @@ void HlslParseContext::expandArguments(const TSourceLoc& loc, const TFunction& f
                 auto it = aggregate->getSequence().erase(aggregate->getSequence().begin() + paramNum);
                 aggregate->getSequence().insert(it, args.begin(), args.end());
             }
+            functionParamNumberOffset += (int)(args.size() - 1);
         }
-        functionParamNumberOffset += (args.size() - 1);
     };
 
     // Process each argument's conversion
