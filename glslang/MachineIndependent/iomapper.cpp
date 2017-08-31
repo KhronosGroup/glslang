@@ -416,7 +416,7 @@ struct TDefaultIoResolverBase : public glslang::TIoMapResolver
 
         return 0;
     }
-    int resolveUniformLocation(EShLanguage /*stage*/, const char* /*name*/, const glslang::TType& type, bool is_live) override
+    int resolveUniformLocation(EShLanguage /*stage*/, const char* /*name*/, const glslang::TType& type, bool /*is_live*/) override
     {
         // kick out of not doing this
         if (!doAutoLocationMapping)
