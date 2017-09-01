@@ -136,6 +136,7 @@ const char* const E_GL_ARB_sparse_texture_clamp         = "GL_ARB_sparse_texture
 const char* const E_GL_ARB_shader_stencil_export        = "GL_ARB_shader_stencil_export";
 // const char* const E_GL_ARB_cull_distance            = "GL_ARB_cull_distance";  // present for 4.5, but need extension control over block members
 const char* const E_GL_ARB_post_depth_coverage          = "GL_ARB_post_depth_coverage";
+const char* const E_GL_ARB_shader_viewport_layer_array  = "GL_ARB_shader_viewport_layer_array";
 
 const char* const E_GL_KHR_shader_subgroup_basic            = "GL_KHR_shader_subgroup_basic";
 const char* const E_GL_KHR_shader_subgroup_vote             = "GL_KHR_shader_subgroup_vote";
@@ -178,13 +179,13 @@ const char* const E_GL_AMD_gcn_shader                           = "GL_AMD_gcn_sh
 const char* const E_GL_AMD_gpu_shader_half_float                = "GL_AMD_gpu_shader_half_float";
 const char* const E_GL_AMD_texture_gather_bias_lod              = "GL_AMD_texture_gather_bias_lod";
 const char* const E_GL_AMD_gpu_shader_int16                     = "GL_AMD_gpu_shader_int16";
+const char* const E_GL_AMD_shader_image_load_store_lod          = "GL_AMD_shader_image_load_store_lod";
 #endif
 
 #ifdef NV_EXTENSIONS
 
 const char* const E_GL_NV_sample_mask_override_coverage         = "GL_NV_sample_mask_override_coverage";
 const char* const E_SPV_NV_geometry_shader_passthrough          = "GL_NV_geometry_shader_passthrough";
-const char* const E_GL_ARB_shader_viewport_layer_array          = "GL_ARB_shader_viewport_layer_array";
 const char* const E_GL_NV_viewport_array2                       = "GL_NV_viewport_array2";
 const char* const E_GL_NV_stereo_view_rendering                 = "GL_NV_stereo_view_rendering";
 const char* const E_GL_NVX_multiview_per_view_attributes        = "GL_NVX_multiview_per_view_attributes";

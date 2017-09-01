@@ -80,7 +80,19 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
     bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
     bool   external : 1;  // GL_OES_EGL_image_external
-    unsigned int vectorSize : 3;  // return vector size.  TODO: support arbitrary types.
+    unsigned int vectorSize : 3;  // vector return type size.
+
+    // Some languages support structures as sample results.  Storing the whole structure in the
+    // TSampler is too large, so there is an index to a separate table.
+    static const unsigned structReturnIndexBits = 4;                        // number of index bits to use.
+    static const unsigned structReturnSlots = (1<<structReturnIndexBits)-1; // number of valid values
+    static const unsigned noReturnStruct = structReturnSlots;               // value if no return struct type.
+
+    // Index into a language specific table of texture return structures.
+    unsigned int structReturnIndex : structReturnIndexBits;
+
+    // Encapsulate getting members' vector sizes packed into the vectorSize bitfield.
+    unsigned int getVectorSize() const { return vectorSize; }
 
     bool isImage()       const { return image && dim != EsdSubpass; }
     bool isSubpass()     const { return dim == EsdSubpass; }
@@ -90,6 +102,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool isShadow()      const { return shadow; }
     bool isArrayed()     const { return arrayed; }
     bool isMultiSample() const { return ms; }
+    bool hasReturnStruct() const { return structReturnIndex != noReturnStruct; }
 
     void clear()
     {
@@ -102,6 +115,9 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         combined = false;
         sampler = false;
         external = false;
+        structReturnIndex = noReturnStruct;
+
+        // by default, returns a single vec4;
         vectorSize = 4;
     }
 
@@ -160,16 +176,17 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
 
     bool operator==(const TSampler& right) const
     {
-        return type == right.type &&
-                dim == right.dim &&
-            arrayed == right.arrayed &&
-             shadow == right.shadow &&
-                 ms == right.ms &&
-              image == right.image &&
-           combined == right.combined &&
-            sampler == right.sampler &&
-           external == right.external &&
-         vectorSize == right.vectorSize;
+        return      type == right.type &&
+                     dim == right.dim &&
+                 arrayed == right.arrayed &&
+                  shadow == right.shadow &&
+                      ms == right.ms &&
+                   image == right.image &&
+                combined == right.combined &&
+                 sampler == right.sampler &&
+                external == right.external &&
+              vectorSize == right.vectorSize &&
+       structReturnIndex == right.structReturnIndex;            
     }
 
     bool operator!=(const TSampler& right) const
@@ -1365,51 +1382,12 @@ public:
         return false;
     }
     virtual bool isOpaque() const { return basicType == EbtSampler || basicType == EbtAtomicUint; }
+    virtual bool isBuiltIn() const { return getQualifier().builtIn != EbvNone; }
 
     // "Image" is a superset of "Subpass"
     virtual bool isImage() const   { return basicType == EbtSampler && getSampler().isImage(); }
     virtual bool isSubpass() const { return basicType == EbtSampler && getSampler().isSubpass(); }
 
-    virtual bool isBuiltInInterstageIO(EShLanguage language) const
-    {
-        return isPerVertexAndBuiltIn(language) || isLooseAndBuiltIn(language);
-    }
-
-    // Return true if this is an interstage IO builtin
-    virtual bool isPerVertexAndBuiltIn(EShLanguage language) const
-    {
-        if (language == EShLangFragment)
-            return false;
-
-        // Any non-fragment stage
-        switch (getQualifier().builtIn) {
-        case EbvPosition:
-        case EbvPointSize:
-        case EbvClipDistance:
-        case EbvCullDistance:
-#ifdef NV_EXTENSIONS
-        case EbvLayer:
-        case EbvViewportMaskNV:
-        case EbvSecondaryPositionNV:
-        case EbvSecondaryViewportMaskNV:
-        case EbvPositionPerViewNV:
-        case EbvViewportMaskPerViewNV:
-#endif
-            return true;
-        default:
-            return false;
-        }
-    }
-
-    // Return true if this is a loose builtin
-    virtual bool isLooseAndBuiltIn(EShLanguage language) const
-    {
-        if (getQualifier().builtIn == EbvNone)
-            return false;
-
-        return !isPerVertexAndBuiltIn(language);
-    }
-    
     // return true if this type contains any subtype which satisfies the given predicate.
     template <typename P> 
     bool contains(P predicate) const
@@ -1451,10 +1429,10 @@ public:
         return contains([](const TType* t) { return t->isOpaque(); } );
     }
 
-    // Recursively checks if the type contains an interstage IO builtin
-    virtual bool containsBuiltInInterstageIO(EShLanguage language) const
+    // Recursively checks if the type contains a built-in variable
+    virtual bool containsBuiltIn() const
     {
-        return contains([language](const TType* t) { return t->isBuiltInInterstageIO(language); } );
+        return contains([](const TType* t) { return t->isBuiltIn(); } );
     }
 
     virtual bool containsNonOpaque() const

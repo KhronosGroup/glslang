@@ -1144,7 +1144,13 @@ void TParseContext::computeBuiltinPrecisions(TIntermTyped& node, const TFunction
             operationPrecision = std::max(operationPrecision, function[arg].type->getQualifier().precision);
         }
         // compute the result precision
+#ifdef AMD_EXTENSIONS
+        if (agg->isSampling() ||
+            agg->getOp() == EOpImageLoad || agg->getOp() == EOpImageStore ||
+            agg->getOp() == EOpImageLoadLod || agg->getOp() == EOpImageStoreLod)
+#else
         if (agg->isSampling() || agg->getOp() == EOpImageLoad || agg->getOp() == EOpImageStore)
+#endif
             resultPrecision = sequence[0]->getAsTyped()->getQualifier().precision;
         else if (function.getType().getBasicType() != EbtBool)
             resultPrecision = function.getType().getQualifier().precision == EpqNone ?
@@ -2487,8 +2493,8 @@ void TParseContext::transparentOpaqueCheck(const TSourceLoc& loc, const TType& t
         // Vulkan doesn't allow transparent uniforms outside of blocks
         if (spvVersion.vulkan > 0)
             vulkanRemoved(loc, "non-opaque uniforms outside a block");
-        // OpenGL wants locations on these
-        if (spvVersion.openGl > 0 && !type.getQualifier().hasLocation())
+        // OpenGL wants locations on these (unless they are getting automapped)
+        if (spvVersion.openGl > 0 && !type.getQualifier().hasLocation() && !intermediate.getAutoMapLocations())
             error(loc, "non-opaque uniform variables need a layout(location=L)", identifier.c_str(), "");
     }
 }

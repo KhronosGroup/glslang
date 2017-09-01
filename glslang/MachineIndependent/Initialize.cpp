@@ -4146,6 +4146,12 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "in int gl_DrawIDARB;"
                 );
         }
+        if (version >= 450) {
+            stageBuiltins[EShLangVertex].append(
+                "out int gl_ViewportIndex;"
+                "out int gl_Layer;"
+                );
+        }
         if (version >= 460) {
             stageBuiltins[EShLangVertex].append(
                 "in int gl_BaseVertex;"
@@ -4157,8 +4163,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 #ifdef NV_EXTENSIONS
         if (version >= 450)
             stageBuiltins[EShLangVertex].append(
-                "out int gl_ViewportIndex;"
-                "out int gl_Layer;"
                 "out int gl_ViewportMask[];"             // GL_NV_viewport_array2
                 "out int gl_SecondaryViewportMaskNV[];"  // GL_NV_stereo_view_rendering
                 "out vec4 gl_SecondaryPositionNV;"       // GL_NV_stereo_view_rendering
@@ -4451,11 +4455,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "};"
             "\n");
 
+        if (version >= 450)
+            stageBuiltins[EShLangTessEvaluation].append(
+                "out int gl_ViewportIndex;"
+                "out int gl_Layer;"
+                );
+
 #ifdef NV_EXTENSIONS
         if (version >= 450)
             stageBuiltins[EShLangTessEvaluation].append(
-                "out int  gl_ViewportIndex;"
-                "out int  gl_Layer;"
                 "out int  gl_ViewportMask[];"             // GL_NV_viewport_array2
                 "out vec4 gl_SecondaryPositionNV;"        // GL_NV_stereo_view_rendering
                 "out int  gl_SecondaryViewportMaskNV[];"  // GL_NV_stereo_view_rendering
@@ -5005,6 +5013,43 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
             }
         }
     }
+
+#ifdef AMD_EXTENSIONS
+    if (sampler.dim == EsdRect || sampler.dim == EsdBuffer || sampler.shadow || sampler.ms)
+        return;
+
+    if (profile == EEsProfile || version < 450)
+        return;
+
+    TString imageLodParams = typeName;
+    if (dims == 1)
+        imageLodParams.append(", int");
+    else {
+        imageLodParams.append(", ivec");
+        imageLodParams.append(postfixes[dims]);
+    }
+    imageLodParams.append(", int");
+
+    commonBuiltins.append(prefixes[sampler.type]);
+    commonBuiltins.append("vec4 imageLoadLodAMD(readonly volatile coherent ");
+    commonBuiltins.append(imageLodParams);
+    commonBuiltins.append(");\n");
+
+    commonBuiltins.append("void imageStoreLodAMD(writeonly volatile coherent ");
+    commonBuiltins.append(imageLodParams);
+    commonBuiltins.append(", ");
+    commonBuiltins.append(prefixes[sampler.type]);
+    commonBuiltins.append("vec4);\n");
+
+    if (sampler.dim != Esd1D) {
+        commonBuiltins.append("int sparseImageLoadLodAMD(readonly volatile coherent ");
+        commonBuiltins.append(imageLodParams);
+        commonBuiltins.append(", out ");
+        commonBuiltins.append(prefixes[sampler.type]);
+        commonBuiltins.append("vec4");
+        commonBuiltins.append(");\n");
+    }
+#endif
 }
 
 //
@@ -6199,6 +6244,14 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setVariableExtensions("gl_Layer",         Num_viewportEXTs, viewportEXTs);
             symbolTable.setVariableExtensions("gl_ViewportIndex", Num_viewportEXTs, viewportEXTs);
         }
+#else
+        if (language == EShLangVertex || language == EShLangTessEvaluation) {
+            symbolTable.setVariableExtensions("gl_Layer",         1, &E_GL_ARB_shader_viewport_layer_array);
+            symbolTable.setVariableExtensions("gl_ViewportIndex", 1, &E_GL_ARB_shader_viewport_layer_array);
+        }
+#endif
+
+#ifdef NV_EXTENSIONS
         symbolTable.setVariableExtensions("gl_ViewportMask",            1, &E_GL_NV_viewport_array2);
         symbolTable.setVariableExtensions("gl_SecondaryPositionNV",     1, &E_GL_NV_stereo_view_rendering);
         symbolTable.setVariableExtensions("gl_SecondaryViewportMaskNV", 1, &E_GL_NV_stereo_view_rendering);
@@ -6497,6 +6550,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("sparseTextureGatherLodAMD",          1, &E_GL_AMD_texture_gather_bias_lod);
             symbolTable.setFunctionExtensions("sparseTextureGatherLodOffsetAMD",    1, &E_GL_AMD_texture_gather_bias_lod);
             symbolTable.setFunctionExtensions("sparseTextureGatherLodOffsetsAMD",   1, &E_GL_AMD_texture_gather_bias_lod);
+        }
+
+        // E_GL_AMD_shader_image_load_store_lod
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("imageLoadLodAMD",        1, &E_GL_AMD_shader_image_load_store_lod);
+            symbolTable.setFunctionExtensions("imageStoreLodAMD",       1, &E_GL_AMD_shader_image_load_store_lod);
+            symbolTable.setFunctionExtensions("sparseImageLoadLodAMD",  1, &E_GL_AMD_shader_image_load_store_lod);
         }
 #endif
 
@@ -7085,6 +7145,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("sparseTextureGatherLodAMD",           EOpSparseTextureGatherLod);
             symbolTable.relateToOperator("sparseTextureGatherLodOffsetAMD",     EOpSparseTextureGatherLodOffset);
             symbolTable.relateToOperator("sparseTextureGatherLodOffsetsAMD",    EOpSparseTextureGatherLodOffsets);
+
+            symbolTable.relateToOperator("imageLoadLodAMD",                     EOpImageLoadLod);
+            symbolTable.relateToOperator("imageStoreLodAMD",                    EOpImageStoreLod);
+            symbolTable.relateToOperator("sparseImageLoadLodAMD",               EOpSparseImageLoadLod);
 #endif
         }
 
