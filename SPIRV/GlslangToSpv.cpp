@@ -454,8 +454,8 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         return spv::BuiltInCullDistance;
 
     case glslang::EbvViewportIndex:
+        builder.addCapability(spv::CapabilityMultiViewport);
         if (!memberDeclaration) {
-            builder.addCapability(spv::CapabilityMultiViewport);
             if (glslangIntermediate->getStage() == EShLangVertex ||
                 glslangIntermediate->getStage() == EShLangTessControl ||
                 glslangIntermediate->getStage() == EShLangTessEvaluation) {
