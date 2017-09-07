@@ -94,6 +94,7 @@ enum TOptions {
     EOptionHlslIoMapping        = (1 << 24),
     EOptionAutoMapLocations     = (1 << 25),
     EOptionDebug                = (1 << 26),
+    EOptionOutputVkShaderModule = (1 << 27),
 };
 
 //
@@ -491,6 +492,14 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         variableName = argv[1];
                         bumpArg();
                         break;
+                    } else if (lowerword == "vk-shader-module-name" || // synonyms
+                        lowerword == "vksmn") {
+                        Options |= EOptionOutputVkShaderModule;
+                        if (argc <= 1)
+                            Error("no <C-variable-name> provided for --vk-shader-module-name");
+                        variableName = argv[1];
+                        bumpArg();
+                        break;
                     } else {
                         usage();
                     }
@@ -617,6 +626,11 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
     if ((Options & EOptionFlattenUniformArrays) != 0 &&
         (Options & EOptionReadHlsl) == 0)
         Error("uniform array flattening only valid when compiling HLSL source.");
+
+    // --vk-shader-module-name must be used with -V
+    if ((Options & EOptionOutputVkShaderModule) != 0 &&
+        (Options & EOptionVulkanRules) == 0)
+        Error("can't output a VkShaderModuleCreateInfo without using Vulkan semantics.");
 }
 
 //
@@ -866,7 +880,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     // memory/perf testing, as it's not internal to programmatic use.
                     if (! (Options & EOptionMemoryLeakMode)) {
                         printf("%s", logger.getAllMessages().c_str());
-                        if (Options & EOptionOutputHexadecimal) {
+                        if (Options & EOptionOutputVkShaderModule) {
+                            glslang::OutputSpvMod(spirv, GetBinaryName((EShLanguage)stage), variableName);
+                        } else if (Options & EOptionOutputHexadecimal) {
                             glslang::OutputSpvHex(spirv, GetBinaryName((EShLanguage)stage), variableName);
                         } else {
                             glslang::OutputSpvBin(spirv, GetBinaryName((EShLanguage)stage));
@@ -1231,6 +1247,11 @@ void usage()
            "                                       uint32_t array named <name>\n"
            "                                       initialized with the shader binary code.\n"
            "  --vn <name>                          synonym for --variable-name <name>\n"
+           "  --vk-shader-module-name <name>       Creates a C header file that contains a\n"
+           "                                       VkShaderModuleCreateInfo structure named\n"
+           "                                       <name> initialized with the shader binary\n"
+           "                                       code and the size.\n"
+           "  --vksmn <name>                       synonym for --vk-shader-module-name <name>\n"
            );
 
     exit(EFailUsage);
