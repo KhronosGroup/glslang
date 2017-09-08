@@ -771,33 +771,41 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
 {
     if (type.getQualifier().isPipeInput())
         return spv::StorageClassInput;
-    else if (type.getQualifier().isPipeOutput())
+    if (type.getQualifier().isPipeOutput())
         return spv::StorageClassOutput;
-    else if (type.getBasicType() == glslang::EbtAtomicUint)
-        return spv::StorageClassAtomicCounter;
-    else if (type.containsOpaque())
-        return spv::StorageClassUniformConstant;
-    else if (glslangIntermediate->usingStorageBuffer() && type.getQualifier().storage == glslang::EvqBuffer) {
+
+    if (glslangIntermediate->getSource() != glslang::EShSourceHlsl ||
+        type.getQualifier().storage == glslang::EvqUniform) {
+        if (type.getBasicType() == glslang::EbtAtomicUint)
+            return spv::StorageClassAtomicCounter;
+        if (type.containsOpaque())
+            return spv::StorageClassUniformConstant;
+    }
+
+    if (glslangIntermediate->usingStorageBuffer() && type.getQualifier().storage == glslang::EvqBuffer) {
         builder.addExtension(spv::E_SPV_KHR_storage_buffer_storage_class);
         return spv::StorageClassStorageBuffer;
-    } else if (type.getQualifier().isUniformOrBuffer()) {
+    }
+
+    if (type.getQualifier().isUniformOrBuffer()) {
         if (type.getQualifier().layoutPushConstant)
             return spv::StorageClassPushConstant;
         if (type.getBasicType() == glslang::EbtBlock)
             return spv::StorageClassUniform;
-        else
-            return spv::StorageClassUniformConstant;
-    } else {
-        switch (type.getQualifier().storage) {
-        case glslang::EvqShared:        return spv::StorageClassWorkgroup;  break;
-        case glslang::EvqGlobal:        return spv::StorageClassPrivate;
-        case glslang::EvqConstReadOnly: return spv::StorageClassFunction;
-        case glslang::EvqTemporary:     return spv::StorageClassFunction;
-        default:
-            assert(0);
-            return spv::StorageClassFunction;
-        }
+        return spv::StorageClassUniformConstant;
     }
+
+    switch (type.getQualifier().storage) {
+    case glslang::EvqShared:        return spv::StorageClassWorkgroup;
+    case glslang::EvqGlobal:        return spv::StorageClassPrivate;
+    case glslang::EvqConstReadOnly: return spv::StorageClassFunction;
+    case glslang::EvqTemporary:     return spv::StorageClassFunction;
+    default:
+        assert(0);
+        break;
+    }
+
+    return spv::StorageClassFunction;
 }
 
 // Return whether or not the given type is something that should be tied to a
@@ -2997,15 +3005,21 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
         bool implicitThis = (int)parameters.size() > 0 && parameters[0]->getAsSymbolNode()->getName() ==
                                                           glslangIntermediate->implicitThisName;
 
+        const auto canPassOriginal = [&](const glslang::TType& paramType, bool firstParam) -> bool {
+            if (glslangIntermediate->getSource() == glslang::EShSourceHlsl)
+                return firstParam && implicitThis;
+            else
+                return paramType.containsOpaque() ||                                // sampler, etc.
+                       (paramType.getBasicType() == glslang::EbtBlock &&
+                        paramType.getQualifier().storage == glslang::EvqBuffer) ||  // SSBO
+                       (firstParam && implicitThis);                                // implicit 'this'
+        };
+
         paramDecorations.resize(parameters.size());
         for (int p = 0; p < (int)parameters.size(); ++p) {
             const glslang::TType& paramType = parameters[p]->getAsTyped()->getType();
             spv::Id typeId = convertGlslangToSpvType(paramType);
-            // can we pass by reference?
-            if (paramType.containsOpaque() ||                                // sampler, etc.
-                (paramType.getBasicType() == glslang::EbtBlock &&
-                 paramType.getQualifier().storage == glslang::EvqBuffer) ||  // SSBO
-                (p == 0 && implicitThis))                                    // implicit 'this'
+            if (canPassOriginal(paramType, p == 0))
                 typeId = builder.makePointer(TranslateStorageClass(paramType), typeId);
             else if (paramType.getQualifier().storage != glslang::EvqConstReadOnly)
                 typeId = builder.makePointer(spv::StorageClassFunction, typeId);
@@ -3567,8 +3581,10 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     const glslang::TIntermSequence& glslangArgs = node->getSequence();
     const glslang::TQualifierList& qualifiers = node->getQualifierList();
 
-    // Encapsulate lvalue logic, used in several places below, for safety.
-    const auto isLValue = [](int qualifier, const glslang::TType& paramType) -> bool {
+    // Encapsulate lvalue logic, used in multiple places below, for safety.
+    const auto isLValue = [&](int qualifier, const glslang::TType& paramType) -> bool {
+        if (glslangIntermediate->getSource() == glslang::EShSourceHlsl)
+            return qualifier != glslang::EvqConstReadOnly;
         return qualifier != glslang::EvqConstReadOnly || paramType.containsOpaque();
     };
 
@@ -3610,9 +3626,10 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     for (int a = 0; a < (int)glslangArgs.size(); ++a) {
         const glslang::TType& paramType = glslangArgs[a]->getAsTyped()->getType();
         spv::Id arg;
-        if (paramType.containsOpaque() ||
-            (paramType.getBasicType() == glslang::EbtBlock && qualifiers[a] == glslang::EvqBuffer) ||
-            (a == 0 && function->hasImplicitThis())) {
+        if ((a == 0 && function->hasImplicitThis()) ||
+            (glslangIntermediate->getSource() != glslang::EShSourceHlsl &&
+             (paramType.containsOpaque() ||
+             (paramType.getBasicType() == glslang::EbtBlock && qualifiers[a] == glslang::EvqBuffer)))) {
             builder.setAccessChain(lValues[lValueCount]);
             arg = builder.accessChainGetLValue();
             ++lValueCount;
