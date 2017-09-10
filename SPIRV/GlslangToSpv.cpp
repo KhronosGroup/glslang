@@ -158,6 +158,8 @@ protected:
     void declareUseOfStructMember(const glslang::TTypeList& members, int glslangMember);
 
     bool isShaderEntryPoint(const glslang::TIntermAggregate* node);
+    bool writableParam(glslang::TStorageQualifier);
+    bool originalParam(glslang::TStorageQualifier, const glslang::TType&, bool implicitThisParam);
     void makeFunctions(const glslang::TIntermSequence&);
     void makeGlobalInitializers(const glslang::TIntermSequence&);
     void visitFunctions(const glslang::TIntermSequence&);
@@ -2969,6 +2971,24 @@ bool TGlslangToSpvTraverser::isShaderEntryPoint(const glslang::TIntermAggregate*
     return node->getName().compare(glslangIntermediate->getEntryPointMangledName().c_str()) == 0;
 }
 
+// Does parameter need a place to keep writes, separate from the original?
+bool TGlslangToSpvTraverser::writableParam(glslang::TStorageQualifier qualifier)
+{
+    return qualifier != glslang::EvqConstReadOnly;
+}
+
+// Is parameter pass-by-original?
+bool TGlslangToSpvTraverser::originalParam(glslang::TStorageQualifier qualifier, const glslang::TType& paramType,
+                                           bool implicitThisParam)
+{
+    if (implicitThisParam)                                                                     // implicit this
+        return true;
+    if (glslangIntermediate->getSource() == glslang::EShSourceHlsl)
+        return false;
+    return paramType.containsOpaque() ||                                                       // sampler, etc.
+           (paramType.getBasicType() == glslang::EbtBlock && qualifier == glslang::EvqBuffer); // SSBO
+}
+
 // Make all the functions, skeletally, without actually visiting their bodies.
 void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslFunctions)
 {
@@ -3005,23 +3025,13 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
         bool implicitThis = (int)parameters.size() > 0 && parameters[0]->getAsSymbolNode()->getName() ==
                                                           glslangIntermediate->implicitThisName;
 
-        const auto canPassOriginal = [&](const glslang::TType& paramType, bool firstParam) -> bool {
-            if (glslangIntermediate->getSource() == glslang::EShSourceHlsl)
-                return firstParam && implicitThis;
-            else
-                return paramType.containsOpaque() ||                                // sampler, etc.
-                       (paramType.getBasicType() == glslang::EbtBlock &&
-                        paramType.getQualifier().storage == glslang::EvqBuffer) ||  // SSBO
-                       (firstParam && implicitThis);                                // implicit 'this'
-        };
-
         paramDecorations.resize(parameters.size());
         for (int p = 0; p < (int)parameters.size(); ++p) {
             const glslang::TType& paramType = parameters[p]->getAsTyped()->getType();
             spv::Id typeId = convertGlslangToSpvType(paramType);
-            if (canPassOriginal(paramType, p == 0))
+            if (originalParam(paramType.getQualifier().storage, paramType, implicitThis && p == 0))
                 typeId = builder.makePointer(TranslateStorageClass(paramType), typeId);
-            else if (paramType.getQualifier().storage != glslang::EvqConstReadOnly)
+            else if (writableParam(paramType.getQualifier().storage))
                 typeId = builder.makePointer(spv::StorageClassFunction, typeId);
             else
                 rValueParameters.insert(parameters[p]->getAsSymbolNode()->getId());
@@ -3581,13 +3591,6 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     const glslang::TIntermSequence& glslangArgs = node->getSequence();
     const glslang::TQualifierList& qualifiers = node->getQualifierList();
 
-    // Encapsulate lvalue logic, used in multiple places below, for safety.
-    const auto isLValue = [&](int qualifier, const glslang::TType& paramType) -> bool {
-        if (glslangIntermediate->getSource() == glslang::EShSourceHlsl)
-            return qualifier != glslang::EvqConstReadOnly;
-        return qualifier != glslang::EvqConstReadOnly || paramType.containsOpaque();
-    };
-
     //  See comments in makeFunctions() for details about the semantics for parameter passing.
     //
     // These imply we need a four step process:
@@ -3606,8 +3609,9 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
         builder.clearAccessChain();
         glslangArgs[a]->traverse(this);
         argTypes.push_back(&paramType);
-        // keep outputs and opaque objects as l-values, evaluate input-only as r-values
-        if (isLValue(qualifiers[a], paramType)) {
+        // keep outputs and pass-by-originals as l-values, evaluate others as r-values
+        if (writableParam(qualifiers[a]) ||
+            originalParam(qualifiers[a], paramType, function->hasImplicitThis() && a == 0)) {
             // save l-value
             lValues.push_back(builder.getAccessChain());
         } else {
@@ -3626,14 +3630,11 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     for (int a = 0; a < (int)glslangArgs.size(); ++a) {
         const glslang::TType& paramType = glslangArgs[a]->getAsTyped()->getType();
         spv::Id arg;
-        if ((a == 0 && function->hasImplicitThis()) ||
-            (glslangIntermediate->getSource() != glslang::EShSourceHlsl &&
-             (paramType.containsOpaque() ||
-             (paramType.getBasicType() == glslang::EbtBlock && qualifiers[a] == glslang::EvqBuffer)))) {
+        if (originalParam(qualifiers[a], paramType, function->hasImplicitThis() && a == 0)) {
             builder.setAccessChain(lValues[lValueCount]);
             arg = builder.accessChainGetLValue();
             ++lValueCount;
-        } else if (isLValue(qualifiers[a], paramType)) {
+        } else if (writableParam(qualifiers[a])) {
             // need space to hold the copy
             arg = builder.createVariable(spv::StorageClassFunction, convertGlslangToSpvType(paramType), "param");
             if (qualifiers[a] == glslang::EvqIn || qualifiers[a] == glslang::EvqInOut) {
@@ -3660,7 +3661,9 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     lValueCount = 0;
     for (int a = 0; a < (int)glslangArgs.size(); ++a) {
         const glslang::TType& paramType = glslangArgs[a]->getAsTyped()->getType();
-        if (isLValue(qualifiers[a], paramType)) {
+        if (originalParam(qualifiers[a], paramType, function->hasImplicitThis() && a == 0))
+            ++lValueCount;
+        else if (writableParam(qualifiers[a])) {
             if (qualifiers[a] == glslang::EvqOut || qualifiers[a] == glslang::EvqInOut) {
                 spv::Id copy = builder.createLoad(spvArgs[a]);
                 builder.setAccessChain(lValues[lValueCount]);
