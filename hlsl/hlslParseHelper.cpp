@@ -2039,7 +2039,10 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
 
             TIntermTyped* element = intermediate.addIndex(EOpIndexIndirect, intermediate.addSymbol(*entryPointOutput),
                                                           invocationIdSym, loc);
-            element->setType(callReturn->getType());
+
+            // Set the type of the array element being dereferenced
+            const TType derefElementType(entryPointOutput->getType(), 0);
+            element->setType(derefElementType);
 
             returnAssign = handleAssign(loc, EOpAssign, element, callReturn);
         } else {
@@ -2561,14 +2564,25 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     if (left->getAsOperator() && left->getAsOperator()->getOp() == EOpMatrixSwizzle)
         return handleAssignToMatrixSwizzle(loc, op, left, right);
 
-    const bool isSplitLeft    = wasSplit(left);
-    const bool isSplitRight   = wasSplit(right);
+    // Return true if the given node is an index operation into a split variable.
+    const auto indexesSplit = [this](const TIntermTyped* node) -> bool {
+        const TIntermBinary* binaryNode = node->getAsBinaryNode();
+
+        if (binaryNode == nullptr)
+            return false;
+
+        return (binaryNode->getOp() == EOpIndexDirect || binaryNode->getOp() == EOpIndexIndirect) && 
+               wasSplit(binaryNode->getLeft());
+    };
+
+    const bool isSplitLeft    = wasSplit(left) || indexesSplit(left);
+    const bool isSplitRight   = wasSplit(right) || indexesSplit(right);
 
     const bool isFlattenLeft  = wasFlattened(left);
     const bool isFlattenRight = wasFlattened(right);
 
-    // OK to do a single assign if both are split, or both are unsplit.  But if one is and the other
-    // isn't, we fall back to a member-wise copy.
+    // OK to do a single assign if neither side is split or flattened.  Otherwise, 
+    // fall through to a member-wise copy.
     if (!isFlattenLeft && !isFlattenRight && !isSplitLeft && !isSplitRight) {
         // Clip and cull distance requires more processing.  See comment above assignClipCullDistance.
         if (isClipOrCullDistance(left->getType()) || isClipOrCullDistance(right->getType())) {
@@ -2803,8 +2817,25 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
     // If either left or right was a split structure, we must read or write it, but still have to
     // parallel-recurse through the unsplit structure to identify the built-in IO vars.
-    if (isSplitLeft)
-        splitLeft = intermediate.addSymbol(*getSplitNonIoVar(left->getAsSymbolNode()->getId()), loc);
+    // The left can be either a symbol, or an index into a symbol (e.g, array reference)
+    if (isSplitLeft) {
+        if (indexesSplit(left)) {
+            // Index case: Refer to the indexed symbol, if the left is an index operator.
+            const TIntermSymbol* symNode = left->getAsBinaryNode()->getLeft()->getAsSymbolNode();
+
+            TIntermTyped* splitLeftNonIo = intermediate.addSymbol(*getSplitNonIoVar(symNode->getId()), loc);
+
+            splitLeft = intermediate.addIndex(left->getAsBinaryNode()->getOp(), splitLeftNonIo,
+                                              left->getAsBinaryNode()->getRight(), loc);
+
+            const TType derefType(splitLeftNonIo->getType(), 0);
+            splitLeft->setType(derefType);
+        } else {
+            // Symbol case: otherwise, if not indexed, we have the symbol directly.
+            const TIntermSymbol* symNode = left->getAsSymbolNode();
+            splitLeft = intermediate.addSymbol(*getSplitNonIoVar(symNode->getId()), loc);
+        }
+    }
 
     if (isSplitRight)
         splitRight = intermediate.addSymbol(*getSplitNonIoVar(right->getAsSymbolNode()->getId()), loc);

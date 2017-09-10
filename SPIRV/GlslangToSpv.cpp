@@ -3555,7 +3555,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     const glslang::TIntermSequence& glslangArgs = node->getSequence();
     const glslang::TQualifierList& qualifiers = node->getQualifierList();
 
-    // Encapsulate lvalue logic, used in two places below, for safety.
+    // Encapsulate lvalue logic, used in several places below, for safety.
     const auto isLValue = [](int qualifier, const glslang::TType& paramType) -> bool {
         return qualifier != glslang::EvqConstReadOnly || paramType.containsOpaque();
     };

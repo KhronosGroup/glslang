@@ -1,0 +1,241 @@
+hlsl.hull.4.tesc
+Shader version: 500
+vertices = 3
+0:? Sequence
+0:14  Function Definition: @main( ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14    Function Parameters: 
+0:?     Sequence
+0:15      Sequence
+0:15        move second child to first child ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:15          'output' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:15          Constant:
+0:15            0.000000
+0:15            0.000000
+0:15            0.000000
+0:15            0.000000
+0:16      Branch: Return with expression
+0:16        'output' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14  Function Definition: main( ( temp void)
+0:14    Function Parameters: 
+0:?     Sequence
+0:14      Sequence
+0:14        move second child to first child ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14          'flattenTemp' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14          Function Call: @main( ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14        move second child to first child ( temp float)
+0:14          direct index ( patch out float TessLevelOuter)
+0:?             '@entryPointOutput.tessFactor' ( patch out 4-element array of float TessLevelOuter)
+0:14            Constant:
+0:14              0 (const int)
+0:14          direct index ( temp float)
+0:14            tessFactor: direct index for structure ( temp 3-element array of float)
+0:14              'flattenTemp' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14              Constant:
+0:14                0 (const int)
+0:14            Constant:
+0:14              0 (const int)
+0:14        move second child to first child ( temp float)
+0:14          direct index ( patch out float TessLevelOuter)
+0:?             '@entryPointOutput.tessFactor' ( patch out 4-element array of float TessLevelOuter)
+0:14            Constant:
+0:14              1 (const int)
+0:14          direct index ( temp float)
+0:14            tessFactor: direct index for structure ( temp 3-element array of float)
+0:14              'flattenTemp' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14              Constant:
+0:14                0 (const int)
+0:14            Constant:
+0:14              1 (const int)
+0:14        move second child to first child ( temp float)
+0:14          direct index ( patch out float TessLevelOuter)
+0:?             '@entryPointOutput.tessFactor' ( patch out 4-element array of float TessLevelOuter)
+0:14            Constant:
+0:14              2 (const int)
+0:14          direct index ( temp float)
+0:14            tessFactor: direct index for structure ( temp 3-element array of float)
+0:14              'flattenTemp' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14              Constant:
+0:14                0 (const int)
+0:14            Constant:
+0:14              2 (const int)
+0:14        move second child to first child ( temp float)
+0:14          coord: direct index for structure ( temp float)
+0:14            indirect index (layout( location=0) out structure{ temp float coord})
+0:14              '@entryPointOutput' (layout( location=0) out 3-element array of structure{ temp float coord})
+0:?               'InvocationId' ( in uint InvocationID)
+0:14            Constant:
+0:14              0 (const int)
+0:14          coord: direct index for structure ( temp float)
+0:14            'flattenTemp' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14            Constant:
+0:14              1 (const int)
+0:?   Linker Objects
+0:?     '@entryPointOutput.tessFactor' ( patch out 4-element array of float TessLevelOuter)
+0:?     '@entryPointOutput' (layout( location=0) out 3-element array of structure{ temp float coord})
+0:?     'InvocationId' ( in uint InvocationID)
+
+
+Linked tessellation control stage:
+
+
+Shader version: 500
+vertices = 3
+0:? Sequence
+0:14  Function Definition: @main( ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14    Function Parameters: 
+0:?     Sequence
+0:15      Sequence
+0:15        move second child to first child ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:15          'output' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:15          Constant:
+0:15            0.000000
+0:15            0.000000
+0:15            0.000000
+0:15            0.000000
+0:16      Branch: Return with expression
+0:16        'output' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14  Function Definition: main( ( temp void)
+0:14    Function Parameters: 
+0:?     Sequence
+0:14      Sequence
+0:14        move second child to first child ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14          'flattenTemp' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14          Function Call: @main( ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14        move second child to first child ( temp float)
+0:14          direct index ( patch out float TessLevelOuter)
+0:?             '@entryPointOutput.tessFactor' ( patch out 4-element array of float TessLevelOuter)
+0:14            Constant:
+0:14              0 (const int)
+0:14          direct index ( temp float)
+0:14            tessFactor: direct index for structure ( temp 3-element array of float)
+0:14              'flattenTemp' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14              Constant:
+0:14                0 (const int)
+0:14            Constant:
+0:14              0 (const int)
+0:14        move second child to first child ( temp float)
+0:14          direct index ( patch out float TessLevelOuter)
+0:?             '@entryPointOutput.tessFactor' ( patch out 4-element array of float TessLevelOuter)
+0:14            Constant:
+0:14              1 (const int)
+0:14          direct index ( temp float)
+0:14            tessFactor: direct index for structure ( temp 3-element array of float)
+0:14              'flattenTemp' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14              Constant:
+0:14                0 (const int)
+0:14            Constant:
+0:14              1 (const int)
+0:14        move second child to first child ( temp float)
+0:14          direct index ( patch out float TessLevelOuter)
+0:?             '@entryPointOutput.tessFactor' ( patch out 4-element array of float TessLevelOuter)
+0:14            Constant:
+0:14              2 (const int)
+0:14          direct index ( temp float)
+0:14            tessFactor: direct index for structure ( temp 3-element array of float)
+0:14              'flattenTemp' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14              Constant:
+0:14                0 (const int)
+0:14            Constant:
+0:14              2 (const int)
+0:14        move second child to first child ( temp float)
+0:14          coord: direct index for structure ( temp float)
+0:14            indirect index (layout( location=0) out structure{ temp float coord})
+0:14              '@entryPointOutput' (layout( location=0) out 3-element array of structure{ temp float coord})
+0:?               'InvocationId' ( in uint InvocationID)
+0:14            Constant:
+0:14              0 (const int)
+0:14          coord: direct index for structure ( temp float)
+0:14            'flattenTemp' ( temp structure{ temp 3-element array of float tessFactor,  temp float coord})
+0:14            Constant:
+0:14              1 (const int)
+0:?   Linker Objects
+0:?     '@entryPointOutput.tessFactor' ( patch out 4-element array of float TessLevelOuter)
+0:?     '@entryPointOutput' (layout( location=0) out 3-element array of structure{ temp float coord})
+0:?     'InvocationId' ( in uint InvocationID)
+
+// Module Version 10000
+// Generated by (magic number): 80001
+// Id's are bound by 53
+
+                              Capability Tessellation
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint TessellationControl 4  "main" 27 46 48
+                              ExecutionMode 4 OutputVertices 3
+                              ExecutionMode 4 Triangles
+                              Source HLSL 500
+                              Name 4  "main"
+                              Name 10  "HS_Output"
+                              MemberName 10(HS_Output) 0  "tessFactor"
+                              MemberName 10(HS_Output) 1  "coord"
+                              Name 12  "@main("
+                              Name 15  "output"
+                              Name 22  "flattenTemp"
+                              Name 27  "@entryPointOutput.tessFactor"
+                              Name 43  "HS_Output"
+                              MemberName 43(HS_Output) 0  "coord"
+                              Name 46  "@entryPointOutput"
+                              Name 48  "InvocationId"
+                              Decorate 27(@entryPointOutput.tessFactor) Patch
+                              Decorate 27(@entryPointOutput.tessFactor) BuiltIn TessLevelOuter
+                              Decorate 46(@entryPointOutput) Location 0
+                              Decorate 48(InvocationId) BuiltIn InvocationId
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 32
+               7:             TypeInt 32 0
+               8:      7(int) Constant 3
+               9:             TypeArray 6(float) 8
+   10(HS_Output):             TypeStruct 9 6(float)
+              11:             TypeFunction 10(HS_Output)
+              14:             TypePointer Function 10(HS_Output)
+              16:    6(float) Constant 0
+              17:           9 ConstantComposite 16 16 16
+              18:10(HS_Output) ConstantComposite 17 16
+              24:      7(int) Constant 4
+              25:             TypeArray 6(float) 24
+              26:             TypePointer Output 25
+27(@entryPointOutput.tessFactor):     26(ptr) Variable Output
+              28:             TypeInt 32 1
+              29:     28(int) Constant 0
+              30:             TypePointer Function 6(float)
+              33:             TypePointer Output 6(float)
+              35:     28(int) Constant 1
+              39:     28(int) Constant 2
+   43(HS_Output):             TypeStruct 6(float)
+              44:             TypeArray 43(HS_Output) 8
+              45:             TypePointer Output 44
+46(@entryPointOutput):     45(ptr) Variable Output
+              47:             TypePointer Input 7(int)
+48(InvocationId):     47(ptr) Variable Input
+         4(main):           2 Function None 3
+               5:             Label
+ 22(flattenTemp):     14(ptr) Variable Function
+              23:10(HS_Output) FunctionCall 12(@main()
+                              Store 22(flattenTemp) 23
+              31:     30(ptr) AccessChain 22(flattenTemp) 29 29
+              32:    6(float) Load 31
+              34:     33(ptr) AccessChain 27(@entryPointOutput.tessFactor) 29
+                              Store 34 32
+              36:     30(ptr) AccessChain 22(flattenTemp) 29 35
+              37:    6(float) Load 36
+              38:     33(ptr) AccessChain 27(@entryPointOutput.tessFactor) 35
+                              Store 38 37
+              40:     30(ptr) AccessChain 22(flattenTemp) 29 39
+              41:    6(float) Load 40
+              42:     33(ptr) AccessChain 27(@entryPointOutput.tessFactor) 39
+                              Store 42 41
+              49:      7(int) Load 48(InvocationId)
+              50:     30(ptr) AccessChain 22(flattenTemp) 35
+              51:    6(float) Load 50
+              52:     33(ptr) AccessChain 46(@entryPointOutput) 49 29
+                              Store 52 51
+                              Return
+                              FunctionEnd
+      12(@main():10(HS_Output) Function None 11
+              13:             Label
+      15(output):     14(ptr) Variable Function
+                              Store 15(output) 18
+              19:10(HS_Output) Load 15(output)
+                              ReturnValue 19
+                              FunctionEnd
