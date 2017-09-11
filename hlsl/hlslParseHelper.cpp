@@ -9118,7 +9118,7 @@ void HlslParseContext::addPatchConstantInvocation()
         }
     };
 
-    const auto isOutputPatch = [this](TFunction& patchConstantFunction, int param) {
+    const auto isOutputPatch = [](TFunction& patchConstantFunction, int param) {
         const TType& type = *patchConstantFunction[param].type;
         const TBuiltInVariable biType = patchConstantFunction[param].getDeclaredBuiltIn();
 
