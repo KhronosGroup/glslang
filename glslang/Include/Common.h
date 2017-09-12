@@ -78,6 +78,10 @@ inline long long int atoll (const char* str)
 }
 #endif
 
+#if defined(_MSC_VER)
+#define strdup _strdup
+#endif
+
 /* windows only pragma */
 #ifdef _MSC_VER
     #pragma warning(disable : 4786) // Don't warn about too long identifiers
