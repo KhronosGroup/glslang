@@ -49,9 +49,10 @@ namespace glslang {
 
 TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, bool parsingBuiltins,
                              int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
-                             TInfoSink& infoSink, bool forwardCompatible, EShMessages messages) :
+                             TInfoSink& infoSink, bool forwardCompatible, EShMessages messages,
+                             const TString* entryPoint) :
             TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language,
-                              infoSink, forwardCompatible, messages),
+                              infoSink, forwardCompatible, messages, entryPoint),
             inMain(false),
             blockName(nullptr),
             limits(resources.limits),
@@ -88,6 +89,9 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
 
     if (language == EShLangGeometry)
         globalOutputDefaults.layoutStream = 0;
+
+    if (entryPoint != nullptr && entryPoint->size() > 0 && *entryPoint != "main")
+        infoSink.info.message(EPrefixError, "Source entry point must be \"main\"");
 }
 
 TParseContext::~TParseContext()
