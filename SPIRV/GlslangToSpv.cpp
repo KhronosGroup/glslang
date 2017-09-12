@@ -3204,9 +3204,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     glslang::TCrackedTextureOp cracked;
     node->crackTexture(sampler, cracked);
 
-    const bool isUnsignedResult =
-        node->getType().getBasicType() == glslang::EbtUint64 ||
-        node->getType().getBasicType() == glslang::EbtUint;
+    const bool isUnsignedResult = node->getType().getBasicType() == glslang::EbtUint;
 
     // Check for queries
     if (cracked.query) {
@@ -3357,6 +3355,45 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             return createAtomicOperation(node->getOp(), precision, resultType(), operands, node->getBasicType());
         }
     }
+
+#ifdef AMD_EXTENSIONS
+    // Check for fragment mask functions other than queries
+    if (cracked.fragMask) {
+        assert(sampler.ms);
+
+        auto opIt = arguments.begin();
+        std::vector<spv::Id> operands;
+
+        // Extract the image if necessary
+        if (builder.isSampledImage(params.sampler))
+            params.sampler = builder.createUnaryOp(spv::OpImage, builder.getImageType(params.sampler), params.sampler);
+
+        operands.push_back(params.sampler);
+        ++opIt;
+
+        if (sampler.isSubpass()) {
+            // add on the (0,0) coordinate
+            spv::Id zero = builder.makeIntConstant(0);
+            std::vector<spv::Id> comps;
+            comps.push_back(zero);
+            comps.push_back(zero);
+            operands.push_back(builder.makeCompositeConstant(builder.makeVectorType(builder.makeIntType(32), 2), comps));
+        }
+
+        for (; opIt != arguments.end(); ++opIt)
+            operands.push_back(*opIt);
+
+        spv::Op fragMaskOp = spv::OpNop;
+        if (node->getOp() == glslang::EOpFragmentMaskFetch)
+            fragMaskOp = spv::OpFragmentMaskFetchAMD;
+        else if (node->getOp() == glslang::EOpFragmentFetch)
+            fragMaskOp = spv::OpFragmentFetchAMD;
+
+        builder.addExtension(spv::E_SPV_AMD_shader_fragment_mask);
+        builder.addCapability(spv::CapabilityFragmentMaskAMD);
+        return builder.createOp(fragMaskOp, resultType(), operands);
+    }
+#endif
 
     // Check for texture functions other than queries
     bool sparse = node->isSparseTexture();
@@ -3529,6 +3566,11 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     const glslang::TIntermSequence& glslangArgs = node->getSequence();
     const glslang::TQualifierList& qualifiers = node->getQualifierList();
 
+    // Encapsulate lvalue logic, used in two places below, for safety.
+    const auto isLValue = [](int qualifier, const glslang::TType& paramType) -> bool {
+        return qualifier != glslang::EvqConstReadOnly || paramType.containsOpaque();
+    };
+
     //  See comments in makeFunctions() for details about the semantics for parameter passing.
     //
     // These imply we need a four step process:
@@ -3548,7 +3590,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
         glslangArgs[a]->traverse(this);
         argTypes.push_back(&paramType);
         // keep outputs and opaque objects as l-values, evaluate input-only as r-values
-        if (qualifiers[a] != glslang::EvqConstReadOnly || paramType.containsOpaque()) {
+        if (isLValue(qualifiers[a], paramType)) {
             // save l-value
             lValues.push_back(builder.getAccessChain());
         } else {
@@ -3573,7 +3615,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
             builder.setAccessChain(lValues[lValueCount]);
             arg = builder.accessChainGetLValue();
             ++lValueCount;
-        } else if (qualifiers[a] != glslang::EvqConstReadOnly) {
+        } else if (isLValue(qualifiers[a], paramType)) {
             // need space to hold the copy
             arg = builder.createVariable(spv::StorageClassFunction, convertGlslangToSpvType(paramType), "param");
             if (qualifiers[a] == glslang::EvqIn || qualifiers[a] == glslang::EvqInOut) {
@@ -3600,7 +3642,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
     lValueCount = 0;
     for (int a = 0; a < (int)glslangArgs.size(); ++a) {
         const glslang::TType& paramType = glslangArgs[a]->getAsTyped()->getType();
-        if (qualifiers[a] != glslang::EvqConstReadOnly) {
+        if (isLValue(qualifiers[a], paramType)) {
             if (qualifiers[a] == glslang::EvqOut || qualifiers[a] == glslang::EvqInOut) {
                 spv::Id copy = builder.createLoad(spvArgs[a]);
                 builder.setAccessChain(lValues[lValueCount]);

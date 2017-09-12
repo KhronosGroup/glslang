@@ -182,7 +182,7 @@ public:
 
     void pushNamespace(const TString& name);
     void popNamespace();
-    void getFullNamespaceName(const TString*&) const;
+    void getFullNamespaceName(TString*&) const;
     void addScopeMangler(TString&);
 
     void pushSwitchSequence(TIntermSequence* sequence) { switchSequenceStack.push_back(sequence); }
@@ -206,9 +206,6 @@ public:
 
     // Determine loop control from attributes
     TLoopControl handleLoopControl(const TAttributeMap& attributes) const;
-
-    // Potentially rename shader entry point function
-    void renameShaderFunction(const TString*& name) const;
 
     // Share struct buffer deep types
     void shareStructBufferType(TType&);
@@ -423,7 +420,6 @@ protected:
     unsigned int nextInLocation;
     unsigned int nextOutLocation;
 
-    TString    sourceEntryPointName;
     TFunction* entryPointFunction;
     TIntermNode* entryPointFunctionBody;
 
@@ -435,12 +431,16 @@ protected:
 
     TVariable* gsStreamOutput;               // geometry shader stream outputs, for emit (Append method)
 
-    TVariable* clipDistanceVariable;         // synthesized clip distance variable (shader might have >1)
-    TVariable* cullDistanceVariable;         // synthesized cull distance variable (shader might have >1)
+    TVariable* clipDistanceOutput;           // synthesized clip distance out variable (shader might have >1)
+    TVariable* cullDistanceOutput;           // synthesized cull distance out variable (shader might have >1)
+    TVariable* clipDistanceInput;            // synthesized clip distance in variable (shader might have >1)
+    TVariable* cullDistanceInput;            // synthesized cull distance in variable (shader might have >1)
 
     static const int maxClipCullRegs = 2;
-    std::array<int, maxClipCullRegs> clipSemanticNSize; // vector, indexed by clip semantic ID
-    std::array<int, maxClipCullRegs> cullSemanticNSize; // vector, indexed by cull semantic ID
+    std::array<int, maxClipCullRegs> clipSemanticNSizeIn;  // vector, indexed by clip semantic ID
+    std::array<int, maxClipCullRegs> cullSemanticNSizeIn;  // vector, indexed by cull semantic ID
+    std::array<int, maxClipCullRegs> clipSemanticNSizeOut; // vector, indexed by clip semantic ID
+    std::array<int, maxClipCullRegs> cullSemanticNSizeOut; // vector, indexed by cull semantic ID
 
     // This tracks the first (mip level) argument to the .mips[][] operator.  Since this can be nested as
     // in tx.mips[tx.mips[0][1].x][2], we need a stack.  We also track the TSourceLoc for error reporting 
