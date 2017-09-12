@@ -2283,7 +2283,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     if (profile != EEsProfile && version >= 450) {
         commonBuiltins.append(
             "float cubeFaceIndexAMD(vec3);"
-            "vec2 cubeFaceCoordAMD(vec3);"
+            "vec2  cubeFaceCoordAMD(vec3);"
             "uint64_t timeAMD();"
 
             "\n");
@@ -2787,6 +2787,29 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
     }
+
+    // GL_AMD_shader_fragment_mask
+    if (profile != EEsProfile && version >= 450) {
+        commonBuiltins.append(
+            "uint fragmentMaskFetchAMD(sampler2DMS,       ivec2);"
+            "uint fragmentMaskFetchAMD(isampler2DMS,      ivec2);"
+            "uint fragmentMaskFetchAMD(usampler2DMS,      ivec2);"
+
+            "uint fragmentMaskFetchAMD(sampler2DMSArray,  ivec3);"
+            "uint fragmentMaskFetchAMD(isampler2DMSArray, ivec3);"
+            "uint fragmentMaskFetchAMD(usampler2DMSArray, ivec3);"
+
+            "vec4  fragmentFetchAMD(sampler2DMS,       ivec2, uint);"
+            "ivec4 fragmentFetchAMD(isampler2DMS,      ivec2, uint);"
+            "uvec4 fragmentFetchAMD(usampler2DMS,      ivec2, uint);"
+
+            "vec4  fragmentFetchAMD(sampler2DMSArray,  ivec3, uint);"
+            "ivec4 fragmentFetchAMD(isampler2DMSArray, ivec3, uint);"
+            "uvec4 fragmentFetchAMD(usampler2DMSArray, ivec3, uint);"
+
+            "\n");
+    }
+
 #endif
 
     //============================================================================
@@ -3126,6 +3149,20 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
     }
+
+    // GL_AMD_shader_fragment_mask
+    if (profile != EEsProfile && version >= 450 && spvVersion.vulkan >= 100) {
+        stageBuiltins[EShLangFragment].append(
+            "uint fragmentMaskFetchAMD(subpassInputMS);"
+            "uint fragmentMaskFetchAMD(isubpassInputMS);"
+            "uint fragmentMaskFetchAMD(usubpassInputMS);"
+
+            "vec4  fragmentFetchAMD(subpassInputMS,  uint);"
+            "ivec4 fragmentFetchAMD(isubpassInputMS, uint);"
+            "uvec4 fragmentFetchAMD(usubpassInputMS, uint);"
+
+            "\n");
+        }
 #endif
 
     //============================================================================
@@ -5372,6 +5409,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("cubeFaceCoordAMD", 1, &E_GL_AMD_gcn_shader);
             symbolTable.setFunctionExtensions("timeAMD",          1, &E_GL_AMD_gcn_shader);
         }
+
+        if (profile != EEsProfile) {
+            symbolTable.setFunctionExtensions("fragmentMaskFetchAMD", 1, &E_GL_AMD_shader_fragment_mask);
+            symbolTable.setFunctionExtensions("fragmentFetchAMD",     1, &E_GL_AMD_shader_fragment_mask);
+        }
 #endif
 
         // Compatibility variables, vertex only
@@ -6210,6 +6252,9 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("imageLoadLodAMD",                     EOpImageLoadLod);
             symbolTable.relateToOperator("imageStoreLodAMD",                    EOpImageStoreLod);
             symbolTable.relateToOperator("sparseImageLoadLodAMD",               EOpSparseImageLoadLod);
+
+            symbolTable.relateToOperator("fragmentMaskFetchAMD",                EOpFragmentMaskFetch);
+            symbolTable.relateToOperator("fragmentFetchAMD",                    EOpFragmentFetch);
 #endif
         }
         if (profile == EEsProfile) {
