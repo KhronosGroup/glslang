@@ -937,7 +937,7 @@ void CompileAndLinkShaderFiles(glslang::TWorklist& Worklist)
         ShaderCompUnit compUnit(FindLanguage("stdin"));
         std::istreambuf_iterator<char> begin(std::cin), end;
         std::string tempString(begin, end);
-        char* fileText = strdup(tempString.c_str());
+        char* fileText = _strdup(tempString.c_str());
         std::string fileName = "stdin";
         compUnit.addString(fileName, fileText);
         compUnits.push_back(compUnit);
@@ -1131,7 +1131,7 @@ void CompileFile(const char* fileName, ShHandle compiler)
     if ((Options & EOptionStdin) != 0) {
         std::istreambuf_iterator<char> begin(std::cin), end;
         std::string tempString(begin, end);
-        shaderString = strdup(tempString.c_str());
+        shaderString = _strdup(tempString.c_str());
     } else {
         shaderString = ReadFileData(fileName);
     }
