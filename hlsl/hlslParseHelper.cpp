@@ -1999,6 +1999,11 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
         TParameter& param = userFunction[i];
         argVars.push_back(makeInternalVariable(*param.name, *param.type));
         argVars.back()->getWritableType().getQualifier().makeTemporary();
+
+        // Track the input patch, which is the only non-builtin supported by hull shader PCF.
+        if (param.getDeclaredBuiltIn() == EbvInputPatch)
+            inputPatch = argVars.back();
+
         TIntermSymbol* arg = intermediate.addSymbol(*argVars.back());
         handleFunctionArgument(&callee, callingArgs, arg);
         if (param.type->getQualifier().isParamInput()) {
@@ -2218,9 +2223,6 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
             synthesizeEditedInput(paramType);
             TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingIn);
             inputs.push_back(argAsGlobal);
-
-            if (function[i].getDeclaredBuiltIn() == EbvInputPatch)
-                inputPatch = argAsGlobal;
         }
         if (paramType.getQualifier().isParamOutput()) {
             TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingOut);
@@ -9066,19 +9068,12 @@ TIntermSymbol* HlslParseContext::findTessLinkageSymbol(TBuiltInVariable biType) 
     return intermediate.addSymbol(*it->second->getAsVariable());
 }
 
-// Finalization step: Add patch constant function invocation
-void HlslParseContext::addPatchConstantInvocation()
+// Find the patch constant function (issues error, returns nullptr if not found)
+const TFunction* HlslParseContext::findPatchConstantFunction(const TSourceLoc& loc)
 {
-    TSourceLoc loc;
-    loc.init();
-
-    // If there's no patch constant function, or we're not a HS, do nothing.
-    if (patchConstantFunctionName.empty() || language != EShLangTessControl)
-        return;
-
     if (symbolTable.isFunctionNameVariable(patchConstantFunctionName)) {
         error(loc, "can't use variable in patch constant function", patchConstantFunctionName.c_str(), "");
-        return;
+        return nullptr;
     }
 
     const TString mangledName = patchConstantFunctionName + "(";
@@ -9092,7 +9087,7 @@ void HlslParseContext::addPatchConstantInvocation()
     // allow any disambiguation of overloads.
     if (candidateList.empty()) {
         error(loc, "patch constant function not found", patchConstantFunctionName.c_str(), "");
-        return;
+        return nullptr;
     }
 
     // Based on directed experiments, it appears that if there are overloaded patchconstantfunctions,
@@ -9100,8 +9095,21 @@ void HlslParseContext::addPatchConstantInvocation()
     // out if there is more than one candidate.
     if (candidateList.size() > 1) {
         error(loc, "ambiguous patch constant function", patchConstantFunctionName.c_str(), "");
-        return;
+        return nullptr;
     }
+
+    return candidateList[0];
+}
+
+// Finalization step: Add patch constant function invocation
+void HlslParseContext::addPatchConstantInvocation()
+{
+    TSourceLoc loc;
+    loc.init();
+
+    // If there's no patch constant function, or we're not a HS, do nothing.
+    if (patchConstantFunctionName.empty() || language != EShLangTessControl)
+        return;
 
     // Look for built-in variables in a function's parameter list.
     const auto findBuiltIns = [&](const TFunction& function, std::set<tInterstageIoData>& builtIns) {
@@ -9167,7 +9175,13 @@ void HlslParseContext::addPatchConstantInvocation()
     // 
     // 5/5B. Call the PCF inside an if test for (invocation id == 0).
 
-    TFunction& patchConstantFunction = const_cast<TFunction&>(*candidateList[0]);
+    TFunction* patchConstantFunctionPtr = const_cast<TFunction*>(findPatchConstantFunction(loc));
+
+    if (patchConstantFunctionPtr == nullptr)
+        return;
+
+    TFunction& patchConstantFunction = *patchConstantFunctionPtr;
+
     const int pcfParamCount = patchConstantFunction.getParamCount();
     TIntermSymbol* invocationIdSym = findTessLinkageSymbol(EbvInvocationId);
     TIntermSequence& epBodySeq = entryPointFunctionBody->getAsAggregate()->getSequence();
@@ -9248,10 +9262,9 @@ void HlslParseContext::addPatchConstantInvocation()
 
     // ================ Step 1B: Argument synthesis ================
     // Create pcfArguments for synthesis of patchconstantfunction invocation
-    // TODO: handle struct or array inputs
     {
         for (int p=0; p<pcfParamCount; ++p) {
-            TIntermSymbol* inputArg = nullptr;
+            TIntermTyped* inputArg = nullptr;
 
             if (p == outPatchParam) {
                 if (perCtrlPtVar == nullptr) {
@@ -9265,6 +9278,11 @@ void HlslParseContext::addPatchConstantInvocation()
                 // find which built-in it is
                 const TBuiltInVariable biType = patchConstantFunction[p].getDeclaredBuiltIn();
                 
+                if (biType == EbvInputPatch && inputPatch == nullptr) {
+                    error(loc, "unimplemented: PCF input patch without entry point input patch parameter", "", "");
+                    return;
+                }
+
                 inputArg = findTessLinkageSymbol(biType);
 
                 if (inputArg == nullptr) {

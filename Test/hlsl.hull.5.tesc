@@ -2,7 +2,7 @@
 // Test mixed InputPatch structure: user and builtin members.  Hull shaders involve extra
 // logic in this case due to patch constant function call synthesis.
 
-// This example tests the main EP and the PCF EP both having an input patch.
+// This example tests the PCF EP having an InputPatch, but the main EP does not.
 
 struct HS_Main_Output
 { 
@@ -35,7 +35,7 @@ HS_Output HS_ConstFunc ( InputPatch < HS_Input , 3 > I )
 [ outputtopology ( "triangle_cw" ) ] 
 [ patchconstantfunc ( "HS_ConstFunc" ) ] 
 [ outputcontrolpoints ( 3 ) ] 
-HS_Main_Output main( InputPatch < HS_Input , 3 > I , uint cpid : SV_OutputControlPointID ) 
+HS_Main_Output main( uint cpid : SV_OutputControlPointID ) 
 { 
     HS_Main_Output output = ( HS_Main_Output ) 0 ; 
     output.m_Position = 0;
