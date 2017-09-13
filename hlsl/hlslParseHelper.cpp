@@ -58,11 +58,10 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
                                    const TString sourceEntryPointName,
                                    bool forwardCompatible, EShMessages messages) :
     TParseContextBase(symbolTable, interm, parsingBuiltins, version, profile, spvVersion, language, infoSink,
-                      forwardCompatible, messages),
+                      forwardCompatible, messages, &sourceEntryPointName),
     annotationNestingLevel(0),
     inputPatch(nullptr),
     nextInLocation(0), nextOutLocation(0),
-    sourceEntryPointName(sourceEntryPointName),
     entryPointFunction(nullptr),
     entryPointFunctionBody(nullptr),
     gsStreamOutput(nullptr),
@@ -8823,7 +8822,7 @@ void HlslParseContext::popNamespace()
 
 // Use the class/struct nesting string to create a global name for
 // a member of a class/struct.
-void HlslParseContext::getFullNamespaceName(const TString*& name) const
+void HlslParseContext::getFullNamespaceName(TString*& name) const
 {
     if (currentTypePrefix.size() == 0)
         return;
@@ -8837,15 +8836,6 @@ void HlslParseContext::getFullNamespaceName(const TString*& name) const
 void HlslParseContext::addScopeMangler(TString& name)
 {
     name.append(scopeMangler);
-}
-
-// Potentially rename shader entry point function
-void HlslParseContext::renameShaderFunction(const TString*& name) const
-{
-    // Replace the entry point name given in the shader with the real entry point name,
-    // if there is a substitution.
-    if (name != nullptr && *name == sourceEntryPointName)
-        name = NewPoolTString(intermediate.getEntryPointName().c_str());
 }
 
 // Return true if this has uniform-interface like decorations.
@@ -9231,7 +9221,7 @@ void HlslParseContext::addPatchConstantInvocation()
         }
     };
 
-    const auto isOutputPatch = [this](TFunction& patchConstantFunction, int param) {
+    const auto isOutputPatch = [](TFunction& patchConstantFunction, int param) {
         const TType& type = *patchConstantFunction[param].type;
         const TBuiltInVariable biType = patchConstantFunction[param].getDeclaredBuiltIn();
 
