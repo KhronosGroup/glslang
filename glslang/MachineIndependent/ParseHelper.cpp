@@ -3532,14 +3532,6 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
             oldType.getQualifier().flat = newType.getQualifier().flat;
             oldType.getQualifier().nopersp = newType.getQualifier().nopersp;
 
-#ifdef NV_EXTENSIONS
-            if (member->type->getFieldName() == "gl_Layer") {
-                if (!newType.getQualifier().layoutViewportRelative && newType.getQualifier().layoutSecondaryViewportRelativeOffset == -2048)
-                    error(loc, "redeclaration only allowed for viewport_relative or secondary_view_offset layout", "redeclaration", member->type->getFieldName().c_str());
-                oldType.getQualifier().layoutViewportRelative = newType.getQualifier().layoutViewportRelative;
-                oldType.getQualifier().layoutSecondaryViewportRelativeOffset = newType.getQualifier().layoutSecondaryViewportRelativeOffset;
-            }
-#endif
             if (oldType.isImplicitlySizedArray() && newType.isExplicitlySizedArray())
                 oldType.changeOuterArraySize(newType.getOuterArraySize());
 
