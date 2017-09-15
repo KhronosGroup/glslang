@@ -7807,12 +7807,13 @@ TIntermTyped* HlslParseContext::handleConstructor(const TSourceLoc& loc, TInterm
 //
 TIntermTyped* HlslParseContext::addConstructor(const TSourceLoc& loc, TIntermTyped* node, const TType& type)
 {
+    TIntermAggregate* aggrNode = node->getAsAggregate();
     TOperator op = intermediate.mapTypeToConstructorOp(type);
 
     // Combined texture-sampler constructors are completely semantic checked
     // in constructorTextureSamplerError()
     if (op == EOpConstructTextureSampler)
-        return intermediate.setAggregateOperator(node->getAsAggregate(), op, type, loc);
+        return intermediate.setAggregateOperator(aggrNode, op, type, loc);
 
     TTypeList::const_iterator memberTypes;
     if (op == EOpConstructStruct)
@@ -7826,7 +7827,6 @@ TIntermTyped* HlslParseContext::addConstructor(const TSourceLoc& loc, TIntermTyp
         elementType.shallowCopy(type);
 
     bool singleArg;
-    TIntermAggregate* aggrNode = node->getAsAggregate();
     if (aggrNode != nullptr) {
         if (aggrNode->getOp() != EOpNull || aggrNode->getSequence().size() == 1)
             singleArg = true;
@@ -7844,7 +7844,7 @@ TIntermTyped* HlslParseContext::addConstructor(const TSourceLoc& loc, TIntermTyp
             newNode = convertArray(node, type);
 
         // If structure constructor or array constructor is being called
-        // for only one parameter inside the structure, we need to call constructAggregate function once.
+        // for only one parameter inside the aggregate, we need to call constructAggregate function once.
         else if (type.isArray())
             newNode = constructAggregate(node, elementType, 1, node->getLoc());
         else if (op == EOpConstructStruct)
@@ -7868,7 +7868,7 @@ TIntermTyped* HlslParseContext::addConstructor(const TSourceLoc& loc, TIntermTyp
     //
     // Handle list of arguments.
     //
-    TIntermSequence &sequenceVector = aggrNode->getSequence();    // Stores the information about the parameter to the constructor
+    TIntermSequence& sequenceVector = aggrNode->getSequence();    // Stores the information about the parameter to the constructor
     // if the structure constructor contains more than one parameter, then construct
     // each parameter
 
