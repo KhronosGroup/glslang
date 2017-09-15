@@ -429,29 +429,6 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     return result;
 }
 
-void TParseContext::checkIndex(const TSourceLoc& loc, const TType& type, int& index)
-{
-    if (index < 0) {
-        error(loc, "", "[", "index out of range '%d'", index);
-        index = 0;
-    } else if (type.isArray()) {
-        if (type.isExplicitlySizedArray() && index >= type.getOuterArraySize()) {
-            error(loc, "", "[", "array index out of range '%d'", index);
-            index = type.getOuterArraySize() - 1;
-        }
-    } else if (type.isVector()) {
-        if (index >= type.getVectorSize()) {
-            error(loc, "", "[", "vector index out of range '%d'", index);
-            index = type.getVectorSize() - 1;
-        }
-    } else if (type.isMatrix()) {
-        if (index >= type.getMatrixCols()) {
-            error(loc, "", "[", "matrix index out of range '%d'", index);
-            index = type.getMatrixCols() - 1;
-        }
-    }
-}
-
 // for ES 2.0 (version 100) limitations for almost all index operations except vertex-shader uniforms
 void TParseContext::handleIndexLimits(const TSourceLoc& /*loc*/, TIntermTyped* base, TIntermTyped* index)
 {

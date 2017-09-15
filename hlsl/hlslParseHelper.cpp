@@ -859,10 +859,8 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
 
     bool flattened = false;
     int indexValue = 0;
-    if (index->getQualifier().storage == EvqConst) {
+    if (index->getQualifier().isFrontEndConstant())
         indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
-        checkIndex(loc, base->getType(), indexValue);
-    }
 
     variableCheck(base);
     if (! base->isArray() && ! base->isMatrix() && ! base->isVector()) {
@@ -871,9 +869,11 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
                   base->getAsSymbolNode()->getName().c_str(), "");
         else
             error(loc, " left of '[' is not of type array, matrix, or vector ", "expression", "");
-    } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst)
+    } else if (base->getType().getQualifier().storage == EvqConst && index->getQualifier().storage == EvqConst) {
+        // both base and index are front-end constants
+        checkIndex(loc, base->getType(), indexValue);
         return intermediate.foldDereference(base, indexValue, loc);
-    else {
+    } else {
         // at least one of base and index is variable...
 
         if (base->getAsSymbolNode() && wasFlattened(base)) {
@@ -883,9 +883,11 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
             result = flattenAccess(base, indexValue);
             flattened = (result != base);
         } else {
-            if (index->getQualifier().storage == EvqConst) {
+            if (index->getQualifier().isFrontEndConstant()) {
                 if (base->getType().isImplicitlySizedArray())
                     updateImplicitArraySize(loc, base, indexValue);
+                else
+                    checkIndex(loc, base->getType(), indexValue);
                 result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
             } else {
                 result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
@@ -912,11 +914,6 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
     }
 
     return result;
-}
-
-void HlslParseContext::checkIndex(const TSourceLoc& /*loc*/, const TType& /*type*/, int& /*index*/)
-{
-    // HLSL todo: any rules for index fixups?
 }
 
 // Handle seeing a binary node with a math operation.

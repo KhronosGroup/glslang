@@ -102,6 +102,8 @@ public:
 
     virtual void setLimits(const TBuiltInResource&) = 0;
 
+    void checkIndex(const TSourceLoc&, const TType&, int& index);
+
     EShLanguage getLanguage() const { return language; }
     void setScanContext(TScanContext* c) { scanContext = c; }
     TScanContext* getScanContext() const { return scanContext; }
@@ -283,7 +285,6 @@ public:
     void handlePragma(const TSourceLoc&, const TVector<TString>&) override;
     TIntermTyped* handleVariable(const TSourceLoc&, TSymbol* symbol, const TString* string);
     TIntermTyped* handleBracketDereference(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
-    void checkIndex(const TSourceLoc&, const TType&, int& index);
     void handleIndexLimits(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
 
     void makeEditable(TSymbol*&) override;
