@@ -1999,6 +1999,11 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
         TParameter& param = userFunction[i];
         argVars.push_back(makeInternalVariable(*param.name, *param.type));
         argVars.back()->getWritableType().getQualifier().makeTemporary();
+
+        // Track the input patch, which is the only non-builtin supported by hull shader PCF.
+        if (param.getDeclaredBuiltIn() == EbvInputPatch)
+            inputPatch = argVars.back();
+
         TIntermSymbol* arg = intermediate.addSymbol(*argVars.back());
         handleFunctionArgument(&callee, callingArgs, arg);
         if (param.type->getQualifier().isParamInput()) {
@@ -2039,7 +2044,10 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
 
             TIntermTyped* element = intermediate.addIndex(EOpIndexIndirect, intermediate.addSymbol(*entryPointOutput),
                                                           invocationIdSym, loc);
-            element->setType(callReturn->getType());
+
+            // Set the type of the array element being dereferenced
+            const TType derefElementType(entryPointOutput->getType(), 0);
+            element->setType(derefElementType);
 
             returnAssign = handleAssign(loc, EOpAssign, element, callReturn);
         } else {
@@ -2215,9 +2223,6 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
             synthesizeEditedInput(paramType);
             TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingIn);
             inputs.push_back(argAsGlobal);
-
-            if (function[i].getDeclaredBuiltIn() == EbvInputPatch)
-                inputPatch = argAsGlobal;
         }
         if (paramType.getQualifier().isParamOutput()) {
             TVariable* argAsGlobal = makeIoVariable(function[i].name->c_str(), paramType, EvqVaryingOut);
@@ -2561,14 +2566,25 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
     if (left->getAsOperator() && left->getAsOperator()->getOp() == EOpMatrixSwizzle)
         return handleAssignToMatrixSwizzle(loc, op, left, right);
 
-    const bool isSplitLeft    = wasSplit(left);
-    const bool isSplitRight   = wasSplit(right);
+    // Return true if the given node is an index operation into a split variable.
+    const auto indexesSplit = [this](const TIntermTyped* node) -> bool {
+        const TIntermBinary* binaryNode = node->getAsBinaryNode();
+
+        if (binaryNode == nullptr)
+            return false;
+
+        return (binaryNode->getOp() == EOpIndexDirect || binaryNode->getOp() == EOpIndexIndirect) && 
+               wasSplit(binaryNode->getLeft());
+    };
+
+    const bool isSplitLeft    = wasSplit(left) || indexesSplit(left);
+    const bool isSplitRight   = wasSplit(right) || indexesSplit(right);
 
     const bool isFlattenLeft  = wasFlattened(left);
     const bool isFlattenRight = wasFlattened(right);
 
-    // OK to do a single assign if both are split, or both are unsplit.  But if one is and the other
-    // isn't, we fall back to a member-wise copy.
+    // OK to do a single assign if neither side is split or flattened.  Otherwise, 
+    // fall through to a member-wise copy.
     if (!isFlattenLeft && !isFlattenRight && !isSplitLeft && !isSplitRight) {
         // Clip and cull distance requires more processing.  See comment above assignClipCullDistance.
         if (isClipOrCullDistance(left->getType()) || isClipOrCullDistance(right->getType())) {
@@ -2803,8 +2819,25 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
 
     // If either left or right was a split structure, we must read or write it, but still have to
     // parallel-recurse through the unsplit structure to identify the built-in IO vars.
-    if (isSplitLeft)
-        splitLeft = intermediate.addSymbol(*getSplitNonIoVar(left->getAsSymbolNode()->getId()), loc);
+    // The left can be either a symbol, or an index into a symbol (e.g, array reference)
+    if (isSplitLeft) {
+        if (indexesSplit(left)) {
+            // Index case: Refer to the indexed symbol, if the left is an index operator.
+            const TIntermSymbol* symNode = left->getAsBinaryNode()->getLeft()->getAsSymbolNode();
+
+            TIntermTyped* splitLeftNonIo = intermediate.addSymbol(*getSplitNonIoVar(symNode->getId()), loc);
+
+            splitLeft = intermediate.addIndex(left->getAsBinaryNode()->getOp(), splitLeftNonIo,
+                                              left->getAsBinaryNode()->getRight(), loc);
+
+            const TType derefType(splitLeftNonIo->getType(), 0);
+            splitLeft->setType(derefType);
+        } else {
+            // Symbol case: otherwise, if not indexed, we have the symbol directly.
+            const TIntermSymbol* symNode = left->getAsSymbolNode();
+            splitLeft = intermediate.addSymbol(*getSplitNonIoVar(symNode->getId()), loc);
+        }
+    }
 
     if (isSplitRight)
         splitRight = intermediate.addSymbol(*getSplitNonIoVar(right->getAsSymbolNode()->getId()), loc);
@@ -9035,19 +9068,12 @@ TIntermSymbol* HlslParseContext::findTessLinkageSymbol(TBuiltInVariable biType) 
     return intermediate.addSymbol(*it->second->getAsVariable());
 }
 
-// Finalization step: Add patch constant function invocation
-void HlslParseContext::addPatchConstantInvocation()
+// Find the patch constant function (issues error, returns nullptr if not found)
+const TFunction* HlslParseContext::findPatchConstantFunction(const TSourceLoc& loc)
 {
-    TSourceLoc loc;
-    loc.init();
-
-    // If there's no patch constant function, or we're not a HS, do nothing.
-    if (patchConstantFunctionName.empty() || language != EShLangTessControl)
-        return;
-
     if (symbolTable.isFunctionNameVariable(patchConstantFunctionName)) {
         error(loc, "can't use variable in patch constant function", patchConstantFunctionName.c_str(), "");
-        return;
+        return nullptr;
     }
 
     const TString mangledName = patchConstantFunctionName + "(";
@@ -9061,7 +9087,7 @@ void HlslParseContext::addPatchConstantInvocation()
     // allow any disambiguation of overloads.
     if (candidateList.empty()) {
         error(loc, "patch constant function not found", patchConstantFunctionName.c_str(), "");
-        return;
+        return nullptr;
     }
 
     // Based on directed experiments, it appears that if there are overloaded patchconstantfunctions,
@@ -9069,8 +9095,21 @@ void HlslParseContext::addPatchConstantInvocation()
     // out if there is more than one candidate.
     if (candidateList.size() > 1) {
         error(loc, "ambiguous patch constant function", patchConstantFunctionName.c_str(), "");
-        return;
+        return nullptr;
     }
+
+    return candidateList[0];
+}
+
+// Finalization step: Add patch constant function invocation
+void HlslParseContext::addPatchConstantInvocation()
+{
+    TSourceLoc loc;
+    loc.init();
+
+    // If there's no patch constant function, or we're not a HS, do nothing.
+    if (patchConstantFunctionName.empty() || language != EShLangTessControl)
+        return;
 
     // Look for built-in variables in a function's parameter list.
     const auto findBuiltIns = [&](const TFunction& function, std::set<tInterstageIoData>& builtIns) {
@@ -9136,7 +9175,13 @@ void HlslParseContext::addPatchConstantInvocation()
     // 
     // 5/5B. Call the PCF inside an if test for (invocation id == 0).
 
-    TFunction& patchConstantFunction = const_cast<TFunction&>(*candidateList[0]);
+    TFunction* patchConstantFunctionPtr = const_cast<TFunction*>(findPatchConstantFunction(loc));
+
+    if (patchConstantFunctionPtr == nullptr)
+        return;
+
+    TFunction& patchConstantFunction = *patchConstantFunctionPtr;
+
     const int pcfParamCount = patchConstantFunction.getParamCount();
     TIntermSymbol* invocationIdSym = findTessLinkageSymbol(EbvInvocationId);
     TIntermSequence& epBodySeq = entryPointFunctionBody->getAsAggregate()->getSequence();
@@ -9217,10 +9262,9 @@ void HlslParseContext::addPatchConstantInvocation()
 
     // ================ Step 1B: Argument synthesis ================
     // Create pcfArguments for synthesis of patchconstantfunction invocation
-    // TODO: handle struct or array inputs
     {
         for (int p=0; p<pcfParamCount; ++p) {
-            TIntermSymbol* inputArg = nullptr;
+            TIntermTyped* inputArg = nullptr;
 
             if (p == outPatchParam) {
                 if (perCtrlPtVar == nullptr) {
@@ -9234,6 +9278,11 @@ void HlslParseContext::addPatchConstantInvocation()
                 // find which built-in it is
                 const TBuiltInVariable biType = patchConstantFunction[p].getDeclaredBuiltIn();
                 
+                if (biType == EbvInputPatch && inputPatch == nullptr) {
+                    error(loc, "unimplemented: PCF input patch without entry point input patch parameter", "", "");
+                    return;
+                }
+
                 inputArg = findTessLinkageSymbol(biType);
 
                 if (inputArg == nullptr) {

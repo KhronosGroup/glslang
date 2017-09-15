@@ -316,6 +316,9 @@ protected:
     static bool isClipOrCullDistance(const TQualifier& qual) { return isClipOrCullDistance(qual.builtIn); }
     static bool isClipOrCullDistance(const TType& type) { return isClipOrCullDistance(type.getQualifier()); }
 
+    // Find the patch constant function (issues error, returns nullptr if not found)
+    const TFunction* findPatchConstantFunction(const TSourceLoc& loc);
+
     // Pass through to base class after remembering built-in mappings.
     using TParseContextBase::trackLinkage;
     void trackLinkage(TSymbol& variable) override;
@@ -415,7 +418,8 @@ protected:
     };
 
     TMap<tInterstageIoData, TVariable*> splitBuiltIns; // split built-ins, indexed by built-in type.
-    TVariable* inputPatch;
+    TVariable* inputPatch; // input patch is special for PCF: it's the only non-builtin PCF input,
+                           // and is handled as a pseudo-builtin.
 
     unsigned int nextInLocation;
     unsigned int nextOutLocation;
