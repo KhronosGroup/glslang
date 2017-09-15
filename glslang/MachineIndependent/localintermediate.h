@@ -640,8 +640,8 @@ protected:
     std::string entryPointName;
     std::string entryPointMangledName;
 
-    EProfile profile;
-    int version;
+    EProfile profile;                           // source profile
+    int version;                                // source version
     SpvVersion spvVersion;
     TIntermNode* treeRoot;
     std::set<std::string> requestedExtensions;  // cumulation of all enabled or required extensions; not connected to what subset of the shader used them

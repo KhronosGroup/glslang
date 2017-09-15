@@ -65,6 +65,7 @@ public:
 
     static const int maxMatrixSize = 4;
 
+    void setTargetVersion(unsigned int v) { targetVersion = v; }
     void setSource(spv::SourceLanguage lang, int version)
     {
         source = lang;
@@ -585,6 +586,7 @@ public:
     void dumpInstructions(std::vector<unsigned int>&, const std::vector<std::unique_ptr<Instruction> >&) const;
     void dumpModuleProcesses(std::vector<unsigned int>&) const;
 
+    unsigned int targetVersion;
     SourceLanguage source;
     int sourceVersion;
     spv::Id sourceFileStringId;

@@ -46,13 +46,12 @@ namespace spv {
 
 typedef unsigned int Id;
 
-#define SPV_VERSION 0x10200
+#define SPV_VERSION 0x10300
 #define SPV_REVISION 1
 
 static const unsigned int MagicNumber = 0x07230203;
-static const unsigned int Version = 0x00010200;
+static const unsigned int Version = 0x00010300;
 static const unsigned int Revision = 1;
-
 static const unsigned int OpCodeMask = 0xffff;
 static const unsigned int WordCountShift = 16;
 
@@ -130,9 +129,8 @@ enum ExecutionMode {
     ExecutionModeSubgroupsPerWorkgroupId = 37,
     ExecutionModeLocalSizeId = 38,
     ExecutionModeLocalSizeHintId = 39,
-    ExecutionModeInvocationsId = 40,
-    ExecutionModeOutputVerticesId = 41,
     ExecutionModePostDepthCoverage = 4446,
+    ExecutionModeStencilRefReplacingEXT = 5027,
     ExecutionModeMax = 0x7fffffff,
 };
 
@@ -390,21 +388,11 @@ enum Decoration {
     DecorationMaxByteOffset = 45,
     DecorationAlignmentId = 46,
     DecorationMaxByteOffsetId = 47,
-    DecorationArrayStrideId = 48,
-    DecorationMatrixStrideId = 49,
-    DecorationStreamId = 50,
-    DecorationLocationId = 51,
-    DecorationIndexId = 52,
-    DecorationBindingId = 53,
-    DecorationDescriptorSetId = 54,
-    DecorationOffsetId = 55,
-    DecorationInputAttachmentIndexId = 56,
     DecorationExplicitInterpAMD = 4999,
     DecorationOverrideCoverageNV = 5248,
     DecorationPassthroughNV = 5250,
     DecorationViewportRelativeNV = 5252,
     DecorationSecondaryViewportRelativeNV = 5256,
-    DecorationSecondaryViewportRelativeIdNV = 5263,
     DecorationMax = 0x7fffffff,
 };
 
@@ -685,7 +673,9 @@ enum Capability {
     CapabilityAtomicStorageOps = 4445,
     CapabilitySampleMaskPostDepthCoverage = 4447,
     CapabilityImageGatherBiasLodAMD = 5009,
+    CapabilityFragmentMaskAMD = 5010,
     CapabilityStencilExportEXT = 5013,
+    CapabilityImageReadWriteLodAMD = 5015,
     CapabilitySampleMaskOverrideCoverageNV = 5249,
     CapabilityGeometryShaderPassthroughNV = 5251,
     CapabilityShaderViewportIndexLayerEXT = 5254,
@@ -1051,6 +1041,8 @@ enum Op {
     OpGroupFMaxNonUniformAMD = 5005,
     OpGroupUMaxNonUniformAMD = 5006,
     OpGroupSMaxNonUniformAMD = 5007,
+    OpFragmentMaskFetchAMD = 5011,
+    OpFragmentFetchAMD = 5012,
     OpMax = 0x7fffffff,
 };
 

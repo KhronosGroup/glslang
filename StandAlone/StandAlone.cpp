@@ -152,7 +152,7 @@ std::vector<std::string> IncludeDirectoryList;
 int ClientInputSemanticsVersion = 100;   // maps to, say, #define VULKAN 100
 int VulkanClientVersion = 100;           // would map to, say, Vulkan 1.0
 int OpenGLClientVersion = 450;           // doesn't influence anything yet, but maps to OpenGL 4.50
-unsigned int TargetVersion = 0x00001000; // maps to, say, SPIR-V 1.0
+unsigned int TargetVersion = 0x00010000; // maps to, say, SPIR-V 1.0
 std::vector<std::string> Processes;      // what should be recorded by OpModuleProcessed, or equivalent
 
 std::array<unsigned int, EShLangCount> baseSamplerBinding;
@@ -482,6 +482,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                 VulkanClientVersion = 100;
                             } else if (strcmp(argv[1], "vulkan1.1") == 0) {
                                 setVulkanSpv();
+                                TargetVersion = 0x00010300;
                                 VulkanClientVersion = 110;
                             } else if (strcmp(argv[1], "opengl") == 0) {
                                 setOpenGlSpv();
