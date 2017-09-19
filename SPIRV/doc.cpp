@@ -1200,6 +1200,7 @@ const char* OpcodeString(int op)
     case 318: return "OpAtomicFlagTestAndSet";
     case 319: return "OpAtomicFlagClear";
     case 320: return "OpImageSparseRead";
+    case OpModuleProcessed: return "OpModuleProcesses";
     case 333: return "OpGroupNonUniformElect";
     case 334: return "OpGroupNonUniformAll";
     case 335: return "OpGroupNonUniformAny";
@@ -1385,6 +1386,7 @@ void Parameterize()
     InstructionDesc[OpReleaseEvent].setResultAndType(false, false);
     InstructionDesc[OpGroupWaitEvents].setResultAndType(false, false);
     InstructionDesc[OpAtomicFlagClear].setResultAndType(false, false);
+    InstructionDesc[OpModuleProcessed].setResultAndType(false, false);
 
     // Specific additional context-dependent operands
 
@@ -3050,6 +3052,8 @@ void Parameterize()
     InstructionDesc[OpSubgroupReadInvocationKHR].capabilities.push_back(CapabilityGroups);
     InstructionDesc[OpSubgroupReadInvocationKHR].operands.push(OperandId, "'Value'");
     InstructionDesc[OpSubgroupReadInvocationKHR].operands.push(OperandId, "'Index'");
+
+    InstructionDesc[OpModuleProcessed].operands.push(OperandLiteralString, "'process'");
 
 #ifdef AMD_EXTENSIONS
     InstructionDesc[OpGroupIAddNonUniformAMD].capabilities.push_back(CapabilityGroups);
