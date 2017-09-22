@@ -55,7 +55,7 @@ install:
 
 before_script:
   - git clone --depth=1 https://github.com/google/googletest.git External/googletest
-  - update_glslang_sources.py
+  - ./update_glslang_sources.py
 
 script:
   - mkdir build && cd build
