@@ -25,7 +25,7 @@ matrix:
 # scripts that run after cloning repository
 install:
   - git clone https://github.com/google/googletest.git External/googletest
-  - ./update_glslang_sources.py
+  - C:/Python27/python.exe update_glslang_sources.py
 
 build:
   parallel: true  # enable MSBuild parallel builds
