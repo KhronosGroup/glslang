@@ -3,6 +3,7 @@
 TARGETDIR=localResults
 BASEDIR=baseResults
 EXE=../build/install/bin/glslangValidator
+REMAPEXE=../build/install/bin/spirv-remap
 HASERROR=0
 mkdir -p localResults
 
@@ -141,6 +142,7 @@ diff -b $BASEDIR/hlsl.dashI.vert.out $TARGETDIR/hlsl.dashI.vert.out || HASERROR=
 #
 # Testing -D and -U
 #
+echo "Testing -D and -U"
 $EXE -DUNDEFED -UIN_SHADER -DFOO=200 -i -l -UUNDEFED -DMUL=FOO*2 glsl.-D-U.frag > $TARGETDIR/glsl.-D-U.frag.out
 diff -b $BASEDIR/glsl.-D-U.frag.out $TARGETDIR/glsl.-D-U.frag.out || HASERROR=1
 $EXE -D -e main -V -i -DUNDEFED -UIN_SHADER -DFOO=200 -UUNDEFED hlsl.-D-U.frag > $TARGETDIR/hlsl.-D-U.frag.out
@@ -149,6 +151,7 @@ diff -b $BASEDIR/hlsl.-D-U.frag.out $TARGETDIR/hlsl.-D-U.frag.out || HASERROR=1
 #
 # Test --client and --target-env
 #
+echo "Testing --client and --target-env"
 $EXE --client vulkan100      spv.targetVulkan.vert || HASERROR=1
 $EXE --client opengl100      spv.targetOpenGL.vert || HASERROR=1
 $EXE --target-env vulkan1.0  spv.targetVulkan.vert || HASERROR=1
@@ -159,12 +162,22 @@ $EXE -G100                   spv.targetOpenGL.vert || HASERROR=1
 #
 # Testing GLSL entry point rename
 #
+echo "Testing GLSL entry point rename"
 $EXE -H -e foo --source-entrypoint main glsl.entryPointRename.vert > $TARGETDIR/glsl.entryPointRename.vert.out
 diff -b $BASEDIR/glsl.entryPointRename.vert.out $TARGETDIR/glsl.entryPointRename.vert.out || HASERROR=1
 $EXE -H -e foo --source-entrypoint bar glsl.entryPointRename.vert > $TARGETDIR/glsl.entryPointRename.vert.bad.out
 diff -b $BASEDIR/glsl.entryPointRename.vert.bad.out $TARGETDIR/glsl.entryPointRename.vert.bad.out || HASERROR=1
 $EXE -H -e foo --source-entrypoint main glsl.entryPointRename2.vert > $TARGETDIR/glsl.entryPointRename2.vert.out
 diff -b $BASEDIR/glsl.entryPointRename2.vert.out $TARGETDIR/glsl.entryPointRename2.vert.out || HASERROR=1
+
+#
+# Testing remapper error handling
+#
+echo "Testing remapper error handling"
+$REMAPEXE --do-everything -i remap.invalid-spirv-1.spv -o $TARGETDIR > $TARGETDIR/remap.invalid-spirv-1.out && HASERROR=1
+diff -b $BASEDIR/remap.invalid-spirv-1.out $TARGETDIR/remap.invalid-spirv-1.out || HASERROR=1
+$REMAPEXE --do-everything -i remap.invalid-spirv-2.spv -o $TARGETDIR > $TARGETDIR/remap.invalid-spirv-2.out && HASERROR=1
+diff -b $BASEDIR/remap.invalid-spirv-2.out $TARGETDIR/remap.invalid-spirv-2.out || HASERROR=1
 
 #
 # Final checking
