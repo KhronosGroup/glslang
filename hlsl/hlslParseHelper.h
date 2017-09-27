@@ -262,6 +262,7 @@ protected:
     bool wasSplit(int id) const { return splitNonIoVars.find(id) != splitNonIoVars.end(); }
     TVariable* getSplitNonIoVar(int id) const;
     void addPatchConstantInvocation();
+    void fixTextureShadowModes();
     TIntermTyped* makeIntegerIndex(TIntermTyped*);
 
     void fixBuiltInIoType(TType&);
@@ -455,6 +456,11 @@ protected:
     };
 
     TVector<tMipsOperatorData> mipsOperatorMipArg;
+
+    // This can be removed if and when the texture shadow workarounnd in
+    // HlslParseContext::handleSamplerTextureCombine is removed.  It maps
+    // texture symbol IDs to the shadow modes of samplers they were combined with.
+    TMap<int, bool> textureShadowMode;
 };
 
 // This is the prefix we use for built-in methods to avoid namespace collisions with

@@ -2946,6 +2946,36 @@ TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc
     samplerType.combined = true;
     samplerType.shadow   = argSampler->getType().getSampler().shadow;
 
+    {
+        // ** TODO: **
+        // This forces the texture's shadow state to be the sampler's
+        // shadow state.  This can't work if a single texture is used with
+        // both comparison and non-comparison samplers, so an error is
+        // reported if the shader does that.
+        //
+        // If this code is ever removed (possibly due to a relaxation in the
+        // SPIR-V rules), also remove the textureShadowMode member variable.
+        TIntermSymbol* texSymbol = argTex->getAsSymbolNode();
+
+        if (texSymbol == nullptr)
+            texSymbol = argTex->getAsBinaryNode()->getLeft()->getAsSymbolNode();
+
+        if (texSymbol != nullptr) {
+            const auto textureShadowModeEntry = textureShadowMode.find(texSymbol->getId());
+
+            // Check to see if this texture has been given a different shadow mode already.
+            if (textureShadowModeEntry != textureShadowMode.end() &&
+                textureShadowModeEntry->second != samplerType.shadow) {
+                error(loc, "all uses of texture must use the same shadow mode", "", "");
+                return nullptr;
+            }
+
+            argTex->getWritableType().getSampler().shadow = samplerType.shadow;
+            textureShadowMode[texSymbol->getId()] = samplerType.shadow;
+        }
+    }
+
+
     txcombine->setType(TType(samplerType, EvqTemporary));
     txcombine->setLoc(loc);
 
@@ -9463,6 +9493,21 @@ void HlslParseContext::removeUnusedStructBufferCounters()
     linkageSymbols.erase(endIt, linkageSymbols.end());
 }
 
+// Finalization step: patch texture shadow modes to match samplers they were combined with
+void HlslParseContext::fixTextureShadowModes()
+{
+    for (auto symbol = linkageSymbols.begin(); symbol != linkageSymbols.end(); ++symbol) {
+        TSampler& sampler = (*symbol)->getWritableType().getSampler();
+
+        if (sampler.isTexture()) {
+            const auto shadowMode = textureShadowMode.find((*symbol)->getUniqueId());
+            if (shadowMode != textureShadowMode.end())
+                sampler.shadow = shadowMode->second;
+        }
+    }
+}
+
+
 // post-processing
 void HlslParseContext::finish()
 {
@@ -9474,6 +9519,7 @@ void HlslParseContext::finish()
 
     removeUnusedStructBufferCounters();
     addPatchConstantInvocation();
+    fixTextureShadowModes();
 
     TParseContextBase::finish();
 }
