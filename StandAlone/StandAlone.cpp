@@ -95,6 +95,8 @@ enum TOptions {
     EOptionAutoMapLocations     = (1 << 25),
     EOptionDebug                = (1 << 26),
     EOptionStdin                = (1 << 27),
+    EOptionOptimizeDisable      = (1 << 28),
+    EOptionOptimizeSize         = (1 << 29),
 };
 
 //
@@ -528,6 +530,18 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
             case 'I':
                 IncludeDirectoryList.push_back(getStringOperand("-I<dir> include path"));
                 break;
+            case 'O':
+                if (argv[0][2] == 'd')
+                    Options |= EOptionOptimizeDisable;
+                else if (argv[0][2] == 's')
+#ifdef ENABLE_OPT
+                    Options |= EOptionOptimizeSize;
+#else
+                    Error("-Os not available; optimizer not linked");
+#endif
+                else
+                    Error("unknown -O option");
+                break;
             case 'S':
                 if (argc <= 1)
                     Error("no <stage> specified for -S");
@@ -882,6 +896,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     glslang::SpvOptions spvOptions;
                     if (Options & EOptionDebug)
                         spvOptions.generateDebugInfo = true;
+                    spvOptions.disableOptimizer = Options & EOptionOptimizeDisable;
+                    spvOptions.optimizeSize = Options & EOptionOptimizeSize;
                     glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)stage), spirv, &logger, &spvOptions);
 
                     // Dump the spv to a file or stdout, etc., but only if not doing
@@ -1201,6 +1217,8 @@ void usage()
            "  -H          print human readable form of SPIR-V; turns on -V\n"
            "  -I<dir>     add dir to the include search path; includer's directory\n"
            "              is searched first, followed by left-to-right order of -I\n"
+           "  -Od         disables optimization. May cause illegal SPIR-V for HLSL.\n"
+           "  -Os         optimizes SPIR-V to minimize size.\n"
            "  -S <stage>  uses specified stage rather than parsing the file extension\n"
            "              choices for <stage> are vert, tesc, tese, geom, frag, or comp\n"
            "  -U<macro>   undefine a pre-processor macro\n"
