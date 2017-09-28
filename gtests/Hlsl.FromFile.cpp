@@ -366,6 +366,7 @@ INSTANTIATE_TEST_CASE_P(
 );
 // clang-format on
 
+#ifdef ENABLE_OPT
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslLegalizeTest,
@@ -378,6 +379,7 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 // clang-format on
+#endif
 
 }  // anonymous namespace
 }  // namespace glslangtest
