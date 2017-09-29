@@ -781,8 +781,12 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         shader->setStringsWithLengthsAndNames(compUnit.text, NULL, compUnit.fileNameList, compUnit.count);
         if (entryPointName) // HLSL todo: this needs to be tracked per compUnits
             shader->setEntryPoint(entryPointName);
-        if (sourceEntryPointName)
+        if (sourceEntryPointName) {
+            if (entryPointName == nullptr)
+                printf("Warning: Changing source entry point name without setting an entry-point name.\n"
+                       "Use '-e <name>'.\n");
             shader->setSourceEntryPoint(sourceEntryPointName);
+        }
         if (UserPreamble.isSet())
             shader->setPreamble(UserPreamble.get());
         shader->addProcesses(Processes);
