@@ -88,7 +88,6 @@ public:
     void remapNonEntryPointIO(TFunction& function);
     TIntermNode* handleReturnValue(const TSourceLoc&, TIntermTyped*);
     void handleFunctionArgument(TFunction*, TIntermTyped*& arguments, TIntermTyped* newArg);
-    TIntermTyped* executeFlattenedInitializer(const TSourceLoc&, TIntermSymbol*, TIntermAggregate&);
     TIntermTyped* handleAssign(const TSourceLoc&, TOperator, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleAssignToMatrixSwizzle(const TSourceLoc&, TOperator, TIntermTyped* left, TIntermTyped* right);
     TIntermTyped* handleFunctionCall(const TSourceLoc&, TFunction*, TIntermTyped*);
@@ -191,8 +190,6 @@ public:
 
     // Apply L-value conversions.  E.g, turning a write to a RWTexture into an ImageStore.
     TIntermTyped* handleLvalue(const TSourceLoc&, const char* op, TIntermTyped*& node);
-    TIntermTyped* handleSamplerLvalue(const TSourceLoc&, const char* op, TIntermTyped*& node);
-    TIntermTyped* setOpaqueLvalue(TIntermTyped* left, TIntermTyped* right);
     bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
 
     TLayoutFormat getLayoutFromTxType(const TSourceLoc&, const TType&);
