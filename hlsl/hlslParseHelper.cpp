@@ -1666,7 +1666,6 @@ TIntermAggregate* HlslParseContext::handleFunctionDefinition(const TSourceLoc& l
     return paramNodes;
 }
 
-
 // Handle all [attrib] attribute for the shader entry point
 void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const TAttributeMap& attributes)
 {
@@ -1813,6 +1812,44 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
             }
         }
     }
+}
+
+// Update the given type with any type-like attribute information in the
+// attributes.
+void HlslParseContext::transferTypeAttributes(const TAttributeMap& attributes, TType& type)
+{
+    // extract integers out of attribute arguments stored in attribute aggregate
+    const auto getInt = [&](TAttributeType attr, int argNum, int& value) -> bool {
+        const TIntermAggregate* attrAgg = attributes[attr];
+        if (attrAgg == nullptr)
+            return false;
+        if (argNum >= attrAgg->getSequence().size())
+            return false;
+        const TConstUnion& intConst = attrAgg->getSequence()[argNum]->getAsConstantUnion()->getConstArray()[0];
+        if (intConst == nullptr)
+            return false;
+        value = intConst.getIConst();
+        return true;
+    };
+
+    // location
+    int value;
+    if (getInt(EatLocation, 0, value))
+        type.getQualifier().layoutLocation = value;
+
+    // binding
+    if (getInt(EatBinding, 0, value)) {
+        type.getQualifier().layoutBinding = value;
+        type.getQualifier().layoutSet = 0;
+    }
+
+    // set
+    if (getInt(EatBinding, 1, value))
+        type.getQualifier().layoutSet = value;
+
+    // input attachment
+    if (getInt(EatInputAttachment, 0, value))
+        type.getQualifier().layoutAttachment = value;
 }
 
 //
