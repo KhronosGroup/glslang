@@ -1826,7 +1826,7 @@ void HlslParseContext::transferTypeAttributes(const TAttributeMap& attributes, T
         if (argNum >= attrAgg->getSequence().size())
             return false;
         const TConstUnion& intConst = attrAgg->getSequence()[argNum]->getAsConstantUnion()->getConstArray()[0];
-        if (intConst == nullptr)
+        if (intConst.getType() != EbtInt)
             return false;
         value = intConst.getIConst();
         return true;
@@ -7420,7 +7420,7 @@ TIntermNode* HlslParseContext::declareVariable(const TSourceLoc& loc, const TStr
         error(loc, "initializer requires a variable, not a member", identifier.c_str(), "");
         return nullptr;
     }
-    return executeInitializer(loc, initializer, variable, flattenVar);
+    return executeInitializer(loc, initializer, variable);
 }
 
 // Pick up global defaults from the provide global defaults into dst.
@@ -7488,8 +7488,7 @@ TVariable* HlslParseContext::declareNonArray(const TSourceLoc& loc, const TStrin
 // Returning nullptr just means there is no code to execute to handle the
 // initializer, which will, for example, be the case for constant initializers.
 //
-TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyped* initializer, TVariable* variable,
-                                                  bool flattened)
+TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyped* initializer, TVariable* variable)
 {
     //
     // Identifier must be of type constant, a global, or a temporary, and
