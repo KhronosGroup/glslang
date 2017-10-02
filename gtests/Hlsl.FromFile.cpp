@@ -318,6 +318,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.structin.vert", "main"},
         {"hlsl.structIoFourWay.frag", "main"},
         {"hlsl.structStructName.frag", "main"},
+        {"hlsl.subpass.frag", "main"},
         {"hlsl.synthesizeInput.frag", "main"},
         {"hlsl.texture.struct.frag", "main"},
         {"hlsl.texture.subvec4.frag", "main"},
