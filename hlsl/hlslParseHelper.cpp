@@ -2595,7 +2595,8 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         }
     }
 
-    int memberIdx = 0;
+    int memberIdxLeft = 0;
+    int memberIdxRight = 0;
 
     // When dealing with split arrayed structures of built-ins, the arrayness is moved to the extracted built-in
     // variables, which is awkward when copying between split and unsplit structures.  This variable tracks
@@ -2635,8 +2636,10 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 subTree->setType(splitDerefType);
             }
         } else if (flattened && isFinalFlattening(derefType)) {
-            const TVector<TVariable*>& flatVariables = isLeft ? *leftVariables : *rightVariables;
-            subTree = intermediate.addSymbol(*flatVariables[memberIdx++]);
+            if (isLeft)
+                subTree = intermediate.addSymbol(*(*leftVariables)[memberIdxLeft++]);
+            else
+                subTree = intermediate.addSymbol(*(*rightVariables)[memberIdxRight++]);
         } else {
             // Index operator if it's an aggregate, else EOpNull
             const TOperator accessOp = node->getType().isArray()  ? EOpIndexDirect
