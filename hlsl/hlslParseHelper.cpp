@@ -1379,6 +1379,44 @@ TIntermTyped* HlslParseContext::flattenAccess(int uniqueId, int member, const TT
     return subsetSymbol;
 }
 
+// For finding where the first leaf is in a subtree of a multi-level aggregate
+// that is just getting a subset assigned. Follows the same logic as flattenAccess,
+// but logically going down the "left-most" tree branch each step of the way.
+//
+// Returns the offset into the first leaf of the subset.
+int HlslParseContext::findSubtreeOffset(const TIntermNode& node) const
+{
+    const TIntermSymbol* sym = node.getAsSymbolNode();
+    if (sym == nullptr)
+        return 0;
+    if (!sym->isArray() && !sym->isStruct())
+        return 0;
+    int subset = sym->getFlattenSubset();
+    if (subset == -1)
+        return 0;
+
+    // Getting this far means a partial aggregate is identified by the flatten subset.
+    // Find the first leaf of the subset.
+
+    const auto flattenData = flattenMap.find(sym->getId());
+    if (flattenData == flattenMap.end())
+        return 0;
+
+    return findSubtreeOffset(sym->getType(), subset, flattenData->second.offsets);
+
+    do {
+        subset = flattenData->second.offsets[subset];
+    } while (true);
+}
+// Recursively do the desent
+int HlslParseContext::findSubtreeOffset(const TType& type, int subset, const TVector<int>& offsets) const
+{
+    if (!type.isArray() && !type.isStruct())
+        return offsets[subset];
+    TType derefType(type, 0);
+    return findSubtreeOffset(derefType, offsets[subset], offsets);
+};
+
 // Find and return the split IO TVariable for id, or nullptr if none.
 TVariable* HlslParseContext::getSplitNonIoVar(int id) const
 {
@@ -1823,7 +1861,7 @@ void HlslParseContext::transferTypeAttributes(const TAttributeMap& attributes, T
         const TIntermAggregate* attrAgg = attributes[attr];
         if (attrAgg == nullptr)
             return false;
-        if (argNum >= attrAgg->getSequence().size())
+        if (argNum >= (int)attrAgg->getSequence().size())
             return false;
         const TConstUnion& intConst = attrAgg->getSequence()[argNum]->getAsConstantUnion()->getConstArray()[0];
         if (intConst.getType() != EbtInt)
@@ -2595,31 +2633,29 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         }
     }
 
-    int memberIdxLeft = 0;
-    int memberIdxRight = 0;
-
     // When dealing with split arrayed structures of built-ins, the arrayness is moved to the extracted built-in
     // variables, which is awkward when copying between split and unsplit structures.  This variable tracks
     // array indirections so they can be percolated from outer structs to inner variables.
     std::vector <int> arrayElement;
 
-    // We track the outer-most aggregate, so that we can use its storage class later.
-    const TIntermTyped* outerLeft  = left;
-    const TIntermTyped* outerRight = right;
+    TStorageQualifier leftStorage = left->getType().getQualifier().storage;
+    TStorageQualifier rightStorage = right->getType().getQualifier().storage;
 
-    const auto getMember = [&](bool isLeft, TIntermTyped* node, int member, TIntermTyped* splitNode, int splitMember)
+    int leftOffset = findSubtreeOffset(*left);
+    int rightOffset = findSubtreeOffset(*right);
+
+    const auto getMember = [&](bool isLeft, const TType& type, int member, TIntermTyped* splitNode, int splitMember)
                            -> TIntermTyped * {
         const bool flattened = isLeft ? isFlattenLeft : isFlattenRight;
         const bool split     = isLeft ? isSplitLeft   : isSplitRight;
 
         TIntermTyped* subTree;
-        const TType derefType(node->getType(), member);
+        const TType derefType(type, member);
         const TVariable* builtInVar = nullptr;
         if ((flattened || split) && derefType.isBuiltIn()) {
-            const TIntermTyped* outer = isLeft ? outerLeft : outerRight;
             auto splitPair = splitBuiltIns.find(HlslParseContext::tInterstageIoData(
                                                    derefType.getQualifier().builtIn,
-                                                   outer->getType().getQualifier().storage));
+                                                   isLeft ? leftStorage : rightStorage));
             if (splitPair != splitBuiltIns.end())
                 builtInVar = splitPair->second;
         }
@@ -2637,13 +2673,13 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
             }
         } else if (flattened && isFinalFlattening(derefType)) {
             if (isLeft)
-                subTree = intermediate.addSymbol(*(*leftVariables)[memberIdxLeft++]);
+                subTree = intermediate.addSymbol(*(*leftVariables)[leftOffset++]);
             else
-                subTree = intermediate.addSymbol(*(*rightVariables)[memberIdxRight++]);
+                subTree = intermediate.addSymbol(*(*rightVariables)[rightOffset++]);
         } else {
             // Index operator if it's an aggregate, else EOpNull
-            const TOperator accessOp = node->getType().isArray()  ? EOpIndexDirect
-                                     : node->getType().isStruct() ? EOpIndexDirectStruct
+            const TOperator accessOp = type.isArray()  ? EOpIndexDirect
+                                     : type.isStruct() ? EOpIndexDirectStruct
                                      : EOpNull;
             if (accessOp == EOpNull) {
                 subTree = splitNode;
@@ -2684,12 +2720,12 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 arrayElement.push_back(element);
 
                 // Add a new AST symbol node if we have a temp variable holding a complex RHS.
-                TIntermTyped* subLeft  = getMember(true,  left,  element, left, element);
-                TIntermTyped* subRight = getMember(false, right, element, right, element);
+                TIntermTyped* subLeft  = getMember(true,  left->getType(),  element, left, element);
+                TIntermTyped* subRight = getMember(false, right->getType(), element, right, element);
 
-                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left,  element, splitLeft, element)
+                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left->getType(),  element, splitLeft, element)
                                                            : subLeft;
-                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, element, splitRight, element)
+                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right->getType(), element, splitRight, element)
                                                            : subRight;
 
                 traverse(subLeft, subRight, subSplitLeft, subSplitRight);
@@ -2714,13 +2750,13 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
                 const TType& typeL = *membersL[member].type;
                 const TType& typeR = *membersR[member].type;
 
-                TIntermTyped* subLeft  = getMember(true,  left, member, left, member);
-                TIntermTyped* subRight = getMember(false, right, member, right, member);
+                TIntermTyped* subLeft  = getMember(true,  left->getType(), member, left, member);
+                TIntermTyped* subRight = getMember(false, right->getType(), member, right, member);
 
                 // If there is no splitting, use the same values to avoid inefficiency.
-                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left,  member, splitLeft, memberL)
+                TIntermTyped* subSplitLeft =  isSplitLeft  ? getMember(true,  left->getType(),  member, splitLeft, memberL)
                                                            : subLeft;
-                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right, member, splitRight, memberR)
+                TIntermTyped* subSplitRight = isSplitRight ? getMember(false, right->getType(), member, splitRight, memberR)
                                                            : subRight;
 
                 if (isClipOrCullDistance(subSplitLeft->getType()) || isClipOrCullDistance(subSplitRight->getType())) {
