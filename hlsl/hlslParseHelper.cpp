@@ -2936,37 +2936,66 @@ TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc
 
     TSampler samplerType = argTex->getType().getSampler();
     samplerType.combined = true;
-    samplerType.shadow   = argSampler->getType().getSampler().shadow;
 
+    // TODO:
+    // This block exists until the spec no longer requires shadow modes on texture objects.
+    // It can be deleted after that, along with the shadowTextureVariant member.
     {
-        // ** TODO: **
-        // This forces the texture's shadow state to be the sampler's
-        // shadow state.  This can't work if a single texture is used with
-        // both comparison and non-comparison samplers, so an error is
-        // reported if the shader does that.
-        //
-        // If this code is ever removed (possibly due to a relaxation in the
-        // SPIR-V rules), also remove the textureShadowMode member variable.
+        const bool shadowMode = argSampler->getType().getSampler().shadow;
+
         TIntermSymbol* texSymbol = argTex->getAsSymbolNode();
 
         if (texSymbol == nullptr)
             texSymbol = argTex->getAsBinaryNode()->getLeft()->getAsSymbolNode();
 
-        if (texSymbol != nullptr) {
-            const auto textureShadowModeEntry = textureShadowMode.find(texSymbol->getId());
-
-            // Check to see if this texture has been given a different shadow mode already.
-            if (textureShadowModeEntry != textureShadowMode.end() &&
-                textureShadowModeEntry->second != samplerType.shadow) {
-                error(loc, "all uses of texture must use the same shadow mode", "", "");
-                return nullptr;
-            }
-
-            argTex->getWritableType().getSampler().shadow = samplerType.shadow;
-            textureShadowMode[texSymbol->getId()] = samplerType.shadow;
+        if (texSymbol == nullptr) {
+            error(loc, "unable to find texture symbol", "", "");
+            return nullptr;
         }
-    }
 
+        // This forces the texture's shadow state to be the sampler's
+        // shadow state.  This depends on downstream optimization to
+        // DCE one variant in [shadow, nonshadow] if both are present,
+        // or the SPIR-V module would be invalid.
+        int newId = texSymbol->getId();
+
+        // Check to see if this texture has been given a shadow mode already.
+        // If so, look up the one we already have.
+        const auto textureShadowEntry = textureShadowVariant.find(texSymbol->getId());
+
+        if (textureShadowEntry != textureShadowVariant.end())
+            newId = textureShadowEntry->second->get(shadowMode);
+        else
+            textureShadowVariant[texSymbol->getId()] = new tShadowTextureSymbols;
+
+        // Sometimes we have to create another symbol (if this texture has been seen before,
+        // and we haven't created the form for this shadow mode).
+        if (newId == -1) {
+            TType texType;
+            texType.shallowCopy(argTex->getType());
+            texType.getSampler().shadow = shadowMode;  // set appropriate shadow mode.
+            globalQualifierFix(loc, texType.getQualifier());
+
+            TVariable* newTexture = makeInternalVariable(texSymbol->getName(), texType);
+
+            trackLinkage(*newTexture);
+
+            newId = newTexture->getUniqueId();
+        }
+
+        assert(newId != -1);
+
+        if (textureShadowVariant.find(newId) == textureShadowVariant.end())
+            textureShadowVariant[newId] = textureShadowVariant[texSymbol->getId()];
+
+        textureShadowVariant[newId]->set(shadowMode, newId);
+
+        // Remember this shadow mode in the texture and the merged type.
+        argTex->getWritableType().getSampler().shadow = shadowMode;
+        samplerType.shadow = shadowMode;
+
+        texSymbol->setId(newId);
+    }
 
     txcombine->setType(TType(samplerType, EvqTemporary));
     txcombine->setLoc(loc);
@@ -9506,13 +9535,18 @@ void HlslParseContext::fixTextureShadowModes()
         TSampler& sampler = (*symbol)->getWritableType().getSampler();
 
         if (sampler.isTexture()) {
-            const auto shadowMode = textureShadowMode.find((*symbol)->getUniqueId());
-            if (shadowMode != textureShadowMode.end())
-                sampler.shadow = shadowMode->second;
+            const auto shadowMode = textureShadowVariant.find((*symbol)->getUniqueId());
+            if (shadowMode != textureShadowVariant.end()) {
+
+                if (shadowMode->second->overloaded())
+                    // Texture needs legalization if it's been seen with both shadow and non-shadow modes.
+                    intermediate.setNeedsLegalization();
+
+                sampler.shadow = shadowMode->second->isShadowId((*symbol)->getUniqueId());
+            }
         }
     }
 }
-
 
 // post-processing
 void HlslParseContext::finish()
@@ -9523,14 +9557,14 @@ void HlslParseContext::finish()
         error(mipsOperatorMipArg.back().loc, "unterminated mips operator:", "", "");
     }
 
+    removeUnusedStructBufferCounters();
+    addPatchConstantInvocation();
+    fixTextureShadowModes();
+
     // Communicate out (esp. for command line) that we formed AST that will make
     // illegal AST SPIR-V and it needs transforms to legalize it.
     if (intermediate.needsLegalization())
         infoSink.info << "WARNING: AST will form illegal SPIR-V; need to transform to legalize";
-
-    removeUnusedStructBufferCounters();
-    addPatchConstantInvocation();
-    fixTextureShadowModes();
 
     TParseContextBase::finish();
 }
