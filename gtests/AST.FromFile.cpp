@@ -201,6 +201,7 @@ INSTANTIATE_TEST_CASE_P(
         "precise.tesc",
         "precise_struct_block.vert",
         "maxClipDistances.vert",
+        "findFunction.frag",
     })),
     FileNameAsCustomTestSuffix
 );

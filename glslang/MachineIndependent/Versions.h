@@ -1,6 +1,7 @@
 //
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2012-2013 LunarG, Inc.
+// Copyright (C) 2017 ARM Limited.
 //
 // All rights reserved.
 //
@@ -224,6 +225,16 @@ const char* const E_GL_OES_tessellation_shader                  = "GL_OES_tessel
 const char* const E_GL_OES_tessellation_point_size              = "GL_OES_tessellation_point_size";
 const char* const E_GL_OES_texture_buffer                       = "GL_OES_texture_buffer";
 const char* const E_GL_OES_texture_cube_map_array               = "GL_OES_texture_cube_map_array";
+
+// KHX
+const char* const E_GL_KHX_shader_explicit_arithmetic_types          = "GL_KHX_shader_explicit_arithmetic_types";
+const char* const E_GL_KHX_shader_explicit_arithmetic_types_int8     = "GL_KHX_shader_explicit_arithmetic_types_int8";
+const char* const E_GL_KHX_shader_explicit_arithmetic_types_int16    = "GL_KHX_shader_explicit_arithmetic_types_int16";
+const char* const E_GL_KHX_shader_explicit_arithmetic_types_int32    = "GL_KHX_shader_explicit_arithmetic_types_int32";
+const char* const E_GL_KHX_shader_explicit_arithmetic_types_int64    = "GL_KHX_shader_explicit_arithmetic_types_int64";
+const char* const E_GL_KHX_shader_explicit_arithmetic_types_float16  = "GL_KHX_shader_explicit_arithmetic_types_float16";
+const char* const E_GL_KHX_shader_explicit_arithmetic_types_float32  = "GL_KHX_shader_explicit_arithmetic_types_float32";
+const char* const E_GL_KHX_shader_explicit_arithmetic_types_float64  = "GL_KHX_shader_explicit_arithmetic_types_float64";
 
 // Arrays of extensions for the above AEP duplications
 

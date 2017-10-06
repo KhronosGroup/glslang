@@ -336,6 +336,11 @@ INSTANTIATE_TEST_CASE_P(
         "spv.subgroupArithmetic.comp",
         "spv.subgroupClustered.comp",
         "spv.subgroupQuad.comp",
+        "spv.int8.frag",
+        "spv.int16.frag",
+        "spv.int32.frag",
+        "spv.float32.frag",
+        "spv.float64.frag",
     })),
     FileNameAsCustomTestSuffix
 );
@@ -421,6 +426,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.float16.frag",
         "spv.imageLoadStoreLod.frag",
         "spv.int16.frag",
+        "spv.int16.amd.frag",
         "spv.shaderBallotAMD.comp",
         "spv.shaderFragMaskAMD.frag",
         "spv.textureGatherBiasLod.frag"
