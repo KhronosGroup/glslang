@@ -269,6 +269,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.samplebias.offsetarray.dx10.frag", "main"},
         {"hlsl.samplecmp.array.dx10.frag", "main"},
         {"hlsl.samplecmp.basic.dx10.frag", "main"},
+        {"hlsl.samplecmp.dualmode.frag", "main"},
         {"hlsl.samplecmp.offset.dx10.frag", "main"},
         {"hlsl.samplecmp.offsetarray.dx10.frag", "main"},
         {"hlsl.samplecmp.negative.frag", "main"},
