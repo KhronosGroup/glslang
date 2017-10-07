@@ -81,7 +81,7 @@ namespace {
 // For low-order part of the generator's magic number. Bump up
 // when there is a change in the style (e.g., if SSA form changes,
 // or a different instruction sequence to do something gets used).
-const int GeneratorVersion = 1;
+const int GeneratorVersion = 2;
 
 namespace {
 class SpecConstantOpModeGuard {
