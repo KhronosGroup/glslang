@@ -4981,8 +4981,10 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
             // It's a constructor, of type 'type'.
             //
             result = handleConstructor(loc, arguments, type);
-            if (result == nullptr)
+            if (result == nullptr) {
                 error(loc, "cannot construct with these arguments", type.getCompleteString().c_str(), "");
+                return nullptr;
+            }
         }
     } else {
         //
@@ -7736,6 +7738,14 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
 
         return addConstructor(loc, initList, arrayType);
     } else if (type.isStruct()) {
+        // do we have implicit assignments to opaques?
+        for (size_t i = initList->getSequence().size(); i < type.getStruct()->size(); ++i) {
+            if ((*type.getStruct())[i].type->containsOpaque()) {
+                error(loc, "cannot implicitly initialize opaque members", "initializer list", "");
+                return nullptr;
+            }
+        }
+
         // lengthen list to be long enough
         lengthenList(loc, initList->getSequence(), static_cast<int>(type.getStruct()->size()), scalarInit);
 
