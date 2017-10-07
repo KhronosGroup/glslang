@@ -379,7 +379,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.aliasOpaque.frag", "main"},
         {"hlsl.flattenOpaque.frag", "main"},
         {"hlsl.flattenOpaqueInit.vert", "main"},
-        {"hlsl.flattenOpaqueInitMix.vert", "main"}
+        {"hlsl.flattenOpaqueInitMix.vert", "main"},
+        {"hlsl.flattenSubset.frag", "main"}
     }),
     FileNameAsCustomTestSuffix
 );
