@@ -565,8 +565,8 @@ enum TOperator {
     EOpAtomicExchange,
     EOpAtomicCompSwap,
 
-    EOpAtomicCounterIncrement,
-    EOpAtomicCounterDecrement,
+    EOpAtomicCounterIncrement, // results in pre-increment value
+    EOpAtomicCounterDecrement, // results in post-decrement value
     EOpAtomicCounter,
     EOpAtomicCounterAdd,
     EOpAtomicCounterSubtract,

@@ -72,7 +72,7 @@ namespace {
 // For low-order part of the generator's magic number. Bump up
 // when there is a change in the style (e.g., if SSA form changes,
 // or a different instruction sequence to do something gets used).
-const int GeneratorVersion = 1;
+const int GeneratorVersion = 2;
 
 namespace {
 class SpecConstantOpModeGuard {
@@ -4991,6 +4991,7 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     //  - there are extra SPV operands with no glslang source
     //  - compare-exchange swaps the value and comparator
     //  - compare-exchange has an extra memory semantics
+    //  - EOpAtomicCounterDecrement needs a post decrement
     std::vector<spv::Id> spvAtomicOperands;  // hold the spv operands
     auto opIt = operands.begin();            // walk the glslang operands
     spvAtomicOperands.push_back(*(opIt++));
@@ -5009,7 +5010,14 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     for (; opIt != operands.end(); ++opIt)
         spvAtomicOperands.push_back(*opIt);
 
-    return builder.createOp(opCode, typeId, spvAtomicOperands);
+    spv::Id resultId = builder.createOp(opCode, typeId, spvAtomicOperands);
+
+    // GLSL and HLSL atomic-counter decrement return post-decrement value,
+    // while SPIR-V returns pre-decrement value. Translate between these semantics.
+    if (op == glslang::EOpAtomicCounterDecrement)
+        resultId = builder.createBinOp(spv::OpISub, typeId, resultId, builder.makeIntConstant(1));
+
+    return resultId;
 }
 
 // Create group invocation operations.
