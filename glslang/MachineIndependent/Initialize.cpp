@@ -927,6 +927,32 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+#ifdef NV_EXTENSIONS
+    if (profile != EEsProfile && version >= 440) {
+        commonBuiltins.append(
+            "uint64_t atomicMin(coherent volatile inout uint64_t, uint64_t);"
+            " int64_t atomicMin(coherent volatile inout  int64_t,  int64_t);"
+
+            "uint64_t atomicMax(coherent volatile inout uint64_t, uint64_t);"
+            " int64_t atomicMax(coherent volatile inout  int64_t,  int64_t);"
+
+            "uint64_t atomicAnd(coherent volatile inout uint64_t, uint64_t);"
+            " int64_t atomicAnd(coherent volatile inout  int64_t,  int64_t);"
+
+            "uint64_t atomicOr (coherent volatile inout uint64_t, uint64_t);"
+            " int64_t atomicOr (coherent volatile inout  int64_t,  int64_t);"
+
+            "uint64_t atomicXor(coherent volatile inout uint64_t, uint64_t);"
+            " int64_t atomicXor(coherent volatile inout  int64_t,  int64_t);"
+
+            " int64_t atomicAdd(coherent volatile inout int64_t, int64_t);"
+            " int64_t atomicExchange(coherent volatile inout int64_t, int64_t);"
+            " int64_t atomicCompSwap(coherent volatile inout int64_t, int64_t, int64_t);"
+
+            "\n");
+    }
+#endif
+
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 450)) {
         commonBuiltins.append(
@@ -1328,10 +1354,25 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
     if (profile == EEsProfile) {
         if (spvVersion.spv == 0) {
+            if (version < 300) {
+                commonBuiltins.append(
+                    "vec4 texture2D(samplerExternalOES, vec2 coord);" // GL_OES_EGL_image_external
+                    "vec4 texture2DProj(samplerExternalOES, vec3);"   // GL_OES_EGL_image_external
+                    "vec4 texture2DProj(samplerExternalOES, vec4);"   // GL_OES_EGL_image_external
+                "\n");
+            } else {
+                commonBuiltins.append(
+                    "highp ivec2 textureSize(samplerExternalOES, int lod);"   // GL_OES_EGL_image_external_essl3
+                    "vec4 texture(samplerExternalOES, vec2);"                 // GL_OES_EGL_image_external_essl3
+                    "vec4 texture(samplerExternalOES, vec2, float bias);"     // GL_OES_EGL_image_external_essl3
+                    "vec4 textureProj(samplerExternalOES, vec3);"             // GL_OES_EGL_image_external_essl3
+                    "vec4 textureProj(samplerExternalOES, vec3, float bias);" // GL_OES_EGL_image_external_essl3
+                    "vec4 textureProj(samplerExternalOES, vec4);"             // GL_OES_EGL_image_external_essl3
+                    "vec4 textureProj(samplerExternalOES, vec4, float bias);" // GL_OES_EGL_image_external_essl3
+                    "vec4 texelFetch(samplerExternalOES, ivec2, int lod);"    // GL_OES_EGL_image_external_essl3
+                "\n");
+            }
             commonBuiltins.append(
-                "vec4 texture2D(samplerExternalOES, vec2 coord);"  // GL_OES_EGL_image_external, caught by keyword check
-                "vec4 texture2DProj(samplerExternalOES, vec3);"    // GL_OES_EGL_image_external, caught by keyword check
-                "vec4 texture2DProj(samplerExternalOES, vec4);"    // GL_OES_EGL_image_external, caught by keyword check
                 "vec4 texture2DGradEXT(sampler2D, vec2, vec2, vec2);"      // GL_EXT_shader_texture_lod
                 "vec4 texture2DProjGradEXT(sampler2D, vec3, vec2, vec2);"  // GL_EXT_shader_texture_lod
                 "vec4 texture2DProjGradEXT(sampler2D, vec4, vec2, vec2);"  // GL_EXT_shader_texture_lod

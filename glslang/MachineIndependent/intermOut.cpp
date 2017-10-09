@@ -197,6 +197,7 @@ bool TOutputTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
     case EOpLogicalOr:  out.debug << "logical-or";   break;
     case EOpLogicalXor: out.debug << "logical-xor"; break;
     case EOpLogicalAnd: out.debug << "logical-and"; break;
+
     default: out.debug << "<unknown op>";
     }
 
@@ -637,6 +638,9 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpCubeFaceCoord:          out.debug << "cubeFaceCoord";               break;
 #endif
 
+    case EOpSubpassLoad:   out.debug << "subpassLoad";   break;
+    case EOpSubpassLoadMS: out.debug << "subpassLoadMS"; break;
+
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
 
@@ -936,9 +940,9 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpSinCos:                     out.debug << "sincos";                break;
     case EOpGenMul:                     out.debug << "mul";                   break;
 
-    case EOpAllMemoryBarrierWithGroupSync:    out.debug << "AllMemoryBarrierWithGroupSync";    break;
-    case EOpGroupMemoryBarrierWithGroupSync: out.debug << "GroupMemoryBarrierWithGroupSync"; break;
-    case EOpWorkgroupMemoryBarrier:           out.debug << "WorkgroupMemoryBarrier";           break;
+    case EOpAllMemoryBarrierWithGroupSync:       out.debug << "AllMemoryBarrierWithGroupSync";    break;
+    case EOpGroupMemoryBarrierWithGroupSync:     out.debug << "GroupMemoryBarrierWithGroupSync"; break;
+    case EOpWorkgroupMemoryBarrier:              out.debug << "WorkgroupMemoryBarrier";           break;
     case EOpWorkgroupMemoryBarrierWithGroupSync: out.debug << "WorkgroupMemoryBarrierWithGroupSync"; break;
 
     case EOpSubgroupBarrier:                 out.debug << "subgroupBarrier"; break;
@@ -996,6 +1000,9 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpSubgroupQuadSwapHorizontal:      out.debug << "subgroupQuadSwapHorizontal"; break;
     case EOpSubgroupQuadSwapVertical:        out.debug << "subgroupQuadSwapVertical"; break;
     case EOpSubgroupQuadSwapDiagonal:        out.debug << "subgroupQuadSwapDiagonal"; break;
+
+    case EOpSubpassLoad:   out.debug << "subpassLoad";   break;
+    case EOpSubpassLoadMS: out.debug << "subpassLoadMS"; break;
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }

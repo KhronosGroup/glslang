@@ -1133,6 +1133,7 @@ public:
         constSubtree(nullptr)
           { name = n; }
     virtual int getId() const { return id; }
+    virtual void setId(int newId) { id = newId; }
     virtual const TString& getName() const { return name; }
     virtual void traverse(TIntermTraverser*);
     virtual       TIntermSymbol* getAsSymbolNode()       { return this; }
@@ -1440,7 +1441,7 @@ protected:
 };
 
 typedef TVector<TIntermNode*> TIntermSequence;
-typedef TVector<int> TQualifierList;
+typedef TVector<TStorageQualifier> TQualifierList;
 //
 // Nodes that operate on an arbitrary sized set of children.
 //

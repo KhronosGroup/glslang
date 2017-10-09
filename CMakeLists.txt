@@ -18,6 +18,8 @@ option(ENABLE_NV_EXTENSIONS "Enables support of Nvidia-specific extensions" ON)
 
 option(ENABLE_HLSL "Enables HLSL input support" ON)
 
+option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
+
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
     set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "..." FORCE)
 endif()
@@ -52,7 +54,7 @@ endif(WIN32)
 
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     add_compile_options(-Wall -Wmaybe-uninitialized -Wuninitialized -Wunused -Wunused-local-typedefs
-                        -Wunused-parameter -Wunused-value  -Wunused-variable -Wunused-but-set-parameter -Wunused-but-set-variable)
+                        -Wunused-parameter -Wunused-value  -Wunused-variable -Wunused-but-set-parameter -Wunused-but-set-variable -fno-exceptions)
     add_compile_options(-Wno-reorder)  # disable this from -Wall, since it happens all over.
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     add_compile_options(-Wall -Wuninitialized -Wunused -Wunused-local-typedefs
@@ -82,6 +84,17 @@ endfunction(glslang_set_link_args)
 
 # We depend on these for later projects, so they should come first.
 add_subdirectory(External)
+
+if(NOT TARGET SPIRV-Tools-opt)
+    set(ENABLE_OPT OFF)
+endif()
+
+if(ENABLE_OPT)
+    message(STATUS "optimizer enabled")
+    add_definitions(-DENABLE_OPT)
+elseif(ENABLE_HLSL)
+    message(STATUS "spirv-tools not linked - illegal SPIRV may be generated for HLSL")
+endif()
 
 add_subdirectory(glslang)
 add_subdirectory(OGLCompilersDLL)

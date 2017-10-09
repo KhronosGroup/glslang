@@ -235,7 +235,8 @@ public:
         hlslOffsets(false),
         useStorageBuffer(false),
         hlslIoMapping(false),
-        textureSamplerTransformMode(EShTexSampTransKeep)
+        textureSamplerTransformMode(EShTexSampTransKeep),
+        needToLegalize(false)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -616,6 +617,9 @@ public:
     void addProcessArgument(const std::string& arg) { processes.addArgument(arg); }
     const std::vector<std::string>& getProcesses() const { return processes.getProcesses(); }
 
+    void setNeedsLegalization() { needToLegalize = true; }
+    bool needsLegalization() const { return needToLegalize; }
+
     const char* const implicitThisName;
 
 protected:
@@ -716,6 +720,8 @@ protected:
 
     // for OpModuleProcessed, or equivalent
     TProcesses processes;
+
+    bool needToLegalize;
 
 private:
     void operator=(TIntermediate&); // prevent assignments

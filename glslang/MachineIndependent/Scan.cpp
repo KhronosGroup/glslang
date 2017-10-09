@@ -1287,7 +1287,9 @@ int TScanContext::tokenizeIdentifier()
 
     case SAMPLEREXTERNALOES:
         afterType = true;
-        if (parseContext.symbolTable.atBuiltInLevel() || parseContext.extensionTurnedOn(E_GL_OES_EGL_image_external))
+        if (parseContext.symbolTable.atBuiltInLevel() ||
+            parseContext.extensionTurnedOn(E_GL_OES_EGL_image_external) ||
+            parseContext.extensionTurnedOn(E_GL_OES_EGL_image_external_essl3))
             return keyword;
         return identifierOrType();
 

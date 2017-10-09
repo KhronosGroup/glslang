@@ -155,6 +155,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_OES_standard_derivatives]         = EBhDisable;
     extensionBehavior[E_GL_EXT_frag_depth]                   = EBhDisable;
     extensionBehavior[E_GL_OES_EGL_image_external]           = EBhDisable;
+    extensionBehavior[E_GL_OES_EGL_image_external_essl3]     = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_texture_lod]           = EBhDisable;
     extensionBehavior[E_GL_EXT_shadow_samplers]              = EBhDisable;
     extensionBehavior[E_GL_ARB_texture_rectangle]            = EBhDisable;
@@ -220,6 +221,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_viewport_array2]                       = EBhDisable;
     extensionBehavior[E_GL_NV_stereo_view_rendering]                 = EBhDisable;
     extensionBehavior[E_GL_NVX_multiview_per_view_attributes]        = EBhDisable;
+    extensionBehavior[E_GL_NV_shader_atomic_int64]                   = EBhDisable;
 #endif
 
     // AEP
@@ -281,6 +283,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_OES_standard_derivatives 1\n"
             "#define GL_EXT_frag_depth 1\n"
             "#define GL_OES_EGL_image_external 1\n"
+            "#define GL_OES_EGL_image_external_essl3 1\n"
             "#define GL_EXT_shader_texture_lod 1\n"
             "#define GL_EXT_shadow_samplers 1\n"
 
@@ -371,6 +374,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_NV_sample_mask_override_coverage 1\n"
             "#define GL_NV_geometry_shader_passthrough 1\n"
             "#define GL_NV_viewport_array2 1\n"
+            "#define GL_NV_shader_atomic_int64 1\n"
 #endif
             "#define GL_KHX_shader_explicit_arithmetic_types 1\n"
             "#define GL_KHX_shader_explicit_arithmetic_types_int8 1\n"

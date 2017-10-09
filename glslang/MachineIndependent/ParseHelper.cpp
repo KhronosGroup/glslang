@@ -430,29 +430,6 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     return result;
 }
 
-void TParseContext::checkIndex(const TSourceLoc& loc, const TType& type, int& index)
-{
-    if (index < 0) {
-        error(loc, "", "[", "index out of range '%d'", index);
-        index = 0;
-    } else if (type.isArray()) {
-        if (type.isExplicitlySizedArray() && index >= type.getOuterArraySize()) {
-            error(loc, "", "[", "array index out of range '%d'", index);
-            index = type.getOuterArraySize() - 1;
-        }
-    } else if (type.isVector()) {
-        if (index >= type.getVectorSize()) {
-            error(loc, "", "[", "vector index out of range '%d'", index);
-            index = type.getVectorSize() - 1;
-        }
-    } else if (type.isMatrix()) {
-        if (index >= type.getMatrixCols()) {
-            error(loc, "", "[", "matrix index out of range '%d'", index);
-            index = type.getMatrixCols() - 1;
-        }
-    }
-}
-
 // for ES 2.0 (version 100) limitations for almost all index operations except vertex-shader uniforms
 void TParseContext::handleIndexLimits(const TSourceLoc& /*loc*/, TIntermTyped* base, TIntermTyped* index)
 {
@@ -1575,6 +1552,23 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
     }
 
+#ifdef NV_EXTENSIONS
+    case EOpAtomicAdd:
+    case EOpAtomicMin:
+    case EOpAtomicMax:
+    case EOpAtomicAnd:
+    case EOpAtomicOr:
+    case EOpAtomicXor:
+    case EOpAtomicExchange:
+    case EOpAtomicCompSwap:
+    {
+        if (arg0->getType().getBasicType() == EbtInt64 || arg0->getType().getBasicType() == EbtUint64)
+            requireExtensions(loc, 1, &E_GL_NV_shader_atomic_int64, fnCandidate.getName().c_str());
+
+        break;
+    }
+#endif
+
     case EOpInterpolateAtCentroid:
     case EOpInterpolateAtSample:
     case EOpInterpolateAtOffset:
@@ -2464,6 +2458,16 @@ void TParseContext::boolCheck(const TSourceLoc& loc, const TPublicType& pType)
 
 void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const TString& identifier, TIntermTyped* /*initializer*/)
 {
+    // Check that the appropriate extension is enabled if external sampler is used.
+    // There are two extensions. The correct one must be used based on GLSL version.
+    if (type.getBasicType() == EbtSampler && type.getSampler().external) {
+        if (version < 300) {
+            requireExtensions(loc, 1, &E_GL_OES_EGL_image_external, "samplerExternalOES");
+        } else {
+            requireExtensions(loc, 1, &E_GL_OES_EGL_image_external_essl3, "samplerExternalOES");
+        }
+    }
+
     if (type.getQualifier().storage == EvqUniform)
         return;
 
@@ -5581,7 +5585,7 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
 
     bool singleArg;
     if (aggrNode) {
-        if (aggrNode->getOp() != EOpNull || aggrNode->getSequence().size() == 1)
+        if (aggrNode->getOp() != EOpNull)
             singleArg = true;
         else
             singleArg = false;
