@@ -2994,7 +2994,7 @@ TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc
         argTex->getWritableType().getSampler().shadow = shadowMode;
         samplerType.shadow = shadowMode;
 
-        texSymbol->setId(newId);
+        texSymbol->switchId(newId);
     }
 
     txcombine->setType(TType(samplerType, EvqTemporary));

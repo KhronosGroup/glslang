@@ -984,7 +984,6 @@ public:
         constSubtree(nullptr)
           { name = n; }
     virtual int getId() const { return id; }
-    virtual void setId(int newId) { id = newId; }
     virtual const TString& getName() const { return name; }
     virtual void traverse(TIntermTraverser*);
     virtual       TIntermSymbol* getAsSymbolNode()       { return this; }
@@ -997,6 +996,10 @@ public:
     void setFlattenSubset(int subset) { flattenSubset = subset; }
     int getFlattenSubset() const { return flattenSubset; } // -1 means full object
 #endif
+
+    // This is meant for cases where a node has already been constructed, and
+    // later on, it becomes necessary to switch to a different symbol.
+    virtual void switchId(int newId) { id = newId; }
 
 protected:
     int id;                      // the unique id of the symbol this node represents
