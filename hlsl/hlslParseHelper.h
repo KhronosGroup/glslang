@@ -244,15 +244,14 @@ protected:
 
     // Array and struct flattening
     TIntermTyped* flattenAccess(TIntermTyped* base, int member);
-    TIntermTyped* flattenAccess(int uniqueId, int member, const TType&, int subset = -1);
+    TIntermTyped* flattenAccess(int uniqueId, int member, TStorageQualifier outerStorage, const TType&, int subset = -1);
     int findSubtreeOffset(const TIntermNode&) const;
     int findSubtreeOffset(const TType&, int subset, const TVector<int>& offsets) const;
-    bool shouldFlatten(const TType&) const;
+    bool shouldFlatten(const TType&, TStorageQualifier, bool topLevel) const;
     bool wasFlattened(const TIntermTyped* node) const;
     bool wasFlattened(int id) const { return flattenMap.find(id) != flattenMap.end(); }
     int  addFlattenedMember(const TVariable&, const TType&, TFlattenData&, const TString& name, bool linkage,
                             const TQualifier& outerQualifier, const TArraySizes* builtInArraySizes);
-    bool isFinalFlattening(const TType& type) const { return !(type.isStruct() || type.isArray()); }
 
     // Structure splitting (splits interstage built-in types into its own struct)
     void split(const TVariable&);

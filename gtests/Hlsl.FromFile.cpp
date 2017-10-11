@@ -247,6 +247,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.params.default.frag", "main"},
         {"hlsl.params.default.negative.frag", "main"},
         {"hlsl.partialInit.frag", "PixelShaderFunction"},
+        {"hlsl.partialFlattenLocal.vert", "main"},
         {"hlsl.pp.vert", "main"},
         {"hlsl.pp.line.frag", "main"},
         {"hlsl.precise.frag", "main"},
@@ -367,6 +368,7 @@ INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileAndFlattenTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
         {"hlsl.array.flatten.frag", "main"},
+        {"hlsl.partialFlattenMixed.vert", "main"},
     }),
     FileNameAsCustomTestSuffix
 );
