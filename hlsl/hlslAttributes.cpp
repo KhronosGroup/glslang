@@ -36,6 +36,7 @@
 #include "hlslAttributes.h"
 #include <cstdlib>
 #include <cctype>
+#include <algorithm>
 
 namespace glslang {
     // Map the given string to an attribute enum from TAttributeType,
@@ -129,6 +130,53 @@ namespace glslang {
     bool TAttributeMap::contains(TAttributeType attr) const
     {
         return attributes.find(attr) != attributes.end();
+    }
+
+    // extract integers out of attribute arguments stored in attribute aggregate
+    bool TAttributeMap::getInt(TAttributeType attr, int& value, int argNum) const 
+    {
+        const TConstUnion* intConst = getConstUnion(attr, EbtInt, argNum);
+
+        if (intConst == nullptr)
+            return false;
+
+        value = intConst->getIConst();
+        return true;
+    };
+
+    // extract strings out of attribute arguments stored in attribute aggregate.
+    // convert to lower case if converToLower is true (for case-insensitive compare convenience)
+    bool TAttributeMap::getString(TAttributeType attr, TString& value, int argNum, bool convertToLower) const 
+    {
+        const TConstUnion* stringConst = getConstUnion(attr, EbtString, argNum);
+
+        if (stringConst == nullptr)
+            return false;
+
+        value = *stringConst->getSConst();
+
+        // Convenience.
+        if (convertToLower)
+            std::transform(value.begin(), value.end(), value.begin(), ::tolower);
+
+        return true;
+    };
+
+    // Helper to get attribute const union.  Returns nullptr on failure.
+    const TConstUnion* TAttributeMap::getConstUnion(TAttributeType attr, TBasicType basicType, int argNum) const
+    {
+        const TIntermAggregate* attrAgg = (*this)[attr];
+        if (attrAgg == nullptr)
+            return nullptr;
+
+        if (argNum >= int(attrAgg->getSequence().size()))
+            return nullptr;
+
+        const TConstUnion* constVal = &attrAgg->getSequence()[argNum]->getAsConstantUnion()->getConstArray()[0];
+        if (constVal == nullptr || constVal->getType() != basicType)
+            return nullptr;
+        
+        return constVal;
     }
 
 } // end namespace glslang

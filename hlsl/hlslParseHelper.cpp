@@ -1717,36 +1717,33 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
     }
 
     // MaxVertexCount
-    const TIntermAggregate* maxVertexCount = attributes[EatMaxVertexCount];
-    if (maxVertexCount != nullptr) {
-        if (! intermediate.setVertices(maxVertexCount->getSequence()[0]->getAsConstantUnion()->
-                                       getConstArray()[0].getIConst())) {
-            error(loc, "cannot change previously set maxvertexcount attribute", "", "");
+    if (attributes.contains(EatMaxVertexCount)) {
+        int maxVertexCount;
+
+        if (! attributes.getInt(EatMaxVertexCount, maxVertexCount)) {
+            error(loc, "invalid maxvertexcount", "", "");
+        } else {
+            if (! intermediate.setVertices(maxVertexCount))
+                error(loc, "cannot change previously set maxvertexcount attribute", "", "");
         }
     }
 
     // Handle [patchconstantfunction("...")]
-    const TIntermAggregate* pcfAttr = attributes[EatPatchConstantFunc]; 
-    if (pcfAttr != nullptr) {
-        const TConstUnion& pcfName = pcfAttr->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
-
-        if (pcfName.getType() != EbtString) {
+    if (attributes.contains(EatPatchConstantFunc)) {
+        TString pcfName;
+        if (! attributes.getString(EatPatchConstantFunc, pcfName, 0, false)) {
             error(loc, "invalid patch constant function", "", "");
         } else {
-            patchConstantFunctionName = *pcfName.getSConst();
+            patchConstantFunctionName = pcfName;
         }
     }
 
     // Handle [domain("...")]
-    const TIntermAggregate* domainAttr = attributes[EatDomain]; 
-    if (domainAttr != nullptr) {
-        const TConstUnion& domainType = domainAttr->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
-        if (domainType.getType() != EbtString) {
+    if (attributes.contains(EatDomain)) {
+        TString domainStr;
+        if (! attributes.getString(EatDomain, domainStr)) {
             error(loc, "invalid domain", "", "");
         } else {
-            TString domainStr = *domainType.getSConst();
-            std::transform(domainStr.begin(), domainStr.end(), domainStr.begin(), ::tolower);
-
             TLayoutGeometry domain = ElgNone;
 
             if (domainStr == "tri") {
@@ -1770,15 +1767,11 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
     }
 
     // Handle [outputtopology("...")]
-    const TIntermAggregate* topologyAttr = attributes[EatOutputTopology];
-    if (topologyAttr != nullptr) {
-        const TConstUnion& topoType = topologyAttr->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
-        if (topoType.getType() != EbtString) {
+    if (attributes.contains(EatOutputTopology)) {
+        TString topologyStr;
+        if (! attributes.getString(EatOutputTopology, topologyStr)) {
             error(loc, "invalid outputtopology", "", "");
         } else {
-            TString topologyStr = *topoType.getSConst();
-            std::transform(topologyStr.begin(), topologyStr.end(), topologyStr.begin(), ::tolower);
-
             TVertexOrder vertexOrder = EvoNone;
             TLayoutGeometry primitive = ElgNone;
 
@@ -1808,15 +1801,11 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
     }
 
     // Handle [partitioning("...")]
-    const TIntermAggregate* partitionAttr = attributes[EatPartitioning]; 
-    if (partitionAttr != nullptr) {
-        const TConstUnion& partType = partitionAttr->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
-        if (partType.getType() != EbtString) {
+    if (attributes.contains(EatPartitioning)) {
+        TString partitionStr;
+        if (! attributes.getString(EatPartitioning, partitionStr)) {
             error(loc, "invalid partitioning", "", "");
         } else {
-            TString partitionStr = *partType.getSConst();
-            std::transform(partitionStr.begin(), partitionStr.end(), partitionStr.begin(), ::tolower);
-
             TVertexSpacing partitioning = EvsNone;
                 
             if (partitionStr == "integer") {
@@ -1837,14 +1826,11 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
     }
 
     // Handle [outputcontrolpoints("...")]
-    const TIntermAggregate* outputControlPoints = attributes[EatOutputControlPoints]; 
-    if (outputControlPoints != nullptr) {
-        const TConstUnion& ctrlPointConst =
-            outputControlPoints->getSequence()[0]->getAsConstantUnion()->getConstArray()[0];
-        if (ctrlPointConst.getType() != EbtInt) {
+    if (attributes.contains(EatOutputControlPoints)) {
+        int ctrlPoints;
+        if (! attributes.getInt(EatOutputControlPoints, ctrlPoints)) {
             error(loc, "invalid outputcontrolpoints", "", "");
         } else {
-            const int ctrlPoints = ctrlPointConst.getIConst();
             if (! intermediate.setVertices(ctrlPoints)) {
                 error(loc, "cannot change previously set outputcontrolpoints attribute", "", "");
             }
@@ -1856,37 +1842,23 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
 // attributes.
 void HlslParseContext::transferTypeAttributes(const TAttributeMap& attributes, TType& type)
 {
-    // extract integers out of attribute arguments stored in attribute aggregate
-    const auto getInt = [&](TAttributeType attr, int argNum, int& value) -> bool {
-        const TIntermAggregate* attrAgg = attributes[attr];
-        if (attrAgg == nullptr)
-            return false;
-        if (argNum >= (int)attrAgg->getSequence().size())
-            return false;
-        const TConstUnion& intConst = attrAgg->getSequence()[argNum]->getAsConstantUnion()->getConstArray()[0];
-        if (intConst.getType() != EbtInt)
-            return false;
-        value = intConst.getIConst();
-        return true;
-    };
-
     // location
     int value;
-    if (getInt(EatLocation, 0, value))
+    if (attributes.getInt(EatLocation, value))
         type.getQualifier().layoutLocation = value;
 
     // binding
-    if (getInt(EatBinding, 0, value)) {
+    if (attributes.getInt(EatBinding, value)) {
         type.getQualifier().layoutBinding = value;
         type.getQualifier().layoutSet = 0;
     }
 
     // set
-    if (getInt(EatBinding, 1, value))
+    if (attributes.getInt(EatBinding, value, 1))
         type.getQualifier().layoutSet = value;
 
     // input attachment
-    if (getInt(EatInputAttachment, 0, value))
+    if (attributes.getInt(EatInputAttachment, value))
         type.getQualifier().layoutAttachment = value;
 }
 
