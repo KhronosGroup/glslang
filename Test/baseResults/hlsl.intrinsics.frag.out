@@ -88,7 +88,7 @@ gl_FragCoord origin is upper left
 0:34        Compare Less Than ( temp bool)
 0:34          'r005' ( temp int)
 0:34          Constant:
-0:34            0.000000
+0:34            0 (const int)
 0:34        true case
 0:34        Branch: Kill
 0:35      Sequence
@@ -2906,7 +2906,7 @@ gl_FragCoord origin is upper left
 0:34        Compare Less Than ( temp bool)
 0:34          'r005' ( temp int)
 0:34          Constant:
-0:34            0.000000
+0:34            0 (const int)
 0:34        true case
 0:34        Branch: Kill
 0:35      Sequence

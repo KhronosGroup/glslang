@@ -4503,14 +4503,21 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
                     std::max(arg0->getType().getMatrixRows(), 1);
 
                 TConstUnion zero;
-                zero.setDConst(0.0);
+                if (arg0->getType().isIntegerDomain())
+                    zero.setDConst(0);
+                else
+                    zero.setDConst(0.0);
                 TConstUnionArray zeros(constComponentCount, zero);
 
                 less->getSequence().push_back(intermediate.addConstantUnion(zeros, arg0->getType(), loc, true));
 
                 compareNode = intermediate.addBuiltInFunctionCall(loc, EOpAny, true, less, TType(EbtBool));
             } else {
-                TIntermTyped* zero = intermediate.addConstantUnion(0, type0, loc, true);
+                TIntermTyped* zero;
+                if (arg0->getType().isIntegerDomain())
+                    zero = intermediate.addConstantUnion(0, loc, true);
+                else
+                    zero = intermediate.addConstantUnion(0.0, type0, loc, true);
                 compareNode = handleBinaryMath(loc, "clip", EOpLessThan, arg0, zero);
             }
 
