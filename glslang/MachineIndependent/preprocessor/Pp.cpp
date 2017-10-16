@@ -241,15 +241,20 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
         int nextAtom = atomStrings.getAtom(ppToken->name);
         if (nextAtom == PpAtomIf || nextAtom == PpAtomIfdef || nextAtom == PpAtomIfndef) {
             depth++;
-            ifdepth++;
-            elsetracker++;
+            if (ifdepth >= maxIfNesting || elsetracker >= maxIfNesting) {
+                parseContext.ppError(ppToken->loc, "maximum nesting depth exceeded", "#if/#ifdef/#ifndef", "");
+                return EndOfInput;
+            } else {
+                ifdepth++;
+                elsetracker++;
+            }
         } else if (nextAtom == PpAtomEndif) {
             token = extraTokenCheck(nextAtom, ppToken, scanToken(ppToken));
             elseSeen[elsetracker] = false;
             --elsetracker;
             if (depth == 0) {
                 // found the #endif we are looking for
-                if (ifdepth)
+                if (ifdepth > 0)
                     --ifdepth;
                 break;
             }
@@ -266,7 +271,7 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
                     parseContext.ppError(ppToken->loc, "#elif after #else", "#elif", "");
                 /* we decrement ifdepth here, because CPPif will increment
                 * it and we really want to leave it alone */
-                if (ifdepth) {
+                if (ifdepth > 0) {
                     --ifdepth;
                     elseSeen[elsetracker] = false;
                     --elsetracker;
@@ -536,11 +541,12 @@ int TPpContext::evalToToken(int token, bool shortCircuit, int& res, bool& err, T
 int TPpContext::CPPif(TPpToken* ppToken)
 {
     int token = scanToken(ppToken);
-    elsetracker++;
-    ifdepth++;
-    if (ifdepth > maxIfNesting) {
+    if (ifdepth >= maxIfNesting || elsetracker >= maxIfNesting) {
         parseContext.ppError(ppToken->loc, "maximum nesting depth exceeded", "#if", "");
-        return 0;
+        return EndOfInput;
+    } else {
+        elsetracker++;
+        ifdepth++;
     }
     int res = 0;
     bool err = false;
@@ -556,11 +562,14 @@ int TPpContext::CPPif(TPpToken* ppToken)
 int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
 {
     int token = scanToken(ppToken);
-    if (++ifdepth > maxIfNesting) {
+    if (ifdepth > maxIfNesting || elsetracker > maxIfNesting) {
         parseContext.ppError(ppToken->loc, "maximum nesting depth exceeded", "#ifdef", "");
-        return 0;
+        return EndOfInput;
+    } else {
+        elsetracker++;
+        ifdepth++;
     }
-    elsetracker++;
+
     if (token != PpAtomIdentifier) {
         if (defined)
             parseContext.ppError(ppToken->loc, "must be followed by macro name", "#ifdef", "");
@@ -886,16 +895,16 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             token = CPPdefine(ppToken);
             break;
         case PpAtomElse:
-            if (elsetracker[elseSeen])
+            if (elseSeen[elsetracker])
                 parseContext.ppError(ppToken->loc, "#else after #else", "#else", "");
-            elsetracker[elseSeen] = true;
-            if (! ifdepth)
+            elseSeen[elsetracker] = true;
+            if (ifdepth == 0)
                 parseContext.ppError(ppToken->loc, "mismatched statements", "#else", "");
             token = extraTokenCheck(PpAtomElse, ppToken, scanToken(ppToken));
             token = CPPelse(0, ppToken);
             break;
         case PpAtomElif:
-            if (! ifdepth)
+            if (ifdepth == 0)
                 parseContext.ppError(ppToken->loc, "mismatched statements", "#elif", "");
             if (elseSeen[elsetracker])
                 parseContext.ppError(ppToken->loc, "#elif after #else", "#elif", "");
@@ -906,7 +915,7 @@ int TPpContext::readCPPline(TPpToken* ppToken)
             token = CPPelse(0, ppToken);
             break;
         case PpAtomEndif:
-            if (! ifdepth)
+            if (ifdepth == 0)
                 parseContext.ppError(ppToken->loc, "mismatched statements", "#endif", "");
             else {
                 elseSeen[elsetracker] = false;
