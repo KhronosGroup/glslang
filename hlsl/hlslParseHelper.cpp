@@ -3067,6 +3067,7 @@ void HlslParseContext::declareStructBufferCounter(const TSourceLoc& loc, const T
 
     TType blockType;
     counterBufferType(loc, blockType);
+    blockType.getQualifier().layoutSet = bufferType.getQualifier().layoutSet;
 
     TString* blockName = new TString(getStructBuffCounterName(name));
 
@@ -6633,7 +6634,10 @@ void HlslParseContext::shareStructBufferType(TType& type)
 
     // We need to compare certain qualifiers in addition to the type.
     const auto typeEqual = [compareQualifiers](TType& lhs, TType& rhs) -> bool {
-        if (lhs.getQualifier().readonly != rhs.getQualifier().readonly)
+        if (lhs.getQualifier().readonly != rhs.getQualifier().readonly ||
+            lhs.getQualifier().layoutSet != rhs.getQualifier().layoutSet ||
+            lhs.getQualifier().coherent != rhs.getQualifier().coherent ||
+            lhs.getQualifier().layoutBinding != rhs.getQualifier().layoutBinding)
             return false;
 
         // If both are structures, recursively look for packOffset equality

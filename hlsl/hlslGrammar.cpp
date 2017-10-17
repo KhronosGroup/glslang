@@ -461,6 +461,11 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
             // post_decls
             acceptPostDecls(variableType.getQualifier());
 
+            // We may have created an equivalent type before, in which case we should use its
+            // deep structure.  We cannot do this before processing the layout qualifiers.
+            if (parseContext.isStructBufferType(variableType))
+                parseContext.shareStructBufferType(variableType);
+
             // EQUAL assignment_expression
             TIntermTyped* expressionNode = nullptr;
             if (acceptTokenClass(EHTokAssign)) {
@@ -480,6 +485,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
                 else if (variableType.getBasicType() == EbtBlock) {
                     parseContext.declareBlock(idToken.loc, variableType, fullName,
                                               variableType.isArray() ? &variableType.getArraySizes() : nullptr);
+
                     parseContext.declareStructBufferCounter(idToken.loc, variableType, *fullName);
                 } else {
                     if (variableType.getQualifier().storage == EvqUniform && ! variableType.containsOpaque()) {

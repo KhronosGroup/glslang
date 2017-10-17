@@ -1,0 +1,233 @@
+hlsl.structbuffer.counter.space.frag
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:10  Function Definition: @main(vf4; ( temp 4-component vector of float)
+0:10    Function Parameters: 
+0:10      'sv_pos' ( in 4-component vector of float)
+0:?     Sequence
+0:11      Sequence
+0:11        move second child to first child ( temp structure{ temp 4-component vector of float v})
+0:11          'val' ( temp structure{ temp 4-component vector of float v})
+0:11          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of float v})
+0:11            @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v})
+0:11              'buf_in' (layout( set=1 binding=0 row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v} @data})
+0:11              Constant:
+0:11                0 (const uint)
+0:11            add ( temp uint)
+0:11              AtomicAdd ( temp uint)
+0:11                @count: direct index for structure ( temp int)
+0:11                  'buf_in@count' (layout( set=1 row_major std430) buffer block{layout( row_major std430) buffer int @count})
+0:11                  Constant:
+0:11                    0 (const int)
+0:11                Constant:
+0:11                  -1 (const int)
+0:11              Constant:
+0:11                -1 (const int)
+0:12      move second child to first child ( temp structure{ temp 4-component vector of float v})
+0:12        indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of float v})
+0:12          @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v})
+0:12            'buf_out' (layout( set=3 binding=2 row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v} @data})
+0:12            Constant:
+0:12              0 (const uint)
+0:12          AtomicAdd ( temp uint)
+0:12            @count: direct index for structure ( temp int)
+0:12              'buf_out@count' (layout( set=3 row_major std430) buffer block{layout( row_major std430) buffer int @count})
+0:12              Constant:
+0:12                0 (const int)
+0:12            Constant:
+0:12              1 (const int)
+0:12        'val' ( temp structure{ temp 4-component vector of float v})
+0:13      Branch: Return with expression
+0:13        'sv_pos' ( in 4-component vector of float)
+0:10  Function Definition: main( ( temp void)
+0:10    Function Parameters: 
+0:?     Sequence
+0:10      move second child to first child ( temp 4-component vector of float)
+0:?         'sv_pos' ( temp 4-component vector of float)
+0:?         'sv_pos' ( in 4-component vector of float FragCoord)
+0:10      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:10        Function Call: @main(vf4; ( temp 4-component vector of float)
+0:?           'sv_pos' ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'buf_in' (layout( set=1 binding=0 row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v} @data})
+0:?     'buf_in@count' (layout( set=1 row_major std430) buffer block{layout( row_major std430) buffer int @count})
+0:?     'buf_out' (layout( set=3 binding=2 row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v} @data})
+0:?     'buf_out@count' (layout( set=3 row_major std430) buffer block{layout( row_major std430) buffer int @count})
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     'sv_pos' ( in 4-component vector of float FragCoord)
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:10  Function Definition: @main(vf4; ( temp 4-component vector of float)
+0:10    Function Parameters: 
+0:10      'sv_pos' ( in 4-component vector of float)
+0:?     Sequence
+0:11      Sequence
+0:11        move second child to first child ( temp structure{ temp 4-component vector of float v})
+0:11          'val' ( temp structure{ temp 4-component vector of float v})
+0:11          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of float v})
+0:11            @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v})
+0:11              'buf_in' (layout( set=1 binding=0 row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v} @data})
+0:11              Constant:
+0:11                0 (const uint)
+0:11            add ( temp uint)
+0:11              AtomicAdd ( temp uint)
+0:11                @count: direct index for structure ( temp int)
+0:11                  'buf_in@count' (layout( set=1 row_major std430) buffer block{layout( row_major std430) buffer int @count})
+0:11                  Constant:
+0:11                    0 (const int)
+0:11                Constant:
+0:11                  -1 (const int)
+0:11              Constant:
+0:11                -1 (const int)
+0:12      move second child to first child ( temp structure{ temp 4-component vector of float v})
+0:12        indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of float v})
+0:12          @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v})
+0:12            'buf_out' (layout( set=3 binding=2 row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v} @data})
+0:12            Constant:
+0:12              0 (const uint)
+0:12          AtomicAdd ( temp uint)
+0:12            @count: direct index for structure ( temp int)
+0:12              'buf_out@count' (layout( set=3 row_major std430) buffer block{layout( row_major std430) buffer int @count})
+0:12              Constant:
+0:12                0 (const int)
+0:12            Constant:
+0:12              1 (const int)
+0:12        'val' ( temp structure{ temp 4-component vector of float v})
+0:13      Branch: Return with expression
+0:13        'sv_pos' ( in 4-component vector of float)
+0:10  Function Definition: main( ( temp void)
+0:10    Function Parameters: 
+0:?     Sequence
+0:10      move second child to first child ( temp 4-component vector of float)
+0:?         'sv_pos' ( temp 4-component vector of float)
+0:?         'sv_pos' ( in 4-component vector of float FragCoord)
+0:10      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:10        Function Call: @main(vf4; ( temp 4-component vector of float)
+0:?           'sv_pos' ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'buf_in' (layout( set=1 binding=0 row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v} @data})
+0:?     'buf_in@count' (layout( set=1 row_major std430) buffer block{layout( row_major std430) buffer int @count})
+0:?     'buf_out' (layout( set=3 binding=2 row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of float v} @data})
+0:?     'buf_out@count' (layout( set=3 row_major std430) buffer block{layout( row_major std430) buffer int @count})
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:?     'sv_pos' ( in 4-component vector of float FragCoord)
+
+// Module Version 10000
+// Generated by (magic number): 80002
+// Id's are bound by 61
+
+                              Capability Shader
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint Fragment 4  "main" 54 57
+                              ExecutionMode 4 OriginUpperLeft
+                              Source HLSL 500
+                              Name 4  "main"
+                              Name 11  "@main(vf4;"
+                              Name 10  "sv_pos"
+                              Name 13  "Data"
+                              MemberName 13(Data) 0  "v"
+                              Name 15  "val"
+                              Name 16  "Data"
+                              MemberName 16(Data) 0  "v"
+                              Name 18  "buf_in"
+                              MemberName 18(buf_in) 0  "@data"
+                              Name 20  "buf_in"
+                              Name 23  "buf_in@count"
+                              MemberName 23(buf_in@count) 0  "@count"
+                              Name 25  "buf_in@count"
+                              Name 39  "buf_out"
+                              Name 40  "buf_out@count"
+                              Name 52  "sv_pos"
+                              Name 54  "sv_pos"
+                              Name 57  "@entryPointOutput"
+                              Name 58  "param"
+                              MemberDecorate 16(Data) 0 Offset 0
+                              Decorate 17 ArrayStride 16
+                              MemberDecorate 18(buf_in) 0 Offset 0
+                              Decorate 18(buf_in) BufferBlock
+                              Decorate 20(buf_in) DescriptorSet 1
+                              Decorate 20(buf_in) Binding 0
+                              MemberDecorate 23(buf_in@count) 0 Offset 0
+                              Decorate 23(buf_in@count) BufferBlock
+                              Decorate 25(buf_in@count) DescriptorSet 1
+                              Decorate 39(buf_out) DescriptorSet 3
+                              Decorate 39(buf_out) Binding 2
+                              Decorate 40(buf_out@count) DescriptorSet 3
+                              Decorate 54(sv_pos) BuiltIn FragCoord
+                              Decorate 57(@entryPointOutput) Location 0
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 32
+               7:             TypeVector 6(float) 4
+               8:             TypePointer Function 7(fvec4)
+               9:             TypeFunction 7(fvec4) 8(ptr)
+        13(Data):             TypeStruct 7(fvec4)
+              14:             TypePointer Function 13(Data)
+        16(Data):             TypeStruct 7(fvec4)
+              17:             TypeRuntimeArray 16(Data)
+      18(buf_in):             TypeStruct 17
+              19:             TypePointer Uniform 18(buf_in)
+      20(buf_in):     19(ptr) Variable Uniform
+              21:             TypeInt 32 1
+              22:     21(int) Constant 0
+23(buf_in@count):             TypeStruct 21(int)
+              24:             TypePointer Uniform 23(buf_in@count)
+25(buf_in@count):     24(ptr) Variable Uniform
+              26:             TypePointer Uniform 21(int)
+              28:     21(int) Constant 4294967295
+              29:             TypeInt 32 0
+              30:     29(int) Constant 1
+              31:     29(int) Constant 0
+              34:             TypePointer Uniform 16(Data)
+     39(buf_out):     19(ptr) Variable Uniform
+40(buf_out@count):     24(ptr) Variable Uniform
+              42:     21(int) Constant 1
+              47:             TypePointer Uniform 7(fvec4)
+              53:             TypePointer Input 7(fvec4)
+      54(sv_pos):     53(ptr) Variable Input
+              56:             TypePointer Output 7(fvec4)
+57(@entryPointOutput):     56(ptr) Variable Output
+         4(main):           2 Function None 3
+               5:             Label
+      52(sv_pos):      8(ptr) Variable Function
+       58(param):      8(ptr) Variable Function
+              55:    7(fvec4) Load 54(sv_pos)
+                              Store 52(sv_pos) 55
+              59:    7(fvec4) Load 52(sv_pos)
+                              Store 58(param) 59
+              60:    7(fvec4) FunctionCall 11(@main(vf4;) 58(param)
+                              Store 57(@entryPointOutput) 60
+                              Return
+                              FunctionEnd
+  11(@main(vf4;):    7(fvec4) Function None 9
+      10(sv_pos):      8(ptr) FunctionParameter
+              12:             Label
+         15(val):     14(ptr) Variable Function
+              27:     26(ptr) AccessChain 25(buf_in@count) 22
+              32:     29(int) AtomicIAdd 27 30 31 28
+              33:     29(int) IAdd 32 28
+              35:     34(ptr) AccessChain 20(buf_in) 22 33
+              36:    16(Data) Load 35
+              37:    7(fvec4) CompositeExtract 36 0
+              38:      8(ptr) AccessChain 15(val) 22
+                              Store 38 37
+              41:     26(ptr) AccessChain 40(buf_out@count) 22
+              43:     29(int) AtomicIAdd 41 30 31 42
+              44:    13(Data) Load 15(val)
+              45:     34(ptr) AccessChain 39(buf_out) 22 43
+              46:    7(fvec4) CompositeExtract 44 0
+              48:     47(ptr) AccessChain 45 22
+                              Store 48 46
+              49:    7(fvec4) Load 10(sv_pos)
+                              ReturnValue 49
+                              FunctionEnd

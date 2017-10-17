@@ -215,6 +215,8 @@ public:
     // Obtain the sampler return type of the given sampler in retType.
     void getTextureReturnType(const TSampler& sampler, TType& retType) const;
 
+    bool isStructBufferType(const TType& type) const { return getStructBufferContentType(type) != nullptr; }
+
 protected:
     struct TFlattenData {
         TFlattenData() : nextBinding(TQualifier::layoutBindingEnd),
@@ -295,7 +297,6 @@ protected:
     TIntermConstantUnion* getSamplePosArray(int count);
 
     TType* getStructBufferContentType(const TType& type) const;
-    bool isStructBufferType(const TType& type) const { return getStructBufferContentType(type) != nullptr; }
     TIntermTyped* indexStructBufferContent(const TSourceLoc& loc, TIntermTyped* buffer) const;
     TIntermTyped* getStructBufferCounter(const TSourceLoc& loc, TIntermTyped* buffer);
     TString getStructBuffCounterName(const TString&) const;
