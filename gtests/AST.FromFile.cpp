@@ -188,6 +188,7 @@ INSTANTIATE_TEST_CASE_P(
         "structDeref.frag",
         "structure.frag",
         "swizzle.frag",
+        "invalidSwizzle.vert",
         "syntaxError.frag",
         "test.frag",
         "texture.frag",
