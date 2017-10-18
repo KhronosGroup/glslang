@@ -78,6 +78,7 @@ INSTANTIATE_TEST_CASE_P(
         "matrixError.vert",
         "cppSimple.vert",
         "cppIndent.vert",
+        "cppIntMinOverNegativeOne.frag",
         "cppNest.vert",
         "cppBad.vert",
         "cppBad2.vert",
