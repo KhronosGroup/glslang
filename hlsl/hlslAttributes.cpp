@@ -58,6 +58,8 @@ namespace glslang {
                 return EatLocation;
             else if (lowername == "binding")
                 return EatBinding;
+            else if (lowername == "global_cbuffer_binding")
+                return EatGlobalBinding;
         } else if (lowernameSpace.size() > 0)
             return EatNone;
 

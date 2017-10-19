@@ -100,6 +100,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.attribute.frag", "PixelShaderFunction"},
         {"hlsl.attribute.expression.comp", "main"},
         {"hlsl.attributeC11.frag", "main"},
+        {"hlsl.attributeGlobalBuffer.frag", "main"},
         {"hlsl.basic.comp", "main"},
         {"hlsl.basic.geom", "main"},
         {"hlsl.boolConv.vert", "main"},

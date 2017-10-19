@@ -64,6 +64,7 @@ namespace glslang {
         EatUnroll,
         EatLoop,
         EatBinding,
+        EatGlobalBinding,
         EatLocation,
         EatInputAttachment
     };

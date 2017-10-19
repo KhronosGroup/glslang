@@ -1869,6 +1869,14 @@ void HlslParseContext::transferTypeAttributes(const TAttributeMap& attributes, T
     if (attributes.getInt(EatBinding, value, 1))
         type.getQualifier().layoutSet = value;
 
+    // global cbuffer binding
+    if (attributes.getInt(EatGlobalBinding, value))
+        globalUniformBinding = value;
+
+    // global cbuffer binding
+    if (attributes.getInt(EatGlobalBinding, value, 1))
+        globalUniformSet = value;
+
     // input attachment
     if (attributes.getInt(EatInputAttachment, value))
         type.getQualifier().layoutAttachment = value;
