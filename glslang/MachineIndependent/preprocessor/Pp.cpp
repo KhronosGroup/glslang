@@ -84,6 +84,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <climits>
 
 #include "PpContext.h"
 #include "PpTokens.h"
@@ -350,7 +351,7 @@ namespace {
     int op_add(int a, int b) { return a + b; }
     int op_sub(int a, int b) { return a - b; }
     int op_mul(int a, int b) { return a * b; }
-    int op_div(int a, int b) { return a / b; }
+    int op_div(int a, int b) { return a == INT_MIN && b == -1 ? 0 : a / b; }
     int op_mod(int a, int b) { return a % b; }
     int op_pos(int a) { return a; }
     int op_neg(int a) { return -a; }
