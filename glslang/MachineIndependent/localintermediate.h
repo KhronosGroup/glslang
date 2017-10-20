@@ -677,8 +677,7 @@ protected:
     std::array<unsigned int, EResCount> shiftBinding;
 
     // Per-descriptor-set shift values
-    typedef std::map<int, int> TDescriptorSetShift;
-    TDescriptorSetShift shiftBindingForSet[EResCount];
+    std::array<std::map<int, int>, EResCount>  shiftBindingForSet;
 
     std::vector<std::string> resourceSetBinding;
     bool autoMapBindings;
