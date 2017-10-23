@@ -128,7 +128,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
         ch = getChar();
 
         // 1.#INF or -1.#INF
-        if (ch == '#') {
+        if (parseContext.intermediate.getSource() == EShSourceHlsl && ch == '#') {
             if ((len <  2) ||
                 (len == 2 && ppToken->name[0] != '1') ||
                 (len == 3 && ppToken->name[1] != '1' && !(ppToken->name[0] == '-' || ppToken->name[0] == '+')) ||
