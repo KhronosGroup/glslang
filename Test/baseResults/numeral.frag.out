@@ -404,6 +404,21 @@ ERROR: node is still EOpNull!
 0:103      'g6' ( global int)
 0:103      Constant:
 0:103        -2 (const int)
+0:104  Sequence
+0:104    move second child to first child ( temp float)
+0:104      'inf1' ( global float)
+0:104      Constant:
+0:104        -1.#INF
+0:105  Sequence
+0:105    move second child to first child ( temp float)
+0:105      'inf2' ( global float)
+0:105      Constant:
+0:105        +1.#INF
+0:106  Sequence
+0:106    move second child to first child ( temp float)
+0:106      'inf3' ( global float)
+0:106      Constant:
+0:106        +1.#INF
 0:?   Linker Objects
 0:?     'c2' (layout( location=2) out 4-component vector of float)
 0:?     'c3' (layout( location=3) out 4-component vector of float)
@@ -417,6 +432,9 @@ ERROR: node is still EOpNull!
 0:?     'g4' ( global int)
 0:?     'g5' ( global int)
 0:?     'g6' ( global int)
+0:?     'inf1' ( global float)
+0:?     'inf2' ( global float)
+0:?     'inf3' ( global float)
 
 
 Linked fragment stage:
@@ -812,6 +830,21 @@ ERROR: node is still EOpNull!
 0:103      'g6' ( global int)
 0:103      Constant:
 0:103        -2 (const int)
+0:104  Sequence
+0:104    move second child to first child ( temp float)
+0:104      'inf1' ( global float)
+0:104      Constant:
+0:104        -1.#INF
+0:105  Sequence
+0:105    move second child to first child ( temp float)
+0:105      'inf2' ( global float)
+0:105      Constant:
+0:105        +1.#INF
+0:106  Sequence
+0:106    move second child to first child ( temp float)
+0:106      'inf3' ( global float)
+0:106      Constant:
+0:106        +1.#INF
 0:?   Linker Objects
 0:?     'c2' (layout( location=2) out 4-component vector of float)
 0:?     'c3' (layout( location=3) out 4-component vector of float)
@@ -825,4 +858,7 @@ ERROR: node is still EOpNull!
 0:?     'g4' ( global int)
 0:?     'g5' ( global int)
 0:?     'g6' ( global int)
+0:?     'inf1' ( global float)
+0:?     'inf2' ( global float)
+0:?     'inf3' ( global float)
 
