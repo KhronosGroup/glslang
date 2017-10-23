@@ -183,6 +183,7 @@ INSTANTIATE_TEST_CASE_P(
         "matrix2.frag",
         "newTexture.frag",
         "Operations.frag",
+        "overlongLiteral.frag",
         "prepost.frag",
         "simpleFunctionCall.frag",
         "structAssignment.frag",
