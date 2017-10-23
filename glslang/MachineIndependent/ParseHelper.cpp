@@ -665,7 +665,8 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
     // leaving swizzles and struct/block dereferences.
 
     TIntermTyped* result = base;
-    if (base->getBasicType() != EbtVoid && (base->isVector() || base->isScalar())) {
+    if ((base->isVector() || base->isScalar()) &&
+        (base->isFloatingDomain() || base->isIntegerDomain() || base->getBasicType() == EbtBool)) {
         if (base->isScalar()) {
             const char* dotFeature = "scalar swizzle";
             requireProfile(loc, ~EEsProfile, dotFeature);
@@ -4460,8 +4461,8 @@ void TParseContext::layoutObjectCheck(const TSourceLoc& loc, const TSymbol& symb
         switch (qualifier.storage) {
         case EvqVaryingIn:
         case EvqVaryingOut:
-            if (type.getBasicType() != EbtBlock || 
-                (!(*type.getStruct())[0].type->getQualifier().hasLocation() && 
+            if (type.getBasicType() != EbtBlock ||
+                (!(*type.getStruct())[0].type->getQualifier().hasLocation() &&
                   (*type.getStruct())[0].type->getQualifier().builtIn == EbvNone))
                 error(loc, "SPIR-V requires location for user input/output", "location", "");
             break;
