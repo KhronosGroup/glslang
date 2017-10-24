@@ -647,6 +647,7 @@ protected:
     bool isConversionAllowed(TOperator op, TIntermTyped* node) const;
     TIntermUnary* createConversion(TBasicType convertTo, TIntermTyped* node) const;
     std::tuple<TBasicType, TBasicType> getConversionDestinatonType(TBasicType type0, TBasicType type1, TOperator op) const;
+    bool extensionRequested(const char *extension) const {return requestedExtensions.find(extension) != requestedExtensions.end();}
 
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later
