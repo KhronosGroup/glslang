@@ -1369,12 +1369,14 @@ public:
     virtual bool isIntegerDomain() const
     {
         switch (basicType) {
+        case EbtInt8:
+        case EbtUint8:
+        case EbtInt16:
+        case EbtUint16:
         case EbtInt:
         case EbtUint:
         case EbtInt64:
         case EbtUint64:
-        case EbtInt16:
-        case EbtUint16:
         case EbtAtomicUint:
             return true;
         default:
