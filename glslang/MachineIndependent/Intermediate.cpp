@@ -1429,6 +1429,7 @@ bool TIntermediate::isFPIntegralConversion(TBasicType from, TBasicType to) const
     }
     return false;
 }
+
 //
 // See if the 'from' type is allowed to be implicitly converted to the
 // 'to' type.  This is not about vector/array/struct, only about basic type.
@@ -1474,36 +1475,161 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         }
     }
 
+    bool explicitTypesEnabled = extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types) ||
+                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int8) ||
+                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int16) ||
+                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int32) ||
+                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int64) ||
+                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_float16) ||
+                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_float32) ||
+                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_float64);
 
-    // integral promotions
-    if (isIntegralPromotion(from, to)) {
-        return true;
-    }
+    if(explicitTypesEnabled)
+    {
 
-    // floating-point promotions
-    if (isFPPromotion(from, to)) {
-        return true;
-    }
-
-    // integral conversions
-    if (isIntegralConversion(from, to)) {
-        return true;
-    }
-
-    // floating-point conversions
-    if (isFPConversion(from, to)) {
-        return true;
-    }
-
-    // floating-integral conversions
-    if (isFPIntegralConversion(from, to)) {
-        return true;
-    }
-
-    // hlsl supported conversions
-    if (source == EShSourceHlsl) {
-        if (from == EbtBool && (to == EbtInt || to == EbtUint || to == EbtFloat))
+        // integral promotions
+        if (isIntegralPromotion(from, to)) {
             return true;
+        }
+
+        // floating-point promotions
+        if (isFPPromotion(from, to)) {
+            return true;
+        }
+
+        // integral conversions
+        if (isIntegralConversion(from, to)) {
+            return true;
+        }
+
+        // floating-point conversions
+        if (isFPConversion(from, to)) {
+           return true;
+        }
+
+        // floating-integral conversions
+        if (isFPIntegralConversion(from, to)) {
+           return true;
+        }
+
+        // hlsl supported conversions
+        if (source == EShSourceHlsl) {
+            if (from == EbtBool && (to == EbtInt || to == EbtUint || to == EbtFloat))
+                return true;
+        }
+    } else {
+        switch (to) {
+        case EbtDouble:
+            switch (from) {
+            case EbtInt:
+            case EbtUint:
+            case EbtInt64:
+            case EbtUint64:
+#ifdef AMD_EXTENSIONS
+            case EbtInt16:
+            case EbtUint16:
+#endif
+             case EbtFloat:
+             case EbtDouble:
+#ifdef AMD_EXTENSIONS
+             case EbtFloat16:
+#endif
+                return true;
+            default:
+                return false;
+           }
+        case EbtFloat:
+            switch (from) {
+            case EbtInt:
+            case EbtUint:
+#ifdef AMD_EXTENSIONS
+            case EbtInt16:
+            case EbtUint16:
+#endif
+            case EbtFloat:
+#ifdef AMD_EXTENSIONS
+            case EbtFloat16:
+#endif
+                 return true;
+            case EbtBool:
+                 return (source == EShSourceHlsl);
+            default:
+                 return false;
+            }
+        case EbtUint:
+            switch (from) {
+            case EbtInt:
+                 return version >= 400 || (source == EShSourceHlsl);
+            case EbtUint:
+#ifdef AMD_EXTENSIONS
+            case EbtInt16:
+            case EbtUint16:
+#endif
+                return true;
+            case EbtBool:
+                return (source == EShSourceHlsl);
+            default:
+                return false;
+            }
+        case EbtInt:
+            switch (from) {
+            case EbtInt:
+#ifdef AMD_EXTENSIONS
+            case EbtInt16:
+#endif
+                return true;
+            case EbtBool:
+                return (source == EShSourceHlsl);
+            default:
+                return false;
+            }
+        case EbtUint64:
+            switch (from) {
+            case EbtInt:
+            case EbtUint:
+            case EbtInt64:
+            case EbtUint64:
+#ifdef AMD_EXTENSIONS
+            case EbtInt16:
+            case EbtUint16:
+#endif
+                return true;
+            default:
+                return false;
+            }
+        case EbtInt64:
+            switch (from) {
+            case EbtInt:
+            case EbtInt64:
+#ifdef AMD_EXTENSIONS
+            case EbtInt16:
+#endif
+                return true;
+            default:
+                return false;
+            }
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16:
+            switch (from) {
+            case EbtInt16:
+            case EbtUint16:
+            case EbtFloat16:
+                return true;
+            default:
+                return false;
+        }
+        case EbtUint16:
+            switch (from) {
+            case EbtInt16:
+            case EbtUint16:
+                return true;
+            default:
+                return false;
+        }
+#endif
+        default:
+            return false;
+        }
     }
 
     return false;
