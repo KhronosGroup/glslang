@@ -2986,10 +2986,13 @@ bool TParseContext::arrayError(const TSourceLoc& loc, const TType& type)
 //
 // Require array to be completely sized
 //
-void TParseContext::arraySizeRequiredCheck(const TSourceLoc& loc, const TArraySizes& arraySizes)
+bool TParseContext::arraySizeRequiredCheck(const TSourceLoc& loc, const TArraySizes& arraySizes)
 {
-    if (arraySizes.isImplicit())
+    if (arraySizes.isImplicit()) {
         error(loc, "array size required", "", "");
+        return true;
+    } else
+        return false;
 }
 
 void TParseContext::structArrayCheck(const TSourceLoc& /*loc*/, const TType& type)
@@ -3002,35 +3005,39 @@ void TParseContext::structArrayCheck(const TSourceLoc& /*loc*/, const TType& typ
     }
 }
 
-void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qualifier, const TArraySizes* arraySizes, bool initializer, bool lastMember)
+bool TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qualifier, const TArraySizes* arraySizes, bool initializer, bool lastMember)
 {
     assert(arraySizes);
 
     // always allow special built-in ins/outs sized to topologies
     if (parsingBuiltins)
-        return;
+        return false;
 
     // always allow an initializer to set any unknown array sizes
     if (initializer)
-        return;
+        return false;
 
     // No environment allows any non-outer-dimension to be implicitly sized
-    if (arraySizes->isInnerImplicit())
+    if (arraySizes->isInnerImplicit()) {
         error(loc, "only outermost dimension of an array of arrays can be implicitly sized", "[]", "");
+        return true;
+    }
 
-    if (arraySizes->isInnerSpecialization())
+    if (arraySizes->isInnerSpecialization()) {
         error(loc, "only outermost dimension of an array of arrays can be a specialization constant", "[]", "");
+        return true;
+    }
 
     // desktop always allows outer-dimension-unsized variable arrays,
     if (profile != EEsProfile)
-        return;
+        return false;
 
     // for ES, if size isn't coming from an initializer, it has to be explicitly declared now,
     // with very few exceptions
 
     // last member of ssbo block exception:
     if (qualifier.storage == EvqBuffer && lastMember)
-        return;
+        return false;
 
     // implicitly-sized io exceptions:
     switch (language) {
@@ -3038,27 +3045,27 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
         if (qualifier.storage == EvqVaryingIn)
             if ((profile == EEsProfile && version >= 320) ||
                 extensionsTurnedOn(Num_AEP_geometry_shader, AEP_geometry_shader))
-                return;
+                return false;
         break;
     case EShLangTessControl:
         if ( qualifier.storage == EvqVaryingIn ||
             (qualifier.storage == EvqVaryingOut && ! qualifier.patch))
             if ((profile == EEsProfile && version >= 320) ||
                 extensionsTurnedOn(Num_AEP_tessellation_shader, AEP_tessellation_shader))
-                return;
+                return false;
         break;
     case EShLangTessEvaluation:
         if ((qualifier.storage == EvqVaryingIn && ! qualifier.patch) ||
              qualifier.storage == EvqVaryingOut)
             if ((profile == EEsProfile && version >= 320) ||
                 extensionsTurnedOn(Num_AEP_tessellation_shader, AEP_tessellation_shader))
-                return;
+                return false;
         break;
     default:
         break;
     }
 
-    arraySizeRequiredCheck(loc, *arraySizes);
+    return arraySizeRequiredCheck(loc, *arraySizes);
 }
 
 void TParseContext::arrayOfArrayVersionCheck(const TSourceLoc& loc)
@@ -5153,7 +5160,8 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
         arrayDimMerge(type, arraySizes);
 
         // Check that implicit sizing is only where allowed.
-        arraySizesCheck(loc, type.getQualifier(), &type.getArraySizes(), initializer != nullptr, false);
+        if (arraySizesCheck(loc, type.getQualifier(), &type.getArraySizes(), initializer != nullptr, false))
+            return nullptr;
 
         if (! arrayQualifierError(loc, type.getQualifier()) && ! arrayError(loc, type))
             declareArray(loc, identifier, type, symbol);

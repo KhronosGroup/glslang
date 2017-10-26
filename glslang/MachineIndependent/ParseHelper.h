@@ -336,9 +336,9 @@ public:
     void arraySizeCheck(const TSourceLoc&, TIntermTyped* expr, TArraySize&);
     bool arrayQualifierError(const TSourceLoc&, const TQualifier&);
     bool arrayError(const TSourceLoc&, const TType&);
-    void arraySizeRequiredCheck(const TSourceLoc&, const TArraySizes&);
+    bool arraySizeRequiredCheck(const TSourceLoc&, const TArraySizes&);
     void structArrayCheck(const TSourceLoc&, const TType& structure);
-    void arraySizesCheck(const TSourceLoc&, const TQualifier&, const TArraySizes*, bool initializer, bool lastMember);
+    bool arraySizesCheck(const TSourceLoc&, const TQualifier&, const TArraySizes*, bool initializer, bool lastMember);
     void arrayOfArrayVersionCheck(const TSourceLoc&);
     void arrayDimCheck(const TSourceLoc&, const TArraySizes* sizes1, const TArraySizes* sizes2);
     void arrayDimCheck(const TSourceLoc&, const TType*, const TArraySizes*);

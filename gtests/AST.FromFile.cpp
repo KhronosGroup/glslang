@@ -104,6 +104,7 @@ INSTANTIATE_TEST_CASE_P(
         "310.tesc",
         "310.tese",
         "310implicitSizeArrayError.vert",
+        "fancyInnerImplicitSize.frag",
         "310AofA.vert",
         "320.comp",
         "320.vert",
