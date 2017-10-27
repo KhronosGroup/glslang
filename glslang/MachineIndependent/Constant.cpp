@@ -264,7 +264,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
         for (int i = 0; i < newComps; i++) {
             if (rightUnionArray[i] == 0)
                 newConstArray[i] = leftUnionArray[i];
-            else
+            else {
                 switch (getType().getBasicType()) {
                 case EbtInt:
                     if (rightUnionArray[i].getIConst() == -1 && leftUnionArray[i].getIConst() == INT_MIN) {
@@ -288,6 +288,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
                 modulo_default:
                     newConstArray[i] = leftUnionArray[i] % rightUnionArray[i];
                 }
+            }
         }
         break;
 
