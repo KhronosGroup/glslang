@@ -115,6 +115,7 @@ INSTANTIATE_TEST_CASE_P(
         "330comp.frag",
         "constErrors.frag",
         "constFold.frag",
+        "constFoldIntMin.frag",
         "errors.frag",
         "forwardRef.frag",
         "uint.frag",
