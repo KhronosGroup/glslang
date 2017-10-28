@@ -107,6 +107,7 @@ const char* const E_GL_OES_texture_3D                   = "GL_OES_texture_3D";
 const char* const E_GL_OES_standard_derivatives         = "GL_OES_standard_derivatives";
 const char* const E_GL_EXT_frag_depth                   = "GL_EXT_frag_depth";
 const char* const E_GL_OES_EGL_image_external           = "GL_OES_EGL_image_external";
+const char* const E_GL_OES_EGL_image_external_essl3     = "GL_OES_EGL_image_external_essl3";
 const char* const E_GL_EXT_shader_texture_lod           = "GL_EXT_shader_texture_lod";
 const char* const E_GL_EXT_shadow_samplers              = "GL_EXT_shadow_samplers";
 
@@ -181,6 +182,7 @@ const char* const E_SPV_NV_geometry_shader_passthrough          = "GL_NV_geometr
 const char* const E_GL_NV_viewport_array2                       = "GL_NV_viewport_array2";
 const char* const E_GL_NV_stereo_view_rendering                 = "GL_NV_stereo_view_rendering";
 const char* const E_GL_NVX_multiview_per_view_attributes        = "GL_NVX_multiview_per_view_attributes";
+const char* const E_GL_NV_shader_atomic_int64                   = "GL_NV_shader_atomic_int64";
 
 // Arrays of extensions for the above viewportEXTs duplications
 

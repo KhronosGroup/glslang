@@ -126,11 +126,6 @@ void TParseContext::setPrecisionDefaults()
             sampler.set(EbtFloat, Esd2D);
             sampler.external = true;
             defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
-        } else {
-            // Non-ES profile
-            // All default to highp.
-            for (int type = 0; type < maxSamplerIndex; ++type)
-                defaultSamplerPrecision[type] = EpqHigh;
         }
 
         // If we are parsing built-in computational variables/functions, it is meaningful to record
@@ -145,6 +140,13 @@ void TParseContext::setPrecisionDefaults()
                 defaultPrecision[EbtInt] = EpqHigh;
                 defaultPrecision[EbtUint] = EpqHigh;
                 defaultPrecision[EbtFloat] = EpqHigh;
+            }
+
+            if (profile != EEsProfile) {
+                // Non-ES profile
+                // All sampler precisions default to highp.
+                for (int type = 0; type < maxSamplerIndex; ++type)
+                    defaultSamplerPrecision[type] = EpqHigh;
             }
         }
 
@@ -429,29 +431,6 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     return result;
 }
 
-void TParseContext::checkIndex(const TSourceLoc& loc, const TType& type, int& index)
-{
-    if (index < 0) {
-        error(loc, "", "[", "index out of range '%d'", index);
-        index = 0;
-    } else if (type.isArray()) {
-        if (type.isExplicitlySizedArray() && index >= type.getOuterArraySize()) {
-            error(loc, "", "[", "array index out of range '%d'", index);
-            index = type.getOuterArraySize() - 1;
-        }
-    } else if (type.isVector()) {
-        if (index >= type.getVectorSize()) {
-            error(loc, "", "[", "vector index out of range '%d'", index);
-            index = type.getVectorSize() - 1;
-        }
-    } else if (type.isMatrix()) {
-        if (index >= type.getMatrixCols()) {
-            error(loc, "", "[", "matrix index out of range '%d'", index);
-            index = type.getMatrixCols() - 1;
-        }
-    }
-}
-
 // for ES 2.0 (version 100) limitations for almost all index operations except vertex-shader uniforms
 void TParseContext::handleIndexLimits(const TSourceLoc& /*loc*/, TIntermTyped* base, TIntermTyped* index)
 {
@@ -686,7 +665,8 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
     // leaving swizzles and struct/block dereferences.
 
     TIntermTyped* result = base;
-    if (base->isVector() || base->isScalar()) {
+    if ((base->isVector() || base->isScalar()) &&
+        (base->isFloatingDomain() || base->isIntegerDomain() || base->getBasicType() == EbtBool)) {
         if (base->isScalar()) {
             const char* dotFeature = "scalar swizzle";
             requireProfile(loc, ~EEsProfile, dotFeature);
@@ -1573,6 +1553,23 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
 
         break;
     }
+
+#ifdef NV_EXTENSIONS
+    case EOpAtomicAdd:
+    case EOpAtomicMin:
+    case EOpAtomicMax:
+    case EOpAtomicAnd:
+    case EOpAtomicOr:
+    case EOpAtomicXor:
+    case EOpAtomicExchange:
+    case EOpAtomicCompSwap:
+    {
+        if (arg0->getType().getBasicType() == EbtInt64 || arg0->getType().getBasicType() == EbtUint64)
+            requireExtensions(loc, 1, &E_GL_NV_shader_atomic_int64, fnCandidate.getName().c_str());
+
+        break;
+    }
+#endif
 
     case EOpInterpolateAtCentroid:
     case EOpInterpolateAtSample:
@@ -2461,6 +2458,16 @@ void TParseContext::boolCheck(const TSourceLoc& loc, const TPublicType& pType)
 
 void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const TString& identifier, TIntermTyped* /*initializer*/)
 {
+    // Check that the appropriate extension is enabled if external sampler is used.
+    // There are two extensions. The correct one must be used based on GLSL version.
+    if (type.getBasicType() == EbtSampler && type.getSampler().external) {
+        if (version < 300) {
+            requireExtensions(loc, 1, &E_GL_OES_EGL_image_external, "samplerExternalOES");
+        } else {
+            requireExtensions(loc, 1, &E_GL_OES_EGL_image_external_essl3, "samplerExternalOES");
+        }
+    }
+
     if (type.getQualifier().storage == EvqUniform)
         return;
 
@@ -3532,14 +3539,6 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
             oldType.getQualifier().flat = newType.getQualifier().flat;
             oldType.getQualifier().nopersp = newType.getQualifier().nopersp;
 
-#ifdef NV_EXTENSIONS
-            if (member->type->getFieldName() == "gl_Layer") {
-                if (!newType.getQualifier().layoutViewportRelative && newType.getQualifier().layoutSecondaryViewportRelativeOffset == -2048)
-                    error(loc, "redeclaration only allowed for viewport_relative or secondary_view_offset layout", "redeclaration", member->type->getFieldName().c_str());
-                oldType.getQualifier().layoutViewportRelative = newType.getQualifier().layoutViewportRelative;
-                oldType.getQualifier().layoutSecondaryViewportRelativeOffset = newType.getQualifier().layoutSecondaryViewportRelativeOffset;
-            }
-#endif
             if (oldType.isImplicitlySizedArray() && newType.isExplicitlySizedArray())
                 oldType.changeOuterArraySize(newType.getOuterArraySize());
 
@@ -4462,8 +4461,8 @@ void TParseContext::layoutObjectCheck(const TSourceLoc& loc, const TSymbol& symb
         switch (qualifier.storage) {
         case EvqVaryingIn:
         case EvqVaryingOut:
-            if (type.getBasicType() != EbtBlock || 
-                (!(*type.getStruct())[0].type->getQualifier().hasLocation() && 
+            if (type.getBasicType() != EbtBlock ||
+                (!(*type.getStruct())[0].type->getQualifier().hasLocation() &&
                   (*type.getStruct())[0].type->getQualifier().builtIn == EbvNone))
                 error(loc, "SPIR-V requires location for user input/output", "location", "");
             break;
@@ -4864,7 +4863,7 @@ void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
             // Check for overlap
             int numOffsets = 4;
             if (symbol.getType().isArray()) {
-                if (symbol.getType().isExplicitlySizedArray())
+                if (symbol.getType().isExplicitlySizedArray() && ! symbol.getType().getArraySizes()->isInnerImplicit())
                     numOffsets *= symbol.getType().getCumulativeArraySize();
                 else {
                     // "It is a compile-time error to declare an unsized array of atomic_uint."
@@ -5505,7 +5504,7 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
 
     bool singleArg;
     if (aggrNode) {
-        if (aggrNode->getOp() != EOpNull || aggrNode->getSequence().size() == 1)
+        if (aggrNode->getOp() != EOpNull)
             singleArg = true;
         else
             singleArg = false;

@@ -59,9 +59,10 @@ std::string FileNameAsCustomTestSuffix(
 
 using HlslCompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslCompileAndFlattenTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 
-// Compiling HLSL to SPIR-V under Vulkan semantics. Expected to successfully
-// generate both AST and SPIR-V.
+// Compiling HLSL to pre-legalized SPIR-V under Vulkan semantics. Expected
+// to successfully generate both AST and SPIR-V.
 TEST_P(HlslCompileTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
@@ -76,6 +77,16 @@ TEST_P(HlslCompileAndFlattenTest, FromFile)
                                            Target::BothASTAndSpv, GetParam().entryPoint);
 }
 
+// Compiling HLSL to legal SPIR-V under Vulkan semantics. Expected to
+// successfully generate SPIR-V.
+TEST_P(HlslLegalizeTest, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
+                            Source::HLSL, Semantics::Vulkan,
+                            Target::Spv, GetParam().entryPoint,
+                            "/baseLegalResults/", false);
+}
+
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileTest,
@@ -88,6 +99,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.assoc.frag", "PixelShaderFunction"},
         {"hlsl.attribute.frag", "PixelShaderFunction"},
         {"hlsl.attribute.expression.comp", "main"},
+        {"hlsl.attributeC11.frag", "main"},
+        {"hlsl.attributeGlobalBuffer.frag", "main"},
         {"hlsl.basic.comp", "main"},
         {"hlsl.basic.geom", "main"},
         {"hlsl.boolConv.vert", "main"},
@@ -141,6 +154,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.flattenOpaque.frag", "main"},
         {"hlsl.flattenOpaqueInit.vert", "main"},
         {"hlsl.flattenOpaqueInitMix.vert", "main"},
+        {"hlsl.flattenSubset.frag", "main"},
+        {"hlsl.flattenSubset2.frag", "main"},
         {"hlsl.forLoop.frag", "PixelShaderFunction"},
         {"hlsl.gather.array.dx10.frag", "main"},
         {"hlsl.gather.basic.dx10.frag", "main"},
@@ -164,6 +179,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.hull.1.tesc", "main"},
         {"hlsl.hull.2.tesc", "main"},
         {"hlsl.hull.3.tesc", "main"},
+        {"hlsl.hull.4.tesc", "main"},
+        {"hlsl.hull.5.tesc", "main"},
         {"hlsl.hull.void.tesc", "main"},
         {"hlsl.hull.ctrlpt-1.tesc", "main"},
         {"hlsl.hull.ctrlpt-2.tesc", "main"},
@@ -203,6 +220,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.load.rwtexture.array.dx10.frag", "main"},
         {"hlsl.load.offset.dx10.frag", "main"},
         {"hlsl.load.offsetarray.dx10.frag", "main"},
+        {"hlsl.localStructuredBuffer.comp", "main"},
         {"hlsl.logical.binary.frag", "main"},
         {"hlsl.logical.binary.vec.frag", "main"},
         {"hlsl.logicalConvert.frag", "main"},
@@ -230,6 +248,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.params.default.frag", "main"},
         {"hlsl.params.default.negative.frag", "main"},
         {"hlsl.partialInit.frag", "PixelShaderFunction"},
+        {"hlsl.partialFlattenLocal.vert", "main"},
         {"hlsl.pp.vert", "main"},
         {"hlsl.pp.line.frag", "main"},
         {"hlsl.precise.frag", "main"},
@@ -253,6 +272,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.samplebias.offsetarray.dx10.frag", "main"},
         {"hlsl.samplecmp.array.dx10.frag", "main"},
         {"hlsl.samplecmp.basic.dx10.frag", "main"},
+        {"hlsl.samplecmp.dualmode.frag", "main"},
         {"hlsl.samplecmp.offset.dx10.frag", "main"},
         {"hlsl.samplecmp.offsetarray.dx10.frag", "main"},
         {"hlsl.samplecmp.negative.frag", "main"},
@@ -304,6 +324,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.structin.vert", "main"},
         {"hlsl.structIoFourWay.frag", "main"},
         {"hlsl.structStructName.frag", "main"},
+        {"hlsl.subpass.frag", "main"},
         {"hlsl.synthesizeInput.frag", "main"},
         {"hlsl.texture.struct.frag", "main"},
         {"hlsl.texture.subvec4.frag", "main"},
@@ -348,10 +369,27 @@ INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileAndFlattenTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
         {"hlsl.array.flatten.frag", "main"},
+        {"hlsl.partialFlattenMixed.vert", "main"},
     }),
     FileNameAsCustomTestSuffix
 );
-
 // clang-format on
+
+#ifdef ENABLE_OPT
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    ToSpirv, HlslLegalizeTest,
+    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
+        {"hlsl.aliasOpaque.frag", "main"},
+        {"hlsl.flattenOpaque.frag", "main"},
+        {"hlsl.flattenOpaqueInit.vert", "main"},
+        {"hlsl.flattenOpaqueInitMix.vert", "main"},
+        {"hlsl.flattenSubset.frag", "main"}
+    }),
+    FileNameAsCustomTestSuffix
+);
+// clang-format on
+#endif
+
 }  // anonymous namespace
 }  // namespace glslangtest

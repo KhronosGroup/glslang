@@ -417,8 +417,8 @@ enum TOperator {
     EOpAtomicExchange,
     EOpAtomicCompSwap,
 
-    EOpAtomicCounterIncrement,
-    EOpAtomicCounterDecrement,
+    EOpAtomicCounterIncrement, // results in pre-increment value
+    EOpAtomicCounterDecrement, // results in post-decrement value
     EOpAtomicCounter,
     EOpAtomicCounterAdd,
     EOpAtomicCounterSubtract,
@@ -790,6 +790,7 @@ class TIntermBranch;
 class TIntermTyped;
 class TIntermMethod;
 class TIntermSymbol;
+class TIntermLoop;
 
 } // end namespace glslang
 
@@ -817,6 +818,7 @@ public:
     virtual       glslang::TIntermMethod*        getAsMethodNode()          { return 0; }
     virtual       glslang::TIntermSymbol*        getAsSymbolNode()          { return 0; }
     virtual       glslang::TIntermBranch*        getAsBranchNode()          { return 0; }
+	virtual       glslang::TIntermLoop*          getAsLoopNode()            { return 0; }
 
     virtual const glslang::TIntermTyped*         getAsTyped()         const { return 0; }
     virtual const glslang::TIntermOperator*      getAsOperator()      const { return 0; }
@@ -829,6 +831,7 @@ public:
     virtual const glslang::TIntermMethod*        getAsMethodNode()    const { return 0; }
     virtual const glslang::TIntermSymbol*        getAsSymbolNode()    const { return 0; }
     virtual const glslang::TIntermBranch*        getAsBranchNode()    const { return 0; }
+	virtual const glslang::TIntermLoop*          getAsLoopNode()      const { return 0; }
     virtual ~TIntermNode() { }
 
 protected:
@@ -872,6 +875,8 @@ public:
     virtual bool isVector() const { return type.isVector(); }
     virtual bool isScalar() const { return type.isScalar(); }
     virtual bool isStruct() const { return type.isStruct(); }
+    virtual bool isFloatingDomain() const { return type.isFloatingDomain(); }
+    virtual bool isIntegerDomain() const { return type.isIntegerDomain(); }
     TString getCompleteString() const { return type.getCompleteString(); }
 
 protected:
@@ -910,6 +915,8 @@ public:
         control(ELoopControlNone)
     { }
 
+	virtual       TIntermLoop* getAsLoopNode() { return this; }
+	virtual const TIntermLoop* getAsLoopNode() const { return this; }
     virtual void traverse(TIntermTraverser*);
     TIntermNode*  getBody() const { return body; }
     TIntermTyped* getTest() const { return test; }
@@ -991,6 +998,10 @@ public:
     void setFlattenSubset(int subset) { flattenSubset = subset; }
     int getFlattenSubset() const { return flattenSubset; } // -1 means full object
 #endif
+
+    // This is meant for cases where a node has already been constructed, and
+    // later on, it becomes necessary to switch to a different symbol.
+    virtual void switchId(int newId) { id = newId; }
 
 protected:
     int id;                      // the unique id of the symbol this node represents
@@ -1286,7 +1297,7 @@ protected:
 };
 
 typedef TVector<TIntermNode*> TIntermSequence;
-typedef TVector<int> TQualifierList;
+typedef TVector<TStorageQualifier> TQualifierList;
 //
 // Nodes that operate on an arbitrary sized set of children.
 //
