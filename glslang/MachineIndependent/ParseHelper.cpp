@@ -4614,7 +4614,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                 } else
                     lastBinding += type.getCumulativeArraySize();
             }
-            if (lastBinding >= resources.maxCombinedTextureImageUnits)
+            if (spvVersion.vulkan == 0 && lastBinding >= resources.maxCombinedTextureImageUnits)
                 error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
         }
         if (type.getBasicType() == EbtAtomicUint) {
