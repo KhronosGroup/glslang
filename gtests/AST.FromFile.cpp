@@ -84,6 +84,7 @@ INSTANTIATE_TEST_CASE_P(
         "cppBad2.vert",
         "cppComplexExpr.vert",
         "cppDeepNest.frag",
+        "cppPassMacroName.frag",
         "badChars.frag",
         "pointCoord.frag",
         "array.frag",
