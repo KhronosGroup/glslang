@@ -160,7 +160,7 @@ INSTANTIATE_TEST_CASE_P(
         "460.vert",
         "dce.frag",
         "atomic_uint.frag",
-//        "implicitInnerAtomicUint.frag",
+        "implicitInnerAtomicUint.frag",
         "aggOps.frag",
         "always-discard.frag",
         "always-discard2.frag",
