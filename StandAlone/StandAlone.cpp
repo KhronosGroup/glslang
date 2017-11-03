@@ -261,7 +261,7 @@ bool SetConfigFile(const std::string& name)
 //
 void Error(const char* message)
 {
-    printf("%s: Error %s (use -h for usage)\n", ExecutableName, message);
+    fprintf(stderr, "%s: Error %s (use -h for usage)\n", ExecutableName, message);
     exit(EFailUsage);
 }
 
@@ -1090,7 +1090,7 @@ int C_DECL main(int argc, char* argv[])
                 threads[t] = std::thread(CompileShaders, std::ref(workList));
                 if (threads[t].get_id() == std::thread::id())
                 {
-                    printf("Failed to create thread\n");
+                    fprintf(stderr, "Failed to create thread\n");
                     return EFailThreadCreate;
                 }
             }
