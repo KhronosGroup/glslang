@@ -3002,7 +3002,7 @@ void TParseContext::structArrayCheck(const TSourceLoc& /*loc*/, const TType& typ
     }
 }
 
-void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qualifier, const TArraySizes* arraySizes, bool initializer, bool lastMember)
+void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qualifier, TArraySizes* arraySizes, bool initializer, bool lastMember)
 {
     assert(arraySizes);
 
@@ -3015,8 +3015,10 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
         return;
 
     // No environment allows any non-outer-dimension to be implicitly sized
-    if (arraySizes->isInnerImplicit())
+    if (arraySizes->isInnerImplicit()) {
         error(loc, "only outermost dimension of an array of arrays can be implicitly sized", "[]", "");
+        arraySizes->clearInnerImplicit();
+    }
 
     if (arraySizes->isInnerSpecialization())
         error(loc, "only outermost dimension of an array of arrays can be a specialization constant", "[]", "");
@@ -4614,7 +4616,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                 } else
                     lastBinding += type.getCumulativeArraySize();
             }
-            if (lastBinding >= resources.maxCombinedTextureImageUnits)
+            if (spvVersion.vulkan == 0 && lastBinding >= resources.maxCombinedTextureImageUnits)
                 error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
         }
         if (type.getBasicType() == EbtAtomicUint) {
