@@ -664,6 +664,7 @@ protected:
     bool linkStage(EShLanguage, EShMessages);
 
     TPoolAllocator* pool;
+    TPoolAllocator* old_pool;
     std::list<TShader*> stages[EShLangCount];
     TIntermediate* intermediate[EShLangCount];
     bool newedIntermediate[EShLangCount];      // track which intermediate were "new" versus reusing a singleton unit in a stage

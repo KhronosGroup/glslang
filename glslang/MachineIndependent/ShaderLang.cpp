@@ -1767,6 +1767,7 @@ TProgram::~TProgram()
     delete infoSink;
     delete reflection;
 
+    SetThreadPoolAllocator(*old_pool);
     for (int s = 0; s < EShLangCount; ++s)
         if (newedIntermediate[s])
             delete intermediate[s];
@@ -1789,6 +1790,7 @@ bool TProgram::link(EShMessages messages)
     bool error = false;
 
     pool = new TPoolAllocator();
+    old_pool = &GetThreadPoolAllocator();
     SetThreadPoolAllocator(*pool);
 
     for (int s = 0; s < EShLangCount; ++s) {
