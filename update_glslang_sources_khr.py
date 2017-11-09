@@ -28,9 +28,9 @@ import sys
 
 KNOWN_GOOD_FILE = 'known_good_khr.json'
 
-# Maps a site name to its hostname.
-SITE_TO_HOST = { 'github' : 'github.com',
-                 'gitlab' : 'gitlab.khronos.org' }
+# Maps a site name to its host URL.
+SITE_TO_HOST = { 'github' : 'https://github.com/',
+                 'gitlab' : 'git@gitlab.khronos.org:' }
 
 VERBOSE = True
 
@@ -83,14 +83,11 @@ class GoodCommit(object):
         self.subdir = json['subdir'] if ('subdir' in json) else '.'
         self.commit = json['commit']
 
-    def GetUrl(self, style='https'):
+    def GetUrl(self):
         """Returns the URL for the repository."""
         host = SITE_TO_HOST[self.site]
-        sep = '/' if (style is 'https') else ':'
-        return '{style}://{host}{sep}{subrepo}'.format(
-                    style=style,
+        return '{host}{subrepo}'.format(
                     host=host,
-                    sep=sep,
                     subrepo=self.subrepo)
 
     def AddRemote(self):
