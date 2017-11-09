@@ -1153,7 +1153,6 @@ int TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, bool newLineOka
     }
 
     MacroSymbol* macro = macroAtom == 0 ? nullptr : lookupMacroDef(macroAtom);
-    int token;
     int depth = 0;
 
     // no recursive expansions
@@ -1175,13 +1174,12 @@ int TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, bool newLineOka
     TSourceLoc loc = ppToken->loc;  // in case we go to the next line before discovering the error
     in->mac = macro;
     if (macro->args.size() > 0 || macro->emptyArgs) {
-        token = scanToken(ppToken);
+        int token = scanToken(ppToken);
         if (newLineOkay) {
             while (token == '\n')
                 token = scanToken(ppToken);
         }
         if (token != '(') {
-            parseContext.ppError(loc, "expected '(' following", "macro expansion", atomStrings.getString(macroAtom));
             UngetToken(token, ppToken);
             delete in;
             return 0;

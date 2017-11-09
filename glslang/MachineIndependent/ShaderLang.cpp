@@ -1572,12 +1572,12 @@ namespace glslang {
 
 const char* GetEsslVersionString()
 {
-    return "OpenGL ES GLSL 3.00 glslang LunarG Khronos." GLSLANG_REVISION " " GLSLANG_DATE;
+    return "OpenGL ES GLSL 3.20 glslang Khronos." GLSLANG_REVISION " " GLSLANG_DATE;
 }
 
 const char* GetGlslVersionString()
 {
-    return "4.20 glslang LunarG Khronos." GLSLANG_REVISION " " GLSLANG_DATE;
+    return "4.60 glslang Khronos." GLSLANG_REVISION " " GLSLANG_DATE;
 }
 
 int GetKhronosToolId()
@@ -1667,8 +1667,8 @@ void TShader::setShiftBinding(TResourceType res, unsigned int base) {
 }
 
 // Set binding base for given resource type for a given binding set.
-void TShader::setShiftBindingForSet(TResourceType res, unsigned int set, unsigned int base) {
-    intermediate->setShiftBindingForSet(res, set, base); 
+void TShader::setShiftBindingForSet(TResourceType res, unsigned int base, unsigned int set) {
+    intermediate->setShiftBindingForSet(res, base, set);
 }
 
 // Set binding base for sampler types
