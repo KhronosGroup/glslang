@@ -1453,6 +1453,10 @@ bool HlslGrammar::acceptType(TType& type, TIntermNode*& nodeList)
         return acceptStructBufferType(type);
         break;
 
+    case EHTokTextureBuffer:
+        return acceptTextureBufferType(type);
+        break;
+
     case EHTokConstantBuffer:
         return acceptConstantBufferType(type);
 
@@ -2126,6 +2130,43 @@ bool HlslGrammar::acceptConstantBufferType(TType& type)
         return false;
     }
 }
+
+// texture_buffer
+//    : TEXTUREBUFFER LEFT_ANGLE type RIGHT_ANGLE
+bool HlslGrammar::acceptTextureBufferType(TType& type)
+{
+    if (! acceptTokenClass(EHTokTextureBuffer))
+        return false;
+
+    if (! acceptTokenClass(EHTokLeftAngle)) {
+        expected("left angle bracket");
+        return false;
+    }
+    
+    TType templateType;
+    if (! acceptType(templateType)) {
+        expected("type");
+        return false;
+    }
+
+    if (! acceptTokenClass(EHTokRightAngle)) {
+        expected("right angle bracket");
+        return false;
+    }
+
+    templateType.getQualifier().storage = EvqBuffer;
+    templateType.getQualifier().readonly = true;
+
+    TType blockType(templateType.getWritableStruct(), "", templateType.getQualifier());
+
+    blockType.getQualifier().storage = EvqBuffer;
+    blockType.getQualifier().readonly = true;
+
+    type.shallowCopy(blockType);
+
+    return true;
+}
+
 
 // struct_buffer
 //    : APPENDSTRUCTUREDBUFFER
