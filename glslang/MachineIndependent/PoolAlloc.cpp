@@ -40,35 +40,40 @@
 
 namespace glslang {
 
+// Process-wide TLS index
 OS_TLSIndex PoolIndex;
 
-void InitializeMemoryPools()
+// Per-thread structure holding pool pointers.
+struct TThreadMemoryPools
 {
-    TThreadMemoryPools* pools = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
-    if (pools)
-        return;
+    TPoolAllocator* threadPoolAllocator; // the current pool
+};
 
-    TPoolAllocator *threadPoolAllocator = new TPoolAllocator();
-
-    TThreadMemoryPools* threadData = new TThreadMemoryPools();
-
-    threadData->threadPoolAllocator = threadPoolAllocator;
-
-    OS_SetTLSValue(PoolIndex, threadData);
+// Return the thread-specific pool pointers.
+TThreadMemoryPools* GetThreadMemoryPools()
+{
+    return static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
 }
 
-void FreeGlobalPools()
+// Set the thread-specific pool pointers.
+void SetThreadMemoryPools(TThreadMemoryPools* pools)
 {
-    // Release the allocated memory for this thread.
-    TThreadMemoryPools* globalPools = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
-    if (! globalPools)
-        return;
-
-    GetThreadPoolAllocator().popAll();
-    delete &GetThreadPoolAllocator();
-    delete globalPools;
+    OS_SetTLSValue(PoolIndex, pools);
 }
 
+// Return the thread-specific current pool.
+TPoolAllocator& GetThreadPoolAllocator()
+{
+    return *GetThreadMemoryPools()->threadPoolAllocator;
+}
+
+// Set the thread-specific current pool.
+void SetThreadPoolAllocator(TPoolAllocator* poolAllocator)
+{
+    GetThreadMemoryPools()->threadPoolAllocator = poolAllocator;
+}
+
+// Process-wide set up of the TLS pool storage.
 bool InitializePoolIndex()
 {
     // Allocate a TLS index.
@@ -78,24 +83,30 @@ bool InitializePoolIndex()
     return true;
 }
 
+// Process-wide tear down of the TLS pool storage.
 void FreePoolIndex()
 {
     // Release the TLS index.
     OS_FreeTLSIndex(PoolIndex);
 }
 
-TPoolAllocator& GetThreadPoolAllocator()
+// Per-thread set up of the memory pools.
+void InitializeMemoryPools()
 {
-    TThreadMemoryPools* threadData = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
-
-    return *threadData->threadPoolAllocator;
+    if (GetThreadMemoryPools() == nullptr) {
+        SetThreadMemoryPools(new TThreadMemoryPools());
+        SetThreadPoolAllocator(new TPoolAllocator());
+    }
 }
 
-void SetThreadPoolAllocator(TPoolAllocator& poolAllocator)
+// Per-thread tear down of the memory pools.
+void FreeMemoryPools()
 {
-    TThreadMemoryPools* threadData = static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
-
-    threadData->threadPoolAllocator = &poolAllocator;
+    if (GetThreadMemoryPools() != nullptr) {
+        GetThreadPoolAllocator().popAll();
+        delete &GetThreadPoolAllocator();
+        delete GetThreadMemoryPools();
+    }
 }
 
 //

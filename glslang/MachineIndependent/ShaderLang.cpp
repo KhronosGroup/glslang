@@ -217,7 +217,7 @@ enum EPrecisionClass {
 TSymbolTable* CommonSymbolTable[VersionCount][SpvVersionCount][ProfileCount][SourceCount][EPcCount] = {};
 TSymbolTable* SharedSymbolTables[VersionCount][SpvVersionCount][ProfileCount][SourceCount][EShLangCount] = {};
 
-TPoolAllocator* PerProcessGPA = 0;
+TPoolAllocator* PerProcessGPA = nullptr;
 
 //
 // Parse and add to the given symbol table the content of the given shader string.
@@ -361,7 +361,7 @@ bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& inf
 // pool allocator intact, so:
 //  - Switch to a new pool for parsing the built-ins
 //  - Do the parsing, which builds the symbol table, using the new pool
-//  - Switch to the process-global pool to save a copy the resulting symbol table
+//  - Switch to the process-global pool to save a copy of the resulting symbol table
 //  - Free up the new pool used to parse the built-ins
 //  - Switch back to the original thread's pool
 //
@@ -388,8 +388,8 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
 
     // Switch to a new pool
     TPoolAllocator& previousAllocator = GetThreadPoolAllocator();
-    TPoolAllocator* builtInPoolAllocator = new TPoolAllocator();
-    SetThreadPoolAllocator(*builtInPoolAllocator);
+    TPoolAllocator* builtInPoolAllocator = new TPoolAllocator;
+    SetThreadPoolAllocator(builtInPoolAllocator);
 
     // Dynamically allocate the local symbol tables so we can control when they are deallocated WRT when the pool is popped.
     TSymbolTable* commonTable[EPcCount];
@@ -403,7 +403,7 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
     InitializeSymbolTables(infoSink, commonTable, stageTables, version, profile, spvVersion, source);
 
     // Switch to the process-global pool
-    SetThreadPoolAllocator(*PerProcessGPA);
+    SetThreadPoolAllocator(PerProcessGPA);
 
     // Copy the local symbol tables from the new pool to the global tables using the process-global pool
     for (int precClass = 0; precClass < EPcCount; ++precClass) {
@@ -430,7 +430,7 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
         delete stageTables[stage];
 
     delete builtInPoolAllocator;
-    SetThreadPoolAllocator(previousAllocator);
+    SetThreadPoolAllocator(&previousAllocator);
 
     glslang::ReleaseGlobalLock();
 }
@@ -1196,7 +1196,7 @@ int ShInitialize()
     if (! InitProcess())
         return 0;
 
-    if (! PerProcessGPA)
+    if (PerProcessGPA == nullptr)
         PerProcessGPA = new TPoolAllocator();
 
     glslang::TScanContext::fillInKeywordMap();
@@ -1288,10 +1288,10 @@ int __fastcall ShFinalize()
         }
     }
 
-    if (PerProcessGPA) {
+    if (PerProcessGPA != nullptr) {
         PerProcessGPA->popAll();
         delete PerProcessGPA;
-        PerProcessGPA = 0;
+        PerProcessGPA = nullptr;
     }
 
     glslang::TScanContext::deleteKeywordMap();
@@ -1708,7 +1708,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
         return false;
 
     pool = new TPoolAllocator();
-    SetThreadPoolAllocator(*pool);
+    SetThreadPoolAllocator(pool);
     if (! preamble)
         preamble = "";
 
@@ -1732,7 +1732,7 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
         return false;
 
     pool = new TPoolAllocator();
-    SetThreadPoolAllocator(*pool);
+    SetThreadPoolAllocator(pool);
     if (! preamble)
         preamble = "";
 
@@ -1789,7 +1789,7 @@ bool TProgram::link(EShMessages messages)
     bool error = false;
 
     pool = new TPoolAllocator();
-    SetThreadPoolAllocator(*pool);
+    SetThreadPoolAllocator(pool);
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (! linkStage((EShLanguage)s, messages))

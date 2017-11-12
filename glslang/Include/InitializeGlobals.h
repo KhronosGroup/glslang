@@ -38,7 +38,8 @@
 namespace glslang {
 
 void InitializeMemoryPools();
-void FreeGlobalPools();
+void FreeMemoryPools();
+
 bool InitializePoolIndex();
 void FreePoolIndex();
 

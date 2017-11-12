@@ -45,6 +45,10 @@ namespace glslang {
 
 OS_TLSIndex ThreadInitializeIndex = OS_INVALID_TLS_INDEX;
 
+// Per-process initialization.
+// Needs to be called at least once before parsing, etc. is done.
+// Will also do thread initialization for the calling thread; other
+// threads will need to do that explicitly.
 bool InitProcess()
 {
     glslang::GetGlobalLock();
@@ -85,7 +89,9 @@ bool InitProcess()
     return true;
 }
 
-
+// Per-thread scoped initialization.
+// Must be called at least once by each new thread sharing the
+// symbol tables, etc., needed to parse.
 bool InitThread()
 {
     //
@@ -109,7 +115,9 @@ bool InitThread()
     return true;
 }
 
-
+// Thread-scoped tear down. Needs to be done by all but the last
+// thread, which calls DetachProcess() instead.
+// NB. TODO: Not currently being executed by each thread.
 bool DetachThread()
 {
     bool success = true;
@@ -126,13 +134,13 @@ bool DetachThread()
             success = false;
         }
 
-        FreeGlobalPools();
-
+        FreeMemoryPools();
     }
 
     return success;
 }
 
+// Process-scoped tear down. Needs to be done by final thread in process.
 bool DetachProcess()
 {
     bool success = true;
