@@ -1299,7 +1299,7 @@ int __fastcall ShFinalize()
     glslang::HlslScanContext::deleteKeywordMap();
 #endif
 
-    return 1;
+    return DetachProcess() ? 1 : 0;
 }
 
 //

@@ -148,8 +148,6 @@ bool DetachProcess()
     if (ThreadInitializeIndex == OS_INVALID_TLS_INDEX)
         return true;
 
-    ShFinalize();
-
     success = DetachThread();
 
     FreePoolIndex();
