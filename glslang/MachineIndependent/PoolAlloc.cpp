@@ -47,6 +47,7 @@ OS_TLSIndex PoolIndex;
 struct TThreadMemoryPools
 {
     TPoolAllocator* threadPoolAllocator; // the current pool
+    TPoolAllocator* initialMemoryPool;   // the original pool owned by this thread (this file), to be freed here as well
 };
 
 // Return the thread-specific pool pointers.
@@ -80,6 +81,8 @@ bool InitializePoolIndex()
     if ((PoolIndex = OS_AllocTLSIndex()) == OS_INVALID_TLS_INDEX)
         return false;
 
+    SetThreadMemoryPools(nullptr);
+
     return true;
 }
 
@@ -95,7 +98,8 @@ void InitializeMemoryPools()
 {
     if (GetThreadMemoryPools() == nullptr) {
         SetThreadMemoryPools(new TThreadMemoryPools());
-        SetThreadPoolAllocator(new TPoolAllocator());
+        GetThreadMemoryPools()->initialMemoryPool = new TPoolAllocator();
+        SetThreadPoolAllocator(GetThreadMemoryPools()->initialMemoryPool);
     }
 }
 
@@ -103,9 +107,10 @@ void InitializeMemoryPools()
 void FreeMemoryPools()
 {
     if (GetThreadMemoryPools() != nullptr) {
-        GetThreadPoolAllocator().popAll();
-        delete &GetThreadPoolAllocator();
+        if (GetThreadMemoryPools()->initialMemoryPool != nullptr)
+            delete GetThreadMemoryPools()->initialMemoryPool;
         delete GetThreadMemoryPools();
+        SetThreadMemoryPools(nullptr);
     }
 }
 
