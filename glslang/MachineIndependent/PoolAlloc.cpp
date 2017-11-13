@@ -43,35 +43,16 @@ namespace glslang {
 // Process-wide TLS index
 OS_TLSIndex PoolIndex;
 
-// Per-thread structure holding pool pointers.
-struct TThreadMemoryPools
-{
-    TPoolAllocator* threadPoolAllocator; // the current pool
-    TPoolAllocator* initialMemoryPool;   // the original pool owned by this thread (this file), to be freed here as well
-};
-
-// Return the thread-specific pool pointers.
-TThreadMemoryPools* GetThreadMemoryPools()
-{
-    return static_cast<TThreadMemoryPools*>(OS_GetTLSValue(PoolIndex));
-}
-
-// Set the thread-specific pool pointers.
-void SetThreadMemoryPools(TThreadMemoryPools* pools)
-{
-    OS_SetTLSValue(PoolIndex, pools);
-}
-
 // Return the thread-specific current pool.
 TPoolAllocator& GetThreadPoolAllocator()
 {
-    return *GetThreadMemoryPools()->threadPoolAllocator;
+    return *static_cast<TPoolAllocator*>(OS_GetTLSValue(PoolIndex));
 }
 
 // Set the thread-specific current pool.
 void SetThreadPoolAllocator(TPoolAllocator* poolAllocator)
 {
-    GetThreadMemoryPools()->threadPoolAllocator = poolAllocator;
+    OS_SetTLSValue(PoolIndex, poolAllocator);
 }
 
 // Process-wide set up of the TLS pool storage.
@@ -81,37 +62,7 @@ bool InitializePoolIndex()
     if ((PoolIndex = OS_AllocTLSIndex()) == OS_INVALID_TLS_INDEX)
         return false;
 
-    SetThreadMemoryPools(nullptr);
-
     return true;
-}
-
-// Process-wide tear down of the TLS pool storage.
-void FreePoolIndex()
-{
-    // Release the TLS index.
-    OS_FreeTLSIndex(PoolIndex);
-}
-
-// Per-thread set up of the memory pools.
-void InitializeMemoryPools()
-{
-    if (GetThreadMemoryPools() == nullptr) {
-        SetThreadMemoryPools(new TThreadMemoryPools());
-        GetThreadMemoryPools()->initialMemoryPool = new TPoolAllocator();
-        SetThreadPoolAllocator(GetThreadMemoryPools()->initialMemoryPool);
-    }
-}
-
-// Per-thread tear down of the memory pools.
-void FreeMemoryPools()
-{
-    if (GetThreadMemoryPools() != nullptr) {
-        if (GetThreadMemoryPools()->initialMemoryPool != nullptr)
-            delete GetThreadMemoryPools()->initialMemoryPool;
-        delete GetThreadMemoryPools();
-        SetThreadMemoryPools(nullptr);
-    }
 }
 
 //

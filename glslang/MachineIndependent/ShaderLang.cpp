@@ -722,9 +722,6 @@ bool ProcessDeferred(
     const std::string sourceEntryPointName = "",
     const TEnvironment* environment = nullptr)  // optional way of fully setting all versions, overriding the above
 {
-    if (! InitThread())
-        return false;
-
     // This must be undone (.pop()) by the caller, after it finishes consuming the created tree.
     GetThreadPoolAllocator().push();
 
@@ -1299,7 +1296,7 @@ int __fastcall ShFinalize()
     glslang::HlslScanContext::deleteKeywordMap();
 #endif
 
-    return DetachProcess() ? 1 : 0;
+    return 1;
 }
 
 //
@@ -1331,6 +1328,8 @@ int ShCompile(
     TCompiler* compiler = base->getAsCompiler();
     if (compiler == 0)
         return 0;
+
+    SetThreadPoolAllocator(compiler->getPool());
 
     compiler->infoSink.info.erase();
     compiler->infoSink.debug.erase();
@@ -1389,6 +1388,8 @@ int ShLinkExt(
     TShHandleBase* base = reinterpret_cast<TShHandleBase*>(linkHandle);
     TLinker* linker = static_cast<TLinker*>(base->getAsLinker());
 
+    SetThreadPoolAllocator(linker->getPool());
+
     if (linker == 0)
         return 0;
 
@@ -1423,9 +1424,6 @@ void ShSetEncryptionMethod(ShHandle handle)
 //
 const char* ShGetInfoLog(const ShHandle handle)
 {
-    if (!InitThread())
-        return 0;
-
     if (handle == 0)
         return 0;
 
@@ -1449,9 +1447,6 @@ const char* ShGetInfoLog(const ShHandle handle)
 //
 const void* ShGetExecutable(const ShHandle handle)
 {
-    if (!InitThread())
-        return 0;
-
     if (handle == 0)
         return 0;
 
@@ -1474,9 +1469,6 @@ const void* ShGetExecutable(const ShHandle handle)
 //
 int ShSetVirtualAttributeBindings(const ShHandle handle, const ShBindingTable* table)
 {
-    if (!InitThread())
-        return 0;
-
     if (handle == 0)
         return 0;
 
@@ -1496,9 +1488,6 @@ int ShSetVirtualAttributeBindings(const ShHandle handle, const ShBindingTable* t
 //
 int ShSetFixedAttributeBindings(const ShHandle handle, const ShBindingTable* table)
 {
-    if (!InitThread())
-        return 0;
-
     if (handle == 0)
         return 0;
 
@@ -1517,9 +1506,6 @@ int ShSetFixedAttributeBindings(const ShHandle handle, const ShBindingTable* tab
 //
 int ShExcludeAttributes(const ShHandle handle, int *attributes, int count)
 {
-    if (!InitThread())
-        return 0;
-
     if (handle == 0)
         return 0;
 
@@ -1541,9 +1527,6 @@ int ShExcludeAttributes(const ShHandle handle, int *attributes, int count)
 //
 int ShGetUniformLocation(const ShHandle handle, const char* name)
 {
-    if (!InitThread())
-        return 0;
-
     if (handle == 0)
         return -1;
 
@@ -1707,8 +1690,8 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
 {
     if (! InitThread())
         return false;
-
     SetThreadPoolAllocator(pool);
+
     if (! preamble)
         preamble = "";
 
@@ -1730,8 +1713,8 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
 {
     if (! InitThread())
         return false;
-
     SetThreadPoolAllocator(pool);
+
     if (! preamble)
         preamble = "";
 

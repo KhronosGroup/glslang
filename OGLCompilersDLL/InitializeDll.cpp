@@ -38,8 +38,8 @@
 
 #include "InitializeDll.h"
 #include "../glslang/Include/InitializeGlobals.h"
-
 #include "../glslang/Public/ShaderLang.h"
+#include "../glslang/Include/PoolAlloc.h"
 
 namespace glslang {
 
@@ -105,57 +105,14 @@ bool InitThread()
     if (OS_GetTLSValue(ThreadInitializeIndex) != 0)
         return true;
 
-    InitializeMemoryPools();
-
     if (! OS_SetTLSValue(ThreadInitializeIndex, (void *)1)) {
         assert(0 && "InitThread(): Unable to set init flag.");
         return false;
     }
 
+    glslang::SetThreadPoolAllocator(nullptr);
+
     return true;
-}
-
-// Thread-scoped tear down. Needs to be done by all but the last
-// thread, which calls DetachProcess() instead.
-// NB. TODO: Not currently being executed by each thread.
-bool DetachThread()
-{
-    bool success = true;
-
-    if (ThreadInitializeIndex == OS_INVALID_TLS_INDEX)
-        return true;
-
-    //
-    // Function is re-entrant and this thread may not have been initialized.
-    //
-    if (OS_GetTLSValue(ThreadInitializeIndex) != 0) {
-        if (!OS_SetTLSValue(ThreadInitializeIndex, (void *)0)) {
-            assert(0 && "DetachThread(): Unable to clear init flag.");
-            success = false;
-        }
-
-        FreeMemoryPools();
-    }
-
-    return success;
-}
-
-// Process-scoped tear down. Needs to be done by final thread in process.
-bool DetachProcess()
-{
-    bool success = true;
-
-    if (ThreadInitializeIndex == OS_INVALID_TLS_INDEX)
-        return true;
-
-    success = DetachThread();
-
-    FreePoolIndex();
-
-    OS_FreeTLSIndex(ThreadInitializeIndex);
-    ThreadInitializeIndex = OS_INVALID_TLS_INDEX;
-
-    return success;
 }
 
 } // end namespace glslang
