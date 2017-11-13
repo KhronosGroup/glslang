@@ -326,6 +326,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.structStructName.frag", "main"},
         {"hlsl.subpass.frag", "main"},
         {"hlsl.synthesizeInput.frag", "main"},
+        {"hlsl.texturebuffer.frag", "main"},
         {"hlsl.texture.struct.frag", "main"},
         {"hlsl.texture.subvec4.frag", "main"},
         {"hlsl.this.frag", "main"},
