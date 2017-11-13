@@ -512,6 +512,7 @@ public:
     TIntermediate* getIntermediate() const { return intermediate; }
 
 protected:
+	TPoolAllocator* previousPoolAllocator;
     TPoolAllocator* pool;
     EShLanguage stage;
     TCompiler* compiler;
@@ -663,6 +664,7 @@ public:
 protected:
     bool linkStage(EShLanguage, EShMessages);
 
+	TPoolAllocator* previousPoolAllocator;
     TPoolAllocator* pool;
     std::list<TShader*> stages[EShLangCount];
     TIntermediate* intermediate[EShLangCount];

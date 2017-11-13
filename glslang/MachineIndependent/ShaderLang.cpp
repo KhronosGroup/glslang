@@ -1602,7 +1602,7 @@ public:
 };
 
 TShader::TShader(EShLanguage s)
-    : pool(0), stage(s), lengths(nullptr), stringNames(nullptr), preamble("")
+    : previousPoolAllocator(0), pool(0), stage(s), lengths(nullptr), stringNames(nullptr), preamble("")
 {
     infoSink = new TInfoSink;
     compiler = new TDeferredCompiler(stage, *infoSink);
@@ -1620,7 +1620,12 @@ TShader::~TShader()
     delete infoSink;
     delete compiler;
     delete intermediate;
-    delete pool;
+	
+	if (pool)
+	{
+		SetThreadPoolAllocator(*previousPoolAllocator);
+		delete pool;
+	}
 }
 
 void TShader::setStrings(const char* const* s, int n)
@@ -1707,7 +1712,12 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
     if (! InitThread())
         return false;
 
-    pool = new TPoolAllocator();
+	if (!pool)
+	{
+		previousPoolAllocator = &GetThreadPoolAllocator();
+		pool = new TPoolAllocator();
+	}
+
     SetThreadPoolAllocator(*pool);
     if (! preamble)
         preamble = "";
@@ -1731,8 +1741,13 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
     if (! InitThread())
         return false;
 
-    pool = new TPoolAllocator();
-    SetThreadPoolAllocator(*pool);
+	if (!pool)
+	{
+		previousPoolAllocator = &GetThreadPoolAllocator();
+		pool = new TPoolAllocator();
+	}
+    
+	SetThreadPoolAllocator(*pool);
     if (! preamble)
         preamble = "";
 
@@ -1752,7 +1767,8 @@ const char* TShader::getInfoDebugLog()
     return infoSink->debug.c_str();
 }
 
-TProgram::TProgram() : pool(0), reflection(0), ioMapper(nullptr), linked(false)
+TProgram::TProgram() : 
+	previousPoolAllocator(0), pool(0), reflection(0), ioMapper(nullptr), linked(false)
 {
     infoSink = new TInfoSink;
     for (int s = 0; s < EShLangCount; ++s) {
@@ -1771,7 +1787,11 @@ TProgram::~TProgram()
         if (newedIntermediate[s])
             delete intermediate[s];
 
-    delete pool;
+	if (pool)
+	{
+		SetThreadPoolAllocator(*previousPoolAllocator);
+		delete pool;
+	}
 }
 
 //
@@ -1788,7 +1808,12 @@ bool TProgram::link(EShMessages messages)
 
     bool error = false;
 
-    pool = new TPoolAllocator();
+	if (!pool)
+	{
+		previousPoolAllocator = &GetThreadPoolAllocator();
+		pool = new TPoolAllocator();
+	}
+
     SetThreadPoolAllocator(*pool);
 
     for (int s = 0; s < EShLangCount; ++s) {
