@@ -127,6 +127,9 @@ void InfoLogMsg(const char* msg, const char* name, const int num);
 bool CompileFailed = false;
 bool LinkFailed = false;
 
+// array of unique places to leave the shader names and infologs for the asynchronous compiles
+std::vector<std::unique_ptr<glslang::TWorkItem>> WorkItems;
+
 TBuiltInResource Resources;
 std::string ConfigFile;
 
@@ -1022,14 +1025,10 @@ void CompileAndLinkShaderFiles(glslang::TWorklist& Worklist)
         FreeFileData(const_cast<char*>(it->text[0]));
 }
 
-int C_DECL main(int argc, char* argv[])
+int singleMain()
 {
-    // array of unique places to leave the shader names and infologs for the asynchronous compiles
-    std::vector<std::unique_ptr<glslang::TWorkItem>> workItems;
-    ProcessArguments(workItems, argc, argv);
-
     glslang::TWorklist workList;
-    std::for_each(workItems.begin(), workItems.end(), [&workList](std::unique_ptr<glslang::TWorkItem>& item) {
+    std::for_each(WorkItems.begin(), WorkItems.end(), [&workList](std::unique_ptr<glslang::TWorkItem>& item) {
         assert(item);
         workList.add(item.get());
     });
@@ -1061,8 +1060,8 @@ int C_DECL main(int argc, char* argv[])
     }
 
     if (Options & EOptionStdin) {
-        workItems.push_back(std::unique_ptr<glslang::TWorkItem>{new glslang::TWorkItem("stdin")});
-        workList.add(workItems.back().get());
+        WorkItems.push_back(std::unique_ptr<glslang::TWorkItem>{new glslang::TWorkItem("stdin")});
+        workList.add(WorkItems.back().get());
     }
 
     ProcessConfigFile();
@@ -1100,11 +1099,11 @@ int C_DECL main(int argc, char* argv[])
             CompileShaders(workList);
 
         // Print out all the resulting infologs
-        for (size_t w = 0; w < workItems.size(); ++w) {
-            if (workItems[w]) {
-                if (printShaderNames || workItems[w]->results.size() > 0)
-                    PutsIfNonEmpty(workItems[w]->name.c_str());
-                PutsIfNonEmpty(workItems[w]->results.c_str());
+        for (size_t w = 0; w < WorkItems.size(); ++w) {
+            if (WorkItems[w]) {
+                if (printShaderNames || WorkItems[w]->results.size() > 0)
+                    PutsIfNonEmpty(WorkItems[w]->name.c_str());
+                PutsIfNonEmpty(WorkItems[w]->results.c_str());
             }
         }
 
@@ -1117,6 +1116,25 @@ int C_DECL main(int argc, char* argv[])
         return EFailLink;
 
     return 0;
+}
+
+int C_DECL main(int argc, char* argv[])
+{
+    ProcessArguments(WorkItems, argc, argv);
+
+    int ret = 0;
+
+    // Loop over the entire init/finalize cycle to watch memory changes
+    const int iterations = 1;
+    if (iterations > 1)
+        glslang::OS_DumpMemoryCounters();
+    for (int i = 0; i < iterations; ++i) {
+        ret = singleMain();
+        if (iterations > 1)
+            glslang::OS_DumpMemoryCounters();
+    }
+
+    return ret;
 }
 
 //
