@@ -1378,6 +1378,23 @@ bool HlslGrammar::acceptType(TType& type, TIntermNode*& nodeList)
         }
     }
 
+    bool isUnorm = false;
+    bool isSnorm = false;
+
+    // Accept snorm and unorm.  Presently, this is ignored, save for an error check below.
+    switch (peek()) {
+    case EHTokUnorm:
+        isUnorm = true;
+        advanceToken();  // eat the token
+        break;
+    case EHTokSNorm:
+        isSnorm = true;
+        advanceToken();  // eat the token
+        break;
+    default:
+        break;
+    }
+
     switch (peek()) {
     case EHTokVector:
         return acceptVectorTemplateType(type);
@@ -1971,6 +1988,11 @@ bool HlslGrammar::acceptType(TType& type, TIntermNode*& nodeList)
     }
 
     advanceToken();
+
+    if ((isUnorm || isSnorm) && !type.isFloatingDomain()) {
+        parseContext.error(token.loc, "unorm and snorm only valid in floating point domain", "", "");
+        return false;
+    }
 
     return true;
 }
