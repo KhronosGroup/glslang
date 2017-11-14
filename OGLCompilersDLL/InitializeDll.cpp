@@ -38,13 +38,17 @@
 
 #include "InitializeDll.h"
 #include "../glslang/Include/InitializeGlobals.h"
-
 #include "../glslang/Public/ShaderLang.h"
+#include "../glslang/Include/PoolAlloc.h"
 
 namespace glslang {
 
 OS_TLSIndex ThreadInitializeIndex = OS_INVALID_TLS_INDEX;
 
+// Per-process initialization.
+// Needs to be called at least once before parsing, etc. is done.
+// Will also do thread initialization for the calling thread; other
+// threads will need to do that explicitly.
 bool InitProcess()
 {
     glslang::GetGlobalLock();
@@ -85,7 +89,9 @@ bool InitProcess()
     return true;
 }
 
-
+// Per-thread scoped initialization.
+// Must be called at least once by each new thread sharing the
+// symbol tables, etc., needed to parse.
 bool InitThread()
 {
     //
@@ -99,57 +105,14 @@ bool InitThread()
     if (OS_GetTLSValue(ThreadInitializeIndex) != 0)
         return true;
 
-    InitializeMemoryPools();
-
     if (! OS_SetTLSValue(ThreadInitializeIndex, (void *)1)) {
         assert(0 && "InitThread(): Unable to set init flag.");
         return false;
     }
 
+    glslang::SetThreadPoolAllocator(nullptr);
+
     return true;
-}
-
-
-bool DetachThread()
-{
-    bool success = true;
-
-    if (ThreadInitializeIndex == OS_INVALID_TLS_INDEX)
-        return true;
-
-    //
-    // Function is re-entrant and this thread may not have been initialized.
-    //
-    if (OS_GetTLSValue(ThreadInitializeIndex) != 0) {
-        if (!OS_SetTLSValue(ThreadInitializeIndex, (void *)0)) {
-            assert(0 && "DetachThread(): Unable to clear init flag.");
-            success = false;
-        }
-
-        FreeGlobalPools();
-
-    }
-
-    return success;
-}
-
-bool DetachProcess()
-{
-    bool success = true;
-
-    if (ThreadInitializeIndex == OS_INVALID_TLS_INDEX)
-        return true;
-
-    ShFinalize();
-
-    success = DetachThread();
-
-    FreePoolIndex();
-
-    OS_FreeTLSIndex(ThreadInitializeIndex);
-    ThreadInitializeIndex = OS_INVALID_TLS_INDEX;
-
-    return success;
 }
 
 } // end namespace glslang

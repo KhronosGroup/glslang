@@ -40,8 +40,6 @@ namespace glslang {
 
 bool InitProcess();
 bool InitThread();
-bool DetachThread();
-bool DetachProcess();
 
 } // end namespace glslang
 
