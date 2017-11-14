@@ -56,6 +56,7 @@ namespace glslang {
 //
 static void DetachThreadLinux(void *)
 {
+    DetachThread();
 }
 
 //

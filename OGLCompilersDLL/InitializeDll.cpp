@@ -115,4 +115,51 @@ bool InitThread()
     return true;
 }
 
+// Not necessary to call this: InitThread() is reentrant, and the need
+// to do per thread tear down has been removed.
+//
+// This is kept, with memory management removed, to satisfy any exiting
+// calls to it that rely on it.
+bool DetachThread()
+{
+    bool success = true;
+
+    if (ThreadInitializeIndex == OS_INVALID_TLS_INDEX)
+        return true;
+
+    //
+    // Function is re-entrant and this thread may not have been initialized.
+    //
+    if (OS_GetTLSValue(ThreadInitializeIndex) != 0) {
+        if (!OS_SetTLSValue(ThreadInitializeIndex, (void *)0)) {
+            assert(0 && "DetachThread(): Unable to clear init flag.");
+            success = false;
+        }
+    }
+
+    return success;
+}
+
+// Not necessary to call this: InitProcess() is reentrant.
+//
+// This is kept, with memory management removed, to satisfy any exiting
+// calls to it that rely on it.
+//
+// Users of glslang should call shFinalize() or glslang::FinalizeProcess() for
+// process-scoped memory tear down.
+bool DetachProcess()
+{
+    bool success = true;
+
+    if (ThreadInitializeIndex == OS_INVALID_TLS_INDEX)
+        return true;
+
+    success = DetachThread();
+
+    OS_FreeTLSIndex(ThreadInitializeIndex);
+    ThreadInitializeIndex = OS_INVALID_TLS_INDEX;
+
+    return success;
+}
+
 } // end namespace glslang
