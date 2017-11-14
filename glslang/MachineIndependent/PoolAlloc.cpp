@@ -53,6 +53,7 @@ void InitializeMemoryPools()
     TThreadMemoryPools* threadData = new TThreadMemoryPools();
 
     threadData->threadPoolAllocator = threadPoolAllocator;
+    threadData->originalThreadPoolAllocator = threadPoolAllocator;
 
     OS_SetTLSValue(PoolIndex, threadData);
 }
@@ -64,8 +65,9 @@ void FreeGlobalPools()
     if (! globalPools)
         return;
 
-    GetThreadPoolAllocator().popAll();
-    delete &GetThreadPoolAllocator();
+    globalPools->originalThreadPoolAllocator->popAll();
+
+    delete globalPools->originalThreadPoolAllocator;
     delete globalPools;
 }
 
