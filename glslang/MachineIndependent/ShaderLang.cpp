@@ -1286,7 +1286,6 @@ int __fastcall ShFinalize()
     }
 
     if (PerProcessGPA != nullptr) {
-        PerProcessGPA->popAll();
         delete PerProcessGPA;
         PerProcessGPA = nullptr;
     }
