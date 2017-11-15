@@ -172,6 +172,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.getdimensions.dx10.vert", "main"},
         {"hlsl.getsampleposition.dx10.frag", "main"},
         {"hlsl.global-const-init.frag", "main"},
+        {"hlsl.gs-hs-mix.tesc", "HSMain"},
         {"hlsl.domain.1.tese", "main"},
         {"hlsl.domain.2.tese", "main"},
         {"hlsl.domain.3.tese", "main"},
