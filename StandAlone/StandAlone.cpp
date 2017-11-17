@@ -1074,21 +1074,24 @@ int singleMain()
     if (Options & EOptionLinkProgram ||
         Options & EOptionOutputPreprocessed) {
         glslang::InitializeProcess();
+        glslang::InitializeProcess();  // also test reference counting of users
+        glslang::InitializeProcess();  // also test reference counting of users
+        glslang::FinalizeProcess();    // also test reference counting of users
+        glslang::FinalizeProcess();    // also test reference counting of users
         CompileAndLinkShaderFiles(workList);
         glslang::FinalizeProcess();
     } else {
         ShInitialize();
+        ShInitialize();  // also test reference counting of users
+        ShFinalize();    // also test reference counting of users
 
         bool printShaderNames = workList.size() > 1;
 
-        if (Options & EOptionMultiThreaded)
-        {
+        if (Options & EOptionMultiThreaded) {
             std::array<std::thread, 16> threads;
-            for (unsigned int t = 0; t < threads.size(); ++t)
-            {
+            for (unsigned int t = 0; t < threads.size(); ++t) {
                 threads[t] = std::thread(CompileShaders, std::ref(workList));
-                if (threads[t].get_id() == std::thread::id())
-                {
+                if (threads[t].get_id() == std::thread::id()) {
                     fprintf(stderr, "Failed to create thread\n");
                     return EFailThreadCreate;
                 }

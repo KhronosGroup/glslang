@@ -69,6 +69,10 @@
 
 namespace { // anonymous namespace for file-local functions and symbols
 
+// Total number of successful initializers of glslang: a refcount
+// Shared global; access should be protected by a global mutex/critical section.
+int NumberOfClients = 0;
+
 using namespace glslang;
 
 // Create a language specific version of parseables.
@@ -1193,6 +1197,10 @@ int ShInitialize()
     if (! InitProcess())
         return 0;
 
+    glslang::GetGlobalLock();
+    ++NumberOfClients;
+    glslang::ReleaseGlobalLock();
+
     if (PerProcessGPA == nullptr)
         PerProcessGPA = new TPoolAllocator();
 
@@ -1259,6 +1267,14 @@ void ShDestruct(ShHandle handle)
 //
 int __fastcall ShFinalize()
 {
+    glslang::GetGlobalLock();
+    --NumberOfClients;
+    assert(NumberOfClients >= 0);
+    bool finalize = NumberOfClients == 0;
+    glslang::ReleaseGlobalLock();
+    if (! finalize)
+        return 1;
+
     for (int version = 0; version < VersionCount; ++version) {
         for (int spvVersion = 0; spvVersion < SpvVersionCount; ++spvVersion) {
             for (int p = 0; p < ProfileCount; ++p) {
