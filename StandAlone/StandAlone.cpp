@@ -1291,7 +1291,7 @@ void usage()
            "  -o <file>   save binary to <file>, requires a binary option (e.g., -V)\n"
            "  -q          dump reflection query database\n"
            "  -r          synonym for --relaxed-errors\n"
-           "  -s          silent mode\n"
+           "  -s          silence syntax and semantic error reporting\n"
            "  -t          multi-threaded mode\n"
            "  -v          print version strings\n"
            "  -w          synonym for --suppress-warnings\n"
