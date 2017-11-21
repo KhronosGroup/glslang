@@ -202,14 +202,17 @@ void TPoolAllocator::pop()
 
     while (inUseList != page) {
         tHeader* nextInUse = inUseList->nextPage;
-        if (inUseList->pageCount > 1) {
-            inUseList->~tHeader(); // currently, just a debug allocation checker
+        size_t pageCount = inUseList->pageCount;
+
+        // This technically ends the lifetime of the header as C++ object,
+        // but we will still control the memory and reuse it.
+        inUseList->~tHeader(); // currently, just a debug allocation checker
+
+        if (pageCount > 1) {
             delete [] reinterpret_cast<char*>(inUseList);
         } else {
             inUseList->nextPage = freeList;
             freeList = inUseList;
-            // inUseList->~tHeader();  TODO: this should probably call the allocation checker, but not the destructor
-            // ...if the destructor actually overwrites nextPage, that would effect freeList->nextPage
         }
         inUseList = nextInUse;
     }
