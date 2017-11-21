@@ -201,15 +201,15 @@ void TPoolAllocator::pop()
     currentPageOffset = stack.back().offset;
 
     while (inUseList != page) {
-        // invoke destructor to free allocation list
-        inUseList->~tHeader();
-
         tHeader* nextInUse = inUseList->nextPage;
-        if (inUseList->pageCount > 1)
+        if (inUseList->pageCount > 1) {
+            inUseList->~tHeader(); // currently, just a debug allocation checker
             delete [] reinterpret_cast<char*>(inUseList);
-        else {
+        } else {
             inUseList->nextPage = freeList;
             freeList = inUseList;
+            // inUseList->~tHeader();  TODO: this should probably call the allocation checker, but not the destructor
+            // ...if the destructor actually overwrites nextPage, that would effect freeList->nextPage
         }
         inUseList = nextInUse;
     }
