@@ -238,6 +238,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.matrixSwizzle.vert", "ShaderFunction"},
         {"hlsl.memberFunCall.frag", "main"},
         {"hlsl.mintypes.frag", "main"},
+        {"hlsl.mul-truncate.frag", "main"},
         {"hlsl.multiEntry.vert", "RealEntrypoint"},
         {"hlsl.multiReturn.frag", "main"},
         {"hlsl.matrixindex.frag", "main"},
