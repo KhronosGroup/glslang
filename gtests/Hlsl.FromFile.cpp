@@ -301,6 +301,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.shapeConvRet.frag", "main"},
         {"hlsl.snorm.uav.comp", "main"},
         {"hlsl.staticMemberFunction.frag", "main"},
+        {"hlsl.store.rwbyteaddressbuffer.type.comp", "main"},
         {"hlsl.stringtoken.frag", "main"},
         {"hlsl.string.frag", "main"},
         {"hlsl.struct.split-1.vert", "main"},
