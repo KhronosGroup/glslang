@@ -2029,10 +2029,18 @@ bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
 
     // Now known to be one of CBUFFER, TBUFFER, CLASS, or STRUCT
 
-    // IDENTIFIER
+
+    // IDENTIFIER.  It might also be a keyword which can double as an identifier.
+    // For example:  'cbuffer ConstantBuffer' or 'struct ConstantBuffer' is legal.
+    // 'cbuffer int' is also legal, and 'struct int' appears rejected only because
+    // it attempts to redefine the 'int' type.
+    const char* idString = getTypeString(peek());
     TString structName = "";
-    if (peekTokenClass(EHTokIdentifier)) {
-        structName = *token.string;
+    if (peekTokenClass(EHTokIdentifier) || idString != nullptr) {
+        if (idString != nullptr)
+            structName = *idString;
+        else
+            structName = *token.string;
         advanceToken();
     }
 
@@ -4056,6 +4064,7 @@ const char* HlslGrammar::getTypeString(EHlslTokenClass tokenClass) const
     case EHTokMin10float: return "min10float";
     case EHTokMin16int:   return "min16int";
     case EHTokMin12int:   return "min12int";
+    case EHTokConstantBuffer: return "ConstantBuffer";
     default:
         return nullptr;
     }
