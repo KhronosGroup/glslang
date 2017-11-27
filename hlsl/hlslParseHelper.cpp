@@ -5178,7 +5178,7 @@ void HlslParseContext::pushFrontArguments(TIntermTyped* front, TIntermTyped*& ar
 //
 // HLSL allows mismatched dimensions on vec*mat, mat*vec, vec*vec, and mat*mat.  This is a
 // situation not well suited to resolution in intrinsic selection, but we can do so here, since we
-// can look at both arguments insert explicit shape changes here, if required.
+// can look at both arguments insert explicit shape changes if required.
 //
 void HlslParseContext::addGenMulArgumentConversion(const TSourceLoc& loc, TFunction& call, TIntermTyped*& args)
 {
@@ -5224,12 +5224,23 @@ void HlslParseContext::addGenMulArgumentConversion(const TSourceLoc& loc, TFunct
             arg1 = addConstructor(loc, arg1, truncType);
         }
     } else if (arg0->isMatrix() && arg1->isMatrix()) {
-        // mat * mat
+        // mat * mat: we clamp the smaller inner dimension to match the other matrix size.
+        // Remember, HLSL Mrc = GLSL/SPIRV Mcr.
+        if (arg0->getMatrixRows() > arg1->getMatrixCols()) {
+            const TType truncType(arg0->getBasicType(), arg0->getQualifier().storage, arg0->getQualifier().precision,
+                                  0, arg0->getMatrixCols(), arg1->getMatrixCols());
+            arg0 = addConstructor(loc, arg0, truncType);
+        } else if (arg0->getMatrixRows() < arg1->getMatrixCols()) {
+            const TType truncType(arg1->getBasicType(), arg1->getQualifier().storage, arg1->getQualifier().precision,
+                                  0, arg0->getMatrixRows(), arg1->getMatrixRows());
+            arg1 = addConstructor(loc, arg1, truncType);
+        }
     } else {
-        // It's something with scalars: we'll just leave it alone.
+        // It's something with scalars: we'll just leave it alone.  Function selection will handle it
+        // downstream.
     }
 
-    // Put arguments back.
+    // Put arguments back.  (They might be unchanged, in which case this is harmless).
     argAggregate->getSequence()[0] = arg0;
     argAggregate->getSequence()[1] = arg1;
 
