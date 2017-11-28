@@ -108,6 +108,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.calculatelod.dx10.frag", "main"},
         {"hlsl.calculatelodunclamped.dx10.frag", "main"},
         {"hlsl.cast.frag", "PixelShaderFunction"},
+        {"hlsl.cbuffer-identifier.vert", "main"},
         {"hlsl.charLit.vert", "main"},
         {"hlsl.clip.frag", "main"},
         {"hlsl.clipdistance-1.frag", "main"},
