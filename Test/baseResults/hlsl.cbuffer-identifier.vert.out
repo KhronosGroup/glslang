@@ -1,4 +1,6 @@
 hlsl.cbuffer-identifier.vert
+WARNING: 0:29: '' : mul() matrix size mismatch 
+
 Shader version: 500
 0:? Sequence
 0:22  Function Definition: @main(struct-VS_INPUT-vf4-vf31; ( temp structure{ temp 4-component vector of float Pos,  temp 3-component vector of float Norm})

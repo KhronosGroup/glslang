@@ -3238,7 +3238,7 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
 
             // Index into the array to find the item being loaded.
             // Byte address buffers index in bytes (only multiples of 4 permitted... not so much a byte address
-            // buffer then, but that's what it calls itself.
+            // buffer then, but that's what it calls itself).
 
             int size = 0;
 
@@ -5242,6 +5242,10 @@ void HlslParseContext::addGenMulArgumentConversion(const TSourceLoc& loc, TFunct
         // It's something with scalars: we'll just leave it alone.  Function selection will handle it
         // downstream.
     }
+
+    // Warn if we altered one of the arguments
+    if (arg0 != argAggregate->getSequence()[0] || arg1 != argAggregate->getSequence()[1])
+        warn(loc, "mul() matrix size mismatch", "", "");
 
     // Put arguments back.  (They might be unchanged, in which case this is harmless).
     argAggregate->getSequence()[0] = arg0;
