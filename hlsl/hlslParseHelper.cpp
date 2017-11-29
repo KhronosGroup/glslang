@@ -3274,6 +3274,9 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
                                                                                         : EOpIndexIndirect;
 
                 TIntermTyped* lValue = intermediate.addIndex(idxOp, argArray, offsetIdx, loc);
+                const TType derefType(argArray->getType(), 0);
+                lValue->setType(derefType);
+
                 TIntermTyped* rValue = (size == 1) ? argValue :
                     intermediate.addIndex(EOpIndexDirect, argValue, idxConst, loc);
                     
