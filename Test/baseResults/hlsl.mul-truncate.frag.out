@@ -1,4 +1,13 @@
 hlsl.mul-truncate.frag
+WARNING: 0:24: '' : mul() matrix size mismatch 
+WARNING: 0:25: '' : mul() matrix size mismatch 
+WARNING: 0:28: '' : mul() matrix size mismatch 
+WARNING: 0:29: '' : mul() matrix size mismatch 
+WARNING: 0:32: '' : mul() matrix size mismatch 
+WARNING: 0:33: '' : mul() matrix size mismatch 
+WARNING: 0:34: '' : mul() matrix size mismatch 
+WARNING: 0:35: '' : mul() matrix size mismatch 
+
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence
