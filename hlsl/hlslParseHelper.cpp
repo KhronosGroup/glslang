@@ -1854,6 +1854,9 @@ void HlslParseContext::handleEntryPointAttributes(const TSourceLoc& loc, const T
 // attributes.
 void HlslParseContext::transferTypeAttributes(const TAttributeMap& attributes, TType& type)
 {
+    if (attributes.size() == 0)
+        return;
+
     // location
     int value;
     if (attributes.getInt(EatLocation, value))
@@ -1880,6 +1883,13 @@ void HlslParseContext::transferTypeAttributes(const TAttributeMap& attributes, T
     // input attachment
     if (attributes.getInt(EatInputAttachment, value))
         type.getQualifier().layoutAttachment = value;
+
+    // PointSize built-in
+    TString builtInString;
+    if (attributes.getString(EatBuiltIn, builtInString, 0, false)) {
+        if (builtInString == "PointSize")
+            type.getQualifier().builtIn = EbvPointSize;
+    }
 }
 
 //
