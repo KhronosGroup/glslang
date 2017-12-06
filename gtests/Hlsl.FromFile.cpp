@@ -211,6 +211,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.intrinsics.promote.down.frag", "main"},
         {"hlsl.intrinsics.promote.outputs.frag", "main"},
         {"hlsl.layout.frag", "main"},
+        {"hlsl.layoutOverride.vert", "main"},
         {"hlsl.load.2dms.dx10.frag", "main"},
         {"hlsl.load.array.dx10.frag", "main"},
         {"hlsl.load.basic.dx10.frag", "main"},

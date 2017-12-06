@@ -5856,7 +5856,10 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
     case 'c':
     case 's':
     case 'u':
-        qualifier.layoutBinding = regNumber + subComponent;
+        // if nothing else has set the binding, do so now
+        // (other mechanisms override this one)
+        if (!qualifier.hasBinding())
+            qualifier.layoutBinding = regNumber + subComponent;
 
         // This handles per-register layout sets numbers.  For the global mode which sets
         // every symbol to the same value, see setLinkageLayoutSets().
@@ -5890,7 +5893,9 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
         return true;
     };
 
-    if (spaceDesc) {
+    // if nothing else has set the set, do so now
+    // (other mechanisms override this one)
+    if (spaceDesc && !qualifier.hasSet()) {
         if (! crackSpace()) {
             error(loc, "expected spaceN", "register", "");
             return;
