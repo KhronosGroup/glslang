@@ -224,6 +224,7 @@ public:
 #endif
         autoMapBindings(false),
         autoMapLocations(false),
+        invertY(false),
         flattenUniformArrays(false),
         useUnknownFormat(false),
         hlslOffsets(false),
@@ -317,6 +318,14 @@ public:
             processes.addProcess("auto-map-locations");
     }
     bool getAutoMapLocations() const { return autoMapLocations; }
+    void setInvertY(bool invert)
+    {
+        invertY = invert;
+        if (invertY)
+            processes.addProcess("invert-y");
+    }
+    bool getInvertY() const { return invertY; }
+
     void setFlattenUniformArrays(bool flatten)
     {
         flattenUniformArrays = flatten;
@@ -682,6 +691,7 @@ protected:
     std::vector<std::string> resourceSetBinding;
     bool autoMapBindings;
     bool autoMapLocations;
+    bool invertY;
     bool flattenUniformArrays;
     bool useUnknownFormat;
     bool hlslOffsets;
