@@ -1,0 +1,5 @@
+layout(set = 2, binding = 1)
+RWStructuredBuffer<uint> srt0;
+void main() {
+    RWStructuredBuffer<uint> srt0Local = srt0;
+}
