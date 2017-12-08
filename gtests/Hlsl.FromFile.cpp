@@ -133,6 +133,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.clipdistance-8.vert", "main"},
         {"hlsl.clipdistance-9.frag", "main"},
         {"hlsl.clipdistance-9.vert", "main"},
+        {"hlsl.color.hull.tesc", "main"},
         {"hlsl.comparison.vec.frag", "main"},
         {"hlsl.conditional.frag", "PixelShaderFunction"},
         {"hlsl.constantbuffer.frag", "main"},
