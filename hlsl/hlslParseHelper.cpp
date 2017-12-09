@@ -1160,7 +1160,7 @@ bool HlslParseContext::shouldFlatten(const TType& type, TStorageQualifier qualif
         return (type.isArray() && intermediate.getFlattenUniformArrays() && topLevel) ||
                (type.isStruct() && type.containsOpaque());
     default:
-        return type.isStruct() && type.containsOpaque();
+        return false;
     };
 }
 
