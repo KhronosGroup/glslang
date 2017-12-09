@@ -9048,7 +9048,7 @@ bool HlslParseContext::isOutputBuiltIn(const TQualifier& qualifier) const
     case EbvViewportIndex:
         return language == EShLangGeometry;
     case EbvPrimitiveId:
-        return language == EShLangGeometry || language == EShLangTessControl || language == EShLangTessEvaluation;
+        return language == EShLangGeometry;
     case EbvTessLevelInner:
     case EbvTessLevelOuter:
         return language == EShLangTessControl;
