@@ -9000,7 +9000,7 @@ bool HlslParseContext::isInputBuiltIn(const TQualifier& qualifier) const
     case EbvVertexIndex:
         return language == EShLangVertex;
     case EbvPrimitiveId:
-        return language == EShLangGeometry || language == EShLangFragment;
+        return language == EShLangGeometry || language == EShLangFragment || language == EShLangTessControl;
     case EbvTessLevelInner:
     case EbvTessLevelOuter:
         return language == EShLangTessEvaluation;
