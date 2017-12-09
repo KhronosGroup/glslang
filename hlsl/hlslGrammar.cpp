@@ -478,6 +478,17 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
                 if (typedefDecl)
                     parseContext.declareTypedef(idToken.loc, *fullName, variableType);
                 else if (variableType.getBasicType() == EbtBlock) {
+                    if (expressionNode != nullptr) {
+                        if (expressionNode->getType() != variableType)
+                        {
+                            parseContext.error(idToken.loc, 
+                                               "non-matching or non-convertible type for block initializer", 
+                                               variableType.getCompleteString().c_str(),
+                                               expressionNode->getType().getCompleteString().c_str());
+                            return false;
+                        }
+                        variableType.shallowCopy(expressionNode->getType());
+                    }
                     parseContext.declareBlock(idToken.loc, variableType, fullName,
                                               variableType.isArray() ? &variableType.getArraySizes() : nullptr);
                     parseContext.declareStructBufferCounter(idToken.loc, variableType, *fullName);

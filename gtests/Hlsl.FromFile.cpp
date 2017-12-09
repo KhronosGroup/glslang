@@ -225,6 +225,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.load.offset.dx10.frag", "main"},
         {"hlsl.load.offsetarray.dx10.frag", "main"},
         {"hlsl.localStructuredBuffer.comp", "main"},
+        {"hlsl.localStructuredBuffer.binding.comp", "main"},
         {"hlsl.logical.binary.frag", "main"},
         {"hlsl.logical.binary.vec.frag", "main"},
         {"hlsl.logicalConvert.frag", "main"},
