@@ -74,8 +74,7 @@ const Decoration NoPrecision = DecorationMax;
 
 POTENTIALLY_UNUSED
 const MemorySemanticsMask MemorySemanticsAllMemory =
-                (MemorySemanticsMask)(MemorySemanticsSequentiallyConsistentMask |
-                                      MemorySemanticsUniformMemoryMask |
+                (MemorySemanticsMask)(MemorySemanticsUniformMemoryMask |
                                       MemorySemanticsSubgroupMemoryMask |
                                       MemorySemanticsWorkgroupMemoryMask |
                                       MemorySemanticsCrossWorkgroupMemoryMask |
