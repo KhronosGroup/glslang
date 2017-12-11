@@ -5977,7 +5977,7 @@ void GetSpirvVersion(std::string& version)
 // or a different instruction sequence to do something gets used).
 int GetSpirvGeneratorVersion()
 {
-    return 2;
+    return 3;
 }
 
 // Write SPIR-V out to a binary file
