@@ -2731,13 +2731,23 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
             // copy from interstage IO built-in if needed
             subTree = intermediate.addSymbol(*builtInVar);
 
-            // Arrayness of builtIn symbols isn't handled by the normal recursion:
-            // it's been extracted and moved to the built-in.
-            if (subTree->getType().isArray() && !arrayElement.empty()) {
-                const TType splitDerefType(subTree->getType(), arrayElement.back());
-                subTree = intermediate.addIndex(EOpIndexDirect, subTree,
-                                                intermediate.addConstantUnion(arrayElement.back(), loc), loc);
-                subTree->setType(splitDerefType);
+            if (subTree->getType().isArray()) {
+                // Arrayness of builtIn symbols isn't handled by the normal recursion:
+                // it's been extracted and moved to the built-in.
+                if (!arrayElement.empty()) {
+                    const TType splitDerefType(subTree->getType(), arrayElement.back());
+                    subTree = intermediate.addIndex(EOpIndexDirect, subTree,
+                                                    intermediate.addConstantUnion(arrayElement.back(), loc), loc);
+                    subTree->setType(splitDerefType);
+                } else if (splitNode->getAsOperator() != nullptr && (splitNode->getAsOperator()->getOp() == EOpIndexIndirect)) {
+                    // This might also be a stage with arrayed outputs, in which case there's an index
+                    // operation we should transfer to the output builtin.
+
+                    const TType splitDerefType(subTree->getType(), 0);
+                    subTree = intermediate.addIndex(splitNode->getAsOperator()->getOp(), subTree,
+                                                    splitNode->getAsBinaryNode()->getRight(), loc);
+                    subTree->setType(splitDerefType);
+                }
             }
         } else if (flattened && !shouldFlatten(derefType, isLeft ? leftStorage : rightStorage, false)) {
             if (isLeft)
