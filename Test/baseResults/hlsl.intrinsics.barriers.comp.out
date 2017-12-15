@@ -71,7 +71,7 @@ local_size = (1, 1, 1)
                7:             TypeFunction 6(float)
               10:             TypeInt 32 0
               11:     10(int) Constant 1
-              12:     10(int) Constant 4040
+              12:     10(int) Constant 3400
               13:     10(int) Constant 2
               14:     10(int) Constant 2120
               15:     10(int) Constant 264

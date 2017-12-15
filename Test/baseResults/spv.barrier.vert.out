@@ -23,7 +23,7 @@ spv.barrier.vert
               11:    7(fvec4) ConstantComposite 10 10 10 10
               12:             TypeInt 32 0
               13:     12(int) Constant 1
-              14:     12(int) Constant 4040
+              14:     12(int) Constant 3400
           15(c1):      8(ptr) Variable Output
               16:     12(int) Constant 72
               20:     12(int) Constant 2056

@@ -93,7 +93,7 @@ spv.310.comp
               63:             TypePointer Input 15(int)
 64(gl_DeviceIndex):     63(ptr) Variable Input
               65:      6(int) Constant 1
-              66:      6(int) Constant 4040
+              66:      6(int) Constant 3400
               67:      6(int) Constant 16
               68:      6(int) Constant 32
               69:      6(int) Constant 4
