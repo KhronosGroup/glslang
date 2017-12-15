@@ -2560,7 +2560,7 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
 
     // now, knowing it is a shader in/out, do all the in/out semantic checks
 
-    if (publicType.basicType == EbtBool) {
+    if (publicType.basicType == EbtBool && !parsingBuiltins) {
         error(loc, "cannot be bool", GetStorageQualifierString(qualifier.storage), "");
         return;
     }

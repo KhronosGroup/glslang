@@ -44,6 +44,7 @@
 namespace spv {
     #include "GLSL.std.450.h"
     #include "GLSL.ext.KHR.h"
+    #include "GLSL.ext.EXT.h"
 #ifdef AMD_EXTENSIONS
     #include "GLSL.ext.AMD.h"
 #endif
@@ -646,6 +647,10 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
             builder.addCapability(spv::CapabilityPerViewAttributesNV);
         }
         return spv::BuiltInViewportMaskPerViewNV;
+    case glslang::EbvFragFullyCoveredNV:
+        builder.addExtension(spv::E_SPV_EXT_fragment_fully_covered);
+        builder.addCapability(spv::CapabilityFragmentFullyCoveredEXT);
+        return spv::BuiltInFullyCoveredEXT;
 #endif 
     default:
         return spv::BuiltInMax;

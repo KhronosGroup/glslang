@@ -249,6 +249,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.flowControl.frag",
         "spv.forLoop.frag",
         "spv.forwardFun.frag",
+        "spv.fullyCovered.frag",
         "spv.functionCall.frag",
         "spv.functionNestedOpaque.vert",
         "spv.functionSemantics.frag",
