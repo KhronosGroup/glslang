@@ -583,6 +583,7 @@ public:
         xfbBuffers[buffer].stride = stride;
         return true;
     }
+    unsigned getXfbStride(int buffer) const { return xfbBuffers[buffer].stride; }
     int addXfbBufferOffset(const TType&);
     unsigned int computeTypeXfbSize(const TType&, bool& containsDouble) const;
     static int getBaseAlignmentScalar(const TType&, int& size);
