@@ -329,6 +329,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.storageBuffer.vert",
         "spv.precise.tese",
         "spv.precise.tesc",
+        "spv.xfb.vert",
     })),
     FileNameAsCustomTestSuffix
 );

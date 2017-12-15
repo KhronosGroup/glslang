@@ -20,8 +20,8 @@ spv.builtInXFB.vert
                               MemberDecorate 8(gl_PerVertex) 1 Offset 16
                               MemberDecorate 8(gl_PerVertex) 1 BuiltIn PointSize
                               Decorate 8(gl_PerVertex) Block
-                              Decorate 8(gl_PerVertex) XfbBuffer 0
-                              Decorate 10 XfbBuffer 0
+                              Decorate 10 XfbBuffer 1
+                              Decorate 10 XfbStride 64
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
