@@ -5856,7 +5856,8 @@ void HlslParseContext::handleSemantic(TSourceLoc loc, TQualifier& qualifier, TBu
         break;
     }
 
-    qualifier.builtIn = builtIn;
+    if (qualifier.builtIn == EbvNone)
+        qualifier.builtIn = builtIn;
     qualifier.semanticName = intermediate.addSemanticName(upperCase);
 }
 
