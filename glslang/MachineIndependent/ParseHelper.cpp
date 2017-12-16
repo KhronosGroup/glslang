@@ -4569,6 +4569,8 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
             break;
         case EvqUniform:
         case EvqBuffer:
+            if (type.getBasicType() == EbtBlock)
+                error(loc, "cannot apply to uniform or buffer block", "location", "");
             break;
         default:
             error(loc, "can only apply to uniform, buffer, in, or out storage qualifiers", "location", "");
