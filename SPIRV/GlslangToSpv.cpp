@@ -5985,7 +5985,9 @@ void GetSpirvVersion(std::string& version)
 // or a different instruction sequence to do something gets used).
 int GetSpirvGeneratorVersion()
 {
-    return 3;
+    // return 1; // start
+    // return 2; // EOpAtomicCounterDecrement gets a post decrement, to map between GLSL -> SPIR-V
+    return 3;    // change/correct barrier-instruction operands, to match memory model group decisions
 }
 
 // Write SPIR-V out to a binary file
