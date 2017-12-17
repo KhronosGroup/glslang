@@ -466,6 +466,7 @@ enum BuiltIn {
     BuiltInSecondaryViewportMaskNV = 5258,
     BuiltInPositionPerViewNV = 5261,
     BuiltInViewportMaskPerViewNV = 5262,
+    BuiltInFullyCoveredEXT = 5264,
     BuiltInMax = 0x7fffffff,
 };
 
@@ -683,6 +684,7 @@ enum Capability {
     CapabilityShaderViewportMaskNV = 5255,
     CapabilityShaderStereoViewNV = 5259,
     CapabilityPerViewAttributesNV = 5260,
+    CapabilityFragmentFullyCoveredEXT = 5265,
     CapabilitySubgroupShuffleINTEL = 5568,
     CapabilitySubgroupBufferBlockIOINTEL = 5569,
     CapabilitySubgroupImageBlockIOINTEL = 5570,

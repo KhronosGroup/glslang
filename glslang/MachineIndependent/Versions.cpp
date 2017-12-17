@@ -222,6 +222,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_stereo_view_rendering]                 = EBhDisable;
     extensionBehavior[E_GL_NVX_multiview_per_view_attributes]        = EBhDisable;
     extensionBehavior[E_GL_NV_shader_atomic_int64]                   = EBhDisable;
+    extensionBehavior[E_GL_NV_conservative_raster_underestimation]   = EBhDisable;
 #endif
 
     // AEP
@@ -375,6 +376,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_NV_geometry_shader_passthrough 1\n"
             "#define GL_NV_viewport_array2 1\n"
             "#define GL_NV_shader_atomic_int64 1\n"
+            "#define GL_NV_conservative_raster_underestimation 1\n"
 #endif
             "#define GL_KHX_shader_explicit_arithmetic_types 1\n"
             "#define GL_KHX_shader_explicit_arithmetic_types_int8 1\n"

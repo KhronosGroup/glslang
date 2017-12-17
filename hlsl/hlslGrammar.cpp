@@ -478,6 +478,8 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
                 if (typedefDecl)
                     parseContext.declareTypedef(idToken.loc, *fullName, variableType);
                 else if (variableType.getBasicType() == EbtBlock) {
+                    if (expressionNode)
+                        parseContext.error(idToken.loc, "buffer aliasing not yet supported", "block initializer", "");
                     parseContext.declareBlock(idToken.loc, variableType, fullName,
                                               variableType.isArray() ? &variableType.getArraySizes() : nullptr);
                     parseContext.declareStructBufferCounter(idToken.loc, variableType, *fullName);
@@ -2033,10 +2035,18 @@ bool HlslGrammar::acceptStruct(TType& type, TIntermNode*& nodeList)
 
     // Now known to be one of CBUFFER, TBUFFER, CLASS, or STRUCT
 
-    // IDENTIFIER
+
+    // IDENTIFIER.  It might also be a keyword which can double as an identifier.
+    // For example:  'cbuffer ConstantBuffer' or 'struct ConstantBuffer' is legal.
+    // 'cbuffer int' is also legal, and 'struct int' appears rejected only because
+    // it attempts to redefine the 'int' type.
+    const char* idString = getTypeString(peek());
     TString structName = "";
-    if (peekTokenClass(EHTokIdentifier)) {
-        structName = *token.string;
+    if (peekTokenClass(EHTokIdentifier) || idString != nullptr) {
+        if (idString != nullptr)
+            structName = *idString;
+        else
+            structName = *token.string;
         advanceToken();
     }
 
@@ -2298,8 +2308,8 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
 //      : struct_declaration SEMI_COLON struct_declaration SEMI_COLON ...
 //
 // struct_declaration
-//      : fully_specified_type struct_declarator COMMA struct_declarator ...
-//      | fully_specified_type IDENTIFIER function_parameters post_decls compound_statement // member-function definition
+//      : attributes fully_specified_type struct_declarator COMMA struct_declarator ...
+//      | attributes fully_specified_type IDENTIFIER function_parameters post_decls compound_statement // member-function definition
 //
 // struct_declarator
 //      : IDENTIFIER post_decls
@@ -2318,7 +2328,11 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*
             break;
 
         // struct_declaration
-    
+
+        // attributes
+        TAttributeMap attributes;
+        acceptAttributes(attributes);
+
         bool declarator_list = false;
 
         // fully_specified_type
@@ -2327,6 +2341,8 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*
             expected("member type");
             return false;
         }
+
+        parseContext.transferTypeAttributes(attributes, memberType);
 
         // struct_declarator COMMA struct_declarator ...
         bool functionDefinitionAccepted = false;
@@ -2622,6 +2638,8 @@ bool HlslGrammar::acceptFunctionBody(TFunctionDeclarator& declarator, TIntermNod
 //
 bool HlslGrammar::acceptParenExpression(TIntermTyped*& expression)
 {
+    expression = nullptr;
+
     // LEFT_PAREN
     if (! acceptTokenClass(EHTokLeftParen))
         expected("(");
@@ -3670,7 +3688,6 @@ bool HlslGrammar::acceptIterationStatement(TIntermNode*& statement, const TAttri
         }
 
         // LEFT_PAREN condition RIGHT_PAREN
-        TIntermTyped* condition;
         if (! acceptParenExpression(condition))
             return false;
         condition = parseContext.convertConditionalExpression(loc, condition);
@@ -4060,6 +4077,7 @@ const char* HlslGrammar::getTypeString(EHlslTokenClass tokenClass) const
     case EHTokMin10float: return "min10float";
     case EHTokMin16int:   return "min16int";
     case EHTokMin12int:   return "min12int";
+    case EHTokConstantBuffer: return "ConstantBuffer";
     default:
         return nullptr;
     }

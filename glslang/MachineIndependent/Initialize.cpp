@@ -5106,6 +5106,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "in vec3 gl_BaryCoordPullModelAMD;"
                 );
 #endif
+
+#ifdef NV_EXTENSIONS
+        if (version >= 430)
+            stageBuiltins[EShLangFragment].append(
+                "in bool gl_FragFullyCoveredNV;"
+                );
+#endif
     } else {
         // ES profile
 
@@ -7065,6 +7072,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("imageLoadLodAMD",        1, &E_GL_AMD_shader_image_load_store_lod);
             symbolTable.setFunctionExtensions("imageStoreLodAMD",       1, &E_GL_AMD_shader_image_load_store_lod);
             symbolTable.setFunctionExtensions("sparseImageLoadLodAMD",  1, &E_GL_AMD_shader_image_load_store_lod);
+        }
+#endif
+
+#ifdef NV_EXTENSIONS
+        if (profile != EEsProfile && version >= 430) {
+            symbolTable.setVariableExtensions("gl_FragFullyCoveredNV", 1, &E_GL_NV_conservative_raster_underestimation);
+            BuiltInVariable("gl_FragFullyCoveredNV", EbvFragFullyCoveredNV, symbolTable);
         }
 #endif
 
