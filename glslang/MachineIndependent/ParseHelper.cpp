@@ -1388,7 +1388,8 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         // Figure out which variants are allowed by what extensions,
         // and what arguments must be constant for which situations.
 
-        featureString = fnCandidate.getName() + "(...)";
+        featureString = fnCandidate.getName();
+        featureString += "(...)";
         feature = featureString.c_str();
         profileRequires(loc, EEsProfile, 310, nullptr, feature);
         int compArg = -1;  // track which argument, if any, is the constant component argument
@@ -1445,7 +1446,8 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             bias = fnCandidate.getParamCount() > 4;
 
         if (bias) {
-            featureString = fnCandidate.getName() + "with bias argument";
+            featureString = fnCandidate.getName();
+            featureString += "with bias argument";
             feature = featureString.c_str();
             profileRequires(loc, ~EEsProfile, 450, nullptr, feature);
             requireExtensions(loc, 1, &E_GL_AMD_texture_gather_bias_lod, feature);
@@ -1468,7 +1470,8 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             bias = fnCandidate.getParamCount() > 5;
 
         if (bias) {
-            featureString = fnCandidate.getName() + "with bias argument";
+            featureString = fnCandidate.getName();
+            featureString += "with bias argument";
             feature = featureString.c_str();
             profileRequires(loc, ~EEsProfile, 450, nullptr, feature);
             requireExtensions(loc, 1, &E_GL_AMD_texture_gather_bias_lod, feature);
