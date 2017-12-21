@@ -6086,6 +6086,8 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
         });
 
         optimizer.RegisterPass(CreateInlineExhaustivePass());
+        optimizer.RegisterPass(CreateEliminateDeadFunctionsPass());
+        optimizer.RegisterPass(CreateScalarReplacementPass());
         optimizer.RegisterPass(CreateLocalAccessChainConvertPass());
         optimizer.RegisterPass(CreateLocalSingleBlockLoadStoreElimPass());
         optimizer.RegisterPass(CreateLocalSingleStoreElimPass());
