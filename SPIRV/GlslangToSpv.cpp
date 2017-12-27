@@ -5945,16 +5945,20 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         builder.createControlBarrier(spv::ScopeSubgroup, spv::ScopeDevice, spv::MemorySemanticsMaskNone);
         return spv::NoResult;
     case glslang::EOpSubgroupMemoryBarrier:
-        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsAllMemory);
+        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsAllMemory |
+                                                        spv::MemorySemanticsAcquireReleaseMask);
         return spv::NoResult;
     case glslang::EOpSubgroupMemoryBarrierBuffer:
-        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsUniformMemoryMask);
+        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsUniformMemoryMask |
+                                                        spv::MemorySemanticsAcquireReleaseMask);
         return spv::NoResult;
     case glslang::EOpSubgroupMemoryBarrierImage:
-        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsImageMemoryMask);
+        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsImageMemoryMask |
+                                                        spv::MemorySemanticsAcquireReleaseMask);
         return spv::NoResult;
     case glslang::EOpSubgroupMemoryBarrierShared:
-        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsWorkgroupMemoryMask);
+        builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsWorkgroupMemoryMask |
+                                                        spv::MemorySemanticsAcquireReleaseMask);
         return spv::NoResult;
     case glslang::EOpSubgroupElect: {
         std::vector<spv::Id> operands;

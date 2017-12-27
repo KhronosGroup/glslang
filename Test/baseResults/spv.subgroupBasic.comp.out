@@ -53,10 +53,10 @@ spv.subgroupBasic.comp
               28:     12(int) Constant 3
               32:     12(int) Constant 1
               33:     12(int) Constant 0
-              34:     12(int) Constant 3392
-              35:     12(int) Constant 64
-              36:     12(int) Constant 256
-              37:     12(int) Constant 2048
+              34:     12(int) Constant 3400
+              35:     12(int) Constant 72
+              36:     12(int) Constant 264
+              37:     12(int) Constant 2056
               38:             TypeVector 12(int) 3
               39:     12(int) Constant 8
               40:   38(ivec3) ConstantComposite 39 39 32
