@@ -342,6 +342,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.subgroupShuffleRelative.comp",
         "spv.subgroupArithmetic.comp",
         "spv.subgroupClustered.comp",
+        "spv.subgroupClusteredNeg.comp",
         "spv.subgroupQuad.comp",
         "spv.int8.frag",
         "spv.int16.frag",

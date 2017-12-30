@@ -1598,6 +1598,24 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         intermediate.setMultiStream();
         break;
 
+    case EOpSubgroupClusteredAdd:
+    case EOpSubgroupClusteredMul:
+    case EOpSubgroupClusteredMin:
+    case EOpSubgroupClusteredMax:
+    case EOpSubgroupClusteredAnd:
+    case EOpSubgroupClusteredOr:
+    case EOpSubgroupClusteredXor:
+        if ((*argp)[1]->getAsConstantUnion() == nullptr)
+            error(loc, "argument must be compile-time constant", "cluster size", "");
+        else {
+            int size = (*argp)[1]->getAsConstantUnion()->getConstArray()[0].getIConst();
+            if (size < 1)
+                error(loc, "argument must be at least 1", "cluster size", "");
+            else if (!IsPow2(size))
+                error(loc, "argument must be a power of 2", "cluster size", "");
+        }
+        break;
+
     default:
         break;
     }
