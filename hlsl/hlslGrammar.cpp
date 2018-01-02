@@ -611,6 +611,8 @@ bool HlslGrammar::acceptFullySpecifiedType(TType& type, TIntermNode*& nodeList, 
         parseContext.transferTypeAttributes(attributes, type);
 
         // further, it can create an anonymous instance of the block
+        // (cbuffer and tbuffer don't consume the next identifier, and
+        // should set forbidDeclarators)
         if (forbidDeclarators || peek() != EHTokIdentifier)
             parseContext.declareBlock(loc, type);
     } else {
