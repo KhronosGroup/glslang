@@ -988,6 +988,7 @@ public:
           { name = n; }
     virtual int getId() const { return id; }
     virtual const TString& getName() const { return name; }
+    virtual void setName(const TString& newName) { name = newName; }
     virtual void traverse(TIntermTraverser*);
     virtual       TIntermSymbol* getAsSymbolNode()       { return this; }
     virtual const TIntermSymbol* getAsSymbolNode() const { return this; }

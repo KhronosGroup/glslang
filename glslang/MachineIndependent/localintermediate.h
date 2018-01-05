@@ -231,7 +231,8 @@ public:
         useStorageBuffer(false),
         hlslIoMapping(false),
         textureSamplerTransformMode(EShTexSampTransKeep),
-        needToLegalize(false)
+        needToLegalize(false),
+        addSemanticNameToFieldName(false)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -325,6 +326,12 @@ public:
             processes.addProcess("invert-y");
     }
     bool getInvertY() const { return invertY; }
+
+    void setAppendSemanticNameToVarName(bool append)
+    {
+        addSemanticNameToFieldName = append;
+    }
+    bool getAppendSemanticNameToVarName() const { return addSemanticNameToFieldName; }
 
     void setFlattenUniformArrays(bool flatten)
     {
@@ -719,6 +726,7 @@ protected:
     TProcesses processes;
 
     bool needToLegalize;
+    bool addSemanticNameToFieldName;
 
 private:
     void operator=(TIntermediate&); // prevent assignments

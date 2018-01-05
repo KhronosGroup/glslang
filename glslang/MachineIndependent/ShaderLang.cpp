@@ -1688,6 +1688,8 @@ void TShader::setShiftSsboBinding(unsigned int base)    { setShiftBinding(EResSs
 void TShader::setAutoMapBindings(bool map)              { intermediate->setAutoMapBindings(map); }
 // Enables position.Y output negation in vertex shader
 void TShader::setInvertY(bool invert)                   { intermediate->setInvertY(invert); }
+// Appends the semantic name to the variable name so semantic can be restored by parsing spir-v code
+void TShader::setAppendSemanticToVarName(bool append)   { intermediate->setAppendSemanticNameToVarName(append); }
 // Fragile: currently within one stage: simple auto-assignment of location
 void TShader::setAutoMapLocations(bool map)             { intermediate->setAutoMapLocations(map); }
 // See comment above TDefaultHlslIoMapper in iomapper.cpp:
