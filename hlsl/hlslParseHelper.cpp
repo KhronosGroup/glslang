@@ -2001,14 +2001,16 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     for (auto it = outputs.begin(); it != outputs.end(); ++it)
         makeVariableInOut(*(*it));
 
-    for (auto& in : inputs) {
-        if (TVariable* var = in->getAsVariable())
-            if(var->getType().getQualifier().semanticName) {
-                TString oldName = var->getName();
-                TString newName = getSemanticsAppendedVariableName(*var);
-                semanticAppendedVarMap[oldName] = newName;
-                var->changeName(&semanticAppendedVarMap[oldName]);
-            }
+    if (intermediate.getAppendSemanticNameToVarName()) {
+        for (auto& in : inputs) {
+            if (TVariable* var = in->getAsVariable())
+                if (var->getType().getQualifier().semanticName) {
+                    TString oldName = var->getName();
+                    TString newName = getSemanticsAppendedVariableName(*var);
+                    semanticAppendedVarMap[oldName] = newName;
+                    var->changeName(&semanticAppendedVarMap[oldName]);
+                }
+        }
     }
 
     // In the domain shader, PCF input must be at the end of the linkage.  That's because in the
@@ -9397,18 +9399,6 @@ TString HlslParseContext::getSemanticsAppendedVariableName(const TVariable& var)
     if (!semanticName)
         return var.getName();
     return var.getName() + SEMANTICS_SEPARATOR + semanticName;
-}
-
-TString HlslParseContext::removeSemanticsFromVariableName(const TVariable & var)
-{
-    const TString& varName = var.getName();
-    const char* semanticName = var.getType().getQualifier().semanticName;
-    if (!semanticName)
-        return varName;
-    size_t loc = varName.find(SEMANTICS_SEPARATOR + semanticName);
-    if (loc == TString::npos)
-        return varName;
-    return varName.substr(0, loc);
 }
 
 TString HlslParseContext::getSemanticsAppendedFieldName(const TType& type)

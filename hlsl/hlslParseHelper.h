@@ -222,9 +222,6 @@ public:
     // Returns the variable name appended with a separator and semantic
     static TString getSemanticsAppendedVariableName(const TVariable& var);
 
-    // Return a string which appended seprator and semantic name is reduced from the field name
-    static TString removeSemanticsFromVariableName(const TVariable& var);
-
     // Returns the type's field name appended with a separator and semantic
     static TString getSemanticsAppendedFieldName(const TType& type);
 
