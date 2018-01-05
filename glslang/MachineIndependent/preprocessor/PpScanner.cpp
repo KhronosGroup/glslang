@@ -333,19 +333,47 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
     int ch = 0;
     int ii = 0;
     unsigned long long ival = 0;
-    bool enableInt64 = pp->parseContext.version >= 450 && pp->parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_int64);
+
+    bool enableInt64Set = false;
+    bool enableInt64Value = false;
+    const auto enableInt64 = [&]() {
+        if (! enableInt64Set) {
+            enableInt64Value = pp->parseContext.version >= 450 && pp->parseContext.extensionTurnedOn(E_GL_ARB_gpu_shader_int64);
+            enableInt64Set = true;
+        }
+        return enableInt64Value;
+    };
+
 #ifdef AMD_EXTENSIONS
-    bool enableInt16 = pp->parseContext.version >= 450 && pp->parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_int16);
+    bool enableInt16Set = false;
+    bool enableInt16Value = false;
+    const auto enableInt16 = [&]() {
+        if (! enableInt16Set) {
+            enableInt16Value = pp->parseContext.version >= 450 && pp->parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_int16);
+            enableInt16Set = true;
+        }
+        return enableInt16Value;
+    };
 #endif
-    bool acceptHalf = pp->parseContext.intermediate.getSource() == EShSourceHlsl;
+
+    bool acceptHalfValue = pp->parseContext.intermediate.getSource() == EShSourceHlsl;
 #ifdef AMD_EXTENSIONS
-    if (pp->parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float))
-        acceptHalf = true;
+    bool acceptHalfSet = false;
 #endif
+    const auto acceptHalf = [&]() {
+#ifdef AMD_EXTENSIONS
+        if (! acceptHalfSet) {
+            if (pp->parseContext.extensionTurnedOn(E_GL_AMD_gpu_shader_half_float))
+                acceptHalfValue = true;
+            acceptHalfSet = true;
+        }
+#endif
+        return acceptHalfValue;
+    };
 
     const auto floatingPointChar = [&](int ch) { return ch == '.' || ch == 'e' || ch == 'E' ||
                                                                      ch == 'f' || ch == 'F' ||
-                                                     (acceptHalf && (ch == 'h' || ch == 'H')); };
+                                                   (acceptHalf() && (ch == 'h' || ch == 'H')); };
 
     ppToken->ival = 0;
     ppToken->i64val = 0;
@@ -420,7 +448,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
 
                     ival = 0;
                     do {
-                        if (len < MaxTokenLength && (ival <= 0x0fffffffu || (enableInt64 && ival <= 0x0fffffffffffffffull))) {
+                        if (len < MaxTokenLength && (ival <= 0x0fffffffu || (enableInt64() && ival <= 0x0fffffffffffffffull))) {
                             ppToken->name[len++] = (char)ch;
                             if (ch >= '0' && ch <= '9') {
                                 ii = ch - '0';
@@ -453,7 +481,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
 
-                    if (enableInt64) {
+                    if (enableInt64()) {
                         int nextCh = getch();
                         if ((ch == 'u' && nextCh == 'l') || (ch == 'U' && nextCh == 'L')) {
                             if (len < MaxTokenLength)
@@ -464,7 +492,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     }
 
 #ifdef AMD_EXTENSIONS
-                    if (enableInt16) {
+                    if (enableInt16()) {
                         int nextCh = getch();
                         if ((ch == 'u' && nextCh == 's') || (ch == 'U' && nextCh == 'S')) {
                             if (len < MaxTokenLength)
@@ -474,12 +502,12 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                             ungetch();
                     }
 #endif
-                } else if (enableInt64 && (ch == 'l' || ch == 'L')) {
+                } else if (enableInt64() && (ch == 'l' || ch == 'L')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt64 = true;
 #ifdef AMD_EXTENSIONS
-                } else if (enableInt16 && (ch == 's' || ch == 'S')) {
+                } else if (enableInt16() && (ch == 's' || ch == 'S')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
@@ -520,7 +548,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         pp->parseContext.ppError(ppToken->loc, "numeric literal too long", "", "");
                         AlreadyComplained = 1;
                     }
-                    if (ival <= 0x1fffffffu || (enableInt64 && ival <= 0x1fffffffffffffffull)) {
+                    if (ival <= 0x1fffffffu || (enableInt64() && ival <= 0x1fffffffffffffffull)) {
                         ii = ch - '0';
                         ival = (ival << 3) | ii;
                     } else
@@ -553,7 +581,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
 
-                    if (enableInt64) {
+                    if (enableInt64()) {
                         int nextCh = getch();
                         if ((ch == 'u' && nextCh == 'l') || (ch == 'U' && nextCh == 'L')) {
                             if (len < MaxTokenLength)
@@ -564,7 +592,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     }
 
 #ifdef AMD_EXTENSIONS
-                    if (enableInt16) {
+                    if (enableInt16()) {
                         int nextCh = getch();
                         if ((ch == 'u' && nextCh == 's') || (ch == 'U' && nextCh == 'S')) {
                             if (len < MaxTokenLength)
@@ -574,12 +602,12 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                             ungetch();
                     }
 #endif
-                } else if (enableInt64 && (ch == 'l' || ch == 'L')) {
+                } else if (enableInt64() && (ch == 'l' || ch == 'L')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt64 = true;
 #ifdef AMD_EXTENSIONS
-                } else if (enableInt16 && (ch == 's' || ch == 'S')) {
+                } else if (enableInt16() && (ch == 's' || ch == 'S')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
@@ -633,7 +661,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
 
-                    if (enableInt64) {
+                    if (enableInt64()) {
                         int nextCh = getch();
                         if ((ch == 'u' && nextCh == 'l') || (ch == 'U' && nextCh == 'L')) {
                             if (len < MaxTokenLength)
@@ -644,7 +672,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     }
 
 #ifdef AMD_EXTENSIONS
-                    if (enableInt16) {
+                    if (enableInt16()) {
                         int nextCh = getch();
                         if ((ch == 'u' && nextCh == 's') || (ch == 'U' && nextCh == 'S')) {
                             if (len < MaxTokenLength)
@@ -654,12 +682,12 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                             ungetch();
                     }
 #endif
-                } else if (enableInt64 && (ch == 'l' || ch == 'L')) {
+                } else if (enableInt64() && (ch == 'l' || ch == 'L')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt64 = true;
 #ifdef AMD_EXTENSIONS
-                } else if (enableInt16 && (ch == 's' || ch == 'S')) {
+                } else if (enableInt16() && (ch == 's' || ch == 'S')) {
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
