@@ -271,14 +271,6 @@ void Error(const char* message)
 }
 
 //
-// Give a warning but program continues its execution
-//
-void Warning(const char* message)
-{
-    fprintf(stdout, "%s: Warning %s \n", ExecutableName, message);
-}
-
-//
 // Process an optional binding base of one the forms:
 //   --argname [stage] base            // base for stage (if given) or all stages (if not)
 //   --argname [stage] [base set]...   // set/base pairs: set the base for given binding set.
@@ -680,7 +672,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
     // Show a warning if --append-semantic-names is not used for HLSL vertex shader translation
     if ((Options & EOptionAppendSemanticToVarName) && (!(Options & EOptionReadHlsl) || strcmp(shaderStageName, "vert") != 0))
     {
-        Warning("--append-semantic-names arguments can only be used for translating HLSL vertex shaders. The option is disabled automatically.");
+        fprintf(stdout, "WARNING: --append-semantic-names arguments can only be used for translating HLSL vertex shaders. The option is disabled automatically. \n");
         Options &= ~EOptionAppendSemanticToVarName;
     }
 }
