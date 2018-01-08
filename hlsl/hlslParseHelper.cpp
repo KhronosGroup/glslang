@@ -2066,7 +2066,7 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
 
     for (int i = 0; i < userFunction.getParamCount(); i++) {
         TParameter& param = userFunction[i];
-        if (param.type->getQualifier().isParamInput() && !param.type->isStruct()) {
+        if (intermediate.getAppendSemanticNameToVarName() && param.type->getQualifier().isParamInput() && !param.type->isStruct()) {
             TString newParamName = getSemanticsAppendedParameterName(param);
             *(param.name) = newParamName;
         }
