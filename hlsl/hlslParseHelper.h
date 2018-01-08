@@ -497,6 +497,9 @@ protected:
 
 	// Maps the old variable name to the new variable name (semantic appended one) when --append-semantic-name option is used.
 	std::map<TString, TString> semanticAppendedVarMap;
+
+    // Maps the base name and its field name to the new field name (semantic appended one) when --append-semantic-name option is used.
+    std::map<std::pair<TString, TString>, TString> semanticAppendedFieldMap;
 };
 
 // This is the prefix we use for built-in methods to avoid namespace collisions with

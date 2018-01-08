@@ -2382,17 +2382,6 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*
 
                 acceptPostDecls(member.type->getQualifier());
 
-                if (intermediate.getAppendSemanticNameToVarName())
-                {
-                    auto semanticName = member.type->getQualifier().semanticName;
-                    if (semanticName)
-                    {
-                        auto oldFieldName = member.type->getFieldName();
-                        auto newFieldName = parseContext.getSemanticsAppendedFieldName(*member.type);
-                        member.type->setFieldName(newFieldName);
-                    }
-                }
-
                 // EQUAL assignment_expression
                 if (acceptTokenClass(EHTokAssign)) {
                     parseContext.warn(idToken.loc, "struct-member initializers ignored", "typedef", "");
