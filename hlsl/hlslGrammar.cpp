@@ -3789,6 +3789,10 @@ bool HlslGrammar::acceptJumpStatement(TIntermNode*& statement)
         break;
     case EHTokBreak:
         statement = intermediate.addBranch(EOpBreak, token.loc);
+        if (parseContext.loopNestingLevel == 0 && parseContext.switchSequenceStack.size() == 0) {
+            expected("loop or switch");
+            return false;
+        }
         break;
     case EHTokDiscard:
         statement = intermediate.addBranch(EOpKill, token.loc);
