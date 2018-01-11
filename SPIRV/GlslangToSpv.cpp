@@ -5942,7 +5942,8 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
                                         spv::MemorySemanticsAcquireReleaseMask);
         return 0;
     case glslang::EOpSubgroupBarrier:
-        builder.createControlBarrier(spv::ScopeSubgroup, spv::ScopeDevice, spv::MemorySemanticsMaskNone);
+        builder.createControlBarrier(spv::ScopeSubgroup, spv::ScopeSubgroup, spv::MemorySemanticsAllMemory |
+                                                                             spv::MemorySemanticsAcquireReleaseMask);
         return spv::NoResult;
     case glslang::EOpSubgroupMemoryBarrier:
         builder.createMemoryBarrier(spv::ScopeSubgroup, spv::MemorySemanticsAllMemory |
