@@ -3446,6 +3446,558 @@ local_size = (32, 16, 1)
 0:132                1 (const int)
 0:132              Constant:
 0:132                2 (const int)
+0:134      move second child to first child ( temp 4-component vector of uint)
+0:134        u: direct index for structure ( temp 4-component vector of uint)
+0:134          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:134            @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:134              'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:134              Constant:
+0:134                0 (const uint)
+0:134            direct index ( temp uint)
+0:134              'dti' ( in 3-component vector of uint)
+0:134              Constant:
+0:134                0 (const int)
+0:134          Constant:
+0:134            0 (const int)
+0:134        subgroupQuadSwapDiagonal ( temp 4-component vector of uint)
+0:134          u: direct index for structure ( temp 4-component vector of uint)
+0:134            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:134              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:134                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:134                Constant:
+0:134                  0 (const uint)
+0:134              direct index ( temp uint)
+0:134                'dti' ( in 3-component vector of uint)
+0:134                Constant:
+0:134                  0 (const int)
+0:134            Constant:
+0:134              0 (const int)
+0:135      move second child to first child ( temp uint)
+0:135        direct index ( temp uint)
+0:135          u: direct index for structure ( temp 4-component vector of uint)
+0:135            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:135              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:135                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:135                Constant:
+0:135                  0 (const uint)
+0:135              direct index ( temp uint)
+0:135                'dti' ( in 3-component vector of uint)
+0:135                Constant:
+0:135                  0 (const int)
+0:135            Constant:
+0:135              0 (const int)
+0:135          Constant:
+0:135            0 (const int)
+0:135        subgroupQuadSwapDiagonal ( temp uint)
+0:135          direct index ( temp uint)
+0:135            u: direct index for structure ( temp 4-component vector of uint)
+0:135              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:135                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:135                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:135                  Constant:
+0:135                    0 (const uint)
+0:135                direct index ( temp uint)
+0:135                  'dti' ( in 3-component vector of uint)
+0:135                  Constant:
+0:135                    0 (const int)
+0:135              Constant:
+0:135                0 (const int)
+0:135            Constant:
+0:135              0 (const int)
+0:136      move second child to first child ( temp 2-component vector of uint)
+0:136        vector swizzle ( temp 2-component vector of uint)
+0:136          u: direct index for structure ( temp 4-component vector of uint)
+0:136            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:136              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:136                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:136                Constant:
+0:136                  0 (const uint)
+0:136              direct index ( temp uint)
+0:136                'dti' ( in 3-component vector of uint)
+0:136                Constant:
+0:136                  0 (const int)
+0:136            Constant:
+0:136              0 (const int)
+0:136          Sequence
+0:136            Constant:
+0:136              0 (const int)
+0:136            Constant:
+0:136              1 (const int)
+0:136        subgroupQuadSwapDiagonal ( temp 2-component vector of uint)
+0:136          vector swizzle ( temp 2-component vector of uint)
+0:136            u: direct index for structure ( temp 4-component vector of uint)
+0:136              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:136                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:136                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:136                  Constant:
+0:136                    0 (const uint)
+0:136                direct index ( temp uint)
+0:136                  'dti' ( in 3-component vector of uint)
+0:136                  Constant:
+0:136                    0 (const int)
+0:136              Constant:
+0:136                0 (const int)
+0:136            Sequence
+0:136              Constant:
+0:136                0 (const int)
+0:136              Constant:
+0:136                1 (const int)
+0:137      move second child to first child ( temp 3-component vector of uint)
+0:137        vector swizzle ( temp 3-component vector of uint)
+0:137          u: direct index for structure ( temp 4-component vector of uint)
+0:137            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:137              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:137                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:137                Constant:
+0:137                  0 (const uint)
+0:137              direct index ( temp uint)
+0:137                'dti' ( in 3-component vector of uint)
+0:137                Constant:
+0:137                  0 (const int)
+0:137            Constant:
+0:137              0 (const int)
+0:137          Sequence
+0:137            Constant:
+0:137              0 (const int)
+0:137            Constant:
+0:137              1 (const int)
+0:137            Constant:
+0:137              2 (const int)
+0:137        subgroupQuadSwapDiagonal ( temp 3-component vector of uint)
+0:137          vector swizzle ( temp 3-component vector of uint)
+0:137            u: direct index for structure ( temp 4-component vector of uint)
+0:137              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:137                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:137                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:137                  Constant:
+0:137                    0 (const uint)
+0:137                direct index ( temp uint)
+0:137                  'dti' ( in 3-component vector of uint)
+0:137                  Constant:
+0:137                    0 (const int)
+0:137              Constant:
+0:137                0 (const int)
+0:137            Sequence
+0:137              Constant:
+0:137                0 (const int)
+0:137              Constant:
+0:137                1 (const int)
+0:137              Constant:
+0:137                2 (const int)
+0:139      move second child to first child ( temp 4-component vector of int)
+0:139        i: direct index for structure ( temp 4-component vector of int)
+0:139          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:139            @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:139              'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:139              Constant:
+0:139                0 (const uint)
+0:139            direct index ( temp uint)
+0:139              'dti' ( in 3-component vector of uint)
+0:139              Constant:
+0:139                0 (const int)
+0:139          Constant:
+0:139            1 (const int)
+0:139        subgroupQuadSwapDiagonal ( temp 4-component vector of int)
+0:139          i: direct index for structure ( temp 4-component vector of int)
+0:139            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:139              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:139                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:139                Constant:
+0:139                  0 (const uint)
+0:139              direct index ( temp uint)
+0:139                'dti' ( in 3-component vector of uint)
+0:139                Constant:
+0:139                  0 (const int)
+0:139            Constant:
+0:139              1 (const int)
+0:140      move second child to first child ( temp int)
+0:140        direct index ( temp int)
+0:140          i: direct index for structure ( temp 4-component vector of int)
+0:140            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:140              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:140                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:140                Constant:
+0:140                  0 (const uint)
+0:140              direct index ( temp uint)
+0:140                'dti' ( in 3-component vector of uint)
+0:140                Constant:
+0:140                  0 (const int)
+0:140            Constant:
+0:140              1 (const int)
+0:140          Constant:
+0:140            0 (const int)
+0:140        subgroupQuadSwapDiagonal ( temp int)
+0:140          direct index ( temp int)
+0:140            i: direct index for structure ( temp 4-component vector of int)
+0:140              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:140                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:140                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:140                  Constant:
+0:140                    0 (const uint)
+0:140                direct index ( temp uint)
+0:140                  'dti' ( in 3-component vector of uint)
+0:140                  Constant:
+0:140                    0 (const int)
+0:140              Constant:
+0:140                1 (const int)
+0:140            Constant:
+0:140              0 (const int)
+0:141      move second child to first child ( temp 2-component vector of int)
+0:141        vector swizzle ( temp 2-component vector of int)
+0:141          i: direct index for structure ( temp 4-component vector of int)
+0:141            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:141              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:141                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:141                Constant:
+0:141                  0 (const uint)
+0:141              direct index ( temp uint)
+0:141                'dti' ( in 3-component vector of uint)
+0:141                Constant:
+0:141                  0 (const int)
+0:141            Constant:
+0:141              1 (const int)
+0:141          Sequence
+0:141            Constant:
+0:141              0 (const int)
+0:141            Constant:
+0:141              1 (const int)
+0:141        subgroupQuadSwapDiagonal ( temp 2-component vector of int)
+0:141          vector swizzle ( temp 2-component vector of int)
+0:141            i: direct index for structure ( temp 4-component vector of int)
+0:141              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:141                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:141                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:141                  Constant:
+0:141                    0 (const uint)
+0:141                direct index ( temp uint)
+0:141                  'dti' ( in 3-component vector of uint)
+0:141                  Constant:
+0:141                    0 (const int)
+0:141              Constant:
+0:141                1 (const int)
+0:141            Sequence
+0:141              Constant:
+0:141                0 (const int)
+0:141              Constant:
+0:141                1 (const int)
+0:142      move second child to first child ( temp 3-component vector of int)
+0:142        vector swizzle ( temp 3-component vector of int)
+0:142          i: direct index for structure ( temp 4-component vector of int)
+0:142            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:142              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:142                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:142                Constant:
+0:142                  0 (const uint)
+0:142              direct index ( temp uint)
+0:142                'dti' ( in 3-component vector of uint)
+0:142                Constant:
+0:142                  0 (const int)
+0:142            Constant:
+0:142              1 (const int)
+0:142          Sequence
+0:142            Constant:
+0:142              0 (const int)
+0:142            Constant:
+0:142              1 (const int)
+0:142            Constant:
+0:142              2 (const int)
+0:142        subgroupQuadSwapDiagonal ( temp 3-component vector of int)
+0:142          vector swizzle ( temp 3-component vector of int)
+0:142            i: direct index for structure ( temp 4-component vector of int)
+0:142              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:142                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:142                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:142                  Constant:
+0:142                    0 (const uint)
+0:142                direct index ( temp uint)
+0:142                  'dti' ( in 3-component vector of uint)
+0:142                  Constant:
+0:142                    0 (const int)
+0:142              Constant:
+0:142                1 (const int)
+0:142            Sequence
+0:142              Constant:
+0:142                0 (const int)
+0:142              Constant:
+0:142                1 (const int)
+0:142              Constant:
+0:142                2 (const int)
+0:144      move second child to first child ( temp 4-component vector of float)
+0:144        f: direct index for structure ( temp 4-component vector of float)
+0:144          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:144            @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:144              'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:144              Constant:
+0:144                0 (const uint)
+0:144            direct index ( temp uint)
+0:144              'dti' ( in 3-component vector of uint)
+0:144              Constant:
+0:144                0 (const int)
+0:144          Constant:
+0:144            2 (const int)
+0:144        subgroupQuadSwapDiagonal ( temp 4-component vector of float)
+0:144          f: direct index for structure ( temp 4-component vector of float)
+0:144            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:144              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:144                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:144                Constant:
+0:144                  0 (const uint)
+0:144              direct index ( temp uint)
+0:144                'dti' ( in 3-component vector of uint)
+0:144                Constant:
+0:144                  0 (const int)
+0:144            Constant:
+0:144              2 (const int)
+0:145      move second child to first child ( temp float)
+0:145        direct index ( temp float)
+0:145          f: direct index for structure ( temp 4-component vector of float)
+0:145            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:145              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:145                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:145                Constant:
+0:145                  0 (const uint)
+0:145              direct index ( temp uint)
+0:145                'dti' ( in 3-component vector of uint)
+0:145                Constant:
+0:145                  0 (const int)
+0:145            Constant:
+0:145              2 (const int)
+0:145          Constant:
+0:145            0 (const int)
+0:145        subgroupQuadSwapDiagonal ( temp float)
+0:145          direct index ( temp float)
+0:145            f: direct index for structure ( temp 4-component vector of float)
+0:145              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:145                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:145                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:145                  Constant:
+0:145                    0 (const uint)
+0:145                direct index ( temp uint)
+0:145                  'dti' ( in 3-component vector of uint)
+0:145                  Constant:
+0:145                    0 (const int)
+0:145              Constant:
+0:145                2 (const int)
+0:145            Constant:
+0:145              0 (const int)
+0:146      move second child to first child ( temp 2-component vector of float)
+0:146        vector swizzle ( temp 2-component vector of float)
+0:146          f: direct index for structure ( temp 4-component vector of float)
+0:146            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:146              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:146                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:146                Constant:
+0:146                  0 (const uint)
+0:146              direct index ( temp uint)
+0:146                'dti' ( in 3-component vector of uint)
+0:146                Constant:
+0:146                  0 (const int)
+0:146            Constant:
+0:146              2 (const int)
+0:146          Sequence
+0:146            Constant:
+0:146              0 (const int)
+0:146            Constant:
+0:146              1 (const int)
+0:146        subgroupQuadSwapDiagonal ( temp 2-component vector of float)
+0:146          vector swizzle ( temp 2-component vector of float)
+0:146            f: direct index for structure ( temp 4-component vector of float)
+0:146              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:146                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:146                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:146                  Constant:
+0:146                    0 (const uint)
+0:146                direct index ( temp uint)
+0:146                  'dti' ( in 3-component vector of uint)
+0:146                  Constant:
+0:146                    0 (const int)
+0:146              Constant:
+0:146                2 (const int)
+0:146            Sequence
+0:146              Constant:
+0:146                0 (const int)
+0:146              Constant:
+0:146                1 (const int)
+0:147      move second child to first child ( temp 3-component vector of float)
+0:147        vector swizzle ( temp 3-component vector of float)
+0:147          f: direct index for structure ( temp 4-component vector of float)
+0:147            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:147              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:147                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:147                Constant:
+0:147                  0 (const uint)
+0:147              direct index ( temp uint)
+0:147                'dti' ( in 3-component vector of uint)
+0:147                Constant:
+0:147                  0 (const int)
+0:147            Constant:
+0:147              2 (const int)
+0:147          Sequence
+0:147            Constant:
+0:147              0 (const int)
+0:147            Constant:
+0:147              1 (const int)
+0:147            Constant:
+0:147              2 (const int)
+0:147        subgroupQuadSwapDiagonal ( temp 3-component vector of float)
+0:147          vector swizzle ( temp 3-component vector of float)
+0:147            f: direct index for structure ( temp 4-component vector of float)
+0:147              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:147                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:147                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:147                  Constant:
+0:147                    0 (const uint)
+0:147                direct index ( temp uint)
+0:147                  'dti' ( in 3-component vector of uint)
+0:147                  Constant:
+0:147                    0 (const int)
+0:147              Constant:
+0:147                2 (const int)
+0:147            Sequence
+0:147              Constant:
+0:147                0 (const int)
+0:147              Constant:
+0:147                1 (const int)
+0:147              Constant:
+0:147                2 (const int)
+0:149      move second child to first child ( temp 4-component vector of double)
+0:149        d: direct index for structure ( temp 4-component vector of double)
+0:149          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:149            @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:149              'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:149              Constant:
+0:149                0 (const uint)
+0:149            direct index ( temp uint)
+0:149              'dti' ( in 3-component vector of uint)
+0:149              Constant:
+0:149                0 (const int)
+0:149          Constant:
+0:149            3 (const int)
+0:149        subgroupQuadSwapDiagonal ( temp 4-component vector of double)
+0:149          d: direct index for structure ( temp 4-component vector of double)
+0:149            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:149              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:149                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:149                Constant:
+0:149                  0 (const uint)
+0:149              direct index ( temp uint)
+0:149                'dti' ( in 3-component vector of uint)
+0:149                Constant:
+0:149                  0 (const int)
+0:149            Constant:
+0:149              3 (const int)
+0:150      move second child to first child ( temp double)
+0:150        direct index ( temp double)
+0:150          d: direct index for structure ( temp 4-component vector of double)
+0:150            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:150              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:150                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:150                Constant:
+0:150                  0 (const uint)
+0:150              direct index ( temp uint)
+0:150                'dti' ( in 3-component vector of uint)
+0:150                Constant:
+0:150                  0 (const int)
+0:150            Constant:
+0:150              3 (const int)
+0:150          Constant:
+0:150            0 (const int)
+0:150        subgroupQuadSwapDiagonal ( temp double)
+0:150          direct index ( temp double)
+0:150            d: direct index for structure ( temp 4-component vector of double)
+0:150              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:150                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:150                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:150                  Constant:
+0:150                    0 (const uint)
+0:150                direct index ( temp uint)
+0:150                  'dti' ( in 3-component vector of uint)
+0:150                  Constant:
+0:150                    0 (const int)
+0:150              Constant:
+0:150                3 (const int)
+0:150            Constant:
+0:150              0 (const int)
+0:151      move second child to first child ( temp 2-component vector of double)
+0:151        vector swizzle ( temp 2-component vector of double)
+0:151          d: direct index for structure ( temp 4-component vector of double)
+0:151            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:151              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:151                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:151                Constant:
+0:151                  0 (const uint)
+0:151              direct index ( temp uint)
+0:151                'dti' ( in 3-component vector of uint)
+0:151                Constant:
+0:151                  0 (const int)
+0:151            Constant:
+0:151              3 (const int)
+0:151          Sequence
+0:151            Constant:
+0:151              0 (const int)
+0:151            Constant:
+0:151              1 (const int)
+0:151        subgroupQuadSwapDiagonal ( temp 2-component vector of double)
+0:151          vector swizzle ( temp 2-component vector of double)
+0:151            d: direct index for structure ( temp 4-component vector of double)
+0:151              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:151                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:151                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:151                  Constant:
+0:151                    0 (const uint)
+0:151                direct index ( temp uint)
+0:151                  'dti' ( in 3-component vector of uint)
+0:151                  Constant:
+0:151                    0 (const int)
+0:151              Constant:
+0:151                3 (const int)
+0:151            Sequence
+0:151              Constant:
+0:151                0 (const int)
+0:151              Constant:
+0:151                1 (const int)
+0:152      move second child to first child ( temp 3-component vector of double)
+0:152        vector swizzle ( temp 3-component vector of double)
+0:152          d: direct index for structure ( temp 4-component vector of double)
+0:152            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:152              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:152                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:152                Constant:
+0:152                  0 (const uint)
+0:152              direct index ( temp uint)
+0:152                'dti' ( in 3-component vector of uint)
+0:152                Constant:
+0:152                  0 (const int)
+0:152            Constant:
+0:152              3 (const int)
+0:152          Sequence
+0:152            Constant:
+0:152              0 (const int)
+0:152            Constant:
+0:152              1 (const int)
+0:152            Constant:
+0:152              2 (const int)
+0:152        subgroupQuadSwapDiagonal ( temp 3-component vector of double)
+0:152          vector swizzle ( temp 3-component vector of double)
+0:152            d: direct index for structure ( temp 4-component vector of double)
+0:152              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:152                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:152                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:152                  Constant:
+0:152                    0 (const uint)
+0:152                direct index ( temp uint)
+0:152                  'dti' ( in 3-component vector of uint)
+0:152                  Constant:
+0:152                    0 (const int)
+0:152              Constant:
+0:152                3 (const int)
+0:152            Sequence
+0:152              Constant:
+0:152                0 (const int)
+0:152              Constant:
+0:152                1 (const int)
+0:152              Constant:
+0:152                2 (const int)
 0:13  Function Definition: CSMain( ( temp void)
 0:13    Function Parameters: 
 0:?     Sequence
@@ -6909,6 +7461,558 @@ local_size = (32, 16, 1)
 0:132                1 (const int)
 0:132              Constant:
 0:132                2 (const int)
+0:134      move second child to first child ( temp 4-component vector of uint)
+0:134        u: direct index for structure ( temp 4-component vector of uint)
+0:134          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:134            @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:134              'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:134              Constant:
+0:134                0 (const uint)
+0:134            direct index ( temp uint)
+0:134              'dti' ( in 3-component vector of uint)
+0:134              Constant:
+0:134                0 (const int)
+0:134          Constant:
+0:134            0 (const int)
+0:134        subgroupQuadSwapDiagonal ( temp 4-component vector of uint)
+0:134          u: direct index for structure ( temp 4-component vector of uint)
+0:134            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:134              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:134                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:134                Constant:
+0:134                  0 (const uint)
+0:134              direct index ( temp uint)
+0:134                'dti' ( in 3-component vector of uint)
+0:134                Constant:
+0:134                  0 (const int)
+0:134            Constant:
+0:134              0 (const int)
+0:135      move second child to first child ( temp uint)
+0:135        direct index ( temp uint)
+0:135          u: direct index for structure ( temp 4-component vector of uint)
+0:135            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:135              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:135                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:135                Constant:
+0:135                  0 (const uint)
+0:135              direct index ( temp uint)
+0:135                'dti' ( in 3-component vector of uint)
+0:135                Constant:
+0:135                  0 (const int)
+0:135            Constant:
+0:135              0 (const int)
+0:135          Constant:
+0:135            0 (const int)
+0:135        subgroupQuadSwapDiagonal ( temp uint)
+0:135          direct index ( temp uint)
+0:135            u: direct index for structure ( temp 4-component vector of uint)
+0:135              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:135                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:135                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:135                  Constant:
+0:135                    0 (const uint)
+0:135                direct index ( temp uint)
+0:135                  'dti' ( in 3-component vector of uint)
+0:135                  Constant:
+0:135                    0 (const int)
+0:135              Constant:
+0:135                0 (const int)
+0:135            Constant:
+0:135              0 (const int)
+0:136      move second child to first child ( temp 2-component vector of uint)
+0:136        vector swizzle ( temp 2-component vector of uint)
+0:136          u: direct index for structure ( temp 4-component vector of uint)
+0:136            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:136              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:136                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:136                Constant:
+0:136                  0 (const uint)
+0:136              direct index ( temp uint)
+0:136                'dti' ( in 3-component vector of uint)
+0:136                Constant:
+0:136                  0 (const int)
+0:136            Constant:
+0:136              0 (const int)
+0:136          Sequence
+0:136            Constant:
+0:136              0 (const int)
+0:136            Constant:
+0:136              1 (const int)
+0:136        subgroupQuadSwapDiagonal ( temp 2-component vector of uint)
+0:136          vector swizzle ( temp 2-component vector of uint)
+0:136            u: direct index for structure ( temp 4-component vector of uint)
+0:136              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:136                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:136                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:136                  Constant:
+0:136                    0 (const uint)
+0:136                direct index ( temp uint)
+0:136                  'dti' ( in 3-component vector of uint)
+0:136                  Constant:
+0:136                    0 (const int)
+0:136              Constant:
+0:136                0 (const int)
+0:136            Sequence
+0:136              Constant:
+0:136                0 (const int)
+0:136              Constant:
+0:136                1 (const int)
+0:137      move second child to first child ( temp 3-component vector of uint)
+0:137        vector swizzle ( temp 3-component vector of uint)
+0:137          u: direct index for structure ( temp 4-component vector of uint)
+0:137            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:137              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:137                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:137                Constant:
+0:137                  0 (const uint)
+0:137              direct index ( temp uint)
+0:137                'dti' ( in 3-component vector of uint)
+0:137                Constant:
+0:137                  0 (const int)
+0:137            Constant:
+0:137              0 (const int)
+0:137          Sequence
+0:137            Constant:
+0:137              0 (const int)
+0:137            Constant:
+0:137              1 (const int)
+0:137            Constant:
+0:137              2 (const int)
+0:137        subgroupQuadSwapDiagonal ( temp 3-component vector of uint)
+0:137          vector swizzle ( temp 3-component vector of uint)
+0:137            u: direct index for structure ( temp 4-component vector of uint)
+0:137              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:137                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:137                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:137                  Constant:
+0:137                    0 (const uint)
+0:137                direct index ( temp uint)
+0:137                  'dti' ( in 3-component vector of uint)
+0:137                  Constant:
+0:137                    0 (const int)
+0:137              Constant:
+0:137                0 (const int)
+0:137            Sequence
+0:137              Constant:
+0:137                0 (const int)
+0:137              Constant:
+0:137                1 (const int)
+0:137              Constant:
+0:137                2 (const int)
+0:139      move second child to first child ( temp 4-component vector of int)
+0:139        i: direct index for structure ( temp 4-component vector of int)
+0:139          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:139            @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:139              'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:139              Constant:
+0:139                0 (const uint)
+0:139            direct index ( temp uint)
+0:139              'dti' ( in 3-component vector of uint)
+0:139              Constant:
+0:139                0 (const int)
+0:139          Constant:
+0:139            1 (const int)
+0:139        subgroupQuadSwapDiagonal ( temp 4-component vector of int)
+0:139          i: direct index for structure ( temp 4-component vector of int)
+0:139            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:139              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:139                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:139                Constant:
+0:139                  0 (const uint)
+0:139              direct index ( temp uint)
+0:139                'dti' ( in 3-component vector of uint)
+0:139                Constant:
+0:139                  0 (const int)
+0:139            Constant:
+0:139              1 (const int)
+0:140      move second child to first child ( temp int)
+0:140        direct index ( temp int)
+0:140          i: direct index for structure ( temp 4-component vector of int)
+0:140            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:140              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:140                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:140                Constant:
+0:140                  0 (const uint)
+0:140              direct index ( temp uint)
+0:140                'dti' ( in 3-component vector of uint)
+0:140                Constant:
+0:140                  0 (const int)
+0:140            Constant:
+0:140              1 (const int)
+0:140          Constant:
+0:140            0 (const int)
+0:140        subgroupQuadSwapDiagonal ( temp int)
+0:140          direct index ( temp int)
+0:140            i: direct index for structure ( temp 4-component vector of int)
+0:140              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:140                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:140                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:140                  Constant:
+0:140                    0 (const uint)
+0:140                direct index ( temp uint)
+0:140                  'dti' ( in 3-component vector of uint)
+0:140                  Constant:
+0:140                    0 (const int)
+0:140              Constant:
+0:140                1 (const int)
+0:140            Constant:
+0:140              0 (const int)
+0:141      move second child to first child ( temp 2-component vector of int)
+0:141        vector swizzle ( temp 2-component vector of int)
+0:141          i: direct index for structure ( temp 4-component vector of int)
+0:141            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:141              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:141                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:141                Constant:
+0:141                  0 (const uint)
+0:141              direct index ( temp uint)
+0:141                'dti' ( in 3-component vector of uint)
+0:141                Constant:
+0:141                  0 (const int)
+0:141            Constant:
+0:141              1 (const int)
+0:141          Sequence
+0:141            Constant:
+0:141              0 (const int)
+0:141            Constant:
+0:141              1 (const int)
+0:141        subgroupQuadSwapDiagonal ( temp 2-component vector of int)
+0:141          vector swizzle ( temp 2-component vector of int)
+0:141            i: direct index for structure ( temp 4-component vector of int)
+0:141              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:141                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:141                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:141                  Constant:
+0:141                    0 (const uint)
+0:141                direct index ( temp uint)
+0:141                  'dti' ( in 3-component vector of uint)
+0:141                  Constant:
+0:141                    0 (const int)
+0:141              Constant:
+0:141                1 (const int)
+0:141            Sequence
+0:141              Constant:
+0:141                0 (const int)
+0:141              Constant:
+0:141                1 (const int)
+0:142      move second child to first child ( temp 3-component vector of int)
+0:142        vector swizzle ( temp 3-component vector of int)
+0:142          i: direct index for structure ( temp 4-component vector of int)
+0:142            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:142              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:142                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:142                Constant:
+0:142                  0 (const uint)
+0:142              direct index ( temp uint)
+0:142                'dti' ( in 3-component vector of uint)
+0:142                Constant:
+0:142                  0 (const int)
+0:142            Constant:
+0:142              1 (const int)
+0:142          Sequence
+0:142            Constant:
+0:142              0 (const int)
+0:142            Constant:
+0:142              1 (const int)
+0:142            Constant:
+0:142              2 (const int)
+0:142        subgroupQuadSwapDiagonal ( temp 3-component vector of int)
+0:142          vector swizzle ( temp 3-component vector of int)
+0:142            i: direct index for structure ( temp 4-component vector of int)
+0:142              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:142                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:142                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:142                  Constant:
+0:142                    0 (const uint)
+0:142                direct index ( temp uint)
+0:142                  'dti' ( in 3-component vector of uint)
+0:142                  Constant:
+0:142                    0 (const int)
+0:142              Constant:
+0:142                1 (const int)
+0:142            Sequence
+0:142              Constant:
+0:142                0 (const int)
+0:142              Constant:
+0:142                1 (const int)
+0:142              Constant:
+0:142                2 (const int)
+0:144      move second child to first child ( temp 4-component vector of float)
+0:144        f: direct index for structure ( temp 4-component vector of float)
+0:144          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:144            @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:144              'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:144              Constant:
+0:144                0 (const uint)
+0:144            direct index ( temp uint)
+0:144              'dti' ( in 3-component vector of uint)
+0:144              Constant:
+0:144                0 (const int)
+0:144          Constant:
+0:144            2 (const int)
+0:144        subgroupQuadSwapDiagonal ( temp 4-component vector of float)
+0:144          f: direct index for structure ( temp 4-component vector of float)
+0:144            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:144              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:144                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:144                Constant:
+0:144                  0 (const uint)
+0:144              direct index ( temp uint)
+0:144                'dti' ( in 3-component vector of uint)
+0:144                Constant:
+0:144                  0 (const int)
+0:144            Constant:
+0:144              2 (const int)
+0:145      move second child to first child ( temp float)
+0:145        direct index ( temp float)
+0:145          f: direct index for structure ( temp 4-component vector of float)
+0:145            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:145              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:145                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:145                Constant:
+0:145                  0 (const uint)
+0:145              direct index ( temp uint)
+0:145                'dti' ( in 3-component vector of uint)
+0:145                Constant:
+0:145                  0 (const int)
+0:145            Constant:
+0:145              2 (const int)
+0:145          Constant:
+0:145            0 (const int)
+0:145        subgroupQuadSwapDiagonal ( temp float)
+0:145          direct index ( temp float)
+0:145            f: direct index for structure ( temp 4-component vector of float)
+0:145              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:145                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:145                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:145                  Constant:
+0:145                    0 (const uint)
+0:145                direct index ( temp uint)
+0:145                  'dti' ( in 3-component vector of uint)
+0:145                  Constant:
+0:145                    0 (const int)
+0:145              Constant:
+0:145                2 (const int)
+0:145            Constant:
+0:145              0 (const int)
+0:146      move second child to first child ( temp 2-component vector of float)
+0:146        vector swizzle ( temp 2-component vector of float)
+0:146          f: direct index for structure ( temp 4-component vector of float)
+0:146            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:146              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:146                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:146                Constant:
+0:146                  0 (const uint)
+0:146              direct index ( temp uint)
+0:146                'dti' ( in 3-component vector of uint)
+0:146                Constant:
+0:146                  0 (const int)
+0:146            Constant:
+0:146              2 (const int)
+0:146          Sequence
+0:146            Constant:
+0:146              0 (const int)
+0:146            Constant:
+0:146              1 (const int)
+0:146        subgroupQuadSwapDiagonal ( temp 2-component vector of float)
+0:146          vector swizzle ( temp 2-component vector of float)
+0:146            f: direct index for structure ( temp 4-component vector of float)
+0:146              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:146                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:146                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:146                  Constant:
+0:146                    0 (const uint)
+0:146                direct index ( temp uint)
+0:146                  'dti' ( in 3-component vector of uint)
+0:146                  Constant:
+0:146                    0 (const int)
+0:146              Constant:
+0:146                2 (const int)
+0:146            Sequence
+0:146              Constant:
+0:146                0 (const int)
+0:146              Constant:
+0:146                1 (const int)
+0:147      move second child to first child ( temp 3-component vector of float)
+0:147        vector swizzle ( temp 3-component vector of float)
+0:147          f: direct index for structure ( temp 4-component vector of float)
+0:147            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:147              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:147                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:147                Constant:
+0:147                  0 (const uint)
+0:147              direct index ( temp uint)
+0:147                'dti' ( in 3-component vector of uint)
+0:147                Constant:
+0:147                  0 (const int)
+0:147            Constant:
+0:147              2 (const int)
+0:147          Sequence
+0:147            Constant:
+0:147              0 (const int)
+0:147            Constant:
+0:147              1 (const int)
+0:147            Constant:
+0:147              2 (const int)
+0:147        subgroupQuadSwapDiagonal ( temp 3-component vector of float)
+0:147          vector swizzle ( temp 3-component vector of float)
+0:147            f: direct index for structure ( temp 4-component vector of float)
+0:147              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:147                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:147                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:147                  Constant:
+0:147                    0 (const uint)
+0:147                direct index ( temp uint)
+0:147                  'dti' ( in 3-component vector of uint)
+0:147                  Constant:
+0:147                    0 (const int)
+0:147              Constant:
+0:147                2 (const int)
+0:147            Sequence
+0:147              Constant:
+0:147                0 (const int)
+0:147              Constant:
+0:147                1 (const int)
+0:147              Constant:
+0:147                2 (const int)
+0:149      move second child to first child ( temp 4-component vector of double)
+0:149        d: direct index for structure ( temp 4-component vector of double)
+0:149          indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:149            @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:149              'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:149              Constant:
+0:149                0 (const uint)
+0:149            direct index ( temp uint)
+0:149              'dti' ( in 3-component vector of uint)
+0:149              Constant:
+0:149                0 (const int)
+0:149          Constant:
+0:149            3 (const int)
+0:149        subgroupQuadSwapDiagonal ( temp 4-component vector of double)
+0:149          d: direct index for structure ( temp 4-component vector of double)
+0:149            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:149              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:149                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:149                Constant:
+0:149                  0 (const uint)
+0:149              direct index ( temp uint)
+0:149                'dti' ( in 3-component vector of uint)
+0:149                Constant:
+0:149                  0 (const int)
+0:149            Constant:
+0:149              3 (const int)
+0:150      move second child to first child ( temp double)
+0:150        direct index ( temp double)
+0:150          d: direct index for structure ( temp 4-component vector of double)
+0:150            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:150              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:150                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:150                Constant:
+0:150                  0 (const uint)
+0:150              direct index ( temp uint)
+0:150                'dti' ( in 3-component vector of uint)
+0:150                Constant:
+0:150                  0 (const int)
+0:150            Constant:
+0:150              3 (const int)
+0:150          Constant:
+0:150            0 (const int)
+0:150        subgroupQuadSwapDiagonal ( temp double)
+0:150          direct index ( temp double)
+0:150            d: direct index for structure ( temp 4-component vector of double)
+0:150              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:150                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:150                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:150                  Constant:
+0:150                    0 (const uint)
+0:150                direct index ( temp uint)
+0:150                  'dti' ( in 3-component vector of uint)
+0:150                  Constant:
+0:150                    0 (const int)
+0:150              Constant:
+0:150                3 (const int)
+0:150            Constant:
+0:150              0 (const int)
+0:151      move second child to first child ( temp 2-component vector of double)
+0:151        vector swizzle ( temp 2-component vector of double)
+0:151          d: direct index for structure ( temp 4-component vector of double)
+0:151            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:151              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:151                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:151                Constant:
+0:151                  0 (const uint)
+0:151              direct index ( temp uint)
+0:151                'dti' ( in 3-component vector of uint)
+0:151                Constant:
+0:151                  0 (const int)
+0:151            Constant:
+0:151              3 (const int)
+0:151          Sequence
+0:151            Constant:
+0:151              0 (const int)
+0:151            Constant:
+0:151              1 (const int)
+0:151        subgroupQuadSwapDiagonal ( temp 2-component vector of double)
+0:151          vector swizzle ( temp 2-component vector of double)
+0:151            d: direct index for structure ( temp 4-component vector of double)
+0:151              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:151                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:151                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:151                  Constant:
+0:151                    0 (const uint)
+0:151                direct index ( temp uint)
+0:151                  'dti' ( in 3-component vector of uint)
+0:151                  Constant:
+0:151                    0 (const int)
+0:151              Constant:
+0:151                3 (const int)
+0:151            Sequence
+0:151              Constant:
+0:151                0 (const int)
+0:151              Constant:
+0:151                1 (const int)
+0:152      move second child to first child ( temp 3-component vector of double)
+0:152        vector swizzle ( temp 3-component vector of double)
+0:152          d: direct index for structure ( temp 4-component vector of double)
+0:152            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:152              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:152                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:152                Constant:
+0:152                  0 (const uint)
+0:152              direct index ( temp uint)
+0:152                'dti' ( in 3-component vector of uint)
+0:152                Constant:
+0:152                  0 (const int)
+0:152            Constant:
+0:152              3 (const int)
+0:152          Sequence
+0:152            Constant:
+0:152              0 (const int)
+0:152            Constant:
+0:152              1 (const int)
+0:152            Constant:
+0:152              2 (const int)
+0:152        subgroupQuadSwapDiagonal ( temp 3-component vector of double)
+0:152          vector swizzle ( temp 3-component vector of double)
+0:152            d: direct index for structure ( temp 4-component vector of double)
+0:152              indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:152                @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:152                  'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:152                  Constant:
+0:152                    0 (const uint)
+0:152                direct index ( temp uint)
+0:152                  'dti' ( in 3-component vector of uint)
+0:152                  Constant:
+0:152                    0 (const int)
+0:152              Constant:
+0:152                3 (const int)
+0:152            Sequence
+0:152              Constant:
+0:152                0 (const int)
+0:152              Constant:
+0:152                1 (const int)
+0:152              Constant:
+0:152                2 (const int)
 0:13  Function Definition: CSMain( ( temp void)
 0:13    Function Parameters: 
 0:?     Sequence
@@ -6923,7 +8027,7 @@ local_size = (32, 16, 1)
 
 // Module Version 10000
 // Generated by (magic number): 80003
-// Id's are bound by 968
+// Id's are bound by 1120
 
                               Capability Shader
                               Capability Float64
@@ -6931,7 +8035,7 @@ local_size = (32, 16, 1)
                               Capability GroupNonUniformQuad
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint GLCompute 4  "CSMain" 963
+                              EntryPoint GLCompute 4  "CSMain" 1115
                               ExecutionMode 4 LocalSize 32 16 1
                               Source HLSL 500
                               Name 4  "CSMain"
@@ -6945,9 +8049,9 @@ local_size = (32, 16, 1)
                               Name 22  "data"
                               MemberName 22(data) 0  "@data"
                               Name 24  "data"
-                              Name 961  "dti"
-                              Name 963  "dti"
-                              Name 965  "param"
+                              Name 1113  "dti"
+                              Name 1115  "dti"
+                              Name 1117  "param"
                               MemberDecorate 20(Types) 0 Offset 0
                               MemberDecorate 20(Types) 1 Offset 16
                               MemberDecorate 20(Types) 2 Offset 32
@@ -6956,7 +8060,7 @@ local_size = (32, 16, 1)
                               MemberDecorate 22(data) 0 Offset 0
                               Decorate 22(data) BufferBlock
                               Decorate 24(data) DescriptorSet 0
-                              Decorate 963(dti) BuiltIn GlobalInvocationId
+                              Decorate 1115(dti) BuiltIn GlobalInvocationId
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0
@@ -6999,17 +8103,17 @@ local_size = (32, 16, 1)
              191:             TypeVector 18(float) 3
              205:      6(int) Constant 1
              358:      6(int) Constant 2
-             962:             TypePointer Input 7(ivec3)
-        963(dti):    962(ptr) Variable Input
+            1114:             TypePointer Input 7(ivec3)
+       1115(dti):   1114(ptr) Variable Input
        4(CSMain):           2 Function None 3
                5:             Label
-        961(dti):      8(ptr) Variable Function
-      965(param):      8(ptr) Variable Function
-             964:    7(ivec3) Load 963(dti)
-                              Store 961(dti) 964
-             966:    7(ivec3) Load 961(dti)
-                              Store 965(param) 966
-             967:           2 FunctionCall 11(@CSMain(vu3;) 965(param)
+       1113(dti):      8(ptr) Variable Function
+     1117(param):      8(ptr) Variable Function
+            1116:    7(ivec3) Load 1115(dti)
+                              Store 1113(dti) 1116
+            1118:    7(ivec3) Load 1113(dti)
+                              Store 1117(param) 1118
+            1119:           2 FunctionCall 11(@CSMain(vu3;) 1117(param)
                               Return
                               FunctionEnd
 11(@CSMain(vu3;):           2 Function None 9
@@ -8023,5 +9127,173 @@ local_size = (32, 16, 1)
              959:   19(fvec4) Load 958
              960:   19(fvec4) VectorShuffle 959 957 4 5 6 3
                               Store 958 960
+             961:     27(ptr) AccessChain 10(dti) 26
+             962:      6(int) Load 961
+             963:     27(ptr) AccessChain 10(dti) 26
+             964:      6(int) Load 963
+             965:     32(ptr) AccessChain 24(data) 25 964 25
+             966:   13(ivec4) Load 965
+             967:   13(ivec4) GroupNonUniformQuadSwap 35 966 358
+             968:     32(ptr) AccessChain 24(data) 25 962 25
+                              Store 968 967
+             969:     27(ptr) AccessChain 10(dti) 26
+             970:      6(int) Load 969
+             971:     27(ptr) AccessChain 10(dti) 26
+             972:      6(int) Load 971
+             973:     42(ptr) AccessChain 24(data) 25 972 25 26
+             974:      6(int) Load 973
+             975:      6(int) GroupNonUniformQuadSwap 35 974 358
+             976:     42(ptr) AccessChain 24(data) 25 970 25 26
+                              Store 976 975
+             977:     27(ptr) AccessChain 10(dti) 26
+             978:      6(int) Load 977
+             979:     27(ptr) AccessChain 10(dti) 26
+             980:      6(int) Load 979
+             981:     32(ptr) AccessChain 24(data) 25 980 25
+             982:   13(ivec4) Load 981
+             983:   51(ivec2) VectorShuffle 982 982 0 1
+             984:   51(ivec2) GroupNonUniformQuadSwap 35 983 358
+             985:     32(ptr) AccessChain 24(data) 25 978 25
+             986:   13(ivec4) Load 985
+             987:   13(ivec4) VectorShuffle 986 984 4 5 2 3
+                              Store 985 987
+             988:     27(ptr) AccessChain 10(dti) 26
+             989:      6(int) Load 988
+             990:     27(ptr) AccessChain 10(dti) 26
+             991:      6(int) Load 990
+             992:     32(ptr) AccessChain 24(data) 25 991 25
+             993:   13(ivec4) Load 992
+             994:    7(ivec3) VectorShuffle 993 993 0 1 2
+             995:    7(ivec3) GroupNonUniformQuadSwap 35 994 358
+             996:     32(ptr) AccessChain 24(data) 25 989 25
+             997:   13(ivec4) Load 996
+             998:   13(ivec4) VectorShuffle 997 995 4 5 6 3
+                              Store 996 998
+             999:     27(ptr) AccessChain 10(dti) 26
+            1000:      6(int) Load 999
+            1001:     27(ptr) AccessChain 10(dti) 26
+            1002:      6(int) Load 1001
+            1003:     75(ptr) AccessChain 24(data) 25 1002 72
+            1004:   15(ivec4) Load 1003
+            1005:   15(ivec4) GroupNonUniformQuadSwap 35 1004 358
+            1006:     75(ptr) AccessChain 24(data) 25 1000 72
+                              Store 1006 1005
+            1007:     27(ptr) AccessChain 10(dti) 26
+            1008:      6(int) Load 1007
+            1009:     27(ptr) AccessChain 10(dti) 26
+            1010:      6(int) Load 1009
+            1011:     84(ptr) AccessChain 24(data) 25 1010 72 26
+            1012:     14(int) Load 1011
+            1013:     14(int) GroupNonUniformQuadSwap 35 1012 358
+            1014:     84(ptr) AccessChain 24(data) 25 1008 72 26
+                              Store 1014 1013
+            1015:     27(ptr) AccessChain 10(dti) 26
+            1016:      6(int) Load 1015
+            1017:     27(ptr) AccessChain 10(dti) 26
+            1018:      6(int) Load 1017
+            1019:     75(ptr) AccessChain 24(data) 25 1018 72
+            1020:   15(ivec4) Load 1019
+            1021:   93(ivec2) VectorShuffle 1020 1020 0 1
+            1022:   93(ivec2) GroupNonUniformQuadSwap 35 1021 358
+            1023:     75(ptr) AccessChain 24(data) 25 1016 72
+            1024:   15(ivec4) Load 1023
+            1025:   15(ivec4) VectorShuffle 1024 1022 4 5 2 3
+                              Store 1023 1025
+            1026:     27(ptr) AccessChain 10(dti) 26
+            1027:      6(int) Load 1026
+            1028:     27(ptr) AccessChain 10(dti) 26
+            1029:      6(int) Load 1028
+            1030:     75(ptr) AccessChain 24(data) 25 1029 72
+            1031:   15(ivec4) Load 1030
+            1032:  105(ivec3) VectorShuffle 1031 1031 0 1 2
+            1033:  105(ivec3) GroupNonUniformQuadSwap 35 1032 358
+            1034:     75(ptr) AccessChain 24(data) 25 1027 72
+            1035:   15(ivec4) Load 1034
+            1036:   15(ivec4) VectorShuffle 1035 1033 4 5 6 3
+                              Store 1034 1036
+            1037:     27(ptr) AccessChain 10(dti) 26
+            1038:      6(int) Load 1037
+            1039:     27(ptr) AccessChain 10(dti) 26
+            1040:      6(int) Load 1039
+            1041:    118(ptr) AccessChain 24(data) 25 1040 115
+            1042:   17(fvec4) Load 1041
+            1043:   17(fvec4) GroupNonUniformQuadSwap 35 1042 358
+            1044:    118(ptr) AccessChain 24(data) 25 1038 115
+                              Store 1044 1043
+            1045:     27(ptr) AccessChain 10(dti) 26
+            1046:      6(int) Load 1045
+            1047:     27(ptr) AccessChain 10(dti) 26
+            1048:      6(int) Load 1047
+            1049:    127(ptr) AccessChain 24(data) 25 1048 115 26
+            1050:   16(float) Load 1049
+            1051:   16(float) GroupNonUniformQuadSwap 35 1050 358
+            1052:    127(ptr) AccessChain 24(data) 25 1046 115 26
+                              Store 1052 1051
+            1053:     27(ptr) AccessChain 10(dti) 26
+            1054:      6(int) Load 1053
+            1055:     27(ptr) AccessChain 10(dti) 26
+            1056:      6(int) Load 1055
+            1057:    118(ptr) AccessChain 24(data) 25 1056 115
+            1058:   17(fvec4) Load 1057
+            1059:  136(fvec2) VectorShuffle 1058 1058 0 1
+            1060:  136(fvec2) GroupNonUniformQuadSwap 35 1059 358
+            1061:    118(ptr) AccessChain 24(data) 25 1054 115
+            1062:   17(fvec4) Load 1061
+            1063:   17(fvec4) VectorShuffle 1062 1060 4 5 2 3
+                              Store 1061 1063
+            1064:     27(ptr) AccessChain 10(dti) 26
+            1065:      6(int) Load 1064
+            1066:     27(ptr) AccessChain 10(dti) 26
+            1067:      6(int) Load 1066
+            1068:    118(ptr) AccessChain 24(data) 25 1067 115
+            1069:   17(fvec4) Load 1068
+            1070:  148(fvec3) VectorShuffle 1069 1069 0 1 2
+            1071:  148(fvec3) GroupNonUniformQuadSwap 35 1070 358
+            1072:    118(ptr) AccessChain 24(data) 25 1065 115
+            1073:   17(fvec4) Load 1072
+            1074:   17(fvec4) VectorShuffle 1073 1071 4 5 6 3
+                              Store 1072 1074
+            1075:     27(ptr) AccessChain 10(dti) 26
+            1076:      6(int) Load 1075
+            1077:     27(ptr) AccessChain 10(dti) 26
+            1078:      6(int) Load 1077
+            1079:    161(ptr) AccessChain 24(data) 25 1078 158
+            1080:   19(fvec4) Load 1079
+            1081:   19(fvec4) GroupNonUniformQuadSwap 35 1080 358
+            1082:    161(ptr) AccessChain 24(data) 25 1076 158
+                              Store 1082 1081
+            1083:     27(ptr) AccessChain 10(dti) 26
+            1084:      6(int) Load 1083
+            1085:     27(ptr) AccessChain 10(dti) 26
+            1086:      6(int) Load 1085
+            1087:    170(ptr) AccessChain 24(data) 25 1086 158 26
+            1088:   18(float) Load 1087
+            1089:   18(float) GroupNonUniformQuadSwap 35 1088 358
+            1090:    170(ptr) AccessChain 24(data) 25 1084 158 26
+                              Store 1090 1089
+            1091:     27(ptr) AccessChain 10(dti) 26
+            1092:      6(int) Load 1091
+            1093:     27(ptr) AccessChain 10(dti) 26
+            1094:      6(int) Load 1093
+            1095:    161(ptr) AccessChain 24(data) 25 1094 158
+            1096:   19(fvec4) Load 1095
+            1097:  179(fvec2) VectorShuffle 1096 1096 0 1
+            1098:  179(fvec2) GroupNonUniformQuadSwap 35 1097 358
+            1099:    161(ptr) AccessChain 24(data) 25 1092 158
+            1100:   19(fvec4) Load 1099
+            1101:   19(fvec4) VectorShuffle 1100 1098 4 5 2 3
+                              Store 1099 1101
+            1102:     27(ptr) AccessChain 10(dti) 26
+            1103:      6(int) Load 1102
+            1104:     27(ptr) AccessChain 10(dti) 26
+            1105:      6(int) Load 1104
+            1106:    161(ptr) AccessChain 24(data) 25 1105 158
+            1107:   19(fvec4) Load 1106
+            1108:  191(fvec3) VectorShuffle 1107 1107 0 1 2
+            1109:  191(fvec3) GroupNonUniformQuadSwap 35 1108 358
+            1110:    161(ptr) AccessChain 24(data) 25 1103 158
+            1111:   19(fvec4) Load 1110
+            1112:   19(fvec4) VectorShuffle 1111 1109 4 5 6 3
+                              Store 1110 1112
                               Return
                               FunctionEnd

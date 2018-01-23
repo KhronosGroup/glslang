@@ -1,6 +1,6 @@
 float4 PixelShaderFunction() : COLOR0
 {
-    if (WaveIsHelperLane())
+    if (WaveIsFirstLane())
     {
         return float4(1, 2, 3, 4);
     }

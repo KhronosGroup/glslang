@@ -905,30 +905,33 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "Consume",                          nullptr, nullptr,   "-",              "-",              EShLangAll,   true },
 
         // SM 6.0
-        { "WaveOnce",                         "S",     "B",       "-",              "-",              EShLangPSCS,  false},
+
+        { "WaveIsFirstLane",                  "S",     "B",       "-",              "-",              EShLangPSCS,  false},
         { "WaveGetLaneCount",                 "S",     "U",       "-",              "-",              EShLangPSCS,  false},
         { "WaveGetLaneIndex",                 "S",     "U",       "-",              "-",              EShLangPSCS,  false},
-        { "WaveIsHelperLane",                 "S",     "B",       "-",              "-",              EShLangPS,    false},
-        { "WaveAnyTrue",                      "S",     "B",       "S",              "B",              EShLangPSCS,  false},
-        { "WaveAllTrue",                      "S",     "B",       "S",              "B",              EShLangPSCS,  false},
-        { "WaveAllEqual",                     "S",     "B",       "S",              "B",              EShLangPSCS,  false},
-        { "WaveBallot",                       "S",     "M",       "S",              "B",              EShLangPSCS,  false},
+        { "WaveActiveAnyTrue",                "S",     "B",       "S",              "B",              EShLangPSCS,  false},
+        { "WaveActiveAllTrue",                "S",     "B",       "S",              "B",              EShLangPSCS,  false},
+        { "WaveActiveBallot",                 "V4",    "U",       "S",              "B",              EShLangPSCS,  false},
         { "WaveReadLaneAt",                   nullptr, nullptr,   "SV,S",           "DFUI,U",         EShLangPSCS,  false},
         { "WaveReadFirstLane",                nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
-        { "WaveAllSum",                       nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
-        { "WaveAllProduct",                   nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
-        { "WaveAllMin",                       nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
-        { "WaveAllMax",                       nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
-        { "WaveAllBitAnd",                    nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
-        { "WaveAllBitOr",                     nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
-        { "WaveAllBitXor",                    nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "WaveActiveAllEqual",               "S",     "B",       "SV",             "DFUI",           EShLangPSCS,  false},
+        { "WaveActiveAllEqualBool",           "S",     "B",       "S",              "B",              EShLangPSCS,  false},
+        { "WaveActiveCountBits",              "S",     "U",       "S",              "B",              EShLangPSCS,  false},
+        
+        { "WaveActiveSum",                    nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "WaveActiveProduct",                nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "WaveActiveBitAnd",                 nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "WaveActiveBitOr",                  nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "WaveActiveBitXor",                 nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "WaveActiveMin",                    nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "WaveActiveMax",                    nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
         { "WavePrefixSum",                    nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
         { "WavePrefixProduct",                nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "WavePrefixCountBits",              "S",     "U",       "S",              "B",              EShLangPSCS,  false},
+        { "QuadReadAcrossX",                  nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "QuadReadAcrossY",                  nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "QuadReadAcrossDiagonal",           nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
         { "QuadReadLaneAt",                   nullptr, nullptr,   "SV,S",           "DFUI,U",         EShLangPSCS,  false},
-        { "QuadSwapX",                        nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
-        { "QuadSwapY",                        nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
-        { "WaveGetOrderedIndex",              "S",     "U",       "-",              "-",              EShLangPSCS,  false},
-        { "GlobalOrderedCountIncrement",      "S",     "U",       "S",              "U",              EShLangPSCS,  false},
 
         // Methods for subpass input objects
         { "SubpassLoad",                      "V4",    nullptr,   "[",              "FIU",            EShLangPS,    true },
@@ -1273,30 +1276,31 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator(BUILTIN_PREFIX "RestartStrip",                EOpMethodRestartStrip);
 
     // Wave ops
-    symbolTable.relateToOperator("WaveOnce",                                   EOpSubgroupElect);
+    symbolTable.relateToOperator("WaveIsFirstLane",                            EOpSubgroupElect);
     symbolTable.relateToOperator("WaveGetLaneCount",                           EOpWaveGetLaneCount);
     symbolTable.relateToOperator("WaveGetLaneIndex",                           EOpWaveGetLaneIndex);
-    symbolTable.relateToOperator("WaveIsHelperLane",                           EOpWaveIsHelperLane);
-    symbolTable.relateToOperator("WaveAnyTrue",                                EOpSubgroupAny);
-    symbolTable.relateToOperator("WaveAllTrue",                                EOpSubgroupAll);
-    symbolTable.relateToOperator("WaveAllEqual",                               EOpSubgroupAllEqual);
-    symbolTable.relateToOperator("WaveBallot",                                 EOpWaveBallot);
-    symbolTable.relateToOperator("WaveReadLaneAt",                             EOpSubgroupShuffle);
+    symbolTable.relateToOperator("WaveActiveAnyTrue",                          EOpSubgroupAny);
+    symbolTable.relateToOperator("WaveActiveAllTrue",                          EOpSubgroupAll);
+    symbolTable.relateToOperator("WaveActiveBallot",                           EOpSubgroupBallot);
     symbolTable.relateToOperator("WaveReadFirstLane",                          EOpSubgroupBroadcastFirst);
-    symbolTable.relateToOperator("WaveAllSum",                                 EOpSubgroupAdd);
-    symbolTable.relateToOperator("WaveAllProduct",                             EOpSubgroupMul);
-    symbolTable.relateToOperator("WaveAllMin",                                 EOpSubgroupMin);
-    symbolTable.relateToOperator("WaveAllMax",                                 EOpSubgroupMax);
-    symbolTable.relateToOperator("WaveAllBitAnd",                              EOpSubgroupAnd);
-    symbolTable.relateToOperator("WaveAllBitOr",                               EOpSubgroupOr);
-    symbolTable.relateToOperator("WaveAllBitXor",                              EOpSubgroupXor);
+    symbolTable.relateToOperator("WaveReadLaneAt",                             EOpSubgroupShuffle);
+    symbolTable.relateToOperator("WaveActiveAllEqual",                         EOpSubgroupAllEqual);
+    symbolTable.relateToOperator("WaveActiveAllEqualBool",                     EOpSubgroupAllEqual);
+    symbolTable.relateToOperator("WaveActiveCountBits",                        EOpWaveActiveCountBits);
+    symbolTable.relateToOperator("WaveActiveSum",                              EOpSubgroupAdd);
+    symbolTable.relateToOperator("WaveActiveProduct",                          EOpSubgroupMul);
+    symbolTable.relateToOperator("WaveActiveBitAnd",                           EOpSubgroupAnd);
+    symbolTable.relateToOperator("WaveActiveBitOr",                            EOpSubgroupOr);
+    symbolTable.relateToOperator("WaveActiveBitXor",                           EOpSubgroupXor);
+    symbolTable.relateToOperator("WaveActiveMin",                              EOpSubgroupMin);
+    symbolTable.relateToOperator("WaveActiveMax",                              EOpSubgroupMax);
     symbolTable.relateToOperator("WavePrefixSum",                              EOpSubgroupInclusiveAdd);
     symbolTable.relateToOperator("WavePrefixProduct",                          EOpSubgroupInclusiveMul);
+    symbolTable.relateToOperator("WavePrefixCountBits",                        EOpWavePrefixCountBits);
+    symbolTable.relateToOperator("QuadReadAcrossX",                            EOpSubgroupQuadSwapHorizontal);
+    symbolTable.relateToOperator("QuadReadAcrossY",                            EOpSubgroupQuadSwapVertical);
+    symbolTable.relateToOperator("QuadReadAcrossDiagonal",                     EOpSubgroupQuadSwapDiagonal);
     symbolTable.relateToOperator("QuadReadLaneAt",                             EOpSubgroupQuadBroadcast);
-    symbolTable.relateToOperator("QuadSwapX",                                  EOpSubgroupQuadSwapHorizontal);
-    symbolTable.relateToOperator("QuadSwapY",                                  EOpSubgroupQuadSwapVertical);
-    symbolTable.relateToOperator("WaveGetOrderedIndex",                        EOpWaveGetOrderedIndex);
-    symbolTable.relateToOperator("GlobalOrderedCountIncrement",                EOpGlobalOrderedCountIncrement);
 
     // Subpass input methods
     symbolTable.relateToOperator(BUILTIN_PREFIX "SubpassLoad",                 EOpSubpassLoad);

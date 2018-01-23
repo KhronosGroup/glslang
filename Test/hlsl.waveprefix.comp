@@ -50,4 +50,6 @@ void CSMain(uint3 dti : SV_DispatchThreadID)
 	data[dti.x].d.x = WavePrefixProduct(data[dti.x].d.x);
 	data[dti.x].d.xy = WavePrefixProduct(data[dti.x].d.xy);
 	data[dti.x].d.xyz = WavePrefixProduct(data[dti.x].d.xyz);
+
+	data[dti.x].u.x = WavePrefixCountBits(data[dti.x].u.x == 0);
 }

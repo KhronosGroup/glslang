@@ -5090,19 +5090,9 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             node = lookupBuiltinVariable("@gl_SubgroupInvocationID", EbvSubgroupInvocation2, type);
             break;
         }
-    case EOpWaveIsHelperLane:
+    case EOpWaveActiveCountBits:
         {
-            // Mapped to gl_HelperInvocation builtin (We preprend @ to the symbol
-            // so that it inhabits the symbol table, but has a user-invalid name
-            // in-case some source HLSL defined the symbol also).
-            TType type(EbtBool, EvqVaryingIn);
-            node = lookupBuiltinVariable("@gl_HelperInvocation", EbvHelperInvocation, type);
-            break;
-        }
-    case EOpWaveBallot:
-        {
-            // Mapped to subgroupBallot() builtin (NOTE: if an IHV has
-            // a subgroup size > 64 these wave ops will not work for them!)
+            // Mapped to subgroupBallotBitCount(subgroupBallot()) builtin
 
             // uvec4 type.
             TType uvec4Type(EbtUint, EvqTemporary, 4);
@@ -5111,61 +5101,32 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             TIntermTyped* res = intermediate.addBuiltInFunctionCall(loc,
                 EOpSubgroupBallot, true, arguments, uvec4Type);
 
-            // And extract a uvec2 for the two highest components.
-            TIntermTyped* xy = handleDotDereference(loc, res, "xy");
+            // uint type.
+            TType uintType(EbtUint, EvqTemporary);
 
-            // uint64_t type.
-            TType uint64Type(EbtUint64, EvqTemporary);
-
-            // And bitcast the result for a uint64_t
             node = intermediate.addBuiltInFunctionCall(loc,
-                EOpPackUint2x32, true, xy, uint64Type);
+                EOpSubgroupBallotBitCount, true, res, uintType);
 
             break;
         }
-    case EOpWaveGetOrderedIndex:
+    case EOpWavePrefixCountBits:
         {
-            if (language == EShLangFragment) {
-                // NOTE: For HLSL SM6.0 this should work for PS too, but the current GLSL extensions don't allow this.
-                error(loc, "WaveGetOrderedIndex() unsupported in a pixel/fragment shader", "WaveGetOrderedIndex", "");
-                break;
-            }
+            // Mapped to subgroupBallotInclusiveBitCount(subgroupBallot())
+            // builtin
 
-            TType uintType(EbtUint, EvqVaryingIn);
-            TIntermTyped* subgroupID = lookupBuiltinVariable("@gl_SubgroupID", EbvSubgroupID, uintType);
-            TIntermTyped* numSubgroups = lookupBuiltinVariable("@gl_NumSubgroups", EbvNumSubgroups, uintType);
+            // uvec4 type.
+            TType uvec4Type(EbtUint, EvqTemporary, 4);
 
-            TType uvec3Type(EbtUint, EvqVaryingIn, 3);
-            TIntermTyped* numWorkGroups = lookupBuiltinVariable("@gl_NumWorkGroups", EbvNumWorkGroups, uvec3Type);
-            TIntermTyped* workGroupID = lookupBuiltinVariable("@gl_WorkGroupID", EbvWorkGroupId, uvec3Type);
+            // Get the uvec4 return from subgroupBallot().
+            TIntermTyped* res = intermediate.addBuiltInFunctionCall(loc,
+                EOpSubgroupBallot, true, arguments, uvec4Type);
 
-            //x & y components of gl_NumWorkGroups
-            TIntermTyped* numWorkGroupsX = handleDotDereference(loc, numWorkGroups, "x");
-            TIntermTyped* numWorkGroupsY = handleDotDereference(loc, numWorkGroups, "y");
+            // uint type.
+            TType uintType(EbtUint, EvqTemporary);
 
-            // x & y components of globalSize
-            TIntermTyped* globalSizeX = handleBinaryMath(loc, "mul", EOpMul, numSubgroups, numWorkGroupsX);
-            TIntermTyped* globalSizeY = numWorkGroupsY;
+            node = intermediate.addBuiltInFunctionCall(loc,
+                EOpSubgroupBallotInclusiveBitCount, true, res, uintType);
 
-            // x, y & z components of gl_WorkGroupID
-            TIntermTyped* workGroupX = handleDotDereference(loc, workGroupID, "x");
-            TIntermTyped* workGroupY = handleDotDereference(loc, workGroupID, "y");
-            TIntermTyped* workGroupZ = handleDotDereference(loc, workGroupID, "z");
-
-            // We're going to build up the following variables to get a uniquely ordered ID:
-            // (globalSize.y * gl_WorkGroupID.z + gl_WorkGroupID.y) * globalSize.x + gl_WorkGroupID.x + gl_SubgroupID
-            node = handleBinaryMath(loc, "mul", EOpMul, globalSizeY, workGroupZ);
-            node = handleBinaryMath(loc, "add", EOpAdd, node, workGroupY);
-            node = handleBinaryMath(loc, "mul", EOpMul, node, globalSizeX);
-            node = handleBinaryMath(loc, "add", EOpAdd, node, workGroupX);
-            node = handleBinaryMath(loc, "add", EOpAdd, node, subgroupID);
-
-            break;
-        }
-    case EOpGlobalOrderedCountIncrement:
-        {
-            // NOTE: For HLSL SM6.0 this should work, but the current GLSL extensions don't allow this.
-            error(loc, "GlobalOrderedCountIncrement() unsupported", "GlobalOrderedCountIncrement", "");
             break;
         }
 
