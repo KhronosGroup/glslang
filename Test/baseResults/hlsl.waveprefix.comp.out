@@ -1110,6 +1110,42 @@ local_size = (32, 16, 1)
 0:52                1 (const int)
 0:52              Constant:
 0:52                2 (const int)
+0:54      move second child to first child ( temp uint)
+0:54        direct index ( temp uint)
+0:54          u: direct index for structure ( temp 4-component vector of uint)
+0:54            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:54              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:54                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:54                Constant:
+0:54                  0 (const uint)
+0:54              direct index ( temp uint)
+0:54                'dti' ( in 3-component vector of uint)
+0:54                Constant:
+0:54                  0 (const int)
+0:54            Constant:
+0:54              0 (const int)
+0:54          Constant:
+0:54            0 (const int)
+0:54        subgroupBallotInclusiveBitCount ( temp uint)
+0:54          subgroupBallot ( temp 4-component vector of uint)
+0:54            Compare Equal ( temp bool)
+0:54              direct index ( temp uint)
+0:54                u: direct index for structure ( temp 4-component vector of uint)
+0:54                  indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:54                    @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:54                      'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:54                      Constant:
+0:54                        0 (const uint)
+0:54                    direct index ( temp uint)
+0:54                      'dti' ( in 3-component vector of uint)
+0:54                      Constant:
+0:54                        0 (const int)
+0:54                  Constant:
+0:54                    0 (const int)
+0:54                Constant:
+0:54                  0 (const int)
+0:54              Constant:
+0:54                0 (const uint)
 0:13  Function Definition: CSMain( ( temp void)
 0:13    Function Parameters: 
 0:?     Sequence
@@ -2237,6 +2273,42 @@ local_size = (32, 16, 1)
 0:52                1 (const int)
 0:52              Constant:
 0:52                2 (const int)
+0:54      move second child to first child ( temp uint)
+0:54        direct index ( temp uint)
+0:54          u: direct index for structure ( temp 4-component vector of uint)
+0:54            indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:54              @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:54                'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:54                Constant:
+0:54                  0 (const uint)
+0:54              direct index ( temp uint)
+0:54                'dti' ( in 3-component vector of uint)
+0:54                Constant:
+0:54                  0 (const int)
+0:54            Constant:
+0:54              0 (const int)
+0:54          Constant:
+0:54            0 (const int)
+0:54        subgroupBallotInclusiveBitCount ( temp uint)
+0:54          subgroupBallot ( temp 4-component vector of uint)
+0:54            Compare Equal ( temp bool)
+0:54              direct index ( temp uint)
+0:54                u: direct index for structure ( temp 4-component vector of uint)
+0:54                  indirect index (layout( row_major std430) buffer structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:54                    @data: direct index for structure (layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d})
+0:54                      'data' (layout( row_major std430) buffer block{layout( row_major std430) buffer implicitly-sized array of structure{ temp 4-component vector of uint u,  temp 4-component vector of int i,  temp 4-component vector of float f,  temp 4-component vector of double d} @data})
+0:54                      Constant:
+0:54                        0 (const uint)
+0:54                    direct index ( temp uint)
+0:54                      'dti' ( in 3-component vector of uint)
+0:54                      Constant:
+0:54                        0 (const int)
+0:54                  Constant:
+0:54                    0 (const int)
+0:54                Constant:
+0:54                  0 (const int)
+0:54              Constant:
+0:54                0 (const uint)
 0:13  Function Definition: CSMain( ( temp void)
 0:13    Function Parameters: 
 0:?     Sequence
@@ -2251,15 +2323,16 @@ local_size = (32, 16, 1)
 
 // Module Version 10000
 // Generated by (magic number): 80003
-// Id's are bound by 358
+// Id's are bound by 369
 
                               Capability Shader
                               Capability Float64
                               Capability GroupNonUniform
                               Capability GroupNonUniformArithmetic
+                              Capability GroupNonUniformBallot
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
-                              EntryPoint GLCompute 4  "CSMain" 353
+                              EntryPoint GLCompute 4  "CSMain" 364
                               ExecutionMode 4 LocalSize 32 16 1
                               Source HLSL 500
                               Name 4  "CSMain"
@@ -2273,9 +2346,9 @@ local_size = (32, 16, 1)
                               Name 22  "data"
                               MemberName 22(data) 0  "@data"
                               Name 24  "data"
-                              Name 351  "dti"
-                              Name 353  "dti"
-                              Name 355  "param"
+                              Name 362  "dti"
+                              Name 364  "dti"
+                              Name 366  "param"
                               MemberDecorate 20(Types) 0 Offset 0
                               MemberDecorate 20(Types) 1 Offset 16
                               MemberDecorate 20(Types) 2 Offset 32
@@ -2284,7 +2357,7 @@ local_size = (32, 16, 1)
                               MemberDecorate 22(data) 0 Offset 0
                               Decorate 22(data) BufferBlock
                               Decorate 24(data) DescriptorSet 0
-                              Decorate 353(dti) BuiltIn GlobalInvocationId
+                              Decorate 364(dti) BuiltIn GlobalInvocationId
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0
@@ -2325,17 +2398,18 @@ local_size = (32, 16, 1)
              170:             TypePointer Uniform 18(float)
              179:             TypeVector 18(float) 2
              191:             TypeVector 18(float) 3
-             352:             TypePointer Input 7(ivec3)
-        353(dti):    352(ptr) Variable Input
+             357:             TypeBool
+             363:             TypePointer Input 7(ivec3)
+        364(dti):    363(ptr) Variable Input
        4(CSMain):           2 Function None 3
                5:             Label
-        351(dti):      8(ptr) Variable Function
-      355(param):      8(ptr) Variable Function
-             354:    7(ivec3) Load 353(dti)
-                              Store 351(dti) 354
-             356:    7(ivec3) Load 351(dti)
-                              Store 355(param) 356
-             357:           2 FunctionCall 11(@CSMain(vu3;) 355(param)
+        362(dti):      8(ptr) Variable Function
+      366(param):      8(ptr) Variable Function
+             365:    7(ivec3) Load 364(dti)
+                              Store 362(dti) 365
+             367:    7(ivec3) Load 362(dti)
+                              Store 366(param) 367
+             368:           2 FunctionCall 11(@CSMain(vu3;) 366(param)
                               Return
                               FunctionEnd
 11(@CSMain(vu3;):           2 Function None 9
@@ -2677,5 +2751,16 @@ local_size = (32, 16, 1)
              349:   19(fvec4) Load 348
              350:   19(fvec4) VectorShuffle 349 347 4 5 6 3
                               Store 348 350
+             351:     27(ptr) AccessChain 10(dti) 26
+             352:      6(int) Load 351
+             353:     27(ptr) AccessChain 10(dti) 26
+             354:      6(int) Load 353
+             355:     42(ptr) AccessChain 24(data) 25 354 25 26
+             356:      6(int) Load 355
+             358:   357(bool) IEqual 356 26
+             359:   13(ivec4) GroupNonUniformBallot 35 358
+             360:      6(int) GroupNonUniformBallotBitCount 35 InclusiveScan 359
+             361:     42(ptr) AccessChain 24(data) 25 352 25 26
+                              Store 361 360
                               Return
                               FunctionEnd
