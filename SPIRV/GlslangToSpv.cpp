@@ -6102,10 +6102,12 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
         optimizer.RegisterPass(CreateBlockMergePass());
         optimizer.RegisterPass(CreateLocalMultiStoreElimPass());
         optimizer.RegisterPass(CreateInsertExtractElimPass());
-        optimizer.RegisterPass(CreateAggressiveDCEPass());
         // TODO(greg-lunarg): Add this when AMD driver issues are resolved
         // if (options->optimizeSize)
         //     optimizer.RegisterPass(CreateCommonUniformElimPass());
+        if (options->optimizeSize)
+            optimizer.RegisterPass(CreateRedundancyEliminationPass());
+        optimizer.RegisterPass(CreateAggressiveDCEPass());
 
         if (!optimizer.Run(spirv.data(), spirv.size(), &spirv))
             return;
