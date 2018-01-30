@@ -37,6 +37,9 @@
 #ifndef _CONSTANT_UNION_INCLUDED_
 #define _CONSTANT_UNION_INCLUDED_
 
+#include "../Include/Common.h"
+#include "../Include/BaseTypes.h"
+
 namespace glslang {
 
 class TConstUnion {
