@@ -644,6 +644,11 @@ TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, const TStr
 {
     int thisDepth;
     TSymbol* symbol = symbolTable.find(*string, thisDepth);
+    if (!symbol && intermediate.getAppendSemanticNameToVarName())
+    {
+        symbol = symbolTable.find(semanticAppendedVarMap[*string], thisDepth);
+    }
+
     if (symbol && symbol->getAsVariable() && symbol->getAsVariable()->isUserType()) {
         error(loc, "expected symbol, not user-defined type", string->c_str(), "");
         return nullptr;
@@ -1025,13 +1030,21 @@ TIntermTyped* HlslParseContext::handleDotDereference(const TSourceLoc& loc, TInt
            }
         }
     } else if (base->getBasicType() == EbtStruct || base->getBasicType() == EbtBlock) {
+        TString typeName = base->getType().getTypeName();
         const TTypeList* fields = base->getType().getStruct();
+
         bool fieldFound = false;
         int member;
         for (member = 0; member < (int)fields->size(); ++member) {
             if ((*fields)[member].type->getFieldName() == field) {
                 fieldFound = true;
                 break;
+            } else if ( intermediate.getAppendSemanticNameToVarName() ) {
+                auto typeFieldPair = std::make_pair(typeName, field);
+                if (semanticAppendedFieldMap.find(typeFieldPair) != semanticAppendedFieldMap.end()) {
+                    fieldFound = true;
+                    break;
+                }
             }
         }
         if (fieldFound) {
@@ -1966,6 +1979,31 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
     TVector<TVariable*> outputs;
     remapEntryPointIO(userFunction, entryPointOutput, inputs, outputs);
 
+    // Process inputs of the shader and add semantic name to their names.
+    if (intermediate.getAppendSemanticNameToVarName()) {
+        for (auto& in : inputs) {
+            if (TVariable* var = in->getAsVariable()) {
+                TType& type = var->getWritableType();
+                if (TTypeList* fields = type.getWritableStruct()) {
+                    TString typeName = type.getTypeName();
+                    for (auto& field : *fields) {
+                        auto typeFieldPair = std::make_pair(typeName, field.type->getFieldName());
+                        semanticAppendedFieldMap[typeFieldPair] = getSemanticsAppendedFieldName(*field.type);
+                        field.type->setFieldName(semanticAppendedFieldMap[typeFieldPair]);
+                    }
+                }
+                else {
+                    if (var->getType().getQualifier().semanticName) {
+                        TString oldName = var->getName();
+                        TString newName = getSemanticsAppendedVariableName(*var);
+                        semanticAppendedVarMap[oldName] = newName;
+                        var->changeName(&semanticAppendedVarMap[oldName]);
+                    }
+                }
+            }
+        }
+    }
+
     // Further this return/in/out transform by flattening, splitting, and assigning locations
     const auto makeVariableInOut = [&](TVariable& variable) {
         if (variable.getType().isStruct()) {
@@ -2028,6 +2066,11 @@ TIntermNode* HlslParseContext::transformEntryPoint(const TSourceLoc& loc, TFunct
 
     for (int i = 0; i < userFunction.getParamCount(); i++) {
         TParameter& param = userFunction[i];
+        if (intermediate.getAppendSemanticNameToVarName() && param.type->getQualifier().isParamInput() && !param.type->isStruct()) {
+            TString newParamName = getSemanticsAppendedParameterName(param);
+            *(param.name) = newParamName;
+        }
+
         argVars.push_back(makeInternalVariable(*param.name, *param.type));
         argVars.back()->getWritableType().getQualifier().makeTemporary();
 
@@ -9360,6 +9403,43 @@ void HlslParseContext::getTextureReturnType(const TSampler& sampler, TType& retT
     }
 }
 
+#define SEMANTICS_SEPARATOR TString("__")
+
+TString HlslParseContext::getSemanticsAppendedParameterName(const TParameter & param)
+{
+    const char* semanticName = param.type->getQualifier().semanticName;
+    if (!semanticName)
+        return *param.name;
+    return (*param.name) + SEMANTICS_SEPARATOR + semanticName;
+}
+
+TString HlslParseContext::getSemanticsAppendedVariableName(const TVariable& var)
+{
+    const char* semanticName = var.getType().getQualifier().semanticName;
+    if (!semanticName)
+        return var.getName();
+    return var.getName() + SEMANTICS_SEPARATOR + semanticName;
+}
+
+TString HlslParseContext::getSemanticsAppendedFieldName(const TType& type)
+{
+    const char* semanticName = type.getQualifier().semanticName;
+    if (!semanticName)
+        return type.getFieldName();
+    return type.getFieldName() + SEMANTICS_SEPARATOR + semanticName;
+}
+
+TString HlslParseContext::removeSemanticsFromFieldName(const TType& type)
+{
+    TString fieldName = type.getFieldName();
+    const char* semanticName = type.getQualifier().semanticName;
+    if (!semanticName)
+        return fieldName;
+    size_t loc = fieldName.find(SEMANTICS_SEPARATOR + semanticName);
+    if (loc == TString::npos)
+        return fieldName;
+    return fieldName.substr(0, loc);
+}
 
 // Return a symbol for the tessellation linkage variable of the given TBuiltInVariable type
 TIntermSymbol* HlslParseContext::findTessLinkageSymbol(TBuiltInVariable biType) const

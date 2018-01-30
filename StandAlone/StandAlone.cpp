@@ -67,38 +67,39 @@ extern "C" {
 
 // Command-line options
 enum TOptions {
-    EOptionNone                 = 0,
-    EOptionIntermediate         = (1 <<  0),
-    EOptionSuppressInfolog      = (1 <<  1),
-    EOptionMemoryLeakMode       = (1 <<  2),
-    EOptionRelaxedErrors        = (1 <<  3),
-    EOptionGiveWarnings         = (1 <<  4),
-    EOptionLinkProgram          = (1 <<  5),
-    EOptionMultiThreaded        = (1 <<  6),
-    EOptionDumpConfig           = (1 <<  7),
-    EOptionDumpReflection       = (1 <<  8),
-    EOptionSuppressWarnings     = (1 <<  9),
-    EOptionDumpVersions         = (1 << 10),
-    EOptionSpv                  = (1 << 11),
-    EOptionHumanReadableSpv     = (1 << 12),
-    EOptionVulkanRules          = (1 << 13),
-    EOptionDefaultDesktop       = (1 << 14),
-    EOptionOutputPreprocessed   = (1 << 15),
-    EOptionOutputHexadecimal    = (1 << 16),
-    EOptionReadHlsl             = (1 << 17),
-    EOptionCascadingErrors      = (1 << 18),
-    EOptionAutoMapBindings      = (1 << 19),
-    EOptionFlattenUniformArrays = (1 << 20),
-    EOptionNoStorageFormat      = (1 << 21),
-    EOptionKeepUncalled         = (1 << 22),
-    EOptionHlslOffsets          = (1 << 23),
-    EOptionHlslIoMapping        = (1 << 24),
-    EOptionAutoMapLocations     = (1 << 25),
-    EOptionDebug                = (1 << 26),
-    EOptionStdin                = (1 << 27),
-    EOptionOptimizeDisable      = (1 << 28),
-    EOptionOptimizeSize         = (1 << 29),
-    EOptionInvertY              = (1 << 30),
+    EOptionNone                     = 0,
+    EOptionIntermediate             = (1 <<  0),
+    EOptionSuppressInfolog          = (1 <<  1),
+    EOptionMemoryLeakMode           = (1 <<  2),
+    EOptionRelaxedErrors            = (1 <<  3),
+    EOptionGiveWarnings             = (1 <<  4),
+    EOptionLinkProgram              = (1 <<  5),
+    EOptionMultiThreaded            = (1 <<  6),
+    EOptionDumpConfig               = (1 <<  7),
+    EOptionDumpReflection           = (1 <<  8),
+    EOptionSuppressWarnings         = (1 <<  9),
+    EOptionDumpVersions             = (1 << 10),
+    EOptionSpv                      = (1 << 11),
+    EOptionHumanReadableSpv         = (1 << 12),
+    EOptionVulkanRules              = (1 << 13),
+    EOptionDefaultDesktop           = (1 << 14),
+    EOptionOutputPreprocessed       = (1 << 15),
+    EOptionOutputHexadecimal        = (1 << 16),
+    EOptionReadHlsl                 = (1 << 17),
+    EOptionCascadingErrors          = (1 << 18),
+    EOptionAutoMapBindings          = (1 << 19),
+    EOptionFlattenUniformArrays     = (1 << 20),
+    EOptionNoStorageFormat          = (1 << 21),
+    EOptionKeepUncalled             = (1 << 22),
+    EOptionHlslOffsets              = (1 << 23),
+    EOptionHlslIoMapping            = (1 << 24),
+    EOptionAutoMapLocations         = (1 << 25),
+    EOptionDebug                    = (1 << 26),
+    EOptionStdin                    = (1 << 27),
+    EOptionOptimizeDisable          = (1 << 28),
+    EOptionOptimizeSize             = (1 << 29),
+    EOptionInvertY                  = (1 << 30),
+    EOptionAppendSemanticToVarName  = (1 << 31),
 };
 
 //
@@ -523,6 +524,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                     } else if (lowerword == "invert-y" ||  // synonyms
                                lowerword == "iy") {
                         Options |= EOptionInvertY;
+                    } else if (lowerword == "append-semantic-names"){
+                        Options |= EOptionAppendSemanticToVarName;
                     } else {
                         usage();
                     }
@@ -665,6 +668,13 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
     if ((Options & EOptionFlattenUniformArrays) != 0 &&
         (Options & EOptionReadHlsl) == 0)
         Error("uniform array flattening only valid when compiling HLSL source.");
+
+    // Show a warning if --append-semantic-names is not used for HLSL vertex shader translation
+    if ((Options & EOptionAppendSemanticToVarName) && (!(Options & EOptionReadHlsl) || strcmp(shaderStageName, "vert") != 0))
+    {
+        fprintf(stdout, "WARNING: --append-semantic-names arguments can only be used for translating HLSL vertex shaders. The option is disabled automatically. \n");
+        Options &= ~EOptionAppendSemanticToVarName;
+    }
 }
 
 //
@@ -846,6 +856,9 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         if (Options & EOptionInvertY)
             shader->setInvertY(true);
+
+        if (Options & EOptionAppendSemanticToVarName)
+            shader->setAppendSemanticToVarName(true);
 
         // Set up the environment, some subsettings take precedence over earlier
         // ways of setting things.
@@ -1367,6 +1380,8 @@ void usage()
            "                                       initialized with the shader binary code.\n"
            "  --vn <name>                          synonym for --variable-name <name>\n"
            "  --invert-y | --iy                    invert position.Y output in vertex shader\n"
+           "  --append-semantic-names              appends semantic name to HLSL vertex shader input variable names\n"
+           "                                       e.g. 'float4 vPos : POSITION0' is called vPos__POSITION0 in SPIR-V code.\n"
            );
 
     exit(EFailUsage);

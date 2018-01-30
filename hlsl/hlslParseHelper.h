@@ -217,6 +217,17 @@ public:
     // Obtain the sampler return type of the given sampler in retType.
     void getTextureReturnType(const TSampler& sampler, TType& retType) const;
 
+    static TString getSemanticsAppendedParameterName(const TParameter& param);
+
+    // Returns the variable name appended with a separator and semantic
+    static TString getSemanticsAppendedVariableName(const TVariable& var);
+
+    // Returns the type's field name appended with a separator and semantic
+    static TString getSemanticsAppendedFieldName(const TType& type);
+
+    // Return a string which appended seprator and semantic name is reduced from the field name
+    static TString removeSemanticsFromFieldName(const TType& type);
+
 protected:
     struct TFlattenData {
         TFlattenData() : nextBinding(TQualifier::layoutBindingEnd),
@@ -483,6 +494,12 @@ protected:
     };
 
     TMap<int, tShadowTextureSymbols*> textureShadowVariant;
+
+    // Maps the old variable name to the new variable name (semantic appended one) when --append-semantic-name option is used.
+    std::map<TString, TString> semanticAppendedVarMap;
+
+    // Maps the base name and its field name to the new field name (semantic appended one) when --append-semantic-name option is used.
+    std::map<std::pair<TString, TString>, TString> semanticAppendedFieldMap;
 };
 
 // This is the prefix we use for built-in methods to avoid namespace collisions with
