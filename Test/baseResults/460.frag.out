@@ -38,7 +38,7 @@ ERROR: node is still EOpNull!
 0:22            'i' ( temp int)
 0:22            Constant:
 0:22              0 (const int)
-0:22        Loop with condition tested first
+0:22        Loop with condition tested first: Dependency 4
 0:22          Loop Condition
 0:22          Compare Less Than ( temp bool)
 0:22            'i' ( temp int)
@@ -48,7 +48,7 @@ ERROR: node is still EOpNull!
 0:22          Loop Terminal Expression
 0:22          Pre-Increment ( temp int)
 0:22            'i' ( temp int)
-0:23      Test condition and select ( temp void)
+0:23      Test condition and select ( temp void): Flatten
 0:23        Condition
 0:23        Constant:
 0:23          true (const bool)
@@ -56,7 +56,7 @@ ERROR: node is still EOpNull!
 0:28  Function Definition: attExt( ( global void)
 0:28    Function Parameters: 
 0:30    Sequence
-0:30      Loop with condition not tested first
+0:30      Loop with condition not tested first: Dependency -3
 0:30        Loop Condition
 0:30        Constant:
 0:30          true (const bool)
