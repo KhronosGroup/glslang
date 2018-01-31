@@ -2573,12 +2573,15 @@ void Builder::createSelectionMerge(Block* mergeBlock, unsigned int control)
     buildPoint->addInstruction(std::unique_ptr<Instruction>(merge));
 }
 
-void Builder::createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control)
+void Builder::createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control,
+                              unsigned int dependencyLength)
 {
     Instruction* merge = new Instruction(OpLoopMerge);
     merge->addIdOperand(mergeBlock->getId());
     merge->addIdOperand(continueBlock->getId());
     merge->addImmediateOperand(control);
+    if ((control & LoopControlDependencyLengthMask) != 0)
+        merge->addImmediateOperand(dependencyLength);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(merge));
 }
 

@@ -131,7 +131,7 @@ protected:
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
     spv::SelectionControlMask TranslateSelectionControl(const glslang::TIntermSelection&) const;
     spv::SelectionControlMask TranslateSwitchControl(const glslang::TIntermSwitch&) const;
-    spv::LoopControlMask TranslateLoopControl(const glslang::TIntermLoop&) const;
+    spv::LoopControlMask TranslateLoopControl(const glslang::TIntermLoop&, unsigned int& dependencyLength) const;
     spv::StorageClass TranslateStorageClass(const glslang::TType&);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
@@ -767,7 +767,9 @@ spv::SelectionControlMask TGlslangToSpvTraverser::TranslateSwitchControl(const g
     return spv::SelectionControlMaskNone;
 }
 
-spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(const glslang::TIntermLoop& loopNode) const
+// return a non-0 dependency if the dependency argument must be set
+spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(const glslang::TIntermLoop& loopNode,
+    unsigned int& dependencyLength) const
 {
     spv::LoopControlMask control = spv::LoopControlMaskNone;
 
@@ -775,6 +777,12 @@ spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(const glslang:
         control = control | spv::LoopControlDontUnrollMask;
     if (loopNode.getUnroll())
         control = control | spv::LoopControlUnrollMask;
+    if (loopNode.getLoopDependency() == glslang::TIntermLoop::dependencyInfinite)
+        control = control | spv::LoopControlDependencyInfiniteMask;
+    else if (loopNode.getLoopDependency() > 0) {
+        control = control | spv::LoopControlDependencyLengthMask;
+        dependencyLength = loopNode.getLoopDependency();
+    }
 
     return control;
 }
@@ -2137,9 +2145,8 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
     builder.createBranch(&blocks.head);
 
     // Loop control:
-    const spv::LoopControlMask control = TranslateLoopControl(*node);
-
-    // TODO: dependency length
+    unsigned int dependencyLength = glslang::TIntermLoop::dependencyInfinite;
+    const spv::LoopControlMask control = TranslateLoopControl(*node, dependencyLength);
 
     // Spec requires back edges to target header blocks, and every header block
     // must dominate its merge block.  Make a header block first to ensure these
@@ -2149,7 +2156,7 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
     // including merges of its own.
     builder.setLine(node->getLoc().line);
     builder.setBuildPoint(&blocks.head);
-    builder.createLoopMerge(&blocks.merge, &blocks.continue_target, control);
+    builder.createLoopMerge(&blocks.merge, &blocks.continue_target, control, dependencyLength);
     if (node->testFirst() && node->getTest()) {
         spv::Block& test = builder.makeNewBlock();
         builder.createBranch(&test);

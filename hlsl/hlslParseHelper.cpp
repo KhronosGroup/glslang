@@ -8868,7 +8868,7 @@ void HlslParseContext::handleSwitchAttributes(const TSourceLoc& loc, TIntermSwit
 }
 
 //
-// Loop hints
+// Loop attributes
 //
 void HlslParseContext::handleLoopAttributes(const TSourceLoc& loc, TIntermLoop* loop,
     const TAttributes& attributes)

@@ -69,14 +69,16 @@ namespace glslang {
         EatInputAttachment,
         EatBuiltIn,
         EatPushConstant,
-        EatConstantId
+        EatConstantId,
+        EatDependencyInfinite,
+        EatDependencyLength
     };
 
     class TIntermAggregate;
 
     struct TAttributeArgs {
         TAttributeType name;
-        TIntermAggregate* args;
+        const TIntermAggregate* args;
 
         // Obtain attribute as integer
         // Return false if it cannot be obtained
@@ -85,6 +87,9 @@ namespace glslang {
         // Obtain attribute as string, with optional to-lower transform
         // Return false if it cannot be obtained
         bool getString(TString& value, int argNum = 0, bool convertToLower = true) const;
+
+        // How many arguments were provided to the attribute?
+        int size() const;
 
     protected:
         const TConstUnion* getConstUnion(TBasicType basicType, int argNum) const;

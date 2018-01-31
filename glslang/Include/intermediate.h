@@ -896,7 +896,8 @@ public:
         terminal(aTerminal),
         first(testFirst),
         unroll(false),
-        dontUnroll(false)
+        dontUnroll(false),
+        dependency(0)
     { }
 
     virtual       TIntermLoop* getAsLoopNode() { return this; }
@@ -912,6 +913,10 @@ public:
     bool getUnroll()     const { return unroll; }
     bool getDontUnroll() const { return dontUnroll; }
 
+    static const unsigned int dependencyInfinite = 0xFFFFFFFF;
+    void setLoopDependency(int d) { dependency = d; }
+    int getLoopDependency() const { return dependency; }
+
 protected:
     TIntermNode* body;       // code to loop over
     TIntermTyped* test;      // exit condition associated with loop, could be 0 for 'for' loops
@@ -919,6 +924,7 @@ protected:
     bool first;              // true for while and for, not for do-while
     bool unroll;             // true if unroll requested
     bool dontUnroll;         // true if request to not unroll
+    unsigned int dependency; // loop dependency hint; 0 means not set or unknown
 };
 
 //

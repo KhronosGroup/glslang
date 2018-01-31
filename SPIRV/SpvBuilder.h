@@ -561,7 +561,7 @@ public:
 
     void createBranch(Block* block);
     void createConditionalBranch(Id condition, Block* thenBlock, Block* elseBlock);
-    void createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control);
+    void createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control, unsigned int dependencyLength);
 
     // Sets to generate opcode for specialization constants.
     void setToSpecConstCodeGenMode() { generatingOpCodeForSpecConst = true; }
