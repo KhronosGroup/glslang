@@ -56,7 +56,8 @@
 
 namespace spv {
 
-Builder::Builder(unsigned int magicNumber, SpvBuildLogger* buildLogger) :
+Builder::Builder(unsigned int spvVersion, unsigned int magicNumber, SpvBuildLogger* buildLogger) :
+    spvVersion(spvVersion),
     source(SourceLanguageUnknown),
     sourceVersion(0),
     sourceFileStringId(NoResult),
@@ -2403,7 +2404,7 @@ void Builder::dump(std::vector<unsigned int>& out) const
 {
     // Header, before first instructions:
     out.push_back(MagicNumber);
-    out.push_back(Version);
+    out.push_back(spvVersion);
     out.push_back(builderNumber);
     out.push_back(uniqueId + 1);
     out.push_back(0);
