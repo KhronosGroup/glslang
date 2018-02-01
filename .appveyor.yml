@@ -4,7 +4,12 @@
 # build version format
 version: "{build}"
 
-os: Visual Studio 2013
+# Support two compilation flows:
+#   ENABLE_OPT off:  Use Visual Studio 2010 compiler, but from Visual Studio 2013 image
+#   ENABLE_OPT on:   Use Visual Studio 2015 compiler, from Visual Studio 2015 image
+os:
+  - Visual Studio 2013
+  - Visual Studio 2015
 
 platform:
   - x64
@@ -34,6 +39,15 @@ install:
   - git clone https://github.com/google/googletest.git External/googletest
   - C:/Python27/python.exe update_glslang_sources.py
 
+before_build:
+  # Set path and environment variables for the current Visual Studio version
+  # Use Visual Studio 2010 from the 2013 image
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" (call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86_amd64)
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" set ENABLE_OPT=OFF
+  # Use Visual Studio 2015 from the 2015 image
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" (call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64)
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" set ENABLE_OPT=ON
+
 build:
   parallel: true  # enable MSBuild parallel builds
   verbosity: minimal
@@ -41,7 +55,7 @@ build:
 build_script:
   - mkdir build && cd build
   - cmake .. -DCMAKE_INSTALL_PREFIX=install
-  - cmake --build . --config %CONFIGURATION% --target install
+  - cmake --build . --config %CONFIGURATION% --target install -DENABLE_OPT=%ENABLE_OPT%
 
 test_script:
   - ctest -C %CONFIGURATION% --output-on-failure
@@ -56,6 +70,11 @@ after_test:
       } Else {
         $env:SUFFIX=""
       }
+      If ($env:ENABLE_OPT -Match "ON") {
+        $env:EXTRA_ARTIFACTS="lib\SPIRV-Tools%SUFFIX%.lib lib\SPIRV-Tools-opt%SUFFIX%.lib"
+      } else {
+        $env:EXTRA_ARTIFACTS=""
+      }
   - cd install
   # Zip all glslang artifacts for uploading and deploying
   - 7z a glslang-master-windows-"%PLATFORM%"-"%CONFIGURATION%".zip
@@ -69,7 +88,7 @@ after_test:
     lib\SPIRV%SUFFIX%.lib
     lib\SPVRemapper%SUFFIX%.lib
     lib\SPIRV-Tools%SUFFIX%.lib
-    lib\SPIRV-Tools-opt%SUFFIX%.lib
+    lib\SPIRV-Tools-opt%SUFFIX%.lib %EXTRA_ARTIFACTS%
 
 artifacts:
   - path: build\install\*.zip
@@ -87,4 +106,4 @@ deploy:
     force_update: true
     on:
       branch: master
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
