@@ -2644,8 +2644,6 @@ void Builder::dumpInstructions(std::vector<unsigned int>& out, const std::vector
 void Builder::dumpModuleProcesses(std::vector<unsigned int>& out) const
 {
     for (int i = 0; i < (int)moduleProcesses.size(); ++i) {
-        // TODO: switch this out for the 1.1 headers
-        const spv::Op OpModuleProcessed = (spv::Op)330;
         Instruction moduleProcessed(OpModuleProcessed);
         moduleProcessed.addStringOperand(moduleProcesses[i]);
         moduleProcessed.dump(out);
