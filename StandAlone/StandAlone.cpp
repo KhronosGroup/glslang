@@ -855,7 +855,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                                                                 : glslang::EShSourceGlsl,
                                         compUnit.stage, glslang::EShClientVulkan, ClientInputSemanticsVersion);
                 shader->setEnvClient(glslang::EShClientVulkan, VulkanClientVersion);
-                shader->setEnvTarget(glslang::EshTargetSpv, TargetVersion);
+                shader->setEnvTarget(glslang::EShTargetSpv, TargetVersion);
             } else {
                 shader->setEnvInput((Options & EOptionReadHlsl) ? glslang::EShSourceHlsl
                                                                 : glslang::EShSourceGlsl,
