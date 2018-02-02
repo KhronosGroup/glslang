@@ -3103,7 +3103,7 @@ void TParseContext::arrayDimCheck(const TSourceLoc& loc, const TType* type, cons
 //
 void TParseContext::arrayDimMerge(TType& type, const TArraySizes* sizes)
 {
-    if (sizes)
+    if (sizes != nullptr)
         type.addArrayOuterSizes(*sizes);
 }
 

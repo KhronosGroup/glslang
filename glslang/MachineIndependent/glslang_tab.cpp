@@ -4433,9 +4433,9 @@ yyreduce:
         parseContext.arraySizeRequiredCheck((yyvsp[0].interm).loc, *(yyvsp[0].interm).arraySizes);
         parseContext.reservedErrorCheck((yyvsp[-1].lex).loc, *(yyvsp[-1].lex).string);
 
-        (yyvsp[-2].interm.type).arraySizes = (yyvsp[0].interm).arraySizes;
-
         TParameter param = { (yyvsp[-1].lex).string, new TType((yyvsp[-2].interm.type))};
+        parseContext.arrayDimMerge(*param.type, (yyvsp[0].interm).arraySizes);
+
         (yyval.interm).loc = (yyvsp[-1].lex).loc;
         (yyval.interm).param = param;
     }

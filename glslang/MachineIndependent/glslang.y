@@ -902,9 +902,9 @@ parameter_declarator
         parseContext.arraySizeRequiredCheck($3.loc, *$3.arraySizes);
         parseContext.reservedErrorCheck($2.loc, *$2.string);
 
-        $1.arraySizes = $3.arraySizes;
-
         TParameter param = { $2.string, new TType($1)};
+        parseContext.arrayDimMerge(*param.type, $3.arraySizes);
+
         $$.loc = $2.loc;
         $$.param = param;
     }
