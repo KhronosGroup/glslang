@@ -6114,16 +6114,20 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
         optimizer.RegisterPass(CreateLocalSingleBlockLoadStoreElimPass());
         optimizer.RegisterPass(CreateLocalSingleStoreElimPass());
         optimizer.RegisterPass(CreateInsertExtractElimPass());
+        optimizer.RegisterPass(CreateDeadInsertElimPass());
         optimizer.RegisterPass(CreateAggressiveDCEPass());
         optimizer.RegisterPass(CreateDeadBranchElimPass());
         optimizer.RegisterPass(CreateCFGCleanupPass());
         optimizer.RegisterPass(CreateBlockMergePass());
         optimizer.RegisterPass(CreateLocalMultiStoreElimPass());
         optimizer.RegisterPass(CreateInsertExtractElimPass());
+        optimizer.RegisterPass(CreateDeadInsertElimPass());
+        if (options->optimizeSize) {
+            optimizer.RegisterPass(CreateRedundancyEliminationPass());
+            // TODO(greg-lunarg): Add this when AMD driver issues are resolved
+            // optimizer.RegisterPass(CreateCommonUniformElimPass());
+        }
         optimizer.RegisterPass(CreateAggressiveDCEPass());
-        // TODO(greg-lunarg): Add this when AMD driver issues are resolved
-        // if (options->optimizeSize)
-        //     optimizer.RegisterPass(CreateCommonUniformElimPass());
 
         if (!optimizer.Run(spirv.data(), spirv.size(), &spirv))
             return;
