@@ -235,6 +235,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.branch-return.vert",
         "spv.builtInXFB.vert",
         "spv.conditionalDiscard.frag",
+        "spv.controlFlowAttributes.frag",
         "spv.conversion.frag",
         "spv.dataOut.frag",
         "spv.dataOutIndirect.frag",
@@ -350,6 +351,8 @@ INSTANTIATE_TEST_CASE_P(
         "spv.float32.frag",
         "spv.float64.frag",
         "spv.xfb.vert",
+        "spv.xfb2.vert",
+        "spv.xfb3.vert",
     })),
     FileNameAsCustomTestSuffix
 );

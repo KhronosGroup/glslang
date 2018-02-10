@@ -108,7 +108,8 @@ private:
 //
 class TGlslangToSpvTraverser : public glslang::TIntermTraverser {
 public:
-    TGlslangToSpvTraverser(const glslang::TIntermediate*, spv::SpvBuildLogger* logger, glslang::SpvOptions& options);
+    TGlslangToSpvTraverser(unsigned int spvVersion, const glslang::TIntermediate*, spv::SpvBuildLogger* logger,
+        glslang::SpvOptions& options);
     virtual ~TGlslangToSpvTraverser() { }
 
     bool visitAggregate(glslang::TVisit, glslang::TIntermAggregate*);
@@ -129,8 +130,9 @@ protected:
     spv::Decoration TranslateAuxiliaryStorageDecoration(const glslang::TQualifier& qualifier);
     spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool memberDeclaration);
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
-    spv::SelectionControlMask TranslateSelectionControl(glslang::TSelectionControl) const;
-    spv::LoopControlMask TranslateLoopControl(glslang::TLoopControl) const;
+    spv::SelectionControlMask TranslateSelectionControl(const glslang::TIntermSelection&) const;
+    spv::SelectionControlMask TranslateSwitchControl(const glslang::TIntermSwitch&) const;
+    spv::LoopControlMask TranslateLoopControl(const glslang::TIntermLoop&, unsigned int& dependencyLength) const;
     spv::StorageClass TranslateStorageClass(const glslang::TType&);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
@@ -189,7 +191,9 @@ protected:
     bool isTrivialLeaf(const glslang::TIntermTyped* node);
     bool isTrivial(const glslang::TIntermTyped* node);
     spv::Id createShortCircuit(glslang::TOperator, glslang::TIntermTyped& left, glslang::TIntermTyped& right);
+#ifdef AMD_EXTENSIONS
     spv::Id getExtBuiltins(const char* name);
+#endif
 
     glslang::SpvOptions& options;
     spv::Function* shaderEntry;
@@ -788,26 +792,42 @@ spv::ImageFormat TGlslangToSpvTraverser::TranslateImageFormat(const glslang::TTy
     }
 }
 
-spv::SelectionControlMask TGlslangToSpvTraverser::TranslateSelectionControl(glslang::TSelectionControl selectionControl) const
+spv::SelectionControlMask TGlslangToSpvTraverser::TranslateSelectionControl(const glslang::TIntermSelection& selectionNode) const
 {
-    switch (selectionControl) {
-    case glslang::ESelectionControlNone:        return spv::SelectionControlMaskNone;
-    case glslang::ESelectionControlFlatten:     return spv::SelectionControlFlattenMask;
-    case glslang::ESelectionControlDontFlatten: return spv::SelectionControlDontFlattenMask;
-    default:                                    return spv::SelectionControlMaskNone;
-    }
+    if (selectionNode.getFlatten())
+        return spv::SelectionControlFlattenMask;
+    if (selectionNode.getDontFlatten())
+        return spv::SelectionControlDontFlattenMask;
+    return spv::SelectionControlMaskNone;
 }
 
-spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(glslang::TLoopControl loopControl) const
+spv::SelectionControlMask TGlslangToSpvTraverser::TranslateSwitchControl(const glslang::TIntermSwitch& switchNode) const
 {
-    switch (loopControl) {
-    case glslang::ELoopControlNone:       return spv::LoopControlMaskNone;
-    case glslang::ELoopControlUnroll:     return spv::LoopControlUnrollMask;
-    case glslang::ELoopControlDontUnroll: return spv::LoopControlDontUnrollMask;
-    // TODO: DependencyInfinite
-    // TODO: DependencyLength
-    default:                              return spv::LoopControlMaskNone;
+    if (switchNode.getFlatten())
+        return spv::SelectionControlFlattenMask;
+    if (switchNode.getDontFlatten())
+        return spv::SelectionControlDontFlattenMask;
+    return spv::SelectionControlMaskNone;
+}
+
+// return a non-0 dependency if the dependency argument must be set
+spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(const glslang::TIntermLoop& loopNode,
+    unsigned int& dependencyLength) const
+{
+    spv::LoopControlMask control = spv::LoopControlMaskNone;
+
+    if (loopNode.getDontUnroll())
+        control = control | spv::LoopControlDontUnrollMask;
+    if (loopNode.getUnroll())
+        control = control | spv::LoopControlUnrollMask;
+    if (loopNode.getLoopDependency() == glslang::TIntermLoop::dependencyInfinite)
+        control = control | spv::LoopControlDependencyInfiniteMask;
+    else if (loopNode.getLoopDependency() > 0) {
+        control = control | spv::LoopControlDependencyLengthMask;
+        dependencyLength = loopNode.getLoopDependency();
     }
+
+    return control;
 }
 
 // Translate glslang type to SPIR-V storage class.
@@ -921,17 +941,16 @@ bool HasNonLayoutQualifiers(const glslang::TType& type, const glslang::TQualifie
 // Implement the TGlslangToSpvTraverser class.
 //
 
-TGlslangToSpvTraverser::TGlslangToSpvTraverser(const glslang::TIntermediate* glslangIntermediate,
+TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const glslang::TIntermediate* glslangIntermediate,
                                                spv::SpvBuildLogger* buildLogger, glslang::SpvOptions& options)
     : TIntermTraverser(true, false, true),
       options(options),
       shaderEntry(nullptr), currentFunction(nullptr),
       sequenceDepth(0), logger(buildLogger),
-      builder((glslang::GetKhronosToolId() << 16) | glslang::GetSpirvGeneratorVersion(), logger),
+      builder(spvVersion, (glslang::GetKhronosToolId() << 16) | glslang::GetSpirvGeneratorVersion(), logger),
       inEntryPoint(false), entryPointTerminated(false), linkageOnly(false),
       glslangIntermediate(glslangIntermediate)
 {
-    builder.setTargetVersion(glslangIntermediate->getSpv().spv);
     spv::ExecutionModel executionModel = TranslateExecutionModel(glslangIntermediate->getStage());
 
     builder.clearAccessChain();
@@ -2072,7 +2091,7 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
     node->getCondition()->traverse(this);
 
     // Selection control:
-    const spv::SelectionControlMask control = TranslateSelectionControl(node->getSelectionControl());
+    const spv::SelectionControlMask control = TranslateSelectionControl(*node);
 
     // make an "if" based on the value created by the condition
     spv::Builder::If ifBuilder(accessChainLoad(node->getCondition()->getType()), control, builder);
@@ -2114,7 +2133,7 @@ bool TGlslangToSpvTraverser::visitSwitch(glslang::TVisit /* visit */, glslang::T
     spv::Id selector = accessChainLoad(node->getCondition()->getAsTyped()->getType());
 
     // Selection control:
-    const spv::SelectionControlMask control = TranslateSelectionControl(node->getSelectionControl());
+    const spv::SelectionControlMask control = TranslateSwitchControl(*node);
 
     // browse the children to sort out code segments
     int defaultSegment = -1;
@@ -2174,9 +2193,8 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
     builder.createBranch(&blocks.head);
 
     // Loop control:
-    const spv::LoopControlMask control = TranslateLoopControl(node->getLoopControl());
-
-    // TODO: dependency length
+    unsigned int dependencyLength = glslang::TIntermLoop::dependencyInfinite;
+    const spv::LoopControlMask control = TranslateLoopControl(*node, dependencyLength);
 
     // Spec requires back edges to target header blocks, and every header block
     // must dominate its merge block.  Make a header block first to ensure these
@@ -2186,7 +2204,7 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
     // including merges of its own.
     builder.setLine(node->getLoc().line);
     builder.setBuildPoint(&blocks.head);
-    builder.createLoopMerge(&blocks.merge, &blocks.continue_target, control);
+    builder.createLoopMerge(&blocks.merge, &blocks.continue_target, control, dependencyLength);
     if (node->testFirst() && node->getTest()) {
         spv::Block& test = builder.makeNewBlock();
         builder.createBranch(&test);
@@ -6433,6 +6451,7 @@ spv::Id TGlslangToSpvTraverser::createShortCircuit(glslang::TOperator op, glslan
     return builder.createOp(spv::OpPhi, boolTypeId, phiOperands);
 }
 
+#ifdef AMD_EXTENSIONS
 // Return type Id of the imported set of extended instructions corresponds to the name.
 // Import this set if it has not been imported yet.
 spv::Id TGlslangToSpvTraverser::getExtBuiltins(const char* name)
@@ -6446,6 +6465,7 @@ spv::Id TGlslangToSpvTraverser::getExtBuiltins(const char* name)
         return extBuiltins;
     }
 }
+#endif
 
 };  // end anonymous namespace
 
@@ -6466,7 +6486,8 @@ int GetSpirvGeneratorVersion()
 {
     // return 1; // start
     // return 2; // EOpAtomicCounterDecrement gets a post decrement, to map between GLSL -> SPIR-V
-    return 3;    // change/correct barrier-instruction operands, to match memory model group decisions
+    // return 3; // change/correct barrier-instruction operands, to match memory model group decisions
+       return 4; // some deeper access chains: for dynamic vector component, and local Boolean component
 }
 
 // Write SPIR-V out to a binary file
@@ -6542,7 +6563,7 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
 
     glslang::GetThreadPoolAllocator().push();
 
-    TGlslangToSpvTraverser it(&intermediate, logger, *options);
+    TGlslangToSpvTraverser it(intermediate.getSpv().spv, &intermediate, logger, *options);
     root->traverse(&it);
     it.finishSpv();
     it.dumpSpv(spirv);
@@ -6565,20 +6586,26 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
         });
 
         optimizer.RegisterPass(CreateInlineExhaustivePass());
+        optimizer.RegisterPass(CreateEliminateDeadFunctionsPass());
+        optimizer.RegisterPass(CreateScalarReplacementPass());
         optimizer.RegisterPass(CreateLocalAccessChainConvertPass());
         optimizer.RegisterPass(CreateLocalSingleBlockLoadStoreElimPass());
         optimizer.RegisterPass(CreateLocalSingleStoreElimPass());
         optimizer.RegisterPass(CreateInsertExtractElimPass());
+        optimizer.RegisterPass(CreateDeadInsertElimPass());
         optimizer.RegisterPass(CreateAggressiveDCEPass());
         optimizer.RegisterPass(CreateDeadBranchElimPass());
         optimizer.RegisterPass(CreateCFGCleanupPass());
         optimizer.RegisterPass(CreateBlockMergePass());
         optimizer.RegisterPass(CreateLocalMultiStoreElimPass());
         optimizer.RegisterPass(CreateInsertExtractElimPass());
+        optimizer.RegisterPass(CreateDeadInsertElimPass());
+        if (options->optimizeSize) {
+            optimizer.RegisterPass(CreateRedundancyEliminationPass());
+            // TODO(greg-lunarg): Add this when AMD driver issues are resolved
+            // optimizer.RegisterPass(CreateCommonUniformElimPass());
+        }
         optimizer.RegisterPass(CreateAggressiveDCEPass());
-        // TODO(greg-lunarg): Add this when AMD driver issues are resolved
-        // if (options->optimizeSize)
-        //     optimizer.RegisterPass(CreateCommonUniformElimPass());
 
         if (!optimizer.Run(spirv.data(), spirv.size(), &spirv))
             return;

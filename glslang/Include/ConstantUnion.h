@@ -38,6 +38,9 @@
 #ifndef _CONSTANT_UNION_INCLUDED_
 #define _CONSTANT_UNION_INCLUDED_
 
+#include "../Include/Common.h"
+#include "../Include/BaseTypes.h"
+
 namespace glslang {
 
 class TConstUnion {
@@ -904,9 +907,6 @@ public:
         // this includes the case that both are unallocated
         if (unionArray == rhs.unionArray)
             return true;
-
-        if (! unionArray || ! rhs.unionArray)
-            return false;
 
         if (! unionArray || ! rhs.unionArray)
             return false;

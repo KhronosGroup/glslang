@@ -1023,7 +1023,13 @@ bool TOutputTraverser::visitSelection(TVisit /* visit */, TIntermSelection* node
     OutputTreeText(out, node, depth);
 
     out.debug << "Test condition and select";
-    out.debug << " (" << node->getCompleteString() << ")\n";
+    out.debug << " (" << node->getCompleteString() << ")";
+
+    if (node->getFlatten())
+        out.debug << ": Flatten";
+    if (node->getDontFlatten())
+        out.debug << ": DontFlatten";
+    out.debug << "\n";
 
     ++depth;
 
@@ -1199,7 +1205,17 @@ bool TOutputTraverser::visitLoop(TVisit /* visit */, TIntermLoop* node)
     out.debug << "Loop with condition ";
     if (! node->testFirst())
         out.debug << "not ";
-    out.debug << "tested first\n";
+    out.debug << "tested first";
+
+    if (node->getUnroll())
+        out.debug << ": Unroll";
+    if (node->getDontUnroll())
+        out.debug << ": DontUnroll";
+    if (node->getLoopDependency()) {
+        out.debug << ": Dependency ";
+        out.debug << node->getLoopDependency();
+    }
+    out.debug << "\n";
 
     ++depth;
 
@@ -1260,7 +1276,13 @@ bool TOutputTraverser::visitSwitch(TVisit /* visit */, TIntermSwitch* node)
     TInfoSink& out = infoSink;
 
     OutputTreeText(out, node, depth);
-    out.debug << "switch\n";
+    out.debug << "switch";
+
+    if (node->getFlatten())
+        out.debug << ": Flatten";
+    if (node->getDontFlatten())
+        out.debug << ": DontFlatten";
+    out.debug << "\n";
 
     OutputTreeText(out, node, depth);
     out.debug << "condition\n";
