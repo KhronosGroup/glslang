@@ -5,14 +5,14 @@
       "site" : "gitlab",
       "subrepo" : "spirv/spirv-tools",
       "subdir" : "External/spirv-tools",
-      "commit" : "65457244d0135e91815fef57dc662f9b39232284"
+      "commit" : "310036ac3178121e8acbe4a3ae37ddc8a49ee207"
     },
     {
       "name" : "spirv-tools/external/spirv-headers",
       "site" : "gitlab",
       "subrepo" : "spirv/SPIRV-Headers",
       "subdir" : "External/spirv-tools/external/spirv-headers",
-      "commit" : "854b5dda6149c481d6faf0b9c760c311ab45b05d"
+      "commit" : "efb8e1ed195654ab5144bc7443192236eb5a9f94"
     }
   ]
 }
