@@ -45,7 +45,7 @@ or wish to invoke -Os to reduce SPIR-V size from HLSL or GLSL, install
 spirv-tools with this:
 
 ```bash
-./update_glslang_sources.py
+./update_glslang_sources.py --site gitlab
 ```
 
 #### 3) Configure
