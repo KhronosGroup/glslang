@@ -777,7 +777,7 @@ spv::LoopControlMask TGlslangToSpvTraverser::TranslateLoopControl(const glslang:
         control = control | spv::LoopControlDontUnrollMask;
     if (loopNode.getUnroll())
         control = control | spv::LoopControlUnrollMask;
-    if (loopNode.getLoopDependency() == glslang::TIntermLoop::dependencyInfinite)
+    if (unsigned(loopNode.getLoopDependency()) == glslang::TIntermLoop::dependencyInfinite)
         control = control | spv::LoopControlDependencyInfiniteMask;
     else if (loopNode.getLoopDependency() > 0) {
         control = control | spv::LoopControlDependencyLengthMask;
@@ -3229,8 +3229,6 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     builder.setLine(node->getLoc().line);
 
-    auto resultType = [&node,this]{ return convertGlslangToSpvType(node->getType()); };
-
     // Process a GLSL texturing op (will be SPV image)
     const glslang::TSampler sampler = node->getAsAggregate() ? node->getAsAggregate()->getSequence()[0]->getAsTyped()->getType().getSampler()
                                                              : node->getAsUnaryNode()->getOperand()->getAsTyped()->getType().getSampler();
@@ -3279,6 +3277,20 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
     }
 
+    int components = node->getType().getVectorSize();
+
+    if (node->getOp() == glslang::EOpTextureFetch) {
+        // These must produce 4 components, per SPIR-V spec.  We'll add a conversion constructor if needed.
+        // This will only happen through the HLSL path for operator[], so we do not have to handle e.g.
+        // the EOpTexture/Proj/Lod/etc family.  It would be harmless to do so, but would need more logic
+        // here around e.g. which ones return scalars or other types.
+        components = 4;
+    }
+
+    glslang::TType returnType(node->getType().getBasicType(), glslang::EvqTemporary, components);
+
+    auto resultType = [&returnType,this]{ return convertGlslangToSpvType(returnType); };
+
     // Check for image functions other than queries
     if (node->isImage()) {
         std::vector<spv::Id> operands;
@@ -3325,9 +3337,14 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             if (builder.getImageTypeFormat(builder.getImageType(operands.front())) == spv::ImageFormatUnknown)
                 builder.addCapability(spv::CapabilityStorageImageReadWithoutFormat);
 
-            spv::Id result = builder.createOp(spv::OpImageRead, resultType(), operands);
-            builder.setPrecision(result, precision);
-            return result;
+            std::vector<spv::Id> result = { builder.createOp(spv::OpImageRead, resultType(), operands) };
+            builder.setPrecision(result[0], precision);
+
+            // If needed, add a conversion constructor to the proper size.
+            if (components != node->getType().getVectorSize())
+                result[0] = builder.createConstructor(precision, result, convertGlslangToSpvType(node->getType()));
+
+            return result[0];
 #ifdef AMD_EXTENSIONS
         } else if (node->getOp() == glslang::EOpImageStore || node->getOp() == glslang::EOpImageStoreLod) {
 #else
@@ -3601,7 +3618,14 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         }
     }
 
-    return builder.createTextureCall(precision, resultType(), sparse, cracked.fetch, cracked.proj, cracked.gather, noImplicitLod, params);
+    std::vector<spv::Id> result = { 
+        builder.createTextureCall(precision, resultType(), sparse, cracked.fetch, cracked.proj, cracked.gather, noImplicitLod, params)
+    };
+
+    if (components != node->getType().getVectorSize())
+        result[0] = builder.createConstructor(precision, result, convertGlslangToSpvType(node->getType()));
+
+    return result[0];
 }
 
 spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAggregate* node)
