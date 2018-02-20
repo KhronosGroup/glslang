@@ -189,6 +189,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.hull.ctrlpt-2.tesc", "main"},
         {"hlsl.identifier.sample.frag", "main"},
         {"hlsl.if.frag", "PixelShaderFunction"},
+        {"hlsl.imagefetch-subvec4.comp", "main"},
         {"hlsl.implicitBool.frag", "main"},
         {"hlsl.inf.vert", "main"},
         {"hlsl.inoutquals.frag", "main"},
