@@ -133,7 +133,7 @@ gl_FragCoord origin is upper left
 0:28      Sequence
 0:28        move second child to first child ( temp float)
 0:28          'g' ( temp float)
-0:28          Test condition and select ( temp float)
+0:28          Test condition and select ( temp float): no shortcircuit
 0:28            Condition
 0:28            Convert float to bool ( temp bool)
 0:28              condf: direct index for structure ( uniform float)
@@ -302,7 +302,7 @@ gl_FragCoord origin is upper left
 0:28      Sequence
 0:28        move second child to first child ( temp float)
 0:28          'g' ( temp float)
-0:28          Test condition and select ( temp float)
+0:28          Test condition and select ( temp float): no shortcircuit
 0:28            Condition
 0:28            Convert float to bool ( temp bool)
 0:28              condf: direct index for structure ( uniform float)
