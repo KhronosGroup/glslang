@@ -67,7 +67,7 @@ TEST_P(HlslCompileTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
                             Source::HLSL, Semantics::Vulkan,
-                            Target::BothASTAndSpv, GetParam().entryPoint);
+                            Target::BothASTAndSpv, true, GetParam().entryPoint);
 }
 
 TEST_P(HlslCompileAndFlattenTest, FromFile)
@@ -83,7 +83,7 @@ TEST_P(HlslLegalizeTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
                             Source::HLSL, Semantics::Vulkan,
-                            Target::Spv, GetParam().entryPoint,
+                            Target::Spv, true, GetParam().entryPoint,
                             "/baseLegalResults/", false);
 }
 
