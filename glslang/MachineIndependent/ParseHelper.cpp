@@ -267,6 +267,8 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
         if (tokens.size() != 1)
             error(loc, "extra tokens", "#pragma", "");
         intermediate.setUseStorageBuffer();
+    } else if (tokens[0].compare("once") == 0) {
+        warn(loc, "not implemented", "#pragma once", "");
     }
 }
 
@@ -1584,6 +1586,9 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpInterpolateAtCentroid:
     case EOpInterpolateAtSample:
     case EOpInterpolateAtOffset:
+#ifdef AMD_EXTENSIONS
+    case EOpInterpolateAtVertex:
+#endif
         // Make sure the first argument is an interpolant, or an array element of an interpolant
         if (arg0->getType().getQualifier().storage != EvqVaryingIn) {
             // It might still be an array element.
@@ -4672,12 +4677,23 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                 return;
             }
         }
-    }
+    } else if (!intermediate.getAutoMapBindings()) {
+        // some types require bindings
 
-    // atomic_uint
-    if (type.getBasicType() == EbtAtomicUint) {
-        if (! type.getQualifier().hasBinding())
+        // atomic_uint
+        if (type.getBasicType() == EbtAtomicUint)
             error(loc, "layout(binding=X) is required", "atomic_uint", "");
+
+        // SPIR-V
+        if (spvVersion.spv > 0) {
+            if (qualifier.isUniformOrBuffer()) {
+                if (type.getBasicType() == EbtBlock && !qualifier.layoutPushConstant &&
+                                                       !qualifier.layoutAttachment)
+                    error(loc, "uniform/buffer blocks require layout(binding=X)", "binding", "");
+                else if (spvVersion.vulkan > 0 && type.getBasicType() == EbtSampler)
+                    error(loc, "sampler/texture/image requires layout(binding=X)", "binding", "");
+            }
+        }
     }
 
     // "The offset qualifier can only be used on block members of blocks..."

@@ -2255,7 +2255,11 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     // If it's void, go to the if-then-else selection()
     if (trueBlock->getBasicType() == EbtVoid && falseBlock->getBasicType() == EbtVoid) {
         TIntermNodePair pair = { trueBlock, falseBlock };
-        return addSelection(cond, pair, loc);
+        TIntermSelection* selection = addSelection(cond, pair, loc);
+        if (getSource() == EShSourceHlsl)
+            selection->setNoShortCircuit();
+
+        return selection;
     }
 
     //
@@ -2321,6 +2325,9 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
         node->getQualifier().makeSpecConstant();
     else
         node->getQualifier().makeTemporary();
+
+    if (getSource() == EShSourceHlsl)
+        node->setNoShortCircuit();
 
     return node;
 }
@@ -3308,7 +3315,7 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
                 node.setOp(op = EOpMatrixTimesScalarAssign);
             }
         } else if (left->isMatrix() && right->isMatrix()) {
-            if (left->getMatrixCols() != left->getMatrixRows() || left->getMatrixCols() != right->getMatrixCols() || left->getMatrixCols() != right->getMatrixRows())
+            if (left->getMatrixCols() != right->getMatrixCols() || left->getMatrixCols() != right->getMatrixRows())
                 return false;
             node.setOp(op = EOpMatrixTimesMatrixAssign);
         } else if (!left->isMatrix() && !right->isMatrix()) {
