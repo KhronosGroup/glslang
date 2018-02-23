@@ -2471,6 +2471,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     case glslang::EbtUint8:
         builder.addCapability(spv::CapabilityInt8);
         spvType = builder.makeUintType(8);
+        break;
    case glslang::EbtInt16:
         builder.addCapability(spv::CapabilityInt16);
 #ifdef AMD_EXTENSIONS
@@ -2484,6 +2485,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         builder.addExtension(spv::E_SPV_AMD_gpu_shader_int16);
 #endif
         spvType = builder.makeUintType(16);
+        break;
     case glslang::EbtInt:
         spvType = builder.makeIntType(32);
         break;

@@ -179,6 +179,7 @@ private:
    range_t  constRange(spv::Op opCode)     const;
    unsigned typeSizeInWords(spv::Id id)    const;
    unsigned idTypeSizeInWords(spv::Id id)  const;
+
    spv::Id&        asId(unsigned word)                { return spv[word]; }
    const spv::Id&  asId(unsigned word)          const { return spv[word]; }
    spv::Op         asOpCode(unsigned word)      const { return opOpCode(spv[word]); }
