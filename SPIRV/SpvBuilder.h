@@ -616,7 +616,6 @@ public:
     std::vector<std::unique_ptr<Instruction> > entryPoints;
     std::vector<std::unique_ptr<Instruction> > executionModes;
     std::vector<std::unique_ptr<Instruction> > names;
-    std::vector<std::unique_ptr<Instruction> > lines;
     std::vector<std::unique_ptr<Instruction> > decorations;
     std::vector<std::unique_ptr<Instruction> > constantsTypesGlobals;
     std::vector<std::unique_ptr<Instruction> > externals;

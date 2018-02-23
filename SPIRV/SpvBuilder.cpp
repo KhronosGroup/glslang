@@ -2421,7 +2421,6 @@ void Builder::dump(std::vector<unsigned int>& out) const
 
     // Debug instructions
     dumpInstructions(out, strings);
-    dumpModuleProcesses(out);
     dumpSourceInstructions(out);
     for (int e = 0; e < (int)sourceExtensions.size(); ++e) {
         Instruction sourceExtInst(0, 0, OpSourceExtension);
@@ -2429,7 +2428,7 @@ void Builder::dump(std::vector<unsigned int>& out) const
         sourceExtInst.dump(out);
     }
     dumpInstructions(out, names);
-    dumpInstructions(out, lines);
+    dumpModuleProcesses(out);
 
     // Annotation instructions
     dumpInstructions(out, decorations);
