@@ -66,6 +66,8 @@ public:
 
     static const int maxMatrixSize = 4;
 
+    unsigned int getSpvVersion() const { return spvVersion; }
+
     void setSource(spv::SourceLanguage lang, int version)
     {
         source = lang;
