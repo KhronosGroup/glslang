@@ -1197,6 +1197,8 @@ int TIntermediate::getBaseAlignment(const TType& type, int& size, int& stride, b
     if (type.isVector()) {
         int scalarAlign = getBaseAlignmentScalar(type, size);
         switch (type.getVectorSize()) {
+        case 1: // HLSL has this, GLSL does not
+            return scalarAlign;
         case 2:
             size *= 2;
             return 2 * scalarAlign;
