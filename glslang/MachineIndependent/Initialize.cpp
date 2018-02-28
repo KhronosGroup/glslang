@@ -6355,8 +6355,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 #ifdef AMD_EXTENSIONS
         if (profile != EEsProfile)
             symbolTable.relateToOperator("interpolateAtVertexAMD", EOpInterpolateAtVertex);
-        break;
 #endif
+        break;
 
     case EShLangCompute:
         symbolTable.relateToOperator("memoryBarrierShared",     EOpMemoryBarrierShared);
