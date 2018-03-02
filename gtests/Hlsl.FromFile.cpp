@@ -58,6 +58,7 @@ std::string FileNameAsCustomTestSuffix(
 }
 
 using HlslCompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+using HlslVulkan110CompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslCompileAndFlattenTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 
@@ -66,7 +67,14 @@ using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPoint
 TEST_P(HlslCompileTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan,
+                            Source::HLSL, Semantics::Vulkan, 100,
+                            Target::BothASTAndSpv, true, GetParam().entryPoint);
+}
+
+TEST_P(HlslVulkan110CompileTest, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
+                            Source::HLSL, Semantics::Vulkan, 110,
                             Target::BothASTAndSpv, true, GetParam().entryPoint);
 }
 
@@ -82,7 +90,7 @@ TEST_P(HlslCompileAndFlattenTest, FromFile)
 TEST_P(HlslLegalizeTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan,
+                            Source::HLSL, Semantics::Vulkan, 100,
                             Target::Spv, true, GetParam().entryPoint,
                             "/baseLegalResults/", false);
 }
@@ -368,6 +376,17 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.type.identifier.frag", "main"},
         {"hlsl.typeGraphCopy.vert", "main"},
         {"hlsl.typedef.frag", "PixelShaderFunction"},
+        {"hlsl.whileLoop.frag", "PixelShaderFunction"},
+        {"hlsl.void.frag", "PixelShaderFunction"}
+    }),
+    FileNameAsCustomTestSuffix
+);
+// clang-format on
+
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    ToSpirv, HlslVulkan110CompileTest,
+    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
         {"hlsl.wavebroadcast.comp", "CSMain"},
         {"hlsl.waveprefix.comp", "CSMain"},
         {"hlsl.wavequad.comp", "CSMain"},
@@ -375,8 +394,6 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.wavequery.frag", "PixelShaderFunction"},
         {"hlsl.wavereduction.comp", "CSMain"},
         {"hlsl.wavevote.comp", "CSMain"},
-        {"hlsl.whileLoop.frag", "PixelShaderFunction"},
-        {"hlsl.void.frag", "PixelShaderFunction"}
     }),
     FileNameAsCustomTestSuffix
 );
