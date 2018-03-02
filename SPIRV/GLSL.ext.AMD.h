@@ -105,7 +105,4 @@ static const char* const E_SPV_AMD_shader_fragment_mask = "SPV_AMD_shader_fragme
 // SPV_AMD_gpu_shader_half_float_fetch
 static const char* const E_SPV_AMD_gpu_shader_half_float_fetch = "SPV_AMD_gpu_shader_half_float_fetch";
 
-enum Capability;
-static const Capability CapabilityFloat16ImageAMD = static_cast<Capability>(5008);
-
 #endif  // #ifndef GLSLextAMD_H
