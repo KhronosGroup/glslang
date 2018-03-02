@@ -849,6 +849,7 @@ const char* CapabilityString(int info)
     case 5013: return "StencilExportEXT";
 
 #ifdef AMD_EXTENSIONS
+    case 5008: return "Float16ImageAMD";
     case 5009: return "ImageGatherBiasLodAMD";
     case 5010: return "FragmentMaskAMD";
     case 5015: return "ImageReadWriteLodAMD";
