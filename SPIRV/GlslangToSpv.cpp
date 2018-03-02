@@ -194,6 +194,11 @@ protected:
 #ifdef AMD_EXTENSIONS
     spv::Id getExtBuiltins(const char* name);
 #endif
+    void addPre13Extension(const char* ext)
+    {
+        if (builder.getSpvVersion() < 0x00010300)
+            builder.addExtension(ext);
+    }
 
     glslang::SpvOptions& options;
     spv::Function* shaderEntry;
@@ -507,17 +512,17 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvInstanceIndex:        return spv::BuiltInInstanceIndex;
 
     case glslang::EbvBaseVertex:
-        builder.addExtension(spv::E_SPV_KHR_shader_draw_parameters);
+        addPre13Extension(spv::E_SPV_KHR_shader_draw_parameters);
         builder.addCapability(spv::CapabilityDrawParameters);
         return spv::BuiltInBaseVertex;
 
     case glslang::EbvBaseInstance:
-        builder.addExtension(spv::E_SPV_KHR_shader_draw_parameters);
+        addPre13Extension(spv::E_SPV_KHR_shader_draw_parameters);
         builder.addCapability(spv::CapabilityDrawParameters);
         return spv::BuiltInBaseInstance;
 
     case glslang::EbvDrawId:
-        builder.addExtension(spv::E_SPV_KHR_shader_draw_parameters);
+        addPre13Extension(spv::E_SPV_KHR_shader_draw_parameters);
         builder.addCapability(spv::CapabilityDrawParameters);
         return spv::BuiltInDrawIndex;
 
@@ -654,12 +659,12 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
 #endif
 
     case glslang::EbvDeviceIndex:
-        builder.addExtension(spv::E_SPV_KHR_device_group);
+        addPre13Extension(spv::E_SPV_KHR_device_group);
         builder.addCapability(spv::CapabilityDeviceGroup);
         return spv::BuiltInDeviceIndex;
 
     case glslang::EbvViewIndex:
-        builder.addExtension(spv::E_SPV_KHR_multiview);
+        addPre13Extension(spv::E_SPV_KHR_multiview);
         builder.addCapability(spv::CapabilityMultiView);
         return spv::BuiltInViewIndex;
 
@@ -847,7 +852,7 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     }
 
     if (glslangIntermediate->usingStorageBuffer() && type.getQualifier().storage == glslang::EvqBuffer) {
-        builder.addExtension(spv::E_SPV_KHR_storage_buffer_storage_class);
+        addPre13Extension(spv::E_SPV_KHR_storage_buffer_storage_class);
         return spv::StorageClassStorageBuffer;
     }
 
@@ -2361,13 +2366,13 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
                                    node->getType().containsBasicType(glslang::EbtUint16);
     if (contains16BitType) {
         if (storageClass == spv::StorageClassInput || storageClass == spv::StorageClassOutput) {
-            builder.addExtension(spv::E_SPV_KHR_16bit_storage);
+            addPre13Extension(spv::E_SPV_KHR_16bit_storage);
             builder.addCapability(spv::CapabilityStorageInputOutput16);
         } else if (storageClass == spv::StorageClassPushConstant) {
-            builder.addExtension(spv::E_SPV_KHR_16bit_storage);
+            addPre13Extension(spv::E_SPV_KHR_16bit_storage);
             builder.addCapability(spv::CapabilityStoragePushConstant16);
         } else if (storageClass == spv::StorageClassUniform) {
-            builder.addExtension(spv::E_SPV_KHR_16bit_storage);
+            addPre13Extension(spv::E_SPV_KHR_16bit_storage);
             builder.addCapability(spv::CapabilityStorageUniform16);
             if (node->getType().getQualifier().storage == glslang::EvqBuffer)
                 builder.addCapability(spv::CapabilityStorageUniformBufferBlock16);

@@ -370,6 +370,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.subgroupShuffleRelative.comp",
         "spv.subgroupQuad.comp",
         "spv.subgroupVote.comp",
+        "spv.vulkan110.storageBuffer.vert",
     })),
     FileNameAsCustomTestSuffix
 );

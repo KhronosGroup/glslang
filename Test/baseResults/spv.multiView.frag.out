@@ -5,7 +5,6 @@ spv.multiView.frag
 
                               Capability Shader
                               Capability MultiView
-                              Extension  "SPV_KHR_multiview"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 9 12
