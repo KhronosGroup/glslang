@@ -1197,7 +1197,7 @@ const char* OpcodeString(int op)
     case 319: return "OpAtomicFlagClear";
     case 320: return "OpImageSparseRead";
 
-    case OpModuleProcessed: return "OpModuleProcesses";
+    case OpModuleProcessed: return "OpModuleProcessed";
 
     case 4421: return "OpSubgroupBallotKHR";
     case 4422: return "OpSubgroupFirstInvocationKHR";
