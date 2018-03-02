@@ -1631,6 +1631,12 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     default:
         break;
     }
+
+    if (callNode.getOp() > EOpSubgroupGuardStart && callNode.getOp() < EOpSubgroupGuardStop) {
+        // these require SPIR-V 1.3
+        if (spvVersion.spv > 0 && spvVersion.spv < 0x00010300)
+            error(loc, "requires SPIR-V 1.3", "subgroup op", "");
+    }
 }
 
 extern bool PureOperatorBuiltins;

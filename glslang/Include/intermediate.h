@@ -471,6 +471,7 @@ enum TOperator {
     EOpAllInvocations,
     EOpAllInvocationsEqual,
 
+    EOpSubgroupGuardStart,
     EOpSubgroupBarrier,
     EOpSubgroupMemoryBarrier,
     EOpSubgroupMemoryBarrierBuffer,
@@ -526,6 +527,7 @@ enum TOperator {
     EOpSubgroupQuadSwapHorizontal,
     EOpSubgroupQuadSwapVertical,
     EOpSubgroupQuadSwapDiagonal,
+    EOpSubgroupGuardStop,
 
 #ifdef AMD_EXTENSIONS
     EOpMinInvocations,

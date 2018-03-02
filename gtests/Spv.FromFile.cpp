@@ -336,6 +336,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.storageBuffer.vert",
         "spv.precise.tese",
         "spv.precise.tesc",
+        "spv.vulkan100.subgroupArithmetic.comp",
         "spv.xfb.vert",
         "spv.xfb2.vert",
         "spv.xfb3.vert",
