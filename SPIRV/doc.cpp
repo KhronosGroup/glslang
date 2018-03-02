@@ -1205,7 +1205,9 @@ const char* OpcodeString(int op)
     case 318: return "OpAtomicFlagTestAndSet";
     case 319: return "OpAtomicFlagClear";
     case 320: return "OpImageSparseRead";
-    case OpModuleProcessed: return "OpModuleProcesses";
+
+    case OpModuleProcessed: return "OpModuleProcessed";
+
     case 333: return "OpGroupNonUniformElect";
     case 334: return "OpGroupNonUniformAll";
     case 335: return "OpGroupNonUniformAny";
@@ -1240,6 +1242,7 @@ const char* OpcodeString(int op)
     case 364: return "OpGroupNonUniformLogicalXor";
     case 365: return "OpGroupNonUniformQuadBroadcast";
     case 366: return "OpGroupNonUniformQuadSwap";
+
     case 4421: return "OpSubgroupBallotKHR";
     case 4422: return "OpSubgroupFirstInvocationKHR";
     case 4428: return "OpSubgroupAllKHR";

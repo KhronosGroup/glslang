@@ -2735,7 +2735,8 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
                 builder.addMemberDecoration(spvType, member, spv::DecorationLocation, memberQualifier.layoutLocation);
 
             if (qualifier.hasLocation())      // track for upcoming inheritance
-                locationOffset += glslangIntermediate->computeTypeLocationSize(glslangMember);
+                locationOffset += glslangIntermediate->computeTypeLocationSize(
+                                                glslangMember, glslangIntermediate->getStage());
 
             // component, XFB, others
             if (glslangMember.getQualifier().hasComponent())
