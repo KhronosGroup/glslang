@@ -6134,7 +6134,8 @@ int GetSpirvGeneratorVersion()
     // return 1; // start
     // return 2; // EOpAtomicCounterDecrement gets a post decrement, to map between GLSL -> SPIR-V
     // return 3; // change/correct barrier-instruction operands, to match memory model group decisions
-       return 4; // some deeper access chains: for dynamic vector component, and local Boolean component
+    // return 4; // some deeper access chains: for dynamic vector component, and local Boolean component
+    return 5; // make OpArrayLength result type be an int with signedness of 0
 }
 
 // Write SPIR-V out to a binary file
