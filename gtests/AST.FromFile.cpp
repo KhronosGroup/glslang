@@ -44,7 +44,7 @@ using CompileToAstTest = GlslangTest<::testing::TestWithParam<std::string>>;
 TEST_P(CompileToAstTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::OpenGL, 100,
+                            Source::GLSL, Semantics::OpenGL, glslang::Vulkan_1_0,
                             Target::AST);
 }
 

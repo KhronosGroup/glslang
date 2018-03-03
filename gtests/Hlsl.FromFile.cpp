@@ -58,7 +58,7 @@ std::string FileNameAsCustomTestSuffix(
 }
 
 using HlslCompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
-using HlslVulkan110CompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+using HlslVulkan1_1CompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslCompileAndFlattenTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 
@@ -67,14 +67,14 @@ using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPoint
 TEST_P(HlslCompileTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, 100,
+                            Source::HLSL, Semantics::Vulkan, glslang::Vulkan_1_0,
                             Target::BothASTAndSpv, true, GetParam().entryPoint);
 }
 
-TEST_P(HlslVulkan110CompileTest, FromFile)
+TEST_P(HlslVulkan1_1CompileTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, 110,
+                            Source::HLSL, Semantics::Vulkan, glslang::Vulkan_1_1,
                             Target::BothASTAndSpv, true, GetParam().entryPoint);
 }
 
@@ -90,7 +90,7 @@ TEST_P(HlslCompileAndFlattenTest, FromFile)
 TEST_P(HlslLegalizeTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, 100,
+                            Source::HLSL, Semantics::Vulkan, glslang::Vulkan_1_0,
                             Target::Spv, true, GetParam().entryPoint,
                             "/baseLegalResults/", false);
 }
@@ -385,7 +385,7 @@ INSTANTIATE_TEST_CASE_P(
 
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
-    ToSpirv, HlslVulkan110CompileTest,
+    ToSpirv, HlslVulkan1_1CompileTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
         {"hlsl.wavebroadcast.comp", "CSMain"},
         {"hlsl.waveprefix.comp", "CSMain"},

@@ -135,10 +135,16 @@ struct TClient {
     int version;              // version of client itself (not the client's input dialect)
 };
 
+static const int Vulkan_1_0 = (1 << 22);
+static const int Vulkan_1_1 = (1 << 22) | (1 << 12);
+
 struct TTarget {
     EShTargetLanguage language;
     unsigned int version;     // the version to target, if SPIR-V, defined by "word 1" of the SPIR-V binary header
 };
+
+static const int Spv_1_0 = (1 << 16);
+static const int Spv_1_3 = (1 << 16) | (3 << 8);
 
 // All source/client/target versions and settings.
 // Can override previous methods of setting, when items are set here.

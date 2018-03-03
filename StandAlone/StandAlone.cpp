@@ -156,11 +156,11 @@ const char* sourceEntryPointName = nullptr;
 const char* shaderStageName = nullptr;
 const char* variableName = nullptr;
 std::vector<std::string> IncludeDirectoryList;
-int ClientInputSemanticsVersion = 100;   // maps to, say, #define VULKAN 100
-int VulkanClientVersion = 100;           // would map to, say, Vulkan 1.0
-int OpenGLClientVersion = 450;           // doesn't influence anything yet, but maps to OpenGL 4.50
-unsigned int TargetVersion = 0x00010000; // maps to, say, SPIR-V 1.0
-std::vector<std::string> Processes;      // what should be recorded by OpModuleProcessed, or equivalent
+int ClientInputSemanticsVersion = 100;         // maps to, say, #define VULKAN 100
+int VulkanClientVersion = glslang::Vulkan_1_0; // would map to, say, Vulkan 1.0
+int OpenGLClientVersion = 450;                 // doesn't influence anything yet, but maps to OpenGL 4.50
+unsigned int TargetVersion = glslang::Spv_1_0; // maps to, say, SPIR-V 1.0
+std::vector<std::string> Processes;            // what should be recorded by OpModuleProcessed, or equivalent
 
 // Per descriptor-set binding base data
 typedef std::map<unsigned int, unsigned int> TPerSetBaseBinding;
@@ -504,11 +504,11 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         if (argc > 1) {
                             if (strcmp(argv[1], "vulkan1.0") == 0) {
                                 setVulkanSpv();
-                                VulkanClientVersion = 100;
+                                VulkanClientVersion = glslang::Vulkan_1_0;
                             } else if (strcmp(argv[1], "vulkan1.1") == 0) {
                                 setVulkanSpv();
-                                TargetVersion = 0x00010300;
-                                VulkanClientVersion = 110;
+                                TargetVersion = glslang::Spv_1_3;
+                                VulkanClientVersion = glslang::Vulkan_1_1;
                             } else if (strcmp(argv[1], "opengl") == 0) {
                                 setOpenGlSpv();
                                 OpenGLClientVersion = 450;
@@ -517,7 +517,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         }
                         bumpArg();
                     } else if (lowerword == "variable-name" || // synonyms
-                        lowerword == "vn") {
+                               lowerword == "vn") {
                         Options |= EOptionOutputHexadecimal;
                         if (argc <= 1)
                             Error("no <C-variable-name> provided for --variable-name");

@@ -218,13 +218,15 @@ public:
                                                                : glslang::EShSourceGlsl,
                                     stage, glslang::EShClientVulkan, 100);
                 shader.setEnvClient(glslang::EShClientVulkan, clientTargetVersion);
-                shader.setEnvTarget(glslang::EShTargetSpv, clientTargetVersion == 110 ? 0x00010300 : 0x00010000);
+                shader.setEnvTarget(glslang::EShTargetSpv,
+                        clientTargetVersion == glslang::Vulkan_1_1 ? glslang::Spv_1_3
+                                                                   : glslang::Spv_1_0);
             } else {
                 shader.setEnvInput((controls & EShMsgReadHlsl) ? glslang::EShSourceHlsl
                                                                : glslang::EShSourceGlsl,
                                     stage, glslang::EShClientOpenGL, 100);
                 shader.setEnvClient(glslang::EShClientOpenGL, clientTargetVersion);
-                shader.setEnvTarget(glslang::EshTargetSpv, 0x00010000);
+                shader.setEnvTarget(glslang::EshTargetSpv, glslang::Spv_1_0);
             }
         }
 
@@ -447,7 +449,7 @@ public:
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
-        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, 100, true);
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, glslang::Vulkan_1_0, true);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
@@ -616,7 +618,7 @@ public:
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
         const EShMessages controls = DeriveOptions(source, semantics, target);
-        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, 100, false,
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, glslang::Vulkan_1_0, false,
                                               EShTexSampTransUpgradeTextureRemoveSampler);
 
         // Generate the hybrid output in the way of glslangValidator.

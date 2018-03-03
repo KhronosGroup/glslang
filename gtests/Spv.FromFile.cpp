@@ -63,7 +63,7 @@ std::string FileNameAsCustomTestSuffixIoMap(
 }
 
 using CompileVulkanToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
-using CompileVulkan110ToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
+using CompileVulkan1_1ToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using CompileOpenGLToSpirvTest = GlslangTest<::testing::TestWithParam<std::string>>;
 using VulkanSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
 using OpenGLSemantics = GlslangTest<::testing::TestWithParam<std::string>>;
@@ -83,14 +83,14 @@ using CompileUpgradeTextureToSampledTextureAndDropSamplersTest = GlslangTest<::t
 TEST_P(CompileVulkanToSpirvTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::Vulkan, 100,
+                            Source::GLSL, Semantics::Vulkan, glslang::Vulkan_1_0,
                             Target::Spv);
 }
 
-TEST_P(CompileVulkan110ToSpirvTest, FromFile)
+TEST_P(CompileVulkan1_1ToSpirvTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::Vulkan, 110,
+                            Source::GLSL, Semantics::Vulkan, glslang::Vulkan_1_1,
                             Target::Spv);
 }
 
@@ -108,7 +108,7 @@ TEST_P(CompileOpenGLToSpirvTest, FromFile)
 TEST_P(VulkanSemantics, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::Vulkan, 100,
+                            Source::GLSL, Semantics::Vulkan, glslang::Vulkan_1_0,
                             Target::Spv, false);
 }
 
@@ -125,7 +125,7 @@ TEST_P(OpenGLSemantics, FromFile)
 TEST_P(VulkanAstSemantics, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::Vulkan, 100,
+                            Source::GLSL, Semantics::Vulkan, glslang::Vulkan_1_0,
                             Target::AST);
 }
 
@@ -165,7 +165,7 @@ TEST_P(GlslIoMap, FromFile)
 TEST_P(CompileVulkanToSpirvTestAMD, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::Vulkan, 100,
+                            Source::GLSL, Semantics::Vulkan, glslang::Vulkan_1_0,
                             Target::Spv);
 }
 #endif
@@ -176,7 +176,7 @@ TEST_P(CompileVulkanToSpirvTestAMD, FromFile)
 TEST_P(CompileVulkanToSpirvTestNV, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::Vulkan, 100,
+                            Source::GLSL, Semantics::Vulkan, glslang::Vulkan_1_0,
                             Target::Spv);
 }
 #endif
@@ -347,7 +347,7 @@ INSTANTIATE_TEST_CASE_P(
 
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
-    Glsl, CompileVulkan110ToSpirvTest,
+    Glsl, CompileVulkan1_1ToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
         "spv.deviceGroup.frag",
         "spv.drawParams.vert",
