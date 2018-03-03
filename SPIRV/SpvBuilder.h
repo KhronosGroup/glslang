@@ -215,10 +215,10 @@ public:
 
     // For making new constants (will return old constant if the requested one was already made).
     Id makeBoolConstant(bool b, bool specConstant = false);
-    Id makeInt8Constant(int i, bool specConstant = false)         { return makeIntConstant(makeIntType(8),  (unsigned)i, specConstant); }
-    Id makeUint8Constant(unsigned u, bool specConstant = false)   { return makeIntConstant(makeUintType(8),           u, specConstant); }
-    Id makeInt16Constant(int i, bool specConstant = false)         { return makeIntConstant(makeIntType(16),  (unsigned)i, specConstant); }
-    Id makeUint16Constant(unsigned u, bool specConstant = false)   { return makeIntConstant(makeUintType(16),           u, specConstant); }
+    Id makeInt8Constant(int i, bool specConstant = false)        { return makeIntConstant(makeIntType(8),  (unsigned)i, specConstant); }
+    Id makeUint8Constant(unsigned u, bool specConstant = false)  { return makeIntConstant(makeUintType(8),           u, specConstant); }
+    Id makeInt16Constant(int i, bool specConstant = false)       { return makeIntConstant(makeIntType(16),  (unsigned)i, specConstant); }
+    Id makeUint16Constant(unsigned u, bool specConstant = false) { return makeIntConstant(makeUintType(16),           u, specConstant); }
     Id makeIntConstant(int i, bool specConstant = false)         { return makeIntConstant(makeIntType(32),  (unsigned)i, specConstant); }
     Id makeUintConstant(unsigned u, bool specConstant = false)   { return makeIntConstant(makeUintType(32),           u, specConstant); }
     Id makeInt64Constant(long long i, bool specConstant = false)            { return makeInt64Constant(makeIntType(64),  (unsigned long long)i, specConstant); }

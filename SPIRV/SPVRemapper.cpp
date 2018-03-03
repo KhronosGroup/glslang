@@ -431,7 +431,7 @@ namespace spv {
                 if (spv::InstructionDesc[opCode].hasResult()) {
                     const spv::Id resultId = asId(word++);
                     idPosR[resultId] = start;
-                    
+
                     if (typeId != spv::NoResult) {
                         const unsigned idTypeSize = typeSizeInWords(typeId);
 
