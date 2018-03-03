@@ -1244,7 +1244,7 @@ int TScanContext::tokenizeIdentifier()
     case TEXTURE1DARRAY:
     case SAMPLER:
     case SAMPLERSHADOW:
-        if (parseContext.spvVersion.vulkan >= 100)
+        if (parseContext.spvVersion.vulkan > 0)
             return keyword;
         else
             return identifierOrType();
@@ -1255,7 +1255,7 @@ int TScanContext::tokenizeIdentifier()
     case ISUBPASSINPUTMS:
     case USUBPASSINPUT:
     case USUBPASSINPUTMS:
-        if (parseContext.spvVersion.vulkan >= 100)
+        if (parseContext.spvVersion.vulkan > 0)
             return keyword;
         else
             return identifierOrType();

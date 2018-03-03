@@ -3195,7 +3195,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     // GL_AMD_shader_fragment_mask
-    if (profile != EEsProfile && version >= 450 && spvVersion.vulkan >= 100) {
+    if (profile != EEsProfile && version >= 450 && spvVersion.vulkan > 0) {
         stageBuiltins[EShLangFragment].append(
             "uint fragmentMaskFetchAMD(subpassInputMS);"
             "uint fragmentMaskFetchAMD(isubpassInputMS);"
@@ -3494,7 +3494,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangVertex].append(
                 "int gl_InstanceID;"          // needs qualifier fixed later
                 );
-        if (spvVersion.vulkan >= 100 && version >= 140)
+        if (spvVersion.vulkan > 0 && version >= 140)
             stageBuiltins[EShLangVertex].append(
                 "in int gl_VertexIndex;"
                 "in int gl_InstanceIndex;"
@@ -3544,7 +3544,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                     "in highp int gl_VertexID;"      // needs qualifier fixed later
                     "in highp int gl_InstanceID;"    // needs qualifier fixed later
                     );
-            if (spvVersion.vulkan >= 100)
+            if (spvVersion.vulkan > 0)
                 stageBuiltins[EShLangVertex].append(
                     "in highp int gl_VertexIndex;"
                     "in highp int gl_InstanceIndex;"
@@ -5569,7 +5569,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_SubGroupLeMaskARB",     EbvSubGroupLeMask,     symbolTable);
             BuiltInVariable("gl_SubGroupLtMaskARB",     EbvSubGroupLtMask,     symbolTable);
 
-            if (spvVersion.vulkan >= 100)
+            if (spvVersion.vulkan > 0)
                 // Treat "gl_SubGroupSizeARB" as shader input instead of uniform for Vulkan
                 SpecialQualifier("gl_SubGroupSizeARB", EvqVaryingIn, EbvSubGroupSize, symbolTable);
 
@@ -5670,7 +5670,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             SpecialQualifier("gl_InstanceID", EvqInstanceId, EbvInstanceId, symbolTable);
         }
 
-        if (spvVersion.vulkan >= 100) {
+        if (spvVersion.vulkan > 0) {
             BuiltInVariable("gl_VertexIndex",   EbvVertexIndex,   symbolTable);
             BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
         }
