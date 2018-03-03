@@ -206,6 +206,9 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
 
         switch (type) {
         case EbtFloat:                   break;
+#ifdef AMD_EXTENSIONS
+        case EbtFloat16: s.append("f16"); break;
+#endif
         case EbtInt8:   s.append("i8");  break;
         case EbtUint16: s.append("u8");  break;
         case EbtInt16:  s.append("i16"); break;

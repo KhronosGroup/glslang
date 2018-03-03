@@ -214,6 +214,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_AMD_gpu_shader_int16]                     = EBhDisable;
     extensionBehavior[E_GL_AMD_shader_image_load_store_lod]          = EBhDisable;
     extensionBehavior[E_GL_AMD_shader_fragment_mask]                 = EBhDisable;
+    extensionBehavior[E_GL_AMD_gpu_shader_half_float_fetch]          = EBhDisable;
 #endif
 
 #ifdef NV_EXTENSIONS
@@ -371,6 +372,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_AMD_gpu_shader_int16 1\n"
             "#define GL_AMD_shader_image_load_store_lod 1\n"
             "#define GL_AMD_shader_fragment_mask 1\n"
+            "#define GL_AMD_gpu_shader_half_float_fetch 1\n"
 #endif
 
 #ifdef NV_EXTENSIONS
@@ -856,6 +858,19 @@ void TParseVersions::explicitInt8Check(const TSourceLoc& loc, const char* op, bo
     }
 }
 
+#ifdef AMD_EXTENSIONS
+// Call for any operation needing GLSL float16 opaque-type support
+void TParseVersions::float16OpaqueCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+{
+    if (! builtIn) {
+        requireExtensions(loc, 1, &E_GL_AMD_gpu_shader_half_float_fetch, op);
+        requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
+        profileRequires(loc, ECoreProfile, 450, nullptr, op);
+        profileRequires(loc, ECompatibilityProfile, 450, nullptr, op);
+    }
+}
+#endif
+
 // Call for any operation needing GLSL explicit int16 data-type support.
 void TParseVersions::explicitInt16Check(const TSourceLoc& loc, const char* op, bool builtIn)
 {
@@ -912,7 +927,7 @@ void TParseVersions::spvRemoved(const TSourceLoc& loc, const char* op)
 // Call for any operation removed because Vulkan SPIR-V is being generated.
 void TParseVersions::vulkanRemoved(const TSourceLoc& loc, const char* op)
 {
-    if (spvVersion.vulkan >= 100)
+    if (spvVersion.vulkan > 0)
         error(loc, "not allowed when using GLSL for Vulkan", op, "");
 }
 

@@ -79,6 +79,9 @@ public:
     virtual void fullIntegerCheck(const TSourceLoc&, const char* op);
     virtual void doubleCheck(const TSourceLoc&, const char* op);
     virtual void float16Check(const TSourceLoc&, const char* op, bool builtIn = false);
+#ifdef AMD_EXTENSIONS
+    virtual void float16OpaqueCheck(const TSourceLoc&, const char* op, bool builtIn = false);
+#endif
     virtual void int64Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void explicitInt8Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void explicitInt16Check(const TSourceLoc&, const char* op, bool builtIn = false);

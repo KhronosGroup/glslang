@@ -1750,7 +1750,11 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
         break;
     }
     case OpImageQueryLod:
+#ifdef AMD_EXTENSIONS
+        resultType = makeVectorType(getScalarTypeId(getTypeId(parameters.coords)), 2);
+#else
         resultType = makeVectorType(makeFloatType(32), 2);
+#endif
         break;
     case OpImageQueryLevels:
     case OpImageQuerySamples:
