@@ -1635,7 +1635,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     // GL_KHR_shader_subgroup
-    if (spvVersion.vulkan >= 100) {
+    if (spvVersion.vulkan > 0) {
         commonBuiltins.append(
             "void subgroupBarrier();"
             "void subgroupMemoryBarrier();"
@@ -5199,7 +5199,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     // GL_KHR_shader_subgroup
-    if (spvVersion.vulkan >= 100) {
+    if (spvVersion.vulkan > 0) {
         const char* ballotDecls = 
             "in mediump uint  gl_SubgroupSize;"
             "in mediump uint  gl_SubgroupInvocationID;"
@@ -7003,7 +7003,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
         
         // GL_KHR_shader_subgroup
-        if (spvVersion.vulkan >= 100) {
+        if (spvVersion.vulkan > 0) {
             symbolTable.setVariableExtensions("gl_SubgroupSize",         1, &E_GL_KHR_shader_subgroup_basic);
             symbolTable.setVariableExtensions("gl_SubgroupInvocationID", 1, &E_GL_KHR_shader_subgroup_basic);
             symbolTable.setVariableExtensions("gl_SubgroupEqMask",       1, &E_GL_KHR_shader_subgroup_ballot);
@@ -7282,7 +7282,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_SubGroupLeMaskARB",     EbvSubGroupLeMask,     symbolTable);
             BuiltInVariable("gl_SubGroupLtMaskARB",     EbvSubGroupLtMask,     symbolTable);
 
-            if (spvVersion.vulkan >= 100)
+            if (spvVersion.vulkan > 0)
                 // Treat "gl_SubGroupSizeARB" as shader input instead of uniform for Vulkan
                 SpecialQualifier("gl_SubGroupSizeARB", EvqVaryingIn, EbvSubGroupSize, symbolTable);
             else
@@ -7290,7 +7290,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         // GL_KHR_shader_subgroup
-        if (spvVersion.vulkan >= 100) {
+        if (spvVersion.vulkan > 0) {
             symbolTable.setVariableExtensions("gl_SubgroupSize",         1, &E_GL_KHR_shader_subgroup_basic);
             symbolTable.setVariableExtensions("gl_SubgroupInvocationID", 1, &E_GL_KHR_shader_subgroup_basic);
             symbolTable.setVariableExtensions("gl_SubgroupEqMask",       1, &E_GL_KHR_shader_subgroup_ballot);
@@ -7418,7 +7418,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_SubGroupLeMaskARB",     EbvSubGroupLeMask,     symbolTable);
             BuiltInVariable("gl_SubGroupLtMaskARB",     EbvSubGroupLtMask,     symbolTable);
 
-            if (spvVersion.vulkan >= 100)
+            if (spvVersion.vulkan > 0)
                 // Treat "gl_SubGroupSizeARB" as shader input instead of uniform for Vulkan
                 SpecialQualifier("gl_SubGroupSizeARB", EvqVaryingIn, EbvSubGroupSize, symbolTable);
             else
@@ -7426,7 +7426,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         // GL_ARB_shader_ballot
-        if (spvVersion.vulkan >= 100) {
+        if (spvVersion.vulkan > 0) {
             symbolTable.setVariableExtensions("gl_SubgroupSize",         1, &E_GL_KHR_shader_subgroup_basic);
             symbolTable.setVariableExtensions("gl_SubgroupInvocationID", 1, &E_GL_KHR_shader_subgroup_basic);
             symbolTable.setVariableExtensions("gl_SubgroupEqMask",       1, &E_GL_KHR_shader_subgroup_ballot);
@@ -7453,7 +7453,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         // GL_KHR_shader_subgroup
-        if (spvVersion.vulkan >= 100) {
+        if (spvVersion.vulkan > 0) {
             symbolTable.setVariableExtensions("gl_NumSubgroups", 1, &E_GL_KHR_shader_subgroup_basic);
             symbolTable.setVariableExtensions("gl_SubgroupID",   1, &E_GL_KHR_shader_subgroup_basic);
 
@@ -7842,7 +7842,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         // GL_KHR_shader_subgroup
-        if (spvVersion.vulkan >= 100) {
+        if (spvVersion.vulkan > 0) {
             symbolTable.relateToOperator("subgroupBarrier",                 EOpSubgroupBarrier);
             symbolTable.relateToOperator("subgroupMemoryBarrier",           EOpSubgroupMemoryBarrier);
             symbolTable.relateToOperator("subgroupMemoryBarrierBuffer",     EOpSubgroupMemoryBarrierBuffer);
