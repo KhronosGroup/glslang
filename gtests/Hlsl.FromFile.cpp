@@ -67,14 +67,14 @@ using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPoint
 TEST_P(HlslCompileTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::Vulkan_1_0,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
                             Target::BothASTAndSpv, true, GetParam().entryPoint);
 }
 
 TEST_P(HlslVulkan1_1CompileTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::Vulkan_1_1,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_1,
                             Target::BothASTAndSpv, true, GetParam().entryPoint);
 }
 
@@ -90,7 +90,7 @@ TEST_P(HlslCompileAndFlattenTest, FromFile)
 TEST_P(HlslLegalizeTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
-                            Source::HLSL, Semantics::Vulkan, glslang::Vulkan_1_0,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
                             Target::Spv, true, GetParam().entryPoint,
                             "/baseLegalResults/", false);
 }

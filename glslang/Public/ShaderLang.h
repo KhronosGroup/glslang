@@ -123,6 +123,17 @@ typedef enum {
     EshTargetSpv = EShTargetSpv,  // legacy spelling
 } EShTargetLanguage;
 
+typedef enum {
+    EShTargetVulkan_1_0 = (1 << 22),
+    EShTargetVulkan_1_1 = (1 << 22) | (1 << 12),
+    EShTargetOpenGL_450 = 450,
+} EshTargetClientVersion;
+
+typedef enum {
+    EShTargetSpv_1_0 = (1 << 16),
+    EShTargetSpv_1_3 = (1 << 16) | (3 << 8),
+} EShTargetLanguageVersion;
+
 struct TInputLanguage {
     EShSource languageFamily; // redundant information with other input, this one overrides when not EShSourceNone
     EShLanguage stage;        // redundant information with other input, this one overrides when not EShSourceNone
@@ -132,19 +143,13 @@ struct TInputLanguage {
 
 struct TClient {
     EShClient client;
-    int version;              // version of client itself (not the client's input dialect)
+    EshTargetClientVersion version;   // version of client itself (not the client's input dialect)
 };
-
-static const int Vulkan_1_0 = (1 << 22);
-static const int Vulkan_1_1 = (1 << 22) | (1 << 12);
 
 struct TTarget {
     EShTargetLanguage language;
-    unsigned int version;     // the version to target, if SPIR-V, defined by "word 1" of the SPIR-V binary header
+    EShTargetLanguageVersion version; // version to target, if SPIR-V, defined by "word 1" of the SPIR-V header
 };
-
-static const int Spv_1_0 = (1 << 16);
-static const int Spv_1_3 = (1 << 16) | (3 << 8);
 
 // All source/client/target versions and settings.
 // Can override previous methods of setting, when items are set here.
@@ -399,12 +404,12 @@ public:
         environment.input.dialect = client;
         environment.input.dialectVersion = version;
     }
-    void setEnvClient(EShClient client, int version)
+    void setEnvClient(EShClient client, EshTargetClientVersion version)
     {
         environment.client.client = client;
         environment.client.version = version;
     }
-    void setEnvTarget(EShTargetLanguage lang, unsigned int version)
+    void setEnvTarget(EShTargetLanguage lang, EShTargetLanguageVersion version)
     {
         environment.target.language = lang;
         environment.target.version = version;
