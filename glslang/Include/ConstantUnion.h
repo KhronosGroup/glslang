@@ -440,13 +440,13 @@ public:
         TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
-        case EbtInt8: returnValue.setI8Const(i8Const + constant.i8Const); break;
-        case EbtInt16: returnValue.setI16Const(i16Const + constant.i16Const); break;
-        case EbtInt: returnValue.setIConst(iConst + constant.iConst); break;
-        case EbtInt64: returnValue.setI64Const(i64Const + constant.i64Const); break;
-        case EbtUint8: returnValue.setU8Const(u8Const + constant.u8Const); break;
-        case EbtUint16: returnValue.setU8Const(u16Const + constant.u16Const); break;
-        case EbtUint: returnValue.setUConst(uConst + constant.uConst); break;
+        case EbtInt8:   returnValue.setI8Const(i8Const + constant.i8Const); break;
+        case EbtInt16:  returnValue.setI16Const(i16Const + constant.i16Const); break;
+        case EbtInt:    returnValue.setIConst(iConst + constant.iConst); break;
+        case EbtInt64:  returnValue.setI64Const(i64Const + constant.i64Const); break;
+        case EbtUint8:  returnValue.setU8Const(u8Const + constant.u8Const); break;
+        case EbtUint16: returnValue.setU16Const(u16Const + constant.u16Const); break;
+        case EbtUint:   returnValue.setUConst(uConst + constant.uConst); break;
         case EbtUint64: returnValue.setU64Const(u64Const + constant.u64Const); break;
         case EbtDouble: returnValue.setDConst(dConst + constant.dConst); break;
         default: assert(false && "Default missing");
@@ -460,13 +460,13 @@ public:
         TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
-        case EbtInt8: returnValue.setI8Const(i8Const - constant.i8Const); break;
-        case EbtInt16: returnValue.setI16Const(i16Const - constant.i16Const); break;
-        case EbtInt: returnValue.setIConst(iConst - constant.iConst); break;
-        case EbtInt64: returnValue.setI64Const(i64Const - constant.i64Const); break;
-        case EbtUint8: returnValue.setU8Const(u8Const - constant.u8Const); break;
-        case EbtUint16: returnValue.setU8Const(u16Const - constant.u16Const); break;
-        case EbtUint: returnValue.setUConst(uConst - constant.uConst); break;
+        case EbtInt8:   returnValue.setI8Const(i8Const - constant.i8Const); break;
+        case EbtInt16:  returnValue.setI16Const(i16Const - constant.i16Const); break;
+        case EbtInt:    returnValue.setIConst(iConst - constant.iConst); break;
+        case EbtInt64:  returnValue.setI64Const(i64Const - constant.i64Const); break;
+        case EbtUint8:  returnValue.setU8Const(u8Const - constant.u8Const); break;
+        case EbtUint16: returnValue.setU16Const(u16Const - constant.u16Const); break;
+        case EbtUint:   returnValue.setUConst(uConst - constant.uConst); break;
         case EbtUint64: returnValue.setU64Const(u64Const - constant.u64Const); break;
         case EbtDouble: returnValue.setDConst(dConst - constant.dConst); break;
         default: assert(false && "Default missing");
@@ -480,13 +480,13 @@ public:
         TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
-        case EbtInt8: returnValue.setI8Const(i8Const * constant.i8Const); break;
-        case EbtInt16: returnValue.setI8Const(i16Const * constant.i16Const); break;
-        case EbtInt: returnValue.setIConst(iConst * constant.iConst); break;
-        case EbtInt64: returnValue.setI64Const(i64Const * constant.i64Const); break;
-        case EbtUint8: returnValue.setU8Const(u8Const * constant.u8Const); break;
-        case EbtUint16: returnValue.setU8Const(u16Const * constant.u16Const); break;
-        case EbtUint: returnValue.setUConst(uConst * constant.uConst); break;
+        case EbtInt8:   returnValue.setI8Const(i8Const * constant.i8Const); break;
+        case EbtInt16:  returnValue.setI16Const(i16Const * constant.i16Const); break;
+        case EbtInt:    returnValue.setIConst(iConst * constant.iConst); break;
+        case EbtInt64:  returnValue.setI64Const(i64Const * constant.i64Const); break;
+        case EbtUint8:  returnValue.setU8Const(u8Const * constant.u8Const); break;
+        case EbtUint16: returnValue.setU16Const(u16Const * constant.u16Const); break;
+        case EbtUint:   returnValue.setUConst(uConst * constant.uConst); break;
         case EbtUint64: returnValue.setU64Const(u64Const * constant.u64Const); break;
         case EbtDouble: returnValue.setDConst(dConst * constant.dConst); break;
         default: assert(false && "Default missing");
@@ -500,13 +500,13 @@ public:
         TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
-        case EbtInt8: returnValue.setI8Const(i8Const % constant.i8Const); break;
-        case EbtInt16: returnValue.setI8Const(i8Const % constant.i16Const); break;
-        case EbtInt: returnValue.setIConst(iConst % constant.iConst); break;
-        case EbtInt64: returnValue.setI64Const(i64Const % constant.i64Const); break;
-        case EbtUint8: returnValue.setU8Const(u8Const % constant.u8Const); break;
-        case EbtUint16: returnValue.setU8Const(u16Const % constant.u16Const); break;
-        case EbtUint: returnValue.setUConst(uConst % constant.uConst); break;
+        case EbtInt8:   returnValue.setI8Const(i8Const % constant.i8Const); break;
+        case EbtInt16:  returnValue.setI8Const(i8Const % constant.i16Const); break;
+        case EbtInt:    returnValue.setIConst(iConst % constant.iConst); break;
+        case EbtInt64:  returnValue.setI64Const(i64Const % constant.i64Const); break;
+        case EbtUint8:  returnValue.setU8Const(u8Const % constant.u8Const); break;
+        case EbtUint16: returnValue.setU16Const(u16Const % constant.u16Const); break;
+        case EbtUint:   returnValue.setUConst(uConst % constant.uConst); break;
         case EbtUint64: returnValue.setU64Const(u64Const % constant.u64Const); break;
         default:     assert(false && "Default missing");
         }
@@ -747,12 +747,12 @@ public:
         TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
-        case EbtInt8:  returnValue.setI8Const(i8Const & constant.i8Const); break;
-        case EbtUint8: returnValue.setU8Const(u8Const & constant.u8Const); break;
-        case EbtInt16: returnValue.setI16Const(i16Const & constant.i16Const); break;
-        case EbtUint16:returnValue.setU16Const(u16Const & constant.u16Const); break;
-        case EbtInt:  returnValue.setIConst(iConst & constant.iConst); break;
-        case EbtUint: returnValue.setUConst(uConst & constant.uConst); break;
+        case EbtInt8:   returnValue.setI8Const(i8Const & constant.i8Const); break;
+        case EbtUint8:  returnValue.setU8Const(u8Const & constant.u8Const); break;
+        case EbtInt16:  returnValue.setI16Const(i16Const & constant.i16Const); break;
+        case EbtUint16: returnValue.setU16Const(u16Const & constant.u16Const); break;
+        case EbtInt:    returnValue.setIConst(iConst & constant.iConst); break;
+        case EbtUint:   returnValue.setUConst(uConst & constant.uConst); break;
         case EbtInt64:  returnValue.setI64Const(i64Const & constant.i64Const); break;
         case EbtUint64: returnValue.setU64Const(u64Const & constant.u64Const); break;
         default:     assert(false && "Default missing");
@@ -766,12 +766,12 @@ public:
         TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
-        case EbtInt8:  returnValue.setI8Const(i8Const | constant.i8Const); break;
-        case EbtUint8: returnValue.setU8Const(u8Const | constant.u8Const); break;
-        case EbtInt16: returnValue.setI16Const(i16Const | constant.i16Const); break;
-        case EbtUint16:returnValue.setU16Const(u16Const | constant.u16Const); break;
-        case EbtInt:  returnValue.setIConst(iConst | constant.iConst); break;
-        case EbtUint: returnValue.setUConst(uConst | constant.uConst); break;
+        case EbtInt8:   returnValue.setI8Const(i8Const | constant.i8Const); break;
+        case EbtUint8:  returnValue.setU8Const(u8Const | constant.u8Const); break;
+        case EbtInt16:  returnValue.setI16Const(i16Const | constant.i16Const); break;
+        case EbtUint16: returnValue.setU16Const(u16Const | constant.u16Const); break;
+        case EbtInt:    returnValue.setIConst(iConst | constant.iConst); break;
+        case EbtUint:   returnValue.setUConst(uConst | constant.uConst); break;
         case EbtInt64:  returnValue.setI64Const(i64Const | constant.i64Const); break;
         case EbtUint64: returnValue.setU64Const(u64Const | constant.u64Const); break;
         default:     assert(false && "Default missing");
@@ -785,12 +785,12 @@ public:
         TConstUnion returnValue;
         assert(type == constant.type);
         switch (type) {
-        case EbtInt8:  returnValue.setI8Const(i8Const ^ constant.i8Const); break;
-        case EbtUint8: returnValue.setU8Const(u8Const ^ constant.u8Const); break;
-        case EbtInt16: returnValue.setI16Const(i16Const ^ constant.i16Const); break;
-        case EbtUint16:returnValue.setU16Const(u16Const ^ constant.u16Const); break;
-        case EbtInt:  returnValue.setIConst(iConst ^ constant.iConst); break;
-        case EbtUint: returnValue.setUConst(uConst ^ constant.uConst); break;
+        case EbtInt8:   returnValue.setI8Const(i8Const ^ constant.i8Const); break;
+        case EbtUint8:  returnValue.setU8Const(u8Const ^ constant.u8Const); break;
+        case EbtInt16:  returnValue.setI16Const(i16Const ^ constant.i16Const); break;
+        case EbtUint16: returnValue.setU16Const(u16Const ^ constant.u16Const); break;
+        case EbtInt:    returnValue.setIConst(iConst ^ constant.iConst); break;
+        case EbtUint:   returnValue.setUConst(uConst ^ constant.uConst); break;
         case EbtInt64:  returnValue.setI64Const(i64Const ^ constant.i64Const); break;
         case EbtUint64: returnValue.setU64Const(u64Const ^ constant.u64Const); break;
         default:     assert(false && "Default missing");
@@ -803,12 +803,12 @@ public:
     {
         TConstUnion returnValue;
         switch (type) {
-        case EbtInt8:  returnValue.setI8Const(~i8Const); break;
-        case EbtUint8: returnValue.setU8Const(~u8Const); break;
+        case EbtInt8:   returnValue.setI8Const(~i8Const); break;
+        case EbtUint8:  returnValue.setU8Const(~u8Const); break;
         case EbtInt16:  returnValue.setI16Const(~i16Const); break;
         case EbtUint16: returnValue.setU16Const(~u16Const); break;
-        case EbtInt:  returnValue.setIConst(~iConst); break;
-        case EbtUint: returnValue.setUConst(~uConst); break;
+        case EbtInt:    returnValue.setIConst(~iConst); break;
+        case EbtUint:   returnValue.setUConst(~uConst); break;
         case EbtInt64:  returnValue.setI64Const(~i64Const); break;
         case EbtUint64: returnValue.setU64Const(~u64Const); break;
         default:     assert(false && "Default missing");
