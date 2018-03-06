@@ -1577,14 +1577,17 @@ namespace glslang {
 
 #include "../Include/revision.h"
 
+#define QUOTE(s) #s
+#define STR(n) QUOTE(n)
+
 const char* GetEsslVersionString()
 {
-    return "OpenGL ES GLSL 3.20 glslang Khronos." GLSLANG_REVISION " " GLSLANG_DATE;
+    return "OpenGL ES GLSL 3.20 glslang Khronos. " STR(GLSLANG_MINOR_VERSION) "." STR(GLSLANG_PATCH_LEVEL);
 }
 
 const char* GetGlslVersionString()
 {
-    return "4.60 glslang Khronos." GLSLANG_REVISION " " GLSLANG_DATE;
+    return "4.60 glslang Khronos. " STR(GLSLANG_MINOR_VERSION) "." STR(GLSLANG_PATCH_LEVEL);
 }
 
 int GetKhronosToolId()
