@@ -6159,7 +6159,9 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, 
     out.open(baseName, std::ios::binary | std::ios::out);
     if (out.fail())
         printf("ERROR: Failed to open file: %s\n", baseName);
-    out << "\t// " GLSLANG_REVISION " " GLSLANG_DATE << std::endl;
+    out << "\t// " << 
+        glslang::GetSpirvGeneratorVersion() << "." << GLSLANG_MINOR_VERSION << "." << GLSLANG_PATCH_LEVEL <<
+        std::endl;
     if (varName != nullptr) {
         out << "\t #pragma once" << std::endl;
         out << "const uint32_t " << varName << "[] = {" << std::endl;

@@ -99,6 +99,7 @@ enum TOptions {
     EOptionOptimizeDisable      = (1 << 28),
     EOptionOptimizeSize         = (1 << 29),
     EOptionInvertY              = (1 << 30),
+    EOptionDumpBareVersion      = (1 << 31),
 };
 
 //
@@ -449,6 +450,9 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                lowerword == "hlsl-iomapper" ||
                                lowerword == "hlsl-iomapping") {
                         Options |= EOptionHlslIoMapping;
+                    } else if (lowerword == "invert-y" ||  // synonyms
+                               lowerword == "iy") {
+                        Options |= EOptionInvertY;
                     } else if (lowerword == "keep-uncalled" || // synonyms
                                lowerword == "ku") {
                         Options |= EOptionKeepUncalled;
@@ -520,9 +524,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         variableName = argv[1];
                         bumpArg();
                         break;
-                    } else if (lowerword == "invert-y" ||  // synonyms
-                               lowerword == "iy") {
-                        Options |= EOptionInvertY;
+                    } else if (lowerword == "version") {
+                        Options |= EOptionDumpVersions;
                     } else {
                         usage();
                     }
@@ -586,7 +589,11 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 Options |= EOptionDumpConfig;
                 break;
             case 'd':
-                Options |= EOptionDefaultDesktop;
+                if (strncmp(&argv[0][1], "dumpversion", strlen(&argv[0][1]) + 1) == 0 ||
+                    strncmp(&argv[0][1], "dumpfullversion", strlen(&argv[0][1]) + 1) == 0)
+                    Options |= EOptionDumpBareVersion;
+                else
+                    Options |= EOptionDefaultDesktop;
                 break;
             case 'e':
                 // HLSL todo: entry point handle needs much more sophistication.
@@ -1046,8 +1053,14 @@ int singleMain()
             return ESuccess;
     }
 
-    if (Options & EOptionDumpVersions) {
-        printf("Glslang Version: %s %s\n", GLSLANG_REVISION, GLSLANG_DATE);
+    if (Options & EOptionDumpBareVersion) {
+        printf("%d.%d.%d\n",
+            glslang::GetSpirvGeneratorVersion(), GLSLANG_MINOR_VERSION, GLSLANG_PATCH_LEVEL);
+        if (workList.empty())
+            return ESuccess;
+    } else if (Options & EOptionDumpVersions) {
+        printf("Glslang Version: %d.%d.%d\n",
+            glslang::GetSpirvGeneratorVersion(), GLSLANG_MINOR_VERSION, GLSLANG_PATCH_LEVEL);
         printf("ESSL Version: %s\n", glslang::GetEsslVersionString());
         printf("GLSL Version: %s\n", glslang::GetGlslVersionString());
         std::string spirvVersion;
@@ -1313,12 +1326,15 @@ void usage()
            "                                       'location' (fragile, not cross stage)\n"
            "  --aml                                synonym for --auto-map-locations\n"
            "  --client {vulkan<ver>|opengl<ver>}   see -V and -G\n"
+           "  -dumpfullversion                     print bare major.minor.patchlevel\n"
+           "  -dumpversion                         same as -dumpfullversion\n"
            "  --flatten-uniform-arrays             flatten uniform texture/sampler arrays to\n"
            "                                       scalars\n"
            "  --fua                                synonym for --flatten-uniform-arrays\n"
            "  --hlsl-offsets                       Allow block offsets to follow HLSL rules\n"
            "                                       Works independently of source language\n"
            "  --hlsl-iomap                         Perform IO mapping in HLSL register space\n"
+           "  --invert-y | --iy                    invert position.Y output in vertex shader\n"
            "  --keep-uncalled                      don't eliminate uncalled functions\n"
            "  --ku                                 synonym for --keep-uncalled\n"
            "  --no-storage-format                  use Unknown image format\n"
@@ -1365,8 +1381,8 @@ void usage()
            "  --variable-name <name>               Creates a C header file that contains a\n"
            "                                       uint32_t array named <name>\n"
            "                                       initialized with the shader binary code.\n"
+           "  --version                            synonym for -v\n"
            "  --vn <name>                          synonym for --variable-name <name>\n"
-           "  --invert-y | --iy                    invert position.Y output in vertex shader\n"
            );
 
     exit(EFailUsage);
