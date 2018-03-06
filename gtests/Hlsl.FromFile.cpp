@@ -362,7 +362,6 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.typedef.frag", "PixelShaderFunction"},
         {"hlsl.whileLoop.frag", "PixelShaderFunction"},
         {"hlsl.void.frag", "PixelShaderFunction"},
-#ifndef ENABLE_OPT
         {"hlsl.aliasOpaque.frag", "main"},
         {"hlsl.flattenOpaque.frag", "main"},
         {"hlsl.flattenOpaqueInit.vert", "main"},
@@ -371,7 +370,6 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.flattenSubset2.frag", "main"},
         {"hlsl.partialFlattenLocal.vert", "main"},
         {"hlsl.samplecmp.dualmode.frag", "main"},
-#endif
     }),
     FileNameAsCustomTestSuffix
 );

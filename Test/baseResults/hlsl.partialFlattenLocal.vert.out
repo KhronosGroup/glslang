@@ -1,5 +1,4 @@
 hlsl.partialFlattenLocal.vert
-WARNING: AST will form illegal SPIR-V; need to transform to legalize
 Shader version: 500
 0:? Sequence
 0:12  Function Definition: @main(vf4; ( temp 4-component vector of float)
