@@ -577,9 +577,9 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     if (len < MaxTokenLength)
                         ppToken->name[len++] = (char)ch;
                     isInt16 = true;
+#endif
                 } else
                     ungetch();
-#endif
                 ppToken->name[len] = '\0';
 
                 if (!isInt64 && ival > 0xffffffffu)
