@@ -508,6 +508,12 @@ public:
         return flat || smooth || nopersp;
 #endif
     }
+#ifdef AMD_EXTENSIONS
+    bool isExplicitInterpolation() const
+    {
+        return explicitInterp;
+    }
+#endif
     bool isAuxiliary() const
     {
         return centroid || patch || sample;
