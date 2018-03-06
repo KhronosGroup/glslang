@@ -9885,10 +9885,12 @@ void HlslParseContext::finish()
     addPatchConstantInvocation();
     fixTextureShadowModes();
 
+#ifndef ENABLE_OPT
     // Communicate out (esp. for command line) that we formed AST that will make
     // illegal AST SPIR-V and it needs transforms to legalize it.
     if (intermediate.needsLegalization())
         infoSink.info << "WARNING: AST will form illegal SPIR-V; need to transform to legalize";
+#endif
 
     TParseContextBase::finish();
 }

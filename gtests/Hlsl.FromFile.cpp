@@ -92,7 +92,6 @@ INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
         {"hlsl.amend.frag", "f1"},
-        {"hlsl.aliasOpaque.frag", "main"},
         {"hlsl.array.frag", "PixelShaderFunction"},
         {"hlsl.array.implicit-size.frag", "PixelShaderFunction"},
         {"hlsl.array.multidim.frag", "main"},
@@ -153,11 +152,6 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.float1.frag", "PixelShaderFunction"},
         {"hlsl.float4.frag", "PixelShaderFunction"},
         {"hlsl.flatten.return.frag", "main"},
-        {"hlsl.flattenOpaque.frag", "main"},
-        {"hlsl.flattenOpaqueInit.vert", "main"},
-        {"hlsl.flattenOpaqueInitMix.vert", "main"},
-        {"hlsl.flattenSubset.frag", "main"},
-        {"hlsl.flattenSubset2.frag", "main"},
         {"hlsl.forLoop.frag", "PixelShaderFunction"},
         {"hlsl.gather.array.dx10.frag", "main"},
         {"hlsl.gather.basic.dx10.frag", "main"},
@@ -254,7 +248,6 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.params.default.frag", "main"},
         {"hlsl.params.default.negative.frag", "main"},
         {"hlsl.partialInit.frag", "PixelShaderFunction"},
-        {"hlsl.partialFlattenLocal.vert", "main"},
         {"hlsl.PointSize.geom", "main"},
         {"hlsl.PointSize.vert", "main"},
         {"hlsl.pp.vert", "main"},
@@ -280,7 +273,6 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.samplebias.offsetarray.dx10.frag", "main"},
         {"hlsl.samplecmp.array.dx10.frag", "main"},
         {"hlsl.samplecmp.basic.dx10.frag", "main"},
-        {"hlsl.samplecmp.dualmode.frag", "main"},
         {"hlsl.samplecmp.offset.dx10.frag", "main"},
         {"hlsl.samplecmp.offsetarray.dx10.frag", "main"},
         {"hlsl.samplecmp.negative.frag", "main"},
@@ -369,22 +361,34 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.typeGraphCopy.vert", "main"},
         {"hlsl.typedef.frag", "PixelShaderFunction"},
         {"hlsl.whileLoop.frag", "PixelShaderFunction"},
-        {"hlsl.void.frag", "PixelShaderFunction"}
+        {"hlsl.void.frag", "PixelShaderFunction"},
+#ifndef ENABLE_OPT
+        {"hlsl.aliasOpaque.frag", "main"},
+        {"hlsl.flattenOpaque.frag", "main"},
+        {"hlsl.flattenOpaqueInit.vert", "main"},
+        {"hlsl.flattenOpaqueInitMix.vert", "main"},
+        {"hlsl.flattenSubset.frag", "main"},
+        {"hlsl.flattenSubset2.frag", "main"},
+        {"hlsl.partialFlattenLocal.vert", "main"},
+        {"hlsl.samplecmp.dualmode.frag", "main"},
+#endif
     }),
     FileNameAsCustomTestSuffix
 );
 // clang-format on
 
+#ifndef ENABLE_OPT
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileAndFlattenTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
         {"hlsl.array.flatten.frag", "main"},
-        {"hlsl.partialFlattenMixed.vert", "main"},
+        {"hlsl.partialFlattenMixed.vert", "main"}
     }),
     FileNameAsCustomTestSuffix
 );
 // clang-format on
+#endif
 
 #ifdef ENABLE_OPT
 // clang-format off
@@ -398,7 +402,9 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.flattenSubset.frag", "main"},
         {"hlsl.flattenSubset2.frag", "main"},
         {"hlsl.partialFlattenLocal.vert", "main"},
-        {"hlsl.partialFlattenMixed.vert", "main"}
+        {"hlsl.array.flatten.frag", "main"},
+        {"hlsl.partialFlattenMixed.vert", "main"},
+        {"hlsl.samplecmp.dualmode.frag", "main"}
     }),
     FileNameAsCustomTestSuffix
 );
