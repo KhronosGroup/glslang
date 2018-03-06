@@ -619,9 +619,9 @@ void TranslateEnvironment(const TEnvironment* environment, EShMessages& messages
 {
     // Set up environmental defaults, first ignoring 'environment'.
     if (messages & EShMsgSpvRules)
-        spvVersion.spv = 0x00010000;
+        spvVersion.spv = EShTargetSpv_1_0;
     if (messages & EShMsgVulkanRules) {
-        spvVersion.vulkan = 100;
+        spvVersion.vulkan = EShTargetVulkan_1_0;
         spvVersion.vulkanGlsl = 100;
     } else if (spvVersion.spv != 0)
         spvVersion.openGl = 100;
