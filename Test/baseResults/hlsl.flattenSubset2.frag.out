@@ -1,4 +1,5 @@
 hlsl.flattenSubset2.frag
+WARNING: AST will form illegal SPIR-V; need to transform to legalize
 Shader version: 500
 gl_FragCoord origin is upper left
 0:? Sequence

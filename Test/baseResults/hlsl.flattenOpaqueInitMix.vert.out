@@ -1,4 +1,5 @@
 hlsl.flattenOpaqueInitMix.vert
+WARNING: AST will form illegal SPIR-V; need to transform to legalize
 Shader version: 500
 0:? Sequence
 0:5  Function Definition: lookUp(struct-FxaaTex-p1-t21-f11; ( temp 4-component vector of float)
