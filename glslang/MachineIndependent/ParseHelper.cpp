@@ -1609,6 +1609,23 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             if (base == nullptr || base->getType().getQualifier().storage != EvqVaryingIn)
                 error(loc, "first argument must be an interpolant, or interpolant-array element", fnCandidate.getName().c_str(), "");
         }
+
+#ifdef AMD_EXTENSIONS
+        if (callNode.getOp() == EOpInterpolateAtVertex) {
+            if (!arg0->getType().getQualifier().isExplicitInterpolation())
+                error(loc, "argument must be qualified as __explicitInterpAMD in", "interpolant", "");
+            else {
+                if (! (*argp)[1]->getAsConstantUnion())
+                    error(loc, "argument must be compile-time constant", "vertex index", "");
+                else {
+                    unsigned vertexIdx = (*argp)[1]->getAsConstantUnion()->getConstArray()[0].getUConst();
+                    if (vertexIdx > 2)
+                        error(loc, "must be in the range [0, 2]", "vertex index", "");
+                }
+            }
+        }
+#endif
+
         break;
 
     case EOpEmitStreamVertex:
