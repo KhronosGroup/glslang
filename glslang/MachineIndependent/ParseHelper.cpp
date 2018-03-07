@@ -1494,6 +1494,39 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         requireExtensions(loc, 1, &E_GL_ARB_sparse_texture2, fnCandidate.getName().c_str());
         break;
     }
+
+    case EOpSwizzleInvocations:
+    {
+        if (! (*argp)[1]->getAsConstantUnion())
+            error(loc, "argument must be compile-time constant", "offset", "");
+        else {
+            unsigned offset[4] = {};
+            offset[0] = (*argp)[1]->getAsConstantUnion()->getConstArray()[0].getUConst();
+            offset[1] = (*argp)[1]->getAsConstantUnion()->getConstArray()[1].getUConst();
+            offset[2] = (*argp)[1]->getAsConstantUnion()->getConstArray()[2].getUConst();
+            offset[3] = (*argp)[1]->getAsConstantUnion()->getConstArray()[3].getUConst();
+            if (offset[0] > 3 || offset[1] > 3 || offset[2] > 3 || offset[3] > 3)
+                error(loc, "components must be in the range [0, 3]", "offset", "");
+        }
+
+        break;
+    }
+
+    case EOpSwizzleInvocationsMasked:
+    {
+        if (! (*argp)[1]->getAsConstantUnion())
+            error(loc, "argument must be compile-time constant", "mask", "");
+        else {
+            unsigned mask[3] = {};
+            mask[0] = (*argp)[1]->getAsConstantUnion()->getConstArray()[0].getUConst();
+            mask[1] = (*argp)[1]->getAsConstantUnion()->getConstArray()[1].getUConst();
+            mask[2] = (*argp)[1]->getAsConstantUnion()->getConstArray()[2].getUConst();
+            if (mask[0] > 31 || mask[1] > 31 || mask[2] > 31)
+                error(loc, "components must be in the range [0, 31]", "mask", "");
+        }
+
+        break;
+    }
 #endif
 
     case EOpTextureOffset:
