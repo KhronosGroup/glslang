@@ -200,6 +200,7 @@ enum EShMessages {
     EShMsgKeepUncalled     = (1 << 8),  // for testing, don't eliminate uncalled functions
     EShMsgHlslOffsets      = (1 << 9),  // allow block offsets to follow HLSL rules instead of GLSL rules
     EShMsgDebugInfo        = (1 << 10), // save debug information
+    EShMsgHlslEnable16BitTypes  = (1 << 11), // enable use of 16-bit types in SPIR-V for HLSL
 };
 
 //
