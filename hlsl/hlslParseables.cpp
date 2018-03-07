@@ -913,7 +913,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "WaveActiveAllTrue",                "S",     "B",       "S",              "B",              EShLangPSCS,  false},
         { "WaveActiveBallot",                 "V4",    "U",       "S",              "B",              EShLangPSCS,  false},
         { "WaveReadLaneAt",                   nullptr, nullptr,   "SV,S",           "DFUI,U",         EShLangPSCS,  false},
-        { "WaveReadFirstLane",                nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
+        { "WaveReadLaneFirst",                nullptr, nullptr,   "SV",             "DFUI",           EShLangPSCS,  false},
         { "WaveActiveAllEqual",               "S",     "B",       "SV",             "DFUI",           EShLangPSCS,  false},
         { "WaveActiveAllEqualBool",           "S",     "B",       "S",              "B",              EShLangPSCS,  false},
         { "WaveActiveCountBits",              "S",     "U",       "S",              "B",              EShLangPSCS,  false},
@@ -1282,7 +1282,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("WaveActiveAnyTrue",                          EOpSubgroupAny);
     symbolTable.relateToOperator("WaveActiveAllTrue",                          EOpSubgroupAll);
     symbolTable.relateToOperator("WaveActiveBallot",                           EOpSubgroupBallot);
-    symbolTable.relateToOperator("WaveReadFirstLane",                          EOpSubgroupBroadcastFirst);
+    symbolTable.relateToOperator("WaveReadLaneFirst",                          EOpSubgroupBroadcastFirst);
     symbolTable.relateToOperator("WaveReadLaneAt",                             EOpSubgroupShuffle);
     symbolTable.relateToOperator("WaveActiveAllEqual",                         EOpSubgroupAllEqual);
     symbolTable.relateToOperator("WaveActiveAllEqualBool",                     EOpSubgroupAllEqual);
