@@ -156,6 +156,7 @@ const char* entryPointName = nullptr;
 const char* sourceEntryPointName = nullptr;
 const char* shaderStageName = nullptr;
 const char* variableName = nullptr;
+bool HlslEnable16BitTypes = false;
 std::vector<std::string> IncludeDirectoryList;
 int ClientInputSemanticsVersion = 100;                  // maps to, say, #define VULKAN 100
 glslang::EshTargetClientVersion VulkanClientVersion =
@@ -453,6 +454,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                lowerword == "hlsl-iomapper" ||
                                lowerword == "hlsl-iomapping") {
                         Options |= EOptionHlslIoMapping;
+                    } else if (lowerword == "hlsl-enable-16bit-types") {
+                        HlslEnable16BitTypes = true;
                     } else if (lowerword == "invert-y" ||  // synonyms
                                lowerword == "iy") {
                         Options |= EOptionInvertY;
@@ -520,7 +523,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                 setOpenGlSpv();
                                 OpenGLClientVersion = glslang::EShTargetOpenGL_450;
                             } else
-                                Error("--target-env expected vulkan1.0 or opengl");
+                                Error("--target-env expected vulkan1.0, opengl, or hlsl-16bit-types");
                         }
                         bumpArg();
                     } else if (lowerword == "variable-name" || // synonyms
@@ -708,6 +711,8 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgHlslOffsets);
     if (Options & EOptionDebug)
         messages = (EShMessages)(messages | EShMsgDebugInfo);
+    if (HlslEnable16BitTypes)
+        messages = (EShMessages)(messages | EShMsgHlslEnable16BitTypes);
 }
 
 //
@@ -1341,6 +1346,7 @@ void usage()
            "  --hlsl-offsets                       Allow block offsets to follow HLSL rules\n"
            "                                       Works independently of source language\n"
            "  --hlsl-iomap                         Perform IO mapping in HLSL register space\n"
+           "  --hlsl-enable-16bit-types            Allow use of 16-bit types in SPIR-V for HLSL\n"
            "  --invert-y | --iy                    invert position.Y output in vertex shader\n"
            "  --keep-uncalled                      don't eliminate uncalled functions\n"
            "  --ku                                 synonym for --keep-uncalled\n"
