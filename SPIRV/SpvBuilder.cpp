@@ -1010,6 +1010,7 @@ void Builder::addDecoration(Id id, Decoration decoration, int num)
 {
     if (decoration == spv::DecorationMax)
         return;
+
     Instruction* dec = new Instruction(OpDecorate);
     dec->addIdOperand(id);
     dec->addImmediateOperand(decoration);
@@ -1019,14 +1020,57 @@ void Builder::addDecoration(Id id, Decoration decoration, int num)
     decorations.push_back(std::unique_ptr<Instruction>(dec));
 }
 
+void Builder::addDecoration(Id id, Decoration decoration, const char* s)
+{
+    if (decoration == spv::DecorationMax)
+        return;
+
+    Instruction* dec = new Instruction(OpDecorateStringGOOGLE);
+    dec->addIdOperand(id);
+    dec->addImmediateOperand(decoration);
+    dec->addStringOperand(s);
+
+    decorations.push_back(std::unique_ptr<Instruction>(dec));
+}
+
+void Builder::addDecorationId(Id id, Decoration decoration, Id idDecoration)
+{
+    if (decoration == spv::DecorationMax)
+        return;
+
+    Instruction* dec = new Instruction(OpDecorateId);
+    dec->addIdOperand(id);
+    dec->addImmediateOperand(decoration);
+    dec->addIdOperand(idDecoration);
+
+    decorations.push_back(std::unique_ptr<Instruction>(dec));
+}
+
 void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, int num)
 {
+    if (decoration == spv::DecorationMax)
+        return;
+
     Instruction* dec = new Instruction(OpMemberDecorate);
     dec->addIdOperand(id);
     dec->addImmediateOperand(member);
     dec->addImmediateOperand(decoration);
     if (num >= 0)
         dec->addImmediateOperand(num);
+
+    decorations.push_back(std::unique_ptr<Instruction>(dec));
+}
+
+void Builder::addMemberDecoration(Id id, unsigned int member, Decoration decoration, const char *s)
+{
+    if (decoration == spv::DecorationMax)
+        return;
+
+    Instruction* dec = new Instruction(OpMemberDecorateStringGOOGLE);
+    dec->addIdOperand(id);
+    dec->addImmediateOperand(member);
+    dec->addImmediateOperand(decoration);
+    dec->addStringOperand(s);
 
     decorations.push_back(std::unique_ptr<Instruction>(dec));
 }
