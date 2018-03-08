@@ -840,8 +840,13 @@ bool ProcessDeferred(
     // Add built-in symbols that are potentially context dependent;
     // they get popped again further down.
     if (! AddContextSpecificSymbols(resources, compiler->infoSink, symbolTable, version, profile, spvVersion,
-                                    stage, source))
+                                    stage, source)) {
+        delete symbolTableMemory;
+        delete [] lengths;
+        delete [] strings;
+        delete [] names;
         return false;
+    }
 
     //
     // Now we can process the full shader under proper symbols and rules.
