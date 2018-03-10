@@ -341,6 +341,7 @@ void TScanContext::fillInKeywordMap()
 
     (*KeywordMap)["const"] =                   CONST;
     (*KeywordMap)["uniform"] =                 UNIFORM;
+    (*KeywordMap)["nonuniformEXT"] =           NONUNIFORM;
     (*KeywordMap)["in"] =                      IN;
     (*KeywordMap)["out"] =                     OUT;
     (*KeywordMap)["inout"] =                   INOUT;
@@ -857,6 +858,7 @@ int TScanContext::tokenizeIdentifier()
     switch (keyword) {
     case CONST:
     case UNIFORM:
+    case NONUNIFORM:
     case IN:
     case OUT:
     case INOUT:

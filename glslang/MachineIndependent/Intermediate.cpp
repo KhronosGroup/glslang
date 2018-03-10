@@ -1816,6 +1816,9 @@ TOperator TIntermediate::mapTypeToConstructorOp(const TType& type) const
 {
     TOperator op = EOpNull;
 
+    if (type.getQualifier().nonUniform)
+        return EOpConstructNonuniform;
+
     switch (type.getBasicType()) {
     case EbtStruct:
         op = EOpConstructStruct;

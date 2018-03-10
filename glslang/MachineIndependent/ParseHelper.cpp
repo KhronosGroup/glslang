@@ -2579,12 +2579,15 @@ void TParseContext::transparentOpaqueCheck(const TSourceLoc& loc, const TType& t
 //
 void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& qualifier)
 {
+    bool nonuniformOkay = false;
+
     // move from parameter/unknown qualifiers to pipeline in/out qualifiers
     switch (qualifier.storage) {
     case EvqIn:
         profileRequires(loc, ENoProfile, 130, nullptr, "in for stage inputs");
         profileRequires(loc, EEsProfile, 300, nullptr, "in for stage inputs");
         qualifier.storage = EvqVaryingIn;
+        nonuniformOkay = true;
         break;
     case EvqOut:
         profileRequires(loc, ENoProfile, 130, nullptr, "out for stage outputs");
@@ -2595,9 +2598,16 @@ void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& q
         qualifier.storage = EvqVaryingIn;
         error(loc, "cannot use 'inout' at global scope", "", "");
         break;
+    case EvqGlobal:
+    case EvqTemporary:
+        nonuniformOkay = true;
+        break;
     default:
         break;
     }
+
+    if (!nonuniformOkay && qualifier.nonUniform)
+        error(loc, "for non-parameter, can only apply to 'in' or no storage qualifier", "nonuniformEXT", "");
 
     invariantCheck(loc, qualifier);
 }
@@ -2847,6 +2857,7 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
     MERGE_SINGLETON(readonly);
     MERGE_SINGLETON(writeonly);
     MERGE_SINGLETON(specConstant);
+    MERGE_SINGLETON(nonUniform);
 
     if (repeated)
         error(loc, "replicated qualifiers", "", "");
@@ -3669,7 +3680,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     trackLinkage(*block);
 }
 
-void TParseContext::paramCheckFix(const TSourceLoc& loc, const TStorageQualifier& qualifier, TType& type)
+void TParseContext::paramCheckFixStorage(const TSourceLoc& loc, const TStorageQualifier& qualifier, TType& type)
 {
     switch (qualifier) {
     case EvqConst:
@@ -3715,8 +3726,10 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
         else
             warn(loc, "qualifier has no effect on non-output parameters", "precise", "");
     }
+    if (qualifier.isNonUniform())
+        type.getQualifier().nonUniform = qualifier.nonUniform;
 
-    paramCheckFix(loc, qualifier.storage, type);
+    paramCheckFixStorage(loc, qualifier.storage, type);
 }
 
 void TParseContext::nestedBlockCheck(const TSourceLoc& loc)
@@ -5865,6 +5878,11 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
     case EOpConstructBVec4:
     case EOpConstructBool:
         basicOp = EOpConstructBool;
+        break;
+
+    case EOpConstructNonuniform:
+        node->getWritableType().getQualifier().nonUniform = true;
+        return node;
         break;
 
     default:

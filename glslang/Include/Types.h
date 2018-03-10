@@ -437,6 +437,7 @@ public:
         clearInterstage();
         clearMemory();
         specConstant = false;
+        nonUniform = false;
         clearLayout();
     }
 
@@ -470,7 +471,7 @@ public:
     // Drop just the storage qualification, which perhaps should
     // never be done, as it is fundamentally inconsistent, but need to
     // explore what downstream consumers need.
-    // E.g., in a deference, it is an inconsistency between:
+    // E.g., in a dereference, it is an inconsistency between:
     // A) partially dereferenced resource is still in the storage class it started in
     // B) partially dereferenced resource is a new temporary object
     // If A, then nothing should change, if B, then everything should change, but this is half way.
@@ -478,6 +479,7 @@ public:
     {
         storage      = EvqTemporary;
         specConstant = false;
+        nonUniform   = false;
     }
 
     const char*         semanticName;
@@ -502,6 +504,7 @@ public:
     bool readonly     : 1;
     bool writeonly    : 1;
     bool specConstant : 1;  // having a constant_id is not sufficient: expressions have no id, but are still specConstant
+    bool nonUniform   : 1;
 
     bool isMemory() const
     {
@@ -832,6 +835,10 @@ public:
         // had a specialization-constant ID, and false if it is not a
         // true front-end constant.
         return specConstant;
+    }
+    bool isNonUniform() const
+    {
+        return nonUniform;
     }
     bool isFrontEndConstant() const
     {
@@ -1692,6 +1699,8 @@ public:
             appendStr(" writeonly");
         if (qualifier.specConstant)
             appendStr(" specialization-constant");
+        if (qualifier.nonUniform)
+            appendStr(" nonuniform");
         appendStr(" ");
         appendStr(getStorageQualifierString());
         if (isArray()) {
