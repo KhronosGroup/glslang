@@ -269,6 +269,8 @@ const char* DecorationString(int decoration)
     case 5252: return "ViewportRelativeNV";
     case 5256: return "SecondaryViewportRelativeNV";
 #endif
+
+    case DecorationNonUniformEXT: return "DecorationNonUniformEXT";
     }
 }
 

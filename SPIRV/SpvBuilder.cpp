@@ -2268,7 +2268,7 @@ void Builder::accessChainStore(Id rvalue)
 }
 
 // Comments in header
-Id Builder::accessChainLoad(Decoration precision, Id resultType)
+Id Builder::accessChainLoad(Decoration precision, Decoration nonUniform, Id resultType)
 {
     Id id;
 
@@ -2314,6 +2314,7 @@ Id Builder::accessChainLoad(Decoration precision, Id resultType)
         // load through the access chain
         id = createLoad(collapseAccessChain());
         setPrecision(id, precision);
+        addDecoration(id, nonUniform);
     }
 
     // Done, unless there are swizzles to do
@@ -2334,6 +2335,7 @@ Id Builder::accessChainLoad(Decoration precision, Id resultType)
     if (accessChain.component != NoResult)
         id = setPrecision(createVectorExtractDynamic(id, resultType, accessChain.component), precision);
 
+    addDecoration(id, nonUniform);
     return id;
 }
 
