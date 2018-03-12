@@ -2,34 +2,39 @@ nonuniform.frag
 ERROR: 0:6: 'nonuniformEXT' : for non-parameter, can only apply to 'in' or no storage qualifier 
 ERROR: 0:7: 'nonuniformEXT' : for non-parameter, can only apply to 'in' or no storage qualifier 
 ERROR: 0:8: 'nonuniformEXT' : for non-parameter, can only apply to 'in' or no storage qualifier 
-ERROR: 0:17: 'nonuniformEXT' : for non-parameter, can only apply to 'in' or no storage qualifier 
-ERROR: 0:23: 'constructor' : too many arguments 
-ERROR: 0:23: 'assign' :  cannot convert from ' const float' to ' nonuniform temp int'
-ERROR: 0:24: 'constructor' : not enough data provided for construction 
+ERROR: 0:18: 'nonuniformEXT' : for non-parameter, can only apply to 'in' or no storage qualifier 
+ERROR: 0:24: 'constructor' : too many arguments 
 ERROR: 0:24: 'assign' :  cannot convert from ' const float' to ' nonuniform temp int'
+ERROR: 0:25: 'constructor' : not enough data provided for construction 
+ERROR: 0:25: 'assign' :  cannot convert from ' const float' to ' nonuniform temp int'
 ERROR: 8 compilation errors.  No code generated.
 
 
 Shader version: 450
 ERROR: node is still EOpNull!
-0:10  Function Definition: foo(i1; ( global void)
+0:10  Function Definition: foo(i1;i1; ( nonuniform temp int)
 0:10    Function Parameters: 
 0:10      'nupi' ( nonuniform in int)
-0:14  Function Definition: main( ( global void)
-0:14    Function Parameters: 
+0:10      'f' ( nonuniform out int)
+0:12    Sequence
+0:12      Branch: Return with expression
+0:12        'nupi' ( nonuniform in int)
+0:15  Function Definition: main( ( global void)
+0:15    Function Parameters: 
 0:?     Sequence
-0:19      Function Call: foo(i1; ( global void)
-0:19        'nu_li' ( nonuniform temp int)
-0:22      move second child to first child ( temp int)
-0:22        'nu_li' ( nonuniform temp int)
-0:22        add ( temp int)
-0:22          'a' ( nonuniform temp int)
-0:22          component-wise multiply ( nonuniform temp int)
-0:22            'a' ( temp int)
-0:22            Constant:
-0:22              2 (const int)
-0:23      'nu_li' ( nonuniform temp int)
+0:20      Function Call: foo(i1;i1; ( nonuniform temp int)
+0:20        'nu_li' ( nonuniform temp int)
+0:20        'nu_li' ( nonuniform temp int)
+0:23      move second child to first child ( temp int)
+0:23        'nu_li' ( nonuniform temp int)
+0:23        add ( temp int)
+0:23          'a' ( nonuniform temp int)
+0:23          component-wise multiply ( nonuniform temp int)
+0:23            'a' ( temp int)
+0:23            Constant:
+0:23              2 (const int)
 0:24      'nu_li' ( nonuniform temp int)
+0:25      'nu_li' ( nonuniform temp int)
 0:?   Linker Objects
 0:?     'nu_inv4' ( smooth nonuniform in 4-component vector of float)
 0:?     'nu_gf' ( nonuniform temp float)
@@ -37,6 +42,8 @@ ERROR: node is still EOpNull!
 0:?     'nu_uv4' ( nonuniform uniform 4-component vector of float)
 0:?     'nu_constf' ( nonuniform const float)
 0:?       1.000000
+0:?     'ins' (layout( location=1) smooth in structure{ global float a,  nonuniform temp float b})
+0:?     'inb' (layout( location=3) in block{ in float a,  nonuniform in float b})
 
 
 Linked fragment stage:
@@ -44,24 +51,29 @@ Linked fragment stage:
 
 Shader version: 450
 ERROR: node is still EOpNull!
-0:10  Function Definition: foo(i1; ( global void)
+0:10  Function Definition: foo(i1;i1; ( nonuniform temp int)
 0:10    Function Parameters: 
 0:10      'nupi' ( nonuniform in int)
-0:14  Function Definition: main( ( global void)
-0:14    Function Parameters: 
+0:10      'f' ( nonuniform out int)
+0:12    Sequence
+0:12      Branch: Return with expression
+0:12        'nupi' ( nonuniform in int)
+0:15  Function Definition: main( ( global void)
+0:15    Function Parameters: 
 0:?     Sequence
-0:19      Function Call: foo(i1; ( global void)
-0:19        'nu_li' ( nonuniform temp int)
-0:22      move second child to first child ( temp int)
-0:22        'nu_li' ( nonuniform temp int)
-0:22        add ( temp int)
-0:22          'a' ( nonuniform temp int)
-0:22          component-wise multiply ( nonuniform temp int)
-0:22            'a' ( temp int)
-0:22            Constant:
-0:22              2 (const int)
-0:23      'nu_li' ( nonuniform temp int)
+0:20      Function Call: foo(i1;i1; ( nonuniform temp int)
+0:20        'nu_li' ( nonuniform temp int)
+0:20        'nu_li' ( nonuniform temp int)
+0:23      move second child to first child ( temp int)
+0:23        'nu_li' ( nonuniform temp int)
+0:23        add ( temp int)
+0:23          'a' ( nonuniform temp int)
+0:23          component-wise multiply ( nonuniform temp int)
+0:23            'a' ( temp int)
+0:23            Constant:
+0:23              2 (const int)
 0:24      'nu_li' ( nonuniform temp int)
+0:25      'nu_li' ( nonuniform temp int)
 0:?   Linker Objects
 0:?     'nu_inv4' ( smooth nonuniform in 4-component vector of float)
 0:?     'nu_gf' ( nonuniform temp float)
@@ -69,4 +81,6 @@ ERROR: node is still EOpNull!
 0:?     'nu_uv4' ( nonuniform uniform 4-component vector of float)
 0:?     'nu_constf' ( nonuniform const float)
 0:?       1.000000
+0:?     'ins' (layout( location=1) smooth in structure{ global float a,  nonuniform temp float b})
+0:?     'inb' (layout( location=3) in block{ in float a,  nonuniform in float b})
 

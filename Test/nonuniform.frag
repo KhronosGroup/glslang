@@ -7,8 +7,9 @@ nonuniformEXT out vec4 nu_outv4;           // ERROR, out
 nonuniformEXT uniform vec4 nu_uv4;         // ERROR, uniform
 nonuniformEXT const float nu_constf = 1.0; // ERROR, const
 
-void foo(nonuniformEXT int nupi)
+nonuniformEXT int foo(nonuniformEXT int nupi, nonuniformEXT out int f)
 {
+    return nupi;
 }
 
 void main()
@@ -16,10 +17,13 @@ void main()
     nonuniformEXT int nu_li;
     nonuniformEXT const int nu_ci = 2; // ERROR, const
 
-    foo(nu_li);
+    foo(nu_li, nu_li);
 
     int a;
     nu_li = nonuniformEXT(a) + nonuniformEXT(a * 2);
     nu_li = nonuniformEXT(a, a);       // ERROR, too many arguments
     nu_li = nonuniformEXT();           // ERROR, no arguments
 }
+
+layout(location=1) in struct S { float a; nonuniformEXT float b; } ins;
+layout(location=3) in inbName { float a; nonuniformEXT float b; } inb;
