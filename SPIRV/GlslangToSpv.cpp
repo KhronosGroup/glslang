@@ -4137,7 +4137,8 @@ spv::Id TGlslangToSpvTraverser::createBinaryMatrixOperation(spv::Op op, spv::Dec
     case spv::OpFDiv:
         if (builder.isMatrix(left) && builder.isScalar(right)) {
             // turn matrix / scalar into a multiply...
-            right = builder.createBinOp(spv::OpFDiv, builder.getTypeId(right), builder.makeFloatConstant(1.0F), right);
+            spv::Id resultType = builder.getTypeId(right);
+            right = builder.createBinOp(spv::OpFDiv, resultType, builder.makeFpConstant(resultType, 1.0), right);
             op = spv::OpMatrixTimesScalar;
         } else
             firstClass = false;

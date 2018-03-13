@@ -848,6 +848,23 @@ Id Builder::makeFloat16Constant(float f16, bool specConstant)
     return c->getResultId();
 }
 
+Id Builder::makeFpConstant(Id type, double d, bool specConstant)
+{
+        assert(isFloatType(type));
+
+        switch (getScalarTypeWidth(type)) {
+        case 16:
+                return makeFloat16Constant(d, specConstant);
+        case 32:
+                return makeFloatConstant(d, specConstant);
+        case 64:
+                return makeDoubleConstant(d, specConstant);
+        }
+
+        assert(false);
+}
+
+
 Id Builder::findCompositeConstant(Op typeClass, const std::vector<Id>& comps)
 {
     Instruction* constant = 0;

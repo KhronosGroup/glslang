@@ -226,6 +226,7 @@ public:
     Id makeFloatConstant(float f, bool specConstant = false);
     Id makeDoubleConstant(double d, bool specConstant = false);
     Id makeFloat16Constant(float f16, bool specConstant = false);
+    Id makeFpConstant(Id type, double d, bool specConstant = false);
 
     // Turn the array of constants into a proper spv constant of the requested type.
     Id makeCompositeConstant(Id type, const std::vector<Id>& comps, bool specConst = false);
