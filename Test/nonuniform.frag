@@ -25,5 +25,5 @@ void main()
     nu_li = nonuniformEXT();           // ERROR, no arguments
 }
 
-layout(location=1) in struct S { float a; nonuniformEXT float b; } ins;
-layout(location=3) in inbName { float a; nonuniformEXT float b; } inb;
+layout(location=1) in struct S { float a; nonuniformEXT float b; } ins;  // ERROR, not on member
+layout(location=3) in inbName { float a; nonuniformEXT float b; } inb;   // ERROR, not on member

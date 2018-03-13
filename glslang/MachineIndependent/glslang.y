@@ -3127,7 +3127,6 @@ struct_declaration
         }
     }
     | type_qualifier type_specifier struct_declarator_list SEMICOLON {
-        parseContext.globalQualifierFixCheck($1.loc, $1.qualifier);
         if ($2.arraySizes) {
             parseContext.profileRequires($2.loc, ENoProfile, 120, E_GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($2.loc, EEsProfile, 300, 0, "arrayed type");
@@ -3137,7 +3136,7 @@ struct_declaration
 
         $$ = $3;
 
-        parseContext.checkNoShaderLayouts($1.loc, $1.shaderQualifiers);
+        parseContext.memberQualifierCheck($1);
         parseContext.voidErrorCheck($2.loc, (*$3)[0].type->getFieldName(), $2.basicType);
         parseContext.mergeQualifiers($2.loc, $2.qualifier, $1.qualifier, true);
         parseContext.precisionQualifierCheck($2.loc, $2.basicType, $2.qualifier);

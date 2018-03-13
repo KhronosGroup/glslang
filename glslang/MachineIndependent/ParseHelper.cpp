@@ -2575,6 +2575,19 @@ void TParseContext::transparentOpaqueCheck(const TSourceLoc& loc, const TType& t
 }
 
 //
+// Qualifier checks knowing the qualifier and that it is a member of a struct/block.
+//
+void TParseContext::memberQualifierCheck(glslang::TPublicType& publicType)
+{
+    globalQualifierFixCheck(publicType.loc, publicType.qualifier);
+    checkNoShaderLayouts(publicType.loc, publicType.shaderQualifiers);
+    if (publicType.qualifier.isNonUniform()) {
+        error(publicType.loc, "not allowed on block or structure members", "nonuniformEXT", "");
+        publicType.qualifier.nonUniform = false;
+    }
+}
+
+//
 // Check/fix just a full qualifier (no variables or types yet, but qualifier is complete) at global level.
 //
 void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& qualifier)
