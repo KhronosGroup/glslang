@@ -2530,7 +2530,7 @@ void Builder::remapDynamicSwizzle()
     if (accessChain.component != NoResult && accessChain.swizzle.size() > 1) {
         // build a vector of the swizzle for the component to map into
         std::vector<Id> components;
-        for (int c = 0; c < accessChain.swizzle.size(); ++c)
+        for (int c = 0; c < (int)accessChain.swizzle.size(); ++c)
             components.push_back(makeUintConstant(accessChain.swizzle[c]));
         Id mapType = makeVectorType(makeUintType(32), (int)accessChain.swizzle.size());
         Id map = makeCompositeConstant(mapType, components);

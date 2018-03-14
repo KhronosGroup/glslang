@@ -65,10 +65,10 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     entryPointFunction(nullptr),
     entryPointFunctionBody(nullptr),
     gsStreamOutput(nullptr),
-    clipDistanceInput(nullptr),
-    cullDistanceInput(nullptr),
     clipDistanceOutput(nullptr),
-    cullDistanceOutput(nullptr)
+    cullDistanceOutput(nullptr),
+    clipDistanceInput(nullptr),
+    cullDistanceInput(nullptr)
 {
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;
