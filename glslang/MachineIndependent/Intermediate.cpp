@@ -816,24 +816,17 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
 
         break;
 
-    // Shifts can have mixed types as long as they are integer and of the same rank,
-    // without converting.
+    // Shifts can have mixed types as long as they are integer
     // It's the left operand's type that determines the resulting type, so no issue
-    // with assign shift ops either.
+    // with assign shift ops either. Result and base needs to be the same rank.
     case EOpLeftShift:
     case EOpRightShift:
     case EOpLeftShiftAssign:
     case EOpRightShiftAssign:
 
-        if (isTypeInt(type0) && isTypeInt(type1)) {
-            if (getTypeRank(type0) == getTypeRank(type1)) {
-                return std::make_tuple(node0, node1);
-            } else {
-                promoteTo = getConversionDestinatonType(type0, type1, op);
-                if (std::get<0>(promoteTo) == EbtNumTypes || std::get<1>(promoteTo) == EbtNumTypes)
-                    return std::make_tuple(nullptr, nullptr);
-            }
-        } else
+      if (isTypeInt(type0) && isTypeInt(type1))
+          return std::make_tuple(node0, node1);
+          else
             return std::make_tuple(nullptr, nullptr);
         break;
 

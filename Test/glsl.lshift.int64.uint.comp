@@ -1,0 +1,13 @@
+#version 450
+
+#extension GL_ARB_gpu_shader_int64 : require
+
+layout(local_size_x = 54) in;
+
+layout(location = 0) uniform int64_t base;
+layout(location = 1) uniform uint shift;
+
+void main()
+{
+  int64_t result = (base << shift);
+}
