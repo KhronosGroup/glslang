@@ -773,42 +773,6 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
     case EOpAnd:
     case EOpInclusiveOr:
     case EOpExclusiveOr:
-    case EOpAndAssign:
-    case EOpInclusiveOrAssign:
-    case EOpExclusiveOrAssign:
-
-    case EOpLogicalNot:
-    case EOpFunctionCall:
-    case EOpReturn:
-    case EOpAssign:
-    case EOpAddAssign:
-    case EOpSubAssign:
-    case EOpMulAssign:
-    case EOpVectorTimesScalarAssign:
-    case EOpMatrixTimesScalarAssign:
-    case EOpDivAssign:
-    case EOpModAssign:
-    case EOpAtan:
-    case EOpClamp:
-    case EOpCross:
-    case EOpDistance:
-    case EOpDot:
-    case EOpDst:
-    case EOpFaceForward:
-    case EOpFma:
-    case EOpFrexp:
-    case EOpLdexp:
-    case EOpMix:
-    case EOpLit:
-    case EOpMax:
-    case EOpMin:
-    case EOpModf:
-    case EOpPow:
-    case EOpReflect:
-    case EOpRefract:
-    case EOpSmoothStep:
-    case EOpStep:
-    case EOpConstructStruct:
 
     case EOpSequence:          // used by ?:
 
@@ -832,12 +796,8 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
 
     // Shifts can have mixed types as long as they are integer and of the same rank,
     // without converting.
-    // It's the left operand's type that determines the resulting type, so no issue
-    // with assign shift ops either.
     case EOpLeftShift:
     case EOpRightShift:
-    case EOpLeftShiftAssign:
-    case EOpRightShiftAssign:
         if (node0->getType() == node1->getType())
             return std::make_tuple(node0, node1);
 
@@ -886,6 +846,8 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
 // Convert the node's type to the given type, as allowed by the operation involved: 'op'.
 // For implicit conversions, 'op' is not the requested conversion, it is the explicit
 // operation requiring the implicit conversion.
+//
+// Binary operation conversions should be handled by addConversion(op, node, node), not here.
 //
 // Returns a node representing the conversion, which could be the same
 // node passed in if no conversion was needed.
@@ -958,40 +920,10 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         promoteTo = EbtUint64;
         break;
 
-    //
-    // List all the binary ops that can implicitly convert one operand to the other's type;
-    // This implements the 'policy' for implicit type conversion.
-    //
-    case EOpLessThan:
-    case EOpGreaterThan:
-    case EOpLessThanEqual:
-    case EOpGreaterThanEqual:
-    case EOpEqual:
-    case EOpNotEqual:
-
-    case EOpAdd:
-    case EOpSub:
-    case EOpMul:
-    case EOpDiv:
-    case EOpMod:
-
-    case EOpVectorTimesScalar:
-    case EOpVectorTimesMatrix:
-    case EOpMatrixTimesVector:
-    case EOpMatrixTimesScalar:
-
-    case EOpAnd:
-    case EOpInclusiveOr:
-    case EOpExclusiveOr:
-    case EOpAndAssign:
-    case EOpInclusiveOrAssign:
-    case EOpExclusiveOrAssign:
     case EOpLogicalNot:
-    case EOpLogicalAnd:
-    case EOpLogicalOr:
-    case EOpLogicalXor:
 
     case EOpFunctionCall:
+
     case EOpReturn:
     case EOpAssign:
     case EOpAddAssign:
@@ -1001,6 +933,9 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpMatrixTimesScalarAssign:
     case EOpDivAssign:
     case EOpModAssign:
+    case EOpAndAssign:
+    case EOpInclusiveOrAssign:
+    case EOpExclusiveOrAssign:
 
     case EOpAtan:
     case EOpClamp:
@@ -1039,8 +974,6 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     // without converting.
     // It's the left operand's type that determines the resulting type, so no issue
     // with assign shift ops either.
-    case EOpLeftShift:
-    case EOpRightShift:
     case EOpLeftShiftAssign:
     case EOpRightShiftAssign:
     {
@@ -3088,8 +3021,10 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
         case EOpSub:
         case EOpDiv:
         case EOpMul:
-            left = addConversion(op, TType(EbtInt, EvqTemporary, left->getVectorSize()), left);
-            right = addConversion(op, TType(EbtInt, EvqTemporary, right->getVectorSize()), right);
+            if (left->getBasicType() == EbtBool)
+                left  = createConversion(EbtInt, left);
+            if (right->getBasicType() == EbtBool)
+                right = createConversion(EbtInt, right);
             if (left == nullptr || right == nullptr)
                 return false;
             node.setLeft(left);
