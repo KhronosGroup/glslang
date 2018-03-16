@@ -416,6 +416,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.460.comp",
         "spv.atomic.comp",
         "spv.glFragColor.frag",
+        "spv.rankShift.comp",
         "spv.specConst.vert",
         "spv.OVR_multiview.vert",
     })),
