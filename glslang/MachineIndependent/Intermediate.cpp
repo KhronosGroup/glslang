@@ -475,7 +475,7 @@ bool TIntermediate::isConversionAllowed(TOperator op, TIntermTyped* node) const
 
 // This is 'mechanism' here, it does any conversion told.
 // It is about basic type, not about shape.
-// The policy comes from the shader or the above code.
+// The policy comes from the shader or the calling code.
 TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped* node) const
 {
     //
@@ -488,44 +488,44 @@ TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
     switch (convertTo) {
     case EbtDouble:
         switch (node->getBasicType()) {
-        case EbtInt8:  newOp = EOpConvInt8ToDouble;  break;
-        case EbtUint8: newOp = EOpConvUint8ToDouble; break;
-        case EbtInt16: newOp = EOpConvInt16ToDouble; break;
-        case EbtUint16:newOp = EOpConvUint16ToDouble;break;
-        case EbtInt:   newOp = EOpConvIntToDouble;   break;
-        case EbtUint:  newOp = EOpConvUintToDouble;  break;
-        case EbtBool:  newOp = EOpConvBoolToDouble;  break;
-        case EbtFloat: newOp = EOpConvFloatToDouble; break;
+        case EbtInt8:    newOp = EOpConvInt8ToDouble;    break;
+        case EbtUint8:   newOp = EOpConvUint8ToDouble;   break;
+        case EbtInt16:   newOp = EOpConvInt16ToDouble;   break;
+        case EbtUint16:  newOp = EOpConvUint16ToDouble;  break;
+        case EbtInt:     newOp = EOpConvIntToDouble;     break;
+        case EbtUint:    newOp = EOpConvUintToDouble;    break;
+        case EbtBool:    newOp = EOpConvBoolToDouble;    break;
+        case EbtFloat:   newOp = EOpConvFloatToDouble;   break;
         case EbtFloat16: newOp = EOpConvFloat16ToDouble; break;
-        case EbtInt64: newOp = EOpConvInt64ToDouble; break;
-        case EbtUint64: newOp = EOpConvUint64ToDouble; break;
+        case EbtInt64:   newOp = EOpConvInt64ToDouble;   break;
+        case EbtUint64:  newOp = EOpConvUint64ToDouble;  break;
         default:
             return nullptr;
         }
         break;
     case EbtFloat:
         switch (node->getBasicType()) {
-        case EbtInt8:   newOp = EOpConvInt8ToFloat;    break;
-        case EbtUint8:  newOp = EOpConvUint8ToFloat;   break;
-        case EbtInt16:  newOp = EOpConvInt16ToFloat;    break;
-        case EbtUint16: newOp = EOpConvUint16ToFloat;   break;
-        case EbtInt:    newOp = EOpConvIntToFloat;    break;
-        case EbtUint:   newOp = EOpConvUintToFloat;   break;
-        case EbtBool:   newOp = EOpConvBoolToFloat;   break;
-        case EbtDouble: newOp = EOpConvDoubleToFloat; break;
+        case EbtInt8:    newOp = EOpConvInt8ToFloat;    break;
+        case EbtUint8:   newOp = EOpConvUint8ToFloat;   break;
+        case EbtInt16:   newOp = EOpConvInt16ToFloat;   break;
+        case EbtUint16:  newOp = EOpConvUint16ToFloat;  break;
+        case EbtInt:     newOp = EOpConvIntToFloat;     break;
+        case EbtUint:    newOp = EOpConvUintToFloat;    break;
+        case EbtBool:    newOp = EOpConvBoolToFloat;    break;
+        case EbtDouble:  newOp = EOpConvDoubleToFloat;  break;
         case EbtFloat16: newOp = EOpConvFloat16ToFloat; break;
-        case EbtInt64:  newOp = EOpConvInt64ToFloat;  break;
-        case EbtUint64: newOp = EOpConvUint64ToFloat; break;
+        case EbtInt64:   newOp = EOpConvInt64ToFloat;   break;
+        case EbtUint64:  newOp = EOpConvUint64ToFloat;  break;
         default:
             return nullptr;
         }
         break;
     case EbtFloat16:
         switch (node->getBasicType()) {
-        case EbtInt8:   newOp = EOpConvInt8ToFloat16;    break;
-        case EbtUint8:  newOp = EOpConvUint8ToFloat16;   break;
-        case EbtInt16:  newOp = EOpConvInt16ToFloat16;    break;
-        case EbtUint16: newOp = EOpConvUint16ToFloat16;   break;
+        case EbtInt8:   newOp = EOpConvInt8ToFloat16;   break;
+        case EbtUint8:  newOp = EOpConvUint8ToFloat16;  break;
+        case EbtInt16:  newOp = EOpConvInt16ToFloat16;  break;
+        case EbtUint16: newOp = EOpConvUint16ToFloat16; break;
         case EbtInt:    newOp = EOpConvIntToFloat16;    break;
         case EbtUint:   newOp = EOpConvUintToFloat16;   break;
         case EbtBool:   newOp = EOpConvBoolToFloat16;   break;
@@ -539,33 +539,33 @@ TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
         break;
     case EbtBool:
         switch (node->getBasicType()) {
-        case EbtInt8:   newOp = EOpConvInt8ToBool;   break;
-        case EbtUint8:  newOp = EOpConvUint8ToBool;  break;
-        case EbtInt16:  newOp = EOpConvInt16ToBool;  break;
-        case EbtUint16: newOp = EOpConvUint16ToBool; break;
-        case EbtInt:    newOp = EOpConvIntToBool;    break;
-        case EbtUint:   newOp = EOpConvUintToBool;   break;
-        case EbtFloat:  newOp = EOpConvFloatToBool;  break;
-        case EbtDouble: newOp = EOpConvDoubleToBool; break;
+        case EbtInt8:    newOp = EOpConvInt8ToBool;    break;
+        case EbtUint8:   newOp = EOpConvUint8ToBool;   break;
+        case EbtInt16:   newOp = EOpConvInt16ToBool;   break;
+        case EbtUint16:  newOp = EOpConvUint16ToBool;  break;
+        case EbtInt:     newOp = EOpConvIntToBool;     break;
+        case EbtUint:    newOp = EOpConvUintToBool;    break;
+        case EbtFloat:   newOp = EOpConvFloatToBool;   break;
+        case EbtDouble:  newOp = EOpConvDoubleToBool;  break;
         case EbtFloat16: newOp = EOpConvFloat16ToBool; break;
-        case EbtInt64:  newOp = EOpConvInt64ToBool;  break;
-        case EbtUint64: newOp = EOpConvUint64ToBool; break;
+        case EbtInt64:   newOp = EOpConvInt64ToBool;   break;
+        case EbtUint64:  newOp = EOpConvUint64ToBool;  break;
         default:
             return nullptr;
         }
         break;
     case EbtInt8:
         switch (node->getBasicType()) {
-        case EbtUint8:  newOp = EOpConvUint8ToInt8;   break;
-        case EbtInt16:  newOp = EOpConvInt16ToInt8;   break;
-        case EbtUint16: newOp = EOpConvUint16ToInt8;  break;
-        case EbtInt:    newOp = EOpConvIntToInt8;   break;
-        case EbtUint:   newOp = EOpConvUintToInt8;   break;
-        case EbtInt64:  newOp = EOpConvInt64ToInt8;  break;
-        case EbtUint64: newOp = EOpConvUint64ToInt8; break;
-        case EbtBool:   newOp = EOpConvBoolToInt8;   break;
-        case EbtFloat:  newOp = EOpConvFloatToInt8;  break;
-        case EbtDouble: newOp = EOpConvDoubleToInt8; break;
+        case EbtUint8:   newOp = EOpConvUint8ToInt8;   break;
+        case EbtInt16:   newOp = EOpConvInt16ToInt8;   break;
+        case EbtUint16:  newOp = EOpConvUint16ToInt8;  break;
+        case EbtInt:     newOp = EOpConvIntToInt8;     break;
+        case EbtUint:    newOp = EOpConvUintToInt8;    break;
+        case EbtInt64:   newOp = EOpConvInt64ToInt8;   break;
+        case EbtUint64:  newOp = EOpConvUint64ToInt8;  break;
+        case EbtBool:    newOp = EOpConvBoolToInt8;    break;
+        case EbtFloat:   newOp = EOpConvFloatToInt8;   break;
+        case EbtDouble:  newOp = EOpConvDoubleToInt8;  break;
         case EbtFloat16: newOp = EOpConvFloat16ToInt8; break;
         default:
             return nullptr;
@@ -573,16 +573,16 @@ TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
         break;
     case EbtUint8:
         switch (node->getBasicType()) {
-        case EbtInt8:   newOp = EOpConvInt8ToUint8;   break;
-        case EbtInt16:  newOp = EOpConvInt16ToUint8;  break;
-        case EbtUint16: newOp = EOpConvUint16ToUint8; break;
-        case EbtInt:    newOp = EOpConvIntToUint8;    break;
-        case EbtUint:   newOp = EOpConvUintToUint8;   break;
-        case EbtInt64:  newOp = EOpConvInt64ToUint8;  break;
-        case EbtUint64: newOp = EOpConvUint64ToUint8; break;
-        case EbtBool:   newOp = EOpConvBoolToUint8;   break;
-        case EbtFloat:  newOp = EOpConvFloatToUint8;  break;
-        case EbtDouble: newOp = EOpConvDoubleToUint8; break;
+        case EbtInt8:    newOp = EOpConvInt8ToUint8;    break;
+        case EbtInt16:   newOp = EOpConvInt16ToUint8;   break;
+        case EbtUint16:  newOp = EOpConvUint16ToUint8;  break;
+        case EbtInt:     newOp = EOpConvIntToUint8;     break;
+        case EbtUint:    newOp = EOpConvUintToUint8;    break;
+        case EbtInt64:   newOp = EOpConvInt64ToUint8;   break;
+        case EbtUint64:  newOp = EOpConvUint64ToUint8;  break;
+        case EbtBool:    newOp = EOpConvBoolToUint8;    break;
+        case EbtFloat:   newOp = EOpConvFloatToUint8;   break;
+        case EbtDouble:  newOp = EOpConvDoubleToUint8;  break;
         case EbtFloat16: newOp = EOpConvFloat16ToUint8; break;
         default:
             return nullptr;
@@ -591,16 +591,16 @@ TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
 
     case EbtInt16:
         switch (node->getBasicType()) {
-        case EbtUint8:  newOp = EOpConvUint8ToInt16;   break;
-        case EbtInt8:   newOp = EOpConvInt8ToInt16;   break;
-        case EbtUint16: newOp = EOpConvUint16ToInt16;  break;
-        case EbtInt:    newOp = EOpConvIntToInt16;   break;
-        case EbtUint:   newOp = EOpConvUintToInt16;   break;
-        case EbtInt64:  newOp = EOpConvInt64ToInt16;  break;
-        case EbtUint64: newOp = EOpConvUint64ToInt16; break;
-        case EbtBool:   newOp = EOpConvBoolToInt16;   break;
-        case EbtFloat:  newOp = EOpConvFloatToInt16;  break;
-        case EbtDouble: newOp = EOpConvDoubleToInt16; break;
+        case EbtUint8:   newOp = EOpConvUint8ToInt16;   break;
+        case EbtInt8:    newOp = EOpConvInt8ToInt16;    break;
+        case EbtUint16:  newOp = EOpConvUint16ToInt16;  break;
+        case EbtInt:     newOp = EOpConvIntToInt16;     break;
+        case EbtUint:    newOp = EOpConvUintToInt16;    break;
+        case EbtInt64:   newOp = EOpConvInt64ToInt16;   break;
+        case EbtUint64:  newOp = EOpConvUint64ToInt16;  break;
+        case EbtBool:    newOp = EOpConvBoolToInt16;    break;
+        case EbtFloat:   newOp = EOpConvFloatToInt16;   break;
+        case EbtDouble:  newOp = EOpConvDoubleToInt16;  break;
         case EbtFloat16: newOp = EOpConvFloat16ToInt16; break;
         default:
             return nullptr;
@@ -608,16 +608,16 @@ TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
         break;
     case EbtUint16:
         switch (node->getBasicType()) {
-        case EbtInt8:   newOp = EOpConvInt8ToUint16;   break;
-        case EbtUint8:  newOp = EOpConvUint8ToUint16;  break;
-        case EbtInt16:  newOp = EOpConvInt16ToUint16; break;
-        case EbtInt:    newOp = EOpConvIntToUint16;    break;
-        case EbtUint:   newOp = EOpConvUintToUint16;   break;
-        case EbtInt64:  newOp = EOpConvInt64ToUint16;  break;
-        case EbtUint64: newOp = EOpConvUint64ToUint16; break;
-        case EbtBool:   newOp = EOpConvBoolToUint16;   break;
-        case EbtFloat:  newOp = EOpConvFloatToUint16;  break;
-        case EbtDouble: newOp = EOpConvDoubleToUint16; break;
+        case EbtInt8:    newOp = EOpConvInt8ToUint16;    break;
+        case EbtUint8:   newOp = EOpConvUint8ToUint16;   break;
+        case EbtInt16:   newOp = EOpConvInt16ToUint16;   break;
+        case EbtInt:     newOp = EOpConvIntToUint16;     break;
+        case EbtUint:    newOp = EOpConvUintToUint16;    break;
+        case EbtInt64:   newOp = EOpConvInt64ToUint16;   break;
+        case EbtUint64:  newOp = EOpConvUint64ToUint16;  break;
+        case EbtBool:    newOp = EOpConvBoolToUint16;    break;
+        case EbtFloat:   newOp = EOpConvFloatToUint16;   break;
+        case EbtDouble:  newOp = EOpConvDoubleToUint16;  break;
         case EbtFloat16: newOp = EOpConvFloat16ToUint16; break;
         default:
             return nullptr;
@@ -626,68 +626,68 @@ TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
 
     case EbtInt:
         switch (node->getBasicType()) {
-        case EbtInt8:   newOp = EOpConvInt8ToInt;    break;
-        case EbtUint8:  newOp = EOpConvUint8ToInt;   break;
-        case EbtInt16:  newOp = EOpConvInt16ToInt;   break;
-        case EbtUint16: newOp = EOpConvUint16ToInt;  break;
-        case EbtUint:   newOp = EOpConvUintToInt;   break;
-        case EbtBool:   newOp = EOpConvBoolToInt;   break;
-        case EbtFloat:  newOp = EOpConvFloatToInt;  break;
-        case EbtDouble: newOp = EOpConvDoubleToInt; break;
+        case EbtInt8:    newOp = EOpConvInt8ToInt;    break;
+        case EbtUint8:   newOp = EOpConvUint8ToInt;   break;
+        case EbtInt16:   newOp = EOpConvInt16ToInt;   break;
+        case EbtUint16:  newOp = EOpConvUint16ToInt;  break;
+        case EbtUint:    newOp = EOpConvUintToInt;    break;
+        case EbtBool:    newOp = EOpConvBoolToInt;    break;
+        case EbtFloat:   newOp = EOpConvFloatToInt;   break;
+        case EbtDouble:  newOp = EOpConvDoubleToInt;  break;
         case EbtFloat16: newOp = EOpConvFloat16ToInt; break;
-        case EbtInt64:  newOp = EOpConvInt64ToInt;  break;
-        case EbtUint64: newOp = EOpConvUint64ToInt; break;
+        case EbtInt64:   newOp = EOpConvInt64ToInt;   break;
+        case EbtUint64:  newOp = EOpConvUint64ToInt;  break;
         default:
             return nullptr;
         }
         break;
     case EbtUint:
         switch (node->getBasicType()) {
-        case EbtInt8:   newOp = EOpConvInt8ToUint;   break;
-        case EbtUint8:  newOp = EOpConvUint8ToUint;  break;
-        case EbtInt16:  newOp = EOpConvInt16ToUint;  break;
-        case EbtUint16: newOp = EOpConvUint16ToUint; break;
-        case EbtInt:    newOp = EOpConvIntToUint;    break;
-        case EbtBool:   newOp = EOpConvBoolToUint;   break;
-        case EbtFloat:  newOp = EOpConvFloatToUint;  break;
-        case EbtDouble: newOp = EOpConvDoubleToUint; break;
+        case EbtInt8:    newOp = EOpConvInt8ToUint;    break;
+        case EbtUint8:   newOp = EOpConvUint8ToUint;   break;
+        case EbtInt16:   newOp = EOpConvInt16ToUint;   break;
+        case EbtUint16:  newOp = EOpConvUint16ToUint;  break;
+        case EbtInt:     newOp = EOpConvIntToUint;     break;
+        case EbtBool:    newOp = EOpConvBoolToUint;    break;
+        case EbtFloat:   newOp = EOpConvFloatToUint;   break;
+        case EbtDouble:  newOp = EOpConvDoubleToUint;  break;
         case EbtFloat16: newOp = EOpConvFloat16ToUint; break;
-        case EbtInt64:  newOp = EOpConvInt64ToUint;  break;
-        case EbtUint64: newOp = EOpConvUint64ToUint; break;
+        case EbtInt64:   newOp = EOpConvInt64ToUint;   break;
+        case EbtUint64:  newOp = EOpConvUint64ToUint;  break;
         default:
             return nullptr;
         }
         break;
     case EbtInt64:
         switch (node->getBasicType()) {
-        case EbtInt8:   newOp = EOpConvInt8ToInt64;   break;
-        case EbtUint8:  newOp = EOpConvUint8ToInt64;  break;
-        case EbtInt16:  newOp = EOpConvInt16ToInt64;  break;
-        case EbtUint16: newOp = EOpConvUint16ToInt64; break;
-        case EbtInt:    newOp = EOpConvIntToInt64;    break;
-        case EbtUint:   newOp = EOpConvUintToInt64;   break;
-        case EbtBool:   newOp = EOpConvBoolToInt64;   break;
-        case EbtFloat:  newOp = EOpConvFloatToInt64;  break;
-        case EbtDouble: newOp = EOpConvDoubleToInt64; break;
+        case EbtInt8:    newOp = EOpConvInt8ToInt64;    break;
+        case EbtUint8:   newOp = EOpConvUint8ToInt64;   break;
+        case EbtInt16:   newOp = EOpConvInt16ToInt64;   break;
+        case EbtUint16:  newOp = EOpConvUint16ToInt64;  break;
+        case EbtInt:     newOp = EOpConvIntToInt64;     break;
+        case EbtUint:    newOp = EOpConvUintToInt64;    break;
+        case EbtBool:    newOp = EOpConvBoolToInt64;    break;
+        case EbtFloat:   newOp = EOpConvFloatToInt64;   break;
+        case EbtDouble:  newOp = EOpConvDoubleToInt64;  break;
         case EbtFloat16: newOp = EOpConvFloat16ToInt64; break;
-        case EbtUint64: newOp = EOpConvUint64ToInt64; break;
+        case EbtUint64:  newOp = EOpConvUint64ToInt64;  break;
         default:
             return nullptr;
         }
         break;
     case EbtUint64:
         switch (node->getBasicType()) {
-        case EbtInt8:   newOp = EOpConvInt8ToUint64;   break;
-        case EbtUint8:  newOp = EOpConvUint8ToUint64;  break;
-        case EbtInt16:  newOp = EOpConvInt16ToUint64;  break;
-        case EbtUint16: newOp = EOpConvUint16ToUint64; break;
-        case EbtInt:    newOp = EOpConvIntToUint64;    break;
-        case EbtUint:   newOp = EOpConvUintToUint64;   break;
-        case EbtBool:   newOp = EOpConvBoolToUint64;   break;
-        case EbtFloat:  newOp = EOpConvFloatToUint64;  break;
-        case EbtDouble: newOp = EOpConvDoubleToUint64; break;
+        case EbtInt8:    newOp = EOpConvInt8ToUint64;    break;
+        case EbtUint8:   newOp = EOpConvUint8ToUint64;   break;
+        case EbtInt16:   newOp = EOpConvInt16ToUint64;   break;
+        case EbtUint16:  newOp = EOpConvUint16ToUint64;  break;
+        case EbtInt:     newOp = EOpConvIntToUint64;     break;
+        case EbtUint:    newOp = EOpConvUintToUint64;    break;
+        case EbtBool:    newOp = EOpConvBoolToUint64;    break;
+        case EbtFloat:   newOp = EOpConvFloatToUint64;   break;
+        case EbtDouble:  newOp = EOpConvDoubleToUint64;  break;
         case EbtFloat16: newOp = EOpConvFloat16ToUint64; break;
-        case EbtInt64:  newOp = EOpConvInt64ToUint64;  break;
+        case EbtInt64:   newOp = EOpConvInt64ToUint64;   break;
         default:
             return nullptr;
         }
@@ -714,24 +714,33 @@ TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
     return newNode;
 }
 
+// For converting a pair of operands to a binary operation to compatible
+// types with each other, relative to the operation in 'op'.
+// This does not cover assignment operations, which is asymmetric in that the
+// left type is not changeable.
+// See addConversion(op, type, node) for assignments and unary operation
+// conversions.
+//
+// Generally, this is focused on basic type conversion, not shape conversion.
+// See addShapeConversion() for shape conversions.
+//
+// Returns the converted pair of nodes.
+// Returns <nullptr, nullptr> when there is no conversion.
 std::tuple<TIntermTyped*, TIntermTyped*>
 TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* node1) const
 {
-    if (!isConversionAllowed(op, node0) || !isConversionAllowed(op, node1)) {
+    if (!isConversionAllowed(op, node0) || !isConversionAllowed(op, node1))
         return std::make_tuple(nullptr, nullptr);
+
+    if (node0->getType() != node1->getType()) {
+        // If differing structure, then no conversions.
+        if (node0->isStruct() || node1->isStruct())
+            return std::make_tuple(nullptr, nullptr);
+
+        // If differing arrays, then no conversions.
+        if (node0->getType().isArray() || node1->getType().isArray())
+            return std::make_tuple(nullptr, nullptr);
     }
-
-    // If types are identical, no problem
-    if (node0->getType() == node1->getType())
-        return std::make_tuple(node0, node1);
-
-    // If one's a structure, then no conversions.
-    if (node0->isStruct() || node1->isStruct())
-        return std::make_tuple(nullptr, nullptr);
-
-    // If one's an array, then no conversions.
-    if (node0->getType().isArray() || node1->getType().isArray())
-        return std::make_tuple(nullptr, nullptr);
 
     auto promoteTo = std::make_tuple(EbtNumTypes, EbtNumTypes);
 
@@ -767,11 +776,8 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
     case EOpAndAssign:
     case EOpInclusiveOrAssign:
     case EOpExclusiveOrAssign:
-    case EOpLogicalNot:
-    case EOpLogicalAnd:
-    case EOpLogicalOr:
-    case EOpLogicalXor:
 
+    case EOpLogicalNot:
     case EOpFunctionCall:
     case EOpReturn:
     case EOpAssign:
@@ -782,7 +788,6 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
     case EOpMatrixTimesScalarAssign:
     case EOpDivAssign:
     case EOpModAssign:
-
     case EOpAtan:
     case EOpClamp:
     case EOpCross:
@@ -803,9 +808,9 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
     case EOpRefract:
     case EOpSmoothStep:
     case EOpStep:
-
-    case EOpSequence:
     case EOpConstructStruct:
+
+    case EOpSequence:          // used by ?:
 
         if (type0 == type1)
             return std::make_tuple(node0, node1);
@@ -816,6 +821,15 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
 
         break;
 
+    case EOpLogicalAnd:
+    case EOpLogicalOr:
+    case EOpLogicalXor:
+        if (source == EShSourceHlsl)
+            promoteTo = std::make_tuple(EbtBool, EbtBool);
+        else
+            return std::make_tuple(node0, node1);
+        break;
+
     // Shifts can have mixed types as long as they are integer and of the same rank,
     // without converting.
     // It's the left operand's type that determines the resulting type, so no issue
@@ -824,6 +838,8 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
     case EOpRightShift:
     case EOpLeftShiftAssign:
     case EOpRightShiftAssign:
+        if (node0->getType() == node1->getType())
+            return std::make_tuple(node0, node1);
 
         if (isTypeInt(type0) && isTypeInt(type1)) {
             if (getTypeRank(type0) == getTypeRank(type1)) {
@@ -838,6 +854,9 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
         break;
 
     default:
+        if (node0->getType() == node1->getType())
+            return std::make_tuple(node0, node1);
+
         return std::make_tuple(nullptr, nullptr);
     }
 
@@ -872,7 +891,7 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
 // node passed in if no conversion was needed.
 //
 // Generally, this is focused on basic type conversion, not shape conversion.
-// See addShapeConversion().
+// See addShapeConversion() for shape conversions.
 //
 // Return nullptr if a conversion can't be done.
 //
@@ -2952,7 +2971,7 @@ bool TIntermediate::promoteUnary(TIntermUnary& node)
         // Convert operand to a boolean type
         if (operand->getBasicType() != EbtBool) {
             // Add constructor to boolean type. If that fails, we can't do it, so return false.
-            TIntermTyped* converted = convertToBasicType(op, EbtBool, operand);
+            TIntermTyped* converted = addConversion(op, TType(EbtBool), operand);
             if (converted == nullptr)
                 return false;
 
@@ -2995,24 +3014,6 @@ void TIntermUnary::updatePrecision()
         if (operand->getQualifier().precision > getQualifier().precision)
             getQualifier().precision = operand->getQualifier().precision;
     }
-}
-
-// If it is not already, convert this node to the given basic type.
-TIntermTyped* TIntermediate::convertToBasicType(TOperator op, TBasicType basicType, TIntermTyped* node) const
-{
-    if (node == nullptr)
-        return nullptr;
-
-    // It's already this basic type: nothing needs to be done, so use the node directly.
-    if (node->getBasicType() == basicType)
-        return node;
-
-    const TType& type = node->getType();
-    const TType newType(basicType, type.getQualifier().storage,
-                        type.getVectorSize(), type.getMatrixCols(), type.getMatrixRows(), type.isVector());
-
-    // Add constructor to the right vectorness of the right type. If that fails, we can't do it, so return nullptr.
-    return addConversion(op, newType, node);
 }
 
 //
@@ -3139,21 +3140,17 @@ bool TIntermediate::promoteBinary(TIntermBinary& node)
     case EOpLogicalAnd:
     case EOpLogicalOr:
     case EOpLogicalXor:
-        if (getSource() == EShSourceHlsl) {
-            TIntermTyped* convertedL = convertToBasicType(op, EbtBool, left);
-            TIntermTyped* convertedR = convertToBasicType(op, EbtBool, right);
-            if (convertedL == nullptr || convertedR == nullptr)
+        // logical ops operate only on Booleans or vectors of Booleans.
+        if (left->getBasicType() != EbtBool || left->isMatrix())
                 return false;
-            node.setLeft(left = convertedL);   // also updates stack variable
-            node.setRight(right = convertedR); // also updates stack variable
-        } else {
+
+        if (getSource() == EShSourceGlsl) {
             // logical ops operate only on scalar Booleans and will promote to scalar Boolean.
-            if (left->getBasicType() != EbtBool || left->isVector() || left->isMatrix())
+            if (left->isVector())
                 return false;
         }
 
         node.setType(TType(EbtBool, EvqTemporary, left->getVectorSize()));
-
         break;
 
     case EOpRightShift:
