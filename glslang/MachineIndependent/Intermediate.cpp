@@ -744,9 +744,6 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
 
     auto promoteTo = std::make_tuple(EbtNumTypes, EbtNumTypes);
 
-    TBasicType type0 = node0->getType().getBasicType();
-    TBasicType type1 = node1->getType().getBasicType();
-
     switch (op) {
     //
     // List all the binary ops that can implicitly convert one operand to the other's type;
@@ -776,10 +773,10 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
 
     case EOpSequence:          // used by ?:
 
-        if (type0 == type1)
+        if (node0->getBasicType() == node1->getBasicType())
             return std::make_tuple(node0, node1);
 
-        promoteTo = getConversionDestinatonType(type0, type1, op);
+        promoteTo = getConversionDestinatonType(node0->getBasicType(), node1->getBasicType(), op);
         if (std::get<0>(promoteTo) == EbtNumTypes || std::get<1>(promoteTo) == EbtNumTypes)
             return std::make_tuple(nullptr, nullptr);
 
@@ -794,23 +791,25 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
             return std::make_tuple(node0, node1);
         break;
 
-    // Shifts can have mixed types as long as they are integer and of the same rank,
-    // without converting.
+    // There are no conversions needed for GLSL; the shift amount just needs to be an
+    // integer type, as does the base.
+    // HLSL can promote bools to ints to make this work.
     case EOpLeftShift:
     case EOpRightShift:
-        if (node0->getType() == node1->getType())
-            return std::make_tuple(node0, node1);
-
-        if (isTypeInt(type0) && isTypeInt(type1)) {
-            if (getTypeRank(type0) == getTypeRank(type1)) {
+        if (source == EShSourceHlsl) {
+            TBasicType node0BasicType = node0->getBasicType();
+            if (node0BasicType == EbtBool)
+                node0BasicType = EbtInt;
+            if (node1->getBasicType() == EbtBool)
+                promoteTo = std::make_tuple(node0BasicType, EbtInt);
+            else
+                promoteTo = std::make_tuple(node0BasicType, node1->getBasicType());
+        } else {
+            if (isTypeInt(node0->getBasicType()) && isTypeInt(node1->getBasicType()))
                 return std::make_tuple(node0, node1);
-            } else {
-                promoteTo = getConversionDestinatonType(type0, type1, op);
-                if (std::get<0>(promoteTo) == EbtNumTypes || std::get<1>(promoteTo) == EbtNumTypes)
-                    return std::make_tuple(nullptr, nullptr);
-            }
-        } else
-            return std::make_tuple(nullptr, nullptr);
+            else
+                return std::make_tuple(nullptr, nullptr);
+        }
         break;
 
     default:
@@ -964,35 +963,24 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         if (type.getBasicType() == node->getType().getBasicType())
             return node;
 
-        if (canImplicitlyPromote(node->getType().getBasicType(), type.getBasicType(), op))
+        if (canImplicitlyPromote(node->getBasicType(), type.getBasicType(), op))
             promoteTo = type.getBasicType();
         else
            return nullptr;
         break;
 
-    // Shifts can have mixed types as long as they are integer and of the same rank,
-    // without converting.
-    // It's the left operand's type that determines the resulting type, so no issue
-    // with assign shift ops either.
+    // For GLSL, there are no conversions needed; the shift amount just needs to be an
+    // integer type, as do the base/result.
+    // HLSL can convert the shift from a bool to an int.
     case EOpLeftShiftAssign:
     case EOpRightShiftAssign:
     {
-        TBasicType type0 = type.getBasicType();
-        TBasicType type1 = node->getType().getBasicType();
-
-        if (source == EShSourceHlsl && node->getType().getBasicType() == EbtBool) {
-            promoteTo = type0;            
-        } else {
-            if (isTypeInt(type0) && isTypeInt(type1)) {
-                if (getTypeRank(type0) == getTypeRank(type1)) {
-                    return node;
-                } else {
-                    if (canImplicitlyPromote(type1, type0, op))
-                        promoteTo = type0;
-                    else
-                        return nullptr;
-                }
-            } else
+        if (source == EShSourceHlsl && node->getType().getBasicType() == EbtBool)
+            promoteTo = type.getBasicType();
+        else {
+            if (isTypeInt(type.getBasicType()) && isTypeInt(node->getBasicType()))
+                return node;
+            else
                 return nullptr;
         }
         break;
@@ -1437,9 +1425,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                                 extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_float32) ||
                                 extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_float64);
 
-    if(explicitTypesEnabled)
-    {
-
+    if(explicitTypesEnabled) {
         // integral promotions
         if (isIntegralPromotion(from, to)) {
             return true;
