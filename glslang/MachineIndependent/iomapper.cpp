@@ -443,7 +443,11 @@ struct TDefaultIoResolverBase : public glslang::TIoMapResolver
                 return -1;
         }
 
-        return nextUniformLocation++;
+        int location = nextUniformLocation;
+
+        nextUniformLocation += TIntermediate::computeTypeUniformLocationSize(type);
+
+        return location;
     }
     bool validateInOut(EShLanguage /*stage*/, const char* /*name*/, const TType& /*type*/, bool /*is_live*/) override
     {
