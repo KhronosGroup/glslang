@@ -359,7 +359,7 @@ struct TDefaultIoResolverBase : public glslang::TIoMapResolver
 {
     TDefaultIoResolverBase(const TIntermediate &intermediate) :
         intermediate(intermediate),
-        nextUniformLocation(0),
+        nextUniformLocation(intermediate.getUniformLocationBase()),
         nextInputLocation(0),
         nextOutputLocation(0)
     { }
