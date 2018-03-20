@@ -11,7 +11,6 @@ ERROR: 0:79: 'assign' :  cannot convert from ' global 4-element array of 7-eleme
 ERROR: 0:81: 'foo' : no matching overloaded function found 
 ERROR: 0:86: '==' :  wrong operand types: no operation '==' exists that takes a left-hand operand of type ' global 4-element array of 7-element array of highp float' and a right operand of type ' global 5-element array of 7-element array of highp float' (or there is no acceptable conversion)
 ERROR: 0:90: '[' :  array index out of range '5'
-ERROR: 0:94: '[' :  index out of range '-1'
 ERROR: 0:96: 'assign' :  cannot convert from ' temp 3-element array of highp 4-component vector of float' to 'layout( column_major shared) buffer implicitly-sized array of highp 4-component vector of float'
 ERROR: 0:103: '' : array size required 
 ERROR: 0:104: '' : array size required 
@@ -21,7 +20,7 @@ ERROR: 0:107: '' : array size required
 ERROR: 0:110: 'vertex input arrays' : not supported with this profile: es
 ERROR: 0:111: 'vertex-shader array-of-array output' : not supported with this profile: es
 ERROR: 0:113: 'array-of-array of block' : not supported with this profile: es
-ERROR: 22 compilation errors.  No code generated.
+ERROR: 21 compilation errors.  No code generated.
 
 
 Shader version: 310
@@ -378,7 +377,7 @@ ERROR: node is still EOpNull!
 0:13          2 (const uint)
 0:13        'd' ( temp 3-element array of 2-element array of highp int)
 0:?   Linker Objects
-0:?     'name' (layout( column_major shared) buffer 3-element array of block{layout( column_major shared) buffer implicitly-sized array of highp float u, layout( column_major shared) buffer implicitly-sized array of highp 4-component vector of float v})
+0:?     'name' (layout( column_major shared) buffer 3-element array of block{layout( column_major shared) buffer 1-element array of highp float u, layout( column_major shared) buffer implicitly-sized array of highp 4-component vector of float v})
 0:?     'uname' (layout( column_major shared) uniform 3-element array of block{layout( column_major shared) uniform highp float u, layout( column_major shared) uniform 1-element array of highp 4-component vector of float v})
 0:?     'name2' (layout( column_major shared) buffer 3-element array of block{layout( column_major shared) buffer highp float u, layout( column_major shared) buffer implicitly-sized array of 1-element array of highp 4-component vector of float v})
 0:?     'name3' (layout( column_major shared) buffer 3-element array of block{layout( column_major shared) buffer highp float u, layout( column_major shared) buffer implicitly-sized array of 7-element array of highp 4-component vector of float v})

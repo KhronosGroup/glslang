@@ -1435,9 +1435,11 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         // Quite special; won't want to evaluate the operand.
 
         // Normal .length() would have been constant folded by the front-end.
-        // So, this has to be block.lastMember.length().
+        // So, this has to be block.lastMember.length().  ??
         // SPV wants "block" and member number as the operands, go get them.
-        assert(node->getOperand()->getType().isRuntimeSizedArray());
+
+        //?? depends if size was determined while linking, and on what the rules allow applying .length() to
+
         glslang::TIntermTyped* block = node->getOperand()->getAsBinaryNode()->getLeft();
         block->traverse(this);
         unsigned int member = node->getOperand()->getAsBinaryNode()->getRight()->getAsConstantUnion()->getConstArray()[0].getUConst();
@@ -2631,13 +2633,12 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                 stride = getArrayStride(type, explicitLayout, qualifier.layoutMatrix);
         }
 
-        // Do the outer dimension, which might not be known for a runtime-sized array
-        if (type.isRuntimeSizedArray()) {
-            spvType = builder.makeRuntimeArray(spvType);
-        } else {
-            assert(type.getOuterArraySize() > 0);
+        // Do the outer dimension, which might not be known for a runtime-sized array.
+        // (Unsized arrays that survive through linking will be runtime-sized arrays)
+        if (type.isSizedArray())
             spvType = builder.makeArrayType(spvType, makeArraySizeId(*type.getArraySizes(), 0), stride);
-        }
+        else
+            spvType = builder.makeRuntimeArray(spvType);
         if (stride > 0)
             builder.addDecoration(spvType, spv::DecorationArrayStride, stride);
     }

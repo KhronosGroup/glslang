@@ -446,7 +446,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
             acceptArraySpecifier(arraySizes);
 
             // Fix arrayness in the variableType
-            if (declaredType.isImplicitlySizedArray()) {
+            if (declaredType.isUnsizedArray()) {
                 // Because "int[] a = int[2](...), b = int[3](...)" makes two arrays a and b
                 // of different sizes, for this case sharing the shallow copy of arrayness
                 // with the parseType oversubscribes it, so get a deep copy of the arrayness.
@@ -2577,8 +2577,8 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
     TArraySizes* arraySizes = nullptr;
     acceptArraySpecifier(arraySizes);
     if (arraySizes) {
-        if (arraySizes->isImplicit()) {
-            parseContext.error(token.loc, "function parameter array cannot be implicitly sized", "", "");
+        if (arraySizes->hasUnsized()) {
+            parseContext.error(token.loc, "function parameter requires array size", "[]", "");
             return false;
         }
 

@@ -1383,9 +1383,10 @@ public:
     virtual bool isVector() const { return vectorSize > 1 || vector1; }
     virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray()  const { return arraySizes != nullptr; }
-    virtual bool isExplicitlySizedArray() const { return isArray() && getOuterArraySize() != UnsizedArraySize; }
-    virtual bool isImplicitlySizedArray() const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage != EvqBuffer; }
-    virtual bool isRuntimeSizedArray()    const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage == EvqBuffer; }
+    virtual bool isSizedArray() const { return isArray() && arraySizes->isSized(); }
+    virtual bool isUnsizedArray() const { return isArray() && !arraySizes->isSized(); }
+    virtual bool isArrayVariablyIndexed() const { assert(isArray()); return arraySizes->isVariablyIndexed(); }
+    virtual void setArrayVariablyIndexed() { assert(isArray()); arraySizes->setVariablyIndexed(); }
     virtual bool isStruct() const { return structure != nullptr; }
     virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble || basicType == EbtFloat16; }
     virtual bool isIntegerDomain() const
@@ -1443,10 +1444,10 @@ public:
         return contains([this](const TType* t) { return t != this && t->isStruct(); } );
     }
 
-    // Recursively check the structure for any implicitly-sized arrays, needed for triggering a copyUp().
-    virtual bool containsImplicitlySizedArray() const
+    // Recursively check the structure for any unsized arrays, needed for triggering a copyUp().
+    virtual bool containsUnsizedArray() const
     {
-        return contains([](const TType* t) { return t->isImplicitlySizedArray(); } );
+        return contains([](const TType* t) { return t->isUnsizedArray(); } );
     }
 
     virtual bool containsOpaque() const
@@ -1530,14 +1531,21 @@ public:
     void changeOuterArraySize(int s) { arraySizes->changeOuterSize(s); }
     void setImplicitArraySize(int s) { arraySizes->setImplicitSize(s); }
 
-    // Recursively make the implicit array size the explicit array size, through the type tree.
-    void adoptImplicitArraySizes()
+    // Recursively make the implicit array size the explicit array size.
+    // Expicit arrays are compile-time or link-time sized, never run-time sized.
+    // Sometimes, policy calls for an array to be run-time sized even if it was
+    // never variably indexed: Don't turn a 'skipNonvariablyIndexed' array into
+    // an explicit array.
+    void adoptImplicitArraySizes(bool skipNonvariablyIndexed)
     {
-        if (isImplicitlySizedArray())
+        if (isUnsizedArray() && !(skipNonvariablyIndexed || isArrayVariablyIndexed()))
             changeOuterArraySize(getImplicitArraySize());
-        if (isStruct()) {
-            for (int i = 0; i < (int)structure->size(); ++i)
-                (*structure)[i].type->adoptImplicitArraySizes();
+        if (isStruct() && structure->size() > 0) {
+            int lastMember = (int)structure->size() - 1;
+            for (int i = 0; i < lastMember; ++i)
+                (*structure)[i].type->adoptImplicitArraySizes(false);
+            // implement the "last member of an SSBO" policy
+            (*structure)[lastMember].type->adoptImplicitArraySizes(getQualifier().storage == EvqBuffer);
         }
     }
 
@@ -1706,9 +1714,12 @@ public:
         if (isArray()) {
             for(int i = 0; i < (int)arraySizes->getNumDims(); ++i) {
                 int size = arraySizes->getDimSize(i);
-                if (size == 0)
-                    appendStr(" implicitly-sized array of");
-                else {
+                if (size == UnsizedArraySize) {
+                    if (arraySizes->isVariablyIndexed())
+                        appendStr(" runtime-sized array of");
+                    else
+                        appendStr(" implicitly-sized array of");
+                } else {
                     appendStr(" ");
                     appendInt(arraySizes->getDimSize(i));
                     appendStr("-element array of");

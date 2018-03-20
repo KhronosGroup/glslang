@@ -858,7 +858,7 @@ int TScanContext::tokenizeIdentifier()
     switch (keyword) {
     case CONST:
     case UNIFORM:
-    case NONUNIFORM:
+    case NONUNIFORM:  //?? check for extension
     case IN:
     case OUT:
     case INOUT:
