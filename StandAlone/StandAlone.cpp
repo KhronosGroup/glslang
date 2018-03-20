@@ -173,6 +173,8 @@ std::vector<std::string> Processes;                     // what should be record
 // Per descriptor-set binding base data
 typedef std::map<unsigned int, unsigned int> TPerSetBaseBinding;
 
+std::vector<std::pair<std::string, int>> uniformLocationOverrides;
+
 std::array<std::array<unsigned int, EShLangCount>, glslang::EResCount> baseBinding;
 std::array<std::array<TPerSetBaseBinding, EShLangCount>, glslang::EResCount> baseBindingForSet;
 std::array<std::vector<std::string>, EShLangCount> baseResourceSetBinding;
@@ -431,6 +433,22 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
         Options &= ~EOptionVulkanRules;
     };
 
+    const auto getUniformOverride = [getStringOperand]() {
+        const char *arg = getStringOperand("-u<name>:<location>");
+        const char *split = strchr(arg, ':');
+        if (split == NULL) {
+            printf("%s: missing location\n", arg);
+            exit(EFailUsage);
+        }
+        errno = 0;
+        int location = ::strtol(split + 1, NULL, 10);
+        if (errno) {
+            printf("%s: invalid location\n", arg);
+            exit(EFailUsage);
+        }
+        return std::make_pair(std::string(arg, split - arg), location);
+    };
+
     for (bumpArg(); argc >= 1; bumpArg()) {
         if (argv[0][0] == '-') {
             switch (argv[0][1]) {
@@ -571,6 +589,9 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                     Options |= EOptionReadHlsl;
                 else
                     UserPreamble.addDef(getStringOperand("-D<macro> macro name"));
+                break;
+            case 'u':
+                uniformLocationOverrides.push_back(getUniformOverride());
                 break;
             case 'E':
                 Options |= EOptionOutputPreprocessed;
@@ -897,6 +918,11 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         if (Options & EOptionInvertY)
             shader->setInvertY(true);
+
+        for (auto& uniOverride : uniformLocationOverrides) {
+            shader->addUniformLocationOverride(uniOverride.first.c_str(),
+                                               uniOverride.second);
+        }
 
         // Set up the environment, some subsettings take precedence over earlier
         // ways of setting things.
@@ -1417,6 +1443,7 @@ void usage()
            "  -w | --suppress-warnings\n"
            "              suppress GLSL warnings, except as required by \"#extension : warn\"\n"
            "  -x          save binary output as text-based 32-bit hexadecimal numbers\n"
+           "  -u<name>:<loc> specify a uniform location override for --aml\n"
            "  --auto-map-bindings | --amb       automatically bind uniform variables\n"
            "                                    without explicit bindings\n"
            "  --auto-map-locations | --aml      automatically locate input/output lacking\n"
