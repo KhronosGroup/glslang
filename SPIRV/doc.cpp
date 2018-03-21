@@ -879,6 +879,19 @@ const char* CapabilityString(int info)
 
     case 5265: return "FragmentFullyCoveredEXT";
 
+    case CapabilityShaderNonUniformEXT:                          return "CapabilityShaderNonUniformEXT";
+    case CapabilityRuntimeDescriptorArrayEXT:                    return "CapabilityRuntimeDescriptorArrayEXT";
+    case CapabilityInputAttachmentArrayDynamicIndexingEXT:       return "CapabilityInputAttachmentArrayDynamicIndexingEXT";
+    case CapabilityUniformTexelBufferArrayDynamicIndexingEXT:    return "CapabilityUniformTexelBufferArrayDynamicIndexingEXT";
+    case CapabilityStorageTexelBufferArrayDynamicIndexingEXT:    return "CapabilityStorageTexelBufferArrayDynamicIndexingEXT";
+    case CapabilityUniformBufferArrayNonUniformIndexingEXT:      return "CapabilityUniformBufferArrayNonUniformIndexingEXT";
+    case CapabilitySampledImageArrayNonUniformIndexingEXT:       return "CapabilitySampledImageArrayNonUniformIndexingEXT";
+    case CapabilityStorageBufferArrayNonUniformIndexingEXT:      return "CapabilityStorageBufferArrayNonUniformIndexingEXT";
+    case CapabilityStorageImageArrayNonUniformIndexingEXT:       return "CapabilityStorageImageArrayNonUniformIndexingEXT";
+    case CapabilityInputAttachmentArrayNonUniformIndexingEXT:    return "CapabilityInputAttachmentArrayNonUniformIndexingEXT";
+    case CapabilityUniformTexelBufferArrayNonUniformIndexingEXT: return "CapabilityUniformTexelBufferArrayNonUniformIndexingEXT";
+    case CapabilityStorageTexelBufferArrayNonUniformIndexingEXT: return "CapabilityStorageTexelBufferArrayNonUniformIndexingEXT";
+
     case CapabilityCeiling:
     default: return "Bad";
     }

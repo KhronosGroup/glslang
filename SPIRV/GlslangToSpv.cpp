@@ -135,6 +135,7 @@ public:
 protected:
     spv::Decoration TranslateInterpolationDecoration(const glslang::TQualifier& qualifier);
     spv::Decoration TranslateAuxiliaryStorageDecoration(const glslang::TQualifier& qualifier);
+    spv::Decoration TranslateNonUniformDecoration(const glslang::TQualifier& qualifier);
     spv::BuiltIn TranslateBuiltInDecoration(glslang::TBuiltInVariable, bool memberDeclaration);
     spv::ImageFormat TranslateImageFormat(const glslang::TType& type);
     spv::SelectionControlMask TranslateSelectionControl(const glslang::TIntermSelection&) const;
@@ -147,7 +148,8 @@ protected:
     spv::Id createInvertedSwizzle(spv::Decoration precision, const glslang::TIntermTyped&, spv::Id parentResult);
     void convertSwizzle(const glslang::TIntermAggregate&, std::vector<unsigned>& swizzle);
     spv::Id convertGlslangToSpvType(const glslang::TType& type);
-    spv::Id convertGlslangToSpvType(const glslang::TType& type, glslang::TLayoutPacking, const glslang::TQualifier&);
+    spv::Id convertGlslangToSpvType(const glslang::TType& type, glslang::TLayoutPacking, const glslang::TQualifier&,
+        bool lastBufferBlockMember);
     bool filterMember(const glslang::TType& member);
     spv::Id convertGlslangStructToSpvType(const glslang::TType&, const glslang::TTypeList* glslangStruct,
                                           glslang::TLayoutPacking, const glslang::TQualifier&);
@@ -443,11 +445,13 @@ spv::Decoration TranslateNoContractionDecoration(const glslang::TQualifier& qual
 }
 
 // If glslang type is nonUniform, return SPIR-V NonUniform decoration.
-spv::Decoration TranslateNonUniformDecoration(const glslang::TQualifier& qualifier)
+spv::Decoration TGlslangToSpvTraverser::TranslateNonUniformDecoration(const glslang::TQualifier& qualifier)
 {
-    if (qualifier.isNonUniform())
+    if (qualifier.isNonUniform()) {
+        builder.addExtension("SPV_EXT_descriptor_indexing");
+        builder.addCapability(spv::CapabilityShaderNonUniformEXT);
         return spv::DecorationNonUniformEXT;
-    else
+    } else
         return spv::DecorationMax;
 }
 
@@ -2474,13 +2478,14 @@ void TGlslangToSpvTraverser::convertSwizzle(const glslang::TIntermAggregate& nod
 // layout state rooted from the top-level type.
 spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& type)
 {
-    return convertGlslangToSpvType(type, getExplicitLayout(type), type.getQualifier());
+    return convertGlslangToSpvType(type, getExplicitLayout(type), type.getQualifier(), false);
 }
 
 // Do full recursive conversion of an arbitrary glslang type to a SPIR-V Id.
 // explicitLayout can be kept the same throughout the hierarchical recursive walk.
 // Mutually recursive with convertGlslangStructToSpvType().
-spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& type, glslang::TLayoutPacking explicitLayout, const glslang::TQualifier& qualifier)
+spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& type,
+    glslang::TLayoutPacking explicitLayout, const glslang::TQualifier& qualifier, bool lastBufferBlockMember)
 {
     spv::Id spvType = spv::NoResult;
 
@@ -2637,8 +2642,13 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         // (Unsized arrays that survive through linking will be runtime-sized arrays)
         if (type.isSizedArray())
             spvType = builder.makeArrayType(spvType, makeArraySizeId(*type.getArraySizes(), 0), stride);
-        else
+        else {
+            if (!lastBufferBlockMember) {
+                builder.addExtension("SPV_EXT_descriptor_indexing");
+                builder.addCapability(spv::CapabilityRuntimeDescriptorArrayEXT);
+            }
             spvType = builder.makeRuntimeArray(spvType);
+        }
         if (stride > 0)
             builder.addDecoration(spvType, spv::DecorationArrayStride, stride);
     }
@@ -2705,7 +2715,10 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
                 memberQualifier.layoutLocation = qualifier.layoutLocation;
 
             // recurse
-            spvMembers.push_back(convertGlslangToSpvType(glslangMember, explicitLayout, memberQualifier));
+            bool lastBufferBlockMember = qualifier.storage == glslang::EvqBuffer &&
+                                         i == (int)glslangMembers->size() - 1;
+            spvMembers.push_back(
+                convertGlslangToSpvType(glslangMember, explicitLayout, memberQualifier, lastBufferBlockMember));
         }
     }
 
@@ -2803,8 +2816,7 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
             addMemberDecoration(spvType, member, spv::DecorationBuiltIn, (int)builtIn);
 
         // nonuniform
-        if (glslangMember.getQualifier().isNonUniform())
-            addMemberDecoration(spvType, member, spv::DecorationNonUniformEXT);
+        addMemberDecoration(spvType, member, TranslateNonUniformDecoration(glslangMember.getQualifier()));
 
 #ifdef NV_EXTENSIONS
         if (builtIn == spv::BuiltInLayer) {
@@ -6262,8 +6274,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         addDecoration(id, spv::DecorationBuiltIn, (int)builtIn);
 
     // nonuniform
-    if (symbol->getType().getQualifier().isNonUniform())
-        addDecoration(id, spv::DecorationNonUniformEXT);
+    addDecoration(id, TranslateNonUniformDecoration(symbol->getType().getQualifier()));
 
 #ifdef NV_EXTENSIONS
     if (builtIn == spv::BuiltInSampleMask) {

@@ -6,6 +6,9 @@ WARNING: 0:8: '[]' : assuming array size of one for compile-time checking of bin
 // Id's are bound by 57
 
                               Capability Shader
+                              Capability CapabilityShaderNonUniformEXT
+                              Capability CapabilityRuntimeDescriptorArrayEXT
+                              Extension  "SPV_EXT_descriptor_indexing"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 4  "main" 33 48
