@@ -412,7 +412,6 @@ public:
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(const TSourceLoc&, TIntermTyped* expression, TIntermAggregate* body);
 
-    void updateImplicitArraySize(const TSourceLoc&, TIntermNode*, int index);
     TAttributeType attributeFromName(const TString& name) const;
     TAttributes* makeAttributes(const TString& identifier) const;
     TAttributes* makeAttributes(const TString& identifier, TIntermNode* node) const;

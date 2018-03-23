@@ -41,6 +41,8 @@
 #ifndef _ARRAYS_INCLUDED
 #define _ARRAYS_INCLUDED
 
+#include <algorithm>
+
 namespace glslang {
 
 // This is used to mean there is no size yet (unsized), it is waiting to get a size from somewhere else.
@@ -254,8 +256,8 @@ struct TArraySizes {
     void addInnerSize(int s, TIntermTyped* n) { sizes.push_back((unsigned)s, n); }
     void addInnerSize(TArraySize pair) { sizes.push_back(pair.size, pair.node); }
     void changeOuterSize(int s) { sizes.changeFront((unsigned)s); }
-    int getImplicitSize() const { return (int)implicitArraySize; }
-    void setImplicitSize(int s) { implicitArraySize = s; }
+    int getImplicitSize() const { return implicitArraySize; }
+    void updateImplicitSize(int s) { implicitArraySize = std::max(implicitArraySize, s); }
     bool isInnerUnsized() const
     {
         for (int d = 1; d < sizes.size(); ++d) {

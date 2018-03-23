@@ -271,8 +271,7 @@ void TIntermediate::mergeImplicitArraySizes(TType& type, const TType& unitType)
     if (type.isUnsizedArray() && unitType.isArray()) {
         int newImplicitArraySize = unitType.isSizedArray() ? unitType.getOuterArraySize() : 
                                                              unitType.getImplicitArraySize();
-        if (newImplicitArraySize > type.getImplicitArraySize ())
-            type.setImplicitArraySize(newImplicitArraySize);
+        type.updateImplicitArraySize(type.getImplicitArraySize());
         if (unitType.isArrayVariablyIndexed())
             type.setArrayVariablyIndexed();
     }

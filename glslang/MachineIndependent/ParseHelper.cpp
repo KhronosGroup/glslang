@@ -377,7 +377,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
 
         if (index->getQualifier().isFrontEndConstant()) {
             if (base->getType().isUnsizedArray())
-                updateImplicitArraySize(loc, base, indexValue);
+                base->getWritableType().updateImplicitArraySize(indexValue + 1);
             else
                 checkIndex(loc, base->getType(), indexValue);
             result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
@@ -3281,66 +3281,6 @@ void TParseContext::declareArray(const TSourceLoc& loc, const TString& identifie
 
     if (isIoResizeArray(type))
         checkIoArraysConsistency(loc);
-}
-
-void TParseContext::updateImplicitArraySize(const TSourceLoc& loc, TIntermNode *node, int index)
-{
-    // maybe there is nothing to do...
-    TIntermTyped* typedNode = node->getAsTyped();
-    if (typedNode->getType().getImplicitArraySize() > index)
-        return;
-
-    // something to do...
-
-    // Figure out what symbol to lookup, as we will use its type to edit for the size change,
-    // as that type will be shared through shallow copies for future references.
-    TSymbol* symbol = nullptr;
-    int blockIndex = -1;
-    const TString* lookupName = nullptr;
-    if (node->getAsSymbolNode())
-        lookupName = &node->getAsSymbolNode()->getName();
-    else if (node->getAsBinaryNode()) {
-        const TIntermBinary* deref = node->getAsBinaryNode();
-        // This has to be the result of a block dereference, unless it's bad shader code
-        // If it's a uniform block, then an error will be issued elsewhere, but
-        // return early now to avoid crashing later in this function.
-        if (deref->getLeft()->getBasicType() != EbtBlock ||
-            deref->getLeft()->getType().getQualifier().storage == EvqUniform ||
-            deref->getRight()->getAsConstantUnion() == nullptr)
-            return;
-
-        const TIntermTyped* left  = deref->getLeft();
-        const TIntermTyped* right = deref->getRight();
-
-        if (left->getAsBinaryNode()) {
-            left = left->getAsBinaryNode()->getLeft(); // Block array access
-            assert(left->isArray());
-        }
-
-        if (! left->getAsSymbolNode())
-            return;
-
-        blockIndex = right->getAsConstantUnion()->getConstArray()[0].getIConst();
-
-        lookupName = &left->getAsSymbolNode()->getName();
-        if (IsAnonymous(*lookupName))
-            lookupName = &(*left->getType().getStruct())[blockIndex].type->getFieldName();
-    }
-
-    // Lookup the symbol, should only fail if shader code is incorrect
-    symbol = symbolTable.find(*lookupName);
-    if (symbol == nullptr)
-        return;
-
-    if (symbol->getAsFunction()) {
-        error(loc, "array variable name expected", symbol->getName().c_str(), "");
-        return;
-    }
-
-    if (symbol->getType().isStruct() && blockIndex != -1)
-        (*symbol->getWritableType().getStruct())[blockIndex].type->setImplicitArraySize(index + 1);
-    else
-        symbol->getWritableType().setImplicitArraySize(index + 1);
 }
 
 // Returns true if the first argument to the #line directive is the line number for the next line.

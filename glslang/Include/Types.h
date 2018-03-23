@@ -1387,6 +1387,7 @@ public:
     virtual bool isUnsizedArray() const { return isArray() && !arraySizes->isSized(); }
     virtual bool isArrayVariablyIndexed() const { assert(isArray()); return arraySizes->isVariablyIndexed(); }
     virtual void setArrayVariablyIndexed() { assert(isArray()); arraySizes->setVariablyIndexed(); }
+    virtual void updateImplicitArraySize(int size) { assert(isArray()); arraySizes->updateImplicitSize(size); }
     virtual bool isStruct() const { return structure != nullptr; }
     virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble || basicType == EbtFloat16; }
     virtual bool isIntegerDomain() const
@@ -1529,7 +1530,6 @@ public:
             arraySizes->addOuterSizes(s);
     }
     void changeOuterArraySize(int s) { arraySizes->changeOuterSize(s); }
-    void setImplicitArraySize(int s) { arraySizes->setImplicitSize(s); }
 
     // Recursively make the implicit array size the explicit array size.
     // Expicit arrays are compile-time or link-time sized, never run-time sized.

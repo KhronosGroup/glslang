@@ -106,6 +106,7 @@ INSTANTIATE_TEST_CASE_P(
         "310.tese",
         "310implicitSizeArrayError.vert",
         "310AofA.vert",
+        "310runtimeArray.vert",
         "320.comp",
         "320.vert",
         "320.geom",
