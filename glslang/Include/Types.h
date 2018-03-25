@@ -1697,13 +1697,17 @@ public:
         if (isArray()) {
             for(int i = 0; i < (int)arraySizes->getNumDims(); ++i) {
                 int size = arraySizes->getDimSize(i);
-                if (size == 0)
-                    appendStr(" implicitly-sized array of");
-                else {
+                if (size == UnsizedArraySize) {
+                    appendStr(" unsized");
+                    if (i == 0) {
+                        appendStr(" ");
+                        appendInt(arraySizes->getImplicitSize());
+                    }
+                } else {
                     appendStr(" ");
                     appendInt(arraySizes->getDimSize(i));
-                    appendStr("-element array of");
                 }
+                appendStr("-element array of");
             }
         }
         if (qualifier.precision != EpqNone) {
