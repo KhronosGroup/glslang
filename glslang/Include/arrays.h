@@ -130,10 +130,10 @@ struct TSmallArrayVector {
         sizes->push_back(pair);
     }
 
-    void push_front(const TSmallArrayVector& newDims)
+    void push_back(const TSmallArrayVector& newDims)
     {
         alloc();
-        sizes->insert(sizes->begin(), newDims.sizes->begin(), newDims.sizes->end());
+        sizes->insert(sizes->end(), newDims.sizes->begin(), newDims.sizes->end());
     }
 
     void pop_front()
@@ -252,6 +252,7 @@ struct TArraySizes {
     void addInnerSize(int s) { addInnerSize((unsigned)s, nullptr); }
     void addInnerSize(int s, TIntermTyped* n) { sizes.push_back((unsigned)s, n); }
     void addInnerSize(TArraySize pair) { sizes.push_back(pair.size, pair.node); }
+    void addInnerSizes(const TArraySizes& s) { sizes.push_back(s.sizes); }
     void changeOuterSize(int s) { sizes.changeFront((unsigned)s); }
     int getImplicitSize() const { return (int)implicitArraySize; }
     void setImplicitSize(int s) { implicitArraySize = s; }
@@ -288,7 +289,6 @@ struct TArraySizes {
     }
 
     bool isImplicit() const { return getOuterSize() == UnsizedArraySize || isInnerImplicit(); }
-    void addOuterSizes(const TArraySizes& s) { sizes.push_front(s.sizes); }
     void dereference() { sizes.pop_front(); }
     void copyDereferenced(const TArraySizes& rhs)
     {

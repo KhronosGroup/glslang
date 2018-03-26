@@ -1315,31 +1315,9 @@ public:
 
     void makeVector() { vector1 = true; }
 
-    // Merge type from parent, where a parentType is at the beginning of a declaration,
-    // establishing some characteristics for all subsequent names, while this type
-    // is on the individual names.
-    void mergeType(const TPublicType& parentType)
-    {
-        // arrayness is currently the only child aspect that has to be preserved
-        basicType = parentType.basicType;
-        vectorSize = parentType.vectorSize;
-        matrixCols = parentType.matrixCols;
-        matrixRows = parentType.matrixRows;
-        vector1 = false;                      // TPublicType is only GLSL which so far has no vec1
-        qualifier = parentType.qualifier;
-        sampler = parentType.sampler;
-        if (parentType.arraySizes)
-            newArraySizes(*parentType.arraySizes);
-        if (parentType.userDef) {
-            structure = parentType.userDef->getWritableStruct();
-            setTypeName(parentType.userDef->getTypeName());
-        }
-    }
-
     virtual void hideMember() { basicType = EbtVoid; vectorSize = 1; }
     virtual bool hiddenMember() const { return basicType == EbtVoid; }
 
-    virtual void setTypeName(const TString& n) { typeName = NewPoolTString(n.c_str()); }
     virtual void setFieldName(const TString& n) { fieldName = NewPoolTString(n.c_str()); }
     virtual const TString& getTypeName() const
     {
@@ -1369,7 +1347,7 @@ public:
     virtual bool isArrayOfArrays() const { return arraySizes != nullptr && arraySizes->getNumDims() > 1; }
     virtual int getImplicitArraySize() const { return arraySizes->getImplicitSize(); }
     virtual const TArraySizes* getArraySizes() const { return arraySizes; }
-    virtual       TArraySizes& getArraySizes()       { assert(arraySizes != nullptr); return *arraySizes; }
+    virtual       TArraySizes* getArraySizes()       { return arraySizes; }
 
     virtual bool isScalar() const { return ! isVector() && ! isMatrix() && ! isStruct() && ! isArray(); }
     virtual bool isScalarOrVec1() const { return isScalar() || vector1; }
@@ -1503,22 +1481,33 @@ public:
         assert(type.arraySizes != nullptr);
         *arraySizes = *type.arraySizes;
     }
-    void newArraySizes(const TArraySizes& s)
+    void copyArraySizes(const TArraySizes& s)
     {
         // For setting a fresh new set of array sizes, not yet worrying about sharing.
         arraySizes = new TArraySizes;
         *arraySizes = s;
     }
+    void transferArraySizes(TArraySizes* s)
+    {
+        // For setting an already allocated set of sizes that this type can use
+        // (no copy made).
+        arraySizes = s;
+    }
     void clearArraySizes()
     {
-        arraySizes = 0;
+        arraySizes = nullptr;
     }
-    void addArrayOuterSizes(const TArraySizes& s)
+
+    // Add inner array sizes, to any existing sizes, via copy; the
+    // sizes passed in can still be reused for other purposes.
+    void copyArrayInnerSizes(const TArraySizes* s)
     {
-        if (arraySizes == nullptr)
-            newArraySizes(s);
-        else
-            arraySizes->addOuterSizes(s);
+        if (s != nullptr) {
+            if (arraySizes == nullptr)
+                copyArraySizes(*s);
+            else
+                arraySizes->addInnerSizes(*s);
+        }
     }
     void changeOuterArraySize(int s) { arraySizes->changeOuterSize(s); }
     void setImplicitArraySize(int s) { arraySizes->setImplicitSize(s); }
