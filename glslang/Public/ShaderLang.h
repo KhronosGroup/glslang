@@ -70,7 +70,7 @@
 // This should always increase, as some paths to do not consume
 // a more major number.
 // It should increment by one when new functionality is added.
-#define GLSLANG_MINOR_VERSION 3
+#define GLSLANG_MINOR_VERSION 5
 
 //
 // Call before doing any other compiler/linker operations.
@@ -132,7 +132,9 @@ typedef enum {
     EShTargetVulkan_1_0 = (1 << 22),
     EShTargetVulkan_1_1 = (1 << 22) | (1 << 12),
     EShTargetOpenGL_450 = 450,
-} EshTargetClientVersion;
+} EShTargetClientVersion;
+
+typedef EShTargetClientVersion EshTargetClientVersion;
 
 typedef enum {
     EShTargetSpv_1_0 = (1 << 16),
@@ -148,12 +150,13 @@ struct TInputLanguage {
 
 struct TClient {
     EShClient client;
-    EshTargetClientVersion version;   // version of client itself (not the client's input dialect)
+    EShTargetClientVersion version;   // version of client itself (not the client's input dialect)
 };
 
 struct TTarget {
     EShTargetLanguage language;
     EShTargetLanguageVersion version; // version to target, if SPIR-V, defined by "word 1" of the SPIR-V header
+    bool hlslFunctionality1;          // can target hlsl_functionality1 extension(s)
 };
 
 // All source/client/target versions and settings.
@@ -410,7 +413,7 @@ public:
         environment.input.dialect = client;
         environment.input.dialectVersion = version;
     }
-    void setEnvClient(EShClient client, EshTargetClientVersion version)
+    void setEnvClient(EShClient client, EShTargetClientVersion version)
     {
         environment.client.client = client;
         environment.client.version = version;
@@ -420,6 +423,8 @@ public:
         environment.target.language = lang;
         environment.target.version = version;
     }
+    void setEnvTargetHlslFunctionality1() { environment.target.hlslFunctionality1 = true; }
+    bool getEnvTargetHlslFunctionality1() const { return environment.target.hlslFunctionality1; }
 
     // Interface to #include handlers.
     //
