@@ -57,7 +57,6 @@ namespace spv {
 #ifdef ENABLE_OPT
     #include "spirv-tools/optimizer.hpp"
     #include "message.h"
-    #include "SPVRemapper.h"
 #endif
 
 #ifdef ENABLE_OPT
@@ -6701,12 +6700,6 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, 
     out.close();
 }
 
-#ifdef ENABLE_OPT
-void errHandler(const std::string& str) {
-    std::cerr << str << std::endl;
-}
-#endif
-
 //
 // Set up the glslang traversal
 //
@@ -6781,12 +6774,6 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
 
         if (!optimizer.Run(spirv.data(), spirv.size(), &spirv))
             return;
-
-        // Remove dead module-level objects: functions, types, vars
-        // TODO(greg-lunarg): Switch to spirv-opt versions when available
-        spv::spirvbin_t Remapper(0);
-        Remapper.registerErrorHandler(errHandler);
-        Remapper.remap(spirv, spv::spirvbin_t::DCE_ALL);
     }
 #endif
 
