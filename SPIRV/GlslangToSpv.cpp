@@ -2607,8 +2607,8 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
                 // Use a dummy glslang type for querying internal strides of
                 // arrays of arrays, but using just a one-dimensional array.
                 glslang::TType simpleArrayType(type, 0); // deference type of the array
-                while (simpleArrayType.getArraySizes().getNumDims() > 1)
-                    simpleArrayType.getArraySizes().dereference();
+                while (simpleArrayType.getArraySizes()->getNumDims() > 1)
+                    simpleArrayType.getArraySizes()->dereference();
 
                 // Will compute the higher-order strides here, rather than making a whole
                 // pile of types and doing repetitive recursion on their contents.
