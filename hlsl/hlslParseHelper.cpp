@@ -65,10 +65,10 @@ HlslParseContext::HlslParseContext(TSymbolTable& symbolTable, TIntermediate& int
     entryPointFunction(nullptr),
     entryPointFunctionBody(nullptr),
     gsStreamOutput(nullptr),
-    clipDistanceInput(nullptr),
-    cullDistanceInput(nullptr),
     clipDistanceOutput(nullptr),
-    cullDistanceOutput(nullptr)
+    cullDistanceOutput(nullptr),
+    clipDistanceInput(nullptr),
+    cullDistanceInput(nullptr)
 {
     globalUniformDefaults.clear();
     globalUniformDefaults.layoutMatrix = ElmRowMajor;
@@ -1105,7 +1105,7 @@ void HlslParseContext::splitBuiltIn(const TString& baseName, const TType& member
     TVariable* ioVar = makeInternalVariable(baseName + "." + memberType.getFieldName(), memberType);
 
     if (arraySizes != nullptr && !memberType.isArray())
-        ioVar->getWritableType().newArraySizes(*arraySizes);
+        ioVar->getWritableType().copyArraySizes(*arraySizes);
 
     splitBuiltIns[tInterstageIoData(memberType.getQualifier().builtIn, outerQualifier.storage)] = ioVar;
     if (!isClipOrCullDistance(ioVar->getType()))
@@ -1301,7 +1301,7 @@ int HlslParseContext::flattenStruct(const TVariable& variable, const TType& type
                                                 name + "." + dereferencedType.getFieldName(),
                                                 linkage, outerQualifier,
                                                 builtInArraySizes == nullptr && dereferencedType.isArray()
-                                                                       ? &dereferencedType.getArraySizes()
+                                                                       ? dereferencedType.getArraySizes()
                                                                        : builtInArraySizes);
             flattenData.offsets[pos++] = mpos;
         }
@@ -1512,9 +1512,9 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
     // Alter or set array size as needed.
     if (requiredArraySize > 0) {
         if (!type.isArray() || type.getOuterArraySize() != requiredArraySize) {
-            TArraySizes arraySizes;
-            arraySizes.addInnerSize(requiredArraySize);
-            type.newArraySizes(arraySizes);
+            TArraySizes* arraySizes = new TArraySizes;
+            arraySizes->addInnerSize(requiredArraySize);
+            type.transferArraySizes(arraySizes);
         }
     }
 }
@@ -1608,7 +1608,7 @@ void HlslParseContext::addStructBufferHiddenCounterParam(const TSourceLoc& loc, 
     if (! hasStructBuffCounter(*param.type))
         return;
 
-    const TString counterBlockName(getStructBuffCounterName(*param.name));
+    const TString counterBlockName(intermediate.addCounterBufferName(*param.name));
 
     TType counterType;
     counterBufferType(loc, counterType);
@@ -2273,9 +2273,9 @@ void HlslParseContext::remapEntryPointIO(TFunction& function, TVariable*& return
             outputType.shallowCopy(function.getType());
 
             // vertices has necessarily already been set when handling entry point attributes.
-            TArraySizes arraySizes;
-            arraySizes.addInnerSize(intermediate.getVertices());
-            outputType.newArraySizes(arraySizes);
+            TArraySizes* arraySizes = new TArraySizes;
+            arraySizes->addInnerSize(intermediate.getVertices());
+            outputType.transferArraySizes(arraySizes);
 
             clearUniformInputOutput(function.getWritableType().getQualifier());
             returnValue = makeIoVariable("@entryPointOutput", outputType, EvqVaryingOut);
@@ -2512,11 +2512,11 @@ TIntermAggregate* HlslParseContext::assignClipCullDistance(const TSourceLoc& loc
         clipCullType.getQualifier() = clipCullNode->getType().getQualifier();
 
         // Create required array dimension
-        TArraySizes arraySizes;
+        TArraySizes* arraySizes = new TArraySizes;
         if (isImplicitlyArrayed)
-            arraySizes.addInnerSize(requiredOuterArraySize);
-        arraySizes.addInnerSize(requiredInnerArraySize);
-        clipCullType.newArraySizes(arraySizes);
+            arraySizes->addInnerSize(requiredOuterArraySize);
+        arraySizes->addInnerSize(requiredInnerArraySize);
+        clipCullType.transferArraySizes(arraySizes);
 
         // Obtain symbol name: we'll use that for the symbol we introduce.
         TIntermSymbol* sym = clipCullNode->getAsSymbolNode();
@@ -3163,7 +3163,7 @@ void HlslParseContext::counterBufferType(const TSourceLoc& loc, TType& type)
 {
     // Counter type
     TType* counterType = new TType(EbtInt, EvqBuffer);
-    counterType->setFieldName("@count");
+    counterType->setFieldName(intermediate.implicitCounterName);
 
     TTypeList* blockStruct = new TTypeList;
     TTypeLoc  member = { counterType, loc };
@@ -3174,12 +3174,6 @@ void HlslParseContext::counterBufferType(const TSourceLoc& loc, TType& type)
 
     type.shallowCopy(blockType);
     shareStructBufferType(type);
-}
-
-// knowledge of how to construct block name, in one place instead of N places.
-TString HlslParseContext::getStructBuffCounterName(const TString& blockName) const
-{
-    return blockName + "@count";
 }
 
 // declare counter for a structured buffer type
@@ -3195,9 +3189,9 @@ void HlslParseContext::declareStructBufferCounter(const TSourceLoc& loc, const T
     TType blockType;
     counterBufferType(loc, blockType);
 
-    TString* blockName = new TString(getStructBuffCounterName(name));
+    TString* blockName = new TString(intermediate.addCounterBufferName(name));
 
-    // Counter buffer does not have its own counter buffer.  TODO: there should be a better way to track this.
+    // Counter buffer is not yet in use
     structBufferCounter[*blockName] = false;
 
     shareStructBufferType(blockType);
@@ -3211,7 +3205,7 @@ TIntermTyped* HlslParseContext::getStructBufferCounter(const TSourceLoc& loc, TI
     if (buffer == nullptr || ! isStructBufferType(buffer->getType()))
         return nullptr;
 
-    const TString counterBlockName(getStructBuffCounterName(buffer->getAsSymbolNode()->getName()));
+    const TString counterBlockName(intermediate.addCounterBufferName(buffer->getAsSymbolNode()->getName()));
 
     // Mark the counter as being used
     structBufferCounter[counterBlockName] = true;
@@ -3223,7 +3217,6 @@ TIntermTyped* HlslParseContext::getStructBufferCounter(const TSourceLoc& loc, TI
     counterMember->setType(TType(EbtInt));
     return counterMember;
 }
-
 
 //
 // Decompose structure buffer methods into AST
@@ -3619,9 +3612,9 @@ TIntermConstantUnion* HlslParseContext::getSamplePosArray(int count)
     TType retType(EbtFloat, EvqConst, 2);
 
     if (numSamples != 1) {
-        TArraySizes arraySizes;
-        arraySizes.addInnerSize(numSamples);
-        retType.newArraySizes(arraySizes);
+        TArraySizes* arraySizes = new TArraySizes;
+        arraySizes->addInnerSize(numSamples);
+        retType.transferArraySizes(arraySizes);
     }
 
     return new TIntermConstantUnion(*values, retType);
@@ -4318,9 +4311,9 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
             // we construct an array from the separate args.
             if (hasOffset4) {
                 TType arrayType(EbtInt, EvqTemporary, 2);
-                TArraySizes arraySizes;
-                arraySizes.addInnerSize(4);
-                arrayType.newArraySizes(arraySizes);
+                TArraySizes* arraySizes = new TArraySizes;
+                arraySizes->addInnerSize(4);
+                arrayType.transferArraySizes(arraySizes);
 
                 TIntermAggregate* initList = new TIntermAggregate(EOpNull);
 
@@ -5743,12 +5736,11 @@ void HlslParseContext::addStructBuffArguments(const TSourceLoc& loc, TIntermAggr
                 TType counterType;
                 counterBufferType(loc, counterType);
 
-                const TString counterBlockName(getStructBuffCounterName(blockSym->getName()));
+                const TString counterBlockName(intermediate.addCounterBufferName(blockSym->getName()));
 
                 TVariable* variable = makeInternalVariable(counterBlockName, counterType);
 
-                // Mark this buffer as requiring a counter block.  TODO: there should be a better
-                // way to track it.
+                // Mark this buffer's counter block as being in use
                 structBufferCounter[counterBlockName] = true;
 
                 TIntermSymbol* sym = intermediate.addSymbol(*variable, loc);
@@ -6350,11 +6342,11 @@ bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node
             // Types have to match, but we're still making the type.
             // Finish making the type, and the comparison is done later
             // when checking for conversion.
-            TArraySizes& arraySizes = type.getArraySizes();
+            TArraySizes& arraySizes = *type.getArraySizes();
 
             // At least the dimensionalities have to match.
             if (! function[0].type->isArray() ||
-                arraySizes.getNumDims() != function[0].type->getArraySizes().getNumDims() + 1) {
+                arraySizes.getNumDims() != function[0].type->getArraySizes()->getNumDims() + 1) {
                 error(loc, "array constructor argument not correct type to construct array element", "constructor", "");
                 return true;
             }
@@ -6364,7 +6356,7 @@ bool HlslParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node
                 // That means we need to adopt (from the first argument) the other array sizes into the type.
                 for (int d = 1; d < arraySizes.getNumDims(); ++d) {
                     if (arraySizes.getDimSize(d) == UnsizedArraySize) {
-                        arraySizes.setDimSize(d, function[0].type->getArraySizes().getDimSize(d - 1));
+                        arraySizes.setDimSize(d, function[0].type->getArraySizes()->getDimSize(d - 1));
                     }
                 }
             }
@@ -6627,20 +6619,6 @@ void HlslParseContext::structArrayCheck(const TSourceLoc& /*loc*/, const TType& 
         if (member.isArray())
             arraySizeRequiredCheck(structure[m].loc, *member.getArraySizes());
     }
-}
-
-// Merge array dimensions listed in 'sizes' onto the type's array dimensions.
-//
-// From the spec: "vec4[2] a[3]; // size-3 array of size-2 array of vec4"
-//
-// That means, the 'sizes' go in front of the 'type' as outermost sizes.
-// 'type' is the type part of the declaration (to the left)
-// 'sizes' is the arrayness tagged on the identifier (to the right)
-//
-void HlslParseContext::arrayDimMerge(TType& type, const TArraySizes* sizes)
-{
-    if (sizes)
-        type.addArrayOuterSizes(*sizes);
 }
 
 //
@@ -7474,8 +7452,8 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             }
         };
 
-        return std::abs(linearize(to2.getBasicType()) - linearize(from.getBasicType())) <
-               std::abs(linearize(to1.getBasicType()) - linearize(from.getBasicType()));
+        return abs(linearize(to2.getBasicType()) - linearize(from.getBasicType())) <
+               abs(linearize(to1.getBasicType()) - linearize(from.getBasicType()));
     };
 
     // for ambiguity reporting
@@ -7907,8 +7885,10 @@ TIntermNode* HlslParseContext::executeInitializer(const TSourceLoc& loc, TInterm
         variable->getType().getArraySizes()->getNumDims()) {
         // adopt unsized sizes from the initializer's sizes
         for (int d = 1; d < variable->getType().getArraySizes()->getNumDims(); ++d) {
-            if (variable->getType().getArraySizes()->getDimSize(d) == UnsizedArraySize)
-                variable->getWritableType().getArraySizes().setDimSize(d, initializer->getType().getArraySizes()->getDimSize(d));
+            if (variable->getType().getArraySizes()->getDimSize(d) == UnsizedArraySize) {
+                variable->getWritableType().getArraySizes()->setDimSize(d,
+                    initializer->getType().getArraySizes()->getDimSize(d));
+            }
         }
     }
 
@@ -7995,7 +7975,7 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
         // Later on, initializer execution code will deal with array size logic.
         TType arrayType;
         arrayType.shallowCopy(type);                     // sharing struct stuff is fine
-        arrayType.newArraySizes(*type.getArraySizes());  // but get a fresh copy of the array information, to edit below
+        arrayType.copyArraySizes(*type.getArraySizes()); // but get a fresh copy of the array information, to edit below
 
         // edit array sizes to fill in unsized dimensions
         if (type.isUnsizedArray())
@@ -8005,10 +7985,10 @@ TIntermTyped* HlslParseContext::convertInitializerList(const TSourceLoc& loc, co
         if (arrayType.isArrayOfArrays() && initList->getSequence().size() > 0) {
             TIntermTyped* firstInit = initList->getSequence()[0]->getAsTyped();
             if (firstInit->getType().isArray() &&
-                arrayType.getArraySizes().getNumDims() == firstInit->getType().getArraySizes()->getNumDims() + 1) {
-                for (int d = 1; d < arrayType.getArraySizes().getNumDims(); ++d) {
-                    if (arrayType.getArraySizes().getDimSize(d) == UnsizedArraySize)
-                        arrayType.getArraySizes().setDimSize(d, firstInit->getType().getArraySizes()->getDimSize(d - 1));
+                arrayType.getArraySizes()->getNumDims() == firstInit->getType().getArraySizes()->getNumDims() + 1) {
+                for (int d = 1; d < arrayType.getArraySizes()->getNumDims(); ++d) {
+                    if (arrayType.getArraySizes()->getDimSize(d) == UnsizedArraySize)
+                        arrayType.getArraySizes()->setDimSize(d, firstInit->getType().getArraySizes()->getDimSize(d - 1));
                 }
             }
         }
@@ -8273,6 +8253,22 @@ TIntermTyped* HlslParseContext::constructBuiltIn(const TType& type, TOperator op
     // First, convert types as needed.
     //
     switch (op) {
+    case EOpConstructF16Vec2:
+    case EOpConstructF16Vec3:
+    case EOpConstructF16Vec4:
+    case EOpConstructF16Mat2x2:
+    case EOpConstructF16Mat2x3:
+    case EOpConstructF16Mat2x4:
+    case EOpConstructF16Mat3x2:
+    case EOpConstructF16Mat3x3:
+    case EOpConstructF16Mat3x4:
+    case EOpConstructF16Mat4x2:
+    case EOpConstructF16Mat4x3:
+    case EOpConstructF16Mat4x4:
+    case EOpConstructFloat16:
+        basicOp = EOpConstructFloat16;
+        break;
+
     case EOpConstructVec2:
     case EOpConstructVec3:
     case EOpConstructVec4:
@@ -8305,6 +8301,13 @@ TIntermTyped* HlslParseContext::constructBuiltIn(const TType& type, TOperator op
         basicOp = EOpConstructDouble;
         break;
 
+    case EOpConstructI16Vec2:
+    case EOpConstructI16Vec3:
+    case EOpConstructI16Vec4:
+    case EOpConstructInt16:
+        basicOp = EOpConstructInt16;
+        break;
+
     case EOpConstructIVec2:
     case EOpConstructIVec3:
     case EOpConstructIVec4:
@@ -8319,6 +8322,13 @@ TIntermTyped* HlslParseContext::constructBuiltIn(const TType& type, TOperator op
     case EOpConstructIMat4x4:
     case EOpConstructInt:
         basicOp = EOpConstructInt;
+        break;
+
+    case EOpConstructU16Vec2:
+    case EOpConstructU16Vec3:
+    case EOpConstructU16Vec4:
+    case EOpConstructUint16:
+        basicOp = EOpConstructUint16;
         break;
 
     case EOpConstructUVec2:
@@ -8470,7 +8480,7 @@ TIntermTyped* HlslParseContext::constructAggregate(TIntermNode* node, const TTyp
 //
 // Do everything needed to add an interface block.
 //
-void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TString* instanceName, TArraySizes* arraySizes)
+void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TString* instanceName)
 {
     assert(type.getWritableStruct() != nullptr);
 
@@ -8598,8 +8608,8 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
     const TString& interfaceName = (instanceName && !instanceName->empty()) ? *instanceName : type.getTypeName();
 
     TType blockType(&typeList, interfaceName, type.getQualifier());
-    if (arraySizes)
-        blockType.newArraySizes(*arraySizes);
+    if (type.isArray())
+        blockType.transferArraySizes(type.getArraySizes());
 
     // Add the variable, as anonymous or named instanceName.
     // Make an anonymous variable if no name was provided.
@@ -9867,7 +9877,8 @@ void HlslParseContext::addPatchConstantInvocation()
 }
 
 // Finalization step: remove unused buffer blocks from linkage (we don't know until the
-// shader is entirely compiled)
+// shader is entirely compiled).
+// Preserve order of remaining symbols.
 void HlslParseContext::removeUnusedStructBufferCounters()
 {
     const auto endIt = std::remove_if(linkageSymbols.begin(), linkageSymbols.end(),

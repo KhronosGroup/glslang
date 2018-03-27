@@ -226,6 +226,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NVX_multiview_per_view_attributes]        = EBhDisable;
     extensionBehavior[E_GL_NV_shader_atomic_int64]                   = EBhDisable;
     extensionBehavior[E_GL_NV_conservative_raster_underestimation]   = EBhDisable;
+    extensionBehavior[E_GL_NV_shader_noperspective_interpolation]    = EBhDisable;
 #endif
 
     // AEP
@@ -320,6 +321,13 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_OES_texture_cube_map_array 1\n"
             "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             ;
+
+#ifdef NV_EXTENSIONS
+            if (profile == EEsProfile && version >= 300) {
+                preamble += "#define GL_NV_shader_noperspective_interpolation 1\n";
+            }
+#endif
+
     } else {
         preamble =
             "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
@@ -353,6 +361,16 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_post_depth_coverage 1\n"
             "#define GL_EXT_control_flow_attributes 1\n"
             "#define GL_EXT_nonuniform_qualifier 1\n"
+
+            // GL_KHR_shader_subgroup
+            "#define GL_KHR_shader_subgroup_basic 1\n"
+            "#define GL_KHR_shader_subgroup_vote 1\n"
+            "#define GL_KHR_shader_subgroup_arithmetic 1\n"
+            "#define GL_KHR_shader_subgroup_ballot 1\n"
+            "#define GL_KHR_shader_subgroup_shuffle 1\n"
+            "#define GL_KHR_shader_subgroup_shuffle_relative 1\n"
+            "#define GL_KHR_shader_subgroup_clustered 1\n"
+            "#define GL_KHR_shader_subgroup_quad 1\n"
 
             // GL_KHR_shader_subgroup
             "#define GL_KHR_shader_subgroup_basic 1\n"

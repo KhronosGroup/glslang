@@ -187,7 +187,7 @@ protected:
     TParseContextBase& operator=(TParseContextBase&);
 
     const bool parsingBuiltins;       // true if parsing built-in symbols/functions
-    TVector<TSymbol*> linkageSymbols; // these need to be transferred to 'linkage', after all editing is done
+    TVector<TSymbol*> linkageSymbols; // will be transferred to 'linkage', after all editing is done, order preserving
     TScanContext* scanContext;
     TPpContext* ppContext;
     TBuiltInResource resources;
@@ -341,10 +341,7 @@ public:
     void arraySizeRequiredCheck(const TSourceLoc&, const TArraySizes&);
     void structArrayCheck(const TSourceLoc&, const TType& structure);
     void arraySizesCheck(const TSourceLoc&, const TQualifier&, TArraySizes*, bool initializer, bool lastMember);
-    void arrayOfArrayVersionCheck(const TSourceLoc&);
-    void arrayDimCheck(const TSourceLoc&, const TArraySizes* sizes1, const TArraySizes* sizes2);
-    void arrayDimCheck(const TSourceLoc&, const TType*, const TArraySizes*);
-    void arrayDimMerge(TType& type, const TArraySizes* sizes);
+    void arrayOfArrayVersionCheck(const TSourceLoc&, const TArraySizes*);
     bool voidErrorCheck(const TSourceLoc&, const TString&, TBasicType);
     void boolCheck(const TSourceLoc&, const TIntermTyped*);
     void boolCheck(const TSourceLoc&, const TPublicType&);

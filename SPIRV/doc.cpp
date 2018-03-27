@@ -270,7 +270,9 @@ const char* DecorationString(int decoration)
     case 5256: return "SecondaryViewportRelativeNV";
 #endif
 
-    case DecorationNonUniformEXT: return "DecorationNonUniformEXT";
+    case DecorationNonUniformEXT:           return "DecorationNonUniformEXT";
+    case DecorationHlslCounterBufferGOOGLE: return "DecorationHlslCounterBufferGOOGLE";
+    case DecorationHlslSemanticGOOGLE:      return "DecorationHlslSemanticGOOGLE";
     }
 }
 
@@ -1223,6 +1225,7 @@ const char* OpcodeString(int op)
     case 320: return "OpImageSparseRead";
 
     case OpModuleProcessed: return "OpModuleProcessed";
+    case OpDecorateId:      return "OpDecorateId";
 
     case 333: return "OpGroupNonUniformElect";
     case 334: return "OpGroupNonUniformAll";
@@ -1279,6 +1282,9 @@ const char* OpcodeString(int op)
     case 5011: return "OpFragmentMaskFetchAMD";
     case 5012: return "OpFragmentFetchAMD";
 #endif
+
+    case OpDecorateStringGOOGLE:       return "OpDecorateStringGOOGLE";
+    case OpMemberDecorateStringGOOGLE: return "OpMemberDecorateStringGOOGLE";
 
     case OpcodeCeiling:
     default:
@@ -1371,7 +1377,10 @@ void Parameterize()
     InstructionDesc[OpImageWrite].setResultAndType(false, false);
     InstructionDesc[OpDecorationGroup].setResultAndType(true, false);
     InstructionDesc[OpDecorate].setResultAndType(false, false);
+    InstructionDesc[OpDecorateId].setResultAndType(false, false);
+    InstructionDesc[OpDecorateStringGOOGLE].setResultAndType(false, false);
     InstructionDesc[OpMemberDecorate].setResultAndType(false, false);
+    InstructionDesc[OpMemberDecorateStringGOOGLE].setResultAndType(false, false);
     InstructionDesc[OpGroupDecorate].setResultAndType(false, false);
     InstructionDesc[OpGroupMemberDecorate].setResultAndType(false, false);
     InstructionDesc[OpName].setResultAndType(false, false);
@@ -1936,10 +1945,23 @@ void Parameterize()
     InstructionDesc[OpDecorate].operands.push(OperandDecoration, "");
     InstructionDesc[OpDecorate].operands.push(OperandVariableLiterals, "See <<Decoration,'Decoration'>>.");
 
+    InstructionDesc[OpDecorateId].operands.push(OperandId, "'Target'");
+    InstructionDesc[OpDecorateId].operands.push(OperandDecoration, "");
+    InstructionDesc[OpDecorateId].operands.push(OperandVariableIds, "See <<Decoration,'Decoration'>>.");
+
+    InstructionDesc[OpDecorateStringGOOGLE].operands.push(OperandId, "'Target'");
+    InstructionDesc[OpDecorateStringGOOGLE].operands.push(OperandDecoration, "");
+    InstructionDesc[OpDecorateStringGOOGLE].operands.push(OperandLiteralString, "'Literal String'");
+
     InstructionDesc[OpMemberDecorate].operands.push(OperandId, "'Structure Type'");
     InstructionDesc[OpMemberDecorate].operands.push(OperandLiteralNumber, "'Member'");
     InstructionDesc[OpMemberDecorate].operands.push(OperandDecoration, "");
     InstructionDesc[OpMemberDecorate].operands.push(OperandVariableLiterals, "See <<Decoration,'Decoration'>>.");
+
+    InstructionDesc[OpMemberDecorateStringGOOGLE].operands.push(OperandId, "'Structure Type'");
+    InstructionDesc[OpMemberDecorateStringGOOGLE].operands.push(OperandLiteralNumber, "'Member'");
+    InstructionDesc[OpMemberDecorateStringGOOGLE].operands.push(OperandDecoration, "");
+    InstructionDesc[OpMemberDecorateStringGOOGLE].operands.push(OperandLiteralString, "'Literal String'");
 
     InstructionDesc[OpGroupDecorate].operands.push(OperandId, "'Decoration Group'");
     InstructionDesc[OpGroupDecorate].operands.push(OperandVariableIds, "'Targets'");

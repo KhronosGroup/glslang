@@ -436,28 +436,20 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
             if (declaredType.getQualifier().storage == EvqTemporary && parseContext.symbolTable.atGlobalLevel())
                 declaredType.getQualifier().storage = EvqUniform;
 
+            // recognize array_specifier
+            TArraySizes* arraySizes = nullptr;
+            acceptArraySpecifier(arraySizes);
+
             // We can handle multiple variables per type declaration, so
             // the number of types can expand when arrayness is different.
             TType variableType;
             variableType.shallowCopy(declaredType);
 
-            // recognize array_specifier
-            TArraySizes* arraySizes = nullptr;
-            acceptArraySpecifier(arraySizes);
-
-            // Fix arrayness in the variableType
-            if (declaredType.isUnsizedArray()) {
-                // Because "int[] a = int[2](...), b = int[3](...)" makes two arrays a and b
-                // of different sizes, for this case sharing the shallow copy of arrayness
-                // with the parseType oversubscribes it, so get a deep copy of the arrayness.
-                variableType.newArraySizes(declaredType.getArraySizes());
-            }
-            if (arraySizes || variableType.isArray()) {
-                // In the most general case, arrayness is potentially coming both from the
-                // declared type and from the variable: "int[] a[];" or just one or the other.
-                // Merge it all to the variableType, so all arrayness is part of the variableType.
-                parseContext.arrayDimMerge(variableType, arraySizes);
-            }
+            // In the most general case, arrayness is potentially coming both from the
+            // declared type and from the variable: "int[] a[];" or just one or the other.
+            // Merge it all to the variableType, so all arrayness is part of the variableType.
+            variableType.transferArraySizes(arraySizes);
+            variableType.copyArrayInnerSizes(declaredType.getArraySizes());
 
             // samplers accept immediate sampler state
             if (variableType.getBasicType() == EbtSampler) {
@@ -487,8 +479,7 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
                 else if (variableType.getBasicType() == EbtBlock) {
                     if (expressionNode)
                         parseContext.error(idToken.loc, "buffer aliasing not yet supported", "block initializer", "");
-                    parseContext.declareBlock(idToken.loc, variableType, fullName,
-                                              variableType.isArray() ? &variableType.getArraySizes() : nullptr);
+                    parseContext.declareBlock(idToken.loc, variableType, fullName);
                     parseContext.declareStructBufferCounter(idToken.loc, variableType, *fullName);
                 } else {
                     if (variableType.getQualifier().storage == EvqUniform && ! variableType.containsOpaque()) {
@@ -1036,7 +1027,7 @@ bool HlslGrammar::acceptTessellationPatchTemplateType(TType& type)
 
     TArraySizes* arraySizes = new TArraySizes;
     arraySizes->addInnerSize(size->getAsConstantUnion()->getConstArray()[0].getIConst());
-    type.newArraySizes(*arraySizes);
+    type.transferArraySizes(arraySizes);
     type.getQualifier().builtIn = patchType;
 
     if (! acceptTokenClass(EHTokRightAngle)) {
@@ -1377,14 +1368,15 @@ bool HlslGrammar::acceptType(TType& type)
 }
 bool HlslGrammar::acceptType(TType& type, TIntermNode*& nodeList)
 {
-    // Basic types for min* types, broken out here in case of future
-    // changes, e.g, to use native halfs.
-    static const TBasicType min16float_bt = EbtFloat;
-    static const TBasicType min10float_bt = EbtFloat;
-    static const TBasicType half_bt       = EbtFloat;
-    static const TBasicType min16int_bt   = EbtInt;
-    static const TBasicType min12int_bt   = EbtInt;
-    static const TBasicType min16uint_bt  = EbtUint;
+    // Basic types for min* types, use native halfs if the option allows them.
+    bool enable16BitTypes = parseContext.hlslEnable16BitTypes();
+
+    const TBasicType min16float_bt = enable16BitTypes ? EbtFloat16 : EbtFloat;
+    const TBasicType min10float_bt = enable16BitTypes ? EbtFloat16 : EbtFloat;
+    const TBasicType half_bt       = enable16BitTypes ? EbtFloat16 : EbtFloat;
+    const TBasicType min16int_bt   = enable16BitTypes ? EbtInt16   : EbtInt;
+    const TBasicType min12int_bt   = enable16BitTypes ? EbtInt16   : EbtInt;
+    const TBasicType min16uint_bt  = enable16BitTypes ? EbtUint16  : EbtUint;
 
     // Some types might have turned into identifiers. Take the hit for checking
     // when this has happened.
@@ -2294,9 +2286,9 @@ bool HlslGrammar::acceptStructBufferType(TType& type)
 
     // Create an unsized array out of that type.
     // TODO: does this work if it's already an array type?
-    TArraySizes unsizedArray;
-    unsizedArray.addInnerSize(UnsizedArraySize);
-    templateType->newArraySizes(unsizedArray);
+    TArraySizes* unsizedArray = new TArraySizes;
+    unsizedArray->addInnerSize(UnsizedArraySize);
+    templateType->transferArraySizes(unsizedArray);
     templateType->getQualifier().storage = storage;
 
     // field name is canonical for all structbuffers
@@ -2394,7 +2386,7 @@ bool HlslGrammar::acceptStructDeclarationList(TTypeList*& typeList, TIntermNode*
                 TArraySizes* arraySizes = nullptr;
                 acceptArraySpecifier(arraySizes);
                 if (arraySizes)
-                    typeList->back().type->newArraySizes(*arraySizes);
+                    typeList->back().type->transferArraySizes(arraySizes);
 
                 acceptPostDecls(member.type->getQualifier());
 
@@ -2582,7 +2574,7 @@ bool HlslGrammar::acceptParameterDeclaration(TFunction& function)
             return false;
         }
 
-        type->newArraySizes(*arraySizes);
+        type->transferArraySizes(arraySizes);
     }
 
     // post_decls
@@ -2953,7 +2945,7 @@ bool HlslGrammar::acceptUnaryExpression(TIntermTyped*& node)
             TArraySizes* arraySizes = nullptr;
             acceptArraySpecifier(arraySizes);
             if (arraySizes != nullptr)
-                castType.newArraySizes(*arraySizes);
+                castType.transferArraySizes(arraySizes);
             TSourceLoc loc = token.loc;
             if (acceptTokenClass(EHTokRightParen)) {
                 // We've matched "(type)" now, get the expression to cast
@@ -3281,6 +3273,9 @@ bool HlslGrammar::acceptLiteral(TIntermTyped*& node)
         break;
     case EHTokUintConstant:
         node = intermediate.addConstantUnion(token.u, token.loc, true);
+        break;
+    case EHTokFloat16Constant:
+        node = intermediate.addConstantUnion(token.d, EbtFloat16, token.loc, true);
         break;
     case EHTokFloatConstant:
         node = intermediate.addConstantUnion(token.d, EbtFloat, token.loc, true);

@@ -302,7 +302,7 @@ ERROR: node is still EOpNull!
 0:?     'offcheckI' (layout( column_major shared) uniform block{layout( column_major shared offset=16) uniform int foo})
 0:?     'samp1D' ( uniform sampler1D)
 0:?     'samp1Ds' ( uniform sampler1DShadow)
-0:?     'badArray' (layout( binding=0) writeonly uniform implicitly-sized array of image1D)
+0:?     'badArray' (layout( binding=0) writeonly uniform unsized 1-element array of image1D)
 0:?     'gl_VertexID' ( gl_VertexId int VertexId)
 0:?     'gl_InstanceID' ( gl_InstanceId int InstanceId)
 

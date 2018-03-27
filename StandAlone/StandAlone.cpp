@@ -101,6 +101,7 @@ enum TOptions {
     EOptionInvertY              = (1 << 30),
     EOptionDumpBareVersion      = (1 << 31),
 };
+bool targetHlslFunctionality1 = false;
 
 //
 // Return codes from main/exit().
@@ -156,11 +157,12 @@ const char* entryPointName = nullptr;
 const char* sourceEntryPointName = nullptr;
 const char* shaderStageName = nullptr;
 const char* variableName = nullptr;
+bool HlslEnable16BitTypes = false;
 std::vector<std::string> IncludeDirectoryList;
 int ClientInputSemanticsVersion = 100;                  // maps to, say, #define VULKAN 100
-glslang::EshTargetClientVersion VulkanClientVersion =
+glslang::EShTargetClientVersion VulkanClientVersion =
                           glslang::EShTargetVulkan_1_0; // would map to, say, Vulkan 1.0
-glslang::EshTargetClientVersion OpenGLClientVersion =
+glslang::EShTargetClientVersion OpenGLClientVersion =
                           glslang::EShTargetOpenGL_450; // doesn't influence anything yet, but maps to OpenGL 4.50
 glslang::EShTargetLanguageVersion TargetVersion =
                           glslang::EShTargetSpv_1_0;    // maps to, say, SPIR-V 1.0
@@ -453,6 +455,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                lowerword == "hlsl-iomapper" ||
                                lowerword == "hlsl-iomapping") {
                         Options |= EOptionHlslIoMapping;
+                    } else if (lowerword == "hlsl-enable-16bit-types") {
+                        HlslEnable16BitTypes = true;
                     } else if (lowerword == "invert-y" ||  // synonyms
                                lowerword == "iy") {
                         Options |= EOptionInvertY;
@@ -520,7 +524,7 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                 setOpenGlSpv();
                                 OpenGLClientVersion = glslang::EShTargetOpenGL_450;
                             } else
-                                Error("--target-env expected vulkan1.0 or opengl");
+                                Error("--target-env expected vulkan1.0, vulkan1.1, or opengl");
                         }
                         bumpArg();
                     } else if (lowerword == "variable-name" || // synonyms
@@ -609,6 +613,12 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                 if (argc <= 1)
                     Error("no <name> provided for -e");
                 bumpArg();
+                break;
+            case 'f':
+                if (strcmp(&argv[0][2], "hlsl_functionality1") == 0)
+                    targetHlslFunctionality1 = true;
+                else
+                    Error("-f: expected hlsl_functionality1");
                 break;
             case 'g':
                 Options |= EOptionDebug;
@@ -708,6 +718,8 @@ void SetMessageOptions(EShMessages& messages)
         messages = (EShMessages)(messages | EShMsgHlslOffsets);
     if (Options & EOptionDebug)
         messages = (EShMessages)(messages | EShMsgDebugInfo);
+    if (HlslEnable16BitTypes)
+        messages = (EShMessages)(messages | EShMsgHlslEnable16BitTypes);
 }
 
 //
@@ -869,14 +881,15 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                                                                 : glslang::EShSourceGlsl,
                                         compUnit.stage, glslang::EShClientVulkan, ClientInputSemanticsVersion);
                 shader->setEnvClient(glslang::EShClientVulkan, VulkanClientVersion);
-                shader->setEnvTarget(glslang::EShTargetSpv, TargetVersion);
             } else {
                 shader->setEnvInput((Options & EOptionReadHlsl) ? glslang::EShSourceHlsl
                                                                 : glslang::EShSourceGlsl,
                                         compUnit.stage, glslang::EShClientOpenGL, ClientInputSemanticsVersion);
                 shader->setEnvClient(glslang::EShClientOpenGL, OpenGLClientVersion);
-                shader->setEnvTarget(glslang::EshTargetSpv, TargetVersion);
             }
+            shader->setEnvTarget(glslang::EShTargetSpv, TargetVersion);
+            if (targetHlslFunctionality1)
+                shader->setEnvTargetHlslFunctionality1();
         }
 
         shaders.push_back(shader);
@@ -1313,6 +1326,9 @@ void usage()
            "  -d          default to desktop (#version 110) when there is no shader #version\n"
            "              (default is ES version 100)\n"
            "  -e <name>   specify <name> as the entry-point name\n"
+           "  -f{hlsl_functionality1}\n"
+           "              'hlsl_functionality1' enables use of the\n"
+           "                  SPV_GOOGLE_hlsl_functionality1 extension\n"
            "  -g          generate debug information\n"
            "  -h          print this usage message\n"
            "  -i          intermediate tree (glslang AST) is printed out\n"
@@ -1341,6 +1357,7 @@ void usage()
            "  --hlsl-offsets                       Allow block offsets to follow HLSL rules\n"
            "                                       Works independently of source language\n"
            "  --hlsl-iomap                         Perform IO mapping in HLSL register space\n"
+           "  --hlsl-enable-16bit-types            Allow use of 16-bit types in SPIR-V for HLSL\n"
            "  --invert-y | --iy                    invert position.Y output in vertex shader\n"
            "  --keep-uncalled                      don't eliminate uncalled functions\n"
            "  --ku                                 synonym for --keep-uncalled\n"
@@ -1384,8 +1401,8 @@ void usage()
            "                                       set execution environment that emitted code\n"
            "                                       will execute in (as opposed to the language\n"
            "                                       semantics selected by --client) defaults:\n"
-           "                                        'vulkan1.0' under '--client vulkan<ver>'\n"
-           "                                        'opengl' under '--client opengl<ver>'\n"
+           "                                          'vulkan1.0' under '--client vulkan<ver>'\n"
+           "                                          'opengl' under '--client opengl<ver>'\n"
            "  --variable-name <name>               Creates a C header file that contains a\n"
            "                                       uint32_t array named <name>\n"
            "                                       initialized with the shader binary code.\n"

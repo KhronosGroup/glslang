@@ -964,7 +964,7 @@ int TScanContext::tokenizeIdentifier()
     case PATCH:
         if (parseContext.symbolTable.atBuiltInLevel() ||
             (parseContext.profile == EEsProfile &&
-             (parseContext.version >= 320 || 
+             (parseContext.version >= 320 ||
               parseContext.extensionsTurnedOn(Num_AEP_tessellation_shader, AEP_tessellation_shader))) ||
             (parseContext.profile != EEsProfile && parseContext.extensionTurnedOn(E_GL_ARB_tessellation_shader)))
             return keyword;
@@ -1452,6 +1452,11 @@ int TScanContext::tokenizeIdentifier()
 #endif
 
     case NOPERSPECTIVE:
+#ifdef NV_EXTENSIONS
+        if (parseContext.profile == EEsProfile && parseContext.version >= 300 &&
+            parseContext.extensionTurnedOn(E_GL_NV_shader_noperspective_interpolation))
+            return keyword;
+#endif
         return es30ReservedFromGLSL(130);
 
     case SMOOTH:
