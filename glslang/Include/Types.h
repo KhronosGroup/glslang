@@ -470,7 +470,7 @@ public:
     // Drop just the storage qualification, which perhaps should
     // never be done, as it is fundamentally inconsistent, but need to
     // explore what downstream consumers need.
-    // E.g., in a deference, it is an inconsistency between:
+    // E.g., in a dereference, it is an inconsistency between:
     // A) partially dereferenced resource is still in the storage class it started in
     // B) partially dereferenced resource is a new temporary object
     // If A, then nothing should change, if B, then everything should change, but this is half way.
@@ -1354,9 +1354,11 @@ public:
     virtual bool isVector() const { return vectorSize > 1 || vector1; }
     virtual bool isMatrix() const { return matrixCols ? true : false; }
     virtual bool isArray()  const { return arraySizes != nullptr; }
-    virtual bool isExplicitlySizedArray() const { return isArray() && getOuterArraySize() != UnsizedArraySize; }
-    virtual bool isImplicitlySizedArray() const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage != EvqBuffer; }
-    virtual bool isRuntimeSizedArray()    const { return isArray() && getOuterArraySize() == UnsizedArraySize && qualifier.storage == EvqBuffer; }
+    virtual bool isSizedArray() const { return isArray() && arraySizes->isSized(); }
+    virtual bool isUnsizedArray() const { return isArray() && !arraySizes->isSized(); }
+    virtual bool isArrayVariablyIndexed() const { assert(isArray()); return arraySizes->isVariablyIndexed(); }
+    virtual void setArrayVariablyIndexed() { assert(isArray()); arraySizes->setVariablyIndexed(); }
+    virtual void updateImplicitArraySize(int size) { assert(isArray()); arraySizes->updateImplicitSize(size); }
     virtual bool isStruct() const { return structure != nullptr; }
     virtual bool isFloatingDomain() const { return basicType == EbtFloat || basicType == EbtDouble || basicType == EbtFloat16; }
     virtual bool isIntegerDomain() const
@@ -1414,10 +1416,10 @@ public:
         return contains([this](const TType* t) { return t != this && t->isStruct(); } );
     }
 
-    // Recursively check the structure for any implicitly-sized arrays, needed for triggering a copyUp().
-    virtual bool containsImplicitlySizedArray() const
+    // Recursively check the structure for any unsized arrays, needed for triggering a copyUp().
+    virtual bool containsUnsizedArray() const
     {
-        return contains([](const TType* t) { return t->isImplicitlySizedArray(); } );
+        return contains([](const TType* t) { return t->isUnsizedArray(); } );
     }
 
     virtual bool containsOpaque() const
@@ -1510,16 +1512,22 @@ public:
         }
     }
     void changeOuterArraySize(int s) { arraySizes->changeOuterSize(s); }
-    void setImplicitArraySize(int s) { arraySizes->setImplicitSize(s); }
 
-    // Recursively make the implicit array size the explicit array size, through the type tree.
-    void adoptImplicitArraySizes()
+    // Recursively make the implicit array size the explicit array size.
+    // Expicit arrays are compile-time or link-time sized, never run-time sized.
+    // Sometimes, policy calls for an array to be run-time sized even if it was
+    // never variably indexed: Don't turn a 'skipNonvariablyIndexed' array into
+    // an explicit array.
+    void adoptImplicitArraySizes(bool skipNonvariablyIndexed)
     {
-        if (isImplicitlySizedArray())
+        if (isUnsizedArray() && !(skipNonvariablyIndexed || isArrayVariablyIndexed()))
             changeOuterArraySize(getImplicitArraySize());
-        if (isStruct()) {
-            for (int i = 0; i < (int)structure->size(); ++i)
-                (*structure)[i].type->adoptImplicitArraySizes();
+        if (isStruct() && structure->size() > 0) {
+            int lastMember = (int)structure->size() - 1;
+            for (int i = 0; i < lastMember; ++i)
+                (*structure)[i].type->adoptImplicitArraySizes(false);
+            // implement the "last member of an SSBO" policy
+            (*structure)[lastMember].type->adoptImplicitArraySizes(getQualifier().storage == EvqBuffer);
         }
     }
 
@@ -1686,17 +1694,21 @@ public:
         if (isArray()) {
             for(int i = 0; i < (int)arraySizes->getNumDims(); ++i) {
                 int size = arraySizes->getDimSize(i);
-                if (size == UnsizedArraySize) {
-                    appendStr(" unsized");
-                    if (i == 0) {
+                if (size == UnsizedArraySize && i == 0 && arraySizes->isVariablyIndexed())
+                    appendStr(" runtime-sized array of");
+                else {
+                    if (size == UnsizedArraySize) {
+                        appendStr(" unsized");
+                        if (i == 0) {
+                            appendStr(" ");
+                            appendInt(arraySizes->getImplicitSize());
+                        }
+                    } else {
                         appendStr(" ");
-                        appendInt(arraySizes->getImplicitSize());
+                        appendInt(arraySizes->getDimSize(i));
                     }
-                } else {
-                    appendStr(" ");
-                    appendInt(arraySizes->getDimSize(i));
+                    appendStr("-element array of");
                 }
-                appendStr("-element array of");
             }
         }
         if (qualifier.precision != EpqNone) {

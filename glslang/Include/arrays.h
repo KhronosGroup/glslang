@@ -41,6 +41,8 @@
 #ifndef _ARRAYS_INCLUDED
 #define _ARRAYS_INCLUDED
 
+#include <algorithm>
+
 namespace glslang {
 
 // This is used to mean there is no size yet (unsized), it is waiting to get a size from somewhere else.
@@ -220,12 +222,13 @@ protected:
 struct TArraySizes {
     POOL_ALLOCATOR_NEW_DELETE(GetThreadPoolAllocator())
 
-    TArraySizes() : implicitArraySize(1) { }
+    TArraySizes() : implicitArraySize(1), variablyIndexed(false) { }
 
     // For breaking into two non-shared copies, independently modifiable.
     TArraySizes& operator=(const TArraySizes& from)
     {
         implicitArraySize = from.implicitArraySize;
+        variablyIndexed = from.variablyIndexed;
         sizes = from.sizes;
 
         return *this;
@@ -254,9 +257,9 @@ struct TArraySizes {
     void addInnerSize(TArraySize pair) { sizes.push_back(pair.size, pair.node); }
     void addInnerSizes(const TArraySizes& s) { sizes.push_back(s.sizes); }
     void changeOuterSize(int s) { sizes.changeFront((unsigned)s); }
-    int getImplicitSize() const { return (int)implicitArraySize; }
-    void setImplicitSize(int s) { implicitArraySize = s; }
-    bool isInnerImplicit() const
+    int getImplicitSize() const { return implicitArraySize; }
+    void updateImplicitSize(int s) { implicitArraySize = std::max(implicitArraySize, s); }
+    bool isInnerUnsized() const
     {
         for (int d = 1; d < sizes.size(); ++d) {
             if (sizes.getDimSize(d) == (unsigned)UnsizedArraySize)
@@ -265,7 +268,7 @@ struct TArraySizes {
 
         return false;
     }
-    bool clearInnerImplicit()
+    bool clearInnerUnsized()
     {
         for (int d = 1; d < sizes.size(); ++d) {
             if (sizes.getDimSize(d) == (unsigned)UnsizedArraySize)
@@ -288,7 +291,8 @@ struct TArraySizes {
         return sizes.getDimNode(0) != nullptr;
     }
 
-    bool isImplicit() const { return getOuterSize() == UnsizedArraySize || isInnerImplicit(); }
+    bool hasUnsized() const { return getOuterSize() == UnsizedArraySize || isInnerUnsized(); }
+    bool isSized() const { return getOuterSize() != UnsizedArraySize; }
     void dereference() { sizes.pop_front(); }
     void copyDereferenced(const TArraySizes& rhs)
     {
@@ -311,6 +315,9 @@ struct TArraySizes {
         return true;
     }
 
+    void setVariablyIndexed() { variablyIndexed = true; }
+    bool isVariablyIndexed() const { return variablyIndexed; }
+
     bool operator==(const TArraySizes& rhs) { return sizes == rhs.sizes; }
     bool operator!=(const TArraySizes& rhs) { return sizes != rhs.sizes; }
 
@@ -319,9 +326,12 @@ protected:
 
     TArraySizes(const TArraySizes&);
 
-    // for tracking maximum referenced index, before an explicit size is given
-    // applies only to the outer-most dimension
+    // For tracking maximum referenced compile-time constant index.
+    // Applies only to the outer-most dimension. Potentially becomes
+    // the implicit size of the array, if not variably indexed and
+    // otherwise legal.
     int implicitArraySize;
+    bool variablyIndexed;  // true if array is indexed with a non compile-time constant
 };
 
 } // end namespace glslang
