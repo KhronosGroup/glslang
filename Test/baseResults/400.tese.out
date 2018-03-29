@@ -11,7 +11,7 @@ ERROR: 0:47: 'patch' : cannot use interpolation qualifiers with patch
 ERROR: 0:48: 'patch' : cannot use interpolation qualifiers with patch 
 ERROR: 0:49: 'patch' : cannot use interpolation qualifiers with patch 
 ERROR: 0:50: '' : can only have one auxiliary qualifier (centroid, patch, and sample) 
-ERROR: 0:54: 'gl_PerVertex' : block already declared with size, can't redeclare as implicitly-sized 
+ERROR: 0:54: 'gl_PerVertex' : block already declared with size, can't redeclare as unsized 
 ERROR: 0:59: 'gl_PerVertex' : can only redeclare a built-in block once, and before any use 
 ERROR: 0:64: 'quads' : cannot apply to 'out' 
 ERROR: 0:64: 'cw' : can only apply to 'in' 

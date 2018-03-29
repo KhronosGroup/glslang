@@ -164,8 +164,6 @@ public:
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(const TSourceLoc&, TIntermTyped* expression, TIntermAggregate* body, const TAttributes&);
 
-    void updateImplicitArraySize(const TSourceLoc&, TIntermNode*, int index);
-
     void nestLooping()       { ++loopNestingLevel; }
     void unnestLooping()     { --loopNestingLevel; }
     void nestAnnotations()   { ++annotationNestingLevel; }
