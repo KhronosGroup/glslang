@@ -895,6 +895,36 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   mid3(f16vec3,   f16vec3,   f16vec3);"
             "f16vec4   mid3(f16vec4,   f16vec4,   f16vec4);"
 
+            "int16_t   min3(int16_t,   int16_t,   int16_t);"
+            "i16vec2   min3(i16vec2,   i16vec2,   i16vec2);"
+            "i16vec3   min3(i16vec3,   i16vec3,   i16vec3);"
+            "i16vec4   min3(i16vec4,   i16vec4,   i16vec4);"
+
+            "int16_t   max3(int16_t,   int16_t,   int16_t);"
+            "i16vec2   max3(i16vec2,   i16vec2,   i16vec2);"
+            "i16vec3   max3(i16vec3,   i16vec3,   i16vec3);"
+            "i16vec4   max3(i16vec4,   i16vec4,   i16vec4);"
+
+            "int16_t   mid3(int16_t,   int16_t,   int16_t);"
+            "i16vec2   mid3(i16vec2,   i16vec2,   i16vec2);"
+            "i16vec3   mid3(i16vec3,   i16vec3,   i16vec3);"
+            "i16vec4   mid3(i16vec4,   i16vec4,   i16vec4);"
+
+            "uint16_t  min3(uint16_t,  uint16_t,  uint16_t);"
+            "u16vec2   min3(u16vec2,   u16vec2,   u16vec2);"
+            "u16vec3   min3(u16vec3,   u16vec3,   u16vec3);"
+            "u16vec4   min3(u16vec4,   u16vec4,   u16vec4);"
+
+            "uint16_t  max3(uint16_t,  uint16_t,  uint16_t);"
+            "u16vec2   max3(u16vec2,   u16vec2,   u16vec2);"
+            "u16vec3   max3(u16vec3,   u16vec3,   u16vec3);"
+            "u16vec4   max3(u16vec4,   u16vec4,   u16vec4);"
+
+            "uint16_t  mid3(uint16_t,  uint16_t,  uint16_t);"
+            "u16vec2   mid3(u16vec2,   u16vec2,   u16vec2);"
+            "u16vec3   mid3(u16vec3,   u16vec3,   u16vec3);"
+            "u16vec4   mid3(u16vec4,   u16vec4,   u16vec4);"
+
             "\n"
         );
     }
@@ -2403,6 +2433,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   minInvocationsAMD(f16vec3);"
             "f16vec4   minInvocationsAMD(f16vec4);"
 
+            "int16_t minInvocationsAMD(int16_t);"
+            "i16vec2 minInvocationsAMD(i16vec2);"
+            "i16vec3 minInvocationsAMD(i16vec3);"
+            "i16vec4 minInvocationsAMD(i16vec4);"
+
+            "uint16_t minInvocationsAMD(uint16_t);"
+            "u16vec2  minInvocationsAMD(u16vec2);"
+            "u16vec3  minInvocationsAMD(u16vec3);"
+            "u16vec4  minInvocationsAMD(u16vec4);"
+
             "float minInvocationsInclusiveScanAMD(float);"
             "vec2  minInvocationsInclusiveScanAMD(vec2);"
             "vec3  minInvocationsInclusiveScanAMD(vec3);"
@@ -2437,6 +2477,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec2   minInvocationsInclusiveScanAMD(f16vec2);"
             "f16vec3   minInvocationsInclusiveScanAMD(f16vec3);"
             "f16vec4   minInvocationsInclusiveScanAMD(f16vec4);"
+
+            "int16_t minInvocationsInclusiveScanAMD(int16_t);"
+            "i16vec2 minInvocationsInclusiveScanAMD(i16vec2);"
+            "i16vec3 minInvocationsInclusiveScanAMD(i16vec3);"
+            "i16vec4 minInvocationsInclusiveScanAMD(i16vec4);"
+
+            "uint16_t minInvocationsInclusiveScanAMD(uint16_t);"
+            "u16vec2  minInvocationsInclusiveScanAMD(u16vec2);"
+            "u16vec3  minInvocationsInclusiveScanAMD(u16vec3);"
+            "u16vec4  minInvocationsInclusiveScanAMD(u16vec4);"
 
             "float minInvocationsExclusiveScanAMD(float);"
             "vec2  minInvocationsExclusiveScanAMD(vec2);"
@@ -2473,6 +2523,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   minInvocationsExclusiveScanAMD(f16vec3);"
             "f16vec4   minInvocationsExclusiveScanAMD(f16vec4);"
 
+            "int16_t minInvocationsExclusiveScanAMD(int16_t);"
+            "i16vec2 minInvocationsExclusiveScanAMD(i16vec2);"
+            "i16vec3 minInvocationsExclusiveScanAMD(i16vec3);"
+            "i16vec4 minInvocationsExclusiveScanAMD(i16vec4);"
+
+            "uint16_t minInvocationsExclusiveScanAMD(uint16_t);"
+            "u16vec2  minInvocationsExclusiveScanAMD(u16vec2);"
+            "u16vec3  minInvocationsExclusiveScanAMD(u16vec3);"
+            "u16vec4  minInvocationsExclusiveScanAMD(u16vec4);"
+
             "float maxInvocationsAMD(float);"
             "vec2  maxInvocationsAMD(vec2);"
             "vec3  maxInvocationsAMD(vec3);"
@@ -2507,6 +2567,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec2   maxInvocationsAMD(f16vec2);"
             "f16vec3   maxInvocationsAMD(f16vec3);"
             "f16vec4   maxInvocationsAMD(f16vec4);"
+
+            "int16_t maxInvocationsAMD(int16_t);"
+            "i16vec2 maxInvocationsAMD(i16vec2);"
+            "i16vec3 maxInvocationsAMD(i16vec3);"
+            "i16vec4 maxInvocationsAMD(i16vec4);"
+
+            "uint16_t maxInvocationsAMD(uint16_t);"
+            "u16vec2  maxInvocationsAMD(u16vec2);"
+            "u16vec3  maxInvocationsAMD(u16vec3);"
+            "u16vec4  maxInvocationsAMD(u16vec4);"
 
             "float maxInvocationsInclusiveScanAMD(float);"
             "vec2  maxInvocationsInclusiveScanAMD(vec2);"
@@ -2543,6 +2613,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   maxInvocationsInclusiveScanAMD(f16vec3);"
             "f16vec4   maxInvocationsInclusiveScanAMD(f16vec4);"
 
+            "int16_t maxInvocationsInclusiveScanAMD(int16_t);"
+            "i16vec2 maxInvocationsInclusiveScanAMD(i16vec2);"
+            "i16vec3 maxInvocationsInclusiveScanAMD(i16vec3);"
+            "i16vec4 maxInvocationsInclusiveScanAMD(i16vec4);"
+
+            "uint16_t maxInvocationsInclusiveScanAMD(uint16_t);"
+            "u16vec2  maxInvocationsInclusiveScanAMD(u16vec2);"
+            "u16vec3  maxInvocationsInclusiveScanAMD(u16vec3);"
+            "u16vec4  maxInvocationsInclusiveScanAMD(u16vec4);"
+
             "float maxInvocationsExclusiveScanAMD(float);"
             "vec2  maxInvocationsExclusiveScanAMD(vec2);"
             "vec3  maxInvocationsExclusiveScanAMD(vec3);"
@@ -2577,6 +2657,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec2   maxInvocationsExclusiveScanAMD(f16vec2);"
             "f16vec3   maxInvocationsExclusiveScanAMD(f16vec3);"
             "f16vec4   maxInvocationsExclusiveScanAMD(f16vec4);"
+
+            "int16_t maxInvocationsExclusiveScanAMD(int16_t);"
+            "i16vec2 maxInvocationsExclusiveScanAMD(i16vec2);"
+            "i16vec3 maxInvocationsExclusiveScanAMD(i16vec3);"
+            "i16vec4 maxInvocationsExclusiveScanAMD(i16vec4);"
+
+            "uint16_t maxInvocationsExclusiveScanAMD(uint16_t);"
+            "u16vec2  maxInvocationsExclusiveScanAMD(u16vec2);"
+            "u16vec3  maxInvocationsExclusiveScanAMD(u16vec3);"
+            "u16vec4  maxInvocationsExclusiveScanAMD(u16vec4);"
 
             "float addInvocationsAMD(float);"
             "vec2  addInvocationsAMD(vec2);"
@@ -2613,6 +2703,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   addInvocationsAMD(f16vec3);"
             "f16vec4   addInvocationsAMD(f16vec4);"
 
+            "int16_t addInvocationsAMD(int16_t);"
+            "i16vec2 addInvocationsAMD(i16vec2);"
+            "i16vec3 addInvocationsAMD(i16vec3);"
+            "i16vec4 addInvocationsAMD(i16vec4);"
+
+            "uint16_t addInvocationsAMD(uint16_t);"
+            "u16vec2  addInvocationsAMD(u16vec2);"
+            "u16vec3  addInvocationsAMD(u16vec3);"
+            "u16vec4  addInvocationsAMD(u16vec4);"
+
             "float addInvocationsInclusiveScanAMD(float);"
             "vec2  addInvocationsInclusiveScanAMD(vec2);"
             "vec3  addInvocationsInclusiveScanAMD(vec3);"
@@ -2647,6 +2747,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec2   addInvocationsInclusiveScanAMD(f16vec2);"
             "f16vec3   addInvocationsInclusiveScanAMD(f16vec3);"
             "f16vec4   addInvocationsInclusiveScanAMD(f16vec4);"
+
+            "int16_t addInvocationsInclusiveScanAMD(int16_t);"
+            "i16vec2 addInvocationsInclusiveScanAMD(i16vec2);"
+            "i16vec3 addInvocationsInclusiveScanAMD(i16vec3);"
+            "i16vec4 addInvocationsInclusiveScanAMD(i16vec4);"
+
+            "uint16_t addInvocationsInclusiveScanAMD(uint16_t);"
+            "u16vec2  addInvocationsInclusiveScanAMD(u16vec2);"
+            "u16vec3  addInvocationsInclusiveScanAMD(u16vec3);"
+            "u16vec4  addInvocationsInclusiveScanAMD(u16vec4);"
 
             "float addInvocationsExclusiveScanAMD(float);"
             "vec2  addInvocationsExclusiveScanAMD(vec2);"
@@ -2683,6 +2793,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   addInvocationsExclusiveScanAMD(f16vec3);"
             "f16vec4   addInvocationsExclusiveScanAMD(f16vec4);"
 
+            "int16_t addInvocationsExclusiveScanAMD(int16_t);"
+            "i16vec2 addInvocationsExclusiveScanAMD(i16vec2);"
+            "i16vec3 addInvocationsExclusiveScanAMD(i16vec3);"
+            "i16vec4 addInvocationsExclusiveScanAMD(i16vec4);"
+
+            "uint16_t addInvocationsExclusiveScanAMD(uint16_t);"
+            "u16vec2  addInvocationsExclusiveScanAMD(u16vec2);"
+            "u16vec3  addInvocationsExclusiveScanAMD(u16vec3);"
+            "u16vec4  addInvocationsExclusiveScanAMD(u16vec4);"
+
             "float minInvocationsNonUniformAMD(float);"
             "vec2  minInvocationsNonUniformAMD(vec2);"
             "vec3  minInvocationsNonUniformAMD(vec3);"
@@ -2717,6 +2837,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec2   minInvocationsNonUniformAMD(f16vec2);"
             "f16vec3   minInvocationsNonUniformAMD(f16vec3);"
             "f16vec4   minInvocationsNonUniformAMD(f16vec4);"
+
+            "int16_t minInvocationsNonUniformAMD(int16_t);"
+            "i16vec2 minInvocationsNonUniformAMD(i16vec2);"
+            "i16vec3 minInvocationsNonUniformAMD(i16vec3);"
+            "i16vec4 minInvocationsNonUniformAMD(i16vec4);"
+
+            "uint16_t minInvocationsNonUniformAMD(uint16_t);"
+            "u16vec2  minInvocationsNonUniformAMD(u16vec2);"
+            "u16vec3  minInvocationsNonUniformAMD(u16vec3);"
+            "u16vec4  minInvocationsNonUniformAMD(u16vec4);"
 
             "float minInvocationsInclusiveScanNonUniformAMD(float);"
             "vec2  minInvocationsInclusiveScanNonUniformAMD(vec2);"
@@ -2753,6 +2883,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   minInvocationsInclusiveScanNonUniformAMD(f16vec3);"
             "f16vec4   minInvocationsInclusiveScanNonUniformAMD(f16vec4);"
 
+            "int16_t minInvocationsInclusiveScanNonUniformAMD(int16_t);"
+            "i16vec2 minInvocationsInclusiveScanNonUniformAMD(i16vec2);"
+            "i16vec3 minInvocationsInclusiveScanNonUniformAMD(i16vec3);"
+            "i16vec4 minInvocationsInclusiveScanNonUniformAMD(i16vec4);"
+
+            "uint16_t minInvocationsInclusiveScanNonUniformAMD(uint16_t);"
+            "u16vec2  minInvocationsInclusiveScanNonUniformAMD(u16vec2);"
+            "u16vec3  minInvocationsInclusiveScanNonUniformAMD(u16vec3);"
+            "u16vec4  minInvocationsInclusiveScanNonUniformAMD(u16vec4);"
+
             "float minInvocationsExclusiveScanNonUniformAMD(float);"
             "vec2  minInvocationsExclusiveScanNonUniformAMD(vec2);"
             "vec3  minInvocationsExclusiveScanNonUniformAMD(vec3);"
@@ -2787,6 +2927,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec2   minInvocationsExclusiveScanNonUniformAMD(f16vec2);"
             "f16vec3   minInvocationsExclusiveScanNonUniformAMD(f16vec3);"
             "f16vec4   minInvocationsExclusiveScanNonUniformAMD(f16vec4);"
+
+            "int16_t minInvocationsExclusiveScanNonUniformAMD(int16_t);"
+            "i16vec2 minInvocationsExclusiveScanNonUniformAMD(i16vec2);"
+            "i16vec3 minInvocationsExclusiveScanNonUniformAMD(i16vec3);"
+            "i16vec4 minInvocationsExclusiveScanNonUniformAMD(i16vec4);"
+
+            "uint16_t minInvocationsExclusiveScanNonUniformAMD(uint16_t);"
+            "u16vec2  minInvocationsExclusiveScanNonUniformAMD(u16vec2);"
+            "u16vec3  minInvocationsExclusiveScanNonUniformAMD(u16vec3);"
+            "u16vec4  minInvocationsExclusiveScanNonUniformAMD(u16vec4);"
 
             "float maxInvocationsNonUniformAMD(float);"
             "vec2  maxInvocationsNonUniformAMD(vec2);"
@@ -2823,6 +2973,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   maxInvocationsNonUniformAMD(f16vec3);"
             "f16vec4   maxInvocationsNonUniformAMD(f16vec4);"
 
+            "int16_t maxInvocationsNonUniformAMD(int16_t);"
+            "i16vec2 maxInvocationsNonUniformAMD(i16vec2);"
+            "i16vec3 maxInvocationsNonUniformAMD(i16vec3);"
+            "i16vec4 maxInvocationsNonUniformAMD(i16vec4);"
+
+            "uint16_t maxInvocationsNonUniformAMD(uint16_t);"
+            "u16vec2  maxInvocationsNonUniformAMD(u16vec2);"
+            "u16vec3  maxInvocationsNonUniformAMD(u16vec3);"
+            "u16vec4  maxInvocationsNonUniformAMD(u16vec4);"
+
             "float maxInvocationsInclusiveScanNonUniformAMD(float);"
             "vec2  maxInvocationsInclusiveScanNonUniformAMD(vec2);"
             "vec3  maxInvocationsInclusiveScanNonUniformAMD(vec3);"
@@ -2857,6 +3017,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec2   maxInvocationsInclusiveScanNonUniformAMD(f16vec2);"
             "f16vec3   maxInvocationsInclusiveScanNonUniformAMD(f16vec3);"
             "f16vec4   maxInvocationsInclusiveScanNonUniformAMD(f16vec4);"
+
+            "int16_t maxInvocationsInclusiveScanNonUniformAMD(int16_t);"
+            "i16vec2 maxInvocationsInclusiveScanNonUniformAMD(i16vec2);"
+            "i16vec3 maxInvocationsInclusiveScanNonUniformAMD(i16vec3);"
+            "i16vec4 maxInvocationsInclusiveScanNonUniformAMD(i16vec4);"
+
+            "uint16_t maxInvocationsInclusiveScanNonUniformAMD(uint16_t);"
+            "u16vec2  maxInvocationsInclusiveScanNonUniformAMD(u16vec2);"
+            "u16vec3  maxInvocationsInclusiveScanNonUniformAMD(u16vec3);"
+            "u16vec4  maxInvocationsInclusiveScanNonUniformAMD(u16vec4);"
 
             "float maxInvocationsExclusiveScanNonUniformAMD(float);"
             "vec2  maxInvocationsExclusiveScanNonUniformAMD(vec2);"
@@ -2893,6 +3063,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   maxInvocationsExclusiveScanNonUniformAMD(f16vec3);"
             "f16vec4   maxInvocationsExclusiveScanNonUniformAMD(f16vec4);"
 
+            "int16_t maxInvocationsExclusiveScanNonUniformAMD(int16_t);"
+            "i16vec2 maxInvocationsExclusiveScanNonUniformAMD(i16vec2);"
+            "i16vec3 maxInvocationsExclusiveScanNonUniformAMD(i16vec3);"
+            "i16vec4 maxInvocationsExclusiveScanNonUniformAMD(i16vec4);"
+
+            "uint16_t maxInvocationsExclusiveScanNonUniformAMD(uint16_t);"
+            "u16vec2  maxInvocationsExclusiveScanNonUniformAMD(u16vec2);"
+            "u16vec3  maxInvocationsExclusiveScanNonUniformAMD(u16vec3);"
+            "u16vec4  maxInvocationsExclusiveScanNonUniformAMD(u16vec4);"
+
             "float addInvocationsNonUniformAMD(float);"
             "vec2  addInvocationsNonUniformAMD(vec2);"
             "vec3  addInvocationsNonUniformAMD(vec3);"
@@ -2927,6 +3107,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec2   addInvocationsNonUniformAMD(f16vec2);"
             "f16vec3   addInvocationsNonUniformAMD(f16vec3);"
             "f16vec4   addInvocationsNonUniformAMD(f16vec4);"
+
+            "int16_t addInvocationsNonUniformAMD(int16_t);"
+            "i16vec2 addInvocationsNonUniformAMD(i16vec2);"
+            "i16vec3 addInvocationsNonUniformAMD(i16vec3);"
+            "i16vec4 addInvocationsNonUniformAMD(i16vec4);"
+
+            "uint16_t addInvocationsNonUniformAMD(uint16_t);"
+            "u16vec2  addInvocationsNonUniformAMD(u16vec2);"
+            "u16vec3  addInvocationsNonUniformAMD(u16vec3);"
+            "u16vec4  addInvocationsNonUniformAMD(u16vec4);"
 
             "float addInvocationsInclusiveScanNonUniformAMD(float);"
             "vec2  addInvocationsInclusiveScanNonUniformAMD(vec2);"
@@ -2963,6 +3153,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec3   addInvocationsInclusiveScanNonUniformAMD(f16vec3);"
             "f16vec4   addInvocationsInclusiveScanNonUniformAMD(f16vec4);"
 
+            "int16_t addInvocationsInclusiveScanNonUniformAMD(int16_t);"
+            "i16vec2 addInvocationsInclusiveScanNonUniformAMD(i16vec2);"
+            "i16vec3 addInvocationsInclusiveScanNonUniformAMD(i16vec3);"
+            "i16vec4 addInvocationsInclusiveScanNonUniformAMD(i16vec4);"
+
+            "uint16_t addInvocationsInclusiveScanNonUniformAMD(uint16_t);"
+            "u16vec2  addInvocationsInclusiveScanNonUniformAMD(u16vec2);"
+            "u16vec3  addInvocationsInclusiveScanNonUniformAMD(u16vec3);"
+            "u16vec4  addInvocationsInclusiveScanNonUniformAMD(u16vec4);"
+
             "float addInvocationsExclusiveScanNonUniformAMD(float);"
             "vec2  addInvocationsExclusiveScanNonUniformAMD(vec2);"
             "vec3  addInvocationsExclusiveScanNonUniformAMD(vec3);"
@@ -2997,6 +3197,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "f16vec2   addInvocationsExclusiveScanNonUniformAMD(f16vec2);"
             "f16vec3   addInvocationsExclusiveScanNonUniformAMD(f16vec3);"
             "f16vec4   addInvocationsExclusiveScanNonUniformAMD(f16vec4);"
+
+            "int16_t addInvocationsExclusiveScanNonUniformAMD(int16_t);"
+            "i16vec2 addInvocationsExclusiveScanNonUniformAMD(i16vec2);"
+            "i16vec3 addInvocationsExclusiveScanNonUniformAMD(i16vec3);"
+            "i16vec4 addInvocationsExclusiveScanNonUniformAMD(i16vec4);"
+
+            "uint16_t addInvocationsExclusiveScanNonUniformAMD(uint16_t);"
+            "u16vec2  addInvocationsExclusiveScanNonUniformAMD(u16vec2);"
+            "u16vec3  addInvocationsExclusiveScanNonUniformAMD(u16vec3);"
+            "u16vec4  addInvocationsExclusiveScanNonUniformAMD(u16vec4);"
 
             "float swizzleInvocationsAMD(float, uvec4);"
             "vec2  swizzleInvocationsAMD(vec2,  uvec4);"
