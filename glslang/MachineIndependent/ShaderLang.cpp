@@ -1922,9 +1922,11 @@ int TProgram::getNumLiveUniformVariables() const             { return reflection
 int TProgram::getNumLiveUniformBlocks() const                { return reflection->getNumUniformBlocks(); }
 const char* TProgram::getUniformName(int index) const        { return reflection->getUniform(index).name.c_str(); }
 const char* TProgram::getUniformBlockName(int index) const   { return reflection->getUniformBlock(index).name.c_str(); }
+int TProgram::getUniformSize(int index) const                { return 0; } // TODO
 int TProgram::getUniformBlockSize(int index) const           { return reflection->getUniformBlock(index).size; }
 int TProgram::getUniformIndex(const char* name) const        { return reflection->getIndex(name); }
 int TProgram::getUniformBinding(int index) const             { return reflection->getUniform(index).getBinding(); }
+int TProgram::getUniformBlockBinding(int index) const        { return reflection->getUniformBlock(index).getBinding(); }
 int TProgram::getUniformBlockIndex(int index) const          { return reflection->getUniform(index).index; }
 int TProgram::getUniformBlockCounterIndex(int index) const   { return reflection->getUniformBlock(index).counterIndex; }
 int TProgram::getUniformType(int index) const                { return reflection->getUniform(index).glDefineType; }
@@ -1933,6 +1935,8 @@ int TProgram::getUniformArraySize(int index) const           { return reflection
 int TProgram::getNumLiveAttributes() const                   { return reflection->getNumAttributes(); }
 const char* TProgram::getAttributeName(int index) const      { return reflection->getAttribute(index).name.c_str(); }
 int TProgram::getAttributeType(int index) const              { return reflection->getAttribute(index).glDefineType; }
+int TProgram::getAttributeSize(int index) const              { return 0; } // TODO
+int TProgram::getAttributeLocation(int index) const          { return index; } // TODO
 const TType* TProgram::getAttributeTType(int index) const    { return reflection->getAttribute(index).getType(); }
 const TType* TProgram::getUniformTType(int index) const      { return reflection->getUniform(index).getType(); }
 const TType* TProgram::getUniformBlockTType(int index) const { return reflection->getUniformBlock(index).getType(); }
