@@ -527,6 +527,32 @@ enum TOperator {
     EOpSubgroupQuadSwapHorizontal,
     EOpSubgroupQuadSwapVertical,
     EOpSubgroupQuadSwapDiagonal,
+
+#ifdef NV_EXTENSIONS
+    EOpSubgroupPartition,
+    EOpSubgroupPartitionedAdd,
+    EOpSubgroupPartitionedMul,
+    EOpSubgroupPartitionedMin,
+    EOpSubgroupPartitionedMax,
+    EOpSubgroupPartitionedAnd,
+    EOpSubgroupPartitionedOr,
+    EOpSubgroupPartitionedXor,
+    EOpSubgroupPartitionedInclusiveAdd,
+    EOpSubgroupPartitionedInclusiveMul,
+    EOpSubgroupPartitionedInclusiveMin,
+    EOpSubgroupPartitionedInclusiveMax,
+    EOpSubgroupPartitionedInclusiveAnd,
+    EOpSubgroupPartitionedInclusiveOr,
+    EOpSubgroupPartitionedInclusiveXor,
+    EOpSubgroupPartitionedExclusiveAdd,
+    EOpSubgroupPartitionedExclusiveMul,
+    EOpSubgroupPartitionedExclusiveMin,
+    EOpSubgroupPartitionedExclusiveMax,
+    EOpSubgroupPartitionedExclusiveAnd,
+    EOpSubgroupPartitionedExclusiveOr,
+    EOpSubgroupPartitionedExclusiveXor,
+#endif
+
     EOpSubgroupGuardStop,
 
 #ifdef AMD_EXTENSIONS

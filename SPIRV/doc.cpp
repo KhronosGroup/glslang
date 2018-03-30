@@ -728,17 +728,22 @@ const char* ScopeString(int mem)
     }
 }
 
-const int GroupOperationCeiling = 4;
+const int GroupOperationCeiling = 9;
 
 const char* GroupOperationString(int gop)
 {
 
     switch (gop)
     {
-    case 0:  return "Reduce";
-    case 1:  return "InclusiveScan";
-    case 2:  return "ExclusiveScan";
-    case 3:  return "ClusteredReduce";
+    case GroupOperationReduce:  return "Reduce";
+    case GroupOperationInclusiveScan:  return "InclusiveScan";
+    case GroupOperationExclusiveScan:  return "ExclusiveScan";
+    case GroupOperationClusteredReduce:  return "ClusteredReduce";
+#ifdef NV_EXTENSIONS
+    case GroupOperationPartitionedReduceNV:  return "PartitionedReduceNV";
+    case GroupOperationPartitionedInclusiveScanNV:  return "PartitionedInclusiveScanNV";
+    case GroupOperationPartitionedExclusiveScanNV:  return "PartitionedExclusiveScanNV";
+#endif
 
     case GroupOperationCeiling:
     default: return "Bad";
@@ -876,6 +881,7 @@ const char* CapabilityString(int info)
     case 5255: return "ShaderViewportMaskNV";
     case 5259: return "ShaderStereoViewNV";
     case 5260: return "PerViewAttributesNV";
+    case 5297: return "GroupNonUniformPartitionedNV";
 #endif
 
     case 5265: return "FragmentFullyCoveredEXT";
@@ -1272,6 +1278,9 @@ const char* OpcodeString(int op)
     case OpDecorateStringGOOGLE:       return "OpDecorateStringGOOGLE";
     case OpMemberDecorateStringGOOGLE: return "OpMemberDecorateStringGOOGLE";
 
+#ifdef NV_EXTENSIONS
+    case 5296: return "OpGroupNonUniformPartitionNV";
+#endif
     case OpcodeCeiling:
     default:
         return "Bad";
@@ -3137,6 +3146,11 @@ void Parameterize()
     InstructionDesc[OpFragmentFetchAMD].operands.push(OperandId, "'Image'");
     InstructionDesc[OpFragmentFetchAMD].operands.push(OperandId, "'Coordinate'");
     InstructionDesc[OpFragmentFetchAMD].operands.push(OperandId, "'Fragment Index'");
+#endif
+
+#ifdef NV_EXTENSIONS
+    InstructionDesc[OpGroupNonUniformPartitionNV].capabilities.push_back(CapabilityGroupNonUniformPartitionedNV);
+    InstructionDesc[OpGroupNonUniformPartitionNV].operands.push(OperandId, "X");
 #endif
 }
 
