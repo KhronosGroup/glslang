@@ -573,6 +573,9 @@ enum GroupOperation {
     GroupOperationInclusiveScan = 1,
     GroupOperationExclusiveScan = 2,
     GroupOperationClusteredReduce = 3,
+    GroupOperationPartitionedReduceNV = 6,
+    GroupOperationPartitionedInclusiveScanNV = 7,
+    GroupOperationPartitionedExclusiveScanNV = 8,
     GroupOperationMax = 0x7fffffff,
 };
 
@@ -701,6 +704,7 @@ enum Capability {
     CapabilityInputAttachmentArrayNonUniformIndexingEXT = 5310,
     CapabilityUniformTexelBufferArrayNonUniformIndexingEXT = 5311,
     CapabilityStorageTexelBufferArrayNonUniformIndexingEXT = 5312,
+    CapabilityGroupNonUniformPartitionedNV = 5297,
     CapabilitySubgroupShuffleINTEL = 5568,
     CapabilitySubgroupBufferBlockIOINTEL = 5569,
     CapabilitySubgroupImageBlockIOINTEL = 5570,
@@ -1064,6 +1068,7 @@ enum Op {
     OpGroupSMaxNonUniformAMD = 5007,
     OpFragmentMaskFetchAMD = 5011,
     OpFragmentFetchAMD = 5012,
+    OpGroupNonUniformPartitionNV = 5296,
     OpSubgroupShuffleINTEL = 5571,
     OpSubgroupShuffleDownINTEL = 5572,
     OpSubgroupShuffleUpINTEL = 5573,

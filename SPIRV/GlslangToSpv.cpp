@@ -54,13 +54,12 @@ namespace spv {
 #endif
 }
 
-#ifdef ENABLE_OPT
+#if ENABLE_OPT
     #include "spirv-tools/optimizer.hpp"
     #include "message.h"
-    #include "SPVRemapper.h"
 #endif
 
-#ifdef ENABLE_OPT
+#if ENABLE_OPT
 using namespace spvtools;
 #endif
 
@@ -4704,7 +4703,13 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
         libCall = spv::CubeFaceCoordAMD;
         break;
 #endif
-
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartition:
+        builder.addExtension(spv::E_SPV_NV_shader_subgroup_partitioned);
+        builder.addCapability(spv::CapabilityGroupNonUniformPartitionedNV);
+        unaryOp = spv::OpGroupNonUniformPartitionNV;
+        break;
+#endif
     default:
         return 0;
     }
@@ -5671,6 +5676,32 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
         builder.addCapability(spv::CapabilityGroupNonUniform);
         builder.addCapability(spv::CapabilityGroupNonUniformQuad);
         break;
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartitionedAdd:
+    case glslang::EOpSubgroupPartitionedMul:
+    case glslang::EOpSubgroupPartitionedMin:
+    case glslang::EOpSubgroupPartitionedMax:
+    case glslang::EOpSubgroupPartitionedAnd:
+    case glslang::EOpSubgroupPartitionedOr:
+    case glslang::EOpSubgroupPartitionedXor:
+    case glslang::EOpSubgroupPartitionedInclusiveAdd:
+    case glslang::EOpSubgroupPartitionedInclusiveMul:
+    case glslang::EOpSubgroupPartitionedInclusiveMin:
+    case glslang::EOpSubgroupPartitionedInclusiveMax:
+    case glslang::EOpSubgroupPartitionedInclusiveAnd:
+    case glslang::EOpSubgroupPartitionedInclusiveOr:
+    case glslang::EOpSubgroupPartitionedInclusiveXor:
+    case glslang::EOpSubgroupPartitionedExclusiveAdd:
+    case glslang::EOpSubgroupPartitionedExclusiveMul:
+    case glslang::EOpSubgroupPartitionedExclusiveMin:
+    case glslang::EOpSubgroupPartitionedExclusiveMax:
+    case glslang::EOpSubgroupPartitionedExclusiveAnd:
+    case glslang::EOpSubgroupPartitionedExclusiveOr:
+    case glslang::EOpSubgroupPartitionedExclusiveXor:
+        builder.addExtension(spv::E_SPV_NV_shader_subgroup_partitioned);
+        builder.addCapability(spv::CapabilityGroupNonUniformPartitionedNV);
+        break;
+#endif
     default: assert(0 && "Unhandled subgroup operation!");
     }
 
@@ -5704,6 +5735,11 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     case glslang::EOpSubgroupInclusiveAdd:
     case glslang::EOpSubgroupExclusiveAdd:
     case glslang::EOpSubgroupClusteredAdd:
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartitionedAdd:
+    case glslang::EOpSubgroupPartitionedInclusiveAdd:
+    case glslang::EOpSubgroupPartitionedExclusiveAdd:
+#endif
         if (isFloat) {
             opCode = spv::OpGroupNonUniformFAdd;
         } else {
@@ -5714,6 +5750,11 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     case glslang::EOpSubgroupInclusiveMul:
     case glslang::EOpSubgroupExclusiveMul:
     case glslang::EOpSubgroupClusteredMul:
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartitionedMul:
+    case glslang::EOpSubgroupPartitionedInclusiveMul:
+    case glslang::EOpSubgroupPartitionedExclusiveMul:
+#endif
         if (isFloat) {
             opCode = spv::OpGroupNonUniformFMul;
         } else {
@@ -5724,6 +5765,11 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     case glslang::EOpSubgroupInclusiveMin:
     case glslang::EOpSubgroupExclusiveMin:
     case glslang::EOpSubgroupClusteredMin:
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartitionedMin:
+    case glslang::EOpSubgroupPartitionedInclusiveMin:
+    case glslang::EOpSubgroupPartitionedExclusiveMin:
+#endif
         if (isFloat) {
             opCode = spv::OpGroupNonUniformFMin;
         } else if (isUnsigned) {
@@ -5736,6 +5782,11 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     case glslang::EOpSubgroupInclusiveMax:
     case glslang::EOpSubgroupExclusiveMax:
     case glslang::EOpSubgroupClusteredMax:
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartitionedMax:
+    case glslang::EOpSubgroupPartitionedInclusiveMax:
+    case glslang::EOpSubgroupPartitionedExclusiveMax:
+#endif
         if (isFloat) {
             opCode = spv::OpGroupNonUniformFMax;
         } else if (isUnsigned) {
@@ -5748,6 +5799,11 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     case glslang::EOpSubgroupInclusiveAnd:
     case glslang::EOpSubgroupExclusiveAnd:
     case glslang::EOpSubgroupClusteredAnd:
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartitionedAnd:
+    case glslang::EOpSubgroupPartitionedInclusiveAnd:
+    case glslang::EOpSubgroupPartitionedExclusiveAnd:
+#endif
         if (isBool) {
             opCode = spv::OpGroupNonUniformLogicalAnd;
         } else {
@@ -5758,6 +5814,11 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     case glslang::EOpSubgroupInclusiveOr:
     case glslang::EOpSubgroupExclusiveOr:
     case glslang::EOpSubgroupClusteredOr:
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartitionedOr:
+    case glslang::EOpSubgroupPartitionedInclusiveOr:
+    case glslang::EOpSubgroupPartitionedExclusiveOr:
+#endif
         if (isBool) {
             opCode = spv::OpGroupNonUniformLogicalOr;
         } else {
@@ -5768,6 +5829,11 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     case glslang::EOpSubgroupInclusiveXor:
     case glslang::EOpSubgroupExclusiveXor:
     case glslang::EOpSubgroupClusteredXor:
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartitionedXor:
+    case glslang::EOpSubgroupPartitionedInclusiveXor:
+    case glslang::EOpSubgroupPartitionedExclusiveXor:
+#endif
         if (isBool) {
             opCode = spv::OpGroupNonUniformLogicalXor;
         } else {
@@ -5828,6 +5894,35 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
     case glslang::EOpSubgroupClusteredXor:
         spvGroupOperands.push_back(spv::GroupOperationClusteredReduce);
         break;
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartitionedAdd:
+    case glslang::EOpSubgroupPartitionedMul:
+    case glslang::EOpSubgroupPartitionedMin:
+    case glslang::EOpSubgroupPartitionedMax:
+    case glslang::EOpSubgroupPartitionedAnd:
+    case glslang::EOpSubgroupPartitionedOr:
+    case glslang::EOpSubgroupPartitionedXor:
+        spvGroupOperands.push_back(spv::GroupOperationPartitionedReduceNV);
+        break;
+    case glslang::EOpSubgroupPartitionedInclusiveAdd:
+    case glslang::EOpSubgroupPartitionedInclusiveMul:
+    case glslang::EOpSubgroupPartitionedInclusiveMin:
+    case glslang::EOpSubgroupPartitionedInclusiveMax:
+    case glslang::EOpSubgroupPartitionedInclusiveAnd:
+    case glslang::EOpSubgroupPartitionedInclusiveOr:
+    case glslang::EOpSubgroupPartitionedInclusiveXor:
+        spvGroupOperands.push_back(spv::GroupOperationPartitionedInclusiveScanNV);
+        break;
+    case glslang::EOpSubgroupPartitionedExclusiveAdd:
+    case glslang::EOpSubgroupPartitionedExclusiveMul:
+    case glslang::EOpSubgroupPartitionedExclusiveMin:
+    case glslang::EOpSubgroupPartitionedExclusiveMax:
+    case glslang::EOpSubgroupPartitionedExclusiveAnd:
+    case glslang::EOpSubgroupPartitionedExclusiveOr:
+    case glslang::EOpSubgroupPartitionedExclusiveXor:
+        spvGroupOperands.push_back(spv::GroupOperationPartitionedExclusiveScanNV);
+        break;
+#endif
     }
 
     // Push back the operands next.
@@ -6016,6 +6111,29 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     case glslang::EOpSubgroupClusteredOr:
     case glslang::EOpSubgroupClusteredXor:
     case glslang::EOpSubgroupQuadBroadcast:
+#ifdef NV_EXTENSIONS
+    case glslang::EOpSubgroupPartitionedAdd:
+    case glslang::EOpSubgroupPartitionedMul:
+    case glslang::EOpSubgroupPartitionedMin:
+    case glslang::EOpSubgroupPartitionedMax:
+    case glslang::EOpSubgroupPartitionedAnd:
+    case glslang::EOpSubgroupPartitionedOr:
+    case glslang::EOpSubgroupPartitionedXor:
+    case glslang::EOpSubgroupPartitionedInclusiveAdd:
+    case glslang::EOpSubgroupPartitionedInclusiveMul:
+    case glslang::EOpSubgroupPartitionedInclusiveMin:
+    case glslang::EOpSubgroupPartitionedInclusiveMax:
+    case glslang::EOpSubgroupPartitionedInclusiveAnd:
+    case glslang::EOpSubgroupPartitionedInclusiveOr:
+    case glslang::EOpSubgroupPartitionedInclusiveXor:
+    case glslang::EOpSubgroupPartitionedExclusiveAdd:
+    case glslang::EOpSubgroupPartitionedExclusiveMul:
+    case glslang::EOpSubgroupPartitionedExclusiveMin:
+    case glslang::EOpSubgroupPartitionedExclusiveMax:
+    case glslang::EOpSubgroupPartitionedExclusiveAnd:
+    case glslang::EOpSubgroupPartitionedExclusiveOr:
+    case glslang::EOpSubgroupPartitionedExclusiveXor:
+#endif
         return createSubgroupOperation(op, typeId, operands, typeProxy);
 
 #ifdef AMD_EXTENSIONS
@@ -6774,12 +6892,6 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, 
     out.close();
 }
 
-#ifdef ENABLE_OPT
-void errHandler(const std::string& str) {
-    std::cerr << str << std::endl;
-}
-#endif
-
 //
 // Set up the glslang traversal
 //
@@ -6808,7 +6920,7 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
     it.finishSpv();
     it.dumpSpv(spirv);
 
-#ifdef ENABLE_OPT
+#if ENABLE_OPT
     // If from HLSL, run spirv-opt to "legalize" the SPIR-V for Vulkan
     // eg. forward and remove memory writes of opaque types.
     if ((intermediate.getSource() == EShSourceHlsl ||
@@ -6854,12 +6966,6 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
 
         if (!optimizer.Run(spirv.data(), spirv.size(), &spirv))
             return;
-
-        // Remove dead module-level objects: functions, types, vars
-        // TODO(greg-lunarg): Switch to spirv-opt versions when available
-        spv::spirvbin_t Remapper(0);
-        Remapper.registerErrorHandler(errHandler);
-        Remapper.remap(spirv, spv::spirvbin_t::DCE_ALL);
     }
 #endif
 

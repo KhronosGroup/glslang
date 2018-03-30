@@ -829,6 +829,9 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
     } else {
         // at least one of base and index is variable...
 
+        if (index->getQualifier().isFrontEndConstant())
+            checkIndex(loc, base->getType(), indexValue);
+
         if (base->getType().isScalarOrVec1())
             result = base;
         else if (base->getAsSymbolNode() && wasFlattened(base)) {
@@ -844,9 +847,8 @@ TIntermTyped* HlslParseContext::handleBracketDereference(const TSourceLoc& loc, 
                 else
                     checkIndex(loc, base->getType(), indexValue);
                 result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
-            } else {
+            } else
                 result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
-            }
         }
     }
 
@@ -9925,7 +9927,7 @@ void HlslParseContext::finish()
 
     // Communicate out (esp. for command line) that we formed AST that will make
     // illegal AST SPIR-V and it needs transforms to legalize it.
-    if (intermediate.needsLegalization())
+    if (intermediate.needsLegalization() && (messages & EShMsgHlslLegalization))
         infoSink.info << "WARNING: AST will form illegal SPIR-V; need to transform to legalize";
 
     TParseContextBase::finish();

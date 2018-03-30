@@ -11,6 +11,7 @@ ERROR: 0:79: 'assign' :  cannot convert from ' global 4-element array of 7-eleme
 ERROR: 0:81: 'foo' : no matching overloaded function found 
 ERROR: 0:86: '==' :  wrong operand types: no operation '==' exists that takes a left-hand operand of type ' global 4-element array of 7-element array of highp float' and a right operand of type ' global 5-element array of 7-element array of highp float' (or there is no acceptable conversion)
 ERROR: 0:90: '[' :  array index out of range '5'
+ERROR: 0:94: '[' :  index out of range '-1'
 ERROR: 0:96: 'assign' :  cannot convert from ' temp 3-element array of highp 4-component vector of float' to 'layout( column_major shared) buffer unsized 2-element array of highp 4-component vector of float'
 ERROR: 0:103: '' : array size required 
 ERROR: 0:104: '' : array size required 
@@ -20,7 +21,7 @@ ERROR: 0:107: '' : array size required
 ERROR: 0:110: 'vertex input arrays' : not supported with this profile: es
 ERROR: 0:111: 'vertex-shader array-of-array output' : not supported with this profile: es
 ERROR: 0:113: 'array-of-array of block' : not supported with this profile: es
-ERROR: 21 compilation errors.  No code generated.
+ERROR: 22 compilation errors.  No code generated.
 
 
 Shader version: 310
