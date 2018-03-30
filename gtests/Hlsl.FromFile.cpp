@@ -92,7 +92,7 @@ TEST_P(HlslLegalizeTest, FromFile)
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
                             Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
                             Target::Spv, true, GetParam().entryPoint,
-                            "/baseLegalResults/", true);
+                            "/baseLegalResults/", false);
 }
 
 // clang-format off
@@ -410,7 +410,7 @@ INSTANTIATE_TEST_CASE_P(
 );
 // clang-format on
 
-#if ENABLE_OPT
+#ifdef ENABLE_OPT
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslLegalizeTest,

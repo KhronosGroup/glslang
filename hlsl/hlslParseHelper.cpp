@@ -9924,7 +9924,7 @@ void HlslParseContext::finish()
 
     // Communicate out (esp. for command line) that we formed AST that will make
     // illegal AST SPIR-V and it needs transforms to legalize it.
-    if (intermediate.needsLegalization() && (messages & EShMsgHlslLegalization))
+    if (intermediate.needsLegalization())
         infoSink.info << "WARNING: AST will form illegal SPIR-V; need to transform to legalize";
 
     TParseContextBase::finish();

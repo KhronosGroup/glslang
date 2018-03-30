@@ -200,7 +200,7 @@ public:
             glslang::EShTargetClientVersion clientTargetVersion,
             bool flattenUniformArrays = false,
             EShTextureSamplerTransformMode texSampTransMode = EShTexSampTransKeep,
-            bool enableOptimizer = false,
+            bool disableOptimizer = true,
             bool automap = true)
     {
         const EShLanguage stage = GetShaderStage(GetSuffix(shaderName));
@@ -242,7 +242,7 @@ public:
         if (success && (controls & EShMsgSpvRules)) {
             std::vector<uint32_t> spirv_binary;
             glslang::SpvOptions options;
-            options.disableOptimizer = !enableOptimizer;
+            options.disableOptimizer = disableOptimizer;
             glslang::GlslangToSpv(*program.getIntermediate(stage),
                                   spirv_binary, &logger, &options);
 
@@ -412,7 +412,7 @@ public:
                                  bool automap = true,
                                  const std::string& entryPointName="",
                                  const std::string& baseDir="/baseResults/",
-                                 const bool enableOptimizer = false)
+                                 const bool disableOptimizer = true)
     {
         const std::string inputFname = testDir + "/" + testName;
         const std::string expectedOutputFname =
@@ -422,11 +422,9 @@ public:
         tryLoadFile(inputFname, "input", &input);
         tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
 
-        EShMessages controls = DeriveOptions(source, semantics, target);
-        if (enableOptimizer)
-            controls = static_cast<EShMessages>(controls & ~EShMsgHlslLegalization);
+        const EShMessages controls = DeriveOptions(source, semantics, target);
         GlslangResult result = compileAndLink(testName, input, entryPointName, controls, clientTargetVersion, false,
-                                              EShTexSampTransKeep, enableOptimizer, automap);
+                                              EShTexSampTransKeep, disableOptimizer, automap);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
