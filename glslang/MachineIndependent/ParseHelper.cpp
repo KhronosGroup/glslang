@@ -4679,11 +4679,15 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         if (type.getBasicType() == EbtSampler) {
             int lastBinding = qualifier.layoutBinding;
             if (type.isArray()) {
-                if (type.isSizedArray())
-                    lastBinding += type.getCumulativeArraySize();
-                else {
+                if (spvVersion.vulkan > 0)
                     lastBinding += 1;
-                    warn(loc, "assuming array size of one for compile-time checking of binding numbers for unsized array", "[]", "");
+                else {
+                    if (type.isSizedArray())
+                        lastBinding += type.getCumulativeArraySize();
+                    else {
+                        lastBinding += 1;
+                        warn(loc, "assuming array size of one for compile-time checking of binding numbers for unsized array", "[]", "");
+                    }
                 }
             }
             if (spvVersion.vulkan == 0 && lastBinding >= resources.maxCombinedTextureImageUnits)
