@@ -144,6 +144,7 @@ protected:
     spv::SelectionControlMask TranslateSwitchControl(const glslang::TIntermSwitch&) const;
     spv::LoopControlMask TranslateLoopControl(const glslang::TIntermLoop&, unsigned int& dependencyLength) const;
     spv::StorageClass TranslateStorageClass(const glslang::TType&);
+    void addIndirectionIndexCapabilities(const glslang::TType& baseType, const glslang::TType& indexType);
     spv::Id createSpvVariable(const glslang::TIntermSymbol*);
     spv::Id getSampledType(const glslang::TSampler&);
     spv::Id getInvertedSwizzleType(const glslang::TIntermTyped&);
@@ -902,6 +903,42 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     return spv::StorageClassFunction;
 }
 
+// Add capabilities pertaining to how an array is indexed.
+void TGlslangToSpvTraverser::addIndirectionIndexCapabilities(const glslang::TType& baseType,
+                                                             const glslang::TType& indexType)
+{
+    if (indexType.getQualifier().isNonUniform()) {
+        // deal with an asserted non-uniform index
+        if (baseType.getBasicType() == glslang::EbtSampler) {
+            if (baseType.getQualifier().hasAttachment())
+                builder.addCapability(spv::CapabilityInputAttachmentArrayNonUniformIndexingEXT);
+            else if (baseType.isImage() && baseType.getSampler().dim == glslang::EsdBuffer)
+                builder.addCapability(spv::CapabilityStorageTexelBufferArrayNonUniformIndexingEXT);
+            else if (baseType.isTexture() && baseType.getSampler().dim == glslang::EsdBuffer)
+                builder.addCapability(spv::CapabilityUniformTexelBufferArrayNonUniformIndexingEXT);
+            else if (baseType.isImage())
+                builder.addCapability(spv::CapabilityStorageImageArrayNonUniformIndexingEXT);
+            else if (baseType.isTexture())
+                builder.addCapability(spv::CapabilitySampledImageArrayNonUniformIndexingEXT);
+        } else if (baseType.getBasicType() == glslang::EbtBlock) {
+            if (baseType.getQualifier().storage == glslang::EvqBuffer)
+                builder.addCapability(spv::CapabilityStorageBufferArrayNonUniformIndexingEXT);
+            else if (baseType.getQualifier().storage == glslang::EvqUniform)
+                builder.addCapability(spv::CapabilityUniformBufferArrayNonUniformIndexingEXT);
+        }
+    } else {
+        // assume a dynamically uniform index
+        if (baseType.getBasicType() == glslang::EbtSampler) {
+            if (baseType.getQualifier().hasAttachment())
+                builder.addCapability(spv::CapabilityInputAttachmentArrayDynamicIndexingEXT);
+            else if (baseType.isImage() && baseType.getSampler().dim == glslang::EsdBuffer)
+                builder.addCapability(spv::CapabilityStorageTexelBufferArrayDynamicIndexingEXT);
+            else if (baseType.isTexture() && baseType.getSampler().dim == glslang::EsdBuffer)
+                builder.addCapability(spv::CapabilityUniformTexelBufferArrayDynamicIndexingEXT);
+        }
+    }
+}
+
 // Return whether or not the given type is something that should be tied to a
 // descriptor set.
 bool IsDescriptorResource(const glslang::TType& type)
@@ -1375,6 +1412,8 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
             builder.clearAccessChain();
             node->getRight()->traverse(this);
             spv::Id index = accessChainLoad(node->getRight()->getType());
+
+            addIndirectionIndexCapabilities(node->getLeft()->getType(), node->getRight()->getType());
 
             // restore the saved access chain
             builder.setAccessChain(partial);
