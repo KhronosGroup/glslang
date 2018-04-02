@@ -42,4 +42,14 @@ void main()
     b += subpassLoad(inputAttachment[nu_ii]).x;
     b += texelFetch(uniformTexelBuffer[nu_ii], 1).x;
     b += imageLoad(storageTexelBuffer[nu_ii], 1).x;
+
+    nonuniformEXT ivec4 v;
+    nonuniformEXT mat4 m;
+    nonuniformEXT struct S { int a; } s;
+    ivec4 uv;
+    b += uniformBuffer[v.y].a;
+    b += uniformBuffer[v[2]].a;
+    b += uniformBuffer[uv[nu_ii]].a;
+    b += uniformBuffer[int(m[2].z)].a;
+    b += uniformBuffer[s.a].a;
 }

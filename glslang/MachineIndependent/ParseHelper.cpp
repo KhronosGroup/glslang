@@ -443,6 +443,10 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
         }
         result->setType(newType);
 
+        // Propagate nonuniform
+        if (base->getQualifier().isNonUniform() || index->getQualifier().isNonUniform())
+            result->getWritableType().getQualifier().nonUniform = true;
+
         if (anyIndexLimits)
             handleIndexLimits(loc, base, index);
     }
@@ -750,6 +754,10 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
     // Propagate noContraction up the dereference chain
     if (base->getQualifier().noContraction)
         result->getWritableType().getQualifier().noContraction = true;
+
+    // Propagate nonuniform
+    if (base->getQualifier().isNonUniform())
+        result->getWritableType().getQualifier().nonUniform = true;
 
     return result;
 }
