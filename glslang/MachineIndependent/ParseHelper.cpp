@@ -392,8 +392,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
                     error(loc, "", "[", "array must be sized by a redeclaration or layout qualifier before being indexed with a variable");
                 else {
                     // it is okay for a run-time sized array
-                    bool runtimeSized = (base->getType().getQualifier().storage == EvqBuffer 
-                                            /*?? && last member of block*/);
+                    bool runtimeSized = isRuntimeSizable(*base);
                     if (!runtimeSized && /*?? base->getType().isOpaque() && */ base->getQualifier().isUniformOrBuffer()) {
                         requireExtensions(loc, 1, &E_GL_EXT_nonuniform_qualifier, "variable index");
                         runtimeSized = true;
@@ -1252,7 +1251,7 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                 if (length == 0) {
                     if (intermNode->getAsSymbolNode() && isIoResizeArray(type))
                         error(loc, "", function->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
-                    else if (type.getQualifier().isUniformOrBuffer()) {
+                    else if (isRuntimeLength(*intermNode->getAsTyped())) {
                         //?? possible run-time arary
                         // Create a unary op and let the back end handle it
                         return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, TType(EbtInt));
@@ -3299,6 +3298,31 @@ void TParseContext::declareArray(const TSourceLoc& loc, const TString& identifie
 
     if (isIoResizeArray(type))
         checkIoArraysConsistency(loc);
+}
+
+// Policy decision for whether a node could potentially be sized at runtime.
+bool TParseContext::isRuntimeSizable(const TIntermTyped& base) const
+{
+    const TType& type = base.getType();
+    if (type.getQualifier().storage == EvqBuffer) {
+        // in a buffer block
+        const TIntermBinary* binary = base.getAsBinaryNode();
+        if (binary != nullptr && binary->getOp() == EOpIndexDirectStruct) {
+            // is it the last member?
+            const int index = binary->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
+            const int memberCount = (int)binary->getLeft()->getType().getStruct()->size();
+            if (index == memberCount - 1)
+                return true;
+        }
+    }
+
+    return false;
+}
+
+// Policy decision for whether a run-time .length() is allowed.
+bool TParseContext::isRuntimeLength(const TIntermTyped& base) const
+{
+    return isRuntimeSizable(base);
 }
 
 // Returns true if the first argument to the #line directive is the line number for the next line.

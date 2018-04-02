@@ -206,6 +206,7 @@ INSTANTIATE_TEST_CASE_P(
         "Operations.frag",
         "overlongLiteral.frag",
         "prepost.frag",
+        "runtimeArray.vert",
         "simpleFunctionCall.frag",
         "structAssignment.frag",
         "structDeref.frag",
