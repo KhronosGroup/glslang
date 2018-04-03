@@ -392,15 +392,8 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
                     error(loc, "", "[", "array must be sized by a redeclaration or layout qualifier before being indexed with a variable");
                 else {
                     // it is okay for a run-time sized array
-                    bool runtimeSized = isRuntimeSizable(*base);
-                    if (!runtimeSized && /*?? base->getType().isOpaque() && */ base->getQualifier().isUniformOrBuffer()) {
-                        requireExtensions(loc, 1, &E_GL_EXT_nonuniform_qualifier, "variable index");
-                        runtimeSized = true;
-                    }
-                    if (!runtimeSized)
-                        error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
+                    checkRuntimeSizable(loc, *base);
                 }
-                // ?? add correct run-time array semantics
                 base->getWritableType().setArrayVariablyIndexed();
             }
             if (base->getBasicType() == EbtBlock) {
@@ -1252,7 +1245,6 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                     if (intermNode->getAsSymbolNode() && isIoResizeArray(type))
                         error(loc, "", function->getName().c_str(), "array must first be sized by a redeclaration or layout qualifier");
                     else if (isRuntimeLength(*intermNode->getAsTyped())) {
-                        //?? possible run-time arary
                         // Create a unary op and let the back end handle it
                         return intermediate.addBuiltInFunctionCall(loc, EOpArrayLength, true, intermNode, TType(EbtInt));
                     } else
@@ -3300,11 +3292,25 @@ void TParseContext::declareArray(const TSourceLoc& loc, const TString& identifie
         checkIoArraysConsistency(loc);
 }
 
-// Policy decision for whether a node could potentially be sized at runtime.
-bool TParseContext::isRuntimeSizable(const TIntermTyped& base) const
+// Policy and error check for needing a runtime sized array.
+void TParseContext::checkRuntimeSizable(const TSourceLoc& loc, const TIntermTyped& base)
 {
-    const TType& type = base.getType();
-    if (type.getQualifier().storage == EvqBuffer) {
+    // runtime length implies runtime sizeable, so no problem
+    if (isRuntimeLength(base))
+        return;
+
+    // check for additional things allowed by GL_EXT_nonuniform_qualifier
+    if (base.getBasicType() == EbtSampler ||
+            (base.getBasicType() == EbtBlock && base.getType().getQualifier().isUniformOrBuffer()))
+        requireExtensions(loc, 1, &E_GL_EXT_nonuniform_qualifier, "variable index");
+    else
+        error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
+}
+
+// Policy decision for whether a run-time .length() is allowed.
+bool TParseContext::isRuntimeLength(const TIntermTyped& base) const
+{
+    if (base.getType().getQualifier().storage == EvqBuffer) {
         // in a buffer block
         const TIntermBinary* binary = base.getAsBinaryNode();
         if (binary != nullptr && binary->getOp() == EOpIndexDirectStruct) {
@@ -3317,12 +3323,6 @@ bool TParseContext::isRuntimeSizable(const TIntermTyped& base) const
     }
 
     return false;
-}
-
-// Policy decision for whether a run-time .length() is allowed.
-bool TParseContext::isRuntimeLength(const TIntermTyped& base) const
-{
-    return isRuntimeSizable(base);
 }
 
 // Returns true if the first argument to the #line directive is the line number for the next line.
@@ -4721,7 +4721,8 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
                         lastBinding += type.getCumulativeArraySize();
                     else {
                         lastBinding += 1;
-                        warn(loc, "assuming array size of one for compile-time checking of binding numbers for unsized array", "[]", "");
+                        if (spvVersion.vulkan == 0)
+                            warn(loc, "assuming binding count of one for compile-time checking of binding numbers for unsized array", "[]", "");
                     }
                 }
             }

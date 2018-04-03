@@ -858,7 +858,6 @@ int TScanContext::tokenizeIdentifier()
     switch (keyword) {
     case CONST:
     case UNIFORM:
-    case NONUNIFORM:  //?? check for extension
     case IN:
     case OUT:
     case INOUT:
@@ -874,6 +873,12 @@ int TScanContext::tokenizeIdentifier()
     case RETURN:
     case CASE:
         return keyword;
+
+    case NONUNIFORM:
+        if (parseContext.extensionTurnedOn(E_GL_EXT_nonuniform_qualifier))
+            return keyword;
+        else
+            return identifierOrType();
 
     case SWITCH:
     case DEFAULT:

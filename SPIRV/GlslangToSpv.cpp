@@ -1508,11 +1508,14 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
     if (node->getOp() == glslang::EOpArrayLength) {
         // Quite special; won't want to evaluate the operand.
 
-        // Normal .length() would have been constant folded by the front-end.
-        // So, this has to be block.lastMember.length().  ??
-        // SPV wants "block" and member number as the operands, go get them.
+        // Currently, the front-end does not allow .length() on an array until it is sized,
+        // except for the last block membeor of an SSBO.
+        // TODO: If this changes, link-time sized arrays might show up here, and need their
+        // size extracted.
 
-        //?? depends if size was determined while linking, and on what the rules allow applying .length() to
+        // Normal .length() would have been constant folded by the front-end.
+        // So, this has to be block.lastMember.length().
+        // SPV wants "block" and member number as the operands, go get them.
 
         glslang::TIntermTyped* block = node->getOperand()->getAsBinaryNode()->getLeft();
         block->traverse(this);

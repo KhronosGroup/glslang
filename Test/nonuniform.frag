@@ -1,5 +1,9 @@
 #version 450
 
+int nonuniformEXT;
+
+#extension GL_EXT_nonuniform_qualifier : enable
+
 nonuniformEXT in vec4 nu_inv4;
 nonuniformEXT float nu_gf;
 

@@ -48,7 +48,7 @@ spv.nonuniform.frag
                               Name 97  "bname"
                               MemberName 97(bname) 0  "b"
                               Name 100  "storageBuffer"
-                              Name 111  "sampledImage"
+                              Name 110  "sampledImage"
                               Name 125  "storageImage"
                               Name 137  "inputAttachment"
                               Name 147  "uniformTexelBuffer"
@@ -93,10 +93,10 @@ spv.nonuniform.frag
                               Decorate 100(storageBuffer) Binding 4
                               Decorate 101 DecorationNonUniformEXT
                               Decorate 103 DecorationNonUniformEXT
-                              Decorate 111(sampledImage) DescriptorSet 0
-                              Decorate 111(sampledImage) Binding 5
-                              Decorate 112 DecorationNonUniformEXT
-                              Decorate 115 DecorationNonUniformEXT
+                              Decorate 110(sampledImage) DescriptorSet 0
+                              Decorate 110(sampledImage) Binding 5
+                              Decorate 111 DecorationNonUniformEXT
+                              Decorate 114 DecorationNonUniformEXT
                               Decorate 125(storageImage) DescriptorSet 0
                               Decorate 125(storageImage) Binding 6
                               Decorate 126 DecorationNonUniformEXT
@@ -172,15 +172,15 @@ spv.nonuniform.frag
               98:             TypeRuntimeArray 97(bname)
               99:             TypePointer Uniform 98
 100(storageBuffer):     99(ptr) Variable Uniform
-             107:             TypeImage 28(float) 2D sampled format:Unknown
-             108:             TypeSampledImage 107
-             109:             TypeRuntimeArray 108
-             110:             TypePointer UniformConstant 109
-111(sampledImage):    110(ptr) Variable UniformConstant
-             113:             TypePointer UniformConstant 108
-             116:             TypeVector 28(float) 2
-             117:   28(float) Constant 1056964608
-             118:  116(fvec2) ConstantComposite 117 117
+             106:             TypeImage 28(float) 2D sampled format:Unknown
+             107:             TypeSampledImage 106
+             108:             TypeRuntimeArray 107
+             109:             TypePointer UniformConstant 108
+110(sampledImage):    109(ptr) Variable UniformConstant
+             112:             TypePointer UniformConstant 107
+             115:             TypeVector 28(float) 2
+             116:   28(float) Constant 1056964608
+             117:  115(fvec2) ConstantComposite 116 116
              122:             TypeImage 28(float) 2D nonsampled format:R32f
              123:             TypeRuntimeArray 122
              124:             TypePointer UniformConstant 123
@@ -270,13 +270,14 @@ spv.nonuniform.frag
              104:   28(float) Load 30(b)
              105:   28(float) FAdd 104 103
                               Store 30(b) 105
-             106:   28(float) Load 30(b)
-             112:      6(int) Load 90(nu_ii)
-             114:    113(ptr) AccessChain 111(sampledImage) 112
-             115:         108 Load 114
-             119:   31(fvec4) ImageSampleImplicitLod 115 118
-             120:   28(float) CompositeExtract 119 0
-             121:   28(float) FAdd 106 120
+             111:      6(int) Load 90(nu_ii)
+             113:    112(ptr) AccessChain 110(sampledImage) 111
+             114:         107 Load 113
+             118:   31(fvec4) ImageSampleImplicitLod 114 117
+             119:   28(float) CompositeExtract 118 0
+             120:   28(float) Load 30(b)
+             121:   28(float) FAdd 120 119
+                              Store 30(b) 121
              126:      6(int) Load 90(nu_ii)
              128:    127(ptr) AccessChain 125(storageImage) 126
              129:         122 Load 128

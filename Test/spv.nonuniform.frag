@@ -10,7 +10,7 @@ layout(binding=0, input_attachment_index = 0) uniform subpassInput        inputA
 layout(binding=1)                             uniform samplerBuffer       uniformTexelBufferDyn[];
 layout(binding=2, r32f)                       uniform imageBuffer         storageTexelBufferDyn[];
 layout(binding=3)                             uniform uname { float a; }  uniformBuffer[];
-layout(binding=4)                             buffer bname { float b; }   storageBuffer[];
+layout(binding=4)                             buffer  bname { float b; }  storageBuffer[];
 layout(binding=5)                             uniform sampler2D           sampledImage[];
 layout(binding=6, r32f)                       uniform image2D             storageImage[];
 layout(binding=7, input_attachment_index = 1) uniform subpassInput        inputAttachment[];
@@ -37,7 +37,7 @@ void main()
     b += imageLoad(storageTexelBufferDyn[dyn_i], 1).x;
     b += uniformBuffer[nu_ii].a;
     b += storageBuffer[nu_ii].b;
-    b + texture(sampledImage[nu_ii], vec2(0.5)).x;
+    b += texture(sampledImage[nu_ii], vec2(0.5)).x;
     b += imageLoad(storageImage[nu_ii], ivec2(1)).x;
     b += subpassLoad(inputAttachment[nu_ii]).x;
     b += texelFetch(uniformTexelBuffer[nu_ii], 1).x;
