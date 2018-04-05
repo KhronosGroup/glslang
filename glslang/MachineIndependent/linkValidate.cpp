@@ -495,6 +495,29 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
 #endif
            )
             error(infoSink, "At least one shader must specify a layout(max_vertices = value)");
+
+#ifdef NV_EXTENSIONS
+        if (getGeoPassthroughEXT()) {
+            if (getInputPrimitive() != ElgPoints &&
+                getInputPrimitive() != ElgLines &&
+                getInputPrimitive() != ElgTriangles)
+                error(infoSink, "input primitive type needs to be \"points\", \"lines\", or \"triangles\" for GL_NV_geometry_shader_passthrough");
+            if (getOutputPrimitive() != ElgNone &&
+                getOutputPrimitive() != ElgPoints &&
+                getOutputPrimitive() != ElgLineStrip &&
+                getOutputPrimitive() != ElgTriangleStrip)
+                error(infoSink, "output primitive type needs to be \"points\", \"line_strip\", or \"triangle_strip\" for GL_NV_geometry_shader_passthrough");
+            if (getVertices() != TQualifier::layoutNotSet)
+                error(infoSink, "max_vertices is not allowed for GL_NV_geometry_shader_passthrough");
+            if (getInvocations() != TQualifier::layoutNotSet &&
+                getInvocations() != 1)
+                error(infoSink, "invocations needs to be 1 for GL_NV_geometry_shader_passthrough");
+            if (isMultiStream())
+                error(infoSink, "stream is not allowed for GL_NV_geometry_shader_passthrough");
+            if (getXfbMode())
+                error(infoSink, "xfb is not allowed for GL_NV_geometry_shader_passthrough");
+        }
+#endif 
         break;
     case EShLangFragment:
         // for GL_ARB_post_depth_coverage, EarlyFragmentTest is set automatically in 

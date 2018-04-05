@@ -1680,6 +1680,13 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpEmitStreamVertex:
     case EOpEndStreamPrimitive:
         intermediate.setMultiStream();
+#ifdef NV_EXTENSIONS
+    //fall through
+    case EOpEmitVertex:
+    case EOpEndPrimitive:
+        if(intermediate.getGeoPassthroughEXT())
+            error(loc, "not allowed with GL_NV_geometry_shader_passthrough", fnCandidate.getName().c_str(), "");
+#endif
         break;
 
     case EOpSubgroupClusteredAdd:
@@ -4947,6 +4954,14 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         if (qualifier.hasSet())
             error(loc, "cannot be used with push_constant", "set", "");
     }
+#ifdef NV_EXTENSIONS
+    if (qualifier.layoutPassthrough) {
+        if (qualifier.builtIn == EbvPrimitiveId)
+            error(loc, "passthrough can not applied to gl_PrimitiveIDIn", "", "");
+        else if(qualifier.builtIn == EbvInvocationId)
+            error(loc, "passthrough can not applied to gl_InvocationID", "", "");
+    }
+#endif
 }
 
 // For places that can't have shader-level layout qualifiers
