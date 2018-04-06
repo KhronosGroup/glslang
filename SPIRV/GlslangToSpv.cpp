@@ -1279,8 +1279,10 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
                         id = getSymbolId(it->second);
                         if (id != spv::NoResult) {
                             spv::Id counterId = getSymbolId(symbol);
-                            if (counterId != spv::NoResult)
+                            if (counterId != spv::NoResult) {
+                                builder.addExtension("SPV_GOOGLE_hlsl_functionality1");
                                 builder.addDecorationId(id, spv::DecorationHlslCounterBufferGOOGLE, counterId);
+                            }
                         }
                     }
                 }
