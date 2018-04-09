@@ -637,6 +637,11 @@ public:
     const char* const implicitThisName;
     const char* const implicitCounterName;
 
+	void insertAccessedNamedDefine( const char *defName ) { accessedNamedDefines.emplace( defName ); }
+	void insertDeclaredNamedDefine( const char *defName ) { declaredNamedDefines.emplace( defName ); }
+	void getAddAccessedNamedDefines( std::unordered_set< std::string > &targetSet ) const { getAddDefines( targetSet, accessedNamedDefines ); }
+	void getAddDeclaredNamedDefines( std::unordered_set< std::string > &targetSet ) const { getAddDefines( targetSet, declaredNamedDefines ); }
+
 protected:
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TConstUnionArray&, TIntermTyped* subtree, const TSourceLoc&);
     void error(TInfoSink& infoSink, const char*);
@@ -665,6 +670,7 @@ protected:
     std::tuple<TBasicType, TBasicType> getConversionDestinatonType(TBasicType type0, TBasicType type1, TOperator op) const;
     bool extensionRequested(const char *extension) const {return requestedExtensions.find(extension) != requestedExtensions.end();}
     static const char* getResourceName(TResourceType);
+	void getAddDefines( std::unordered_set< std::string > &targetSet, const std::unordered_set< TString > &sourceSet ) const;
 
     const EShLanguage language;  // stage, known at construction time
     EShSource source;            // source language, known a bit later
@@ -742,6 +748,9 @@ protected:
     TProcesses processes;
 
     bool needToLegalize;
+
+	// storage for (accessed/declared) "named defines"
+	std::unordered_set< TString > accessedNamedDefines, declaredNamedDefines;
 
 private:
     void operator=(TIntermediate&); // prevent assignments
