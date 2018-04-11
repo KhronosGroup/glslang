@@ -8629,7 +8629,7 @@ void HlslParseContext::declareBlock(const TSourceLoc& loc, TType& type, const TS
         return;
     }
 
-	// Save it in the AST for linker use.
+    // Save it in the AST for linker use.
     if (symbolTable.atGlobalLevel())
         trackLinkage(variable);
 }
