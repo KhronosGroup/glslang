@@ -3811,15 +3811,4 @@ const char* TIntermediate::getResourceName(TResourceType res)
 }
 
 
-// Access recorded named preprocessor-defines from the outside
-// ->	needs to take into account, that the outside may want to use the set
-//		even after the memory pool got released
-void TIntermediate::getAddDefines( std::unordered_set< std::string > &targetSet, const std::unordered_set< TString > &sourceSet ) const
-{
-	targetSet.reserve( targetSet.size() + sourceSet.size() );
-	for ( auto &i: sourceSet )
-		targetSet.emplace( i.c_str() );		// need to convert from TString (pool-allocated) to normal std::basic_string, so it may be used after the pool is released
-}
-
-
 } // end namespace glslang
