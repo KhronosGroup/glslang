@@ -4815,6 +4815,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
                 } else {
                     // Set the matching operator.  Since output is absent, this is all we need to do.
                     node->getAsAggregate()->setOperator(atomicOp);
+                    node->setType(atomic->getType());
                 }
             }
 
