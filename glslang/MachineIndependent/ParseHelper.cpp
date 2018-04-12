@@ -3978,6 +3978,7 @@ void TParseContext::finish()
         break;
     }
 
+#ifdef NV_EXTENSIONS
     // Set default outputs for GL_NV_geometry_shader_passthrough
     if (language == EShLangGeometry && extensionTurnedOn(E_SPV_NV_geometry_shader_passthrough)) {
         if (intermediate.getOutputPrimitive() == ElgNone) {
@@ -3997,6 +3998,7 @@ void TParseContext::finish()
             }
         }
     }
+#endif
 }
 
 //
