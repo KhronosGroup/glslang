@@ -1196,38 +1196,47 @@ int C_DECL main(int argc, char* argv[])
 //   .frag = fragment
 //   .comp = compute
 //
-EShLanguage FindLanguage(const std::string& name, bool parseSuffix)
+//   Additionally, the file names may end in .<stage>.glsl and .<stage>.hlsl
+//   where <stage> is one of the stages listed above.
+//
+EShLanguage FindLanguage(const std::string& name, bool parseStageName)
 {
-    size_t ext = 0;
-    std::string suffix;
+    std::string stage_name;
 
-    if (shaderStageName)
-        suffix = shaderStageName;
-    else {
-        // Search for a suffix on a filename: e.g, "myfile.frag".  If given
-        // the suffix directly, we skip looking for the '.'
-        if (parseSuffix) {
-            ext = name.rfind('.');
-            if (ext == std::string::npos) {
-                usage();
-                return EShLangVertex;
-            }
-            ++ext;
+    if (shaderStageName) {
+        stage_name = shaderStageName;
+    } else if (parseStageName) {
+        // Note: "first" extension means "first from the end", i.e.
+        // if the file is named foo.vert.glsl, then "glsl" is first,
+        // "vert" is second.
+        size_t first_ext_start = name.find_last_of(".");
+        bool has_first_ext = first_ext_start != std::string::npos;
+        size_t second_ext_start =
+            has_first_ext ? name.find_last_of(".", first_ext_start - 1) : std::string::npos;
+        bool has_second_ext = second_ext_start != std::string::npos;
+        bool uses_unified_ext = has_first_ext && (first_ext == "glsl" ||
+                                                  first_ext == "hlsl");
+        std::string first_ext = name.substr(first_ext_start + 1, std::string::npos);
+        if (has_first_ext && !uses_unified_ext) {
+          stage_name = first_ext;
+        } else if (uses_unified_ext && has_second_ext) {
+            stage_name = name.substr(second_ext_start + 1, first_ext_start - second_ext_start - 1);
+        } else {
+            usage();
+            return EShLangVertex;
         }
-        suffix = name.substr(ext, std::string::npos);
     }
-
-    if (suffix == "vert")
+    if (stage_name == "vert")
         return EShLangVertex;
-    else if (suffix == "tesc")
+    else if (stage_name == "tesc")
         return EShLangTessControl;
-    else if (suffix == "tese")
+    else if (stage_name == "tese")
         return EShLangTessEvaluation;
-    else if (suffix == "geom")
+    else if (stage_name == "geom")
         return EShLangGeometry;
-    else if (suffix == "frag")
+    else if (stage_name == "frag")
         return EShLangFragment;
-    else if (suffix == "comp")
+    else if (stage_name == "comp")
         return EShLangCompute;
 
     usage();
