@@ -231,6 +231,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     ppToken->name[len] = '\0';
 
     // Get the numerical value
+    // Depends on setlocale(LC_NUMERIC, "C") for correct behavior.
     ppToken->dval = strtod(ppToken->name, nullptr);
 
     // Return the right token type
