@@ -1214,9 +1214,9 @@ EShLanguage FindLanguage(const std::string& name, bool parseStageName)
         size_t second_ext_start =
             has_first_ext ? name.find_last_of(".", first_ext_start - 1) : std::string::npos;
         bool has_second_ext = second_ext_start != std::string::npos;
+        std::string first_ext = name.substr(first_ext_start + 1, std::string::npos);
         bool uses_unified_ext = has_first_ext && (first_ext == "glsl" ||
                                                   first_ext == "hlsl");
-        std::string first_ext = name.substr(first_ext_start + 1, std::string::npos);
         if (has_first_ext && !uses_unified_ext) {
           stage_name = first_ext;
         } else if (uses_unified_ext && has_second_ext) {
