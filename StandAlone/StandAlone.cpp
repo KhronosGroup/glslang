@@ -1202,7 +1202,6 @@ int C_DECL main(int argc, char* argv[])
 EShLanguage FindLanguage(const std::string& name, bool parseStageName)
 {
     std::string stage_name;
-
     if (shaderStageName) {
         stage_name = shaderStageName;
     } else if (parseStageName) {
@@ -1225,6 +1224,8 @@ EShLanguage FindLanguage(const std::string& name, bool parseStageName)
             usage();
             return EShLangVertex;
         }
+    } else {
+      stage_name = name;
     }
     if (stage_name == "vert")
         return EShLangVertex;
