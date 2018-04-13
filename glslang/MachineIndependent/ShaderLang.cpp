@@ -1919,6 +1919,7 @@ int TProgram::getUniformArraySize(int index) const           { return reflection
 int TProgram::getNumLiveAttributes() const                   { return reflection->getNumAttributes(); }
 const char* TProgram::getAttributeName(int index) const      { return reflection->getAttribute(index).name.c_str(); }
 int TProgram::getAttributeType(int index) const              { return reflection->getAttribute(index).glDefineType; }
+int TProgram::getAttributeLocation(int index) const          { return reflection->getAttribute(index).getLocation(); }
 const TType* TProgram::getAttributeTType(int index) const    { return reflection->getAttribute(index).getType(); }
 const TType* TProgram::getUniformTType(int index) const      { return reflection->getUniform(index).getType(); }
 const TType* TProgram::getUniformBlockTType(int index) const { return reflection->getUniformBlock(index).getType(); }
