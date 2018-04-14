@@ -9343,11 +9343,17 @@ void HlslParseContext::correctOutput(TQualifier& qualifier)
         qualifier.patch = false;
 
     switch (qualifier.builtIn) {
+    case EbvFragDepth:
+        intermediate.setDepthReplacing();
+        intermediate.setDepth(EldAny);
+        break;
     case EbvFragDepthGreater:
+        intermediate.setDepthReplacing();
         intermediate.setDepth(EldGreater);
         qualifier.builtIn = EbvFragDepth;
         break;
     case EbvFragDepthLesser:
+        intermediate.setDepthReplacing();
         intermediate.setDepth(EldLess);
         qualifier.builtIn = EbvFragDepth;
         break;
