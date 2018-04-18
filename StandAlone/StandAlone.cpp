@@ -1214,11 +1214,13 @@ EShLanguage FindLanguage(const std::string& name, bool parseStageName)
         bool hasSecondExt = secondExtStart != std::string::npos;
         std::string firstExt = name.substr(firstExtStart + 1, std::string::npos);
         bool usesUnifiedExt = hasFirstExt && (firstExt == "glsl" || firstExt == "hlsl");
-        if (hasFirstExt && !usesUnifiedExt) {
+        if (usesUnifiedExt && firstExt == "hlsl")
+            Options |= EOptionReadHlsl;
+        if (hasFirstExt && !usesUnifiedExt)
             stageName = firstExt;
-        } else if (usesUnifiedExt && hasSecondExt) {
+        else if (usesUnifiedExt && hasSecondExt)
             stageName = name.substr(secondExtStart + 1, firstExtStart - secondExtStart - 1);
-        } else {
+        else {
             usage();
             return EShLangVertex;
         }
@@ -1311,7 +1313,7 @@ void usage()
            "\n"
            "Options:\n"
            "  -C          cascading errors; risk crash from accumulation of error recoveries\n"
-           "  -D          input is HLSL\n"
+           "  -D          input is HLSL (default when any suffix is .hlsl)\n"
            "  -D<macro=def>\n"
            "  -D<macro>   define a pre-processor macro\n"
            "  -E          print pre-processed GLSL; cannot be used with -l;\n"
