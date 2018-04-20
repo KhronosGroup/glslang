@@ -41,6 +41,7 @@
 
 #include "../OSDependent/osinclude.h"
 #include <algorithm>
+#include <clocale>
 
 #include "preprocessor/PpContext.h"
 
@@ -188,7 +189,20 @@ bool TParseContext::parseShaderStrings(TPpContext& ppContext, TInputScanner& inp
 {
     currentScanner = &input;
     ppContext.setInput(input, versionWillBeError);
+
+    // Push the locale to "C", for numeric standard processing,
+    // where lexical analysis depends on library functions for
+    // "C" style locale.
+    TString startLocale(setlocale(LC_NUMERIC, nullptr));
+    if (startLocale != "C")
+        setlocale(LC_NUMERIC, "C");
+
+    // parse
     yyparse(this);
+
+    // pop the locale
+    if (startLocale != "C")
+        setlocale(LC_NUMERIC, startLocale.c_str());
 
     finish();
 

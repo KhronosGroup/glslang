@@ -216,6 +216,7 @@ int TPpContext::TokenStream::getToken(TParseContextBase& parseContext, TPpToken 
         case PpAtomConstFloat:
         case PpAtomConstDouble:
         case PpAtomConstFloat16:
+            // Depends on setlocale(LC_NUMERIC, "C") for correct behavior.
             ppToken->dval = atof(ppToken->name);
             break;
         case PpAtomConstInt:
