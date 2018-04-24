@@ -66,10 +66,16 @@ public:
             return -1;
         return type->getQualifier().layoutBinding;
     }
+    int getLocation() const
+    {
+        if (type == nullptr || !type->getQualifier().hasLocation())
+            return -1;
+        return type->getQualifier().layoutLocation;
+    }
     void dump() const
     {
-        printf("%s: offset %d, type %x, size %d, index %d, binding %d",
-               name.c_str(), offset, glDefineType, size, index, getBinding() );
+        printf("%s: offset %d, type %x, size %d, index %d, binding %d, location %d",
+               name.c_str(), offset, glDefineType, size, index, getBinding(), getLocation() );
 
         if (counterIndex != -1)
             printf(", counter %d", counterIndex);
