@@ -293,6 +293,11 @@ Shader version: 500
                               Decorate 28(C) Block
                               Decorate 30 DescriptorSet 0
                               Decorate 30 Binding 0
+                              Decorate 33 Uniform
+                              Decorate 41 Uniform
+                              Decorate 48 Uniform
+                              Decorate 54 Uniform
+                              Decorate 72 Uniform
                               Decorate 87(input.Pos) Location 0
                               Decorate 91(input.Norm) Location 1
                               Decorate 99(@entryPointOutput.Pos) BuiltIn Position

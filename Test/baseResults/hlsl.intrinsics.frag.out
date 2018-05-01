@@ -6154,6 +6154,25 @@ gl_FragCoord origin is upper left
                               Name 1829  "gs_ua4"
                               Name 1830  "gs_ub4"
                               Name 1831  "gs_uc4"
+                              Decorate 200 Uniform
+                              Decorate 229 Uniform
+                              Decorate 230 Uniform
+                              Decorate 232 Uniform
+                              Decorate 233 Uniform
+                              Decorate 294 Uniform
+                              Decorate 295 Uniform
+                              Decorate 411 Uniform
+                              Decorate 456 Uniform
+                              Decorate 458 Uniform
+                              Decorate 536 Uniform
+                              Decorate 653 Uniform
+                              Decorate 701 Uniform
+                              Decorate 703 Uniform
+                              Decorate 784 Uniform
+                              Decorate 900 Uniform
+                              Decorate 956 Uniform
+                              Decorate 958 Uniform
+                              Decorate 1033 Uniform
                               Decorate 1813(@entryPointOutput.color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

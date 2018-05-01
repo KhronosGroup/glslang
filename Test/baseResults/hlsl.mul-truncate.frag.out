@@ -439,6 +439,42 @@ gl_FragCoord origin is upper left
                               MemberDecorate 21(Matrix) 8 Offset 352
                               Decorate 21(Matrix) Block
                               Decorate 23 DescriptorSet 0
+                              Decorate 28 Uniform
+                              Decorate 32 Uniform
+                              Decorate 41 Uniform
+                              Decorate 46 Uniform
+                              Decorate 53 Uniform
+                              Decorate 71 Uniform
+                              Decorate 73 Uniform
+                              Decorate 74 Uniform
+                              Decorate 79 Uniform
+                              Decorate 81 Uniform
+                              Decorate 85 Uniform
+                              Decorate 86 Uniform
+                              Decorate 89 Uniform
+                              Decorate 91 Uniform
+                              Decorate 108 Uniform
+                              Decorate 109 Uniform
+                              Decorate 112 Uniform
+                              Decorate 116 Uniform
+                              Decorate 120 Uniform
+                              Decorate 121 Uniform
+                              Decorate 128 Uniform
+                              Decorate 132 Uniform
+                              Decorate 141 Uniform
+                              Decorate 142 Uniform
+                              Decorate 146 Uniform
+                              Decorate 148 Uniform
+                              Decorate 159 Uniform
+                              Decorate 160 Uniform
+                              Decorate 166 Uniform
+                              Decorate 176 Uniform
+                              Decorate 178 Uniform
+                              Decorate 179 Uniform
+                              Decorate 183 Uniform
+                              Decorate 192 Uniform
+                              Decorate 194 Uniform
+                              Decorate 195 Uniform
                               Decorate 229(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

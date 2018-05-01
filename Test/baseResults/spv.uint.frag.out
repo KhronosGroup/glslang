@@ -59,20 +59,25 @@ spv.uint.frag
                               Decorate 72(usampler) RelaxedPrecision
                               Decorate 72(usampler) DescriptorSet 0
                               Decorate 73 RelaxedPrecision
+                              Decorate 73 Uniform
                               Decorate 77(tc) RelaxedPrecision
                               Decorate 78 RelaxedPrecision
                               Decorate 79 RelaxedPrecision
                               Decorate 80 RelaxedPrecision
                               Decorate 81 RelaxedPrecision
                               Decorate 85 RelaxedPrecision
+                              Decorate 85 Uniform
                               Decorate 86 RelaxedPrecision
+                              Decorate 87 Uniform
                               Decorate 88 RelaxedPrecision
                               Decorate 89 RelaxedPrecision
                               Decorate 90 RelaxedPrecision
                               Decorate 91 RelaxedPrecision
                               Decorate 92 RelaxedPrecision
                               Decorate 97 RelaxedPrecision
+                              Decorate 97 Uniform
                               Decorate 98 RelaxedPrecision
+                              Decorate 100 Uniform
                               Decorate 101 RelaxedPrecision
                               Decorate 102 RelaxedPrecision
                               Decorate 105 RelaxedPrecision

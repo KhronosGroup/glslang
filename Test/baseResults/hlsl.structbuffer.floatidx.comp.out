@@ -225,6 +225,7 @@ local_size = (1, 1, 1)
                               Decorate 26(csb@count) BufferBlock
                               Decorate 28(csb@count) DescriptorSet 0
                               Decorate 58(outtx) DescriptorSet 0
+                              Decorate 59 Uniform
                               Decorate 63 ArrayStride 16
                               MemberDecorate 64(rwsb) 0 Offset 0
                               Decorate 64(rwsb) BufferBlock

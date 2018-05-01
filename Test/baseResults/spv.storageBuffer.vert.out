@@ -30,6 +30,7 @@ spv.storageBuffer.vert
                               MemberDecorate 16(ub) 0 Offset 0
                               Decorate 16(ub) Block
                               Decorate 18(ubi) DescriptorSet 0
+                              Decorate 21 Uniform
                               MemberDecorate 22(bb) 0 Offset 0
                               Decorate 22(bb) Block
                               Decorate 24(bbi) DescriptorSet 0

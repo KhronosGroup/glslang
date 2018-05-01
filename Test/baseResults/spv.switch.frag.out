@@ -51,12 +51,15 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
                               Decorate 31 RelaxedPrecision
                               Decorate 32 RelaxedPrecision
                               Decorate 33 RelaxedPrecision
+                              Decorate 37 Uniform
                               Decorate 40 RelaxedPrecision
                               Decorate 46 RelaxedPrecision
+                              Decorate 49 Uniform
                               Decorate 51 RelaxedPrecision
                               Decorate 53 RelaxedPrecision
                               Decorate 54 RelaxedPrecision
                               Decorate 55 RelaxedPrecision
+                              Decorate 37 Uniform
                               Decorate 60(local) RelaxedPrecision
                               Decorate 62(c) RelaxedPrecision
                               Decorate 62(c) Flat

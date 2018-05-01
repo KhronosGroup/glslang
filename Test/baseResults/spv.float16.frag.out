@@ -110,6 +110,7 @@ spv.float16.frag
                               Name 526  "sf16"
                               Name 527  "sf"
                               Name 528  "sd"
+                              Decorate 509 Uniform
                               Decorate 512 ArrayStride 16
                               Decorate 513 ArrayStride 32
                               MemberDecorate 514(S) 0 Offset 0
@@ -153,6 +154,11 @@ spv.float16.frag
                               Decorate 526(sf16) SpecId 100
                               Decorate 527(sf) SpecId 101
                               Decorate 528(sd) SpecId 102
+                              Decorate 529 Uniform
+                              Decorate 530 Uniform
+                              Decorate 531 Uniform
+                              Decorate 532 Uniform
+                              Decorate 533 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
               28:             TypeFloat 16

@@ -904,12 +904,27 @@ gl_FragCoord origin is upper left
                               Name 230  "param"
                               Name 238  "@entryPointOutput"
                               Decorate 30(g_sSamp) DescriptorSet 0
+                              Decorate 31 Uniform
+                              Decorate 67 Uniform
                               Decorate 90(g_tTex2s1) DescriptorSet 0
+                              Decorate 91 Uniform
+                              Decorate 92 Uniform
                               Decorate 114(g_tTex2s2) DescriptorSet 0
+                              Decorate 115 Uniform
+                              Decorate 116 Uniform
                               Decorate 140(g_tTex2s3) DescriptorSet 0
+                              Decorate 141 Uniform
+                              Decorate 142 Uniform
                               Decorate 168(g_tTex2s4) DescriptorSet 0
+                              Decorate 169 Uniform
+                              Decorate 170 Uniform
                               Decorate 202(g_tTex2s5) DescriptorSet 0
+                              Decorate 203 Uniform
+                              Decorate 204 Uniform
+                              Decorate 222 Uniform
+                              Decorate 226 Uniform
                               Decorate 229(g_tTex2s1a) DescriptorSet 0
+                              Decorate 231 Uniform
                               Decorate 238(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

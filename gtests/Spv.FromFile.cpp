@@ -253,6 +253,8 @@ INSTANTIATE_TEST_CASE_P(
         "spv.depthOut.frag",
         "spv.discard-dce.frag",
         "spv.doWhileLoop.frag",
+        "spv.dynamicallyUniform.frag",
+        "spv.dynamicallyUniformWarnings.vert",
         "spv.earlyReturnDiscard.frag",
         "spv.extPostDepthCoverage.frag",
         "spv.extPostDepthCoverage_Error.frag",

@@ -77,6 +77,7 @@ gl_FragCoord origin is upper left
                               Name 23  "param"
                               Decorate 20(MyTexture) DescriptorSet 0
                               Decorate 20(MyTexture) Binding 0
+                              Decorate 21 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

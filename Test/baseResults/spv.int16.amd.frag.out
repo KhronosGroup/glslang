@@ -77,6 +77,18 @@ spv.int16.amd.frag
                               Decorate 25(Uniforms) Block
                               Decorate 27 DescriptorSet 0
                               Decorate 27 Binding 0
+                              Decorate 32 Uniform
+                              Decorate 37 Uniform
+                              Decorate 38 Uniform
+                              Decorate 43 Uniform
+                              Decorate 47 Uniform
+                              Decorate 48 Uniform
+                              Decorate 317 Uniform
+                              Decorate 326 Uniform
+                              Decorate 317 Uniform
+                              Decorate 326 Uniform
+                              Decorate 376 Uniform
+                              Decorate 389 Uniform
                               MemberDecorate 515(Block) 0 Offset 0
                               MemberDecorate 515(Block) 1 Offset 6
                               Decorate 515(Block) Block
@@ -93,6 +105,28 @@ spv.int16.amd.frag
                               Decorate 526(sb) SpecId 104
                               Decorate 527(si16) SpecId 105
                               Decorate 528(su16) SpecId 106
+                              Decorate 529 Uniform
+                              Decorate 530 Uniform
+                              Decorate 531 Uniform
+                              Decorate 532 Uniform
+                              Decorate 533 Uniform
+                              Decorate 535 Uniform
+                              Decorate 536 Uniform
+                              Decorate 538 Uniform
+                              Decorate 540 Uniform
+                              Decorate 541 Uniform
+                              Decorate 543 Uniform
+                              Decorate 544 Uniform
+                              Decorate 545 Uniform
+                              Decorate 548 Uniform
+                              Decorate 549 Uniform
+                              Decorate 551 Uniform
+                              Decorate 553 Uniform
+                              Decorate 554 Uniform
+                              Decorate 556 Uniform
+                              Decorate 557 Uniform
+                              Decorate 558 Uniform
+                              Decorate 559 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
               14:             TypeInt 16 0

@@ -30,6 +30,9 @@ spv.xfb3.vert
                               Decorate 17(ComponentsBlock) Block
                               Decorate 19(components) DescriptorSet 0
                               Decorate 19(components) Binding 5
+                              Decorate 22 Uniform
+                              Decorate 27 Uniform
+                              Decorate 31 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

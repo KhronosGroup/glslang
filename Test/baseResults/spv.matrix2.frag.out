@@ -27,6 +27,7 @@ spv.matrix2.frag
                               Name 218  "colorTransform"
                               Name 219  "m"
                               Name 220  "n"
+                              Decorate 24 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

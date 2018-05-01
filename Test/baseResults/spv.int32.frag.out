@@ -84,6 +84,16 @@ spv.int32.frag
                               Decorate 27(Uniforms) Block
                               Decorate 29 DescriptorSet 0
                               Decorate 29 Binding 0
+                              Decorate 33 Uniform
+                              Decorate 37 Uniform
+                              Decorate 44 Uniform
+                              Decorate 48 Uniform
+                              Decorate 323 Uniform
+                              Decorate 332 Uniform
+                              Decorate 323 Uniform
+                              Decorate 332 Uniform
+                              Decorate 382 Uniform
+                              Decorate 395 Uniform
                               MemberDecorate 485(Block) 0 Offset 0
                               MemberDecorate 485(Block) 1 Offset 8
                               MemberDecorate 485(Block) 2 Offset 16

@@ -438,6 +438,7 @@ public:
         clearMemory();
         specConstant = false;
         nonUniform = false;
+        dynamicallyUniform = false;
         clearLayout();
     }
 
@@ -480,6 +481,7 @@ public:
         storage      = EvqTemporary;
         specConstant = false;
         nonUniform   = false;
+        dynamicallyUniform = false;
     }
 
     const char*         semanticName;
@@ -505,6 +507,7 @@ public:
     bool writeonly    : 1;
     bool specConstant : 1;  // having a constant_id is not sufficient: expressions have no id, but are still specConstant
     bool nonUniform   : 1;
+    bool dynamicallyUniform : 1;
 
     bool isMemory() const
     {
@@ -839,6 +842,24 @@ public:
     bool isNonUniform() const
     {
         return nonUniform;
+    }
+    bool isDynamicallyUniform() const
+    {
+        switch (storage) {
+        case EvqUniform:
+            return true;
+        default:
+            return dynamicallyUniform;
+        }
+    }
+    bool isDynamicallyUniformOrConstant() const
+    {
+        switch (storage) {
+        case EvqUniform:
+            return true;
+        default:
+            return dynamicallyUniform || isConstant();
+        }
     }
     bool isFrontEndConstant() const
     {

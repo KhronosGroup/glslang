@@ -37,7 +37,15 @@ spv.140.frag
                               Decorate 14(gl_FrontFacing) BuiltIn FrontFacing
                               Decorate 28(gl_ClipDistance) BuiltIn ClipDistance
                               Decorate 50(sampR) DescriptorSet 0
+                              Decorate 51 Uniform
+                              Decorate 54 Uniform
                               Decorate 58(sampB) DescriptorSet 0
+                              Decorate 59 Uniform
+                              Decorate 61 Uniform
+                              Decorate 63 Uniform
+                              Decorate 65 Uniform
+                              Decorate 66 Uniform
+                              Decorate 68 Uniform
                               Decorate 82(samp2Da) DescriptorSet 0
                               Decorate 85 ArrayStride 64
                               Decorate 86 ArrayStride 64

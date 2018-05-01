@@ -27,11 +27,26 @@ spv.boolInBlock.frag
                               Decorate 25(Buffer) BufferBlock
                               Decorate 27 DescriptorSet 0
                               Decorate 27 Binding 1
+                              Decorate 31 Uniform
                               MemberDecorate 40(Uniform) 0 Offset 0
                               Decorate 40(Uniform) Block
                               Decorate 42 DescriptorSet 0
                               Decorate 42 Binding 0
+                              Decorate 46 Uniform
+                              Decorate 51 Uniform
+                              Decorate 52 Uniform
+                              Decorate 65 Uniform
                               Decorate 74(fragColor) Location 0
+                              Decorate 77 Uniform
+                              Decorate 82 Uniform
+                              Decorate 83 Uniform
+                              Decorate 86 Uniform
+                              Decorate 87 Uniform
+                              Decorate 90 Uniform
+                              Decorate 96 Uniform
+                              Decorate 97 Uniform
+                              Decorate 98 Uniform
+                              Decorate 99 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeBool

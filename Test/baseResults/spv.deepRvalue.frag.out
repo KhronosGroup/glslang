@@ -27,7 +27,16 @@ spv.deepRvalue.frag
                               MemberName 131(str) 2  "c"
                               Name 133  "t"
                               Name 146  "gl_FragColor"
+                              Decorate 14 Uniform
+                              Decorate 20 Uniform
+                              Decorate 26 Uniform
+                              Decorate 32 Uniform
+                              Decorate 12 Uniform
                               Decorate 111(samp2D) DescriptorSet 0
+                              Decorate 112 Uniform
+                              Decorate 115 Uniform
+                              Decorate 117 Uniform
+                              Decorate 141 Uniform
                               Decorate 146(gl_FragColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

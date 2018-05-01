@@ -31,11 +31,14 @@ spv.shaderBallot.comp
                               Name 55  "data"
                               Decorate 10(gl_SubGroupInvocationARB) BuiltIn SubgroupLocalInvocationId
                               Decorate 12(gl_SubGroupSizeARB) BuiltIn SubgroupSize
+                              Decorate 12(gl_SubGroupSizeARB) Uniform
+                              Decorate 13 Uniform
                               Decorate 21(gl_SubGroupEqMaskARB) BuiltIn SubgroupEqMaskKHR
                               Decorate 23(gl_SubGroupGeMaskARB) BuiltIn SubgroupGeMaskKHR
                               Decorate 26(gl_SubGroupGtMaskARB) BuiltIn SubgroupGtMaskKHR
                               Decorate 29(gl_SubGroupLeMaskARB) BuiltIn SubgroupLeMaskKHR
                               Decorate 32(gl_SubGroupLtMaskARB) BuiltIn SubgroupLtMaskKHR
+                              Decorate 44 Uniform
                               MemberDecorate 52(Buffers) 0 Offset 0
                               MemberDecorate 52(Buffers) 1 Offset 16
                               MemberDecorate 52(Buffers) 2 Offset 32

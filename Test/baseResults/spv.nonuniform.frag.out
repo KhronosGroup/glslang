@@ -87,6 +87,7 @@ spv.nonuniform.frag
                               Decorate 90(nu_ii) DecorationNonUniformEXT
                               Decorate 91 DecorationNonUniformEXT
                               Decorate 94 DecorationNonUniformEXT
+                              Decorate 94 Uniform
                               MemberDecorate 97(bname) 0 Offset 0
                               Decorate 97(bname) BufferBlock
                               Decorate 100(storageBuffer) DescriptorSet 0
@@ -97,10 +98,12 @@ spv.nonuniform.frag
                               Decorate 110(sampledImage) Binding 5
                               Decorate 111 DecorationNonUniformEXT
                               Decorate 114 DecorationNonUniformEXT
+                              Decorate 117 Uniform
                               Decorate 125(storageImage) DescriptorSet 0
                               Decorate 125(storageImage) Binding 6
                               Decorate 126 DecorationNonUniformEXT
                               Decorate 129 DecorationNonUniformEXT
+                              Decorate 130 Uniform
                               Decorate 137(inputAttachment) DescriptorSet 0
                               Decorate 137(inputAttachment) Binding 7
                               Decorate 137(inputAttachment) InputAttachmentIndex 1
@@ -117,16 +120,21 @@ spv.nonuniform.frag
                               Decorate 168(v) DecorationNonUniformEXT
                               Decorate 171 DecorationNonUniformEXT
                               Decorate 173 DecorationNonUniformEXT
+                              Decorate 173 Uniform
                               Decorate 178 DecorationNonUniformEXT
                               Decorate 180 DecorationNonUniformEXT
+                              Decorate 180 Uniform
                               Decorate 184 DecorationNonUniformEXT
                               Decorate 186 DecorationNonUniformEXT
                               Decorate 188 DecorationNonUniformEXT
+                              Decorate 188 Uniform
                               Decorate 193(m) DecorationNonUniformEXT
                               Decorate 195 DecorationNonUniformEXT
+                              Decorate 198 Uniform
                               Decorate 203(s) DecorationNonUniformEXT
                               Decorate 205 DecorationNonUniformEXT
                               Decorate 207 DecorationNonUniformEXT
+                              Decorate 207 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

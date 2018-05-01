@@ -38,6 +38,9 @@ spv.intOps.vert
                               Name 173  "u3"
                               Name 182  "i3"
                               Name 247  "v4"
+                              Decorate 11 Uniform
+                              Decorate 17 Uniform
+                              Decorate 23 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

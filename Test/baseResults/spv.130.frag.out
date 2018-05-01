@@ -58,14 +58,50 @@ WARNING: 0:31: '#extension' : extension is only partially supported: GL_ARB_gpu_
                               Name 203  "s1D"
                               Name 204  "s2DS"
                               Decorate 21(samp2D) DescriptorSet 0
+                              Decorate 22 Uniform
+                              Decorate 25 Uniform
+                              Decorate 29 Uniform
+                              Decorate 31 Uniform
                               Decorate 37(samp2DA) DescriptorSet 0
+                              Decorate 38 Uniform
+                              Decorate 40 Uniform
+                              Decorate 29 Uniform
+                              Decorate 41 Uniform
                               Decorate 47(samp2DR) DescriptorSet 0
+                              Decorate 48 Uniform
+                              Decorate 25 Uniform
+                              Decorate 29 Uniform
+                              Decorate 49 Uniform
                               Decorate 55(samp2DS) DescriptorSet 0
+                              Decorate 56 Uniform
+                              Decorate 25 Uniform
+                              Decorate 29 Uniform
+                              Decorate 58 Uniform
+                              Decorate 61 Uniform
+                              Decorate 25 Uniform
+                              Decorate 29 Uniform
+                              Decorate 63 Uniform
                               Decorate 72(Sca) DescriptorSet 0
+                              Decorate 73 Uniform
+                              Decorate 76 Uniform
+                              Decorate 77 Uniform
                               Decorate 87(Isca) DescriptorSet 0
+                              Decorate 88 Uniform
                               Decorate 103(Usca) DescriptorSet 0
+                              Decorate 104 Uniform
+                              Decorate 107 Uniform
                               Decorate 118(Scas) DescriptorSet 0
+                              Decorate 119 Uniform
+                              Decorate 121 Uniform
+                              Decorate 122 Uniform
+                              Decorate 125 Uniform
+                              Decorate 134 Uniform
+                              Decorate 137 Uniform
+                              Decorate 139 Uniform
                               Decorate 167(sampC) DescriptorSet 0
+                              Decorate 168 Uniform
+                              Decorate 139 Uniform
+                              Decorate 169 Uniform
                               Decorate 173(gl_ClipDistance) BuiltIn ClipDistance
                               Decorate 184(fflat) Flat
                               Decorate 186(fnop) NoPerspective

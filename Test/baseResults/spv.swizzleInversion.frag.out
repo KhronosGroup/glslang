@@ -20,6 +20,9 @@ spv.swizzleInversion.frag
                               Name 37  "in3"
                               Name 40  "v32"
                               Name 43  "v31"
+                              Decorate 25 Uniform
+                              Decorate 25 Uniform
+                              Decorate 25 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

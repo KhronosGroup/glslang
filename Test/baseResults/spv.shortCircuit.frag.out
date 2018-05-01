@@ -21,6 +21,7 @@ spv.shortCircuit.frag
                               Name 142  "uv4"
                               Name 145  "ub41"
                               Name 146  "ub42"
+                              Decorate 25 Uniform
                               Decorate 34(ui) Flat
                               Decorate 140(uiv4) Flat
                2:             TypeVoid

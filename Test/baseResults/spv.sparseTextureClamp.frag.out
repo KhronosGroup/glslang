@@ -39,17 +39,60 @@ spv.sparseTextureClamp.frag
                               Name 286  "s2DRectShadow"
                               Name 305  "is2DArray"
                               Name 345  "outColor"
+                              Decorate 15 Uniform
+                              Decorate 19 Uniform
+                              Decorate 25 Uniform
                               Decorate 29(s2D) DescriptorSet 0
+                              Decorate 30 Uniform
                               Decorate 47(s3D) DescriptorSet 0
+                              Decorate 48 Uniform
                               Decorate 63(isCube) DescriptorSet 0
+                              Decorate 64 Uniform
                               Decorate 76(s2DShadow) DescriptorSet 0
+                              Decorate 77 Uniform
                               Decorate 92(sCubeArrayShadow) DescriptorSet 0
+                              Decorate 93 Uniform
+                              Decorate 105 Uniform
+                              Decorate 111 Uniform
+                              Decorate 117 Uniform
+                              Decorate 123 Uniform
+                              Decorate 132 Uniform
+                              Decorate 140 Uniform
+                              Decorate 144 Uniform
                               Decorate 154(us2DRect) DescriptorSet 0
+                              Decorate 155 Uniform
+                              Decorate 159 Uniform
                               Decorate 170(s2DArrayShadow) DescriptorSet 0
+                              Decorate 171 Uniform
+                              Decorate 174 Uniform
+                              Decorate 184 Uniform
+                              Decorate 144 Uniform
+                              Decorate 190 Uniform
+                              Decorate 159 Uniform
+                              Decorate 196 Uniform
+                              Decorate 174 Uniform
+                              Decorate 205 Uniform
                               Decorate 218(sCubeShadow) DescriptorSet 0
+                              Decorate 219 Uniform
                               Decorate 235(usCubeArray) DescriptorSet 0
+                              Decorate 236 Uniform
+                              Decorate 246 Uniform
+                              Decorate 254 Uniform
+                              Decorate 265 Uniform
+                              Decorate 273 Uniform
+                              Decorate 174 Uniform
                               Decorate 286(s2DRectShadow) DescriptorSet 0
+                              Decorate 287 Uniform
+                              Decorate 292 Uniform
                               Decorate 305(is2DArray) DescriptorSet 0
+                              Decorate 306 Uniform
+                              Decorate 310 Uniform
+                              Decorate 317 Uniform
+                              Decorate 174 Uniform
+                              Decorate 325 Uniform
+                              Decorate 292 Uniform
+                              Decorate 336 Uniform
+                              Decorate 310 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

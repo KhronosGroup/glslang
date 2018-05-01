@@ -19,6 +19,7 @@ spv.interpOps.frag
                               Name 47  "samp"
                               Name 72  "offset"
                               Name 98  "fragColor"
+                              Decorate 11 Uniform
                               Decorate 47(samp) Flat
                               Decorate 72(offset) Flat
                2:             TypeVoid

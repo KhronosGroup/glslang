@@ -35,6 +35,7 @@ spv.precision.frag
                               Name 116  "s"
                               Decorate 12(foo(vf3;) RelaxedPrecision
                               Decorate 11(mv3) RelaxedPrecision
+                              Decorate 31 Uniform
                               Decorate 38(sum) RelaxedPrecision
                               Decorate 40(uniform_medium) RelaxedPrecision
                               Decorate 41 RelaxedPrecision

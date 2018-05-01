@@ -39,6 +39,12 @@ spv.subgroupShuffle.comp
                               Decorate 24(Buffers) BufferBlock
                               Decorate 27(data) DescriptorSet 0
                               Decorate 27(data) Binding 0
+                              Decorate 183 Uniform
+                              Decorate 197 Uniform
+                              Decorate 210 Uniform
+                              Decorate 183 Uniform
+                              Decorate 197 Uniform
+                              Decorate 210 Uniform
                               Decorate 378 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

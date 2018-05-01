@@ -56,6 +56,7 @@ spv.types.frag
                               Decorate 123(u_i4) Flat
                               Decorate 125(i_i4) Flat
                               Decorate 165(gl_FragColor) Location 0
+                              Decorate 258 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeBool

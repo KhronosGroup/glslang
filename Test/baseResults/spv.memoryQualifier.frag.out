@@ -32,18 +32,31 @@ spv.memoryQualifier.frag
                               Decorate 12(i1D) DescriptorSet 0
                               Decorate 12(i1D) Binding 0
                               Decorate 12(i1D) Coherent
+                              Decorate 13 Uniform
+                              Decorate 16 Uniform
                               Decorate 19(i2D) DescriptorSet 0
                               Decorate 19(i2D) Binding 1
                               Decorate 19(i2D) Volatile
+                              Decorate 20 Uniform
+                              Decorate 22 Uniform
+                              Decorate 23 Uniform
                               Decorate 28(i2DRect) DescriptorSet 0
                               Decorate 28(i2DRect) Binding 2
                               Decorate 28(i2DRect) Restrict
+                              Decorate 29 Uniform
+                              Decorate 22 Uniform
+                              Decorate 30 Uniform
                               Decorate 35(i3D) DescriptorSet 0
                               Decorate 35(i3D) Binding 3
                               Decorate 35(i3D) NonWritable
+                              Decorate 36 Uniform
+                              Decorate 38 Uniform
+                              Decorate 39 Uniform
                               Decorate 44(iCube) DescriptorSet 0
                               Decorate 44(iCube) Binding 3
                               Decorate 44(iCube) NonReadable
+                              Decorate 45 Uniform
+                              Decorate 38 Uniform
                               MemberDecorate 49(Data) 0 Offset 0
                               MemberDecorate 49(Data) 1 Offset 8
                               MemberDecorate 50(Buffer) 0 Coherent

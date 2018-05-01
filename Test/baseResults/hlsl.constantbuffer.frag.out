@@ -159,14 +159,22 @@ gl_FragCoord origin is upper left
                               MemberDecorate 12(cb3) 1 Offset 4
                               Decorate 12(cb3) Block
                               Decorate 18(cb3) DescriptorSet 0
+                              Decorate 28 Uniform
                               MemberDecorate 31(cb1) 0 Offset 0
                               Decorate 31(cb1) Block
                               Decorate 33(cb1) DescriptorSet 0
                               Decorate 33(cb1) Binding 12
+                              Decorate 36 Uniform
                               Decorate 40(cb2) DescriptorSet 0
+                              Decorate 43 Uniform
+                              Decorate 45 Uniform
                               MemberDecorate 46(cbuff) 0 Offset 0
                               Decorate 46(cbuff) Block
                               Decorate 48 DescriptorSet 0
+                              Decorate 51 Uniform
+                              Decorate 52 Uniform
+                              Decorate 54 Uniform
+                              Decorate 59 Uniform
                               Decorate 64(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

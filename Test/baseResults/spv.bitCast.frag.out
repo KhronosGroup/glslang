@@ -26,6 +26,9 @@ spv.bitCast.frag
                               Name 139  "u3"
                               Name 148  "u4"
                               Name 154  "fragColor"
+                              Decorate 11 Uniform
+                              Decorate 56 Uniform
+                              Decorate 87 Uniform
                               Decorate 89(i1) Flat
                               Decorate 98(i2) Flat
                               Decorate 107(i3) Flat
@@ -34,6 +37,7 @@ spv.bitCast.frag
                               Decorate 130(u2) Flat
                               Decorate 139(u3) Flat
                               Decorate 148(u4) Flat
+                              Decorate 169 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

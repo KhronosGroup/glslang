@@ -25,6 +25,7 @@ spv.swizzle.frag
                               Name 83  "rep"
                               Name 107  "blend"
                               Decorate 69(gl_FragColor) Location 0
+                              Decorate 86 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

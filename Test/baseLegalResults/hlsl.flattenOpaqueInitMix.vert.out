@@ -15,6 +15,8 @@ hlsl.flattenOpaqueInitMix.vert
                               Decorate 44(g_tInputTexture_sampler) DescriptorSet 0
                               Decorate 47(g_tInputTexture) DescriptorSet 0
                               Decorate 57(@entryPointOutput) Location 0
+                              Decorate 63 Uniform
+                              Decorate 64 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeSampler

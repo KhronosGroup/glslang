@@ -41,6 +41,33 @@ spv.subgroupPartitioned.comp
                               Decorate 28(Buffers) BufferBlock
                               Decorate 31(data) DescriptorSet 0
                               Decorate 31(data) Binding 0
+                              Decorate 727 Uniform
+                              Decorate 740 Uniform
+                              Decorate 752 Uniform
+                              Decorate 727 Uniform
+                              Decorate 740 Uniform
+                              Decorate 752 Uniform
+                              Decorate 727 Uniform
+                              Decorate 740 Uniform
+                              Decorate 752 Uniform
+                              Decorate 727 Uniform
+                              Decorate 740 Uniform
+                              Decorate 752 Uniform
+                              Decorate 727 Uniform
+                              Decorate 740 Uniform
+                              Decorate 752 Uniform
+                              Decorate 727 Uniform
+                              Decorate 740 Uniform
+                              Decorate 752 Uniform
+                              Decorate 727 Uniform
+                              Decorate 740 Uniform
+                              Decorate 752 Uniform
+                              Decorate 727 Uniform
+                              Decorate 740 Uniform
+                              Decorate 752 Uniform
+                              Decorate 727 Uniform
+                              Decorate 740 Uniform
+                              Decorate 752 Uniform
                               Decorate 2505 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

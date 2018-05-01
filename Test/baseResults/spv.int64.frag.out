@@ -59,6 +59,20 @@ spv.int64.frag
                               Decorate 28(Uniforms) Block
                               Decorate 30 DescriptorSet 0
                               Decorate 30 Binding 0
+                              Decorate 35 Uniform
+                              Decorate 39 Uniform
+                              Decorate 47 Uniform
+                              Decorate 51 Uniform
+                              Decorate 297 Uniform
+                              Decorate 306 Uniform
+                              Decorate 297 Uniform
+                              Decorate 306 Uniform
+                              Decorate 356 Uniform
+                              Decorate 369 Uniform
+                              Decorate 390 Uniform
+                              Decorate 391 Uniform
+                              Decorate 395 Uniform
+                              Decorate 396 Uniform
                               MemberDecorate 462(Block) 0 Offset 0
                               MemberDecorate 462(Block) 1 Offset 24
                               Decorate 462(Block) Block
@@ -69,6 +83,20 @@ spv.int64.frag
                               Decorate 467(si) SpecId 102
                               Decorate 468(su) SpecId 103
                               Decorate 469(sb) SpecId 104
+                              Decorate 470 Uniform
+                              Decorate 471 Uniform
+                              Decorate 472 Uniform
+                              Decorate 473 Uniform
+                              Decorate 474 Uniform
+                              Decorate 475 Uniform
+                              Decorate 476 Uniform
+                              Decorate 477 Uniform
+                              Decorate 478 Uniform
+                              Decorate 479 Uniform
+                              Decorate 481 Uniform
+                              Decorate 483 Uniform
+                              Decorate 485 Uniform
+                              Decorate 487 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
               14:             TypeInt 64 0

@@ -140,6 +140,9 @@ Shader version: 500
                               Name 47  "g_sSamp"
                               Decorate 17(g_tTex1df4) DescriptorSet 0
                               Decorate 17(g_tTex1df4) Binding 0
+                              Decorate 18 Uniform
+                              Decorate 25 Uniform
+                              Decorate 30 Uniform
                               Decorate 42(@entryPointOutput.Pos) BuiltIn Position
                               Decorate 47(g_sSamp) DescriptorSet 0
                               Decorate 47(g_sSamp) Binding 0

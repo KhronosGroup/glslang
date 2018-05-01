@@ -263,14 +263,14 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.intermNode> iteration_statement iteration_statement_nonattributed jump_statement statement_no_new_scope statement_scoped
 %type <interm> single_declaration init_declarator_list
 
-%type <interm> parameter_declaration parameter_declarator parameter_type_specifier
+%type <interm> parameter_declaration parameter_declaration_nonattributed parameter_declarator parameter_type_specifier
 
 %type <interm> array_specifier
 %type <interm.type> precise_qualifier invariant_qualifier interpolation_qualifier storage_qualifier precision_qualifier
 %type <interm.type> layout_qualifier layout_qualifier_id_list layout_qualifier_id
 %type <interm.type> non_uniform_qualifier
 
-%type <interm.type> type_qualifier fully_specified_type type_specifier
+%type <interm.type> type_qualifier fully_specified_type fully_specified_type_nonattributed type_specifier
 %type <interm.type> single_type_qualifier
 %type <interm.type> type_specifier_nonarray
 %type <interm.type> struct_specifier
@@ -420,6 +420,7 @@ function_call_header_with_parameters
     : function_call_header assignment_expression {
         TParameter param = { 0, new TType };
         param.type->shallowCopy($2->getType());
+        parseContext.propagateDynamicallyUniform($1.function, param, $2->getType());
         $1.function->addParameter(param);
         $$.function = $1.function;
         $$.intermNode = $2;
@@ -427,6 +428,7 @@ function_call_header_with_parameters
     | function_call_header_with_parameters COMMA assignment_expression {
         TParameter param = { 0, new TType };
         param.type->shallowCopy($3->getType());
+        parseContext.propagateDynamicallyUniform($1.function, param, $3->getType());
         $1.function->addParameter(param);
         $$.function = $1.function;
         $$.intermNode = parseContext.intermediate.growAggregate($1.intermNode, $3, $2.loc);
@@ -702,6 +704,7 @@ assignment_expression
         parseContext.specializationCheck($2.loc, $1->getType(), "=");
         parseContext.lValueErrorCheck($2.loc, "assign", $1);
         parseContext.rValueErrorCheck($2.loc, "assign", $3);
+        parseContext.dynamicallyUniformCheck($2.loc, $1, $3);
         $$ = parseContext.intermediate.addAssign($2.op, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.assignError($2.loc, "assign", $1->getCompleteString(), $3->getCompleteString());
@@ -956,6 +959,16 @@ parameter_declarator
     ;
 
 parameter_declaration
+    : attribute parameter_declaration_nonattributed {
+        $$ = $2;
+        parseContext.requireExtensions($$.loc, 1, &E_GL_EXT_dynamically_uniform_attribute, "attribute");
+        parseContext.handleParameterAttributes(*$1, $$.param, $$.loc);
+    }
+    | parameter_declaration_nonattributed {
+        $$ = $1;
+    }
+
+parameter_declaration_nonattributed
     //
     // With name
     //
@@ -1062,6 +1075,16 @@ single_declaration
 // Grammar Note:  No 'enum', or 'typedef'.
 
 fully_specified_type
+    : fully_specified_type_nonattributed {
+        $$ = $1;
+    }
+    | attribute fully_specified_type_nonattributed {
+        $$ = $2;
+        parseContext.requireExtensions($$.loc, 1, &E_GL_EXT_dynamically_uniform_attribute, "attribute");
+        parseContext.handleTypeAttributes(*$1, $$, $$.loc);
+    }
+
+fully_specified_type_nonattributed
     : type_specifier {
         $$ = $1;
 
@@ -1298,6 +1321,7 @@ storage_qualifier
         parseContext.globalCheck($1.loc, "uniform");
         $$.init($1.loc);
         $$.qualifier.storage = EvqUniform;
+        $$.qualifier.dynamicallyUniform = true;
     }
     | BUFFER {
         parseContext.globalCheck($1.loc, "buffer");
@@ -3319,6 +3343,7 @@ selection_statement
         $$ = $1;
     }
     | attribute selection_statement_nonattributed {
+        parseContext.requireExtensions($2->getLoc(), 1, &E_GL_EXT_control_flow_attributes, "attribute");
         parseContext.handleSelectionAttributes(*$1, $2);
         $$ = $2;
     }
@@ -3364,6 +3389,7 @@ switch_statement
         $$ = $1;
     }
     | attribute switch_statement_nonattributed {
+        parseContext.requireExtensions($2->getLoc(), 1, &E_GL_EXT_control_flow_attributes, "attribute");
         parseContext.handleSwitchAttributes(*$1, $2);
         $$ = $2;
     }
@@ -3426,6 +3452,7 @@ iteration_statement
         $$ = $1;
     }
     | attribute iteration_statement_nonattributed {
+        parseContext.requireExtensions($2->getLoc(), 1, &E_GL_EXT_control_flow_attributes, "attribute");
         parseContext.handleLoopAttributes(*$1, $2);
         $$ = $2;
     }
@@ -3592,7 +3619,6 @@ function_definition
 attribute
     : LEFT_BRACKET LEFT_BRACKET attribute_list RIGHT_BRACKET RIGHT_BRACKET {
         $$ = $3;
-        parseContext.requireExtensions($1.loc, 1, &E_GL_EXT_control_flow_attributes, "attribute");
     }
 
 attribute_list

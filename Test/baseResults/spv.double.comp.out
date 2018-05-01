@@ -26,8 +26,10 @@ spv.double.comp
                               MemberDecorate 8(bufName) 1 Offset 8
                               Decorate 8(bufName) BufferBlock
                               Decorate 10(bufInst) DescriptorSet 0
+                              Decorate 17 Uniform
                               Decorate 26(gl_GlobalInvocationID) BuiltIn GlobalInvocationId
                               Decorate 33(gl_LocalInvocationID) BuiltIn LocalInvocationId
+                              Decorate 53 Uniform
                               Decorate 59(destTex) DescriptorSet 0
                               Decorate 59(destTex) NonReadable
                2:             TypeVoid

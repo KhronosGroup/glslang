@@ -70,6 +70,7 @@ spv.accessChain.frag
                               Name 215  "param"
                               Name 219  "param"
                               Decorate 69(OutColor) Location 0
+                              Decorate 163 Uniform
                               Decorate 170(u) Flat
                2:             TypeVoid
                3:             TypeFunction 2

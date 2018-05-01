@@ -411,6 +411,10 @@ triangle order = cw
                               Decorate 33(TessellationBuffer) Block
                               Decorate 35 DescriptorSet 0
                               Decorate 35 Binding 0
+                              Decorate 38 Uniform
+                              Decorate 43 Uniform
+                              Decorate 47 Uniform
+                              Decorate 50 Uniform
                               Decorate 72(patch) Location 0
                               Decorate 76(pointId) BuiltIn InvocationId
                               Decorate 79(patchId) BuiltIn PrimitiveId

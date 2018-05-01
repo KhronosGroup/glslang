@@ -200,6 +200,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_post_depth_coverage]                     = EBhDisable;
     extensionBehavior[E_GL_EXT_control_flow_attributes]                 = EBhDisable;
     extensionBehavior[E_GL_EXT_nonuniform_qualifier]                    = EBhDisable;
+    extensionBehavior[E_GL_EXT_dynamically_uniform_attribute]           = EBhDisable;
 
     // #line and #include
     extensionBehavior[E_GL_GOOGLE_cpp_style_line_directive]          = EBhDisable;

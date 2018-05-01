@@ -42,31 +42,81 @@ spv.image.frag
                               Name 357  "wo2D"
                               Name 362  "fragData"
                               Name 375  "ic4D"
+                              Decorate 11 Uniform
                               Decorate 15(i1D) DescriptorSet 0
                               Decorate 15(i1D) Binding 0
+                              Decorate 16 Uniform
+                              Decorate 17 Uniform
                               Decorate 27(i2D) DescriptorSet 0
                               Decorate 27(i2D) Binding 1
+                              Decorate 28 Uniform
+                              Decorate 30 Uniform
                               Decorate 38(i3D) DescriptorSet 0
                               Decorate 38(i3D) Binding 2
+                              Decorate 39 Uniform
+                              Decorate 40 Uniform
                               Decorate 45(iCube) DescriptorSet 0
                               Decorate 45(iCube) Binding 3
+                              Decorate 46 Uniform
+                              Decorate 47 Uniform
                               Decorate 55(iCubeArray) DescriptorSet 0
                               Decorate 55(iCubeArray) Binding 4
+                              Decorate 56 Uniform
+                              Decorate 57 Uniform
                               Decorate 62(i2DRect) DescriptorSet 0
                               Decorate 62(i2DRect) Binding 5
+                              Decorate 63 Uniform
+                              Decorate 64 Uniform
                               Decorate 72(i1DArray) DescriptorSet 0
                               Decorate 72(i1DArray) Binding 6
+                              Decorate 73 Uniform
+                              Decorate 74 Uniform
                               Decorate 82(i2DArray) DescriptorSet 0
                               Decorate 82(i2DArray) Binding 7
+                              Decorate 83 Uniform
+                              Decorate 84 Uniform
                               Decorate 89(iBuffer) DescriptorSet 0
                               Decorate 89(iBuffer) Binding 8
+                              Decorate 90 Uniform
+                              Decorate 91 Uniform
                               Decorate 98(i2DMS) DescriptorSet 0
                               Decorate 98(i2DMS) Binding 9
+                              Decorate 99 Uniform
+                              Decorate 100 Uniform
                               Decorate 108(i2DMSArray) DescriptorSet 0
                               Decorate 108(i2DMSArray) Binding 10
+                              Decorate 109 Uniform
+                              Decorate 110 Uniform
+                              Decorate 113 Uniform
+                              Decorate 114 Uniform
+                              Decorate 119 Uniform
+                              Decorate 120 Uniform
+                              Decorate 129 Uniform
+                              Decorate 130 Uniform
                               Decorate 132(ic1D) Flat
+                              Decorate 137 Uniform
+                              Decorate 140 Uniform
                               Decorate 142(ic2D) Flat
+                              Decorate 147 Uniform
+                              Decorate 150 Uniform
                               Decorate 152(ic3D) Flat
+                              Decorate 157 Uniform
+                              Decorate 160 Uniform
+                              Decorate 165 Uniform
+                              Decorate 168 Uniform
+                              Decorate 173 Uniform
+                              Decorate 176 Uniform
+                              Decorate 181 Uniform
+                              Decorate 184 Uniform
+                              Decorate 189 Uniform
+                              Decorate 192 Uniform
+                              Decorate 197 Uniform
+                              Decorate 200 Uniform
+                              Decorate 205 Uniform
+                              Decorate 208 Uniform
+                              Decorate 214 Uniform
+                              Decorate 218 Uniform
+                              Decorate 224 Uniform
                               Decorate 232(ii1D) DescriptorSet 0
                               Decorate 232(ii1D) Binding 11
                               Decorate 245(ui2D) DescriptorSet 0
@@ -75,6 +125,7 @@ spv.image.frag
                               Decorate 357(wo2D) DescriptorSet 0
                               Decorate 357(wo2D) Binding 1
                               Decorate 357(wo2D) NonReadable
+                              Decorate 358 Uniform
                               Decorate 375(ic4D) Flat
                2:             TypeVoid
                3:             TypeFunction 2

@@ -22,6 +22,7 @@ ERROR: Source entry point must be "main"
                               MemberDecorate 11(gl_PerVertex) 2 BuiltIn ClipDistance
                               MemberDecorate 11(gl_PerVertex) 3 BuiltIn CullDistance
                               Decorate 11(gl_PerVertex) Block
+                              Decorate 17 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

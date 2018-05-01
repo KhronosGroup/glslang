@@ -25,15 +25,18 @@ spv.310.bitcast.frag
                               Name 130  "u2"
                               Name 139  "u3"
                               Name 148  "u4"
+                              Decorate 11 Uniform
                               Decorate 14(f1) RelaxedPrecision
                               Decorate 15 RelaxedPrecision
                               Decorate 26(f2) RelaxedPrecision
                               Decorate 27 RelaxedPrecision
                               Decorate 37(f3) RelaxedPrecision
                               Decorate 38 RelaxedPrecision
+                              Decorate 56 Uniform
                               Decorate 57 RelaxedPrecision
                               Decorate 64 RelaxedPrecision
                               Decorate 72 RelaxedPrecision
+                              Decorate 87 Uniform
                               Decorate 89(i1) RelaxedPrecision
                               Decorate 89(i1) Flat
                               Decorate 90 RelaxedPrecision

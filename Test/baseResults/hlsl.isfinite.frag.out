@@ -200,6 +200,9 @@ gl_FragCoord origin is upper left
                               MemberDecorate 35($Global) 2 Offset 16
                               Decorate 35($Global) Block
                               Decorate 37 DescriptorSet 0
+                              Decorate 42 Uniform
+                              Decorate 55 Uniform
+                              Decorate 69 Uniform
                               Decorate 83(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

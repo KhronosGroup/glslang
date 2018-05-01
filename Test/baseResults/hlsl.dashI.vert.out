@@ -25,6 +25,15 @@ hlsl.dashI.vert
                               MemberDecorate 11($Global) 4 Offset 64
                               Decorate 11($Global) Block
                               Decorate 13 DescriptorSet 0
+                              Decorate 18 Uniform
+                              Decorate 21 Uniform
+                              Decorate 22 Uniform
+                              Decorate 25 Uniform
+                              Decorate 26 Uniform
+                              Decorate 29 Uniform
+                              Decorate 30 Uniform
+                              Decorate 33 Uniform
+                              Decorate 34 Uniform
                               Decorate 38(@entryPointOutput) BuiltIn Position
                2:             TypeVoid
                3:             TypeFunction 2

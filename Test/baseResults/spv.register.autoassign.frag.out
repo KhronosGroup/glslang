@@ -46,12 +46,16 @@ spv.register.autoassign.frag
                               Name 154  "g_tTex_unused3"
                               Decorate 21(g_tTex1) DescriptorSet 0
                               Decorate 21(g_tTex1) Binding 11
+                              Decorate 22 Uniform
                               Decorate 25(g_sSamp1) DescriptorSet 0
                               Decorate 25(g_sSamp1) Binding 5
+                              Decorate 26 Uniform
                               Decorate 31(g_tTex2) DescriptorSet 0
                               Decorate 31(g_tTex2) Binding 14
+                              Decorate 32 Uniform
                               Decorate 33(g_sSamp2) DescriptorSet 0
                               Decorate 33(g_sSamp2) Binding 6
+                              Decorate 34 Uniform
                               Decorate 43(g_tTex3) DescriptorSet 0
                               Decorate 43(g_tTex3) Binding 13
                               Decorate 50(g_sSamp3) DescriptorSet 0
@@ -62,8 +66,10 @@ spv.register.autoassign.frag
                               Decorate 73(g_sSamp4) Binding 8
                               Decorate 88(g_tTex5) DescriptorSet 0
                               Decorate 88(g_tTex5) Binding 16
+                              Decorate 89 Uniform
                               Decorate 90(g_sSamp5) DescriptorSet 0
                               Decorate 90(g_sSamp5) Binding 9
+                              Decorate 91 Uniform
                               MemberDecorate 97(MyStruct_t) 0 Offset 0
                               MemberDecorate 97(MyStruct_t) 1 Offset 4
                               MemberDecorate 97(MyStruct_t) 2 Offset 16
@@ -74,12 +80,18 @@ spv.register.autoassign.frag
                               Decorate 99($Global) Block
                               Decorate 101 DescriptorSet 0
                               Decorate 101 Binding 20
+                              Decorate 110 Uniform
+                              Decorate 111 Uniform
                               Decorate 123(g_tTex_unused1) DescriptorSet 0
                               Decorate 123(g_tTex_unused1) Binding 10
+                              Decorate 124 Uniform
                               Decorate 125(g_sSamp_unused1) DescriptorSet 0
+                              Decorate 126 Uniform
                               Decorate 130(g_tTex_unused2) DescriptorSet 0
                               Decorate 130(g_tTex_unused2) Binding 12
+                              Decorate 131 Uniform
                               Decorate 132(g_sSamp_unused2) DescriptorSet 0
+                              Decorate 133 Uniform
                               Decorate 151(@entryPointOutput.Color) Location 0
                               Decorate 154(g_tTex_unused3) DescriptorSet 0
                2:             TypeVoid

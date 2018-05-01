@@ -37,6 +37,7 @@ WARNING: 0:6: '[][]' : Generating SPIR-V array-of-arrays, but Vulkan only suppor
                               MemberDecorate 94(uAofA) 0 Offset 0
                               Decorate 94(uAofA) Block
                               Decorate 98(nameAofA) DescriptorSet 0
+                              Decorate 101 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -53,11 +53,29 @@ spv.400.frag
                               Name 1115  "id"
                               Name 1116  "gl_PrimitiveID"
                               Decorate 17(u2drs) DescriptorSet 0
+                              Decorate 18 Uniform
+                              Decorate 22 Uniform
+                              Decorate 22 Uniform
+                              Decorate 572 Uniform
+                              Decorate 581 Uniform
+                              Decorate 590 Uniform
                               Decorate 1025(arrayedSampler) DescriptorSet 0
                               Decorate 1027(i) Flat
                               Decorate 1038(gl_ClipDistance) BuiltIn ClipDistance
                               Decorate 1054(samp2dr) DescriptorSet 0
+                              Decorate 1055 Uniform
+                              Decorate 1069 Uniform
                               Decorate 1080(isamp2DA) DescriptorSet 0
+                              Decorate 1081 Uniform
+                              Decorate 1083 Uniform
+                              Decorate 1084 Uniform
+                              Decorate 1085 Uniform
+                              Decorate 1086 Uniform
+                              Decorate 1083 Uniform
+                              Decorate 1084 Uniform
+                              Decorate 1087 Uniform
+                              Decorate 1090 Uniform
+                              Decorate 1083 Uniform
                               Decorate 1097(gl_FragCoord) BuiltIn FragCoord
                               Decorate 1099(vl2) Location 6
                               Decorate 1107(u) Flat

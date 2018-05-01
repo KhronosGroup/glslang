@@ -18,6 +18,8 @@ hlsl.flattenSubset.frag
                               Decorate 33(tex) DescriptorSet 0
                               Decorate 47(vpos) Location 0
                               Decorate 50(@entryPointOutput) Location 0
+                              Decorate 57 Uniform
+                              Decorate 61 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -49,6 +49,9 @@ spv.300layoutp.vert
                               MemberDecorate 17(Transform) 3 Offset 176
                               Decorate 17(Transform) Block
                               Decorate 19(tblock) DescriptorSet 0
+                              Decorate 23 Uniform
+                              Decorate 26 Uniform
+                              Decorate 27 Uniform
                               Decorate 32 ArrayStride 16
                               MemberDecorate 33(T3) 0 ColMajor
                               MemberDecorate 33(T3) 0 Offset 0
@@ -62,15 +65,30 @@ spv.300layoutp.vert
                               MemberDecorate 33(T3) 3 Offset 160
                               Decorate 33(T3) Block
                               Decorate 35 DescriptorSet 0
+                              Decorate 37 Uniform
+                              Decorate 38 Uniform
+                              Decorate 40 Uniform
+                              Decorate 41 Uniform
                               MemberDecorate 42(T2) 0 Offset 0
                               MemberDecorate 42(T2) 1 RowMajor
                               MemberDecorate 42(T2) 1 Offset 16
                               MemberDecorate 42(T2) 1 MatrixStride 16
                               Decorate 42(T2) Block
                               Decorate 44 DescriptorSet 0
+                              Decorate 46 Uniform
+                              Decorate 47 Uniform
                               Decorate 52(c) Location 7
+                              Decorate 57 Uniform
                               Decorate 60(iout) Flat
+                              Decorate 64 Uniform
                               Decorate 72(aiv2) Location 9
+                              Decorate 92 Uniform
+                              Decorate 94 Uniform
+                              Decorate 97 Uniform
+                              Decorate 103 Uniform
+                              Decorate 105 Uniform
+                              Decorate 107 Uniform
+                              Decorate 108 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32
