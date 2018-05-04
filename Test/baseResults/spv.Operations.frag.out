@@ -29,6 +29,8 @@ spv.Operations.frag
                               Name 531  "uuv4"
                               Decorate 22(ui) Flat
                               Decorate 288(uui) Flat
+                              Decorate 509 Uniform
+                              Decorate 512 Uniform
                               Decorate 526(uiv4) Flat
                               Decorate 531(uuv4) Flat
                2:             TypeVoid

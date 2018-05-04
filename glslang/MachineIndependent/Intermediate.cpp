@@ -164,6 +164,11 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
             isNonuniformPropagating(node->getOp()))
         node->getWritableType().getQualifier().nonUniform = true;
 
+    const bool lhsUniform = node->getLeft()->getQualifier().isDynamicallyUniformOrConstant();
+    const bool rhsUniform = node->getRight()->getQualifier().isDynamicallyUniformOrConstant();
+    if (lhsUniform && rhsUniform)
+        node->getWritableType().getQualifier().dynamicallyUniform = true;
+
     return node;
 }
 
@@ -179,6 +184,12 @@ TIntermBinary* TIntermediate::addBinaryNode(TOperator op, TIntermTyped* left, TI
     node->setLoc(loc);
     node->setLeft(left);
     node->setRight(right);
+
+    const bool lhsUniform = left->getType().getQualifier().isDynamicallyUniformOrConstant();
+    const bool rhsUniform = right->getType().getQualifier().isDynamicallyUniformOrConstant();
+
+    if (lhsUniform && rhsUniform)
+        node->getWritableType().getQualifier().dynamicallyUniform = true;
 
     return node;
 }
@@ -376,6 +387,10 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     if (node->getOperand()->getQualifier().nonUniform && isNonuniformPropagating(node->getOp()))
         node->getWritableType().getQualifier().nonUniform = true;
 
+    const bool isUniform = node->getOperand()->getQualifier().isDynamicallyUniformOrConstant();
+    if (isUniform)
+        node->getWritableType().getQualifier().dynamicallyUniform = true;
+
     return node;
 }
 
@@ -398,10 +413,32 @@ TIntermTyped* TIntermediate::addBuiltInFunctionCall(const TSourceLoc& loc, TOper
                 return folded;
         }
 
-        return addUnaryNode(op, child, child->getLoc(), returnType);
+        TIntermTyped* node = addUnaryNode(op, child, child->getLoc(), returnType);
+
+        if (child->getType().getQualifier().isDynamicallyUniformOrConstant())
+            node->getWritableType().getQualifier().dynamicallyUniform = true;
+
+        return node;
     } else {
         // setAggregateOperater() calls fold() for constant folding
         TIntermTyped* node = setAggregateOperator(childNode, op, returnType, loc);
+
+        if (!(childNode && childNode->getAsAggregate()))
+            return node;
+
+        bool dynamicallyUniform = true;
+
+        for (auto p : childNode->getAsAggregate()->getSequence()) {
+            if (!p->getAsTyped()) {
+                dynamicallyUniform = false;
+                break;
+            }
+
+            dynamicallyUniform &= p->getAsTyped()->getType().getQualifier().isDynamicallyUniformOrConstant();
+        }
+
+        if (dynamicallyUniform)
+            node->getWritableType().getQualifier().dynamicallyUniform = true;
 
         return node;
     }
@@ -714,6 +751,10 @@ TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
     // Propagate specialization-constant-ness, if allowed
     if (node->getType().getQualifier().isSpecConstant() && isSpecializationOperation(*newNode))
         newNode->getWritableType().getQualifier().makeSpecConstant();
+
+    const bool isUniform = node->getType().getQualifier().isDynamicallyUniformOrConstant();
+    if (isUniform)
+        newNode->getWritableType().getQualifier().dynamicallyUniform = true;
 
     return newNode;
 }
@@ -2153,6 +2194,17 @@ TIntermSelection* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePai
     TIntermSelection* node = new TIntermSelection(cond, nodePair.node1, nodePair.node2);
     node->setLoc(loc);
 
+    if (nodePair.node1 && nodePair.node2 && nodePair.node1->getAsTyped() && nodePair.node2->getAsTyped()) {
+        TIntermTyped* lhs = nodePair.node1->getAsTyped();
+        TIntermTyped* rhs = nodePair.node2->getAsTyped();
+
+        const bool cndUniform = cond->getType().getQualifier().isDynamicallyUniformOrConstant();
+        const bool lhsUniform = lhs->getType().getQualifier().isDynamicallyUniformOrConstant();
+        const bool rhsUniform = rhs->getType().getQualifier().isDynamicallyUniformOrConstant();
+        if (cndUniform && lhsUniform && rhsUniform)
+            node->getWritableType().getQualifier().dynamicallyUniform = true;
+    }
+
     return node;
 }
 
@@ -2273,6 +2325,12 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
 
     if (getSource() == EShSourceHlsl)
         node->setNoShortCircuit();
+
+    const bool cndUniform = cond->getType().getQualifier().isDynamicallyUniformOrConstant();
+    const bool lhsUniform = trueBlock->getType().getQualifier().isDynamicallyUniformOrConstant();
+    const bool rhsUniform = falseBlock->getType().getQualifier().isDynamicallyUniformOrConstant();
+    if (cndUniform && lhsUniform && rhsUniform)
+        node->getWritableType().getQualifier().dynamicallyUniform = true;
 
     return node;
 }

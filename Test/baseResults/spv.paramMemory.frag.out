@@ -54,6 +54,7 @@ spv.paramMemory.frag
                               Decorate 57(image4) Binding 3
                               Decorate 57(image4) NonReadable
                               Decorate 66(out_color) Location 0
+                              Decorate 68 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

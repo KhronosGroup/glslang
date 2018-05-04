@@ -118,6 +118,22 @@ spv.explicittypes.frag
                               Decorate 26(Uniforms) Block
                               Decorate 28 DescriptorSet 0
                               Decorate 28 Binding 0
+                              Decorate 33 Uniform
+                              Decorate 37 Uniform
+                              Decorate 47 Uniform
+                              Decorate 51 Uniform
+                              Decorate 60 Uniform
+                              Decorate 64 Uniform
+                              Decorate 72 Uniform
+                              Decorate 76 Uniform
+                              Decorate 86 Uniform
+                              Decorate 90 Uniform
+                              Decorate 99 Uniform
+                              Decorate 103 Uniform
+                              Decorate 113 Uniform
+                              Decorate 117 Uniform
+                              Decorate 126 Uniform
+                              Decorate 130 Uniform
                               MemberDecorate 573(Block) 0 Offset 0
                               MemberDecorate 573(Block) 1 Offset 4
                               MemberDecorate 573(Block) 2 Offset 8

@@ -23,12 +23,28 @@ spv.texture.vert
                               Name 106  "shadowSampler1D"
                               Name 118  "shadowSampler2D"
                               Name 148  "gl_Position"
+                              Decorate 17 Uniform
+                              Decorate 22 Uniform
+                              Decorate 25 Uniform
                               Decorate 29(texSampler1D) DescriptorSet 0
+                              Decorate 30 Uniform
+                              Decorate 36 Uniform
+                              Decorate 45 Uniform
                               Decorate 56(texSampler2D) DescriptorSet 0
+                              Decorate 57 Uniform
+                              Decorate 63 Uniform
+                              Decorate 69 Uniform
                               Decorate 80(texSampler3D) DescriptorSet 0
+                              Decorate 81 Uniform
+                              Decorate 87 Uniform
                               Decorate 96(texSamplerCube) DescriptorSet 0
+                              Decorate 97 Uniform
                               Decorate 106(shadowSampler1D) DescriptorSet 0
+                              Decorate 107 Uniform
                               Decorate 118(shadowSampler2D) DescriptorSet 0
+                              Decorate 119 Uniform
+                              Decorate 127 Uniform
+                              Decorate 137 Uniform
                               Decorate 148(gl_Position) BuiltIn Position
                2:             TypeVoid
                3:             TypeFunction 2

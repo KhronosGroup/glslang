@@ -171,6 +171,7 @@ local_size = (256, 1, 1)
                               Decorate 44(g_input) Binding 0
                               Decorate 50(g_output) DescriptorSet 0
                               Decorate 50(g_output) Binding 1
+                              Decorate 51 Uniform
                               Decorate 56(dispatchId) BuiltIn GlobalInvocationId
                2:             TypeVoid
                3:             TypeFunction 2

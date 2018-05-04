@@ -12,6 +12,7 @@ spv.merge-unreachable.frag
                               Name 4  "main"
                               Name 9  "v"
                               Decorate 9(v) Location 1
+                              Decorate 15 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

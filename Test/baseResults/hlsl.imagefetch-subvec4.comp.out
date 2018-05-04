@@ -92,8 +92,10 @@ local_size = (8, 8, 8)
                               Name 36  "param"
                               Decorate 18(IN) DescriptorSet 0
                               Decorate 18(IN) Binding 0
+                              Decorate 19 Uniform
                               Decorate 28(OUT) DescriptorSet 0
                               Decorate 28(OUT) Binding 1
+                              Decorate 29 Uniform
                               Decorate 34(tid) BuiltIn GlobalInvocationId
                2:             TypeVoid
                3:             TypeFunction 2

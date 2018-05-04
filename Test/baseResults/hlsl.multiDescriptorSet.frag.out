@@ -42,22 +42,28 @@ hlsl.multiDescriptorSet.frag
                               Decorate 23(cbChangesEveryFrame) Block
                               Decorate 25 DescriptorSet 2
                               Decorate 25 Binding 2
+                              Decorate 28 Uniform
                               MemberDecorate 34(cbNeverChanges) 0 RowMajor
                               MemberDecorate 34(cbNeverChanges) 0 Offset 0
                               MemberDecorate 34(cbNeverChanges) 0 MatrixStride 16
                               Decorate 34(cbNeverChanges) Block
                               Decorate 36 DescriptorSet 2
                               Decorate 36 Binding 0
+                              Decorate 38 Uniform
                               MemberDecorate 43(cbChangeOnResize) 0 RowMajor
                               MemberDecorate 43(cbChangeOnResize) 0 Offset 0
                               MemberDecorate 43(cbChangeOnResize) 0 MatrixStride 16
                               Decorate 43(cbChangeOnResize) Block
                               Decorate 45 DescriptorSet 2
                               Decorate 45 Binding 1
+                              Decorate 47 Uniform
                               Decorate 59(txDiffuseA) DescriptorSet 0
                               Decorate 59(txDiffuseA) Binding 0
+                              Decorate 60 Uniform
                               Decorate 63(samLinearA) DescriptorSet 0
                               Decorate 63(samLinearA) Binding 1
+                              Decorate 64 Uniform
+                              Decorate 72 Uniform
                               Decorate 78(input.Pos) BuiltIn FragCoord
                               Decorate 82(input.Tex) Location 0
                               Decorate 86(@entryPointOutput) Location 0

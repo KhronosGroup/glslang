@@ -42,6 +42,7 @@ spv.420.geom
                               Decorate 28(gl_ViewportIndex) BuiltIn ViewportIndex
                               Decorate 33(gl_InvocationID) BuiltIn InvocationId
                               Decorate 41(s2D) DescriptorSet 0
+                              Decorate 42 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

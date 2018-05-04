@@ -81,6 +81,16 @@ spv.vulkan110.int16.frag
                               Decorate 24(Uniforms) Block
                               Decorate 26 DescriptorSet 0
                               Decorate 26 Binding 0
+                              Decorate 31 Uniform
+                              Decorate 35 Uniform
+                              Decorate 44 Uniform
+                              Decorate 48 Uniform
+                              Decorate 354 Uniform
+                              Decorate 363 Uniform
+                              Decorate 354 Uniform
+                              Decorate 363 Uniform
+                              Decorate 413 Uniform
+                              Decorate 426 Uniform
                               MemberDecorate 518(Block) 0 Offset 0
                               MemberDecorate 518(Block) 1 Offset 4
                               MemberDecorate 518(Block) 2 Offset 8

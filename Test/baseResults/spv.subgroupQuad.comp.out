@@ -39,6 +39,18 @@ spv.subgroupQuad.comp
                               Decorate 24(Buffers) BufferBlock
                               Decorate 27(data) DescriptorSet 0
                               Decorate 27(data) Binding 0
+                              Decorate 167 Uniform
+                              Decorate 180 Uniform
+                              Decorate 192 Uniform
+                              Decorate 167 Uniform
+                              Decorate 180 Uniform
+                              Decorate 192 Uniform
+                              Decorate 167 Uniform
+                              Decorate 180 Uniform
+                              Decorate 192 Uniform
+                              Decorate 167 Uniform
+                              Decorate 180 Uniform
+                              Decorate 192 Uniform
                               Decorate 615 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

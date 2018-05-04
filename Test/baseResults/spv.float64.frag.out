@@ -100,6 +100,7 @@ spv.float64.frag
                               Name 514  "sf"
                               Name 515  "sd"
                               Decorate 458(if64v) Flat
+                              Decorate 502 Uniform
                               Decorate 505 ArrayStride 16
                               Decorate 506 ArrayStride 64
                               MemberDecorate 507(S) 0 Offset 0
@@ -123,6 +124,11 @@ spv.float64.frag
                               Decorate 512(sf16) SpecId 100
                               Decorate 514(sf) SpecId 101
                               Decorate 515(sd) SpecId 102
+                              Decorate 516 Uniform
+                              Decorate 517 Uniform
+                              Decorate 518 Uniform
+                              Decorate 519 Uniform
+                              Decorate 520 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
               26:             TypeFloat 64

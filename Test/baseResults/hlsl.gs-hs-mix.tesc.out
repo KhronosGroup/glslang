@@ -886,6 +886,7 @@ triangle order = ccw
                               Decorate 42(UniformBlock0) Block
                               Decorate 44 DescriptorSet 0
                               Decorate 44 Binding 0
+                              Decorate 49 Uniform
                               Decorate 97(patch) Location 0
                               Decorate 101(id) BuiltIn InvocationId
                               Decorate 105(@entryPointOutput) Location 0
@@ -896,6 +897,9 @@ triangle order = ccw
                               MemberDecorate 143(HSTrianglePatchConstant) 0 Patch
                               Decorate 145(@patchConstantOutput) Patch
                               Decorate 145(@patchConstantOutput) Location 1
+                              Decorate 182 Uniform
+                              Decorate 191 Uniform
+                              Decorate 200 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

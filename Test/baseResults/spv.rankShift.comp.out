@@ -16,7 +16,17 @@ spv.rankShift.comp
                               Name 11  "arg0"
                               Name 15  "arg1"
                               Decorate 11(arg0) Location 4
+                              Decorate 12 Uniform
                               Decorate 15(arg1) Location 5
+                              Decorate 16 Uniform
+                              Decorate 17 Uniform
+                              Decorate 18 Uniform
+                              Decorate 19 Uniform
+                              Decorate 20 Uniform
+                              Decorate 21 Uniform
+                              Decorate 22 Uniform
+                              Decorate 23 Uniform
+                              Decorate 26 Uniform
                               Decorate 32 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

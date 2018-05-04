@@ -8,9 +8,13 @@ remap.basic.everything.frag
                               MemoryModel Logical GLSL450
                               EntryPoint Fragment 5663  "main" 4539 3773
                               ExecutionMode 5663 OriginUpperLeft
+                              Decorate 2604 Uniform
                8:             TypeVoid
             1282:             TypeFunction 8
               13:             TypeFloat 32
+              24:             TypeVector 13(float) 3
+            2572:   13(float) Constant 0
+            2604:   24(fvec3) ConstantComposite 2572 2572 2572
               29:             TypeVector 13(float) 4
              666:             TypePointer Output 29(fvec4)
             4539:    666(ptr) Variable Output

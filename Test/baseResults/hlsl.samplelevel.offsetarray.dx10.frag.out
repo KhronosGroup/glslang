@@ -334,13 +334,25 @@ using depth_any
                               Name 118  "g_tTex1df4a"
                               Decorate 16(g_tTex1df4) DescriptorSet 0
                               Decorate 16(g_tTex1df4) Binding 0
+                              Decorate 17 Uniform
                               Decorate 20(g_sSamp) DescriptorSet 0
                               Decorate 20(g_sSamp) Binding 0
+                              Decorate 21 Uniform
                               Decorate 37(g_tTex1di4) DescriptorSet 0
+                              Decorate 38 Uniform
+                              Decorate 39 Uniform
                               Decorate 52(g_tTex1du4) DescriptorSet 0
+                              Decorate 53 Uniform
+                              Decorate 54 Uniform
                               Decorate 64(g_tTex2df4) DescriptorSet 0
+                              Decorate 65 Uniform
+                              Decorate 66 Uniform
                               Decorate 77(g_tTex2di4) DescriptorSet 0
+                              Decorate 78 Uniform
+                              Decorate 79 Uniform
                               Decorate 88(g_tTex2du4) DescriptorSet 0
+                              Decorate 89 Uniform
+                              Decorate 90 Uniform
                               Decorate 111(@entryPointOutput.Color) Location 0
                               Decorate 115(@entryPointOutput.Depth) BuiltIn FragDepth
                               Decorate 118(g_tTex1df4a) DescriptorSet 0

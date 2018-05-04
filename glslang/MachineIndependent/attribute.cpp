@@ -107,6 +107,8 @@ TAttributeType TParseContext::attributeFromName(const TString& name) const
         return EatDependencyInfinite;
     else if (name == "dependency_length")
         return EatDependencyLength;
+    else if (name == "dynamically_uniform")
+        return EatDynamicallyUniform;
     else
         return EatNone;
 }
@@ -253,5 +255,48 @@ void TParseContext::handleLoopAttributes(const TAttributes& attributes, TIntermN
     }
 }
 
+//
+// Type attributes
+//
+void TParseContext::handleTypeAttributes(const TAttributes& attributes, TPublicType& type, TSourceLoc& loc)
+{
+    for (auto it = attributes.begin(); it != attributes.end(); ++it) {
+        if (it->size() > 0) {
+            warn(loc, "attribute with arguments not recognized, skipping", "", "");
+            continue;
+        }
+
+        switch (it->name) {
+        case EatDynamicallyUniform:
+            type.qualifier.dynamicallyUniform = true;
+            break;
+        default:
+            warn(loc, "attribute does not apply to a type", "", "");
+            break;
+        }
+    }
+}
+
+//
+// Parameter attributes
+//
+void TParseContext::handleParameterAttributes(const TAttributes& attributes, TParameter& param, TSourceLoc& loc)
+{
+    for (auto it = attributes.begin(); it != attributes.end(); ++it) {
+        if (it->size() > 0) {
+            warn(loc, "attribute with arguments not recognized, skipping", "", "");
+            continue;
+        }
+
+        switch (it->name) {
+        case EatDynamicallyUniform:
+            param.type->getQualifier().dynamicallyUniform = true;
+            break;
+        default:
+            warn(loc, "attribute does not apply to a parameter", "", "");
+            break;
+        }
+    }
+}
 
 } // end namespace glslang

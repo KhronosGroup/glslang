@@ -39,12 +39,46 @@ WARNING: 0:12: varying deprecated in version 130; may be removed in future relea
                               Name 297  "blend"
                               Name 303  "scale"
                               Name 304  "t"
+                              Decorate 21 Uniform
+                              Decorate 25 Uniform
+                              Decorate 28 Uniform
                               Decorate 32(texSampler1D) DescriptorSet 0
+                              Decorate 33 Uniform
+                              Decorate 38 Uniform
+                              Decorate 44 Uniform
+                              Decorate 52 Uniform
+                              Decorate 59 Uniform
+                              Decorate 65 Uniform
                               Decorate 76(texSampler2D) DescriptorSet 0
+                              Decorate 77 Uniform
+                              Decorate 82 Uniform
+                              Decorate 88 Uniform
+                              Decorate 93 Uniform
                               Decorate 104(texSampler3D) DescriptorSet 0
+                              Decorate 105 Uniform
+                              Decorate 110 Uniform
+                              Decorate 116 Uniform
+                              Decorate 121 Uniform
                               Decorate 130(texSamplerCube) DescriptorSet 0
+                              Decorate 131 Uniform
+                              Decorate 136 Uniform
                               Decorate 145(shadowSampler1D) DescriptorSet 0
+                              Decorate 146 Uniform
+                              Decorate 153 Uniform
                               Decorate 164(shadowSampler2D) DescriptorSet 0
+                              Decorate 165 Uniform
+                              Decorate 172 Uniform
+                              Decorate 180 Uniform
+                              Decorate 189 Uniform
+                              Decorate 199 Uniform
+                              Decorate 208 Uniform
+                              Decorate 224 Uniform
+                              Decorate 228 Uniform
+                              Decorate 242 Uniform
+                              Decorate 249 Uniform
+                              Decorate 260 Uniform
+                              Decorate 270 Uniform
+                              Decorate 277 Uniform
                               Decorate 291(gl_FragColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

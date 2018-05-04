@@ -45,24 +45,78 @@ spv.sparseTexture.frag
                               Name 405  "ic3"
                               Name 414  "i2DMS"
                               Name 423  "outColor"
+                              Decorate 15 Uniform
+                              Decorate 19 Uniform
+                              Decorate 25 Uniform
                               Decorate 29(s2D) DescriptorSet 0
+                              Decorate 30 Uniform
                               Decorate 44(s3D) DescriptorSet 0
+                              Decorate 45 Uniform
                               Decorate 59(isCube) DescriptorSet 0
+                              Decorate 60 Uniform
                               Decorate 71(s2DShadow) DescriptorSet 0
+                              Decorate 72 Uniform
                               Decorate 86(sCubeArrayShadow) DescriptorSet 0
+                              Decorate 87 Uniform
+                              Decorate 98 Uniform
                               Decorate 108(usCubeArray) DescriptorSet 0
+                              Decorate 109 Uniform
+                              Decorate 117 Uniform
+                              Decorate 127 Uniform
+                              Decorate 131 Uniform
                               Decorate 140(us2DRect) DescriptorSet 0
+                              Decorate 141 Uniform
+                              Decorate 145 Uniform
                               Decorate 154(s2DArrayShadow) DescriptorSet 0
+                              Decorate 155 Uniform
+                              Decorate 158 Uniform
+                              Decorate 167 Uniform
+                              Decorate 176 Uniform
                               Decorate 188(s2DMS) DescriptorSet 0
+                              Decorate 189 Uniform
+                              Decorate 199 Uniform
+                              Decorate 202 Uniform
+                              Decorate 209 Uniform
+                              Decorate 145 Uniform
+                              Decorate 218 Uniform
+                              Decorate 158 Uniform
                               Decorate 228(is2DArray) DescriptorSet 0
+                              Decorate 229 Uniform
+                              Decorate 232 Uniform
+                              Decorate 238 Uniform
+                              Decorate 241 Uniform
+                              Decorate 249 Uniform
                               Decorate 261(sCubeShadow) DescriptorSet 0
+                              Decorate 262 Uniform
+                              Decorate 273 Uniform
+                              Decorate 282 Uniform
+                              Decorate 158 Uniform
                               Decorate 294(s2DRectShadow) DescriptorSet 0
+                              Decorate 295 Uniform
+                              Decorate 232 Uniform
+                              Decorate 307 Uniform
+                              Decorate 311 Uniform
+                              Decorate 317 Uniform
+                              Decorate 324 Uniform
+                              Decorate 331 Uniform
+                              Decorate 338 Uniform
+                              Decorate 340 Uniform
+                              Decorate 346 Uniform
+                              Decorate 158 Uniform
+                              Decorate 353 Uniform
+                              Decorate 241 Uniform
+                              Decorate 360 Uniform
                               Decorate 365(offsets) Flat
+                              Decorate 372 Uniform
+                              Decorate 380 Uniform
                               Decorate 390(i2D) DescriptorSet 0
+                              Decorate 391 Uniform
                               Decorate 393(ic2) Flat
                               Decorate 402(ii3D) DescriptorSet 0
+                              Decorate 403 Uniform
                               Decorate 405(ic3) Flat
                               Decorate 414(i2DMS) DescriptorSet 0
+                              Decorate 415 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

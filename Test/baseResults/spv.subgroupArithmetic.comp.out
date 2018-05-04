@@ -39,6 +39,33 @@ spv.subgroupArithmetic.comp
                               Decorate 24(Buffers) BufferBlock
                               Decorate 27(data) DescriptorSet 0
                               Decorate 27(data) Binding 0
+                              Decorate 530 Uniform
+                              Decorate 543 Uniform
+                              Decorate 555 Uniform
+                              Decorate 530 Uniform
+                              Decorate 543 Uniform
+                              Decorate 555 Uniform
+                              Decorate 530 Uniform
+                              Decorate 543 Uniform
+                              Decorate 555 Uniform
+                              Decorate 530 Uniform
+                              Decorate 543 Uniform
+                              Decorate 555 Uniform
+                              Decorate 530 Uniform
+                              Decorate 543 Uniform
+                              Decorate 555 Uniform
+                              Decorate 530 Uniform
+                              Decorate 543 Uniform
+                              Decorate 555 Uniform
+                              Decorate 530 Uniform
+                              Decorate 543 Uniform
+                              Decorate 555 Uniform
+                              Decorate 530 Uniform
+                              Decorate 543 Uniform
+                              Decorate 555 Uniform
+                              Decorate 530 Uniform
+                              Decorate 543 Uniform
+                              Decorate 555 Uniform
                               Decorate 2084 BuiltIn WorkgroupSize
                2:             TypeVoid
                3:             TypeFunction 2

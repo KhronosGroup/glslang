@@ -48,6 +48,9 @@ spv.loops.frag
                               Name 649  "d16"
                               Name 687  "d18"
                               Name 698  "d17"
+                              Decorate 29 Uniform
+                              Decorate 39 Uniform
+                              Decorate 29 Uniform
                               Decorate 157(Count) Flat
                               Decorate 615(gl_FragColor) Location 0
                2:             TypeVoid

@@ -12,6 +12,11 @@ remap.specconst.comp
                               Decorate 3 SpecId 1
                               Decorate 4 SpecId 2
                               Decorate 5 BuiltIn WorkgroupSize
+                              Decorate 6 Uniform
+                              Decorate 7 Uniform
+                              Decorate 9 Uniform
+                              Decorate 10 Uniform
+                              Decorate 12 Uniform
                8:             TypeVoid
             1282:             TypeFunction 8
               11:             TypeInt 32 0

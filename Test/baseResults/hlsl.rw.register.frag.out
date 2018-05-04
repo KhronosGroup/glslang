@@ -121,8 +121,10 @@ gl_FragCoord origin is upper left
                               Name 39  "@entryPointOutput.Color"
                               Decorate 16(g_tTex1df1) DescriptorSet 0
                               Decorate 16(g_tTex1df1) Binding 2
+                              Decorate 17 Uniform
                               Decorate 26(g_tBuf1du1) DescriptorSet 0
                               Decorate 26(g_tBuf1du1) Binding 3
+                              Decorate 27 Uniform
                               Decorate 39(@entryPointOutput.Color) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

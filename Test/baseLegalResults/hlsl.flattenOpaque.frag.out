@@ -20,6 +20,14 @@ hlsl.flattenOpaque.frag
                               Decorate 97(s2.s2D) DescriptorSet 0
                               Decorate 100(s2.tex) DescriptorSet 0
                               Decorate 120(@entryPointOutput) Location 0
+                              Decorate 134 Uniform
+                              Decorate 138 Uniform
+                              Decorate 143 Uniform
+                              Decorate 145 Uniform
+                              Decorate 150 Uniform
+                              Decorate 152 Uniform
+                              Decorate 158 Uniform
+                              Decorate 164 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeSampler

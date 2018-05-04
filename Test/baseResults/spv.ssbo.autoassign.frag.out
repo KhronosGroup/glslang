@@ -43,11 +43,19 @@ spv.ssbo.autoassign.frag
                               Decorate 26(TestCB) Block
                               Decorate 28 DescriptorSet 0
                               Decorate 28 Binding 15
+                              Decorate 31 Uniform
+                              Decorate 32 Uniform
+                              Decorate 45 Uniform
+                              Decorate 46 Uniform
                               Decorate 56 ArrayStride 32
                               MemberDecorate 57(SB1) 0 Offset 0
                               Decorate 57(SB1) BufferBlock
                               Decorate 59(SB1) DescriptorSet 0
                               Decorate 59(SB1) Binding 31
+                              Decorate 63 Uniform
+                              Decorate 64 Uniform
+                              Decorate 75 Uniform
+                              Decorate 76 Uniform
                               Decorate 92(pos) Location 0
                               Decorate 95(@entryPointOutput) Location 0
                2:             TypeVoid

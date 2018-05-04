@@ -44,21 +44,52 @@ spv.newTexture.frag
                               Name 281  "us2DArray"
                               Name 283  "ic4D"
                               Decorate 13(s2D) DescriptorSet 0
+                              Decorate 14 Uniform
                               Decorate 23(sCubeArrayShadow) DescriptorSet 0
+                              Decorate 24 Uniform
                               Decorate 42(s3D) DescriptorSet 0
+                              Decorate 43 Uniform
                               Decorate 51(s2DArray) DescriptorSet 0
+                              Decorate 52 Uniform
                               Decorate 64(s2DShadow) DescriptorSet 0
+                              Decorate 65 Uniform
+                              Decorate 70 Uniform
+                              Decorate 78 Uniform
                               Decorate 81(ic3D) Flat
                               Decorate 84(ic1D) Flat
+                              Decorate 90 Uniform
                               Decorate 92(ic2D) Flat
+                              Decorate 70 Uniform
                               Decorate 102(sr) DescriptorSet 0
+                              Decorate 103 Uniform
+                              Decorate 105 Uniform
+                              Decorate 110 Uniform
+                              Decorate 70 Uniform
+                              Decorate 119 Uniform
+                              Decorate 70 Uniform
                               Decorate 128(sCube) DescriptorSet 0
+                              Decorate 129 Uniform
                               Decorate 139(s2DArrayShadow) DescriptorSet 0
+                              Decorate 140 Uniform
+                              Decorate 70 Uniform
+                              Decorate 151 Uniform
+                              Decorate 158 Uniform
+                              Decorate 70 Uniform
                               Decorate 171(is2D) DescriptorSet 0
+                              Decorate 172 Uniform
+                              Decorate 179 Uniform
+                              Decorate 70 Uniform
+                              Decorate 188 Uniform
+                              Decorate 196 Uniform
                               Decorate 208(is3D) DescriptorSet 0
+                              Decorate 209 Uniform
                               Decorate 220(isCube) DescriptorSet 0
+                              Decorate 221 Uniform
                               Decorate 232(is2DArray) DescriptorSet 0
+                              Decorate 233 Uniform
                               Decorate 247(sCubeShadow) DescriptorSet 0
+                              Decorate 248 Uniform
+                              Decorate 251 Uniform
                               Decorate 265(is2Dms) DescriptorSet 0
                               Decorate 269(us2D) DescriptorSet 0
                               Decorate 273(us3D) DescriptorSet 0

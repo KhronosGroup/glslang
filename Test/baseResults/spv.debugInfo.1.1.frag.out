@@ -94,8 +94,13 @@ void main()
                               MemberDecorate 54(ubuf) 0 Offset 0
                               Decorate 54(ubuf) Block
                               Decorate 56 DescriptorSet 3
+                              Decorate 62 Uniform
                               Decorate 69(s2d) Location 0
                               Decorate 69(s2d) DescriptorSet 3
+                              Decorate 70 Uniform
+                              Decorate 73 Uniform
+                              Decorate 74 Uniform
+                              Decorate 79 Uniform
                3:             TypeVoid
                4:             TypeFunction 3
                7:             TypeInt 32 1

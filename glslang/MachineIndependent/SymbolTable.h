@@ -153,6 +153,7 @@ public:
     TVariable(const TString *name, const TType& t, bool uT = false )
         : TSymbol(name),
           userType(uT),
+          dynamicallyUniform(false),
           constSubtree(nullptr),
           anonId(-1) { type.shallowCopy(t); }
     virtual TVariable* clone() const;
@@ -173,12 +174,16 @@ public:
 
     virtual void dump(TInfoSink &infoSink) const;
 
+    void setDynamicallyUniform() { dynamicallyUniform = true; }
+    bool isDynamicallyUniform() const { return dynamicallyUniform; }
+
 protected:
     explicit TVariable(const TVariable&);
     TVariable& operator=(const TVariable&);
 
     TType type;
     bool userType;
+    bool dynamicallyUniform;
     // we are assuming that Pool Allocator will free the memory allocated to unionArray
     // when this object is destroyed
 

@@ -18,6 +18,8 @@ spv.constStruct.vert
                               MemberName 11(S) 1  "u"
                               Name 13  "s1"
                               Name 22  "s2"
+                              Decorate 21 Uniform
+                              Decorate 21 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

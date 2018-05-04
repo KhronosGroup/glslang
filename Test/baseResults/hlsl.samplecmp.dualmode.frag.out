@@ -104,12 +104,16 @@ gl_FragCoord origin is upper left
                               Name 41  "@entryPointOutput"
                               Decorate 13(g_tTex) DescriptorSet 0
                               Decorate 13(g_tTex) Binding 3
+                              Decorate 14 Uniform
                               Decorate 17(g_sSampCmp) DescriptorSet 0
                               Decorate 17(g_sSampCmp) Binding 1
+                              Decorate 18 Uniform
                               Decorate 29(g_tTex) DescriptorSet 0
                               Decorate 29(g_tTex) Binding 3
+                              Decorate 30 Uniform
                               Decorate 31(g_sSamp) DescriptorSet 0
                               Decorate 31(g_sSamp) Binding 0
+                              Decorate 32 Uniform
                               Decorate 41(@entryPointOutput) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

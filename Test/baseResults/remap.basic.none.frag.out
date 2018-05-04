@@ -13,6 +13,7 @@ remap.basic.none.frag
                               Name 9  "dead_fn("
                               Name 17  "outf4"
                               Name 19  "inf"
+                              Decorate 12 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

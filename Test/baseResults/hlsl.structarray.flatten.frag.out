@@ -198,9 +198,13 @@ gl_FragCoord origin is upper left
                               Name 78  "g_texdata_array2[2].tex"
                               Name 79  "g_texdata_array2[2].nonopaque_thing"
                               Decorate 18(g_texdata.tex) DescriptorSet 0
+                              Decorate 19 Uniform
                               Decorate 22(g_texdata.samp) DescriptorSet 0
+                              Decorate 23 Uniform
                               Decorate 28(g_texdata_array[1].tex) DescriptorSet 0
+                              Decorate 29 Uniform
                               Decorate 30(g_texdata_array[1].samp) DescriptorSet 0
+                              Decorate 31 Uniform
                               Decorate 40(g_texdata_array2[1].tex) DescriptorSet 0
                               Decorate 45(g_texdata_array2[1].samp) DescriptorSet 0
                               Decorate 59(ps_output.color) Location 0

@@ -330,6 +330,9 @@ public:
     void variableCheck(TIntermTyped*& nodePtr);
     bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
     void rValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*) override;
+    void dynamicallyUniformCheck(const TSourceLoc&, TIntermNode*, TIntermNode*);
+    bool isConstantOrAggregateOfConstant(TIntermNode*) const;
+    void propagateDynamicallyUniform(const TFunction*, TParameter&, const TType&) const;
     void constantValueCheck(TIntermTyped* node, const char* token);
     void integerCheck(const TIntermTyped* node, const char* token);
     void globalCheck(const TSourceLoc&, const char* token);
@@ -420,6 +423,12 @@ public:
 
     // Determine loop control from attributes
     void handleLoopAttributes(const TAttributes& attributes, TIntermNode*);
+
+    // Determine type attributes
+    void handleTypeAttributes(const TAttributes& attributes, TPublicType&, TSourceLoc& loc);
+
+    // Determine parameter attributes
+    void handleParameterAttributes(const TAttributes& attributes, TParameter&, TSourceLoc& loc);
 
 protected:
     void nonInitConstCheck(const TSourceLoc&, TString& identifier, TType& type);

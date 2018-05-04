@@ -19,6 +19,11 @@ spv.specConstant.comp
                               Decorate 12 SpecId 18
                               Decorate 14 SpecId 19
                               Decorate 16 BuiltIn WorkgroupSize
+                              Decorate 18 Uniform
+                              Decorate 20 Uniform
+                              Decorate 21 Uniform
+                              Decorate 23 Uniform
+                              Decorate 24 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 0

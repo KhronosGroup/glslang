@@ -63,6 +63,7 @@ spv.multiStruct.comp
                               Decorate 59(UBO) Block
                               Decorate 61(uBuf) DescriptorSet 0
                               Decorate 61(uBuf) Binding 2
+                              Decorate 64 Uniform
                               Decorate 89 ArrayStride 48
                               MemberDecorate 90(Nested) 0 Offset 0
                               MemberDecorate 90(Nested) 1 Offset 16
@@ -70,6 +71,7 @@ spv.multiStruct.comp
                               Decorate 91(UBON) Block
                               Decorate 93(uBufN) DescriptorSet 0
                               Decorate 93(uBufN) Binding 2
+                              Decorate 96 Uniform
                               Decorate 125 ArrayStride 24
                               MemberDecorate 126(Nested) 0 Offset 0
                               MemberDecorate 126(Nested) 1 Offset 8

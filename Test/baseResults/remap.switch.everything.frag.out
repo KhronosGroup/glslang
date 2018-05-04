@@ -17,6 +17,7 @@ WARNING: 0:5: '' : all default precisions are highp; use precision statements to
                               Decorate 12421 RelaxedPrecision
                               Decorate 12422 RelaxedPrecision
                               Decorate 12423 RelaxedPrecision
+                              Decorate 1284 Uniform
                8:             TypeVoid
             1282:             TypeFunction 8
               13:             TypeFloat 32

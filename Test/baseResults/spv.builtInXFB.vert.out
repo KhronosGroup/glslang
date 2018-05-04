@@ -22,6 +22,7 @@ spv.builtInXFB.vert
                               Decorate 8(gl_PerVertex) Block
                               Decorate 10 XfbBuffer 1
                               Decorate 10 XfbStride 64
+                              Decorate 14 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

@@ -29,10 +29,44 @@ spv.textureGatherBiasLod.frag
                               Name 104  "ResType"
                               Name 176  "lod"
                               Name 296  "fragColor"
+                              Decorate 11 Uniform
+                              Decorate 11 Uniform
                               Decorate 16(s2D) DescriptorSet 0
+                              Decorate 17 Uniform
                               Decorate 33(s2DArray) DescriptorSet 0
+                              Decorate 34 Uniform
                               Decorate 47(sCube) DescriptorSet 0
+                              Decorate 48 Uniform
                               Decorate 58(sCubeArray) DescriptorSet 0
+                              Decorate 59 Uniform
+                              Decorate 68 Uniform
+                              Decorate 76 Uniform
+                              Decorate 83 Uniform
+                              Decorate 95 Uniform
+                              Decorate 101 Uniform
+                              Decorate 111 Uniform
+                              Decorate 120 Uniform
+                              Decorate 129 Uniform
+                              Decorate 138 Uniform
+                              Decorate 147 Uniform
+                              Decorate 156 Uniform
+                              Decorate 165 Uniform
+                              Decorate 174 Uniform
+                              Decorate 181 Uniform
+                              Decorate 187 Uniform
+                              Decorate 193 Uniform
+                              Decorate 199 Uniform
+                              Decorate 205 Uniform
+                              Decorate 211 Uniform
+                              Decorate 217 Uniform
+                              Decorate 223 Uniform
+                              Decorate 232 Uniform
+                              Decorate 241 Uniform
+                              Decorate 250 Uniform
+                              Decorate 259 Uniform
+                              Decorate 268 Uniform
+                              Decorate 277 Uniform
+                              Decorate 286 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

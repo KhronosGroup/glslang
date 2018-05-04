@@ -24,16 +24,28 @@ spv.subpass.frag
                               Name 61  "usubMS"
                               Decorate 30(sub) DescriptorSet 0
                               Decorate 30(sub) InputAttachmentIndex 1
+                              Decorate 31 Uniform
+                              Decorate 32 Uniform
                               Decorate 35(subMS) DescriptorSet 0
                               Decorate 35(subMS) InputAttachmentIndex 2
+                              Decorate 36 Uniform
+                              Decorate 37 Uniform
                               Decorate 42(isub) DescriptorSet 0
                               Decorate 42(isub) InputAttachmentIndex 3
+                              Decorate 43 Uniform
+                              Decorate 44 Uniform
                               Decorate 45(isubMS) DescriptorSet 0
                               Decorate 45(isubMS) InputAttachmentIndex 4
+                              Decorate 46 Uniform
+                              Decorate 47 Uniform
                               Decorate 56(usub) DescriptorSet 0
                               Decorate 56(usub) InputAttachmentIndex 5
+                              Decorate 57 Uniform
+                              Decorate 58 Uniform
                               Decorate 61(usubMS) DescriptorSet 0
                               Decorate 61(usubMS) InputAttachmentIndex 6
+                              Decorate 62 Uniform
+                              Decorate 63 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeInt 32 1

@@ -273,6 +273,11 @@ Shader version: 450
                               Decorate 7(scf1) SpecId 200
                               Decorate 11(scbt) SpecId 201
                               Decorate 13(sci2) SpecId 202
+                              Decorate 27 Uniform
+                              Decorate 39 Uniform
+                              Decorate 40 Uniform
+                              Decorate 46 Uniform
+                              Decorate 47 Uniform
                2:             TypeVoid
                3:             TypeFunction 2
                6:             TypeFloat 32

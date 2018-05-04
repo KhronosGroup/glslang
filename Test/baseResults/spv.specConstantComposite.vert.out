@@ -25,6 +25,7 @@ spv.specConstantComposite.vert
                               Name 42  "global_vec4_array_with_spec_length"
                               Decorate 21(spec_bool) SpecId 203
                               Decorate 28(spec_int) SpecId 200
+                              Decorate 29 Uniform
                               Decorate 37(spec_float) SpecId 201
                               Decorate 39(spec_double) SpecId 202
                2:             TypeVoid

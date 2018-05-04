@@ -196,9 +196,11 @@ gl_FragCoord origin is upper left
                               MemberDecorate 24(cbufName2) 0 Offset 0
                               Decorate 24(cbufName2) Block
                               Decorate 26 DescriptorSet 0
+                              Decorate 29 Uniform
                               MemberDecorate 31(buf1) 0 Offset 0
                               Decorate 31(buf1) Block
                               Decorate 33 DescriptorSet 0
+                              Decorate 35 Uniform
                               MemberDecorate 37(buf2) 0 NonWritable
                               MemberDecorate 37(buf2) 0 Offset 0
                               Decorate 37(buf2) BufferBlock
@@ -207,6 +209,7 @@ gl_FragCoord origin is upper left
                               MemberDecorate 43(cbufName) 1 Offset 20
                               Decorate 43(cbufName) Block
                               Decorate 45 DescriptorSet 0
+                              Decorate 47 Uniform
                               MemberDecorate 50(tbufName) 0 NonWritable
                               MemberDecorate 50(tbufName) 0 Offset 16
                               MemberDecorate 50(tbufName) 1 NonWritable

@@ -123,6 +123,7 @@ gl_FragCoord origin is upper left
                               Name 50  ""
                               Decorate 16(attach) DescriptorSet 0
                               Decorate 16(attach) InputAttachmentIndex 4
+                              Decorate 17 Uniform
                               Decorate 33(input) Location 8
                               Decorate 36(@entryPointOutput) Location 7
                               MemberDecorate 41(S) 0 Offset 0

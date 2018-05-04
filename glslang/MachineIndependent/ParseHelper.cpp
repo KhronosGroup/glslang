@@ -313,6 +313,10 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
         node = intermediate.addIndex(EOpIndexDirectStruct, container, constNode, loc);
 
         node->setType(*(*variable->getType().getStruct())[anon->getMemberNumber()].type);
+
+        if (container->getType().getQualifier().isDynamicallyUniformOrConstant())
+            node->getWritableType().getQualifier().dynamicallyUniform = true;
+
         if (node->getType().hiddenMember())
             error(loc, "member of nameless block was not redeclared", string->c_str(), "");
     } else {
@@ -442,6 +446,12 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
         if (anyIndexLimits)
             handleIndexLimits(loc, base, index);
     }
+
+    const bool baseUniform = base->getType().getQualifier().isDynamicallyUniformOrConstant();
+    const bool indexUniform = index->getType().getQualifier().isDynamicallyUniformOrConstant();
+
+    if (baseUniform && indexUniform)
+        result->getWritableType().getQualifier().dynamicallyUniform = true;
 
     return result;
 }
@@ -751,6 +761,12 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
     if (base->getQualifier().isNonUniform())
         result->getWritableType().getQualifier().nonUniform = true;
 
+    const bool baseUniform = base->getType().getQualifier().isDynamicallyUniformOrConstant();
+
+    // Propagate dynamically uniform
+    if (baseUniform)
+        result->getWritableType().getQualifier().dynamicallyUniform = true;
+
     return result;
 }
 
@@ -994,6 +1010,10 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                         if (argQualifier.writeonly && ! formalQualifier.writeonly)
                             error(arguments->getLoc(), message, "writeonly", "");
                     }
+
+                    if (!argQualifier.isDynamicallyUniformOrConstant() && formalQualifier.isDynamicallyUniform())
+                        warn(arg->getLoc(), "passing argument of unknown uniformity to a dynamically uniform function argument", "", "");
+
                     // TODO 4.5 functionality:  A shader will fail to compile
                     // if the value passed to the memargument of an atomic memory function does not correspond to a buffer or
                     // shared variable. It is acceptable to pass an element of an array or a single component of a vector to the
@@ -1189,13 +1209,21 @@ TIntermNode* TParseContext::handleReturnValue(const TSourceLoc& loc, TIntermType
                 error(loc, "cannot convert return value to function return type", "return", "");
             if (version < 420)
                 warn(loc, "type conversion on return values was not explicitly allowed until version 420", "return", "");
+
+            if (!converted->getType().getQualifier().isDynamicallyUniformOrConstant() && currentFunctionType->getQualifier().isDynamicallyUniform())
+                warn(loc, "returning a value of unknown uniformity to a dynamically uniform function return", "", "");
+
             return intermediate.addBranch(EOpReturn, converted, loc);
         } else {
             error(loc, "type does not match, or is not convertible to, the function's return type", "return", "");
             return intermediate.addBranch(EOpReturn, value, loc);
         }
-    } else
+    } else {
+        if (!value->getType().getQualifier().isDynamicallyUniformOrConstant() && currentFunctionType->getQualifier().isDynamicallyUniform())
+            warn(loc, "returning a value of unknown uniformity to a dynamically uniform function return", "", "");
+
         return intermediate.addBranch(EOpReturn, value, loc);
+    }
 }
 
 // See if the operation is being done in an illegal location.
@@ -2099,6 +2127,46 @@ void TParseContext::rValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
 #endif
 }
 
+void TParseContext::dynamicallyUniformCheck(const TSourceLoc& loc, TIntermNode* l, TIntermNode* r) {
+    if (!(l->getAsTyped() && r->getAsTyped()))
+        return;
+
+    const TType& lhs = l->getAsTyped()->getType();
+    const TType& rhs = r->getAsTyped()->getType();
+
+    if (lhs.getQualifier().isDynamicallyUniform() && !rhs.getQualifier().isDynamicallyUniformOrConstant())
+        warn(loc, "assigning to a dynamically uniform variable with a value of unknown uniformity", "", "");
+}
+
+bool TParseContext::isConstantOrAggregateOfConstant(TIntermNode* node) const {
+    // Easy first check for if the node is a constant
+    if (node->getAsConstantUnion())
+        return true;
+
+    // If the node is not an aggregate, it can't be an aggregate of constant
+    if (!node->getAsAggregate())
+        return false;
+
+    for (auto part : node->getAsAggregate()->getSequence())
+        if (!isConstantOrAggregateOfConstant(part))
+            return false;
+
+    return true;
+}
+
+void TParseContext::propagateDynamicallyUniform(const TFunction* function, TParameter& param, const TType& type) const {
+    // If the function is not a constructor, we don't want to do any propagation
+    if (function->getBuiltInOp() == EOpNull)
+        return;
+
+    const bool dynamicallyUniform = type.getQualifier().isDynamicallyUniformOrConstant();
+
+    param.type->getQualifier().dynamicallyUniform = dynamicallyUniform;
+
+    if (param.defaultValue)
+        param.defaultValue->getWritableType().getQualifier().dynamicallyUniform = dynamicallyUniform;
+}
+
 //
 // Both test, and if necessary spit out an error, to see if the node is really
 // a constant.
@@ -2921,6 +2989,7 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
     MERGE_SINGLETON(writeonly);
     MERGE_SINGLETON(specConstant);
     MERGE_SINGLETON(nonUniform);
+    MERGE_SINGLETON(dynamicallyUniform);
 
     if (repeated)
         error(loc, "replicated qualifiers", "", "");
@@ -5440,6 +5509,14 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     // fix up
     fixOffset(loc, *symbol);
 
+    if (initNode && initNode->getAsTyped()) {
+        const TType& lhs = type;
+        const TType& rhs = initializer->getAsTyped()->getType();
+
+        if (lhs.getQualifier().isDynamicallyUniform() && !rhs.getQualifier().isDynamicallyUniformOrConstant())
+            warn(loc, "initializing a dynamically uniform variable with a value of unknown uniformity", "", "");
+    }
+
     return initNode;
 }
 
@@ -5648,6 +5725,21 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
     if (! initList || initList->getOp() != EOpNull)
         return initializer;
 
+    bool dynamicallyUniform = true;
+    for (auto part : initList->getSequence()) {
+        // If the element is a constant then skip this loop iteration
+        if (isConstantOrAggregateOfConstant(part))
+            continue;
+
+        // If its not typed, then definitely not dynamically uniform
+        if (!part->getAsTyped()) {
+            dynamicallyUniform = false;
+            break;
+        }
+
+        dynamicallyUniform &= part->getAsTyped()->getType().getQualifier().isDynamicallyUniformOrConstant();
+    }
+
     // Of the initializer-list set of nodes, need to process bottom up,
     // so recurse deep, then process on the way up.
 
@@ -5658,6 +5750,7 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
         TType arrayType;
         arrayType.shallowCopy(type);                     // sharing struct stuff is fine
         arrayType.copyArraySizes(*type.getArraySizes());  // but get a fresh copy of the array information, to edit below
+        arrayType.getQualifier().dynamicallyUniform = dynamicallyUniform;
 
         // edit array sizes to fill in unsized dimensions
         arrayType.changeOuterArraySize((int)initList->getSequence().size());
@@ -5709,6 +5802,12 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
         return nullptr;
     }
 
+    TType newType;
+    if (dynamicallyUniform) {
+        newType.deepCopy(type);
+        newType.getQualifier().dynamicallyUniform = dynamicallyUniform;
+    }
+
     // Now that the subtree is processed, process this node as if the
     // initializer list is a set of arguments to a constructor.
     TIntermNode* emulatedConstructorArguments;
@@ -5716,7 +5815,7 @@ TIntermTyped* TParseContext::convertInitializerList(const TSourceLoc& loc, const
         emulatedConstructorArguments = initList->getSequence()[0];
     else
         emulatedConstructorArguments = initList;
-    return addConstructor(loc, emulatedConstructorArguments, type);
+    return addConstructor(loc, emulatedConstructorArguments, dynamicallyUniform ? newType : type);
 }
 
 //
@@ -5776,6 +5875,9 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
         if (newNode && (type.isArray() || op == EOpConstructStruct))
             newNode = intermediate.setAggregateOperator(newNode, EOpConstructStruct, type, loc);
 
+        if (node->getAsTyped()->getType().getQualifier().isDynamicallyUniformOrConstant())
+            newNode->getWritableType().getQualifier().dynamicallyUniform = true;
+
         return newNode;
     }
 
@@ -5787,18 +5889,27 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
     // each parameter
 
     int paramCount = 0;  // keeps track of the constructor parameter number being checked
+    
+    bool dynamicallyUniform = true; // keeps track on whether the constructor is dynamically uniform or not
 
     // for each parameter to the constructor call, check to see if the right type is passed or convert them
     // to the right type if possible (and allowed).
     // for structure constructors, just check if the right type is passed, no conversion is allowed.
     for (TIntermSequence::iterator p = sequenceVector.begin();
                                    p != sequenceVector.end(); p++, paramCount++) {
-        if (type.isArray())
-            newNode = constructAggregate(*p, elementType, paramCount+1, node->getLoc());
-        else if (op == EOpConstructStruct)
-            newNode = constructAggregate(*p, *(memberTypes[paramCount]).type, paramCount+1, node->getLoc());
+        TIntermNode* pNode = *p;
+        
+        if (!pNode->getAsTyped())
+            dynamicallyUniform = false;
         else
-            newNode = constructBuiltIn(type, op, (*p)->getAsTyped(), node->getLoc(), true);
+            dynamicallyUniform &= pNode->getAsTyped()->getType().getQualifier().isDynamicallyUniformOrConstant();
+
+        if (type.isArray())
+            newNode = constructAggregate(pNode, elementType, paramCount+1, node->getLoc());
+        else if (op == EOpConstructStruct)
+            newNode = constructAggregate(pNode, *(memberTypes[paramCount]).type, paramCount+1, node->getLoc());
+        else
+            newNode = constructBuiltIn(type, op, pNode->getAsTyped(), node->getLoc(), true);
 
         if (newNode)
             *p = newNode;
@@ -5806,7 +5917,12 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
             return nullptr;
     }
 
-    return intermediate.setAggregateOperator(aggrNode, op, type, loc);
+    newNode = intermediate.setAggregateOperator(aggrNode, op, type, loc);
+
+    if (dynamicallyUniform)
+        newNode->getWritableType().getQualifier().dynamicallyUniform = true;
+
+    return newNode;
 }
 
 // Function for constructor implementation. Calls addUnaryMath with appropriate EOp value

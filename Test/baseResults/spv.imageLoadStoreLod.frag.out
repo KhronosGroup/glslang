@@ -27,20 +27,31 @@ spv.imageLoadStoreLod.frag
                               Name 65  "ResType"
                               Name 71  "uiCubeArray"
                               Name 77  "fragColor"
+                              Decorate 11 Uniform
                               Decorate 14(i1D) DescriptorSet 0
                               Decorate 14(i1D) Binding 0
+                              Decorate 15 Uniform
+                              Decorate 19 Uniform
                               Decorate 24(i2D) DescriptorSet 0
                               Decorate 24(i2D) Binding 1
+                              Decorate 25 Uniform
+                              Decorate 29 Uniform
                               Decorate 34(i3D) DescriptorSet 0
                               Decorate 34(i3D) Binding 2
+                              Decorate 35 Uniform
+                              Decorate 41 Uniform
                               Decorate 46(iiCube) DescriptorSet 0
                               Decorate 46(iiCube) Binding 3
+                              Decorate 47 Uniform
                               Decorate 53(ii1DArray) DescriptorSet 0
                               Decorate 53(ii1DArray) Binding 4
+                              Decorate 54 Uniform
                               Decorate 60(ui2DArray) DescriptorSet 0
                               Decorate 60(ui2DArray) Binding 5
+                              Decorate 61 Uniform
                               Decorate 71(uiCubeArray) DescriptorSet 0
                               Decorate 71(uiCubeArray) Binding 6
+                              Decorate 72 Uniform
                               Decorate 77(fragColor) Location 0
                2:             TypeVoid
                3:             TypeFunction 2

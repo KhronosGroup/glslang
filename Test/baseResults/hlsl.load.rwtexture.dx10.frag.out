@@ -292,6 +292,7 @@ using depth_any
                               Name 131  "g_tTex2du4a"
                               Decorate 14(g_tTex1df4) DescriptorSet 0
                               Decorate 14(g_tTex1df4) Binding 0
+                              Decorate 15 Uniform
                               MemberDecorate 20($Global) 0 Offset 0
                               MemberDecorate 20($Global) 1 Offset 8
                               MemberDecorate 20($Global) 2 Offset 16
@@ -302,14 +303,31 @@ using depth_any
                               MemberDecorate 20($Global) 7 Offset 80
                               Decorate 20($Global) Block
                               Decorate 22 DescriptorSet 0
+                              Decorate 26 Uniform
                               Decorate 30(g_tTex1di4) DescriptorSet 0
+                              Decorate 31 Uniform
+                              Decorate 33 Uniform
                               Decorate 38(g_tTex1du4) DescriptorSet 0
+                              Decorate 39 Uniform
+                              Decorate 41 Uniform
                               Decorate 46(g_tTex2df4) DescriptorSet 0
+                              Decorate 47 Uniform
+                              Decorate 51 Uniform
                               Decorate 55(g_tTex2di4) DescriptorSet 0
+                              Decorate 56 Uniform
+                              Decorate 58 Uniform
                               Decorate 62(g_tTex2du4) DescriptorSet 0
+                              Decorate 63 Uniform
+                              Decorate 65 Uniform
                               Decorate 69(g_tTex3df4) DescriptorSet 0
+                              Decorate 70 Uniform
+                              Decorate 74 Uniform
                               Decorate 78(g_tTex3di4) DescriptorSet 0
+                              Decorate 79 Uniform
+                              Decorate 81 Uniform
                               Decorate 85(g_tTex3du4) DescriptorSet 0
+                              Decorate 86 Uniform
+                              Decorate 88 Uniform
                               Decorate 104(@entryPointOutput.Color) Location 0
                               Decorate 108(@entryPointOutput.Depth) BuiltIn FragDepth
                               Decorate 113(g_sSamp) DescriptorSet 0
