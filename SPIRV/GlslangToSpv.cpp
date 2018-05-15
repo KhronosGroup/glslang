@@ -2479,17 +2479,29 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
                                    node->getType().containsBasicType(glslang::EbtInt16)   ||
                                    node->getType().containsBasicType(glslang::EbtUint16);
     if (contains16BitType) {
-        if (storageClass == spv::StorageClassInput || storageClass == spv::StorageClassOutput) {
+        switch (storageClass) {
+        case spv::StorageClassInput:
+        case spv::StorageClassOutput:
             addPre13Extension(spv::E_SPV_KHR_16bit_storage);
             builder.addCapability(spv::CapabilityStorageInputOutput16);
-        } else if (storageClass == spv::StorageClassPushConstant) {
+            break;
+        case spv::StorageClassPushConstant:
             addPre13Extension(spv::E_SPV_KHR_16bit_storage);
             builder.addCapability(spv::CapabilityStoragePushConstant16);
-        } else if (storageClass == spv::StorageClassUniform) {
+            break;
+        case spv::StorageClassUniform:
             addPre13Extension(spv::E_SPV_KHR_16bit_storage);
-            builder.addCapability(spv::CapabilityStorageUniform16);
             if (node->getType().getQualifier().storage == glslang::EvqBuffer)
                 builder.addCapability(spv::CapabilityStorageUniformBufferBlock16);
+            else
+                builder.addCapability(spv::CapabilityStorageUniform16);
+            break;
+        case spv::StorageClassStorageBuffer:
+            addPre13Extension(spv::E_SPV_KHR_16bit_storage);
+            builder.addCapability(spv::CapabilityStorageUniformBufferBlock16);
+            break;
+        default:
+            break;
         }
     }
 
