@@ -1481,6 +1481,14 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
     case EbvTessLevelOuter: requiredArraySize = 4; break;
     case EbvTessLevelInner: requiredArraySize = 2; break;
 
+    case EbvSampleMask:
+        {
+            // Promote scalar to array of size 1.  Leave existing arrays alone.
+            if (!type.isArray())
+                requiredArraySize = 1;
+            break;
+        }
+
     case EbvWorkGroupId:        requiredVectorSize = 3; break;
     case EbvGlobalInvocationId: requiredVectorSize = 3; break;
     case EbvLocalInvocationId:  requiredVectorSize = 3; break;
@@ -2700,6 +2708,15 @@ TIntermTyped* HlslParseContext::handleAssign(const TSourceLoc& loc, TOperator op
         } else if (assignsClipPos(left)) {
             // Position can require special handling: see comment above assignPosition
             return assignPosition(loc, op, left, right);
+        } else if (left->getQualifier().builtIn == EbvSampleMask) {
+            // Certain builtins are required to be arrayed outputs in SPIR-V, but may internally be scalars
+            // in the shader.  Copy the scalar RHS into the LHS array element zero, if that happens.
+            if (left->isArray() && !right->isArray()) {
+                const TType derefType(left->getType(), 0);
+                left = intermediate.addIndex(EOpIndexDirect, left, intermediate.addConstantUnion(0, loc), loc);
+                left->setType(derefType);
+                // Fall through to add assign.
+            }
         }
 
         return intermediate.addAssign(op, left, right, loc);
