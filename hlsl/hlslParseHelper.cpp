@@ -4487,23 +4487,18 @@ void HlslParseContext::decomposeGeometryMethods(const TSourceLoc& loc, TIntermTy
             emit->setLoc(loc);
             emit->setType(TType(EbtVoid));
 
-            // find the matching output
-            if (gsStreamOutput == nullptr) {
-                error(loc, "unable to find output symbol for Append()", "", "");
-                return;
-            }
+            TIntermTyped* data = argAggregate->getSequence()[1]->getAsTyped();
 
-            sequence = intermediate.growAggregate(sequence,
-                                                  handleAssign(loc, EOpAssign,
-                                                               intermediate.addSymbol(*gsStreamOutput, loc),
-                                                               argAggregate->getSequence()[1]->getAsTyped()),
-                                                  loc);
-
+            // This will be patched in finalization during finalizeAppendMethods()
+            sequence = intermediate.growAggregate(sequence, data, loc);
             sequence = intermediate.growAggregate(sequence, emit);
 
             sequence->setOperator(EOpSequence);
             sequence->setLoc(loc);
             sequence->setType(TType(EbtVoid));
+
+            gsAppends.push_back({sequence, loc});
+
             node = sequence;
         }
         break;
@@ -9919,6 +9914,31 @@ void HlslParseContext::fixTextureShadowModes()
     }
 }
 
+// Finalization step: patch append methods to use proper stream output, which isn't known until
+// main is parsed, which could happen after the append method is parsed.
+void HlslParseContext::finalizeAppendMethods()
+{
+    TSourceLoc loc;
+    loc.init();
+
+    // Nothing to do: bypass test for valid stream output.
+    if (gsAppends.empty())
+        return;
+
+    if (gsStreamOutput == nullptr) {
+        error(loc, "unable to find output symbol for Append()", "", "");
+        return;
+    }
+
+    // Patch append sequences, now that we know the stream output symbol.
+    for (auto append = gsAppends.begin(); append != gsAppends.end(); ++append) {
+        append->node->getSequence()[0] = 
+            handleAssign(append->loc, EOpAssign,
+                         intermediate.addSymbol(*gsStreamOutput, append->loc),
+                         append->node->getSequence()[0]->getAsTyped());
+    }
+}
+
 // post-processing
 void HlslParseContext::finish()
 {
@@ -9931,6 +9951,7 @@ void HlslParseContext::finish()
     removeUnusedStructBufferCounters();
     addPatchConstantInvocation();
     fixTextureShadowModes();
+    finalizeAppendMethods();
 
     // Communicate out (esp. for command line) that we formed AST that will make
     // illegal AST SPIR-V and it needs transforms to legalize it.

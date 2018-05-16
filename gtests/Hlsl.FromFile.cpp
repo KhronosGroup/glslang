@@ -370,6 +370,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.targetStruct1.frag", "main"},
         {"hlsl.targetStruct2.frag", "main"},
         {"hlsl.templatetypes.frag", "PixelShaderFunction"},
+        {"hlsl.tristream-append.geom", "main"},
         {"hlsl.tx.bracket.frag", "main"},
         {"hlsl.tx.overload.frag", "main"},
         {"hlsl.type.half.frag", "main"},
