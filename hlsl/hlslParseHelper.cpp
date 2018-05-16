@@ -1475,22 +1475,17 @@ bool HlslParseContext::isClipOrCullDistance(TBuiltInVariable builtIn)
 void HlslParseContext::fixBuiltInIoType(TType& type)
 {
     int requiredArraySize = 0;
+    int requiredVectorSize = 0;
 
     switch (type.getQualifier().builtIn) {
     case EbvTessLevelOuter: requiredArraySize = 4; break;
     case EbvTessLevelInner: requiredArraySize = 2; break;
 
-    case EbvTessCoord:
-        {
-            // tesscoord is always a vec3 for the IO variable, no matter the shader's
-            // declared vector size.
-            TType tessCoordType(type.getBasicType(), type.getQualifier().storage, 3);
+    case EbvWorkGroupId:        requiredVectorSize = 3; break;
+    case EbvGlobalInvocationId: requiredVectorSize = 3; break;
+    case EbvLocalInvocationId:  requiredVectorSize = 3; break;
+    case EbvTessCoord:          requiredVectorSize = 3; break;
 
-            tessCoordType.getQualifier() = type.getQualifier();
-            type.shallowCopy(tessCoordType);
-
-            break;
-        }
     default:
         if (isClipOrCullDistance(type)) {
             const int loc = type.getQualifier().layoutLocation;
@@ -1509,6 +1504,14 @@ void HlslParseContext::fixBuiltInIoType(TType& type)
         }
 
         return;
+    }
+
+    // Alter or set vector size as needed.
+    if (requiredVectorSize > 0) {
+        TType newType(type.getBasicType(), type.getQualifier().storage, requiredVectorSize);
+        newType.getQualifier() = type.getQualifier();
+
+        type.shallowCopy(newType);
     }
 
     // Alter or set array size as needed.
