@@ -148,6 +148,7 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.constructArray.vert", "main"},
         {"hlsl.constructexpr.frag", "main"},
         {"hlsl.constructimat.frag", "main"},
+        {"hlsl.coverage.frag", "main"},
         {"hlsl.depthGreater.frag", "PixelShaderFunction"},
         {"hlsl.depthLess.frag", "PixelShaderFunction"},
         {"hlsl.discard.frag", "PixelShaderFunction"},
