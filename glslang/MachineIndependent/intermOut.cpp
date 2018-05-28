@@ -1115,7 +1115,7 @@ static void OutputDouble(TInfoSink& out, double value, TOutputTraverser::EExtraO
 
         // remove a leading zero in the 100s slot in exponent; it is not portable
         // pattern:   XX...XXXe+0XX or XX...XXXe-0XX
-        int len = (int)strnlen(buf, maxSize);
+        int len = std::min((int)strlen(buf), maxSize);
         if (len > 5) {
             if (buf[len-5] == 'e' && (buf[len-4] == '+' || buf[len-4] == '-') && buf[len-3] == '0') {
                 buf[len-3] = buf[len-2];
