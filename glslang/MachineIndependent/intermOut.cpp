@@ -1111,11 +1111,11 @@ static void OutputDouble(TInfoSink& out, double value, TOutputTraverser::EExtraO
         const char* format = "%f";
         if (fabs(value) > 0.0 && (fabs(value) < 1e-5 || fabs(value) > 1e12))
             format = "%-.13e";
-        snprintf(buf, maxSize, format, value);
+        int len = snprintf(buf, maxSize, format, value);
+        assert(len < maxSize);
 
         // remove a leading zero in the 100s slot in exponent; it is not portable
         // pattern:   XX...XXXe+0XX or XX...XXXe-0XX
-        int len = (int)strnlen(buf, maxSize);
         if (len > 5) {
             if (buf[len-5] == 'e' && (buf[len-4] == '+' || buf[len-4] == '-') && buf[len-3] == '0') {
                 buf[len-3] = buf[len-2];
