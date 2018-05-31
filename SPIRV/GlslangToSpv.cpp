@@ -7024,18 +7024,18 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
         optimizer.RegisterPass(CreateLocalAccessChainConvertPass());
         optimizer.RegisterPass(CreateLocalSingleBlockLoadStoreElimPass());
         optimizer.RegisterPass(CreateLocalSingleStoreElimPass());
+        optimizer.RegisterPass(CreateSimplificationPass());
         optimizer.RegisterPass(CreateAggressiveDCEPass());
-        optimizer.RegisterPass(CreateInsertExtractElimPass());
+        optimizer.RegisterPass(CreateVectorDCEPass());
         optimizer.RegisterPass(CreateDeadInsertElimPass());
         optimizer.RegisterPass(CreateAggressiveDCEPass());
-        optimizer.RegisterPass(CreateCCPPass());
-        optimizer.RegisterPass(CreateSimplificationPass());
         optimizer.RegisterPass(CreateDeadBranchElimPass());
-        optimizer.RegisterPass(CreateCFGCleanupPass());
         optimizer.RegisterPass(CreateBlockMergePass());
         optimizer.RegisterPass(CreateLocalMultiStoreElimPass());
+        optimizer.RegisterPass(CreateIfConversionPass());
+        optimizer.RegisterPass(CreateSimplificationPass());
         optimizer.RegisterPass(CreateAggressiveDCEPass());
-        optimizer.RegisterPass(CreateInsertExtractElimPass());
+        optimizer.RegisterPass(CreateVectorDCEPass());
         optimizer.RegisterPass(CreateDeadInsertElimPass());
         if (options->optimizeSize) {
             optimizer.RegisterPass(CreateRedundancyEliminationPass());
@@ -7043,6 +7043,7 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
             // optimizer.RegisterPass(CreateCommonUniformElimPass());
         }
         optimizer.RegisterPass(CreateAggressiveDCEPass());
+        optimizer.RegisterPass(CreateCFGCleanupPass());
 
         if (!optimizer.Run(spirv.data(), spirv.size(), &spirv))
             return;
