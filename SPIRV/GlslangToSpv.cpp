@@ -340,8 +340,10 @@ void TranslateMemoryDecoration(const glslang::TQualifier& qualifier, std::vector
 {
     if (qualifier.coherent)
         memory.push_back(spv::DecorationCoherent);
-    if (qualifier.volatil)
+    if (qualifier.volatil) {
         memory.push_back(spv::DecorationVolatile);
+        memory.push_back(spv::DecorationCoherent);
+    }
     if (qualifier.restrict)
         memory.push_back(spv::DecorationRestrict);
     if (qualifier.readonly)
