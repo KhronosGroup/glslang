@@ -460,6 +460,7 @@ using depth_any
 // Id's are bound by 164
 
                               Capability Shader
+                              Capability ImageGatherExtended
                               Capability Sampled1D
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450

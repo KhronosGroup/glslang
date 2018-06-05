@@ -5,6 +5,7 @@ spv.float16Fetch.frag
 
                               Capability Shader
                               Capability Float16
+                              Capability ImageGatherExtended
                               Capability StorageImageMultisample
                               Capability ImageCubeArray
                               Capability ImageRect

@@ -4,6 +4,7 @@ spv.textureGatherBiasLod.frag
 // Id's are bound by 298
 
                               Capability Shader
+                              Capability ImageGatherExtended
                               Capability SparseResidency
                               Capability SampledCubeArray
                               Capability ImageGatherBiasLodAMD
