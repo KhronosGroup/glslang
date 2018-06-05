@@ -136,56 +136,56 @@ Shader version: 500
                               Decorate 37(clip) BuiltIn ClipDistance
                               Decorate 43(cull) BuiltIn CullDistance
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
+               8:             TypePointer Function 7(vec4)
                9:             TypePointer Function 6(float)
-              10:             TypeFunction 2 8(ptr) 9(ptr) 9(ptr)
+              10:             TypeFunction 2(void) 8(vec4*) 9(float*) 9(float*)
               16:    6(float) Constant 1065353216
-              17:    7(fvec4) ConstantComposite 16 16 16 16
+              17:     7(vec4) ConstantComposite 16 16 16 16
               18:    6(float) Constant 1056964608
               19:    6(float) Constant 1057132380
-              30:             TypePointer Output 7(fvec4)
-         31(pos):     30(ptr) Variable Output
+              30:             TypePointer Output 7(vec4)
+         31(pos):   30(vec4*) Variable Output
               33:             TypeInt 32 0
-              34:     33(int) Constant 1
+              34:    33(uint) Constant 1
               35:             TypeArray 6(float) 34
-              36:             TypePointer Output 35
-        37(clip):     36(ptr) Variable Output
+              36:             TypePointer Output 35(float[1])
+        37(clip):36(float[1]*) Variable Output
               38:             TypeInt 32 1
               39:     38(int) Constant 0
               41:             TypePointer Output 6(float)
-        43(cull):     36(ptr) Variable Output
-         4(main):           2 Function None 3
+        43(cull):36(float[1]*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-         20(pos):      8(ptr) Variable Function
-        21(clip):      9(ptr) Variable Function
-        22(cull):      9(ptr) Variable Function
-       23(param):      8(ptr) Variable Function
-       24(param):      9(ptr) Variable Function
-       25(param):      9(ptr) Variable Function
-              26:           2 FunctionCall 14(@main(vf4;f1;f1;) 23(param) 24(param) 25(param)
-              27:    7(fvec4) Load 23(param)
+         20(pos):    8(vec4*) Variable Function
+        21(clip):   9(float*) Variable Function
+        22(cull):   9(float*) Variable Function
+       23(param):    8(vec4*) Variable Function
+       24(param):   9(float*) Variable Function
+       25(param):   9(float*) Variable Function
+              26:     2(void) FunctionCall 14(@main(vf4;f1;f1;) 23(param) 24(param) 25(param)
+              27:     7(vec4) Load 23(param)
                               Store 20(pos) 27
               28:    6(float) Load 24(param)
                               Store 21(clip) 28
               29:    6(float) Load 25(param)
                               Store 22(cull) 29
-              32:    7(fvec4) Load 20(pos)
+              32:     7(vec4) Load 20(pos)
                               Store 31(pos) 32
               40:    6(float) Load 21(clip)
-              42:     41(ptr) AccessChain 37(clip) 39
+              42:  41(float*) AccessChain 37(clip) 39
                               Store 42 40
               44:    6(float) Load 22(cull)
-              45:     41(ptr) AccessChain 43(cull) 39
+              45:  41(float*) AccessChain 43(cull) 39
                               Store 45 44
                               Return
                               FunctionEnd
-14(@main(vf4;f1;f1;):           2 Function None 10
-         11(pos):      8(ptr) FunctionParameter
-        12(clip):      9(ptr) FunctionParameter
-        13(cull):      9(ptr) FunctionParameter
+14(@main(vf4;f1;f1;):     2(void) Function None 10
+         11(pos):    8(vec4*) FunctionParameter
+        12(clip):   9(float*) FunctionParameter
+        13(cull):   9(float*) FunctionParameter
               15:             Label
                               Store 11(pos) 17
                               Store 12(clip) 18

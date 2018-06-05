@@ -79,31 +79,31 @@ gl_FragCoord origin is upper left
                               Decorate 13 Binding 5
                               Decorate 26(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
-     11($Global):             TypeStruct 7(fvec4) 7(fvec4)
+               8:             TypeFunction 7(vec4)
+     11($Global):             TypeStruct 7(vec4) 7(vec4)
               12:             TypePointer Uniform 11($Global)
-              13:     12(ptr) Variable Uniform
+              13:12($Global*) Variable Uniform
               14:             TypeInt 32 1
               15:     14(int) Constant 0
-              16:             TypePointer Uniform 7(fvec4)
+              16:             TypePointer Uniform 7(vec4)
               19:     14(int) Constant 1
-              25:             TypePointer Output 7(fvec4)
-26(@entryPointOutput):     25(ptr) Variable Output
-         4(main):           2 Function None 3
+              25:             TypePointer Output 7(vec4)
+26(@entryPointOutput):   25(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              27:    7(fvec4) FunctionCall 9(@main()
+              27:     7(vec4) FunctionCall 9(@main()
                               Store 26(@entryPointOutput) 27
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-              17:     16(ptr) AccessChain 13 15
-              18:    7(fvec4) Load 17
-              20:     16(ptr) AccessChain 13 19
-              21:    7(fvec4) Load 20
-              22:    7(fvec4) FAdd 18 21
+              17:   16(vec4*) AccessChain 13 15
+              18:     7(vec4) Load 17
+              20:   16(vec4*) AccessChain 13 19
+              21:     7(vec4) Load 20
+              22:     7(vec4) FAdd 18 21
                               ReturnValue 22
                               FunctionEnd

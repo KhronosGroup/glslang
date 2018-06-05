@@ -99,43 +99,43 @@ output primitive = line_strip
                               Decorate 19(OutputStream.ps) BuiltIn PointSize
                               Decorate 28(ps) BuiltIn PointSize
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:      6(int) Constant 3
-               8:             TypeArray 6(int) 7
-               9:             TypePointer Function 8
+               7:     6(uint) Constant 3
+               8:             TypeArray 6(uint) 7
+               9:             TypePointer Function 8(uint[3])
               10:             TypeFloat 32
            11(S):             TypeStruct 10(float)
               12:             TypePointer Function 11(S)
-              13:             TypeFunction 2 9(ptr) 12(ptr)
+              13:             TypeFunction 2(void) 9(uint[3]*) 12(S*)
               18:             TypePointer Output 10(float)
-19(OutputStream.ps):     18(ptr) Variable Output
+19(OutputStream.ps):  18(float*) Variable Output
               21:             TypeInt 32 1
               22:     21(int) Constant 0
               23:             TypePointer Function 10(float)
-              27:             TypePointer Input 8
-          28(ps):     27(ptr) Variable Input
-         4(main):           2 Function None 3
+              27:             TypePointer Input 8(uint[3])
+          28(ps):27(uint[3]*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-          26(ps):      9(ptr) Variable Function
-30(OutputStream):     12(ptr) Variable Function
-       31(param):      9(ptr) Variable Function
-       33(param):     12(ptr) Variable Function
-              29:           8 Load 28(ps)
+          26(ps): 9(uint[3]*) Variable Function
+30(OutputStream):      12(S*) Variable Function
+       31(param): 9(uint[3]*) Variable Function
+       33(param):      12(S*) Variable Function
+              29:  8(uint[3]) Load 28(ps)
                               Store 26(ps) 29
-              32:           8 Load 26(ps)
+              32:  8(uint[3]) Load 26(ps)
                               Store 31(param) 32
-              34:           2 FunctionCall 16(@main(u1[3];struct-S-f11;) 31(param) 33(param)
+              34:     2(void) FunctionCall 16(@main(u1[3];struct-S-f11;) 31(param) 33(param)
               35:       11(S) Load 33(param)
                               Store 30(OutputStream) 35
                               Return
                               FunctionEnd
-16(@main(u1[3];struct-S-f11;):           2 Function None 13
-          14(ps):      9(ptr) FunctionParameter
-15(OutputStream):     12(ptr) FunctionParameter
+16(@main(u1[3];struct-S-f11;):     2(void) Function None 13
+          14(ps): 9(uint[3]*) FunctionParameter
+15(OutputStream):      12(S*) FunctionParameter
               17:             Label
-           20(s):     12(ptr) Variable Function
-              24:     23(ptr) AccessChain 20(s) 22
+           20(s):      12(S*) Variable Function
+              24:  23(float*) AccessChain 20(s) 22
               25:   10(float) Load 24
                               Store 19(OutputStream.ps) 25
                               EmitVertex

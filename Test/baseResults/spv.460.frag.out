@@ -18,34 +18,34 @@ spv.460.frag
                               Decorate 8(aui) Offset 0
                               Decorate 8(aui) Binding 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypePointer AtomicCounter 6(int)
-          8(aui):      7(ptr) Variable AtomicCounter
-               9:             TypePointer Private 6(int)
-          10(ui):      9(ptr) Variable Private
-              12:      6(int) Constant 1
-              13:      6(int) Constant 0
-         4(main):           2 Function None 3
+               7:             TypePointer AtomicCounter 6(uint)
+          8(aui):    7(uint*) Variable AtomicCounter
+               9:             TypePointer Private 6(uint)
+          10(ui):    9(uint*) Variable Private
+              12:     6(uint) Constant 1
+              13:     6(uint) Constant 0
+         4(main):     2(void) Function None 3
                5:             Label
-              11:      6(int) Load 10(ui)
-              14:      6(int) AtomicIAdd 8(aui) 12 13 11
-              15:      6(int) Load 10(ui)
-              16:      6(int) AtomicISub 8(aui) 12 13 15
-              17:      6(int) Load 10(ui)
-              18:      6(int) AtomicUMin 8(aui) 12 13 17
-              19:      6(int) Load 10(ui)
-              20:      6(int) AtomicUMax 8(aui) 12 13 19
-              21:      6(int) Load 10(ui)
-              22:      6(int) AtomicAnd 8(aui) 12 13 21
-              23:      6(int) Load 10(ui)
-              24:      6(int) AtomicOr 8(aui) 12 13 23
-              25:      6(int) Load 10(ui)
-              26:      6(int) AtomicXor 8(aui) 12 13 25
-              27:      6(int) Load 10(ui)
-              28:      6(int) AtomicExchange 8(aui) 12 13 27
-              29:      6(int) Load 10(ui)
-              30:      6(int) Load 10(ui)
-              31:      6(int) AtomicCompareExchange 8(aui) 12 13 13 30 29
+              11:     6(uint) Load 10(ui)
+              14:     6(uint) AtomicIAdd 8(aui) 12 13 11
+              15:     6(uint) Load 10(ui)
+              16:     6(uint) AtomicISub 8(aui) 12 13 15
+              17:     6(uint) Load 10(ui)
+              18:     6(uint) AtomicUMin 8(aui) 12 13 17
+              19:     6(uint) Load 10(ui)
+              20:     6(uint) AtomicUMax 8(aui) 12 13 19
+              21:     6(uint) Load 10(ui)
+              22:     6(uint) AtomicAnd 8(aui) 12 13 21
+              23:     6(uint) Load 10(ui)
+              24:     6(uint) AtomicOr 8(aui) 12 13 23
+              25:     6(uint) Load 10(ui)
+              26:     6(uint) AtomicXor 8(aui) 12 13 25
+              27:     6(uint) Load 10(ui)
+              28:     6(uint) AtomicExchange 8(aui) 12 13 27
+              29:     6(uint) Load 10(ui)
+              30:     6(uint) Load 10(ui)
+              31:     6(uint) AtomicCompareExchange 8(aui) 12 13 13 30 29
                               Return
                               FunctionEnd

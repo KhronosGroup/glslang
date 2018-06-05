@@ -126,52 +126,52 @@ Shader version: 500
                               Decorate 35(Pos_loose) Location 1
                               Decorate 38(@entryPointOutput.Pos) BuiltIn Position
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-     8(VS_INPUT):             TypeStruct 7(fvec4)
+     8(VS_INPUT):             TypeStruct 7(vec4)
                9:             TypePointer Function 8(VS_INPUT)
-              10:             TypePointer Function 7(fvec4)
-   11(VS_OUTPUT):             TypeStruct 7(fvec4)
-              12:             TypeFunction 11(VS_OUTPUT) 9(ptr) 10(ptr)
+              10:             TypePointer Function 7(vec4)
+   11(VS_OUTPUT):             TypeStruct 7(vec4)
+              12:             TypeFunction 11(VS_OUTPUT) 9(VS_INPUT*) 10(vec4*)
               17:             TypePointer Function 11(VS_OUTPUT)
               19:             TypeInt 32 1
               20:     19(int) Constant 0
-              30:             TypePointer Input 7(fvec4)
- 31(vsin.Pos_in):     30(ptr) Variable Input
-   35(Pos_loose):     30(ptr) Variable Input
-              37:             TypePointer Output 7(fvec4)
-38(@entryPointOutput.Pos):     37(ptr) Variable Output
-         4(main):           2 Function None 3
+              30:             TypePointer Input 7(vec4)
+ 31(vsin.Pos_in):   30(vec4*) Variable Input
+   35(Pos_loose):   30(vec4*) Variable Input
+              37:             TypePointer Output 7(vec4)
+38(@entryPointOutput.Pos):   37(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-        29(vsin):      9(ptr) Variable Function
-   34(Pos_loose):     10(ptr) Variable Function
-       39(param):      9(ptr) Variable Function
-       41(param):     10(ptr) Variable Function
-              32:    7(fvec4) Load 31(vsin.Pos_in)
-              33:     10(ptr) AccessChain 29(vsin) 20
+        29(vsin):9(VS_INPUT*) Variable Function
+   34(Pos_loose):   10(vec4*) Variable Function
+       39(param):9(VS_INPUT*) Variable Function
+       41(param):   10(vec4*) Variable Function
+              32:     7(vec4) Load 31(vsin.Pos_in)
+              33:   10(vec4*) AccessChain 29(vsin) 20
                               Store 33 32
-              36:    7(fvec4) Load 35(Pos_loose)
+              36:     7(vec4) Load 35(Pos_loose)
                               Store 34(Pos_loose) 36
               40: 8(VS_INPUT) Load 29(vsin)
                               Store 39(param) 40
-              42:    7(fvec4) Load 34(Pos_loose)
+              42:     7(vec4) Load 34(Pos_loose)
                               Store 41(param) 42
               43:11(VS_OUTPUT) FunctionCall 15(@main(struct-VS_INPUT-vf41;vf4;) 39(param) 41(param)
-              44:    7(fvec4) CompositeExtract 43 0
+              44:     7(vec4) CompositeExtract 43 0
                               Store 38(@entryPointOutput.Pos) 44
                               Return
                               FunctionEnd
 15(@main(struct-VS_INPUT-vf41;vf4;):11(VS_OUTPUT) Function None 12
-        13(vsin):      9(ptr) FunctionParameter
-   14(Pos_loose):     10(ptr) FunctionParameter
+        13(vsin):9(VS_INPUT*) FunctionParameter
+   14(Pos_loose):   10(vec4*) FunctionParameter
               16:             Label
-       18(vsout):     17(ptr) Variable Function
-              21:     10(ptr) AccessChain 13(vsin) 20
-              22:    7(fvec4) Load 21
-              23:    7(fvec4) Load 14(Pos_loose)
-              24:    7(fvec4) FAdd 22 23
-              25:     10(ptr) AccessChain 18(vsout) 20
+       18(vsout):17(VS_OUTPUT*) Variable Function
+              21:   10(vec4*) AccessChain 13(vsin) 20
+              22:     7(vec4) Load 21
+              23:     7(vec4) Load 14(Pos_loose)
+              24:     7(vec4) FAdd 22 23
+              25:   10(vec4*) AccessChain 18(vsout) 20
                               Store 25 24
               26:11(VS_OUTPUT) Load 18(vsout)
                               ReturnValue 26

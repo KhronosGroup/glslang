@@ -673,157 +673,157 @@ output primitive = line_strip
                               Decorate 73(VertexID) Location 0
                               Decorate 78(clip) BuiltIn ClipDistance
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeInt 32 0
-               9:      8(int) Constant 3
-              10:             TypeArray 7(fvec4) 9
-              11:             TypePointer Function 10
-              12:             TypeArray 8(int) 9
-              13:             TypePointer Function 12
+               9:     8(uint) Constant 3
+              10:             TypeArray 7(vec4) 9
+              11:             TypePointer Function 10(vec4[3])
+              12:             TypeArray 8(uint) 9
+              13:             TypePointer Function 12(uint[3])
               14:             TypeVector 6(float) 2
-           15(S):             TypeStruct 7(fvec4) 14(fvec2) 14(fvec2)
+           15(S):             TypeStruct 7(vec4) 14(vec2) 14(vec2)
               16:             TypePointer Function 15(S)
-              17:             TypeFunction 2 11(ptr) 13(ptr) 16(ptr) 11(ptr)
+              17:             TypeFunction 2(void) 11(vec4[3]*) 13(uint[3]*) 16(S*) 11(vec4[3]*)
               25:             TypeInt 32 1
               26:     25(int) Constant 0
-              27:             TypePointer Function 7(fvec4)
+              27:             TypePointer Function 7(vec4)
               31:     25(int) Constant 1
-              35:             TypePointer Function 14(fvec2)
+              35:             TypePointer Function 14(vec2)
               37:     25(int) Constant 2
-              42:             TypePointer Output 7(fvec4)
-43(OutputStream.pos):     42(ptr) Variable Output
-              46:      8(int) Constant 4
+              42:             TypePointer Output 7(vec4)
+43(OutputStream.pos):   42(vec4*) Variable Output
+              46:     8(uint) Constant 4
               47:             TypeArray 6(float) 46
-              48:             TypePointer Output 47
-49(OutputStream.clip1):     48(ptr) Variable Output
-              50:      8(int) Constant 0
+              48:             TypePointer Output 47(float[4])
+49(OutputStream.clip1):48(float[4]*) Variable Output
+              50:     8(uint) Constant 0
               51:             TypePointer Function 6(float)
               54:             TypePointer Output 6(float)
-              56:      8(int) Constant 1
+              56:     8(uint) Constant 1
               63:     25(int) Constant 3
-              68:             TypePointer Input 10
-         69(pos):     68(ptr) Variable Input
-              72:             TypePointer Input 12
-    73(VertexID):     72(ptr) Variable Input
-              76:             TypeArray 47 9
-              77:             TypePointer Input 76
-        78(clip):     77(ptr) Variable Input
+              68:             TypePointer Input 10(vec4[3])
+         69(pos):68(vec4[3]*) Variable Input
+              72:             TypePointer Input 12(uint[3])
+    73(VertexID):72(uint[3]*) Variable Input
+              76:             TypeArray 47(float[4]) 9
+              77:             TypePointer Input 76(float[4][3])
+        78(clip):77(float[4][3]*) Variable Input
               79:             TypePointer Input 6(float)
-              88:      8(int) Constant 2
-         4(main):           2 Function None 3
+              88:     8(uint) Constant 2
+         4(main):     2(void) Function None 3
                5:             Label
-         67(pos):     11(ptr) Variable Function
-    71(VertexID):     13(ptr) Variable Function
-        75(clip):     11(ptr) Variable Function
-117(OutputStream):     16(ptr) Variable Function
-      118(param):     11(ptr) Variable Function
-      120(param):     13(ptr) Variable Function
-      122(param):     16(ptr) Variable Function
-      123(param):     11(ptr) Variable Function
-              70:          10 Load 69(pos)
+         67(pos):11(vec4[3]*) Variable Function
+    71(VertexID):13(uint[3]*) Variable Function
+        75(clip):11(vec4[3]*) Variable Function
+117(OutputStream):      16(S*) Variable Function
+      118(param):11(vec4[3]*) Variable Function
+      120(param):13(uint[3]*) Variable Function
+      122(param):      16(S*) Variable Function
+      123(param):11(vec4[3]*) Variable Function
+              70: 10(vec4[3]) Load 69(pos)
                               Store 67(pos) 70
-              74:          12 Load 73(VertexID)
+              74: 12(uint[3]) Load 73(VertexID)
                               Store 71(VertexID) 74
-              80:     79(ptr) AccessChain 78(clip) 26 26
+              80:  79(float*) AccessChain 78(clip) 26 26
               81:    6(float) Load 80
-              82:     51(ptr) AccessChain 75(clip) 26 50
+              82:  51(float*) AccessChain 75(clip) 26 50
                               Store 82 81
-              83:     79(ptr) AccessChain 78(clip) 26 31
+              83:  79(float*) AccessChain 78(clip) 26 31
               84:    6(float) Load 83
-              85:     51(ptr) AccessChain 75(clip) 26 56
+              85:  51(float*) AccessChain 75(clip) 26 56
                               Store 85 84
-              86:     79(ptr) AccessChain 78(clip) 26 37
+              86:  79(float*) AccessChain 78(clip) 26 37
               87:    6(float) Load 86
-              89:     51(ptr) AccessChain 75(clip) 26 88
+              89:  51(float*) AccessChain 75(clip) 26 88
                               Store 89 87
-              90:     79(ptr) AccessChain 78(clip) 26 63
+              90:  79(float*) AccessChain 78(clip) 26 63
               91:    6(float) Load 90
-              92:     51(ptr) AccessChain 75(clip) 26 9
+              92:  51(float*) AccessChain 75(clip) 26 9
                               Store 92 91
-              93:     79(ptr) AccessChain 78(clip) 31 26
+              93:  79(float*) AccessChain 78(clip) 31 26
               94:    6(float) Load 93
-              95:     51(ptr) AccessChain 75(clip) 31 50
+              95:  51(float*) AccessChain 75(clip) 31 50
                               Store 95 94
-              96:     79(ptr) AccessChain 78(clip) 31 31
+              96:  79(float*) AccessChain 78(clip) 31 31
               97:    6(float) Load 96
-              98:     51(ptr) AccessChain 75(clip) 31 56
+              98:  51(float*) AccessChain 75(clip) 31 56
                               Store 98 97
-              99:     79(ptr) AccessChain 78(clip) 31 37
+              99:  79(float*) AccessChain 78(clip) 31 37
              100:    6(float) Load 99
-             101:     51(ptr) AccessChain 75(clip) 31 88
+             101:  51(float*) AccessChain 75(clip) 31 88
                               Store 101 100
-             102:     79(ptr) AccessChain 78(clip) 31 63
+             102:  79(float*) AccessChain 78(clip) 31 63
              103:    6(float) Load 102
-             104:     51(ptr) AccessChain 75(clip) 31 9
+             104:  51(float*) AccessChain 75(clip) 31 9
                               Store 104 103
-             105:     79(ptr) AccessChain 78(clip) 37 26
+             105:  79(float*) AccessChain 78(clip) 37 26
              106:    6(float) Load 105
-             107:     51(ptr) AccessChain 75(clip) 37 50
+             107:  51(float*) AccessChain 75(clip) 37 50
                               Store 107 106
-             108:     79(ptr) AccessChain 78(clip) 37 31
+             108:  79(float*) AccessChain 78(clip) 37 31
              109:    6(float) Load 108
-             110:     51(ptr) AccessChain 75(clip) 37 56
+             110:  51(float*) AccessChain 75(clip) 37 56
                               Store 110 109
-             111:     79(ptr) AccessChain 78(clip) 37 37
+             111:  79(float*) AccessChain 78(clip) 37 37
              112:    6(float) Load 111
-             113:     51(ptr) AccessChain 75(clip) 37 88
+             113:  51(float*) AccessChain 75(clip) 37 88
                               Store 113 112
-             114:     79(ptr) AccessChain 78(clip) 37 63
+             114:  79(float*) AccessChain 78(clip) 37 63
              115:    6(float) Load 114
-             116:     51(ptr) AccessChain 75(clip) 37 9
+             116:  51(float*) AccessChain 75(clip) 37 9
                               Store 116 115
-             119:          10 Load 67(pos)
+             119: 10(vec4[3]) Load 67(pos)
                               Store 118(param) 119
-             121:          12 Load 71(VertexID)
+             121: 12(uint[3]) Load 71(VertexID)
                               Store 120(param) 121
-             124:          10 Load 75(clip)
+             124: 10(vec4[3]) Load 75(clip)
                               Store 123(param) 124
-             125:           2 FunctionCall 22(@main(vf4[3];u1[3];struct-S-vf4-vf2-vf21;vf4[3];) 118(param) 120(param) 122(param) 123(param)
+             125:     2(void) FunctionCall 22(@main(vf4[3];u1[3];struct-S-vf4-vf2-vf21;vf4[3];) 118(param) 120(param) 122(param) 123(param)
              126:       15(S) Load 122(param)
                               Store 117(OutputStream) 126
                               Return
                               FunctionEnd
-22(@main(vf4[3];u1[3];struct-S-vf4-vf2-vf21;vf4[3];):           2 Function None 17
-         18(pos):     11(ptr) FunctionParameter
-    19(VertexID):     13(ptr) FunctionParameter
-20(OutputStream):     16(ptr) FunctionParameter
-        21(clip):     11(ptr) FunctionParameter
+22(@main(vf4[3];u1[3];struct-S-vf4-vf2-vf21;vf4[3];):     2(void) Function None 17
+         18(pos):11(vec4[3]*) FunctionParameter
+    19(VertexID):13(uint[3]*) FunctionParameter
+20(OutputStream):      16(S*) FunctionParameter
+        21(clip):11(vec4[3]*) FunctionParameter
               23:             Label
-           24(s):     16(ptr) Variable Function
-              28:     27(ptr) AccessChain 18(pos) 26
-              29:    7(fvec4) Load 28
-              30:     27(ptr) AccessChain 24(s) 26
+           24(s):      16(S*) Variable Function
+              28:   27(vec4*) AccessChain 18(pos) 26
+              29:     7(vec4) Load 28
+              30:   27(vec4*) AccessChain 24(s) 26
                               Store 30 29
-              32:     27(ptr) AccessChain 21(clip) 26
-              33:    7(fvec4) Load 32
-              34:   14(fvec2) VectorShuffle 33 33 0 1
-              36:     35(ptr) AccessChain 24(s) 31
+              32:   27(vec4*) AccessChain 21(clip) 26
+              33:     7(vec4) Load 32
+              34:    14(vec2) VectorShuffle 33 33 0 1
+              36:   35(vec2*) AccessChain 24(s) 31
                               Store 36 34
-              38:     27(ptr) AccessChain 21(clip) 26
-              39:    7(fvec4) Load 38
-              40:   14(fvec2) VectorShuffle 39 39 2 3
-              41:     35(ptr) AccessChain 24(s) 37
+              38:   27(vec4*) AccessChain 21(clip) 26
+              39:     7(vec4) Load 38
+              40:    14(vec2) VectorShuffle 39 39 2 3
+              41:   35(vec2*) AccessChain 24(s) 37
                               Store 41 40
-              44:     27(ptr) AccessChain 24(s) 26
-              45:    7(fvec4) Load 44
+              44:   27(vec4*) AccessChain 24(s) 26
+              45:     7(vec4) Load 44
                               Store 43(OutputStream.pos) 45
-              52:     51(ptr) AccessChain 24(s) 31 50
+              52:  51(float*) AccessChain 24(s) 31 50
               53:    6(float) Load 52
-              55:     54(ptr) AccessChain 49(OutputStream.clip1) 26
+              55:  54(float*) AccessChain 49(OutputStream.clip1) 26
                               Store 55 53
-              57:     51(ptr) AccessChain 24(s) 31 56
+              57:  51(float*) AccessChain 24(s) 31 56
               58:    6(float) Load 57
-              59:     54(ptr) AccessChain 49(OutputStream.clip1) 31
+              59:  54(float*) AccessChain 49(OutputStream.clip1) 31
                               Store 59 58
-              60:     51(ptr) AccessChain 24(s) 37 50
+              60:  51(float*) AccessChain 24(s) 37 50
               61:    6(float) Load 60
-              62:     54(ptr) AccessChain 49(OutputStream.clip1) 37
+              62:  54(float*) AccessChain 49(OutputStream.clip1) 37
                               Store 62 61
-              64:     51(ptr) AccessChain 24(s) 37 56
+              64:  51(float*) AccessChain 24(s) 37 56
               65:    6(float) Load 64
-              66:     54(ptr) AccessChain 49(OutputStream.clip1) 63
+              66:  54(float*) AccessChain 49(OutputStream.clip1) 63
                               Store 66 65
                               EmitVertex
                               Return

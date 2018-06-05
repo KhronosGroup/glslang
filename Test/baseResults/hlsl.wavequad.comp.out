@@ -8062,1238 +8062,1238 @@ local_size = (32, 16, 1)
                               Decorate 24(data) DescriptorSet 0
                               Decorate 1115(dti) BuiltIn GlobalInvocationId
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypeVector 6(int) 3
-               8:             TypePointer Function 7(ivec3)
-               9:             TypeFunction 2 8(ptr)
-              13:             TypeVector 6(int) 4
+               7:             TypeVector 6(uint) 3
+               8:             TypePointer Function 7(uvec3)
+               9:             TypeFunction 2(void) 8(uvec3*)
+              13:             TypeVector 6(uint) 4
               14:             TypeInt 32 1
               15:             TypeVector 14(int) 4
               16:             TypeFloat 32
               17:             TypeVector 16(float) 4
               18:             TypeFloat 64
-              19:             TypeVector 18(float64_t) 4
-       20(Types):             TypeStruct 13(ivec4) 15(ivec4) 17(fvec4) 19(f64vec4)
+              19:             TypeVector 18(double) 4
+       20(Types):             TypeStruct 13(uvec4) 15(ivec4) 17(vec4) 19(dvec4)
               21:             TypeRuntimeArray 20(Types)
-        22(data):             TypeStruct 21
+        22(data):             TypeStruct 21(Types[])
               23:             TypePointer Uniform 22(data)
-        24(data):     23(ptr) Variable Uniform
+        24(data):   23(data*) Variable Uniform
               25:     14(int) Constant 0
-              26:      6(int) Constant 0
-              27:             TypePointer Function 6(int)
-              32:             TypePointer Uniform 13(ivec4)
-              35:      6(int) Constant 3
-              42:             TypePointer Uniform 6(int)
-              51:             TypeVector 6(int) 2
+              26:     6(uint) Constant 0
+              27:             TypePointer Function 6(uint)
+              32:             TypePointer Uniform 13(uvec4)
+              35:     6(uint) Constant 3
+              42:             TypePointer Uniform 6(uint)
+              51:             TypeVector 6(uint) 2
               72:     14(int) Constant 1
               75:             TypePointer Uniform 15(ivec4)
               84:             TypePointer Uniform 14(int)
               93:             TypeVector 14(int) 2
              105:             TypeVector 14(int) 3
              115:     14(int) Constant 2
-             118:             TypePointer Uniform 17(fvec4)
+             118:             TypePointer Uniform 17(vec4)
              127:             TypePointer Uniform 16(float)
              136:             TypeVector 16(float) 2
              148:             TypeVector 16(float) 3
              158:     14(int) Constant 3
-             161:             TypePointer Uniform 19(f64vec4)
-             170:             TypePointer Uniform 18(float64_t)
-             179:             TypeVector 18(float64_t) 2
-             191:             TypeVector 18(float64_t) 3
-             205:      6(int) Constant 1
-             358:      6(int) Constant 2
-            1114:             TypePointer Input 7(ivec3)
-       1115(dti):   1114(ptr) Variable Input
-       4(CSMain):           2 Function None 3
+             161:             TypePointer Uniform 19(dvec4)
+             170:             TypePointer Uniform 18(double)
+             179:             TypeVector 18(double) 2
+             191:             TypeVector 18(double) 3
+             205:     6(uint) Constant 1
+             358:     6(uint) Constant 2
+            1114:             TypePointer Input 7(uvec3)
+       1115(dti):1114(uvec3*) Variable Input
+       4(CSMain):     2(void) Function None 3
                5:             Label
-       1113(dti):      8(ptr) Variable Function
-     1117(param):      8(ptr) Variable Function
-            1116:    7(ivec3) Load 1115(dti)
+       1113(dti):   8(uvec3*) Variable Function
+     1117(param):   8(uvec3*) Variable Function
+            1116:    7(uvec3) Load 1115(dti)
                               Store 1113(dti) 1116
-            1118:    7(ivec3) Load 1113(dti)
+            1118:    7(uvec3) Load 1113(dti)
                               Store 1117(param) 1118
-            1119:           2 FunctionCall 11(@CSMain(vu3;) 1117(param)
+            1119:     2(void) FunctionCall 11(@CSMain(vu3;) 1117(param)
                               Return
                               FunctionEnd
-11(@CSMain(vu3;):           2 Function None 9
-         10(dti):      8(ptr) FunctionParameter
+11(@CSMain(vu3;):     2(void) Function None 9
+         10(dti):   8(uvec3*) FunctionParameter
               12:             Label
-              28:     27(ptr) AccessChain 10(dti) 26
-              29:      6(int) Load 28
-              30:     27(ptr) AccessChain 10(dti) 26
-              31:      6(int) Load 30
-              33:     32(ptr) AccessChain 24(data) 25 31 25
-              34:   13(ivec4) Load 33
-              36:   13(ivec4) GroupNonUniformQuadBroadcast 35 34 26
-              37:     32(ptr) AccessChain 24(data) 25 29 25
+              28:   27(uint*) AccessChain 10(dti) 26
+              29:     6(uint) Load 28
+              30:   27(uint*) AccessChain 10(dti) 26
+              31:     6(uint) Load 30
+              33:  32(uvec4*) AccessChain 24(data) 25 31 25
+              34:   13(uvec4) Load 33
+              36:   13(uvec4) GroupNonUniformQuadBroadcast 35 34 26
+              37:  32(uvec4*) AccessChain 24(data) 25 29 25
                               Store 37 36
-              38:     27(ptr) AccessChain 10(dti) 26
-              39:      6(int) Load 38
-              40:     27(ptr) AccessChain 10(dti) 26
-              41:      6(int) Load 40
-              43:     42(ptr) AccessChain 24(data) 25 41 25 26
-              44:      6(int) Load 43
-              45:      6(int) GroupNonUniformQuadBroadcast 35 44 26
-              46:     42(ptr) AccessChain 24(data) 25 39 25 26
+              38:   27(uint*) AccessChain 10(dti) 26
+              39:     6(uint) Load 38
+              40:   27(uint*) AccessChain 10(dti) 26
+              41:     6(uint) Load 40
+              43:   42(uint*) AccessChain 24(data) 25 41 25 26
+              44:     6(uint) Load 43
+              45:     6(uint) GroupNonUniformQuadBroadcast 35 44 26
+              46:   42(uint*) AccessChain 24(data) 25 39 25 26
                               Store 46 45
-              47:     27(ptr) AccessChain 10(dti) 26
-              48:      6(int) Load 47
-              49:     27(ptr) AccessChain 10(dti) 26
-              50:      6(int) Load 49
-              52:     32(ptr) AccessChain 24(data) 25 50 25
-              53:   13(ivec4) Load 52
-              54:   51(ivec2) VectorShuffle 53 53 0 1
-              55:   51(ivec2) GroupNonUniformQuadBroadcast 35 54 26
-              56:     32(ptr) AccessChain 24(data) 25 48 25
-              57:   13(ivec4) Load 56
-              58:   13(ivec4) VectorShuffle 57 55 4 5 2 3
+              47:   27(uint*) AccessChain 10(dti) 26
+              48:     6(uint) Load 47
+              49:   27(uint*) AccessChain 10(dti) 26
+              50:     6(uint) Load 49
+              52:  32(uvec4*) AccessChain 24(data) 25 50 25
+              53:   13(uvec4) Load 52
+              54:   51(uvec2) VectorShuffle 53 53 0 1
+              55:   51(uvec2) GroupNonUniformQuadBroadcast 35 54 26
+              56:  32(uvec4*) AccessChain 24(data) 25 48 25
+              57:   13(uvec4) Load 56
+              58:   13(uvec4) VectorShuffle 57 55 4 5 2 3
                               Store 56 58
-              59:     27(ptr) AccessChain 10(dti) 26
-              60:      6(int) Load 59
-              61:     27(ptr) AccessChain 10(dti) 26
-              62:      6(int) Load 61
-              63:     32(ptr) AccessChain 24(data) 25 62 25
-              64:   13(ivec4) Load 63
-              65:    7(ivec3) VectorShuffle 64 64 0 1 2
-              66:    7(ivec3) GroupNonUniformQuadBroadcast 35 65 26
-              67:     32(ptr) AccessChain 24(data) 25 60 25
-              68:   13(ivec4) Load 67
-              69:   13(ivec4) VectorShuffle 68 66 4 5 6 3
+              59:   27(uint*) AccessChain 10(dti) 26
+              60:     6(uint) Load 59
+              61:   27(uint*) AccessChain 10(dti) 26
+              62:     6(uint) Load 61
+              63:  32(uvec4*) AccessChain 24(data) 25 62 25
+              64:   13(uvec4) Load 63
+              65:    7(uvec3) VectorShuffle 64 64 0 1 2
+              66:    7(uvec3) GroupNonUniformQuadBroadcast 35 65 26
+              67:  32(uvec4*) AccessChain 24(data) 25 60 25
+              68:   13(uvec4) Load 67
+              69:   13(uvec4) VectorShuffle 68 66 4 5 6 3
                               Store 67 69
-              70:     27(ptr) AccessChain 10(dti) 26
-              71:      6(int) Load 70
-              73:     27(ptr) AccessChain 10(dti) 26
-              74:      6(int) Load 73
-              76:     75(ptr) AccessChain 24(data) 25 74 72
+              70:   27(uint*) AccessChain 10(dti) 26
+              71:     6(uint) Load 70
+              73:   27(uint*) AccessChain 10(dti) 26
+              74:     6(uint) Load 73
+              76:  75(ivec4*) AccessChain 24(data) 25 74 72
               77:   15(ivec4) Load 76
               78:   15(ivec4) GroupNonUniformQuadBroadcast 35 77 26
-              79:     75(ptr) AccessChain 24(data) 25 71 72
+              79:  75(ivec4*) AccessChain 24(data) 25 71 72
                               Store 79 78
-              80:     27(ptr) AccessChain 10(dti) 26
-              81:      6(int) Load 80
-              82:     27(ptr) AccessChain 10(dti) 26
-              83:      6(int) Load 82
-              85:     84(ptr) AccessChain 24(data) 25 83 72 26
+              80:   27(uint*) AccessChain 10(dti) 26
+              81:     6(uint) Load 80
+              82:   27(uint*) AccessChain 10(dti) 26
+              83:     6(uint) Load 82
+              85:    84(int*) AccessChain 24(data) 25 83 72 26
               86:     14(int) Load 85
               87:     14(int) GroupNonUniformQuadBroadcast 35 86 26
-              88:     84(ptr) AccessChain 24(data) 25 81 72 26
+              88:    84(int*) AccessChain 24(data) 25 81 72 26
                               Store 88 87
-              89:     27(ptr) AccessChain 10(dti) 26
-              90:      6(int) Load 89
-              91:     27(ptr) AccessChain 10(dti) 26
-              92:      6(int) Load 91
-              94:     75(ptr) AccessChain 24(data) 25 92 72
+              89:   27(uint*) AccessChain 10(dti) 26
+              90:     6(uint) Load 89
+              91:   27(uint*) AccessChain 10(dti) 26
+              92:     6(uint) Load 91
+              94:  75(ivec4*) AccessChain 24(data) 25 92 72
               95:   15(ivec4) Load 94
               96:   93(ivec2) VectorShuffle 95 95 0 1
               97:   93(ivec2) GroupNonUniformQuadBroadcast 35 96 26
-              98:     75(ptr) AccessChain 24(data) 25 90 72
+              98:  75(ivec4*) AccessChain 24(data) 25 90 72
               99:   15(ivec4) Load 98
              100:   15(ivec4) VectorShuffle 99 97 4 5 2 3
                               Store 98 100
-             101:     27(ptr) AccessChain 10(dti) 26
-             102:      6(int) Load 101
-             103:     27(ptr) AccessChain 10(dti) 26
-             104:      6(int) Load 103
-             106:     75(ptr) AccessChain 24(data) 25 104 72
+             101:   27(uint*) AccessChain 10(dti) 26
+             102:     6(uint) Load 101
+             103:   27(uint*) AccessChain 10(dti) 26
+             104:     6(uint) Load 103
+             106:  75(ivec4*) AccessChain 24(data) 25 104 72
              107:   15(ivec4) Load 106
              108:  105(ivec3) VectorShuffle 107 107 0 1 2
              109:  105(ivec3) GroupNonUniformQuadBroadcast 35 108 26
-             110:     75(ptr) AccessChain 24(data) 25 102 72
+             110:  75(ivec4*) AccessChain 24(data) 25 102 72
              111:   15(ivec4) Load 110
              112:   15(ivec4) VectorShuffle 111 109 4 5 6 3
                               Store 110 112
-             113:     27(ptr) AccessChain 10(dti) 26
-             114:      6(int) Load 113
-             116:     27(ptr) AccessChain 10(dti) 26
-             117:      6(int) Load 116
-             119:    118(ptr) AccessChain 24(data) 25 117 115
-             120:   17(fvec4) Load 119
-             121:   17(fvec4) GroupNonUniformQuadBroadcast 35 120 26
-             122:    118(ptr) AccessChain 24(data) 25 114 115
+             113:   27(uint*) AccessChain 10(dti) 26
+             114:     6(uint) Load 113
+             116:   27(uint*) AccessChain 10(dti) 26
+             117:     6(uint) Load 116
+             119:  118(vec4*) AccessChain 24(data) 25 117 115
+             120:    17(vec4) Load 119
+             121:    17(vec4) GroupNonUniformQuadBroadcast 35 120 26
+             122:  118(vec4*) AccessChain 24(data) 25 114 115
                               Store 122 121
-             123:     27(ptr) AccessChain 10(dti) 26
-             124:      6(int) Load 123
-             125:     27(ptr) AccessChain 10(dti) 26
-             126:      6(int) Load 125
-             128:    127(ptr) AccessChain 24(data) 25 126 115 26
+             123:   27(uint*) AccessChain 10(dti) 26
+             124:     6(uint) Load 123
+             125:   27(uint*) AccessChain 10(dti) 26
+             126:     6(uint) Load 125
+             128: 127(float*) AccessChain 24(data) 25 126 115 26
              129:   16(float) Load 128
              130:   16(float) GroupNonUniformQuadBroadcast 35 129 26
-             131:    127(ptr) AccessChain 24(data) 25 124 115 26
+             131: 127(float*) AccessChain 24(data) 25 124 115 26
                               Store 131 130
-             132:     27(ptr) AccessChain 10(dti) 26
-             133:      6(int) Load 132
-             134:     27(ptr) AccessChain 10(dti) 26
-             135:      6(int) Load 134
-             137:    118(ptr) AccessChain 24(data) 25 135 115
-             138:   17(fvec4) Load 137
-             139:  136(fvec2) VectorShuffle 138 138 0 1
-             140:  136(fvec2) GroupNonUniformQuadBroadcast 35 139 26
-             141:    118(ptr) AccessChain 24(data) 25 133 115
-             142:   17(fvec4) Load 141
-             143:   17(fvec4) VectorShuffle 142 140 4 5 2 3
+             132:   27(uint*) AccessChain 10(dti) 26
+             133:     6(uint) Load 132
+             134:   27(uint*) AccessChain 10(dti) 26
+             135:     6(uint) Load 134
+             137:  118(vec4*) AccessChain 24(data) 25 135 115
+             138:    17(vec4) Load 137
+             139:   136(vec2) VectorShuffle 138 138 0 1
+             140:   136(vec2) GroupNonUniformQuadBroadcast 35 139 26
+             141:  118(vec4*) AccessChain 24(data) 25 133 115
+             142:    17(vec4) Load 141
+             143:    17(vec4) VectorShuffle 142 140 4 5 2 3
                               Store 141 143
-             144:     27(ptr) AccessChain 10(dti) 26
-             145:      6(int) Load 144
-             146:     27(ptr) AccessChain 10(dti) 26
-             147:      6(int) Load 146
-             149:    118(ptr) AccessChain 24(data) 25 147 115
-             150:   17(fvec4) Load 149
-             151:  148(fvec3) VectorShuffle 150 150 0 1 2
-             152:  148(fvec3) GroupNonUniformQuadBroadcast 35 151 26
-             153:    118(ptr) AccessChain 24(data) 25 145 115
-             154:   17(fvec4) Load 153
-             155:   17(fvec4) VectorShuffle 154 152 4 5 6 3
+             144:   27(uint*) AccessChain 10(dti) 26
+             145:     6(uint) Load 144
+             146:   27(uint*) AccessChain 10(dti) 26
+             147:     6(uint) Load 146
+             149:  118(vec4*) AccessChain 24(data) 25 147 115
+             150:    17(vec4) Load 149
+             151:   148(vec3) VectorShuffle 150 150 0 1 2
+             152:   148(vec3) GroupNonUniformQuadBroadcast 35 151 26
+             153:  118(vec4*) AccessChain 24(data) 25 145 115
+             154:    17(vec4) Load 153
+             155:    17(vec4) VectorShuffle 154 152 4 5 6 3
                               Store 153 155
-             156:     27(ptr) AccessChain 10(dti) 26
-             157:      6(int) Load 156
-             159:     27(ptr) AccessChain 10(dti) 26
-             160:      6(int) Load 159
-             162:    161(ptr) AccessChain 24(data) 25 160 158
-             163: 19(f64vec4) Load 162
-             164: 19(f64vec4) GroupNonUniformQuadBroadcast 35 163 26
-             165:    161(ptr) AccessChain 24(data) 25 157 158
+             156:   27(uint*) AccessChain 10(dti) 26
+             157:     6(uint) Load 156
+             159:   27(uint*) AccessChain 10(dti) 26
+             160:     6(uint) Load 159
+             162: 161(dvec4*) AccessChain 24(data) 25 160 158
+             163:   19(dvec4) Load 162
+             164:   19(dvec4) GroupNonUniformQuadBroadcast 35 163 26
+             165: 161(dvec4*) AccessChain 24(data) 25 157 158
                               Store 165 164
-             166:     27(ptr) AccessChain 10(dti) 26
-             167:      6(int) Load 166
-             168:     27(ptr) AccessChain 10(dti) 26
-             169:      6(int) Load 168
-             171:    170(ptr) AccessChain 24(data) 25 169 158 26
-             172:18(float64_t) Load 171
-             173:18(float64_t) GroupNonUniformQuadBroadcast 35 172 26
-             174:    170(ptr) AccessChain 24(data) 25 167 158 26
+             166:   27(uint*) AccessChain 10(dti) 26
+             167:     6(uint) Load 166
+             168:   27(uint*) AccessChain 10(dti) 26
+             169:     6(uint) Load 168
+             171:170(double*) AccessChain 24(data) 25 169 158 26
+             172:  18(double) Load 171
+             173:  18(double) GroupNonUniformQuadBroadcast 35 172 26
+             174:170(double*) AccessChain 24(data) 25 167 158 26
                               Store 174 173
-             175:     27(ptr) AccessChain 10(dti) 26
-             176:      6(int) Load 175
-             177:     27(ptr) AccessChain 10(dti) 26
-             178:      6(int) Load 177
-             180:    161(ptr) AccessChain 24(data) 25 178 158
-             181: 19(f64vec4) Load 180
-             182:179(f64vec2) VectorShuffle 181 181 0 1
-             183:179(f64vec2) GroupNonUniformQuadBroadcast 35 182 26
-             184:    161(ptr) AccessChain 24(data) 25 176 158
-             185: 19(f64vec4) Load 184
-             186: 19(f64vec4) VectorShuffle 185 183 4 5 2 3
+             175:   27(uint*) AccessChain 10(dti) 26
+             176:     6(uint) Load 175
+             177:   27(uint*) AccessChain 10(dti) 26
+             178:     6(uint) Load 177
+             180: 161(dvec4*) AccessChain 24(data) 25 178 158
+             181:   19(dvec4) Load 180
+             182:  179(dvec2) VectorShuffle 181 181 0 1
+             183:  179(dvec2) GroupNonUniformQuadBroadcast 35 182 26
+             184: 161(dvec4*) AccessChain 24(data) 25 176 158
+             185:   19(dvec4) Load 184
+             186:   19(dvec4) VectorShuffle 185 183 4 5 2 3
                               Store 184 186
-             187:     27(ptr) AccessChain 10(dti) 26
-             188:      6(int) Load 187
-             189:     27(ptr) AccessChain 10(dti) 26
-             190:      6(int) Load 189
-             192:    161(ptr) AccessChain 24(data) 25 190 158
-             193: 19(f64vec4) Load 192
-             194:191(f64vec3) VectorShuffle 193 193 0 1 2
-             195:191(f64vec3) GroupNonUniformQuadBroadcast 35 194 26
-             196:    161(ptr) AccessChain 24(data) 25 188 158
-             197: 19(f64vec4) Load 196
-             198: 19(f64vec4) VectorShuffle 197 195 4 5 6 3
+             187:   27(uint*) AccessChain 10(dti) 26
+             188:     6(uint) Load 187
+             189:   27(uint*) AccessChain 10(dti) 26
+             190:     6(uint) Load 189
+             192: 161(dvec4*) AccessChain 24(data) 25 190 158
+             193:   19(dvec4) Load 192
+             194:  191(dvec3) VectorShuffle 193 193 0 1 2
+             195:  191(dvec3) GroupNonUniformQuadBroadcast 35 194 26
+             196: 161(dvec4*) AccessChain 24(data) 25 188 158
+             197:   19(dvec4) Load 196
+             198:   19(dvec4) VectorShuffle 197 195 4 5 6 3
                               Store 196 198
-             199:     27(ptr) AccessChain 10(dti) 26
-             200:      6(int) Load 199
-             201:     27(ptr) AccessChain 10(dti) 26
-             202:      6(int) Load 201
-             203:     32(ptr) AccessChain 24(data) 25 202 25
-             204:   13(ivec4) Load 203
-             206:   13(ivec4) GroupNonUniformQuadBroadcast 35 204 205
-             207:     32(ptr) AccessChain 24(data) 25 200 25
+             199:   27(uint*) AccessChain 10(dti) 26
+             200:     6(uint) Load 199
+             201:   27(uint*) AccessChain 10(dti) 26
+             202:     6(uint) Load 201
+             203:  32(uvec4*) AccessChain 24(data) 25 202 25
+             204:   13(uvec4) Load 203
+             206:   13(uvec4) GroupNonUniformQuadBroadcast 35 204 205
+             207:  32(uvec4*) AccessChain 24(data) 25 200 25
                               Store 207 206
-             208:     27(ptr) AccessChain 10(dti) 26
-             209:      6(int) Load 208
-             210:     27(ptr) AccessChain 10(dti) 26
-             211:      6(int) Load 210
-             212:     42(ptr) AccessChain 24(data) 25 211 25 26
-             213:      6(int) Load 212
-             214:      6(int) GroupNonUniformQuadBroadcast 35 213 205
-             215:     42(ptr) AccessChain 24(data) 25 209 25 26
+             208:   27(uint*) AccessChain 10(dti) 26
+             209:     6(uint) Load 208
+             210:   27(uint*) AccessChain 10(dti) 26
+             211:     6(uint) Load 210
+             212:   42(uint*) AccessChain 24(data) 25 211 25 26
+             213:     6(uint) Load 212
+             214:     6(uint) GroupNonUniformQuadBroadcast 35 213 205
+             215:   42(uint*) AccessChain 24(data) 25 209 25 26
                               Store 215 214
-             216:     27(ptr) AccessChain 10(dti) 26
-             217:      6(int) Load 216
-             218:     27(ptr) AccessChain 10(dti) 26
-             219:      6(int) Load 218
-             220:     32(ptr) AccessChain 24(data) 25 219 25
-             221:   13(ivec4) Load 220
-             222:   51(ivec2) VectorShuffle 221 221 0 1
-             223:   51(ivec2) GroupNonUniformQuadBroadcast 35 222 205
-             224:     32(ptr) AccessChain 24(data) 25 217 25
-             225:   13(ivec4) Load 224
-             226:   13(ivec4) VectorShuffle 225 223 4 5 2 3
+             216:   27(uint*) AccessChain 10(dti) 26
+             217:     6(uint) Load 216
+             218:   27(uint*) AccessChain 10(dti) 26
+             219:     6(uint) Load 218
+             220:  32(uvec4*) AccessChain 24(data) 25 219 25
+             221:   13(uvec4) Load 220
+             222:   51(uvec2) VectorShuffle 221 221 0 1
+             223:   51(uvec2) GroupNonUniformQuadBroadcast 35 222 205
+             224:  32(uvec4*) AccessChain 24(data) 25 217 25
+             225:   13(uvec4) Load 224
+             226:   13(uvec4) VectorShuffle 225 223 4 5 2 3
                               Store 224 226
-             227:     27(ptr) AccessChain 10(dti) 26
-             228:      6(int) Load 227
-             229:     27(ptr) AccessChain 10(dti) 26
-             230:      6(int) Load 229
-             231:     32(ptr) AccessChain 24(data) 25 230 25
-             232:   13(ivec4) Load 231
-             233:    7(ivec3) VectorShuffle 232 232 0 1 2
-             234:    7(ivec3) GroupNonUniformQuadBroadcast 35 233 205
-             235:     32(ptr) AccessChain 24(data) 25 228 25
-             236:   13(ivec4) Load 235
-             237:   13(ivec4) VectorShuffle 236 234 4 5 6 3
+             227:   27(uint*) AccessChain 10(dti) 26
+             228:     6(uint) Load 227
+             229:   27(uint*) AccessChain 10(dti) 26
+             230:     6(uint) Load 229
+             231:  32(uvec4*) AccessChain 24(data) 25 230 25
+             232:   13(uvec4) Load 231
+             233:    7(uvec3) VectorShuffle 232 232 0 1 2
+             234:    7(uvec3) GroupNonUniformQuadBroadcast 35 233 205
+             235:  32(uvec4*) AccessChain 24(data) 25 228 25
+             236:   13(uvec4) Load 235
+             237:   13(uvec4) VectorShuffle 236 234 4 5 6 3
                               Store 235 237
-             238:     27(ptr) AccessChain 10(dti) 26
-             239:      6(int) Load 238
-             240:     27(ptr) AccessChain 10(dti) 26
-             241:      6(int) Load 240
-             242:     75(ptr) AccessChain 24(data) 25 241 72
+             238:   27(uint*) AccessChain 10(dti) 26
+             239:     6(uint) Load 238
+             240:   27(uint*) AccessChain 10(dti) 26
+             241:     6(uint) Load 240
+             242:  75(ivec4*) AccessChain 24(data) 25 241 72
              243:   15(ivec4) Load 242
              244:   15(ivec4) GroupNonUniformQuadBroadcast 35 243 205
-             245:     75(ptr) AccessChain 24(data) 25 239 72
+             245:  75(ivec4*) AccessChain 24(data) 25 239 72
                               Store 245 244
-             246:     27(ptr) AccessChain 10(dti) 26
-             247:      6(int) Load 246
-             248:     27(ptr) AccessChain 10(dti) 26
-             249:      6(int) Load 248
-             250:     84(ptr) AccessChain 24(data) 25 249 72 26
+             246:   27(uint*) AccessChain 10(dti) 26
+             247:     6(uint) Load 246
+             248:   27(uint*) AccessChain 10(dti) 26
+             249:     6(uint) Load 248
+             250:    84(int*) AccessChain 24(data) 25 249 72 26
              251:     14(int) Load 250
              252:     14(int) GroupNonUniformQuadBroadcast 35 251 205
-             253:     84(ptr) AccessChain 24(data) 25 247 72 26
+             253:    84(int*) AccessChain 24(data) 25 247 72 26
                               Store 253 252
-             254:     27(ptr) AccessChain 10(dti) 26
-             255:      6(int) Load 254
-             256:     27(ptr) AccessChain 10(dti) 26
-             257:      6(int) Load 256
-             258:     75(ptr) AccessChain 24(data) 25 257 72
+             254:   27(uint*) AccessChain 10(dti) 26
+             255:     6(uint) Load 254
+             256:   27(uint*) AccessChain 10(dti) 26
+             257:     6(uint) Load 256
+             258:  75(ivec4*) AccessChain 24(data) 25 257 72
              259:   15(ivec4) Load 258
              260:   93(ivec2) VectorShuffle 259 259 0 1
              261:   93(ivec2) GroupNonUniformQuadBroadcast 35 260 205
-             262:     75(ptr) AccessChain 24(data) 25 255 72
+             262:  75(ivec4*) AccessChain 24(data) 25 255 72
              263:   15(ivec4) Load 262
              264:   15(ivec4) VectorShuffle 263 261 4 5 2 3
                               Store 262 264
-             265:     27(ptr) AccessChain 10(dti) 26
-             266:      6(int) Load 265
-             267:     27(ptr) AccessChain 10(dti) 26
-             268:      6(int) Load 267
-             269:     75(ptr) AccessChain 24(data) 25 268 72
+             265:   27(uint*) AccessChain 10(dti) 26
+             266:     6(uint) Load 265
+             267:   27(uint*) AccessChain 10(dti) 26
+             268:     6(uint) Load 267
+             269:  75(ivec4*) AccessChain 24(data) 25 268 72
              270:   15(ivec4) Load 269
              271:  105(ivec3) VectorShuffle 270 270 0 1 2
              272:  105(ivec3) GroupNonUniformQuadBroadcast 35 271 205
-             273:     75(ptr) AccessChain 24(data) 25 266 72
+             273:  75(ivec4*) AccessChain 24(data) 25 266 72
              274:   15(ivec4) Load 273
              275:   15(ivec4) VectorShuffle 274 272 4 5 6 3
                               Store 273 275
-             276:     27(ptr) AccessChain 10(dti) 26
-             277:      6(int) Load 276
-             278:     27(ptr) AccessChain 10(dti) 26
-             279:      6(int) Load 278
-             280:    118(ptr) AccessChain 24(data) 25 279 115
-             281:   17(fvec4) Load 280
-             282:   17(fvec4) GroupNonUniformQuadBroadcast 35 281 205
-             283:    118(ptr) AccessChain 24(data) 25 277 115
+             276:   27(uint*) AccessChain 10(dti) 26
+             277:     6(uint) Load 276
+             278:   27(uint*) AccessChain 10(dti) 26
+             279:     6(uint) Load 278
+             280:  118(vec4*) AccessChain 24(data) 25 279 115
+             281:    17(vec4) Load 280
+             282:    17(vec4) GroupNonUniformQuadBroadcast 35 281 205
+             283:  118(vec4*) AccessChain 24(data) 25 277 115
                               Store 283 282
-             284:     27(ptr) AccessChain 10(dti) 26
-             285:      6(int) Load 284
-             286:     27(ptr) AccessChain 10(dti) 26
-             287:      6(int) Load 286
-             288:    127(ptr) AccessChain 24(data) 25 287 115 26
+             284:   27(uint*) AccessChain 10(dti) 26
+             285:     6(uint) Load 284
+             286:   27(uint*) AccessChain 10(dti) 26
+             287:     6(uint) Load 286
+             288: 127(float*) AccessChain 24(data) 25 287 115 26
              289:   16(float) Load 288
              290:   16(float) GroupNonUniformQuadBroadcast 35 289 205
-             291:    127(ptr) AccessChain 24(data) 25 285 115 26
+             291: 127(float*) AccessChain 24(data) 25 285 115 26
                               Store 291 290
-             292:     27(ptr) AccessChain 10(dti) 26
-             293:      6(int) Load 292
-             294:     27(ptr) AccessChain 10(dti) 26
-             295:      6(int) Load 294
-             296:    118(ptr) AccessChain 24(data) 25 295 115
-             297:   17(fvec4) Load 296
-             298:  136(fvec2) VectorShuffle 297 297 0 1
-             299:  136(fvec2) GroupNonUniformQuadBroadcast 35 298 205
-             300:    118(ptr) AccessChain 24(data) 25 293 115
-             301:   17(fvec4) Load 300
-             302:   17(fvec4) VectorShuffle 301 299 4 5 2 3
+             292:   27(uint*) AccessChain 10(dti) 26
+             293:     6(uint) Load 292
+             294:   27(uint*) AccessChain 10(dti) 26
+             295:     6(uint) Load 294
+             296:  118(vec4*) AccessChain 24(data) 25 295 115
+             297:    17(vec4) Load 296
+             298:   136(vec2) VectorShuffle 297 297 0 1
+             299:   136(vec2) GroupNonUniformQuadBroadcast 35 298 205
+             300:  118(vec4*) AccessChain 24(data) 25 293 115
+             301:    17(vec4) Load 300
+             302:    17(vec4) VectorShuffle 301 299 4 5 2 3
                               Store 300 302
-             303:     27(ptr) AccessChain 10(dti) 26
-             304:      6(int) Load 303
-             305:     27(ptr) AccessChain 10(dti) 26
-             306:      6(int) Load 305
-             307:    118(ptr) AccessChain 24(data) 25 306 115
-             308:   17(fvec4) Load 307
-             309:  148(fvec3) VectorShuffle 308 308 0 1 2
-             310:  148(fvec3) GroupNonUniformQuadBroadcast 35 309 205
-             311:    118(ptr) AccessChain 24(data) 25 304 115
-             312:   17(fvec4) Load 311
-             313:   17(fvec4) VectorShuffle 312 310 4 5 6 3
+             303:   27(uint*) AccessChain 10(dti) 26
+             304:     6(uint) Load 303
+             305:   27(uint*) AccessChain 10(dti) 26
+             306:     6(uint) Load 305
+             307:  118(vec4*) AccessChain 24(data) 25 306 115
+             308:    17(vec4) Load 307
+             309:   148(vec3) VectorShuffle 308 308 0 1 2
+             310:   148(vec3) GroupNonUniformQuadBroadcast 35 309 205
+             311:  118(vec4*) AccessChain 24(data) 25 304 115
+             312:    17(vec4) Load 311
+             313:    17(vec4) VectorShuffle 312 310 4 5 6 3
                               Store 311 313
-             314:     27(ptr) AccessChain 10(dti) 26
-             315:      6(int) Load 314
-             316:     27(ptr) AccessChain 10(dti) 26
-             317:      6(int) Load 316
-             318:    161(ptr) AccessChain 24(data) 25 317 158
-             319: 19(f64vec4) Load 318
-             320: 19(f64vec4) GroupNonUniformQuadBroadcast 35 319 205
-             321:    161(ptr) AccessChain 24(data) 25 315 158
+             314:   27(uint*) AccessChain 10(dti) 26
+             315:     6(uint) Load 314
+             316:   27(uint*) AccessChain 10(dti) 26
+             317:     6(uint) Load 316
+             318: 161(dvec4*) AccessChain 24(data) 25 317 158
+             319:   19(dvec4) Load 318
+             320:   19(dvec4) GroupNonUniformQuadBroadcast 35 319 205
+             321: 161(dvec4*) AccessChain 24(data) 25 315 158
                               Store 321 320
-             322:     27(ptr) AccessChain 10(dti) 26
-             323:      6(int) Load 322
-             324:     27(ptr) AccessChain 10(dti) 26
-             325:      6(int) Load 324
-             326:    170(ptr) AccessChain 24(data) 25 325 158 26
-             327:18(float64_t) Load 326
-             328:18(float64_t) GroupNonUniformQuadBroadcast 35 327 205
-             329:    170(ptr) AccessChain 24(data) 25 323 158 26
+             322:   27(uint*) AccessChain 10(dti) 26
+             323:     6(uint) Load 322
+             324:   27(uint*) AccessChain 10(dti) 26
+             325:     6(uint) Load 324
+             326:170(double*) AccessChain 24(data) 25 325 158 26
+             327:  18(double) Load 326
+             328:  18(double) GroupNonUniformQuadBroadcast 35 327 205
+             329:170(double*) AccessChain 24(data) 25 323 158 26
                               Store 329 328
-             330:     27(ptr) AccessChain 10(dti) 26
-             331:      6(int) Load 330
-             332:     27(ptr) AccessChain 10(dti) 26
-             333:      6(int) Load 332
-             334:    161(ptr) AccessChain 24(data) 25 333 158
-             335: 19(f64vec4) Load 334
-             336:179(f64vec2) VectorShuffle 335 335 0 1
-             337:179(f64vec2) GroupNonUniformQuadBroadcast 35 336 205
-             338:    161(ptr) AccessChain 24(data) 25 331 158
-             339: 19(f64vec4) Load 338
-             340: 19(f64vec4) VectorShuffle 339 337 4 5 2 3
+             330:   27(uint*) AccessChain 10(dti) 26
+             331:     6(uint) Load 330
+             332:   27(uint*) AccessChain 10(dti) 26
+             333:     6(uint) Load 332
+             334: 161(dvec4*) AccessChain 24(data) 25 333 158
+             335:   19(dvec4) Load 334
+             336:  179(dvec2) VectorShuffle 335 335 0 1
+             337:  179(dvec2) GroupNonUniformQuadBroadcast 35 336 205
+             338: 161(dvec4*) AccessChain 24(data) 25 331 158
+             339:   19(dvec4) Load 338
+             340:   19(dvec4) VectorShuffle 339 337 4 5 2 3
                               Store 338 340
-             341:     27(ptr) AccessChain 10(dti) 26
-             342:      6(int) Load 341
-             343:     27(ptr) AccessChain 10(dti) 26
-             344:      6(int) Load 343
-             345:    161(ptr) AccessChain 24(data) 25 344 158
-             346: 19(f64vec4) Load 345
-             347:191(f64vec3) VectorShuffle 346 346 0 1 2
-             348:191(f64vec3) GroupNonUniformQuadBroadcast 35 347 205
-             349:    161(ptr) AccessChain 24(data) 25 342 158
-             350: 19(f64vec4) Load 349
-             351: 19(f64vec4) VectorShuffle 350 348 4 5 6 3
+             341:   27(uint*) AccessChain 10(dti) 26
+             342:     6(uint) Load 341
+             343:   27(uint*) AccessChain 10(dti) 26
+             344:     6(uint) Load 343
+             345: 161(dvec4*) AccessChain 24(data) 25 344 158
+             346:   19(dvec4) Load 345
+             347:  191(dvec3) VectorShuffle 346 346 0 1 2
+             348:  191(dvec3) GroupNonUniformQuadBroadcast 35 347 205
+             349: 161(dvec4*) AccessChain 24(data) 25 342 158
+             350:   19(dvec4) Load 349
+             351:   19(dvec4) VectorShuffle 350 348 4 5 6 3
                               Store 349 351
-             352:     27(ptr) AccessChain 10(dti) 26
-             353:      6(int) Load 352
-             354:     27(ptr) AccessChain 10(dti) 26
-             355:      6(int) Load 354
-             356:     32(ptr) AccessChain 24(data) 25 355 25
-             357:   13(ivec4) Load 356
-             359:   13(ivec4) GroupNonUniformQuadBroadcast 35 357 358
-             360:     32(ptr) AccessChain 24(data) 25 353 25
+             352:   27(uint*) AccessChain 10(dti) 26
+             353:     6(uint) Load 352
+             354:   27(uint*) AccessChain 10(dti) 26
+             355:     6(uint) Load 354
+             356:  32(uvec4*) AccessChain 24(data) 25 355 25
+             357:   13(uvec4) Load 356
+             359:   13(uvec4) GroupNonUniformQuadBroadcast 35 357 358
+             360:  32(uvec4*) AccessChain 24(data) 25 353 25
                               Store 360 359
-             361:     27(ptr) AccessChain 10(dti) 26
-             362:      6(int) Load 361
-             363:     27(ptr) AccessChain 10(dti) 26
-             364:      6(int) Load 363
-             365:     42(ptr) AccessChain 24(data) 25 364 25 26
-             366:      6(int) Load 365
-             367:      6(int) GroupNonUniformQuadBroadcast 35 366 358
-             368:     42(ptr) AccessChain 24(data) 25 362 25 26
+             361:   27(uint*) AccessChain 10(dti) 26
+             362:     6(uint) Load 361
+             363:   27(uint*) AccessChain 10(dti) 26
+             364:     6(uint) Load 363
+             365:   42(uint*) AccessChain 24(data) 25 364 25 26
+             366:     6(uint) Load 365
+             367:     6(uint) GroupNonUniformQuadBroadcast 35 366 358
+             368:   42(uint*) AccessChain 24(data) 25 362 25 26
                               Store 368 367
-             369:     27(ptr) AccessChain 10(dti) 26
-             370:      6(int) Load 369
-             371:     27(ptr) AccessChain 10(dti) 26
-             372:      6(int) Load 371
-             373:     32(ptr) AccessChain 24(data) 25 372 25
-             374:   13(ivec4) Load 373
-             375:   51(ivec2) VectorShuffle 374 374 0 1
-             376:   51(ivec2) GroupNonUniformQuadBroadcast 35 375 358
-             377:     32(ptr) AccessChain 24(data) 25 370 25
-             378:   13(ivec4) Load 377
-             379:   13(ivec4) VectorShuffle 378 376 4 5 2 3
+             369:   27(uint*) AccessChain 10(dti) 26
+             370:     6(uint) Load 369
+             371:   27(uint*) AccessChain 10(dti) 26
+             372:     6(uint) Load 371
+             373:  32(uvec4*) AccessChain 24(data) 25 372 25
+             374:   13(uvec4) Load 373
+             375:   51(uvec2) VectorShuffle 374 374 0 1
+             376:   51(uvec2) GroupNonUniformQuadBroadcast 35 375 358
+             377:  32(uvec4*) AccessChain 24(data) 25 370 25
+             378:   13(uvec4) Load 377
+             379:   13(uvec4) VectorShuffle 378 376 4 5 2 3
                               Store 377 379
-             380:     27(ptr) AccessChain 10(dti) 26
-             381:      6(int) Load 380
-             382:     27(ptr) AccessChain 10(dti) 26
-             383:      6(int) Load 382
-             384:     32(ptr) AccessChain 24(data) 25 383 25
-             385:   13(ivec4) Load 384
-             386:    7(ivec3) VectorShuffle 385 385 0 1 2
-             387:    7(ivec3) GroupNonUniformQuadBroadcast 35 386 358
-             388:     32(ptr) AccessChain 24(data) 25 381 25
-             389:   13(ivec4) Load 388
-             390:   13(ivec4) VectorShuffle 389 387 4 5 6 3
+             380:   27(uint*) AccessChain 10(dti) 26
+             381:     6(uint) Load 380
+             382:   27(uint*) AccessChain 10(dti) 26
+             383:     6(uint) Load 382
+             384:  32(uvec4*) AccessChain 24(data) 25 383 25
+             385:   13(uvec4) Load 384
+             386:    7(uvec3) VectorShuffle 385 385 0 1 2
+             387:    7(uvec3) GroupNonUniformQuadBroadcast 35 386 358
+             388:  32(uvec4*) AccessChain 24(data) 25 381 25
+             389:   13(uvec4) Load 388
+             390:   13(uvec4) VectorShuffle 389 387 4 5 6 3
                               Store 388 390
-             391:     27(ptr) AccessChain 10(dti) 26
-             392:      6(int) Load 391
-             393:     27(ptr) AccessChain 10(dti) 26
-             394:      6(int) Load 393
-             395:     75(ptr) AccessChain 24(data) 25 394 72
+             391:   27(uint*) AccessChain 10(dti) 26
+             392:     6(uint) Load 391
+             393:   27(uint*) AccessChain 10(dti) 26
+             394:     6(uint) Load 393
+             395:  75(ivec4*) AccessChain 24(data) 25 394 72
              396:   15(ivec4) Load 395
              397:   15(ivec4) GroupNonUniformQuadBroadcast 35 396 358
-             398:     75(ptr) AccessChain 24(data) 25 392 72
+             398:  75(ivec4*) AccessChain 24(data) 25 392 72
                               Store 398 397
-             399:     27(ptr) AccessChain 10(dti) 26
-             400:      6(int) Load 399
-             401:     27(ptr) AccessChain 10(dti) 26
-             402:      6(int) Load 401
-             403:     84(ptr) AccessChain 24(data) 25 402 72 26
+             399:   27(uint*) AccessChain 10(dti) 26
+             400:     6(uint) Load 399
+             401:   27(uint*) AccessChain 10(dti) 26
+             402:     6(uint) Load 401
+             403:    84(int*) AccessChain 24(data) 25 402 72 26
              404:     14(int) Load 403
              405:     14(int) GroupNonUniformQuadBroadcast 35 404 358
-             406:     84(ptr) AccessChain 24(data) 25 400 72 26
+             406:    84(int*) AccessChain 24(data) 25 400 72 26
                               Store 406 405
-             407:     27(ptr) AccessChain 10(dti) 26
-             408:      6(int) Load 407
-             409:     27(ptr) AccessChain 10(dti) 26
-             410:      6(int) Load 409
-             411:     75(ptr) AccessChain 24(data) 25 410 72
+             407:   27(uint*) AccessChain 10(dti) 26
+             408:     6(uint) Load 407
+             409:   27(uint*) AccessChain 10(dti) 26
+             410:     6(uint) Load 409
+             411:  75(ivec4*) AccessChain 24(data) 25 410 72
              412:   15(ivec4) Load 411
              413:   93(ivec2) VectorShuffle 412 412 0 1
              414:   93(ivec2) GroupNonUniformQuadBroadcast 35 413 358
-             415:     75(ptr) AccessChain 24(data) 25 408 72
+             415:  75(ivec4*) AccessChain 24(data) 25 408 72
              416:   15(ivec4) Load 415
              417:   15(ivec4) VectorShuffle 416 414 4 5 2 3
                               Store 415 417
-             418:     27(ptr) AccessChain 10(dti) 26
-             419:      6(int) Load 418
-             420:     27(ptr) AccessChain 10(dti) 26
-             421:      6(int) Load 420
-             422:     75(ptr) AccessChain 24(data) 25 421 72
+             418:   27(uint*) AccessChain 10(dti) 26
+             419:     6(uint) Load 418
+             420:   27(uint*) AccessChain 10(dti) 26
+             421:     6(uint) Load 420
+             422:  75(ivec4*) AccessChain 24(data) 25 421 72
              423:   15(ivec4) Load 422
              424:  105(ivec3) VectorShuffle 423 423 0 1 2
              425:  105(ivec3) GroupNonUniformQuadBroadcast 35 424 358
-             426:     75(ptr) AccessChain 24(data) 25 419 72
+             426:  75(ivec4*) AccessChain 24(data) 25 419 72
              427:   15(ivec4) Load 426
              428:   15(ivec4) VectorShuffle 427 425 4 5 6 3
                               Store 426 428
-             429:     27(ptr) AccessChain 10(dti) 26
-             430:      6(int) Load 429
-             431:     27(ptr) AccessChain 10(dti) 26
-             432:      6(int) Load 431
-             433:    118(ptr) AccessChain 24(data) 25 432 115
-             434:   17(fvec4) Load 433
-             435:   17(fvec4) GroupNonUniformQuadBroadcast 35 434 358
-             436:    118(ptr) AccessChain 24(data) 25 430 115
+             429:   27(uint*) AccessChain 10(dti) 26
+             430:     6(uint) Load 429
+             431:   27(uint*) AccessChain 10(dti) 26
+             432:     6(uint) Load 431
+             433:  118(vec4*) AccessChain 24(data) 25 432 115
+             434:    17(vec4) Load 433
+             435:    17(vec4) GroupNonUniformQuadBroadcast 35 434 358
+             436:  118(vec4*) AccessChain 24(data) 25 430 115
                               Store 436 435
-             437:     27(ptr) AccessChain 10(dti) 26
-             438:      6(int) Load 437
-             439:     27(ptr) AccessChain 10(dti) 26
-             440:      6(int) Load 439
-             441:    127(ptr) AccessChain 24(data) 25 440 115 26
+             437:   27(uint*) AccessChain 10(dti) 26
+             438:     6(uint) Load 437
+             439:   27(uint*) AccessChain 10(dti) 26
+             440:     6(uint) Load 439
+             441: 127(float*) AccessChain 24(data) 25 440 115 26
              442:   16(float) Load 441
              443:   16(float) GroupNonUniformQuadBroadcast 35 442 358
-             444:    127(ptr) AccessChain 24(data) 25 438 115 26
+             444: 127(float*) AccessChain 24(data) 25 438 115 26
                               Store 444 443
-             445:     27(ptr) AccessChain 10(dti) 26
-             446:      6(int) Load 445
-             447:     27(ptr) AccessChain 10(dti) 26
-             448:      6(int) Load 447
-             449:    118(ptr) AccessChain 24(data) 25 448 115
-             450:   17(fvec4) Load 449
-             451:  136(fvec2) VectorShuffle 450 450 0 1
-             452:  136(fvec2) GroupNonUniformQuadBroadcast 35 451 358
-             453:    118(ptr) AccessChain 24(data) 25 446 115
-             454:   17(fvec4) Load 453
-             455:   17(fvec4) VectorShuffle 454 452 4 5 2 3
+             445:   27(uint*) AccessChain 10(dti) 26
+             446:     6(uint) Load 445
+             447:   27(uint*) AccessChain 10(dti) 26
+             448:     6(uint) Load 447
+             449:  118(vec4*) AccessChain 24(data) 25 448 115
+             450:    17(vec4) Load 449
+             451:   136(vec2) VectorShuffle 450 450 0 1
+             452:   136(vec2) GroupNonUniformQuadBroadcast 35 451 358
+             453:  118(vec4*) AccessChain 24(data) 25 446 115
+             454:    17(vec4) Load 453
+             455:    17(vec4) VectorShuffle 454 452 4 5 2 3
                               Store 453 455
-             456:     27(ptr) AccessChain 10(dti) 26
-             457:      6(int) Load 456
-             458:     27(ptr) AccessChain 10(dti) 26
-             459:      6(int) Load 458
-             460:    118(ptr) AccessChain 24(data) 25 459 115
-             461:   17(fvec4) Load 460
-             462:  148(fvec3) VectorShuffle 461 461 0 1 2
-             463:  148(fvec3) GroupNonUniformQuadBroadcast 35 462 358
-             464:    118(ptr) AccessChain 24(data) 25 457 115
-             465:   17(fvec4) Load 464
-             466:   17(fvec4) VectorShuffle 465 463 4 5 6 3
+             456:   27(uint*) AccessChain 10(dti) 26
+             457:     6(uint) Load 456
+             458:   27(uint*) AccessChain 10(dti) 26
+             459:     6(uint) Load 458
+             460:  118(vec4*) AccessChain 24(data) 25 459 115
+             461:    17(vec4) Load 460
+             462:   148(vec3) VectorShuffle 461 461 0 1 2
+             463:   148(vec3) GroupNonUniformQuadBroadcast 35 462 358
+             464:  118(vec4*) AccessChain 24(data) 25 457 115
+             465:    17(vec4) Load 464
+             466:    17(vec4) VectorShuffle 465 463 4 5 6 3
                               Store 464 466
-             467:     27(ptr) AccessChain 10(dti) 26
-             468:      6(int) Load 467
-             469:     27(ptr) AccessChain 10(dti) 26
-             470:      6(int) Load 469
-             471:    161(ptr) AccessChain 24(data) 25 470 158
-             472: 19(f64vec4) Load 471
-             473: 19(f64vec4) GroupNonUniformQuadBroadcast 35 472 358
-             474:    161(ptr) AccessChain 24(data) 25 468 158
+             467:   27(uint*) AccessChain 10(dti) 26
+             468:     6(uint) Load 467
+             469:   27(uint*) AccessChain 10(dti) 26
+             470:     6(uint) Load 469
+             471: 161(dvec4*) AccessChain 24(data) 25 470 158
+             472:   19(dvec4) Load 471
+             473:   19(dvec4) GroupNonUniformQuadBroadcast 35 472 358
+             474: 161(dvec4*) AccessChain 24(data) 25 468 158
                               Store 474 473
-             475:     27(ptr) AccessChain 10(dti) 26
-             476:      6(int) Load 475
-             477:     27(ptr) AccessChain 10(dti) 26
-             478:      6(int) Load 477
-             479:    170(ptr) AccessChain 24(data) 25 478 158 26
-             480:18(float64_t) Load 479
-             481:18(float64_t) GroupNonUniformQuadBroadcast 35 480 358
-             482:    170(ptr) AccessChain 24(data) 25 476 158 26
+             475:   27(uint*) AccessChain 10(dti) 26
+             476:     6(uint) Load 475
+             477:   27(uint*) AccessChain 10(dti) 26
+             478:     6(uint) Load 477
+             479:170(double*) AccessChain 24(data) 25 478 158 26
+             480:  18(double) Load 479
+             481:  18(double) GroupNonUniformQuadBroadcast 35 480 358
+             482:170(double*) AccessChain 24(data) 25 476 158 26
                               Store 482 481
-             483:     27(ptr) AccessChain 10(dti) 26
-             484:      6(int) Load 483
-             485:     27(ptr) AccessChain 10(dti) 26
-             486:      6(int) Load 485
-             487:    161(ptr) AccessChain 24(data) 25 486 158
-             488: 19(f64vec4) Load 487
-             489:179(f64vec2) VectorShuffle 488 488 0 1
-             490:179(f64vec2) GroupNonUniformQuadBroadcast 35 489 358
-             491:    161(ptr) AccessChain 24(data) 25 484 158
-             492: 19(f64vec4) Load 491
-             493: 19(f64vec4) VectorShuffle 492 490 4 5 2 3
+             483:   27(uint*) AccessChain 10(dti) 26
+             484:     6(uint) Load 483
+             485:   27(uint*) AccessChain 10(dti) 26
+             486:     6(uint) Load 485
+             487: 161(dvec4*) AccessChain 24(data) 25 486 158
+             488:   19(dvec4) Load 487
+             489:  179(dvec2) VectorShuffle 488 488 0 1
+             490:  179(dvec2) GroupNonUniformQuadBroadcast 35 489 358
+             491: 161(dvec4*) AccessChain 24(data) 25 484 158
+             492:   19(dvec4) Load 491
+             493:   19(dvec4) VectorShuffle 492 490 4 5 2 3
                               Store 491 493
-             494:     27(ptr) AccessChain 10(dti) 26
-             495:      6(int) Load 494
-             496:     27(ptr) AccessChain 10(dti) 26
-             497:      6(int) Load 496
-             498:    161(ptr) AccessChain 24(data) 25 497 158
-             499: 19(f64vec4) Load 498
-             500:191(f64vec3) VectorShuffle 499 499 0 1 2
-             501:191(f64vec3) GroupNonUniformQuadBroadcast 35 500 358
-             502:    161(ptr) AccessChain 24(data) 25 495 158
-             503: 19(f64vec4) Load 502
-             504: 19(f64vec4) VectorShuffle 503 501 4 5 6 3
+             494:   27(uint*) AccessChain 10(dti) 26
+             495:     6(uint) Load 494
+             496:   27(uint*) AccessChain 10(dti) 26
+             497:     6(uint) Load 496
+             498: 161(dvec4*) AccessChain 24(data) 25 497 158
+             499:   19(dvec4) Load 498
+             500:  191(dvec3) VectorShuffle 499 499 0 1 2
+             501:  191(dvec3) GroupNonUniformQuadBroadcast 35 500 358
+             502: 161(dvec4*) AccessChain 24(data) 25 495 158
+             503:   19(dvec4) Load 502
+             504:   19(dvec4) VectorShuffle 503 501 4 5 6 3
                               Store 502 504
-             505:     27(ptr) AccessChain 10(dti) 26
-             506:      6(int) Load 505
-             507:     27(ptr) AccessChain 10(dti) 26
-             508:      6(int) Load 507
-             509:     32(ptr) AccessChain 24(data) 25 508 25
-             510:   13(ivec4) Load 509
-             511:   13(ivec4) GroupNonUniformQuadBroadcast 35 510 35
-             512:     32(ptr) AccessChain 24(data) 25 506 25
+             505:   27(uint*) AccessChain 10(dti) 26
+             506:     6(uint) Load 505
+             507:   27(uint*) AccessChain 10(dti) 26
+             508:     6(uint) Load 507
+             509:  32(uvec4*) AccessChain 24(data) 25 508 25
+             510:   13(uvec4) Load 509
+             511:   13(uvec4) GroupNonUniformQuadBroadcast 35 510 35
+             512:  32(uvec4*) AccessChain 24(data) 25 506 25
                               Store 512 511
-             513:     27(ptr) AccessChain 10(dti) 26
-             514:      6(int) Load 513
-             515:     27(ptr) AccessChain 10(dti) 26
-             516:      6(int) Load 515
-             517:     42(ptr) AccessChain 24(data) 25 516 25 26
-             518:      6(int) Load 517
-             519:      6(int) GroupNonUniformQuadBroadcast 35 518 35
-             520:     42(ptr) AccessChain 24(data) 25 514 25 26
+             513:   27(uint*) AccessChain 10(dti) 26
+             514:     6(uint) Load 513
+             515:   27(uint*) AccessChain 10(dti) 26
+             516:     6(uint) Load 515
+             517:   42(uint*) AccessChain 24(data) 25 516 25 26
+             518:     6(uint) Load 517
+             519:     6(uint) GroupNonUniformQuadBroadcast 35 518 35
+             520:   42(uint*) AccessChain 24(data) 25 514 25 26
                               Store 520 519
-             521:     27(ptr) AccessChain 10(dti) 26
-             522:      6(int) Load 521
-             523:     27(ptr) AccessChain 10(dti) 26
-             524:      6(int) Load 523
-             525:     32(ptr) AccessChain 24(data) 25 524 25
-             526:   13(ivec4) Load 525
-             527:   51(ivec2) VectorShuffle 526 526 0 1
-             528:   51(ivec2) GroupNonUniformQuadBroadcast 35 527 35
-             529:     32(ptr) AccessChain 24(data) 25 522 25
-             530:   13(ivec4) Load 529
-             531:   13(ivec4) VectorShuffle 530 528 4 5 2 3
+             521:   27(uint*) AccessChain 10(dti) 26
+             522:     6(uint) Load 521
+             523:   27(uint*) AccessChain 10(dti) 26
+             524:     6(uint) Load 523
+             525:  32(uvec4*) AccessChain 24(data) 25 524 25
+             526:   13(uvec4) Load 525
+             527:   51(uvec2) VectorShuffle 526 526 0 1
+             528:   51(uvec2) GroupNonUniformQuadBroadcast 35 527 35
+             529:  32(uvec4*) AccessChain 24(data) 25 522 25
+             530:   13(uvec4) Load 529
+             531:   13(uvec4) VectorShuffle 530 528 4 5 2 3
                               Store 529 531
-             532:     27(ptr) AccessChain 10(dti) 26
-             533:      6(int) Load 532
-             534:     27(ptr) AccessChain 10(dti) 26
-             535:      6(int) Load 534
-             536:     32(ptr) AccessChain 24(data) 25 535 25
-             537:   13(ivec4) Load 536
-             538:    7(ivec3) VectorShuffle 537 537 0 1 2
-             539:    7(ivec3) GroupNonUniformQuadBroadcast 35 538 35
-             540:     32(ptr) AccessChain 24(data) 25 533 25
-             541:   13(ivec4) Load 540
-             542:   13(ivec4) VectorShuffle 541 539 4 5 6 3
+             532:   27(uint*) AccessChain 10(dti) 26
+             533:     6(uint) Load 532
+             534:   27(uint*) AccessChain 10(dti) 26
+             535:     6(uint) Load 534
+             536:  32(uvec4*) AccessChain 24(data) 25 535 25
+             537:   13(uvec4) Load 536
+             538:    7(uvec3) VectorShuffle 537 537 0 1 2
+             539:    7(uvec3) GroupNonUniformQuadBroadcast 35 538 35
+             540:  32(uvec4*) AccessChain 24(data) 25 533 25
+             541:   13(uvec4) Load 540
+             542:   13(uvec4) VectorShuffle 541 539 4 5 6 3
                               Store 540 542
-             543:     27(ptr) AccessChain 10(dti) 26
-             544:      6(int) Load 543
-             545:     27(ptr) AccessChain 10(dti) 26
-             546:      6(int) Load 545
-             547:     75(ptr) AccessChain 24(data) 25 546 72
+             543:   27(uint*) AccessChain 10(dti) 26
+             544:     6(uint) Load 543
+             545:   27(uint*) AccessChain 10(dti) 26
+             546:     6(uint) Load 545
+             547:  75(ivec4*) AccessChain 24(data) 25 546 72
              548:   15(ivec4) Load 547
              549:   15(ivec4) GroupNonUniformQuadBroadcast 35 548 35
-             550:     75(ptr) AccessChain 24(data) 25 544 72
+             550:  75(ivec4*) AccessChain 24(data) 25 544 72
                               Store 550 549
-             551:     27(ptr) AccessChain 10(dti) 26
-             552:      6(int) Load 551
-             553:     27(ptr) AccessChain 10(dti) 26
-             554:      6(int) Load 553
-             555:     84(ptr) AccessChain 24(data) 25 554 72 26
+             551:   27(uint*) AccessChain 10(dti) 26
+             552:     6(uint) Load 551
+             553:   27(uint*) AccessChain 10(dti) 26
+             554:     6(uint) Load 553
+             555:    84(int*) AccessChain 24(data) 25 554 72 26
              556:     14(int) Load 555
              557:     14(int) GroupNonUniformQuadBroadcast 35 556 35
-             558:     84(ptr) AccessChain 24(data) 25 552 72 26
+             558:    84(int*) AccessChain 24(data) 25 552 72 26
                               Store 558 557
-             559:     27(ptr) AccessChain 10(dti) 26
-             560:      6(int) Load 559
-             561:     27(ptr) AccessChain 10(dti) 26
-             562:      6(int) Load 561
-             563:     75(ptr) AccessChain 24(data) 25 562 72
+             559:   27(uint*) AccessChain 10(dti) 26
+             560:     6(uint) Load 559
+             561:   27(uint*) AccessChain 10(dti) 26
+             562:     6(uint) Load 561
+             563:  75(ivec4*) AccessChain 24(data) 25 562 72
              564:   15(ivec4) Load 563
              565:   93(ivec2) VectorShuffle 564 564 0 1
              566:   93(ivec2) GroupNonUniformQuadBroadcast 35 565 35
-             567:     75(ptr) AccessChain 24(data) 25 560 72
+             567:  75(ivec4*) AccessChain 24(data) 25 560 72
              568:   15(ivec4) Load 567
              569:   15(ivec4) VectorShuffle 568 566 4 5 2 3
                               Store 567 569
-             570:     27(ptr) AccessChain 10(dti) 26
-             571:      6(int) Load 570
-             572:     27(ptr) AccessChain 10(dti) 26
-             573:      6(int) Load 572
-             574:     75(ptr) AccessChain 24(data) 25 573 72
+             570:   27(uint*) AccessChain 10(dti) 26
+             571:     6(uint) Load 570
+             572:   27(uint*) AccessChain 10(dti) 26
+             573:     6(uint) Load 572
+             574:  75(ivec4*) AccessChain 24(data) 25 573 72
              575:   15(ivec4) Load 574
              576:  105(ivec3) VectorShuffle 575 575 0 1 2
              577:  105(ivec3) GroupNonUniformQuadBroadcast 35 576 35
-             578:     75(ptr) AccessChain 24(data) 25 571 72
+             578:  75(ivec4*) AccessChain 24(data) 25 571 72
              579:   15(ivec4) Load 578
              580:   15(ivec4) VectorShuffle 579 577 4 5 6 3
                               Store 578 580
-             581:     27(ptr) AccessChain 10(dti) 26
-             582:      6(int) Load 581
-             583:     27(ptr) AccessChain 10(dti) 26
-             584:      6(int) Load 583
-             585:    118(ptr) AccessChain 24(data) 25 584 115
-             586:   17(fvec4) Load 585
-             587:   17(fvec4) GroupNonUniformQuadBroadcast 35 586 35
-             588:    118(ptr) AccessChain 24(data) 25 582 115
+             581:   27(uint*) AccessChain 10(dti) 26
+             582:     6(uint) Load 581
+             583:   27(uint*) AccessChain 10(dti) 26
+             584:     6(uint) Load 583
+             585:  118(vec4*) AccessChain 24(data) 25 584 115
+             586:    17(vec4) Load 585
+             587:    17(vec4) GroupNonUniformQuadBroadcast 35 586 35
+             588:  118(vec4*) AccessChain 24(data) 25 582 115
                               Store 588 587
-             589:     27(ptr) AccessChain 10(dti) 26
-             590:      6(int) Load 589
-             591:     27(ptr) AccessChain 10(dti) 26
-             592:      6(int) Load 591
-             593:    127(ptr) AccessChain 24(data) 25 592 115 26
+             589:   27(uint*) AccessChain 10(dti) 26
+             590:     6(uint) Load 589
+             591:   27(uint*) AccessChain 10(dti) 26
+             592:     6(uint) Load 591
+             593: 127(float*) AccessChain 24(data) 25 592 115 26
              594:   16(float) Load 593
              595:   16(float) GroupNonUniformQuadBroadcast 35 594 35
-             596:    127(ptr) AccessChain 24(data) 25 590 115 26
+             596: 127(float*) AccessChain 24(data) 25 590 115 26
                               Store 596 595
-             597:     27(ptr) AccessChain 10(dti) 26
-             598:      6(int) Load 597
-             599:     27(ptr) AccessChain 10(dti) 26
-             600:      6(int) Load 599
-             601:    118(ptr) AccessChain 24(data) 25 600 115
-             602:   17(fvec4) Load 601
-             603:  136(fvec2) VectorShuffle 602 602 0 1
-             604:  136(fvec2) GroupNonUniformQuadBroadcast 35 603 35
-             605:    118(ptr) AccessChain 24(data) 25 598 115
-             606:   17(fvec4) Load 605
-             607:   17(fvec4) VectorShuffle 606 604 4 5 2 3
+             597:   27(uint*) AccessChain 10(dti) 26
+             598:     6(uint) Load 597
+             599:   27(uint*) AccessChain 10(dti) 26
+             600:     6(uint) Load 599
+             601:  118(vec4*) AccessChain 24(data) 25 600 115
+             602:    17(vec4) Load 601
+             603:   136(vec2) VectorShuffle 602 602 0 1
+             604:   136(vec2) GroupNonUniformQuadBroadcast 35 603 35
+             605:  118(vec4*) AccessChain 24(data) 25 598 115
+             606:    17(vec4) Load 605
+             607:    17(vec4) VectorShuffle 606 604 4 5 2 3
                               Store 605 607
-             608:     27(ptr) AccessChain 10(dti) 26
-             609:      6(int) Load 608
-             610:     27(ptr) AccessChain 10(dti) 26
-             611:      6(int) Load 610
-             612:    118(ptr) AccessChain 24(data) 25 611 115
-             613:   17(fvec4) Load 612
-             614:  148(fvec3) VectorShuffle 613 613 0 1 2
-             615:  148(fvec3) GroupNonUniformQuadBroadcast 35 614 35
-             616:    118(ptr) AccessChain 24(data) 25 609 115
-             617:   17(fvec4) Load 616
-             618:   17(fvec4) VectorShuffle 617 615 4 5 6 3
+             608:   27(uint*) AccessChain 10(dti) 26
+             609:     6(uint) Load 608
+             610:   27(uint*) AccessChain 10(dti) 26
+             611:     6(uint) Load 610
+             612:  118(vec4*) AccessChain 24(data) 25 611 115
+             613:    17(vec4) Load 612
+             614:   148(vec3) VectorShuffle 613 613 0 1 2
+             615:   148(vec3) GroupNonUniformQuadBroadcast 35 614 35
+             616:  118(vec4*) AccessChain 24(data) 25 609 115
+             617:    17(vec4) Load 616
+             618:    17(vec4) VectorShuffle 617 615 4 5 6 3
                               Store 616 618
-             619:     27(ptr) AccessChain 10(dti) 26
-             620:      6(int) Load 619
-             621:     27(ptr) AccessChain 10(dti) 26
-             622:      6(int) Load 621
-             623:    161(ptr) AccessChain 24(data) 25 622 158
-             624: 19(f64vec4) Load 623
-             625: 19(f64vec4) GroupNonUniformQuadBroadcast 35 624 35
-             626:    161(ptr) AccessChain 24(data) 25 620 158
+             619:   27(uint*) AccessChain 10(dti) 26
+             620:     6(uint) Load 619
+             621:   27(uint*) AccessChain 10(dti) 26
+             622:     6(uint) Load 621
+             623: 161(dvec4*) AccessChain 24(data) 25 622 158
+             624:   19(dvec4) Load 623
+             625:   19(dvec4) GroupNonUniformQuadBroadcast 35 624 35
+             626: 161(dvec4*) AccessChain 24(data) 25 620 158
                               Store 626 625
-             627:     27(ptr) AccessChain 10(dti) 26
-             628:      6(int) Load 627
-             629:     27(ptr) AccessChain 10(dti) 26
-             630:      6(int) Load 629
-             631:    170(ptr) AccessChain 24(data) 25 630 158 26
-             632:18(float64_t) Load 631
-             633:18(float64_t) GroupNonUniformQuadBroadcast 35 632 35
-             634:    170(ptr) AccessChain 24(data) 25 628 158 26
+             627:   27(uint*) AccessChain 10(dti) 26
+             628:     6(uint) Load 627
+             629:   27(uint*) AccessChain 10(dti) 26
+             630:     6(uint) Load 629
+             631:170(double*) AccessChain 24(data) 25 630 158 26
+             632:  18(double) Load 631
+             633:  18(double) GroupNonUniformQuadBroadcast 35 632 35
+             634:170(double*) AccessChain 24(data) 25 628 158 26
                               Store 634 633
-             635:     27(ptr) AccessChain 10(dti) 26
-             636:      6(int) Load 635
-             637:     27(ptr) AccessChain 10(dti) 26
-             638:      6(int) Load 637
-             639:    161(ptr) AccessChain 24(data) 25 638 158
-             640: 19(f64vec4) Load 639
-             641:179(f64vec2) VectorShuffle 640 640 0 1
-             642:179(f64vec2) GroupNonUniformQuadBroadcast 35 641 35
-             643:    161(ptr) AccessChain 24(data) 25 636 158
-             644: 19(f64vec4) Load 643
-             645: 19(f64vec4) VectorShuffle 644 642 4 5 2 3
+             635:   27(uint*) AccessChain 10(dti) 26
+             636:     6(uint) Load 635
+             637:   27(uint*) AccessChain 10(dti) 26
+             638:     6(uint) Load 637
+             639: 161(dvec4*) AccessChain 24(data) 25 638 158
+             640:   19(dvec4) Load 639
+             641:  179(dvec2) VectorShuffle 640 640 0 1
+             642:  179(dvec2) GroupNonUniformQuadBroadcast 35 641 35
+             643: 161(dvec4*) AccessChain 24(data) 25 636 158
+             644:   19(dvec4) Load 643
+             645:   19(dvec4) VectorShuffle 644 642 4 5 2 3
                               Store 643 645
-             646:     27(ptr) AccessChain 10(dti) 26
-             647:      6(int) Load 646
-             648:     27(ptr) AccessChain 10(dti) 26
-             649:      6(int) Load 648
-             650:    161(ptr) AccessChain 24(data) 25 649 158
-             651: 19(f64vec4) Load 650
-             652:191(f64vec3) VectorShuffle 651 651 0 1 2
-             653:191(f64vec3) GroupNonUniformQuadBroadcast 35 652 35
-             654:    161(ptr) AccessChain 24(data) 25 647 158
-             655: 19(f64vec4) Load 654
-             656: 19(f64vec4) VectorShuffle 655 653 4 5 6 3
+             646:   27(uint*) AccessChain 10(dti) 26
+             647:     6(uint) Load 646
+             648:   27(uint*) AccessChain 10(dti) 26
+             649:     6(uint) Load 648
+             650: 161(dvec4*) AccessChain 24(data) 25 649 158
+             651:   19(dvec4) Load 650
+             652:  191(dvec3) VectorShuffle 651 651 0 1 2
+             653:  191(dvec3) GroupNonUniformQuadBroadcast 35 652 35
+             654: 161(dvec4*) AccessChain 24(data) 25 647 158
+             655:   19(dvec4) Load 654
+             656:   19(dvec4) VectorShuffle 655 653 4 5 6 3
                               Store 654 656
-             657:     27(ptr) AccessChain 10(dti) 26
-             658:      6(int) Load 657
-             659:     27(ptr) AccessChain 10(dti) 26
-             660:      6(int) Load 659
-             661:     32(ptr) AccessChain 24(data) 25 660 25
-             662:   13(ivec4) Load 661
-             663:   13(ivec4) GroupNonUniformQuadSwap 35 662 26
-             664:     32(ptr) AccessChain 24(data) 25 658 25
+             657:   27(uint*) AccessChain 10(dti) 26
+             658:     6(uint) Load 657
+             659:   27(uint*) AccessChain 10(dti) 26
+             660:     6(uint) Load 659
+             661:  32(uvec4*) AccessChain 24(data) 25 660 25
+             662:   13(uvec4) Load 661
+             663:   13(uvec4) GroupNonUniformQuadSwap 35 662 26
+             664:  32(uvec4*) AccessChain 24(data) 25 658 25
                               Store 664 663
-             665:     27(ptr) AccessChain 10(dti) 26
-             666:      6(int) Load 665
-             667:     27(ptr) AccessChain 10(dti) 26
-             668:      6(int) Load 667
-             669:     42(ptr) AccessChain 24(data) 25 668 25 26
-             670:      6(int) Load 669
-             671:      6(int) GroupNonUniformQuadSwap 35 670 26
-             672:     42(ptr) AccessChain 24(data) 25 666 25 26
+             665:   27(uint*) AccessChain 10(dti) 26
+             666:     6(uint) Load 665
+             667:   27(uint*) AccessChain 10(dti) 26
+             668:     6(uint) Load 667
+             669:   42(uint*) AccessChain 24(data) 25 668 25 26
+             670:     6(uint) Load 669
+             671:     6(uint) GroupNonUniformQuadSwap 35 670 26
+             672:   42(uint*) AccessChain 24(data) 25 666 25 26
                               Store 672 671
-             673:     27(ptr) AccessChain 10(dti) 26
-             674:      6(int) Load 673
-             675:     27(ptr) AccessChain 10(dti) 26
-             676:      6(int) Load 675
-             677:     32(ptr) AccessChain 24(data) 25 676 25
-             678:   13(ivec4) Load 677
-             679:   51(ivec2) VectorShuffle 678 678 0 1
-             680:   51(ivec2) GroupNonUniformQuadSwap 35 679 26
-             681:     32(ptr) AccessChain 24(data) 25 674 25
-             682:   13(ivec4) Load 681
-             683:   13(ivec4) VectorShuffle 682 680 4 5 2 3
+             673:   27(uint*) AccessChain 10(dti) 26
+             674:     6(uint) Load 673
+             675:   27(uint*) AccessChain 10(dti) 26
+             676:     6(uint) Load 675
+             677:  32(uvec4*) AccessChain 24(data) 25 676 25
+             678:   13(uvec4) Load 677
+             679:   51(uvec2) VectorShuffle 678 678 0 1
+             680:   51(uvec2) GroupNonUniformQuadSwap 35 679 26
+             681:  32(uvec4*) AccessChain 24(data) 25 674 25
+             682:   13(uvec4) Load 681
+             683:   13(uvec4) VectorShuffle 682 680 4 5 2 3
                               Store 681 683
-             684:     27(ptr) AccessChain 10(dti) 26
-             685:      6(int) Load 684
-             686:     27(ptr) AccessChain 10(dti) 26
-             687:      6(int) Load 686
-             688:     32(ptr) AccessChain 24(data) 25 687 25
-             689:   13(ivec4) Load 688
-             690:    7(ivec3) VectorShuffle 689 689 0 1 2
-             691:    7(ivec3) GroupNonUniformQuadSwap 35 690 26
-             692:     32(ptr) AccessChain 24(data) 25 685 25
-             693:   13(ivec4) Load 692
-             694:   13(ivec4) VectorShuffle 693 691 4 5 6 3
+             684:   27(uint*) AccessChain 10(dti) 26
+             685:     6(uint) Load 684
+             686:   27(uint*) AccessChain 10(dti) 26
+             687:     6(uint) Load 686
+             688:  32(uvec4*) AccessChain 24(data) 25 687 25
+             689:   13(uvec4) Load 688
+             690:    7(uvec3) VectorShuffle 689 689 0 1 2
+             691:    7(uvec3) GroupNonUniformQuadSwap 35 690 26
+             692:  32(uvec4*) AccessChain 24(data) 25 685 25
+             693:   13(uvec4) Load 692
+             694:   13(uvec4) VectorShuffle 693 691 4 5 6 3
                               Store 692 694
-             695:     27(ptr) AccessChain 10(dti) 26
-             696:      6(int) Load 695
-             697:     27(ptr) AccessChain 10(dti) 26
-             698:      6(int) Load 697
-             699:     75(ptr) AccessChain 24(data) 25 698 72
+             695:   27(uint*) AccessChain 10(dti) 26
+             696:     6(uint) Load 695
+             697:   27(uint*) AccessChain 10(dti) 26
+             698:     6(uint) Load 697
+             699:  75(ivec4*) AccessChain 24(data) 25 698 72
              700:   15(ivec4) Load 699
              701:   15(ivec4) GroupNonUniformQuadSwap 35 700 26
-             702:     75(ptr) AccessChain 24(data) 25 696 72
+             702:  75(ivec4*) AccessChain 24(data) 25 696 72
                               Store 702 701
-             703:     27(ptr) AccessChain 10(dti) 26
-             704:      6(int) Load 703
-             705:     27(ptr) AccessChain 10(dti) 26
-             706:      6(int) Load 705
-             707:     84(ptr) AccessChain 24(data) 25 706 72 26
+             703:   27(uint*) AccessChain 10(dti) 26
+             704:     6(uint) Load 703
+             705:   27(uint*) AccessChain 10(dti) 26
+             706:     6(uint) Load 705
+             707:    84(int*) AccessChain 24(data) 25 706 72 26
              708:     14(int) Load 707
              709:     14(int) GroupNonUniformQuadSwap 35 708 26
-             710:     84(ptr) AccessChain 24(data) 25 704 72 26
+             710:    84(int*) AccessChain 24(data) 25 704 72 26
                               Store 710 709
-             711:     27(ptr) AccessChain 10(dti) 26
-             712:      6(int) Load 711
-             713:     27(ptr) AccessChain 10(dti) 26
-             714:      6(int) Load 713
-             715:     75(ptr) AccessChain 24(data) 25 714 72
+             711:   27(uint*) AccessChain 10(dti) 26
+             712:     6(uint) Load 711
+             713:   27(uint*) AccessChain 10(dti) 26
+             714:     6(uint) Load 713
+             715:  75(ivec4*) AccessChain 24(data) 25 714 72
              716:   15(ivec4) Load 715
              717:   93(ivec2) VectorShuffle 716 716 0 1
              718:   93(ivec2) GroupNonUniformQuadSwap 35 717 26
-             719:     75(ptr) AccessChain 24(data) 25 712 72
+             719:  75(ivec4*) AccessChain 24(data) 25 712 72
              720:   15(ivec4) Load 719
              721:   15(ivec4) VectorShuffle 720 718 4 5 2 3
                               Store 719 721
-             722:     27(ptr) AccessChain 10(dti) 26
-             723:      6(int) Load 722
-             724:     27(ptr) AccessChain 10(dti) 26
-             725:      6(int) Load 724
-             726:     75(ptr) AccessChain 24(data) 25 725 72
+             722:   27(uint*) AccessChain 10(dti) 26
+             723:     6(uint) Load 722
+             724:   27(uint*) AccessChain 10(dti) 26
+             725:     6(uint) Load 724
+             726:  75(ivec4*) AccessChain 24(data) 25 725 72
              727:   15(ivec4) Load 726
              728:  105(ivec3) VectorShuffle 727 727 0 1 2
              729:  105(ivec3) GroupNonUniformQuadSwap 35 728 26
-             730:     75(ptr) AccessChain 24(data) 25 723 72
+             730:  75(ivec4*) AccessChain 24(data) 25 723 72
              731:   15(ivec4) Load 730
              732:   15(ivec4) VectorShuffle 731 729 4 5 6 3
                               Store 730 732
-             733:     27(ptr) AccessChain 10(dti) 26
-             734:      6(int) Load 733
-             735:     27(ptr) AccessChain 10(dti) 26
-             736:      6(int) Load 735
-             737:    118(ptr) AccessChain 24(data) 25 736 115
-             738:   17(fvec4) Load 737
-             739:   17(fvec4) GroupNonUniformQuadSwap 35 738 26
-             740:    118(ptr) AccessChain 24(data) 25 734 115
+             733:   27(uint*) AccessChain 10(dti) 26
+             734:     6(uint) Load 733
+             735:   27(uint*) AccessChain 10(dti) 26
+             736:     6(uint) Load 735
+             737:  118(vec4*) AccessChain 24(data) 25 736 115
+             738:    17(vec4) Load 737
+             739:    17(vec4) GroupNonUniformQuadSwap 35 738 26
+             740:  118(vec4*) AccessChain 24(data) 25 734 115
                               Store 740 739
-             741:     27(ptr) AccessChain 10(dti) 26
-             742:      6(int) Load 741
-             743:     27(ptr) AccessChain 10(dti) 26
-             744:      6(int) Load 743
-             745:    127(ptr) AccessChain 24(data) 25 744 115 26
+             741:   27(uint*) AccessChain 10(dti) 26
+             742:     6(uint) Load 741
+             743:   27(uint*) AccessChain 10(dti) 26
+             744:     6(uint) Load 743
+             745: 127(float*) AccessChain 24(data) 25 744 115 26
              746:   16(float) Load 745
              747:   16(float) GroupNonUniformQuadSwap 35 746 26
-             748:    127(ptr) AccessChain 24(data) 25 742 115 26
+             748: 127(float*) AccessChain 24(data) 25 742 115 26
                               Store 748 747
-             749:     27(ptr) AccessChain 10(dti) 26
-             750:      6(int) Load 749
-             751:     27(ptr) AccessChain 10(dti) 26
-             752:      6(int) Load 751
-             753:    118(ptr) AccessChain 24(data) 25 752 115
-             754:   17(fvec4) Load 753
-             755:  136(fvec2) VectorShuffle 754 754 0 1
-             756:  136(fvec2) GroupNonUniformQuadSwap 35 755 26
-             757:    118(ptr) AccessChain 24(data) 25 750 115
-             758:   17(fvec4) Load 757
-             759:   17(fvec4) VectorShuffle 758 756 4 5 2 3
+             749:   27(uint*) AccessChain 10(dti) 26
+             750:     6(uint) Load 749
+             751:   27(uint*) AccessChain 10(dti) 26
+             752:     6(uint) Load 751
+             753:  118(vec4*) AccessChain 24(data) 25 752 115
+             754:    17(vec4) Load 753
+             755:   136(vec2) VectorShuffle 754 754 0 1
+             756:   136(vec2) GroupNonUniformQuadSwap 35 755 26
+             757:  118(vec4*) AccessChain 24(data) 25 750 115
+             758:    17(vec4) Load 757
+             759:    17(vec4) VectorShuffle 758 756 4 5 2 3
                               Store 757 759
-             760:     27(ptr) AccessChain 10(dti) 26
-             761:      6(int) Load 760
-             762:     27(ptr) AccessChain 10(dti) 26
-             763:      6(int) Load 762
-             764:    118(ptr) AccessChain 24(data) 25 763 115
-             765:   17(fvec4) Load 764
-             766:  148(fvec3) VectorShuffle 765 765 0 1 2
-             767:  148(fvec3) GroupNonUniformQuadSwap 35 766 26
-             768:    118(ptr) AccessChain 24(data) 25 761 115
-             769:   17(fvec4) Load 768
-             770:   17(fvec4) VectorShuffle 769 767 4 5 6 3
+             760:   27(uint*) AccessChain 10(dti) 26
+             761:     6(uint) Load 760
+             762:   27(uint*) AccessChain 10(dti) 26
+             763:     6(uint) Load 762
+             764:  118(vec4*) AccessChain 24(data) 25 763 115
+             765:    17(vec4) Load 764
+             766:   148(vec3) VectorShuffle 765 765 0 1 2
+             767:   148(vec3) GroupNonUniformQuadSwap 35 766 26
+             768:  118(vec4*) AccessChain 24(data) 25 761 115
+             769:    17(vec4) Load 768
+             770:    17(vec4) VectorShuffle 769 767 4 5 6 3
                               Store 768 770
-             771:     27(ptr) AccessChain 10(dti) 26
-             772:      6(int) Load 771
-             773:     27(ptr) AccessChain 10(dti) 26
-             774:      6(int) Load 773
-             775:    161(ptr) AccessChain 24(data) 25 774 158
-             776: 19(f64vec4) Load 775
-             777: 19(f64vec4) GroupNonUniformQuadSwap 35 776 26
-             778:    161(ptr) AccessChain 24(data) 25 772 158
+             771:   27(uint*) AccessChain 10(dti) 26
+             772:     6(uint) Load 771
+             773:   27(uint*) AccessChain 10(dti) 26
+             774:     6(uint) Load 773
+             775: 161(dvec4*) AccessChain 24(data) 25 774 158
+             776:   19(dvec4) Load 775
+             777:   19(dvec4) GroupNonUniformQuadSwap 35 776 26
+             778: 161(dvec4*) AccessChain 24(data) 25 772 158
                               Store 778 777
-             779:     27(ptr) AccessChain 10(dti) 26
-             780:      6(int) Load 779
-             781:     27(ptr) AccessChain 10(dti) 26
-             782:      6(int) Load 781
-             783:    170(ptr) AccessChain 24(data) 25 782 158 26
-             784:18(float64_t) Load 783
-             785:18(float64_t) GroupNonUniformQuadSwap 35 784 26
-             786:    170(ptr) AccessChain 24(data) 25 780 158 26
+             779:   27(uint*) AccessChain 10(dti) 26
+             780:     6(uint) Load 779
+             781:   27(uint*) AccessChain 10(dti) 26
+             782:     6(uint) Load 781
+             783:170(double*) AccessChain 24(data) 25 782 158 26
+             784:  18(double) Load 783
+             785:  18(double) GroupNonUniformQuadSwap 35 784 26
+             786:170(double*) AccessChain 24(data) 25 780 158 26
                               Store 786 785
-             787:     27(ptr) AccessChain 10(dti) 26
-             788:      6(int) Load 787
-             789:     27(ptr) AccessChain 10(dti) 26
-             790:      6(int) Load 789
-             791:    161(ptr) AccessChain 24(data) 25 790 158
-             792: 19(f64vec4) Load 791
-             793:179(f64vec2) VectorShuffle 792 792 0 1
-             794:179(f64vec2) GroupNonUniformQuadSwap 35 793 26
-             795:    161(ptr) AccessChain 24(data) 25 788 158
-             796: 19(f64vec4) Load 795
-             797: 19(f64vec4) VectorShuffle 796 794 4 5 2 3
+             787:   27(uint*) AccessChain 10(dti) 26
+             788:     6(uint) Load 787
+             789:   27(uint*) AccessChain 10(dti) 26
+             790:     6(uint) Load 789
+             791: 161(dvec4*) AccessChain 24(data) 25 790 158
+             792:   19(dvec4) Load 791
+             793:  179(dvec2) VectorShuffle 792 792 0 1
+             794:  179(dvec2) GroupNonUniformQuadSwap 35 793 26
+             795: 161(dvec4*) AccessChain 24(data) 25 788 158
+             796:   19(dvec4) Load 795
+             797:   19(dvec4) VectorShuffle 796 794 4 5 2 3
                               Store 795 797
-             798:     27(ptr) AccessChain 10(dti) 26
-             799:      6(int) Load 798
-             800:     27(ptr) AccessChain 10(dti) 26
-             801:      6(int) Load 800
-             802:    161(ptr) AccessChain 24(data) 25 801 158
-             803: 19(f64vec4) Load 802
-             804:191(f64vec3) VectorShuffle 803 803 0 1 2
-             805:191(f64vec3) GroupNonUniformQuadSwap 35 804 26
-             806:    161(ptr) AccessChain 24(data) 25 799 158
-             807: 19(f64vec4) Load 806
-             808: 19(f64vec4) VectorShuffle 807 805 4 5 6 3
+             798:   27(uint*) AccessChain 10(dti) 26
+             799:     6(uint) Load 798
+             800:   27(uint*) AccessChain 10(dti) 26
+             801:     6(uint) Load 800
+             802: 161(dvec4*) AccessChain 24(data) 25 801 158
+             803:   19(dvec4) Load 802
+             804:  191(dvec3) VectorShuffle 803 803 0 1 2
+             805:  191(dvec3) GroupNonUniformQuadSwap 35 804 26
+             806: 161(dvec4*) AccessChain 24(data) 25 799 158
+             807:   19(dvec4) Load 806
+             808:   19(dvec4) VectorShuffle 807 805 4 5 6 3
                               Store 806 808
-             809:     27(ptr) AccessChain 10(dti) 26
-             810:      6(int) Load 809
-             811:     27(ptr) AccessChain 10(dti) 26
-             812:      6(int) Load 811
-             813:     32(ptr) AccessChain 24(data) 25 812 25
-             814:   13(ivec4) Load 813
-             815:   13(ivec4) GroupNonUniformQuadSwap 35 814 205
-             816:     32(ptr) AccessChain 24(data) 25 810 25
+             809:   27(uint*) AccessChain 10(dti) 26
+             810:     6(uint) Load 809
+             811:   27(uint*) AccessChain 10(dti) 26
+             812:     6(uint) Load 811
+             813:  32(uvec4*) AccessChain 24(data) 25 812 25
+             814:   13(uvec4) Load 813
+             815:   13(uvec4) GroupNonUniformQuadSwap 35 814 205
+             816:  32(uvec4*) AccessChain 24(data) 25 810 25
                               Store 816 815
-             817:     27(ptr) AccessChain 10(dti) 26
-             818:      6(int) Load 817
-             819:     27(ptr) AccessChain 10(dti) 26
-             820:      6(int) Load 819
-             821:     42(ptr) AccessChain 24(data) 25 820 25 26
-             822:      6(int) Load 821
-             823:      6(int) GroupNonUniformQuadSwap 35 822 205
-             824:     42(ptr) AccessChain 24(data) 25 818 25 26
+             817:   27(uint*) AccessChain 10(dti) 26
+             818:     6(uint) Load 817
+             819:   27(uint*) AccessChain 10(dti) 26
+             820:     6(uint) Load 819
+             821:   42(uint*) AccessChain 24(data) 25 820 25 26
+             822:     6(uint) Load 821
+             823:     6(uint) GroupNonUniformQuadSwap 35 822 205
+             824:   42(uint*) AccessChain 24(data) 25 818 25 26
                               Store 824 823
-             825:     27(ptr) AccessChain 10(dti) 26
-             826:      6(int) Load 825
-             827:     27(ptr) AccessChain 10(dti) 26
-             828:      6(int) Load 827
-             829:     32(ptr) AccessChain 24(data) 25 828 25
-             830:   13(ivec4) Load 829
-             831:   51(ivec2) VectorShuffle 830 830 0 1
-             832:   51(ivec2) GroupNonUniformQuadSwap 35 831 205
-             833:     32(ptr) AccessChain 24(data) 25 826 25
-             834:   13(ivec4) Load 833
-             835:   13(ivec4) VectorShuffle 834 832 4 5 2 3
+             825:   27(uint*) AccessChain 10(dti) 26
+             826:     6(uint) Load 825
+             827:   27(uint*) AccessChain 10(dti) 26
+             828:     6(uint) Load 827
+             829:  32(uvec4*) AccessChain 24(data) 25 828 25
+             830:   13(uvec4) Load 829
+             831:   51(uvec2) VectorShuffle 830 830 0 1
+             832:   51(uvec2) GroupNonUniformQuadSwap 35 831 205
+             833:  32(uvec4*) AccessChain 24(data) 25 826 25
+             834:   13(uvec4) Load 833
+             835:   13(uvec4) VectorShuffle 834 832 4 5 2 3
                               Store 833 835
-             836:     27(ptr) AccessChain 10(dti) 26
-             837:      6(int) Load 836
-             838:     27(ptr) AccessChain 10(dti) 26
-             839:      6(int) Load 838
-             840:     32(ptr) AccessChain 24(data) 25 839 25
-             841:   13(ivec4) Load 840
-             842:    7(ivec3) VectorShuffle 841 841 0 1 2
-             843:    7(ivec3) GroupNonUniformQuadSwap 35 842 205
-             844:     32(ptr) AccessChain 24(data) 25 837 25
-             845:   13(ivec4) Load 844
-             846:   13(ivec4) VectorShuffle 845 843 4 5 6 3
+             836:   27(uint*) AccessChain 10(dti) 26
+             837:     6(uint) Load 836
+             838:   27(uint*) AccessChain 10(dti) 26
+             839:     6(uint) Load 838
+             840:  32(uvec4*) AccessChain 24(data) 25 839 25
+             841:   13(uvec4) Load 840
+             842:    7(uvec3) VectorShuffle 841 841 0 1 2
+             843:    7(uvec3) GroupNonUniformQuadSwap 35 842 205
+             844:  32(uvec4*) AccessChain 24(data) 25 837 25
+             845:   13(uvec4) Load 844
+             846:   13(uvec4) VectorShuffle 845 843 4 5 6 3
                               Store 844 846
-             847:     27(ptr) AccessChain 10(dti) 26
-             848:      6(int) Load 847
-             849:     27(ptr) AccessChain 10(dti) 26
-             850:      6(int) Load 849
-             851:     75(ptr) AccessChain 24(data) 25 850 72
+             847:   27(uint*) AccessChain 10(dti) 26
+             848:     6(uint) Load 847
+             849:   27(uint*) AccessChain 10(dti) 26
+             850:     6(uint) Load 849
+             851:  75(ivec4*) AccessChain 24(data) 25 850 72
              852:   15(ivec4) Load 851
              853:   15(ivec4) GroupNonUniformQuadSwap 35 852 205
-             854:     75(ptr) AccessChain 24(data) 25 848 72
+             854:  75(ivec4*) AccessChain 24(data) 25 848 72
                               Store 854 853
-             855:     27(ptr) AccessChain 10(dti) 26
-             856:      6(int) Load 855
-             857:     27(ptr) AccessChain 10(dti) 26
-             858:      6(int) Load 857
-             859:     84(ptr) AccessChain 24(data) 25 858 72 26
+             855:   27(uint*) AccessChain 10(dti) 26
+             856:     6(uint) Load 855
+             857:   27(uint*) AccessChain 10(dti) 26
+             858:     6(uint) Load 857
+             859:    84(int*) AccessChain 24(data) 25 858 72 26
              860:     14(int) Load 859
              861:     14(int) GroupNonUniformQuadSwap 35 860 205
-             862:     84(ptr) AccessChain 24(data) 25 856 72 26
+             862:    84(int*) AccessChain 24(data) 25 856 72 26
                               Store 862 861
-             863:     27(ptr) AccessChain 10(dti) 26
-             864:      6(int) Load 863
-             865:     27(ptr) AccessChain 10(dti) 26
-             866:      6(int) Load 865
-             867:     75(ptr) AccessChain 24(data) 25 866 72
+             863:   27(uint*) AccessChain 10(dti) 26
+             864:     6(uint) Load 863
+             865:   27(uint*) AccessChain 10(dti) 26
+             866:     6(uint) Load 865
+             867:  75(ivec4*) AccessChain 24(data) 25 866 72
              868:   15(ivec4) Load 867
              869:   93(ivec2) VectorShuffle 868 868 0 1
              870:   93(ivec2) GroupNonUniformQuadSwap 35 869 205
-             871:     75(ptr) AccessChain 24(data) 25 864 72
+             871:  75(ivec4*) AccessChain 24(data) 25 864 72
              872:   15(ivec4) Load 871
              873:   15(ivec4) VectorShuffle 872 870 4 5 2 3
                               Store 871 873
-             874:     27(ptr) AccessChain 10(dti) 26
-             875:      6(int) Load 874
-             876:     27(ptr) AccessChain 10(dti) 26
-             877:      6(int) Load 876
-             878:     75(ptr) AccessChain 24(data) 25 877 72
+             874:   27(uint*) AccessChain 10(dti) 26
+             875:     6(uint) Load 874
+             876:   27(uint*) AccessChain 10(dti) 26
+             877:     6(uint) Load 876
+             878:  75(ivec4*) AccessChain 24(data) 25 877 72
              879:   15(ivec4) Load 878
              880:  105(ivec3) VectorShuffle 879 879 0 1 2
              881:  105(ivec3) GroupNonUniformQuadSwap 35 880 205
-             882:     75(ptr) AccessChain 24(data) 25 875 72
+             882:  75(ivec4*) AccessChain 24(data) 25 875 72
              883:   15(ivec4) Load 882
              884:   15(ivec4) VectorShuffle 883 881 4 5 6 3
                               Store 882 884
-             885:     27(ptr) AccessChain 10(dti) 26
-             886:      6(int) Load 885
-             887:     27(ptr) AccessChain 10(dti) 26
-             888:      6(int) Load 887
-             889:    118(ptr) AccessChain 24(data) 25 888 115
-             890:   17(fvec4) Load 889
-             891:   17(fvec4) GroupNonUniformQuadSwap 35 890 205
-             892:    118(ptr) AccessChain 24(data) 25 886 115
+             885:   27(uint*) AccessChain 10(dti) 26
+             886:     6(uint) Load 885
+             887:   27(uint*) AccessChain 10(dti) 26
+             888:     6(uint) Load 887
+             889:  118(vec4*) AccessChain 24(data) 25 888 115
+             890:    17(vec4) Load 889
+             891:    17(vec4) GroupNonUniformQuadSwap 35 890 205
+             892:  118(vec4*) AccessChain 24(data) 25 886 115
                               Store 892 891
-             893:     27(ptr) AccessChain 10(dti) 26
-             894:      6(int) Load 893
-             895:     27(ptr) AccessChain 10(dti) 26
-             896:      6(int) Load 895
-             897:    127(ptr) AccessChain 24(data) 25 896 115 26
+             893:   27(uint*) AccessChain 10(dti) 26
+             894:     6(uint) Load 893
+             895:   27(uint*) AccessChain 10(dti) 26
+             896:     6(uint) Load 895
+             897: 127(float*) AccessChain 24(data) 25 896 115 26
              898:   16(float) Load 897
              899:   16(float) GroupNonUniformQuadSwap 35 898 205
-             900:    127(ptr) AccessChain 24(data) 25 894 115 26
+             900: 127(float*) AccessChain 24(data) 25 894 115 26
                               Store 900 899
-             901:     27(ptr) AccessChain 10(dti) 26
-             902:      6(int) Load 901
-             903:     27(ptr) AccessChain 10(dti) 26
-             904:      6(int) Load 903
-             905:    118(ptr) AccessChain 24(data) 25 904 115
-             906:   17(fvec4) Load 905
-             907:  136(fvec2) VectorShuffle 906 906 0 1
-             908:  136(fvec2) GroupNonUniformQuadSwap 35 907 205
-             909:    118(ptr) AccessChain 24(data) 25 902 115
-             910:   17(fvec4) Load 909
-             911:   17(fvec4) VectorShuffle 910 908 4 5 2 3
+             901:   27(uint*) AccessChain 10(dti) 26
+             902:     6(uint) Load 901
+             903:   27(uint*) AccessChain 10(dti) 26
+             904:     6(uint) Load 903
+             905:  118(vec4*) AccessChain 24(data) 25 904 115
+             906:    17(vec4) Load 905
+             907:   136(vec2) VectorShuffle 906 906 0 1
+             908:   136(vec2) GroupNonUniformQuadSwap 35 907 205
+             909:  118(vec4*) AccessChain 24(data) 25 902 115
+             910:    17(vec4) Load 909
+             911:    17(vec4) VectorShuffle 910 908 4 5 2 3
                               Store 909 911
-             912:     27(ptr) AccessChain 10(dti) 26
-             913:      6(int) Load 912
-             914:     27(ptr) AccessChain 10(dti) 26
-             915:      6(int) Load 914
-             916:    118(ptr) AccessChain 24(data) 25 915 115
-             917:   17(fvec4) Load 916
-             918:  148(fvec3) VectorShuffle 917 917 0 1 2
-             919:  148(fvec3) GroupNonUniformQuadSwap 35 918 205
-             920:    118(ptr) AccessChain 24(data) 25 913 115
-             921:   17(fvec4) Load 920
-             922:   17(fvec4) VectorShuffle 921 919 4 5 6 3
+             912:   27(uint*) AccessChain 10(dti) 26
+             913:     6(uint) Load 912
+             914:   27(uint*) AccessChain 10(dti) 26
+             915:     6(uint) Load 914
+             916:  118(vec4*) AccessChain 24(data) 25 915 115
+             917:    17(vec4) Load 916
+             918:   148(vec3) VectorShuffle 917 917 0 1 2
+             919:   148(vec3) GroupNonUniformQuadSwap 35 918 205
+             920:  118(vec4*) AccessChain 24(data) 25 913 115
+             921:    17(vec4) Load 920
+             922:    17(vec4) VectorShuffle 921 919 4 5 6 3
                               Store 920 922
-             923:     27(ptr) AccessChain 10(dti) 26
-             924:      6(int) Load 923
-             925:     27(ptr) AccessChain 10(dti) 26
-             926:      6(int) Load 925
-             927:    161(ptr) AccessChain 24(data) 25 926 158
-             928: 19(f64vec4) Load 927
-             929: 19(f64vec4) GroupNonUniformQuadSwap 35 928 205
-             930:    161(ptr) AccessChain 24(data) 25 924 158
+             923:   27(uint*) AccessChain 10(dti) 26
+             924:     6(uint) Load 923
+             925:   27(uint*) AccessChain 10(dti) 26
+             926:     6(uint) Load 925
+             927: 161(dvec4*) AccessChain 24(data) 25 926 158
+             928:   19(dvec4) Load 927
+             929:   19(dvec4) GroupNonUniformQuadSwap 35 928 205
+             930: 161(dvec4*) AccessChain 24(data) 25 924 158
                               Store 930 929
-             931:     27(ptr) AccessChain 10(dti) 26
-             932:      6(int) Load 931
-             933:     27(ptr) AccessChain 10(dti) 26
-             934:      6(int) Load 933
-             935:    170(ptr) AccessChain 24(data) 25 934 158 26
-             936:18(float64_t) Load 935
-             937:18(float64_t) GroupNonUniformQuadSwap 35 936 205
-             938:    170(ptr) AccessChain 24(data) 25 932 158 26
+             931:   27(uint*) AccessChain 10(dti) 26
+             932:     6(uint) Load 931
+             933:   27(uint*) AccessChain 10(dti) 26
+             934:     6(uint) Load 933
+             935:170(double*) AccessChain 24(data) 25 934 158 26
+             936:  18(double) Load 935
+             937:  18(double) GroupNonUniformQuadSwap 35 936 205
+             938:170(double*) AccessChain 24(data) 25 932 158 26
                               Store 938 937
-             939:     27(ptr) AccessChain 10(dti) 26
-             940:      6(int) Load 939
-             941:     27(ptr) AccessChain 10(dti) 26
-             942:      6(int) Load 941
-             943:    161(ptr) AccessChain 24(data) 25 942 158
-             944: 19(f64vec4) Load 943
-             945:179(f64vec2) VectorShuffle 944 944 0 1
-             946:179(f64vec2) GroupNonUniformQuadSwap 35 945 205
-             947:    161(ptr) AccessChain 24(data) 25 940 158
-             948: 19(f64vec4) Load 947
-             949: 19(f64vec4) VectorShuffle 948 946 4 5 2 3
+             939:   27(uint*) AccessChain 10(dti) 26
+             940:     6(uint) Load 939
+             941:   27(uint*) AccessChain 10(dti) 26
+             942:     6(uint) Load 941
+             943: 161(dvec4*) AccessChain 24(data) 25 942 158
+             944:   19(dvec4) Load 943
+             945:  179(dvec2) VectorShuffle 944 944 0 1
+             946:  179(dvec2) GroupNonUniformQuadSwap 35 945 205
+             947: 161(dvec4*) AccessChain 24(data) 25 940 158
+             948:   19(dvec4) Load 947
+             949:   19(dvec4) VectorShuffle 948 946 4 5 2 3
                               Store 947 949
-             950:     27(ptr) AccessChain 10(dti) 26
-             951:      6(int) Load 950
-             952:     27(ptr) AccessChain 10(dti) 26
-             953:      6(int) Load 952
-             954:    161(ptr) AccessChain 24(data) 25 953 158
-             955: 19(f64vec4) Load 954
-             956:191(f64vec3) VectorShuffle 955 955 0 1 2
-             957:191(f64vec3) GroupNonUniformQuadSwap 35 956 205
-             958:    161(ptr) AccessChain 24(data) 25 951 158
-             959: 19(f64vec4) Load 958
-             960: 19(f64vec4) VectorShuffle 959 957 4 5 6 3
+             950:   27(uint*) AccessChain 10(dti) 26
+             951:     6(uint) Load 950
+             952:   27(uint*) AccessChain 10(dti) 26
+             953:     6(uint) Load 952
+             954: 161(dvec4*) AccessChain 24(data) 25 953 158
+             955:   19(dvec4) Load 954
+             956:  191(dvec3) VectorShuffle 955 955 0 1 2
+             957:  191(dvec3) GroupNonUniformQuadSwap 35 956 205
+             958: 161(dvec4*) AccessChain 24(data) 25 951 158
+             959:   19(dvec4) Load 958
+             960:   19(dvec4) VectorShuffle 959 957 4 5 6 3
                               Store 958 960
-             961:     27(ptr) AccessChain 10(dti) 26
-             962:      6(int) Load 961
-             963:     27(ptr) AccessChain 10(dti) 26
-             964:      6(int) Load 963
-             965:     32(ptr) AccessChain 24(data) 25 964 25
-             966:   13(ivec4) Load 965
-             967:   13(ivec4) GroupNonUniformQuadSwap 35 966 358
-             968:     32(ptr) AccessChain 24(data) 25 962 25
+             961:   27(uint*) AccessChain 10(dti) 26
+             962:     6(uint) Load 961
+             963:   27(uint*) AccessChain 10(dti) 26
+             964:     6(uint) Load 963
+             965:  32(uvec4*) AccessChain 24(data) 25 964 25
+             966:   13(uvec4) Load 965
+             967:   13(uvec4) GroupNonUniformQuadSwap 35 966 358
+             968:  32(uvec4*) AccessChain 24(data) 25 962 25
                               Store 968 967
-             969:     27(ptr) AccessChain 10(dti) 26
-             970:      6(int) Load 969
-             971:     27(ptr) AccessChain 10(dti) 26
-             972:      6(int) Load 971
-             973:     42(ptr) AccessChain 24(data) 25 972 25 26
-             974:      6(int) Load 973
-             975:      6(int) GroupNonUniformQuadSwap 35 974 358
-             976:     42(ptr) AccessChain 24(data) 25 970 25 26
+             969:   27(uint*) AccessChain 10(dti) 26
+             970:     6(uint) Load 969
+             971:   27(uint*) AccessChain 10(dti) 26
+             972:     6(uint) Load 971
+             973:   42(uint*) AccessChain 24(data) 25 972 25 26
+             974:     6(uint) Load 973
+             975:     6(uint) GroupNonUniformQuadSwap 35 974 358
+             976:   42(uint*) AccessChain 24(data) 25 970 25 26
                               Store 976 975
-             977:     27(ptr) AccessChain 10(dti) 26
-             978:      6(int) Load 977
-             979:     27(ptr) AccessChain 10(dti) 26
-             980:      6(int) Load 979
-             981:     32(ptr) AccessChain 24(data) 25 980 25
-             982:   13(ivec4) Load 981
-             983:   51(ivec2) VectorShuffle 982 982 0 1
-             984:   51(ivec2) GroupNonUniformQuadSwap 35 983 358
-             985:     32(ptr) AccessChain 24(data) 25 978 25
-             986:   13(ivec4) Load 985
-             987:   13(ivec4) VectorShuffle 986 984 4 5 2 3
+             977:   27(uint*) AccessChain 10(dti) 26
+             978:     6(uint) Load 977
+             979:   27(uint*) AccessChain 10(dti) 26
+             980:     6(uint) Load 979
+             981:  32(uvec4*) AccessChain 24(data) 25 980 25
+             982:   13(uvec4) Load 981
+             983:   51(uvec2) VectorShuffle 982 982 0 1
+             984:   51(uvec2) GroupNonUniformQuadSwap 35 983 358
+             985:  32(uvec4*) AccessChain 24(data) 25 978 25
+             986:   13(uvec4) Load 985
+             987:   13(uvec4) VectorShuffle 986 984 4 5 2 3
                               Store 985 987
-             988:     27(ptr) AccessChain 10(dti) 26
-             989:      6(int) Load 988
-             990:     27(ptr) AccessChain 10(dti) 26
-             991:      6(int) Load 990
-             992:     32(ptr) AccessChain 24(data) 25 991 25
-             993:   13(ivec4) Load 992
-             994:    7(ivec3) VectorShuffle 993 993 0 1 2
-             995:    7(ivec3) GroupNonUniformQuadSwap 35 994 358
-             996:     32(ptr) AccessChain 24(data) 25 989 25
-             997:   13(ivec4) Load 996
-             998:   13(ivec4) VectorShuffle 997 995 4 5 6 3
+             988:   27(uint*) AccessChain 10(dti) 26
+             989:     6(uint) Load 988
+             990:   27(uint*) AccessChain 10(dti) 26
+             991:     6(uint) Load 990
+             992:  32(uvec4*) AccessChain 24(data) 25 991 25
+             993:   13(uvec4) Load 992
+             994:    7(uvec3) VectorShuffle 993 993 0 1 2
+             995:    7(uvec3) GroupNonUniformQuadSwap 35 994 358
+             996:  32(uvec4*) AccessChain 24(data) 25 989 25
+             997:   13(uvec4) Load 996
+             998:   13(uvec4) VectorShuffle 997 995 4 5 6 3
                               Store 996 998
-             999:     27(ptr) AccessChain 10(dti) 26
-            1000:      6(int) Load 999
-            1001:     27(ptr) AccessChain 10(dti) 26
-            1002:      6(int) Load 1001
-            1003:     75(ptr) AccessChain 24(data) 25 1002 72
+             999:   27(uint*) AccessChain 10(dti) 26
+            1000:     6(uint) Load 999
+            1001:   27(uint*) AccessChain 10(dti) 26
+            1002:     6(uint) Load 1001
+            1003:  75(ivec4*) AccessChain 24(data) 25 1002 72
             1004:   15(ivec4) Load 1003
             1005:   15(ivec4) GroupNonUniformQuadSwap 35 1004 358
-            1006:     75(ptr) AccessChain 24(data) 25 1000 72
+            1006:  75(ivec4*) AccessChain 24(data) 25 1000 72
                               Store 1006 1005
-            1007:     27(ptr) AccessChain 10(dti) 26
-            1008:      6(int) Load 1007
-            1009:     27(ptr) AccessChain 10(dti) 26
-            1010:      6(int) Load 1009
-            1011:     84(ptr) AccessChain 24(data) 25 1010 72 26
+            1007:   27(uint*) AccessChain 10(dti) 26
+            1008:     6(uint) Load 1007
+            1009:   27(uint*) AccessChain 10(dti) 26
+            1010:     6(uint) Load 1009
+            1011:    84(int*) AccessChain 24(data) 25 1010 72 26
             1012:     14(int) Load 1011
             1013:     14(int) GroupNonUniformQuadSwap 35 1012 358
-            1014:     84(ptr) AccessChain 24(data) 25 1008 72 26
+            1014:    84(int*) AccessChain 24(data) 25 1008 72 26
                               Store 1014 1013
-            1015:     27(ptr) AccessChain 10(dti) 26
-            1016:      6(int) Load 1015
-            1017:     27(ptr) AccessChain 10(dti) 26
-            1018:      6(int) Load 1017
-            1019:     75(ptr) AccessChain 24(data) 25 1018 72
+            1015:   27(uint*) AccessChain 10(dti) 26
+            1016:     6(uint) Load 1015
+            1017:   27(uint*) AccessChain 10(dti) 26
+            1018:     6(uint) Load 1017
+            1019:  75(ivec4*) AccessChain 24(data) 25 1018 72
             1020:   15(ivec4) Load 1019
             1021:   93(ivec2) VectorShuffle 1020 1020 0 1
             1022:   93(ivec2) GroupNonUniformQuadSwap 35 1021 358
-            1023:     75(ptr) AccessChain 24(data) 25 1016 72
+            1023:  75(ivec4*) AccessChain 24(data) 25 1016 72
             1024:   15(ivec4) Load 1023
             1025:   15(ivec4) VectorShuffle 1024 1022 4 5 2 3
                               Store 1023 1025
-            1026:     27(ptr) AccessChain 10(dti) 26
-            1027:      6(int) Load 1026
-            1028:     27(ptr) AccessChain 10(dti) 26
-            1029:      6(int) Load 1028
-            1030:     75(ptr) AccessChain 24(data) 25 1029 72
+            1026:   27(uint*) AccessChain 10(dti) 26
+            1027:     6(uint) Load 1026
+            1028:   27(uint*) AccessChain 10(dti) 26
+            1029:     6(uint) Load 1028
+            1030:  75(ivec4*) AccessChain 24(data) 25 1029 72
             1031:   15(ivec4) Load 1030
             1032:  105(ivec3) VectorShuffle 1031 1031 0 1 2
             1033:  105(ivec3) GroupNonUniformQuadSwap 35 1032 358
-            1034:     75(ptr) AccessChain 24(data) 25 1027 72
+            1034:  75(ivec4*) AccessChain 24(data) 25 1027 72
             1035:   15(ivec4) Load 1034
             1036:   15(ivec4) VectorShuffle 1035 1033 4 5 6 3
                               Store 1034 1036
-            1037:     27(ptr) AccessChain 10(dti) 26
-            1038:      6(int) Load 1037
-            1039:     27(ptr) AccessChain 10(dti) 26
-            1040:      6(int) Load 1039
-            1041:    118(ptr) AccessChain 24(data) 25 1040 115
-            1042:   17(fvec4) Load 1041
-            1043:   17(fvec4) GroupNonUniformQuadSwap 35 1042 358
-            1044:    118(ptr) AccessChain 24(data) 25 1038 115
+            1037:   27(uint*) AccessChain 10(dti) 26
+            1038:     6(uint) Load 1037
+            1039:   27(uint*) AccessChain 10(dti) 26
+            1040:     6(uint) Load 1039
+            1041:  118(vec4*) AccessChain 24(data) 25 1040 115
+            1042:    17(vec4) Load 1041
+            1043:    17(vec4) GroupNonUniformQuadSwap 35 1042 358
+            1044:  118(vec4*) AccessChain 24(data) 25 1038 115
                               Store 1044 1043
-            1045:     27(ptr) AccessChain 10(dti) 26
-            1046:      6(int) Load 1045
-            1047:     27(ptr) AccessChain 10(dti) 26
-            1048:      6(int) Load 1047
-            1049:    127(ptr) AccessChain 24(data) 25 1048 115 26
+            1045:   27(uint*) AccessChain 10(dti) 26
+            1046:     6(uint) Load 1045
+            1047:   27(uint*) AccessChain 10(dti) 26
+            1048:     6(uint) Load 1047
+            1049: 127(float*) AccessChain 24(data) 25 1048 115 26
             1050:   16(float) Load 1049
             1051:   16(float) GroupNonUniformQuadSwap 35 1050 358
-            1052:    127(ptr) AccessChain 24(data) 25 1046 115 26
+            1052: 127(float*) AccessChain 24(data) 25 1046 115 26
                               Store 1052 1051
-            1053:     27(ptr) AccessChain 10(dti) 26
-            1054:      6(int) Load 1053
-            1055:     27(ptr) AccessChain 10(dti) 26
-            1056:      6(int) Load 1055
-            1057:    118(ptr) AccessChain 24(data) 25 1056 115
-            1058:   17(fvec4) Load 1057
-            1059:  136(fvec2) VectorShuffle 1058 1058 0 1
-            1060:  136(fvec2) GroupNonUniformQuadSwap 35 1059 358
-            1061:    118(ptr) AccessChain 24(data) 25 1054 115
-            1062:   17(fvec4) Load 1061
-            1063:   17(fvec4) VectorShuffle 1062 1060 4 5 2 3
+            1053:   27(uint*) AccessChain 10(dti) 26
+            1054:     6(uint) Load 1053
+            1055:   27(uint*) AccessChain 10(dti) 26
+            1056:     6(uint) Load 1055
+            1057:  118(vec4*) AccessChain 24(data) 25 1056 115
+            1058:    17(vec4) Load 1057
+            1059:   136(vec2) VectorShuffle 1058 1058 0 1
+            1060:   136(vec2) GroupNonUniformQuadSwap 35 1059 358
+            1061:  118(vec4*) AccessChain 24(data) 25 1054 115
+            1062:    17(vec4) Load 1061
+            1063:    17(vec4) VectorShuffle 1062 1060 4 5 2 3
                               Store 1061 1063
-            1064:     27(ptr) AccessChain 10(dti) 26
-            1065:      6(int) Load 1064
-            1066:     27(ptr) AccessChain 10(dti) 26
-            1067:      6(int) Load 1066
-            1068:    118(ptr) AccessChain 24(data) 25 1067 115
-            1069:   17(fvec4) Load 1068
-            1070:  148(fvec3) VectorShuffle 1069 1069 0 1 2
-            1071:  148(fvec3) GroupNonUniformQuadSwap 35 1070 358
-            1072:    118(ptr) AccessChain 24(data) 25 1065 115
-            1073:   17(fvec4) Load 1072
-            1074:   17(fvec4) VectorShuffle 1073 1071 4 5 6 3
+            1064:   27(uint*) AccessChain 10(dti) 26
+            1065:     6(uint) Load 1064
+            1066:   27(uint*) AccessChain 10(dti) 26
+            1067:     6(uint) Load 1066
+            1068:  118(vec4*) AccessChain 24(data) 25 1067 115
+            1069:    17(vec4) Load 1068
+            1070:   148(vec3) VectorShuffle 1069 1069 0 1 2
+            1071:   148(vec3) GroupNonUniformQuadSwap 35 1070 358
+            1072:  118(vec4*) AccessChain 24(data) 25 1065 115
+            1073:    17(vec4) Load 1072
+            1074:    17(vec4) VectorShuffle 1073 1071 4 5 6 3
                               Store 1072 1074
-            1075:     27(ptr) AccessChain 10(dti) 26
-            1076:      6(int) Load 1075
-            1077:     27(ptr) AccessChain 10(dti) 26
-            1078:      6(int) Load 1077
-            1079:    161(ptr) AccessChain 24(data) 25 1078 158
-            1080: 19(f64vec4) Load 1079
-            1081: 19(f64vec4) GroupNonUniformQuadSwap 35 1080 358
-            1082:    161(ptr) AccessChain 24(data) 25 1076 158
+            1075:   27(uint*) AccessChain 10(dti) 26
+            1076:     6(uint) Load 1075
+            1077:   27(uint*) AccessChain 10(dti) 26
+            1078:     6(uint) Load 1077
+            1079: 161(dvec4*) AccessChain 24(data) 25 1078 158
+            1080:   19(dvec4) Load 1079
+            1081:   19(dvec4) GroupNonUniformQuadSwap 35 1080 358
+            1082: 161(dvec4*) AccessChain 24(data) 25 1076 158
                               Store 1082 1081
-            1083:     27(ptr) AccessChain 10(dti) 26
-            1084:      6(int) Load 1083
-            1085:     27(ptr) AccessChain 10(dti) 26
-            1086:      6(int) Load 1085
-            1087:    170(ptr) AccessChain 24(data) 25 1086 158 26
-            1088:18(float64_t) Load 1087
-            1089:18(float64_t) GroupNonUniformQuadSwap 35 1088 358
-            1090:    170(ptr) AccessChain 24(data) 25 1084 158 26
+            1083:   27(uint*) AccessChain 10(dti) 26
+            1084:     6(uint) Load 1083
+            1085:   27(uint*) AccessChain 10(dti) 26
+            1086:     6(uint) Load 1085
+            1087:170(double*) AccessChain 24(data) 25 1086 158 26
+            1088:  18(double) Load 1087
+            1089:  18(double) GroupNonUniformQuadSwap 35 1088 358
+            1090:170(double*) AccessChain 24(data) 25 1084 158 26
                               Store 1090 1089
-            1091:     27(ptr) AccessChain 10(dti) 26
-            1092:      6(int) Load 1091
-            1093:     27(ptr) AccessChain 10(dti) 26
-            1094:      6(int) Load 1093
-            1095:    161(ptr) AccessChain 24(data) 25 1094 158
-            1096: 19(f64vec4) Load 1095
-            1097:179(f64vec2) VectorShuffle 1096 1096 0 1
-            1098:179(f64vec2) GroupNonUniformQuadSwap 35 1097 358
-            1099:    161(ptr) AccessChain 24(data) 25 1092 158
-            1100: 19(f64vec4) Load 1099
-            1101: 19(f64vec4) VectorShuffle 1100 1098 4 5 2 3
+            1091:   27(uint*) AccessChain 10(dti) 26
+            1092:     6(uint) Load 1091
+            1093:   27(uint*) AccessChain 10(dti) 26
+            1094:     6(uint) Load 1093
+            1095: 161(dvec4*) AccessChain 24(data) 25 1094 158
+            1096:   19(dvec4) Load 1095
+            1097:  179(dvec2) VectorShuffle 1096 1096 0 1
+            1098:  179(dvec2) GroupNonUniformQuadSwap 35 1097 358
+            1099: 161(dvec4*) AccessChain 24(data) 25 1092 158
+            1100:   19(dvec4) Load 1099
+            1101:   19(dvec4) VectorShuffle 1100 1098 4 5 2 3
                               Store 1099 1101
-            1102:     27(ptr) AccessChain 10(dti) 26
-            1103:      6(int) Load 1102
-            1104:     27(ptr) AccessChain 10(dti) 26
-            1105:      6(int) Load 1104
-            1106:    161(ptr) AccessChain 24(data) 25 1105 158
-            1107: 19(f64vec4) Load 1106
-            1108:191(f64vec3) VectorShuffle 1107 1107 0 1 2
-            1109:191(f64vec3) GroupNonUniformQuadSwap 35 1108 358
-            1110:    161(ptr) AccessChain 24(data) 25 1103 158
-            1111: 19(f64vec4) Load 1110
-            1112: 19(f64vec4) VectorShuffle 1111 1109 4 5 6 3
+            1102:   27(uint*) AccessChain 10(dti) 26
+            1103:     6(uint) Load 1102
+            1104:   27(uint*) AccessChain 10(dti) 26
+            1105:     6(uint) Load 1104
+            1106: 161(dvec4*) AccessChain 24(data) 25 1105 158
+            1107:   19(dvec4) Load 1106
+            1108:  191(dvec3) VectorShuffle 1107 1107 0 1 2
+            1109:  191(dvec3) GroupNonUniformQuadSwap 35 1108 358
+            1110: 161(dvec4*) AccessChain 24(data) 25 1103 158
+            1111:   19(dvec4) Load 1110
+            1112:   19(dvec4) VectorShuffle 1111 1109 4 5 6 3
                               Store 1110 1112
                               Return
                               FunctionEnd

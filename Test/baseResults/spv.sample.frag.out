@@ -17,16 +17,16 @@ spv.sample.frag
                               Decorate 11(samp) Sample
                               Decorate 11(samp) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Output 7(fvec4)
-        9(color):      8(ptr) Variable Output
-              10:             TypePointer Input 7(fvec4)
-        11(samp):     10(ptr) Variable Input
-         4(main):           2 Function None 3
+               8:             TypePointer Output 7(vec4)
+        9(color):    8(vec4*) Variable Output
+              10:             TypePointer Input 7(vec4)
+        11(samp):   10(vec4*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-              12:    7(fvec4) Load 11(samp)
+              12:     7(vec4) Load 11(samp)
                               Store 9(color) 12
                               Return
                               FunctionEnd

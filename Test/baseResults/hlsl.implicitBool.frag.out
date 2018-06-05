@@ -362,22 +362,22 @@ gl_FragCoord origin is upper left
                               Decorate 18 DescriptorSet 0
                               Decorate 137(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
-              11:             TypePointer Function 7(fvec4)
+               8:             TypeFunction 7(vec4)
+              11:             TypePointer Function 7(vec4)
               13:    6(float) Constant 1073741824
-              14:    7(fvec4) ConstantComposite 13 13 13 13
+              14:     7(vec4) ConstantComposite 13 13 13 13
               15:             TypeInt 32 1
      16($Global):             TypeStruct 6(float) 15(int) 6(float) 15(int)
               17:             TypePointer Uniform 16($Global)
-              18:     17(ptr) Variable Uniform
+              18:17($Global*) Variable Uniform
               19:     15(int) Constant 1
               20:             TypePointer Uniform 15(int)
               23:             TypeBool
               24:             TypeInt 32 0
-              25:     24(int) Constant 0
+              25:    24(uint) Constant 0
               30:    6(float) Constant 1065353216
               34:     15(int) Constant 0
               35:             TypePointer Uniform 6(float)
@@ -391,85 +391,85 @@ gl_FragCoord origin is upper left
               99:             TypePointer Function 15(int)
              124:    6(float) Constant 1088421888
              125:    6(float) Constant 1090519040
-             136:             TypePointer Output 7(fvec4)
-137(@entryPointOutput):    136(ptr) Variable Output
-         4(main):           2 Function None 3
+             136:             TypePointer Output 7(vec4)
+137(@entryPointOutput):  136(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-             138:    7(fvec4) FunctionCall 9(@main()
+             138:     7(vec4) FunctionCall 9(@main()
                               Store 137(@entryPointOutput) 138
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-           12(a):     11(ptr) Variable Function
-           87(f):     86(ptr) Variable Function
-          100(i):     99(ptr) Variable Function
-          120(g):     86(ptr) Variable Function
+           12(a):   11(vec4*) Variable Function
+           87(f):  86(float*) Variable Function
+          100(i):    99(int*) Variable Function
+          120(g):  86(float*) Variable Function
                               Store 12(a) 14
-              21:     20(ptr) AccessChain 18 19
+              21:    20(int*) AccessChain 18 19
               22:     15(int) Load 21
               26:    23(bool) INotEqual 22 25
                               SelectionMerge 28 None
                               BranchConditional 26 27 28
               27:               Label
-              29:    7(fvec4)   Load 12(a)
-              31:    7(fvec4)   CompositeConstruct 30 30 30 30
-              32:    7(fvec4)   FAdd 29 31
+              29:     7(vec4)   Load 12(a)
+              31:     7(vec4)   CompositeConstruct 30 30 30 30
+              32:     7(vec4)   FAdd 29 31
                                 ReturnValue 32
               28:             Label
-              36:     35(ptr) AccessChain 18 34
+              36:  35(float*) AccessChain 18 34
               37:    6(float) Load 36
               39:    23(bool) FOrdNotEqual 37 38
                               SelectionMerge 41 None
                               BranchConditional 39 40 41
               40:               Label
-              42:    7(fvec4)   Load 12(a)
-              43:    7(fvec4)   CompositeConstruct 13 13 13 13
-              44:    7(fvec4)   FAdd 42 43
+              42:     7(vec4)   Load 12(a)
+              43:     7(vec4)   CompositeConstruct 13 13 13 13
+              44:     7(vec4)   FAdd 42 43
                                 ReturnValue 44
               41:             Label
-              47:     35(ptr) AccessChain 18 46
+              47:  35(float*) AccessChain 18 46
               48:    6(float) Load 47
               49:    23(bool) FOrdNotEqual 48 38
                               SelectionMerge 51 None
                               BranchConditional 49 50 51
               50:               Label
-              52:    7(fvec4)   Load 12(a)
-              54:    7(fvec4)   CompositeConstruct 53 53 53 53
-              55:    7(fvec4)   FAdd 52 54
+              52:     7(vec4)   Load 12(a)
+              54:     7(vec4)   CompositeConstruct 53 53 53 53
+              55:     7(vec4)   FAdd 52 54
                                 ReturnValue 55
               51:             Label
-              58:     20(ptr) AccessChain 18 57
+              58:    20(int*) AccessChain 18 57
               59:     15(int) Load 58
               60:    23(bool) INotEqual 59 25
                               SelectionMerge 62 None
                               BranchConditional 60 61 62
               61:               Label
-              63:    7(fvec4)   Load 12(a)
-              65:    7(fvec4)   CompositeConstruct 64 64 64 64
-              66:    7(fvec4)   FAdd 63 65
+              63:     7(vec4)   Load 12(a)
+              65:     7(vec4)   CompositeConstruct 64 64 64 64
+              66:     7(vec4)   FAdd 63 65
                                 ReturnValue 66
               62:             Label
-              68:     20(ptr) AccessChain 18 19
+              68:    20(int*) AccessChain 18 19
               69:     15(int) Load 68
               70:    23(bool) INotEqual 69 25
-              71:     35(ptr) AccessChain 18 34
+              71:  35(float*) AccessChain 18 34
               72:    6(float) Load 71
               73:    23(bool) FOrdNotEqual 72 38
               74:    23(bool) LogicalAnd 70 73
-              75:     35(ptr) AccessChain 18 46
+              75:  35(float*) AccessChain 18 46
               76:    6(float) Load 75
               77:    23(bool) FOrdNotEqual 76 38
               78:    23(bool) LogicalOr 74 77
                               SelectionMerge 80 None
                               BranchConditional 78 79 80
               79:               Label
-              81:    7(fvec4)   Load 12(a)
-              83:    7(fvec4)   CompositeConstruct 82 82 82 82
-              84:    7(fvec4)   FAdd 81 83
+              81:     7(vec4)   Load 12(a)
+              83:     7(vec4)   CompositeConstruct 82 82 82 82
+              84:     7(vec4)   FAdd 81 83
                                 ReturnValue 84
               80:             Label
-              88:     35(ptr) AccessChain 18 34
+              88:  35(float*) AccessChain 18 34
               89:    6(float) Load 88
                               Store 87(f) 89
                               Branch 90
@@ -488,7 +488,7 @@ gl_FragCoord origin is upper left
               93:               Label
                                 Branch 90
               92:             Label
-             101:     20(ptr) AccessChain 18 19
+             101:    20(int*) AccessChain 18 19
              102:     15(int) Load 101
                               Store 100(i) 102
                               Branch 103
@@ -521,18 +521,18 @@ gl_FragCoord origin is upper left
              114:               Label
                                 Branch 111
              113:             Label
-             121:     35(ptr) AccessChain 18 34
+             121:  35(float*) AccessChain 18 34
              122:    6(float) Load 121
              123:    23(bool) FOrdNotEqual 122 38
              126:    6(float) Select 123 124 125
                               Store 120(g) 126
              127:    6(float) Load 120(g)
-             128:    7(fvec4) Load 12(a)
-             129:    7(fvec4) CompositeConstruct 127 127 127 127
-             130:    7(fvec4) FAdd 128 129
+             128:     7(vec4) Load 12(a)
+             129:     7(vec4) CompositeConstruct 127 127 127 127
+             130:     7(vec4) FAdd 128 129
                               Store 12(a) 130
-             131:    7(fvec4) Load 12(a)
-             132:    7(fvec4) CompositeConstruct 30 30 30 30
-             133:    7(fvec4) FSub 131 132
+             131:     7(vec4) Load 12(a)
+             132:     7(vec4) CompositeConstruct 30 30 30 30
+             133:     7(vec4) FSub 131 132
                               ReturnValue 133
                               FunctionEnd

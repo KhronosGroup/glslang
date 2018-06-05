@@ -395,21 +395,21 @@ gl_FragCoord origin is upper left
                               Name 109  "@entryPointOutput.color"
                               Decorate 109(@entryPointOutput.color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
-   10(PS_OUTPUT):             TypeStruct 9(fvec4)
+   10(PS_OUTPUT):             TypeStruct 9(vec4)
               11:             TypeFunction 10(PS_OUTPUT)
               14:             TypeVector 8(float) 2
-    15(mystruct):             TypeStruct 14(fvec2)
+    15(mystruct):             TypeStruct 14(vec2)
               16:             TypePointer Function 15(mystruct)
               18:    8(float) Constant 1065353216
               19:    8(float) Constant 1073741824
-              20:   14(fvec2) ConstantComposite 18 19
+              20:    14(vec2) ConstantComposite 18 19
               21:15(mystruct) ConstantComposite 20
               23:    8(float) Constant 1077936128
               24:    8(float) Constant 1082130432
-              25:   14(fvec2) ConstantComposite 23 24
+              25:    14(vec2) ConstantComposite 23 24
               26:15(mystruct) ConstantComposite 25
               27:             TypePointer Function 8(float)
               29:    8(float) Constant 1088421888
@@ -422,47 +422,47 @@ gl_FragCoord origin is upper left
               38:    8(float) Constant 0
               39:             TypeVector 8(float) 3
               40:             TypeInt 32 0
-              41:     40(int) Constant 8
-              42:             TypeArray 39(fvec3) 41
-              43:             TypePointer Function 42
+              41:    40(uint) Constant 8
+              42:             TypeArray 39(vec3) 41
+              43:             TypePointer Function 42(vec3[8])
               45:    8(float) Constant 1058262330
-              46:   39(fvec3) ConstantComposite 45 45 45
+              46:    39(vec3) ConstantComposite 45 45 45
               50:    8(float) Constant 3205745978
-              51:   39(fvec3) ConstantComposite 50 50 50
-              55:   39(fvec3) ConstantComposite 50 50 45
-              59:   39(fvec3) ConstantComposite 50 45 50
-              63:   39(fvec3) ConstantComposite 50 45 45
-              67:   39(fvec3) ConstantComposite 45 50 50
-              71:   39(fvec3) ConstantComposite 45 50 45
-              75:   39(fvec3) ConstantComposite 45 45 50
-         80(one):             TypeStruct 39(fvec3)
+              51:    39(vec3) ConstantComposite 50 50 50
+              55:    39(vec3) ConstantComposite 50 50 45
+              59:    39(vec3) ConstantComposite 50 45 50
+              63:    39(vec3) ConstantComposite 50 45 45
+              67:    39(vec3) ConstantComposite 45 50 50
+              71:    39(vec3) ConstantComposite 45 50 45
+              75:    39(vec3) ConstantComposite 45 45 50
+         80(one):             TypeStruct 39(vec3)
               81:             TypePointer Function 80(one)
-         87(two):             TypeStruct 39(fvec3) 39(fvec3)
+         87(two):             TypeStruct 39(vec3) 39(vec3)
               88:             TypePointer Function 87(two)
               98:             TypePointer Function 10(PS_OUTPUT)
              100:             TypeInt 32 1
              101:    100(int) Constant 0
-             102:    9(fvec4) ConstantComposite 18 18 18 18
-             103:             TypePointer Function 9(fvec4)
-             108:             TypePointer Output 9(fvec4)
-109(@entryPointOutput.color):    108(ptr) Variable Output
-         4(main):           2 Function None 3
+             102:     9(vec4) ConstantComposite 18 18 18 18
+             103:             TypePointer Function 9(vec4)
+             108:             TypePointer Output 9(vec4)
+109(@entryPointOutput.color):  108(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
              110:10(PS_OUTPUT) FunctionCall 12(@main()
-             111:    9(fvec4) CompositeExtract 110 0
+             111:     9(vec4) CompositeExtract 110 0
                               Store 109(@entryPointOutput.color) 111
                               Return
                               FunctionEnd
-       6(Test1():           2 Function None 3
+       6(Test1():     2(void) Function None 3
                7:             Label
-       17(test1):     16(ptr) Variable Function
-       22(test2):     16(ptr) Variable Function
-       28(test4):     27(ptr) Variable Function
-       32(test5):     31(ptr) Variable Function
-           37(n):     27(ptr) Variable Function
-           44(a):     43(ptr) Variable Function
- 82(oneNonConst):     81(ptr) Variable Function
- 89(twoNonConst):     88(ptr) Variable Function
+       17(test1):16(mystruct*) Variable Function
+       22(test2):16(mystruct*) Variable Function
+       28(test4):  27(float*) Variable Function
+       32(test5):31(mystruct2*) Variable Function
+           37(n):  27(float*) Variable Function
+           44(a):43(vec3[8]*) Variable Function
+ 82(oneNonConst):    81(one*) Variable Function
+ 89(twoNonConst):    88(two*) Variable Function
                               Store 17(test1) 21
                               Store 22(test2) 26
                               Store 28(test4) 29
@@ -471,60 +471,60 @@ gl_FragCoord origin is upper left
               47:    8(float) Load 37(n)
               48:    8(float) FAdd 47 18
                               Store 37(n) 48
-              49:   39(fvec3) VectorTimesScalar 46 48
+              49:    39(vec3) VectorTimesScalar 46 48
               52:    8(float) Load 37(n)
               53:    8(float) FAdd 52 18
                               Store 37(n) 53
-              54:   39(fvec3) VectorTimesScalar 51 53
+              54:    39(vec3) VectorTimesScalar 51 53
               56:    8(float) Load 37(n)
               57:    8(float) FAdd 56 18
                               Store 37(n) 57
-              58:   39(fvec3) VectorTimesScalar 55 57
+              58:    39(vec3) VectorTimesScalar 55 57
               60:    8(float) Load 37(n)
               61:    8(float) FAdd 60 18
                               Store 37(n) 61
-              62:   39(fvec3) VectorTimesScalar 59 61
+              62:    39(vec3) VectorTimesScalar 59 61
               64:    8(float) Load 37(n)
               65:    8(float) FAdd 64 18
                               Store 37(n) 65
-              66:   39(fvec3) VectorTimesScalar 63 65
+              66:    39(vec3) VectorTimesScalar 63 65
               68:    8(float) Load 37(n)
               69:    8(float) FAdd 68 18
                               Store 37(n) 69
-              70:   39(fvec3) VectorTimesScalar 67 69
+              70:    39(vec3) VectorTimesScalar 67 69
               72:    8(float) Load 37(n)
               73:    8(float) FAdd 72 18
                               Store 37(n) 73
-              74:   39(fvec3) VectorTimesScalar 71 73
+              74:    39(vec3) VectorTimesScalar 71 73
               76:    8(float) Load 37(n)
               77:    8(float) FAdd 76 18
                               Store 37(n) 77
-              78:   39(fvec3) VectorTimesScalar 75 77
-              79:          42 CompositeConstruct 49 54 58 62 66 70 74 78
+              78:    39(vec3) VectorTimesScalar 75 77
+              79: 42(vec3[8]) CompositeConstruct 49 54 58 62 66 70 74 78
                               Store 44(a) 79
               83:    8(float) Load 37(n)
               84:    8(float) FAdd 83 18
                               Store 37(n) 84
-              85:   39(fvec3) VectorTimesScalar 63 84
+              85:    39(vec3) VectorTimesScalar 63 84
               86:     80(one) CompositeConstruct 85
                               Store 82(oneNonConst) 86
               90:    8(float) Load 37(n)
               91:    8(float) FAdd 90 18
                               Store 37(n) 91
-              92:   39(fvec3) VectorTimesScalar 63 91
+              92:    39(vec3) VectorTimesScalar 63 91
               93:    8(float) Load 37(n)
               94:    8(float) FAdd 93 18
                               Store 37(n) 94
-              95:   39(fvec3) VectorTimesScalar 63 94
+              95:    39(vec3) VectorTimesScalar 63 94
               96:     87(two) CompositeConstruct 92 95
                               Store 89(twoNonConst) 96
                               Return
                               FunctionEnd
       12(@main():10(PS_OUTPUT) Function None 11
               13:             Label
-   99(ps_output):     98(ptr) Variable Function
-              97:           2 FunctionCall 6(Test1()
-             104:    103(ptr) AccessChain 99(ps_output) 101
+   99(ps_output):98(PS_OUTPUT*) Variable Function
+              97:     2(void) FunctionCall 6(Test1()
+             104:  103(vec4*) AccessChain 99(ps_output) 101
                               Store 104 102
              105:10(PS_OUTPUT) Load 99(ps_output)
                               ReturnValue 105

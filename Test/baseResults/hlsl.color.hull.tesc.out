@@ -420,152 +420,152 @@ triangle order = cw
                               Decorate 123(@patchConstantOutput.inside) Patch
                               Decorate 123(@patchConstantOutput.inside) BuiltIn TessLevelInner
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 3
                8:             TypeVector 6(float) 4
-9(HullInputType):             TypeStruct 7(fvec3) 8(fvec4)
+9(HullInputType):             TypeStruct 7(vec3) 8(vec4)
               10:             TypeInt 32 0
-              11:     10(int) Constant 3
+              11:    10(uint) Constant 3
               12:             TypeArray 9(HullInputType) 11
-              13:             TypePointer Function 12
-              14:             TypePointer Function 10(int)
+              13:             TypePointer Function 12(HullInputType[3])
+              14:             TypePointer Function 10(uint)
               15:             TypeArray 6(float) 11
-16(ConstantOutputType):             TypeStruct 15 6(float)
-              17:             TypeFunction 16(ConstantOutputType) 13(ptr) 14(ptr)
-22(HullOutputType):             TypeStruct 7(fvec3) 8(fvec4)
-              23:             TypeFunction 22(HullOutputType) 13(ptr) 14(ptr) 14(ptr)
+16(ConstantOutputType):             TypeStruct 15(float[3]) 6(float)
+              17:             TypeFunction 16(ConstantOutputType) 13(HullInputType[3]*) 14(uint*)
+22(HullOutputType):             TypeStruct 7(vec3) 8(vec4)
+              23:             TypeFunction 22(HullOutputType) 13(HullInputType[3]*) 14(uint*) 14(uint*)
               29:             TypePointer Function 16(ConstantOutputType)
               31:             TypeInt 32 1
               32:     31(int) Constant 0
-33(TessellationBuffer):             TypeStruct 6(float) 7(fvec3)
+33(TessellationBuffer):             TypeStruct 6(float) 7(vec3)
               34:             TypePointer Uniform 33(TessellationBuffer)
-              35:     34(ptr) Variable Uniform
+              35:34(TessellationBuffer*) Variable Uniform
               36:             TypePointer Uniform 6(float)
               39:             TypePointer Function 6(float)
               41:     31(int) Constant 1
               45:     31(int) Constant 2
               55:             TypePointer Function 22(HullOutputType)
-              58:             TypePointer Function 7(fvec3)
-              63:             TypePointer Function 8(fvec4)
-              71:             TypePointer Input 12
-       72(patch):     71(ptr) Variable Input
-              75:             TypePointer Input 10(int)
-     76(pointId):     75(ptr) Variable Input
-     79(patchId):     75(ptr) Variable Input
+              58:             TypePointer Function 7(vec3)
+              63:             TypePointer Function 8(vec4)
+              71:             TypePointer Input 12(HullInputType[3])
+       72(patch):71(HullInputType[3]*) Variable Input
+              75:             TypePointer Input 10(uint)
+     76(pointId):   75(uint*) Variable Input
+     79(patchId):   75(uint*) Variable Input
               81:             TypeArray 22(HullOutputType) 11
-              82:             TypePointer Output 81
-83(@entryPointOutput):     82(ptr) Variable Output
+              82:             TypePointer Output 81(HullOutputType[3])
+83(@entryPointOutput):82(HullOutputType[3]*) Variable Output
               92:             TypePointer Output 22(HullOutputType)
-              94:     10(int) Constant 2
-              95:     10(int) Constant 4
-              96:     10(int) Constant 0
+              94:    10(uint) Constant 2
+              95:    10(uint) Constant 4
+              96:    10(uint) Constant 0
               98:             TypeBool
              108:             TypeArray 6(float) 95
-             109:             TypePointer Output 108
-110(@patchConstantOutput.edges):    109(ptr) Variable Output
+             109:             TypePointer Output 108(float[4])
+110(@patchConstantOutput.edges):109(float[4]*) Variable Output
              113:             TypePointer Output 6(float)
              121:             TypeArray 6(float) 94
-             122:             TypePointer Output 121
-123(@patchConstantOutput.inside):    122(ptr) Variable Output
-         4(main):           2 Function None 3
+             122:             TypePointer Output 121(float[2])
+123(@patchConstantOutput.inside):122(float[2]*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-       70(patch):     13(ptr) Variable Function
-     74(pointId):     14(ptr) Variable Function
-     78(patchId):     14(ptr) Variable Function
-       85(param):     13(ptr) Variable Function
-       87(param):     14(ptr) Variable Function
-       89(param):     14(ptr) Variable Function
-102(@patchConstantResult):     29(ptr) Variable Function
-      103(param):     13(ptr) Variable Function
-      105(param):     14(ptr) Variable Function
-              73:          12 Load 72(patch)
+       70(patch):13(HullInputType[3]*) Variable Function
+     74(pointId):   14(uint*) Variable Function
+     78(patchId):   14(uint*) Variable Function
+       85(param):13(HullInputType[3]*) Variable Function
+       87(param):   14(uint*) Variable Function
+       89(param):   14(uint*) Variable Function
+102(@patchConstantResult):29(ConstantOutputType*) Variable Function
+      103(param):13(HullInputType[3]*) Variable Function
+      105(param):   14(uint*) Variable Function
+              73:12(HullInputType[3]) Load 72(patch)
                               Store 70(patch) 73
-              77:     10(int) Load 76(pointId)
+              77:    10(uint) Load 76(pointId)
                               Store 74(pointId) 77
-              80:     10(int) Load 79(patchId)
+              80:    10(uint) Load 79(patchId)
                               Store 78(patchId) 80
-              84:     10(int) Load 76(pointId)
-              86:          12 Load 70(patch)
+              84:    10(uint) Load 76(pointId)
+              86:12(HullInputType[3]) Load 70(patch)
                               Store 85(param) 86
-              88:     10(int) Load 74(pointId)
+              88:    10(uint) Load 74(pointId)
                               Store 87(param) 88
-              90:     10(int) Load 78(patchId)
+              90:    10(uint) Load 78(patchId)
                               Store 89(param) 90
               91:22(HullOutputType) FunctionCall 27(@main(struct-HullInputType-vf3-vf41[3];u1;u1;) 85(param) 87(param) 89(param)
-              93:     92(ptr) AccessChain 83(@entryPointOutput) 84
+              93:92(HullOutputType*) AccessChain 83(@entryPointOutput) 84
                               Store 93 91
                               ControlBarrier 94 95 96
-              97:     10(int) Load 76(pointId)
+              97:    10(uint) Load 76(pointId)
               99:    98(bool) IEqual 97 32
                               SelectionMerge 101 None
                               BranchConditional 99 100 101
              100:               Label
-             104:          12   Load 70(patch)
+             104:12(HullInputType[3])   Load 70(patch)
                                 Store 103(param) 104
-             106:     10(int)   Load 79(patchId)
+             106:    10(uint)   Load 79(patchId)
                                 Store 105(param) 106
              107:16(ConstantOutputType)   FunctionCall 20(ColorPatchConstantFunction(struct-HullInputType-vf3-vf41[3];u1;) 103(param) 105(param)
                                 Store 102(@patchConstantResult) 107
-             111:     39(ptr)   AccessChain 102(@patchConstantResult) 32 32
+             111:  39(float*)   AccessChain 102(@patchConstantResult) 32 32
              112:    6(float)   Load 111
-             114:    113(ptr)   AccessChain 110(@patchConstantOutput.edges) 32
+             114: 113(float*)   AccessChain 110(@patchConstantOutput.edges) 32
                                 Store 114 112
-             115:     39(ptr)   AccessChain 102(@patchConstantResult) 32 41
+             115:  39(float*)   AccessChain 102(@patchConstantResult) 32 41
              116:    6(float)   Load 115
-             117:    113(ptr)   AccessChain 110(@patchConstantOutput.edges) 41
+             117: 113(float*)   AccessChain 110(@patchConstantOutput.edges) 41
                                 Store 117 116
-             118:     39(ptr)   AccessChain 102(@patchConstantResult) 32 45
+             118:  39(float*)   AccessChain 102(@patchConstantResult) 32 45
              119:    6(float)   Load 118
-             120:    113(ptr)   AccessChain 110(@patchConstantOutput.edges) 45
+             120: 113(float*)   AccessChain 110(@patchConstantOutput.edges) 45
                                 Store 120 119
-             124:     39(ptr)   AccessChain 102(@patchConstantResult) 41
+             124:  39(float*)   AccessChain 102(@patchConstantResult) 41
              125:    6(float)   Load 124
-             126:    113(ptr)   AccessChain 123(@patchConstantOutput.inside) 32
+             126: 113(float*)   AccessChain 123(@patchConstantOutput.inside) 32
                                 Store 126 125
                                 Branch 101
              101:             Label
                               Return
                               FunctionEnd
 20(ColorPatchConstantFunction(struct-HullInputType-vf3-vf41[3];u1;):16(ConstantOutputType) Function None 17
-  18(inputPatch):     13(ptr) FunctionParameter
-     19(patchId):     14(ptr) FunctionParameter
+  18(inputPatch):13(HullInputType[3]*) FunctionParameter
+     19(patchId):   14(uint*) FunctionParameter
               21:             Label
-      30(output):     29(ptr) Variable Function
-              37:     36(ptr) AccessChain 35 32
+      30(output):29(ConstantOutputType*) Variable Function
+              37:  36(float*) AccessChain 35 32
               38:    6(float) Load 37
-              40:     39(ptr) AccessChain 30(output) 32 32
+              40:  39(float*) AccessChain 30(output) 32 32
                               Store 40 38
-              42:     36(ptr) AccessChain 35 32
+              42:  36(float*) AccessChain 35 32
               43:    6(float) Load 42
-              44:     39(ptr) AccessChain 30(output) 32 41
+              44:  39(float*) AccessChain 30(output) 32 41
                               Store 44 43
-              46:     36(ptr) AccessChain 35 32
+              46:  36(float*) AccessChain 35 32
               47:    6(float) Load 46
-              48:     39(ptr) AccessChain 30(output) 32 45
+              48:  39(float*) AccessChain 30(output) 32 45
                               Store 48 47
-              49:     36(ptr) AccessChain 35 32
+              49:  36(float*) AccessChain 35 32
               50:    6(float) Load 49
-              51:     39(ptr) AccessChain 30(output) 41
+              51:  39(float*) AccessChain 30(output) 41
                               Store 51 50
               52:16(ConstantOutputType) Load 30(output)
                               ReturnValue 52
                               FunctionEnd
 27(@main(struct-HullInputType-vf3-vf41[3];u1;u1;):22(HullOutputType) Function None 23
-       24(patch):     13(ptr) FunctionParameter
-     25(pointId):     14(ptr) FunctionParameter
-     26(patchId):     14(ptr) FunctionParameter
+       24(patch):13(HullInputType[3]*) FunctionParameter
+     25(pointId):   14(uint*) FunctionParameter
+     26(patchId):   14(uint*) FunctionParameter
               28:             Label
-      56(output):     55(ptr) Variable Function
-              57:     10(int) Load 25(pointId)
-              59:     58(ptr) AccessChain 24(patch) 57 32
-              60:    7(fvec3) Load 59
-              61:     58(ptr) AccessChain 56(output) 32
+      56(output):55(HullOutputType*) Variable Function
+              57:    10(uint) Load 25(pointId)
+              59:   58(vec3*) AccessChain 24(patch) 57 32
+              60:     7(vec3) Load 59
+              61:   58(vec3*) AccessChain 56(output) 32
                               Store 61 60
-              62:     10(int) Load 25(pointId)
-              64:     63(ptr) AccessChain 24(patch) 62 41
-              65:    8(fvec4) Load 64
-              66:     63(ptr) AccessChain 56(output) 41
+              62:    10(uint) Load 25(pointId)
+              64:   63(vec4*) AccessChain 24(patch) 62 41
+              65:     8(vec4) Load 64
+              66:   63(vec4*) AccessChain 56(output) 41
                               Store 66 65
               67:22(HullOutputType) Load 56(output)
                               ReturnValue 67

@@ -268,24 +268,24 @@ gl_FragCoord origin is upper left
                               Name 48  "@entryPointOutput"
                               Decorate 48(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypeBool
               12:    11(bool) ConstantFalse
               15:    6(float) Constant 0
-              16:    7(fvec4) ConstantComposite 15 15 15 15
+              16:     7(vec4) ConstantComposite 15 15 15 15
               21:    11(bool) ConstantTrue
-              47:             TypePointer Output 7(fvec4)
-48(@entryPointOutput):     47(ptr) Variable Output
-         4(main):           2 Function None 3
+              47:             TypePointer Output 7(vec4)
+48(@entryPointOutput):   47(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              49:    7(fvec4) FunctionCall 9(@main()
+              49:     7(vec4) FunctionCall 9(@main()
                               Store 48(@entryPointOutput) 49
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
                               SelectionMerge 14 None
                               BranchConditional 12 13 14
@@ -337,6 +337,6 @@ gl_FragCoord origin is upper left
               43:               Label
                                 ReturnValue 16
               44:             Label
-              46:    7(fvec4) Undef
+              46:     7(vec4) Undef
                               ReturnValue 46
                               FunctionEnd

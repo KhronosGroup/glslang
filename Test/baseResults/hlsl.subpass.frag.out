@@ -546,11 +546,11 @@ gl_FragCoord origin is upper left
                               Decorate 194(subpass_2) InputAttachmentIndex 7
                               Decorate 202(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
-              11:             TypePointer Function 7(fvec4)
+               8:             TypeFunction 7(vec4)
+              11:             TypePointer Function 7(vec4)
               13:             TypeImage 6(float) SubpassData nonsampled format:Unknown
               14:             TypePointer UniformConstant 13
   15(subpass_f4):     14(ptr) Variable UniformConstant
@@ -564,9 +564,9 @@ gl_FragCoord origin is upper left
               26:             TypePointer UniformConstant 25
   27(subpass_i4):     26(ptr) Variable UniformConstant
               30:             TypeInt 32 0
-              31:             TypeVector 30(int) 4
-              32:             TypePointer Function 31(ivec4)
-              34:             TypeImage 30(int) SubpassData nonsampled format:Unknown
+              31:             TypeVector 30(uint) 4
+              32:             TypePointer Function 31(uvec4)
+              34:             TypeImage 30(uint) SubpassData nonsampled format:Unknown
               35:             TypePointer UniformConstant 34
   36(subpass_u4):     35(ptr) Variable UniformConstant
               40:             TypeImage 6(float) SubpassData multi-sampled nonsampled format:Unknown
@@ -576,28 +576,28 @@ gl_FragCoord origin is upper left
               47:             TypeImage 17(int) SubpassData multi-sampled nonsampled format:Unknown
               48:             TypePointer UniformConstant 47
 49(subpass_ms_i4):     48(ptr) Variable UniformConstant
-              53:             TypeImage 30(int) SubpassData multi-sampled nonsampled format:Unknown
+              53:             TypeImage 30(uint) SubpassData multi-sampled nonsampled format:Unknown
               54:             TypePointer UniformConstant 53
 55(subpass_ms_u4):     54(ptr) Variable UniformConstant
               58:             TypeVector 6(float) 3
-              59:             TypePointer Function 58(fvec3)
+              59:             TypePointer Function 58(vec3)
   61(subpass_f3):     14(ptr) Variable UniformConstant
               68:             TypeVector 17(int) 3
               69:             TypePointer Function 68(ivec3)
   71(subpass_i3):     26(ptr) Variable UniformConstant
-              78:             TypeVector 30(int) 3
-              79:             TypePointer Function 78(ivec3)
+              78:             TypeVector 30(uint) 3
+              79:             TypePointer Function 78(uvec3)
   81(subpass_u3):     35(ptr) Variable UniformConstant
 89(subpass_ms_f3):     41(ptr) Variable UniformConstant
 97(subpass_ms_i3):     48(ptr) Variable UniformConstant
 105(subpass_ms_u3):     54(ptr) Variable UniformConstant
              112:             TypeVector 6(float) 2
-             113:             TypePointer Function 112(fvec2)
+             113:             TypePointer Function 112(vec2)
  115(subpass_f2):     14(ptr) Variable UniformConstant
              121:             TypePointer Function 19(ivec2)
  123(subpass_i2):     26(ptr) Variable UniformConstant
-             129:             TypeVector 30(int) 2
-             130:             TypePointer Function 129(ivec2)
+             129:             TypeVector 30(uint) 2
+             130:             TypePointer Function 129(uvec2)
  132(subpass_u2):     35(ptr) Variable UniformConstant
 139(subpass_ms_f2):     41(ptr) Variable UniformConstant
              141:     17(int) Constant 2
@@ -607,73 +607,73 @@ gl_FragCoord origin is upper left
   162(subpass_f):     14(ptr) Variable UniformConstant
              166:             TypePointer Function 17(int)
   168(subpass_i):     26(ptr) Variable UniformConstant
-             172:             TypePointer Function 30(int)
+             172:             TypePointer Function 30(uint)
   174(subpass_u):     35(ptr) Variable UniformConstant
 179(subpass_ms_f):     41(ptr) Variable UniformConstant
 184(subpass_ms_i):     48(ptr) Variable UniformConstant
 189(subpass_ms_u):     54(ptr) Variable UniformConstant
   194(subpass_2):     14(ptr) Variable UniformConstant
              197:    6(float) Constant 0
-             198:    7(fvec4) ConstantComposite 197 197 197 197
-             201:             TypePointer Output 7(fvec4)
-202(@entryPointOutput):    201(ptr) Variable Output
-         4(main):           2 Function None 3
+             198:     7(vec4) ConstantComposite 197 197 197 197
+             201:             TypePointer Output 7(vec4)
+202(@entryPointOutput):  201(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-             203:    7(fvec4) FunctionCall 9(@main()
+             203:     7(vec4) FunctionCall 9(@main()
                               Store 202(@entryPointOutput) 203
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-    12(result00):     11(ptr) Variable Function
-    24(result01):     23(ptr) Variable Function
-    33(result02):     32(ptr) Variable Function
-    39(result10):     11(ptr) Variable Function
-    46(result11):     23(ptr) Variable Function
-    52(result12):     32(ptr) Variable Function
-    60(result20):     59(ptr) Variable Function
-    70(result21):     69(ptr) Variable Function
-    80(result22):     79(ptr) Variable Function
-    88(result30):     59(ptr) Variable Function
-    96(result31):     69(ptr) Variable Function
-   104(result32):     79(ptr) Variable Function
-   114(result40):    113(ptr) Variable Function
-   122(result41):    121(ptr) Variable Function
-   131(result42):    130(ptr) Variable Function
-   138(result50):    113(ptr) Variable Function
-   146(result51):    121(ptr) Variable Function
-   153(result52):    130(ptr) Variable Function
-   161(result60):    160(ptr) Variable Function
-   167(result61):    166(ptr) Variable Function
-   173(result62):    172(ptr) Variable Function
-   178(result70):    160(ptr) Variable Function
-   183(result71):    166(ptr) Variable Function
-   188(result72):    172(ptr) Variable Function
-   193(result73):     11(ptr) Variable Function
+    12(result00):   11(vec4*) Variable Function
+    24(result01):  23(ivec4*) Variable Function
+    33(result02):  32(uvec4*) Variable Function
+    39(result10):   11(vec4*) Variable Function
+    46(result11):  23(ivec4*) Variable Function
+    52(result12):  32(uvec4*) Variable Function
+    60(result20):   59(vec3*) Variable Function
+    70(result21):  69(ivec3*) Variable Function
+    80(result22):  79(uvec3*) Variable Function
+    88(result30):   59(vec3*) Variable Function
+    96(result31):  69(ivec3*) Variable Function
+   104(result32):  79(uvec3*) Variable Function
+   114(result40):  113(vec2*) Variable Function
+   122(result41): 121(ivec2*) Variable Function
+   131(result42): 130(uvec2*) Variable Function
+   138(result50):  113(vec2*) Variable Function
+   146(result51): 121(ivec2*) Variable Function
+   153(result52): 130(uvec2*) Variable Function
+   161(result60): 160(float*) Variable Function
+   167(result61):   166(int*) Variable Function
+   173(result62):  172(uint*) Variable Function
+   178(result70): 160(float*) Variable Function
+   183(result71):   166(int*) Variable Function
+   188(result72):  172(uint*) Variable Function
+   193(result73):   11(vec4*) Variable Function
               16:          13 Load 15(subpass_f4)
-              21:    7(fvec4) ImageRead 16 20
+              21:     7(vec4) ImageRead 16 20
                               Store 12(result00) 21
               28:          25 Load 27(subpass_i4)
               29:   22(ivec4) ImageRead 28 20
                               Store 24(result01) 29
               37:          34 Load 36(subpass_u4)
-              38:   31(ivec4) ImageRead 37 20
+              38:   31(uvec4) ImageRead 37 20
                               Store 33(result02) 38
               43:          40 Load 42(subpass_ms_f4)
-              45:    7(fvec4) ImageRead 43 20 Sample 44
+              45:     7(vec4) ImageRead 43 20 Sample 44
                               Store 39(result10) 45
               50:          47 Load 49(subpass_ms_i4)
               51:   22(ivec4) ImageRead 50 20 Sample 44
                               Store 46(result11) 51
               56:          53 Load 55(subpass_ms_u4)
-              57:   31(ivec4) ImageRead 56 20 Sample 44
+              57:   31(uvec4) ImageRead 56 20 Sample 44
                               Store 52(result12) 57
               62:          13 Load 61(subpass_f3)
-              63:    7(fvec4) ImageRead 62 20
+              63:     7(vec4) ImageRead 62 20
               64:    6(float) CompositeExtract 63 0
               65:    6(float) CompositeExtract 63 1
               66:    6(float) CompositeExtract 63 2
-              67:   58(fvec3) CompositeConstruct 64 65 66
+              67:    58(vec3) CompositeConstruct 64 65 66
                               Store 60(result20) 67
               72:          25 Load 71(subpass_i3)
               73:   22(ivec4) ImageRead 72 20
@@ -683,18 +683,18 @@ gl_FragCoord origin is upper left
               77:   68(ivec3) CompositeConstruct 74 75 76
                               Store 70(result21) 77
               82:          34 Load 81(subpass_u3)
-              83:   31(ivec4) ImageRead 82 20
-              84:     30(int) CompositeExtract 83 0
-              85:     30(int) CompositeExtract 83 1
-              86:     30(int) CompositeExtract 83 2
-              87:   78(ivec3) CompositeConstruct 84 85 86
+              83:   31(uvec4) ImageRead 82 20
+              84:    30(uint) CompositeExtract 83 0
+              85:    30(uint) CompositeExtract 83 1
+              86:    30(uint) CompositeExtract 83 2
+              87:   78(uvec3) CompositeConstruct 84 85 86
                               Store 80(result22) 87
               90:          40 Load 89(subpass_ms_f3)
-              91:    7(fvec4) ImageRead 90 20 Sample 44
+              91:     7(vec4) ImageRead 90 20 Sample 44
               92:    6(float) CompositeExtract 91 0
               93:    6(float) CompositeExtract 91 1
               94:    6(float) CompositeExtract 91 2
-              95:   58(fvec3) CompositeConstruct 92 93 94
+              95:    58(vec3) CompositeConstruct 92 93 94
                               Store 88(result30) 95
               98:          47 Load 97(subpass_ms_i3)
               99:   22(ivec4) ImageRead 98 20 Sample 44
@@ -704,17 +704,17 @@ gl_FragCoord origin is upper left
              103:   68(ivec3) CompositeConstruct 100 101 102
                               Store 96(result31) 103
              106:          53 Load 105(subpass_ms_u3)
-             107:   31(ivec4) ImageRead 106 20 Sample 44
-             108:     30(int) CompositeExtract 107 0
-             109:     30(int) CompositeExtract 107 1
-             110:     30(int) CompositeExtract 107 2
-             111:   78(ivec3) CompositeConstruct 108 109 110
+             107:   31(uvec4) ImageRead 106 20 Sample 44
+             108:    30(uint) CompositeExtract 107 0
+             109:    30(uint) CompositeExtract 107 1
+             110:    30(uint) CompositeExtract 107 2
+             111:   78(uvec3) CompositeConstruct 108 109 110
                               Store 104(result32) 111
              116:          13 Load 115(subpass_f2)
-             117:    7(fvec4) ImageRead 116 20
+             117:     7(vec4) ImageRead 116 20
              118:    6(float) CompositeExtract 117 0
              119:    6(float) CompositeExtract 117 1
-             120:  112(fvec2) CompositeConstruct 118 119
+             120:   112(vec2) CompositeConstruct 118 119
                               Store 114(result40) 120
              124:          25 Load 123(subpass_i2)
              125:   22(ivec4) ImageRead 124 20
@@ -723,16 +723,16 @@ gl_FragCoord origin is upper left
              128:   19(ivec2) CompositeConstruct 126 127
                               Store 122(result41) 128
              133:          34 Load 132(subpass_u2)
-             134:   31(ivec4) ImageRead 133 20
-             135:     30(int) CompositeExtract 134 0
-             136:     30(int) CompositeExtract 134 1
-             137:  129(ivec2) CompositeConstruct 135 136
+             134:   31(uvec4) ImageRead 133 20
+             135:    30(uint) CompositeExtract 134 0
+             136:    30(uint) CompositeExtract 134 1
+             137:  129(uvec2) CompositeConstruct 135 136
                               Store 131(result42) 137
              140:          40 Load 139(subpass_ms_f2)
-             142:    7(fvec4) ImageRead 140 20 Sample 141
+             142:     7(vec4) ImageRead 140 20 Sample 141
              143:    6(float) CompositeExtract 142 0
              144:    6(float) CompositeExtract 142 1
-             145:  112(fvec2) CompositeConstruct 143 144
+             145:   112(vec2) CompositeConstruct 143 144
                               Store 138(result50) 145
              148:          47 Load 147(subpass_ms_i2)
              149:   22(ivec4) ImageRead 148 20 Sample 141
@@ -741,13 +741,13 @@ gl_FragCoord origin is upper left
              152:   19(ivec2) CompositeConstruct 150 151
                               Store 146(result51) 152
              155:          53 Load 154(subpass_ms_u2)
-             156:   31(ivec4) ImageRead 155 20 Sample 141
-             157:     30(int) CompositeExtract 156 0
-             158:     30(int) CompositeExtract 156 1
-             159:  129(ivec2) CompositeConstruct 157 158
+             156:   31(uvec4) ImageRead 155 20 Sample 141
+             157:    30(uint) CompositeExtract 156 0
+             158:    30(uint) CompositeExtract 156 1
+             159:  129(uvec2) CompositeConstruct 157 158
                               Store 153(result52) 159
              163:          13 Load 162(subpass_f)
-             164:    7(fvec4) ImageRead 163 20
+             164:     7(vec4) ImageRead 163 20
              165:    6(float) CompositeExtract 164 0
                               Store 161(result60) 165
              169:          25 Load 168(subpass_i)
@@ -755,11 +755,11 @@ gl_FragCoord origin is upper left
              171:     17(int) CompositeExtract 170 0
                               Store 167(result61) 171
              175:          34 Load 174(subpass_u)
-             176:   31(ivec4) ImageRead 175 20
-             177:     30(int) CompositeExtract 176 0
+             176:   31(uvec4) ImageRead 175 20
+             177:    30(uint) CompositeExtract 176 0
                               Store 173(result62) 177
              180:          40 Load 179(subpass_ms_f)
-             181:    7(fvec4) ImageRead 180 20 Sample 141
+             181:     7(vec4) ImageRead 180 20 Sample 141
              182:    6(float) CompositeExtract 181 0
                               Store 178(result70) 182
              185:          47 Load 184(subpass_ms_i)
@@ -767,11 +767,11 @@ gl_FragCoord origin is upper left
              187:     17(int) CompositeExtract 186 0
                               Store 183(result71) 187
              190:          53 Load 189(subpass_ms_u)
-             191:   31(ivec4) ImageRead 190 20 Sample 141
-             192:     30(int) CompositeExtract 191 0
+             191:   31(uvec4) ImageRead 190 20 Sample 141
+             192:    30(uint) CompositeExtract 191 0
                               Store 188(result72) 192
              195:          13 Load 194(subpass_2)
-             196:    7(fvec4) ImageRead 195 20
+             196:     7(vec4) ImageRead 195 20
                               Store 193(result73) 196
                               ReturnValue 198
                               FunctionEnd

@@ -94,47 +94,47 @@ Shader version: 500
                               Decorate 34(Index) BuiltIn VertexIndex
                               Decorate 37(@entryPointOutput) BuiltIn Position
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypePointer Function 6(int)
+               7:             TypePointer Function 6(uint)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
-              10:             TypeFunction 9(fvec4) 7(ptr)
+              10:             TypeFunction 9(vec4) 7(uint*)
               17:             TypeImage 8(float) Buffer sampled format:Rgba32f
               18:             TypePointer UniformConstant 17
     19(Position):     18(ptr) Variable UniformConstant
               22:             TypeInt 32 1
-              33:             TypePointer Input 6(int)
-       34(Index):     33(ptr) Variable Input
-              36:             TypePointer Output 9(fvec4)
-37(@entryPointOutput):     36(ptr) Variable Output
-4(RealEntrypoint):           2 Function None 3
+              33:             TypePointer Input 6(uint)
+       34(Index):   33(uint*) Variable Input
+              36:             TypePointer Output 9(vec4)
+37(@entryPointOutput):   36(vec4*) Variable Output
+4(RealEntrypoint):     2(void) Function None 3
                5:             Label
-       32(Index):      7(ptr) Variable Function
-       38(param):      7(ptr) Variable Function
-              35:      6(int) Load 34(Index)
+       32(Index):    7(uint*) Variable Function
+       38(param):    7(uint*) Variable Function
+              35:     6(uint) Load 34(Index)
                               Store 32(Index) 35
-              39:      6(int) Load 32(Index)
+              39:     6(uint) Load 32(Index)
                               Store 38(param) 39
-              40:    9(fvec4) FunctionCall 15(@RealEntrypoint(u1;) 38(param)
+              40:     9(vec4) FunctionCall 15(@RealEntrypoint(u1;) 38(param)
                               Store 37(@entryPointOutput) 40
                               Return
                               FunctionEnd
-12(FakeEntrypoint(u1;):    9(fvec4) Function None 10
-       11(Index):      7(ptr) FunctionParameter
+12(FakeEntrypoint(u1;):     9(vec4) Function None 10
+       11(Index):    7(uint*) FunctionParameter
               13:             Label
               20:          17 Load 19(Position)
-              21:      6(int) Load 11(Index)
+              21:     6(uint) Load 11(Index)
               23:     22(int) Bitcast 21
-              24:    9(fvec4) ImageFetch 20 23
+              24:     9(vec4) ImageFetch 20 23
                               ReturnValue 24
                               FunctionEnd
-15(@RealEntrypoint(u1;):    9(fvec4) Function None 10
-       14(Index):      7(ptr) FunctionParameter
+15(@RealEntrypoint(u1;):     9(vec4) Function None 10
+       14(Index):    7(uint*) FunctionParameter
               16:             Label
-       27(param):      7(ptr) Variable Function
-              28:      6(int) Load 14(Index)
+       27(param):    7(uint*) Variable Function
+              28:     6(uint) Load 14(Index)
                               Store 27(param) 28
-              29:    9(fvec4) FunctionCall 12(FakeEntrypoint(u1;) 27(param)
+              29:     9(vec4) FunctionCall 12(FakeEntrypoint(u1;) 27(param)
                               ReturnValue 29
                               FunctionEnd

@@ -92,39 +92,39 @@ Shader version: 500
                               Decorate 13 DescriptorSet 0
                               Decorate 32(@entryPointOutput) BuiltIn Position
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
-     11($Global):             TypeStruct 7(fvec4)
+               8:             TypeFunction 7(vec4)
+     11($Global):             TypeStruct 7(vec4)
               12:             TypePointer Uniform 11($Global)
-              13:     12(ptr) Variable Uniform
+              13:12($Global*) Variable Uniform
               14:             TypeInt 32 1
               15:     14(int) Constant 0
-              16:             TypePointer Uniform 7(fvec4)
-              21:             TypePointer Function 7(fvec4)
+              16:             TypePointer Uniform 7(vec4)
+              21:             TypePointer Function 7(vec4)
               24:             TypeInt 32 0
-              25:     24(int) Constant 1
+              25:    24(uint) Constant 1
               26:             TypePointer Function 6(float)
-              31:             TypePointer Output 7(fvec4)
-32(@entryPointOutput):     31(ptr) Variable Output
-         4(main):           2 Function None 3
+              31:             TypePointer Output 7(vec4)
+32(@entryPointOutput):   31(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-   22(@position):     21(ptr) Variable Function
-              23:    7(fvec4) FunctionCall 9(@main()
+   22(@position):   21(vec4*) Variable Function
+              23:     7(vec4) FunctionCall 9(@main()
                               Store 22(@position) 23
-              27:     26(ptr) AccessChain 22(@position) 25
+              27:  26(float*) AccessChain 22(@position) 25
               28:    6(float) Load 27
               29:    6(float) FNegate 28
-              30:     26(ptr) AccessChain 22(@position) 25
+              30:  26(float*) AccessChain 22(@position) 25
                               Store 30 29
-              33:    7(fvec4) Load 22(@position)
+              33:     7(vec4) Load 22(@position)
                               Store 32(@entryPointOutput) 33
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-              17:     16(ptr) AccessChain 13 15
-              18:    7(fvec4) Load 17
+              17:   16(vec4*) AccessChain 13 15
+              18:     7(vec4) Load 17
                               ReturnValue 18
                               FunctionEnd

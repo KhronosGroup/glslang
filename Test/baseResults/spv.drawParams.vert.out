@@ -22,22 +22,22 @@ spv.drawParams.vert
                               Decorate 13(gl_BaseInstanceARB) BuiltIn BaseInstance
                               Decorate 16(gl_DrawIDARB) BuiltIn DrawIndex
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                9:             TypePointer Input 6(int)
-10(gl_BaseVertexARB):      9(ptr) Variable Input
-13(gl_BaseInstanceARB):      9(ptr) Variable Input
-16(gl_DrawIDARB):      9(ptr) Variable Input
+10(gl_BaseVertexARB):     9(int*) Variable Input
+13(gl_BaseInstanceARB):     9(int*) Variable Input
+16(gl_DrawIDARB):     9(int*) Variable Input
               18:             TypeFloat 32
               19:             TypeVector 18(float) 3
-              20:             TypePointer Output 19(fvec3)
-         21(pos):     20(ptr) Variable Output
-         4(main):           2 Function None 3
+              20:             TypePointer Output 19(vec3)
+         21(pos):   20(vec3*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-            8(a):      7(ptr) Variable Function
-           12(b):      7(ptr) Variable Function
-           15(c):      7(ptr) Variable Function
+            8(a):     7(int*) Variable Function
+           12(b):     7(int*) Variable Function
+           15(c):     7(int*) Variable Function
               11:      6(int) Load 10(gl_BaseVertexARB)
                               Store 8(a) 11
               14:      6(int) Load 13(gl_BaseInstanceARB)
@@ -50,7 +50,7 @@ spv.drawParams.vert
               25:   18(float) ConvertSToF 24
               26:      6(int) Load 15(c)
               27:   18(float) ConvertSToF 26
-              28:   19(fvec3) CompositeConstruct 23 25 27
+              28:    19(vec3) CompositeConstruct 23 25 27
                               Store 21(pos) 28
                               Return
                               FunctionEnd

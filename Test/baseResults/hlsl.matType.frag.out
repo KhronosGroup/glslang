@@ -72,31 +72,31 @@ gl_FragCoord origin is upper left
                               Decorate 27($Global) Block
                               Decorate 29 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 6(float) 7(ptr) 7(ptr)
+               8:             TypeFunction 6(float) 7(float*) 7(float*)
               16:             TypeVector 6(float) 1
-              17:             TypeMatrix 16(fvec) 1
-              18:             TypeMatrix 16(fvec) 4
+              17:             TypeMatrix 16(vec1) 1
+              18:             TypeMatrix 16(vec1) 4
               19:             TypeVector 6(float) 2
-              20:             TypeMatrix 19(fvec2) 1
+              20:             TypeMatrix 19(vec2) 1
               21:             TypeFloat 64
-              22:             TypeVector 21(float64_t) 3
-              23:             TypeMatrix 22(f64vec3) 2
+              22:             TypeVector 21(double) 3
+              23:             TypeMatrix 22(dvec3) 2
               24:             TypeInt 32 1
               25:             TypeVector 24(int) 4
               26:             TypeMatrix 25(ivec4) 4
-     27($Global):             TypeStruct 6(float) 17 18 20 23 26
+     27($Global):             TypeStruct 6(float) 17(mat1) 18(mat4x1) 20(mat1x2) 23(dmat2x3) 26(imat4)
               28:             TypePointer Uniform 27($Global)
-              29:     28(ptr) Variable Uniform
-4(PixelShaderFunction):           2 Function None 3
+              29:28($Global*) Variable Uniform
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd
 11(ShaderFunction(vf1;f1;):    6(float) Function None 8
-     9(inFloat1):      7(ptr) FunctionParameter
-    10(inScalar):      7(ptr) FunctionParameter
+     9(inFloat1):   7(float*) FunctionParameter
+    10(inScalar):   7(float*) FunctionParameter
               12:             Label
               13:    6(float) Load 9(inFloat1)
                               ReturnValue 13

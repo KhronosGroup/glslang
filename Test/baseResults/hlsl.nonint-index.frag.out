@@ -108,26 +108,26 @@ gl_FragCoord origin is upper left
                               Decorate 32(input) Location 0
                               Decorate 35(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 6(float) 7(ptr)
+               8:             TypeFunction 6(float) 7(float*)
               12:             TypeInt 32 0
-              13:     12(int) Constant 3
+              13:    12(uint) Constant 3
               14:             TypeArray 6(float) 13
               15:    6(float) Constant 1065353216
               16:    6(float) Constant 1073741824
               17:    6(float) Constant 1077936128
-              18:          14 ConstantComposite 15 16 17
-              21:             TypePointer Function 14
+              18:14(float[3]) ConstantComposite 15 16 17
+              21:             TypePointer Function 14(float[3])
               31:             TypePointer Input 6(float)
-       32(input):     31(ptr) Variable Input
+       32(input):  31(float*) Variable Input
               34:             TypePointer Output 6(float)
-35(@entryPointOutput):     34(ptr) Variable Output
-         4(main):           2 Function None 3
+35(@entryPointOutput):  34(float*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-       30(input):      7(ptr) Variable Function
-       36(param):      7(ptr) Variable Function
+       30(input):   7(float*) Variable Function
+       36(param):   7(float*) Variable Function
               33:    6(float) Load 32(input)
                               Store 30(input) 33
               37:    6(float) Load 30(input)
@@ -137,13 +137,13 @@ gl_FragCoord origin is upper left
                               Return
                               FunctionEnd
    10(@main(f1;):    6(float) Function None 8
-        9(input):      7(ptr) FunctionParameter
+        9(input):   7(float*) FunctionParameter
               11:             Label
-   22(indexable):     21(ptr) Variable Function
+   22(indexable):21(float[3]*) Variable Function
               19:    6(float) Load 9(input)
-              20:     12(int) ConvertFToU 19
+              20:    12(uint) ConvertFToU 19
                               Store 22(indexable) 18
-              23:      7(ptr) AccessChain 22(indexable) 20
+              23:   7(float*) AccessChain 22(indexable) 20
               24:    6(float) Load 23
               25:    6(float) FAdd 24 17
               26:    6(float) FAdd 25 16

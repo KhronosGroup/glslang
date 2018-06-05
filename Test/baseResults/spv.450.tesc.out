@@ -73,48 +73,48 @@ spv.450.tesc
                               MemberDecorate 42(bn) 2 Location 25
                               Decorate 42(bn) Block
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeInt 32 0
-               9:      8(int) Constant 1
+               9:     8(uint) Constant 1
               10:             TypeArray 6(float) 9
-11(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 10 10
-              12:      8(int) Constant 4
+11(gl_PerVertex):             TypeStruct 7(vec4) 6(float) 10(float[1]) 10(float[1])
+              12:     8(uint) Constant 4
               13:             TypeArray 11(gl_PerVertex) 12
-              14:             TypePointer Output 13
-      15(gl_out):     14(ptr) Variable Output
+              14:             TypePointer Output 13(gl_PerVertex[4])
+      15(gl_out):14(gl_PerVertex[4]*) Variable Output
               16:             TypeInt 32 1
               17:             TypePointer Input 16(int)
-18(gl_InvocationID):     17(ptr) Variable Input
+18(gl_InvocationID):    17(int*) Variable Input
               20:     16(int) Constant 0
-21(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 10 10
-              22:      8(int) Constant 32
+21(gl_PerVertex):             TypeStruct 7(vec4) 6(float) 10(float[1]) 10(float[1])
+              22:     8(uint) Constant 32
               23:             TypeArray 21(gl_PerVertex) 22
-              24:             TypePointer Input 23
-       25(gl_in):     24(ptr) Variable Input
-              27:             TypePointer Input 7(fvec4)
-              30:             TypePointer Output 7(fvec4)
-    32(patchOut):     30(ptr) Variable Output
+              24:             TypePointer Input 23(gl_PerVertex[32])
+       25(gl_in):24(gl_PerVertex[32]*) Variable Input
+              27:             TypePointer Input 7(vec4)
+              30:             TypePointer Output 7(vec4)
+    32(patchOut):   30(vec4*) Variable Output
            33(S):             TypeStruct 6(float) 6(float)
     34(TheBlock):             TypeStruct 6(float) 6(float) 33(S)
-              35:      8(int) Constant 2
+              35:     8(uint) Constant 2
               36:             TypeArray 34(TheBlock) 35
-              37:             TypePointer Output 36
-     38(tcBlock):     37(ptr) Variable Output
+              37:             TypePointer Output 36(TheBlock[2])
+     38(tcBlock):37(TheBlock[2]*) Variable Output
  39(SingleBlock):             TypeStruct 6(float) 6(float) 33(S)
               40:             TypePointer Output 39(SingleBlock)
- 41(singleBlock):     40(ptr) Variable Output
-          42(bn):             TypeStruct 7(fvec4) 7(fvec4) 7(fvec4)
+ 41(singleBlock):40(SingleBlock*) Variable Output
+          42(bn):             TypeStruct 7(vec4) 7(vec4) 7(vec4)
               43:             TypePointer Output 42(bn)
-              44:     43(ptr) Variable Output
-         4(main):           2 Function None 3
+              44:     43(bn*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               19:     16(int) Load 18(gl_InvocationID)
               26:     16(int) Load 18(gl_InvocationID)
-              28:     27(ptr) AccessChain 25(gl_in) 26 20
-              29:    7(fvec4) Load 28
-              31:     30(ptr) AccessChain 15(gl_out) 19 20
+              28:   27(vec4*) AccessChain 25(gl_in) 26 20
+              29:     7(vec4) Load 28
+              31:   30(vec4*) AccessChain 15(gl_out) 19 20
                               Store 31 29
                               Return
                               FunctionEnd

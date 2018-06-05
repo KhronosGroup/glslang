@@ -28,17 +28,17 @@ spv.GeometryShaderPassthrough.geom
                               Decorate 12(Inputs) Block
                               Decorate 14 PassthroughNV
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
- 8(gl_PerVertex):             TypeStruct 7(fvec4)
+ 8(gl_PerVertex):             TypeStruct 7(vec4)
                9:             TypePointer Input 8(gl_PerVertex)
-              10:      9(ptr) Variable Input
+              10:9(gl_PerVertex*) Variable Input
               11:             TypeVector 6(float) 2
-      12(Inputs):             TypeStruct 11(fvec2) 7(fvec4)
+      12(Inputs):             TypeStruct 11(vec2) 7(vec4)
               13:             TypePointer Input 12(Inputs)
-              14:     13(ptr) Variable Input
-         4(main):           2 Function None 3
+              14: 13(Inputs*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd

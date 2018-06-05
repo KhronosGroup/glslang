@@ -51,13 +51,13 @@ Shader version: 500
                               Name 14  "@entryPointOutput"
                               Decorate 14(@entryPointOutput) BuiltIn PointSize
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeFunction 6(float)
               10:    6(float) Constant 1075000115
               13:             TypePointer Output 6(float)
-14(@entryPointOutput):     13(ptr) Variable Output
-         4(main):           2 Function None 3
+14(@entryPointOutput):  13(float*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               15:    6(float) FunctionCall 8(@main()
                               Store 14(@entryPointOutput) 15

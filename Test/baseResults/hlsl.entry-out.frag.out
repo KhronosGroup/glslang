@@ -289,112 +289,112 @@ gl_FragCoord origin is upper left
                               Decorate 83(out3.v) Location 4
                               Decorate 86(out3.i) Location 5
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 2
                8:             TypeInt 32 1
                9:             TypeVector 8(int) 2
-    10(OutParam):             TypeStruct 7(fvec2) 9(ivec2)
+    10(OutParam):             TypeStruct 7(vec2) 9(ivec2)
               11:             TypePointer Function 10(OutParam)
-              12:             TypeFunction 2 11(ptr)
+              12:             TypeFunction 2(void) 11(OutParam*)
               16:             TypeVector 6(float) 4
-              17:             TypePointer Function 16(fvec4)
-              18:             TypeFunction 16(fvec4) 17(ptr) 17(ptr) 11(ptr) 11(ptr)
+              17:             TypePointer Function 16(vec4)
+              18:             TypeFunction 16(vec4) 17(vec4*) 17(vec4*) 11(OutParam*) 11(OutParam*)
               25:      8(int) Constant 0
               26:    6(float) Constant 1053609165
-              27:    7(fvec2) ConstantComposite 26 26
-              28:             TypePointer Function 7(fvec2)
+              27:     7(vec2) ConstantComposite 26 26
+              28:             TypePointer Function 7(vec2)
               30:      8(int) Constant 1
               31:      8(int) Constant 7
               32:    9(ivec2) ConstantComposite 31 31
               33:             TypePointer Function 9(ivec2)
               36:    6(float) Constant 1073741824
-              37:    7(fvec2) ConstantComposite 36 36
+              37:     7(vec2) ConstantComposite 36 36
               39:      8(int) Constant 3
               40:    9(ivec2) ConstantComposite 39 39
               43:    6(float) Constant 1094713344
-              44:    7(fvec2) ConstantComposite 43 43
+              44:     7(vec2) ConstantComposite 43 43
               46:      8(int) Constant 13
               47:    9(ivec2) ConstantComposite 46 46
-              56:             TypePointer Input 16(fvec4)
-       57(input):     56(ptr) Variable Input
-              59:             TypePointer Output 16(fvec4)
-60(@entryPointOutput):     59(ptr) Variable Output
-        73(out1):     59(ptr) Variable Output
-              75:             TypePointer Output 7(fvec2)
-      76(out2.v):     75(ptr) Variable Output
+              56:             TypePointer Input 16(vec4)
+       57(input):   56(vec4*) Variable Input
+              59:             TypePointer Output 16(vec4)
+60(@entryPointOutput):   59(vec4*) Variable Output
+        73(out1):   59(vec4*) Variable Output
+              75:             TypePointer Output 7(vec2)
+      76(out2.v):   75(vec2*) Variable Output
               79:             TypePointer Output 9(ivec2)
-      80(out2.i):     79(ptr) Variable Output
-      83(out3.v):     75(ptr) Variable Output
-      86(out3.i):     79(ptr) Variable Output
-4(PixelShaderFunction):           2 Function None 3
+      80(out2.i):  79(ivec2*) Variable Output
+      83(out3.v):   75(vec2*) Variable Output
+      86(out3.i):  79(ivec2*) Variable Output
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-       55(input):     17(ptr) Variable Function
-        61(out1):     17(ptr) Variable Function
-        62(out2):     11(ptr) Variable Function
-        63(out3):     11(ptr) Variable Function
-       64(param):     17(ptr) Variable Function
-       66(param):     17(ptr) Variable Function
-       67(param):     11(ptr) Variable Function
-       68(param):     11(ptr) Variable Function
-              58:   16(fvec4) Load 57(input)
+       55(input):   17(vec4*) Variable Function
+        61(out1):   17(vec4*) Variable Function
+        62(out2):11(OutParam*) Variable Function
+        63(out3):11(OutParam*) Variable Function
+       64(param):   17(vec4*) Variable Function
+       66(param):   17(vec4*) Variable Function
+       67(param):11(OutParam*) Variable Function
+       68(param):11(OutParam*) Variable Function
+              58:    16(vec4) Load 57(input)
                               Store 55(input) 58
-              65:   16(fvec4) Load 55(input)
+              65:    16(vec4) Load 55(input)
                               Store 64(param) 65
-              69:   16(fvec4) FunctionCall 23(@PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21;) 64(param) 66(param) 67(param) 68(param)
-              70:   16(fvec4) Load 66(param)
+              69:    16(vec4) FunctionCall 23(@PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21;) 64(param) 66(param) 67(param) 68(param)
+              70:    16(vec4) Load 66(param)
                               Store 61(out1) 70
               71:10(OutParam) Load 67(param)
                               Store 62(out2) 71
               72:10(OutParam) Load 68(param)
                               Store 63(out3) 72
                               Store 60(@entryPointOutput) 69
-              74:   16(fvec4) Load 61(out1)
+              74:    16(vec4) Load 61(out1)
                               Store 73(out1) 74
-              77:     28(ptr) AccessChain 62(out2) 25
-              78:    7(fvec2) Load 77
+              77:   28(vec2*) AccessChain 62(out2) 25
+              78:     7(vec2) Load 77
                               Store 76(out2.v) 78
-              81:     33(ptr) AccessChain 62(out2) 30
+              81:  33(ivec2*) AccessChain 62(out2) 30
               82:    9(ivec2) Load 81
                               Store 80(out2.i) 82
-              84:     28(ptr) AccessChain 63(out3) 25
-              85:    7(fvec2) Load 84
+              84:   28(vec2*) AccessChain 63(out3) 25
+              85:     7(vec2) Load 84
                               Store 83(out3.v) 85
-              87:     33(ptr) AccessChain 63(out3) 30
+              87:  33(ivec2*) AccessChain 63(out3) 30
               88:    9(ivec2) Load 87
                               Store 86(out3.i) 88
                               Return
                               FunctionEnd
-14(fun(struct-OutParam-vf2-vi21;):           2 Function None 12
-          13(op):     11(ptr) FunctionParameter
+14(fun(struct-OutParam-vf2-vi21;):     2(void) Function None 12
+          13(op):11(OutParam*) FunctionParameter
               15:             Label
-              29:     28(ptr) AccessChain 13(op) 25
+              29:   28(vec2*) AccessChain 13(op) 25
                               Store 29 27
-              34:     33(ptr) AccessChain 13(op) 30
+              34:  33(ivec2*) AccessChain 13(op) 30
                               Store 34 32
                               Return
                               FunctionEnd
-23(@PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21;):   16(fvec4) Function None 18
-       19(input):     17(ptr) FunctionParameter
-        20(out1):     17(ptr) FunctionParameter
-        21(out2):     11(ptr) FunctionParameter
-        22(out3):     11(ptr) FunctionParameter
+23(@PixelShaderFunction(vf4;vf4;struct-OutParam-vf2-vi21;struct-OutParam-vf2-vi21;):    16(vec4) Function None 18
+       19(input):   17(vec4*) FunctionParameter
+        20(out1):   17(vec4*) FunctionParameter
+        21(out2):11(OutParam*) FunctionParameter
+        22(out3):11(OutParam*) FunctionParameter
               24:             Label
-       42(local):     11(ptr) Variable Function
-       49(param):     11(ptr) Variable Function
-              35:   16(fvec4) Load 19(input)
+       42(local):11(OutParam*) Variable Function
+       49(param):11(OutParam*) Variable Function
+              35:    16(vec4) Load 19(input)
                               Store 20(out1) 35
-              38:     28(ptr) AccessChain 21(out2) 25
+              38:   28(vec2*) AccessChain 21(out2) 25
                               Store 38 37
-              41:     33(ptr) AccessChain 21(out2) 30
+              41:  33(ivec2*) AccessChain 21(out2) 30
                               Store 41 40
-              45:     28(ptr) AccessChain 42(local) 25
+              45:   28(vec2*) AccessChain 42(local) 25
                               Store 45 44
-              48:     33(ptr) AccessChain 42(local) 30
+              48:  33(ivec2*) AccessChain 42(local) 30
                               Store 48 47
-              50:           2 FunctionCall 14(fun(struct-OutParam-vf2-vi21;) 49(param)
+              50:     2(void) FunctionCall 14(fun(struct-OutParam-vf2-vi21;) 49(param)
               51:10(OutParam) Load 49(param)
                               Store 22(out3) 51
-              52:   16(fvec4) Load 20(out1)
+              52:    16(vec4) Load 20(out1)
                               ReturnValue 52
                               FunctionEnd

@@ -153,10 +153,10 @@ gl_FragCoord origin is upper left
                               Name 52  "@entryPointOutput"
                               Decorate 52(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypeInt 32 1
               12:             TypePointer Function 11(int)
               14:     11(int) Constant 0
@@ -164,20 +164,20 @@ gl_FragCoord origin is upper left
               22:             TypeBool
               25:     11(int) Constant 1
               47:    6(float) Constant 0
-              48:    7(fvec4) ConstantComposite 47 47 47 47
-              51:             TypePointer Output 7(fvec4)
-52(@entryPointOutput):     51(ptr) Variable Output
-         4(main):           2 Function None 3
+              48:     7(vec4) ConstantComposite 47 47 47 47
+              51:             TypePointer Output 7(vec4)
+52(@entryPointOutput):   51(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              53:    7(fvec4) FunctionCall 9(@main()
+              53:     7(vec4) FunctionCall 9(@main()
                               Store 52(@entryPointOutput) 53
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-           13(x):     12(ptr) Variable Function
-           27(y):     12(ptr) Variable Function
-           37(z):     12(ptr) Variable Function
+           13(x):    12(int*) Variable Function
+           27(y):    12(int*) Variable Function
+           37(z):    12(int*) Variable Function
                               Store 13(x) 14
                               Branch 15
               15:             Label

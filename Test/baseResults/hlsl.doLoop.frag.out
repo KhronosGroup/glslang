@@ -163,34 +163,34 @@ gl_FragCoord origin is upper left
                               Decorate 64(input) Location 0
                               Decorate 67(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
                8:             TypeVector 6(float) 4
-               9:             TypeFunction 8(fvec4) 7(ptr)
+               9:             TypeFunction 8(vec4) 7(float*)
               17:             TypeBool
               18:    17(bool) ConstantFalse
               31:    6(float) Constant 1073741824
               38:    6(float) Constant 1065353216
               41:    6(float) Constant 1092616192
               63:             TypePointer Input 6(float)
-       64(input):     63(ptr) Variable Input
-              66:             TypePointer Output 8(fvec4)
-67(@entryPointOutput):     66(ptr) Variable Output
-4(PixelShaderFunction):           2 Function None 3
+       64(input):  63(float*) Variable Input
+              66:             TypePointer Output 8(vec4)
+67(@entryPointOutput):   66(vec4*) Variable Output
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-       62(input):      7(ptr) Variable Function
-       68(param):      7(ptr) Variable Function
+       62(input):   7(float*) Variable Function
+       68(param):   7(float*) Variable Function
               65:    6(float) Load 64(input)
                               Store 62(input) 65
               69:    6(float) Load 62(input)
                               Store 68(param) 69
-              70:    8(fvec4) FunctionCall 11(@PixelShaderFunction(f1;) 68(param)
+              70:     8(vec4) FunctionCall 11(@PixelShaderFunction(f1;) 68(param)
                               Store 67(@entryPointOutput) 70
                               Return
                               FunctionEnd
-11(@PixelShaderFunction(f1;):    8(fvec4) Function None 9
-       10(input):      7(ptr) FunctionParameter
+11(@PixelShaderFunction(f1;):     8(vec4) Function None 9
+       10(input):   7(float*) FunctionParameter
               12:             Label
                               Branch 13
               13:             Label
@@ -216,7 +216,7 @@ gl_FragCoord origin is upper left
                               Branch 24
               24:             Label
               27:    6(float) Load 10(input)
-              28:    8(fvec4) CompositeConstruct 27 27 27 27
+              28:     8(vec4) CompositeConstruct 27 27 27 27
                               ReturnValue 28
               26:             Label
               30:    6(float) Load 10(input)
@@ -266,6 +266,6 @@ gl_FragCoord origin is upper left
                               BranchConditional 57 43 45
               45:             Label
               58:    6(float) Load 10(input)
-              59:    8(fvec4) CompositeConstruct 58 58 58 58
+              59:     8(vec4) CompositeConstruct 58 58 58 58
                               ReturnValue 59
                               FunctionEnd

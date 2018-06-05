@@ -83,30 +83,30 @@ gl_FragCoord origin is upper left
                               Name 23  "@entryPointOutput"
                               Decorate 23(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-     8(myVertex):             TypeStruct 7(fvec4)
+     8(myVertex):             TypeStruct 7(vec4)
                9:             TypePointer Function 8(myVertex)
-              10:             TypeFunction 2 9(ptr) 9(ptr)
-              15:             TypeFunction 7(fvec4)
+              10:             TypeFunction 2(void) 9(myVertex*) 9(myVertex*)
+              15:             TypeFunction 7(vec4)
               18:    6(float) Constant 0
-              19:    7(fvec4) ConstantComposite 18 18 18 18
-              22:             TypePointer Output 7(fvec4)
-23(@entryPointOutput):     22(ptr) Variable Output
-         4(main):           2 Function None 3
+              19:     7(vec4) ConstantComposite 18 18 18 18
+              22:             TypePointer Output 7(vec4)
+23(@entryPointOutput):   22(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              24:    7(fvec4) FunctionCall 16(@main()
+              24:     7(vec4) FunctionCall 16(@main()
                               Store 23(@entryPointOutput) 24
                               Return
                               FunctionEnd
-13(GS_Draw(struct-myVertex-vf41;struct-myVertex-vf41;):           2 Function None 10
-          11(IN):      9(ptr) FunctionParameter
-12(OutputStream):      9(ptr) FunctionParameter
+13(GS_Draw(struct-myVertex-vf41;struct-myVertex-vf41;):     2(void) Function None 10
+          11(IN):9(myVertex*) FunctionParameter
+12(OutputStream):9(myVertex*) FunctionParameter
               14:             Label
                               Return
                               FunctionEnd
-      16(@main():    7(fvec4) Function None 15
+      16(@main():     7(vec4) Function None 15
               17:             Label
                               ReturnValue 19
                               FunctionEnd

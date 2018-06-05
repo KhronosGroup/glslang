@@ -165,60 +165,60 @@ gl_FragCoord origin is upper left
                               Decorate 67($Global) Block
                               Decorate 69 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypeVector 6(float) 2
-              13:             TypePointer Function 12(fvec2)
+              13:             TypePointer Function 12(vec2)
               16:             TypePointer Function 6(float)
               27:             TypeInt 32 1
               28:             TypeVector 27(int) 2
               29:             TypePointer Function 28(ivec2)
               32:             TypePointer Function 27(int)
               43:             TypeInt 32 0
-              44:             TypeVector 43(int) 2
-              45:             TypePointer Function 44(ivec2)
-              48:             TypePointer Function 43(int)
+              44:             TypeVector 43(uint) 2
+              45:             TypePointer Function 44(uvec2)
+              48:             TypePointer Function 43(uint)
               53:             TypePointer Function 8(PS_OUTPUT)
               55:     27(int) Constant 0
               56:    6(float) Constant 0
-              57:    7(fvec4) ConstantComposite 56 56 56 56
-              58:             TypePointer Function 7(fvec4)
-              63:             TypePointer Output 7(fvec4)
-64(@entryPointOutput.Color):     63(ptr) Variable Output
+              57:     7(vec4) ConstantComposite 56 56 56 56
+              58:             TypePointer Function 7(vec4)
+              63:             TypePointer Output 7(vec4)
+64(@entryPointOutput.Color):   63(vec4*) Variable Output
      67($Global):             TypeStruct 6(float) 6(float)
               68:             TypePointer Uniform 67($Global)
-              69:     68(ptr) Variable Uniform
-         4(main):           2 Function None 3
+              69:68($Global*) Variable Uniform
+         4(main):     2(void) Function None 3
                5:             Label
               65:8(PS_OUTPUT) FunctionCall 10(@main()
-              66:    7(fvec4) CompositeExtract 65 0
+              66:     7(vec4) CompositeExtract 65 0
                               Store 64(@entryPointOutput.Color) 66
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-      14(mf16_2):     13(ptr) Variable Function
-        17(mf16):     16(ptr) Variable Function
-      21(mf10_2):     13(ptr) Variable Function
-        23(mf10):     16(ptr) Variable Function
-      30(mi16_2):     29(ptr) Variable Function
-        33(mi16):     32(ptr) Variable Function
-      37(mi12_2):     29(ptr) Variable Function
-        39(mi12):     32(ptr) Variable Function
-      46(mu16_2):     45(ptr) Variable Function
-        49(mu16):     48(ptr) Variable Function
-       54(psout):     53(ptr) Variable Function
-              15:   12(fvec2) Load 14(mf16_2)
+      14(mf16_2):   13(vec2*) Variable Function
+        17(mf16):  16(float*) Variable Function
+      21(mf10_2):   13(vec2*) Variable Function
+        23(mf10):  16(float*) Variable Function
+      30(mi16_2):  29(ivec2*) Variable Function
+        33(mi16):    32(int*) Variable Function
+      37(mi12_2):  29(ivec2*) Variable Function
+        39(mi12):    32(int*) Variable Function
+      46(mu16_2):  45(uvec2*) Variable Function
+        49(mu16):   48(uint*) Variable Function
+       54(psout):53(PS_OUTPUT*) Variable Function
+              15:    12(vec2) Load 14(mf16_2)
               18:    6(float) Load 17(mf16)
-              19:   12(fvec2) CompositeConstruct 18 18
-              20:   12(fvec2) FAdd 15 19
-              22:   12(fvec2) Load 21(mf10_2)
+              19:    12(vec2) CompositeConstruct 18 18
+              20:    12(vec2) FAdd 15 19
+              22:    12(vec2) Load 21(mf10_2)
               24:    6(float) Load 23(mf10)
-              25:   12(fvec2) CompositeConstruct 24 24
-              26:   12(fvec2) FAdd 22 25
+              25:    12(vec2) CompositeConstruct 24 24
+              26:    12(vec2) FAdd 22 25
               31:   28(ivec2) Load 30(mi16_2)
               34:     27(int) Load 33(mi16)
               35:   28(ivec2) CompositeConstruct 34 34
@@ -227,11 +227,11 @@ gl_FragCoord origin is upper left
               40:     27(int) Load 39(mi12)
               41:   28(ivec2) CompositeConstruct 40 40
               42:   28(ivec2) IAdd 38 41
-              47:   44(ivec2) Load 46(mu16_2)
-              50:     43(int) Load 49(mu16)
-              51:   44(ivec2) CompositeConstruct 50 50
-              52:   44(ivec2) IAdd 47 51
-              59:     58(ptr) AccessChain 54(psout) 55
+              47:   44(uvec2) Load 46(mu16_2)
+              50:    43(uint) Load 49(mu16)
+              51:   44(uvec2) CompositeConstruct 50 50
+              52:   44(uvec2) IAdd 47 51
+              59:   58(vec4*) AccessChain 54(psout) 55
                               Store 59 57
               60:8(PS_OUTPUT) Load 54(psout)
                               ReturnValue 60

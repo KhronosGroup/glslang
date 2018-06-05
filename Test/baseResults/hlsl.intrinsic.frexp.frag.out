@@ -227,54 +227,54 @@ gl_FragCoord origin is upper left
                               Name 95  "@entryPointOutput.color"
                               Decorate 95(@entryPointOutput.color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 6(float) 7(ptr) 7(ptr)
+               8:             TypeFunction 6(float) 7(float*) 7(float*)
               13:             TypeVector 6(float) 2
-              14:             TypePointer Function 13(fvec2)
-              15:             TypeFunction 13(fvec2) 14(ptr) 14(ptr)
+              14:             TypePointer Function 13(vec2)
+              15:             TypeFunction 13(vec2) 14(vec2*) 14(vec2*)
               20:             TypeVector 6(float) 3
-              21:             TypePointer Function 20(fvec3)
-              22:             TypeFunction 20(fvec3) 21(ptr) 21(ptr)
+              21:             TypePointer Function 20(vec3)
+              22:             TypeFunction 20(vec3) 21(vec3*) 21(vec3*)
               27:             TypeVector 6(float) 4
-              28:             TypePointer Function 27(fvec4)
-              29:             TypeFunction 27(fvec4) 28(ptr) 28(ptr)
-   34(PS_OUTPUT):             TypeStruct 27(fvec4)
+              28:             TypePointer Function 27(vec4)
+              29:             TypeFunction 27(vec4) 28(vec4*) 28(vec4*)
+   34(PS_OUTPUT):             TypeStruct 27(vec4)
               35:             TypeFunction 34(PS_OUTPUT)
               40:             TypeInt 32 1
      41(ResType):             TypeStruct 6(float) 40(int)
               46:    6(float) Constant 0
               51:             TypeVector 40(int) 2
-     52(ResType):             TypeStruct 13(fvec2) 51(ivec2)
+     52(ResType):             TypeStruct 13(vec2) 51(ivec2)
               57:    6(float) Constant 1065353216
               58:    6(float) Constant 1073741824
-              59:   13(fvec2) ConstantComposite 57 58
+              59:    13(vec2) ConstantComposite 57 58
               64:             TypeVector 40(int) 3
-     65(ResType):             TypeStruct 20(fvec3) 64(ivec3)
+     65(ResType):             TypeStruct 20(vec3) 64(ivec3)
               70:    6(float) Constant 1077936128
-              71:   20(fvec3) ConstantComposite 57 58 70
+              71:    20(vec3) ConstantComposite 57 58 70
               76:             TypeVector 40(int) 4
-     77(ResType):             TypeStruct 27(fvec4) 76(ivec4)
+     77(ResType):             TypeStruct 27(vec4) 76(ivec4)
               82:    6(float) Constant 1082130432
-              83:   27(fvec4) ConstantComposite 57 58 70 82
+              83:    27(vec4) ConstantComposite 57 58 70 82
               86:             TypePointer Function 34(PS_OUTPUT)
               88:     40(int) Constant 0
-              89:   27(fvec4) ConstantComposite 57 57 57 57
-              94:             TypePointer Output 27(fvec4)
-95(@entryPointOutput.color):     94(ptr) Variable Output
-         4(main):           2 Function None 3
+              89:    27(vec4) ConstantComposite 57 57 57 57
+              94:             TypePointer Output 27(vec4)
+95(@entryPointOutput.color):   94(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               96:34(PS_OUTPUT) FunctionCall 36(@main()
-              97:   27(fvec4) CompositeExtract 96 0
+              97:    27(vec4) CompositeExtract 96 0
                               Store 95(@entryPointOutput.color) 97
                               Return
                               FunctionEnd
 11(PixelShaderFunctionS(f1;f1;):    6(float) Function None 8
-         9(inF0):      7(ptr) FunctionParameter
-        10(inF1):      7(ptr) FunctionParameter
+         9(inF0):   7(float*) FunctionParameter
+        10(inF1):   7(float*) FunctionParameter
               12:             Label
-        38(r000):      7(ptr) Variable Function
+        38(r000):   7(float*) Variable Function
               39:    6(float) Load 9(inF0)
               42: 41(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 39
               43:     40(int) CompositeExtract 42 1
@@ -284,52 +284,52 @@ gl_FragCoord origin is upper left
                               Store 38(r000) 45
                               ReturnValue 46
                               FunctionEnd
-18(PixelShaderFunction2(vf2;vf2;):   13(fvec2) Function None 15
-        16(inF0):     14(ptr) FunctionParameter
-        17(inF1):     14(ptr) FunctionParameter
+18(PixelShaderFunction2(vf2;vf2;):    13(vec2) Function None 15
+        16(inF0):   14(vec2*) FunctionParameter
+        17(inF1):   14(vec2*) FunctionParameter
               19:             Label
-        49(r000):     14(ptr) Variable Function
-              50:   13(fvec2) Load 16(inF0)
+        49(r000):   14(vec2*) Variable Function
+              50:    13(vec2) Load 16(inF0)
               53: 52(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 50
               54:   51(ivec2) CompositeExtract 53 1
-              55:   13(fvec2) ConvertSToF 54
+              55:    13(vec2) ConvertSToF 54
                               Store 17(inF1) 55
-              56:   13(fvec2) CompositeExtract 53 0
+              56:    13(vec2) CompositeExtract 53 0
                               Store 49(r000) 56
                               ReturnValue 59
                               FunctionEnd
-25(PixelShaderFunction3(vf3;vf3;):   20(fvec3) Function None 22
-        23(inF0):     21(ptr) FunctionParameter
-        24(inF1):     21(ptr) FunctionParameter
+25(PixelShaderFunction3(vf3;vf3;):    20(vec3) Function None 22
+        23(inF0):   21(vec3*) FunctionParameter
+        24(inF1):   21(vec3*) FunctionParameter
               26:             Label
-        62(r000):     21(ptr) Variable Function
-              63:   20(fvec3) Load 23(inF0)
+        62(r000):   21(vec3*) Variable Function
+              63:    20(vec3) Load 23(inF0)
               66: 65(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 63
               67:   64(ivec3) CompositeExtract 66 1
-              68:   20(fvec3) ConvertSToF 67
+              68:    20(vec3) ConvertSToF 67
                               Store 24(inF1) 68
-              69:   20(fvec3) CompositeExtract 66 0
+              69:    20(vec3) CompositeExtract 66 0
                               Store 62(r000) 69
                               ReturnValue 71
                               FunctionEnd
-32(PixelShaderFunction(vf4;vf4;):   27(fvec4) Function None 29
-        30(inF0):     28(ptr) FunctionParameter
-        31(inF1):     28(ptr) FunctionParameter
+32(PixelShaderFunction(vf4;vf4;):    27(vec4) Function None 29
+        30(inF0):   28(vec4*) FunctionParameter
+        31(inF1):   28(vec4*) FunctionParameter
               33:             Label
-        74(r000):     28(ptr) Variable Function
-              75:   27(fvec4) Load 30(inF0)
+        74(r000):   28(vec4*) Variable Function
+              75:    27(vec4) Load 30(inF0)
               78: 77(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 75
               79:   76(ivec4) CompositeExtract 78 1
-              80:   27(fvec4) ConvertSToF 79
+              80:    27(vec4) ConvertSToF 79
                               Store 31(inF1) 80
-              81:   27(fvec4) CompositeExtract 78 0
+              81:    27(vec4) CompositeExtract 78 0
                               Store 74(r000) 81
                               ReturnValue 83
                               FunctionEnd
       36(@main():34(PS_OUTPUT) Function None 35
               37:             Label
-   87(ps_output):     86(ptr) Variable Function
-              90:     28(ptr) AccessChain 87(ps_output) 88
+   87(ps_output):86(PS_OUTPUT*) Variable Function
+              90:   28(vec4*) AccessChain 87(ps_output) 88
                               Store 90 89
               91:34(PS_OUTPUT) Load 87(ps_output)
                               ReturnValue 91

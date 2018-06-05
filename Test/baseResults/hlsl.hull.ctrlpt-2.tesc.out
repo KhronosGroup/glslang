@@ -470,155 +470,155 @@ triangle order = cw
                               Decorate 110(@patchConstantOutput.flInFactor) Patch
                               Decorate 110(@patchConstantOutput.flInFactor) BuiltIn TessLevelInner
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 3
-      8(hs_in_t):             TypeStruct 7(fvec3)
+      8(hs_in_t):             TypeStruct 7(vec3)
                9:             TypeInt 32 0
-              10:      9(int) Constant 3
+              10:     9(uint) Constant 3
               11:             TypeArray 8(hs_in_t) 10
-              12:             TypePointer Function 11
-              13:             TypePointer Function 9(int)
-    14(hs_out_t):             TypeStruct 7(fvec3)
-              15:             TypeFunction 14(hs_out_t) 12(ptr) 13(ptr)
+              12:             TypePointer Function 11(hs_in_t[3])
+              13:             TypePointer Function 9(uint)
+    14(hs_out_t):             TypeStruct 7(vec3)
+              15:             TypeFunction 14(hs_out_t) 12(hs_in_t[3]*) 13(uint*)
               20:             TypeArray 14(hs_out_t) 10
               21:             TypeArray 6(float) 10
-    22(hs_pcf_t):             TypeStruct 21 6(float)
-              23:             TypeFunction 22(hs_pcf_t) 20 11
+    22(hs_pcf_t):             TypeStruct 21(float[3]) 6(float)
+              23:             TypeFunction 22(hs_pcf_t) 20(hs_out_t[3]) 11(hs_in_t[3])
               28:             TypeInt 32 1
               29:     28(int) Constant 0
               30:             TypePointer Function 14(hs_out_t)
-              35:             TypePointer Function 7(fvec3)
-              41:             TypePointer Input 11
-           42(i):     41(ptr) Variable Input
-              45:             TypePointer Input 9(int)
-        46(cpid):     45(ptr) Variable Input
-              48:             TypePointer Output 20
-49(@entryPointOutput):     48(ptr) Variable Output
+              35:             TypePointer Function 7(vec3)
+              41:             TypePointer Input 11(hs_in_t[3])
+           42(i):41(hs_in_t[3]*) Variable Input
+              45:             TypePointer Input 9(uint)
+        46(cpid):   45(uint*) Variable Input
+              48:             TypePointer Output 20(hs_out_t[3])
+49(@entryPointOutput):48(hs_out_t[3]*) Variable Output
               56:             TypePointer Output 14(hs_out_t)
-              58:      9(int) Constant 2
-              59:      9(int) Constant 4
-              60:      9(int) Constant 0
+              58:     9(uint) Constant 2
+              59:     9(uint) Constant 4
+              60:     9(uint) Constant 0
               62:             TypeBool
-              66:             TypePointer Function 20
+              66:             TypePointer Function 20(hs_out_t[3])
               74:     28(int) Constant 1
-              76:      9(int) Constant 1
+              76:     9(uint) Constant 1
               82:     28(int) Constant 2
               89:             TypePointer Function 22(hs_pcf_t)
               94:             TypeArray 6(float) 59
-              95:             TypePointer Output 94
-96(@patchConstantOutput.tfactor):     95(ptr) Variable Output
+              95:             TypePointer Output 94(float[4])
+96(@patchConstantOutput.tfactor):95(float[4]*) Variable Output
               97:             TypePointer Function 6(float)
              100:             TypePointer Output 6(float)
              108:             TypeArray 6(float) 58
-             109:             TypePointer Output 108
-110(@patchConstantOutput.flInFactor):    109(ptr) Variable Output
+             109:             TypePointer Output 108(float[2])
+110(@patchConstantOutput.flInFactor):109(float[2]*) Variable Output
              121:    6(float) Constant 1082130432
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-           40(i):     12(ptr) Variable Function
-        44(cpid):     13(ptr) Variable Function
-       51(param):     12(ptr) Variable Function
-       53(param):     13(ptr) Variable Function
-     67(pcf_out):     66(ptr) Variable Function
-           68(i):     12(ptr) Variable Function
-       69(param):     12(ptr) Variable Function
-       71(param):     13(ptr) Variable Function
-           75(i):     12(ptr) Variable Function
-       77(param):     12(ptr) Variable Function
-       79(param):     13(ptr) Variable Function
-           83(i):     12(ptr) Variable Function
-       84(param):     12(ptr) Variable Function
-       86(param):     13(ptr) Variable Function
-90(@patchConstantResult):     89(ptr) Variable Function
-              43:          11 Load 42(i)
+           40(i):12(hs_in_t[3]*) Variable Function
+        44(cpid):   13(uint*) Variable Function
+       51(param):12(hs_in_t[3]*) Variable Function
+       53(param):   13(uint*) Variable Function
+     67(pcf_out):66(hs_out_t[3]*) Variable Function
+           68(i):12(hs_in_t[3]*) Variable Function
+       69(param):12(hs_in_t[3]*) Variable Function
+       71(param):   13(uint*) Variable Function
+           75(i):12(hs_in_t[3]*) Variable Function
+       77(param):12(hs_in_t[3]*) Variable Function
+       79(param):   13(uint*) Variable Function
+           83(i):12(hs_in_t[3]*) Variable Function
+       84(param):12(hs_in_t[3]*) Variable Function
+       86(param):   13(uint*) Variable Function
+90(@patchConstantResult):89(hs_pcf_t*) Variable Function
+              43:11(hs_in_t[3]) Load 42(i)
                               Store 40(i) 43
-              47:      9(int) Load 46(cpid)
+              47:     9(uint) Load 46(cpid)
                               Store 44(cpid) 47
-              50:      9(int) Load 46(cpid)
-              52:          11 Load 40(i)
+              50:     9(uint) Load 46(cpid)
+              52:11(hs_in_t[3]) Load 40(i)
                               Store 51(param) 52
-              54:      9(int) Load 44(cpid)
+              54:     9(uint) Load 44(cpid)
                               Store 53(param) 54
               55:14(hs_out_t) FunctionCall 18(@main(struct-hs_in_t-vf31[3];u1;) 51(param) 53(param)
-              57:     56(ptr) AccessChain 49(@entryPointOutput) 50
+              57:56(hs_out_t*) AccessChain 49(@entryPointOutput) 50
                               Store 57 55
                               ControlBarrier 58 59 60
-              61:      9(int) Load 46(cpid)
+              61:     9(uint) Load 46(cpid)
               63:    62(bool) IEqual 61 29
                               SelectionMerge 65 None
                               BranchConditional 63 64 65
               64:               Label
-              70:          11   Load 68(i)
+              70:11(hs_in_t[3])   Load 68(i)
                                 Store 69(param) 70
                                 Store 71(param) 60
               72:14(hs_out_t)   FunctionCall 18(@main(struct-hs_in_t-vf31[3];u1;) 69(param) 71(param)
-              73:     30(ptr)   AccessChain 67(pcf_out) 29
+              73:30(hs_out_t*)   AccessChain 67(pcf_out) 29
                                 Store 73 72
-              78:          11   Load 75(i)
+              78:11(hs_in_t[3])   Load 75(i)
                                 Store 77(param) 78
                                 Store 79(param) 76
               80:14(hs_out_t)   FunctionCall 18(@main(struct-hs_in_t-vf31[3];u1;) 77(param) 79(param)
-              81:     30(ptr)   AccessChain 67(pcf_out) 74
+              81:30(hs_out_t*)   AccessChain 67(pcf_out) 74
                                 Store 81 80
-              85:          11   Load 83(i)
+              85:11(hs_in_t[3])   Load 83(i)
                                 Store 84(param) 85
                                 Store 86(param) 58
               87:14(hs_out_t)   FunctionCall 18(@main(struct-hs_in_t-vf31[3];u1;) 84(param) 86(param)
-              88:     30(ptr)   AccessChain 67(pcf_out) 82
+              88:30(hs_out_t*)   AccessChain 67(pcf_out) 82
                                 Store 88 87
-              91:          20   Load 67(pcf_out)
-              92:          11   Load 40(i)
+              91:20(hs_out_t[3])   Load 67(pcf_out)
+              92:11(hs_in_t[3])   Load 40(i)
               93:22(hs_pcf_t)   FunctionCall 26(PCF(struct-hs_out_t-vf31[3];struct-hs_in_t-vf31[3];) 91 92
                                 Store 90(@patchConstantResult) 93
-              98:     97(ptr)   AccessChain 90(@patchConstantResult) 29 29
+              98:  97(float*)   AccessChain 90(@patchConstantResult) 29 29
               99:    6(float)   Load 98
-             101:    100(ptr)   AccessChain 96(@patchConstantOutput.tfactor) 29
+             101: 100(float*)   AccessChain 96(@patchConstantOutput.tfactor) 29
                                 Store 101 99
-             102:     97(ptr)   AccessChain 90(@patchConstantResult) 29 74
+             102:  97(float*)   AccessChain 90(@patchConstantResult) 29 74
              103:    6(float)   Load 102
-             104:    100(ptr)   AccessChain 96(@patchConstantOutput.tfactor) 74
+             104: 100(float*)   AccessChain 96(@patchConstantOutput.tfactor) 74
                                 Store 104 103
-             105:     97(ptr)   AccessChain 90(@patchConstantResult) 29 82
+             105:  97(float*)   AccessChain 90(@patchConstantResult) 29 82
              106:    6(float)   Load 105
-             107:    100(ptr)   AccessChain 96(@patchConstantOutput.tfactor) 82
+             107: 100(float*)   AccessChain 96(@patchConstantOutput.tfactor) 82
                                 Store 107 106
-             111:     97(ptr)   AccessChain 90(@patchConstantResult) 74
+             111:  97(float*)   AccessChain 90(@patchConstantResult) 74
              112:    6(float)   Load 111
-             113:    100(ptr)   AccessChain 110(@patchConstantOutput.flInFactor) 29
+             113: 100(float*)   AccessChain 110(@patchConstantOutput.flInFactor) 29
                                 Store 113 112
                                 Branch 65
               65:             Label
                               Return
                               FunctionEnd
 18(@main(struct-hs_in_t-vf31[3];u1;):14(hs_out_t) Function None 15
-           16(i):     12(ptr) FunctionParameter
-        17(cpid):     13(ptr) FunctionParameter
+           16(i):12(hs_in_t[3]*) FunctionParameter
+        17(cpid):   13(uint*) FunctionParameter
               19:             Label
-           31(o):     30(ptr) Variable Function
-              32:      9(int) Load 17(cpid)
+           31(o):30(hs_out_t*) Variable Function
+              32:     9(uint) Load 17(cpid)
               33:    6(float) ConvertUToF 32
-              34:    7(fvec3) CompositeConstruct 33 33 33
-              36:     35(ptr) AccessChain 31(o) 29
+              34:     7(vec3) CompositeConstruct 33 33 33
+              36:   35(vec3*) AccessChain 31(o) 29
                               Store 36 34
               37:14(hs_out_t) Load 31(o)
                               ReturnValue 37
                               FunctionEnd
 26(PCF(struct-hs_out_t-vf31[3];struct-hs_in_t-vf31[3];):22(hs_pcf_t) Function None 23
-     24(pcf_out):          20 FunctionParameter
-      25(pcf_in):          11 FunctionParameter
+     24(pcf_out):20(hs_out_t[3]) FunctionParameter
+      25(pcf_in):11(hs_in_t[3]) FunctionParameter
               27:             Label
-          114(o):     89(ptr) Variable Function
+          114(o):89(hs_pcf_t*) Variable Function
              115:    6(float) CompositeExtract 24(pcf_out) 0 0 0
-             116:     97(ptr) AccessChain 114(o) 29 29
+             116:  97(float*) AccessChain 114(o) 29 29
                               Store 116 115
              117:    6(float) CompositeExtract 24(pcf_out) 1 0 0
-             118:     97(ptr) AccessChain 114(o) 29 74
+             118:  97(float*) AccessChain 114(o) 29 74
                               Store 118 117
              119:    6(float) CompositeExtract 24(pcf_out) 2 0 0
-             120:     97(ptr) AccessChain 114(o) 29 82
+             120:  97(float*) AccessChain 114(o) 29 82
                               Store 120 119
-             122:     97(ptr) AccessChain 114(o) 74
+             122:  97(float*) AccessChain 114(o) 74
                               Store 122 121
              123:22(hs_pcf_t) Load 114(o)
                               ReturnValue 123

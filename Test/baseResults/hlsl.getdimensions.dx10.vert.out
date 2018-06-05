@@ -144,56 +144,56 @@ Shader version: 500
                               Decorate 47(g_sSamp) DescriptorSet 0
                               Decorate 47(g_sSamp) Binding 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(VS_OUTPUT):             TypeStruct 7(fvec4)
+    8(VS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(VS_OUTPUT)
               12:             TypeInt 32 0
-              13:             TypePointer Function 12(int)
+              13:             TypePointer Function 12(uint)
               15:             TypeImage 6(float) 1D sampled format:Unknown
               16:             TypePointer UniformConstant 15
   17(g_tTex1df4):     16(ptr) Variable UniformConstant
               19:             TypeInt 32 1
               20:     19(int) Constant 0
-              26:     12(int) Constant 6
+              26:    12(uint) Constant 6
               32:             TypePointer Function 8(VS_OUTPUT)
               34:    6(float) Constant 0
-              35:    7(fvec4) ConstantComposite 34 34 34 34
-              36:             TypePointer Function 7(fvec4)
-              41:             TypePointer Output 7(fvec4)
-42(@entryPointOutput.Pos):     41(ptr) Variable Output
+              35:     7(vec4) ConstantComposite 34 34 34 34
+              36:             TypePointer Function 7(vec4)
+              41:             TypePointer Output 7(vec4)
+42(@entryPointOutput.Pos):   41(vec4*) Variable Output
               45:             TypeSampler
               46:             TypePointer UniformConstant 45
      47(g_sSamp):     46(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
               43:8(VS_OUTPUT) FunctionCall 10(@main()
-              44:    7(fvec4) CompositeExtract 43 0
+              44:     7(vec4) CompositeExtract 43 0
                               Store 42(@entryPointOutput.Pos) 44
                               Return
                               FunctionEnd
       10(@main():8(VS_OUTPUT) Function None 9
               11:             Label
-14(sizeQueryTemp):     13(ptr) Variable Function
-      22(WidthU):     13(ptr) Variable Function
-24(sizeQueryTemp):     13(ptr) Variable Function
-29(NumberOfLevelsU):     13(ptr) Variable Function
-       33(vsout):     32(ptr) Variable Function
+14(sizeQueryTemp):   13(uint*) Variable Function
+      22(WidthU):   13(uint*) Variable Function
+24(sizeQueryTemp):   13(uint*) Variable Function
+29(NumberOfLevelsU):   13(uint*) Variable Function
+       33(vsout):32(VS_OUTPUT*) Variable Function
               18:          15 Load 17(g_tTex1df4)
-              21:     12(int) ImageQuerySizeLod 18 20
+              21:    12(uint) ImageQuerySizeLod 18 20
                               Store 14(sizeQueryTemp) 21
-              23:     12(int) Load 14(sizeQueryTemp)
+              23:    12(uint) Load 14(sizeQueryTemp)
                               Store 22(WidthU) 23
               25:          15 Load 17(g_tTex1df4)
-              27:     12(int) ImageQuerySizeLod 25 26
+              27:    12(uint) ImageQuerySizeLod 25 26
                               Store 24(sizeQueryTemp) 27
-              28:     12(int) Load 24(sizeQueryTemp)
+              28:    12(uint) Load 24(sizeQueryTemp)
                               Store 22(WidthU) 28
               30:          15 Load 17(g_tTex1df4)
-              31:     12(int) ImageQueryLevels 30
+              31:    12(uint) ImageQueryLevels 30
                               Store 29(NumberOfLevelsU) 31
-              37:     36(ptr) AccessChain 33(vsout) 20
+              37:   36(vec4*) AccessChain 33(vsout) 20
                               Store 37 35
               38:8(VS_OUTPUT) Load 33(vsout)
                               ReturnValue 38

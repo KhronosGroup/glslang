@@ -146,64 +146,64 @@ gl_FragCoord origin is upper left
                               Decorate 25(g_tTex2df4a) DescriptorSet 0
                               Decorate 59(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypeImage 6(float) 2D sampled format:Unknown
               12:             TypePointer UniformConstant 11
   13(g_tTex2df4):     12(ptr) Variable UniformConstant
               15:             TypeInt 32 0
-              16:             TypeVector 15(int) 2
-              17:     15(int) Constant 3
-              18:     15(int) Constant 4
-              19:   16(ivec2) ConstantComposite 17 18
+              16:             TypeVector 15(uint) 2
+              17:    15(uint) Constant 3
+              18:    15(uint) Constant 4
+              19:   16(uvec2) ConstantComposite 17 18
               20:             TypeInt 32 1
               21:     20(int) Constant 2
               23:             TypeImage 6(float) 2D array sampled format:Unknown
               24:             TypePointer UniformConstant 23
  25(g_tTex2df4a):     24(ptr) Variable UniformConstant
-              27:             TypeVector 15(int) 3
-              28:     15(int) Constant 6
-              29:     15(int) Constant 7
-              30:     15(int) Constant 8
-              31:   27(ivec3) ConstantComposite 28 29 30
-              32:     15(int) Constant 5
-              37:     15(int) Constant 14
-              38:     15(int) Constant 15
-              39:   16(ivec2) ConstantComposite 37 38
+              27:             TypeVector 15(uint) 3
+              28:    15(uint) Constant 6
+              29:    15(uint) Constant 7
+              30:    15(uint) Constant 8
+              31:   27(uvec3) ConstantComposite 28 29 30
+              32:    15(uint) Constant 5
+              37:    15(uint) Constant 14
+              38:    15(uint) Constant 15
+              39:   16(uvec2) ConstantComposite 37 38
               40:     20(int) Constant 13
               42:             TypeVector 6(float) 2
-              46:     15(int) Constant 10
-              47:     15(int) Constant 11
-              48:   16(ivec2) ConstantComposite 46 47
+              46:    15(uint) Constant 10
+              47:    15(uint) Constant 11
+              48:   16(uvec2) ConstantComposite 46 47
               49:     20(int) Constant 9
-              51:     15(int) Constant 0
-              58:             TypePointer Output 7(fvec4)
-59(@entryPointOutput):     58(ptr) Variable Output
-         4(main):           2 Function None 3
+              51:    15(uint) Constant 0
+              58:             TypePointer Output 7(vec4)
+59(@entryPointOutput):   58(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              60:    7(fvec4) FunctionCall 9(@main()
+              60:     7(vec4) FunctionCall 9(@main()
                               Store 59(@entryPointOutput) 60
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
               14:          11 Load 13(g_tTex2df4)
-              22:    7(fvec4) ImageFetch 14 19 Lod 21
+              22:     7(vec4) ImageFetch 14 19 Lod 21
               26:          23 Load 25(g_tTex2df4a)
-              33:    7(fvec4) ImageFetch 26 31 Lod 32
-              34:    7(fvec4) FAdd 22 33
+              33:     7(vec4) ImageFetch 26 31 Lod 32
+              34:     7(vec4) FAdd 22 33
               35:          11 Load 13(g_tTex2df4)
               36:          11 Load 13(g_tTex2df4)
-              41:    7(fvec4) ImageFetch 36 39 Lod 40
-              43:   42(fvec2) VectorShuffle 41 41 0 1
-              44:   16(ivec2) ConvertFToU 43
+              41:     7(vec4) ImageFetch 36 39 Lod 40
+              43:    42(vec2) VectorShuffle 41 41 0 1
+              44:   16(uvec2) ConvertFToU 43
               45:          11 Load 13(g_tTex2df4)
-              50:    7(fvec4) ImageFetch 45 48 Lod 49
+              50:     7(vec4) ImageFetch 45 48 Lod 49
               52:    6(float) CompositeExtract 50 0
-              53:     15(int) ConvertFToU 52
-              54:    7(fvec4) ImageFetch 35 44 Lod 53
-              55:    7(fvec4) FAdd 34 54
+              53:    15(uint) ConvertFToU 52
+              54:     7(vec4) ImageFetch 35 44 Lod 53
+              55:     7(vec4) FAdd 34 54
                               ReturnValue 55
                               FunctionEnd

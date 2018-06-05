@@ -153,58 +153,58 @@ Shader version: 500
                               Decorate 44(@entryPointOutput.pos) BuiltIn Position
                               Decorate 47(@entryPointOutput.somethingelse) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeInt 32 1
-       9(VS_OUT):             TypeStruct 7(fvec4) 8(int)
+       9(VS_OUT):             TypeStruct 7(vec4) 8(int)
               10:             TypeFunction 9(VS_OUT)
               13:             TypePointer Function 9(VS_OUT)
               15:      8(int) Constant 0
-     16($Global):             TypeStruct 7(fvec4)
+     16($Global):             TypeStruct 7(vec4)
               17:             TypePointer Uniform 16($Global)
-              18:     17(ptr) Variable Uniform
-              19:             TypePointer Uniform 7(fvec4)
-              22:             TypePointer Function 7(fvec4)
+              18:17($Global*) Variable Uniform
+              19:             TypePointer Uniform 7(vec4)
+              22:             TypePointer Function 7(vec4)
               24:      8(int) Constant 1
               25:      8(int) Constant 42
               26:             TypePointer Function 8(int)
               36:             TypeInt 32 0
-              37:     36(int) Constant 1
+              37:    36(uint) Constant 1
               38:             TypePointer Function 6(float)
-              43:             TypePointer Output 7(fvec4)
-44(@entryPointOutput.pos):     43(ptr) Variable Output
+              43:             TypePointer Output 7(vec4)
+44(@entryPointOutput.pos):   43(vec4*) Variable Output
               46:             TypePointer Output 8(int)
-47(@entryPointOutput.somethingelse):     46(ptr) Variable Output
-         4(main):           2 Function None 3
+47(@entryPointOutput.somethingelse):    46(int*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
- 31(flattenTemp):     13(ptr) Variable Function
-   33(@position):     22(ptr) Variable Function
+ 31(flattenTemp): 13(VS_OUT*) Variable Function
+   33(@position):   22(vec4*) Variable Function
               32:   9(VS_OUT) FunctionCall 11(@main()
                               Store 31(flattenTemp) 32
-              34:     22(ptr) AccessChain 31(flattenTemp) 15
-              35:    7(fvec4) Load 34
+              34:   22(vec4*) AccessChain 31(flattenTemp) 15
+              35:     7(vec4) Load 34
                               Store 33(@position) 35
-              39:     38(ptr) AccessChain 33(@position) 37
+              39:  38(float*) AccessChain 33(@position) 37
               40:    6(float) Load 39
               41:    6(float) FNegate 40
-              42:     38(ptr) AccessChain 33(@position) 37
+              42:  38(float*) AccessChain 33(@position) 37
                               Store 42 41
-              45:    7(fvec4) Load 33(@position)
+              45:     7(vec4) Load 33(@position)
                               Store 44(@entryPointOutput.pos) 45
-              48:     26(ptr) AccessChain 31(flattenTemp) 24
+              48:    26(int*) AccessChain 31(flattenTemp) 24
               49:      8(int) Load 48
                               Store 47(@entryPointOutput.somethingelse) 49
                               Return
                               FunctionEnd
       11(@main():   9(VS_OUT) Function None 10
               12:             Label
-       14(vsout):     13(ptr) Variable Function
-              20:     19(ptr) AccessChain 18 15
-              21:    7(fvec4) Load 20
-              23:     22(ptr) AccessChain 14(vsout) 15
+       14(vsout): 13(VS_OUT*) Variable Function
+              20:   19(vec4*) AccessChain 18 15
+              21:     7(vec4) Load 20
+              23:   22(vec4*) AccessChain 14(vsout) 15
                               Store 23 21
-              27:     26(ptr) AccessChain 14(vsout) 24
+              27:    26(int*) AccessChain 14(vsout) 24
                               Store 27 25
               28:   9(VS_OUT) Load 14(vsout)
                               ReturnValue 28

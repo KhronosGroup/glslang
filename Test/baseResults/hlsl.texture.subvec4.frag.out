@@ -396,19 +396,19 @@ gl_FragCoord origin is upper left
                               Decorate 118(g_tTex2df4) DescriptorSet 0
                               Decorate 128(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypeInt 32 0
-              12:             TypeVector 11(int) 2
-              13:             TypePointer Function 12(ivec2)
+              12:             TypeVector 11(uint) 2
+              13:             TypePointer Function 12(uvec2)
               15:             TypeImage 6(float) 2D multi-sampled sampled format:Unknown
               16:             TypePointer UniformConstant 15
 17(g_tTex2dmsf1):     16(ptr) Variable UniformConstant
-              20:             TypePointer Function 11(int)
-              22:     11(int) Constant 0
-              26:     11(int) Constant 1
+              20:             TypePointer Function 11(uint)
+              22:    11(uint) Constant 0
+              26:    11(uint) Constant 1
 33(g_tTex2dmsf2):     16(ptr) Variable UniformConstant
 43(g_tTex2dmsf3):     16(ptr) Variable UniformConstant
 53(g_tTex2dmsf4):     16(ptr) Variable UniformConstant
@@ -429,116 +429,116 @@ gl_FragCoord origin is upper left
               94:             TypeSampledImage 86
               96:    6(float) Constant 1036831949
               97:    6(float) Constant 1045220557
-              98:   73(fvec2) ConstantComposite 96 97
+              98:    73(vec2) ConstantComposite 96 97
  101(g_tTex2df2):     87(ptr) Variable UniformConstant
  109(g_tTex2df3):     87(ptr) Variable UniformConstant
  118(g_tTex2df4):     87(ptr) Variable UniformConstant
              123:    6(float) Constant 0
-             124:    7(fvec4) ConstantComposite 123 123 123 123
-             127:             TypePointer Output 7(fvec4)
-128(@entryPointOutput):    127(ptr) Variable Output
-         4(main):           2 Function None 3
+             124:     7(vec4) ConstantComposite 123 123 123 123
+             127:             TypePointer Output 7(vec4)
+128(@entryPointOutput):  127(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-             129:    7(fvec4) FunctionCall 9(@main()
+             129:     7(vec4) FunctionCall 9(@main()
                               Store 128(@entryPointOutput) 129
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-14(sizeQueryTemp):     13(ptr) Variable Function
-      21(WidthU):     20(ptr) Variable Function
-     25(HeightU):     20(ptr) Variable Function
-29(NumberOfSamplesU):     20(ptr) Variable Function
-32(sizeQueryTemp):     13(ptr) Variable Function
-42(sizeQueryTemp):     13(ptr) Variable Function
-52(sizeQueryTemp):     13(ptr) Variable Function
+14(sizeQueryTemp):  13(uvec2*) Variable Function
+      21(WidthU):   20(uint*) Variable Function
+     25(HeightU):   20(uint*) Variable Function
+29(NumberOfSamplesU):   20(uint*) Variable Function
+32(sizeQueryTemp):  13(uvec2*) Variable Function
+42(sizeQueryTemp):  13(uvec2*) Variable Function
+52(sizeQueryTemp):  13(uvec2*) Variable Function
               18:          15 Load 17(g_tTex2dmsf1)
-              19:   12(ivec2) ImageQuerySize 18
+              19:   12(uvec2) ImageQuerySize 18
                               Store 14(sizeQueryTemp) 19
-              23:     20(ptr) AccessChain 14(sizeQueryTemp) 22
-              24:     11(int) Load 23
+              23:   20(uint*) AccessChain 14(sizeQueryTemp) 22
+              24:    11(uint) Load 23
                               Store 21(WidthU) 24
-              27:     20(ptr) AccessChain 14(sizeQueryTemp) 26
-              28:     11(int) Load 27
+              27:   20(uint*) AccessChain 14(sizeQueryTemp) 26
+              28:    11(uint) Load 27
                               Store 25(HeightU) 28
               30:          15 Load 17(g_tTex2dmsf1)
-              31:     11(int) ImageQuerySamples 30
+              31:    11(uint) ImageQuerySamples 30
                               Store 29(NumberOfSamplesU) 31
               34:          15 Load 33(g_tTex2dmsf2)
-              35:   12(ivec2) ImageQuerySize 34
+              35:   12(uvec2) ImageQuerySize 34
                               Store 32(sizeQueryTemp) 35
-              36:     20(ptr) AccessChain 32(sizeQueryTemp) 22
-              37:     11(int) Load 36
+              36:   20(uint*) AccessChain 32(sizeQueryTemp) 22
+              37:    11(uint) Load 36
                               Store 21(WidthU) 37
-              38:     20(ptr) AccessChain 32(sizeQueryTemp) 26
-              39:     11(int) Load 38
+              38:   20(uint*) AccessChain 32(sizeQueryTemp) 26
+              39:    11(uint) Load 38
                               Store 25(HeightU) 39
               40:          15 Load 33(g_tTex2dmsf2)
-              41:     11(int) ImageQuerySamples 40
+              41:    11(uint) ImageQuerySamples 40
                               Store 29(NumberOfSamplesU) 41
               44:          15 Load 43(g_tTex2dmsf3)
-              45:   12(ivec2) ImageQuerySize 44
+              45:   12(uvec2) ImageQuerySize 44
                               Store 42(sizeQueryTemp) 45
-              46:     20(ptr) AccessChain 42(sizeQueryTemp) 22
-              47:     11(int) Load 46
+              46:   20(uint*) AccessChain 42(sizeQueryTemp) 22
+              47:    11(uint) Load 46
                               Store 21(WidthU) 47
-              48:     20(ptr) AccessChain 42(sizeQueryTemp) 26
-              49:     11(int) Load 48
+              48:   20(uint*) AccessChain 42(sizeQueryTemp) 26
+              49:    11(uint) Load 48
                               Store 25(HeightU) 49
               50:          15 Load 43(g_tTex2dmsf3)
-              51:     11(int) ImageQuerySamples 50
+              51:    11(uint) ImageQuerySamples 50
                               Store 29(NumberOfSamplesU) 51
               54:          15 Load 53(g_tTex2dmsf4)
-              55:   12(ivec2) ImageQuerySize 54
+              55:   12(uvec2) ImageQuerySize 54
                               Store 52(sizeQueryTemp) 55
-              56:     20(ptr) AccessChain 52(sizeQueryTemp) 22
-              57:     11(int) Load 56
+              56:   20(uint*) AccessChain 52(sizeQueryTemp) 22
+              57:    11(uint) Load 56
                               Store 21(WidthU) 57
-              58:     20(ptr) AccessChain 52(sizeQueryTemp) 26
-              59:     11(int) Load 58
+              58:   20(uint*) AccessChain 52(sizeQueryTemp) 26
+              59:    11(uint) Load 58
                               Store 25(HeightU) 59
               60:          15 Load 53(g_tTex2dmsf4)
-              61:     11(int) ImageQuerySamples 60
+              61:    11(uint) ImageQuerySamples 60
                               Store 29(NumberOfSamplesU) 61
               62:          15 Load 17(g_tTex2dmsf1)
-              69:    7(fvec4) ImageFetch 62 67 Sample 68
+              69:     7(vec4) ImageFetch 62 67 Sample 68
               70:    6(float) CompositeExtract 69 0
               71:          15 Load 33(g_tTex2dmsf2)
-              72:    7(fvec4) ImageFetch 71 67 Sample 68
+              72:     7(vec4) ImageFetch 71 67 Sample 68
               74:    6(float) CompositeExtract 72 0
               75:    6(float) CompositeExtract 72 1
-              76:   73(fvec2) CompositeConstruct 74 75
+              76:    73(vec2) CompositeConstruct 74 75
               77:          15 Load 43(g_tTex2dmsf3)
-              78:    7(fvec4) ImageFetch 77 67 Sample 68
+              78:     7(vec4) ImageFetch 77 67 Sample 68
               80:    6(float) CompositeExtract 78 0
               81:    6(float) CompositeExtract 78 1
               82:    6(float) CompositeExtract 78 2
-              83:   79(fvec3) CompositeConstruct 80 81 82
+              83:    79(vec3) CompositeConstruct 80 81 82
               84:          15 Load 53(g_tTex2dmsf4)
-              85:    7(fvec4) ImageFetch 84 67 Sample 68
+              85:     7(vec4) ImageFetch 84 67 Sample 68
               89:          86 Load 88(g_tTex2df1)
               93:          90 Load 92(g_sSamp)
               95:          94 SampledImage 89 93
-              99:    7(fvec4) ImageSampleImplicitLod 95 98
+              99:     7(vec4) ImageSampleImplicitLod 95 98
              100:    6(float) CompositeExtract 99 0
              102:          86 Load 101(g_tTex2df2)
              103:          90 Load 92(g_sSamp)
              104:          94 SampledImage 102 103
-             105:    7(fvec4) ImageSampleImplicitLod 104 98
+             105:     7(vec4) ImageSampleImplicitLod 104 98
              106:    6(float) CompositeExtract 105 0
              107:    6(float) CompositeExtract 105 1
-             108:   73(fvec2) CompositeConstruct 106 107
+             108:    73(vec2) CompositeConstruct 106 107
              110:          86 Load 109(g_tTex2df3)
              111:          90 Load 92(g_sSamp)
              112:          94 SampledImage 110 111
-             113:    7(fvec4) ImageSampleImplicitLod 112 98
+             113:     7(vec4) ImageSampleImplicitLod 112 98
              114:    6(float) CompositeExtract 113 0
              115:    6(float) CompositeExtract 113 1
              116:    6(float) CompositeExtract 113 2
-             117:   79(fvec3) CompositeConstruct 114 115 116
+             117:    79(vec3) CompositeConstruct 114 115 116
              119:          86 Load 118(g_tTex2df4)
              120:          90 Load 92(g_sSamp)
              121:          94 SampledImage 119 120
-             122:    7(fvec4) ImageSampleImplicitLod 121 98
+             122:     7(vec4) ImageSampleImplicitLod 121 98
                               ReturnValue 124
                               FunctionEnd

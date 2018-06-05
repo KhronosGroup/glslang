@@ -149,64 +149,64 @@ local_size = (16, 16, 1)
                               Decorate 43(ResultOutU) Binding 0
                               Decorate 49(tid) BuiltIn GlobalInvocationId
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypeVector 6(int) 3
-               8:             TypePointer Function 7(ivec3)
-               9:             TypeFunction 2 8(ptr)
+               7:             TypeVector 6(uint) 3
+               8:             TypePointer Function 7(uvec3)
+               9:             TypeFunction 2(void) 8(uvec3*)
               13:             TypeFloat 32
               14:             TypeVector 13(float) 4
-              15:             TypePointer Function 14(fvec4)
+              15:             TypePointer Function 14(vec4)
               17:             TypeImage 13(float) 3D sampled format:Unknown
               18:             TypePointer UniformConstant 17
    19(ResultInS):     18(ptr) Variable UniformConstant
               22:             TypeInt 32 1
               23:     22(int) Constant 0
-     25($Global):             TypeStruct 14(fvec4)
+     25($Global):             TypeStruct 14(vec4)
               26:             TypePointer Uniform 25($Global)
-              27:     26(ptr) Variable Uniform
-              28:             TypePointer Uniform 14(fvec4)
+              27:26($Global*) Variable Uniform
+              28:             TypePointer Uniform 14(vec4)
               32:             TypeImage 13(float) 3D nonsampled format:Rgba32f
               33:             TypePointer UniformConstant 32
   34(ResultOutS):     33(ptr) Variable UniformConstant
    39(ResultInU):     18(ptr) Variable UniformConstant
   43(ResultOutU):     33(ptr) Variable UniformConstant
-              48:             TypePointer Input 7(ivec3)
-         49(tid):     48(ptr) Variable Input
-         4(main):           2 Function None 3
+              48:             TypePointer Input 7(uvec3)
+         49(tid):  48(uvec3*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-         47(tid):      8(ptr) Variable Function
-       51(param):      8(ptr) Variable Function
-              50:    7(ivec3) Load 49(tid)
+         47(tid):   8(uvec3*) Variable Function
+       51(param):   8(uvec3*) Variable Function
+              50:    7(uvec3) Load 49(tid)
                               Store 47(tid) 50
-              52:    7(ivec3) Load 47(tid)
+              52:    7(uvec3) Load 47(tid)
                               Store 51(param) 52
-              53:           2 FunctionCall 11(@main(vu3;) 51(param)
+              53:     2(void) FunctionCall 11(@main(vu3;) 51(param)
                               Return
                               FunctionEnd
-  11(@main(vu3;):           2 Function None 9
-         10(tid):      8(ptr) FunctionParameter
+  11(@main(vu3;):     2(void) Function None 9
+         10(tid):   8(uvec3*) FunctionParameter
               12:             Label
-   16(storeTemp):     15(ptr) Variable Function
-   38(storeTemp):     15(ptr) Variable Function
+   16(storeTemp):   15(vec4*) Variable Function
+   38(storeTemp):   15(vec4*) Variable Function
               20:          17 Load 19(ResultInS)
-              21:    7(ivec3) Load 10(tid)
-              24:   14(fvec4) ImageFetch 20 21 Lod 23
-              29:     28(ptr) AccessChain 27 23
-              30:   14(fvec4) Load 29
-              31:   14(fvec4) FAdd 24 30
+              21:    7(uvec3) Load 10(tid)
+              24:    14(vec4) ImageFetch 20 21 Lod 23
+              29:   28(vec4*) AccessChain 27 23
+              30:    14(vec4) Load 29
+              31:    14(vec4) FAdd 24 30
                               Store 16(storeTemp) 31
               35:          32 Load 34(ResultOutS)
-              36:    7(ivec3) Load 10(tid)
-              37:   14(fvec4) Load 16(storeTemp)
+              36:    7(uvec3) Load 10(tid)
+              37:    14(vec4) Load 16(storeTemp)
                               ImageWrite 35 36 37
               40:          17 Load 39(ResultInU)
-              41:    7(ivec3) Load 10(tid)
-              42:   14(fvec4) ImageFetch 40 41 Lod 23
+              41:    7(uvec3) Load 10(tid)
+              42:    14(vec4) ImageFetch 40 41 Lod 23
                               Store 38(storeTemp) 42
               44:          32 Load 43(ResultOutU)
-              45:    7(ivec3) Load 10(tid)
-              46:   14(fvec4) Load 38(storeTemp)
+              45:    7(uvec3) Load 10(tid)
+              46:    14(vec4) Load 38(storeTemp)
                               ImageWrite 44 45 46
                               Return
                               FunctionEnd

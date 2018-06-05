@@ -358,49 +358,49 @@ Shader version: 500
                               Decorate 108(@entryPointOutput.position) BuiltIn Position
                               Decorate 115(@entryPointOutput.texCoord) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeVector 6(float) 2
-    9(VertexOut):             TypeStruct 7(fvec4) 8(fvec2)
+    9(VertexOut):             TypeStruct 7(vec4) 8(vec2)
               10:             TypeFunction 9(VertexOut)
               25:    6(float) Constant 1073741824
-              26:    7(fvec4) ConstantComposite 25 25 25 25
-              27:    8(fvec2) ConstantComposite 25 25
+              26:     7(vec4) ConstantComposite 25 25 25 25
+              27:     8(vec2) ConstantComposite 25 25
               28:9(VertexOut) ConstantComposite 26 27
               31:    6(float) Constant 1077936128
-              32:    7(fvec4) ConstantComposite 31 31 31 31
-              33:    8(fvec2) ConstantComposite 31 31
+              32:     7(vec4) ConstantComposite 31 31 31 31
+              33:     8(vec2) ConstantComposite 31 31
               34:9(VertexOut) ConstantComposite 32 33
               37:    6(float) Constant 1063831479
-              38:    7(fvec4) ConstantComposite 37 37 37 37
-              39:    8(fvec2) ConstantComposite 37 37
+              38:     7(vec4) ConstantComposite 37 37 37 37
+              39:     8(vec2) ConstantComposite 37 37
               40:9(VertexOut) ConstantComposite 38 39
               43:             TypePointer Function 6(float)
               59:    6(float) Constant 1065353216
               87:             TypePointer Function 9(VertexOut)
-             100:    7(fvec4) ConstantComposite 59 59 59 59
-             101:    8(fvec2) ConstantComposite 59 59
+             100:     7(vec4) ConstantComposite 59 59 59 59
+             101:     8(vec2) ConstantComposite 59 59
              102:9(VertexOut) ConstantComposite 100 101
-             107:             TypePointer Output 7(fvec4)
-108(@entryPointOutput.position):    107(ptr) Variable Output
+             107:             TypePointer Output 7(vec4)
+108(@entryPointOutput.position):  107(vec4*) Variable Output
              109:             TypeInt 32 1
              110:    109(int) Constant 0
-             111:             TypePointer Function 7(fvec4)
-             114:             TypePointer Output 8(fvec2)
-115(@entryPointOutput.texCoord):    114(ptr) Variable Output
+             111:             TypePointer Function 7(vec4)
+             114:             TypePointer Output 8(vec2)
+115(@entryPointOutput.texCoord):  114(vec2*) Variable Output
              116:    109(int) Constant 1
-             117:             TypePointer Function 8(fvec2)
-         4(main):           2 Function None 3
+             117:             TypePointer Function 8(vec2)
+         4(main):     2(void) Function None 3
                5:             Label
-105(flattenTemp):     87(ptr) Variable Function
+105(flattenTemp):87(VertexOut*) Variable Function
              106:9(VertexOut) FunctionCall 23(@main()
                               Store 105(flattenTemp) 106
-             112:    111(ptr) AccessChain 105(flattenTemp) 110
-             113:    7(fvec4) Load 112
+             112:  111(vec4*) AccessChain 105(flattenTemp) 110
+             113:     7(vec4) Load 112
                               Store 108(@entryPointOutput.position) 113
-             118:    117(ptr) AccessChain 105(flattenTemp) 116
-             119:    8(fvec2) Load 118
+             118:  117(vec2*) AccessChain 105(flattenTemp) 116
+             119:     8(vec2) Load 118
                               Store 115(@entryPointOutput.texCoord) 119
                               Return
                               FunctionEnd
@@ -418,23 +418,23 @@ Shader version: 500
                               FunctionEnd
          17(r3():9(VertexOut) Function None 10
               18:             Label
-           44(f):     43(ptr) Variable Function
+           44(f):  43(float*) Variable Function
                               Store 44(f) 25
               45:    6(float) Load 44(f)
               46:    6(float) Load 44(f)
               47:    6(float) Load 44(f)
               48:    6(float) Load 44(f)
-              49:    7(fvec4) CompositeConstruct 45 46 47 48
+              49:     7(vec4) CompositeConstruct 45 46 47 48
               50:    6(float) Load 44(f)
               51:    6(float) Load 44(f)
-              52:    8(fvec2) CompositeConstruct 50 51
+              52:     8(vec2) CompositeConstruct 50 51
               53:9(VertexOut) CompositeConstruct 49 52
                               ReturnValue 53
                               FunctionEnd
          19(r4():9(VertexOut) Function None 10
               20:             Label
-           56(f):     43(ptr) Variable Function
-  57(scalarCopy):     43(ptr) Variable Function
+           56(f):  43(float*) Variable Function
+  57(scalarCopy):  43(float*) Variable Function
                               Store 56(f) 25
               58:    6(float) Load 56(f)
               60:    6(float) FAdd 58 59
@@ -443,17 +443,17 @@ Shader version: 500
               62:    6(float) Load 57(scalarCopy)
               63:    6(float) Load 57(scalarCopy)
               64:    6(float) Load 57(scalarCopy)
-              65:    7(fvec4) CompositeConstruct 61 62 63 64
+              65:     7(vec4) CompositeConstruct 61 62 63 64
               66:    6(float) Load 57(scalarCopy)
               67:    6(float) Load 57(scalarCopy)
-              68:    8(fvec2) CompositeConstruct 66 67
+              68:     8(vec2) CompositeConstruct 66 67
               69:9(VertexOut) CompositeConstruct 65 68
                               ReturnValue 69
                               FunctionEnd
          21(r5():9(VertexOut) Function None 10
               22:             Label
-           72(f):     43(ptr) Variable Function
-  73(scalarCopy):     43(ptr) Variable Function
+           72(f):  43(float*) Variable Function
+  73(scalarCopy):  43(float*) Variable Function
                               Store 72(f) 25
               74:    6(float) Load 72(f)
               75:    6(float) ExtInst 1(GLSL.std.450) 13(Sin) 74
@@ -462,21 +462,21 @@ Shader version: 500
               77:    6(float) Load 73(scalarCopy)
               78:    6(float) Load 73(scalarCopy)
               79:    6(float) Load 73(scalarCopy)
-              80:    7(fvec4) CompositeConstruct 76 77 78 79
+              80:     7(vec4) CompositeConstruct 76 77 78 79
               81:    6(float) Load 73(scalarCopy)
               82:    6(float) Load 73(scalarCopy)
-              83:    8(fvec2) CompositeConstruct 81 82
+              83:     8(vec2) CompositeConstruct 81 82
               84:9(VertexOut) CompositeConstruct 80 83
                               ReturnValue 84
                               FunctionEnd
       23(@main():9(VertexOut) Function None 10
               24:             Label
-          88(v0):     87(ptr) Variable Function
-          90(v1):     87(ptr) Variable Function
-          92(v2):     87(ptr) Variable Function
-          94(v3):     87(ptr) Variable Function
-          96(v4):     87(ptr) Variable Function
-          98(v5):     87(ptr) Variable Function
+          88(v0):87(VertexOut*) Variable Function
+          90(v1):87(VertexOut*) Variable Function
+          92(v2):87(VertexOut*) Variable Function
+          94(v3):87(VertexOut*) Variable Function
+          96(v4):87(VertexOut*) Variable Function
+          98(v5):87(VertexOut*) Variable Function
               89:9(VertexOut) FunctionCall 11(r0()
                               Store 88(v0) 89
               91:9(VertexOut) FunctionCall 13(r1()

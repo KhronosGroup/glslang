@@ -208,71 +208,71 @@ output primitive = triangle_strip
                               Decorate 45(outStream.uv) Location 1
                               Decorate 50(vin) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeVector 6(float) 2
-   9(VertexData):             TypeStruct 7(fvec4) 7(fvec4) 8(fvec2)
+   9(VertexData):             TypeStruct 7(vec4) 7(vec4) 8(vec2)
               10:             TypeInt 32 0
-              11:     10(int) Constant 2
+              11:    10(uint) Constant 2
               12:             TypeArray 9(VertexData) 11
-              13:             TypePointer Function 12
-       14(PS_IN):             TypeStruct 7(fvec4) 7(fvec4) 8(fvec2)
+              13:             TypePointer Function 12(VertexData[2])
+       14(PS_IN):             TypeStruct 7(vec4) 7(vec4) 8(vec2)
               15:             TypePointer Function 14(PS_IN)
-              16:             TypeFunction 2 13(ptr) 15(ptr)
+              16:             TypeFunction 2(void) 13(VertexData[2]*) 15(PS_IN*)
               22:             TypeInt 32 1
               23:     22(int) Constant 1
-              24:             TypePointer Function 7(fvec4)
+              24:             TypePointer Function 7(vec4)
               28:     22(int) Constant 2
-              29:             TypePointer Function 8(fvec2)
+              29:             TypePointer Function 8(vec2)
               33:     22(int) Constant 0
-              37:             TypePointer Output 7(fvec4)
-38(outStream.position):     37(ptr) Variable Output
-41(outStream.color):     37(ptr) Variable Output
-              44:             TypePointer Output 8(fvec2)
-45(outStream.uv):     44(ptr) Variable Output
-              49:             TypePointer Input 12
-         50(vin):     49(ptr) Variable Input
-         4(main):           2 Function None 3
+              37:             TypePointer Output 7(vec4)
+38(outStream.position):   37(vec4*) Variable Output
+41(outStream.color):   37(vec4*) Variable Output
+              44:             TypePointer Output 8(vec2)
+45(outStream.uv):   44(vec2*) Variable Output
+              49:             TypePointer Input 12(VertexData[2])
+         50(vin):49(VertexData[2]*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-         48(vin):     13(ptr) Variable Function
-   52(outStream):     15(ptr) Variable Function
-       53(param):     13(ptr) Variable Function
-       55(param):     15(ptr) Variable Function
-              51:          12 Load 50(vin)
+         48(vin):13(VertexData[2]*) Variable Function
+   52(outStream):  15(PS_IN*) Variable Function
+       53(param):13(VertexData[2]*) Variable Function
+       55(param):  15(PS_IN*) Variable Function
+              51:12(VertexData[2]) Load 50(vin)
                               Store 48(vin) 51
-              54:          12 Load 48(vin)
+              54:12(VertexData[2]) Load 48(vin)
                               Store 53(param) 54
-              56:           2 FunctionCall 19(@main(struct-VertexData-vf4-vf4-vf21[2];struct-PS_IN-vf4-vf4-vf21;) 53(param) 55(param)
+              56:     2(void) FunctionCall 19(@main(struct-VertexData-vf4-vf4-vf21[2];struct-PS_IN-vf4-vf4-vf21;) 53(param) 55(param)
               57:   14(PS_IN) Load 55(param)
                               Store 52(outStream) 57
                               Return
                               FunctionEnd
-19(@main(struct-VertexData-vf4-vf4-vf21[2];struct-PS_IN-vf4-vf4-vf21;):           2 Function None 16
-         17(vin):     13(ptr) FunctionParameter
-   18(outStream):     15(ptr) FunctionParameter
+19(@main(struct-VertexData-vf4-vf4-vf21[2];struct-PS_IN-vf4-vf4-vf21;):     2(void) Function None 16
+         17(vin):13(VertexData[2]*) FunctionParameter
+   18(outStream):  15(PS_IN*) FunctionParameter
               20:             Label
-        21(vout):     15(ptr) Variable Function
-              25:     24(ptr) AccessChain 17(vin) 23 23
-              26:    7(fvec4) Load 25
-              27:     24(ptr) AccessChain 21(vout) 23
+        21(vout):  15(PS_IN*) Variable Function
+              25:   24(vec4*) AccessChain 17(vin) 23 23
+              26:     7(vec4) Load 25
+              27:   24(vec4*) AccessChain 21(vout) 23
                               Store 27 26
-              30:     29(ptr) AccessChain 17(vin) 23 28
-              31:    8(fvec2) Load 30
-              32:     29(ptr) AccessChain 21(vout) 28
+              30:   29(vec2*) AccessChain 17(vin) 23 28
+              31:     8(vec2) Load 30
+              32:   29(vec2*) AccessChain 21(vout) 28
                               Store 32 31
-              34:     24(ptr) AccessChain 17(vin) 23 33
-              35:    7(fvec4) Load 34
-              36:     24(ptr) AccessChain 21(vout) 33
+              34:   24(vec4*) AccessChain 17(vin) 23 33
+              35:     7(vec4) Load 34
+              36:   24(vec4*) AccessChain 21(vout) 33
                               Store 36 35
-              39:     24(ptr) AccessChain 21(vout) 33
-              40:    7(fvec4) Load 39
+              39:   24(vec4*) AccessChain 21(vout) 33
+              40:     7(vec4) Load 39
                               Store 38(outStream.position) 40
-              42:     24(ptr) AccessChain 21(vout) 23
-              43:    7(fvec4) Load 42
+              42:   24(vec4*) AccessChain 21(vout) 23
+              43:     7(vec4) Load 42
                               Store 41(outStream.color) 43
-              46:     29(ptr) AccessChain 21(vout) 28
-              47:    8(fvec2) Load 46
+              46:   29(vec2*) AccessChain 21(vout) 28
+              47:     8(vec2) Load 46
                               Store 45(outStream.uv) 47
                               EmitVertex
                               Return

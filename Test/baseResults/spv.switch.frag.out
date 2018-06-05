@@ -171,24 +171,24 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
                               Decorate 257 RelaxedPrecision
                               Decorate 264 RelaxedPrecision
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
+               8:             TypePointer Function 7(vec4)
                9:             TypeInt 32 1
               10:             TypePointer Function 9(int)
-              11:             TypeFunction 7(fvec4) 8(ptr) 8(ptr) 10(ptr)
+              11:             TypeFunction 7(vec4) 8(vec4*) 8(vec4*) 10(int*)
               36:    6(float) Constant 0
-              37:    7(fvec4) ConstantComposite 36 36 36 36
+              37:     7(vec4) ConstantComposite 36 36 36 36
               48:    6(float) Constant 1065353216
-              49:    7(fvec4) ConstantComposite 48 48 48 48
+              49:     7(vec4) ConstantComposite 48 48 48 48
               61:             TypePointer Input 9(int)
-           62(c):     61(ptr) Variable Input
+           62(c):    61(int*) Variable Input
               65:      9(int) Constant 1
               72:             TypePointer Function 6(float)
               74:             TypePointer Input 6(float)
-           75(x):     74(ptr) Variable Input
-          129(d):     61(ptr) Variable Input
+           75(x):  74(float*) Variable Input
+          129(d):    61(int*) Variable Input
              156:      9(int) Constant 0
              163:      9(int) Constant 10
              164:             TypeBool
@@ -197,24 +197,24 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
              188:    6(float) Constant 1120429670
              208:    6(float) Constant 1079739679
              226:             TypePointer Output 6(float)
-      227(color):    226(ptr) Variable Output
-             232:             TypePointer Input 7(fvec4)
-          233(v):    232(ptr) Variable Input
+      227(color): 226(float*) Variable Output
+             232:             TypePointer Input 7(vec4)
+          233(v):  232(vec4*) Variable Input
              241:             TypeInt 32 0
-             242:    241(int) Constant 1
-             253:    241(int) Constant 2
-         4(main):           2 Function None 3
+             242:   241(uint) Constant 1
+             253:   241(uint) Constant 2
+         4(main):     2(void) Function None 3
                5:             Label
-       60(local):     10(ptr) Variable Function
-           73(f):     72(ptr) Variable Function
-          155(i):     10(ptr) Variable Function
-          175(j):     10(ptr) Variable Function
-      234(param):      8(ptr) Variable Function
-      236(param):      8(ptr) Variable Function
-      238(param):     10(ptr) Variable Function
-      246(param):      8(ptr) Variable Function
-      248(param):      8(ptr) Variable Function
-      250(param):     10(ptr) Variable Function
+       60(local):    10(int*) Variable Function
+           73(f):  72(float*) Variable Function
+          155(i):    10(int*) Variable Function
+          175(j):    10(int*) Variable Function
+      234(param):    8(vec4*) Variable Function
+      236(param):    8(vec4*) Variable Function
+      238(param):    10(int*) Variable Function
+      246(param):    8(vec4*) Variable Function
+      248(param):    8(vec4*) Variable Function
+      250(param):    10(int*) Variable Function
               63:      9(int) Load 62(c)
                               Store 60(local) 63
               64:      9(int) Load 60(local)
@@ -432,24 +432,24 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
              230:    6(float) ConvertSToF 229
              231:    6(float) FAdd 228 230
                               Store 227(color) 231
-             235:    7(fvec4) Load 233(v)
+             235:     7(vec4) Load 233(v)
                               Store 234(param) 235
-             237:    7(fvec4) Load 233(v)
+             237:     7(vec4) Load 233(v)
                               Store 236(param) 237
              239:      9(int) Load 62(c)
                               Store 238(param) 239
-             240:    7(fvec4) FunctionCall 15(foo1(vf4;vf4;i1;) 234(param) 236(param) 238(param)
+             240:     7(vec4) FunctionCall 15(foo1(vf4;vf4;i1;) 234(param) 236(param) 238(param)
              243:    6(float) CompositeExtract 240 1
              244:    6(float) Load 227(color)
              245:    6(float) FAdd 244 243
                               Store 227(color) 245
-             247:    7(fvec4) Load 233(v)
+             247:     7(vec4) Load 233(v)
                               Store 246(param) 247
-             249:    7(fvec4) Load 233(v)
+             249:     7(vec4) Load 233(v)
                               Store 248(param) 249
              251:      9(int) Load 62(c)
                               Store 250(param) 251
-             252:    7(fvec4) FunctionCall 20(foo2(vf4;vf4;i1;) 246(param) 248(param) 250(param)
+             252:     7(vec4) FunctionCall 20(foo2(vf4;vf4;i1;) 246(param) 248(param) 250(param)
              254:    6(float) CompositeExtract 252 2
              255:    6(float) Load 227(color)
              256:    6(float) FAdd 255 254
@@ -471,10 +471,10 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
              266:             Label
                               Return
                               FunctionEnd
-15(foo1(vf4;vf4;i1;):    7(fvec4) Function None 11
-          12(v1):      8(ptr) FunctionParameter
-          13(v2):      8(ptr) FunctionParameter
-          14(i1):     10(ptr) FunctionParameter
+15(foo1(vf4;vf4;i1;):     7(vec4) Function None 11
+          12(v1):    8(vec4*) FunctionParameter
+          13(v2):    8(vec4*) FunctionParameter
+          14(i1):    10(int*) FunctionParameter
               16:             Label
               22:      9(int) Load 14(i1)
                               SelectionMerge 26 None
@@ -484,23 +484,23 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
                                      case 1: 24
                                      case 3: 25
               23:               Label
-              27:    7(fvec4)   Load 12(v1)
+              27:     7(vec4)   Load 12(v1)
                                 ReturnValue 27
               24:               Label
-              29:    7(fvec4)   Load 13(v2)
+              29:     7(vec4)   Load 13(v2)
                                 ReturnValue 29
               25:               Label
-              31:    7(fvec4)   Load 12(v1)
-              32:    7(fvec4)   Load 13(v2)
-              33:    7(fvec4)   FMul 31 32
+              31:     7(vec4)   Load 12(v1)
+              32:     7(vec4)   Load 13(v2)
+              33:     7(vec4)   FMul 31 32
                                 ReturnValue 33
               26:             Label
                               ReturnValue 37
                               FunctionEnd
-20(foo2(vf4;vf4;i1;):    7(fvec4) Function None 11
-          17(v1):      8(ptr) FunctionParameter
-          18(v2):      8(ptr) FunctionParameter
-          19(i1):     10(ptr) FunctionParameter
+20(foo2(vf4;vf4;i1;):     7(vec4) Function None 11
+          17(v1):    8(vec4*) FunctionParameter
+          18(v2):    8(vec4*) FunctionParameter
+          19(i1):    10(int*) FunctionParameter
               21:             Label
               40:      9(int) Load 19(i1)
                               SelectionMerge 45 None
@@ -510,17 +510,17 @@ WARNING: 0:139: 'switch' : last case/default label not followed by statements
                                      case 1: 43
                                      case 3: 44
               41:               Label
-              46:    7(fvec4)   Load 17(v1)
+              46:     7(vec4)   Load 17(v1)
                                 ReturnValue 46
               42:               Label
                                 ReturnValue 49
               43:               Label
-              51:    7(fvec4)   Load 18(v2)
+              51:     7(vec4)   Load 18(v2)
                                 ReturnValue 51
               44:               Label
-              53:    7(fvec4)   Load 17(v1)
-              54:    7(fvec4)   Load 18(v2)
-              55:    7(fvec4)   FMul 53 54
+              53:     7(vec4)   Load 17(v1)
+              54:     7(vec4)   Load 18(v2)
+              55:     7(vec4)   FMul 53 54
                                 ReturnValue 55
               45:             Label
                               ReturnValue 37

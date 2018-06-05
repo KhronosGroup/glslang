@@ -448,25 +448,25 @@ Shader version: 500
                               Decorate 60(clip) BuiltIn ClipDistance
                               Decorate 76(cull) BuiltIn CullDistance
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
+               8:             TypePointer Function 7(vec4)
                9:             TypeVector 6(float) 2
               10:             TypeInt 32 0
-              11:     10(int) Constant 2
-              12:             TypeArray 9(fvec2) 11
-              13:             TypePointer Function 12
-              14:             TypeFunction 2 8(ptr) 13(ptr) 13(ptr)
+              11:    10(uint) Constant 2
+              12:             TypeArray 9(vec2) 11
+              13:             TypePointer Function 12(vec2[2])
+              14:             TypeFunction 2(void) 8(vec4*) 13(vec2[2]*) 13(vec2[2]*)
               20:    6(float) Constant 1065353216
-              21:    7(fvec4) ConstantComposite 20 20 20 20
+              21:     7(vec4) ConstantComposite 20 20 20 20
               22:             TypeInt 32 1
               23:     22(int) Constant 0
               24:    6(float) Constant 1056964608
-              25:     10(int) Constant 0
+              25:    10(uint) Constant 0
               26:             TypePointer Function 6(float)
               28:    6(float) Constant 1058642330
-              29:     10(int) Constant 1
+              29:    10(uint) Constant 1
               31:     22(int) Constant 1
               32:    6(float) Constant 1060320051
               34:    6(float) Constant 1061997773
@@ -474,88 +474,88 @@ Shader version: 500
               38:    6(float) Constant 1059061760
               40:    6(float) Constant 1060739482
               42:    6(float) Constant 1062417203
-              54:             TypePointer Output 7(fvec4)
-         55(pos):     54(ptr) Variable Output
-              57:     10(int) Constant 4
+              54:             TypePointer Output 7(vec4)
+         55(pos):   54(vec4*) Variable Output
+              57:    10(uint) Constant 4
               58:             TypeArray 6(float) 57
-              59:             TypePointer Output 58
-        60(clip):     59(ptr) Variable Output
+              59:             TypePointer Output 58(float[4])
+        60(clip):59(float[4]*) Variable Output
               63:             TypePointer Output 6(float)
               68:     22(int) Constant 2
               72:     22(int) Constant 3
-        76(cull):     59(ptr) Variable Output
-         4(main):           2 Function None 3
+        76(cull):59(float[4]*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-         44(pos):      8(ptr) Variable Function
-        45(clip):     13(ptr) Variable Function
-        46(cull):     13(ptr) Variable Function
-       47(param):      8(ptr) Variable Function
-       48(param):     13(ptr) Variable Function
-       49(param):     13(ptr) Variable Function
-              50:           2 FunctionCall 18(@main(vf4;vf2[2];vf2[2];) 47(param) 48(param) 49(param)
-              51:    7(fvec4) Load 47(param)
+         44(pos):    8(vec4*) Variable Function
+        45(clip):13(vec2[2]*) Variable Function
+        46(cull):13(vec2[2]*) Variable Function
+       47(param):    8(vec4*) Variable Function
+       48(param):13(vec2[2]*) Variable Function
+       49(param):13(vec2[2]*) Variable Function
+              50:     2(void) FunctionCall 18(@main(vf4;vf2[2];vf2[2];) 47(param) 48(param) 49(param)
+              51:     7(vec4) Load 47(param)
                               Store 44(pos) 51
-              52:          12 Load 48(param)
+              52: 12(vec2[2]) Load 48(param)
                               Store 45(clip) 52
-              53:          12 Load 49(param)
+              53: 12(vec2[2]) Load 49(param)
                               Store 46(cull) 53
-              56:    7(fvec4) Load 44(pos)
+              56:     7(vec4) Load 44(pos)
                               Store 55(pos) 56
-              61:     26(ptr) AccessChain 45(clip) 23 25
+              61:  26(float*) AccessChain 45(clip) 23 25
               62:    6(float) Load 61
-              64:     63(ptr) AccessChain 60(clip) 23
+              64:  63(float*) AccessChain 60(clip) 23
                               Store 64 62
-              65:     26(ptr) AccessChain 45(clip) 23 29
+              65:  26(float*) AccessChain 45(clip) 23 29
               66:    6(float) Load 65
-              67:     63(ptr) AccessChain 60(clip) 31
+              67:  63(float*) AccessChain 60(clip) 31
                               Store 67 66
-              69:     26(ptr) AccessChain 45(clip) 31 25
+              69:  26(float*) AccessChain 45(clip) 31 25
               70:    6(float) Load 69
-              71:     63(ptr) AccessChain 60(clip) 68
+              71:  63(float*) AccessChain 60(clip) 68
                               Store 71 70
-              73:     26(ptr) AccessChain 45(clip) 31 29
+              73:  26(float*) AccessChain 45(clip) 31 29
               74:    6(float) Load 73
-              75:     63(ptr) AccessChain 60(clip) 72
+              75:  63(float*) AccessChain 60(clip) 72
                               Store 75 74
-              77:     26(ptr) AccessChain 46(cull) 23 25
+              77:  26(float*) AccessChain 46(cull) 23 25
               78:    6(float) Load 77
-              79:     63(ptr) AccessChain 76(cull) 23
+              79:  63(float*) AccessChain 76(cull) 23
                               Store 79 78
-              80:     26(ptr) AccessChain 46(cull) 23 29
+              80:  26(float*) AccessChain 46(cull) 23 29
               81:    6(float) Load 80
-              82:     63(ptr) AccessChain 76(cull) 31
+              82:  63(float*) AccessChain 76(cull) 31
                               Store 82 81
-              83:     26(ptr) AccessChain 46(cull) 31 25
+              83:  26(float*) AccessChain 46(cull) 31 25
               84:    6(float) Load 83
-              85:     63(ptr) AccessChain 76(cull) 68
+              85:  63(float*) AccessChain 76(cull) 68
                               Store 85 84
-              86:     26(ptr) AccessChain 46(cull) 31 29
+              86:  26(float*) AccessChain 46(cull) 31 29
               87:    6(float) Load 86
-              88:     63(ptr) AccessChain 76(cull) 72
+              88:  63(float*) AccessChain 76(cull) 72
                               Store 88 87
                               Return
                               FunctionEnd
-18(@main(vf4;vf2[2];vf2[2];):           2 Function None 14
-         15(pos):      8(ptr) FunctionParameter
-        16(clip):     13(ptr) FunctionParameter
-        17(cull):     13(ptr) FunctionParameter
+18(@main(vf4;vf2[2];vf2[2];):     2(void) Function None 14
+         15(pos):    8(vec4*) FunctionParameter
+        16(clip):13(vec2[2]*) FunctionParameter
+        17(cull):13(vec2[2]*) FunctionParameter
               19:             Label
                               Store 15(pos) 21
-              27:     26(ptr) AccessChain 16(clip) 23 25
+              27:  26(float*) AccessChain 16(clip) 23 25
                               Store 27 24
-              30:     26(ptr) AccessChain 16(clip) 23 29
+              30:  26(float*) AccessChain 16(clip) 23 29
                               Store 30 28
-              33:     26(ptr) AccessChain 16(clip) 31 25
+              33:  26(float*) AccessChain 16(clip) 31 25
                               Store 33 32
-              35:     26(ptr) AccessChain 16(clip) 31 29
+              35:  26(float*) AccessChain 16(clip) 31 29
                               Store 35 34
-              37:     26(ptr) AccessChain 17(cull) 23 25
+              37:  26(float*) AccessChain 17(cull) 23 25
                               Store 37 36
-              39:     26(ptr) AccessChain 17(cull) 23 29
+              39:  26(float*) AccessChain 17(cull) 23 29
                               Store 39 38
-              41:     26(ptr) AccessChain 17(cull) 31 25
+              41:  26(float*) AccessChain 17(cull) 31 25
                               Store 41 40
-              43:     26(ptr) AccessChain 17(cull) 31 29
+              43:  26(float*) AccessChain 17(cull) 31 29
                               Store 43 42
                               Return
                               FunctionEnd

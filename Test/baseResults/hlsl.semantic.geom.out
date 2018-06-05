@@ -202,77 +202,77 @@ output primitive = line_strip
                               Decorate 50(OutputStream.ii) Location 0
                               Decorate 57(VertexID) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:      6(int) Constant 3
-               8:             TypeArray 6(int) 7
-               9:             TypePointer Function 8
+               7:     6(uint) Constant 3
+               8:             TypeArray 6(uint) 7
+               9:             TypePointer Function 8(uint[3])
               10:             TypeFloat 32
               11:             TypeInt 32 1
-           12(S):             TypeStruct 10(float) 10(float) 10(float) 6(int) 6(int) 11(int)
+           12(S):             TypeStruct 10(float) 10(float) 10(float) 6(uint) 6(uint) 11(int)
               13:             TypePointer Function 12(S)
-              14:             TypeFunction 2 9(ptr) 13(ptr)
+              14:             TypeFunction 2(void) 9(uint[3]*) 13(S*)
               19:             TypePointer Output 10(float)
-20(OutputStream.clip0):     19(ptr) Variable Output
+20(OutputStream.clip0):  19(float*) Variable Output
               22:     11(int) Constant 0
               23:             TypePointer Function 10(float)
-              26:      6(int) Constant 1
+              26:     6(uint) Constant 1
               27:             TypeArray 10(float) 26
-              28:             TypePointer Output 27
-29(OutputStream.clip0):     28(ptr) Variable Output
+              28:             TypePointer Output 27(float[1])
+29(OutputStream.clip0):28(float[1]*) Variable Output
               30:     11(int) Constant 1
-34(OutputStream.cull0):     28(ptr) Variable Output
+34(OutputStream.cull0):28(float[1]*) Variable Output
               35:     11(int) Constant 2
-              39:             TypePointer Output 6(int)
-40(OutputStream.vpai):     39(ptr) Variable Output
+              39:             TypePointer Output 6(uint)
+40(OutputStream.vpai):   39(uint*) Variable Output
               41:     11(int) Constant 3
-              42:             TypePointer Function 6(int)
-45(OutputStream.rtai):     39(ptr) Variable Output
+              42:             TypePointer Function 6(uint)
+45(OutputStream.rtai):   39(uint*) Variable Output
               46:     11(int) Constant 4
               49:             TypePointer Output 11(int)
-50(OutputStream.ii):     49(ptr) Variable Output
+50(OutputStream.ii):    49(int*) Variable Output
               51:     11(int) Constant 5
               52:             TypePointer Function 11(int)
-              56:             TypePointer Input 8
-    57(VertexID):     56(ptr) Variable Input
-         4(main):           2 Function None 3
+              56:             TypePointer Input 8(uint[3])
+    57(VertexID):56(uint[3]*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-    55(VertexID):      9(ptr) Variable Function
-59(OutputStream):     13(ptr) Variable Function
-       60(param):      9(ptr) Variable Function
-       62(param):     13(ptr) Variable Function
-              58:           8 Load 57(VertexID)
+    55(VertexID): 9(uint[3]*) Variable Function
+59(OutputStream):      13(S*) Variable Function
+       60(param): 9(uint[3]*) Variable Function
+       62(param):      13(S*) Variable Function
+              58:  8(uint[3]) Load 57(VertexID)
                               Store 55(VertexID) 58
-              61:           8 Load 55(VertexID)
+              61:  8(uint[3]) Load 55(VertexID)
                               Store 60(param) 61
-              63:           2 FunctionCall 17(@main(u1[3];struct-S-f1-f1-f1-u1-u1-i11;) 60(param) 62(param)
+              63:     2(void) FunctionCall 17(@main(u1[3];struct-S-f1-f1-f1-u1-u1-i11;) 60(param) 62(param)
               64:       12(S) Load 62(param)
                               Store 59(OutputStream) 64
                               Return
                               FunctionEnd
-17(@main(u1[3];struct-S-f1-f1-f1-u1-u1-i11;):           2 Function None 14
-    15(VertexID):      9(ptr) FunctionParameter
-16(OutputStream):     13(ptr) FunctionParameter
+17(@main(u1[3];struct-S-f1-f1-f1-u1-u1-i11;):     2(void) Function None 14
+    15(VertexID): 9(uint[3]*) FunctionParameter
+16(OutputStream):      13(S*) FunctionParameter
               18:             Label
-           21(s):     13(ptr) Variable Function
-              24:     23(ptr) AccessChain 21(s) 22
+           21(s):      13(S*) Variable Function
+              24:  23(float*) AccessChain 21(s) 22
               25:   10(float) Load 24
                               Store 20(OutputStream.clip0) 25
-              31:     23(ptr) AccessChain 21(s) 30
+              31:  23(float*) AccessChain 21(s) 30
               32:   10(float) Load 31
-              33:     19(ptr) AccessChain 29(OutputStream.clip0) 22
+              33:  19(float*) AccessChain 29(OutputStream.clip0) 22
                               Store 33 32
-              36:     23(ptr) AccessChain 21(s) 35
+              36:  23(float*) AccessChain 21(s) 35
               37:   10(float) Load 36
-              38:     19(ptr) AccessChain 34(OutputStream.cull0) 22
+              38:  19(float*) AccessChain 34(OutputStream.cull0) 22
                               Store 38 37
-              43:     42(ptr) AccessChain 21(s) 41
-              44:      6(int) Load 43
+              43:   42(uint*) AccessChain 21(s) 41
+              44:     6(uint) Load 43
                               Store 40(OutputStream.vpai) 44
-              47:     42(ptr) AccessChain 21(s) 46
-              48:      6(int) Load 47
+              47:   42(uint*) AccessChain 21(s) 46
+              48:     6(uint) Load 47
                               Store 45(OutputStream.rtai) 48
-              53:     52(ptr) AccessChain 21(s) 51
+              53:    52(int*) AccessChain 21(s) 51
               54:     11(int) Load 53
                               Store 50(OutputStream.ii) 54
                               EmitVertex

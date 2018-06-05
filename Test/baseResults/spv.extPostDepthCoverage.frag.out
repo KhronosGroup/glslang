@@ -16,8 +16,8 @@ spv.extPostDepthCoverage.frag
                               SourceExtension  "GL_EXT_post_depth_coverage"
                               Name 4  "main"
                2:             TypeVoid
-               3:             TypeFunction 2
-         4(main):           2 Function None 3
+               3:             TypeFunction 2(void)
+         4(main):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd

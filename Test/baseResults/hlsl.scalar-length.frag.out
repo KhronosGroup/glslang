@@ -79,34 +79,34 @@ gl_FragCoord origin is upper left
                               Name 28  "@entryPointOutput"
                               Decorate 28(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
-              11:             TypePointer Function 7(fvec4)
+               8:             TypeFunction 7(vec4)
+              11:             TypePointer Function 7(vec4)
               13:    6(float) Constant 0
               14:    6(float) Constant 1065353216
               15:    6(float) Constant 1073741824
               16:    6(float) Constant 1077936128
-              17:    7(fvec4) ConstantComposite 13 14 15 16
+              17:     7(vec4) ConstantComposite 13 14 15 16
               18:             TypeInt 32 0
-              19:     18(int) Constant 3
+              19:    18(uint) Constant 3
               20:             TypePointer Function 6(float)
-              27:             TypePointer Output 7(fvec4)
-28(@entryPointOutput):     27(ptr) Variable Output
-         4(main):           2 Function None 3
+              27:             TypePointer Output 7(vec4)
+28(@entryPointOutput):   27(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              29:    7(fvec4) FunctionCall 9(@main()
+              29:     7(vec4) FunctionCall 9(@main()
                               Store 28(@entryPointOutput) 29
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-        12(test):     11(ptr) Variable Function
+        12(test):   11(vec4*) Variable Function
                               Store 12(test) 17
-              21:     20(ptr) AccessChain 12(test) 19
+              21:  20(float*) AccessChain 12(test) 19
               22:    6(float) Load 21
               23:    6(float) ExtInst 1(GLSL.std.450) 66(Length) 22
-              24:    7(fvec4) CompositeConstruct 23 23 23 23
+              24:     7(vec4) CompositeConstruct 23 23 23 23
                               ReturnValue 24
                               FunctionEnd

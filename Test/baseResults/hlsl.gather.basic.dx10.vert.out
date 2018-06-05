@@ -276,12 +276,12 @@ Shader version: 500
                               Decorate 122(g_tTex3di4) DescriptorSet 0
                               Decorate 125(g_tTex3du4) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(VS_OUTPUT):             TypeStruct 7(fvec4)
+    8(VS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(VS_OUTPUT)
-              12:             TypePointer Function 7(fvec4)
+              12:             TypePointer Function 7(vec4)
               14:             TypeImage 6(float) 2D sampled format:Unknown
               15:             TypePointer UniformConstant 14
   16(g_tTex2df4):     15(ptr) Variable UniformConstant
@@ -292,7 +292,7 @@ Shader version: 500
               24:             TypeVector 6(float) 2
               25:    6(float) Constant 1036831949
               26:    6(float) Constant 1045220557
-              27:   24(fvec2) ConstantComposite 25 26
+              27:    24(vec2) ConstantComposite 25 26
               28:             TypeInt 32 1
               29:     28(int) Constant 0
               31:             TypeVector 28(int) 4
@@ -303,41 +303,41 @@ Shader version: 500
               39:             TypeSampledImage 34
               41:    6(float) Constant 1050253722
               42:    6(float) Constant 1053609165
-              43:   24(fvec2) ConstantComposite 41 42
+              43:    24(vec2) ConstantComposite 41 42
               45:             TypeInt 32 0
-              46:             TypeVector 45(int) 4
-              47:             TypePointer Function 46(ivec4)
-              49:             TypeImage 45(int) 2D sampled format:Unknown
+              46:             TypeVector 45(uint) 4
+              47:             TypePointer Function 46(uvec4)
+              49:             TypeImage 45(uint) 2D sampled format:Unknown
               50:             TypePointer UniformConstant 49
   51(g_tTex2du4):     50(ptr) Variable UniformConstant
               54:             TypeSampledImage 49
               56:    6(float) Constant 1056964608
               57:    6(float) Constant 1058642330
-              58:   24(fvec2) ConstantComposite 56 57
+              58:    24(vec2) ConstantComposite 56 57
               61:             TypeImage 6(float) Cube sampled format:Unknown
               62:             TypePointer UniformConstant 61
   63(g_tTexcdf4):     62(ptr) Variable UniformConstant
               66:             TypeSampledImage 61
               68:             TypeVector 6(float) 3
-              69:   68(fvec3) ConstantComposite 25 26 41
+              69:    68(vec3) ConstantComposite 25 26 41
               72:             TypeImage 28(int) Cube sampled format:Unknown
               73:             TypePointer UniformConstant 72
   74(g_tTexcdi4):     73(ptr) Variable UniformConstant
               77:             TypeSampledImage 72
-              79:   68(fvec3) ConstantComposite 42 56 57
-              82:             TypeImage 45(int) Cube sampled format:Unknown
+              79:    68(vec3) ConstantComposite 42 56 57
+              82:             TypeImage 45(uint) Cube sampled format:Unknown
               83:             TypePointer UniformConstant 82
   84(g_tTexcdu4):     83(ptr) Variable UniformConstant
               87:             TypeSampledImage 82
               89:    6(float) Constant 1060320051
               90:    6(float) Constant 1061997773
               91:    6(float) Constant 1063675494
-              92:   68(fvec3) ConstantComposite 89 90 91
+              92:    68(vec3) ConstantComposite 89 90 91
               94:             TypePointer Function 8(VS_OUTPUT)
               96:    6(float) Constant 0
-              97:    7(fvec4) ConstantComposite 96 96 96 96
-             102:             TypePointer Output 7(fvec4)
-103(@entryPointOutput.Pos):    102(ptr) Variable Output
+              97:     7(vec4) ConstantComposite 96 96 96 96
+             102:             TypePointer Output 7(vec4)
+103(@entryPointOutput.Pos):  102(vec4*) Variable Output
   106(g_sSamp2d):     19(ptr) Variable UniformConstant
              107:             TypeImage 6(float) 1D sampled format:Unknown
              108:             TypePointer UniformConstant 107
@@ -346,7 +346,7 @@ Shader version: 500
              111:             TypeImage 28(int) 1D sampled format:Unknown
              112:             TypePointer UniformConstant 111
  113(g_tTex1di4):    112(ptr) Variable UniformConstant
-             114:             TypeImage 45(int) 1D sampled format:Unknown
+             114:             TypeImage 45(uint) 1D sampled format:Unknown
              115:             TypePointer UniformConstant 114
  116(g_tTex1du4):    115(ptr) Variable UniformConstant
              117:             TypeImage 6(float) 3D sampled format:Unknown
@@ -355,29 +355,29 @@ Shader version: 500
              120:             TypeImage 28(int) 3D sampled format:Unknown
              121:             TypePointer UniformConstant 120
  122(g_tTex3di4):    121(ptr) Variable UniformConstant
-             123:             TypeImage 45(int) 3D sampled format:Unknown
+             123:             TypeImage 45(uint) 3D sampled format:Unknown
              124:             TypePointer UniformConstant 123
  125(g_tTex3du4):    124(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
              104:8(VS_OUTPUT) FunctionCall 10(@main()
-             105:    7(fvec4) CompositeExtract 104 0
+             105:     7(vec4) CompositeExtract 104 0
                               Store 103(@entryPointOutput.Pos) 105
                               Return
                               FunctionEnd
       10(@main():8(VS_OUTPUT) Function None 9
               11:             Label
-     13(txval20):     12(ptr) Variable Function
-     33(txval21):     32(ptr) Variable Function
-     48(txval22):     47(ptr) Variable Function
-     60(txval40):     12(ptr) Variable Function
-     71(txval41):     32(ptr) Variable Function
-     81(txval42):     47(ptr) Variable Function
-       95(vsout):     94(ptr) Variable Function
+     13(txval20):   12(vec4*) Variable Function
+     33(txval21):  32(ivec4*) Variable Function
+     48(txval22):  47(uvec4*) Variable Function
+     60(txval40):   12(vec4*) Variable Function
+     71(txval41):  32(ivec4*) Variable Function
+     81(txval42):  47(uvec4*) Variable Function
+       95(vsout):94(VS_OUTPUT*) Variable Function
               17:          14 Load 16(g_tTex2df4)
               21:          18 Load 20(g_sSamp)
               23:          22 SampledImage 17 21
-              30:    7(fvec4) ImageGather 23 27 29
+              30:     7(vec4) ImageGather 23 27 29
                               Store 13(txval20) 30
               37:          34 Load 36(g_tTex2di4)
               38:          18 Load 20(g_sSamp)
@@ -387,12 +387,12 @@ Shader version: 500
               52:          49 Load 51(g_tTex2du4)
               53:          18 Load 20(g_sSamp)
               55:          54 SampledImage 52 53
-              59:   46(ivec4) ImageGather 55 58 29
+              59:   46(uvec4) ImageGather 55 58 29
                               Store 48(txval22) 59
               64:          61 Load 63(g_tTexcdf4)
               65:          18 Load 20(g_sSamp)
               67:          66 SampledImage 64 65
-              70:    7(fvec4) ImageGather 67 69 29
+              70:     7(vec4) ImageGather 67 69 29
                               Store 60(txval40) 70
               75:          72 Load 74(g_tTexcdi4)
               76:          18 Load 20(g_sSamp)
@@ -402,9 +402,9 @@ Shader version: 500
               85:          82 Load 84(g_tTexcdu4)
               86:          18 Load 20(g_sSamp)
               88:          87 SampledImage 85 86
-              93:   46(ivec4) ImageGather 88 92 29
+              93:   46(uvec4) ImageGather 88 92 29
                               Store 81(txval42) 93
-              98:     12(ptr) AccessChain 95(vsout) 29
+              98:   12(vec4*) AccessChain 95(vsout) 29
                               Store 98 97
               99:8(VS_OUTPUT) Load 95(vsout)
                               ReturnValue 99

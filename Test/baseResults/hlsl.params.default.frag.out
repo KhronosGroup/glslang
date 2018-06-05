@@ -442,24 +442,24 @@ gl_FragCoord origin is upper left
                               Decorate 110 DescriptorSet 0
                               Decorate 175(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypeVector 6(int) 4
                8:             TypePointer Function 7(ivec4)
                9:             TypeBool
               10:             TypePointer Function 9(bool)
-              11:             TypeFunction 7(ivec4) 8(ptr) 10(ptr) 10(ptr)
+              11:             TypeFunction 7(ivec4) 8(ivec4*) 10(bool*) 10(bool*)
               17:             TypeInt 32 0
-              18:     17(int) Constant 2
+              18:    17(uint) Constant 2
               19:             TypeArray 6(int) 18
-              20:             TypePointer Function 19
+              20:             TypePointer Function 19(int[2])
               21:             TypePointer Function 6(int)
-              22:             TypeFunction 7(ivec4) 8(ptr) 8(ptr) 20(ptr) 21(ptr)
-              29:             TypeFunction 7(ivec4) 8(ptr) 21(ptr)
+              22:             TypeFunction 7(ivec4) 8(ivec4*) 8(ivec4*) 20(int[2]*) 21(int*)
+              29:             TypeFunction 7(ivec4) 8(ivec4*) 21(int*)
               34:             TypeFloat 32
               35:             TypePointer Function 34(float)
-              36:             TypeFunction 7(ivec4) 8(ptr) 35(ptr)
-              41:             TypeFunction 2 21(ptr)
+              36:             TypeFunction 7(ivec4) 8(ivec4*) 35(float*)
+              41:             TypeFunction 2(void) 21(int*)
               45:             TypeFunction 7(ivec4)
               54:      6(int) Constant 0
               64:      6(int) Constant 10
@@ -474,7 +474,7 @@ gl_FragCoord origin is upper left
               76:    7(ivec4) ConstantComposite 72 73 74 75
               81:      6(int) Constant 30
               82:      6(int) Constant 31
-              83:          19 ConstantComposite 81 82
+              83:  19(int[2]) ConstantComposite 81 82
               84:      6(int) Constant 3
               87:      6(int) Constant 5
               90:      6(int) Constant 100
@@ -486,13 +486,13 @@ gl_FragCoord origin is upper left
               96:    7(ivec4) ConstantComposite 92 93 94 95
               97:      6(int) Constant 1
               98:      6(int) Constant 2
-              99:          19 ConstantComposite 97 98
+              99:  19(int[2]) ConstantComposite 97 98
              100:      6(int) Constant 42
              106:      6(int) Constant 101
              107:    7(ivec4) ConstantComposite 106 106 106 106
     108($Global):             TypeStruct 7(ivec4)
              109:             TypePointer Uniform 108($Global)
-             110:    109(ptr) Variable Uniform
+             110:109($Global*) Variable Uniform
              113:             TypePointer Uniform 7(ivec4)
              120:      6(int) Constant 102
              121:    7(ivec4) ConstantComposite 120 120 120 120
@@ -511,32 +511,32 @@ gl_FragCoord origin is upper left
              166:      6(int) Constant 111
              167:    7(ivec4) ConstantComposite 166 166 166 166
              174:             TypePointer Output 7(ivec4)
-175(@entryPointOutput):    174(ptr) Variable Output
+175(@entryPointOutput): 174(ivec4*) Variable Output
              177:      6(int) Constant 4294967254
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
              176:    7(ivec4) FunctionCall 46(@main()
                               Store 175(@entryPointOutput) 176
                               Return
                               FunctionEnd
 15(fn1(vi4;b1;b1;):    7(ivec4) Function None 11
-          12(p0):      8(ptr) FunctionParameter
-          13(b1):     10(ptr) FunctionParameter
-          14(b2):     10(ptr) FunctionParameter
+          12(p0):   8(ivec4*) FunctionParameter
+          13(b1):   10(bool*) FunctionParameter
+          14(b2):   10(bool*) FunctionParameter
               16:             Label
               48:    7(ivec4) Load 12(p0)
                               ReturnValue 48
                               FunctionEnd
 27(fn1(vi4;vi4;i1[2];i1;):    7(ivec4) Function None 22
-          23(p0):      8(ptr) FunctionParameter
-          24(p1):      8(ptr) FunctionParameter
-          25(p2):     20(ptr) FunctionParameter
-          26(p3):     21(ptr) FunctionParameter
+          23(p0):   8(ivec4*) FunctionParameter
+          24(p1):   8(ivec4*) FunctionParameter
+          25(p2): 20(int[2]*) FunctionParameter
+          26(p3):    21(int*) FunctionParameter
               28:             Label
               51:    7(ivec4) Load 23(p0)
               52:    7(ivec4) Load 24(p1)
               53:    7(ivec4) IAdd 51 52
-              55:     21(ptr) AccessChain 25(p2) 54
+              55:    21(int*) AccessChain 25(p2) 54
               56:      6(int) Load 55
               57:    7(ivec4) CompositeConstruct 56 56 56 56
               58:    7(ivec4) IAdd 53 57
@@ -546,67 +546,67 @@ gl_FragCoord origin is upper left
                               ReturnValue 61
                               FunctionEnd
  32(fn2(vi4;i1;):    7(ivec4) Function None 29
-          30(p0):      8(ptr) FunctionParameter
-           31(x):     21(ptr) FunctionParameter
+          30(p0):   8(ivec4*) FunctionParameter
+           31(x):    21(int*) FunctionParameter
               33:             Label
                               ReturnValue 68
                               FunctionEnd
  39(fn2(vi4;f1;):    7(ivec4) Function None 36
-          37(p0):      8(ptr) FunctionParameter
-           38(x):     35(ptr) FunctionParameter
+          37(p0):   8(ivec4*) FunctionParameter
+           38(x):  35(float*) FunctionParameter
               40:             Label
               71:    7(ivec4) Load 37(p0)
               77:    7(ivec4) IAdd 71 76
                               ReturnValue 77
                               FunctionEnd
-     43(fn3(i1;):           2 Function None 41
-          42(p0):     21(ptr) FunctionParameter
+     43(fn3(i1;):     2(void) Function None 41
+          42(p0):    21(int*) FunctionParameter
               44:             Label
                               Return
                               FunctionEnd
       46(@main():    7(ivec4) Function None 45
               47:             Label
-     80(myarray):     20(ptr) Variable Function
-       85(param):     21(ptr) Variable Function
-       88(param):     21(ptr) Variable Function
-      101(param):      8(ptr) Variable Function
-      102(param):      8(ptr) Variable Function
-      103(param):     20(ptr) Variable Function
-      104(param):     21(ptr) Variable Function
-      111(param):      8(ptr) Variable Function
-      112(param):      8(ptr) Variable Function
-      116(param):     20(ptr) Variable Function
-      117(param):     21(ptr) Variable Function
-      122(param):      8(ptr) Variable Function
-      123(param):      8(ptr) Variable Function
-      126(param):     20(ptr) Variable Function
-      128(param):     21(ptr) Variable Function
-      134(param):      8(ptr) Variable Function
-      135(param):      8(ptr) Variable Function
-      138(param):     20(ptr) Variable Function
-      140(param):     21(ptr) Variable Function
-      146(param):      8(ptr) Variable Function
-      147(param):     10(ptr) Variable Function
-      148(param):     10(ptr) Variable Function
-      154(param):      8(ptr) Variable Function
-      155(param):     10(ptr) Variable Function
-      156(param):     10(ptr) Variable Function
-      162(param):      8(ptr) Variable Function
-      163(param):     35(ptr) Variable Function
-      168(param):      8(ptr) Variable Function
-      169(param):     21(ptr) Variable Function
+     80(myarray): 20(int[2]*) Variable Function
+       85(param):    21(int*) Variable Function
+       88(param):    21(int*) Variable Function
+      101(param):   8(ivec4*) Variable Function
+      102(param):   8(ivec4*) Variable Function
+      103(param): 20(int[2]*) Variable Function
+      104(param):    21(int*) Variable Function
+      111(param):   8(ivec4*) Variable Function
+      112(param):   8(ivec4*) Variable Function
+      116(param): 20(int[2]*) Variable Function
+      117(param):    21(int*) Variable Function
+      122(param):   8(ivec4*) Variable Function
+      123(param):   8(ivec4*) Variable Function
+      126(param): 20(int[2]*) Variable Function
+      128(param):    21(int*) Variable Function
+      134(param):   8(ivec4*) Variable Function
+      135(param):   8(ivec4*) Variable Function
+      138(param): 20(int[2]*) Variable Function
+      140(param):    21(int*) Variable Function
+      146(param):   8(ivec4*) Variable Function
+      147(param):   10(bool*) Variable Function
+      148(param):   10(bool*) Variable Function
+      154(param):   8(ivec4*) Variable Function
+      155(param):   10(bool*) Variable Function
+      156(param):   10(bool*) Variable Function
+      162(param):   8(ivec4*) Variable Function
+      163(param):  35(float*) Variable Function
+      168(param):   8(ivec4*) Variable Function
+      169(param):    21(int*) Variable Function
                               Store 80(myarray) 83
                               Store 85(param) 84
-              86:           2 FunctionCall 43(fn3(i1;) 85(param)
+              86:     2(void) FunctionCall 43(fn3(i1;) 85(param)
                               Store 88(param) 87
-              89:           2 FunctionCall 43(fn3(i1;) 88(param)
+              89:     2(void) FunctionCall 43(fn3(i1;) 88(param)
                               Store 101(param) 91
                               Store 102(param) 96
                               Store 103(param) 99
                               Store 104(param) 100
              105:    7(ivec4) FunctionCall 27(fn1(vi4;vi4;i1[2];i1;) 101(param) 102(param) 103(param) 104(param)
                               Store 111(param) 107
-             114:    113(ptr) AccessChain 110 54
+             114: 113(ivec4*) AccessChain 110 54
              115:    7(ivec4) Load 114
                               Store 112(param) 115
                               Store 116(param) 99
@@ -614,19 +614,19 @@ gl_FragCoord origin is upper left
              118:    7(ivec4) FunctionCall 27(fn1(vi4;vi4;i1[2];i1;) 111(param) 112(param) 116(param) 117(param)
              119:    7(ivec4) IAdd 105 118
                               Store 122(param) 121
-             124:    113(ptr) AccessChain 110 54
+             124: 113(ivec4*) AccessChain 110 54
              125:    7(ivec4) Load 124
                               Store 123(param) 125
-             127:          19 Load 80(myarray)
+             127:  19(int[2]) Load 80(myarray)
                               Store 126(param) 127
                               Store 128(param) 100
              129:    7(ivec4) FunctionCall 27(fn1(vi4;vi4;i1[2];i1;) 122(param) 123(param) 126(param) 128(param)
              130:    7(ivec4) IAdd 119 129
                               Store 134(param) 132
-             136:    113(ptr) AccessChain 110 54
+             136: 113(ivec4*) AccessChain 110 54
              137:    7(ivec4) Load 136
                               Store 135(param) 137
-             139:          19 Load 80(myarray)
+             139:  19(int[2]) Load 80(myarray)
                               Store 138(param) 139
                               Store 140(param) 133
              141:    7(ivec4) FunctionCall 27(fn1(vi4;vi4;i1[2];i1;) 134(param) 135(param) 138(param) 140(param)

@@ -11,16 +11,16 @@ spv.while-simple.vert
                               Name 4  "main"
                               Name 8  "i"
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                9:      6(int) Constant 0
               16:      6(int) Constant 10
               17:             TypeBool
               20:      6(int) Constant 1
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-            8(i):      7(ptr) Variable Function
+            8(i):     7(int*) Variable Function
                               Store 8(i) 9
                               Branch 10
               10:             Label

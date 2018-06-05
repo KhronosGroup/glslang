@@ -430,17 +430,17 @@ gl_FragCoord origin is upper left
                               Decorate 176(input) Location 0
                               Decorate 179(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
               18:    6(float) Constant 1065353216
               32:             TypeBool
               33:             TypeVector 32(bool) 4
               63:    6(float) Constant 1073741824
               71:             TypeInt 32 0
-              72:     71(int) Constant 0
+              72:    71(uint) Constant 0
               73:             TypePointer Function 6(float)
               90:             TypeInt 32 1
               91:             TypePointer Function 90(int)
@@ -450,37 +450,37 @@ gl_FragCoord origin is upper left
              109:     90(int) Constant 1
              115:     90(int) Constant 0
              139:    6(float) Constant 0
-             146:     71(int) Constant 2
+             146:    71(uint) Constant 2
              147:             TypeArray 6(float) 146
-             148:             TypePointer Function 147
-             175:             TypePointer Input 7(fvec4)
-      176(input):    175(ptr) Variable Input
-             178:             TypePointer Output 7(fvec4)
-179(@entryPointOutput):    178(ptr) Variable Output
-4(PixelShaderFunction):           2 Function None 3
+             148:             TypePointer Function 147(float[2])
+             175:             TypePointer Input 7(vec4)
+      176(input):  175(vec4*) Variable Input
+             178:             TypePointer Output 7(vec4)
+179(@entryPointOutput):  178(vec4*) Variable Output
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-      174(input):      8(ptr) Variable Function
-      180(param):      8(ptr) Variable Function
-             177:    7(fvec4) Load 176(input)
+      174(input):    8(vec4*) Variable Function
+      180(param):    8(vec4*) Variable Function
+             177:     7(vec4) Load 176(input)
                               Store 174(input) 177
-             181:    7(fvec4) Load 174(input)
+             181:     7(vec4) Load 174(input)
                               Store 180(param) 181
-             182:    7(fvec4) FunctionCall 11(@PixelShaderFunction(vf4;) 180(param)
+             182:     7(vec4) FunctionCall 11(@PixelShaderFunction(vf4;) 180(param)
                               Store 179(@entryPointOutput) 182
                               Return
                               FunctionEnd
-11(@PixelShaderFunction(vf4;):    7(fvec4) Function None 9
-       10(input):      8(ptr) FunctionParameter
+11(@PixelShaderFunction(vf4;):     7(vec4) Function None 9
+       10(input):    8(vec4*) FunctionParameter
               12:             Label
-          92(ii):     91(ptr) Variable Function
-         111(ii):     73(ptr) Variable Function
-      114(first):     91(ptr) Variable Function
-     116(second):     91(ptr) Variable Function
-          124(i):     91(ptr) Variable Function
-      125(count):     91(ptr) Variable Function
-      138(first):     73(ptr) Variable Function
-     149(second):    148(ptr) Variable Function
-      157(third):     73(ptr) Variable Function
+          92(ii):    91(int*) Variable Function
+         111(ii):  73(float*) Variable Function
+      114(first):    91(int*) Variable Function
+     116(second):    91(int*) Variable Function
+          124(i):    91(int*) Variable Function
+      125(count):    91(int*) Variable Function
+      138(first):  73(float*) Variable Function
+     149(second):148(float[2]*) Variable Function
+      157(third):  73(float*) Variable Function
                               Branch 13
               13:             Label
                               LoopMerge 15 16 None
@@ -490,9 +490,9 @@ gl_FragCoord origin is upper left
               16:             Label
                               Branch 13
               15:             Label
-              17:    7(fvec4) Load 10(input)
-              19:    7(fvec4) CompositeConstruct 18 18 18 18
-              20:    7(fvec4) FAdd 17 19
+              17:     7(vec4) Load 10(input)
+              19:     7(vec4) CompositeConstruct 18 18 18 18
+              20:     7(vec4) FAdd 17 19
                               Store 10(input) 20
                               Branch 21
               21:             Label
@@ -508,8 +508,8 @@ gl_FragCoord origin is upper left
                               LoopMerge 27 28 Unroll 
                               Branch 29
               29:             Label
-              30:    7(fvec4) Load 10(input)
-              31:    7(fvec4) Load 10(input)
+              30:     7(vec4) Load 10(input)
+              31:     7(vec4) Load 10(input)
               34:   33(bvec4) FOrdNotEqual 30 31
               35:    32(bool) Any 34
                               BranchConditional 35 26 27
@@ -523,40 +523,40 @@ gl_FragCoord origin is upper left
                               LoopMerge 38 39 None
                               Branch 40
               40:             Label
-              41:    7(fvec4) Load 10(input)
-              42:    7(fvec4) Load 10(input)
+              41:     7(vec4) Load 10(input)
+              42:     7(vec4) Load 10(input)
               43:   33(bvec4) FOrdNotEqual 41 42
               44:    32(bool) Any 43
                               BranchConditional 44 37 38
               37:               Label
-              45:    7(fvec4)   Load 10(input)
-              46:    7(fvec4)   FNegate 45
+              45:     7(vec4)   Load 10(input)
+              46:     7(vec4)   FNegate 45
                                 ReturnValue 46
               39:               Label
                                 Branch 36
               38:             Label
-              48:    7(fvec4) Load 10(input)
-              49:    7(fvec4) CompositeConstruct 18 18 18 18
-              50:    7(fvec4) FSub 48 49
+              48:     7(vec4) Load 10(input)
+              49:     7(vec4) CompositeConstruct 18 18 18 18
+              50:     7(vec4) FSub 48 49
                               Store 10(input) 50
                               Branch 51
               51:             Label
                               LoopMerge 53 54 None
                               Branch 55
               55:             Label
-              56:    7(fvec4) Load 10(input)
-              57:    7(fvec4) Load 10(input)
+              56:     7(vec4) Load 10(input)
+              57:     7(vec4) Load 10(input)
               58:   33(bvec4) FOrdNotEqual 56 57
               59:    32(bool) Any 58
                               BranchConditional 59 52 53
               52:               Label
-              60:    7(fvec4)   Load 10(input)
-              61:    7(fvec4)   FNegate 60
+              60:     7(vec4)   Load 10(input)
+              61:     7(vec4)   FNegate 60
                                 ReturnValue 61
               54:               Label
-              64:    7(fvec4)   Load 10(input)
-              65:    7(fvec4)   CompositeConstruct 63 63 63 63
-              66:    7(fvec4)   FAdd 64 65
+              64:     7(vec4)   Load 10(input)
+              65:     7(vec4)   CompositeConstruct 63 63 63 63
+              66:     7(vec4)   FAdd 64 65
                                 Store 10(input) 66
                                 Branch 51
               53:             Label
@@ -565,7 +565,7 @@ gl_FragCoord origin is upper left
                               LoopMerge 69 70 None
                               Branch 68
               68:             Label
-              74:     73(ptr) AccessChain 10(input) 72
+              74:  73(float*) AccessChain 10(input) 72
               75:    6(float) Load 74
               76:    32(bool) FOrdGreaterThan 75 63
                               SelectionMerge 78 None
@@ -582,7 +582,7 @@ gl_FragCoord origin is upper left
                               LoopMerge 82 83 None
                               Branch 81
               81:             Label
-              84:     73(ptr) AccessChain 10(input) 72
+              84:  73(float*) AccessChain 10(input) 72
               85:    6(float) Load 84
               86:    32(bool) FOrdGreaterThan 85 63
                               SelectionMerge 88 None
@@ -663,20 +663,20 @@ gl_FragCoord origin is upper left
                               Branch 144
              144:             Label
              145:    6(float) Load 138(first)
-             150:     73(ptr) AccessChain 149(second) 115
+             150:  73(float*) AccessChain 149(second) 115
              151:    6(float) Load 150
              152:    32(bool) FOrdLessThan 145 151
                               BranchConditional 152 141 142
              141:               Label
              153:    6(float)   Load 138(first)
-             154:     73(ptr)   AccessChain 149(second) 109
+             154:  73(float*)   AccessChain 149(second) 109
              155:    6(float)   Load 154
              156:    6(float)   FAdd 153 155
              158:    6(float)   Load 157(third)
              159:    6(float)   FAdd 156 158
                                 Branch 143
              143:               Label
-             160:     73(ptr)   AccessChain 149(second) 109
+             160:  73(float*)   AccessChain 149(second) 109
              161:    6(float)   Load 160
              162:    6(float)   FAdd 161 18
                                 Store 160 162
@@ -700,6 +700,6 @@ gl_FragCoord origin is upper left
              172:             Label
                               Branch 169
              171:             Label
-             173:    7(fvec4) Undef
+             173:     7(vec4) Undef
                               ReturnValue 173
                               FunctionEnd

@@ -125,47 +125,47 @@ gl_FragCoord origin is upper left
                               Decorate 35 Binding 7
                               Decorate 43(specConst) SpecId 17
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
               14:    6(float) Constant 1073741824
-              15:    7(fvec4) ConstantComposite 14 14 14 14
-    17(tbufName):             TypeStruct 7(fvec4)
+              15:     7(vec4) ConstantComposite 14 14 14 14
+    17(tbufName):             TypeStruct 7(vec4)
               18:             TypePointer Uniform 17(tbufName)
-              19:     18(ptr) Variable Uniform
+              19:18(tbufName*) Variable Uniform
               20:             TypeInt 32 1
               21:     20(int) Constant 0
-              22:             TypePointer Uniform 7(fvec4)
-   26(tbufName2):             TypeStruct 7(fvec4)
+              22:             TypePointer Uniform 7(vec4)
+   26(tbufName2):             TypeStruct 7(vec4)
               27:             TypePointer PushConstant 26(tbufName2)
-              28:     27(ptr) Variable PushConstant
-              29:             TypePointer PushConstant 7(fvec4)
-   33(tbufName2):             TypeStruct 7(fvec4)
+              28:27(tbufName2*) Variable PushConstant
+              29:             TypePointer PushConstant 7(vec4)
+   33(tbufName2):             TypeStruct 7(vec4)
               34:             TypePointer Uniform 33(tbufName2)
-              35:     34(ptr) Variable Uniform
+              35:34(tbufName2*) Variable Uniform
    43(specConst):     20(int) SpecConstant 10
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd
-11(PixelShaderFunction(vf4;):    7(fvec4) Function None 9
-       10(input):      8(ptr) FunctionParameter
+11(PixelShaderFunction(vf4;):     7(vec4) Function None 9
+       10(input):    8(vec4*) FunctionParameter
               12:             Label
-      13(layout):      8(ptr) Variable Function
+      13(layout):    8(vec4*) Variable Function
                               Store 13(layout) 15
-              16:    7(fvec4) Load 10(input)
-              23:     22(ptr) AccessChain 19 21
-              24:    7(fvec4) Load 23
-              25:    7(fvec4) FAdd 16 24
-              30:     29(ptr) AccessChain 28 21
-              31:    7(fvec4) Load 30
-              32:    7(fvec4) FAdd 25 31
-              36:     22(ptr) AccessChain 35 21
-              37:    7(fvec4) Load 36
-              38:    7(fvec4) Load 13(layout)
-              39:    7(fvec4) FMul 37 38
-              40:    7(fvec4) FAdd 32 39
+              16:     7(vec4) Load 10(input)
+              23:   22(vec4*) AccessChain 19 21
+              24:     7(vec4) Load 23
+              25:     7(vec4) FAdd 16 24
+              30:   29(vec4*) AccessChain 28 21
+              31:     7(vec4) Load 30
+              32:     7(vec4) FAdd 25 31
+              36:   22(vec4*) AccessChain 35 21
+              37:     7(vec4) Load 36
+              38:     7(vec4) Load 13(layout)
+              39:     7(vec4) FMul 37 38
+              40:     7(vec4) FAdd 32 39
                               ReturnValue 40
                               FunctionEnd

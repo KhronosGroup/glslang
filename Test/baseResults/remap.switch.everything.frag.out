@@ -18,28 +18,28 @@ WARNING: 0:5: '' : all default precisions are highp; use precision statements to
                               Decorate 12422 RelaxedPrecision
                               Decorate 12423 RelaxedPrecision
                8:             TypeVoid
-            1282:             TypeFunction 8
+            1282:             TypeFunction 8(void)
               13:             TypeFloat 32
               29:             TypeVector 13(float) 4
-             666:             TypePointer Input 29(fvec4)
-            3719:    666(ptr) Variable Input
+             666:             TypePointer Input 29(vec4)
+            3719:  666(vec4*) Variable Input
               11:             TypeInt 32 0
-            2579:     11(int) Constant 3
+            2579:    11(uint) Constant 3
              650:             TypePointer Input 13(float)
               12:             TypeInt 32 1
-             667:             TypePointer Output 29(fvec4)
-            3994:    667(ptr) Variable Output
-            2570:     11(int) Constant 0
+             667:             TypePointer Output 29(vec4)
+            3994:  667(vec4*) Variable Output
+            2570:    11(uint) Constant 0
             2572:   13(float) Constant 0
-            2573:     11(int) Constant 1
+            2573:    11(uint) Constant 1
              138:   13(float) Constant 1065353216
-            2576:     11(int) Constant 2
+            2576:    11(uint) Constant 2
               24:   13(float) Constant 1073741824
              833:   13(float) Constant 3212836864
-            1284:   29(fvec4) ConstantComposite 833 833 833 833
-            5663:           8 Function None 1282
+            1284:    29(vec4) ConstantComposite 833 833 833 833
+            5663:     8(void) Function None 1282
            23915:             Label
-            7984:    650(ptr) AccessChain 3719 2579
+            7984: 650(float*) AccessChain 3719 2579
            11376:   13(float) Load 7984
            16859:     12(int) ConvertFToS 11376
                               SelectionMerge 19578 None
@@ -51,24 +51,24 @@ WARNING: 0:5: '' : all default precisions are highp; use precision statements to
                                 Store 3994 1284
                                 Branch 19578
             8158:               Label
-           21848:    650(ptr)   AccessChain 3719 2570
+           21848: 650(float*)   AccessChain 3719 2570
            23987:   13(float)   Load 21848
            19989:   13(float)   FAdd 23987 2572
-           12421:   29(fvec4)   CompositeConstruct 19989 19989 19989 19989
+           12421:    29(vec4)   CompositeConstruct 19989 19989 19989 19989
                                 Store 3994 12421
                                 Branch 19578
             8159:               Label
-           21849:    650(ptr)   AccessChain 3719 2573
+           21849: 650(float*)   AccessChain 3719 2573
            23988:   13(float)   Load 21849
            19990:   13(float)   FAdd 23988 138
-           12422:   29(fvec4)   CompositeConstruct 19990 19990 19990 19990
+           12422:    29(vec4)   CompositeConstruct 19990 19990 19990 19990
                                 Store 3994 12422
                                 Branch 19578
             8160:               Label
-           21850:    650(ptr)   AccessChain 3719 2576
+           21850: 650(float*)   AccessChain 3719 2576
            23989:   13(float)   Load 21850
            19991:   13(float)   FAdd 23989 24
-           12423:   29(fvec4)   CompositeConstruct 19991 19991 19991 19991
+           12423:    29(vec4)   CompositeConstruct 19991 19991 19991 19991
                                 Store 3994 12423
                                 Branch 19578
            19578:             Label

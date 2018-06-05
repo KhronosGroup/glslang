@@ -190,68 +190,68 @@ gl_FragCoord origin is upper left
                               Decorate 20($Global) Block
                               Decorate 22 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
               14:             TypeFloat 32
               15:             TypeVector 14(float) 4
-              16:             TypePointer Private 15(fvec4)
-           17(m):     16(ptr) Variable Private
+              16:             TypePointer Private 15(vec4)
+           17(m):   16(vec4*) Variable Private
               18:             TypeVector 14(float) 3
               19:             TypeInt 32 1
-     20($Global):             TypeStruct 15(fvec4) 14(float) 18(fvec3) 19(int) 19(int)
+     20($Global):             TypeStruct 15(vec4) 14(float) 18(vec3) 19(int) 19(int)
               21:             TypePointer Uniform 20($Global)
-              22:     21(ptr) Variable Uniform
+              22:21($Global*) Variable Uniform
               23:     19(int) Constant 0
-              24:             TypePointer Uniform 15(fvec4)
+              24:             TypePointer Uniform 15(vec4)
               27:     19(int) Constant 1
               28:             TypePointer Uniform 14(float)
               38:             TypeInt 32 0
-              39:     38(int) Constant 0
+              39:    38(uint) Constant 0
               45:     19(int) Constant 2
               49:     19(int) Constant 3
               50:             TypePointer Uniform 19(int)
-           4(f1):           2 Function None 3
+           4(f1):     2(void) Function None 3
                5:             Label
-              25:     24(ptr) AccessChain 22 23
-              26:   15(fvec4) Load 25
-              29:     28(ptr) AccessChain 22 27
+              25:   24(vec4*) AccessChain 22 23
+              26:    15(vec4) Load 25
+              29:  28(float*) AccessChain 22 27
               30:   14(float) Load 29
-              31:   15(fvec4) VectorTimesScalar 26 30
+              31:    15(vec4) VectorTimesScalar 26 30
                               Store 17(m) 31
-              37:           2 FunctionCall 6(@f1()
+              37:     2(void) FunctionCall 6(@f1()
                               Return
                               FunctionEnd
-         6(@f1():           2 Function None 3
+         6(@f1():     2(void) Function None 3
                7:             Label
-              32:     24(ptr) AccessChain 22 23
-              33:   15(fvec4) Load 32
-              34:     28(ptr) AccessChain 22 27
+              32:   24(vec4*) AccessChain 22 23
+              33:    15(vec4) Load 32
+              34:  28(float*) AccessChain 22 27
               35:   14(float) Load 34
-              36:   15(fvec4) VectorTimesScalar 33 35
+              36:    15(vec4) VectorTimesScalar 33 35
                               Return
                               FunctionEnd
-          8(f2():           2 Function None 3
+          8(f2():     2(void) Function None 3
                9:             Label
-              40:     28(ptr) AccessChain 22 23 39
+              40:  28(float*) AccessChain 22 23 39
               41:   14(float) Load 40
-              42:     28(ptr) AccessChain 22 27
+              42:  28(float*) AccessChain 22 27
               43:   14(float) Load 42
               44:   14(float) FAdd 41 43
-              46:     28(ptr) AccessChain 22 45 39
+              46:  28(float*) AccessChain 22 45 39
               47:   14(float) Load 46
               48:   14(float) FAdd 44 47
                               Return
                               FunctionEnd
-         10(f3():           2 Function None 3
+         10(f3():     2(void) Function None 3
               11:             Label
                               Return
                               FunctionEnd
-         12(f4():           2 Function None 3
+         12(f4():     2(void) Function None 3
               13:             Label
-              51:     50(ptr) AccessChain 22 49
+              51:    50(int*) AccessChain 22 49
               52:     19(int) Load 51
               53:   14(float) ConvertSToF 52
-              54:     24(ptr) AccessChain 22 23
-              55:   15(fvec4) Load 54
-              56:   15(fvec4) VectorTimesScalar 55 53
+              54:   24(vec4*) AccessChain 22 23
+              55:    15(vec4) Load 54
+              56:    15(vec4) VectorTimesScalar 55 53
                               Return
                               FunctionEnd

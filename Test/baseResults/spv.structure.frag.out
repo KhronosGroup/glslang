@@ -27,70 +27,70 @@ spv.structure.frag
                               Decorate 45(gl_FragColor) Location 0
                               Decorate 50(samp2D) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
                9:    6(float) Constant 0
               10:             TypeInt 32 1
               11:             TypeInt 32 0
-              12:     11(int) Constant 5
+              12:    11(uint) Constant 5
               13:             TypeArray 10(int) 12
-              14:     11(int) Constant 4
+              14:    11(uint) Constant 4
               15:             TypeArray 6(float) 14
               16:             TypeVector 6(float) 4
-              17:             TypeArray 16(fvec4) 12
-18(lunarStruct1):             TypeStruct 10(int) 15 17
-              19:     11(int) Constant 7
+              17:             TypeArray 16(vec4) 12
+18(lunarStruct1):             TypeStruct 10(int) 15(float[4]) 17(vec4[5])
+              19:    11(uint) Constant 7
               20:             TypeArray 18(lunarStruct1) 19
-21(lunarStruct2):             TypeStruct 13 6(float) 20
+21(lunarStruct2):             TypeStruct 13(int[5]) 6(float) 20(lunarStruct1[7])
               22:             TypeArray 21(lunarStruct2) 12
-              23:             TypePointer Private 22
-        24(foo2):     23(ptr) Variable Private
+              23:             TypePointer Private 22(lunarStruct2[5])
+        24(foo2):23(lunarStruct2[5]*) Variable Private
               25:     10(int) Constant 3
               26:     10(int) Constant 0
               27:     10(int) Constant 4
               28:             TypePointer Private 10(int)
               31:             TypeBool
               35:     10(int) Constant 2
-              36:     11(int) Constant 0
+              36:    11(uint) Constant 0
               37:             TypePointer Private 6(float)
               41:     10(int) Constant 1
-              44:             TypePointer Output 16(fvec4)
-45(gl_FragColor):     44(ptr) Variable Output
+              44:             TypePointer Output 16(vec4)
+45(gl_FragColor):   44(vec4*) Variable Output
               47:             TypeImage 6(float) 2D sampled format:Unknown
               48:             TypeSampledImage 47
               49:             TypePointer UniformConstant 48
       50(samp2D):     49(ptr) Variable UniformConstant
               52:             TypeVector 6(float) 2
-              53:             TypePointer Input 52(fvec2)
-       54(coord):     53(ptr) Variable Input
+              53:             TypePointer Input 52(vec2)
+       54(coord):   53(vec2*) Variable Input
               58:             TypePointer Private 18(lunarStruct1)
-         59(foo):     58(ptr) Variable Private
-         4(main):           2 Function None 3
+         59(foo):58(lunarStruct1*) Variable Private
+         4(main):     2(void) Function None 3
                5:             Label
-        8(scale):      7(ptr) Variable Function
+        8(scale):   7(float*) Variable Function
                               Store 8(scale) 9
-              29:     28(ptr) AccessChain 24(foo2) 25 26 27
+              29:    28(int*) AccessChain 24(foo2) 25 26 27
               30:     10(int) Load 29
               32:    31(bool) SGreaterThan 30 26
                               SelectionMerge 34 None
                               BranchConditional 32 33 40
               33:               Label
-              38:     37(ptr)   AccessChain 24(foo2) 25 35 35 35 25 36
+              38:  37(float*)   AccessChain 24(foo2) 25 35 35 35 25 36
               39:    6(float)   Load 38
                                 Store 8(scale) 39
                                 Branch 34
               40:               Label
-              42:     37(ptr)   AccessChain 24(foo2) 25 35 35 41 25
+              42:  37(float*)   AccessChain 24(foo2) 25 35 35 41 25
               43:    6(float)   Load 42
                                 Store 8(scale) 43
                                 Branch 34
               34:             Label
               46:    6(float) Load 8(scale)
               51:          48 Load 50(samp2D)
-              55:   52(fvec2) Load 54(coord)
-              56:   16(fvec4) ImageSampleImplicitLod 51 55
-              57:   16(fvec4) VectorTimesScalar 56 46
+              55:    52(vec2) Load 54(coord)
+              56:    16(vec4) ImageSampleImplicitLod 51 55
+              57:    16(vec4) VectorTimesScalar 56 46
                               Store 45(gl_FragColor) 57
                               Return
                               FunctionEnd

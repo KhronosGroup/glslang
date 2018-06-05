@@ -129,34 +129,34 @@ gl_FragCoord origin is upper left
                               Name 47  "param"
                               Decorate 45(input) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 2 7(ptr)
+               8:             TypeFunction 2(void) 7(float*)
               12:             TypeVector 6(float) 4
-              13:             TypePointer Function 12(fvec4)
-              14:             TypeFunction 2 13(ptr)
+              13:             TypePointer Function 12(vec4)
+              14:             TypeFunction 2(void) 13(vec4*)
               19:    6(float) Constant 1065353216
               20:             TypeBool
               26:             TypeInt 32 0
-              27:     26(int) Constant 2
-              31:     26(int) Constant 0
+              27:    26(uint) Constant 2
+              31:    26(uint) Constant 0
               34:    6(float) Constant 0
-              44:             TypePointer Input 12(fvec4)
-       45(input):     44(ptr) Variable Input
-4(PixelShaderFunction):           2 Function None 3
+              44:             TypePointer Input 12(vec4)
+       45(input):   44(vec4*) Variable Input
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-       43(input):     13(ptr) Variable Function
-       47(param):     13(ptr) Variable Function
-              46:   12(fvec4) Load 45(input)
+       43(input):   13(vec4*) Variable Function
+       47(param):   13(vec4*) Variable Function
+              46:    12(vec4) Load 45(input)
                               Store 43(input) 46
-              48:   12(fvec4) Load 43(input)
+              48:    12(vec4) Load 43(input)
                               Store 47(param) 48
-              49:           2 FunctionCall 16(@PixelShaderFunction(vf4;) 47(param)
+              49:     2(void) FunctionCall 16(@PixelShaderFunction(vf4;) 47(param)
                               Return
                               FunctionEnd
-     10(foo(f1;):           2 Function None 8
-            9(f):      7(ptr) FunctionParameter
+     10(foo(f1;):     2(void) Function None 8
+            9(f):   7(float*) FunctionParameter
               11:             Label
               18:    6(float) Load 9(f)
               21:    20(bool) FOrdLessThan 18 19
@@ -167,16 +167,16 @@ gl_FragCoord origin is upper left
               23:             Label
                               Return
                               FunctionEnd
-16(@PixelShaderFunction(vf4;):           2 Function None 14
-       15(input):     13(ptr) FunctionParameter
+16(@PixelShaderFunction(vf4;):     2(void) Function None 14
+       15(input):   13(vec4*) FunctionParameter
               17:             Label
-       25(param):      7(ptr) Variable Function
-           39(f):      7(ptr) Variable Function
-              28:      7(ptr) AccessChain 15(input) 27
+       25(param):   7(float*) Variable Function
+           39(f):   7(float*) Variable Function
+              28:   7(float*) AccessChain 15(input) 27
               29:    6(float) Load 28
                               Store 25(param) 29
-              30:           2 FunctionCall 10(foo(f1;) 25(param)
-              32:      7(ptr) AccessChain 15(input) 31
+              30:     2(void) FunctionCall 10(foo(f1;) 25(param)
+              32:   7(float*) AccessChain 15(input) 31
               33:    6(float) Load 32
               35:    20(bool) FOrdNotEqual 33 34
                               SelectionMerge 37 None
@@ -184,7 +184,7 @@ gl_FragCoord origin is upper left
               36:               Label
                                 Kill
               37:             Label
-              40:      7(ptr) AccessChain 15(input) 31
+              40:   7(float*) AccessChain 15(input) 31
               41:    6(float) Load 40
                               Store 39(f) 41
                               Kill

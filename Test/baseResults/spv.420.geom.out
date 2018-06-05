@@ -43,42 +43,42 @@ spv.420.geom
                               Decorate 33(gl_InvocationID) BuiltIn InvocationId
                               Decorate 41(s2D) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
  9(gl_PerVertex):             TypeStruct 6(float)
               10:             TypeInt 32 0
-              11:     10(int) Constant 3
+              11:    10(uint) Constant 3
               12:             TypeArray 9(gl_PerVertex) 11
-              13:             TypePointer Input 12
-       14(gl_in):     13(ptr) Variable Input
+              13:             TypePointer Input 12(gl_PerVertex[3])
+       14(gl_in):13(gl_PerVertex[3]*) Variable Input
               15:             TypeInt 32 1
               16:     15(int) Constant 1
               17:     15(int) Constant 0
               18:             TypePointer Input 6(float)
 21(gl_PerVertex):             TypeStruct 6(float)
               22:             TypePointer Output 21(gl_PerVertex)
-              23:     22(ptr) Variable Output
+              23:22(gl_PerVertex*) Variable Output
               25:             TypePointer Output 6(float)
               27:             TypePointer Output 15(int)
-28(gl_ViewportIndex):     27(ptr) Variable Output
+28(gl_ViewportIndex):    27(int*) Variable Output
               29:     15(int) Constant 7
               30:             TypePointer Function 15(int)
               32:             TypePointer Input 15(int)
-33(gl_InvocationID):     32(ptr) Variable Input
+33(gl_InvocationID):    32(int*) Variable Input
               35:             TypeVector 6(float) 4
-              36:             TypePointer Function 35(fvec4)
+              36:             TypePointer Function 35(vec4)
               38:             TypeImage 6(float) 2D sampled format:Unknown
               39:             TypeSampledImage 38
               40:             TypePointer UniformConstant 39
          41(s2D):     40(ptr) Variable UniformConstant
               43:             TypeVector 6(float) 2
-              44:             TypeArray 43(fvec2) 11
-              45:             TypePointer Input 44
-       46(coord):     45(ptr) Variable Input
-              47:             TypePointer Input 43(fvec2)
+              44:             TypeArray 43(vec2) 11
+              45:             TypePointer Input 44(vec2[3])
+       46(coord):45(vec2[3]*) Variable Input
+              47:             TypePointer Input 43(vec2)
               50:             TypeVector 15(int) 2
-              51:     10(int) Constant 5
+              51:    10(uint) Constant 5
               52:             TypeArray 50(ivec2) 51
               53:   50(ivec2) ConstantComposite 17 16
               54:     15(int) Constant 4294967294
@@ -89,22 +89,22 @@ spv.420.geom
               59:   50(ivec2) ConstantComposite 58 17
               60:     15(int) Constant 2
               61:   50(ivec2) ConstantComposite 60 16
-              62:          52 ConstantComposite 53 55 57 59 61
+              62:52(ivec2[5]) ConstantComposite 53 55 57 59 61
               63:             TypePointer Private 15(int)
-           64(i):     63(ptr) Variable Private
-              66:             TypePointer Function 52
+           64(i):    63(int*) Variable Private
+              66:             TypePointer Function 52(ivec2[5])
               68:             TypePointer Function 50(ivec2)
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-            8(p):      7(ptr) Variable Function
-          31(id):     30(ptr) Variable Function
-           37(v):     36(ptr) Variable Function
-   67(indexable):     66(ptr) Variable Function
-              19:     18(ptr) AccessChain 14(gl_in) 16 17
+            8(p):   7(float*) Variable Function
+          31(id):    30(int*) Variable Function
+           37(v):   36(vec4*) Variable Function
+   67(indexable):66(ivec2[5]*) Variable Function
+              19:  18(float*) AccessChain 14(gl_in) 16 17
               20:    6(float) Load 19
                               Store 8(p) 20
               24:    6(float) Load 8(p)
-              26:     25(ptr) AccessChain 23 17
+              26:  25(float*) AccessChain 23 17
                               Store 26 24
                               Store 28(gl_ViewportIndex) 29
                               EmitStreamVertex 16
@@ -114,13 +114,13 @@ spv.420.geom
               34:     15(int) Load 33(gl_InvocationID)
                               Store 31(id) 34
               42:          39 Load 41(s2D)
-              48:     47(ptr) AccessChain 46(coord) 17
-              49:   43(fvec2) Load 48
+              48:   47(vec2*) AccessChain 46(coord) 17
+              49:    43(vec2) Load 48
               65:     15(int) Load 64(i)
                               Store 67(indexable) 62
-              69:     68(ptr) AccessChain 67(indexable) 65
+              69:  68(ivec2*) AccessChain 67(indexable) 65
               70:   50(ivec2) Load 69
-              71:   35(fvec4) ImageGather 42 49 17 Offset 70
+              71:    35(vec4) ImageGather 42 49 17 Offset 70
                               Store 37(v) 71
                               Return
                               FunctionEnd

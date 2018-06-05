@@ -1697,673 +1697,673 @@ gl_FragCoord origin is upper left
                               Decorate 113 DescriptorSet 0
                               Decorate 593(@entryPointOutput.Color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 3
-               8:             TypePointer Function 7(fvec3)
-               9:             TypeFunction 2 8(ptr)
+               8:             TypePointer Function 7(vec3)
+               9:             TypeFunction 2(void) 8(vec3*)
               13:             TypeInt 32 1
               14:             TypeVector 13(int) 3
               15:             TypePointer Function 14(ivec3)
-              16:             TypeFunction 2 15(ptr)
+              16:             TypeFunction 2(void) 15(ivec3*)
               20:             TypeInt 32 0
-              21:             TypeVector 20(int) 3
-              22:             TypePointer Function 21(ivec3)
-              23:             TypeFunction 2 22(ptr)
+              21:             TypeVector 20(uint) 3
+              22:             TypePointer Function 21(uvec3)
+              23:             TypeFunction 2(void) 22(uvec3*)
               27:             TypeBool
               28:             TypeVector 27(bool) 3
               29:             TypePointer Function 28(bvec3)
-              30:             TypeFunction 2 29(ptr)
+              30:             TypeFunction 2(void) 29(bvec3*)
               34:             TypeFloat 64
-              35:             TypeVector 34(float64_t) 3
-              36:             TypePointer Function 35(f64vec3)
-              37:             TypeFunction 2 36(ptr)
-              41:             TypeFunction 7(fvec3) 8(ptr)
-              54:             TypeFunction 14(ivec3) 15(ptr)
-              67:             TypeFunction 21(ivec3) 22(ptr)
-              80:             TypeFunction 28(bvec3) 29(ptr)
-              93:             TypeFunction 35(f64vec3) 36(ptr)
+              35:             TypeVector 34(double) 3
+              36:             TypePointer Function 35(dvec3)
+              37:             TypeFunction 2(void) 36(dvec3*)
+              41:             TypeFunction 7(vec3) 8(vec3*)
+              54:             TypeFunction 14(ivec3) 15(ivec3*)
+              67:             TypeFunction 21(uvec3) 22(uvec3*)
+              80:             TypeFunction 28(bvec3) 29(bvec3*)
+              93:             TypeFunction 35(dvec3) 36(dvec3*)
              106:             TypeVector 6(float) 4
-  107(PS_OUTPUT):             TypeStruct 106(fvec4)
+  107(PS_OUTPUT):             TypeStruct 106(vec4)
              108:             TypeFunction 107(PS_OUTPUT)
-    111($Global):             TypeStruct 14(ivec3) 21(ivec3) 7(fvec3) 21(ivec3) 35(f64vec3) 13(int) 20(int) 6(float) 20(int) 34(float64_t)
+    111($Global):             TypeStruct 14(ivec3) 21(uvec3) 7(vec3) 21(uvec3) 35(dvec3) 13(int) 20(uint) 6(float) 20(uint) 34(double)
              112:             TypePointer Uniform 111($Global)
-             113:    112(ptr) Variable Uniform
+             113:112($Global*) Variable Uniform
              114:     13(int) Constant 0
              115:             TypePointer Uniform 14(ivec3)
              124:     13(int) Constant 3
-             125:             TypePointer Uniform 21(ivec3)
+             125:             TypePointer Uniform 21(uvec3)
              134:     13(int) Constant 1
-             137:     20(int) Constant 0
-             138:   21(ivec3) ConstantComposite 137 137 137
+             137:    20(uint) Constant 0
+             138:   21(uvec3) ConstantComposite 137 137 137
              140:    6(float) Constant 0
              141:    6(float) Constant 1065353216
-             142:    7(fvec3) ConstantComposite 140 140 140
-             143:    7(fvec3) ConstantComposite 141 141 141
+             142:     7(vec3) ConstantComposite 140 140 140
+             143:     7(vec3) ConstantComposite 141 141 141
              151:     13(int) Constant 4
-             152:             TypePointer Uniform 35(f64vec3)
+             152:             TypePointer Uniform 35(dvec3)
              172:   14(ivec3) ConstantComposite 114 114 114
              173:   14(ivec3) ConstantComposite 134 134 134
              181:     13(int) Constant 2
-             182:             TypePointer Uniform 7(fvec3)
-             218:     20(int) Constant 1
-             219:   21(ivec3) ConstantComposite 218 218 218
-             261:34(float64_t) Constant 0 0
-             262: 35(f64vec3) ConstantComposite 261 261 261
-             288:34(float64_t) Constant 0 1072693248
-             289: 35(f64vec3) ConstantComposite 288 288 288
+             182:             TypePointer Uniform 7(vec3)
+             218:    20(uint) Constant 1
+             219:   21(uvec3) ConstantComposite 218 218 218
+             261:  34(double) Constant 0 0
+             262:   35(dvec3) ConstantComposite 261 261 261
+             288:  34(double) Constant 0 1072693248
+             289:   35(dvec3) ConstantComposite 288 288 288
              473:     13(int) Constant 5
              474:             TypePointer Uniform 13(int)
              480:     13(int) Constant 6
-             481:             TypePointer Uniform 20(int)
+             481:             TypePointer Uniform 20(uint)
              488:     13(int) Constant 8
              494:     13(int) Constant 9
-             495:             TypePointer Uniform 34(float64_t)
+             495:             TypePointer Uniform 34(double)
              514:     13(int) Constant 7
              515:             TypePointer Uniform 6(float)
              574:             TypePointer Function 13(int)
-             577:             TypePointer Function 106(fvec4)
+             577:             TypePointer Function 106(vec4)
              579:    6(float) Constant 1080452710
              585:             TypePointer Function 107(PS_OUTPUT)
-             592:             TypePointer Output 106(fvec4)
-593(@entryPointOutput.Color):    592(ptr) Variable Output
-         4(main):           2 Function None 3
+             592:             TypePointer Output 106(vec4)
+593(@entryPointOutput.Color):  592(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
              594:107(PS_OUTPUT) FunctionCall 109(@main()
-             595:  106(fvec4) CompositeExtract 594 0
+             595:   106(vec4) CompositeExtract 594 0
                               Store 593(@entryPointOutput.Color) 595
                               Return
                               FunctionEnd
-  11(Fn_F3(vf3;):           2 Function None 9
-           10(x):      8(ptr) FunctionParameter
+  11(Fn_F3(vf3;):     2(void) Function None 9
+           10(x):    8(vec3*) FunctionParameter
               12:             Label
                               Return
                               FunctionEnd
-  18(Fn_I3(vi3;):           2 Function None 16
-           17(x):     15(ptr) FunctionParameter
+  18(Fn_I3(vi3;):     2(void) Function None 16
+           17(x):  15(ivec3*) FunctionParameter
               19:             Label
                               Return
                               FunctionEnd
-  25(Fn_U3(vu3;):           2 Function None 23
-           24(x):     22(ptr) FunctionParameter
+  25(Fn_U3(vu3;):     2(void) Function None 23
+           24(x):  22(uvec3*) FunctionParameter
               26:             Label
                               Return
                               FunctionEnd
-  32(Fn_B3(vb3;):           2 Function None 30
-           31(x):     29(ptr) FunctionParameter
+  32(Fn_B3(vb3;):     2(void) Function None 30
+           31(x):  29(bvec3*) FunctionParameter
               33:             Label
                               Return
                               FunctionEnd
-  39(Fn_D3(vd3;):           2 Function None 37
-           38(x):     36(ptr) FunctionParameter
+  39(Fn_D3(vd3;):     2(void) Function None 37
+           38(x):  36(dvec3*) FunctionParameter
               40:             Label
                               Return
                               FunctionEnd
-43(Fn_R_F3I(vf3;):    7(fvec3) Function None 41
-           42(p):      8(ptr) FunctionParameter
+43(Fn_R_F3I(vf3;):     7(vec3) Function None 41
+           42(p):    8(vec3*) FunctionParameter
               44:             Label
-             116:    115(ptr) AccessChain 113 114
+             116: 115(ivec3*) AccessChain 113 114
              117:   14(ivec3) Load 116
-             118:    7(fvec3) ConvertSToF 117
+             118:     7(vec3) ConvertSToF 117
                               Store 42(p) 118
-             119:    115(ptr) AccessChain 113 114
+             119: 115(ivec3*) AccessChain 113 114
              120:   14(ivec3) Load 119
-             121:    7(fvec3) ConvertSToF 120
+             121:     7(vec3) ConvertSToF 120
                               ReturnValue 121
                               FunctionEnd
-46(Fn_R_F3U(vf3;):    7(fvec3) Function None 41
-           45(p):      8(ptr) FunctionParameter
+46(Fn_R_F3U(vf3;):     7(vec3) Function None 41
+           45(p):    8(vec3*) FunctionParameter
               47:             Label
-             126:    125(ptr) AccessChain 113 124
-             127:   21(ivec3) Load 126
-             128:    7(fvec3) ConvertUToF 127
+             126: 125(uvec3*) AccessChain 113 124
+             127:   21(uvec3) Load 126
+             128:     7(vec3) ConvertUToF 127
                               Store 45(p) 128
-             129:    125(ptr) AccessChain 113 124
-             130:   21(ivec3) Load 129
-             131:    7(fvec3) ConvertUToF 130
+             129: 125(uvec3*) AccessChain 113 124
+             130:   21(uvec3) Load 129
+             131:     7(vec3) ConvertUToF 130
                               ReturnValue 131
                               FunctionEnd
-49(Fn_R_F3B(vf3;):    7(fvec3) Function None 41
-           48(p):      8(ptr) FunctionParameter
+49(Fn_R_F3B(vf3;):     7(vec3) Function None 41
+           48(p):    8(vec3*) FunctionParameter
               50:             Label
-             135:    125(ptr) AccessChain 113 134
-             136:   21(ivec3) Load 135
+             135: 125(uvec3*) AccessChain 113 134
+             136:   21(uvec3) Load 135
              139:   28(bvec3) INotEqual 136 138
-             144:    7(fvec3) Select 139 143 142
+             144:     7(vec3) Select 139 143 142
                               Store 48(p) 144
-             145:    125(ptr) AccessChain 113 134
-             146:   21(ivec3) Load 145
+             145: 125(uvec3*) AccessChain 113 134
+             146:   21(uvec3) Load 145
              147:   28(bvec3) INotEqual 146 138
-             148:    7(fvec3) Select 147 143 142
+             148:     7(vec3) Select 147 143 142
                               ReturnValue 148
                               FunctionEnd
-52(Fn_R_F3D(vf3;):    7(fvec3) Function None 41
-           51(p):      8(ptr) FunctionParameter
+52(Fn_R_F3D(vf3;):     7(vec3) Function None 41
+           51(p):    8(vec3*) FunctionParameter
               53:             Label
-             153:    152(ptr) AccessChain 113 151
-             154: 35(f64vec3) Load 153
-             155:    7(fvec3) FConvert 154
+             153: 152(dvec3*) AccessChain 113 151
+             154:   35(dvec3) Load 153
+             155:     7(vec3) FConvert 154
                               Store 51(p) 155
-             156:    152(ptr) AccessChain 113 151
-             157: 35(f64vec3) Load 156
-             158:    7(fvec3) FConvert 157
+             156: 152(dvec3*) AccessChain 113 151
+             157:   35(dvec3) Load 156
+             158:     7(vec3) FConvert 157
                               ReturnValue 158
                               FunctionEnd
 56(Fn_R_I3U(vi3;):   14(ivec3) Function None 54
-           55(p):     15(ptr) FunctionParameter
+           55(p):  15(ivec3*) FunctionParameter
               57:             Label
-             161:    125(ptr) AccessChain 113 124
-             162:   21(ivec3) Load 161
+             161: 125(uvec3*) AccessChain 113 124
+             162:   21(uvec3) Load 161
              163:   14(ivec3) Bitcast 162
                               Store 55(p) 163
-             164:    125(ptr) AccessChain 113 124
-             165:   21(ivec3) Load 164
+             164: 125(uvec3*) AccessChain 113 124
+             165:   21(uvec3) Load 164
              166:   14(ivec3) Bitcast 165
                               ReturnValue 166
                               FunctionEnd
 59(Fn_R_I3B(vi3;):   14(ivec3) Function None 54
-           58(p):     15(ptr) FunctionParameter
+           58(p):  15(ivec3*) FunctionParameter
               60:             Label
-             169:    125(ptr) AccessChain 113 134
-             170:   21(ivec3) Load 169
+             169: 125(uvec3*) AccessChain 113 134
+             170:   21(uvec3) Load 169
              171:   28(bvec3) INotEqual 170 138
              174:   14(ivec3) Select 171 173 172
                               Store 58(p) 174
-             175:    125(ptr) AccessChain 113 134
-             176:   21(ivec3) Load 175
+             175: 125(uvec3*) AccessChain 113 134
+             176:   21(uvec3) Load 175
              177:   28(bvec3) INotEqual 176 138
              178:   14(ivec3) Select 177 173 172
                               ReturnValue 178
                               FunctionEnd
 62(Fn_R_I3F(vi3;):   14(ivec3) Function None 54
-           61(p):     15(ptr) FunctionParameter
+           61(p):  15(ivec3*) FunctionParameter
               63:             Label
-             183:    182(ptr) AccessChain 113 181
-             184:    7(fvec3) Load 183
+             183:  182(vec3*) AccessChain 113 181
+             184:     7(vec3) Load 183
              185:   14(ivec3) ConvertFToS 184
                               Store 61(p) 185
-             186:    182(ptr) AccessChain 113 181
-             187:    7(fvec3) Load 186
+             186:  182(vec3*) AccessChain 113 181
+             187:     7(vec3) Load 186
              188:   14(ivec3) ConvertFToS 187
                               ReturnValue 188
                               FunctionEnd
 65(Fn_R_I3D(vi3;):   14(ivec3) Function None 54
-           64(p):     15(ptr) FunctionParameter
+           64(p):  15(ivec3*) FunctionParameter
               66:             Label
-             191:    152(ptr) AccessChain 113 151
-             192: 35(f64vec3) Load 191
+             191: 152(dvec3*) AccessChain 113 151
+             192:   35(dvec3) Load 191
              193:   14(ivec3) ConvertFToS 192
                               Store 64(p) 193
-             194:    152(ptr) AccessChain 113 151
-             195: 35(f64vec3) Load 194
+             194: 152(dvec3*) AccessChain 113 151
+             195:   35(dvec3) Load 194
              196:   14(ivec3) ConvertFToS 195
                               ReturnValue 196
                               FunctionEnd
-69(Fn_R_U3I(vu3;):   21(ivec3) Function None 67
-           68(p):     22(ptr) FunctionParameter
+69(Fn_R_U3I(vu3;):   21(uvec3) Function None 67
+           68(p):  22(uvec3*) FunctionParameter
               70:             Label
-             199:    115(ptr) AccessChain 113 114
+             199: 115(ivec3*) AccessChain 113 114
              200:   14(ivec3) Load 199
-             201:   21(ivec3) Bitcast 200
+             201:   21(uvec3) Bitcast 200
                               Store 68(p) 201
-             202:    115(ptr) AccessChain 113 114
+             202: 115(ivec3*) AccessChain 113 114
              203:   14(ivec3) Load 202
-             204:   21(ivec3) Bitcast 203
+             204:   21(uvec3) Bitcast 203
                               ReturnValue 204
                               FunctionEnd
-72(Fn_R_U3F(vu3;):   21(ivec3) Function None 67
-           71(p):     22(ptr) FunctionParameter
+72(Fn_R_U3F(vu3;):   21(uvec3) Function None 67
+           71(p):  22(uvec3*) FunctionParameter
               73:             Label
-             207:    182(ptr) AccessChain 113 181
-             208:    7(fvec3) Load 207
-             209:   21(ivec3) ConvertFToU 208
+             207:  182(vec3*) AccessChain 113 181
+             208:     7(vec3) Load 207
+             209:   21(uvec3) ConvertFToU 208
                               Store 71(p) 209
-             210:    182(ptr) AccessChain 113 181
-             211:    7(fvec3) Load 210
-             212:   21(ivec3) ConvertFToU 211
+             210:  182(vec3*) AccessChain 113 181
+             211:     7(vec3) Load 210
+             212:   21(uvec3) ConvertFToU 211
                               ReturnValue 212
                               FunctionEnd
-75(Fn_R_U3B(vu3;):   21(ivec3) Function None 67
-           74(p):     22(ptr) FunctionParameter
+75(Fn_R_U3B(vu3;):   21(uvec3) Function None 67
+           74(p):  22(uvec3*) FunctionParameter
               76:             Label
-             215:    125(ptr) AccessChain 113 134
-             216:   21(ivec3) Load 215
+             215: 125(uvec3*) AccessChain 113 134
+             216:   21(uvec3) Load 215
              217:   28(bvec3) INotEqual 216 138
-             220:   21(ivec3) Select 217 219 138
+             220:   21(uvec3) Select 217 219 138
                               Store 74(p) 220
-             221:    125(ptr) AccessChain 113 134
-             222:   21(ivec3) Load 221
+             221: 125(uvec3*) AccessChain 113 134
+             222:   21(uvec3) Load 221
              223:   28(bvec3) INotEqual 222 138
-             224:   21(ivec3) Select 223 219 138
+             224:   21(uvec3) Select 223 219 138
                               ReturnValue 224
                               FunctionEnd
-78(Fn_R_U3D(vu3;):   21(ivec3) Function None 67
-           77(p):     22(ptr) FunctionParameter
+78(Fn_R_U3D(vu3;):   21(uvec3) Function None 67
+           77(p):  22(uvec3*) FunctionParameter
               79:             Label
-             227:    152(ptr) AccessChain 113 151
-             228: 35(f64vec3) Load 227
-             229:   21(ivec3) ConvertFToU 228
+             227: 152(dvec3*) AccessChain 113 151
+             228:   35(dvec3) Load 227
+             229:   21(uvec3) ConvertFToU 228
                               Store 77(p) 229
-             230:    152(ptr) AccessChain 113 151
-             231: 35(f64vec3) Load 230
-             232:   21(ivec3) ConvertFToU 231
+             230: 152(dvec3*) AccessChain 113 151
+             231:   35(dvec3) Load 230
+             232:   21(uvec3) ConvertFToU 231
                               ReturnValue 232
                               FunctionEnd
 82(Fn_R_B3I(vb3;):   28(bvec3) Function None 80
-           81(p):     29(ptr) FunctionParameter
+           81(p):  29(bvec3*) FunctionParameter
               83:             Label
-             235:    115(ptr) AccessChain 113 114
+             235: 115(ivec3*) AccessChain 113 114
              236:   14(ivec3) Load 235
              237:   28(bvec3) INotEqual 236 138
                               Store 81(p) 237
-             238:    115(ptr) AccessChain 113 114
+             238: 115(ivec3*) AccessChain 113 114
              239:   14(ivec3) Load 238
              240:   28(bvec3) INotEqual 239 138
                               ReturnValue 240
                               FunctionEnd
 85(Fn_R_B3U(vb3;):   28(bvec3) Function None 80
-           84(p):     29(ptr) FunctionParameter
+           84(p):  29(bvec3*) FunctionParameter
               86:             Label
-             243:    125(ptr) AccessChain 113 124
-             244:   21(ivec3) Load 243
+             243: 125(uvec3*) AccessChain 113 124
+             244:   21(uvec3) Load 243
              245:   28(bvec3) INotEqual 244 138
                               Store 84(p) 245
-             246:    125(ptr) AccessChain 113 124
-             247:   21(ivec3) Load 246
+             246: 125(uvec3*) AccessChain 113 124
+             247:   21(uvec3) Load 246
              248:   28(bvec3) INotEqual 247 138
                               ReturnValue 248
                               FunctionEnd
 88(Fn_R_B3F(vb3;):   28(bvec3) Function None 80
-           87(p):     29(ptr) FunctionParameter
+           87(p):  29(bvec3*) FunctionParameter
               89:             Label
-             251:    182(ptr) AccessChain 113 181
-             252:    7(fvec3) Load 251
+             251:  182(vec3*) AccessChain 113 181
+             252:     7(vec3) Load 251
              253:   28(bvec3) FOrdNotEqual 252 142
                               Store 87(p) 253
-             254:    182(ptr) AccessChain 113 181
-             255:    7(fvec3) Load 254
+             254:  182(vec3*) AccessChain 113 181
+             255:     7(vec3) Load 254
              256:   28(bvec3) FOrdNotEqual 255 142
                               ReturnValue 256
                               FunctionEnd
 91(Fn_R_B3D(vb3;):   28(bvec3) Function None 80
-           90(p):     29(ptr) FunctionParameter
+           90(p):  29(bvec3*) FunctionParameter
               92:             Label
-             259:    152(ptr) AccessChain 113 151
-             260: 35(f64vec3) Load 259
+             259: 152(dvec3*) AccessChain 113 151
+             260:   35(dvec3) Load 259
              263:   28(bvec3) FOrdNotEqual 260 262
                               Store 90(p) 263
-             264:    152(ptr) AccessChain 113 151
-             265: 35(f64vec3) Load 264
+             264: 152(dvec3*) AccessChain 113 151
+             265:   35(dvec3) Load 264
              266:   28(bvec3) FOrdNotEqual 265 262
                               ReturnValue 266
                               FunctionEnd
-95(Fn_R_D3I(vd3;): 35(f64vec3) Function None 93
-           94(p):     36(ptr) FunctionParameter
+95(Fn_R_D3I(vd3;):   35(dvec3) Function None 93
+           94(p):  36(dvec3*) FunctionParameter
               96:             Label
-             269:    115(ptr) AccessChain 113 114
+             269: 115(ivec3*) AccessChain 113 114
              270:   14(ivec3) Load 269
-             271: 35(f64vec3) ConvertSToF 270
+             271:   35(dvec3) ConvertSToF 270
                               Store 94(p) 271
-             272:    115(ptr) AccessChain 113 114
+             272: 115(ivec3*) AccessChain 113 114
              273:   14(ivec3) Load 272
-             274: 35(f64vec3) ConvertSToF 273
+             274:   35(dvec3) ConvertSToF 273
                               ReturnValue 274
                               FunctionEnd
-98(Fn_R_D3U(vd3;): 35(f64vec3) Function None 93
-           97(p):     36(ptr) FunctionParameter
+98(Fn_R_D3U(vd3;):   35(dvec3) Function None 93
+           97(p):  36(dvec3*) FunctionParameter
               99:             Label
-             277:    125(ptr) AccessChain 113 124
-             278:   21(ivec3) Load 277
-             279: 35(f64vec3) ConvertUToF 278
+             277: 125(uvec3*) AccessChain 113 124
+             278:   21(uvec3) Load 277
+             279:   35(dvec3) ConvertUToF 278
                               Store 97(p) 279
-             280:    125(ptr) AccessChain 113 124
-             281:   21(ivec3) Load 280
-             282: 35(f64vec3) ConvertUToF 281
+             280: 125(uvec3*) AccessChain 113 124
+             281:   21(uvec3) Load 280
+             282:   35(dvec3) ConvertUToF 281
                               ReturnValue 282
                               FunctionEnd
-101(Fn_R_D3B(vd3;): 35(f64vec3) Function None 93
-          100(p):     36(ptr) FunctionParameter
+101(Fn_R_D3B(vd3;):   35(dvec3) Function None 93
+          100(p):  36(dvec3*) FunctionParameter
              102:             Label
-             285:    125(ptr) AccessChain 113 134
-             286:   21(ivec3) Load 285
+             285: 125(uvec3*) AccessChain 113 134
+             286:   21(uvec3) Load 285
              287:   28(bvec3) INotEqual 286 138
-             290: 35(f64vec3) Select 287 289 262
+             290:   35(dvec3) Select 287 289 262
                               Store 100(p) 290
-             291:    125(ptr) AccessChain 113 134
-             292:   21(ivec3) Load 291
+             291: 125(uvec3*) AccessChain 113 134
+             292:   21(uvec3) Load 291
              293:   28(bvec3) INotEqual 292 138
-             294: 35(f64vec3) Select 293 289 262
+             294:   35(dvec3) Select 293 289 262
                               ReturnValue 294
                               FunctionEnd
-104(Fn_R_D3F(vd3;): 35(f64vec3) Function None 93
-          103(p):     36(ptr) FunctionParameter
+104(Fn_R_D3F(vd3;):   35(dvec3) Function None 93
+          103(p):  36(dvec3*) FunctionParameter
              105:             Label
-             297:    182(ptr) AccessChain 113 181
-             298:    7(fvec3) Load 297
-             299: 35(f64vec3) FConvert 298
+             297:  182(vec3*) AccessChain 113 181
+             298:     7(vec3) Load 297
+             299:   35(dvec3) FConvert 298
                               Store 103(p) 299
-             300:    182(ptr) AccessChain 113 181
-             301:    7(fvec3) Load 300
-             302: 35(f64vec3) FConvert 301
+             300:  182(vec3*) AccessChain 113 181
+             301:     7(vec3) Load 300
+             302:   35(dvec3) FConvert 301
                               ReturnValue 302
                               FunctionEnd
      109(@main():107(PS_OUTPUT) Function None 108
              110:             Label
-        305(r00):      8(ptr) Variable Function
-        309(r01):      8(ptr) Variable Function
-        314(r02):      8(ptr) Variable Function
-        318(r03):      8(ptr) Variable Function
-        322(r10):     15(ptr) Variable Function
-        327(r11):     15(ptr) Variable Function
-        331(r12):     15(ptr) Variable Function
-        335(r13):     15(ptr) Variable Function
-        339(r20):     22(ptr) Variable Function
-        344(r21):     22(ptr) Variable Function
-        348(r22):     22(ptr) Variable Function
-        352(r23):     22(ptr) Variable Function
-        356(r30):     29(ptr) Variable Function
-        360(r31):     29(ptr) Variable Function
-        364(r32):     29(ptr) Variable Function
-        368(r33):     29(ptr) Variable Function
-        372(r40):     36(ptr) Variable Function
-        376(r41):     36(ptr) Variable Function
-        380(r42):     36(ptr) Variable Function
-        384(r43):     36(ptr) Variable Function
-         575(c1):    574(ptr) Variable Function
-         576(c2):    574(ptr) Variable Function
-     578(outval):    577(ptr) Variable Function
-      586(psout):    585(ptr) Variable Function
-             306:    115(ptr) AccessChain 113 114
+        305(r00):    8(vec3*) Variable Function
+        309(r01):    8(vec3*) Variable Function
+        314(r02):    8(vec3*) Variable Function
+        318(r03):    8(vec3*) Variable Function
+        322(r10):  15(ivec3*) Variable Function
+        327(r11):  15(ivec3*) Variable Function
+        331(r12):  15(ivec3*) Variable Function
+        335(r13):  15(ivec3*) Variable Function
+        339(r20):  22(uvec3*) Variable Function
+        344(r21):  22(uvec3*) Variable Function
+        348(r22):  22(uvec3*) Variable Function
+        352(r23):  22(uvec3*) Variable Function
+        356(r30):  29(bvec3*) Variable Function
+        360(r31):  29(bvec3*) Variable Function
+        364(r32):  29(bvec3*) Variable Function
+        368(r33):  29(bvec3*) Variable Function
+        372(r40):  36(dvec3*) Variable Function
+        376(r41):  36(dvec3*) Variable Function
+        380(r42):  36(dvec3*) Variable Function
+        384(r43):  36(dvec3*) Variable Function
+         575(c1):   574(int*) Variable Function
+         576(c2):   574(int*) Variable Function
+     578(outval):  577(vec4*) Variable Function
+      586(psout):585(PS_OUTPUT*) Variable Function
+             306: 115(ivec3*) AccessChain 113 114
              307:   14(ivec3) Load 306
-             308:    7(fvec3) ConvertSToF 307
+             308:     7(vec3) ConvertSToF 307
                               Store 305(r00) 308
-             310:    125(ptr) AccessChain 113 134
-             311:   21(ivec3) Load 310
+             310: 125(uvec3*) AccessChain 113 134
+             311:   21(uvec3) Load 310
              312:   28(bvec3) INotEqual 311 138
-             313:    7(fvec3) Select 312 143 142
+             313:     7(vec3) Select 312 143 142
                               Store 309(r01) 313
-             315:    125(ptr) AccessChain 113 124
-             316:   21(ivec3) Load 315
-             317:    7(fvec3) ConvertUToF 316
+             315: 125(uvec3*) AccessChain 113 124
+             316:   21(uvec3) Load 315
+             317:     7(vec3) ConvertUToF 316
                               Store 314(r02) 317
-             319:    152(ptr) AccessChain 113 151
-             320: 35(f64vec3) Load 319
-             321:    7(fvec3) FConvert 320
+             319: 152(dvec3*) AccessChain 113 151
+             320:   35(dvec3) Load 319
+             321:     7(vec3) FConvert 320
                               Store 318(r03) 321
-             323:    125(ptr) AccessChain 113 134
-             324:   21(ivec3) Load 323
+             323: 125(uvec3*) AccessChain 113 134
+             324:   21(uvec3) Load 323
              325:   28(bvec3) INotEqual 324 138
              326:   14(ivec3) Select 325 173 172
                               Store 322(r10) 326
-             328:    125(ptr) AccessChain 113 124
-             329:   21(ivec3) Load 328
+             328: 125(uvec3*) AccessChain 113 124
+             329:   21(uvec3) Load 328
              330:   14(ivec3) Bitcast 329
                               Store 327(r11) 330
-             332:    182(ptr) AccessChain 113 181
-             333:    7(fvec3) Load 332
+             332:  182(vec3*) AccessChain 113 181
+             333:     7(vec3) Load 332
              334:   14(ivec3) ConvertFToS 333
                               Store 331(r12) 334
-             336:    152(ptr) AccessChain 113 151
-             337: 35(f64vec3) Load 336
+             336: 152(dvec3*) AccessChain 113 151
+             337:   35(dvec3) Load 336
              338:   14(ivec3) ConvertFToS 337
                               Store 335(r13) 338
-             340:    125(ptr) AccessChain 113 134
-             341:   21(ivec3) Load 340
+             340: 125(uvec3*) AccessChain 113 134
+             341:   21(uvec3) Load 340
              342:   28(bvec3) INotEqual 341 138
-             343:   21(ivec3) Select 342 219 138
+             343:   21(uvec3) Select 342 219 138
                               Store 339(r20) 343
-             345:    115(ptr) AccessChain 113 114
+             345: 115(ivec3*) AccessChain 113 114
              346:   14(ivec3) Load 345
-             347:   21(ivec3) Bitcast 346
+             347:   21(uvec3) Bitcast 346
                               Store 344(r21) 347
-             349:    182(ptr) AccessChain 113 181
-             350:    7(fvec3) Load 349
-             351:   21(ivec3) ConvertFToU 350
+             349:  182(vec3*) AccessChain 113 181
+             350:     7(vec3) Load 349
+             351:   21(uvec3) ConvertFToU 350
                               Store 348(r22) 351
-             353:    152(ptr) AccessChain 113 151
-             354: 35(f64vec3) Load 353
-             355:   21(ivec3) ConvertFToU 354
+             353: 152(dvec3*) AccessChain 113 151
+             354:   35(dvec3) Load 353
+             355:   21(uvec3) ConvertFToU 354
                               Store 352(r23) 355
-             357:    115(ptr) AccessChain 113 114
+             357: 115(ivec3*) AccessChain 113 114
              358:   14(ivec3) Load 357
              359:   28(bvec3) INotEqual 358 138
                               Store 356(r30) 359
-             361:    125(ptr) AccessChain 113 124
-             362:   21(ivec3) Load 361
+             361: 125(uvec3*) AccessChain 113 124
+             362:   21(uvec3) Load 361
              363:   28(bvec3) INotEqual 362 138
                               Store 360(r31) 363
-             365:    182(ptr) AccessChain 113 181
-             366:    7(fvec3) Load 365
+             365:  182(vec3*) AccessChain 113 181
+             366:     7(vec3) Load 365
              367:   28(bvec3) FOrdNotEqual 366 142
                               Store 364(r32) 367
-             369:    152(ptr) AccessChain 113 151
-             370: 35(f64vec3) Load 369
+             369: 152(dvec3*) AccessChain 113 151
+             370:   35(dvec3) Load 369
              371:   28(bvec3) FOrdNotEqual 370 262
                               Store 368(r33) 371
-             373:    115(ptr) AccessChain 113 114
+             373: 115(ivec3*) AccessChain 113 114
              374:   14(ivec3) Load 373
-             375: 35(f64vec3) ConvertSToF 374
+             375:   35(dvec3) ConvertSToF 374
                               Store 372(r40) 375
-             377:    125(ptr) AccessChain 113 124
-             378:   21(ivec3) Load 377
-             379: 35(f64vec3) ConvertUToF 378
+             377: 125(uvec3*) AccessChain 113 124
+             378:   21(uvec3) Load 377
+             379:   35(dvec3) ConvertUToF 378
                               Store 376(r41) 379
-             381:    182(ptr) AccessChain 113 181
-             382:    7(fvec3) Load 381
-             383: 35(f64vec3) FConvert 382
+             381:  182(vec3*) AccessChain 113 181
+             382:     7(vec3) Load 381
+             383:   35(dvec3) FConvert 382
                               Store 380(r42) 383
-             385:    125(ptr) AccessChain 113 134
-             386:   21(ivec3) Load 385
+             385: 125(uvec3*) AccessChain 113 134
+             386:   21(uvec3) Load 385
              387:   28(bvec3) INotEqual 386 138
-             388: 35(f64vec3) Select 387 289 262
+             388:   35(dvec3) Select 387 289 262
                               Store 384(r43) 388
-             389:    115(ptr) AccessChain 113 114
+             389: 115(ivec3*) AccessChain 113 114
              390:   14(ivec3) Load 389
-             391:    7(fvec3) ConvertSToF 390
-             392:    7(fvec3) Load 305(r00)
-             393:    7(fvec3) FMul 392 391
+             391:     7(vec3) ConvertSToF 390
+             392:     7(vec3) Load 305(r00)
+             393:     7(vec3) FMul 392 391
                               Store 305(r00) 393
-             394:    125(ptr) AccessChain 113 134
-             395:   21(ivec3) Load 394
+             394: 125(uvec3*) AccessChain 113 134
+             395:   21(uvec3) Load 394
              396:   28(bvec3) INotEqual 395 138
-             397:    7(fvec3) Select 396 143 142
-             398:    7(fvec3) Load 309(r01)
-             399:    7(fvec3) FMul 398 397
+             397:     7(vec3) Select 396 143 142
+             398:     7(vec3) Load 309(r01)
+             399:     7(vec3) FMul 398 397
                               Store 309(r01) 399
-             400:    125(ptr) AccessChain 113 124
-             401:   21(ivec3) Load 400
-             402:    7(fvec3) ConvertUToF 401
-             403:    7(fvec3) Load 314(r02)
-             404:    7(fvec3) FMul 403 402
+             400: 125(uvec3*) AccessChain 113 124
+             401:   21(uvec3) Load 400
+             402:     7(vec3) ConvertUToF 401
+             403:     7(vec3) Load 314(r02)
+             404:     7(vec3) FMul 403 402
                               Store 314(r02) 404
-             405:    152(ptr) AccessChain 113 151
-             406: 35(f64vec3) Load 405
-             407:    7(fvec3) FConvert 406
-             408:    7(fvec3) Load 318(r03)
-             409:    7(fvec3) FMul 408 407
+             405: 152(dvec3*) AccessChain 113 151
+             406:   35(dvec3) Load 405
+             407:     7(vec3) FConvert 406
+             408:     7(vec3) Load 318(r03)
+             409:     7(vec3) FMul 408 407
                               Store 318(r03) 409
-             410:    125(ptr) AccessChain 113 134
-             411:   21(ivec3) Load 410
+             410: 125(uvec3*) AccessChain 113 134
+             411:   21(uvec3) Load 410
              412:   28(bvec3) INotEqual 411 138
              413:   14(ivec3) Select 412 173 172
              414:   14(ivec3) Load 322(r10)
              415:   14(ivec3) IMul 414 413
                               Store 322(r10) 415
-             416:    125(ptr) AccessChain 113 124
-             417:   21(ivec3) Load 416
+             416: 125(uvec3*) AccessChain 113 124
+             417:   21(uvec3) Load 416
              418:   14(ivec3) Bitcast 417
              419:   14(ivec3) Load 327(r11)
              420:   14(ivec3) IMul 419 418
                               Store 327(r11) 420
-             421:    182(ptr) AccessChain 113 181
-             422:    7(fvec3) Load 421
+             421:  182(vec3*) AccessChain 113 181
+             422:     7(vec3) Load 421
              423:   14(ivec3) ConvertFToS 422
              424:   14(ivec3) Load 331(r12)
              425:   14(ivec3) IMul 424 423
                               Store 331(r12) 425
-             426:    152(ptr) AccessChain 113 151
-             427: 35(f64vec3) Load 426
+             426: 152(dvec3*) AccessChain 113 151
+             427:   35(dvec3) Load 426
              428:   14(ivec3) ConvertFToS 427
              429:   14(ivec3) Load 335(r13)
              430:   14(ivec3) IMul 429 428
                               Store 335(r13) 430
-             431:    125(ptr) AccessChain 113 134
-             432:   21(ivec3) Load 431
+             431: 125(uvec3*) AccessChain 113 134
+             432:   21(uvec3) Load 431
              433:   28(bvec3) INotEqual 432 138
-             434:   21(ivec3) Select 433 219 138
-             435:   21(ivec3) Load 339(r20)
-             436:   21(ivec3) IMul 435 434
+             434:   21(uvec3) Select 433 219 138
+             435:   21(uvec3) Load 339(r20)
+             436:   21(uvec3) IMul 435 434
                               Store 339(r20) 436
-             437:    115(ptr) AccessChain 113 114
+             437: 115(ivec3*) AccessChain 113 114
              438:   14(ivec3) Load 437
-             439:   21(ivec3) Bitcast 438
-             440:   21(ivec3) Load 344(r21)
-             441:   21(ivec3) IMul 440 439
+             439:   21(uvec3) Bitcast 438
+             440:   21(uvec3) Load 344(r21)
+             441:   21(uvec3) IMul 440 439
                               Store 344(r21) 441
-             442:    182(ptr) AccessChain 113 181
-             443:    7(fvec3) Load 442
-             444:   21(ivec3) ConvertFToU 443
-             445:   21(ivec3) Load 348(r22)
-             446:   21(ivec3) IMul 445 444
+             442:  182(vec3*) AccessChain 113 181
+             443:     7(vec3) Load 442
+             444:   21(uvec3) ConvertFToU 443
+             445:   21(uvec3) Load 348(r22)
+             446:   21(uvec3) IMul 445 444
                               Store 348(r22) 446
-             447:    152(ptr) AccessChain 113 151
-             448: 35(f64vec3) Load 447
-             449:   21(ivec3) ConvertFToU 448
-             450:   21(ivec3) Load 352(r23)
-             451:   21(ivec3) IMul 450 449
+             447: 152(dvec3*) AccessChain 113 151
+             448:   35(dvec3) Load 447
+             449:   21(uvec3) ConvertFToU 448
+             450:   21(uvec3) Load 352(r23)
+             451:   21(uvec3) IMul 450 449
                               Store 352(r23) 451
-             452:    115(ptr) AccessChain 113 114
+             452: 115(ivec3*) AccessChain 113 114
              453:   14(ivec3) Load 452
-             454: 35(f64vec3) ConvertSToF 453
-             455: 35(f64vec3) Load 372(r40)
-             456: 35(f64vec3) FMul 455 454
+             454:   35(dvec3) ConvertSToF 453
+             455:   35(dvec3) Load 372(r40)
+             456:   35(dvec3) FMul 455 454
                               Store 372(r40) 456
-             457:    125(ptr) AccessChain 113 124
-             458:   21(ivec3) Load 457
-             459: 35(f64vec3) ConvertUToF 458
-             460: 35(f64vec3) Load 376(r41)
-             461: 35(f64vec3) FMul 460 459
+             457: 125(uvec3*) AccessChain 113 124
+             458:   21(uvec3) Load 457
+             459:   35(dvec3) ConvertUToF 458
+             460:   35(dvec3) Load 376(r41)
+             461:   35(dvec3) FMul 460 459
                               Store 376(r41) 461
-             462:    182(ptr) AccessChain 113 181
-             463:    7(fvec3) Load 462
-             464: 35(f64vec3) FConvert 463
-             465: 35(f64vec3) Load 380(r42)
-             466: 35(f64vec3) FMul 465 464
+             462:  182(vec3*) AccessChain 113 181
+             463:     7(vec3) Load 462
+             464:   35(dvec3) FConvert 463
+             465:   35(dvec3) Load 380(r42)
+             466:   35(dvec3) FMul 465 464
                               Store 380(r42) 466
-             467:    125(ptr) AccessChain 113 134
-             468:   21(ivec3) Load 467
+             467: 125(uvec3*) AccessChain 113 134
+             468:   21(uvec3) Load 467
              469:   28(bvec3) INotEqual 468 138
-             470: 35(f64vec3) Select 469 289 262
-             471: 35(f64vec3) Load 384(r43)
-             472: 35(f64vec3) FMul 471 470
+             470:   35(dvec3) Select 469 289 262
+             471:   35(dvec3) Load 384(r43)
+             472:   35(dvec3) FMul 471 470
                               Store 384(r43) 472
-             475:    474(ptr) AccessChain 113 473
+             475:   474(int*) AccessChain 113 473
              476:     13(int) Load 475
              477:    6(float) ConvertSToF 476
-             478:    7(fvec3) Load 305(r00)
-             479:    7(fvec3) VectorTimesScalar 478 477
+             478:     7(vec3) Load 305(r00)
+             479:     7(vec3) VectorTimesScalar 478 477
                               Store 305(r00) 479
-             482:    481(ptr) AccessChain 113 480
-             483:     20(int) Load 482
+             482:  481(uint*) AccessChain 113 480
+             483:    20(uint) Load 482
              484:    27(bool) INotEqual 483 137
              485:    6(float) Select 484 141 140
-             486:    7(fvec3) Load 309(r01)
-             487:    7(fvec3) VectorTimesScalar 486 485
+             486:     7(vec3) Load 309(r01)
+             487:     7(vec3) VectorTimesScalar 486 485
                               Store 309(r01) 487
-             489:    481(ptr) AccessChain 113 488
-             490:     20(int) Load 489
+             489:  481(uint*) AccessChain 113 488
+             490:    20(uint) Load 489
              491:    6(float) ConvertUToF 490
-             492:    7(fvec3) Load 314(r02)
-             493:    7(fvec3) VectorTimesScalar 492 491
+             492:     7(vec3) Load 314(r02)
+             493:     7(vec3) VectorTimesScalar 492 491
                               Store 314(r02) 493
-             496:    495(ptr) AccessChain 113 494
-             497:34(float64_t) Load 496
+             496:495(double*) AccessChain 113 494
+             497:  34(double) Load 496
              498:    6(float) FConvert 497
-             499:    7(fvec3) Load 318(r03)
-             500:    7(fvec3) VectorTimesScalar 499 498
+             499:     7(vec3) Load 318(r03)
+             500:     7(vec3) VectorTimesScalar 499 498
                               Store 318(r03) 500
-             501:    481(ptr) AccessChain 113 480
-             502:     20(int) Load 501
+             501:  481(uint*) AccessChain 113 480
+             502:    20(uint) Load 501
              503:    27(bool) INotEqual 502 137
              504:     13(int) Select 503 134 114
              505:   14(ivec3) Load 322(r10)
              506:   14(ivec3) CompositeConstruct 504 504 504
              507:   14(ivec3) IMul 505 506
                               Store 322(r10) 507
-             508:    481(ptr) AccessChain 113 488
-             509:     20(int) Load 508
+             508:  481(uint*) AccessChain 113 488
+             509:    20(uint) Load 508
              510:     13(int) Bitcast 509
              511:   14(ivec3) Load 327(r11)
              512:   14(ivec3) CompositeConstruct 510 510 510
              513:   14(ivec3) IMul 511 512
                               Store 327(r11) 513
-             516:    515(ptr) AccessChain 113 514
+             516: 515(float*) AccessChain 113 514
              517:    6(float) Load 516
              518:     13(int) ConvertFToS 517
              519:   14(ivec3) Load 331(r12)
              520:   14(ivec3) CompositeConstruct 518 518 518
              521:   14(ivec3) IMul 519 520
                               Store 331(r12) 521
-             522:    495(ptr) AccessChain 113 494
-             523:34(float64_t) Load 522
+             522:495(double*) AccessChain 113 494
+             523:  34(double) Load 522
              524:     13(int) ConvertFToS 523
              525:   14(ivec3) Load 335(r13)
              526:   14(ivec3) CompositeConstruct 524 524 524
              527:   14(ivec3) IMul 525 526
                               Store 335(r13) 527
-             528:    481(ptr) AccessChain 113 480
-             529:     20(int) Load 528
+             528:  481(uint*) AccessChain 113 480
+             529:    20(uint) Load 528
              530:    27(bool) INotEqual 529 137
-             531:     20(int) Select 530 218 137
-             532:   21(ivec3) Load 339(r20)
-             533:   21(ivec3) CompositeConstruct 531 531 531
-             534:   21(ivec3) IMul 532 533
+             531:    20(uint) Select 530 218 137
+             532:   21(uvec3) Load 339(r20)
+             533:   21(uvec3) CompositeConstruct 531 531 531
+             534:   21(uvec3) IMul 532 533
                               Store 339(r20) 534
-             535:    474(ptr) AccessChain 113 473
+             535:   474(int*) AccessChain 113 473
              536:     13(int) Load 535
-             537:     20(int) Bitcast 536
-             538:   21(ivec3) Load 344(r21)
-             539:   21(ivec3) CompositeConstruct 537 537 537
-             540:   21(ivec3) IMul 538 539
+             537:    20(uint) Bitcast 536
+             538:   21(uvec3) Load 344(r21)
+             539:   21(uvec3) CompositeConstruct 537 537 537
+             540:   21(uvec3) IMul 538 539
                               Store 344(r21) 540
-             541:    515(ptr) AccessChain 113 514
+             541: 515(float*) AccessChain 113 514
              542:    6(float) Load 541
-             543:     20(int) ConvertFToU 542
-             544:   21(ivec3) Load 348(r22)
-             545:   21(ivec3) CompositeConstruct 543 543 543
-             546:   21(ivec3) IMul 544 545
+             543:    20(uint) ConvertFToU 542
+             544:   21(uvec3) Load 348(r22)
+             545:   21(uvec3) CompositeConstruct 543 543 543
+             546:   21(uvec3) IMul 544 545
                               Store 348(r22) 546
-             547:    495(ptr) AccessChain 113 494
-             548:34(float64_t) Load 547
-             549:     20(int) ConvertFToU 548
-             550:   21(ivec3) Load 352(r23)
-             551:   21(ivec3) CompositeConstruct 549 549 549
-             552:   21(ivec3) IMul 550 551
+             547:495(double*) AccessChain 113 494
+             548:  34(double) Load 547
+             549:    20(uint) ConvertFToU 548
+             550:   21(uvec3) Load 352(r23)
+             551:   21(uvec3) CompositeConstruct 549 549 549
+             552:   21(uvec3) IMul 550 551
                               Store 352(r23) 552
-             553:    474(ptr) AccessChain 113 473
+             553:   474(int*) AccessChain 113 473
              554:     13(int) Load 553
-             555:34(float64_t) ConvertSToF 554
-             556: 35(f64vec3) Load 372(r40)
-             557: 35(f64vec3) VectorTimesScalar 556 555
+             555:  34(double) ConvertSToF 554
+             556:   35(dvec3) Load 372(r40)
+             557:   35(dvec3) VectorTimesScalar 556 555
                               Store 372(r40) 557
-             558:    481(ptr) AccessChain 113 488
-             559:     20(int) Load 558
-             560:34(float64_t) ConvertUToF 559
-             561: 35(f64vec3) Load 376(r41)
-             562: 35(f64vec3) VectorTimesScalar 561 560
+             558:  481(uint*) AccessChain 113 488
+             559:    20(uint) Load 558
+             560:  34(double) ConvertUToF 559
+             561:   35(dvec3) Load 376(r41)
+             562:   35(dvec3) VectorTimesScalar 561 560
                               Store 376(r41) 562
-             563:    515(ptr) AccessChain 113 514
+             563: 515(float*) AccessChain 113 514
              564:    6(float) Load 563
-             565:34(float64_t) FConvert 564
-             566: 35(f64vec3) Load 380(r42)
-             567: 35(f64vec3) VectorTimesScalar 566 565
+             565:  34(double) FConvert 564
+             566:   35(dvec3) Load 380(r42)
+             567:   35(dvec3) VectorTimesScalar 566 565
                               Store 380(r42) 567
-             568:    481(ptr) AccessChain 113 480
-             569:     20(int) Load 568
+             568:  481(uint*) AccessChain 113 480
+             569:    20(uint) Load 568
              570:    27(bool) INotEqual 569 137
-             571:34(float64_t) Select 570 288 261
-             572: 35(f64vec3) Load 384(r43)
-             573: 35(f64vec3) VectorTimesScalar 572 571
+             571:  34(double) Select 570 288 261
+             572:   35(dvec3) Load 384(r43)
+             573:   35(dvec3) VectorTimesScalar 572 571
                               Store 384(r43) 573
                               Store 575(c1) 124
                               Store 576(c2) 124
@@ -2371,10 +2371,10 @@ gl_FragCoord origin is upper left
              581:    6(float) ConvertSToF 580
              582:     13(int) Load 576(c2)
              583:    6(float) ConvertSToF 582
-             584:  106(fvec4) CompositeConstruct 579 579 581 583
+             584:   106(vec4) CompositeConstruct 579 579 581 583
                               Store 578(outval) 584
-             587:  106(fvec4) Load 578(outval)
-             588:    577(ptr) AccessChain 586(psout) 114
+             587:   106(vec4) Load 578(outval)
+             588:  577(vec4*) AccessChain 586(psout) 114
                               Store 588 587
              589:107(PS_OUTPUT) Load 586(psout)
                               ReturnValue 589

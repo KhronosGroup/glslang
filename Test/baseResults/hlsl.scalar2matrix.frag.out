@@ -395,112 +395,112 @@ gl_FragCoord origin is upper left
                               Name 94  "@entryPointOutput"
                               Decorate 94(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeMatrix 7(fvec4) 4
-               9:             TypePointer Function 8
-              10:             TypeFunction 2 9(ptr)
-              14:             TypeFunction 7(fvec4)
+               8:             TypeMatrix 7(vec4) 4
+               9:             TypePointer Function 8(mat4)
+              10:             TypeFunction 2(void) 9(mat4*)
+              14:             TypeFunction 7(vec4)
               18:    6(float) Constant 1048576000
-              19:    7(fvec4) ConstantComposite 18 18 18 18
-              20:           8 ConstantComposite 19 19 19 19
+              19:     7(vec4) ConstantComposite 18 18 18 18
+              20:     8(mat4) ConstantComposite 19 19 19 19
               22:    6(float) Constant 1077936128
               23:    6(float) Constant 1078355558
               24:    6(float) Constant 1078774989
               25:    6(float) Constant 0
-              26:    7(fvec4) ConstantComposite 22 23 24 25
-              27:    7(fvec4) ConstantComposite 25 25 25 25
-              28:           8 ConstantComposite 26 27 27 27
+              26:     7(vec4) ConstantComposite 22 23 24 25
+              27:     7(vec4) ConstantComposite 25 25 25 25
+              28:     8(mat4) ConstantComposite 26 27 27 27
               30:    6(float) Constant 1052770304
-              31:    7(fvec4) ConstantComposite 30 30 30 30
-              32:           8 ConstantComposite 31 31 31 31
+              31:     7(vec4) ConstantComposite 30 30 30 30
+              32:     8(mat4) ConstantComposite 31 31 31 31
               34:    6(float) Constant 1061158912
-              35:    7(fvec4) ConstantComposite 34 34 34 34
-              36:           8 ConstantComposite 35 35 35 35
+              35:     7(vec4) ConstantComposite 34 34 34 34
+              36:     8(mat4) ConstantComposite 35 35 35 35
               37:    6(float) Constant 1082130432
               38:    6(float) Constant 1082340147
               39:    6(float) Constant 1082549862
-              40:    7(fvec4) ConstantComposite 37 38 39 25
-              41:           8 ConstantComposite 40 27 27 27
+              40:     7(vec4) ConstantComposite 37 38 39 25
+              41:     8(mat4) ConstantComposite 40 27 27 27
               42:    6(float) Constant 1056964608
-              43:    7(fvec4) ConstantComposite 42 42 42 42
-              44:           8 ConstantComposite 43 43 43 43
+              43:     7(vec4) ConstantComposite 42 42 42 42
+              44:     8(mat4) ConstantComposite 43 43 43 43
               69:    6(float) Constant 1073741824
               71:    6(float) Constant 1065353216
               74:    6(float) Constant 1084227584
-              75:    7(fvec4) ConstantComposite 74 74 74 74
-              76:           8 ConstantComposite 75 75 75 75
+              75:     7(vec4) ConstantComposite 74 74 74 74
+              76:     8(mat4) ConstantComposite 75 75 75 75
               79:    6(float) Constant 1050253722
-              80:    7(fvec4) ConstantComposite 79 79 79 79
+              80:     7(vec4) ConstantComposite 79 79 79 79
               81:             TypeInt 32 1
               82:     81(int) Constant 1
-              83:             TypePointer Function 7(fvec4)
+              83:             TypePointer Function 7(vec4)
               87:     81(int) Constant 2
-              93:             TypePointer Output 7(fvec4)
-94(@entryPointOutput):     93(ptr) Variable Output
-         4(main):           2 Function None 3
+              93:             TypePointer Output 7(vec4)
+94(@entryPointOutput):   93(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              95:    7(fvec4) FunctionCall 15(@main()
+              95:     7(vec4) FunctionCall 15(@main()
                               Store 94(@entryPointOutput) 95
                               Return
                               FunctionEnd
-   12(Fn1(mf44;):           2 Function None 10
-           11(p):      9(ptr) FunctionParameter
+   12(Fn1(mf44;):     2(void) Function None 10
+           11(p):    9(mat4*) FunctionParameter
               13:             Label
                               Return
                               FunctionEnd
-      15(@main():    7(fvec4) Function None 14
+      15(@main():     7(vec4) Function None 14
               16:             Label
-        17(mat1):      9(ptr) Variable Function
-        21(mat2):      9(ptr) Variable Function
-        29(mat3):      9(ptr) Variable Function
-        33(mat4):      9(ptr) Variable Function
-       77(param):      9(ptr) Variable Function
+        17(mat1):    9(mat4*) Variable Function
+        21(mat2):    9(mat4*) Variable Function
+        29(mat3):    9(mat4*) Variable Function
+        33(mat4):    9(mat4*) Variable Function
+       77(param):    9(mat4*) Variable Function
                               Store 17(mat1) 20
                               Store 21(mat2) 28
                               Store 29(mat3) 32
                               Store 33(mat4) 36
                               Store 33(mat4) 41
                               Store 33(mat4) 44
-              45:           8 Load 33(mat4)
-              46:           8 MatrixTimesScalar 45 34
+              45:     8(mat4) Load 33(mat4)
+              46:     8(mat4) MatrixTimesScalar 45 34
                               Store 33(mat4) 46
-              47:           8 Load 33(mat4)
-              48:    7(fvec4) CompositeConstruct 34 34 34 34
-              49:    7(fvec4) CompositeExtract 47 0
-              50:    7(fvec4) FAdd 49 48
-              51:    7(fvec4) CompositeExtract 47 1
-              52:    7(fvec4) FAdd 51 48
-              53:    7(fvec4) CompositeExtract 47 2
-              54:    7(fvec4) FAdd 53 48
-              55:    7(fvec4) CompositeExtract 47 3
-              56:    7(fvec4) FAdd 55 48
-              57:           8 CompositeConstruct 50 52 54 56
+              47:     8(mat4) Load 33(mat4)
+              48:     7(vec4) CompositeConstruct 34 34 34 34
+              49:     7(vec4) CompositeExtract 47 0
+              50:     7(vec4) FAdd 49 48
+              51:     7(vec4) CompositeExtract 47 1
+              52:     7(vec4) FAdd 51 48
+              53:     7(vec4) CompositeExtract 47 2
+              54:     7(vec4) FAdd 53 48
+              55:     7(vec4) CompositeExtract 47 3
+              56:     7(vec4) FAdd 55 48
+              57:     8(mat4) CompositeConstruct 50 52 54 56
                               Store 33(mat4) 57
-              58:           8 Load 33(mat4)
-              59:    7(fvec4) CompositeConstruct 42 42 42 42
-              60:    7(fvec4) CompositeExtract 58 0
-              61:    7(fvec4) FSub 60 59
-              62:    7(fvec4) CompositeExtract 58 1
-              63:    7(fvec4) FSub 62 59
-              64:    7(fvec4) CompositeExtract 58 2
-              65:    7(fvec4) FSub 64 59
-              66:    7(fvec4) CompositeExtract 58 3
-              67:    7(fvec4) FSub 66 59
-              68:           8 CompositeConstruct 61 63 65 67
+              58:     8(mat4) Load 33(mat4)
+              59:     7(vec4) CompositeConstruct 42 42 42 42
+              60:     7(vec4) CompositeExtract 58 0
+              61:     7(vec4) FSub 60 59
+              62:     7(vec4) CompositeExtract 58 1
+              63:     7(vec4) FSub 62 59
+              64:     7(vec4) CompositeExtract 58 2
+              65:     7(vec4) FSub 64 59
+              66:     7(vec4) CompositeExtract 58 3
+              67:     7(vec4) FSub 66 59
+              68:     8(mat4) CompositeConstruct 61 63 65 67
                               Store 33(mat4) 68
-              70:           8 Load 33(mat4)
+              70:     8(mat4) Load 33(mat4)
               72:    6(float) FDiv 71 69
-              73:           8 MatrixTimesScalar 70 72
+              73:     8(mat4) MatrixTimesScalar 70 72
                               Store 33(mat4) 73
                               Store 77(param) 76
-              78:           2 FunctionCall 12(Fn1(mf44;) 77(param)
-              84:     83(ptr) AccessChain 17(mat1) 82
-              85:    7(fvec4) Load 84
-              86:    7(fvec4) FAdd 80 85
-              88:     83(ptr) AccessChain 33(mat4) 87
-              89:    7(fvec4) Load 88
-              90:    7(fvec4) FAdd 86 89
+              78:     2(void) FunctionCall 12(Fn1(mf44;) 77(param)
+              84:   83(vec4*) AccessChain 17(mat1) 82
+              85:     7(vec4) Load 84
+              86:     7(vec4) FAdd 80 85
+              88:   83(vec4*) AccessChain 33(mat4) 87
+              89:     7(vec4) Load 88
+              90:     7(vec4) FAdd 86 89
                               ReturnValue 90
                               FunctionEnd

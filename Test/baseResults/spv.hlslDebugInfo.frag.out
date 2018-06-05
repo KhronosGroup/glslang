@@ -36,22 +36,22 @@ float4 origMain() : SV_Position
                               Name 17  "@entryPointOutput"
                               Decorate 17(@entryPointOutput) BuiltIn Position
                3:             TypeVoid
-               4:             TypeFunction 3
+               4:             TypeFunction 3(void)
                7:             TypeFloat 32
                8:             TypeVector 7(float) 4
-               9:             TypeFunction 8(fvec4)
+               9:             TypeFunction 8(vec4)
               12:    7(float) Constant 0
-              13:    8(fvec4) ConstantComposite 12 12 12 12
-              16:             TypePointer Output 8(fvec4)
-17(@entryPointOutput):     16(ptr) Variable Output
-      5(newMain):           3 Function None 4
+              13:     8(vec4) ConstantComposite 12 12 12 12
+              16:             TypePointer Output 8(vec4)
+17(@entryPointOutput):   16(vec4*) Variable Output
+      5(newMain):     3(void) Function None 4
                6:             Label
                               Line 1 2 0
-              18:    8(fvec4) FunctionCall 10(@newMain()
+              18:     8(vec4) FunctionCall 10(@newMain()
                               Store 17(@entryPointOutput) 18
                               Return
                               FunctionEnd
-   10(@newMain():    8(fvec4) Function None 9
+   10(@newMain():     8(vec4) Function None 9
               11:             Label
                               Line 1 3 0
                               ReturnValue 13

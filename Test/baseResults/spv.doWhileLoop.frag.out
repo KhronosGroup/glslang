@@ -17,44 +17,44 @@ spv.doWhileLoop.frag
                               Name 32  "gl_FragColor"
                               Decorate 32(gl_FragColor) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-              10:             TypePointer Input 7(fvec4)
-   11(BaseColor):     10(ptr) Variable Input
-    17(bigColor):     10(ptr) Variable Input
+               8:             TypePointer Function 7(vec4)
+              10:             TypePointer Input 7(vec4)
+   11(BaseColor):   10(vec4*) Variable Input
+    17(bigColor):   10(vec4*) Variable Input
               21:             TypeInt 32 0
-              22:     21(int) Constant 0
+              22:    21(uint) Constant 0
               23:             TypePointer Function 6(float)
               26:             TypePointer Input 6(float)
-           27(d):     26(ptr) Variable Input
+           27(d):  26(float*) Variable Input
               29:             TypeBool
-              31:             TypePointer Output 7(fvec4)
-32(gl_FragColor):     31(ptr) Variable Output
-         4(main):           2 Function None 3
+              31:             TypePointer Output 7(vec4)
+32(gl_FragColor):   31(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-        9(color):      8(ptr) Variable Function
-              12:    7(fvec4) Load 11(BaseColor)
+        9(color):    8(vec4*) Variable Function
+              12:     7(vec4) Load 11(BaseColor)
                               Store 9(color) 12
                               Branch 13
               13:             Label
                               LoopMerge 15 16 None
                               Branch 14
               14:             Label
-              18:    7(fvec4) Load 17(bigColor)
-              19:    7(fvec4) Load 9(color)
-              20:    7(fvec4) FAdd 19 18
+              18:     7(vec4) Load 17(bigColor)
+              19:     7(vec4) Load 9(color)
+              20:     7(vec4) FAdd 19 18
                               Store 9(color) 20
                               Branch 16
               16:             Label
-              24:     23(ptr) AccessChain 9(color) 22
+              24:  23(float*) AccessChain 9(color) 22
               25:    6(float) Load 24
               28:    6(float) Load 27(d)
               30:    29(bool) FOrdLessThan 25 28
                               BranchConditional 30 13 15
               15:             Label
-              33:    7(fvec4) Load 9(color)
+              33:     7(vec4) Load 9(color)
                               Store 32(gl_FragColor) 33
                               Return
                               FunctionEnd

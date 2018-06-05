@@ -17,28 +17,28 @@ compoundsuffix.frag.hlsl
                               Name 20  "fragColor"
                               Decorate 20(fragColor) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 2 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 2(void) 8(vec4*)
               13:    6(float) Constant 1065353216
-              14:    7(fvec4) ConstantComposite 13 13 13 13
-              19:             TypePointer Output 7(fvec4)
-   20(fragColor):     19(ptr) Variable Output
-         4(main):           2 Function None 3
+              14:     7(vec4) ConstantComposite 13 13 13 13
+              19:             TypePointer Output 7(vec4)
+   20(fragColor):   19(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-   15(fragColor):      8(ptr) Variable Function
-       16(param):      8(ptr) Variable Function
-              17:           2 FunctionCall 11(@main(vf4;) 16(param)
-              18:    7(fvec4) Load 16(param)
+   15(fragColor):    8(vec4*) Variable Function
+       16(param):    8(vec4*) Variable Function
+              17:     2(void) FunctionCall 11(@main(vf4;) 16(param)
+              18:     7(vec4) Load 16(param)
                               Store 15(fragColor) 18
-              21:    7(fvec4) Load 15(fragColor)
+              21:     7(vec4) Load 15(fragColor)
                               Store 20(fragColor) 21
                               Return
                               FunctionEnd
-  11(@main(vf4;):           2 Function None 9
-   10(fragColor):      8(ptr) FunctionParameter
+  11(@main(vf4;):     2(void) Function None 9
+   10(fragColor):    8(vec4*) FunctionParameter
               12:             Label
                               Store 10(fragColor) 14
                               Return

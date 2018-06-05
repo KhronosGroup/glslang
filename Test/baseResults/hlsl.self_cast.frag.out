@@ -91,40 +91,40 @@ gl_FragCoord origin is upper left
                               Name 28  "b"
                               Name 29  "a"
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
         8(Test0):             TypeStruct
                9:             TypePointer Function 8(Test0)
               13:             TypeFloat 32
        14(Test1):             TypeStruct 13(float)
               15:             TypePointer Function 14(Test1)
               19:             TypeInt 32 0
-              20:     19(int) Constant 2
+              20:    19(uint) Constant 2
               21:             TypeArray 8(Test0) 20
-              22:             TypePointer Function 21
+              22:             TypePointer Function 21(Test0[2])
               26:             TypeArray 14(Test1) 20
-              27:             TypePointer Function 26
-         4(main):           2 Function None 3
+              27:             TypePointer Function 26(Test1[2])
+         4(main):     2(void) Function None 3
                5:             Label
-              31:           2 FunctionCall 6(@main()
+              31:     2(void) FunctionCall 6(@main()
                               Return
                               FunctionEnd
-       6(@main():           2 Function None 3
+       6(@main():     2(void) Function None 3
                7:             Label
-           10(b):      9(ptr) Variable Function
-           11(a):      9(ptr) Variable Function
-           16(b):     15(ptr) Variable Function
-           17(a):     15(ptr) Variable Function
-           23(b):     22(ptr) Variable Function
-           24(a):     22(ptr) Variable Function
-           28(b):     27(ptr) Variable Function
-           29(a):     27(ptr) Variable Function
+           10(b):   9(Test0*) Variable Function
+           11(a):   9(Test0*) Variable Function
+           16(b):  15(Test1*) Variable Function
+           17(a):  15(Test1*) Variable Function
+           23(b):22(Test0[2]*) Variable Function
+           24(a):22(Test0[2]*) Variable Function
+           28(b):27(Test1[2]*) Variable Function
+           29(a):27(Test1[2]*) Variable Function
               12:    8(Test0) Load 11(a)
                               Store 10(b) 12
               18:   14(Test1) Load 17(a)
                               Store 16(b) 18
-              25:          21 Load 24(a)
+              25:21(Test0[2]) Load 24(a)
                               Store 23(b) 25
-              30:          26 Load 29(a)
+              30:26(Test1[2]) Load 29(a)
                               Store 28(b) 30
                               Return
                               FunctionEnd

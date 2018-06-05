@@ -187,10 +187,10 @@ gl_FragCoord origin is upper left
                               Decorate 53(g_tTex1df4) DescriptorSet 0
                               Decorate 69(@entryPointOutput.Color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypePointer Function 6(float)
               14:             TypeImage 6(float) 1D sampled format:Unknown
@@ -202,64 +202,64 @@ gl_FragCoord origin is upper left
               22:             TypeSampledImage 14
               24:    6(float) Constant 1036831949
               27:             TypeVector 6(float) 2
-              28:             TypePointer Function 27(fvec2)
+              28:             TypePointer Function 27(vec2)
   30(g_tTex1df2):     15(ptr) Variable UniformConstant
               34:    6(float) Constant 1045220557
               39:             TypeVector 6(float) 3
-              40:             TypePointer Function 39(fvec3)
+              40:             TypePointer Function 39(vec3)
   42(g_tTex1df3):     15(ptr) Variable UniformConstant
-              51:             TypePointer Function 7(fvec4)
+              51:             TypePointer Function 7(vec4)
   53(g_tTex1df4):     15(ptr) Variable UniformConstant
               58:             TypePointer Function 8(PS_OUTPUT)
               60:             TypeInt 32 1
               61:     60(int) Constant 0
               62:    6(float) Constant 1065353216
-              63:    7(fvec4) ConstantComposite 62 62 62 62
-              68:             TypePointer Output 7(fvec4)
-69(@entryPointOutput.Color):     68(ptr) Variable Output
-         4(main):           2 Function None 3
+              63:     7(vec4) ConstantComposite 62 62 62 62
+              68:             TypePointer Output 7(vec4)
+69(@entryPointOutput.Color):   68(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               70:8(PS_OUTPUT) FunctionCall 10(@main()
-              71:    7(fvec4) CompositeExtract 70 0
+              71:     7(vec4) CompositeExtract 70 0
                               Store 69(@entryPointOutput.Color) 71
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-     13(txval10):     12(ptr) Variable Function
-     29(txval11):     28(ptr) Variable Function
-     41(txval12):     40(ptr) Variable Function
-     52(txval13):     51(ptr) Variable Function
-       59(psout):     58(ptr) Variable Function
+     13(txval10):  12(float*) Variable Function
+     29(txval11):   28(vec2*) Variable Function
+     41(txval12):   40(vec3*) Variable Function
+     52(txval13):   51(vec4*) Variable Function
+       59(psout):58(PS_OUTPUT*) Variable Function
               17:          14 Load 16(g_tTex1df1)
               21:          18 Load 20(g_sSamp)
               23:          22 SampledImage 17 21
-              25:    7(fvec4) ImageSampleImplicitLod 23 24
+              25:     7(vec4) ImageSampleImplicitLod 23 24
               26:    6(float) CompositeExtract 25 0
                               Store 13(txval10) 26
               31:          14 Load 30(g_tTex1df2)
               32:          18 Load 20(g_sSamp)
               33:          22 SampledImage 31 32
-              35:    7(fvec4) ImageSampleImplicitLod 33 34
+              35:     7(vec4) ImageSampleImplicitLod 33 34
               36:    6(float) CompositeExtract 35 0
               37:    6(float) CompositeExtract 35 1
-              38:   27(fvec2) CompositeConstruct 36 37
+              38:    27(vec2) CompositeConstruct 36 37
                               Store 29(txval11) 38
               43:          14 Load 42(g_tTex1df3)
               44:          18 Load 20(g_sSamp)
               45:          22 SampledImage 43 44
-              46:    7(fvec4) ImageSampleImplicitLod 45 34
+              46:     7(vec4) ImageSampleImplicitLod 45 34
               47:    6(float) CompositeExtract 46 0
               48:    6(float) CompositeExtract 46 1
               49:    6(float) CompositeExtract 46 2
-              50:   39(fvec3) CompositeConstruct 47 48 49
+              50:    39(vec3) CompositeConstruct 47 48 49
                               Store 41(txval12) 50
               54:          14 Load 53(g_tTex1df4)
               55:          18 Load 20(g_sSamp)
               56:          22 SampledImage 54 55
-              57:    7(fvec4) ImageSampleImplicitLod 56 34
+              57:     7(vec4) ImageSampleImplicitLod 56 34
                               Store 52(txval13) 57
-              64:     51(ptr) AccessChain 59(psout) 61
+              64:   51(vec4*) AccessChain 59(psout) 61
                               Store 64 63
               65:8(PS_OUTPUT) Load 59(psout)
                               ReturnValue 65

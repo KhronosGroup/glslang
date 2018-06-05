@@ -262,74 +262,74 @@ Shader version: 500
                               Decorate 41(@entryPointOutput.Position) BuiltIn Position
                               Decorate 47(@entryPointOutput.clip1) BuiltIn ClipDistance
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeVector 6(float) 3
-    9(VS_OUTPUT):             TypeStruct 7(fvec4) 8(fvec3) 6(float)
+    9(VS_OUTPUT):             TypeStruct 7(vec4) 8(vec3) 6(float)
               10:             TypeFunction 9(VS_OUTPUT)
               13:             TypePointer Function 9(VS_OUTPUT)
               15:             TypeInt 32 1
               16:     15(int) Constant 0
               17:    6(float) Constant 0
-              18:    7(fvec4) ConstantComposite 17 17 17 17
-              19:             TypePointer Function 7(fvec4)
+              18:     7(vec4) ConstantComposite 17 17 17 17
+              19:             TypePointer Function 7(vec4)
               21:     15(int) Constant 1
               22:             TypeInt 32 0
-              23:     22(int) Constant 0
+              23:    22(uint) Constant 0
               24:             TypePointer Function 6(float)
               26:    6(float) Constant 1065353216
-              27:     22(int) Constant 1
+              27:    22(uint) Constant 1
               29:    6(float) Constant 1073741824
-              30:     22(int) Constant 2
+              30:    22(uint) Constant 2
               32:     15(int) Constant 2
               33:    6(float) Constant 1077936128
-              40:             TypePointer Output 7(fvec4)
-41(@entryPointOutput.Position):     40(ptr) Variable Output
-              44:     22(int) Constant 4
+              40:             TypePointer Output 7(vec4)
+41(@entryPointOutput.Position):   40(vec4*) Variable Output
+              44:    22(uint) Constant 4
               45:             TypeArray 6(float) 44
-              46:             TypePointer Output 45
-47(@entryPointOutput.clip1):     46(ptr) Variable Output
+              46:             TypePointer Output 45(float[4])
+47(@entryPointOutput.clip1):46(float[4]*) Variable Output
               50:             TypePointer Output 6(float)
               58:     15(int) Constant 3
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
- 38(flattenTemp):     13(ptr) Variable Function
+ 38(flattenTemp):13(VS_OUTPUT*) Variable Function
               39:9(VS_OUTPUT) FunctionCall 11(@main()
                               Store 38(flattenTemp) 39
-              42:     19(ptr) AccessChain 38(flattenTemp) 16
-              43:    7(fvec4) Load 42
+              42:   19(vec4*) AccessChain 38(flattenTemp) 16
+              43:     7(vec4) Load 42
                               Store 41(@entryPointOutput.Position) 43
-              48:     24(ptr) AccessChain 38(flattenTemp) 21 23
+              48:  24(float*) AccessChain 38(flattenTemp) 21 23
               49:    6(float) Load 48
-              51:     50(ptr) AccessChain 47(@entryPointOutput.clip1) 16
+              51:  50(float*) AccessChain 47(@entryPointOutput.clip1) 16
                               Store 51 49
-              52:     24(ptr) AccessChain 38(flattenTemp) 21 27
+              52:  24(float*) AccessChain 38(flattenTemp) 21 27
               53:    6(float) Load 52
-              54:     50(ptr) AccessChain 47(@entryPointOutput.clip1) 21
+              54:  50(float*) AccessChain 47(@entryPointOutput.clip1) 21
                               Store 54 53
-              55:     24(ptr) AccessChain 38(flattenTemp) 21 30
+              55:  24(float*) AccessChain 38(flattenTemp) 21 30
               56:    6(float) Load 55
-              57:     50(ptr) AccessChain 47(@entryPointOutput.clip1) 32
+              57:  50(float*) AccessChain 47(@entryPointOutput.clip1) 32
                               Store 57 56
-              59:     24(ptr) AccessChain 38(flattenTemp) 32
+              59:  24(float*) AccessChain 38(flattenTemp) 32
               60:    6(float) Load 59
-              61:     50(ptr) AccessChain 47(@entryPointOutput.clip1) 58
+              61:  50(float*) AccessChain 47(@entryPointOutput.clip1) 58
                               Store 61 60
                               Return
                               FunctionEnd
       11(@main():9(VS_OUTPUT) Function None 10
               12:             Label
-      14(Output):     13(ptr) Variable Function
-              20:     19(ptr) AccessChain 14(Output) 16
+      14(Output):13(VS_OUTPUT*) Variable Function
+              20:   19(vec4*) AccessChain 14(Output) 16
                               Store 20 18
-              25:     24(ptr) AccessChain 14(Output) 21 23
+              25:  24(float*) AccessChain 14(Output) 21 23
                               Store 25 17
-              28:     24(ptr) AccessChain 14(Output) 21 27
+              28:  24(float*) AccessChain 14(Output) 21 27
                               Store 28 26
-              31:     24(ptr) AccessChain 14(Output) 21 30
+              31:  24(float*) AccessChain 14(Output) 21 30
                               Store 31 29
-              34:     24(ptr) AccessChain 14(Output) 32
+              34:  24(float*) AccessChain 14(Output) 32
                               Store 34 33
               35:9(VS_OUTPUT) Load 14(Output)
                               ReturnValue 35

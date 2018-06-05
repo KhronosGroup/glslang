@@ -628,88 +628,88 @@ using depth_any
                               Decorate 197(g_sSamp) DescriptorSet 0
                               Decorate 197(g_sSamp) Binding 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
-   10(PS_OUTPUT):             TypeStruct 9(fvec4) 8(float)
-              11:             TypeFunction 10(PS_OUTPUT) 7(ptr)
+   10(PS_OUTPUT):             TypeStruct 9(vec4) 8(float)
+              11:             TypeFunction 10(PS_OUTPUT) 7(int*)
               15:             TypeVector 8(float) 2
-              16:             TypePointer Function 15(fvec2)
+              16:             TypePointer Function 15(vec2)
               18:             TypeInt 32 0
-              19:             TypePointer Function 18(int)
+              19:             TypePointer Function 18(uint)
               21:             TypeImage 8(float) 2D multi-sampled sampled format:Unknown
               22:             TypePointer UniformConstant 21
 23(g_tTex2dmsf4):     22(ptr) Variable UniformConstant
               27:      6(int) Constant 2
               28:             TypeBool
-              30:     18(int) Constant 2
-              31:             TypeArray 15(fvec2) 30
+              30:    18(uint) Constant 2
+              31:             TypeArray 15(vec2) 30
               32:    8(float) Constant 1048576000
-              33:   15(fvec2) ConstantComposite 32 32
+              33:    15(vec2) ConstantComposite 32 32
               34:    8(float) Constant 3196059648
-              35:   15(fvec2) ConstantComposite 34 34
-              36:          31 ConstantComposite 33 35
-              38:             TypePointer Function 31
+              35:    15(vec2) ConstantComposite 34 34
+              36: 31(vec2[2]) ConstantComposite 33 35
+              38:             TypePointer Function 31(vec2[2])
               43:      6(int) Constant 4
-              45:     18(int) Constant 4
-              46:             TypeArray 15(fvec2) 45
+              45:    18(uint) Constant 4
+              46:             TypeArray 15(vec2) 45
               47:    8(float) Constant 3187671040
               48:    8(float) Constant 3200253952
-              49:   15(fvec2) ConstantComposite 47 48
+              49:    15(vec2) ConstantComposite 47 48
               50:    8(float) Constant 1052770304
-              51:   15(fvec2) ConstantComposite 50 47
+              51:    15(vec2) ConstantComposite 50 47
               52:    8(float) Constant 1040187392
-              53:   15(fvec2) ConstantComposite 48 52
-              54:   15(fvec2) ConstantComposite 52 50
-              55:          46 ConstantComposite 49 51 53 54
-              57:             TypePointer Function 46
+              53:    15(vec2) ConstantComposite 48 52
+              54:    15(vec2) ConstantComposite 52 50
+              55: 46(vec2[4]) ConstantComposite 49 51 53 54
+              57:             TypePointer Function 46(vec2[4])
               62:      6(int) Constant 8
-              64:     18(int) Constant 8
-              65:             TypeArray 15(fvec2) 64
+              64:    18(uint) Constant 8
+              65:             TypeArray 15(vec2) 64
               66:    8(float) Constant 1031798784
               67:    8(float) Constant 3191865344
-              68:   15(fvec2) ConstantComposite 66 67
+              68:    15(vec2) ConstantComposite 66 67
               69:    8(float) Constant 3179282432
               70:    8(float) Constant 1044381696
-              71:   15(fvec2) ConstantComposite 69 70
+              71:    15(vec2) ConstantComposite 69 70
               72:    8(float) Constant 1050673152
-              73:   15(fvec2) ConstantComposite 72 66
+              73:    15(vec2) ConstantComposite 72 66
               74:    8(float) Constant 3198156800
-              75:   15(fvec2) ConstantComposite 67 74
-              76:   15(fvec2) ConstantComposite 74 72
+              75:    15(vec2) ConstantComposite 67 74
+              76:    15(vec2) ConstantComposite 74 72
               77:    8(float) Constant 3202351104
-              78:   15(fvec2) ConstantComposite 77 69
+              78:    15(vec2) ConstantComposite 77 69
               79:    8(float) Constant 1054867456
-              80:   15(fvec2) ConstantComposite 70 79
-              81:   15(fvec2) ConstantComposite 79 77
-              82:          65 ConstantComposite 68 71 73 75 76 78 80 81
-              84:             TypePointer Function 65
+              80:    15(vec2) ConstantComposite 70 79
+              81:    15(vec2) ConstantComposite 79 77
+              82: 65(vec2[8]) ConstantComposite 68 71 73 75 76 78 80 81
+              84:             TypePointer Function 65(vec2[8])
               89:      6(int) Constant 16
-              91:     18(int) Constant 16
-              92:             TypeArray 15(fvec2) 91
-              93:   15(fvec2) ConstantComposite 66 66
-              94:   15(fvec2) ConstantComposite 69 67
-              95:   15(fvec2) ConstantComposite 67 52
-              96:   15(fvec2) ConstantComposite 32 69
-              97:   15(fvec2) ConstantComposite 74 47
-              98:   15(fvec2) ConstantComposite 52 72
-              99:   15(fvec2) ConstantComposite 72 70
-             100:   15(fvec2) ConstantComposite 70 74
-             101:   15(fvec2) ConstantComposite 47 50
+              91:    18(uint) Constant 16
+              92:             TypeArray 15(vec2) 91
+              93:    15(vec2) ConstantComposite 66 66
+              94:    15(vec2) ConstantComposite 69 67
+              95:    15(vec2) ConstantComposite 67 52
+              96:    15(vec2) ConstantComposite 32 69
+              97:    15(vec2) ConstantComposite 74 47
+              98:    15(vec2) ConstantComposite 52 72
+              99:    15(vec2) ConstantComposite 72 70
+             100:    15(vec2) ConstantComposite 70 74
+             101:    15(vec2) ConstantComposite 47 50
              102:    8(float) Constant 0
-             103:   15(fvec2) ConstantComposite 102 77
-             104:   15(fvec2) ConstantComposite 34 48
-             105:   15(fvec2) ConstantComposite 48 32
+             103:    15(vec2) ConstantComposite 102 77
+             104:    15(vec2) ConstantComposite 34 48
+             105:    15(vec2) ConstantComposite 48 32
              106:    8(float) Constant 3204448256
-             107:   15(fvec2) ConstantComposite 106 102
-             108:   15(fvec2) ConstantComposite 79 34
-             109:   15(fvec2) ConstantComposite 50 79
-             110:   15(fvec2) ConstantComposite 77 106
-             111:          92 ConstantComposite 93 94 95 96 97 98 99 100 101 103 104 105 107 108 109 110
-             113:             TypePointer Function 92
-             117:   15(fvec2) ConstantComposite 102 102
+             107:    15(vec2) ConstantComposite 106 102
+             108:    15(vec2) ConstantComposite 79 34
+             109:    15(vec2) ConstantComposite 50 79
+             110:    15(vec2) ConstantComposite 77 106
+             111:92(vec2[16]) ConstantComposite 93 94 95 96 97 98 99 100 101 103 104 105 107 108 109 110
+             113:             TypePointer Function 92(vec2[16])
+             117:    15(vec2) ConstantComposite 102 102
              118:             TypeVector 28(bool) 2
              129:             TypeImage 8(float) 2D array multi-sampled sampled format:Unknown
              130:             TypePointer UniformConstant 129
@@ -717,129 +717,129 @@ using depth_any
              166:             TypePointer Function 10(PS_OUTPUT)
              168:      6(int) Constant 0
              169:    8(float) Constant 1065353216
-             170:    9(fvec4) ConstantComposite 169 169 169 169
-             171:             TypePointer Function 9(fvec4)
+             170:     9(vec4) ConstantComposite 169 169 169 169
+             171:             TypePointer Function 9(vec4)
              173:      6(int) Constant 1
              174:             TypePointer Function 8(float)
              180:             TypePointer Input 6(int)
-     181(sample):    180(ptr) Variable Input
-             187:             TypePointer Output 9(fvec4)
-188(@entryPointOutput.Color):    187(ptr) Variable Output
+     181(sample):   180(int*) Variable Input
+             187:             TypePointer Output 9(vec4)
+188(@entryPointOutput.Color):  187(vec4*) Variable Output
              191:             TypePointer Output 8(float)
-192(@entryPointOutput.Depth):    191(ptr) Variable Output
+192(@entryPointOutput.Depth): 191(float*) Variable Output
              195:             TypeSampler
              196:             TypePointer UniformConstant 195
     197(g_sSamp):    196(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-     179(sample):      7(ptr) Variable Function
-183(flattenTemp):    166(ptr) Variable Function
-      184(param):      7(ptr) Variable Function
+     179(sample):     7(int*) Variable Function
+183(flattenTemp):166(PS_OUTPUT*) Variable Function
+      184(param):     7(int*) Variable Function
              182:      6(int) Load 181(sample)
                               Store 179(sample) 182
              185:      6(int) Load 179(sample)
                               Store 184(param) 185
              186:10(PS_OUTPUT) FunctionCall 13(@main(i1;) 184(param)
                               Store 183(flattenTemp) 186
-             189:    171(ptr) AccessChain 183(flattenTemp) 168
-             190:    9(fvec4) Load 189
+             189:  171(vec4*) AccessChain 183(flattenTemp) 168
+             190:     9(vec4) Load 189
                               Store 188(@entryPointOutput.Color) 190
-             193:    174(ptr) AccessChain 183(flattenTemp) 173
+             193: 174(float*) AccessChain 183(flattenTemp) 173
              194:    8(float) Load 193
                               Store 192(@entryPointOutput.Depth) 194
                               Return
                               FunctionEnd
    13(@main(i1;):10(PS_OUTPUT) Function None 11
-      12(sample):      7(ptr) FunctionParameter
+      12(sample):     7(int*) FunctionParameter
               14:             Label
-         17(r00):     16(ptr) Variable Function
-20(@sampleCount):     19(ptr) Variable Function
-   39(indexable):     38(ptr) Variable Function
-   58(indexable):     57(ptr) Variable Function
-   85(indexable):     84(ptr) Variable Function
-  114(indexable):    113(ptr) Variable Function
-        127(r01):     16(ptr) Variable Function
-128(@sampleCount):     19(ptr) Variable Function
-  137(indexable):     38(ptr) Variable Function
-  143(indexable):     57(ptr) Variable Function
-  149(indexable):     84(ptr) Variable Function
-  155(indexable):    113(ptr) Variable Function
-      167(psout):    166(ptr) Variable Function
+         17(r00):   16(vec2*) Variable Function
+20(@sampleCount):   19(uint*) Variable Function
+   39(indexable):38(vec2[2]*) Variable Function
+   58(indexable):57(vec2[4]*) Variable Function
+   85(indexable):84(vec2[8]*) Variable Function
+  114(indexable):113(vec2[16]*) Variable Function
+        127(r01):   16(vec2*) Variable Function
+128(@sampleCount):   19(uint*) Variable Function
+  137(indexable):38(vec2[2]*) Variable Function
+  143(indexable):57(vec2[4]*) Variable Function
+  149(indexable):84(vec2[8]*) Variable Function
+  155(indexable):113(vec2[16]*) Variable Function
+      167(psout):166(PS_OUTPUT*) Variable Function
               24:          21 Load 23(g_tTex2dmsf4)
-              25:     18(int) ImageQuerySamples 24
+              25:    18(uint) ImageQuerySamples 24
                               Store 20(@sampleCount) 25
-              26:     18(int) Load 20(@sampleCount)
+              26:    18(uint) Load 20(@sampleCount)
               29:    28(bool) IEqual 26 27
               37:      6(int) Load 12(sample)
                               Store 39(indexable) 36
-              40:     16(ptr) AccessChain 39(indexable) 37
-              41:   15(fvec2) Load 40
-              42:     18(int) Load 20(@sampleCount)
+              40:   16(vec2*) AccessChain 39(indexable) 37
+              41:    15(vec2) Load 40
+              42:    18(uint) Load 20(@sampleCount)
               44:    28(bool) IEqual 42 43
               56:      6(int) Load 12(sample)
                               Store 58(indexable) 55
-              59:     16(ptr) AccessChain 58(indexable) 56
-              60:   15(fvec2) Load 59
-              61:     18(int) Load 20(@sampleCount)
+              59:   16(vec2*) AccessChain 58(indexable) 56
+              60:    15(vec2) Load 59
+              61:    18(uint) Load 20(@sampleCount)
               63:    28(bool) IEqual 61 62
               83:      6(int) Load 12(sample)
                               Store 85(indexable) 82
-              86:     16(ptr) AccessChain 85(indexable) 83
-              87:   15(fvec2) Load 86
-              88:     18(int) Load 20(@sampleCount)
+              86:   16(vec2*) AccessChain 85(indexable) 83
+              87:    15(vec2) Load 86
+              88:    18(uint) Load 20(@sampleCount)
               90:    28(bool) IEqual 88 89
              112:      6(int) Load 12(sample)
                               Store 114(indexable) 111
-             115:     16(ptr) AccessChain 114(indexable) 112
-             116:   15(fvec2) Load 115
+             115:   16(vec2*) AccessChain 114(indexable) 112
+             116:    15(vec2) Load 115
              119:  118(bvec2) CompositeConstruct 90 90
-             120:   15(fvec2) Select 119 116 117
+             120:    15(vec2) Select 119 116 117
              121:  118(bvec2) CompositeConstruct 63 63
-             122:   15(fvec2) Select 121 87 120
+             122:    15(vec2) Select 121 87 120
              123:  118(bvec2) CompositeConstruct 44 44
-             124:   15(fvec2) Select 123 60 122
+             124:    15(vec2) Select 123 60 122
              125:  118(bvec2) CompositeConstruct 29 29
-             126:   15(fvec2) Select 125 41 124
+             126:    15(vec2) Select 125 41 124
                               Store 17(r00) 126
              132:         129 Load 131(g_tTex2dmsf4a)
-             133:     18(int) ImageQuerySamples 132
+             133:    18(uint) ImageQuerySamples 132
                               Store 128(@sampleCount) 133
-             134:     18(int) Load 128(@sampleCount)
+             134:    18(uint) Load 128(@sampleCount)
              135:    28(bool) IEqual 134 27
              136:      6(int) Load 12(sample)
                               Store 137(indexable) 36
-             138:     16(ptr) AccessChain 137(indexable) 136
-             139:   15(fvec2) Load 138
-             140:     18(int) Load 128(@sampleCount)
+             138:   16(vec2*) AccessChain 137(indexable) 136
+             139:    15(vec2) Load 138
+             140:    18(uint) Load 128(@sampleCount)
              141:    28(bool) IEqual 140 43
              142:      6(int) Load 12(sample)
                               Store 143(indexable) 55
-             144:     16(ptr) AccessChain 143(indexable) 142
-             145:   15(fvec2) Load 144
-             146:     18(int) Load 128(@sampleCount)
+             144:   16(vec2*) AccessChain 143(indexable) 142
+             145:    15(vec2) Load 144
+             146:    18(uint) Load 128(@sampleCount)
              147:    28(bool) IEqual 146 62
              148:      6(int) Load 12(sample)
                               Store 149(indexable) 82
-             150:     16(ptr) AccessChain 149(indexable) 148
-             151:   15(fvec2) Load 150
-             152:     18(int) Load 128(@sampleCount)
+             150:   16(vec2*) AccessChain 149(indexable) 148
+             151:    15(vec2) Load 150
+             152:    18(uint) Load 128(@sampleCount)
              153:    28(bool) IEqual 152 89
              154:      6(int) Load 12(sample)
                               Store 155(indexable) 111
-             156:     16(ptr) AccessChain 155(indexable) 154
-             157:   15(fvec2) Load 156
+             156:   16(vec2*) AccessChain 155(indexable) 154
+             157:    15(vec2) Load 156
              158:  118(bvec2) CompositeConstruct 153 153
-             159:   15(fvec2) Select 158 157 117
+             159:    15(vec2) Select 158 157 117
              160:  118(bvec2) CompositeConstruct 147 147
-             161:   15(fvec2) Select 160 151 159
+             161:    15(vec2) Select 160 151 159
              162:  118(bvec2) CompositeConstruct 141 141
-             163:   15(fvec2) Select 162 145 161
+             163:    15(vec2) Select 162 145 161
              164:  118(bvec2) CompositeConstruct 135 135
-             165:   15(fvec2) Select 164 139 163
+             165:    15(vec2) Select 164 139 163
                               Store 127(r01) 165
-             172:    171(ptr) AccessChain 167(psout) 168
+             172:  171(vec4*) AccessChain 167(psout) 168
                               Store 172 170
-             175:    174(ptr) AccessChain 167(psout) 173
+             175: 174(float*) AccessChain 167(psout) 173
                               Store 175 169
              176:10(PS_OUTPUT) Load 167(psout)
                               ReturnValue 176

@@ -103,37 +103,37 @@ gl_FragCoord origin is upper left
                               Name 31  "@entryPointOutput"
                               Decorate 31(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
-               8:             TypeFunction 6(int) 7(ptr)
+               8:             TypeFunction 6(int) 7(int*)
               12:             TypeFloat 32
               13:             TypeVector 12(float) 4
-              14:             TypeFunction 13(fvec4)
-              20:             TypePointer Function 13(fvec4)
+              14:             TypeFunction 13(vec4)
+              20:             TypePointer Function 13(vec4)
               22:   12(float) Constant 1077936128
               23:   12(float) Constant 1082130432
               24:   12(float) Constant 1084227584
               25:   12(float) Constant 1086324736
-              26:   13(fvec4) ConstantComposite 22 23 24 25
-              30:             TypePointer Output 13(fvec4)
-31(@entryPointOutput):     30(ptr) Variable Output
-         4(main):           2 Function None 3
+              26:    13(vec4) ConstantComposite 22 23 24 25
+              30:             TypePointer Output 13(vec4)
+31(@entryPointOutput):   30(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              32:   13(fvec4) FunctionCall 15(@main()
+              32:    13(vec4) FunctionCall 15(@main()
                               Store 31(@entryPointOutput) 32
                               Return
                               FunctionEnd
   10(sample(i1;):      6(int) Function None 8
-            9(x):      7(ptr) FunctionParameter
+            9(x):     7(int*) FunctionParameter
               11:             Label
               17:      6(int) Load 9(x)
                               ReturnValue 17
                               FunctionEnd
-      15(@main():   13(fvec4) Function None 14
+      15(@main():    13(vec4) Function None 14
               16:             Label
-      21(sample):     20(ptr) Variable Function
+      21(sample):   20(vec4*) Variable Function
                               Store 21(sample) 26
-              27:   13(fvec4) Load 21(sample)
+              27:    13(vec4) Load 21(sample)
                               ReturnValue 27
                               FunctionEnd

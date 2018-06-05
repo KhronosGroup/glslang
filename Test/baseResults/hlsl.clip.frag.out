@@ -89,20 +89,20 @@ gl_FragCoord origin is upper left
                               Name 28  "@entryPointOutput"
                               Decorate 28(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeFunction 6(float)
               10:             TypeVector 6(float) 4
-              11:             TypeFunction 10(fvec4)
+              11:             TypeFunction 10(vec4)
               14:    6(float) Constant 1065353216
               18:    6(float) Constant 0
               19:             TypeBool
-              24:   10(fvec4) ConstantComposite 18 18 18 18
-              27:             TypePointer Output 10(fvec4)
-28(@entryPointOutput):     27(ptr) Variable Output
-         4(main):           2 Function None 3
+              24:    10(vec4) ConstantComposite 18 18 18 18
+              27:             TypePointer Output 10(vec4)
+28(@entryPointOutput):   27(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              29:   10(fvec4) FunctionCall 12(@main()
+              29:    10(vec4) FunctionCall 12(@main()
                               Store 28(@entryPointOutput) 29
                               Return
                               FunctionEnd
@@ -110,7 +110,7 @@ gl_FragCoord origin is upper left
                9:             Label
                               ReturnValue 14
                               FunctionEnd
-      12(@main():   10(fvec4) Function None 11
+      12(@main():    10(vec4) Function None 11
               13:             Label
               17:    6(float) FunctionCall 8(GetEntitySelectClip()
               20:    19(bool) FOrdLessThan 17 18

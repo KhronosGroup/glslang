@@ -250,84 +250,84 @@ Shader version: 500
                               Decorate 59(@entryPointOutput.cull1) BuiltIn CullDistance
                               Decorate 67(@entryPointOutput.ii) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeInt 32 1
             8(S):             TypeStruct 6(float) 6(float) 6(float) 6(float) 7(int)
                9:             TypePointer Function 8(S)
-              10:             TypeFunction 8(S) 9(ptr)
+              10:             TypeFunction 8(S) 9(S*)
               19:      7(int) Constant 0
               20:             TypePointer Input 6(float)
-   21(ins.clip0):     20(ptr) Variable Input
+   21(ins.clip0):  20(float*) Variable Input
               23:             TypePointer Function 6(float)
               25:      7(int) Constant 1
-   26(ins.clip1):     20(ptr) Variable Input
+   26(ins.clip1):  20(float*) Variable Input
               29:      7(int) Constant 2
-   30(ins.cull0):     20(ptr) Variable Input
+   30(ins.cull0):  20(float*) Variable Input
               33:      7(int) Constant 3
-   34(ins.cull1):     20(ptr) Variable Input
+   34(ins.cull1):  20(float*) Variable Input
               37:      7(int) Constant 4
               38:             TypePointer Input 7(int)
-      39(ins.ii):     38(ptr) Variable Input
+      39(ins.ii):    38(int*) Variable Input
               41:             TypePointer Function 7(int)
               47:             TypeInt 32 0
-              48:     47(int) Constant 2
+              48:    47(uint) Constant 2
               49:             TypeArray 6(float) 48
-              50:             TypePointer Output 49
-51(@entryPointOutput.clip1):     50(ptr) Variable Output
+              50:             TypePointer Output 49(float[2])
+51(@entryPointOutput.clip1):50(float[2]*) Variable Output
               54:             TypePointer Output 6(float)
-59(@entryPointOutput.cull1):     50(ptr) Variable Output
+59(@entryPointOutput.cull1):50(float[2]*) Variable Output
               66:             TypePointer Output 7(int)
-67(@entryPointOutput.ii):     66(ptr) Variable Output
-         4(main):           2 Function None 3
+67(@entryPointOutput.ii):    66(int*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-         18(ins):      9(ptr) Variable Function
- 43(flattenTemp):      9(ptr) Variable Function
-       44(param):      9(ptr) Variable Function
+         18(ins):       9(S*) Variable Function
+ 43(flattenTemp):       9(S*) Variable Function
+       44(param):       9(S*) Variable Function
               22:    6(float) Load 21(ins.clip0)
-              24:     23(ptr) AccessChain 18(ins) 19
+              24:  23(float*) AccessChain 18(ins) 19
                               Store 24 22
               27:    6(float) Load 26(ins.clip1)
-              28:     23(ptr) AccessChain 18(ins) 25
+              28:  23(float*) AccessChain 18(ins) 25
                               Store 28 27
               31:    6(float) Load 30(ins.cull0)
-              32:     23(ptr) AccessChain 18(ins) 29
+              32:  23(float*) AccessChain 18(ins) 29
                               Store 32 31
               35:    6(float) Load 34(ins.cull1)
-              36:     23(ptr) AccessChain 18(ins) 33
+              36:  23(float*) AccessChain 18(ins) 33
                               Store 36 35
               40:      7(int) Load 39(ins.ii)
-              42:     41(ptr) AccessChain 18(ins) 37
+              42:    41(int*) AccessChain 18(ins) 37
                               Store 42 40
               45:        8(S) Load 18(ins)
                               Store 44(param) 45
               46:        8(S) FunctionCall 12(@main(struct-S-f1-f1-f1-f1-i11;) 44(param)
                               Store 43(flattenTemp) 46
-              52:     23(ptr) AccessChain 43(flattenTemp) 19
+              52:  23(float*) AccessChain 43(flattenTemp) 19
               53:    6(float) Load 52
-              55:     54(ptr) AccessChain 51(@entryPointOutput.clip1) 19
+              55:  54(float*) AccessChain 51(@entryPointOutput.clip1) 19
                               Store 55 53
-              56:     23(ptr) AccessChain 43(flattenTemp) 25
+              56:  23(float*) AccessChain 43(flattenTemp) 25
               57:    6(float) Load 56
-              58:     54(ptr) AccessChain 51(@entryPointOutput.clip1) 25
+              58:  54(float*) AccessChain 51(@entryPointOutput.clip1) 25
                               Store 58 57
-              60:     23(ptr) AccessChain 43(flattenTemp) 29
+              60:  23(float*) AccessChain 43(flattenTemp) 29
               61:    6(float) Load 60
-              62:     54(ptr) AccessChain 59(@entryPointOutput.cull1) 19
+              62:  54(float*) AccessChain 59(@entryPointOutput.cull1) 19
                               Store 62 61
-              63:     23(ptr) AccessChain 43(flattenTemp) 33
+              63:  23(float*) AccessChain 43(flattenTemp) 33
               64:    6(float) Load 63
-              65:     54(ptr) AccessChain 59(@entryPointOutput.cull1) 25
+              65:  54(float*) AccessChain 59(@entryPointOutput.cull1) 25
                               Store 65 64
-              68:     41(ptr) AccessChain 43(flattenTemp) 37
+              68:    41(int*) AccessChain 43(flattenTemp) 37
               69:      7(int) Load 68
                               Store 67(@entryPointOutput.ii) 69
                               Return
                               FunctionEnd
 12(@main(struct-S-f1-f1-f1-f1-i11;):        8(S) Function None 10
-         11(ins):      9(ptr) FunctionParameter
+         11(ins):       9(S*) FunctionParameter
               13:             Label
-           14(s):      9(ptr) Variable Function
+           14(s):       9(S*) Variable Function
               15:        8(S) Load 14(s)
                               ReturnValue 15
                               FunctionEnd

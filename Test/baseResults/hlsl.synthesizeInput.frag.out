@@ -123,50 +123,50 @@ gl_FragCoord origin is upper left
                               Decorate 36(input.no_interp) Location 1
                               Decorate 40(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeInt 32 0
-      8(PSInput):             TypeStruct 6(float) 7(int)
+      8(PSInput):             TypeStruct 6(float) 7(uint)
                9:             TypePointer Function 8(PSInput)
               10:             TypeVector 6(float) 4
-              11:             TypeFunction 10(fvec4) 9(ptr)
+              11:             TypeFunction 10(vec4) 9(PSInput*)
               15:             TypeInt 32 1
               16:     15(int) Constant 1
-              17:             TypePointer Function 7(int)
+              17:             TypePointer Function 7(uint)
               21:     15(int) Constant 0
               22:             TypePointer Function 6(float)
               25:    6(float) Constant 0
               26:    6(float) Constant 1065353216
               31:             TypePointer Input 6(float)
-32(input.interp):     31(ptr) Variable Input
-              35:             TypePointer Input 7(int)
-36(input.no_interp):     35(ptr) Variable Input
-              39:             TypePointer Output 10(fvec4)
-40(@entryPointOutput):     39(ptr) Variable Output
-         4(main):           2 Function None 3
+32(input.interp):  31(float*) Variable Input
+              35:             TypePointer Input 7(uint)
+36(input.no_interp):   35(uint*) Variable Input
+              39:             TypePointer Output 10(vec4)
+40(@entryPointOutput):   39(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-       30(input):      9(ptr) Variable Function
-       41(param):      9(ptr) Variable Function
+       30(input): 9(PSInput*) Variable Function
+       41(param): 9(PSInput*) Variable Function
               33:    6(float) Load 32(input.interp)
-              34:     22(ptr) AccessChain 30(input) 21
+              34:  22(float*) AccessChain 30(input) 21
                               Store 34 33
-              37:      7(int) Load 36(input.no_interp)
-              38:     17(ptr) AccessChain 30(input) 16
+              37:     7(uint) Load 36(input.no_interp)
+              38:   17(uint*) AccessChain 30(input) 16
                               Store 38 37
               42:  8(PSInput) Load 30(input)
                               Store 41(param) 42
-              43:   10(fvec4) FunctionCall 13(@main(struct-PSInput-f1-u11;) 41(param)
+              43:    10(vec4) FunctionCall 13(@main(struct-PSInput-f1-u11;) 41(param)
                               Store 40(@entryPointOutput) 43
                               Return
                               FunctionEnd
-13(@main(struct-PSInput-f1-u11;):   10(fvec4) Function None 11
-       12(input):      9(ptr) FunctionParameter
+13(@main(struct-PSInput-f1-u11;):    10(vec4) Function None 11
+       12(input): 9(PSInput*) FunctionParameter
               14:             Label
-              18:     17(ptr) AccessChain 12(input) 16
-              19:      7(int) Load 18
+              18:   17(uint*) AccessChain 12(input) 16
+              19:     7(uint) Load 18
               20:    6(float) ConvertUToF 19
-              23:     22(ptr) AccessChain 12(input) 21
+              23:  22(float*) AccessChain 12(input) 21
               24:    6(float) Load 23
-              27:   10(fvec4) CompositeConstruct 20 24 25 26
+              27:    10(vec4) CompositeConstruct 20 24 25 26
                               ReturnValue 27
                               FunctionEnd

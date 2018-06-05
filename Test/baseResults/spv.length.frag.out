@@ -16,36 +16,36 @@ spv.length.frag
                               Name 32  "u"
                               Decorate 26(gl_FragColor) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 2
-               8:             TypePointer Function 7(fvec2)
+               8:             TypePointer Function 7(vec2)
               10:             TypeInt 32 0
-              11:     10(int) Constant 2
-              12:             TypeArray 7(fvec2) 11
-              13:             TypePointer Input 12
-           14(v):     13(ptr) Variable Input
+              11:    10(uint) Constant 2
+              12:             TypeArray 7(vec2) 11
+              13:             TypePointer Input 12(vec2[2])
+           14(v):13(vec2[2]*) Variable Input
               15:             TypeInt 32 1
               16:     15(int) Constant 0
-              17:             TypePointer Input 7(fvec2)
+              17:             TypePointer Input 7(vec2)
               20:     15(int) Constant 1
               24:             TypeVector 6(float) 4
-              25:             TypePointer Output 24(fvec4)
-26(gl_FragColor):     25(ptr) Variable Output
+              25:             TypePointer Output 24(vec4)
+26(gl_FragColor):   25(vec4*) Variable Output
               27:    6(float) Constant 1106247680
-              28:   24(fvec4) ConstantComposite 27 27 27 27
-              29:     10(int) Constant 3
-              30:             TypeArray 24(fvec4) 29
-              31:             TypePointer Private 30
-           32(u):     31(ptr) Variable Private
-         4(main):           2 Function None 3
+              28:    24(vec4) ConstantComposite 27 27 27 27
+              29:    10(uint) Constant 3
+              30:             TypeArray 24(vec4) 29
+              31:             TypePointer Private 30(vec4[3])
+           32(u):31(vec4[3]*) Variable Private
+         4(main):     2(void) Function None 3
                5:             Label
-            9(t):      8(ptr) Variable Function
-              18:     17(ptr) AccessChain 14(v) 16
-              19:    7(fvec2) Load 18
-              21:     17(ptr) AccessChain 14(v) 20
-              22:    7(fvec2) Load 21
-              23:    7(fvec2) FAdd 19 22
+            9(t):    8(vec2*) Variable Function
+              18:   17(vec2*) AccessChain 14(v) 16
+              19:     7(vec2) Load 18
+              21:   17(vec2*) AccessChain 14(v) 20
+              22:     7(vec2) Load 21
+              23:     7(vec2) FAdd 19 22
                               Store 9(t) 23
                               Store 26(gl_FragColor) 28
                               Return

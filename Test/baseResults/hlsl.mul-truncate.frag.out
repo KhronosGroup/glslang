@@ -441,92 +441,92 @@ gl_FragCoord origin is upper left
                               Decorate 23 DescriptorSet 0
                               Decorate 229(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypePointer Function 6(float)
-              13:             TypeMatrix 7(fvec4) 4
+              13:             TypeMatrix 7(vec4) 4
               14:             TypeVector 6(float) 3
-              15:             TypeMatrix 14(fvec3) 4
-              16:             TypeMatrix 7(fvec4) 3
-              17:             TypeMatrix 14(fvec3) 3
-              18:             TypeMatrix 7(fvec4) 2
+              15:             TypeMatrix 14(vec3) 4
+              16:             TypeMatrix 7(vec4) 3
+              17:             TypeMatrix 14(vec3) 3
+              18:             TypeMatrix 7(vec4) 2
               19:             TypeVector 6(float) 2
-              20:             TypeMatrix 19(fvec2) 4
-      21(Matrix):             TypeStruct 13 15 16 17 18 20 7(fvec4) 14(fvec3) 19(fvec2)
+              20:             TypeMatrix 19(vec2) 4
+      21(Matrix):             TypeStruct 13(mat4) 15(mat4x3) 16(mat3x4) 17(mat3) 18(mat2x4) 20(mat4x2) 7(vec4) 14(vec3) 19(vec2)
               22:             TypePointer Uniform 21(Matrix)
-              23:     22(ptr) Variable Uniform
+              23: 22(Matrix*) Variable Uniform
               24:             TypeInt 32 1
               25:     24(int) Constant 8
-              26:             TypePointer Uniform 19(fvec2)
+              26:             TypePointer Uniform 19(vec2)
               29:     24(int) Constant 7
-              30:             TypePointer Uniform 14(fvec3)
+              30:             TypePointer Uniform 14(vec3)
               38:     24(int) Constant 6
-              39:             TypePointer Uniform 7(fvec4)
-              48:             TypePointer Function 7(fvec4)
+              39:             TypePointer Uniform 7(vec4)
+              48:             TypePointer Function 7(vec4)
               50:     24(int) Constant 0
-              51:             TypePointer Uniform 13
+              51:             TypePointer Uniform 13(mat4)
               54:    6(float) Constant 1065353216
               55:    6(float) Constant 0
               76:     24(int) Constant 2
-              77:             TypePointer Uniform 16
+              77:             TypePointer Uniform 16(mat3x4)
              117:     24(int) Constant 1
-             118:             TypePointer Uniform 15
-             122:             TypeMatrix 14(fvec3) 2
-             123:             TypePointer Function 122
+             118:             TypePointer Uniform 15(mat4x3)
+             122:             TypeMatrix 14(vec3) 2
+             123:             TypePointer Function 122(mat2x3)
              125:     24(int) Constant 3
-             126:             TypePointer Uniform 17
+             126:             TypePointer Uniform 17(mat3)
              129:     24(int) Constant 4
-             130:             TypePointer Uniform 18
-             143:             TypePointer Function 16
-             149:             TypeMatrix 19(fvec2) 3
-             161:             TypePointer Function 149
+             130:             TypePointer Uniform 18(mat2x4)
+             143:             TypePointer Function 16(mat3x4)
+             149:             TypeMatrix 19(vec2) 3
+             161:             TypePointer Function 149(mat3x2)
              163:     24(int) Constant 5
-             164:             TypePointer Uniform 20
-             180:             TypePointer Function 15
+             164:             TypePointer Uniform 20(mat4x2)
+             180:             TypePointer Function 15(mat4x3)
              209:             TypeInt 32 0
-             210:    209(int) Constant 0
-             228:             TypePointer Output 7(fvec4)
-229(@entryPointOutput):    228(ptr) Variable Output
-         4(main):           2 Function None 3
+             210:   209(uint) Constant 0
+             228:             TypePointer Output 7(vec4)
+229(@entryPointOutput):  228(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-             230:    7(fvec4) FunctionCall 9(@main()
+             230:     7(vec4) FunctionCall 9(@main()
                               Store 229(@entryPointOutput) 230
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-         12(r00):     11(ptr) Variable Function
-         37(r01):     11(ptr) Variable Function
-         49(r10):     48(ptr) Variable Function
-         75(r11):     48(ptr) Variable Function
-         87(r20):     48(ptr) Variable Function
-        110(r21):     48(ptr) Variable Function
-        124(r30):    123(ptr) Variable Function
-        144(r31):    143(ptr) Variable Function
-        162(r32):    161(ptr) Variable Function
-        181(r33):    180(ptr) Variable Function
-              27:     26(ptr) AccessChain 23 25
-              28:   19(fvec2) Load 27
-              31:     30(ptr) AccessChain 23 29
-              32:   14(fvec3) Load 31
+         12(r00):  11(float*) Variable Function
+         37(r01):  11(float*) Variable Function
+         49(r10):   48(vec4*) Variable Function
+         75(r11):   48(vec4*) Variable Function
+         87(r20):   48(vec4*) Variable Function
+        110(r21):   48(vec4*) Variable Function
+        124(r30):123(mat2x3*) Variable Function
+        144(r31):143(mat3x4*) Variable Function
+        162(r32):161(mat3x2*) Variable Function
+        181(r33):180(mat4x3*) Variable Function
+              27:   26(vec2*) AccessChain 23 25
+              28:    19(vec2) Load 27
+              31:   30(vec3*) AccessChain 23 29
+              32:    14(vec3) Load 31
               33:    6(float) CompositeExtract 32 0
               34:    6(float) CompositeExtract 32 1
-              35:   19(fvec2) CompositeConstruct 33 34
+              35:    19(vec2) CompositeConstruct 33 34
               36:    6(float) Dot 28 35
                               Store 12(r00) 36
-              40:     39(ptr) AccessChain 23 38
-              41:    7(fvec4) Load 40
+              40:   39(vec4*) AccessChain 23 38
+              41:     7(vec4) Load 40
               42:    6(float) CompositeExtract 41 0
               43:    6(float) CompositeExtract 41 1
-              44:   19(fvec2) CompositeConstruct 42 43
-              45:     26(ptr) AccessChain 23 25
-              46:   19(fvec2) Load 45
+              44:    19(vec2) CompositeConstruct 42 43
+              45:   26(vec2*) AccessChain 23 25
+              46:    19(vec2) Load 45
               47:    6(float) Dot 44 46
                               Store 37(r01) 47
-              52:     51(ptr) AccessChain 23 50
-              53:          13 Load 52
+              52:   51(mat4*) AccessChain 23 50
+              53:    13(mat4) Load 52
               56:    6(float) CompositeExtract 53 0 0
               57:    6(float) CompositeExtract 53 0 1
               58:    6(float) CompositeExtract 53 0 2
@@ -539,28 +539,28 @@ gl_FragCoord origin is upper left
               65:    6(float) CompositeExtract 53 2 1
               66:    6(float) CompositeExtract 53 2 2
               67:    6(float) CompositeExtract 53 2 3
-              68:    7(fvec4) CompositeConstruct 56 57 58 59
-              69:    7(fvec4) CompositeConstruct 60 61 62 63
-              70:    7(fvec4) CompositeConstruct 64 65 66 67
-              71:          16 CompositeConstruct 68 69 70
-              72:     30(ptr) AccessChain 23 29
-              73:   14(fvec3) Load 72
-              74:    7(fvec4) MatrixTimesVector 71 73
+              68:     7(vec4) CompositeConstruct 56 57 58 59
+              69:     7(vec4) CompositeConstruct 60 61 62 63
+              70:     7(vec4) CompositeConstruct 64 65 66 67
+              71:  16(mat3x4) CompositeConstruct 68 69 70
+              72:   30(vec3*) AccessChain 23 29
+              73:    14(vec3) Load 72
+              74:     7(vec4) MatrixTimesVector 71 73
                               Store 49(r10) 74
-              78:     77(ptr) AccessChain 23 76
-              79:          16 Load 78
-              80:     39(ptr) AccessChain 23 38
-              81:    7(fvec4) Load 80
+              78: 77(mat3x4*) AccessChain 23 76
+              79:  16(mat3x4) Load 78
+              80:   39(vec4*) AccessChain 23 38
+              81:     7(vec4) Load 80
               82:    6(float) CompositeExtract 81 0
               83:    6(float) CompositeExtract 81 1
               84:    6(float) CompositeExtract 81 2
-              85:   14(fvec3) CompositeConstruct 82 83 84
-              86:    7(fvec4) MatrixTimesVector 79 85
+              85:    14(vec3) CompositeConstruct 82 83 84
+              86:     7(vec4) MatrixTimesVector 79 85
                               Store 75(r11) 86
-              88:     30(ptr) AccessChain 23 29
-              89:   14(fvec3) Load 88
-              90:     51(ptr) AccessChain 23 50
-              91:          13 Load 90
+              88:   30(vec3*) AccessChain 23 29
+              89:    14(vec3) Load 88
+              90:   51(mat4*) AccessChain 23 50
+              91:    13(mat4) Load 90
               92:    6(float) CompositeExtract 91 0 0
               93:    6(float) CompositeExtract 91 0 1
               94:    6(float) CompositeExtract 91 0 2
@@ -573,112 +573,112 @@ gl_FragCoord origin is upper left
              101:    6(float) CompositeExtract 91 3 0
              102:    6(float) CompositeExtract 91 3 1
              103:    6(float) CompositeExtract 91 3 2
-             104:   14(fvec3) CompositeConstruct 92 93 94
-             105:   14(fvec3) CompositeConstruct 95 96 97
-             106:   14(fvec3) CompositeConstruct 98 99 100
-             107:   14(fvec3) CompositeConstruct 101 102 103
-             108:          15 CompositeConstruct 104 105 106 107
-             109:    7(fvec4) VectorTimesMatrix 89 108
+             104:    14(vec3) CompositeConstruct 92 93 94
+             105:    14(vec3) CompositeConstruct 95 96 97
+             106:    14(vec3) CompositeConstruct 98 99 100
+             107:    14(vec3) CompositeConstruct 101 102 103
+             108:  15(mat4x3) CompositeConstruct 104 105 106 107
+             109:     7(vec4) VectorTimesMatrix 89 108
                               Store 87(r20) 109
-             111:     39(ptr) AccessChain 23 38
-             112:    7(fvec4) Load 111
+             111:   39(vec4*) AccessChain 23 38
+             112:     7(vec4) Load 111
              113:    6(float) CompositeExtract 112 0
              114:    6(float) CompositeExtract 112 1
              115:    6(float) CompositeExtract 112 2
-             116:   14(fvec3) CompositeConstruct 113 114 115
-             119:    118(ptr) AccessChain 23 117
-             120:          15 Load 119
-             121:    7(fvec4) VectorTimesMatrix 116 120
+             116:    14(vec3) CompositeConstruct 113 114 115
+             119:118(mat4x3*) AccessChain 23 117
+             120:  15(mat4x3) Load 119
+             121:     7(vec4) VectorTimesMatrix 116 120
                               Store 110(r21) 121
-             127:    126(ptr) AccessChain 23 125
-             128:          17 Load 127
-             131:    130(ptr) AccessChain 23 129
-             132:          18 Load 131
+             127:  126(mat3*) AccessChain 23 125
+             128:    17(mat3) Load 127
+             131:130(mat2x4*) AccessChain 23 129
+             132:  18(mat2x4) Load 131
              133:    6(float) CompositeExtract 132 0 0
              134:    6(float) CompositeExtract 132 0 1
              135:    6(float) CompositeExtract 132 0 2
              136:    6(float) CompositeExtract 132 1 0
              137:    6(float) CompositeExtract 132 1 1
              138:    6(float) CompositeExtract 132 1 2
-             139:   14(fvec3) CompositeConstruct 133 134 135
-             140:   14(fvec3) CompositeConstruct 136 137 138
-             141:         122 CompositeConstruct 139 140
-             142:         122 MatrixTimesMatrix 128 141
+             139:    14(vec3) CompositeConstruct 133 134 135
+             140:    14(vec3) CompositeConstruct 136 137 138
+             141: 122(mat2x3) CompositeConstruct 139 140
+             142: 122(mat2x3) MatrixTimesMatrix 128 141
                               Store 124(r30) 142
-             145:    130(ptr) AccessChain 23 129
-             146:          18 Load 145
-             147:    126(ptr) AccessChain 23 125
-             148:          17 Load 147
+             145:130(mat2x4*) AccessChain 23 129
+             146:  18(mat2x4) Load 145
+             147:  126(mat3*) AccessChain 23 125
+             148:    17(mat3) Load 147
              150:    6(float) CompositeExtract 148 0 0
              151:    6(float) CompositeExtract 148 0 1
              152:    6(float) CompositeExtract 148 1 0
              153:    6(float) CompositeExtract 148 1 1
              154:    6(float) CompositeExtract 148 2 0
              155:    6(float) CompositeExtract 148 2 1
-             156:   19(fvec2) CompositeConstruct 150 151
-             157:   19(fvec2) CompositeConstruct 152 153
-             158:   19(fvec2) CompositeConstruct 154 155
-             159:         149 CompositeConstruct 156 157 158
-             160:          16 MatrixTimesMatrix 146 159
+             156:    19(vec2) CompositeConstruct 150 151
+             157:    19(vec2) CompositeConstruct 152 153
+             158:    19(vec2) CompositeConstruct 154 155
+             159: 149(mat3x2) CompositeConstruct 156 157 158
+             160:  16(mat3x4) MatrixTimesMatrix 146 159
                               Store 144(r31) 160
-             165:    164(ptr) AccessChain 23 163
-             166:          20 Load 165
+             165:164(mat4x2*) AccessChain 23 163
+             166:  20(mat4x2) Load 165
              167:    6(float) CompositeExtract 166 0 0
              168:    6(float) CompositeExtract 166 0 1
              169:    6(float) CompositeExtract 166 1 0
              170:    6(float) CompositeExtract 166 1 1
              171:    6(float) CompositeExtract 166 2 0
              172:    6(float) CompositeExtract 166 2 1
-             173:   19(fvec2) CompositeConstruct 167 168
-             174:   19(fvec2) CompositeConstruct 169 170
-             175:   19(fvec2) CompositeConstruct 171 172
-             176:         149 CompositeConstruct 173 174 175
-             177:    126(ptr) AccessChain 23 125
-             178:          17 Load 177
-             179:         149 MatrixTimesMatrix 176 178
+             173:    19(vec2) CompositeConstruct 167 168
+             174:    19(vec2) CompositeConstruct 169 170
+             175:    19(vec2) CompositeConstruct 171 172
+             176: 149(mat3x2) CompositeConstruct 173 174 175
+             177:  126(mat3*) AccessChain 23 125
+             178:    17(mat3) Load 177
+             179: 149(mat3x2) MatrixTimesMatrix 176 178
                               Store 162(r32) 179
-             182:    126(ptr) AccessChain 23 125
-             183:          17 Load 182
+             182:  126(mat3*) AccessChain 23 125
+             183:    17(mat3) Load 182
              184:    6(float) CompositeExtract 183 0 0
              185:    6(float) CompositeExtract 183 0 1
              186:    6(float) CompositeExtract 183 0 2
              187:    6(float) CompositeExtract 183 1 0
              188:    6(float) CompositeExtract 183 1 1
              189:    6(float) CompositeExtract 183 1 2
-             190:   14(fvec3) CompositeConstruct 184 185 186
-             191:   14(fvec3) CompositeConstruct 187 188 189
-             192:         122 CompositeConstruct 190 191
-             193:    164(ptr) AccessChain 23 163
-             194:          20 Load 193
-             195:          15 MatrixTimesMatrix 192 194
+             190:    14(vec3) CompositeConstruct 184 185 186
+             191:    14(vec3) CompositeConstruct 187 188 189
+             192: 122(mat2x3) CompositeConstruct 190 191
+             193:164(mat4x2*) AccessChain 23 163
+             194:  20(mat4x2) Load 193
+             195:  15(mat4x3) MatrixTimesMatrix 192 194
                               Store 181(r33) 195
-             196:    7(fvec4) Load 49(r10)
-             197:    7(fvec4) Load 75(r11)
-             198:    7(fvec4) FAdd 196 197
-             199:    7(fvec4) Load 87(r20)
-             200:    7(fvec4) FAdd 198 199
-             201:    7(fvec4) Load 110(r21)
-             202:    7(fvec4) FAdd 200 201
+             196:     7(vec4) Load 49(r10)
+             197:     7(vec4) Load 75(r11)
+             198:     7(vec4) FAdd 196 197
+             199:     7(vec4) Load 87(r20)
+             200:     7(vec4) FAdd 198 199
+             201:     7(vec4) Load 110(r21)
+             202:     7(vec4) FAdd 200 201
              203:    6(float) Load 12(r00)
-             204:    7(fvec4) CompositeConstruct 203 203 203 203
-             205:    7(fvec4) FAdd 202 204
+             204:     7(vec4) CompositeConstruct 203 203 203 203
+             205:     7(vec4) FAdd 202 204
              206:    6(float) Load 37(r01)
-             207:    7(fvec4) CompositeConstruct 206 206 206 206
-             208:    7(fvec4) FAdd 205 207
-             211:     11(ptr) AccessChain 124(r30) 50 210
+             207:     7(vec4) CompositeConstruct 206 206 206 206
+             208:     7(vec4) FAdd 205 207
+             211:  11(float*) AccessChain 124(r30) 50 210
              212:    6(float) Load 211
-             213:    7(fvec4) CompositeConstruct 212 212 212 212
-             214:    7(fvec4) FAdd 208 213
-             215:     48(ptr) AccessChain 144(r31) 50
-             216:    7(fvec4) Load 215
-             217:    7(fvec4) FAdd 214 216
-             218:     11(ptr) AccessChain 162(r32) 50 210
+             213:     7(vec4) CompositeConstruct 212 212 212 212
+             214:     7(vec4) FAdd 208 213
+             215:   48(vec4*) AccessChain 144(r31) 50
+             216:     7(vec4) Load 215
+             217:     7(vec4) FAdd 214 216
+             218:  11(float*) AccessChain 162(r32) 50 210
              219:    6(float) Load 218
-             220:    7(fvec4) CompositeConstruct 219 219 219 219
-             221:    7(fvec4) FAdd 217 220
-             222:          15 Load 181(r33)
-             223:          16 Transpose 222
-             224:    7(fvec4) CompositeExtract 223 0
-             225:    7(fvec4) FAdd 221 224
+             220:     7(vec4) CompositeConstruct 219 219 219 219
+             221:     7(vec4) FAdd 217 220
+             222:  15(mat4x3) Load 181(r33)
+             223:  16(mat3x4) Transpose 222
+             224:     7(vec4) CompositeExtract 223 0
+             225:     7(vec4) FAdd 221 224
                               ReturnValue 225
                               FunctionEnd

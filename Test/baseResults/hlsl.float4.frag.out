@@ -69,28 +69,28 @@ gl_FragCoord origin is upper left
                               Decorate 15($Global) Block
                               Decorate 17 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
               14:             TypeInt 32 0
-     15($Global):             TypeStruct 7(fvec4) 14(int) 6(float) 7(fvec4) 7(fvec4)
+     15($Global):             TypeStruct 7(vec4) 14(uint) 6(float) 7(vec4) 7(vec4)
               16:             TypePointer Uniform 15($Global)
-              17:     16(ptr) Variable Uniform
+              17:16($Global*) Variable Uniform
               18:             TypeInt 32 1
               19:     18(int) Constant 0
-              20:             TypePointer Uniform 7(fvec4)
-4(PixelShaderFunction):           2 Function None 3
+              20:             TypePointer Uniform 7(vec4)
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd
-11(ShaderFunction(vf4;):    7(fvec4) Function None 9
-       10(input):      8(ptr) FunctionParameter
+11(ShaderFunction(vf4;):     7(vec4) Function None 9
+       10(input):    8(vec4*) FunctionParameter
               12:             Label
-              13:    7(fvec4) Load 10(input)
-              21:     20(ptr) AccessChain 17 19
-              22:    7(fvec4) Load 21
-              23:    7(fvec4) FMul 13 22
+              13:     7(vec4) Load 10(input)
+              21:   20(vec4*) AccessChain 17 19
+              22:     7(vec4) Load 21
+              23:     7(vec4) FMul 13 22
                               ReturnValue 23
                               FunctionEnd

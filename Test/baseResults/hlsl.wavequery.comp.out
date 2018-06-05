@@ -84,33 +84,33 @@ local_size = (32, 16, 1)
                               Decorate 16(@gl_SubgroupInvocationID) BuiltIn SubgroupLocalInvocationId
                               Decorate 21(@gl_SubgroupSize) BuiltIn SubgroupSize
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                8:             TypeInt 32 0
-               9:             TypeRuntimeArray 8(int)
-        10(data):             TypeStruct 9
+               9:             TypeRuntimeArray 8(uint)
+        10(data):             TypeStruct 9(uint[])
               11:             TypePointer Uniform 10(data)
-        12(data):     11(ptr) Variable Uniform
+        12(data):   11(data*) Variable Uniform
               13:             TypeInt 32 1
               14:     13(int) Constant 0
-              15:             TypePointer Input 8(int)
-16(@gl_SubgroupInvocationID):     15(ptr) Variable Input
+              15:             TypePointer Input 8(uint)
+16(@gl_SubgroupInvocationID):   15(uint*) Variable Input
               18:             TypeBool
-              19:      8(int) Constant 3
-21(@gl_SubgroupSize):     15(ptr) Variable Input
-              23:      8(int) Constant 0
-              25:             TypePointer Uniform 8(int)
-       4(CSMain):           2 Function None 3
+              19:     8(uint) Constant 3
+21(@gl_SubgroupSize):   15(uint*) Variable Input
+              23:     8(uint) Constant 0
+              25:             TypePointer Uniform 8(uint)
+       4(CSMain):     2(void) Function None 3
                5:             Label
-              27:           2 FunctionCall 6(@CSMain()
+              27:     2(void) FunctionCall 6(@CSMain()
                               Return
                               FunctionEnd
-     6(@CSMain():           2 Function None 3
+     6(@CSMain():     2(void) Function None 3
                7:             Label
-              17:      8(int) Load 16(@gl_SubgroupInvocationID)
+              17:     8(uint) Load 16(@gl_SubgroupInvocationID)
               20:    18(bool) GroupNonUniformElect 19
-              22:      8(int) Load 21(@gl_SubgroupSize)
-              24:      8(int) Select 20 22 23
-              26:     25(ptr) AccessChain 12(data) 14 17
+              22:     8(uint) Load 21(@gl_SubgroupSize)
+              24:     8(uint) Select 20 22 23
+              26:   25(uint*) AccessChain 12(data) 14 17
                               Store 26 24
                               Return
                               FunctionEnd

@@ -222,47 +222,47 @@ gl_FragCoord origin is upper left
                               Decorate 16 DescriptorSet 0
                               Decorate 42(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
-              11:             TypeMatrix 7(fvec4) 4
-   12(MyBuffer1):             TypeStruct 11 11 11
-   13(MyBuffer2):             TypeStruct 11 11 11
-     14(Example):             TypeStruct 12(MyBuffer1) 13(MyBuffer2) 11
+               8:             TypeFunction 7(vec4)
+              11:             TypeMatrix 7(vec4) 4
+   12(MyBuffer1):             TypeStruct 11(mat4) 11(mat4) 11(mat4)
+   13(MyBuffer2):             TypeStruct 11(mat4) 11(mat4) 11(mat4)
+     14(Example):             TypeStruct 12(MyBuffer1) 13(MyBuffer2) 11(mat4)
               15:             TypePointer Uniform 14(Example)
-              16:     15(ptr) Variable Uniform
+              16:15(Example*) Variable Uniform
               17:             TypeInt 32 1
               18:     17(int) Constant 0
-              19:             TypePointer Uniform 7(fvec4)
+              19:             TypePointer Uniform 7(vec4)
               22:     17(int) Constant 1
               26:     17(int) Constant 2
-              41:             TypePointer Output 7(fvec4)
-42(@entryPointOutput):     41(ptr) Variable Output
-         4(main):           2 Function None 3
+              41:             TypePointer Output 7(vec4)
+42(@entryPointOutput):   41(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              43:    7(fvec4) FunctionCall 9(@main()
+              43:     7(vec4) FunctionCall 9(@main()
                               Store 42(@entryPointOutput) 43
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-              20:     19(ptr) AccessChain 16 18 18 18
-              21:    7(fvec4) Load 20
-              23:     19(ptr) AccessChain 16 18 22 18
-              24:    7(fvec4) Load 23
-              25:    7(fvec4) FAdd 21 24
-              27:     19(ptr) AccessChain 16 18 26 18
-              28:    7(fvec4) Load 27
-              29:    7(fvec4) FAdd 25 28
-              30:     19(ptr) AccessChain 16 22 18 18
-              31:    7(fvec4) Load 30
-              32:    7(fvec4) FAdd 29 31
-              33:     19(ptr) AccessChain 16 22 22 18
-              34:    7(fvec4) Load 33
-              35:    7(fvec4) FAdd 32 34
-              36:     19(ptr) AccessChain 16 22 26 18
-              37:    7(fvec4) Load 36
-              38:    7(fvec4) FAdd 35 37
+              20:   19(vec4*) AccessChain 16 18 18 18
+              21:     7(vec4) Load 20
+              23:   19(vec4*) AccessChain 16 18 22 18
+              24:     7(vec4) Load 23
+              25:     7(vec4) FAdd 21 24
+              27:   19(vec4*) AccessChain 16 18 26 18
+              28:     7(vec4) Load 27
+              29:     7(vec4) FAdd 25 28
+              30:   19(vec4*) AccessChain 16 22 18 18
+              31:     7(vec4) Load 30
+              32:     7(vec4) FAdd 29 31
+              33:   19(vec4*) AccessChain 16 22 22 18
+              34:     7(vec4) Load 33
+              35:     7(vec4) FAdd 32 34
+              36:   19(vec4*) AccessChain 16 22 26 18
+              37:     7(vec4) Load 36
+              38:     7(vec4) FAdd 35 37
                               ReturnValue 38
                               FunctionEnd

@@ -27,30 +27,30 @@ spv.specConst.vert
                               Decorate 25(gl_VertexID) BuiltIn VertexId
                               Decorate 26(gl_InstanceID) BuiltIn InstanceId
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeInt 32 0
-               9:      8(int) Constant 1
+               9:     8(uint) Constant 1
               10:             TypeArray 6(float) 9
-11(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 10 10
+11(gl_PerVertex):             TypeStruct 7(vec4) 6(float) 10(float[1]) 10(float[1])
               12:             TypePointer Output 11(gl_PerVertex)
-              13:     12(ptr) Variable Output
+              13:12(gl_PerVertex*) Variable Output
               14:             TypeInt 32 1
               15:     14(int) Constant 0
               16:    6(float) Constant 1065353216
-              17:    7(fvec4) ConstantComposite 16 16 16 16
+              17:     7(vec4) ConstantComposite 16 16 16 16
            18(a):     14(int) SpecConstant 8
-              22:             TypePointer Output 7(fvec4)
+              22:             TypePointer Output 7(vec4)
               24:             TypePointer Input 14(int)
- 25(gl_VertexID):     24(ptr) Variable Input
-26(gl_InstanceID):     24(ptr) Variable Input
-         4(main):           2 Function None 3
+ 25(gl_VertexID):    24(int*) Variable Input
+26(gl_InstanceID):    24(int*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
               19:    6(float) ConvertSToF 18(a)
-              20:    7(fvec4) CompositeConstruct 19 19 19 19
-              21:    7(fvec4) FDiv 17 20
-              23:     22(ptr) AccessChain 13 15
+              20:     7(vec4) CompositeConstruct 19 19 19 19
+              21:     7(vec4) FDiv 17 20
+              23:   22(vec4*) AccessChain 13 15
                               Store 23 21
                               Return
                               FunctionEnd

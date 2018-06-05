@@ -22,20 +22,20 @@ spv.arbPostDepthCoverage.frag
                               Decorate 13(gl_SampleMaskIn) Flat
                               Decorate 13(gl_SampleMaskIn) BuiltIn SampleMask
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Output 6(int)
-8(readSampleMaskIn):      7(ptr) Variable Output
+8(readSampleMaskIn):     7(int*) Variable Output
                9:             TypeInt 32 0
-              10:      9(int) Constant 1
+              10:     9(uint) Constant 1
               11:             TypeArray 6(int) 10
-              12:             TypePointer Input 11
-13(gl_SampleMaskIn):     12(ptr) Variable Input
+              12:             TypePointer Input 11(int[1])
+13(gl_SampleMaskIn): 12(int[1]*) Variable Input
               14:      6(int) Constant 0
               15:             TypePointer Input 6(int)
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-              16:     15(ptr) AccessChain 13(gl_SampleMaskIn) 14
+              16:    15(int*) AccessChain 13(gl_SampleMaskIn) 14
               17:      6(int) Load 16
                               Store 8(readSampleMaskIn) 17
                               Return

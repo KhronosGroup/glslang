@@ -18,7 +18,7 @@ spv.do-while-continue-break.vert
                               Name 35  "F"
                               Name 41  "G"
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                9:      6(int) Constant 0
@@ -31,16 +31,16 @@ spv.do-while-continue-break.vert
               36:      6(int) Constant 99
               39:      6(int) Constant 19
               42:      6(int) Constant 12
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-            8(i):      7(ptr) Variable Function
-           14(A):      7(ptr) Variable Function
-           21(B):      7(ptr) Variable Function
-           24(C):      7(ptr) Variable Function
-           30(D):      7(ptr) Variable Function
-           33(E):      7(ptr) Variable Function
-           35(F):      7(ptr) Variable Function
-           41(G):      7(ptr) Variable Function
+            8(i):     7(int*) Variable Function
+           14(A):     7(int*) Variable Function
+           21(B):     7(int*) Variable Function
+           24(C):     7(int*) Variable Function
+           30(D):     7(int*) Variable Function
+           33(E):     7(int*) Variable Function
+           35(F):     7(int*) Variable Function
+           41(G):     7(int*) Variable Function
                               Store 8(i) 9
                               Branch 10
               10:             Label

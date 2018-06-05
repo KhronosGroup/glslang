@@ -174,68 +174,68 @@ spv.layoutNested.vert
                               MemberDecorate 63(S) 2 Invariant
                               Decorate 65(soutinv) Invariant
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypeInt 32 0
-               8:             TypeVector 7(int) 3
+               8:             TypeVector 7(uint) 3
                9:             TypeFloat 32
               10:             TypeVector 9(float) 2
-              11:             TypeMatrix 10(fvec2) 2
-              12:      7(int) Constant 4
-              13:             TypeArray 11 12
-           14(S):             TypeStruct 8(ivec3) 13 7(int)
-              15:      7(int) Constant 3
+              11:             TypeMatrix 10(vec2) 2
+              12:     7(uint) Constant 4
+              13:             TypeArray 11(mat2) 12
+           14(S):             TypeStruct 8(uvec3) 13(mat2[4]) 7(uint)
+              15:     7(uint) Constant 3
               16:             TypeArray 14(S) 15
-              17:      7(int) Constant 2
-              18:             TypeArray 16 17
-    19(Block140):             TypeStruct 6(int) 18 10(fvec2)
+              17:     7(uint) Constant 2
+              18:             TypeArray 16(S[3]) 17
+    19(Block140):             TypeStruct 6(int) 18(S[3][2]) 10(vec2)
               20:             TypePointer Uniform 19(Block140)
-     21(inst140):     20(ptr) Variable Uniform
-              22:             TypeArray 11 12
-           23(S):             TypeStruct 8(ivec3) 22 7(int)
+     21(inst140):20(Block140*) Variable Uniform
+              22:             TypeArray 11(mat2) 12
+           23(S):             TypeStruct 8(uvec3) 22(mat2[4]) 7(uint)
               24:             TypeArray 23(S) 15
-              25:             TypeArray 24 17
-    26(Block430):             TypeStruct 6(int) 25 10(fvec2)
+              25:             TypeArray 24(S[3]) 17
+    26(Block430):             TypeStruct 6(int) 25(S[3][2]) 10(vec2)
               27:             TypePointer Uniform 26(Block430)
-     28(inst430):     27(ptr) Variable Uniform
-           29(S):             TypeStruct 8(ivec3) 13 7(int)
+     28(inst430):27(Block430*) Variable Uniform
+           29(S):             TypeStruct 8(uvec3) 13(mat2[4]) 7(uint)
               30:             TypePointer Private 29(S)
-           31(s):     30(ptr) Variable Private
-           32(T):             TypeStruct 11 6(int)
+           31(s):      30(S*) Variable Private
+           32(T):             TypeStruct 11(mat2) 6(int)
               33:             TypePointer Private 32(T)
-           34(t):     33(ptr) Variable Private
-           35(T):             TypeStruct 11 6(int)
+           34(t):      33(T*) Variable Private
+           35(T):             TypeStruct 11(mat2) 6(int)
       36(Nestor):             TypeStruct 35(T)
          37(Bt1):             TypeStruct 36(Nestor)
               38:             TypePointer Uniform 37(Bt1)
-        39(Btn1):     38(ptr) Variable Uniform
-           40(T):             TypeStruct 11 6(int)
+        39(Btn1):    38(Bt1*) Variable Uniform
+           40(T):             TypeStruct 11(mat2) 6(int)
       41(Nestor):             TypeStruct 40(T)
          42(Bt2):             TypeStruct 41(Nestor)
               43:             TypePointer Uniform 42(Bt2)
-        44(Btn2):     43(ptr) Variable Uniform
+        44(Btn2):    43(Bt2*) Variable Uniform
          45(Bt3):             TypeStruct 41(Nestor) 36(Nestor)
               46:             TypePointer Uniform 45(Bt3)
-        47(Btn3):     46(ptr) Variable Uniform
-           48(T):             TypeStruct 11 6(int)
+        47(Btn3):    46(Bt3*) Variable Uniform
+           48(T):             TypeStruct 11(mat2) 6(int)
       49(Nestor):             TypeStruct 48(T)
         50(bBt1):             TypeStruct 49(Nestor)
               51:             TypePointer Uniform 50(bBt1)
-       52(bBtn1):     51(ptr) Variable Uniform
-           53(T):             TypeStruct 11 6(int)
+       52(bBtn1):   51(bBt1*) Variable Uniform
+           53(T):             TypeStruct 11(mat2) 6(int)
       54(Nestor):             TypeStruct 53(T)
         55(bBt2):             TypeStruct 54(Nestor)
               56:             TypePointer Uniform 55(bBt2)
-       57(bBtn2):     56(ptr) Variable Uniform
+       57(bBtn2):   56(bBt2*) Variable Uniform
         58(bBt3):             TypeStruct 49(Nestor) 54(Nestor)
               59:             TypePointer Uniform 58(bBt3)
-       60(bBtn3):     59(ptr) Variable Uniform
+       60(bBtn3):   59(bBt3*) Variable Uniform
               61:             TypePointer Output 29(S)
-        62(sout):     61(ptr) Variable Output
-           63(S):             TypeStruct 8(ivec3) 13 7(int)
+        62(sout):      61(S*) Variable Output
+           63(S):             TypeStruct 8(uvec3) 13(mat2[4]) 7(uint)
               64:             TypePointer Output 63(S)
-     65(soutinv):     64(ptr) Variable Output
-         4(main):           2 Function None 3
+     65(soutinv):      64(S*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd

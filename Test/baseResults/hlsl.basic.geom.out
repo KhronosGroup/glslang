@@ -224,83 +224,83 @@ output primitive = line_strip
                               Decorate 55(VertexID) Location 0
                               Decorate 58(test) Location 1
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:      6(int) Constant 3
-               8:             TypeArray 6(int) 7
-               9:             TypePointer Function 8
+               7:     6(uint) Constant 3
+               8:             TypeArray 6(uint) 7
+               9:             TypePointer Function 8(uint[3])
               10:             TypeFloat 32
               11:             TypeInt 32 1
      12(PSInput):             TypeStruct 10(float) 11(int)
               13:             TypePointer Function 12(PSInput)
-              14:             TypeFunction 2 9(ptr) 9(ptr) 13(ptr)
+              14:             TypeFunction 2(void) 9(uint[3]*) 9(uint[3]*) 13(PSInput*)
               21:     11(int) Constant 0
-              22:             TypePointer Function 6(int)
+              22:             TypePointer Function 6(uint)
               25:     11(int) Constant 1
               29:     11(int) Constant 2
               34:             TypePointer Function 10(float)
               39:             TypePointer Function 11(int)
               41:             TypePointer Output 10(float)
-42(OutputStream.myfloat):     41(ptr) Variable Output
+42(OutputStream.myfloat):  41(float*) Variable Output
               45:             TypePointer Output 11(int)
-46(OutputStream.something):     45(ptr) Variable Output
-              54:             TypePointer Input 8
-    55(VertexID):     54(ptr) Variable Input
-        58(test):     54(ptr) Variable Input
-         4(main):           2 Function None 3
+46(OutputStream.something):    45(int*) Variable Output
+              54:             TypePointer Input 8(uint[3])
+    55(VertexID):54(uint[3]*) Variable Input
+        58(test):54(uint[3]*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-    53(VertexID):      9(ptr) Variable Function
-        57(test):      9(ptr) Variable Function
-60(OutputStream):     13(ptr) Variable Function
-       61(param):      9(ptr) Variable Function
-       63(param):      9(ptr) Variable Function
-       65(param):     13(ptr) Variable Function
-              56:           8 Load 55(VertexID)
+    53(VertexID): 9(uint[3]*) Variable Function
+        57(test): 9(uint[3]*) Variable Function
+60(OutputStream):13(PSInput*) Variable Function
+       61(param): 9(uint[3]*) Variable Function
+       63(param): 9(uint[3]*) Variable Function
+       65(param):13(PSInput*) Variable Function
+              56:  8(uint[3]) Load 55(VertexID)
                               Store 53(VertexID) 56
-              59:           8 Load 58(test)
+              59:  8(uint[3]) Load 58(test)
                               Store 57(test) 59
-              62:           8 Load 53(VertexID)
+              62:  8(uint[3]) Load 53(VertexID)
                               Store 61(param) 62
-              64:           8 Load 57(test)
+              64:  8(uint[3]) Load 57(test)
                               Store 63(param) 64
-              66:           2 FunctionCall 18(@main(u1[3];u1[3];struct-PSInput-f1-i11;) 61(param) 63(param) 65(param)
+              66:     2(void) FunctionCall 18(@main(u1[3];u1[3];struct-PSInput-f1-i11;) 61(param) 63(param) 65(param)
               67: 12(PSInput) Load 65(param)
                               Store 60(OutputStream) 67
                               Return
                               FunctionEnd
-18(@main(u1[3];u1[3];struct-PSInput-f1-i11;):           2 Function None 14
-    15(VertexID):      9(ptr) FunctionParameter
-        16(test):      9(ptr) FunctionParameter
-17(OutputStream):     13(ptr) FunctionParameter
+18(@main(u1[3];u1[3];struct-PSInput-f1-i11;):     2(void) Function None 14
+    15(VertexID): 9(uint[3]*) FunctionParameter
+        16(test): 9(uint[3]*) FunctionParameter
+17(OutputStream):13(PSInput*) FunctionParameter
               19:             Label
-        20(Vert):     13(ptr) Variable Function
-              23:     22(ptr) AccessChain 16(test) 21
-              24:      6(int) Load 23
-              26:     22(ptr) AccessChain 16(test) 25
-              27:      6(int) Load 26
-              28:      6(int) IAdd 24 27
-              30:     22(ptr) AccessChain 16(test) 29
-              31:      6(int) Load 30
-              32:      6(int) IAdd 28 31
+        20(Vert):13(PSInput*) Variable Function
+              23:   22(uint*) AccessChain 16(test) 21
+              24:     6(uint) Load 23
+              26:   22(uint*) AccessChain 16(test) 25
+              27:     6(uint) Load 26
+              28:     6(uint) IAdd 24 27
+              30:   22(uint*) AccessChain 16(test) 29
+              31:     6(uint) Load 30
+              32:     6(uint) IAdd 28 31
               33:   10(float) ConvertUToF 32
-              35:     34(ptr) AccessChain 20(Vert) 21
+              35:  34(float*) AccessChain 20(Vert) 21
                               Store 35 33
-              36:     22(ptr) AccessChain 15(VertexID) 21
-              37:      6(int) Load 36
+              36:   22(uint*) AccessChain 15(VertexID) 21
+              37:     6(uint) Load 36
               38:     11(int) Bitcast 37
-              40:     39(ptr) AccessChain 20(Vert) 25
+              40:    39(int*) AccessChain 20(Vert) 25
                               Store 40 38
-              43:     34(ptr) AccessChain 20(Vert) 21
+              43:  34(float*) AccessChain 20(Vert) 21
               44:   10(float) Load 43
                               Store 42(OutputStream.myfloat) 44
-              47:     39(ptr) AccessChain 20(Vert) 25
+              47:    39(int*) AccessChain 20(Vert) 25
               48:     11(int) Load 47
                               Store 46(OutputStream.something) 48
                               EmitVertex
-              49:     34(ptr) AccessChain 20(Vert) 21
+              49:  34(float*) AccessChain 20(Vert) 21
               50:   10(float) Load 49
                               Store 42(OutputStream.myfloat) 50
-              51:     39(ptr) AccessChain 20(Vert) 25
+              51:    39(int*) AccessChain 20(Vert) 25
               52:     11(int) Load 51
                               Store 46(OutputStream.something) 52
                               EmitVertex

@@ -103,32 +103,32 @@ local_size = (4, 6, 8)
                               Decorate 23 DescriptorSet 0
                               Decorate 37(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypeInt 32 1
               12:             TypePointer Function 11(int)
               14:     11(int) Constant 0
      21($Global):             TypeStruct 11(int)
               22:             TypePointer Uniform 21($Global)
-              23:     22(ptr) Variable Uniform
+              23:22($Global*) Variable Uniform
               24:             TypePointer Uniform 11(int)
               27:             TypeBool
               30:     11(int) Constant 1
               32:    6(float) Constant 0
-              33:    7(fvec4) ConstantComposite 32 32 32 32
-              36:             TypePointer Output 7(fvec4)
-37(@entryPointOutput):     36(ptr) Variable Output
-         4(main):           2 Function None 3
+              33:     7(vec4) ConstantComposite 32 32 32 32
+              36:             TypePointer Output 7(vec4)
+37(@entryPointOutput):   36(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              38:    7(fvec4) FunctionCall 9(@main()
+              38:     7(vec4) FunctionCall 9(@main()
                               Store 37(@entryPointOutput) 38
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-           13(x):     12(ptr) Variable Function
+           13(x):    12(int*) Variable Function
                               Store 13(x) 14
                               Branch 15
               15:             Label
@@ -136,7 +136,7 @@ local_size = (4, 6, 8)
                               Branch 19
               19:             Label
               20:     11(int) Load 13(x)
-              25:     24(ptr) AccessChain 23 14
+              25:    24(int*) AccessChain 23 14
               26:     11(int) Load 25
               28:    27(bool) SLessThan 20 26
                               BranchConditional 28 16 17

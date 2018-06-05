@@ -19,26 +19,26 @@ spv.constStruct.vert
                               Name 13  "s1"
                               Name 22  "s2"
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 2
-               8:             TypeMatrix 7(fvec2) 2
-            9(T):             TypeStruct 8
-           10(U):             TypeStruct 8
+               8:             TypeMatrix 7(vec2) 2
+            9(T):             TypeStruct 8(mat2)
+           10(U):             TypeStruct 8(mat2)
            11(S):             TypeStruct 9(T) 10(U)
               12:             TypePointer Function 11(S)
               14:    6(float) Constant 1065353216
               15:    6(float) Constant 0
-              16:    7(fvec2) ConstantComposite 14 15
-              17:    7(fvec2) ConstantComposite 15 14
-              18:           8 ConstantComposite 16 17
+              16:     7(vec2) ConstantComposite 14 15
+              17:     7(vec2) ConstantComposite 15 14
+              18:     8(mat2) ConstantComposite 16 17
               19:        9(T) ConstantComposite 18
               20:       10(U) ConstantComposite 18
               21:       11(S) ConstantComposite 19 20
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-          13(s1):     12(ptr) Variable Function
-          22(s2):     12(ptr) Variable Function
+          13(s1):      12(S*) Variable Function
+          22(s2):      12(S*) Variable Function
                               Store 13(s1) 21
                               Store 22(s2) 21
                               Return

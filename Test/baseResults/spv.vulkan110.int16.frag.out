@@ -95,59 +95,59 @@ spv.vulkan110.int16.frag
                               Decorate 521(si16) SpecId 100
                               Decorate 522(su16) SpecId 101
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
               14:             TypeInt 16 1
               15:             TypePointer Function 14(int16_t)
               17:             TypeInt 32 0
-              18:     17(int) Constant 3
+              18:    17(uint) Constant 3
               19:             TypeArray 14(int16_t) 18
               20: 14(int16_t) Constant 4294962927
               21: 14(int16_t) Constant 4294967295
               22: 14(int16_t) Constant 16384
-              23:          19 ConstantComposite 20 21 22
-    24(Uniforms):             TypeStruct 17(int)
+              23:19(int16_t[3]) ConstantComposite 20 21 22
+    24(Uniforms):             TypeStruct 17(uint)
               25:             TypePointer Uniform 24(Uniforms)
-              26:     25(ptr) Variable Uniform
+              26:25(Uniforms*) Variable Uniform
               27:             TypeInt 32 1
               28:     27(int) Constant 0
-              29:             TypePointer Uniform 17(int)
-              32:             TypePointer Function 19
+              29:             TypePointer Uniform 17(uint)
+              32:             TypePointer Function 19(int16_t[3])
               36:             TypeInt 16 0
-              37:             TypePointer Function 36(int16_t)
-              39:             TypeArray 36(int16_t) 18
-              40: 36(int16_t) Constant 65535
-              41: 36(int16_t) Constant 32767
-              42:          39 ConstantComposite 40 40 41
-              45:             TypePointer Function 39
+              37:             TypePointer Function 36(uint16_t)
+              39:             TypeArray 36(uint16_t) 18
+              40:36(uint16_t) Constant 65535
+              41:36(uint16_t) Constant 32767
+              42:39(uint16_t[3]) ConstantComposite 40 40 41
+              45:             TypePointer Function 39(uint16_t[3])
               49:             TypeVector 27(int) 2
               50:             TypePointer Function 49(ivec2)
               52:             TypeVector 14(int16_t) 2
               53:             TypePointer Function 52(i16vec2)
-              57:             TypeVector 36(int16_t) 2
-              58:             TypePointer Function 57(i16vec2)
-              61:             TypeVector 17(int) 2
-              66:             TypePointer Function 61(ivec2)
+              57:             TypeVector 36(uint16_t) 2
+              58:             TypePointer Function 57(u16vec2)
+              61:             TypeVector 17(uint) 2
+              66:             TypePointer Function 61(uvec2)
               71:             TypeInt 64 1
               72:             TypeVector 71(int64_t) 2
               73:             TypePointer Function 72(i64vec2)
               77:             TypeInt 64 0
-              78:             TypeVector 77(int64_t) 2
-              79:             TypePointer Function 78(i64vec2)
+              78:             TypeVector 77(uint64_t) 2
+              79:             TypePointer Function 78(u64vec2)
               91:             TypeFloat 16
               92:             TypeVector 91(float16_t) 2
               93:             TypePointer Function 92(f16vec2)
               97:             TypeFloat 32
               98:             TypeVector 97(float) 2
-              99:             TypePointer Function 98(fvec2)
+              99:             TypePointer Function 98(vec2)
              103:             TypeFloat 64
-             104:             TypeVector 103(float64_t) 2
-             105:             TypePointer Function 104(f64vec2)
+             104:             TypeVector 103(double) 2
+             105:             TypePointer Function 104(dvec2)
              151:             TypeInt 8 1
              152:             TypeVector 151(int8_t) 2
              153:             TypePointer Function 152(i8vec2)
              158:             TypeInt 8 0
-             159:             TypeVector 158(int8_t) 2
-             162:             TypePointer Function 159(i8vec2)
+             159:             TypeVector 158(uint8_t) 2
+             162:             TypePointer Function 159(u8vec2)
              173:             TypeBool
              174:             TypeVector 173(bool) 2
              175:             TypePointer Function 174(bvec2)
@@ -155,25 +155,25 @@ spv.vulkan110.int16.frag
              179: 14(int16_t) Constant 1
              180: 52(i16vec2) ConstantComposite 178 178
              181: 52(i16vec2) ConstantComposite 179 179
-             184: 36(int16_t) Constant 0
-             185: 36(int16_t) Constant 1
-             186: 57(i16vec2) ConstantComposite 184 184
-             187: 57(i16vec2) ConstantComposite 185 185
-             193:             TypeVector 36(int16_t) 3
-             194:             TypePointer Function 193(i16vec3)
+             184:36(uint16_t) Constant 0
+             185:36(uint16_t) Constant 1
+             186: 57(u16vec2) ConstantComposite 184 184
+             187: 57(u16vec2) ConstantComposite 185 185
+             193:             TypeVector 36(uint16_t) 3
+             194:             TypePointer Function 193(u16vec3)
              197:             TypeVector 14(int16_t) 3
              219:             TypePointer Function 27(int)
-             225:             TypeVector 17(int) 3
-             226:             TypePointer Function 225(ivec3)
+             225:             TypeVector 17(uint) 3
+             226:             TypePointer Function 225(uvec3)
              242:             TypePointer Function 71(int64_t)
-             264:     17(int) Constant 1
-             270:     17(int) Constant 2
+             264:    17(uint) Constant 1
+             270:    17(uint) Constant 2
              276:             TypeVector 27(int) 3
              280:             TypePointer Function 173(bool)
-             282:     17(int) Constant 0
-             296:             TypePointer Function 17(int)
+             282:    17(uint) Constant 0
+             296:             TypePointer Function 17(uint)
              354: 52(i16vec2) ConstantComposite 21 21
-             363:193(i16vec3) ConstantComposite 184 184 184
+             363:193(u16vec3) ConstantComposite 184 184 184
              405:   173(bool) ConstantTrue
              412:   173(bool) ConstantFalse
              413:  174(bvec2) ConstantComposite 412 412
@@ -181,197 +181,197 @@ spv.vulkan110.int16.frag
              426:  425(bvec3) ConstantComposite 412 412 412
              432:             TypeVector 14(int16_t) 4
              433:             TypePointer Function 432(i16vec4)
-             441:             TypePointer Function 77(int64_t)
-             443:             TypeVector 36(int16_t) 4
-             444:             TypePointer Function 443(i16vec4)
+             441:             TypePointer Function 77(uint64_t)
+             443:             TypeVector 36(uint16_t) 4
+             444:             TypePointer Function 443(u16vec4)
              456:             TypePointer Function 425(bvec3)
-      518(Block):             TypeStruct 14(int16_t) 52(i16vec2) 197(i16vec3) 432(i16vec4) 36(int16_t) 57(i16vec2) 193(i16vec3) 443(i16vec4)
+      518(Block):             TypeStruct 14(int16_t) 52(i16vec2) 197(i16vec3) 432(i16vec4) 36(uint16_t) 57(u16vec2) 193(u16vec3) 443(u16vec4)
              519:             TypePointer Uniform 518(Block)
-      520(block):    519(ptr) Variable Uniform
+      520(block): 519(Block*) Variable Uniform
        521(si16): 14(int16_t) SpecConstant 4294967286
-       522(su16): 36(int16_t) SpecConstant 20
-         4(main):           2 Function None 3
+       522(su16):36(uint16_t) SpecConstant 20
+         4(main):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd
-     6(literal():           2 Function None 3
+     6(literal():     2(void) Function None 3
                7:             Label
-         16(i16):     15(ptr) Variable Function
-   33(indexable):     32(ptr) Variable Function
-         38(u16):     37(ptr) Variable Function
-   46(indexable):     45(ptr) Variable Function
-              30:     29(ptr) AccessChain 26 28
-              31:     17(int) Load 30
+         16(i16):15(int16_t*) Variable Function
+   33(indexable):32(int16_t[3]*) Variable Function
+         38(u16):37(uint16_t*) Variable Function
+   46(indexable):45(uint16_t[3]*) Variable Function
+              30:   29(uint*) AccessChain 26 28
+              31:    17(uint) Load 30
                               Store 33(indexable) 23
-              34:     15(ptr) AccessChain 33(indexable) 31
+              34:15(int16_t*) AccessChain 33(indexable) 31
               35: 14(int16_t) Load 34
                               Store 16(i16) 35
-              43:     29(ptr) AccessChain 26 28
-              44:     17(int) Load 43
+              43:   29(uint*) AccessChain 26 28
+              44:    17(uint) Load 43
                               Store 46(indexable) 42
-              47:     37(ptr) AccessChain 46(indexable) 44
-              48: 36(int16_t) Load 47
+              47:37(uint16_t*) AccessChain 46(indexable) 44
+              48:36(uint16_t) Load 47
                               Store 38(u16) 48
                               Return
                               FunctionEnd
-  8(typeCast16():           2 Function None 3
+  8(typeCast16():     2(void) Function None 3
                9:             Label
-        51(i32v):     50(ptr) Variable Function
-        54(i16v):     53(ptr) Variable Function
-        59(u16v):     58(ptr) Variable Function
-        67(u32v):     66(ptr) Variable Function
-        74(i64v):     73(ptr) Variable Function
-        80(u64v):     79(ptr) Variable Function
-        94(f16v):     93(ptr) Variable Function
-       100(f32v):     99(ptr) Variable Function
-       106(f64v):    105(ptr) Variable Function
-        154(i8v):    153(ptr) Variable Function
-        163(u8v):    162(ptr) Variable Function
-         176(bv):    175(ptr) Variable Function
+        51(i32v):  50(ivec2*) Variable Function
+        54(i16v):53(i16vec2*) Variable Function
+        59(u16v):58(u16vec2*) Variable Function
+        67(u32v):  66(uvec2*) Variable Function
+        74(i64v):73(i64vec2*) Variable Function
+        80(u64v):79(u64vec2*) Variable Function
+        94(f16v):93(f16vec2*) Variable Function
+       100(f32v):   99(vec2*) Variable Function
+       106(f64v): 105(dvec2*) Variable Function
+        154(i8v):153(i8vec2*) Variable Function
+        163(u8v):162(u8vec2*) Variable Function
+         176(bv): 175(bvec2*) Variable Function
               55: 52(i16vec2) Load 54(i16v)
               56:   49(ivec2) SConvert 55
                               Store 51(i32v) 56
-              60: 57(i16vec2) Load 59(u16v)
-              62:   61(ivec2) UConvert 60
+              60: 57(u16vec2) Load 59(u16v)
+              62:   61(uvec2) UConvert 60
               63:   49(ivec2) Bitcast 62
                               Store 51(i32v) 63
               64: 52(i16vec2) Load 54(i16v)
-              65: 57(i16vec2) Bitcast 64
+              65: 57(u16vec2) Bitcast 64
                               Store 59(u16v) 65
               68: 52(i16vec2) Load 54(i16v)
               69:   49(ivec2) SConvert 68
-              70:   61(ivec2) Bitcast 69
+              70:   61(uvec2) Bitcast 69
                               Store 67(u32v) 70
               75: 52(i16vec2) Load 54(i16v)
               76: 72(i64vec2) SConvert 75
                               Store 74(i64v) 76
               81: 52(i16vec2) Load 54(i16v)
               82: 72(i64vec2) SConvert 81
-              83: 78(i64vec2) Bitcast 82
+              83: 78(u64vec2) Bitcast 82
                               Store 80(u64v) 83
-              84: 57(i16vec2) Load 59(u16v)
-              85:   61(ivec2) UConvert 84
+              84: 57(u16vec2) Load 59(u16v)
+              85:   61(uvec2) UConvert 84
                               Store 67(u32v) 85
-              86: 57(i16vec2) Load 59(u16v)
-              87: 78(i64vec2) UConvert 86
+              86: 57(u16vec2) Load 59(u16v)
+              87: 78(u64vec2) UConvert 86
               88: 72(i64vec2) Bitcast 87
                               Store 74(i64v) 88
-              89: 57(i16vec2) Load 59(u16v)
-              90: 78(i64vec2) UConvert 89
+              89: 57(u16vec2) Load 59(u16v)
+              90: 78(u64vec2) UConvert 89
                               Store 80(u64v) 90
               95: 52(i16vec2) Load 54(i16v)
               96: 92(f16vec2) ConvertSToF 95
                               Store 94(f16v) 96
              101: 52(i16vec2) Load 54(i16v)
-             102:   98(fvec2) ConvertSToF 101
+             102:    98(vec2) ConvertSToF 101
                               Store 100(f32v) 102
              107: 52(i16vec2) Load 54(i16v)
-             108:104(f64vec2) ConvertSToF 107
+             108:  104(dvec2) ConvertSToF 107
                               Store 106(f64v) 108
-             109: 57(i16vec2) Load 59(u16v)
+             109: 57(u16vec2) Load 59(u16v)
              110: 92(f16vec2) ConvertUToF 109
                               Store 94(f16v) 110
-             111: 57(i16vec2) Load 59(u16v)
-             112:   98(fvec2) ConvertUToF 111
+             111: 57(u16vec2) Load 59(u16v)
+             112:    98(vec2) ConvertUToF 111
                               Store 100(f32v) 112
-             113: 57(i16vec2) Load 59(u16v)
-             114:104(f64vec2) ConvertUToF 113
+             113: 57(u16vec2) Load 59(u16v)
+             114:  104(dvec2) ConvertUToF 113
                               Store 106(f64v) 114
              115: 52(i16vec2) Load 54(i16v)
              116:   49(ivec2) SConvert 115
                               Store 51(i32v) 116
-             117: 57(i16vec2) Load 59(u16v)
-             118:   61(ivec2) UConvert 117
+             117: 57(u16vec2) Load 59(u16v)
+             118:   61(uvec2) UConvert 117
              119:   49(ivec2) Bitcast 118
                               Store 51(i32v) 119
              120: 52(i16vec2) Load 54(i16v)
-             121: 57(i16vec2) Bitcast 120
+             121: 57(u16vec2) Bitcast 120
                               Store 59(u16v) 121
              122: 52(i16vec2) Load 54(i16v)
              123:   49(ivec2) SConvert 122
-             124:   61(ivec2) Bitcast 123
+             124:   61(uvec2) Bitcast 123
                               Store 67(u32v) 124
              125: 52(i16vec2) Load 54(i16v)
              126: 72(i64vec2) SConvert 125
                               Store 74(i64v) 126
              127: 52(i16vec2) Load 54(i16v)
              128: 72(i64vec2) SConvert 127
-             129: 78(i64vec2) Bitcast 128
+             129: 78(u64vec2) Bitcast 128
                               Store 80(u64v) 129
-             130: 57(i16vec2) Load 59(u16v)
-             131:   61(ivec2) UConvert 130
+             130: 57(u16vec2) Load 59(u16v)
+             131:   61(uvec2) UConvert 130
                               Store 67(u32v) 131
-             132: 57(i16vec2) Load 59(u16v)
-             133: 78(i64vec2) UConvert 132
+             132: 57(u16vec2) Load 59(u16v)
+             133: 78(u64vec2) UConvert 132
              134: 72(i64vec2) Bitcast 133
                               Store 74(i64v) 134
-             135: 57(i16vec2) Load 59(u16v)
-             136: 78(i64vec2) UConvert 135
+             135: 57(u16vec2) Load 59(u16v)
+             136: 78(u64vec2) UConvert 135
              137: 72(i64vec2) Bitcast 136
-             138: 78(i64vec2) Bitcast 137
+             138: 78(u64vec2) Bitcast 137
                               Store 80(u64v) 138
              139: 52(i16vec2) Load 54(i16v)
              140: 92(f16vec2) ConvertSToF 139
                               Store 94(f16v) 140
              141: 52(i16vec2) Load 54(i16v)
-             142:   98(fvec2) ConvertSToF 141
+             142:    98(vec2) ConvertSToF 141
                               Store 100(f32v) 142
              143: 52(i16vec2) Load 54(i16v)
-             144:104(f64vec2) ConvertSToF 143
+             144:  104(dvec2) ConvertSToF 143
                               Store 106(f64v) 144
-             145: 57(i16vec2) Load 59(u16v)
+             145: 57(u16vec2) Load 59(u16v)
              146: 92(f16vec2) ConvertUToF 145
                               Store 94(f16v) 146
-             147: 57(i16vec2) Load 59(u16v)
-             148:   98(fvec2) ConvertUToF 147
+             147: 57(u16vec2) Load 59(u16v)
+             148:    98(vec2) ConvertUToF 147
                               Store 100(f32v) 148
-             149: 57(i16vec2) Load 59(u16v)
-             150:104(f64vec2) ConvertUToF 149
+             149: 57(u16vec2) Load 59(u16v)
+             150:  104(dvec2) ConvertUToF 149
                               Store 106(f64v) 150
              155: 52(i16vec2) Load 54(i16v)
              156: 152(i8vec2) SConvert 155
                               Store 154(i8v) 156
-             157: 57(i16vec2) Load 59(u16v)
-             160: 159(i8vec2) UConvert 157
+             157: 57(u16vec2) Load 59(u16v)
+             160: 159(u8vec2) UConvert 157
              161: 152(i8vec2) Bitcast 160
                               Store 154(i8v) 161
              164: 52(i16vec2) Load 54(i16v)
              165: 152(i8vec2) SConvert 164
-             166: 159(i8vec2) Bitcast 165
+             166: 159(u8vec2) Bitcast 165
                               Store 163(u8v) 166
-             167: 57(i16vec2) Load 59(u16v)
-             168: 159(i8vec2) UConvert 167
+             167: 57(u16vec2) Load 59(u16v)
+             168: 159(u8vec2) UConvert 167
                               Store 163(u8v) 168
-             169: 57(i16vec2) Load 59(u16v)
-             170: 159(i8vec2) UConvert 169
-             171: 57(i16vec2) UConvert 170
+             169: 57(u16vec2) Load 59(u16v)
+             170: 159(u8vec2) UConvert 169
+             171: 57(u16vec2) UConvert 170
              172: 52(i16vec2) Bitcast 171
                               Store 54(i16v) 172
              177:  174(bvec2) Load 176(bv)
              182: 52(i16vec2) Select 177 181 180
                               Store 54(i16v) 182
              183:  174(bvec2) Load 176(bv)
-             188: 57(i16vec2) Select 183 187 186
+             188: 57(u16vec2) Select 183 187 186
                               Store 59(u16v) 188
              189: 52(i16vec2) Load 54(i16v)
              190:  174(bvec2) INotEqual 189 186
                               Store 176(bv) 190
-             191: 57(i16vec2) Load 59(u16v)
+             191: 57(u16vec2) Load 59(u16v)
              192:  174(bvec2) INotEqual 191 186
                               Store 176(bv) 192
                               Return
                               FunctionEnd
-  10(operators():           2 Function None 3
+  10(operators():     2(void) Function None 3
               11:             Label
-       195(u16v):    194(ptr) Variable Function
-        200(i16):     15(ptr) Variable Function
-          220(i):    219(ptr) Variable Function
-         227(uv):    226(ptr) Variable Function
-        243(i64):    242(ptr) Variable Function
-          281(b):    280(ptr) Variable Function
-             196:193(i16vec3) Load 195(u16v)
+       195(u16v):194(u16vec3*) Variable Function
+        200(i16):15(int16_t*) Variable Function
+          220(i):   219(int*) Variable Function
+         227(uv): 226(uvec3*) Variable Function
+        243(i64):242(int64_t*) Variable Function
+          281(b):  280(bool*) Variable Function
+             196:193(u16vec3) Load 195(u16v)
              198:197(i16vec3) CompositeConstruct 179 179 179
-             199:193(i16vec3) IAdd 196 198
+             199:193(u16vec3) IAdd 196 198
                               Store 195(u16v) 199
              201: 14(int16_t) Load 200(i16)
              202: 14(int16_t) ISub 201 179
@@ -379,57 +379,57 @@ spv.vulkan110.int16.frag
              203: 14(int16_t) Load 200(i16)
              204: 14(int16_t) IAdd 203 179
                               Store 200(i16) 204
-             205:193(i16vec3) Load 195(u16v)
+             205:193(u16vec3) Load 195(u16v)
              206:197(i16vec3) CompositeConstruct 179 179 179
-             207:193(i16vec3) ISub 205 206
+             207:193(u16vec3) ISub 205 206
                               Store 195(u16v) 207
-             208:193(i16vec3) Load 195(u16v)
-             209:193(i16vec3) Not 208
+             208:193(u16vec3) Load 195(u16v)
+             209:193(u16vec3) Not 208
                               Store 195(u16v) 209
              210: 14(int16_t) Load 200(i16)
                               Store 200(i16) 210
-             211:193(i16vec3) Load 195(u16v)
-             212:193(i16vec3) SNegate 211
+             211:193(u16vec3) Load 195(u16v)
+             212:193(u16vec3) SNegate 211
                               Store 195(u16v) 212
              213: 14(int16_t) Load 200(i16)
              214: 14(int16_t) Load 200(i16)
              215: 14(int16_t) IAdd 214 213
                               Store 200(i16) 215
-             216:193(i16vec3) Load 195(u16v)
-             217:193(i16vec3) Load 195(u16v)
-             218:193(i16vec3) ISub 217 216
+             216:193(u16vec3) Load 195(u16v)
+             217:193(u16vec3) Load 195(u16v)
+             218:193(u16vec3) ISub 217 216
                               Store 195(u16v) 218
              221: 14(int16_t) Load 200(i16)
              222:     27(int) SConvert 221
              223:     27(int) Load 220(i)
              224:     27(int) IMul 223 222
                               Store 220(i) 224
-             228:193(i16vec3) Load 195(u16v)
-             229:  225(ivec3) UConvert 228
-             230:  225(ivec3) Load 227(uv)
-             231:  225(ivec3) UDiv 230 229
+             228:193(u16vec3) Load 195(u16v)
+             229:  225(uvec3) UConvert 228
+             230:  225(uvec3) Load 227(uv)
+             231:  225(uvec3) UDiv 230 229
                               Store 227(uv) 231
              232: 14(int16_t) Load 200(i16)
              233:     27(int) SConvert 232
-             234:     17(int) Bitcast 233
-             235:  225(ivec3) Load 227(uv)
-             236:  225(ivec3) CompositeConstruct 234 234 234
-             237:  225(ivec3) UMod 235 236
+             234:    17(uint) Bitcast 233
+             235:  225(uvec3) Load 227(uv)
+             236:  225(uvec3) CompositeConstruct 234 234 234
+             237:  225(uvec3) UMod 235 236
                               Store 227(uv) 237
-             238:193(i16vec3) Load 195(u16v)
-             239:  225(ivec3) UConvert 238
-             240:  225(ivec3) Load 227(uv)
-             241:  225(ivec3) IAdd 239 240
+             238:193(u16vec3) Load 195(u16v)
+             239:  225(uvec3) UConvert 238
+             240:  225(uvec3) Load 227(uv)
+             241:  225(uvec3) IAdd 239 240
                               Store 227(uv) 241
              244: 14(int16_t) Load 200(i16)
              245: 71(int64_t) SConvert 244
              246: 71(int64_t) Load 243(i64)
              247: 71(int64_t) ISub 245 246
                               Store 243(i64) 247
-             248:193(i16vec3) Load 195(u16v)
-             249:  225(ivec3) UConvert 248
-             250:  225(ivec3) Load 227(uv)
-             251:  225(ivec3) IMul 249 250
+             248:193(u16vec3) Load 195(u16v)
+             249:  225(uvec3) UConvert 248
+             250:  225(uvec3) Load 227(uv)
+             251:  225(uvec3) IMul 249 250
                               Store 227(uv) 251
              252: 14(int16_t) Load 200(i16)
              253: 71(int64_t) SConvert 252
@@ -442,43 +442,43 @@ spv.vulkan110.int16.frag
              259:     27(int) SMod 257 258
                               Store 220(i) 259
              260: 14(int16_t) Load 200(i16)
-             261:193(i16vec3) Load 195(u16v)
+             261:193(u16vec3) Load 195(u16v)
              262:197(i16vec3) CompositeConstruct 260 260 260
-             263:193(i16vec3) ShiftLeftLogical 261 262
+             263:193(u16vec3) ShiftLeftLogical 261 262
                               Store 195(u16v) 263
-             265:     37(ptr) AccessChain 195(u16v) 264
-             266: 36(int16_t) Load 265
+             265:37(uint16_t*) AccessChain 195(u16v) 264
+             266:36(uint16_t) Load 265
              267: 14(int16_t) Load 200(i16)
              268: 14(int16_t) ShiftRightArithmetic 267 266
                               Store 200(i16) 268
              269: 14(int16_t) Load 200(i16)
-             271:     37(ptr) AccessChain 195(u16v) 270
-             272: 36(int16_t) Load 271
+             271:37(uint16_t*) AccessChain 195(u16v) 270
+             272:36(uint16_t) Load 271
              273: 14(int16_t) ShiftLeftLogical 269 272
                               Store 200(i16) 273
-             274:193(i16vec3) Load 195(u16v)
+             274:193(u16vec3) Load 195(u16v)
              275:     27(int) Load 220(i)
              277:  276(ivec3) CompositeConstruct 275 275 275
-             278:193(i16vec3) ShiftLeftLogical 274 277
-             279:  225(ivec3) UConvert 278
+             278:193(u16vec3) ShiftLeftLogical 274 277
+             279:  225(uvec3) UConvert 278
                               Store 227(uv) 279
-             283:     37(ptr) AccessChain 195(u16v) 282
-             284: 36(int16_t) Load 283
+             283:37(uint16_t*) AccessChain 195(u16v) 282
+             284:36(uint16_t) Load 283
              285: 14(int16_t) Load 200(i16)
-             286: 36(int16_t) Bitcast 285
+             286:36(uint16_t) Bitcast 285
              287:   173(bool) INotEqual 284 286
                               Store 281(b) 287
              288: 14(int16_t) Load 200(i16)
-             289: 36(int16_t) Bitcast 288
-             290:     37(ptr) AccessChain 195(u16v) 282
-             291: 36(int16_t) Load 290
+             289:36(uint16_t) Bitcast 288
+             290:37(uint16_t*) AccessChain 195(u16v) 282
+             291:36(uint16_t) Load 290
              292:   173(bool) IEqual 289 291
                               Store 281(b) 292
-             293:     37(ptr) AccessChain 195(u16v) 282
-             294: 36(int16_t) Load 293
-             295:     17(int) UConvert 294
-             297:    296(ptr) AccessChain 227(uv) 264
-             298:     17(int) Load 297
+             293:37(uint16_t*) AccessChain 195(u16v) 282
+             294:36(uint16_t) Load 293
+             295:    17(uint) UConvert 294
+             297:  296(uint*) AccessChain 227(uv) 264
+             298:    17(uint) Load 297
              299:   173(bool) UGreaterThan 295 298
                               Store 281(b) 299
              300: 14(int16_t) Load 200(i16)
@@ -486,11 +486,11 @@ spv.vulkan110.int16.frag
              302:     27(int) Load 220(i)
              303:   173(bool) SLessThan 301 302
                               Store 281(b) 303
-             304:     37(ptr) AccessChain 195(u16v) 264
-             305: 36(int16_t) Load 304
-             306:     17(int) UConvert 305
-             307:    296(ptr) AccessChain 227(uv) 282
-             308:     17(int) Load 307
+             304:37(uint16_t*) AccessChain 195(u16v) 264
+             305:36(uint16_t) Load 304
+             306:    17(uint) UConvert 305
+             307:  296(uint*) AccessChain 227(uv) 282
+             308:    17(uint) Load 307
              309:   173(bool) UGreaterThanEqual 306 308
                               Store 281(b) 309
              310: 14(int16_t) Load 200(i16)
@@ -500,10 +500,10 @@ spv.vulkan110.int16.frag
                               Store 281(b) 313
              314: 14(int16_t) Load 200(i16)
              315:     27(int) SConvert 314
-             316:     17(int) Bitcast 315
-             317:  225(ivec3) Load 227(uv)
-             318:  225(ivec3) CompositeConstruct 316 316 316
-             319:  225(ivec3) BitwiseOr 317 318
+             316:    17(uint) Bitcast 315
+             317:  225(uvec3) Load 227(uv)
+             318:  225(uvec3) CompositeConstruct 316 316 316
+             319:  225(uvec3) BitwiseOr 317 318
                               Store 227(uv) 319
              320: 14(int16_t) Load 200(i16)
              321:     27(int) SConvert 320
@@ -515,40 +515,40 @@ spv.vulkan110.int16.frag
              326: 71(int64_t) Load 243(i64)
              327: 71(int64_t) BitwiseAnd 326 325
                               Store 243(i64) 327
-             328:193(i16vec3) Load 195(u16v)
-             329:  225(ivec3) UConvert 328
-             330:  225(ivec3) Load 227(uv)
-             331:  225(ivec3) BitwiseAnd 329 330
+             328:193(u16vec3) Load 195(u16v)
+             329:  225(uvec3) UConvert 328
+             330:  225(uvec3) Load 227(uv)
+             331:  225(uvec3) BitwiseAnd 329 330
                               Store 227(uv) 331
              332: 14(int16_t) Load 200(i16)
              333:     27(int) SConvert 332
-             334:     17(int) Bitcast 333
-             335:  225(ivec3) Load 227(uv)
-             336:  225(ivec3) CompositeConstruct 334 334 334
-             337:  225(ivec3) BitwiseXor 335 336
+             334:    17(uint) Bitcast 333
+             335:  225(uvec3) Load 227(uv)
+             336:  225(uvec3) CompositeConstruct 334 334 334
+             337:  225(uvec3) BitwiseXor 335 336
                               Store 227(uv) 337
-             338:193(i16vec3) Load 195(u16v)
+             338:193(u16vec3) Load 195(u16v)
              339: 14(int16_t) Load 200(i16)
-             340: 36(int16_t) Bitcast 339
-             341:193(i16vec3) CompositeConstruct 340 340 340
-             342:193(i16vec3) BitwiseXor 338 341
+             340:36(uint16_t) Bitcast 339
+             341:193(u16vec3) CompositeConstruct 340 340 340
+             342:193(u16vec3) BitwiseXor 338 341
                               Store 195(u16v) 342
                               Return
                               FunctionEnd
-12(builtinFuncs():           2 Function None 3
+12(builtinFuncs():     2(void) Function None 3
               13:             Label
-       343(i16v):     53(ptr) Variable Function
-        346(i16):     15(ptr) Variable Function
-       356(u16v):    194(ptr) Variable Function
-        358(u16):     37(ptr) Variable Function
-        428(i32):    219(ptr) Variable Function
-        431(i64):    242(ptr) Variable Function
-      434(i16v4):    433(ptr) Variable Function
-        437(u32):    296(ptr) Variable Function
-      438(u16v2):     58(ptr) Variable Function
-        442(u64):    441(ptr) Variable Function
-      445(u16v4):    444(ptr) Variable Function
-         457(bv):    456(ptr) Variable Function
+       343(i16v):53(i16vec2*) Variable Function
+        346(i16):15(int16_t*) Variable Function
+       356(u16v):194(u16vec3*) Variable Function
+        358(u16):37(uint16_t*) Variable Function
+        428(i32):   219(int*) Variable Function
+        431(i64):242(int64_t*) Variable Function
+      434(i16v4):433(i16vec4*) Variable Function
+        437(u32):  296(uint*) Variable Function
+      438(u16v2):58(u16vec2*) Variable Function
+        442(u64):441(uint64_t*) Variable Function
+      445(u16v4):444(u16vec4*) Variable Function
+         457(bv): 456(bvec3*) Variable Function
              344: 52(i16vec2) Load 343(i16v)
              345: 52(i16vec2) ExtInst 1(GLSL.std.450) 5(SAbs) 344
                               Store 343(i16v) 345
@@ -563,13 +563,13 @@ spv.vulkan110.int16.frag
              353: 52(i16vec2) Load 343(i16v)
              355: 52(i16vec2) ExtInst 1(GLSL.std.450) 39(SMin) 353 354
                               Store 343(i16v) 355
-             357:193(i16vec3) Load 356(u16v)
-             359: 36(int16_t) Load 358(u16)
-             360:193(i16vec3) CompositeConstruct 359 359 359
-             361:193(i16vec3) ExtInst 1(GLSL.std.450) 38(UMin) 357 360
+             357:193(u16vec3) Load 356(u16v)
+             359:36(uint16_t) Load 358(u16)
+             360:193(u16vec3) CompositeConstruct 359 359 359
+             361:193(u16vec3) ExtInst 1(GLSL.std.450) 38(UMin) 357 360
                               Store 356(u16v) 361
-             362:193(i16vec3) Load 356(u16v)
-             364:193(i16vec3) ExtInst 1(GLSL.std.450) 38(UMin) 362 363
+             362:193(u16vec3) Load 356(u16v)
+             364:193(u16vec3) ExtInst 1(GLSL.std.450) 38(UMin) 362 363
                               Store 356(u16v) 364
              365: 52(i16vec2) Load 343(i16v)
              366: 14(int16_t) Load 346(i16)
@@ -579,13 +579,13 @@ spv.vulkan110.int16.frag
              369: 52(i16vec2) Load 343(i16v)
              370: 52(i16vec2) ExtInst 1(GLSL.std.450) 42(SMax) 369 354
                               Store 343(i16v) 370
-             371:193(i16vec3) Load 356(u16v)
-             372: 36(int16_t) Load 358(u16)
-             373:193(i16vec3) CompositeConstruct 372 372 372
-             374:193(i16vec3) ExtInst 1(GLSL.std.450) 41(UMax) 371 373
+             371:193(u16vec3) Load 356(u16v)
+             372:36(uint16_t) Load 358(u16)
+             373:193(u16vec3) CompositeConstruct 372 372 372
+             374:193(u16vec3) ExtInst 1(GLSL.std.450) 41(UMax) 371 373
                               Store 356(u16v) 374
-             375:193(i16vec3) Load 356(u16v)
-             376:193(i16vec3) ExtInst 1(GLSL.std.450) 41(UMax) 375 363
+             375:193(u16vec3) Load 356(u16v)
+             376:193(u16vec3) ExtInst 1(GLSL.std.450) 41(UMax) 375 363
                               Store 356(u16v) 376
              377: 52(i16vec2) Load 343(i16v)
              378: 14(int16_t) Load 346(i16)
@@ -601,23 +601,23 @@ spv.vulkan110.int16.frag
              387: 52(i16vec2) Load 343(i16v)
              388: 52(i16vec2) ExtInst 1(GLSL.std.450) 45(SClamp) 384 386 387
                               Store 343(i16v) 388
-             389:193(i16vec3) Load 356(u16v)
-             390: 36(int16_t) Load 358(u16)
-             391: 36(int16_t) SNegate 390
-             392: 36(int16_t) Load 358(u16)
-             393:193(i16vec3) CompositeConstruct 391 391 391
-             394:193(i16vec3) CompositeConstruct 392 392 392
-             395:193(i16vec3) ExtInst 1(GLSL.std.450) 44(UClamp) 389 393 394
+             389:193(u16vec3) Load 356(u16v)
+             390:36(uint16_t) Load 358(u16)
+             391:36(uint16_t) SNegate 390
+             392:36(uint16_t) Load 358(u16)
+             393:193(u16vec3) CompositeConstruct 391 391 391
+             394:193(u16vec3) CompositeConstruct 392 392 392
+             395:193(u16vec3) ExtInst 1(GLSL.std.450) 44(UClamp) 389 393 394
                               Store 356(u16v) 395
-             396:193(i16vec3) Load 356(u16v)
-             397:193(i16vec3) Load 356(u16v)
-             398:193(i16vec3) SNegate 397
-             399:193(i16vec3) Load 356(u16v)
-             400:193(i16vec3) ExtInst 1(GLSL.std.450) 44(UClamp) 396 398 399
+             396:193(u16vec3) Load 356(u16v)
+             397:193(u16vec3) Load 356(u16v)
+             398:193(u16vec3) SNegate 397
+             399:193(u16vec3) Load 356(u16v)
+             400:193(u16vec3) ExtInst 1(GLSL.std.450) 44(UClamp) 396 398 399
                               Store 356(u16v) 400
-             401:     15(ptr) AccessChain 343(i16v) 282
+             401:15(int16_t*) AccessChain 343(i16v) 282
              402: 14(int16_t) Load 401
-             403:     15(ptr) AccessChain 343(i16v) 264
+             403:15(int16_t*) AccessChain 343(i16v) 264
              404: 14(int16_t) Load 403
              406: 14(int16_t) Select 405 404 402
                               Store 346(i16) 406
@@ -628,18 +628,18 @@ spv.vulkan110.int16.frag
              411: 52(i16vec2) CompositeConstruct 410 410
              414: 52(i16vec2) Select 413 411 408
                               Store 343(i16v) 414
-             415:     37(ptr) AccessChain 356(u16v) 282
-             416: 36(int16_t) Load 415
-             417:     37(ptr) AccessChain 356(u16v) 264
-             418: 36(int16_t) Load 417
-             419: 36(int16_t) Select 405 418 416
+             415:37(uint16_t*) AccessChain 356(u16v) 282
+             416:36(uint16_t) Load 415
+             417:37(uint16_t*) AccessChain 356(u16v) 264
+             418:36(uint16_t) Load 417
+             419:36(uint16_t) Select 405 418 416
                               Store 358(u16) 419
-             420: 36(int16_t) Load 358(u16)
-             421:193(i16vec3) CompositeConstruct 420 420 420
-             422: 36(int16_t) Load 358(u16)
-             423: 36(int16_t) SNegate 422
-             424:193(i16vec3) CompositeConstruct 423 423 423
-             427:193(i16vec3) Select 426 424 421
+             420:36(uint16_t) Load 358(u16)
+             421:193(u16vec3) CompositeConstruct 420 420 420
+             422:36(uint16_t) Load 358(u16)
+             423:36(uint16_t) SNegate 422
+             424:193(u16vec3) CompositeConstruct 423 423 423
+             427:193(u16vec3) Select 426 424 421
                               Store 356(u16v) 427
              429: 52(i16vec2) Load 343(i16v)
              430:     27(int) Bitcast 429
@@ -647,11 +647,11 @@ spv.vulkan110.int16.frag
              435:432(i16vec4) Load 434(i16v4)
              436: 71(int64_t) Bitcast 435
                               Store 431(i64) 436
-             439: 57(i16vec2) Load 438(u16v2)
-             440:     17(int) Bitcast 439
+             439: 57(u16vec2) Load 438(u16v2)
+             440:    17(uint) Bitcast 439
                               Store 437(u32) 440
-             446:443(i16vec4) Load 445(u16v4)
-             447: 77(int64_t) Bitcast 446
+             446:443(u16vec4) Load 445(u16v4)
+             447:77(uint64_t) Bitcast 446
                               Store 442(u64) 447
              448:     27(int) Load 428(i32)
              449: 52(i16vec2) Bitcast 448
@@ -659,15 +659,15 @@ spv.vulkan110.int16.frag
              450: 71(int64_t) Load 431(i64)
              451:432(i16vec4) Bitcast 450
                               Store 434(i16v4) 451
-             452:     17(int) Load 437(u32)
-             453: 57(i16vec2) Bitcast 452
+             452:    17(uint) Load 437(u32)
+             453: 57(u16vec2) Bitcast 452
                               Store 438(u16v2) 453
-             454: 77(int64_t) Load 442(u64)
-             455:443(i16vec4) Bitcast 454
+             454:77(uint64_t) Load 442(u64)
+             455:443(u16vec4) Bitcast 454
                               Store 445(u16v4) 455
-             458:193(i16vec3) Load 356(u16v)
-             459: 36(int16_t) Load 358(u16)
-             460:193(i16vec3) CompositeConstruct 459 459 459
+             458:193(u16vec3) Load 356(u16v)
+             459:36(uint16_t) Load 358(u16)
+             460:193(u16vec3) CompositeConstruct 459 459 459
              461:  425(bvec3) ULessThan 458 460
                               Store 457(bv) 461
              462: 52(i16vec2) Load 343(i16v)
@@ -677,9 +677,9 @@ spv.vulkan110.int16.frag
              466:  425(bvec3) Load 457(bv)
              467:  425(bvec3) VectorShuffle 466 465 3 4 2
                               Store 457(bv) 467
-             468:193(i16vec3) Load 356(u16v)
-             469: 36(int16_t) Load 358(u16)
-             470:193(i16vec3) CompositeConstruct 469 469 469
+             468:193(u16vec3) Load 356(u16v)
+             469:36(uint16_t) Load 358(u16)
+             470:193(u16vec3) CompositeConstruct 469 469 469
              471:  425(bvec3) ULessThanEqual 468 470
                               Store 457(bv) 471
              472: 52(i16vec2) Load 343(i16v)
@@ -689,9 +689,9 @@ spv.vulkan110.int16.frag
              476:  425(bvec3) Load 457(bv)
              477:  425(bvec3) VectorShuffle 476 475 3 4 2
                               Store 457(bv) 477
-             478:193(i16vec3) Load 356(u16v)
-             479: 36(int16_t) Load 358(u16)
-             480:193(i16vec3) CompositeConstruct 479 479 479
+             478:193(u16vec3) Load 356(u16v)
+             479:36(uint16_t) Load 358(u16)
+             480:193(u16vec3) CompositeConstruct 479 479 479
              481:  425(bvec3) UGreaterThan 478 480
                               Store 457(bv) 481
              482: 52(i16vec2) Load 343(i16v)
@@ -701,9 +701,9 @@ spv.vulkan110.int16.frag
              486:  425(bvec3) Load 457(bv)
              487:  425(bvec3) VectorShuffle 486 485 3 4 2
                               Store 457(bv) 487
-             488:193(i16vec3) Load 356(u16v)
-             489: 36(int16_t) Load 358(u16)
-             490:193(i16vec3) CompositeConstruct 489 489 489
+             488:193(u16vec3) Load 356(u16v)
+             489:36(uint16_t) Load 358(u16)
+             490:193(u16vec3) CompositeConstruct 489 489 489
              491:  425(bvec3) UGreaterThanEqual 488 490
                               Store 457(bv) 491
              492: 52(i16vec2) Load 343(i16v)
@@ -713,9 +713,9 @@ spv.vulkan110.int16.frag
              496:  425(bvec3) Load 457(bv)
              497:  425(bvec3) VectorShuffle 496 495 3 4 2
                               Store 457(bv) 497
-             498:193(i16vec3) Load 356(u16v)
-             499: 36(int16_t) Load 358(u16)
-             500:193(i16vec3) CompositeConstruct 499 499 499
+             498:193(u16vec3) Load 356(u16v)
+             499:36(uint16_t) Load 358(u16)
+             500:193(u16vec3) CompositeConstruct 499 499 499
              501:  425(bvec3) IEqual 498 500
                               Store 457(bv) 501
              502: 52(i16vec2) Load 343(i16v)
@@ -725,9 +725,9 @@ spv.vulkan110.int16.frag
              506:  425(bvec3) Load 457(bv)
              507:  425(bvec3) VectorShuffle 506 505 3 4 2
                               Store 457(bv) 507
-             508:193(i16vec3) Load 356(u16v)
-             509: 36(int16_t) Load 358(u16)
-             510:193(i16vec3) CompositeConstruct 509 509 509
+             508:193(u16vec3) Load 356(u16v)
+             509:36(uint16_t) Load 358(u16)
+             510:193(u16vec3) CompositeConstruct 509 509 509
              511:  425(bvec3) INotEqual 508 510
                               Store 457(bv) 511
              512: 52(i16vec2) Load 343(i16v)

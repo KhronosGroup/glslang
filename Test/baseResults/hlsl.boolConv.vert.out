@@ -220,31 +220,31 @@ Shader version: 500
                               Name 97  "@entryPointOutput"
                               Decorate 97(@entryPointOutput) BuiltIn Position
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypeBool
               12:             TypePointer Private 11(bool)
-           13(b):     12(ptr) Variable Private
+           13(b):   12(bool*) Variable Private
               14:    11(bool) ConstantTrue
               15:             TypeInt 32 1
               16:             TypePointer Function 15(int)
               18:     15(int) Constant 0
-           19(a):     12(ptr) Variable Private
+           19(a):   12(bool*) Variable Private
               21:     15(int) Constant 1
-              96:             TypePointer Output 7(fvec4)
-97(@entryPointOutput):     96(ptr) Variable Output
-         4(main):           2 Function None 3
+              96:             TypePointer Output 7(vec4)
+97(@entryPointOutput):   96(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
                               Store 13(b) 14
-              98:    7(fvec4) FunctionCall 9(@main()
+              98:     7(vec4) FunctionCall 9(@main()
                               Store 97(@entryPointOutput) 98
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-           17(r):     16(ptr) Variable Function
+           17(r):    16(int*) Variable Function
                               Store 17(r) 18
               20:    11(bool) Load 19(a)
               22:     15(int) Select 20 21 18
@@ -328,6 +328,6 @@ Shader version: 500
                               Store 17(r) 90
               91:     15(int) Load 17(r)
               92:    6(float) ConvertSToF 91
-              93:    7(fvec4) CompositeConstruct 92 92 92 92
+              93:     7(vec4) CompositeConstruct 92 92 92 92
                               ReturnValue 93
                               FunctionEnd

@@ -30,29 +30,29 @@ spv.subgroup.vert
                               Decorate 20(gl_SubgroupInvocationID) BuiltIn SubgroupLocalInvocationId
                               Decorate 21 RelaxedPrecision
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypeVector 6(int) 4
-               8:             TypeRuntimeArray 7(ivec4)
-       9(Output):             TypeStruct 8
+               7:             TypeVector 6(uint) 4
+               8:             TypeRuntimeArray 7(uvec4)
+       9(Output):             TypeStruct 8(uvec4[])
               10:             TypePointer Uniform 9(Output)
-              11:     10(ptr) Variable Uniform
+              11: 10(Output*) Variable Uniform
               12:             TypeInt 32 1
               13:     12(int) Constant 0
               14:             TypePointer Input 12(int)
-15(gl_VertexIndex):     14(ptr) Variable Input
-              17:             TypePointer Input 6(int)
-18(gl_SubgroupSize):     17(ptr) Variable Input
-20(gl_SubgroupInvocationID):     17(ptr) Variable Input
-              22:      6(int) Constant 0
-              24:             TypePointer Uniform 7(ivec4)
-         4(main):           2 Function None 3
+15(gl_VertexIndex):    14(int*) Variable Input
+              17:             TypePointer Input 6(uint)
+18(gl_SubgroupSize):   17(uint*) Variable Input
+20(gl_SubgroupInvocationID):   17(uint*) Variable Input
+              22:     6(uint) Constant 0
+              24:             TypePointer Uniform 7(uvec4)
+         4(main):     2(void) Function None 3
                5:             Label
               16:     12(int) Load 15(gl_VertexIndex)
-              19:      6(int) Load 18(gl_SubgroupSize)
-              21:      6(int) Load 20(gl_SubgroupInvocationID)
-              23:    7(ivec4) CompositeConstruct 19 21 22 22
-              25:     24(ptr) AccessChain 11 13 16
+              19:     6(uint) Load 18(gl_SubgroupSize)
+              21:     6(uint) Load 20(gl_SubgroupInvocationID)
+              23:    7(uvec4) CompositeConstruct 19 21 22 22
+              25:  24(uvec4*) AccessChain 11 13 16
                               Store 25 23
                               Return
                               FunctionEnd

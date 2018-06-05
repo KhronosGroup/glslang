@@ -45,42 +45,42 @@ spv.stereoViewRendering.tesc
                               Decorate 37(gl_Layer) ViewportRelativeNV
                               Decorate 37(gl_Layer) SecondaryViewportRelativeNV 1
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeInt 32 1
                9:             TypeInt 32 0
-              10:      9(int) Constant 2
+              10:     9(uint) Constant 2
               11:             TypeArray 8(int) 10
-12(gl_PerVertex):             TypeStruct 7(fvec4) 11
-              13:      9(int) Constant 4
+12(gl_PerVertex):             TypeStruct 7(vec4) 11(int[2])
+              13:     9(uint) Constant 4
               14:             TypeArray 12(gl_PerVertex) 13
-              15:             TypePointer Output 14
-      16(gl_out):     15(ptr) Variable Output
+              15:             TypePointer Output 14(gl_PerVertex[4])
+      16(gl_out):15(gl_PerVertex[4]*) Variable Output
               17:             TypePointer Input 8(int)
-18(gl_InvocationID):     17(ptr) Variable Input
+18(gl_InvocationID):    17(int*) Variable Input
               20:      8(int) Constant 1
               21:      8(int) Constant 0
               22:             TypePointer Output 8(int)
-              25:      9(int) Constant 1
+              25:     9(uint) Constant 1
               26:             TypeArray 6(float) 25
-27(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 26 26 7(fvec4)
-              28:      9(int) Constant 32
+27(gl_PerVertex):             TypeStruct 7(vec4) 6(float) 26(float[1]) 26(float[1]) 7(vec4)
+              28:     9(uint) Constant 32
               29:             TypeArray 27(gl_PerVertex) 28
-              30:             TypePointer Input 29
-       31(gl_in):     30(ptr) Variable Input
-              32:             TypePointer Input 7(fvec4)
-              35:             TypePointer Output 7(fvec4)
-    37(gl_Layer):     22(ptr) Variable Output
-         4(main):           2 Function None 3
+              30:             TypePointer Input 29(gl_PerVertex[32])
+       31(gl_in):30(gl_PerVertex[32]*) Variable Input
+              32:             TypePointer Input 7(vec4)
+              35:             TypePointer Output 7(vec4)
+    37(gl_Layer):    22(int*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               19:      8(int) Load 18(gl_InvocationID)
-              23:     22(ptr) AccessChain 16(gl_out) 19 20 21
+              23:    22(int*) AccessChain 16(gl_out) 19 20 21
                               Store 23 20
               24:      8(int) Load 18(gl_InvocationID)
-              33:     32(ptr) AccessChain 31(gl_in) 20 21
-              34:    7(fvec4) Load 33
-              36:     35(ptr) AccessChain 16(gl_out) 24 21
+              33:   32(vec4*) AccessChain 31(gl_in) 20 21
+              34:     7(vec4) Load 33
+              36:   35(vec4*) AccessChain 16(gl_out) 24 21
                               Store 36 34
                               Return
                               FunctionEnd

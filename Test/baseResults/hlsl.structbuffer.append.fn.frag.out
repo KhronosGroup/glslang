@@ -201,76 +201,76 @@ gl_FragCoord origin is upper left
                               Decorate 68(sbuf_c@count) DescriptorSet 0
                               Decorate 69(sbuf_unused) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeRuntimeArray 7(fvec4)
-               9:             TypeStruct 8
+               8:             TypeRuntimeArray 7(vec4)
+               9:             TypeStruct 8(vec4[])
               10:             TypePointer Uniform 9(struct)
               11:             TypeInt 32 0
-              12:             TypeStruct 11(int)
+              12:             TypeStruct 11(uint)
               13:             TypePointer Uniform 12(struct)
-              14:             TypeFunction 7(fvec4) 10(ptr) 13(ptr) 10(ptr) 13(ptr)
-              21:             TypePointer Function 11(int)
-              22:             TypeFunction 7(fvec4) 21(ptr)
+              14:             TypeFunction 7(vec4) 10(struct*) 13(struct*) 10(struct*) 13(struct*)
+              21:             TypePointer Function 11(uint)
+              22:             TypeFunction 7(vec4) 21(uint*)
               26:             TypeInt 32 1
               27:     26(int) Constant 0
-              28:             TypePointer Uniform 11(int)
-              30:     11(int) Constant 1
-              31:     11(int) Constant 0
+              28:             TypePointer Uniform 11(uint)
+              30:    11(uint) Constant 1
+              31:    11(uint) Constant 0
               33:    6(float) Constant 1065353216
               34:    6(float) Constant 1073741824
               35:    6(float) Constant 1077936128
               36:    6(float) Constant 1082130432
-              37:    7(fvec4) ConstantComposite 33 34 35 36
-              38:             TypePointer Uniform 7(fvec4)
-              41:     11(int) Constant 4294967295
+              37:     7(vec4) ConstantComposite 33 34 35 36
+              38:             TypePointer Uniform 7(vec4)
+              41:    11(uint) Constant 4294967295
               43:     26(int) Constant 4294967295
-      49(sbuf_a):     10(ptr) Variable Uniform
-50(sbuf_a@count):     13(ptr) Variable Uniform
-      51(sbuf_c):     10(ptr) Variable Uniform
-52(sbuf_c@count):     13(ptr) Variable Uniform
-              57:             TypePointer Input 11(int)
-         58(pos):     57(ptr) Variable Input
-              60:             TypePointer Output 7(fvec4)
-61(@entryPointOutput):     60(ptr) Variable Output
-65(sbuf_a@count):             TypeStruct 11(int)
+      49(sbuf_a): 10(struct*) Variable Uniform
+50(sbuf_a@count): 13(struct*) Variable Uniform
+      51(sbuf_c): 10(struct*) Variable Uniform
+52(sbuf_c@count): 13(struct*) Variable Uniform
+              57:             TypePointer Input 11(uint)
+         58(pos):   57(uint*) Variable Input
+              60:             TypePointer Output 7(vec4)
+61(@entryPointOutput):   60(vec4*) Variable Output
+65(sbuf_a@count):             TypeStruct 11(uint)
               66:             TypePointer Uniform 65(sbuf_a@count)
-67(sbuf_a@count):     66(ptr) Variable Uniform
-68(sbuf_c@count):     66(ptr) Variable Uniform
- 69(sbuf_unused):     10(ptr) Variable Uniform
-         4(main):           2 Function None 3
+67(sbuf_a@count):66(sbuf_a@count*) Variable Uniform
+68(sbuf_c@count):66(sbuf_a@count*) Variable Uniform
+ 69(sbuf_unused): 10(struct*) Variable Uniform
+         4(main):     2(void) Function None 3
                5:             Label
-         56(pos):     21(ptr) Variable Function
-       62(param):     21(ptr) Variable Function
-              59:     11(int) Load 58(pos)
+         56(pos):   21(uint*) Variable Function
+       62(param):   21(uint*) Variable Function
+              59:    11(uint) Load 58(pos)
                               Store 56(pos) 59
-              63:     11(int) Load 56(pos)
+              63:    11(uint) Load 56(pos)
                               Store 62(param) 63
-              64:    7(fvec4) FunctionCall 24(@main(u1;) 62(param)
+              64:     7(vec4) FunctionCall 24(@main(u1;) 62(param)
                               Store 61(@entryPointOutput) 64
                               Return
                               FunctionEnd
-19(Fn2(block--vf4[0]1;block--vf4[0]1;):    7(fvec4) Function None 14
-       15(arg_a):     10(ptr) FunctionParameter
- 16(arg_a@count):     13(ptr) FunctionParameter
-       17(arg_c):     10(ptr) FunctionParameter
- 18(arg_c@count):     13(ptr) FunctionParameter
+19(Fn2(block--vf4[0]1;block--vf4[0]1;):     7(vec4) Function None 14
+       15(arg_a): 10(struct*) FunctionParameter
+ 16(arg_a@count): 13(struct*) FunctionParameter
+       17(arg_c): 10(struct*) FunctionParameter
+ 18(arg_c@count): 13(struct*) FunctionParameter
               20:             Label
-              29:     28(ptr) AccessChain 16(arg_a@count) 27
-              32:     11(int) AtomicIAdd 29 30 31 30
-              39:     38(ptr) AccessChain 15(arg_a) 27 32
+              29:   28(uint*) AccessChain 16(arg_a@count) 27
+              32:    11(uint) AtomicIAdd 29 30 31 30
+              39:   38(vec4*) AccessChain 15(arg_a) 27 32
                               Store 39 37
-              40:     28(ptr) AccessChain 18(arg_c@count) 27
-              42:     11(int) AtomicIAdd 40 30 31 41
-              44:     11(int) IAdd 42 43
-              45:     38(ptr) AccessChain 17(arg_c) 27 44
-              46:    7(fvec4) Load 45
+              40:   28(uint*) AccessChain 18(arg_c@count) 27
+              42:    11(uint) AtomicIAdd 40 30 31 41
+              44:    11(uint) IAdd 42 43
+              45:   38(vec4*) AccessChain 17(arg_c) 27 44
+              46:     7(vec4) Load 45
                               ReturnValue 46
                               FunctionEnd
-   24(@main(u1;):    7(fvec4) Function None 22
-         23(pos):     21(ptr) FunctionParameter
+   24(@main(u1;):     7(vec4) Function None 22
+         23(pos):   21(uint*) FunctionParameter
               25:             Label
-              53:    7(fvec4) FunctionCall 19(Fn2(block--vf4[0]1;block--vf4[0]1;) 49(sbuf_a) 50(sbuf_a@count) 51(sbuf_c) 52(sbuf_c@count)
+              53:     7(vec4) FunctionCall 19(Fn2(block--vf4[0]1;block--vf4[0]1;) 49(sbuf_a) 50(sbuf_a@count) 51(sbuf_c) 52(sbuf_c@count)
                               ReturnValue 53
                               FunctionEnd

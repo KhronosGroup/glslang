@@ -37,17 +37,17 @@ spv.offsets.frag
                               Decorate 14(i2) DescriptorSet 0
                               Decorate 14(i2) Binding 1
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
            7(n1):             TypeStruct 6(int) 6(int) 6(int) 6(int)
                8:             TypePointer Uniform 7(n1)
-           9(i1):      8(ptr) Variable Uniform
+           9(i1):      8(n1*) Variable Uniform
               10:             TypeFloat 32
               11:             TypeVector 10(float) 3
-          12(n2):             TypeStruct 11(fvec3) 11(fvec3) 11(fvec3) 11(fvec3)
+          12(n2):             TypeStruct 11(vec3) 11(vec3) 11(vec3) 11(vec3)
               13:             TypePointer Uniform 12(n2)
-          14(i2):     13(ptr) Variable Uniform
-         4(main):           2 Function None 3
+          14(i2):     13(n2*) Variable Uniform
+         4(main):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd

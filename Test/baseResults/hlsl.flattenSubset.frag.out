@@ -156,11 +156,11 @@ gl_FragCoord origin is upper left
                               Decorate 47(vpos) Location 0
                               Decorate 50(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
               13:             TypeSampler
               14:             TypeInt 32 1
           15(S0):             TypeStruct 14(int) 14(int) 13
@@ -179,38 +179,38 @@ gl_FragCoord origin is upper left
               37:             TypeSampledImage 31
               39:             TypeVector 6(float) 2
               40:    6(float) Constant 1056964608
-              41:   39(fvec2) ConstantComposite 40 40
-              46:             TypePointer Input 7(fvec4)
-        47(vpos):     46(ptr) Variable Input
-              49:             TypePointer Output 7(fvec4)
-50(@entryPointOutput):     49(ptr) Variable Output
-         4(main):           2 Function None 3
+              41:    39(vec2) ConstantComposite 40 40
+              46:             TypePointer Input 7(vec4)
+        47(vpos):   46(vec4*) Variable Input
+              49:             TypePointer Output 7(vec4)
+50(@entryPointOutput):   49(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-        45(vpos):      8(ptr) Variable Function
-       51(param):      8(ptr) Variable Function
-              48:    7(fvec4) Load 47(vpos)
+        45(vpos):    8(vec4*) Variable Function
+       51(param):    8(vec4*) Variable Function
+              48:     7(vec4) Load 47(vpos)
                               Store 45(vpos) 48
-              52:    7(fvec4) Load 45(vpos)
+              52:     7(vec4) Load 45(vpos)
                               Store 51(param) 52
-              53:    7(fvec4) FunctionCall 11(@main(vf4;) 51(param)
+              53:     7(vec4) FunctionCall 11(@main(vf4;) 51(param)
                               Store 50(@entryPointOutput) 53
                               Return
                               FunctionEnd
-  11(@main(vf4;):    7(fvec4) Function None 9
-        10(vpos):      8(ptr) FunctionParameter
+  11(@main(vf4;):     7(vec4) Function None 9
+        10(vpos):    8(vec4*) FunctionParameter
               12:             Label
-          18(s1):     17(ptr) Variable Function
-          27(s2):     26(ptr) Variable Function
+          18(s1):     17(S1*) Variable Function
+          27(s2):     26(S2*) Variable Function
               22:          13 Load 21(samp)
               24:     23(ptr) AccessChain 18(s1) 19 19
                               Store 24 22
               29:      16(S1) Load 18(s1)
-              30:     17(ptr) AccessChain 27(s2) 28
+              30:     17(S1*) AccessChain 27(s2) 28
                               Store 30 29
               34:          31 Load 33(tex)
               35:     23(ptr) AccessChain 27(s2) 28 19 19
               36:          13 Load 35
               38:          37 SampledImage 34 36
-              42:    7(fvec4) ImageSampleImplicitLod 38 41
+              42:     7(vec4) ImageSampleImplicitLod 38 41
                               ReturnValue 42
                               FunctionEnd

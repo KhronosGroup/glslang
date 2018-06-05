@@ -154,10 +154,10 @@ gl_FragCoord origin is upper left
                               Decorate 39(g_tBuffI) DescriptorSet 0
                               Decorate 54(@entryPointOutput.Color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypeImage 6(float) Buffer nonsampled format:Rgba32f
               13:             TypePointer UniformConstant 12
@@ -168,46 +168,46 @@ gl_FragCoord origin is upper left
               19:             TypeVector 16(int) 4
      20($Global):             TypeStruct 16(int) 17(ivec2) 18(ivec3) 19(ivec4) 16(int) 17(ivec2) 18(ivec3) 19(ivec4)
               21:             TypePointer Uniform 20($Global)
-              22:     21(ptr) Variable Uniform
+              22:21($Global*) Variable Uniform
               23:     16(int) Constant 0
               24:             TypePointer Uniform 16(int)
               28:             TypeInt 32 0
-              29:             TypeImage 28(int) Buffer nonsampled format:Rgba32ui
+              29:             TypeImage 28(uint) Buffer nonsampled format:Rgba32ui
               30:             TypePointer UniformConstant 29
     31(g_tBuffU):     30(ptr) Variable UniformConstant
-              35:             TypeVector 28(int) 4
+              35:             TypeVector 28(uint) 4
               37:             TypeImage 16(int) Buffer nonsampled format:Rgba32i
               38:             TypePointer UniformConstant 37
     39(g_tBuffI):     38(ptr) Variable UniformConstant
               44:             TypePointer Function 8(PS_OUTPUT)
               46:    6(float) Constant 1065353216
-              47:    7(fvec4) ConstantComposite 46 46 46 46
-              48:             TypePointer Function 7(fvec4)
-              53:             TypePointer Output 7(fvec4)
-54(@entryPointOutput.Color):     53(ptr) Variable Output
-         4(main):           2 Function None 3
+              47:     7(vec4) ConstantComposite 46 46 46 46
+              48:             TypePointer Function 7(vec4)
+              53:             TypePointer Output 7(vec4)
+54(@entryPointOutput.Color):   53(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               55:8(PS_OUTPUT) FunctionCall 10(@main()
-              56:    7(fvec4) CompositeExtract 55 0
+              56:     7(vec4) CompositeExtract 55 0
                               Store 54(@entryPointOutput.Color) 56
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-       45(psout):     44(ptr) Variable Function
+       45(psout):44(PS_OUTPUT*) Variable Function
               15:          12 Load 14(g_tBuffF)
-              25:     24(ptr) AccessChain 22 23
+              25:    24(int*) AccessChain 22 23
               26:     16(int) Load 25
-              27:    7(fvec4) ImageRead 15 26
+              27:     7(vec4) ImageRead 15 26
               32:          29 Load 31(g_tBuffU)
-              33:     24(ptr) AccessChain 22 23
+              33:    24(int*) AccessChain 22 23
               34:     16(int) Load 33
-              36:   35(ivec4) ImageRead 32 34
+              36:   35(uvec4) ImageRead 32 34
               40:          37 Load 39(g_tBuffI)
-              41:     24(ptr) AccessChain 22 23
+              41:    24(int*) AccessChain 22 23
               42:     16(int) Load 41
               43:   19(ivec4) ImageRead 40 42
-              49:     48(ptr) AccessChain 45(psout) 23
+              49:   48(vec4*) AccessChain 45(psout) 23
                               Store 49 47
               50:8(PS_OUTPUT) Load 45(psout)
                               ReturnValue 50

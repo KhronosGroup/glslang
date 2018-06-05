@@ -339,137 +339,137 @@ gl_FragCoord origin is upper left
                               Decorate 116(input) Location 1
                               Decorate 119(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
               10:             TypeInt 32 0
-              11:     10(int) Constant 3
-              12:             TypeArray 9(fvec4) 11
-              13:             TypePointer Function 12
-              14:             TypeFunction 9(fvec4) 7(ptr) 13(ptr)
-              19:             TypePointer Private 9(fvec4)
-           20(C):     19(ptr) Variable Private
+              11:    10(uint) Constant 3
+              12:             TypeArray 9(vec4) 11
+              13:             TypePointer Function 12(vec4[3])
+              14:             TypeFunction 9(vec4) 7(int*) 13(vec4[3]*)
+              19:             TypePointer Private 9(vec4)
+           20(C):   19(vec4*) Variable Private
               21:    8(float) Constant 1065353216
               22:    8(float) Constant 1073741824
               23:    8(float) Constant 1077936128
               24:    8(float) Constant 1082130432
-              25:    9(fvec4) ConstantComposite 21 22 23 24
-              26:     10(int) Constant 2
-              27:             TypeArray 9(fvec4) 26
-              28:             TypePointer Private 27
-          29(c2):     28(ptr) Variable Private
-              32:     10(int) Constant 10
-              33:             TypeArray 9(fvec4) 32
-              34:             TypePointer Function 33
-              47:             TypePointer Function 9(fvec4)
-              50:     10(int) Constant 4
-              51:             TypeArray 9(fvec4) 50
-              52:     10(int) Constant 7
-              53:             TypeArray 9(fvec4) 52
-              54:             TypeStruct 53
-              55:     10(int) Constant 11
+              25:     9(vec4) ConstantComposite 21 22 23 24
+              26:    10(uint) Constant 2
+              27:             TypeArray 9(vec4) 26
+              28:             TypePointer Private 27(vec4[2])
+          29(c2):28(vec4[2]*) Variable Private
+              32:    10(uint) Constant 10
+              33:             TypeArray 9(vec4) 32
+              34:             TypePointer Function 33(vec4[10])
+              47:             TypePointer Function 9(vec4)
+              50:    10(uint) Constant 4
+              51:             TypeArray 9(vec4) 50
+              52:    10(uint) Constant 7
+              53:             TypeArray 9(vec4) 52
+              54:             TypeStruct 53(vec4[7])
+              55:    10(uint) Constant 11
               56:             TypeArray 54(struct) 55
-              57:     10(int) Constant 1
-              58:             TypeArray 9(fvec4) 57
-              59:             TypeArray 9(fvec4) 26
-     60($Global):             TypeStruct 51 56 58 59
+              57:    10(uint) Constant 1
+              58:             TypeArray 9(vec4) 57
+              59:             TypeArray 9(vec4) 26
+     60($Global):             TypeStruct 51(vec4[4]) 56(struct[11]) 58(vec4[1]) 59(vec4[2])
               61:             TypePointer Uniform 60($Global)
-              62:     61(ptr) Variable Uniform
+              62:61($Global*) Variable Uniform
               63:      6(int) Constant 2
               64:      6(int) Constant 0
-              65:             TypePointer Uniform 9(fvec4)
+              65:             TypePointer Uniform 9(vec4)
               70:      6(int) Constant 3
               79:      6(int) Constant 1
               93:      6(int) Constant 5
              111:             TypePointer Input 6(int)
-          112(i):    111(ptr) Variable Input
-             115:             TypePointer Input 12
-      116(input):    115(ptr) Variable Input
-             118:             TypePointer Output 9(fvec4)
-119(@entryPointOutput):    118(ptr) Variable Output
-             125:          58 ConstantComposite 25
-4(PixelShaderFunction):           2 Function None 3
+          112(i):   111(int*) Variable Input
+             115:             TypePointer Input 12(vec4[3])
+      116(input):115(vec4[3]*) Variable Input
+             118:             TypePointer Output 9(vec4)
+119(@entryPointOutput):  118(vec4*) Variable Output
+             125: 58(vec4[1]) ConstantComposite 25
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-          110(i):      7(ptr) Variable Function
-      114(input):     13(ptr) Variable Function
-      120(param):      7(ptr) Variable Function
-      122(param):     13(ptr) Variable Function
+          110(i):     7(int*) Variable Function
+      114(input):13(vec4[3]*) Variable Function
+      120(param):     7(int*) Variable Function
+      122(param):13(vec4[3]*) Variable Function
                               Store 20(C) 25
-              30:    9(fvec4) Load 20(C)
-              31:          27 CompositeConstruct 30 25
+              30:     9(vec4) Load 20(C)
+              31: 27(vec4[2]) CompositeConstruct 30 25
                               Store 29(c2) 31
              113:      6(int) Load 112(i)
                               Store 110(i) 113
-             117:          12 Load 116(input)
+             117: 12(vec4[3]) Load 116(input)
                               Store 114(input) 117
              121:      6(int) Load 110(i)
                               Store 120(param) 121
-             123:          12 Load 114(input)
+             123: 12(vec4[3]) Load 114(input)
                               Store 122(param) 123
-             124:    9(fvec4) FunctionCall 17(@PixelShaderFunction(i1;vf4[3];) 120(param) 122(param)
+             124:     9(vec4) FunctionCall 17(@PixelShaderFunction(i1;vf4[3];) 120(param) 122(param)
                               Store 119(@entryPointOutput) 124
                               Return
                               FunctionEnd
-17(@PixelShaderFunction(i1;vf4[3];):    9(fvec4) Function None 14
-           15(i):      7(ptr) FunctionParameter
-       16(input):     13(ptr) FunctionParameter
+17(@PixelShaderFunction(i1;vf4[3];):     9(vec4) Function None 14
+           15(i):     7(int*) FunctionParameter
+       16(input):13(vec4[3]*) FunctionParameter
               18:             Label
-           35(b):     34(ptr) Variable Function
-         48(tmp):     47(ptr) Variable Function
-              36:    9(fvec4) Load 20(C)
-              37:    9(fvec4) Load 20(C)
-              38:    9(fvec4) Load 20(C)
-              39:    9(fvec4) Load 20(C)
-              40:    9(fvec4) Load 20(C)
-              41:    9(fvec4) Load 20(C)
-              42:    9(fvec4) Load 20(C)
-              43:    9(fvec4) Load 20(C)
-              44:    9(fvec4) Load 20(C)
-              45:    9(fvec4) Load 20(C)
-              46:          33 CompositeConstruct 36 37 38 39 40 41 42 43 44 45
+           35(b):34(vec4[10]*) Variable Function
+         48(tmp):   47(vec4*) Variable Function
+              36:     9(vec4) Load 20(C)
+              37:     9(vec4) Load 20(C)
+              38:     9(vec4) Load 20(C)
+              39:     9(vec4) Load 20(C)
+              40:     9(vec4) Load 20(C)
+              41:     9(vec4) Load 20(C)
+              42:     9(vec4) Load 20(C)
+              43:     9(vec4) Load 20(C)
+              44:     9(vec4) Load 20(C)
+              45:     9(vec4) Load 20(C)
+              46:33(vec4[10]) CompositeConstruct 36 37 38 39 40 41 42 43 44 45
                               Store 35(b) 46
-              49:    9(fvec4) Load 20(C)
-              66:     65(ptr) AccessChain 62 63 64
-              67:    9(fvec4) Load 66
-              68:    9(fvec4) FAdd 49 67
-              69:    9(fvec4) FAdd 68 25
+              49:     9(vec4) Load 20(C)
+              66:   65(vec4*) AccessChain 62 63 64
+              67:     9(vec4) Load 66
+              68:     9(vec4) FAdd 49 67
+              69:     9(vec4) FAdd 68 25
               71:      6(int) Load 15(i)
-              72:     65(ptr) AccessChain 62 70 71
-              73:    9(fvec4) Load 72
-              74:    9(fvec4) FAdd 69 73
+              72:   65(vec4*) AccessChain 62 70 71
+              73:     9(vec4) Load 72
+              74:     9(vec4) FAdd 69 73
               75:      6(int) Load 15(i)
-              76:     19(ptr) AccessChain 29(c2) 75
-              77:    9(fvec4) Load 76
-              78:    9(fvec4) FAdd 74 77
+              76:   19(vec4*) AccessChain 29(c2) 75
+              77:     9(vec4) Load 76
+              78:     9(vec4) FAdd 74 77
                               Store 48(tmp) 78
-              80:     65(ptr) AccessChain 62 64 79
-              81:    9(fvec4) Load 80
+              80:   65(vec4*) AccessChain 62 64 79
+              81:     9(vec4) Load 80
               82:      6(int) Load 15(i)
-              83:     65(ptr) AccessChain 62 64 82
-              84:    9(fvec4) Load 83
-              85:    9(fvec4) FAdd 81 84
-              86:     47(ptr) AccessChain 16(input) 63
-              87:    9(fvec4) Load 86
-              88:    9(fvec4) FAdd 85 87
+              83:   65(vec4*) AccessChain 62 64 82
+              84:     9(vec4) Load 83
+              85:     9(vec4) FAdd 81 84
+              86:   47(vec4*) AccessChain 16(input) 63
+              87:     9(vec4) Load 86
+              88:     9(vec4) FAdd 85 87
               89:      6(int) Load 15(i)
-              90:     47(ptr) AccessChain 16(input) 89
-              91:    9(fvec4) Load 90
-              92:    9(fvec4) FAdd 88 91
-              94:     47(ptr) AccessChain 35(b) 93
-              95:    9(fvec4) Load 94
-              96:    9(fvec4) FAdd 92 95
+              90:   47(vec4*) AccessChain 16(input) 89
+              91:     9(vec4) Load 90
+              92:     9(vec4) FAdd 88 91
+              94:   47(vec4*) AccessChain 35(b) 93
+              95:     9(vec4) Load 94
+              96:     9(vec4) FAdd 92 95
               97:      6(int) Load 15(i)
-              98:     47(ptr) AccessChain 35(b) 97
-              99:    9(fvec4) Load 98
-             100:    9(fvec4) FAdd 96 99
+              98:   47(vec4*) AccessChain 35(b) 97
+              99:     9(vec4) Load 98
+             100:     9(vec4) FAdd 96 99
              101:      6(int) Load 15(i)
              102:      6(int) Load 15(i)
-             103:     65(ptr) AccessChain 62 79 101 64 102
-             104:    9(fvec4) Load 103
-             105:    9(fvec4) FAdd 100 104
-             106:    9(fvec4) Load 48(tmp)
-             107:    9(fvec4) FAdd 105 106
+             103:   65(vec4*) AccessChain 62 79 101 64 102
+             104:     9(vec4) Load 103
+             105:     9(vec4) FAdd 100 104
+             106:     9(vec4) Load 48(tmp)
+             107:     9(vec4) FAdd 105 106
                               ReturnValue 107
                               FunctionEnd

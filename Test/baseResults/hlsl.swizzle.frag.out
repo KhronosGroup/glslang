@@ -91,33 +91,33 @@ gl_FragCoord origin is upper left
                               Name 10  "input"
                               Name 14  "AmbientColor"
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
-              13:             TypePointer Private 7(fvec4)
-14(AmbientColor):     13(ptr) Variable Private
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
+              13:             TypePointer Private 7(vec4)
+14(AmbientColor):   13(vec4*) Variable Private
               15:    6(float) Constant 1065353216
               16:    6(float) Constant 1056964608
               17:    6(float) Constant 0
-              18:    7(fvec4) ConstantComposite 15 16 17 15
+              18:     7(vec4) ConstantComposite 15 16 17 15
               21:             TypeInt 32 0
-              22:     21(int) Constant 2
+              22:    21(uint) Constant 2
               23:             TypePointer Private 6(float)
-4(PixelShaderFunction):           2 Function None 3
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
                               Store 14(AmbientColor) 18
                               Return
                               FunctionEnd
-11(ShaderFunction(vf4;):    7(fvec4) Function None 9
-       10(input):      8(ptr) FunctionParameter
+11(ShaderFunction(vf4;):     7(vec4) Function None 9
+       10(input):    8(vec4*) FunctionParameter
               12:             Label
-              19:    7(fvec4) Load 10(input)
-              20:    7(fvec4) VectorShuffle 19 19 3 3 1 0
-              24:     23(ptr) AccessChain 14(AmbientColor) 22
+              19:     7(vec4) Load 10(input)
+              20:     7(vec4) VectorShuffle 19 19 3 3 1 0
+              24:  23(float*) AccessChain 14(AmbientColor) 22
               25:    6(float) Load 24
-              26:    7(fvec4) CompositeConstruct 25 25 25 25
-              27:    7(fvec4) FMul 20 26
+              26:     7(vec4) CompositeConstruct 25 25 25 25
+              27:     7(vec4) FMul 20 26
                               ReturnValue 27
                               FunctionEnd

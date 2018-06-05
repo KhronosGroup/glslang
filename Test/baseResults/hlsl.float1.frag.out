@@ -81,24 +81,24 @@ gl_FragCoord origin is upper left
                               Name 14  "f1"
                               Name 16  "scalar"
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 6(float) 7(ptr) 7(ptr)
+               8:             TypeFunction 6(float) 7(float*) 7(float*)
               13:             TypePointer Private 6(float)
-          14(f1):     13(ptr) Variable Private
+          14(f1):  13(float*) Variable Private
               15:    6(float) Constant 1065353216
-      16(scalar):     13(ptr) Variable Private
+      16(scalar):  13(float*) Variable Private
               17:    6(float) Constant 1073741824
-4(PixelShaderFunction):           2 Function None 3
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
                               Store 14(f1) 15
                               Store 16(scalar) 17
                               Return
                               FunctionEnd
 11(ShaderFunction(vf1;f1;):    6(float) Function None 8
-     9(inFloat1):      7(ptr) FunctionParameter
-    10(inScalar):      7(ptr) FunctionParameter
+     9(inFloat1):   7(float*) FunctionParameter
+    10(inScalar):   7(float*) FunctionParameter
               12:             Label
               18:    6(float) Load 14(f1)
               19:    6(float) Load 16(scalar)

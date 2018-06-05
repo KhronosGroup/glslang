@@ -64,39 +64,39 @@ spv.400.frag
                               Decorate 1113(gl_PrimitiveID) Flat
                               Decorate 1113(gl_PrimitiveID) BuiltIn PrimitiveId
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
               10:             TypeFloat 32
               11:             TypeVector 10(float) 4
-              12:             TypePointer Output 11(fvec4)
-        13(outp):     12(ptr) Variable Output
+              12:             TypePointer Output 11(vec4)
+        13(outp):   12(vec4*) Variable Output
               14:             TypeImage 10(float) Rect depth sampled format:Unknown
               15:             TypeSampledImage 14
               16:             TypePointer UniformConstant 15
        17(u2drs):     16(ptr) Variable UniformConstant
               20:             TypeVector 10(float) 2
               21:   10(float) Constant 0
-              22:   20(fvec2) ConstantComposite 21 21
+              22:    20(vec2) ConstantComposite 21 21
               23:             TypeInt 32 1
               24:             TypeVector 23(int) 2
               25:     23(int) Constant 3
               26:     23(int) Constant 4
               27:   24(ivec2) ConstantComposite 25 26
               32:             TypeInt 32 0
-              33:     32(int) Constant 0
+              33:    32(uint) Constant 0
               34:             TypePointer Output 10(float)
               39:             TypeFloat 64
-              40:             TypePointer Function 39(float64_t)
-              42:39(float64_t) Constant 2507418074 1073430332
-              43:             TypeVector 39(float64_t) 2
-              44:             TypePointer Function 43(f64vec2)
-              46:39(float64_t) Constant 796182188 1073367658
-              47: 43(f64vec2) ConstantComposite 46 46
-              48:             TypeVector 39(float64_t) 3
-              49:             TypePointer Function 48(f64vec3)
-              51:39(float64_t) Constant 1719614413 1073127582
-              52: 48(f64vec3) ConstantComposite 51 51 51
-              53:             TypeVector 39(float64_t) 4
-              54:             TypePointer Function 53(f64vec4)
+              40:             TypePointer Function 39(double)
+              42:  39(double) Constant 2507418074 1073430332
+              43:             TypeVector 39(double) 2
+              44:             TypePointer Function 43(dvec2)
+              46:  39(double) Constant 796182188 1073367658
+              47:   43(dvec2) ConstantComposite 46 46
+              48:             TypeVector 39(double) 3
+              49:             TypePointer Function 48(dvec3)
+              51:  39(double) Constant 1719614413 1073127582
+              52:   48(dvec3) ConstantComposite 51 51 51
+              53:             TypeVector 39(double) 4
+              54:             TypePointer Function 53(dvec4)
              428:             TypeBool
              429:             TypePointer Function 428(bool)
              437:             TypeVector 428(bool) 2
@@ -110,55 +110,55 @@ spv.400.frag
              581:  446(bvec3) ConstantComposite 563 563 563
              590:  455(bvec4) ConstantComposite 563 563 563 563
              715:   10(float) Constant 1067869798
-             734:             TypeMatrix 43(f64vec2) 2
-             735:             TypePointer Function 734
-             740:             TypeMatrix 48(f64vec3) 3
-             741:             TypePointer Function 740
-             746:             TypeMatrix 53(f64vec4) 4
-             747:             TypePointer Function 746
-             752:             TypeMatrix 48(f64vec3) 2
-             753:             TypePointer Function 752
-             758:             TypeMatrix 43(f64vec2) 3
-             759:             TypePointer Function 758
-             764:             TypeMatrix 53(f64vec4) 2
-             765:             TypePointer Function 764
-             770:             TypeMatrix 43(f64vec2) 4
-             771:             TypePointer Function 770
-             776:             TypeMatrix 53(f64vec4) 3
-             777:             TypePointer Function 776
-             782:             TypeMatrix 48(f64vec3) 4
-             783:             TypePointer Function 782
-             951:     32(int) Constant 1
-             955:     32(int) Constant 2
-             959:     32(int) Constant 3
+             734:             TypeMatrix 43(dvec2) 2
+             735:             TypePointer Function 734(dmat2)
+             740:             TypeMatrix 48(dvec3) 3
+             741:             TypePointer Function 740(dmat3)
+             746:             TypeMatrix 53(dvec4) 4
+             747:             TypePointer Function 746(dmat4)
+             752:             TypeMatrix 48(dvec3) 2
+             753:             TypePointer Function 752(dmat2x3)
+             758:             TypeMatrix 43(dvec2) 3
+             759:             TypePointer Function 758(dmat3x2)
+             764:             TypeMatrix 53(dvec4) 2
+             765:             TypePointer Function 764(dmat2x4)
+             770:             TypeMatrix 43(dvec2) 4
+             771:             TypePointer Function 770(dmat4x2)
+             776:             TypeMatrix 53(dvec4) 3
+             777:             TypePointer Function 776(dmat3x4)
+             782:             TypeMatrix 48(dvec3) 4
+             783:             TypePointer Function 782(dmat4x3)
+             951:    32(uint) Constant 1
+             955:    32(uint) Constant 2
+             959:    32(uint) Constant 3
              963:     23(int) Constant 1
              967:     23(int) Constant 2
              993:   10(float) Constant 1065353216
-            1015:             TypePointer Function 11(fvec4)
+            1015:             TypePointer Function 11(vec4)
             1017:             TypeImage 10(float) 2D sampled format:Unknown
             1018:             TypeSampledImage 1017
-            1019:     32(int) Constant 5
+            1019:    32(uint) Constant 5
             1020:             TypeArray 1018 1019
-            1021:             TypePointer UniformConstant 1020
-1022(arrayedSampler):   1021(ptr) Variable UniformConstant
+            1021:             TypePointer UniformConstant 1020(arr[5])
+1022(arrayedSampler):1021(arr[5]*) Variable UniformConstant
             1023:             TypePointer Input 23(int)
-         1024(i):   1023(ptr) Variable Input
+         1024(i):  1023(int*) Variable Input
             1026:             TypePointer UniformConstant 1018
-            1029:             TypePointer Input 20(fvec2)
-       1030(c2D):   1029(ptr) Variable Input
+            1029:             TypePointer Input 20(vec2)
+       1030(c2D): 1029(vec2*) Variable Input
             1033:             TypeArray 10(float) 955
-            1034:             TypePointer Input 1033
-1035(gl_ClipDistance):   1034(ptr) Variable Input
+            1034:             TypePointer Input 1033(float[2])
+1035(gl_ClipDistance):1034(float[2]*) Variable Input
             1036:             TypePointer Input 10(float)
             1040:             TypeVector 10(float) 3
-            1045:             TypeVector 32(int) 4
-            1046:             TypePointer Output 1045(ivec4)
-     1047(uoutp):   1046(ptr) Variable Output
-            1048:             TypeImage 32(int) Rect sampled format:Unknown
+            1045:             TypeVector 32(uint) 4
+            1046:             TypePointer Output 1045(uvec4)
+     1047(uoutp):1046(uvec4*) Variable Output
+            1048:             TypeImage 32(uint) Rect sampled format:Unknown
             1049:             TypeSampledImage 1048
             1050:             TypePointer UniformConstant 1049
    1051(samp2dr):   1050(ptr) Variable UniformConstant
-            1054:     32(int) Constant 4
+            1054:    32(uint) Constant 4
             1055:             TypeArray 24(ivec2) 1054
             1056:   24(ivec2) ConstantComposite 963 967
             1057:     23(int) Constant 15
@@ -167,55 +167,55 @@ spv.400.frag
             1060:     23(int) Constant 4294967294
             1061:     23(int) Constant 0
             1062:   24(ivec2) ConstantComposite 1060 1061
-            1063:        1055 ConstantComposite 1056 27 1059 1062
+            1063:1055(ivec2[4]) ConstantComposite 1056 27 1059 1062
             1071:             TypeVector 23(int) 4
             1072:             TypePointer Output 1071(ivec4)
-     1073(ioutp):   1072(ptr) Variable Output
+     1073(ioutp):1072(ivec4*) Variable Output
             1074:             TypeImage 23(int) 2D array sampled format:Unknown
             1075:             TypeSampledImage 1074
             1076:             TypePointer UniformConstant 1075
   1077(isamp2DA):   1076(ptr) Variable UniformConstant
             1079:   10(float) Constant 1036831949
-            1080: 1040(fvec3) ConstantComposite 1079 1079 1079
+            1080:  1040(vec3) ConstantComposite 1079 1079 1079
             1081:   24(ivec2) ConstantComposite 963 963
-            1093:             TypePointer Input 11(fvec4)
-1094(gl_FragCoord):   1093(ptr) Variable Input
-       1096(vl2):   1093(ptr) Variable Input
-            1101:             TypePointer Output 32(int)
-        1102(uo):   1101(ptr) Variable Output
-            1103:             TypePointer Input 32(int)
-         1104(u):   1103(ptr) Variable Input
+            1093:             TypePointer Input 11(vec4)
+1094(gl_FragCoord): 1093(vec4*) Variable Input
+       1096(vl2): 1093(vec4*) Variable Input
+            1101:             TypePointer Output 32(uint)
+        1102(uo): 1101(uint*) Variable Output
+            1103:             TypePointer Input 32(uint)
+         1104(u): 1103(uint*) Variable Input
             1111:             TypePointer Function 23(int)
-1113(gl_PrimitiveID):   1023(ptr) Variable Input
-         4(main):           2 Function None 3
+1113(gl_PrimitiveID):  1023(int*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-         1016(v):   1015(ptr) Variable Function
-        1112(id):   1111(ptr) Variable Function
+         1016(v): 1015(vec4*) Variable Function
+        1112(id):  1111(int*) Variable Function
             1025:     23(int) Load 1024(i)
             1027:   1026(ptr) AccessChain 1022(arrayedSampler) 1025
             1028:        1018 Load 1027
-            1031:   20(fvec2) Load 1030(c2D)
-            1032:   11(fvec4) ImageSampleImplicitLod 1028 1031
+            1031:    20(vec2) Load 1030(c2D)
+            1032:    11(vec4) ImageSampleImplicitLod 1028 1031
                               Store 1016(v) 1032
-            1037:   1036(ptr) AccessChain 1035(gl_ClipDistance) 963
+            1037:1036(float*) AccessChain 1035(gl_ClipDistance) 963
             1038:   10(float) Load 1037
-            1039:     34(ptr) AccessChain 13(outp) 33
+            1039:  34(float*) AccessChain 13(outp) 33
                               Store 1039 1038
-            1041:   11(fvec4) Load 1016(v)
-            1042: 1040(fvec3) VectorShuffle 1041 1041 1 2 3
-            1043:   11(fvec4) Load 13(outp)
-            1044:   11(fvec4) VectorShuffle 1043 1042 0 4 5 6
+            1041:    11(vec4) Load 1016(v)
+            1042:  1040(vec3) VectorShuffle 1041 1041 1 2 3
+            1043:    11(vec4) Load 13(outp)
+            1044:    11(vec4) VectorShuffle 1043 1042 0 4 5 6
                               Store 13(outp) 1044
             1052:        1049 Load 1051(samp2dr)
-            1053:   20(fvec2) Load 1030(c2D)
-            1064: 1045(ivec4) ImageGather 1052 1053 967 ConstOffsets 1063
+            1053:    20(vec2) Load 1030(c2D)
+            1064: 1045(uvec4) ImageGather 1052 1053 967 ConstOffsets 1063
                               Store 1047(uoutp) 1064
             1065:   1026(ptr) AccessChain 1022(arrayedSampler) 1061
             1066:        1018 Load 1065
-            1067:   20(fvec2) Load 1030(c2D)
-            1068:   11(fvec4) ImageGather 1066 1067 1061
-            1069:   11(fvec4) Load 13(outp)
-            1070:   11(fvec4) FAdd 1069 1068
+            1067:    20(vec2) Load 1030(c2D)
+            1068:    11(vec4) ImageGather 1066 1067 1061
+            1069:    11(vec4) Load 13(outp)
+            1070:    11(vec4) FAdd 1069 1068
                               Store 13(outp) 1070
             1078:        1075 Load 1077(isamp2DA)
             1082: 1071(ivec4) ImageGather 1078 1080 25 ConstOffset 1081
@@ -232,655 +232,655 @@ spv.400.frag
             1091: 1071(ivec4) Load 1073(ioutp)
             1092: 1071(ivec4) IAdd 1091 1090
                               Store 1073(ioutp) 1092
-            1095:   11(fvec4) Load 1094(gl_FragCoord)
-            1097:   11(fvec4) Load 1096(vl2)
-            1098:   11(fvec4) FAdd 1095 1097
-            1099:   11(fvec4) Load 13(outp)
-            1100:   11(fvec4) FAdd 1099 1098
+            1095:    11(vec4) Load 1094(gl_FragCoord)
+            1097:    11(vec4) Load 1096(vl2)
+            1098:    11(vec4) FAdd 1095 1097
+            1099:    11(vec4) Load 13(outp)
+            1100:    11(vec4) FAdd 1099 1098
                               Store 13(outp) 1100
-            1105:     32(int) Load 1104(u)
+            1105:    32(uint) Load 1104(u)
             1106:     23(int) Load 1024(i)
-            1107:     32(int) Bitcast 1106
-            1108:     32(int) UMod 1105 1107
+            1107:    32(uint) Bitcast 1106
+            1108:    32(uint) UMod 1105 1107
                               Store 1102(uo) 1108
-            1109:           2 FunctionCall 6(foo23()
-            1110:           2 FunctionCall 8(doubles()
+            1109:     2(void) FunctionCall 6(foo23()
+            1110:     2(void) FunctionCall 8(doubles()
             1114:     23(int) Load 1113(gl_PrimitiveID)
                               Store 1112(id) 1114
                               Return
                               FunctionEnd
-       6(foo23():           2 Function None 3
+       6(foo23():     2(void) Function None 3
                7:             Label
               18:          15 Load 17(u2drs)
-              19:   11(fvec4) Load 13(outp)
+              19:    11(vec4) Load 13(outp)
               28:   10(float) CompositeExtract 19 2
               29:   10(float) CompositeExtract 19 3
-              30:   11(fvec4) CompositeInsert 29 19 2
+              30:    11(vec4) CompositeInsert 29 19 2
               31:   10(float) ImageSampleProjDrefExplicitLod 18 30 28 Grad ConstOffset 22 22 27
-              35:     34(ptr) AccessChain 13(outp) 33
+              35:  34(float*) AccessChain 13(outp) 33
               36:   10(float) Load 35
               37:   10(float) FAdd 36 31
-              38:     34(ptr) AccessChain 13(outp) 33
+              38:  34(float*) AccessChain 13(outp) 33
                               Store 38 37
                               Return
                               FunctionEnd
-     8(doubles():           2 Function None 3
+     8(doubles():     2(void) Function None 3
                9:             Label
-     41(doublev):     40(ptr) Variable Function
-      45(dvec2v):     44(ptr) Variable Function
-      50(dvec3v):     49(ptr) Variable Function
-      55(dvec4v):     54(ptr) Variable Function
-      430(boolv):    429(ptr) Variable Function
-     439(bvec2v):    438(ptr) Variable Function
-     448(bvec3v):    447(ptr) Variable Function
-     457(bvec4v):    456(ptr) Variable Function
-             557:    429(ptr) Variable Function
-             566:    438(ptr) Variable Function
-             575:    447(ptr) Variable Function
-             584:    456(ptr) Variable Function
-     736(dmat2v):    735(ptr) Variable Function
-     742(dmat3v):    741(ptr) Variable Function
-     748(dmat4v):    747(ptr) Variable Function
-   754(dmat2x3v):    753(ptr) Variable Function
-   760(dmat3x2v):    759(ptr) Variable Function
-   766(dmat2x4v):    765(ptr) Variable Function
-   772(dmat4x2v):    771(ptr) Variable Function
-   778(dmat3x4v):    777(ptr) Variable Function
-   784(dmat4x3v):    783(ptr) Variable Function
+     41(doublev): 40(double*) Variable Function
+      45(dvec2v):  44(dvec2*) Variable Function
+      50(dvec3v):  49(dvec3*) Variable Function
+      55(dvec4v):  54(dvec4*) Variable Function
+      430(boolv):  429(bool*) Variable Function
+     439(bvec2v): 438(bvec2*) Variable Function
+     448(bvec3v): 447(bvec3*) Variable Function
+     457(bvec4v): 456(bvec4*) Variable Function
+             557:  429(bool*) Variable Function
+             566: 438(bvec2*) Variable Function
+             575: 447(bvec3*) Variable Function
+             584: 456(bvec4*) Variable Function
+     736(dmat2v): 735(dmat2*) Variable Function
+     742(dmat3v): 741(dmat3*) Variable Function
+     748(dmat4v): 747(dmat4*) Variable Function
+   754(dmat2x3v):753(dmat2x3*) Variable Function
+   760(dmat3x2v):759(dmat3x2*) Variable Function
+   766(dmat2x4v):765(dmat2x4*) Variable Function
+   772(dmat4x2v):771(dmat4x2*) Variable Function
+   778(dmat3x4v):777(dmat3x4*) Variable Function
+   784(dmat4x3v):783(dmat4x3*) Variable Function
                               Store 41(doublev) 42
                               Store 45(dvec2v) 47
                               Store 50(dvec3v) 52
-              56:39(float64_t) Load 41(doublev)
-              57: 53(f64vec4) CompositeConstruct 56 56 56 56
-              58: 53(f64vec4) ExtInst 1(GLSL.std.450) 31(Sqrt) 57
+              56:  39(double) Load 41(doublev)
+              57:   53(dvec4) CompositeConstruct 56 56 56 56
+              58:   53(dvec4) ExtInst 1(GLSL.std.450) 31(Sqrt) 57
                               Store 55(dvec4v) 58
-              59:39(float64_t) Load 41(doublev)
-              60:39(float64_t) ExtInst 1(GLSL.std.450) 32(InverseSqrt) 59
-              61:39(float64_t) Load 41(doublev)
-              62:39(float64_t) FAdd 61 60
+              59:  39(double) Load 41(doublev)
+              60:  39(double) ExtInst 1(GLSL.std.450) 32(InverseSqrt) 59
+              61:  39(double) Load 41(doublev)
+              62:  39(double) FAdd 61 60
                               Store 41(doublev) 62
-              63: 43(f64vec2) Load 45(dvec2v)
-              64: 43(f64vec2) ExtInst 1(GLSL.std.450) 32(InverseSqrt) 63
-              65: 43(f64vec2) Load 45(dvec2v)
-              66: 43(f64vec2) FAdd 65 64
+              63:   43(dvec2) Load 45(dvec2v)
+              64:   43(dvec2) ExtInst 1(GLSL.std.450) 32(InverseSqrt) 63
+              65:   43(dvec2) Load 45(dvec2v)
+              66:   43(dvec2) FAdd 65 64
                               Store 45(dvec2v) 66
-              67: 48(f64vec3) Load 50(dvec3v)
-              68: 48(f64vec3) ExtInst 1(GLSL.std.450) 32(InverseSqrt) 67
-              69: 48(f64vec3) Load 50(dvec3v)
-              70: 48(f64vec3) FAdd 69 68
+              67:   48(dvec3) Load 50(dvec3v)
+              68:   48(dvec3) ExtInst 1(GLSL.std.450) 32(InverseSqrt) 67
+              69:   48(dvec3) Load 50(dvec3v)
+              70:   48(dvec3) FAdd 69 68
                               Store 50(dvec3v) 70
-              71: 53(f64vec4) Load 55(dvec4v)
-              72: 53(f64vec4) ExtInst 1(GLSL.std.450) 32(InverseSqrt) 71
-              73: 53(f64vec4) Load 55(dvec4v)
-              74: 53(f64vec4) FAdd 73 72
+              71:   53(dvec4) Load 55(dvec4v)
+              72:   53(dvec4) ExtInst 1(GLSL.std.450) 32(InverseSqrt) 71
+              73:   53(dvec4) Load 55(dvec4v)
+              74:   53(dvec4) FAdd 73 72
                               Store 55(dvec4v) 74
-              75:39(float64_t) Load 41(doublev)
-              76:39(float64_t) ExtInst 1(GLSL.std.450) 4(FAbs) 75
-              77:39(float64_t) Load 41(doublev)
-              78:39(float64_t) FAdd 77 76
+              75:  39(double) Load 41(doublev)
+              76:  39(double) ExtInst 1(GLSL.std.450) 4(FAbs) 75
+              77:  39(double) Load 41(doublev)
+              78:  39(double) FAdd 77 76
                               Store 41(doublev) 78
-              79: 43(f64vec2) Load 45(dvec2v)
-              80: 43(f64vec2) ExtInst 1(GLSL.std.450) 4(FAbs) 79
-              81: 43(f64vec2) Load 45(dvec2v)
-              82: 43(f64vec2) FAdd 81 80
+              79:   43(dvec2) Load 45(dvec2v)
+              80:   43(dvec2) ExtInst 1(GLSL.std.450) 4(FAbs) 79
+              81:   43(dvec2) Load 45(dvec2v)
+              82:   43(dvec2) FAdd 81 80
                               Store 45(dvec2v) 82
-              83: 48(f64vec3) Load 50(dvec3v)
-              84: 48(f64vec3) ExtInst 1(GLSL.std.450) 4(FAbs) 83
-              85: 48(f64vec3) Load 50(dvec3v)
-              86: 48(f64vec3) FAdd 85 84
+              83:   48(dvec3) Load 50(dvec3v)
+              84:   48(dvec3) ExtInst 1(GLSL.std.450) 4(FAbs) 83
+              85:   48(dvec3) Load 50(dvec3v)
+              86:   48(dvec3) FAdd 85 84
                               Store 50(dvec3v) 86
-              87: 53(f64vec4) Load 55(dvec4v)
-              88: 53(f64vec4) ExtInst 1(GLSL.std.450) 4(FAbs) 87
-              89: 53(f64vec4) Load 55(dvec4v)
-              90: 53(f64vec4) FAdd 89 88
+              87:   53(dvec4) Load 55(dvec4v)
+              88:   53(dvec4) ExtInst 1(GLSL.std.450) 4(FAbs) 87
+              89:   53(dvec4) Load 55(dvec4v)
+              90:   53(dvec4) FAdd 89 88
                               Store 55(dvec4v) 90
-              91:39(float64_t) Load 41(doublev)
-              92:39(float64_t) ExtInst 1(GLSL.std.450) 6(FSign) 91
-              93:39(float64_t) Load 41(doublev)
-              94:39(float64_t) FAdd 93 92
+              91:  39(double) Load 41(doublev)
+              92:  39(double) ExtInst 1(GLSL.std.450) 6(FSign) 91
+              93:  39(double) Load 41(doublev)
+              94:  39(double) FAdd 93 92
                               Store 41(doublev) 94
-              95: 43(f64vec2) Load 45(dvec2v)
-              96: 43(f64vec2) ExtInst 1(GLSL.std.450) 6(FSign) 95
-              97: 43(f64vec2) Load 45(dvec2v)
-              98: 43(f64vec2) FAdd 97 96
+              95:   43(dvec2) Load 45(dvec2v)
+              96:   43(dvec2) ExtInst 1(GLSL.std.450) 6(FSign) 95
+              97:   43(dvec2) Load 45(dvec2v)
+              98:   43(dvec2) FAdd 97 96
                               Store 45(dvec2v) 98
-              99: 48(f64vec3) Load 50(dvec3v)
-             100: 48(f64vec3) ExtInst 1(GLSL.std.450) 6(FSign) 99
-             101: 48(f64vec3) Load 50(dvec3v)
-             102: 48(f64vec3) FAdd 101 100
+              99:   48(dvec3) Load 50(dvec3v)
+             100:   48(dvec3) ExtInst 1(GLSL.std.450) 6(FSign) 99
+             101:   48(dvec3) Load 50(dvec3v)
+             102:   48(dvec3) FAdd 101 100
                               Store 50(dvec3v) 102
-             103: 53(f64vec4) Load 55(dvec4v)
-             104: 53(f64vec4) ExtInst 1(GLSL.std.450) 6(FSign) 103
-             105: 53(f64vec4) Load 55(dvec4v)
-             106: 53(f64vec4) FAdd 105 104
+             103:   53(dvec4) Load 55(dvec4v)
+             104:   53(dvec4) ExtInst 1(GLSL.std.450) 6(FSign) 103
+             105:   53(dvec4) Load 55(dvec4v)
+             106:   53(dvec4) FAdd 105 104
                               Store 55(dvec4v) 106
-             107:39(float64_t) Load 41(doublev)
-             108:39(float64_t) ExtInst 1(GLSL.std.450) 8(Floor) 107
-             109:39(float64_t) Load 41(doublev)
-             110:39(float64_t) FAdd 109 108
+             107:  39(double) Load 41(doublev)
+             108:  39(double) ExtInst 1(GLSL.std.450) 8(Floor) 107
+             109:  39(double) Load 41(doublev)
+             110:  39(double) FAdd 109 108
                               Store 41(doublev) 110
-             111: 43(f64vec2) Load 45(dvec2v)
-             112: 43(f64vec2) ExtInst 1(GLSL.std.450) 8(Floor) 111
-             113: 43(f64vec2) Load 45(dvec2v)
-             114: 43(f64vec2) FAdd 113 112
+             111:   43(dvec2) Load 45(dvec2v)
+             112:   43(dvec2) ExtInst 1(GLSL.std.450) 8(Floor) 111
+             113:   43(dvec2) Load 45(dvec2v)
+             114:   43(dvec2) FAdd 113 112
                               Store 45(dvec2v) 114
-             115: 48(f64vec3) Load 50(dvec3v)
-             116: 48(f64vec3) ExtInst 1(GLSL.std.450) 8(Floor) 115
-             117: 48(f64vec3) Load 50(dvec3v)
-             118: 48(f64vec3) FAdd 117 116
+             115:   48(dvec3) Load 50(dvec3v)
+             116:   48(dvec3) ExtInst 1(GLSL.std.450) 8(Floor) 115
+             117:   48(dvec3) Load 50(dvec3v)
+             118:   48(dvec3) FAdd 117 116
                               Store 50(dvec3v) 118
-             119: 53(f64vec4) Load 55(dvec4v)
-             120: 53(f64vec4) ExtInst 1(GLSL.std.450) 8(Floor) 119
-             121: 53(f64vec4) Load 55(dvec4v)
-             122: 53(f64vec4) FAdd 121 120
+             119:   53(dvec4) Load 55(dvec4v)
+             120:   53(dvec4) ExtInst 1(GLSL.std.450) 8(Floor) 119
+             121:   53(dvec4) Load 55(dvec4v)
+             122:   53(dvec4) FAdd 121 120
                               Store 55(dvec4v) 122
-             123:39(float64_t) Load 41(doublev)
-             124:39(float64_t) ExtInst 1(GLSL.std.450) 3(Trunc) 123
-             125:39(float64_t) Load 41(doublev)
-             126:39(float64_t) FAdd 125 124
+             123:  39(double) Load 41(doublev)
+             124:  39(double) ExtInst 1(GLSL.std.450) 3(Trunc) 123
+             125:  39(double) Load 41(doublev)
+             126:  39(double) FAdd 125 124
                               Store 41(doublev) 126
-             127: 43(f64vec2) Load 45(dvec2v)
-             128: 43(f64vec2) ExtInst 1(GLSL.std.450) 3(Trunc) 127
-             129: 43(f64vec2) Load 45(dvec2v)
-             130: 43(f64vec2) FAdd 129 128
+             127:   43(dvec2) Load 45(dvec2v)
+             128:   43(dvec2) ExtInst 1(GLSL.std.450) 3(Trunc) 127
+             129:   43(dvec2) Load 45(dvec2v)
+             130:   43(dvec2) FAdd 129 128
                               Store 45(dvec2v) 130
-             131: 48(f64vec3) Load 50(dvec3v)
-             132: 48(f64vec3) ExtInst 1(GLSL.std.450) 3(Trunc) 131
-             133: 48(f64vec3) Load 50(dvec3v)
-             134: 48(f64vec3) FAdd 133 132
+             131:   48(dvec3) Load 50(dvec3v)
+             132:   48(dvec3) ExtInst 1(GLSL.std.450) 3(Trunc) 131
+             133:   48(dvec3) Load 50(dvec3v)
+             134:   48(dvec3) FAdd 133 132
                               Store 50(dvec3v) 134
-             135: 53(f64vec4) Load 55(dvec4v)
-             136: 53(f64vec4) ExtInst 1(GLSL.std.450) 3(Trunc) 135
-             137: 53(f64vec4) Load 55(dvec4v)
-             138: 53(f64vec4) FAdd 137 136
+             135:   53(dvec4) Load 55(dvec4v)
+             136:   53(dvec4) ExtInst 1(GLSL.std.450) 3(Trunc) 135
+             137:   53(dvec4) Load 55(dvec4v)
+             138:   53(dvec4) FAdd 137 136
                               Store 55(dvec4v) 138
-             139:39(float64_t) Load 41(doublev)
-             140:39(float64_t) ExtInst 1(GLSL.std.450) 1(Round) 139
-             141:39(float64_t) Load 41(doublev)
-             142:39(float64_t) FAdd 141 140
+             139:  39(double) Load 41(doublev)
+             140:  39(double) ExtInst 1(GLSL.std.450) 1(Round) 139
+             141:  39(double) Load 41(doublev)
+             142:  39(double) FAdd 141 140
                               Store 41(doublev) 142
-             143: 43(f64vec2) Load 45(dvec2v)
-             144: 43(f64vec2) ExtInst 1(GLSL.std.450) 1(Round) 143
-             145: 43(f64vec2) Load 45(dvec2v)
-             146: 43(f64vec2) FAdd 145 144
+             143:   43(dvec2) Load 45(dvec2v)
+             144:   43(dvec2) ExtInst 1(GLSL.std.450) 1(Round) 143
+             145:   43(dvec2) Load 45(dvec2v)
+             146:   43(dvec2) FAdd 145 144
                               Store 45(dvec2v) 146
-             147: 48(f64vec3) Load 50(dvec3v)
-             148: 48(f64vec3) ExtInst 1(GLSL.std.450) 1(Round) 147
-             149: 48(f64vec3) Load 50(dvec3v)
-             150: 48(f64vec3) FAdd 149 148
+             147:   48(dvec3) Load 50(dvec3v)
+             148:   48(dvec3) ExtInst 1(GLSL.std.450) 1(Round) 147
+             149:   48(dvec3) Load 50(dvec3v)
+             150:   48(dvec3) FAdd 149 148
                               Store 50(dvec3v) 150
-             151: 53(f64vec4) Load 55(dvec4v)
-             152: 53(f64vec4) ExtInst 1(GLSL.std.450) 1(Round) 151
-             153: 53(f64vec4) Load 55(dvec4v)
-             154: 53(f64vec4) FAdd 153 152
+             151:   53(dvec4) Load 55(dvec4v)
+             152:   53(dvec4) ExtInst 1(GLSL.std.450) 1(Round) 151
+             153:   53(dvec4) Load 55(dvec4v)
+             154:   53(dvec4) FAdd 153 152
                               Store 55(dvec4v) 154
-             155:39(float64_t) Load 41(doublev)
-             156:39(float64_t) ExtInst 1(GLSL.std.450) 2(RoundEven) 155
-             157:39(float64_t) Load 41(doublev)
-             158:39(float64_t) FAdd 157 156
+             155:  39(double) Load 41(doublev)
+             156:  39(double) ExtInst 1(GLSL.std.450) 2(RoundEven) 155
+             157:  39(double) Load 41(doublev)
+             158:  39(double) FAdd 157 156
                               Store 41(doublev) 158
-             159: 43(f64vec2) Load 45(dvec2v)
-             160: 43(f64vec2) ExtInst 1(GLSL.std.450) 2(RoundEven) 159
-             161: 43(f64vec2) Load 45(dvec2v)
-             162: 43(f64vec2) FAdd 161 160
+             159:   43(dvec2) Load 45(dvec2v)
+             160:   43(dvec2) ExtInst 1(GLSL.std.450) 2(RoundEven) 159
+             161:   43(dvec2) Load 45(dvec2v)
+             162:   43(dvec2) FAdd 161 160
                               Store 45(dvec2v) 162
-             163: 48(f64vec3) Load 50(dvec3v)
-             164: 48(f64vec3) ExtInst 1(GLSL.std.450) 2(RoundEven) 163
-             165: 48(f64vec3) Load 50(dvec3v)
-             166: 48(f64vec3) FAdd 165 164
+             163:   48(dvec3) Load 50(dvec3v)
+             164:   48(dvec3) ExtInst 1(GLSL.std.450) 2(RoundEven) 163
+             165:   48(dvec3) Load 50(dvec3v)
+             166:   48(dvec3) FAdd 165 164
                               Store 50(dvec3v) 166
-             167: 53(f64vec4) Load 55(dvec4v)
-             168: 53(f64vec4) ExtInst 1(GLSL.std.450) 2(RoundEven) 167
-             169: 53(f64vec4) Load 55(dvec4v)
-             170: 53(f64vec4) FAdd 169 168
+             167:   53(dvec4) Load 55(dvec4v)
+             168:   53(dvec4) ExtInst 1(GLSL.std.450) 2(RoundEven) 167
+             169:   53(dvec4) Load 55(dvec4v)
+             170:   53(dvec4) FAdd 169 168
                               Store 55(dvec4v) 170
-             171:39(float64_t) Load 41(doublev)
-             172:39(float64_t) ExtInst 1(GLSL.std.450) 9(Ceil) 171
-             173:39(float64_t) Load 41(doublev)
-             174:39(float64_t) FAdd 173 172
+             171:  39(double) Load 41(doublev)
+             172:  39(double) ExtInst 1(GLSL.std.450) 9(Ceil) 171
+             173:  39(double) Load 41(doublev)
+             174:  39(double) FAdd 173 172
                               Store 41(doublev) 174
-             175: 43(f64vec2) Load 45(dvec2v)
-             176: 43(f64vec2) ExtInst 1(GLSL.std.450) 9(Ceil) 175
-             177: 43(f64vec2) Load 45(dvec2v)
-             178: 43(f64vec2) FAdd 177 176
+             175:   43(dvec2) Load 45(dvec2v)
+             176:   43(dvec2) ExtInst 1(GLSL.std.450) 9(Ceil) 175
+             177:   43(dvec2) Load 45(dvec2v)
+             178:   43(dvec2) FAdd 177 176
                               Store 45(dvec2v) 178
-             179: 48(f64vec3) Load 50(dvec3v)
-             180: 48(f64vec3) ExtInst 1(GLSL.std.450) 9(Ceil) 179
-             181: 48(f64vec3) Load 50(dvec3v)
-             182: 48(f64vec3) FAdd 181 180
+             179:   48(dvec3) Load 50(dvec3v)
+             180:   48(dvec3) ExtInst 1(GLSL.std.450) 9(Ceil) 179
+             181:   48(dvec3) Load 50(dvec3v)
+             182:   48(dvec3) FAdd 181 180
                               Store 50(dvec3v) 182
-             183: 53(f64vec4) Load 55(dvec4v)
-             184: 53(f64vec4) ExtInst 1(GLSL.std.450) 9(Ceil) 183
-             185: 53(f64vec4) Load 55(dvec4v)
-             186: 53(f64vec4) FAdd 185 184
+             183:   53(dvec4) Load 55(dvec4v)
+             184:   53(dvec4) ExtInst 1(GLSL.std.450) 9(Ceil) 183
+             185:   53(dvec4) Load 55(dvec4v)
+             186:   53(dvec4) FAdd 185 184
                               Store 55(dvec4v) 186
-             187:39(float64_t) Load 41(doublev)
-             188:39(float64_t) ExtInst 1(GLSL.std.450) 10(Fract) 187
-             189:39(float64_t) Load 41(doublev)
-             190:39(float64_t) FAdd 189 188
+             187:  39(double) Load 41(doublev)
+             188:  39(double) ExtInst 1(GLSL.std.450) 10(Fract) 187
+             189:  39(double) Load 41(doublev)
+             190:  39(double) FAdd 189 188
                               Store 41(doublev) 190
-             191: 43(f64vec2) Load 45(dvec2v)
-             192: 43(f64vec2) ExtInst 1(GLSL.std.450) 10(Fract) 191
-             193: 43(f64vec2) Load 45(dvec2v)
-             194: 43(f64vec2) FAdd 193 192
+             191:   43(dvec2) Load 45(dvec2v)
+             192:   43(dvec2) ExtInst 1(GLSL.std.450) 10(Fract) 191
+             193:   43(dvec2) Load 45(dvec2v)
+             194:   43(dvec2) FAdd 193 192
                               Store 45(dvec2v) 194
-             195: 48(f64vec3) Load 50(dvec3v)
-             196: 48(f64vec3) ExtInst 1(GLSL.std.450) 10(Fract) 195
-             197: 48(f64vec3) Load 50(dvec3v)
-             198: 48(f64vec3) FAdd 197 196
+             195:   48(dvec3) Load 50(dvec3v)
+             196:   48(dvec3) ExtInst 1(GLSL.std.450) 10(Fract) 195
+             197:   48(dvec3) Load 50(dvec3v)
+             198:   48(dvec3) FAdd 197 196
                               Store 50(dvec3v) 198
-             199: 53(f64vec4) Load 55(dvec4v)
-             200: 53(f64vec4) ExtInst 1(GLSL.std.450) 10(Fract) 199
-             201: 53(f64vec4) Load 55(dvec4v)
-             202: 53(f64vec4) FAdd 201 200
+             199:   53(dvec4) Load 55(dvec4v)
+             200:   53(dvec4) ExtInst 1(GLSL.std.450) 10(Fract) 199
+             201:   53(dvec4) Load 55(dvec4v)
+             202:   53(dvec4) FAdd 201 200
                               Store 55(dvec4v) 202
-             203:39(float64_t) Load 41(doublev)
-             204:39(float64_t) Load 41(doublev)
-             205:39(float64_t) FMod 203 204
-             206:39(float64_t) Load 41(doublev)
-             207:39(float64_t) FAdd 206 205
+             203:  39(double) Load 41(doublev)
+             204:  39(double) Load 41(doublev)
+             205:  39(double) FMod 203 204
+             206:  39(double) Load 41(doublev)
+             207:  39(double) FAdd 206 205
                               Store 41(doublev) 207
-             208: 43(f64vec2) Load 45(dvec2v)
-             209:39(float64_t) Load 41(doublev)
-             210: 43(f64vec2) CompositeConstruct 209 209
-             211: 43(f64vec2) FMod 208 210
-             212: 43(f64vec2) Load 45(dvec2v)
-             213: 43(f64vec2) FAdd 212 211
+             208:   43(dvec2) Load 45(dvec2v)
+             209:  39(double) Load 41(doublev)
+             210:   43(dvec2) CompositeConstruct 209 209
+             211:   43(dvec2) FMod 208 210
+             212:   43(dvec2) Load 45(dvec2v)
+             213:   43(dvec2) FAdd 212 211
                               Store 45(dvec2v) 213
-             214: 48(f64vec3) Load 50(dvec3v)
-             215:39(float64_t) Load 41(doublev)
-             216: 48(f64vec3) CompositeConstruct 215 215 215
-             217: 48(f64vec3) FMod 214 216
-             218: 48(f64vec3) Load 50(dvec3v)
-             219: 48(f64vec3) FAdd 218 217
+             214:   48(dvec3) Load 50(dvec3v)
+             215:  39(double) Load 41(doublev)
+             216:   48(dvec3) CompositeConstruct 215 215 215
+             217:   48(dvec3) FMod 214 216
+             218:   48(dvec3) Load 50(dvec3v)
+             219:   48(dvec3) FAdd 218 217
                               Store 50(dvec3v) 219
-             220: 53(f64vec4) Load 55(dvec4v)
-             221:39(float64_t) Load 41(doublev)
-             222: 53(f64vec4) CompositeConstruct 221 221 221 221
-             223: 53(f64vec4) FMod 220 222
-             224: 53(f64vec4) Load 55(dvec4v)
-             225: 53(f64vec4) FAdd 224 223
+             220:   53(dvec4) Load 55(dvec4v)
+             221:  39(double) Load 41(doublev)
+             222:   53(dvec4) CompositeConstruct 221 221 221 221
+             223:   53(dvec4) FMod 220 222
+             224:   53(dvec4) Load 55(dvec4v)
+             225:   53(dvec4) FAdd 224 223
                               Store 55(dvec4v) 225
-             226: 43(f64vec2) Load 45(dvec2v)
-             227: 43(f64vec2) Load 45(dvec2v)
-             228: 43(f64vec2) FMod 226 227
-             229: 43(f64vec2) Load 45(dvec2v)
-             230: 43(f64vec2) FAdd 229 228
+             226:   43(dvec2) Load 45(dvec2v)
+             227:   43(dvec2) Load 45(dvec2v)
+             228:   43(dvec2) FMod 226 227
+             229:   43(dvec2) Load 45(dvec2v)
+             230:   43(dvec2) FAdd 229 228
                               Store 45(dvec2v) 230
-             231: 48(f64vec3) Load 50(dvec3v)
-             232: 48(f64vec3) Load 50(dvec3v)
-             233: 48(f64vec3) FMod 231 232
-             234: 48(f64vec3) Load 50(dvec3v)
-             235: 48(f64vec3) FAdd 234 233
+             231:   48(dvec3) Load 50(dvec3v)
+             232:   48(dvec3) Load 50(dvec3v)
+             233:   48(dvec3) FMod 231 232
+             234:   48(dvec3) Load 50(dvec3v)
+             235:   48(dvec3) FAdd 234 233
                               Store 50(dvec3v) 235
-             236: 53(f64vec4) Load 55(dvec4v)
-             237: 53(f64vec4) Load 55(dvec4v)
-             238: 53(f64vec4) FMod 236 237
-             239: 53(f64vec4) Load 55(dvec4v)
-             240: 53(f64vec4) FAdd 239 238
+             236:   53(dvec4) Load 55(dvec4v)
+             237:   53(dvec4) Load 55(dvec4v)
+             238:   53(dvec4) FMod 236 237
+             239:   53(dvec4) Load 55(dvec4v)
+             240:   53(dvec4) FAdd 239 238
                               Store 55(dvec4v) 240
-             241:39(float64_t) Load 41(doublev)
-             242:39(float64_t) ExtInst 1(GLSL.std.450) 35(Modf) 241 41(doublev)
-             243:39(float64_t) Load 41(doublev)
-             244:39(float64_t) FAdd 243 242
+             241:  39(double) Load 41(doublev)
+             242:  39(double) ExtInst 1(GLSL.std.450) 35(Modf) 241 41(doublev)
+             243:  39(double) Load 41(doublev)
+             244:  39(double) FAdd 243 242
                               Store 41(doublev) 244
-             245: 43(f64vec2) Load 45(dvec2v)
-             246: 43(f64vec2) ExtInst 1(GLSL.std.450) 35(Modf) 245 45(dvec2v)
-             247: 43(f64vec2) Load 45(dvec2v)
-             248: 43(f64vec2) FAdd 247 246
+             245:   43(dvec2) Load 45(dvec2v)
+             246:   43(dvec2) ExtInst 1(GLSL.std.450) 35(Modf) 245 45(dvec2v)
+             247:   43(dvec2) Load 45(dvec2v)
+             248:   43(dvec2) FAdd 247 246
                               Store 45(dvec2v) 248
-             249: 48(f64vec3) Load 50(dvec3v)
-             250: 48(f64vec3) ExtInst 1(GLSL.std.450) 35(Modf) 249 50(dvec3v)
-             251: 48(f64vec3) Load 50(dvec3v)
-             252: 48(f64vec3) FAdd 251 250
+             249:   48(dvec3) Load 50(dvec3v)
+             250:   48(dvec3) ExtInst 1(GLSL.std.450) 35(Modf) 249 50(dvec3v)
+             251:   48(dvec3) Load 50(dvec3v)
+             252:   48(dvec3) FAdd 251 250
                               Store 50(dvec3v) 252
-             253: 53(f64vec4) Load 55(dvec4v)
-             254: 53(f64vec4) ExtInst 1(GLSL.std.450) 35(Modf) 253 55(dvec4v)
-             255: 53(f64vec4) Load 55(dvec4v)
-             256: 53(f64vec4) FAdd 255 254
+             253:   53(dvec4) Load 55(dvec4v)
+             254:   53(dvec4) ExtInst 1(GLSL.std.450) 35(Modf) 253 55(dvec4v)
+             255:   53(dvec4) Load 55(dvec4v)
+             256:   53(dvec4) FAdd 255 254
                               Store 55(dvec4v) 256
-             257:39(float64_t) Load 41(doublev)
-             258:39(float64_t) Load 41(doublev)
-             259:39(float64_t) ExtInst 1(GLSL.std.450) 37(FMin) 257 258
-             260:39(float64_t) Load 41(doublev)
-             261:39(float64_t) FAdd 260 259
+             257:  39(double) Load 41(doublev)
+             258:  39(double) Load 41(doublev)
+             259:  39(double) ExtInst 1(GLSL.std.450) 37(FMin) 257 258
+             260:  39(double) Load 41(doublev)
+             261:  39(double) FAdd 260 259
                               Store 41(doublev) 261
-             262: 43(f64vec2) Load 45(dvec2v)
-             263:39(float64_t) Load 41(doublev)
-             264: 43(f64vec2) CompositeConstruct 263 263
-             265: 43(f64vec2) ExtInst 1(GLSL.std.450) 37(FMin) 262 264
-             266: 43(f64vec2) Load 45(dvec2v)
-             267: 43(f64vec2) FAdd 266 265
+             262:   43(dvec2) Load 45(dvec2v)
+             263:  39(double) Load 41(doublev)
+             264:   43(dvec2) CompositeConstruct 263 263
+             265:   43(dvec2) ExtInst 1(GLSL.std.450) 37(FMin) 262 264
+             266:   43(dvec2) Load 45(dvec2v)
+             267:   43(dvec2) FAdd 266 265
                               Store 45(dvec2v) 267
-             268: 48(f64vec3) Load 50(dvec3v)
-             269:39(float64_t) Load 41(doublev)
-             270: 48(f64vec3) CompositeConstruct 269 269 269
-             271: 48(f64vec3) ExtInst 1(GLSL.std.450) 37(FMin) 268 270
-             272: 48(f64vec3) Load 50(dvec3v)
-             273: 48(f64vec3) FAdd 272 271
+             268:   48(dvec3) Load 50(dvec3v)
+             269:  39(double) Load 41(doublev)
+             270:   48(dvec3) CompositeConstruct 269 269 269
+             271:   48(dvec3) ExtInst 1(GLSL.std.450) 37(FMin) 268 270
+             272:   48(dvec3) Load 50(dvec3v)
+             273:   48(dvec3) FAdd 272 271
                               Store 50(dvec3v) 273
-             274: 53(f64vec4) Load 55(dvec4v)
-             275:39(float64_t) Load 41(doublev)
-             276: 53(f64vec4) CompositeConstruct 275 275 275 275
-             277: 53(f64vec4) ExtInst 1(GLSL.std.450) 37(FMin) 274 276
-             278: 53(f64vec4) Load 55(dvec4v)
-             279: 53(f64vec4) FAdd 278 277
+             274:   53(dvec4) Load 55(dvec4v)
+             275:  39(double) Load 41(doublev)
+             276:   53(dvec4) CompositeConstruct 275 275 275 275
+             277:   53(dvec4) ExtInst 1(GLSL.std.450) 37(FMin) 274 276
+             278:   53(dvec4) Load 55(dvec4v)
+             279:   53(dvec4) FAdd 278 277
                               Store 55(dvec4v) 279
-             280: 43(f64vec2) Load 45(dvec2v)
-             281: 43(f64vec2) Load 45(dvec2v)
-             282: 43(f64vec2) ExtInst 1(GLSL.std.450) 37(FMin) 280 281
-             283: 43(f64vec2) Load 45(dvec2v)
-             284: 43(f64vec2) FAdd 283 282
+             280:   43(dvec2) Load 45(dvec2v)
+             281:   43(dvec2) Load 45(dvec2v)
+             282:   43(dvec2) ExtInst 1(GLSL.std.450) 37(FMin) 280 281
+             283:   43(dvec2) Load 45(dvec2v)
+             284:   43(dvec2) FAdd 283 282
                               Store 45(dvec2v) 284
-             285: 48(f64vec3) Load 50(dvec3v)
-             286: 48(f64vec3) Load 50(dvec3v)
-             287: 48(f64vec3) ExtInst 1(GLSL.std.450) 37(FMin) 285 286
-             288: 48(f64vec3) Load 50(dvec3v)
-             289: 48(f64vec3) FAdd 288 287
+             285:   48(dvec3) Load 50(dvec3v)
+             286:   48(dvec3) Load 50(dvec3v)
+             287:   48(dvec3) ExtInst 1(GLSL.std.450) 37(FMin) 285 286
+             288:   48(dvec3) Load 50(dvec3v)
+             289:   48(dvec3) FAdd 288 287
                               Store 50(dvec3v) 289
-             290: 53(f64vec4) Load 55(dvec4v)
-             291: 53(f64vec4) Load 55(dvec4v)
-             292: 53(f64vec4) ExtInst 1(GLSL.std.450) 37(FMin) 290 291
-             293: 53(f64vec4) Load 55(dvec4v)
-             294: 53(f64vec4) FAdd 293 292
+             290:   53(dvec4) Load 55(dvec4v)
+             291:   53(dvec4) Load 55(dvec4v)
+             292:   53(dvec4) ExtInst 1(GLSL.std.450) 37(FMin) 290 291
+             293:   53(dvec4) Load 55(dvec4v)
+             294:   53(dvec4) FAdd 293 292
                               Store 55(dvec4v) 294
-             295:39(float64_t) Load 41(doublev)
-             296:39(float64_t) Load 41(doublev)
-             297:39(float64_t) ExtInst 1(GLSL.std.450) 40(FMax) 295 296
-             298:39(float64_t) Load 41(doublev)
-             299:39(float64_t) FAdd 298 297
+             295:  39(double) Load 41(doublev)
+             296:  39(double) Load 41(doublev)
+             297:  39(double) ExtInst 1(GLSL.std.450) 40(FMax) 295 296
+             298:  39(double) Load 41(doublev)
+             299:  39(double) FAdd 298 297
                               Store 41(doublev) 299
-             300: 43(f64vec2) Load 45(dvec2v)
-             301:39(float64_t) Load 41(doublev)
-             302: 43(f64vec2) CompositeConstruct 301 301
-             303: 43(f64vec2) ExtInst 1(GLSL.std.450) 40(FMax) 300 302
-             304: 43(f64vec2) Load 45(dvec2v)
-             305: 43(f64vec2) FAdd 304 303
+             300:   43(dvec2) Load 45(dvec2v)
+             301:  39(double) Load 41(doublev)
+             302:   43(dvec2) CompositeConstruct 301 301
+             303:   43(dvec2) ExtInst 1(GLSL.std.450) 40(FMax) 300 302
+             304:   43(dvec2) Load 45(dvec2v)
+             305:   43(dvec2) FAdd 304 303
                               Store 45(dvec2v) 305
-             306: 48(f64vec3) Load 50(dvec3v)
-             307:39(float64_t) Load 41(doublev)
-             308: 48(f64vec3) CompositeConstruct 307 307 307
-             309: 48(f64vec3) ExtInst 1(GLSL.std.450) 40(FMax) 306 308
-             310: 48(f64vec3) Load 50(dvec3v)
-             311: 48(f64vec3) FAdd 310 309
+             306:   48(dvec3) Load 50(dvec3v)
+             307:  39(double) Load 41(doublev)
+             308:   48(dvec3) CompositeConstruct 307 307 307
+             309:   48(dvec3) ExtInst 1(GLSL.std.450) 40(FMax) 306 308
+             310:   48(dvec3) Load 50(dvec3v)
+             311:   48(dvec3) FAdd 310 309
                               Store 50(dvec3v) 311
-             312: 53(f64vec4) Load 55(dvec4v)
-             313:39(float64_t) Load 41(doublev)
-             314: 53(f64vec4) CompositeConstruct 313 313 313 313
-             315: 53(f64vec4) ExtInst 1(GLSL.std.450) 40(FMax) 312 314
-             316: 53(f64vec4) Load 55(dvec4v)
-             317: 53(f64vec4) FAdd 316 315
+             312:   53(dvec4) Load 55(dvec4v)
+             313:  39(double) Load 41(doublev)
+             314:   53(dvec4) CompositeConstruct 313 313 313 313
+             315:   53(dvec4) ExtInst 1(GLSL.std.450) 40(FMax) 312 314
+             316:   53(dvec4) Load 55(dvec4v)
+             317:   53(dvec4) FAdd 316 315
                               Store 55(dvec4v) 317
-             318: 43(f64vec2) Load 45(dvec2v)
-             319: 43(f64vec2) Load 45(dvec2v)
-             320: 43(f64vec2) ExtInst 1(GLSL.std.450) 40(FMax) 318 319
-             321: 43(f64vec2) Load 45(dvec2v)
-             322: 43(f64vec2) FAdd 321 320
+             318:   43(dvec2) Load 45(dvec2v)
+             319:   43(dvec2) Load 45(dvec2v)
+             320:   43(dvec2) ExtInst 1(GLSL.std.450) 40(FMax) 318 319
+             321:   43(dvec2) Load 45(dvec2v)
+             322:   43(dvec2) FAdd 321 320
                               Store 45(dvec2v) 322
-             323: 48(f64vec3) Load 50(dvec3v)
-             324: 48(f64vec3) Load 50(dvec3v)
-             325: 48(f64vec3) ExtInst 1(GLSL.std.450) 40(FMax) 323 324
-             326: 48(f64vec3) Load 50(dvec3v)
-             327: 48(f64vec3) FAdd 326 325
+             323:   48(dvec3) Load 50(dvec3v)
+             324:   48(dvec3) Load 50(dvec3v)
+             325:   48(dvec3) ExtInst 1(GLSL.std.450) 40(FMax) 323 324
+             326:   48(dvec3) Load 50(dvec3v)
+             327:   48(dvec3) FAdd 326 325
                               Store 50(dvec3v) 327
-             328: 53(f64vec4) Load 55(dvec4v)
-             329: 53(f64vec4) Load 55(dvec4v)
-             330: 53(f64vec4) ExtInst 1(GLSL.std.450) 40(FMax) 328 329
-             331: 53(f64vec4) Load 55(dvec4v)
-             332: 53(f64vec4) FAdd 331 330
+             328:   53(dvec4) Load 55(dvec4v)
+             329:   53(dvec4) Load 55(dvec4v)
+             330:   53(dvec4) ExtInst 1(GLSL.std.450) 40(FMax) 328 329
+             331:   53(dvec4) Load 55(dvec4v)
+             332:   53(dvec4) FAdd 331 330
                               Store 55(dvec4v) 332
-             333:39(float64_t) Load 41(doublev)
-             334:39(float64_t) Load 41(doublev)
-             335:39(float64_t) Load 41(doublev)
-             336:39(float64_t) ExtInst 1(GLSL.std.450) 43(FClamp) 333 334 335
-             337:39(float64_t) Load 41(doublev)
-             338:39(float64_t) FAdd 337 336
+             333:  39(double) Load 41(doublev)
+             334:  39(double) Load 41(doublev)
+             335:  39(double) Load 41(doublev)
+             336:  39(double) ExtInst 1(GLSL.std.450) 43(FClamp) 333 334 335
+             337:  39(double) Load 41(doublev)
+             338:  39(double) FAdd 337 336
                               Store 41(doublev) 338
-             339: 43(f64vec2) Load 45(dvec2v)
-             340:39(float64_t) Load 41(doublev)
-             341:39(float64_t) Load 41(doublev)
-             342: 43(f64vec2) CompositeConstruct 340 340
-             343: 43(f64vec2) CompositeConstruct 341 341
-             344: 43(f64vec2) ExtInst 1(GLSL.std.450) 43(FClamp) 339 342 343
-             345: 43(f64vec2) Load 45(dvec2v)
-             346: 43(f64vec2) FAdd 345 344
+             339:   43(dvec2) Load 45(dvec2v)
+             340:  39(double) Load 41(doublev)
+             341:  39(double) Load 41(doublev)
+             342:   43(dvec2) CompositeConstruct 340 340
+             343:   43(dvec2) CompositeConstruct 341 341
+             344:   43(dvec2) ExtInst 1(GLSL.std.450) 43(FClamp) 339 342 343
+             345:   43(dvec2) Load 45(dvec2v)
+             346:   43(dvec2) FAdd 345 344
                               Store 45(dvec2v) 346
-             347: 48(f64vec3) Load 50(dvec3v)
-             348:39(float64_t) Load 41(doublev)
-             349:39(float64_t) Load 41(doublev)
-             350: 48(f64vec3) CompositeConstruct 348 348 348
-             351: 48(f64vec3) CompositeConstruct 349 349 349
-             352: 48(f64vec3) ExtInst 1(GLSL.std.450) 43(FClamp) 347 350 351
-             353: 48(f64vec3) Load 50(dvec3v)
-             354: 48(f64vec3) FAdd 353 352
+             347:   48(dvec3) Load 50(dvec3v)
+             348:  39(double) Load 41(doublev)
+             349:  39(double) Load 41(doublev)
+             350:   48(dvec3) CompositeConstruct 348 348 348
+             351:   48(dvec3) CompositeConstruct 349 349 349
+             352:   48(dvec3) ExtInst 1(GLSL.std.450) 43(FClamp) 347 350 351
+             353:   48(dvec3) Load 50(dvec3v)
+             354:   48(dvec3) FAdd 353 352
                               Store 50(dvec3v) 354
-             355: 53(f64vec4) Load 55(dvec4v)
-             356:39(float64_t) Load 41(doublev)
-             357:39(float64_t) Load 41(doublev)
-             358: 53(f64vec4) CompositeConstruct 356 356 356 356
-             359: 53(f64vec4) CompositeConstruct 357 357 357 357
-             360: 53(f64vec4) ExtInst 1(GLSL.std.450) 43(FClamp) 355 358 359
-             361: 53(f64vec4) Load 55(dvec4v)
-             362: 53(f64vec4) FAdd 361 360
+             355:   53(dvec4) Load 55(dvec4v)
+             356:  39(double) Load 41(doublev)
+             357:  39(double) Load 41(doublev)
+             358:   53(dvec4) CompositeConstruct 356 356 356 356
+             359:   53(dvec4) CompositeConstruct 357 357 357 357
+             360:   53(dvec4) ExtInst 1(GLSL.std.450) 43(FClamp) 355 358 359
+             361:   53(dvec4) Load 55(dvec4v)
+             362:   53(dvec4) FAdd 361 360
                               Store 55(dvec4v) 362
-             363: 43(f64vec2) Load 45(dvec2v)
-             364: 43(f64vec2) Load 45(dvec2v)
-             365: 43(f64vec2) Load 45(dvec2v)
-             366: 43(f64vec2) ExtInst 1(GLSL.std.450) 43(FClamp) 363 364 365
-             367: 43(f64vec2) Load 45(dvec2v)
-             368: 43(f64vec2) FAdd 367 366
+             363:   43(dvec2) Load 45(dvec2v)
+             364:   43(dvec2) Load 45(dvec2v)
+             365:   43(dvec2) Load 45(dvec2v)
+             366:   43(dvec2) ExtInst 1(GLSL.std.450) 43(FClamp) 363 364 365
+             367:   43(dvec2) Load 45(dvec2v)
+             368:   43(dvec2) FAdd 367 366
                               Store 45(dvec2v) 368
-             369: 48(f64vec3) Load 50(dvec3v)
-             370: 48(f64vec3) Load 50(dvec3v)
-             371: 48(f64vec3) Load 50(dvec3v)
-             372: 48(f64vec3) ExtInst 1(GLSL.std.450) 43(FClamp) 369 370 371
-             373: 48(f64vec3) Load 50(dvec3v)
-             374: 48(f64vec3) FAdd 373 372
+             369:   48(dvec3) Load 50(dvec3v)
+             370:   48(dvec3) Load 50(dvec3v)
+             371:   48(dvec3) Load 50(dvec3v)
+             372:   48(dvec3) ExtInst 1(GLSL.std.450) 43(FClamp) 369 370 371
+             373:   48(dvec3) Load 50(dvec3v)
+             374:   48(dvec3) FAdd 373 372
                               Store 50(dvec3v) 374
-             375: 53(f64vec4) Load 55(dvec4v)
-             376: 53(f64vec4) Load 55(dvec4v)
-             377: 53(f64vec4) Load 55(dvec4v)
-             378: 53(f64vec4) ExtInst 1(GLSL.std.450) 43(FClamp) 375 376 377
-             379: 53(f64vec4) Load 55(dvec4v)
-             380: 53(f64vec4) FAdd 379 378
+             375:   53(dvec4) Load 55(dvec4v)
+             376:   53(dvec4) Load 55(dvec4v)
+             377:   53(dvec4) Load 55(dvec4v)
+             378:   53(dvec4) ExtInst 1(GLSL.std.450) 43(FClamp) 375 376 377
+             379:   53(dvec4) Load 55(dvec4v)
+             380:   53(dvec4) FAdd 379 378
                               Store 55(dvec4v) 380
-             381:39(float64_t) Load 41(doublev)
-             382:39(float64_t) Load 41(doublev)
-             383:39(float64_t) Load 41(doublev)
-             384:39(float64_t) ExtInst 1(GLSL.std.450) 46(FMix) 381 382 383
-             385:39(float64_t) Load 41(doublev)
-             386:39(float64_t) FAdd 385 384
+             381:  39(double) Load 41(doublev)
+             382:  39(double) Load 41(doublev)
+             383:  39(double) Load 41(doublev)
+             384:  39(double) ExtInst 1(GLSL.std.450) 46(FMix) 381 382 383
+             385:  39(double) Load 41(doublev)
+             386:  39(double) FAdd 385 384
                               Store 41(doublev) 386
-             387: 43(f64vec2) Load 45(dvec2v)
-             388: 43(f64vec2) Load 45(dvec2v)
-             389:39(float64_t) Load 41(doublev)
-             390: 43(f64vec2) CompositeConstruct 389 389
-             391: 43(f64vec2) ExtInst 1(GLSL.std.450) 46(FMix) 387 388 390
-             392: 43(f64vec2) Load 45(dvec2v)
-             393: 43(f64vec2) FAdd 392 391
+             387:   43(dvec2) Load 45(dvec2v)
+             388:   43(dvec2) Load 45(dvec2v)
+             389:  39(double) Load 41(doublev)
+             390:   43(dvec2) CompositeConstruct 389 389
+             391:   43(dvec2) ExtInst 1(GLSL.std.450) 46(FMix) 387 388 390
+             392:   43(dvec2) Load 45(dvec2v)
+             393:   43(dvec2) FAdd 392 391
                               Store 45(dvec2v) 393
-             394: 48(f64vec3) Load 50(dvec3v)
-             395: 48(f64vec3) Load 50(dvec3v)
-             396:39(float64_t) Load 41(doublev)
-             397: 48(f64vec3) CompositeConstruct 396 396 396
-             398: 48(f64vec3) ExtInst 1(GLSL.std.450) 46(FMix) 394 395 397
-             399: 48(f64vec3) Load 50(dvec3v)
-             400: 48(f64vec3) FAdd 399 398
+             394:   48(dvec3) Load 50(dvec3v)
+             395:   48(dvec3) Load 50(dvec3v)
+             396:  39(double) Load 41(doublev)
+             397:   48(dvec3) CompositeConstruct 396 396 396
+             398:   48(dvec3) ExtInst 1(GLSL.std.450) 46(FMix) 394 395 397
+             399:   48(dvec3) Load 50(dvec3v)
+             400:   48(dvec3) FAdd 399 398
                               Store 50(dvec3v) 400
-             401: 53(f64vec4) Load 55(dvec4v)
-             402: 53(f64vec4) Load 55(dvec4v)
-             403:39(float64_t) Load 41(doublev)
-             404: 53(f64vec4) CompositeConstruct 403 403 403 403
-             405: 53(f64vec4) ExtInst 1(GLSL.std.450) 46(FMix) 401 402 404
-             406: 53(f64vec4) Load 55(dvec4v)
-             407: 53(f64vec4) FAdd 406 405
+             401:   53(dvec4) Load 55(dvec4v)
+             402:   53(dvec4) Load 55(dvec4v)
+             403:  39(double) Load 41(doublev)
+             404:   53(dvec4) CompositeConstruct 403 403 403 403
+             405:   53(dvec4) ExtInst 1(GLSL.std.450) 46(FMix) 401 402 404
+             406:   53(dvec4) Load 55(dvec4v)
+             407:   53(dvec4) FAdd 406 405
                               Store 55(dvec4v) 407
-             408: 43(f64vec2) Load 45(dvec2v)
-             409: 43(f64vec2) Load 45(dvec2v)
-             410: 43(f64vec2) Load 45(dvec2v)
-             411: 43(f64vec2) ExtInst 1(GLSL.std.450) 46(FMix) 408 409 410
-             412: 43(f64vec2) Load 45(dvec2v)
-             413: 43(f64vec2) FAdd 412 411
+             408:   43(dvec2) Load 45(dvec2v)
+             409:   43(dvec2) Load 45(dvec2v)
+             410:   43(dvec2) Load 45(dvec2v)
+             411:   43(dvec2) ExtInst 1(GLSL.std.450) 46(FMix) 408 409 410
+             412:   43(dvec2) Load 45(dvec2v)
+             413:   43(dvec2) FAdd 412 411
                               Store 45(dvec2v) 413
-             414: 48(f64vec3) Load 50(dvec3v)
-             415: 48(f64vec3) Load 50(dvec3v)
-             416: 48(f64vec3) Load 50(dvec3v)
-             417: 48(f64vec3) ExtInst 1(GLSL.std.450) 46(FMix) 414 415 416
-             418: 48(f64vec3) Load 50(dvec3v)
-             419: 48(f64vec3) FAdd 418 417
+             414:   48(dvec3) Load 50(dvec3v)
+             415:   48(dvec3) Load 50(dvec3v)
+             416:   48(dvec3) Load 50(dvec3v)
+             417:   48(dvec3) ExtInst 1(GLSL.std.450) 46(FMix) 414 415 416
+             418:   48(dvec3) Load 50(dvec3v)
+             419:   48(dvec3) FAdd 418 417
                               Store 50(dvec3v) 419
-             420: 53(f64vec4) Load 55(dvec4v)
-             421: 53(f64vec4) Load 55(dvec4v)
-             422: 53(f64vec4) Load 55(dvec4v)
-             423: 53(f64vec4) ExtInst 1(GLSL.std.450) 46(FMix) 420 421 422
-             424: 53(f64vec4) Load 55(dvec4v)
-             425: 53(f64vec4) FAdd 424 423
+             420:   53(dvec4) Load 55(dvec4v)
+             421:   53(dvec4) Load 55(dvec4v)
+             422:   53(dvec4) Load 55(dvec4v)
+             423:   53(dvec4) ExtInst 1(GLSL.std.450) 46(FMix) 420 421 422
+             424:   53(dvec4) Load 55(dvec4v)
+             425:   53(dvec4) FAdd 424 423
                               Store 55(dvec4v) 425
-             426:39(float64_t) Load 41(doublev)
-             427:39(float64_t) Load 41(doublev)
+             426:  39(double) Load 41(doublev)
+             427:  39(double) Load 41(doublev)
              431:   428(bool) Load 430(boolv)
-             432:39(float64_t) Select 431 427 426
-             433:39(float64_t) Load 41(doublev)
-             434:39(float64_t) FAdd 433 432
+             432:  39(double) Select 431 427 426
+             433:  39(double) Load 41(doublev)
+             434:  39(double) FAdd 433 432
                               Store 41(doublev) 434
-             435: 43(f64vec2) Load 45(dvec2v)
-             436: 43(f64vec2) Load 45(dvec2v)
+             435:   43(dvec2) Load 45(dvec2v)
+             436:   43(dvec2) Load 45(dvec2v)
              440:  437(bvec2) Load 439(bvec2v)
-             441: 43(f64vec2) Select 440 436 435
-             442: 43(f64vec2) Load 45(dvec2v)
-             443: 43(f64vec2) FAdd 442 441
+             441:   43(dvec2) Select 440 436 435
+             442:   43(dvec2) Load 45(dvec2v)
+             443:   43(dvec2) FAdd 442 441
                               Store 45(dvec2v) 443
-             444: 48(f64vec3) Load 50(dvec3v)
-             445: 48(f64vec3) Load 50(dvec3v)
+             444:   48(dvec3) Load 50(dvec3v)
+             445:   48(dvec3) Load 50(dvec3v)
              449:  446(bvec3) Load 448(bvec3v)
-             450: 48(f64vec3) Select 449 445 444
-             451: 48(f64vec3) Load 50(dvec3v)
-             452: 48(f64vec3) FAdd 451 450
+             450:   48(dvec3) Select 449 445 444
+             451:   48(dvec3) Load 50(dvec3v)
+             452:   48(dvec3) FAdd 451 450
                               Store 50(dvec3v) 452
-             453: 53(f64vec4) Load 55(dvec4v)
-             454: 53(f64vec4) Load 55(dvec4v)
+             453:   53(dvec4) Load 55(dvec4v)
+             454:   53(dvec4) Load 55(dvec4v)
              458:  455(bvec4) Load 457(bvec4v)
-             459: 53(f64vec4) Select 458 454 453
-             460: 53(f64vec4) Load 55(dvec4v)
-             461: 53(f64vec4) FAdd 460 459
+             459:   53(dvec4) Select 458 454 453
+             460:   53(dvec4) Load 55(dvec4v)
+             461:   53(dvec4) FAdd 460 459
                               Store 55(dvec4v) 461
-             462:39(float64_t) Load 41(doublev)
-             463:39(float64_t) Load 41(doublev)
-             464:39(float64_t) ExtInst 1(GLSL.std.450) 48(Step) 462 463
-             465:39(float64_t) Load 41(doublev)
-             466:39(float64_t) FAdd 465 464
+             462:  39(double) Load 41(doublev)
+             463:  39(double) Load 41(doublev)
+             464:  39(double) ExtInst 1(GLSL.std.450) 48(Step) 462 463
+             465:  39(double) Load 41(doublev)
+             466:  39(double) FAdd 465 464
                               Store 41(doublev) 466
-             467: 43(f64vec2) Load 45(dvec2v)
-             468: 43(f64vec2) Load 45(dvec2v)
-             469: 43(f64vec2) ExtInst 1(GLSL.std.450) 48(Step) 467 468
-             470: 43(f64vec2) Load 45(dvec2v)
-             471: 43(f64vec2) FAdd 470 469
+             467:   43(dvec2) Load 45(dvec2v)
+             468:   43(dvec2) Load 45(dvec2v)
+             469:   43(dvec2) ExtInst 1(GLSL.std.450) 48(Step) 467 468
+             470:   43(dvec2) Load 45(dvec2v)
+             471:   43(dvec2) FAdd 470 469
                               Store 45(dvec2v) 471
-             472: 48(f64vec3) Load 50(dvec3v)
-             473: 48(f64vec3) Load 50(dvec3v)
-             474: 48(f64vec3) ExtInst 1(GLSL.std.450) 48(Step) 472 473
-             475: 48(f64vec3) Load 50(dvec3v)
-             476: 48(f64vec3) FAdd 475 474
+             472:   48(dvec3) Load 50(dvec3v)
+             473:   48(dvec3) Load 50(dvec3v)
+             474:   48(dvec3) ExtInst 1(GLSL.std.450) 48(Step) 472 473
+             475:   48(dvec3) Load 50(dvec3v)
+             476:   48(dvec3) FAdd 475 474
                               Store 50(dvec3v) 476
-             477: 53(f64vec4) Load 55(dvec4v)
-             478: 53(f64vec4) Load 55(dvec4v)
-             479: 53(f64vec4) ExtInst 1(GLSL.std.450) 48(Step) 477 478
-             480: 53(f64vec4) Load 55(dvec4v)
-             481: 53(f64vec4) FAdd 480 479
+             477:   53(dvec4) Load 55(dvec4v)
+             478:   53(dvec4) Load 55(dvec4v)
+             479:   53(dvec4) ExtInst 1(GLSL.std.450) 48(Step) 477 478
+             480:   53(dvec4) Load 55(dvec4v)
+             481:   53(dvec4) FAdd 480 479
                               Store 55(dvec4v) 481
-             482:39(float64_t) Load 41(doublev)
-             483: 43(f64vec2) Load 45(dvec2v)
-             484: 43(f64vec2) CompositeConstruct 482 482
-             485: 43(f64vec2) ExtInst 1(GLSL.std.450) 48(Step) 484 483
-             486: 43(f64vec2) Load 45(dvec2v)
-             487: 43(f64vec2) FAdd 486 485
+             482:  39(double) Load 41(doublev)
+             483:   43(dvec2) Load 45(dvec2v)
+             484:   43(dvec2) CompositeConstruct 482 482
+             485:   43(dvec2) ExtInst 1(GLSL.std.450) 48(Step) 484 483
+             486:   43(dvec2) Load 45(dvec2v)
+             487:   43(dvec2) FAdd 486 485
                               Store 45(dvec2v) 487
-             488:39(float64_t) Load 41(doublev)
-             489: 48(f64vec3) Load 50(dvec3v)
-             490: 48(f64vec3) CompositeConstruct 488 488 488
-             491: 48(f64vec3) ExtInst 1(GLSL.std.450) 48(Step) 490 489
-             492: 48(f64vec3) Load 50(dvec3v)
-             493: 48(f64vec3) FAdd 492 491
+             488:  39(double) Load 41(doublev)
+             489:   48(dvec3) Load 50(dvec3v)
+             490:   48(dvec3) CompositeConstruct 488 488 488
+             491:   48(dvec3) ExtInst 1(GLSL.std.450) 48(Step) 490 489
+             492:   48(dvec3) Load 50(dvec3v)
+             493:   48(dvec3) FAdd 492 491
                               Store 50(dvec3v) 493
-             494:39(float64_t) Load 41(doublev)
-             495: 53(f64vec4) Load 55(dvec4v)
-             496: 53(f64vec4) CompositeConstruct 494 494 494 494
-             497: 53(f64vec4) ExtInst 1(GLSL.std.450) 48(Step) 496 495
-             498: 53(f64vec4) Load 55(dvec4v)
-             499: 53(f64vec4) FAdd 498 497
+             494:  39(double) Load 41(doublev)
+             495:   53(dvec4) Load 55(dvec4v)
+             496:   53(dvec4) CompositeConstruct 494 494 494 494
+             497:   53(dvec4) ExtInst 1(GLSL.std.450) 48(Step) 496 495
+             498:   53(dvec4) Load 55(dvec4v)
+             499:   53(dvec4) FAdd 498 497
                               Store 55(dvec4v) 499
-             500:39(float64_t) Load 41(doublev)
-             501:39(float64_t) Load 41(doublev)
-             502:39(float64_t) Load 41(doublev)
-             503:39(float64_t) ExtInst 1(GLSL.std.450) 49(SmoothStep) 500 501 502
-             504:39(float64_t) Load 41(doublev)
-             505:39(float64_t) FAdd 504 503
+             500:  39(double) Load 41(doublev)
+             501:  39(double) Load 41(doublev)
+             502:  39(double) Load 41(doublev)
+             503:  39(double) ExtInst 1(GLSL.std.450) 49(SmoothStep) 500 501 502
+             504:  39(double) Load 41(doublev)
+             505:  39(double) FAdd 504 503
                               Store 41(doublev) 505
-             506: 43(f64vec2) Load 45(dvec2v)
-             507: 43(f64vec2) Load 45(dvec2v)
-             508: 43(f64vec2) Load 45(dvec2v)
-             509: 43(f64vec2) ExtInst 1(GLSL.std.450) 49(SmoothStep) 506 507 508
-             510: 43(f64vec2) Load 45(dvec2v)
-             511: 43(f64vec2) FAdd 510 509
+             506:   43(dvec2) Load 45(dvec2v)
+             507:   43(dvec2) Load 45(dvec2v)
+             508:   43(dvec2) Load 45(dvec2v)
+             509:   43(dvec2) ExtInst 1(GLSL.std.450) 49(SmoothStep) 506 507 508
+             510:   43(dvec2) Load 45(dvec2v)
+             511:   43(dvec2) FAdd 510 509
                               Store 45(dvec2v) 511
-             512: 48(f64vec3) Load 50(dvec3v)
-             513: 48(f64vec3) Load 50(dvec3v)
-             514: 48(f64vec3) Load 50(dvec3v)
-             515: 48(f64vec3) ExtInst 1(GLSL.std.450) 49(SmoothStep) 512 513 514
-             516: 48(f64vec3) Load 50(dvec3v)
-             517: 48(f64vec3) FAdd 516 515
+             512:   48(dvec3) Load 50(dvec3v)
+             513:   48(dvec3) Load 50(dvec3v)
+             514:   48(dvec3) Load 50(dvec3v)
+             515:   48(dvec3) ExtInst 1(GLSL.std.450) 49(SmoothStep) 512 513 514
+             516:   48(dvec3) Load 50(dvec3v)
+             517:   48(dvec3) FAdd 516 515
                               Store 50(dvec3v) 517
-             518: 53(f64vec4) Load 55(dvec4v)
-             519: 53(f64vec4) Load 55(dvec4v)
-             520: 53(f64vec4) Load 55(dvec4v)
-             521: 53(f64vec4) ExtInst 1(GLSL.std.450) 49(SmoothStep) 518 519 520
-             522: 53(f64vec4) Load 55(dvec4v)
-             523: 53(f64vec4) FAdd 522 521
+             518:   53(dvec4) Load 55(dvec4v)
+             519:   53(dvec4) Load 55(dvec4v)
+             520:   53(dvec4) Load 55(dvec4v)
+             521:   53(dvec4) ExtInst 1(GLSL.std.450) 49(SmoothStep) 518 519 520
+             522:   53(dvec4) Load 55(dvec4v)
+             523:   53(dvec4) FAdd 522 521
                               Store 55(dvec4v) 523
-             524:39(float64_t) Load 41(doublev)
-             525:39(float64_t) Load 41(doublev)
-             526: 43(f64vec2) Load 45(dvec2v)
-             527: 43(f64vec2) CompositeConstruct 524 524
-             528: 43(f64vec2) CompositeConstruct 525 525
-             529: 43(f64vec2) ExtInst 1(GLSL.std.450) 49(SmoothStep) 527 528 526
-             530: 43(f64vec2) Load 45(dvec2v)
-             531: 43(f64vec2) FAdd 530 529
+             524:  39(double) Load 41(doublev)
+             525:  39(double) Load 41(doublev)
+             526:   43(dvec2) Load 45(dvec2v)
+             527:   43(dvec2) CompositeConstruct 524 524
+             528:   43(dvec2) CompositeConstruct 525 525
+             529:   43(dvec2) ExtInst 1(GLSL.std.450) 49(SmoothStep) 527 528 526
+             530:   43(dvec2) Load 45(dvec2v)
+             531:   43(dvec2) FAdd 530 529
                               Store 45(dvec2v) 531
-             532:39(float64_t) Load 41(doublev)
-             533:39(float64_t) Load 41(doublev)
-             534: 48(f64vec3) Load 50(dvec3v)
-             535: 48(f64vec3) CompositeConstruct 532 532 532
-             536: 48(f64vec3) CompositeConstruct 533 533 533
-             537: 48(f64vec3) ExtInst 1(GLSL.std.450) 49(SmoothStep) 535 536 534
-             538: 48(f64vec3) Load 50(dvec3v)
-             539: 48(f64vec3) FAdd 538 537
+             532:  39(double) Load 41(doublev)
+             533:  39(double) Load 41(doublev)
+             534:   48(dvec3) Load 50(dvec3v)
+             535:   48(dvec3) CompositeConstruct 532 532 532
+             536:   48(dvec3) CompositeConstruct 533 533 533
+             537:   48(dvec3) ExtInst 1(GLSL.std.450) 49(SmoothStep) 535 536 534
+             538:   48(dvec3) Load 50(dvec3v)
+             539:   48(dvec3) FAdd 538 537
                               Store 50(dvec3v) 539
-             540:39(float64_t) Load 41(doublev)
-             541:39(float64_t) Load 41(doublev)
-             542: 53(f64vec4) Load 55(dvec4v)
-             543: 53(f64vec4) CompositeConstruct 540 540 540 540
-             544: 53(f64vec4) CompositeConstruct 541 541 541 541
-             545: 53(f64vec4) ExtInst 1(GLSL.std.450) 49(SmoothStep) 543 544 542
-             546: 53(f64vec4) Load 55(dvec4v)
-             547: 53(f64vec4) FAdd 546 545
+             540:  39(double) Load 41(doublev)
+             541:  39(double) Load 41(doublev)
+             542:   53(dvec4) Load 55(dvec4v)
+             543:   53(dvec4) CompositeConstruct 540 540 540 540
+             544:   53(dvec4) CompositeConstruct 541 541 541 541
+             545:   53(dvec4) ExtInst 1(GLSL.std.450) 49(SmoothStep) 543 544 542
+             546:   53(dvec4) Load 55(dvec4v)
+             547:   53(dvec4) FAdd 546 545
                               Store 55(dvec4v) 547
-             548:39(float64_t) Load 41(doublev)
+             548:  39(double) Load 41(doublev)
              549:   428(bool) IsNan 548
                               Store 430(boolv) 549
-             550: 43(f64vec2) Load 45(dvec2v)
+             550:   43(dvec2) Load 45(dvec2v)
              551:  437(bvec2) IsNan 550
                               Store 439(bvec2v) 551
-             552: 48(f64vec3) Load 50(dvec3v)
+             552:   48(dvec3) Load 50(dvec3v)
              553:  446(bvec3) IsNan 552
                               Store 448(bvec3v) 553
-             554: 53(f64vec4) Load 55(dvec4v)
+             554:   53(dvec4) Load 55(dvec4v)
              555:  455(bvec4) IsNan 554
                               Store 457(bvec4v) 555
              556:   428(bool) Load 430(boolv)
                               SelectionMerge 559 None
                               BranchConditional 556 558 562
              558:               Label
-             560:39(float64_t)   Load 41(doublev)
+             560:  39(double)   Load 41(doublev)
              561:   428(bool)   IsInf 560
                                 Store 557 561
                                 Branch 559
@@ -894,7 +894,7 @@ spv.400.frag
                               SelectionMerge 568 None
                               BranchConditional 565 567 571
              567:               Label
-             569: 43(f64vec2)   Load 45(dvec2v)
+             569:   43(dvec2)   Load 45(dvec2v)
              570:  437(bvec2)   IsInf 569
                                 Store 566 570
                                 Branch 568
@@ -908,7 +908,7 @@ spv.400.frag
                               SelectionMerge 577 None
                               BranchConditional 574 576 580
              576:               Label
-             578: 48(f64vec3)   Load 50(dvec3v)
+             578:   48(dvec3)   Load 50(dvec3v)
              579:  446(bvec3)   IsInf 578
                                 Store 575 579
                                 Branch 577
@@ -922,7 +922,7 @@ spv.400.frag
                               SelectionMerge 586 None
                               BranchConditional 583 585 589
              585:               Label
-             587: 53(f64vec4)   Load 55(dvec4v)
+             587:   53(dvec4)   Load 55(dvec4v)
              588:  455(bvec4)   IsInf 587
                                 Store 584 588
                                 Branch 586
@@ -932,457 +932,457 @@ spv.400.frag
              586:             Label
              591:  455(bvec4) Load 584
                               Store 457(bvec4v) 591
-             592:39(float64_t) Load 41(doublev)
-             593:39(float64_t) ExtInst 1(GLSL.std.450) 66(Length) 592
-             594:39(float64_t) Load 41(doublev)
-             595:39(float64_t) FAdd 594 593
+             592:  39(double) Load 41(doublev)
+             593:  39(double) ExtInst 1(GLSL.std.450) 66(Length) 592
+             594:  39(double) Load 41(doublev)
+             595:  39(double) FAdd 594 593
                               Store 41(doublev) 595
-             596: 43(f64vec2) Load 45(dvec2v)
-             597:39(float64_t) ExtInst 1(GLSL.std.450) 66(Length) 596
-             598:39(float64_t) Load 41(doublev)
-             599:39(float64_t) FAdd 598 597
+             596:   43(dvec2) Load 45(dvec2v)
+             597:  39(double) ExtInst 1(GLSL.std.450) 66(Length) 596
+             598:  39(double) Load 41(doublev)
+             599:  39(double) FAdd 598 597
                               Store 41(doublev) 599
-             600: 48(f64vec3) Load 50(dvec3v)
-             601:39(float64_t) ExtInst 1(GLSL.std.450) 66(Length) 600
-             602:39(float64_t) Load 41(doublev)
-             603:39(float64_t) FAdd 602 601
+             600:   48(dvec3) Load 50(dvec3v)
+             601:  39(double) ExtInst 1(GLSL.std.450) 66(Length) 600
+             602:  39(double) Load 41(doublev)
+             603:  39(double) FAdd 602 601
                               Store 41(doublev) 603
-             604: 53(f64vec4) Load 55(dvec4v)
-             605:39(float64_t) ExtInst 1(GLSL.std.450) 66(Length) 604
-             606:39(float64_t) Load 41(doublev)
-             607:39(float64_t) FAdd 606 605
+             604:   53(dvec4) Load 55(dvec4v)
+             605:  39(double) ExtInst 1(GLSL.std.450) 66(Length) 604
+             606:  39(double) Load 41(doublev)
+             607:  39(double) FAdd 606 605
                               Store 41(doublev) 607
-             608:39(float64_t) Load 41(doublev)
-             609:39(float64_t) Load 41(doublev)
-             610:39(float64_t) ExtInst 1(GLSL.std.450) 67(Distance) 608 609
-             611:39(float64_t) Load 41(doublev)
-             612:39(float64_t) FAdd 611 610
+             608:  39(double) Load 41(doublev)
+             609:  39(double) Load 41(doublev)
+             610:  39(double) ExtInst 1(GLSL.std.450) 67(Distance) 608 609
+             611:  39(double) Load 41(doublev)
+             612:  39(double) FAdd 611 610
                               Store 41(doublev) 612
-             613: 43(f64vec2) Load 45(dvec2v)
-             614: 43(f64vec2) Load 45(dvec2v)
-             615:39(float64_t) ExtInst 1(GLSL.std.450) 67(Distance) 613 614
-             616:39(float64_t) Load 41(doublev)
-             617:39(float64_t) FAdd 616 615
+             613:   43(dvec2) Load 45(dvec2v)
+             614:   43(dvec2) Load 45(dvec2v)
+             615:  39(double) ExtInst 1(GLSL.std.450) 67(Distance) 613 614
+             616:  39(double) Load 41(doublev)
+             617:  39(double) FAdd 616 615
                               Store 41(doublev) 617
-             618: 48(f64vec3) Load 50(dvec3v)
-             619: 48(f64vec3) Load 50(dvec3v)
-             620:39(float64_t) ExtInst 1(GLSL.std.450) 67(Distance) 618 619
-             621:39(float64_t) Load 41(doublev)
-             622:39(float64_t) FAdd 621 620
+             618:   48(dvec3) Load 50(dvec3v)
+             619:   48(dvec3) Load 50(dvec3v)
+             620:  39(double) ExtInst 1(GLSL.std.450) 67(Distance) 618 619
+             621:  39(double) Load 41(doublev)
+             622:  39(double) FAdd 621 620
                               Store 41(doublev) 622
-             623: 53(f64vec4) Load 55(dvec4v)
-             624: 53(f64vec4) Load 55(dvec4v)
-             625:39(float64_t) ExtInst 1(GLSL.std.450) 67(Distance) 623 624
-             626:39(float64_t) Load 41(doublev)
-             627:39(float64_t) FAdd 626 625
+             623:   53(dvec4) Load 55(dvec4v)
+             624:   53(dvec4) Load 55(dvec4v)
+             625:  39(double) ExtInst 1(GLSL.std.450) 67(Distance) 623 624
+             626:  39(double) Load 41(doublev)
+             627:  39(double) FAdd 626 625
                               Store 41(doublev) 627
-             628:39(float64_t) Load 41(doublev)
-             629:39(float64_t) Load 41(doublev)
-             630:39(float64_t) FMul 628 629
-             631:39(float64_t) Load 41(doublev)
-             632:39(float64_t) FAdd 631 630
+             628:  39(double) Load 41(doublev)
+             629:  39(double) Load 41(doublev)
+             630:  39(double) FMul 628 629
+             631:  39(double) Load 41(doublev)
+             632:  39(double) FAdd 631 630
                               Store 41(doublev) 632
-             633: 43(f64vec2) Load 45(dvec2v)
-             634: 43(f64vec2) Load 45(dvec2v)
-             635:39(float64_t) Dot 633 634
-             636:39(float64_t) Load 41(doublev)
-             637:39(float64_t) FAdd 636 635
+             633:   43(dvec2) Load 45(dvec2v)
+             634:   43(dvec2) Load 45(dvec2v)
+             635:  39(double) Dot 633 634
+             636:  39(double) Load 41(doublev)
+             637:  39(double) FAdd 636 635
                               Store 41(doublev) 637
-             638: 48(f64vec3) Load 50(dvec3v)
-             639: 48(f64vec3) Load 50(dvec3v)
-             640:39(float64_t) Dot 638 639
-             641:39(float64_t) Load 41(doublev)
-             642:39(float64_t) FAdd 641 640
+             638:   48(dvec3) Load 50(dvec3v)
+             639:   48(dvec3) Load 50(dvec3v)
+             640:  39(double) Dot 638 639
+             641:  39(double) Load 41(doublev)
+             642:  39(double) FAdd 641 640
                               Store 41(doublev) 642
-             643: 53(f64vec4) Load 55(dvec4v)
-             644: 53(f64vec4) Load 55(dvec4v)
-             645:39(float64_t) Dot 643 644
-             646:39(float64_t) Load 41(doublev)
-             647:39(float64_t) FAdd 646 645
+             643:   53(dvec4) Load 55(dvec4v)
+             644:   53(dvec4) Load 55(dvec4v)
+             645:  39(double) Dot 643 644
+             646:  39(double) Load 41(doublev)
+             647:  39(double) FAdd 646 645
                               Store 41(doublev) 647
-             648: 48(f64vec3) Load 50(dvec3v)
-             649: 48(f64vec3) Load 50(dvec3v)
-             650: 48(f64vec3) ExtInst 1(GLSL.std.450) 68(Cross) 648 649
-             651: 48(f64vec3) Load 50(dvec3v)
-             652: 48(f64vec3) FAdd 651 650
+             648:   48(dvec3) Load 50(dvec3v)
+             649:   48(dvec3) Load 50(dvec3v)
+             650:   48(dvec3) ExtInst 1(GLSL.std.450) 68(Cross) 648 649
+             651:   48(dvec3) Load 50(dvec3v)
+             652:   48(dvec3) FAdd 651 650
                               Store 50(dvec3v) 652
-             653:39(float64_t) Load 41(doublev)
-             654:39(float64_t) ExtInst 1(GLSL.std.450) 69(Normalize) 653
-             655:39(float64_t) Load 41(doublev)
-             656:39(float64_t) FAdd 655 654
+             653:  39(double) Load 41(doublev)
+             654:  39(double) ExtInst 1(GLSL.std.450) 69(Normalize) 653
+             655:  39(double) Load 41(doublev)
+             656:  39(double) FAdd 655 654
                               Store 41(doublev) 656
-             657: 43(f64vec2) Load 45(dvec2v)
-             658: 43(f64vec2) ExtInst 1(GLSL.std.450) 69(Normalize) 657
-             659: 43(f64vec2) Load 45(dvec2v)
-             660: 43(f64vec2) FAdd 659 658
+             657:   43(dvec2) Load 45(dvec2v)
+             658:   43(dvec2) ExtInst 1(GLSL.std.450) 69(Normalize) 657
+             659:   43(dvec2) Load 45(dvec2v)
+             660:   43(dvec2) FAdd 659 658
                               Store 45(dvec2v) 660
-             661: 48(f64vec3) Load 50(dvec3v)
-             662: 48(f64vec3) ExtInst 1(GLSL.std.450) 69(Normalize) 661
-             663: 48(f64vec3) Load 50(dvec3v)
-             664: 48(f64vec3) FAdd 663 662
+             661:   48(dvec3) Load 50(dvec3v)
+             662:   48(dvec3) ExtInst 1(GLSL.std.450) 69(Normalize) 661
+             663:   48(dvec3) Load 50(dvec3v)
+             664:   48(dvec3) FAdd 663 662
                               Store 50(dvec3v) 664
-             665: 53(f64vec4) Load 55(dvec4v)
-             666: 53(f64vec4) ExtInst 1(GLSL.std.450) 69(Normalize) 665
-             667: 53(f64vec4) Load 55(dvec4v)
-             668: 53(f64vec4) FAdd 667 666
+             665:   53(dvec4) Load 55(dvec4v)
+             666:   53(dvec4) ExtInst 1(GLSL.std.450) 69(Normalize) 665
+             667:   53(dvec4) Load 55(dvec4v)
+             668:   53(dvec4) FAdd 667 666
                               Store 55(dvec4v) 668
-             669:39(float64_t) Load 41(doublev)
-             670:39(float64_t) Load 41(doublev)
-             671:39(float64_t) Load 41(doublev)
-             672:39(float64_t) ExtInst 1(GLSL.std.450) 70(FaceForward) 669 670 671
-             673:39(float64_t) Load 41(doublev)
-             674:39(float64_t) FAdd 673 672
+             669:  39(double) Load 41(doublev)
+             670:  39(double) Load 41(doublev)
+             671:  39(double) Load 41(doublev)
+             672:  39(double) ExtInst 1(GLSL.std.450) 70(FaceForward) 669 670 671
+             673:  39(double) Load 41(doublev)
+             674:  39(double) FAdd 673 672
                               Store 41(doublev) 674
-             675: 43(f64vec2) Load 45(dvec2v)
-             676: 43(f64vec2) Load 45(dvec2v)
-             677: 43(f64vec2) Load 45(dvec2v)
-             678: 43(f64vec2) ExtInst 1(GLSL.std.450) 70(FaceForward) 675 676 677
-             679: 43(f64vec2) Load 45(dvec2v)
-             680: 43(f64vec2) FAdd 679 678
+             675:   43(dvec2) Load 45(dvec2v)
+             676:   43(dvec2) Load 45(dvec2v)
+             677:   43(dvec2) Load 45(dvec2v)
+             678:   43(dvec2) ExtInst 1(GLSL.std.450) 70(FaceForward) 675 676 677
+             679:   43(dvec2) Load 45(dvec2v)
+             680:   43(dvec2) FAdd 679 678
                               Store 45(dvec2v) 680
-             681: 48(f64vec3) Load 50(dvec3v)
-             682: 48(f64vec3) Load 50(dvec3v)
-             683: 48(f64vec3) Load 50(dvec3v)
-             684: 48(f64vec3) ExtInst 1(GLSL.std.450) 70(FaceForward) 681 682 683
-             685: 48(f64vec3) Load 50(dvec3v)
-             686: 48(f64vec3) FAdd 685 684
+             681:   48(dvec3) Load 50(dvec3v)
+             682:   48(dvec3) Load 50(dvec3v)
+             683:   48(dvec3) Load 50(dvec3v)
+             684:   48(dvec3) ExtInst 1(GLSL.std.450) 70(FaceForward) 681 682 683
+             685:   48(dvec3) Load 50(dvec3v)
+             686:   48(dvec3) FAdd 685 684
                               Store 50(dvec3v) 686
-             687: 53(f64vec4) Load 55(dvec4v)
-             688: 53(f64vec4) Load 55(dvec4v)
-             689: 53(f64vec4) Load 55(dvec4v)
-             690: 53(f64vec4) ExtInst 1(GLSL.std.450) 70(FaceForward) 687 688 689
-             691: 53(f64vec4) Load 55(dvec4v)
-             692: 53(f64vec4) FAdd 691 690
+             687:   53(dvec4) Load 55(dvec4v)
+             688:   53(dvec4) Load 55(dvec4v)
+             689:   53(dvec4) Load 55(dvec4v)
+             690:   53(dvec4) ExtInst 1(GLSL.std.450) 70(FaceForward) 687 688 689
+             691:   53(dvec4) Load 55(dvec4v)
+             692:   53(dvec4) FAdd 691 690
                               Store 55(dvec4v) 692
-             693:39(float64_t) Load 41(doublev)
-             694:39(float64_t) Load 41(doublev)
-             695:39(float64_t) ExtInst 1(GLSL.std.450) 71(Reflect) 693 694
-             696:39(float64_t) Load 41(doublev)
-             697:39(float64_t) FAdd 696 695
+             693:  39(double) Load 41(doublev)
+             694:  39(double) Load 41(doublev)
+             695:  39(double) ExtInst 1(GLSL.std.450) 71(Reflect) 693 694
+             696:  39(double) Load 41(doublev)
+             697:  39(double) FAdd 696 695
                               Store 41(doublev) 697
-             698: 43(f64vec2) Load 45(dvec2v)
-             699: 43(f64vec2) Load 45(dvec2v)
-             700: 43(f64vec2) ExtInst 1(GLSL.std.450) 71(Reflect) 698 699
-             701: 43(f64vec2) Load 45(dvec2v)
-             702: 43(f64vec2) FAdd 701 700
+             698:   43(dvec2) Load 45(dvec2v)
+             699:   43(dvec2) Load 45(dvec2v)
+             700:   43(dvec2) ExtInst 1(GLSL.std.450) 71(Reflect) 698 699
+             701:   43(dvec2) Load 45(dvec2v)
+             702:   43(dvec2) FAdd 701 700
                               Store 45(dvec2v) 702
-             703: 48(f64vec3) Load 50(dvec3v)
-             704: 48(f64vec3) Load 50(dvec3v)
-             705: 48(f64vec3) ExtInst 1(GLSL.std.450) 71(Reflect) 703 704
-             706: 48(f64vec3) Load 50(dvec3v)
-             707: 48(f64vec3) FAdd 706 705
+             703:   48(dvec3) Load 50(dvec3v)
+             704:   48(dvec3) Load 50(dvec3v)
+             705:   48(dvec3) ExtInst 1(GLSL.std.450) 71(Reflect) 703 704
+             706:   48(dvec3) Load 50(dvec3v)
+             707:   48(dvec3) FAdd 706 705
                               Store 50(dvec3v) 707
-             708: 53(f64vec4) Load 55(dvec4v)
-             709: 53(f64vec4) Load 55(dvec4v)
-             710: 53(f64vec4) ExtInst 1(GLSL.std.450) 71(Reflect) 708 709
-             711: 53(f64vec4) Load 55(dvec4v)
-             712: 53(f64vec4) FAdd 711 710
+             708:   53(dvec4) Load 55(dvec4v)
+             709:   53(dvec4) Load 55(dvec4v)
+             710:   53(dvec4) ExtInst 1(GLSL.std.450) 71(Reflect) 708 709
+             711:   53(dvec4) Load 55(dvec4v)
+             712:   53(dvec4) FAdd 711 710
                               Store 55(dvec4v) 712
-             713:39(float64_t) Load 41(doublev)
-             714:39(float64_t) Load 41(doublev)
-             716:39(float64_t) ExtInst 1(GLSL.std.450) 72(Refract) 713 714 715
-             717:39(float64_t) Load 41(doublev)
-             718:39(float64_t) FAdd 717 716
+             713:  39(double) Load 41(doublev)
+             714:  39(double) Load 41(doublev)
+             716:  39(double) ExtInst 1(GLSL.std.450) 72(Refract) 713 714 715
+             717:  39(double) Load 41(doublev)
+             718:  39(double) FAdd 717 716
                               Store 41(doublev) 718
-             719: 43(f64vec2) Load 45(dvec2v)
-             720: 43(f64vec2) Load 45(dvec2v)
-             721: 43(f64vec2) ExtInst 1(GLSL.std.450) 72(Refract) 719 720 715
-             722: 43(f64vec2) Load 45(dvec2v)
-             723: 43(f64vec2) FAdd 722 721
+             719:   43(dvec2) Load 45(dvec2v)
+             720:   43(dvec2) Load 45(dvec2v)
+             721:   43(dvec2) ExtInst 1(GLSL.std.450) 72(Refract) 719 720 715
+             722:   43(dvec2) Load 45(dvec2v)
+             723:   43(dvec2) FAdd 722 721
                               Store 45(dvec2v) 723
-             724: 48(f64vec3) Load 50(dvec3v)
-             725: 48(f64vec3) Load 50(dvec3v)
-             726: 48(f64vec3) ExtInst 1(GLSL.std.450) 72(Refract) 724 725 715
-             727: 48(f64vec3) Load 50(dvec3v)
-             728: 48(f64vec3) FAdd 727 726
+             724:   48(dvec3) Load 50(dvec3v)
+             725:   48(dvec3) Load 50(dvec3v)
+             726:   48(dvec3) ExtInst 1(GLSL.std.450) 72(Refract) 724 725 715
+             727:   48(dvec3) Load 50(dvec3v)
+             728:   48(dvec3) FAdd 727 726
                               Store 50(dvec3v) 728
-             729: 53(f64vec4) Load 55(dvec4v)
-             730: 53(f64vec4) Load 55(dvec4v)
-             731: 53(f64vec4) ExtInst 1(GLSL.std.450) 72(Refract) 729 730 715
-             732: 53(f64vec4) Load 55(dvec4v)
-             733: 53(f64vec4) FAdd 732 731
+             729:   53(dvec4) Load 55(dvec4v)
+             730:   53(dvec4) Load 55(dvec4v)
+             731:   53(dvec4) ExtInst 1(GLSL.std.450) 72(Refract) 729 730 715
+             732:   53(dvec4) Load 55(dvec4v)
+             733:   53(dvec4) FAdd 732 731
                               Store 55(dvec4v) 733
-             737: 43(f64vec2) Load 45(dvec2v)
-             738: 43(f64vec2) Load 45(dvec2v)
-             739:         734 OuterProduct 737 738
+             737:   43(dvec2) Load 45(dvec2v)
+             738:   43(dvec2) Load 45(dvec2v)
+             739:  734(dmat2) OuterProduct 737 738
                               Store 736(dmat2v) 739
-             743: 48(f64vec3) Load 50(dvec3v)
-             744: 48(f64vec3) Load 50(dvec3v)
-             745:         740 OuterProduct 743 744
+             743:   48(dvec3) Load 50(dvec3v)
+             744:   48(dvec3) Load 50(dvec3v)
+             745:  740(dmat3) OuterProduct 743 744
                               Store 742(dmat3v) 745
-             749: 53(f64vec4) Load 55(dvec4v)
-             750: 53(f64vec4) Load 55(dvec4v)
-             751:         746 OuterProduct 749 750
+             749:   53(dvec4) Load 55(dvec4v)
+             750:   53(dvec4) Load 55(dvec4v)
+             751:  746(dmat4) OuterProduct 749 750
                               Store 748(dmat4v) 751
-             755: 48(f64vec3) Load 50(dvec3v)
-             756: 43(f64vec2) Load 45(dvec2v)
-             757:         752 OuterProduct 755 756
+             755:   48(dvec3) Load 50(dvec3v)
+             756:   43(dvec2) Load 45(dvec2v)
+             757:752(dmat2x3) OuterProduct 755 756
                               Store 754(dmat2x3v) 757
-             761: 43(f64vec2) Load 45(dvec2v)
-             762: 48(f64vec3) Load 50(dvec3v)
-             763:         758 OuterProduct 761 762
+             761:   43(dvec2) Load 45(dvec2v)
+             762:   48(dvec3) Load 50(dvec3v)
+             763:758(dmat3x2) OuterProduct 761 762
                               Store 760(dmat3x2v) 763
-             767: 53(f64vec4) Load 55(dvec4v)
-             768: 43(f64vec2) Load 45(dvec2v)
-             769:         764 OuterProduct 767 768
+             767:   53(dvec4) Load 55(dvec4v)
+             768:   43(dvec2) Load 45(dvec2v)
+             769:764(dmat2x4) OuterProduct 767 768
                               Store 766(dmat2x4v) 769
-             773: 43(f64vec2) Load 45(dvec2v)
-             774: 53(f64vec4) Load 55(dvec4v)
-             775:         770 OuterProduct 773 774
+             773:   43(dvec2) Load 45(dvec2v)
+             774:   53(dvec4) Load 55(dvec4v)
+             775:770(dmat4x2) OuterProduct 773 774
                               Store 772(dmat4x2v) 775
-             779: 53(f64vec4) Load 55(dvec4v)
-             780: 48(f64vec3) Load 50(dvec3v)
-             781:         776 OuterProduct 779 780
+             779:   53(dvec4) Load 55(dvec4v)
+             780:   48(dvec3) Load 50(dvec3v)
+             781:776(dmat3x4) OuterProduct 779 780
                               Store 778(dmat3x4v) 781
-             785: 48(f64vec3) Load 50(dvec3v)
-             786: 53(f64vec4) Load 55(dvec4v)
-             787:         782 OuterProduct 785 786
+             785:   48(dvec3) Load 50(dvec3v)
+             786:   53(dvec4) Load 55(dvec4v)
+             787:782(dmat4x3) OuterProduct 785 786
                               Store 784(dmat4x3v) 787
-             788:         734 Load 736(dmat2v)
-             789:         734 Load 736(dmat2v)
-             790: 43(f64vec2) CompositeExtract 788 0
-             791: 43(f64vec2) CompositeExtract 789 0
-             792: 43(f64vec2) FMul 790 791
-             793: 43(f64vec2) CompositeExtract 788 1
-             794: 43(f64vec2) CompositeExtract 789 1
-             795: 43(f64vec2) FMul 793 794
-             796:         734 CompositeConstruct 792 795
-             797:         734 Load 736(dmat2v)
-             798:         734 MatrixTimesMatrix 797 796
+             788:  734(dmat2) Load 736(dmat2v)
+             789:  734(dmat2) Load 736(dmat2v)
+             790:   43(dvec2) CompositeExtract 788 0
+             791:   43(dvec2) CompositeExtract 789 0
+             792:   43(dvec2) FMul 790 791
+             793:   43(dvec2) CompositeExtract 788 1
+             794:   43(dvec2) CompositeExtract 789 1
+             795:   43(dvec2) FMul 793 794
+             796:  734(dmat2) CompositeConstruct 792 795
+             797:  734(dmat2) Load 736(dmat2v)
+             798:  734(dmat2) MatrixTimesMatrix 797 796
                               Store 736(dmat2v) 798
-             799:         740 Load 742(dmat3v)
-             800:         740 Load 742(dmat3v)
-             801: 48(f64vec3) CompositeExtract 799 0
-             802: 48(f64vec3) CompositeExtract 800 0
-             803: 48(f64vec3) FMul 801 802
-             804: 48(f64vec3) CompositeExtract 799 1
-             805: 48(f64vec3) CompositeExtract 800 1
-             806: 48(f64vec3) FMul 804 805
-             807: 48(f64vec3) CompositeExtract 799 2
-             808: 48(f64vec3) CompositeExtract 800 2
-             809: 48(f64vec3) FMul 807 808
-             810:         740 CompositeConstruct 803 806 809
-             811:         740 Load 742(dmat3v)
-             812:         740 MatrixTimesMatrix 811 810
+             799:  740(dmat3) Load 742(dmat3v)
+             800:  740(dmat3) Load 742(dmat3v)
+             801:   48(dvec3) CompositeExtract 799 0
+             802:   48(dvec3) CompositeExtract 800 0
+             803:   48(dvec3) FMul 801 802
+             804:   48(dvec3) CompositeExtract 799 1
+             805:   48(dvec3) CompositeExtract 800 1
+             806:   48(dvec3) FMul 804 805
+             807:   48(dvec3) CompositeExtract 799 2
+             808:   48(dvec3) CompositeExtract 800 2
+             809:   48(dvec3) FMul 807 808
+             810:  740(dmat3) CompositeConstruct 803 806 809
+             811:  740(dmat3) Load 742(dmat3v)
+             812:  740(dmat3) MatrixTimesMatrix 811 810
                               Store 742(dmat3v) 812
-             813:         746 Load 748(dmat4v)
-             814:         746 Load 748(dmat4v)
-             815: 53(f64vec4) CompositeExtract 813 0
-             816: 53(f64vec4) CompositeExtract 814 0
-             817: 53(f64vec4) FMul 815 816
-             818: 53(f64vec4) CompositeExtract 813 1
-             819: 53(f64vec4) CompositeExtract 814 1
-             820: 53(f64vec4) FMul 818 819
-             821: 53(f64vec4) CompositeExtract 813 2
-             822: 53(f64vec4) CompositeExtract 814 2
-             823: 53(f64vec4) FMul 821 822
-             824: 53(f64vec4) CompositeExtract 813 3
-             825: 53(f64vec4) CompositeExtract 814 3
-             826: 53(f64vec4) FMul 824 825
-             827:         746 CompositeConstruct 817 820 823 826
-             828:         746 Load 748(dmat4v)
-             829:         746 MatrixTimesMatrix 828 827
+             813:  746(dmat4) Load 748(dmat4v)
+             814:  746(dmat4) Load 748(dmat4v)
+             815:   53(dvec4) CompositeExtract 813 0
+             816:   53(dvec4) CompositeExtract 814 0
+             817:   53(dvec4) FMul 815 816
+             818:   53(dvec4) CompositeExtract 813 1
+             819:   53(dvec4) CompositeExtract 814 1
+             820:   53(dvec4) FMul 818 819
+             821:   53(dvec4) CompositeExtract 813 2
+             822:   53(dvec4) CompositeExtract 814 2
+             823:   53(dvec4) FMul 821 822
+             824:   53(dvec4) CompositeExtract 813 3
+             825:   53(dvec4) CompositeExtract 814 3
+             826:   53(dvec4) FMul 824 825
+             827:  746(dmat4) CompositeConstruct 817 820 823 826
+             828:  746(dmat4) Load 748(dmat4v)
+             829:  746(dmat4) MatrixTimesMatrix 828 827
                               Store 748(dmat4v) 829
-             830:         752 Load 754(dmat2x3v)
-             831:         752 Load 754(dmat2x3v)
-             832: 48(f64vec3) CompositeExtract 830 0
-             833: 48(f64vec3) CompositeExtract 831 0
-             834: 48(f64vec3) FMul 832 833
-             835: 48(f64vec3) CompositeExtract 830 1
-             836: 48(f64vec3) CompositeExtract 831 1
-             837: 48(f64vec3) FMul 835 836
-             838:         752 CompositeConstruct 834 837
+             830:752(dmat2x3) Load 754(dmat2x3v)
+             831:752(dmat2x3) Load 754(dmat2x3v)
+             832:   48(dvec3) CompositeExtract 830 0
+             833:   48(dvec3) CompositeExtract 831 0
+             834:   48(dvec3) FMul 832 833
+             835:   48(dvec3) CompositeExtract 830 1
+             836:   48(dvec3) CompositeExtract 831 1
+             837:   48(dvec3) FMul 835 836
+             838:752(dmat2x3) CompositeConstruct 834 837
                               Store 754(dmat2x3v) 838
-             839:         764 Load 766(dmat2x4v)
-             840:         764 Load 766(dmat2x4v)
-             841: 53(f64vec4) CompositeExtract 839 0
-             842: 53(f64vec4) CompositeExtract 840 0
-             843: 53(f64vec4) FMul 841 842
-             844: 53(f64vec4) CompositeExtract 839 1
-             845: 53(f64vec4) CompositeExtract 840 1
-             846: 53(f64vec4) FMul 844 845
-             847:         764 CompositeConstruct 843 846
+             839:764(dmat2x4) Load 766(dmat2x4v)
+             840:764(dmat2x4) Load 766(dmat2x4v)
+             841:   53(dvec4) CompositeExtract 839 0
+             842:   53(dvec4) CompositeExtract 840 0
+             843:   53(dvec4) FMul 841 842
+             844:   53(dvec4) CompositeExtract 839 1
+             845:   53(dvec4) CompositeExtract 840 1
+             846:   53(dvec4) FMul 844 845
+             847:764(dmat2x4) CompositeConstruct 843 846
                               Store 766(dmat2x4v) 847
-             848:         758 Load 760(dmat3x2v)
-             849:         758 Load 760(dmat3x2v)
-             850: 43(f64vec2) CompositeExtract 848 0
-             851: 43(f64vec2) CompositeExtract 849 0
-             852: 43(f64vec2) FMul 850 851
-             853: 43(f64vec2) CompositeExtract 848 1
-             854: 43(f64vec2) CompositeExtract 849 1
-             855: 43(f64vec2) FMul 853 854
-             856: 43(f64vec2) CompositeExtract 848 2
-             857: 43(f64vec2) CompositeExtract 849 2
-             858: 43(f64vec2) FMul 856 857
-             859:         758 CompositeConstruct 852 855 858
+             848:758(dmat3x2) Load 760(dmat3x2v)
+             849:758(dmat3x2) Load 760(dmat3x2v)
+             850:   43(dvec2) CompositeExtract 848 0
+             851:   43(dvec2) CompositeExtract 849 0
+             852:   43(dvec2) FMul 850 851
+             853:   43(dvec2) CompositeExtract 848 1
+             854:   43(dvec2) CompositeExtract 849 1
+             855:   43(dvec2) FMul 853 854
+             856:   43(dvec2) CompositeExtract 848 2
+             857:   43(dvec2) CompositeExtract 849 2
+             858:   43(dvec2) FMul 856 857
+             859:758(dmat3x2) CompositeConstruct 852 855 858
                               Store 760(dmat3x2v) 859
-             860:         776 Load 778(dmat3x4v)
-             861:         776 Load 778(dmat3x4v)
-             862: 53(f64vec4) CompositeExtract 860 0
-             863: 53(f64vec4) CompositeExtract 861 0
-             864: 53(f64vec4) FMul 862 863
-             865: 53(f64vec4) CompositeExtract 860 1
-             866: 53(f64vec4) CompositeExtract 861 1
-             867: 53(f64vec4) FMul 865 866
-             868: 53(f64vec4) CompositeExtract 860 2
-             869: 53(f64vec4) CompositeExtract 861 2
-             870: 53(f64vec4) FMul 868 869
-             871:         776 CompositeConstruct 864 867 870
+             860:776(dmat3x4) Load 778(dmat3x4v)
+             861:776(dmat3x4) Load 778(dmat3x4v)
+             862:   53(dvec4) CompositeExtract 860 0
+             863:   53(dvec4) CompositeExtract 861 0
+             864:   53(dvec4) FMul 862 863
+             865:   53(dvec4) CompositeExtract 860 1
+             866:   53(dvec4) CompositeExtract 861 1
+             867:   53(dvec4) FMul 865 866
+             868:   53(dvec4) CompositeExtract 860 2
+             869:   53(dvec4) CompositeExtract 861 2
+             870:   53(dvec4) FMul 868 869
+             871:776(dmat3x4) CompositeConstruct 864 867 870
                               Store 778(dmat3x4v) 871
-             872:         770 Load 772(dmat4x2v)
-             873:         770 Load 772(dmat4x2v)
-             874: 43(f64vec2) CompositeExtract 872 0
-             875: 43(f64vec2) CompositeExtract 873 0
-             876: 43(f64vec2) FMul 874 875
-             877: 43(f64vec2) CompositeExtract 872 1
-             878: 43(f64vec2) CompositeExtract 873 1
-             879: 43(f64vec2) FMul 877 878
-             880: 43(f64vec2) CompositeExtract 872 2
-             881: 43(f64vec2) CompositeExtract 873 2
-             882: 43(f64vec2) FMul 880 881
-             883: 43(f64vec2) CompositeExtract 872 3
-             884: 43(f64vec2) CompositeExtract 873 3
-             885: 43(f64vec2) FMul 883 884
-             886:         770 CompositeConstruct 876 879 882 885
+             872:770(dmat4x2) Load 772(dmat4x2v)
+             873:770(dmat4x2) Load 772(dmat4x2v)
+             874:   43(dvec2) CompositeExtract 872 0
+             875:   43(dvec2) CompositeExtract 873 0
+             876:   43(dvec2) FMul 874 875
+             877:   43(dvec2) CompositeExtract 872 1
+             878:   43(dvec2) CompositeExtract 873 1
+             879:   43(dvec2) FMul 877 878
+             880:   43(dvec2) CompositeExtract 872 2
+             881:   43(dvec2) CompositeExtract 873 2
+             882:   43(dvec2) FMul 880 881
+             883:   43(dvec2) CompositeExtract 872 3
+             884:   43(dvec2) CompositeExtract 873 3
+             885:   43(dvec2) FMul 883 884
+             886:770(dmat4x2) CompositeConstruct 876 879 882 885
                               Store 772(dmat4x2v) 886
-             887:         782 Load 784(dmat4x3v)
-             888:         782 Load 784(dmat4x3v)
-             889: 48(f64vec3) CompositeExtract 887 0
-             890: 48(f64vec3) CompositeExtract 888 0
-             891: 48(f64vec3) FMul 889 890
-             892: 48(f64vec3) CompositeExtract 887 1
-             893: 48(f64vec3) CompositeExtract 888 1
-             894: 48(f64vec3) FMul 892 893
-             895: 48(f64vec3) CompositeExtract 887 2
-             896: 48(f64vec3) CompositeExtract 888 2
-             897: 48(f64vec3) FMul 895 896
-             898: 48(f64vec3) CompositeExtract 887 3
-             899: 48(f64vec3) CompositeExtract 888 3
-             900: 48(f64vec3) FMul 898 899
-             901:         782 CompositeConstruct 891 894 897 900
+             887:782(dmat4x3) Load 784(dmat4x3v)
+             888:782(dmat4x3) Load 784(dmat4x3v)
+             889:   48(dvec3) CompositeExtract 887 0
+             890:   48(dvec3) CompositeExtract 888 0
+             891:   48(dvec3) FMul 889 890
+             892:   48(dvec3) CompositeExtract 887 1
+             893:   48(dvec3) CompositeExtract 888 1
+             894:   48(dvec3) FMul 892 893
+             895:   48(dvec3) CompositeExtract 887 2
+             896:   48(dvec3) CompositeExtract 888 2
+             897:   48(dvec3) FMul 895 896
+             898:   48(dvec3) CompositeExtract 887 3
+             899:   48(dvec3) CompositeExtract 888 3
+             900:   48(dvec3) FMul 898 899
+             901:782(dmat4x3) CompositeConstruct 891 894 897 900
                               Store 784(dmat4x3v) 901
-             902:         734 Load 736(dmat2v)
-             903:         734 Transpose 902
-             904:         734 Load 736(dmat2v)
-             905:         734 MatrixTimesMatrix 904 903
+             902:  734(dmat2) Load 736(dmat2v)
+             903:  734(dmat2) Transpose 902
+             904:  734(dmat2) Load 736(dmat2v)
+             905:  734(dmat2) MatrixTimesMatrix 904 903
                               Store 736(dmat2v) 905
-             906:         740 Load 742(dmat3v)
-             907:         740 Transpose 906
-             908:         740 Load 742(dmat3v)
-             909:         740 MatrixTimesMatrix 908 907
+             906:  740(dmat3) Load 742(dmat3v)
+             907:  740(dmat3) Transpose 906
+             908:  740(dmat3) Load 742(dmat3v)
+             909:  740(dmat3) MatrixTimesMatrix 908 907
                               Store 742(dmat3v) 909
-             910:         746 Load 748(dmat4v)
-             911:         746 Transpose 910
-             912:         746 Load 748(dmat4v)
-             913:         746 MatrixTimesMatrix 912 911
+             910:  746(dmat4) Load 748(dmat4v)
+             911:  746(dmat4) Transpose 910
+             912:  746(dmat4) Load 748(dmat4v)
+             913:  746(dmat4) MatrixTimesMatrix 912 911
                               Store 748(dmat4v) 913
-             914:         758 Load 760(dmat3x2v)
-             915:         752 Transpose 914
+             914:758(dmat3x2) Load 760(dmat3x2v)
+             915:752(dmat2x3) Transpose 914
                               Store 754(dmat2x3v) 915
-             916:         752 Load 754(dmat2x3v)
-             917:         758 Transpose 916
+             916:752(dmat2x3) Load 754(dmat2x3v)
+             917:758(dmat3x2) Transpose 916
                               Store 760(dmat3x2v) 917
-             918:         770 Load 772(dmat4x2v)
-             919:         764 Transpose 918
+             918:770(dmat4x2) Load 772(dmat4x2v)
+             919:764(dmat2x4) Transpose 918
                               Store 766(dmat2x4v) 919
-             920:         764 Load 766(dmat2x4v)
-             921:         770 Transpose 920
+             920:764(dmat2x4) Load 766(dmat2x4v)
+             921:770(dmat4x2) Transpose 920
                               Store 772(dmat4x2v) 921
-             922:         782 Load 784(dmat4x3v)
-             923:         776 Transpose 922
+             922:782(dmat4x3) Load 784(dmat4x3v)
+             923:776(dmat3x4) Transpose 922
                               Store 778(dmat3x4v) 923
-             924:         776 Load 778(dmat3x4v)
-             925:         782 Transpose 924
+             924:776(dmat3x4) Load 778(dmat3x4v)
+             925:782(dmat4x3) Transpose 924
                               Store 784(dmat4x3v) 925
-             926:         734 Load 736(dmat2v)
-             927:39(float64_t) ExtInst 1(GLSL.std.450) 33(Determinant) 926
-             928:39(float64_t) Load 41(doublev)
-             929:39(float64_t) FAdd 928 927
+             926:  734(dmat2) Load 736(dmat2v)
+             927:  39(double) ExtInst 1(GLSL.std.450) 33(Determinant) 926
+             928:  39(double) Load 41(doublev)
+             929:  39(double) FAdd 928 927
                               Store 41(doublev) 929
-             930:         740 Load 742(dmat3v)
-             931:39(float64_t) ExtInst 1(GLSL.std.450) 33(Determinant) 930
-             932:39(float64_t) Load 41(doublev)
-             933:39(float64_t) FAdd 932 931
+             930:  740(dmat3) Load 742(dmat3v)
+             931:  39(double) ExtInst 1(GLSL.std.450) 33(Determinant) 930
+             932:  39(double) Load 41(doublev)
+             933:  39(double) FAdd 932 931
                               Store 41(doublev) 933
-             934:         746 Load 748(dmat4v)
-             935:39(float64_t) ExtInst 1(GLSL.std.450) 33(Determinant) 934
-             936:39(float64_t) Load 41(doublev)
-             937:39(float64_t) FAdd 936 935
+             934:  746(dmat4) Load 748(dmat4v)
+             935:  39(double) ExtInst 1(GLSL.std.450) 33(Determinant) 934
+             936:  39(double) Load 41(doublev)
+             937:  39(double) FAdd 936 935
                               Store 41(doublev) 937
-             938:         734 Load 736(dmat2v)
-             939:         734 ExtInst 1(GLSL.std.450) 34(MatrixInverse) 938
-             940:         734 Load 736(dmat2v)
-             941:         734 MatrixTimesMatrix 940 939
+             938:  734(dmat2) Load 736(dmat2v)
+             939:  734(dmat2) ExtInst 1(GLSL.std.450) 34(MatrixInverse) 938
+             940:  734(dmat2) Load 736(dmat2v)
+             941:  734(dmat2) MatrixTimesMatrix 940 939
                               Store 736(dmat2v) 941
-             942:         740 Load 742(dmat3v)
-             943:         740 ExtInst 1(GLSL.std.450) 34(MatrixInverse) 942
-             944:         740 Load 742(dmat3v)
-             945:         740 MatrixTimesMatrix 944 943
+             942:  740(dmat3) Load 742(dmat3v)
+             943:  740(dmat3) ExtInst 1(GLSL.std.450) 34(MatrixInverse) 942
+             944:  740(dmat3) Load 742(dmat3v)
+             945:  740(dmat3) MatrixTimesMatrix 944 943
                               Store 742(dmat3v) 945
-             946:         746 Load 748(dmat4v)
-             947:         746 ExtInst 1(GLSL.std.450) 34(MatrixInverse) 946
-             948:         746 Load 748(dmat4v)
-             949:         746 MatrixTimesMatrix 948 947
+             946:  746(dmat4) Load 748(dmat4v)
+             947:  746(dmat4) ExtInst 1(GLSL.std.450) 34(MatrixInverse) 946
+             948:  746(dmat4) Load 748(dmat4v)
+             949:  746(dmat4) MatrixTimesMatrix 948 947
                               Store 748(dmat4v) 949
-             950:39(float64_t) Load 41(doublev)
-             952:     40(ptr) AccessChain 45(dvec2v) 951
-             953:39(float64_t) Load 952
-             954:39(float64_t) FAdd 950 953
-             956:     40(ptr) AccessChain 50(dvec3v) 955
-             957:39(float64_t) Load 956
-             958:39(float64_t) FAdd 954 957
-             960:     40(ptr) AccessChain 55(dvec4v) 959
-             961:39(float64_t) Load 960
-             962:39(float64_t) FAdd 958 961
-             964:     40(ptr) AccessChain 736(dmat2v) 963 951
-             965:39(float64_t) Load 964
-             966:39(float64_t) FAdd 962 965
-             968:     40(ptr) AccessChain 742(dmat3v) 967 955
-             969:39(float64_t) Load 968
-             970:39(float64_t) FAdd 966 969
-             971:     40(ptr) AccessChain 748(dmat4v) 25 959
-             972:39(float64_t) Load 971
-             973:39(float64_t) FAdd 970 972
-             974:     40(ptr) AccessChain 754(dmat2x3v) 963 951
-             975:39(float64_t) Load 974
-             976:39(float64_t) FAdd 973 975
-             977:     40(ptr) AccessChain 760(dmat3x2v) 963 951
-             978:39(float64_t) Load 977
-             979:39(float64_t) FAdd 976 978
-             980:     40(ptr) AccessChain 778(dmat3x4v) 967 955
-             981:39(float64_t) Load 980
-             982:39(float64_t) FAdd 979 981
-             983:     40(ptr) AccessChain 784(dmat4x3v) 967 955
-             984:39(float64_t) Load 983
-             985:39(float64_t) FAdd 982 984
-             986:     40(ptr) AccessChain 766(dmat2x4v) 963 951
-             987:39(float64_t) Load 986
-             988:39(float64_t) FAdd 985 987
-             989:     40(ptr) AccessChain 772(dmat4x2v) 963 951
-             990:39(float64_t) Load 989
-             991:39(float64_t) FAdd 988 990
+             950:  39(double) Load 41(doublev)
+             952: 40(double*) AccessChain 45(dvec2v) 951
+             953:  39(double) Load 952
+             954:  39(double) FAdd 950 953
+             956: 40(double*) AccessChain 50(dvec3v) 955
+             957:  39(double) Load 956
+             958:  39(double) FAdd 954 957
+             960: 40(double*) AccessChain 55(dvec4v) 959
+             961:  39(double) Load 960
+             962:  39(double) FAdd 958 961
+             964: 40(double*) AccessChain 736(dmat2v) 963 951
+             965:  39(double) Load 964
+             966:  39(double) FAdd 962 965
+             968: 40(double*) AccessChain 742(dmat3v) 967 955
+             969:  39(double) Load 968
+             970:  39(double) FAdd 966 969
+             971: 40(double*) AccessChain 748(dmat4v) 25 959
+             972:  39(double) Load 971
+             973:  39(double) FAdd 970 972
+             974: 40(double*) AccessChain 754(dmat2x3v) 963 951
+             975:  39(double) Load 974
+             976:  39(double) FAdd 973 975
+             977: 40(double*) AccessChain 760(dmat3x2v) 963 951
+             978:  39(double) Load 977
+             979:  39(double) FAdd 976 978
+             980: 40(double*) AccessChain 778(dmat3x4v) 967 955
+             981:  39(double) Load 980
+             982:  39(double) FAdd 979 981
+             983: 40(double*) AccessChain 784(dmat4x3v) 967 955
+             984:  39(double) Load 983
+             985:  39(double) FAdd 982 984
+             986: 40(double*) AccessChain 766(dmat2x4v) 963 951
+             987:  39(double) Load 986
+             988:  39(double) FAdd 985 987
+             989: 40(double*) AccessChain 772(dmat4x2v) 963 951
+             990:  39(double) Load 989
+             991:  39(double) FAdd 988 990
              992:   428(bool) Load 430(boolv)
              994:   10(float) Select 992 993 21
-             995:39(float64_t) FConvert 994
-             996:39(float64_t) FAdd 991 995
-             997:    429(ptr) AccessChain 439(bvec2v) 33
+             995:  39(double) FConvert 994
+             996:  39(double) FAdd 991 995
+             997:  429(bool*) AccessChain 439(bvec2v) 33
              998:   428(bool) Load 997
              999:   10(float) Select 998 993 21
-            1000:39(float64_t) FConvert 999
-            1001:39(float64_t) FAdd 996 1000
-            1002:    429(ptr) AccessChain 448(bvec3v) 33
+            1000:  39(double) FConvert 999
+            1001:  39(double) FAdd 996 1000
+            1002:  429(bool*) AccessChain 448(bvec3v) 33
             1003:   428(bool) Load 1002
             1004:   10(float) Select 1003 993 21
-            1005:39(float64_t) FConvert 1004
-            1006:39(float64_t) FAdd 1001 1005
-            1007:    429(ptr) AccessChain 457(bvec4v) 33
+            1005:  39(double) FConvert 1004
+            1006:  39(double) FAdd 1001 1005
+            1007:  429(bool*) AccessChain 457(bvec4v) 33
             1008:   428(bool) Load 1007
             1009:   10(float) Select 1008 993 21
-            1010:39(float64_t) FConvert 1009
-            1011:39(float64_t) FAdd 1006 1010
+            1010:  39(double) FConvert 1009
+            1011:  39(double) FAdd 1006 1010
             1012:   10(float) FConvert 1011
-            1013:   11(fvec4) Load 13(outp)
-            1014:   11(fvec4) VectorTimesScalar 1013 1012
+            1013:    11(vec4) Load 13(outp)
+            1014:    11(vec4) VectorTimesScalar 1013 1012
                               Store 13(outp) 1014
                               Return
                               FunctionEnd

@@ -259,67 +259,67 @@ using depth_any
                               Decorate 82(@entryPointOutput.Depth) BuiltIn FragDepth
                               Decorate 88(sampleMask) BuiltIn SampleMask
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 2 7(ptr) 7(ptr) 7(ptr) 7(ptr)
+               8:             TypeFunction 2(void) 7(float*) 7(float*) 7(float*) 7(float*)
               15:             TypeVector 6(float) 4
-              16:             TypePointer Function 15(fvec4)
+              16:             TypePointer Function 15(vec4)
               17:             TypeInt 32 1
               18:             TypePointer Function 17(int)
-   19(PS_OUTPUT):             TypeStruct 15(fvec4) 6(float)
-              20:             TypeFunction 19(PS_OUTPUT) 16(ptr) 18(ptr)
+   19(PS_OUTPUT):             TypeStruct 15(vec4) 6(float)
+              20:             TypeFunction 19(PS_OUTPUT) 16(vec4*) 18(int*)
               27:    6(float) Constant 3212836864
               28:    6(float) Constant 1065353216
               32:    6(float) Constant 1088421888
               34:    6(float) Constant 1077936128
               42:             TypeInt 32 0
-              43:     42(int) Constant 3
+              43:    42(uint) Constant 3
               51:             TypePointer Function 19(PS_OUTPUT)
               53:     17(int) Constant 0
               59:     17(int) Constant 1
-              67:             TypePointer Input 15(fvec4)
-       68(inpos):     67(ptr) Variable Input
-              77:             TypePointer Output 15(fvec4)
-78(@entryPointOutput.Color):     77(ptr) Variable Output
+              67:             TypePointer Input 15(vec4)
+       68(inpos):   67(vec4*) Variable Input
+              77:             TypePointer Output 15(vec4)
+78(@entryPointOutput.Color):   77(vec4*) Variable Output
               81:             TypePointer Output 6(float)
-82(@entryPointOutput.Depth):     81(ptr) Variable Output
-              85:     42(int) Constant 1
+82(@entryPointOutput.Depth):  81(float*) Variable Output
+              85:    42(uint) Constant 1
               86:             TypeArray 17(int) 85
-              87:             TypePointer Output 86
-  88(sampleMask):     87(ptr) Variable Output
+              87:             TypePointer Output 86(int[1])
+  88(sampleMask): 87(int[1]*) Variable Output
               90:             TypePointer Output 17(int)
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-       66(inpos):     16(ptr) Variable Function
- 70(flattenTemp):     51(ptr) Variable Function
-  71(sampleMask):     18(ptr) Variable Function
-       72(param):     16(ptr) Variable Function
-       74(param):     18(ptr) Variable Function
-              69:   15(fvec4) Load 68(inpos)
+       66(inpos):   16(vec4*) Variable Function
+ 70(flattenTemp):51(PS_OUTPUT*) Variable Function
+  71(sampleMask):    18(int*) Variable Function
+       72(param):   16(vec4*) Variable Function
+       74(param):    18(int*) Variable Function
+              69:    15(vec4) Load 68(inpos)
                               Store 66(inpos) 69
-              73:   15(fvec4) Load 66(inpos)
+              73:    15(vec4) Load 66(inpos)
                               Store 72(param) 73
               75:19(PS_OUTPUT) FunctionCall 23(@main(vf4;i1;) 72(param) 74(param)
               76:     17(int) Load 74(param)
                               Store 71(sampleMask) 76
                               Store 70(flattenTemp) 75
-              79:     16(ptr) AccessChain 70(flattenTemp) 53
-              80:   15(fvec4) Load 79
+              79:   16(vec4*) AccessChain 70(flattenTemp) 53
+              80:    15(vec4) Load 79
                               Store 78(@entryPointOutput.Color) 80
-              83:      7(ptr) AccessChain 70(flattenTemp) 59
+              83:   7(float*) AccessChain 70(flattenTemp) 59
               84:    6(float) Load 83
                               Store 82(@entryPointOutput.Depth) 84
               89:     17(int) Load 71(sampleMask)
-              91:     90(ptr) AccessChain 88(sampleMask) 53
+              91:    90(int*) AccessChain 88(sampleMask) 53
                               Store 91 89
                               Return
                               FunctionEnd
-13(MyFunc(f1;f1;f1;f1;):           2 Function None 8
-            9(x):      7(ptr) FunctionParameter
-           10(y):      7(ptr) FunctionParameter
-           11(z):      7(ptr) FunctionParameter
-           12(w):      7(ptr) FunctionParameter
+13(MyFunc(f1;f1;f1;f1;):     2(void) Function None 8
+            9(x):   7(float*) FunctionParameter
+           10(y):   7(float*) FunctionParameter
+           11(z):   7(float*) FunctionParameter
+           12(w):   7(float*) FunctionParameter
               14:             Label
               25:    6(float) Load 9(x)
                               Store 10(y) 25
@@ -332,43 +332,43 @@ using depth_any
                               Return
                               FunctionEnd
 23(@main(vf4;i1;):19(PS_OUTPUT) Function None 20
-       21(inpos):     16(ptr) FunctionParameter
-  22(sampleMask):     18(ptr) FunctionParameter
+       21(inpos):   16(vec4*) FunctionParameter
+  22(sampleMask):    18(int*) FunctionParameter
               24:             Label
-           31(x):      7(ptr) Variable Function
-           33(z):      7(ptr) Variable Function
-           35(y):      7(ptr) Variable Function
-       36(param):      7(ptr) Variable Function
-       38(param):      7(ptr) Variable Function
-       39(param):      7(ptr) Variable Function
-       41(param):      7(ptr) Variable Function
-       52(psout):     51(ptr) Variable Function
+           31(x):   7(float*) Variable Function
+           33(z):   7(float*) Variable Function
+           35(y):   7(float*) Variable Function
+       36(param):   7(float*) Variable Function
+       38(param):   7(float*) Variable Function
+       39(param):   7(float*) Variable Function
+       41(param):   7(float*) Variable Function
+       52(psout):51(PS_OUTPUT*) Variable Function
                               Store 31(x) 32
                               Store 33(z) 34
               37:    6(float) Load 31(x)
                               Store 36(param) 37
               40:    6(float) Load 33(z)
                               Store 39(param) 40
-              44:      7(ptr) AccessChain 21(inpos) 43
+              44:   7(float*) AccessChain 21(inpos) 43
               45:    6(float) Load 44
                               Store 41(param) 45
-              46:           2 FunctionCall 13(MyFunc(f1;f1;f1;f1;) 36(param) 38(param) 39(param) 41(param)
+              46:     2(void) FunctionCall 13(MyFunc(f1;f1;f1;f1;) 36(param) 38(param) 39(param) 41(param)
               47:    6(float) Load 38(param)
                               Store 35(y) 47
               48:    6(float) Load 39(param)
                               Store 33(z) 48
               49:    6(float) Load 41(param)
-              50:      7(ptr) AccessChain 21(inpos) 43
+              50:   7(float*) AccessChain 21(inpos) 43
                               Store 50 49
               54:    6(float) Load 31(x)
               55:    6(float) Load 35(y)
               56:    6(float) Load 33(z)
-              57:   15(fvec4) CompositeConstruct 54 55 56 28
-              58:     16(ptr) AccessChain 52(psout) 53
+              57:    15(vec4) CompositeConstruct 54 55 56 28
+              58:   16(vec4*) AccessChain 52(psout) 53
                               Store 58 57
-              60:      7(ptr) AccessChain 21(inpos) 43
+              60:   7(float*) AccessChain 21(inpos) 43
               61:    6(float) Load 60
-              62:      7(ptr) AccessChain 52(psout) 59
+              62:   7(float*) AccessChain 52(psout) 59
                               Store 62 61
               63:19(PS_OUTPUT) Load 52(psout)
                               ReturnValue 63

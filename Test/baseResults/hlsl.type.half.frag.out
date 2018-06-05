@@ -185,56 +185,56 @@ gl_FragCoord origin is upper left
                               Name 58  "@entryPointOutput"
                               Decorate 58(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypePointer Function 6(float)
               13:    6(float) Constant 0
               15:    6(float) Constant 1065353216
               16:             TypeVector 6(float) 2
-              17:             TypePointer Function 16(fvec2)
+              17:             TypePointer Function 16(vec2)
               19:    6(float) Constant 1073741824
-              20:   16(fvec2) ConstantComposite 19 19
+              20:    16(vec2) ConstantComposite 19 19
               21:             TypeVector 6(float) 3
-              22:             TypePointer Function 21(fvec3)
+              22:             TypePointer Function 21(vec3)
               24:    6(float) Constant 1077936128
-              25:   21(fvec3) ConstantComposite 24 24 24
-              26:             TypePointer Function 7(fvec4)
+              25:    21(vec3) ConstantComposite 24 24 24
+              26:             TypePointer Function 7(vec4)
               28:    6(float) Constant 1082130432
-              29:    7(fvec4) ConstantComposite 28 28 28 28
-              30:             TypeMatrix 16(fvec2) 2
-              31:             TypePointer Function 30
-              33:   16(fvec2) ConstantComposite 15 19
-              34:   16(fvec2) ConstantComposite 24 28
-              35:          30 ConstantComposite 33 34
-              36:             TypeMatrix 21(fvec3) 2
-              37:             TypePointer Function 36
+              29:     7(vec4) ConstantComposite 28 28 28 28
+              30:             TypeMatrix 16(vec2) 2
+              31:             TypePointer Function 30(mat2)
+              33:    16(vec2) ConstantComposite 15 19
+              34:    16(vec2) ConstantComposite 24 28
+              35:    30(mat2) ConstantComposite 33 34
+              36:             TypeMatrix 21(vec3) 2
+              37:             TypePointer Function 36(mat2x3)
               39:    6(float) Constant 1084017869
-              40:   21(fvec3) ConstantComposite 39 39 39
-              41:          36 ConstantComposite 40 40
+              40:    21(vec3) ConstantComposite 39 39 39
+              41:  36(mat2x3) ConstantComposite 40 40
               42:             TypeInt 32 1
               43:     42(int) Constant 0
               44:             TypeInt 32 0
-              45:     44(int) Constant 0
-              48:     44(int) Constant 1
-              57:             TypePointer Output 7(fvec4)
-58(@entryPointOutput):     57(ptr) Variable Output
-         4(main):           2 Function None 3
+              45:    44(uint) Constant 0
+              48:    44(uint) Constant 1
+              57:             TypePointer Output 7(vec4)
+58(@entryPointOutput):   57(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              59:    7(fvec4) FunctionCall 9(@main()
+              59:     7(vec4) FunctionCall 9(@main()
                               Store 58(@entryPointOutput) 59
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-          12(h0):     11(ptr) Variable Function
-          14(h1):     11(ptr) Variable Function
-          18(h2):     17(ptr) Variable Function
-          23(h3):     22(ptr) Variable Function
-          27(h4):     26(ptr) Variable Function
-         32(h22):     31(ptr) Variable Function
-         38(h23):     37(ptr) Variable Function
+          12(h0):  11(float*) Variable Function
+          14(h1):  11(float*) Variable Function
+          18(h2):   17(vec2*) Variable Function
+          23(h3):   22(vec3*) Variable Function
+          27(h4):   26(vec4*) Variable Function
+         32(h22):   31(mat2*) Variable Function
+         38(h23): 37(mat2x3*) Variable Function
                               Store 12(h0) 13
                               Store 14(h1) 15
                               Store 18(h2) 20
@@ -242,13 +242,13 @@ gl_FragCoord origin is upper left
                               Store 27(h4) 29
                               Store 32(h22) 35
                               Store 38(h23) 41
-              46:     11(ptr) AccessChain 38(h23) 43 45
+              46:  11(float*) AccessChain 38(h23) 43 45
               47:    6(float) Load 46
-              49:     11(ptr) AccessChain 27(h4) 48
+              49:  11(float*) AccessChain 27(h4) 48
               50:    6(float) Load 49
               51:    6(float) FAdd 47 50
               52:    6(float) Load 12(h0)
               53:    6(float) FAdd 51 52
-              54:    7(fvec4) CompositeConstruct 53 53 53 53
+              54:     7(vec4) CompositeConstruct 53 53 53 53
                               ReturnValue 54
                               FunctionEnd

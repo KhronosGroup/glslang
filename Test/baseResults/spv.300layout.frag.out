@@ -33,41 +33,41 @@ spv.300layout.frag
                               Decorate 33 RelaxedPrecision
                               Decorate 34 RelaxedPrecision
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 3
-               8:             TypePointer Output 7(fvec3)
-            9(c):      8(ptr) Variable Output
-              10:             TypePointer Input 7(fvec3)
-       11(color):     10(ptr) Variable Input
-           13(S):             TypeStruct 7(fvec3) 6(float)
+               8:             TypePointer Output 7(vec3)
+            9(c):    8(vec3*) Variable Output
+              10:             TypePointer Input 7(vec3)
+       11(color):   10(vec3*) Variable Input
+           13(S):             TypeStruct 7(vec3) 6(float)
               14:             TypePointer Input 13(S)
-           15(s):     14(ptr) Variable Input
+           15(s):      14(S*) Variable Input
               16:             TypeInt 32 1
               17:     16(int) Constant 0
               21:             TypeVector 6(float) 4
               22:             TypeInt 32 0
-              23:     22(int) Constant 2
-              24:             TypeArray 21(fvec4) 23
-              25:             TypePointer Output 24
-           26(p):     25(ptr) Variable Output
+              23:    22(uint) Constant 2
+              24:             TypeArray 21(vec4) 23
+              25:             TypePointer Output 24(vec4[2])
+           26(p):25(vec4[2]*) Variable Output
               27:     16(int) Constant 1
-              28:             TypePointer Input 21(fvec4)
-         29(pos):     28(ptr) Variable Input
+              28:             TypePointer Input 21(vec4)
+         29(pos):   28(vec4*) Variable Input
               31:             TypePointer Input 6(float)
-              35:             TypePointer Output 21(fvec4)
-         4(main):           2 Function None 3
+              35:             TypePointer Output 21(vec4)
+         4(main):     2(void) Function None 3
                5:             Label
-              12:    7(fvec3) Load 11(color)
-              18:     10(ptr) AccessChain 15(s) 17
-              19:    7(fvec3) Load 18
-              20:    7(fvec3) FAdd 12 19
+              12:     7(vec3) Load 11(color)
+              18:   10(vec3*) AccessChain 15(s) 17
+              19:     7(vec3) Load 18
+              20:     7(vec3) FAdd 12 19
                               Store 9(c) 20
-              30:   21(fvec4) Load 29(pos)
-              32:     31(ptr) AccessChain 15(s) 27
+              30:    21(vec4) Load 29(pos)
+              32:  31(float*) AccessChain 15(s) 27
               33:    6(float) Load 32
-              34:   21(fvec4) VectorTimesScalar 30 33
-              36:     35(ptr) AccessChain 26(p) 27
+              34:    21(vec4) VectorTimesScalar 30 33
+              36:   35(vec4*) AccessChain 26(p) 27
                               Store 36 34
                               Return
                               FunctionEnd

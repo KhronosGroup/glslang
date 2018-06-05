@@ -171,15 +171,15 @@ gl_FragCoord origin is upper left
                               Decorate 51(gtex) DescriptorSet 0
                               Decorate 62(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeSampler
                7:             TypeFloat 32
                8:             TypeImage 7(float) 2D sampled format:Unknown
            9(OS):             TypeStruct 6 7(float) 8
               10:             TypePointer Function 9(OS)
               11:             TypeVector 7(float) 4
-              12:             TypeFunction 11(fvec4) 10(ptr)
-              16:             TypeFunction 11(fvec4)
+              12:             TypeFunction 11(vec4) 10(OS*)
+              16:             TypeFunction 11(vec4)
               19:             TypeInt 32 1
               20:     19(int) Constant 1
               21:             TypePointer Function 7(float)
@@ -191,39 +191,39 @@ gl_FragCoord origin is upper left
               34:             TypeVector 7(float) 2
               35:    7(float) Constant 1045220557
               36:    7(float) Constant 1050253722
-              37:   34(fvec2) ConstantComposite 35 36
+              37:    34(vec2) ConstantComposite 35 36
               43:             TypePointer UniformConstant 6
         44(gss2):     43(ptr) Variable UniformConstant
          47(gss):     43(ptr) Variable UniformConstant
               50:             TypePointer UniformConstant 8
         51(gtex):     50(ptr) Variable UniformConstant
               54:    7(float) Constant 1077936128
-              61:             TypePointer Output 11(fvec4)
-62(@entryPointOutput):     61(ptr) Variable Output
-         4(main):           2 Function None 3
+              61:             TypePointer Output 11(vec4)
+62(@entryPointOutput):   61(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              63:   11(fvec4) FunctionCall 17(@main()
+              63:    11(vec4) FunctionCall 17(@main()
                               Store 62(@entryPointOutput) 63
                               Return
                               FunctionEnd
-14(osCall(struct-OS-p1-f1-t211;):   11(fvec4) Function None 12
-           13(s):     10(ptr) FunctionParameter
+14(osCall(struct-OS-p1-f1-t211;):    11(vec4) Function None 12
+           13(s):     10(OS*) FunctionParameter
               15:             Label
-              22:     21(ptr) AccessChain 13(s) 20
+              22:  21(float*) AccessChain 13(s) 20
               23:    7(float) Load 22
               26:     25(ptr) AccessChain 13(s) 24
               27:           8 Load 26
               30:     29(ptr) AccessChain 13(s) 28
               31:           6 Load 30
               33:          32 SampledImage 27 31
-              38:   11(fvec4) ImageSampleImplicitLod 33 37
-              39:   11(fvec4) VectorTimesScalar 38 23
+              38:    11(vec4) ImageSampleImplicitLod 33 37
+              39:    11(vec4) VectorTimesScalar 38 23
                               ReturnValue 39
                               FunctionEnd
-      17(@main():   11(fvec4) Function None 16
+      17(@main():    11(vec4) Function None 16
               18:             Label
-          42(os):     10(ptr) Variable Function
-       56(param):     10(ptr) Variable Function
+          42(os):     10(OS*) Variable Function
+       56(param):     10(OS*) Variable Function
               45:           6 Load 44(gss2)
               46:     29(ptr) AccessChain 42(os) 28
                               Store 46 45
@@ -233,10 +233,10 @@ gl_FragCoord origin is upper left
               52:           8 Load 51(gtex)
               53:     25(ptr) AccessChain 42(os) 24
                               Store 53 52
-              55:     21(ptr) AccessChain 42(os) 20
+              55:  21(float*) AccessChain 42(os) 20
                               Store 55 54
               57:       9(OS) Load 42(os)
                               Store 56(param) 57
-              58:   11(fvec4) FunctionCall 14(osCall(struct-OS-p1-f1-t211;) 56(param)
+              58:    11(vec4) FunctionCall 14(osCall(struct-OS-p1-f1-t211;) 56(param)
                               ReturnValue 58
                               FunctionEnd

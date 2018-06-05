@@ -132,15 +132,15 @@ Shader version: 500
                               Decorate 47(g_tInputTexture) DescriptorSet 0
                               Decorate 57(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeSampler
                7:             TypeFloat 32
                8:             TypeImage 7(float) 2D sampled format:Unknown
       9(FxaaTex):             TypeStruct 6 8 7(float)
               10:             TypePointer Function 9(FxaaTex)
               11:             TypeVector 7(float) 4
-              12:             TypeFunction 11(fvec4) 10(ptr)
-              16:             TypeFunction 11(fvec4)
+              12:             TypeFunction 11(vec4) 10(FxaaTex*)
+              16:             TypeFunction 11(vec4)
               19:             TypeInt 32 1
               20:     19(int) Constant 1
               21:             TypePointer Function 8
@@ -156,40 +156,40 @@ Shader version: 500
               46:             TypePointer UniformConstant 8
 47(g_tInputTexture):     46(ptr) Variable UniformConstant
               49:    7(float) Constant 1056964608
-              56:             TypePointer Output 11(fvec4)
-57(@entryPointOutput):     56(ptr) Variable Output
-         4(main):           2 Function None 3
+              56:             TypePointer Output 11(vec4)
+57(@entryPointOutput):   56(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              58:   11(fvec4) FunctionCall 17(@main()
+              58:    11(vec4) FunctionCall 17(@main()
                               Store 57(@entryPointOutput) 58
                               Return
                               FunctionEnd
-14(lookUp(struct-FxaaTex-p1-t21-f11;):   11(fvec4) Function None 12
-         13(tex):     10(ptr) FunctionParameter
+14(lookUp(struct-FxaaTex-p1-t21-f11;):    11(vec4) Function None 12
+         13(tex):10(FxaaTex*) FunctionParameter
               15:             Label
               22:     21(ptr) AccessChain 13(tex) 20
               23:           8 Load 22
               26:     25(ptr) AccessChain 13(tex) 24
               27:           6 Load 26
               29:          28 SampledImage 23 27
-              32:     31(ptr) AccessChain 13(tex) 30
+              32:  31(float*) AccessChain 13(tex) 30
               33:    7(float) Load 32
-              34:     31(ptr) AccessChain 13(tex) 30
+              34:  31(float*) AccessChain 13(tex) 30
               35:    7(float) Load 34
-              37:   36(fvec2) CompositeConstruct 33 35
-              39:   11(fvec4) ImageSampleExplicitLod 29 37 Lod 38
+              37:    36(vec2) CompositeConstruct 33 35
+              39:    11(vec4) ImageSampleExplicitLod 29 37 Lod 38
                               ReturnValue 39
                               FunctionEnd
-      17(@main():   11(fvec4) Function None 16
+      17(@main():    11(vec4) Function None 16
               18:             Label
-         42(tex):     10(ptr) Variable Function
-       51(param):     10(ptr) Variable Function
+         42(tex):10(FxaaTex*) Variable Function
+       51(param):10(FxaaTex*) Variable Function
               45:           6 Load 44(g_tInputTexture_sampler)
               48:           8 Load 47(g_tInputTexture)
               50:  9(FxaaTex) CompositeConstruct 45 48 49
                               Store 42(tex) 50
               52:  9(FxaaTex) Load 42(tex)
                               Store 51(param) 52
-              53:   11(fvec4) FunctionCall 14(lookUp(struct-FxaaTex-p1-t21-f11;) 51(param)
+              53:    11(vec4) FunctionCall 14(lookUp(struct-FxaaTex-p1-t21-f11;) 51(param)
                               ReturnValue 53
                               FunctionEnd

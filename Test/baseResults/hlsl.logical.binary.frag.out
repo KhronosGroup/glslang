@@ -153,44 +153,44 @@ gl_FragCoord origin is upper left
                               Decorate 16 DescriptorSet 0
                               Decorate 53(@entryPointOutput.Color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypeInt 32 1
               13:             TypeVector 12(int) 4
-     14($Global):             TypeStruct 12(int) 13(ivec4) 6(float) 7(fvec4)
+     14($Global):             TypeStruct 12(int) 13(ivec4) 6(float) 7(vec4)
               15:             TypePointer Uniform 14($Global)
-              16:     15(ptr) Variable Uniform
+              16:15($Global*) Variable Uniform
               17:     12(int) Constant 0
               18:             TypePointer Uniform 12(int)
               21:             TypeBool
               22:             TypeInt 32 0
-              23:     22(int) Constant 0
+              23:    22(uint) Constant 0
               25:     12(int) Constant 2
               26:             TypePointer Uniform 6(float)
               29:    6(float) Constant 0
               43:             TypePointer Function 8(PS_OUTPUT)
               45:    6(float) Constant 1065353216
-              46:    7(fvec4) ConstantComposite 45 45 45 45
-              47:             TypePointer Function 7(fvec4)
-              52:             TypePointer Output 7(fvec4)
-53(@entryPointOutput.Color):     52(ptr) Variable Output
-         4(main):           2 Function None 3
+              46:     7(vec4) ConstantComposite 45 45 45 45
+              47:             TypePointer Function 7(vec4)
+              52:             TypePointer Output 7(vec4)
+53(@entryPointOutput.Color):   52(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               54:8(PS_OUTPUT) FunctionCall 10(@main()
-              55:    7(fvec4) CompositeExtract 54 0
+              55:     7(vec4) CompositeExtract 54 0
                               Store 53(@entryPointOutput.Color) 55
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-       44(psout):     43(ptr) Variable Function
-              19:     18(ptr) AccessChain 16 17
+       44(psout):43(PS_OUTPUT*) Variable Function
+              19:    18(int*) AccessChain 16 17
               20:     12(int) Load 19
               24:    21(bool) INotEqual 20 23
-              27:     26(ptr) AccessChain 16 25
+              27:  26(float*) AccessChain 16 25
               28:    6(float) Load 27
               30:    21(bool) FOrdNotEqual 28 29
               31:    21(bool) LogicalAnd 24 30
@@ -199,10 +199,10 @@ gl_FragCoord origin is upper left
               32:               Label
                                 Branch 33
               33:             Label
-              34:     18(ptr) AccessChain 16 17
+              34:    18(int*) AccessChain 16 17
               35:     12(int) Load 34
               36:    21(bool) INotEqual 35 23
-              37:     26(ptr) AccessChain 16 25
+              37:  26(float*) AccessChain 16 25
               38:    6(float) Load 37
               39:    21(bool) FOrdNotEqual 38 29
               40:    21(bool) LogicalOr 36 39
@@ -211,7 +211,7 @@ gl_FragCoord origin is upper left
               41:               Label
                                 Branch 42
               42:             Label
-              48:     47(ptr) AccessChain 44(psout) 17
+              48:   47(vec4*) AccessChain 44(psout) 17
                               Store 48 46
               49:8(PS_OUTPUT) Load 44(psout)
                               ReturnValue 49

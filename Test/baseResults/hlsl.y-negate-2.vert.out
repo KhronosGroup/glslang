@@ -103,46 +103,46 @@ Shader version: 500
                               Decorate 15 DescriptorSet 0
                               Decorate 35(position) BuiltIn Position
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 2 8(ptr)
-     13($Global):             TypeStruct 7(fvec4)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 2(void) 8(vec4*)
+     13($Global):             TypeStruct 7(vec4)
               14:             TypePointer Uniform 13($Global)
-              15:     14(ptr) Variable Uniform
+              15:14($Global*) Variable Uniform
               16:             TypeInt 32 1
               17:     16(int) Constant 0
-              18:             TypePointer Uniform 7(fvec4)
+              18:             TypePointer Uniform 7(vec4)
               27:             TypeInt 32 0
-              28:     27(int) Constant 1
+              28:    27(uint) Constant 1
               29:             TypePointer Function 6(float)
-              34:             TypePointer Output 7(fvec4)
-    35(position):     34(ptr) Variable Output
-         4(main):           2 Function None 3
+              34:             TypePointer Output 7(vec4)
+    35(position):   34(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-    21(position):      8(ptr) Variable Function
-       22(param):      8(ptr) Variable Function
-   25(@position):      8(ptr) Variable Function
-              23:           2 FunctionCall 11(@main(vf4;) 22(param)
-              24:    7(fvec4) Load 22(param)
+    21(position):    8(vec4*) Variable Function
+       22(param):    8(vec4*) Variable Function
+   25(@position):    8(vec4*) Variable Function
+              23:     2(void) FunctionCall 11(@main(vf4;) 22(param)
+              24:     7(vec4) Load 22(param)
                               Store 21(position) 24
-              26:    7(fvec4) Load 21(position)
+              26:     7(vec4) Load 21(position)
                               Store 25(@position) 26
-              30:     29(ptr) AccessChain 25(@position) 28
+              30:  29(float*) AccessChain 25(@position) 28
               31:    6(float) Load 30
               32:    6(float) FNegate 31
-              33:     29(ptr) AccessChain 25(@position) 28
+              33:  29(float*) AccessChain 25(@position) 28
                               Store 33 32
-              36:    7(fvec4) Load 25(@position)
+              36:     7(vec4) Load 25(@position)
                               Store 35(position) 36
                               Return
                               FunctionEnd
-  11(@main(vf4;):           2 Function None 9
-    10(position):      8(ptr) FunctionParameter
+  11(@main(vf4;):     2(void) Function None 9
+    10(position):    8(vec4*) FunctionParameter
               12:             Label
-              19:     18(ptr) AccessChain 15 17
-              20:    7(fvec4) Load 19
+              19:   18(vec4*) AccessChain 15 17
+              20:     7(vec4) Load 19
                               Store 10(position) 20
                               Return
                               FunctionEnd

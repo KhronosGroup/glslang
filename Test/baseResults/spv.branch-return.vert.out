@@ -19,24 +19,24 @@ spv.branch-return.vert
                               MemberDecorate 18(gl_PerVertex) 1 BuiltIn PointSize
                               Decorate 18(gl_PerVertex) Block
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Input 6(int)
-8(gl_InstanceIndex):      7(ptr) Variable Input
+8(gl_InstanceIndex):     7(int*) Variable Input
               16:             TypeFloat 32
               17:             TypeVector 16(float) 4
-18(gl_PerVertex):             TypeStruct 17(fvec4) 16(float)
+18(gl_PerVertex):             TypeStruct 17(vec4) 16(float)
               19:             TypePointer Output 18(gl_PerVertex)
-              20:     19(ptr) Variable Output
+              20:19(gl_PerVertex*) Variable Output
               21:      6(int) Constant 0
               22:   16(float) Constant 0
-              23:   17(fvec4) ConstantComposite 22 22 22 22
-              24:             TypePointer Output 17(fvec4)
+              23:    17(vec4) ConstantComposite 22 22 22 22
+              24:             TypePointer Output 17(vec4)
               30:   16(float) Constant 1039918957
               31:             TypeInt 32 0
-              32:     31(int) Constant 0
+              32:    31(uint) Constant 0
               33:             TypePointer Output 16(float)
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
                9:      6(int) Load 8(gl_InstanceIndex)
                               SelectionMerge 14 None
@@ -48,7 +48,7 @@ spv.branch-return.vert
               10:               Label
                                 Return
               11:               Label
-              25:     24(ptr)   AccessChain 20 21
+              25:   24(vec4*)   AccessChain 20 21
                                 Store 25 23
                                 Branch 14
               12:               Label
@@ -56,10 +56,10 @@ spv.branch-return.vert
               13:               Label
                                 Return
               14:             Label
-              34:     33(ptr) AccessChain 20 21 32
+              34:  33(float*) AccessChain 20 21 32
               35:   16(float) Load 34
               36:   16(float) FAdd 35 30
-              37:     33(ptr) AccessChain 20 21 32
+              37:  33(float*) AccessChain 20 21 32
                               Store 37 36
                               Return
                               FunctionEnd

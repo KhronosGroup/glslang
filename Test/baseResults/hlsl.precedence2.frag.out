@@ -152,27 +152,27 @@ gl_FragCoord origin is upper left
                               Decorate 43(a4) Location 3
                               Decorate 46(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
-               8:             TypeFunction 6(int) 7(ptr) 7(ptr) 7(ptr) 7(ptr)
+               8:             TypeFunction 6(int) 7(int*) 7(int*) 7(int*) 7(int*)
               33:             TypePointer Input 6(int)
-          34(a1):     33(ptr) Variable Input
-          37(a2):     33(ptr) Variable Input
-          40(a3):     33(ptr) Variable Input
-          43(a4):     33(ptr) Variable Input
+          34(a1):    33(int*) Variable Input
+          37(a2):    33(int*) Variable Input
+          40(a3):    33(int*) Variable Input
+          43(a4):    33(int*) Variable Input
               45:             TypePointer Output 6(int)
-46(@entryPointOutput):     45(ptr) Variable Output
-4(PixelShaderFunction):           2 Function None 3
+46(@entryPointOutput):    45(int*) Variable Output
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-          32(a1):      7(ptr) Variable Function
-          36(a2):      7(ptr) Variable Function
-          39(a3):      7(ptr) Variable Function
-          42(a4):      7(ptr) Variable Function
-       47(param):      7(ptr) Variable Function
-       49(param):      7(ptr) Variable Function
-       51(param):      7(ptr) Variable Function
-       53(param):      7(ptr) Variable Function
+          32(a1):     7(int*) Variable Function
+          36(a2):     7(int*) Variable Function
+          39(a3):     7(int*) Variable Function
+          42(a4):     7(int*) Variable Function
+       47(param):     7(int*) Variable Function
+       49(param):     7(int*) Variable Function
+       51(param):     7(int*) Variable Function
+       53(param):     7(int*) Variable Function
               35:      6(int) Load 34(a1)
                               Store 32(a1) 35
               38:      6(int) Load 37(a2)
@@ -194,10 +194,10 @@ gl_FragCoord origin is upper left
                               Return
                               FunctionEnd
 13(@PixelShaderFunction(i1;i1;i1;i1;):      6(int) Function None 8
-           9(a1):      7(ptr) FunctionParameter
-          10(a2):      7(ptr) FunctionParameter
-          11(a3):      7(ptr) FunctionParameter
-          12(a4):      7(ptr) FunctionParameter
+           9(a1):     7(int*) FunctionParameter
+          10(a2):     7(int*) FunctionParameter
+          11(a3):     7(int*) FunctionParameter
+          12(a4):     7(int*) FunctionParameter
               14:             Label
               15:      6(int) Load 9(a1)
               16:      6(int) Load 10(a2)

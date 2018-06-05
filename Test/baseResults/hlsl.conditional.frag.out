@@ -572,179 +572,179 @@ gl_FragCoord origin is upper left
                               Decorate 199(input) Location 0
                               Decorate 202(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               13:             TypeBool
               14:             TypeVector 13(bool) 2
               15:             TypePointer Function 14(bvec2)
               16:             TypeVector 6(float) 2
-              17:             TypePointer Function 16(fvec2)
-              18:             TypeFunction 16(fvec2) 15(ptr) 17(ptr) 17(ptr)
-              24:             TypePointer Function 7(fvec4)
-              25:             TypeFunction 7(fvec4) 24(ptr)
-     29($Global):             TypeStruct 7(fvec4) 7(fvec4) 7(fvec4) 6(float) 6(float)
+              17:             TypePointer Function 16(vec2)
+              18:             TypeFunction 16(vec2) 15(bvec2*) 17(vec2*) 17(vec2*)
+              24:             TypePointer Function 7(vec4)
+              25:             TypeFunction 7(vec4) 24(vec4*)
+     29($Global):             TypeStruct 7(vec4) 7(vec4) 7(vec4) 6(float) 6(float)
               30:             TypePointer Uniform 29($Global)
-              31:     30(ptr) Variable Uniform
+              31:30($Global*) Variable Uniform
               32:             TypeInt 32 1
               33:     32(int) Constant 2
-              34:             TypePointer Uniform 7(fvec4)
+              34:             TypePointer Uniform 7(vec4)
               37:     32(int) Constant 1
               40:     32(int) Constant 0
               43:             TypeVector 13(bool) 4
               44:    6(float) Constant 0
-              45:    7(fvec4) ConstantComposite 44 44 44 44
+              45:     7(vec4) ConstantComposite 44 44 44 44
               48:     32(int) Constant 4
               49:             TypePointer Uniform 6(float)
               53:     32(int) Constant 3
               96:    6(float) Constant 1065353216
-              97:    7(fvec4) ConstantComposite 96 96 96 96
+              97:     7(vec4) ConstantComposite 96 96 96 96
              109:             TypePointer Function 32(int)
              111:     32(int) Constant 5
              113:     32(int) Constant 6
              115:     32(int) Constant 7
              139:             TypeInt 32 0
-             140:    139(int) Constant 0
+             140:   139(uint) Constant 0
              143:     32(int) Constant 10
              148:     32(int) Constant 11
              151:             TypePointer Function 6(float)
-             154:    139(int) Constant 1
+             154:   139(uint) Constant 1
              178:    13(bool) ConstantTrue
              179:    13(bool) ConstantFalse
              180:   14(bvec2) ConstantComposite 178 179
              181:    6(float) Constant 1073741824
-             182:   16(fvec2) ConstantComposite 96 181
+             182:    16(vec2) ConstantComposite 96 181
              183:    6(float) Constant 1077936128
              184:    6(float) Constant 1082130432
-             185:   16(fvec2) ConstantComposite 183 184
+             185:    16(vec2) ConstantComposite 183 184
              190:    6(float) Constant 1092616192
-             198:             TypePointer Input 7(fvec4)
-      199(input):    198(ptr) Variable Input
-             201:             TypePointer Output 7(fvec4)
-202(@entryPointOutput):    201(ptr) Variable Output
-4(PixelShaderFunction):           2 Function None 3
+             198:             TypePointer Input 7(vec4)
+      199(input):  198(vec4*) Variable Input
+             201:             TypePointer Output 7(vec4)
+202(@entryPointOutput):  201(vec4*) Variable Output
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-      197(input):     24(ptr) Variable Function
-      203(param):     24(ptr) Variable Function
-             200:    7(fvec4) Load 199(input)
+      197(input):   24(vec4*) Variable Function
+      203(param):   24(vec4*) Variable Function
+             200:     7(vec4) Load 199(input)
                               Store 197(input) 200
-             204:    7(fvec4) Load 197(input)
+             204:     7(vec4) Load 197(input)
                               Store 203(param) 204
-             205:    7(fvec4) FunctionCall 27(@PixelShaderFunction(vf4;) 203(param)
+             205:     7(vec4) FunctionCall 27(@PixelShaderFunction(vf4;) 203(param)
                               Store 202(@entryPointOutput) 205
                               Return
                               FunctionEnd
-  9(vectorCond():    7(fvec4) Function None 8
+  9(vectorCond():     7(vec4) Function None 8
               10:             Label
-              35:     34(ptr) AccessChain 31 33
-              36:    7(fvec4) Load 35
-              38:     34(ptr) AccessChain 31 37
-              39:    7(fvec4) Load 38
-              41:     34(ptr) AccessChain 31 40
-              42:    7(fvec4) Load 41
+              35:   34(vec4*) AccessChain 31 33
+              36:     7(vec4) Load 35
+              38:   34(vec4*) AccessChain 31 37
+              39:     7(vec4) Load 38
+              41:   34(vec4*) AccessChain 31 40
+              42:     7(vec4) Load 41
               46:   43(bvec4) FOrdNotEqual 42 45
-              47:    7(fvec4) Select 46 39 36
-              50:     49(ptr) AccessChain 31 48
+              47:     7(vec4) Select 46 39 36
+              50:  49(float*) AccessChain 31 48
               51:    6(float) Load 50
-              52:    7(fvec4) CompositeConstruct 51 51 51 51
-              54:     49(ptr) AccessChain 31 53
+              52:     7(vec4) CompositeConstruct 51 51 51 51
+              54:  49(float*) AccessChain 31 53
               55:    6(float) Load 54
-              56:    7(fvec4) CompositeConstruct 55 55 55 55
-              57:     34(ptr) AccessChain 31 40
-              58:    7(fvec4) Load 57
+              56:     7(vec4) CompositeConstruct 55 55 55 55
+              57:   34(vec4*) AccessChain 31 40
+              58:     7(vec4) Load 57
               59:   43(bvec4) FOrdNotEqual 58 45
-              60:    7(fvec4) Select 59 56 52
-              61:    7(fvec4) FAdd 47 60
-              62:     34(ptr) AccessChain 31 33
-              63:    7(fvec4) Load 62
-              64:     34(ptr) AccessChain 31 37
-              65:    7(fvec4) Load 64
-              66:     34(ptr) AccessChain 31 37
-              67:    7(fvec4) Load 66
-              68:     34(ptr) AccessChain 31 33
-              69:    7(fvec4) Load 68
+              60:     7(vec4) Select 59 56 52
+              61:     7(vec4) FAdd 47 60
+              62:   34(vec4*) AccessChain 31 33
+              63:     7(vec4) Load 62
+              64:   34(vec4*) AccessChain 31 37
+              65:     7(vec4) Load 64
+              66:   34(vec4*) AccessChain 31 37
+              67:     7(vec4) Load 66
+              68:   34(vec4*) AccessChain 31 33
+              69:     7(vec4) Load 68
               70:   43(bvec4) FOrdLessThan 67 69
-              71:    7(fvec4) Select 70 65 63
-              72:    7(fvec4) FAdd 61 71
-              73:     34(ptr) AccessChain 31 33
-              74:    7(fvec4) Load 73
-              75:     49(ptr) AccessChain 31 53
+              71:     7(vec4) Select 70 65 63
+              72:     7(vec4) FAdd 61 71
+              73:   34(vec4*) AccessChain 31 33
+              74:     7(vec4) Load 73
+              75:  49(float*) AccessChain 31 53
               76:    6(float) Load 75
-              77:    7(fvec4) CompositeConstruct 76 76 76 76
-              78:     34(ptr) AccessChain 31 40
-              79:    7(fvec4) Load 78
+              77:     7(vec4) CompositeConstruct 76 76 76 76
+              78:   34(vec4*) AccessChain 31 40
+              79:     7(vec4) Load 78
               80:   43(bvec4) FOrdNotEqual 79 45
-              81:    7(fvec4) Select 80 77 74
-              82:    7(fvec4) FAdd 72 81
+              81:     7(vec4) Select 80 77 74
+              82:     7(vec4) FAdd 72 81
                               ReturnValue 82
                               FunctionEnd
- 11(scalarCond():    7(fvec4) Function None 8
+ 11(scalarCond():     7(vec4) Function None 8
               12:             Label
-         85(ret):     24(ptr) Variable Function
-              86:     49(ptr) AccessChain 31 53
+         85(ret):   24(vec4*) Variable Function
+              86:  49(float*) AccessChain 31 53
               87:    6(float) Load 86
-              88:     49(ptr) AccessChain 31 48
+              88:  49(float*) AccessChain 31 48
               89:    6(float) Load 88
               90:    13(bool) FOrdNotEqual 87 89
-              91:     49(ptr) AccessChain 31 53
+              91:  49(float*) AccessChain 31 53
               92:    6(float) Load 91
-              93:     34(ptr) AccessChain 31 33
-              94:    7(fvec4) Load 93
-              95:    7(fvec4) VectorTimesScalar 94 92
+              93:   34(vec4*) AccessChain 31 33
+              94:     7(vec4) Load 93
+              95:     7(vec4) VectorTimesScalar 94 92
               98:   43(bvec4) CompositeConstruct 90 90 90 90
-              99:    7(fvec4) Select 98 95 97
+              99:     7(vec4) Select 98 95 97
                               Store 85(ret) 99
-             100:    7(fvec4) Load 85(ret)
+             100:     7(vec4) Load 85(ret)
                               ReturnValue 100
                               FunctionEnd
-22(fbSelect(vb2;vf2;vf2;):   16(fvec2) Function None 18
-         19(cnd):     15(ptr) FunctionParameter
-        20(src0):     17(ptr) FunctionParameter
-        21(src1):     17(ptr) FunctionParameter
+22(fbSelect(vb2;vf2;vf2;):    16(vec2) Function None 18
+         19(cnd):  15(bvec2*) FunctionParameter
+        20(src0):   17(vec2*) FunctionParameter
+        21(src1):   17(vec2*) FunctionParameter
               23:             Label
-             103:   16(fvec2) Load 21(src1)
-             104:   16(fvec2) Load 20(src0)
+             103:    16(vec2) Load 21(src1)
+             104:    16(vec2) Load 20(src0)
              105:   14(bvec2) Load 19(cnd)
-             106:   16(fvec2) Select 105 104 103
+             106:    16(vec2) Select 105 104 103
                               ReturnValue 106
                               FunctionEnd
-27(@PixelShaderFunction(vf4;):    7(fvec4) Function None 25
-       26(input):     24(ptr) FunctionParameter
+27(@PixelShaderFunction(vf4;):     7(vec4) Function None 25
+       26(input):   24(vec4*) FunctionParameter
               28:             Label
-          110(a):    109(ptr) Variable Function
-          112(b):    109(ptr) Variable Function
-          114(c):    109(ptr) Variable Function
-          116(d):    109(ptr) Variable Function
-        117(ret):     24(ptr) Variable Function
-          137(e):    109(ptr) Variable Function
-          150(f):     24(ptr) Variable Function
-      186(param):     15(ptr) Variable Function
-      187(param):     17(ptr) Variable Function
-      188(param):     17(ptr) Variable Function
+          110(a):   109(int*) Variable Function
+          112(b):   109(int*) Variable Function
+          114(c):   109(int*) Variable Function
+          116(d):   109(int*) Variable Function
+        117(ret):   24(vec4*) Variable Function
+          137(e):   109(int*) Variable Function
+          150(f):   24(vec4*) Variable Function
+      186(param):  15(bvec2*) Variable Function
+      187(param):   17(vec2*) Variable Function
+      188(param):   17(vec2*) Variable Function
                               Store 110(a) 111
                               Store 112(b) 113
                               Store 114(c) 115
                               Store 116(d) 115
              118:     32(int) Load 110(a)
              119:    6(float) ConvertSToF 118
-             120:    7(fvec4) Load 26(input)
-             121:    7(fvec4) VectorTimesScalar 120 119
+             120:     7(vec4) Load 26(input)
+             121:     7(vec4) VectorTimesScalar 120 119
              122:     32(int) Load 112(b)
              123:    6(float) ConvertSToF 122
-             124:    7(fvec4) Load 26(input)
-             125:    7(fvec4) VectorTimesScalar 124 123
-             126:    7(fvec4) FAdd 121 125
+             124:     7(vec4) Load 26(input)
+             125:     7(vec4) VectorTimesScalar 124 123
+             126:     7(vec4) FAdd 121 125
              127:     32(int) Load 114(c)
              128:    6(float) ConvertSToF 127
-             129:    7(fvec4) Load 26(input)
-             130:    7(fvec4) VectorTimesScalar 129 128
-             131:    7(fvec4) FAdd 126 130
+             129:     7(vec4) Load 26(input)
+             130:     7(vec4) VectorTimesScalar 129 128
+             131:     7(vec4) FAdd 126 130
              132:     32(int) Load 116(d)
              133:    6(float) ConvertSToF 132
-             134:    7(fvec4) Load 26(input)
-             135:    7(fvec4) VectorTimesScalar 134 133
-             136:    7(fvec4) FAdd 131 135
+             134:     7(vec4) Load 26(input)
+             135:     7(vec4) VectorTimesScalar 134 133
+             136:     7(vec4) FAdd 131 135
                               Store 117(ret) 136
              138:     32(int) Load 112(b)
              141:    13(bool) INotEqual 138 140
@@ -759,39 +759,39 @@ gl_FragCoord origin is upper left
                               Store 116(d) 147
              149:     32(int) Select 146 147 148
                               Store 112(b) 149
-             152:    151(ptr) AccessChain 117(ret) 140
+             152: 151(float*) AccessChain 117(ret) 140
              153:    6(float) Load 152
-             155:    151(ptr) AccessChain 26(input) 154
+             155: 151(float*) AccessChain 26(input) 154
              156:    6(float) Load 155
              157:    13(bool) FOrdLessThan 153 156
              158:     32(int) Load 114(c)
              159:    6(float) ConvertSToF 158
-             160:    7(fvec4) Load 26(input)
-             161:    7(fvec4) VectorTimesScalar 160 159
+             160:     7(vec4) Load 26(input)
+             161:     7(vec4) VectorTimesScalar 160 159
              162:     32(int) Load 116(d)
              163:    6(float) ConvertSToF 162
-             164:    7(fvec4) Load 26(input)
-             165:    7(fvec4) VectorTimesScalar 164 163
+             164:     7(vec4) Load 26(input)
+             165:     7(vec4) VectorTimesScalar 164 163
              166:   43(bvec4) CompositeConstruct 157 157 157 157
-             167:    7(fvec4) Select 166 161 165
+             167:     7(vec4) Select 166 161 165
                               Store 150(f) 167
              168:     32(int) Load 137(e)
              169:    6(float) ConvertSToF 168
-             170:    7(fvec4) Load 117(ret)
-             171:    7(fvec4) VectorTimesScalar 170 169
-             172:    7(fvec4) Load 150(f)
-             173:    7(fvec4) FAdd 171 172
-             174:    7(fvec4) FunctionCall 9(vectorCond()
-             175:    7(fvec4) FAdd 173 174
-             176:    7(fvec4) FunctionCall 11(scalarCond()
-             177:    7(fvec4) FAdd 175 176
+             170:     7(vec4) Load 117(ret)
+             171:     7(vec4) VectorTimesScalar 170 169
+             172:     7(vec4) Load 150(f)
+             173:     7(vec4) FAdd 171 172
+             174:     7(vec4) FunctionCall 9(vectorCond()
+             175:     7(vec4) FAdd 173 174
+             176:     7(vec4) FunctionCall 11(scalarCond()
+             177:     7(vec4) FAdd 175 176
                               Store 186(param) 180
                               Store 187(param) 182
                               Store 188(param) 185
-             189:   16(fvec2) FunctionCall 22(fbSelect(vb2;vf2;vf2;) 186(param) 187(param) 188(param)
+             189:    16(vec2) FunctionCall 22(fbSelect(vb2;vf2;vf2;) 186(param) 187(param) 188(param)
              191:    6(float) CompositeExtract 189 0
              192:    6(float) CompositeExtract 189 1
-             193:    7(fvec4) CompositeConstruct 191 192 190 190
-             194:    7(fvec4) FAdd 177 193
+             193:     7(vec4) CompositeConstruct 191 192 190 190
+             194:     7(vec4) FAdd 177 193
                               ReturnValue 194
                               FunctionEnd

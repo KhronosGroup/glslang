@@ -183,11 +183,11 @@ gl_FragCoord origin is upper left
                               Decorate 49(vpos) Location 0
                               Decorate 52(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
               13:             TypeImage 6(float) 2D sampled format:Unknown
       14(Nested):             TypeStruct 6(float) 13
            15(A):             TypeStruct 14(Nested) 6(float)
@@ -204,45 +204,45 @@ gl_FragCoord origin is upper left
               40:    6(float) Constant 1065353216
               41:             TypePointer Function 6(float)
               43:    6(float) Constant 0
-              44:    7(fvec4) ConstantComposite 43 43 43 43
-              48:             TypePointer Input 7(fvec4)
-        49(vpos):     48(ptr) Variable Input
-              51:             TypePointer Output 7(fvec4)
-52(@entryPointOutput):     51(ptr) Variable Output
-         4(main):           2 Function None 3
+              44:     7(vec4) ConstantComposite 43 43 43 43
+              48:             TypePointer Input 7(vec4)
+        49(vpos):   48(vec4*) Variable Input
+              51:             TypePointer Output 7(vec4)
+52(@entryPointOutput):   51(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-        47(vpos):      8(ptr) Variable Function
-       53(param):      8(ptr) Variable Function
-              50:    7(fvec4) Load 49(vpos)
+        47(vpos):    8(vec4*) Variable Function
+       53(param):    8(vec4*) Variable Function
+              50:     7(vec4) Load 49(vpos)
                               Store 47(vpos) 50
-              54:    7(fvec4) Load 47(vpos)
+              54:     7(vec4) Load 47(vpos)
                               Store 53(param) 54
-              55:    7(fvec4) FunctionCall 11(@main(vf4;) 53(param)
+              55:     7(vec4) FunctionCall 11(@main(vf4;) 53(param)
                               Store 52(@entryPointOutput) 55
                               Return
                               FunctionEnd
-  11(@main(vf4;):    7(fvec4) Function None 9
-        10(vpos):      8(ptr) FunctionParameter
+  11(@main(vf4;):     7(vec4) Function None 9
+        10(vpos):    8(vec4*) FunctionParameter
               12:             Label
-          17(a1):     16(ptr) Variable Function
-          20(a2):     16(ptr) Variable Function
-           27(b):     26(ptr) Variable Function
-           31(n):     21(ptr) Variable Function
-              22:     21(ptr) AccessChain 20(a2) 19
+          17(a1):      16(A*) Variable Function
+          20(a2):      16(A*) Variable Function
+           27(b):      26(B*) Variable Function
+           31(n): 21(Nested*) Variable Function
+              22: 21(Nested*) AccessChain 20(a2) 19
               23:  14(Nested) Load 22
-              24:     21(ptr) AccessChain 17(a1) 19
+              24: 21(Nested*) AccessChain 17(a1) 19
                               Store 24 23
-              28:     21(ptr) AccessChain 17(a1) 19
+              28: 21(Nested*) AccessChain 17(a1) 19
               29:  14(Nested) Load 28
-              30:     21(ptr) AccessChain 27(b) 19
+              30: 21(Nested*) AccessChain 27(b) 19
                               Store 30 29
-              32:     21(ptr) AccessChain 27(b) 19
+              32: 21(Nested*) AccessChain 27(b) 19
               33:  14(Nested) Load 32
                               Store 31(n) 33
               37:          13 Load 36(someTex)
               39:     38(ptr) AccessChain 20(a2) 19 34
                               Store 39 37
-              42:     41(ptr) AccessChain 17(a1) 19 19
+              42:  41(float*) AccessChain 17(a1) 19 19
                               Store 42 40
                               ReturnValue 44
                               FunctionEnd

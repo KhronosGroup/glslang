@@ -233,34 +233,34 @@ gl_FragCoord origin is upper left
                               Decorate 68(bnameImplicit) BufferBlock
                               Decorate 70 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
-              11:             TypePointer Output 7(fvec4)
-       12(color):     11(ptr) Variable Output
+               8:             TypeFunction 7(vec4)
+              11:             TypePointer Output 7(vec4)
+       12(color):   11(vec4*) Variable Output
               14:             TypeInt 32 1
               15:             TypeInt 32 0
-              16:     15(int) Constant 9
+              16:    15(uint) Constant 9
               17:             TypeArray 14(int) 16
-              18:             TypePointer Private 17
-          19(a1):     18(ptr) Variable Private
+              18:             TypePointer Private 17(int[9])
+          19(a1): 18(int[9]*) Variable Private
               20:     14(int) Constant 8
               21:     14(int) Constant 1
               22:             TypePointer Private 14(int)
-              24:     15(int) Constant 10
+              24:    15(uint) Constant 10
               25:             TypeArray 14(int) 24
-              26:             TypePointer Private 25
-          27(a2):     26(ptr) Variable Private
-              29:     15(int) Constant 5
+              26:             TypePointer Private 25(int[10])
+          27(a2):26(int[10]*) Variable Private
+              29:    15(uint) Constant 5
               30:             TypeArray 14(int) 29
-              31:             TypePointer Private 30
-           32(b):     31(ptr) Variable Private
-           33(i):     22(ptr) Variable Private
-              36:     15(int) Constant 7
+              31:             TypePointer Private 30(int[5])
+           32(b): 31(int[5]*) Variable Private
+           33(i):    22(int*) Variable Private
+              36:    15(uint) Constant 7
               37:             TypeArray 14(int) 36
-              38:             TypePointer Private 37
-           39(c):     38(ptr) Variable Private
+              38:             TypePointer Private 37(int[7])
+           39(c): 38(int[7]*) Variable Private
               40:     14(int) Constant 3
               42:     14(int) Constant 2
               43:             TypePointer Output 6(float)
@@ -271,45 +271,45 @@ gl_FragCoord origin is upper left
          54(s2D):     53(ptr) Variable UniformConstant
               56:             TypeVector 6(float) 2
               57:    6(float) Constant 1056964608
-              58:   56(fvec2) ConstantComposite 57 57
+              58:    56(vec2) ConstantComposite 57 57
               62:             TypeRuntimeArray 6(float)
-63(bnameRuntime):             TypeStruct 62
+63(bnameRuntime):             TypeStruct 62(float[])
               64:             TypePointer Uniform 63(bnameRuntime)
-              65:     64(ptr) Variable Uniform
-              66:     15(int) Constant 4
+              65:64(bnameRuntime*) Variable Uniform
+              66:    15(uint) Constant 4
               67:             TypeArray 6(float) 66
-68(bnameImplicit):             TypeStruct 67
+68(bnameImplicit):             TypeStruct 67(float[4])
               69:             TypePointer Uniform 68(bnameImplicit)
-              70:     69(ptr) Variable Uniform
-         4(main):           2 Function None 3
+              70:69(bnameImplicit*) Variable Uniform
+         4(main):     2(void) Function None 3
                5:             Label
-              13:    7(fvec4) FunctionCall 9(getColor()
+              13:     7(vec4) FunctionCall 9(getColor()
                               Store 12(color) 13
-              23:     22(ptr) AccessChain 19(a1) 20
+              23:    22(int*) AccessChain 19(a1) 20
                               Store 23 21
-              28:     22(ptr) AccessChain 27(a2) 21
+              28:    22(int*) AccessChain 27(a2) 21
                               Store 28 21
               34:     14(int) Load 33(i)
-              35:     22(ptr) AccessChain 32(b) 34
+              35:    22(int*) AccessChain 32(b) 34
                               Store 35 21
-              41:     22(ptr) AccessChain 39(c) 40
+              41:    22(int*) AccessChain 39(c) 40
                               Store 41 21
                               Return
                               FunctionEnd
-    9(getColor():    7(fvec4) Function None 8
+    9(getColor():     7(vec4) Function None 8
               10:             Label
-              44:     43(ptr) AccessChain 12(color) 42
+              44:  43(float*) AccessChain 12(color) 42
                               Store 44 21
-              46:     22(ptr) AccessChain 19(a1) 45
+              46:    22(int*) AccessChain 19(a1) 45
                               Store 46 21
-              47:     22(ptr) AccessChain 27(a2) 42
+              47:    22(int*) AccessChain 27(a2) 42
                               Store 47 21
-              48:     22(ptr) AccessChain 32(b) 40
+              48:    22(int*) AccessChain 32(b) 40
                               Store 48 21
-              49:          37 Load 39(c)
-              50:     22(ptr) AccessChain 32(b) 49
+              49:  37(int[7]) Load 39(c)
+              50:    22(int*) AccessChain 32(b) 49
                               Store 50 21
               55:          52 Load 54(s2D)
-              59:    7(fvec4) ImageSampleImplicitLod 55 58
+              59:     7(vec4) ImageSampleImplicitLod 55 58
                               ReturnValue 59
                               FunctionEnd

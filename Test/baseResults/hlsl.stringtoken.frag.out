@@ -95,37 +95,37 @@ gl_FragCoord origin is upper left
                               Decorate 31($Global) Block
                               Decorate 33 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypePointer Function 8(PS_OUTPUT)
               14:             TypeInt 32 1
               15:     14(int) Constant 0
               16:    6(float) Constant 0
               17:    6(float) Constant 1065353216
-              18:    7(fvec4) ConstantComposite 16 16 16 17
-              19:             TypePointer Function 7(fvec4)
-              24:             TypePointer Output 7(fvec4)
-25(@entryPointOutput.Color):     24(ptr) Variable Output
+              18:     7(vec4) ConstantComposite 16 16 16 17
+              19:             TypePointer Function 7(vec4)
+              24:             TypePointer Output 7(vec4)
+25(@entryPointOutput.Color):   24(vec4*) Variable Output
               28:             TypeImage 6(float) 2D sampled format:Unknown
               29:             TypePointer UniformConstant 28
  30(TestTexture):     29(ptr) Variable UniformConstant
-     31($Global):             TypeStruct 7(fvec4)
+     31($Global):             TypeStruct 7(vec4)
               32:             TypePointer Uniform 31($Global)
-              33:     32(ptr) Variable Uniform
-         4(main):           2 Function None 3
+              33:32($Global*) Variable Uniform
+         4(main):     2(void) Function None 3
                5:             Label
               26:8(PS_OUTPUT) FunctionCall 10(@main()
-              27:    7(fvec4) CompositeExtract 26 0
+              27:     7(vec4) CompositeExtract 26 0
                               Store 25(@entryPointOutput.Color) 27
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-       13(psout):     12(ptr) Variable Function
-              20:     19(ptr) AccessChain 13(psout) 15
+       13(psout):12(PS_OUTPUT*) Variable Function
+              20:   19(vec4*) AccessChain 13(psout) 15
                               Store 20 18
               21:8(PS_OUTPUT) Load 13(psout)
                               ReturnValue 21

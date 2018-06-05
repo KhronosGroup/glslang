@@ -28,35 +28,35 @@ hlsl.noSemantic.functionality1.comp
                               Decorate 19(Buf@count) DescriptorSet 0
                               DecorateId 13(Buf) DecorationHlslCounterBufferGOOGLE 19(Buf@count)
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
-              10:             TypeRuntimeArray 9(fvec4)
-         11(Buf):             TypeStruct 10
+              10:             TypeRuntimeArray 9(vec4)
+         11(Buf):             TypeStruct 10(vec4[])
               12:             TypePointer Uniform 11(Buf)
-         13(Buf):     12(ptr) Variable Uniform
+         13(Buf):    12(Buf*) Variable Uniform
               14:             TypeInt 32 1
               15:     14(int) Constant 0
               16:             TypeInt 32 0
-   17(Buf@count):             TypeStruct 16(int)
+   17(Buf@count):             TypeStruct 16(uint)
               18:             TypePointer Uniform 17(Buf@count)
-   19(Buf@count):     18(ptr) Variable Uniform
-              20:             TypePointer Uniform 16(int)
-              22:     16(int) Constant 1
-              23:     16(int) Constant 0
+   19(Buf@count):18(Buf@count*) Variable Uniform
+              20:             TypePointer Uniform 16(uint)
+              22:    16(uint) Constant 1
+              23:    16(uint) Constant 0
               25:    8(float) Constant 1065353216
-              26:    9(fvec4) ConstantComposite 25 25 25 25
-              27:             TypePointer Uniform 9(fvec4)
-         4(main):           2 Function None 3
+              26:     9(vec4) ConstantComposite 25 25 25 25
+              27:             TypePointer Uniform 9(vec4)
+         4(main):     2(void) Function None 3
                5:             Label
-              29:           2 FunctionCall 6(@main()
+              29:     2(void) FunctionCall 6(@main()
                               Return
                               FunctionEnd
-       6(@main():           2 Function None 3
+       6(@main():     2(void) Function None 3
                7:             Label
-              21:     20(ptr) AccessChain 19(Buf@count) 15
-              24:     16(int) AtomicIAdd 21 22 23 22
-              28:     27(ptr) AccessChain 13(Buf) 15 24
+              21:   20(uint*) AccessChain 19(Buf@count) 15
+              24:    16(uint) AtomicIAdd 21 22 23 22
+              28:   27(vec4*) AccessChain 13(Buf) 15 24
                               Store 28 26
                               Return
                               FunctionEnd
