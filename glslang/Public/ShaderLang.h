@@ -655,6 +655,8 @@ public:
     virtual ~TProgram();
     void addShader(TShader* shader) { stages[shader->stage].push_back(shader); }
 
+    bool hasReflection(void) const { return (reflection != nullptr); }
+
     // Link Validation interface
     bool link(EShMessages);
     const char* getInfoLog();
@@ -679,11 +681,68 @@ public:
     int getUniformArraySize(int index) const;              // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
     int getNumLiveAttributes() const;                      // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
     unsigned getLocalSize(int dim) const;                  // return dim'th local size
-    const char *getAttributeName(int index) const;         // can be used for glGetActiveAttrib()
+    const char* getAttributeName(int index) const;         // can be used for glGetActiveAttrib()
     int getAttributeType(int index) const;                 // can be used for glGetActiveAttrib()
     const TType* getUniformTType(int index) const;         // returns a TType*
     const TType* getUniformBlockTType(int index) const;    // returns a TType*
     const TType* getAttributeTType(int index) const;       // returns a TType*
+
+    EShLanguageMask getUniformStages(int index) const;     // returns shader stage of uniform
+    bool getUniformHasLocation(int index) const;
+    bool getUniformHasBinding(int index) const;
+    bool getUniformHasSet(int index) const;
+    int getUniformLocation(int index) const;
+    int getUniformSet(int index) const;
+
+    void setUniformBinding(int index, int binding);
+    void setUniformLocation(int index, int binding);
+
+    bool getAttributeHasLocation(int index) const;
+    int getAttributeLocation(int index) const;
+    int getAttributeArraySize(int index) const;
+
+    void setAttributeLocation(int index, int location);
+
+    // VaryingIns
+    int getNumLiveVaryingInVariables() const;
+    const char* getVaryingInName(int index) const;
+    int getVaryingInIndex(const char* name) const;
+    int getVaryingInType(int index) const;
+    int getVaryingInArraySize(int index) const;
+    int getVaryingInLocation(int index) const;
+    bool getVaryingInHasLocation(int index) const;
+
+    bool isInVaryingFlat(int index) const;
+    bool isInVaryingNoPerspective(int index) const;
+
+    void setVaryingInLocation(int index, int location);
+
+    // VaryingOuts
+    int getNumLiveVaryingOutVariables() const;
+    const char* getVaryingOutName(int index) const;
+    int getVaryingOutIndex(const char* name) const;
+    int getVaryingOutType(int index) const;
+    int getVaryingOutArraySize(int index) const;
+    int getVaryingOutLocation(int index) const;
+    bool getVaryingOutHasLocation(int index) const;
+
+    bool isOutVaryingFlat(int index) const;
+    bool isOutVaryingNoPerspective(int index) const;
+
+    void setVaryingOutLocation(int index, int location);
+
+    // Built ins
+    int getNumLiveBuiltIns(void) const;
+    const char* getBuiltInName(int index) const;
+    int getBuiltinType(int index) const;
+    int getBuiltInIndex(const char* name) const;
+    int getBuiltInHasLocation(int index) const;
+
+    void setBuiltInLocation(int index, int location);
+
+    // Functions
+    int getNumLiveFunctions(void) const;
+    const char* getFunctionName(int index) const;
 
     void dumpReflection();
 

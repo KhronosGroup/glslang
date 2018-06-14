@@ -1924,7 +1924,73 @@ const TType* TProgram::getUniformTType(int index) const      { return reflection
 const TType* TProgram::getUniformBlockTType(int index) const { return reflection->getUniformBlock(index).getType(); }
 unsigned TProgram::getLocalSize(int dim) const               { return reflection->getLocalSize(dim); }
 
-void TProgram::dumpReflection()                      { reflection->dump(); }
+// Uniforms
+EShLanguageMask TProgram::getUniformStages(int index) const  { return reflection->getUniformStages(index); }
+bool TProgram::getUniformHasLocation(int index) const        { return reflection->getUniformQualifier(index)->hasLocation(); }
+bool TProgram::getUniformHasBinding(int index) const         { return reflection->getUniformQualifier(index)->hasBinding(); }
+bool TProgram::getUniformHasSet(int index) const             { return reflection->getUniformQualifier(index)->hasSet(); }
+int TProgram::getUniformLocation(int index) const            { return reflection->getUniformQualifier(index)->hasLocation() ?
+                                                                      reflection->getUniformQualifier(index)->layoutLocation : -1; }
+int TProgram::getUniformSet(int index) const                 { return reflection->getUniformQualifier(index)->hasSet() ?
+                                                                      reflection->getUniformQualifier(index)->layoutSet : -1; }
+
+void TProgram::setUniformBinding(int index, int binding)     { reflection->getUniformQualifier(index)->setBinding(binding); }
+void TProgram::setUniformLocation(int index, int location)   { reflection->getUniformQualifier(index)->setLocation(location); }
+
+// Attributes
+bool TProgram::getAttributeHasLocation(int index) const      { return reflection->getAttributeQualifier(index)->hasLocation(); }
+int TProgram::getAttributeLocation(int index) const          { return reflection->getAttributeQualifier(index)->hasLocation() ?
+                                                                      reflection->getAttributeQualifier(index)->layoutLocation : -1;}
+int TProgram::getAttributeArraySize(int index) const         { return reflection->getAttribute(index).size; }
+
+void TProgram::setAttributeLocation(int index, int location) { reflection->setAttributeLocation(index, location); }
+
+// VaryingIns
+int TProgram::getNumLiveVaryingInVariables() const           { return reflection->getNumInVaryings(); }
+const char* TProgram::getVaryingInName(int index) const      { return reflection->getVaryingIn(index).name.c_str(); }
+int TProgram::getVaryingInIndex(const char* name) const      { return reflection->getVaryingInIndex(name); }
+int TProgram::getVaryingInType(int index) const              { return reflection->getVaryingIn(index).glDefineType; }
+int TProgram::getVaryingInArraySize(int index) const         { return reflection->getVaryingIn(index).size; }
+int TProgram::getVaryingInLocation(int index) const          { return reflection->getVaryingInQualifier(index)->hasLocation() ?
+                                                                      reflection->getVaryingInQualifier(index)->layoutLocation : -1; }
+bool TProgram::getVaryingInHasLocation(int index) const      { return reflection->getVaryingInQualifier(index)->hasLocation(); }
+
+bool TProgram::isInVaryingFlat(int index) const              { assert(reflection->getVaryingInQualifier(index)->flat == !reflection->getVaryingInQualifier(index)->smooth);
+                                                               return reflection->getVaryingInQualifier(index)->flat; }
+bool TProgram::isInVaryingNoPerspective(int index) const     { return reflection->getVaryingInQualifier(index)->nopersp; }
+
+void TProgram::setVaryingInLocation(int index, int location) { reflection->setVaryingInLocation(index, location); }
+
+// VaryingOuts
+int TProgram::getNumLiveVaryingOutVariables() const          { return reflection->getNumOutVaryings(); }
+const char* TProgram::getVaryingOutName(int index) const     { return reflection->getVaryingOut(index).name.c_str(); }
+int TProgram::getVaryingOutIndex(const char* name) const     { return reflection->getVaryingOutIndex(name); }
+int TProgram::getVaryingOutType(int index) const             { return reflection->getVaryingOut(index).glDefineType; }
+int TProgram::getVaryingOutArraySize(int index) const        { return reflection->getVaryingOut(index).size; }
+int TProgram::getVaryingOutLocation(int index) const         { return reflection->getVaryingOutQualifier(index)->hasLocation() ?
+                                                                      reflection->getVaryingOutQualifier(index)->layoutLocation : -1; }
+bool TProgram::getVaryingOutHasLocation(int index) const     { return reflection->getVaryingOutQualifier(index)->hasLocation(); }
+
+bool TProgram::isOutVaryingFlat(int index) const             { assert(reflection->getVaryingOutQualifier(index)->flat == !reflection->getVaryingOutQualifier(index)->smooth);
+                                                               return reflection->getVaryingOutQualifier(index)->flat; }
+bool TProgram::isOutVaryingNoPerspective(int index) const    { return reflection->getVaryingOutQualifier(index)->nopersp; }
+
+void TProgram::setVaryingOutLocation(int index, int location){ reflection->setVaryingOutLocation(index, location); }
+
+// Built ins
+int TProgram::getNumLiveBuiltIns(void) const                 { return reflection->getNumLiveBuiltIns(); }
+const char* TProgram::getBuiltInName(int index) const        { return reflection->getBuiltIn(index).name.c_str(); }
+int TProgram::getBuiltinType(int index) const                { return reflection->getBuiltIn(index).glDefineType; }
+int TProgram::getBuiltInIndex(const char* name) const        { return reflection->getBuiltInIndex(name); }
+int TProgram::getBuiltInHasLocation(int index) const         { return reflection->getBuiltInQualifier(index)->hasLocation(); }
+
+void TProgram::setBuiltInLocation(int index, int location)   { reflection->getBuiltInQualifier(index)->setLocation(location); }
+
+// Functions
+int TProgram::getNumLiveFunctions(void) const                { return reflection->getNumLiveFunctions(); }
+const char* TProgram::getFunctionName(int index) const       { return reflection->getFunctionName(index); }
+
+void TProgram::dumpReflection()                              { reflection->dump(); }
 
 //
 // I/O mapping implementation.
