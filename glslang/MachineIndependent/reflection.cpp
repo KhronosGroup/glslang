@@ -273,7 +273,16 @@ public:
             break;
             }
         // Built ins
-        case EvqVertexId ... EvqFragDepth: {
+        case EvqVertexId:
+        case EvqInstanceId:
+        case EvqPosition:
+        case EvqPointSize:
+        case EvqClipVertex:
+        case EvqFace:
+        case EvqFragCoord:
+        case EvqPointCoord:
+        case EvqFragColor:
+        case EvqFragDepth: {
             TReflection::TNameToIndex::const_iterator it = reflection.builtInsNameToIndex.find(name);
             if (it == reflection.builtInsNameToIndex.end()) {
                 reflection.builtInsNameToIndex[name] = (int)reflection.builtInsQualifiers.size();
