@@ -43,18 +43,18 @@ spv.structDeref.frag
                               Decorate 99(gl_FragColor) Location 0
                               Decorate 116(samp2D) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypeFloat 32
            8(s0):             TypeStruct 6(int)
            9(s1):             TypeStruct 6(int) 7(float) 8(s0)
           10(s2):             TypeStruct 6(int) 7(float) 9(s1)
               11:             TypeInt 32 0
-              12:     11(int) Constant 12
+              12:    11(uint) Constant 12
               13:             TypeArray 10(s2) 12
-          14(s3):             TypeStruct 13 6(int) 7(float) 9(s1)
+          14(s3):             TypeStruct 13(s2[12]) 6(int) 7(float) 9(s1)
               15:             TypePointer Private 14(s3)
-        16(foo3):     15(ptr) Variable Private
+        16(foo3):     15(s3*) Variable Private
               17:      6(int) Constant 0
               18:      6(int) Constant 9
               19:             TypePointer Private 6(int)
@@ -67,122 +67,122 @@ spv.structDeref.frag
               33:       8(s0) ConstantComposite 17
               34:       9(s1) ConstantComposite 17 29 33
               35:             TypePointer Function 9(s1)
-              37:     11(int) Constant 6
+              37:    11(uint) Constant 6
               38:             TypeArray 7(float) 37
-              39:             TypePointer Function 38
+              39:             TypePointer Function 38(float[6])
               41:    7(float) Constant 0
-              42:          38 ConstantComposite 41 41 41 41 41 41
-              43:     11(int) Constant 10
+              42:38(float[6]) ConstantComposite 41 41 41 41 41 41
+              43:    11(uint) Constant 10
               44:             TypeArray 9(s1) 43
-              45:             TypePointer Function 44
+              45:             TypePointer Function 44(s1[10])
               47:      6(int) Constant 6
               48:             TypePointer Private 9(s1)
-        49(foo1):     48(ptr) Variable Private
+        49(foo1):     48(s1*) Variable Private
               52:             TypePointer Function 8(s0)
          54(s00):             TypeStruct 8(s0)
               55:             TypePointer Function 54(s00)
               57:     54(s00) ConstantComposite 33
               59:             TypeVector 7(float) 2
-              60:             TypePointer Input 59(fvec2)
-       61(coord):     60(ptr) Variable Input
-              62:     11(int) Constant 0
+              60:             TypePointer Input 59(vec2)
+       61(coord):   60(vec2*) Variable Input
+              62:    11(uint) Constant 0
               63:             TypePointer Input 7(float)
-              67:     11(int) Constant 1
+              67:    11(uint) Constant 1
               70:             TypePointer Private 8(s0)
-        71(foo0):     70(ptr) Variable Private
+        71(foo0):     70(s0*) Variable Private
               75:    7(float) Constant 1073741824
               76:    7(float) Constant 1077936128
               77:    7(float) Constant 1082130432
               78:    7(float) Constant 1084227584
-              79:          38 ConstantComposite 41 29 75 76 77 78
+              79:38(float[6]) ConstantComposite 41 29 75 76 77 78
               85:             TypePointer Private 54(s00)
-       86(foo00):     85(ptr) Variable Private
+       86(foo00):    85(s00*) Variable Private
               88:             TypePointer Function 6(int)
               91:      6(int) Constant 5
               97:             TypeVector 7(float) 4
-              98:             TypePointer Output 97(fvec4)
-99(gl_FragColor):     98(ptr) Variable Output
+              98:             TypePointer Output 97(vec4)
+99(gl_FragColor):   98(vec4*) Variable Output
              106:      6(int) Constant 3
              113:             TypeImage 7(float) 2D sampled format:Unknown
              114:             TypeSampledImage 113
              115:             TypePointer UniformConstant 114
      116(samp2D):    115(ptr) Variable UniformConstant
              121:             TypePointer Private 10(s2)
-       122(foo2):    121(ptr) Variable Private
-         4(main):           2 Function None 3
+       122(foo2):    121(s2*) Variable Private
+         4(main):     2(void) Function None 3
                5:             Label
-     27(locals2):     26(ptr) Variable Function
-      40(fArray):     39(ptr) Variable Function
-46(locals1Array):     45(ptr) Variable Function
-     53(locals0):     52(ptr) Variable Function
-    56(locals00):     55(ptr) Variable Function
-              20:     19(ptr) AccessChain 16(foo3) 17 18 17
+     27(locals2):     26(s2*) Variable Function
+      40(fArray):39(float[6]*) Variable Function
+46(locals1Array): 45(s1[10]*) Variable Function
+     53(locals0):     52(s0*) Variable Function
+    56(locals00):    55(s00*) Variable Function
+              20:    19(int*) AccessChain 16(foo3) 17 18 17
               21:      6(int) Load 20
               23:    22(bool) SGreaterThan 21 17
                               SelectionMerge 25 None
                               BranchConditional 23 24 58
               24:               Label
-              31:     30(ptr)   AccessChain 27(locals2) 28
+              31:  30(float*)   AccessChain 27(locals2) 28
                                 Store 31 29
-              36:     35(ptr)   AccessChain 27(locals2) 32
+              36:     35(s1*)   AccessChain 27(locals2) 32
                                 Store 36 34
                                 Store 40(fArray) 42
               50:       9(s1)   Load 49(foo1)
-              51:     35(ptr)   AccessChain 46(locals1Array) 47
+              51:     35(s1*)   AccessChain 46(locals1Array) 47
                                 Store 51 50
                                 Store 53(locals0) 33
                                 Store 56(locals00) 57
                                 Branch 25
               58:               Label
-              64:     63(ptr)   AccessChain 61(coord) 62
+              64:  63(float*)   AccessChain 61(coord) 62
               65:    7(float)   Load 64
-              66:     30(ptr)   AccessChain 27(locals2) 28
+              66:  30(float*)   AccessChain 27(locals2) 28
                                 Store 66 65
-              68:     63(ptr)   AccessChain 61(coord) 67
+              68:  63(float*)   AccessChain 61(coord) 67
               69:    7(float)   Load 68
               72:       8(s0)   Load 71(foo0)
               73:       9(s1)   CompositeConstruct 28 69 72
-              74:     35(ptr)   AccessChain 27(locals2) 32
+              74:     35(s1*)   AccessChain 27(locals2) 32
                                 Store 74 73
                                 Store 40(fArray) 79
-              80:     35(ptr)   AccessChain 27(locals2) 32
+              80:     35(s1*)   AccessChain 27(locals2) 32
               81:       9(s1)   Load 80
-              82:     35(ptr)   AccessChain 46(locals1Array) 47
+              82:     35(s1*)   AccessChain 46(locals1Array) 47
                                 Store 82 81
-              83:     70(ptr)   AccessChain 49(foo1) 32
+              83:     70(s0*)   AccessChain 49(foo1) 32
               84:       8(s0)   Load 83
                                 Store 53(locals0) 84
               87:     54(s00)   Load 86(foo00)
                                 Store 56(locals00) 87
                                 Branch 25
               25:             Label
-              89:     88(ptr) AccessChain 53(locals0) 17
+              89:    88(int*) AccessChain 53(locals0) 17
               90:      6(int) Load 89
               92:    22(bool) SGreaterThan 90 91
                               SelectionMerge 94 None
                               BranchConditional 92 93 94
               93:               Label
-              95:     52(ptr)   AccessChain 56(locals00) 17
+              95:     52(s0*)   AccessChain 56(locals00) 17
               96:       8(s0)   Load 95
                                 Store 53(locals0) 96
                                 Branch 94
               94:             Label
-             100:     88(ptr) AccessChain 53(locals0) 17
+             100:    88(int*) AccessChain 53(locals0) 17
              101:      6(int) Load 100
              102:    7(float) ConvertSToF 101
-             103:     30(ptr) AccessChain 46(locals1Array) 47 28
+             103:  30(float*) AccessChain 46(locals1Array) 47 28
              104:    7(float) Load 103
              105:    7(float) FAdd 102 104
-             107:     30(ptr) AccessChain 40(fArray) 106
+             107:  30(float*) AccessChain 40(fArray) 106
              108:    7(float) Load 107
              109:    7(float) FAdd 105 108
-             110:     30(ptr) AccessChain 27(locals2) 32 28
+             110:  30(float*) AccessChain 27(locals2) 32 28
              111:    7(float) Load 110
              112:    7(float) FAdd 109 111
              117:         114 Load 116(samp2D)
-             118:   59(fvec2) Load 61(coord)
-             119:   97(fvec4) ImageSampleImplicitLod 117 118
-             120:   97(fvec4) VectorTimesScalar 119 112
+             118:    59(vec2) Load 61(coord)
+             119:    97(vec4) ImageSampleImplicitLod 117 118
+             120:    97(vec4) VectorTimesScalar 119 112
                               Store 99(gl_FragColor) 120
                               Return
                               FunctionEnd

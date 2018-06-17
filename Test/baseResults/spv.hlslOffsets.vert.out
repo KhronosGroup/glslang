@@ -61,16 +61,16 @@ Shader version: 450
                               Decorate 11(block) BufferBlock
                               Decorate 13 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 3
                8:             TypeVector 6(float) 2
                9:             TypeFloat 64
-              10:             TypeVector 9(float64_t) 2
-       11(block):             TypeStruct 6(float) 7(fvec3) 6(float) 7(fvec3) 7(fvec3) 8(fvec2) 8(fvec2) 6(float) 8(fvec2) 6(float) 6(float) 8(fvec2) 8(fvec2) 10(f64vec2)
+              10:             TypeVector 9(double) 2
+       11(block):             TypeStruct 6(float) 7(vec3) 6(float) 7(vec3) 7(vec3) 8(vec2) 8(vec2) 6(float) 8(vec2) 6(float) 6(float) 8(vec2) 8(vec2) 10(dvec2)
               12:             TypePointer Uniform 11(block)
-              13:     12(ptr) Variable Uniform
-         4(main):           2 Function None 3
+              13:  12(block*) Variable Uniform
+         4(main):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd

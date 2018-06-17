@@ -13,14 +13,14 @@ spv.glFragColor.frag
                               Name 9  "gl_FragColor"
                               Decorate 9(gl_FragColor) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Output 7(fvec4)
- 9(gl_FragColor):      8(ptr) Variable Output
+               8:             TypePointer Output 7(vec4)
+ 9(gl_FragColor):    8(vec4*) Variable Output
               10:    6(float) Constant 1065353216
-              11:    7(fvec4) ConstantComposite 10 10 10 10
-         4(main):           2 Function None 3
+              11:     7(vec4) ConstantComposite 10 10 10 10
+         4(main):     2(void) Function None 3
                5:             Label
                               Store 9(gl_FragColor) 11
                               Return

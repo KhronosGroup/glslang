@@ -138,11 +138,11 @@ gl_FragCoord origin is upper left
                               MemberDecorate 48(pcBuf) 0 Offset 0
                               Decorate 48(pcBuf) Block
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
               14:             TypeImage 6(float) 2D sampled format:Unknown
               15:             TypePointer UniformConstant 14
       16(attach):     15(ptr) Variable UniformConstant
@@ -151,43 +151,43 @@ gl_FragCoord origin is upper left
               20:     18(int) Constant 0
               21:   19(ivec2) ConstantComposite 20 20
               22:             TypeInt 32 0
-              23:     22(int) Constant 0
-              25:     22(int) Constant 1
-              32:             TypePointer Input 7(fvec4)
-       33(input):     32(ptr) Variable Input
-              35:             TypePointer Output 7(fvec4)
-36(@entryPointOutput):     35(ptr) Variable Output
+              23:    22(uint) Constant 0
+              25:    22(uint) Constant 1
+              32:             TypePointer Input 7(vec4)
+       33(input):   32(vec4*) Variable Input
+              35:             TypePointer Output 7(vec4)
+36(@entryPointOutput):   35(vec4*) Variable Output
               40:             TypeVector 6(float) 2
-           41(S):             TypeStruct 40(fvec2)
+           41(S):             TypeStruct 40(vec2)
               42:             TypeRuntimeArray 41(S)
-     43(buffer1):             TypeStruct 42
+     43(buffer1):             TypeStruct 42(S[])
               44:             TypePointer Uniform 43(buffer1)
-     45(buffer1):     44(ptr) Variable Uniform
-     46(buffer3):     44(ptr) Variable Uniform
+     45(buffer1):44(buffer1*) Variable Uniform
+     46(buffer3):44(buffer1*) Variable Uniform
           47(ci):     18(int) SpecConstant 11
        48(pcBuf):             TypeStruct 18(int)
               49:             TypePointer PushConstant 48(pcBuf)
-              50:     49(ptr) Variable PushConstant
-         4(main):           2 Function None 3
+              50:  49(pcBuf*) Variable PushConstant
+         4(main):     2(void) Function None 3
                5:             Label
-       31(input):      8(ptr) Variable Function
-       37(param):      8(ptr) Variable Function
-              34:    7(fvec4) Load 33(input)
+       31(input):    8(vec4*) Variable Function
+       37(param):    8(vec4*) Variable Function
+              34:     7(vec4) Load 33(input)
                               Store 31(input) 34
-              38:    7(fvec4) Load 31(input)
+              38:     7(vec4) Load 31(input)
                               Store 37(param) 38
-              39:    7(fvec4) FunctionCall 11(@main(vf4;) 37(param)
+              39:     7(vec4) FunctionCall 11(@main(vf4;) 37(param)
                               Store 36(@entryPointOutput) 39
                               Return
                               FunctionEnd
-  11(@main(vf4;):    7(fvec4) Function None 9
-       10(input):      8(ptr) FunctionParameter
+  11(@main(vf4;):     7(vec4) Function None 9
+       10(input):    8(vec4*) FunctionParameter
               12:             Label
-              13:    7(fvec4) Load 10(input)
+              13:     7(vec4) Load 10(input)
               17:          14 Load 16(attach)
               24:     18(int) CompositeExtract 21 0
               26:     18(int) CompositeExtract 21 1
-              27:    7(fvec4) ImageFetch 17 24 Lod 26
-              28:    7(fvec4) FAdd 13 27
+              27:     7(vec4) ImageFetch 17 24 Lod 26
+              28:     7(vec4) FAdd 13 27
                               ReturnValue 28
                               FunctionEnd

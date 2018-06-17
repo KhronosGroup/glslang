@@ -968,45 +968,45 @@ gl_FragCoord origin is upper left
                               Decorate 277(g_tTex1df4) DescriptorSet 0
                               Decorate 319(@entryPointOutput.color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypePointer Function 6(float)
               14:             TypeInt 32 1
               15:             TypeInt 32 0
               16:             TypeVector 14(int) 2
-              17:             TypeVector 15(int) 2
+              17:             TypeVector 15(uint) 2
               18:             TypeVector 6(float) 2
-     19($Global):             TypeStruct 14(int) 15(int) 6(float) 15(int) 16(ivec2) 17(ivec2) 18(fvec2) 17(ivec2) 15(int) 6(float)
+     19($Global):             TypeStruct 14(int) 15(uint) 6(float) 15(uint) 16(ivec2) 17(uvec2) 18(vec2) 17(uvec2) 15(uint) 6(float)
               20:             TypePointer Uniform 19($Global)
-              21:     20(ptr) Variable Uniform
+              21:20($Global*) Variable Uniform
               22:     14(int) Constant 3
-              23:             TypePointer Uniform 15(int)
+              23:             TypePointer Uniform 15(uint)
               26:             TypeBool
-              27:     15(int) Constant 0
+              27:    15(uint) Constant 0
               29:    6(float) Constant 0
               30:    6(float) Constant 1065353216
               32:     14(int) Constant 2
               33:             TypePointer Uniform 6(float)
-              37:             TypePointer Function 15(int)
-              42:     15(int) Constant 1
+              37:             TypePointer Function 15(uint)
+              42:    15(uint) Constant 1
               44:     14(int) Constant 1
               48:             TypePointer Function 14(int)
               53:     14(int) Constant 0
               55:             TypePointer Uniform 14(int)
-              73:             TypePointer Function 18(fvec2)
+              73:             TypePointer Function 18(vec2)
               75:     14(int) Constant 7
-              76:             TypePointer Uniform 17(ivec2)
+              76:             TypePointer Uniform 17(uvec2)
               79:             TypeVector 26(bool) 2
-              80:   17(ivec2) ConstantComposite 27 27
-              82:   18(fvec2) ConstantComposite 29 29
-              83:   18(fvec2) ConstantComposite 30 30
+              80:   17(uvec2) ConstantComposite 27 27
+              82:    18(vec2) ConstantComposite 29 29
+              83:    18(vec2) ConstantComposite 30 30
               85:     14(int) Constant 6
-              86:             TypePointer Uniform 18(fvec2)
-              90:             TypePointer Function 17(ivec2)
-              95:   17(ivec2) ConstantComposite 42 42
+              86:             TypePointer Uniform 18(vec2)
+              90:             TypePointer Function 17(uvec2)
+              95:   17(uvec2) ConstantComposite 42 42
               97:     14(int) Constant 5
              101:             TypePointer Function 16(ivec2)
              106:   16(ivec2) ConstantComposite 53 53
@@ -1021,307 +1021,307 @@ gl_FragCoord origin is upper left
              275:             TypeImage 6(float) 1D sampled format:Unknown
              276:             TypePointer UniformConstant 275
  277(g_tTex1df4):    276(ptr) Variable UniformConstant
-             285:     15(int) Constant 6
+             285:    15(uint) Constant 6
              309:             TypePointer Function 8(PS_OUTPUT)
-             313:             TypePointer Function 7(fvec4)
-             318:             TypePointer Output 7(fvec4)
-319(@entryPointOutput.color):    318(ptr) Variable Output
-         4(main):           2 Function None 3
+             313:             TypePointer Function 7(vec4)
+             318:             TypePointer Output 7(vec4)
+319(@entryPointOutput.color):  318(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
              320:8(PS_OUTPUT) FunctionCall 10(@main()
-             321:    7(fvec4) CompositeExtract 320 0
+             321:     7(vec4) CompositeExtract 320 0
                               Store 319(@entryPointOutput.color) 321
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-         13(r00):     12(ptr) Variable Function
-         38(r01):     37(ptr) Variable Function
-         49(r02):     48(ptr) Variable Function
-         59(r03):     12(ptr) Variable Function
-         66(r04):     12(ptr) Variable Function
-         74(r10):     73(ptr) Variable Function
-         91(r11):     90(ptr) Variable Function
-        102(r12):    101(ptr) Variable Function
-        114(r13):     73(ptr) Variable Function
-        121(r14):     73(ptr) Variable Function
-        128(r20):     73(ptr) Variable Function
-        138(r21):     90(ptr) Variable Function
-        150(r22):     73(ptr) Variable Function
-        162(r30):     73(ptr) Variable Function
-        171(r31):     90(ptr) Variable Function
-        180(r32):    101(ptr) Variable Function
-        189(r33):     73(ptr) Variable Function
-        197(r34):     73(ptr) Variable Function
-        205(r40):     73(ptr) Variable Function
-        216(r41):     90(ptr) Variable Function
-        229(r42):     73(ptr) Variable Function
-        243(r43):    101(ptr) Variable Function
-        255(r50):     12(ptr) Variable Function
-        266(r51):     12(ptr) Variable Function
-274(sizeQueryTemp):     37(ptr) Variable Function
-     280(WidthI):     48(ptr) Variable Function
-283(sizeQueryTemp):     37(ptr) Variable Function
-289(NumberOfLevelsU):     37(ptr) Variable Function
-292(sizeQueryTemp):     37(ptr) Variable Function
-     295(WidthU):     37(ptr) Variable Function
-297(NumberOfLevelsI):     48(ptr) Variable Function
-301(sizeQueryTemp):     37(ptr) Variable Function
-  310(ps_output):    309(ptr) Variable Function
-              24:     23(ptr) AccessChain 21 22
-              25:     15(int) Load 24
+         13(r00):  12(float*) Variable Function
+         38(r01):   37(uint*) Variable Function
+         49(r02):    48(int*) Variable Function
+         59(r03):  12(float*) Variable Function
+         66(r04):  12(float*) Variable Function
+         74(r10):   73(vec2*) Variable Function
+         91(r11):  90(uvec2*) Variable Function
+        102(r12): 101(ivec2*) Variable Function
+        114(r13):   73(vec2*) Variable Function
+        121(r14):   73(vec2*) Variable Function
+        128(r20):   73(vec2*) Variable Function
+        138(r21):  90(uvec2*) Variable Function
+        150(r22):   73(vec2*) Variable Function
+        162(r30):   73(vec2*) Variable Function
+        171(r31):  90(uvec2*) Variable Function
+        180(r32): 101(ivec2*) Variable Function
+        189(r33):   73(vec2*) Variable Function
+        197(r34):   73(vec2*) Variable Function
+        205(r40):   73(vec2*) Variable Function
+        216(r41):  90(uvec2*) Variable Function
+        229(r42):   73(vec2*) Variable Function
+        243(r43): 101(ivec2*) Variable Function
+        255(r50):  12(float*) Variable Function
+        266(r51):  12(float*) Variable Function
+274(sizeQueryTemp):   37(uint*) Variable Function
+     280(WidthI):    48(int*) Variable Function
+283(sizeQueryTemp):   37(uint*) Variable Function
+289(NumberOfLevelsU):   37(uint*) Variable Function
+292(sizeQueryTemp):   37(uint*) Variable Function
+     295(WidthU):   37(uint*) Variable Function
+297(NumberOfLevelsI):    48(int*) Variable Function
+301(sizeQueryTemp):   37(uint*) Variable Function
+  310(ps_output):309(PS_OUTPUT*) Variable Function
+              24:   23(uint*) AccessChain 21 22
+              25:    15(uint) Load 24
               28:    26(bool) INotEqual 25 27
               31:    6(float) Select 28 30 29
-              34:     33(ptr) AccessChain 21 32
+              34:  33(float*) AccessChain 21 32
               35:    6(float) Load 34
               36:    6(float) ExtInst 1(GLSL.std.450) 40(FMax) 31 35
                               Store 13(r00) 36
-              39:     23(ptr) AccessChain 21 22
-              40:     15(int) Load 39
+              39:   23(uint*) AccessChain 21 22
+              40:    15(uint) Load 39
               41:    26(bool) INotEqual 40 27
-              43:     15(int) Select 41 42 27
-              45:     23(ptr) AccessChain 21 44
-              46:     15(int) Load 45
-              47:     15(int) ExtInst 1(GLSL.std.450) 41(UMax) 43 46
+              43:    15(uint) Select 41 42 27
+              45:   23(uint*) AccessChain 21 44
+              46:    15(uint) Load 45
+              47:    15(uint) ExtInst 1(GLSL.std.450) 41(UMax) 43 46
                               Store 38(r01) 47
-              50:     23(ptr) AccessChain 21 22
-              51:     15(int) Load 50
+              50:   23(uint*) AccessChain 21 22
+              51:    15(uint) Load 50
               52:    26(bool) INotEqual 51 27
               54:     14(int) Select 52 44 53
-              56:     55(ptr) AccessChain 21 53
+              56:    55(int*) AccessChain 21 53
               57:     14(int) Load 56
               58:     14(int) ExtInst 1(GLSL.std.450) 42(SMax) 54 57
                               Store 49(r02) 58
-              60:     55(ptr) AccessChain 21 53
+              60:    55(int*) AccessChain 21 53
               61:     14(int) Load 60
               62:    6(float) ConvertSToF 61
-              63:     33(ptr) AccessChain 21 32
+              63:  33(float*) AccessChain 21 32
               64:    6(float) Load 63
               65:    6(float) ExtInst 1(GLSL.std.450) 40(FMax) 62 64
                               Store 59(r03) 65
-              67:     23(ptr) AccessChain 21 44
-              68:     15(int) Load 67
+              67:   23(uint*) AccessChain 21 44
+              68:    15(uint) Load 67
               69:    6(float) ConvertUToF 68
-              70:     33(ptr) AccessChain 21 32
+              70:  33(float*) AccessChain 21 32
               71:    6(float) Load 70
               72:    6(float) ExtInst 1(GLSL.std.450) 40(FMax) 69 71
                               Store 66(r04) 72
-              77:     76(ptr) AccessChain 21 75
-              78:   17(ivec2) Load 77
+              77:  76(uvec2*) AccessChain 21 75
+              78:   17(uvec2) Load 77
               81:   79(bvec2) INotEqual 78 80
-              84:   18(fvec2) Select 81 83 82
-              87:     86(ptr) AccessChain 21 85
-              88:   18(fvec2) Load 87
-              89:   18(fvec2) ExtInst 1(GLSL.std.450) 40(FMax) 84 88
+              84:    18(vec2) Select 81 83 82
+              87:   86(vec2*) AccessChain 21 85
+              88:    18(vec2) Load 87
+              89:    18(vec2) ExtInst 1(GLSL.std.450) 40(FMax) 84 88
                               Store 74(r10) 89
-              92:     76(ptr) AccessChain 21 75
-              93:   17(ivec2) Load 92
+              92:  76(uvec2*) AccessChain 21 75
+              93:   17(uvec2) Load 92
               94:   79(bvec2) INotEqual 93 80
-              96:   17(ivec2) Select 94 95 80
-              98:     76(ptr) AccessChain 21 97
-              99:   17(ivec2) Load 98
-             100:   17(ivec2) ExtInst 1(GLSL.std.450) 41(UMax) 96 99
+              96:   17(uvec2) Select 94 95 80
+              98:  76(uvec2*) AccessChain 21 97
+              99:   17(uvec2) Load 98
+             100:   17(uvec2) ExtInst 1(GLSL.std.450) 41(UMax) 96 99
                               Store 91(r11) 100
-             103:     76(ptr) AccessChain 21 75
-             104:   17(ivec2) Load 103
+             103:  76(uvec2*) AccessChain 21 75
+             104:   17(uvec2) Load 103
              105:   79(bvec2) INotEqual 104 80
              108:   16(ivec2) Select 105 107 106
-             111:    110(ptr) AccessChain 21 109
+             111: 110(ivec2*) AccessChain 21 109
              112:   16(ivec2) Load 111
              113:   16(ivec2) ExtInst 1(GLSL.std.450) 42(SMax) 108 112
                               Store 102(r12) 113
-             115:    110(ptr) AccessChain 21 109
+             115: 110(ivec2*) AccessChain 21 109
              116:   16(ivec2) Load 115
-             117:   18(fvec2) ConvertSToF 116
-             118:     86(ptr) AccessChain 21 85
-             119:   18(fvec2) Load 118
-             120:   18(fvec2) ExtInst 1(GLSL.std.450) 40(FMax) 117 119
+             117:    18(vec2) ConvertSToF 116
+             118:   86(vec2*) AccessChain 21 85
+             119:    18(vec2) Load 118
+             120:    18(vec2) ExtInst 1(GLSL.std.450) 40(FMax) 117 119
                               Store 114(r13) 120
-             122:     76(ptr) AccessChain 21 97
-             123:   17(ivec2) Load 122
-             124:   18(fvec2) ConvertUToF 123
-             125:     86(ptr) AccessChain 21 85
-             126:   18(fvec2) Load 125
-             127:   18(fvec2) ExtInst 1(GLSL.std.450) 40(FMax) 124 126
+             122:  76(uvec2*) AccessChain 21 97
+             123:   17(uvec2) Load 122
+             124:    18(vec2) ConvertUToF 123
+             125:   86(vec2*) AccessChain 21 85
+             126:    18(vec2) Load 125
+             127:    18(vec2) ExtInst 1(GLSL.std.450) 40(FMax) 124 126
                               Store 121(r14) 127
-             129:    110(ptr) AccessChain 21 109
+             129: 110(ivec2*) AccessChain 21 109
              130:   16(ivec2) Load 129
-             131:   18(fvec2) ConvertSToF 130
-             132:     76(ptr) AccessChain 21 97
-             133:   17(ivec2) Load 132
-             134:   18(fvec2) ConvertUToF 133
-             135:     86(ptr) AccessChain 21 85
-             136:   18(fvec2) Load 135
-             137:   18(fvec2) ExtInst 1(GLSL.std.450) 43(FClamp) 131 134 136
+             131:    18(vec2) ConvertSToF 130
+             132:  76(uvec2*) AccessChain 21 97
+             133:   17(uvec2) Load 132
+             134:    18(vec2) ConvertUToF 133
+             135:   86(vec2*) AccessChain 21 85
+             136:    18(vec2) Load 135
+             137:    18(vec2) ExtInst 1(GLSL.std.450) 43(FClamp) 131 134 136
                               Store 128(r20) 137
-             139:     76(ptr) AccessChain 21 75
-             140:   17(ivec2) Load 139
+             139:  76(uvec2*) AccessChain 21 75
+             140:   17(uvec2) Load 139
              141:   79(bvec2) INotEqual 140 80
-             142:   17(ivec2) Select 141 95 80
-             143:     76(ptr) AccessChain 21 97
-             144:   17(ivec2) Load 143
-             145:     76(ptr) AccessChain 21 75
-             146:   17(ivec2) Load 145
+             142:   17(uvec2) Select 141 95 80
+             143:  76(uvec2*) AccessChain 21 97
+             144:   17(uvec2) Load 143
+             145:  76(uvec2*) AccessChain 21 75
+             146:   17(uvec2) Load 145
              147:   79(bvec2) INotEqual 146 80
-             148:   17(ivec2) Select 147 95 80
-             149:   17(ivec2) ExtInst 1(GLSL.std.450) 44(UClamp) 142 144 148
+             148:   17(uvec2) Select 147 95 80
+             149:   17(uvec2) ExtInst 1(GLSL.std.450) 44(UClamp) 142 144 148
                               Store 138(r21) 149
-             151:     76(ptr) AccessChain 21 75
-             152:   17(ivec2) Load 151
+             151:  76(uvec2*) AccessChain 21 75
+             152:   17(uvec2) Load 151
              153:   79(bvec2) INotEqual 152 80
-             154:   18(fvec2) Select 153 83 82
-             155:     86(ptr) AccessChain 21 85
-             156:   18(fvec2) Load 155
-             157:     76(ptr) AccessChain 21 75
-             158:   17(ivec2) Load 157
+             154:    18(vec2) Select 153 83 82
+             155:   86(vec2*) AccessChain 21 85
+             156:    18(vec2) Load 155
+             157:  76(uvec2*) AccessChain 21 75
+             158:   17(uvec2) Load 157
              159:   79(bvec2) INotEqual 158 80
-             160:   18(fvec2) Select 159 83 82
-             161:   18(fvec2) ExtInst 1(GLSL.std.450) 43(FClamp) 154 156 160
+             160:    18(vec2) Select 159 83 82
+             161:    18(vec2) ExtInst 1(GLSL.std.450) 43(FClamp) 154 156 160
                               Store 150(r22) 161
-             163:     23(ptr) AccessChain 21 22
-             164:     15(int) Load 163
+             163:   23(uint*) AccessChain 21 22
+             164:    15(uint) Load 163
              165:    26(bool) INotEqual 164 27
              166:    6(float) Select 165 30 29
-             167:   18(fvec2) CompositeConstruct 166 166
-             168:     86(ptr) AccessChain 21 85
-             169:   18(fvec2) Load 168
-             170:   18(fvec2) ExtInst 1(GLSL.std.450) 40(FMax) 167 169
+             167:    18(vec2) CompositeConstruct 166 166
+             168:   86(vec2*) AccessChain 21 85
+             169:    18(vec2) Load 168
+             170:    18(vec2) ExtInst 1(GLSL.std.450) 40(FMax) 167 169
                               Store 162(r30) 170
-             172:     23(ptr) AccessChain 21 22
-             173:     15(int) Load 172
+             172:   23(uint*) AccessChain 21 22
+             173:    15(uint) Load 172
              174:    26(bool) INotEqual 173 27
-             175:     15(int) Select 174 42 27
-             176:   17(ivec2) CompositeConstruct 175 175
-             177:     76(ptr) AccessChain 21 97
-             178:   17(ivec2) Load 177
-             179:   17(ivec2) ExtInst 1(GLSL.std.450) 41(UMax) 176 178
+             175:    15(uint) Select 174 42 27
+             176:   17(uvec2) CompositeConstruct 175 175
+             177:  76(uvec2*) AccessChain 21 97
+             178:   17(uvec2) Load 177
+             179:   17(uvec2) ExtInst 1(GLSL.std.450) 41(UMax) 176 178
                               Store 171(r31) 179
-             181:     23(ptr) AccessChain 21 22
-             182:     15(int) Load 181
+             181:   23(uint*) AccessChain 21 22
+             182:    15(uint) Load 181
              183:    26(bool) INotEqual 182 27
              184:     14(int) Select 183 44 53
              185:   16(ivec2) CompositeConstruct 184 184
-             186:    110(ptr) AccessChain 21 109
+             186: 110(ivec2*) AccessChain 21 109
              187:   16(ivec2) Load 186
              188:   16(ivec2) ExtInst 1(GLSL.std.450) 42(SMax) 185 187
                               Store 180(r32) 188
-             190:     55(ptr) AccessChain 21 53
+             190:    55(int*) AccessChain 21 53
              191:     14(int) Load 190
              192:    6(float) ConvertSToF 191
-             193:   18(fvec2) CompositeConstruct 192 192
-             194:     86(ptr) AccessChain 21 85
-             195:   18(fvec2) Load 194
-             196:   18(fvec2) ExtInst 1(GLSL.std.450) 40(FMax) 193 195
+             193:    18(vec2) CompositeConstruct 192 192
+             194:   86(vec2*) AccessChain 21 85
+             195:    18(vec2) Load 194
+             196:    18(vec2) ExtInst 1(GLSL.std.450) 40(FMax) 193 195
                               Store 189(r33) 196
-             198:     23(ptr) AccessChain 21 44
-             199:     15(int) Load 198
+             198:   23(uint*) AccessChain 21 44
+             199:    15(uint) Load 198
              200:    6(float) ConvertUToF 199
-             201:   18(fvec2) CompositeConstruct 200 200
-             202:     86(ptr) AccessChain 21 85
-             203:   18(fvec2) Load 202
-             204:   18(fvec2) ExtInst 1(GLSL.std.450) 40(FMax) 201 203
+             201:    18(vec2) CompositeConstruct 200 200
+             202:   86(vec2*) AccessChain 21 85
+             203:    18(vec2) Load 202
+             204:    18(vec2) ExtInst 1(GLSL.std.450) 40(FMax) 201 203
                               Store 197(r34) 204
-             206:     55(ptr) AccessChain 21 53
+             206:    55(int*) AccessChain 21 53
              207:     14(int) Load 206
              208:    6(float) ConvertSToF 207
-             209:   18(fvec2) CompositeConstruct 208 208
-             210:     76(ptr) AccessChain 21 97
-             211:   17(ivec2) Load 210
-             212:   18(fvec2) ConvertUToF 211
-             213:     86(ptr) AccessChain 21 85
-             214:   18(fvec2) Load 213
-             215:   18(fvec2) ExtInst 1(GLSL.std.450) 43(FClamp) 209 212 214
+             209:    18(vec2) CompositeConstruct 208 208
+             210:  76(uvec2*) AccessChain 21 97
+             211:   17(uvec2) Load 210
+             212:    18(vec2) ConvertUToF 211
+             213:   86(vec2*) AccessChain 21 85
+             214:    18(vec2) Load 213
+             215:    18(vec2) ExtInst 1(GLSL.std.450) 43(FClamp) 209 212 214
                               Store 205(r40) 215
-             217:     76(ptr) AccessChain 21 75
-             218:   17(ivec2) Load 217
+             217:  76(uvec2*) AccessChain 21 75
+             218:   17(uvec2) Load 217
              219:   79(bvec2) INotEqual 218 80
-             220:   17(ivec2) Select 219 95 80
-             221:     23(ptr) AccessChain 21 44
-             222:     15(int) Load 221
-             223:   17(ivec2) CompositeConstruct 222 222
-             224:     76(ptr) AccessChain 21 75
-             225:   17(ivec2) Load 224
+             220:   17(uvec2) Select 219 95 80
+             221:   23(uint*) AccessChain 21 44
+             222:    15(uint) Load 221
+             223:   17(uvec2) CompositeConstruct 222 222
+             224:  76(uvec2*) AccessChain 21 75
+             225:   17(uvec2) Load 224
              226:   79(bvec2) INotEqual 225 80
-             227:   17(ivec2) Select 226 95 80
-             228:   17(ivec2) ExtInst 1(GLSL.std.450) 44(UClamp) 220 223 227
+             227:   17(uvec2) Select 226 95 80
+             228:   17(uvec2) ExtInst 1(GLSL.std.450) 44(UClamp) 220 223 227
                               Store 216(r41) 228
-             230:     76(ptr) AccessChain 21 75
-             231:   17(ivec2) Load 230
+             230:  76(uvec2*) AccessChain 21 75
+             231:   17(uvec2) Load 230
              232:   79(bvec2) INotEqual 231 80
-             233:   18(fvec2) Select 232 83 82
-             234:     33(ptr) AccessChain 21 32
+             233:    18(vec2) Select 232 83 82
+             234:  33(float*) AccessChain 21 32
              235:    6(float) Load 234
-             236:   18(fvec2) CompositeConstruct 235 235
-             237:     23(ptr) AccessChain 21 22
-             238:     15(int) Load 237
+             236:    18(vec2) CompositeConstruct 235 235
+             237:   23(uint*) AccessChain 21 22
+             238:    15(uint) Load 237
              239:    26(bool) INotEqual 238 27
              240:    6(float) Select 239 30 29
-             241:   18(fvec2) CompositeConstruct 240 240
-             242:   18(fvec2) ExtInst 1(GLSL.std.450) 43(FClamp) 233 236 241
+             241:    18(vec2) CompositeConstruct 240 240
+             242:    18(vec2) ExtInst 1(GLSL.std.450) 43(FClamp) 233 236 241
                               Store 229(r42) 242
-             244:     55(ptr) AccessChain 21 53
+             244:    55(int*) AccessChain 21 53
              245:     14(int) Load 244
-             246:     15(int) Bitcast 245
-             247:   17(ivec2) CompositeConstruct 246 246
-             248:    110(ptr) AccessChain 21 109
+             246:    15(uint) Bitcast 245
+             247:   17(uvec2) CompositeConstruct 246 246
+             248: 110(ivec2*) AccessChain 21 109
              249:   16(ivec2) Load 248
-             250:   17(ivec2) Bitcast 249
-             251:     76(ptr) AccessChain 21 97
-             252:   17(ivec2) Load 251
-             253:   17(ivec2) ExtInst 1(GLSL.std.450) 44(UClamp) 247 250 252
+             250:   17(uvec2) Bitcast 249
+             251:  76(uvec2*) AccessChain 21 97
+             252:   17(uvec2) Load 251
+             253:   17(uvec2) ExtInst 1(GLSL.std.450) 44(UClamp) 247 250 252
              254:   16(ivec2) Bitcast 253
                               Store 243(r43) 254
              259:         256 Load 258(g_tTexbfs)
-             261:     23(ptr) AccessChain 21 260
-             262:     15(int) Load 261
+             261:   23(uint*) AccessChain 21 260
+             262:    15(uint) Load 261
              263:     14(int) Bitcast 262
-             264:    7(fvec4) ImageFetch 259 263
+             264:     7(vec4) ImageFetch 259 263
              265:    6(float) CompositeExtract 264 0
                               Store 255(r50) 265
              267:         256 Load 258(g_tTexbfs)
-             269:     33(ptr) AccessChain 21 268
+             269:  33(float*) AccessChain 21 268
              270:    6(float) Load 269
              271:     14(int) ConvertFToS 270
-             272:    7(fvec4) ImageFetch 267 271
+             272:     7(vec4) ImageFetch 267 271
              273:    6(float) CompositeExtract 272 0
                               Store 266(r51) 273
              278:         275 Load 277(g_tTex1df4)
-             279:     15(int) ImageQuerySizeLod 278 53
+             279:    15(uint) ImageQuerySizeLod 278 53
                               Store 274(sizeQueryTemp) 279
-             281:     15(int) Load 274(sizeQueryTemp)
+             281:    15(uint) Load 274(sizeQueryTemp)
              282:     14(int) Bitcast 281
                               Store 280(WidthI) 282
              284:         275 Load 277(g_tTex1df4)
-             286:     15(int) ImageQuerySizeLod 284 285
+             286:    15(uint) ImageQuerySizeLod 284 285
                               Store 283(sizeQueryTemp) 286
-             287:     15(int) Load 283(sizeQueryTemp)
+             287:    15(uint) Load 283(sizeQueryTemp)
              288:     14(int) Bitcast 287
                               Store 280(WidthI) 288
              290:         275 Load 277(g_tTex1df4)
-             291:     15(int) ImageQueryLevels 290
+             291:    15(uint) ImageQueryLevels 290
                               Store 289(NumberOfLevelsU) 291
              293:         275 Load 277(g_tTex1df4)
-             294:     15(int) ImageQuerySizeLod 293 285
+             294:    15(uint) ImageQuerySizeLod 293 285
                               Store 292(sizeQueryTemp) 294
-             296:     15(int) Load 292(sizeQueryTemp)
+             296:    15(uint) Load 292(sizeQueryTemp)
                               Store 295(WidthU) 296
              298:         275 Load 277(g_tTex1df4)
-             299:     15(int) ImageQueryLevels 298
+             299:    15(uint) ImageQueryLevels 298
              300:     14(int) Bitcast 299
                               Store 297(NumberOfLevelsI) 300
              302:         275 Load 277(g_tTex1df4)
-             303:     15(int) ImageQuerySizeLod 302 285
+             303:    15(uint) ImageQuerySizeLod 302 285
                               Store 301(sizeQueryTemp) 303
-             304:     15(int) Load 301(sizeQueryTemp)
+             304:    15(uint) Load 301(sizeQueryTemp)
              305:     14(int) Bitcast 304
                               Store 280(WidthI) 305
              306:         275 Load 277(g_tTex1df4)
-             307:     15(int) ImageQueryLevels 306
+             307:    15(uint) ImageQueryLevels 306
              308:     14(int) Bitcast 307
                               Store 297(NumberOfLevelsI) 308
              311:    6(float) Load 13(r00)
-             312:    7(fvec4) CompositeConstruct 311 311 311 311
-             314:    313(ptr) AccessChain 310(ps_output) 53
+             312:     7(vec4) CompositeConstruct 311 311 311 311
+             314:  313(vec4*) AccessChain 310(ps_output) 53
                               Store 314 312
              315:8(PS_OUTPUT) Load 310(ps_output)
                               ReturnValue 315

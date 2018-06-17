@@ -124,55 +124,55 @@ gl_FragCoord origin is upper left
                               Decorate 15 DescriptorSet 0
                               Decorate 41(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
-              11:             TypePointer Private 7(fvec4)
-         12(bar):     11(ptr) Variable Private
-          13(CB):             TypeStruct 7(fvec4)
+               8:             TypeFunction 7(vec4)
+              11:             TypePointer Private 7(vec4)
+         12(bar):   11(vec4*) Variable Private
+          13(CB):             TypeStruct 7(vec4)
               14:             TypePointer Uniform 13(CB)
-              15:     14(ptr) Variable Uniform
+              15:     14(CB*) Variable Uniform
               16:             TypeInt 32 1
               17:     16(int) Constant 0
-              18:             TypePointer Uniform 7(fvec4)
+              18:             TypePointer Uniform 7(vec4)
               21:             TypeVector 6(float) 2
               22:             TypeInt 32 0
-              23:     22(int) Constant 2
-              24:             TypeArray 21(fvec2) 23
-              25:             TypePointer Private 24
-          26(a1):     25(ptr) Variable Private
+              23:    22(uint) Constant 2
+              24:             TypeArray 21(vec2) 23
+              25:             TypePointer Private 24(vec2[2])
+          26(a1):25(vec2[2]*) Variable Private
               27:    6(float) Constant 1065353216
               28:    6(float) Constant 1073741824
-              29:   21(fvec2) ConstantComposite 27 28
-              30:     22(int) Constant 0
+              29:    21(vec2) ConstantComposite 27 28
+              30:    22(uint) Constant 0
               31:             TypePointer Uniform 6(float)
               34:    6(float) Constant 1082130432
-              40:             TypePointer Output 7(fvec4)
-41(@entryPointOutput):     40(ptr) Variable Output
+              40:             TypePointer Output 7(vec4)
+41(@entryPointOutput):   40(vec4*) Variable Output
               43:    6(float) Constant 1084227584
               44:    6(float) Constant 1086324736
-              45:   21(fvec2) ConstantComposite 43 44
+              45:    21(vec2) ConstantComposite 43 44
               46:    6(float) Constant 1088421888
               47:    6(float) Constant 1090519040
-              48:   21(fvec2) ConstantComposite 46 47
-              49:          24 ConstantComposite 45 48
-         4(main):           2 Function None 3
+              48:    21(vec2) ConstantComposite 46 47
+              49: 24(vec2[2]) ConstantComposite 45 48
+         4(main):     2(void) Function None 3
                5:             Label
-              19:     18(ptr) AccessChain 15 17
-              20:    7(fvec4) Load 19
+              19:   18(vec4*) AccessChain 15 17
+              20:     7(vec4) Load 19
                               Store 12(bar) 20
-              32:     31(ptr) AccessChain 15 17 30
+              32:  31(float*) AccessChain 15 17 30
               33:    6(float) Load 32
-              35:   21(fvec2) CompositeConstruct 33 34
-              36:          24 CompositeConstruct 29 35
+              35:    21(vec2) CompositeConstruct 33 34
+              36: 24(vec2[2]) CompositeConstruct 29 35
                               Store 26(a1) 36
-              42:    7(fvec4) FunctionCall 9(@main()
+              42:     7(vec4) FunctionCall 9(@main()
                               Store 41(@entryPointOutput) 42
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-              37:    7(fvec4) Load 12(bar)
+              37:     7(vec4) Load 12(bar)
                               ReturnValue 37
                               FunctionEnd

@@ -51,81 +51,81 @@ spv.310.comp
                               Decorate 64(gl_DeviceIndex) BuiltIn DeviceIndex
                               Decorate 70 BuiltIn WorkgroupSize
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:      6(int) Constant 2
-               8:      6(int) Constant 264
+               7:     6(uint) Constant 2
+               8:     6(uint) Constant 264
                9:             TypeFloat 32
               10:             TypeVector 9(float) 3
-              11:             TypeRuntimeArray 10(fvec3)
-        12(outb):             TypeStruct 9(float) 9(float) 9(float) 11
+              11:             TypeRuntimeArray 10(vec3)
+        12(outb):             TypeStruct 9(float) 9(float) 9(float) 11(vec3[])
               13:             TypePointer Uniform 12(outb)
-    14(outbname):     13(ptr) Variable Uniform
+    14(outbname):   13(outb*) Variable Uniform
               15:             TypeInt 32 1
               16:     15(int) Constant 0
               17:             TypePointer Workgroup 9(float)
-           18(s):     17(ptr) Variable Workgroup
+           18(s):  17(float*) Variable Workgroup
               20:             TypePointer Uniform 9(float)
               22:             TypeVector 9(float) 4
-      23(outbna):             TypeStruct 15(int) 22(fvec4)
+      23(outbna):             TypeStruct 15(int) 22(vec4)
               24:             TypePointer Uniform 23(outbna)
-  25(outbnamena):     24(ptr) Variable Uniform
+  25(outbnamena): 24(outbna*) Variable Uniform
               26:     15(int) Constant 1
-              29:             TypePointer Uniform 22(fvec4)
+              29:             TypePointer Uniform 22(vec4)
               31:     15(int) Constant 3
               32:     15(int) Constant 18
-              33:      6(int) Constant 0
+              33:     6(uint) Constant 0
               36:     15(int) Constant 17
               37:    9(float) Constant 1077936128
-              38:   10(fvec3) ConstantComposite 37 37 37
-              39:             TypePointer Uniform 10(fvec3)
+              38:    10(vec3) ConstantComposite 37 37 37
+              39:             TypePointer Uniform 10(vec3)
               41:             TypePointer Workgroup 15(int)
-           42(i):     41(ptr) Variable Workgroup
-              47:             TypeRuntimeArray 22(fvec4)
-        48(outs):             TypeStruct 15(int) 47
+           42(i):    41(int*) Variable Workgroup
+              47:             TypeRuntimeArray 22(vec4)
+        48(outs):             TypeStruct 15(int) 47(vec4[])
               49:             TypePointer Uniform 48(outs)
-    50(outnames):     49(ptr) Variable Uniform
-              51:             TypeVector 6(int) 3
-              52:             TypePointer Input 51(ivec3)
-53(gl_LocalInvocationID):     52(ptr) Variable Input
-              54:             TypePointer Input 6(int)
+    50(outnames):   49(outs*) Variable Uniform
+              51:             TypeVector 6(uint) 3
+              52:             TypePointer Input 51(uvec3)
+53(gl_LocalInvocationID):  52(uvec3*) Variable Input
+              54:             TypePointer Input 6(uint)
               61:             TypePointer Uniform 15(int)
               63:             TypePointer Input 15(int)
-64(gl_DeviceIndex):     63(ptr) Variable Input
-              65:      6(int) Constant 1
-              66:      6(int) Constant 3400
-              67:      6(int) Constant 16
-              68:      6(int) Constant 32
-              69:      6(int) Constant 4
-              70:   51(ivec3) ConstantComposite 67 68 69
-         4(main):           2 Function None 3
+64(gl_DeviceIndex):    63(int*) Variable Input
+              65:     6(uint) Constant 1
+              66:     6(uint) Constant 3400
+              67:     6(uint) Constant 16
+              68:     6(uint) Constant 32
+              69:     6(uint) Constant 4
+              70:   51(uvec3) ConstantComposite 67 68 69
+         4(main):     2(void) Function None 3
                5:             Label
                               ControlBarrier 7 7 8
               19:    9(float) Load 18(s)
-              21:     20(ptr) AccessChain 14(outbname) 16
+              21:  20(float*) AccessChain 14(outbname) 16
                               Store 21 19
               27:    9(float) Load 18(s)
-              28:   22(fvec4) CompositeConstruct 27 27 27 27
-              30:     29(ptr) AccessChain 25(outbnamena) 26
+              28:    22(vec4) CompositeConstruct 27 27 27 27
+              30:   29(vec4*) AccessChain 25(outbnamena) 26
                               Store 30 28
-              34:     20(ptr) AccessChain 14(outbname) 31 32 33
+              34:  20(float*) AccessChain 14(outbname) 31 32 33
               35:    9(float) Load 34
                               Store 18(s) 35
-              40:     39(ptr) AccessChain 14(outbname) 31 36
+              40:   39(vec3*) AccessChain 14(outbname) 31 36
                               Store 40 38
               43:     15(int) Load 42(i)
               44:    9(float) Load 18(s)
-              45:   10(fvec3) CompositeConstruct 44 44 44
-              46:     39(ptr) AccessChain 14(outbname) 31 43
+              45:    10(vec3) CompositeConstruct 44 44 44
+              46:   39(vec3*) AccessChain 14(outbname) 31 43
                               Store 46 45
-              55:     54(ptr) AccessChain 53(gl_LocalInvocationID) 33
-              56:      6(int) Load 55
+              55:   54(uint*) AccessChain 53(gl_LocalInvocationID) 33
+              56:     6(uint) Load 55
               57:    9(float) Load 18(s)
-              58:   22(fvec4) CompositeConstruct 57 57 57 57
-              59:     29(ptr) AccessChain 50(outnames) 26 56
+              58:    22(vec4) CompositeConstruct 57 57 57 57
+              59:   29(vec4*) AccessChain 50(outnames) 26 56
                               Store 59 58
               60:     15(int) ArrayLength 14(outbname) 3
-              62:     61(ptr) AccessChain 50(outnames) 16
+              62:    61(int*) AccessChain 50(outnames) 16
                               Store 62 60
                               MemoryBarrier 65 8
                               MemoryBarrier 7 66

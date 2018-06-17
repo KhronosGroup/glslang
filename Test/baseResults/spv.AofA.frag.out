@@ -38,74 +38,74 @@ WARNING: 0:6: '[][]' : Generating SPIR-V array-of-arrays, but Vulkan only suppor
                               Decorate 94(uAofA) Block
                               Decorate 98(nameAofA) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeInt 32 0
-               8:      7(int) Constant 7
+               8:     7(uint) Constant 7
                9:             TypeArray 6(float) 8
-              10:      7(int) Constant 5
-              11:             TypeArray 9 10
-              12:             TypePointer Function 11
-              13:      7(int) Constant 4
-              14:             TypeArray 9 13
-              15:             TypeFunction 14 12(ptr)
-              19:             TypePointer Function 9
+              10:     7(uint) Constant 5
+              11:             TypeArray 9(float[7]) 10
+              12:             TypePointer Function 11(float[7][5])
+              13:     7(uint) Constant 4
+              14:             TypeArray 9(float[7]) 13
+              15:             TypeFunction 14(float[7][4]) 12(float[7][5]*)
+              19:             TypePointer Function 9(float[7])
               21:             TypeInt 32 1
               22:     21(int) Constant 2
               25:     21(int) Constant 0
               28:     21(int) Constant 1
               32:     21(int) Constant 3
               38:             TypePointer Output 6(float)
-    39(outfloat):     38(ptr) Variable Output
+    39(outfloat):  38(float*) Variable Output
               40:    6(float) Constant 0
-              41:             TypePointer Private 14
-          42(g4):     41(ptr) Variable Private
-              43:             TypePointer Input 11
-          44(g5):     43(ptr) Variable Input
+              41:             TypePointer Private 14(float[7][4])
+          42(g4):41(float[7][4]*) Variable Private
+              43:             TypePointer Input 11(float[7][5])
+          44(g5):43(float[7][5]*) Variable Input
               49:    6(float) Constant 1077936128
               50:             TypePointer Function 6(float)
-              55:      7(int) Constant 6
+              55:     7(uint) Constant 6
               56:             TypeArray 6(float) 55
-              57:             TypeArray 56 10
-              58:             TypeArray 57 13
-              59:      7(int) Constant 3
-              60:             TypeArray 58 59
-              61:      7(int) Constant 2
-              62:             TypeArray 60 61
-              63:      7(int) Constant 1
-              64:             TypeArray 62 63
-              65:             TypePointer Private 64
-        66(many):     65(ptr) Variable Private
+              57:             TypeArray 56(float[6]) 10
+              58:             TypeArray 57(float[6][5]) 13
+              59:     7(uint) Constant 3
+              60:             TypeArray 58(float[6][5][4]) 59
+              61:     7(uint) Constant 2
+              62:             TypeArray 60(float[6][5][4][3]) 61
+              63:     7(uint) Constant 1
+              64:             TypeArray 62(float[6][5][4][3][2]) 63
+              65:             TypePointer Private 64(float[6][5][4][3][2][1])
+        66(many):65(float[6][5][4][3][2][1]*) Variable Private
               67:             TypePointer Input 21(int)
-           68(i):     67(ptr) Variable Input
-           70(j):     67(ptr) Variable Input
-           72(k):     67(ptr) Variable Input
+           68(i):    67(int*) Variable Input
+           70(j):    67(int*) Variable Input
+           72(k):    67(int*) Variable Input
               77:             TypePointer Input 6(float)
-     78(infloat):     77(ptr) Variable Input
+     78(infloat):  77(float*) Variable Input
               80:             TypePointer Private 6(float)
               92:             TypeArray 6(float) 13
-              93:             TypeArray 92 61
-       94(uAofA):             TypeStruct 93
+              93:             TypeArray 92(float[4]) 61
+       94(uAofA):             TypeStruct 93(float[4][2])
               95:             TypeArray 94(uAofA) 10
-              96:             TypeArray 95 59
-              97:             TypePointer Uniform 96
-    98(nameAofA):     97(ptr) Variable Uniform
+              96:             TypeArray 95(uAofA[5]) 59
+              97:             TypePointer Uniform 96(uAofA[5][3])
+    98(nameAofA):97(uAofA[5][3]*) Variable Uniform
               99:             TypePointer Uniform 6(float)
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-       45(param):     12(ptr) Variable Function
-           48(u):     12(ptr) Variable Function
-       52(param):     12(ptr) Variable Function
+       45(param):12(float[7][5]*) Variable Function
+           48(u):12(float[7][5]*) Variable Function
+       52(param):12(float[7][5]*) Variable Function
                               Store 39(outfloat) 40
-              46:          11 Load 44(g5)
+              46:11(float[7][5]) Load 44(g5)
                               Store 45(param) 46
-              47:          14 FunctionCall 17(foo(f1[5][7];) 45(param)
+              47:14(float[7][4]) FunctionCall 17(foo(f1[5][7];) 45(param)
                               Store 42(g4) 47
-              51:     50(ptr) AccessChain 48(u) 22 22
+              51:  50(float*) AccessChain 48(u) 22 22
                               Store 51 49
-              53:          11 Load 48(u)
+              53:11(float[7][5]) Load 48(u)
                               Store 52(param) 53
-              54:          14 FunctionCall 17(foo(f1[5][7];) 52(param)
+              54:14(float[7][4]) FunctionCall 17(foo(f1[5][7];) 52(param)
               69:     21(int) Load 68(i)
               71:     21(int) Load 70(j)
               73:     21(int) Load 72(k)
@@ -113,7 +113,7 @@ WARNING: 0:6: '[][]' : Generating SPIR-V array-of-arrays, but Vulkan only suppor
               75:     21(int) Load 70(j)
               76:     21(int) Load 72(k)
               79:    6(float) Load 78(infloat)
-              81:     80(ptr) AccessChain 66(many) 69 71 73 74 75 76
+              81:  80(float*) AccessChain 66(many) 69 71 73 74 75 76
                               Store 81 79
               82:     21(int) Load 70(j)
               83:     21(int) Load 70(j)
@@ -121,32 +121,32 @@ WARNING: 0:6: '[][]' : Generating SPIR-V array-of-arrays, but Vulkan only suppor
               85:     21(int) Load 70(j)
               86:     21(int) Load 70(j)
               87:     21(int) Load 70(j)
-              88:     80(ptr) AccessChain 66(many) 82 83 84 85 86 87
+              88:  80(float*) AccessChain 66(many) 82 83 84 85 86 87
               89:    6(float) Load 88
               90:    6(float) Load 39(outfloat)
               91:    6(float) FAdd 90 89
                               Store 39(outfloat) 91
-             100:     99(ptr) AccessChain 98(nameAofA) 28 22 25 25 32
+             100:  99(float*) AccessChain 98(nameAofA) 28 22 25 25 32
              101:    6(float) Load 100
              102:    6(float) Load 39(outfloat)
              103:    6(float) FAdd 102 101
                               Store 39(outfloat) 103
                               Return
                               FunctionEnd
-17(foo(f1[5][7];):          14 Function None 15
-           16(a):     12(ptr) FunctionParameter
+17(foo(f1[5][7];):14(float[7][4]) Function None 15
+           16(a):12(float[7][5]*) FunctionParameter
               18:             Label
-           20(r):     19(ptr) Variable Function
-              23:     19(ptr) AccessChain 16(a) 22
-              24:           9 Load 23
+           20(r):19(float[7]*) Variable Function
+              23:19(float[7]*) AccessChain 16(a) 22
+              24: 9(float[7]) Load 23
                               Store 20(r) 24
-              26:     19(ptr) AccessChain 16(a) 25
-              27:           9 Load 26
-              29:     19(ptr) AccessChain 16(a) 28
-              30:           9 Load 29
-              31:           9 Load 20(r)
-              33:     19(ptr) AccessChain 16(a) 32
-              34:           9 Load 33
-              35:          14 CompositeConstruct 27 30 31 34
+              26:19(float[7]*) AccessChain 16(a) 25
+              27: 9(float[7]) Load 26
+              29:19(float[7]*) AccessChain 16(a) 28
+              30: 9(float[7]) Load 29
+              31: 9(float[7]) Load 20(r)
+              33:19(float[7]*) AccessChain 16(a) 32
+              34: 9(float[7]) Load 33
+              35:14(float[7][4]) CompositeConstruct 27 30 31 34
                               ReturnValue 35
                               FunctionEnd

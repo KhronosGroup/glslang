@@ -19,7 +19,7 @@ hlsl.flattenSubset.frag
                               Decorate 47(vpos) Location 0
                               Decorate 50(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
               13:             TypeSampler
@@ -31,17 +31,17 @@ hlsl.flattenSubset.frag
               37:             TypeSampledImage 31
               39:             TypeVector 6(float) 2
               40:    6(float) Constant 1056964608
-              41:   39(fvec2) ConstantComposite 40 40
-              46:             TypePointer Input 7(fvec4)
-        47(vpos):     46(ptr) Variable Input
-              49:             TypePointer Output 7(fvec4)
-50(@entryPointOutput):     49(ptr) Variable Output
-         4(main):           2 Function None 3
+              41:    39(vec2) ConstantComposite 40 40
+              46:             TypePointer Input 7(vec4)
+        47(vpos):   46(vec4*) Variable Input
+              49:             TypePointer Output 7(vec4)
+50(@entryPointOutput):   49(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               57:          13 Load 21(samp)
               61:          31 Load 33(tex)
               64:          37 SampledImage 61 57
-              65:    7(fvec4) ImageSampleImplicitLod 64 41
+              65:     7(vec4) ImageSampleImplicitLod 64 41
                               Store 50(@entryPointOutput) 65
                               Return
                               FunctionEnd

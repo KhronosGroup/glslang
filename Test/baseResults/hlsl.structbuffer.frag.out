@@ -239,110 +239,110 @@ gl_FragCoord origin is upper left
                               Decorate 89(pos) Location 0
                               Decorate 92(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypePointer Function 6(int)
+               7:             TypePointer Function 6(uint)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
-              10:             TypeFunction 9(fvec4) 7(ptr)
+              10:             TypeFunction 9(vec4) 7(uint*)
               14:             TypeVector 8(float) 3
               15:             TypeBool
-        16(sb_t):             TypeStruct 14(fvec3) 15(bool) 15(bool)
+        16(sb_t):             TypeStruct 14(vec3) 15(bool) 15(bool)
               17:             TypePointer Function 16(sb_t)
-        19(sb_t):             TypeStruct 14(fvec3) 6(int) 6(int)
+        19(sb_t):             TypeStruct 14(vec3) 6(uint) 6(uint)
               20:             TypeRuntimeArray 19(sb_t)
-        21(sbuf):             TypeStruct 20
+        21(sbuf):             TypeStruct 20(sb_t[])
               22:             TypePointer Uniform 21(sbuf)
-        23(sbuf):     22(ptr) Variable Uniform
+        23(sbuf):   22(sbuf*) Variable Uniform
               24:             TypeInt 32 1
               25:     24(int) Constant 0
               27:             TypePointer Uniform 19(sb_t)
-              31:             TypePointer Function 14(fvec3)
+              31:             TypePointer Function 14(vec3)
               34:     24(int) Constant 1
-              35:      6(int) Constant 0
+              35:     6(uint) Constant 0
               37:             TypePointer Function 15(bool)
               40:     24(int) Constant 2
-              46:      6(int) Constant 32
-              48:             TypePointer Uniform 6(int)
-              55:             TypePointer Uniform 14(fvec3)
+              46:     6(uint) Constant 32
+              48:             TypePointer Uniform 6(uint)
+              55:             TypePointer Uniform 14(vec3)
               58:             TypeRuntimeArray 8(float)
-       59(sbuf2):             TypeStruct 58
+       59(sbuf2):             TypeStruct 58(float[])
               60:             TypePointer Uniform 59(sbuf2)
-       61(sbuf2):     60(ptr) Variable Uniform
+       61(sbuf2):  60(sbuf2*) Variable Uniform
               63:             TypePointer Uniform 8(float)
               68:    8(float) Constant 0
               75:             TypePointer Function 8(float)
-              88:             TypePointer Input 6(int)
-         89(pos):     88(ptr) Variable Input
-              91:             TypePointer Output 9(fvec4)
-92(@entryPointOutput):     91(ptr) Variable Output
-         4(main):           2 Function None 3
+              88:             TypePointer Input 6(uint)
+         89(pos):   88(uint*) Variable Input
+              91:             TypePointer Output 9(vec4)
+92(@entryPointOutput):   91(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-         87(pos):      7(ptr) Variable Function
-       93(param):      7(ptr) Variable Function
-              90:      6(int) Load 89(pos)
+         87(pos):    7(uint*) Variable Function
+       93(param):    7(uint*) Variable Function
+              90:     6(uint) Load 89(pos)
                               Store 87(pos) 90
-              94:      6(int) Load 87(pos)
+              94:     6(uint) Load 87(pos)
                               Store 93(param) 94
-              95:    9(fvec4) FunctionCall 12(@main(u1;) 93(param)
+              95:     9(vec4) FunctionCall 12(@main(u1;) 93(param)
                               Store 92(@entryPointOutput) 95
                               Return
                               FunctionEnd
-   12(@main(u1;):    9(fvec4) Function None 10
-         11(pos):      7(ptr) FunctionParameter
+   12(@main(u1;):     9(vec4) Function None 10
+         11(pos):    7(uint*) FunctionParameter
               13:             Label
-      18(mydata):     17(ptr) Variable Function
-        43(size):      7(ptr) Variable Function
-      45(stride):      7(ptr) Variable Function
-              26:      6(int) Load 11(pos)
-              28:     27(ptr) AccessChain 23(sbuf) 25 26
+      18(mydata):   17(sb_t*) Variable Function
+        43(size):    7(uint*) Variable Function
+      45(stride):    7(uint*) Variable Function
+              26:     6(uint) Load 11(pos)
+              28:   27(sb_t*) AccessChain 23(sbuf) 25 26
               29:    19(sb_t) Load 28
-              30:   14(fvec3) CompositeExtract 29 0
-              32:     31(ptr) AccessChain 18(mydata) 25
+              30:    14(vec3) CompositeExtract 29 0
+              32:   31(vec3*) AccessChain 18(mydata) 25
                               Store 32 30
-              33:      6(int) CompositeExtract 29 1
+              33:     6(uint) CompositeExtract 29 1
               36:    15(bool) INotEqual 33 35
-              38:     37(ptr) AccessChain 18(mydata) 34
+              38:   37(bool*) AccessChain 18(mydata) 34
                               Store 38 36
-              39:      6(int) CompositeExtract 29 2
+              39:     6(uint) CompositeExtract 29 2
               41:    15(bool) INotEqual 39 35
-              42:     37(ptr) AccessChain 18(mydata) 40
+              42:   37(bool*) AccessChain 18(mydata) 40
                               Store 42 41
               44:     24(int) ArrayLength 23(sbuf) 0
                               Store 43(size) 44
                               Store 45(stride) 46
-              47:      6(int) Load 11(pos)
-              49:     48(ptr) AccessChain 23(sbuf) 25 47 34
-              50:      6(int) Load 49
+              47:     6(uint) Load 11(pos)
+              49:   48(uint*) AccessChain 23(sbuf) 25 47 34
+              50:     6(uint) Load 49
               51:    15(bool) INotEqual 50 35
                               SelectionMerge 53 None
                               BranchConditional 51 52 74
               52:               Label
-              54:      6(int)   Load 11(pos)
-              56:     55(ptr)   AccessChain 23(sbuf) 25 54 25
-              57:   14(fvec3)   Load 56
-              62:      6(int)   Load 11(pos)
-              64:     63(ptr)   AccessChain 61(sbuf2) 25 62
+              54:     6(uint)   Load 11(pos)
+              56:   55(vec3*)   AccessChain 23(sbuf) 25 54 25
+              57:    14(vec3)   Load 56
+              62:     6(uint)   Load 11(pos)
+              64:  63(float*)   AccessChain 61(sbuf2) 25 62
               65:    8(float)   Load 64
-              66:   14(fvec3)   CompositeConstruct 65 65 65
-              67:   14(fvec3)   FAdd 57 66
+              66:    14(vec3)   CompositeConstruct 65 65 65
+              67:    14(vec3)   FAdd 57 66
               69:    8(float)   CompositeExtract 67 0
               70:    8(float)   CompositeExtract 67 1
               71:    8(float)   CompositeExtract 67 2
-              72:    9(fvec4)   CompositeConstruct 69 70 71 68
+              72:     9(vec4)   CompositeConstruct 69 70 71 68
                                 ReturnValue 72
               74:               Label
-              76:     75(ptr)   AccessChain 18(mydata) 25 35
+              76:  75(float*)   AccessChain 18(mydata) 25 35
               77:    8(float)   Load 76
-              78:      6(int)   Load 43(size)
+              78:     6(uint)   Load 43(size)
               79:    8(float)   ConvertUToF 78
               80:    8(float)   FAdd 77 79
-              81:      6(int)   Load 45(stride)
+              81:     6(uint)   Load 45(stride)
               82:    8(float)   ConvertUToF 81
               83:    8(float)   FAdd 80 82
-              84:    9(fvec4)   CompositeConstruct 83 83 83 83
+              84:     9(vec4)   CompositeConstruct 83 83 83 83
                                 ReturnValue 84
               53:             Label
-              86:    9(fvec4) Undef
+              86:     9(vec4) Undef
                               ReturnValue 86
                               FunctionEnd

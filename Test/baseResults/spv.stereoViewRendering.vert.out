@@ -38,31 +38,31 @@ spv.stereoViewRendering.vert
                               Decorate 26(gl_Layer) ViewportRelativeNV
                               Decorate 26(gl_Layer) SecondaryViewportRelativeNV 2
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypeInt 32 0
-               8:      7(int) Constant 1
+               8:     7(uint) Constant 1
                9:             TypeArray 6(int) 8
-              10:             TypePointer Output 9
-11(gl_SecondaryViewportMaskNV):     10(ptr) Variable Output
+              10:             TypePointer Output 9(int[1])
+11(gl_SecondaryViewportMaskNV): 10(int[1]*) Variable Output
               12:      6(int) Constant 0
               13:      6(int) Constant 1
               14:             TypePointer Output 6(int)
               16:             TypeFloat 32
               17:             TypeVector 16(float) 4
-              18:             TypePointer Output 17(fvec4)
-19(gl_SecondaryPositionNV):     18(ptr) Variable Output
+              18:             TypePointer Output 17(vec4)
+19(gl_SecondaryPositionNV):   18(vec4*) Variable Output
               20:             TypeArray 16(float) 8
-21(gl_PerVertex):             TypeStruct 17(fvec4) 16(float) 20 20
+21(gl_PerVertex):             TypeStruct 17(vec4) 16(float) 20(float[1]) 20(float[1])
               22:             TypePointer Output 21(gl_PerVertex)
-              23:     22(ptr) Variable Output
-    26(gl_Layer):     14(ptr) Variable Output
-         4(main):           2 Function None 3
+              23:22(gl_PerVertex*) Variable Output
+    26(gl_Layer):    14(int*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              15:     14(ptr) AccessChain 11(gl_SecondaryViewportMaskNV) 12
+              15:    14(int*) AccessChain 11(gl_SecondaryViewportMaskNV) 12
                               Store 15 13
-              24:     18(ptr) AccessChain 23 12
-              25:   17(fvec4) Load 24
+              24:   18(vec4*) AccessChain 23 12
+              25:    17(vec4) Load 24
                               Store 19(gl_SecondaryPositionNV) 25
                               Return
                               FunctionEnd

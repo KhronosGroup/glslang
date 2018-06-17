@@ -168,23 +168,23 @@ gl_FragCoord origin is upper left
                               Decorate 63(twf4) DescriptorSet 0
                               Decorate 71(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeImage 6(float) 2D sampled format:Unknown
                8:             TypePointer Function 7
                9:             TypeFunction 6(float) 8(ptr)
               13:             TypeVector 6(float) 4
-              14:             TypeFunction 13(fvec4) 8(ptr)
+              14:             TypeFunction 13(vec4) 8(ptr)
               18:             TypeImage 6(float) 2D nonsampled format:R32f
               19:             TypePointer Function 18
               20:             TypeFunction 6(float) 19(ptr)
               24:             TypeImage 6(float) 2D nonsampled format:Rgba32f
               25:             TypePointer Function 24
-              26:             TypeFunction 13(fvec4) 25(ptr)
-              30:             TypeFunction 13(fvec4)
+              26:             TypeFunction 13(vec4) 25(ptr)
+              30:             TypeFunction 13(vec4)
               33:    6(float) Constant 1065353216
               36:    6(float) Constant 0
-              37:   13(fvec4) ConstantComposite 36 36 36 36
+              37:    13(vec4) ConstantComposite 36 36 36 36
               44:             TypePointer UniformConstant 7
          45(tf1):     44(ptr) Variable UniformConstant
          49(tf4):     44(ptr) Variable UniformConstant
@@ -192,11 +192,11 @@ gl_FragCoord origin is upper left
         56(twf1):     55(ptr) Variable UniformConstant
               62:             TypePointer UniformConstant 24
         63(twf4):     62(ptr) Variable UniformConstant
-              70:             TypePointer Output 13(fvec4)
-71(@entryPointOutput):     70(ptr) Variable Output
-         4(main):           2 Function None 3
+              70:             TypePointer Output 13(vec4)
+71(@entryPointOutput):   70(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              72:   13(fvec4) FunctionCall 31(@main()
+              72:    13(vec4) FunctionCall 31(@main()
                               Store 71(@entryPointOutput) 72
                               Return
                               FunctionEnd
@@ -205,7 +205,7 @@ gl_FragCoord origin is upper left
               12:             Label
                               ReturnValue 33
                               FunctionEnd
-   16(Func(t21;):   13(fvec4) Function None 14
+   16(Func(t21;):    13(vec4) Function None 14
     15(DummyTex):      8(ptr) FunctionParameter
               17:             Label
                               ReturnValue 37
@@ -215,12 +215,12 @@ gl_FragCoord origin is upper left
               23:             Label
                               ReturnValue 33
                               FunctionEnd
-   28(Func(I21;):   13(fvec4) Function None 26
+   28(Func(I21;):    13(vec4) Function None 26
     27(DummyTex):     25(ptr) FunctionParameter
               29:             Label
                               ReturnValue 37
                               FunctionEnd
-      31(@main():   13(fvec4) Function None 30
+      31(@main():    13(vec4) Function None 30
               32:             Label
        46(param):      8(ptr) Variable Function
        50(param):      8(ptr) Variable Function
@@ -231,17 +231,17 @@ gl_FragCoord origin is upper left
               48:    6(float) FunctionCall 11(Func(t211;) 46(param)
               51:           7 Load 49(tf4)
                               Store 50(param) 51
-              52:   13(fvec4) FunctionCall 16(Func(t21;) 50(param)
-              53:   13(fvec4) CompositeConstruct 48 48 48 48
-              54:   13(fvec4) FAdd 53 52
+              52:    13(vec4) FunctionCall 16(Func(t21;) 50(param)
+              53:    13(vec4) CompositeConstruct 48 48 48 48
+              54:    13(vec4) FAdd 53 52
               58:          18 Load 56(twf1)
                               Store 57(param) 58
               59:    6(float) FunctionCall 22(Func(I211;) 57(param)
-              60:   13(fvec4) CompositeConstruct 59 59 59 59
-              61:   13(fvec4) FAdd 54 60
+              60:    13(vec4) CompositeConstruct 59 59 59 59
+              61:    13(vec4) FAdd 54 60
               65:          24 Load 63(twf4)
                               Store 64(param) 65
-              66:   13(fvec4) FunctionCall 28(Func(I21;) 64(param)
-              67:   13(fvec4) FAdd 61 66
+              66:    13(vec4) FunctionCall 28(Func(I21;) 64(param)
+              67:    13(vec4) FAdd 61 66
                               ReturnValue 67
                               FunctionEnd

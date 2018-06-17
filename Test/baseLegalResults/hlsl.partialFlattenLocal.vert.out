@@ -14,40 +14,40 @@ hlsl.partialFlattenLocal.vert
                               Decorate 83(pos) Location 0
                               Decorate 86(@entryPointOutput) BuiltIn Position
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
               14:             TypeVector 6(float) 3
               15:             TypeInt 32 0
-              16:     15(int) Constant 3
-              17:             TypeArray 14(fvec3) 16
+              16:    15(uint) Constant 3
+              17:             TypeArray 14(vec3) 16
               18:             TypeVector 6(float) 2
-              19:     15(int) Constant 2
-              20:             TypeArray 18(fvec2) 19
+              19:    15(uint) Constant 2
+              20:             TypeArray 18(vec2) 19
               21:             TypeInt 32 1
               25:     21(int) Constant 0
               31:     21(int) Constant 1
               32:    6(float) Constant 0
-              33:   14(fvec3) ConstantComposite 32 32 32
-              34:             TypePointer Function 14(fvec3)
+              33:    14(vec3) ConstantComposite 32 32 32
+              34:             TypePointer Function 14(vec3)
               37:    6(float) Constant 1065353216
-              38:   18(fvec2) ConstantComposite 32 37
-              39:             TypePointer Function 18(fvec2)
+              38:    18(vec2) ConstantComposite 32 37
+              39:             TypePointer Function 18(vec2)
               54:             TypeBool
-              82:             TypePointer Input 7(fvec4)
-         83(pos):     82(ptr) Variable Input
-              85:             TypePointer Output 7(fvec4)
-86(@entryPointOutput):     85(ptr) Variable Output
-             130:             TypePointer Function 17
-             132:             TypePointer Function 20
-         4(main):           2 Function None 3
+              82:             TypePointer Input 7(vec4)
+         83(pos):   82(vec4*) Variable Input
+              85:             TypePointer Output 7(vec4)
+86(@entryPointOutput):   85(vec4*) Variable Output
+             130:             TypePointer Function 17(vec3[3])
+             132:             TypePointer Function 20(vec2[2])
+         4(main):     2(void) Function None 3
                5:             Label
-             133:    132(ptr) Variable Function
-             131:    130(ptr) Variable Function
-              84:    7(fvec4) Load 83(pos)
-             136:     34(ptr) AccessChain 131 25
+             133:132(vec2[2]*) Variable Function
+             131:130(vec3[3]*) Variable Function
+              84:     7(vec4) Load 83(pos)
+             136:   34(vec3*) AccessChain 131 25
                               Store 136 33
-             137:     39(ptr) AccessChain 133 25
+             137:   39(vec2*) AccessChain 133 25
                               Store 137 38
                               Branch 100
              100:             Label
@@ -56,26 +56,26 @@ hlsl.partialFlattenLocal.vert
                               LoopMerge 101 106 None
                               BranchConditional 105 106 101
              106:               Label
-             138:     39(ptr)   AccessChain 133 157
-             110:   18(fvec2)   Load 138
-             139:     34(ptr)   AccessChain 131 157
-             112:   14(fvec3)   Load 139
-             113:   18(fvec2)   VectorShuffle 112 112 0 1
-             114:   18(fvec2)   FAdd 113 110
-             140:     34(ptr)   AccessChain 131 157
-             116:   14(fvec3)   Load 140
-             117:   14(fvec3)   VectorShuffle 116 114 3 4 2
+             138:   39(vec2*)   AccessChain 133 157
+             110:    18(vec2)   Load 138
+             139:   34(vec3*)   AccessChain 131 157
+             112:    14(vec3)   Load 139
+             113:    18(vec2)   VectorShuffle 112 112 0 1
+             114:    18(vec2)   FAdd 113 110
+             140:   34(vec3*)   AccessChain 131 157
+             116:    14(vec3)   Load 140
+             117:    14(vec3)   VectorShuffle 116 114 3 4 2
                                 Store 140 117
              119:     21(int)   IAdd 157 31
                                 Branch 100
              101:             Label
-             142:          17 Load 131
-             156:   14(fvec3) CompositeExtract 142 0
+             142: 17(vec3[3]) Load 131
+             156:    14(vec3) CompositeExtract 142 0
              124:    6(float) CompositeExtract 156 0
              125:    6(float) CompositeExtract 156 1
              126:    6(float) CompositeExtract 156 2
-             127:    7(fvec4) CompositeConstruct 124 125 126 32
-             128:    7(fvec4) FAdd 84 127
+             127:     7(vec4) CompositeConstruct 124 125 126 32
+             128:     7(vec4) FAdd 84 127
                               Store 86(@entryPointOutput) 128
                               Return
                               FunctionEnd

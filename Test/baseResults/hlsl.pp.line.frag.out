@@ -143,10 +143,10 @@ using depth_any
                               Decorate 35(@entryPointOutput.Color) Location 0
                               Decorate 39(@entryPointOutput.Depth) BuiltIn FragDepth
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4) 6(float)
+    8(PS_OUTPUT):             TypeStruct 7(vec4) 6(float)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypeInt 32 1
               13:             TypePointer Function 12(int)
@@ -155,37 +155,37 @@ using depth_any
               18:     12(int) Constant 0
               21:    6(float) Constant 0
               22:    6(float) Constant 1065353216
-              24:             TypePointer Function 7(fvec4)
+              24:             TypePointer Function 7(vec4)
               26:     12(int) Constant 1
               27:             TypePointer Function 6(float)
-              34:             TypePointer Output 7(fvec4)
-35(@entryPointOutput.Color):     34(ptr) Variable Output
+              34:             TypePointer Output 7(vec4)
+35(@entryPointOutput.Color):   34(vec4*) Variable Output
               38:             TypePointer Output 6(float)
-39(@entryPointOutput.Depth):     38(ptr) Variable Output
-         4(main):           2 Function None 3
+39(@entryPointOutput.Depth):  38(float*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
- 32(flattenTemp):     16(ptr) Variable Function
+ 32(flattenTemp):16(PS_OUTPUT*) Variable Function
               33:8(PS_OUTPUT) FunctionCall 10(@main()
                               Store 32(flattenTemp) 33
-              36:     24(ptr) AccessChain 32(flattenTemp) 18
-              37:    7(fvec4) Load 36
+              36:   24(vec4*) AccessChain 32(flattenTemp) 18
+              37:     7(vec4) Load 36
                               Store 35(@entryPointOutput.Color) 37
-              40:     27(ptr) AccessChain 32(flattenTemp) 26
+              40:  27(float*) AccessChain 32(flattenTemp) 26
               41:    6(float) Load 40
                               Store 39(@entryPointOutput.Depth) 41
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-  14(thisLineIs):     13(ptr) Variable Function
-       17(psout):     16(ptr) Variable Function
+  14(thisLineIs):    13(int*) Variable Function
+       17(psout):16(PS_OUTPUT*) Variable Function
                               Store 14(thisLineIs) 15
               19:     12(int) Load 14(thisLineIs)
               20:    6(float) ConvertSToF 19
-              23:    7(fvec4) CompositeConstruct 20 21 21 22
-              25:     24(ptr) AccessChain 17(psout) 18
+              23:     7(vec4) CompositeConstruct 20 21 21 22
+              25:   24(vec4*) AccessChain 17(psout) 18
                               Store 25 23
-              28:     27(ptr) AccessChain 17(psout) 26
+              28:  27(float*) AccessChain 17(psout) 26
                               Store 28 22
               29:8(PS_OUTPUT) Load 17(psout)
                               ReturnValue 29

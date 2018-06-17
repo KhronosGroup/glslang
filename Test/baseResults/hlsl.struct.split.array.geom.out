@@ -200,68 +200,68 @@ output primitive = triangle_strip
                               Decorate 79(OutputStream.TerrainPos) Location 1
                               Decorate 81(OutputStream.VertexID) Location 2
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:      6(int) Constant 1
-               8:             TypeArray 6(int) 7
-               9:             TypePointer Function 8
+               7:     6(uint) Constant 1
+               8:             TypeArray 6(uint) 7
+               9:             TypePointer Function 8(uint[1])
               10:             TypeFloat 32
               11:             TypeVector 10(float) 4
               12:             TypeVector 10(float) 2
               13:             TypeVector 10(float) 3
-     14(PSInput):             TypeStruct 11(fvec4) 12(fvec2) 13(fvec3) 6(int)
+     14(PSInput):             TypeStruct 11(vec4) 12(vec2) 13(vec3) 6(uint)
               15:             TypePointer Function 14(PSInput)
-              16:             TypeFunction 2 9(ptr) 15(ptr)
+              16:             TypeFunction 2(void) 9(uint[1]*) 15(PSInput*)
               22:   10(float) Constant 0
-              23:   11(fvec4) ConstantComposite 22 22 22 22
-              24:   12(fvec2) ConstantComposite 22 22
-              25:   13(fvec3) ConstantComposite 22 22 22
-              26:      6(int) Constant 0
+              23:    11(vec4) ConstantComposite 22 22 22 22
+              24:    12(vec2) ConstantComposite 22 22
+              25:    13(vec3) ConstantComposite 22 22 22
+              26:     6(uint) Constant 0
               27: 14(PSInput) ConstantComposite 23 24 25 26
               28:             TypeInt 32 1
               29:             TypePointer Function 28(int)
               31:     28(int) Constant 0
               38:     28(int) Constant 2
               39:             TypeBool
-              49:      6(int) Constant 3
+              49:     6(uint) Constant 3
               50:             TypeArray 14(PSInput) 49
-              51:      6(int) Constant 2
-              52:             TypeArray 50 51
-              53:             TypePointer Function 52
+              51:     6(uint) Constant 2
+              52:             TypeArray 50(PSInput[3]) 51
+              53:             TypePointer Function 52(PSInput[3][2])
               60:     28(int) Constant 1
-              65:             TypePointer Input 8
-           66(v):     65(ptr) Variable Input
-              74:             TypePointer Output 11(fvec4)
-75(OutputStream.Pos):     74(ptr) Variable Output
-              76:             TypePointer Output 12(fvec2)
-77(OutputStream.TexCoord):     76(ptr) Variable Output
-              78:             TypePointer Output 13(fvec3)
-79(OutputStream.TerrainPos):     78(ptr) Variable Output
-              80:             TypePointer Output 6(int)
-81(OutputStream.VertexID):     80(ptr) Variable Output
-         4(main):           2 Function None 3
+              65:             TypePointer Input 8(uint[1])
+           66(v):65(uint[1]*) Variable Input
+              74:             TypePointer Output 11(vec4)
+75(OutputStream.Pos):   74(vec4*) Variable Output
+              76:             TypePointer Output 12(vec2)
+77(OutputStream.TexCoord):   76(vec2*) Variable Output
+              78:             TypePointer Output 13(vec3)
+79(OutputStream.TerrainPos):   78(vec3*) Variable Output
+              80:             TypePointer Output 6(uint)
+81(OutputStream.VertexID):   80(uint*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-           64(v):      9(ptr) Variable Function
-68(OutputStream):     15(ptr) Variable Function
-       69(param):      9(ptr) Variable Function
-       71(param):     15(ptr) Variable Function
-              67:           8 Load 66(v)
+           64(v): 9(uint[1]*) Variable Function
+68(OutputStream):15(PSInput*) Variable Function
+       69(param): 9(uint[1]*) Variable Function
+       71(param):15(PSInput*) Variable Function
+              67:  8(uint[1]) Load 66(v)
                               Store 64(v) 67
-              70:           8 Load 64(v)
+              70:  8(uint[1]) Load 64(v)
                               Store 69(param) 70
-              72:           2 FunctionCall 19(@main(u1[1];struct-PSInput-vf4-vf2-vf3-u11;) 69(param) 71(param)
+              72:     2(void) FunctionCall 19(@main(u1[1];struct-PSInput-vf4-vf2-vf3-u11;) 69(param) 71(param)
               73: 14(PSInput) Load 71(param)
                               Store 68(OutputStream) 73
                               Return
                               FunctionEnd
-19(@main(u1[1];struct-PSInput-vf4-vf2-vf3-u11;):           2 Function None 16
-           17(v):      9(ptr) FunctionParameter
-18(OutputStream):     15(ptr) FunctionParameter
+19(@main(u1[1];struct-PSInput-vf4-vf2-vf3-u11;):     2(void) Function None 16
+           17(v): 9(uint[1]*) FunctionParameter
+18(OutputStream):15(PSInput*) FunctionParameter
               20:             Label
-         21(Out):     15(ptr) Variable Function
-           30(x):     29(ptr) Variable Function
-           41(y):     29(ptr) Variable Function
-       54(Verts):     53(ptr) Variable Function
+         21(Out):15(PSInput*) Variable Function
+           30(x):    29(int*) Variable Function
+           41(y):    29(int*) Variable Function
+       54(Verts):53(PSInput[3][2]*) Variable Function
                               Store 21(Out) 27
                               Store 30(x) 31
                               Branch 32
@@ -286,7 +286,7 @@ output primitive = triangle_strip
               55:     28(int)     Load 30(x)
               56:     28(int)     Load 41(y)
               57: 14(PSInput)     Load 21(Out)
-              58:     15(ptr)     AccessChain 54(Verts) 55 56
+              58:15(PSInput*)     AccessChain 54(Verts) 55 56
                                   Store 58 57
                                   Branch 45
               45:                 Label

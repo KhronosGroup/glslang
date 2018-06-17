@@ -185,90 +185,90 @@ gl_FragCoord origin is upper left
                               Name 74  "@entryPointOutput.color"
                               Decorate 74(@entryPointOutput.color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
-   10(PS_OUTPUT):             TypeStruct 9(fvec4)
+   10(PS_OUTPUT):             TypeStruct 9(vec4)
               11:             TypeFunction 10(PS_OUTPUT)
               14:             TypeVector 8(float) 1
-              15:             TypeMatrix 14(fvec) 1
-              16:             TypePointer Function 15
+              15:             TypeMatrix 14(vec1) 1
+              16:             TypePointer Function 15(mat1)
               21:             TypeVector 8(float) 2
-              22:             TypeMatrix 21(fvec2) 1
-              23:             TypePointer Function 22
-              25:             TypeMatrix 14(fvec) 2
-              26:             TypePointer Function 25
+              22:             TypeMatrix 21(vec2) 1
+              23:             TypePointer Function 22(mat1x2)
+              25:             TypeMatrix 14(vec1) 2
+              26:             TypePointer Function 25(mat2x1)
               30:             TypeVector 8(float) 3
-              31:             TypeMatrix 30(fvec3) 1
-              32:             TypePointer Function 31
-              34:             TypeMatrix 14(fvec) 3
-              35:             TypePointer Function 34
-              39:             TypeMatrix 9(fvec4) 1
-              40:             TypePointer Function 39
-              42:             TypeMatrix 14(fvec) 4
-              43:             TypePointer Function 42
+              31:             TypeMatrix 30(vec3) 1
+              32:             TypePointer Function 31(mat1x3)
+              34:             TypeMatrix 14(vec1) 3
+              35:             TypePointer Function 34(mat3x1)
+              39:             TypeMatrix 9(vec4) 1
+              40:             TypePointer Function 39(mat1x4)
+              42:             TypeMatrix 14(vec1) 4
+              43:             TypePointer Function 42(mat4x1)
               62:             TypePointer Function 10(PS_OUTPUT)
               64:             TypeInt 32 1
               65:     64(int) Constant 0
               66:    8(float) Constant 1065353216
-              67:    9(fvec4) ConstantComposite 66 66 66 66
-              68:             TypePointer Function 9(fvec4)
-              73:             TypePointer Output 9(fvec4)
-74(@entryPointOutput.color):     73(ptr) Variable Output
-         4(main):           2 Function None 3
+              67:     9(vec4) ConstantComposite 66 66 66 66
+              68:             TypePointer Function 9(vec4)
+              73:             TypePointer Output 9(vec4)
+74(@entryPointOutput.color):   73(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               75:10(PS_OUTPUT) FunctionCall 12(@main()
-              76:    9(fvec4) CompositeExtract 75 0
+              76:     9(vec4) CompositeExtract 75 0
                               Store 74(@entryPointOutput.color) 76
                               Return
                               FunctionEnd
-  6(TestMatNx1():           2 Function None 3
+  6(TestMatNx1():     2(void) Function None 3
                7:             Label
-         17(r00):     16(ptr) Variable Function
-        18(f1x1):     16(ptr) Variable Function
-         24(r01):     23(ptr) Variable Function
-        27(f2x1):     26(ptr) Variable Function
-         33(r02):     32(ptr) Variable Function
-        36(f3x1):     35(ptr) Variable Function
-         41(r03):     40(ptr) Variable Function
-        44(f4x1):     43(ptr) Variable Function
-         47(r10):     16(ptr) Variable Function
-         50(r11):     26(ptr) Variable Function
-        51(f1x2):     23(ptr) Variable Function
-         54(r12):     35(ptr) Variable Function
-        55(f1x3):     32(ptr) Variable Function
-         58(r13):     43(ptr) Variable Function
-        59(f1x4):     40(ptr) Variable Function
-              19:          15 Load 18(f1x1)
-              20:          15 Transpose 19
+         17(r00):   16(mat1*) Variable Function
+        18(f1x1):   16(mat1*) Variable Function
+         24(r01): 23(mat1x2*) Variable Function
+        27(f2x1): 26(mat2x1*) Variable Function
+         33(r02): 32(mat1x3*) Variable Function
+        36(f3x1): 35(mat3x1*) Variable Function
+         41(r03): 40(mat1x4*) Variable Function
+        44(f4x1): 43(mat4x1*) Variable Function
+         47(r10):   16(mat1*) Variable Function
+         50(r11): 26(mat2x1*) Variable Function
+        51(f1x2): 23(mat1x2*) Variable Function
+         54(r12): 35(mat3x1*) Variable Function
+        55(f1x3): 32(mat1x3*) Variable Function
+         58(r13): 43(mat4x1*) Variable Function
+        59(f1x4): 40(mat1x4*) Variable Function
+              19:    15(mat1) Load 18(f1x1)
+              20:    15(mat1) Transpose 19
                               Store 17(r00) 20
-              28:          25 Load 27(f2x1)
-              29:          22 Transpose 28
+              28:  25(mat2x1) Load 27(f2x1)
+              29:  22(mat1x2) Transpose 28
                               Store 24(r01) 29
-              37:          34 Load 36(f3x1)
-              38:          31 Transpose 37
+              37:  34(mat3x1) Load 36(f3x1)
+              38:  31(mat1x3) Transpose 37
                               Store 33(r02) 38
-              45:          42 Load 44(f4x1)
-              46:          39 Transpose 45
+              45:  42(mat4x1) Load 44(f4x1)
+              46:  39(mat1x4) Transpose 45
                               Store 41(r03) 46
-              48:          15 Load 18(f1x1)
-              49:          15 Transpose 48
+              48:    15(mat1) Load 18(f1x1)
+              49:    15(mat1) Transpose 48
                               Store 47(r10) 49
-              52:          22 Load 51(f1x2)
-              53:          25 Transpose 52
+              52:  22(mat1x2) Load 51(f1x2)
+              53:  25(mat2x1) Transpose 52
                               Store 50(r11) 53
-              56:          31 Load 55(f1x3)
-              57:          34 Transpose 56
+              56:  31(mat1x3) Load 55(f1x3)
+              57:  34(mat3x1) Transpose 56
                               Store 54(r12) 57
-              60:          39 Load 59(f1x4)
-              61:          42 Transpose 60
+              60:  39(mat1x4) Load 59(f1x4)
+              61:  42(mat4x1) Transpose 60
                               Store 58(r13) 61
                               Return
                               FunctionEnd
       12(@main():10(PS_OUTPUT) Function None 11
               13:             Label
-   63(ps_output):     62(ptr) Variable Function
-              69:     68(ptr) AccessChain 63(ps_output) 65
+   63(ps_output):62(PS_OUTPUT*) Variable Function
+              69:   68(vec4*) AccessChain 63(ps_output) 65
                               Store 69 67
               70:10(PS_OUTPUT) Load 63(ps_output)
                               ReturnValue 70

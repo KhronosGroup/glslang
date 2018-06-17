@@ -67,10 +67,10 @@ spv.memoryQualifier.frag
                               Decorate 50(Buffer) BufferBlock
                               Decorate 52 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
+               8:             TypePointer Function 7(vec4)
               10:             TypeImage 6(float) 1D nonsampled format:R32f
               11:             TypePointer UniformConstant 10
          12(i1D):     11(ptr) Variable UniformConstant
@@ -94,82 +94,82 @@ spv.memoryQualifier.frag
        44(iCube):     43(ptr) Variable UniformConstant
               47:             TypeVector 6(float) 2
               48:             TypeVector 6(float) 3
-        49(Data):             TypeStruct 6(float) 47(fvec2)
-      50(Buffer):             TypeStruct 6(float) 47(fvec2) 48(fvec3) 7(fvec4) 14(int) 49(Data)
+        49(Data):             TypeStruct 6(float) 47(vec2)
+      50(Buffer):             TypeStruct 6(float) 47(vec2) 48(vec3) 7(vec4) 14(int) 49(Data)
               51:             TypePointer Uniform 50(Buffer)
-              52:     51(ptr) Variable Uniform
+              52: 51(Buffer*) Variable Uniform
               53:     14(int) Constant 4
               54:             TypePointer Uniform 14(int)
               57:     14(int) Constant 0
               58:             TypePointer Uniform 6(float)
               61:             TypePointer Function 6(float)
-              63:             TypePointer Uniform 47(fvec2)
+              63:             TypePointer Uniform 47(vec2)
               71:     14(int) Constant 2
-              72:             TypePointer Uniform 48(fvec3)
+              72:             TypePointer Uniform 48(vec3)
               80:     14(int) Constant 5
               83:             TypeInt 32 0
-              84:     83(int) Constant 1
-              88:     83(int) Constant 3
+              84:    83(uint) Constant 1
+              88:    83(uint) Constant 3
               93:     14(int) Constant 3
-              95:             TypePointer Uniform 7(fvec4)
-         4(main):           2 Function None 3
+              95:             TypePointer Uniform 7(vec4)
+         4(main):     2(void) Function None 3
                5:             Label
-        9(texel):      8(ptr) Variable Function
+        9(texel):    8(vec4*) Variable Function
               13:          10 Load 12(i1D)
-              16:    7(fvec4) ImageRead 13 15
+              16:     7(vec4) ImageRead 13 15
                               Store 9(texel) 16
               20:          17 Load 19(i2D)
-              23:    7(fvec4) ImageRead 20 22
-              24:    7(fvec4) Load 9(texel)
-              25:    7(fvec4) FAdd 24 23
+              23:     7(vec4) ImageRead 20 22
+              24:     7(vec4) Load 9(texel)
+              25:     7(vec4) FAdd 24 23
                               Store 9(texel) 25
               29:          26 Load 28(i2DRect)
-              30:    7(fvec4) ImageRead 29 22
-              31:    7(fvec4) Load 9(texel)
-              32:    7(fvec4) FAdd 31 30
+              30:     7(vec4) ImageRead 29 22
+              31:     7(vec4) Load 9(texel)
+              32:     7(vec4) FAdd 31 30
                               Store 9(texel) 32
               36:          33 Load 35(i3D)
-              39:    7(fvec4) ImageRead 36 38
-              40:    7(fvec4) Load 9(texel)
-              41:    7(fvec4) FAdd 40 39
+              39:     7(vec4) ImageRead 36 38
+              40:     7(vec4) Load 9(texel)
+              41:     7(vec4) FAdd 40 39
                               Store 9(texel) 41
               45:          42 Load 44(iCube)
-              46:    7(fvec4) Load 9(texel)
+              46:     7(vec4) Load 9(texel)
                               ImageWrite 45 38 46
-              55:     54(ptr) AccessChain 52 53
+              55:    54(int*) AccessChain 52 53
               56:     14(int) Load 55
-              59:     58(ptr) AccessChain 52 57
+              59:  58(float*) AccessChain 52 57
               60:    6(float) Load 59
-              62:     61(ptr) AccessChain 9(texel) 56
+              62:  61(float*) AccessChain 9(texel) 56
                               Store 62 60
-              64:     63(ptr) AccessChain 52 15
-              65:   47(fvec2) Load 64
-              66:    7(fvec4) Load 9(texel)
-              67:   47(fvec2) VectorShuffle 66 66 0 1
-              68:   47(fvec2) FAdd 67 65
-              69:    7(fvec4) Load 9(texel)
-              70:    7(fvec4) VectorShuffle 69 68 4 5 2 3
+              64:   63(vec2*) AccessChain 52 15
+              65:    47(vec2) Load 64
+              66:     7(vec4) Load 9(texel)
+              67:    47(vec2) VectorShuffle 66 66 0 1
+              68:    47(vec2) FAdd 67 65
+              69:     7(vec4) Load 9(texel)
+              70:     7(vec4) VectorShuffle 69 68 4 5 2 3
                               Store 9(texel) 70
-              73:     72(ptr) AccessChain 52 71
-              74:   48(fvec3) Load 73
-              75:    7(fvec4) Load 9(texel)
-              76:   48(fvec3) VectorShuffle 75 75 0 1 2
-              77:   48(fvec3) FSub 76 74
-              78:    7(fvec4) Load 9(texel)
-              79:    7(fvec4) VectorShuffle 78 77 4 5 6 3
+              73:   72(vec3*) AccessChain 52 71
+              74:    48(vec3) Load 73
+              75:     7(vec4) Load 9(texel)
+              76:    48(vec3) VectorShuffle 75 75 0 1 2
+              77:    48(vec3) FSub 76 74
+              78:     7(vec4) Load 9(texel)
+              79:     7(vec4) VectorShuffle 78 77 4 5 6 3
                               Store 9(texel) 79
-              81:     58(ptr) AccessChain 52 80 57
+              81:  58(float*) AccessChain 52 80 57
               82:    6(float) Load 81
-              85:     58(ptr) AccessChain 52 80 15 84
+              85:  58(float*) AccessChain 52 80 15 84
               86:    6(float) Load 85
               87:    6(float) FAdd 82 86
-              89:     61(ptr) AccessChain 9(texel) 88
+              89:  61(float*) AccessChain 9(texel) 88
               90:    6(float) Load 89
               91:    6(float) FAdd 90 87
-              92:     61(ptr) AccessChain 9(texel) 88
+              92:  61(float*) AccessChain 9(texel) 88
                               Store 92 91
-              94:    7(fvec4) Load 9(texel)
-              96:     95(ptr) AccessChain 52 93
+              94:     7(vec4) Load 9(texel)
+              96:   95(vec4*) AccessChain 52 93
                               Store 96 94
                               Return
                               FunctionEnd

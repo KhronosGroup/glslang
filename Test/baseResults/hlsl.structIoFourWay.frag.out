@@ -224,77 +224,77 @@ using depth_greater
                               Decorate 62(buff) Block
                               Decorate 64 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-            8(T):             TypeStruct 6(float) 6(float) 6(float) 7(fvec4)
+            8(T):             TypeStruct 6(float) 6(float) 6(float) 7(vec4)
                9:             TypePointer Function 8(T)
-              10:             TypeFunction 8(T) 9(ptr)
+              10:             TypeFunction 8(T) 9(T*)
               19:             TypeInt 32 1
               20:     19(int) Constant 0
               21:             TypePointer Input 6(float)
-         22(t.f):     21(ptr) Variable Input
+         22(t.f):  21(float*) Variable Input
               24:             TypePointer Function 6(float)
               26:     19(int) Constant 1
-         27(t.g):     21(ptr) Variable Input
+         27(t.g):  21(float*) Variable Input
               30:     19(int) Constant 2
-         31(t.d):     21(ptr) Variable Input
+         31(t.d):  21(float*) Variable Input
               34:     19(int) Constant 3
-              35:             TypePointer Input 7(fvec4)
-    36(t.normal):     35(ptr) Variable Input
-              38:             TypePointer Function 7(fvec4)
+              35:             TypePointer Input 7(vec4)
+    36(t.normal):   35(vec4*) Variable Input
+              38:             TypePointer Function 7(vec4)
               44:             TypePointer Output 6(float)
-45(@entryPointOutput.f):     44(ptr) Variable Output
-48(@entryPointOutput.g):     44(ptr) Variable Output
-51(@entryPointOutput.d):     44(ptr) Variable Output
-              54:             TypePointer Output 7(fvec4)
-55(@entryPointOutput.normal):     54(ptr) Variable Output
-           58(T):             TypeStruct 6(float) 6(float) 6(float) 7(fvec4)
+45(@entryPointOutput.f):  44(float*) Variable Output
+48(@entryPointOutput.g):  44(float*) Variable Output
+51(@entryPointOutput.d):  44(float*) Variable Output
+              54:             TypePointer Output 7(vec4)
+55(@entryPointOutput.normal):   54(vec4*) Variable Output
+           58(T):             TypeStruct 6(float) 6(float) 6(float) 7(vec4)
      59($Global):             TypeStruct 58(T)
               60:             TypePointer Uniform 59($Global)
-              61:     60(ptr) Variable Uniform
+              61:60($Global*) Variable Uniform
         62(buff):             TypeStruct 58(T)
               63:             TypePointer Uniform 62(buff)
-              64:     63(ptr) Variable Uniform
-         4(main):           2 Function None 3
+              64:   63(buff*) Variable Uniform
+         4(main):     2(void) Function None 3
                5:             Label
-           18(t):      9(ptr) Variable Function
- 40(flattenTemp):      9(ptr) Variable Function
-       41(param):      9(ptr) Variable Function
+           18(t):       9(T*) Variable Function
+ 40(flattenTemp):       9(T*) Variable Function
+       41(param):       9(T*) Variable Function
               23:    6(float) Load 22(t.f)
-              25:     24(ptr) AccessChain 18(t) 20
+              25:  24(float*) AccessChain 18(t) 20
                               Store 25 23
               28:    6(float) Load 27(t.g)
-              29:     24(ptr) AccessChain 18(t) 26
+              29:  24(float*) AccessChain 18(t) 26
                               Store 29 28
               32:    6(float) Load 31(t.d)
-              33:     24(ptr) AccessChain 18(t) 30
+              33:  24(float*) AccessChain 18(t) 30
                               Store 33 32
-              37:    7(fvec4) Load 36(t.normal)
-              39:     38(ptr) AccessChain 18(t) 34
+              37:     7(vec4) Load 36(t.normal)
+              39:   38(vec4*) AccessChain 18(t) 34
                               Store 39 37
               42:        8(T) Load 18(t)
                               Store 41(param) 42
               43:        8(T) FunctionCall 12(@main(struct-T-f1-f1-f1-vf41;) 41(param)
                               Store 40(flattenTemp) 43
-              46:     24(ptr) AccessChain 40(flattenTemp) 20
+              46:  24(float*) AccessChain 40(flattenTemp) 20
               47:    6(float) Load 46
                               Store 45(@entryPointOutput.f) 47
-              49:     24(ptr) AccessChain 40(flattenTemp) 26
+              49:  24(float*) AccessChain 40(flattenTemp) 26
               50:    6(float) Load 49
                               Store 48(@entryPointOutput.g) 50
-              52:     24(ptr) AccessChain 40(flattenTemp) 30
+              52:  24(float*) AccessChain 40(flattenTemp) 30
               53:    6(float) Load 52
                               Store 51(@entryPointOutput.d) 53
-              56:     38(ptr) AccessChain 40(flattenTemp) 34
-              57:    7(fvec4) Load 56
+              56:   38(vec4*) AccessChain 40(flattenTemp) 34
+              57:     7(vec4) Load 56
                               Store 55(@entryPointOutput.normal) 57
                               Return
                               FunctionEnd
 12(@main(struct-T-f1-f1-f1-vf41;):        8(T) Function None 10
-           11(t):      9(ptr) FunctionParameter
+           11(t):       9(T*) FunctionParameter
               13:             Label
-       14(local):      9(ptr) Variable Function
+       14(local):       9(T*) Variable Function
               15:        8(T) Load 14(local)
                               ReturnValue 15
                               FunctionEnd

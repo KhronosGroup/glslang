@@ -26,40 +26,40 @@ spv.earlyReturnDiscard.frag
                               Name 109  "threshhold3"
                               Decorate 105(gl_FragColor) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-              10:             TypePointer Input 7(fvec4)
-   11(BaseColor):     10(ptr) Variable Input
-  14(otherColor):     10(ptr) Variable Input
+               8:             TypePointer Function 7(vec4)
+              10:             TypePointer Input 7(vec4)
+   11(BaseColor):   10(vec4*) Variable Input
+  14(otherColor):   10(vec4*) Variable Input
               16:             TypePointer Input 6(float)
-           17(c):     16(ptr) Variable Input
-           19(d):     16(ptr) Variable Input
+           17(c):  16(float*) Variable Input
+           19(d):  16(float*) Variable Input
               21:             TypeBool
-    25(bigColor):     10(ptr) Variable Input
-  30(smallColor):     10(ptr) Variable Input
+    25(bigColor):   10(vec4*) Variable Input
+  30(smallColor):   10(vec4*) Variable Input
               34:             TypeInt 32 0
-              35:     34(int) Constant 2
+              35:    34(uint) Constant 2
               36:             TypePointer Function 6(float)
-     39(minimum):     16(ptr) Variable Input
+     39(minimum):  16(float*) Variable Input
               47:    6(float) Constant 1065353216
-  51(threshhold):     16(ptr) Variable Input
-              60:     34(int) Constant 3
- 63(threshhold2):     16(ptr) Variable Input
+  51(threshhold):  16(float*) Variable Input
+              60:    34(uint) Constant 3
+ 63(threshhold2):  16(float*) Variable Input
               76:             TypePointer Private 21(bool)
-           77(b):     76(ptr) Variable Private
-              85:     34(int) Constant 0
-             104:             TypePointer Output 7(fvec4)
-105(gl_FragColor):    104(ptr) Variable Output
-109(threshhold3):     16(ptr) Variable Input
-         4(main):           2 Function None 3
+           77(b):   76(bool*) Variable Private
+              85:    34(uint) Constant 0
+             104:             TypePointer Output 7(vec4)
+105(gl_FragColor):  104(vec4*) Variable Output
+109(threshhold3):  16(float*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-        9(color):      8(ptr) Variable Function
-      13(color2):      8(ptr) Variable Function
-              12:    7(fvec4) Load 11(BaseColor)
+        9(color):    8(vec4*) Variable Function
+      13(color2):    8(vec4*) Variable Function
+              12:     7(vec4) Load 11(BaseColor)
                               Store 9(color) 12
-              15:    7(fvec4) Load 14(otherColor)
+              15:     7(vec4) Load 14(otherColor)
                               Store 13(color2) 15
               18:    6(float) Load 17(c)
               20:    6(float) Load 19(d)
@@ -67,19 +67,19 @@ spv.earlyReturnDiscard.frag
                               SelectionMerge 24 None
                               BranchConditional 22 23 29
               23:               Label
-              26:    7(fvec4)   Load 25(bigColor)
-              27:    7(fvec4)   Load 9(color)
-              28:    7(fvec4)   FAdd 27 26
+              26:     7(vec4)   Load 25(bigColor)
+              27:     7(vec4)   Load 9(color)
+              28:     7(vec4)   FAdd 27 26
                                 Store 9(color) 28
                                 Branch 24
               29:               Label
-              31:    7(fvec4)   Load 30(smallColor)
-              32:    7(fvec4)   Load 9(color)
-              33:    7(fvec4)   FAdd 32 31
+              31:     7(vec4)   Load 30(smallColor)
+              32:     7(vec4)   Load 9(color)
+              33:     7(vec4)   FAdd 32 31
                                 Store 9(color) 33
                                 Branch 24
               24:             Label
-              37:     36(ptr) AccessChain 9(color) 35
+              37:  36(float*) AccessChain 9(color) 35
               38:    6(float) Load 37
               40:    6(float) Load 39(minimum)
               41:    21(bool) FOrdLessThan 38 40
@@ -88,11 +88,11 @@ spv.earlyReturnDiscard.frag
               42:               Label
                                 Return
               43:             Label
-              45:     36(ptr) AccessChain 9(color) 35
+              45:  36(float*) AccessChain 9(color) 35
               46:    6(float) Load 45
               48:    6(float) FAdd 46 47
                               Store 45 48
-              49:     36(ptr) AccessChain 9(color) 35
+              49:  36(float*) AccessChain 9(color) 35
               50:    6(float) Load 49
               52:    6(float) Load 51(threshhold)
               53:    21(bool) FOrdGreaterThan 50 52
@@ -101,18 +101,18 @@ spv.earlyReturnDiscard.frag
               54:               Label
                                 Kill
               55:             Label
-              57:    7(fvec4) Load 9(color)
-              58:    7(fvec4) CompositeConstruct 47 47 47 47
-              59:    7(fvec4) FAdd 57 58
+              57:     7(vec4) Load 9(color)
+              58:     7(vec4) CompositeConstruct 47 47 47 47
+              59:     7(vec4) FAdd 57 58
                               Store 9(color) 59
-              61:     36(ptr) AccessChain 9(color) 60
+              61:  36(float*) AccessChain 9(color) 60
               62:    6(float) Load 61
               64:    6(float) Load 63(threshhold2)
               65:    21(bool) FOrdGreaterThan 62 64
                               SelectionMerge 67 None
                               BranchConditional 65 66 97
               66:               Label
-              68:     36(ptr)   AccessChain 9(color) 35
+              68:  36(float*)   AccessChain 9(color) 35
               69:    6(float)   Load 68
               70:    6(float)   Load 63(threshhold2)
               71:    21(bool)   FOrdGreaterThan 69 70
@@ -125,13 +125,13 @@ spv.earlyReturnDiscard.frag
                                   SelectionMerge 80 None
                                   BranchConditional 78 79 84
               79:                   Label
-              81:     36(ptr)       AccessChain 9(color) 35
+              81:  36(float*)       AccessChain 9(color) 35
               82:    6(float)       Load 81
               83:    6(float)       FAdd 82 47
                                     Store 81 83
                                     Branch 80
               84:                   Label
-              86:     36(ptr)       AccessChain 9(color) 85
+              86:  36(float*)       AccessChain 9(color) 85
               87:    6(float)       Load 86
               88:    6(float)       Load 39(minimum)
               89:    21(bool)       FOrdLessThan 87 88
@@ -140,9 +140,9 @@ spv.earlyReturnDiscard.frag
               90:                     Label
                                       Kill
               93:                     Label
-              94:    7(fvec4)         Load 9(color)
-              95:    7(fvec4)         CompositeConstruct 47 47 47 47
-              96:    7(fvec4)         FAdd 94 95
+              94:     7(vec4)         Load 9(color)
+              95:     7(vec4)         CompositeConstruct 47 47 47 47
+              96:     7(vec4)         FAdd 94 95
                                       Store 9(color) 96
                                       Branch 91
               91:                   Label
@@ -162,9 +162,9 @@ spv.earlyReturnDiscard.frag
              100:               Label
                                 Branch 67
               67:             Label
-             106:    7(fvec4) Load 9(color)
-             107:    7(fvec4) Load 13(color2)
-             108:    7(fvec4) FMul 106 107
+             106:     7(vec4) Load 9(color)
+             107:     7(vec4) Load 13(color2)
+             108:     7(vec4) FMul 106 107
                               Store 105(gl_FragColor) 108
                               Return
                               FunctionEnd

@@ -37,80 +37,80 @@ spv.precise.tesc
                               Decorate 69 NoContraction
                               Decorate 70 NoContraction
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 2
                8:             TypeInt 32 0
-               9:      8(int) Constant 3
-              10:             TypeArray 7(fvec2) 9
-              11:             TypePointer Output 10
-12(in_te_position):     11(ptr) Variable Output
+               9:     8(uint) Constant 3
+              10:             TypeArray 7(vec2) 9
+              11:             TypePointer Output 10(vec2[3])
+12(in_te_position):11(vec2[3]*) Variable Output
               13:             TypeInt 32 1
               14:             TypePointer Input 13(int)
-15(gl_InvocationID):     14(ptr) Variable Input
-              17:      8(int) Constant 32
-              18:             TypeArray 7(fvec2) 17
-              19:             TypePointer Input 18
-20(in_tc_position):     19(ptr) Variable Input
-              22:             TypePointer Input 7(fvec2)
-              25:             TypePointer Output 7(fvec2)
-              27:      8(int) Constant 2
+15(gl_InvocationID):    14(int*) Variable Input
+              17:     8(uint) Constant 32
+              18:             TypeArray 7(vec2) 17
+              19:             TypePointer Input 18(vec2[32])
+20(in_tc_position):19(vec2[32]*) Variable Input
+              22:             TypePointer Input 7(vec2)
+              25:             TypePointer Output 7(vec2)
+              27:     8(uint) Constant 2
               28:             TypeArray 6(float) 27
-              29:             TypePointer Output 28
-30(gl_TessLevelInner):     29(ptr) Variable Output
+              29:             TypePointer Output 28(float[2])
+30(gl_TessLevelInner):29(float[2]*) Variable Output
               31:     13(int) Constant 0
               32:    6(float) Constant 1084227584
               33:             TypePointer Output 6(float)
               35:     13(int) Constant 1
-              37:      8(int) Constant 4
+              37:     8(uint) Constant 4
               38:             TypeArray 6(float) 37
-              39:             TypePointer Output 38
-40(gl_TessLevelOuter):     39(ptr) Variable Output
+              39:             TypePointer Output 38(float[4])
+40(gl_TessLevelOuter):39(float[4]*) Variable Output
               41:    6(float) Constant 1065353216
               42:    6(float) Constant 1105985536
               43:             TypeArray 6(float) 17
-              44:             TypePointer Input 43
-45(in_tc_tessParam):     44(ptr) Variable Input
+              44:             TypePointer Input 43(float[32])
+45(in_tc_tessParam):44(float[32]*) Variable Input
               46:             TypePointer Input 6(float)
               49:     13(int) Constant 2
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
               16:     13(int) Load 15(gl_InvocationID)
               21:     13(int) Load 15(gl_InvocationID)
-              23:     22(ptr) AccessChain 20(in_tc_position) 21
-              24:    7(fvec2) Load 23
-              26:     25(ptr) AccessChain 12(in_te_position) 16
+              23:   22(vec2*) AccessChain 20(in_tc_position) 21
+              24:     7(vec2) Load 23
+              26:   25(vec2*) AccessChain 12(in_te_position) 16
                               Store 26 24
-              34:     33(ptr) AccessChain 30(gl_TessLevelInner) 31
+              34:  33(float*) AccessChain 30(gl_TessLevelInner) 31
                               Store 34 32
-              36:     33(ptr) AccessChain 30(gl_TessLevelInner) 35
+              36:  33(float*) AccessChain 30(gl_TessLevelInner) 35
                               Store 36 32
-              47:     46(ptr) AccessChain 45(in_tc_tessParam) 35
+              47:  46(float*) AccessChain 45(in_tc_tessParam) 35
               48:    6(float) Load 47
-              50:     46(ptr) AccessChain 45(in_tc_tessParam) 49
+              50:  46(float*) AccessChain 45(in_tc_tessParam) 49
               51:    6(float) Load 50
               52:    6(float) FAdd 48 51
               53:    6(float) FMul 42 52
               54:    6(float) FAdd 41 53
-              55:     33(ptr) AccessChain 40(gl_TessLevelOuter) 31
+              55:  33(float*) AccessChain 40(gl_TessLevelOuter) 31
                               Store 55 54
-              56:     46(ptr) AccessChain 45(in_tc_tessParam) 49
+              56:  46(float*) AccessChain 45(in_tc_tessParam) 49
               57:    6(float) Load 56
-              58:     46(ptr) AccessChain 45(in_tc_tessParam) 31
+              58:  46(float*) AccessChain 45(in_tc_tessParam) 31
               59:    6(float) Load 58
               60:    6(float) FAdd 57 59
               61:    6(float) FMul 42 60
               62:    6(float) FAdd 41 61
-              63:     33(ptr) AccessChain 40(gl_TessLevelOuter) 35
+              63:  33(float*) AccessChain 40(gl_TessLevelOuter) 35
                               Store 63 62
-              64:     46(ptr) AccessChain 45(in_tc_tessParam) 31
+              64:  46(float*) AccessChain 45(in_tc_tessParam) 31
               65:    6(float) Load 64
-              66:     46(ptr) AccessChain 45(in_tc_tessParam) 35
+              66:  46(float*) AccessChain 45(in_tc_tessParam) 35
               67:    6(float) Load 66
               68:    6(float) FAdd 65 67
               69:    6(float) FMul 42 68
               70:    6(float) FAdd 41 69
-              71:     33(ptr) AccessChain 40(gl_TessLevelOuter) 49
+              71:  33(float*) AccessChain 40(gl_TessLevelOuter) 49
                               Store 71 70
                               Return
                               FunctionEnd

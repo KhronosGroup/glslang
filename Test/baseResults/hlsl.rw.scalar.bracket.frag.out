@@ -1858,32 +1858,32 @@ gl_FragCoord origin is upper left
                               Decorate 567(g_tTex2di1a) DescriptorSet 0
                               Decorate 570(g_tTex2du1a) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
-               8:             TypeFunction 6(int) 7(ptr)
+               8:             TypeFunction 6(int) 7(int*)
               12:             TypeInt 32 0
-              13:             TypePointer Function 12(int)
-              14:             TypeFunction 12(int) 13(ptr)
+              13:             TypePointer Function 12(uint)
+              14:             TypeFunction 12(uint) 13(uint*)
               18:             TypeFloat 32
               19:             TypePointer Function 18(float)
-              20:             TypeFunction 18(float) 19(ptr)
-              24:             TypeFunction 2 7(ptr)
-              28:             TypeFunction 2 13(ptr)
-              32:             TypeFunction 2 19(ptr)
+              20:             TypeFunction 18(float) 19(float*)
+              24:             TypeFunction 2(void) 7(int*)
+              28:             TypeFunction 2(void) 13(uint*)
+              32:             TypeFunction 2(void) 19(float*)
               36:             TypeFunction 18(float)
               39:             TypeVector 18(float) 4
-   40(PS_OUTPUT):             TypeStruct 39(fvec4)
+   40(PS_OUTPUT):             TypeStruct 39(vec4)
               41:             TypeFunction 40(PS_OUTPUT)
               53:      6(int) Constant 0
-              54:     12(int) Constant 0
+              54:    12(uint) Constant 0
               55:   18(float) Constant 0
               56:             TypeVector 6(int) 2
               57:             TypeVector 6(int) 3
               58:             TypeVector 6(int) 4
-     59($Global):             TypeStruct 6(int) 56(ivec2) 57(ivec3) 58(ivec4) 6(int) 56(ivec2) 57(ivec3) 58(ivec4) 18(float) 6(int) 12(int)
+     59($Global):             TypeStruct 6(int) 56(ivec2) 57(ivec3) 58(ivec4) 6(int) 56(ivec2) 57(ivec3) 58(ivec4) 18(float) 6(int) 12(uint)
               60:             TypePointer Uniform 59($Global)
-              61:     60(ptr) Variable Uniform
+              61:60($Global*) Variable Uniform
               62:             TypePointer Uniform 6(int)
               68:             TypeImage 18(float) 1D nonsampled format:R32f
               69:             TypePointer UniformConstant 68
@@ -1891,7 +1891,7 @@ gl_FragCoord origin is upper left
               81:             TypeImage 6(int) 1D nonsampled format:R32i
               82:             TypePointer UniformConstant 81
   83(g_tTex1di1):     82(ptr) Variable UniformConstant
-              89:             TypeImage 12(int) 1D nonsampled format:R32ui
+              89:             TypeImage 12(uint) 1D nonsampled format:R32ui
               90:             TypePointer UniformConstant 89
   91(g_tTex1du1):     90(ptr) Variable UniformConstant
               97:             TypeImage 18(float) 2D nonsampled format:R32f
@@ -1902,7 +1902,7 @@ gl_FragCoord origin is upper left
              107:             TypeImage 6(int) 2D nonsampled format:R32i
              108:             TypePointer UniformConstant 107
  109(g_tTex2di1):    108(ptr) Variable UniformConstant
-             115:             TypeImage 12(int) 2D nonsampled format:R32ui
+             115:             TypeImage 12(uint) 2D nonsampled format:R32ui
              116:             TypePointer UniformConstant 115
  117(g_tTex2du1):    116(ptr) Variable UniformConstant
              123:             TypeImage 18(float) 3D nonsampled format:R32f
@@ -1913,28 +1913,28 @@ gl_FragCoord origin is upper left
              133:             TypeImage 6(int) 3D nonsampled format:R32i
              134:             TypePointer UniformConstant 133
  135(g_tTex3di1):    134(ptr) Variable UniformConstant
-             141:             TypeImage 12(int) 3D nonsampled format:R32ui
+             141:             TypeImage 12(uint) 3D nonsampled format:R32ui
              142:             TypePointer UniformConstant 141
  143(g_tTex3du1):    142(ptr) Variable UniformConstant
              149:      6(int) Constant 8
              150:             TypePointer Uniform 18(float)
-             169:     12(int) Constant 3
+             169:    12(uint) Constant 3
              182:   18(float) Constant 1073741824
              196:   18(float) Constant 1077936128
              209:   18(float) Constant 1082130432
              246:      6(int) Constant 65535
              259:      6(int) Constant 61680
              300:      6(int) Constant 5
-             306:     12(int) Constant 6
-             327:     12(int) Constant 9
+             306:    12(uint) Constant 6
+             327:    12(uint) Constant 9
              382:   18(float) Constant 1065353216
              533:      6(int) Constant 3
              534:   56(ivec2) ConstantComposite 127 533
              538:             TypePointer Function 40(PS_OUTPUT)
-             540:   39(fvec4) ConstantComposite 382 382 382 382
-             541:             TypePointer Function 39(fvec4)
-             546:             TypePointer Output 39(fvec4)
-547(@entryPointOutput.Color):    546(ptr) Variable Output
+             540:    39(vec4) ConstantComposite 382 382 382 382
+             541:             TypePointer Function 39(vec4)
+             546:             TypePointer Output 39(vec4)
+547(@entryPointOutput.Color):  546(vec4*) Variable Output
              550:             TypeSampler
              551:             TypePointer UniformConstant 550
     552(g_sSamp):    551(ptr) Variable UniformConstant
@@ -1944,7 +1944,7 @@ gl_FragCoord origin is upper left
              556:             TypeImage 6(int) 1D array nonsampled format:R32i
              557:             TypePointer UniformConstant 556
 558(g_tTex1di1a):    557(ptr) Variable UniformConstant
-             559:             TypeImage 12(int) 1D array nonsampled format:R32ui
+             559:             TypeImage 12(uint) 1D array nonsampled format:R32ui
              560:             TypePointer UniformConstant 559
 561(g_tTex1du1a):    560(ptr) Variable UniformConstant
              562:             TypeImage 18(float) 2D array nonsampled format:R32f
@@ -1953,217 +1953,217 @@ gl_FragCoord origin is upper left
              565:             TypeImage 6(int) 2D array nonsampled format:R32i
              566:             TypePointer UniformConstant 565
 567(g_tTex2di1a):    566(ptr) Variable UniformConstant
-             568:             TypeImage 12(int) 2D array nonsampled format:R32ui
+             568:             TypeImage 12(uint) 2D array nonsampled format:R32ui
              569:             TypePointer UniformConstant 568
 570(g_tTex2du1a):    569(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
              548:40(PS_OUTPUT) FunctionCall 42(@main()
-             549:   39(fvec4) CompositeExtract 548 0
+             549:    39(vec4) CompositeExtract 548 0
                               Store 547(@entryPointOutput.Color) 549
                               Return
                               FunctionEnd
      10(Fn1(i1;):      6(int) Function None 8
-            9(x):      7(ptr) FunctionParameter
+            9(x):     7(int*) FunctionParameter
               11:             Label
               44:      6(int) Load 9(x)
                               ReturnValue 44
                               FunctionEnd
-     16(Fn1(u1;):     12(int) Function None 14
-           15(x):     13(ptr) FunctionParameter
+     16(Fn1(u1;):    12(uint) Function None 14
+           15(x):   13(uint*) FunctionParameter
               17:             Label
-              47:     12(int) Load 15(x)
+              47:    12(uint) Load 15(x)
                               ReturnValue 47
                               FunctionEnd
      22(Fn1(f1;):   18(float) Function None 20
-           21(x):     19(ptr) FunctionParameter
+           21(x):  19(float*) FunctionParameter
               23:             Label
               50:   18(float) Load 21(x)
                               ReturnValue 50
                               FunctionEnd
-     26(Fn2(i1;):           2 Function None 24
-           25(x):      7(ptr) FunctionParameter
+     26(Fn2(i1;):     2(void) Function None 24
+           25(x):     7(int*) FunctionParameter
               27:             Label
                               Store 25(x) 53
                               Return
                               FunctionEnd
-     30(Fn2(u1;):           2 Function None 28
-           29(x):     13(ptr) FunctionParameter
+     30(Fn2(u1;):     2(void) Function None 28
+           29(x):   13(uint*) FunctionParameter
               31:             Label
                               Store 29(x) 54
                               Return
                               FunctionEnd
-     34(Fn2(f1;):           2 Function None 32
-           33(x):     19(ptr) FunctionParameter
+     34(Fn2(f1;):     2(void) Function None 32
+           33(x):  19(float*) FunctionParameter
               35:             Label
                               Store 33(x) 55
                               Return
                               FunctionEnd
   37(SomeValue():   18(float) Function None 36
               38:             Label
-              63:     62(ptr) AccessChain 61 53
+              63:    62(int*) AccessChain 61 53
               64:      6(int) Load 63
               65:   18(float) ConvertSToF 64
                               ReturnValue 65
                               FunctionEnd
       42(@main():40(PS_OUTPUT) Function None 41
               43:             Label
-         75(r00):     19(ptr) Variable Function
-         80(r01):      7(ptr) Variable Function
-         88(r02):     13(ptr) Variable Function
-         96(r10):     19(ptr) Variable Function
-        106(r11):      7(ptr) Variable Function
-        114(r12):     13(ptr) Variable Function
-        122(r20):     19(ptr) Variable Function
-        132(r21):      7(ptr) Variable Function
-        140(r22):     13(ptr) Variable Function
-        148(lf1):     19(ptr) Variable Function
-  153(storeTemp):     19(ptr) Variable Function
-  163(storeTemp):      7(ptr) Variable Function
-  168(storeTemp):     13(ptr) Variable Function
-       174(val1):     19(ptr) Variable Function
-  175(coordTemp):      7(ptr) Variable Function
-  178(storeTemp):     19(ptr) Variable Function
-  189(coordTemp):      7(ptr) Variable Function
-  192(storeTemp):     19(ptr) Variable Function
-  202(coordTemp):      7(ptr) Variable Function
-  205(storeTemp):     19(ptr) Variable Function
-  215(coordTemp):      7(ptr) Variable Function
-  218(storeTemp):      7(ptr) Variable Function
-  227(coordTemp):      7(ptr) Variable Function
-  230(storeTemp):      7(ptr) Variable Function
-  239(coordTemp):      7(ptr) Variable Function
-  242(storeTemp):      7(ptr) Variable Function
-  252(coordTemp):      7(ptr) Variable Function
-  255(storeTemp):      7(ptr) Variable Function
-  265(coordTemp):      7(ptr) Variable Function
-  268(storeTemp):      7(ptr) Variable Function
-  277(coordTemp):      7(ptr) Variable Function
-  280(storeTemp):      7(ptr) Variable Function
-  289(storeTemp):     19(ptr) Variable Function
-  299(storeTemp):      7(ptr) Variable Function
-  305(storeTemp):     13(ptr) Variable Function
-  311(storeTemp):     19(ptr) Variable Function
-  321(storeTemp):      7(ptr) Variable Function
-  326(storeTemp):     13(ptr) Variable Function
-      336(param):     19(ptr) Variable Function
-      342(param):      7(ptr) Variable Function
-      348(param):     13(ptr) Variable Function
-    350(tempArg):     19(ptr) Variable Function
-      351(param):     19(ptr) Variable Function
-    358(tempArg):      7(ptr) Variable Function
-      359(param):      7(ptr) Variable Function
-    366(tempArg):     13(ptr) Variable Function
-      367(param):     13(ptr) Variable Function
-  374(coordTemp):      7(ptr) Variable Function
-  377(storeTemp):     19(ptr) Variable Function
-  387(coordTemp):      7(ptr) Variable Function
-  390(storeTemp):      7(ptr) Variable Function
-  399(coordTemp):      7(ptr) Variable Function
-  402(storeTemp):     13(ptr) Variable Function
-  411(coordTemp):      7(ptr) Variable Function
-  414(storeTemp):     19(ptr) Variable Function
-  423(coordTemp):      7(ptr) Variable Function
-  426(storeTemp):      7(ptr) Variable Function
-  435(coordTemp):      7(ptr) Variable Function
-  438(storeTemp):     13(ptr) Variable Function
-  447(coordTemp):      7(ptr) Variable Function
-450(storeTempPre):     19(ptr) Variable Function
-454(storeTempPost):     19(ptr) Variable Function
-  461(coordTemp):      7(ptr) Variable Function
-464(storeTempPre):     13(ptr) Variable Function
-468(storeTempPost):     13(ptr) Variable Function
-  475(coordTemp):      7(ptr) Variable Function
-478(storeTempPre):      7(ptr) Variable Function
-482(storeTempPost):      7(ptr) Variable Function
-  489(coordTemp):      7(ptr) Variable Function
-492(storeTempPre):     19(ptr) Variable Function
-496(storeTempPost):     19(ptr) Variable Function
-  503(coordTemp):      7(ptr) Variable Function
-506(storeTempPre):      7(ptr) Variable Function
-510(storeTempPost):      7(ptr) Variable Function
-  517(coordTemp):      7(ptr) Variable Function
-520(storeTempPre):     13(ptr) Variable Function
-524(storeTempPost):     13(ptr) Variable Function
-  531(storeTemp):     19(ptr) Variable Function
-      539(psout):    538(ptr) Variable Function
+         75(r00):  19(float*) Variable Function
+         80(r01):     7(int*) Variable Function
+         88(r02):   13(uint*) Variable Function
+         96(r10):  19(float*) Variable Function
+        106(r11):     7(int*) Variable Function
+        114(r12):   13(uint*) Variable Function
+        122(r20):  19(float*) Variable Function
+        132(r21):     7(int*) Variable Function
+        140(r22):   13(uint*) Variable Function
+        148(lf1):  19(float*) Variable Function
+  153(storeTemp):  19(float*) Variable Function
+  163(storeTemp):     7(int*) Variable Function
+  168(storeTemp):   13(uint*) Variable Function
+       174(val1):  19(float*) Variable Function
+  175(coordTemp):     7(int*) Variable Function
+  178(storeTemp):  19(float*) Variable Function
+  189(coordTemp):     7(int*) Variable Function
+  192(storeTemp):  19(float*) Variable Function
+  202(coordTemp):     7(int*) Variable Function
+  205(storeTemp):  19(float*) Variable Function
+  215(coordTemp):     7(int*) Variable Function
+  218(storeTemp):     7(int*) Variable Function
+  227(coordTemp):     7(int*) Variable Function
+  230(storeTemp):     7(int*) Variable Function
+  239(coordTemp):     7(int*) Variable Function
+  242(storeTemp):     7(int*) Variable Function
+  252(coordTemp):     7(int*) Variable Function
+  255(storeTemp):     7(int*) Variable Function
+  265(coordTemp):     7(int*) Variable Function
+  268(storeTemp):     7(int*) Variable Function
+  277(coordTemp):     7(int*) Variable Function
+  280(storeTemp):     7(int*) Variable Function
+  289(storeTemp):  19(float*) Variable Function
+  299(storeTemp):     7(int*) Variable Function
+  305(storeTemp):   13(uint*) Variable Function
+  311(storeTemp):  19(float*) Variable Function
+  321(storeTemp):     7(int*) Variable Function
+  326(storeTemp):   13(uint*) Variable Function
+      336(param):  19(float*) Variable Function
+      342(param):     7(int*) Variable Function
+      348(param):   13(uint*) Variable Function
+    350(tempArg):  19(float*) Variable Function
+      351(param):  19(float*) Variable Function
+    358(tempArg):     7(int*) Variable Function
+      359(param):     7(int*) Variable Function
+    366(tempArg):   13(uint*) Variable Function
+      367(param):   13(uint*) Variable Function
+  374(coordTemp):     7(int*) Variable Function
+  377(storeTemp):  19(float*) Variable Function
+  387(coordTemp):     7(int*) Variable Function
+  390(storeTemp):     7(int*) Variable Function
+  399(coordTemp):     7(int*) Variable Function
+  402(storeTemp):   13(uint*) Variable Function
+  411(coordTemp):     7(int*) Variable Function
+  414(storeTemp):  19(float*) Variable Function
+  423(coordTemp):     7(int*) Variable Function
+  426(storeTemp):     7(int*) Variable Function
+  435(coordTemp):     7(int*) Variable Function
+  438(storeTemp):   13(uint*) Variable Function
+  447(coordTemp):     7(int*) Variable Function
+450(storeTempPre):  19(float*) Variable Function
+454(storeTempPost):  19(float*) Variable Function
+  461(coordTemp):     7(int*) Variable Function
+464(storeTempPre):   13(uint*) Variable Function
+468(storeTempPost):   13(uint*) Variable Function
+  475(coordTemp):     7(int*) Variable Function
+478(storeTempPre):     7(int*) Variable Function
+482(storeTempPost):     7(int*) Variable Function
+  489(coordTemp):     7(int*) Variable Function
+492(storeTempPre):  19(float*) Variable Function
+496(storeTempPost):  19(float*) Variable Function
+  503(coordTemp):     7(int*) Variable Function
+506(storeTempPre):     7(int*) Variable Function
+510(storeTempPost):     7(int*) Variable Function
+  517(coordTemp):     7(int*) Variable Function
+520(storeTempPre):   13(uint*) Variable Function
+524(storeTempPost):   13(uint*) Variable Function
+  531(storeTemp):  19(float*) Variable Function
+      539(psout):538(PS_OUTPUT*) Variable Function
               71:          68 Load 70(g_tTex1df1)
-              72:     62(ptr) AccessChain 61 53
+              72:    62(int*) AccessChain 61 53
               73:      6(int) Load 72
               74:   18(float) ImageRead 71 73
               76:          68 Load 70(g_tTex1df1)
-              77:     62(ptr) AccessChain 61 53
+              77:    62(int*) AccessChain 61 53
               78:      6(int) Load 77
               79:   18(float) ImageRead 76 78
                               Store 75(r00) 79
               84:          81 Load 83(g_tTex1di1)
-              85:     62(ptr) AccessChain 61 53
+              85:    62(int*) AccessChain 61 53
               86:      6(int) Load 85
               87:      6(int) ImageRead 84 86
                               Store 80(r01) 87
               92:          89 Load 91(g_tTex1du1)
-              93:     62(ptr) AccessChain 61 53
+              93:    62(int*) AccessChain 61 53
               94:      6(int) Load 93
-              95:     12(int) ImageRead 92 94
+              95:    12(uint) ImageRead 92 94
                               Store 88(r02) 95
              100:          97 Load 99(g_tTex2df1)
-             103:    102(ptr) AccessChain 61 101
+             103: 102(ivec2*) AccessChain 61 101
              104:   56(ivec2) Load 103
              105:   18(float) ImageRead 100 104
                               Store 96(r10) 105
              110:         107 Load 109(g_tTex2di1)
-             111:    102(ptr) AccessChain 61 101
+             111: 102(ivec2*) AccessChain 61 101
              112:   56(ivec2) Load 111
              113:      6(int) ImageRead 110 112
                               Store 106(r11) 113
              118:         115 Load 117(g_tTex2du1)
-             119:    102(ptr) AccessChain 61 101
+             119: 102(ivec2*) AccessChain 61 101
              120:   56(ivec2) Load 119
-             121:     12(int) ImageRead 118 120
+             121:    12(uint) ImageRead 118 120
                               Store 114(r12) 121
              126:         123 Load 125(g_tTex3df1)
-             129:    128(ptr) AccessChain 61 127
+             129: 128(ivec3*) AccessChain 61 127
              130:   57(ivec3) Load 129
              131:   18(float) ImageRead 126 130
                               Store 122(r20) 131
              136:         133 Load 135(g_tTex3di1)
-             137:    128(ptr) AccessChain 61 127
+             137: 128(ivec3*) AccessChain 61 127
              138:   57(ivec3) Load 137
              139:      6(int) ImageRead 136 138
                               Store 132(r21) 139
              144:         141 Load 143(g_tTex3du1)
-             145:    128(ptr) AccessChain 61 127
+             145: 128(ivec3*) AccessChain 61 127
              146:   57(ivec3) Load 145
-             147:     12(int) ImageRead 144 146
+             147:    12(uint) ImageRead 144 146
                               Store 140(r22) 147
-             151:    150(ptr) AccessChain 61 149
+             151: 150(float*) AccessChain 61 149
              152:   18(float) Load 151
                               Store 148(lf1) 152
              154:   18(float) FunctionCall 37(SomeValue()
                               Store 153(storeTemp) 154
              155:          68 Load 70(g_tTex1df1)
-             156:     62(ptr) AccessChain 61 53
+             156:    62(int*) AccessChain 61 53
              157:      6(int) Load 156
              158:   18(float) Load 153(storeTemp)
                               ImageWrite 155 157 158
              159:          68 Load 70(g_tTex1df1)
-             160:     62(ptr) AccessChain 61 53
+             160:    62(int*) AccessChain 61 53
              161:      6(int) Load 160
              162:   18(float) Load 148(lf1)
                               ImageWrite 159 161 162
                               Store 163(storeTemp) 127
              164:          81 Load 83(g_tTex1di1)
-             165:     62(ptr) AccessChain 61 53
+             165:    62(int*) AccessChain 61 53
              166:      6(int) Load 165
              167:      6(int) Load 163(storeTemp)
                               ImageWrite 164 166 167
                               Store 168(storeTemp) 169
              170:          89 Load 91(g_tTex1du1)
-             171:     62(ptr) AccessChain 61 53
+             171:    62(int*) AccessChain 61 53
              172:      6(int) Load 171
-             173:     12(int) Load 168(storeTemp)
+             173:    12(uint) Load 168(storeTemp)
                               ImageWrite 170 172 173
-             176:     62(ptr) AccessChain 61 53
+             176:    62(int*) AccessChain 61 53
              177:      6(int) Load 176
                               Store 175(coordTemp) 177
              179:          68 Load 70(g_tTex1df1)
@@ -2179,7 +2179,7 @@ gl_FragCoord origin is upper left
                               ImageWrite 185 186 187
              188:   18(float) Load 178(storeTemp)
                               Store 174(val1) 188
-             190:     62(ptr) AccessChain 61 53
+             190:    62(int*) AccessChain 61 53
              191:      6(int) Load 190
                               Store 189(coordTemp) 191
              193:          68 Load 70(g_tTex1df1)
@@ -2193,7 +2193,7 @@ gl_FragCoord origin is upper left
              200:      6(int) Load 189(coordTemp)
              201:   18(float) Load 192(storeTemp)
                               ImageWrite 199 200 201
-             203:     62(ptr) AccessChain 61 53
+             203:    62(int*) AccessChain 61 53
              204:      6(int) Load 203
                               Store 202(coordTemp) 204
              206:          68 Load 70(g_tTex1df1)
@@ -2207,7 +2207,7 @@ gl_FragCoord origin is upper left
              213:      6(int) Load 202(coordTemp)
              214:   18(float) Load 205(storeTemp)
                               ImageWrite 212 213 214
-             216:     62(ptr) AccessChain 61 53
+             216:    62(int*) AccessChain 61 53
              217:      6(int) Load 216
                               Store 215(coordTemp) 217
              219:          81 Load 83(g_tTex1di1)
@@ -2221,7 +2221,7 @@ gl_FragCoord origin is upper left
              225:      6(int) Load 215(coordTemp)
              226:      6(int) Load 218(storeTemp)
                               ImageWrite 224 225 226
-             228:     62(ptr) AccessChain 61 53
+             228:    62(int*) AccessChain 61 53
              229:      6(int) Load 228
                               Store 227(coordTemp) 229
              231:          81 Load 83(g_tTex1di1)
@@ -2235,7 +2235,7 @@ gl_FragCoord origin is upper left
              237:      6(int) Load 227(coordTemp)
              238:      6(int) Load 230(storeTemp)
                               ImageWrite 236 237 238
-             240:     62(ptr) AccessChain 61 53
+             240:    62(int*) AccessChain 61 53
              241:      6(int) Load 240
                               Store 239(coordTemp) 241
              243:          81 Load 83(g_tTex1di1)
@@ -2249,7 +2249,7 @@ gl_FragCoord origin is upper left
              250:      6(int) Load 239(coordTemp)
              251:      6(int) Load 242(storeTemp)
                               ImageWrite 249 250 251
-             253:     62(ptr) AccessChain 61 53
+             253:    62(int*) AccessChain 61 53
              254:      6(int) Load 253
                               Store 252(coordTemp) 254
              256:          81 Load 83(g_tTex1di1)
@@ -2263,7 +2263,7 @@ gl_FragCoord origin is upper left
              263:      6(int) Load 252(coordTemp)
              264:      6(int) Load 255(storeTemp)
                               ImageWrite 262 263 264
-             266:     62(ptr) AccessChain 61 53
+             266:    62(int*) AccessChain 61 53
              267:      6(int) Load 266
                               Store 265(coordTemp) 267
              269:          81 Load 83(g_tTex1di1)
@@ -2277,7 +2277,7 @@ gl_FragCoord origin is upper left
              275:      6(int) Load 265(coordTemp)
              276:      6(int) Load 268(storeTemp)
                               ImageWrite 274 275 276
-             278:     62(ptr) AccessChain 61 53
+             278:    62(int*) AccessChain 61 53
              279:      6(int) Load 278
                               Store 277(coordTemp) 279
              281:          81 Load 83(g_tTex1di1)
@@ -2294,94 +2294,94 @@ gl_FragCoord origin is upper left
              290:   18(float) FunctionCall 37(SomeValue()
                               Store 289(storeTemp) 290
              291:          97 Load 99(g_tTex2df1)
-             292:    102(ptr) AccessChain 61 101
+             292: 102(ivec2*) AccessChain 61 101
              293:   56(ivec2) Load 292
              294:   18(float) Load 289(storeTemp)
                               ImageWrite 291 293 294
              295:          97 Load 99(g_tTex2df1)
-             296:    102(ptr) AccessChain 61 101
+             296: 102(ivec2*) AccessChain 61 101
              297:   56(ivec2) Load 296
              298:   18(float) Load 148(lf1)
                               ImageWrite 295 297 298
                               Store 299(storeTemp) 300
              301:         107 Load 109(g_tTex2di1)
-             302:    102(ptr) AccessChain 61 101
+             302: 102(ivec2*) AccessChain 61 101
              303:   56(ivec2) Load 302
              304:      6(int) Load 299(storeTemp)
                               ImageWrite 301 303 304
                               Store 305(storeTemp) 306
              307:         115 Load 117(g_tTex2du1)
-             308:    102(ptr) AccessChain 61 101
+             308: 102(ivec2*) AccessChain 61 101
              309:   56(ivec2) Load 308
-             310:     12(int) Load 305(storeTemp)
+             310:    12(uint) Load 305(storeTemp)
                               ImageWrite 307 309 310
              312:   18(float) FunctionCall 37(SomeValue()
                               Store 311(storeTemp) 312
              313:         123 Load 125(g_tTex3df1)
-             314:    128(ptr) AccessChain 61 127
+             314: 128(ivec3*) AccessChain 61 127
              315:   57(ivec3) Load 314
              316:   18(float) Load 311(storeTemp)
                               ImageWrite 313 315 316
              317:         123 Load 125(g_tTex3df1)
-             318:    128(ptr) AccessChain 61 127
+             318: 128(ivec3*) AccessChain 61 127
              319:   57(ivec3) Load 318
              320:   18(float) Load 148(lf1)
                               ImageWrite 317 319 320
                               Store 321(storeTemp) 149
              322:         133 Load 135(g_tTex3di1)
-             323:    128(ptr) AccessChain 61 127
+             323: 128(ivec3*) AccessChain 61 127
              324:   57(ivec3) Load 323
              325:      6(int) Load 321(storeTemp)
                               ImageWrite 322 324 325
                               Store 326(storeTemp) 327
              328:         141 Load 143(g_tTex3du1)
-             329:    128(ptr) AccessChain 61 127
+             329: 128(ivec3*) AccessChain 61 127
              330:   57(ivec3) Load 329
-             331:     12(int) Load 326(storeTemp)
+             331:    12(uint) Load 326(storeTemp)
                               ImageWrite 328 330 331
              332:          68 Load 70(g_tTex1df1)
-             333:     62(ptr) AccessChain 61 53
+             333:    62(int*) AccessChain 61 53
              334:      6(int) Load 333
              335:   18(float) ImageRead 332 334
                               Store 336(param) 335
              337:   18(float) FunctionCall 22(Fn1(f1;) 336(param)
              338:          81 Load 83(g_tTex1di1)
-             339:     62(ptr) AccessChain 61 53
+             339:    62(int*) AccessChain 61 53
              340:      6(int) Load 339
              341:      6(int) ImageRead 338 340
                               Store 342(param) 341
              343:      6(int) FunctionCall 10(Fn1(i1;) 342(param)
              344:          89 Load 91(g_tTex1du1)
-             345:     62(ptr) AccessChain 61 53
+             345:    62(int*) AccessChain 61 53
              346:      6(int) Load 345
-             347:     12(int) ImageRead 344 346
+             347:    12(uint) ImageRead 344 346
                               Store 348(param) 347
-             349:     12(int) FunctionCall 16(Fn1(u1;) 348(param)
-             352:           2 FunctionCall 34(Fn2(f1;) 351(param)
+             349:    12(uint) FunctionCall 16(Fn1(u1;) 348(param)
+             352:     2(void) FunctionCall 34(Fn2(f1;) 351(param)
              353:   18(float) Load 351(param)
                               Store 350(tempArg) 353
              354:          68 Load 70(g_tTex1df1)
-             355:     62(ptr) AccessChain 61 53
+             355:    62(int*) AccessChain 61 53
              356:      6(int) Load 355
              357:   18(float) Load 350(tempArg)
                               ImageWrite 354 356 357
-             360:           2 FunctionCall 26(Fn2(i1;) 359(param)
+             360:     2(void) FunctionCall 26(Fn2(i1;) 359(param)
              361:      6(int) Load 359(param)
                               Store 358(tempArg) 361
              362:          81 Load 83(g_tTex1di1)
-             363:     62(ptr) AccessChain 61 53
+             363:    62(int*) AccessChain 61 53
              364:      6(int) Load 363
              365:      6(int) Load 358(tempArg)
                               ImageWrite 362 364 365
-             368:           2 FunctionCall 30(Fn2(u1;) 367(param)
-             369:     12(int) Load 367(param)
+             368:     2(void) FunctionCall 30(Fn2(u1;) 367(param)
+             369:    12(uint) Load 367(param)
                               Store 366(tempArg) 369
              370:          89 Load 91(g_tTex1du1)
-             371:     62(ptr) AccessChain 61 53
+             371:    62(int*) AccessChain 61 53
              372:      6(int) Load 371
-             373:     12(int) Load 366(tempArg)
+             373:    12(uint) Load 366(tempArg)
                               ImageWrite 370 372 373
-             375:     62(ptr) AccessChain 61 53
+             375:    62(int*) AccessChain 61 53
              376:      6(int) Load 375
                               Store 374(coordTemp) 376
              378:          68 Load 70(g_tTex1df1)
@@ -2395,7 +2395,7 @@ gl_FragCoord origin is upper left
              385:      6(int) Load 374(coordTemp)
              386:   18(float) Load 377(storeTemp)
                               ImageWrite 384 385 386
-             388:     62(ptr) AccessChain 61 53
+             388:    62(int*) AccessChain 61 53
              389:      6(int) Load 388
                               Store 387(coordTemp) 389
              391:          81 Load 83(g_tTex1di1)
@@ -2409,21 +2409,21 @@ gl_FragCoord origin is upper left
              397:      6(int) Load 387(coordTemp)
              398:      6(int) Load 390(storeTemp)
                               ImageWrite 396 397 398
-             400:     62(ptr) AccessChain 61 53
+             400:    62(int*) AccessChain 61 53
              401:      6(int) Load 400
                               Store 399(coordTemp) 401
              403:          89 Load 91(g_tTex1du1)
              404:      6(int) Load 399(coordTemp)
-             405:     12(int) ImageRead 403 404
+             405:    12(uint) ImageRead 403 404
                               Store 402(storeTemp) 405
-             406:     12(int) Load 402(storeTemp)
-             407:     12(int) IAdd 406 101
+             406:    12(uint) Load 402(storeTemp)
+             407:    12(uint) IAdd 406 101
                               Store 402(storeTemp) 407
              408:          89 Load 91(g_tTex1du1)
              409:      6(int) Load 399(coordTemp)
-             410:     12(int) Load 402(storeTemp)
+             410:    12(uint) Load 402(storeTemp)
                               ImageWrite 408 409 410
-             412:     62(ptr) AccessChain 61 53
+             412:    62(int*) AccessChain 61 53
              413:      6(int) Load 412
                               Store 411(coordTemp) 413
              415:          68 Load 70(g_tTex1df1)
@@ -2437,7 +2437,7 @@ gl_FragCoord origin is upper left
              421:      6(int) Load 411(coordTemp)
              422:   18(float) Load 414(storeTemp)
                               ImageWrite 420 421 422
-             424:     62(ptr) AccessChain 61 53
+             424:    62(int*) AccessChain 61 53
              425:      6(int) Load 424
                               Store 423(coordTemp) 425
              427:          81 Load 83(g_tTex1di1)
@@ -2451,21 +2451,21 @@ gl_FragCoord origin is upper left
              433:      6(int) Load 423(coordTemp)
              434:      6(int) Load 426(storeTemp)
                               ImageWrite 432 433 434
-             436:     62(ptr) AccessChain 61 53
+             436:    62(int*) AccessChain 61 53
              437:      6(int) Load 436
                               Store 435(coordTemp) 437
              439:          89 Load 91(g_tTex1du1)
              440:      6(int) Load 435(coordTemp)
-             441:     12(int) ImageRead 439 440
+             441:    12(uint) ImageRead 439 440
                               Store 438(storeTemp) 441
-             442:     12(int) Load 438(storeTemp)
-             443:     12(int) ISub 442 101
+             442:    12(uint) Load 438(storeTemp)
+             443:    12(uint) ISub 442 101
                               Store 438(storeTemp) 443
              444:          89 Load 91(g_tTex1du1)
              445:      6(int) Load 435(coordTemp)
-             446:     12(int) Load 438(storeTemp)
+             446:    12(uint) Load 438(storeTemp)
                               ImageWrite 444 445 446
-             448:     62(ptr) AccessChain 61 53
+             448:    62(int*) AccessChain 61 53
              449:      6(int) Load 448
                               Store 447(coordTemp) 449
              451:          68 Load 70(g_tTex1df1)
@@ -2481,23 +2481,23 @@ gl_FragCoord origin is upper left
              459:      6(int) Load 447(coordTemp)
              460:   18(float) Load 454(storeTempPost)
                               ImageWrite 458 459 460
-             462:     62(ptr) AccessChain 61 53
+             462:    62(int*) AccessChain 61 53
              463:      6(int) Load 462
                               Store 461(coordTemp) 463
              465:          89 Load 91(g_tTex1du1)
              466:      6(int) Load 461(coordTemp)
-             467:     12(int) ImageRead 465 466
+             467:    12(uint) ImageRead 465 466
                               Store 464(storeTempPre) 467
-             469:     12(int) Load 464(storeTempPre)
+             469:    12(uint) Load 464(storeTempPre)
                               Store 468(storeTempPost) 469
-             470:     12(int) Load 468(storeTempPost)
-             471:     12(int) ISub 470 101
+             470:    12(uint) Load 468(storeTempPost)
+             471:    12(uint) ISub 470 101
                               Store 468(storeTempPost) 471
              472:          89 Load 91(g_tTex1du1)
              473:      6(int) Load 461(coordTemp)
-             474:     12(int) Load 468(storeTempPost)
+             474:    12(uint) Load 468(storeTempPost)
                               ImageWrite 472 473 474
-             476:     62(ptr) AccessChain 61 53
+             476:    62(int*) AccessChain 61 53
              477:      6(int) Load 476
                               Store 475(coordTemp) 477
              479:          81 Load 83(g_tTex1di1)
@@ -2513,7 +2513,7 @@ gl_FragCoord origin is upper left
              487:      6(int) Load 475(coordTemp)
              488:      6(int) Load 482(storeTempPost)
                               ImageWrite 486 487 488
-             490:     62(ptr) AccessChain 61 53
+             490:    62(int*) AccessChain 61 53
              491:      6(int) Load 490
                               Store 489(coordTemp) 491
              493:          68 Load 70(g_tTex1df1)
@@ -2529,7 +2529,7 @@ gl_FragCoord origin is upper left
              501:      6(int) Load 489(coordTemp)
              502:   18(float) Load 496(storeTempPost)
                               ImageWrite 500 501 502
-             504:     62(ptr) AccessChain 61 53
+             504:    62(int*) AccessChain 61 53
              505:      6(int) Load 504
                               Store 503(coordTemp) 505
              507:          81 Load 83(g_tTex1di1)
@@ -2545,21 +2545,21 @@ gl_FragCoord origin is upper left
              515:      6(int) Load 503(coordTemp)
              516:      6(int) Load 510(storeTempPost)
                               ImageWrite 514 515 516
-             518:     62(ptr) AccessChain 61 53
+             518:    62(int*) AccessChain 61 53
              519:      6(int) Load 518
                               Store 517(coordTemp) 519
              521:          89 Load 91(g_tTex1du1)
              522:      6(int) Load 517(coordTemp)
-             523:     12(int) ImageRead 521 522
+             523:    12(uint) ImageRead 521 522
                               Store 520(storeTempPre) 523
-             525:     12(int) Load 520(storeTempPre)
+             525:    12(uint) Load 520(storeTempPre)
                               Store 524(storeTempPost) 525
-             526:     12(int) Load 524(storeTempPost)
-             527:     12(int) ISub 526 101
+             526:    12(uint) Load 524(storeTempPost)
+             527:    12(uint) ISub 526 101
                               Store 524(storeTempPost) 527
              528:          89 Load 91(g_tTex1du1)
              529:      6(int) Load 517(coordTemp)
-             530:     12(int) Load 524(storeTempPost)
+             530:    12(uint) Load 524(storeTempPost)
                               ImageWrite 528 529 530
              532:          97 Load 99(g_tTex2df1)
              535:   18(float) ImageRead 532 534
@@ -2567,7 +2567,7 @@ gl_FragCoord origin is upper left
              536:          68 Load 70(g_tTex1df1)
              537:   18(float) Load 531(storeTemp)
                               ImageWrite 536 101 537
-             542:    541(ptr) AccessChain 539(psout) 53
+             542:  541(vec4*) AccessChain 539(psout) 53
                               Store 542 540
              543:40(PS_OUTPUT) Load 539(psout)
                               ReturnValue 543

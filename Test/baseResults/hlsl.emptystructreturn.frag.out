@@ -70,20 +70,20 @@ gl_FragCoord origin is upper left
                               Name 23  "@entryPointOutput"
                               Name 24  "param"
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
         6(ps_in):             TypeStruct
                7:             TypePointer Function 6(ps_in)
        8(ps_out):             TypeStruct
-               9:             TypeFunction 8(ps_out) 7(ptr)
+               9:             TypeFunction 8(ps_out) 7(ps_in*)
               13:             TypePointer Function 8(ps_out)
               19:             TypePointer Input 6(ps_in)
-           20(i):     19(ptr) Variable Input
+           20(i):  19(ps_in*) Variable Input
               22:             TypePointer Output 8(ps_out)
-23(@entryPointOutput):     22(ptr) Variable Output
-         4(main):           2 Function None 3
+23(@entryPointOutput): 22(ps_out*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-           18(i):      7(ptr) Variable Function
-       24(param):      7(ptr) Variable Function
+           18(i):   7(ps_in*) Variable Function
+       24(param):   7(ps_in*) Variable Function
               21:    6(ps_in) Load 20(i)
                               Store 18(i) 21
               25:    6(ps_in) Load 18(i)
@@ -93,9 +93,9 @@ gl_FragCoord origin is upper left
                               Return
                               FunctionEnd
 11(@main(struct-ps_in1;):   8(ps_out) Function None 9
-           10(i):      7(ptr) FunctionParameter
+           10(i):   7(ps_in*) FunctionParameter
               12:             Label
-           14(o):     13(ptr) Variable Function
+           14(o): 13(ps_out*) Variable Function
               15:   8(ps_out) Load 14(o)
                               ReturnValue 15
                               FunctionEnd

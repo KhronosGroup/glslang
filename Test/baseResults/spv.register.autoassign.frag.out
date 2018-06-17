@@ -83,11 +83,11 @@ spv.register.autoassign.frag
                               Decorate 151(@entryPointOutput.Color) Location 0
                               Decorate 154(g_tTex_unused3) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
-   15(PS_OUTPUT):             TypeStruct 7(fvec4)
+               8:             TypeFunction 7(vec4)
+   15(PS_OUTPUT):             TypeStruct 7(vec4)
               16:             TypeFunction 15(PS_OUTPUT)
               19:             TypeImage 6(float) 1D sampled format:Unknown
               20:             TypePointer UniformConstant 19
@@ -101,36 +101,36 @@ spv.register.autoassign.frag
     33(g_sSamp2):     24(ptr) Variable UniformConstant
               36:    6(float) Constant 1045220557
               39:             TypeInt 32 0
-              40:     39(int) Constant 2
+              40:    39(uint) Constant 2
               41:             TypeArray 19 40
-              42:             TypePointer UniformConstant 41
-     43(g_tTex3):     42(ptr) Variable UniformConstant
+              42:             TypePointer UniformConstant 41(arr[2])
+     43(g_tTex3): 42(arr[2]*) Variable UniformConstant
               44:             TypeInt 32 1
               45:     44(int) Constant 0
               48:             TypeArray 23 40
-              49:             TypePointer UniformConstant 48
-    50(g_sSamp3):     49(ptr) Variable UniformConstant
+              49:             TypePointer UniformConstant 48(arr[2])
+    50(g_sSamp3): 49(arr[2]*) Variable UniformConstant
               54:    6(float) Constant 1050253722
               57:     44(int) Constant 1
-              65:     39(int) Constant 3
+              65:    39(uint) Constant 3
               66:             TypeArray 19 65
-              67:             TypePointer UniformConstant 66
-     68(g_tTex4):     67(ptr) Variable UniformConstant
+              67:             TypePointer UniformConstant 66(arr[3])
+     68(g_tTex4): 67(arr[3]*) Variable UniformConstant
               71:             TypeArray 23 65
-              72:             TypePointer UniformConstant 71
-    73(g_sSamp4):     72(ptr) Variable UniformConstant
+              72:             TypePointer UniformConstant 71(arr[3])
+    73(g_sSamp4): 72(arr[3]*) Variable UniformConstant
               77:    6(float) Constant 1053609165
               80:     44(int) Constant 2
      88(g_tTex5):     20(ptr) Variable UniformConstant
     90(g_sSamp5):     24(ptr) Variable UniformConstant
               93:    6(float) Constant 1056964608
               96:             TypeVector 6(float) 3
-  97(MyStruct_t):             TypeStruct 44(int) 6(float) 96(fvec3)
+  97(MyStruct_t):             TypeStruct 44(int) 6(float) 96(vec3)
               98:             TypeVector 44(int) 4
-     99($Global):             TypeStruct 97(MyStruct_t) 7(fvec4) 7(fvec4) 98(ivec4)
+     99($Global):             TypeStruct 97(MyStruct_t) 7(vec4) 7(vec4) 98(ivec4)
              100:             TypePointer Uniform 99($Global)
-             101:    100(ptr) Variable Uniform
-             102:     39(int) Constant 1
+             101:100($Global*) Variable Uniform
+             102:    39(uint) Constant 1
              103:             TypePointer Uniform 6(float)
 123(g_tTex_unused1):     20(ptr) Variable UniformConstant
 125(g_sSamp_unused1):     24(ptr) Variable UniformConstant
@@ -139,102 +139,102 @@ spv.register.autoassign.frag
 132(g_sSamp_unused2):     24(ptr) Variable UniformConstant
              135:    6(float) Constant 1067030938
              140:             TypePointer Function 15(PS_OUTPUT)
-             145:             TypePointer Function 7(fvec4)
-             150:             TypePointer Output 7(fvec4)
-151(@entryPointOutput.Color):    150(ptr) Variable Output
+             145:             TypePointer Function 7(vec4)
+             150:             TypePointer Output 7(vec4)
+151(@entryPointOutput.Color):  150(vec4*) Variable Output
 154(g_tTex_unused3):     20(ptr) Variable UniformConstant
-      4(main_ep):           2 Function None 3
+      4(main_ep):     2(void) Function None 3
                5:             Label
              152:15(PS_OUTPUT) FunctionCall 17(@main_ep()
-             153:    7(fvec4) CompositeExtract 152 0
+             153:     7(vec4) CompositeExtract 152 0
                               Store 151(@entryPointOutput.Color) 153
                               Return
                               FunctionEnd
-       9(Func1():    7(fvec4) Function None 8
+       9(Func1():     7(vec4) Function None 8
               10:             Label
               22:          19 Load 21(g_tTex1)
               26:          23 Load 25(g_sSamp1)
               28:          27 SampledImage 22 26
-              30:    7(fvec4) ImageSampleImplicitLod 28 29
+              30:     7(vec4) ImageSampleImplicitLod 28 29
               32:          19 Load 31(g_tTex2)
               34:          23 Load 33(g_sSamp2)
               35:          27 SampledImage 32 34
-              37:    7(fvec4) ImageSampleImplicitLod 35 36
-              38:    7(fvec4) FAdd 30 37
+              37:     7(vec4) ImageSampleImplicitLod 35 36
+              38:     7(vec4) FAdd 30 37
               46:     20(ptr) AccessChain 43(g_tTex3) 45
               47:          19 Load 46
               51:     24(ptr) AccessChain 50(g_sSamp3) 45
               52:          23 Load 51
               53:          27 SampledImage 47 52
-              55:    7(fvec4) ImageSampleImplicitLod 53 54
-              56:    7(fvec4) FAdd 38 55
+              55:     7(vec4) ImageSampleImplicitLod 53 54
+              56:     7(vec4) FAdd 38 55
               58:     20(ptr) AccessChain 43(g_tTex3) 57
               59:          19 Load 58
               60:     24(ptr) AccessChain 50(g_sSamp3) 57
               61:          23 Load 60
               62:          27 SampledImage 59 61
-              63:    7(fvec4) ImageSampleImplicitLod 62 54
-              64:    7(fvec4) FAdd 56 63
+              63:     7(vec4) ImageSampleImplicitLod 62 54
+              64:     7(vec4) FAdd 56 63
               69:     20(ptr) AccessChain 68(g_tTex4) 57
               70:          19 Load 69
               74:     24(ptr) AccessChain 73(g_sSamp4) 57
               75:          23 Load 74
               76:          27 SampledImage 70 75
-              78:    7(fvec4) ImageSampleImplicitLod 76 77
-              79:    7(fvec4) FAdd 64 78
+              78:     7(vec4) ImageSampleImplicitLod 76 77
+              79:     7(vec4) FAdd 64 78
               81:     20(ptr) AccessChain 68(g_tTex4) 80
               82:          19 Load 81
               83:     24(ptr) AccessChain 73(g_sSamp4) 80
               84:          23 Load 83
               85:          27 SampledImage 82 84
-              86:    7(fvec4) ImageSampleImplicitLod 85 77
-              87:    7(fvec4) FAdd 79 86
+              86:     7(vec4) ImageSampleImplicitLod 85 77
+              87:     7(vec4) FAdd 79 86
               89:          19 Load 88(g_tTex5)
               91:          23 Load 90(g_sSamp5)
               92:          27 SampledImage 89 91
-              94:    7(fvec4) ImageSampleImplicitLod 92 93
-              95:    7(fvec4) FAdd 87 94
-             104:    103(ptr) AccessChain 101 45 80 102
+              94:     7(vec4) ImageSampleImplicitLod 92 93
+              95:     7(vec4) FAdd 87 94
+             104: 103(float*) AccessChain 101 45 80 102
              105:    6(float) Load 104
-             106:    7(fvec4) CompositeConstruct 105 105 105 105
-             107:    7(fvec4) FAdd 95 106
+             106:     7(vec4) CompositeConstruct 105 105 105 105
+             107:     7(vec4) FAdd 95 106
                               ReturnValue 107
                               FunctionEnd
-      11(Func2():    7(fvec4) Function None 8
+      11(Func2():     7(vec4) Function None 8
               12:             Label
              110:          19 Load 21(g_tTex1)
              111:          23 Load 25(g_sSamp1)
              112:          27 SampledImage 110 111
-             113:    7(fvec4) ImageSampleImplicitLod 112 29
+             113:     7(vec4) ImageSampleImplicitLod 112 29
              114:     20(ptr) AccessChain 43(g_tTex3) 57
              115:          19 Load 114
              116:     24(ptr) AccessChain 50(g_sSamp3) 57
              117:          23 Load 116
              118:          27 SampledImage 115 117
-             119:    7(fvec4) ImageSampleImplicitLod 118 54
-             120:    7(fvec4) FAdd 113 119
+             119:     7(vec4) ImageSampleImplicitLod 118 54
+             120:     7(vec4) FAdd 113 119
                               ReturnValue 120
                               FunctionEnd
-13(Func2_unused():    7(fvec4) Function None 8
+13(Func2_unused():     7(vec4) Function None 8
               14:             Label
              124:          19 Load 123(g_tTex_unused1)
              126:          23 Load 125(g_sSamp_unused1)
              127:          27 SampledImage 124 126
-             129:    7(fvec4) ImageSampleImplicitLod 127 128
+             129:     7(vec4) ImageSampleImplicitLod 127 128
              131:          19 Load 130(g_tTex_unused2)
              133:          23 Load 132(g_sSamp_unused2)
              134:          27 SampledImage 131 133
-             136:    7(fvec4) ImageSampleImplicitLod 134 135
-             137:    7(fvec4) FAdd 129 136
+             136:     7(vec4) ImageSampleImplicitLod 134 135
+             137:     7(vec4) FAdd 129 136
                               ReturnValue 137
                               FunctionEnd
    17(@main_ep():15(PS_OUTPUT) Function None 16
               18:             Label
-      141(psout):    140(ptr) Variable Function
-             142:    7(fvec4) FunctionCall 9(Func1()
-             143:    7(fvec4) FunctionCall 11(Func2()
-             144:    7(fvec4) FAdd 142 143
-             146:    145(ptr) AccessChain 141(psout) 45
+      141(psout):140(PS_OUTPUT*) Variable Function
+             142:     7(vec4) FunctionCall 9(Func1()
+             143:     7(vec4) FunctionCall 11(Func2()
+             144:     7(vec4) FAdd 142 143
+             146:  145(vec4*) AccessChain 141(psout) 45
                               Store 146 144
              147:15(PS_OUTPUT) Load 141(psout)
                               ReturnValue 147

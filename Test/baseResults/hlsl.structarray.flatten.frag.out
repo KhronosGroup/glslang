@@ -215,12 +215,12 @@ gl_FragCoord origin is upper left
                               Decorate 77(g_texdata_array2[2].samp) DescriptorSet 0
                               Decorate 78(g_texdata_array2[2].tex) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypePointer Function 8(PS_OUTPUT)
-              10:             TypeFunction 2 9(ptr)
+              10:             TypeFunction 2(void) 9(PS_OUTPUT*)
               14:             TypeInt 32 1
               15:     14(int) Constant 0
               16:             TypeImage 6(float) 1D sampled format:Unknown
@@ -235,67 +235,67 @@ gl_FragCoord origin is upper left
 30(g_texdata_array[1].samp):     21(ptr) Variable UniformConstant
               33:    6(float) Constant 1053609165
               36:             TypeInt 32 0
-              37:     36(int) Constant 2
+              37:    36(uint) Constant 2
               38:             TypeArray 16 37
-              39:             TypePointer UniformConstant 38
-40(g_texdata_array2[1].tex):     39(ptr) Variable UniformConstant
+              39:             TypePointer UniformConstant 38(arr[2])
+40(g_texdata_array2[1].tex): 39(arr[2]*) Variable UniformConstant
               43:             TypeArray 20 37
-              44:             TypePointer UniformConstant 43
-45(g_texdata_array2[1].samp):     44(ptr) Variable UniformConstant
+              44:             TypePointer UniformConstant 43(arr[2])
+45(g_texdata_array2[1].samp): 44(arr[2]*) Variable UniformConstant
               49:    6(float) Constant 1050253722
-              52:             TypePointer Function 7(fvec4)
-              58:             TypePointer Output 7(fvec4)
-59(ps_output.color):     58(ptr) Variable Output
+              52:             TypePointer Function 7(vec4)
+              58:             TypePointer Output 7(vec4)
+59(ps_output.color):   58(vec4*) Variable Output
       62(g_samp):     21(ptr) Variable UniformConstant
        63(g_tex):     17(ptr) Variable UniformConstant
               64:             TypePointer UniformConstant 14(int)
-65(g_texdata.nonopaque_thing):     64(ptr) Variable UniformConstant
+65(g_texdata.nonopaque_thing):    64(int*) Variable UniformConstant
 66(g_texdata_array[0].samp):     21(ptr) Variable UniformConstant
 67(g_texdata_array[0].tex):     17(ptr) Variable UniformConstant
-68(g_texdata_array[0].nonopaque_thing):     64(ptr) Variable UniformConstant
-69(g_texdata_array[1].nonopaque_thing):     64(ptr) Variable UniformConstant
+68(g_texdata_array[0].nonopaque_thing):    64(int*) Variable UniformConstant
+69(g_texdata_array[1].nonopaque_thing):    64(int*) Variable UniformConstant
 70(g_texdata_array[2].samp):     21(ptr) Variable UniformConstant
 71(g_texdata_array[2].tex):     17(ptr) Variable UniformConstant
-72(g_texdata_array[2].nonopaque_thing):     64(ptr) Variable UniformConstant
-73(g_texdata_array2[0].samp):     44(ptr) Variable UniformConstant
-74(g_texdata_array2[0].tex):     39(ptr) Variable UniformConstant
-75(g_texdata_array2[0].nonopaque_thing):     64(ptr) Variable UniformConstant
-76(g_texdata_array2[1].nonopaque_thing):     64(ptr) Variable UniformConstant
-77(g_texdata_array2[2].samp):     44(ptr) Variable UniformConstant
-78(g_texdata_array2[2].tex):     39(ptr) Variable UniformConstant
-79(g_texdata_array2[2].nonopaque_thing):     64(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+72(g_texdata_array[2].nonopaque_thing):    64(int*) Variable UniformConstant
+73(g_texdata_array2[0].samp): 44(arr[2]*) Variable UniformConstant
+74(g_texdata_array2[0].tex): 39(arr[2]*) Variable UniformConstant
+75(g_texdata_array2[0].nonopaque_thing):    64(int*) Variable UniformConstant
+76(g_texdata_array2[1].nonopaque_thing):    64(int*) Variable UniformConstant
+77(g_texdata_array2[2].samp): 44(arr[2]*) Variable UniformConstant
+78(g_texdata_array2[2].tex): 39(arr[2]*) Variable UniformConstant
+79(g_texdata_array2[2].nonopaque_thing):    64(int*) Variable UniformConstant
+         4(main):     2(void) Function None 3
                5:             Label
-   54(ps_output):      9(ptr) Variable Function
-       55(param):      9(ptr) Variable Function
-              56:           2 FunctionCall 12(@main(struct-PS_OUTPUT-vf41;) 55(param)
+   54(ps_output):9(PS_OUTPUT*) Variable Function
+       55(param):9(PS_OUTPUT*) Variable Function
+              56:     2(void) FunctionCall 12(@main(struct-PS_OUTPUT-vf41;) 55(param)
               57:8(PS_OUTPUT) Load 55(param)
                               Store 54(ps_output) 57
-              60:     52(ptr) AccessChain 54(ps_output) 15
-              61:    7(fvec4) Load 60
+              60:   52(vec4*) AccessChain 54(ps_output) 15
+              61:     7(vec4) Load 60
                               Store 59(ps_output.color) 61
                               Return
                               FunctionEnd
-12(@main(struct-PS_OUTPUT-vf41;):           2 Function None 10
-   11(ps_output):      9(ptr) FunctionParameter
+12(@main(struct-PS_OUTPUT-vf41;):     2(void) Function None 10
+   11(ps_output):9(PS_OUTPUT*) FunctionParameter
               13:             Label
               19:          16 Load 18(g_texdata.tex)
               23:          20 Load 22(g_texdata.samp)
               25:          24 SampledImage 19 23
-              27:    7(fvec4) ImageSampleImplicitLod 25 26
+              27:     7(vec4) ImageSampleImplicitLod 25 26
               29:          16 Load 28(g_texdata_array[1].tex)
               31:          20 Load 30(g_texdata_array[1].samp)
               32:          24 SampledImage 29 31
-              34:    7(fvec4) ImageSampleImplicitLod 32 33
-              35:    7(fvec4) FAdd 27 34
+              34:     7(vec4) ImageSampleImplicitLod 32 33
+              35:     7(vec4) FAdd 27 34
               41:     17(ptr) AccessChain 40(g_texdata_array2[1].tex) 15
               42:          16 Load 41
               46:     21(ptr) AccessChain 45(g_texdata_array2[1].samp) 15
               47:          20 Load 46
               48:          24 SampledImage 42 47
-              50:    7(fvec4) ImageSampleImplicitLod 48 49
-              51:    7(fvec4) FAdd 35 50
-              53:     52(ptr) AccessChain 11(ps_output) 15
+              50:     7(vec4) ImageSampleImplicitLod 48 49
+              51:     7(vec4) FAdd 35 50
+              53:   52(vec4*) AccessChain 11(ps_output) 15
                               Store 53 51
                               Return
                               FunctionEnd

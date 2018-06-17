@@ -42,34 +42,34 @@ spv.450.geom
                               Decorate 27(gl_Layer) BuiltIn Layer
                               Decorate 29(gl_ViewportIndex) BuiltIn ViewportIndex
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeInt 32 0
-               9:      8(int) Constant 1
+               9:     8(uint) Constant 1
               10:             TypeArray 6(float) 9
-11(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 10 10
+11(gl_PerVertex):             TypeStruct 7(vec4) 6(float) 10(float[1]) 10(float[1])
               12:             TypePointer Output 11(gl_PerVertex)
-              13:     12(ptr) Variable Output
+              13:12(gl_PerVertex*) Variable Output
               14:             TypeInt 32 1
               15:     14(int) Constant 1
-16(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 10 10
-              17:      8(int) Constant 3
+16(gl_PerVertex):             TypeStruct 7(vec4) 6(float) 10(float[1]) 10(float[1])
+              17:     8(uint) Constant 3
               18:             TypeArray 16(gl_PerVertex) 17
-              19:             TypePointer Input 18
-       20(gl_in):     19(ptr) Variable Input
+              19:             TypePointer Input 18(gl_PerVertex[3])
+       20(gl_in):19(gl_PerVertex[3]*) Variable Input
               21:             TypePointer Input 6(float)
               24:             TypePointer Output 6(float)
               26:             TypePointer Output 14(int)
-    27(gl_Layer):     26(ptr) Variable Output
+    27(gl_Layer):    26(int*) Variable Output
               28:     14(int) Constant 2
-29(gl_ViewportIndex):     26(ptr) Variable Output
+29(gl_ViewportIndex):    26(int*) Variable Output
               30:     14(int) Constant 3
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-              22:     21(ptr) AccessChain 20(gl_in) 15 15
+              22:  21(float*) AccessChain 20(gl_in) 15 15
               23:    6(float) Load 22
-              25:     24(ptr) AccessChain 13 15
+              25:  24(float*) AccessChain 13 15
                               Store 25 23
                               Store 27(gl_Layer) 28
                               Store 29(gl_ViewportIndex) 30

@@ -21,7 +21,7 @@ spv.textureBuffer.vert
                               Decorate 32(utBuf) DescriptorSet 0
                               Decorate 38(itBuf) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeImage 6(float) Buffer sampled format:Unknown
                8:             TypePointer UniformConstant 7
@@ -36,28 +36,28 @@ spv.textureBuffer.vert
               22:             TypePointer UniformConstant 15
         23(sBuf):     22(ptr) Variable UniformConstant
               29:             TypeInt 32 0
-              30:             TypeImage 29(int) Buffer sampled format:Unknown
+              30:             TypeImage 29(uint) Buffer sampled format:Unknown
               31:             TypePointer UniformConstant 30
        32(utBuf):     31(ptr) Variable UniformConstant
-              34:             TypeVector 29(int) 4
+              34:             TypeVector 29(uint) 4
               36:             TypeImage 17(int) Buffer sampled format:Unknown
               37:             TypePointer UniformConstant 36
        38(itBuf):     37(ptr) Variable UniformConstant
               40:             TypeVector 17(int) 4
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
               10:           7 Load 9(tBuf)
               14:          11 Load 13(s)
               16:          15 SampledImage 10 14
               19:           7 Image 16
-              21:   20(fvec4) ImageFetch 19 18
+              21:    20(vec4) ImageFetch 19 18
               24:          15 Load 23(sBuf)
               25:           7 Image 24
-              26:   20(fvec4) ImageFetch 25 18
+              26:    20(vec4) ImageFetch 25 18
               27:           7 Load 9(tBuf)
-              28:   20(fvec4) ImageFetch 27 18
+              28:    20(vec4) ImageFetch 27 18
               33:          30 Load 32(utBuf)
-              35:   34(ivec4) ImageFetch 33 18
+              35:   34(uvec4) ImageFetch 33 18
               39:          36 Load 38(itBuf)
               41:   40(ivec4) ImageFetch 39 18
                               Return

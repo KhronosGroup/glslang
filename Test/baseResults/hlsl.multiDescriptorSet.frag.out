@@ -66,33 +66,33 @@ hlsl.multiDescriptorSet.frag
                               Decorate 91(samLinearB) DescriptorSet 1
                               Decorate 91(samLinearB) Binding 1
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeVector 6(float) 2
-     9(PS_INPUT):             TypeStruct 7(fvec4) 8(fvec2)
+     9(PS_INPUT):             TypeStruct 7(vec4) 8(vec2)
               10:             TypePointer Function 9(PS_INPUT)
-              11:             TypeFunction 7(fvec4) 10(ptr)
+              11:             TypeFunction 7(vec4) 10(PS_INPUT*)
               16:    6(float) Constant 0
-              17:    7(fvec4) ConstantComposite 16 16 16 16
-              18:    8(fvec2) ConstantComposite 16 16
+              17:     7(vec4) ConstantComposite 16 16 16 16
+              18:     8(vec2) ConstantComposite 16 16
               19: 9(PS_INPUT) ConstantComposite 17 18
               20:             TypeInt 32 1
               21:     20(int) Constant 0
-              22:             TypeMatrix 7(fvec4) 4
-23(cbChangesEveryFrame):             TypeStruct 22 7(fvec4)
+              22:             TypeMatrix 7(vec4) 4
+23(cbChangesEveryFrame):             TypeStruct 22(mat4) 7(vec4)
               24:             TypePointer Uniform 23(cbChangesEveryFrame)
-              25:     24(ptr) Variable Uniform
-              26:             TypePointer Uniform 22
-              29:             TypePointer Function 7(fvec4)
-34(cbNeverChanges):             TypeStruct 22
+              25:24(cbChangesEveryFrame*) Variable Uniform
+              26:             TypePointer Uniform 22(mat4)
+              29:             TypePointer Function 7(vec4)
+34(cbNeverChanges):             TypeStruct 22(mat4)
               35:             TypePointer Uniform 34(cbNeverChanges)
-              36:     35(ptr) Variable Uniform
-43(cbChangeOnResize):             TypeStruct 22
+              36:35(cbNeverChanges*) Variable Uniform
+43(cbChangeOnResize):             TypeStruct 22(mat4)
               44:             TypePointer Uniform 43(cbChangeOnResize)
-              45:     44(ptr) Variable Uniform
+              45:44(cbChangeOnResize*) Variable Uniform
               52:     20(int) Constant 1
-              53:             TypePointer Function 8(fvec2)
+              53:             TypePointer Function 8(vec2)
               57:             TypeImage 6(float) 2D sampled format:Unknown
               58:             TypePointer UniformConstant 57
   59(txDiffuseA):     58(ptr) Variable UniformConstant
@@ -100,69 +100,69 @@ hlsl.multiDescriptorSet.frag
               62:             TypePointer UniformConstant 61
   63(samLinearA):     62(ptr) Variable UniformConstant
               65:             TypeSampledImage 57
-              70:             TypePointer Uniform 7(fvec4)
-              77:             TypePointer Input 7(fvec4)
-   78(input.Pos):     77(ptr) Variable Input
-              81:             TypePointer Input 8(fvec2)
-   82(input.Tex):     81(ptr) Variable Input
-              85:             TypePointer Output 7(fvec4)
-86(@entryPointOutput):     85(ptr) Variable Output
+              70:             TypePointer Uniform 7(vec4)
+              77:             TypePointer Input 7(vec4)
+   78(input.Pos):   77(vec4*) Variable Input
+              81:             TypePointer Input 8(vec2)
+   82(input.Tex):   81(vec2*) Variable Input
+              85:             TypePointer Output 7(vec4)
+86(@entryPointOutput):   85(vec4*) Variable Output
   90(txDiffuseB):     58(ptr) Variable UniformConstant
   91(samLinearB):     62(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-       76(input):     10(ptr) Variable Function
-       87(param):     10(ptr) Variable Function
-              79:    7(fvec4) Load 78(input.Pos)
-              80:     29(ptr) AccessChain 76(input) 21
+       76(input):10(PS_INPUT*) Variable Function
+       87(param):10(PS_INPUT*) Variable Function
+              79:     7(vec4) Load 78(input.Pos)
+              80:   29(vec4*) AccessChain 76(input) 21
                               Store 80 79
-              83:    8(fvec2) Load 82(input.Tex)
-              84:     53(ptr) AccessChain 76(input) 52
+              83:     8(vec2) Load 82(input.Tex)
+              84:   53(vec2*) AccessChain 76(input) 52
                               Store 84 83
               88: 9(PS_INPUT) Load 76(input)
                               Store 87(param) 88
-              89:    7(fvec4) FunctionCall 13(@main(struct-PS_INPUT-vf4-vf21;) 87(param)
+              89:     7(vec4) FunctionCall 13(@main(struct-PS_INPUT-vf4-vf21;) 87(param)
                               Store 86(@entryPointOutput) 89
                               Return
                               FunctionEnd
-13(@main(struct-PS_INPUT-vf4-vf21;):    7(fvec4) Function None 11
-       12(input):     10(ptr) FunctionParameter
+13(@main(struct-PS_INPUT-vf4-vf21;):     7(vec4) Function None 11
+       12(input):10(PS_INPUT*) FunctionParameter
               14:             Label
-      15(output):     10(ptr) Variable Function
+      15(output):10(PS_INPUT*) Variable Function
                               Store 15(output) 19
-              27:     26(ptr) AccessChain 25 21
-              28:          22 Load 27
-              30:     29(ptr) AccessChain 12(input) 21
-              31:    7(fvec4) Load 30
-              32:    7(fvec4) MatrixTimesVector 28 31
-              33:     29(ptr) AccessChain 15(output) 21
+              27:   26(mat4*) AccessChain 25 21
+              28:    22(mat4) Load 27
+              30:   29(vec4*) AccessChain 12(input) 21
+              31:     7(vec4) Load 30
+              32:     7(vec4) MatrixTimesVector 28 31
+              33:   29(vec4*) AccessChain 15(output) 21
                               Store 33 32
-              37:     26(ptr) AccessChain 36 21
-              38:          22 Load 37
-              39:     29(ptr) AccessChain 15(output) 21
-              40:    7(fvec4) Load 39
-              41:    7(fvec4) MatrixTimesVector 38 40
-              42:     29(ptr) AccessChain 15(output) 21
+              37:   26(mat4*) AccessChain 36 21
+              38:    22(mat4) Load 37
+              39:   29(vec4*) AccessChain 15(output) 21
+              40:     7(vec4) Load 39
+              41:     7(vec4) MatrixTimesVector 38 40
+              42:   29(vec4*) AccessChain 15(output) 21
                               Store 42 41
-              46:     26(ptr) AccessChain 45 21
-              47:          22 Load 46
-              48:     29(ptr) AccessChain 15(output) 21
-              49:    7(fvec4) Load 48
-              50:    7(fvec4) MatrixTimesVector 47 49
-              51:     29(ptr) AccessChain 15(output) 21
+              46:   26(mat4*) AccessChain 45 21
+              47:    22(mat4) Load 46
+              48:   29(vec4*) AccessChain 15(output) 21
+              49:     7(vec4) Load 48
+              50:     7(vec4) MatrixTimesVector 47 49
+              51:   29(vec4*) AccessChain 15(output) 21
                               Store 51 50
-              54:     53(ptr) AccessChain 12(input) 52
-              55:    8(fvec2) Load 54
-              56:     53(ptr) AccessChain 15(output) 52
+              54:   53(vec2*) AccessChain 12(input) 52
+              55:     8(vec2) Load 54
+              56:   53(vec2*) AccessChain 15(output) 52
                               Store 56 55
               60:          57 Load 59(txDiffuseA)
               64:          61 Load 63(samLinearA)
               66:          65 SampledImage 60 64
-              67:     53(ptr) AccessChain 15(output) 52
-              68:    8(fvec2) Load 67
-              69:    7(fvec4) ImageSampleImplicitLod 66 68
-              71:     70(ptr) AccessChain 25 52
-              72:    7(fvec4) Load 71
-              73:    7(fvec4) FMul 69 72
+              67:   53(vec2*) AccessChain 15(output) 52
+              68:     8(vec2) Load 67
+              69:     7(vec4) ImageSampleImplicitLod 66 68
+              71:   70(vec4*) AccessChain 25 52
+              72:     7(vec4) Load 71
+              73:     7(vec4) FMul 69 72
                               ReturnValue 73
                               FunctionEnd

@@ -270,34 +270,34 @@ gl_FragCoord origin is upper left
                               Name 96  "@entryPointOutput"
                               Decorate 96(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 2
                8:             TypeInt 32 1
-        9(type1):             TypeStruct 7(fvec2) 8(int) 8(int)
+        9(type1):             TypeStruct 7(vec2) 8(int) 8(int)
               10:             TypePointer Function 9(type1)
               11:             TypeVector 8(int) 3
               12:             TypePointer Function 11(ivec3)
-              13:             TypeFunction 8(int) 10(ptr) 12(ptr)
+              13:             TypeFunction 8(int) 10(type1*) 12(ivec3*)
               18:             TypePointer Function 8(int)
-              19:             TypeFunction 8(int) 10(ptr) 18(ptr)
+              19:             TypeFunction 8(int) 10(type1*) 18(int*)
               24:             TypeVector 6(float) 4
-              25:             TypeFunction 24(fvec4)
-              28:             TypePointer Private 7(fvec2)
-         29(var):     28(ptr) Variable Private
+              25:             TypeFunction 24(vec4)
+              28:             TypePointer Private 7(vec2)
+         29(var):   28(vec2*) Variable Private
               30:    6(float) Constant 1065353216
               31:    6(float) Constant 1073741824
-              32:    7(fvec2) ConstantComposite 30 31
+              32:     7(vec2) ConstantComposite 30 31
               33:             TypeInt 32 0
-              34:     33(int) Constant 2
+              34:    33(uint) Constant 2
               37:      8(int) Constant 1
               41:      8(int) Constant 2
               48:      8(int) Constant 3
               49:   11(ivec3) ConstantComposite 37 41 48
               52:      8(int) Constant 0
-              53:     33(int) Constant 1
+              53:    33(uint) Constant 1
               54:             TypePointer Function 6(float)
-              66:             TypePointer Function 7(fvec2)
+              66:             TypePointer Function 7(vec2)
               68:      8(int) Constant 7
               70:      8(int) Constant 9
               73:      8(int) Constant 10
@@ -305,58 +305,58 @@ gl_FragCoord origin is upper left
               75:      8(int) Constant 12
               76:   11(ivec3) ConstantComposite 73 74 75
               79:      8(int) Constant 17
-              95:             TypePointer Output 24(fvec4)
-96(@entryPointOutput):     95(ptr) Variable Output
-         4(main):           2 Function None 3
+              95:             TypePointer Output 24(vec4)
+96(@entryPointOutput):   95(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
                               Store 29(var) 32
-              97:   24(fvec4) FunctionCall 26(@main()
+              97:    24(vec4) FunctionCall 26(@main()
                               Store 96(@entryPointOutput) 97
                               Return
                               FunctionEnd
 16(type1::memFun1(vi3;):      8(int) Function None 13
-       14(@this):     10(ptr) FunctionParameter
-         15(var):     12(ptr) FunctionParameter
+       14(@this):  10(type1*) FunctionParameter
+         15(var):  12(ivec3*) FunctionParameter
               17:             Label
-              35:     18(ptr) AccessChain 15(var) 34
+              35:    18(int*) AccessChain 15(var) 34
               36:      8(int) Load 35
-              38:     18(ptr) AccessChain 14(@this) 37
+              38:    18(int*) AccessChain 14(@this) 37
               39:      8(int) Load 38
               40:      8(int) IAdd 36 39
-              42:     18(ptr) AccessChain 14(@this) 41
+              42:    18(int*) AccessChain 14(@this) 41
               43:      8(int) Load 42
               44:      8(int) IAdd 40 43
                               ReturnValue 44
                               FunctionEnd
 22(type1::memFun2(i1;):      8(int) Function None 19
-       20(@this):     10(ptr) FunctionParameter
-           21(a):     18(ptr) FunctionParameter
+       20(@this):  10(type1*) FunctionParameter
+           21(a):    18(int*) FunctionParameter
               23:             Label
-         47(var):     12(ptr) Variable Function
+         47(var):  12(ivec3*) Variable Function
                               Store 47(var) 49
-              50:     18(ptr) AccessChain 47(var) 34
+              50:    18(int*) AccessChain 47(var) 34
               51:      8(int) Load 50
-              55:     54(ptr) AccessChain 20(@this) 52 53
+              55:  54(float*) AccessChain 20(@this) 52 53
               56:    6(float) Load 55
               57:      8(int) ConvertFToS 56
               58:      8(int) IAdd 51 57
-              59:     18(ptr) AccessChain 20(@this) 41
+              59:    18(int*) AccessChain 20(@this) 41
               60:      8(int) Load 59
               61:      8(int) IAdd 58 60
                               ReturnValue 61
                               FunctionEnd
-      26(@main():   24(fvec4) Function None 25
+      26(@main():    24(vec4) Function None 25
               27:             Label
-           64(T):     10(ptr) Variable Function
-           72(i):     18(ptr) Variable Function
-       77(param):     12(ptr) Variable Function
-       80(param):     18(ptr) Variable Function
-              65:    7(fvec2) Load 29(var)
-              67:     66(ptr) AccessChain 64(T) 52
+           64(T):  10(type1*) Variable Function
+           72(i):    18(int*) Variable Function
+       77(param):  12(ivec3*) Variable Function
+       80(param):    18(int*) Variable Function
+              65:     7(vec2) Load 29(var)
+              67:   66(vec2*) AccessChain 64(T) 52
                               Store 67 65
-              69:     18(ptr) AccessChain 64(T) 37
+              69:    18(int*) AccessChain 64(T) 37
                               Store 69 68
-              71:     18(ptr) AccessChain 64(T) 41
+              71:    18(int*) AccessChain 64(T) 41
                               Store 71 70
                               Store 77(param) 76
               78:      8(int) FunctionCall 16(type1::memFun1(vi3;) 64(T) 77(param)
@@ -374,6 +374,6 @@ gl_FragCoord origin is upper left
               89:    6(float) ConvertSToF 88
               90:      8(int) Load 72(i)
               91:    6(float) ConvertSToF 90
-              92:   24(fvec4) CompositeConstruct 85 87 89 91
+              92:    24(vec4) CompositeConstruct 85 87 89 91
                               ReturnValue 92
                               FunctionEnd

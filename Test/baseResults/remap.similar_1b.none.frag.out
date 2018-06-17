@@ -24,11 +24,11 @@ remap.similar_1b.none.frag
                               Name 87  "param"
                               Decorate 58(ini4) Flat
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                8:             TypeFloat 32
-               9:             TypeFunction 8(float) 7(ptr)
+               9:             TypeFunction 8(float) 7(int*)
               16:             TypePointer Function 8(float)
               18:    8(float) Constant 0
               20:      6(int) Constant 0
@@ -40,21 +40,21 @@ remap.similar_1b.none.frag
               54:      6(int) Constant 4
               56:             TypeVector 6(int) 4
               57:             TypePointer Input 56(ivec4)
-        58(ini4):     57(ptr) Variable Input
+        58(ini4):  57(ivec4*) Variable Input
               59:             TypeInt 32 0
-              60:     59(int) Constant 1
+              60:    59(uint) Constant 1
               61:             TypePointer Input 6(int)
-              64:     59(int) Constant 2
-              69:     59(int) Constant 0
+              64:    59(uint) Constant 2
+              69:    59(uint) Constant 0
               76:             TypeVector 8(float) 4
-              77:             TypePointer Output 76(fvec4)
-       78(outf4):     77(ptr) Variable Output
+              77:             TypePointer Output 76(vec4)
+       78(outf4):   77(vec4*) Variable Output
               79:             TypePointer Input 8(float)
-         80(inf):     79(ptr) Variable Input
-         4(main):           2 Function None 3
+         80(inf):  79(float*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-       83(param):      7(ptr) Variable Function
-       87(param):      7(ptr) Variable Function
+       83(param):     7(int*) Variable Function
+       87(param):     7(int*) Variable Function
               81:    8(float) Load 80(inf)
               82:      6(int) ConvertFToS 81
                               Store 83(param) 82
@@ -64,15 +64,15 @@ remap.similar_1b.none.frag
                               Store 87(param) 86
               88:    8(float) FunctionCall 14(Test2(i1;) 87(param)
               89:    8(float) FAdd 84 88
-              90:   76(fvec4) CompositeConstruct 89 89 89 89
+              90:    76(vec4) CompositeConstruct 89 89 89 89
                               Store 78(outf4) 90
                               Return
                               FunctionEnd
    11(Test1(i1;):    8(float) Function None 9
-       10(bound):      7(ptr) FunctionParameter
+       10(bound):     7(int*) FunctionParameter
               12:             Label
-           17(r):     16(ptr) Variable Function
-           19(x):      7(ptr) Variable Function
+           17(r):  16(float*) Variable Function
+           19(x):     7(int*) Variable Function
                               Store 17(r) 18
                               Store 19(x) 20
                               Branch 21
@@ -102,9 +102,9 @@ remap.similar_1b.none.frag
                               ReturnValue 39
                               FunctionEnd
    14(Test2(i1;):    8(float) Function None 9
-       13(bound):      7(ptr) FunctionParameter
+       13(bound):     7(int*) FunctionParameter
               15:             Label
-       49(param):      7(ptr) Variable Function
+       49(param):     7(int*) Variable Function
               42:      6(int) Load 13(bound)
               44:    28(bool) SGreaterThan 42 43
                               SelectionMerge 46 None
@@ -118,13 +118,13 @@ remap.similar_1b.none.frag
               52:               Label
               53:      6(int)   Load 13(bound)
               55:      6(int)   IMul 53 54
-              62:     61(ptr)   AccessChain 58(ini4) 60
+              62:    61(int*)   AccessChain 58(ini4) 60
               63:      6(int)   Load 62
-              65:     61(ptr)   AccessChain 58(ini4) 64
+              65:    61(int*)   AccessChain 58(ini4) 64
               66:      6(int)   Load 65
               67:      6(int)   IMul 63 66
               68:      6(int)   IAdd 55 67
-              70:     61(ptr)   AccessChain 58(ini4) 69
+              70:    61(int*)   AccessChain 58(ini4) 69
               71:      6(int)   Load 70
               72:      6(int)   IAdd 68 71
               73:    8(float)   ConvertSToF 72

@@ -301,15 +301,15 @@ gl_FragCoord origin is upper left
                               Decorate 93($Global) Block
                               Decorate 95 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 2 8(ptr)
-   13(PS_OUTPUT):             TypeStruct 7(fvec4)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 2(void) 8(vec4*)
+   13(PS_OUTPUT):             TypeStruct 7(vec4)
               14:             TypeFunction 13(PS_OUTPUT)
               18:    6(float) Constant 0
-              19:    7(fvec4) ConstantComposite 18 18 18 18
+              19:     7(vec4) ConstantComposite 18 18 18 18
               20:             TypePointer Function 6(float)
               22:             TypeBool
               23:             TypeVector 22(bool) 4
@@ -317,99 +317,99 @@ gl_FragCoord origin is upper left
               81:             TypePointer Function 13(PS_OUTPUT)
               83:             TypeInt 32 1
               84:     83(int) Constant 0
-              89:             TypePointer Output 7(fvec4)
-90(@entryPointOutput.Color):     89(ptr) Variable Output
-     93($Global):             TypeStruct 7(fvec4)
+              89:             TypePointer Output 7(vec4)
+90(@entryPointOutput.Color):   89(vec4*) Variable Output
+     93($Global):             TypeStruct 7(vec4)
               94:             TypePointer Uniform 93($Global)
-              95:     94(ptr) Variable Uniform
-         4(main):           2 Function None 3
+              95:94($Global*) Variable Uniform
+         4(main):     2(void) Function None 3
                5:             Label
               91:13(PS_OUTPUT) FunctionCall 15(@main()
-              92:    7(fvec4) CompositeExtract 91 0
+              92:     7(vec4) CompositeExtract 91 0
                               Store 90(@entryPointOutput.Color) 92
                               Return
                               FunctionEnd
-   11(Bug1(vf4;):           2 Function None 9
-           10(a):      8(ptr) FunctionParameter
+   11(Bug1(vf4;):     2(void) Function None 9
+           10(a):    8(vec4*) FunctionParameter
               12:             Label
-         17(v04):      8(ptr) Variable Function
-         21(v01):     20(ptr) Variable Function
-         25(r00):     24(ptr) Variable Function
-         29(r01):     24(ptr) Variable Function
-         33(r02):     24(ptr) Variable Function
-         37(r03):     24(ptr) Variable Function
-         41(r10):     24(ptr) Variable Function
-         46(r11):     24(ptr) Variable Function
-         51(r12):     24(ptr) Variable Function
-         56(r13):     24(ptr) Variable Function
-         61(r20):     24(ptr) Variable Function
-         66(r21):     24(ptr) Variable Function
-         71(r22):     24(ptr) Variable Function
-         76(r23):     24(ptr) Variable Function
+         17(v04):    8(vec4*) Variable Function
+         21(v01):  20(float*) Variable Function
+         25(r00):  24(bvec4*) Variable Function
+         29(r01):  24(bvec4*) Variable Function
+         33(r02):  24(bvec4*) Variable Function
+         37(r03):  24(bvec4*) Variable Function
+         41(r10):  24(bvec4*) Variable Function
+         46(r11):  24(bvec4*) Variable Function
+         51(r12):  24(bvec4*) Variable Function
+         56(r13):  24(bvec4*) Variable Function
+         61(r20):  24(bvec4*) Variable Function
+         66(r21):  24(bvec4*) Variable Function
+         71(r22):  24(bvec4*) Variable Function
+         76(r23):  24(bvec4*) Variable Function
                               Store 17(v04) 19
                               Store 21(v01) 18
-              26:    7(fvec4) Load 10(a)
-              27:    7(fvec4) Load 17(v04)
+              26:     7(vec4) Load 10(a)
+              27:     7(vec4) Load 17(v04)
               28:   23(bvec4) FOrdEqual 26 27
                               Store 25(r00) 28
-              30:    7(fvec4) Load 10(a)
-              31:    7(fvec4) Load 17(v04)
+              30:     7(vec4) Load 10(a)
+              31:     7(vec4) Load 17(v04)
               32:   23(bvec4) FOrdNotEqual 30 31
                               Store 29(r01) 32
-              34:    7(fvec4) Load 10(a)
-              35:    7(fvec4) Load 17(v04)
+              34:     7(vec4) Load 10(a)
+              35:     7(vec4) Load 17(v04)
               36:   23(bvec4) FOrdLessThan 34 35
                               Store 33(r02) 36
-              38:    7(fvec4) Load 10(a)
-              39:    7(fvec4) Load 17(v04)
+              38:     7(vec4) Load 10(a)
+              39:     7(vec4) Load 17(v04)
               40:   23(bvec4) FOrdGreaterThan 38 39
                               Store 37(r03) 40
-              42:    7(fvec4) Load 10(a)
+              42:     7(vec4) Load 10(a)
               43:    6(float) Load 21(v01)
-              44:    7(fvec4) CompositeConstruct 43 43 43 43
+              44:     7(vec4) CompositeConstruct 43 43 43 43
               45:   23(bvec4) FOrdEqual 42 44
                               Store 41(r10) 45
-              47:    7(fvec4) Load 10(a)
+              47:     7(vec4) Load 10(a)
               48:    6(float) Load 21(v01)
-              49:    7(fvec4) CompositeConstruct 48 48 48 48
+              49:     7(vec4) CompositeConstruct 48 48 48 48
               50:   23(bvec4) FOrdNotEqual 47 49
                               Store 46(r11) 50
-              52:    7(fvec4) Load 10(a)
+              52:     7(vec4) Load 10(a)
               53:    6(float) Load 21(v01)
-              54:    7(fvec4) CompositeConstruct 53 53 53 53
+              54:     7(vec4) CompositeConstruct 53 53 53 53
               55:   23(bvec4) FOrdLessThan 52 54
                               Store 51(r12) 55
-              57:    7(fvec4) Load 10(a)
+              57:     7(vec4) Load 10(a)
               58:    6(float) Load 21(v01)
-              59:    7(fvec4) CompositeConstruct 58 58 58 58
+              59:     7(vec4) CompositeConstruct 58 58 58 58
               60:   23(bvec4) FOrdGreaterThan 57 59
                               Store 56(r13) 60
               62:    6(float) Load 21(v01)
-              63:    7(fvec4) CompositeConstruct 62 62 62 62
-              64:    7(fvec4) Load 10(a)
+              63:     7(vec4) CompositeConstruct 62 62 62 62
+              64:     7(vec4) Load 10(a)
               65:   23(bvec4) FOrdEqual 63 64
                               Store 61(r20) 65
               67:    6(float) Load 21(v01)
-              68:    7(fvec4) CompositeConstruct 67 67 67 67
-              69:    7(fvec4) Load 10(a)
+              68:     7(vec4) CompositeConstruct 67 67 67 67
+              69:     7(vec4) Load 10(a)
               70:   23(bvec4) FOrdNotEqual 68 69
                               Store 66(r21) 70
               72:    6(float) Load 21(v01)
-              73:    7(fvec4) CompositeConstruct 72 72 72 72
-              74:    7(fvec4) Load 10(a)
+              73:     7(vec4) CompositeConstruct 72 72 72 72
+              74:     7(vec4) Load 10(a)
               75:   23(bvec4) FOrdLessThan 73 74
                               Store 71(r22) 75
               77:    6(float) Load 21(v01)
-              78:    7(fvec4) CompositeConstruct 77 77 77 77
-              79:    7(fvec4) Load 10(a)
+              78:     7(vec4) CompositeConstruct 77 77 77 77
+              79:     7(vec4) Load 10(a)
               80:   23(bvec4) FOrdGreaterThan 78 79
                               Store 76(r23) 80
                               Return
                               FunctionEnd
       15(@main():13(PS_OUTPUT) Function None 14
               16:             Label
-       82(psout):     81(ptr) Variable Function
-              85:      8(ptr) AccessChain 82(psout) 84
+       82(psout):81(PS_OUTPUT*) Variable Function
+              85:    8(vec4*) AccessChain 82(psout) 84
                               Store 85 19
               86:13(PS_OUTPUT) Load 82(psout)
                               ReturnValue 86

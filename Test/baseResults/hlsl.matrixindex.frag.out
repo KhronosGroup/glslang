@@ -317,10 +317,10 @@ gl_FragCoord origin is upper left
                               Decorate 54 DescriptorSet 0
                               Decorate 80(@entryPointOutput.Color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypePointer Function 6(float)
               14:    6(float) Constant 1092616192
@@ -336,56 +336,56 @@ gl_FragCoord origin is upper left
               34:    6(float) Constant 1103101952
               36:    6(float) Constant 1103626240
               37:             TypeVector 6(float) 2
-              38:             TypePointer Function 37(fvec2)
-              40:   37(fvec2) ConstantComposite 14 16
-              42:   37(fvec2) ConstantComposite 18 20
-              44:   37(fvec2) ConstantComposite 22 24
-              46:             TypeMatrix 37(fvec2) 3
-              47:   37(fvec2) ConstantComposite 26 28
-              48:   37(fvec2) ConstantComposite 30 32
-              49:   37(fvec2) ConstantComposite 34 36
-              50:          46 ConstantComposite 47 48 49
+              38:             TypePointer Function 37(vec2)
+              40:    37(vec2) ConstantComposite 14 16
+              42:    37(vec2) ConstantComposite 18 20
+              44:    37(vec2) ConstantComposite 22 24
+              46:             TypeMatrix 37(vec2) 3
+              47:    37(vec2) ConstantComposite 26 28
+              48:    37(vec2) ConstantComposite 30 32
+              49:    37(vec2) ConstantComposite 34 36
+              50:  46(mat3x2) ConstantComposite 47 48 49
               51:             TypeInt 32 1
-     52($Global):             TypeStruct 51(int) 46
+     52($Global):             TypeStruct 51(int) 46(mat3x2)
               53:             TypePointer Uniform 52($Global)
-              54:     53(ptr) Variable Uniform
+              54:53($Global*) Variable Uniform
               55:     51(int) Constant 0
               56:             TypePointer Uniform 51(int)
-              59:             TypePointer Function 46
+              59:             TypePointer Function 46(mat3x2)
               64:     51(int) Constant 1
-              67:             TypePointer Uniform 37(fvec2)
+              67:             TypePointer Uniform 37(vec2)
               70:             TypePointer Function 8(PS_OUTPUT)
-              74:             TypePointer Function 7(fvec4)
-              79:             TypePointer Output 7(fvec4)
-80(@entryPointOutput.Color):     79(ptr) Variable Output
-         4(main):           2 Function None 3
+              74:             TypePointer Function 7(vec4)
+              79:             TypePointer Output 7(vec4)
+80(@entryPointOutput.Color):   79(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               81:8(PS_OUTPUT) FunctionCall 10(@main()
-              82:    7(fvec4) CompositeExtract 81 0
+              82:     7(vec4) CompositeExtract 81 0
                               Store 80(@entryPointOutput.Color) 82
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-       13(e1_00):     12(ptr) Variable Function
-       15(e1_01):     12(ptr) Variable Function
-       17(e1_10):     12(ptr) Variable Function
-       19(e1_11):     12(ptr) Variable Function
-       21(e1_20):     12(ptr) Variable Function
-       23(e1_21):     12(ptr) Variable Function
-       25(e2_00):     12(ptr) Variable Function
-       27(e2_01):     12(ptr) Variable Function
-       29(e2_10):     12(ptr) Variable Function
-       31(e2_11):     12(ptr) Variable Function
-       33(e2_20):     12(ptr) Variable Function
-       35(e2_21):     12(ptr) Variable Function
-         39(r0a):     38(ptr) Variable Function
-         41(r1a):     38(ptr) Variable Function
-         43(r2a):     38(ptr) Variable Function
-         45(r0b):     38(ptr) Variable Function
-   60(indexable):     59(ptr) Variable Function
-         63(r0c):     38(ptr) Variable Function
-       71(psout):     70(ptr) Variable Function
+       13(e1_00):  12(float*) Variable Function
+       15(e1_01):  12(float*) Variable Function
+       17(e1_10):  12(float*) Variable Function
+       19(e1_11):  12(float*) Variable Function
+       21(e1_20):  12(float*) Variable Function
+       23(e1_21):  12(float*) Variable Function
+       25(e2_00):  12(float*) Variable Function
+       27(e2_01):  12(float*) Variable Function
+       29(e2_10):  12(float*) Variable Function
+       31(e2_11):  12(float*) Variable Function
+       33(e2_20):  12(float*) Variable Function
+       35(e2_21):  12(float*) Variable Function
+         39(r0a):   38(vec2*) Variable Function
+         41(r1a):   38(vec2*) Variable Function
+         43(r2a):   38(vec2*) Variable Function
+         45(r0b):   38(vec2*) Variable Function
+   60(indexable): 59(mat3x2*) Variable Function
+         63(r0c):   38(vec2*) Variable Function
+       71(psout):70(PS_OUTPUT*) Variable Function
                               Store 13(e1_00) 14
                               Store 15(e1_01) 16
                               Store 17(e1_10) 18
@@ -401,20 +401,20 @@ gl_FragCoord origin is upper left
                               Store 39(r0a) 40
                               Store 41(r1a) 42
                               Store 43(r2a) 44
-              57:     56(ptr) AccessChain 54 55
+              57:    56(int*) AccessChain 54 55
               58:     51(int) Load 57
                               Store 60(indexable) 50
-              61:     38(ptr) AccessChain 60(indexable) 58
-              62:   37(fvec2) Load 61
+              61:   38(vec2*) AccessChain 60(indexable) 58
+              62:    37(vec2) Load 61
                               Store 45(r0b) 62
-              65:     56(ptr) AccessChain 54 55
+              65:    56(int*) AccessChain 54 55
               66:     51(int) Load 65
-              68:     67(ptr) AccessChain 54 64 66
-              69:   37(fvec2) Load 68
+              68:   67(vec2*) AccessChain 54 64 66
+              69:    37(vec2) Load 68
                               Store 63(r0c) 69
               72:    6(float) Load 31(e2_11)
-              73:    7(fvec4) CompositeConstruct 72 72 72 72
-              75:     74(ptr) AccessChain 71(psout) 55
+              73:     7(vec4) CompositeConstruct 72 72 72 72
+              75:   74(vec4*) AccessChain 71(psout) 55
                               Store 75 73
               76:8(PS_OUTPUT) Load 71(psout)
                               ReturnValue 76

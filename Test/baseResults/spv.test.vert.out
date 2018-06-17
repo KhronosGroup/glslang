@@ -18,28 +18,28 @@ WARNING: 0:5: attribute deprecated in version 130; may be removed in future rele
                               Name 21  "position"
                               Decorate 15(gl_Position) BuiltIn Position
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 2
-               8:             TypePointer Output 7(fvec2)
-           9(uv):      8(ptr) Variable Output
-              10:             TypePointer Input 7(fvec2)
-       11(uv_in):     10(ptr) Variable Input
+               8:             TypePointer Output 7(vec2)
+           9(uv):    8(vec2*) Variable Output
+              10:             TypePointer Input 7(vec2)
+       11(uv_in):   10(vec2*) Variable Input
               13:             TypeVector 6(float) 4
-              14:             TypePointer Output 13(fvec4)
- 15(gl_Position):     14(ptr) Variable Output
-              16:             TypeMatrix 13(fvec4) 4
-              17:             TypePointer Input 16
-   18(transform):     17(ptr) Variable Input
-              20:             TypePointer Input 13(fvec4)
-    21(position):     20(ptr) Variable Input
-         4(main):           2 Function None 3
+              14:             TypePointer Output 13(vec4)
+ 15(gl_Position):   14(vec4*) Variable Output
+              16:             TypeMatrix 13(vec4) 4
+              17:             TypePointer Input 16(mat4)
+   18(transform):   17(mat4*) Variable Input
+              20:             TypePointer Input 13(vec4)
+    21(position):   20(vec4*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-              12:    7(fvec2) Load 11(uv_in)
+              12:     7(vec2) Load 11(uv_in)
                               Store 9(uv) 12
-              19:          16 Load 18(transform)
-              22:   13(fvec4) Load 21(position)
-              23:   13(fvec4) MatrixTimesVector 19 22
+              19:    16(mat4) Load 18(transform)
+              22:    13(vec4) Load 21(position)
+              23:    13(vec4) MatrixTimesVector 19 22
                               Store 15(gl_Position) 23
                               Return
                               FunctionEnd

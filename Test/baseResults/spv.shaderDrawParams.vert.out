@@ -39,34 +39,34 @@ spv.shaderDrawParams.vert
                               Decorate 36(block) Binding 0
                               Decorate 37(gl_DrawIDARB) BuiltIn DrawIndex
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeBool
                7:             TypeInt 32 1
                8:             TypePointer Input 7(int)
-9(gl_BaseVertexARB):      8(ptr) Variable Input
+9(gl_BaseVertexARB):     8(int*) Variable Input
               11:      7(int) Constant 0
-16(gl_BaseInstanceARB):      8(ptr) Variable Input
+16(gl_BaseInstanceARB):     8(int*) Variable Input
               22:             TypeFloat 32
               23:             TypeVector 22(float) 4
               24:             TypeInt 32 0
-              25:     24(int) Constant 1
+              25:    24(uint) Constant 1
               26:             TypeArray 22(float) 25
-27(gl_PerVertex):             TypeStruct 23(fvec4) 22(float) 26 26
+27(gl_PerVertex):             TypeStruct 23(vec4) 22(float) 26(float[1]) 26(float[1])
               28:             TypePointer Output 27(gl_PerVertex)
-              29:     28(ptr) Variable Output
-              30:     24(int) Constant 4
-              31:             TypeArray 23(fvec4) 30
-              32:     24(int) Constant 2
-              33:             TypeArray 31 32
-       34(Block):             TypeStruct 33
+              29:28(gl_PerVertex*) Variable Output
+              30:    24(uint) Constant 4
+              31:             TypeArray 23(vec4) 30
+              32:    24(uint) Constant 2
+              33:             TypeArray 31(vec4[4]) 32
+       34(Block):             TypeStruct 33(vec4[4][2])
               35:             TypePointer Uniform 34(Block)
-       36(block):     35(ptr) Variable Uniform
-37(gl_DrawIDARB):      8(ptr) Variable Input
+       36(block):  35(Block*) Variable Uniform
+37(gl_DrawIDARB):     8(int*) Variable Input
               39:      7(int) Constant 4
-              41:             TypePointer Uniform 23(fvec4)
-              44:             TypePointer Output 23(fvec4)
+              41:             TypePointer Uniform 23(vec4)
+              44:             TypePointer Output 23(vec4)
               47:      7(int) Constant 1
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
               10:      7(int) Load 9(gl_BaseVertexARB)
               12:     6(bool) SGreaterThan 10 11
@@ -84,17 +84,17 @@ spv.shaderDrawParams.vert
               20:               Label
               38:      7(int)   Load 37(gl_DrawIDARB)
               40:      7(int)   SMod 38 39
-              42:     41(ptr)   AccessChain 36(block) 11 11 40
-              43:   23(fvec4)   Load 42
-              45:     44(ptr)   AccessChain 29 11
+              42:   41(vec4*)   AccessChain 36(block) 11 11 40
+              43:    23(vec4)   Load 42
+              45:   44(vec4*)   AccessChain 29 11
                                 Store 45 43
                                 Branch 21
               46:               Label
               48:      7(int)   Load 37(gl_DrawIDARB)
               49:      7(int)   SMod 48 39
-              50:     41(ptr)   AccessChain 36(block) 11 47 49
-              51:   23(fvec4)   Load 50
-              52:     44(ptr)   AccessChain 29 11
+              50:   41(vec4*)   AccessChain 36(block) 11 47 49
+              51:    23(vec4)   Load 50
+              52:   44(vec4*)   AccessChain 29 11
                                 Store 52 51
                                 Branch 21
               21:             Label

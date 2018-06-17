@@ -72,115 +72,115 @@ spv.300layoutp.vert
                               Decorate 60(iout) Flat
                               Decorate 72(aiv2) Location 9
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Output 7(fvec4)
-          9(pos):      8(ptr) Variable Output
-              10:             TypePointer Input 7(fvec4)
-           11(p):     10(ptr) Variable Input
-              13:             TypeMatrix 7(fvec4) 4
+               8:             TypePointer Output 7(vec4)
+          9(pos):    8(vec4*) Variable Output
+              10:             TypePointer Input 7(vec4)
+           11(p):   10(vec4*) Variable Input
+              13:             TypeMatrix 7(vec4) 4
               14:             TypeVector 6(float) 3
-              15:             TypeMatrix 14(fvec3) 3
+              15:             TypeMatrix 14(vec3) 3
               16:             TypeInt 32 1
-   17(Transform):             TypeStruct 13 13 15 16(int)
+   17(Transform):             TypeStruct 13(mat4) 13(mat4) 15(mat3) 16(int)
               18:             TypePointer Uniform 17(Transform)
-      19(tblock):     18(ptr) Variable Uniform
+      19(tblock):18(Transform*) Variable Uniform
               20:     16(int) Constant 0
-              21:             TypePointer Uniform 13
+              21:             TypePointer Uniform 13(mat4)
               24:     16(int) Constant 1
-              28:             TypeMatrix 14(fvec3) 2
+              28:             TypeMatrix 14(vec3) 2
               29:             TypeInt 32 0
-              30:             TypeVector 29(int) 3
-              31:     29(int) Constant 4
-              32:             TypeArray 30(ivec3) 31
-          33(T3):             TypeStruct 13 13 28 32
+              30:             TypeVector 29(uint) 3
+              31:    29(uint) Constant 4
+              32:             TypeArray 30(uvec3) 31
+          33(T3):             TypeStruct 13(mat4) 13(mat4) 28(mat2x3) 32(uvec3[4])
               34:             TypePointer Uniform 33(T3)
-              35:     34(ptr) Variable Uniform
-          42(T2):             TypeStruct 29(int) 13
+              35:     34(T3*) Variable Uniform
+          42(T2):             TypeStruct 29(uint) 13(mat4)
               43:             TypePointer Uniform 42(T2)
-              44:     43(ptr) Variable Uniform
-              49:             TypePointer Output 14(fvec3)
-       50(color):     49(ptr) Variable Output
-              51:             TypePointer Input 14(fvec3)
-           52(c):     51(ptr) Variable Input
+              44:     43(T2*) Variable Uniform
+              49:             TypePointer Output 14(vec3)
+       50(color):   49(vec3*) Variable Output
+              51:             TypePointer Input 14(vec3)
+           52(c):   51(vec3*) Variable Input
               54:     16(int) Constant 2
-              55:             TypePointer Uniform 15
+              55:             TypePointer Uniform 15(mat3)
               59:             TypePointer Output 16(int)
-        60(iout):     59(ptr) Variable Output
+        60(iout):    59(int*) Variable Output
               61:     16(int) Constant 3
               62:             TypePointer Uniform 16(int)
-              65:             TypePointer Private 29(int)
-       66(uiuin):     65(ptr) Variable Private
+              65:             TypePointer Private 29(uint)
+       66(uiuin):   65(uint*) Variable Private
               70:             TypeVector 16(int) 2
               71:             TypePointer Input 70(ivec2)
-        72(aiv2):     71(ptr) Variable Input
-              73:     29(int) Constant 1
+        72(aiv2):  71(ivec2*) Variable Input
+              73:    29(uint) Constant 1
               74:             TypePointer Input 16(int)
-           78(S):             TypeStruct 14(fvec3) 6(float)
+           78(S):             TypeStruct 14(vec3) 6(float)
               79:             TypePointer Output 78(S)
-           80(s):     79(ptr) Variable Output
-              83:     29(int) Constant 0
+           80(s):      79(S*) Variable Output
+              83:    29(uint) Constant 0
               84:             TypePointer Input 6(float)
               87:             TypePointer Output 6(float)
               89:             TypeBool
-              90:             TypePointer Uniform 14(fvec3)
+              90:             TypePointer Uniform 14(vec3)
               93:    6(float) Constant 1065353216
-              94:   14(fvec3) ConstantComposite 93 93 93
+              94:    14(vec3) ConstantComposite 93 93 93
               95:             TypeVector 89(bool) 3
-             101:             TypePointer Uniform 30(ivec3)
-             104:     29(int) Constant 5
-             105:   30(ivec3) ConstantComposite 104 104 104
-         4(main):           2 Function None 3
+             101:             TypePointer Uniform 30(uvec3)
+             104:    29(uint) Constant 5
+             105:   30(uvec3) ConstantComposite 104 104 104
+         4(main):     2(void) Function None 3
                5:             Label
-              12:    7(fvec4) Load 11(p)
-              22:     21(ptr) AccessChain 19(tblock) 20
-              23:          13 Load 22
-              25:     21(ptr) AccessChain 19(tblock) 24
-              26:          13 Load 25
-              27:          13 MatrixTimesMatrix 23 26
-              36:     21(ptr) AccessChain 35 24
-              37:          13 Load 36
-              38:          13 MatrixTimesMatrix 27 37
-              39:     21(ptr) AccessChain 35 20
-              40:          13 Load 39
-              41:          13 MatrixTimesMatrix 38 40
-              45:     21(ptr) AccessChain 44 24
-              46:          13 Load 45
-              47:          13 MatrixTimesMatrix 41 46
-              48:    7(fvec4) VectorTimesMatrix 12 47
+              12:     7(vec4) Load 11(p)
+              22:   21(mat4*) AccessChain 19(tblock) 20
+              23:    13(mat4) Load 22
+              25:   21(mat4*) AccessChain 19(tblock) 24
+              26:    13(mat4) Load 25
+              27:    13(mat4) MatrixTimesMatrix 23 26
+              36:   21(mat4*) AccessChain 35 24
+              37:    13(mat4) Load 36
+              38:    13(mat4) MatrixTimesMatrix 27 37
+              39:   21(mat4*) AccessChain 35 20
+              40:    13(mat4) Load 39
+              41:    13(mat4) MatrixTimesMatrix 38 40
+              45:   21(mat4*) AccessChain 44 24
+              46:    13(mat4) Load 45
+              47:    13(mat4) MatrixTimesMatrix 41 46
+              48:     7(vec4) VectorTimesMatrix 12 47
                               Store 9(pos) 48
-              53:   14(fvec3) Load 52(c)
-              56:     55(ptr) AccessChain 19(tblock) 54
-              57:          15 Load 56
-              58:   14(fvec3) VectorTimesMatrix 53 57
+              53:    14(vec3) Load 52(c)
+              56:   55(mat3*) AccessChain 19(tblock) 54
+              57:    15(mat3) Load 56
+              58:    14(vec3) VectorTimesMatrix 53 57
                               Store 50(color) 58
-              63:     62(ptr) AccessChain 19(tblock) 61
+              63:    62(int*) AccessChain 19(tblock) 61
               64:     16(int) Load 63
-              67:     29(int) Load 66(uiuin)
+              67:    29(uint) Load 66(uiuin)
               68:     16(int) Bitcast 67
               69:     16(int) IAdd 64 68
-              75:     74(ptr) AccessChain 72(aiv2) 73
+              75:    74(int*) AccessChain 72(aiv2) 73
               76:     16(int) Load 75
               77:     16(int) IAdd 69 76
                               Store 60(iout) 77
-              81:   14(fvec3) Load 52(c)
-              82:     49(ptr) AccessChain 80(s) 20
+              81:    14(vec3) Load 52(c)
+              82:   49(vec3*) AccessChain 80(s) 20
                               Store 82 81
-              85:     84(ptr) AccessChain 11(p) 83
+              85:  84(float*) AccessChain 11(p) 83
               86:    6(float) Load 85
-              88:     87(ptr) AccessChain 80(s) 24
+              88:  87(float*) AccessChain 80(s) 24
                               Store 88 86
-              91:     90(ptr) AccessChain 35 54 24
-              92:   14(fvec3) Load 91
+              91:   90(vec3*) AccessChain 35 54 24
+              92:    14(vec3) Load 91
               96:   95(bvec3) FOrdNotEqual 92 94
               97:    89(bool) Any 96
               98:    89(bool) LogicalNot 97
                               SelectionMerge 100 None
                               BranchConditional 98 99 100
               99:               Label
-             102:    101(ptr)   AccessChain 35 61 54
-             103:   30(ivec3)   Load 102
+             102: 101(uvec3*)   AccessChain 35 61 54
+             103:   30(uvec3)   Load 102
              106:   95(bvec3)   INotEqual 103 105
              107:    89(bool)   Any 106
                                 Branch 100
@@ -189,10 +189,10 @@ spv.300layoutp.vert
                               SelectionMerge 110 None
                               BranchConditional 108 109 110
              109:               Label
-             111:     49(ptr)   AccessChain 80(s) 20
-             112:   14(fvec3)   Load 111
-             113:   14(fvec3)   CompositeConstruct 93 93 93
-             114:   14(fvec3)   FAdd 112 113
+             111:   49(vec3*)   AccessChain 80(s) 20
+             112:    14(vec3)   Load 111
+             113:    14(vec3)   CompositeConstruct 93 93 93
+             114:    14(vec3)   FAdd 112 113
                                 Store 111 114
                                 Branch 110
              110:             Label

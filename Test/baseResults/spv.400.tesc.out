@@ -64,84 +64,84 @@ spv.400.tesc
                               Decorate 90(ovla) Location 3
                               Decorate 91(ovlb) Location 4
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:      6(int) Constant 2
-               8:      6(int) Constant 4
-               9:      6(int) Constant 0
+               7:     6(uint) Constant 2
+               8:     6(uint) Constant 4
+               9:     6(uint) Constant 0
               10:             TypeInt 32 1
               11:             TypePointer Function 10(int)
               13:     10(int) Constant 5392
               14:             TypeFloat 32
               15:             TypeVector 14(float) 4
-              16:             TypePointer Function 15(fvec4)
-              18:      6(int) Constant 3
+              16:             TypePointer Function 15(vec4)
+              18:     6(uint) Constant 3
               19:             TypeArray 14(float) 18
-20(gl_PerVertex):             TypeStruct 15(fvec4) 14(float) 19
-              21:      6(int) Constant 32
+20(gl_PerVertex):             TypeStruct 15(vec4) 14(float) 19(float[3])
+              21:     6(uint) Constant 32
               22:             TypeArray 20(gl_PerVertex) 21
-              23:             TypePointer Input 22
-       24(gl_in):     23(ptr) Variable Input
+              23:             TypePointer Input 22(gl_PerVertex[32])
+       24(gl_in):23(gl_PerVertex[32]*) Variable Input
               25:     10(int) Constant 1
               26:     10(int) Constant 0
-              27:             TypePointer Input 15(fvec4)
+              27:             TypePointer Input 15(vec4)
               30:             TypePointer Function 14(float)
               32:             TypePointer Input 14(float)
               36:     10(int) Constant 2
               40:             TypePointer Input 10(int)
-41(gl_PatchVerticesIn):     40(ptr) Variable Input
-44(gl_PrimitiveID):     40(ptr) Variable Input
-47(gl_InvocationID):     40(ptr) Variable Input
+41(gl_PatchVerticesIn):    40(int*) Variable Input
+44(gl_PrimitiveID):    40(int*) Variable Input
+47(gl_InvocationID):    40(int*) Variable Input
               49:             TypeArray 14(float) 7
-50(gl_PerVertex):             TypeStruct 15(fvec4) 14(float) 49
+50(gl_PerVertex):             TypeStruct 15(vec4) 14(float) 49(float[2])
               51:             TypeArray 50(gl_PerVertex) 8
-              52:             TypePointer Output 51
-      53(gl_out):     52(ptr) Variable Output
-              56:             TypePointer Output 15(fvec4)
+              52:             TypePointer Output 51(gl_PerVertex[4])
+      53(gl_out):52(gl_PerVertex[4]*) Variable Output
+              56:             TypePointer Output 15(vec4)
               60:             TypePointer Output 14(float)
               65:             TypeArray 14(float) 8
-              66:             TypePointer Output 65
-67(gl_TessLevelOuter):     66(ptr) Variable Output
+              66:             TypePointer Output 65(float[4])
+67(gl_TessLevelOuter):66(float[4]*) Variable Output
               68:     10(int) Constant 3
               69:   14(float) Constant 1078774989
-              71:             TypePointer Output 49
-72(gl_TessLevelInner):     71(ptr) Variable Output
+              71:             TypePointer Output 49(float[2])
+72(gl_TessLevelInner):71(float[2]*) Variable Output
               73:   14(float) Constant 1067869798
               75:             TypeArray 10(int) 8
-              76:             TypePointer Private 75
-        77(outa):     76(ptr) Variable Private
-    78(patchOut):     56(ptr) Variable Output
+              76:             TypePointer Private 75(int[4])
+        77(outa): 76(int[4]*) Variable Private
+    78(patchOut):   56(vec4*) Variable Output
               79:             TypeVector 14(float) 2
-              80:             TypeArray 79(fvec2) 21
-              81:             TypePointer Input 80
-         82(inb):     81(ptr) Variable Input
-         83(ind):     81(ptr) Variable Input
-              84:             TypeArray 15(fvec4) 21
-              85:             TypePointer Input 84
-        86(ivla):     85(ptr) Variable Input
-        87(ivlb):     85(ptr) Variable Input
-              88:             TypeArray 15(fvec4) 8
-              89:             TypePointer Output 88
-        90(ovla):     89(ptr) Variable Output
-        91(ovlb):     89(ptr) Variable Output
-         4(main):           2 Function None 3
+              80:             TypeArray 79(vec2) 21
+              81:             TypePointer Input 80(vec2[32])
+         82(inb):81(vec2[32]*) Variable Input
+         83(ind):81(vec2[32]*) Variable Input
+              84:             TypeArray 15(vec4) 21
+              85:             TypePointer Input 84(vec4[32])
+        86(ivla):85(vec4[32]*) Variable Input
+        87(ivlb):85(vec4[32]*) Variable Input
+              88:             TypeArray 15(vec4) 8
+              89:             TypePointer Output 88(vec4[4])
+        90(ovla):89(vec4[4]*) Variable Output
+        91(ovlb):89(vec4[4]*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-           12(a):     11(ptr) Variable Function
-           17(p):     16(ptr) Variable Function
-          31(ps):     30(ptr) Variable Function
-          35(cd):     30(ptr) Variable Function
-         39(pvi):     11(ptr) Variable Function
-         43(pid):     11(ptr) Variable Function
-         46(iid):     11(ptr) Variable Function
+           12(a):    11(int*) Variable Function
+           17(p):   16(vec4*) Variable Function
+          31(ps):  30(float*) Variable Function
+          35(cd):  30(float*) Variable Function
+         39(pvi):    11(int*) Variable Function
+         43(pid):    11(int*) Variable Function
+         46(iid):    11(int*) Variable Function
                               ControlBarrier 7 8 9
                               Store 12(a) 13
-              28:     27(ptr) AccessChain 24(gl_in) 25 26
-              29:   15(fvec4) Load 28
+              28:   27(vec4*) AccessChain 24(gl_in) 25 26
+              29:    15(vec4) Load 28
                               Store 17(p) 29
-              33:     32(ptr) AccessChain 24(gl_in) 25 25
+              33:  32(float*) AccessChain 24(gl_in) 25 25
               34:   14(float) Load 33
                               Store 31(ps) 34
-              37:     32(ptr) AccessChain 24(gl_in) 25 36 36
+              37:  32(float*) AccessChain 24(gl_in) 25 36 36
               38:   14(float) Load 37
                               Store 35(cd) 38
               42:     10(int) Load 41(gl_PatchVerticesIn)
@@ -151,20 +151,20 @@ spv.400.tesc
               48:     10(int) Load 47(gl_InvocationID)
                               Store 46(iid) 48
               54:     10(int) Load 47(gl_InvocationID)
-              55:   15(fvec4) Load 17(p)
-              57:     56(ptr) AccessChain 53(gl_out) 54 26
+              55:    15(vec4) Load 17(p)
+              57:   56(vec4*) AccessChain 53(gl_out) 54 26
                               Store 57 55
               58:     10(int) Load 47(gl_InvocationID)
               59:   14(float) Load 31(ps)
-              61:     60(ptr) AccessChain 53(gl_out) 58 25
+              61:  60(float*) AccessChain 53(gl_out) 58 25
                               Store 61 59
               62:     10(int) Load 47(gl_InvocationID)
               63:   14(float) Load 35(cd)
-              64:     60(ptr) AccessChain 53(gl_out) 62 36 25
+              64:  60(float*) AccessChain 53(gl_out) 62 36 25
                               Store 64 63
-              70:     60(ptr) AccessChain 67(gl_TessLevelOuter) 68
+              70:  60(float*) AccessChain 67(gl_TessLevelOuter) 68
                               Store 70 69
-              74:     60(ptr) AccessChain 72(gl_TessLevelInner) 25
+              74:  60(float*) AccessChain 72(gl_TessLevelInner) 25
                               Store 74 73
                               Return
                               FunctionEnd

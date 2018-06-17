@@ -17,7 +17,7 @@ WARNING: 0:3: attribute deprecated in version 130; may be removed in future rele
                               Name 34  "gl_Position"
                               Decorate 34(gl_Position) BuiltIn Position
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                9:      6(int) Constant 1
@@ -26,18 +26,18 @@ WARNING: 0:3: attribute deprecated in version 130; may be removed in future rele
               19:             TypeFloat 32
               20:             TypeVector 19(float) 4
               21:             TypeInt 32 0
-              22:     21(int) Constant 6
-              23:             TypeArray 20(fvec4) 22
-              24:             TypePointer Output 23
-    25(colorOut):     24(ptr) Variable Output
-              27:             TypePointer Input 20(fvec4)
-       28(color):     27(ptr) Variable Input
-              30:             TypePointer Output 20(fvec4)
- 34(gl_Position):     30(ptr) Variable Output
+              22:    21(uint) Constant 6
+              23:             TypeArray 20(vec4) 22
+              24:             TypePointer Output 23(vec4[6])
+    25(colorOut):24(vec4[6]*) Variable Output
+              27:             TypePointer Input 20(vec4)
+       28(color):   27(vec4*) Variable Input
+              30:             TypePointer Output 20(vec4)
+ 34(gl_Position):   30(vec4*) Variable Output
               35:      6(int) Constant 2
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-            8(i):      7(ptr) Variable Function
+            8(i):     7(int*) Variable Function
                               Store 8(i) 9
                               Branch 10
               10:             Label
@@ -49,8 +49,8 @@ WARNING: 0:3: attribute deprecated in version 130; may be removed in future rele
                               BranchConditional 18 11 12
               11:               Label
               26:      6(int)   Load 8(i)
-              29:   20(fvec4)   Load 28(color)
-              31:     30(ptr)   AccessChain 25(colorOut) 26
+              29:    20(vec4)   Load 28(color)
+              31:   30(vec4*)   AccessChain 25(colorOut) 26
                                 Store 31 29
                                 Branch 13
               13:               Label
@@ -59,8 +59,8 @@ WARNING: 0:3: attribute deprecated in version 130; may be removed in future rele
                                 Store 8(i) 33
                                 Branch 10
               12:             Label
-              36:     30(ptr) AccessChain 25(colorOut) 35
-              37:   20(fvec4) Load 36
+              36:   30(vec4*) AccessChain 25(colorOut) 35
+              37:    20(vec4) Load 36
                               Store 34(gl_Position) 37
                               Return
                               FunctionEnd

@@ -17,16 +17,16 @@ spv.depthOut.frag
                               Name 14  "Color"
                               Decorate 8(gl_FragDepth) BuiltIn FragDepth
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Output 6(float)
- 8(gl_FragDepth):      7(ptr) Variable Output
+ 8(gl_FragDepth):   7(float*) Variable Output
                9:             TypePointer Input 6(float)
-       10(Depth):      9(ptr) Variable Input
+       10(Depth):   9(float*) Variable Input
               12:             TypeVector 6(float) 4
-              13:             TypePointer Input 12(fvec4)
-       14(Color):     13(ptr) Variable Input
-         4(main):           2 Function None 3
+              13:             TypePointer Input 12(vec4)
+       14(Color):   13(vec4*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
               11:    6(float) Load 10(Depth)
                               Store 8(gl_FragDepth) 11

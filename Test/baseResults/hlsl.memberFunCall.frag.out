@@ -185,54 +185,54 @@ gl_FragCoord origin is upper left
                               Name 71  "@entryPointOutput"
                               Decorate 71(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 6(float) 7(ptr)
+               8:             TypeFunction 6(float) 7(float*)
    12(myContext):             TypeStruct 6(float)
               13:             TypePointer Function 12(myContext)
-              14:             TypeFunction 6(float) 13(ptr)
-              21:             TypeFunction 6(float) 13(ptr) 7(ptr)
-              26:             TypeFunction 6(float) 13(ptr) 7(ptr) 7(ptr)
+              14:             TypeFunction 6(float) 13(myContext*)
+              21:             TypeFunction 6(float) 13(myContext*) 7(float*)
+              26:             TypeFunction 6(float) 13(myContext*) 7(float*) 7(float*)
               32:             TypeVector 6(float) 4
-              33:             TypeFunction 32(fvec4)
+              33:             TypeFunction 32(vec4)
               36:    6(float) Constant 1065353216
               56:             TypeInt 32 1
               57:     56(int) Constant 0
               64:    6(float) Constant 1077936128
-              70:             TypePointer Output 32(fvec4)
-71(@entryPointOutput):     70(ptr) Variable Output
-         4(main):           2 Function None 3
+              70:             TypePointer Output 32(vec4)
+71(@entryPointOutput):   70(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              72:   32(fvec4) FunctionCall 34(@main()
+              72:    32(vec4) FunctionCall 34(@main()
                               Store 71(@entryPointOutput) 72
                               Return
                               FunctionEnd
  10(method3(f1;):    6(float) Function None 8
-            9(a):      7(ptr) FunctionParameter
+            9(a):   7(float*) FunctionParameter
               11:             Label
                               ReturnValue 36
                               FunctionEnd
 16(myContext::method1():    6(float) Function None 14
-       15(@this):     13(ptr) FunctionParameter
+       15(@this):13(myContext*) FunctionParameter
               17:             Label
               39:    6(float) FunctionCall 19(myContext::method2() 15(@this)
                               ReturnValue 39
                               FunctionEnd
 19(myContext::method2():    6(float) Function None 14
-       18(@this):     13(ptr) FunctionParameter
+       18(@this):13(myContext*) FunctionParameter
               20:             Label
-       42(param):      7(ptr) Variable Function
+       42(param):   7(float*) Variable Function
                               Store 42(param) 36
               43:    6(float) FunctionCall 24(myContext::method3(f1;) 18(@this) 42(param)
                               ReturnValue 43
                               FunctionEnd
 24(myContext::method3(f1;):    6(float) Function None 21
-       22(@this):     13(ptr) FunctionParameter
-           23(a):      7(ptr) FunctionParameter
+       22(@this):13(myContext*) FunctionParameter
+           23(a):   7(float*) FunctionParameter
               25:             Label
-       46(param):      7(ptr) Variable Function
-       48(param):      7(ptr) Variable Function
+       46(param):   7(float*) Variable Function
+       48(param):   7(float*) Variable Function
               47:    6(float) Load 23(a)
                               Store 46(param) 47
               49:    6(float) Load 23(a)
@@ -241,24 +241,24 @@ gl_FragCoord origin is upper left
                               ReturnValue 50
                               FunctionEnd
 30(myContext::method4(f1;f1;):    6(float) Function None 26
-       27(@this):     13(ptr) FunctionParameter
-           28(a):      7(ptr) FunctionParameter
-           29(b):      7(ptr) FunctionParameter
+       27(@this):13(myContext*) FunctionParameter
+           28(a):   7(float*) FunctionParameter
+           29(b):   7(float*) FunctionParameter
               31:             Label
               53:    6(float) Load 28(a)
               54:    6(float) Load 29(b)
               55:    6(float) FAdd 53 54
-              58:      7(ptr) AccessChain 27(@this) 57
+              58:   7(float*) AccessChain 27(@this) 57
               59:    6(float) Load 58
               60:    6(float) FAdd 55 59
                               ReturnValue 60
                               FunctionEnd
-      34(@main():   32(fvec4) Function None 33
+      34(@main():    32(vec4) Function None 33
               35:             Label
-     63(context):     13(ptr) Variable Function
-              65:      7(ptr) AccessChain 63(context) 57
+     63(context):13(myContext*) Variable Function
+              65:   7(float*) AccessChain 63(context) 57
                               Store 65 64
               66:    6(float) FunctionCall 16(myContext::method1() 63(context)
-              67:   32(fvec4) CompositeConstruct 66 66 66 66
+              67:    32(vec4) CompositeConstruct 66 66 66 66
                               ReturnValue 67
                               FunctionEnd

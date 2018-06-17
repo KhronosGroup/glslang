@@ -40,30 +40,30 @@ spv.100ops.frag
                               Decorate 45 RelaxedPrecision
                               Decorate 46 RelaxedPrecision
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeFunction 6(float)
               10:             TypePointer Private 6(float)
-       11(face1):     10(ptr) Variable Private
+       11(face1):  10(float*) Variable Private
               12:    6(float) Constant 1093664768
-       13(face2):     10(ptr) Variable Private
+       13(face2):  10(float*) Variable Private
               14:    6(float) Constant 3221225472
               15:             TypeInt 32 1
               16:             TypePointer Function 15(int)
               18:     15(int) Constant 3
               19:    6(float) Constant 1073741824
               20:             TypePointer Input 6(float)
-         21(low):     20(ptr) Variable Input
+         21(low):  20(float*) Variable Input
               24:    6(float) Constant 1065353216
-        26(high):     20(ptr) Variable Input
+        26(high):  20(float*) Variable Input
               28:             TypeBool
               33:     15(int) Constant 1
               35:             TypeVector 6(float) 4
-              36:             TypePointer Output 35(fvec4)
-       37(Color):     36(ptr) Variable Output
-         4(main):           2 Function None 3
+              36:             TypePointer Output 35(vec4)
+       37(Color):   36(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-           17(z):     16(ptr) Variable Function
+           17(z):    16(int*) Variable Function
                               Store 11(face1) 12
                               Store 13(face2) 14
                               Store 17(z) 18
@@ -83,11 +83,11 @@ spv.100ops.frag
               38:    6(float) Load 11(face1)
               39:     15(int) Load 17(z)
               40:    6(float) ConvertSToF 39
-              41:   35(fvec4) CompositeConstruct 40 40 40 40
-              42:   35(fvec4) VectorTimesScalar 41 38
+              41:    35(vec4) CompositeConstruct 40 40 40 40
+              42:    35(vec4) VectorTimesScalar 41 38
               43:    6(float) FunctionCall 8(foo()
-              44:   35(fvec4) CompositeConstruct 43 43 43 43
-              45:   35(fvec4) FAdd 42 44
+              44:    35(vec4) CompositeConstruct 43 43 43 43
+              45:    35(vec4) FAdd 42 44
                               Store 37(Color) 45
                               Return
                               FunctionEnd

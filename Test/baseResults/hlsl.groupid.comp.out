@@ -102,45 +102,45 @@ local_size = (8, 8, 1)
                               Decorate 22(OutputTexture) DescriptorSet 0
                               Decorate 29(vGroupId) BuiltIn WorkgroupId
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypeVector 6(int) 2
-               8:             TypePointer Function 7(ivec2)
-               9:             TypeFunction 2 8(ptr)
+               7:             TypeVector 6(uint) 2
+               8:             TypePointer Function 7(uvec2)
+               9:             TypeFunction 2(void) 8(uvec2*)
               13:             TypeFloat 32
               14:             TypeVector 13(float) 4
-              15:             TypePointer Function 14(fvec4)
+              15:             TypePointer Function 14(vec4)
               17:   13(float) Constant 1065353216
               18:   13(float) Constant 0
-              19:   14(fvec4) ConstantComposite 17 18 18 17
+              19:    14(vec4) ConstantComposite 17 18 18 17
               20:             TypeImage 13(float) 2D nonsampled format:Rgba32f
               21:             TypePointer UniformConstant 20
 22(OutputTexture):     21(ptr) Variable UniformConstant
-              27:             TypeVector 6(int) 3
-              28:             TypePointer Input 27(ivec3)
-    29(vGroupId):     28(ptr) Variable Input
-         4(main):           2 Function None 3
+              27:             TypeVector 6(uint) 3
+              28:             TypePointer Input 27(uvec3)
+    29(vGroupId):  28(uvec3*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-    26(vGroupId):      8(ptr) Variable Function
-       34(param):      8(ptr) Variable Function
-              30:   27(ivec3) Load 29(vGroupId)
-              31:      6(int) CompositeExtract 30 0
-              32:      6(int) CompositeExtract 30 1
-              33:    7(ivec2) CompositeConstruct 31 32
+    26(vGroupId):   8(uvec2*) Variable Function
+       34(param):   8(uvec2*) Variable Function
+              30:   27(uvec3) Load 29(vGroupId)
+              31:     6(uint) CompositeExtract 30 0
+              32:     6(uint) CompositeExtract 30 1
+              33:    7(uvec2) CompositeConstruct 31 32
                               Store 26(vGroupId) 33
-              35:    7(ivec2) Load 26(vGroupId)
+              35:    7(uvec2) Load 26(vGroupId)
                               Store 34(param) 35
-              36:           2 FunctionCall 11(@main(vu2;) 34(param)
+              36:     2(void) FunctionCall 11(@main(vu2;) 34(param)
                               Return
                               FunctionEnd
-  11(@main(vu2;):           2 Function None 9
-    10(vGroupId):      8(ptr) FunctionParameter
+  11(@main(vu2;):     2(void) Function None 9
+    10(vGroupId):   8(uvec2*) FunctionParameter
               12:             Label
-   16(storeTemp):     15(ptr) Variable Function
+   16(storeTemp):   15(vec4*) Variable Function
                               Store 16(storeTemp) 19
               23:          20 Load 22(OutputTexture)
-              24:    7(ivec2) Load 10(vGroupId)
-              25:   14(fvec4) Load 16(storeTemp)
+              24:    7(uvec2) Load 10(vGroupId)
+              25:    14(vec4) Load 16(storeTemp)
                               ImageWrite 23 24 25
                               Return
                               FunctionEnd

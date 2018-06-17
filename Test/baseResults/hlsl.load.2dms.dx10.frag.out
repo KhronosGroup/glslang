@@ -416,10 +416,10 @@ using depth_any
                               Decorate 129(g_sSamp) DescriptorSet 0
                               Decorate 129(g_sSamp) Binding 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4) 6(float)
+    8(PS_OUTPUT):             TypeStruct 7(vec4) 6(float)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypeImage 6(float) 2D multi-sampled sampled format:Unknown
               13:             TypePointer UniformConstant 12
@@ -430,7 +430,7 @@ using depth_any
               19:             TypeVector 16(int) 4
      20($Global):             TypeStruct 16(int) 17(ivec2) 18(ivec3) 19(ivec4) 16(int) 17(ivec2) 18(ivec3) 19(ivec4)
               21:             TypePointer Uniform 20($Global)
-              22:     21(ptr) Variable Uniform
+              22:21($Global*) Variable Uniform
               23:     16(int) Constant 1
               24:             TypePointer Uniform 17(ivec2)
               27:     16(int) Constant 3
@@ -438,10 +438,10 @@ using depth_any
               30:             TypePointer UniformConstant 29
 31(g_tTex2dmsi4):     30(ptr) Variable UniformConstant
               36:             TypeInt 32 0
-              37:             TypeImage 36(int) 2D multi-sampled sampled format:Unknown
+              37:             TypeImage 36(uint) 2D multi-sampled sampled format:Unknown
               38:             TypePointer UniformConstant 37
 39(g_tTex2dmsu4):     38(ptr) Variable UniformConstant
-              43:             TypeVector 36(int) 4
+              43:             TypeVector 36(uint) 4
               48:     16(int) Constant 5
               64:             TypeImage 6(float) 2D array multi-sampled sampled format:Unknown
               65:             TypePointer UniformConstant 64
@@ -451,101 +451,101 @@ using depth_any
               73:             TypeImage 16(int) 2D array multi-sampled sampled format:Unknown
               74:             TypePointer UniformConstant 73
 75(g_tTex2dmsi4a):     74(ptr) Variable UniformConstant
-              80:             TypeImage 36(int) 2D array multi-sampled sampled format:Unknown
+              80:             TypeImage 36(uint) 2D array multi-sampled sampled format:Unknown
               81:             TypePointer UniformConstant 80
 82(g_tTex2dmsu4a):     81(ptr) Variable UniformConstant
              105:             TypePointer Function 8(PS_OUTPUT)
              107:     16(int) Constant 0
              108:    6(float) Constant 1065353216
-             109:    7(fvec4) ConstantComposite 108 108 108 108
-             110:             TypePointer Function 7(fvec4)
+             109:     7(vec4) ConstantComposite 108 108 108 108
+             110:             TypePointer Function 7(vec4)
              112:             TypePointer Function 6(float)
-             119:             TypePointer Output 7(fvec4)
-120(@entryPointOutput.Color):    119(ptr) Variable Output
+             119:             TypePointer Output 7(vec4)
+120(@entryPointOutput.Color):  119(vec4*) Variable Output
              123:             TypePointer Output 6(float)
-124(@entryPointOutput.Depth):    123(ptr) Variable Output
+124(@entryPointOutput.Depth): 123(float*) Variable Output
              127:             TypeSampler
              128:             TypePointer UniformConstant 127
     129(g_sSamp):    128(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-117(flattenTemp):    105(ptr) Variable Function
+117(flattenTemp):105(PS_OUTPUT*) Variable Function
              118:8(PS_OUTPUT) FunctionCall 10(@main()
                               Store 117(flattenTemp) 118
-             121:    110(ptr) AccessChain 117(flattenTemp) 107
-             122:    7(fvec4) Load 121
+             121:  110(vec4*) AccessChain 117(flattenTemp) 107
+             122:     7(vec4) Load 121
                               Store 120(@entryPointOutput.Color) 122
-             125:    112(ptr) AccessChain 117(flattenTemp) 23
+             125: 112(float*) AccessChain 117(flattenTemp) 23
              126:    6(float) Load 125
                               Store 124(@entryPointOutput.Depth) 126
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-      106(psout):    105(ptr) Variable Function
+      106(psout):105(PS_OUTPUT*) Variable Function
               15:          12 Load 14(g_tTex2dmsf4)
-              25:     24(ptr) AccessChain 22 23
+              25:  24(ivec2*) AccessChain 22 23
               26:   17(ivec2) Load 25
-              28:    7(fvec4) ImageFetch 15 26 Sample 27
+              28:     7(vec4) ImageFetch 15 26 Sample 27
               32:          29 Load 31(g_tTex2dmsi4)
-              33:     24(ptr) AccessChain 22 23
+              33:  24(ivec2*) AccessChain 22 23
               34:   17(ivec2) Load 33
               35:   19(ivec4) ImageFetch 32 34 Sample 27
               40:          37 Load 39(g_tTex2dmsu4)
-              41:     24(ptr) AccessChain 22 23
+              41:  24(ivec2*) AccessChain 22 23
               42:   17(ivec2) Load 41
-              44:   43(ivec4) ImageFetch 40 42 Sample 27
+              44:   43(uvec4) ImageFetch 40 42 Sample 27
               45:          12 Load 14(g_tTex2dmsf4)
-              46:     24(ptr) AccessChain 22 23
+              46:  24(ivec2*) AccessChain 22 23
               47:   17(ivec2) Load 46
-              49:     24(ptr) AccessChain 22 48
+              49:  24(ivec2*) AccessChain 22 48
               50:   17(ivec2) Load 49
-              51:    7(fvec4) ImageFetch 45 47 Offset Sample 50 27
+              51:     7(vec4) ImageFetch 45 47 Offset Sample 50 27
               52:          29 Load 31(g_tTex2dmsi4)
-              53:     24(ptr) AccessChain 22 23
+              53:  24(ivec2*) AccessChain 22 23
               54:   17(ivec2) Load 53
-              55:     24(ptr) AccessChain 22 48
+              55:  24(ivec2*) AccessChain 22 48
               56:   17(ivec2) Load 55
               57:   19(ivec4) ImageFetch 52 54 Offset Sample 56 27
               58:          37 Load 39(g_tTex2dmsu4)
-              59:     24(ptr) AccessChain 22 23
+              59:  24(ivec2*) AccessChain 22 23
               60:   17(ivec2) Load 59
-              61:     24(ptr) AccessChain 22 48
+              61:  24(ivec2*) AccessChain 22 48
               62:   17(ivec2) Load 61
-              63:   43(ivec4) ImageFetch 58 60 Offset Sample 62 27
+              63:   43(uvec4) ImageFetch 58 60 Offset Sample 62 27
               67:          64 Load 66(g_tTex2dmsf4a)
-              70:     69(ptr) AccessChain 22 68
+              70:  69(ivec3*) AccessChain 22 68
               71:   18(ivec3) Load 70
-              72:    7(fvec4) ImageFetch 67 71 Sample 27
+              72:     7(vec4) ImageFetch 67 71 Sample 27
               76:          73 Load 75(g_tTex2dmsi4a)
-              77:     69(ptr) AccessChain 22 68
+              77:  69(ivec3*) AccessChain 22 68
               78:   18(ivec3) Load 77
               79:   19(ivec4) ImageFetch 76 78 Sample 27
               83:          80 Load 82(g_tTex2dmsu4a)
-              84:     69(ptr) AccessChain 22 68
+              84:  69(ivec3*) AccessChain 22 68
               85:   18(ivec3) Load 84
-              86:   43(ivec4) ImageFetch 83 85 Sample 27
+              86:   43(uvec4) ImageFetch 83 85 Sample 27
               87:          64 Load 66(g_tTex2dmsf4a)
-              88:     69(ptr) AccessChain 22 68
+              88:  69(ivec3*) AccessChain 22 68
               89:   18(ivec3) Load 88
-              90:     24(ptr) AccessChain 22 48
+              90:  24(ivec2*) AccessChain 22 48
               91:   17(ivec2) Load 90
-              92:    7(fvec4) ImageFetch 87 89 Offset Sample 91 27
+              92:     7(vec4) ImageFetch 87 89 Offset Sample 91 27
               93:          73 Load 75(g_tTex2dmsi4a)
-              94:     69(ptr) AccessChain 22 68
+              94:  69(ivec3*) AccessChain 22 68
               95:   18(ivec3) Load 94
-              96:     24(ptr) AccessChain 22 48
+              96:  24(ivec2*) AccessChain 22 48
               97:   17(ivec2) Load 96
               98:   19(ivec4) ImageFetch 93 95 Offset Sample 97 27
               99:          80 Load 82(g_tTex2dmsu4a)
-             100:     69(ptr) AccessChain 22 68
+             100:  69(ivec3*) AccessChain 22 68
              101:   18(ivec3) Load 100
-             102:     24(ptr) AccessChain 22 48
+             102:  24(ivec2*) AccessChain 22 48
              103:   17(ivec2) Load 102
-             104:   43(ivec4) ImageFetch 99 101 Offset Sample 103 27
-             111:    110(ptr) AccessChain 106(psout) 107
+             104:   43(uvec4) ImageFetch 99 101 Offset Sample 103 27
+             111:  110(vec4*) AccessChain 106(psout) 107
                               Store 111 109
-             113:    112(ptr) AccessChain 106(psout) 23
+             113: 112(float*) AccessChain 106(psout) 23
                               Store 113 108
              114:8(PS_OUTPUT) Load 106(psout)
                               ReturnValue 114

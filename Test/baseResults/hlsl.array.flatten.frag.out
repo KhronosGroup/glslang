@@ -424,33 +424,33 @@ gl_FragCoord origin is upper left
                               Decorate 142(g_samp_explicit[2]) DescriptorSet 0
                               Decorate 142(g_samp_explicit[2]) Binding 7
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypeImage 6(float) 1D sampled format:Unknown
               12:             TypeInt 32 0
-              13:     12(int) Constant 3
+              13:    12(uint) Constant 3
               14:             TypeArray 11 13
-              15:             TypePointer Function 14
+              15:             TypePointer Function 14(arr[3])
               16:             TypeSampler
               17:             TypeArray 16 13
-              18:             TypePointer Function 17
-              19:             TypeFunction 7(fvec4) 15(ptr) 18(ptr)
-   24(PS_OUTPUT):             TypeStruct 7(fvec4)
+              18:             TypePointer Function 17(arr[3])
+              19:             TypeFunction 7(vec4) 15(arr[3]*) 18(arr[3]*)
+   24(PS_OUTPUT):             TypeStruct 7(vec4)
               25:             TypePointer Function 24(PS_OUTPUT)
-              26:             TypeFunction 2 25(ptr)
+              26:             TypeFunction 2(void) 25(PS_OUTPUT*)
               30:             TypeInt 32 1
-              31:     12(int) Constant 5
+              31:    12(uint) Constant 5
               32:             TypeArray 30(int) 31
-              33:             TypePointer Private 32
-34(not_flattened_a):     33(ptr) Variable Private
+              33:             TypePointer Private 32(int[5])
+34(not_flattened_a): 33(int[5]*) Variable Private
               35:     30(int) Constant 1
               36:     30(int) Constant 2
               37:     30(int) Constant 3
               38:     30(int) Constant 4
               39:     30(int) Constant 5
-              40:          32 ConstantComposite 35 36 37 38 39
+              40:  32(int[5]) ConstantComposite 35 36 37 38 39
               41:             TypePointer UniformConstant 11
     42(g_tex[1]):     41(ptr) Variable UniformConstant
               44:             TypePointer UniformConstant 16
@@ -464,71 +464,71 @@ gl_FragCoord origin is upper left
    70(g_samp[2]):     44(ptr) Variable UniformConstant
     74(g_tex[0]):     41(ptr) Variable UniformConstant
     79(g_tex[2]):     41(ptr) Variable UniformConstant
-              82:     12(int) Constant 4
+              82:    12(uint) Constant 4
               83:             TypeArray 6(float) 82
-              84:             TypePointer Function 83
+              84:             TypePointer Function 83(float[4])
               86:             TypeVector 6(float) 3
-              87:             TypeMatrix 86(fvec3) 3
-              88:             TypeArray 87 82
-              89:             TypeArray 87 82
+              87:             TypeMatrix 86(vec3) 3
+              88:             TypeArray 87(mat3) 82
+              89:             TypeArray 87(mat3) 82
               90:             TypeArray 6(float) 82
-     91($Global):             TypeStruct 88 89 90
+     91($Global):             TypeStruct 88(mat3[4]) 89(mat3[4]) 90(float[4])
               92:             TypePointer Uniform 91($Global)
-              93:     92(ptr) Variable Uniform
-              94:             TypePointer Uniform 90
+              93:92($Global*) Variable Uniform
+              94:             TypePointer Uniform 90(float[4])
               98:             TypePointer Function 6(float)
-             127:             TypePointer Function 7(fvec4)
-             133:             TypePointer Output 7(fvec4)
-134(ps_output.color):    133(ptr) Variable Output
+             127:             TypePointer Function 7(vec4)
+             133:             TypePointer Output 7(vec4)
+134(ps_output.color):  133(vec4*) Variable Output
 137(g_tex_explicit[0]):     41(ptr) Variable UniformConstant
 138(g_tex_explicit[1]):     41(ptr) Variable UniformConstant
 139(g_tex_explicit[2]):     41(ptr) Variable UniformConstant
 140(g_samp_explicit[0]):     44(ptr) Variable UniformConstant
 141(g_samp_explicit[1]):     44(ptr) Variable UniformConstant
 142(g_samp_explicit[2]):     44(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-  129(ps_output):     25(ptr) Variable Function
-      130(param):     25(ptr) Variable Function
+  129(ps_output):25(PS_OUTPUT*) Variable Function
+      130(param):25(PS_OUTPUT*) Variable Function
                               Store 34(not_flattened_a) 40
-             131:           2 FunctionCall 28(@main(struct-PS_OUTPUT-vf41;) 130(param)
+             131:     2(void) FunctionCall 28(@main(struct-PS_OUTPUT-vf41;) 130(param)
              132:24(PS_OUTPUT) Load 130(param)
                               Store 129(ps_output) 132
-             135:    127(ptr) AccessChain 129(ps_output) 64
-             136:    7(fvec4) Load 135
+             135:  127(vec4*) AccessChain 129(ps_output) 64
+             136:     7(vec4) Load 135
                               Store 134(ps_output.color) 136
                               Return
                               FunctionEnd
-     9(TestFn1():    7(fvec4) Function None 8
+     9(TestFn1():     7(vec4) Function None 8
               10:             Label
               43:          11 Load 42(g_tex[1])
               46:          16 Load 45(g_samp[1])
               48:          47 SampledImage 43 46
-              50:    7(fvec4) ImageSampleImplicitLod 48 49
+              50:     7(vec4) ImageSampleImplicitLod 48 49
                               ReturnValue 50
                               FunctionEnd
-22(TestFn2(t11[3];p1[3];):    7(fvec4) Function None 19
-       20(l_tex):     15(ptr) FunctionParameter
-      21(l_samp):     18(ptr) FunctionParameter
+22(TestFn2(t11[3];p1[3];):     7(vec4) Function None 19
+       20(l_tex): 15(arr[3]*) FunctionParameter
+      21(l_samp): 18(arr[3]*) FunctionParameter
               23:             Label
               54:     53(ptr) AccessChain 20(l_tex) 36
               55:          11 Load 54
               57:     56(ptr) AccessChain 21(l_samp) 36
               58:          16 Load 57
               59:          47 SampledImage 55 58
-              60:    7(fvec4) ImageSampleImplicitLod 59 49
+              60:     7(vec4) ImageSampleImplicitLod 59 49
                               ReturnValue 60
                               FunctionEnd
-28(@main(struct-PS_OUTPUT-vf41;):           2 Function None 26
-   27(ps_output):     25(ptr) FunctionParameter
+28(@main(struct-PS_OUTPUT-vf41;):     2(void) Function None 26
+   27(ps_output):25(PS_OUTPUT*) FunctionParameter
               29:             Label
-63(local_sampler_array):     18(ptr) Variable Function
-73(local_texture_array):     15(ptr) Variable Function
-85(local_float_array):     84(ptr) Variable Function
-  107(aggShadow):     15(ptr) Variable Function
-  114(aggShadow):     18(ptr) Variable Function
-      121(param):     15(ptr) Variable Function
-      123(param):     18(ptr) Variable Function
+63(local_sampler_array): 18(arr[3]*) Variable Function
+73(local_texture_array): 15(arr[3]*) Variable Function
+85(local_float_array):84(float[4]*) Variable Function
+  107(aggShadow): 15(arr[3]*) Variable Function
+  114(aggShadow): 18(arr[3]*) Variable Function
+      121(param): 15(arr[3]*) Variable Function
+      123(param): 18(arr[3]*) Variable Function
               66:          16 Load 65(g_samp[0])
               67:     56(ptr) AccessChain 63(local_sampler_array) 64
                               Store 67 66
@@ -547,21 +547,21 @@ gl_FragCoord origin is upper left
               80:          11 Load 79(g_tex[2])
               81:     53(ptr) AccessChain 73(local_texture_array) 36
                               Store 81 80
-              95:     94(ptr) AccessChain 93 36
-              96:          90 Load 95
+              95:94(float[4]*) AccessChain 93 36
+              96:90(float[4]) Load 95
               97:    6(float) CompositeExtract 96 0
-              99:     98(ptr) AccessChain 85(local_float_array) 64
+              99:  98(float*) AccessChain 85(local_float_array) 64
                               Store 99 97
              100:    6(float) CompositeExtract 96 1
-             101:     98(ptr) AccessChain 85(local_float_array) 35
+             101:  98(float*) AccessChain 85(local_float_array) 35
                               Store 101 100
              102:    6(float) CompositeExtract 96 2
-             103:     98(ptr) AccessChain 85(local_float_array) 36
+             103:  98(float*) AccessChain 85(local_float_array) 36
                               Store 103 102
              104:    6(float) CompositeExtract 96 3
-             105:     98(ptr) AccessChain 85(local_float_array) 37
+             105:  98(float*) AccessChain 85(local_float_array) 37
                               Store 105 104
-             106:    7(fvec4) FunctionCall 9(TestFn1()
+             106:     7(vec4) FunctionCall 9(TestFn1()
              108:          11 Load 74(g_tex[0])
              109:     53(ptr) AccessChain 107(aggShadow) 64
                               Store 109 108
@@ -580,13 +580,13 @@ gl_FragCoord origin is upper left
              119:          16 Load 70(g_samp[2])
              120:     56(ptr) AccessChain 114(aggShadow) 36
                               Store 120 119
-             122:          14 Load 107(aggShadow)
+             122:  14(arr[3]) Load 107(aggShadow)
                               Store 121(param) 122
-             124:          17 Load 114(aggShadow)
+             124:  17(arr[3]) Load 114(aggShadow)
                               Store 123(param) 124
-             125:    7(fvec4) FunctionCall 22(TestFn2(t11[3];p1[3];) 121(param) 123(param)
-             126:    7(fvec4) FAdd 106 125
-             128:    127(ptr) AccessChain 27(ps_output) 64
+             125:     7(vec4) FunctionCall 22(TestFn2(t11[3];p1[3];) 121(param) 123(param)
+             126:     7(vec4) FAdd 106 125
+             128:  127(vec4*) AccessChain 27(ps_output) 64
                               Store 128 126
                               Return
                               FunctionEnd

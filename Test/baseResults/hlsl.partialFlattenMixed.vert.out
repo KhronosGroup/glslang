@@ -118,17 +118,17 @@ Shader version: 500
                               Decorate 36(pos) Location 0
                               Decorate 39(@entryPointOutput) BuiltIn Position
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
               13:             TypeInt 32 1
               14:             TypeImage 6(float) 2D sampled format:Unknown
               15:             TypeInt 32 0
-              16:     15(int) Constant 2
+              16:    15(uint) Constant 2
               17:             TypeArray 14 16
-      18(Packed):             TypeStruct 13(int) 17 13(int)
+      18(Packed):             TypeStruct 13(int) 17(arr[2]) 13(int)
               19:             TypePointer Function 18(Packed)
               21:     13(int) Constant 1
               22:     13(int) Constant 0
@@ -136,32 +136,32 @@ Shader version: 500
       24(tex[0]):     23(ptr) Variable UniformConstant
               26:             TypePointer Function 14
       28(tex[1]):     23(ptr) Variable UniformConstant
-              35:             TypePointer Input 7(fvec4)
-         36(pos):     35(ptr) Variable Input
-              38:             TypePointer Output 7(fvec4)
-39(@entryPointOutput):     38(ptr) Variable Output
-         4(main):           2 Function None 3
+              35:             TypePointer Input 7(vec4)
+         36(pos):   35(vec4*) Variable Input
+              38:             TypePointer Output 7(vec4)
+39(@entryPointOutput):   38(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-         34(pos):      8(ptr) Variable Function
-       40(param):      8(ptr) Variable Function
-              37:    7(fvec4) Load 36(pos)
+         34(pos):    8(vec4*) Variable Function
+       40(param):    8(vec4*) Variable Function
+              37:     7(vec4) Load 36(pos)
                               Store 34(pos) 37
-              41:    7(fvec4) Load 34(pos)
+              41:     7(vec4) Load 34(pos)
                               Store 40(param) 41
-              42:    7(fvec4) FunctionCall 11(@main(vf4;) 40(param)
+              42:     7(vec4) FunctionCall 11(@main(vf4;) 40(param)
                               Store 39(@entryPointOutput) 42
                               Return
                               FunctionEnd
-  11(@main(vf4;):    7(fvec4) Function None 9
-         10(pos):      8(ptr) FunctionParameter
+  11(@main(vf4;):     7(vec4) Function None 9
+         10(pos):    8(vec4*) FunctionParameter
               12:             Label
-      20(packed):     19(ptr) Variable Function
+      20(packed): 19(Packed*) Variable Function
               25:          14 Load 24(tex[0])
               27:     26(ptr) AccessChain 20(packed) 21 22
                               Store 27 25
               29:          14 Load 28(tex[1])
               30:     26(ptr) AccessChain 20(packed) 21 21
                               Store 30 29
-              31:    7(fvec4) Load 10(pos)
+              31:     7(vec4) Load 10(pos)
                               ReturnValue 31
                               FunctionEnd

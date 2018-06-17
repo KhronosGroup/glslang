@@ -51,81 +51,81 @@ spv.loops.frag
                               Decorate 157(Count) Flat
                               Decorate 615(gl_FragColor) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-              10:             TypePointer Input 7(fvec4)
-   11(BaseColor):     10(ptr) Variable Input
+               8:             TypePointer Function 7(vec4)
+              10:             TypePointer Input 7(vec4)
+   11(BaseColor):   10(vec4*) Variable Input
               18:             TypeBool
               19:    18(bool) ConstantTrue
               20:             TypeInt 32 0
-              21:     20(int) Constant 0
+              21:    20(uint) Constant 0
               22:             TypePointer Function 6(float)
               25:    6(float) Constant 1051260355
-              29:    7(fvec4) ConstantComposite 25 25 25 25
+              29:     7(vec4) ConstantComposite 25 25 25 25
               35:    6(float) Constant 1059648963
-              39:    7(fvec4) ConstantComposite 35 35 35 35
+              39:     7(vec4) ConstantComposite 35 35 35 35
               53:             TypePointer Input 6(float)
-           54(d):     53(ptr) Variable Input
-    57(bigColor):     10(ptr) Variable Input
-              66:     20(int) Constant 2
- 71(bigColor1_1):     10(ptr) Variable Input
-              75:     20(int) Constant 3
+           54(d):  53(float*) Variable Input
+    57(bigColor):   10(vec4*) Variable Input
+              66:    20(uint) Constant 2
+ 71(bigColor1_1):   10(vec4*) Variable Input
+              75:    20(uint) Constant 3
               93:    6(float) Constant 1109917696
               96:    6(float) Constant 1065353216
-         106(d2):     53(ptr) Variable Input
-             111:     20(int) Constant 1
-         114(d3):     53(ptr) Variable Input
-118(bigColor1_2):     10(ptr) Variable Input
-131(bigColor1_3):     10(ptr) Variable Input
-         137(d4):     53(ptr) Variable Input
+         106(d2):  53(float*) Variable Input
+             111:    20(uint) Constant 1
+         114(d3):  53(float*) Variable Input
+118(bigColor1_2):   10(vec4*) Variable Input
+131(bigColor1_3):   10(vec4*) Variable Input
+         137(d4):  53(float*) Variable Input
              146:             TypeInt 32 1
              147:             TypePointer Function 146(int)
              149:    146(int) Constant 0
              156:             TypePointer Input 146(int)
-      157(Count):    156(ptr) Variable Input
-  160(bigColor2):     10(ptr) Variable Input
+      157(Count):   156(int*) Variable Input
+  160(bigColor2):   10(vec4*) Variable Input
              165:    146(int) Constant 1
-  171(bigColor3):     10(ptr) Variable Input
+  171(bigColor3):   10(vec4*) Variable Input
              186:    146(int) Constant 42
              202:    146(int) Constant 100
              206:    6(float) Constant 1101004800
              238:    146(int) Constant 120
-  308(bigColor4):     10(ptr) Variable Input
-  344(bigColor5):     10(ptr) Variable Input
-         350(d5):     53(ptr) Variable Input
-         366(d6):     53(ptr) Variable Input
-  380(bigColor6):     10(ptr) Variable Input
-         418(d7):     53(ptr) Variable Input
+  308(bigColor4):   10(vec4*) Variable Input
+  344(bigColor5):   10(vec4*) Variable Input
+         350(d5):  53(float*) Variable Input
+         366(d6):  53(float*) Variable Input
+  380(bigColor6):   10(vec4*) Variable Input
+         418(d7):  53(float*) Variable Input
              445:    6(float) Constant 0
-  450(bigColor7):     10(ptr) Variable Input
-         469(d8):     53(ptr) Variable Input
+  450(bigColor7):   10(vec4*) Variable Input
+         469(d8):  53(float*) Variable Input
              486:    6(float) Constant 1073741824
-         512(d9):     53(ptr) Variable Input
+         512(d9):  53(float*) Variable Input
              528:    6(float) Constant 1084227584
-        544(d10):     53(ptr) Variable Input
-        552(d11):     53(ptr) Variable Input
-        562(d12):     53(ptr) Variable Input
+        544(d10):  53(float*) Variable Input
+        552(d11):  53(float*) Variable Input
+        562(d12):  53(float*) Variable Input
              586:    6(float) Constant 1092616192
-  588(bigColor8):     10(ptr) Variable Input
-             614:             TypePointer Output 7(fvec4)
-615(gl_FragColor):    614(ptr) Variable Output
-        624(d14):     53(ptr) Variable Input
-        629(d15):     53(ptr) Variable Input
-        649(d16):     53(ptr) Variable Input
-        687(d18):     53(ptr) Variable Input
-        698(d17):     53(ptr) Variable Input
-         4(main):           2 Function None 3
+  588(bigColor8):   10(vec4*) Variable Input
+             614:             TypePointer Output 7(vec4)
+615(gl_FragColor):  614(vec4*) Variable Output
+        624(d14):  53(float*) Variable Input
+        629(d15):  53(float*) Variable Input
+        649(d16):  53(float*) Variable Input
+        687(d18):  53(float*) Variable Input
+        698(d17):  53(float*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-        9(color):      8(ptr) Variable Function
-          148(i):    147(ptr) Variable Function
-          179(i):    147(ptr) Variable Function
-          195(i):    147(ptr) Variable Function
-          231(i):    147(ptr) Variable Function
-          254(i):    147(ptr) Variable Function
-          279(i):    147(ptr) Variable Function
-              12:    7(fvec4) Load 11(BaseColor)
+        9(color):    8(vec4*) Variable Function
+          148(i):   147(int*) Variable Function
+          179(i):   147(int*) Variable Function
+          195(i):   147(int*) Variable Function
+          231(i):   147(int*) Variable Function
+          254(i):   147(int*) Variable Function
+          279(i):   147(int*) Variable Function
+              12:     7(vec4) Load 11(BaseColor)
                               Store 9(color) 12
                               Branch 13
               13:             Label
@@ -134,30 +134,30 @@ spv.loops.frag
               17:             Label
                               BranchConditional 19 14 15
               14:               Label
-              23:     22(ptr)   AccessChain 9(color) 21
+              23:  22(float*)   AccessChain 9(color) 21
               24:    6(float)   Load 23
               26:    18(bool)   FOrdLessThan 24 25
                                 SelectionMerge 28 None
                                 BranchConditional 26 27 28
               27:                 Label
-              30:    7(fvec4)     Load 9(color)
-              31:    7(fvec4)     FAdd 30 29
+              30:     7(vec4)     Load 9(color)
+              31:     7(vec4)     FAdd 30 29
                                   Store 9(color) 31
                                   Branch 15
               28:               Label
-              33:     22(ptr)   AccessChain 9(color) 21
+              33:  22(float*)   AccessChain 9(color) 21
               34:    6(float)   Load 33
               36:    18(bool)   FOrdLessThan 34 35
                                 SelectionMerge 38 None
                                 BranchConditional 36 37 38
               37:                 Label
-              40:    7(fvec4)     Load 9(color)
-              41:    7(fvec4)     FAdd 40 39
+              40:     7(vec4)     Load 9(color)
+              41:     7(vec4)     FAdd 40 39
                                   Store 9(color) 41
                                   Branch 15
               38:               Label
-              43:    7(fvec4)   Load 9(color)
-              44:    7(fvec4)   FAdd 43 29
+              43:     7(vec4)   Load 9(color)
+              44:     7(vec4)   FAdd 43 29
                                 Store 9(color) 44
                                 Branch 15
               16:               Label
@@ -168,15 +168,15 @@ spv.loops.frag
                               LoopMerge 48 49 None
                               Branch 50
               50:             Label
-              51:     22(ptr) AccessChain 9(color) 21
+              51:  22(float*) AccessChain 9(color) 21
               52:    6(float) Load 51
               55:    6(float) Load 54(d)
               56:    18(bool) FOrdLessThan 52 55
                               BranchConditional 56 47 48
               47:               Label
-              58:    7(fvec4)   Load 57(bigColor)
-              59:    7(fvec4)   Load 9(color)
-              60:    7(fvec4)   FAdd 59 58
+              58:     7(vec4)   Load 57(bigColor)
+              59:     7(vec4)   Load 9(color)
+              60:     7(vec4)   FAdd 59 58
                                 Store 9(color) 60
                                 Branch 49
               49:               Label
@@ -187,17 +187,17 @@ spv.loops.frag
                               LoopMerge 63 64 None
                               Branch 65
               65:             Label
-              67:     22(ptr) AccessChain 9(color) 66
+              67:  22(float*) AccessChain 9(color) 66
               68:    6(float) Load 67
               69:    6(float) Load 54(d)
               70:    18(bool) FOrdLessThan 68 69
                               BranchConditional 70 62 63
               62:               Label
-              72:    7(fvec4)   Load 71(bigColor1_1)
-              73:    7(fvec4)   Load 9(color)
-              74:    7(fvec4)   FAdd 73 72
+              72:     7(vec4)   Load 71(bigColor1_1)
+              73:     7(vec4)   Load 9(color)
+              74:     7(vec4)   FAdd 73 72
                                 Store 9(color) 74
-              76:     22(ptr)   AccessChain 9(color) 75
+              76:  22(float*)   AccessChain 9(color) 75
               77:    6(float)   Load 76
               78:    6(float)   Load 54(d)
               79:    18(bool)   FOrdLessThan 77 78
@@ -206,9 +206,9 @@ spv.loops.frag
               80:                 Label
                                   Branch 64
               81:               Label
-              83:    7(fvec4)   Load 71(bigColor1_1)
-              84:    7(fvec4)   Load 9(color)
-              85:    7(fvec4)   FAdd 84 83
+              83:     7(vec4)   Load 71(bigColor1_1)
+              84:     7(vec4)   Load 9(color)
+              85:     7(vec4)   FAdd 84 83
                                 Store 9(color) 85
                                 Branch 64
               64:               Label
@@ -219,14 +219,14 @@ spv.loops.frag
                               LoopMerge 88 89 None
                               Branch 90
               90:             Label
-              91:     22(ptr) AccessChain 9(color) 21
+              91:  22(float*) AccessChain 9(color) 21
               92:    6(float) Load 91
               94:    18(bool) FOrdLessThan 92 93
                               BranchConditional 94 87 88
               87:               Label
-              95:    7(fvec4)   Load 9(color)
-              97:    7(fvec4)   CompositeConstruct 96 96 96 96
-              98:    7(fvec4)   FAdd 95 97
+              95:     7(vec4)   Load 9(color)
+              97:     7(vec4)   CompositeConstruct 96 96 96 96
+              98:     7(vec4)   FAdd 95 97
                                 Store 9(color) 98
                                 Branch 89
               89:               Label
@@ -237,14 +237,14 @@ spv.loops.frag
                               LoopMerge 101 102 None
                               Branch 103
              103:             Label
-             104:     22(ptr) AccessChain 9(color) 75
+             104:  22(float*) AccessChain 9(color) 75
              105:    6(float) Load 104
              107:    6(float) Load 106(d2)
              108:    18(bool) FOrdLessThan 105 107
                               SelectionMerge 110 None
                               BranchConditional 108 109 110
              109:               Label
-             112:     22(ptr)   AccessChain 9(color) 111
+             112:  22(float*)   AccessChain 9(color) 111
              113:    6(float)   Load 112
              115:    6(float)   Load 114(d3)
              116:    18(bool)   FOrdLessThan 113 115
@@ -253,9 +253,9 @@ spv.loops.frag
              117:    18(bool) Phi 108 103 116 109
                               BranchConditional 117 100 101
              100:             Label
-             119:    7(fvec4) Load 118(bigColor1_2)
-             120:    7(fvec4) Load 9(color)
-             121:    7(fvec4) FAdd 120 119
+             119:     7(vec4) Load 118(bigColor1_2)
+             120:     7(vec4) Load 9(color)
+             121:     7(vec4) FAdd 120 119
                               Store 9(color) 121
                               Branch 102
              102:             Label
@@ -266,17 +266,17 @@ spv.loops.frag
                               LoopMerge 124 125 None
                               Branch 126
              126:             Label
-             127:     22(ptr) AccessChain 9(color) 66
+             127:  22(float*) AccessChain 9(color) 66
              128:    6(float) Load 127
              129:    6(float) Load 114(d3)
              130:    18(bool) FOrdLessThan 128 129
                               BranchConditional 130 123 124
              123:               Label
-             132:    7(fvec4)   Load 131(bigColor1_3)
-             133:    7(fvec4)   Load 9(color)
-             134:    7(fvec4)   FAdd 133 132
+             132:     7(vec4)   Load 131(bigColor1_3)
+             133:     7(vec4)   Load 9(color)
+             134:     7(vec4)   FAdd 133 132
                                 Store 9(color) 134
-             135:     22(ptr)   AccessChain 9(color) 111
+             135:  22(float*)   AccessChain 9(color) 111
              136:    6(float)   Load 135
              138:    6(float)   Load 137(d4)
              139:    18(bool)   FOrdLessThan 136 138
@@ -285,9 +285,9 @@ spv.loops.frag
              140:                 Label
                                   Branch 124
              141:               Label
-             143:    7(fvec4)   Load 131(bigColor1_3)
-             144:    7(fvec4)   Load 9(color)
-             145:    7(fvec4)   FAdd 144 143
+             143:     7(vec4)   Load 131(bigColor1_3)
+             144:     7(vec4)   Load 9(color)
+             145:     7(vec4)   FAdd 144 143
                                 Store 9(color) 145
                                 Branch 125
              125:               Label
@@ -304,9 +304,9 @@ spv.loops.frag
              159:    18(bool) SLessThan 155 158
                               BranchConditional 159 151 152
              151:               Label
-             161:    7(fvec4)   Load 160(bigColor2)
-             162:    7(fvec4)   Load 9(color)
-             163:    7(fvec4)   FAdd 162 161
+             161:     7(vec4)   Load 160(bigColor2)
+             162:     7(vec4)   Load 9(color)
+             163:     7(vec4)   FAdd 162 161
                                 Store 9(color) 163
                                 Branch 153
              153:               Label
@@ -320,13 +320,13 @@ spv.loops.frag
                               LoopMerge 169 170 None
                               Branch 168
              168:             Label
-             172:    7(fvec4) Load 171(bigColor3)
-             173:    7(fvec4) Load 9(color)
-             174:    7(fvec4) FAdd 173 172
+             172:     7(vec4) Load 171(bigColor3)
+             173:     7(vec4) Load 9(color)
+             174:     7(vec4) FAdd 173 172
                               Store 9(color) 174
                               Branch 170
              170:             Label
-             175:     22(ptr) AccessChain 9(color) 21
+             175:  22(float*) AccessChain 9(color) 21
              176:    6(float) Load 175
              177:    6(float) Load 106(d2)
              178:    18(bool) FOrdLessThan 176 177
@@ -343,10 +343,10 @@ spv.loops.frag
                               BranchConditional 187 181 182
              181:               Label
              188:    6(float)   Load 114(d3)
-             189:     22(ptr)   AccessChain 9(color) 66
+             189:  22(float*)   AccessChain 9(color) 66
              190:    6(float)   Load 189
              191:    6(float)   FAdd 190 188
-             192:     22(ptr)   AccessChain 9(color) 66
+             192:  22(float*)   AccessChain 9(color) 66
                                 Store 192 191
                                 Branch 183
              183:               Label
@@ -365,33 +365,33 @@ spv.loops.frag
              203:    18(bool) SLessThan 201 202
                               BranchConditional 203 197 198
              197:               Label
-             204:     22(ptr)   AccessChain 9(color) 66
+             204:  22(float*)   AccessChain 9(color) 66
              205:    6(float)   Load 204
              207:    18(bool)   FOrdLessThan 205 206
                                 SelectionMerge 209 None
                                 BranchConditional 207 208 213
              208:                 Label
-             210:     22(ptr)     AccessChain 9(color) 21
+             210:  22(float*)     AccessChain 9(color) 21
              211:    6(float)     Load 210
              212:    6(float)     FAdd 211 96
                                   Store 210 212
                                   Branch 209
              213:                 Label
-             214:     22(ptr)     AccessChain 9(color) 111
+             214:  22(float*)     AccessChain 9(color) 111
              215:    6(float)     Load 214
              216:    6(float)     FAdd 215 96
                                   Store 214 216
                                   Branch 209
              209:               Label
-             217:     22(ptr)   AccessChain 9(color) 75
+             217:  22(float*)   AccessChain 9(color) 75
              218:    6(float)   Load 217
              219:    18(bool)   FOrdLessThan 218 206
                                 SelectionMerge 221 None
                                 BranchConditional 219 220 221
              220:                 Label
-             222:     22(ptr)     AccessChain 9(color) 66
+             222:  22(float*)     AccessChain 9(color) 66
              223:    6(float)     Load 222
-             224:     22(ptr)     AccessChain 9(color) 111
+             224:  22(float*)     AccessChain 9(color) 111
              225:    6(float)     Load 224
              226:    18(bool)     FOrdGreaterThan 223 225
                                   SelectionMerge 228 None
@@ -418,19 +418,19 @@ spv.loops.frag
              239:    18(bool) SLessThan 237 238
                               BranchConditional 239 233 234
              233:               Label
-             240:     22(ptr)   AccessChain 9(color) 66
+             240:  22(float*)   AccessChain 9(color) 66
              241:    6(float)   Load 240
              242:    18(bool)   FOrdLessThan 241 206
                                 SelectionMerge 244 None
                                 BranchConditional 242 243 248
              243:                 Label
-             245:     22(ptr)     AccessChain 9(color) 21
+             245:  22(float*)     AccessChain 9(color) 21
              246:    6(float)     Load 245
              247:    6(float)     FAdd 246 96
                                   Store 245 247
                                   Branch 244
              248:                 Label
-             249:     22(ptr)     AccessChain 9(color) 111
+             249:  22(float*)     AccessChain 9(color) 111
              250:    6(float)     Load 249
              251:    6(float)     FAdd 250 96
                                   Store 249 251
@@ -454,12 +454,12 @@ spv.loops.frag
                               BranchConditional 261 256 257
              256:               Label
              262:    6(float)   Load 114(d3)
-             263:     22(ptr)   AccessChain 9(color) 66
+             263:  22(float*)   AccessChain 9(color) 66
              264:    6(float)   Load 263
              265:    6(float)   FAdd 264 262
-             266:     22(ptr)   AccessChain 9(color) 66
+             266:  22(float*)   AccessChain 9(color) 66
                                 Store 266 265
-             267:     22(ptr)   AccessChain 9(color) 21
+             267:  22(float*)   AccessChain 9(color) 21
              268:    6(float)   Load 267
              269:    6(float)   Load 137(d4)
              270:    18(bool)   FOrdLessThan 268 269
@@ -468,7 +468,7 @@ spv.loops.frag
              271:                 Label
                                   Branch 258
              272:               Label
-             274:     22(ptr)   AccessChain 9(color) 75
+             274:  22(float*)   AccessChain 9(color) 75
              275:    6(float)   Load 274
              276:    6(float)   FAdd 275 96
                                 Store 274 276
@@ -490,12 +490,12 @@ spv.loops.frag
                               BranchConditional 286 281 282
              281:               Label
              287:    6(float)   Load 114(d3)
-             288:     22(ptr)   AccessChain 9(color) 66
+             288:  22(float*)   AccessChain 9(color) 66
              289:    6(float)   Load 288
              290:    6(float)   FAdd 289 287
-             291:     22(ptr)   AccessChain 9(color) 66
+             291:  22(float*)   AccessChain 9(color) 66
                                 Store 291 290
-             292:     22(ptr)   AccessChain 9(color) 21
+             292:  22(float*)   AccessChain 9(color) 21
              293:    6(float)   Load 292
              294:    6(float)   Load 137(d4)
              295:    18(bool)   FOrdLessThan 293 294
@@ -504,7 +504,7 @@ spv.loops.frag
              296:                 Label
                                   Branch 282
              297:               Label
-             299:     22(ptr)   AccessChain 9(color) 75
+             299:  22(float*)   AccessChain 9(color) 75
              300:    6(float)   Load 299
              301:    6(float)   FAdd 300 96
                                 Store 299 301
@@ -520,11 +520,11 @@ spv.loops.frag
                               LoopMerge 306 307 None
                               Branch 305
              305:             Label
-             309:    7(fvec4) Load 308(bigColor4)
-             310:    7(fvec4) Load 9(color)
-             311:    7(fvec4) FAdd 310 309
+             309:     7(vec4) Load 308(bigColor4)
+             310:     7(vec4) Load 9(color)
+             311:     7(vec4) FAdd 310 309
                               Store 9(color) 311
-             312:     22(ptr) AccessChain 9(color) 21
+             312:  22(float*) AccessChain 9(color) 21
              313:    6(float) Load 312
              314:    6(float) Load 137(d4)
              315:    18(bool) FOrdLessThan 313 314
@@ -533,7 +533,7 @@ spv.loops.frag
              316:               Label
                                 Branch 307
              317:             Label
-             319:     22(ptr) AccessChain 9(color) 111
+             319:  22(float*) AccessChain 9(color) 111
              320:    6(float) Load 319
              321:    6(float) Load 137(d4)
              322:    18(bool) FOrdLessThan 320 321
@@ -541,24 +541,24 @@ spv.loops.frag
                               BranchConditional 322 323 330
              323:               Label
              325:    6(float)   Load 137(d4)
-             326:     22(ptr)   AccessChain 9(color) 111
+             326:  22(float*)   AccessChain 9(color) 111
              327:    6(float)   Load 326
              328:    6(float)   FAdd 327 325
-             329:     22(ptr)   AccessChain 9(color) 111
+             329:  22(float*)   AccessChain 9(color) 111
                                 Store 329 328
                                 Branch 324
              330:               Label
              331:    6(float)   Load 137(d4)
-             332:     22(ptr)   AccessChain 9(color) 21
+             332:  22(float*)   AccessChain 9(color) 21
              333:    6(float)   Load 332
              334:    6(float)   FAdd 333 331
-             335:     22(ptr)   AccessChain 9(color) 21
+             335:  22(float*)   AccessChain 9(color) 21
                                 Store 335 334
                                 Branch 324
              324:             Label
                               Branch 307
              307:             Label
-             336:     22(ptr) AccessChain 9(color) 66
+             336:  22(float*) AccessChain 9(color) 66
              337:    6(float) Load 336
              338:    6(float) Load 137(d4)
              339:    18(bool) FOrdLessThan 337 338
@@ -569,11 +569,11 @@ spv.loops.frag
                               LoopMerge 342 343 None
                               Branch 341
              341:             Label
-             345:    7(fvec4) Load 344(bigColor5)
-             346:    7(fvec4) Load 9(color)
-             347:    7(fvec4) FAdd 346 345
+             345:     7(vec4) Load 344(bigColor5)
+             346:     7(vec4) Load 9(color)
+             347:     7(vec4) FAdd 346 345
                               Store 9(color) 347
-             348:     22(ptr) AccessChain 9(color) 111
+             348:  22(float*) AccessChain 9(color) 111
              349:    6(float) Load 348
              351:    6(float) Load 350(d5)
              352:    18(bool) FOrdLessThan 349 351
@@ -581,22 +581,22 @@ spv.loops.frag
                               BranchConditional 352 353 354
              353:               Label
              355:    6(float)   Load 350(d5)
-             356:     22(ptr)   AccessChain 9(color) 111
+             356:  22(float*)   AccessChain 9(color) 111
              357:    6(float)   Load 356
              358:    6(float)   FAdd 357 355
-             359:     22(ptr)   AccessChain 9(color) 111
+             359:  22(float*)   AccessChain 9(color) 111
                                 Store 359 358
                                 Branch 354
              354:             Label
                               Branch 343
              343:             Label
-             360:     22(ptr) AccessChain 9(color) 21
+             360:  22(float*) AccessChain 9(color) 21
              361:    6(float) Load 360
              362:    6(float) Load 350(d5)
              363:    18(bool) FOrdLessThan 361 362
                               BranchConditional 363 340 342
              342:             Label
-             364:     22(ptr) AccessChain 9(color) 21
+             364:  22(float*) AccessChain 9(color) 21
              365:    6(float) Load 364
              367:    6(float) Load 366(d6)
              368:    18(bool) FOrdLessThan 365 367
@@ -608,15 +608,15 @@ spv.loops.frag
                                 LoopMerge 373 374 None
                                 Branch 375
              375:               Label
-             376:     22(ptr)   AccessChain 9(color) 111
+             376:  22(float*)   AccessChain 9(color) 111
              377:    6(float)   Load 376
              378:    6(float)   Load 366(d6)
              379:    18(bool)   FOrdLessThan 377 378
                                 BranchConditional 379 372 373
              372:                 Label
-             381:    7(fvec4)     Load 380(bigColor6)
-             382:    7(fvec4)     Load 9(color)
-             383:    7(fvec4)     FAdd 382 381
+             381:     7(vec4)     Load 380(bigColor6)
+             382:     7(vec4)     Load 9(color)
+             383:     7(vec4)     FAdd 382 381
                                   Store 9(color) 383
                                   Branch 374
              374:                 Label
@@ -629,18 +629,18 @@ spv.loops.frag
                                 LoopMerge 387 388 None
                                 Branch 389
              389:               Label
-             390:     22(ptr)   AccessChain 9(color) 66
+             390:  22(float*)   AccessChain 9(color) 66
              391:    6(float)   Load 390
              392:    6(float)   Load 366(d6)
              393:    18(bool)   FOrdLessThan 391 392
                                 BranchConditional 393 386 387
              386:                 Label
-             394:     53(ptr)     AccessChain 380(bigColor6) 66
+             394:  53(float*)     AccessChain 380(bigColor6) 66
              395:    6(float)     Load 394
-             396:     22(ptr)     AccessChain 9(color) 66
+             396:  22(float*)     AccessChain 9(color) 66
              397:    6(float)     Load 396
              398:    6(float)     FAdd 397 395
-             399:     22(ptr)     AccessChain 9(color) 66
+             399:  22(float*)     AccessChain 9(color) 66
                                   Store 399 398
                                   Branch 388
              388:                 Label
@@ -648,7 +648,7 @@ spv.loops.frag
              387:               Label
                                 Branch 370
              370:             Label
-             400:     22(ptr) AccessChain 9(color) 21
+             400:  22(float*) AccessChain 9(color) 21
              401:    6(float) Load 400
              402:    6(float) Load 366(d6)
              403:    18(bool) FOrdLessThan 401 402
@@ -660,15 +660,15 @@ spv.loops.frag
                                 LoopMerge 408 409 None
                                 Branch 410
              410:               Label
-             411:     22(ptr)   AccessChain 9(color) 111
+             411:  22(float*)   AccessChain 9(color) 111
              412:    6(float)   Load 411
              413:    6(float)   Load 366(d6)
              414:    18(bool)   FOrdLessThan 412 413
                                 BranchConditional 414 407 408
              407:                 Label
-             415:    7(fvec4)     Load 380(bigColor6)
-             416:    7(fvec4)     Load 9(color)
-             417:    7(fvec4)     FAdd 416 415
+             415:     7(vec4)     Load 380(bigColor6)
+             416:     7(vec4)     Load 9(color)
+             417:     7(vec4)     FAdd 416 415
                                   Store 9(color) 417
              419:    6(float)     Load 418(d7)
              420:    18(bool)     FOrdLessThan 419 96
@@ -688,18 +688,18 @@ spv.loops.frag
                                 LoopMerge 427 428 None
                                 Branch 429
              429:               Label
-             430:     22(ptr)   AccessChain 9(color) 66
+             430:  22(float*)   AccessChain 9(color) 66
              431:    6(float)   Load 430
              432:    6(float)   Load 366(d6)
              433:    18(bool)   FOrdLessThan 431 432
                                 BranchConditional 433 426 427
              426:                 Label
-             434:     53(ptr)     AccessChain 380(bigColor6) 66
+             434:  53(float*)     AccessChain 380(bigColor6) 66
              435:    6(float)     Load 434
-             436:     22(ptr)     AccessChain 9(color) 66
+             436:  22(float*)     AccessChain 9(color) 66
              437:    6(float)     Load 436
              438:    6(float)     FAdd 437 435
-             439:     22(ptr)     AccessChain 9(color) 66
+             439:  22(float*)     AccessChain 9(color) 66
                                   Store 439 438
                                   Branch 428
              428:                 Label
@@ -719,24 +719,24 @@ spv.loops.frag
              447:               Label
                                 Branch 442
              448:             Label
-             451:    7(fvec4) Load 450(bigColor7)
-             452:    7(fvec4) Load 9(color)
-             453:    7(fvec4) FAdd 452 451
+             451:     7(vec4) Load 450(bigColor7)
+             452:     7(vec4) Load 9(color)
+             453:     7(vec4) FAdd 452 451
                               Store 9(color) 453
              454:    6(float) Load 418(d7)
              455:    18(bool) FOrdLessThan 454 96
                               SelectionMerge 457 None
                               BranchConditional 455 456 457
              456:               Label
-             458:     22(ptr)   AccessChain 9(color) 66
+             458:  22(float*)   AccessChain 9(color) 66
              459:    6(float)   Load 458
              460:    6(float)   FAdd 459 96
                                 Store 458 460
                                 Branch 442
              457:             Label
-             462:    7(fvec4) Load 11(BaseColor)
-             463:    7(fvec4) Load 9(color)
-             464:    7(fvec4) FAdd 463 462
+             462:     7(vec4) Load 11(BaseColor)
+             463:     7(vec4) Load 9(color)
+             464:     7(vec4) FAdd 463 462
                               Store 9(color) 464
                               Branch 443
              443:             Label
@@ -754,16 +754,16 @@ spv.loops.frag
              472:               Label
                                 Branch 467
              473:             Label
-             475:    7(fvec4) Load 450(bigColor7)
-             476:    7(fvec4) Load 9(color)
-             477:    7(fvec4) FAdd 476 475
+             475:     7(vec4) Load 450(bigColor7)
+             476:     7(vec4) Load 9(color)
+             477:     7(vec4) FAdd 476 475
                               Store 9(color) 477
              478:    6(float) Load 469(d8)
              479:    18(bool) FOrdLessThan 478 96
                               SelectionMerge 481 None
                               BranchConditional 479 480 481
              480:               Label
-             482:     22(ptr)   AccessChain 9(color) 66
+             482:  22(float*)   AccessChain 9(color) 66
              483:    6(float)   Load 482
              484:    6(float)   FAdd 483 96
                                 Store 482 484
@@ -772,13 +772,13 @@ spv.loops.frag
                                 SelectionMerge 489 None
                                 BranchConditional 487 488 493
              488:                 Label
-             490:     22(ptr)     AccessChain 9(color) 111
+             490:  22(float*)     AccessChain 9(color) 111
              491:    6(float)     Load 490
              492:    6(float)     FAdd 491 96
                                   Store 490 492
                                   Branch 489
              493:                 Label
-             494:     22(ptr)     AccessChain 9(color) 21
+             494:  22(float*)     AccessChain 9(color) 21
              495:    6(float)     Load 494
              496:    6(float)     FAdd 495 96
                                   Store 494 496
@@ -786,13 +786,13 @@ spv.loops.frag
              489:               Label
                                 Branch 467
              481:             Label
-             498:    7(fvec4) Load 11(BaseColor)
-             499:    7(fvec4) Load 9(color)
-             500:    7(fvec4) FAdd 499 498
+             498:     7(vec4) Load 11(BaseColor)
+             499:     7(vec4) Load 9(color)
+             500:     7(vec4) FAdd 499 498
                               Store 9(color) 500
                               Branch 468
              468:             Label
-             501:     22(ptr) AccessChain 9(color) 66
+             501:  22(float*) AccessChain 9(color) 66
              502:    6(float) Load 501
              503:    6(float) Load 469(d8)
              504:    18(bool) FOrdLessThan 502 503
@@ -803,7 +803,7 @@ spv.loops.frag
                               LoopMerge 507 508 None
                               Branch 509
              509:             Label
-             510:     22(ptr) AccessChain 9(color) 75
+             510:  22(float*) AccessChain 9(color) 75
              511:    6(float) Load 510
              513:    6(float) Load 512(d9)
              514:    18(bool) FOrdLessThan 511 513
@@ -815,20 +815,20 @@ spv.loops.frag
                                 SelectionMerge 519 None
                                 BranchConditional 517 518 519
              518:                 Label
-             520:     22(ptr)     AccessChain 9(color) 21
+             520:  22(float*)     AccessChain 9(color) 21
              521:    6(float)     Load 520
              522:    6(float)     Load 418(d7)
              523:    18(bool)     FOrdLessThanEqual 521 522
                                   SelectionMerge 525 None
                                   BranchConditional 523 524 525
              524:                   Label
-             526:     22(ptr)       AccessChain 9(color) 66
+             526:  22(float*)       AccessChain 9(color) 66
              527:    6(float)       Load 526
              529:    18(bool)       FOrdEqual 527 528
                                     SelectionMerge 531 None
                                     BranchConditional 529 530 535
              530:                     Label
-             532:     22(ptr)         AccessChain 9(color) 75
+             532:  22(float*)         AccessChain 9(color) 75
              533:    6(float)         Load 532
              534:    6(float)         FAdd 533 96
                                       Store 532 534
@@ -849,41 +849,41 @@ spv.loops.frag
                               LoopMerge 539 540 None
                               Branch 541
              541:             Label
-             542:     22(ptr) AccessChain 9(color) 66
+             542:  22(float*) AccessChain 9(color) 66
              543:    6(float) Load 542
              545:    6(float) Load 544(d10)
              546:    18(bool) FOrdLessThan 543 545
                               BranchConditional 546 538 539
              538:               Label
-             547:     22(ptr)   AccessChain 9(color) 111
+             547:  22(float*)   AccessChain 9(color) 111
              548:    6(float)   Load 547
              549:    6(float)   FAdd 548 96
                                 Store 547 549
-             550:     22(ptr)   AccessChain 9(color) 111
+             550:  22(float*)   AccessChain 9(color) 111
              551:    6(float)   Load 550
              553:    6(float)   Load 552(d11)
              554:    18(bool)   FOrdLessThan 551 553
                                 SelectionMerge 556 None
                                 BranchConditional 554 555 556
              555:                 Label
-             557:     22(ptr)     AccessChain 9(color) 66
+             557:  22(float*)     AccessChain 9(color) 66
              558:    6(float)     Load 557
              559:    6(float)     FAdd 558 96
                                   Store 557 559
-             560:     22(ptr)     AccessChain 9(color) 75
+             560:  22(float*)     AccessChain 9(color) 75
              561:    6(float)     Load 560
              563:    6(float)     Load 562(d12)
              564:    18(bool)     FOrdLessThan 561 563
                                   SelectionMerge 566 None
                                   BranchConditional 564 565 570
              565:                   Label
-             567:     22(ptr)       AccessChain 9(color) 75
+             567:  22(float*)       AccessChain 9(color) 75
              568:    6(float)       Load 567
              569:    6(float)       FAdd 568 96
                                     Store 567 569
                                     Branch 566
              570:                   Label
-             571:     22(ptr)       AccessChain 9(color) 21
+             571:  22(float*)       AccessChain 9(color) 21
              572:    6(float)       Load 571
              573:    6(float)       FAdd 572 96
                                     Store 571 573
@@ -891,9 +891,9 @@ spv.loops.frag
              566:                 Label
                                   Branch 540
              556:               Label
-             575:    7(fvec4)   Load 9(color)
-             576:    7(fvec4)   CompositeConstruct 96 96 96 96
-             577:    7(fvec4)   FAdd 575 576
+             575:     7(vec4)   Load 9(color)
+             576:     7(vec4)   CompositeConstruct 96 96 96 96
+             577:     7(vec4)   FAdd 575 576
                                 Store 9(color) 577
                                 Branch 539
              540:               Label
@@ -904,23 +904,23 @@ spv.loops.frag
                               LoopMerge 581 582 None
                               Branch 583
              583:             Label
-             584:     22(ptr) AccessChain 9(color) 21
+             584:  22(float*) AccessChain 9(color) 21
              585:    6(float) Load 584
              587:    18(bool) FOrdLessThan 585 586
                               BranchConditional 587 580 581
              580:               Label
-             589:    7(fvec4)   Load 588(bigColor8)
-             590:    7(fvec4)   Load 9(color)
-             591:    7(fvec4)   FAdd 590 589
+             589:     7(vec4)   Load 588(bigColor8)
+             590:     7(vec4)   Load 9(color)
+             591:     7(vec4)   FAdd 590 589
                                 Store 9(color) 591
-             592:     22(ptr)   AccessChain 9(color) 66
+             592:  22(float*)   AccessChain 9(color) 66
              593:    6(float)   Load 592
              594:    6(float)   Load 469(d8)
              595:    18(bool)   FOrdLessThan 593 594
                                 SelectionMerge 597 None
                                 BranchConditional 595 596 597
              596:                 Label
-             598:     22(ptr)     AccessChain 9(color) 75
+             598:  22(float*)     AccessChain 9(color) 75
              599:    6(float)     Load 598
              600:    6(float)     Load 366(d6)
              601:    18(bool)     FOrdLessThan 599 600
@@ -931,35 +931,35 @@ spv.loops.frag
              603:                 Label
                                   Branch 597
              597:               Label
-             605:     53(ptr)   AccessChain 588(bigColor8) 21
+             605:  53(float*)   AccessChain 588(bigColor8) 21
              606:    6(float)   Load 605
-             607:     22(ptr)   AccessChain 9(color) 111
+             607:  22(float*)   AccessChain 9(color) 111
              608:    6(float)   Load 607
              609:    6(float)   FAdd 608 606
-             610:     22(ptr)   AccessChain 9(color) 111
+             610:  22(float*)   AccessChain 9(color) 111
                                 Store 610 609
                                 Branch 582
              582:               Label
                                 Branch 579
              581:             Label
-             611:    7(fvec4) Load 9(color)
-             612:    7(fvec4) CompositeConstruct 96 96 96 96
-             613:    7(fvec4) FAdd 611 612
+             611:     7(vec4) Load 9(color)
+             612:     7(vec4) CompositeConstruct 96 96 96 96
+             613:     7(vec4) FAdd 611 612
                               Store 9(color) 613
-             616:    7(fvec4) Load 9(color)
+             616:     7(vec4) Load 9(color)
                               Store 615(gl_FragColor) 616
                               Branch 617
              617:             Label
                               LoopMerge 619 620 None
                               Branch 621
              621:             Label
-             622:     22(ptr) AccessChain 9(color) 21
+             622:  22(float*) AccessChain 9(color) 21
              623:    6(float) Load 622
              625:    6(float) Load 624(d14)
              626:    18(bool) FOrdLessThan 623 625
                               BranchConditional 626 618 619
              618:               Label
-             627:     22(ptr)   AccessChain 9(color) 111
+             627:  22(float*)   AccessChain 9(color) 111
              628:    6(float)   Load 627
              630:    6(float)   Load 629(d15)
              631:    18(bool)   FOrdLessThan 628 630
@@ -968,9 +968,9 @@ spv.loops.frag
              632:                 Label
                                   Return
              635:                 Label
-             636:    7(fvec4)     Load 9(color)
-             637:    7(fvec4)     CompositeConstruct 96 96 96 96
-             638:    7(fvec4)     FAdd 636 637
+             636:     7(vec4)     Load 9(color)
+             637:     7(vec4)     CompositeConstruct 96 96 96 96
+             638:     7(vec4)     FAdd 636 637
                                   Store 9(color) 638
                                   Branch 633
              633:               Label
@@ -978,22 +978,22 @@ spv.loops.frag
              620:               Label
                                 Branch 617
              619:             Label
-             639:    7(fvec4) Load 9(color)
-             640:    7(fvec4) CompositeConstruct 96 96 96 96
-             641:    7(fvec4) FAdd 639 640
+             639:     7(vec4) Load 9(color)
+             640:     7(vec4) CompositeConstruct 96 96 96 96
+             641:     7(vec4) FAdd 639 640
                               Store 9(color) 641
                               Branch 642
              642:             Label
                               LoopMerge 644 645 None
                               Branch 646
              646:             Label
-             647:     22(ptr) AccessChain 9(color) 75
+             647:  22(float*) AccessChain 9(color) 75
              648:    6(float) Load 647
              650:    6(float) Load 649(d16)
              651:    18(bool) FOrdLessThan 648 650
                               BranchConditional 651 643 644
              643:               Label
-             652:     22(ptr)   AccessChain 9(color) 75
+             652:  22(float*)   AccessChain 9(color) 75
              653:    6(float)   Load 652
              654:    6(float)   FAdd 653 96
                                 Store 652 654
@@ -1006,14 +1006,14 @@ spv.loops.frag
                               LoopMerge 657 658 None
                               Branch 659
              659:             Label
-             660:     22(ptr) AccessChain 9(color) 75
+             660:  22(float*) AccessChain 9(color) 75
              661:    6(float) Load 660
              662:    6(float) Load 106(d2)
              663:    18(bool) FOrdLessThan 661 662
                               SelectionMerge 665 None
                               BranchConditional 663 664 665
              664:               Label
-             666:     22(ptr)   AccessChain 9(color) 111
+             666:  22(float*)   AccessChain 9(color) 111
              667:    6(float)   Load 666
              668:    6(float)   Load 114(d3)
              669:    18(bool)   FOrdLessThan 667 668
@@ -1022,11 +1022,11 @@ spv.loops.frag
              670:    18(bool) Phi 663 659 669 664
                               BranchConditional 670 656 657
              656:             Label
-             671:    7(fvec4) Load 118(bigColor1_2)
-             672:    7(fvec4) Load 9(color)
-             673:    7(fvec4) FAdd 672 671
+             671:     7(vec4) Load 118(bigColor1_2)
+             672:     7(vec4) Load 9(color)
+             673:     7(vec4) FAdd 672 671
                               Store 9(color) 673
-             674:     22(ptr) AccessChain 9(color) 66
+             674:  22(float*) AccessChain 9(color) 66
              675:    6(float) Load 674
              676:    6(float) Load 114(d3)
              677:    18(bool) FOrdLessThan 675 676
@@ -1044,7 +1044,7 @@ spv.loops.frag
                               LoopMerge 683 684 None
                               Branch 682
              682:             Label
-             685:     22(ptr) AccessChain 9(color) 111
+             685:  22(float*) AccessChain 9(color) 111
              686:    6(float) Load 685
              688:    6(float) Load 687(d18)
              689:    18(bool) FOrdLessThan 686 688
@@ -1053,13 +1053,13 @@ spv.loops.frag
              690:               Label
                                 Return
              691:             Label
-             693:    7(fvec4) Load 9(color)
-             694:    7(fvec4) CompositeConstruct 96 96 96 96
-             695:    7(fvec4) FAdd 693 694
+             693:     7(vec4) Load 9(color)
+             694:     7(vec4) CompositeConstruct 96 96 96 96
+             695:     7(vec4) FAdd 693 694
                               Store 9(color) 695
                               Branch 684
              684:             Label
-             696:     22(ptr) AccessChain 9(color) 21
+             696:  22(float*) AccessChain 9(color) 21
              697:    6(float) Load 696
              699:    6(float) Load 698(d17)
              700:    18(bool) FOrdLessThan 697 699
@@ -1070,13 +1070,13 @@ spv.loops.frag
                               LoopMerge 703 704 None
                               Branch 705
              705:             Label
-             706:     22(ptr) AccessChain 9(color) 111
+             706:  22(float*) AccessChain 9(color) 111
              707:    6(float) Load 706
              708:    6(float) Load 649(d16)
              709:    18(bool) FOrdLessThan 707 708
                               BranchConditional 709 702 703
              702:               Label
-             710:     22(ptr)   AccessChain 9(color) 75
+             710:  22(float*)   AccessChain 9(color) 75
              711:    6(float)   Load 710
              712:    6(float)   Load 649(d16)
              713:    18(bool)   FOrdLessThan 711 712
@@ -1085,9 +1085,9 @@ spv.loops.frag
              714:                 Label
                                   Kill
              717:                 Label
-             718:    7(fvec4)     Load 9(color)
-             719:    7(fvec4)     CompositeConstruct 96 96 96 96
-             720:    7(fvec4)     FAdd 718 719
+             718:     7(vec4)     Load 9(color)
+             719:     7(vec4)     CompositeConstruct 96 96 96 96
+             720:     7(vec4)     FAdd 718 719
                                   Store 9(color) 720
                                   Branch 715
              715:               Label
@@ -1095,11 +1095,11 @@ spv.loops.frag
              704:               Label
                                 Branch 701
              703:             Label
-             721:    7(fvec4) Load 9(color)
-             722:    7(fvec4) CompositeConstruct 96 96 96 96
-             723:    7(fvec4) FAdd 721 722
+             721:     7(vec4) Load 9(color)
+             722:     7(vec4) CompositeConstruct 96 96 96 96
+             723:     7(vec4) FAdd 721 722
                               Store 9(color) 723
-             724:    7(fvec4) Load 9(color)
+             724:     7(vec4) Load 9(color)
                               Store 615(gl_FragColor) 724
                               Return
                               FunctionEnd

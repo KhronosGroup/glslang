@@ -237,68 +237,68 @@ gl_FragCoord origin is upper left
                               Decorate 96(input) Location 0
                               Decorate 99(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
               15:             TypeBool
               16:             TypeVector 15(bool) 4
               67:             TypePointer Function 6(float)
               69:             TypeInt 32 0
-              70:     69(int) Constant 2
+              70:    69(uint) Constant 2
               73:    6(float) Constant 0
               78:    6(float) Constant 1065353216
               80:             TypeInt 32 1
               81:             TypePointer Function 80(int)
               84:     80(int) Constant 1
-              95:             TypePointer Input 7(fvec4)
-       96(input):     95(ptr) Variable Input
-              98:             TypePointer Output 7(fvec4)
-99(@entryPointOutput):     98(ptr) Variable Output
-4(PixelShaderFunction):           2 Function None 3
+              95:             TypePointer Input 7(vec4)
+       96(input):   95(vec4*) Variable Input
+              98:             TypePointer Output 7(vec4)
+99(@entryPointOutput):   98(vec4*) Variable Output
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-       94(input):      8(ptr) Variable Function
-      100(param):      8(ptr) Variable Function
-              97:    7(fvec4) Load 96(input)
+       94(input):    8(vec4*) Variable Function
+      100(param):    8(vec4*) Variable Function
+              97:     7(vec4) Load 96(input)
                               Store 94(input) 97
-             101:    7(fvec4) Load 94(input)
+             101:     7(vec4) Load 94(input)
                               Store 100(param) 101
-             102:    7(fvec4) FunctionCall 11(@PixelShaderFunction(vf4;) 100(param)
+             102:     7(vec4) FunctionCall 11(@PixelShaderFunction(vf4;) 100(param)
                               Store 99(@entryPointOutput) 102
                               Return
                               FunctionEnd
-11(@PixelShaderFunction(vf4;):    7(fvec4) Function None 9
-       10(input):      8(ptr) FunctionParameter
+11(@PixelShaderFunction(vf4;):     7(vec4) Function None 9
+       10(input):    8(vec4*) FunctionParameter
               12:             Label
-          68(ii):     67(ptr) Variable Function
-          82(ii):     81(ptr) Variable Function
-              13:    7(fvec4) Load 10(input)
-              14:    7(fvec4) Load 10(input)
+          68(ii):  67(float*) Variable Function
+          82(ii):    81(int*) Variable Function
+              13:     7(vec4) Load 10(input)
+              14:     7(vec4) Load 10(input)
               17:   16(bvec4) FOrdEqual 13 14
               18:    15(bool) All 17
                               SelectionMerge 20 None
                               BranchConditional 18 19 20
               19:               Label
-              21:    7(fvec4)   Load 10(input)
+              21:     7(vec4)   Load 10(input)
                                 ReturnValue 21
               20:             Label
-              23:    7(fvec4) Load 10(input)
-              24:    7(fvec4) Load 10(input)
+              23:     7(vec4) Load 10(input)
+              24:     7(vec4) Load 10(input)
               25:   16(bvec4) FOrdEqual 23 24
               26:    15(bool) All 25
                               SelectionMerge 28 None
                               BranchConditional 26 27 31
               27:               Label
-              29:    7(fvec4)   Load 10(input)
+              29:     7(vec4)   Load 10(input)
                                 ReturnValue 29
               31:               Label
-              32:    7(fvec4)   Load 10(input)
-              33:    7(fvec4)   FNegate 32
+              32:     7(vec4)   Load 10(input)
+              33:     7(vec4)   FNegate 32
                                 ReturnValue 33
               28:             Label
-              35:    7(fvec4) Load 10(input)
-              36:    7(fvec4) Load 10(input)
+              35:     7(vec4) Load 10(input)
+              36:     7(vec4) Load 10(input)
               37:   16(bvec4) FOrdEqual 35 36
               38:    15(bool) All 37
                               SelectionMerge 40 None
@@ -306,8 +306,8 @@ gl_FragCoord origin is upper left
               39:               Label
                                 Branch 40
               40:             Label
-              41:    7(fvec4) Load 10(input)
-              42:    7(fvec4) Load 10(input)
+              41:     7(vec4) Load 10(input)
+              42:     7(vec4) Load 10(input)
               43:   16(bvec4) FOrdEqual 41 42
               44:    15(bool) All 43
                               SelectionMerge 46 None
@@ -315,31 +315,31 @@ gl_FragCoord origin is upper left
               45:               Label
                                 Branch 46
               46:             Label
-              47:    7(fvec4) Load 10(input)
-              48:    7(fvec4) Load 10(input)
+              47:     7(vec4) Load 10(input)
+              48:     7(vec4) Load 10(input)
               49:   16(bvec4) FOrdEqual 47 48
               50:    15(bool) All 49
                               SelectionMerge 52 Flatten 
                               BranchConditional 50 51 52
               51:               Label
-              53:    7(fvec4)   Load 10(input)
+              53:     7(vec4)   Load 10(input)
                                 ReturnValue 53
               52:             Label
-              55:    7(fvec4) Load 10(input)
-              56:    7(fvec4) Load 10(input)
+              55:     7(vec4) Load 10(input)
+              56:     7(vec4) Load 10(input)
               57:   16(bvec4) FOrdEqual 55 56
               58:    15(bool) All 57
                               SelectionMerge 60 None
                               BranchConditional 58 59 63
               59:               Label
-              61:    7(fvec4)   Load 10(input)
+              61:     7(vec4)   Load 10(input)
                                 ReturnValue 61
               63:               Label
-              64:    7(fvec4)   Load 10(input)
-              65:    7(fvec4)   FNegate 64
+              64:     7(vec4)   Load 10(input)
+              65:     7(vec4)   FNegate 64
                                 ReturnValue 65
               60:             Label
-              71:     67(ptr) AccessChain 10(input) 70
+              71:  67(float*) AccessChain 10(input) 70
               72:    6(float) Load 71
                               Store 68(ii) 72
               74:    15(bool) FOrdNotEqual 72 73
@@ -365,6 +365,6 @@ gl_FragCoord origin is upper left
                                 Store 82(ii) 92
                                 Branch 90
               90:             Label
-              93:    7(fvec4) Undef
+              93:     7(vec4) Undef
                               ReturnValue 93
                               FunctionEnd

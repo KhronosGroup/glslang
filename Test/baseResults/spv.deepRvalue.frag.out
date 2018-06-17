@@ -30,85 +30,85 @@ spv.deepRvalue.frag
                               Decorate 111(samp2D) DescriptorSet 0
                               Decorate 146(gl_FragColor) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Private 7(fvec4)
-           9(v1):      8(ptr) Variable Private
+               8:             TypePointer Private 7(vec4)
+           9(v1):    8(vec4*) Variable Private
               10:    6(float) Constant 1073741824
               11:    6(float) Constant 1077936128
               12:    6(float) Constant 1084227584
               13:    6(float) Constant 1088421888
-              14:    7(fvec4) ConstantComposite 10 11 12 13
-          15(v2):      8(ptr) Variable Private
+              14:     7(vec4) ConstantComposite 10 11 12 13
+          15(v2):    8(vec4*) Variable Private
               16:    6(float) Constant 1093664768
               17:    6(float) Constant 1095761920
               18:    6(float) Constant 1099431936
               19:    6(float) Constant 1100480512
-              20:    7(fvec4) ConstantComposite 16 17 18 19
-          21(v3):      8(ptr) Variable Private
+              20:     7(vec4) ConstantComposite 16 17 18 19
+          21(v3):    8(vec4*) Variable Private
               22:    6(float) Constant 1102577664
               23:    6(float) Constant 1105723392
               24:    6(float) Constant 1106771968
               25:    6(float) Constant 1108606976
-              26:    7(fvec4) ConstantComposite 22 23 24 25
-          27(v4):      8(ptr) Variable Private
+              26:     7(vec4) ConstantComposite 22 23 24 25
+          27(v4):    8(vec4*) Variable Private
               28:    6(float) Constant 1109655552
               29:    6(float) Constant 1110179840
               30:    6(float) Constant 1111228416
               31:    6(float) Constant 1112801280
-              32:    7(fvec4) ConstantComposite 28 29 30 31
-              33:             TypeMatrix 7(fvec4) 4
-              34:             TypePointer Function 33
+              32:     7(vec4) ConstantComposite 28 29 30 31
+              33:             TypeMatrix 7(vec4) 4
+              34:             TypePointer Function 33(mat4)
               40:    6(float) Constant 1065353216
               41:    6(float) Constant 0
               79:             TypePointer Function 6(float)
               81:             TypeInt 32 1
               82:     81(int) Constant 1
               83:             TypeInt 32 0
-              84:     83(int) Constant 3
+              84:    83(uint) Constant 3
              103:     81(int) Constant 2
-             104:     83(int) Constant 1
+             104:    83(uint) Constant 1
              108:             TypeImage 6(float) 2D sampled format:Unknown
              109:             TypeSampledImage 108
              110:             TypePointer UniformConstant 109
      111(samp2D):    110(ptr) Variable UniformConstant
              113:             TypeVector 6(float) 2
              114:    6(float) Constant 1056964608
-             115:  113(fvec2) ConstantComposite 114 114
+             115:   113(vec2) ConstantComposite 114 114
              119:    6(float) Constant 1036831949
              120:             TypeBool
              124:             TypeVector 120(bool) 4
-             130:             TypeArray 113(fvec2) 84
-        131(str):             TypeStruct 81(int) 130 120(bool)
+             130:             TypeArray 113(vec2) 84
+        131(str):             TypeStruct 81(int) 130(vec2[3]) 120(bool)
              132:             TypePointer Function 131(str)
-             134:  113(fvec2) ConstantComposite 10 11
+             134:   113(vec2) ConstantComposite 10 11
              135:    6(float) Constant 1082130432
-             136:  113(fvec2) ConstantComposite 135 12
+             136:   113(vec2) ConstantComposite 135 12
              137:    6(float) Constant 1086324736
-             138:  113(fvec2) ConstantComposite 137 13
-             139:         130 ConstantComposite 134 136 138
+             138:   113(vec2) ConstantComposite 137 13
+             139:130(vec2[3]) ConstantComposite 134 136 138
              140:   120(bool) ConstantTrue
              141:    131(str) ConstantComposite 82 139 140
-             145:             TypePointer Output 7(fvec4)
-146(gl_FragColor):    145(ptr) Variable Output
-         4(main):           2 Function None 3
+             145:             TypePointer Output 7(vec4)
+146(gl_FragColor):  145(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-           35(m):     34(ptr) Variable Function
-          63(mm):     34(ptr) Variable Function
-           80(f):     79(ptr) Variable Function
-           87(g):     79(ptr) Variable Function
-          106(h):     79(ptr) Variable Function
-          107(i):     79(ptr) Variable Function
-          133(t):    132(ptr) Variable Function
+           35(m):   34(mat4*) Variable Function
+          63(mm):   34(mat4*) Variable Function
+           80(f):  79(float*) Variable Function
+           87(g):  79(float*) Variable Function
+          106(h):  79(float*) Variable Function
+          107(i):  79(float*) Variable Function
+          133(t):   132(str*) Variable Function
                               Store 9(v1) 14
                               Store 15(v2) 20
                               Store 21(v3) 26
                               Store 27(v4) 32
-              36:    7(fvec4) Load 9(v1)
-              37:    7(fvec4) Load 15(v2)
-              38:    7(fvec4) Load 21(v3)
-              39:    7(fvec4) Load 27(v4)
+              36:     7(vec4) Load 9(v1)
+              37:     7(vec4) Load 15(v2)
+              38:     7(vec4) Load 21(v3)
+              39:     7(vec4) Load 27(v4)
               42:    6(float) CompositeExtract 36 0
               43:    6(float) CompositeExtract 36 1
               44:    6(float) CompositeExtract 36 2
@@ -125,59 +125,59 @@ spv.deepRvalue.frag
               55:    6(float) CompositeExtract 39 1
               56:    6(float) CompositeExtract 39 2
               57:    6(float) CompositeExtract 39 3
-              58:    7(fvec4) CompositeConstruct 42 43 44 45
-              59:    7(fvec4) CompositeConstruct 46 47 48 49
-              60:    7(fvec4) CompositeConstruct 50 51 52 53
-              61:    7(fvec4) CompositeConstruct 54 55 56 57
-              62:          33 CompositeConstruct 58 59 60 61
+              58:     7(vec4) CompositeConstruct 42 43 44 45
+              59:     7(vec4) CompositeConstruct 46 47 48 49
+              60:     7(vec4) CompositeConstruct 50 51 52 53
+              61:     7(vec4) CompositeConstruct 54 55 56 57
+              62:    33(mat4) CompositeConstruct 58 59 60 61
                               Store 35(m) 62
-              64:          33 Load 35(m)
-              65:          33 Load 35(m)
-              66:    7(fvec4) CompositeExtract 64 0
-              67:    7(fvec4) CompositeExtract 65 0
-              68:    7(fvec4) FMul 66 67
-              69:    7(fvec4) CompositeExtract 64 1
-              70:    7(fvec4) CompositeExtract 65 1
-              71:    7(fvec4) FMul 69 70
-              72:    7(fvec4) CompositeExtract 64 2
-              73:    7(fvec4) CompositeExtract 65 2
-              74:    7(fvec4) FMul 72 73
-              75:    7(fvec4) CompositeExtract 64 3
-              76:    7(fvec4) CompositeExtract 65 3
-              77:    7(fvec4) FMul 75 76
-              78:          33 CompositeConstruct 68 71 74 77
+              64:    33(mat4) Load 35(m)
+              65:    33(mat4) Load 35(m)
+              66:     7(vec4) CompositeExtract 64 0
+              67:     7(vec4) CompositeExtract 65 0
+              68:     7(vec4) FMul 66 67
+              69:     7(vec4) CompositeExtract 64 1
+              70:     7(vec4) CompositeExtract 65 1
+              71:     7(vec4) FMul 69 70
+              72:     7(vec4) CompositeExtract 64 2
+              73:     7(vec4) CompositeExtract 65 2
+              74:     7(vec4) FMul 72 73
+              75:     7(vec4) CompositeExtract 64 3
+              76:     7(vec4) CompositeExtract 65 3
+              77:     7(vec4) FMul 75 76
+              78:    33(mat4) CompositeConstruct 68 71 74 77
                               Store 63(mm) 78
-              85:     79(ptr) AccessChain 63(mm) 82 84
+              85:  79(float*) AccessChain 63(mm) 82 84
               86:    6(float) Load 85
                               Store 80(f) 86
-              88:          33 Load 35(m)
-              89:          33 Load 35(m)
-              90:    7(fvec4) CompositeExtract 88 0
-              91:    7(fvec4) CompositeExtract 89 0
-              92:    7(fvec4) FMul 90 91
-              93:    7(fvec4) CompositeExtract 88 1
-              94:    7(fvec4) CompositeExtract 89 1
-              95:    7(fvec4) FMul 93 94
-              96:    7(fvec4) CompositeExtract 88 2
-              97:    7(fvec4) CompositeExtract 89 2
-              98:    7(fvec4) FMul 96 97
-              99:    7(fvec4) CompositeExtract 88 3
-             100:    7(fvec4) CompositeExtract 89 3
-             101:    7(fvec4) FMul 99 100
-             102:          33 CompositeConstruct 92 95 98 101
+              88:    33(mat4) Load 35(m)
+              89:    33(mat4) Load 35(m)
+              90:     7(vec4) CompositeExtract 88 0
+              91:     7(vec4) CompositeExtract 89 0
+              92:     7(vec4) FMul 90 91
+              93:     7(vec4) CompositeExtract 88 1
+              94:     7(vec4) CompositeExtract 89 1
+              95:     7(vec4) FMul 93 94
+              96:     7(vec4) CompositeExtract 88 2
+              97:     7(vec4) CompositeExtract 89 2
+              98:     7(vec4) FMul 96 97
+              99:     7(vec4) CompositeExtract 88 3
+             100:     7(vec4) CompositeExtract 89 3
+             101:     7(vec4) FMul 99 100
+             102:    33(mat4) CompositeConstruct 92 95 98 101
              105:    6(float) CompositeExtract 102 2 1
                               Store 87(g) 105
                               Store 106(h) 12
              112:         109 Load 111(samp2D)
-             116:    7(fvec4) ImageSampleImplicitLod 112 115
+             116:     7(vec4) ImageSampleImplicitLod 112 115
              117:    6(float) CompositeExtract 116 1
                               Store 107(i) 117
              118:    6(float) Load 107(i)
              121:   120(bool) FOrdGreaterThan 118 119
-             122:    7(fvec4) Load 9(v1)
-             123:    7(fvec4) Load 15(v2)
+             122:     7(vec4) Load 9(v1)
+             123:     7(vec4) Load 15(v2)
              125:  124(bvec4) CompositeConstruct 121 121 121 121
-             126:    7(fvec4) Select 125 122 123
+             126:     7(vec4) Select 125 122 123
              127:    6(float) CompositeExtract 126 3
              128:    6(float) Load 107(i)
              129:    6(float) FAdd 128 127
@@ -191,7 +191,7 @@ spv.deepRvalue.frag
              148:    6(float) Load 87(g)
              149:    6(float) Load 106(h)
              150:    6(float) Load 107(i)
-             151:    7(fvec4) CompositeConstruct 147 148 149 150
+             151:     7(vec4) CompositeConstruct 147 148 149 150
                               Store 146(gl_FragColor) 151
                               Return
                               FunctionEnd

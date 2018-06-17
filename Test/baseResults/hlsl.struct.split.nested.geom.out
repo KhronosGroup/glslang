@@ -495,121 +495,121 @@ output primitive = triangle_strip
                               Decorate 69(tin.pos) BuiltIn Position
                               Decorate 77(tin) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeVector 6(float) 2
-        9(PS_IN):             TypeStruct 7(fvec4) 8(fvec2)
+        9(PS_IN):             TypeStruct 7(vec4) 8(vec2)
               10:             TypeInt 32 0
-              11:     10(int) Constant 3
+              11:    10(uint) Constant 3
               12:             TypeArray 9(PS_IN) 11
-              13:             TypePointer Function 12
-              14:     10(int) Constant 2
+              13:             TypePointer Function 12(PS_IN[3])
+              14:    10(uint) Constant 2
               15:             TypeArray 6(float) 14
               16:             TypeInt 32 1
-17(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO):             TypeStruct 15 16(int)
+17(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO):             TypeStruct 15(float[2]) 16(int)
       18(GS_OUT):             TypeStruct 9(PS_IN) 17(STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO)
               19:             TypePointer Function 18(GS_OUT)
-              20:             TypeFunction 2 13(ptr) 19(ptr)
+              20:             TypeFunction 2(void) 13(PS_IN[3]*) 19(GS_OUT*)
               26:     16(int) Constant 0
               27:    6(float) Constant 1065353216
               28:    6(float) Constant 1073741824
               29:    6(float) Constant 1077936128
               30:    6(float) Constant 1082130432
-              31:    7(fvec4) ConstantComposite 27 28 29 30
-              32:             TypePointer Function 7(fvec4)
+              31:     7(vec4) ConstantComposite 27 28 29 30
+              32:             TypePointer Function 7(vec4)
               34:     16(int) Constant 1
               35:    6(float) Constant 1084227584
               36:    6(float) Constant 1086324736
-              37:    8(fvec2) ConstantComposite 35 36
-              38:             TypePointer Function 8(fvec2)
+              37:     8(vec2) ConstantComposite 35 36
+              38:             TypePointer Function 8(vec2)
               40:    6(float) Constant 1075000115
               41:             TypePointer Function 6(float)
               44:     16(int) Constant 2
               45:             TypePointer Function 16(int)
-              47:             TypePointer Output 7(fvec4)
-      48(ts.pos):     47(ptr) Variable Output
-              51:             TypePointer Output 8(fvec2)
-  52(ts.psIn.tc):     51(ptr) Variable Output
+              47:             TypePointer Output 7(vec4)
+      48(ts.pos):   47(vec4*) Variable Output
+              51:             TypePointer Output 8(vec2)
+  52(ts.psIn.tc):   51(vec2*) Variable Output
               55:             TypePointer Output 6(float)
-56(ts.contains_no_builtin_io.m0_array[0]):     55(ptr) Variable Output
-59(ts.contains_no_builtin_io.m0_array[1]):     55(ptr) Variable Output
+56(ts.contains_no_builtin_io.m0_array[0]):  55(float*) Variable Output
+59(ts.contains_no_builtin_io.m0_array[1]):  55(float*) Variable Output
               62:             TypePointer Output 16(int)
-63(ts.contains_no_builtin_io.m1):     62(ptr) Variable Output
-              67:             TypeArray 7(fvec4) 11
-              68:             TypePointer Input 67
-     69(tin.pos):     68(ptr) Variable Input
-              70:             TypePointer Input 7(fvec4)
-       74(PS_IN):             TypeStruct 8(fvec2)
+63(ts.contains_no_builtin_io.m1):    62(int*) Variable Output
+              67:             TypeArray 7(vec4) 11
+              68:             TypePointer Input 67(vec4[3])
+     69(tin.pos):68(vec4[3]*) Variable Input
+              70:             TypePointer Input 7(vec4)
+       74(PS_IN):             TypeStruct 8(vec2)
               75:             TypeArray 74(PS_IN) 11
-              76:             TypePointer Input 75
-         77(tin):     76(ptr) Variable Input
-              78:             TypePointer Input 8(fvec2)
-         4(main):           2 Function None 3
+              76:             TypePointer Input 75(PS_IN[3])
+         77(tin):76(PS_IN[3]*) Variable Input
+              78:             TypePointer Input 8(vec2)
+         4(main):     2(void) Function None 3
                5:             Label
-         66(tin):     13(ptr) Variable Function
-          94(ts):     19(ptr) Variable Function
-       95(param):     13(ptr) Variable Function
-       97(param):     19(ptr) Variable Function
-              71:     70(ptr) AccessChain 69(tin.pos) 26
-              72:    7(fvec4) Load 71
-              73:     32(ptr) AccessChain 66(tin) 26 26
+         66(tin):13(PS_IN[3]*) Variable Function
+          94(ts): 19(GS_OUT*) Variable Function
+       95(param):13(PS_IN[3]*) Variable Function
+       97(param): 19(GS_OUT*) Variable Function
+              71:   70(vec4*) AccessChain 69(tin.pos) 26
+              72:     7(vec4) Load 71
+              73:   32(vec4*) AccessChain 66(tin) 26 26
                               Store 73 72
-              79:     78(ptr) AccessChain 77(tin) 26 26
-              80:    8(fvec2) Load 79
-              81:     38(ptr) AccessChain 66(tin) 26 34
+              79:   78(vec2*) AccessChain 77(tin) 26 26
+              80:     8(vec2) Load 79
+              81:   38(vec2*) AccessChain 66(tin) 26 34
                               Store 81 80
-              82:     70(ptr) AccessChain 69(tin.pos) 34
-              83:    7(fvec4) Load 82
-              84:     32(ptr) AccessChain 66(tin) 34 26
+              82:   70(vec4*) AccessChain 69(tin.pos) 34
+              83:     7(vec4) Load 82
+              84:   32(vec4*) AccessChain 66(tin) 34 26
                               Store 84 83
-              85:     78(ptr) AccessChain 77(tin) 34 26
-              86:    8(fvec2) Load 85
-              87:     38(ptr) AccessChain 66(tin) 34 34
+              85:   78(vec2*) AccessChain 77(tin) 34 26
+              86:     8(vec2) Load 85
+              87:   38(vec2*) AccessChain 66(tin) 34 34
                               Store 87 86
-              88:     70(ptr) AccessChain 69(tin.pos) 44
-              89:    7(fvec4) Load 88
-              90:     32(ptr) AccessChain 66(tin) 44 26
+              88:   70(vec4*) AccessChain 69(tin.pos) 44
+              89:     7(vec4) Load 88
+              90:   32(vec4*) AccessChain 66(tin) 44 26
                               Store 90 89
-              91:     78(ptr) AccessChain 77(tin) 44 26
-              92:    8(fvec2) Load 91
-              93:     38(ptr) AccessChain 66(tin) 44 34
+              91:   78(vec2*) AccessChain 77(tin) 44 26
+              92:     8(vec2) Load 91
+              93:   38(vec2*) AccessChain 66(tin) 44 34
                               Store 93 92
-              96:          12 Load 66(tin)
+              96:12(PS_IN[3]) Load 66(tin)
                               Store 95(param) 96
-              98:           2 FunctionCall 23(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;) 95(param) 97(param)
+              98:     2(void) FunctionCall 23(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;) 95(param) 97(param)
               99:  18(GS_OUT) Load 97(param)
                               Store 94(ts) 99
                               Return
                               FunctionEnd
-23(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;):           2 Function None 20
-         21(tin):     13(ptr) FunctionParameter
-          22(ts):     19(ptr) FunctionParameter
+23(@main(struct-PS_IN-vf4-vf21[3];struct-GS_OUT-struct-PS_IN-vf4-vf21-struct-STRUCT_WITH_NO_BUILTIN_INTERSTAGE_IO-f1[2]-i111;):     2(void) Function None 20
+         21(tin):13(PS_IN[3]*) FunctionParameter
+          22(ts): 19(GS_OUT*) FunctionParameter
               24:             Label
-           25(o):     19(ptr) Variable Function
-              33:     32(ptr) AccessChain 25(o) 26 26
+           25(o): 19(GS_OUT*) Variable Function
+              33:   32(vec4*) AccessChain 25(o) 26 26
                               Store 33 31
-              39:     38(ptr) AccessChain 25(o) 26 34
+              39:   38(vec2*) AccessChain 25(o) 26 34
                               Store 39 37
-              42:     41(ptr) AccessChain 25(o) 34 26 26
+              42:  41(float*) AccessChain 25(o) 34 26 26
                               Store 42 40
-              43:     41(ptr) AccessChain 25(o) 34 26 34
+              43:  41(float*) AccessChain 25(o) 34 26 34
                               Store 43 40
-              46:     45(ptr) AccessChain 25(o) 34 34
+              46:    45(int*) AccessChain 25(o) 34 34
                               Store 46 44
-              49:     32(ptr) AccessChain 25(o) 26 26
-              50:    7(fvec4) Load 49
+              49:   32(vec4*) AccessChain 25(o) 26 26
+              50:     7(vec4) Load 49
                               Store 48(ts.pos) 50
-              53:     38(ptr) AccessChain 25(o) 26 34
-              54:    8(fvec2) Load 53
+              53:   38(vec2*) AccessChain 25(o) 26 34
+              54:     8(vec2) Load 53
                               Store 52(ts.psIn.tc) 54
-              57:     41(ptr) AccessChain 25(o) 34 26 26
+              57:  41(float*) AccessChain 25(o) 34 26 26
               58:    6(float) Load 57
                               Store 56(ts.contains_no_builtin_io.m0_array[0]) 58
-              60:     41(ptr) AccessChain 25(o) 34 26 34
+              60:  41(float*) AccessChain 25(o) 34 26 34
               61:    6(float) Load 60
                               Store 59(ts.contains_no_builtin_io.m0_array[1]) 61
-              64:     45(ptr) AccessChain 25(o) 34 34
+              64:    45(int*) AccessChain 25(o) 34 34
               65:     16(int) Load 64
                               Store 63(ts.contains_no_builtin_io.m1) 65
                               EmitVertex

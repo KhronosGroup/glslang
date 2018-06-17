@@ -17,7 +17,7 @@ hlsl.aliasOpaque.frag
                               Decorate 51(gtex) DescriptorSet 0
                               Decorate 62(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeSampler
                7:             TypeFloat 32
                8:             TypeImage 7(float) 2D sampled format:Unknown
@@ -26,21 +26,21 @@ hlsl.aliasOpaque.frag
               34:             TypeVector 7(float) 2
               35:    7(float) Constant 1045220557
               36:    7(float) Constant 1050253722
-              37:   34(fvec2) ConstantComposite 35 36
+              37:    34(vec2) ConstantComposite 35 36
               43:             TypePointer UniformConstant 6
          47(gss):     43(ptr) Variable UniformConstant
               50:             TypePointer UniformConstant 8
         51(gtex):     50(ptr) Variable UniformConstant
               54:    7(float) Constant 1077936128
-              61:             TypePointer Output 11(fvec4)
-62(@entryPointOutput):     61(ptr) Variable Output
-         4(main):           2 Function None 3
+              61:             TypePointer Output 11(vec4)
+62(@entryPointOutput):   61(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               70:           6 Load 47(gss)
               72:           8 Load 51(gtex)
               84:          32 SampledImage 72 70
-              85:   11(fvec4) ImageSampleImplicitLod 84 37
-              86:   11(fvec4) VectorTimesScalar 85 54
+              85:    11(vec4) ImageSampleImplicitLod 84 37
+              86:    11(vec4) VectorTimesScalar 85 54
                               Store 62(@entryPointOutput) 86
                               Return
                               FunctionEnd

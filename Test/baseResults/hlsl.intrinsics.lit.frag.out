@@ -146,27 +146,27 @@ gl_FragCoord origin is upper left
                               Decorate 36(n_dot_h) Location 1
                               Decorate 39(m) Location 2
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 2 7(ptr) 7(ptr) 7(ptr)
+               8:             TypeFunction 2(void) 7(float*) 7(float*) 7(float*)
               14:             TypeVector 6(float) 4
-              15:             TypePointer Function 14(fvec4)
+              15:             TypePointer Function 14(vec4)
               17:    6(float) Constant 1065353216
               19:    6(float) Constant 0
               24:             TypeBool
               32:             TypePointer Input 6(float)
-     33(n_dot_l):     32(ptr) Variable Input
-     36(n_dot_h):     32(ptr) Variable Input
-           39(m):     32(ptr) Variable Input
-4(PixelShaderFunction):           2 Function None 3
+     33(n_dot_l):  32(float*) Variable Input
+     36(n_dot_h):  32(float*) Variable Input
+           39(m):  32(float*) Variable Input
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-     31(n_dot_l):      7(ptr) Variable Function
-     35(n_dot_h):      7(ptr) Variable Function
-           38(m):      7(ptr) Variable Function
-       41(param):      7(ptr) Variable Function
-       43(param):      7(ptr) Variable Function
-       45(param):      7(ptr) Variable Function
+     31(n_dot_l):   7(float*) Variable Function
+     35(n_dot_h):   7(float*) Variable Function
+           38(m):   7(float*) Variable Function
+       41(param):   7(float*) Variable Function
+       43(param):   7(float*) Variable Function
+       45(param):   7(float*) Variable Function
               34:    6(float) Load 33(n_dot_l)
                               Store 31(n_dot_l) 34
               37:    6(float) Load 36(n_dot_h)
@@ -179,15 +179,15 @@ gl_FragCoord origin is upper left
                               Store 43(param) 44
               46:    6(float) Load 38(m)
                               Store 45(param) 46
-              47:           2 FunctionCall 12(@PixelShaderFunction(f1;f1;f1;) 41(param) 43(param) 45(param)
+              47:     2(void) FunctionCall 12(@PixelShaderFunction(f1;f1;f1;) 41(param) 43(param) 45(param)
                               Return
                               FunctionEnd
-12(@PixelShaderFunction(f1;f1;f1;):           2 Function None 8
-      9(n_dot_l):      7(ptr) FunctionParameter
-     10(n_dot_h):      7(ptr) FunctionParameter
-           11(m):      7(ptr) FunctionParameter
+12(@PixelShaderFunction(f1;f1;f1;):     2(void) Function None 8
+      9(n_dot_l):   7(float*) FunctionParameter
+     10(n_dot_h):   7(float*) FunctionParameter
+           11(m):   7(float*) FunctionParameter
               13:             Label
-          16(r0):     15(ptr) Variable Function
+          16(r0):   15(vec4*) Variable Function
               18:    6(float) Load 9(n_dot_l)
               20:    6(float) ExtInst 1(GLSL.std.450) 40(FMax) 18 19
               21:    6(float) Load 9(n_dot_l)
@@ -198,7 +198,7 @@ gl_FragCoord origin is upper left
               27:    6(float) Load 11(m)
               28:    6(float) FMul 26 27
               29:    6(float) Select 25 19 28
-              30:   14(fvec4) CompositeConstruct 17 20 29 17
+              30:    14(vec4) CompositeConstruct 17 20 29 17
                               Store 16(r0) 30
                               Return
                               FunctionEnd

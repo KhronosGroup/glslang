@@ -72,163 +72,163 @@ spv.300layout.vert
                               Decorate 108(iout) Flat
                               Decorate 120(aiv2) Location 9
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Output 7(fvec4)
-          9(pos):      8(ptr) Variable Output
-              10:             TypePointer Input 7(fvec4)
-           11(p):     10(ptr) Variable Input
-              13:             TypeMatrix 7(fvec4) 4
+               8:             TypePointer Output 7(vec4)
+          9(pos):    8(vec4*) Variable Output
+              10:             TypePointer Input 7(vec4)
+           11(p):   10(vec4*) Variable Input
+              13:             TypeMatrix 7(vec4) 4
               14:             TypeVector 6(float) 3
-              15:             TypeMatrix 14(fvec3) 3
+              15:             TypeMatrix 14(vec3) 3
               16:             TypeInt 32 1
-   17(Transform):             TypeStruct 13 13 15 16(int)
+   17(Transform):             TypeStruct 13(mat4) 13(mat4) 15(mat3) 16(int)
               18:             TypePointer Uniform 17(Transform)
-      19(tblock):     18(ptr) Variable Uniform
+      19(tblock):18(Transform*) Variable Uniform
               20:     16(int) Constant 0
-              21:             TypePointer Uniform 13
+              21:             TypePointer Uniform 13(mat4)
               24:     16(int) Constant 1
-              40:             TypeMatrix 14(fvec3) 2
+              40:             TypeMatrix 14(vec3) 2
               41:             TypeInt 32 0
-              42:             TypeVector 41(int) 3
-              43:     41(int) Constant 4
-              44:             TypeArray 42(ivec3) 43
-          45(T3):             TypeStruct 13 13 40 44
+              42:             TypeVector 41(uint) 3
+              43:    41(uint) Constant 4
+              44:             TypeArray 42(uvec3) 43
+          45(T3):             TypeStruct 13(mat4) 13(mat4) 40(mat2x3) 44(uvec3[4])
               46:             TypePointer Uniform 45(T3)
-              47:     46(ptr) Variable Uniform
-          78(T2):             TypeStruct 41(int) 13
+              47:     46(T3*) Variable Uniform
+          78(T2):             TypeStruct 41(uint) 13(mat4)
               79:             TypePointer Uniform 78(T2)
-              80:     79(ptr) Variable Uniform
-              97:             TypePointer Output 14(fvec3)
-       98(color):     97(ptr) Variable Output
-              99:             TypePointer Input 14(fvec3)
-          100(c):     99(ptr) Variable Input
+              80:     79(T2*) Variable Uniform
+              97:             TypePointer Output 14(vec3)
+       98(color):   97(vec3*) Variable Output
+              99:             TypePointer Input 14(vec3)
+          100(c):   99(vec3*) Variable Input
              102:     16(int) Constant 2
-             103:             TypePointer Uniform 15
+             103:             TypePointer Uniform 15(mat3)
              107:             TypePointer Output 16(int)
-       108(iout):    107(ptr) Variable Output
+       108(iout):   107(int*) Variable Output
              109:     16(int) Constant 3
              110:             TypePointer Uniform 16(int)
-             113:             TypePointer Input 41(int)
-      114(uiuin):    113(ptr) Variable Input
+             113:             TypePointer Input 41(uint)
+      114(uiuin):  113(uint*) Variable Input
              118:             TypeVector 16(int) 2
              119:             TypePointer Input 118(ivec2)
-       120(aiv2):    119(ptr) Variable Input
-             121:     41(int) Constant 1
+       120(aiv2): 119(ivec2*) Variable Input
+             121:    41(uint) Constant 1
              122:             TypePointer Input 16(int)
-          126(S):             TypeStruct 14(fvec3) 6(float)
+          126(S):             TypeStruct 14(vec3) 6(float)
              127:             TypePointer Output 126(S)
-          128(s):    127(ptr) Variable Output
-             131:     41(int) Constant 0
+          128(s):     127(S*) Variable Output
+             131:    41(uint) Constant 0
              132:             TypePointer Input 6(float)
              135:             TypePointer Output 6(float)
              137:             TypeBool
-             138:             TypePointer Uniform 14(fvec3)
+             138:             TypePointer Uniform 14(vec3)
              141:    6(float) Constant 1065353216
-             142:   14(fvec3) ConstantComposite 141 141 141
+             142:    14(vec3) ConstantComposite 141 141 141
              143:             TypeVector 137(bool) 3
-             149:             TypePointer Uniform 42(ivec3)
-             152:     41(int) Constant 5
-             153:   42(ivec3) ConstantComposite 152 152 152
-         4(main):           2 Function None 3
+             149:             TypePointer Uniform 42(uvec3)
+             152:    41(uint) Constant 5
+             153:   42(uvec3) ConstantComposite 152 152 152
+         4(main):     2(void) Function None 3
                5:             Label
-              12:    7(fvec4) Load 11(p)
-              22:     21(ptr) AccessChain 19(tblock) 20
-              23:          13 Load 22
-              25:     21(ptr) AccessChain 19(tblock) 24
-              26:          13 Load 25
-              27:    7(fvec4) CompositeExtract 23 0
-              28:    7(fvec4) CompositeExtract 26 0
-              29:    7(fvec4) FAdd 27 28
-              30:    7(fvec4) CompositeExtract 23 1
-              31:    7(fvec4) CompositeExtract 26 1
-              32:    7(fvec4) FAdd 30 31
-              33:    7(fvec4) CompositeExtract 23 2
-              34:    7(fvec4) CompositeExtract 26 2
-              35:    7(fvec4) FAdd 33 34
-              36:    7(fvec4) CompositeExtract 23 3
-              37:    7(fvec4) CompositeExtract 26 3
-              38:    7(fvec4) FAdd 36 37
-              39:          13 CompositeConstruct 29 32 35 38
-              48:     21(ptr) AccessChain 47 24
-              49:          13 Load 48
-              50:    7(fvec4) CompositeExtract 39 0
-              51:    7(fvec4) CompositeExtract 49 0
-              52:    7(fvec4) FAdd 50 51
-              53:    7(fvec4) CompositeExtract 39 1
-              54:    7(fvec4) CompositeExtract 49 1
-              55:    7(fvec4) FAdd 53 54
-              56:    7(fvec4) CompositeExtract 39 2
-              57:    7(fvec4) CompositeExtract 49 2
-              58:    7(fvec4) FAdd 56 57
-              59:    7(fvec4) CompositeExtract 39 3
-              60:    7(fvec4) CompositeExtract 49 3
-              61:    7(fvec4) FAdd 59 60
-              62:          13 CompositeConstruct 52 55 58 61
-              63:     21(ptr) AccessChain 47 20
-              64:          13 Load 63
-              65:    7(fvec4) CompositeExtract 62 0
-              66:    7(fvec4) CompositeExtract 64 0
-              67:    7(fvec4) FAdd 65 66
-              68:    7(fvec4) CompositeExtract 62 1
-              69:    7(fvec4) CompositeExtract 64 1
-              70:    7(fvec4) FAdd 68 69
-              71:    7(fvec4) CompositeExtract 62 2
-              72:    7(fvec4) CompositeExtract 64 2
-              73:    7(fvec4) FAdd 71 72
-              74:    7(fvec4) CompositeExtract 62 3
-              75:    7(fvec4) CompositeExtract 64 3
-              76:    7(fvec4) FAdd 74 75
-              77:          13 CompositeConstruct 67 70 73 76
-              81:     21(ptr) AccessChain 80 24
-              82:          13 Load 81
-              83:    7(fvec4) CompositeExtract 77 0
-              84:    7(fvec4) CompositeExtract 82 0
-              85:    7(fvec4) FAdd 83 84
-              86:    7(fvec4) CompositeExtract 77 1
-              87:    7(fvec4) CompositeExtract 82 1
-              88:    7(fvec4) FAdd 86 87
-              89:    7(fvec4) CompositeExtract 77 2
-              90:    7(fvec4) CompositeExtract 82 2
-              91:    7(fvec4) FAdd 89 90
-              92:    7(fvec4) CompositeExtract 77 3
-              93:    7(fvec4) CompositeExtract 82 3
-              94:    7(fvec4) FAdd 92 93
-              95:          13 CompositeConstruct 85 88 91 94
-              96:    7(fvec4) VectorTimesMatrix 12 95
+              12:     7(vec4) Load 11(p)
+              22:   21(mat4*) AccessChain 19(tblock) 20
+              23:    13(mat4) Load 22
+              25:   21(mat4*) AccessChain 19(tblock) 24
+              26:    13(mat4) Load 25
+              27:     7(vec4) CompositeExtract 23 0
+              28:     7(vec4) CompositeExtract 26 0
+              29:     7(vec4) FAdd 27 28
+              30:     7(vec4) CompositeExtract 23 1
+              31:     7(vec4) CompositeExtract 26 1
+              32:     7(vec4) FAdd 30 31
+              33:     7(vec4) CompositeExtract 23 2
+              34:     7(vec4) CompositeExtract 26 2
+              35:     7(vec4) FAdd 33 34
+              36:     7(vec4) CompositeExtract 23 3
+              37:     7(vec4) CompositeExtract 26 3
+              38:     7(vec4) FAdd 36 37
+              39:    13(mat4) CompositeConstruct 29 32 35 38
+              48:   21(mat4*) AccessChain 47 24
+              49:    13(mat4) Load 48
+              50:     7(vec4) CompositeExtract 39 0
+              51:     7(vec4) CompositeExtract 49 0
+              52:     7(vec4) FAdd 50 51
+              53:     7(vec4) CompositeExtract 39 1
+              54:     7(vec4) CompositeExtract 49 1
+              55:     7(vec4) FAdd 53 54
+              56:     7(vec4) CompositeExtract 39 2
+              57:     7(vec4) CompositeExtract 49 2
+              58:     7(vec4) FAdd 56 57
+              59:     7(vec4) CompositeExtract 39 3
+              60:     7(vec4) CompositeExtract 49 3
+              61:     7(vec4) FAdd 59 60
+              62:    13(mat4) CompositeConstruct 52 55 58 61
+              63:   21(mat4*) AccessChain 47 20
+              64:    13(mat4) Load 63
+              65:     7(vec4) CompositeExtract 62 0
+              66:     7(vec4) CompositeExtract 64 0
+              67:     7(vec4) FAdd 65 66
+              68:     7(vec4) CompositeExtract 62 1
+              69:     7(vec4) CompositeExtract 64 1
+              70:     7(vec4) FAdd 68 69
+              71:     7(vec4) CompositeExtract 62 2
+              72:     7(vec4) CompositeExtract 64 2
+              73:     7(vec4) FAdd 71 72
+              74:     7(vec4) CompositeExtract 62 3
+              75:     7(vec4) CompositeExtract 64 3
+              76:     7(vec4) FAdd 74 75
+              77:    13(mat4) CompositeConstruct 67 70 73 76
+              81:   21(mat4*) AccessChain 80 24
+              82:    13(mat4) Load 81
+              83:     7(vec4) CompositeExtract 77 0
+              84:     7(vec4) CompositeExtract 82 0
+              85:     7(vec4) FAdd 83 84
+              86:     7(vec4) CompositeExtract 77 1
+              87:     7(vec4) CompositeExtract 82 1
+              88:     7(vec4) FAdd 86 87
+              89:     7(vec4) CompositeExtract 77 2
+              90:     7(vec4) CompositeExtract 82 2
+              91:     7(vec4) FAdd 89 90
+              92:     7(vec4) CompositeExtract 77 3
+              93:     7(vec4) CompositeExtract 82 3
+              94:     7(vec4) FAdd 92 93
+              95:    13(mat4) CompositeConstruct 85 88 91 94
+              96:     7(vec4) VectorTimesMatrix 12 95
                               Store 9(pos) 96
-             101:   14(fvec3) Load 100(c)
-             104:    103(ptr) AccessChain 19(tblock) 102
-             105:          15 Load 104
-             106:   14(fvec3) VectorTimesMatrix 101 105
+             101:    14(vec3) Load 100(c)
+             104:  103(mat3*) AccessChain 19(tblock) 102
+             105:    15(mat3) Load 104
+             106:    14(vec3) VectorTimesMatrix 101 105
                               Store 98(color) 106
-             111:    110(ptr) AccessChain 19(tblock) 109
+             111:   110(int*) AccessChain 19(tblock) 109
              112:     16(int) Load 111
-             115:     41(int) Load 114(uiuin)
+             115:    41(uint) Load 114(uiuin)
              116:     16(int) Bitcast 115
              117:     16(int) IAdd 112 116
-             123:    122(ptr) AccessChain 120(aiv2) 121
+             123:   122(int*) AccessChain 120(aiv2) 121
              124:     16(int) Load 123
              125:     16(int) IAdd 117 124
                               Store 108(iout) 125
-             129:   14(fvec3) Load 100(c)
-             130:     97(ptr) AccessChain 128(s) 20
+             129:    14(vec3) Load 100(c)
+             130:   97(vec3*) AccessChain 128(s) 20
                               Store 130 129
-             133:    132(ptr) AccessChain 11(p) 131
+             133: 132(float*) AccessChain 11(p) 131
              134:    6(float) Load 133
-             136:    135(ptr) AccessChain 128(s) 24
+             136: 135(float*) AccessChain 128(s) 24
                               Store 136 134
-             139:    138(ptr) AccessChain 47 102 24
-             140:   14(fvec3) Load 139
+             139:  138(vec3*) AccessChain 47 102 24
+             140:    14(vec3) Load 139
              144:  143(bvec3) FOrdNotEqual 140 142
              145:   137(bool) Any 144
              146:   137(bool) LogicalNot 145
                               SelectionMerge 148 None
                               BranchConditional 146 147 148
              147:               Label
-             150:    149(ptr)   AccessChain 47 109 102
-             151:   42(ivec3)   Load 150
+             150: 149(uvec3*)   AccessChain 47 109 102
+             151:   42(uvec3)   Load 150
              154:  143(bvec3)   INotEqual 151 153
              155:   137(bool)   Any 154
                                 Branch 148
@@ -237,10 +237,10 @@ spv.300layout.vert
                               SelectionMerge 158 None
                               BranchConditional 156 157 158
              157:               Label
-             159:     97(ptr)   AccessChain 128(s) 20
-             160:   14(fvec3)   Load 159
-             161:   14(fvec3)   CompositeConstruct 141 141 141
-             162:   14(fvec3)   FAdd 160 161
+             159:   97(vec3*)   AccessChain 128(s) 20
+             160:    14(vec3)   Load 159
+             161:    14(vec3)   CompositeConstruct 141 141 141
+             162:    14(vec3)   FAdd 160 161
                                 Store 159 162
                                 Branch 158
              158:             Label

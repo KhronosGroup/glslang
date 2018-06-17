@@ -416,12 +416,12 @@ using depth_any
                               Decorate 146(g_tTex1df4) DescriptorSet 0
                               Decorate 146(g_tTex1df4) Binding 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4) 6(float)
+    8(PS_OUTPUT):             TypeStruct 7(vec4) 6(float)
                9:             TypeFunction 8(PS_OUTPUT)
-              12:             TypePointer Function 7(fvec4)
+              12:             TypePointer Function 7(vec4)
               14:             TypeImage 6(float) 1D array sampled format:Unknown
               15:             TypePointer UniformConstant 14
  16(g_tTex1df4a):     15(ptr) Variable UniformConstant
@@ -432,7 +432,7 @@ using depth_any
               24:             TypeVector 6(float) 2
               25:    6(float) Constant 1036831949
               26:    6(float) Constant 1045220557
-              27:   24(fvec2) ConstantComposite 25 26
+              27:    24(vec2) ConstantComposite 25 26
               28:    6(float) Constant 1061158912
               30:             TypeInt 32 1
               31:             TypeVector 30(int) 4
@@ -442,92 +442,92 @@ using depth_any
  36(g_tTex1di4a):     35(ptr) Variable UniformConstant
               39:             TypeSampledImage 34
               41:    6(float) Constant 1050253722
-              42:   24(fvec2) ConstantComposite 26 41
+              42:    24(vec2) ConstantComposite 26 41
               44:             TypeInt 32 0
-              45:             TypeVector 44(int) 4
-              46:             TypePointer Function 45(ivec4)
-              48:             TypeImage 44(int) 1D array sampled format:Unknown
+              45:             TypeVector 44(uint) 4
+              46:             TypePointer Function 45(uvec4)
+              48:             TypeImage 44(uint) 1D array sampled format:Unknown
               49:             TypePointer UniformConstant 48
  50(g_tTex1du4a):     49(ptr) Variable UniformConstant
               53:             TypeSampledImage 48
               55:    6(float) Constant 1053609165
-              56:   24(fvec2) ConstantComposite 41 55
+              56:    24(vec2) ConstantComposite 41 55
               59:             TypeImage 6(float) 2D array sampled format:Unknown
               60:             TypePointer UniformConstant 59
  61(g_tTex2df4a):     60(ptr) Variable UniformConstant
               64:             TypeSampledImage 59
               66:             TypeVector 6(float) 3
-              67:   66(fvec3) ConstantComposite 25 26 41
+              67:    66(vec3) ConstantComposite 25 26 41
               70:             TypeImage 30(int) 2D array sampled format:Unknown
               71:             TypePointer UniformConstant 70
  72(g_tTex2di4a):     71(ptr) Variable UniformConstant
               75:             TypeSampledImage 70
               77:    6(float) Constant 1056964608
-              78:   66(fvec3) ConstantComposite 41 55 77
-              81:             TypeImage 44(int) 2D array sampled format:Unknown
+              78:    66(vec3) ConstantComposite 41 55 77
+              81:             TypeImage 44(uint) 2D array sampled format:Unknown
               82:             TypePointer UniformConstant 81
  83(g_tTex2du4a):     82(ptr) Variable UniformConstant
               86:             TypeSampledImage 81
               88:    6(float) Constant 1058642330
               89:    6(float) Constant 1060320051
-              90:   66(fvec3) ConstantComposite 77 88 89
+              90:    66(vec3) ConstantComposite 77 88 89
               93:             TypeImage 6(float) Cube array sampled format:Unknown
               94:             TypePointer UniformConstant 93
  95(g_tTexcdf4a):     94(ptr) Variable UniformConstant
               98:             TypeSampledImage 93
-             100:    7(fvec4) ConstantComposite 25 26 41 55
+             100:     7(vec4) ConstantComposite 25 26 41 55
              103:             TypeImage 30(int) Cube array sampled format:Unknown
              104:             TypePointer UniformConstant 103
 105(g_tTexcdi4a):    104(ptr) Variable UniformConstant
              108:             TypeSampledImage 103
-             110:    7(fvec4) ConstantComposite 55 77 88 89
-             113:             TypeImage 44(int) Cube array sampled format:Unknown
+             110:     7(vec4) ConstantComposite 55 77 88 89
+             113:             TypeImage 44(uint) Cube array sampled format:Unknown
              114:             TypePointer UniformConstant 113
 115(g_tTexcdu4a):    114(ptr) Variable UniformConstant
              118:             TypeSampledImage 113
              120:    6(float) Constant 1061997773
              121:    6(float) Constant 1063675494
              122:    6(float) Constant 1065353216
-             123:    7(fvec4) ConstantComposite 89 120 121 122
+             123:     7(vec4) ConstantComposite 89 120 121 122
              125:             TypePointer Function 8(PS_OUTPUT)
              127:     30(int) Constant 0
-             128:    7(fvec4) ConstantComposite 122 122 122 122
+             128:     7(vec4) ConstantComposite 122 122 122 122
              130:     30(int) Constant 1
              131:             TypePointer Function 6(float)
-             138:             TypePointer Output 7(fvec4)
-139(@entryPointOutput.Color):    138(ptr) Variable Output
+             138:             TypePointer Output 7(vec4)
+139(@entryPointOutput.Color):  138(vec4*) Variable Output
              142:             TypePointer Output 6(float)
-143(@entryPointOutput.Depth):    142(ptr) Variable Output
+143(@entryPointOutput.Depth): 142(float*) Variable Output
  146(g_tTex1df4):     15(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-136(flattenTemp):    125(ptr) Variable Function
+136(flattenTemp):125(PS_OUTPUT*) Variable Function
              137:8(PS_OUTPUT) FunctionCall 10(@main()
                               Store 136(flattenTemp) 137
-             140:     12(ptr) AccessChain 136(flattenTemp) 127
-             141:    7(fvec4) Load 140
+             140:   12(vec4*) AccessChain 136(flattenTemp) 127
+             141:     7(vec4) Load 140
                               Store 139(@entryPointOutput.Color) 141
-             144:    131(ptr) AccessChain 136(flattenTemp) 130
+             144: 131(float*) AccessChain 136(flattenTemp) 130
              145:    6(float) Load 144
                               Store 143(@entryPointOutput.Depth) 145
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-     13(txval10):     12(ptr) Variable Function
-     33(txval11):     32(ptr) Variable Function
-     47(txval12):     46(ptr) Variable Function
-     58(txval20):     12(ptr) Variable Function
-     69(txval21):     32(ptr) Variable Function
-     80(txval22):     46(ptr) Variable Function
-     92(txval40):     12(ptr) Variable Function
-    102(txval41):     32(ptr) Variable Function
-    112(txval42):     46(ptr) Variable Function
-      126(psout):    125(ptr) Variable Function
+     13(txval10):   12(vec4*) Variable Function
+     33(txval11):  32(ivec4*) Variable Function
+     47(txval12):  46(uvec4*) Variable Function
+     58(txval20):   12(vec4*) Variable Function
+     69(txval21):  32(ivec4*) Variable Function
+     80(txval22):  46(uvec4*) Variable Function
+     92(txval40):   12(vec4*) Variable Function
+    102(txval41):  32(ivec4*) Variable Function
+    112(txval42):  46(uvec4*) Variable Function
+      126(psout):125(PS_OUTPUT*) Variable Function
               17:          14 Load 16(g_tTex1df4a)
               21:          18 Load 20(g_sSamp)
               23:          22 SampledImage 17 21
-              29:    7(fvec4) ImageSampleExplicitLod 23 27 Lod 28
+              29:     7(vec4) ImageSampleExplicitLod 23 27 Lod 28
                               Store 13(txval10) 29
               37:          34 Load 36(g_tTex1di4a)
               38:          18 Load 20(g_sSamp)
@@ -537,12 +537,12 @@ using depth_any
               51:          48 Load 50(g_tTex1du4a)
               52:          18 Load 20(g_sSamp)
               54:          53 SampledImage 51 52
-              57:   45(ivec4) ImageSampleExplicitLod 54 56 Lod 28
+              57:   45(uvec4) ImageSampleExplicitLod 54 56 Lod 28
                               Store 47(txval12) 57
               62:          59 Load 61(g_tTex2df4a)
               63:          18 Load 20(g_sSamp)
               65:          64 SampledImage 62 63
-              68:    7(fvec4) ImageSampleExplicitLod 65 67 Lod 28
+              68:     7(vec4) ImageSampleExplicitLod 65 67 Lod 28
                               Store 58(txval20) 68
               73:          70 Load 72(g_tTex2di4a)
               74:          18 Load 20(g_sSamp)
@@ -552,12 +552,12 @@ using depth_any
               84:          81 Load 83(g_tTex2du4a)
               85:          18 Load 20(g_sSamp)
               87:          86 SampledImage 84 85
-              91:   45(ivec4) ImageSampleExplicitLod 87 90 Lod 28
+              91:   45(uvec4) ImageSampleExplicitLod 87 90 Lod 28
                               Store 80(txval22) 91
               96:          93 Load 95(g_tTexcdf4a)
               97:          18 Load 20(g_sSamp)
               99:          98 SampledImage 96 97
-             101:    7(fvec4) ImageSampleExplicitLod 99 100 Lod 28
+             101:     7(vec4) ImageSampleExplicitLod 99 100 Lod 28
                               Store 92(txval40) 101
              106:         103 Load 105(g_tTexcdi4a)
              107:          18 Load 20(g_sSamp)
@@ -567,11 +567,11 @@ using depth_any
              116:         113 Load 115(g_tTexcdu4a)
              117:          18 Load 20(g_sSamp)
              119:         118 SampledImage 116 117
-             124:   45(ivec4) ImageSampleExplicitLod 119 123 Lod 28
+             124:   45(uvec4) ImageSampleExplicitLod 119 123 Lod 28
                               Store 112(txval42) 124
-             129:     12(ptr) AccessChain 126(psout) 127
+             129:   12(vec4*) AccessChain 126(psout) 127
                               Store 129 128
-             132:    131(ptr) AccessChain 126(psout) 130
+             132: 131(float*) AccessChain 126(psout) 130
                               Store 132 122
              133:8(PS_OUTPUT) Load 126(psout)
                               ReturnValue 133

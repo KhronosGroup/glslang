@@ -138,67 +138,67 @@ triangle order = ccw
                               Decorate 37(@entryPointOutput) Location 0
                               Decorate 39(InvocationId) BuiltIn InvocationId
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 3
-       8(VS_OUT):             TypeStruct 7(fvec3)
+       8(VS_OUT):             TypeStruct 7(vec3)
                9:             TypeInt 32 0
-              10:      9(int) Constant 3
+              10:     9(uint) Constant 3
               11:             TypeArray 8(VS_OUT) 10
-              12:             TypePointer Function 11
-      13(HS_OUT):             TypeStruct 7(fvec3)
-              14:             TypeFunction 13(HS_OUT) 12(ptr)
+              12:             TypePointer Function 11(VS_OUT[3])
+      13(HS_OUT):             TypeStruct 7(vec3)
+              14:             TypeFunction 13(HS_OUT) 12(VS_OUT[3]*)
               20:             TypePointer Function 13(HS_OUT)
               22:             TypeInt 32 1
               23:     22(int) Constant 0
-              24:             TypePointer Function 7(fvec3)
-              32:             TypePointer Input 11
-          33(ip):     32(ptr) Variable Input
+              24:             TypePointer Function 7(vec3)
+              32:             TypePointer Input 11(VS_OUT[3])
+          33(ip):32(VS_OUT[3]*) Variable Input
               35:             TypeArray 13(HS_OUT) 10
-              36:             TypePointer Output 35
-37(@entryPointOutput):     36(ptr) Variable Output
-              38:             TypePointer Input 9(int)
-39(InvocationId):     38(ptr) Variable Input
+              36:             TypePointer Output 35(HS_OUT[3])
+37(@entryPointOutput):36(HS_OUT[3]*) Variable Output
+              38:             TypePointer Input 9(uint)
+39(InvocationId):   38(uint*) Variable Input
               44:             TypePointer Output 13(HS_OUT)
-              46:      9(int) Constant 2
-              47:      9(int) Constant 4
-              48:      9(int) Constant 0
+              46:     9(uint) Constant 2
+              47:     9(uint) Constant 4
+              48:     9(uint) Constant 0
               50:             TypeBool
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-          31(ip):     12(ptr) Variable Function
-       41(param):     12(ptr) Variable Function
-              34:          11 Load 33(ip)
+          31(ip):12(VS_OUT[3]*) Variable Function
+       41(param):12(VS_OUT[3]*) Variable Function
+              34:11(VS_OUT[3]) Load 33(ip)
                               Store 31(ip) 34
-              40:      9(int) Load 39(InvocationId)
-              42:          11 Load 31(ip)
+              40:     9(uint) Load 39(InvocationId)
+              42:11(VS_OUT[3]) Load 31(ip)
                               Store 41(param) 42
               43:  13(HS_OUT) FunctionCall 16(@main(struct-VS_OUT-vf31[3];) 41(param)
-              45:     44(ptr) AccessChain 37(@entryPointOutput) 40
+              45: 44(HS_OUT*) AccessChain 37(@entryPointOutput) 40
                               Store 45 43
                               ControlBarrier 46 47 48
-              49:      9(int) Load 39(InvocationId)
+              49:     9(uint) Load 39(InvocationId)
               51:    50(bool) IEqual 49 23
                               SelectionMerge 53 None
                               BranchConditional 51 52 53
               52:               Label
-              54:           2   FunctionCall 18(PCF()
+              54:     2(void)   FunctionCall 18(PCF()
                                 Branch 53
               53:             Label
                               Return
                               FunctionEnd
 16(@main(struct-VS_OUT-vf31[3];):  13(HS_OUT) Function None 14
-          15(ip):     12(ptr) FunctionParameter
+          15(ip):12(VS_OUT[3]*) FunctionParameter
               17:             Label
-      21(output):     20(ptr) Variable Function
-              25:     24(ptr) AccessChain 15(ip) 23 23
-              26:    7(fvec3) Load 25
-              27:     24(ptr) AccessChain 21(output) 23
+      21(output): 20(HS_OUT*) Variable Function
+              25:   24(vec3*) AccessChain 15(ip) 23 23
+              26:     7(vec3) Load 25
+              27:   24(vec3*) AccessChain 21(output) 23
                               Store 27 26
               28:  13(HS_OUT) Load 21(output)
                               ReturnValue 28
                               FunctionEnd
-        18(PCF():           2 Function None 3
+        18(PCF():     2(void) Function None 3
               19:             Label
                               Return
                               FunctionEnd

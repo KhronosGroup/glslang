@@ -33,34 +33,34 @@ spv.vulkan110.storageBuffer.vert
                               Decorate 22(bb) Block
                               Decorate 24(bbi) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeInt 32 0
-               9:      8(int) Constant 1
+               9:     8(uint) Constant 1
               10:             TypeArray 6(float) 9
-11(gl_PerVertex):             TypeStruct 7(fvec4) 6(float) 10 10
+11(gl_PerVertex):             TypeStruct 7(vec4) 6(float) 10(float[1]) 10(float[1])
               12:             TypePointer Output 11(gl_PerVertex)
-              13:     12(ptr) Variable Output
+              13:12(gl_PerVertex*) Variable Output
               14:             TypeInt 32 1
               15:     14(int) Constant 0
-          16(ub):             TypeStruct 7(fvec4)
+          16(ub):             TypeStruct 7(vec4)
               17:             TypePointer Uniform 16(ub)
-         18(ubi):     17(ptr) Variable Uniform
-              19:             TypePointer Uniform 7(fvec4)
-          22(bb):             TypeStruct 7(fvec4)
+         18(ubi):     17(ub*) Variable Uniform
+              19:             TypePointer Uniform 7(vec4)
+          22(bb):             TypeStruct 7(vec4)
               23:             TypePointer StorageBuffer 22(bb)
-         24(bbi):     23(ptr) Variable StorageBuffer
-              25:             TypePointer StorageBuffer 7(fvec4)
-              29:             TypePointer Output 7(fvec4)
-         4(main):           2 Function None 3
+         24(bbi):     23(bb*) Variable StorageBuffer
+              25:             TypePointer StorageBuffer 7(vec4)
+              29:             TypePointer Output 7(vec4)
+         4(main):     2(void) Function None 3
                5:             Label
-              20:     19(ptr) AccessChain 18(ubi) 15
-              21:    7(fvec4) Load 20
-              26:     25(ptr) AccessChain 24(bbi) 15
-              27:    7(fvec4) Load 26
-              28:    7(fvec4) FAdd 21 27
-              30:     29(ptr) AccessChain 13 15
+              20:   19(vec4*) AccessChain 18(ubi) 15
+              21:     7(vec4) Load 20
+              26:   25(vec4*) AccessChain 24(bbi) 15
+              27:     7(vec4) Load 26
+              28:     7(vec4) FAdd 21 27
+              30:   29(vec4*) AccessChain 13 15
                               Store 30 28
                               Return
                               FunctionEnd

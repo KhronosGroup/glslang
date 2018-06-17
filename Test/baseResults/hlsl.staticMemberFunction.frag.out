@@ -139,62 +139,62 @@ gl_FragCoord origin is upper left
                               Name 52  "@entryPointOutput"
                               Decorate 52(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
               13:             TypeInt 32 1
               14:             TypePointer Function 13(int)
-              15:             TypeFunction 13(int) 14(ptr)
-              19:             TypeFunction 7(fvec4)
+              15:             TypeFunction 13(int) 14(int*)
+              19:             TypeFunction 7(vec4)
               22:    6(float) Constant 1073741824
               27:     13(int) Constant 2
               33:    6(float) Constant 1065353216
-              34:    7(fvec4) ConstantComposite 33 33 33 33
+              34:     7(vec4) ConstantComposite 33 33 33 33
               35:    6(float) Constant 1084227584
-              36:    7(fvec4) ConstantComposite 35 35 35 35
+              36:     7(vec4) ConstantComposite 35 35 35 35
               41:     13(int) Constant 7
-              51:             TypePointer Output 7(fvec4)
-52(@entryPointOutput):     51(ptr) Variable Output
-         4(main):           2 Function None 3
+              51:             TypePointer Output 7(vec4)
+52(@entryPointOutput):   51(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              53:    7(fvec4) FunctionCall 20(@main()
+              53:     7(vec4) FunctionCall 20(@main()
                               Store 52(@entryPointOutput) 53
                               Return
                               FunctionEnd
-11(Test::staticMemFun(vf4;):    7(fvec4) Function None 9
-           10(a):      8(ptr) FunctionParameter
+11(Test::staticMemFun(vf4;):     7(vec4) Function None 9
+           10(a):    8(vec4*) FunctionParameter
               12:             Label
-              23:    7(fvec4) Load 10(a)
-              24:    7(fvec4) VectorTimesScalar 23 22
+              23:     7(vec4) Load 10(a)
+              24:     7(vec4) VectorTimesScalar 23 22
                               ReturnValue 24
                               FunctionEnd
 17(Test::staticMemFun(i1;):     13(int) Function None 15
-           16(a):     14(ptr) FunctionParameter
+           16(a):    14(int*) FunctionParameter
               18:             Label
               28:     13(int) Load 16(a)
               29:     13(int) IAdd 27 28
                               ReturnValue 29
                               FunctionEnd
-      20(@main():    7(fvec4) Function None 19
+      20(@main():     7(vec4) Function None 19
               21:             Label
-          32(f4):      8(ptr) Variable Function
-       37(param):      8(ptr) Variable Function
-       42(param):     14(ptr) Variable Function
+          32(f4):    8(vec4*) Variable Function
+       37(param):    8(vec4*) Variable Function
+       42(param):    14(int*) Variable Function
                               Store 32(f4) 34
                               Store 37(param) 36
-              38:    7(fvec4) FunctionCall 11(Test::staticMemFun(vf4;) 37(param)
-              39:    7(fvec4) Load 32(f4)
-              40:    7(fvec4) FAdd 39 38
+              38:     7(vec4) FunctionCall 11(Test::staticMemFun(vf4;) 37(param)
+              39:     7(vec4) Load 32(f4)
+              40:     7(vec4) FAdd 39 38
                               Store 32(f4) 40
                               Store 42(param) 41
               43:     13(int) FunctionCall 17(Test::staticMemFun(i1;) 42(param)
               44:    6(float) ConvertSToF 43
-              45:    7(fvec4) Load 32(f4)
-              46:    7(fvec4) CompositeConstruct 44 44 44 44
-              47:    7(fvec4) FAdd 45 46
+              45:     7(vec4) Load 32(f4)
+              46:     7(vec4) CompositeConstruct 44 44 44 44
+              47:     7(vec4) FAdd 45 46
                               Store 32(f4) 47
-              48:    7(fvec4) Load 32(f4)
+              48:     7(vec4) Load 32(f4)
                               ReturnValue 48
                               FunctionEnd

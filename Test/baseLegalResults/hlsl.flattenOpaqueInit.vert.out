@@ -16,7 +16,7 @@ hlsl.flattenOpaqueInit.vert
                               Decorate 47(g_tInputTexture) DescriptorSet 0
                               Decorate 80(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeSampler
                7:             TypeFloat 32
                8:             TypeImage 7(float) 2D sampled format:Unknown
@@ -25,28 +25,28 @@ hlsl.flattenOpaqueInit.vert
               33:             TypeVector 7(float) 2
               34:    7(float) Constant 1050253722
               35:    7(float) Constant 1053609165
-              36:   33(fvec2) ConstantComposite 34 35
+              36:    33(vec2) ConstantComposite 34 35
               37:    7(float) Constant 0
               42:             TypePointer UniformConstant 6
 43(g_tInputTexture_sampler):     42(ptr) Variable UniformConstant
               46:             TypePointer UniformConstant 8
 47(g_tInputTexture):     46(ptr) Variable UniformConstant
-              79:             TypePointer Output 11(fvec4)
-80(@entryPointOutput):     79(ptr) Variable Output
-         4(main):           2 Function None 3
+              79:             TypePointer Output 11(vec4)
+80(@entryPointOutput):   79(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               90:           6 Load 43(g_tInputTexture_sampler)
               91:           8 Load 47(g_tInputTexture)
              111:          31 SampledImage 91 90
-             112:   11(fvec4) ImageSampleExplicitLod 111 36 Lod 37
+             112:    11(vec4) ImageSampleExplicitLod 111 36 Lod 37
              115:           6 Load 43(g_tInputTexture_sampler)
              117:           8 Load 47(g_tInputTexture)
              125:          31 SampledImage 117 115
-             126:   11(fvec4) ImageSampleExplicitLod 125 36 Lod 37
-              99:   11(fvec4) FAdd 112 126
+             126:    11(vec4) ImageSampleExplicitLod 125 36 Lod 37
+              99:    11(vec4) FAdd 112 126
              132:          31 SampledImage 91 90
-             133:   11(fvec4) ImageSampleExplicitLod 132 36 Lod 37
-             104:   11(fvec4) FAdd 99 133
+             133:    11(vec4) ImageSampleExplicitLod 132 36 Lod 37
+             104:    11(vec4) FAdd 99 133
                               Store 80(@entryPointOutput) 104
                               Return
                               FunctionEnd

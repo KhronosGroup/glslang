@@ -97,35 +97,35 @@ gl_FragCoord origin is upper left
                               Name 29  "@entryPointOutput"
                               Decorate 29(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypePointer Function 6(float)
               16:             TypeVector 6(float) 3
               17:    6(float) Constant 0
-              18:   16(fvec3) ConstantComposite 17 17 17
-              19:             TypePointer Function 16(fvec3)
-              25:    7(fvec4) ConstantComposite 17 17 17 17
-              28:             TypePointer Output 7(fvec4)
-29(@entryPointOutput):     28(ptr) Variable Output
-         4(main):           2 Function None 3
+              18:    16(vec3) ConstantComposite 17 17 17
+              19:             TypePointer Function 16(vec3)
+              25:     7(vec4) ConstantComposite 17 17 17 17
+              28:             TypePointer Output 7(vec4)
+29(@entryPointOutput):   28(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              30:    7(fvec4) FunctionCall 9(@main()
+              30:     7(vec4) FunctionCall 9(@main()
                               Store 29(@entryPointOutput) 30
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-         12(f1a):     11(ptr) Variable Function
-         13(f1b):     11(ptr) Variable Function
-          20(f3):     19(ptr) Variable Function
+         12(f1a):  11(float*) Variable Function
+         13(f1b):  11(float*) Variable Function
+          20(f3):   19(vec3*) Variable Function
               14:    6(float) Load 13(f1b)
                               Store 12(f1a) 14
               15:    6(float) Load 12(f1a)
                               Store 13(f1b) 15
-              21:   16(fvec3) Load 20(f3)
-              22:   16(fvec3) ExtInst 1(GLSL.std.450) 48(Step) 18 21
+              21:    16(vec3) Load 20(f3)
+              22:    16(vec3) ExtInst 1(GLSL.std.450) 48(Step) 18 21
               23:    6(float) Load 13(f1b)
               24:    6(float) ExtInst 1(GLSL.std.450) 13(Sin) 23
                               ReturnValue 25

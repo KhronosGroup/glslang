@@ -73,36 +73,36 @@ gl_FragCoord origin is upper left
                               Name 24  "param"
                               Decorate 22(input) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
               10:             TypeFloat 32
               11:             TypeVector 10(float) 4
-              12:             TypePointer Function 11(fvec4)
-              13:             TypeFunction 2 12(ptr)
-              21:             TypePointer Input 11(fvec4)
-       22(input):     21(ptr) Variable Input
-4(PixelShaderFunction):           2 Function None 3
+              12:             TypePointer Function 11(vec4)
+              13:             TypeFunction 2(void) 12(vec4*)
+              21:             TypePointer Input 11(vec4)
+       22(input):   21(vec4*) Variable Input
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-       20(input):     12(ptr) Variable Function
-       24(param):     12(ptr) Variable Function
-              23:   11(fvec4) Load 22(input)
+       20(input):   12(vec4*) Variable Function
+       24(param):   12(vec4*) Variable Function
+              23:    11(vec4) Load 22(input)
                               Store 20(input) 23
-              25:   11(fvec4) Load 20(input)
+              25:    11(vec4) Load 20(input)
                               Store 24(param) 25
-              26:           2 FunctionCall 15(@PixelShaderFunction(vf4;) 24(param)
+              26:     2(void) FunctionCall 15(@PixelShaderFunction(vf4;) 24(param)
                               Return
                               FunctionEnd
-        6(foo1():           2 Function None 3
+        6(foo1():     2(void) Function None 3
                7:             Label
                               Return
                               FunctionEnd
-        8(foo2():           2 Function None 3
+        8(foo2():     2(void) Function None 3
                9:             Label
                               Return
                               FunctionEnd
-15(@PixelShaderFunction(vf4;):           2 Function None 13
-       14(input):     12(ptr) FunctionParameter
+15(@PixelShaderFunction(vf4;):     2(void) Function None 13
+       14(input):   12(vec4*) FunctionParameter
               16:             Label
-              17:           2 FunctionCall 6(foo1()
-              18:           2 FunctionCall 8(foo2()
+              17:     2(void) FunctionCall 6(foo1()
+              18:     2(void) FunctionCall 8(foo2()
                               Return
                               FunctionEnd

@@ -144,60 +144,60 @@ gl_FragCoord origin is upper left
                               Decorate 41(@entryPointOutput.vColor) Location 0
                               Decorate 47(@entryPointOutput.nCoverageMask) BuiltIn SampleMask
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
      6(PS_INPUT):             TypeStruct
                7:             TypePointer Function 6(PS_INPUT)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
               10:             TypeInt 32 0
-   11(PS_OUTPUT):             TypeStruct 9(fvec4) 10(int)
-              12:             TypeFunction 11(PS_OUTPUT) 7(ptr)
+   11(PS_OUTPUT):             TypeStruct 9(vec4) 10(uint)
+              12:             TypeFunction 11(PS_OUTPUT) 7(PS_INPUT*)
               16:             TypePointer Function 11(PS_OUTPUT)
               18:             TypeInt 32 1
               19:     18(int) Constant 0
               20:    8(float) Constant 1065353216
               21:    8(float) Constant 0
-              22:    9(fvec4) ConstantComposite 20 21 21 20
-              23:             TypePointer Function 9(fvec4)
+              22:     9(vec4) ConstantComposite 20 21 21 20
+              23:             TypePointer Function 9(vec4)
               25:     18(int) Constant 1
-              26:     10(int) Constant 0
-              27:             TypePointer Function 10(int)
+              26:    10(uint) Constant 0
+              27:             TypePointer Function 10(uint)
               33:             TypePointer Input 6(PS_INPUT)
-           34(i):     33(ptr) Variable Input
-              40:             TypePointer Output 9(fvec4)
-41(@entryPointOutput.vColor):     40(ptr) Variable Output
-              44:     10(int) Constant 1
-              45:             TypeArray 10(int) 44
-              46:             TypePointer Output 45
-47(@entryPointOutput.nCoverageMask):     46(ptr) Variable Output
-              50:             TypePointer Output 10(int)
-         4(main):           2 Function None 3
+           34(i):33(PS_INPUT*) Variable Input
+              40:             TypePointer Output 9(vec4)
+41(@entryPointOutput.vColor):   40(vec4*) Variable Output
+              44:    10(uint) Constant 1
+              45:             TypeArray 10(uint) 44
+              46:             TypePointer Output 45(uint[1])
+47(@entryPointOutput.nCoverageMask):46(uint[1]*) Variable Output
+              50:             TypePointer Output 10(uint)
+         4(main):     2(void) Function None 3
                5:             Label
-           32(i):      7(ptr) Variable Function
- 36(flattenTemp):     16(ptr) Variable Function
-       37(param):      7(ptr) Variable Function
+           32(i):7(PS_INPUT*) Variable Function
+ 36(flattenTemp):16(PS_OUTPUT*) Variable Function
+       37(param):7(PS_INPUT*) Variable Function
               35: 6(PS_INPUT) Load 34(i)
                               Store 32(i) 35
               38: 6(PS_INPUT) Load 32(i)
                               Store 37(param) 38
               39:11(PS_OUTPUT) FunctionCall 14(@main(struct-PS_INPUT1;) 37(param)
                               Store 36(flattenTemp) 39
-              42:     23(ptr) AccessChain 36(flattenTemp) 19
-              43:    9(fvec4) Load 42
+              42:   23(vec4*) AccessChain 36(flattenTemp) 19
+              43:     9(vec4) Load 42
                               Store 41(@entryPointOutput.vColor) 43
-              48:     27(ptr) AccessChain 36(flattenTemp) 25
-              49:     10(int) Load 48
-              51:     50(ptr) AccessChain 47(@entryPointOutput.nCoverageMask) 19
+              48:   27(uint*) AccessChain 36(flattenTemp) 25
+              49:    10(uint) Load 48
+              51:   50(uint*) AccessChain 47(@entryPointOutput.nCoverageMask) 19
                               Store 51 49
                               Return
                               FunctionEnd
 14(@main(struct-PS_INPUT1;):11(PS_OUTPUT) Function None 12
-           13(i):      7(ptr) FunctionParameter
+           13(i):7(PS_INPUT*) FunctionParameter
               15:             Label
-           17(o):     16(ptr) Variable Function
-              24:     23(ptr) AccessChain 17(o) 19
+           17(o):16(PS_OUTPUT*) Variable Function
+              24:   23(vec4*) AccessChain 17(o) 19
                               Store 24 22
-              28:     27(ptr) AccessChain 17(o) 25
+              28:   27(uint*) AccessChain 17(o) 25
                               Store 28 26
               29:11(PS_OUTPUT) Load 17(o)
                               ReturnValue 29

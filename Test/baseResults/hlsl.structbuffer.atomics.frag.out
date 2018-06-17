@@ -502,100 +502,100 @@ gl_FragCoord origin is upper left
                               Decorate 80(pos) Location 0
                               Decorate 83(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypePointer Function 6(int)
+               7:             TypePointer Function 6(uint)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
-              10:             TypeFunction 9(fvec4) 7(ptr)
-              14:             TypeRuntimeArray 6(int)
-        15(sbuf):             TypeStruct 14
+              10:             TypeFunction 9(vec4) 7(uint*)
+              14:             TypeRuntimeArray 6(uint)
+        15(sbuf):             TypeStruct 14(uint[])
               16:             TypePointer Uniform 15(sbuf)
-        17(sbuf):     16(ptr) Variable Uniform
+        17(sbuf):   16(sbuf*) Variable Uniform
               18:             TypeInt 32 1
               19:     18(int) Constant 0
               20:     18(int) Constant 8
               21:     18(int) Constant 2
-              23:             TypePointer Uniform 6(int)
+              23:             TypePointer Uniform 6(uint)
               25:     18(int) Constant 1
-              26:      6(int) Constant 1
-              27:      6(int) Constant 0
-              79:             TypePointer Input 6(int)
-         80(pos):     79(ptr) Variable Input
-              82:             TypePointer Output 9(fvec4)
-83(@entryPointOutput):     82(ptr) Variable Output
-         4(main):           2 Function None 3
+              26:     6(uint) Constant 1
+              27:     6(uint) Constant 0
+              79:             TypePointer Input 6(uint)
+         80(pos):   79(uint*) Variable Input
+              82:             TypePointer Output 9(vec4)
+83(@entryPointOutput):   82(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-         78(pos):      7(ptr) Variable Function
-       84(param):      7(ptr) Variable Function
-              81:      6(int) Load 80(pos)
+         78(pos):    7(uint*) Variable Function
+       84(param):    7(uint*) Variable Function
+              81:     6(uint) Load 80(pos)
                               Store 78(pos) 81
-              85:      6(int) Load 78(pos)
+              85:     6(uint) Load 78(pos)
                               Store 84(param) 85
-              86:    9(fvec4) FunctionCall 12(@main(u1;) 84(param)
+              86:     9(vec4) FunctionCall 12(@main(u1;) 84(param)
                               Store 83(@entryPointOutput) 86
                               Return
                               FunctionEnd
-   12(@main(u1;):    9(fvec4) Function None 10
-         11(pos):      7(ptr) FunctionParameter
+   12(@main(u1;):     9(vec4) Function None 10
+         11(pos):    7(uint*) FunctionParameter
               13:             Label
-           29(u):      7(ptr) Variable Function
+           29(u):    7(uint*) Variable Function
               22:     18(int) ShiftRightArithmetic 20 21
-              24:     23(ptr) AccessChain 17(sbuf) 19 22
-              28:      6(int) AtomicIAdd 24 26 27 25
+              24:   23(uint*) AccessChain 17(sbuf) 19 22
+              28:     6(uint) AtomicIAdd 24 26 27 25
               30:     18(int) ShiftRightArithmetic 20 21
-              31:     23(ptr) AccessChain 17(sbuf) 19 30
-              32:      6(int) AtomicIAdd 31 26 27 25
+              31:   23(uint*) AccessChain 17(sbuf) 19 30
+              32:     6(uint) AtomicIAdd 31 26 27 25
                               Store 29(u) 32
               33:     18(int) ShiftRightArithmetic 20 21
-              34:     23(ptr) AccessChain 17(sbuf) 19 33
-              35:      6(int) AtomicAnd 34 26 27 25
+              34:   23(uint*) AccessChain 17(sbuf) 19 33
+              35:     6(uint) AtomicAnd 34 26 27 25
               36:     18(int) ShiftRightArithmetic 20 21
-              37:     23(ptr) AccessChain 17(sbuf) 19 36
-              38:      6(int) AtomicAnd 37 26 27 25
+              37:   23(uint*) AccessChain 17(sbuf) 19 36
+              38:     6(uint) AtomicAnd 37 26 27 25
                               Store 29(u) 38
               39:     18(int) ShiftRightArithmetic 20 21
-              40:     23(ptr) AccessChain 17(sbuf) 19 39
+              40:   23(uint*) AccessChain 17(sbuf) 19 39
               41:     18(int) AtomicCompareExchange 40 26 27 27 21 25
-              42:      6(int) Bitcast 41
+              42:     6(uint) Bitcast 41
                               Store 29(u) 42
               43:     18(int) ShiftRightArithmetic 20 21
-              44:     23(ptr) AccessChain 17(sbuf) 19 43
-              45:      6(int) AtomicExchange 44 26 27 25
+              44:   23(uint*) AccessChain 17(sbuf) 19 43
+              45:     6(uint) AtomicExchange 44 26 27 25
                               Store 29(u) 45
               46:     18(int) ShiftRightArithmetic 20 21
-              47:     23(ptr) AccessChain 17(sbuf) 19 46
-              48:      6(int) AtomicUMax 47 26 27 25
+              47:   23(uint*) AccessChain 17(sbuf) 19 46
+              48:     6(uint) AtomicUMax 47 26 27 25
               49:     18(int) ShiftRightArithmetic 20 21
-              50:     23(ptr) AccessChain 17(sbuf) 19 49
-              51:      6(int) AtomicUMax 50 26 27 25
+              50:   23(uint*) AccessChain 17(sbuf) 19 49
+              51:     6(uint) AtomicUMax 50 26 27 25
                               Store 29(u) 51
               52:     18(int) ShiftRightArithmetic 20 21
-              53:     23(ptr) AccessChain 17(sbuf) 19 52
-              54:      6(int) AtomicUMin 53 26 27 25
+              53:   23(uint*) AccessChain 17(sbuf) 19 52
+              54:     6(uint) AtomicUMin 53 26 27 25
               55:     18(int) ShiftRightArithmetic 20 21
-              56:     23(ptr) AccessChain 17(sbuf) 19 55
-              57:      6(int) AtomicUMin 56 26 27 25
+              56:   23(uint*) AccessChain 17(sbuf) 19 55
+              57:     6(uint) AtomicUMin 56 26 27 25
                               Store 29(u) 57
               58:     18(int) ShiftRightArithmetic 20 21
-              59:     23(ptr) AccessChain 17(sbuf) 19 58
-              60:      6(int) AtomicOr 59 26 27 25
+              59:   23(uint*) AccessChain 17(sbuf) 19 58
+              60:     6(uint) AtomicOr 59 26 27 25
               61:     18(int) ShiftRightArithmetic 20 21
-              62:     23(ptr) AccessChain 17(sbuf) 19 61
-              63:      6(int) AtomicOr 62 26 27 25
+              62:   23(uint*) AccessChain 17(sbuf) 19 61
+              63:     6(uint) AtomicOr 62 26 27 25
                               Store 29(u) 63
               64:     18(int) ShiftRightArithmetic 20 21
-              65:     23(ptr) AccessChain 17(sbuf) 19 64
-              66:      6(int) AtomicXor 65 26 27 25
+              65:   23(uint*) AccessChain 17(sbuf) 19 64
+              66:     6(uint) AtomicXor 65 26 27 25
               67:     18(int) ShiftRightArithmetic 20 21
-              68:     23(ptr) AccessChain 17(sbuf) 19 67
-              69:      6(int) AtomicXor 68 26 27 25
+              68:   23(uint*) AccessChain 17(sbuf) 19 67
+              69:     6(uint) AtomicXor 68 26 27 25
                               Store 29(u) 69
-              70:      6(int) Load 11(pos)
+              70:     6(uint) Load 11(pos)
               71:     18(int) ShiftRightLogical 70 21
-              72:     23(ptr) AccessChain 17(sbuf) 19 71
-              73:      6(int) Load 72
+              72:   23(uint*) AccessChain 17(sbuf) 19 71
+              73:     6(uint) Load 72
               74:    8(float) ConvertUToF 73
-              75:    9(fvec4) CompositeConstruct 74 74 74 74
+              75:     9(vec4) CompositeConstruct 74 74 74 74
                               ReturnValue 75
                               FunctionEnd

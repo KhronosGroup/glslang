@@ -317,67 +317,67 @@ gl_FragCoord origin is upper left
                               Decorate 85 RelaxedPrecision
                               Decorate 103(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 6(float) 7(ptr)
+               8:             TypeFunction 6(float) 7(float*)
               12:             TypeVector 6(float) 4
-              13:             TypeFunction 12(fvec4)
+              13:             TypeFunction 12(vec4)
               20:    6(float) Constant 1088421888
               21:             TypeBool
               22:             TypeInt 32 0
-              23:     22(int) Constant 2
+              23:    22(uint) Constant 2
               24:             TypeArray 21(bool) 23
-              25:             TypePointer Function 24
+              25:             TypePointer Function 24(bool[2])
               28:    6(float) Constant 0
               33:             TypeInt 32 1
               34:             TypePointer Function 33(int)
               36:     33(int) Constant 1
               37:             TypePointer Function 21(bool)
               40:     33(int) Constant 0
-              42:             TypePointer Function 22(int)
+              42:             TypePointer Function 22(uint)
               55:    6(float) Constant 1056964608
        56(foo_t):             TypeStruct 6(float)
               57:             TypePointer Function 56(foo_t)
               59:    6(float) Constant 1109917696
               86:             TypeVector 6(float) 3
-              87:             TypeMatrix 86(fvec3) 2
-              88:             TypePointer Function 87
-              93:     22(int) Constant 0
-             102:             TypePointer Output 12(fvec4)
-103(@entryPointOutput):    102(ptr) Variable Output
-         4(main):           2 Function None 3
+              87:             TypeMatrix 86(vec3) 2
+              88:             TypePointer Function 87(mat2x3)
+              93:    22(uint) Constant 0
+             102:             TypePointer Output 12(vec4)
+103(@entryPointOutput):  102(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-             104:   12(fvec4) FunctionCall 14(@main()
+             104:    12(vec4) FunctionCall 14(@main()
                               Store 103(@entryPointOutput) 104
                               Return
                               FunctionEnd
       10(fn(f1;):    6(float) Function None 8
-        9(float):      7(ptr) FunctionParameter
+        9(float):   7(float*) FunctionParameter
               11:             Label
               16:    6(float) Load 9(float)
                               ReturnValue 16
                               FunctionEnd
-      14(@main():   12(fvec4) Function None 13
+      14(@main():    12(vec4) Function None 13
               15:             Label
-       19(float):      7(ptr) Variable Function
-        26(bool):     25(ptr) Variable Function
-         35(int):     34(ptr) Variable Function
-        43(uint):     42(ptr) Variable Function
-  49(min16float):      7(ptr) Variable Function
-  52(min10float):      7(ptr) Variable Function
-        54(half):      7(ptr) Variable Function
-       58(float):     57(ptr) Variable Function
-       82(param):      7(ptr) Variable Function
-     89(half2x3):     88(ptr) Variable Function
+       19(float):   7(float*) Variable Function
+        26(bool):25(bool[2]*) Variable Function
+         35(int):    34(int*) Variable Function
+        43(uint):   42(uint*) Variable Function
+  49(min16float):   7(float*) Variable Function
+  52(min10float):   7(float*) Variable Function
+        54(half):   7(float*) Variable Function
+       58(float):  57(foo_t*) Variable Function
+       82(param):   7(float*) Variable Function
+     89(half2x3): 88(mat2x3*) Variable Function
                               Store 19(float) 20
               27:    6(float) Load 19(float)
               29:    21(bool) FOrdNotEqual 27 28
               30:    6(float) Load 19(float)
               31:    21(bool) FOrdNotEqual 30 28
-              32:          24 CompositeConstruct 29 31
+              32: 24(bool[2]) CompositeConstruct 29 31
                               Store 26(bool) 32
-              38:     37(ptr) AccessChain 26(bool) 36
+              38:   37(bool*) AccessChain 26(bool) 36
               39:    21(bool) Load 38
               41:     33(int) Select 39 36 40
                               Store 35(int) 41
@@ -385,32 +385,32 @@ gl_FragCoord origin is upper left
               45:     33(int) Load 35(int)
               46:    6(float) ConvertSToF 45
               47:    6(float) FAdd 44 46
-              48:     22(int) ConvertFToU 47
+              48:    22(uint) ConvertFToU 47
                               Store 43(uint) 48
-              50:     22(int) Load 43(uint)
+              50:    22(uint) Load 43(uint)
               51:    6(float) ConvertUToF 50
                               Store 49(min16float) 51
               53:    6(float) Load 49(min16float)
                               Store 52(min10float) 53
                               Store 54(half) 55
-              60:      7(ptr) AccessChain 58(float) 40
+              60:   7(float*) AccessChain 58(float) 40
                               Store 60 59
-              61:     37(ptr) AccessChain 26(bool) 36
+              61:   37(bool*) AccessChain 26(bool) 36
               62:    21(bool) Load 61
-              63:     37(ptr) AccessChain 26(bool) 40
+              63:   37(bool*) AccessChain 26(bool) 40
                               Store 63 62
               64:    6(float) Load 19(float)
               65:     33(int) Load 35(int)
               66:    6(float) ConvertSToF 65
               67:    6(float) FAdd 64 66
-              68:     22(int) Load 43(uint)
+              68:    22(uint) Load 43(uint)
               69:    6(float) ConvertUToF 68
               70:    6(float) FAdd 67 69
               71:    6(float) Load 49(min16float)
               72:    6(float) FAdd 70 71
               73:    6(float) Load 52(min10float)
               74:    6(float) FAdd 72 73
-              75:     37(ptr) AccessChain 26(bool) 40
+              75:   37(bool*) AccessChain 26(bool) 40
               76:    21(bool) Load 75
               77:     33(int) Load 35(int)
               78:    6(float) ConvertSToF 77
@@ -425,12 +425,12 @@ gl_FragCoord origin is upper left
               90:    6(float) Load 19(float)
               91:    6(float) Load 19(float)
               92:    6(float) FMul 90 91
-              94:      7(ptr) AccessChain 89(half2x3) 40 93
+              94:   7(float*) AccessChain 89(half2x3) 40 93
                               Store 94 92
               95:    6(float) Load 19(float)
-              96:      7(ptr) AccessChain 89(half2x3) 40 93
+              96:   7(float*) AccessChain 89(half2x3) 40 93
               97:    6(float) Load 96
               98:    6(float) FAdd 95 97
-              99:   12(fvec4) CompositeConstruct 98 98 98 98
+              99:    12(vec4) CompositeConstruct 98 98 98 98
                               ReturnValue 99
                               FunctionEnd

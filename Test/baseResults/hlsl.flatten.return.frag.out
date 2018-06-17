@@ -145,46 +145,46 @@ gl_FragCoord origin is upper left
                               Decorate 41(@entryPointOutput.other_struct_member2) Location 2
                               Decorate 45(@entryPointOutput.other_struct_member3) Location 3
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4) 6(float) 6(float) 6(float)
+    8(PS_OUTPUT):             TypeStruct 7(vec4) 6(float) 6(float) 6(float)
                9:             TypeFunction 8(PS_OUTPUT)
               14:    6(float) Constant 1065353216
-              15:    7(fvec4) ConstantComposite 14 14 14 14
+              15:     7(vec4) ConstantComposite 14 14 14 14
               16:    6(float) Constant 1073741824
               17:    6(float) Constant 1077936128
               18:    6(float) Constant 1082130432
               19:8(PS_OUTPUT) ConstantComposite 15 16 17 18
               25:             TypePointer Function 8(PS_OUTPUT)
-              28:             TypePointer Output 7(fvec4)
-29(@entryPointOutput.color):     28(ptr) Variable Output
+              28:             TypePointer Output 7(vec4)
+29(@entryPointOutput.color):   28(vec4*) Variable Output
               30:             TypeInt 32 1
               31:     30(int) Constant 0
-              32:             TypePointer Function 7(fvec4)
+              32:             TypePointer Function 7(vec4)
               35:             TypePointer Output 6(float)
-36(@entryPointOutput.other_struct_member1):     35(ptr) Variable Output
+36(@entryPointOutput.other_struct_member1):  35(float*) Variable Output
               37:     30(int) Constant 1
               38:             TypePointer Function 6(float)
-41(@entryPointOutput.other_struct_member2):     35(ptr) Variable Output
+41(@entryPointOutput.other_struct_member2):  35(float*) Variable Output
               42:     30(int) Constant 2
-45(@entryPointOutput.other_struct_member3):     35(ptr) Variable Output
+45(@entryPointOutput.other_struct_member3):  35(float*) Variable Output
               46:     30(int) Constant 3
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
- 26(flattenTemp):     25(ptr) Variable Function
+ 26(flattenTemp):25(PS_OUTPUT*) Variable Function
               27:8(PS_OUTPUT) FunctionCall 12(@main()
                               Store 26(flattenTemp) 27
-              33:     32(ptr) AccessChain 26(flattenTemp) 31
-              34:    7(fvec4) Load 33
+              33:   32(vec4*) AccessChain 26(flattenTemp) 31
+              34:     7(vec4) Load 33
                               Store 29(@entryPointOutput.color) 34
-              39:     38(ptr) AccessChain 26(flattenTemp) 37
+              39:  38(float*) AccessChain 26(flattenTemp) 37
               40:    6(float) Load 39
                               Store 36(@entryPointOutput.other_struct_member1) 40
-              43:     38(ptr) AccessChain 26(flattenTemp) 42
+              43:  38(float*) AccessChain 26(flattenTemp) 42
               44:    6(float) Load 43
                               Store 41(@entryPointOutput.other_struct_member2) 44
-              47:     38(ptr) AccessChain 26(flattenTemp) 46
+              47:  38(float*) AccessChain 26(flattenTemp) 46
               48:    6(float) Load 47
                               Store 45(@entryPointOutput.other_struct_member3) 48
                               Return

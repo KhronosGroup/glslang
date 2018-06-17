@@ -38,18 +38,18 @@ spv.xfb.vert
                               Decorate 15(out4) XfbStride 8
                               Decorate 15(out4) Offset 4
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Output 6(float)
-         8(out1):      7(ptr) Variable Output
+         8(out1):   7(float*) Variable Output
        9(outXfb):             TypeStruct 6(float)
               10:             TypePointer Output 9(outXfb)
-              11:     10(ptr) Variable Output
+              11: 10(outXfb*) Variable Output
      12(outXfb2):             TypeStruct 6(float)
               13:             TypePointer Output 12(outXfb2)
-              14:     13(ptr) Variable Output
-        15(out4):      7(ptr) Variable Output
-         4(main):           2 Function None 3
+              14:13(outXfb2*) Variable Output
+        15(out4):   7(float*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd

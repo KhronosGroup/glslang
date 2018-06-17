@@ -15,16 +15,16 @@ hlsl.flattenSubset2.frag
                               Decorate 49(vpos) Location 0
                               Decorate 52(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
               43:    6(float) Constant 0
-              44:    7(fvec4) ConstantComposite 43 43 43 43
-              48:             TypePointer Input 7(fvec4)
-        49(vpos):     48(ptr) Variable Input
-              51:             TypePointer Output 7(fvec4)
-52(@entryPointOutput):     51(ptr) Variable Output
-         4(main):           2 Function None 3
+              44:     7(vec4) ConstantComposite 43 43 43 43
+              48:             TypePointer Input 7(vec4)
+        49(vpos):   48(vec4*) Variable Input
+              51:             TypePointer Output 7(vec4)
+52(@entryPointOutput):   51(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
                               Store 52(@entryPointOutput) 44
                               Return

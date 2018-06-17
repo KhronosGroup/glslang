@@ -39,106 +39,106 @@ spv.variableArrayIndex.frag
                               Decorate 54(gl_FragColor) Location 0
                               Decorate 59(samp2D) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                9:             TypePointer Input 6(int)
-       10(Count):      9(ptr) Variable Input
+       10(Count):     9(int*) Variable Input
               12:             TypeFloat 32
 13(lunarStruct1):             TypeStruct 6(int) 12(float)
 14(lunarStruct2):             TypeStruct 6(int) 12(float) 13(lunarStruct1)
               15:             TypeInt 32 0
-              16:     15(int) Constant 3
+              16:    15(uint) Constant 3
               17:             TypeArray 14(lunarStruct2) 16
-18(lunarStruct3):             TypeStruct 17 6(int) 12(float) 13(lunarStruct1)
+18(lunarStruct3):             TypeStruct 17(lunarStruct2[3]) 6(int) 12(float) 13(lunarStruct1)
               19:             TypePointer Input 18(lunarStruct3)
-        20(foo3):     19(ptr) Variable Input
+        20(foo3):19(lunarStruct3*) Variable Input
               21:      6(int) Constant 0
               22:      6(int) Constant 1
               25:             TypeBool
               29:             TypePointer Function 12(float)
-              31:     15(int) Constant 5
+              31:    15(uint) Constant 5
               32:             TypeArray 14(lunarStruct2) 31
-              33:             TypePointer Input 32
-        34(foo2):     33(ptr) Variable Input
+              33:             TypePointer Input 32(lunarStruct2[5])
+        34(foo2):33(lunarStruct2[5]*) Variable Input
               35:             TypePointer Input 13(lunarStruct1)
-         36(foo):     35(ptr) Variable Input
+         36(foo):35(lunarStruct1*) Variable Input
               41:      6(int) Constant 2
               46:             TypePointer Input 12(float)
               52:             TypeVector 12(float) 4
-              53:             TypePointer Output 52(fvec4)
-54(gl_FragColor):     53(ptr) Variable Output
+              53:             TypePointer Output 52(vec4)
+54(gl_FragColor):   53(vec4*) Variable Output
               56:             TypeImage 12(float) 2D sampled format:Unknown
               57:             TypeSampledImage 56
               58:             TypePointer UniformConstant 57
       59(samp2D):     58(ptr) Variable UniformConstant
               61:             TypeVector 12(float) 2
-              62:             TypePointer Input 61(fvec2)
-       63(coord):     62(ptr) Variable Input
-              67:             TypeArray 61(fvec2) 16
-              68:             TypePointer Function 67
+              62:             TypePointer Input 61(vec2)
+       63(coord):   62(vec2*) Variable Input
+              67:             TypeArray 61(vec2) 16
+              68:             TypePointer Function 67(vec2[3])
               73:   12(float) Constant 1065353216
               74:   12(float) Constant 1073741824
-              75:   61(fvec2) ConstantComposite 73 74
-              79:             TypePointer Function 61(fvec2)
-         4(main):           2 Function None 3
+              75:    61(vec2) ConstantComposite 73 74
+              79:             TypePointer Function 61(vec2)
+         4(main):     2(void) Function None 3
                5:             Label
-       8(iLocal):      7(ptr) Variable Function
-       30(scale):     29(ptr) Variable Function
- 69(constructed):     68(ptr) Variable Function
+       8(iLocal):     7(int*) Variable Function
+       30(scale):  29(float*) Variable Function
+ 69(constructed):68(vec2[3]*) Variable Function
               11:      6(int) Load 10(Count)
                               Store 8(iLocal) 11
-              23:      9(ptr) AccessChain 20(foo3) 21 22 21
+              23:     9(int*) AccessChain 20(foo3) 21 22 21
               24:      6(int) Load 23
               26:    25(bool) SGreaterThan 24 21
                               SelectionMerge 28 None
                               BranchConditional 26 27 49
               27:               Label
-              37:      9(ptr)   AccessChain 36(foo) 21
+              37:     9(int*)   AccessChain 36(foo) 21
               38:      6(int)   Load 37
-              39:      9(ptr)   AccessChain 20(foo3) 21 38 21
+              39:     9(int*)   AccessChain 20(foo3) 21 38 21
               40:      6(int)   Load 39
               42:      6(int)   IAdd 40 41
               43:      6(int)   Load 8(iLocal)
               44:      6(int)   IAdd 43 22
                                 Store 8(iLocal) 44
               45:      6(int)   IAdd 42 44
-              47:     46(ptr)   AccessChain 34(foo2) 45 41 22
+              47:  46(float*)   AccessChain 34(foo2) 45 41 22
               48:   12(float)   Load 47
                                 Store 30(scale) 48
                                 Branch 28
               49:               Label
-              50:     46(ptr)   AccessChain 20(foo3) 21 21 41 22
+              50:  46(float*)   AccessChain 20(foo3) 21 21 41 22
               51:   12(float)   Load 50
                                 Store 30(scale) 51
                                 Branch 28
               28:             Label
               55:   12(float) Load 30(scale)
               60:          57 Load 59(samp2D)
-              64:   61(fvec2) Load 63(coord)
-              65:   52(fvec4) ImageSampleImplicitLod 60 64
-              66:   52(fvec4) VectorTimesScalar 65 55
+              64:    61(vec2) Load 63(coord)
+              65:    52(vec4) ImageSampleImplicitLod 60 64
+              66:    52(vec4) VectorTimesScalar 65 55
                               Store 54(gl_FragColor) 66
-              70:   61(fvec2) Load 63(coord)
+              70:    61(vec2) Load 63(coord)
               71:   12(float) Load 30(scale)
-              72:   61(fvec2) CompositeConstruct 71 71
-              76:          67 CompositeConstruct 70 72 75
+              72:    61(vec2) CompositeConstruct 71 71
+              76: 67(vec2[3]) CompositeConstruct 70 72 75
                               Store 69(constructed) 76
-              77:      9(ptr) AccessChain 36(foo) 21
+              77:     9(int*) AccessChain 36(foo) 21
               78:      6(int) Load 77
-              80:     79(ptr) AccessChain 69(constructed) 78
-              81:   61(fvec2) Load 80
-              82:      9(ptr) AccessChain 36(foo) 21
+              80:   79(vec2*) AccessChain 69(constructed) 78
+              81:    61(vec2) Load 80
+              82:     9(int*) AccessChain 36(foo) 21
               83:      6(int) Load 82
-              84:     79(ptr) AccessChain 69(constructed) 83
-              85:   61(fvec2) Load 84
+              84:   79(vec2*) AccessChain 69(constructed) 83
+              85:    61(vec2) Load 84
               86:   12(float) CompositeExtract 81 0
               87:   12(float) CompositeExtract 81 1
               88:   12(float) CompositeExtract 85 0
               89:   12(float) CompositeExtract 85 1
-              90:   52(fvec4) CompositeConstruct 86 87 88 89
-              91:   52(fvec4) Load 54(gl_FragColor)
-              92:   52(fvec4) FAdd 91 90
+              90:    52(vec4) CompositeConstruct 86 87 88 89
+              91:    52(vec4) Load 54(gl_FragColor)
+              92:    52(vec4) FAdd 91 90
                               Store 54(gl_FragColor) 92
                               Return
                               FunctionEnd

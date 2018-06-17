@@ -25,22 +25,22 @@ spv.viewportArray2.vert
                               Decorate 18(gl_Layer) BuiltIn Layer
                               Decorate 18(gl_Layer) ViewportRelativeNV
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypeInt 32 0
-               8:      7(int) Constant 1
+               8:     7(uint) Constant 1
                9:             TypeArray 6(int) 8
-              10:             TypePointer Output 9
-11(gl_ViewportMask):     10(ptr) Variable Output
+              10:             TypePointer Output 9(int[1])
+11(gl_ViewportMask): 10(int[1]*) Variable Output
               12:      6(int) Constant 0
               13:      6(int) Constant 1
               14:             TypePointer Output 6(int)
-16(gl_ViewportIndex):     14(ptr) Variable Output
+16(gl_ViewportIndex):    14(int*) Variable Output
               17:      6(int) Constant 2
-    18(gl_Layer):     14(ptr) Variable Output
-         4(main):           2 Function None 3
+    18(gl_Layer):    14(int*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              15:     14(ptr) AccessChain 11(gl_ViewportMask) 12
+              15:    14(int*) AccessChain 11(gl_ViewportMask) 12
                               Store 15 13
                               Store 16(gl_ViewportIndex) 17
                               Return

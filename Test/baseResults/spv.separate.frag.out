@@ -95,11 +95,11 @@ spv.separate.frag
                               Decorate 294(tex3D) DescriptorSet 0
                               Decorate 305(tex2DRect) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
-              10:             TypePointer Output 9(fvec4)
-       11(color):     10(ptr) Variable Output
+              10:             TypePointer Output 9(vec4)
+       11(color):   10(vec4*) Variable Output
               12:             TypeImage 8(float) 2D sampled format:Unknown
               13:             TypePointer UniformConstant 12
          14(t2d):     13(ptr) Variable UniformConstant
@@ -109,24 +109,24 @@ spv.separate.frag
               20:             TypeSampledImage 12
               22:             TypeVector 8(float) 2
               23:    8(float) Constant 1056964608
-              24:   22(fvec2) ConstantComposite 23 23
+              24:    22(vec2) ConstantComposite 23 23
               26:             TypeImage 8(float) 3D sampled format:Unknown
               27:             TypeInt 32 0
-              28:     27(int) Constant 4
+              28:    27(uint) Constant 4
               29:             TypeArray 26 28
-              30:             TypePointer UniformConstant 29
-         31(t3d):     30(ptr) Variable UniformConstant
+              30:             TypePointer UniformConstant 29(arr[4])
+         31(t3d): 30(arr[4]*) Variable UniformConstant
               32:             TypeInt 32 1
               33:             TypePointer Input 32(int)
-           34(i):     33(ptr) Variable Input
+           34(i):    33(int*) Variable Input
               36:             TypePointer UniformConstant 26
               39:             TypeArray 16 28
-              40:             TypePointer UniformConstant 39
-          41(sA):     40(ptr) Variable UniformConstant
+              40:             TypePointer UniformConstant 39(arr[4])
+          41(sA): 40(arr[4]*) Variable UniformConstant
               42:     32(int) Constant 2
               45:             TypeSampledImage 26
               47:             TypeVector 8(float) 3
-              48:   47(fvec3) ConstantComposite 23 23 23
+              48:    47(vec3) ConstantComposite 23 23 23
        58(tex2D):     13(ptr) Variable UniformConstant
               62:             TypeImage 8(float) Cube sampled format:Unknown
               63:             TypePointer UniformConstant 62
@@ -143,7 +143,7 @@ spv.separate.frag
               83:             TypePointer UniformConstant 82
 84(itexCubeArray):     83(ptr) Variable UniformConstant
               87:             TypeSampledImage 82
-              89:             TypeImage 27(int) Cube array sampled format:Unknown
+              89:             TypeImage 27(uint) Cube array sampled format:Unknown
               90:             TypePointer UniformConstant 89
 91(utexCubeArray):     90(ptr) Variable UniformConstant
               94:             TypeSampledImage 89
@@ -156,7 +156,7 @@ spv.separate.frag
              105:             TypePointer UniformConstant 104
 106(itex1DArray):    105(ptr) Variable UniformConstant
              109:             TypeSampledImage 104
-             111:             TypeImage 27(int) 1D sampled format:Unknown
+             111:             TypeImage 27(uint) 1D sampled format:Unknown
              112:             TypePointer UniformConstant 111
      113(utex1D):    112(ptr) Variable UniformConstant
              116:             TypeSampledImage 111
@@ -164,7 +164,7 @@ spv.separate.frag
              119:             TypePointer UniformConstant 118
      120(itex1D):    119(ptr) Variable UniformConstant
              123:             TypeSampledImage 118
-             125:             TypeImage 27(int) 1D array sampled format:Unknown
+             125:             TypeImage 27(uint) 1D array sampled format:Unknown
              126:             TypePointer UniformConstant 125
 127(utex1DArray):    126(ptr) Variable UniformConstant
              130:             TypeSampledImage 125
@@ -196,19 +196,19 @@ spv.separate.frag
              178:             TypePointer UniformConstant 177
 179(itex2DArray):    178(ptr) Variable UniformConstant
              182:             TypeSampledImage 177
-             184:             TypeImage 27(int) 2D sampled format:Unknown
+             184:             TypeImage 27(uint) 2D sampled format:Unknown
              185:             TypePointer UniformConstant 184
      186(utex2D):    185(ptr) Variable UniformConstant
              189:             TypeSampledImage 184
-             191:             TypeImage 27(int) 3D sampled format:Unknown
+             191:             TypeImage 27(uint) 3D sampled format:Unknown
              192:             TypePointer UniformConstant 191
      193(utex3D):    192(ptr) Variable UniformConstant
              196:             TypeSampledImage 191
-             198:             TypeImage 27(int) Cube sampled format:Unknown
+             198:             TypeImage 27(uint) Cube sampled format:Unknown
              199:             TypePointer UniformConstant 198
    200(utexCube):    199(ptr) Variable UniformConstant
              203:             TypeSampledImage 198
-             205:             TypeImage 27(int) 2D array sampled format:Unknown
+             205:             TypeImage 27(uint) 2D array sampled format:Unknown
              206:             TypePointer UniformConstant 205
 207(utex2DArray):    206(ptr) Variable UniformConstant
              210:             TypeSampledImage 205
@@ -216,7 +216,7 @@ spv.separate.frag
              213:             TypePointer UniformConstant 212
  214(itex2DRect):    213(ptr) Variable UniformConstant
              217:             TypeSampledImage 212
-             219:             TypeImage 27(int) Rect sampled format:Unknown
+             219:             TypeImage 27(uint) Rect sampled format:Unknown
              220:             TypePointer UniformConstant 219
  221(utex2DRect):    220(ptr) Variable UniformConstant
              224:             TypeSampledImage 219
@@ -224,7 +224,7 @@ spv.separate.frag
              227:             TypePointer UniformConstant 226
  228(itexBuffer):    227(ptr) Variable UniformConstant
              231:             TypeSampledImage 226
-             233:             TypeImage 27(int) Buffer sampled format:Unknown
+             233:             TypeImage 27(uint) Buffer sampled format:Unknown
              234:             TypePointer UniformConstant 233
  235(utexBuffer):    234(ptr) Variable UniformConstant
              238:             TypeSampledImage 233
@@ -236,7 +236,7 @@ spv.separate.frag
              248:             TypePointer UniformConstant 247
    249(itex2DMS):    248(ptr) Variable UniformConstant
              252:             TypeSampledImage 247
-             254:             TypeImage 27(int) 2D multi-sampled sampled format:Unknown
+             254:             TypeImage 27(uint) 2D multi-sampled sampled format:Unknown
              255:             TypePointer UniformConstant 254
    256(utex2DMS):    255(ptr) Variable UniformConstant
              259:             TypeSampledImage 254
@@ -248,7 +248,7 @@ spv.separate.frag
              269:             TypePointer UniformConstant 268
 270(itex2DMSArray):    269(ptr) Variable UniformConstant
              273:             TypeSampledImage 268
-             275:             TypeImage 27(int) 2D array multi-sampled sampled format:Unknown
+             275:             TypeImage 27(uint) 2D array multi-sampled sampled format:Unknown
              276:             TypePointer UniformConstant 275
 277(utex2DMSArray):    276(ptr) Variable UniformConstant
              280:             TypeSampledImage 275
@@ -268,12 +268,12 @@ spv.separate.frag
              312:             TypeImage 8(float) Rect depth sampled format:Unknown
              313:             TypeSampledImage 312
              317:             TypeSampledImage 96
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
               15:          12 Load 14(t2d)
               19:          16 Load 18(s)
               21:          20 SampledImage 15 19
-              25:    9(fvec4) ImageSampleImplicitLod 21 24
+              25:     9(vec4) ImageSampleImplicitLod 21 24
                               Store 11(color) 25
               35:     32(int) Load 34(i)
               37:     36(ptr) AccessChain 31(t3d) 35
@@ -281,20 +281,20 @@ spv.separate.frag
               43:     17(ptr) AccessChain 41(sA) 42
               44:          16 Load 43
               46:          45 SampledImage 38 44
-              49:    9(fvec4) ImageSampleImplicitLod 46 48
-              50:    9(fvec4) Load 11(color)
-              51:    9(fvec4) FAdd 50 49
+              49:     9(vec4) ImageSampleImplicitLod 46 48
+              50:     9(vec4) Load 11(color)
+              51:     9(vec4) FAdd 50 49
                               Store 11(color) 51
               52:          12 Load 14(t2d)
               53:          16 Load 18(s)
               54:          20 SampledImage 52 53
-              55:    9(fvec4) ImageSampleImplicitLod 54 24
-              56:    9(fvec4) Load 11(color)
-              57:    9(fvec4) FAdd 56 55
+              55:     9(vec4) ImageSampleImplicitLod 54 24
+              56:     9(vec4) Load 11(color)
+              57:     9(vec4) FAdd 56 55
                               Store 11(color) 57
                               Return
                               FunctionEnd
-         6(foo():           2 Function None 3
+         6(foo():     2(void) Function None 3
                7:             Label
               59:          12 Load 58(tex2D)
               60:          16 Load 18(s)

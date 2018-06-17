@@ -77,7 +77,7 @@ spv.image.frag
                               Decorate 357(wo2D) NonReadable
                               Decorate 375(ic4D) Flat
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypeVector 6(int) 3
                8:             TypePointer Function 7(ivec3)
@@ -88,7 +88,7 @@ spv.image.frag
               14:             TypePointer UniformConstant 13
          15(i1D):     14(ptr) Variable UniformConstant
               18:             TypeInt 32 0
-              19:     18(int) Constant 0
+              19:    18(uint) Constant 0
               20:             TypePointer Function 6(int)
               25:             TypeImage 12(float) 2D nonsampled format:Rgba32f
               26:             TypePointer UniformConstant 25
@@ -122,32 +122,32 @@ spv.image.frag
              107:             TypePointer UniformConstant 106
  108(i2DMSArray):    107(ptr) Variable UniformConstant
              125:             TypeVector 12(float) 4
-             126:             TypePointer Function 125(fvec4)
+             126:             TypePointer Function 125(vec4)
              128:   12(float) Constant 0
-             129:  125(fvec4) ConstantComposite 128 128 128 128
+             129:   125(vec4) ConstantComposite 128 128 128 128
              131:             TypePointer Input 6(int)
-       132(ic1D):    131(ptr) Variable Input
+       132(ic1D):   131(int*) Variable Input
              141:             TypePointer Input 29(ivec2)
-       142(ic2D):    141(ptr) Variable Input
+       142(ic2D): 141(ivec2*) Variable Input
              151:             TypePointer Input 7(ivec3)
-       152(ic3D):    151(ptr) Variable Input
+       152(ic3D): 151(ivec3*) Variable Input
              210:      6(int) Constant 1
              216:      6(int) Constant 2
              220:      6(int) Constant 3
              226:      6(int) Constant 4
-             228:             TypePointer Function 18(int)
+             228:             TypePointer Function 18(uint)
              230:             TypeImage 6(int) 1D nonsampled format:R32i
              231:             TypePointer UniformConstant 230
        232(ii1D):    231(ptr) Variable UniformConstant
              234:      6(int) Constant 10
              235:             TypePointer Image 6(int)
-             237:     18(int) Constant 1
-             243:             TypeImage 18(int) 2D nonsampled format:R32ui
+             237:    18(uint) Constant 1
+             243:             TypeImage 18(uint) 2D nonsampled format:R32ui
              244:             TypePointer UniformConstant 243
        245(ui2D):    244(ptr) Variable UniformConstant
-             247:             TypePointer Input 18(int)
-      248(value):    247(ptr) Variable Input
-             250:             TypePointer Image 18(int)
+             247:             TypePointer Input 18(uint)
+      248(value):  247(uint*) Variable Input
+             250:             TypePointer Image 18(uint)
              256:      6(int) Constant 11
              270:      6(int) Constant 12
              284:      6(int) Constant 13
@@ -156,29 +156,29 @@ spv.image.frag
              326:      6(int) Constant 16
              340:      6(int) Constant 18
              341:      6(int) Constant 17
-             349:     18(int) Constant 19
+             349:    18(uint) Constant 19
              355:             TypeImage 12(float) 2D nonsampled format:Unknown
              356:             TypePointer UniformConstant 355
        357(wo2D):    356(ptr) Variable UniformConstant
-             361:             TypePointer Output 125(fvec4)
-   362(fragData):    361(ptr) Variable Output
+             361:             TypePointer Output 125(vec4)
+   362(fragData):  361(vec4*) Variable Output
              367:             TypeBool
              370:             TypeVector 367(bool) 4
              373:             TypeVector 6(int) 4
              374:             TypePointer Input 373(ivec4)
-       375(ic4D):    374(ptr) Variable Input
-         4(main):           2 Function None 3
+       375(ic4D): 374(ivec4*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-           9(iv):      8(ptr) Variable Function
-          127(v):    126(ptr) Variable Function
-         229(ui):    228(ptr) Variable Function
+           9(iv):   8(ivec3*) Variable Function
+          127(v):  126(vec4*) Variable Function
+         229(ui):  228(uint*) Variable Function
                               Store 9(iv) 11
               16:          13 Load 15(i1D)
               17:      6(int) ImageQuerySize 16
-              21:     20(ptr) AccessChain 9(iv) 19
+              21:    20(int*) AccessChain 9(iv) 19
               22:      6(int) Load 21
               23:      6(int) IAdd 22 17
-              24:     20(ptr) AccessChain 9(iv) 19
+              24:    20(int*) AccessChain 9(iv) 19
                               Store 24 23
               28:          25 Load 27(i2D)
               30:   29(ivec2) ImageQuerySize 28
@@ -229,10 +229,10 @@ spv.image.frag
                               Store 9(iv) 86
               90:          87 Load 89(iBuffer)
               91:      6(int) ImageQuerySize 90
-              92:     20(ptr) AccessChain 9(iv) 19
+              92:    20(int*) AccessChain 9(iv) 19
               93:      6(int) Load 92
               94:      6(int) IAdd 93 91
-              95:     20(ptr) AccessChain 9(iv) 19
+              95:    20(int*) AccessChain 9(iv) 19
                               Store 95 94
               99:          96 Load 98(i2DMS)
              100:   29(ivec2) ImageQuerySize 99
@@ -249,262 +249,262 @@ spv.image.frag
                               Store 9(iv) 112
              113:          96 Load 98(i2DMS)
              114:      6(int) ImageQuerySamples 113
-             115:     20(ptr) AccessChain 9(iv) 19
+             115:    20(int*) AccessChain 9(iv) 19
              116:      6(int) Load 115
              117:      6(int) IAdd 116 114
-             118:     20(ptr) AccessChain 9(iv) 19
+             118:    20(int*) AccessChain 9(iv) 19
                               Store 118 117
              119:         106 Load 108(i2DMSArray)
              120:      6(int) ImageQuerySamples 119
-             121:     20(ptr) AccessChain 9(iv) 19
+             121:    20(int*) AccessChain 9(iv) 19
              122:      6(int) Load 121
              123:      6(int) IAdd 122 120
-             124:     20(ptr) AccessChain 9(iv) 19
+             124:    20(int*) AccessChain 9(iv) 19
                               Store 124 123
                               Store 127(v) 129
              130:          13 Load 15(i1D)
              133:      6(int) Load 132(ic1D)
-             134:  125(fvec4) ImageRead 130 133
-             135:  125(fvec4) Load 127(v)
-             136:  125(fvec4) FAdd 135 134
+             134:   125(vec4) ImageRead 130 133
+             135:   125(vec4) Load 127(v)
+             136:   125(vec4) FAdd 135 134
                               Store 127(v) 136
              137:          13 Load 15(i1D)
              138:      6(int) Load 132(ic1D)
-             139:  125(fvec4) Load 127(v)
+             139:   125(vec4) Load 127(v)
                               ImageWrite 137 138 139
              140:          25 Load 27(i2D)
              143:   29(ivec2) Load 142(ic2D)
-             144:  125(fvec4) ImageRead 140 143
-             145:  125(fvec4) Load 127(v)
-             146:  125(fvec4) FAdd 145 144
+             144:   125(vec4) ImageRead 140 143
+             145:   125(vec4) Load 127(v)
+             146:   125(vec4) FAdd 145 144
                               Store 127(v) 146
              147:          25 Load 27(i2D)
              148:   29(ivec2) Load 142(ic2D)
-             149:  125(fvec4) Load 127(v)
+             149:   125(vec4) Load 127(v)
                               ImageWrite 147 148 149
              150:          36 Load 38(i3D)
              153:    7(ivec3) Load 152(ic3D)
-             154:  125(fvec4) ImageRead 150 153
-             155:  125(fvec4) Load 127(v)
-             156:  125(fvec4) FAdd 155 154
+             154:   125(vec4) ImageRead 150 153
+             155:   125(vec4) Load 127(v)
+             156:   125(vec4) FAdd 155 154
                               Store 127(v) 156
              157:          36 Load 38(i3D)
              158:    7(ivec3) Load 152(ic3D)
-             159:  125(fvec4) Load 127(v)
+             159:   125(vec4) Load 127(v)
                               ImageWrite 157 158 159
              160:          43 Load 45(iCube)
              161:    7(ivec3) Load 152(ic3D)
-             162:  125(fvec4) ImageRead 160 161
-             163:  125(fvec4) Load 127(v)
-             164:  125(fvec4) FAdd 163 162
+             162:   125(vec4) ImageRead 160 161
+             163:   125(vec4) Load 127(v)
+             164:   125(vec4) FAdd 163 162
                               Store 127(v) 164
              165:          43 Load 45(iCube)
              166:    7(ivec3) Load 152(ic3D)
-             167:  125(fvec4) Load 127(v)
+             167:   125(vec4) Load 127(v)
                               ImageWrite 165 166 167
              168:          53 Load 55(iCubeArray)
              169:    7(ivec3) Load 152(ic3D)
-             170:  125(fvec4) ImageRead 168 169
-             171:  125(fvec4) Load 127(v)
-             172:  125(fvec4) FAdd 171 170
+             170:   125(vec4) ImageRead 168 169
+             171:   125(vec4) Load 127(v)
+             172:   125(vec4) FAdd 171 170
                               Store 127(v) 172
              173:          53 Load 55(iCubeArray)
              174:    7(ivec3) Load 152(ic3D)
-             175:  125(fvec4) Load 127(v)
+             175:   125(vec4) Load 127(v)
                               ImageWrite 173 174 175
              176:          60 Load 62(i2DRect)
              177:   29(ivec2) Load 142(ic2D)
-             178:  125(fvec4) ImageRead 176 177
-             179:  125(fvec4) Load 127(v)
-             180:  125(fvec4) FAdd 179 178
+             178:   125(vec4) ImageRead 176 177
+             179:   125(vec4) Load 127(v)
+             180:   125(vec4) FAdd 179 178
                               Store 127(v) 180
              181:          60 Load 62(i2DRect)
              182:   29(ivec2) Load 142(ic2D)
-             183:  125(fvec4) Load 127(v)
+             183:   125(vec4) Load 127(v)
                               ImageWrite 181 182 183
              184:          70 Load 72(i1DArray)
              185:   29(ivec2) Load 142(ic2D)
-             186:  125(fvec4) ImageRead 184 185
-             187:  125(fvec4) Load 127(v)
-             188:  125(fvec4) FAdd 187 186
+             186:   125(vec4) ImageRead 184 185
+             187:   125(vec4) Load 127(v)
+             188:   125(vec4) FAdd 187 186
                               Store 127(v) 188
              189:          70 Load 72(i1DArray)
              190:   29(ivec2) Load 142(ic2D)
-             191:  125(fvec4) Load 127(v)
+             191:   125(vec4) Load 127(v)
                               ImageWrite 189 190 191
              192:          80 Load 82(i2DArray)
              193:    7(ivec3) Load 152(ic3D)
-             194:  125(fvec4) ImageRead 192 193
-             195:  125(fvec4) Load 127(v)
-             196:  125(fvec4) FAdd 195 194
+             194:   125(vec4) ImageRead 192 193
+             195:   125(vec4) Load 127(v)
+             196:   125(vec4) FAdd 195 194
                               Store 127(v) 196
              197:          80 Load 82(i2DArray)
              198:    7(ivec3) Load 152(ic3D)
-             199:  125(fvec4) Load 127(v)
+             199:   125(vec4) Load 127(v)
                               ImageWrite 197 198 199
              200:          87 Load 89(iBuffer)
              201:      6(int) Load 132(ic1D)
-             202:  125(fvec4) ImageRead 200 201
-             203:  125(fvec4) Load 127(v)
-             204:  125(fvec4) FAdd 203 202
+             202:   125(vec4) ImageRead 200 201
+             203:   125(vec4) Load 127(v)
+             204:   125(vec4) FAdd 203 202
                               Store 127(v) 204
              205:          87 Load 89(iBuffer)
              206:      6(int) Load 132(ic1D)
-             207:  125(fvec4) Load 127(v)
+             207:   125(vec4) Load 127(v)
                               ImageWrite 205 206 207
              208:          96 Load 98(i2DMS)
              209:   29(ivec2) Load 142(ic2D)
-             211:  125(fvec4) ImageRead 208 209 Sample 210
-             212:  125(fvec4) Load 127(v)
-             213:  125(fvec4) FAdd 212 211
+             211:   125(vec4) ImageRead 208 209 Sample 210
+             212:   125(vec4) Load 127(v)
+             213:   125(vec4) FAdd 212 211
                               Store 127(v) 213
              214:          96 Load 98(i2DMS)
              215:   29(ivec2) Load 142(ic2D)
-             217:  125(fvec4) Load 127(v)
+             217:   125(vec4) Load 127(v)
                               ImageWrite 214 215 217 Sample 216
              218:         106 Load 108(i2DMSArray)
              219:    7(ivec3) Load 152(ic3D)
-             221:  125(fvec4) ImageRead 218 219 Sample 220
-             222:  125(fvec4) Load 127(v)
-             223:  125(fvec4) FAdd 222 221
+             221:   125(vec4) ImageRead 218 219 Sample 220
+             222:   125(vec4) Load 127(v)
+             223:   125(vec4) FAdd 222 221
                               Store 127(v) 223
              224:         106 Load 108(i2DMSArray)
              225:    7(ivec3) Load 152(ic3D)
-             227:  125(fvec4) Load 127(v)
+             227:   125(vec4) Load 127(v)
                               ImageWrite 224 225 227 Sample 226
                               Store 229(ui) 19
              233:      6(int) Load 132(ic1D)
-             236:    235(ptr) ImageTexelPointer 232(ii1D) 233 19
+             236:   235(int*) ImageTexelPointer 232(ii1D) 233 19
              238:      6(int) AtomicIAdd 236 237 19 234
-             239:     20(ptr) AccessChain 9(iv) 19
+             239:    20(int*) AccessChain 9(iv) 19
              240:      6(int) Load 239
              241:      6(int) IAdd 240 238
-             242:     20(ptr) AccessChain 9(iv) 19
+             242:    20(int*) AccessChain 9(iv) 19
                               Store 242 241
              246:   29(ivec2) Load 142(ic2D)
-             249:     18(int) Load 248(value)
-             251:    250(ptr) ImageTexelPointer 245(ui2D) 246 19
-             252:     18(int) AtomicIAdd 251 237 19 249
-             253:     18(int) Load 229(ui)
-             254:     18(int) IAdd 253 252
+             249:    18(uint) Load 248(value)
+             251:  250(uint*) ImageTexelPointer 245(ui2D) 246 19
+             252:    18(uint) AtomicIAdd 251 237 19 249
+             253:    18(uint) Load 229(ui)
+             254:    18(uint) IAdd 253 252
                               Store 229(ui) 254
              255:      6(int) Load 132(ic1D)
-             257:    235(ptr) ImageTexelPointer 232(ii1D) 255 19
+             257:   235(int*) ImageTexelPointer 232(ii1D) 255 19
              258:      6(int) AtomicSMin 257 237 19 256
-             259:     20(ptr) AccessChain 9(iv) 19
+             259:    20(int*) AccessChain 9(iv) 19
              260:      6(int) Load 259
              261:      6(int) IAdd 260 258
-             262:     20(ptr) AccessChain 9(iv) 19
+             262:    20(int*) AccessChain 9(iv) 19
                               Store 262 261
              263:   29(ivec2) Load 142(ic2D)
-             264:     18(int) Load 248(value)
-             265:    250(ptr) ImageTexelPointer 245(ui2D) 263 19
-             266:     18(int) AtomicUMin 265 237 19 264
-             267:     18(int) Load 229(ui)
-             268:     18(int) IAdd 267 266
+             264:    18(uint) Load 248(value)
+             265:  250(uint*) ImageTexelPointer 245(ui2D) 263 19
+             266:    18(uint) AtomicUMin 265 237 19 264
+             267:    18(uint) Load 229(ui)
+             268:    18(uint) IAdd 267 266
                               Store 229(ui) 268
              269:      6(int) Load 132(ic1D)
-             271:    235(ptr) ImageTexelPointer 232(ii1D) 269 19
+             271:   235(int*) ImageTexelPointer 232(ii1D) 269 19
              272:      6(int) AtomicSMax 271 237 19 270
-             273:     20(ptr) AccessChain 9(iv) 19
+             273:    20(int*) AccessChain 9(iv) 19
              274:      6(int) Load 273
              275:      6(int) IAdd 274 272
-             276:     20(ptr) AccessChain 9(iv) 19
+             276:    20(int*) AccessChain 9(iv) 19
                               Store 276 275
              277:   29(ivec2) Load 142(ic2D)
-             278:     18(int) Load 248(value)
-             279:    250(ptr) ImageTexelPointer 245(ui2D) 277 19
-             280:     18(int) AtomicUMax 279 237 19 278
-             281:     18(int) Load 229(ui)
-             282:     18(int) IAdd 281 280
+             278:    18(uint) Load 248(value)
+             279:  250(uint*) ImageTexelPointer 245(ui2D) 277 19
+             280:    18(uint) AtomicUMax 279 237 19 278
+             281:    18(uint) Load 229(ui)
+             282:    18(uint) IAdd 281 280
                               Store 229(ui) 282
              283:      6(int) Load 132(ic1D)
-             285:    235(ptr) ImageTexelPointer 232(ii1D) 283 19
+             285:   235(int*) ImageTexelPointer 232(ii1D) 283 19
              286:      6(int) AtomicAnd 285 237 19 284
-             287:     20(ptr) AccessChain 9(iv) 19
+             287:    20(int*) AccessChain 9(iv) 19
              288:      6(int) Load 287
              289:      6(int) IAdd 288 286
-             290:     20(ptr) AccessChain 9(iv) 19
+             290:    20(int*) AccessChain 9(iv) 19
                               Store 290 289
              291:   29(ivec2) Load 142(ic2D)
-             292:     18(int) Load 248(value)
-             293:    250(ptr) ImageTexelPointer 245(ui2D) 291 19
-             294:     18(int) AtomicAnd 293 237 19 292
-             295:     18(int) Load 229(ui)
-             296:     18(int) IAdd 295 294
+             292:    18(uint) Load 248(value)
+             293:  250(uint*) ImageTexelPointer 245(ui2D) 291 19
+             294:    18(uint) AtomicAnd 293 237 19 292
+             295:    18(uint) Load 229(ui)
+             296:    18(uint) IAdd 295 294
                               Store 229(ui) 296
              297:      6(int) Load 132(ic1D)
-             299:    235(ptr) ImageTexelPointer 232(ii1D) 297 19
+             299:   235(int*) ImageTexelPointer 232(ii1D) 297 19
              300:      6(int) AtomicOr 299 237 19 298
-             301:     20(ptr) AccessChain 9(iv) 19
+             301:    20(int*) AccessChain 9(iv) 19
              302:      6(int) Load 301
              303:      6(int) IAdd 302 300
-             304:     20(ptr) AccessChain 9(iv) 19
+             304:    20(int*) AccessChain 9(iv) 19
                               Store 304 303
              305:   29(ivec2) Load 142(ic2D)
-             306:     18(int) Load 248(value)
-             307:    250(ptr) ImageTexelPointer 245(ui2D) 305 19
-             308:     18(int) AtomicOr 307 237 19 306
-             309:     18(int) Load 229(ui)
-             310:     18(int) IAdd 309 308
+             306:    18(uint) Load 248(value)
+             307:  250(uint*) ImageTexelPointer 245(ui2D) 305 19
+             308:    18(uint) AtomicOr 307 237 19 306
+             309:    18(uint) Load 229(ui)
+             310:    18(uint) IAdd 309 308
                               Store 229(ui) 310
              311:      6(int) Load 132(ic1D)
-             313:    235(ptr) ImageTexelPointer 232(ii1D) 311 19
+             313:   235(int*) ImageTexelPointer 232(ii1D) 311 19
              314:      6(int) AtomicXor 313 237 19 312
-             315:     20(ptr) AccessChain 9(iv) 19
+             315:    20(int*) AccessChain 9(iv) 19
              316:      6(int) Load 315
              317:      6(int) IAdd 316 314
-             318:     20(ptr) AccessChain 9(iv) 19
+             318:    20(int*) AccessChain 9(iv) 19
                               Store 318 317
              319:   29(ivec2) Load 142(ic2D)
-             320:     18(int) Load 248(value)
-             321:    250(ptr) ImageTexelPointer 245(ui2D) 319 19
-             322:     18(int) AtomicXor 321 237 19 320
-             323:     18(int) Load 229(ui)
-             324:     18(int) IAdd 323 322
+             320:    18(uint) Load 248(value)
+             321:  250(uint*) ImageTexelPointer 245(ui2D) 319 19
+             322:    18(uint) AtomicXor 321 237 19 320
+             323:    18(uint) Load 229(ui)
+             324:    18(uint) IAdd 323 322
                               Store 229(ui) 324
              325:      6(int) Load 132(ic1D)
-             327:    235(ptr) ImageTexelPointer 232(ii1D) 325 19
+             327:   235(int*) ImageTexelPointer 232(ii1D) 325 19
              328:      6(int) AtomicExchange 327 237 19 326
-             329:     20(ptr) AccessChain 9(iv) 19
+             329:    20(int*) AccessChain 9(iv) 19
              330:      6(int) Load 329
              331:      6(int) IAdd 330 328
-             332:     20(ptr) AccessChain 9(iv) 19
+             332:    20(int*) AccessChain 9(iv) 19
                               Store 332 331
              333:   29(ivec2) Load 142(ic2D)
-             334:     18(int) Load 248(value)
-             335:    250(ptr) ImageTexelPointer 245(ui2D) 333 19
-             336:     18(int) AtomicExchange 335 237 19 334
-             337:     18(int) Load 229(ui)
-             338:     18(int) IAdd 337 336
+             334:    18(uint) Load 248(value)
+             335:  250(uint*) ImageTexelPointer 245(ui2D) 333 19
+             336:    18(uint) AtomicExchange 335 237 19 334
+             337:    18(uint) Load 229(ui)
+             338:    18(uint) IAdd 337 336
                               Store 229(ui) 338
              339:      6(int) Load 132(ic1D)
-             342:    235(ptr) ImageTexelPointer 232(ii1D) 339 19
+             342:   235(int*) ImageTexelPointer 232(ii1D) 339 19
              343:      6(int) AtomicCompareExchange 342 237 19 19 341 340
-             344:     20(ptr) AccessChain 9(iv) 19
+             344:    20(int*) AccessChain 9(iv) 19
              345:      6(int) Load 344
              346:      6(int) IAdd 345 343
-             347:     20(ptr) AccessChain 9(iv) 19
+             347:    20(int*) AccessChain 9(iv) 19
                               Store 347 346
              348:   29(ivec2) Load 142(ic2D)
-             350:     18(int) Load 248(value)
-             351:    250(ptr) ImageTexelPointer 245(ui2D) 348 19
-             352:     18(int) AtomicCompareExchange 351 237 19 19 350 349
-             353:     18(int) Load 229(ui)
-             354:     18(int) IAdd 353 352
+             350:    18(uint) Load 248(value)
+             351:  250(uint*) ImageTexelPointer 245(ui2D) 348 19
+             352:    18(uint) AtomicCompareExchange 351 237 19 19 350 349
+             353:    18(uint) Load 229(ui)
+             354:    18(uint) IAdd 353 352
                               Store 229(ui) 354
              358:         355 Load 357(wo2D)
              359:   29(ivec2) Load 142(ic2D)
-             360:  125(fvec4) Load 127(v)
+             360:   125(vec4) Load 127(v)
                               ImageWrite 358 359 360
-             363:     18(int) Load 229(ui)
-             364:     20(ptr) AccessChain 9(iv) 237
+             363:    18(uint) Load 229(ui)
+             364:    20(int*) AccessChain 9(iv) 237
              365:      6(int) Load 364
-             366:     18(int) Bitcast 365
+             366:    18(uint) Bitcast 365
              368:   367(bool) INotEqual 363 366
-             369:  125(fvec4) Load 127(v)
+             369:   125(vec4) Load 127(v)
              371:  370(bvec4) CompositeConstruct 368 368 368 368
-             372:  125(fvec4) Select 371 369 129
+             372:   125(vec4) Select 371 369 129
                               Store 362(fragData) 372
                               Return
                               FunctionEnd

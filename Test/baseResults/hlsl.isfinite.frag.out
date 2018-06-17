@@ -202,43 +202,43 @@ gl_FragCoord origin is upper left
                               Decorate 37 DescriptorSet 0
                               Decorate 83(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
                8:             TypeBool
-               9:             TypeFunction 8(bool) 7(ptr)
+               9:             TypeFunction 8(bool) 7(float*)
               13:             TypeVector 6(float) 4
-              14:             TypeFunction 13(fvec4)
+              14:             TypeFunction 13(vec4)
               33:             TypeVector 6(float) 2
               34:             TypeVector 6(float) 3
-     35($Global):             TypeStruct 6(float) 33(fvec2) 34(fvec3)
+     35($Global):             TypeStruct 6(float) 33(vec2) 34(vec3)
               36:             TypePointer Uniform 35($Global)
-              37:     36(ptr) Variable Uniform
+              37:36($Global*) Variable Uniform
               38:             TypeInt 32 1
               39:     38(int) Constant 0
               40:             TypePointer Uniform 6(float)
-              50:             TypePointer Function 33(fvec2)
+              50:             TypePointer Function 33(vec2)
               52:     38(int) Constant 1
-              53:             TypePointer Uniform 33(fvec2)
+              53:             TypePointer Uniform 33(vec2)
               57:             TypeVector 8(bool) 2
-              64:             TypePointer Function 34(fvec3)
+              64:             TypePointer Function 34(vec3)
               66:     38(int) Constant 2
-              67:             TypePointer Uniform 34(fvec3)
+              67:             TypePointer Uniform 34(vec3)
               71:             TypeVector 8(bool) 3
               78:    6(float) Constant 0
-              79:   13(fvec4) ConstantComposite 78 78 78 78
-              82:             TypePointer Output 13(fvec4)
-83(@entryPointOutput):     82(ptr) Variable Output
-         4(main):           2 Function None 3
+              79:    13(vec4) ConstantComposite 78 78 78 78
+              82:             TypePointer Output 13(vec4)
+83(@entryPointOutput):   82(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              84:   13(fvec4) FunctionCall 15(@main()
+              84:    13(vec4) FunctionCall 15(@main()
                               Store 83(@entryPointOutput) 84
                               Return
                               FunctionEnd
    11(test1(f1;):     8(bool) Function None 9
-           10(v):      7(ptr) FunctionParameter
+           10(v):   7(float*) FunctionParameter
               12:             Label
-  20(@finitetmp):      7(ptr) Variable Function
+  20(@finitetmp):   7(float*) Variable Function
               17:    6(float) Load 10(v)
               18:     8(bool) IsNan 17
               19:     8(bool) LogicalNot 18
@@ -254,12 +254,12 @@ gl_FragCoord origin is upper left
               29:     8(bool) LogicalAnd 19 28
                               ReturnValue 29
                               FunctionEnd
-      15(@main():   13(fvec4) Function None 14
+      15(@main():    13(vec4) Function None 14
               16:             Label
-  32(@finitetmp):      7(ptr) Variable Function
-  51(@finitetmp):     50(ptr) Variable Function
-  65(@finitetmp):     64(ptr) Variable Function
-              41:     40(ptr) AccessChain 37 39
+  32(@finitetmp):   7(float*) Variable Function
+  51(@finitetmp):   50(vec2*) Variable Function
+  65(@finitetmp):   64(vec3*) Variable Function
+              41:  40(float*) AccessChain 37 39
               42:    6(float) Load 41
                               Store 32(@finitetmp) 42
               43:    6(float) Load 32(@finitetmp)
@@ -269,23 +269,23 @@ gl_FragCoord origin is upper left
               47:     8(bool) IsInf 46
               48:     8(bool) LogicalNot 47
               49:     8(bool) LogicalAnd 45 48
-              54:     53(ptr) AccessChain 37 52
-              55:   33(fvec2) Load 54
+              54:   53(vec2*) AccessChain 37 52
+              55:    33(vec2) Load 54
                               Store 51(@finitetmp) 55
-              56:   33(fvec2) Load 51(@finitetmp)
+              56:    33(vec2) Load 51(@finitetmp)
               58:   57(bvec2) IsNan 56
               59:   57(bvec2) LogicalNot 58
-              60:   33(fvec2) Load 51(@finitetmp)
+              60:    33(vec2) Load 51(@finitetmp)
               61:   57(bvec2) IsInf 60
               62:   57(bvec2) LogicalNot 61
               63:   57(bvec2) LogicalAnd 59 62
-              68:     67(ptr) AccessChain 37 66
-              69:   34(fvec3) Load 68
+              68:   67(vec3*) AccessChain 37 66
+              69:    34(vec3) Load 68
                               Store 65(@finitetmp) 69
-              70:   34(fvec3) Load 65(@finitetmp)
+              70:    34(vec3) Load 65(@finitetmp)
               72:   71(bvec3) IsNan 70
               73:   71(bvec3) LogicalNot 72
-              74:   34(fvec3) Load 65(@finitetmp)
+              74:    34(vec3) Load 65(@finitetmp)
               75:   71(bvec3) IsInf 74
               76:   71(bvec3) LogicalNot 75
               77:   71(bvec3) LogicalAnd 73 76

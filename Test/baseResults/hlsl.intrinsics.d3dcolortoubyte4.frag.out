@@ -94,21 +94,21 @@ gl_FragCoord origin is upper left
                               Decorate 16 DescriptorSet 0
                               Decorate 27(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypeVector 6(int) 4
                8:             TypeFunction 7(ivec4)
               11:             TypeFloat 32
               12:   11(float) Constant 1132396672
               13:             TypeVector 11(float) 4
-     14($Global):             TypeStruct 13(fvec4)
+     14($Global):             TypeStruct 13(vec4)
               15:             TypePointer Uniform 14($Global)
-              16:     15(ptr) Variable Uniform
+              16:15($Global*) Variable Uniform
               17:      6(int) Constant 0
-              18:             TypePointer Uniform 13(fvec4)
+              18:             TypePointer Uniform 13(vec4)
               26:             TypePointer Output 7(ivec4)
-27(@entryPointOutput):     26(ptr) Variable Output
-         4(main):           2 Function None 3
+27(@entryPointOutput):  26(ivec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               28:    7(ivec4) FunctionCall 9(@main()
                               Store 27(@entryPointOutput) 28
@@ -116,10 +116,10 @@ gl_FragCoord origin is upper left
                               FunctionEnd
        9(@main():    7(ivec4) Function None 8
               10:             Label
-              19:     18(ptr) AccessChain 16 17
-              20:   13(fvec4) Load 19
-              21:   13(fvec4) VectorShuffle 20 20 2 1 0 3
-              22:   13(fvec4) VectorTimesScalar 21 12
+              19:   18(vec4*) AccessChain 16 17
+              20:    13(vec4) Load 19
+              21:    13(vec4) VectorShuffle 20 20 2 1 0 3
+              22:    13(vec4) VectorTimesScalar 21 12
               23:    7(ivec4) ConvertFToS 22
                               ReturnValue 23
                               FunctionEnd

@@ -231,97 +231,97 @@ local_size = (1, 1, 1)
                               Decorate 66(rwsb) DescriptorSet 0
                               Decorate 80(nThreadId) BuiltIn GlobalInvocationId
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypeVector 6(int) 3
-               8:             TypePointer Function 7(ivec3)
-               9:             TypeFunction 2 8(ptr)
+               7:             TypeVector 6(uint) 3
+               8:             TypePointer Function 7(uvec3)
+               9:             TypeFunction 2(void) 8(uvec3*)
               13:             TypeFloat 32
               14:             TypeVector 13(float) 4
-              15:             TypeVector 6(int) 2
-        16(sb_t):             TypeStruct 14(fvec4) 15(ivec2)
+              15:             TypeVector 6(uint) 2
+        16(sb_t):             TypeStruct 14(vec4) 15(uvec2)
               17:             TypePointer Function 16(sb_t)
-        19(sb_t):             TypeStruct 14(fvec4) 15(ivec2)
+        19(sb_t):             TypeStruct 14(vec4) 15(uvec2)
               20:             TypeRuntimeArray 19(sb_t)
-         21(csb):             TypeStruct 20
+         21(csb):             TypeStruct 20(sb_t[])
               22:             TypePointer Uniform 21(csb)
-         23(csb):     22(ptr) Variable Uniform
+         23(csb):    22(csb*) Variable Uniform
               24:             TypeInt 32 1
               25:     24(int) Constant 0
-   26(csb@count):             TypeStruct 6(int)
+   26(csb@count):             TypeStruct 6(uint)
               27:             TypePointer Uniform 26(csb@count)
-   28(csb@count):     27(ptr) Variable Uniform
-              29:             TypePointer Uniform 6(int)
-              31:      6(int) Constant 4294967295
-              32:      6(int) Constant 1
-              33:      6(int) Constant 0
+   28(csb@count):27(csb@count*) Variable Uniform
+              29:             TypePointer Uniform 6(uint)
+              31:     6(uint) Constant 4294967295
+              32:     6(uint) Constant 1
+              33:     6(uint) Constant 0
               35:     24(int) Constant 4294967295
               37:             TypePointer Uniform 19(sb_t)
-              41:             TypePointer Function 14(fvec4)
+              41:             TypePointer Function 14(vec4)
               44:     24(int) Constant 1
-              45:             TypePointer Function 15(ivec2)
+              45:             TypePointer Function 15(uvec2)
               47:             TypeVector 13(float) 2
-              48:             TypePointer Function 47(fvec2)
+              48:             TypePointer Function 47(vec2)
               56:             TypeImage 13(float) 2D nonsampled format:Rgba32f
               57:             TypePointer UniformConstant 56
        58(outtx):     57(ptr) Variable UniformConstant
-              63:             TypeRuntimeArray 14(fvec4)
-        64(rwsb):             TypeStruct 63
+              63:             TypeRuntimeArray 14(vec4)
+        64(rwsb):             TypeStruct 63(vec4[])
               65:             TypePointer Uniform 64(rwsb)
-        66(rwsb):     65(ptr) Variable Uniform
+        66(rwsb):   65(rwsb*) Variable Uniform
               67:             TypePointer Function 13(float)
-              74:             TypePointer Uniform 14(fvec4)
-              79:             TypePointer Input 7(ivec3)
-   80(nThreadId):     79(ptr) Variable Input
-         4(main):           2 Function None 3
+              74:             TypePointer Uniform 14(vec4)
+              79:             TypePointer Input 7(uvec3)
+   80(nThreadId):  79(uvec3*) Variable Input
+         4(main):     2(void) Function None 3
                5:             Label
-   78(nThreadId):      8(ptr) Variable Function
-       82(param):      8(ptr) Variable Function
-              81:    7(ivec3) Load 80(nThreadId)
+   78(nThreadId):   8(uvec3*) Variable Function
+       82(param):   8(uvec3*) Variable Function
+              81:    7(uvec3) Load 80(nThreadId)
                               Store 78(nThreadId) 81
-              83:    7(ivec3) Load 78(nThreadId)
+              83:    7(uvec3) Load 78(nThreadId)
                               Store 82(param) 83
-              84:           2 FunctionCall 11(@main(vu3;) 82(param)
+              84:     2(void) FunctionCall 11(@main(vu3;) 82(param)
                               Return
                               FunctionEnd
-  11(@main(vu3;):           2 Function None 9
-   10(nThreadId):      8(ptr) FunctionParameter
+  11(@main(vu3;):     2(void) Function None 9
+   10(nThreadId):   8(uvec3*) FunctionParameter
               12:             Label
-        18(data):     17(ptr) Variable Function
-       49(coord):     48(ptr) Variable Function
-   53(storeTemp):     41(ptr) Variable Function
-              30:     29(ptr) AccessChain 28(csb@count) 25
-              34:      6(int) AtomicIAdd 30 32 33 31
-              36:      6(int) IAdd 34 35
-              38:     37(ptr) AccessChain 23(csb) 25 36
+        18(data):   17(sb_t*) Variable Function
+       49(coord):   48(vec2*) Variable Function
+   53(storeTemp):   41(vec4*) Variable Function
+              30:   29(uint*) AccessChain 28(csb@count) 25
+              34:     6(uint) AtomicIAdd 30 32 33 31
+              36:     6(uint) IAdd 34 35
+              38:   37(sb_t*) AccessChain 23(csb) 25 36
               39:    19(sb_t) Load 38
-              40:   14(fvec4) CompositeExtract 39 0
-              42:     41(ptr) AccessChain 18(data) 25
+              40:    14(vec4) CompositeExtract 39 0
+              42:   41(vec4*) AccessChain 18(data) 25
                               Store 42 40
-              43:   15(ivec2) CompositeExtract 39 1
-              46:     45(ptr) AccessChain 18(data) 44
+              43:   15(uvec2) CompositeExtract 39 1
+              46:  45(uvec2*) AccessChain 18(data) 44
                               Store 46 43
-              50:     45(ptr) AccessChain 18(data) 44
-              51:   15(ivec2) Load 50
-              52:   47(fvec2) ConvertUToF 51
+              50:  45(uvec2*) AccessChain 18(data) 44
+              51:   15(uvec2) Load 50
+              52:    47(vec2) ConvertUToF 51
                               Store 49(coord) 52
-              54:     41(ptr) AccessChain 18(data) 25
-              55:   14(fvec4) Load 54
+              54:   41(vec4*) AccessChain 18(data) 25
+              55:    14(vec4) Load 54
                               Store 53(storeTemp) 55
               59:          56 Load 58(outtx)
-              60:   47(fvec2) Load 49(coord)
-              61:   15(ivec2) ConvertFToU 60
-              62:   14(fvec4) Load 53(storeTemp)
+              60:    47(vec2) Load 49(coord)
+              61:   15(uvec2) ConvertFToU 60
+              62:    14(vec4) Load 53(storeTemp)
                               ImageWrite 59 61 62
-              68:     67(ptr) AccessChain 49(coord) 33
+              68:  67(float*) AccessChain 49(coord) 33
               69:   13(float) Load 68
-              70:      6(int) ConvertFToU 69
-              71:     67(ptr) AccessChain 49(coord) 32
+              70:     6(uint) ConvertFToU 69
+              71:  67(float*) AccessChain 49(coord) 32
               72:   13(float) Load 71
-              73:      6(int) ConvertFToU 72
-              75:     74(ptr) AccessChain 66(rwsb) 25 73
-              76:   14(fvec4) Load 75
-              77:     74(ptr) AccessChain 66(rwsb) 25 70
+              73:     6(uint) ConvertFToU 72
+              75:   74(vec4*) AccessChain 66(rwsb) 25 73
+              76:    14(vec4) Load 75
+              77:   74(vec4*) AccessChain 66(rwsb) 25 70
                               Store 77 76
                               Return
                               FunctionEnd

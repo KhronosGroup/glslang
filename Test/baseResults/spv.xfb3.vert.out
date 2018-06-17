@@ -31,38 +31,38 @@ spv.xfb3.vert
                               Decorate 19(components) DescriptorSet 0
                               Decorate 19(components) Binding 5
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
- 8(gl_PerVertex):             TypeStruct 7(fvec4)
+ 8(gl_PerVertex):             TypeStruct 7(vec4)
                9:             TypePointer Output 8(gl_PerVertex)
-              10:      9(ptr) Variable Output
+              10:9(gl_PerVertex*) Variable Output
               11:             TypeInt 32 1
               12:     11(int) Constant 0
-              13:             TypePointer Input 7(fvec4)
-    14(position):     13(ptr) Variable Input
+              13:             TypePointer Input 7(vec4)
+    14(position):   13(vec4*) Variable Input
               16:             TypeVector 6(float) 2
-17(ComponentsBlock):             TypeStruct 7(fvec4) 16(fvec2)
+17(ComponentsBlock):             TypeStruct 7(vec4) 16(vec2)
               18:             TypePointer Uniform 17(ComponentsBlock)
-  19(components):     18(ptr) Variable Uniform
-              20:             TypePointer Uniform 7(fvec4)
+  19(components):18(ComponentsBlock*) Variable Uniform
+              20:             TypePointer Uniform 7(vec4)
               24:     11(int) Constant 1
-              25:             TypePointer Uniform 16(fvec2)
+              25:             TypePointer Uniform 16(vec2)
               28:    6(float) Constant 0
-              33:             TypePointer Output 7(fvec4)
-         4(main):           2 Function None 3
+              33:             TypePointer Output 7(vec4)
+         4(main):     2(void) Function None 3
                5:             Label
-              15:    7(fvec4) Load 14(position)
-              21:     20(ptr) AccessChain 19(components) 12
-              22:    7(fvec4) Load 21
-              23:    7(fvec4) FAdd 15 22
-              26:     25(ptr) AccessChain 19(components) 24
-              27:   16(fvec2) Load 26
+              15:     7(vec4) Load 14(position)
+              21:   20(vec4*) AccessChain 19(components) 12
+              22:     7(vec4) Load 21
+              23:     7(vec4) FAdd 15 22
+              26:   25(vec2*) AccessChain 19(components) 24
+              27:    16(vec2) Load 26
               29:    6(float) CompositeExtract 27 0
               30:    6(float) CompositeExtract 27 1
-              31:    7(fvec4) CompositeConstruct 29 30 28 28
-              32:    7(fvec4) FAdd 23 31
-              34:     33(ptr) AccessChain 10 12
+              31:     7(vec4) CompositeConstruct 29 30 28 28
+              32:     7(vec4) FAdd 23 31
+              34:   33(vec4*) AccessChain 10 12
                               Store 34 32
                               Return
                               FunctionEnd

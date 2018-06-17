@@ -63,35 +63,35 @@ spv.140.frag
                               Decorate 92(bi) Block
                               Decorate 95(bname) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeFunction 6(float)
               10:             TypePointer Private 6(float)
-          11(i1):     10(ptr) Variable Private
+          11(i1):  10(float*) Variable Private
               12:             TypeBool
               13:             TypePointer Input 12(bool)
-14(gl_FrontFacing):     13(ptr) Variable Input
+14(gl_FrontFacing):   13(bool*) Variable Input
               16:    6(float) Constant 3221225472
               17:    6(float) Constant 1073741824
-          19(i2):     10(ptr) Variable Private
+          19(i2):  10(float*) Variable Private
               20:    6(float) Constant 1120665600
               21:             TypeVector 6(float) 4
-              22:             TypePointer Output 21(fvec4)
-           23(o):     22(ptr) Variable Output
+              22:             TypePointer Output 21(vec4)
+           23(o):   22(vec4*) Variable Output
               24:             TypeInt 32 0
-              25:     24(int) Constant 5
+              25:    24(uint) Constant 5
               26:             TypeArray 6(float) 25
-              27:             TypePointer Input 26
-28(gl_ClipDistance):     27(ptr) Variable Input
+              27:             TypePointer Input 26(float[5])
+28(gl_ClipDistance):27(float[5]*) Variable Input
               29:             TypeInt 32 1
               30:     29(int) Constant 2
               31:             TypePointer Input 6(float)
-              34:     24(int) Constant 1
+              34:    24(uint) Constant 1
               35:             TypePointer Output 6(float)
-              37:             TypePointer Input 21(fvec4)
-           38(k):     37(ptr) Variable Input
+              37:             TypePointer Input 21(vec4)
+           38(k):   37(vec4*) Variable Input
               40:             TypeVector 29(int) 4
-              45:     24(int) Constant 2
+              45:    24(uint) Constant 2
               47:             TypeImage 6(float) Rect sampled format:Unknown
               48:             TypeSampledImage 47
               49:             TypePointer UniformConstant 48
@@ -103,41 +103,41 @@ spv.140.frag
        58(sampB):     57(ptr) Variable UniformConstant
               64:             TypeVector 6(float) 2
               67:    6(float) Constant 1120403456
-              69:     24(int) Constant 3
+              69:    24(uint) Constant 3
               78:             TypeImage 6(float) 2D sampled format:Unknown
               79:             TypeSampledImage 78
               80:             TypeArray 79 69
-              81:             TypePointer UniformConstant 80
-     82(samp2Da):     81(ptr) Variable UniformConstant
-              83:             TypeMatrix 21(fvec4) 4
-              84:     24(int) Constant 4
-              85:             TypeArray 83 84
-              86:             TypeArray 83 84
-          87(bn):             TypeStruct 85 86 83 83 83
+              81:             TypePointer UniformConstant 80(arr[3])
+     82(samp2Da): 81(arr[3]*) Variable UniformConstant
+              83:             TypeMatrix 21(vec4) 4
+              84:    24(uint) Constant 4
+              85:             TypeArray 83(mat4) 84
+              86:             TypeArray 83(mat4) 84
+          87(bn):             TypeStruct 85(mat4[4]) 86(mat4[4]) 83(mat4) 83(mat4) 83(mat4)
               88:             TypePointer Uniform 87(bn)
-              89:     88(ptr) Variable Uniform
+              89:     88(bn*) Variable Uniform
               90:             TypeVector 6(float) 3
-              91:             TypeArray 90(fvec3) 45
-          92(bi):             TypeStruct 91
+              91:             TypeArray 90(vec3) 45
+          92(bi):             TypeStruct 91(vec3[2])
               93:             TypeArray 92(bi) 84
-              94:             TypePointer Uniform 93
-       95(bname):     94(ptr) Variable Uniform
-         4(main):           2 Function None 3
+              94:             TypePointer Uniform 93(bi[4])
+       95(bname):  94(bi[4]*) Variable Uniform
+         4(main):     2(void) Function None 3
                5:             Label
               15:    12(bool) Load 14(gl_FrontFacing)
               18:    6(float) Select 15 16 17
                               Store 11(i1) 18
                               Store 19(i2) 20
-              32:     31(ptr) AccessChain 28(gl_ClipDistance) 30
+              32:  31(float*) AccessChain 28(gl_ClipDistance) 30
               33:    6(float) Load 32
-              36:     35(ptr) AccessChain 23(o) 34
+              36:  35(float*) AccessChain 23(o) 34
                               Store 36 33
-              39:   21(fvec4) Load 38(k)
+              39:    21(vec4) Load 38(k)
               41:   40(ivec4) ConvertFToS 39
               42:     29(int) CompositeExtract 41 0
-              43:     31(ptr) AccessChain 28(gl_ClipDistance) 42
+              43:  31(float*) AccessChain 28(gl_ClipDistance) 42
               44:    6(float) Load 43
-              46:     35(ptr) AccessChain 23(o) 45
+              46:  35(float*) AccessChain 23(o) 45
                               Store 46 44
               51:          48 Load 50(sampR)
               52:          47 Image 51
@@ -147,13 +147,13 @@ spv.140.frag
               61:     29(int) ImageQuerySize 60
               62:   53(ivec2) CompositeConstruct 61 61
               63:   53(ivec2) IAdd 54 62
-              65:   64(fvec2) ConvertSToF 63
+              65:    64(vec2) ConvertSToF 63
               66:    6(float) CompositeExtract 65 0
               68:    6(float) FDiv 66 67
-              70:     35(ptr) AccessChain 23(o) 69
+              70:  35(float*) AccessChain 23(o) 69
                               Store 70 68
               71:    6(float) FunctionCall 8(foo()
-              72:     35(ptr) AccessChain 23(o) 45
+              72:  35(float*) AccessChain 23(o) 45
                               Store 72 71
                               Return
                               FunctionEnd

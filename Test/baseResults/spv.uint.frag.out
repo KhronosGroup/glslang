@@ -140,18 +140,18 @@ spv.uint.frag
                               Decorate 210(i) RelaxedPrecision
                               Decorate 210(i) Flat
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                9:      6(int) Constant 1
               10:             TypeInt 32 0
-              11:             TypePointer Function 10(int)
-              13:             TypeVector 10(int) 2
-              14:             TypePointer Input 13(ivec2)
-           15(t):     14(ptr) Variable Input
-              16:     10(int) Constant 1
-              17:             TypePointer Input 10(int)
-              20:     10(int) Constant 3
+              11:             TypePointer Function 10(uint)
+              13:             TypeVector 10(uint) 2
+              14:             TypePointer Input 13(uvec2)
+           15(t):  14(uvec2*) Variable Input
+              16:    10(uint) Constant 1
+              17:             TypePointer Input 10(uint)
+              20:    10(uint) Constant 3
               22:             TypeBool
               23:    22(bool) ConstantTrue
               26:      6(int) Constant 2
@@ -162,62 +162,62 @@ spv.uint.frag
               47:      6(int) Constant 11
               52:      6(int) Constant 13
               56:      6(int) Constant 4294967295
-              58:     10(int) Constant 4194303
-              66:             TypeVector 10(int) 4
-              67:             TypePointer Output 66(ivec4)
-           68(c):     67(ptr) Variable Output
-              69:             TypeImage 10(int) 2D sampled format:Unknown
+              58:    10(uint) Constant 4194303
+              66:             TypeVector 10(uint) 4
+              67:             TypePointer Output 66(uvec4)
+           68(c):  67(uvec4*) Variable Output
+              69:             TypeImage 10(uint) 2D sampled format:Unknown
               70:             TypeSampledImage 69
               71:             TypePointer UniformConstant 70
     72(usampler):     71(ptr) Variable UniformConstant
               74:             TypeFloat 32
               75:             TypeVector 74(float) 2
-              76:             TypePointer Input 75(fvec2)
-          77(tc):     76(ptr) Variable Input
+              76:             TypePointer Input 75(vec2)
+          77(tc):   76(vec2*) Variable Input
               87:   74(float) Constant 1065353216
               99:   74(float) Constant 1073741824
-             100:   75(fvec2) ConstantComposite 99 99
-             103:     10(int) Constant 0
-             106:     10(int) Constant 4
+             100:    75(vec2) ConstantComposite 99 99
+             103:    10(uint) Constant 0
+             106:    10(uint) Constant 4
              110:             TypePointer Function 74(float)
              114:             TypePointer Function 22(bool)
              134:      6(int) Constant 17
              139:      6(int) Constant 19
              144:      6(int) Constant 23
              149:      6(int) Constant 27
-             153:     10(int) Constant 161
-             155:     10(int) Constant 2576
+             153:    10(uint) Constant 161
+             155:    10(uint) Constant 2576
              158:      6(int) Constant 4
-             161:     10(int) Constant 2737
-             199:     10(int) Constant 4294967295
-             200:             TypePointer Output 10(int)
+             161:    10(uint) Constant 2737
+             199:    10(uint) Constant 4294967295
+             200:             TypePointer Output 10(uint)
              205:             TypePointer Input 74(float)
-          206(f):    205(ptr) Variable Input
-             207:             TypePointer Input 66(ivec4)
-          208(v):    207(ptr) Variable Input
+          206(f): 205(float*) Variable Input
+             207:             TypePointer Input 66(uvec4)
+          208(v): 207(uvec4*) Variable Input
              209:             TypePointer Input 6(int)
-          210(i):    209(ptr) Variable Input
+          210(i):   209(int*) Variable Input
              211:             TypePointer Private 22(bool)
-          212(b):    211(ptr) Variable Private
-         4(main):           2 Function None 3
+          212(b):  211(bool*) Variable Private
+         4(main):     2(void) Function None 3
                5:             Label
-        8(count):      7(ptr) Variable Function
-           12(u):     11(ptr) Variable Function
-   55(shiftedii):      7(ptr) Variable Function
-   57(shiftedui):     11(ptr) Variable Function
-   59(shiftediu):      7(ptr) Variable Function
-   60(shifteduu):     11(ptr) Variable Function
-         111(af):    110(ptr) Variable Function
-         115(ab):    114(ptr) Variable Function
-         118(ai):      7(ptr) Variable Function
-      152(mask1):     11(ptr) Variable Function
-      154(mask2):     11(ptr) Variable Function
-      156(mask3):     11(ptr) Variable Function
-      160(mask4):     11(ptr) Variable Function
+        8(count):     7(int*) Variable Function
+           12(u):   11(uint*) Variable Function
+   55(shiftedii):     7(int*) Variable Function
+   57(shiftedui):   11(uint*) Variable Function
+   59(shiftediu):     7(int*) Variable Function
+   60(shifteduu):   11(uint*) Variable Function
+         111(af): 110(float*) Variable Function
+         115(ab):  114(bool*) Variable Function
+         118(ai):     7(int*) Variable Function
+      152(mask1):   11(uint*) Variable Function
+      154(mask2):   11(uint*) Variable Function
+      156(mask3):   11(uint*) Variable Function
+      160(mask4):   11(uint*) Variable Function
                               Store 8(count) 9
-              18:     17(ptr) AccessChain 15(t) 16
-              19:     10(int) Load 18
-              21:     10(int) IAdd 19 20
+              18:   17(uint*) AccessChain 15(t) 16
+              19:    10(uint) Load 18
+              21:    10(uint) IAdd 19 20
                               Store 12(u) 21
                               SelectionMerge 25 None
                               BranchConditional 23 24 25
@@ -278,65 +278,65 @@ spv.uint.frag
                               BranchConditional 63 64 65
               64:               Label
               73:          70   Load 72(usampler)
-              78:   75(fvec2)   Load 77(tc)
-              79:   66(ivec4)   ImageSampleImplicitLod 73 78
+              78:    75(vec2)   Load 77(tc)
+              79:   66(uvec4)   ImageSampleImplicitLod 73 78
                                 Store 68(c) 79
                                 Branch 65
               65:             Label
-              80:     10(int) Load 57(shiftedui)
-              81:     10(int) Load 60(shifteduu)
+              80:    10(uint) Load 57(shiftedui)
+              81:    10(uint) Load 60(shifteduu)
               82:    22(bool) IEqual 80 81
                               SelectionMerge 84 None
                               BranchConditional 82 83 84
               83:               Label
               85:          70   Load 72(usampler)
-              86:   75(fvec2)   Load 77(tc)
-              88:   75(fvec2)   CompositeConstruct 87 87
-              89:   75(fvec2)   FAdd 86 88
-              90:   66(ivec4)   ImageSampleImplicitLod 85 89
+              86:    75(vec2)   Load 77(tc)
+              88:    75(vec2)   CompositeConstruct 87 87
+              89:    75(vec2)   FAdd 86 88
+              90:   66(uvec4)   ImageSampleImplicitLod 85 89
                                 Store 68(c) 90
                                 Branch 84
               84:             Label
               91:      6(int) Load 55(shiftedii)
-              92:     10(int) Load 57(shiftedui)
+              92:    10(uint) Load 57(shiftedui)
               93:      6(int) Bitcast 92
               94:    22(bool) IEqual 91 93
                               SelectionMerge 96 None
                               BranchConditional 94 95 96
               95:               Label
               97:          70   Load 72(usampler)
-              98:   75(fvec2)   Load 77(tc)
-             101:   75(fvec2)   FSub 98 100
-             102:   66(ivec4)   ImageSampleImplicitLod 97 101
+              98:    75(vec2)   Load 77(tc)
+             101:    75(vec2)   FSub 98 100
+             102:   66(uvec4)   ImageSampleImplicitLod 97 101
                                 Store 68(c) 102
                                 Branch 96
               96:             Label
-             104:     17(ptr) AccessChain 15(t) 103
-             105:     10(int) Load 104
+             104:   17(uint*) AccessChain 15(t) 103
+             105:    10(uint) Load 104
              107:    22(bool) UGreaterThan 105 106
                               SelectionMerge 109 None
                               BranchConditional 107 108 109
              108:               Label
-             112:     10(int)   Load 12(u)
+             112:    10(uint)   Load 12(u)
              113:   74(float)   ConvertUToF 112
                                 Store 111(af) 113
-             116:     10(int)   Load 12(u)
+             116:    10(uint)   Load 12(u)
              117:    22(bool)   INotEqual 116 103
                                 Store 115(ab) 117
-             119:     10(int)   Load 12(u)
+             119:    10(uint)   Load 12(u)
              120:      6(int)   Bitcast 119
                                 Store 118(ai) 120
              121:   74(float)   Load 111(af)
-             122:     10(int)   ConvertFToU 121
+             122:    10(uint)   ConvertFToU 121
              123:    22(bool)   Load 115(ab)
-             124:     10(int)   Select 123 16 103
+             124:    10(uint)   Select 123 16 103
              125:      6(int)   Load 118(ai)
-             126:     10(int)   Bitcast 125
+             126:    10(uint)   Bitcast 125
              127:      6(int)   Load 8(count)
-             128:     10(int)   Bitcast 127
-             129:   66(ivec4)   CompositeConstruct 122 124 126 128
-             130:   66(ivec4)   Load 68(c)
-             131:   66(ivec4)   IAdd 130 129
+             128:    10(uint)   Bitcast 127
+             129:   66(uvec4)   CompositeConstruct 122 124 126 128
+             130:   66(uvec4)   Load 68(c)
+             131:   66(uvec4)   IAdd 130 129
                                 Store 68(c) 131
                                 Branch 109
              109:             Label
@@ -374,12 +374,12 @@ spv.uint.frag
              148:             Label
                               Store 152(mask1) 153
                               Store 154(mask2) 155
-             157:     10(int) Load 152(mask1)
-             159:     10(int) ShiftLeftLogical 157 158
+             157:    10(uint) Load 152(mask1)
+             159:    10(uint) ShiftLeftLogical 157 158
                               Store 156(mask3) 159
                               Store 160(mask4) 161
-             162:     10(int) Load 156(mask3)
-             163:     10(int) Load 154(mask2)
+             162:    10(uint) Load 156(mask3)
+             163:    10(uint) Load 154(mask2)
              164:    22(bool) IEqual 162 163
                               SelectionMerge 166 None
                               BranchConditional 164 165 166
@@ -389,9 +389,9 @@ spv.uint.frag
                                 Store 8(count) 168
                                 Branch 166
              166:             Label
-             169:     10(int) Load 156(mask3)
-             170:     10(int) Load 152(mask1)
-             171:     10(int) BitwiseAnd 169 170
+             169:    10(uint) Load 156(mask3)
+             170:    10(uint) Load 152(mask1)
+             171:    10(uint) BitwiseAnd 169 170
              172:    22(bool) INotEqual 171 103
                               SelectionMerge 174 None
                               BranchConditional 172 173 174
@@ -401,10 +401,10 @@ spv.uint.frag
                                 Store 8(count) 176
                                 Branch 174
              174:             Label
-             177:     10(int) Load 152(mask1)
-             178:     10(int) Load 156(mask3)
-             179:     10(int) BitwiseOr 177 178
-             180:     10(int) Load 160(mask4)
+             177:    10(uint) Load 152(mask1)
+             178:    10(uint) Load 156(mask3)
+             179:    10(uint) BitwiseOr 177 178
+             180:    10(uint) Load 160(mask4)
              181:    22(bool) IEqual 179 180
                               SelectionMerge 183 None
                               BranchConditional 181 182 183
@@ -414,9 +414,9 @@ spv.uint.frag
                                 Store 8(count) 185
                                 Branch 183
              183:             Label
-             186:     10(int) Load 152(mask1)
-             187:     10(int) Load 160(mask4)
-             188:     10(int) BitwiseXor 186 187
+             186:    10(uint) Load 152(mask1)
+             187:    10(uint) Load 160(mask4)
+             188:    10(uint) BitwiseXor 186 187
              189:    22(bool) IEqual 188 155
                               SelectionMerge 191 None
                               BranchConditional 189 190 191
@@ -427,15 +427,15 @@ spv.uint.frag
                                 Branch 191
              191:             Label
              194:      6(int) Load 8(count)
-             195:     10(int) Bitcast 194
-             196:   66(ivec4) CompositeConstruct 195 195 195 195
-             197:   66(ivec4) Load 68(c)
-             198:   66(ivec4) IAdd 197 196
+             195:    10(uint) Bitcast 194
+             196:   66(uvec4) CompositeConstruct 195 195 195 195
+             197:   66(uvec4) Load 68(c)
+             198:   66(uvec4) IAdd 197 196
                               Store 68(c) 198
-             201:    200(ptr) AccessChain 68(c) 103
-             202:     10(int) Load 201
-             203:     10(int) IAdd 202 199
-             204:    200(ptr) AccessChain 68(c) 103
+             201:  200(uint*) AccessChain 68(c) 103
+             202:    10(uint) Load 201
+             203:    10(uint) IAdd 202 199
+             204:  200(uint*) AccessChain 68(c) 103
                               Store 204 203
                               Return
                               FunctionEnd

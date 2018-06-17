@@ -327,52 +327,52 @@ gl_FragCoord origin is upper left
                               Decorate 95(d) Location 2
                               Decorate 98(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
+               8:             TypePointer Function 7(vec4)
                9:             TypeInt 32 1
               10:             TypePointer Function 9(int)
-              11:             TypeFunction 7(fvec4) 8(ptr) 10(ptr) 10(ptr)
+              11:             TypeFunction 7(vec4) 8(vec4*) 10(int*) 10(int*)
               27:    6(float) Constant 1065353216
               49:    6(float) Constant 1073741824
               54:    6(float) Constant 1077936128
               61:    6(float) Constant 1082130432
-              87:             TypePointer Input 7(fvec4)
-       88(input):     87(ptr) Variable Input
+              87:             TypePointer Input 7(vec4)
+       88(input):   87(vec4*) Variable Input
               91:             TypePointer Input 9(int)
-           92(c):     91(ptr) Variable Input
-           95(d):     91(ptr) Variable Input
-              97:             TypePointer Output 7(fvec4)
-98(@entryPointOutput):     97(ptr) Variable Output
-4(PixelShaderFunction):           2 Function None 3
+           92(c):    91(int*) Variable Input
+           95(d):    91(int*) Variable Input
+              97:             TypePointer Output 7(vec4)
+98(@entryPointOutput):   97(vec4*) Variable Output
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-       86(input):      8(ptr) Variable Function
-           90(c):     10(ptr) Variable Function
-           94(d):     10(ptr) Variable Function
-       99(param):      8(ptr) Variable Function
-      101(param):     10(ptr) Variable Function
-      103(param):     10(ptr) Variable Function
-              89:    7(fvec4) Load 88(input)
+       86(input):    8(vec4*) Variable Function
+           90(c):    10(int*) Variable Function
+           94(d):    10(int*) Variable Function
+       99(param):    8(vec4*) Variable Function
+      101(param):    10(int*) Variable Function
+      103(param):    10(int*) Variable Function
+              89:     7(vec4) Load 88(input)
                               Store 86(input) 89
               93:      9(int) Load 92(c)
                               Store 90(c) 93
               96:      9(int) Load 95(d)
                               Store 94(d) 96
-             100:    7(fvec4) Load 86(input)
+             100:     7(vec4) Load 86(input)
                               Store 99(param) 100
              102:      9(int) Load 90(c)
                               Store 101(param) 102
              104:      9(int) Load 94(d)
                               Store 103(param) 104
-             105:    7(fvec4) FunctionCall 15(@PixelShaderFunction(vf4;i1;i1;) 99(param) 101(param) 103(param)
+             105:     7(vec4) FunctionCall 15(@PixelShaderFunction(vf4;i1;i1;) 99(param) 101(param) 103(param)
                               Store 98(@entryPointOutput) 105
                               Return
                               FunctionEnd
-15(@PixelShaderFunction(vf4;i1;i1;):    7(fvec4) Function None 11
-       12(input):      8(ptr) FunctionParameter
-           13(c):     10(ptr) FunctionParameter
-           14(d):     10(ptr) FunctionParameter
+15(@PixelShaderFunction(vf4;i1;i1;):     7(vec4) Function None 11
+       12(input):    8(vec4*) FunctionParameter
+           13(c):    10(int*) FunctionParameter
+           14(d):    10(int*) FunctionParameter
               16:             Label
               17:      9(int) Load 13(c)
                               SelectionMerge 19 None
@@ -386,15 +386,15 @@ gl_FragCoord origin is upper left
                                      case 1: 23
                                      case 2: 24
               23:               Label
-              26:    7(fvec4)   Load 12(input)
-              28:    7(fvec4)   CompositeConstruct 27 27 27 27
-              29:    7(fvec4)   FAdd 26 28
+              26:     7(vec4)   Load 12(input)
+              28:     7(vec4)   CompositeConstruct 27 27 27 27
+              29:     7(vec4)   FAdd 26 28
                                 Store 12(input) 29
                                 Branch 25
               24:               Label
-              31:    7(fvec4)   Load 12(input)
-              32:    7(fvec4)   CompositeConstruct 27 27 27 27
-              33:    7(fvec4)   FSub 31 32
+              31:     7(vec4)   Load 12(input)
+              32:     7(vec4)   CompositeConstruct 27 27 27 27
+              33:     7(vec4)   FSub 31 32
                                 Store 12(input) 33
                                 Branch 25
               25:             Label
@@ -404,15 +404,15 @@ gl_FragCoord origin is upper left
                                      case 1: 37
                                      case 2: 38
               39:               Label
-              62:    7(fvec4)   Load 12(input)
-              63:    7(fvec4)   CompositeConstruct 61 61 61 61
-              64:    7(fvec4)   FAdd 62 63
+              62:     7(vec4)   Load 12(input)
+              63:     7(vec4)   CompositeConstruct 61 61 61 61
+              64:     7(vec4)   FAdd 62 63
                                 Store 12(input) 64
                                 Branch 40
               37:               Label
-              41:    7(fvec4)   Load 12(input)
-              42:    7(fvec4)   CompositeConstruct 27 27 27 27
-              43:    7(fvec4)   FAdd 41 42
+              41:     7(vec4)   Load 12(input)
+              42:     7(vec4)   CompositeConstruct 27 27 27 27
+              43:     7(vec4)   FAdd 41 42
                                 Store 12(input) 43
                                 Branch 40
               38:               Label
@@ -422,15 +422,15 @@ gl_FragCoord origin is upper left
                                        case 2: 46
                                        case 3: 47
               46:                 Label
-              50:    7(fvec4)     Load 12(input)
-              51:    7(fvec4)     CompositeConstruct 49 49 49 49
-              52:    7(fvec4)     FAdd 50 51
+              50:     7(vec4)     Load 12(input)
+              51:     7(vec4)     CompositeConstruct 49 49 49 49
+              52:     7(vec4)     FAdd 50 51
                                   Store 12(input) 52
                                   Branch 48
               47:                 Label
-              55:    7(fvec4)     Load 12(input)
-              56:    7(fvec4)     CompositeConstruct 54 54 54 54
-              57:    7(fvec4)     FAdd 55 56
+              55:     7(vec4)     Load 12(input)
+              56:     7(vec4)     CompositeConstruct 54 54 54 54
+              57:     7(vec4)     FAdd 55 56
                                   Store 12(input) 57
                                   Branch 48
               48:               Label
@@ -452,18 +452,18 @@ gl_FragCoord origin is upper left
                                      case 4: 73
                                      case 5: 73
               72:               Label
-              75:    7(fvec4)   Load 12(input)
-              76:    7(fvec4)   CompositeConstruct 27 27 27 27
-              77:    7(fvec4)   FAdd 75 76
+              75:     7(vec4)   Load 12(input)
+              76:     7(vec4)   CompositeConstruct 27 27 27 27
+              77:     7(vec4)   FAdd 75 76
                                 Store 12(input) 77
                                 Branch 74
               73:               Label
-              79:    7(fvec4)   Load 12(input)
-              80:    7(fvec4)   CompositeConstruct 27 27 27 27
-              81:    7(fvec4)   FSub 79 80
+              79:     7(vec4)   Load 12(input)
+              80:     7(vec4)   CompositeConstruct 27 27 27 27
+              81:     7(vec4)   FSub 79 80
                                 Store 12(input) 81
                                 Branch 74
               74:             Label
-              83:    7(fvec4) Load 12(input)
+              83:     7(vec4) Load 12(input)
                               ReturnValue 83
                               FunctionEnd

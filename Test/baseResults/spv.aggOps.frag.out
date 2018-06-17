@@ -67,50 +67,50 @@ WARNING: 0:4: '' : all default precisions are highp; use precision statements to
                               Decorate 108 RelaxedPrecision
                               Decorate 129 RelaxedPrecision
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypeFloat 32
            8(s1):             TypeStruct 6(int) 7(float)
                9:             TypeInt 32 0
-              10:      9(int) Constant 3
+              10:     9(uint) Constant 3
               11:             TypeArray 8(s1) 10
-              12:             TypePointer Function 11
+              12:             TypePointer Function 11(s1[3])
               14:             TypeVector 7(float) 4
-              15:             TypePointer Input 14(fvec4)
-           16(u):     15(ptr) Variable Input
-              17:      9(int) Constant 0
+              15:             TypePointer Input 14(vec4)
+           16(u):   15(vec4*) Variable Input
+              17:     9(uint) Constant 0
               18:             TypePointer Input 7(float)
-              22:      9(int) Constant 1
-              26:      9(int) Constant 2
+              22:     9(uint) Constant 1
+              26:     9(uint) Constant 2
               33:      6(int) Constant 14
               34:    7(float) Constant 1096810496
               35:       8(s1) ConstantComposite 33 34
               38:      6(int) Constant 17
               39:    7(float) Constant 1099431936
               40:       8(s1) ConstantComposite 38 39
-           41(w):     15(ptr) Variable Input
+           41(w):   15(vec4*) Variable Input
           55(s1):             TypeStruct 6(int) 7(float)
           56(s2):             TypeStruct 6(int) 7(float) 55(s1)
          57(ub1):             TypeStruct 56(s2)
               58:             TypePointer Uniform 57(ub1)
-      59(uName1):     58(ptr) Variable Uniform
+      59(uName1):    58(ub1*) Variable Uniform
               60:      6(int) Constant 0
               61:             TypePointer Uniform 56(s2)
           64(s1):             TypeStruct 6(int) 7(float)
           65(s2):             TypeStruct 6(int) 7(float) 64(s1)
          66(ub2):             TypeStruct 65(s2)
               67:             TypePointer Uniform 66(ub2)
-      68(uName2):     67(ptr) Variable Uniform
+      68(uName2):    67(ub2*) Variable Uniform
               69:             TypePointer Uniform 65(s2)
               72:             TypeBool
-              92:             TypePointer Function 14(fvec4)
+              92:             TypePointer Function 14(vec4)
               94:             TypeImage 7(float) 2D sampled format:Unknown
               95:             TypeSampledImage 94
               96:             TypePointer UniformConstant 95
       97(samp2D):     96(ptr) Variable UniformConstant
               99:             TypeVector 7(float) 2
-             100:             TypePointer Input 99(fvec2)
-      101(coord):    100(ptr) Variable Input
+             100:             TypePointer Input 99(vec2)
+      101(coord):  100(vec2*) Variable Input
              106:    7(float) Constant 1073741824
              112:             TypeVector 72(bool) 4
              117:    7(float) Constant 1077936128
@@ -119,44 +119,44 @@ WARNING: 0:4: '' : all default precisions are highp; use precision statements to
              137:    7(float) Constant 1084227584
              173:    7(float) Constant 1086324736
              209:    7(float) Constant 1088421888
-             212:             TypePointer Output 14(fvec4)
-      213(color):    212(ptr) Variable Output
-         4(main):           2 Function None 3
+             212:             TypePointer Output 14(vec4)
+      213(color):  212(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-           13(a):     12(ptr) Variable Function
-           37(b):     12(ptr) Variable Function
-           93(v):     92(ptr) Variable Function
-              19:     18(ptr) AccessChain 16(u) 17
+           13(a):  12(s1[3]*) Variable Function
+           37(b):  12(s1[3]*) Variable Function
+           93(v):   92(vec4*) Variable Function
+              19:  18(float*) AccessChain 16(u) 17
               20:    7(float) Load 19
               21:      6(int) ConvertFToS 20
-              23:     18(ptr) AccessChain 16(u) 22
+              23:  18(float*) AccessChain 16(u) 22
               24:    7(float) Load 23
               25:       8(s1) CompositeConstruct 21 24
-              27:     18(ptr) AccessChain 16(u) 26
+              27:  18(float*) AccessChain 16(u) 26
               28:    7(float) Load 27
               29:      6(int) ConvertFToS 28
-              30:     18(ptr) AccessChain 16(u) 10
+              30:  18(float*) AccessChain 16(u) 10
               31:    7(float) Load 30
               32:       8(s1) CompositeConstruct 29 31
-              36:          11 CompositeConstruct 25 32 35
+              36:   11(s1[3]) CompositeConstruct 25 32 35
                               Store 13(a) 36
-              42:     18(ptr) AccessChain 41(w) 17
+              42:  18(float*) AccessChain 41(w) 17
               43:    7(float) Load 42
               44:      6(int) ConvertFToS 43
-              45:     18(ptr) AccessChain 41(w) 22
+              45:  18(float*) AccessChain 41(w) 22
               46:    7(float) Load 45
               47:       8(s1) CompositeConstruct 44 46
-              48:     18(ptr) AccessChain 41(w) 26
+              48:  18(float*) AccessChain 41(w) 26
               49:    7(float) Load 48
               50:      6(int) ConvertFToS 49
-              51:     18(ptr) AccessChain 41(w) 10
+              51:  18(float*) AccessChain 41(w) 10
               52:    7(float) Load 51
               53:       8(s1) CompositeConstruct 50 52
-              54:          11 CompositeConstruct 40 47 53
+              54:   11(s1[3]) CompositeConstruct 40 47 53
                               Store 37(b) 54
-              62:     61(ptr) AccessChain 59(uName1) 60
+              62:     61(s2*) AccessChain 59(uName1) 60
               63:      56(s2) Load 62
-              70:     69(ptr) AccessChain 68(uName2) 60
+              70:     69(s2*) AccessChain 68(uName2) 60
               71:      65(s2) Load 70
               73:      6(int) CompositeExtract 63 0
               74:      6(int) CompositeExtract 71 0
@@ -179,57 +179,57 @@ WARNING: 0:4: '' : all default precisions are highp; use precision statements to
                               BranchConditional 89 90 104
               90:               Label
               98:          95   Load 97(samp2D)
-             102:   99(fvec2)   Load 101(coord)
-             103:   14(fvec4)   ImageSampleImplicitLod 98 102
+             102:    99(vec2)   Load 101(coord)
+             103:    14(vec4)   ImageSampleImplicitLod 98 102
                                 Store 93(v) 103
                                 Branch 91
              104:               Label
              105:          95   Load 97(samp2D)
-             107:   99(fvec2)   Load 101(coord)
-             108:   99(fvec2)   VectorTimesScalar 107 106
-             109:   14(fvec4)   ImageSampleImplicitLod 105 108
+             107:    99(vec2)   Load 101(coord)
+             108:    99(vec2)   VectorTimesScalar 107 106
+             109:    14(vec4)   ImageSampleImplicitLod 105 108
                                 Store 93(v) 109
                                 Branch 91
               91:             Label
-             110:   14(fvec4) Load 16(u)
-             111:   14(fvec4) Load 93(v)
+             110:    14(vec4) Load 16(u)
+             111:    14(vec4) Load 93(v)
              113:  112(bvec4) FOrdEqual 110 111
              114:    72(bool) All 113
                               SelectionMerge 116 None
                               BranchConditional 114 115 116
              115:               Label
-             118:   14(fvec4)   Load 93(v)
-             119:   14(fvec4)   VectorTimesScalar 118 117
+             118:    14(vec4)   Load 93(v)
+             119:    14(vec4)   VectorTimesScalar 118 117
                                 Store 93(v) 119
                                 Branch 116
              116:             Label
-             120:   14(fvec4) Load 16(u)
-             121:   14(fvec4) Load 93(v)
+             120:    14(vec4) Load 16(u)
+             121:    14(vec4) Load 93(v)
              122:  112(bvec4) FOrdNotEqual 120 121
              123:    72(bool) Any 122
                               SelectionMerge 125 None
                               BranchConditional 123 124 125
              124:               Label
-             127:   14(fvec4)   Load 93(v)
-             128:   14(fvec4)   VectorTimesScalar 127 126
+             127:    14(vec4)   Load 93(v)
+             128:    14(vec4)   VectorTimesScalar 127 126
                                 Store 93(v) 128
                                 Branch 125
              125:             Label
-             129:   99(fvec2) Load 101(coord)
-             130:   14(fvec4) Load 93(v)
-             131:   99(fvec2) VectorShuffle 130 130 1 3
+             129:    99(vec2) Load 101(coord)
+             130:    14(vec4) Load 93(v)
+             131:    99(vec2) VectorShuffle 130 130 1 3
              133:  132(bvec2) FOrdEqual 129 131
              134:    72(bool) All 133
                               SelectionMerge 136 None
                               BranchConditional 134 135 136
              135:               Label
-             138:   14(fvec4)   Load 93(v)
-             139:   14(fvec4)   VectorTimesScalar 138 137
+             138:    14(vec4)   Load 93(v)
+             139:    14(vec4)   VectorTimesScalar 138 137
                                 Store 93(v) 139
                                 Branch 136
              136:             Label
-             140:          11 Load 13(a)
-             141:          11 Load 37(b)
+             140:   11(s1[3]) Load 13(a)
+             141:   11(s1[3]) Load 37(b)
              142:       8(s1) CompositeExtract 140 0
              143:       8(s1) CompositeExtract 141 0
              144:      6(int) CompositeExtract 142 0
@@ -262,13 +262,13 @@ WARNING: 0:4: '' : all default precisions are highp; use precision statements to
                               SelectionMerge 172 None
                               BranchConditional 170 171 172
              171:               Label
-             174:   14(fvec4)   Load 93(v)
-             175:   14(fvec4)   VectorTimesScalar 174 173
+             174:    14(vec4)   Load 93(v)
+             175:    14(vec4)   VectorTimesScalar 174 173
                                 Store 93(v) 175
                                 Branch 172
              172:             Label
-             176:          11 Load 13(a)
-             177:          11 Load 37(b)
+             176:   11(s1[3]) Load 13(a)
+             177:   11(s1[3]) Load 37(b)
              178:       8(s1) CompositeExtract 176 0
              179:       8(s1) CompositeExtract 177 0
              180:      6(int) CompositeExtract 178 0
@@ -301,12 +301,12 @@ WARNING: 0:4: '' : all default precisions are highp; use precision statements to
                               SelectionMerge 208 None
                               BranchConditional 206 207 208
              207:               Label
-             210:   14(fvec4)   Load 93(v)
-             211:   14(fvec4)   VectorTimesScalar 210 209
+             210:    14(vec4)   Load 93(v)
+             211:    14(vec4)   VectorTimesScalar 210 209
                                 Store 93(v) 211
                                 Branch 208
              208:             Label
-             214:   14(fvec4) Load 93(v)
+             214:    14(vec4) Load 93(v)
                               Store 213(color) 214
                               Return
                               FunctionEnd

@@ -128,23 +128,23 @@ spv.nonuniform.frag
                               Decorate 205 DecorationNonUniformEXT
                               Decorate 207 DecorationNonUniformEXT
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
-               8:             TypeFunction 6(int) 7(ptr) 7(ptr)
+               8:             TypeFunction 6(int) 7(int*) 7(int*)
               25:      6(int) Constant 2
               28:             TypeFloat 32
               29:             TypePointer Function 28(float)
               31:             TypeVector 28(float) 4
-              32:             TypePointer Input 31(fvec4)
-     33(nu_inv4):     32(ptr) Variable Input
+              32:             TypePointer Input 31(vec4)
+     33(nu_inv4):   32(vec4*) Variable Input
               34:             TypeInt 32 0
-              35:     34(int) Constant 0
+              35:    34(uint) Constant 0
               36:             TypePointer Input 28(float)
               42:             TypeImage 28(float) SubpassData nonsampled format:Unknown
               43:             TypeRuntimeArray 42
-              44:             TypePointer UniformConstant 43
-45(inputAttachmentDyn):     44(ptr) Variable UniformConstant
+              44:             TypePointer UniformConstant 43(arr[])
+45(inputAttachmentDyn):  44(arr[]*) Variable UniformConstant
               48:             TypePointer UniformConstant 42
               51:      6(int) Constant 0
               52:             TypeVector 6(int) 2
@@ -152,71 +152,71 @@ spv.nonuniform.frag
               58:             TypeImage 28(float) Buffer sampled format:Unknown
               59:             TypeSampledImage 58
               60:             TypeRuntimeArray 59
-              61:             TypePointer UniformConstant 60
-62(uniformTexelBufferDyn):     61(ptr) Variable UniformConstant
+              61:             TypePointer UniformConstant 60(arr[])
+62(uniformTexelBufferDyn):  61(arr[]*) Variable UniformConstant
               64:             TypePointer UniformConstant 59
               67:      6(int) Constant 1
               73:             TypeImage 28(float) Buffer nonsampled format:R32f
               74:             TypeRuntimeArray 73
-              75:             TypePointer UniformConstant 74
-76(storageTexelBufferDyn):     75(ptr) Variable UniformConstant
+              75:             TypePointer UniformConstant 74(arr[])
+76(storageTexelBufferDyn):  75(arr[]*) Variable UniformConstant
               78:             TypePointer UniformConstant 73
        85(uname):             TypeStruct 28(float)
               86:             TypeRuntimeArray 85(uname)
-              87:             TypePointer Uniform 86
-88(uniformBuffer):     87(ptr) Variable Uniform
+              87:             TypePointer Uniform 86(uname[])
+88(uniformBuffer):87(uname[]*) Variable Uniform
               89:             TypePointer Input 6(int)
-       90(nu_ii):     89(ptr) Variable Input
+       90(nu_ii):    89(int*) Variable Input
               92:             TypePointer Uniform 28(float)
        97(bname):             TypeStruct 28(float)
               98:             TypeRuntimeArray 97(bname)
-              99:             TypePointer Uniform 98
-100(storageBuffer):     99(ptr) Variable Uniform
+              99:             TypePointer Uniform 98(bname[])
+100(storageBuffer):99(bname[]*) Variable Uniform
              106:             TypeImage 28(float) 2D sampled format:Unknown
              107:             TypeSampledImage 106
              108:             TypeRuntimeArray 107
-             109:             TypePointer UniformConstant 108
-110(sampledImage):    109(ptr) Variable UniformConstant
+             109:             TypePointer UniformConstant 108(arr[])
+110(sampledImage): 109(arr[]*) Variable UniformConstant
              112:             TypePointer UniformConstant 107
              115:             TypeVector 28(float) 2
              116:   28(float) Constant 1056964608
-             117:  115(fvec2) ConstantComposite 116 116
+             117:   115(vec2) ConstantComposite 116 116
              122:             TypeImage 28(float) 2D nonsampled format:R32f
              123:             TypeRuntimeArray 122
-             124:             TypePointer UniformConstant 123
-125(storageImage):    124(ptr) Variable UniformConstant
+             124:             TypePointer UniformConstant 123(arr[])
+125(storageImage): 124(arr[]*) Variable UniformConstant
              127:             TypePointer UniformConstant 122
              130:   52(ivec2) ConstantComposite 67 67
              135:             TypeRuntimeArray 42
-             136:             TypePointer UniformConstant 135
-137(inputAttachment):    136(ptr) Variable UniformConstant
+             136:             TypePointer UniformConstant 135(arr[])
+137(inputAttachment): 136(arr[]*) Variable UniformConstant
              145:             TypeRuntimeArray 59
-             146:             TypePointer UniformConstant 145
-147(uniformTexelBuffer):    146(ptr) Variable UniformConstant
+             146:             TypePointer UniformConstant 145(arr[])
+147(uniformTexelBuffer): 146(arr[]*) Variable UniformConstant
              156:             TypeRuntimeArray 73
-             157:             TypePointer UniformConstant 156
-158(storageTexelBuffer):    157(ptr) Variable UniformConstant
+             157:             TypePointer UniformConstant 156(arr[])
+158(storageTexelBuffer): 157(arr[]*) Variable UniformConstant
              166:             TypeVector 6(int) 4
              167:             TypePointer Function 166(ivec4)
-             169:     34(int) Constant 1
-             176:     34(int) Constant 2
-             191:             TypeMatrix 31(fvec4) 4
-             192:             TypePointer Function 191
+             169:    34(uint) Constant 1
+             176:    34(uint) Constant 2
+             191:             TypeMatrix 31(vec4) 4
+             192:             TypePointer Function 191(mat4)
           201(S):             TypeStruct 6(int)
              202:             TypePointer Function 201(S)
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-           16(a):      7(ptr) Variable Function
-       17(nu_li):      7(ptr) Variable Function
-       18(param):      7(ptr) Variable Function
-       20(param):      7(ptr) Variable Function
-           30(b):     29(ptr) Variable Function
-       39(nu_gf):     29(ptr) Variable Function
-       46(dyn_i):      7(ptr) Variable Function
-          168(v):    167(ptr) Variable Function
-         183(uv):    167(ptr) Variable Function
-          193(m):    192(ptr) Variable Function
-          203(s):    202(ptr) Variable Function
+           16(a):     7(int*) Variable Function
+       17(nu_li):     7(int*) Variable Function
+       18(param):     7(int*) Variable Function
+       20(param):     7(int*) Variable Function
+           30(b):  29(float*) Variable Function
+       39(nu_gf):  29(float*) Variable Function
+       46(dyn_i):     7(int*) Variable Function
+          168(v): 167(ivec4*) Variable Function
+         183(uv): 167(ivec4*) Variable Function
+          193(m):  192(mat4*) Variable Function
+          203(s):     202(S*) Variable Function
               19:      6(int) Load 17(nu_li)
                               Store 18(param) 19
               21:      6(int) FunctionCall 11(foo(i1;i1;) 18(param) 20(param)
@@ -228,7 +228,7 @@ spv.nonuniform.frag
               26:      6(int) IMul 24 25
               27:      6(int) IAdd 23 26
                               Store 17(nu_li) 27
-              37:     36(ptr) AccessChain 33(nu_inv4) 35
+              37:  36(float*) AccessChain 33(nu_inv4) 35
               38:   28(float) Load 37
               40:   28(float) Load 39(nu_gf)
               41:   28(float) FMul 38 40
@@ -236,7 +236,7 @@ spv.nonuniform.frag
               47:      6(int) Load 46(dyn_i)
               49:     48(ptr) AccessChain 45(inputAttachmentDyn) 47
               50:          42 Load 49
-              54:   31(fvec4) ImageRead 50 53
+              54:    31(vec4) ImageRead 50 53
               55:   28(float) CompositeExtract 54 0
               56:   28(float) Load 30(b)
               57:   28(float) FAdd 56 55
@@ -245,7 +245,7 @@ spv.nonuniform.frag
               65:     64(ptr) AccessChain 62(uniformTexelBufferDyn) 63
               66:          59 Load 65
               68:          58 Image 66
-              69:   31(fvec4) ImageFetch 68 67
+              69:    31(vec4) ImageFetch 68 67
               70:   28(float) CompositeExtract 69 0
               71:   28(float) Load 30(b)
               72:   28(float) FAdd 71 70
@@ -253,19 +253,19 @@ spv.nonuniform.frag
               77:      6(int) Load 46(dyn_i)
               79:     78(ptr) AccessChain 76(storageTexelBufferDyn) 77
               80:          73 Load 79
-              81:   31(fvec4) ImageRead 80 67
+              81:    31(vec4) ImageRead 80 67
               82:   28(float) CompositeExtract 81 0
               83:   28(float) Load 30(b)
               84:   28(float) FAdd 83 82
                               Store 30(b) 84
               91:      6(int) Load 90(nu_ii)
-              93:     92(ptr) AccessChain 88(uniformBuffer) 91 51
+              93:  92(float*) AccessChain 88(uniformBuffer) 91 51
               94:   28(float) Load 93
               95:   28(float) Load 30(b)
               96:   28(float) FAdd 95 94
                               Store 30(b) 96
              101:      6(int) Load 90(nu_ii)
-             102:     92(ptr) AccessChain 100(storageBuffer) 101 51
+             102:  92(float*) AccessChain 100(storageBuffer) 101 51
              103:   28(float) Load 102
              104:   28(float) Load 30(b)
              105:   28(float) FAdd 104 103
@@ -273,7 +273,7 @@ spv.nonuniform.frag
              111:      6(int) Load 90(nu_ii)
              113:    112(ptr) AccessChain 110(sampledImage) 111
              114:         107 Load 113
-             118:   31(fvec4) ImageSampleImplicitLod 114 117
+             118:    31(vec4) ImageSampleImplicitLod 114 117
              119:   28(float) CompositeExtract 118 0
              120:   28(float) Load 30(b)
              121:   28(float) FAdd 120 119
@@ -281,7 +281,7 @@ spv.nonuniform.frag
              126:      6(int) Load 90(nu_ii)
              128:    127(ptr) AccessChain 125(storageImage) 126
              129:         122 Load 128
-             131:   31(fvec4) ImageRead 129 130
+             131:    31(vec4) ImageRead 129 130
              132:   28(float) CompositeExtract 131 0
              133:   28(float) Load 30(b)
              134:   28(float) FAdd 133 132
@@ -289,7 +289,7 @@ spv.nonuniform.frag
              138:      6(int) Load 90(nu_ii)
              139:     48(ptr) AccessChain 137(inputAttachment) 138
              140:          42 Load 139
-             141:   31(fvec4) ImageRead 140 53
+             141:    31(vec4) ImageRead 140 53
              142:   28(float) CompositeExtract 141 0
              143:   28(float) Load 30(b)
              144:   28(float) FAdd 143 142
@@ -298,7 +298,7 @@ spv.nonuniform.frag
              149:     64(ptr) AccessChain 147(uniformTexelBuffer) 148
              150:          59 Load 149
              151:          58 Image 150
-             152:   31(fvec4) ImageFetch 151 67
+             152:    31(vec4) ImageFetch 151 67
              153:   28(float) CompositeExtract 152 0
              154:   28(float) Load 30(b)
              155:   28(float) FAdd 154 153
@@ -306,44 +306,44 @@ spv.nonuniform.frag
              159:      6(int) Load 90(nu_ii)
              160:     78(ptr) AccessChain 158(storageTexelBuffer) 159
              161:          73 Load 160
-             162:   31(fvec4) ImageRead 161 67
+             162:    31(vec4) ImageRead 161 67
              163:   28(float) CompositeExtract 162 0
              164:   28(float) Load 30(b)
              165:   28(float) FAdd 164 163
                               Store 30(b) 165
-             170:      7(ptr) AccessChain 168(v) 169
+             170:     7(int*) AccessChain 168(v) 169
              171:      6(int) Load 170
-             172:     92(ptr) AccessChain 88(uniformBuffer) 171 51
+             172:  92(float*) AccessChain 88(uniformBuffer) 171 51
              173:   28(float) Load 172
              174:   28(float) Load 30(b)
              175:   28(float) FAdd 174 173
                               Store 30(b) 175
-             177:      7(ptr) AccessChain 168(v) 176
+             177:     7(int*) AccessChain 168(v) 176
              178:      6(int) Load 177
-             179:     92(ptr) AccessChain 88(uniformBuffer) 178 51
+             179:  92(float*) AccessChain 88(uniformBuffer) 178 51
              180:   28(float) Load 179
              181:   28(float) Load 30(b)
              182:   28(float) FAdd 181 180
                               Store 30(b) 182
              184:      6(int) Load 90(nu_ii)
-             185:      7(ptr) AccessChain 183(uv) 184
+             185:     7(int*) AccessChain 183(uv) 184
              186:      6(int) Load 185
-             187:     92(ptr) AccessChain 88(uniformBuffer) 186 51
+             187:  92(float*) AccessChain 88(uniformBuffer) 186 51
              188:   28(float) Load 187
              189:   28(float) Load 30(b)
              190:   28(float) FAdd 189 188
                               Store 30(b) 190
-             194:     29(ptr) AccessChain 193(m) 25 176
+             194:  29(float*) AccessChain 193(m) 25 176
              195:   28(float) Load 194
              196:      6(int) ConvertFToS 195
-             197:     92(ptr) AccessChain 88(uniformBuffer) 196 51
+             197:  92(float*) AccessChain 88(uniformBuffer) 196 51
              198:   28(float) Load 197
              199:   28(float) Load 30(b)
              200:   28(float) FAdd 199 198
                               Store 30(b) 200
-             204:      7(ptr) AccessChain 203(s) 51
+             204:     7(int*) AccessChain 203(s) 51
              205:      6(int) Load 204
-             206:     92(ptr) AccessChain 88(uniformBuffer) 205 51
+             206:  92(float*) AccessChain 88(uniformBuffer) 205 51
              207:   28(float) Load 206
              208:   28(float) Load 30(b)
              209:   28(float) FAdd 208 207
@@ -351,8 +351,8 @@ spv.nonuniform.frag
                               Return
                               FunctionEnd
   11(foo(i1;i1;):      6(int) Function None 8
-         9(nupi):      7(ptr) FunctionParameter
-           10(f):      7(ptr) FunctionParameter
+         9(nupi):     7(int*) FunctionParameter
+           10(f):     7(int*) FunctionParameter
               12:             Label
               13:      6(int) Load 9(nupi)
                               ReturnValue 13

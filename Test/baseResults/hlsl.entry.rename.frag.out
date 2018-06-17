@@ -96,37 +96,37 @@ gl_FragCoord origin is upper left
                               Decorate 29($Global) Block
                               Decorate 31 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
-   10(PS_OUTPUT):             TypeStruct 9(fvec4)
+   10(PS_OUTPUT):             TypeStruct 9(vec4)
               11:             TypeFunction 10(PS_OUTPUT)
               14:             TypePointer Function 10(PS_OUTPUT)
               16:             TypeInt 32 1
               17:     16(int) Constant 0
               18:    8(float) Constant 0
-              19:    9(fvec4) ConstantComposite 18 18 18 18
-              20:             TypePointer Function 9(fvec4)
-              25:             TypePointer Output 9(fvec4)
-26(@entryPointOutput.Color):     25(ptr) Variable Output
+              19:     9(vec4) ConstantComposite 18 18 18 18
+              20:             TypePointer Function 9(vec4)
+              25:             TypePointer Output 9(vec4)
+26(@entryPointOutput.Color):   25(vec4*) Variable Output
      29($Global):             TypeStruct 16(int)
               30:             TypePointer Uniform 29($Global)
-              31:     30(ptr) Variable Uniform
-  4(main_in_spv):           2 Function None 3
+              31:30($Global*) Variable Uniform
+  4(main_in_spv):     2(void) Function None 3
                5:             Label
               27:10(PS_OUTPUT) FunctionCall 12(@main_in_spv()
-              28:    9(fvec4) CompositeExtract 27 0
+              28:     9(vec4) CompositeExtract 27 0
                               Store 26(@entryPointOutput.Color) 28
                               Return
                               FunctionEnd
-6(not_the_entry_point():           2 Function None 3
+6(not_the_entry_point():     2(void) Function None 3
                7:             Label
                               Return
                               FunctionEnd
 12(@main_in_spv():10(PS_OUTPUT) Function None 11
               13:             Label
-       15(psout):     14(ptr) Variable Function
-              21:     20(ptr) AccessChain 15(psout) 17
+       15(psout):14(PS_OUTPUT*) Variable Function
+              21:   20(vec4*) AccessChain 15(psout) 17
                               Store 21 19
               22:10(PS_OUTPUT) Load 15(psout)
                               ReturnValue 22

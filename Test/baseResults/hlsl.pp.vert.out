@@ -45,17 +45,17 @@ Shader version: 500
                               Decorate 10($Global) Block
                               Decorate 12 DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                9:             TypeInt 32 1
      10($Global):             TypeStruct 9(int) 9(int)
               11:             TypePointer Uniform 10($Global)
-              12:     11(ptr) Variable Uniform
-         4(main):           2 Function None 3
+              12:11($Global*) Variable Uniform
+         4(main):     2(void) Function None 3
                5:             Label
-               8:           2 FunctionCall 6(@main()
+               8:     2(void) FunctionCall 6(@main()
                               Return
                               FunctionEnd
-       6(@main():           2 Function None 3
+       6(@main():     2(void) Function None 3
                7:             Label
                               Return
                               FunctionEnd

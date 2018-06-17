@@ -219,90 +219,90 @@ gl_FragCoord origin is upper left
                               Decorate 71(pos) Location 0
                               Decorate 74(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypePointer Function 6(int)
+               7:             TypePointer Function 6(uint)
                8:             TypeFloat 32
                9:             TypeVector 8(float) 4
-              10:             TypeFunction 9(fvec4) 7(ptr)
+              10:             TypeFunction 9(vec4) 7(uint*)
               14:             TypeRuntimeArray 8(float)
-       15(sbuf2):             TypeStruct 14
+       15(sbuf2):             TypeStruct 14(float[])
               16:             TypePointer Uniform 15(sbuf2)
-       17(sbuf2):     16(ptr) Variable Uniform
+       17(sbuf2):  16(sbuf2*) Variable Uniform
               18:             TypeInt 32 1
               19:     18(int) Constant 0
-              21:      6(int) Constant 1
+              21:     6(uint) Constant 1
               23:    8(float) Constant 1109917696
               24:             TypePointer Uniform 8(float)
               27:             TypeVector 8(float) 3
-        28(sb_t):             TypeStruct 27(fvec3) 6(int)
+        28(sb_t):             TypeStruct 27(vec3) 6(uint)
               29:             TypeRuntimeArray 28(sb_t)
-        30(sbuf):             TypeStruct 29
+        30(sbuf):             TypeStruct 29(sb_t[])
               31:             TypePointer Uniform 30(sbuf)
-        32(sbuf):     31(ptr) Variable Uniform
-              35:      6(int) Constant 16
+        32(sbuf):   31(sbuf*) Variable Uniform
+              35:     6(uint) Constant 16
               37:     18(int) Constant 1
-              38:             TypePointer Uniform 6(int)
+              38:             TypePointer Uniform 6(uint)
               41:             TypeBool
-              42:      6(int) Constant 0
-              47:             TypePointer Uniform 27(fvec3)
+              42:     6(uint) Constant 0
+              47:             TypePointer Uniform 27(vec3)
               55:    8(float) Constant 0
-              70:             TypePointer Input 6(int)
-         71(pos):     70(ptr) Variable Input
-              73:             TypePointer Output 9(fvec4)
-74(@entryPointOutput):     73(ptr) Variable Output
-         4(main):           2 Function None 3
+              70:             TypePointer Input 6(uint)
+         71(pos):   70(uint*) Variable Input
+              73:             TypePointer Output 9(vec4)
+74(@entryPointOutput):   73(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-         69(pos):      7(ptr) Variable Function
-       75(param):      7(ptr) Variable Function
-              72:      6(int) Load 71(pos)
+         69(pos):    7(uint*) Variable Function
+       75(param):    7(uint*) Variable Function
+              72:     6(uint) Load 71(pos)
                               Store 69(pos) 72
-              76:      6(int) Load 69(pos)
+              76:     6(uint) Load 69(pos)
                               Store 75(param) 76
-              77:    9(fvec4) FunctionCall 12(@main(u1;) 75(param)
+              77:     9(vec4) FunctionCall 12(@main(u1;) 75(param)
                               Store 74(@entryPointOutput) 77
                               Return
                               FunctionEnd
-   12(@main(u1;):    9(fvec4) Function None 10
-         11(pos):      7(ptr) FunctionParameter
+   12(@main(u1;):     9(vec4) Function None 10
+         11(pos):    7(uint*) FunctionParameter
               13:             Label
-        26(size):      7(ptr) Variable Function
-      34(stride):      7(ptr) Variable Function
-              20:      6(int) Load 11(pos)
-              22:      6(int) IAdd 20 21
-              25:     24(ptr) AccessChain 17(sbuf2) 19 22
+        26(size):    7(uint*) Variable Function
+      34(stride):    7(uint*) Variable Function
+              20:     6(uint) Load 11(pos)
+              22:     6(uint) IAdd 20 21
+              25:  24(float*) AccessChain 17(sbuf2) 19 22
                               Store 25 23
               33:     18(int) ArrayLength 32(sbuf) 0
                               Store 26(size) 33
                               Store 34(stride) 35
-              36:      6(int) Load 11(pos)
-              39:     38(ptr) AccessChain 32(sbuf) 19 36 37
-              40:      6(int) Load 39
+              36:     6(uint) Load 11(pos)
+              39:   38(uint*) AccessChain 32(sbuf) 19 36 37
+              40:     6(uint) Load 39
               43:    41(bool) INotEqual 40 42
                               SelectionMerge 45 None
                               BranchConditional 43 44 61
               44:               Label
-              46:      6(int)   Load 11(pos)
-              48:     47(ptr)   AccessChain 32(sbuf) 19 46 19
-              49:   27(fvec3)   Load 48
-              50:      6(int)   Load 11(pos)
-              51:     24(ptr)   AccessChain 17(sbuf2) 19 50
+              46:     6(uint)   Load 11(pos)
+              48:   47(vec3*)   AccessChain 32(sbuf) 19 46 19
+              49:    27(vec3)   Load 48
+              50:     6(uint)   Load 11(pos)
+              51:  24(float*)   AccessChain 17(sbuf2) 19 50
               52:    8(float)   Load 51
-              53:   27(fvec3)   CompositeConstruct 52 52 52
-              54:   27(fvec3)   FAdd 49 53
+              53:    27(vec3)   CompositeConstruct 52 52 52
+              54:    27(vec3)   FAdd 49 53
               56:    8(float)   CompositeExtract 54 0
               57:    8(float)   CompositeExtract 54 1
               58:    8(float)   CompositeExtract 54 2
-              59:    9(fvec4)   CompositeConstruct 56 57 58 55
+              59:     9(vec4)   CompositeConstruct 56 57 58 55
                                 ReturnValue 59
               61:               Label
-              62:      6(int)   Load 26(size)
-              63:      6(int)   Load 34(stride)
-              64:      6(int)   IAdd 62 63
+              62:     6(uint)   Load 26(size)
+              63:     6(uint)   Load 34(stride)
+              64:     6(uint)   IAdd 62 63
               65:    8(float)   ConvertUToF 64
-              66:    9(fvec4)   CompositeConstruct 65 65 65 65
+              66:     9(vec4)   CompositeConstruct 65 65 65 65
                                 ReturnValue 66
               45:             Label
-              68:    9(fvec4) Undef
+              68:     9(vec4) Undef
                               ReturnValue 68
                               FunctionEnd

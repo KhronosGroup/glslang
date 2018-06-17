@@ -98,7 +98,7 @@ Shader version: 500
                               Decorate 16 DescriptorSet 0
                               Decorate 26(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeFunction 6(float)
               10:             TypeInt 32 1
@@ -107,14 +107,14 @@ Shader version: 500
           13(N3):             TypeStruct 12(N2) 11(N1) 12(N2)
      14($Global):             TypeStruct 13(N3)
               15:             TypePointer Uniform 14($Global)
-              16:     15(ptr) Variable Uniform
+              16:15($Global*) Variable Uniform
               17:     10(int) Constant 0
               18:     10(int) Constant 2
               19:     10(int) Constant 1
               20:             TypePointer Uniform 6(float)
               25:             TypePointer Output 6(float)
-26(@entryPointOutput):     25(ptr) Variable Output
-         4(main):           2 Function None 3
+26(@entryPointOutput):  25(float*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               27:    6(float) FunctionCall 8(@main()
                               Store 26(@entryPointOutput) 27
@@ -122,7 +122,7 @@ Shader version: 500
                               FunctionEnd
        8(@main():    6(float) Function None 7
                9:             Label
-              21:     20(ptr) AccessChain 16 17 18 19 19
+              21:  20(float*) AccessChain 16 17 18 19 19
               22:    6(float) Load 21
                               ReturnValue 22
                               FunctionEnd

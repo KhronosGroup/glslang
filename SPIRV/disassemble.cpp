@@ -36,13 +36,13 @@
 // Disassembler for SPIR-V.
 //
 
+#include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <cassert>
 #include <iomanip>
-#include <stack>
 #include <sstream>
-#include <cstring>
+#include <stack>
+#include <string>
 
 #include "disassemble.h"
 #include "doc.h"
@@ -333,6 +333,85 @@ int SpirvStream::disassembleString()
     return word - startWord;
 }
 
+std::string scalarToString(const Op opCode, const std::vector<unsigned int> &stream, const unsigned int word)
+{
+    switch (opCode)
+    {
+    case OpTypeBool:
+        return "bool";
+    case OpTypeInt:
+    {
+        const auto width = stream[word];
+        const auto signedness = stream[word + 1];
+
+        std::ostringstream type;
+        if (signedness == 0)
+            type << "uint";
+        else
+            type << "int";
+
+        if (width != 32)
+            type << width << "_t";
+
+        return type.str();
+    }
+    case OpTypeFloat:
+    {
+        const auto width = stream[word];
+
+        std::ostringstream type;
+        if (width == 32)
+            type << "float";
+        else if (width == 64)
+            type << "double";
+        else
+            type << "float" << width << "_t";
+        return type.str();
+    }
+    default:
+        return "bad";
+    }
+}
+
+std::string scalarToShortString(const Op opCode, const std::vector<unsigned int> &stream, const unsigned int word)
+{
+    switch (opCode)
+    {
+    case OpTypeBool:
+        return "b";
+    case OpTypeInt:
+    {
+        const auto width = stream[word];
+        const auto signedness = stream[word + 1];
+
+        std::ostringstream type;
+        if (signedness == 0)
+            type << "u";
+        else
+            type << "i";
+
+        if (width != 32)
+            type << width;
+        return type.str();
+    }
+    case OpTypeFloat:
+    {
+        const auto width = stream[word];
+
+        std::ostringstream type;
+        if (width == 32)
+            type << "";
+        else if (width == 64)
+            type << "d";
+        else
+            type << "f" << width;
+        return type.str();
+    }
+    default:
+        return "bad";
+    }
+}
+
 void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, int numOperands)
 {
     // Process the opcode
@@ -352,56 +431,93 @@ void SpirvStream::disassembleInstruction(Id resultId, Id /*typeId*/, Op opCode, 
     else {
         if (resultId != 0 && idDescriptor[resultId].size() == 0) {
             switch (opCode) {
-            case OpTypeInt:
-                switch (stream[word]) {
-                case 8:  idDescriptor[resultId] = "int8_t"; break;
-                case 16: idDescriptor[resultId] = "int16_t"; break;
-                default: assert(0); // fallthrough
-                case 32: idDescriptor[resultId] = "int"; break;
-                case 64: idDescriptor[resultId] = "int64_t"; break;
+            case OpTypeVoid:
+                idDescriptor[resultId] = "void";
+                break;
+            case OpTypeBool:  // fallthrough
+            case OpTypeInt:   // fallthrough
+            case OpTypeFloat: // catch all scalar types
+                idDescriptor[resultId] = scalarToString(opCode, stream, word);
+                break;
+            case OpTypeVector:
+            {
+                const auto componentTypeId = stream[word];
+                const auto componentCount = stream[word + 1];
+
+                const Op componentOpCode = (Op)(stream[idInstruction[componentTypeId]] & OpCodeMask);
+
+                std::ostringstream desc;
+                desc << scalarToShortString(componentOpCode, stream, idInstruction[componentTypeId] + 2) << "vec"
+                     << componentCount;
+                idDescriptor[resultId] = desc.str();
+                break;
+            }
+            case OpTypeMatrix:
+            {
+                const auto columnTypeId = stream[word];
+                const auto columnCount = stream[word + 1];
+
+                const auto columnWord = idInstruction[columnTypeId];
+                const auto columnComponentTypeId = stream[columnWord + 2];
+                const auto columnComponentCount = stream[columnWord + 3];
+                const auto columnComponentWord = idInstruction[columnComponentTypeId];
+
+                const Op columnComponentOpCode = (Op)(stream[columnComponentWord] & OpCodeMask);
+                std::ostringstream desc;
+                desc << scalarToShortString(columnComponentOpCode, stream, columnComponentWord + 2) << "mat"
+                     << columnCount;
+                if (columnCount != columnComponentCount)
+                    desc << 'x' << columnComponentCount;
+
+                idDescriptor[resultId] = desc.str();
+                break;
+            }
+            case OpTypeArray:
+            {
+                const auto elementType = stream[word];
+
+                std::ostringstream desc;
+                if (idDescriptor[elementType].empty())
+                    desc << "arr";
+                else
+                    desc << idDescriptor[elementType];
+
+                const auto lengthConstantWord = idInstruction[stream[word + 1]];
+                const Op lengthConstOpCode = (Op)(stream[lengthConstantWord] & OpCodeMask);
+                const auto constantSize = (stream[lengthConstantWord] >> WordCountShift) - 3;
+                if (lengthConstOpCode == OpConstant && constantSize == 1)
+                {
+                    const auto length = stream[lengthConstantWord + 3];
+                    desc << '[' << length << ']';
+                } else
+                {
+                    desc << "[N]";
                 }
+
+                idDescriptor[resultId] = desc.str();
                 break;
-            case OpTypeFloat:
-                switch (stream[word]) {
-                case 16: idDescriptor[resultId] = "float16_t"; break;
-                default: assert(0); // fallthrough
-                case 32: idDescriptor[resultId] = "float"; break;
-                case 64: idDescriptor[resultId] = "float64_t"; break;
-                }
+            }
+            case OpTypeRuntimeArray:
+            {
+                const auto elementType = stream[word];
+                if (idDescriptor[elementType].empty())
+                    idDescriptor[resultId] = "arr[]";
+                else
+                    idDescriptor[resultId] = idDescriptor[elementType] + "[]";
                 break;
-            case OpTypeBool:
-                idDescriptor[resultId] = "bool";
-                break;
+            }
             case OpTypeStruct:
                 idDescriptor[resultId] = "struct";
                 break;
             case OpTypePointer:
-                idDescriptor[resultId] = "ptr";
+            {
+                const auto type = stream[word + 1];
+                if (idDescriptor[type].empty())
+                    idDescriptor[resultId] = "ptr";
+                else
+                    idDescriptor[resultId] = idDescriptor[type] + '*';
                 break;
-            case OpTypeVector:
-                if (idDescriptor[stream[word]].size() > 0) {
-                    idDescriptor[resultId].append(idDescriptor[stream[word]].begin(), idDescriptor[stream[word]].begin() + 1);
-                    if (strstr(idDescriptor[stream[word]].c_str(), "8")) {
-                        idDescriptor[resultId].append("8");
-                    }
-                    if (strstr(idDescriptor[stream[word]].c_str(), "16")) {
-                        idDescriptor[resultId].append("16");
-                    }
-                    if (strstr(idDescriptor[stream[word]].c_str(), "64")) {
-                        idDescriptor[resultId].append("64");
-                    }
-                }
-                idDescriptor[resultId].append("vec");
-                switch (stream[word + 1]) {
-                case 2:   idDescriptor[resultId].append("2");   break;
-                case 3:   idDescriptor[resultId].append("3");   break;
-                case 4:   idDescriptor[resultId].append("4");   break;
-                case 8:   idDescriptor[resultId].append("8");   break;
-                case 16:  idDescriptor[resultId].append("16");  break;
-                case 32:  idDescriptor[resultId].append("32");  break;
-                default: break;
-                }
-                break;
+            }
             default:
                 break;
             }

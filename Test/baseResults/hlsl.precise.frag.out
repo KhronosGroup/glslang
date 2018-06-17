@@ -97,42 +97,42 @@ gl_FragCoord origin is upper left
                               Name 36  "precisefloat"
                               Decorate 32(@entryPointOutput.color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
                8:             TypeVector 6(float) 3
-               9:             TypePointer Function 8(fvec3)
-              10:             TypeFunction 2 7(ptr) 9(ptr)
+               9:             TypePointer Function 8(vec3)
+              10:             TypeFunction 2(void) 7(float*) 9(vec3*)
               15:             TypeVector 6(float) 4
-   16(PS_OUTPUT):             TypeStruct 15(fvec4)
+   16(PS_OUTPUT):             TypeStruct 15(vec4)
               17:             TypeFunction 16(PS_OUTPUT)
               20:             TypePointer Function 16(PS_OUTPUT)
               22:             TypeInt 32 1
               23:     22(int) Constant 0
               24:    6(float) Constant 1065353216
-              25:   15(fvec4) ConstantComposite 24 24 24 24
-              26:             TypePointer Function 15(fvec4)
-              31:             TypePointer Output 15(fvec4)
-32(@entryPointOutput.color):     31(ptr) Variable Output
+              25:    15(vec4) ConstantComposite 24 24 24 24
+              26:             TypePointer Function 15(vec4)
+              31:             TypePointer Output 15(vec4)
+32(@entryPointOutput.color):   31(vec4*) Variable Output
               35:             TypePointer Private 6(float)
-36(precisefloat):     35(ptr) Variable Private
-         4(main):           2 Function None 3
+36(precisefloat):  35(float*) Variable Private
+         4(main):     2(void) Function None 3
                5:             Label
               33:16(PS_OUTPUT) FunctionCall 18(@main()
-              34:   15(fvec4) CompositeExtract 33 0
+              34:    15(vec4) CompositeExtract 33 0
                               Store 32(@entryPointOutput.color) 34
                               Return
                               FunctionEnd
-13(MyFunction(f1;vf3;):           2 Function None 10
-     11(myfloat):      7(ptr) FunctionParameter
-    12(myfloat3):      9(ptr) FunctionParameter
+13(MyFunction(f1;vf3;):     2(void) Function None 10
+     11(myfloat):   7(float*) FunctionParameter
+    12(myfloat3):    9(vec3*) FunctionParameter
               14:             Label
                               Return
                               FunctionEnd
       18(@main():16(PS_OUTPUT) Function None 17
               19:             Label
-   21(ps_output):     20(ptr) Variable Function
-              27:     26(ptr) AccessChain 21(ps_output) 23
+   21(ps_output):20(PS_OUTPUT*) Variable Function
+              27:   26(vec4*) AccessChain 21(ps_output) 23
                               Store 27 25
               28:16(PS_OUTPUT) Load 21(ps_output)
                               ReturnValue 28

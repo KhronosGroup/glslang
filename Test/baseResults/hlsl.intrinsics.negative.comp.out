@@ -234,110 +234,110 @@ local_size = (1, 1, 1)
                               Decorate 86(inI0) Location 3
                               Decorate 89(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
                8:             TypeInt 32 1
                9:             TypePointer Function 8(int)
-              10:             TypeFunction 6(float) 7(ptr) 7(ptr) 7(ptr) 9(ptr)
+              10:             TypeFunction 6(float) 7(float*) 7(float*) 7(float*) 9(int*)
               23:             TypeVector 6(float) 2
-              24:             TypePointer Function 23(fvec2)
+              24:             TypePointer Function 23(vec2)
               25:             TypeVector 8(int) 2
               26:             TypePointer Function 25(ivec2)
-              27:             TypeFunction 23(fvec2) 24(ptr) 24(ptr) 24(ptr) 26(ptr)
+              27:             TypeFunction 23(vec2) 24(vec2*) 24(vec2*) 24(vec2*) 26(ivec2*)
               34:             TypeVector 6(float) 3
-              35:             TypePointer Function 34(fvec3)
+              35:             TypePointer Function 34(vec3)
               36:             TypeVector 8(int) 3
               37:             TypePointer Function 36(ivec3)
-              38:             TypeFunction 34(fvec3) 35(ptr) 35(ptr) 35(ptr) 37(ptr)
+              38:             TypeFunction 34(vec3) 35(vec3*) 35(vec3*) 35(vec3*) 37(ivec3*)
               45:             TypeVector 6(float) 4
-              46:             TypePointer Function 45(fvec4)
+              46:             TypePointer Function 45(vec4)
               47:             TypeVector 8(int) 4
               48:             TypePointer Function 47(ivec4)
-              49:             TypeFunction 45(fvec4) 46(ptr) 46(ptr) 46(ptr) 48(ptr)
+              49:             TypeFunction 45(vec4) 46(vec4*) 46(vec4*) 46(vec4*) 48(ivec4*)
               56:    6(float) Constant 0
               61:    6(float) Constant 1065353216
               62:    6(float) Constant 1073741824
-              63:   23(fvec2) ConstantComposite 61 62
+              63:    23(vec2) ConstantComposite 61 62
               66:    6(float) Constant 1077936128
-              67:   34(fvec3) ConstantComposite 61 62 66
+              67:    34(vec3) ConstantComposite 61 62 66
               70:    6(float) Constant 1082130432
-              71:   45(fvec4) ConstantComposite 61 62 66 70
-              75:             TypePointer Input 45(fvec4)
-        76(inF0):     75(ptr) Variable Input
-        79(inF1):     75(ptr) Variable Input
-        82(inF2):     75(ptr) Variable Input
+              71:    45(vec4) ConstantComposite 61 62 66 70
+              75:             TypePointer Input 45(vec4)
+        76(inF0):   75(vec4*) Variable Input
+        79(inF1):   75(vec4*) Variable Input
+        82(inF2):   75(vec4*) Variable Input
               85:             TypePointer Input 47(ivec4)
-        86(inI0):     85(ptr) Variable Input
-              88:             TypePointer Output 45(fvec4)
-89(@entryPointOutput):     88(ptr) Variable Output
-4(ComputeShaderFunction):           2 Function None 3
+        86(inI0):  85(ivec4*) Variable Input
+              88:             TypePointer Output 45(vec4)
+89(@entryPointOutput):   88(vec4*) Variable Output
+4(ComputeShaderFunction):     2(void) Function None 3
                5:             Label
-        74(inF0):     46(ptr) Variable Function
-        78(inF1):     46(ptr) Variable Function
-        81(inF2):     46(ptr) Variable Function
-        84(inI0):     48(ptr) Variable Function
-       90(param):     46(ptr) Variable Function
-       92(param):     46(ptr) Variable Function
-       94(param):     46(ptr) Variable Function
-       96(param):     48(ptr) Variable Function
-              77:   45(fvec4) Load 76(inF0)
+        74(inF0):   46(vec4*) Variable Function
+        78(inF1):   46(vec4*) Variable Function
+        81(inF2):   46(vec4*) Variable Function
+        84(inI0):  48(ivec4*) Variable Function
+       90(param):   46(vec4*) Variable Function
+       92(param):   46(vec4*) Variable Function
+       94(param):   46(vec4*) Variable Function
+       96(param):  48(ivec4*) Variable Function
+              77:    45(vec4) Load 76(inF0)
                               Store 74(inF0) 77
-              80:   45(fvec4) Load 79(inF1)
+              80:    45(vec4) Load 79(inF1)
                               Store 78(inF1) 80
-              83:   45(fvec4) Load 82(inF2)
+              83:    45(vec4) Load 82(inF2)
                               Store 81(inF2) 83
               87:   47(ivec4) Load 86(inI0)
                               Store 84(inI0) 87
-              91:   45(fvec4) Load 74(inF0)
+              91:    45(vec4) Load 74(inF0)
                               Store 90(param) 91
-              93:   45(fvec4) Load 78(inF1)
+              93:    45(vec4) Load 78(inF1)
                               Store 92(param) 93
-              95:   45(fvec4) Load 81(inF2)
+              95:    45(vec4) Load 81(inF2)
                               Store 94(param) 95
               97:   47(ivec4) Load 84(inI0)
                               Store 96(param) 97
-              98:   45(fvec4) FunctionCall 54(@ComputeShaderFunction(vf4;vf4;vf4;vi4;) 90(param) 92(param) 94(param) 96(param)
+              98:    45(vec4) FunctionCall 54(@ComputeShaderFunction(vf4;vf4;vf4;vi4;) 90(param) 92(param) 94(param) 96(param)
                               Store 89(@entryPointOutput) 98
                               Return
                               FunctionEnd
 15(ComputeShaderFunctionS(f1;f1;f1;i1;):    6(float) Function None 10
-        11(inF0):      7(ptr) FunctionParameter
-        12(inF1):      7(ptr) FunctionParameter
-        13(inF2):      7(ptr) FunctionParameter
-        14(inI0):      9(ptr) FunctionParameter
+        11(inF0):   7(float*) FunctionParameter
+        12(inF1):   7(float*) FunctionParameter
+        13(inF2):   7(float*) FunctionParameter
+        14(inI0):     9(int*) FunctionParameter
               16:             Label
                               ReturnValue 56
                               FunctionEnd
 21(ComputeShaderFunction1(vf1;vf1;vf1;vi1;):    6(float) Function None 10
-        17(inF0):      7(ptr) FunctionParameter
-        18(inF1):      7(ptr) FunctionParameter
-        19(inF2):      7(ptr) FunctionParameter
-        20(inI0):      9(ptr) FunctionParameter
+        17(inF0):   7(float*) FunctionParameter
+        18(inF1):   7(float*) FunctionParameter
+        19(inF2):   7(float*) FunctionParameter
+        20(inI0):     9(int*) FunctionParameter
               22:             Label
                               ReturnValue 56
                               FunctionEnd
-32(ComputeShaderFunction2(vf2;vf2;vf2;vi2;):   23(fvec2) Function None 27
-        28(inF0):     24(ptr) FunctionParameter
-        29(inF1):     24(ptr) FunctionParameter
-        30(inF2):     24(ptr) FunctionParameter
-        31(inI0):     26(ptr) FunctionParameter
+32(ComputeShaderFunction2(vf2;vf2;vf2;vi2;):    23(vec2) Function None 27
+        28(inF0):   24(vec2*) FunctionParameter
+        29(inF1):   24(vec2*) FunctionParameter
+        30(inF2):   24(vec2*) FunctionParameter
+        31(inI0):  26(ivec2*) FunctionParameter
               33:             Label
                               ReturnValue 63
                               FunctionEnd
-43(ComputeShaderFunction3(vf3;vf3;vf3;vi3;):   34(fvec3) Function None 38
-        39(inF0):     35(ptr) FunctionParameter
-        40(inF1):     35(ptr) FunctionParameter
-        41(inF2):     35(ptr) FunctionParameter
-        42(inI0):     37(ptr) FunctionParameter
+43(ComputeShaderFunction3(vf3;vf3;vf3;vi3;):    34(vec3) Function None 38
+        39(inF0):   35(vec3*) FunctionParameter
+        40(inF1):   35(vec3*) FunctionParameter
+        41(inF2):   35(vec3*) FunctionParameter
+        42(inI0):  37(ivec3*) FunctionParameter
               44:             Label
                               ReturnValue 67
                               FunctionEnd
-54(@ComputeShaderFunction(vf4;vf4;vf4;vi4;):   45(fvec4) Function None 49
-        50(inF0):     46(ptr) FunctionParameter
-        51(inF1):     46(ptr) FunctionParameter
-        52(inF2):     46(ptr) FunctionParameter
-        53(inI0):     48(ptr) FunctionParameter
+54(@ComputeShaderFunction(vf4;vf4;vf4;vi4;):    45(vec4) Function None 49
+        50(inF0):   46(vec4*) FunctionParameter
+        51(inF1):   46(vec4*) FunctionParameter
+        52(inF2):   46(vec4*) FunctionParameter
+        53(inI0):  48(ivec4*) FunctionParameter
               55:             Label
                               ReturnValue 71
                               FunctionEnd

@@ -912,53 +912,53 @@ gl_FragCoord origin is upper left
                               Decorate 229(g_tTex2s1a) DescriptorSet 0
                               Decorate 238(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeImage 6(float) 2D sampled format:Unknown
                8:             TypePointer Function 7
                9:             TypeVector 6(float) 2
-        10(s1_t):             TypeStruct 6(float) 9(fvec2) 6(float)
+        10(s1_t):             TypeStruct 6(float) 9(vec2) 6(float)
               11:             TypeFunction 10(s1_t) 8(ptr)
               15:             TypeVector 6(float) 3
-        16(s2_t):             TypeStruct 6(float) 15(fvec3)
+        16(s2_t):             TypeStruct 6(float) 15(vec3)
               17:             TypeFunction 16(s2_t) 8(ptr)
               21:             TypeVector 6(float) 4
-              22:             TypeFunction 21(fvec4)
-              25:             TypePointer Function 21(fvec4)
+              22:             TypeFunction 21(vec4)
+              25:             TypePointer Function 21(vec4)
               28:             TypeSampler
               29:             TypePointer UniformConstant 28
      30(g_sSamp):     29(ptr) Variable UniformConstant
               32:             TypeSampledImage 7
               34:    6(float) Constant 1058642330
               35:    6(float) Constant 1058810102
-              36:    9(fvec2) ConstantComposite 34 35
+              36:     9(vec2) ConstantComposite 34 35
               38:             TypePointer Function 10(s1_t)
               40:             TypeInt 32 1
               41:     40(int) Constant 0
               42:             TypeInt 32 0
-              43:     42(int) Constant 0
+              43:    42(uint) Constant 0
               44:             TypePointer Function 6(float)
               48:     40(int) Constant 1
-              49:     42(int) Constant 1
-              53:     42(int) Constant 2
+              49:    42(uint) Constant 1
+              53:    42(uint) Constant 2
               57:     40(int) Constant 2
-              58:     42(int) Constant 3
+              58:    42(uint) Constant 3
               70:             TypePointer Function 16(s2_t)
               89:             TypePointer UniformConstant 7
    90(g_tTex2s1):     89(ptr) Variable UniformConstant
               94:    6(float) Constant 1036831949
               95:    6(float) Constant 1038174126
-              96:    9(fvec2) ConstantComposite 94 95
+              96:     9(vec2) ConstantComposite 94 95
   114(g_tTex2s2):     89(ptr) Variable UniformConstant
              118:    6(float) Constant 1045220557
              119:    6(float) Constant 1045891645
-             120:    9(fvec2) ConstantComposite 118 119
-       136(s3_t):             TypeStruct 9(fvec2) 6(float)
+             120:     9(vec2) ConstantComposite 118 119
+       136(s3_t):             TypeStruct 9(vec2) 6(float)
              137:             TypePointer Function 136(s3_t)
   140(g_tTex2s3):     89(ptr) Variable UniformConstant
              144:    6(float) Constant 1050253722
              145:    6(float) Constant 1050589266
-             146:    9(fvec2) ConstantComposite 144 145
+             146:     9(vec2) ConstantComposite 144 145
              159:             TypeVector 40(int) 2
        160(s4_t):             TypeStruct 40(int) 159(ivec2) 40(int)
              161:             TypePointer Function 160(s4_t)
@@ -970,56 +970,56 @@ gl_FragCoord origin is upper left
              171:             TypeSampledImage 166
              173:    6(float) Constant 1053609165
              174:    6(float) Constant 1053944709
-             175:    9(fvec2) ConstantComposite 173 174
+             175:     9(vec2) ConstantComposite 173 174
              178:             TypePointer Function 40(int)
-       194(s5_t):             TypeStruct 42(int) 42(int)
+       194(s5_t):             TypeStruct 42(uint) 42(uint)
              195:             TypePointer Function 194(s5_t)
-             197:             TypeVector 42(int) 4
-             198:             TypePointer Function 197(ivec4)
-             200:             TypeImage 42(int) 2D sampled format:Unknown
+             197:             TypeVector 42(uint) 4
+             198:             TypePointer Function 197(uvec4)
+             200:             TypeImage 42(uint) 2D sampled format:Unknown
              201:             TypePointer UniformConstant 200
   202(g_tTex2s5):    201(ptr) Variable UniformConstant
              205:             TypeSampledImage 200
              207:    6(float) Constant 1056964608
              208:    6(float) Constant 1057132380
-             209:    9(fvec2) ConstantComposite 207 208
-             212:             TypePointer Function 42(int)
+             209:     9(vec2) ConstantComposite 207 208
+             212:             TypePointer Function 42(uint)
  229(g_tTex2s1a):     89(ptr) Variable UniformConstant
              233:    6(float) Constant 0
-             234:   21(fvec4) ConstantComposite 233 233 233 233
-             237:             TypePointer Output 21(fvec4)
-238(@entryPointOutput):    237(ptr) Variable Output
-         4(main):           2 Function None 3
+             234:    21(vec4) ConstantComposite 233 233 233 233
+             237:             TypePointer Output 21(vec4)
+238(@entryPointOutput):  237(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-             239:   21(fvec4) FunctionCall 23(@main()
+             239:    21(vec4) FunctionCall 23(@main()
                               Store 238(@entryPointOutput) 239
                               Return
                               FunctionEnd
 13(fn1(t2-tx-struct0-1;):    10(s1_t) Function None 11
           12(t1):      8(ptr) FunctionParameter
               14:             Label
-26(@sampleResultShadow):     25(ptr) Variable Function
-39(@sampleStructTemp):     38(ptr) Variable Function
+26(@sampleResultShadow):   25(vec4*) Variable Function
+39(@sampleStructTemp):   38(s1_t*) Variable Function
               27:           7 Load 12(t1)
               31:          28 Load 30(g_sSamp)
               33:          32 SampledImage 27 31
-              37:   21(fvec4) ImageSampleImplicitLod 33 36
+              37:    21(vec4) ImageSampleImplicitLod 33 36
                               Store 26(@sampleResultShadow) 37
-              45:     44(ptr) AccessChain 26(@sampleResultShadow) 43
+              45:  44(float*) AccessChain 26(@sampleResultShadow) 43
               46:    6(float) Load 45
-              47:     44(ptr) AccessChain 39(@sampleStructTemp) 41
+              47:  44(float*) AccessChain 39(@sampleStructTemp) 41
                               Store 47 46
-              50:     44(ptr) AccessChain 26(@sampleResultShadow) 49
+              50:  44(float*) AccessChain 26(@sampleResultShadow) 49
               51:    6(float) Load 50
-              52:     44(ptr) AccessChain 39(@sampleStructTemp) 48 43
+              52:  44(float*) AccessChain 39(@sampleStructTemp) 48 43
                               Store 52 51
-              54:     44(ptr) AccessChain 26(@sampleResultShadow) 53
+              54:  44(float*) AccessChain 26(@sampleResultShadow) 53
               55:    6(float) Load 54
-              56:     44(ptr) AccessChain 39(@sampleStructTemp) 48 49
+              56:  44(float*) AccessChain 39(@sampleStructTemp) 48 49
                               Store 56 55
-              59:     44(ptr) AccessChain 26(@sampleResultShadow) 58
+              59:  44(float*) AccessChain 26(@sampleResultShadow) 58
               60:    6(float) Load 59
-              61:     44(ptr) AccessChain 39(@sampleStructTemp) 57
+              61:  44(float*) AccessChain 39(@sampleStructTemp) 57
                               Store 61 60
               62:    10(s1_t) Load 39(@sampleStructTemp)
                               ReturnValue 62
@@ -1027,117 +1027,117 @@ gl_FragCoord origin is upper left
 19(fn1(t2-tx-struct1-1;):    16(s2_t) Function None 17
           18(t2):      8(ptr) FunctionParameter
               20:             Label
-65(@sampleResultShadow):     25(ptr) Variable Function
-71(@sampleStructTemp):     70(ptr) Variable Function
+65(@sampleResultShadow):   25(vec4*) Variable Function
+71(@sampleStructTemp):   70(s2_t*) Variable Function
               66:           7 Load 18(t2)
               67:          28 Load 30(g_sSamp)
               68:          32 SampledImage 66 67
-              69:   21(fvec4) ImageSampleImplicitLod 68 36
+              69:    21(vec4) ImageSampleImplicitLod 68 36
                               Store 65(@sampleResultShadow) 69
-              72:     44(ptr) AccessChain 65(@sampleResultShadow) 43
+              72:  44(float*) AccessChain 65(@sampleResultShadow) 43
               73:    6(float) Load 72
-              74:     44(ptr) AccessChain 71(@sampleStructTemp) 41
+              74:  44(float*) AccessChain 71(@sampleStructTemp) 41
                               Store 74 73
-              75:     44(ptr) AccessChain 65(@sampleResultShadow) 49
+              75:  44(float*) AccessChain 65(@sampleResultShadow) 49
               76:    6(float) Load 75
-              77:     44(ptr) AccessChain 71(@sampleStructTemp) 48 43
+              77:  44(float*) AccessChain 71(@sampleStructTemp) 48 43
                               Store 77 76
-              78:     44(ptr) AccessChain 65(@sampleResultShadow) 53
+              78:  44(float*) AccessChain 65(@sampleResultShadow) 53
               79:    6(float) Load 78
-              80:     44(ptr) AccessChain 71(@sampleStructTemp) 48 49
+              80:  44(float*) AccessChain 71(@sampleStructTemp) 48 49
                               Store 80 79
-              81:     44(ptr) AccessChain 65(@sampleResultShadow) 58
+              81:  44(float*) AccessChain 65(@sampleResultShadow) 58
               82:    6(float) Load 81
-              83:     44(ptr) AccessChain 71(@sampleStructTemp) 48 53
+              83:  44(float*) AccessChain 71(@sampleStructTemp) 48 53
                               Store 83 82
               84:    16(s2_t) Load 71(@sampleStructTemp)
                               ReturnValue 84
                               FunctionEnd
-      23(@main():   21(fvec4) Function None 22
+      23(@main():    21(vec4) Function None 22
               24:             Label
-          87(s1):     38(ptr) Variable Function
-88(@sampleResultShadow):     25(ptr) Variable Function
-98(@sampleStructTemp):     38(ptr) Variable Function
-         112(s2):     70(ptr) Variable Function
-113(@sampleResultShadow):     25(ptr) Variable Function
-122(@sampleStructTemp):     70(ptr) Variable Function
-         138(s3):    137(ptr) Variable Function
-139(@sampleResultShadow):     25(ptr) Variable Function
-148(@sampleStructTemp):    137(ptr) Variable Function
-         162(s4):    161(ptr) Variable Function
-165(@sampleResultShadow):    164(ptr) Variable Function
-177(@sampleStructTemp):    161(ptr) Variable Function
-         196(s5):    195(ptr) Variable Function
-199(@sampleResultShadow):    198(ptr) Variable Function
-211(@sampleStructTemp):    195(ptr) Variable Function
-         220(r0):     38(ptr) Variable Function
+          87(s1):   38(s1_t*) Variable Function
+88(@sampleResultShadow):   25(vec4*) Variable Function
+98(@sampleStructTemp):   38(s1_t*) Variable Function
+         112(s2):   70(s2_t*) Variable Function
+113(@sampleResultShadow):   25(vec4*) Variable Function
+122(@sampleStructTemp):   70(s2_t*) Variable Function
+         138(s3):  137(s3_t*) Variable Function
+139(@sampleResultShadow):   25(vec4*) Variable Function
+148(@sampleStructTemp):  137(s3_t*) Variable Function
+         162(s4):  161(s4_t*) Variable Function
+165(@sampleResultShadow): 164(ivec4*) Variable Function
+177(@sampleStructTemp):  161(s4_t*) Variable Function
+         196(s5):  195(s5_t*) Variable Function
+199(@sampleResultShadow): 198(uvec4*) Variable Function
+211(@sampleStructTemp):  195(s5_t*) Variable Function
+         220(r0):   38(s1_t*) Variable Function
       221(param):      8(ptr) Variable Function
-         224(r1):     70(ptr) Variable Function
+         224(r1):   70(s2_t*) Variable Function
       225(param):      8(ptr) Variable Function
-         228(r2):     38(ptr) Variable Function
+         228(r2):   38(s1_t*) Variable Function
       230(param):      8(ptr) Variable Function
               91:           7 Load 90(g_tTex2s1)
               92:          28 Load 30(g_sSamp)
               93:          32 SampledImage 91 92
-              97:   21(fvec4) ImageSampleImplicitLod 93 96
+              97:    21(vec4) ImageSampleImplicitLod 93 96
                               Store 88(@sampleResultShadow) 97
-              99:     44(ptr) AccessChain 88(@sampleResultShadow) 43
+              99:  44(float*) AccessChain 88(@sampleResultShadow) 43
              100:    6(float) Load 99
-             101:     44(ptr) AccessChain 98(@sampleStructTemp) 41
+             101:  44(float*) AccessChain 98(@sampleStructTemp) 41
                               Store 101 100
-             102:     44(ptr) AccessChain 88(@sampleResultShadow) 49
+             102:  44(float*) AccessChain 88(@sampleResultShadow) 49
              103:    6(float) Load 102
-             104:     44(ptr) AccessChain 98(@sampleStructTemp) 48 43
+             104:  44(float*) AccessChain 98(@sampleStructTemp) 48 43
                               Store 104 103
-             105:     44(ptr) AccessChain 88(@sampleResultShadow) 53
+             105:  44(float*) AccessChain 88(@sampleResultShadow) 53
              106:    6(float) Load 105
-             107:     44(ptr) AccessChain 98(@sampleStructTemp) 48 49
+             107:  44(float*) AccessChain 98(@sampleStructTemp) 48 49
                               Store 107 106
-             108:     44(ptr) AccessChain 88(@sampleResultShadow) 58
+             108:  44(float*) AccessChain 88(@sampleResultShadow) 58
              109:    6(float) Load 108
-             110:     44(ptr) AccessChain 98(@sampleStructTemp) 57
+             110:  44(float*) AccessChain 98(@sampleStructTemp) 57
                               Store 110 109
              111:    10(s1_t) Load 98(@sampleStructTemp)
                               Store 87(s1) 111
              115:           7 Load 114(g_tTex2s2)
              116:          28 Load 30(g_sSamp)
              117:          32 SampledImage 115 116
-             121:   21(fvec4) ImageSampleImplicitLod 117 120
+             121:    21(vec4) ImageSampleImplicitLod 117 120
                               Store 113(@sampleResultShadow) 121
-             123:     44(ptr) AccessChain 113(@sampleResultShadow) 43
+             123:  44(float*) AccessChain 113(@sampleResultShadow) 43
              124:    6(float) Load 123
-             125:     44(ptr) AccessChain 122(@sampleStructTemp) 41
+             125:  44(float*) AccessChain 122(@sampleStructTemp) 41
                               Store 125 124
-             126:     44(ptr) AccessChain 113(@sampleResultShadow) 49
+             126:  44(float*) AccessChain 113(@sampleResultShadow) 49
              127:    6(float) Load 126
-             128:     44(ptr) AccessChain 122(@sampleStructTemp) 48 43
+             128:  44(float*) AccessChain 122(@sampleStructTemp) 48 43
                               Store 128 127
-             129:     44(ptr) AccessChain 113(@sampleResultShadow) 53
+             129:  44(float*) AccessChain 113(@sampleResultShadow) 53
              130:    6(float) Load 129
-             131:     44(ptr) AccessChain 122(@sampleStructTemp) 48 49
+             131:  44(float*) AccessChain 122(@sampleStructTemp) 48 49
                               Store 131 130
-             132:     44(ptr) AccessChain 113(@sampleResultShadow) 58
+             132:  44(float*) AccessChain 113(@sampleResultShadow) 58
              133:    6(float) Load 132
-             134:     44(ptr) AccessChain 122(@sampleStructTemp) 48 53
+             134:  44(float*) AccessChain 122(@sampleStructTemp) 48 53
                               Store 134 133
              135:    16(s2_t) Load 122(@sampleStructTemp)
                               Store 112(s2) 135
              141:           7 Load 140(g_tTex2s3)
              142:          28 Load 30(g_sSamp)
              143:          32 SampledImage 141 142
-             147:   21(fvec4) ImageSampleImplicitLod 143 146
+             147:    21(vec4) ImageSampleImplicitLod 143 146
                               Store 139(@sampleResultShadow) 147
-             149:     44(ptr) AccessChain 139(@sampleResultShadow) 43
+             149:  44(float*) AccessChain 139(@sampleResultShadow) 43
              150:    6(float) Load 149
-             151:     44(ptr) AccessChain 148(@sampleStructTemp) 41 43
+             151:  44(float*) AccessChain 148(@sampleStructTemp) 41 43
                               Store 151 150
-             152:     44(ptr) AccessChain 139(@sampleResultShadow) 49
+             152:  44(float*) AccessChain 139(@sampleResultShadow) 49
              153:    6(float) Load 152
-             154:     44(ptr) AccessChain 148(@sampleStructTemp) 41 49
+             154:  44(float*) AccessChain 148(@sampleStructTemp) 41 49
                               Store 154 153
-             155:     44(ptr) AccessChain 139(@sampleResultShadow) 53
+             155:  44(float*) AccessChain 139(@sampleResultShadow) 53
              156:    6(float) Load 155
-             157:     44(ptr) AccessChain 148(@sampleStructTemp) 48
+             157:  44(float*) AccessChain 148(@sampleStructTemp) 48
                               Store 157 156
              158:   136(s3_t) Load 148(@sampleStructTemp)
                               Store 138(s3) 158
@@ -1146,38 +1146,38 @@ gl_FragCoord origin is upper left
              172:         171 SampledImage 169 170
              176:  163(ivec4) ImageSampleImplicitLod 172 175
                               Store 165(@sampleResultShadow) 176
-             179:    178(ptr) AccessChain 165(@sampleResultShadow) 43
+             179:   178(int*) AccessChain 165(@sampleResultShadow) 43
              180:     40(int) Load 179
-             181:    178(ptr) AccessChain 177(@sampleStructTemp) 41
+             181:   178(int*) AccessChain 177(@sampleStructTemp) 41
                               Store 181 180
-             182:    178(ptr) AccessChain 165(@sampleResultShadow) 49
+             182:   178(int*) AccessChain 165(@sampleResultShadow) 49
              183:     40(int) Load 182
              184:    6(float) ConvertSToF 183
-             185:    178(ptr) AccessChain 177(@sampleStructTemp) 48 43
+             185:   178(int*) AccessChain 177(@sampleStructTemp) 48 43
                               Store 185 184
-             186:    178(ptr) AccessChain 165(@sampleResultShadow) 53
+             186:   178(int*) AccessChain 165(@sampleResultShadow) 53
              187:     40(int) Load 186
              188:    6(float) ConvertSToF 187
-             189:    178(ptr) AccessChain 177(@sampleStructTemp) 48 49
+             189:   178(int*) AccessChain 177(@sampleStructTemp) 48 49
                               Store 189 188
-             190:    178(ptr) AccessChain 165(@sampleResultShadow) 58
+             190:   178(int*) AccessChain 165(@sampleResultShadow) 58
              191:     40(int) Load 190
-             192:    178(ptr) AccessChain 177(@sampleStructTemp) 57
+             192:   178(int*) AccessChain 177(@sampleStructTemp) 57
                               Store 192 191
              193:   160(s4_t) Load 177(@sampleStructTemp)
                               Store 162(s4) 193
              203:         200 Load 202(g_tTex2s5)
              204:          28 Load 30(g_sSamp)
              206:         205 SampledImage 203 204
-             210:  197(ivec4) ImageSampleImplicitLod 206 209
+             210:  197(uvec4) ImageSampleImplicitLod 206 209
                               Store 199(@sampleResultShadow) 210
-             213:    212(ptr) AccessChain 199(@sampleResultShadow) 43
-             214:     42(int) Load 213
-             215:    212(ptr) AccessChain 211(@sampleStructTemp) 41
+             213:  212(uint*) AccessChain 199(@sampleResultShadow) 43
+             214:    42(uint) Load 213
+             215:  212(uint*) AccessChain 211(@sampleStructTemp) 41
                               Store 215 214
-             216:    212(ptr) AccessChain 199(@sampleResultShadow) 49
-             217:     42(int) Load 216
-             218:    212(ptr) AccessChain 211(@sampleStructTemp) 48
+             216:  212(uint*) AccessChain 199(@sampleResultShadow) 49
+             217:    42(uint) Load 216
+             218:  212(uint*) AccessChain 211(@sampleStructTemp) 48
                               Store 218 217
              219:   194(s5_t) Load 211(@sampleStructTemp)
                               Store 196(s5) 219

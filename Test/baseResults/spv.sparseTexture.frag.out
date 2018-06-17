@@ -65,38 +65,38 @@ spv.sparseTexture.frag
                               Decorate 405(ic3) Flat
                               Decorate 414(i2DMS) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
                9:      6(int) Constant 0
               10:             TypeFloat 32
               11:             TypeVector 10(float) 4
-              12:             TypePointer Function 11(fvec4)
+              12:             TypePointer Function 11(vec4)
               14:   10(float) Constant 0
-              15:   11(fvec4) ConstantComposite 14 14 14 14
+              15:    11(vec4) ConstantComposite 14 14 14 14
               16:             TypeVector 6(int) 4
               17:             TypePointer Function 16(ivec4)
               19:   16(ivec4) ConstantComposite 9 9 9 9
               20:             TypeInt 32 0
-              21:             TypeVector 20(int) 4
-              22:             TypePointer Function 21(ivec4)
-              24:     20(int) Constant 0
-              25:   21(ivec4) ConstantComposite 24 24 24 24
+              21:             TypeVector 20(uint) 4
+              22:             TypePointer Function 21(uvec4)
+              24:    20(uint) Constant 0
+              25:   21(uvec4) ConstantComposite 24 24 24 24
               26:             TypeImage 10(float) 2D sampled format:Unknown
               27:             TypeSampledImage 26
               28:             TypePointer UniformConstant 27
          29(s2D):     28(ptr) Variable UniformConstant
               31:             TypeVector 10(float) 2
-              32:             TypePointer Input 31(fvec2)
-          33(c2):     32(ptr) Variable Input
-     35(ResType):             TypeStruct 6(int) 11(fvec4)
+              32:             TypePointer Input 31(vec2)
+          33(c2):   32(vec2*) Variable Input
+     35(ResType):             TypeStruct 6(int) 11(vec4)
               41:             TypeImage 10(float) 3D sampled format:Unknown
               42:             TypeSampledImage 41
               43:             TypePointer UniformConstant 42
          44(s3D):     43(ptr) Variable UniformConstant
               46:             TypeVector 10(float) 3
-              47:             TypePointer Input 46(fvec3)
-          48(c3):     47(ptr) Variable Input
+              47:             TypePointer Input 46(vec3)
+          48(c3):   47(vec3*) Variable Input
               50:   10(float) Constant 1073741824
               56:             TypeImage 6(int) Cube sampled format:Unknown
               57:             TypeSampledImage 56
@@ -113,19 +113,19 @@ spv.sparseTexture.frag
               84:             TypeSampledImage 83
               85:             TypePointer UniformConstant 84
 86(sCubeArrayShadow):     85(ptr) Variable UniformConstant
-              88:             TypePointer Input 11(fvec4)
-          89(c4):     88(ptr) Variable Input
+              88:             TypePointer Input 11(vec4)
+          89(c4):   88(vec4*) Variable Input
               91:   10(float) Constant 1065353216
-             105:             TypeImage 20(int) Cube array sampled format:Unknown
+             105:             TypeImage 20(uint) Cube array sampled format:Unknown
              106:             TypeSampledImage 105
              107:             TypePointer UniformConstant 106
 108(usCubeArray):    107(ptr) Variable UniformConstant
-    111(ResType):             TypeStruct 6(int) 21(ivec4)
-             119:     20(int) Constant 1
+    111(ResType):             TypeStruct 6(int) 21(uvec4)
+             119:    20(uint) Constant 1
              129:             TypeVector 6(int) 3
              130:      6(int) Constant 2
              131:  129(ivec3) ConstantComposite 130 130 130
-             137:             TypeImage 20(int) Rect sampled format:Unknown
+             137:             TypeImage 20(uint) Rect sampled format:Unknown
              138:             TypeSampledImage 137
              139:             TypePointer UniformConstant 138
    140(us2DRect):    139(ptr) Variable UniformConstant
@@ -138,7 +138,7 @@ spv.sparseTexture.frag
 154(s2DArrayShadow):    153(ptr) Variable UniformConstant
              157:      6(int) Constant 5
              158:  143(ivec2) ConstantComposite 157 157
-             159:     20(int) Constant 2
+             159:    20(uint) Constant 2
              185:             TypeImage 10(float) 2D multi-sampled sampled format:Unknown
              186:             TypeSampledImage 185
              187:             TypePointer UniformConstant 186
@@ -161,60 +161,60 @@ spv.sparseTexture.frag
              292:             TypeSampledImage 291
              293:             TypePointer UniformConstant 292
 294(s2DRectShadow):    293(ptr) Variable UniformConstant
-             299:     20(int) Constant 3
+             299:    20(uint) Constant 3
              311:  143(ivec2) ConstantComposite 130 130
              340:  143(ivec2) ConstantComposite 192 192
-             362:     20(int) Constant 4
+             362:    20(uint) Constant 4
              363:             TypeArray 143(ivec2) 362
-             364:             TypePointer Input 363
-    365(offsets):    364(ptr) Variable Input
+             364:             TypePointer Input 363(ivec2[4])
+    365(offsets):364(ivec2[4]*) Variable Input
              388:             TypeImage 10(float) 2D nonsampled format:Rgba32f
              389:             TypePointer UniformConstant 388
         390(i2D):    389(ptr) Variable UniformConstant
              392:             TypePointer Input 143(ivec2)
-        393(ic2):    392(ptr) Variable Input
+        393(ic2): 392(ivec2*) Variable Input
              400:             TypeImage 6(int) 3D nonsampled format:Rgba32i
              401:             TypePointer UniformConstant 400
        402(ii3D):    401(ptr) Variable UniformConstant
              404:             TypePointer Input 129(ivec3)
-        405(ic3):    404(ptr) Variable Input
+        405(ic3): 404(ivec3*) Variable Input
              412:             TypeImage 10(float) 2D multi-sampled nonsampled format:Rgba32f
              413:             TypePointer UniformConstant 412
       414(i2DMS):    413(ptr) Variable UniformConstant
-             422:             TypePointer Output 11(fvec4)
-   423(outColor):    422(ptr) Variable Output
+             422:             TypePointer Output 11(vec4)
+   423(outColor):  422(vec4*) Variable Output
              425:             TypeBool
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-     8(resident):      7(ptr) Variable Function
-       13(texel):     12(ptr) Variable Function
-      18(itexel):     17(ptr) Variable Function
-      23(utexel):     22(ptr) Variable Function
-             427:     12(ptr) Variable Function
+     8(resident):     7(int*) Variable Function
+       13(texel):   12(vec4*) Variable Function
+      18(itexel):  17(ivec4*) Variable Function
+      23(utexel):  22(uvec4*) Variable Function
+             427:   12(vec4*) Variable Function
                               Store 8(resident) 9
                               Store 13(texel) 15
                               Store 18(itexel) 19
                               Store 23(utexel) 25
               30:          27 Load 29(s2D)
-              34:   31(fvec2) Load 33(c2)
+              34:    31(vec2) Load 33(c2)
               36: 35(ResType) ImageSparseSampleImplicitLod 30 34
-              37:   11(fvec4) CompositeExtract 36 1
+              37:    11(vec4) CompositeExtract 36 1
                               Store 13(texel) 37
               38:      6(int) CompositeExtract 36 0
               39:      6(int) Load 8(resident)
               40:      6(int) BitwiseOr 39 38
                               Store 8(resident) 40
               45:          42 Load 44(s3D)
-              49:   46(fvec3) Load 48(c3)
+              49:    46(vec3) Load 48(c3)
               51: 35(ResType) ImageSparseSampleImplicitLod 45 49 Bias 50
-              52:   11(fvec4) CompositeExtract 51 1
+              52:    11(vec4) CompositeExtract 51 1
                               Store 13(texel) 52
               53:      6(int) CompositeExtract 51 0
               54:      6(int) Load 8(resident)
               55:      6(int) BitwiseOr 54 53
                               Store 8(resident) 55
               60:          57 Load 59(isCube)
-              61:   46(fvec3) Load 48(c3)
+              61:    46(vec3) Load 48(c3)
               63: 62(ResType) ImageSparseSampleImplicitLod 60 61
               64:   16(ivec4) CompositeExtract 63 1
                               Store 18(itexel) 64
@@ -223,8 +223,8 @@ spv.sparseTexture.frag
               67:      6(int) BitwiseOr 66 65
                               Store 8(resident) 67
               72:          69 Load 71(s2DShadow)
-              73:   46(fvec3) Load 48(c3)
-              75:     74(ptr) AccessChain 13(texel) 24
+              73:    46(vec3) Load 48(c3)
+              75:  74(float*) AccessChain 13(texel) 24
               76:   10(float) CompositeExtract 73 2
               78: 77(ResType) ImageSparseSampleDrefImplicitLod 72 73 76
               79:   10(float) CompositeExtract 78 1
@@ -234,8 +234,8 @@ spv.sparseTexture.frag
               82:      6(int) BitwiseOr 81 80
                               Store 8(resident) 82
               87:          84 Load 86(sCubeArrayShadow)
-              90:   11(fvec4) Load 89(c4)
-              92:     74(ptr) AccessChain 13(texel) 24
+              90:    11(vec4) Load 89(c4)
+              92:  74(float*) AccessChain 13(texel) 24
               93: 77(ResType) ImageSparseSampleDrefImplicitLod 87 90 91
               94:   10(float) CompositeExtract 93 1
                               Store 92 94
@@ -244,26 +244,26 @@ spv.sparseTexture.frag
               97:      6(int) BitwiseOr 96 95
                               Store 8(resident) 97
               98:          27 Load 29(s2D)
-              99:   31(fvec2) Load 33(c2)
+              99:    31(vec2) Load 33(c2)
              100: 35(ResType) ImageSparseSampleExplicitLod 98 99 Lod 50
-             101:   11(fvec4) CompositeExtract 100 1
+             101:    11(vec4) CompositeExtract 100 1
                               Store 13(texel) 101
              102:      6(int) CompositeExtract 100 0
              103:      6(int) Load 8(resident)
              104:      6(int) BitwiseOr 103 102
                               Store 8(resident) 104
              109:         106 Load 108(usCubeArray)
-             110:   11(fvec4) Load 89(c4)
+             110:    11(vec4) Load 89(c4)
              112:111(ResType) ImageSparseSampleExplicitLod 109 110 Lod 91
-             113:   21(ivec4) CompositeExtract 112 1
+             113:   21(uvec4) CompositeExtract 112 1
                               Store 23(utexel) 113
              114:      6(int) CompositeExtract 112 0
              115:      6(int) Load 8(resident)
              116:      6(int) BitwiseOr 115 114
                               Store 8(resident) 116
              117:          69 Load 71(s2DShadow)
-             118:   46(fvec3) Load 48(c3)
-             120:     74(ptr) AccessChain 13(texel) 119
+             118:    46(vec3) Load 48(c3)
+             120:  74(float*) AccessChain 13(texel) 119
              121:   10(float) CompositeExtract 118 2
              122: 77(ResType) ImageSparseSampleDrefExplicitLod 117 118 121 Lod 50
              123:   10(float) CompositeExtract 122 1
@@ -273,26 +273,26 @@ spv.sparseTexture.frag
              126:      6(int) BitwiseOr 125 124
                               Store 8(resident) 126
              127:          42 Load 44(s3D)
-             128:   46(fvec3) Load 48(c3)
+             128:    46(vec3) Load 48(c3)
              132: 35(ResType) ImageSparseSampleImplicitLod 127 128 Bias ConstOffset 50 131
-             133:   11(fvec4) CompositeExtract 132 1
+             133:    11(vec4) CompositeExtract 132 1
                               Store 13(texel) 133
              134:      6(int) CompositeExtract 132 0
              135:      6(int) Load 8(resident)
              136:      6(int) BitwiseOr 135 134
                               Store 8(resident) 136
              141:         138 Load 140(us2DRect)
-             142:   31(fvec2) Load 33(c2)
+             142:    31(vec2) Load 33(c2)
              146:111(ResType) ImageSparseSampleImplicitLod 141 142 ConstOffset 145
-             147:   21(ivec4) CompositeExtract 146 1
+             147:   21(uvec4) CompositeExtract 146 1
                               Store 23(utexel) 147
              148:      6(int) CompositeExtract 146 0
              149:      6(int) Load 8(resident)
              150:      6(int) BitwiseOr 149 148
                               Store 8(resident) 150
              155:         152 Load 154(s2DArrayShadow)
-             156:   11(fvec4) Load 89(c4)
-             160:     74(ptr) AccessChain 13(texel) 159
+             156:    11(vec4) Load 89(c4)
+             160:  74(float*) AccessChain 13(texel) 159
              161:   10(float) CompositeExtract 156 3
              162: 77(ResType) ImageSparseSampleDrefImplicitLod 155 156 161 ConstOffset 158
              163:   10(float) CompositeExtract 162 1
@@ -302,71 +302,71 @@ spv.sparseTexture.frag
              166:      6(int) BitwiseOr 165 164
                               Store 8(resident) 166
              167:          27 Load 29(s2D)
-             168:   31(fvec2) Load 33(c2)
+             168:    31(vec2) Load 33(c2)
              169:  143(ivec2) ConvertFToS 168
              170:          26 Image 167
              171: 35(ResType) ImageSparseFetch 170 169 Lod 130
-             172:   11(fvec4) CompositeExtract 171 1
+             172:    11(vec4) CompositeExtract 171 1
                               Store 13(texel) 172
              173:      6(int) CompositeExtract 171 0
              174:      6(int) Load 8(resident)
              175:      6(int) BitwiseOr 174 173
                               Store 8(resident) 175
              176:         138 Load 140(us2DRect)
-             177:   31(fvec2) Load 33(c2)
+             177:    31(vec2) Load 33(c2)
              178:  143(ivec2) ConvertFToS 177
              179:         137 Image 176
              180:111(ResType) ImageSparseFetch 179 178
-             181:   21(ivec4) CompositeExtract 180 1
+             181:   21(uvec4) CompositeExtract 180 1
                               Store 23(utexel) 181
              182:      6(int) CompositeExtract 180 0
              183:      6(int) Load 8(resident)
              184:      6(int) BitwiseOr 183 182
                               Store 8(resident) 184
              189:         186 Load 188(s2DMS)
-             190:   31(fvec2) Load 33(c2)
+             190:    31(vec2) Load 33(c2)
              191:  143(ivec2) ConvertFToS 190
              193:         185 Image 189
              194: 35(ResType) ImageSparseFetch 193 191 Sample 192
-             195:   11(fvec4) CompositeExtract 194 1
+             195:    11(vec4) CompositeExtract 194 1
                               Store 13(texel) 195
              196:      6(int) CompositeExtract 194 0
              197:      6(int) Load 8(resident)
              198:      6(int) BitwiseOr 197 196
                               Store 8(resident) 198
              199:          42 Load 44(s3D)
-             200:   46(fvec3) Load 48(c3)
+             200:    46(vec3) Load 48(c3)
              201:  129(ivec3) ConvertFToS 200
              203:          41 Image 199
              204: 35(ResType) ImageSparseFetch 203 201 Lod ConstOffset 130 202
-             205:   11(fvec4) CompositeExtract 204 1
+             205:    11(vec4) CompositeExtract 204 1
                               Store 13(texel) 205
              206:      6(int) CompositeExtract 204 0
              207:      6(int) Load 8(resident)
              208:      6(int) BitwiseOr 207 206
                               Store 8(resident) 208
              209:         138 Load 140(us2DRect)
-             210:   31(fvec2) Load 33(c2)
+             210:    31(vec2) Load 33(c2)
              211:  143(ivec2) ConvertFToS 210
              212:         137 Image 209
              213:111(ResType) ImageSparseFetch 212 211 ConstOffset 145
-             214:   21(ivec4) CompositeExtract 213 1
+             214:   21(uvec4) CompositeExtract 213 1
                               Store 23(utexel) 214
              215:      6(int) CompositeExtract 213 0
              216:      6(int) Load 8(resident)
              217:      6(int) BitwiseOr 216 215
                               Store 8(resident) 217
              218:          27 Load 29(s2D)
-             219:   31(fvec2) Load 33(c2)
+             219:    31(vec2) Load 33(c2)
              220: 35(ResType) ImageSparseSampleExplicitLod 218 219 Lod ConstOffset 50 158
-             221:   11(fvec4) CompositeExtract 220 1
+             221:    11(vec4) CompositeExtract 220 1
                               Store 13(texel) 221
              222:      6(int) CompositeExtract 220 0
              223:      6(int) Load 8(resident)
              224:      6(int) BitwiseOr 223 222
                               Store 8(resident) 224
              229:         226 Load 228(is2DArray)
-             230:   46(fvec3) Load 48(c3)
+             230:    46(vec3) Load 48(c3)
              233: 62(ResType) ImageSparseSampleExplicitLod 229 230 Lod ConstOffset 50 232
              234:   16(ivec4) CompositeExtract 233 1
                               Store 18(itexel) 234
@@ -375,8 +375,8 @@ spv.sparseTexture.frag
              237:      6(int) BitwiseOr 236 235
                               Store 8(resident) 237
              238:          69 Load 71(s2DShadow)
-             239:   46(fvec3) Load 48(c3)
-             242:     74(ptr) AccessChain 13(texel) 159
+             239:    46(vec3) Load 48(c3)
+             242:  74(float*) AccessChain 13(texel) 159
              243:   10(float) CompositeExtract 239 2
              244: 77(ResType) ImageSparseSampleDrefExplicitLod 238 239 243 Lod ConstOffset 50 241
              245:   10(float) CompositeExtract 244 1
@@ -386,21 +386,21 @@ spv.sparseTexture.frag
              248:      6(int) BitwiseOr 247 246
                               Store 8(resident) 248
              249:          42 Load 44(s3D)
-             250:   46(fvec3) Load 48(c3)
-             251:   46(fvec3) Load 48(c3)
-             252:   46(fvec3) Load 48(c3)
+             250:    46(vec3) Load 48(c3)
+             251:    46(vec3) Load 48(c3)
+             252:    46(vec3) Load 48(c3)
              253: 35(ResType) ImageSparseSampleExplicitLod 249 250 Grad 251 252
-             254:   11(fvec4) CompositeExtract 253 1
+             254:    11(vec4) CompositeExtract 253 1
                               Store 13(texel) 254
              255:      6(int) CompositeExtract 253 0
              256:      6(int) Load 8(resident)
              257:      6(int) BitwiseOr 256 255
                               Store 8(resident) 257
              262:         259 Load 261(sCubeShadow)
-             263:   11(fvec4) Load 89(c4)
-             264:   46(fvec3) Load 48(c3)
-             265:   46(fvec3) Load 48(c3)
-             266:     74(ptr) AccessChain 13(texel) 119
+             263:    11(vec4) Load 89(c4)
+             264:    46(vec3) Load 48(c3)
+             265:    46(vec3) Load 48(c3)
+             266:  74(float*) AccessChain 13(texel) 119
              267:   10(float) CompositeExtract 263 3
              268: 77(ResType) ImageSparseSampleDrefExplicitLod 262 263 267 Grad 264 265
              269:   10(float) CompositeExtract 268 1
@@ -410,32 +410,32 @@ spv.sparseTexture.frag
              272:      6(int) BitwiseOr 271 270
                               Store 8(resident) 272
              273:         106 Load 108(usCubeArray)
-             274:   11(fvec4) Load 89(c4)
-             275:   46(fvec3) Load 48(c3)
-             276:   46(fvec3) Load 48(c3)
+             274:    11(vec4) Load 89(c4)
+             275:    46(vec3) Load 48(c3)
+             276:    46(vec3) Load 48(c3)
              277:111(ResType) ImageSparseSampleExplicitLod 273 274 Grad 275 276
-             278:   21(ivec4) CompositeExtract 277 1
+             278:   21(uvec4) CompositeExtract 277 1
                               Store 23(utexel) 278
              279:      6(int) CompositeExtract 277 0
              280:      6(int) Load 8(resident)
              281:      6(int) BitwiseOr 280 279
                               Store 8(resident) 281
              282:          27 Load 29(s2D)
-             283:   31(fvec2) Load 33(c2)
-             284:   31(fvec2) Load 33(c2)
-             285:   31(fvec2) Load 33(c2)
+             283:    31(vec2) Load 33(c2)
+             284:    31(vec2) Load 33(c2)
+             285:    31(vec2) Load 33(c2)
              286: 35(ResType) ImageSparseSampleExplicitLod 282 283 Grad ConstOffset 284 285 158
-             287:   11(fvec4) CompositeExtract 286 1
+             287:    11(vec4) CompositeExtract 286 1
                               Store 13(texel) 287
              288:      6(int) CompositeExtract 286 0
              289:      6(int) Load 8(resident)
              290:      6(int) BitwiseOr 289 288
                               Store 8(resident) 290
              295:         292 Load 294(s2DRectShadow)
-             296:   46(fvec3) Load 48(c3)
-             297:   31(fvec2) Load 33(c2)
-             298:   31(fvec2) Load 33(c2)
-             300:     74(ptr) AccessChain 13(texel) 299
+             296:    46(vec3) Load 48(c3)
+             297:    31(vec2) Load 33(c2)
+             298:    31(vec2) Load 33(c2)
+             300:  74(float*) AccessChain 13(texel) 299
              301:   10(float) CompositeExtract 296 2
              302: 77(ResType) ImageSparseSampleDrefExplicitLod 295 296 301 Grad ConstOffset 297 298 232
              303:   10(float) CompositeExtract 302 1
@@ -445,9 +445,9 @@ spv.sparseTexture.frag
              306:      6(int) BitwiseOr 305 304
                               Store 8(resident) 306
              307:         226 Load 228(is2DArray)
-             308:   46(fvec3) Load 48(c3)
-             309:   31(fvec2) Load 33(c2)
-             310:   31(fvec2) Load 33(c2)
+             308:    46(vec3) Load 48(c3)
+             309:    31(vec2) Load 33(c2)
+             310:    31(vec2) Load 33(c2)
              312: 62(ResType) ImageSparseSampleExplicitLod 307 308 Grad ConstOffset 309 310 311
              313:   16(ivec4) CompositeExtract 312 1
                               Store 18(itexel) 313
@@ -456,16 +456,16 @@ spv.sparseTexture.frag
              316:      6(int) BitwiseOr 315 314
                               Store 8(resident) 316
              317:          27 Load 29(s2D)
-             318:   31(fvec2) Load 33(c2)
+             318:    31(vec2) Load 33(c2)
              319: 35(ResType) ImageSparseGather 317 318 9
-             320:   11(fvec4) CompositeExtract 319 1
+             320:    11(vec4) CompositeExtract 319 1
                               Store 13(texel) 320
              321:      6(int) CompositeExtract 319 0
              322:      6(int) Load 8(resident)
              323:      6(int) BitwiseOr 322 321
                               Store 8(resident) 323
              324:         226 Load 228(is2DArray)
-             325:   46(fvec3) Load 48(c3)
+             325:    46(vec3) Load 48(c3)
              326: 62(ResType) ImageSparseGather 324 325 130
              327:   16(ivec4) CompositeExtract 326 1
                               Store 18(itexel) 327
@@ -474,25 +474,25 @@ spv.sparseTexture.frag
              330:      6(int) BitwiseOr 329 328
                               Store 8(resident) 330
              331:         152 Load 154(s2DArrayShadow)
-             332:   46(fvec3) Load 48(c3)
+             332:    46(vec3) Load 48(c3)
              333: 35(ResType) ImageSparseDrefGather 331 332 50
-             334:   11(fvec4) CompositeExtract 333 1
+             334:    11(vec4) CompositeExtract 333 1
                               Store 13(texel) 334
              335:      6(int) CompositeExtract 333 0
              336:      6(int) Load 8(resident)
              337:      6(int) BitwiseOr 336 335
                               Store 8(resident) 337
              338:          27 Load 29(s2D)
-             339:   31(fvec2) Load 33(c2)
+             339:    31(vec2) Load 33(c2)
              341: 35(ResType) ImageSparseGather 338 339 9 ConstOffset 340
-             342:   11(fvec4) CompositeExtract 341 1
+             342:    11(vec4) CompositeExtract 341 1
                               Store 13(texel) 342
              343:      6(int) CompositeExtract 341 0
              344:      6(int) Load 8(resident)
              345:      6(int) BitwiseOr 344 343
                               Store 8(resident) 345
              346:         226 Load 228(is2DArray)
-             347:   46(fvec3) Load 48(c3)
+             347:    46(vec3) Load 48(c3)
              348: 62(ResType) ImageSparseGather 346 347 130 ConstOffset 158
              349:   16(ivec4) CompositeExtract 348 1
                               Store 18(itexel) 349
@@ -501,27 +501,27 @@ spv.sparseTexture.frag
              352:      6(int) BitwiseOr 351 350
                               Store 8(resident) 352
              353:         292 Load 294(s2DRectShadow)
-             354:   31(fvec2) Load 33(c2)
+             354:    31(vec2) Load 33(c2)
              355: 35(ResType) ImageSparseDrefGather 353 354 50 ConstOffset 241
-             356:   11(fvec4) CompositeExtract 355 1
+             356:    11(vec4) CompositeExtract 355 1
                               Store 13(texel) 356
              357:      6(int) CompositeExtract 355 0
              358:      6(int) Load 8(resident)
              359:      6(int) BitwiseOr 358 357
                               Store 8(resident) 359
              360:          27 Load 29(s2D)
-             361:   31(fvec2) Load 33(c2)
-             366:         363 Load 365(offsets)
+             361:    31(vec2) Load 33(c2)
+             366:363(ivec2[4]) Load 365(offsets)
              367: 35(ResType) ImageSparseGather 360 361 9 ConstOffsets 366
-             368:   11(fvec4) CompositeExtract 367 1
+             368:    11(vec4) CompositeExtract 367 1
                               Store 13(texel) 368
              369:      6(int) CompositeExtract 367 0
              370:      6(int) Load 8(resident)
              371:      6(int) BitwiseOr 370 369
                               Store 8(resident) 371
              372:         226 Load 228(is2DArray)
-             373:   46(fvec3) Load 48(c3)
-             374:         363 Load 365(offsets)
+             373:    46(vec3) Load 48(c3)
+             374:363(ivec2[4]) Load 365(offsets)
              375: 62(ResType) ImageSparseGather 372 373 130 ConstOffsets 374
              376:   16(ivec4) CompositeExtract 375 1
                               Store 18(itexel) 376
@@ -530,10 +530,10 @@ spv.sparseTexture.frag
              379:      6(int) BitwiseOr 378 377
                               Store 8(resident) 379
              380:         292 Load 294(s2DRectShadow)
-             381:   31(fvec2) Load 33(c2)
-             382:         363 Load 365(offsets)
+             381:    31(vec2) Load 33(c2)
+             382:363(ivec2[4]) Load 365(offsets)
              383: 35(ResType) ImageSparseDrefGather 380 381 50 ConstOffsets 382
-             384:   11(fvec4) CompositeExtract 383 1
+             384:    11(vec4) CompositeExtract 383 1
                               Store 13(texel) 384
              385:      6(int) CompositeExtract 383 0
              386:      6(int) Load 8(resident)
@@ -542,7 +542,7 @@ spv.sparseTexture.frag
              391:         388 Load 390(i2D)
              394:  143(ivec2) Load 393(ic2)
              395: 35(ResType) ImageSparseRead 391 394
-             396:   11(fvec4) CompositeExtract 395 1
+             396:    11(vec4) CompositeExtract 395 1
                               Store 13(texel) 396
              397:      6(int) CompositeExtract 395 0
              398:      6(int) Load 8(resident)
@@ -560,7 +560,7 @@ spv.sparseTexture.frag
              415:         412 Load 414(i2DMS)
              416:  143(ivec2) Load 393(ic2)
              417: 35(ResType) ImageSparseRead 415 416 Sample 144
-             418:   11(fvec4) CompositeExtract 417 1
+             418:    11(vec4) CompositeExtract 417 1
                               Store 13(texel) 418
              419:      6(int) CompositeExtract 417 0
              420:      6(int) Load 8(resident)
@@ -571,19 +571,19 @@ spv.sparseTexture.frag
                               SelectionMerge 429 None
                               BranchConditional 426 428 431
              428:               Label
-             430:   11(fvec4)   Load 13(texel)
+             430:    11(vec4)   Load 13(texel)
                                 Store 427 430
                                 Branch 429
              431:               Label
              432:   16(ivec4)   Load 18(itexel)
-             433:   11(fvec4)   ConvertSToF 432
-             434:   21(ivec4)   Load 23(utexel)
-             435:   11(fvec4)   ConvertUToF 434
-             436:   11(fvec4)   FAdd 433 435
+             433:    11(vec4)   ConvertSToF 432
+             434:   21(uvec4)   Load 23(utexel)
+             435:    11(vec4)   ConvertUToF 434
+             436:    11(vec4)   FAdd 433 435
                                 Store 427 436
                                 Branch 429
              429:             Label
-             437:   11(fvec4) Load 427
+             437:    11(vec4) Load 427
                               Store 423(outColor) 437
                               Return
                               FunctionEnd

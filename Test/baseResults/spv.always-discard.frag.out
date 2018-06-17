@@ -20,48 +20,48 @@ spv.always-discard.frag
                               Name 59  "gl_FragColor"
                               Decorate 59(gl_FragColor) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
+               8:             TypePointer Function 7(vec4)
               10:    6(float) Constant 1065353216
-              11:    7(fvec4) ConstantComposite 10 10 10 10
+              11:     7(vec4) ConstantComposite 10 10 10 10
               13:    6(float) Constant 1045220557
-              14:    7(fvec4) ConstantComposite 13 13 13 13
+              14:     7(vec4) ConstantComposite 13 13 13 13
               17:             TypePointer Function 6(float)
               19:             TypeVector 6(float) 2
-              20:             TypePointer Input 19(fvec2)
-   21(tex_coord):     20(ptr) Variable Input
+              20:             TypePointer Input 19(vec2)
+   21(tex_coord):   20(vec2*) Variable Input
               22:             TypeInt 32 0
-              23:     22(int) Constant 0
+              23:    22(uint) Constant 0
               24:             TypePointer Input 6(float)
               27:    6(float) Constant 1073741824
-              31:     22(int) Constant 1
+              31:    22(uint) Constant 1
               46:             TypeBool
               51:    6(float) Constant 1066192077
-              58:             TypePointer Output 7(fvec4)
-59(gl_FragColor):     58(ptr) Variable Output
+              58:             TypePointer Output 7(vec4)
+59(gl_FragColor):   58(vec4*) Variable Output
               62:    6(float) Constant 1067030938
               71:    6(float) Constant 1061158912
               76:    6(float) Constant 1098907648
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-        9(white):      8(ptr) Variable Function
-       12(black):      8(ptr) Variable Function
-       15(color):      8(ptr) Variable Function
-           18(x):     17(ptr) Variable Function
-           30(y):     17(ptr) Variable Function
-      36(radius):     17(ptr) Variable Function
+        9(white):    8(vec4*) Variable Function
+       12(black):    8(vec4*) Variable Function
+       15(color):    8(vec4*) Variable Function
+           18(x):  17(float*) Variable Function
+           30(y):  17(float*) Variable Function
+      36(radius):  17(float*) Variable Function
                               Store 9(white) 11
                               Store 12(black) 14
-              16:    7(fvec4) Load 9(white)
+              16:     7(vec4) Load 9(white)
                               Store 15(color) 16
-              25:     24(ptr) AccessChain 21(tex_coord) 23
+              25:  24(float*) AccessChain 21(tex_coord) 23
               26:    6(float) Load 25
               28:    6(float) FMul 26 27
               29:    6(float) FSub 28 10
                               Store 18(x) 29
-              32:     24(ptr) AccessChain 21(tex_coord) 31
+              32:  24(float*) AccessChain 21(tex_coord) 31
               33:    6(float) Load 32
               34:    6(float) FMul 33 27
               35:    6(float) FSub 34 10
@@ -85,22 +85,22 @@ spv.always-discard.frag
                                 SelectionMerge 54 None
                                 BranchConditional 52 53 54
               53:                 Label
-              55:    7(fvec4)     Load 15(color)
-              56:    7(fvec4)     CompositeConstruct 10 10 10 10
-              57:    7(fvec4)     FAdd 55 56
+              55:     7(vec4)     Load 15(color)
+              56:     7(vec4)     CompositeConstruct 10 10 10 10
+              57:     7(vec4)     FAdd 55 56
                                   Store 15(color) 57
                                   Branch 54
               54:               Label
-              60:    7(fvec4)   Load 15(color)
+              60:     7(vec4)   Load 15(color)
                                 Store 59(gl_FragColor) 60
               61:    6(float)   Load 36(radius)
               63:    46(bool)   FOrdGreaterThan 61 62
                                 SelectionMerge 65 None
                                 BranchConditional 63 64 65
               64:                 Label
-              66:    7(fvec4)     Load 15(color)
-              67:    7(fvec4)     CompositeConstruct 10 10 10 10
-              68:    7(fvec4)     FAdd 66 67
+              66:     7(vec4)     Load 15(color)
+              67:     7(vec4)     CompositeConstruct 10 10 10 10
+              68:     7(vec4)     FAdd 66 67
                                   Store 15(color) 68
                                   Branch 65
               65:               Label

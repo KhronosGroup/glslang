@@ -34,46 +34,46 @@ spv.subgroupBasic.comp
                               Decorate 25(gl_SubgroupID) BuiltIn SubgroupId
                               Decorate 39 BuiltIn WorkgroupSize
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypeRuntimeArray 6(int)
-       8(Buffer):             TypeStruct 7
+       8(Buffer):             TypeStruct 7(int[])
                9:             TypePointer Uniform 8(Buffer)
-        10(data):      9(ptr) Variable Uniform
+        10(data):  9(Buffer*) Variable Uniform
               11:      6(int) Constant 0
               12:             TypeInt 32 0
-              13:             TypePointer Input 12(int)
-14(gl_SubgroupSize):     13(ptr) Variable Input
+              13:             TypePointer Input 12(uint)
+14(gl_SubgroupSize):   13(uint*) Variable Input
               16:      6(int) Constant 1
               17:             TypePointer Uniform 6(int)
-19(gl_SubgroupInvocationID):     13(ptr) Variable Input
-22(gl_NumSubgroups):     13(ptr) Variable Input
-25(gl_SubgroupID):     13(ptr) Variable Input
+19(gl_SubgroupInvocationID):   13(uint*) Variable Input
+22(gl_NumSubgroups):   13(uint*) Variable Input
+25(gl_SubgroupID):   13(uint*) Variable Input
               27:             TypeBool
-              28:     12(int) Constant 3
-              32:     12(int) Constant 3400
-              33:     12(int) Constant 72
-              34:     12(int) Constant 264
-              35:     12(int) Constant 2056
-              36:             TypeVector 12(int) 3
-              37:     12(int) Constant 8
-              38:     12(int) Constant 1
-              39:   36(ivec3) ConstantComposite 37 37 38
-         4(main):           2 Function None 3
+              28:    12(uint) Constant 3
+              32:    12(uint) Constant 3400
+              33:    12(uint) Constant 72
+              34:    12(uint) Constant 264
+              35:    12(uint) Constant 2056
+              36:             TypeVector 12(uint) 3
+              37:    12(uint) Constant 8
+              38:    12(uint) Constant 1
+              39:   36(uvec3) ConstantComposite 37 37 38
+         4(main):     2(void) Function None 3
                5:             Label
-              15:     12(int) Load 14(gl_SubgroupSize)
-              18:     17(ptr) AccessChain 10(data) 11 15
+              15:    12(uint) Load 14(gl_SubgroupSize)
+              18:    17(int*) AccessChain 10(data) 11 15
                               Store 18 16
-              20:     12(int) Load 19(gl_SubgroupInvocationID)
-              21:     17(ptr) AccessChain 10(data) 11 20
+              20:    12(uint) Load 19(gl_SubgroupInvocationID)
+              21:    17(int*) AccessChain 10(data) 11 20
                               Store 21 16
-              23:     12(int) Load 22(gl_NumSubgroups)
-              24:     17(ptr) AccessChain 10(data) 11 23
+              23:    12(uint) Load 22(gl_NumSubgroups)
+              24:    17(int*) AccessChain 10(data) 11 23
                               Store 24 16
-              26:     12(int) Load 25(gl_SubgroupID)
+              26:    12(uint) Load 25(gl_SubgroupID)
               29:    27(bool) GroupNonUniformElect 28
               30:      6(int) Select 29 16 11
-              31:     17(ptr) AccessChain 10(data) 11 26
+              31:    17(int*) AccessChain 10(data) 11 26
                               Store 31 30
                               ControlBarrier 28 28 32
                               MemoryBarrier 28 32

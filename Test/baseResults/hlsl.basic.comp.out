@@ -87,27 +87,27 @@ local_size = (1, 1, 1)
                               Decorate 19(dti) BuiltIn GlobalInvocationId
                               Decorate 23(gti) BuiltIn LocalInvocationId
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Function 6(int)
-               8:             TypeFunction 2 7(ptr) 7(ptr)
+               8:             TypeFunction 2(void) 7(int*) 7(int*)
               17:             TypeVector 6(int) 3
               18:             TypePointer Input 17(ivec3)
-         19(dti):     18(ptr) Variable Input
-         23(gti):     18(ptr) Variable Input
+         19(dti):  18(ivec3*) Variable Input
+         23(gti):  18(ivec3*) Variable Input
               31:             TypeFloat 32
               32:             TypeVector 31(float) 4
               33:             TypeInt 32 0
-              34:     33(int) Constant 100
-              35:             TypeArray 32(fvec4) 34
-              36:             TypePointer Workgroup 35
-           37(a):     36(ptr) Variable Workgroup
-         4(main):           2 Function None 3
+              34:    33(uint) Constant 100
+              35:             TypeArray 32(vec4) 34
+              36:             TypePointer Workgroup 35(vec4[100])
+           37(a):36(vec4[100]*) Variable Workgroup
+         4(main):     2(void) Function None 3
                5:             Label
-         16(dti):      7(ptr) Variable Function
-         22(gti):      7(ptr) Variable Function
-       26(param):      7(ptr) Variable Function
-       28(param):      7(ptr) Variable Function
+         16(dti):     7(int*) Variable Function
+         22(gti):     7(int*) Variable Function
+       26(param):     7(int*) Variable Function
+       28(param):     7(int*) Variable Function
               20:   17(ivec3) Load 19(dti)
               21:      6(int) CompositeExtract 20 0
                               Store 16(dti) 21
@@ -118,12 +118,12 @@ local_size = (1, 1, 1)
                               Store 26(param) 27
               29:      6(int) Load 22(gti)
                               Store 28(param) 29
-              30:           2 FunctionCall 11(@main(i1;i1;) 26(param) 28(param)
+              30:     2(void) FunctionCall 11(@main(i1;i1;) 26(param) 28(param)
                               Return
                               FunctionEnd
-11(@main(i1;i1;):           2 Function None 8
-          9(dti):      7(ptr) FunctionParameter
-         10(gti):      7(ptr) FunctionParameter
+11(@main(i1;i1;):     2(void) Function None 8
+          9(dti):     7(int*) FunctionParameter
+         10(gti):     7(int*) FunctionParameter
               12:             Label
               13:      6(int) Load 9(dti)
               14:      6(int) Load 10(gti)

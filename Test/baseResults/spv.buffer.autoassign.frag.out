@@ -40,53 +40,53 @@ spv.buffer.autoassign.frag
                               Decorate 36 Binding 16
                               Decorate 47(@entryPointOutput.Color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypePointer Function 8(PS_OUTPUT)
               14:             TypeInt 32 1
               15:     14(int) Constant 0
        16(MyUB1):             TypeStruct 6(float) 14(int)
               17:             TypePointer Uniform 16(MyUB1)
-              18:     17(ptr) Variable Uniform
+              18:  17(MyUB1*) Variable Uniform
               19:             TypePointer Uniform 6(float)
               22:     14(int) Constant 1
               23:             TypePointer Uniform 14(int)
        28(MyUB2):             TypeStruct 6(float)
               29:             TypePointer Uniform 28(MyUB2)
-              30:     29(ptr) Variable Uniform
+              30:  29(MyUB2*) Variable Uniform
        34(MyUB3):             TypeStruct 6(float)
               35:             TypePointer Uniform 34(MyUB3)
-              36:     35(ptr) Variable Uniform
-              41:             TypePointer Function 7(fvec4)
-              46:             TypePointer Output 7(fvec4)
-47(@entryPointOutput.Color):     46(ptr) Variable Output
-         4(main):           2 Function None 3
+              36:  35(MyUB3*) Variable Uniform
+              41:             TypePointer Function 7(vec4)
+              46:             TypePointer Output 7(vec4)
+47(@entryPointOutput.Color):   46(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               48:8(PS_OUTPUT) FunctionCall 10(@main()
-              49:    7(fvec4) CompositeExtract 48 0
+              49:     7(vec4) CompositeExtract 48 0
                               Store 47(@entryPointOutput.Color) 49
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-       13(psout):     12(ptr) Variable Function
-              20:     19(ptr) AccessChain 18 15
+       13(psout):12(PS_OUTPUT*) Variable Function
+              20:  19(float*) AccessChain 18 15
               21:    6(float) Load 20
-              24:     23(ptr) AccessChain 18 22
+              24:    23(int*) AccessChain 18 22
               25:     14(int) Load 24
               26:    6(float) ConvertSToF 25
               27:    6(float) FAdd 21 26
-              31:     19(ptr) AccessChain 30 15
+              31:  19(float*) AccessChain 30 15
               32:    6(float) Load 31
               33:    6(float) FAdd 27 32
-              37:     19(ptr) AccessChain 36 15
+              37:  19(float*) AccessChain 36 15
               38:    6(float) Load 37
               39:    6(float) FAdd 33 38
-              40:    7(fvec4) CompositeConstruct 39 39 39 39
-              42:     41(ptr) AccessChain 13(psout) 15
+              40:     7(vec4) CompositeConstruct 39 39 39 39
+              42:   41(vec4*) AccessChain 13(psout) 15
                               Store 42 40
               43:8(PS_OUTPUT) Load 13(psout)
                               ReturnValue 43

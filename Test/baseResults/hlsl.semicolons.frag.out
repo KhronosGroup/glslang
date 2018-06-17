@@ -93,38 +93,38 @@ gl_FragCoord origin is upper left
                               Name 28  "@entryPointOutput.color"
                               Decorate 28(@entryPointOutput.color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
               10:             TypeFloat 32
               11:             TypeVector 10(float) 4
-   12(PS_OUTPUT):             TypeStruct 11(fvec4)
+   12(PS_OUTPUT):             TypeStruct 11(vec4)
               13:             TypeFunction 12(PS_OUTPUT)
               16:             TypePointer Function 12(PS_OUTPUT)
               18:             TypeInt 32 1
               19:     18(int) Constant 0
               20:   10(float) Constant 1065353216
-              21:   11(fvec4) ConstantComposite 20 20 20 20
-              22:             TypePointer Function 11(fvec4)
-              27:             TypePointer Output 11(fvec4)
-28(@entryPointOutput.color):     27(ptr) Variable Output
-         4(main):           2 Function None 3
+              21:    11(vec4) ConstantComposite 20 20 20 20
+              22:             TypePointer Function 11(vec4)
+              27:             TypePointer Output 11(vec4)
+28(@entryPointOutput.color):   27(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               29:12(PS_OUTPUT) FunctionCall 14(@main()
-              30:   11(fvec4) CompositeExtract 29 0
+              30:    11(vec4) CompositeExtract 29 0
                               Store 28(@entryPointOutput.color) 30
                               Return
                               FunctionEnd
-      6(MyFunc():           2 Function None 3
+      6(MyFunc():     2(void) Function None 3
                7:             Label
                               Return
                               FunctionEnd
-     8(MyFunc2():           2 Function None 3
+     8(MyFunc2():     2(void) Function None 3
                9:             Label
                               Return
                               FunctionEnd
       14(@main():12(PS_OUTPUT) Function None 13
               15:             Label
-   17(ps_output):     16(ptr) Variable Function
-              23:     22(ptr) AccessChain 17(ps_output) 19
+   17(ps_output):16(PS_OUTPUT*) Variable Function
+              23:   22(vec4*) AccessChain 17(ps_output) 19
                               Store 23 21
               24:12(PS_OUTPUT) Load 17(ps_output)
                               ReturnValue 24

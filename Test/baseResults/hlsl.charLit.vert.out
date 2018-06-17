@@ -163,13 +163,13 @@ Shader version: 500
                               Name 56  "@entryPointOutput"
                               Decorate 56(@entryPointOutput) BuiltIn Position
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypeFunction 7(fvec4)
+               8:             TypeFunction 7(vec4)
               11:             TypeInt 32 0
-              12:             TypePointer Function 11(int)
-              14:     11(int) Constant 65
+              12:             TypePointer Function 11(uint)
+              14:    11(uint) Constant 65
               15:             TypeInt 32 1
               16:             TypePointer Function 15(int)
               18:     15(int) Constant 48
@@ -181,20 +181,20 @@ Shader version: 500
               33:     15(int) Constant 12
               36:     15(int) Constant 13
               40:     15(int) Constant 99
-              55:             TypePointer Output 7(fvec4)
-56(@entryPointOutput):     55(ptr) Variable Output
-         4(main):           2 Function None 3
+              55:             TypePointer Output 7(vec4)
+56(@entryPointOutput):   55(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              57:    7(fvec4) FunctionCall 9(@main()
+              57:     7(vec4) FunctionCall 9(@main()
                               Store 56(@entryPointOutput) 57
                               Return
                               FunctionEnd
-       9(@main():    7(fvec4) Function None 8
+       9(@main():     7(vec4) Function None 8
               10:             Label
-          13(a1):     12(ptr) Variable Function
-          17(a2):     16(ptr) Variable Function
-          19(a3):     16(ptr) Variable Function
-         39(a10):     16(ptr) Variable Function
+          13(a1):   12(uint*) Variable Function
+          17(a2):    16(int*) Variable Function
+          19(a3):    16(int*) Variable Function
+         39(a10):    16(int*) Variable Function
                               Store 13(a1) 14
                               Store 17(a2) 18
                               Store 19(a3) 20
@@ -217,17 +217,17 @@ Shader version: 500
               38:     15(int) IAdd 37 36
                               Store 19(a3) 38
                               Store 39(a10) 40
-              41:     11(int) Load 13(a1)
+              41:    11(uint) Load 13(a1)
               42:     15(int) Load 17(a2)
-              43:     11(int) Bitcast 42
-              44:     11(int) IAdd 41 43
+              43:    11(uint) Bitcast 42
+              44:    11(uint) IAdd 41 43
               45:     15(int) Load 19(a3)
-              46:     11(int) Bitcast 45
-              47:     11(int) IAdd 44 46
+              46:    11(uint) Bitcast 45
+              47:    11(uint) IAdd 44 46
               48:     15(int) Load 39(a10)
-              49:     11(int) Bitcast 48
-              50:     11(int) IAdd 47 49
+              49:    11(uint) Bitcast 48
+              50:    11(uint) IAdd 47 49
               51:    6(float) ConvertUToF 50
-              52:    7(fvec4) CompositeConstruct 51 51 51 51
+              52:     7(vec4) CompositeConstruct 51 51 51 51
                               ReturnValue 52
                               FunctionEnd

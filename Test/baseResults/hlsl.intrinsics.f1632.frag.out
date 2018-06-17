@@ -284,106 +284,106 @@ gl_FragCoord origin is upper left
                               Name 101  "@entryPointOutput"
                               Decorate 101(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:             TypePointer Function 6(int)
+               7:             TypePointer Function 6(uint)
                8:             TypeFloat 32
-               9:             TypeFunction 8(float) 7(ptr)
-              16:             TypeVector 6(int) 2
-              17:             TypePointer Function 16(ivec2)
+               9:             TypeFunction 8(float) 7(uint*)
+              16:             TypeVector 6(uint) 2
+              17:             TypePointer Function 16(uvec2)
               18:             TypeVector 8(float) 2
-              19:             TypeFunction 18(fvec2) 17(ptr)
-              23:             TypeVector 6(int) 3
-              24:             TypePointer Function 23(ivec3)
+              19:             TypeFunction 18(vec2) 17(uvec2*)
+              23:             TypeVector 6(uint) 3
+              24:             TypePointer Function 23(uvec3)
               25:             TypeVector 8(float) 3
-              26:             TypeFunction 25(fvec3) 24(ptr)
-              30:             TypeVector 6(int) 4
-              31:             TypePointer Function 30(ivec4)
+              26:             TypeFunction 25(vec3) 24(uvec3*)
+              30:             TypeVector 6(uint) 4
+              31:             TypePointer Function 30(uvec4)
               32:             TypeVector 8(float) 4
-              33:             TypeFunction 32(fvec4) 31(ptr)
-              37:             TypeFunction 32(fvec4)
-              42:      6(int) Constant 0
+              33:             TypeFunction 32(vec4) 31(uvec4*)
+              37:             TypeFunction 32(vec4)
+              42:     6(uint) Constant 0
               46:    8(float) Constant 0
-              53:      6(int) Constant 1
-              69:      6(int) Constant 2
-              89:      6(int) Constant 3
-              97:   32(fvec4) ConstantComposite 46 46 46 46
-             100:             TypePointer Output 32(fvec4)
-101(@entryPointOutput):    100(ptr) Variable Output
-         4(main):           2 Function None 3
+              53:     6(uint) Constant 1
+              69:     6(uint) Constant 2
+              89:     6(uint) Constant 3
+              97:    32(vec4) ConstantComposite 46 46 46 46
+             100:             TypePointer Output 32(vec4)
+101(@entryPointOutput):  100(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-             102:   32(fvec4) FunctionCall 38(@main()
+             102:    32(vec4) FunctionCall 38(@main()
                               Store 101(@entryPointOutput) 102
                               Return
                               FunctionEnd
 11(PixelShaderFunctionS(u1;):    8(float) Function None 9
-        10(inF0):      7(ptr) FunctionParameter
+        10(inF0):    7(uint*) FunctionParameter
               12:             Label
-              40:      6(int) Load 10(inF0)
-              41:   18(fvec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 40
+              40:     6(uint) Load 10(inF0)
+              41:    18(vec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 40
               43:    8(float) CompositeExtract 41 0
                               ReturnValue 43
                               FunctionEnd
 14(PixelShaderFunction1(vu1;):    8(float) Function None 9
-        13(inF0):      7(ptr) FunctionParameter
+        13(inF0):    7(uint*) FunctionParameter
               15:             Label
                               ReturnValue 46
                               FunctionEnd
-21(PixelShaderFunction2(vu2;):   18(fvec2) Function None 19
-        20(inF0):     17(ptr) FunctionParameter
+21(PixelShaderFunction2(vu2;):    18(vec2) Function None 19
+        20(inF0):  17(uvec2*) FunctionParameter
               22:             Label
-              49:      7(ptr) AccessChain 20(inF0) 42
-              50:      6(int) Load 49
-              51:   18(fvec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 50
+              49:    7(uint*) AccessChain 20(inF0) 42
+              50:     6(uint) Load 49
+              51:    18(vec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 50
               52:    8(float) CompositeExtract 51 0
-              54:      7(ptr) AccessChain 20(inF0) 53
-              55:      6(int) Load 54
-              56:   18(fvec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 55
+              54:    7(uint*) AccessChain 20(inF0) 53
+              55:     6(uint) Load 54
+              56:    18(vec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 55
               57:    8(float) CompositeExtract 56 0
-              58:   18(fvec2) CompositeConstruct 52 57
+              58:    18(vec2) CompositeConstruct 52 57
                               ReturnValue 58
                               FunctionEnd
-28(PixelShaderFunction3(vu3;):   25(fvec3) Function None 26
-        27(inF0):     24(ptr) FunctionParameter
+28(PixelShaderFunction3(vu3;):    25(vec3) Function None 26
+        27(inF0):  24(uvec3*) FunctionParameter
               29:             Label
-              61:      7(ptr) AccessChain 27(inF0) 42
-              62:      6(int) Load 61
-              63:   18(fvec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 62
+              61:    7(uint*) AccessChain 27(inF0) 42
+              62:     6(uint) Load 61
+              63:    18(vec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 62
               64:    8(float) CompositeExtract 63 0
-              65:      7(ptr) AccessChain 27(inF0) 53
-              66:      6(int) Load 65
-              67:   18(fvec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 66
+              65:    7(uint*) AccessChain 27(inF0) 53
+              66:     6(uint) Load 65
+              67:    18(vec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 66
               68:    8(float) CompositeExtract 67 0
-              70:      7(ptr) AccessChain 27(inF0) 69
-              71:      6(int) Load 70
-              72:   18(fvec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 71
+              70:    7(uint*) AccessChain 27(inF0) 69
+              71:     6(uint) Load 70
+              72:    18(vec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 71
               73:    8(float) CompositeExtract 72 0
-              74:   25(fvec3) CompositeConstruct 64 68 73
+              74:    25(vec3) CompositeConstruct 64 68 73
                               ReturnValue 74
                               FunctionEnd
-35(PixelShaderFunction(vu4;):   32(fvec4) Function None 33
-        34(inF0):     31(ptr) FunctionParameter
+35(PixelShaderFunction(vu4;):    32(vec4) Function None 33
+        34(inF0):  31(uvec4*) FunctionParameter
               36:             Label
-              77:      7(ptr) AccessChain 34(inF0) 42
-              78:      6(int) Load 77
-              79:   18(fvec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 78
+              77:    7(uint*) AccessChain 34(inF0) 42
+              78:     6(uint) Load 77
+              79:    18(vec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 78
               80:    8(float) CompositeExtract 79 0
-              81:      7(ptr) AccessChain 34(inF0) 53
-              82:      6(int) Load 81
-              83:   18(fvec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 82
+              81:    7(uint*) AccessChain 34(inF0) 53
+              82:     6(uint) Load 81
+              83:    18(vec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 82
               84:    8(float) CompositeExtract 83 0
-              85:      7(ptr) AccessChain 34(inF0) 69
-              86:      6(int) Load 85
-              87:   18(fvec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 86
+              85:    7(uint*) AccessChain 34(inF0) 69
+              86:     6(uint) Load 85
+              87:    18(vec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 86
               88:    8(float) CompositeExtract 87 0
-              90:      7(ptr) AccessChain 34(inF0) 89
-              91:      6(int) Load 90
-              92:   18(fvec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 91
+              90:    7(uint*) AccessChain 34(inF0) 89
+              91:     6(uint) Load 90
+              92:    18(vec2) ExtInst 1(GLSL.std.450) 62(UnpackHalf2x16) 91
               93:    8(float) CompositeExtract 92 0
-              94:   32(fvec4) CompositeConstruct 80 84 88 93
+              94:    32(vec4) CompositeConstruct 80 84 88 93
                               ReturnValue 94
                               FunctionEnd
-      38(@main():   32(fvec4) Function None 37
+      38(@main():    32(vec4) Function None 37
               39:             Label
                               ReturnValue 97
                               FunctionEnd

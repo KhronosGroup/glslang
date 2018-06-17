@@ -60,80 +60,80 @@ spv.150.geom
                               Decorate 68(toFragment) Stream 3
                               Decorate 70(toF) Stream 3
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 3
-   8(fromVertex):             TypeStruct 7(fvec3)
+   8(fromVertex):             TypeStruct 7(vec3)
                9:             TypePointer Output 8(fromVertex)
-              10:      9(ptr) Variable Output
+              10:9(fromVertex*) Variable Output
               11:             TypeInt 32 1
               12:     11(int) Constant 0
-  13(fromVertex):             TypeStruct 7(fvec3)
+  13(fromVertex):             TypeStruct 7(vec3)
               14:             TypeInt 32 0
-              15:     14(int) Constant 6
+              15:    14(uint) Constant 6
               16:             TypeArray 13(fromVertex) 15
-              17:             TypePointer Input 16
-       18(fromV):     17(ptr) Variable Input
-              19:             TypePointer Input 7(fvec3)
-              22:             TypePointer Output 7(fvec3)
+              17:             TypePointer Input 16(fromVertex[6])
+       18(fromV):17(fromVertex[6]*) Variable Input
+              19:             TypePointer Input 7(vec3)
+              22:             TypePointer Output 7(vec3)
               24:             TypeVector 6(float) 4
-              25:     14(int) Constant 1
+              25:    14(uint) Constant 1
               26:             TypeArray 6(float) 25
-27(gl_PerVertex):             TypeStruct 24(fvec4) 6(float) 26
+27(gl_PerVertex):             TypeStruct 24(vec4) 6(float) 26(float[1])
               28:             TypePointer Output 27(gl_PerVertex)
-              29:     28(ptr) Variable Output
-30(gl_PerVertex):             TypeStruct 24(fvec4) 6(float) 26
+              29:28(gl_PerVertex*) Variable Output
+30(gl_PerVertex):             TypeStruct 24(vec4) 6(float) 26(float[1])
               31:             TypeArray 30(gl_PerVertex) 15
-              32:             TypePointer Input 31
-       33(gl_in):     32(ptr) Variable Input
-              34:             TypePointer Input 24(fvec4)
-              37:             TypePointer Output 24(fvec4)
+              32:             TypePointer Input 31(gl_PerVertex[6])
+       33(gl_in):32(gl_PerVertex[6]*) Variable Input
+              34:             TypePointer Input 24(vec4)
+              37:             TypePointer Output 24(vec4)
               39:     11(int) Constant 1
               40:     11(int) Constant 3
               41:             TypePointer Input 6(float)
               44:             TypePointer Output 6(float)
               46:             TypePointer Output 11(int)
-47(gl_PrimitiveID):     46(ptr) Variable Output
+47(gl_PrimitiveID):    46(int*) Variable Output
               48:             TypePointer Input 11(int)
-49(gl_PrimitiveIDIn):     48(ptr) Variable Input
-    51(gl_Layer):     46(ptr) Variable Output
+49(gl_PrimitiveIDIn):    48(int*) Variable Input
+    51(gl_Layer):    46(int*) Variable Output
               52:     11(int) Constant 2
               53:    6(float) Constant 1073741824
-  68(toFragment):             TypeStruct 7(fvec3)
+  68(toFragment):             TypeStruct 7(vec3)
               69:             TypePointer Output 68(toFragment)
-         70(toF):     69(ptr) Variable Output
-         4(main):           2 Function None 3
+         70(toF):69(toFragment*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-              20:     19(ptr) AccessChain 18(fromV) 12 12
-              21:    7(fvec3) Load 20
-              23:     22(ptr) AccessChain 10 12
+              20:   19(vec3*) AccessChain 18(fromV) 12 12
+              21:     7(vec3) Load 20
+              23:   22(vec3*) AccessChain 10 12
                               Store 23 21
-              35:     34(ptr) AccessChain 33(gl_in) 12 12
-              36:   24(fvec4) Load 35
-              38:     37(ptr) AccessChain 29 12
+              35:   34(vec4*) AccessChain 33(gl_in) 12 12
+              36:    24(vec4) Load 35
+              38:   37(vec4*) AccessChain 29 12
                               Store 38 36
-              42:     41(ptr) AccessChain 33(gl_in) 40 39
+              42:  41(float*) AccessChain 33(gl_in) 40 39
               43:    6(float) Load 42
-              45:     44(ptr) AccessChain 29 39
+              45:  44(float*) AccessChain 29 39
                               Store 45 43
               50:     11(int) Load 49(gl_PrimitiveIDIn)
                               Store 47(gl_PrimitiveID) 50
                               Store 51(gl_Layer) 52
                               EmitVertex
-              54:     19(ptr) AccessChain 18(fromV) 12 12
-              55:    7(fvec3) Load 54
-              56:    7(fvec3) VectorTimesScalar 55 53
-              57:     22(ptr) AccessChain 10 12
+              54:   19(vec3*) AccessChain 18(fromV) 12 12
+              55:     7(vec3) Load 54
+              56:     7(vec3) VectorTimesScalar 55 53
+              57:   22(vec3*) AccessChain 10 12
                               Store 57 56
-              58:     34(ptr) AccessChain 33(gl_in) 12 12
-              59:   24(fvec4) Load 58
-              60:   24(fvec4) VectorTimesScalar 59 53
-              61:     37(ptr) AccessChain 29 12
+              58:   34(vec4*) AccessChain 33(gl_in) 12 12
+              59:    24(vec4) Load 58
+              60:    24(vec4) VectorTimesScalar 59 53
+              61:   37(vec4*) AccessChain 29 12
                               Store 61 60
-              62:     41(ptr) AccessChain 33(gl_in) 40 39
+              62:  41(float*) AccessChain 33(gl_in) 40 39
               63:    6(float) Load 62
               64:    6(float) FMul 53 63
-              65:     44(ptr) AccessChain 29 39
+              65:  44(float*) AccessChain 29 39
                               Store 65 64
               66:     11(int) Load 49(gl_PrimitiveIDIn)
               67:     11(int) IAdd 66 39

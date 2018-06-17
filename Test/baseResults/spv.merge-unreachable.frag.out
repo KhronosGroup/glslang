@@ -13,21 +13,21 @@ spv.merge-unreachable.frag
                               Name 9  "v"
                               Decorate 9(v) Location 1
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Input 7(fvec4)
-            9(v):      8(ptr) Variable Input
+               8:             TypePointer Input 7(vec4)
+            9(v):    8(vec4*) Variable Input
               11:    6(float) Constant 1036831949
               12:    6(float) Constant 1045220557
               13:    6(float) Constant 1050253722
               14:    6(float) Constant 1053609165
-              15:    7(fvec4) ConstantComposite 11 12 13 14
+              15:     7(vec4) ConstantComposite 11 12 13 14
               16:             TypeBool
               17:             TypeVector 16(bool) 4
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-              10:    7(fvec4) Load 9(v)
+              10:     7(vec4) Load 9(v)
               18:   17(bvec4) FOrdEqual 10 15
               19:    16(bool) All 18
                               SelectionMerge 21 None

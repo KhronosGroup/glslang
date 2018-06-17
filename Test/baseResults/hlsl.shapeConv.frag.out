@@ -345,145 +345,145 @@ gl_FragCoord origin is upper left
                               Name 115  "sf"
                               Name 118  "sf1"
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
+               8:             TypePointer Function 7(vec4)
                9:             TypePointer Function 6(float)
-              10:             TypeFunction 7(fvec4) 8(ptr) 9(ptr)
+              10:             TypeFunction 7(vec4) 8(vec4*) 9(float*)
               16:    6(float) Constant 1065353216
-              17:    7(fvec4) ConstantComposite 16 16 16 16
+              17:     7(vec4) ConstantComposite 16 16 16 16
               18:    6(float) Constant 1073741824
-              19:    7(fvec4) ConstantComposite 18 18 18 18
+              19:     7(vec4) ConstantComposite 18 18 18 18
               22:             TypeVector 6(float) 3
-              23:             TypePointer Function 22(fvec3)
-              25:   22(fvec3) ConstantComposite 16 16 16
-              26:   22(fvec3) ConstantComposite 18 18 18
+              23:             TypePointer Function 22(vec3)
+              25:    22(vec3) ConstantComposite 16 16 16
+              26:    22(vec3) ConstantComposite 18 18 18
               29:             TypeVector 6(float) 2
-              30:             TypePointer Function 29(fvec2)
-              32:   29(fvec2) ConstantComposite 18 18
+              30:             TypePointer Function 29(vec2)
+              32:    29(vec2) ConstantComposite 18 18
               39:    6(float) Constant 1082130432
-              40:   22(fvec3) ConstantComposite 39 39 39
+              40:    22(vec3) ConstantComposite 39 39 39
               41:             TypeBool
               42:             TypeVector 41(bool) 3
               45:    6(float) Constant 1084227584
-              46:   22(fvec3) ConstantComposite 45 45 45
+              46:    22(vec3) ConstantComposite 45 45 45
               48:    6(float) Constant 1086324736
-              49:   22(fvec3) ConstantComposite 48 48 48
+              49:    22(vec3) ConstantComposite 48 48 48
               52:    6(float) Constant 1088421888
-              53:   22(fvec3) ConstantComposite 52 52 52
+              53:    22(vec3) ConstantComposite 52 52 52
               56:             TypeInt 32 0
-              57:     56(int) Constant 0
+              57:    56(uint) Constant 0
               62:             TypeVector 41(bool) 4
-              82:             TypePointer Function 56(int)
-              85:             TypeVector 56(int) 3
-              87:             TypePointer Function 85(ivec3)
+              82:             TypePointer Function 56(uint)
+              85:             TypeVector 56(uint) 3
+              87:             TypePointer Function 85(uvec3)
              122:    6(float) Constant 1077936128
-             123:    7(fvec4) ConstantComposite 122 122 122 122
-         4(main):           2 Function None 3
+             123:     7(vec4) ConstantComposite 122 122 122 122
+         4(main):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd
-13(PixelShaderFunction(vf4;f1;):    7(fvec4) Function None 10
-       11(input):      8(ptr) FunctionParameter
-           12(f):      9(ptr) FunctionParameter
+13(PixelShaderFunction(vf4;f1;):     7(vec4) Function None 10
+       11(input):    8(vec4*) FunctionParameter
+           12(f):   9(float*) FunctionParameter
               14:             Label
-           15(v):      8(ptr) Variable Function
-           24(u):     23(ptr) Variable Function
-           31(w):     30(ptr) Variable Function
-           33(V):      9(ptr) Variable Function
-       34(MyVal):     23(ptr) Variable Function
-         37(foo):     23(ptr) Variable Function
-          70(f1):      9(ptr) Variable Function
-          83(ui):     82(ptr) Variable Function
-         88(ui3):     87(ptr) Variable Function
-      103(mixed):     23(ptr) Variable Function
-         115(sf):      9(ptr) Variable Function
-        118(sf1):      9(ptr) Variable Function
+           15(v):    8(vec4*) Variable Function
+           24(u):   23(vec3*) Variable Function
+           31(w):   30(vec2*) Variable Function
+           33(V):   9(float*) Variable Function
+       34(MyVal):   23(vec3*) Variable Function
+         37(foo):   23(vec3*) Variable Function
+          70(f1):   9(float*) Variable Function
+          83(ui):   82(uint*) Variable Function
+         88(ui3):  87(uvec3*) Variable Function
+      103(mixed):   23(vec3*) Variable Function
+         115(sf):   9(float*) Variable Function
+        118(sf1):   9(float*) Variable Function
                               Store 15(v) 17
                               Store 15(v) 19
               20:    6(float) Load 12(f)
-              21:    7(fvec4) CompositeConstruct 20 20 20 20
+              21:     7(vec4) CompositeConstruct 20 20 20 20
                               Store 15(v) 21
                               Store 24(u) 25
                               Store 24(u) 26
               27:    6(float) Load 12(f)
-              28:   22(fvec3) CompositeConstruct 27 27 27
+              28:    22(vec3) CompositeConstruct 27 27 27
                               Store 24(u) 28
                               Store 31(w) 32
                               Store 33(V) 16
               35:    6(float) Load 33(V)
-              36:   22(fvec3) CompositeConstruct 35 35 35
+              36:    22(vec3) CompositeConstruct 35 35 35
                               Store 34(MyVal) 36
-              38:   22(fvec3) Load 37(foo)
+              38:    22(vec3) Load 37(foo)
               43:   42(bvec3) FOrdGreaterThan 38 40
-              44:   22(fvec3) Load 37(foo)
+              44:    22(vec3) Load 37(foo)
               47:   42(bvec3) FOrdGreaterThanEqual 44 46
-              50:   22(fvec3) Load 37(foo)
+              50:    22(vec3) Load 37(foo)
               51:   42(bvec3) FOrdLessThan 49 50
-              54:   22(fvec3) Load 37(foo)
+              54:    22(vec3) Load 37(foo)
               55:   42(bvec3) FOrdLessThanEqual 53 54
-              58:      9(ptr) AccessChain 15(v) 57
+              58:   9(float*) AccessChain 15(v) 57
               59:    6(float) Load 58
-              60:    7(fvec4) CompositeConstruct 59 59 59 59
-              61:    7(fvec4) Load 15(v)
+              60:     7(vec4) CompositeConstruct 59 59 59 59
+              61:     7(vec4) Load 15(v)
               63:   62(bvec4) FOrdEqual 60 61
               64:    41(bool) All 63
               65:    6(float) Load 12(f)
-              66:    7(fvec4) CompositeConstruct 65 65 65 65
-              67:    7(fvec4) Load 15(v)
+              66:     7(vec4) CompositeConstruct 65 65 65 65
+              67:     7(vec4) Load 15(v)
               68:   62(bvec4) FOrdNotEqual 66 67
               69:    41(bool) Any 68
               71:    6(float) Load 70(f1)
-              72:    7(fvec4) CompositeConstruct 71 71 71 71
-              73:    7(fvec4) Load 15(v)
+              72:     7(vec4) CompositeConstruct 71 71 71 71
+              73:     7(vec4) Load 15(v)
               74:   62(bvec4) FOrdEqual 72 73
-              75:    7(fvec4) Load 15(v)
+              75:     7(vec4) Load 15(v)
               76:    6(float) Load 70(f1)
-              77:    7(fvec4) CompositeConstruct 76 76 76 76
+              77:     7(vec4) CompositeConstruct 76 76 76 76
               78:   62(bvec4) FOrdLessThan 75 77
               79:    6(float) Load 70(f1)
               80:    6(float) Load 70(f1)
-              81:   22(fvec3) CompositeConstruct 80 80 80
-              84:     56(int) Load 83(ui)
-              86:   85(ivec3) CompositeConstruct 84 84 84
-              89:   85(ivec3) Load 88(ui3)
-              90:   85(ivec3) ShiftRightLogical 86 89
-              91:   85(ivec3) Load 88(ui3)
-              92:     56(int) Load 83(ui)
-              93:   85(ivec3) CompositeConstruct 92 92 92
-              94:   85(ivec3) ShiftRightLogical 91 93
+              81:    22(vec3) CompositeConstruct 80 80 80
+              84:    56(uint) Load 83(ui)
+              86:   85(uvec3) CompositeConstruct 84 84 84
+              89:   85(uvec3) Load 88(ui3)
+              90:   85(uvec3) ShiftRightLogical 86 89
+              91:   85(uvec3) Load 88(ui3)
+              92:    56(uint) Load 83(ui)
+              93:   85(uvec3) CompositeConstruct 92 92 92
+              94:   85(uvec3) ShiftRightLogical 91 93
               95:    6(float) Load 70(f1)
-              96:    7(fvec4) Load 15(v)
-              97:    7(fvec4) CompositeConstruct 95 95 95 95
-              98:    7(fvec4) FMul 96 97
+              96:     7(vec4) Load 15(v)
+              97:     7(vec4) CompositeConstruct 95 95 95 95
+              98:     7(vec4) FMul 96 97
                               Store 15(v) 98
-              99:    7(fvec4) Load 15(v)
+              99:     7(vec4) Load 15(v)
              100:    6(float) CompositeExtract 99 0
              101:    6(float) Load 70(f1)
              102:    6(float) FMul 101 100
                               Store 70(f1) 102
-             104:   22(fvec3) Load 24(u)
-             105:    7(fvec4) Load 15(v)
+             104:    22(vec3) Load 24(u)
+             105:     7(vec4) Load 15(v)
              106:    6(float) CompositeExtract 105 0
              107:    6(float) CompositeExtract 105 1
              108:    6(float) CompositeExtract 105 2
-             109:   22(fvec3) CompositeConstruct 106 107 108
-             110:   22(fvec3) FMul 104 109
+             109:    22(vec3) CompositeConstruct 106 107 108
+             110:    22(vec3) FMul 104 109
                               Store 103(mixed) 110
-             111:   22(fvec3) Load 24(u)
+             111:    22(vec3) Load 24(u)
              112:    6(float) CompositeExtract 111 0
                               Store 12(f) 112
-             113:   22(fvec3) Load 24(u)
+             113:    22(vec3) Load 24(u)
              114:    6(float) CompositeExtract 113 0
                               Store 70(f1) 114
-             116:    7(fvec4) Load 15(v)
+             116:     7(vec4) Load 15(v)
              117:    6(float) CompositeExtract 116 0
                               Store 115(sf) 117
-             119:    7(fvec4) Load 15(v)
+             119:     7(vec4) Load 15(v)
              120:    6(float) CompositeExtract 119 0
                               Store 118(sf1) 120
-             121:    7(fvec4) Load 11(input)
-             124:    7(fvec4) FMul 121 123
+             121:     7(vec4) Load 11(input)
+             124:     7(vec4) FMul 121 123
                               ReturnValue 124
                               FunctionEnd

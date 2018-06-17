@@ -481,271 +481,271 @@ gl_FragCoord origin is upper left
                               Name 229  "@entryPointOutput.color"
                               Decorate 229(@entryPointOutput.color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
               10:             TypeFloat 32
               11:             TypeVector 10(float) 4
-   12(PS_OUTPUT):             TypeStruct 11(fvec4)
+   12(PS_OUTPUT):             TypeStruct 11(vec4)
               13:             TypeFunction 12(PS_OUTPUT)
               16:             TypeInt 32 1
               17:             TypeVector 16(int) 1
-              18:             TypeMatrix 17(ivec) 1
-              19:             TypePointer Function 18
+              18:             TypeMatrix 17(ivec1) 1
+              19:             TypePointer Function 18(imat1)
               24:             TypeVector 16(int) 2
               25:             TypeMatrix 24(ivec2) 1
-              26:             TypePointer Function 25
-              28:             TypeMatrix 17(ivec) 2
-              29:             TypePointer Function 28
+              26:             TypePointer Function 25(imat1x2)
+              28:             TypeMatrix 17(ivec1) 2
+              29:             TypePointer Function 28(imat2x1)
               33:             TypeVector 16(int) 3
               34:             TypeMatrix 33(ivec3) 1
-              35:             TypePointer Function 34
-              37:             TypeMatrix 17(ivec) 3
-              38:             TypePointer Function 37
+              35:             TypePointer Function 34(imat1x3)
+              37:             TypeMatrix 17(ivec1) 3
+              38:             TypePointer Function 37(imat3x1)
               42:             TypeVector 16(int) 4
               43:             TypeMatrix 42(ivec4) 1
-              44:             TypePointer Function 43
-              46:             TypeMatrix 17(ivec) 4
-              47:             TypePointer Function 46
+              44:             TypePointer Function 43(imat1x4)
+              46:             TypeMatrix 17(ivec1) 4
+              47:             TypePointer Function 46(imat4x1)
               55:             TypeMatrix 24(ivec2) 2
-              56:             TypePointer Function 55
+              56:             TypePointer Function 55(imat2)
               61:             TypeMatrix 33(ivec3) 2
-              62:             TypePointer Function 61
+              62:             TypePointer Function 61(imat2x3)
               64:             TypeMatrix 24(ivec2) 3
-              65:             TypePointer Function 64
+              65:             TypePointer Function 64(imat3x2)
               69:             TypeMatrix 42(ivec4) 2
-              70:             TypePointer Function 69
+              70:             TypePointer Function 69(imat2x4)
               72:             TypeMatrix 24(ivec2) 4
-              73:             TypePointer Function 72
+              73:             TypePointer Function 72(imat4x2)
               85:             TypeMatrix 33(ivec3) 3
-              86:             TypePointer Function 85
+              86:             TypePointer Function 85(imat3)
               91:             TypeMatrix 42(ivec4) 3
-              92:             TypePointer Function 91
+              92:             TypePointer Function 91(imat3x4)
               94:             TypeMatrix 33(ivec3) 4
-              95:             TypePointer Function 94
+              95:             TypePointer Function 94(imat4x3)
              111:             TypeMatrix 42(ivec4) 4
-             112:             TypePointer Function 111
+             112:             TypePointer Function 111(imat4)
              117:             TypeInt 32 0
-             118:             TypeVector 117(int) 1
-             119:             TypeMatrix 118(ivec) 1
-             120:             TypePointer Function 119
-             125:             TypeVector 117(int) 2
-             126:             TypeMatrix 125(ivec2) 1
-             127:             TypePointer Function 126
-             129:             TypeMatrix 118(ivec) 2
-             130:             TypePointer Function 129
-             134:             TypeVector 117(int) 3
-             135:             TypeMatrix 134(ivec3) 1
-             136:             TypePointer Function 135
-             138:             TypeMatrix 118(ivec) 3
-             139:             TypePointer Function 138
-             143:             TypeVector 117(int) 4
-             144:             TypeMatrix 143(ivec4) 1
-             145:             TypePointer Function 144
-             147:             TypeMatrix 118(ivec) 4
-             148:             TypePointer Function 147
-             156:             TypeMatrix 125(ivec2) 2
-             157:             TypePointer Function 156
-             162:             TypeMatrix 134(ivec3) 2
-             163:             TypePointer Function 162
-             165:             TypeMatrix 125(ivec2) 3
-             166:             TypePointer Function 165
-             170:             TypeMatrix 143(ivec4) 2
-             171:             TypePointer Function 170
-             173:             TypeMatrix 125(ivec2) 4
-             174:             TypePointer Function 173
-             186:             TypeMatrix 134(ivec3) 3
-             187:             TypePointer Function 186
-             192:             TypeMatrix 143(ivec4) 3
-             193:             TypePointer Function 192
-             195:             TypeMatrix 134(ivec3) 4
-             196:             TypePointer Function 195
-             212:             TypeMatrix 143(ivec4) 4
-             213:             TypePointer Function 212
+             118:             TypeVector 117(uint) 1
+             119:             TypeMatrix 118(uvec1) 1
+             120:             TypePointer Function 119(umat1)
+             125:             TypeVector 117(uint) 2
+             126:             TypeMatrix 125(uvec2) 1
+             127:             TypePointer Function 126(umat1x2)
+             129:             TypeMatrix 118(uvec1) 2
+             130:             TypePointer Function 129(umat2x1)
+             134:             TypeVector 117(uint) 3
+             135:             TypeMatrix 134(uvec3) 1
+             136:             TypePointer Function 135(umat1x3)
+             138:             TypeMatrix 118(uvec1) 3
+             139:             TypePointer Function 138(umat3x1)
+             143:             TypeVector 117(uint) 4
+             144:             TypeMatrix 143(uvec4) 1
+             145:             TypePointer Function 144(umat1x4)
+             147:             TypeMatrix 118(uvec1) 4
+             148:             TypePointer Function 147(umat4x1)
+             156:             TypeMatrix 125(uvec2) 2
+             157:             TypePointer Function 156(umat2)
+             162:             TypeMatrix 134(uvec3) 2
+             163:             TypePointer Function 162(umat2x3)
+             165:             TypeMatrix 125(uvec2) 3
+             166:             TypePointer Function 165(umat3x2)
+             170:             TypeMatrix 143(uvec4) 2
+             171:             TypePointer Function 170(umat2x4)
+             173:             TypeMatrix 125(uvec2) 4
+             174:             TypePointer Function 173(umat4x2)
+             186:             TypeMatrix 134(uvec3) 3
+             187:             TypePointer Function 186(umat3)
+             192:             TypeMatrix 143(uvec4) 3
+             193:             TypePointer Function 192(umat3x4)
+             195:             TypeMatrix 134(uvec3) 4
+             196:             TypePointer Function 195(umat4x3)
+             212:             TypeMatrix 143(uvec4) 4
+             213:             TypePointer Function 212(umat4)
              218:             TypePointer Function 12(PS_OUTPUT)
              220:     16(int) Constant 0
              221:   10(float) Constant 0
-             222:   11(fvec4) ConstantComposite 221 221 221 221
-             223:             TypePointer Function 11(fvec4)
-             228:             TypePointer Output 11(fvec4)
-229(@entryPointOutput.color):    228(ptr) Variable Output
-         4(main):           2 Function None 3
+             222:    11(vec4) ConstantComposite 221 221 221 221
+             223:             TypePointer Function 11(vec4)
+             228:             TypePointer Output 11(vec4)
+229(@entryPointOutput.color):  228(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
              230:12(PS_OUTPUT) FunctionCall 14(@main()
-             231:   11(fvec4) CompositeExtract 230 0
+             231:    11(vec4) CompositeExtract 230 0
                               Store 229(@entryPointOutput.color) 231
                               Return
                               FunctionEnd
-6(TestIntMatTypes():           2 Function None 3
+6(TestIntMatTypes():     2(void) Function None 3
                7:             Label
-         20(r00):     19(ptr) Variable Function
-        21(i1x1):     19(ptr) Variable Function
-         27(r01):     26(ptr) Variable Function
-        30(i2x1):     29(ptr) Variable Function
-         36(r02):     35(ptr) Variable Function
-        39(i3x1):     38(ptr) Variable Function
-         45(r03):     44(ptr) Variable Function
-        48(i4x1):     47(ptr) Variable Function
-         51(r10):     29(ptr) Variable Function
-        52(i1x2):     26(ptr) Variable Function
-         57(r11):     56(ptr) Variable Function
-        58(i2x2):     56(ptr) Variable Function
-         63(r12):     62(ptr) Variable Function
-        66(i3x2):     65(ptr) Variable Function
-         71(r13):     70(ptr) Variable Function
-        74(i4x2):     73(ptr) Variable Function
-         77(r20):     38(ptr) Variable Function
-        78(i1x3):     35(ptr) Variable Function
-         81(r21):     65(ptr) Variable Function
-        82(i2x3):     62(ptr) Variable Function
-         87(r22):     86(ptr) Variable Function
-        88(i3x3):     86(ptr) Variable Function
-         93(r23):     92(ptr) Variable Function
-        96(i4x3):     95(ptr) Variable Function
-         99(r30):     47(ptr) Variable Function
-       100(i1x4):     44(ptr) Variable Function
-        103(r31):     73(ptr) Variable Function
-       104(i2x4):     70(ptr) Variable Function
-        107(r32):     95(ptr) Variable Function
-       108(i3x4):     92(ptr) Variable Function
-        113(r33):    112(ptr) Variable Function
-       114(i4x4):    112(ptr) Variable Function
-              22:          18 Load 21(i1x1)
-              23:          18 Transpose 22
+         20(r00):  19(imat1*) Variable Function
+        21(i1x1):  19(imat1*) Variable Function
+         27(r01):26(imat1x2*) Variable Function
+        30(i2x1):29(imat2x1*) Variable Function
+         36(r02):35(imat1x3*) Variable Function
+        39(i3x1):38(imat3x1*) Variable Function
+         45(r03):44(imat1x4*) Variable Function
+        48(i4x1):47(imat4x1*) Variable Function
+         51(r10):29(imat2x1*) Variable Function
+        52(i1x2):26(imat1x2*) Variable Function
+         57(r11):  56(imat2*) Variable Function
+        58(i2x2):  56(imat2*) Variable Function
+         63(r12):62(imat2x3*) Variable Function
+        66(i3x2):65(imat3x2*) Variable Function
+         71(r13):70(imat2x4*) Variable Function
+        74(i4x2):73(imat4x2*) Variable Function
+         77(r20):38(imat3x1*) Variable Function
+        78(i1x3):35(imat1x3*) Variable Function
+         81(r21):65(imat3x2*) Variable Function
+        82(i2x3):62(imat2x3*) Variable Function
+         87(r22):  86(imat3*) Variable Function
+        88(i3x3):  86(imat3*) Variable Function
+         93(r23):92(imat3x4*) Variable Function
+        96(i4x3):95(imat4x3*) Variable Function
+         99(r30):47(imat4x1*) Variable Function
+       100(i1x4):44(imat1x4*) Variable Function
+        103(r31):73(imat4x2*) Variable Function
+       104(i2x4):70(imat2x4*) Variable Function
+        107(r32):95(imat4x3*) Variable Function
+       108(i3x4):92(imat3x4*) Variable Function
+        113(r33): 112(imat4*) Variable Function
+       114(i4x4): 112(imat4*) Variable Function
+              22:   18(imat1) Load 21(i1x1)
+              23:   18(imat1) Transpose 22
                               Store 20(r00) 23
-              31:          28 Load 30(i2x1)
-              32:          25 Transpose 31
+              31: 28(imat2x1) Load 30(i2x1)
+              32: 25(imat1x2) Transpose 31
                               Store 27(r01) 32
-              40:          37 Load 39(i3x1)
-              41:          34 Transpose 40
+              40: 37(imat3x1) Load 39(i3x1)
+              41: 34(imat1x3) Transpose 40
                               Store 36(r02) 41
-              49:          46 Load 48(i4x1)
-              50:          43 Transpose 49
+              49: 46(imat4x1) Load 48(i4x1)
+              50: 43(imat1x4) Transpose 49
                               Store 45(r03) 50
-              53:          25 Load 52(i1x2)
-              54:          28 Transpose 53
+              53: 25(imat1x2) Load 52(i1x2)
+              54: 28(imat2x1) Transpose 53
                               Store 51(r10) 54
-              59:          55 Load 58(i2x2)
-              60:          55 Transpose 59
+              59:   55(imat2) Load 58(i2x2)
+              60:   55(imat2) Transpose 59
                               Store 57(r11) 60
-              67:          64 Load 66(i3x2)
-              68:          61 Transpose 67
+              67: 64(imat3x2) Load 66(i3x2)
+              68: 61(imat2x3) Transpose 67
                               Store 63(r12) 68
-              75:          72 Load 74(i4x2)
-              76:          69 Transpose 75
+              75: 72(imat4x2) Load 74(i4x2)
+              76: 69(imat2x4) Transpose 75
                               Store 71(r13) 76
-              79:          34 Load 78(i1x3)
-              80:          37 Transpose 79
+              79: 34(imat1x3) Load 78(i1x3)
+              80: 37(imat3x1) Transpose 79
                               Store 77(r20) 80
-              83:          61 Load 82(i2x3)
-              84:          64 Transpose 83
+              83: 61(imat2x3) Load 82(i2x3)
+              84: 64(imat3x2) Transpose 83
                               Store 81(r21) 84
-              89:          85 Load 88(i3x3)
-              90:          85 Transpose 89
+              89:   85(imat3) Load 88(i3x3)
+              90:   85(imat3) Transpose 89
                               Store 87(r22) 90
-              97:          94 Load 96(i4x3)
-              98:          91 Transpose 97
+              97: 94(imat4x3) Load 96(i4x3)
+              98: 91(imat3x4) Transpose 97
                               Store 93(r23) 98
-             101:          43 Load 100(i1x4)
-             102:          46 Transpose 101
+             101: 43(imat1x4) Load 100(i1x4)
+             102: 46(imat4x1) Transpose 101
                               Store 99(r30) 102
-             105:          69 Load 104(i2x4)
-             106:          72 Transpose 105
+             105: 69(imat2x4) Load 104(i2x4)
+             106: 72(imat4x2) Transpose 105
                               Store 103(r31) 106
-             109:          91 Load 108(i3x4)
-             110:          94 Transpose 109
+             109: 91(imat3x4) Load 108(i3x4)
+             110: 94(imat4x3) Transpose 109
                               Store 107(r32) 110
-             115:         111 Load 114(i4x4)
-             116:         111 Transpose 115
+             115:  111(imat4) Load 114(i4x4)
+             116:  111(imat4) Transpose 115
                               Store 113(r33) 116
                               Return
                               FunctionEnd
-8(TestUintMatTypes():           2 Function None 3
+8(TestUintMatTypes():     2(void) Function None 3
                9:             Label
-        121(r00):    120(ptr) Variable Function
-       122(u1x1):    120(ptr) Variable Function
-        128(r01):    127(ptr) Variable Function
-       131(u2x1):    130(ptr) Variable Function
-        137(r02):    136(ptr) Variable Function
-       140(u3x1):    139(ptr) Variable Function
-        146(r03):    145(ptr) Variable Function
-       149(u4x1):    148(ptr) Variable Function
-        152(r10):    130(ptr) Variable Function
-       153(u1x2):    127(ptr) Variable Function
-        158(r11):    157(ptr) Variable Function
-       159(u2x2):    157(ptr) Variable Function
-        164(r12):    163(ptr) Variable Function
-       167(u3x2):    166(ptr) Variable Function
-        172(r13):    171(ptr) Variable Function
-       175(u4x2):    174(ptr) Variable Function
-        178(r20):    139(ptr) Variable Function
-       179(u1x3):    136(ptr) Variable Function
-        182(r21):    166(ptr) Variable Function
-       183(u2x3):    163(ptr) Variable Function
-        188(r22):    187(ptr) Variable Function
-       189(u3x3):    187(ptr) Variable Function
-        194(r23):    193(ptr) Variable Function
-       197(u4x3):    196(ptr) Variable Function
-        200(r30):    148(ptr) Variable Function
-       201(u1x4):    145(ptr) Variable Function
-        204(r31):    174(ptr) Variable Function
-       205(u2x4):    171(ptr) Variable Function
-        208(r32):    196(ptr) Variable Function
-       209(u3x4):    193(ptr) Variable Function
-        214(r33):    213(ptr) Variable Function
-       215(u4x4):    213(ptr) Variable Function
-             123:         119 Load 122(u1x1)
-             124:         119 Transpose 123
+        121(r00): 120(umat1*) Variable Function
+       122(u1x1): 120(umat1*) Variable Function
+        128(r01):127(umat1x2*) Variable Function
+       131(u2x1):130(umat2x1*) Variable Function
+        137(r02):136(umat1x3*) Variable Function
+       140(u3x1):139(umat3x1*) Variable Function
+        146(r03):145(umat1x4*) Variable Function
+       149(u4x1):148(umat4x1*) Variable Function
+        152(r10):130(umat2x1*) Variable Function
+       153(u1x2):127(umat1x2*) Variable Function
+        158(r11): 157(umat2*) Variable Function
+       159(u2x2): 157(umat2*) Variable Function
+        164(r12):163(umat2x3*) Variable Function
+       167(u3x2):166(umat3x2*) Variable Function
+        172(r13):171(umat2x4*) Variable Function
+       175(u4x2):174(umat4x2*) Variable Function
+        178(r20):139(umat3x1*) Variable Function
+       179(u1x3):136(umat1x3*) Variable Function
+        182(r21):166(umat3x2*) Variable Function
+       183(u2x3):163(umat2x3*) Variable Function
+        188(r22): 187(umat3*) Variable Function
+       189(u3x3): 187(umat3*) Variable Function
+        194(r23):193(umat3x4*) Variable Function
+       197(u4x3):196(umat4x3*) Variable Function
+        200(r30):148(umat4x1*) Variable Function
+       201(u1x4):145(umat1x4*) Variable Function
+        204(r31):174(umat4x2*) Variable Function
+       205(u2x4):171(umat2x4*) Variable Function
+        208(r32):196(umat4x3*) Variable Function
+       209(u3x4):193(umat3x4*) Variable Function
+        214(r33): 213(umat4*) Variable Function
+       215(u4x4): 213(umat4*) Variable Function
+             123:  119(umat1) Load 122(u1x1)
+             124:  119(umat1) Transpose 123
                               Store 121(r00) 124
-             132:         129 Load 131(u2x1)
-             133:         126 Transpose 132
+             132:129(umat2x1) Load 131(u2x1)
+             133:126(umat1x2) Transpose 132
                               Store 128(r01) 133
-             141:         138 Load 140(u3x1)
-             142:         135 Transpose 141
+             141:138(umat3x1) Load 140(u3x1)
+             142:135(umat1x3) Transpose 141
                               Store 137(r02) 142
-             150:         147 Load 149(u4x1)
-             151:         144 Transpose 150
+             150:147(umat4x1) Load 149(u4x1)
+             151:144(umat1x4) Transpose 150
                               Store 146(r03) 151
-             154:         126 Load 153(u1x2)
-             155:         129 Transpose 154
+             154:126(umat1x2) Load 153(u1x2)
+             155:129(umat2x1) Transpose 154
                               Store 152(r10) 155
-             160:         156 Load 159(u2x2)
-             161:         156 Transpose 160
+             160:  156(umat2) Load 159(u2x2)
+             161:  156(umat2) Transpose 160
                               Store 158(r11) 161
-             168:         165 Load 167(u3x2)
-             169:         162 Transpose 168
+             168:165(umat3x2) Load 167(u3x2)
+             169:162(umat2x3) Transpose 168
                               Store 164(r12) 169
-             176:         173 Load 175(u4x2)
-             177:         170 Transpose 176
+             176:173(umat4x2) Load 175(u4x2)
+             177:170(umat2x4) Transpose 176
                               Store 172(r13) 177
-             180:         135 Load 179(u1x3)
-             181:         138 Transpose 180
+             180:135(umat1x3) Load 179(u1x3)
+             181:138(umat3x1) Transpose 180
                               Store 178(r20) 181
-             184:         162 Load 183(u2x3)
-             185:         165 Transpose 184
+             184:162(umat2x3) Load 183(u2x3)
+             185:165(umat3x2) Transpose 184
                               Store 182(r21) 185
-             190:         186 Load 189(u3x3)
-             191:         186 Transpose 190
+             190:  186(umat3) Load 189(u3x3)
+             191:  186(umat3) Transpose 190
                               Store 188(r22) 191
-             198:         195 Load 197(u4x3)
-             199:         192 Transpose 198
+             198:195(umat4x3) Load 197(u4x3)
+             199:192(umat3x4) Transpose 198
                               Store 194(r23) 199
-             202:         144 Load 201(u1x4)
-             203:         147 Transpose 202
+             202:144(umat1x4) Load 201(u1x4)
+             203:147(umat4x1) Transpose 202
                               Store 200(r30) 203
-             206:         170 Load 205(u2x4)
-             207:         173 Transpose 206
+             206:170(umat2x4) Load 205(u2x4)
+             207:173(umat4x2) Transpose 206
                               Store 204(r31) 207
-             210:         192 Load 209(u3x4)
-             211:         195 Transpose 210
+             210:192(umat3x4) Load 209(u3x4)
+             211:195(umat4x3) Transpose 210
                               Store 208(r32) 211
-             216:         212 Load 215(u4x4)
-             217:         212 Transpose 216
+             216:  212(umat4) Load 215(u4x4)
+             217:  212(umat4) Transpose 216
                               Store 214(r33) 217
                               Return
                               FunctionEnd
       14(@main():12(PS_OUTPUT) Function None 13
               15:             Label
-  219(ps_output):    218(ptr) Variable Function
-             224:    223(ptr) AccessChain 219(ps_output) 220
+  219(ps_output):218(PS_OUTPUT*) Variable Function
+             224:  223(vec4*) AccessChain 219(ps_output) 220
                               Store 224 222
              225:12(PS_OUTPUT) Load 219(ps_output)
                               ReturnValue 225

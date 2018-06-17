@@ -10,11 +10,11 @@ remap.similar_1b.everything.frag
                               ExecutionMode 5663 OriginUpperLeft
                               Decorate 4201 Flat
                8:             TypeVoid
-            1282:             TypeFunction 8
+            1282:             TypeFunction 8(void)
               12:             TypeInt 32 1
              649:             TypePointer Function 12(int)
               13:             TypeFloat 32
-             204:             TypeFunction 13(float) 649(ptr)
+             204:             TypeFunction 13(float) 649(int*)
              650:             TypePointer Function 13(float)
             2572:   13(float) Constant 0
             2571:     12(int) Constant 0
@@ -26,21 +26,21 @@ remap.similar_1b.everything.frag
             2583:     12(int) Constant 4
               26:             TypeVector 12(int) 4
              663:             TypePointer Input 26(ivec4)
-            4201:    663(ptr) Variable Input
+            4201: 663(ivec4*) Variable Input
               11:             TypeInt 32 0
-            2573:     11(int) Constant 1
+            2573:    11(uint) Constant 1
              651:             TypePointer Input 12(int)
-            2576:     11(int) Constant 2
-            2570:     11(int) Constant 0
+            2576:    11(uint) Constant 2
+            2570:    11(uint) Constant 0
               29:             TypeVector 13(float) 4
-             666:             TypePointer Output 29(fvec4)
-            4539:    666(ptr) Variable Output
+             666:             TypePointer Output 29(vec4)
+            4539:  666(vec4*) Variable Output
              652:             TypePointer Input 13(float)
-            3773:    652(ptr) Variable Input
-            5663:           8 Function None 1282
+            3773: 652(float*) Variable Input
+            5663:     8(void) Function None 1282
            24915:             Label
-           18415:    649(ptr) Variable Function
-            5786:    649(ptr) Variable Function
+           18415:   649(int*) Variable Function
+            5786:   649(int*) Variable Function
             8366:   13(float) Load 3773
             8654:     12(int) ConvertFToS 8366
                               Store 18415 8654
@@ -50,15 +50,15 @@ remap.similar_1b.everything.frag
                               Store 5786 7041
            23993:   13(float) FunctionCall 3836 5786
             9180:   13(float) FAdd 17256 23993
-           15728:   29(fvec4) CompositeConstruct 9180 9180 9180 9180
+           15728:    29(vec4) CompositeConstruct 9180 9180 9180 9180
                               Store 4539 15728
                               Return
                               FunctionEnd
             3782:   13(float) Function None 204
-            6931:    649(ptr) FunctionParameter
+            6931:   649(int*) FunctionParameter
            12220:             Label
-            4292:    650(ptr) Variable Function
-            4298:    649(ptr) Variable Function
+            4292: 650(float*) Variable Function
+            4298:   649(int*) Variable Function
                               Store 4292 2572
                               Store 4298 2571
                               Branch 14924
@@ -88,9 +88,9 @@ remap.similar_1b.everything.frag
                               ReturnValue 20342
                               FunctionEnd
             3836:   13(float) Function None 204
-            4408:    649(ptr) FunctionParameter
+            4408:   649(int*) FunctionParameter
            12143:             Label
-           22102:    649(ptr) Variable Function
+           22102:   649(int*) Variable Function
            24151:     12(int) Load 4408
            13868:     9(bool) SGreaterThan 24151 2577
                               SelectionMerge 22309 None
@@ -104,13 +104,13 @@ remap.similar_1b.everything.frag
            17416:               Label
            19506:     12(int)   Load 4408
            22773:     12(int)   IMul 19506 2583
-           13472:    651(ptr)   AccessChain 4201 2573
+           13472:   651(int*)   AccessChain 4201 2573
            15280:     12(int)   Load 13472
-           18079:    651(ptr)   AccessChain 4201 2576
+           18079:   651(int*)   AccessChain 4201 2576
            15199:     12(int)   Load 18079
             9343:     12(int)   IMul 15280 15199
            11462:     12(int)   IAdd 22773 9343
-           11885:    651(ptr)   AccessChain 4201 2570
+           11885:   651(int*)   AccessChain 4201 2570
            21176:     12(int)   Load 11885
            10505:     12(int)   IAdd 11462 21176
            14626:   13(float)   ConvertSToF 10505

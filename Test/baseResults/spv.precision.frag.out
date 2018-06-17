@@ -82,59 +82,59 @@ spv.precision.frag
                               Decorate 125 RelaxedPrecision
                               Decorate 126 RelaxedPrecision
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 3
-               8:             TypePointer Function 7(fvec3)
+               8:             TypePointer Function 7(vec3)
                9:             TypeVector 6(float) 2
-              10:             TypeFunction 9(fvec2) 8(ptr)
+              10:             TypeFunction 9(vec2) 8(vec3*)
               14:             TypeBool
               15:             TypeVector 14(bool) 2
               16:             TypePointer Function 15(bvec2)
-              17:             TypeFunction 14(bool) 16(ptr)
+              17:             TypeFunction 14(bool) 16(bvec2*)
               21:             TypeVector 6(float) 4
-              22:             TypePointer Input 21(fvec4)
-     23(highfin):     22(ptr) Variable Input
+              22:             TypePointer Input 21(vec4)
+     23(highfin):   22(vec4*) Variable Input
               29:    14(bool) ConstantFalse
               30:    14(bool) ConstantTrue
               31:   15(bvec2) ConstantComposite 29 30
               36:             TypeInt 32 1
               37:             TypePointer Function 36(int)
               39:             TypePointer Private 36(int)
-40(uniform_medium):     39(ptr) Variable Private
-42(uniform_high):     39(ptr) Variable Private
- 48(uniform_low):     39(ptr) Variable Private
+40(uniform_medium):    39(int*) Variable Private
+42(uniform_high):    39(int*) Variable Private
+ 48(uniform_low):    39(int*) Variable Private
               52:             TypePointer Function 6(float)
               54:    6(float) Constant 1078774989
               56:    6(float) Constant 1232730691
               58:             TypePointer Input 6(float)
-      59(lowfin):     58(ptr) Variable Input
-   61(mediumfin):     58(ptr) Variable Input
+      59(lowfin):  58(float*) Variable Input
+   61(mediumfin):  58(float*) Variable Input
               64:             TypePointer Private 6(float)
-65(global_highp):     64(ptr) Variable Private
-              68:             TypePointer Function 21(fvec4)
-              72:             TypePointer Output 21(fvec4)
-  73(mediumfout):     72(ptr) Variable Output
+65(global_highp):  64(float*) Variable Private
+              68:             TypePointer Function 21(vec4)
+              72:             TypePointer Output 21(vec4)
+  73(mediumfout):   72(vec4*) Variable Output
               82:     36(int) Constant 4
               84:             TypeVector 36(int) 2
               92:             TypeInt 32 0
-              93:     92(int) Constant 0
+              93:    92(uint) Constant 0
              103:             TypePointer Private 15(bvec2)
-        104(ub2):    103(ptr) Variable Private
+        104(ub2): 103(bvec2*) Variable Private
              111:    6(float) Constant 1065353216
           114(S):             TypeStruct 6(float) 6(float)
              115:             TypePointer Input 114(S)
-          116(s):    115(ptr) Variable Input
+          116(s):     115(S*) Variable Input
              117:     36(int) Constant 0
              122:     36(int) Constant 1
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-         38(sum):     37(ptr) Variable Function
-        53(arg1):     52(ptr) Variable Function
-        55(arg2):     52(ptr) Variable Function
-           57(d):     52(ptr) Variable Function
- 69(local_highp):     68(ptr) Variable Function
-      105(param):     16(ptr) Variable Function
+         38(sum):    37(int*) Variable Function
+        53(arg1):  52(float*) Variable Function
+        55(arg2):  52(float*) Variable Function
+           57(d):  52(float*) Variable Function
+ 69(local_highp):   68(vec4*) Variable Function
+      105(param):  16(bvec2*) Variable Function
               41:     36(int) Load 40(uniform_medium)
               43:     36(int) Load 42(uniform_high)
               44:     36(int) IAdd 41 43
@@ -153,20 +153,20 @@ spv.precision.frag
               62:    6(float) Load 61(mediumfin)
               63:    6(float) ExtInst 1(GLSL.std.450) 67(Distance) 60 62
                               Store 57(d) 63
-              66:   21(fvec4) Load 23(highfin)
+              66:    21(vec4) Load 23(highfin)
               67:    6(float) ExtInst 1(GLSL.std.450) 66(Length) 66
                               Store 65(global_highp) 67
               70:    6(float) Load 65(global_highp)
-              71:   21(fvec4) CompositeConstruct 70 70 70 70
+              71:    21(vec4) CompositeConstruct 70 70 70 70
                               Store 69(local_highp) 71
               74:    6(float) Load 57(d)
               75:    6(float) ExtInst 1(GLSL.std.450) 13(Sin) 74
-              76:   21(fvec4) CompositeConstruct 75 75 75 75
+              76:    21(vec4) CompositeConstruct 75 75 75 75
               77:    6(float) Load 55(arg2)
-              78:   21(fvec4) CompositeConstruct 77 77 77 77
-              79:   21(fvec4) FAdd 76 78
-              80:   21(fvec4) Load 69(local_highp)
-              81:   21(fvec4) FAdd 79 80
+              78:    21(vec4) CompositeConstruct 77 77 77 77
+              79:    21(vec4) FAdd 76 78
+              80:    21(vec4) Load 69(local_highp)
+              81:    21(vec4) FAdd 79 80
                               Store 73(mediumfout) 81
               83:     36(int) Load 48(uniform_low)
               85:   84(ivec2) CompositeConstruct 83 83
@@ -183,9 +183,9 @@ spv.precision.frag
                               Store 38(sum) 97
               98:     36(int) Load 38(sum)
               99:    6(float) ConvertSToF 98
-             100:   21(fvec4) CompositeConstruct 99 99 99 99
-             101:   21(fvec4) Load 73(mediumfout)
-             102:   21(fvec4) FAdd 101 100
+             100:    21(vec4) CompositeConstruct 99 99 99 99
+             101:    21(vec4) Load 73(mediumfout)
+             102:    21(vec4) FAdd 101 100
                               Store 73(mediumfout) 102
              106:   15(bvec2) Load 104(ub2)
                               Store 105(param) 106
@@ -193,33 +193,33 @@ spv.precision.frag
                               SelectionMerge 109 None
                               BranchConditional 107 108 109
              108:               Label
-             110:   21(fvec4)   Load 73(mediumfout)
-             112:   21(fvec4)   CompositeConstruct 111 111 111 111
-             113:   21(fvec4)   FAdd 110 112
+             110:    21(vec4)   Load 73(mediumfout)
+             112:    21(vec4)   CompositeConstruct 111 111 111 111
+             113:    21(vec4)   FAdd 110 112
                                 Store 73(mediumfout) 113
                                 Branch 109
              109:             Label
-             118:     58(ptr) AccessChain 116(s) 117
+             118:  58(float*) AccessChain 116(s) 117
              119:    6(float) Load 118
-             120:   21(fvec4) Load 73(mediumfout)
-             121:   21(fvec4) VectorTimesScalar 120 119
+             120:    21(vec4) Load 73(mediumfout)
+             121:    21(vec4) VectorTimesScalar 120 119
                               Store 73(mediumfout) 121
-             123:     58(ptr) AccessChain 116(s) 122
+             123:  58(float*) AccessChain 116(s) 122
              124:    6(float) Load 123
-             125:   21(fvec4) Load 73(mediumfout)
-             126:   21(fvec4) VectorTimesScalar 125 124
+             125:    21(vec4) Load 73(mediumfout)
+             126:    21(vec4) VectorTimesScalar 125 124
                               Store 73(mediumfout) 126
                               Return
                               FunctionEnd
-    12(foo(vf3;):    9(fvec2) Function None 10
-         11(mv3):      8(ptr) FunctionParameter
+    12(foo(vf3;):     9(vec2) Function None 10
+         11(mv3):    8(vec3*) FunctionParameter
               13:             Label
-              24:   21(fvec4) Load 23(highfin)
-              25:    9(fvec2) VectorShuffle 24 24 0 1
+              24:    21(vec4) Load 23(highfin)
+              25:     9(vec2) VectorShuffle 24 24 0 1
                               ReturnValue 25
                               FunctionEnd
 19(boolfun(vb2;):    14(bool) Function None 17
-         18(bv2):     16(ptr) FunctionParameter
+         18(bv2):  16(bvec2*) FunctionParameter
               20:             Label
               28:   15(bvec2) Load 18(bv2)
               32:   15(bvec2) LogicalEqual 28 31

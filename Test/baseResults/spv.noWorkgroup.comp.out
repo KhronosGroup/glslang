@@ -15,14 +15,14 @@ spv.noWorkgroup.comp
                               Decorate 9 SpecId 19
                               Decorate 11 BuiltIn WorkgroupSize
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 0
-               7:      6(int) SpecConstant 1
-               8:      6(int) SpecConstant 1
-               9:      6(int) SpecConstant 1
-              10:             TypeVector 6(int) 3
-              11:   10(ivec3) SpecConstantComposite 7 8 9
-         4(main):           2 Function None 3
+               7:     6(uint) SpecConstant 1
+               8:     6(uint) SpecConstant 1
+               9:     6(uint) SpecConstant 1
+              10:             TypeVector 6(uint) 3
+              11:   10(uvec3) SpecConstantComposite 7 8 9
+         4(main):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd

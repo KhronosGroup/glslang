@@ -213,65 +213,65 @@ gl_FragCoord origin is upper left
                               Decorate 16 DescriptorSet 0
                               Decorate 81(@entryPointOutput.Color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypeInt 32 1
               13:             TypeVector 12(int) 4
-     14($Global):             TypeStruct 12(int) 13(ivec4) 6(float) 7(fvec4)
+     14($Global):             TypeStruct 12(int) 13(ivec4) 6(float) 7(vec4)
               15:             TypePointer Uniform 14($Global)
-              16:     15(ptr) Variable Uniform
+              16:15($Global*) Variable Uniform
               17:     12(int) Constant 0
               18:             TypePointer Uniform 12(int)
               21:             TypeBool
               22:             TypeInt 32 0
-              23:     22(int) Constant 0
+              23:    22(uint) Constant 0
               26:     12(int) Constant 1
               27:             TypePointer Uniform 13(ivec4)
               30:             TypeVector 21(bool) 4
-              31:             TypeVector 22(int) 4
-              32:   31(ivec4) ConstantComposite 23 23 23 23
+              31:             TypeVector 22(uint) 4
+              32:   31(uvec4) ConstantComposite 23 23 23 23
               35:     12(int) Constant 2
               36:             TypePointer Uniform 6(float)
               39:    6(float) Constant 0
               42:     12(int) Constant 3
-              43:             TypePointer Uniform 7(fvec4)
-              46:    7(fvec4) ConstantComposite 39 39 39 39
+              43:             TypePointer Uniform 7(vec4)
+              46:     7(vec4) ConstantComposite 39 39 39 39
               71:             TypePointer Function 8(PS_OUTPUT)
               73:    6(float) Constant 1065353216
-              74:    7(fvec4) ConstantComposite 73 73 73 73
-              75:             TypePointer Function 7(fvec4)
-              80:             TypePointer Output 7(fvec4)
-81(@entryPointOutput.Color):     80(ptr) Variable Output
-         4(main):           2 Function None 3
+              74:     7(vec4) ConstantComposite 73 73 73 73
+              75:             TypePointer Function 7(vec4)
+              80:             TypePointer Output 7(vec4)
+81(@entryPointOutput.Color):   80(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               82:8(PS_OUTPUT) FunctionCall 10(@main()
-              83:    7(fvec4) CompositeExtract 82 0
+              83:     7(vec4) CompositeExtract 82 0
                               Store 81(@entryPointOutput.Color) 83
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-       72(psout):     71(ptr) Variable Function
-              19:     18(ptr) AccessChain 16 17
+       72(psout):71(PS_OUTPUT*) Variable Function
+              19:    18(int*) AccessChain 16 17
               20:     12(int) Load 19
               24:    21(bool) INotEqual 20 23
               25:    21(bool) LogicalNot 24
-              28:     27(ptr) AccessChain 16 26
+              28:  27(ivec4*) AccessChain 16 26
               29:   13(ivec4) Load 28
               33:   30(bvec4) INotEqual 29 32
               34:   30(bvec4) LogicalNot 33
-              37:     36(ptr) AccessChain 16 35
+              37:  36(float*) AccessChain 16 35
               38:    6(float) Load 37
               40:    21(bool) FOrdNotEqual 38 39
               41:    21(bool) LogicalNot 40
-              44:     43(ptr) AccessChain 16 42
-              45:    7(fvec4) Load 44
+              44:   43(vec4*) AccessChain 16 42
+              45:     7(vec4) Load 44
               47:   30(bvec4) FOrdNotEqual 45 46
               48:   30(bvec4) LogicalNot 47
-              49:     18(ptr) AccessChain 16 17
+              49:    18(int*) AccessChain 16 17
               50:     12(int) Load 49
               51:    21(bool) INotEqual 50 23
                               SelectionMerge 53 None
@@ -279,7 +279,7 @@ gl_FragCoord origin is upper left
               52:               Label
                                 Branch 53
               53:             Label
-              54:     36(ptr) AccessChain 16 35
+              54:  36(float*) AccessChain 16 35
               55:    6(float) Load 54
               56:    21(bool) FOrdNotEqual 55 39
                               SelectionMerge 58 None
@@ -287,7 +287,7 @@ gl_FragCoord origin is upper left
               57:               Label
                                 Branch 58
               58:             Label
-              59:     18(ptr) AccessChain 16 17
+              59:    18(int*) AccessChain 16 17
               60:     12(int) Load 59
               61:    21(bool) INotEqual 60 23
               62:    21(bool) LogicalNot 61
@@ -296,7 +296,7 @@ gl_FragCoord origin is upper left
               63:               Label
                                 Branch 64
               64:             Label
-              65:     36(ptr) AccessChain 16 35
+              65:  36(float*) AccessChain 16 35
               66:    6(float) Load 65
               67:    21(bool) FOrdNotEqual 66 39
               68:    21(bool) LogicalNot 67
@@ -305,7 +305,7 @@ gl_FragCoord origin is upper left
               69:               Label
                                 Branch 70
               70:             Label
-              76:     75(ptr) AccessChain 72(psout) 17
+              76:   75(vec4*) AccessChain 72(psout) 17
                               Store 76 74
               77:8(PS_OUTPUT) Load 72(psout)
                               ReturnValue 77

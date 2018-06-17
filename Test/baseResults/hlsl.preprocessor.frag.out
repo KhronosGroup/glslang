@@ -118,11 +118,11 @@ gl_FragCoord origin is upper left
                               Decorate 33(input) Location 0
                               Decorate 36(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-               8:             TypePointer Function 7(fvec4)
-               9:             TypeFunction 7(fvec4) 8(ptr)
+               8:             TypePointer Function 7(vec4)
+               9:             TypeFunction 7(vec4) 8(vec4*)
               14:             TypeImage 6(float) 2D sampled format:Unknown
               15:             TypePointer UniformConstant 14
 16(test_texture):     15(ptr) Variable UniformConstant
@@ -131,33 +131,33 @@ gl_FragCoord origin is upper left
 20(test_texture_ss):     19(ptr) Variable UniformConstant
               22:             TypeSampledImage 14
               24:             TypeVector 6(float) 2
-              32:             TypePointer Input 7(fvec4)
-       33(input):     32(ptr) Variable Input
-              35:             TypePointer Output 7(fvec4)
-36(@entryPointOutput):     35(ptr) Variable Output
-         4(main):           2 Function None 3
+              32:             TypePointer Input 7(vec4)
+       33(input):   32(vec4*) Variable Input
+              35:             TypePointer Output 7(vec4)
+36(@entryPointOutput):   35(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-       31(input):      8(ptr) Variable Function
-       37(param):      8(ptr) Variable Function
-              34:    7(fvec4) Load 33(input)
+       31(input):    8(vec4*) Variable Function
+       37(param):    8(vec4*) Variable Function
+              34:     7(vec4) Load 33(input)
                               Store 31(input) 34
-              38:    7(fvec4) Load 31(input)
+              38:     7(vec4) Load 31(input)
                               Store 37(param) 38
-              39:    7(fvec4) FunctionCall 11(@main(vf4;) 37(param)
+              39:     7(vec4) FunctionCall 11(@main(vf4;) 37(param)
                               Store 36(@entryPointOutput) 39
                               Return
                               FunctionEnd
-  11(@main(vf4;):    7(fvec4) Function None 9
-       10(input):      8(ptr) FunctionParameter
+  11(@main(vf4;):     7(vec4) Function None 9
+       10(input):    8(vec4*) FunctionParameter
               12:             Label
-         13(tex):      8(ptr) Variable Function
+         13(tex):    8(vec4*) Variable Function
               17:          14 Load 16(test_texture)
               21:          18 Load 20(test_texture_ss)
               23:          22 SampledImage 17 21
-              25:    7(fvec4) Load 10(input)
-              26:   24(fvec2) VectorShuffle 25 25 0 1
-              27:    7(fvec4) ImageSampleImplicitLod 23 26
+              25:     7(vec4) Load 10(input)
+              26:    24(vec2) VectorShuffle 25 25 0 1
+              27:     7(vec4) ImageSampleImplicitLod 23 26
                               Store 13(tex) 27
-              28:    7(fvec4) Load 13(tex)
+              28:     7(vec4) Load 13(tex)
                               ReturnValue 28
                               FunctionEnd

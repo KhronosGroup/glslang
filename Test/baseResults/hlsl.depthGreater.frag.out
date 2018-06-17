@@ -69,26 +69,26 @@ using depth_greater
                               Name 18  "depth"
                               Decorate 18(depth) BuiltIn FragDepth
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 2 7(ptr)
+               8:             TypeFunction 2(void) 7(float*)
               12:    6(float) Constant 1045220557
               17:             TypePointer Output 6(float)
-       18(depth):     17(ptr) Variable Output
-4(PixelShaderFunction):           2 Function None 3
+       18(depth):  17(float*) Variable Output
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-       13(depth):      7(ptr) Variable Function
-       14(param):      7(ptr) Variable Function
-              15:           2 FunctionCall 10(@PixelShaderFunction(f1;) 14(param)
+       13(depth):   7(float*) Variable Function
+       14(param):   7(float*) Variable Function
+              15:     2(void) FunctionCall 10(@PixelShaderFunction(f1;) 14(param)
               16:    6(float) Load 14(param)
                               Store 13(depth) 16
               19:    6(float) Load 13(depth)
                               Store 18(depth) 19
                               Return
                               FunctionEnd
-10(@PixelShaderFunction(f1;):           2 Function None 8
-        9(depth):      7(ptr) FunctionParameter
+10(@PixelShaderFunction(f1;):     2(void) Function None 8
+        9(depth):   7(float*) FunctionParameter
               11:             Label
                               Store 9(depth) 12
                               Return

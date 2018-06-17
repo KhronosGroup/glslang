@@ -69,18 +69,18 @@ gl_FragCoord origin is upper left
                               Decorate 17(f) Location 0
                               Decorate 20(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 6(float) 7(ptr)
+               8:             TypeFunction 6(float) 7(float*)
               16:             TypePointer Input 6(float)
-           17(f):     16(ptr) Variable Input
+           17(f):  16(float*) Variable Input
               19:             TypePointer Output 6(float)
-20(@entryPointOutput):     19(ptr) Variable Output
-         4(main):           2 Function None 3
+20(@entryPointOutput):  19(float*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-           15(f):      7(ptr) Variable Function
-       21(param):      7(ptr) Variable Function
+           15(f):   7(float*) Variable Function
+       21(param):   7(float*) Variable Function
               18:    6(float) Load 17(f)
                               Store 15(f) 18
               22:    6(float) Load 15(f)
@@ -90,7 +90,7 @@ gl_FragCoord origin is upper left
                               Return
                               FunctionEnd
    10(@main(f1;):    6(float) Function None 8
-            9(f):      7(ptr) FunctionParameter
+            9(f):   7(float*) FunctionParameter
               11:             Label
               12:    6(float) Load 9(f)
                               ReturnValue 12

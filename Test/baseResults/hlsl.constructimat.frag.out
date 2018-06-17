@@ -576,77 +576,77 @@ gl_FragCoord origin is upper left
                               Name 96  "@entryPointOutput"
                               Decorate 96(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypeFunction 6(int)
               10:             TypeVector 6(int) 4
               11:             TypeMatrix 10(ivec4) 4
-              12:             TypePointer Function 11
+              12:             TypePointer Function 11(imat4)
               14:      6(int) Constant 0
               15:      6(int) Constant 1
               16:   10(ivec4) ConstantComposite 14 15 14 14
               17:   10(ivec4) ConstantComposite 15 15 14 14
               18:   10(ivec4) ConstantComposite 15 14 14 14
               19:   10(ivec4) ConstantComposite 14 14 14 14
-              20:          11 ConstantComposite 16 17 18 19
+              20:   11(imat4) ConstantComposite 16 17 18 19
               22:             TypeVector 6(int) 2
               23:             TypeMatrix 22(ivec2) 4
-              24:             TypePointer Function 23
+              24:             TypePointer Function 23(imat4x2)
               26:   22(ivec2) ConstantComposite 14 15
               27:   22(ivec2) ConstantComposite 15 15
               28:   22(ivec2) ConstantComposite 15 14
               29:   22(ivec2) ConstantComposite 14 14
-              30:          23 ConstantComposite 26 27 28 29
+              30: 23(imat4x2) ConstantComposite 26 27 28 29
               32:             TypeMatrix 22(ivec2) 3
-              33:             TypePointer Function 32
-              35:          32 ConstantComposite 26 27 28
+              33:             TypePointer Function 32(imat3x2)
+              35: 32(imat3x2) ConstantComposite 26 27 28
               37:             TypeInt 32 0
-              38:             TypeVector 37(int) 4
-              39:             TypeMatrix 38(ivec4) 4
-              40:             TypePointer Function 39
-              42:     37(int) Constant 0
-              43:     37(int) Constant 1
-              44:   38(ivec4) ConstantComposite 42 43 42 42
-              45:   38(ivec4) ConstantComposite 43 43 42 42
-              46:   38(ivec4) ConstantComposite 43 42 42 42
-              47:   38(ivec4) ConstantComposite 42 42 42 42
-              48:          39 ConstantComposite 44 45 46 47
-              50:             TypeVector 37(int) 2
-              51:             TypeMatrix 50(ivec2) 4
-              52:             TypePointer Function 51
-              54:   50(ivec2) ConstantComposite 42 43
-              55:   50(ivec2) ConstantComposite 43 43
-              56:   50(ivec2) ConstantComposite 43 42
-              57:   50(ivec2) ConstantComposite 42 42
-              58:          51 ConstantComposite 54 55 56 57
-              60:             TypeMatrix 50(ivec2) 3
-              61:             TypePointer Function 60
-              63:          60 ConstantComposite 54 55 56
+              38:             TypeVector 37(uint) 4
+              39:             TypeMatrix 38(uvec4) 4
+              40:             TypePointer Function 39(umat4)
+              42:    37(uint) Constant 0
+              43:    37(uint) Constant 1
+              44:   38(uvec4) ConstantComposite 42 43 42 42
+              45:   38(uvec4) ConstantComposite 43 43 42 42
+              46:   38(uvec4) ConstantComposite 43 42 42 42
+              47:   38(uvec4) ConstantComposite 42 42 42 42
+              48:   39(umat4) ConstantComposite 44 45 46 47
+              50:             TypeVector 37(uint) 2
+              51:             TypeMatrix 50(uvec2) 4
+              52:             TypePointer Function 51(umat4x2)
+              54:   50(uvec2) ConstantComposite 42 43
+              55:   50(uvec2) ConstantComposite 43 43
+              56:   50(uvec2) ConstantComposite 43 42
+              57:   50(uvec2) ConstantComposite 42 42
+              58: 51(umat4x2) ConstantComposite 54 55 56 57
+              60:             TypeMatrix 50(uvec2) 3
+              61:             TypePointer Function 60(umat3x2)
+              63: 60(umat3x2) ConstantComposite 54 55 56
               65:             TypeBool
               66:             TypeVector 65(bool) 4
               67:             TypeMatrix 66(bvec4) 4
-              68:             TypePointer Function 67
+              68:             TypePointer Function 67(bmat4)
               70:    65(bool) ConstantFalse
               71:    65(bool) ConstantTrue
               72:   66(bvec4) ConstantComposite 70 71 70 70
               73:   66(bvec4) ConstantComposite 71 71 70 70
               74:   66(bvec4) ConstantComposite 71 70 70 70
               75:   66(bvec4) ConstantComposite 70 70 70 70
-              76:          67 ConstantComposite 72 73 74 75
+              76:   67(bmat4) ConstantComposite 72 73 74 75
               78:             TypeVector 65(bool) 2
               79:             TypeMatrix 78(bvec2) 4
-              80:             TypePointer Function 79
+              80:             TypePointer Function 79(bmat4x2)
               82:   78(bvec2) ConstantComposite 70 71
               83:   78(bvec2) ConstantComposite 71 71
               84:   78(bvec2) ConstantComposite 71 70
               85:   78(bvec2) ConstantComposite 70 70
-              86:          79 ConstantComposite 82 83 84 85
+              86: 79(bmat4x2) ConstantComposite 82 83 84 85
               88:             TypeMatrix 78(bvec2) 3
-              89:             TypePointer Function 88
-              91:          88 ConstantComposite 82 83 84
+              89:             TypePointer Function 88(bmat3x2)
+              91: 88(bmat3x2) ConstantComposite 82 83 84
               95:             TypePointer Output 6(int)
-96(@entryPointOutput):     95(ptr) Variable Output
-         4(main):           2 Function None 3
+96(@entryPointOutput):    95(int*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               97:      6(int) FunctionCall 8(@main()
                               Store 96(@entryPointOutput) 97
@@ -654,24 +654,24 @@ gl_FragCoord origin is upper left
                               FunctionEnd
        8(@main():      6(int) Function None 7
                9:             Label
-      13(var443):     12(ptr) Variable Function
-      21(var444):     12(ptr) Variable Function
-      25(var423):     24(ptr) Variable Function
-      31(var424):     24(ptr) Variable Function
-      34(var323):     33(ptr) Variable Function
-      36(var234):     33(ptr) Variable Function
-     41(uvar443):     40(ptr) Variable Function
-     49(uvar444):     40(ptr) Variable Function
-     53(uvar423):     52(ptr) Variable Function
-     59(uvar424):     52(ptr) Variable Function
-     62(uvar323):     61(ptr) Variable Function
-     64(uvar234):     61(ptr) Variable Function
-     69(bvar443):     68(ptr) Variable Function
-     77(bvar444):     68(ptr) Variable Function
-     81(bvar423):     80(ptr) Variable Function
-     87(bvar424):     80(ptr) Variable Function
-     90(bvar323):     89(ptr) Variable Function
-     92(bvar234):     89(ptr) Variable Function
+      13(var443):  12(imat4*) Variable Function
+      21(var444):  12(imat4*) Variable Function
+      25(var423):24(imat4x2*) Variable Function
+      31(var424):24(imat4x2*) Variable Function
+      34(var323):33(imat3x2*) Variable Function
+      36(var234):33(imat3x2*) Variable Function
+     41(uvar443):  40(umat4*) Variable Function
+     49(uvar444):  40(umat4*) Variable Function
+     53(uvar423):52(umat4x2*) Variable Function
+     59(uvar424):52(umat4x2*) Variable Function
+     62(uvar323):61(umat3x2*) Variable Function
+     64(uvar234):61(umat3x2*) Variable Function
+     69(bvar443):  68(bmat4*) Variable Function
+     77(bvar444):  68(bmat4*) Variable Function
+     81(bvar423):80(bmat4x2*) Variable Function
+     87(bvar424):80(bmat4x2*) Variable Function
+     90(bvar323):89(bmat3x2*) Variable Function
+     92(bvar234):89(bmat3x2*) Variable Function
                               Store 13(var443) 20
                               Store 21(var444) 20
                               Store 25(var423) 30

@@ -256,70 +256,70 @@ gl_FragCoord origin is upper left
                               Decorate 40(v.ClipRect) BuiltIn ClipDistance
                               Decorate 59(@entryPointOutput) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
                8:             TypeVector 6(float) 2
                9:             TypeInt 32 0
-              10:      9(int) Constant 2
-              11:             TypeArray 8(fvec2) 10
-   12(VS_OUTPUT):             TypeStruct 7(fvec4) 11
-              13:             TypeFunction 7(fvec4) 12(VS_OUTPUT)
+              10:     9(uint) Constant 2
+              11:             TypeArray 8(vec2) 10
+   12(VS_OUTPUT):             TypeStruct 7(vec4) 11(vec2[2])
+              13:             TypeFunction 7(vec4) 12(VS_OUTPUT)
               17:             TypeInt 32 1
               18:     17(int) Constant 0
               20:     17(int) Constant 1
-              21:      9(int) Constant 0
+              21:     9(uint) Constant 0
               30:             TypePointer Function 12(VS_OUTPUT)
-              32:             TypePointer Input 7(fvec4)
-  33(v.Position):     32(ptr) Variable Input
-              35:             TypePointer Function 7(fvec4)
-              37:      9(int) Constant 4
+              32:             TypePointer Input 7(vec4)
+  33(v.Position):   32(vec4*) Variable Input
+              35:             TypePointer Function 7(vec4)
+              37:     9(uint) Constant 4
               38:             TypeArray 6(float) 37
-              39:             TypePointer Input 38
-  40(v.ClipRect):     39(ptr) Variable Input
+              39:             TypePointer Input 38(float[4])
+  40(v.ClipRect):39(float[4]*) Variable Input
               41:             TypePointer Input 6(float)
               44:             TypePointer Function 6(float)
-              48:      9(int) Constant 1
+              48:     9(uint) Constant 1
               50:     17(int) Constant 2
               54:     17(int) Constant 3
-              58:             TypePointer Output 7(fvec4)
-59(@entryPointOutput):     58(ptr) Variable Output
-         4(main):           2 Function None 3
+              58:             TypePointer Output 7(vec4)
+59(@entryPointOutput):   58(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
-           31(v):     30(ptr) Variable Function
-              34:    7(fvec4) Load 33(v.Position)
-              36:     35(ptr) AccessChain 31(v) 18
+           31(v):30(VS_OUTPUT*) Variable Function
+              34:     7(vec4) Load 33(v.Position)
+              36:   35(vec4*) AccessChain 31(v) 18
                               Store 36 34
-              42:     41(ptr) AccessChain 40(v.ClipRect) 18
+              42:  41(float*) AccessChain 40(v.ClipRect) 18
               43:    6(float) Load 42
-              45:     44(ptr) AccessChain 31(v) 20 18 21
+              45:  44(float*) AccessChain 31(v) 20 18 21
                               Store 45 43
-              46:     41(ptr) AccessChain 40(v.ClipRect) 20
+              46:  41(float*) AccessChain 40(v.ClipRect) 20
               47:    6(float) Load 46
-              49:     44(ptr) AccessChain 31(v) 20 18 48
+              49:  44(float*) AccessChain 31(v) 20 18 48
                               Store 49 47
-              51:     41(ptr) AccessChain 40(v.ClipRect) 50
+              51:  41(float*) AccessChain 40(v.ClipRect) 50
               52:    6(float) Load 51
-              53:     44(ptr) AccessChain 31(v) 20 20 21
+              53:  44(float*) AccessChain 31(v) 20 20 21
                               Store 53 52
-              55:     41(ptr) AccessChain 40(v.ClipRect) 54
+              55:  41(float*) AccessChain 40(v.ClipRect) 54
               56:    6(float) Load 55
-              57:     44(ptr) AccessChain 31(v) 20 20 48
+              57:  44(float*) AccessChain 31(v) 20 20 48
                               Store 57 56
               60:12(VS_OUTPUT) Load 31(v)
-              61:    7(fvec4) FunctionCall 15(@main(struct-VS_OUTPUT-vf4-vf2[2]1;) 60
+              61:     7(vec4) FunctionCall 15(@main(struct-VS_OUTPUT-vf4-vf2[2]1;) 60
                               Store 59(@entryPointOutput) 61
                               Return
                               FunctionEnd
-15(@main(struct-VS_OUTPUT-vf4-vf2[2]1;):    7(fvec4) Function None 13
+15(@main(struct-VS_OUTPUT-vf4-vf2[2]1;):     7(vec4) Function None 13
            14(v):12(VS_OUTPUT) FunctionParameter
               16:             Label
-              19:    7(fvec4) CompositeExtract 14(v) 0
+              19:     7(vec4) CompositeExtract 14(v) 0
               22:    6(float) CompositeExtract 14(v) 1 0 0
-              23:    7(fvec4) CompositeConstruct 22 22 22 22
-              24:    7(fvec4) FAdd 19 23
+              23:     7(vec4) CompositeConstruct 22 22 22 22
+              24:     7(vec4) FAdd 19 23
               25:    6(float) CompositeExtract 14(v) 1 1 0
-              26:    7(fvec4) CompositeConstruct 25 25 25 25
-              27:    7(fvec4) FAdd 24 26
+              26:     7(vec4) CompositeConstruct 25 25 25 25
+              27:     7(vec4) FAdd 24 26
                               ReturnValue 27
                               FunctionEnd

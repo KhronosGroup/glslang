@@ -285,10 +285,10 @@ using depth_any
                               Decorate 115(g_tTex3di4) DescriptorSet 0
                               Decorate 118(g_tTex3du4) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4) 6(float)
+    8(PS_OUTPUT):             TypeStruct 7(vec4) 6(float)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypeImage 6(float) 1D array nonsampled format:Rgba32f
               13:             TypePointer UniformConstant 12
@@ -299,17 +299,17 @@ using depth_any
               19:             TypeVector 16(int) 4
      20($Global):             TypeStruct 16(int) 17(ivec2) 18(ivec3) 19(ivec4) 16(int) 17(ivec2) 18(ivec3) 19(ivec4)
               21:             TypePointer Uniform 20($Global)
-              22:     21(ptr) Variable Uniform
+              22:21($Global*) Variable Uniform
               23:     16(int) Constant 1
               24:             TypePointer Uniform 17(ivec2)
               28:             TypeImage 16(int) 1D array nonsampled format:Rgba32i
               29:             TypePointer UniformConstant 28
  30(g_tTex1di4a):     29(ptr) Variable UniformConstant
               35:             TypeInt 32 0
-              36:             TypeImage 35(int) 1D array nonsampled format:Rgba32ui
+              36:             TypeImage 35(uint) 1D array nonsampled format:Rgba32ui
               37:             TypePointer UniformConstant 36
  38(g_tTex1du4a):     37(ptr) Variable UniformConstant
-              42:             TypeVector 35(int) 4
+              42:             TypeVector 35(uint) 4
               44:             TypeImage 6(float) 2D array nonsampled format:Rgba32f
               45:             TypePointer UniformConstant 44
  46(g_tTex2df4a):     45(ptr) Variable UniformConstant
@@ -318,19 +318,19 @@ using depth_any
               53:             TypeImage 16(int) 2D array nonsampled format:Rgba32i
               54:             TypePointer UniformConstant 53
  55(g_tTex2di4a):     54(ptr) Variable UniformConstant
-              60:             TypeImage 35(int) 2D array nonsampled format:Rgba32ui
+              60:             TypeImage 35(uint) 2D array nonsampled format:Rgba32ui
               61:             TypePointer UniformConstant 60
  62(g_tTex2du4a):     61(ptr) Variable UniformConstant
               67:             TypePointer Function 8(PS_OUTPUT)
               69:     16(int) Constant 0
               70:    6(float) Constant 1065353216
-              71:    7(fvec4) ConstantComposite 70 70 70 70
-              72:             TypePointer Function 7(fvec4)
+              71:     7(vec4) ConstantComposite 70 70 70 70
+              72:             TypePointer Function 7(vec4)
               74:             TypePointer Function 6(float)
-              81:             TypePointer Output 7(fvec4)
-82(@entryPointOutput.Color):     81(ptr) Variable Output
+              81:             TypePointer Output 7(vec4)
+82(@entryPointOutput.Color):   81(vec4*) Variable Output
               85:             TypePointer Output 6(float)
-86(@entryPointOutput.Depth):     85(ptr) Variable Output
+86(@entryPointOutput.Depth):  85(float*) Variable Output
               89:             TypeSampler
               90:             TypePointer UniformConstant 89
      91(g_sSamp):     90(ptr) Variable UniformConstant
@@ -340,7 +340,7 @@ using depth_any
               95:             TypeImage 16(int) 1D nonsampled format:Rgba32i
               96:             TypePointer UniformConstant 95
   97(g_tTex1di4):     96(ptr) Variable UniformConstant
-              98:             TypeImage 35(int) 1D nonsampled format:Rgba32ui
+              98:             TypeImage 35(uint) 1D nonsampled format:Rgba32ui
               99:             TypePointer UniformConstant 98
  100(g_tTex1du4):     99(ptr) Variable UniformConstant
              101:             TypeImage 6(float) 2D nonsampled format:Rgba32f
@@ -349,7 +349,7 @@ using depth_any
              104:             TypeImage 16(int) 2D nonsampled format:Rgba32i
              105:             TypePointer UniformConstant 104
  106(g_tTex2di4):    105(ptr) Variable UniformConstant
-             107:             TypeImage 35(int) 2D nonsampled format:Rgba32ui
+             107:             TypeImage 35(uint) 2D nonsampled format:Rgba32ui
              108:             TypePointer UniformConstant 107
  109(g_tTex2du4):    108(ptr) Variable UniformConstant
              110:             TypeImage 6(float) 3D nonsampled format:Rgba32f
@@ -358,52 +358,52 @@ using depth_any
              113:             TypeImage 16(int) 3D nonsampled format:Rgba32i
              114:             TypePointer UniformConstant 113
  115(g_tTex3di4):    114(ptr) Variable UniformConstant
-             116:             TypeImage 35(int) 3D nonsampled format:Rgba32ui
+             116:             TypeImage 35(uint) 3D nonsampled format:Rgba32ui
              117:             TypePointer UniformConstant 116
  118(g_tTex3du4):    117(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
- 79(flattenTemp):     67(ptr) Variable Function
+ 79(flattenTemp):67(PS_OUTPUT*) Variable Function
               80:8(PS_OUTPUT) FunctionCall 10(@main()
                               Store 79(flattenTemp) 80
-              83:     72(ptr) AccessChain 79(flattenTemp) 69
-              84:    7(fvec4) Load 83
+              83:   72(vec4*) AccessChain 79(flattenTemp) 69
+              84:     7(vec4) Load 83
                               Store 82(@entryPointOutput.Color) 84
-              87:     74(ptr) AccessChain 79(flattenTemp) 23
+              87:  74(float*) AccessChain 79(flattenTemp) 23
               88:    6(float) Load 87
                               Store 86(@entryPointOutput.Depth) 88
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-       68(psout):     67(ptr) Variable Function
+       68(psout):67(PS_OUTPUT*) Variable Function
               15:          12 Load 14(g_tTex1df4a)
-              25:     24(ptr) AccessChain 22 23
+              25:  24(ivec2*) AccessChain 22 23
               26:   17(ivec2) Load 25
-              27:    7(fvec4) ImageRead 15 26
+              27:     7(vec4) ImageRead 15 26
               31:          28 Load 30(g_tTex1di4a)
-              32:     24(ptr) AccessChain 22 23
+              32:  24(ivec2*) AccessChain 22 23
               33:   17(ivec2) Load 32
               34:   19(ivec4) ImageRead 31 33
               39:          36 Load 38(g_tTex1du4a)
-              40:     24(ptr) AccessChain 22 23
+              40:  24(ivec2*) AccessChain 22 23
               41:   17(ivec2) Load 40
-              43:   42(ivec4) ImageRead 39 41
+              43:   42(uvec4) ImageRead 39 41
               47:          44 Load 46(g_tTex2df4a)
-              50:     49(ptr) AccessChain 22 48
+              50:  49(ivec3*) AccessChain 22 48
               51:   18(ivec3) Load 50
-              52:    7(fvec4) ImageRead 47 51
+              52:     7(vec4) ImageRead 47 51
               56:          53 Load 55(g_tTex2di4a)
-              57:     49(ptr) AccessChain 22 48
+              57:  49(ivec3*) AccessChain 22 48
               58:   18(ivec3) Load 57
               59:   19(ivec4) ImageRead 56 58
               63:          60 Load 62(g_tTex2du4a)
-              64:     49(ptr) AccessChain 22 48
+              64:  49(ivec3*) AccessChain 22 48
               65:   18(ivec3) Load 64
-              66:   42(ivec4) ImageRead 63 65
-              73:     72(ptr) AccessChain 68(psout) 69
+              66:   42(uvec4) ImageRead 63 65
+              73:   72(vec4*) AccessChain 68(psout) 69
                               Store 73 71
-              75:     74(ptr) AccessChain 68(psout) 23
+              75:  74(float*) AccessChain 68(psout) 23
                               Store 75 70
               76:8(PS_OUTPUT) Load 68(psout)
                               ReturnValue 76

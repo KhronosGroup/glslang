@@ -24,39 +24,39 @@ spv.shortCircuit.frag
                               Decorate 34(ui) Flat
                               Decorate 140(uiv4) Flat
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeBool
                7:             TypeFunction 6(bool)
               10:             TypeFloat 32
               11:             TypePointer Output 10(float)
-         12(of1):     11(ptr) Variable Output
+         12(of1):  11(float*) Variable Output
               14:   10(float) Constant 1065353216
               17:   10(float) Constant 1092616192
               21:   10(float) Constant 0
               22:             TypeVector 10(float) 4
-              23:             TypePointer Output 22(fvec4)
-         24(of4):     23(ptr) Variable Output
-              25:   22(fvec4) ConstantComposite 21 21 21 21
+              23:             TypePointer Output 22(vec4)
+         24(of4):   23(vec4*) Variable Output
+              25:    22(vec4) ConstantComposite 21 21 21 21
               26:             TypePointer Private 6(bool)
-          27(ub):     26(ptr) Variable Private
+          27(ub):   26(bool*) Variable Private
               32:             TypeInt 32 1
               33:             TypePointer Input 32(int)
-          34(ui):     33(ptr) Variable Input
+          34(ui):    33(int*) Variable Input
               36:     32(int) Constant 2
-         44(uba):     26(ptr) Variable Private
+         44(uba):   26(bool*) Variable Private
              112:             TypePointer Input 10(float)
-         113(uf):    112(ptr) Variable Input
+         113(uf): 112(float*) Variable Input
              116:   10(float) Constant 1082130432
              138:             TypeVector 32(int) 4
              139:             TypePointer Input 138(ivec4)
-       140(uiv4):    139(ptr) Variable Input
-             141:             TypePointer Input 22(fvec4)
-        142(uv4):    141(ptr) Variable Input
+       140(uiv4): 139(ivec4*) Variable Input
+             141:             TypePointer Input 22(vec4)
+        142(uv4):  141(vec4*) Variable Input
              143:             TypeVector 6(bool) 4
              144:             TypePointer Private 143(bvec4)
-       145(ub41):    144(ptr) Variable Private
-       146(ub42):    144(ptr) Variable Private
-         4(main):           2 Function None 3
+       145(ub41): 144(bvec4*) Variable Private
+       146(ub42): 144(bvec4*) Variable Private
+         4(main):     2(void) Function None 3
                5:             Label
                               Store 12(of1) 21
                               Store 24(of4) 25
@@ -160,9 +160,9 @@ spv.shortCircuit.frag
                               SelectionMerge 94 None
                               BranchConditional 92 93 94
               93:               Label
-              95:   22(fvec4)   Load 24(of4)
-              96:   22(fvec4)   CompositeConstruct 14 14 14 14
-              97:   22(fvec4)   FAdd 95 96
+              95:    22(vec4)   Load 24(of4)
+              96:    22(vec4)   CompositeConstruct 14 14 14 14
+              97:    22(vec4)   FAdd 95 96
                                 Store 24(of4) 97
                                 Branch 94
               94:             Label
@@ -175,9 +175,9 @@ spv.shortCircuit.frag
                               SelectionMerge 104 None
                               BranchConditional 102 103 104
              103:               Label
-             105:   22(fvec4)   Load 24(of4)
-             106:   22(fvec4)   CompositeConstruct 14 14 14 14
-             107:   22(fvec4)   FAdd 105 106
+             105:    22(vec4)   Load 24(of4)
+             106:    22(vec4)   CompositeConstruct 14 14 14 14
+             107:    22(vec4)   FAdd 105 106
                                 Store 24(of4) 107
                                 Branch 104
              104:             Label

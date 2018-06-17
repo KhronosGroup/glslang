@@ -245,48 +245,48 @@ gl_FragCoord origin is upper left
                               Decorate 65(input) BuiltIn FragCoord
                               Decorate 68(@entryPointOutput.a) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeFunction 6(float)
               10:             TypeVector 6(float) 4
-              11:             TypePointer Function 10(fvec4)
-          12(id):             TypeStruct 10(fvec4)
-              13:             TypeFunction 12(id) 11(ptr)
+              11:             TypePointer Function 10(vec4)
+          12(id):             TypeStruct 10(vec4)
+              13:             TypeFunction 12(id) 11(vec4*)
               17:    6(float) Constant 1065353216
               20:             TypePointer Function 12(id)
               22:             TypeInt 32 1
               23:     22(int) Constant 0
-   24(cbufName2):             TypeStruct 10(fvec4)
+   24(cbufName2):             TypeStruct 10(vec4)
               25:             TypePointer Uniform 24(cbufName2)
-              26:     25(ptr) Variable Uniform
-              27:             TypePointer Uniform 10(fvec4)
-        31(buf1):             TypeStruct 10(fvec4)
+              26:25(cbufName2*) Variable Uniform
+              27:             TypePointer Uniform 10(vec4)
+        31(buf1):             TypeStruct 10(vec4)
               32:             TypePointer Uniform 31(buf1)
-              33:     32(ptr) Variable Uniform
-        37(buf2):             TypeStruct 10(fvec4)
+              33:   32(buf1*) Variable Uniform
+        37(buf2):             TypeStruct 10(vec4)
               38:             TypePointer Uniform 37(buf2)
-              39:     38(ptr) Variable Uniform
-    43(cbufName):             TypeStruct 10(fvec4) 22(int)
+              39:   38(buf2*) Variable Uniform
+    43(cbufName):             TypeStruct 10(vec4) 22(int)
               44:             TypePointer Uniform 43(cbufName)
-              45:     44(ptr) Variable Uniform
-              49:             TypeMatrix 10(fvec4) 3
-    50(tbufName):             TypeStruct 10(fvec4) 22(int) 6(float) 6(float) 6(float) 6(float) 6(float) 6(float) 49 49 49 49
+              45:44(cbufName*) Variable Uniform
+              49:             TypeMatrix 10(vec4) 3
+    50(tbufName):             TypeStruct 10(vec4) 22(int) 6(float) 6(float) 6(float) 6(float) 6(float) 6(float) 49(mat3x4) 49(mat3x4) 49(mat3x4) 49(mat3x4)
               51:             TypePointer Uniform 50(tbufName)
-              52:     51(ptr) Variable Uniform
-              64:             TypePointer Input 10(fvec4)
-       65(input):     64(ptr) Variable Input
-              67:             TypePointer Output 10(fvec4)
-68(@entryPointOutput.a):     67(ptr) Variable Output
-4(PixelShaderFunction):           2 Function None 3
+              52:51(tbufName*) Variable Uniform
+              64:             TypePointer Input 10(vec4)
+       65(input):   64(vec4*) Variable Input
+              67:             TypePointer Output 10(vec4)
+68(@entryPointOutput.a):   67(vec4*) Variable Output
+4(PixelShaderFunction):     2(void) Function None 3
                5:             Label
-       63(input):     11(ptr) Variable Function
-       69(param):     11(ptr) Variable Function
-              66:   10(fvec4) Load 65(input)
+       63(input):   11(vec4*) Variable Function
+       69(param):   11(vec4*) Variable Function
+              66:    10(vec4) Load 65(input)
                               Store 63(input) 66
-              70:   10(fvec4) Load 63(input)
+              70:    10(vec4) Load 63(input)
                               Store 69(param) 70
               71:      12(id) FunctionCall 15(@PixelShaderFunction(vf4;) 69(param)
-              72:   10(fvec4) CompositeExtract 71 0
+              72:    10(vec4) CompositeExtract 71 0
                               Store 68(@entryPointOutput.a) 72
                               Return
                               FunctionEnd
@@ -295,28 +295,28 @@ gl_FragCoord origin is upper left
                               ReturnValue 17
                               FunctionEnd
 15(@PixelShaderFunction(vf4;):      12(id) Function None 13
-       14(input):     11(ptr) FunctionParameter
+       14(input):   11(vec4*) FunctionParameter
               16:             Label
-         21(ret):     20(ptr) Variable Function
-              28:     27(ptr) AccessChain 26 23
-              29:   10(fvec4) Load 28
-              30:   10(fvec4) Load 14(input)
-              34:     27(ptr) AccessChain 33 23
-              35:   10(fvec4) Load 34
-              36:   10(fvec4) FAdd 30 35
-              40:     27(ptr) AccessChain 39 23
-              41:   10(fvec4) Load 40
-              42:   10(fvec4) FAdd 36 41
-              46:     27(ptr) AccessChain 45 23
-              47:   10(fvec4) Load 46
-              48:   10(fvec4) FAdd 42 47
-              53:     27(ptr) AccessChain 52 23
-              54:   10(fvec4) Load 53
-              55:   10(fvec4) FAdd 48 54
+         21(ret):     20(id*) Variable Function
+              28:   27(vec4*) AccessChain 26 23
+              29:    10(vec4) Load 28
+              30:    10(vec4) Load 14(input)
+              34:   27(vec4*) AccessChain 33 23
+              35:    10(vec4) Load 34
+              36:    10(vec4) FAdd 30 35
+              40:   27(vec4*) AccessChain 39 23
+              41:    10(vec4) Load 40
+              42:    10(vec4) FAdd 36 41
+              46:   27(vec4*) AccessChain 45 23
+              47:    10(vec4) Load 46
+              48:    10(vec4) FAdd 42 47
+              53:   27(vec4*) AccessChain 52 23
+              54:    10(vec4) Load 53
+              55:    10(vec4) FAdd 48 54
               56:    6(float) FunctionCall 8(foo()
-              57:   10(fvec4) VectorTimesScalar 55 56
-              58:   10(fvec4) FAdd 29 57
-              59:     11(ptr) AccessChain 21(ret) 23
+              57:    10(vec4) VectorTimesScalar 55 56
+              58:    10(vec4) FAdd 29 57
+              59:   11(vec4*) AccessChain 21(ret) 23
                               Store 59 58
               60:      12(id) Load 21(ret)
                               ReturnValue 60

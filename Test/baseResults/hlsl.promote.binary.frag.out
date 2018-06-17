@@ -206,18 +206,18 @@ gl_FragCoord origin is upper left
                               Decorate 18 DescriptorSet 0
                               Decorate 80(@entryPointOutput.Color) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 4
-    8(PS_OUTPUT):             TypeStruct 7(fvec4)
+    8(PS_OUTPUT):             TypeStruct 7(vec4)
                9:             TypeFunction 8(PS_OUTPUT)
               12:             TypeInt 32 0
-              13:             TypeVector 12(int) 4
+              13:             TypeVector 12(uint) 4
               14:             TypeInt 32 1
               15:             TypeVector 14(int) 4
-     16($Global):             TypeStruct 12(int) 13(ivec4) 14(int) 15(ivec4) 6(float) 7(fvec4)
+     16($Global):             TypeStruct 12(uint) 13(uvec4) 14(int) 15(ivec4) 6(float) 7(vec4)
               17:             TypePointer Uniform 16($Global)
-              18:     17(ptr) Variable Uniform
+              18:17($Global*) Variable Uniform
               19:     14(int) Constant 2
               20:             TypePointer Uniform 14(int)
               24:     14(int) Constant 4
@@ -225,69 +225,69 @@ gl_FragCoord origin is upper left
               29:     14(int) Constant 3
               30:             TypePointer Uniform 15(ivec4)
               34:     14(int) Constant 5
-              35:             TypePointer Uniform 7(fvec4)
+              35:             TypePointer Uniform 7(vec4)
               39:     14(int) Constant 0
-              40:             TypePointer Uniform 12(int)
+              40:             TypePointer Uniform 12(uint)
               43:             TypeBool
-              44:     12(int) Constant 0
+              44:    12(uint) Constant 0
               46:    6(float) Constant 0
               47:    6(float) Constant 1065353216
               52:     14(int) Constant 1
-              53:             TypePointer Uniform 13(ivec4)
+              53:             TypePointer Uniform 13(uvec4)
               56:             TypeVector 43(bool) 4
-              57:   13(ivec4) ConstantComposite 44 44 44 44
-              59:    7(fvec4) ConstantComposite 46 46 46 46
-              60:    7(fvec4) ConstantComposite 47 47 47 47
+              57:   13(uvec4) ConstantComposite 44 44 44 44
+              59:     7(vec4) ConstantComposite 46 46 46 46
+              60:     7(vec4) ConstantComposite 47 47 47 47
               65:             TypePointer Function 14(int)
               72:             TypePointer Function 8(PS_OUTPUT)
-              74:             TypePointer Function 7(fvec4)
-              79:             TypePointer Output 7(fvec4)
-80(@entryPointOutput.Color):     79(ptr) Variable Output
-         4(main):           2 Function None 3
+              74:             TypePointer Function 7(vec4)
+              79:             TypePointer Output 7(vec4)
+80(@entryPointOutput.Color):   79(vec4*) Variable Output
+         4(main):     2(void) Function None 3
                5:             Label
               81:8(PS_OUTPUT) FunctionCall 10(@main()
-              82:    7(fvec4) CompositeExtract 81 0
+              82:     7(vec4) CompositeExtract 81 0
                               Store 80(@entryPointOutput.Color) 82
                               Return
                               FunctionEnd
       10(@main():8(PS_OUTPUT) Function None 9
               11:             Label
-       66(l_int):     65(ptr) Variable Function
-       73(psout):     72(ptr) Variable Function
-              21:     20(ptr) AccessChain 18 19
+       66(l_int):    65(int*) Variable Function
+       73(psout):72(PS_OUTPUT*) Variable Function
+              21:    20(int*) AccessChain 18 19
               22:     14(int) Load 21
               23:    6(float) ConvertSToF 22
-              26:     25(ptr) AccessChain 18 24
+              26:  25(float*) AccessChain 18 24
               27:    6(float) Load 26
               28:    6(float) FMod 23 27
-              31:     30(ptr) AccessChain 18 29
+              31:  30(ivec4*) AccessChain 18 29
               32:   15(ivec4) Load 31
-              33:    7(fvec4) ConvertSToF 32
-              36:     35(ptr) AccessChain 18 34
-              37:    7(fvec4) Load 36
-              38:    7(fvec4) FMod 33 37
-              41:     40(ptr) AccessChain 18 39
-              42:     12(int) Load 41
+              33:     7(vec4) ConvertSToF 32
+              36:   35(vec4*) AccessChain 18 34
+              37:     7(vec4) Load 36
+              38:     7(vec4) FMod 33 37
+              41:   40(uint*) AccessChain 18 39
+              42:    12(uint) Load 41
               45:    43(bool) INotEqual 42 44
               48:    6(float) Select 45 47 46
-              49:     25(ptr) AccessChain 18 24
+              49:  25(float*) AccessChain 18 24
               50:    6(float) Load 49
               51:    6(float) FMod 48 50
-              54:     53(ptr) AccessChain 18 52
-              55:   13(ivec4) Load 54
+              54:  53(uvec4*) AccessChain 18 52
+              55:   13(uvec4) Load 54
               58:   56(bvec4) INotEqual 55 57
-              61:    7(fvec4) Select 58 60 59
-              62:     35(ptr) AccessChain 18 34
-              63:    7(fvec4) Load 62
-              64:    7(fvec4) FMod 61 63
+              61:     7(vec4) Select 58 60 59
+              62:   35(vec4*) AccessChain 18 34
+              63:     7(vec4) Load 62
+              64:     7(vec4) FMod 61 63
                               Store 66(l_int) 52
-              67:     25(ptr) AccessChain 18 24
+              67:  25(float*) AccessChain 18 24
               68:    6(float) Load 67
               69:     14(int) ConvertFToS 68
               70:     14(int) Load 66(l_int)
               71:     14(int) SMod 70 69
                               Store 66(l_int) 71
-              75:     74(ptr) AccessChain 73(psout) 39
+              75:   74(vec4*) AccessChain 73(psout) 39
                               Store 75 59
               76:8(PS_OUTPUT) Load 73(psout)
                               ReturnValue 76

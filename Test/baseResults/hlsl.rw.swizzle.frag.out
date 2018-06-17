@@ -227,74 +227,74 @@ gl_FragCoord origin is upper left
                               Decorate 58(@entryPointOutput) Location 0
                               Decorate 62(buf) DescriptorSet 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypeVector 6(float) 3
-               8:             TypeFunction 7(fvec3)
+               8:             TypeFunction 7(vec3)
               11:             TypeVector 6(float) 4
-              12:             TypeFunction 11(fvec4)
+              12:             TypeFunction 11(vec4)
               15:    6(float) Constant 1065353216
               16:    6(float) Constant 1073741824
               17:    6(float) Constant 1077936128
-              18:    7(fvec3) ConstantComposite 15 16 17
+              18:     7(vec3) ConstantComposite 15 16 17
               21:             TypeInt 32 1
               22:             TypeVector 21(int) 2
               23:             TypePointer Function 22(ivec2)
               25:     21(int) Constant 0
               26:   22(ivec2) ConstantComposite 25 25
               27:             TypePointer Function 21(int)
-              29:             TypePointer Function 7(fvec3)
+              29:             TypePointer Function 7(vec3)
               33:             TypeImage 6(float) 2D nonsampled format:Rgba32f
               34:             TypePointer UniformConstant 33
         35(rwtx):     34(ptr) Variable UniformConstant
-              47:    7(fvec3) ConstantComposite 16 16 16
+              47:     7(vec3) ConstantComposite 16 16 16
               53:    6(float) Constant 0
-              54:   11(fvec4) ConstantComposite 53 53 53 53
-              57:             TypePointer Output 11(fvec4)
-58(@entryPointOutput):     57(ptr) Variable Output
+              54:    11(vec4) ConstantComposite 53 53 53 53
+              57:             TypePointer Output 11(vec4)
+58(@entryPointOutput):   57(vec4*) Variable Output
               60:             TypeImage 6(float) Buffer nonsampled format:Rgba32f
               61:             TypePointer UniformConstant 60
          62(buf):     61(ptr) Variable UniformConstant
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
-              59:   11(fvec4) FunctionCall 13(@main()
+              59:    11(vec4) FunctionCall 13(@main()
                               Store 58(@entryPointOutput) 59
                               Return
                               FunctionEnd
-   9(SomeValue():    7(fvec3) Function None 8
+   9(SomeValue():     7(vec3) Function None 8
               10:             Label
                               ReturnValue 18
                               FunctionEnd
-      13(@main():   11(fvec4) Function None 12
+      13(@main():    11(vec4) Function None 12
               14:             Label
-         24(tc2):     23(ptr) Variable Function
-          28(tc):     27(ptr) Variable Function
-   30(storeTemp):     29(ptr) Variable Function
-   39(storeTemp):     29(ptr) Variable Function
-   46(storeTemp):     29(ptr) Variable Function
+         24(tc2):  23(ivec2*) Variable Function
+          28(tc):    27(int*) Variable Function
+   30(storeTemp):   29(vec3*) Variable Function
+   39(storeTemp):   29(vec3*) Variable Function
+   46(storeTemp):   29(vec3*) Variable Function
                               Store 24(tc2) 26
                               Store 28(tc) 25
-              31:    7(fvec3) Load 30(storeTemp)
-              32:    7(fvec3) VectorShuffle 31 18 5 4 3
+              31:     7(vec3) Load 30(storeTemp)
+              32:     7(vec3) VectorShuffle 31 18 5 4 3
                               Store 30(storeTemp) 32
               36:          33 Load 35(rwtx)
               37:   22(ivec2) Load 24(tc2)
-              38:    7(fvec3) Load 30(storeTemp)
+              38:     7(vec3) Load 30(storeTemp)
                               ImageWrite 36 37 38
-              40:    7(fvec3) FunctionCall 9(SomeValue()
-              41:    7(fvec3) Load 39(storeTemp)
-              42:    7(fvec3) VectorShuffle 41 40 5 4 3
+              40:     7(vec3) FunctionCall 9(SomeValue()
+              41:     7(vec3) Load 39(storeTemp)
+              42:     7(vec3) VectorShuffle 41 40 5 4 3
                               Store 39(storeTemp) 42
               43:          33 Load 35(rwtx)
               44:   22(ivec2) Load 24(tc2)
-              45:    7(fvec3) Load 39(storeTemp)
+              45:     7(vec3) Load 39(storeTemp)
                               ImageWrite 43 44 45
-              48:    7(fvec3) Load 46(storeTemp)
-              49:    7(fvec3) VectorShuffle 48 47 5 4 3
+              48:     7(vec3) Load 46(storeTemp)
+              49:     7(vec3) VectorShuffle 48 47 5 4 3
                               Store 46(storeTemp) 49
               50:          33 Load 35(rwtx)
               51:   22(ivec2) Load 24(tc2)
-              52:    7(fvec3) Load 46(storeTemp)
+              52:     7(vec3) Load 46(storeTemp)
                               ImageWrite 50 51 52
                               ReturnValue 54
                               FunctionEnd

@@ -139,42 +139,42 @@ Shader version: 500
                               Name 58  "ResType"
                               Name 69  "ResType"
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 6(float) 7(ptr) 7(ptr)
+               8:             TypeFunction 6(float) 7(float*) 7(float*)
               13:             TypeVector 6(float) 2
-              14:             TypePointer Function 13(fvec2)
-              15:             TypeFunction 13(fvec2) 14(ptr) 14(ptr)
+              14:             TypePointer Function 13(vec2)
+              15:             TypeFunction 13(vec2) 14(vec2*) 14(vec2*)
               20:             TypeVector 6(float) 3
-              21:             TypePointer Function 20(fvec3)
-              22:             TypeFunction 20(fvec3) 21(ptr) 21(ptr)
+              21:             TypePointer Function 20(vec3)
+              22:             TypeFunction 20(vec3) 21(vec3*) 21(vec3*)
               27:             TypeVector 6(float) 4
-              28:             TypePointer Function 27(fvec4)
-              29:             TypeFunction 27(fvec4) 28(ptr) 28(ptr)
+              28:             TypePointer Function 27(vec4)
+              29:             TypeFunction 27(vec4) 28(vec4*) 28(vec4*)
               35:             TypeInt 32 1
      36(ResType):             TypeStruct 6(float) 35(int)
               41:    6(float) Constant 0
               45:             TypeVector 35(int) 2
-     46(ResType):             TypeStruct 13(fvec2) 45(ivec2)
+     46(ResType):             TypeStruct 13(vec2) 45(ivec2)
               51:    6(float) Constant 1065353216
               52:    6(float) Constant 1073741824
-              53:   13(fvec2) ConstantComposite 51 52
+              53:    13(vec2) ConstantComposite 51 52
               57:             TypeVector 35(int) 3
-     58(ResType):             TypeStruct 20(fvec3) 57(ivec3)
+     58(ResType):             TypeStruct 20(vec3) 57(ivec3)
               63:    6(float) Constant 1077936128
-              64:   20(fvec3) ConstantComposite 51 52 63
+              64:    20(vec3) ConstantComposite 51 52 63
               68:             TypeVector 35(int) 4
-     69(ResType):             TypeStruct 27(fvec4) 68(ivec4)
+     69(ResType):             TypeStruct 27(vec4) 68(ivec4)
               74:    6(float) Constant 1082130432
-              75:   27(fvec4) ConstantComposite 51 52 63 74
-4(VertexShaderFunction):           2 Function None 3
+              75:    27(vec4) ConstantComposite 51 52 63 74
+4(VertexShaderFunction):     2(void) Function None 3
                5:             Label
                               Return
                               FunctionEnd
 11(VertexShaderFunctionS(f1;f1;):    6(float) Function None 8
-         9(inF0):      7(ptr) FunctionParameter
-        10(inF1):      7(ptr) FunctionParameter
+         9(inF0):   7(float*) FunctionParameter
+        10(inF1):   7(float*) FunctionParameter
               12:             Label
               34:    6(float) Load 9(inF0)
               37: 36(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 34
@@ -184,39 +184,39 @@ Shader version: 500
               40:    6(float) CompositeExtract 37 0
                               ReturnValue 41
                               FunctionEnd
-18(VertexShaderFunction2(vf2;vf2;):   13(fvec2) Function None 15
-        16(inF0):     14(ptr) FunctionParameter
-        17(inF1):     14(ptr) FunctionParameter
+18(VertexShaderFunction2(vf2;vf2;):    13(vec2) Function None 15
+        16(inF0):   14(vec2*) FunctionParameter
+        17(inF1):   14(vec2*) FunctionParameter
               19:             Label
-              44:   13(fvec2) Load 16(inF0)
+              44:    13(vec2) Load 16(inF0)
               47: 46(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 44
               48:   45(ivec2) CompositeExtract 47 1
-              49:   13(fvec2) ConvertSToF 48
+              49:    13(vec2) ConvertSToF 48
                               Store 17(inF1) 49
-              50:   13(fvec2) CompositeExtract 47 0
+              50:    13(vec2) CompositeExtract 47 0
                               ReturnValue 53
                               FunctionEnd
-25(VertexShaderFunction3(vf3;vf3;):   20(fvec3) Function None 22
-        23(inF0):     21(ptr) FunctionParameter
-        24(inF1):     21(ptr) FunctionParameter
+25(VertexShaderFunction3(vf3;vf3;):    20(vec3) Function None 22
+        23(inF0):   21(vec3*) FunctionParameter
+        24(inF1):   21(vec3*) FunctionParameter
               26:             Label
-              56:   20(fvec3) Load 23(inF0)
+              56:    20(vec3) Load 23(inF0)
               59: 58(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 56
               60:   57(ivec3) CompositeExtract 59 1
-              61:   20(fvec3) ConvertSToF 60
+              61:    20(vec3) ConvertSToF 60
                               Store 24(inF1) 61
-              62:   20(fvec3) CompositeExtract 59 0
+              62:    20(vec3) CompositeExtract 59 0
                               ReturnValue 64
                               FunctionEnd
-32(VertexShaderFunction4(vf4;vf4;):   27(fvec4) Function None 29
-        30(inF0):     28(ptr) FunctionParameter
-        31(inF1):     28(ptr) FunctionParameter
+32(VertexShaderFunction4(vf4;vf4;):    27(vec4) Function None 29
+        30(inF0):   28(vec4*) FunctionParameter
+        31(inF1):   28(vec4*) FunctionParameter
               33:             Label
-              67:   27(fvec4) Load 30(inF0)
+              67:    27(vec4) Load 30(inF0)
               70: 69(ResType) ExtInst 1(GLSL.std.450) 52(FrexpStruct) 67
               71:   68(ivec4) CompositeExtract 70 1
-              72:   27(fvec4) ConvertSToF 71
+              72:    27(vec4) ConvertSToF 71
                               Store 31(inF1) 72
-              73:   27(fvec4) CompositeExtract 70 0
+              73:    27(vec4) CompositeExtract 70 0
                               ReturnValue 75
                               FunctionEnd

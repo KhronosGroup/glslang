@@ -702,151 +702,151 @@ Missing functionality: matrix swizzle
                               Name 87  "m"
                               Decorate 81(inf) Location 0
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeFloat 32
                7:             TypePointer Function 6(float)
-               8:             TypeFunction 2 7(ptr)
+               8:             TypeFunction 2(void) 7(float*)
               12:             TypeVector 6(float) 3
-              13:             TypePointer Function 12(fvec3)
-              14:             TypeMatrix 12(fvec3) 3
-              15:             TypeFunction 14 13(ptr) 13(ptr) 13(ptr)
+              13:             TypePointer Function 12(vec3)
+              14:             TypeMatrix 12(vec3) 3
+              15:             TypeFunction 14(mat3) 13(vec3*) 13(vec3*) 13(vec3*)
               21:             TypeVector 6(float) 4
-              22:             TypeMatrix 21(fvec4) 3
-              23:             TypePointer Function 22
+              22:             TypeMatrix 21(vec4) 3
+              23:             TypePointer Function 22(mat3x4)
               25:             TypeInt 32 1
               26:     25(int) Constant 2
               27:    6(float) Constant 1065353216
               28:             TypeInt 32 0
-              29:     28(int) Constant 3
+              29:    28(uint) Constant 3
               31:    6(float) Constant 1073741824
               34:     25(int) Constant 0
               35:    6(float) Constant 1077936128
-              36:   21(fvec4) ConstantComposite 35 35 35 35
-              37:             TypePointer Function 21(fvec4)
+              36:    21(vec4) ConstantComposite 35 35 35 35
+              37:             TypePointer Function 21(vec4)
               39:     25(int) Constant 1
-              43:     28(int) Constant 0
-              47:     28(int) Constant 1
-              51:     28(int) Constant 2
+              43:    28(uint) Constant 0
+              47:    28(uint) Constant 1
+              51:    28(uint) Constant 2
               56:    6(float) Constant 1084227584
-              57:   12(fvec3) ConstantComposite 56 56 56
+              57:    12(vec3) ConstantComposite 56 56 56
               80:             TypePointer Input 6(float)
-         81(inf):     80(ptr) Variable Input
-              86:             TypePointer Function 14
-4(ShaderFunction):           2 Function None 3
+         81(inf):  80(float*) Variable Input
+              86:             TypePointer Function 14(mat3)
+4(ShaderFunction):     2(void) Function None 3
                5:             Label
-         79(inf):      7(ptr) Variable Function
-       83(param):      7(ptr) Variable Function
+         79(inf):   7(float*) Variable Function
+       83(param):   7(float*) Variable Function
               82:    6(float) Load 81(inf)
                               Store 79(inf) 82
               84:    6(float) Load 79(inf)
                               Store 83(param) 84
-              85:           2 FunctionCall 10(@ShaderFunction(f1;) 83(param)
+              85:     2(void) FunctionCall 10(@ShaderFunction(f1;) 83(param)
                               Return
                               FunctionEnd
-10(@ShaderFunction(f1;):           2 Function None 8
-          9(inf):      7(ptr) FunctionParameter
+10(@ShaderFunction(f1;):     2(void) Function None 8
+          9(inf):   7(float*) FunctionParameter
               11:             Label
-           24(m):     23(ptr) Variable Function
-          42(f3):     13(ptr) Variable Function
-   55(intermVec):     13(ptr) Variable Function
-   67(intermVec):     13(ptr) Variable Function
-              30:      7(ptr) AccessChain 24(m) 26 29
+           24(m): 23(mat3x4*) Variable Function
+          42(f3):   13(vec3*) Variable Function
+   55(intermVec):   13(vec3*) Variable Function
+   67(intermVec):   13(vec3*) Variable Function
+              30:   7(float*) AccessChain 24(m) 26 29
                               Store 30 27
-              32:      7(ptr) AccessChain 24(m) 26 29
+              32:   7(float*) AccessChain 24(m) 26 29
                               Store 32 31
-              33:      7(ptr) AccessChain 24(m) 26 29
+              33:   7(float*) AccessChain 24(m) 26 29
                               Store 33 31
-              38:     37(ptr) AccessChain 24(m) 34
+              38:   37(vec4*) AccessChain 24(m) 34
                               Store 38 36
-              40:     37(ptr) AccessChain 24(m) 39
+              40:   37(vec4*) AccessChain 24(m) 39
                               Store 40 36
-              41:     37(ptr) AccessChain 24(m) 39
+              41:   37(vec4*) AccessChain 24(m) 39
                               Store 41 36
-              44:      7(ptr) AccessChain 42(f3) 43
+              44:   7(float*) AccessChain 42(f3) 43
               45:    6(float) Load 44
-              46:      7(ptr) AccessChain 24(m) 34 43
+              46:   7(float*) AccessChain 24(m) 34 43
                               Store 46 45
-              48:      7(ptr) AccessChain 42(f3) 47
+              48:   7(float*) AccessChain 42(f3) 47
               49:    6(float) Load 48
-              50:      7(ptr) AccessChain 24(m) 39 47
+              50:   7(float*) AccessChain 24(m) 39 47
                               Store 50 49
-              52:      7(ptr) AccessChain 42(f3) 51
+              52:   7(float*) AccessChain 42(f3) 51
               53:    6(float) Load 52
-              54:      7(ptr) AccessChain 24(m) 39 51
+              54:   7(float*) AccessChain 24(m) 39 51
                               Store 54 53
                               Store 55(intermVec) 57
-              58:      7(ptr) AccessChain 55(intermVec) 43
+              58:   7(float*) AccessChain 55(intermVec) 43
               59:    6(float) Load 58
-              60:      7(ptr) AccessChain 24(m) 39 43
+              60:   7(float*) AccessChain 24(m) 39 43
                               Store 60 59
-              61:      7(ptr) AccessChain 55(intermVec) 47
+              61:   7(float*) AccessChain 55(intermVec) 47
               62:    6(float) Load 61
-              63:      7(ptr) AccessChain 24(m) 34 47
+              63:   7(float*) AccessChain 24(m) 34 47
                               Store 63 62
-              64:      7(ptr) AccessChain 55(intermVec) 51
+              64:   7(float*) AccessChain 55(intermVec) 51
               65:    6(float) Load 64
-              66:      7(ptr) AccessChain 24(m) 26 43
+              66:   7(float*) AccessChain 24(m) 26 43
                               Store 66 65
-              68:   12(fvec3) Load 42(f3)
-              69:   12(fvec3) VectorTimesScalar 68 31
+              68:    12(vec3) Load 42(f3)
+              69:    12(vec3) VectorTimesScalar 68 31
                               Store 67(intermVec) 69
-              70:      7(ptr) AccessChain 67(intermVec) 43
+              70:   7(float*) AccessChain 67(intermVec) 43
               71:    6(float) Load 70
-              72:      7(ptr) AccessChain 24(m) 34 43
+              72:   7(float*) AccessChain 24(m) 34 43
                               Store 72 71
-              73:      7(ptr) AccessChain 67(intermVec) 47
+              73:   7(float*) AccessChain 67(intermVec) 47
               74:    6(float) Load 73
-              75:      7(ptr) AccessChain 24(m) 34 47
+              75:   7(float*) AccessChain 24(m) 34 47
                               Store 75 74
-              76:      7(ptr) AccessChain 67(intermVec) 51
+              76:   7(float*) AccessChain 67(intermVec) 51
               77:    6(float) Load 76
-              78:      7(ptr) AccessChain 24(m) 39 43
+              78:   7(float*) AccessChain 24(m) 39 43
                               Store 78 77
                               Store 42(f3) 34
                               Return
                               FunctionEnd
-19(createMat3x3(vf3;vf3;vf3;):          14 Function None 15
-           16(a):     13(ptr) FunctionParameter
-           17(b):     13(ptr) FunctionParameter
-           18(c):     13(ptr) FunctionParameter
+19(createMat3x3(vf3;vf3;vf3;):    14(mat3) Function None 15
+           16(a):   13(vec3*) FunctionParameter
+           17(b):   13(vec3*) FunctionParameter
+           18(c):   13(vec3*) FunctionParameter
               20:             Label
-           87(m):     86(ptr) Variable Function
-              88:      7(ptr) AccessChain 16(a) 43
+           87(m):   86(mat3*) Variable Function
+              88:   7(float*) AccessChain 16(a) 43
               89:    6(float) Load 88
-              90:      7(ptr) AccessChain 87(m) 34 43
+              90:   7(float*) AccessChain 87(m) 34 43
                               Store 90 89
-              91:      7(ptr) AccessChain 16(a) 47
+              91:   7(float*) AccessChain 16(a) 47
               92:    6(float) Load 91
-              93:      7(ptr) AccessChain 87(m) 39 43
+              93:   7(float*) AccessChain 87(m) 39 43
                               Store 93 92
-              94:      7(ptr) AccessChain 16(a) 51
+              94:   7(float*) AccessChain 16(a) 51
               95:    6(float) Load 94
-              96:      7(ptr) AccessChain 87(m) 26 43
+              96:   7(float*) AccessChain 87(m) 26 43
                               Store 96 95
-              97:      7(ptr) AccessChain 17(b) 43
+              97:   7(float*) AccessChain 17(b) 43
               98:    6(float) Load 97
-              99:      7(ptr) AccessChain 87(m) 34 47
+              99:   7(float*) AccessChain 87(m) 34 47
                               Store 99 98
-             100:      7(ptr) AccessChain 17(b) 47
+             100:   7(float*) AccessChain 17(b) 47
              101:    6(float) Load 100
-             102:      7(ptr) AccessChain 87(m) 39 47
+             102:   7(float*) AccessChain 87(m) 39 47
                               Store 102 101
-             103:      7(ptr) AccessChain 17(b) 51
+             103:   7(float*) AccessChain 17(b) 51
              104:    6(float) Load 103
-             105:      7(ptr) AccessChain 87(m) 26 47
+             105:   7(float*) AccessChain 87(m) 26 47
                               Store 105 104
-             106:      7(ptr) AccessChain 18(c) 43
+             106:   7(float*) AccessChain 18(c) 43
              107:    6(float) Load 106
-             108:      7(ptr) AccessChain 87(m) 34 51
+             108:   7(float*) AccessChain 87(m) 34 51
                               Store 108 107
-             109:      7(ptr) AccessChain 18(c) 47
+             109:   7(float*) AccessChain 18(c) 47
              110:    6(float) Load 109
-             111:      7(ptr) AccessChain 87(m) 39 51
+             111:   7(float*) AccessChain 87(m) 39 51
                               Store 111 110
-             112:      7(ptr) AccessChain 18(c) 51
+             112:   7(float*) AccessChain 18(c) 51
              113:    6(float) Load 112
-             114:      7(ptr) AccessChain 87(m) 26 51
+             114:   7(float*) AccessChain 87(m) 26 51
                               Store 114 113
-             115:          14 Load 87(m)
+             115:    14(mat3) Load 87(m)
                               ReturnValue 115
                               FunctionEnd

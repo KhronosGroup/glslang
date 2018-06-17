@@ -16,12 +16,12 @@ spv.shaderStencilExport.frag
                               Name 8  "gl_FragStencilRefARB"
                               Decorate 8(gl_FragStencilRefARB) BuiltIn FragStencilRefEXT
                2:             TypeVoid
-               3:             TypeFunction 2
+               3:             TypeFunction 2(void)
                6:             TypeInt 32 1
                7:             TypePointer Output 6(int)
-8(gl_FragStencilRefARB):      7(ptr) Variable Output
+8(gl_FragStencilRefARB):     7(int*) Variable Output
                9:      6(int) Constant 100
-         4(main):           2 Function None 3
+         4(main):     2(void) Function None 3
                5:             Label
                               Store 8(gl_FragStencilRefARB) 9
                               Return
