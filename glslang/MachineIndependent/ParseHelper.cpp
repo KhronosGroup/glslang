@@ -1705,6 +1705,31 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         break;
     }
 
+    // Texture operations on texture objects (aside from texelFetch on a
+    // textureBuffer) require EXT_samplerless_texture_functions.
+    switch (callNode.getOp()) {
+    case EOpTextureQuerySize:
+    case EOpTextureQueryLevels:
+    case EOpTextureQuerySamples:
+    case EOpTextureFetch:
+    case EOpTextureFetchOffset:
+    {
+        const TSampler& sampler = fnCandidate[0].type->getSampler();
+
+        const bool isTexture = sampler.isTexture() && !sampler.isCombined();
+        const bool isBuffer = sampler.dim == EsdBuffer;
+        const bool isFetch = callNode.getOp() == EOpTextureFetch || callNode.getOp() == EOpTextureFetchOffset;
+
+        if (isTexture && (!isBuffer || !isFetch))
+            requireExtensions(loc, 1, &E_GL_EXT_samplerless_texture_functions, fnCandidate.getName().c_str());
+
+        break;
+    }
+
+    default:
+        break;
+    }
+
     if (callNode.getOp() > EOpSubgroupGuardStart && callNode.getOp() < EOpSubgroupGuardStop) {
         // these require SPIR-V 1.3
         if (spvVersion.spv > 0 && spvVersion.spv < EShTargetSpv_1_3)
