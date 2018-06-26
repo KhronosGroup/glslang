@@ -373,16 +373,6 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_KHR_shader_subgroup_clustered 1\n"
             "#define GL_KHR_shader_subgroup_quad 1\n"
 
-            // GL_KHR_shader_subgroup
-            "#define GL_KHR_shader_subgroup_basic 1\n"
-            "#define GL_KHR_shader_subgroup_vote 1\n"
-            "#define GL_KHR_shader_subgroup_arithmetic 1\n"
-            "#define GL_KHR_shader_subgroup_ballot 1\n"
-            "#define GL_KHR_shader_subgroup_shuffle 1\n"
-            "#define GL_KHR_shader_subgroup_shuffle_relative 1\n"
-            "#define GL_KHR_shader_subgroup_clustered 1\n"
-            "#define GL_KHR_shader_subgroup_quad 1\n"
-
 #ifdef AMD_EXTENSIONS
             "#define GL_AMD_shader_ballot 1\n"
             "#define GL_AMD_shader_trinary_minmax 1\n"
@@ -902,12 +892,12 @@ void TParseVersions::explicitInt16Check(const TSourceLoc& loc, const char* op, b
 {
     if (! builtIn) {
 #if AMD_EXTENSIONS
-	const char* const extensions[3] = {E_GL_AMD_gpu_shader_int16,
-                                           E_GL_KHX_shader_explicit_arithmetic_types,
-                                           E_GL_KHX_shader_explicit_arithmetic_types_int16};
+        const char* const extensions[3] = {E_GL_AMD_gpu_shader_int16,
+                                            E_GL_KHX_shader_explicit_arithmetic_types,
+                                            E_GL_KHX_shader_explicit_arithmetic_types_int16};
 #else
         const char* const extensions[2] = {E_GL_KHX_shader_explicit_arithmetic_types,
-                                           E_GL_KHX_shader_explicit_arithmetic_types_int16};
+                                            E_GL_KHX_shader_explicit_arithmetic_types_int16};
 #endif
         requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, "explicit types");
         requireProfile(loc, ECoreProfile | ECompatibilityProfile, op);
