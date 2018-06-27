@@ -3290,7 +3290,7 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
             decorations.push_back(paramPrecision);
         TranslateMemoryDecoration(type.getQualifier(), decorations);
         spv::Decoration dynamicallyUniform = TranslateDynamicallyUniformDecoration(type.getQualifier());
-        if (dynamicallyUniform != spv::NoPrecision)
+        if (dynamicallyUniform != spv::DecorationMax)
             decorations.push_back(dynamicallyUniform);
     };
 
