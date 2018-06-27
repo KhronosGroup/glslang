@@ -354,95 +354,95 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
 //
 TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIntermTyped* base, TIntermTyped* index)
 {
-    TIntermTyped* result = nullptr;
-
     int indexValue = 0;
     if (index->getQualifier().isFrontEndConstant())
         indexValue = index->getAsConstantUnion()->getConstArray()[0].getIConst();
 
+    // basic type checks...
     variableCheck(base);
     if (! base->isArray() && ! base->isMatrix() && ! base->isVector()) {
         if (base->getAsSymbolNode())
             error(loc, " left of '[' is not of type array, matrix, or vector ", base->getAsSymbolNode()->getName().c_str(), "");
         else
             error(loc, " left of '[' is not of type array, matrix, or vector ", "expression", "");
-    } else if (base->getType().getQualifier().isFrontEndConstant() && index->getQualifier().isFrontEndConstant()) {
+
+        // Insert dummy error-recovery result
+        return intermediate.addConstantUnion(0.0, EbtFloat, loc);
+    }
+
+    // check for constant folding
+    if (base->getType().getQualifier().isFrontEndConstant() && index->getQualifier().isFrontEndConstant()) {
         // both base and index are front-end constants
         checkIndex(loc, base->getType(), indexValue);
         return intermediate.foldDereference(base, indexValue, loc);
-    } else {
-        // at least one of base and index is not a front-end constant variable...
+    }
 
-        if (index->getQualifier().isFrontEndConstant())
+    // at least one of base and index is not a front-end constant variable...
+    TIntermTyped* result = nullptr;
+    if (index->getQualifier().isFrontEndConstant())
+        checkIndex(loc, base->getType(), indexValue);
+
+    if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
+        handleIoResizeArrayAccess(loc, base);
+
+    if (index->getQualifier().isFrontEndConstant()) {
+        if (base->getType().isUnsizedArray())
+            base->getWritableType().updateImplicitArraySize(indexValue + 1);
+        else
             checkIndex(loc, base->getType(), indexValue);
-
-        if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
-            handleIoResizeArrayAccess(loc, base);
-
-        if (index->getQualifier().isFrontEndConstant()) {
-            if (base->getType().isUnsizedArray())
-                base->getWritableType().updateImplicitArraySize(indexValue + 1);
-            else
-                checkIndex(loc, base->getType(), indexValue);
-            result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
-        } else {
-            if (base->getType().isUnsizedArray()) {
-                // we have a variable index into an unsized array, which is okay,
-                // depending on the situation
-                if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
-                    error(loc, "", "[", "array must be sized by a redeclaration or layout qualifier before being indexed with a variable");
-                else {
-                    // it is okay for a run-time sized array
-                    checkRuntimeSizable(loc, *base);
-                }
-                base->getWritableType().setArrayVariablyIndexed();
-            }
-            if (base->getBasicType() == EbtBlock) {
-                if (base->getQualifier().storage == EvqBuffer)
-                    requireProfile(base->getLoc(), ~EEsProfile, "variable indexing buffer block array");
-                else if (base->getQualifier().storage == EvqUniform)
-                    profileRequires(base->getLoc(), EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5,
-                                    "variable indexing uniform block array");
-                else {
-                    // input/output blocks either don't exist or can be variable indexed
-                }
-            } else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
-                requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader output array");
-            else if (base->getBasicType() == EbtSampler && version >= 130) {
-                const char* explanation = "variable indexing sampler array";
-                requireProfile(base->getLoc(), EEsProfile | ECoreProfile | ECompatibilityProfile, explanation);
-                profileRequires(base->getLoc(), EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5, explanation);
-                profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, nullptr, explanation);
-            }
-
-            result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
-        }
-    }
-
-    if (result == nullptr) {
-        // Insert dummy error-recovery result
-        result = intermediate.addConstantUnion(0.0, EbtFloat, loc);
+        result = intermediate.addIndex(EOpIndexDirect, base, index, loc);
     } else {
-        // Insert valid dereferenced result
-        TType newType(base->getType(), 0);  // dereferenced type
-        if (base->getType().getQualifier().isConstant() && index->getQualifier().isConstant()) {
-            newType.getQualifier().storage = EvqConst;
-            // If base or index is a specialization constant, the result should also be a specialization constant.
-            if (base->getType().getQualifier().isSpecConstant() || index->getQualifier().isSpecConstant()) {
-                newType.getQualifier().makeSpecConstant();
+        if (base->getType().isUnsizedArray()) {
+            // we have a variable index into an unsized array, which is okay,
+            // depending on the situation
+            if (base->getAsSymbolNode() && isIoResizeArray(base->getType()))
+                error(loc, "", "[", "array must be sized by a redeclaration or layout qualifier before being indexed with a variable");
+            else {
+                // it is okay for a run-time sized array
+                checkRuntimeSizable(loc, *base);
             }
-        } else {
-            newType.getQualifier().makePartialTemporary();
+            base->getWritableType().setArrayVariablyIndexed();
         }
-        result->setType(newType);
+        if (base->getBasicType() == EbtBlock) {
+            if (base->getQualifier().storage == EvqBuffer)
+                requireProfile(base->getLoc(), ~EEsProfile, "variable indexing buffer block array");
+            else if (base->getQualifier().storage == EvqUniform)
+                profileRequires(base->getLoc(), EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5,
+                                "variable indexing uniform block array");
+            else {
+                // input/output blocks either don't exist or can be variable indexed
+            }
+        } else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
+            requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader output array");
+        else if (base->getBasicType() == EbtSampler && version >= 130) {
+            const char* explanation = "variable indexing sampler array";
+            requireProfile(base->getLoc(), EEsProfile | ECoreProfile | ECompatibilityProfile, explanation);
+            profileRequires(base->getLoc(), EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5, explanation);
+            profileRequires(base->getLoc(), ECoreProfile | ECompatibilityProfile, 400, nullptr, explanation);
+        }
 
-        // Propagate nonuniform
-        if (base->getQualifier().isNonUniform() || index->getQualifier().isNonUniform())
-            result->getWritableType().getQualifier().nonUniform = true;
-
-        if (anyIndexLimits)
-            handleIndexLimits(loc, base, index);
+        result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
     }
+
+    // Insert valid dereferenced result
+    TType newType(base->getType(), 0);  // dereferenced type
+    if (base->getType().getQualifier().isConstant() && index->getQualifier().isConstant()) {
+        newType.getQualifier().storage = EvqConst;
+        // If base or index is a specialization constant, the result should also be a specialization constant.
+        if (base->getType().getQualifier().isSpecConstant() || index->getQualifier().isSpecConstant()) {
+            newType.getQualifier().makeSpecConstant();
+        }
+    } else {
+        newType.getQualifier().makePartialTemporary();
+    }
+    result->setType(newType);
+
+    // Propagate nonuniform
+    if (base->getQualifier().isNonUniform() || index->getQualifier().isNonUniform())
+        result->getWritableType().getQualifier().nonUniform = true;
+
+    if (anyIndexLimits)
+        handleIndexLimits(loc, base, index);
 
     return result;
 }
