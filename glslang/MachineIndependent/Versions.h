@@ -152,6 +152,10 @@ const char* const E_GL_KHR_shader_subgroup_quad             = "GL_KHR_shader_sub
 const char* const E_GL_EXT_shader_non_constant_global_initializers = "GL_EXT_shader_non_constant_global_initializers";
 const char* const E_GL_EXT_shader_image_load_formatted = "GL_EXT_shader_image_load_formatted";
 
+const char* const E_GL_EXT_shader_16bit_storage             = "GL_EXT_shader_16bit_storage";
+const char* const E_GL_EXT_shader_8bit_storage              = "GL_EXT_shader_8bit_storage";
+
+
 // EXT extensions
 const char* const E_GL_EXT_device_group                 = "GL_EXT_device_group";
 const char* const E_GL_EXT_multiview                    = "GL_EXT_multiview";
