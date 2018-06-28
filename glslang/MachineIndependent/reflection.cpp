@@ -97,19 +97,15 @@ public:
         }
     }
 
-    void addAttribute(const TIntermSymbol& base)
+    void addVarLocation(const TIntermSymbol& base)
     {
         if (processedDerefs.find(&base) == processedDerefs.end()) {
             processedDerefs.insert(&base);
 
-            const TString &name = base.getName();
-            const TType &type = base.getType();
-
-            TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
-            if (it == reflection.nameToIndex.end()) {
-                reflection.nameToIndex[name] = (int)reflection.indexToAttribute.size();
-                reflection.indexToAttribute.push_back(TObjectReflection(name, type, 0, mapToGlType(type), 0, 0));
-            }
+            // Use a degenerate (empty) set of dereferences to immediately put as at the end of
+            // the dereference change expected by blowUpActiveAggregate.
+            TList<TIntermBinary*> derefs;
+            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), 0, 0, 0);
         }
     }
 
@@ -245,15 +241,82 @@ public:
         if (arraySize == 0)
             arraySize = mapToGlArraySize(*terminalType);
 
-        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
-        if (it == reflection.nameToIndex.end()) {
-            reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
-            reflection.indexToUniform.push_back(TObjectReflection(name, *terminalType, offset,
-                                                                  mapToGlType(*terminalType),
-                                                                  arraySize, blockIndex));
-        } else if (arraySize > 1) {
-            int& reflectedArraySize = reflection.indexToUniform[it->second].size;
-            reflectedArraySize = std::max(arraySize, reflectedArraySize);
+        switch(baseType.getQualifier().storage) {
+        // Input Varyings
+        case EvqVaryingIn: {
+            TReflection::TNameToIndex::const_iterator it = reflection.varyingInNameToIndex.find(name);
+            if (it == reflection.varyingInNameToIndex.end()) {
+                reflection.varyingInNameToIndex[name] = (int)reflection.indexToVaryingIn.size();
+                reflection.indexToVaryingIn.push_back(TObjectReflection(name, baseType, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.varyingInQualifiers.push_back(&baseType.getQualifier());
+                if (intermediate.getStage() == EShLangVertex) {
+                    reflection.nameToIndex[name] = (int)reflection.indexToAttribute.size();
+                    reflection.indexToAttribute.push_back(TObjectReflection(name, baseType, offset, mapToGlType(*terminalType), 0, blockIndex));
+                }
+            } else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToVaryingIn[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+            break;
+            }
+        // Output Varyings
+        case EvqVaryingOut: {
+            TReflection::TNameToIndex::const_iterator it = reflection.varyingOutNameToIndex.find(name);
+            if (it == reflection.varyingOutNameToIndex.end()) {
+                reflection.varyingOutNameToIndex[name] = (int)reflection.indexToVaryingOut.size();
+                reflection.indexToVaryingOut.push_back(TObjectReflection(name, baseType, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.varyingOutQualifiers.push_back(&baseType.getQualifier());
+            } else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToVaryingOut[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+            break;
+            }
+        // Built ins
+        case EvqVertexId:
+        case EvqInstanceId:
+        case EvqPosition:
+        case EvqPointSize:
+        case EvqClipVertex:
+        case EvqFace:
+        case EvqFragCoord:
+        case EvqPointCoord:
+        case EvqFragColor:
+        case EvqFragDepth: {
+            TReflection::TNameToIndex::const_iterator it = reflection.builtInsNameToIndex.find(name);
+            if (it == reflection.builtInsNameToIndex.end()) {
+                reflection.builtInsNameToIndex[name] = (int)reflection.builtInsQualifiers.size();
+                reflection.indexToBuiltin.push_back(TObjectReflection(name, baseType, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.builtInsQualifiers.push_back(&baseType.getQualifier());
+                if (intermediate.getStage() == EShLangVertex && baseType.getQualifier().isPipeInput()) {
+                    reflection.nameToIndex[name] = (int)reflection.indexToAttribute.size();
+                    reflection.indexToAttribute.push_back(TObjectReflection(name, baseType, offset, mapToGlType(*terminalType), 0, blockIndex));
+                }
+            }
+            else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToVaryingOut[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+            break;
+            }
+        default: {
+            TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
+            if (it == reflection.nameToIndex.end()) {
+                reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
+                reflection.indexToUniform.push_back(TObjectReflection(name, *terminalType, offset, mapToGlType(*terminalType), arraySize, blockIndex));
+                reflection.uniformQualifiers.push_back(&baseType.getQualifier());
+                reflection.uniformStages.push_back(static_cast<EShLanguageMask>(1 << intermediate.getStage()));
+            } else if (arraySize > 1) {
+                int& reflectedArraySize = reflection.indexToUniform[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+                EShLanguageMask& reflectedStages = reflection.uniformStages[it->second];
+                reflectedStages = static_cast<EShLanguageMask>(reflectedStages | (1 << intermediate.getStage()));
+            } else if (reflection.uniformStages[it->second]) {
+                EShLanguageMask& reflectedStages = reflection.uniformStages[it->second];
+                reflectedStages = static_cast<EShLanguageMask>(reflectedStages | (1 << intermediate.getStage()));
+            }
+            break;
+            }
         }
     }
 
@@ -743,11 +806,19 @@ bool TReflectionTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 // To reflect non-dereferenced objects.
 void TReflectionTraverser::visitSymbol(TIntermSymbol* base)
 {
-    if (base->getQualifier().storage == EvqUniform)
+    if (IsAnonymous(base->getName()))
+        return;
+
+    TStorageQualifier storage = base->getQualifier().storage;
+
+    if (storage == EvqUniform)
         addUniform(*base);
 
-    if (intermediate.getStage() == EShLangVertex && base->getQualifier().isPipeInput())
-        addAttribute(*base);
+    if ((storage == EvqVaryingOut) ||
+        (storage == EvqVaryingIn) ||
+        (intermediate.getStage() == EShLangVertex && base->getQualifier().isPipeInput()) ||
+        (storage >= EvqVertexId && storage <= EvqFragDepth))
+        addVarLocation(*base);
 }
 
 //

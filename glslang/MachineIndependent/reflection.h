@@ -145,11 +145,137 @@ public:
             return it->second;
     }
 
+    EShLanguageMask getUniformStages(int i) const
+    {
+        if (i >= 0 && i < (int)indexToUniform.size())
+            return uniformStages[i];
+        else
+            return EShLanguageMask(0);
+    }
+
+    const TQualifier* getUniformQualifier(int i) const
+    {
+        if (i >= 0 && i < (int)indexToUniform.size())
+            return uniformQualifiers[i];
+        else
+            return &badQualifier;
+    }
+
+    // VaryingIns
+    int getNumInVaryings() { return (int)indexToVaryingIn.size(); }
+    const TObjectReflection& getVaryingIn(int i) const
+    {
+        if (i >= 0 && i < (int)indexToVaryingIn.size())
+            return indexToVaryingIn[i];
+        else
+            return badReflection;
+    }
+
+    int getVaryingInIndex(const char* name) const
+    {
+        TNameToIndex::const_iterator it = varyingInNameToIndex.find(name);
+        if (it == varyingInNameToIndex.end())
+            return -1;
+        else
+            return it->second;
+    }
+
+    const TQualifier* getVaryingInQualifier(int i) const
+    {
+        if (i >= 0 && i < (int)indexToVaryingIn.size())
+            return varyingInQualifiers[i];
+        else
+            return &badQualifier;
+    }
+
+    void setVaryingInLocation(int i, int location)
+    {
+        if (i >= 0 && i < (int)indexToVaryingIn.size())
+            varyingInQualifiers[i]->setLocation(location);
+    }
+
+    // VaryingOuts
+    int getNumOutVaryings() { return (int)indexToVaryingOut.size(); }
+    const TObjectReflection& getVaryingOut(int i) const
+    {
+        if (i >= 0 && i < (int)indexToVaryingOut.size())
+            return indexToVaryingOut[i];
+        else
+            return badReflection;
+    }
+
+    int getVaryingOutIndex(const char* name) const
+    {
+        TNameToIndex::const_iterator it = varyingOutNameToIndex.find(name);
+        if (it == varyingOutNameToIndex.end())
+            return -1;
+        else
+            return it->second;
+    }
+
+    const TQualifier* getVaryingOutQualifier(int i) const
+    {
+        if (i >= 0 && i < (int)indexToVaryingOut.size())
+            return varyingOutQualifiers[i];
+        else
+            return &badQualifier;
+    }
+
+    void setVaryingOutLocation(int i, int location)
+    {
+        if(i >= 0 && i < (int)indexToVaryingOut.size())
+            varyingOutQualifiers[i]->setLocation(location);
+    }
+
+    const TQualifier* getAttributeQualifier(int i) const
+    {
+        if (i >= 0 && i < (int)indexToAttribute.size())
+            return varyingInQualifiers[i];
+        else
+            return &badQualifier;
+    }
+
+    void setAttributeLocation(int i, int location)
+    {
+        if (i >= 0 && i < (int)indexToAttribute.size()){
+            varyingInQualifiers[i]->setLocation(location);
+        }
+    }
+
+    int getNumLiveBuiltIns(void) const { return (int)builtInsNameToIndex.size(); }
+    int getBuiltInIndex(const char* name) const
+    {
+        TNameToIndex::const_iterator it = builtInsNameToIndex.find(name);
+        if (it == builtInsNameToIndex.end())
+            return -1;
+        else
+            return it->second;
+    }
+
+    const TQualifier* getBuiltInQualifier(int index) const
+    {
+        if (index >= 0 && index < (int)builtInsQualifiers.size())
+            return builtInsQualifiers[index];
+        else
+            return &badQualifier;
+    }
+
+    const TObjectReflection& getBuiltIn(int i) const
+    {
+        if (i >= 0 && i < (int)indexToBuiltin.size())
+            return indexToBuiltin[i];
+        else
+            return badReflection;
+    }
+
     // see getIndex(const char*)
     int getIndex(const TString& name) const { return getIndex(name.c_str()); }
 
     // Thread local size
     unsigned getLocalSize(int dim) const { return dim <= 2 ? localSize[dim] : 0; }
+
+    int getNumLiveFunctions(void) { return (int)liveFunctions.size(); }
+    const char* getFunctionName(int index) { return liveFunctions[index].c_str(); }
 
     void dump();
 
@@ -170,6 +296,27 @@ protected:
     TMapIndexToReflection indexToAttribute;
 
     unsigned int localSize[3];
+
+    TQualifier                      badQualifier;
+
+    std::vector<EShLanguageMask>    uniformStages;
+    std::vector<const TQualifier *> uniformQualifiers;
+
+    std::vector<int>                attributeIndices;
+
+    TNameToIndex                    varyingInNameToIndex;
+    TMapIndexToReflection           indexToVaryingIn;
+    std::vector<const TQualifier *> varyingInQualifiers;
+
+    TNameToIndex                    varyingOutNameToIndex;
+    TMapIndexToReflection           indexToVaryingOut;
+    std::vector<const TQualifier *> varyingOutQualifiers;
+
+    TNameToIndex                    builtInsNameToIndex;
+    TMapIndexToReflection           indexToBuiltin;
+    std::vector<const TQualifier *> builtInsQualifiers;
+
+    std::vector<TString>            liveFunctions;
 };
 
 } // end namespace glslang
