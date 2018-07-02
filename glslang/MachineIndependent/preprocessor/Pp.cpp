@@ -1153,7 +1153,6 @@ int TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, bool newLineOka
     }
 
     MacroSymbol* macro = macroAtom == 0 ? nullptr : lookupMacroDef(macroAtom);
-    int depth = 0;
 
     // no recursive expansions
     if (macro != nullptr && macro->busy)
@@ -1193,8 +1192,8 @@ int TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, bool newLineOka
         size_t arg = 0;
         bool tokenRecorded = false;
         do {
-            depth = 0;
-            while (1) {
+            TVector<char> nestStack;
+            while (true) {
                 token = scanToken(ppToken);
                 if (token == EndOfInput || token == tMarkerInput::marker) {
                     parseContext.ppError(loc, "End of input in macro", "macro expansion", atomStrings.getString(macroAtom));
@@ -1216,16 +1215,21 @@ int TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, bool newLineOka
                 }
                 if (in->mac->args.size() == 0 && token != ')')
                     break;
-                if (depth == 0 && (token == ',' || token == ')'))
+                if (nestStack.size() == 0 && (token == ',' || token == ')'))
                     break;
                 if (token == '(')
-                    depth++;
-                if (token == ')')
-                    depth--;
+                    nestStack.push_back(')');
+                else if (token == '{' && parseContext.isReadingHLSL())
+                    nestStack.push_back('}');
+                else if (nestStack.size() > 0 && token == nestStack.back())
+                    nestStack.pop_back();
                 in->args[arg]->putToken(token, ppToken);
                 tokenRecorded = true;
             }
+            // end of single argument scan
+
             if (token == ')') {
+                // closing paren of call
                 if (in->mac->args.size() == 1 && tokenRecorded == 0)
                     break;
                 arg++;
@@ -1233,16 +1237,18 @@ int TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, bool newLineOka
             }
             arg++;
         } while (arg < in->mac->args.size());
+        // end of all arguments scan
 
         if (arg < in->mac->args.size())
             parseContext.ppError(loc, "Too few args in Macro", "macro expansion", atomStrings.getString(macroAtom));
         else if (token != ')') {
-            depth=0;
+            // Error recover code; find end of call, if possible
+            int depth = 0;
             while (token != EndOfInput && (depth > 0 || token != ')')) {
-                if (token == ')')
+                if (token == ')' || token == '}')
                     depth--;
                 token = scanToken(ppToken);
-                if (token == '(')
+                if (token == '(' || token == '{')
                     depth++;
             }
 
