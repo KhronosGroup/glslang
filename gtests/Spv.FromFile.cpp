@@ -354,6 +354,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.xfb.vert",
         "spv.xfb2.vert",
         "spv.xfb3.vert",
+        "spv.samplerlessTextureFunctions.frag",
     })),
     FileNameAsCustomTestSuffix
 );
@@ -443,6 +444,7 @@ INSTANTIATE_TEST_CASE_P(
         "vulkan.frag",
         "vulkan.vert",
         "vulkan.comp",
+        "samplerlessTextureFunctions.frag",
     })),
     FileNameAsCustomTestSuffix
 );
