@@ -2031,83 +2031,113 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
     Instruction* instr = module.getInstruction(componentTypeId);
     Id bitCount = instr->getIdOperand(0);
 
-    // Will use a two step process
-    // 1. make a compile-time 2D array of values
-    // 2. construct a matrix from that array
-
-    // Step 1.
-
-    // initialize the array to the identity matrix
-    Id ids[maxMatrixSize][maxMatrixSize];
-    Id  one = (bitCount == 64 ? makeDoubleConstant(1.0) : makeFloatConstant(1.0));
-    Id zero = (bitCount == 64 ? makeDoubleConstant(0.0) : makeFloatConstant(0.0));
-    for (int col = 0; col < 4; ++col) {
-        for (int row = 0; row < 4; ++row) {
-            if (col == row)
-                ids[col][row] = one;
-            else
-                ids[col][row] = zero;
-        }
-    }
-
-    // modify components as dictated by the arguments
-    if (sources.size() == 1 && isScalar(sources[0])) {
-        // a single scalar; resets the diagonals
-        for (int col = 0; col < 4; ++col)
-            ids[col][col] = sources[0];
-    } else if (isMatrix(sources[0])) {
-        // constructing from another matrix; copy over the parts that exist in both the argument and constructee
+    if (isMatrix(sources[0]) && getNumColumns(sources[0]) >= numCols && getNumRows(sources[0]) >= numRows) {
+        // To truncate the matrix to a smaller number of rows/columns, we need to:
+        // 1. For each column, extract the column and truncate it to the required size using shuffle
+        // 2. Assemble the resulting matrix from all columns
         Id matrix = sources[0];
-        int minCols = std::min(numCols, getNumColumns(matrix));
-        int minRows = std::min(numRows, getNumRows(matrix));
-        for (int col = 0; col < minCols; ++col) {
+        Id columnTypeId = getContainedTypeId(resultTypeId);
+        Id sourceColumnTypeId = getContainedTypeId(getTypeId(matrix));
+
+        std::vector<unsigned> channels;
+        for (int row = 0; row < numRows; ++row) {
+            channels.push_back(row);
+        }
+
+        std::vector<Id> matrixColumns;
+        for (int col = 0; col < numCols; ++col) {
             std::vector<unsigned> indexes;
             indexes.push_back(col);
-            for (int row = 0; row < minRows; ++row) {
-                indexes.push_back(row);
-                ids[col][row] = createCompositeExtract(matrix, componentTypeId, indexes);
-                indexes.pop_back();
-                setPrecision(ids[col][row], precision);
+            Id colv = createCompositeExtract(matrix, sourceColumnTypeId, indexes);
+            setPrecision(colv, precision);
+
+            if (numRows != getNumRows(matrix)) {
+                matrixColumns.push_back(createRvalueSwizzle(precision, columnTypeId, colv, channels));
+            } else {
+                matrixColumns.push_back(colv);
             }
         }
+
+        return setPrecision(createCompositeConstruct(resultTypeId, matrixColumns), precision);
     } else {
-        // fill in the matrix in column-major order with whatever argument components are available
-        int row = 0;
-        int col = 0;
+        // Will use a two step process
+        // 1. make a compile-time 2D array of values
+        // 2. construct a matrix from that array
 
-        for (int arg = 0; arg < (int)sources.size(); ++arg) {
-            Id argComp = sources[arg];
-            for (int comp = 0; comp < getNumComponents(sources[arg]); ++comp) {
-                if (getNumComponents(sources[arg]) > 1) {
-                    argComp = createCompositeExtract(sources[arg], componentTypeId, comp);
-                    setPrecision(argComp, precision);
+        // Step 1.
+
+        // initialize the array to the identity matrix
+        Id ids[maxMatrixSize][maxMatrixSize];
+        Id  one = (bitCount == 64 ? makeDoubleConstant(1.0) : makeFloatConstant(1.0));
+        Id zero = (bitCount == 64 ? makeDoubleConstant(0.0) : makeFloatConstant(0.0));
+        for (int col = 0; col < 4; ++col) {
+            for (int row = 0; row < 4; ++row) {
+                if (col == row)
+                    ids[col][row] = one;
+                else
+                    ids[col][row] = zero;
+            }
+        }
+
+        // modify components as dictated by the arguments
+        if (sources.size() == 1 && isScalar(sources[0])) {
+            // a single scalar; resets the diagonals
+            for (int col = 0; col < 4; ++col)
+                ids[col][col] = sources[0];
+        } else if (isMatrix(sources[0])) {
+            // constructing from another matrix; copy over the parts that exist in both the argument and constructee
+            Id matrix = sources[0];
+            int minCols = std::min(numCols, getNumColumns(matrix));
+            int minRows = std::min(numRows, getNumRows(matrix));
+            for (int col = 0; col < minCols; ++col) {
+                std::vector<unsigned> indexes;
+                indexes.push_back(col);
+                for (int row = 0; row < minRows; ++row) {
+                    indexes.push_back(row);
+                    ids[col][row] = createCompositeExtract(matrix, componentTypeId, indexes);
+                    indexes.pop_back();
+                    setPrecision(ids[col][row], precision);
                 }
-                ids[col][row++] = argComp;
-                if (row == numRows) {
-                    row = 0;
-                    col++;
+            }
+        } else {
+            // fill in the matrix in column-major order with whatever argument components are available
+            int row = 0;
+            int col = 0;
+
+            for (int arg = 0; arg < (int)sources.size(); ++arg) {
+                Id argComp = sources[arg];
+                for (int comp = 0; comp < getNumComponents(sources[arg]); ++comp) {
+                    if (getNumComponents(sources[arg]) > 1) {
+                        argComp = createCompositeExtract(sources[arg], componentTypeId, comp);
+                        setPrecision(argComp, precision);
+                    }
+                    ids[col][row++] = argComp;
+                    if (row == numRows) {
+                        row = 0;
+                        col++;
+                    }
                 }
             }
         }
+
+        // Step 2:  Construct a matrix from that array.
+        // First make the column vectors, then make the matrix.
+
+        // make the column vectors
+        Id columnTypeId = getContainedTypeId(resultTypeId);
+        std::vector<Id> matrixColumns;
+        for (int col = 0; col < numCols; ++col) {
+            std::vector<Id> vectorComponents;
+            for (int row = 0; row < numRows; ++row)
+                vectorComponents.push_back(ids[col][row]);
+            Id column = createCompositeConstruct(columnTypeId, vectorComponents);
+            setPrecision(column, precision);
+            matrixColumns.push_back(column);
+        }
+
+        // make the matrix
+        return setPrecision(createCompositeConstruct(resultTypeId, matrixColumns), precision);
     }
-
-    // Step 2:  Construct a matrix from that array.
-    // First make the column vectors, then make the matrix.
-
-    // make the column vectors
-    Id columnTypeId = getContainedTypeId(resultTypeId);
-    std::vector<Id> matrixColumns;
-    for (int col = 0; col < numCols; ++col) {
-        std::vector<Id> vectorComponents;
-        for (int row = 0; row < numRows; ++row)
-            vectorComponents.push_back(ids[col][row]);
-        Id column = createCompositeConstruct(columnTypeId, vectorComponents);
-        setPrecision(column, precision);
-        matrixColumns.push_back(column);
-    }
-
-    // make the matrix
-    return setPrecision(createCompositeConstruct(resultTypeId, matrixColumns), precision);
 }
 
 // Comments in header
