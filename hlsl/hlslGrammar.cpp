@@ -521,13 +521,11 @@ bool HlslGrammar::acceptDeclaration(TIntermNode*& nodeList)
         // was actually an assignment such as "float = 4", where "float" is an identifier.
         // We put the token back to let further parsing happen for cases where that may
         // happen.  This errors on the side of caution, and mostly triggers the error.
-        if (peek() == EHTokAssign || peek() == EHTokLeftBracket || peek() == EHTokDot || peek() == EHTokComma) {
+        if (peek() == EHTokAssign || peek() == EHTokLeftBracket || peek() == EHTokDot || peek() == EHTokComma)
             recedeToken();
-            return false;
-        } else {
+        else
             expected(";");
-            return false;
-        }
+        return false;
     }
 
     return true;
