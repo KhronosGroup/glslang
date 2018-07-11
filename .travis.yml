@@ -50,8 +50,16 @@ install:
     fi
   # Download Android NDK and Android CMake toolchain file.
   - if [[ "$BUILD_NDK" == "ON" ]]; then
-      git clone --depth=1 https://github.com/urho3d/android-ndk.git $HOME/android-ndk;
+      # Unfortunately the android.toolchain.cmake file does not understand how to
+      # get the API level from Android NDK r17b.  So fall back on r13b.
+      # Get only one commit at tag r13b.
       export ANDROID_NDK=$HOME/android-ndk;
+      git init $ANDROID_NDK;
+      pushd $ANDROID_NDK;
+        git remote add urho3d https://github.com/urho3d/android-ndk.git;
+        git fetch --depth=1 urho3d r13b;
+        git checkout FETCH_HEAD;
+      popd;
       git clone --depth=1 https://github.com/taka-no-me/android-cmake.git $HOME/android-cmake;
       export TOOLCHAIN_PATH=$HOME/android-cmake/android.toolchain.cmake;
     fi
