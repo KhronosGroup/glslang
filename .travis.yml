@@ -49,10 +49,10 @@ install:
       export CC=clang-3.6 CXX=clang++-3.6;
     fi
   # Download Android NDK and Android CMake toolchain file.
+  # Unfortunately the android.toolchain.cmake file does not understand how to
+  # get the API level from Android NDK r17b.  So fall back on r13b.
+  # Get only one commit at tag r13b.
   - if [[ "$BUILD_NDK" == "ON" ]]; then
-      # Unfortunately the android.toolchain.cmake file does not understand how to
-      # get the API level from Android NDK r17b.  So fall back on r13b.
-      # Get only one commit at tag r13b.
       export ANDROID_NDK=$HOME/android-ndk;
       git init $ANDROID_NDK;
       pushd $ANDROID_NDK;
