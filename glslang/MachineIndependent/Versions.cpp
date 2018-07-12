@@ -822,7 +822,7 @@ void TParseVersions::doubleCheck(const TSourceLoc& loc, const char* op)
 }
 
 // Call for any operation needing GLSL float16 data-type support.
-void TParseVersions::float16Check(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::float16Check(const TSourceLoc& loc, const char*, bool builtIn)
 {
     if (!builtIn) {
         const char* const extensions[] = {
@@ -910,7 +910,7 @@ void TParseVersions::requireInt8Arithmetic(const TSourceLoc& loc, const char* op
     requireExtensions(loc, sizeof(extensions)/sizeof(extensions[0]), extensions, combined.c_str());
 }
 
-void TParseVersions::float16ScalarVectorCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::float16ScalarVectorCheck(const TSourceLoc& loc, const char*, bool builtIn)
 {
     if (!builtIn) {
         const char* const extensions[] = {
@@ -925,7 +925,7 @@ void TParseVersions::float16ScalarVectorCheck(const TSourceLoc& loc, const char*
 }
 
 // Call for any operation needing GLSL float32 data-type support.
-void TParseVersions::explicitFloat32Check(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::explicitFloat32Check(const TSourceLoc& loc, const char*, bool builtIn)
 {
     if (!builtIn) {
         const char* const extensions[2] = {E_GL_KHX_shader_explicit_arithmetic_types,
@@ -947,7 +947,7 @@ void TParseVersions::explicitFloat64Check(const TSourceLoc& loc, const char* op,
 }
 
 // Call for any operation needing GLSL explicit int8 data-type support.
-void TParseVersions::explicitInt8Check(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::explicitInt8Check(const TSourceLoc& loc, const char*, bool builtIn)
 {
     if (! builtIn) {
         const char* const extensions[2] = {E_GL_KHX_shader_explicit_arithmetic_types,
@@ -969,7 +969,7 @@ void TParseVersions::float16OpaqueCheck(const TSourceLoc& loc, const char* op, b
 #endif
 
 // Call for any operation needing GLSL explicit int16 data-type support.
-void TParseVersions::explicitInt16Check(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::explicitInt16Check(const TSourceLoc& loc, const char*, bool builtIn)
 {
     if (! builtIn) {
     	const char* const extensions[] = {
@@ -982,7 +982,7 @@ void TParseVersions::explicitInt16Check(const TSourceLoc& loc, const char* op, b
     }
 }
 
-void TParseVersions::int16ScalarVectorCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::int16ScalarVectorCheck(const TSourceLoc& loc, const char*, bool builtIn)
 {
     if (! builtIn) {
     	const char* const extensions[] = {
@@ -996,7 +996,7 @@ void TParseVersions::int16ScalarVectorCheck(const TSourceLoc& loc, const char* o
     }
 }
 
-void TParseVersions::int8ScalarVectorCheck(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::int8ScalarVectorCheck(const TSourceLoc& loc, const char*, bool builtIn)
 {
     if (! builtIn) {
     	const char* const extensions[] = {
@@ -1008,7 +1008,7 @@ void TParseVersions::int8ScalarVectorCheck(const TSourceLoc& loc, const char* op
 }
 
 // Call for any operation needing GLSL explicit int32 data-type support.
-void TParseVersions::explicitInt32Check(const TSourceLoc& loc, const char* op, bool builtIn)
+void TParseVersions::explicitInt32Check(const TSourceLoc& loc, const char*, bool builtIn)
 {
     if (! builtIn) {
         const char* const extensions[2] = {E_GL_KHX_shader_explicit_arithmetic_types,
