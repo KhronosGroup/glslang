@@ -36,6 +36,14 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
     set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "..." FORCE)
 endif()
 
+option(USE_CCACHE "Use ccache" OFF)
+if(USE_CCACHE)
+    find_program(CCACHE_FOUND ccache)
+    if(CCACHE_FOUND)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    endif(CCACHE_FOUND)
+endif()
+
 project(glslang)
 # make testing optional
 include(CTest)
