@@ -182,22 +182,132 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
     }
 
     // Getting this far means we have two existing trees to merge...
+    mergeTree(infoSink, unit);
 
     version = std::max(version, unit.version);
     requestedExtensions.insert(unit.requestedExtensions.begin(), unit.requestedExtensions.end());
+    ioAccessed.insert(unit.ioAccessed.begin(), unit.ioAccessed.end());
+}
 
+//
+// Merge the 'unit' AST into 'this' AST.
+// That includes rationalizing the unique IDs, which were set up independently,
+// and might have overlaps that are not the same symbol, or might have different
+// IDs for what should be the same shared symbol.
+//
+void TIntermediate::mergeTree(TInfoSink& infoSink, TIntermediate& unit)
+{
     // Get the top-level globals of each unit
     TIntermSequence& globals = treeRoot->getAsAggregate()->getSequence();
     TIntermSequence& unitGlobals = unit.treeRoot->getAsAggregate()->getSequence();
 
     // Get the linker-object lists
-    TIntermSequence& linkerObjects = findLinkerObjects();
-    TIntermSequence& unitLinkerObjects = unit.findLinkerObjects();
+    TIntermSequence& linkerObjects = findLinkerObjects()->getSequence();
+    const TIntermSequence& unitLinkerObjects = unit.findLinkerObjects()->getSequence();
+
+    // Map by global name to unique ID to rationalize the same object having
+    // differing IDs in different trees.
+    TMap<TString, int> idMap;
+    int maxId;
+    seedIdMap(idMap, maxId);
+    remapIds(idMap, maxId + 1, unit);
 
     mergeBodies(infoSink, globals, unitGlobals);
     mergeLinkerObjects(infoSink, linkerObjects, unitLinkerObjects);
+}
 
-    ioAccessed.insert(unit.ioAccessed.begin(), unit.ioAccessed.end());
+// Traverser that seeds an ID map with all built-ins, and tracks the
+// maximum ID used.
+// (It would be nice to put this in a function, but that causes warnings
+// on having no bodies for the copy-constructor/operator=.)
+class TBuiltInIdTraverser : public TIntermTraverser {
+public:
+    TBuiltInIdTraverser(TMap<TString, int>& idMap) : idMap(idMap), maxId(0) { }
+    // If it's a built in, add it to the map.
+    // Track the max ID.
+    virtual void visitSymbol(TIntermSymbol* symbol)
+    {
+        const TQualifier& qualifier = symbol->getType().getQualifier();
+        if (qualifier.builtIn != EbvNone)
+            idMap[symbol->getName()] = symbol->getId();
+        maxId = std::max(maxId, symbol->getId());
+    }
+    int getMaxId() const { return maxId; }
+protected:
+    TBuiltInIdTraverser(TBuiltInIdTraverser&);
+    TBuiltInIdTraverser& operator=(TBuiltInIdTraverser&);
+    TMap<TString, int>& idMap;
+    int maxId;
+};
+
+// Traverser that seeds an ID map with non-builtin globals.
+// (It would be nice to put this in a function, but that causes warnings
+// on having no bodies for the copy-constructor/operator=.)
+class TUserIdTraverser : public TIntermTraverser {
+public:
+    TUserIdTraverser(TMap<TString, int>& idMap) : idMap(idMap) { }
+    // If its a non-built-in global, add it to the map.
+    virtual void visitSymbol(TIntermSymbol* symbol)
+    {
+        const TQualifier& qualifier = symbol->getType().getQualifier();
+        if (qualifier.storage == EvqGlobal && qualifier.builtIn == EbvNone)
+            idMap[symbol->getName()] = symbol->getId();
+    }
+
+protected:
+    TUserIdTraverser(TUserIdTraverser&);
+    TUserIdTraverser& operator=(TUserIdTraverser&);
+    TMap<TString, int>& idMap; // over biggest id
+};
+
+// Initialize the the ID map with what we know of 'this' AST.
+void TIntermediate::seedIdMap(TMap<TString, int>& idMap, int& maxId)
+{
+    // all built-ins everywhere need to align on IDs and contribute to the max ID
+    TBuiltInIdTraverser builtInIdTraverser(idMap);
+    treeRoot->traverse(&builtInIdTraverser);
+    maxId = builtInIdTraverser.getMaxId();
+
+    // user variables in the linker object list need to align on ids
+    TUserIdTraverser userIdTraverser(idMap);
+    findLinkerObjects()->traverse(&userIdTraverser);
+}
+
+// Traverser to map an AST ID to what was known from the seeding AST.
+// (It would be nice to put this in a function, but that causes warnings
+// on having no bodies for the copy-constructor/operator=.)
+class TRemapIdTraverser : public TIntermTraverser {
+public:
+    TRemapIdTraverser(const TMap<TString, int>& idMap, int idShift) : idMap(idMap), idShift(idShift) { }
+    // Do the mapping:
+    //  - if the same symbol, adopt the 'this' ID
+    //  - otherwise, ensure a unique ID by shifting to a new space
+    virtual void visitSymbol(TIntermSymbol* symbol)
+    {
+        const TQualifier& qualifier = symbol->getType().getQualifier();
+        bool remapped = false;
+        if (qualifier.storage == EvqGlobal || qualifier.builtIn != EbvNone) {
+            auto it = idMap.find(symbol->getName());
+            if (it != idMap.end()) {
+                symbol->changeId(it->second);
+                remapped = true;
+            }
+        }
+        if (!remapped)
+            symbol->changeId(symbol->getId() + idShift);
+    }
+protected:
+    TRemapIdTraverser(TRemapIdTraverser&);
+    TRemapIdTraverser& operator=(TRemapIdTraverser&);
+    const TMap<TString, int>& idMap;
+    int idShift;
+};
+
+void TIntermediate::remapIds(const TMap<TString, int>& idMap, int idShift, TIntermediate& unit)
+{
+    // Remap all IDs to either share or be unique, as dictated by the idMap and idShift.
+    TRemapIdTraverser idTraverser(idMap, idShift);
+    unit.getTreeRoot()->traverse(&idTraverser);
 }
 
 //
@@ -699,7 +809,7 @@ void TIntermediate::inOutLocationCheck(TInfoSink& infoSink)
 
     // TODO: linker functionality: location collision checking
 
-    TIntermSequence& linkObjects = findLinkerObjects();
+    TIntermSequence& linkObjects = findLinkerObjects()->getSequence();
     for (size_t i = 0; i < linkObjects.size(); ++i) {
         const TType& type = linkObjects[i]->getAsTyped()->getType();
         const TQualifier& qualifier = type.getQualifier();
@@ -718,7 +828,7 @@ void TIntermediate::inOutLocationCheck(TInfoSink& infoSink)
     }
 }
 
-TIntermSequence& TIntermediate::findLinkerObjects() const
+TIntermAggregate* TIntermediate::findLinkerObjects() const
 {
     // Get the top-level globals
     TIntermSequence& globals = treeRoot->getAsAggregate()->getSequence();
@@ -726,7 +836,7 @@ TIntermSequence& TIntermediate::findLinkerObjects() const
     // Get the last member of the sequences, expected to be the linker-object lists
     assert(globals.back()->getAsAggregate()->getOp() == EOpLinkerObjects);
 
-    return globals.back()->getAsAggregate()->getSequence();
+    return globals.back()->getAsAggregate();
 }
 
 // See if a variable was both a user-declared output and used.
@@ -734,7 +844,7 @@ TIntermSequence& TIntermediate::findLinkerObjects() const
 // is more useful, and perhaps the spec should be changed to reflect that.
 bool TIntermediate::userOutputUsed() const
 {
-    const TIntermSequence& linkerObjects = findLinkerObjects();
+    const TIntermSequence& linkerObjects = findLinkerObjects()->getSequence();
 
     bool found = false;
     for (size_t i = 0; i < linkerObjects.size(); ++i) {
