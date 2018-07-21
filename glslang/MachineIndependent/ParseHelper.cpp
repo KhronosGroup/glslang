@@ -5917,8 +5917,14 @@ TIntermTyped* TParseContext::addConstructor(const TSourceLoc& loc, TIntermNode* 
 
     // Combined texture-sampler constructors are completely semantic checked
     // in constructorTextureSamplerError()
-    if (op == EOpConstructTextureSampler)
+    if (op == EOpConstructTextureSampler) {
+        if (aggrNode->getSequence()[1]->getAsTyped()->getType().getSampler().shadow) {
+            // Transfer depth into the texture (SPIR-V image) type, as a hint
+            // for tools to know this texture/image is a depth image.
+            aggrNode->getSequence()[0]->getAsTyped()->getWritableType().getSampler().shadow = true;
+        }
         return intermediate.setAggregateOperator(aggrNode, op, type, loc);
+    }
 
     TTypeList::const_iterator memberTypes;
     if (op == EOpConstructStruct)
