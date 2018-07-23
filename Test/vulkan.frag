@@ -22,7 +22,7 @@ void badConst()
     sampler2D(i2d, s);            // ERROR, image instead of texture
     sampler2D(t3d[1], s);         // ERROR, 3D not 2D
     sampler2D(t2d, sShadow);      // ERROR, shadow mismatch
-    sampler2DShadow(t2d, s);      // ERROR, shadow mismatch
+    sampler2DShadow(t2d, s);
 }
 
 sampler2D s2D = sampler2D(t2d, s);            // ERROR, no sampler constructor
