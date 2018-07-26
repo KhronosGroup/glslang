@@ -316,16 +316,21 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
             ppToken->dval = (double)wholeNumber * exponentValue;
     } else {
         // slow path
+        ppToken->dval = 0.0;
         strtodStream.clear();
         strtodStream.str(ppToken->name);
         strtodStream >> ppToken->dval;
-        // Assume failure combined with a large exponent was overflow, in
-        // an attempt to set INF.  Otherwise, assume underflow, and set 0.0.
         if (strtodStream.fail()) {
+            // Assume failure combined with a large exponent was overflow, in
+            // an attempt to set INF.
             if (!negativeExponent && exponent + numWholeNumberDigits > 300)
                 ppToken->i64val = 0x7ff0000000000000; // +Infinity
-            else
+            // Assume failure combined with a small exponent was overflow.
+            if (negativeExponent && exponent + numWholeNumberDigits > 300)
                 ppToken->dval = 0.0;
+            // Unknown reason for failure. Theory is that either
+            //  - the 0.0 is still there, or
+            //  - something reasonable was written that is better than 0.0
         }
     }
 
