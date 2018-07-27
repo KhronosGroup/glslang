@@ -317,8 +317,19 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
     } else {
         // slow path
         ppToken->dval = 0.0;
+
+        // remove suffix
+        TString numstr(ppToken->name);
+        if (numstr.back() == 'f' || numstr.back() == 'F')
+            numstr.pop_back();
+        if (numstr.back() == 'h' || numstr.back() == 'H')
+            numstr.pop_back();
+        if (numstr.back() == 'l' || numstr.back() == 'L')
+            numstr.pop_back();
+
+        // use platform library
         strtodStream.clear();
-        strtodStream.str(ppToken->name);
+        strtodStream.str(numstr.c_str());
         strtodStream >> ppToken->dval;
         if (strtodStream.fail()) {
             // Assume failure combined with a large exponent was overflow, in
