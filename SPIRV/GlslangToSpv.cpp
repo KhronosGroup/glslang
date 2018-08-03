@@ -1191,6 +1191,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
 // Finish creating SPV, after the traversal is complete.
 void TGlslangToSpvTraverser::finishSpv()
 {
+    // Finish the entry point function
     if (! entryPointTerminated) {
         builder.setBuildPoint(shaderEntry->getLastBlock());
         builder.leaveFunction();
@@ -1200,7 +1201,9 @@ void TGlslangToSpvTraverser::finishSpv()
     for (auto it = iOSet.cbegin(); it != iOSet.cend(); ++it)
         entryPoint->addIdOperand(*it);
 
-    builder.eliminateDeadDecorations();
+    // Add capabilities, extensions, remove unneeded decorations, etc., 
+    // based on the resulting SPIR-V.
+    builder.postProcess();
 }
 
 // Write the SPV into 'out'.
@@ -4627,27 +4630,21 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
         unaryOp = spv::OpFwidth;
         break;
     case glslang::EOpDPdxFine:
-        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpDPdxFine;
         break;
     case glslang::EOpDPdyFine:
-        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpDPdyFine;
         break;
     case glslang::EOpFwidthFine:
-        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpFwidthFine;
         break;
     case glslang::EOpDPdxCoarse:
-        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpDPdxCoarse;
         break;
     case glslang::EOpDPdyCoarse:
-        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpDPdyCoarse;
         break;
     case glslang::EOpFwidthCoarse:
-        builder.addCapability(spv::CapabilityDerivativeControl);
         unaryOp = spv::OpFwidthCoarse;
         break;
     case glslang::EOpInterpolateAtCentroid:
@@ -4655,7 +4652,6 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
         if (typeProxy == glslang::EbtFloat16)
             builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
 #endif
-        builder.addCapability(spv::CapabilityInterpolationFunction);
         libCall = spv::GLSLstd450InterpolateAtCentroid;
         break;
     case glslang::EOpAny:
@@ -4791,8 +4787,6 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
 #endif
 #ifdef NV_EXTENSIONS
     case glslang::EOpSubgroupPartition:
-        builder.addExtension(spv::E_SPV_NV_shader_subgroup_partitioned);
-        builder.addCapability(spv::CapabilityGroupNonUniformPartitionedNV);
         unaryOp = spv::OpGroupNonUniformPartitionNV;
         break;
 #endif
@@ -6087,7 +6081,6 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         if (typeProxy == glslang::EbtFloat16)
             builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
 #endif
-        builder.addCapability(spv::CapabilityInterpolationFunction);
         libCall = spv::GLSLstd450InterpolateAtSample;
         break;
     case glslang::EOpInterpolateAtOffset:
@@ -6095,7 +6088,6 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         if (typeProxy == glslang::EbtFloat16)
             builder.addExtension(spv::E_SPV_AMD_gpu_shader_half_float);
 #endif
-        builder.addCapability(spv::CapabilityInterpolationFunction);
         libCall = spv::GLSLstd450InterpolateAtOffset;
         break;
     case glslang::EOpAddCarry:
