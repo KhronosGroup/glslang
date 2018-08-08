@@ -718,7 +718,7 @@ void Disassemble(std::ostream& out, const std::vector<unsigned int>& stream)
 
 #if ENABLE_OPT
 
-#include "spirv-tools/source/disassemble.h"
+#include "spirv-tools/libspirv.h"
 
 // Use the SPIRV-Tools disassembler to print SPIR-V.
 void SpirvToolsDisassemble(std::ostream& out, const std::vector<unsigned int>& spirv)
