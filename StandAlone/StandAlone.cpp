@@ -446,6 +446,11 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                                 Error("--client expects vulkan100 or opengl100");
                         }
                         bumpArg();
+                    } else if (lowerword == "entry-point") {
+                        entryPointName = argv[1];
+                        if (argc <= 1)
+                            Error("no <name> provided for --entry-point");
+                        bumpArg();
                     } else if (lowerword == "flatten-uniform-arrays" || // synonyms
                                lowerword == "flatten-uniform-array"  ||
                                lowerword == "fua") {
@@ -610,8 +615,6 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                     Options |= EOptionDefaultDesktop;
                 break;
             case 'e':
-                // HLSL todo: entry point handle needs much more sophistication.
-                // This is okay for one compilation unit with one entry point.
                 entryPointName = argv[1];
                 if (argc <= 1)
                     Error("no <name> provided for -e");
@@ -840,7 +843,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         const auto &compUnit = *it;
         glslang::TShader* shader = new glslang::TShader(compUnit.stage);
         shader->setStringsWithLengthsAndNames(compUnit.text, NULL, compUnit.fileNameList, compUnit.count);
-        if (entryPointName) // HLSL todo: this needs to be tracked per compUnits
+        if (entryPointName)
             shader->setEntryPoint(entryPointName);
         if (sourceEntryPointName) {
             if (entryPointName == nullptr)
@@ -1352,7 +1355,8 @@ void usage()
            "              creates the default configuration file (redirect to a .conf file)\n"
            "  -d          default to desktop (#version 110) when there is no shader #version\n"
            "              (default is ES version 100)\n"
-           "  -e <name>   specify <name> as the entry-point name\n"
+           "  --entry-point <name>\n"
+           "  -e <name>   specify <name> as the entry-point function name\n"
            "  -f{hlsl_functionality1}\n"
            "              'hlsl_functionality1' enables use of the\n"
            "                  SPV_GOOGLE_hlsl_functionality1 extension\n"

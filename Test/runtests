@@ -56,7 +56,7 @@ fi
 # entry point renaming tests
 #
 echo Running entry-point renaming tests
-$EXE -i -H -V -D -Od -e main_in_spv --ku --source-entrypoint main -Od hlsl.entry.rename.frag > $TARGETDIR/hlsl.entry.rename.frag.out
+$EXE -i -H -V -D -Od --entry-point main_in_spv --ku --source-entrypoint main -Od hlsl.entry.rename.frag > $TARGETDIR/hlsl.entry.rename.frag.out
 diff -b $BASEDIR/hlsl.entry.rename.frag.out $TARGETDIR/hlsl.entry.rename.frag.out || HASERROR=1
 
 #
