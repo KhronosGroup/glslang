@@ -1,4 +1,3 @@
-hlsl.automap.frag
 Uniform reflection:
 t1: offset -1, type 8b5d, size 1, index -1, binding 11, stages 16
 t2: offset -1, type 8b5e, size 1, index -1, binding 12, stages 16

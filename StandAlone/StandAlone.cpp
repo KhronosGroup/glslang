@@ -930,9 +930,13 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
         if (! (Options & EOptionSuppressInfolog) &&
             ! (Options & EOptionMemoryLeakMode)) {
-            PutsIfNonEmpty(compUnit.fileName[0].c_str());
-            PutsIfNonEmpty(shader->getInfoLog());
-            PutsIfNonEmpty(shader->getInfoDebugLog());
+            const char* infoLog = shader->getInfoLog();
+            const char* infoDebugLog = shader->getInfoDebugLog();
+
+            if ((infoLog && infoLog[0]) || (infoDebugLog && infoDebugLog[0]))
+                PutsIfNonEmpty(compUnit.fileName[0].c_str());
+            PutsIfNonEmpty(infoLog);
+            PutsIfNonEmpty(infoDebugLog);
         }
     }
 

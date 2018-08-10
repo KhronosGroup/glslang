@@ -1,4 +1,3 @@
-reflection.vert
 Uniform reflection:
 image_ui2D: offset -1, type 9063, size 1, index -1, binding -1, stages 1
 sampler_2D: offset -1, type 8b5e, size 1, index -1, binding -1, stages 1
