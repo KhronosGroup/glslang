@@ -322,7 +322,7 @@ void ProcessBindingBase(int& argc, char**& argv, glslang::TResourceType res)
 
     for (int lang = langMin; lang < langMax; ++lang) {
         if (!perSetBase.empty())
-            baseBindingForSet[res][lang] = perSetBase;
+            baseBindingForSet[res][lang].insert(perSetBase.begin(), perSetBase.end());
         else
             baseBinding[res][lang] = singleBase;
     }
