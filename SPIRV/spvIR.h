@@ -79,6 +79,11 @@ const MemorySemanticsMask MemorySemanticsAllMemory =
                                       MemorySemanticsAtomicCounterMemoryMask |
                                       MemorySemanticsImageMemoryMask);
 
+struct IdImmediate {
+    bool isId;      // true if word is an Id, false if word is an immediate
+    unsigned word;
+};
+
 //
 // SPIR-V IR instruction.
 //
@@ -349,7 +354,9 @@ public:
 
     Instruction* getInstruction(Id id) const { return idToInstruction[id]; }
     const std::vector<Function*>& getFunctions() const { return functions; }
-    spv::Id getTypeId(Id resultId) const { return idToInstruction[resultId]->getTypeId(); }
+    spv::Id getTypeId(Id resultId) const {
+        return idToInstruction[resultId] == nullptr ? NoType : idToInstruction[resultId]->getTypeId();
+    }
     StorageClass getStorageClass(Id typeId) const
     {
         assert(idToInstruction[typeId]->getOpCode() == spv::OpTypePointer);
