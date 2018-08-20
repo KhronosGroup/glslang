@@ -56,7 +56,6 @@ namespace spv {
 
 #if ENABLE_OPT
     #include "spirv-tools/optimizer.hpp"
-    #include "message.h"
 #endif
 
 #if ENABLE_OPT
@@ -7032,13 +7031,37 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
         spv_target_env target_env = SPV_ENV_UNIVERSAL_1_2;
 
         spvtools::Optimizer optimizer(target_env);
-        optimizer.SetMessageConsumer([](spv_message_level_t level,
-                                         const char* source,
-                                         const spv_position_t& position,
-                                         const char* message) {
-            std::cerr << StringifyMessage(level, source, position, message)
-                      << std::endl;
-        });
+        optimizer.SetMessageConsumer(
+            [](spv_message_level_t level, const char *source, const spv_position_t &position, const char *message) {
+                auto &out = std::cerr;
+                switch (level)
+                {
+                case SPV_MSG_FATAL:
+                case SPV_MSG_INTERNAL_ERROR:
+                case SPV_MSG_ERROR:
+                    out << "error: ";
+                    break;
+                case SPV_MSG_WARNING:
+                    out << "warning: ";
+                    break;
+                case SPV_MSG_INFO:
+                case SPV_MSG_DEBUG:
+                    out << "info: ";
+                    break;
+                default:
+                    break;
+                }
+                if (source)
+                {
+                    out << source << ":";
+                }
+                out << position.line << ":" << position.column << ":" << position.index << ":";
+                if (message)
+                {
+                    out << " " << message;
+                }
+                out << std::endl;
+            });
 
         optimizer.RegisterPass(CreateMergeReturnPass());
         optimizer.RegisterPass(CreateInlineExhaustivePass());
