@@ -56,6 +56,7 @@ namespace spv {
 
 #if ENABLE_OPT
     #include "spirv-tools/optimizer.hpp"
+    #include "spirv-tools/libspirv.h"
 #endif
 
 #if ENABLE_OPT
@@ -7005,7 +7006,49 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
 
 #if ENABLE_OPT
 
+// Translate glslang's view of target versioning to what SPIRV-Tools uses.
+spv_target_env MapToSpirvToolsEnv(const SpvVersion& spvVersion, spv::SpvBuildLogger* logger)
+{
+    switch (spvVersion.vulkan) {
+    case glslang::EShTargetVulkan_1_0: return spv_target_env::SPV_ENV_VULKAN_1_0;
+    case glslang::EShTargetVulkan_1_1: return spv_target_env::SPV_ENV_VULKAN_1_1;
+    default:
+        break;
+    }
+
+    if (spvVersion.openGl > 0)
+        return spv_target_env::SPV_ENV_OPENGL_4_5;
+
+    logger->missingFunctionality("Target version for SPIRV-Tools validator");
+    return spv_target_env::SPV_ENV_UNIVERSAL_1_0;
+}
+
 // Apply the SPIRV-Tools validator to generated SPIR-V.
+void SpirvToolsValidate(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv,
+                        spv::SpvBuildLogger* logger)
+{
+    // validate
+    spv_context context = spvContextCreate(MapToSpirvToolsEnv(intermediate.getSpv(), logger));
+    spv_const_binary_t binary = { spirv.data(), spirv.size() };
+    spv_diagnostic diagnostic = nullptr;
+    spv_validator_options options = spvValidatorOptionsCreate();
+    spvValidatorOptionsSetRelaxBlockLayout(options, intermediate.usingHlslOffsets());
+    spvValidateWithOptions(context, options, &binary, &diagnostic);
+
+    // report
+    if (diagnostic != nullptr) {
+        logger->error("SPIRV-Tools Validation Errors");
+        logger->error(diagnostic->error);
+    }
+
+    // tear down
+    spvValidatorOptionsDestroy(options);
+    spvDiagnosticDestroy(diagnostic);
+    spvContextDestroy(context);
+}
+
+// Apply the SPIRV-Tools optimizer to generated SPIR-V, for the purpose of
+// legalizing HLSL SPIR-V.
 void SpirvToolsLegalize(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv,
                         spv::SpvBuildLogger* logger, const SpvOptions* options)
 {
@@ -7097,6 +7140,8 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
     it.dumpSpv(spirv);
 
 #if ENABLE_OPT
+    SpirvToolsValidate(intermediate, spirv, logger);
+
     // If from HLSL, run spirv-opt to "legalize" the SPIR-V for Vulkan
     // eg. forward and remove memory writes of opaque types.
     if ((intermediate.getSource() == EShSourceHlsl || options->optimizeSize) &&
