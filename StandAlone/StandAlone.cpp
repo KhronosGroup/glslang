@@ -978,6 +978,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                         spvOptions.generateDebugInfo = true;
                     spvOptions.disableOptimizer = (Options & EOptionOptimizeDisable) != 0;
                     spvOptions.optimizeSize = (Options & EOptionOptimizeSize) != 0;
+                    spvOptions.disassemble = SpvToolsDisassembler;
                     glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)stage), spirv, &logger, &spvOptions);
 
                     // Dump the spv to a file or stdout, etc., but only if not doing
@@ -989,13 +990,6 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                         } else {
                             glslang::OutputSpvBin(spirv, GetBinaryName((EShLanguage)stage));
                         }
-#if ENABLE_OPT
-                        if (SpvToolsDisassembler)
-                            spv::SpirvToolsDisassemble(std::cout, spirv);
-#else
-                        if (SpvToolsDisassembler)
-                            printf("SPIRV-Tools is not enabled; use -H for human readable SPIR-V\n");
-#endif
                         if (!SpvToolsDisassembler && (Options & EOptionHumanReadableSpv))
                             spv::Disassemble(std::cout, spirv);
                     }
