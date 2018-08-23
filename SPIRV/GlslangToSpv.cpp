@@ -7015,7 +7015,8 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
     it.dumpSpv(spirv);
 
 #if ENABLE_OPT
-    SpirvToolsValidate(intermediate, spirv, logger);
+    if (options->validate)
+        SpirvToolsValidate(intermediate, spirv, logger);
 
     // If from HLSL, run spirv-opt to "legalize" the SPIR-V for Vulkan
     // eg. forward and remove memory writes of opaque types.

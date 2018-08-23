@@ -103,6 +103,7 @@ enum TOptions {
 };
 bool targetHlslFunctionality1 = false;
 bool SpvToolsDisassembler = false;
+bool SpvToolsValidate = false;
 
 //
 // Return codes from main/exit().
@@ -514,6 +515,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         break;
                     } else if (lowerword == "spirv-dis") {
                         SpvToolsDisassembler = true;
+                    } else if (lowerword == "spirv-val") {
+                        SpvToolsValidate = true;
                     } else if (lowerword == "stdin") {
                         Options |= EOptionStdin;
                         shaderStageName = argv[1];
@@ -979,6 +982,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                     spvOptions.disableOptimizer = (Options & EOptionOptimizeDisable) != 0;
                     spvOptions.optimizeSize = (Options & EOptionOptimizeSize) != 0;
                     spvOptions.disassemble = SpvToolsDisassembler;
+                    spvOptions.validate = SpvToolsValidate;
                     glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)stage), spirv, &logger, &spvOptions);
 
                     // Dump the spv to a file or stdout, etc., but only if not doing
@@ -1421,6 +1425,7 @@ void usage()
            "  --shift-cbuffer-binding | --scb   synonyms for --shift-UBO-binding\n"
            "  --spirv-dis                       output standard-form disassembly; works only\n"
            "                                    when a SPIR-V generation option is also used\n"
+           "  --spirv-val                       execute the SPIRV-Tools validator\n"
            "  --source-entrypoint <name>        the given shader source function is\n"
            "                                    renamed to be the <name> given in -e\n"
            "  --sep                             synonym for --source-entrypoint\n"
