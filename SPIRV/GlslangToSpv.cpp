@@ -6962,7 +6962,7 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, 
     if (out.fail())
         printf("ERROR: Failed to open file: %s\n", baseName);
     out << "\t// " << 
-        glslang::GetSpirvGeneratorVersion() << "." << GLSLANG_MINOR_VERSION << "." << GLSLANG_PATCH_LEVEL <<
+        GetSpirvGeneratorVersion() << "." << GLSLANG_MINOR_VERSION << "." << GLSLANG_PATCH_LEVEL <<
         std::endl;
     if (varName != nullptr) {
         out << "\t #pragma once" << std::endl;
@@ -6989,13 +6989,13 @@ void OutputSpvHex(const std::vector<unsigned int>& spirv, const char* baseName, 
 //
 // Set up the glslang traversal
 //
-void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv, SpvOptions* options)
+void GlslangToSpv(const TIntermediate& intermediate, std::vector<unsigned int>& spirv, SpvOptions* options)
 {
     spv::SpvBuildLogger logger;
     GlslangToSpv(intermediate, spirv, &logger, options);
 }
 
-void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsigned int>& spirv,
+void GlslangToSpv(const TIntermediate& intermediate, std::vector<unsigned int>& spirv,
                   spv::SpvBuildLogger* logger, SpvOptions* options)
 {
     TIntermNode* root = intermediate.getTreeRoot();
@@ -7003,11 +7003,11 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
     if (root == 0)
         return;
 
-    glslang::SpvOptions defaultOptions;
+    SpvOptions defaultOptions;
     if (options == nullptr)
         options = &defaultOptions;
 
-    glslang::GetThreadPoolAllocator().push();
+    GetThreadPoolAllocator().push();
 
     TGlslangToSpvTraverser it(intermediate.getSpv().spv, &intermediate, logger, *options);
     root->traverse(&it);
@@ -7015,20 +7015,20 @@ void GlslangToSpv(const glslang::TIntermediate& intermediate, std::vector<unsign
     it.dumpSpv(spirv);
 
 #if ENABLE_OPT
-    if (options->validate)
-        SpirvToolsValidate(intermediate, spirv, logger);
-
     // If from HLSL, run spirv-opt to "legalize" the SPIR-V for Vulkan
     // eg. forward and remove memory writes of opaque types.
     if ((intermediate.getSource() == EShSourceHlsl || options->optimizeSize) && !options->disableOptimizer)
         SpirvToolsLegalize(intermediate, spirv, logger, options);
 
+    if (options->validate)
+        SpirvToolsValidate(intermediate, spirv, logger);
+
     if (options->disassemble)
-        glslang::SpirvToolsDisassemble(std::cout, spirv);
+        SpirvToolsDisassemble(std::cout, spirv);
 
 #endif
 
-    glslang::GetThreadPoolAllocator().pop();
+    GetThreadPoolAllocator().pop();
 }
 
 }; // end namespace glslang

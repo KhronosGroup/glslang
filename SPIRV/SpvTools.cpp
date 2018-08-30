@@ -180,7 +180,7 @@ void SpirvToolsLegalize(const glslang::TIntermediate& intermediate, std::vector<
     optimizer.RegisterPass(spvtools::CreateAggressiveDCEPass());
     optimizer.RegisterPass(spvtools::CreateCFGCleanupPass());
 
-    optimizer.Run(spirv.data(), spirv.size(), &spirv);
+    optimizer.Run(spirv.data(), spirv.size(), &spirv, spvtools::ValidatorOptions(), true);
 }
 
 #endif
