@@ -183,6 +183,6 @@ void SpirvToolsLegalize(const glslang::TIntermediate& intermediate, std::vector<
     optimizer.Run(spirv.data(), spirv.size(), &spirv, spvtools::ValidatorOptions(), true);
 }
 
-#endif
-
 }; // end namespace glslang
+
+#endif
