@@ -5300,8 +5300,9 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         case EvqBuffer:
         {
             const char* feature = "location qualifier on uniform or buffer";
+            const char* exts[1] = { E_GL_ARB_explicit_uniform_location };
             requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
-            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, feature);
+            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, 1, exts, feature);
             profileRequires(loc, EEsProfile, 310, nullptr, feature);
             break;
         }

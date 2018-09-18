@@ -170,6 +170,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_ARB_texture_cube_map_array]       = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_texture_lod]           = EBhDisable;
     extensionBehavior[E_GL_ARB_explicit_attrib_location]     = EBhDisable;
+    extensionBehavior[E_GL_ARB_explicit_uniform_location]    = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_image_load_store]      = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_atomic_counters]       = EBhDisable;
     extensionBehavior[E_GL_ARB_shader_draw_parameters]       = EBhDisable;
