@@ -5706,7 +5706,7 @@ spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op
         spv::IdImmediate scope = { true, builder.makeUintConstant(spv::ScopeSubgroup) };
         spvGroupOperands.push_back(scope);
         if (groupOperation != spv::GroupOperationMax) {
-            spv::IdImmediate groupOp = { false, groupOperation };
+            spv::IdImmediate groupOp = { false, (unsigned)groupOperation };
             spvGroupOperands.push_back(groupOp);
         }
 #endif
@@ -5903,7 +5903,7 @@ spv::Id TGlslangToSpvTraverser::CreateInvocationsVectorOperation(spv::Op op, spv
         } else {
             spv::IdImmediate scope = { true, builder.makeUintConstant(spv::ScopeSubgroup) };
             spvGroupOperands.push_back(scope);
-            spv::IdImmediate groupOp = { false, groupOperation };
+            spv::IdImmediate groupOp = { false, (unsigned)groupOperation };
             spvGroupOperands.push_back(groupOp);
             spvGroupOperands.push_back(scalar);
         }
@@ -6249,7 +6249,7 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
 
     // Next, for all operations that use a Group Operation, push that as an operand.
     if (groupOperation != spv::GroupOperationMax) {
-        spv::IdImmediate groupOperand = { false, groupOperation };
+        spv::IdImmediate groupOperand = { false, (unsigned)groupOperation };
         spvGroupOperands.push_back(groupOperand);
     }
 
