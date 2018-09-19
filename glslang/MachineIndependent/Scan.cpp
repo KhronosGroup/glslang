@@ -691,6 +691,9 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["__explicitInterpAMD"] =     EXPLICITINTERPAMD;
 #endif
     (*KeywordMap)["centroid"] =                CENTROID;
+#ifdef NV_EXTENSIONS
+    (*KeywordMap)["pervertexNV"] =             PERVERTEXNV;
+#endif
     (*KeywordMap)["precise"] =                 PRECISE;
     (*KeywordMap)["invariant"] =               INVARIANT;
     (*KeywordMap)["packed"] =                  PACKED;
@@ -1503,6 +1506,15 @@ int TScanContext::tokenizeIdentifier()
     case EXPLICITINTERPAMD:
         if (parseContext.profile != EEsProfile && parseContext.version >= 450 &&
             parseContext.extensionTurnedOn(E_GL_AMD_shader_explicit_vertex_parameter))
+            return keyword;
+        return identifierOrType();
+#endif
+
+#ifdef NV_EXTENSIONS
+    case PERVERTEXNV:
+        if (((parseContext.profile != EEsProfile && parseContext.version >= 450) ||
+            (parseContext.profile == EEsProfile && parseContext.version >= 320)) &&
+            parseContext.extensionTurnedOn(E_GL_NV_fragment_shader_barycentric))
             return keyword;
         return identifierOrType();
 #endif

@@ -254,6 +254,7 @@ const char* DecorationString(int decoration)
     case DecorationPassthroughNV:               return "PassthroughNV";
     case DecorationViewportRelativeNV:          return "ViewportRelativeNV";
     case DecorationSecondaryViewportRelativeNV: return "SecondaryViewportRelativeNV";
+    case DecorationPerVertexNV:                 return "PerVertexNV";
 #endif
 
     case DecorationNonUniformEXT:           return "DecorationNonUniformEXT";
@@ -338,6 +339,8 @@ const char* BuiltInString(int builtIn)
     case 5258: return "SecondaryViewportMaskNV";
     case 5261: return "PositionPerViewNV";
     case 5262: return "ViewportMaskPerViewNV";
+    case BuiltInBaryCoordNV:        return "BaryCoordNV";
+    case BuiltInBaryCoordNoPerspNV: return "BaryCoordNoPerspNV";
 #endif
 
     case 5264: return "FullyCoveredEXT";
@@ -826,6 +829,7 @@ const char* CapabilityString(int info)
     case CapabilityShaderStereoViewNV:           return "ShaderStereoViewNV";
     case CapabilityPerViewAttributesNV:          return "PerViewAttributesNV";
     case CapabilityGroupNonUniformPartitionedNV: return "GroupNonUniformPartitionedNV";
+    case CapabilityFragmentBarycentricNV:        return "FragmentBarycentricNV";
 #endif
 
     case CapabilityFragmentFullyCoveredEXT: return "FragmentFullyCoveredEXT";

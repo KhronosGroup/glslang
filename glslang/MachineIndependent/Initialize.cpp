@@ -5734,6 +5734,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangFragment].append(
                 "in bool gl_FragFullyCoveredNV;"
                 );
+        if (version >= 450)
+            stageBuiltins[EShLangFragment].append(
+                "in vec3 gl_BaryCoordNV;"
+                "in vec3 gl_BaryCoordNoPerspNV;"
+            );
 #endif
     } else {
         // ES profile
@@ -5775,6 +5780,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangFragment].append(
             "highp float gl_FragDepthEXT;"       // GL_EXT_frag_depth
             );
+#ifdef NV_EXTENSIONS
+        if (version >= 320)
+            stageBuiltins[EShLangFragment].append(
+                "in vec3 gl_BaryCoordNV;"
+                "in vec3 gl_BaryCoordNoPerspNV;"
+            );
+#endif
     }
     stageBuiltins[EShLangFragment].append("\n");
 
@@ -7903,6 +7915,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         if (profile != EEsProfile && version >= 430) {
             symbolTable.setVariableExtensions("gl_FragFullyCoveredNV", 1, &E_GL_NV_conservative_raster_underestimation);
             BuiltInVariable("gl_FragFullyCoveredNV", EbvFragFullyCoveredNV, symbolTable);
+        }
+        if ((profile != EEsProfile && version >= 450) ||
+            (profile == EEsProfile && version >= 320)) {
+            symbolTable.setVariableExtensions("gl_BaryCoordNV",        1, &E_GL_NV_fragment_shader_barycentric);
+            symbolTable.setVariableExtensions("gl_BaryCoordNoPerspNV", 1, &E_GL_NV_fragment_shader_barycentric);
+            BuiltInVariable("gl_BaryCoordNV",        EbvBaryCoordNV,        symbolTable);
+            BuiltInVariable("gl_BaryCoordNoPerspNV", EbvBaryCoordNoPerspNV, symbolTable);
         }
 #endif
 

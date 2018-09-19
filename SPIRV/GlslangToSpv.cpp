@@ -827,6 +827,14 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addExtension(spv::E_SPV_EXT_fragment_fully_covered);
         builder.addCapability(spv::CapabilityFragmentFullyCoveredEXT);
         return spv::BuiltInFullyCoveredEXT;
+    case glslang::EbvBaryCoordNV:
+        builder.addExtension(spv::E_SPV_NV_fragment_shader_barycentric);
+        builder.addCapability(spv::CapabilityFragmentBarycentricNV);
+        return spv::BuiltInBaryCoordNV;
+    case glslang::EbvBaryCoordNoPerspNV:
+        builder.addExtension(spv::E_SPV_NV_fragment_shader_barycentric);
+        builder.addCapability(spv::CapabilityFragmentBarycentricNV);
+        return spv::BuiltInBaryCoordNoPerspNV;
 #endif 
     default:
         return spv::BuiltInMax;
@@ -6857,6 +6865,11 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         builder.addDecoration(id, spv::DecorationPassthroughNV);
         builder.addCapability(spv::CapabilityGeometryShaderPassthroughNV);
         builder.addExtension(spv::E_SPV_NV_geometry_shader_passthrough);
+    }
+    if (symbol->getQualifier().pervertexNV) {
+        builder.addDecoration(id, spv::DecorationPerVertexNV);
+        builder.addCapability(spv::CapabilityFragmentBarycentricNV);
+        builder.addExtension(spv::E_SPV_NV_fragment_shader_barycentric);
     }
 #endif
 

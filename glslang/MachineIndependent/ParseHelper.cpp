@@ -496,7 +496,12 @@ bool TParseContext::isIoResizeArray(const TType& type) const
 {
     return type.isArray() &&
            ((language == EShLangGeometry    && type.getQualifier().storage == EvqVaryingIn) ||
-            (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut && ! type.getQualifier().patch));
+            (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut && ! type.getQualifier().patch)
+#ifdef NV_EXTENSIONS
+            ||
+            (language == EShLangFragment && type.getQualifier().storage == EvqVaryingIn &&  type.getQualifier().pervertexNV)
+#endif
+            );
 }
 
 // If an array is not isIoResizeArray() but is an io array, make sure it has the right size
@@ -569,7 +574,12 @@ void TParseContext::checkIoArraysConsistency(const TSourceLoc& loc, bool tailOnl
     const char* feature;
     if (language == EShLangGeometry)
         feature = TQualifier::getGeometryString(intermediate.getInputPrimitive());
-    else if (language == EShLangTessControl)
+    else if (language == EShLangTessControl
+#ifdef NV_EXTENSIONS
+          || language == EShLangFragment
+#endif
+        )
+
         feature = "vertices";
     else
         feature = "unknown";
@@ -589,6 +599,11 @@ int TParseContext::getIoArrayImplicitSize() const
         return TQualifier::mapGeometryToSize(intermediate.getInputPrimitive());
     else if (language == EShLangTessControl)
         return intermediate.getVertices() != TQualifier::layoutNotSet ? intermediate.getVertices() : 0;
+#ifdef NV_EXTENSIONS
+    else if (language == EShLangFragment)
+        return 3; //Number of vertices for Fragment shader is always three.
+#endif
+
     else
         return 0;
 }
@@ -602,6 +617,12 @@ void TParseContext::checkIoArrayConsistency(const TSourceLoc& loc, int requiredS
             error(loc, "inconsistent input primitive for array size of", feature, name.c_str());
         else if (language == EShLangTessControl)
             error(loc, "inconsistent output number of vertices for array size of", feature, name.c_str());
+#ifdef NV_EXTENSIONS
+        else if (language == EShLangFragment) {
+            if (type.getOuterArraySize() > requiredSize)
+                error(loc, " cannot be greater than 3 for pervertexNV", feature, name.c_str());
+        }
+#endif
         else
             assert(0);
     }
@@ -3020,11 +3041,14 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
     if (isTypeInt(publicType.basicType) || publicType.basicType == EbtDouble)
         profileRequires(loc, EEsProfile, 300, nullptr, "shader input/output");
 
+    if (!qualifier.flat
 #ifdef AMD_EXTENSIONS
-    if (! qualifier.flat && ! qualifier.explicitInterp) {
-#else
-    if (!qualifier.flat) {
+        && !qualifier.explicitInterp
 #endif
+#ifdef NV_EXTENSIONS
+        && !qualifier.pervertexNV
+#endif
+        ) {
         if (isTypeInt(publicType.basicType) ||
             publicType.basicType == EbtDouble ||
             (publicType.userDef && (publicType.userDef->containsBasicType(EbtInt8)   ||
@@ -4939,6 +4963,8 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
             dst.layoutViewportRelative = true;
         if (src.layoutSecondaryViewportRelativeOffset != -2048)
             dst.layoutSecondaryViewportRelativeOffset = src.layoutSecondaryViewportRelativeOffset;
+        if (src.pervertexNV)
+            dst.pervertexNV = true;
 #endif
     }
 }

@@ -207,7 +207,7 @@ const char* const E_GL_NV_shader_atomic_int64                   = "GL_NV_shader_
 const char* const E_GL_NV_conservative_raster_underestimation   = "GL_NV_conservative_raster_underestimation";
 const char* const E_GL_NV_shader_noperspective_interpolation    = "GL_NV_shader_noperspective_interpolation";
 const char* const E_GL_NV_shader_subgroup_partitioned           = "GL_NV_shader_subgroup_partitioned";
-
+const char* const E_GL_NV_fragment_shader_barycentric           = "GL_NV_fragment_shader_barycentric";
 // Arrays of extensions for the above viewportEXTs duplications
 
 const char* const viewportEXTs[] = { E_GL_ARB_shader_viewport_layer_array, E_GL_NV_viewport_array2 };

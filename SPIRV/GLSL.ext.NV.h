@@ -33,7 +33,7 @@ enum Op;
 enum Capability;
 
 static const int GLSLextNVVersion = 100;
-static const int GLSLextNVRevision = 5;
+static const int GLSLextNVRevision = 6;
 
 //SPV_NV_sample_mask_override_coverage
 const char* const E_SPV_NV_sample_mask_override_coverage = "SPV_NV_sample_mask_override_coverage";
@@ -53,5 +53,8 @@ const char* const E_SPV_NVX_multiview_per_view_attributes = "SPV_NVX_multiview_p
 
 //SPV_NV_shader_subgroup_partitioned
 const char* const E_SPV_NV_shader_subgroup_partitioned = "SPV_NV_shader_subgroup_partitioned";
+
+//SPV_NV_fragment_shader_barycentric
+const char* const E_SPV_NV_fragment_shader_barycentric = "SPV_NV_fragment_shader_barycentric";
 
 #endif  // #ifndef GLSLextNV_H

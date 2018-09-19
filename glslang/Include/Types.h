@@ -457,6 +457,9 @@ public:
 #ifdef AMD_EXTENSIONS
         explicitInterp = false;
 #endif
+#ifdef NV_EXTENSIONS
+        pervertexNV = false;
+#endif
     }
 
     void clearMemory()
@@ -501,6 +504,9 @@ public:
 #ifdef AMD_EXTENSIONS
     bool explicitInterp : 1;
 #endif
+#ifdef NV_EXTENSIONS
+    bool pervertexNV  : 1;
+#endif
     bool patch        : 1;
     bool sample       : 1;
     bool coherent     : 1;
@@ -524,6 +530,7 @@ public:
     {
         return subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || volatil || restrict || readonly || writeonly;
     }
+
     bool isInterpolation() const
     {
 #ifdef AMD_EXTENSIONS
@@ -532,15 +539,21 @@ public:
         return flat || smooth || nopersp;
 #endif
     }
+
 #ifdef AMD_EXTENSIONS
     bool isExplicitInterpolation() const
     {
         return explicitInterp;
     }
 #endif
+
     bool isAuxiliary() const
     {
+#ifdef NV_EXTENSIONS
+        return centroid || patch || sample || pervertexNV;
+#else
         return centroid || patch || sample;
+#endif
     }
 
     bool isPipeInput() const
@@ -656,6 +669,11 @@ public:
             return ! patch && (isPipeInput() || isPipeOutput());
         case EShLangTessEvaluation:
             return ! patch && isPipeInput();
+#ifdef NV_EXTENSIONS
+        case EShLangFragment:
+            return pervertexNV && isPipeInput();
+#endif
+
         default:
             return false;
         }
@@ -1720,6 +1738,10 @@ public:
 #ifdef AMD_EXTENSIONS
         if (qualifier.explicitInterp)
             appendStr(" __explicitInterpAMD");
+#endif
+#ifdef NV_EXTENSIONS
+        if (qualifier.pervertexNV)
+            appendStr(" pervertexNV");
 #endif
         if (qualifier.patch)
             appendStr(" patch");

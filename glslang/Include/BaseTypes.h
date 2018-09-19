@@ -227,6 +227,8 @@ enum TBuiltInVariable {
     EbvPositionPerViewNV,
     EbvViewportMaskPerViewNV,
     EbvFragFullyCoveredNV,
+    EbvBaryCoordNV,
+    EbvBaryCoordNoPerspNV,
 #endif 
 
     // HLSL built-ins that live only temporarily, until they get remapped
@@ -365,6 +367,8 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvPositionPerViewNV:          return "PositionPerViewNV";
     case EbvViewportMaskPerViewNV:      return "ViewportMaskPerViewNV";
     case EbvFragFullyCoveredNV:         return "FragFullyCoveredNV";
+    case EbvBaryCoordNV:                return "BaryCoordNV";
+    case EbvBaryCoordNoPerspNV:         return "BaryCoordNoPerspNV";
 #endif 
     default:                      return "unknown built-in variable";
     }

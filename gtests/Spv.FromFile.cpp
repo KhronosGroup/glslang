@@ -501,6 +501,8 @@ INSTANTIATE_TEST_CASE_P(
     "spv.multiviewPerViewAttributes.vert",
     "spv.multiviewPerViewAttributes.tesc",
     "spv.atomicInt64.comp",
+    "spv.fragmentShaderBarycentric.frag",
+    "spv.fragmentShaderBarycentric2.frag",
 })),
 FileNameAsCustomTestSuffix
 );
