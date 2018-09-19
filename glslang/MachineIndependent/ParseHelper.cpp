@@ -4623,6 +4623,18 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             return;
         }
     }
+    if (language == EShLangCompute) {
+        if (id.compare(0, 17, "derivative_group_") == 0) {
+            requireExtensions(loc, 1, &E_GL_NV_compute_shader_derivatives, "compute shader derivatives");
+            if (id == "derivative_group_quadsnv") {
+                publicType.shaderQualifiers.layoutDerivativeGroupQuads = true;
+                return;
+            } else if (id == "derivative_group_linearnv") {
+                publicType.shaderQualifiers.layoutDerivativeGroupLinear = true;
+                return;
+            }
+        }
+    }
 #else
     }
 #endif
@@ -7027,6 +7039,36 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             error(loc, "can only apply to 'out'", "blend equation", "");
     }
 
+#ifdef NV_EXTENSIONS
+    if (publicType.shaderQualifiers.layoutDerivativeGroupQuads &&
+        publicType.shaderQualifiers.layoutDerivativeGroupLinear) {
+        error(loc, "cannot be both specified", "derivative_group_quadsNV and derivative_group_linearNV", "");
+    }
+
+    if (publicType.shaderQualifiers.layoutDerivativeGroupQuads) {
+        if (publicType.qualifier.storage == EvqVaryingIn) {
+            if ((intermediate.getLocalSize(0) & 1) ||
+                (intermediate.getLocalSize(1) & 1))
+                error(loc, "requires local_size_x and local_size_y to be multiple of two", "derivative_group_quadsNV", "");
+            else
+                intermediate.setLayoutDerivativeMode(LayoutDerivativeGroupQuads);
+        }
+        else
+            error(loc, "can only apply to 'in'", "derivative_group_quadsNV", "");
+    }
+    if (publicType.shaderQualifiers.layoutDerivativeGroupLinear) {
+        if (publicType.qualifier.storage == EvqVaryingIn) {
+            if((intermediate.getLocalSize(0) *
+                intermediate.getLocalSize(1) *
+                intermediate.getLocalSize(2)) % 4 != 0)
+                error(loc, "requires total group size to be multiple of four", "derivative_group_linearNV", "");
+            else
+                intermediate.setLayoutDerivativeMode(LayoutDerivativeGroupLinear);
+        }
+        else
+            error(loc, "can only apply to 'in'", "derivative_group_linearNV", "");
+    }
+#endif 
     const TQualifier& qualifier = publicType.qualifier;
 
     if (qualifier.isAuxiliary() ||

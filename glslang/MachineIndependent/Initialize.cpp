@@ -124,6 +124,158 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 {
     //============================================================================
     //
+    // Prototypes for built-in functions used repeatly by different shaders
+    //
+    //============================================================================
+
+    //
+    // Derivatives Functions.
+    //
+    TString derivatives (
+        "float dFdx(float p);"
+        "vec2  dFdx(vec2  p);"
+        "vec3  dFdx(vec3  p);"
+        "vec4  dFdx(vec4  p);"
+
+        "float dFdy(float p);"
+        "vec2  dFdy(vec2  p);"
+        "vec3  dFdy(vec3  p);"
+        "vec4  dFdy(vec4  p);"
+
+        "float fwidth(float p);"
+        "vec2  fwidth(vec2  p);"
+        "vec3  fwidth(vec3  p);"
+        "vec4  fwidth(vec4  p);"
+    );
+
+    TString derivativeControls (
+        "float dFdxFine(float p);"
+        "vec2  dFdxFine(vec2  p);"
+        "vec3  dFdxFine(vec3  p);"
+        "vec4  dFdxFine(vec4  p);"
+
+        "float dFdyFine(float p);"
+        "vec2  dFdyFine(vec2  p);"
+        "vec3  dFdyFine(vec3  p);"
+        "vec4  dFdyFine(vec4  p);"
+
+        "float fwidthFine(float p);"
+        "vec2  fwidthFine(vec2  p);"
+        "vec3  fwidthFine(vec3  p);"
+        "vec4  fwidthFine(vec4  p);"
+
+        "float dFdxCoarse(float p);"
+        "vec2  dFdxCoarse(vec2  p);"
+        "vec3  dFdxCoarse(vec3  p);"
+        "vec4  dFdxCoarse(vec4  p);"
+
+        "float dFdyCoarse(float p);"
+        "vec2  dFdyCoarse(vec2  p);"
+        "vec3  dFdyCoarse(vec3  p);"
+        "vec4  dFdyCoarse(vec4  p);"
+
+        "float fwidthCoarse(float p);"
+        "vec2  fwidthCoarse(vec2  p);"
+        "vec3  fwidthCoarse(vec3  p);"
+        "vec4  fwidthCoarse(vec4  p);"
+    );
+
+    TString derivativesAndControl16bits (
+        "float16_t dFdx(float16_t);"
+        "f16vec2   dFdx(f16vec2);"
+        "f16vec3   dFdx(f16vec3);"
+        "f16vec4   dFdx(f16vec4);"
+
+        "float16_t dFdy(float16_t);"
+        "f16vec2   dFdy(f16vec2);"
+        "f16vec3   dFdy(f16vec3);"
+        "f16vec4   dFdy(f16vec4);"
+
+        "float16_t dFdxFine(float16_t);"
+        "f16vec2   dFdxFine(f16vec2);"
+        "f16vec3   dFdxFine(f16vec3);"
+        "f16vec4   dFdxFine(f16vec4);"
+
+        "float16_t dFdyFine(float16_t);"
+        "f16vec2   dFdyFine(f16vec2);"
+        "f16vec3   dFdyFine(f16vec3);"
+        "f16vec4   dFdyFine(f16vec4);"
+
+        "float16_t dFdxCoarse(float16_t);"
+        "f16vec2   dFdxCoarse(f16vec2);"
+        "f16vec3   dFdxCoarse(f16vec3);"
+        "f16vec4   dFdxCoarse(f16vec4);"
+
+        "float16_t dFdyCoarse(float16_t);"
+        "f16vec2   dFdyCoarse(f16vec2);"
+        "f16vec3   dFdyCoarse(f16vec3);"
+        "f16vec4   dFdyCoarse(f16vec4);"
+
+        "float16_t fwidth(float16_t);"
+        "f16vec2   fwidth(f16vec2);"
+        "f16vec3   fwidth(f16vec3);"
+        "f16vec4   fwidth(f16vec4);"
+
+        "float16_t fwidthFine(float16_t);"
+        "f16vec2   fwidthFine(f16vec2);"
+        "f16vec3   fwidthFine(f16vec3);"
+        "f16vec4   fwidthFine(f16vec4);"
+
+        "float16_t fwidthCoarse(float16_t);"
+        "f16vec2   fwidthCoarse(f16vec2);"
+        "f16vec3   fwidthCoarse(f16vec3);"
+        "f16vec4   fwidthCoarse(f16vec4);"
+    );
+
+    TString derivativesAndControl64bits (
+        "float64_t dFdx(float64_t);"
+        "f64vec2   dFdx(f64vec2);"
+        "f64vec3   dFdx(f64vec3);"
+        "f64vec4   dFdx(f64vec4);"
+
+        "float64_t dFdy(float64_t);"
+        "f64vec2   dFdy(f64vec2);"
+        "f64vec3   dFdy(f64vec3);"
+        "f64vec4   dFdy(f64vec4);"
+
+        "float64_t dFdxFine(float64_t);"
+        "f64vec2   dFdxFine(f64vec2);"
+        "f64vec3   dFdxFine(f64vec3);"
+        "f64vec4   dFdxFine(f64vec4);"
+
+        "float64_t dFdyFine(float64_t);"
+        "f64vec2   dFdyFine(f64vec2);"
+        "f64vec3   dFdyFine(f64vec3);"
+        "f64vec4   dFdyFine(f64vec4);"
+
+        "float64_t dFdxCoarse(float64_t);"
+        "f64vec2   dFdxCoarse(f64vec2);"
+        "f64vec3   dFdxCoarse(f64vec3);"
+        "f64vec4   dFdxCoarse(f64vec4);"
+
+        "float64_t dFdyCoarse(float64_t);"
+        "f64vec2   dFdyCoarse(f64vec2);"
+        "f64vec3   dFdyCoarse(f64vec3);"
+        "f64vec4   dFdyCoarse(f64vec4);"
+
+        "float64_t fwidth(float64_t);"
+        "f64vec2   fwidth(f64vec2);"
+        "f64vec3   fwidth(f64vec3);"
+        "f64vec4   fwidth(f64vec4);"
+
+        "float64_t fwidthFine(float64_t);"
+        "f64vec2   fwidthFine(f64vec2);"
+        "f64vec3   fwidthFine(f64vec3);"
+        "f64vec4   fwidthFine(f64vec4);"
+
+        "float64_t fwidthCoarse(float64_t);"
+        "f64vec2   fwidthCoarse(f64vec2);"
+        "f64vec3   fwidthCoarse(f64vec3);"
+        "f64vec4   fwidthCoarse(f64vec4);"
+    );
+
+    //============================================================================
+    //
     // Prototypes for built-in functions seen by both vertex and fragment shaders.
     //
     //============================================================================
@@ -4550,52 +4702,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
         }
         if (profile != EEsProfile && version >= 450) {
+            stageBuiltins[EShLangFragment].append(derivativesAndControl64bits);
             stageBuiltins[EShLangFragment].append(
-                "float64_t dFdx(float64_t);"
-                "f64vec2   dFdx(f64vec2);"
-                "f64vec3   dFdx(f64vec3);"
-                "f64vec4   dFdx(f64vec4);"
-
-                "float64_t dFdy(float64_t);"
-                "f64vec2   dFdy(f64vec2);"
-                "f64vec3   dFdy(f64vec3);"
-                "f64vec4   dFdy(f64vec4);"
-
-                "float64_t dFdxFine(float64_t);"
-                "f64vec2   dFdxFine(f64vec2);"
-                "f64vec3   dFdxFine(f64vec3);"
-                "f64vec4   dFdxFine(f64vec4);"
-
-                "float64_t dFdyFine(float64_t);"
-                "f64vec2   dFdyFine(f64vec2);"
-                "f64vec3   dFdyFine(f64vec3);"
-                "f64vec4   dFdyFine(f64vec4);"
-
-                "float64_t dFdxCoarse(float64_t);"
-                "f64vec2   dFdxCoarse(f64vec2);"
-                "f64vec3   dFdxCoarse(f64vec3);"
-                "f64vec4   dFdxCoarse(f64vec4);"
-
-                "float64_t dFdyCoarse(float64_t);"
-                "f64vec2   dFdyCoarse(f64vec2);"
-                "f64vec3   dFdyCoarse(f64vec3);"
-                "f64vec4   dFdyCoarse(f64vec4);"
-
-                "float64_t fwidth(float64_t);"
-                "f64vec2   fwidth(f64vec2);"
-                "f64vec3   fwidth(f64vec3);"
-                "f64vec4   fwidth(f64vec4);"
-
-                "float64_t fwidthFine(float64_t);"
-                "f64vec2   fwidthFine(f64vec2);"
-                "f64vec3   fwidthFine(f64vec3);"
-                "f64vec4   fwidthFine(f64vec4);"
-
-                "float64_t fwidthCoarse(float64_t);"
-                "f64vec2   fwidthCoarse(f64vec2);"
-                "f64vec3   fwidthCoarse(f64vec3);"
-                "f64vec4   fwidthCoarse(f64vec4);"
-
                 "float64_t interpolateAtCentroid(float64_t);"
                 "f64vec2   interpolateAtCentroid(f64vec2);"
                 "f64vec3   interpolateAtCentroid(f64vec3);"
@@ -4784,61 +4892,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-    stageBuiltins[EShLangFragment].append(
-        "float dFdx(float p);"
-        "vec2  dFdx(vec2  p);"
-        "vec3  dFdx(vec3  p);"
-        "vec4  dFdx(vec4  p);"
-
-        "float dFdy(float p);"
-        "vec2  dFdy(vec2  p);"
-        "vec3  dFdy(vec3  p);"
-        "vec4  dFdy(vec4  p);"
-
-        "float fwidth(float p);"
-        "vec2  fwidth(vec2  p);"
-        "vec3  fwidth(vec3  p);"
-        "vec4  fwidth(vec4  p);"
-
-        "\n");
+    stageBuiltins[EShLangFragment].append(derivatives);
+    stageBuiltins[EShLangFragment].append("\n");
 
     // GL_ARB_derivative_control
     if (profile != EEsProfile && version >= 400) {
-        stageBuiltins[EShLangFragment].append(
-            "float dFdxFine(float p);"
-            "vec2  dFdxFine(vec2  p);"
-            "vec3  dFdxFine(vec3  p);"
-            "vec4  dFdxFine(vec4  p);"
-
-            "float dFdyFine(float p);"
-            "vec2  dFdyFine(vec2  p);"
-            "vec3  dFdyFine(vec3  p);"
-            "vec4  dFdyFine(vec4  p);"
-
-            "float fwidthFine(float p);"
-            "vec2  fwidthFine(vec2  p);"
-            "vec3  fwidthFine(vec3  p);"
-            "vec4  fwidthFine(vec4  p);"
-
-            "\n");
-
-        stageBuiltins[EShLangFragment].append(
-            "float dFdxCoarse(float p);"
-            "vec2  dFdxCoarse(vec2  p);"
-            "vec3  dFdxCoarse(vec3  p);"
-            "vec4  dFdxCoarse(vec4  p);"
-
-            "float dFdyCoarse(float p);"
-            "vec2  dFdyCoarse(vec2  p);"
-            "vec3  dFdyCoarse(vec3  p);"
-            "vec4  dFdyCoarse(vec4  p);"
-
-            "float fwidthCoarse(float p);"
-            "vec2  fwidthCoarse(vec2  p);"
-            "vec3  fwidthCoarse(vec3  p);"
-            "vec4  fwidthCoarse(vec4  p);"
-
-            "\n");
+        stageBuiltins[EShLangFragment].append(derivativeControls);
+        stageBuiltins[EShLangFragment].append("\n");
     }
 
     // GL_OES_shader_multisample_interpolation
@@ -4892,52 +4952,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
     // GL_AMD_gpu_shader_half_float
     if (profile != EEsProfile && version >= 450) {
+        stageBuiltins[EShLangFragment].append(derivativesAndControl16bits);
+        stageBuiltins[EShLangFragment].append("\n");
+
         stageBuiltins[EShLangFragment].append(
-            "float16_t dFdx(float16_t);"
-            "f16vec2   dFdx(f16vec2);"
-            "f16vec3   dFdx(f16vec3);"
-            "f16vec4   dFdx(f16vec4);"
-
-            "float16_t dFdy(float16_t);"
-            "f16vec2   dFdy(f16vec2);"
-            "f16vec3   dFdy(f16vec3);"
-            "f16vec4   dFdy(f16vec4);"
-
-            "float16_t dFdxFine(float16_t);"
-            "f16vec2   dFdxFine(f16vec2);"
-            "f16vec3   dFdxFine(f16vec3);"
-            "f16vec4   dFdxFine(f16vec4);"
-
-            "float16_t dFdyFine(float16_t);"
-            "f16vec2   dFdyFine(f16vec2);"
-            "f16vec3   dFdyFine(f16vec3);"
-            "f16vec4   dFdyFine(f16vec4);"
-
-            "float16_t dFdxCoarse(float16_t);"
-            "f16vec2   dFdxCoarse(f16vec2);"
-            "f16vec3   dFdxCoarse(f16vec3);"
-            "f16vec4   dFdxCoarse(f16vec4);"
-
-            "float16_t dFdyCoarse(float16_t);"
-            "f16vec2   dFdyCoarse(f16vec2);"
-            "f16vec3   dFdyCoarse(f16vec3);"
-            "f16vec4   dFdyCoarse(f16vec4);"
-
-            "float16_t fwidth(float16_t);"
-            "f16vec2   fwidth(f16vec2);"
-            "f16vec3   fwidth(f16vec3);"
-            "f16vec4   fwidth(f16vec4);"
-
-            "float16_t fwidthFine(float16_t);"
-            "f16vec2   fwidthFine(f16vec2);"
-            "f16vec3   fwidthFine(f16vec3);"
-            "f16vec4   fwidthFine(f16vec4);"
-
-            "float16_t fwidthCoarse(float16_t);"
-            "f16vec2   fwidthCoarse(f16vec2);"
-            "f16vec3   fwidthCoarse(f16vec3);"
-            "f16vec4   fwidthCoarse(f16vec4);"
-
             "float16_t interpolateAtCentroid(float16_t);"
             "f16vec2   interpolateAtCentroid(f16vec2);"
             "f16vec3   interpolateAtCentroid(f16vec3);"
@@ -4969,6 +4987,22 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
         }
+#endif
+
+#ifdef NV_EXTENSIONS
+    //E_SPV_NV_compute_shader_derivatives
+    
+    stageBuiltins[EShLangCompute].append(derivatives);
+    stageBuiltins[EShLangCompute].append(derivativeControls);
+    stageBuiltins[EShLangCompute].append("\n");
+    
+
+    if (profile != EEsProfile && version >= 450) {
+
+        stageBuiltins[EShLangCompute].append(derivativesAndControl16bits);
+        stageBuiltins[EShLangCompute].append(derivativesAndControl64bits);
+        stageBuiltins[EShLangCompute].append("\n");
+    }
 #endif
 
     //============================================================================
@@ -6114,6 +6148,18 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
 #ifdef AMD_EXTENSIONS
         }
 #endif
+
+#ifdef NV_EXTENSIONS
+        stageBuiltins[EShLangCompute].append("vec2 textureQueryLod(");
+        stageBuiltins[EShLangCompute].append(typeName);
+        if (dimMap[sampler.dim] == 1)
+            stageBuiltins[EShLangCompute].append(", float");
+        else {
+            stageBuiltins[EShLangCompute].append(", vec");
+            stageBuiltins[EShLangCompute].append(postfixes[dimMap[sampler.dim]]);
+        }
+        stageBuiltins[EShLangCompute].append(");\n");
+#endif
     }
 
     //
@@ -6594,9 +6640,12 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                             s.append(");\n");
 
                                             // Add to the per-language set of built-ins
-                                            if (bias || lodClamp)
+                                            if (bias || lodClamp) {
                                                 stageBuiltins[EShLangFragment].append(s);
-                                            else
+#ifdef NV_EXTENSIONS
+                                                stageBuiltins[EShLangCompute].append(s);
+#endif
+                                            } else
                                                 commonBuiltins.append(s);
 
                                         }
@@ -7923,6 +7972,19 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_BaryCoordNV",        EbvBaryCoordNV,        symbolTable);
             BuiltInVariable("gl_BaryCoordNoPerspNV", EbvBaryCoordNoPerspNV, symbolTable);
         }
+        if (((profile != EEsProfile && version >= 450) ||
+            (profile == EEsProfile && version >= 320)) &&
+            language == EShLangCompute) {
+            symbolTable.setFunctionExtensions("dFdx",                   1, &E_GL_NV_compute_shader_derivatives);
+            symbolTable.setFunctionExtensions("dFdy",                   1, &E_GL_NV_compute_shader_derivatives);
+            symbolTable.setFunctionExtensions("fwidth",                 1, &E_GL_NV_compute_shader_derivatives);
+            symbolTable.setFunctionExtensions("dFdxFine",               1, &E_GL_NV_compute_shader_derivatives);
+            symbolTable.setFunctionExtensions("dFdyFine",               1, &E_GL_NV_compute_shader_derivatives);
+            symbolTable.setFunctionExtensions("fwidthFine",             1, &E_GL_NV_compute_shader_derivatives);
+            symbolTable.setFunctionExtensions("dFdxCoarse",             1, &E_GL_NV_compute_shader_derivatives);
+            symbolTable.setFunctionExtensions("dFdyCoarse",             1, &E_GL_NV_compute_shader_derivatives);
+            symbolTable.setFunctionExtensions("fwidthCoarse",           1, &E_GL_NV_compute_shader_derivatives);
+        }
 #endif
 
         symbolTable.setVariableExtensions("gl_FragDepthEXT", 1, &E_GL_EXT_frag_depth);
@@ -8711,6 +8773,20 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("memoryBarrierShared",         EOpMemoryBarrierShared);
         symbolTable.relateToOperator("groupMemoryBarrier",          EOpGroupMemoryBarrier);
         symbolTable.relateToOperator("subgroupMemoryBarrierShared", EOpSubgroupMemoryBarrierShared);
+#ifdef NV_EXTENSIONS
+        if ((profile != EEsProfile && version >= 450) ||
+            (profile == EEsProfile && version >= 320)) {
+            symbolTable.relateToOperator("dFdx",        EOpDPdx);
+            symbolTable.relateToOperator("dFdy",        EOpDPdy);
+            symbolTable.relateToOperator("fwidth",      EOpFwidth);
+            symbolTable.relateToOperator("dFdxFine",    EOpDPdxFine);
+            symbolTable.relateToOperator("dFdyFine",    EOpDPdyFine);
+            symbolTable.relateToOperator("fwidthFine",  EOpFwidthFine);
+            symbolTable.relateToOperator("dFdxCoarse",  EOpDPdxCoarse);
+            symbolTable.relateToOperator("dFdyCoarse",  EOpDPdyCoarse);
+            symbolTable.relateToOperator("fwidthCoarse",EOpFwidthCoarse);
+        }
+#endif
         break;
 
     default:

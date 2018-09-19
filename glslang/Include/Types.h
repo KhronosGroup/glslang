@@ -1066,7 +1066,9 @@ struct TShaderQualifiers {
     int numViews;             // multiview extenstions
 
 #ifdef NV_EXTENSIONS
-    bool layoutOverrideCoverage;    // true if layout override_coverage set
+    bool layoutOverrideCoverage;        // true if layout override_coverage set
+    bool layoutDerivativeGroupQuads;    // true if layout derivative_group_quadsNV set
+    bool layoutDerivativeGroupLinear;   // true if layout derivative_group_linearNV set
 #endif
 
     void init()
@@ -1092,6 +1094,9 @@ struct TShaderQualifiers {
         numViews = TQualifier::layoutNotSet;
 #ifdef NV_EXTENSIONS
         layoutOverrideCoverage = false;
+        layoutDerivativeGroupQuads = false;
+        layoutDerivativeGroupLinear = false;
+
 #endif
     }
 
@@ -1136,6 +1141,10 @@ struct TShaderQualifiers {
 #ifdef NV_EXTENSIONS
         if (src.layoutOverrideCoverage)
             layoutOverrideCoverage = src.layoutOverrideCoverage;
+        if (src.layoutDerivativeGroupQuads)
+            layoutDerivativeGroupQuads = src.layoutDerivativeGroupQuads;
+        if (src.layoutDerivativeGroupLinear)
+            layoutDerivativeGroupLinear = src.layoutDerivativeGroupLinear;
 #endif
     }
 };

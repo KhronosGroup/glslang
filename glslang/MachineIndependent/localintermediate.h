@@ -206,6 +206,17 @@ class TSymbolTable;
 class TSymbol;
 class TVariable;
 
+#ifdef NV_EXTENSIONS
+//
+// Texture and Sampler transformation mode.
+//
+enum ComputeDerivativeMode {
+    LayoutDerivativeNone,         // default layout as SPV_NV_compute_shader_derivatives not enabled
+    LayoutDerivativeGroupQuads,   // derivative_group_quadsNV
+    LayoutDerivativeGroupLinear,  // derivative_group_linearNV
+};
+#endif
+
 //
 // Set of helper functions to help parse and build the tree.
 //
@@ -225,6 +236,7 @@ public:
 #ifdef NV_EXTENSIONS
         layoutOverrideCoverage(false),
         geoPassthroughEXT(false),
+        computeDerivativeMode(LayoutDerivativeNone),
 #endif
         autoMapBindings(false),
         autoMapLocations(false),
@@ -622,6 +634,8 @@ public:
     bool getLayoutOverrideCoverage() const { return layoutOverrideCoverage; }
     void setGeoPassthroughEXT() { geoPassthroughEXT = true; }
     bool getGeoPassthroughEXT() const { return geoPassthroughEXT; }
+    void setLayoutDerivativeMode(ComputeDerivativeMode mode) { computeDerivativeMode = mode; }
+    ComputeDerivativeMode getLayoutDerivativeModeNone() const { return computeDerivativeMode; }
 #endif
 
     const char* addSemanticName(const TString& name)
@@ -725,6 +739,7 @@ protected:
 #ifdef NV_EXTENSIONS
     bool layoutOverrideCoverage;
     bool geoPassthroughEXT;
+    ComputeDerivativeMode computeDerivativeMode;
 #endif
 
     // Base shift values

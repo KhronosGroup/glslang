@@ -166,6 +166,12 @@ const char* ExecutionModeString(int mode)
     case 32: return "Bad";
 
     case 4446:  return "PostDepthCoverage";
+
+#ifdef NV_EXTENSIONS
+    case ExecutionModeDerivativeGroupQuadsNV:   return "DerivativeGroupQuadsNV";
+    case ExecutionModeDerivativeGroupLinearNV:  return "DerivativeGroupLinearNV";
+#endif
+
     case ExecutionModeCeiling:
     default: return "Bad";
     }
@@ -823,13 +829,15 @@ const char* CapabilityString(int info)
 
     case CapabilitySampleMaskPostDepthCoverage:  return "SampleMaskPostDepthCoverage";
 #ifdef NV_EXTENSIONS
-    case CapabilityGeometryShaderPassthroughNV:  return "GeometryShaderPassthroughNV";
-    case CapabilityShaderViewportIndexLayerNV:   return "ShaderViewportIndexLayerNV";
-    case CapabilityShaderViewportMaskNV:         return "ShaderViewportMaskNV";
-    case CapabilityShaderStereoViewNV:           return "ShaderStereoViewNV";
-    case CapabilityPerViewAttributesNV:          return "PerViewAttributesNV";
-    case CapabilityGroupNonUniformPartitionedNV: return "GroupNonUniformPartitionedNV";
-    case CapabilityFragmentBarycentricNV:        return "FragmentBarycentricNV";
+    case CapabilityGeometryShaderPassthroughNV:     return "GeometryShaderPassthroughNV";
+    case CapabilityShaderViewportIndexLayerNV:      return "ShaderViewportIndexLayerNV";
+    case CapabilityShaderViewportMaskNV:            return "ShaderViewportMaskNV";
+    case CapabilityShaderStereoViewNV:              return "ShaderStereoViewNV";
+    case CapabilityPerViewAttributesNV:             return "PerViewAttributesNV";
+    case CapabilityGroupNonUniformPartitionedNV:    return "GroupNonUniformPartitionedNV";
+    case CapabilityComputeDerivativeGroupQuadsNV:   return "ComputeDerivativeGroupQuadsNV";
+    case CapabilityComputeDerivativeGroupLinearNV:  return "ComputeDerivativeGroupLinearNV";
+    case CapabilityFragmentBarycentricNV:           return "FragmentBarycentricNV";
 #endif
 
     case CapabilityFragmentFullyCoveredEXT: return "FragmentFullyCoveredEXT";

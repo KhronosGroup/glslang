@@ -503,6 +503,8 @@ INSTANTIATE_TEST_CASE_P(
     "spv.atomicInt64.comp",
     "spv.fragmentShaderBarycentric.frag",
     "spv.fragmentShaderBarycentric2.frag",
+    "spv.computeShaderDerivatives.comp",
+    "spv.computeShaderDerivatives2.comp",
 })),
 FileNameAsCustomTestSuffix
 );
