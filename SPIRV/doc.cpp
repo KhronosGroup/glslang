@@ -1251,7 +1251,9 @@ const char* OpcodeString(int op)
 
 #ifdef NV_EXTENSIONS
     case OpGroupNonUniformPartitionNV: return "OpGroupNonUniformPartitionNV";
+    case OpImageSampleFootprintNV:     return "OpImageSampleFootprintNV";
 #endif
+
     default:
         return "Bad";
     }
@@ -2596,6 +2598,12 @@ void Parameterize()
 
 #ifdef NV_EXTENSIONS
     InstructionDesc[OpGroupNonUniformPartitionNV].operands.push(OperandId, "X");
+    InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Sampled Image'");
+    InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Coordinate'");
+    InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Granularity'");
+    InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Coarse'");
+    InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandImageOperands, "", true);
+    InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandVariableIds, "", true);
 #endif
 }
 

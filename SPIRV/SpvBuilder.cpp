@@ -1654,6 +1654,13 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     if (parameters.component != NoResult)
         texArgs[numArgs++] = parameters.component;
 
+#ifdef NV_EXTENSIONS
+    if (parameters.granularity != NoResult)
+        texArgs[numArgs++] = parameters.granularity;
+    if (parameters.coarse != NoResult)
+        texArgs[numArgs++] = parameters.coarse;
+#endif 
+
     //
     // Set up the optional arguments
     //
@@ -1725,6 +1732,10 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
             opCode = OpImageSparseFetch;
         else
             opCode = OpImageFetch;
+#ifdef NV_EXTENSIONS
+    } else if (parameters.granularity && parameters.coarse) {
+        opCode = OpImageSampleFootprintNV;
+#endif
     } else if (gather) {
         if (parameters.Dref)
             if (sparse)

@@ -3668,6 +3668,25 @@ void TGlslangToSpvTraverser::translateArguments(const glslang::TIntermAggregate&
                 lvalue = true;
             break;
 #endif
+#ifdef NV_EXTENSIONS
+        case glslang::EOpImageSampleFootprintNV:
+            if (i == 4)
+                lvalue = true;
+            break;
+        case glslang::EOpImageSampleFootprintClampNV:
+        case glslang::EOpImageSampleFootprintLodNV:
+            if (i == 5)
+                lvalue = true;
+            break;
+        case glslang::EOpImageSampleFootprintGradNV:
+            if (i == 6)
+                lvalue = true;
+            break;
+        case glslang::EOpImageSampleFootprintGradClampNV:
+            if (i == 7)
+                lvalue = true;
+            break;
+#endif
         default:
             break;
         }
@@ -4020,6 +4039,10 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // Check for texture functions other than queries
     bool sparse = node->isSparseTexture();
+#ifdef NV_EXTENSIONS
+    bool imageFootprint = node->isImageFootprint();
+#endif
+
     bool cubeCompare = sampler.dim == glslang::EsdCube && sampler.arrayed && sampler.shadow;
 
     // check for bias argument
@@ -4049,7 +4072,12 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             ++nonBiasArgCount;
         if (sparse)
             ++nonBiasArgCount;
-
+#ifdef NV_EXTENSIONS
+        if (imageFootprint)
+            //Following three extra arguments
+            // int granularity, bool coarse, out gl_TextureFootprint2DNV footprint
+            nonBiasArgCount += 3;
+#endif
         if ((int)arguments.size() > nonBiasArgCount)
             bias = true;
     }
@@ -4142,7 +4170,6 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         params.lodClamp = arguments[2 + extraArgs];
         ++extraArgs;
     }
-
     // sparse
     if (sparse) {
         params.texelOut = arguments[2 + extraArgs];
@@ -4158,12 +4185,80 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         } else
             params.component = builder.makeIntConstant(0);
     }
-
+#ifdef NV_EXTENSIONS
+    spv::Id  resultStruct = spv::NoResult;
+    if (imageFootprint) {
+        //Following three extra arguments
+        // int granularity, bool coarse, out gl_TextureFootprint2DNV footprint
+        params.granularity = arguments[2 + extraArgs];
+        params.coarse = arguments[3 + extraArgs];
+        resultStruct = arguments[4 + extraArgs];
+        extraArgs += 3;
+    }
+#endif
     // bias
     if (bias) {
         params.bias = arguments[2 + extraArgs];
         ++extraArgs;
     }
+
+#ifdef NV_EXTENSIONS
+    if (imageFootprint) {
+        builder.addExtension(spv::E_SPV_NV_shader_image_footprint);
+        builder.addCapability(spv::CapabilityImageFootprintNV);
+
+
+        //resultStructType(OpenGL type) contains 5 elements:
+        //struct gl_TextureFootprint2DNV {
+        //    uvec2 anchor;
+        //    uvec2 offset;
+        //    uvec2 mask;
+        //    uint  lod;
+        //    uint  granularity;
+        //};
+        //or
+        //struct gl_TextureFootprint3DNV {
+        //    uvec3 anchor;
+        //    uvec3 offset;
+        //    uvec2 mask;
+        //    uint  lod;
+        //    uint  granularity;
+        //};
+        spv::Id resultStructType = builder.getContainedTypeId(builder.getTypeId(resultStruct));
+        assert(builder.isStructType(resultStructType));
+
+        //resType (SPIR-V type) contains 6 elements:
+        //Member 0 must be a Boolean type scalar(LOD), 
+        //Member 1 must be a vector of integer type, whose Signedness operand is 0(anchor),  
+        //Member 2 must be a vector of integer type, whose Signedness operand is 0(offset), 
+        //Member 3 must be a vector of integer type, whose Signedness operand is 0(mask), 
+        //Member 4 must be a scalar of integer type, whose Signedness operand is 0(lod),
+        //Member 5 must be a scalar of integer type, whose Signedness operand is 0(granularity).
+        std::vector<spv::Id> members;
+        members.push_back(resultType());
+        for (int i = 0; i < 5; i++) {
+            members.push_back(builder.getContainedTypeId(resultStructType, i));
+        }
+        spv::Id resType = builder.makeStructType(members, "ResType");
+
+        //call ImageFootprintNV
+        spv::Id res = builder.createTextureCall(precision, resType, sparse, cracked.fetch, cracked.proj, cracked.gather, noImplicitLod, params);
+        
+        //copy resType (SPIR-V type) to resultStructType(OpenGL type)
+        for (int i = 0; i < 5; i++) {
+            builder.clearAccessChain();
+            builder.setAccessChainLValue(resultStruct);
+
+            //Accessing to a struct we created, no coherent flag is set
+            spv::Builder::AccessChain::CoherentFlags flags;
+            flags.clear();
+
+            builder.accessChainPush(builder.makeIntConstant(i), flags);
+            builder.accessChainStore(builder.createCompositeExtract(res, builder.getContainedTypeId(resType, i+1), i+1));
+        }
+        return builder.createCompositeExtract(res, resultType(), 0);
+    }
+#endif
 
     // projective component (might not to move)
     // GLSL: "The texture coordinates consumed from P, not including the last component of P,

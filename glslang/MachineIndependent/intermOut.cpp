@@ -956,7 +956,13 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpSparseTextureGatherLodOffsets:  out.debug << "sparseTextureGatherLodOffsets";   break;
     case EOpSparseImageLoadLod:             out.debug << "sparseImageLoadLod";              break;
 #endif
-
+#ifdef NV_EXTENSIONS
+    case EOpImageSampleFootprintNV:             out.debug << "imageSampleFootprintNV";          break;
+    case EOpImageSampleFootprintClampNV:        out.debug << "imageSampleFootprintClampNV";     break;
+    case EOpImageSampleFootprintLodNV:          out.debug << "imageSampleFootprintLodNV";       break;
+    case EOpImageSampleFootprintGradNV:         out.debug << "imageSampleFootprintGradNV";      break;
+    case EOpImageSampleFootprintGradClampNV:    out.debug << "mageSampleFootprintGradClampNV";  break;
+#endif
     case EOpAddCarry:                   out.debug << "addCarry";              break;
     case EOpSubBorrow:                  out.debug << "subBorrow";             break;
     case EOpUMulExtended:               out.debug << "uMulExtended";          break;

@@ -3850,6 +3850,42 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
 #endif  // AMD_EXTENSIONS
 
+
+#ifdef NV_EXTENSIONS
+    if ((profile != EEsProfile && version >= 450) || 
+        (profile == EEsProfile && version >= 320)) {
+        commonBuiltins.append(
+            "struct gl_TextureFootprint2DNV {"
+                "uvec2 anchor;"
+                "uvec2 offset;"
+                "uvec2 mask;"
+                "uint lod;"
+                "uint granularity;"
+            "};"
+
+            "struct gl_TextureFootprint3DNV {"
+                "uvec3 anchor;"
+                "uvec3 offset;"
+                "uvec2 mask;"
+                "uint lod;"
+                "uint granularity;"
+            "};"
+            "bool textureFootprintNV(sampler2D, vec2, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintNV(sampler3D, vec3, int, bool, out gl_TextureFootprint3DNV);"
+            "bool textureFootprintNV(sampler2D, vec2, int, bool, out gl_TextureFootprint2DNV, float);"
+            "bool textureFootprintNV(sampler3D, vec3, int, bool, out gl_TextureFootprint3DNV, float);"
+            "bool textureFootprintClampNV(sampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintClampNV(sampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV);"
+            "bool textureFootprintClampNV(sampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV, float);"
+            "bool textureFootprintClampNV(sampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV, float);"
+            "bool textureFootprintLodNV(sampler2D, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintLodNV(sampler3D, vec3, float, int, bool, out gl_TextureFootprint3DNV);"
+            "bool textureFootprintGradNV(sampler2D, vec2, vec2, vec2, int, bool, out gl_TextureFootprint2DNV);"
+            "bool textureFootprintGradClampNV(sampler2D, vec2, vec2, vec2, float, int, bool, out gl_TextureFootprint2DNV);"
+            "\n");
+    }
+
+#endif // NV_EXTENSIONS
     // GL_AMD_gpu_shader_half_float/Explicit types
     if (profile != EEsProfile && version >= 450) {
         commonBuiltins.append(
@@ -7545,6 +7581,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 #endif
 
+#ifdef NV_EXTENSIONS
+        symbolTable.setFunctionExtensions("textureFootprintNV",          1, &E_GL_NV_shader_texture_footprint);
+        symbolTable.setFunctionExtensions("textureFootprintClampNV",     1, &E_GL_NV_shader_texture_footprint);
+        symbolTable.setFunctionExtensions("textureFootprintLodNV",       1, &E_GL_NV_shader_texture_footprint);
+        symbolTable.setFunctionExtensions("textureFootprintGradNV",      1, &E_GL_NV_shader_texture_footprint);
+        symbolTable.setFunctionExtensions("textureFootprintGradClampNV", 1, &E_GL_NV_shader_texture_footprint);
+#endif
         // Compatibility variables, vertex only
         if (spvVersion.spv == 0) {
             BuiltInVariable("gl_Color",          EbvColor,          symbolTable);
@@ -8500,6 +8543,14 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("noise2", EOpNoise);
         symbolTable.relateToOperator("noise3", EOpNoise);
         symbolTable.relateToOperator("noise4", EOpNoise);
+
+#ifdef NV_EXTENSIONS
+        symbolTable.relateToOperator("textureFootprintNV",          EOpImageSampleFootprintNV);
+        symbolTable.relateToOperator("textureFootprintClampNV",     EOpImageSampleFootprintClampNV);
+        symbolTable.relateToOperator("textureFootprintLodNV",       EOpImageSampleFootprintLodNV);
+        symbolTable.relateToOperator("textureFootprintGradNV",      EOpImageSampleFootprintGradNV);
+        symbolTable.relateToOperator("textureFootprintGradClampNV", EOpImageSampleFootprintGradClampNV);
+#endif
 
         if (spvVersion.spv == 0 && (IncludeLegacy(version, profile, spvVersion) ||
             (profile == EEsProfile && version == 100))) {

@@ -505,6 +505,7 @@ INSTANTIATE_TEST_CASE_P(
     "spv.fragmentShaderBarycentric2.frag",
     "spv.computeShaderDerivatives.comp",
     "spv.computeShaderDerivatives2.comp",
+    "spv.shaderImageFootprint.frag",
 })),
 FileNameAsCustomTestSuffix
 );

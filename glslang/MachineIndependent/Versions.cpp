@@ -237,6 +237,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_shader_subgroup_partitioned]           = EBhDisable;
     extensionBehavior[E_GL_NV_fragment_shader_barycentric]           = EBhDisable;
     extensionBehavior[E_GL_NV_compute_shader_derivatives]            = EBhDisable;
+    extensionBehavior[E_GL_NV_shader_texture_footprint]              = EBhDisable;
 #endif
 
     // AEP
@@ -409,6 +410,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_NV_shader_subgroup_partitioned 1\n"
             "#define GL_NV_fragment_shader_barycentric 1\n"
             "#define GL_NV_compute_shader_derivatives 1\n"
+            "#define GL_NV_shader_texture_footprint 1\n"
 #endif
             "#define GL_KHX_shader_explicit_arithmetic_types 1\n"
             "#define GL_KHX_shader_explicit_arithmetic_types_int8 1\n"
