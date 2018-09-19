@@ -864,6 +864,14 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addExtension(spv::E_SPV_EXT_fragment_fully_covered);
         builder.addCapability(spv::CapabilityFragmentFullyCoveredEXT);
         return spv::BuiltInFullyCoveredEXT;
+    case glslang::EbvFragmentSizeNV:
+        builder.addExtension(spv::E_SPV_NV_shading_rate);
+        builder.addCapability(spv::CapabilityShadingRateNV);
+        return spv::BuiltInFragmentSizeNV;
+    case glslang::EbvInvocationsPerPixelNV:
+        builder.addExtension(spv::E_SPV_NV_shading_rate);
+        builder.addCapability(spv::CapabilityShadingRateNV);
+        return spv::BuiltInInvocationsPerPixelNV;
 
     // raytracing
     case glslang::EbvLaunchIdNV:

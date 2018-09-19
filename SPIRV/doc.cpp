@@ -385,6 +385,8 @@ const char* BuiltInString(int builtIn)
     case BuiltInSecondaryViewportMaskNV:    return "SecondaryViewportMaskNV";
     case BuiltInPositionPerViewNV:          return "PositionPerViewNV";
     case BuiltInViewportMaskPerViewNV:      return "ViewportMaskPerViewNV";
+    case BuiltInFragmentSizeNV:             return "FragmentSizeNV";
+    case BuiltInInvocationsPerPixelNV:      return "InvocationsPerPixelNV";
     case BuiltInBaryCoordNV:                return "BaryCoordNV";
     case BuiltInBaryCoordNoPerspNV:         return "BaryCoordNoPerspNV";
 #endif
@@ -892,6 +894,7 @@ const char* CapabilityString(int info)
     case CapabilityComputeDerivativeGroupLinearNV:  return "ComputeDerivativeGroupLinearNV";
     case CapabilityFragmentBarycentricNV:           return "FragmentBarycentricNV";
     case CapabilityMeshShadingNV:                   return "MeshShadingNV";
+    case CapabilityShadingRateNV:                   return "ShadingRateNV";
 #endif
 
     case CapabilityFragmentFullyCoveredEXT: return "FragmentFullyCoveredEXT";

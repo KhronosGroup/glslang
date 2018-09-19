@@ -237,6 +237,8 @@ enum TBuiltInVariable {
     EbvPositionPerViewNV,
     EbvViewportMaskPerViewNV,
     EbvFragFullyCoveredNV,
+    EbvFragmentSizeNV,
+    EbvInvocationsPerPixelNV,
     // raytracing
     EbvLaunchIdNV,
     EbvLaunchSizeNV,
@@ -404,6 +406,8 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvPositionPerViewNV:          return "PositionPerViewNV";
     case EbvViewportMaskPerViewNV:      return "ViewportMaskPerViewNV";
     case EbvFragFullyCoveredNV:         return "FragFullyCoveredNV";
+    case EbvFragmentSizeNV:             return "FragmentSizeNV";
+    case EbvInvocationsPerPixelNV:      return "InvocationsPerPixelNV";
     case EbvLaunchIdNV:                 return "LaunchIdNVX";
     case EbvLaunchSizeNV:               return "LaunchSizeNVX";
     case EbvInstanceCustomIndexNV:      return "InstanceCustomIndexNVX";

@@ -501,6 +501,7 @@ INSTANTIATE_TEST_CASE_P(
     "spv.multiviewPerViewAttributes.vert",
     "spv.multiviewPerViewAttributes.tesc",
     "spv.atomicInt64.comp",
+    "spv.shadingRate.frag",
     "spv.RayGenShader.rgen",
     "spv.RayGenShader_Errors.rgen",
     "spv.RayConstants.rgen",
