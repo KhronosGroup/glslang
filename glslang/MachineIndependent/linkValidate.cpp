@@ -279,6 +279,9 @@ void TIntermediate::mergeTrees(TInfoSink& infoSink, TIntermediate& unit)
     }
 
     // Getting this far means we have two existing trees to merge...
+#ifdef NV_EXTENSIONS
+    numShaderRecordNVBlocks += unit.numShaderRecordNVBlocks;
+#endif
 
 #ifdef NV_EXTENSIONS
     numTaskNVBlocks += unit.numTaskNVBlocks;
@@ -710,6 +713,15 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
         break;
 
 #ifdef NV_EXTENSIONS
+    case EShLangRayGenNV:
+    case EShLangIntersectNV:
+    case EShLangAnyHitNV:
+    case EShLangClosestHitNV:
+    case EShLangMissNV:
+    case EShLangCallableNV:
+        if (numShaderRecordNVBlocks > 1)
+            error(infoSink, "Only one shaderRecordNVX buffer block is allowed per stage");
+        break;
     case EShLangMeshNV:
         if (outputPrimitive == ElgNone)
             error(infoSink, "At least one shader must specify an output layout primitive");

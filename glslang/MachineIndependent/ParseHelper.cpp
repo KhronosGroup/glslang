@@ -2962,6 +2962,20 @@ void TParseContext::atomicUintCheck(const TSourceLoc& loc, const TType& type, co
     else if (type.getBasicType() == EbtAtomicUint && type.getQualifier().storage != EvqUniform)
         error(loc, "atomic_uints can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
 }
+#ifdef NV_EXTENSIONS
+void TParseContext::accStructNVCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
+{
+    if (type.getQualifier().storage == EvqUniform)
+        return;
+
+    if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtAccStructNV))
+        error(loc, "non-uniform struct contains an accelerationStructureNVX:", type.getBasicTypeString().c_str(), identifier.c_str());
+    else if (type.getBasicType() == EbtAccStructNV && type.getQualifier().storage != EvqUniform)
+        error(loc, "accelerationStructureNVX can only be used in uniform variables or function parameters:",
+            type.getBasicTypeString().c_str(), identifier.c_str());
+
+}
+#endif
 
 void TParseContext::transparentOpaqueCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
 {
@@ -4696,6 +4710,15 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             publicType.qualifier.layoutViewportRelative = true;
             return;
         }
+    } else {
+        if (language == EShLangRayGenNV || language == EShLangIntersectNV ||
+        language == EShLangAnyHitNV || language == EShLangClosestHitNV ||
+        language == EShLangMissNV || language == EShLangCallableNV) {
+            if (id == "shaderrecordnvx") {
+                publicType.qualifier.layoutShaderRecordNV = true;
+                return;
+            }
+        }
     }
     if (language == EShLangCompute) {
         if (id.compare(0, 17, "derivative_group_") == 0) {
@@ -5076,6 +5099,8 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
             dst.layoutViewportRelative = true;
         if (src.layoutSecondaryViewportRelativeOffset != -2048)
             dst.layoutSecondaryViewportRelativeOffset = src.layoutSecondaryViewportRelativeOffset;
+        if (src.layoutShaderRecordNV)
+            dst.layoutShaderRecordNV = true;
         if (src.pervertexNV)
             dst.pervertexNV = true;
 #endif
@@ -5143,6 +5168,10 @@ void TParseContext::layoutObjectCheck(const TSourceLoc& loc, const TSymbol& symb
                     error(loc, "cannot specify on a variable declaration", "align", "");
                 if (qualifier.layoutPushConstant)
                     error(loc, "can only specify on a uniform block", "push_constant", "");
+#ifdef NV_EXTENSIONS
+                if (qualifier.layoutShaderRecordNV)
+                    error(loc, "can only specify on a buffer block", "shaderRecordNVX", "");
+#endif
             }
             break;
         default:
@@ -5216,6 +5245,12 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
             if (type.getBasicType() == EbtBlock)
                 error(loc, "cannot apply to uniform or buffer block", "location", "");
             break;
+#ifdef NV_EXTENSIONS
+        case EvqPayloadNV:
+        case EvqPayloadInNV:
+        case EvqHitAttrNV:
+            break;
+#endif
         default:
             error(loc, "can only apply to uniform, buffer, in, or out storage qualifiers", "location", "");
             break;
@@ -5299,7 +5334,10 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         if (spvVersion.spv > 0) {
             if (qualifier.isUniformOrBuffer()) {
                 if (type.getBasicType() == EbtBlock && !qualifier.layoutPushConstant &&
-                                                       !qualifier.layoutAttachment)
+#ifdef NV_EXTENSIONS
+                       !qualifier.layoutShaderRecordNV &&
+#endif
+                       !qualifier.layoutAttachment)
                     error(loc, "uniform/buffer blocks require layout(binding=X)", "binding", "");
                 else if (spvVersion.vulkan > 0 && type.getBasicType() == EbtSampler)
                     error(loc, "sampler/texture/image requires layout(binding=X)", "binding", "");
@@ -5350,6 +5388,11 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
 
     if (qualifier.layoutPushConstant && type.getBasicType() != EbtBlock)
         error(loc, "can only be used with a block", "push_constant", "");
+
+#ifdef NV_EXTENSIONS
+    if (qualifier.layoutShaderRecordNV && type.getBasicType() != EbtBlock)
+        error(loc, "can only be used with a block", "shaderRecordNVX", "");
+#endif
 
     // input attachment
     if (type.isSubpass()) {
@@ -5486,6 +5529,16 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         if (qualifier.hasSet())
             error(loc, "cannot be used with push_constant", "set", "");
     }
+#ifdef NV_EXTENSIONS
+    if (qualifier.layoutShaderRecordNV) {
+        if (qualifier.storage != EvqBuffer)
+            error(loc, "can only be used with a buffer", "shaderRecordNVX", "");
+        if (qualifier.hasBinding())
+            error(loc, "cannot be used with shaderRecordNVX", "binding", "");
+        if (qualifier.hasSet())
+            error(loc, "cannot be used with shaderRecordNVX", "set", "");
+    }
+#endif
 }
 
 // For places that can't have shader-level layout qualifiers
@@ -5915,6 +5968,9 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     samplerCheck(loc, type, identifier, initializer);
     atomicUintCheck(loc, type, identifier);
     transparentOpaqueCheck(loc, type, identifier);
+#ifdef NV_EXTENSIONS
+    accStructNVCheck(loc, type, identifier);
+#endif
 
     if (type.getQualifier().storage != EvqUniform && type.getQualifier().storage != EvqBuffer) {
         if (type.containsBasicType(EbtFloat16))
@@ -6613,7 +6669,11 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
 
     // Special case for "push_constant uniform", which has a default of std430,
     // contrary to normal uniform defaults, and can't have a default tracked for it.
-    if (currentBlockQualifier.layoutPushConstant && !currentBlockQualifier.hasPacking())
+    if ((currentBlockQualifier.layoutPushConstant && !currentBlockQualifier.hasPacking())
+#ifdef NV_EXTENSIONS
+        || (currentBlockQualifier.layoutShaderRecordNV && !currentBlockQualifier.hasPacking())
+#endif
+       )
         currentBlockQualifier.layoutPacking = ElpStd430;
 
 #ifdef NV_EXTENSIONS
@@ -6835,6 +6895,22 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
         }
 #endif
         break;
+#ifdef NV_EXTENSIONS
+    case EvqPayloadNV:
+        profileRequires(loc, ~EEsProfile, 450, E_GL_NVX_raytracing, "rayPayloadNVX block");
+        requireStage(loc, (EShLanguageMask)(EShLangRayGenNVMask | EShLangAnyHitNVMask | EShLangClosestHitNVMask | EShLangMissNVMask),
+            "rayPayloadNVX block");
+        break;
+    case EvqPayloadInNV:
+        profileRequires(loc, ~EEsProfile, 450, E_GL_NVX_raytracing, "rayPayloadInNVX block");
+        requireStage(loc, (EShLanguageMask)(EShLangAnyHitNVMask | EShLangClosestHitNVMask | EShLangMissNVMask),
+            "rayPayloadInNVX block");
+        break;
+    case EvqHitAttrNV:
+        profileRequires(loc, ~EEsProfile, 450, E_GL_NVX_raytracing, "hitAttributeNVX block");
+        requireStage(loc, (EShLanguageMask)(EShLangIntersectNVMask | EShLangAnyHitNVMask | EShLangClosestHitNVMask), "hitAttributeNVX block");
+        break;
+#endif
     default:
         error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");
         break;
@@ -6872,6 +6948,8 @@ void TParseContext::blockQualifierCheck(const TSourceLoc& loc, const TQualifier&
     if (qualifier.layoutPushConstant)
         intermediate.addPushConstantCount();
 #ifdef NV_EXTENSIONS
+    if (qualifier.layoutShaderRecordNV)
+        intermediate.addShaderRecordNVCount();
     if (qualifier.perTaskNV)
         intermediate.addTaskNVCount();
 #endif
@@ -7357,6 +7435,10 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         error(loc, "cannot declare a default, can only be used on a block", "push_constant", "");
     if (qualifier.hasSpecConstantId())
         error(loc, "cannot declare a default, can only be used on a scalar", "constant_id", "");
+#ifdef NV_EXTENSIONS
+    if (qualifier.layoutShaderRecordNV)
+        error(loc, "cannot declare a default, can only be used on a block", "shaderRecordNVX", "");
+#endif
 }
 
 //

@@ -276,6 +276,12 @@ spv::ExecutionModel TranslateExecutionModel(EShLanguage stage)
     case EShLangFragment:         return spv::ExecutionModelFragment;
     case EShLangCompute:          return spv::ExecutionModelGLCompute;
 #ifdef NV_EXTENSIONS
+    case EShLangRayGenNV:         return spv::ExecutionModelRayGenerationNVX;
+    case EShLangIntersectNV:      return spv::ExecutionModelIntersectionNVX;
+    case EShLangAnyHitNV:         return spv::ExecutionModelAnyHitNVX;
+    case EShLangClosestHitNV:     return spv::ExecutionModelClosestHitNVX;
+    case EShLangMissNV:           return spv::ExecutionModelMissNVX;
+    case EShLangCallableNV:       return spv::ExecutionModelCallableNVX;
     case EShLangTaskNV:           return spv::ExecutionModelTaskNV;
     case EShLangMeshNV:           return spv::ExecutionModelMeshNV;
 #endif
@@ -328,6 +334,11 @@ spv::Decoration TranslateBlockDecoration(const glslang::TType& type, bool useSto
         case glslang::EvqBuffer:       return useStorageBuffer ? spv::DecorationBlock : spv::DecorationBufferBlock;
         case glslang::EvqVaryingIn:    return spv::DecorationBlock;
         case glslang::EvqVaryingOut:   return spv::DecorationBlock;
+#ifdef NV_EXTENSIONS
+        case glslang::EvqPayloadNV:    return spv::DecorationBlock;
+        case glslang::EvqPayloadInNV:  return spv::DecorationBlock;
+        case glslang::EvqHitAttrNV:    return spv::DecorationBlock;
+#endif
         default:
             assert(0);
             break;
@@ -396,6 +407,12 @@ spv::Decoration TranslateLayoutDecoration(const glslang::TType& type, glslang::T
                     assert(type.getQualifier().layoutPacking == glslang::ElpNone);
                 }
                 return spv::DecorationMax;
+#ifdef NV_EXTENSIONS
+            case glslang::EvqPayloadNV:
+            case glslang::EvqPayloadInNV:
+            case glslang::EvqHitAttrNV:
+                return spv::DecorationMax;
+#endif
             default:
                 assert(0);
                 return spv::DecorationMax;
@@ -847,6 +864,34 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addExtension(spv::E_SPV_EXT_fragment_fully_covered);
         builder.addCapability(spv::CapabilityFragmentFullyCoveredEXT);
         return spv::BuiltInFullyCoveredEXT;
+
+    // raytracing
+    case glslang::EbvLaunchIdNV:
+        return spv::BuiltInLaunchIdNVX;
+    case glslang::EbvLaunchSizeNV:
+        return spv::BuiltInLaunchSizeNVX;
+    case glslang::EbvWorldRayOriginNV:
+        return spv::BuiltInWorldRayOriginNVX;
+    case glslang::EbvWorldRayDirectionNV:
+        return spv::BuiltInWorldRayDirectionNVX;
+    case glslang::EbvObjectRayOriginNV:
+        return spv::BuiltInObjectRayOriginNVX;
+    case glslang::EbvObjectRayDirectionNV:
+        return spv::BuiltInObjectRayDirectionNVX;
+    case glslang::EbvRayTminNV:
+        return spv::BuiltInRayTminNVX;
+    case glslang::EbvRayTmaxNV:
+        return spv::BuiltInRayTmaxNVX;
+    case glslang::EbvInstanceCustomIndexNV:
+        return spv::BuiltInInstanceCustomIndexNVX;
+    case glslang::EbvHitTNV:
+        return spv::BuiltInHitTNVX;
+    case glslang::EbvHitKindNV:
+        return spv::BuiltInHitKindNVX;
+    case glslang::EbvObjectToWorldNV:
+        return spv::BuiltInObjectToWorldNVX;
+    case glslang::EbvWorldToObjectNV:
+        return spv::BuiltInWorldToObjectNVX;
     case glslang::EbvBaryCoordNV:
         builder.addExtension(spv::E_SPV_NV_fragment_shader_barycentric);
         builder.addCapability(spv::CapabilityFragmentBarycentricNV);
@@ -1027,6 +1072,10 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     if (type.getQualifier().isUniformOrBuffer()) {
         if (type.getQualifier().layoutPushConstant)
             return spv::StorageClassPushConstant;
+#ifdef NV_EXTENSIONS
+        if (type.getQualifier().layoutShaderRecordNV)
+            return spv::StorageClassShaderRecordBufferNVX;
+#endif
         if (type.getBasicType() == glslang::EbtBlock)
             return spv::StorageClassUniform;
         return spv::StorageClassUniformConstant;
@@ -1037,6 +1086,11 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     case glslang::EvqGlobal:        return spv::StorageClassPrivate;
     case glslang::EvqConstReadOnly: return spv::StorageClassFunction;
     case glslang::EvqTemporary:     return spv::StorageClassFunction;
+#ifdef NV_EXTENSIONS
+    case glslang::EvqPayloadNV:     return spv::StorageClassRayPayloadNVX;
+    case glslang::EvqPayloadInNV:   return spv::StorageClassIncomingRayPayloadNVX;
+    case glslang::EvqHitAttrNV:     return spv::StorageClassHitAttributeNVX;
+#endif
     default:
         assert(0);
         break;
@@ -1092,7 +1146,11 @@ bool IsDescriptorResource(const glslang::TType& type)
 {
     // uniform and buffer blocks are included, unless it is a push_constant
     if (type.getBasicType() == glslang::EbtBlock)
-        return type.getQualifier().isUniformOrBuffer() && ! type.getQualifier().layoutPushConstant;
+        return type.getQualifier().isUniformOrBuffer() &&
+#ifdef NV_EXTENSIONS
+        ! type.getQualifier().layoutShaderRecordNV &&
+#endif
+        ! type.getQualifier().layoutPushConstant;
 
     // non block...
     // basically samplerXXX/subpass/sampler/texture are all included
@@ -1358,6 +1416,15 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
         break;
 
 #ifdef NV_EXTENSIONS
+    case EShLangRayGenNV:
+    case EShLangIntersectNV:
+    case EShLangAnyHitNV:
+    case EShLangClosestHitNV:
+    case EShLangMissNV:
+    case EShLangCallableNV:
+        builder.addCapability(spv::CapabilityRaytracingNVX);
+        builder.addExtension("SPV_NVX_raytracing");
+        break;
     case EShLangTaskNV:
     case EShLangMeshNV:
         builder.addCapability(spv::CapabilityMeshShadingNV);
@@ -2189,6 +2256,9 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         break;
 
 #ifdef NV_EXTENSIONS
+    case glslang::EOpIgnoreIntersectionNV:
+    case glslang::EOpTerminateRayNV:
+    case glslang::EOpTraceNV:
     case glslang::EOpWritePackedPrimitiveIndices4x8NV:
         noReturnValue = true;
         break;
@@ -2860,6 +2930,11 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
         builder.addCapability(spv::CapabilityAtomicStorage);
         spvType = builder.makeUintType(32);
         break;
+#ifdef NV_EXTENSIONS
+    case glslang::EbtAccStructNV:
+        spvType = builder.makeAccelerationStructureNVType();
+        break;
+#endif
     case glslang::EbtSampler:
         {
             const glslang::TSampler& sampler = type.getSampler();
@@ -6784,6 +6859,18 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         break;
 
 #ifdef NV_EXTENSIONS
+    case glslang::EOpReportIntersectionNV:
+    {
+        typeId = builder.makeBoolType();
+        opCode = spv::OpReportIntersectionNVX;
+    }
+    break;
+    case glslang::EOpTraceNV:
+    {
+        builder.createNoResultOp(spv::OpTraceNVX, operands);
+        return 0;
+    }
+    break;
     case glslang::EOpWritePackedPrimitiveIndices4x8NV:
         builder.createNoResultOp(spv::OpWritePackedPrimitiveIndices4x8NV, operands);
         return 0;
@@ -6961,6 +7048,14 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         spv::Id id = builder.createBuiltinCall(typeId, getExtBuiltins(spv::E_SPV_AMD_gcn_shader), spv::TimeAMD, args);
         return builder.setPrecision(id, precision);
     }
+#endif
+#ifdef NV_EXTENSIONS
+    case glslang::EOpIgnoreIntersectionNV:
+        builder.createNoResultOp(spv::OpIgnoreIntersectionNVX);
+        return 0;
+    case glslang::EOpTerminateRayNV:
+        builder.createNoResultOp(spv::OpTerminateRayNVX);
+        return 0;
 #endif
     default:
         logger->missingFunctionality("unknown operation with no arguments");

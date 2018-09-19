@@ -236,6 +236,7 @@ public:
 #ifdef NV_EXTENSIONS
         layoutOverrideCoverage(false),
         geoPassthroughEXT(false),
+        numShaderRecordNVBlocks(0),
         computeDerivativeMode(LayoutDerivativeNone),
         primitives(TQualifier::layoutNotSet),
         numTaskNVBlocks(0),
@@ -430,6 +431,7 @@ public:
     int getNumErrors() const { return numErrors; }
     void addPushConstantCount() { ++numPushConstants; }
 #ifdef NV_EXTENSIONS
+    void addShaderRecordNVCount() { ++numShaderRecordNVBlocks; }
     void addTaskNVCount() { ++numTaskNVBlocks; }
 #endif
 
@@ -753,6 +755,7 @@ protected:
 #ifdef NV_EXTENSIONS
     bool layoutOverrideCoverage;
     bool geoPassthroughEXT;
+    int numShaderRecordNVBlocks;
     ComputeDerivativeMode computeDerivativeMode;
     int primitives;
     int numTaskNVBlocks;

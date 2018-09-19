@@ -894,6 +894,10 @@ enum TOperator {
     EOpFindMSB,
 
 #ifdef NV_EXTENSIONS
+    EOpTraceNV,
+    EOpReportIntersectionNV,
+    EOpIgnoreIntersectionNV,
+    EOpTerminateRayNV,
     EOpWritePackedPrimitiveIndices4x8NV,
 #endif
     //

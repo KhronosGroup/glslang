@@ -5058,6 +5058,27 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 #endif
 
 #ifdef NV_EXTENSIONS
+
+    // Builtins for GL_NV_raytracing
+    if (profile != EEsProfile && version >= 460) {
+        stageBuiltins[EShLangRayGenNV].append(
+            "void traceNVX(accelerationStructureNVX,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
+            "\n");
+        stageBuiltins[EShLangIntersectNV].append(
+            "bool reportIntersectionNVX(float, uint);"
+            "\n");
+        stageBuiltins[EShLangAnyHitNV].append(
+            "void ignoreIntersectionNVX();"
+            "void terminateRayNVX();"
+            "\n");
+        stageBuiltins[EShLangClosestHitNV].append(
+            "void traceNVX(accelerationStructureNVX,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
+            "\n");
+        stageBuiltins[EShLangMissNV].append(
+            "void traceNVX(accelerationStructureNVX,uint,uint,uint,uint,uint,vec3,float,vec3,float,int);"
+            "\n");
+    }
+
     //E_SPV_NV_compute_shader_derivatives
     
     stageBuiltins[EShLangCompute].append(derivatives);
@@ -5930,7 +5951,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             stageBuiltins[EShLangFragment].append(
                 "in vec3 gl_BaryCoordNV;"
                 "in vec3 gl_BaryCoordNoPerspNV;"
-            );
+                );
+
 #endif
     } else {
         // ES profile
@@ -5973,12 +5995,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "highp float gl_FragDepthEXT;"       // GL_EXT_frag_depth
             );
 #ifdef NV_EXTENSIONS
-        if (version >= 320)
+       if (version >= 320)
             stageBuiltins[EShLangFragment].append(
                 "in vec3 gl_BaryCoordNV;"
                 "in vec3 gl_BaryCoordNoPerspNV;"
-            );
+                );
 #endif
+
     }
     stageBuiltins[EShLangFragment].append("\n");
 
@@ -6071,6 +6094,94 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
 #endif
     }
+
+#ifdef NV_EXTENSIONS
+    // GL_NV_raytracing
+    if (profile != EEsProfile && version >= 460) {
+
+        const char *constRayFlags =
+            "const uint gl_RayFlagsNoneNVX = 0U;"
+            "const uint gl_RayFlagsOpaqueNVX = 1U;"
+            "const uint gl_RayFlagsNoOpaqueNVX = 2U;"
+            "const uint gl_RayFlagsTerminateOnFirstHitNVX = 4U;"
+            "const uint gl_RayFlagsSkipClosestHitShaderNVX = 8U;"
+            "const uint gl_RayFlagsCullBackFacingTrianglesNVX = 16U;"
+            "const uint gl_RayFlagsCullFrontFacingTrianglesNVX = 32U;"
+            "const uint gl_RayFlagsCullOpaqueNVX = 64U;"
+            "const uint gl_RayFlagsCullNoOpaqueNVX = 128U;"
+            "\n";
+        const char *rayGenDecls =
+            "in    uvec2  gl_LaunchIDNVX;"
+            "in    uvec2  gl_LaunchSizeNVX;"
+            "\n";
+        const char *intersectDecls =
+            "in    uvec2  gl_LaunchIDNVX;"
+            "in    uvec2  gl_LaunchSizeNVX;"
+            "in     int   gl_PrimitiveID;"
+            "in     int   gl_InstanceID;"
+            "in     int   gl_InstanceCustomIndexNVX;"
+            "in    vec3   gl_WorldRayOriginNVX;"
+            "in    vec3   gl_WorldRayDirectionNVX;"
+            "in    vec3   gl_ObjectRayOriginNVX;"
+            "in    vec3   gl_ObjectRayDirectionNVX;"
+            "in    float  gl_RayTminNVX;"
+            "in    float  gl_RayTmaxNVX;"
+            "in    mat4x3 gl_ObjectToWorldNVX;"
+            "in    mat4x3 gl_WorldToObjectNVX;"
+            "\n";
+        const char *hitDecls =
+            "in    uvec2  gl_LaunchIDNVX;"
+            "in    uvec2  gl_LaunchSizeNVX;"
+            "in     int   gl_PrimitiveID;"
+            "in     int   gl_InstanceID;"
+            "in     int   gl_InstanceCustomIndexNVX;"
+            "in    vec3   gl_WorldRayOriginNVX;"
+            "in    vec3   gl_WorldRayDirectionNVX;"
+            "in    vec3   gl_ObjectRayOriginNVX;"
+            "in    vec3   gl_ObjectRayDirectionNVX;"
+            "in    float  gl_RayTminNVX;"
+            "in    float  gl_RayTmaxNVX;"
+            "in    float  gl_HitTNVX;"
+            "in    uint   gl_HitKindNVX;"
+            "in    mat4x3 gl_ObjectToWorldNVX;"
+            "in    mat4x3 gl_WorldToObjectNVX;"
+            "\n";
+        const char *missDecls =
+            "in    uvec2  gl_LaunchIDNVX;"
+            "in    uvec2  gl_LaunchSizeNVX;"
+            "in    vec3   gl_WorldRayOriginNVX;"
+            "in    vec3   gl_WorldRayDirectionNVX;"
+            "in    vec3   gl_ObjectRayOriginNVX;"
+            "in    vec3   gl_ObjectRayDirectionNVX;"
+            "in    float  gl_RayTminNVX;"
+            "in    float  gl_RayTmaxNVX;"
+            "\n";
+
+        stageBuiltins[EShLangRayGenNV].append(rayGenDecls);
+        stageBuiltins[EShLangRayGenNV].append(constRayFlags);
+
+        stageBuiltins[EShLangIntersectNV].append(intersectDecls);
+
+        stageBuiltins[EShLangAnyHitNV].append(hitDecls);
+
+        stageBuiltins[EShLangClosestHitNV].append(hitDecls);
+        stageBuiltins[EShLangClosestHitNV].append(constRayFlags);
+
+        stageBuiltins[EShLangMissNV].append(missDecls);
+        stageBuiltins[EShLangMissNV].append(constRayFlags);
+    }
+    if ((profile != EEsProfile && version >= 140)) {
+        const char *deviceIndex =
+            "in highp int gl_DeviceIndex;"     // GL_EXT_device_group
+            "\n";
+
+        stageBuiltins[EShLangRayGenNV].append(deviceIndex);
+        stageBuiltins[EShLangIntersectNV].append(deviceIndex);
+        stageBuiltins[EShLangAnyHitNV].append(deviceIndex);
+        stageBuiltins[EShLangClosestHitNV].append(deviceIndex);
+        stageBuiltins[EShLangMissNV].append(deviceIndex);
+    }
+#endif
 
     if (version >= 300 /* both ES and non-ES */) {
         stageBuiltins[EShLangFragment].append(
@@ -8468,8 +8579,48 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("subgroupMemoryBarrierShared", 1, &E_GL_KHR_shader_subgroup_basic);
         }
         break;
-
 #ifdef NV_EXTENSIONS
+    case EShLangRayGenNV:
+    case EShLangIntersectNV:
+    case EShLangAnyHitNV:
+    case EShLangClosestHitNV:
+    case EShLangMissNV:
+        if (profile != EEsProfile && version >= 460) {
+            symbolTable.setVariableExtensions("gl_LaunchIDNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_LaunchSizeNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_PrimitiveID", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_InstanceID", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_InstanceCustomIndexNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_WorldRayOriginNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_WorldRayDirectionNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_ObjectRayOriginNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_ObjectRayDirectionNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_RayTminNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_RayTmaxNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_HitTNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_HitKindNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_ObjectToWorldNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_WorldToObjectNVX", 1, &E_GL_NVX_raytracing);
+            symbolTable.setVariableExtensions("gl_DeviceIndex", 1, &E_GL_EXT_device_group);
+
+            BuiltInVariable("gl_LaunchIDNVX",           EbvLaunchIdNV,           symbolTable);
+            BuiltInVariable("gl_LaunchSizeNVX",         EbvLaunchSizeNV,         symbolTable);
+            BuiltInVariable("gl_PrimitiveID",           EbvPrimitiveId,          symbolTable);
+            BuiltInVariable("gl_InstanceID",            EbvInstanceId,           symbolTable);
+            BuiltInVariable("gl_InstanceCustomIndexNVX",EbvInstanceCustomIndexNV,symbolTable);
+            BuiltInVariable("gl_WorldRayOriginNVX",     EbvWorldRayOriginNV,     symbolTable);
+            BuiltInVariable("gl_WorldRayDirectionNVX",  EbvWorldRayDirectionNV,  symbolTable);
+            BuiltInVariable("gl_ObjectRayOriginNVX",    EbvObjectRayOriginNV,    symbolTable);
+            BuiltInVariable("gl_ObjectRayDirectionNVX", EbvObjectRayDirectionNV, symbolTable);
+            BuiltInVariable("gl_RayTminNVX",            EbvRayTminNV,            symbolTable);
+            BuiltInVariable("gl_RayTmaxNVX",            EbvRayTmaxNV,            symbolTable);
+            BuiltInVariable("gl_HitTNVX",               EbvHitTNV,               symbolTable);
+            BuiltInVariable("gl_HitKindNVX",            EbvHitKindNV,            symbolTable);
+            BuiltInVariable("gl_ObjectToWorldNVX",      EbvObjectToWorldNV,      symbolTable);
+            BuiltInVariable("gl_WorldToObjectNVX",      EbvWorldToObjectNV,      symbolTable);
+            BuiltInVariable("gl_DeviceIndex",           EbvDeviceIndex,          symbolTable);
+        } 
+        break;
     case EShLangMeshNV:
         if (profile != EEsProfile && version >= 450) {
             // Per-vertex builtins
@@ -9200,6 +9351,22 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         break;
 
 #ifdef NV_EXTENSIONS
+    case EShLangRayGenNV:
+    case EShLangClosestHitNV:
+    case EShLangMissNV:
+        if (profile != EEsProfile && version >= 460)
+            symbolTable.relateToOperator("traceNVX", EOpTraceNV);
+        break;
+    case EShLangIntersectNV:
+        if (profile != EEsProfile && version >= 460)
+            symbolTable.relateToOperator("reportIntersectionNVX", EOpReportIntersectionNV);
+        break;
+    case EShLangAnyHitNV:
+        if (profile != EEsProfile && version >= 460) {
+            symbolTable.relateToOperator("ignoreIntersectionNVX", EOpIgnoreIntersectionNV);
+            symbolTable.relateToOperator("terminateRayNVX", EOpTerminateRayNV);
+        }
+        break;
     case EShLangMeshNV:
         if (profile != EEsProfile && version >= 450) {
             symbolTable.relateToOperator("writePackedPrimitiveIndices4x8NV", EOpWritePackedPrimitiveIndices4x8NV);

@@ -701,6 +701,10 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["superp"] =                  SUPERP;
 
 #ifdef NV_EXTENSIONS
+    (*KeywordMap)["rayPayloadNVX"] =            PAYLOADNV;
+    (*KeywordMap)["rayPayloadInNVX"] =          PAYLOADINNV;
+    (*KeywordMap)["hitAttributeNVX"] =          HITATTRNV;
+    (*KeywordMap)["accelerationStructureNVX"] = ACCSTRUCTNV;
     (*KeywordMap)["perprimitiveNV"] =          PERPRIMITIVENV;
     (*KeywordMap)["perviewNV"] =               PERVIEWNV;
     (*KeywordMap)["taskNV"] =                  PERTASKNV;
@@ -943,6 +947,18 @@ int TScanContext::tokenizeIdentifier()
             (parseContext.profile != EEsProfile && parseContext.version < 430))
             return identifierOrType();
         return keyword;
+
+#ifdef NV_EXTENSIONS
+    case PAYLOADNV:
+    case PAYLOADINNV:
+    case HITATTRNV:
+    case ACCSTRUCTNV:
+        if (parseContext.symbolTable.atBuiltInLevel() ||
+            (parseContext.profile != EEsProfile && parseContext.version >= 460
+                 && parseContext.extensionTurnedOn(E_GL_NVX_raytracing)))
+            return keyword;
+        return identifierOrType();
+#endif
 
     case ATOMIC_UINT:
         if ((parseContext.profile == EEsProfile && parseContext.version >= 310) ||

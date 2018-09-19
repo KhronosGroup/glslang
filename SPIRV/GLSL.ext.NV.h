@@ -33,7 +33,7 @@ enum Op;
 enum Capability;
 
 static const int GLSLextNVVersion = 100;
-static const int GLSLextNVRevision = 9;
+static const int GLSLextNVRevision = 10;
 
 //SPV_NV_sample_mask_override_coverage
 const char* const E_SPV_NV_sample_mask_override_coverage = "SPV_NV_sample_mask_override_coverage";
@@ -65,5 +65,8 @@ const char* const E_SPV_NV_shader_image_footprint = "SPV_NV_shader_image_footpri
 
 //SPV_NV_mesh_shader
 const char* const E_SPV_NV_mesh_shader = "SPV_NV_mesh_shader";
+
+//SPV_NVX_raytracing
+const char* const E_SPV_NVX_raytracing = "SPV_NVX_raytracing";
 
 #endif  // #ifndef GLSLextNV_H

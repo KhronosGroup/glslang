@@ -348,6 +348,19 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
                                    infoSink, commonTable, symbolTables);
 
 #ifdef NV_EXTENSIONS
+    // check for ray tracing stages
+    if (profile != EEsProfile && version >= 450) {
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangRayGenNV, source,
+            infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangIntersectNV, source,
+            infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangAnyHitNV, source,
+            infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangClosestHitNV, source,
+            infoSink, commonTable, symbolTables);
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangMissNV, source,
+            infoSink, commonTable, symbolTables);
+    }
     // check for mesh
     if (profile != EEsProfile && version >= 450)
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangMeshNV, source,
@@ -583,6 +596,17 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
         }
         break;
 #ifdef NV_EXTENSIONS
+    case EShLangRayGenNV:
+    case EShLangIntersectNV:
+    case EShLangAnyHitNV:
+    case EShLangClosestHitNV:
+    case EShLangCallableNV:
+        if (profile == EEsProfile || version < 460) {
+            correct = false;
+            infoSink.info.message(EPrefixError, "#version: raytracing shaders require non-es profile with version 460 or above");
+            version = 460;
+        }
+        break;
     case EShLangMeshNV:
     case EShLangTaskNV:
         if ((profile == EEsProfile) ||

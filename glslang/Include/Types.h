@@ -725,6 +725,7 @@ public:
         layoutViewportRelative = false;
         // -2048 as the default value indicating layoutSecondaryViewportRelative is not set
         layoutSecondaryViewportRelativeOffset = -2048;
+        layoutShaderRecordNV = false;
 #endif
 
         clearInterstageLayout();
@@ -758,6 +759,9 @@ public:
                hasAnyLocation() ||
                hasStream() ||
                hasFormat() ||
+#ifdef NV_EXTENSIONS
+               layoutShaderRecordNV ||
+#endif
                layoutPushConstant;
     }
     bool hasLayout() const
@@ -811,6 +815,7 @@ public:
     bool layoutPassthrough;
     bool layoutViewportRelative;
     int layoutSecondaryViewportRelativeOffset;
+    bool layoutShaderRecordNV;
 #endif
 
     bool hasUniformLayout() const
@@ -1481,7 +1486,11 @@ public:
         }
         return false;
     }
-    virtual bool isOpaque() const { return basicType == EbtSampler || basicType == EbtAtomicUint; }
+    virtual bool isOpaque() const { return basicType == EbtSampler || basicType == EbtAtomicUint
+#ifdef NV_EXTENSIONS
+        || basicType == EbtAccStructNV
+#endif
+        ; }
     virtual bool isBuiltIn() const { return getQualifier().builtIn != EbvNone; }
 
     // "Image" is a superset of "Subpass"
@@ -1669,6 +1678,9 @@ public:
         case EbtSampler:           return "sampler/image";
         case EbtStruct:            return "structure";
         case EbtBlock:             return "block";
+#ifdef NV_EXTENSIONS
+        case EbtAccStructNV:       return "accelerationStructureNVX";
+#endif
         default:                   return "unknown type";
         }
     }
@@ -1764,6 +1776,8 @@ public:
                     appendStr(" layoutSecondaryViewportRelativeOffset=");
                     appendInt(qualifier.layoutSecondaryViewportRelativeOffset);
                 }
+                if (qualifier.layoutShaderRecordNV)
+                    appendStr(" shaderRecordNVX");
 #endif
 
                 appendStr(")");

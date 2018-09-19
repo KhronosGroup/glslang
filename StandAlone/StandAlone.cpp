@@ -245,6 +245,12 @@ const char* GetBinaryName(EShLanguage stage)
         case EShLangFragment:        name = "frag.spv";    break;
         case EShLangCompute:         name = "comp.spv";    break;
 #ifdef NV_EXTENSIONS
+        case EShLangRayGenNV:        name = "rgen.spv";    break;
+        case EShLangIntersectNV:     name = "rint.spv";    break;
+        case EShLangAnyHitNV:        name = "rahit.spv";   break;
+        case EShLangClosestHitNV:    name = "rchit.spv";   break;
+        case EShLangMissNV:          name = "rmiss.spv";   break;
+        case EShLangCallableNV:      name = "rcall.spv";   break;
         case EShLangMeshNV:          name = "mesh.spv";    break;
         case EShLangTaskNV:          name = "task.spv";    break;
 #endif
@@ -1210,7 +1216,12 @@ int C_DECL main(int argc, char* argv[])
 //   .geom = geometry
 //   .frag = fragment
 //   .comp = compute
-//
+//   .rgen = ray generation
+//   .rint = ray intersection
+//   .rahit = ray any hit
+//   .rchit = ray closest hit
+//   .rmiss = ray miss
+//   .rcall = ray callable
 //   Additionally, the file names may end in .<stage>.glsl and .<stage>.hlsl
 //   where <stage> is one of the stages listed above.
 //
@@ -1255,6 +1266,18 @@ EShLanguage FindLanguage(const std::string& name, bool parseStageName)
     else if (stageName == "comp")
         return EShLangCompute;
 #ifdef NV_EXTENSIONS
+    else if (stageName == "rgen")
+        return EShLangRayGenNV;
+    else if (stageName == "rint")
+        return EShLangIntersectNV;
+    else if (stageName == "rahit")
+        return EShLangAnyHitNV;
+    else if (stageName == "rchit")
+        return EShLangClosestHitNV;
+    else if (stageName == "rmiss")
+        return EShLangMissNV;
+    else if (stageName == "rcall")
+        return EShLangCallableNV;
     else if (stageName == "mesh")
         return EShLangMeshNV;
     else if (stageName == "task")
@@ -1332,6 +1355,12 @@ void usage()
 #ifdef NV_EXTENSIONS
            "    .mesh   for a mesh shader\n"
            "    .task   for a task shader\n"
+           "    .rgen    for a ray generation shader\n"
+           "    .rint    for a ray intersection shader\n"
+           "    .rahit   for a ray any hit shader\n"
+           "    .rchit   for a ray closest hit shader\n"
+           "    .rmiss   for a ray miss shader\n"
+           "    .rcall   for a ray callable shader"
 #endif
            "    .glsl   for .vert.glsl, .tesc.glsl, ..., .comp.glsl compound suffixes\n"
            "    .hlsl   for .vert.hlsl, .tesc.hlsl, ..., .comp.hlsl compound suffixes\n"

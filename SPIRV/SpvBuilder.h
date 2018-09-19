@@ -131,6 +131,11 @@ public:
     Id makeSamplerType();
     Id makeSampledImageType(Id imageType);
 
+#ifdef NV_EXTENSIONS
+    // accelerationStructureNV type
+    Id makeAccelerationStructureNVType();
+#endif
+
     // For querying about types.
     Id getTypeId(Id resultId) const { return module.getTypeId(resultId); }
     Id getDerefTypeId(Id resultId) const;
