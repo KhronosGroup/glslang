@@ -459,6 +459,9 @@ public:
 #endif
 #ifdef NV_EXTENSIONS
         pervertexNV = false;
+        perPrimitiveNV = false;
+        perViewNV = false;
+        perTaskNV = false;
 #endif
     }
 
@@ -506,6 +509,9 @@ public:
 #endif
 #ifdef NV_EXTENSIONS
     bool pervertexNV  : 1;
+    bool perPrimitiveNV : 1;
+    bool perViewNV : 1;
+    bool perTaskNV : 1;
 #endif
     bool patch        : 1;
     bool sample       : 1;
@@ -620,6 +626,33 @@ public:
         }
     }
 
+    bool isPerPrimitive() const
+    {
+#ifdef NV_EXTENSIONS
+        return perPrimitiveNV;
+#else
+        return false;
+#endif
+    }
+
+    bool isPerView() const
+    {
+#ifdef NV_EXTENSIONS
+        return perViewNV;
+#else
+        return false;
+#endif
+    }
+
+    bool isTaskMemory() const
+    {
+#ifdef NV_EXTENSIONS
+        return perTaskNV;
+#else
+        return false;
+#endif
+    }
+
     bool isIo() const
     {
         switch (storage) {
@@ -672,6 +705,8 @@ public:
 #ifdef NV_EXTENSIONS
         case EShLangFragment:
             return pervertexNV && isPipeInput();
+        case EShLangMeshNV:
+            return ! perTaskNV && isPipeOutput();
 #endif
 
         default:
@@ -1053,7 +1088,7 @@ struct TShaderQualifiers {
     bool pixelCenterInteger;  // fragment shader
     bool originUpperLeft;     // fragment shader
     int invocations;
-    int vertices;             // both for tessellation "vertices" and geometry "max_vertices"
+    int vertices;             // for tessellation "vertices", geometry & mesh "max_vertices"
     TVertexSpacing spacing;
     TVertexOrder order;
     bool pointMode;
@@ -1069,6 +1104,7 @@ struct TShaderQualifiers {
     bool layoutOverrideCoverage;        // true if layout override_coverage set
     bool layoutDerivativeGroupQuads;    // true if layout derivative_group_quadsNV set
     bool layoutDerivativeGroupLinear;   // true if layout derivative_group_linearNV set
+    int primitives;                     // mesh shader "max_primitives"DerivativeGroupLinear;   // true if layout derivative_group_linearNV set
 #endif
 
     void init()
@@ -1093,10 +1129,10 @@ struct TShaderQualifiers {
         blendEquation = false;
         numViews = TQualifier::layoutNotSet;
 #ifdef NV_EXTENSIONS
-        layoutOverrideCoverage = false;
-        layoutDerivativeGroupQuads = false;
+        layoutOverrideCoverage      = false;
+        layoutDerivativeGroupQuads  = false;
         layoutDerivativeGroupLinear = false;
-
+        primitives                  = TQualifier::layoutNotSet;
 #endif
     }
 
@@ -1145,6 +1181,8 @@ struct TShaderQualifiers {
             layoutDerivativeGroupQuads = src.layoutDerivativeGroupQuads;
         if (src.layoutDerivativeGroupLinear)
             layoutDerivativeGroupLinear = src.layoutDerivativeGroupLinear;
+        if (src.primitives != TQualifier::layoutNotSet)
+            primitives = src.primitives;
 #endif
     }
 };
@@ -1751,6 +1789,12 @@ public:
 #ifdef NV_EXTENSIONS
         if (qualifier.pervertexNV)
             appendStr(" pervertexNV");
+        if (qualifier.perPrimitiveNV)
+            appendStr(" perprimitiveNV");
+        if (qualifier.perViewNV)
+            appendStr(" perviewNV");
+        if (qualifier.perTaskNV)
+            appendStr(" taskNV");
 #endif
         if (qualifier.patch)
             appendStr(" patch");

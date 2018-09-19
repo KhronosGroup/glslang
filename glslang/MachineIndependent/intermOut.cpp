@@ -1048,6 +1048,10 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpSubpassLoad:   out.debug << "subpassLoad";   break;
     case EOpSubpassLoadMS: out.debug << "subpassLoadMS"; break;
 
+#ifdef NV_EXTENSIONS
+    case EOpWritePackedPrimitiveIndices4x8NV: out.debug << "writePackedPrimitiveIndices4x8NV"; break;
+#endif
+
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
 
@@ -1451,6 +1455,16 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
         }
         break;
 
+#ifdef NV_EXTENSIONS
+    case EShLangMeshNV:
+        infoSink.debug << "max_vertices = " << vertices << "\n";
+        infoSink.debug << "max_primitives = " << primitives << "\n";
+        infoSink.debug << "output primitive = " << TQualifier::getGeometryString(outputPrimitive) << "\n";
+        // Fall through
+
+    case EShLangTaskNV:
+        // Fall through
+#endif
     case EShLangCompute:
         infoSink.debug << "local_size = (" << localSize[0] << ", " << localSize[1] << ", " << localSize[2] << ")\n";
         {

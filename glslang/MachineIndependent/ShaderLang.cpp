@@ -347,6 +347,18 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangCompute, source,
                                    infoSink, commonTable, symbolTables);
 
+#ifdef NV_EXTENSIONS
+    // check for mesh
+    if (profile != EEsProfile && version >= 450)
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangMeshNV, source,
+                                   infoSink, commonTable, symbolTables);
+
+    // check for task
+    if (profile != EEsProfile && version >= 450)
+        InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTaskNV, source,
+                                   infoSink, commonTable, symbolTables);
+#endif
+
     return true;
 }
 
@@ -570,6 +582,16 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
             version = profile == EEsProfile ? 310 : 420;
         }
         break;
+#ifdef NV_EXTENSIONS
+    case EShLangMeshNV:
+    case EShLangTaskNV:
+        if ((profile == EEsProfile) ||
+            (profile != EEsProfile && version < 450)) {
+            correct = false;
+            infoSink.info.message(EPrefixError, "#version: mesh/task shaders require non-es profile with version 450 or above");
+            version = 450;
+        }
+#endif
     default:
         break;
     }

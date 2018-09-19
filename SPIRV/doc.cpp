@@ -98,6 +98,10 @@ const char* ExecutionModelString(int model)
     case 4:  return "Fragment";
     case 5:  return "GLCompute";
     case 6:  return "Kernel";
+#ifdef NV_EXTENSIONS
+    case ExecutionModelTaskNV: return "TaskNV";
+    case ExecutionModelMeshNV: return "MeshNV";
+#endif
 
     default: return "Bad";
     }
@@ -168,6 +172,9 @@ const char* ExecutionModeString(int mode)
     case 4446:  return "PostDepthCoverage";
 
 #ifdef NV_EXTENSIONS
+    case ExecutionModeOutputLinesNV:            return "OutputLinesNV";
+    case ExecutionModeOutputPrimitivesNV:       return "OutputPrimitivesNV";
+    case ExecutionModeOutputTrianglesNV:        return "OutputTrianglesNV";
     case ExecutionModeDerivativeGroupQuadsNV:   return "DerivativeGroupQuadsNV";
     case ExecutionModeDerivativeGroupLinearNV:  return "DerivativeGroupLinearNV";
 #endif
@@ -260,6 +267,9 @@ const char* DecorationString(int decoration)
     case DecorationPassthroughNV:               return "PassthroughNV";
     case DecorationViewportRelativeNV:          return "ViewportRelativeNV";
     case DecorationSecondaryViewportRelativeNV: return "SecondaryViewportRelativeNV";
+    case DecorationPerPrimitiveNV:              return "PerPrimitiveNV";
+    case DecorationPerViewNV:                   return "PerViewNV";
+    case DecorationPerTaskNV:                   return "PerTaskNV";
     case DecorationPerVertexNV:                 return "PerVertexNV";
 #endif
 
@@ -350,6 +360,18 @@ const char* BuiltInString(int builtIn)
 #endif
 
     case 5264: return "FullyCoveredEXT";
+
+
+#ifdef NV_EXTENSIONS
+    case BuiltInTaskCountNV:           return "TaskCountNV";
+    case BuiltInPrimitiveCountNV:      return "PrimitiveCountNV";
+    case BuiltInPrimitiveIndicesNV:    return "PrimitiveIndicesNV";
+    case BuiltInClipDistancePerViewNV: return "ClipDistancePerViewNV";
+    case BuiltInCullDistancePerViewNV: return "CullDistancePerViewNV";
+    case BuiltInLayerPerViewNV:        return "LayerPerViewNV";
+    case BuiltInMeshViewCountNV:       return "MeshViewCountNV";
+    case BuiltInMeshViewIndicesNV:     return "MeshViewIndicesNV";
+#endif
 
     default: return "Bad";
     }
@@ -838,6 +860,7 @@ const char* CapabilityString(int info)
     case CapabilityComputeDerivativeGroupQuadsNV:   return "ComputeDerivativeGroupQuadsNV";
     case CapabilityComputeDerivativeGroupLinearNV:  return "ComputeDerivativeGroupLinearNV";
     case CapabilityFragmentBarycentricNV:           return "FragmentBarycentricNV";
+    case CapabilityMeshShadingNV:                   return "MeshShadingNV";
 #endif
 
     case CapabilityFragmentFullyCoveredEXT: return "FragmentFullyCoveredEXT";
@@ -1250,8 +1273,9 @@ const char* OpcodeString(int op)
     case OpMemberDecorateStringGOOGLE: return "OpMemberDecorateStringGOOGLE";
 
 #ifdef NV_EXTENSIONS
-    case OpGroupNonUniformPartitionNV: return "OpGroupNonUniformPartitionNV";
-    case OpImageSampleFootprintNV:     return "OpImageSampleFootprintNV";
+    case OpGroupNonUniformPartitionNV:       return "OpGroupNonUniformPartitionNV";
+    case OpImageSampleFootprintNV:           return "OpImageSampleFootprintNV";
+    case OpWritePackedPrimitiveIndices4x8NV: return "OpWritePackedPrimitiveIndices4x8NV";
 #endif
 
     default:
@@ -2598,12 +2622,16 @@ void Parameterize()
 
 #ifdef NV_EXTENSIONS
     InstructionDesc[OpGroupNonUniformPartitionNV].operands.push(OperandId, "X");
+    
     InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Sampled Image'");
     InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Coordinate'");
     InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Granularity'");
     InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandId, "'Coarse'");
     InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandImageOperands, "", true);
     InstructionDesc[OpImageSampleFootprintNV].operands.push(OperandVariableIds, "", true);
+    
+    InstructionDesc[OpWritePackedPrimitiveIndices4x8NV].operands.push(OperandId, "'Index Offset'");
+    InstructionDesc[OpWritePackedPrimitiveIndices4x8NV].operands.push(OperandId, "'Packed Indices'");
 #endif
 }
 

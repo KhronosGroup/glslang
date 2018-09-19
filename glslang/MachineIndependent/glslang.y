@@ -146,7 +146,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> F16VEC2 F16VEC3 F16VEC4 F16MAT2 F16MAT3 F16MAT4
 %token <lex> F32VEC2 F32VEC3 F32VEC4 F32MAT2 F32MAT3 F32MAT4
 %token <lex> F64VEC2 F64VEC3 F64VEC4 F64MAT2 F64MAT3 F64MAT4
-%token <lex> NOPERSPECTIVE FLAT SMOOTH LAYOUT EXPLICITINTERPAMD PERVERTEXNV
+%token <lex> NOPERSPECTIVE FLAT SMOOTH LAYOUT EXPLICITINTERPAMD PERVERTEXNV PERPRIMITIVENV PERVIEWNV PERTASKNV
 
 %token <lex> MAT2X2 MAT2X3 MAT2X4
 %token <lex> MAT3X2 MAT3X3 MAT3X4
@@ -1154,6 +1154,30 @@ interpolation_qualifier
         $$.qualifier.pervertexNV = true;
 #endif
     }
+    | PERPRIMITIVENV {
+#ifdef NV_EXTENSIONS
+        parseContext.globalCheck($1.loc, "perprimitiveNV");
+        parseContext.profileRequires($1.loc, ECoreProfile, 450, E_GL_NV_mesh_shader, "perprimitiveNV");
+        $$.init($1.loc);
+        $$.qualifier.perPrimitiveNV = true;
+#endif
+    }
+    | PERVIEWNV {
+#ifdef NV_EXTENSIONS
+        parseContext.globalCheck($1.loc, "perviewNV");
+        parseContext.profileRequires($1.loc, ECoreProfile, 450, E_GL_NV_mesh_shader, "perviewNV");
+        $$.init($1.loc);
+        $$.qualifier.perViewNV = true;
+#endif
+    }
+    | PERTASKNV {
+#ifdef NV_EXTENSIONS
+        parseContext.globalCheck($1.loc, "taskNV");
+        parseContext.profileRequires($1.loc, ECoreProfile, 450, E_GL_NV_mesh_shader, "taskNV");
+        $$.init($1.loc);
+        $$.qualifier.perTaskNV = true;
+#endif
+    }
     ;
 
 layout_qualifier
@@ -1319,7 +1343,11 @@ storage_qualifier
         parseContext.globalCheck($1.loc, "shared");
         parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 430, E_GL_ARB_compute_shader, "shared");
         parseContext.profileRequires($1.loc, EEsProfile, 310, 0, "shared");
+#ifdef NV_EXTENSIONS
+        parseContext.requireStage($1.loc, (EShLanguageMask)(EShLangComputeMask | EShLangMeshNVMask | EShLangTaskNVMask), "shared");
+#else
         parseContext.requireStage($1.loc, EShLangCompute, "shared");
+#endif
         $$.init($1.loc);
         $$.qualifier.storage = EvqShared;
     }

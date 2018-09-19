@@ -194,6 +194,9 @@ protected:
     spv::Id createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy);
     spv::Id createNoArgOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId);
     spv::Id getSymbolId(const glslang::TIntermSymbol* node);
+#ifdef NV_EXTENSIONS
+    void addMeshNVDecoration(spv::Id id, int member, const glslang::TQualifier & qualifier);
+#endif
     spv::Id createSpvConstant(const glslang::TIntermTyped&);
     spv::Id createSpvConstantFromConstUnionArray(const glslang::TType& type, const glslang::TConstUnionArray&, int& nextConst, bool specConstant);
     bool isTrivialLeaf(const glslang::TIntermTyped* node);
@@ -272,6 +275,10 @@ spv::ExecutionModel TranslateExecutionModel(EShLanguage stage)
     case EShLangGeometry:         return spv::ExecutionModelGeometry;
     case EShLangFragment:         return spv::ExecutionModelFragment;
     case EShLangCompute:          return spv::ExecutionModelGLCompute;
+#ifdef NV_EXTENSIONS
+    case EShLangTaskNV:           return spv::ExecutionModelTaskNV;
+    case EShLangMeshNV:           return spv::ExecutionModelMeshNV;
+#endif
     default:
         assert(0);
         return spv::ExecutionModelFragment;
@@ -379,7 +386,15 @@ spv::Decoration TranslateLayoutDecoration(const glslang::TType& type, glslang::T
                 }
             case glslang::EvqVaryingIn:
             case glslang::EvqVaryingOut:
-                assert(type.getQualifier().layoutPacking == glslang::ElpNone);
+                if (type.getQualifier().isTaskMemory()) {
+                    switch (type.getQualifier().layoutPacking) {
+                    case glslang::ElpShared:  return spv::DecorationGLSLShared;
+                    case glslang::ElpPacked:  return spv::DecorationGLSLPacked;
+                    default: break;
+                    }
+                } else {
+                    assert(type.getQualifier().layoutPacking == glslang::ElpNone);
+                }
                 return spv::DecorationMax;
             default:
                 assert(0);
@@ -619,6 +634,11 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         return spv::BuiltInSampleMask;
 
     case glslang::EbvLayer:
+#ifdef NV_EXTENSIONS
+        if (glslangIntermediate->getStage() == EShLangMeshNV) {
+            return spv::BuiltInLayer;
+        }
+#endif
         builder.addCapability(spv::CapabilityGeometry);
         if (glslangIntermediate->getStage() == EShLangVertex ||
             glslangIntermediate->getStage() == EShLangTessControl ||
@@ -835,6 +855,22 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addExtension(spv::E_SPV_NV_fragment_shader_barycentric);
         builder.addCapability(spv::CapabilityFragmentBarycentricNV);
         return spv::BuiltInBaryCoordNoPerspNV;
+     case glslang::EbvTaskCountNV:
+        return spv::BuiltInTaskCountNV;
+     case glslang::EbvPrimitiveCountNV:
+        return spv::BuiltInPrimitiveCountNV;
+     case glslang::EbvPrimitiveIndicesNV:
+        return spv::BuiltInPrimitiveIndicesNV;
+     case glslang::EbvClipDistancePerViewNV:
+        return spv::BuiltInClipDistancePerViewNV;
+     case glslang::EbvCullDistancePerViewNV:
+        return spv::BuiltInCullDistancePerViewNV;
+     case glslang::EbvLayerPerViewNV:
+        return spv::BuiltInLayerPerViewNV;
+     case glslang::EbvMeshViewCountNV:
+        return spv::BuiltInMeshViewCountNV;
+     case glslang::EbvMeshViewIndicesNV:
+        return spv::BuiltInMeshViewIndicesNV;
 #endif 
     default:
         return spv::BuiltInMax;
@@ -1110,6 +1146,14 @@ void InheritQualifiers(glslang::TQualifier& child, const glslang::TQualifier& pa
         child.readonly = true;
     if (parent.writeonly)
         child.writeonly = true;
+#ifdef NV_EXTENSIONS
+    if (parent.perPrimitiveNV)
+        child.perPrimitiveNV = true;
+    if (parent.perViewNV)
+        child.perViewNV = true;
+    if (parent.perTaskNV)
+        child.perTaskNV = true;
+#endif
 }
 
 bool HasNonLayoutQualifiers(const glslang::TType& type, const glslang::TQualifier& qualifier)
@@ -1312,6 +1356,30 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
         }
 #endif
         break;
+
+#ifdef NV_EXTENSIONS
+    case EShLangTaskNV:
+    case EShLangMeshNV:
+        builder.addCapability(spv::CapabilityMeshShadingNV);
+        builder.addExtension(spv::E_SPV_NV_mesh_shader);
+        builder.addExecutionMode(shaderEntry, spv::ExecutionModeLocalSize, glslangIntermediate->getLocalSize(0),
+                                                                           glslangIntermediate->getLocalSize(1),
+                                                                           glslangIntermediate->getLocalSize(2));
+        if (glslangIntermediate->getStage() == EShLangMeshNV) {
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeOutputVertices, glslangIntermediate->getVertices());
+            builder.addExecutionMode(shaderEntry, spv::ExecutionModeOutputPrimitivesNV, glslangIntermediate->getPrimitives());
+
+            switch (glslangIntermediate->getOutputPrimitive()) {
+            case glslang::ElgPoints:        mode = spv::ExecutionModeOutputPoints;      break;
+            case glslang::ElgLines:         mode = spv::ExecutionModeOutputLinesNV;     break;
+            case glslang::ElgTriangles:     mode = spv::ExecutionModeOutputTrianglesNV; break;
+            default:                        mode = spv::ExecutionModeMax;               break;
+            }
+            if (mode != spv::ExecutionModeMax)
+                builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
+        }
+        break;
+#endif
 
     default:
         break;
@@ -2120,6 +2188,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         atomic = true;
         break;
 
+#ifdef NV_EXTENSIONS
+    case glslang::EOpWritePackedPrimitiveIndices4x8NV:
+        noReturnValue = true;
+        break;
+#endif
+
     default:
         break;
     }
@@ -2892,23 +2966,28 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
 //
 bool TGlslangToSpvTraverser::filterMember(const glslang::TType& member)
 {
+#ifdef NV_EXTENSIONS
     auto& extensions = glslangIntermediate->getRequestedExtensions();
 
-    if (member.getFieldName() == "gl_ViewportMask" &&
-        extensions.find("GL_NV_viewport_array2") == extensions.end())
-        return true;
     if (member.getFieldName() == "gl_SecondaryViewportMaskNV" &&
         extensions.find("GL_NV_stereo_view_rendering") == extensions.end())
         return true;
     if (member.getFieldName() == "gl_SecondaryPositionNV" &&
         extensions.find("GL_NV_stereo_view_rendering") == extensions.end())
         return true;
-    if (member.getFieldName() == "gl_PositionPerViewNV" &&
-        extensions.find("GL_NVX_multiview_per_view_attributes") == extensions.end())
-        return true;
-    if (member.getFieldName() == "gl_ViewportMaskPerViewNV" &&
-        extensions.find("GL_NVX_multiview_per_view_attributes") == extensions.end())
-        return true;
+
+    if (glslangIntermediate->getStage() != EShLangMeshNV) {
+        if (member.getFieldName() == "gl_ViewportMask" &&
+            extensions.find("GL_NV_viewport_array2") == extensions.end())
+            return true;
+        if (member.getFieldName() == "gl_PositionPerViewNV" &&
+            extensions.find("GL_NVX_multiview_per_view_attributes") == extensions.end())
+            return true;
+        if (member.getFieldName() == "gl_ViewportMaskPerViewNV" &&
+            extensions.find("GL_NVX_multiview_per_view_attributes") == extensions.end())
+            return true;
+    }
+#endif
 
     return false;
 };
@@ -3001,6 +3080,9 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
                 glslangIntermediate->getSource() == glslang::EShSourceHlsl) {
                 builder.addMemberDecoration(spvType, member, TranslateInterpolationDecoration(memberQualifier));
                 builder.addMemberDecoration(spvType, member, TranslateAuxiliaryStorageDecoration(memberQualifier));
+#ifdef NV_EXTENSIONS
+                addMeshNVDecoration(spvType, member, memberQualifier);
+#endif
             }
         }
         builder.addMemberDecoration(spvType, member, TranslateInvariantDecoration(memberQualifier));
@@ -3272,9 +3354,10 @@ glslang::TLayoutPacking TGlslangToSpvTraverser::getExplicitLayout(const glslang:
     if (type.getBasicType() != glslang::EbtBlock)
         return glslang::ElpNone;
 
-    // has to be a uniform or buffer block
+    // has to be a uniform or buffer block or task in/out blocks
     if (type.getQualifier().storage != glslang::EvqUniform &&
-        type.getQualifier().storage != glslang::EvqBuffer)
+        type.getQualifier().storage != glslang::EvqBuffer &&
+        !type.getQualifier().isTaskMemory())
         return glslang::ElpNone;
 
     // return the layout to use
@@ -3388,6 +3471,14 @@ void TGlslangToSpvTraverser::declareUseOfStructMember(const glslang::TTypeList& 
     case glslang::EbvSecondaryViewportMaskNV:
     case glslang::EbvPositionPerViewNV:
     case glslang::EbvViewportMaskPerViewNV:
+    case glslang::EbvTaskCountNV:
+    case glslang::EbvPrimitiveCountNV:
+    case glslang::EbvPrimitiveIndicesNV:
+    case glslang::EbvClipDistancePerViewNV:
+    case glslang::EbvCullDistancePerViewNV:
+    case glslang::EbvLayerPerViewNV:
+    case glslang::EbvMeshViewCountNV:
+    case glslang::EbvMeshViewIndicesNV:
 #endif
         // Generate the associated capability.  Delegate to TranslateBuiltInDecoration.
         // Alternately, we could just call this for any glslang built-in, since the
@@ -6691,6 +6782,12 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
             return 0;
         }
         break;
+
+#ifdef NV_EXTENSIONS
+    case glslang::EOpWritePackedPrimitiveIndices4x8NV:
+        builder.createNoResultOp(spv::OpWritePackedPrimitiveIndices4x8NV, operands);
+        return 0;
+#endif
     default:
         return 0;
     }
@@ -6888,6 +6985,9 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         builder.addDecoration(id, TranslatePrecisionDecoration(symbol->getType()));
         builder.addDecoration(id, TranslateInterpolationDecoration(symbol->getType().getQualifier()));
         builder.addDecoration(id, TranslateAuxiliaryStorageDecoration(symbol->getType().getQualifier()));
+#ifdef NV_EXTENSIONS
+        addMeshNVDecoration(id, /*member*/ -1, symbol->getType().getQualifier());
+#endif
         if (symbol->getType().getQualifier().hasSpecConstantId())
             builder.addDecoration(id, spv::DecorationSpecId, symbol->getType().getQualifier().layoutSpecConstantId);
         if (symbol->getQualifier().hasIndex())
@@ -6993,6 +7093,28 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
 
     return id;
 }
+
+#ifdef NV_EXTENSIONS
+// add per-primitive, per-view. per-task decorations to a struct member (member >= 0) or an object
+void TGlslangToSpvTraverser::addMeshNVDecoration(spv::Id id, int member, const glslang::TQualifier& qualifier)
+{
+    if (member >= 0) {
+        if (qualifier.perPrimitiveNV)
+            builder.addMemberDecoration(id, (unsigned)member, spv::DecorationPerPrimitiveNV);
+        if (qualifier.perViewNV)
+            builder.addMemberDecoration(id, (unsigned)member, spv::DecorationPerViewNV);
+        if (qualifier.perTaskNV)
+            builder.addMemberDecoration(id, (unsigned)member, spv::DecorationPerTaskNV);
+    } else {
+        if (qualifier.perPrimitiveNV)
+            builder.addDecoration(id, spv::DecorationPerPrimitiveNV);
+        if (qualifier.perViewNV)
+            builder.addDecoration(id, spv::DecorationPerViewNV);
+        if (qualifier.perTaskNV)
+            builder.addDecoration(id, spv::DecorationPerTaskNV);
+    }
+}
+#endif
 
 // Make a full tree of instructions to build a SPIR-V specialization constant,
 // or regular constant if possible.

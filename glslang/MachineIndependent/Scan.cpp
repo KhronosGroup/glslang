@@ -700,6 +700,12 @@ void TScanContext::fillInKeywordMap()
     (*KeywordMap)["resource"] =                RESOURCE;
     (*KeywordMap)["superp"] =                  SUPERP;
 
+#ifdef NV_EXTENSIONS
+    (*KeywordMap)["perprimitiveNV"] =          PERPRIMITIVENV;
+    (*KeywordMap)["perviewNV"] =               PERVIEWNV;
+    (*KeywordMap)["taskNV"] =                  PERTASKNV;
+#endif
+
     ReservedSet = new std::unordered_set<const char*, str_hash, str_eq>;
 
     ReservedSet->insert("common");
@@ -1564,6 +1570,16 @@ int TScanContext::tokenizeIdentifier()
         bool reserved = parseContext.profile == EEsProfile || parseContext.version >= 130;
         return identifierOrReserved(reserved);
     }
+
+#ifdef NV_EXTENSIONS
+    case PERPRIMITIVENV:
+    case PERVIEWNV:
+    case PERTASKNV:
+        if (parseContext.profile != EEsProfile &&
+            (parseContext.version >= 450 || parseContext.extensionTurnedOn(E_GL_NV_mesh_shader)))
+            return keyword;
+        return identifierOrType();
+#endif
 
     default:
         parseContext.infoSink.info.message(EPrefixInternalError, "Unknown glslang keyword", loc);

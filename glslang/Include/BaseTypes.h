@@ -229,6 +229,14 @@ enum TBuiltInVariable {
     EbvFragFullyCoveredNV,
     EbvBaryCoordNV,
     EbvBaryCoordNoPerspNV,
+    EbvTaskCountNV,
+    EbvPrimitiveCountNV,
+    EbvPrimitiveIndicesNV,
+    EbvClipDistancePerViewNV,
+    EbvCullDistancePerViewNV,
+    EbvLayerPerViewNV,
+    EbvMeshViewCountNV,
+    EbvMeshViewIndicesNV,
 #endif 
 
     // HLSL built-ins that live only temporarily, until they get remapped
@@ -369,6 +377,14 @@ __inline const char* GetBuiltInVariableString(TBuiltInVariable v)
     case EbvFragFullyCoveredNV:         return "FragFullyCoveredNV";
     case EbvBaryCoordNV:                return "BaryCoordNV";
     case EbvBaryCoordNoPerspNV:         return "BaryCoordNoPerspNV";
+    case EbvTaskCountNV:                return "TaskCountNV";
+    case EbvPrimitiveCountNV:           return "PrimitiveCountNV";
+    case EbvPrimitiveIndicesNV:         return "PrimitiveIndicesNV";
+    case EbvClipDistancePerViewNV:      return "ClipDistancePerViewNV";
+    case EbvCullDistancePerViewNV:      return "CullDistancePerViewNV";
+    case EbvLayerPerViewNV:             return "LayerPerViewNV";
+    case EbvMeshViewCountNV:            return "MeshViewCountNV";
+    case EbvMeshViewIndicesNV:          return "MeshViewIndicesNV";
 #endif 
     default:                      return "unknown built-in variable";
     }

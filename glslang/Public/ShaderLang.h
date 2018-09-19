@@ -94,6 +94,10 @@ typedef enum {
     EShLangGeometry,
     EShLangFragment,
     EShLangCompute,
+#ifdef NV_EXTENSIONS
+    EShLangTaskNV,
+    EShLangMeshNV,
+#endif
     EShLangCount,
 } EShLanguage;         // would be better as stage, but this is ancient now
 
@@ -104,6 +108,10 @@ typedef enum {
     EShLangGeometryMask       = (1 << EShLangGeometry),
     EShLangFragmentMask       = (1 << EShLangFragment),
     EShLangComputeMask        = (1 << EShLangCompute),
+#ifdef NV_EXTENSIONS
+    EShLangTaskNVMask         = (1 << EShLangTaskNV),
+    EShLangMeshNVMask         = (1 << EShLangMeshNV),
+#endif
 } EShLanguageMask;
 
 namespace glslang {

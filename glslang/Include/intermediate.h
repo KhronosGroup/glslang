@@ -893,6 +893,9 @@ enum TOperator {
     EOpFindLSB,
     EOpFindMSB,
 
+#ifdef NV_EXTENSIONS
+    EOpWritePackedPrimitiveIndices4x8NV,
+#endif
     //
     // HLSL operations
     //

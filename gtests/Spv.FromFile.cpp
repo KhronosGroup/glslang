@@ -506,6 +506,13 @@ INSTANTIATE_TEST_CASE_P(
     "spv.computeShaderDerivatives.comp",
     "spv.computeShaderDerivatives2.comp",
     "spv.shaderImageFootprint.frag",
+    "spv.meshShaderBuiltins.mesh",
+    "spv.meshShaderUserDefined.mesh",
+    "spv.meshShaderPerViewBuiltins.mesh",
+    "spv.meshShaderPerViewUserDefined.mesh",
+    "spv.meshShaderSharedMem.mesh",
+    "spv.meshShaderTaskMem.mesh",
+    "spv.meshTaskShader.task",
 })),
 FileNameAsCustomTestSuffix
 );

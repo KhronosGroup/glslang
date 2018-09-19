@@ -244,6 +244,10 @@ const char* GetBinaryName(EShLanguage stage)
         case EShLangGeometry:        name = "geom.spv";    break;
         case EShLangFragment:        name = "frag.spv";    break;
         case EShLangCompute:         name = "comp.spv";    break;
+#ifdef NV_EXTENSIONS
+        case EShLangMeshNV:          name = "mesh.spv";    break;
+        case EShLangTaskNV:          name = "task.spv";    break;
+#endif
         default:                     name = "unknown";     break;
         }
     } else
@@ -1250,6 +1254,12 @@ EShLanguage FindLanguage(const std::string& name, bool parseStageName)
         return EShLangFragment;
     else if (stageName == "comp")
         return EShLangCompute;
+#ifdef NV_EXTENSIONS
+    else if (stageName == "mesh")
+        return EShLangMeshNV;
+    else if (stageName == "task")
+        return EShLangTaskNV;
+#endif
 
     usage();
     return EShLangVertex;
@@ -1319,6 +1329,10 @@ void usage()
            "    .geom   for a geometry shader\n"
            "    .frag   for a fragment shader\n"
            "    .comp   for a compute shader\n"
+#ifdef NV_EXTENSIONS
+           "    .mesh   for a mesh shader\n"
+           "    .task   for a task shader\n"
+#endif
            "    .glsl   for .vert.glsl, .tesc.glsl, ..., .comp.glsl compound suffixes\n"
            "    .hlsl   for .vert.hlsl, .tesc.hlsl, ..., .comp.hlsl compound suffixes\n"
            "\n"
