@@ -512,7 +512,7 @@ enum BuiltIn {
     BuiltInBaryCoordNoPerspNV = 5287,
     BuiltInFragmentSizeNV = 5292,
     BuiltInInvocationsPerPixelNV = 5293,
-    BuiltInLaunchIDNVX = 5319,
+    BuiltInLaunchIdNVX = 5319,
     BuiltInLaunchSizeNVX = 5320,
     BuiltInWorldRayOriginNVX = 5321,
     BuiltInWorldRayDirectionNVX = 5322,
