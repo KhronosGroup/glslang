@@ -267,6 +267,10 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
         if (tokens.size() != 1)
             error(loc, "extra tokens", "#pragma", "");
         intermediate.setUseStorageBuffer();
+    } else if (spvVersion.spv > 0 && tokens[0].compare("use_vulkan_memory_model") == 0) {
+        if (tokens.size() != 1)
+            error(loc, "extra tokens", "#pragma", "");
+        intermediate.setUseVulkanMemoryModel();
     } else if (tokens[0].compare("once") == 0) {
         warn(loc, "not implemented", "#pragma once", "");
     } else if (tokens[0].compare("glslang_binary_double_output") == 0)
@@ -487,12 +491,20 @@ void TParseContext::makeEditable(TSymbol*& symbol)
         ioArraySymbolResizeList.push_back(symbol);
 }
 
-// Return true if this is a geometry shader input array or tessellation control output array.
+// Return true if this is a geometry shader input array or tessellation control output array
+// or mesh shader output array.
 bool TParseContext::isIoResizeArray(const TType& type) const
 {
     return type.isArray() &&
            ((language == EShLangGeometry    && type.getQualifier().storage == EvqVaryingIn) ||
-            (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut && ! type.getQualifier().patch));
+            (language == EShLangTessControl && type.getQualifier().storage == EvqVaryingOut && ! type.getQualifier().patch)
+#ifdef NV_EXTENSIONS
+            ||
+            (language == EShLangFragment && type.getQualifier().storage == EvqVaryingIn &&  type.getQualifier().pervertexNV) ||
+            (language == EShLangMeshNV && type.getQualifier().storage == EvqVaryingOut && !type.getQualifier().perTaskNV)
+
+#endif
+            );
 }
 
 // If an array is not isIoResizeArray() but is an io array, make sure it has the right size
@@ -542,7 +554,7 @@ void TParseContext::handleIoResizeArrayAccess(const TSourceLoc& /*loc*/, TInterm
 
     // fix array size, if it can be fixed and needs to be fixed (will allow variable indexing)
     if (symbolNode->getType().isUnsizedArray()) {
-        int newSize = getIoArrayImplicitSize();
+        int newSize = getIoArrayImplicitSize(symbolNode->getType().getQualifier().isPerPrimitive());
         if (newSize > 0)
             symbolNode->getWritableType().changeOuterArraySize(newSize);
     }
@@ -556,17 +568,27 @@ void TParseContext::handleIoResizeArrayAccess(const TSourceLoc& /*loc*/, TInterm
 // Types without an array size will be given one.
 // Types already having a size that is wrong will get an error.
 //
-void TParseContext::checkIoArraysConsistency(const TSourceLoc& loc, bool tailOnly)
+void TParseContext::checkIoArraysConsistency(const TSourceLoc& loc, bool tailOnly, bool isPerPrimitive)
 {
-    int requiredSize = getIoArrayImplicitSize();
+    int requiredSize = getIoArrayImplicitSize(isPerPrimitive);
     if (requiredSize == 0)
         return;
 
     const char* feature;
     if (language == EShLangGeometry)
         feature = TQualifier::getGeometryString(intermediate.getInputPrimitive());
-    else if (language == EShLangTessControl)
+    else if (language == EShLangTessControl
+#ifdef NV_EXTENSIONS
+          || language == EShLangFragment
+#endif
+        )
+
         feature = "vertices";
+#ifdef NV_EXTENSIONS
+     else if (language == EShLangMeshNV) {
+        feature = isPerPrimitive ? "max_primitives" : "max_vertices";
+     }
+#endif
     else
         feature = "unknown";
 
@@ -579,12 +601,24 @@ void TParseContext::checkIoArraysConsistency(const TSourceLoc& loc, bool tailOnl
         checkIoArrayConsistency(loc, requiredSize, feature, ioArraySymbolResizeList[i]->getWritableType(), ioArraySymbolResizeList[i]->getName());
 }
 
-int TParseContext::getIoArrayImplicitSize() const
+int TParseContext::getIoArrayImplicitSize(bool isPerPrimitive) const
 {
     if (language == EShLangGeometry)
         return TQualifier::mapGeometryToSize(intermediate.getInputPrimitive());
     else if (language == EShLangTessControl)
         return intermediate.getVertices() != TQualifier::layoutNotSet ? intermediate.getVertices() : 0;
+#ifdef NV_EXTENSIONS
+    else if (language == EShLangFragment)
+        return 3; //Number of vertices for Fragment shader is always three.
+    else if (language == EShLangMeshNV) {
+        if (isPerPrimitive) {
+            return intermediate.getPrimitives() != TQualifier::layoutNotSet ? intermediate.getPrimitives() : 0;            
+        } else {
+            return intermediate.getVertices() != TQualifier::layoutNotSet ? intermediate.getVertices() : 0;
+        }
+    }
+#endif
+
     else
         return 0;
 }
@@ -598,6 +632,14 @@ void TParseContext::checkIoArrayConsistency(const TSourceLoc& loc, int requiredS
             error(loc, "inconsistent input primitive for array size of", feature, name.c_str());
         else if (language == EShLangTessControl)
             error(loc, "inconsistent output number of vertices for array size of", feature, name.c_str());
+#ifdef NV_EXTENSIONS
+        else if (language == EShLangFragment) {
+            if (type.getOuterArraySize() > requiredSize)
+                error(loc, " cannot be greater than 3 for pervertexNV", feature, name.c_str());
+        }
+        else if (language == EShLangMeshNV)
+            error(loc, "inconsistent output array size of", feature, name.c_str());
+#endif
         else
             assert(0);
     }
@@ -1028,8 +1070,16 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                         const char* message = "argument cannot drop memory qualifier when passed to formal parameter";
                         if (argQualifier.volatil && ! formalQualifier.volatil)
                             error(arguments->getLoc(), message, "volatile", "");
-                        if (argQualifier.coherent && ! formalQualifier.coherent)
+                        if (argQualifier.coherent && ! (formalQualifier.devicecoherent || formalQualifier.coherent))
                             error(arguments->getLoc(), message, "coherent", "");
+                        if (argQualifier.devicecoherent && ! (formalQualifier.devicecoherent || formalQualifier.coherent))
+                            error(arguments->getLoc(), message, "devicecoherent", "");
+                        if (argQualifier.queuefamilycoherent && ! (formalQualifier.queuefamilycoherent || formalQualifier.devicecoherent || formalQualifier.coherent))
+                            error(arguments->getLoc(), message, "queuefamilycoherent", "");
+                        if (argQualifier.workgroupcoherent && ! (formalQualifier.workgroupcoherent || formalQualifier.queuefamilycoherent || formalQualifier.devicecoherent || formalQualifier.coherent))
+                            error(arguments->getLoc(), message, "workgroupcoherent", "");
+                        if (argQualifier.subgroupcoherent && ! (formalQualifier.subgroupcoherent || formalQualifier.workgroupcoherent || formalQualifier.queuefamilycoherent || formalQualifier.devicecoherent || formalQualifier.coherent))
+                            error(arguments->getLoc(), message, "subgroupcoherent", "");
                         if (argQualifier.readonly && ! formalQualifier.readonly)
                             error(arguments->getLoc(), message, "readonly", "");
                         if (argQualifier.writeonly && ! formalQualifier.writeonly)
@@ -1289,8 +1339,15 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
                     // without actually redeclaring the array.  (It is an error to use a member before the
                     // redeclaration, but not an error to use the array name itself.)
                     const TString& name = intermNode->getAsSymbolNode()->getName();
-                    if (name == "gl_in" || name == "gl_out")
-                        length = getIoArrayImplicitSize();
+                    if (name == "gl_in" || name == "gl_out"
+#ifdef NV_EXTENSIONS
+                        || name == "gl_MeshVerticesNV"
+                        || name == "gl_MeshPrimitivesNV"
+#endif
+                        )
+                    {
+                        length = getIoArrayImplicitSize(type.getQualifier().isPerPrimitive());
+                    }
                 }
                 if (length == 0) {
                     if (intermNode->getAsSymbolNode() && isIoResizeArray(type))
@@ -1427,6 +1484,159 @@ TIntermTyped* TParseContext::addOutputArgumentConversions(const TFunction& funct
 
     return conversionTree;
 }
+
+void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction& fnCandidate, const TIntermOperator& callNode)
+{
+    const TIntermSequence* argp = &callNode.getAsAggregate()->getSequence();
+
+    const int gl_SemanticsRelaxed         = 0x0;
+    const int gl_SemanticsAcquire         = 0x2;
+    const int gl_SemanticsRelease         = 0x4;
+    const int gl_SemanticsAcquireRelease  = 0x8;
+    const int gl_SemanticsMakeAvailable   = 0x2000;
+    const int gl_SemanticsMakeVisible     = 0x4000;
+
+    const int gl_StorageSemanticsNone     = 0x0;
+    const int gl_StorageSemanticsBuffer   = 0x40;
+    const int gl_StorageSemanticsShared   = 0x100;
+    const int gl_StorageSemanticsImage    = 0x800;
+    const int gl_StorageSemanticsOutput   = 0x1000;
+
+
+    unsigned int semantics = 0, storageClassSemantics = 0;
+    unsigned int semantics2 = 0, storageClassSemantics2 = 0;
+
+    // Grab the semantics and storage class semantics from the operands, based on opcode
+    switch (callNode.getOp()) {
+    case EOpAtomicAdd:
+    case EOpAtomicMin:
+    case EOpAtomicMax:
+    case EOpAtomicAnd:
+    case EOpAtomicOr:
+    case EOpAtomicXor:
+    case EOpAtomicExchange:
+    case EOpAtomicStore:
+        storageClassSemantics = (*argp)[3]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[4]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        break;
+    case EOpAtomicLoad:
+        storageClassSemantics = (*argp)[2]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[3]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        break;
+    case EOpAtomicCompSwap:
+        storageClassSemantics = (*argp)[4]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[5]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        storageClassSemantics2 = (*argp)[6]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics2 = (*argp)[7]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        break;
+
+    case EOpImageAtomicAdd:
+    case EOpImageAtomicMin:
+    case EOpImageAtomicMax:
+    case EOpImageAtomicAnd:
+    case EOpImageAtomicOr:
+    case EOpImageAtomicXor:
+    case EOpImageAtomicExchange:
+    case EOpImageAtomicStore:
+        storageClassSemantics = (*argp)[4]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[5]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        break;
+    case EOpImageAtomicLoad:
+        storageClassSemantics = (*argp)[3]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[4]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        break;
+    case EOpImageAtomicCompSwap:
+        storageClassSemantics = (*argp)[5]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[6]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        storageClassSemantics2 = (*argp)[7]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics2 = (*argp)[8]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        break;
+
+    case EOpBarrier:
+        storageClassSemantics = (*argp)[2]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[3]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        break;
+    case EOpMemoryBarrier:
+        storageClassSemantics = (*argp)[1]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        semantics = (*argp)[2]->getAsConstantUnion()->getConstArray()[0].getIConst();
+        break;
+    }
+
+    if ((semantics & gl_SemanticsAcquire) && 
+        (callNode.getOp() == EOpAtomicStore || callNode.getOp() == EOpImageAtomicStore)) {
+        error(loc, "gl_SemanticsAcquire must not be used with (image) atomic store",
+              fnCandidate.getName().c_str(), "");
+    }
+    if ((semantics & gl_SemanticsRelease) && 
+        (callNode.getOp() == EOpAtomicLoad || callNode.getOp() == EOpImageAtomicLoad)) {
+        error(loc, "gl_SemanticsRelease must not be used with (image) atomic load",
+              fnCandidate.getName().c_str(), "");
+    }
+    if ((semantics & gl_SemanticsAcquireRelease) && 
+        (callNode.getOp() == EOpAtomicStore || callNode.getOp() == EOpImageAtomicStore || 
+         callNode.getOp() == EOpAtomicLoad  || callNode.getOp() == EOpImageAtomicLoad)) {
+        error(loc, "gl_SemanticsAcquireRelease must not be used with (image) atomic load/store",
+              fnCandidate.getName().c_str(), "");
+    }
+    if (((semantics | semantics2) & ~(gl_SemanticsAcquire |
+                                      gl_SemanticsRelease |
+                                      gl_SemanticsAcquireRelease |
+                                      gl_SemanticsMakeAvailable |
+                                      gl_SemanticsMakeVisible))) {
+        error(loc, "Invalid semantics value", fnCandidate.getName().c_str(), "");
+    }
+    if (((storageClassSemantics | storageClassSemantics2) & ~(gl_StorageSemanticsBuffer |
+                                                              gl_StorageSemanticsShared |
+                                                              gl_StorageSemanticsImage |
+                                                              gl_StorageSemanticsOutput))) {
+        error(loc, "Invalid storage class semantics value", fnCandidate.getName().c_str(), "");
+    }
+
+    if (callNode.getOp() == EOpMemoryBarrier) {
+        if (!IsPow2(semantics & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
+            error(loc, "Semantics must include exactly one of gl_SemanticsRelease, gl_SemanticsAcquire, or "
+                       "gl_SemanticsAcquireRelease", fnCandidate.getName().c_str(), "");
+        }
+    } else {
+        if (semantics & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease)) {
+            if (!IsPow2(semantics & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
+                error(loc, "Semantics must not include multiple of gl_SemanticsRelease, gl_SemanticsAcquire, or "
+                           "gl_SemanticsAcquireRelease", fnCandidate.getName().c_str(), "");
+            }
+        }
+        if (semantics2 & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease)) {
+            if (!IsPow2(semantics2 & (gl_SemanticsAcquire | gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
+                error(loc, "semUnequal must not include multiple of gl_SemanticsRelease, gl_SemanticsAcquire, or "
+                           "gl_SemanticsAcquireRelease", fnCandidate.getName().c_str(), "");
+            }
+        }
+    }
+    if (callNode.getOp() == EOpMemoryBarrier) {
+        if (storageClassSemantics == 0) {
+            error(loc, "Storage class semantics must not be zero", fnCandidate.getName().c_str(), "");
+        }
+    }
+    if (callNode.getOp() == EOpBarrier && semantics != 0 && storageClassSemantics == 0) {
+        error(loc, "Storage class semantics must not be zero", fnCandidate.getName().c_str(), "");
+    }
+    if ((callNode.getOp() == EOpAtomicCompSwap || callNode.getOp() == EOpImageAtomicCompSwap) &&
+        (semantics2 & (gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
+        error(loc, "semUnequal must not be gl_SemanticsRelease or gl_SemanticsAcquireRelease",
+              fnCandidate.getName().c_str(), "");
+    }
+    if ((semantics & gl_SemanticsMakeAvailable) &&
+        !(semantics & (gl_SemanticsRelease | gl_SemanticsAcquireRelease))) {
+        error(loc, "gl_SemanticsMakeAvailable requires gl_SemanticsRelease or gl_SemanticsAcquireRelease",
+              fnCandidate.getName().c_str(), "");
+    }
+    if ((semantics & gl_SemanticsMakeVisible) &&
+        !(semantics & (gl_SemanticsAcquire | gl_SemanticsAcquireRelease))) {
+        error(loc, "gl_SemanticsMakeVisible requires gl_SemanticsAcquire or gl_SemanticsAcquireRelease",
+              fnCandidate.getName().c_str(), "");
+    }
+
+}
+
 
 //
 // Do additional checking of built-in function calls that is not caught
@@ -1656,6 +1866,8 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpImageAtomicXor:
     case EOpImageAtomicExchange:
     case EOpImageAtomicCompSwap:
+    case EOpImageAtomicLoad:
+    case EOpImageAtomicStore:
     {
         // Make sure the image types have the correct layout() format and correct argument types
         const TType& imageType = arg0->getType();
@@ -1669,10 +1881,14 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                 error(loc, "only supported on image with format r32f", fnCandidate.getName().c_str(), "");
         }
 
+        if (argp->size() > 4) {
+            requireExtensions(loc, 1, &E_GL_KHR_memory_scope_semantics, fnCandidate.getName().c_str());
+            memorySemanticsCheck(loc, fnCandidate, callNode);
+        }
+
         break;
     }
 
-#ifdef NV_EXTENSIONS
     case EOpAtomicAdd:
     case EOpAtomicMin:
     case EOpAtomicMax:
@@ -1681,13 +1897,23 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpAtomicXor:
     case EOpAtomicExchange:
     case EOpAtomicCompSwap:
+    case EOpAtomicLoad:
+    case EOpAtomicStore:
     {
-        if (arg0->getType().getBasicType() == EbtInt64 || arg0->getType().getBasicType() == EbtUint64)
-            requireExtensions(loc, 1, &E_GL_NV_shader_atomic_int64, fnCandidate.getName().c_str());
-
+        if (argp->size() > 3) {
+            requireExtensions(loc, 1, &E_GL_KHR_memory_scope_semantics, fnCandidate.getName().c_str());
+            memorySemanticsCheck(loc, fnCandidate, callNode);
+        } else if (arg0->getType().getBasicType() == EbtInt64 || arg0->getType().getBasicType() == EbtUint64) {
+#ifdef NV_EXTENSIONS
+            const char* const extensions[2] = { E_GL_NV_shader_atomic_int64,
+                                                E_GL_EXT_shader_atomic_int64 };
+            requireExtensions(loc, 2, extensions, fnCandidate.getName().c_str());
+#else
+            requireExtensions(loc, 1, &E_GL_EXT_shader_atomic_int64, fnCandidate.getName().c_str());
+#endif
+        }
         break;
     }
-#endif
 
     case EOpInterpolateAtCentroid:
     case EOpInterpolateAtSample:
@@ -1748,6 +1974,14 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                 error(loc, "argument must be at least 1", "cluster size", "");
             else if (!IsPow2(size))
                 error(loc, "argument must be a power of 2", "cluster size", "");
+        }
+        break;
+
+    case EOpBarrier:
+    case EOpMemoryBarrier:
+        if (argp->size() > 0) {
+            requireExtensions(loc, 1, &E_GL_KHR_memory_scope_semantics, fnCandidate.getName().c_str());
+            memorySemanticsCheck(loc, fnCandidate, callNode);
         }
         break;
 
@@ -2728,6 +2962,20 @@ void TParseContext::atomicUintCheck(const TSourceLoc& loc, const TType& type, co
     else if (type.getBasicType() == EbtAtomicUint && type.getQualifier().storage != EvqUniform)
         error(loc, "atomic_uints can only be used in uniform variables or function parameters:", type.getBasicTypeString().c_str(), identifier.c_str());
 }
+#ifdef NV_EXTENSIONS
+void TParseContext::accStructNVCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
+{
+    if (type.getQualifier().storage == EvqUniform)
+        return;
+
+    if (type.getBasicType() == EbtStruct && containsFieldWithBasicType(type, EbtAccStructNV))
+        error(loc, "non-uniform struct contains an accelerationStructureNVX:", type.getBasicTypeString().c_str(), identifier.c_str());
+    else if (type.getBasicType() == EbtAccStructNV && type.getQualifier().storage != EvqUniform)
+        error(loc, "accelerationStructureNVX can only be used in uniform variables or function parameters:",
+            type.getBasicTypeString().c_str(), identifier.c_str());
+
+}
+#endif
 
 void TParseContext::transparentOpaqueCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
 {
@@ -2806,8 +3054,11 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
     if (! symbolTable.atGlobalLevel())
         return;
 
-    if (qualifier.isMemory() && ! publicType.isImage() && publicType.qualifier.storage != EvqBuffer)
+    if (qualifier.isMemoryQualifierImageAndSSBOOnly() && ! publicType.isImage() && publicType.qualifier.storage != EvqBuffer) {
         error(loc, "memory qualifiers cannot be used on this type", "", "");
+    } else if (qualifier.isMemory() && (publicType.basicType != EbtSampler) && !publicType.qualifier.isUniformOrBuffer()) {
+        error(loc, "memory qualifiers cannot be used on this type", "", "");
+    }
 
     if (qualifier.storage == EvqBuffer && publicType.basicType != EbtBlock)
         error(loc, "buffers can be declared only as blocks", "buffer", "");
@@ -2828,11 +3079,14 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
     if (isTypeInt(publicType.basicType) || publicType.basicType == EbtDouble)
         profileRequires(loc, EEsProfile, 300, nullptr, "shader input/output");
 
+    if (!qualifier.flat
 #ifdef AMD_EXTENSIONS
-    if (! qualifier.flat && ! qualifier.explicitInterp) {
-#else
-    if (!qualifier.flat) {
+        && !qualifier.explicitInterp
 #endif
+#ifdef NV_EXTENSIONS
+        && !qualifier.pervertexNV
+#endif
+        ) {
         if (isTypeInt(publicType.basicType) ||
             publicType.basicType == EbtDouble ||
             (publicType.userDef && (publicType.userDef->containsBasicType(EbtInt8)   ||
@@ -2853,6 +3107,11 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
 
     if (qualifier.patch && qualifier.isInterpolation())
         error(loc, "cannot use interpolation qualifiers with patch", "patch", "");
+
+#ifdef NV_EXTENSIONS
+    if (qualifier.perTaskNV && publicType.basicType != EbtBlock)
+        error(loc, "taskNV variables can be declared only as blocks", "taskNV", "");
+#endif
 
     if (qualifier.storage == EvqVaryingIn) {
         switch (language) {
@@ -3020,6 +3279,13 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
     if (dst.precision == EpqNone || (force && src.precision != EpqNone))
         dst.precision = src.precision;
 
+    if (!force && ((src.coherent && (dst.devicecoherent || dst.queuefamilycoherent || dst.workgroupcoherent || dst.subgroupcoherent)) ||
+                   (src.devicecoherent && (dst.coherent || dst.queuefamilycoherent || dst.workgroupcoherent || dst.subgroupcoherent)) ||
+                   (src.queuefamilycoherent && (dst.coherent || dst.devicecoherent || dst.workgroupcoherent || dst.subgroupcoherent)) ||
+                   (src.workgroupcoherent && (dst.coherent || dst.devicecoherent || dst.queuefamilycoherent || dst.subgroupcoherent)) ||
+                   (src.subgroupcoherent  && (dst.coherent || dst.devicecoherent || dst.queuefamilycoherent || dst.workgroupcoherent)))) {
+        error(loc, "only one coherent/devicecoherent/queuefamilycoherent/workgroupcoherent/subgroupcoherent qualifier allowed", GetPrecisionQualifierString(src.precision), "");
+    }
     // Layout qualifiers
     mergeObjectLayoutQualifiers(dst, src, false);
 
@@ -3035,9 +3301,19 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
 #ifdef AMD_EXTENSIONS
     MERGE_SINGLETON(explicitInterp);
 #endif
+#ifdef NV_EXTENSIONS
+    MERGE_SINGLETON(perPrimitiveNV);
+    MERGE_SINGLETON(perViewNV);
+    MERGE_SINGLETON(perTaskNV);
+#endif
     MERGE_SINGLETON(patch);
     MERGE_SINGLETON(sample);
     MERGE_SINGLETON(coherent);
+    MERGE_SINGLETON(devicecoherent);
+    MERGE_SINGLETON(queuefamilycoherent);
+    MERGE_SINGLETON(workgroupcoherent);
+    MERGE_SINGLETON(subgroupcoherent);
+    MERGE_SINGLETON(nonprivate);
     MERGE_SINGLETON(volatil);
     MERGE_SINGLETON(restrict);
     MERGE_SINGLETON(readonly);
@@ -3371,7 +3647,7 @@ void TParseContext::declareArray(const TSourceLoc& loc, const TString& identifie
             if (! symbolTable.atBuiltInLevel()) {
                 if (isIoResizeArray(type)) {
                     ioArraySymbolResizeList.push_back(symbol);
-                    checkIoArraysConsistency(loc, true);
+                    checkIoArraysConsistency(loc, true, type.getQualifier().isPerPrimitive());
                 } else
                     fixIoArraySize(loc, symbol->getWritableType());
             }
@@ -3424,7 +3700,7 @@ void TParseContext::declareArray(const TSourceLoc& loc, const TString& identifie
     existingType.updateArraySizes(type);
 
     if (isIoResizeArray(type))
-        checkIoArraysConsistency(loc);
+        checkIoArraysConsistency(loc, false, type.getQualifier().isPerPrimitive());
 }
 
 // Policy and error check for needing a runtime sized array.
@@ -3459,6 +3735,28 @@ bool TParseContext::isRuntimeLength(const TIntermTyped& base) const
 
     return false;
 }
+
+#ifdef NV_EXTENSIONS
+// Fix mesh view output array dimension
+void TParseContext::resizeMeshViewDimension(const TSourceLoc& loc, TType& type)
+{
+    // see if member is a per-view attribute
+    if (type.getQualifier().isPerView()) {
+        // since we don't have the maxMeshViewCountNV set during parsing builtins, we hardcode the value
+        int maxViewCount = parsingBuiltins ? 4 : resources.maxMeshViewCountNV;
+
+        if (! type.isArray()) {
+            error(loc, "requires an view array dimension", "perviewNV", "");
+        }
+        else if (!type.isUnsizedArray() && type.getOuterArraySize() != maxViewCount) {
+            error(loc, "mesh view output array size must be gl_MaxMeshViewCountNV or implicitly sized", "[]", "");
+        }
+        else if (type.isUnsizedArray()) {
+            type.changeOuterArraySize(maxViewCount);
+        }
+    }
+}
+#endif
 
 // Returns true if the first argument to the #line directive is the line number for the next line.
 //
@@ -3650,7 +3948,12 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     profileRequires(loc, EEsProfile, 320, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, feature);
     profileRequires(loc, ~EEsProfile, 410, E_GL_ARB_separate_shader_objects, feature);
 
-    if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment") {
+    if (blockName != "gl_PerVertex" && blockName != "gl_PerFragment"
+#ifdef NV_EXTENSIONS
+        && blockName != "gl_MeshPerVertexNV" && blockName != "gl_MeshPerPrimitiveNV"
+#endif
+       )
+    {
         error(loc, "cannot redeclare block: ", "block declaration", blockName.c_str());
         return;
     }
@@ -3826,7 +4129,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     // Tracking for implicit sizing of array
     if (isIoResizeArray(block->getType())) {
         ioArraySymbolResizeList.push_back(block);
-        checkIoArraysConsistency(loc, true);
+        checkIoArraysConsistency(loc, true, block->getType().getQualifier().isPerPrimitive());
     } else if (block->getType().isArray())
         fixIoArraySize(loc, block->getWritableType());
 
@@ -3862,6 +4165,11 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
     if (qualifier.isMemory()) {
         type.getQualifier().volatil   = qualifier.volatil;
         type.getQualifier().coherent  = qualifier.coherent;
+        type.getQualifier().devicecoherent  = qualifier.devicecoherent ;
+        type.getQualifier().queuefamilycoherent  = qualifier.queuefamilycoherent;
+        type.getQualifier().workgroupcoherent  = qualifier.workgroupcoherent;
+        type.getQualifier().subgroupcoherent  = qualifier.subgroupcoherent;
+        type.getQualifier().nonprivate = qualifier.nonprivate;
         type.getQualifier().readonly  = qualifier.readonly;
         type.getQualifier().writeonly = qualifier.writeonly;
         type.getQualifier().restrict  = qualifier.restrict;
@@ -4238,44 +4546,57 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         publicType.qualifier.layoutPushConstant = true;
         return;
     }
-    if (language == EShLangGeometry || language == EShLangTessEvaluation) {
+    if (language == EShLangGeometry || language == EShLangTessEvaluation
+#ifdef NV_EXTENSIONS
+        || language == EShLangMeshNV
+#endif
+       ) {
         if (id == TQualifier::getGeometryString(ElgTriangles)) {
             publicType.shaderQualifiers.geometry = ElgTriangles;
             return;
         }
-        if (language == EShLangGeometry) {
+        if (language == EShLangGeometry
+#ifdef NV_EXTENSIONS
+            || language == EShLangMeshNV
+#endif
+           ) {
             if (id == TQualifier::getGeometryString(ElgPoints)) {
                 publicType.shaderQualifiers.geometry = ElgPoints;
-                return;
-            }
-            if (id == TQualifier::getGeometryString(ElgLineStrip)) {
-                publicType.shaderQualifiers.geometry = ElgLineStrip;
                 return;
             }
             if (id == TQualifier::getGeometryString(ElgLines)) {
                 publicType.shaderQualifiers.geometry = ElgLines;
                 return;
             }
-            if (id == TQualifier::getGeometryString(ElgLinesAdjacency)) {
-                publicType.shaderQualifiers.geometry = ElgLinesAdjacency;
-                return;
-            }
-            if (id == TQualifier::getGeometryString(ElgTrianglesAdjacency)) {
-                publicType.shaderQualifiers.geometry = ElgTrianglesAdjacency;
-                return;
-            }
-            if (id == TQualifier::getGeometryString(ElgTriangleStrip)) {
-                publicType.shaderQualifiers.geometry = ElgTriangleStrip;
-                return;
-            }
 #ifdef NV_EXTENSIONS
-            if (id == "passthrough") {
-               requireExtensions(loc, 1, &E_SPV_NV_geometry_shader_passthrough, "geometry shader passthrough");
-               publicType.qualifier.layoutPassthrough = true;
-               intermediate.setGeoPassthroughEXT();
-               return;
-            }
+            if (language == EShLangGeometry)
 #endif
+            {
+                if (id == TQualifier::getGeometryString(ElgLineStrip)) {
+                    publicType.shaderQualifiers.geometry = ElgLineStrip;
+                    return;
+                }
+                if (id == TQualifier::getGeometryString(ElgLinesAdjacency)) {
+                    publicType.shaderQualifiers.geometry = ElgLinesAdjacency;
+                    return;
+                }
+                if (id == TQualifier::getGeometryString(ElgTrianglesAdjacency)) {
+                    publicType.shaderQualifiers.geometry = ElgTrianglesAdjacency;
+                    return;
+                }
+                if (id == TQualifier::getGeometryString(ElgTriangleStrip)) {
+                    publicType.shaderQualifiers.geometry = ElgTriangleStrip;
+                    return;
+                }
+#ifdef NV_EXTENSIONS
+                if (id == "passthrough") {
+                    requireExtensions(loc, 1, &E_SPV_NV_geometry_shader_passthrough, "geometry shader passthrough");
+                    publicType.qualifier.layoutPassthrough = true;
+                    intermediate.setGeoPassthroughEXT();
+                    return;
+                }
+#endif
+            }
         } else {
             assert(language == EShLangTessEvaluation);
 
@@ -4388,6 +4709,27 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             requireExtensions(loc, 1, &E_GL_NV_viewport_array2, "view port array2");
             publicType.qualifier.layoutViewportRelative = true;
             return;
+        }
+    } else {
+        if (language == EShLangRayGenNV || language == EShLangIntersectNV ||
+        language == EShLangAnyHitNV || language == EShLangClosestHitNV ||
+        language == EShLangMissNV || language == EShLangCallableNV) {
+            if (id == "shaderrecordnvx") {
+                publicType.qualifier.layoutShaderRecordNV = true;
+                return;
+            }
+        }
+    }
+    if (language == EShLangCompute) {
+        if (id.compare(0, 17, "derivative_group_") == 0) {
+            requireExtensions(loc, 1, &E_GL_NV_compute_shader_derivatives, "compute shader derivatives");
+            if (id == "derivative_group_quadsnv") {
+                publicType.shaderQualifiers.layoutDerivativeGroupQuads = true;
+                return;
+            } else if (id == "derivative_group_linearnv") {
+                publicType.shaderQualifiers.layoutDerivativeGroupLinear = true;
+                return;
+            }
         }
     }
 #else
@@ -4618,10 +4960,37 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         }
         break;
 
+#ifdef NV_EXTENSIONS
+    case EShLangMeshNV:
+        if (id == "max_vertices") {
+            publicType.shaderQualifiers.vertices = value;
+            if (value > resources.maxMeshOutputVerticesNV)
+                error(loc, "too large, must be less than gl_MaxMeshOutputVerticesNV", "max_vertices", "");
+            return;
+        }
+        if (id == "max_primitives") {
+            publicType.shaderQualifiers.primitives = value;
+            if (value > resources.maxMeshOutputPrimitivesNV)
+                error(loc, "too large, must be less than gl_MaxMeshOutputPrimitivesNV", "max_primitives", "");
+            return;
+        }
+        // Fall through
+
+    case EShLangTaskNV:
+        // Fall through
+#endif
     case EShLangCompute:
         if (id.compare(0, 11, "local_size_") == 0) {
-            profileRequires(loc, EEsProfile, 310, 0, "gl_WorkGroupSize");
-            profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_compute_shader, "gl_WorkGroupSize");
+#ifdef NV_EXTENSIONS
+            if (language == EShLangMeshNV || language == EShLangTaskNV) {
+                profileRequires(loc, ~EEsProfile, 450, E_GL_NV_mesh_shader, "gl_WorkGroupSize");
+            }
+            else
+#endif
+            {
+                profileRequires(loc, EEsProfile, 310, 0, "gl_WorkGroupSize");
+                profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_compute_shader, "gl_WorkGroupSize");
+            }
             if (id.size() == 12 && value == 0) {
                 error(loc, "must be at least 1", id.c_str(), "");
                 return;
@@ -4730,6 +5099,10 @@ void TParseContext::mergeObjectLayoutQualifiers(TQualifier& dst, const TQualifie
             dst.layoutViewportRelative = true;
         if (src.layoutSecondaryViewportRelativeOffset != -2048)
             dst.layoutSecondaryViewportRelativeOffset = src.layoutSecondaryViewportRelativeOffset;
+        if (src.layoutShaderRecordNV)
+            dst.layoutShaderRecordNV = true;
+        if (src.pervertexNV)
+            dst.pervertexNV = true;
 #endif
     }
 }
@@ -4766,9 +5139,10 @@ void TParseContext::layoutObjectCheck(const TSourceLoc& loc, const TSymbol& symb
         switch (qualifier.storage) {
         case EvqVaryingIn:
         case EvqVaryingOut:
-            if (type.getBasicType() != EbtBlock ||
-                (!(*type.getStruct())[0].type->getQualifier().hasLocation() &&
-                  (*type.getStruct())[0].type->getQualifier().builtIn == EbvNone))
+            if (!type.getQualifier().isTaskMemory() &&
+                (type.getBasicType() != EbtBlock ||
+                 (!(*type.getStruct())[0].type->getQualifier().hasLocation() &&
+                   (*type.getStruct())[0].type->getQualifier().builtIn == EbvNone)))
                 error(loc, "SPIR-V requires location for user input/output", "location", "");
             break;
         default:
@@ -4794,6 +5168,10 @@ void TParseContext::layoutObjectCheck(const TSourceLoc& loc, const TSymbol& symb
                     error(loc, "cannot specify on a variable declaration", "align", "");
                 if (qualifier.layoutPushConstant)
                     error(loc, "can only specify on a uniform block", "push_constant", "");
+#ifdef NV_EXTENSIONS
+                if (qualifier.layoutShaderRecordNV)
+                    error(loc, "can only specify on a buffer block", "shaderRecordNVX", "");
+#endif
             }
             break;
         default:
@@ -4857,12 +5235,22 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         case EvqVaryingOut:
             if (type.getBasicType() == EbtBlock)
                 profileRequires(loc, ECoreProfile | ECompatibilityProfile, 440, E_GL_ARB_enhanced_layouts, "location qualifier on in/out block");
+#ifdef NV_EXTENSIONS
+            if (type.getQualifier().isTaskMemory())
+                error(loc, "cannot apply to taskNV in/out blocks", "location", "");
+#endif
             break;
         case EvqUniform:
         case EvqBuffer:
             if (type.getBasicType() == EbtBlock)
                 error(loc, "cannot apply to uniform or buffer block", "location", "");
             break;
+#ifdef NV_EXTENSIONS
+        case EvqPayloadNV:
+        case EvqPayloadInNV:
+        case EvqHitAttrNV:
+            break;
+#endif
         default:
             error(loc, "can only apply to uniform, buffer, in, or out storage qualifiers", "location", "");
             break;
@@ -4946,7 +5334,10 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
         if (spvVersion.spv > 0) {
             if (qualifier.isUniformOrBuffer()) {
                 if (type.getBasicType() == EbtBlock && !qualifier.layoutPushConstant &&
-                                                       !qualifier.layoutAttachment)
+#ifdef NV_EXTENSIONS
+                       !qualifier.layoutShaderRecordNV &&
+#endif
+                       !qualifier.layoutAttachment)
                     error(loc, "uniform/buffer blocks require layout(binding=X)", "binding", "");
                 else if (spvVersion.vulkan > 0 && type.getBasicType() == EbtSampler)
                     error(loc, "sampler/texture/image requires layout(binding=X)", "binding", "");
@@ -4997,6 +5388,11 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
 
     if (qualifier.layoutPushConstant && type.getBasicType() != EbtBlock)
         error(loc, "can only be used with a block", "push_constant", "");
+
+#ifdef NV_EXTENSIONS
+    if (qualifier.layoutShaderRecordNV && type.getBasicType() != EbtBlock)
+        error(loc, "can only be used with a block", "shaderRecordNVX", "");
+#endif
 
     // input attachment
     if (type.isSubpass()) {
@@ -5108,7 +5504,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
     }
 
     if (qualifier.hasBinding()) {
-        if (! qualifier.isUniformOrBuffer())
+        if (! qualifier.isUniformOrBuffer() && !qualifier.isTaskMemory())
             error(loc, "requires uniform or buffer storage qualifier", "binding", "");
     }
     if (qualifier.hasStream()) {
@@ -5120,7 +5516,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
             error(loc, "can only be used on an output", "xfb layout qualifier", "");
     }
     if (qualifier.hasUniformLayout()) {
-        if (! qualifier.isUniformOrBuffer()) {
+        if (! qualifier.isUniformOrBuffer() && !qualifier.isTaskMemory()) {
             if (qualifier.hasMatrix() || qualifier.hasPacking())
                 error(loc, "matrix or packing qualifiers can only be used on a uniform or buffer", "layout", "");
             if (qualifier.hasOffset() || qualifier.hasAlign())
@@ -5133,6 +5529,16 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         if (qualifier.hasSet())
             error(loc, "cannot be used with push_constant", "set", "");
     }
+#ifdef NV_EXTENSIONS
+    if (qualifier.layoutShaderRecordNV) {
+        if (qualifier.storage != EvqBuffer)
+            error(loc, "can only be used with a buffer", "shaderRecordNVX", "");
+        if (qualifier.hasBinding())
+            error(loc, "cannot be used with shaderRecordNVX", "binding", "");
+        if (qualifier.hasSet())
+            error(loc, "cannot be used with shaderRecordNVX", "set", "");
+    }
+#endif
 }
 
 // For places that can't have shader-level layout qualifiers
@@ -5161,13 +5567,25 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
             error(loc, message, "local_size id", "");
     }
     if (shaderQualifiers.vertices != TQualifier::layoutNotSet) {
-        if (language == EShLangGeometry)
+        if (language == EShLangGeometry
+#ifdef NV_EXTENSIONS
+            || language == EShLangMeshNV
+#endif
+           )
             error(loc, message, "max_vertices", "");
         else if (language == EShLangTessControl)
             error(loc, message, "vertices", "");
         else
             assert(0);
     }
+#ifdef NV_EXTENSIONS
+    if (shaderQualifiers.primitives != TQualifier::layoutNotSet) {
+        if (language == EShLangMeshNV)
+            error(loc, message, "max_primitives", "");
+        else
+            assert(0);
+    }
+#endif
     if (shaderQualifiers.blendEquation)
         error(loc, message, "blend equation", "");
     if (shaderQualifiers.numViews != TQualifier::layoutNotSet)
@@ -5550,6 +5968,9 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     samplerCheck(loc, type, identifier, initializer);
     atomicUintCheck(loc, type, identifier);
     transparentOpaqueCheck(loc, type, identifier);
+#ifdef NV_EXTENSIONS
+    accStructNVCheck(loc, type, identifier);
+#endif
 
     if (type.getQualifier().storage != EvqUniform && type.getQualifier().storage != EvqBuffer) {
         if (type.containsBasicType(EbtFloat16))
@@ -6198,6 +6619,14 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         if (memberQualifier.storage != EvqTemporary && memberQualifier.storage != EvqGlobal && memberQualifier.storage != currentBlockQualifier.storage)
             error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", memberType.getFieldName().c_str(), "");
         memberQualifier.storage = currentBlockQualifier.storage;
+#ifdef NV_EXTENSIONS
+        if (currentBlockQualifier.perPrimitiveNV)
+            memberQualifier.perPrimitiveNV = currentBlockQualifier.perPrimitiveNV;
+        if (currentBlockQualifier.perViewNV)
+            memberQualifier.perViewNV = currentBlockQualifier.perViewNV;
+        if (currentBlockQualifier.perTaskNV)
+            memberQualifier.perTaskNV = currentBlockQualifier.perTaskNV;
+#endif
         if ((currentBlockQualifier.storage == EvqUniform || currentBlockQualifier.storage == EvqBuffer) && (memberQualifier.isInterpolation() || memberQualifier.isAuxiliary()))
             error(memberLoc, "member of uniform or buffer block cannot have an auxiliary or interpolation qualifier", memberType.getFieldName().c_str(), "");
         if (memberType.isArray())
@@ -6240,8 +6669,18 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
 
     // Special case for "push_constant uniform", which has a default of std430,
     // contrary to normal uniform defaults, and can't have a default tracked for it.
-    if (currentBlockQualifier.layoutPushConstant && !currentBlockQualifier.hasPacking())
+    if ((currentBlockQualifier.layoutPushConstant && !currentBlockQualifier.hasPacking())
+#ifdef NV_EXTENSIONS
+        || (currentBlockQualifier.layoutShaderRecordNV && !currentBlockQualifier.hasPacking())
+#endif
+       )
         currentBlockQualifier.layoutPacking = ElpStd430;
+
+#ifdef NV_EXTENSIONS
+    // Special case for "taskNV in/out", which has a default of std430,
+    if (currentBlockQualifier.perTaskNV && !currentBlockQualifier.hasPacking())
+        currentBlockQualifier.layoutPacking = ElpStd430;
+#endif
 
     // fix and check for member layout qualifiers
 
@@ -6257,6 +6696,9 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
 
     bool memberWithLocation = false;
     bool memberWithoutLocation = false;
+#ifdef NV_EXTENSIONS
+    bool memberWithPerViewQualifier = false;
+#endif
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TQualifier& memberQualifier = typeList[member].type->getQualifier();
         const TSourceLoc& memberLoc = typeList[member].loc;
@@ -6300,6 +6742,12 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
                 error(memberLoc, "can only be used with std140 or std430 layout packing", "offset/align", "");
         }
 
+#ifdef NV_EXTENSIONS
+        if (memberQualifier.isPerView()) {
+            memberWithPerViewQualifier = true;
+        }
+#endif
+
         TQualifier newMemberQualification = defaultQualification;
         mergeQualifiers(memberLoc, newMemberQualification, memberQualifier, false);
         memberQualifier = newMemberQualification;
@@ -6313,6 +6761,14 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     fixBlockUniformOffsets(currentBlockQualifier, typeList);
     for (unsigned int member = 0; member < typeList.size(); ++member)
         layoutTypeCheck(typeList[member].loc, *typeList[member].type);
+
+#ifdef NV_EXTENSIONS
+    if (memberWithPerViewQualifier) {
+        for (unsigned int member = 0; member < typeList.size(); ++member) {
+            resizeMeshViewDimension(typeList[member].loc, *typeList[member].type);
+        }
+    }
+#endif
 
     // reverse merge, so that currentBlockQualifier now has all layout information
     // (can't use defaultQualification directly, it's missing other non-layout-default-class qualifiers)
@@ -6377,7 +6833,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     // fix up
     if (isIoResizeArray(blockType)) {
         ioArraySymbolResizeList.push_back(&variable);
-        checkIoArraysConsistency(loc, true);
+        checkIoArraysConsistency(loc, true, blockType.getQualifier().isPerPrimitive());
     } else
         fixIoArraySize(loc, variable.getWritableType());
 
@@ -6405,17 +6861,56 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
         profileRequires(loc, ~EEsProfile, 150, E_GL_ARB_separate_shader_objects, "input block");
         // It is a compile-time error to have an input block in a vertex shader or an output block in a fragment shader
         // "Compute shaders do not permit user-defined input variables..."
-        requireStage(loc, (EShLanguageMask)(EShLangTessControlMask|EShLangTessEvaluationMask|EShLangGeometryMask|EShLangFragmentMask), "input block");
-        if (language == EShLangFragment)
+        requireStage(loc, (EShLanguageMask)(EShLangTessControlMask|EShLangTessEvaluationMask|EShLangGeometryMask|EShLangFragmentMask
+#ifdef NV_EXTENSIONS
+                                            |EShLangMeshNVMask
+#endif
+                                           ), "input block");
+        if (language == EShLangFragment) {
             profileRequires(loc, EEsProfile, 320, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "fragment input block");
+        }
+#ifdef NV_EXTENSIONS
+        else if (language == EShLangMeshNV && ! qualifier.isTaskMemory()) {
+            error(loc, "input blocks cannot be used in a mesh shader", "out", "");
+        }
+#endif
         break;
     case EvqVaryingOut:
         profileRequires(loc, ~EEsProfile, 150, E_GL_ARB_separate_shader_objects, "output block");
-        requireStage(loc, (EShLanguageMask)(EShLangVertexMask|EShLangTessControlMask|EShLangTessEvaluationMask|EShLangGeometryMask), "output block");
+        requireStage(loc, (EShLanguageMask)(EShLangVertexMask|EShLangTessControlMask|EShLangTessEvaluationMask|EShLangGeometryMask
+#ifdef NV_EXTENSIONS
+                                            |EShLangMeshNVMask|EShLangTaskNVMask
+#endif
+                                           ), "output block");
         // ES 310 can have a block before shader_io is turned on, so skip this test for built-ins
-        if (language == EShLangVertex && ! parsingBuiltins)
+        if (language == EShLangVertex && ! parsingBuiltins) {
             profileRequires(loc, EEsProfile, 320, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "vertex output block");
+        }
+#ifdef NV_EXTENSIONS
+        else if (language == EShLangMeshNV && qualifier.isTaskMemory()) {
+            error(loc, "can only use on input blocks in mesh shader", "taskNV", "");
+        }
+        else if (language == EShLangTaskNV && ! qualifier.isTaskMemory()) {
+            error(loc, "output blocks cannot be used in a task shader", "out", "");
+        }
+#endif
         break;
+#ifdef NV_EXTENSIONS
+    case EvqPayloadNV:
+        profileRequires(loc, ~EEsProfile, 450, E_GL_NVX_raytracing, "rayPayloadNVX block");
+        requireStage(loc, (EShLanguageMask)(EShLangRayGenNVMask | EShLangAnyHitNVMask | EShLangClosestHitNVMask | EShLangMissNVMask),
+            "rayPayloadNVX block");
+        break;
+    case EvqPayloadInNV:
+        profileRequires(loc, ~EEsProfile, 450, E_GL_NVX_raytracing, "rayPayloadInNVX block");
+        requireStage(loc, (EShLanguageMask)(EShLangAnyHitNVMask | EShLangClosestHitNVMask | EShLangMissNVMask),
+            "rayPayloadInNVX block");
+        break;
+    case EvqHitAttrNV:
+        profileRequires(loc, ~EEsProfile, 450, E_GL_NVX_raytracing, "hitAttributeNVX block");
+        requireStage(loc, (EShLanguageMask)(EShLangIntersectNVMask | EShLangAnyHitNVMask | EShLangClosestHitNVMask), "hitAttributeNVX block");
+        break;
+#endif
     default:
         error(loc, "only uniform, buffer, in, or out blocks are supported", blockName->c_str(), "");
         break;
@@ -6452,6 +6947,12 @@ void TParseContext::blockQualifierCheck(const TSourceLoc& loc, const TQualifier&
         error(loc, "cannot use invariant qualifier on an interface block", "invariant", "");
     if (qualifier.layoutPushConstant)
         intermediate.addPushConstantCount();
+#ifdef NV_EXTENSIONS
+    if (qualifier.layoutShaderRecordNV)
+        intermediate.addShaderRecordNVCount();
+    if (qualifier.perTaskNV)
+        intermediate.addTaskNVCount();
+#endif
 }
 
 //
@@ -6537,7 +7038,7 @@ void TParseContext::fixBlockXfbOffsets(TQualifier& qualifier, TTypeList& typeLis
 //
 void TParseContext::fixBlockUniformOffsets(TQualifier& qualifier, TTypeList& typeList)
 {
-    if (! qualifier.isUniformOrBuffer())
+    if (!qualifier.isUniformOrBuffer() && !qualifier.isTaskMemory())
         return;
     if (qualifier.layoutPacking != ElpStd140 && qualifier.layoutPacking != ElpStd430)
         return;
@@ -6669,7 +7170,11 @@ void TParseContext::invariantCheck(const TSourceLoc& loc, const TQualifier& qual
 void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, const TPublicType& publicType)
 {
     if (publicType.shaderQualifiers.vertices != TQualifier::layoutNotSet) {
+#ifdef NV_EXTENSIONS
+        assert(language == EShLangTessControl || language == EShLangGeometry || language == EShLangMeshNV);
+#else
         assert(language == EShLangTessControl || language == EShLangGeometry);
+#endif
         const char* id = (language == EShLangTessControl) ? "vertices" : "max_vertices";
 
         if (publicType.qualifier.storage != EvqVaryingOut)
@@ -6680,6 +7185,17 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         if (language == EShLangTessControl)
             checkIoArraysConsistency(loc);
     }
+#ifdef NV_EXTENSIONS
+    if (publicType.shaderQualifiers.primitives != TQualifier::layoutNotSet) {
+        assert(language == EShLangMeshNV);
+        const char* id = "max_primitives";
+
+        if (publicType.qualifier.storage != EvqVaryingOut)
+            error(loc, "can only apply to 'out'", id, "");
+        if (! intermediate.setPrimitives(publicType.shaderQualifiers.primitives))
+            error(loc, "cannot change previously set layout value", id, "");
+    }
+#endif
     if (publicType.shaderQualifiers.invocations != TQualifier::layoutNotSet) {
         if (publicType.qualifier.storage != EvqVaryingIn)
             error(loc, "can only apply to 'in'", "invocations", "");
@@ -6696,6 +7212,12 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             case ElgTrianglesAdjacency:
             case ElgQuads:
             case ElgIsolines:
+#ifdef NV_EXTENSIONS
+                if (language == EShLangMeshNV) {
+                    error(loc, "cannot apply to input", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
+                    break;
+                }
+#endif
                 if (intermediate.setInputPrimitive(publicType.shaderQualifiers.geometry)) {
                     if (language == EShLangGeometry)
                         checkIoArraysConsistency(loc);
@@ -6707,6 +7229,15 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             }
         } else if (publicType.qualifier.storage == EvqVaryingOut) {
             switch (publicType.shaderQualifiers.geometry) {
+#ifdef NV_EXTENSIONS
+            case ElgLines:
+            case ElgTriangles:
+                if (language != EShLangMeshNV) {
+                    error(loc, "cannot apply to 'out'", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
+                    break;
+                }
+#endif
+                // Fall through
             case ElgPoints:
             case ElgLineStrip:
             case ElgTriangleStrip:
@@ -6746,14 +7277,41 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
                     error(loc, "cannot change previously set size", "local_size", "");
                 else {
                     int max = 0;
-                    switch (i) {
-                    case 0: max = resources.maxComputeWorkGroupSizeX; break;
-                    case 1: max = resources.maxComputeWorkGroupSizeY; break;
-                    case 2: max = resources.maxComputeWorkGroupSizeZ; break;
-                    default: break;
+                    if (language == EShLangCompute) {
+                        switch (i) {
+                        case 0: max = resources.maxComputeWorkGroupSizeX; break;
+                        case 1: max = resources.maxComputeWorkGroupSizeY; break;
+                        case 2: max = resources.maxComputeWorkGroupSizeZ; break;
+                        default: break;
+                        }
+                        if (intermediate.getLocalSize(i) > (unsigned int)max)
+                            error(loc, "too large; see gl_MaxComputeWorkGroupSize", "local_size", "");
                     }
-                    if (intermediate.getLocalSize(i) > (unsigned int)max)
-                        error(loc, "too large; see gl_MaxComputeWorkGroupSize", "local_size", "");
+#ifdef NV_EXTENSIONS
+                    else if (language == EShLangMeshNV) {
+                        switch (i) {
+                        case 0: max = resources.maxMeshWorkGroupSizeX_NV; break;
+                        case 1: max = resources.maxMeshWorkGroupSizeY_NV; break;
+                        case 2: max = resources.maxMeshWorkGroupSizeZ_NV; break;
+                        default: break;
+                        }
+                        if (intermediate.getLocalSize(i) > (unsigned int)max)
+                            error(loc, "too large; see gl_MaxMeshWorkGroupSizeNV", "local_size", "");
+                    }
+                    else if (language == EShLangTaskNV) {
+                        switch (i) {
+                        case 0: max = resources.maxTaskWorkGroupSizeX_NV; break;
+                        case 1: max = resources.maxTaskWorkGroupSizeY_NV; break;
+                        case 2: max = resources.maxTaskWorkGroupSizeZ_NV; break;
+                        default: break;
+                        }
+                        if (intermediate.getLocalSize(i) > (unsigned int)max)
+                            error(loc, "too large; see gl_MaxTaskWorkGroupSizeNV", "local_size", "");
+                    }
+#endif
+                    else {
+                        assert(0);
+                    }
 
                     // Fix the existing constant gl_WorkGroupSize with this new information.
                     TVariable* workGroupSize = getEditableVariable("gl_WorkGroupSize");
@@ -6792,6 +7350,36 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             error(loc, "can only apply to 'out'", "blend equation", "");
     }
 
+#ifdef NV_EXTENSIONS
+    if (publicType.shaderQualifiers.layoutDerivativeGroupQuads &&
+        publicType.shaderQualifiers.layoutDerivativeGroupLinear) {
+        error(loc, "cannot be both specified", "derivative_group_quadsNV and derivative_group_linearNV", "");
+    }
+
+    if (publicType.shaderQualifiers.layoutDerivativeGroupQuads) {
+        if (publicType.qualifier.storage == EvqVaryingIn) {
+            if ((intermediate.getLocalSize(0) & 1) ||
+                (intermediate.getLocalSize(1) & 1))
+                error(loc, "requires local_size_x and local_size_y to be multiple of two", "derivative_group_quadsNV", "");
+            else
+                intermediate.setLayoutDerivativeMode(LayoutDerivativeGroupQuads);
+        }
+        else
+            error(loc, "can only apply to 'in'", "derivative_group_quadsNV", "");
+    }
+    if (publicType.shaderQualifiers.layoutDerivativeGroupLinear) {
+        if (publicType.qualifier.storage == EvqVaryingIn) {
+            if((intermediate.getLocalSize(0) *
+                intermediate.getLocalSize(1) *
+                intermediate.getLocalSize(2)) % 4 != 0)
+                error(loc, "requires total group size to be multiple of four", "derivative_group_linearNV", "");
+            else
+                intermediate.setLayoutDerivativeMode(LayoutDerivativeGroupLinear);
+        }
+        else
+            error(loc, "can only apply to 'in'", "derivative_group_linearNV", "");
+    }
+#endif 
     const TQualifier& qualifier = publicType.qualifier;
 
     if (qualifier.isAuxiliary() ||
@@ -6847,6 +7435,10 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
         error(loc, "cannot declare a default, can only be used on a block", "push_constant", "");
     if (qualifier.hasSpecConstantId())
         error(loc, "cannot declare a default, can only be used on a scalar", "constant_id", "");
+#ifdef NV_EXTENSIONS
+    if (qualifier.layoutShaderRecordNV)
+        error(loc, "cannot declare a default, can only be used on a block", "shaderRecordNVX", "");
+#endif
 }
 
 //

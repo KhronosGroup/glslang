@@ -194,6 +194,9 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_KHR_shader_subgroup_shuffle_relative] = EBhDisable;
     extensionBehavior[E_GL_KHR_shader_subgroup_clustered]        = EBhDisable;
     extensionBehavior[E_GL_KHR_shader_subgroup_quad]             = EBhDisable;
+    extensionBehavior[E_GL_KHR_memory_scope_semantics]           = EBhDisable;
+
+    extensionBehavior[E_GL_EXT_shader_atomic_int64]              = EBhDisable;
 
     extensionBehavior[E_GL_EXT_shader_non_constant_global_initializers] = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_image_load_formatted]             = EBhDisable;
@@ -232,6 +235,12 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_NV_conservative_raster_underestimation]   = EBhDisable;
     extensionBehavior[E_GL_NV_shader_noperspective_interpolation]    = EBhDisable;
     extensionBehavior[E_GL_NV_shader_subgroup_partitioned]           = EBhDisable;
+    extensionBehavior[E_GL_NV_shading_rate_image]                    = EBhDisable;
+    extensionBehavior[E_GL_NVX_raytracing]                           = EBhDisable;
+    extensionBehavior[E_GL_NV_fragment_shader_barycentric]           = EBhDisable;
+    extensionBehavior[E_GL_NV_compute_shader_derivatives]            = EBhDisable;
+    extensionBehavior[E_GL_NV_shader_texture_footprint]              = EBhDisable;
+    extensionBehavior[E_GL_NV_mesh_shader]                           = EBhDisable;
 #endif
 
     // AEP
@@ -380,6 +389,8 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_KHR_shader_subgroup_clustered 1\n"
             "#define GL_KHR_shader_subgroup_quad 1\n"
 
+            "#define E_GL_EXT_shader_atomic_int64 1\n"
+
 #ifdef AMD_EXTENSIONS
             "#define GL_AMD_shader_ballot 1\n"
             "#define GL_AMD_shader_trinary_minmax 1\n"
@@ -400,6 +411,12 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_NV_shader_atomic_int64 1\n"
             "#define GL_NV_conservative_raster_underestimation 1\n"
             "#define GL_NV_shader_subgroup_partitioned 1\n"
+            "#define GL_NV_shading_rate_image 1\n"
+            "#define GL_NVX_raytracing 1\n"
+            "#define GL_NV_fragment_shader_barycentric 1\n"
+            "#define GL_NV_compute_shader_derivatives 1\n"
+            "#define GL_NV_shader_texture_footprint 1\n"
+            "#define GL_NV_mesh_shader 1\n"
 #endif
             "#define GL_KHX_shader_explicit_arithmetic_types 1\n"
             "#define GL_KHX_shader_explicit_arithmetic_types_int8 1\n"
@@ -487,6 +504,16 @@ const char* StageName(EShLanguage stage)
     case EShLangGeometry:       return "geometry";
     case EShLangFragment:       return "fragment";
     case EShLangCompute:        return "compute";
+#ifdef NV_EXTENSIONS
+    case EShLangRayGenNV:       return "ray-generation";
+    case EShLangIntersectNV:    return "intersection";
+    case EShLangAnyHitNV:       return "any-hit";
+    case EShLangClosestHitNV:   return "closest-hit";
+    case EShLangMissNV:         return "miss";
+    case EShLangCallableNV:     return "callable";
+    case EShLangMeshNV:         return "mesh";
+    case EShLangTaskNV:         return "task";
+#endif
     default:                    return "unknown stage";
     }
 }
