@@ -39,11 +39,7 @@ config("glslang_public") {
   include_dirs = [ "." ]
 }
 
-static_library("glslang_static") {
-  defines = []
-
-  public_configs = [ ":glslang_public" ]
-
+source_set("glslang_sources") {
   sources = [
     "OGLCompilersDLL/InitializeDll.cpp",
     "OGLCompilersDLL/InitializeDll.h",
@@ -131,6 +127,15 @@ static_library("glslang_static") {
     "glslang/Public/ShaderLang.h",
   ]
 
+  defines = []
+  if (is_win) {
+    sources += [ "glslang/OSDependent/Windows/ossource.cpp" ]
+    defines += [ "GLSLANG_OSINCLUDE_WIN32" ]
+  } else {
+    sources += [ "glslang/OSDependent/Unix/ossource.cpp" ]
+    defines += [ "GLSLANG_OSINCLUDE_UNIX" ]
+  }
+
   if (is_clang) {
     cflags_cc = [
       "-Wno-implicit-fallthrough",
@@ -142,14 +147,14 @@ static_library("glslang_static") {
   deps = [
     "${spirv_tools_dir}:spvtools_opt",
   ]
+}
 
-  if (is_win) {
-    sources += [ "glslang/OSDependent/Windows/ossource.cpp" ]
-    defines += [ "GLSLANG_OSINCLUDE_WIN32" ]
-  } else {
-    sources += [ "glslang/OSDependent/Unix/ossource.cpp" ]
-    defines += [ "GLSLANG_OSINCLUDE_UNIX" ]
-  }
+static_library("glslang_static") {
+  public_configs = [ ":glslang_public" ]
+
+  deps = [
+    ":glslang_sources",
+  ]
 
   configs -= [ "//build/config/compiler:chromium_code" ]
   configs += [ "//build/config/compiler:no_chromium_code" ]
