@@ -640,7 +640,7 @@ bool Builder::containsType(Id typeId, spv::Op typeOp, int width) const
     {
     case OpTypeInt:
     case OpTypeFloat:
-        return typeClass == typeOp && instr.getImmediateOperand(0) == width;
+        return typeClass == typeOp && instr.getImmediateOperand(0) == (unsigned int)width;
     case OpTypeStruct:
         for (int m = 0; m < instr.getNumOperands(); ++m) {
             if (containsType(instr.getIdOperand(m), typeOp, width))
