@@ -834,6 +834,23 @@ void TParseVersions::updateExtensionBehavior(const char* extension, TExtensionBe
     }
 }
 
+#ifdef NV_EXTENSIONS
+// Validate if extension name is used with correct shader stage.
+bool TParseVersions::validateExtensionName(const TSourceLoc& loc, const char * const extension)
+{
+    int lNumErrors = getNumErrors();
+
+    // GL_NV_mesh_shader extension is only allowed in task/mesh shaders
+    if (strcmp(extension, "GL_NV_mesh_shader") == 0)
+        requireStage(loc, (EShLanguageMask)(EShLangTaskNVMask | EShLangMeshNVMask),
+                     "#extension GL_NV_mesh_shader");
+
+    if (getNumErrors() > lNumErrors)
+        return false;
+    return true;
+}
+#endif
+
 // Call for any operation needing full GLSL integer data-type support.
 void TParseVersions::fullIntegerCheck(const TSourceLoc& loc, const char* op)
 {

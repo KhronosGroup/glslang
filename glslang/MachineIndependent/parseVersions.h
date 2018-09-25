@@ -103,6 +103,9 @@ public:
     virtual void requireSpv(const TSourceLoc&, const char* op);
     virtual bool checkExtensionsRequested(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
     virtual void updateExtensionBehavior(const char* const extension, TExtensionBehavior);
+#ifdef NV_EXTENSIONS
+    virtual bool validateExtensionName(const TSourceLoc&, const char* const extension);
+#endif
 
     virtual void C_DECL error(const TSourceLoc&, const char* szReason, const char* szToken,
         const char* szExtraInfoFormat, ...) = 0;

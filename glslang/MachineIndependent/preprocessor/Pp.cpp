@@ -874,6 +874,11 @@ int TPpContext::CPPextension(TPpToken* ppToken)
         return token;
     }
 
+#ifdef NV_EXTENSIONS
+    if (!parseContext.validateExtensionName(ppToken->loc, extensionName))
+        return token;
+#endif
+
     parseContext.updateExtensionBehavior(line, extensionName, ppToken->name);
     parseContext.notifyExtensionDirective(line, extensionName, ppToken->name);
 
