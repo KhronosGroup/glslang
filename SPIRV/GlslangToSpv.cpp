@@ -3251,10 +3251,6 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
     // Decorate the structure
     builder.addDecoration(spvType, TranslateLayoutDecoration(type, qualifier.layoutMatrix));
     builder.addDecoration(spvType, TranslateBlockDecoration(type, glslangIntermediate->usingStorageBuffer()));
-    if (type.getQualifier().hasStream() && glslangIntermediate->isMultiStream()) {
-        builder.addCapability(spv::CapabilityGeometryStreams);
-        builder.addDecoration(spvType, spv::DecorationStream, type.getQualifier().layoutStream);
-    }
 }
 
 // Turn the expression forming the array size into an id.
