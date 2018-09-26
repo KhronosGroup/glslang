@@ -55,6 +55,8 @@ source_set("glslang_sources") {
     "SPIRV/SPVRemapper.h",
     "SPIRV/SpvBuilder.cpp",
     "SPIRV/SpvBuilder.h",
+    "SPIRV/SpvPostProcess.cpp",
+    "SPIRV/SpvPostProcess.h",
     "SPIRV/bitutils.h",
     "SPIRV/disassemble.cpp",
     "SPIRV/disassemble.h",
@@ -155,6 +157,7 @@ static_library("glslang_static") {
   deps = [
     ":glslang_sources",
   ]
+  complete_static_lib = true
 
   configs -= [ "//build/config/compiler:chromium_code" ]
   configs += [ "//build/config/compiler:no_chromium_code" ]
