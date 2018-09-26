@@ -1508,6 +1508,8 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
 
     // Grab the semantics and storage class semantics from the operands, based on opcode
     switch (callNode.getOp()) {
+    default:
+        break;
     case EOpAtomicAdd:
     case EOpAtomicMin:
     case EOpAtomicMax:
