@@ -3606,6 +3606,7 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
             if ((profile == EEsProfile && version >= 320) ||
                 extensionTurnedOn(E_GL_NV_mesh_shader))
                 return;
+        break;
 #endif
     default:
         break;

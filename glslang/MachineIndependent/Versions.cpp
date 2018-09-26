@@ -835,8 +835,8 @@ void TParseVersions::updateExtensionBehavior(const char* extension, TExtensionBe
 }
 
 #ifdef NV_EXTENSIONS
-// Validate if extension name is used with correct shader stage.
-bool TParseVersions::validateExtensionName(const TSourceLoc& loc, const char * const extension)
+// Check if extension is used with correct shader stage.
+bool TParseVersions::checkShaderStageForNVExtensions(const TSourceLoc& loc, const char * const extension)
 {
     int lNumErrors = getNumErrors();
 
@@ -844,6 +844,8 @@ bool TParseVersions::validateExtensionName(const TSourceLoc& loc, const char * c
     if (strcmp(extension, "GL_NV_mesh_shader") == 0)
         requireStage(loc, (EShLanguageMask)(EShLangTaskNVMask | EShLangMeshNVMask),
                      "#extension GL_NV_mesh_shader");
+
+    // TODO: need to add error checks for other nvidia turing extensions
 
     if (getNumErrors() > lNumErrors)
         return false;

@@ -875,7 +875,7 @@ int TPpContext::CPPextension(TPpToken* ppToken)
     }
 
 #ifdef NV_EXTENSIONS
-    if (!parseContext.validateExtensionName(ppToken->loc, extensionName))
+    if (!parseContext.checkShaderStageForNVExtensions(ppToken->loc, extensionName))
         return token;
 #endif
 
