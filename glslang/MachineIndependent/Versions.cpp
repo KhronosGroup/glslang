@@ -742,6 +742,11 @@ void TParseVersions::updateExtensionBehavior(int line, const char* extension, co
         return;
     }
 
+#ifdef NV_EXTENSIONS
+    if (!checkShaderStageForNVExtensions(getCurrentLoc(), extension))
+        return;
+#endif
+
     // update the requested extension
     updateExtensionBehavior(extension, behavior);
 
