@@ -1222,6 +1222,8 @@ int C_DECL main(int argc, char* argv[])
 //   .rchit = ray closest hit
 //   .rmiss = ray miss
 //   .rcall = ray callable
+//   .mesh  = mesh
+//   .task  = task
 //   Additionally, the file names may end in .<stage>.glsl and .<stage>.hlsl
 //   where <stage> is one of the stages listed above.
 //
@@ -1360,7 +1362,7 @@ void usage()
            "    .rahit   for a ray any hit shader\n"
            "    .rchit   for a ray closest hit shader\n"
            "    .rmiss   for a ray miss shader\n"
-           "    .rcall   for a ray callable shader"
+           "    .rcall   for a ray callable shader\n"
 #endif
            "    .glsl   for .vert.glsl, .tesc.glsl, ..., .comp.glsl compound suffixes\n"
            "    .hlsl   for .vert.hlsl, .tesc.hlsl, ..., .comp.hlsl compound suffixes\n"
