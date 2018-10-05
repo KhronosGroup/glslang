@@ -4487,7 +4487,7 @@ void TParseContext::finish()
             switch (intermediate.getInputPrimitive()) {
             case ElgPoints:      intermediate.setOutputPrimitive(ElgPoints);    break;
             case ElgLines:       intermediate.setOutputPrimitive(ElgLineStrip); break;
-            case ElgTriangles:   intermediate.setOutputPrimitive(ElgTriangles); break;
+            case ElgTriangles:   intermediate.setOutputPrimitive(ElgTriangleStrip); break;
             default: break;
             }
         }
