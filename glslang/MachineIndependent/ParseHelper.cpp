@@ -1503,14 +1503,14 @@ void TParseContext::memorySemanticsCheck(const TSourceLoc& loc, const TFunction&
 {
     const TIntermSequence* argp = &callNode.getAsAggregate()->getSequence();
 
-    const int gl_SemanticsRelaxed         = 0x0;
+    //const int gl_SemanticsRelaxed         = 0x0;
     const int gl_SemanticsAcquire         = 0x2;
     const int gl_SemanticsRelease         = 0x4;
     const int gl_SemanticsAcquireRelease  = 0x8;
     const int gl_SemanticsMakeAvailable   = 0x2000;
     const int gl_SemanticsMakeVisible     = 0x4000;
 
-    const int gl_StorageSemanticsNone     = 0x0;
+    //const int gl_StorageSemanticsNone     = 0x0;
     const int gl_StorageSemanticsBuffer   = 0x40;
     const int gl_StorageSemanticsShared   = 0x100;
     const int gl_StorageSemanticsImage    = 0x800;
