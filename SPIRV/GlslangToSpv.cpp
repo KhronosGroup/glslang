@@ -2812,8 +2812,9 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
         } else if (storageClass == spv::StorageClassUniform) {
             builder.addExtension(spv::E_SPV_KHR_8bit_storage);
             builder.addCapability(spv::CapabilityUniformAndStorageBuffer8BitAccess);
-            if (node->getType().getQualifier().storage == glslang::EvqBuffer)
-                builder.addCapability(spv::CapabilityStorageBuffer8BitAccess);
+        } else if (storageClass == spv::StorageClassStorageBuffer) {
+            builder.addExtension(spv::E_SPV_KHR_8bit_storage);
+            builder.addCapability(spv::CapabilityStorageBuffer8BitAccess);
         }
     }
 
