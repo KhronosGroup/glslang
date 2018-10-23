@@ -223,6 +223,15 @@ diff -b $BASEDIR/hlsl.pp.expand.frag.out $TARGETDIR/hlsl.pp.expand.frag.out || H
 diff -b $BASEDIR/hlsl.pp.expand.frag.err $TARGETDIR/hlsl.pp.expand.frag.err || HASERROR=1
 
 #
+# Testing xfb tests
+#
+echo "Testing XFB tests"
+$EXE -G -H spv.xfbOffsetOnBlockMembersAssignment.vert > $TARGETDIR/spv.xfbOffsetOnBlockMembersAssignment.vert.out
+diff -b $BASEDIR/spv.xfbOffsetOnBlockMembersAssignment.vert.out $TARGETDIR/spv.xfbOffsetOnBlockMembersAssignment.vert.out || HASERROR=1
+$EXE -G -H spv.xfbOverlapOffsetCheckWithBlockAndMember.vert > $TARGETDIR/spv.xfbOverlapOffsetCheckWithBlockAndMember.vert.out
+diff -b $BASEDIR/spv.xfbOverlapOffsetCheckWithBlockAndMember.vert.out $TARGETDIR/spv.xfbOverlapOffsetCheckWithBlockAndMember.vert.out || HASERROR=1
+
+#
 # Final checking
 #
 if [ $HASERROR -eq 0 ]
