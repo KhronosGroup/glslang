@@ -961,8 +961,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
             includer.pushExternalLocalDirectory(dir); });
         if (Options & EOptionOutputPreprocessed) {
             std::string str;
-            if (shader->preprocess(&Resources, defaultVersion, ENoProfile, false, false,
-                                   messages, &str, includer)) {
+            if (shader->preprocess(&Resources, defaultVersion, ENoProfile, false, false, messages, &str, includer)) {
                 PutsIfNonEmpty(str.c_str());
             } else {
                 CompileFailed = true;
@@ -971,6 +970,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
             StderrIfNonEmpty(shader->getInfoDebugLog());
             continue;
         }
+
         if (! shader->parse(&Resources, defaultVersion, false, messages, includer))
             CompileFailed = true;
 
@@ -1167,13 +1167,15 @@ int singleMain()
 
     ProcessConfigFile();
 
+    if ((Options & EOptionReadHlsl) && !((Options & EOptionOutputPreprocessed) || (Options & EOptionSpv)))
+        Error("ERROR: HLSL requires SPIR-V code generation (or preprocessing only)");
+
     //
     // Two modes:
     // 1) linking all arguments together, single-threaded, new C++ interface
     // 2) independent arguments, can be tackled by multiple asynchronous threads, for testing thread safety, using the old handle interface
     //
-    if (Options & EOptionLinkProgram ||
-        Options & EOptionOutputPreprocessed) {
+    if (Options & (EOptionLinkProgram | EOptionOutputPreprocessed)) {
         glslang::InitializeProcess();
         glslang::InitializeProcess();  // also test reference counting of users
         glslang::InitializeProcess();  // also test reference counting of users
