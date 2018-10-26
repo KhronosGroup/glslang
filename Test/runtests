@@ -166,13 +166,14 @@ diff -b $BASEDIR/hlsl.-D-U.frag.out $TARGETDIR/hlsl.-D-U.frag.out || HASERROR=1
 # Test --client and --target-env
 #
 echo "Testing --client and --target-env"
-$EXE --client vulkan100      spv.targetVulkan.vert || HASERROR=1
-$EXE --client opengl100      spv.targetOpenGL.vert || HASERROR=1
-$EXE --target-env vulkan1.0  spv.targetVulkan.vert || HASERROR=1
-$EXE --target-env vulkan1.1  spv.targetVulkan.vert || HASERROR=1
-$EXE --target-env opengl     spv.targetOpenGL.vert || HASERROR=1
-$EXE -V100                   spv.targetVulkan.vert || HASERROR=1
-$EXE -G100                   spv.targetOpenGL.vert || HASERROR=1
+$EXE --client vulkan100       spv.targetVulkan.vert || HASERROR=1
+$EXE --client opengl100       spv.targetOpenGL.vert || HASERROR=1
+$EXE --target-env vulkan1.0   spv.targetVulkan.vert || HASERROR=1
+$EXE --target-env vulkan1.1   spv.targetVulkan.vert || HASERROR=1
+$EXE --target-env opengl      spv.targetOpenGL.vert || HASERROR=1
+$EXE -V100                    spv.targetVulkan.vert || HASERROR=1
+$EXE -G100                    spv.targetOpenGL.vert || HASERROR=1
+$EXE --target-env spirv1.2 -V spv.targetVulkan.vert || HASERROR=1
 
 #
 # Testing GLSL entry point rename

@@ -1265,14 +1265,14 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
         std::string text;
         const std::vector<std::string>& processes = glslangIntermediate->getProcesses();
         for (int p = 0; p < (int)processes.size(); ++p) {
-            if (glslangIntermediate->getSpv().spv < 0x00010100) {
+            if (glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_1) {
                 text.append("// OpModuleProcessed ");
                 text.append(processes[p]);
                 text.append("\n");
             } else
                 builder.addModuleProcessed(processes[p]);
         }
-        if (glslangIntermediate->getSpv().spv < 0x00010100 && (int)processes.size() > 0)
+        if (glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_1 && (int)processes.size() > 0)
             text.append("#line 1\n");
         text.append(glslangIntermediate->getSourceText());
         builder.setSourceText(text);
