@@ -4514,6 +4514,8 @@ void TParseContext::finish()
         break;
 #ifdef NV_EXTENSIONS
     case EShLangTaskNV:
+        requireExtensions(getCurrentLoc(), 1, &E_GL_NV_mesh_shader, "task shaders");
+        break;
     case EShLangMeshNV:
         requireExtensions(getCurrentLoc(), 1, &E_GL_NV_mesh_shader, "mesh shaders");
         break;

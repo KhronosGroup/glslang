@@ -7202,15 +7202,29 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
 void TGlslangToSpvTraverser::addMeshNVDecoration(spv::Id id, int member, const glslang::TQualifier& qualifier)
 {
     if (member >= 0) {
-        if (qualifier.perPrimitiveNV)
+        if (qualifier.perPrimitiveNV) {
+            // Need to add capability/extension for fragment shader.
+            // Mesh shader already adds this by default.
+            if (glslangIntermediate->getStage() == EShLangFragment) {
+                builder.addCapability(spv::CapabilityMeshShadingNV);
+                builder.addExtension(spv::E_SPV_NV_mesh_shader);
+            }
             builder.addMemberDecoration(id, (unsigned)member, spv::DecorationPerPrimitiveNV);
+        }
         if (qualifier.perViewNV)
             builder.addMemberDecoration(id, (unsigned)member, spv::DecorationPerViewNV);
         if (qualifier.perTaskNV)
             builder.addMemberDecoration(id, (unsigned)member, spv::DecorationPerTaskNV);
     } else {
-        if (qualifier.perPrimitiveNV)
+        if (qualifier.perPrimitiveNV) {
+            // Need to add capability/extension for fragment shader.
+            // Mesh shader already adds this by default.
+            if (glslangIntermediate->getStage() == EShLangFragment) {
+                builder.addCapability(spv::CapabilityMeshShadingNV);
+                builder.addExtension(spv::E_SPV_NV_mesh_shader);
+            }
             builder.addDecoration(id, spv::DecorationPerPrimitiveNV);
+        }
         if (qualifier.perViewNV)
             builder.addDecoration(id, spv::DecorationPerViewNV);
         if (qualifier.perTaskNV)
