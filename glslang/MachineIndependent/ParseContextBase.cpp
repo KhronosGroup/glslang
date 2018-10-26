@@ -336,7 +336,7 @@ const TFunction* TParseContextBase::selectFunction(
     const TVector<const TFunction*> candidateList,
     const TFunction& call,
     std::function<bool(const TType& from, const TType& to, TOperator op, int arg)> convertible,
-    std::function<bool(const TType& from, const TType& to1, const TType& to2)> better,
+    std::function<ConversionCompare(const TType& from, const TType& to1, const TType& to2)> better,
     /* output */ bool& tie)
 {
 //
@@ -418,14 +418,41 @@ const TFunction* TParseContextBase::selectFunction(
         return viableCandidates.front();
 
     // 4. find best...
-    const auto betterParam = [&call, &better](const TFunction& can1, const TFunction& can2) -> bool {
+    const auto betterParam = [this, &call, &better](const TFunction& can1, const TFunction& can2) -> bool {
         // is call -> can2 better than call -> can1 for any parameter
         bool hasBetterParam = false;
-        for (int param = 0; param < call.getParamCount(); ++param) {
-            if (better(*call[param].type, *can1[param].type, *can2[param].type)) {
-                hasBetterParam = true;
-                break;
+        if (isReadingHLSL())
+        {
+          // on hlsl the first parameter has more weight than all others
+          if (call.getParamCount() > 0)
+          {
+            auto result = better(*call[0].type, *can1[0].type, *can2[0].type);
+            if (ConversionCompare::Better == result)
+              return true;
+            else if (ConversionCompare::Worse == result)
+              return false;
+          }
+          int betterCount = 0;
+          int worseCount = 0;
+          for (int param = 1; param < call.getParamCount(); ++param) {
+            auto result = better(*call[param].type, *can1[param].type, *can2[param].type);
+            if (ConversionCompare::Better == result)
+              ++betterCount;
+            else if (ConversionCompare::Worse == result)
+              ++worseCount;
+          }
+          hasBetterParam = betterCount > worseCount;
+        }
+        else
+        {
+          for (int param = 0; param < call.getParamCount(); ++param) {
+            auto result = better(*call[param].type, *can1[param].type, *can2[param].type);
+            if (ConversionCompare::Better == result)
+            {
+              hasBetterParam = true;
+              break;
             }
+          }
         }
         return hasBetterParam;
     };
@@ -433,8 +460,7 @@ const TFunction* TParseContextBase::selectFunction(
     const auto equivalentParams = [&call, &better](const TFunction& can1, const TFunction& can2) -> bool {
         // is call -> can2 equivalent to call -> can1 for all the call parameters?
         for (int param = 0; param < call.getParamCount(); ++param) {
-            if (better(*call[param].type, *can1[param].type, *can2[param].type) ||
-                better(*call[param].type, *can2[param].type, *can1[param].type))
+            if (ConversionCompare::Equal != better(*call[param].type, *can1[param].type, *can2[param].type))
                 return false;
         }
         return true;

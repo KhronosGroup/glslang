@@ -68,6 +68,13 @@ class TPpContext;
 
 typedef std::set<int> TIdSetType;
 
+enum class ConversionCompare
+{
+  Better,
+  Worse,
+  Equal
+};
+
 //
 // Sharable code (as well as what's in TParseVersions) across
 // parse helpers.
@@ -205,7 +212,7 @@ protected:
     // see implementation for detail
     const TFunction* selectFunction(const TVector<const TFunction*>, const TFunction&,
         std::function<bool(const TType&, const TType&, TOperator, int arg)>,
-        std::function<bool(const TType&, const TType&, const TType&)>,
+        std::function<ConversionCompare(const TType&, const TType&, const TType&)>,
         /* output */ bool& tie);
 
     virtual void parseSwizzleSelector(const TSourceLoc&, const TString&, int size,

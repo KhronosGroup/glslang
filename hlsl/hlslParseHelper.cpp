@@ -4978,6 +4978,11 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             case 2: constructOp = EOpConstructVec2; break;
             case 3: constructOp = EOpConstructVec3; break;
             case 4: constructOp = EOpConstructVec4; break;
+            case 0:
+              if (argValue->getType().isMatrix() && argValue->getType().getMatrixCols() == 2 && argValue->getType().getMatrixRows() == 2) {
+                constructOp = EOpConstructVec4;
+                break;
+              }
             default: assert(0); break;
             }
 
@@ -5029,6 +5034,11 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             case 2: constructOp = EOpConstructUVec2; break;
             case 3: constructOp = EOpConstructUVec3; break;
             case 4: constructOp = EOpConstructUVec4; break;
+            case 0:
+              if (argValue->getType().isMatrix() && argValue->getType().getMatrixCols() == 2 && argValue->getType().getMatrixRows() == 2) {
+                constructOp = EOpConstructVec4;
+                break;
+              }
             default: assert(0); break;
             }
 
@@ -7271,6 +7281,36 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
 
     bool allowOnlyUpConversions = true;
 
+    //  2 - exact match
+    //  1 - convertible
+    //  0 - convertible with loss
+    // -1 - not convertible
+    const auto categorizeConversionType = [](const TType &from, const TType &to) -> int
+    {
+      int fromCols = from.getMatrixCols() + from.getVectorSize();
+      int fromRows = from.isMatrix() ? from.getMatrixRows() : 1;
+
+      int toCols = to.getMatrixCols() + to.getVectorSize();
+      int toRows = to.isMatrix() ? to.getMatrixRows() : 1;
+      if (from.isScalar())
+      {
+        return to.isScalar() ? 2 : 1;
+      }
+      if (to.isScalar())
+      {
+        return 0;
+      }
+
+      // special rule float4 <-> float2x2 conversion
+      if ((toRows == 2 || fromRows == 2) && toRows * toCols == 4 && fromCols * fromRows == 4)
+        return 1;
+
+      if (toRows > fromRows || toCols > fromCols)
+        return -1;
+
+      return 0;
+    };
+
     // can 'from' convert to 'to'?
     const auto convertible = [&](const TType& from, const TType& to, TOperator op, int arg) -> bool {
         if (from == to)
@@ -7337,42 +7377,57 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             break;
         }
 
+        // builtins usually only allow conversion within the same base type domain
+        // TODO: replace this with some sort of extra info how strict parameter matching should be
+        if (builtIn)
+        {
+          if (from.getBasicType() != to.getBasicType())
+          {
+            if (from.isFloatingDomain() != to.isFloatingDomain())
+              return false;
+            if (from.isIntegerDomain() != to.isIntegerDomain())
+              return false;
+          }
+        }
+
         // basic types have to be convertible
         if (allowOnlyUpConversions)
             if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), EOpFunctionCall))
                 return false;
 
-        // shapes have to be convertible
-        if ((from.isScalarOrVec1() && to.isScalarOrVec1()) ||
-            (from.isScalarOrVec1() && to.isVector())    ||
-            (from.isScalarOrVec1() && to.isMatrix())    ||
-            (from.isVector() && to.isVector() && from.getVectorSize() >= to.getVectorSize()) ||
-            (from.isVector() && to.isScalarOrVec1()))
-            return true;
-
-        // TODO: what are the matrix rules? they go here
-
-        return false;
+        return categorizeConversionType(from, to) >= 0;
     };
 
     // Is 'to2' a better conversion than 'to1'?
     // Ties should not be considered as better.
     // Assumes 'convertible' already said true.
-    const auto better = [](const TType& from, const TType& to1, const TType& to2) -> bool {
-        // exact match is always better than mismatch
-        if (from == to2)
-            return from != to1;
+    const auto better = [categorizeConversionType](const TType& from, const TType& to1, const TType& to2) -> ConversionCompare {
+        if (to1 == to2)
+            return ConversionCompare::Equal;
         if (from == to1)
-            return false;
+            return ConversionCompare::Worse;
+        if (from == to2)
+            return ConversionCompare::Better;
+
+        int fromTo1 = categorizeConversionType(from, to1);
+        int fromTo2 = categorizeConversionType(from, to2);
+        if (fromTo1 < fromTo2)
+          return ConversionCompare::Better;
+        if (fromTo1 > fromTo2)
+          return ConversionCompare::Worse;
 
         // shape changes are always worse
         if (from.isScalar() || from.isVector()) {
             if (from.getVectorSize() == to2.getVectorSize() &&
                 from.getVectorSize() != to1.getVectorSize())
-                return true;
+                return ConversionCompare::Better;
             if (from.getVectorSize() == to1.getVectorSize() &&
                 from.getVectorSize() != to2.getVectorSize())
-                return false;
+                return ConversionCompare::Worse;
+            if (to1.getVectorSize() > from.getVectorSize() && to1.getVectorSize() < to2.getVectorSize())
+                return ConversionCompare::Worse;
+            else if (to2.getVectorSize() > from.getVectorSize() && to2.getVectorSize() < to1.getVectorSize())
+                return ConversionCompare::Better;
         }
 
         // Handle sampler betterness: An exact sampler match beats a non-exact match.
@@ -7386,9 +7441,9 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             to1Sampler.vectorSize = to2Sampler.vectorSize = from.getSampler().vectorSize;
 
             if (from.getSampler() == to2Sampler)
-                return from.getSampler() != to1Sampler;
+                return from.getSampler() != to1Sampler ? ConversionCompare::Better : ConversionCompare::Equal;
             if (from.getSampler() == to1Sampler)
-                return false;
+                return ConversionCompare::Worse;
         }
 
         // Might or might not be changing shape, which means basic type might
@@ -7414,8 +7469,13 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             }
         };
 
-        return abs(linearize(to2.getBasicType()) - linearize(from.getBasicType())) <
-               abs(linearize(to1.getBasicType()) - linearize(from.getBasicType()));
+        int delta = abs(linearize(to2.getBasicType()) - linearize(from.getBasicType())) - 
+                    abs(linearize(to1.getBasicType()) - linearize(from.getBasicType()));
+        if (delta < 0)
+            return ConversionCompare::Better;
+        else if (delta > 0)
+            return ConversionCompare::Worse;
+        return ConversionCompare::Equal;
     };
 
     // for ambiguity reporting
@@ -7433,7 +7493,10 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
     }
 
     if (bestMatch == nullptr) {
-        error(loc, "no matching overloaded function found", call.getName().c_str(), "");
+        TString names = call.getMangledName() + "\nAvailable overloads are:\n";
+        for (auto &candidate : candidateList)
+          names += candidate->getMangledName() + "\n";
+        error(loc, "no matching overloaded function found", call.getName().c_str(), "\n%s", names.c_str());
         return nullptr;
     }
 
@@ -7506,8 +7569,13 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
         // At this point, there should be no tie.
     }
 
-    if (tie)
-        error(loc, "ambiguous best function under implicit type conversion", call.getName().c_str(), "");
+    if (tie) {
+        TString names = call.getMangledName() + "\nAvailable overloads are:\n";
+        for (auto &candidate : candidateList)
+          names += candidate->getMangledName() + "\n";
+        error(loc, "ambiguous best function under implicit type conversion", call.getName().c_str(), "\n%s", names.c_str());
+        return nullptr;
+    }
 
     // Append default parameter values if needed
     if (!tie && bestMatch != nullptr) {

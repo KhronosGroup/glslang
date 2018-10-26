@@ -5869,21 +5869,22 @@ const TFunction* TParseContext::findFunction400(const TSourceLoc& loc, const TFu
     // Is 'to2' a better conversion than 'to1'?
     // Ties should not be considered as better.
     // Assumes 'convertible' already said true.
-    const auto better = [](const TType& from, const TType& to1, const TType& to2) -> bool {
-        // 1. exact match
-        if (from == to2)
-            return from != to1;
+    const auto better = [](const TType& from, const TType& to1, const TType& to2) -> ConversionCompare {
+        if (to1 == to2)
+            return ConversionCompare::Equal;
         if (from == to1)
-            return false;
+            return ConversionCompare::Worse;
+        if (from == to2)
+            return ConversionCompare::Better;
 
         // 2. float -> double is better
         if (from.getBasicType() == EbtFloat) {
             if (to2.getBasicType() == EbtDouble && to1.getBasicType() != EbtDouble)
-                return true;
+                return ConversionCompare::Better;
         }
 
         // 3. -> float is better than -> double
-        return to2.getBasicType() == EbtFloat && to1.getBasicType() == EbtDouble;
+        return to2.getBasicType() == EbtFloat && to1.getBasicType() == EbtDouble ? ConversionCompare::Better : ConversionCompare::Worse;
     };
 
     // for ambiguity reporting
@@ -5934,12 +5935,13 @@ const TFunction* TParseContext::findFunctionExplicitTypes(const TSourceLoc& loc,
     // Is 'to2' a better conversion than 'to1'?
     // Ties should not be considered as better.
     // Assumes 'convertible' already said true.
-    const auto better = [this](const TType& from, const TType& to1, const TType& to2) -> bool {
-        // 1. exact match
-        if (from == to2)
-            return from != to1;
+    const auto better = [this](const TType& from, const TType& to1, const TType& to2) -> ConversionCompare {
+        if (to1 == to2)
+            return ConversionCompare::Equal;
         if (from == to1)
-            return false;
+            return ConversionCompare::Worse;
+        if (from == to2)
+            return ConversionCompare::Better;
 
         // 2. Promotion (integral, floating-point) is better
         TBasicType from_type = from.getBasicType();
@@ -5950,9 +5952,9 @@ const TFunction* TParseContext::findFunctionExplicitTypes(const TSourceLoc& loc,
         bool isPromotion2 = (intermediate.isIntegralPromotion(from_type, to2_type) ||
                              intermediate.isFPPromotion(from_type, to2_type));
         if (isPromotion2)
-            return !isPromotion1;
+            return !isPromotion1 ? ConversionCompare::Better : ConversionCompare::Equal;
         if(isPromotion1)
-            return false;
+            return ConversionCompare::Worse;
 
         // 3. Conversion (integral, floating-point , floating-integral)
         bool isConversion1 = (intermediate.isIntegralConversion(from_type, to1_type) ||
@@ -5962,7 +5964,11 @@ const TFunction* TParseContext::findFunctionExplicitTypes(const TSourceLoc& loc,
                               intermediate.isFPConversion(from_type, to2_type) ||
                               intermediate.isFPIntegralConversion(from_type, to2_type));
 
-        return isConversion2 && !isConversion1;
+        if (isConversion2)
+            return !isPromotion1 ? ConversionCompare::Better : ConversionCompare::Equal;
+        if (isConversion1)
+            return ConversionCompare::Worse;
+        return ConversionCompare::Equal;
     };
 
     // for ambiguity reporting
