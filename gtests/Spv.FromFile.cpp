@@ -528,6 +528,7 @@ INSTANTIATE_TEST_CASE_P(
     "spv.meshShaderRedeclBuiltins.mesh",
     "spv.meshShaderRedeclPerViewBuiltins.mesh",
     "spv.meshTaskShader.task",
+    "spv.perprimitiveNV.frag",
 })),
 FileNameAsCustomTestSuffix
 );
