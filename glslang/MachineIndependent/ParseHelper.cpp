@@ -76,6 +76,10 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
     globalBufferDefaults.layoutMatrix = ElmColumnMajor;
     globalBufferDefaults.layoutPacking = spvVersion.spv != 0 ? ElpStd430 : ElpShared;
 
+    // use storage buffer on SPIR-V 1.3 and up
+    if (spvVersion.spv >= EShTargetSpv_1_3)
+        intermediate.setUseStorageBuffer();
+
     globalInputDefaults.clear();
     globalOutputDefaults.clear();
 
