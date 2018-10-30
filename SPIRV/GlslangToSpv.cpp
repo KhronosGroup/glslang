@@ -7277,18 +7277,19 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
     // An AST node labelled as specialization constant should be a symbol node.
     // Its initializer should either be a sub tree with constant nodes, or a constant union array.
     if (auto* sn = node.getAsSymbolNode()) {
+        spv::Id result;
         if (auto* sub_tree = sn->getConstSubtree()) {
             // Traverse the constant constructor sub tree like generating normal run-time instructions.
             // During the AST traversal, if the node is marked as 'specConstant', SpecConstantOpModeGuard
             // will set the builder into spec constant op instruction generating mode.
             sub_tree->traverse(this);
-            return accessChainLoad(sub_tree->getType());
-        } else if (auto* const_union_array = &sn->getConstArray()){
+            result = accessChainLoad(sub_tree->getType());
+        } else if (auto* const_union_array = &sn->getConstArray()) {
             int nextConst = 0;
-            spv::Id id = createSpvConstantFromConstUnionArray(sn->getType(), *const_union_array, nextConst, true);
-            builder.addName(id, sn->getName().c_str());
-            return id;
+            result = createSpvConstantFromConstUnionArray(sn->getType(), *const_union_array, nextConst, true);
         }
+        builder.addName(result, sn->getName().c_str());
+        return result;
     }
 
     // Neither a front-end constant node, nor a specialization constant node with constant union array or
