@@ -77,7 +77,7 @@ ERROR: 12:9000: 'preprocessor evaluation' : expected ')'
 ERROR: 12:9002: '#if' : unexpected tokens following directive 
 ERROR: 12:9014: 'FOOOM' : undeclared identifier 
 ERROR: 12:9014: '=' :  cannot convert from ' temp float' to ' global int'
-ERROR: 12:9016: 'preprocessor evaluation' : can't evaluate expression 
+ERROR: 12:9015: 'preprocessor evaluation' : can't evaluate expression 
 ERROR: 12:9016: 'preprocessor evaluation' : bad expression 
 ERROR: 12:9500: 'preprocessor evaluation' : bad expression 
 ERROR: 12:9500: '#if' : unexpected tokens following directive 

@@ -37,7 +37,7 @@ struct S {
 #define xyz xxyz
 #define yzy() yyz
 
-#define LIGHTING_COMMON_BRDF() \
+#define FUN_MAC() \
 	vec3 a = vec3(0); \
 	vec3 b = a.zxyz;  \
 	vec3 b = a.xyz;   \
@@ -55,5 +55,11 @@ void foo()
     s.member2.yzy();
     s.member2.xyz();
     s.member2.yzy;
-	LIGHTING_COMMON_BRDF()
+    FUN_MAC()
+    yzy
+
+    ();
+    yzy
+
+
 }

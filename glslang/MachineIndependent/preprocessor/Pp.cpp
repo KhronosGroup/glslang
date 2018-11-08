@@ -1192,14 +1192,19 @@ MacroExpandResult TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, b
     TSourceLoc loc = ppToken->loc;  // in case we go to the next line before discovering the error
     in->mac = macro;
     if (macro->functionLike) {
-        int token = scanToken(ppToken);
+        // We don't know yet if this will be a successful call of a
+        // function-like macro; need to look for a '(', but without trashing
+        // the passed in ppToken, until we know we are no longer speculative.
+        TPpToken parenToken;
+        int token = scanToken(&parenToken);
         if (newLineOkay) {
             while (token == '\n')
-                token = scanToken(ppToken);
+                token = scanToken(&parenToken);
         }
         if (token != '(') {
-            // function-like macro called with object-like syntax: okay, don't expand
-            UngetToken(token, ppToken);
+            // Function-like macro called with object-like syntax: okay, don't expand.
+            // (We ate exactly one token that might not be white space; put it back.
+            UngetToken(token, &parenToken);
             delete in;
             return MacroExpandNotStarted;
         }
