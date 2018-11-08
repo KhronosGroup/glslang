@@ -35,9 +35,9 @@ ERROR: 0:155: '#else' : unexpected tokens following directive
 ERROR: 0:158: '#else' : #else after #else 
 ERROR: 0:160: '#endif' : unexpected tokens following directive 
 ERROR: 0:164: '#define' : duplicate macro parameter 
-ERROR: 0:173: '#define' : Macro redefined; different number of arguments: m4
-ERROR: 0:178: '#define' : Macro redefined; different number of arguments: m5
-ERROR: 0:182: '#define' : Macro redefined; different number of arguments: m6
+ERROR: 0:173: '#define' : Macro redefined; function-like versus object-like: m4
+ERROR: 0:177: '#define' : Macro redefined; function-like versus object-like: m5
+ERROR: 0:181: '#define' : Macro redefined; different number of arguments: m6
 ERROR: 0:185: '#define' : Macro redefined; different substitutions: m7
 ERROR: 0:192: '#define' : Macro redefined; different substitutions: m8
 ERROR: 0:196: '#define' : Macro redefined; different argument names: m9
