@@ -8,7 +8,7 @@ void main()
 	uvec3 v0 = gl_LaunchIDNV;
 	uvec3 v1 = gl_LaunchSizeNV;
 	int v2 = gl_PrimitiveID;
-	int v3 = gl_InstanceID;
+	// int v3 = gl_InstanceID;  https://github.com/KhronosGroup/glslang/issues/1576
 	int v4 = gl_InstanceCustomIndexNV;
 	vec3 v5 = gl_WorldRayOriginNV;
 	vec3 v6 = gl_WorldRayDirectionNV;
