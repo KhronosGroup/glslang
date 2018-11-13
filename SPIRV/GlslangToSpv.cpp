@@ -2775,7 +2775,9 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
     // can still have a mapping to a SPIR-V Id.
     // This includes specialization constants.
     if (node->getQualifier().isConstant()) {
-        return createSpvConstant(*node);
+        spv::Id result = createSpvConstant(*node);
+        if (result != spv::NoResult)
+            return result;
     }
 
     // Now, handle actual variables
@@ -7304,7 +7306,6 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
             result = createSpvConstantFromConstUnionArray(sn->getType(), *const_union_array, nextConst, true);
         } else {
             logger->missingFunctionality("Invalid initializer for spec onstant.");
-            exit(1);
             return spv::NoResult;
         }
         builder.addName(result, sn->getName().c_str());
@@ -7314,7 +7315,6 @@ spv::Id TGlslangToSpvTraverser::createSpvConstant(const glslang::TIntermTyped& n
     // Neither a front-end constant node, nor a specialization constant node with constant union array or
     // constant sub tree as initializer.
     logger->missingFunctionality("Neither a front-end constant nor a spec constant.");
-    exit(1);
     return spv::NoResult;
 }
 
