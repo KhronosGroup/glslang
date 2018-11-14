@@ -4633,7 +4633,9 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, OpD
             assert(builder.isScalar(right));
             needMatchingVectors = false;
             binOp = spv::OpVectorTimesScalar;
-        } else
+        } else if (isFloat)
+            binOp = spv::OpFMul;
+          else
             binOp = spv::OpIMul;
         break;
     case glslang::EOpVectorTimesMatrix:
