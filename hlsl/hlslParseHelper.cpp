@@ -6066,13 +6066,22 @@ void HlslParseContext::handleRegister(const TSourceLoc& loc, TQualifier& qualifi
         }
     }
 
-    // TODO: learn what all these really mean and how they interact with regNumber and subComponent
+    // more information about register types see
+    // https://docs.microsoft.com/en-us/windows/desktop/direct3dhlsl/dx-graphics-hlsl-variable-register
     const std::vector<std::string>& resourceInfo = intermediate.getResourceSetBinding();
     switch (std::tolower(desc[0])) {
-    case 'b':
-    case 't':
     case 'c':
+        // c register is the register slot in the global const buffer
+        // each slot is a vector of 4 32 bit components
+        qualifier.layoutOffset = regNumber * 4 * 4;
+        break;
+        // const buffer register slot
+    case 'b':
+        // textrues and structured buffers
+    case 't':
+        // samplers
     case 's':
+        // uav resources
     case 'u':
         // if nothing else has set the binding, do so now
         // (other mechanisms override this one)
