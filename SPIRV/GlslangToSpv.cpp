@@ -3459,6 +3459,7 @@ glslang::TLayoutPacking TGlslangToSpvTraverser::getExplicitLayout(const glslang:
     switch (type.getQualifier().layoutPacking) {
     case glslang::ElpStd140:
     case glslang::ElpStd430:
+    case glslang::ElpScalar:
         return type.getQualifier().layoutPacking;
     default:
         return glslang::ElpNone;
@@ -3470,7 +3471,7 @@ int TGlslangToSpvTraverser::getArrayStride(const glslang::TType& arrayType, glsl
 {
     int size;
     int stride;
-    glslangIntermediate->getBaseAlignment(arrayType, size, stride, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
+    glslangIntermediate->getMemberAlignment(arrayType, size, stride, explicitLayout, matrixLayout == glslang::ElmRowMajor);
 
     return stride;
 }
@@ -3485,7 +3486,7 @@ int TGlslangToSpvTraverser::getMatrixStride(const glslang::TType& matrixType, gl
 
     int size;
     int stride;
-    glslangIntermediate->getBaseAlignment(elementType, size, stride, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
+    glslangIntermediate->getMemberAlignment(elementType, size, stride, explicitLayout, matrixLayout == glslang::ElmRowMajor);
 
     return stride;
 }
@@ -3527,7 +3528,7 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& structType
 
     int memberSize;
     int dummyStride;
-    int memberAlignment = glslangIntermediate->getBaseAlignment(memberType, memberSize, dummyStride, explicitLayout == glslang::ElpStd140, matrixLayout == glslang::ElmRowMajor);
+    int memberAlignment = glslangIntermediate->getMemberAlignment(memberType, memberSize, dummyStride, explicitLayout, matrixLayout == glslang::ElmRowMajor);
 
     // Adjust alignment for HLSL rules
     // TODO: make this consistent in early phases of code:
@@ -3546,7 +3547,7 @@ void TGlslangToSpvTraverser::updateMemberOffset(const glslang::TType& structType
     glslang::RoundToPow2(currentOffset, memberAlignment);
 
     // Bump up to vec4 if there is a bad straddle
-    if (glslangIntermediate->improperStraddle(memberType, memberSize, currentOffset))
+    if (explicitLayout != glslang::ElpScalar && glslangIntermediate->improperStraddle(memberType, memberSize, currentOffset))
         glslang::RoundToPow2(currentOffset, 16);
 
     nextOffset = currentOffset + memberSize;

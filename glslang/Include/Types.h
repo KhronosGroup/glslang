@@ -277,6 +277,7 @@ enum TLayoutPacking {
     ElpStd140,
     ElpStd430,
     ElpPacked,
+    ElpScalar,
     ElpCount        // If expanding, see bitfield width below
 };
 
@@ -951,6 +952,7 @@ public:
         case ElpShared:   return "shared";
         case ElpStd140:   return "std140";
         case ElpStd430:   return "std430";
+        case ElpScalar:   return "scalar";
         default:          return "none";
         }
     }
