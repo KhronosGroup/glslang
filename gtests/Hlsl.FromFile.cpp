@@ -400,7 +400,8 @@ INSTANTIATE_TEST_CASE_P(
         {"hlsl.wavequery.frag", "PixelShaderFunction"},
         {"hlsl.wavereduction.comp", "CSMain"},
         {"hlsl.wavevote.comp", "CSMain"},
-        { "hlsl.type.type.conversion.valid.frag", "main" }
+        { "hlsl.type.type.conversion.valid.frag", "main" },
+        {"hlsl.int.dot.frag", "main"}
     }),
     FileNameAsCustomTestSuffix
 );
