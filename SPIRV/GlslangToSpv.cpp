@@ -6914,6 +6914,17 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         // We might need the remaining arguments, e.g. in the EOpFrexp case.
         std::vector<spv::Id> callArguments(operands.begin(), operands.begin() + consumedOperands);
         id = builder.createBuiltinCall(typeId, extBuiltins >= 0 ? extBuiltins : stdBuiltins, libCall, callArguments);
+    } else if (opCode == spv::OpDot && !isFloat) {
+        // int dot(int, int)
+        // NOTE: never called for scalar/vector1, this is turned into simple mul before this can be reached
+        const int componentCount = builder.getNumComponents(operands[0]);
+        spv::Id mulOp = builder.createBinOp(spv::OpIMul, builder.getTypeId(operands[0]), operands[0], operands[1]);
+        builder.setPrecision(mulOp, precision);
+        id = builder.createCompositeExtract(mulOp, typeId, 0);
+        for (int i = 1; i < componentCount; ++i) {
+            builder.setPrecision(id, precision);
+            id = builder.createBinOp(spv::OpIAdd, typeId, id, builder.createCompositeExtract(operands[0], typeId, i));
+        }
     } else {
         switch (consumedOperands) {
         case 0:
