@@ -4936,11 +4936,13 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         } else if (id == "xfb_stride") {
             // "The resulting stride (implicit or explicit), when divided by 4, must be less than or equal to the
             // implementation-dependent constant gl_MaxTransformFeedbackInterleavedComponents."
-            if (value > 4 * resources.maxTransformFeedbackInterleavedComponents)
-                error(loc, "1/4 stride is too large:", id.c_str(), "gl_MaxTransformFeedbackInterleavedComponents is %d", resources.maxTransformFeedbackInterleavedComponents);
-            else if (value >= (int)TQualifier::layoutXfbStrideEnd)
+            if (value > 4 * resources.maxTransformFeedbackInterleavedComponents) {
+                error(loc, "1/4 stride is too large:", id.c_str(), "gl_MaxTransformFeedbackInterleavedComponents is %d",
+                    resources.maxTransformFeedbackInterleavedComponents);
+            }
+            if (value >= (int)TQualifier::layoutXfbStrideEnd)
                 error(loc, "stride is too large:", id.c_str(), "internal max is %d", TQualifier::layoutXfbStrideEnd-1);
-            if (value < (int)TQualifier::layoutXfbStrideEnd)
+            else
                 publicType.qualifier.layoutXfbStride = value;
             return;
         }
