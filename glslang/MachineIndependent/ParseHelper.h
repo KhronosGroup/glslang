@@ -162,6 +162,7 @@ public:
 
     virtual bool lValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*);
     virtual void rValueErrorCheck(const TSourceLoc&, const char* op, TIntermTyped*);
+    virtual void uniformityCheck(const TSourceLoc&, const char* op, TIntermTyped*, TIntermTyped*);
 
     const char* const scopeMangler;
 

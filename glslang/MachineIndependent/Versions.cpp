@@ -203,6 +203,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_post_depth_coverage]                     = EBhDisable;
     extensionBehavior[E_GL_EXT_control_flow_attributes]                 = EBhDisable;
     extensionBehavior[E_GL_EXT_nonuniform_qualifier]                    = EBhDisable;
+    extensionBehavior[E_GL_EXT_subgroupuniform_qualifier]               = EBhDisable;
     extensionBehavior[E_GL_EXT_samplerless_texture_functions]           = EBhDisable;
 
     extensionBehavior[E_GL_EXT_shader_16bit_storage]                    = EBhDisable;
@@ -375,6 +376,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_post_depth_coverage 1\n"
             "#define GL_EXT_control_flow_attributes 1\n"
             "#define GL_EXT_nonuniform_qualifier 1\n"
+            "#define GL_EXT_subgroupuniform_qualifier 1\n"
             "#define GL_EXT_shader_16bit_storage 1\n"
             "#define GL_EXT_shader_8bit_storage 1\n"
             "#define GL_EXT_samplerless_texture_functions 1\n"

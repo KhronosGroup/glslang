@@ -467,9 +467,8 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     }
     result->setType(newType);
 
-    // Propagate nonuniform
-    if (base->getQualifier().isNonUniform() || index->getQualifier().isNonUniform())
-        result->getWritableType().getQualifier().nonUniform = true;
+    // Propagate uniformity
+    result->getWritableType().getQualifier().propagateUniformity(base->getQualifier(), index->getQualifier());
 
     if (anyIndexLimits)
         handleIndexLimits(loc, base, index);
@@ -841,9 +840,8 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
     if (base->getQualifier().noContraction)
         result->getWritableType().getQualifier().noContraction = true;
 
-    // Propagate nonuniform
-    if (base->getQualifier().isNonUniform())
-        result->getWritableType().getQualifier().nonUniform = true;
+    // Propagate uniformity
+    result->getWritableType().getQualifier().propagateUniformity(base->getQualifier());
 
     return result;
 }
@@ -3036,7 +3034,10 @@ void TParseContext::memberQualifierCheck(glslang::TPublicType& publicType)
     checkNoShaderLayouts(publicType.loc, publicType.shaderQualifiers);
     if (publicType.qualifier.isNonUniform()) {
         error(publicType.loc, "not allowed on block or structure members", "nonuniformEXT", "");
-        publicType.qualifier.nonUniform = false;
+        publicType.qualifier.clearUniformity();
+    } else if (publicType.qualifier.isSubgroupUniform()) {
+        error(publicType.loc, "not allowed on block or structure members", "subgroupuniformEXT", "");
+        publicType.qualifier.clearUniformity();
     }
 }
 
@@ -3045,7 +3046,7 @@ void TParseContext::memberQualifierCheck(glslang::TPublicType& publicType)
 //
 void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& qualifier)
 {
-    bool nonuniformOkay = false;
+    bool canHaveUniformity = false;
 
     // move from parameter/unknown qualifiers to pipeline in/out qualifiers
     switch (qualifier.storage) {
@@ -3053,7 +3054,7 @@ void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& q
         profileRequires(loc, ENoProfile, 130, nullptr, "in for stage inputs");
         profileRequires(loc, EEsProfile, 300, nullptr, "in for stage inputs");
         qualifier.storage = EvqVaryingIn;
-        nonuniformOkay = true;
+        canHaveUniformity = true;
         break;
     case EvqOut:
         profileRequires(loc, ENoProfile, 130, nullptr, "out for stage outputs");
@@ -3066,14 +3067,16 @@ void TParseContext::globalQualifierFixCheck(const TSourceLoc& loc, TQualifier& q
         break;
     case EvqGlobal:
     case EvqTemporary:
-        nonuniformOkay = true;
+        canHaveUniformity = true;
         break;
     default:
         break;
     }
 
-    if (!nonuniformOkay && qualifier.nonUniform)
+    if (!canHaveUniformity && qualifier.isNonUniform())
         error(loc, "for non-parameter, can only apply to 'in' or no storage qualifier", "nonuniformEXT", "");
+    else if (!canHaveUniformity && qualifier.isSubgroupUniform())
+        error(loc, "for non-parameter, can only apply to 'in' or no storage qualifier", "subgroupuniformEXT", "");
 
     invariantCheck(loc, qualifier);
 }
@@ -3321,9 +3324,15 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
     // Layout qualifiers
     mergeObjectLayoutQualifiers(dst, src, false);
 
+    if (dst.isNonUniform() && src.isSubgroupUniform())
+        error(loc, "cannot specify the conflicting qualifier subgroupuniformEXT", "nonuniformEXT", "");
+
+    if (dst.isSubgroupUniform() && src.isNonUniform())
+        error(loc, "cannot specify the conflicting qualifier nonuniformEXT", "subgroupuniformEXT", "");
+
     // individual qualifiers
     bool repeated = false;
-    #define MERGE_SINGLETON(field) repeated |= dst.field && src.field; dst.field |= src.field;
+#define MERGE_SINGLETON(field) repeated |= dst.field && src.field; dst.field |= src.field;
     MERGE_SINGLETON(invariant);
     MERGE_SINGLETON(noContraction);
     MERGE_SINGLETON(centroid);
@@ -3351,7 +3360,8 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
     MERGE_SINGLETON(readonly);
     MERGE_SINGLETON(writeonly);
     MERGE_SINGLETON(specConstant);
-    MERGE_SINGLETON(nonUniform);
+#undef MERGE_SINGLETON
+    dst.propagateUniformity(src);
 
     if (repeated)
         error(loc, "replicated qualifiers", "", "");
@@ -4257,8 +4267,8 @@ void TParseContext::paramCheckFix(const TSourceLoc& loc, const TQualifier& quali
         else
             warn(loc, "qualifier has no effect on non-output parameters", "precise", "");
     }
-    if (qualifier.isNonUniform())
-        type.getQualifier().nonUniform = qualifier.nonUniform;
+
+    type.getQualifier().propagateUniformity(qualifier);
 
     paramCheckFixStorage(loc, qualifier.storage, type);
 }
@@ -6310,6 +6320,13 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
         if (! initNode)
             assignError(loc, "=", intermSymbol->getCompleteString(), initializer->getCompleteString());
 
+        const bool lhsSubgroupuniform = intermSymbol->getType().getQualifier().isSubgroupUniform();
+        const bool rhsSubgroupuniform = initializer->getType().getQualifier().isSubgroupUniform();
+        const bool rhsConstant = initializer->getType().getQualifier().isConstant();
+
+        if (lhsSubgroupuniform && (!rhsSubgroupuniform && !rhsConstant))
+            warn(loc, "", "=", "subgroupuniform variable is initialized with a value of unknown uniformity");
+
         return initNode;
     }
 
@@ -6646,9 +6663,11 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         break;
 
     case EOpConstructNonuniform:
-        node->getWritableType().getQualifier().nonUniform = true;
+        node->getWritableType().getQualifier().makeNonUniform();
         return node;
-        break;
+    case EOpConstructSubgroupuniform:
+        node->getWritableType().getQualifier().makeSubgroupUniform();
+        return node;
 
     default:
         error(loc, "unsupported construction", "", "");

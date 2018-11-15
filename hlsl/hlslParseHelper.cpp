@@ -6518,7 +6518,8 @@ void HlslParseContext::mergeQualifiers(TQualifier& dst, const TQualifier& src)
     MERGE_SINGLETON(readonly);
     MERGE_SINGLETON(writeonly);
     MERGE_SINGLETON(specConstant);
-    MERGE_SINGLETON(nonUniform);
+#undef MERGE_SINGLETON
+    dst.propagateUniformity(src);
 }
 
 // used to flatten the sampler type space into a single dimension

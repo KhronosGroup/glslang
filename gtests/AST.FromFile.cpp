@@ -212,6 +212,7 @@ INSTANTIATE_TEST_CASE_P(
         "structAssignment.frag",
         "structDeref.frag",
         "structure.frag",
+        "subgroupuniform.frag",
         "swizzle.frag",
         "invalidSwizzle.vert",
         "syntaxError.frag",

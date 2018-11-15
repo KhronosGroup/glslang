@@ -234,6 +234,17 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
         error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
 }
 
+// Test for and give an error if the node can't be read from.
+void TParseContextBase::uniformityCheck(const TSourceLoc& loc, const char* op, TIntermTyped* lValue, TIntermTyped* rValue)
+{
+    const bool lhsSubgroupuniform = lValue->getType().getQualifier().isSubgroupUniform();
+    const bool rhsSubgroupuniform = rValue->getType().getQualifier().isSubgroupUniform();
+    const bool rhsConstant = rValue->getType().getQualifier().isConstant();
+
+    if (lhsSubgroupuniform && (!rhsSubgroupuniform && !rhsConstant))
+        warn(loc, "", "=", "subgroupuniform variable is assigned with a value of unknown uniformity");
+}
+
 // Add 'symbol' to the list of deferred linkage symbols, which
 // are later processed in finish(), at which point the symbol
 // must still be valid.

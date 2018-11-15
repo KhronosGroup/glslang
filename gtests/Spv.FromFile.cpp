@@ -321,6 +321,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.structAssignment.frag",
         "spv.structDeref.frag",
         "spv.structure.frag",
+        "spv.subgroupuniform.frag",
         "spv.switch.frag",
         "spv.swizzle.frag",
         "spv.swizzleInversion.frag",

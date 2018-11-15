@@ -140,7 +140,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %token <lex> U8VEC2  U8VEC3  U8VEC4
 %token <lex> VEC2 VEC3 VEC4
 %token <lex> MAT2 MAT3 MAT4 CENTROID IN OUT INOUT
-%token <lex> UNIFORM PATCH SAMPLE BUFFER SHARED NONUNIFORM PAYLOADNV PAYLOADINNV HITATTRNV CALLDATANV CALLDATAINNV
+%token <lex> UNIFORM PATCH SAMPLE BUFFER SHARED NONUNIFORM PAYLOADNV PAYLOADINNV HITATTRNV CALLDATANV CALLDATAINNV SUBGROUPUNIFORM
 %token <lex> COHERENT VOLATILE RESTRICT READONLY WRITEONLY DEVICECOHERENT QUEUEFAMILYCOHERENT WORKGROUPCOHERENT SUBGROUPCOHERENT NONPRIVATE
 %token <lex> DVEC2 DVEC3 DVEC4 DMAT2 DMAT3 DMAT4
 %token <lex> F16VEC2 F16VEC3 F16VEC4 F16MAT2 F16MAT3 F16MAT4
@@ -270,6 +270,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.type> precise_qualifier invariant_qualifier interpolation_qualifier storage_qualifier precision_qualifier
 %type <interm.type> layout_qualifier layout_qualifier_id_list layout_qualifier_id
 %type <interm.type> non_uniform_qualifier
+%type <interm.type> subgroup_uniform_qualifier
 
 %type <interm.type> type_qualifier fully_specified_type type_specifier
 %type <interm.type> single_type_qualifier
@@ -476,6 +477,11 @@ function_identifier
         }
     }
     | non_uniform_qualifier {
+        // Constructor
+        $$.intermNode = 0;
+        $$.function = parseContext.handleConstructorCall($1.loc, $1);
+    }
+    | subgroup_uniform_qualifier {
         // Constructor
         $$.intermNode = 0;
         $$.function = parseContext.handleConstructorCall($1.loc, $1);
@@ -704,6 +710,7 @@ assignment_expression
         parseContext.specializationCheck($2.loc, $1->getType(), "=");
         parseContext.lValueErrorCheck($2.loc, "assign", $1);
         parseContext.rValueErrorCheck($2.loc, "assign", $3);
+        parseContext.uniformityCheck($2.loc, "assign", $1, $3);
         $$ = parseContext.intermediate.addAssign($2.op, $1, $3, $2.loc);
         if ($$ == 0) {
             parseContext.assignError($2.loc, "assign", $1->getCompleteString(), $3->getCompleteString());
@@ -1268,6 +1275,9 @@ single_type_qualifier
     | non_uniform_qualifier {
         $$ = $1;
     }
+    | subgroup_uniform_qualifier {
+        $$ = $1;
+    }
     ;
 
 storage_qualifier
@@ -1469,7 +1479,14 @@ storage_qualifier
 non_uniform_qualifier
     : NONUNIFORM {
         $$.init($1.loc);
-        $$.qualifier.nonUniform = true;
+        $$.qualifier.makeNonUniform();
+    }
+    ;
+
+subgroup_uniform_qualifier
+    : SUBGROUPUNIFORM {
+        $$.init($1.loc);
+        $$.qualifier.makeSubgroupUniform();
     }
     ;
 

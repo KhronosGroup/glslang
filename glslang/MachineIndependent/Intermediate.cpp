@@ -159,10 +159,9 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     if (specConstantPropagates(*node->getLeft(), *node->getRight()) && isSpecializationOperation(*node))
         node->getWritableType().getQualifier().makeSpecConstant();
 
-    // If must propagate nonuniform, make a nonuniform.
-    if ((node->getLeft()->getQualifier().nonUniform || node->getRight()->getQualifier().nonUniform) &&
-            isNonuniformPropagating(node->getOp()))
-        node->getWritableType().getQualifier().nonUniform = true;
+    // If must propagate uniformity, propagate.
+    if (canUniformityPropagate(node->getOp()))
+        node->getWritableType().getQualifier().propagateUniformity(node->getLeft()->getQualifier(), node->getRight()->getQualifier());
 
     return node;
 }
@@ -247,7 +246,7 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
     // build the node
     TIntermBinary* node = addBinaryNode(op, left, right, loc);
 
-    if (! promote(node))
+    if (!promote(node))
         return nullptr;
 
     node->updatePrecision();
@@ -372,9 +371,9 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     if (node->getOperand()->getType().getQualifier().isSpecConstant() && isSpecializationOperation(*node))
         node->getWritableType().getQualifier().makeSpecConstant();
 
-    // If must propagate nonuniform, make a nonuniform.
-    if (node->getOperand()->getQualifier().nonUniform && isNonuniformPropagating(node->getOp()))
-        node->getWritableType().getQualifier().nonUniform = true;
+    // If must propagate uniformity, propagate.
+    if (canUniformityPropagate(node->getOp()))
+        node->getWritableType().getQualifier().propagateUniformity(node->getOperand()->getQualifier());
 
     return node;
 }
@@ -1832,8 +1831,10 @@ TOperator TIntermediate::mapTypeToConstructorOp(const TType& type) const
 {
     TOperator op = EOpNull;
 
-    if (type.getQualifier().nonUniform)
+    if (type.getQualifier().isNonUniform())
         return EOpConstructNonuniform;
+    else if (type.getQualifier().isSubgroupUniform())
+        return EOpConstructSubgroupuniform;
 
     switch (type.getBasicType()) {
     case EbtStruct:
@@ -2887,8 +2888,8 @@ bool TIntermediate::isSpecializationOperation(const TIntermOperator& node) const
     }
 }
 
-// Is the operation one that must propagate nonuniform?
-bool TIntermediate::isNonuniformPropagating(TOperator op) const
+// Is the operation one that must propagate uniformity.
+bool TIntermediate::canUniformityPropagate(TOperator op) const
 {
     // "* All Operators in Section 5.1 (Operators), except for assignment,
     //    arithmetic assignment, and sequence

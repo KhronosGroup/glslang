@@ -415,6 +415,12 @@ enum TBlendEquationShift {
     EBlendCount
 };
 
+enum TUniformity {
+    EUniformityIsUnknown = 0,
+    EUniformityIsNonUniform,
+    EUniformityIsSubgroupUniform
+};
+
 class TQualifier {
 public:
     static const int layoutNotSet = -1;
@@ -437,7 +443,7 @@ public:
         clearInterstage();
         clearMemory();
         specConstant = false;
-        nonUniform = false;
+        clearUniformity();
         clearLayout();
     }
 
@@ -490,7 +496,7 @@ public:
     {
         storage      = EvqTemporary;
         specConstant = false;
-        nonUniform   = false;
+        clearUniformity();
     }
 
     const char*         semanticName;
@@ -526,7 +532,7 @@ public:
     bool readonly     : 1;
     bool writeonly    : 1;
     bool specConstant : 1;  // having a constant_id is not sufficient: expressions have no id, but are still specConstant
-    bool nonUniform   : 1;
+    TUniformity uniformity : 3;
 
     bool isMemory() const
     {
@@ -926,7 +932,10 @@ public:
     }
     bool isNonUniform() const
     {
-        return nonUniform;
+        return EUniformityIsNonUniform == uniformity;
+    }
+    bool isSubgroupUniform() const {
+        return EUniformityIsSubgroupUniform == uniformity;
     }
     bool isFrontEndConstant() const
     {
@@ -943,6 +952,40 @@ public:
     {
         storage = EvqConst;
         specConstant = true;
+    }
+    void clearUniformity() {
+        uniformity = EUniformityIsUnknown;
+    }
+    void makeNonUniform() {
+        uniformity = EUniformityIsNonUniform;
+    }
+    void makeSubgroupUniform() {
+        uniformity = EUniformityIsSubgroupUniform;
+    }
+    void propagateUniformity(const TQualifier& q) {
+        // If we are non uniform, nothing overrides that
+        if (EUniformityIsNonUniform == uniformity)
+            return;
+
+        switch (q.uniformity) {
+        case EUniformityIsUnknown:
+            // if q doesn't have any known uniformity don't copy from it!
+            break;
+        default:
+            uniformity = q.uniformity;
+            break;
+        }
+    }
+    void propagateUniformity(const TQualifier& q0, const TQualifier& q1) {
+        // If we are non uniform, nothing overrides that
+        if (EUniformityIsNonUniform == uniformity)
+            return;
+        else if (q0.uniformity == q1.uniformity)
+            propagateUniformity(q0);
+        else if (EUniformityIsNonUniform == q0.uniformity)
+            uniformity = EUniformityIsNonUniform;
+        else if (EUniformityIsNonUniform == q1.uniformity)
+            uniformity = EUniformityIsNonUniform;
     }
     static const char* getLayoutPackingString(TLayoutPacking packing)
     {
@@ -1841,7 +1884,7 @@ public:
             appendStr(" writeonly");
         if (qualifier.specConstant)
             appendStr(" specialization-constant");
-        if (qualifier.nonUniform)
+        if (qualifier.isNonUniform())
             appendStr(" nonuniform");
         appendStr(" ");
         appendStr(getStorageQualifierString());
