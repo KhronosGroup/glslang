@@ -6721,6 +6721,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         opCode = spv::OpBitFieldInsert;
         break;
 
+    case glslang::EOpFmaD:
     case glslang::EOpFma:
         libCall = spv::GLSLstd450Fma;
         break;

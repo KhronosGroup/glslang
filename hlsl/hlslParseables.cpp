@@ -1102,7 +1102,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("atan",                        EOpAtan);
     symbolTable.relateToOperator("atan2",                       EOpAtan);
     symbolTable.relateToOperator("ceil",                        EOpCeil);
-    // symbolTable.relateToOperator("CheckAccessFullyMapped");
+    symbolTable.relateToOperator("CheckAccessFullyMapped",      EOpCheckAccessFullyMapped);
     symbolTable.relateToOperator("clamp",                       EOpClamp);
     symbolTable.relateToOperator("clip",                        EOpClip);
     symbolTable.relateToOperator("cos",                         EOpCos);
@@ -1135,7 +1135,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("firstbithigh",                EOpFindMSB);
     symbolTable.relateToOperator("firstbitlow",                 EOpFindLSB);
     symbolTable.relateToOperator("floor",                       EOpFloor);
-    symbolTable.relateToOperator("fma",                         EOpFma);
+    symbolTable.relateToOperator("fma",                         EOpFmaD);
     symbolTable.relateToOperator("fmod",                        EOpMod);
     symbolTable.relateToOperator("frac",                        EOpFract);
     symbolTable.relateToOperator("frexp",                       EOpFrexp);

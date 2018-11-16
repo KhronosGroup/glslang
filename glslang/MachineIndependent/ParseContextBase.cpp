@@ -336,7 +336,7 @@ const TFunction* TParseContextBase::selectFunction(
     const TVector<const TFunction*> candidateList,
     const TFunction& call,
     std::function<bool(const TType& from, const TType& to, TOperator op, int arg)> convertible,
-    std::function<bool(const TType& from, const TType& to1, const TType& to2)> better,
+    std::function<int(const TType& from, const TType& to1, const TType& to2)> better,
     /* output */ bool& tie)
 {
 //
@@ -422,7 +422,7 @@ const TFunction* TParseContextBase::selectFunction(
         // is call -> can2 better than call -> can1 for any parameter
         bool hasBetterParam = false;
         for (int param = 0; param < call.getParamCount(); ++param) {
-            if (better(*call[param].type, *can1[param].type, *can2[param].type)) {
+            if (better(*call[param].type, *can1[param].type, *can2[param].type) > 0) {
                 hasBetterParam = true;
                 break;
             }
@@ -432,12 +432,15 @@ const TFunction* TParseContextBase::selectFunction(
 
     const auto equivalentParams = [&call, &better](const TFunction& can1, const TFunction& can2) -> bool {
         // is call -> can2 equivalent to call -> can1 for all the call parameters?
+        int sum = 0;
         for (int param = 0; param < call.getParamCount(); ++param) {
-            if (better(*call[param].type, *can1[param].type, *can2[param].type) ||
-                better(*call[param].type, *can2[param].type, *can1[param].type))
-                return false;
+            // have to compare relative 'cost' to convert and sum it up
+            int a = better(*call[param].type, *can1[param].type, *can2[param].type);
+            int b = better(*call[param].type, *can2[param].type, *can1[param].type);
+            sum += a - b;
         }
-        return true;
+        // same 'cost' to convert either to 1 or 2 is then ambigous
+        return sum == 0;
     };
 
     const TFunction* incumbent = viableCandidates.front();

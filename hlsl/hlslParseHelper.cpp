@@ -5091,6 +5091,12 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             node->setType(TType(EbtInt, EvqTemporary, 4));
             break;
         }
+    case EOpCheckAccessFullyMapped:
+        {
+            // maps to OpImageSparseTexelsResident
+            error(loc, "CheckAccessFullyMapped not implemented", "CheckAccessFullyMapped", "");
+            break;
+        }
 
     case EOpIsFinite:
         {
@@ -7343,19 +7349,34 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             break;
         }
 
+        // some intrinsics do not allow type conversion of thier inputs
+        bool allowTypePromote = true;
+        // asdouble, fma and CheckAccessFullyMappedare very picky, only allows uint types (truncation is still allowed)
+        if (EOpAsDouble == op || EOpCheckAccessFullyMapped == op || EOpFmaD == op) {
+            allowTypePromote = false;
+            if (from.getBasicType() != to.getBasicType())
+                return false;
+        }
+
+
         // basic types have to be convertible
-        if (allowOnlyUpConversions)
+        if (allowOnlyUpConversions && allowTypePromote)
             if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), EOpFunctionCall))
                 return false;
 
-        // shapes have to be convertible
-        if ((from.isScalarOrVec1() && to.isScalarOrVec1()) ||
-            (from.isScalarOrVec1() && to.isVector())    ||
-            (from.isScalarOrVec1() && to.isMatrix())    ||
-            (from.isVector() && to.isVector() && from.getVectorSize() >= to.getVectorSize()))
+        // scalar, vec1 and mat1x1 are basically the same thing
+        // converting from and to those is always possible
+        if (from.computeNumComponents() == 1 || to.computeNumComponents() == 1)
             return true;
-
-        // TODO: what are the matrix rules? they go here
+        // special rule for vec4 to matrix2x2 conversion
+        if (from.computeNumComponents() == 4 && to.computeNumComponents() == 4)
+            return true;
+        // can truncate vector components
+        if (from.isVector())
+            return (to.isVector() && from.getVectorSize() >= to.getVectorSize());
+        // can truncate matrix row and solumns
+        if (from.isMatrix())
+            return (to.isMatrix() && from.getMatrixCols() >= to.getMatrixCols() && from.getMatrixRows() >= to.getMatrixRows());
 
         return false;
     };
@@ -7363,22 +7384,12 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
     // Is 'to2' a better conversion than 'to1'?
     // Ties should not be considered as better.
     // Assumes 'convertible' already said true.
-    const auto better = [](const TType& from, const TType& to1, const TType& to2) -> bool {
+    const auto better = [](const TType& from, const TType& to1, const TType& to2) -> int {
         // exact match is always better than mismatch
         if (from == to2)
-            return from != to1;
+            return from != to1 ? 200 : -200;
         if (from == to1)
-            return false;
-
-        // shape changes are always worse
-        if (from.isScalar() || from.isVector()) {
-            if (from.getVectorSize() == to2.getVectorSize() &&
-                from.getVectorSize() != to1.getVectorSize())
-                return true;
-            if (from.getVectorSize() == to1.getVectorSize() &&
-                from.getVectorSize() != to2.getVectorSize())
-                return false;
-        }
+            return -200;
 
         // Handle sampler betterness: An exact sampler match beats a non-exact match.
         // (If we just looked at basic type, all EbtSamplers would look the same).
@@ -7391,11 +7402,20 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             to1Sampler.vectorSize = to2Sampler.vectorSize = from.getSampler().vectorSize;
 
             if (from.getSampler() == to2Sampler)
-                return from.getSampler() != to1Sampler;
+                return from.getSampler() != to1Sampler ? 100 : -100;
             if (from.getSampler() == to1Sampler)
-                return false;
+                return -100;
         }
 
+        // either the component count is the same and the are considered equivalent
+        // or its some sort of truncation any truncation is considered equial
+        int fromComponents = from.computeNumComponents();
+        int to1Components = to1.computeNumComponents();
+        int to2Components = to2.computeNumComponents();
+        if (to2Components == fromComponents)
+            return (fromComponents - to1Components) * -10;
+        if (to1Components == fromComponents)
+            return (fromComponents - to2Components) * 10;
         // Might or might not be changing shape, which means basic type might
         // or might not match, so within that, the question is how big a
         // basic-type conversion is being done.
@@ -7419,7 +7439,7 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             }
         };
 
-        return abs(linearize(to2.getBasicType()) - linearize(from.getBasicType())) <
+        return abs(linearize(to2.getBasicType()) - linearize(from.getBasicType())) -
                abs(linearize(to1.getBasicType()) - linearize(from.getBasicType()));
     };
 

@@ -1,0 +1,276 @@
+hlsl.overload.2.frag
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:2  Function Definition: randPos(vf3; ( temp float)
+0:2    Function Parameters: 
+0:2      'p' ( in 3-component vector of float)
+0:?     Sequence
+0:3      Branch: Return with expression
+0:3        Fraction ( temp float)
+0:3          component-wise multiply ( temp float)
+0:3            sine ( temp float)
+0:3              component-wise multiply ( temp float)
+0:3                dot-product ( temp float)
+0:3                  vector swizzle ( temp 3-component vector of float)
+0:3                    'p' ( in 3-component vector of float)
+0:3                    Sequence
+0:3                      Constant:
+0:3                        0 (const int)
+0:3                      Constant:
+0:3                        1 (const int)
+0:3                      Constant:
+0:3                        2 (const int)
+0:?                   Constant:
+0:?                     1.000000
+0:?                     -2.781300
+0:?                     3.010000
+0:3                Constant:
+0:3                  12.989800
+0:3            Constant:
+0:3              43758.545300
+0:6  Function Definition: rand(f1; ( temp float)
+0:6    Function Parameters: 
+0:6      'p' ( in float)
+0:?     Sequence
+0:7      Branch: Return with expression
+0:7        Fraction ( temp float)
+0:7          component-wise multiply ( temp float)
+0:7            sine ( temp float)
+0:7              component-wise multiply ( temp float)
+0:7                'p' ( in float)
+0:7                Constant:
+0:7                  12.989800
+0:7            Constant:
+0:7              43758.545300
+0:13  Function Definition: @main( ( temp 4-component vector of float)
+0:13    Function Parameters: 
+0:?     Sequence
+0:14      Sequence
+0:14        move second child to first child ( temp float)
+0:14          'randVal' ( temp float)
+0:14          Function Call: rand(f1; ( temp float)
+0:14            Construct float ( in float)
+0:14              add ( temp 2-component vector of float)
+0:14                Function Call: randPos(vf3; ( temp float)
+0:14                  worldPos: direct index for structure (layout( offset=0) uniform 3-component vector of float)
+0:14                    'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float worldPos, layout( offset=16) uniform 2-component vector of float ssgi_current_frame})
+0:14                    Constant:
+0:14                      0 (const uint)
+0:14                sine ( temp 2-component vector of float)
+0:14                  vector-scale ( temp 2-component vector of float)
+0:14                    ssgi_current_frame: direct index for structure (layout( offset=16) uniform 2-component vector of float)
+0:14                      'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float worldPos, layout( offset=16) uniform 2-component vector of float ssgi_current_frame})
+0:14                      Constant:
+0:14                        1 (const uint)
+0:14                    Constant:
+0:14                      0.131700
+0:15      Branch: Return with expression
+0:15        Constant:
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
+0:13  Function Definition: main( ( temp void)
+0:13    Function Parameters: 
+0:?     Sequence
+0:13      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:13        Function Call: @main( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float worldPos, layout( offset=16) uniform 2-component vector of float ssgi_current_frame})
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:2  Function Definition: randPos(vf3; ( temp float)
+0:2    Function Parameters: 
+0:2      'p' ( in 3-component vector of float)
+0:?     Sequence
+0:3      Branch: Return with expression
+0:3        Fraction ( temp float)
+0:3          component-wise multiply ( temp float)
+0:3            sine ( temp float)
+0:3              component-wise multiply ( temp float)
+0:3                dot-product ( temp float)
+0:3                  vector swizzle ( temp 3-component vector of float)
+0:3                    'p' ( in 3-component vector of float)
+0:3                    Sequence
+0:3                      Constant:
+0:3                        0 (const int)
+0:3                      Constant:
+0:3                        1 (const int)
+0:3                      Constant:
+0:3                        2 (const int)
+0:?                   Constant:
+0:?                     1.000000
+0:?                     -2.781300
+0:?                     3.010000
+0:3                Constant:
+0:3                  12.989800
+0:3            Constant:
+0:3              43758.545300
+0:6  Function Definition: rand(f1; ( temp float)
+0:6    Function Parameters: 
+0:6      'p' ( in float)
+0:?     Sequence
+0:7      Branch: Return with expression
+0:7        Fraction ( temp float)
+0:7          component-wise multiply ( temp float)
+0:7            sine ( temp float)
+0:7              component-wise multiply ( temp float)
+0:7                'p' ( in float)
+0:7                Constant:
+0:7                  12.989800
+0:7            Constant:
+0:7              43758.545300
+0:13  Function Definition: @main( ( temp 4-component vector of float)
+0:13    Function Parameters: 
+0:?     Sequence
+0:14      Sequence
+0:14        move second child to first child ( temp float)
+0:14          'randVal' ( temp float)
+0:14          Function Call: rand(f1; ( temp float)
+0:14            Construct float ( in float)
+0:14              add ( temp 2-component vector of float)
+0:14                Function Call: randPos(vf3; ( temp float)
+0:14                  worldPos: direct index for structure (layout( offset=0) uniform 3-component vector of float)
+0:14                    'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float worldPos, layout( offset=16) uniform 2-component vector of float ssgi_current_frame})
+0:14                    Constant:
+0:14                      0 (const uint)
+0:14                sine ( temp 2-component vector of float)
+0:14                  vector-scale ( temp 2-component vector of float)
+0:14                    ssgi_current_frame: direct index for structure (layout( offset=16) uniform 2-component vector of float)
+0:14                      'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float worldPos, layout( offset=16) uniform 2-component vector of float ssgi_current_frame})
+0:14                      Constant:
+0:14                        1 (const uint)
+0:14                    Constant:
+0:14                      0.131700
+0:15      Branch: Return with expression
+0:15        Constant:
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
+0:15          0.000000
+0:13  Function Definition: main( ( temp void)
+0:13    Function Parameters: 
+0:?     Sequence
+0:13      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:13        Function Call: @main( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float worldPos, layout( offset=16) uniform 2-component vector of float ssgi_current_frame})
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+// Module Version 10000
+// Generated by (magic number): 80007
+// Id's are bound by 74
+
+                              Capability Shader
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint Fragment 4  "main" 72
+                              ExecutionMode 4 OriginUpperLeft
+                              Source HLSL 500
+                              Name 4  "main"
+                              Name 11  "randPos(vf3;"
+                              Name 10  "p"
+                              Name 16  "rand(f1;"
+                              Name 15  "p"
+                              Name 20  "@main("
+                              Name 43  "randVal"
+                              Name 45  "$Global"
+                              MemberName 45($Global) 0  "worldPos"
+                              MemberName 45($Global) 1  "ssgi_current_frame"
+                              Name 47  ""
+                              Name 50  "param"
+                              Name 65  "param"
+                              Name 72  "@entryPointOutput"
+                              MemberDecorate 45($Global) 0 Offset 0
+                              MemberDecorate 45($Global) 1 Offset 16
+                              Decorate 45($Global) Block
+                              Decorate 47 DescriptorSet 0
+                              Decorate 72(@entryPointOutput) Location 0
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 32
+               7:             TypeVector 6(float) 3
+               8:             TypePointer Function 7(fvec3)
+               9:             TypeFunction 6(float) 8(ptr)
+              13:             TypePointer Function 6(float)
+              14:             TypeFunction 6(float) 13(ptr)
+              18:             TypeVector 6(float) 4
+              19:             TypeFunction 18(fvec4)
+              23:    6(float) Constant 1065353216
+              24:    6(float) Constant 3224502482
+              25:    6(float) Constant 1077978071
+              26:    7(fvec3) ConstantComposite 23 24 25
+              28:    6(float) Constant 1095751225
+              31:    6(float) Constant 1193995916
+              44:             TypeVector 6(float) 2
+     45($Global):             TypeStruct 7(fvec3) 44(fvec2)
+              46:             TypePointer Uniform 45($Global)
+              47:     46(ptr) Variable Uniform
+              48:             TypeInt 32 1
+              49:     48(int) Constant 0
+              51:             TypePointer Uniform 7(fvec3)
+              55:     48(int) Constant 1
+              56:             TypePointer Uniform 44(fvec2)
+              59:    6(float) Constant 1040637021
+              67:    6(float) Constant 0
+              68:   18(fvec4) ConstantComposite 67 67 67 67
+              71:             TypePointer Output 18(fvec4)
+72(@entryPointOutput):     71(ptr) Variable Output
+         4(main):           2 Function None 3
+               5:             Label
+              73:   18(fvec4) FunctionCall 20(@main()
+                              Store 72(@entryPointOutput) 73
+                              Return
+                              FunctionEnd
+11(randPos(vf3;):    6(float) Function None 9
+           10(p):      8(ptr) FunctionParameter
+              12:             Label
+              22:    7(fvec3) Load 10(p)
+              27:    6(float) Dot 22 26
+              29:    6(float) FMul 27 28
+              30:    6(float) ExtInst 1(GLSL.std.450) 13(Sin) 29
+              32:    6(float) FMul 30 31
+              33:    6(float) ExtInst 1(GLSL.std.450) 10(Fract) 32
+                              ReturnValue 33
+                              FunctionEnd
+    16(rand(f1;):    6(float) Function None 14
+           15(p):     13(ptr) FunctionParameter
+              17:             Label
+              36:    6(float) Load 15(p)
+              37:    6(float) FMul 36 28
+              38:    6(float) ExtInst 1(GLSL.std.450) 13(Sin) 37
+              39:    6(float) FMul 38 31
+              40:    6(float) ExtInst 1(GLSL.std.450) 10(Fract) 39
+                              ReturnValue 40
+                              FunctionEnd
+      20(@main():   18(fvec4) Function None 19
+              21:             Label
+     43(randVal):     13(ptr) Variable Function
+       50(param):      8(ptr) Variable Function
+       65(param):     13(ptr) Variable Function
+              52:     51(ptr) AccessChain 47 49
+              53:    7(fvec3) Load 52
+                              Store 50(param) 53
+              54:    6(float) FunctionCall 11(randPos(vf3;) 50(param)
+              57:     56(ptr) AccessChain 47 55
+              58:   44(fvec2) Load 57
+              60:   44(fvec2) VectorTimesScalar 58 59
+              61:   44(fvec2) ExtInst 1(GLSL.std.450) 13(Sin) 60
+              62:   44(fvec2) CompositeConstruct 54 54
+              63:   44(fvec2) FAdd 62 61
+              64:    6(float) CompositeExtract 63 0
+                              Store 65(param) 64
+              66:    6(float) FunctionCall 16(rand(f1;) 65(param)
+                              Store 43(randVal) 66
+                              ReturnValue 68
+                              FunctionEnd
