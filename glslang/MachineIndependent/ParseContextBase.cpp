@@ -462,6 +462,80 @@ const TFunction* TParseContextBase::selectFunction(
     return incumbent;
 }
 
+TVector<const TFunction*> TParseContextBase::selectFunction(const TVector<const TFunction*>& candidates, const TFunction& call,
+                                                            std::function<TypeConversionCost(const TType&, const TType&, TOperator, int arg)> conversionCost) {
+  struct ViableCandidateInfo {
+      const TFunction *function;
+      unsigned totalCostValue;
+      TypeConversionCost combinedCost;
+  };
+
+  TVector<ViableCandidateInfo> viableCandidates;
+  for (auto &&candidatePtr : candidates) {
+      const TFunction &candidate = *candidatePtr;
+      // to even be a potential match, number of arguments must be >= the number of
+      // fixed (non-default) parameters, and <= the total (including parameter with defaults).
+      if (call.getParamCount() < candidate.getFixedParamCount() ||
+          call.getParamCount() > candidate.getParamCount())
+          continue;
+
+      // The call can have fewer parameters than the candidate, if some have defaults.
+      const int paramCount = call.getParamCount();
+      TypeConversionCost combinedCost;
+      int totalCostValue = 0;
+      for (int param = 0; param < paramCount && combinedCost.isConvertible(); ++param) {
+          if (candidate[param].type->getQualifier().isParamInput()) {
+              TypeConversionCost costIn = conversionCost(*call[param].type, *candidate[param].type, candidate.getBuiltInOp(), param);
+              combinedCost |= costIn;
+              totalCostValue += costIn.value;
+          }
+          if (candidate[param].type->getQualifier().isParamOutput()) {
+              TypeConversionCost costOut = conversionCost(*candidate[param].type, *call[param].type, candidate.getBuiltInOp(), param);
+              combinedCost |= costOut;
+              totalCostValue += costOut.value;
+          }
+      }
+
+      if (combinedCost.isConvertible()) {
+          ViableCandidateInfo info;
+          info.function = candidatePtr;
+          info.totalCostValue = totalCostValue;
+          info.combinedCost = combinedCost;
+          viableCandidates.push_back(info);
+      }
+  }
+
+  TVector<const TFunction*> resultSet;
+  if (!viableCandidates.empty()) {
+      // filter all that do convert to bool or float to int, if anything is left, they are a better choice
+      auto newEnd = std::partition(begin(viableCandidates), end(viableCandidates), [](const ViableCandidateInfo &vci) {
+        return !vci.combinedCost.hasToBooleanOrFloatToIntConversion();
+      });
+      if (newEnd != begin(viableCandidates)) {
+        viableCandidates.erase(newEnd, end(viableCandidates));
+      }
+      // now the leftover ones are searched for the cheapest
+      auto cheapest = std::min_element(begin(viableCandidates),
+                                       end(viableCandidates),
+                                       [](const ViableCandidateInfo &next, const ViableCandidateInfo &sml)
+                                       { return next.totalCostValue < sml.totalCostValue; });
+      auto cheapestCost = cheapest->totalCostValue;
+      // remove all that are more expensive than the cheapest
+      newEnd = std::remove_if(begin(viableCandidates),
+                              end(viableCandidates),
+                              [cheapestCost](const ViableCandidateInfo &vci)
+                              { return vci.totalCostValue > cheapestCost; });
+      viableCandidates.erase(newEnd, end(viableCandidates));
+
+      // build return set, may be more than one
+      resultSet.resize(viableCandidates.size());
+      std::transform(begin(viableCandidates), end(viableCandidates),
+                     begin(resultSet),
+                     [](const ViableCandidateInfo &vci) { return vci.function; });
+  }
+  return resultSet;
+}
+
 //
 // Look at a '.' field selector string and change it into numerical selectors
 // for a vector or scalar.

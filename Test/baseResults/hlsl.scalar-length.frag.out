@@ -16,10 +16,11 @@ gl_FragCoord origin is upper left
 0:5      Branch: Return with expression
 0:5        Construct vec4 ( temp 4-component vector of float)
 0:5          length ( temp float)
-0:5            direct index ( temp float)
-0:5              'test' ( temp 4-component vector of float)
-0:5              Constant:
-0:5                3 (const int)
+0:5            Construct float ( in 1-component vector of float)
+0:5              direct index ( temp float)
+0:5                'test' ( temp 4-component vector of float)
+0:5                Constant:
+0:5                  3 (const int)
 0:2  Function Definition: main( ( temp void)
 0:2    Function Parameters: 
 0:?     Sequence
@@ -50,10 +51,11 @@ gl_FragCoord origin is upper left
 0:5      Branch: Return with expression
 0:5        Construct vec4 ( temp 4-component vector of float)
 0:5          length ( temp float)
-0:5            direct index ( temp float)
-0:5              'test' ( temp 4-component vector of float)
-0:5              Constant:
-0:5                3 (const int)
+0:5            Construct float ( in 1-component vector of float)
+0:5              direct index ( temp float)
+0:5                'test' ( temp 4-component vector of float)
+0:5                Constant:
+0:5                  3 (const int)
 0:2  Function Definition: main( ( temp void)
 0:2    Function Parameters: 
 0:?     Sequence

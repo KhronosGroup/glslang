@@ -905,6 +905,7 @@ enum TOperator {
     // HLSL operations
     //
 
+    EOpFmaD,                // in HLSL fma is double only and only accepts douzble
     EOpClip,                // discard if input value < 0
     EOpIsFinite,
     EOpLog10,               // base 10 log
@@ -934,6 +935,7 @@ enum TOperator {
     EOpTextureBias,                      // HLSL texture bias: will be lowered to EOpTexture
     EOpAsDouble,                         // slightly different from EOpUint64BitsToDouble
     EOpD3DCOLORtoUBYTE4,                 // convert and swizzle 4-component color to UBYTE4 range
+    EOpCheckAccessFullyMapped,           // HLSL checks result from sparse texture lookup
 
     EOpMethodSample,                     // Texture object methods.  These are translated to existing
     EOpMethodSampleBias,                 // AST methods, and exist to represent HLSL semantics until that
@@ -985,6 +987,19 @@ enum TOperator {
     EOpWaveActiveCountBits,              // Will decompose to subgroupBallotBitCount(subgroupBallot()).
     EOpWavePrefixCountBits,              // Will decompose to subgroupBallotInclusiveBitCount(subgroupBallot()).
 };
+
+// some intrinsics in HLSL do not allow base type conversions
+inline bool isIntrinsicThatRequiresExactBaseType(TOperator op) {
+    return (EOpAsDouble == op) || (EOpCheckAccessFullyMapped == op) || (EOpFmaD == op);
+}
+// some intrinsics in HLSL do only allow matrix types and no shape conversions (except from scalar)
+inline bool isIntrinsicWithNoImplicitToMatrixConversion(TOperator op) {
+    return (EOpDeterminant == op) || (EOpTranspose == op);
+}
+// some intrinsics in HLSL do only allow vector types and no shape conversions (except from scalar)
+inline bool isIntrinsicWithNoImplcitToVectorCovnersion(TOperator op) {
+    return (EOpLength == op) || (EOpNoise == op) || (EOpNormalize == op) || (EOpReflect == op) || (EOpRefract == op);
+}
 
 class TIntermTraverser;
 class TIntermOperator;

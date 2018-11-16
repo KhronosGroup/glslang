@@ -1,0 +1,1139 @@
+hlsl.overload.2.frag
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:1  Function Definition: texelFetch(t21;vi2;i1; ( temp 4-component vector of float)
+0:1    Function Parameters: 
+0:1      'a' ( in texture2D)
+0:1      'tc' ( in 2-component vector of int)
+0:1      'lod' ( in int)
+0:?     Sequence
+0:1      Branch: Return with expression
+0:1        textureFetch ( temp 4-component vector of float)
+0:1          'a' ( in texture2D)
+0:1          vector swizzle ( temp 2-component vector of int)
+0:?             Construct ivec3 ( temp 3-component vector of int)
+0:1              'tc' ( in 2-component vector of int)
+0:1              'lod' ( in int)
+0:1            Sequence
+0:1              Constant:
+0:1                0 (const int)
+0:1              Constant:
+0:1                1 (const int)
+0:1          direct index ( temp int)
+0:?             Construct ivec3 ( temp 3-component vector of int)
+0:1              'tc' ( in 2-component vector of int)
+0:1              'lod' ( in int)
+0:1            Constant:
+0:1              2 (const int)
+0:2  Function Definition: texelFetch(t231;vi2;i1; ( temp 3-component vector of float)
+0:2    Function Parameters: 
+0:2      'a' ( in texture2D)
+0:2      'tc' ( in 2-component vector of int)
+0:2      'lod' ( in int)
+0:?     Sequence
+0:2      Branch: Return with expression
+0:2        Construct vec3 ( temp 3-component vector of float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:2            'a' ( in texture2D)
+0:2            vector swizzle ( temp 2-component vector of int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:2                'tc' ( in 2-component vector of int)
+0:2                'lod' ( in int)
+0:2              Sequence
+0:2                Constant:
+0:2                  0 (const int)
+0:2                Constant:
+0:2                  1 (const int)
+0:2            direct index ( temp int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:2                'tc' ( in 2-component vector of int)
+0:2                'lod' ( in int)
+0:2              Constant:
+0:2                2 (const int)
+0:3  Function Definition: texelFetch(t221;vi2;i1; ( temp 2-component vector of float)
+0:3    Function Parameters: 
+0:3      'a' ( in texture2D)
+0:3      'tc' ( in 2-component vector of int)
+0:3      'lod' ( in int)
+0:?     Sequence
+0:3      Branch: Return with expression
+0:3        Construct vec2 ( temp 2-component vector of float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:3            'a' ( in texture2D)
+0:3            vector swizzle ( temp 2-component vector of int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:3                'tc' ( in 2-component vector of int)
+0:3                'lod' ( in int)
+0:3              Sequence
+0:3                Constant:
+0:3                  0 (const int)
+0:3                Constant:
+0:3                  1 (const int)
+0:3            direct index ( temp int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:3                'tc' ( in 2-component vector of int)
+0:3                'lod' ( in int)
+0:3              Constant:
+0:3                2 (const int)
+0:4  Function Definition: texelFetch(t211;vi2;i1; ( temp float)
+0:4    Function Parameters: 
+0:4      'a' ( in texture2D)
+0:4      'tc' ( in 2-component vector of int)
+0:4      'lod' ( in int)
+0:?     Sequence
+0:4      Branch: Return with expression
+0:4        Construct float ( temp float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:4            'a' ( in texture2D)
+0:4            vector swizzle ( temp 2-component vector of int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:4                'tc' ( in 2-component vector of int)
+0:4                'lod' ( in int)
+0:4              Sequence
+0:4                Constant:
+0:4                  0 (const int)
+0:4                Constant:
+0:4                  1 (const int)
+0:4            direct index ( temp int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:4                'tc' ( in 2-component vector of int)
+0:4                'lod' ( in int)
+0:4              Constant:
+0:4                2 (const int)
+0:5  Function Definition: texelFetch(tA21;vi3;i1; ( temp 4-component vector of float)
+0:5    Function Parameters: 
+0:5      'a' ( in texture2DArray)
+0:5      'tc' ( in 3-component vector of int)
+0:5      'lod' ( in int)
+0:?     Sequence
+0:5      Branch: Return with expression
+0:5        textureFetch ( temp 4-component vector of float)
+0:5          'a' ( in texture2DArray)
+0:5          vector swizzle ( temp 3-component vector of int)
+0:?             Construct ivec4 ( temp 4-component vector of int)
+0:5              'tc' ( in 3-component vector of int)
+0:5              'lod' ( in int)
+0:5            Sequence
+0:5              Constant:
+0:5                0 (const int)
+0:5              Constant:
+0:5                1 (const int)
+0:5              Constant:
+0:5                2 (const int)
+0:5          direct index ( temp int)
+0:?             Construct ivec4 ( temp 4-component vector of int)
+0:5              'tc' ( in 3-component vector of int)
+0:5              'lod' ( in int)
+0:5            Constant:
+0:5              3 (const int)
+0:6  Function Definition: texelFetch(tA231;vi3;i1; ( temp 3-component vector of float)
+0:6    Function Parameters: 
+0:6      'a' ( in texture2DArray)
+0:6      'tc' ( in 3-component vector of int)
+0:6      'lod' ( in int)
+0:?     Sequence
+0:6      Branch: Return with expression
+0:6        Construct vec3 ( temp 3-component vector of float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:6            'a' ( in texture2DArray)
+0:6            vector swizzle ( temp 3-component vector of int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:6                'tc' ( in 3-component vector of int)
+0:6                'lod' ( in int)
+0:6              Sequence
+0:6                Constant:
+0:6                  0 (const int)
+0:6                Constant:
+0:6                  1 (const int)
+0:6                Constant:
+0:6                  2 (const int)
+0:6            direct index ( temp int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:6                'tc' ( in 3-component vector of int)
+0:6                'lod' ( in int)
+0:6              Constant:
+0:6                3 (const int)
+0:7  Function Definition: texelFetch(tA221;vi3;i1; ( temp 2-component vector of float)
+0:7    Function Parameters: 
+0:7      'a' ( in texture2DArray)
+0:7      'tc' ( in 3-component vector of int)
+0:7      'lod' ( in int)
+0:?     Sequence
+0:7      Branch: Return with expression
+0:7        Construct vec2 ( temp 2-component vector of float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:7            'a' ( in texture2DArray)
+0:7            vector swizzle ( temp 3-component vector of int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:7                'tc' ( in 3-component vector of int)
+0:7                'lod' ( in int)
+0:7              Sequence
+0:7                Constant:
+0:7                  0 (const int)
+0:7                Constant:
+0:7                  1 (const int)
+0:7                Constant:
+0:7                  2 (const int)
+0:7            direct index ( temp int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:7                'tc' ( in 3-component vector of int)
+0:7                'lod' ( in int)
+0:7              Constant:
+0:7                3 (const int)
+0:8  Function Definition: texelFetch(tA211;vi3;i1; ( temp float)
+0:8    Function Parameters: 
+0:8      'a' ( in texture2DArray)
+0:8      'tc' ( in 3-component vector of int)
+0:8      'lod' ( in int)
+0:?     Sequence
+0:8      Branch: Return with expression
+0:8        Construct float ( temp float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:8            'a' ( in texture2DArray)
+0:8            vector swizzle ( temp 3-component vector of int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:8                'tc' ( in 3-component vector of int)
+0:8                'lod' ( in int)
+0:8              Sequence
+0:8                Constant:
+0:8                  0 (const int)
+0:8                Constant:
+0:8                  1 (const int)
+0:8                Constant:
+0:8                  2 (const int)
+0:8            direct index ( temp int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:8                'tc' ( in 3-component vector of int)
+0:8                'lod' ( in int)
+0:8              Constant:
+0:8                3 (const int)
+0:10  Function Definition: texelFetch(tB1;i1; ( temp 4-component vector of float)
+0:10    Function Parameters: 
+0:10      'a' (layout( rgba32f) in textureBuffer)
+0:10      'tc' ( in int)
+0:?     Sequence
+0:10      Branch: Return with expression
+0:10        textureFetch ( temp 4-component vector of float)
+0:10          'a' (layout( rgba32f) in textureBuffer)
+0:10          'tc' ( in int)
+0:10          Constant:
+0:10            0 (const int)
+0:11  Function Definition: texelFetch(tB31;i1; ( temp 3-component vector of float)
+0:11    Function Parameters: 
+0:11      'a' (layout( rgba32f) in textureBuffer)
+0:11      'tc' ( in int)
+0:?     Sequence
+0:11      Branch: Return with expression
+0:11        textureFetch ( temp 3-component vector of float)
+0:11          'a' (layout( rgba32f) in textureBuffer)
+0:11          'tc' ( in int)
+0:11          Constant:
+0:11            0 (const int)
+0:12  Function Definition: texelFetch(tB21;i1; ( temp 2-component vector of float)
+0:12    Function Parameters: 
+0:12      'a' (layout( rg32f) in textureBuffer)
+0:12      'tc' ( in int)
+0:?     Sequence
+0:12      Branch: Return with expression
+0:12        textureFetch ( temp 2-component vector of float)
+0:12          'a' (layout( rg32f) in textureBuffer)
+0:12          'tc' ( in int)
+0:12          Constant:
+0:12            0 (const int)
+0:13  Function Definition: texelFetch(tB11;i1; ( temp float)
+0:13    Function Parameters: 
+0:13      'a' (layout( r32f) in textureBuffer)
+0:13      'tc' ( in int)
+0:?     Sequence
+0:13      Branch: Return with expression
+0:13        textureFetch ( temp float)
+0:13          'a' (layout( r32f) in textureBuffer)
+0:13          'tc' ( in int)
+0:13          Constant:
+0:13            0 (const int)
+0:16  Function Definition: randPos(vf3; ( temp float)
+0:16    Function Parameters: 
+0:16      'p' ( in 3-component vector of float)
+0:?     Sequence
+0:17      Branch: Return with expression
+0:17        Fraction ( temp float)
+0:17          component-wise multiply ( temp float)
+0:17            sine ( temp float)
+0:17              component-wise multiply ( temp float)
+0:17                dot-product ( temp float)
+0:17                  vector swizzle ( temp 3-component vector of float)
+0:17                    'p' ( in 3-component vector of float)
+0:17                    Sequence
+0:17                      Constant:
+0:17                        0 (const int)
+0:17                      Constant:
+0:17                        1 (const int)
+0:17                      Constant:
+0:17                        2 (const int)
+0:?                   Constant:
+0:?                     1.000000
+0:?                     -2.781300
+0:?                     3.010000
+0:17                Constant:
+0:17                  12.989800
+0:17            Constant:
+0:17              43758.545300
+0:20  Function Definition: rand(f1; ( temp float)
+0:20    Function Parameters: 
+0:20      'p' ( in float)
+0:?     Sequence
+0:21      Branch: Return with expression
+0:21        Fraction ( temp float)
+0:21          component-wise multiply ( temp float)
+0:21            sine ( temp float)
+0:21              component-wise multiply ( temp float)
+0:21                'p' ( in float)
+0:21                Constant:
+0:21                  12.989800
+0:21            Constant:
+0:21              43758.545300
+0:29  Function Definition: @main( ( temp 4-component vector of float)
+0:29    Function Parameters: 
+0:?     Sequence
+0:30      Sequence
+0:30        move second child to first child ( temp int)
+0:30          'i' ( temp int)
+0:30          Constant:
+0:30            0 (const int)
+0:31      Sequence
+0:31        move second child to first child ( temp float)
+0:31          'randVal' ( temp float)
+0:31          Function Call: rand(f1; ( temp float)
+0:31            Construct float ( in float)
+0:31              add ( temp 2-component vector of float)
+0:31                Function Call: randPos(vf3; ( temp float)
+0:31                  v2: direct index for structure (layout( offset=0) uniform 3-component vector of float)
+0:31                    'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float v2, layout( offset=16) uniform 2-component vector of float v1})
+0:31                    Constant:
+0:31                      0 (const uint)
+0:31                sine ( temp 2-component vector of float)
+0:31                  vector-scale ( temp 2-component vector of float)
+0:31                    v1: direct index for structure (layout( offset=16) uniform 2-component vector of float)
+0:31                      'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float v2, layout( offset=16) uniform 2-component vector of float v1})
+0:31                      Constant:
+0:31                        1 (const uint)
+0:31                    Constant:
+0:31                      0.131700
+0:32      Branch: Return with expression
+0:32        Construct vec4 ( temp 4-component vector of float)
+0:32          clamp ( temp float)
+0:32            'randVal' ( temp float)
+0:32            Convert int to float ( temp float)
+0:32              'i' ( temp int)
+0:32            Convert int to float ( temp float)
+0:32              add ( temp int)
+0:32                'i' ( temp int)
+0:32                Constant:
+0:32                  1 (const int)
+0:33      Branch: Return with expression
+0:33        Constant:
+0:33          0.000000
+0:33          0.000000
+0:33          0.000000
+0:33          0.000000
+0:29  Function Definition: main( ( temp void)
+0:29    Function Parameters: 
+0:?     Sequence
+0:29      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:29        Function Call: @main( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'fetchBuffer' (layout( binding=0 rgba32f) uniform textureBuffer)
+0:?     'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float v2, layout( offset=16) uniform 2-component vector of float v1})
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+
+Linked fragment stage:
+
+
+Shader version: 500
+gl_FragCoord origin is upper left
+0:? Sequence
+0:1  Function Definition: texelFetch(t21;vi2;i1; ( temp 4-component vector of float)
+0:1    Function Parameters: 
+0:1      'a' ( in texture2D)
+0:1      'tc' ( in 2-component vector of int)
+0:1      'lod' ( in int)
+0:?     Sequence
+0:1      Branch: Return with expression
+0:1        textureFetch ( temp 4-component vector of float)
+0:1          'a' ( in texture2D)
+0:1          vector swizzle ( temp 2-component vector of int)
+0:?             Construct ivec3 ( temp 3-component vector of int)
+0:1              'tc' ( in 2-component vector of int)
+0:1              'lod' ( in int)
+0:1            Sequence
+0:1              Constant:
+0:1                0 (const int)
+0:1              Constant:
+0:1                1 (const int)
+0:1          direct index ( temp int)
+0:?             Construct ivec3 ( temp 3-component vector of int)
+0:1              'tc' ( in 2-component vector of int)
+0:1              'lod' ( in int)
+0:1            Constant:
+0:1              2 (const int)
+0:2  Function Definition: texelFetch(t231;vi2;i1; ( temp 3-component vector of float)
+0:2    Function Parameters: 
+0:2      'a' ( in texture2D)
+0:2      'tc' ( in 2-component vector of int)
+0:2      'lod' ( in int)
+0:?     Sequence
+0:2      Branch: Return with expression
+0:2        Construct vec3 ( temp 3-component vector of float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:2            'a' ( in texture2D)
+0:2            vector swizzle ( temp 2-component vector of int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:2                'tc' ( in 2-component vector of int)
+0:2                'lod' ( in int)
+0:2              Sequence
+0:2                Constant:
+0:2                  0 (const int)
+0:2                Constant:
+0:2                  1 (const int)
+0:2            direct index ( temp int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:2                'tc' ( in 2-component vector of int)
+0:2                'lod' ( in int)
+0:2              Constant:
+0:2                2 (const int)
+0:3  Function Definition: texelFetch(t221;vi2;i1; ( temp 2-component vector of float)
+0:3    Function Parameters: 
+0:3      'a' ( in texture2D)
+0:3      'tc' ( in 2-component vector of int)
+0:3      'lod' ( in int)
+0:?     Sequence
+0:3      Branch: Return with expression
+0:3        Construct vec2 ( temp 2-component vector of float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:3            'a' ( in texture2D)
+0:3            vector swizzle ( temp 2-component vector of int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:3                'tc' ( in 2-component vector of int)
+0:3                'lod' ( in int)
+0:3              Sequence
+0:3                Constant:
+0:3                  0 (const int)
+0:3                Constant:
+0:3                  1 (const int)
+0:3            direct index ( temp int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:3                'tc' ( in 2-component vector of int)
+0:3                'lod' ( in int)
+0:3              Constant:
+0:3                2 (const int)
+0:4  Function Definition: texelFetch(t211;vi2;i1; ( temp float)
+0:4    Function Parameters: 
+0:4      'a' ( in texture2D)
+0:4      'tc' ( in 2-component vector of int)
+0:4      'lod' ( in int)
+0:?     Sequence
+0:4      Branch: Return with expression
+0:4        Construct float ( temp float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:4            'a' ( in texture2D)
+0:4            vector swizzle ( temp 2-component vector of int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:4                'tc' ( in 2-component vector of int)
+0:4                'lod' ( in int)
+0:4              Sequence
+0:4                Constant:
+0:4                  0 (const int)
+0:4                Constant:
+0:4                  1 (const int)
+0:4            direct index ( temp int)
+0:?               Construct ivec3 ( temp 3-component vector of int)
+0:4                'tc' ( in 2-component vector of int)
+0:4                'lod' ( in int)
+0:4              Constant:
+0:4                2 (const int)
+0:5  Function Definition: texelFetch(tA21;vi3;i1; ( temp 4-component vector of float)
+0:5    Function Parameters: 
+0:5      'a' ( in texture2DArray)
+0:5      'tc' ( in 3-component vector of int)
+0:5      'lod' ( in int)
+0:?     Sequence
+0:5      Branch: Return with expression
+0:5        textureFetch ( temp 4-component vector of float)
+0:5          'a' ( in texture2DArray)
+0:5          vector swizzle ( temp 3-component vector of int)
+0:?             Construct ivec4 ( temp 4-component vector of int)
+0:5              'tc' ( in 3-component vector of int)
+0:5              'lod' ( in int)
+0:5            Sequence
+0:5              Constant:
+0:5                0 (const int)
+0:5              Constant:
+0:5                1 (const int)
+0:5              Constant:
+0:5                2 (const int)
+0:5          direct index ( temp int)
+0:?             Construct ivec4 ( temp 4-component vector of int)
+0:5              'tc' ( in 3-component vector of int)
+0:5              'lod' ( in int)
+0:5            Constant:
+0:5              3 (const int)
+0:6  Function Definition: texelFetch(tA231;vi3;i1; ( temp 3-component vector of float)
+0:6    Function Parameters: 
+0:6      'a' ( in texture2DArray)
+0:6      'tc' ( in 3-component vector of int)
+0:6      'lod' ( in int)
+0:?     Sequence
+0:6      Branch: Return with expression
+0:6        Construct vec3 ( temp 3-component vector of float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:6            'a' ( in texture2DArray)
+0:6            vector swizzle ( temp 3-component vector of int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:6                'tc' ( in 3-component vector of int)
+0:6                'lod' ( in int)
+0:6              Sequence
+0:6                Constant:
+0:6                  0 (const int)
+0:6                Constant:
+0:6                  1 (const int)
+0:6                Constant:
+0:6                  2 (const int)
+0:6            direct index ( temp int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:6                'tc' ( in 3-component vector of int)
+0:6                'lod' ( in int)
+0:6              Constant:
+0:6                3 (const int)
+0:7  Function Definition: texelFetch(tA221;vi3;i1; ( temp 2-component vector of float)
+0:7    Function Parameters: 
+0:7      'a' ( in texture2DArray)
+0:7      'tc' ( in 3-component vector of int)
+0:7      'lod' ( in int)
+0:?     Sequence
+0:7      Branch: Return with expression
+0:7        Construct vec2 ( temp 2-component vector of float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:7            'a' ( in texture2DArray)
+0:7            vector swizzle ( temp 3-component vector of int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:7                'tc' ( in 3-component vector of int)
+0:7                'lod' ( in int)
+0:7              Sequence
+0:7                Constant:
+0:7                  0 (const int)
+0:7                Constant:
+0:7                  1 (const int)
+0:7                Constant:
+0:7                  2 (const int)
+0:7            direct index ( temp int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:7                'tc' ( in 3-component vector of int)
+0:7                'lod' ( in int)
+0:7              Constant:
+0:7                3 (const int)
+0:8  Function Definition: texelFetch(tA211;vi3;i1; ( temp float)
+0:8    Function Parameters: 
+0:8      'a' ( in texture2DArray)
+0:8      'tc' ( in 3-component vector of int)
+0:8      'lod' ( in int)
+0:?     Sequence
+0:8      Branch: Return with expression
+0:8        Construct float ( temp float)
+0:?           textureFetch ( temp 4-component vector of float)
+0:8            'a' ( in texture2DArray)
+0:8            vector swizzle ( temp 3-component vector of int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:8                'tc' ( in 3-component vector of int)
+0:8                'lod' ( in int)
+0:8              Sequence
+0:8                Constant:
+0:8                  0 (const int)
+0:8                Constant:
+0:8                  1 (const int)
+0:8                Constant:
+0:8                  2 (const int)
+0:8            direct index ( temp int)
+0:?               Construct ivec4 ( temp 4-component vector of int)
+0:8                'tc' ( in 3-component vector of int)
+0:8                'lod' ( in int)
+0:8              Constant:
+0:8                3 (const int)
+0:10  Function Definition: texelFetch(tB1;i1; ( temp 4-component vector of float)
+0:10    Function Parameters: 
+0:10      'a' (layout( rgba32f) in textureBuffer)
+0:10      'tc' ( in int)
+0:?     Sequence
+0:10      Branch: Return with expression
+0:10        textureFetch ( temp 4-component vector of float)
+0:10          'a' (layout( rgba32f) in textureBuffer)
+0:10          'tc' ( in int)
+0:10          Constant:
+0:10            0 (const int)
+0:11  Function Definition: texelFetch(tB31;i1; ( temp 3-component vector of float)
+0:11    Function Parameters: 
+0:11      'a' (layout( rgba32f) in textureBuffer)
+0:11      'tc' ( in int)
+0:?     Sequence
+0:11      Branch: Return with expression
+0:11        textureFetch ( temp 3-component vector of float)
+0:11          'a' (layout( rgba32f) in textureBuffer)
+0:11          'tc' ( in int)
+0:11          Constant:
+0:11            0 (const int)
+0:12  Function Definition: texelFetch(tB21;i1; ( temp 2-component vector of float)
+0:12    Function Parameters: 
+0:12      'a' (layout( rg32f) in textureBuffer)
+0:12      'tc' ( in int)
+0:?     Sequence
+0:12      Branch: Return with expression
+0:12        textureFetch ( temp 2-component vector of float)
+0:12          'a' (layout( rg32f) in textureBuffer)
+0:12          'tc' ( in int)
+0:12          Constant:
+0:12            0 (const int)
+0:13  Function Definition: texelFetch(tB11;i1; ( temp float)
+0:13    Function Parameters: 
+0:13      'a' (layout( r32f) in textureBuffer)
+0:13      'tc' ( in int)
+0:?     Sequence
+0:13      Branch: Return with expression
+0:13        textureFetch ( temp float)
+0:13          'a' (layout( r32f) in textureBuffer)
+0:13          'tc' ( in int)
+0:13          Constant:
+0:13            0 (const int)
+0:16  Function Definition: randPos(vf3; ( temp float)
+0:16    Function Parameters: 
+0:16      'p' ( in 3-component vector of float)
+0:?     Sequence
+0:17      Branch: Return with expression
+0:17        Fraction ( temp float)
+0:17          component-wise multiply ( temp float)
+0:17            sine ( temp float)
+0:17              component-wise multiply ( temp float)
+0:17                dot-product ( temp float)
+0:17                  vector swizzle ( temp 3-component vector of float)
+0:17                    'p' ( in 3-component vector of float)
+0:17                    Sequence
+0:17                      Constant:
+0:17                        0 (const int)
+0:17                      Constant:
+0:17                        1 (const int)
+0:17                      Constant:
+0:17                        2 (const int)
+0:?                   Constant:
+0:?                     1.000000
+0:?                     -2.781300
+0:?                     3.010000
+0:17                Constant:
+0:17                  12.989800
+0:17            Constant:
+0:17              43758.545300
+0:20  Function Definition: rand(f1; ( temp float)
+0:20    Function Parameters: 
+0:20      'p' ( in float)
+0:?     Sequence
+0:21      Branch: Return with expression
+0:21        Fraction ( temp float)
+0:21          component-wise multiply ( temp float)
+0:21            sine ( temp float)
+0:21              component-wise multiply ( temp float)
+0:21                'p' ( in float)
+0:21                Constant:
+0:21                  12.989800
+0:21            Constant:
+0:21              43758.545300
+0:29  Function Definition: @main( ( temp 4-component vector of float)
+0:29    Function Parameters: 
+0:?     Sequence
+0:30      Sequence
+0:30        move second child to first child ( temp int)
+0:30          'i' ( temp int)
+0:30          Constant:
+0:30            0 (const int)
+0:31      Sequence
+0:31        move second child to first child ( temp float)
+0:31          'randVal' ( temp float)
+0:31          Function Call: rand(f1; ( temp float)
+0:31            Construct float ( in float)
+0:31              add ( temp 2-component vector of float)
+0:31                Function Call: randPos(vf3; ( temp float)
+0:31                  v2: direct index for structure (layout( offset=0) uniform 3-component vector of float)
+0:31                    'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float v2, layout( offset=16) uniform 2-component vector of float v1})
+0:31                    Constant:
+0:31                      0 (const uint)
+0:31                sine ( temp 2-component vector of float)
+0:31                  vector-scale ( temp 2-component vector of float)
+0:31                    v1: direct index for structure (layout( offset=16) uniform 2-component vector of float)
+0:31                      'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float v2, layout( offset=16) uniform 2-component vector of float v1})
+0:31                      Constant:
+0:31                        1 (const uint)
+0:31                    Constant:
+0:31                      0.131700
+0:32      Branch: Return with expression
+0:32        Construct vec4 ( temp 4-component vector of float)
+0:32          clamp ( temp float)
+0:32            'randVal' ( temp float)
+0:32            Convert int to float ( temp float)
+0:32              'i' ( temp int)
+0:32            Convert int to float ( temp float)
+0:32              add ( temp int)
+0:32                'i' ( temp int)
+0:32                Constant:
+0:32                  1 (const int)
+0:33      Branch: Return with expression
+0:33        Constant:
+0:33          0.000000
+0:33          0.000000
+0:33          0.000000
+0:33          0.000000
+0:29  Function Definition: main( ( temp void)
+0:29    Function Parameters: 
+0:?     Sequence
+0:29      move second child to first child ( temp 4-component vector of float)
+0:?         '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+0:29        Function Call: @main( ( temp 4-component vector of float)
+0:?   Linker Objects
+0:?     'fetchBuffer' (layout( binding=0 rgba32f) uniform textureBuffer)
+0:?     'anon@0' (layout( row_major std140) uniform block{layout( offset=0) uniform 3-component vector of float v2, layout( offset=16) uniform 2-component vector of float v1})
+0:?     '@entryPointOutput' (layout( location=0) out 4-component vector of float)
+
+// Module Version 10000
+// Generated by (magic number): 80007
+// Id's are bound by 353
+
+                              Capability Shader
+                              Capability SampledBuffer
+                              Capability StorageImageExtendedFormats
+               1:             ExtInstImport  "GLSL.std.450"
+                              MemoryModel Logical GLSL450
+                              EntryPoint Fragment 4  "main" 349
+                              ExecutionMode 4 OriginUpperLeft
+                              Source HLSL 500
+                              Name 4  "main"
+                              Name 18  "texelFetch(t21;vi2;i1;"
+                              Name 15  "a"
+                              Name 16  "tc"
+                              Name 17  "lod"
+                              Name 25  "texelFetch(t231;vi2;i1;"
+                              Name 22  "a"
+                              Name 23  "tc"
+                              Name 24  "lod"
+                              Name 32  "texelFetch(t221;vi2;i1;"
+                              Name 29  "a"
+                              Name 30  "tc"
+                              Name 31  "lod"
+                              Name 38  "texelFetch(t211;vi2;i1;"
+                              Name 35  "a"
+                              Name 36  "tc"
+                              Name 37  "lod"
+                              Name 48  "texelFetch(tA21;vi3;i1;"
+                              Name 45  "a"
+                              Name 46  "tc"
+                              Name 47  "lod"
+                              Name 54  "texelFetch(tA231;vi3;i1;"
+                              Name 51  "a"
+                              Name 52  "tc"
+                              Name 53  "lod"
+                              Name 60  "texelFetch(tA221;vi3;i1;"
+                              Name 57  "a"
+                              Name 58  "tc"
+                              Name 59  "lod"
+                              Name 66  "texelFetch(tA211;vi3;i1;"
+                              Name 63  "a"
+                              Name 64  "tc"
+                              Name 65  "lod"
+                              Name 73  "texelFetch(tB1;i1;"
+                              Name 71  "a"
+                              Name 72  "tc"
+                              Name 78  "texelFetch(tB31;i1;"
+                              Name 76  "a"
+                              Name 77  "tc"
+                              Name 85  "texelFetch(tB21;i1;"
+                              Name 83  "a"
+                              Name 84  "tc"
+                              Name 92  "texelFetch(tB11;i1;"
+                              Name 90  "a"
+                              Name 91  "tc"
+                              Name 97  "randPos(vf3;"
+                              Name 96  "p"
+                              Name 102  "rand(f1;"
+                              Name 101  "p"
+                              Name 105  "@main("
+                              Name 313  "i"
+                              Name 314  "randVal"
+                              Name 315  "$Global"
+                              MemberName 315($Global) 0  "v2"
+                              MemberName 315($Global) 1  "v1"
+                              Name 317  ""
+                              Name 318  "param"
+                              Name 333  "param"
+                              Name 349  "@entryPointOutput"
+                              Name 352  "fetchBuffer"
+                              MemberDecorate 315($Global) 0 Offset 0
+                              MemberDecorate 315($Global) 1 Offset 16
+                              Decorate 315($Global) Block
+                              Decorate 317 DescriptorSet 0
+                              Decorate 349(@entryPointOutput) Location 0
+                              Decorate 352(fetchBuffer) DescriptorSet 0
+                              Decorate 352(fetchBuffer) Binding 0
+               2:             TypeVoid
+               3:             TypeFunction 2
+               6:             TypeFloat 32
+               7:             TypeImage 6(float) 2D sampled format:Unknown
+               8:             TypePointer Function 7
+               9:             TypeInt 32 1
+              10:             TypeVector 9(int) 2
+              11:             TypePointer Function 10(ivec2)
+              12:             TypePointer Function 9(int)
+              13:             TypeVector 6(float) 4
+              14:             TypeFunction 13(fvec4) 8(ptr) 11(ptr) 12(ptr)
+              20:             TypeVector 6(float) 3
+              21:             TypeFunction 20(fvec3) 8(ptr) 11(ptr) 12(ptr)
+              27:             TypeVector 6(float) 2
+              28:             TypeFunction 27(fvec2) 8(ptr) 11(ptr) 12(ptr)
+              34:             TypeFunction 6(float) 8(ptr) 11(ptr) 12(ptr)
+              40:             TypeImage 6(float) 2D array sampled format:Unknown
+              41:             TypePointer Function 40
+              42:             TypeVector 9(int) 3
+              43:             TypePointer Function 42(ivec3)
+              44:             TypeFunction 13(fvec4) 41(ptr) 43(ptr) 12(ptr)
+              50:             TypeFunction 20(fvec3) 41(ptr) 43(ptr) 12(ptr)
+              56:             TypeFunction 27(fvec2) 41(ptr) 43(ptr) 12(ptr)
+              62:             TypeFunction 6(float) 41(ptr) 43(ptr) 12(ptr)
+              68:             TypeImage 6(float) Buffer sampled format:Rgba32f
+              69:             TypePointer Function 68
+              70:             TypeFunction 13(fvec4) 69(ptr) 12(ptr)
+              75:             TypeFunction 20(fvec3) 69(ptr) 12(ptr)
+              80:             TypeImage 6(float) Buffer sampled format:Rg32f
+              81:             TypePointer Function 80
+              82:             TypeFunction 27(fvec2) 81(ptr) 12(ptr)
+              87:             TypeImage 6(float) Buffer sampled format:R32f
+              88:             TypePointer Function 87
+              89:             TypeFunction 6(float) 88(ptr) 12(ptr)
+              94:             TypePointer Function 20(fvec3)
+              95:             TypeFunction 6(float) 94(ptr)
+              99:             TypePointer Function 6(float)
+             100:             TypeFunction 6(float) 99(ptr)
+             104:             TypeFunction 13(fvec4)
+             119:             TypeInt 32 0
+             120:    119(int) Constant 2
+             184:             TypeVector 9(int) 4
+             196:    119(int) Constant 3
+             265:      9(int) Constant 0
+             293:    6(float) Constant 1065353216
+             294:    6(float) Constant 3224502482
+             295:    6(float) Constant 1077978071
+             296:   20(fvec3) ConstantComposite 293 294 295
+             298:    6(float) Constant 1095751225
+             301:    6(float) Constant 1193995916
+    315($Global):             TypeStruct 20(fvec3) 27(fvec2)
+             316:             TypePointer Uniform 315($Global)
+             317:    316(ptr) Variable Uniform
+             319:             TypePointer Uniform 20(fvec3)
+             323:      9(int) Constant 1
+             324:             TypePointer Uniform 27(fvec2)
+             327:    6(float) Constant 1040637021
+             344:    6(float) Constant 0
+             345:   13(fvec4) ConstantComposite 344 344 344 344
+             348:             TypePointer Output 13(fvec4)
+349(@entryPointOutput):    348(ptr) Variable Output
+             351:             TypePointer UniformConstant 68
+352(fetchBuffer):    351(ptr) Variable UniformConstant
+         4(main):           2 Function None 3
+               5:             Label
+             350:   13(fvec4) FunctionCall 105(@main()
+                              Store 349(@entryPointOutput) 350
+                              Return
+                              FunctionEnd
+18(texelFetch(t21;vi2;i1;):   13(fvec4) Function None 14
+           15(a):      8(ptr) FunctionParameter
+          16(tc):     11(ptr) FunctionParameter
+         17(lod):     12(ptr) FunctionParameter
+              19:             Label
+             107:           7 Load 15(a)
+             108:   10(ivec2) Load 16(tc)
+             109:      9(int) Load 17(lod)
+             110:      9(int) CompositeExtract 108 0
+             111:      9(int) CompositeExtract 108 1
+             112:   42(ivec3) CompositeConstruct 110 111 109
+             113:   10(ivec2) VectorShuffle 112 112 0 1
+             114:   10(ivec2) Load 16(tc)
+             115:      9(int) Load 17(lod)
+             116:      9(int) CompositeExtract 114 0
+             117:      9(int) CompositeExtract 114 1
+             118:   42(ivec3) CompositeConstruct 116 117 115
+             121:      9(int) CompositeExtract 118 2
+             122:   13(fvec4) ImageFetch 107 113 Lod 121
+                              ReturnValue 122
+                              FunctionEnd
+25(texelFetch(t231;vi2;i1;):   20(fvec3) Function None 21
+           22(a):      8(ptr) FunctionParameter
+          23(tc):     11(ptr) FunctionParameter
+         24(lod):     12(ptr) FunctionParameter
+              26:             Label
+             125:           7 Load 22(a)
+             126:   10(ivec2) Load 23(tc)
+             127:      9(int) Load 24(lod)
+             128:      9(int) CompositeExtract 126 0
+             129:      9(int) CompositeExtract 126 1
+             130:   42(ivec3) CompositeConstruct 128 129 127
+             131:   10(ivec2) VectorShuffle 130 130 0 1
+             132:   10(ivec2) Load 23(tc)
+             133:      9(int) Load 24(lod)
+             134:      9(int) CompositeExtract 132 0
+             135:      9(int) CompositeExtract 132 1
+             136:   42(ivec3) CompositeConstruct 134 135 133
+             137:      9(int) CompositeExtract 136 2
+             138:   13(fvec4) ImageFetch 125 131 Lod 137
+             139:    6(float) CompositeExtract 138 0
+             140:    6(float) CompositeExtract 138 1
+             141:    6(float) CompositeExtract 138 2
+             142:   20(fvec3) CompositeConstruct 139 140 141
+                              ReturnValue 142
+                              FunctionEnd
+32(texelFetch(t221;vi2;i1;):   27(fvec2) Function None 28
+           29(a):      8(ptr) FunctionParameter
+          30(tc):     11(ptr) FunctionParameter
+         31(lod):     12(ptr) FunctionParameter
+              33:             Label
+             145:           7 Load 29(a)
+             146:   10(ivec2) Load 30(tc)
+             147:      9(int) Load 31(lod)
+             148:      9(int) CompositeExtract 146 0
+             149:      9(int) CompositeExtract 146 1
+             150:   42(ivec3) CompositeConstruct 148 149 147
+             151:   10(ivec2) VectorShuffle 150 150 0 1
+             152:   10(ivec2) Load 30(tc)
+             153:      9(int) Load 31(lod)
+             154:      9(int) CompositeExtract 152 0
+             155:      9(int) CompositeExtract 152 1
+             156:   42(ivec3) CompositeConstruct 154 155 153
+             157:      9(int) CompositeExtract 156 2
+             158:   13(fvec4) ImageFetch 145 151 Lod 157
+             159:    6(float) CompositeExtract 158 0
+             160:    6(float) CompositeExtract 158 1
+             161:   27(fvec2) CompositeConstruct 159 160
+                              ReturnValue 161
+                              FunctionEnd
+38(texelFetch(t211;vi2;i1;):    6(float) Function None 34
+           35(a):      8(ptr) FunctionParameter
+          36(tc):     11(ptr) FunctionParameter
+         37(lod):     12(ptr) FunctionParameter
+              39:             Label
+             164:           7 Load 35(a)
+             165:   10(ivec2) Load 36(tc)
+             166:      9(int) Load 37(lod)
+             167:      9(int) CompositeExtract 165 0
+             168:      9(int) CompositeExtract 165 1
+             169:   42(ivec3) CompositeConstruct 167 168 166
+             170:   10(ivec2) VectorShuffle 169 169 0 1
+             171:   10(ivec2) Load 36(tc)
+             172:      9(int) Load 37(lod)
+             173:      9(int) CompositeExtract 171 0
+             174:      9(int) CompositeExtract 171 1
+             175:   42(ivec3) CompositeConstruct 173 174 172
+             176:      9(int) CompositeExtract 175 2
+             177:   13(fvec4) ImageFetch 164 170 Lod 176
+             178:    6(float) CompositeExtract 177 0
+                              ReturnValue 178
+                              FunctionEnd
+48(texelFetch(tA21;vi3;i1;):   13(fvec4) Function None 44
+           45(a):     41(ptr) FunctionParameter
+          46(tc):     43(ptr) FunctionParameter
+         47(lod):     12(ptr) FunctionParameter
+              49:             Label
+             181:          40 Load 45(a)
+             182:   42(ivec3) Load 46(tc)
+             183:      9(int) Load 47(lod)
+             185:      9(int) CompositeExtract 182 0
+             186:      9(int) CompositeExtract 182 1
+             187:      9(int) CompositeExtract 182 2
+             188:  184(ivec4) CompositeConstruct 185 186 187 183
+             189:   42(ivec3) VectorShuffle 188 188 0 1 2
+             190:   42(ivec3) Load 46(tc)
+             191:      9(int) Load 47(lod)
+             192:      9(int) CompositeExtract 190 0
+             193:      9(int) CompositeExtract 190 1
+             194:      9(int) CompositeExtract 190 2
+             195:  184(ivec4) CompositeConstruct 192 193 194 191
+             197:      9(int) CompositeExtract 195 3
+             198:   13(fvec4) ImageFetch 181 189 Lod 197
+                              ReturnValue 198
+                              FunctionEnd
+54(texelFetch(tA231;vi3;i1;):   20(fvec3) Function None 50
+           51(a):     41(ptr) FunctionParameter
+          52(tc):     43(ptr) FunctionParameter
+         53(lod):     12(ptr) FunctionParameter
+              55:             Label
+             201:          40 Load 51(a)
+             202:   42(ivec3) Load 52(tc)
+             203:      9(int) Load 53(lod)
+             204:      9(int) CompositeExtract 202 0
+             205:      9(int) CompositeExtract 202 1
+             206:      9(int) CompositeExtract 202 2
+             207:  184(ivec4) CompositeConstruct 204 205 206 203
+             208:   42(ivec3) VectorShuffle 207 207 0 1 2
+             209:   42(ivec3) Load 52(tc)
+             210:      9(int) Load 53(lod)
+             211:      9(int) CompositeExtract 209 0
+             212:      9(int) CompositeExtract 209 1
+             213:      9(int) CompositeExtract 209 2
+             214:  184(ivec4) CompositeConstruct 211 212 213 210
+             215:      9(int) CompositeExtract 214 3
+             216:   13(fvec4) ImageFetch 201 208 Lod 215
+             217:    6(float) CompositeExtract 216 0
+             218:    6(float) CompositeExtract 216 1
+             219:    6(float) CompositeExtract 216 2
+             220:   20(fvec3) CompositeConstruct 217 218 219
+                              ReturnValue 220
+                              FunctionEnd
+60(texelFetch(tA221;vi3;i1;):   27(fvec2) Function None 56
+           57(a):     41(ptr) FunctionParameter
+          58(tc):     43(ptr) FunctionParameter
+         59(lod):     12(ptr) FunctionParameter
+              61:             Label
+             223:          40 Load 57(a)
+             224:   42(ivec3) Load 58(tc)
+             225:      9(int) Load 59(lod)
+             226:      9(int) CompositeExtract 224 0
+             227:      9(int) CompositeExtract 224 1
+             228:      9(int) CompositeExtract 224 2
+             229:  184(ivec4) CompositeConstruct 226 227 228 225
+             230:   42(ivec3) VectorShuffle 229 229 0 1 2
+             231:   42(ivec3) Load 58(tc)
+             232:      9(int) Load 59(lod)
+             233:      9(int) CompositeExtract 231 0
+             234:      9(int) CompositeExtract 231 1
+             235:      9(int) CompositeExtract 231 2
+             236:  184(ivec4) CompositeConstruct 233 234 235 232
+             237:      9(int) CompositeExtract 236 3
+             238:   13(fvec4) ImageFetch 223 230 Lod 237
+             239:    6(float) CompositeExtract 238 0
+             240:    6(float) CompositeExtract 238 1
+             241:   27(fvec2) CompositeConstruct 239 240
+                              ReturnValue 241
+                              FunctionEnd
+66(texelFetch(tA211;vi3;i1;):    6(float) Function None 62
+           63(a):     41(ptr) FunctionParameter
+          64(tc):     43(ptr) FunctionParameter
+         65(lod):     12(ptr) FunctionParameter
+              67:             Label
+             244:          40 Load 63(a)
+             245:   42(ivec3) Load 64(tc)
+             246:      9(int) Load 65(lod)
+             247:      9(int) CompositeExtract 245 0
+             248:      9(int) CompositeExtract 245 1
+             249:      9(int) CompositeExtract 245 2
+             250:  184(ivec4) CompositeConstruct 247 248 249 246
+             251:   42(ivec3) VectorShuffle 250 250 0 1 2
+             252:   42(ivec3) Load 64(tc)
+             253:      9(int) Load 65(lod)
+             254:      9(int) CompositeExtract 252 0
+             255:      9(int) CompositeExtract 252 1
+             256:      9(int) CompositeExtract 252 2
+             257:  184(ivec4) CompositeConstruct 254 255 256 253
+             258:      9(int) CompositeExtract 257 3
+             259:   13(fvec4) ImageFetch 244 251 Lod 258
+             260:    6(float) CompositeExtract 259 0
+                              ReturnValue 260
+                              FunctionEnd
+73(texelFetch(tB1;i1;):   13(fvec4) Function None 70
+           71(a):     69(ptr) FunctionParameter
+          72(tc):     12(ptr) FunctionParameter
+              74:             Label
+             263:          68 Load 71(a)
+             264:      9(int) Load 72(tc)
+             266:   13(fvec4) ImageFetch 263 264
+                              ReturnValue 266
+                              FunctionEnd
+78(texelFetch(tB31;i1;):   20(fvec3) Function None 75
+           76(a):     69(ptr) FunctionParameter
+          77(tc):     12(ptr) FunctionParameter
+              79:             Label
+             269:          68 Load 76(a)
+             270:      9(int) Load 77(tc)
+             271:   13(fvec4) ImageFetch 269 270
+             272:    6(float) CompositeExtract 271 0
+             273:    6(float) CompositeExtract 271 1
+             274:    6(float) CompositeExtract 271 2
+             275:   20(fvec3) CompositeConstruct 272 273 274
+                              ReturnValue 275
+                              FunctionEnd
+85(texelFetch(tB21;i1;):   27(fvec2) Function None 82
+           83(a):     81(ptr) FunctionParameter
+          84(tc):     12(ptr) FunctionParameter
+              86:             Label
+             278:          80 Load 83(a)
+             279:      9(int) Load 84(tc)
+             280:   13(fvec4) ImageFetch 278 279
+             281:    6(float) CompositeExtract 280 0
+             282:    6(float) CompositeExtract 280 1
+             283:   27(fvec2) CompositeConstruct 281 282
+                              ReturnValue 283
+                              FunctionEnd
+92(texelFetch(tB11;i1;):    6(float) Function None 89
+           90(a):     88(ptr) FunctionParameter
+          91(tc):     12(ptr) FunctionParameter
+              93:             Label
+             286:          87 Load 90(a)
+             287:      9(int) Load 91(tc)
+             288:   13(fvec4) ImageFetch 286 287
+             289:    6(float) CompositeExtract 288 0
+                              ReturnValue 289
+                              FunctionEnd
+97(randPos(vf3;):    6(float) Function None 95
+           96(p):     94(ptr) FunctionParameter
+              98:             Label
+             292:   20(fvec3) Load 96(p)
+             297:    6(float) Dot 292 296
+             299:    6(float) FMul 297 298
+             300:    6(float) ExtInst 1(GLSL.std.450) 13(Sin) 299
+             302:    6(float) FMul 300 301
+             303:    6(float) ExtInst 1(GLSL.std.450) 10(Fract) 302
+                              ReturnValue 303
+                              FunctionEnd
+   102(rand(f1;):    6(float) Function None 100
+          101(p):     99(ptr) FunctionParameter
+             103:             Label
+             306:    6(float) Load 101(p)
+             307:    6(float) FMul 306 298
+             308:    6(float) ExtInst 1(GLSL.std.450) 13(Sin) 307
+             309:    6(float) FMul 308 301
+             310:    6(float) ExtInst 1(GLSL.std.450) 10(Fract) 309
+                              ReturnValue 310
+                              FunctionEnd
+     105(@main():   13(fvec4) Function None 104
+             106:             Label
+          313(i):     12(ptr) Variable Function
+    314(randVal):     99(ptr) Variable Function
+      318(param):     94(ptr) Variable Function
+      333(param):     99(ptr) Variable Function
+                              Store 313(i) 265
+             320:    319(ptr) AccessChain 317 265
+             321:   20(fvec3) Load 320
+                              Store 318(param) 321
+             322:    6(float) FunctionCall 97(randPos(vf3;) 318(param)
+             325:    324(ptr) AccessChain 317 323
+             326:   27(fvec2) Load 325
+             328:   27(fvec2) VectorTimesScalar 326 327
+             329:   27(fvec2) ExtInst 1(GLSL.std.450) 13(Sin) 328
+             330:   27(fvec2) CompositeConstruct 322 322
+             331:   27(fvec2) FAdd 330 329
+             332:    6(float) CompositeExtract 331 0
+                              Store 333(param) 332
+             334:    6(float) FunctionCall 102(rand(f1;) 333(param)
+                              Store 314(randVal) 334
+             335:    6(float) Load 314(randVal)
+             336:      9(int) Load 313(i)
+             337:    6(float) ConvertSToF 336
+             338:      9(int) Load 313(i)
+             339:      9(int) IAdd 338 323
+             340:    6(float) ConvertSToF 339
+             341:    6(float) ExtInst 1(GLSL.std.450) 43(FClamp) 335 337 340
+             342:   13(fvec4) CompositeConstruct 341 341 341 341
+                              ReturnValue 342
+                              FunctionEnd

@@ -19,9 +19,8 @@ gl_FragCoord origin is upper left
 0:11          0.000000
 0:11          0.000000
 0:11        'f3' ( temp 3-component vector of float)
-0:13      sine ( temp float)
-0:13        Construct float ( in float)
-0:13          'f1b' ( temp 1-component vector of float)
+0:13      sine ( temp 1-component vector of float)
+0:13        'f1b' ( temp 1-component vector of float)
 0:15      Branch: Return with expression
 0:?         Constant:
 0:?           0.000000
@@ -61,9 +60,8 @@ gl_FragCoord origin is upper left
 0:11          0.000000
 0:11          0.000000
 0:11        'f3' ( temp 3-component vector of float)
-0:13      sine ( temp float)
-0:13        Construct float ( in float)
-0:13          'f1b' ( temp 1-component vector of float)
+0:13      sine ( temp 1-component vector of float)
+0:13        'f1b' ( temp 1-component vector of float)
 0:15      Branch: Return with expression
 0:?         Constant:
 0:?           0.000000

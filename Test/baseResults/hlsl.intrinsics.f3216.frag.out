@@ -20,8 +20,10 @@ gl_FragCoord origin is upper left
 0:8        Construct uint ( temp 1-component vector of uint)
 0:8          packHalf2x16 ( temp uint)
 0:8            Construct vec2 ( temp 2-component vector of float)
-0:8              Construct float ( in float)
+0:8              direct index ( temp float)
 0:8                'inF0' ( in 1-component vector of float)
+0:8                Constant:
+0:8                  0 (const int)
 0:8              Constant:
 0:8                0.000000
 0:12  Function Definition: PixelShaderFunction2(vf2; ( temp 2-component vector of uint)
@@ -157,8 +159,10 @@ gl_FragCoord origin is upper left
 0:8        Construct uint ( temp 1-component vector of uint)
 0:8          packHalf2x16 ( temp uint)
 0:8            Construct vec2 ( temp 2-component vector of float)
-0:8              Construct float ( in float)
+0:8              direct index ( temp float)
 0:8                'inF0' ( in 1-component vector of float)
+0:8                Constant:
+0:8                  0 (const int)
 0:8              Constant:
 0:8                0.000000
 0:12  Function Definition: PixelShaderFunction2(vf2; ( temp 2-component vector of uint)

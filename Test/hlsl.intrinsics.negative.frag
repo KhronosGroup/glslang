@@ -4,15 +4,8 @@ float PixelShaderFunctionS(float inF0, float inF1, float inF2, int inI0)
     // AllMemoryBarrierWithGroupSync(); // TODO: expected error: invalid in fragment stage
     asdouble(inF0, inF1);                     // expected error: only integer inputs
     CheckAccessFullyMapped(3.0);              // expected error: only valid on integers
-    countbits(inF0);                          // expected error: only integer inputs
-    cross(inF0, inF1);                        // expected error: only on float3 inputs
-    D3DCOLORtoUBYTE4(inF0);                   // expected error: only on float4 inputs
-    determinant(inF0);                        // expected error: only valid on mats
     // DeviceMemoryBarrierWithGroupSync();      // TODO: expected error: only valid in compute stage
-    f16tof32(inF0);                           // expected error: only integer inputs
-    firstbithigh(inF0);                       // expected error: only integer inputs
-    firstbitlow(inF0);                        // expected error: only integer inputs
-    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
+    fma(inF0, inF1, inF2);                       // expected error: only double inputs allowed
     // InterlockedAdd(inI0, inI0, 3);            // expected error: last parameter is out TODO: accepted even though marked as out in proto generator
     // InterlockedAnd(inI0, inI0, 3);            // expected error: last parameter is out TODO: accepted even though marked as out i    // InterlockedMax(inI0, inI0, 3);            // expected error: last parameter is out TODO: accepted even though marked as out in proto generator
     // InterlockedMin(inI0, inI0, 3);            // expected error: last parameter is out TODO: accepted even though marked as out in proto generator
@@ -20,14 +13,6 @@ float PixelShaderFunctionS(float inF0, float inF1, float inF2, int inI0)
     // InterlockedXor(inI0, inI0, 3);            // expected error: last parameter is out TODO: accepted even though marked as out in proto generator
     // GroupMemoryBarrier();               // TODO: expected error: invalid in fragment stage
     // GroupMemoryBarrierWithGroupSync();  // TODO: expected error: invalid in fragment stage
-    length(inF0);                             // expected error: invalid on scalars
-    msad4(inF0, float2(0), float4(0));        // expected error: only integer inputs
-    normalize(inF0);                          // expected error: invalid on scalars
-    reflect(inF0, inF1);                      // expected error: invalid on scalars
-    refract(inF0, inF1, inF2);                // expected error: invalid on scalars
-    refract(float2(0), float2(0), float2(0)); // expected error: last parameter only scalar
-    reversebits(inF0);                        // expected error: only integer inputs
-    transpose(inF0);                          // expected error: only valid on mats
 
     return 0.0;
 }
@@ -45,15 +30,10 @@ float2 PixelShaderFunction2(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
 {
     asdouble(inF0, inF1);         // expected error: only integer inputs
     CheckAccessFullyMapped(inF0); // expected error: only valid on scalars
-    countbits(inF0);              // expected error: only integer inputs
     cross(inF0, inF1);            // expected error: only on float3 inputs
     D3DCOLORtoUBYTE4(inF0);       // expected error: only on float4 inputs
     determinant(inF0);            // expected error: only valid on mats
-    f16tof32(inF0);               // expected error: only integer inputs
-    firstbithigh(inF0);           // expected error: only integer inputs
-    firstbitlow(inF0);            // expected error: only integer inputs
-    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
-    reversebits(inF0);            // expected error: only integer inputs
+    fma(inF0, inF1, inF2);        // expected error: only double inputs allowed
     transpose(inF0);              // expected error: only valid on mats
 
     return float2(1,2);
@@ -61,16 +41,12 @@ float2 PixelShaderFunction2(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
 
 float3 PixelShaderFunction3(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
 {
-    CheckAccessFullyMapped(inF0);  // expected error: only valid on scalars
-    countbits(inF0);            // expected error: only integer inputs
-    D3DCOLORtoUBYTE4(inF0);     // expected error: only on float4 inputs
-    determinant(inF0);          // expected error: only valid on mats
-    f16tof32(inF0);             // expected error: only integer inputs
-    firstbithigh(inF0);         // expected error: only integer inputs
-    firstbitlow(inF0);          // expected error: only integer inputs
-    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
-    reversebits(inF0);          // expected error: only integer inputs
-    transpose(inF0);            // expected error: only valid on mats
+    asdouble(inF0, inF1);        // expected error: only integer inputs
+    CheckAccessFullyMapped(inF0);// expected error: only integer inputs
+    D3DCOLORtoUBYTE4(inF0);      // expected error: only on float4 inputs
+    determinant(inF0);           // expected error: only valid on mats
+    fma(inF0, inF1, inF2);       // expected error: only double inputs allowed
+    transpose(inF0);             // expected error: only valid on mats
 
 
     return float3(1,2,3);
@@ -78,15 +54,10 @@ float3 PixelShaderFunction3(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
 
 float4 PixelShaderFunction(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
 {
-    CheckAccessFullyMapped(inF0); // expected error: only valid on scalars
-    countbits(inF0);              // expected error: only integer inputs
-    cross(inF0, inF1);            // expected error: only on float3 inputs
+    asdouble(inF0, inF1);         // expected error: only integer inputs
+    CheckAccessFullyMapped(inF0); // expected error: only integer inputs
     determinant(inF0);            // expected error: only valid on mats
-    f16tof32(inF0);               // expected error: only integer inputs
-    firstbithigh(inF0);           // expected error: only integer inputs
-    firstbitlow(inF0);            // expected error: only integer inputs
-    // fma(inF0, inF1, inF2); // TODO: this might auto-promote: need to check against FXC
-    reversebits(inF0);            // expected error: only integer inputs
+    fma(inF0, inF1, inF2);        // expected error: only double inputs allowed
     transpose(inF0);              // expected error: only valid on mats
 
     return float4(1,2,3,4);

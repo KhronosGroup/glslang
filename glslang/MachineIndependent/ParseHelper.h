@@ -63,6 +63,86 @@ struct TPragma {
     TPragmaTable pragmaTable;
 };
 
+struct TypeConversionCost {
+  unsigned value = 0;
+  // the order of bits defines how expensive those steps are
+  enum {
+      // mismatching sampler is realy bad, it should later replaced
+      // with not convertible, when proper templates for such types
+      // is supported
+      SamplerMismatchBit = 31,
+      // hack to keep current sampler lookup working, should be
+      // removed as soon as proper templates for such types
+      // is supported
+      SamplerCloseMatchBit = 30,
+      RowTruncationBit = 9,
+      ColumnTruncationBit = 8,
+      VectorTruncationBit = 8,
+      ScalarSmearBit = 7,
+      ScalarSmearYBit = 6,
+      ScalarSmearXBit = 5,
+      ShapeReinterpationBit = 4,
+      BaseTypeDomainConversionToBooleanOrFloatToIntBit = 3,
+      BaseTypeDomainConversionFromBooleanBit = 2,
+      BaseTypeDomainConversionIntToFloatBit = 1,
+      BaseTypeInterDomainConversionBit = 0
+  };
+
+  void setBit(unsigned i) { value |= 1u << i; }
+  bool checkBit(unsigned i) const { return isConvertible() && (0 != (value & (1u << i))); }
+
+  void addMismatchingSampler() { setBit(SamplerMismatchBit); }
+  void addCloseMatchSampler() { setBit(SamplerCloseMatchBit); }
+  void addRowTruncation() { setBit(RowTruncationBit); }
+  void addColumnTruncation() { setBit(ColumnTruncationBit); }
+  void addVectorTruncation() { setBit(VectorTruncationBit); }
+  void addScalarSmearY() { setBit(ScalarSmearBit); setBit(ScalarSmearYBit); }
+  void addScalarSmearX() { setBit(ScalarSmearBit); setBit(ScalarSmearXBit); }
+  void addShapeReinterpretationToScalar() { setBit(ShapeReinterpationBit); }
+  // to vector is sligly worse than to scalar
+  void addShapeReinterpretationToVector() { setBit(ScalarSmearXBit); setBit(ShapeReinterpationBit); }
+  // to matrix is sligly worse than to vector
+  void addShapeReinterpretationToMatrix() { setBit(ScalarSmearXBit); setBit(ScalarSmearYBit); setBit(ShapeReinterpationBit); }
+
+  void setNotConvertible() { value = ~0u; }
+  void setExactMatch() { value = 0; }
+
+  bool isConvertible() const { return value != ~0u; }
+  bool hasToBooleanOrFloatToIntConversion() const { return checkBit(BaseTypeDomainConversionToBooleanOrFloatToIntBit); }
+
+  void addFromBooleanCast()       { setBit(BaseTypeDomainConversionFromBooleanBit); }
+  void addIntToBoolDomainCast()   { setBit(BaseTypeDomainConversionToBooleanOrFloatToIntBit); }
+  void addFloatToBoolDomainCast() { setBit(BaseTypeDomainConversionToBooleanOrFloatToIntBit); }
+  void addFloatToIntDomainCast()  { setBit(BaseTypeDomainConversionToBooleanOrFloatToIntBit); }
+  void addIntToFloatDomainCast()  { setBit(BaseTypeDomainConversionIntToFloatBit); }
+  void addInterDomainCast()       { setBit(BaseTypeInterDomainConversionBit); }
+
+  inline friend bool operator<(TypeConversionCost l, TypeConversionCost r) { return l.value < r.value; }
+  inline friend bool operator>(TypeConversionCost l, TypeConversionCost r) { return l.value > r.value; }
+  inline friend bool operator==(TypeConversionCost l, TypeConversionCost r) { return l.value == r.value; }
+  inline friend bool operator!=(TypeConversionCost l, TypeConversionCost r) { return !(l == r); }
+  inline friend bool operator>=(TypeConversionCost l, TypeConversionCost r) { return l.value >= r.value; }
+  inline friend bool operator<=(TypeConversionCost l, TypeConversionCost r) { return l.value <= r.value; }
+  inline friend TypeConversionCost operator|(TypeConversionCost l, TypeConversionCost r) {
+      TypeConversionCost result;
+      result.value = l.value | r.value;
+      return result;
+  }
+  inline friend TypeConversionCost operator&(TypeConversionCost l, TypeConversionCost r) {
+      TypeConversionCost result;
+      result.value = l.value & r.value;
+      return result;
+  }
+  inline friend TypeConversionCost& operator|=(TypeConversionCost& l, TypeConversionCost r) {
+      l.value |= r.value;
+      return l;
+  }
+  inline friend TypeConversionCost& operator&=(TypeConversionCost& l, TypeConversionCost r) {
+      l.value &= r.value;
+      return l;
+  }
+};
+
 class TScanContext;
 class TPpContext;
 
@@ -207,6 +287,9 @@ protected:
         std::function<bool(const TType&, const TType&, TOperator, int arg)>,
         std::function<bool(const TType&, const TType&, const TType&)>,
         /* output */ bool& tie);
+
+    TVector<const TFunction*> selectFunction(const TVector<const TFunction*>&, const TFunction&,
+      std::function<TypeConversionCost(const TType&, const TType&, TOperator, int arg)>);
 
     virtual void parseSwizzleSelector(const TSourceLoc&, const TString&, int size,
                                       TSwizzleSelectors<TVectorSelector>&);

@@ -970,6 +970,7 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpBitfieldExtract:            out.debug << "bitfieldExtract";       break;
     case EOpBitfieldInsert:             out.debug << "bitfieldInsert";        break;
 
+    case EOpFmaD:                       out.debug << "fma (double)";          break;
     case EOpFma:                        out.debug << "fma";                   break;
     case EOpFrexp:                      out.debug << "frexp";                 break;
     case EOpLdexp:                      out.debug << "ldexp";                 break;

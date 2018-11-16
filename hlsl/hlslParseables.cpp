@@ -216,6 +216,16 @@ int FixedVecSize(const char* arg)
     return 0; // none found.
 }
 
+bool MatrixSameRowColums(const char *arg)
+{
+    while (!IsEndOfArg(arg)) {
+        if ('=' == *arg)
+            return true;
+        ++arg;
+    }
+    return false;
+}
+
 // Create and return a type name.  This is done in GLSL, not HLSL conventions, until such
 // time as builtins are parsed using the HLSL parser.
 //
@@ -373,18 +383,14 @@ glslang::TString& AppendTypeName(glslang::TString& s, const char* argOrder, cons
 // The GLSL parser can be used to parse a subset of HLSL prototypes.  However, many valid HLSL prototypes
 // are not valid GLSL prototypes.  This rejects the invalid ones.  Thus, there is a single switch below
 // to enable creation of the entire HLSL space.
-inline bool IsValid(const char* cname, char retOrder, char retType, char argOrder, char argType, int dim0, int dim1)
+inline bool IsValid(const char* cname, char retOrder, char retType, char argOrder, char argType, int dim0, int dim1, bool matSameDim)
 {
     const bool isVec = (argOrder == 'V');
     const bool isMat = (argOrder == 'M');
 
     const std::string name(cname);
 
-    // these do not have vec1 versions
-    if (dim0 == 1 && (name == "normalize" || name == "reflect" || name == "refract"))
-        return false;
-
-    if (!IsTextureType(argOrder) && (isVec && dim0 == 1)) // avoid vec1
+    if (isMat && matSameDim && dim0 != dim1)
         return false;
 
     if (UseHlslTypes) {
@@ -393,6 +399,9 @@ inline bool IsValid(const char* cname, char retOrder, char retType, char argOrde
         // GLSL parser restrictions
         if ((isMat && (argType == 'I' || argType == 'U' || argType == 'B')) ||
             (retOrder == 'M' && (retType == 'I' || retType == 'U' || retType == 'B')))
+            return false;
+
+        if (isVec && dim0 == 1)
             return false;
 
         if (isMat && dim0 == 1 && dim1 == 1)  // avoid mat1x1
@@ -559,6 +568,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
     // '#' as first letter of order creates arrayed image object
     // '~' as first letter of order creates an image buffer object
     // '[' / ']' as first letter of order creates a SubpassInput/SubpassInputMS object
+    // '=' as post fix for matrix means only NxN matrices are valid
 
     static const struct {
         const char*   name;      // intrinsic name
@@ -572,14 +582,14 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         // name                               retOrd   retType    argOrder          argType          stage mask     method
         // ----------------------------------------------------------------------------------------------------------------
         { "abort",                            nullptr, nullptr,   "-",              "-",             EShLangAll,    false },
-        { "abs",                              nullptr, nullptr,   "SVM",            "DFUI",          EShLangAll,    false },
+        { "abs",                              nullptr, nullptr,   "SVM",            "DFI",           EShLangAll,    false },
         { "acos",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll,    false },
         { "all",                              "S",    "B",        "SVM",            "BFIU",          EShLangAll,    false },
         { "AllMemoryBarrier",                 nullptr, nullptr,   "-",              "-",             EShLangCS,     false },
         { "AllMemoryBarrierWithGroupSync",    nullptr, nullptr,   "-",              "-",             EShLangCS,     false },
         { "any",                              "S",     "B",       "SVM",            "BFIU",          EShLangAll,    false },
-        { "asdouble",                         "S",     "D",       "S,",             "UI,",           EShLangAll,    false },
-        { "asdouble",                         "V2",    "D",       "V2,",            "UI,",           EShLangAll,    false },
+        { "asdouble",                         "S",     "D",       "S,",             "U,",            EShLangAll,    false },
+        { "asdouble",                         "V2",    "D",       "V2,",            "U,",            EShLangAll,    false },
         { "asfloat",                          nullptr, "F",       "SVM",            "BFIU",          EShLangAll,    false },
         { "asin",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll,    false },
         { "asint",                            nullptr, "I",       "SVM",            "FIU",           EShLangAll,    false },
@@ -589,10 +599,10 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "ceil",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll,    false },
         { "CheckAccessFullyMapped",           "S",     "B" ,      "S",              "U",             EShLangPSCS,   false },
         { "clamp",                            nullptr, nullptr,   "SVM,,",          "FUI,,",         EShLangAll,    false },
-        { "clip",                             "-",     "-",       "SVM",            "FUI",           EShLangPS,     false },
+        { "clip",                             "-",     "-",       "SVM",            "FI",            EShLangPS,     false },
         { "cos",                              nullptr, nullptr,   "SVM",            "F",             EShLangAll,    false },
         { "cosh",                             nullptr, nullptr,   "SVM",            "F",             EShLangAll,    false },
-        { "countbits",                        nullptr, nullptr,   "SV",             "UI",            EShLangAll,    false },
+        { "countbits",                        nullptr, nullptr,   "SV",             "U",             EShLangAll,    false },
         { "cross",                            nullptr, nullptr,   "V3,",            "F,",            EShLangAll,    false },
         { "D3DCOLORtoUBYTE4",                 "V4",    "I",       "V4",             "F",             EShLangAll,    false },
         { "ddx",                              nullptr, nullptr,   "SVM",            "F",             EShLangPS,     false },
@@ -602,11 +612,11 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "ddy_coarse",                       nullptr, nullptr,   "SVM",            "F",             EShLangPS,     false },
         { "ddy_fine",                         nullptr, nullptr,   "SVM",            "F",             EShLangPS,     false },
         { "degrees",                          nullptr, nullptr,   "SVM",            "F",             EShLangAll,    false },
-        { "determinant",                      "S",     "F",       "M",              "F",             EShLangAll,    false },
+        { "determinant",                      "S",     "F",       "M=",             "F",             EShLangAll,    false },
         { "DeviceMemoryBarrier",              nullptr, nullptr,   "-",              "-",             EShLangPSCS,   false },
         { "DeviceMemoryBarrierWithGroupSync", nullptr, nullptr,   "-",              "-",             EShLangCS,     false },
-        { "distance",                         "S",     "F",       "SV,",            "F,",            EShLangAll,    false },
-        { "dot",                              "S",     nullptr,   "SV,",            "FI,",           EShLangAll,    false },
+        { "distance",                         "S",     "F",       "V,",             "F,",            EShLangAll,    false },
+        { "dot",                              "S",     nullptr,   "V,",             "FI,",           EShLangAll,    false },
         { "dst",                              nullptr, nullptr,   "V4,",            "F,",            EShLangAll,    false },
         // { "errorf",                           "-",     "-",       "",             "",             EShLangAll,    false }, TODO: varargs
         { "EvaluateAttributeAtCentroid",      nullptr, nullptr,   "SVM",            "F",             EShLangPS,     false },
@@ -648,7 +658,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "isinf",                            nullptr, "B" ,      "SVM",            "F",             EShLangAll,    false },
         { "isnan",                            nullptr, "B" ,      "SVM",            "F",             EShLangAll,    false },
         { "ldexp",                            nullptr, nullptr,   "SVM,",           "F,",            EShLangAll,    false },
-        { "length",                           "S",     "F",       "SV",             "F",             EShLangAll,    false },
+        { "length",                           "S",     "F",       "V",              "F",             EShLangAll,    false },
         { "lerp",                             nullptr, nullptr,   "VM,,",           "F,,",           EShLangAll,    false },
         { "lerp",                             nullptr, nullptr,   "SVM,,S",         "F,,",           EShLangAll,    false },
         { "lit",                              "V4",    "F",       "S,,",            "F,,",           EShLangAll,    false },
@@ -685,7 +695,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
         { "rcp",                              nullptr, nullptr,   "SVM",            "FD",            EShLangAll,    false },
         { "reflect",                          nullptr, nullptr,   "V,",             "F,",            EShLangAll,    false },
         { "refract",                          nullptr, nullptr,   "V,V,S",          "F,,",           EShLangAll,    false },
-        { "reversebits",                      nullptr, nullptr,   "SV",             "UI",            EShLangAll,    false },
+        { "reversebits",                      nullptr, nullptr,   "SV",             "U",             EShLangAll,    false },
         { "round",                            nullptr, nullptr,   "SVM",            "F",             EShLangAll,    false },
         { "rsqrt",                            nullptr, nullptr,   "SVM",            "F",             EShLangAll,    false },
         { "saturate",                         nullptr, nullptr ,  "SVM",            "F",             EShLangAll,    false },
@@ -959,6 +969,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                 const bool isBuffer    = IsBuffer(*argOrder);
                 const bool isImage     = IsImage(*argOrder);
                 const bool mipInCoord  = HasMipInCoord(intrinsic.name, isMS, isBuffer, isImage);
+                const bool matSameDim  = MatrixSameRowColums(argOrder);
                 const int fixedVecSize = FixedVecSize(argOrder);
                 const int coordArg     = CoordinateArgPos(intrinsic.name, isTexture);
 
@@ -976,7 +987,7 @@ void TBuiltInParseablesHlsl::initialize(int /*version*/, EProfile /*profile*/, c
                             const char* retOrder = intrinsic.retOrder ? intrinsic.retOrder : argOrder;
                             const char* retType  = intrinsic.retType  ? intrinsic.retType  : argType;
 
-                            if (!IsValid(intrinsic.name, *retOrder, *retType, *argOrder, *argType, dim0, dim1))
+                            if (!IsValid(intrinsic.name, *retOrder, *retType, *argOrder, *argType, dim0, dim1, matSameDim))
                                 continue;
 
                             // Reject some forms of sample methods that don't exist.
@@ -1102,7 +1113,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("atan",                        EOpAtan);
     symbolTable.relateToOperator("atan2",                       EOpAtan);
     symbolTable.relateToOperator("ceil",                        EOpCeil);
-    // symbolTable.relateToOperator("CheckAccessFullyMapped");
+    symbolTable.relateToOperator("CheckAccessFullyMapped",      EOpCheckAccessFullyMapped);
     symbolTable.relateToOperator("clamp",                       EOpClamp);
     symbolTable.relateToOperator("clip",                        EOpClip);
     symbolTable.relateToOperator("cos",                         EOpCos);
@@ -1135,7 +1146,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("firstbithigh",                EOpFindMSB);
     symbolTable.relateToOperator("firstbitlow",                 EOpFindLSB);
     symbolTable.relateToOperator("floor",                       EOpFloor);
-    symbolTable.relateToOperator("fma",                         EOpFma);
+    symbolTable.relateToOperator("fma",                         EOpFmaD);
     symbolTable.relateToOperator("fmod",                        EOpMod);
     symbolTable.relateToOperator("frac",                        EOpFract);
     symbolTable.relateToOperator("frexp",                       EOpFrexp);
@@ -1169,7 +1180,7 @@ void TBuiltInParseablesHlsl::identifyBuiltIns(int /*version*/, EProfile /*profil
     symbolTable.relateToOperator("modf",                        EOpModf);
     // symbolTable.relateToOperator("msad4",                       EOpMsad4);
     symbolTable.relateToOperator("mul",                         EOpGenMul);
-    // symbolTable.relateToOperator("noise",                    EOpNoise); // TODO: check return type
+    symbolTable.relateToOperator("noise",                       EOpNoise);
     symbolTable.relateToOperator("normalize",                   EOpNormalize);
     symbolTable.relateToOperator("pow",                         EOpPow);
     // symbolTable.relateToOperator("printf",                     EOpPrintf);

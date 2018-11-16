@@ -13,6 +13,7 @@ groupshared uint4 gs_ua4;
 groupshared uint4 gs_ub4;
 groupshared uint4 gs_uc4;
 
+
 float PixelShaderFunctionS(float inF0, float inF1, float inF2, uint inU0, int inU1)
 {
     uint out_u1;
@@ -482,6 +483,118 @@ void TestGenMulNxM(float inF0, float inF1,
     float2x4 r15 = mul(inFM2x3, inFM3x4);
     float3x4 r16 = mul(inFM3x2, inFM2x4);
 }
+
+float PixelShaderFunctionS2(float inF0, float inF1, float inF2, int inI0)
+{
+    countbits(inF0);
+    cross(inF0, inF1);
+    D3DCOLORtoUBYTE4(inF0);
+    determinant(inF0);
+    f16tof32(inF0);
+    firstbithigh(inF0);
+    firstbitlow(inF0);
+    length(inF0);
+    msad4(inF0, float2(0), float4(0));
+    normalize(inF0);
+    reflect(inF0, inF1);
+    refract(inF0, inF1, inF2);
+    refract(float2(0), float2(0), float2(0));
+    reversebits(inF0);
+    //transpose(inF0); // valid but fails to build valid constructor, missing constructors for N/M = 1 for matrix/vector
+
+    return 0.0;
+}
+
+float1 PixelShaderFunction12(float1 inF0, float1 inF1, float1 inF2, int1 inI0)
+{
+    countbits(inF0);
+    f16tof32(inF0);
+    firstbithigh(inF0);
+    firstbitlow(inF0);
+    length(inF0);
+    msad4(inF0, float2(0), float4(0));
+    normalize(inF0);
+    reflect(inF0, inF1);
+    refract(inF0, inF1, inF2);
+    refract(float2(0), float2(0), float2(0));
+    reversebits(inF0);
+
+    return 0.0;
+}
+
+float2 PixelShaderFunction22(float2 inF0, float2 inF1, float2 inF2, int2 inI0)
+{
+    countbits(inF0);
+    f16tof32(inF0);
+    firstbithigh(inF0);
+    firstbitlow(inF0);
+    reversebits(inF0);
+
+    return float2(1,2);
+}
+
+float3 PixelShaderFunction32(float3 inF0, float3 inF1, float3 inF2, int3 inI0)
+{
+    countbits(inF0);
+    f16tof32(inF0);
+    firstbithigh(inF0);
+    firstbitlow(inF0);
+    reversebits(inF0);          // expected error: only integer inputs
+
+
+    return float3(1,2,3);
+}
+
+float4 PixelShaderFunction2(float4 inF0, float4 inF1, float4 inF2, int4 inI0)
+{
+    countbits(inF0);
+    D3DCOLORtoUBYTE4(inF0);
+    cross(inF0, inF1);
+    f16tof32(inF0);
+    firstbithigh(inF0);
+    firstbitlow(inF0);
+    reversebits(inF0);
+
+    return float4(1,2,3,4);
+}
+
+// TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
+#define MATFNS2() \
+    countbits(inF0);          \
+    f16tof32(inF0);           \
+    firstbithigh(inF0);       \
+    firstbitlow(inF0);        \
+    reversebits(inF0);        \
+    reversebits(inF0);        \
+    
+
+// TODO: turn on non-square matrix tests when protos are available.
+
+float2x2 PixelShaderFunction2x22(float2x2 inF0, float2x2 inF1, float2x2 inF2)
+{
+    // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
+    MATFNS2()
+
+    return float2x2(2,2,2,2);
+}
+
+float3x3 PixelShaderFunction3x32(float3x3 inF0, float3x3 inF1, float3x3 inF2)
+{
+    // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
+    MATFNS2()
+
+    return float3x3(3,3,3,3,3,3,3,3,3);
+}
+
+float4x4 PixelShaderFunction4x42(float4x4 inF0, float4x4 inF1, float4x4 inF2)
+{
+    // TODO: FXC doesn't accept this with (), but glslang doesn't accept it without.
+    MATFNS2()
+
+    return float4x4(4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4);
+}
+
+
 
 struct PS_OUTPUT { float4 color : SV_Target0; };
 

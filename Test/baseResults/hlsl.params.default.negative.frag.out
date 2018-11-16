@@ -1,8 +1,12 @@
 hlsl.params.default.negative.frag
 ERROR: 0:27: '' : invalid default parameter value 
 ERROR: 0:32: 'p1' : invalid parameter after default value parameters 
-ERROR: 0:40: 'fn1' : ambiguous best function under implicit type conversion 
-ERROR: 0:47: 'fn2' : ambiguous best function under implicit type conversion 
+ERROR: 0:40: 'fn1' : ambiguous best function under implicit type conversion, while matching fn1(int ), could be one of
+int4 fn1(int4 p0)
+int4 fn1(int4 p0, int4 p1,  in 2-element array of int p2, int p3) 
+ERROR: 0:47: 'fn2' : ambiguous best function under implicit type conversion, while matching fn2(int ), could be one of
+int4 fn2(int4 p0)
+int4 fn2(int4 p0, int x) 
 ERROR: 4 compilation errors.  No code generated.
 
 

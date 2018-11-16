@@ -5091,6 +5091,12 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
             node->setType(TType(EbtInt, EvqTemporary, 4));
             break;
         }
+    case EOpCheckAccessFullyMapped:
+        {
+            // maps to OpImageSparseTexelsResident
+            error(loc, "CheckAccessFullyMapped not implemented", "CheckAccessFullyMapped", "");
+            break;
+        }
 
     case EOpIsFinite:
         {
@@ -7275,8 +7281,6 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
         return candidateList[0];
     }
 
-    bool allowOnlyUpConversions = true;
-
     // can 'from' convert to 'to'?
     const auto convertible = [&](const TType& from, const TType& to, TOperator op, int arg) -> bool {
         if (from == to)
@@ -7343,187 +7347,255 @@ const TFunction* HlslParseContext::findFunction(const TSourceLoc& loc, TFunction
             break;
         }
 
-        // basic types have to be convertible
-        if (allowOnlyUpConversions)
+        if (isIntrinsicThatRequiresExactBaseType(op)) {
+            if (from.getBasicType() != to.getBasicType())
+                return false;
+        } else {
             if (! intermediate.canImplicitlyPromote(from.getBasicType(), to.getBasicType(), EOpFunctionCall))
                 return false;
+        }
 
-        // shapes have to be convertible
-        if ((from.isScalarOrVec1() && to.isScalarOrVec1()) ||
-            (from.isScalarOrVec1() && to.isVector())    ||
-            (from.isScalarOrVec1() && to.isMatrix())    ||
-            (from.isVector() && to.isVector() && from.getVectorSize() >= to.getVectorSize()))
+        if (isIntrinsicWithNoImplicitToMatrixConversion(op)) {
+              if (from.isVector())
+                  return false;
+        } else if (isIntrinsicWithNoImplcitToVectorCovnersion(op)) {
+              if (from.isMatrix())
+                  return false;
+        }
+
+        if (from.computeNumComponents() == 1)
             return true;
-
-        // TODO: what are the matrix rules? they go here
+        if (to.computeNumComponents() == 1)
+            return true;
+        if (from.computeNumComponents() == 4 && to.computeNumComponents() == 4)
+            return true;
+        if (from.isVector() && to.isVector())
+            return from.getVectorSize() >= to.getVectorSize();
+        if (from.isMatrix() && to.isMatrix())
+            return from.getMatrixCols() >= to.getMatrixCols() && from.getMatrixRows() >= to.getMatrixRows();
 
         return false;
     };
 
-    // Is 'to2' a better conversion than 'to1'?
-    // Ties should not be considered as better.
-    // Assumes 'convertible' already said true.
-    const auto better = [](const TType& from, const TType& to1, const TType& to2) -> bool {
-        // exact match is always better than mismatch
-        if (from == to2)
-            return from != to1;
-        if (from == to1)
-            return false;
-
-        // shape changes are always worse
-        if (from.isScalar() || from.isVector()) {
-            if (from.getVectorSize() == to2.getVectorSize() &&
-                from.getVectorSize() != to1.getVectorSize())
-                return true;
-            if (from.getVectorSize() == to1.getVectorSize() &&
-                from.getVectorSize() != to2.getVectorSize())
-                return false;
-        }
-
-        // Handle sampler betterness: An exact sampler match beats a non-exact match.
-        // (If we just looked at basic type, all EbtSamplers would look the same).
-        // If any type is not a sampler, just use the linearize function below.
-        if (from.getBasicType() == EbtSampler && to1.getBasicType() == EbtSampler && to2.getBasicType() == EbtSampler) {
-            // We can ignore the vector size in the comparison.
-            TSampler to1Sampler = to1.getSampler();
-            TSampler to2Sampler = to2.getSampler();
-
-            to1Sampler.vectorSize = to2Sampler.vectorSize = from.getSampler().vectorSize;
-
-            if (from.getSampler() == to2Sampler)
-                return from.getSampler() != to1Sampler;
-            if (from.getSampler() == to1Sampler)
-                return false;
-        }
-
-        // Might or might not be changing shape, which means basic type might
-        // or might not match, so within that, the question is how big a
-        // basic-type conversion is being done.
-        //
-        // Use a hierarchy of domains, translated to order of magnitude
-        // in a linearized view:
-        //   - floating-point vs. integer
-        //     - 32 vs. 64 bit (or width in general)
-        //       - bool vs. non bool
-        //         - signed vs. not signed
-        const auto linearize = [](const TBasicType& basicType) -> int {
-            switch (basicType) {
-            case EbtBool:     return 1;
-            case EbtInt:      return 10;
-            case EbtUint:     return 11;
-            case EbtInt64:    return 20;
-            case EbtUint64:   return 21;
-            case EbtFloat:    return 100;
-            case EbtDouble:   return 110;
-            default:          return 0;
+    // computes the cost to convert types, basically the longer the conversion steps are the more expensive it becomes.
+    // How much each operation consts is abstraced away in TypeConversionCost
+    const auto conversionCost = [convertible, builtIn](const TType& from, const TType& to, TOperator op, int arg) {
+        TypeConversionCost result;
+        if (from == to) {
+            result.setExactMatch();
+        } else if (!convertible(from, to, op, arg)) {
+            result.setNotConvertible();
+        } else if (from.getBasicType() == EbtSampler && to.getBasicType() == EbtSampler) {
+            if (from.getSampler() != to.getSampler()) {
+                // this is incorrect but the only way to make it work for now,
+                // to properly handle this, template support for HLSL types
+                // that make use of it.
+                TSampler toSampler = to.getSampler();
+                toSampler.vectorSize = from.getSampler().vectorSize;
+                if (from.getSampler() == toSampler) {
+                    result.addCloseMatchSampler();
+                } else {
+                    result.addMismatchingSampler();
+                }
             }
-        };
+        } else {
+            if (from.isScalar()) {
+                if (!to.isScalar()) {
+                    if (to.computeNumComponents() == 1) {
+                        if (to.isVector()) {
+                            result.addShapeReinterpretationToVector();
+                        } else {
+                            result.addShapeReinterpretationToMatrix();
+                        }
+                    } else {
+                        if (to.isVector()) {
+                            result.addScalarSmearX();
+                        } else {
+                            result.addScalarSmearX();
+                            result.addScalarSmearY();
+                        }
+                    }
+                }
+            } else if (from.isVector()) {
+                if (!to.isVector()) {
+                    if (to.computeNumComponents() == 1) {
+                        if (from.getVectorSize() > 1) {
+                            result.addVectorTruncation();
+                        }
+                        if (to.isScalar()) {
+                            result.addShapeReinterpretationToScalar();
+                        } else {
+                            result.addShapeReinterpretationToMatrix();
+                        }
+                    } else if (from.getVectorSize() == 4 && to.computeNumComponents() == 4) {
+                        result.addVectorTruncation();
+                        result.addShapeReinterpretationToMatrix();
+                    } else {
+                        result.setNotConvertible();
+                    }
+                } else if (from.getVectorSize() > to.getVectorSize()) {
+                    result.addVectorTruncation();
+                } else if (from.getVectorSize() < to.getVectorSize()) {
+                    result.setNotConvertible();
+                }
+            } else if (from.isMatrix()) {
+                if (!to.isMatrix()) {
+                    if (to.computeNumComponents() == 1) {
+                        if (from.getMatrixCols() > 1) {
+                          result.addColumnTruncation();
+                        }
+                        if (from.getMatrixRows() > 1) {
+                          result.addRowTruncation();
+                        }
+                        if (to.isScalar()) {
+                            result.addShapeReinterpretationToScalar();
+                        } else {
+                            result.addShapeReinterpretationToVector();
+                        }
+                    } else if (from.computeNumComponents() == 4 && to.computeNumComponents() == 4) {
+                        result.addRowTruncation();
+                        result.addColumnTruncation();
+                        result.addShapeReinterpretationToVector();
+                    } else {
+                        result.setNotConvertible();
+                    }
+                } else {
+                    if (from.getMatrixCols() > to.getMatrixCols()) {
+                        result.addColumnTruncation();
+                    } else if (from.getMatrixCols() < to.getMatrixCols()) {
+                        result.setNotConvertible();
+                    }
+                    if (from.getMatrixRows() > to.getMatrixRows()) {
+                        result.addRowTruncation();
+                    } else if (from.getMatrixRows() < to.getMatrixRows()) {
+                        result.setNotConvertible();
+                    }
+                }
+            }
 
-        return abs(linearize(to2.getBasicType()) - linearize(from.getBasicType())) <
-               abs(linearize(to1.getBasicType()) - linearize(from.getBasicType()));
+            const auto isSignedInt = [](TBasicType bt) {
+                switch (bt) {
+                default: return false;
+                case EbtInt8:
+                case EbtInt16:
+                case EbtInt:
+                case EbtInt64:
+                    return true;
+                }
+            };
+
+            TBasicType fromBasicType = from.getBasicType();
+            TBasicType toBasicType = to.getBasicType();
+            bool fromIsAInt = from.isIntegerDomain();
+            bool fromIsAFloat = from.isFloatingDomain();
+            bool fromIsABool = EbtBool == fromBasicType;
+            bool toIsAInt = to.isIntegerDomain();
+            bool toIsAFloat = to.isFloatingDomain();
+            bool toIsABool = EbtBool == toBasicType;
+            if (fromBasicType != toBasicType) {
+                if (fromIsABool) {
+                    result.addFromBooleanCast();
+                } else if (fromIsAInt) {
+                    if (toIsAInt) {
+                        result.addInterDomainCast();
+                    } else if (toIsAFloat) {
+                        result.addIntToFloatDomainCast();
+                    } else if (toIsABool) {
+                      result.addIntToBoolDomainCast();
+                    }
+                } else if (fromIsAFloat) {
+                    if (toIsAFloat) {
+                        result.addInterDomainCast();
+                    } else if (toIsAInt) {
+                        // sligly different handling for intrinsics to avoid int/uint conflicts
+                        if (builtIn && !isSignedInt(toBasicType))
+                            result.addInterDomainCast();
+                        result.addFloatToIntDomainCast();
+                    } else if (toIsABool) {
+                        result.addFloatToBoolDomainCast();
+                    }
+                }
+            }
+        }
+        return result;
+    };
+ 
+    // send to the generic selector
+    TVector<const TFunction*> matchSet = selectFunction(candidateList, call, conversionCost);
+
+    const auto prettyPrintType = [](const TType &type) -> TString {
+        TString result;
+        if (type.isScalar()) {
+            result = type.getBasicString();
+        } else if (type.isVector()) {
+            result = type.getBasicString();
+            result += '0' + type.getVectorSize();
+        } else if (type.isMatrix()) {
+            result = type.getBasicString();
+            result += '0' + type.getMatrixRows();
+            result += 'x';
+            result += '0' + type.getMatrixCols();
+        } else {
+            result = type.getCompleteString();
+        }
+        return result;
     };
 
-    // for ambiguity reporting
-    bool tie = false;
+    const auto prettyPrint = [prettyPrintType](const TFunction& fnc, bool retType) -> TString {
+        TString def;
+        if (retType) {
+            def += prettyPrintType(fnc.getType());
+            def += ' ';
+        }
+        def += fnc.getName();
+        def += '(';
+        for (int pi = 0; pi < fnc.getParamCount(); ++pi) {
+          const auto& param = fnc[pi];
+          if (pi > 0)
+            def += ", ";
+          def += prettyPrintType(*param.type);
+          def += ' ';
+          if (param.name)
+            def += *param.name;
+        }
+        def += ')';
+        return def;
+    };
 
-    // send to the generic selector
-    const TFunction* bestMatch = selectFunction(candidateList, call, convertible, better, tie);
+    if (matchSet.empty()) {
+        // need to construct the message this way, the buffer for the extra
+        // information is in some cases not large enough to print all.
+        TString message = "no matching overloaded function found, could not match ";
+        message += prettyPrint(call, false);
+        message += "to any of";
+        for (auto &&c : candidateList) {
+            message += '\n';
+            message += prettyPrint(*c, true);
+        }
+        error(loc, message.c_str(), call.getName().c_str(), "");
 
-    if (bestMatch == nullptr) {
-        // If there is nothing selected by allowing only up-conversions (to a larger linearize() value),
-        // we instead try down-conversions, which are valid in HLSL, but not preferred if there are any
-        // upconversions possible.
-        allowOnlyUpConversions = false;
-        bestMatch = selectFunction(candidateList, call, convertible, better, tie);
-    }
-
-    if (bestMatch == nullptr) {
-        error(loc, "no matching overloaded function found", call.getName().c_str(), "");
         return nullptr;
-    }
+    } else if (matchSet.size() > 1) {
+        // need to construct the message this way, the buffer for the extra
+        // information is in some cases not large enough to print all.
+        TString message = "ambiguous best function under implicit type conversion, while matching ";
+        message += prettyPrint(call, false);
+        message += ", could be one of";
+        for (auto &&c : matchSet) {
+            message += '\n';
+            message += prettyPrint(*c, true);
+        }
+        error(loc, message.c_str(), call.getName().c_str(), "");
 
-    // For built-ins, we can convert across the arguments.  This will happen in several steps:
-    // Step 1:  If there's an exact match, use it.
-    // Step 2a: Otherwise, get the operator from the best match and promote arguments:
-    // Step 2b: reconstruct the TFunction based on the new arg types
-    // Step 3:  Re-select after type promotion is applied, to find proper candidate.
-    if (builtIn) {
-        // Step 1: If there's an exact match, use it.
-        if (call.getMangledName() == bestMatch->getMangledName())
-            return bestMatch;
-
-        // Step 2a: Otherwise, get the operator from the best match and promote arguments as if we
-        // are that kind of operator.
-        if (args != nullptr) {
-            // The arg list can be a unary node, or an aggregate.  We have to handle both.
-            // We will use the normal promote() facilities, which require an interm node.
-            TIntermOperator* promote = nullptr;
-
-            if (call.getParamCount() == 1) {
-                promote = new TIntermUnary(bestMatch->getBuiltInOp());
-                promote->getAsUnaryNode()->setOperand(args->getAsTyped());
-            } else {
-                promote = new TIntermAggregate(bestMatch->getBuiltInOp());
-                promote->getAsAggregate()->getSequence().swap(args->getAsAggregate()->getSequence());
-            }
-
-            if (! intermediate.promote(promote))
-                return nullptr;
-
-            // Obtain the promoted arg list.
-            if (call.getParamCount() == 1) {
-                args = promote->getAsUnaryNode()->getOperand();
-            } else {
-                promote->getAsAggregate()->getSequence().swap(args->getAsAggregate()->getSequence());
-            }
+        return matchSet.front();
+    } else {
+        for (int defParam = call.getParamCount(); defParam < matchSet.front()->getParamCount(); ++defParam) {
+            handleFunctionArgument(&call, args, (*matchSet.front())[defParam].defaultValue);
         }
 
-        // Step 2b: reconstruct the TFunction based on the new arg types
-        TFunction convertedCall(&call.getName(), call.getType(), call.getBuiltInOp());
-
-        if (args->getAsAggregate()) {
-            // Handle aggregates: put all args into the new function call
-            for (int arg=0; arg<int(args->getAsAggregate()->getSequence().size()); ++arg) {
-                // TODO: But for constness, we could avoid the new & shallowCopy, and use the pointer directly.
-                TParameter param = { 0, new TType, nullptr };
-                param.type->shallowCopy(args->getAsAggregate()->getSequence()[arg]->getAsTyped()->getType());
-                convertedCall.addParameter(param);
-            }
-        } else if (args->getAsUnaryNode()) {
-            // Handle unaries: put all args into the new function call
-            TParameter param = { 0, new TType, nullptr };
-            param.type->shallowCopy(args->getAsUnaryNode()->getOperand()->getAsTyped()->getType());
-            convertedCall.addParameter(param);
-        } else if (args->getAsTyped()) {
-            // Handle bare e.g, floats, not in an aggregate.
-            TParameter param = { 0, new TType, nullptr };
-            param.type->shallowCopy(args->getAsTyped()->getType());
-            convertedCall.addParameter(param);
-        } else {
-            assert(0); // unknown argument list.
-            return nullptr;
-        }
-
-        // Step 3: Re-select after type promotion, to find proper candidate
-        // send to the generic selector
-        bestMatch = selectFunction(candidateList, convertedCall, convertible, better, tie);
-
-        // At this point, there should be no tie.
+        return matchSet.front();
     }
-
-    if (tie)
-        error(loc, "ambiguous best function under implicit type conversion", call.getName().c_str(), "");
-
-    // Append default parameter values if needed
-    if (!tie && bestMatch != nullptr) {
-        for (int defParam = call.getParamCount(); defParam < bestMatch->getParamCount(); ++defParam) {
-            handleFunctionArgument(&call, args, (*bestMatch)[defParam].defaultValue);
-        }
-    }
-
-    return bestMatch;
 }
-
 //
 // Do everything necessary to handle a typedef declaration, for a single symbol.
 //
