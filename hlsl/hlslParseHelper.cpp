@@ -3477,8 +3477,8 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
             if (argStride != nullptr) {
                 int size;
                 int stride;
-                intermediate.getBaseAlignment(argArray->getType(), size, stride, false,
-                                              argArray->getType().getQualifier().layoutMatrix == ElmRowMajor);
+                intermediate.getMemberAlignment(argArray->getType(), size, stride, argArray->getType().getQualifier().layoutPacking,
+                                                argArray->getType().getQualifier().layoutMatrix == ElmRowMajor);
 
                 TIntermTyped* assign = intermediate.addAssign(EOpAssign, argStride,
                                                               intermediate.addConstantUnion(stride, loc, true), loc);
@@ -8688,7 +8688,7 @@ void HlslParseContext::fixBlockUniformOffsets(const TQualifier& qualifier, TType
 {
     if (! qualifier.isUniformOrBuffer())
         return;
-    if (qualifier.layoutPacking != ElpStd140 && qualifier.layoutPacking != ElpStd430)
+    if (qualifier.layoutPacking != ElpStd140 && qualifier.layoutPacking != ElpStd430 && qualifier.layoutPacking != ElpScalar)
         return;
 
     int offset = 0;
@@ -8702,11 +8702,11 @@ void HlslParseContext::fixBlockUniformOffsets(const TQualifier& qualifier, TType
         // modify just the children's view of matrix layout, if there is one for this member
         TLayoutMatrix subMatrixLayout = typeList[member].type->getQualifier().layoutMatrix;
         int dummyStride;
-        int memberAlignment = intermediate.getBaseAlignment(*typeList[member].type, memberSize, dummyStride,
-                                                            qualifier.layoutPacking == ElpStd140,
-                                                            subMatrixLayout != ElmNone
-                                                                ? subMatrixLayout == ElmRowMajor
-                                                                : qualifier.layoutMatrix == ElmRowMajor);
+        int memberAlignment = intermediate.getMemberAlignment(*typeList[member].type, memberSize, dummyStride,
+                                                              qualifier.layoutPacking,
+                                                              subMatrixLayout != ElmNone
+                                                                  ? subMatrixLayout == ElmRowMajor
+                                                                  : qualifier.layoutMatrix == ElmRowMajor);
         if (memberQualifier.hasOffset()) {
             // "The specified offset must be a multiple
             // of the base alignment of the type of the block member it qualifies, or a compile-time error results."
