@@ -252,7 +252,8 @@ public:
         hlslIoMapping(false),
         textureSamplerTransformMode(EShTexSampTransKeep),
         needToLegalize(false),
-        binaryDoubleOutput(false)
+        binaryDoubleOutput(false),
+        uniformLocationBase(0)
     {
         localSize[0] = 1;
         localSize[1] = 1;
@@ -633,7 +634,9 @@ public:
     int addXfbBufferOffset(const TType&);
     unsigned int computeTypeXfbSize(const TType&, bool& containsDouble) const;
     static int getBaseAlignmentScalar(const TType&, int& size);
-    static int getBaseAlignment(const TType&, int& size, int& stride, bool std140, bool rowMajor);
+    static int getBaseAlignment(const TType&, int& size, int& stride, TLayoutPacking layoutPacking, bool rowMajor);
+    static int getScalarAlignment(const TType&, int& size, int& stride, bool rowMajor);
+    static int getMemberAlignment(const TType&, int& size, int& stride, TLayoutPacking layoutPacking, bool rowMajor);
     static bool improperStraddle(const TType& type, int size, int offset);
     bool promote(TIntermOperator*);
 
@@ -663,13 +666,33 @@ public:
     const std::string& getSourceFile() const { return sourceFile; }
     void addSourceText(const char* text) { sourceText = sourceText + text; }
     const std::string& getSourceText() const { return sourceText; }
-    void addProcesses(const std::vector<std::string>& p) {
+    void addProcesses(const std::vector<std::string>& p)
+    {
         for (int i = 0; i < (int)p.size(); ++i)
             processes.addProcess(p[i]);
     }
     void addProcess(const std::string& process) { processes.addProcess(process); }
     void addProcessArgument(const std::string& arg) { processes.addArgument(arg); }
     const std::vector<std::string>& getProcesses() const { return processes.getProcesses(); }
+
+    void addUniformLocationOverride(const char* nameStr, int location)
+    {
+        std::string name = nameStr;
+        uniformLocationOverrides[name] = location;
+    }
+
+    int getUniformLocationOverride(const char* nameStr) const
+    {
+        std::string name = nameStr;
+        auto pos = uniformLocationOverrides.find(name);
+        if (pos == uniformLocationOverrides.end())
+            return -1;
+        else
+            return pos->second;
+    }
+
+    void setUniformLocationBase(int base) { uniformLocationBase = base; }
+    int getUniformLocationBase() const { return uniformLocationBase; }
 
     void setNeedsLegalization() { needToLegalize = true; }
     bool needsLegalization() const { return needToLegalize; }
@@ -795,6 +818,9 @@ protected:
 
     bool needToLegalize;
     bool binaryDoubleOutput;
+
+    std::unordered_map<std::string, int> uniformLocationOverrides;
+    int uniformLocationBase;
 
 private:
     void operator=(TIntermediate&); // prevent assignments

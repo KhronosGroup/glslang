@@ -241,6 +241,8 @@ INSTANTIATE_TEST_CASE_P(
         "spv.8bitstorage_Error-int.frag",
         "spv.8bitstorage-uint.frag",
         "spv.8bitstorage_Error-uint.frag",
+        "spv.8bitstorage-ubo.vert",
+        "spv.8bitstorage-ssbo.vert",
         "spv.accessChain.frag",
         "spv.aggOps.frag",
         "spv.always-discard.frag",
@@ -307,6 +309,8 @@ INSTANTIATE_TEST_CASE_P(
         "spv.sampleId.frag",
         "spv.samplePosition.frag",
         "spv.sampleMaskOverrideCoverage.frag",
+        "spv.scalarlayout.frag",
+        "spv.scalarlayoutfloat16.frag",
         "spv.shaderBallot.comp",
         "spv.shaderDrawParams.vert",
         "spv.shaderGroupVote.comp",
@@ -365,6 +369,8 @@ INSTANTIATE_TEST_CASE_P(
 INSTANTIATE_TEST_CASE_P(
     Glsl, CompileVulkan1_1ToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
+        "spv.1.3.8bitstorage-ubo.vert",
+        "spv.1.3.8bitstorage-ssbo.vert",
         "spv.deviceGroup.frag",
         "spv.drawParams.vert",
         "spv.int8.frag",
@@ -436,6 +442,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.rankShift.comp",
         "spv.specConst.vert",
         "spv.OVR_multiview.vert",
+        "spv.xfbOffsetOnStructMembersAssignment.vert",
     })),
     FileNameAsCustomTestSuffix
 );
@@ -513,6 +520,8 @@ INSTANTIATE_TEST_CASE_P(
     "spv.ClosestHitShader_Errors.rchit",
     "spv.MissShader.rmiss",
     "spv.MissShader_Errors.rmiss",
+    "spv.RayCallable.rcall",
+    "spv.RayCallable_Errors.rcall",
     "spv.fragmentShaderBarycentric.frag",
     "spv.fragmentShaderBarycentric2.frag",
     "spv.computeShaderDerivatives.comp",
@@ -524,7 +533,11 @@ INSTANTIATE_TEST_CASE_P(
     "spv.meshShaderPerViewUserDefined.mesh",
     "spv.meshShaderSharedMem.mesh",
     "spv.meshShaderTaskMem.mesh",
+    "spv.320.meshShaderUserDefined.mesh",
+    "spv.meshShaderRedeclBuiltins.mesh",
+    "spv.meshShaderRedeclPerViewBuiltins.mesh",
     "spv.meshTaskShader.task",
+    "spv.perprimitiveNV.frag",
 })),
 FileNameAsCustomTestSuffix
 );

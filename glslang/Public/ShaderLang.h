@@ -70,7 +70,7 @@
 // This should always increase, as some paths to do not consume
 // a more major number.
 // It should increment by one when new functionality is added.
-#define GLSLANG_MINOR_VERSION 10
+#define GLSLANG_MINOR_VERSION 11
 
 //
 // Call before doing any other compiler/linker operations.
@@ -154,7 +154,10 @@ typedef EShTargetClientVersion EshTargetClientVersion;
 
 typedef enum {
     EShTargetSpv_1_0 = (1 << 16),
+    EShTargetSpv_1_1 = (1 << 16) | (1 << 8),
+    EShTargetSpv_1_2 = (1 << 16) | (2 << 8),
     EShTargetSpv_1_3 = (1 << 16) | (3 << 8),
+    EShTargetSpv_1_4 = (1 << 16) | (4 << 8),
 } EShTargetLanguageVersion;
 
 struct TInputLanguage {
@@ -413,6 +416,8 @@ public:
     void setResourceSetBinding(const std::vector<std::string>& base);
     void setAutoMapBindings(bool map);
     void setAutoMapLocations(bool map);
+    void addUniformLocationOverride(const char* name, int loc);
+    void setUniformLocationBase(int base);
     void setInvertY(bool invert);
     void setHlslIoMapping(bool hlslIoMap);
     void setFlattenUniformArrays(bool flatten);

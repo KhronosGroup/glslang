@@ -40,6 +40,8 @@ config("glslang_public") {
 }
 
 source_set("glslang_sources") {
+  public_configs = [ ":glslang_public" ]
+
   sources = [
     "OGLCompilersDLL/InitializeDll.cpp",
     "OGLCompilersDLL/InitializeDll.h",
@@ -55,6 +57,7 @@ source_set("glslang_sources") {
     "SPIRV/SPVRemapper.h",
     "SPIRV/SpvBuilder.cpp",
     "SPIRV/SpvBuilder.h",
+    "SPIRV/SpvPostProcess.cpp",
     "SPIRV/bitutils.h",
     "SPIRV/disassemble.cpp",
     "SPIRV/disassemble.h",
@@ -148,15 +151,3 @@ source_set("glslang_sources") {
     "${spirv_tools_dir}:spvtools_opt",
   ]
 }
-
-static_library("glslang_static") {
-  public_configs = [ ":glslang_public" ]
-
-  deps = [
-    ":glslang_sources",
-  ]
-
-  configs -= [ "//build/config/compiler:chromium_code" ]
-  configs += [ "//build/config/compiler:no_chromium_code" ]
-}
-
