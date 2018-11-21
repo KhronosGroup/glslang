@@ -104,11 +104,12 @@ public:
 
             const TString &name = base.getName();
             const TType &type = base.getType();
+            const unsigned int location = base.getQualifier().layoutLocation;
 
             TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
             if (it == reflection.nameToIndex.end()) {
                 reflection.nameToIndex[name] = (int)reflection.indexToAttribute.size();
-                reflection.indexToAttribute.push_back(TObjectReflection(name, type, 0, mapToGlType(type), 0, 0));
+                reflection.indexToAttribute.push_back(TObjectReflection(name, type, 0, mapToGlType(type), 0, location));
             }
         }
     }
