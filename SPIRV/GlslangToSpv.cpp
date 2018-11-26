@@ -833,6 +833,16 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilityMultiView);
         return spv::BuiltInViewIndex;
 
+    case glslang::EbvFragSizeEXT:
+        builder.addExtension(spv::E_SPV_EXT_fragment_invocation_density);
+        builder.addCapability(spv::CapabilityFragmentDensityEXT);
+        return spv::BuiltInFragSizeEXT;
+
+    case glslang::EbvFragInvocationCountEXT:
+        builder.addExtension(spv::E_SPV_EXT_fragment_invocation_density);
+        builder.addCapability(spv::CapabilityFragmentDensityEXT);
+        return spv::BuiltInFragInvocationCountEXT;
+
 #ifdef NV_EXTENSIONS
     case glslang::EbvViewportMaskNV:
         if (!memberDeclaration) {
