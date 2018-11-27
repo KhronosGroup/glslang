@@ -447,7 +447,9 @@ INSTANTIATE_TEST_CASE_P(
         "spv.rankShift.comp",
         "spv.specConst.vert",
         "spv.OVR_multiview.vert",
+        "spv.xfbOffsetOnBlockMembersAssignment.vert",
         "spv.xfbOffsetOnStructMembersAssignment.vert",
+        "spv.xfbOverlapOffsetCheckWithBlockAndMember.vert",
     })),
     FileNameAsCustomTestSuffix
 );
