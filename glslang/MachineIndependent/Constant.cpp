@@ -671,27 +671,27 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         }
 
         case EOpConvInt8ToBool:
-            newConstArray[i].setBConst(unionArray[i].getI8Const()); break;
+            newConstArray[i].setBConst(unionArray[i].getI8Const() != 0); break;
         case EOpConvUint8ToBool:
-            newConstArray[i].setBConst(unionArray[i].getU8Const()); break;
+            newConstArray[i].setBConst(unionArray[i].getU8Const() != 0); break;
         case EOpConvInt16ToBool:
-            newConstArray[i].setBConst(unionArray[i].getI16Const()); break;
+            newConstArray[i].setBConst(unionArray[i].getI16Const() != 0); break;
         case EOpConvUint16ToBool:
-            newConstArray[i].setBConst(unionArray[i].getU16Const()); break;
+            newConstArray[i].setBConst(unionArray[i].getU16Const() != 0); break;
         case EOpConvIntToBool:
-            newConstArray[i].setBConst(unionArray[i].getIConst()); break;
+            newConstArray[i].setBConst(unionArray[i].getIConst() != 0); break;
         case EOpConvUintToBool:
-            newConstArray[i].setBConst(unionArray[i].getUConst()); break;
+            newConstArray[i].setBConst(unionArray[i].getUConst() != 0); break;
         case EOpConvInt64ToBool:
-            newConstArray[i].setBConst(unionArray[i].getI64Const()); break;
+            newConstArray[i].setBConst(unionArray[i].getI64Const() != 0); break;
         case EOpConvUint64ToBool:
-            newConstArray[i].setBConst(unionArray[i].getI64Const()); break;
+            newConstArray[i].setBConst(unionArray[i].getI64Const() != 0); break;
         case EOpConvFloat16ToBool:
-            newConstArray[i].setBConst(unionArray[i].getDConst()); break;
+            newConstArray[i].setBConst(unionArray[i].getDConst() != 0); break;
         case EOpConvFloatToBool:
-            newConstArray[i].setBConst(unionArray[i].getDConst()); break;
+            newConstArray[i].setBConst(unionArray[i].getDConst() != 0); break;
         case EOpConvDoubleToBool:
-            newConstArray[i].setBConst(unionArray[i].getDConst()); break;
+            newConstArray[i].setBConst(unionArray[i].getDConst() != 0); break;
 
         case EOpConvBoolToInt8:
             newConstArray[i].setI8Const(unionArray[i].getBConst()); break;
