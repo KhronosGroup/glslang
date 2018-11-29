@@ -1825,6 +1825,12 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         unsigned int member = node->getOperand()->getAsBinaryNode()->getRight()->getAsConstantUnion()->getConstArray()[0].getUConst();
         spv::Id length = builder.createArrayLength(builder.accessChainGetLValue(), member);
 
+        // GLSL semantics say the result of .length() is an int, while SPIR-V says
+        // signedness must be 0. So, convert from SPIR-V unsigned back to GLSL's
+        // AST expectation of a signed result.
+        if (glslangIntermediate->getSource() == glslang::EShSourceGlsl)
+            length = builder.createUnaryOp(spv::OpBitcast, builder.makeIntType(32), length);
+
         builder.clearAccessChain();
         builder.setAccessChainRValue(length);
 
