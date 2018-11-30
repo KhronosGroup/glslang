@@ -448,7 +448,7 @@ public:
 											glslang::EShTargetClientVersion clientTargetVersion,
                                             Target target, bool automap = true, const std::string &entryPointName = "",
                                             const std::string &baseDir = "/baseResults/",
-                                            const EShMessages additionalOptions = 0)
+                                            const EShMessages additionalOptions = EShMessages::EShMsgDefault)
     {
         const std::string inputFname = testDir + "/" + testName;
         const std::string expectedOutputFname = testDir + baseDir + testName + ".out";
