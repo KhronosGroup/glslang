@@ -61,6 +61,7 @@ using HlslCompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointP
 using HlslVulkan1_1CompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslCompileAndFlattenTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+using HlslDX9CompatibleTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 
 // Compiling HLSL to pre-legalized SPIR-V under Vulkan semantics. Expected
 // to successfully generate both AST and SPIR-V.
@@ -93,6 +94,14 @@ TEST_P(HlslLegalizeTest, FromFile)
                             Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
                             Target::Spv, true, GetParam().entryPoint,
                             "/baseLegalResults/", true);
+}
+
+TEST_P(HlslDX9CompatibleTest, FromFile)
+{
+    loadFileCompileAndCheckWithOptions(GlobalTestSettings.testRoot, GetParam().fileName, Source::HLSL,
+                                       Semantics::Vulkan, glslang::EShTargetVulkan_1_0, Target::BothASTAndSpv, true,
+                                       GetParam().entryPoint, "/baseResults/",
+									   EShMessages::EShMsgHlslDX9Compatible);
 }
 
 // clang-format off
@@ -436,6 +445,17 @@ INSTANTIATE_TEST_CASE_P(
 );
 // clang-format on
 #endif
+
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    ToSpirv, HlslDX9CompatibleTest,
+    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
+        {"hlsl.sample.dx9.frag", "main"},
+        {"hlsl.sample.dx9.vert", "main"},
+    }),
+    FileNameAsCustomTestSuffix
+);
+// clang-format on
 
 }  // anonymous namespace
 }  // namespace glslangtest
