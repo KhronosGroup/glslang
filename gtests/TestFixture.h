@@ -111,7 +111,10 @@ public:
         : defaultVersion(100),
           defaultProfile(ENoProfile),
           forceVersionProfile(false),
-          isForwardCompatible(false) {}
+          isForwardCompatible(false) {
+        // Perform validation by default.
+        validatorOptions.validate = true;
+    }
 
     // Tries to load the contents from the file at the given |path|. On success,
     // writes the contents into |contents|. On failure, errors out.
@@ -137,15 +140,18 @@ public:
     // write |real| to the given file named as |fname| if update mode is on.
     void checkEqAndUpdateIfRequested(const std::string& expected,
                                      const std::string& real,
-                                     const std::string& fname)
+                                     const std::string& fname,
+                                     const std::string& errorsAndWarnings = "")
     {
         // In order to output the message we want under proper circumstances,
         // we need the following operator<< stuff.
         EXPECT_EQ(expected, real)
             << (GlobalTestSettings.updateMode
                     ? ("Mismatch found and update mode turned on - "
-                       "flushing expected result output.")
-                    : "");
+                       "flushing expected result output.\n")
+                    : "")
+            << "The following warnings/errors occurred:\n"
+            << errorsAndWarnings;
 
         // Update the expected output file if requested.
         // It looks weird to duplicate the comparison between expected_output
@@ -168,6 +174,7 @@ public:
         std::vector<ShaderResult> shaderResults;
         std::string linkingOutput;
         std::string linkingError;
+        bool validationResult;
         std::string spirvWarningsErrors;
         std::string spirv;  // Optional SPIR-V disassembly text.
     };
@@ -241,21 +248,20 @@ public:
 
         if (success && (controls & EShMsgSpvRules)) {
             std::vector<uint32_t> spirv_binary;
-            glslang::SpvOptions options;
-            options.disableOptimizer = !enableOptimizer;
-            options.validate = true;
+            options().disableOptimizer = !enableOptimizer;
             glslang::GlslangToSpv(*program.getIntermediate(stage),
-                                  spirv_binary, &logger, &options);
+                                  spirv_binary, &logger, &options());
 
             std::ostringstream disassembly_stream;
             spv::Parameterize();
             spv::Disassemble(disassembly_stream, spirv_binary);
+            bool validation_result = !options().validate || logger.getAllMessages().empty();
             return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
                     program.getInfoLog(), program.getInfoDebugLog(),
-                    logger.getAllMessages(), disassembly_stream.str()};
+                    validation_result, logger.getAllMessages(), disassembly_stream.str()};
         } else {
             return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
-                    program.getInfoLog(), program.getInfoDebugLog(), "", ""};
+                    program.getInfoLog(), program.getInfoDebugLog(), true, "", ""};
         }
     }
 
@@ -299,20 +305,19 @@ public:
 
         if (success && (controls & EShMsgSpvRules)) {
             std::vector<uint32_t> spirv_binary;
-            glslang::SpvOptions options;
-            options.validate = true;
             glslang::GlslangToSpv(*program.getIntermediate(stage),
-                                  spirv_binary, &logger, &options);
+                                  spirv_binary, &logger, &options());
 
             std::ostringstream disassembly_stream;
             spv::Parameterize();
             spv::Disassemble(disassembly_stream, spirv_binary);
+            bool validation_result = !options().validate || logger.getAllMessages().empty();
             return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
                     program.getInfoLog(), program.getInfoDebugLog(),
-                    logger.getAllMessages(), disassembly_stream.str()};
+                    validation_result, logger.getAllMessages(), disassembly_stream.str()};
         } else {
             return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
-                    program.getInfoLog(), program.getInfoDebugLog(), "", ""};
+                    program.getInfoLog(), program.getInfoDebugLog(), true, "", ""};
         }
     }
 
@@ -341,22 +346,21 @@ public:
 
         if (success && (controls & EShMsgSpvRules)) {
             std::vector<uint32_t> spirv_binary;
-            glslang::SpvOptions options;
-            options.validate = true;
             glslang::GlslangToSpv(*program.getIntermediate(stage),
-                                  spirv_binary, &logger, &options);
+                                  spirv_binary, &logger, &options());
 
             spv::spirvbin_t(0 /*verbosity*/).remap(spirv_binary, remapOptions);
 
             std::ostringstream disassembly_stream;
             spv::Parameterize();
             spv::Disassemble(disassembly_stream, spirv_binary);
+            bool validation_result = !options().validate || logger.getAllMessages().empty();
             return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
                     program.getInfoLog(), program.getInfoDebugLog(),
-                    logger.getAllMessages(), disassembly_stream.str()};
+                    validation_result, logger.getAllMessages(), disassembly_stream.str()};
         } else {
             return {{{shaderName, shader.getInfoLog(), shader.getInfoDebugLog()},},
-                    program.getInfoLog(), program.getInfoDebugLog(), "", ""};
+                    program.getInfoLog(), program.getInfoDebugLog(), true, "", ""};
         }
     }
 
@@ -377,9 +381,9 @@ public:
 
             return {{{shaderName, "", ""},},
                     "", "",
-                        "", disassembly_stream.str()};
+                    true, "", disassembly_stream.str()};
         } else {
-            return {{{shaderName, "", ""},}, "", "", "", ""};
+            return {{{shaderName, "", ""},}, "", "", true, "", ""};
         }
     }
 
@@ -398,7 +402,9 @@ public:
         }
         outputIfNotEmpty(result.linkingOutput);
         outputIfNotEmpty(result.linkingError);
-        *stream << result.spirvWarningsErrors;
+        if (!result.validationResult) {
+          *stream << "Validation failed\n";
+        }
 
         if (controls & EShMsgSpvRules) {
             *stream
@@ -438,7 +444,7 @@ public:
         outputResultToStream(&stream, result, controls);
 
         checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
-                                    expectedOutputFname);
+                                    expectedOutputFname, result.spirvWarningsErrors);
     }
 
     void loadFileCompileFlattenUniformsAndCheck(const std::string& testDir,
@@ -465,7 +471,7 @@ public:
         outputResultToStream(&stream, result, controls);
 
         checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
-                                    expectedOutputFname);
+                                    expectedOutputFname, result.spirvWarningsErrors);
     }
 
     void loadFileCompileIoMapAndCheck(const std::string& testDir,
@@ -502,7 +508,7 @@ public:
         outputResultToStream(&stream, result, controls);
 
         checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
-                                    expectedOutputFname);
+                                    expectedOutputFname, result.spirvWarningsErrors);
     }
 
     void loadFileCompileRemapAndCheck(const std::string& testDir,
@@ -529,7 +535,7 @@ public:
         outputResultToStream(&stream, result, controls);
 
         checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
-                                    expectedOutputFname);
+                                    expectedOutputFname, result.spirvWarningsErrors);
     }
 
     void loadFileRemapAndCheck(const std::string& testDir,
@@ -556,7 +562,7 @@ public:
         outputResultToStream(&stream, result, controls);
 
         checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
-                                    expectedOutputFname);
+                                    expectedOutputFname, result.spirvWarningsErrors);
     }
 
     // Preprocesses the given |source| code. On success, returns true, the
@@ -636,14 +642,17 @@ public:
         outputResultToStream(&stream, result, controls);
 
         checkEqAndUpdateIfRequested(expectedOutput, stream.str(),
-                                    expectedOutputFname);
+                                    expectedOutputFname, result.spirvWarningsErrors);
     }
+
+    glslang::SpvOptions& options() { return validatorOptions; }
 
 private:
     const int defaultVersion;
     const EProfile defaultProfile;
     const bool forceVersionProfile;
     const bool isForwardCompatible;
+    glslang::SpvOptions validatorOptions;
 };
 
 }  // namespace glslangtest
