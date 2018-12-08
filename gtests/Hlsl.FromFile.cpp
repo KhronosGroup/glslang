@@ -61,6 +61,7 @@ using HlslCompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointP
 using HlslVulkan1_1CompileTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslCompileAndFlattenTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 using HlslLegalizeTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
+using HlslDebugTest = GlslangTest<::testing::TestWithParam<FileNameEntryPointPair>>;
 
 // Compiling HLSL to pre-legalized SPIR-V under Vulkan semantics. Expected
 // to successfully generate both AST and SPIR-V.
@@ -93,6 +94,16 @@ TEST_P(HlslLegalizeTest, FromFile)
                             Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
                             Target::Spv, true, GetParam().entryPoint,
                             "/baseLegalResults/", true);
+}
+
+// Compiling HLSL to pre-legalized SPIR-V. Expected to successfully generate
+// SPIR-V with debug instructions, particularly line info.
+TEST_P(HlslDebugTest, FromFile)
+{
+    loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam().fileName,
+                            Source::HLSL, Semantics::Vulkan, glslang::EShTargetVulkan_1_0,
+                            Target::Spv, true, GetParam().entryPoint,
+                            "/baseResults/", false, true);
 }
 
 // clang-format off
@@ -437,5 +448,15 @@ INSTANTIATE_TEST_CASE_P(
 // clang-format on
 #endif
 
+// clang-format off
+INSTANTIATE_TEST_CASE_P(
+    ToSpirv, HlslDebugTest,
+    ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
+        {"hlsl.pp.line2.frag", "MainPs"}
+    }),
+    FileNameAsCustomTestSuffix
+);
+
+// clang-format on
 }  // anonymous namespace
 }  // namespace glslangtest

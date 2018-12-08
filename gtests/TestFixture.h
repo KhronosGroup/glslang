@@ -184,12 +184,19 @@ public:
     // and modifies |shader| on success.
     bool compile(glslang::TShader* shader, const std::string& code,
                  const std::string& entryPointName, EShMessages controls,
-                 const TBuiltInResource* resources=nullptr)
+                 const TBuiltInResource* resources=nullptr,
+                 const std::string* shaderName=nullptr)
     {
         const char* shaderStrings = code.data();
         const int shaderLengths = static_cast<int>(code.size());
+        const char* shaderNames = nullptr;
 
-        shader->setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
+        if ((controls & EShMsgDebugInfo) && shaderName != nullptr) {
+            shaderNames = shaderName->data();
+            shader->setStringsWithLengthsAndNames(
+                    &shaderStrings, &shaderLengths, &shaderNames, 1);
+        } else
+            shader->setStringsWithLengths(&shaderStrings, &shaderLengths, 1);
         if (!entryPointName.empty()) shader->setEntryPoint(entryPointName.c_str());
         return shader->parse(
                 (resources ? resources : &glslang::DefaultTBuiltInResource),
@@ -202,12 +209,13 @@ public:
     // during the process. If the target includes SPIR-V, also disassembles
     // the result and returns disassembly text.
     GlslangResult compileAndLink(
-            const std::string shaderName, const std::string& code,
+            const std::string& shaderName, const std::string& code,
             const std::string& entryPointName, EShMessages controls,
             glslang::EShTargetClientVersion clientTargetVersion,
             bool flattenUniformArrays = false,
             EShTextureSamplerTransformMode texSampTransMode = EShTexSampTransKeep,
             bool enableOptimizer = false,
+            bool enableDebug = false,
             bool automap = true)
     {
         const EShLanguage stage = GetShaderStage(GetSuffix(shaderName));
@@ -238,7 +246,8 @@ public:
             }
         }
 
-        bool success = compile(&shader, code, entryPointName, controls);
+        bool success = compile(
+                &shader, code, entryPointName, controls, nullptr, &shaderName);
 
         glslang::TProgram program;
         program.addShader(&shader);
@@ -249,6 +258,7 @@ public:
         if (success && (controls & EShMsgSpvRules)) {
             std::vector<uint32_t> spirv_binary;
             options().disableOptimizer = !enableOptimizer;
+            options().generateDebugInfo = enableDebug;
             glslang::GlslangToSpv(*program.getIntermediate(stage),
                                   spirv_binary, &logger, &options());
 
@@ -423,7 +433,8 @@ public:
                                  bool automap = true,
                                  const std::string& entryPointName="",
                                  const std::string& baseDir="/baseResults/",
-                                 const bool enableOptimizer = false)
+                                 const bool enableOptimizer = false,
+                                 const bool enableDebug = false)
     {
         const std::string inputFname = testDir + "/" + testName;
         const std::string expectedOutputFname =
@@ -436,8 +447,10 @@ public:
         EShMessages controls = DeriveOptions(source, semantics, target);
         if (enableOptimizer)
             controls = static_cast<EShMessages>(controls & ~EShMsgHlslLegalization);
+        if (enableDebug)
+            controls = static_cast<EShMessages>(controls | EShMsgDebugInfo);
         GlslangResult result = compileAndLink(testName, input, entryPointName, controls, clientTargetVersion, false,
-                                              EShTexSampTransKeep, enableOptimizer, automap);
+                                              EShTexSampTransKeep, enableOptimizer, enableDebug, automap);
 
         // Generate the hybrid output in the way of glslangValidator.
         std::ostringstream stream;
