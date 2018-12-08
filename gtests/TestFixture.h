@@ -460,6 +460,34 @@ public:
                                     expectedOutputFname, result.spirvWarningsErrors);
     }
 
+	void loadFileCompileAndCheckWithOptions(const std::string &testDir, 
+											const std::string &testName, 
+											Source source,
+											Semantics semantics, 
+											glslang::EShTargetClientVersion clientTargetVersion,
+                                            Target target, bool automap = true, const std::string &entryPointName = "",
+                                            const std::string &baseDir = "/baseResults/",
+                                            const EShMessages additionalOptions = EShMessages::EShMsgDefault)
+    {
+        const std::string inputFname = testDir + "/" + testName;
+        const std::string expectedOutputFname = testDir + baseDir + testName + ".out";
+        std::string input, expectedOutput;
+
+        tryLoadFile(inputFname, "input", &input);
+        tryLoadFile(expectedOutputFname, "expected output", &expectedOutput);
+
+        EShMessages controls = DeriveOptions(source, semantics, target);
+        controls = static_cast<EShMessages>(controls | additionalOptions);
+        GlslangResult result = compileAndLink(testName, input, entryPointName, controls, clientTargetVersion, false,
+                                              EShTexSampTransKeep, false, automap);
+
+        // Generate the hybrid output in the way of glslangValidator.
+        std::ostringstream stream;
+        outputResultToStream(&stream, result, controls);
+
+        checkEqAndUpdateIfRequested(expectedOutput, stream.str(), expectedOutputFname);
+	}
+
     void loadFileCompileFlattenUniformsAndCheck(const std::string& testDir,
                                                 const std::string& testName,
                                                 Source source,
