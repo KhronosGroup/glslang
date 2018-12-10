@@ -2,8 +2,8 @@
 
 TARGETDIR=localResults
 BASEDIR=baseResults
-EXE=../build/install/bin/glslangValidator
-REMAPEXE=../build/install/bin/spirv-remap
+EXE=./glslangValidator
+REMAPEXE=../build/StandAlone/spirv-remap
 HASERROR=0
 mkdir -p localResults
 

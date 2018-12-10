@@ -1,13 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script validates shaders (if successfully compiled) using spirv-val.
 # It is not meant to preclude the possible addition of the validator to
 # glslang.
 
-declare -r EXE='../build/install/bin/glslangValidator'
+declare -r EXE='./glslangValidator'
 
 # search common locations for spirv-tools: keep first one
-for toolsdir in '../External/spirv-tools/build/tools' '../../SPIRV-Tools/build/tools/bin' '/usr/local/bin'; do
+for toolsdir in '../External/spirv-tools/build/tools' '../../SPIRV-Tools/build/tools/bin' '/usr/local/bin' '/usr/bin'; do
     [[ -z "$VAL" && -x "${toolsdir}/spirv-val" ]] && declare -r VAL="${toolsdir}/spirv-val"
     [[ -z "$DIS" && -x "${toolsdir}/spirv-dis" ]] && declare -r DIS="${toolsdir}/spirv-dis"
 done
