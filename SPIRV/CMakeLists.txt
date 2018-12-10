@@ -91,14 +91,19 @@ if(WIN32 AND BUILD_SHARED_LIBS)
 endif()
 
 if(ENABLE_OPT)
-    target_include_directories(SPIRV
-        PRIVATE ${spirv-tools_SOURCE_DIR}/include
-        PRIVATE ${spirv-tools_SOURCE_DIR}/source
-    )
-    target_link_libraries(SPIRV PRIVATE MachineIndependent SPIRV-Tools-opt)
-    target_include_directories(SPIRV PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
+    if(SPIRV-Tools_FOUND)
+        target_include_directories(SPIRV PUBLIC ${SPIRV-Tools_INCLUDEDIR})
+        target_link_libraries(SPIRV glslang ${SPIRV-Tools_LIBRARIES})
+    else()
+        target_include_directories(SPIRV
+            PRIVATE ${spirv-tools_SOURCE_DIR}/include
+            PRIVATE ${spirv-tools_SOURCE_DIR}/source
+        )
+        target_link_libraries(SPIRV PRIVATE MachineIndependent SPIRV-Tools-opt)
+        target_include_directories(SPIRV PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../External>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/External>)
+    endif()
 else()
     target_link_libraries(SPIRV PRIVATE MachineIndependent)
 endif()

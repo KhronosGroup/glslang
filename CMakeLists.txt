@@ -314,7 +314,12 @@ if(BUILD_EXTERNAL AND IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
     add_subdirectory(External)
 endif()
 
-if(NOT TARGET SPIRV-Tools-opt)
+find_package(PkgConfig)
+if(PkgConfig_FOUND)
+    pkg_check_modules(SPIRV-Tools SPIRV-Tools)
+endif()
+# Former would be system-installed, later is from External
+if(NOT SPIRV-Tools_FOUND AND NOT TARGET SPIRV-Tools-opt)
     set(ENABLE_OPT OFF)
 endif()
 
