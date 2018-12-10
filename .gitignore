@@ -5,6 +5,13 @@
 tags
 TAGS
 build/
-Test/localResults/
 External/googletest
 External/spirv-tools
+
+# Test output
+Test/localResults/
+Test/instDesc
+Test/instDesc.html
+localResults/
+multiThread.out
+singleThread.out
