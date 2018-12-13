@@ -489,7 +489,7 @@ bool TIntermediate::isConversionAllowed(TOperator op, TIntermTyped* node) const
 // This is 'mechanism' here, it does any conversion told.
 // It is about basic type, not about shape.
 // The policy comes from the shader or the calling code.
-TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped* node) const
+TIntermTyped* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped* node) const
 {
     //
     // Add a new newNode for the conversion.
@@ -712,7 +712,11 @@ TIntermUnary* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
     TType newType(convertTo, EvqTemporary, node->getVectorSize(), node->getMatrixCols(), node->getMatrixRows());
     newNode = addUnaryNode(newOp, node, node->getLoc(), newType);
 
-    // TODO: it seems that some unary folding operations should occur here, but are not
+    if (node->getAsConstantUnion()) {
+        TIntermTyped* folded = node->getAsConstantUnion()->fold(newOp, newType);
+        if (folded)
+            return folded;
+    }
 
     // Propagate specialization-constant-ness, if allowed
     if (node->getType().getQualifier().isSpecConstant() && isSpecializationOperation(*newNode))
@@ -903,28 +907,28 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
         break;
     case EOpConstructFloat16:
         promoteTo = EbtFloat16;
-        canPromoteConstant = extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_float16);
+        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16);
         break;
     case EOpConstructInt8:
         promoteTo = EbtInt8;
-        canPromoteConstant = extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int8);
+        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8);
         break;
     case EOpConstructUint8:
         promoteTo = EbtUint8;
-        canPromoteConstant = extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int8);
+        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8);
         break;
     case EOpConstructInt16:
         promoteTo = EbtInt16;
-        canPromoteConstant = extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int16);
+        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16);
         break;
     case EOpConstructUint16:
         promoteTo = EbtUint16;
-        canPromoteConstant = extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types) ||
-                             extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int16);
+        canPromoteConstant = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                             extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16);
         break;
     case EOpConstructInt:
         promoteTo = EbtInt;
@@ -1021,7 +1025,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     //
     // Add a new newNode for the conversion.
     //
-    TIntermUnary* newNode = createConversion(promoteTo, node);
+    TIntermTyped* newNode = createConversion(promoteTo, node);
 
     return newNode;
 }
@@ -1481,14 +1485,14 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         }
     }
 
-    bool explicitTypesEnabled = extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types) ||
-                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int8) ||
-                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int16) ||
-                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int32) ||
-                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_int64) ||
-                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_float16) ||
-                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_float32) ||
-                                extensionRequested(E_GL_KHX_shader_explicit_arithmetic_types_float64);
+    bool explicitTypesEnabled = extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8) ||
+                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16) ||
+                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int32) ||
+                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int64) ||
+                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16) ||
+                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float32) ||
+                                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float64);
 
     if (explicitTypesEnabled) {
         // integral promotions

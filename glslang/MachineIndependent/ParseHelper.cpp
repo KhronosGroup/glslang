@@ -1998,6 +1998,10 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     case EOpSubgroupClusteredAnd:
     case EOpSubgroupClusteredOr:
     case EOpSubgroupClusteredXor:
+        // The <clusterSize> as used in the subgroupClustered<op>() operations must be:
+        // - An integral constant expression.
+        // - At least 1.
+        // - A power of 2.
         if ((*argp)[1]->getAsConstantUnion() == nullptr)
             error(loc, "argument must be compile-time constant", "cluster size", "");
         else {
@@ -2007,6 +2011,12 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             else if (!IsPow2(size))
                 error(loc, "argument must be a power of 2", "cluster size", "");
         }
+        break;
+
+    case EOpSubgroupBroadcast:
+        // <id> must be an integral constant expression.
+        if ((*argp)[1]->getAsConstantUnion() == nullptr)
+            error(loc, "argument must be compile-time constant", "id", "");
         break;
 
     case EOpBarrier:
@@ -5740,14 +5750,14 @@ const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunct
         return nullptr;
     }
 
-    bool explicitTypesEnabled = extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types) ||
-                                extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_int8) ||
-                                extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_int16) ||
-                                extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_int32) ||
-                                extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_int64) ||
-                                extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_float16) ||
-                                extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_float32) ||
-                                extensionTurnedOn(E_GL_KHX_shader_explicit_arithmetic_types_float64);
+    bool explicitTypesEnabled = extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types) ||
+                                extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_int8) ||
+                                extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_int16) ||
+                                extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_int32) ||
+                                extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_int64) ||
+                                extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_float16) ||
+                                extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_float32) ||
+                                extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_float64);
 
     if (profile == EEsProfile || version < 120)
         function = findFunctionExact(loc, call, builtIn);
@@ -6862,6 +6872,16 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     }
 
     layoutMemberLocationArrayCheck(loc, memberWithLocation, arraySizes);
+
+    // Ensure that the block has an XfbBuffer assigned. This is needed
+    // because if the block has a XfbOffset assigned, then it is
+    // assumed that it has implicitly assigned the current global
+    // XfbBuffer, and because it's members need to be assigned a
+    // XfbOffset if they lack it.
+    if (currentBlockQualifier.storage == EvqVaryingOut && globalOutputDefaults.hasXfbBuffer()) {
+       if (!currentBlockQualifier.hasXfbBuffer() && currentBlockQualifier.hasXfbOffset())
+          currentBlockQualifier.layoutXfbBuffer = globalOutputDefaults.layoutXfbBuffer;
+    }
 
     // Process the members
     fixBlockLocations(loc, currentBlockQualifier, typeList, memberWithLocation, memberWithoutLocation);

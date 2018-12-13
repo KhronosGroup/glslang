@@ -833,6 +833,16 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilityMultiView);
         return spv::BuiltInViewIndex;
 
+    case glslang::EbvFragSizeEXT:
+        builder.addExtension(spv::E_SPV_EXT_fragment_invocation_density);
+        builder.addCapability(spv::CapabilityFragmentDensityEXT);
+        return spv::BuiltInFragSizeEXT;
+
+    case glslang::EbvFragInvocationCountEXT:
+        builder.addExtension(spv::E_SPV_EXT_fragment_invocation_density);
+        builder.addCapability(spv::CapabilityFragmentDensityEXT);
+        return spv::BuiltInFragInvocationCountEXT;
+
 #ifdef NV_EXTENSIONS
     case glslang::EbvViewportMaskNV:
         if (!memberDeclaration) {
@@ -1584,7 +1594,7 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 
 bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::TIntermBinary* node)
 {
-    builder.setLine(node->getLoc().line);
+    builder.setLine(node->getLoc().line, node->getLoc().getFilename());
 
     SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
     if (node->getType().getQualifier().isSpecConstant())
@@ -1779,7 +1789,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
 
 bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TIntermUnary* node)
 {
-    builder.setLine(node->getLoc().line);
+    builder.setLine(node->getLoc().line, node->getLoc().getFilename());
 
     SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
     if (node->getType().getQualifier().isSpecConstant())
@@ -1814,6 +1824,12 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         block->traverse(this);
         unsigned int member = node->getOperand()->getAsBinaryNode()->getRight()->getAsConstantUnion()->getConstArray()[0].getUConst();
         spv::Id length = builder.createArrayLength(builder.accessChainGetLValue(), member);
+
+        // GLSL semantics say the result of .length() is an int, while SPIR-V says
+        // signedness must be 0. So, convert from SPIR-V unsigned back to GLSL's
+        // AST expectation of a signed result.
+        if (glslangIntermediate->getSource() == glslang::EShSourceGlsl)
+            length = builder.createUnaryOp(spv::OpBitcast, builder.makeIntType(32), length);
 
         builder.clearAccessChain();
         builder.setAccessChainRValue(length);
@@ -2037,7 +2053,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         return false;
     case glslang::EOpFunctionCall:
     {
-        builder.setLine(node->getLoc().line);
+        builder.setLine(node->getLoc().line, node->getLoc().getFilename());
         if (node->isUserDefined())
             result = handleUserFunctionCall(node);
         // assert(result);  // this can happen for bad shaders because the call graph completeness checking is not yet done
@@ -2156,7 +2172,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     case glslang::EOpConstructStruct:
     case glslang::EOpConstructTextureSampler:
     {
-        builder.setLine(node->getLoc().line);
+        builder.setLine(node->getLoc().line, node->getLoc().getFilename());
         std::vector<spv::Id> arguments;
         translateArguments(*node, arguments);
         spv::Id constructed;
@@ -2301,7 +2317,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         right->traverse(this);
         spv::Id rightId = accessChainLoad(right->getType());
 
-        builder.setLine(node->getLoc().line);
+        builder.setLine(node->getLoc().line, node->getLoc().getFilename());
         OpDecorations decorations = { precision,
                                       TranslateNoContractionDecoration(node->getType().getQualifier()),
                                       TranslateNonUniformDecoration(node->getType().getQualifier()) };
@@ -2389,12 +2405,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         if (lvalue)
             operands.push_back(builder.accessChainGetLValue());
         else {
-            builder.setLine(node->getLoc().line);
+            builder.setLine(node->getLoc().line, node->getLoc().getFilename());
             operands.push_back(accessChainLoad(glslangOperands[arg]->getAsTyped()->getType()));
         }
     }
 
-    builder.setLine(node->getLoc().line);
+    builder.setLine(node->getLoc().line, node->getLoc().getFilename());
     if (atomic) {
         // Handle all atomics
         result = createAtomicOperation(node->getOp(), precision, resultType(), operands, node->getBasicType());
@@ -2495,7 +2511,7 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
         node->getFalseBlock()->traverse(this);
         spv::Id falseValue = accessChainLoad(node->getTrueBlock()->getAsTyped()->getType());
 
-        builder.setLine(node->getLoc().line);
+        builder.setLine(node->getLoc().line, node->getLoc().getFilename());
 
         // done if void
         if (node->getBasicType() == glslang::EbtVoid)
@@ -2669,7 +2685,7 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
     // by a block-ending branch.  But we don't want to put any other body/test
     // instructions in it, since the body/test may have arbitrary instructions,
     // including merges of its own.
-    builder.setLine(node->getLoc().line);
+    builder.setLine(node->getLoc().line, node->getLoc().getFilename());
     builder.setBuildPoint(&blocks.head);
     builder.createLoopMerge(&blocks.merge, &blocks.continue_target, control, dependencyLength);
     if (node->testFirst() && node->getTest()) {
@@ -2693,7 +2709,7 @@ bool TGlslangToSpvTraverser::visitLoop(glslang::TVisit /* visit */, glslang::TIn
             node->getTerminal()->traverse(this);
         builder.createBranch(&blocks.head);
     } else {
-        builder.setLine(node->getLoc().line);
+        builder.setLine(node->getLoc().line, node->getLoc().getFilename());
         builder.createBranch(&blocks.body);
 
         breakForLoop.push(true);
@@ -2728,7 +2744,7 @@ bool TGlslangToSpvTraverser::visitBranch(glslang::TVisit /* visit */, glslang::T
     if (node->getExpression())
         node->getExpression()->traverse(this);
 
-    builder.setLine(node->getLoc().line);
+    builder.setLine(node->getLoc().line, node->getLoc().getFilename());
 
     switch (node->getFlowOp()) {
     case glslang::EOpKill:
@@ -3897,7 +3913,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     if (! node->isImage() && ! node->isTexture())
         return spv::NoResult;
 
-    builder.setLine(node->getLoc().line);
+    builder.setLine(node->getLoc().line, node->getLoc().getFilename());
 
     // Process a GLSL texturing op (will be SPV image)
 
@@ -7149,12 +7165,14 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
     if (symbol->getQualifier().hasBinding())
         builder.addDecoration(id, spv::DecorationBinding, symbol->getQualifier().layoutBinding);
+    else if (IsDescriptorResource(symbol->getType())) {
+        // default to 0
+        builder.addDecoration(id, spv::DecorationBinding, 0);
+    }
     if (symbol->getQualifier().hasAttachment())
         builder.addDecoration(id, spv::DecorationInputAttachmentIndex, symbol->getQualifier().layoutAttachment);
     if (glslangIntermediate->getXfbMode()) {
         builder.addCapability(spv::CapabilityTransformFeedback);
-        if (symbol->getQualifier().hasXfbStride())
-            builder.addDecoration(id, spv::DecorationXfbStride, symbol->getQualifier().layoutXfbStride);
         if (symbol->getQualifier().hasXfbBuffer()) {
             builder.addDecoration(id, spv::DecorationXfbBuffer, symbol->getQualifier().layoutXfbBuffer);
             unsigned stride = glslangIntermediate->getXfbStride(symbol->getQualifier().layoutXfbBuffer);
