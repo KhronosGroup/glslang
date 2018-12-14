@@ -1121,7 +1121,8 @@ int TPpContext::tZeroInput::scan(TPpToken* ppToken)
     if (done)
         return EndOfInput;
 
-    strcpy(ppToken->name, "0");
+    ppToken->name[0] = '0';
+    ppToken->name[1] = 0;
     ppToken->ival = 0;
     ppToken->space = false;
     done = true;
