@@ -1088,6 +1088,13 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
             return spv::StorageClassUniformConstant;
     }
 
+#ifdef NV_EXTENSIONS
+    if (type.getQualifier().isUniformOrBuffer() &&
+        type.getQualifier().layoutShaderRecordNV) {
+        return spv::StorageClassShaderRecordBufferNV;
+    }
+#endif
+
     if (glslangIntermediate->usingStorageBuffer() && type.getQualifier().storage == glslang::EvqBuffer) {
         addPre13Extension(spv::E_SPV_KHR_storage_buffer_storage_class);
         return spv::StorageClassStorageBuffer;
@@ -1096,10 +1103,6 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     if (type.getQualifier().isUniformOrBuffer()) {
         if (type.getQualifier().layoutPushConstant)
             return spv::StorageClassPushConstant;
-#ifdef NV_EXTENSIONS
-        if (type.getQualifier().layoutShaderRecordNV)
-            return spv::StorageClassShaderRecordBufferNV;
-#endif
         if (type.getBasicType() == glslang::EbtBlock)
             return spv::StorageClassUniform;
         return spv::StorageClassUniformConstant;
