@@ -39,6 +39,7 @@
 #include "localintermediate.h"
 #include <cmath>
 #include <cfloat>
+#include <cstdint>
 #include <cstdlib>
 #include <climits>
 
