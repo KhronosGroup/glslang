@@ -879,8 +879,12 @@ bool ProcessDeferred(
         intermediate.setHlslOffsets();
     if (messages & EShMsgDebugInfo) {
         intermediate.setSourceFile(names[numPre]);
-        for (int s = 0; s < numStrings; ++s)
-            intermediate.addSourceText(strings[numPre + s]);
+        for (int s = 0; s < numStrings; ++s) {
+            // The string may be null-terminated, so make sure we create one
+            // with the given length.
+            std::string tmp(strings[numPre + s], lengths[numPre + s]);
+            intermediate.addSourceText(tmp.c_str());
+        }
     }
     SetupBuiltinSymbolTable(version, profile, spvVersion, source);
 
