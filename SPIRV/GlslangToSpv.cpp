@@ -1552,10 +1552,16 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 
     // Include all "static use" and "linkage only" interface variables on the OpEntryPoint instruction
     if (builder.isPointer(id)) {
-        spv::StorageClass sc = builder.getStorageClass(id);
-        if (sc == spv::StorageClassInput || sc == spv::StorageClassOutput) {
-            if (!symbol->getType().isStruct() || symbol->getType().getStruct()->size() > 0)
+        // Consider adding to the OpEntryPoint interface list.
+        // Only looking at structures if they have at least one member.
+        if (!symbol->getType().isStruct() || symbol->getType().getStruct()->size() > 0) {
+            spv::StorageClass sc = builder.getStorageClass(id);
+            // Before SPIR-V 1.4, we only want to include Input and Output.
+            // Starting with SPIR-V 1.4, we want all globals.
+            if ((glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_4 && sc != spv::StorageClassFunction) ||
+                (sc == spv::StorageClassInput || sc == spv::StorageClassOutput)) {
                 iOSet.insert(id);
+            }
         }
     }
 
