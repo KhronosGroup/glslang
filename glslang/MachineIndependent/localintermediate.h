@@ -255,6 +255,7 @@ public:
         textureSamplerTransformMode(EShTexSampTransKeep),
         needToLegalize(false),
         binaryDoubleOutput(false),
+        usePhysicalStorageBuffer(false),
         uniformLocationBase(0)
     {
         localSize[0] = 1;
@@ -390,6 +391,11 @@ public:
         processes.addProcess("use-vulkan-memory-model");
     }
     bool usingVulkanMemoryModel() const { return useVulkanMemoryModel; }
+    void setUsePhysicalStorageBuffer()
+    {
+        usePhysicalStorageBuffer = true;
+    }
+    bool usingPhysicalStorageBuffer() const { return usePhysicalStorageBuffer; }
 
     template<class T> T addCounterBufferName(const T& name) const { return name + implicitCounterName; }
     bool hasCounterBufferName(const TString& name) const {
@@ -825,6 +831,7 @@ protected:
 
     bool needToLegalize;
     bool binaryDoubleOutput;
+    bool usePhysicalStorageBuffer;
 
     std::unordered_map<std::string, int> uniformLocationOverrides;
     int uniformLocationBase;
