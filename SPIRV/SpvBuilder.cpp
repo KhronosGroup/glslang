@@ -531,6 +531,7 @@ Id Builder::makeAccelerationStructureNVType()
     Instruction *type;
     if (groupedTypes[OpTypeAccelerationStructureNV].size() == 0) {
         type = new Instruction(getUniqueId(), NoType, OpTypeAccelerationStructureNV);
+        groupedTypes[OpTypeAccelerationStructureNV].push_back(type);
         constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
         module.mapInstruction(type);
     } else {
