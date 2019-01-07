@@ -666,7 +666,7 @@ public:
 
     void setSourceFile(const char* file) { if (file != nullptr) sourceFile = file; }
     const std::string& getSourceFile() const { return sourceFile; }
-    void addSourceText(const char* text) { sourceText = sourceText + text; }
+    void addSourceText(const char* text, size_t len) { sourceText.append(text, len); }
     const std::string& getSourceText() const { return sourceText; }
     const std::map<std::string, std::string>& getIncludeText() const { return includeText; }
     void addIncludeText(const char* name, const char* text, size_t len) { includeText[name].assign(text,len); }
