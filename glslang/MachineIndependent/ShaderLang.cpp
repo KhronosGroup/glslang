@@ -880,10 +880,9 @@ bool ProcessDeferred(
     if (messages & EShMsgDebugInfo) {
         intermediate.setSourceFile(names[numPre]);
         for (int s = 0; s < numStrings; ++s) {
-            // The string may be null-terminated, so make sure we create one
-            // with the given length.
-            std::string tmp(strings[numPre + s], lengths[numPre + s]);
-            intermediate.addSourceText(tmp.c_str());
+            // The string may not be null-terminated, so make sure we provide
+            // the length along with the string.
+            intermediate.addSourceText(strings[numPre + s], lengths[numPre + s]);
         }
     }
     SetupBuiltinSymbolTable(version, profile, spvVersion, source);
