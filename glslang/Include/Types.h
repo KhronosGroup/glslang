@@ -2003,7 +2003,7 @@ public:
     {
         // Most commonly, they are both nullptr, or the same pointer to the same actual structure
         if ((!isStruct() && !right.isStruct()) ||
-            isStruct() && right.isStruct() && structure == right.structure)
+            (isStruct() && right.isStruct() && structure == right.structure))
             return true;
 
         // Both being nullptr was caught above, now they both have to be structures of the same number of elements
