@@ -2615,6 +2615,19 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 // next layer copies r-values into memory to use the access-chain mechanism
 bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang::TIntermSelection* node)
 {
+    // see if OpSelect can handle it
+    const auto isOpSelectable = [&]() {
+        if (node->getBasicType() == glslang::EbtVoid)
+            return false;
+        // OpSelect can do all other types starting with SPV 1.4
+        if (glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_4) {
+            // pre-1.4, only scalars and vectors can be handled
+            if ((!node->getType().isScalar() && !node->getType().isVector()))
+                return false;
+        }
+        return true;
+    };
+
     // See if it simple and safe, or required, to execute both sides.
     // Crucially, side effects must be either semantically required or avoided,
     // and there are performance trade-offs.
@@ -2633,9 +2646,7 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
 
         // if not required to execute both, decide based on performance/practicality...
 
-        // see if OpSelect can handle it
-        if ((!node->getType().isScalar() && !node->getType().isVector()) ||
-            node->getBasicType() == glslang::EbtVoid)
+        if (!isOpSelectable())
             return false;
 
         assert(node->getType() == node->getTrueBlock() ->getAsTyped()->getType() &&
@@ -2672,14 +2683,16 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
         // emit code to select between trueValue and falseValue
 
         // see if OpSelect can handle it
-        if (node->getType().isScalar() || node->getType().isVector()) {
+        if (isOpSelectable()) {
             // Emit OpSelect for this selection.
 
             // smear condition to vector, if necessary (AST is always scalar)
-            if (builder.isVector(trueValue))
+            // Before 1.4, smear like for mix(), starting with 1.4, keep it scalar
+            if (glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_4 && builder.isVector(trueValue)) {
                 condition = builder.smearScalar(spv::NoPrecision, condition, 
                                                 builder.makeVectorType(builder.makeBoolType(),
                                                                        builder.getNumComponents(trueValue)));
+            }
 
             // OpSelect
             result = builder.createTriOp(spv::OpSelect,
