@@ -467,6 +467,7 @@ INSTANTIATE_TEST_CASE_P(
     ::testing::ValuesIn(std::vector<std::string>({
         "spv.1.4.OpEntryPoint.frag",
         "spv.1.4.OpSelect.frag",
+        "spv.1.4.LoopControl.frag",
     })),
     FileNameAsCustomTestSuffix
 );

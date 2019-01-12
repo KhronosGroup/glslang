@@ -2956,14 +2956,14 @@ void Builder::createSelectionMerge(Block* mergeBlock, unsigned int control)
 }
 
 void Builder::createLoopMerge(Block* mergeBlock, Block* continueBlock, unsigned int control,
-                              unsigned int dependencyLength)
+                              const std::vector<unsigned int>& operands)
 {
     Instruction* merge = new Instruction(OpLoopMerge);
     merge->addIdOperand(mergeBlock->getId());
     merge->addIdOperand(continueBlock->getId());
     merge->addImmediateOperand(control);
-    if ((control & LoopControlDependencyLengthMask) != 0)
-        merge->addImmediateOperand(dependencyLength);
+    for (int op = 0; op < (int)operands.size(); ++op)
+        merge->addImmediateOperand(operands[op]);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(merge));
 }
 

@@ -674,15 +674,20 @@ const char* SelectControlString(int cont)
     }
 }
 
-const int LoopControlCeiling = 4;
+const int LoopControlCeiling = LoopControlPartialCountShift + 1;
 
 const char* LoopControlString(int cont)
 {
     switch (cont) {
-    case 0:  return "Unroll";
-    case 1:  return "DontUnroll";
-    case 2:  return "DependencyInfinite";
-    case 3:  return "DependencyLength";
+    case LoopControlUnrollShift:             return "Unroll";
+    case LoopControlDontUnrollShift:         return "DontUnroll";
+    case LoopControlDependencyInfiniteShift: return "DependencyInfinite";
+    case LoopControlDependencyLengthShift:   return "DependencyLength";
+    case LoopControlMinIterationsShift:      return "MinIterations";
+    case LoopControlMaxIterationsShift:      return "MaxIterations";
+    case LoopControlIterationMultipleShift:  return "IterationMultiple";
+    case LoopControlPeelCountShift:          return "PeelCount";
+    case LoopControlPartialCountShift:       return "PartialCount";
 
     case LoopControlCeiling:
     default: return "Bad";
