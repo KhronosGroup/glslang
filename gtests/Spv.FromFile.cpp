@@ -468,6 +468,9 @@ INSTANTIATE_TEST_CASE_P(
         "spv.1.4.OpEntryPoint.frag",
         "spv.1.4.OpSelect.frag",
         "spv.1.4.LoopControl.frag",
+        "spv.1.4.OpCopyLogical.comp",
+        "spv.1.4.OpCopyLogicalBool.comp",
+        "spv.1.4.OpCopyLogical.funcall.frag",
     })),
     FileNameAsCustomTestSuffix
 );

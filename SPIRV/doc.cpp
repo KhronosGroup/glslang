@@ -1031,6 +1031,7 @@ const char* OpcodeString(int op)
     case 82:  return "OpCompositeInsert";
     case 83:  return "OpCopyObject";
     case 84:  return "OpTranspose";
+    case OpCopyLogical: return "OpCopyLogical";
     case 85:  return "Bad";
     case 86:  return "OpSampledImage";
     case 87:  return "OpImageSampleImplicitLod";
@@ -1937,6 +1938,8 @@ void Parameterize()
     InstructionDesc[OpQuantizeToF16].operands.push(OperandId, "'Value'");
 
     InstructionDesc[OpTranspose].operands.push(OperandId, "'Matrix'");
+
+    InstructionDesc[OpCopyLogical].operands.push(OperandId, "'Operand'");
 
     InstructionDesc[OpIsNan].operands.push(OperandId, "'x'");
 

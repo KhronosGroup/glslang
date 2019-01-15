@@ -3656,6 +3656,20 @@ void TGlslangToSpvTraverser::multiTypeStore(const glslang::TType& type, spv::Id 
     // where the two types were the same type in GLSL. This requires member
     // by member copy, recursively.
 
+    // SPIR-V 1.4 added an instruction to do help do this.
+    if (glslangIntermediate->getSpv().spv >= glslang::EShTargetSpv_1_4) {
+        // However, bool in uniform space is changed to int, so
+        // OpCopyLogical does not work for that.
+        // TODO: It would be more robust to do a full recursive verification of the types satisfying SPIR-V rules.
+        bool rBool = builder.containsType(builder.getTypeId(rValue), spv::OpTypeBool, 0);
+        bool lBool = builder.containsType(lType, spv::OpTypeBool, 0);
+        if (lBool == rBool) {
+            spv::Id logicalCopy = builder.createUnaryOp(spv::OpCopyLogical, lType, rValue);
+            accessChainStore(type, logicalCopy);
+            return;
+        }
+    }
+
     // If an array, copy element by element.
     if (type.isArray()) {
         glslang::TType glslangElementType(type, 0);
