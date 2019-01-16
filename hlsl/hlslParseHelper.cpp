@@ -39,6 +39,7 @@
 #include "hlslGrammar.h"
 #include "hlslAttributes.h"
 
+#include "../glslang/Include/Common.h"
 #include "../glslang/MachineIndependent/Scan.h"
 #include "../glslang/MachineIndependent/preprocessor/PpContext.h"
 
@@ -3129,7 +3130,7 @@ TIntermAggregate* HlslParseContext::handleSamplerTextureCombine(const TSourceLoc
         if (textureShadowEntry != textureShadowVariant.end())
             newId = textureShadowEntry->second->get(shadowMode);
         else
-            textureShadowVariant[texSymbol->getId()] = new tShadowTextureSymbols;
+            textureShadowVariant[texSymbol->getId()] = NewPoolObject(tShadowTextureSymbols(), 1);
 
         // Sometimes we have to create another symbol (if this texture has been seen before,
         // and we haven't created the form for this shadow mode).
