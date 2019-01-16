@@ -3208,7 +3208,7 @@ void HlslParseContext::declareStructBufferCounter(const TSourceLoc& loc, const T
     TType blockType;
     counterBufferType(loc, blockType);
 
-    TString* blockName = new TString(intermediate.addCounterBufferName(name));
+    TString* blockName = NewPoolTString(intermediate.addCounterBufferName(name).c_str());
 
     // Counter buffer is not yet in use
     structBufferCounter[*blockName] = false;
