@@ -355,7 +355,7 @@ TIntermTyped* TParseContext::handleVariable(const TSourceLoc& loc, TSymbol* symb
         intermediate.addIoAccessed(*string);
 
     if (variable->getType().getBasicType() == EbtReference &&
-        variable->getType().getQualifier().isMemory()) {
+        variable->getType().getQualifier().bufferReferenceNeedsVulkanMemoryModel()) {
         intermediate.setUseVulkanMemoryModel();
     }
 
