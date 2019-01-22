@@ -338,12 +338,24 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
 
     case EOpLogicalAnd: // this code is written for possible future use, will not get executed currently
         for (int i = 0; i < newComps; i++)
+#ifdef __CTC__
+#pragma CTC SKIP
+#endif	    
             newConstArray[i] = leftUnionArray[i] && rightUnionArray[i];
+#ifdef __CTC__
+#pragma CTC ENDSKIP
+#endif	    
         break;
 
     case EOpLogicalOr: // this code is written for possible future use, will not get executed currently
         for (int i = 0; i < newComps; i++)
+#ifdef __CTC__
+#pragma CTC SKIP
+#endif	    
             newConstArray[i] = leftUnionArray[i] || rightUnionArray[i];
+#ifdef __CTC__
+#pragma CTC ENDSKIP
+#endif	    
         break;
 
     case EOpLogicalXor:
