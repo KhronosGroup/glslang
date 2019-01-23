@@ -7737,11 +7737,12 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
 static void SpecialQualifier(const char* name, TStorageQualifier qualifier, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
 {
     TSymbol* symbol = symbolTable.find(name);
-    if (symbol) {
-        TQualifier& symQualifier = symbol->getWritableType().getQualifier();
-        symQualifier.storage = qualifier;
-        symQualifier.builtIn = builtIn;
-    }
+    if (symbol == nullptr)
+        return;
+
+    TQualifier& symQualifier = symbol->getWritableType().getQualifier();
+    symQualifier.storage = qualifier;
+    symQualifier.builtIn = builtIn;
 }
 
 //
@@ -7757,7 +7758,7 @@ static void SpecialQualifier(const char* name, TStorageQualifier qualifier, TBui
 static void BuiltInVariable(const char* name, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
 {
     TSymbol* symbol = symbolTable.find(name);
-    if (! symbol)
+    if (symbol == nullptr)
         return;
 
     TQualifier& symQualifier = symbol->getWritableType().getQualifier();
@@ -7774,7 +7775,7 @@ static void BuiltInVariable(const char* name, TBuiltInVariable builtIn, TSymbolT
 static void BuiltInVariable(const char* blockName, const char* name, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
 {
     TSymbol* symbol = symbolTable.find(blockName);
-    if (! symbol)
+    if (symbol == nullptr)
         return;
 
     TTypeList& structure = *symbol->getWritableType().getWritableStruct();
@@ -8076,15 +8077,16 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
         // gl_PointSize, when it needs to be tied to an extension, is always a member of a block.
         // (Sometimes with an instance name, sometimes anonymous).
-        // However, the current automatic extension scheme does not work per block member,
-        // so for now check when parsing.
-        //
-        // if (profile == EEsProfile) {
-        //    if (language == EShLangGeometry)
-        //        symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_geometry_point_size, AEP_geometry_point_size);
-        //    else if (language == EShLangTessEvaluation || language == EShLangTessControl)
-        //        symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
-        //}
+        if (profile == EEsProfile) {
+            if (language == EShLangGeometry) {
+                symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_geometry_point_size, AEP_geometry_point_size);
+                symbolTable.setVariableExtensions("gl_in", "gl_PointSize", Num_AEP_geometry_point_size, AEP_geometry_point_size);
+            } else if (language == EShLangTessEvaluation || language == EShLangTessControl) {
+                // gl_in tessellation settings of gl_PointSize are in the context-dependent paths
+                symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
+                symbolTable.setVariableExtensions("gl_out", "gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
+            }
+        }
 
         if ((profile != EEsProfile && version >= 140) ||
             (profile == EEsProfile && version >= 310)) {
@@ -9511,6 +9513,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_in", "gl_BackSecondaryColor",  EbvBackSecondaryColor,  symbolTable);
         BuiltInVariable("gl_in", "gl_TexCoord",            EbvTexCoord,            symbolTable);
         BuiltInVariable("gl_in", "gl_FogFragCoord",        EbvFogFragCoord,        symbolTable);
+
+        // extension requirements
+        if (profile == EEsProfile) {
+            symbolTable.setVariableExtensions("gl_in", "gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
+        }
+
         break;
 
     default:

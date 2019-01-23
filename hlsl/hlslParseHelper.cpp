@@ -654,10 +654,6 @@ TIntermTyped* HlslParseContext::handleVariable(const TSourceLoc& loc, const TStr
         return nullptr;
     }
 
-    // Error check for requiring specific extensions present.
-    if (symbol && symbol->getNumExtensions())
-        requireExtensions(loc, symbol->getNumExtensions(), symbol->getExtensions(), symbol->getName().c_str());
-
     const TVariable* variable = nullptr;
     const TAnonMember* anon = symbol ? symbol->getAsAnonMember() : nullptr;
     TIntermTyped* node = nullptr;
@@ -5323,11 +5319,6 @@ TIntermTyped* HlslParseContext::handleFunctionCall(const TSourceLoc& loc, TFunct
             //  - a built-in operator,
             //  - a built-in function not mapped to an operator, or
             //  - a user function.
-
-            // Error check for a function requiring specific extensions present.
-            if (builtIn && fnCandidate->getNumExtensions())
-                requireExtensions(loc, fnCandidate->getNumExtensions(), fnCandidate->getExtensions(),
-                                  fnCandidate->getName().c_str());
 
             // turn an implicit member-function resolution into an explicit call
             TString callerName;
