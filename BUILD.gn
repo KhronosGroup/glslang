@@ -148,6 +148,11 @@ source_set("glslang_sources") {
       "-Wno-unused-variable",
     ]
   }
+  if (is_win && !is_clang) {
+    cflags = [
+      "/wd4018", # signed/unsigned mismatch
+    ]
+  }
 
   deps = [
     "${spirv_tools_dir}:spvtools_opt",
