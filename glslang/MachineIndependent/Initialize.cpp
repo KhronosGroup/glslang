@@ -8031,9 +8031,18 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_ViewportMaskPerViewNV",     EbvViewportMaskPerViewNV,   symbolTable);
 
         if (language != EShLangVertex) {
+            symbolTable.setVariableExtensions("gl_in", "gl_SecondaryPositionNV", 1, &E_GL_NV_stereo_view_rendering);
+            symbolTable.setVariableExtensions("gl_in", "gl_PositionPerViewNV",   1, &E_GL_NVX_multiview_per_view_attributes);
+
             BuiltInVariable("gl_in", "gl_SecondaryPositionNV", EbvSecondaryPositionNV, symbolTable);
             BuiltInVariable("gl_in", "gl_PositionPerViewNV",   EbvPositionPerViewNV,   symbolTable);
         }
+        symbolTable.setVariableExtensions("gl_out", "gl_ViewportMask",            1, &E_GL_NV_viewport_array2);
+        symbolTable.setVariableExtensions("gl_out", "gl_SecondaryPositionNV",     1, &E_GL_NV_stereo_view_rendering);
+        symbolTable.setVariableExtensions("gl_out", "gl_SecondaryViewportMaskNV", 1, &E_GL_NV_stereo_view_rendering);
+        symbolTable.setVariableExtensions("gl_out", "gl_PositionPerViewNV",       1, &E_GL_NVX_multiview_per_view_attributes);
+        symbolTable.setVariableExtensions("gl_out", "gl_ViewportMaskPerViewNV",   1, &E_GL_NVX_multiview_per_view_attributes);
+
         BuiltInVariable("gl_out", "gl_ViewportMask",            EbvViewportMaskNV,          symbolTable);
         BuiltInVariable("gl_out", "gl_SecondaryPositionNV",     EbvSecondaryPositionNV,     symbolTable);
         BuiltInVariable("gl_out", "gl_SecondaryViewportMaskNV", EbvSecondaryViewportMaskNV, symbolTable);
@@ -8685,25 +8694,44 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         break;
     case EShLangMeshNV:
         if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
-            // Per-vertex builtins
+            // per-vertex builtins
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_Position",     1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_PointSize",    1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_ClipDistance", 1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_CullDistance", 1, &E_GL_NV_mesh_shader);
+
             BuiltInVariable("gl_MeshVerticesNV", "gl_Position",     EbvPosition,     symbolTable);
             BuiltInVariable("gl_MeshVerticesNV", "gl_PointSize",    EbvPointSize,    symbolTable);
             BuiltInVariable("gl_MeshVerticesNV", "gl_ClipDistance", EbvClipDistance, symbolTable);
             BuiltInVariable("gl_MeshVerticesNV", "gl_CullDistance", EbvCullDistance, symbolTable);
-            // Per-view builtins
+
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_PositionPerViewNV",     1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_ClipDistancePerViewNV", 1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_CullDistancePerViewNV", 1, &E_GL_NV_mesh_shader);
+
             BuiltInVariable("gl_MeshVerticesNV", "gl_PositionPerViewNV",     EbvPositionPerViewNV,     symbolTable);
             BuiltInVariable("gl_MeshVerticesNV", "gl_ClipDistancePerViewNV", EbvClipDistancePerViewNV, symbolTable);
             BuiltInVariable("gl_MeshVerticesNV", "gl_CullDistancePerViewNV", EbvCullDistancePerViewNV, symbolTable);
 
-            // Per-primitive builtins
+            // per-primitive builtins
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_PrimitiveID",   1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_Layer",         1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_ViewportIndex", 1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_ViewportMask",  1, &E_GL_NV_mesh_shader);
+
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_PrimitiveID",   EbvPrimitiveId,    symbolTable);
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_Layer",         EbvLayer,          symbolTable);
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_ViewportIndex", EbvViewportIndex,  symbolTable);
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_ViewportMask",  EbvViewportMaskNV, symbolTable);
-            // Per-view builtins
+
+            // per-view per-primitive builtins
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_LayerPerViewNV",        1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_ViewportMaskPerViewNV", 1, &E_GL_NV_mesh_shader);
+
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_LayerPerViewNV",        EbvLayerPerViewNV,        symbolTable);
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_ViewportMaskPerViewNV", EbvViewportMaskPerViewNV, symbolTable);
 
+            // other builtins
             symbolTable.setVariableExtensions("gl_PrimitiveCountNV",     1, &E_GL_NV_mesh_shader);
             symbolTable.setVariableExtensions("gl_PrimitiveIndicesNV",   1, &E_GL_NV_mesh_shader);
             symbolTable.setVariableExtensions("gl_MeshViewCountNV",      1, &E_GL_NV_mesh_shader);
@@ -8724,11 +8752,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_GlobalInvocationID",   EbvGlobalInvocationId,   symbolTable);
             BuiltInVariable("gl_LocalInvocationIndex", EbvLocalInvocationIndex, symbolTable);
 
+            // builtin constants
             symbolTable.setVariableExtensions("gl_MaxMeshOutputVerticesNV",   1, &E_GL_NV_mesh_shader);
             symbolTable.setVariableExtensions("gl_MaxMeshOutputPrimitivesNV", 1, &E_GL_NV_mesh_shader);
             symbolTable.setVariableExtensions("gl_MaxMeshWorkGroupSizeNV",    1, &E_GL_NV_mesh_shader);
             symbolTable.setVariableExtensions("gl_MaxMeshViewCountNV",        1, &E_GL_NV_mesh_shader);
 
+            // builtin functions
             symbolTable.setFunctionExtensions("barrier",                      1, &E_GL_NV_mesh_shader);
             symbolTable.setFunctionExtensions("memoryBarrierShared",          1, &E_GL_NV_mesh_shader);
             symbolTable.setFunctionExtensions("groupMemoryBarrier",           1, &E_GL_NV_mesh_shader);
