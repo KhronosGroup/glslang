@@ -113,6 +113,21 @@ public:
         }
     }
 
+    // shared calculation by getOffset and getOffsets
+    void updateOffset(const TType& parentType, const TType& memberType, int& offset, int& memberSize)
+    {
+        int dummyStride;
+
+        // modify just the children's view of matrix layout, if there is one for this member
+        TLayoutMatrix subMatrixLayout = memberType.getQualifier().layoutMatrix;
+        int memberAlignment = intermediate.getMemberAlignment(memberType, memberSize, dummyStride,
+                                                              parentType.getQualifier().layoutPacking,
+                                                              subMatrixLayout != ElmNone
+                                                                  ? subMatrixLayout == ElmRowMajor
+                                                                  : parentType.getQualifier().layoutMatrix == ElmRowMajor);
+        RoundToPow2(offset, memberAlignment);
+    }
+
     // Lookup or calculate the offset of a block member, using the recursively
     // defined block offset rules.
     int getOffset(const TType& type, int index)
@@ -125,23 +140,60 @@ public:
         if (memberList[index].type->getQualifier().hasOffset())
             return memberList[index].type->getQualifier().layoutOffset;
 
-        int memberSize;
-        int dummyStride;
+        int memberSize = 0;
         int offset = 0;
         for (int m = 0; m <= index; ++m) {
-            // modify just the children's view of matrix layout, if there is one for this member
-            TLayoutMatrix subMatrixLayout = memberList[m].type->getQualifier().layoutMatrix;
-            int memberAlignment = intermediate.getMemberAlignment(*memberList[m].type, memberSize, dummyStride,
-                                                                  type.getQualifier().layoutPacking,
-                                                                  subMatrixLayout != ElmNone
-                                                                      ? subMatrixLayout == ElmRowMajor
-                                                                      : type.getQualifier().layoutMatrix == ElmRowMajor);
-            RoundToPow2(offset, memberAlignment);
+            updateOffset(type, *memberList[m].type, offset, memberSize);
+
             if (m < index)
                 offset += memberSize;
         }
 
         return offset;
+    }
+
+    // Lookup or calculate the offset of all block members at once, using the recursively
+    // defined block offset rules.
+    void getOffsets(const TType& type, TVector<int>& offsets)
+    {
+        const TTypeList& memberList = *type.getStruct();
+
+        int memberSize = 0;
+        int offset = 0;
+        for (size_t m = 0; m < offsets.size(); ++m) {
+            // if the user supplied an offset, snap to it now
+            if (memberList[m].type->getQualifier().hasOffset())
+                offset = memberList[m].type->getQualifier().layoutOffset;
+
+            // calculate the offset of the next member and align the current offset to this member
+            updateOffset(type, *memberList[m].type, offset, memberSize);
+
+            // save the offset of this member
+            offsets[m] = offset;
+
+            // update for the next member
+            offset += memberSize;
+        }
+    }
+
+    // Calculate the stride of an array type
+    int getArrayStride(const TType& baseType, const TType& type)
+    {
+        int dummySize;
+        int stride;
+
+        // consider blocks to have 0 stride, so that all offsets are relative to the start of their block
+        if (type.getBasicType() == EbtBlock)
+            return 0;
+
+        TLayoutMatrix subMatrixLayout = type.getQualifier().layoutMatrix;
+        intermediate.getMemberAlignment(type, dummySize, stride,
+                                        baseType.getQualifier().layoutPacking,
+                                        subMatrixLayout != ElmNone
+                                            ? subMatrixLayout == ElmRowMajor
+                                            : baseType.getQualifier().layoutMatrix == ElmRowMajor);
+
+        return stride;
     }
 
     // Calculate the block data size.
@@ -179,7 +231,9 @@ public:
             terminalType = &visitNode->getType();
             int index;
             switch (visitNode->getOp()) {
-            case EOpIndexIndirect:
+            case EOpIndexIndirect: {
+                int stride = getArrayStride(baseType, visitNode->getLeft()->getType());
+
                 // Visit all the indices of this array, and for each one add on the remaining dereferencing
                 for (int i = 0; i < std::max(visitNode->getLeft()->getType().getOuterArraySize(), 1); ++i) {
                     TString newBaseName = name;
@@ -189,14 +243,22 @@ public:
                     ++nextDeref;
                     TType derefType(*terminalType, 0);
                     blowUpActiveAggregate(derefType, newBaseName, derefs, nextDeref, offset, blockIndex, arraySize);
+
+                    if (offset >= 0)
+                      offset += stride;
                 }
 
                 // it was all completed in the recursive calls above
                 return;
+            }
             case EOpIndexDirect:
                 index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-                if (baseType.getBasicType() != EbtBlock)
+                if (baseType.getBasicType() != EbtBlock) {
                     name.append(TString("[") + String(index) + "]");
+
+                    if (offset >= 0)
+                      offset += getArrayStride(baseType, visitNode->getLeft()->getType()) * index;
+                }
                 break;
             case EOpIndexDirectStruct:
                 index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
@@ -213,23 +275,43 @@ public:
 
         // if the terminalType is still too coarse a granularity, this is still an aggregate to expand, expand it...
         if (! isReflectionGranularity(*terminalType)) {
+            // the base offset of this node, that children are relative to
+            int baseOffset = offset;
+
             if (terminalType->isArray()) {
                 // Visit all the indices of this array, and for each one,
                 // fully explode the remaining aggregate to dereference
+
+                int stride = 0;
+                if (offset >= 0)
+                    stride = getArrayStride(baseType, *terminalType);
+
                 for (int i = 0; i < std::max(terminalType->getOuterArraySize(), 1); ++i) {
                     TString newBaseName = name;
                     newBaseName.append(TString("[") + String(i) + "]");
                     TType derefType(*terminalType, 0);
+                    if (offset >= 0)
+                        offset = baseOffset + stride * i;
                     blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0);
                 }
             } else {
                 // Visit all members of this aggregate, and for each one,
                 // fully explode the remaining aggregate to dereference
                 const TTypeList& typeList = *terminalType->getStruct();
+
+                TVector<int> memberOffsets;
+
+                if (baseOffset >= 0) {
+                    memberOffsets.resize(typeList.size());
+                    getOffsets(*terminalType, memberOffsets);
+                }
+
                 for (int i = 0; i < (int)typeList.size(); ++i) {
                     TString newBaseName = name;
                     newBaseName.append(TString(".") + typeList[i].type->getFieldName());
                     TType derefType(*terminalType, i);
+                    if (offset >= 0)
+                        offset = baseOffset + memberOffsets[i];
                     blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0);
                 }
             }
