@@ -240,6 +240,13 @@ enum EShMessages {
 };
 
 //
+// Options for building reflection
+//
+typedef enum {
+    EShReflectionDefault           = 0,        // default is original behaviour before options were added
+} EShReflectionOptions;
+
+//
 // Build a table for bindings.  This can be used for locating
 // attributes, uniforms, globals, etc., as needed.
 //
@@ -717,7 +724,9 @@ public:
     TIntermediate* getIntermediate(EShLanguage stage) const { return intermediate[stage]; }
 
     // Reflection Interface
-    bool buildReflection();                          // call first, to do liveness analysis, index mapping, etc.; returns false on failure
+
+    // call first, to do liveness analysis, index mapping, etc.; returns false on failure
+    bool buildReflection(int opts = EShReflectionDefault);    
 
     unsigned getLocalSize(int dim) const;                  // return dim'th local size
     int getReflectionIndex(const char *name) const;

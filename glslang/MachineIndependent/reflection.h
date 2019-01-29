@@ -55,7 +55,7 @@ class TReflectionTraverser;
 // The full reflection database
 class TReflection {
 public:
-    TReflection() : badReflection(TObjectReflection::badReflection())
+    TReflection(EShReflectionOptions opts) : options(opts), badReflection(TObjectReflection::badReflection())
     { 
         for (int dim=0; dim<3; ++dim)
             localSize[dim] = 0;
@@ -124,6 +124,8 @@ protected:
     // Need a TString hash: typedef std::unordered_map<TString, int> TNameToIndex;
     typedef std::map<std::string, int> TNameToIndex;
     typedef std::vector<TObjectReflection> TMapIndexToReflection;
+
+    EShReflectionOptions options;
 
     TObjectReflection badReflection; // return for queries of -1 or generally out of range; has expected descriptions with in it for this
     TNameToIndex nameToIndex;        // maps names to indexes; can hold all types of data: uniform/buffer and which function names have been processed

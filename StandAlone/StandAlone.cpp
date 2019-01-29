@@ -152,6 +152,7 @@ void ProcessConfigFile()
     }
 }
 
+int ReflectOptions = EShReflectionDefault;
 int Options = 0;
 const char* ExecutableName = nullptr;
 const char* binaryFileName = nullptr;
@@ -1051,7 +1052,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
 
     // Reflect
     if (Options & EOptionDumpReflection) {
-        program.buildReflection();
+        program.buildReflection(ReflectOptions);
         program.dumpReflection();
     }
 

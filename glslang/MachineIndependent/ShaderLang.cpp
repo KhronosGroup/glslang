@@ -1966,12 +1966,12 @@ const char* TProgram::getInfoDebugLog()
 // Reflection implementation.
 //
 
-bool TProgram::buildReflection()
+bool TProgram::buildReflection(int opts)
 {
     if (! linked || reflection)
         return false;
 
-    reflection = new TReflection;
+    reflection = new TReflection((EShReflectionOptions)opts);
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (intermediate[s]) {
