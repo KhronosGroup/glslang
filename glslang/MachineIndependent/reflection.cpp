@@ -833,6 +833,35 @@ void TReflectionTraverser::visitSymbol(TIntermSymbol* base)
 }
 
 //
+// Implement TObjectReflection methods.
+//
+
+TObjectReflection::TObjectReflection(const std::string &pName, const TType &pType, int pOffset, int pGLDefineType,
+                                     int pSize, int pIndex)
+    : name(pName), offset(pOffset), glDefineType(pGLDefineType), size(pSize), index(pIndex), counterIndex(-1),
+      stages(EShLanguageMask(0)), type(pType.clone())
+{
+}
+
+int TObjectReflection::getBinding() const
+{
+    if (type == nullptr || !type->getQualifier().hasBinding())
+        return -1;
+    return type->getQualifier().layoutBinding;
+}
+
+void TObjectReflection::dump() const
+{
+    printf("%s: offset %d, type %x, size %d, index %d, binding %d, stages %d", name.c_str(), offset, glDefineType, size,
+           index, getBinding(), stages);
+
+    if (counterIndex != -1)
+        printf(", counter %d", counterIndex);
+
+    printf("\n");
+}
+
+//
 // Implement TReflection methods.
 //
 

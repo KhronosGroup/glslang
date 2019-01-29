@@ -599,6 +599,35 @@ private:
     TShader& operator=(TShader&);
 };
 
+//
+// A reflection database and its interface, consistent with the OpenGL API reflection queries.
+//
+
+// Data needed for just a single object at the granularity exchanged by the reflection API
+class TObjectReflection {
+public:
+    TObjectReflection(const std::string& pName, const TType& pType, int pOffset, int pGLDefineType, int pSize, int pIndex);
+
+    const TType* getType() const { return type; }
+    int getBinding() const;
+    void dump() const;
+    static TObjectReflection badReflection() { return TObjectReflection(); }
+
+    std::string name;
+    int offset;
+    int glDefineType;
+    int size;         // data size in bytes for a block, array size for a (non-block) object that's an array
+    int index;
+    int counterIndex;
+    EShLanguageMask stages;
+
+protected:
+    TObjectReflection() :
+        offset(-1), glDefineType(-1), size(-1), index(-1), counterIndex(-1), stages(EShLanguageMask(0)), type(nullptr) { }
+
+    const TType* type;
+};
+
 class TReflection;
 class TIoMapper;
 
@@ -689,27 +718,117 @@ public:
 
     // Reflection Interface
     bool buildReflection();                          // call first, to do liveness analysis, index mapping, etc.; returns false on failure
-    int getNumLiveUniformVariables() const;                // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
-    int getNumLiveUniformBlocks() const;                   // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
-    const char* getUniformName(int index) const;           // can be used for "name" part of glGetActiveUniform()
-    const char* getUniformBlockName(int blockIndex) const; // can be used for glGetActiveUniformBlockName()
-    int getUniformBlockSize(int blockIndex) const;         // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
-    int getUniformIndex(const char* name) const;           // can be used for glGetUniformIndices()
-    int getUniformBinding(int index) const;                // returns the binding number
-    EShLanguageMask getUniformStages(int index) const;     // returns Shaders Stages where a Uniform is present
-    int getUniformBlockBinding(int index) const;           // returns the block binding number
-    int getUniformBlockIndex(int index) const;             // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
-    int getUniformBlockCounterIndex(int index) const;      // returns block index of associated counter.
-    int getUniformType(int index) const;                   // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
-    int getUniformBufferOffset(int index) const;           // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
-    int getUniformArraySize(int index) const;              // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
-    int getNumLiveAttributes() const;                      // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
+
     unsigned getLocalSize(int dim) const;                  // return dim'th local size
-    const char *getAttributeName(int index) const;         // can be used for glGetActiveAttrib()
-    int getAttributeType(int index) const;                 // can be used for glGetActiveAttrib()
-    const TType* getUniformTType(int index) const;         // returns a TType*
-    const TType* getUniformBlockTType(int index) const;    // returns a TType*
-    const TType* getAttributeTType(int index) const;       // returns a TType*
+    int getReflectionIndex(const char *name) const;
+
+    int getNumUniformVariables() const;
+    const TObjectReflection& getUniform(int index) const;
+    int getNumUniformBlocks() const;
+    const TObjectReflection& getUniformBlock(int index) const;
+    int getNumAttributes() const;
+    const TObjectReflection& getAttribute(int index) const;
+
+    // Legacy Reflection Interface - expressed in terms of above interface
+    int getNumLiveUniformVariables() const                 // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
+    {
+        return getNumUniformVariables();
+    }
+
+    int getNumLiveUniformBlocks() const                    // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
+    {
+        return getNumUniformBlocks();
+    }
+
+    int getNumLiveAttributes() const                       // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
+    {
+        return getNumAttributes();
+    }
+
+    int getUniformIndex(const char* name) const            // can be used for glGetUniformIndices()
+    {
+        return getReflectionIndex(name);
+    }
+
+    const char* getUniformName(int index) const            // can be used for "name" part of glGetActiveUniform()
+    {
+        return getUniform(index).name.c_str();
+    }
+
+    int getUniformBinding(int index) const                 // returns the binding number
+    {
+        return getUniform(index).getBinding();
+    }
+
+    EShLanguageMask getUniformStages(int index) const      // returns Shaders Stages where a Uniform is present
+    {
+        return getUniform(index).stages;
+    }
+
+    int getUniformBlockIndex(int index) const              // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
+    {
+        return getUniform(index).index;
+    }
+
+    int getUniformType(int index) const                    // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
+    {
+        return getUniform(index).glDefineType;
+    }
+
+    int getUniformBufferOffset(int index) const            // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
+    {
+        return getUniform(index).offset;
+    }
+
+    int getUniformArraySize(int index) const               // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
+    {
+        return getUniform(index).size;
+    }
+
+    const TType* getUniformTType(int index) const          // returns a TType*
+    {
+        return getUniform(index).getType();
+    }
+
+    const char* getUniformBlockName(int index) const  // can be used for glGetActiveUniformBlockName()
+    {
+        return getUniformBlock(index).name.c_str();
+    }
+
+    int getUniformBlockSize(int index) const          // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
+    {
+        return getUniformBlock(index).size;
+    }
+
+    int getUniformBlockBinding(int index) const            // returns the block binding number
+    {
+        return getUniformBlock(index).getBinding();
+    }
+
+    int getUniformBlockCounterIndex(int index) const       // returns block index of associated counter.
+    {
+        return getUniformBlock(index).counterIndex;
+    }
+
+    const TType* getUniformBlockTType(int index) const     // returns a TType*
+    {
+        return getUniformBlock(index).getType();
+    }
+
+    const char* getAttributeName(int index) const          // can be used for glGetActiveAttrib()
+    {
+        return getAttribute(index).name.c_str();
+    }
+
+    int getAttributeType(int index) const                  // can be used for glGetActiveAttrib()
+    {
+        return getAttribute(index).glDefineType;
+    }
+
+    const TType* getAttributeTType(int index) const        // returns a TType*
+    {
+        return getAttribute(index).getType();
+    }
 
     void dumpReflection();
 

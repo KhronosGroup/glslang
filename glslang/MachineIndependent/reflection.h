@@ -52,47 +52,6 @@ class TIntermediate;
 class TIntermAggregate;
 class TReflectionTraverser;
 
-// Data needed for just a single object at the granularity exchanged by the reflection API
-class TObjectReflection {
-public:
-    TObjectReflection(const std::string& pName, const TType& pType, int pOffset, int pGLDefineType, int pSize, int pIndex) :
-        name(pName), offset(pOffset),
-        glDefineType(pGLDefineType), size(pSize), index(pIndex), counterIndex(-1), stages(EShLanguageMask(0)), type(pType.clone()) { }
-
-    const TType* getType() const { return type; }
-    int getBinding() const
-    {
-        if (type == nullptr || !type->getQualifier().hasBinding())
-            return -1;
-        return type->getQualifier().layoutBinding;
-    }
-    void dump() const
-    {
-        printf("%s: offset %d, type %x, size %d, index %d, binding %d, stages %d",
-               name.c_str(), offset, glDefineType, size, index, getBinding(), stages );
-
-        if (counterIndex != -1)
-            printf(", counter %d", counterIndex);
-
-        printf("\n");
-    }
-    static TObjectReflection badReflection() { return TObjectReflection(); }
-
-    std::string name;
-    int offset;
-    int glDefineType;
-    int size;         // data size in bytes for a block, array size for a (non-block) object that's an array
-    int index;
-    int counterIndex;
-    EShLanguageMask stages;
-
-protected:
-    TObjectReflection() :
-        offset(-1), glDefineType(-1), size(-1), index(-1), counterIndex(-1), stages(EShLanguageMask(0)), type(nullptr) { }
-
-    const TType* type;
-};
-
 // The full reflection database
 class TReflection {
 public:
