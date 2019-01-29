@@ -25,5 +25,8 @@ u6: offset -1, type ffffffff, size 0, index -1, binding 46, stages 0
 cb: offset -1, type ffffffff, size 4, index -1, binding 51, stages 0
 tb: offset -1, type ffffffff, size 4, index -1, binding 17, stages 0
 
-Vertex attribute reflection:
+Pipeline input reflection:
+
+Pipeline output reflection:
+@entryPointOutput: offset 0, type 8b52, size 0, index 0, binding -1, stages 0
 

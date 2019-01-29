@@ -97,7 +97,7 @@ public:
         }
     }
 
-    void addAttribute(const TIntermSymbol& base)
+    void addPipeInput(const TIntermSymbol& base)
     {
         if (processedDerefs.find(&base) == processedDerefs.end()) {
             processedDerefs.insert(&base);
@@ -107,8 +107,24 @@ public:
 
             TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
             if (it == reflection.nameToIndex.end()) {
-                reflection.nameToIndex[name.c_str()] = (int)reflection.indexToAttribute.size();
-                reflection.indexToAttribute.push_back(TObjectReflection(name.c_str(), type, 0, mapToGlType(type), 0, 0));
+                reflection.nameToIndex[name.c_str()] = (int)reflection.indexToPipeInput.size();
+                reflection.indexToPipeInput.push_back(TObjectReflection(name.c_str(), type, 0, mapToGlType(type), 0, 0));
+            }
+        }
+    }
+
+    void addPipeOutput(const TIntermSymbol& base)
+    {
+        if (processedDerefs.find(&base) == processedDerefs.end()) {
+            processedDerefs.insert(&base);
+
+            const TString &name = base.getName();
+            const TType &type = base.getType();
+
+            TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
+            if (it == reflection.nameToIndex.end()) {
+                reflection.nameToIndex[name.c_str()] = (int)reflection.indexToPipeOutput.size();
+                reflection.indexToPipeOutput.push_back(TObjectReflection(name.c_str(), type, 0, mapToGlType(type), 0, 0));
             }
         }
     }
@@ -853,8 +869,11 @@ void TReflectionTraverser::visitSymbol(TIntermSymbol* base)
     if (base->getQualifier().storage == EvqUniform)
         addUniform(*base);
 
-    if (intermediate.getStage() == EShLangVertex && base->getQualifier().isPipeInput())
-        addAttribute(*base);
+    if (intermediate.getStage() == reflection.firstStage && base->getQualifier().isPipeInput())
+        addPipeInput(*base);
+
+    if (intermediate.getStage() == reflection.lastStage && base->getQualifier().isPipeOutput())
+        addPipeOutput(*base);
 }
 
 //
@@ -964,9 +983,14 @@ void TReflection::dump()
         indexToUniformBlock[i].dump();
     printf("\n");
 
-    printf("Vertex attribute reflection:\n");
-    for (size_t i = 0; i < indexToAttribute.size(); ++i)
-        indexToAttribute[i].dump();
+    printf("Pipeline input reflection:\n");
+    for (size_t i = 0; i < indexToPipeInput.size(); ++i)
+        indexToPipeInput[i].dump();
+    printf("\n");
+
+    printf("Pipeline output reflection:\n");
+    for (size_t i = 0; i < indexToPipeOutput.size(); ++i)
+        indexToPipeOutput[i].dump();
     printf("\n");
 
     if (getLocalSize(0) > 1) {

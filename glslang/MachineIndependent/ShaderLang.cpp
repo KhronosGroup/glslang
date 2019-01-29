@@ -1971,7 +1971,22 @@ bool TProgram::buildReflection(int opts)
     if (! linked || reflection)
         return false;
 
-    reflection = new TReflection((EShReflectionOptions)opts);
+    int firstStage = EShLangVertex, lastStage = EShLangFragment;
+
+    if (opts & EShReflectionIntermediateIO) {
+        // if we're reflecting intermediate I/O, determine the first and last stage linked and use those as the
+        // boundaries for which stages generate pipeline inputs/outputs
+        firstStage = EShLangCount;
+        lastStage = 0;
+        for (int s = 0; s < EShLangCount; ++s) {
+            if (intermediate[s]) {
+                firstStage = std::min(firstStage, s);
+                lastStage = std::max(lastStage, s);
+            }
+        }
+    }
+
+    reflection = new TReflection((EShReflectionOptions)opts, (EShLanguage)firstStage, (EShLanguage)lastStage);
 
     for (int s = 0; s < EShLangCount; ++s) {
         if (intermediate[s]) {
@@ -1990,8 +2005,10 @@ int TProgram::getNumUniformVariables() const                        { return ref
 const TObjectReflection& TProgram::getUniform(int index) const      { return reflection->getUniform(index); }
 int TProgram::getNumUniformBlocks() const                           { return reflection->getNumUniformBlocks(); }
 const TObjectReflection& TProgram::getUniformBlock(int index) const { return reflection->getUniformBlock(index); }
-int TProgram::getNumAttributes() const                              { return reflection->getNumAttributes(); }
-const TObjectReflection& TProgram::getAttribute(int index) const    { return reflection->getAttribute(index); }
+int TProgram::getNumPipeInputs() const                              { return reflection->getNumPipeInputs(); }
+const TObjectReflection& TProgram::getPipeInput(int index) const    { return reflection->getPipeInput(index); }
+int TProgram::getNumPipeOutputs() const                             { return reflection->getNumPipeOutputs(); }
+const TObjectReflection& TProgram::getPipeOutput(int index) const   { return reflection->getPipeOutput(index); }
 
 void TProgram::dumpReflection()                      { reflection->dump(); }
 

@@ -10,6 +10,9 @@ t[0].v[2].normal[0]: offset 60, type 1406, size 3, index 0, binding -1, stages 1
 Uniform block reflection:
 VertexCollection: offset -1, type ffffffff, size 360, index -1, binding -1, stages 0
 
-Vertex attribute reflection:
+Pipeline input reflection:
 gl_InstanceID: offset 0, type 1404, size 0, index 0, binding -1, stages 0
+
+Pipeline output reflection:
+outval: offset 0, type 1406, size 0, index 0, binding -1, stages 0
 

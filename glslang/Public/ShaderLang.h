@@ -246,6 +246,7 @@ typedef enum {
     EShReflectionDefault           = 0,        // default is original behaviour before options were added
     EShReflectionStrictArraySuffix = (1 << 0), // reflection will follow stricter rules for array-of-structs suffixes
     EShReflectionBasicArraySuffix  = (1 << 1), // arrays of basic types will be appended with [0] as in GL reflection
+    EShReflectionIntermediateIO    = (1 << 2), // reflect inputs and outputs to program, even with no vertex shader
 } EShReflectionOptions;
 
 //
@@ -737,8 +738,10 @@ public:
     const TObjectReflection& getUniform(int index) const;
     int getNumUniformBlocks() const;
     const TObjectReflection& getUniformBlock(int index) const;
-    int getNumAttributes() const;
-    const TObjectReflection& getAttribute(int index) const;
+    int getNumPipeInputs() const;
+    const TObjectReflection& getPipeInput(int index) const;
+    int getNumPipeOutputs() const;
+    const TObjectReflection& getPipeOutput(int index) const;
 
     // Legacy Reflection Interface - expressed in terms of above interface
     int getNumLiveUniformVariables() const                 // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
@@ -753,7 +756,7 @@ public:
 
     int getNumLiveAttributes() const                       // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
     {
-        return getNumAttributes();
+        return getNumPipeInputs();
     }
 
     int getUniformIndex(const char* name) const            // can be used for glGetUniformIndices()
@@ -828,17 +831,17 @@ public:
 
     const char* getAttributeName(int index) const          // can be used for glGetActiveAttrib()
     {
-        return getAttribute(index).name.c_str();
+        return getPipeInput(index).name.c_str();
     }
 
     int getAttributeType(int index) const                  // can be used for glGetActiveAttrib()
     {
-        return getAttribute(index).glDefineType;
+        return getPipeInput(index).glDefineType;
     }
 
     const TType* getAttributeTType(int index) const        // returns a TType*
     {
-        return getAttribute(index).getType();
+        return getPipeInput(index).getType();
     }
 
     void dumpReflection();

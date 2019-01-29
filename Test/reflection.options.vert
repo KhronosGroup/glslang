@@ -13,6 +13,8 @@ buffer VertexCollection {
     TriangleInfo t[5];
 };
 
+out float outval;
+
 void main()
 {
     float f;
@@ -20,4 +22,5 @@ void main()
     f += t[gl_InstanceID].v[gl_InstanceID].position[gl_InstanceID];
     f += t[gl_InstanceID].v[gl_InstanceID].normal[gl_InstanceID];
     TriangleInfo tlocal[5] = t;
+    outval = f;
 }
