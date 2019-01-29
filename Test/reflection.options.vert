@@ -13,6 +13,12 @@ buffer VertexCollection {
     TriangleInfo t[5];
 };
 
+buffer MultipleArrays {
+    TriangleInfo tri[5];
+    VertexInfo vert[5];
+    float f[5];
+} multiarray;
+
 out float outval;
 
 void main()
@@ -21,6 +27,9 @@ void main()
     f += t[0].v[0].position[0];
     f += t[gl_InstanceID].v[gl_InstanceID].position[gl_InstanceID];
     f += t[gl_InstanceID].v[gl_InstanceID].normal[gl_InstanceID];
+    f += multiarray.tri[gl_InstanceID].v[0].position[0];
+    f += multiarray.vert[gl_InstanceID].position[0];
+    f += multiarray.f[gl_InstanceID];
     TriangleInfo tlocal[5] = t;
     outval = f;
 }

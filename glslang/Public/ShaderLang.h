@@ -626,14 +626,20 @@ public:
     std::string name;
     int offset;
     int glDefineType;
-    int size;         // data size in bytes for a block, array size for a (non-block) object that's an array
+    int size;                   // data size in bytes for a block, array size for a (non-block) object that's an array
     int index;
     int counterIndex;
+    int numMembers;
+    int arrayStride;            // stride of an array variable
+    int topLevelArrayStride;    // stride of the top-level variable in a storage buffer member
     EShLanguageMask stages;
 
 protected:
-    TObjectReflection() :
-        offset(-1), glDefineType(-1), size(-1), index(-1), counterIndex(-1), stages(EShLanguageMask(0)), type(nullptr) { }
+    TObjectReflection()
+        : offset(-1), glDefineType(-1), size(-1), index(-1), counterIndex(-1), numMembers(-1), arrayStride(0),
+          topLevelArrayStride(0), stages(EShLanguageMask(0)), type(nullptr)
+    {
+    }
 
     const TType* type;
 };
