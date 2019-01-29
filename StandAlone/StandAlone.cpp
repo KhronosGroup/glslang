@@ -524,6 +524,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         Options |= EOptionNoStorageFormat;
                     } else if (lowerword == "relaxed-errors") {
                         Options |= EOptionRelaxedErrors;
+                    } else if (lowerword == "reflect-strict-array-suffix") {
+                        ReflectOptions |= EShReflectionStrictArraySuffix;
                     } else if (lowerword == "resource-set-bindings" ||  // synonyms
                                lowerword == "resource-set-binding"  ||
                                lowerword == "rsb") {
@@ -1519,6 +1521,7 @@ void usage()
            "  --invert-y | --iy                 invert position.Y output in vertex shader\n"
            "  --keep-uncalled | --ku            don't eliminate uncalled functions\n"
            "  --no-storage-format | --nsf       use Unknown image format\n"
+           "  --reflect-strict-array-suffix     use strict array suffix rules when reflecting\n"
            "  --resource-set-binding [stage] name set binding\n"
            "                                    set descriptor set and binding for\n"
            "                                    individual resources\n"

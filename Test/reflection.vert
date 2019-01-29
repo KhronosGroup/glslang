@@ -161,6 +161,19 @@ buffer buf4 {
     N2 runtimeArray[];
 } buf4i;
 
+struct VertexInfo {
+    float position[3];
+    float normal[3];
+};
+
+struct TriangleInfo {
+    VertexInfo v[3];
+};
+
+buffer VertexCollection {
+    TriangleInfo t[5];
+};
+
 void main()
 {
     liveFunction1(image_ui2D, sampler_2D, sampler_2DMSArray);
@@ -216,4 +229,9 @@ void main()
     N1 b[4] = nest2.b;
     f += nest2.c[1].a;
     f += nest2.d[gl_InstanceID].a;
+
+    f += t[0].v[0].position[0];
+    f += t[gl_InstanceID].v[gl_InstanceID].position[gl_InstanceID];
+    f += t[gl_InstanceID].v[gl_InstanceID].normal[gl_InstanceID];
+    TriangleInfo tlocal[5] = t;
 }

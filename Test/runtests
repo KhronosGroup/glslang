@@ -32,6 +32,8 @@ diff -b $BASEDIR/badMacroArgs.frag.out $TARGETDIR/badMacroArgs.frag.out || HASER
 echo Running reflection...
 $EXE -l -q -C reflection.vert > $TARGETDIR/reflection.vert.out
 diff -b $BASEDIR/reflection.vert.out $TARGETDIR/reflection.vert.out || HASERROR=1
+$EXE -l -q -C --reflect-strict-array-suffix reflection.options.vert > $TARGETDIR/reflection.options.vert.out
+diff -b $BASEDIR/reflection.options.vert.out $TARGETDIR/reflection.options.vert.out || HASERROR=1
 $EXE -D -Od -e flizv -l -q -C -V -Od hlsl.reflection.vert > $TARGETDIR/hlsl.reflection.vert.out
 diff -b $BASEDIR/hlsl.reflection.vert.out $TARGETDIR/hlsl.reflection.vert.out || HASERROR=1
 $EXE -D -Od -e main -l -q -C -V -Od hlsl.reflection.binding.frag > $TARGETDIR/hlsl.reflection.binding.frag.out

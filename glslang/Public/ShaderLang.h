@@ -244,6 +244,7 @@ enum EShMessages {
 //
 typedef enum {
     EShReflectionDefault           = 0,        // default is original behaviour before options were added
+    EShReflectionStrictArraySuffix = (1 << 0), // reflection will follow stricter rules for array-of-structs suffixes
 } EShReflectionOptions;
 
 //

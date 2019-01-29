@@ -223,6 +223,16 @@ public:
     void blowUpActiveAggregate(const TType& baseType, const TString& baseName, const TList<TIntermBinary*>& derefs,
                                TList<TIntermBinary*>::const_iterator deref, int offset, int blockIndex, int arraySize)
     {
+        // when strictArraySuffix is enabled, we closely follow the rules from ARB_program_interface_query.
+        // Broadly:
+        // * arrays-of-structs always have a [x] suffix.
+        // * with array-of-struct variables in the root of a buffer block, only ever return [0].
+        // * otherwise, array suffixes are added whenever we iterate, even if that means expanding out an array.
+        const bool strictArraySuffix = (reflection.options & EShReflectionStrictArraySuffix);
+
+        // is this variable inside a buffer block. This flag is set back to false after we iterate inside the first array element.
+        bool blockParent = (baseType.getBasicType() == EbtBlock && baseType.getQualifier().storage == EvqBuffer);
+
         // process the part of the dereference chain that was explicit in the shader
         TString name = baseName;
         const TType* terminalType = &baseType;
@@ -237,7 +247,9 @@ public:
                 // Visit all the indices of this array, and for each one add on the remaining dereferencing
                 for (int i = 0; i < std::max(visitNode->getLeft()->getType().getOuterArraySize(), 1); ++i) {
                     TString newBaseName = name;
-                    if (baseType.getBasicType() != EbtBlock)
+                    if (strictArraySuffix && blockParent)
+                        newBaseName.append(TString("[0]"));
+                    else if (strictArraySuffix || baseType.getBasicType() != EbtBlock)
                         newBaseName.append(TString("[") + String(i) + "]");
                     TList<TIntermBinary*>::const_iterator nextDeref = deref;
                     ++nextDeref;
@@ -253,12 +265,15 @@ public:
             }
             case EOpIndexDirect:
                 index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
-                if (baseType.getBasicType() != EbtBlock) {
+                if (strictArraySuffix && blockParent) {
+                    name.append(TString("[0]"));
+                } else if (strictArraySuffix || baseType.getBasicType() != EbtBlock) {
                     name.append(TString("[") + String(index) + "]");
 
                     if (offset >= 0)
                       offset += getArrayStride(baseType, visitNode->getLeft()->getType()) * index;
                 }
+                blockParent = false;
                 break;
             case EOpIndexDirectStruct:
                 index = visitNode->getRight()->getAsConstantUnion()->getConstArray()[0].getIConst();
@@ -286,7 +301,13 @@ public:
                 if (offset >= 0)
                     stride = getArrayStride(baseType, *terminalType);
 
-                for (int i = 0; i < std::max(terminalType->getOuterArraySize(), 1); ++i) {
+                int arrayIterateSize = std::max(terminalType->getOuterArraySize(), 1);
+
+                // for top-level arrays in blocks, only expand [0] to avoid explosion of items
+                if (strictArraySuffix && blockParent)
+                    arrayIterateSize = 1;
+
+                for (int i = 0; i < arrayIterateSize; ++i) {
                     TString newBaseName = name;
                     newBaseName.append(TString("[") + String(i) + "]");
                     TType derefType(*terminalType, 0);
