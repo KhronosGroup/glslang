@@ -87,7 +87,8 @@ public:
     EShLanguageMask stages;
 
 protected:
-    TObjectReflection() : offset(-1), glDefineType(-1), size(-1), index(-1), type(nullptr) { }
+    TObjectReflection() :
+        offset(-1), glDefineType(-1), size(-1), index(-1), counterIndex(-1), stages(EShLanguageMask(0)), type(nullptr) { }
 
     const TType* type;
 };
