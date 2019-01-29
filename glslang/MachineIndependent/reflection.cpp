@@ -341,6 +341,10 @@ public:
             return;
         }
 
+        if ((reflection.options & EShReflectionBasicArraySuffix) && terminalType->isArray()) {
+            name.append(TString("[0]"));
+        }
+
         // Finally, add a full string to the reflection database, and update the array size if necessary.
         // If the dereferenced entity to record is an array, compute the size and update the maximum size.
 
