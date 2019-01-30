@@ -532,6 +532,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         ReflectOptions |= EShReflectionIntermediateIO;
                     } else if (lowerword == "reflect-separate-buffers") {
                         ReflectOptions |= EShReflectionSeparateBuffers;
+                    } else if (lowerword == "reflect-all-block-variables") {
+                        ReflectOptions |= EShReflectionAllBlockVariables;
                     } else if (lowerword == "resource-set-bindings" ||  // synonyms
                                lowerword == "resource-set-binding"  ||
                                lowerword == "rsb") {
@@ -1532,6 +1534,7 @@ void usage()
            "  --reflect-intermediate-io         reflection includes inputs/outputs of linked shaders\n"
            "                                    rather than just vertex/fragment\n"
            "  --reflect-separate-buffers        reflect buffer variables and blocks separately to uniforms\n"
+           "  --reflect-all-block-variables     reflect all variables in blocks, whether inactive or active\n"
            "  --resource-set-binding [stage] name set binding\n"
            "                                    set descriptor set and binding for\n"
            "                                    individual resources\n"

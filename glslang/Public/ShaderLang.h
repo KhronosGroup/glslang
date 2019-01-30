@@ -248,6 +248,7 @@ typedef enum {
     EShReflectionBasicArraySuffix  = (1 << 1), // arrays of basic types will be appended with [0] as in GL reflection
     EShReflectionIntermediateIO    = (1 << 2), // reflect inputs and outputs to program, even with no vertex shader
     EShReflectionSeparateBuffers   = (1 << 3), // buffer variables and buffer blocks are reflected separately
+    EShReflectionAllBlockVariables = (1 << 4), // reflect all variables in blocks, even if they are inactive
 } EShReflectionOptions;
 
 //

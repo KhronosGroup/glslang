@@ -172,6 +172,7 @@ struct TriangleInfo {
 
 buffer VertexCollection {
     TriangleInfo t[5];
+    uint padding[10];
 };
 
 out float outval;

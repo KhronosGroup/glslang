@@ -94,7 +94,7 @@ public:
             // the dereference change expected by blowUpActiveAggregate.
             TList<TIntermBinary*> derefs;
             blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, 0,
-                                  base.getQualifier().storage);
+                                  base.getQualifier().storage, true);
         }
     }
 
@@ -110,6 +110,12 @@ public:
             if (it == reflection.nameToIndex.end()) {
                 reflection.nameToIndex[name.c_str()] = (int)reflection.indexToPipeInput.size();
                 reflection.indexToPipeInput.push_back(TObjectReflection(name.c_str(), type, 0, mapToGlType(type), 0, 0));
+
+                EShLanguageMask& stages = reflection.indexToPipeInput.back().stages;
+                stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+            } else {
+                EShLanguageMask& stages = reflection.indexToPipeInput[it->second].stages;
+                stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
             }
         }
     }
@@ -126,6 +132,12 @@ public:
             if (it == reflection.nameToIndex.end()) {
                 reflection.nameToIndex[name.c_str()] = (int)reflection.indexToPipeOutput.size();
                 reflection.indexToPipeOutput.push_back(TObjectReflection(name.c_str(), type, 0, mapToGlType(type), 0, 0));
+
+                EShLanguageMask& stages = reflection.indexToPipeOutput.back().stages;
+                stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+            } else {
+                EShLanguageMask& stages = reflection.indexToPipeOutput[it->second].stages;
+                stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
             }
         }
     }
@@ -269,7 +281,7 @@ public:
     // A value of 0 for arraySize will mean to use the full array's size.
     void blowUpActiveAggregate(const TType& baseType, const TString& baseName, const TList<TIntermBinary*>& derefs,
                                TList<TIntermBinary*>::const_iterator deref, int offset, int blockIndex, int arraySize,
-                               int topLevelArrayStride, TStorageQualifier baseStorage)
+                               int topLevelArrayStride, TStorageQualifier baseStorage, bool active)
     {
         // when strictArraySuffix is enabled, we closely follow the rules from ARB_program_interface_query.
         // Broadly:
@@ -306,7 +318,7 @@ public:
                     ++nextDeref;
                     TType derefType(*terminalType, 0);
                     blowUpActiveAggregate(derefType, newBaseName, derefs, nextDeref, offset, blockIndex, arraySize,
-                                          topLevelArrayStride, baseStorage);
+                                          topLevelArrayStride, baseStorage, active);
 
                     if (offset >= 0)
                         offset += stride;
@@ -377,7 +389,7 @@ public:
                         offset = baseOffset + stride * i;
 
                     blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0,
-                                          topLevelArrayStride, baseStorage);
+                                          topLevelArrayStride, baseStorage, active);
                 }
             } else {
                 // Visit all members of this aggregate, and for each one,
@@ -393,7 +405,9 @@ public:
 
                 for (int i = 0; i < (int)typeList.size(); ++i) {
                     TString newBaseName = name;
-                    newBaseName.append(TString(".") + typeList[i].type->getFieldName());
+                    if (newBaseName.size() > 0)
+                        newBaseName.append(".");
+                    newBaseName.append(typeList[i].type->getFieldName());
                     TType derefType(*terminalType, i);
                     if (offset >= 0)
                         offset = baseOffset + memberOffsets[i];
@@ -405,7 +419,7 @@ public:
                     }
 
                     blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0,
-                                          arrayStride, baseStorage);
+                                          arrayStride, baseStorage, active);
                 }
             }
 
@@ -442,9 +456,21 @@ public:
                 reflection.atomicCounterUniformIndices.push_back(uniformIndex);
 
             variables.back().topLevelArrayStride = topLevelArrayStride;
-        } else if (arraySize > 1) {
-            int& reflectedArraySize = variables[it->second].size;
-            reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            
+            if ((reflection.options & EShReflectionAllBlockVariables) && active) {
+                EShLanguageMask& stages = variables.back().stages;
+                stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+            }
+        } else {
+            if (arraySize > 1) {
+                int& reflectedArraySize = variables[it->second].size;
+                reflectedArraySize = std::max(arraySize, reflectedArraySize);
+            }
+
+            if ((reflection.options & EShReflectionAllBlockVariables) && active) {
+              EShLanguageMask& stages = variables[it->second].stages;
+              stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+            }
         }
     }
 
@@ -494,6 +520,10 @@ public:
             anonymous = IsAnonymous(base->getName());
 
             const TString& blockName = base->getType().getTypeName();
+            TString baseName;
+            
+            if (! anonymous)
+                baseName = blockName;
 
             if (base->getType().isArray()) {
                 TType derefType(base->getType(), 0);
@@ -502,8 +532,56 @@ public:
                 for (int e = 0; e < base->getType().getCumulativeArraySize(); ++e)
                     blockIndex = addBlockName(blockName + "[" + String(e) + "]", derefType,
                                               getBlockSize(base->getType()));
+                baseName.append(TString("[0]"));
             } else
                 blockIndex = addBlockName(blockName, base->getType(), getBlockSize(base->getType()));
+
+            if (reflection.options & EShReflectionAllBlockVariables) {
+                // Use a degenerate (empty) set of dereferences to immediately put as at the end of
+                // the dereference change expected by blowUpActiveAggregate.
+                TList<TIntermBinary*> derefs;
+
+                // because we don't have any derefs, the first thing blowUpActiveAggregate will do is iterate over each
+                // member in the struct definition. This will lose any information about whether the parent was a buffer
+                // block. So if we're using strict array rules which don't expand the first child of a buffer block we
+                // instead iterate over the children here.
+                const bool strictArraySuffix = (reflection.options & EShReflectionStrictArraySuffix);
+                bool blockParent = (base->getType().getBasicType() == EbtBlock && base->getQualifier().storage == EvqBuffer);
+
+                if (strictArraySuffix && blockParent) {
+                    const TTypeList& typeList = *base->getType().getStruct();
+
+                    TVector<int> memberOffsets;
+
+                    memberOffsets.resize(typeList.size());
+                    getOffsets(base->getType(), memberOffsets);
+
+                    for (int i = 0; i < (int)typeList.size(); ++i) {
+                        TType derefType(base->getType(), i);
+                        TString name = baseName;
+                        if (name.size() > 0)
+                            name.append(".");
+                        name.append(typeList[i].type->getFieldName());
+
+                        // if this member is an array, store the top-level array stride but start the explosion from
+                        // the inner struct type.
+                        if (derefType.isArray() && derefType.isStruct()) {
+                            name.append("[0]");
+                            blowUpActiveAggregate(TType(derefType, 0), name, derefs, derefs.end(), memberOffsets[i],
+                                                  blockIndex, 0, getArrayStride(base->getType(), derefType),
+                                                  base->getQualifier().storage, false);
+                        } else {
+                            blowUpActiveAggregate(derefType, name, derefs, derefs.end(), memberOffsets[i], blockIndex,
+                                                  0, 0, base->getQualifier().storage, false);
+                        }
+                    }
+                } else {
+                    // otherwise - if we're not using strict array suffix rules, or this isn't a block so we are
+                    // expanding root arrays anyway, just start the iteration from the base block type.
+                    blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.end(), 0, blockIndex, 0, 0,
+                                          base->getQualifier().storage, false);
+                }
+            }
         }
 
         // Process the dereference chain, backward, accumulating the pieces for later forward traversal.
@@ -534,7 +612,7 @@ public:
                 baseName = base->getName();
         }
         blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize, 0,
-                              base->getQualifier().storage);
+                              base->getQualifier().storage, true);
     }
 
     int addBlockName(const TString& name, const TType& type, int size)
@@ -549,8 +627,15 @@ public:
             blocks.push_back(TObjectReflection(name.c_str(), type, -1, -1, size, -1));
 
             blocks.back().numMembers = countAggregateMembers(type);
-        } else
+
+            EShLanguageMask& stages = blocks.back().stages;
+            stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+        } else {
             blockIndex = it->second;
+
+            EShLanguageMask& stages = blocks[blockIndex].stages;
+            stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
+        }
 
         return blockIndex;
     }
@@ -1018,6 +1103,9 @@ void TReflection::buildCounterIndices(const TIntermediate& intermediate)
 // build Shader Stages mask for all uniforms
 void TReflection::buildUniformStageMask(const TIntermediate& intermediate)
 {
+    if (options & EShReflectionAllBlockVariables)
+        return;
+
     for (int i = 0; i < int(indexToUniform.size()); ++i) {
         indexToUniform[i].stages = static_cast<EShLanguageMask>(indexToUniform[i].stages | 1 << intermediate.getStage());
     }

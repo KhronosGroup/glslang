@@ -11,6 +11,7 @@ struct TriangleInfo {
 
 buffer VertexCollection {
     TriangleInfo t[5];
+    uint padding[10];
 };
 
 buffer MultipleArrays {
@@ -22,6 +23,7 @@ buffer MultipleArrays {
 uniform UBO {
     VertexInfo verts[2];
     float flt[8];
+    uvec4 unused;
 } ubo;
 
 out float outval;

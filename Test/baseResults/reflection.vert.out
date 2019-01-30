@@ -127,36 +127,36 @@ uf2: offset -1, type 1406, size 1, index -1, binding -1, stages 1
 named.member3: offset 32, type 8b52, size 1, index 1, binding -1, stages 1
 
 Uniform block reflection:
-nameless: offset -1, type ffffffff, size 496, index -1, binding -1, stages 0, numMembers 9
-named: offset -1, type ffffffff, size 304, index -1, binding -1, stages 0, numMembers 10
-c_nameless: offset -1, type ffffffff, size 112, index -1, binding -1, stages 0, numMembers 5
-nested: offset -1, type ffffffff, size 32, index -1, binding -1, stages 0, numMembers 4
-abl[0]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 1
-abl[1]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 1
-abl[2]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 1
-abl[3]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 1
-abl2[0]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 1
-abl2[1]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 1
-abl2[2]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 1
-abl2[3]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 1
-buf1: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 2
-buf2: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 4
-buf3: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 2
-buf4: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 4
-nested2: offset -1, type ffffffff, size 208, index -1, binding -1, stages 0, numMembers 15
-VertexCollection: offset -1, type ffffffff, size 360, index -1, binding -1, stages 0, numMembers 30
+nameless: offset -1, type ffffffff, size 496, index -1, binding -1, stages 1, numMembers 9
+named: offset -1, type ffffffff, size 304, index -1, binding -1, stages 1, numMembers 10
+c_nameless: offset -1, type ffffffff, size 112, index -1, binding -1, stages 1, numMembers 5
+nested: offset -1, type ffffffff, size 32, index -1, binding -1, stages 1, numMembers 4
+abl[0]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
+abl[1]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
+abl[2]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
+abl[3]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
+abl2[0]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
+abl2[1]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
+abl2[2]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
+abl2[3]: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 1
+buf1: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 2
+buf2: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 4
+buf3: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 2
+buf4: offset -1, type ffffffff, size 4, index -1, binding -1, stages 1, numMembers 4
+nested2: offset -1, type ffffffff, size 208, index -1, binding -1, stages 1, numMembers 15
+VertexCollection: offset -1, type ffffffff, size 400, index -1, binding -1, stages 1, numMembers 31
 
 Buffer variable reflection:
 
 Buffer block reflection:
 
 Pipeline input reflection:
-attributeFloat: offset 0, type 1406, size 0, index 0, binding -1, stages 0
-attributeFloat2: offset 0, type 8b50, size 0, index 0, binding -1, stages 0
-attributeFloat3: offset 0, type 8b51, size 0, index 0, binding -1, stages 0
-attributeFloat4: offset 0, type 8b52, size 0, index 0, binding -1, stages 0
-attributeMat4: offset 0, type 8b5c, size 0, index 0, binding -1, stages 0
-gl_InstanceID: offset 0, type 1404, size 0, index 0, binding -1, stages 0
+attributeFloat: offset 0, type 1406, size 0, index 0, binding -1, stages 1
+attributeFloat2: offset 0, type 8b50, size 0, index 0, binding -1, stages 1
+attributeFloat3: offset 0, type 8b51, size 0, index 0, binding -1, stages 1
+attributeFloat4: offset 0, type 8b52, size 0, index 0, binding -1, stages 1
+attributeMat4: offset 0, type 8b5c, size 0, index 0, binding -1, stages 1
+gl_InstanceID: offset 0, type 1404, size 0, index 0, binding -1, stages 1
 
 Pipeline output reflection:
 
