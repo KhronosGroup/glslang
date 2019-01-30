@@ -2001,14 +2001,20 @@ bool TProgram::buildReflection(int opts)
 unsigned TProgram::getLocalSize(int dim) const                      { return reflection->getLocalSize(dim); }
 int TProgram::getReflectionIndex(const char* name) const            { return reflection->getIndex(name); }
 
-int TProgram::getNumUniformVariables() const                        { return reflection->getNumUniforms(); }
-const TObjectReflection& TProgram::getUniform(int index) const      { return reflection->getUniform(index); }
-int TProgram::getNumUniformBlocks() const                           { return reflection->getNumUniformBlocks(); }
-const TObjectReflection& TProgram::getUniformBlock(int index) const { return reflection->getUniformBlock(index); }
-int TProgram::getNumPipeInputs() const                              { return reflection->getNumPipeInputs(); }
-const TObjectReflection& TProgram::getPipeInput(int index) const    { return reflection->getPipeInput(index); }
-int TProgram::getNumPipeOutputs() const                             { return reflection->getNumPipeOutputs(); }
-const TObjectReflection& TProgram::getPipeOutput(int index) const   { return reflection->getPipeOutput(index); }
+int TProgram::getNumUniformVariables() const                          { return reflection->getNumUniforms(); }
+const TObjectReflection& TProgram::getUniform(int index) const        { return reflection->getUniform(index); }
+int TProgram::getNumUniformBlocks() const                             { return reflection->getNumUniformBlocks(); }
+const TObjectReflection& TProgram::getUniformBlock(int index) const   { return reflection->getUniformBlock(index); }
+int TProgram::getNumPipeInputs() const                                { return reflection->getNumPipeInputs(); }
+const TObjectReflection& TProgram::getPipeInput(int index) const      { return reflection->getPipeInput(index); }
+int TProgram::getNumPipeOutputs() const                               { return reflection->getNumPipeOutputs(); }
+const TObjectReflection& TProgram::getPipeOutput(int index) const     { return reflection->getPipeOutput(index); }
+int TProgram::getNumBufferVariables() const                           { return reflection->getNumBufferVariables(); }
+const TObjectReflection& TProgram::getBufferVariable(int index) const { return reflection->getBufferVariable(index); }
+int TProgram::getNumBufferBlocks() const                              { return reflection->getNumStorageBuffers(); }
+const TObjectReflection& TProgram::getBufferBlock(int index) const    { return reflection->getStorageBufferBlock(index); }
+int TProgram::getNumAtomicCounters() const                            { return reflection->getNumAtomicCounters(); }
+const TObjectReflection& TProgram::getAtomicCounter(int index) const  { return reflection->getAtomicCounter(index); }
 
 void TProgram::dumpReflection()                      { reflection->dump(); }
 

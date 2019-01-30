@@ -146,6 +146,10 @@ buf4: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembe
 nested2: offset -1, type ffffffff, size 208, index -1, binding -1, stages 0, numMembers 15
 VertexCollection: offset -1, type ffffffff, size 360, index -1, binding -1, stages 0, numMembers 30
 
+Buffer variable reflection:
+
+Buffer block reflection:
+
 Pipeline input reflection:
 attributeFloat: offset 0, type 1406, size 0, index 0, binding -1, stages 0
 attributeFloat2: offset 0, type 8b50, size 0, index 0, binding -1, stages 0

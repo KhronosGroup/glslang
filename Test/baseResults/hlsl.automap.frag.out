@@ -25,6 +25,10 @@ u6: offset -1, type ffffffff, size 0, index -1, binding 46, stages 0, numMembers
 cb: offset -1, type ffffffff, size 4, index -1, binding 51, stages 0, numMembers 1
 tb: offset -1, type ffffffff, size 4, index -1, binding 17, stages 0, numMembers 1
 
+Buffer variable reflection:
+
+Buffer block reflection:
+
 Pipeline input reflection:
 
 Pipeline output reflection:

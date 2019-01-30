@@ -530,6 +530,8 @@ void ProcessArguments(std::vector<std::unique_ptr<glslang::TWorkItem>>& workItem
                         ReflectOptions |= EShReflectionBasicArraySuffix;
                     } else if (lowerword == "reflect-intermediate-io") {
                         ReflectOptions |= EShReflectionIntermediateIO;
+                    } else if (lowerword == "reflect-separate-buffers") {
+                        ReflectOptions |= EShReflectionSeparateBuffers;
                     } else if (lowerword == "resource-set-bindings" ||  // synonyms
                                lowerword == "resource-set-binding"  ||
                                lowerword == "rsb") {
@@ -1529,6 +1531,7 @@ void usage()
            "  --reflect-basic-array-suffix      arrays of basic types will have trailing [0]\n"
            "  --reflect-intermediate-io         reflection includes inputs/outputs of linked shaders\n"
            "                                    rather than just vertex/fragment\n"
+           "  --reflect-separate-buffers        reflect buffer variables and blocks separately to uniforms\n"
            "  --resource-set-binding [stage] name set binding\n"
            "                                    set descriptor set and binding for\n"
            "                                    individual resources\n"

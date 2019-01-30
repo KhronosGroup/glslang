@@ -93,7 +93,8 @@ public:
             // Use a degenerate (empty) set of dereferences to immediately put as at the end of
             // the dereference change expected by blowUpActiveAggregate.
             TList<TIntermBinary*> derefs;
-            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, 0);
+            blowUpActiveAggregate(base.getType(), base.getName(), derefs, derefs.end(), -1, -1, 0, 0,
+                                  base.getQualifier().storage);
         }
     }
 
@@ -268,7 +269,7 @@ public:
     // A value of 0 for arraySize will mean to use the full array's size.
     void blowUpActiveAggregate(const TType& baseType, const TString& baseName, const TList<TIntermBinary*>& derefs,
                                TList<TIntermBinary*>::const_iterator deref, int offset, int blockIndex, int arraySize,
-                               int topLevelArrayStride)
+                               int topLevelArrayStride, TStorageQualifier baseStorage)
     {
         // when strictArraySuffix is enabled, we closely follow the rules from ARB_program_interface_query.
         // Broadly:
@@ -305,7 +306,7 @@ public:
                     ++nextDeref;
                     TType derefType(*terminalType, 0);
                     blowUpActiveAggregate(derefType, newBaseName, derefs, nextDeref, offset, blockIndex, arraySize,
-                                          topLevelArrayStride);
+                                          topLevelArrayStride, baseStorage);
 
                     if (offset >= 0)
                         offset += stride;
@@ -376,7 +377,7 @@ public:
                         offset = baseOffset + stride * i;
 
                     blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0,
-                                          topLevelArrayStride);
+                                          topLevelArrayStride, baseStorage);
                 }
             } else {
                 // Visit all members of this aggregate, and for each one,
@@ -404,7 +405,7 @@ public:
                     }
 
                     blowUpActiveAggregate(derefType, newBaseName, derefs, derefs.end(), offset, blockIndex, 0,
-                                          arrayStride);
+                                          arrayStride, baseStorage);
                 }
             }
 
@@ -423,22 +424,26 @@ public:
         if (arraySize == 0)
             arraySize = mapToGlArraySize(*terminalType);
 
+        TReflection::TMapIndexToReflection& variables = reflection.GetVariableMapForStorage(baseStorage);
+
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
         if (it == reflection.nameToIndex.end()) {
-            reflection.nameToIndex[name.c_str()] = (int)reflection.indexToUniform.size();
-
-            reflection.indexToUniform.push_back(TObjectReflection(name.c_str(), *terminalType, offset,
-                                                                  mapToGlType(*terminalType),
-                                                                  arraySize, blockIndex));
+            int uniformIndex = (int)variables.size();
+            reflection.nameToIndex[name.c_str()] = uniformIndex;
+            variables.push_back(TObjectReflection(name.c_str(), *terminalType, offset, mapToGlType(*terminalType),
+                                                  arraySize, blockIndex));
             if (terminalType->isArray()) {
-                reflection.indexToUniform.back().arrayStride = getArrayStride(baseType, *terminalType);
+                variables.back().arrayStride = getArrayStride(baseType, *terminalType);
                 if (topLevelArrayStride == 0)
-                    topLevelArrayStride = reflection.indexToUniform.back().arrayStride;
+                    topLevelArrayStride = variables.back().arrayStride;
             }
 
-            reflection.indexToUniform.back().topLevelArrayStride = topLevelArrayStride;
+            if ((reflection.options & EShReflectionSeparateBuffers) && terminalType->getBasicType() == EbtAtomicUint)
+                reflection.atomicCounterUniformIndices.push_back(uniformIndex);
+
+            variables.back().topLevelArrayStride = topLevelArrayStride;
         } else if (arraySize > 1) {
-            int& reflectedArraySize = reflection.indexToUniform[it->second].size;
+            int& reflectedArraySize = variables[it->second].size;
             reflectedArraySize = std::max(arraySize, reflectedArraySize);
         }
     }
@@ -528,19 +533,22 @@ public:
             else
                 baseName = base->getName();
         }
-        blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize, 0);
+        blowUpActiveAggregate(base->getType(), baseName, derefs, derefs.begin(), offset, blockIndex, arraySize, 0,
+                              base->getQualifier().storage);
     }
 
     int addBlockName(const TString& name, const TType& type, int size)
     {
+        TReflection::TMapIndexToReflection& blocks = reflection.GetBlockMapForStorage(type.getQualifier().storage);
+
         int blockIndex;
         TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
         if (reflection.nameToIndex.find(name.c_str()) == reflection.nameToIndex.end()) {
-            blockIndex = (int)reflection.indexToUniformBlock.size();
+            blockIndex = (int)blocks.size();
             reflection.nameToIndex[name.c_str()] = blockIndex;
-            reflection.indexToUniformBlock.push_back(TObjectReflection(name.c_str(), type, -1, -1, size, -1));
+            blocks.push_back(TObjectReflection(name.c_str(), type, -1, -1, size, -1));
 
-            reflection.indexToUniformBlock.back().numMembers = countAggregateMembers(type);
+            blocks.back().numMembers = countAggregateMembers(type);
         } else
             blockIndex = it->second;
 
@@ -1013,6 +1021,11 @@ void TReflection::buildUniformStageMask(const TIntermediate& intermediate)
     for (int i = 0; i < int(indexToUniform.size()); ++i) {
         indexToUniform[i].stages = static_cast<EShLanguageMask>(indexToUniform[i].stages | 1 << intermediate.getStage());
     }
+
+    for (int i = 0; i < int(indexToBufferVariable.size()); ++i) {
+        indexToBufferVariable[i].stages =
+            static_cast<EShLanguageMask>(indexToBufferVariable[i].stages | 1 << intermediate.getStage());
+    }
 }
 
 // Merge live symbols from 'intermediate' into the existing reflection database.
@@ -1055,6 +1068,16 @@ void TReflection::dump()
     printf("Uniform block reflection:\n");
     for (size_t i = 0; i < indexToUniformBlock.size(); ++i)
         indexToUniformBlock[i].dump();
+    printf("\n");
+
+    printf("Buffer variable reflection:\n");
+    for (size_t i = 0; i < indexToBufferVariable.size(); ++i)
+      indexToBufferVariable[i].dump();
+    printf("\n");
+
+    printf("Buffer block reflection:\n");
+    for (size_t i = 0; i < indexToBufferBlock.size(); ++i)
+      indexToBufferBlock[i].dump();
     printf("\n");
 
     printf("Pipeline input reflection:\n");

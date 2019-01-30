@@ -107,6 +107,36 @@ public:
             return badReflection;
     }
 
+    // for mapping from an atomic counter to the uniform index
+    int getNumAtomicCounters() const { return (int)atomicCounterUniformIndices.size(); }
+    const TObjectReflection& getAtomicCounter(int i) const
+    {
+        if (i >= 0 && i < (int)atomicCounterUniformIndices.size())
+            return getUniform(atomicCounterUniformIndices[i]);
+        else
+            return badReflection;
+    }
+
+    // for mapping a buffer variable index to a buffer variable object's description
+    int getNumBufferVariables() { return (int)indexToBufferVariable.size(); }
+    const TObjectReflection& getBufferVariable(int i) const
+    {
+        if (i >= 0 && i < (int)indexToBufferVariable.size())
+            return indexToBufferVariable[i];
+        else
+            return badReflection;
+    }
+    
+    // for mapping a storage block index to the storage block's description
+    int getNumStorageBuffers() const { return (int)indexToBufferBlock.size(); }
+    const TObjectReflection&  getStorageBufferBlock(int i) const
+    {
+        if (i >= 0 && i < (int)indexToBufferBlock.size())
+            return indexToBufferBlock[i];
+        else
+            return badReflection;
+    }
+
     // for mapping any name to its index (block names, uniform names and input/output names)
     int getIndex(const char* name) const
     {
@@ -135,6 +165,20 @@ protected:
     // Need a TString hash: typedef std::unordered_map<TString, int> TNameToIndex;
     typedef std::map<std::string, int> TNameToIndex;
     typedef std::vector<TObjectReflection> TMapIndexToReflection;
+    typedef std::vector<int> TIndices;
+
+    TMapIndexToReflection& GetBlockMapForStorage(TStorageQualifier storage)
+    {
+        if ((options & EShReflectionSeparateBuffers) && storage == EvqBuffer)
+            return indexToBufferBlock;
+        return indexToUniformBlock;
+    }
+    TMapIndexToReflection& GetVariableMapForStorage(TStorageQualifier storage)
+    {
+        if ((options & EShReflectionSeparateBuffers) && storage == EvqBuffer)
+            return indexToBufferVariable;
+        return indexToUniform;
+    }
 
     EShReflectionOptions options;
 
@@ -145,8 +189,11 @@ protected:
     TNameToIndex nameToIndex;        // maps names to indexes; can hold all types of data: uniform/buffer and which function names have been processed
     TMapIndexToReflection indexToUniform;
     TMapIndexToReflection indexToUniformBlock;
+    TMapIndexToReflection indexToBufferVariable;
+    TMapIndexToReflection indexToBufferBlock;
     TMapIndexToReflection indexToPipeInput;
     TMapIndexToReflection indexToPipeOutput;
+    TIndices atomicCounterUniformIndices;
 
     unsigned int localSize[3];
 };

@@ -67,6 +67,10 @@ nested: offset -1, type ffffffff, size 32, index -1, binding -1, stages 0, numMe
 abl: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 1
 abl2: offset -1, type ffffffff, size 4, index -1, binding -1, stages 0, numMembers 1
 
+Buffer variable reflection:
+
+Buffer block reflection:
+
 Pipeline input reflection:
 attributeFloat: offset 0, type 1406, size 0, index 0, binding -1, stages 0
 attributeFloat2: offset 0, type 8b50, size 0, index 0, binding -1, stages 0

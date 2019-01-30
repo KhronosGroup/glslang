@@ -247,6 +247,7 @@ typedef enum {
     EShReflectionStrictArraySuffix = (1 << 0), // reflection will follow stricter rules for array-of-structs suffixes
     EShReflectionBasicArraySuffix  = (1 << 1), // arrays of basic types will be appended with [0] as in GL reflection
     EShReflectionIntermediateIO    = (1 << 2), // reflect inputs and outputs to program, even with no vertex shader
+    EShReflectionSeparateBuffers   = (1 << 3), // buffer variables and buffer blocks are reflected separately
 } EShReflectionOptions;
 
 //
@@ -748,6 +749,12 @@ public:
     const TObjectReflection& getPipeInput(int index) const;
     int getNumPipeOutputs() const;
     const TObjectReflection& getPipeOutput(int index) const;
+    int getNumBufferVariables() const;
+    const TObjectReflection& getBufferVariable(int index) const;
+    int getNumBufferBlocks() const;
+    const TObjectReflection& getBufferBlock(int index) const;
+    int getNumAtomicCounters() const;
+    const TObjectReflection& getAtomicCounter(int index) const;
 
     // Legacy Reflection Interface - expressed in terms of above interface
     int getNumLiveUniformVariables() const                 // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)

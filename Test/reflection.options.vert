@@ -19,6 +19,11 @@ buffer MultipleArrays {
     float f[5];
 } multiarray;
 
+uniform UBO {
+    VertexInfo verts[2];
+    float flt[8];
+} ubo;
+
 out float outval;
 
 void main()
@@ -30,6 +35,8 @@ void main()
     f += multiarray.tri[gl_InstanceID].v[0].position[0];
     f += multiarray.vert[gl_InstanceID].position[0];
     f += multiarray.f[gl_InstanceID];
+    f += ubo.verts[gl_InstanceID].position[0];
+    f += ubo.flt[gl_InstanceID];
     TriangleInfo tlocal[5] = t;
     outval = f;
 }

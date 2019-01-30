@@ -1,5 +1,13 @@
 reflection.options.vert
 Uniform reflection:
+UBO.verts[0].position[0]: offset 0, type 1406, size 1, index 0, binding -1, stages 1, arrayStride 4, topLevelArrayStride 24
+UBO.verts[1].position[0]: offset 24, type 1406, size 1, index 0, binding -1, stages 1, arrayStride 4, topLevelArrayStride 24
+UBO.flt[0]: offset 48, type 1406, size 8, index 0, binding -1, stages 1, arrayStride 4, topLevelArrayStride 4
+
+Uniform block reflection:
+UBO: offset -1, type ffffffff, size 80, index -1, binding -1, stages 0, numMembers 5
+
+Buffer variable reflection:
 t[0].v[0].position[0]: offset 0, type 1406, size 3, index 0, binding -1, stages 1, arrayStride 4, topLevelArrayStride 72
 t[0].v[1].position[0]: offset 24, type 1406, size 3, index 0, binding -1, stages 1, arrayStride 4, topLevelArrayStride 72
 t[0].v[2].position[0]: offset 48, type 1406, size 3, index 0, binding -1, stages 1, arrayStride 4, topLevelArrayStride 72
@@ -10,7 +18,7 @@ MultipleArrays.tri[0].v[0].position[0]: offset 0, type 1406, size 1, index 1, bi
 MultipleArrays.vert[0].position[0]: offset 360, type 1406, size 1, index 1, binding -1, stages 1, arrayStride 4, topLevelArrayStride 24
 MultipleArrays.f[0]: offset 480, type 1406, size 5, index 1, binding -1, stages 1, arrayStride 4, topLevelArrayStride 4
 
-Uniform block reflection:
+Buffer block reflection:
 VertexCollection: offset -1, type ffffffff, size 360, index -1, binding -1, stages 0, numMembers 6
 MultipleArrays: offset -1, type ffffffff, size 500, index -1, binding -1, stages 0, numMembers 9
 
