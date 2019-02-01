@@ -74,7 +74,7 @@ inline const char* ProfileName(EProfile profile)
 }
 
 //
-// What source rules, validation rules, target language, etc. are needed
+// What source rules, validation rules, target language, etc. are needed or
 // desired for SPIR-V?
 //
 // 0 means a target or rule set is not enabled (ignore rules from that entity).
