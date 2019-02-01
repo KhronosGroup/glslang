@@ -105,10 +105,10 @@ public:
             const TString &name = base.getName();
             const TType &type = base.getType();
 
-            TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
+            TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
             if (it == reflection.nameToIndex.end()) {
-                reflection.nameToIndex[name] = (int)reflection.indexToAttribute.size();
-                reflection.indexToAttribute.push_back(TObjectReflection(name, type, 0, mapToGlType(type), 0, 0));
+                reflection.nameToIndex[name.c_str()] = (int)reflection.indexToAttribute.size();
+                reflection.indexToAttribute.push_back(TObjectReflection(name.c_str(), type, 0, mapToGlType(type), 0, 0));
             }
         }
     }
@@ -327,10 +327,10 @@ public:
         if (arraySize == 0)
             arraySize = mapToGlArraySize(*terminalType);
 
-        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
+        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
         if (it == reflection.nameToIndex.end()) {
-            reflection.nameToIndex[name] = (int)reflection.indexToUniform.size();
-            reflection.indexToUniform.push_back(TObjectReflection(name, *terminalType, offset,
+            reflection.nameToIndex[name.c_str()] = (int)reflection.indexToUniform.size();
+            reflection.indexToUniform.push_back(TObjectReflection(name.c_str(), *terminalType, offset,
                                                                   mapToGlType(*terminalType),
                                                                   arraySize, blockIndex));
         } else if (arraySize > 1) {
@@ -430,11 +430,11 @@ public:
     int addBlockName(const TString& name, const TType& type, int size)
     {
         int blockIndex;
-        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name);
-        if (reflection.nameToIndex.find(name) == reflection.nameToIndex.end()) {
+        TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
+        if (reflection.nameToIndex.find(name.c_str()) == reflection.nameToIndex.end()) {
             blockIndex = (int)reflection.indexToUniformBlock.size();
-            reflection.nameToIndex[name] = blockIndex;
-            reflection.indexToUniformBlock.push_back(TObjectReflection(name, type, -1, -1, size, -1));
+            reflection.nameToIndex[name.c_str()] = blockIndex;
+            reflection.indexToUniformBlock.push_back(TObjectReflection(name.c_str(), type, -1, -1, size, -1));
         } else
             blockIndex = it->second;
 
@@ -852,7 +852,7 @@ void TReflection::buildCounterIndices(const TIntermediate& intermediate)
 {
     // search for ones that have counters
     for (int i = 0; i < int(indexToUniformBlock.size()); ++i) {
-        const TString counterName(intermediate.addCounterBufferName(indexToUniformBlock[i].name));
+        const TString counterName(intermediate.addCounterBufferName(indexToUniformBlock[i].name).c_str());
         const int index = getIndex(counterName);
 
         if (index >= 0)
