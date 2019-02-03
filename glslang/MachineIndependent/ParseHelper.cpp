@@ -6244,11 +6244,6 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     // fix up
     fixOffset(loc, *symbol);
 
-    if (symbol->getType().getBasicType() == EbtStruct) {
-       fixXfbOffsets(symbol->getWritableType().getQualifier(),
-                     *(symbol->getWritableType().getWritableStruct()));
-    }
-
     return initNode;
 }
 
