@@ -149,11 +149,20 @@ struct TOffsetRange {
 
 // Things that need to be tracked per xfb buffer.
 struct TXfbBuffer {
-    TXfbBuffer() : stride(TQualifier::layoutXfbStrideEnd), implicitStride(0), containsDouble(false) { }
+#ifdef AMD_EXTENSIONS
+    TXfbBuffer() : stride(TQualifier::layoutXfbStrideEnd), implicitStride(0), contains64BitType(false),
+                   contains32BitType(false), contains16BitType(false) { }
+#else
+    TXfbBuffer() : stride(TQualifier::layoutXfbStrideEnd), implicitStride(0), contains64BitType(false) { }
+#endif
     std::vector<TRange> ranges;  // byte offsets that have already been assigned
     unsigned int stride;
     unsigned int implicitStride;
-    bool containsDouble;
+    bool contains64BitType;
+#ifdef AMD_EXTENSIONS
+    bool contains32BitType;
+    bool contains16BitType;
+#endif
 };
 
 // Track a set of strings describing how the module was processed.
@@ -420,11 +429,40 @@ public:
         if (spvVersion.openGl > 0)
             processes.addProcess("client opengl100");
 
+        // target SPV
+        switch (spvVersion.spv) {
+        case 0:
+            break;
+        case EShTargetSpv_1_0:
+            break;
+        case EShTargetSpv_1_1:
+            processes.addProcess("target-env spirv1.1");
+            break;
+        case EShTargetSpv_1_2:
+            processes.addProcess("target-env spirv1.2");
+            break;
+        case EShTargetSpv_1_3:
+            processes.addProcess("target-env spirv1.3");
+            break;
+        default:
+            processes.addProcess("target-env spirvUnknown");
+            break;
+        }
+
         // target-environment processes
-        if (spvVersion.vulkan > 0)
+        switch (spvVersion.vulkan) {
+        case 0:
+            break;
+        case EShTargetVulkan_1_0:
             processes.addProcess("target-env vulkan1.0");
-        else if (spvVersion.vulkan > 0)
+            break;
+        case EShTargetVulkan_1_1:
+            processes.addProcess("target-env vulkan1.1");
+            break;
+        default:
             processes.addProcess("target-env vulkanUnknown");
+            break;
+        }
         if (spvVersion.openGl > 0)
             processes.addProcess("target-env opengl");
     }
@@ -640,7 +678,11 @@ public:
     }
     unsigned getXfbStride(int buffer) const { return xfbBuffers[buffer].stride; }
     int addXfbBufferOffset(const TType&);
-    unsigned int computeTypeXfbSize(const TType&, bool& containsDouble) const;
+#ifdef AMD_EXTENSIONS
+    unsigned int computeTypeXfbSize(const TType&, bool& contains64BitType, bool& contains32BitType, bool& contains16BitType) const;
+#else
+    unsigned int computeTypeXfbSize(const TType&, bool& contains64BitType) const;
+#endif
     static int getBaseAlignmentScalar(const TType&, int& size);
     static int getBaseAlignment(const TType&, int& size, int& stride, TLayoutPacking layoutPacking, bool rowMajor);
     static int getScalarAlignment(const TType&, int& size, int& stride, bool rowMajor);

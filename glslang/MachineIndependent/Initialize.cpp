@@ -1604,6 +1604,16 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "\n");
             }
             commonBuiltins.append(
+                "highp ivec2 textureSize(__samplerExternal2DY2YEXT, int lod);" // GL_EXT_YUV_target
+                "vec4 texture(__samplerExternal2DY2YEXT, vec2);"               // GL_EXT_YUV_target
+                "vec4 texture(__samplerExternal2DY2YEXT, vec2, float bias);"   // GL_EXT_YUV_target
+                "vec4 textureProj(__samplerExternal2DY2YEXT, vec3);"           // GL_EXT_YUV_target
+                "vec4 textureProj(__samplerExternal2DY2YEXT, vec3, float bias);" // GL_EXT_YUV_target
+                "vec4 textureProj(__samplerExternal2DY2YEXT, vec4);"           // GL_EXT_YUV_target
+                "vec4 textureProj(__samplerExternal2DY2YEXT, vec4, float bias);" // GL_EXT_YUV_target
+                "vec4 texelFetch(__samplerExternal2DY2YEXT sampler, ivec2, int lod);" // GL_EXT_YUV_target
+                "\n");
+            commonBuiltins.append(
                 "vec4 texture2DGradEXT(sampler2D, vec2, vec2, vec2);"      // GL_EXT_shader_texture_lod
                 "vec4 texture2DProjGradEXT(sampler2D, vec3, vec2, vec2);"  // GL_EXT_shader_texture_lod
                 "vec4 texture2DProjGradEXT(sampler2D, vec4, vec2, vec2);"  // GL_EXT_shader_texture_lod
@@ -7737,11 +7747,12 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
 static void SpecialQualifier(const char* name, TStorageQualifier qualifier, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
 {
     TSymbol* symbol = symbolTable.find(name);
-    if (symbol) {
-        TQualifier& symQualifier = symbol->getWritableType().getQualifier();
-        symQualifier.storage = qualifier;
-        symQualifier.builtIn = builtIn;
-    }
+    if (symbol == nullptr)
+        return;
+
+    TQualifier& symQualifier = symbol->getWritableType().getQualifier();
+    symQualifier.storage = qualifier;
+    symQualifier.builtIn = builtIn;
 }
 
 //
@@ -7757,7 +7768,7 @@ static void SpecialQualifier(const char* name, TStorageQualifier qualifier, TBui
 static void BuiltInVariable(const char* name, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
 {
     TSymbol* symbol = symbolTable.find(name);
-    if (! symbol)
+    if (symbol == nullptr)
         return;
 
     TQualifier& symQualifier = symbol->getWritableType().getQualifier();
@@ -7774,7 +7785,7 @@ static void BuiltInVariable(const char* name, TBuiltInVariable builtIn, TSymbolT
 static void BuiltInVariable(const char* blockName, const char* name, TBuiltInVariable builtIn, TSymbolTable& symbolTable)
 {
     TSymbol* symbol = symbolTable.find(blockName);
-    if (! symbol)
+    if (symbol == nullptr)
         return;
 
     TTypeList& structure = *symbol->getWritableType().getWritableStruct();
@@ -8030,9 +8041,18 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_ViewportMaskPerViewNV",     EbvViewportMaskPerViewNV,   symbolTable);
 
         if (language != EShLangVertex) {
+            symbolTable.setVariableExtensions("gl_in", "gl_SecondaryPositionNV", 1, &E_GL_NV_stereo_view_rendering);
+            symbolTable.setVariableExtensions("gl_in", "gl_PositionPerViewNV",   1, &E_GL_NVX_multiview_per_view_attributes);
+
             BuiltInVariable("gl_in", "gl_SecondaryPositionNV", EbvSecondaryPositionNV, symbolTable);
             BuiltInVariable("gl_in", "gl_PositionPerViewNV",   EbvPositionPerViewNV,   symbolTable);
         }
+        symbolTable.setVariableExtensions("gl_out", "gl_ViewportMask",            1, &E_GL_NV_viewport_array2);
+        symbolTable.setVariableExtensions("gl_out", "gl_SecondaryPositionNV",     1, &E_GL_NV_stereo_view_rendering);
+        symbolTable.setVariableExtensions("gl_out", "gl_SecondaryViewportMaskNV", 1, &E_GL_NV_stereo_view_rendering);
+        symbolTable.setVariableExtensions("gl_out", "gl_PositionPerViewNV",       1, &E_GL_NVX_multiview_per_view_attributes);
+        symbolTable.setVariableExtensions("gl_out", "gl_ViewportMaskPerViewNV",   1, &E_GL_NVX_multiview_per_view_attributes);
+
         BuiltInVariable("gl_out", "gl_ViewportMask",            EbvViewportMaskNV,          symbolTable);
         BuiltInVariable("gl_out", "gl_SecondaryPositionNV",     EbvSecondaryPositionNV,     symbolTable);
         BuiltInVariable("gl_out", "gl_SecondaryViewportMaskNV", EbvSecondaryViewportMaskNV, symbolTable);
@@ -8076,15 +8096,16 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
         // gl_PointSize, when it needs to be tied to an extension, is always a member of a block.
         // (Sometimes with an instance name, sometimes anonymous).
-        // However, the current automatic extension scheme does not work per block member,
-        // so for now check when parsing.
-        //
-        // if (profile == EEsProfile) {
-        //    if (language == EShLangGeometry)
-        //        symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_geometry_point_size, AEP_geometry_point_size);
-        //    else if (language == EShLangTessEvaluation || language == EShLangTessControl)
-        //        symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
-        //}
+        if (profile == EEsProfile) {
+            if (language == EShLangGeometry) {
+                symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_geometry_point_size, AEP_geometry_point_size);
+                symbolTable.setVariableExtensions("gl_in", "gl_PointSize", Num_AEP_geometry_point_size, AEP_geometry_point_size);
+            } else if (language == EShLangTessEvaluation || language == EShLangTessControl) {
+                // gl_in tessellation settings of gl_PointSize are in the context-dependent paths
+                symbolTable.setVariableExtensions("gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
+                symbolTable.setVariableExtensions("gl_out", "gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
+            }
+        }
 
         if ((profile != EEsProfile && version >= 140) ||
             (profile == EEsProfile && version >= 310)) {
@@ -8683,25 +8704,44 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         break;
     case EShLangMeshNV:
         if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
-            // Per-vertex builtins
+            // per-vertex builtins
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_Position",     1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_PointSize",    1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_ClipDistance", 1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_CullDistance", 1, &E_GL_NV_mesh_shader);
+
             BuiltInVariable("gl_MeshVerticesNV", "gl_Position",     EbvPosition,     symbolTable);
             BuiltInVariable("gl_MeshVerticesNV", "gl_PointSize",    EbvPointSize,    symbolTable);
             BuiltInVariable("gl_MeshVerticesNV", "gl_ClipDistance", EbvClipDistance, symbolTable);
             BuiltInVariable("gl_MeshVerticesNV", "gl_CullDistance", EbvCullDistance, symbolTable);
-            // Per-view builtins
+
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_PositionPerViewNV",     1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_ClipDistancePerViewNV", 1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshVerticesNV", "gl_CullDistancePerViewNV", 1, &E_GL_NV_mesh_shader);
+
             BuiltInVariable("gl_MeshVerticesNV", "gl_PositionPerViewNV",     EbvPositionPerViewNV,     symbolTable);
             BuiltInVariable("gl_MeshVerticesNV", "gl_ClipDistancePerViewNV", EbvClipDistancePerViewNV, symbolTable);
             BuiltInVariable("gl_MeshVerticesNV", "gl_CullDistancePerViewNV", EbvCullDistancePerViewNV, symbolTable);
 
-            // Per-primitive builtins
+            // per-primitive builtins
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_PrimitiveID",   1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_Layer",         1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_ViewportIndex", 1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_ViewportMask",  1, &E_GL_NV_mesh_shader);
+
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_PrimitiveID",   EbvPrimitiveId,    symbolTable);
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_Layer",         EbvLayer,          symbolTable);
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_ViewportIndex", EbvViewportIndex,  symbolTable);
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_ViewportMask",  EbvViewportMaskNV, symbolTable);
-            // Per-view builtins
+
+            // per-view per-primitive builtins
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_LayerPerViewNV",        1, &E_GL_NV_mesh_shader);
+            symbolTable.setVariableExtensions("gl_MeshPrimitivesNV", "gl_ViewportMaskPerViewNV", 1, &E_GL_NV_mesh_shader);
+
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_LayerPerViewNV",        EbvLayerPerViewNV,        symbolTable);
             BuiltInVariable("gl_MeshPrimitivesNV", "gl_ViewportMaskPerViewNV", EbvViewportMaskPerViewNV, symbolTable);
 
+            // other builtins
             symbolTable.setVariableExtensions("gl_PrimitiveCountNV",     1, &E_GL_NV_mesh_shader);
             symbolTable.setVariableExtensions("gl_PrimitiveIndicesNV",   1, &E_GL_NV_mesh_shader);
             symbolTable.setVariableExtensions("gl_MeshViewCountNV",      1, &E_GL_NV_mesh_shader);
@@ -8722,11 +8762,13 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_GlobalInvocationID",   EbvGlobalInvocationId,   symbolTable);
             BuiltInVariable("gl_LocalInvocationIndex", EbvLocalInvocationIndex, symbolTable);
 
+            // builtin constants
             symbolTable.setVariableExtensions("gl_MaxMeshOutputVerticesNV",   1, &E_GL_NV_mesh_shader);
             symbolTable.setVariableExtensions("gl_MaxMeshOutputPrimitivesNV", 1, &E_GL_NV_mesh_shader);
             symbolTable.setVariableExtensions("gl_MaxMeshWorkGroupSizeNV",    1, &E_GL_NV_mesh_shader);
             symbolTable.setVariableExtensions("gl_MaxMeshViewCountNV",        1, &E_GL_NV_mesh_shader);
 
+            // builtin functions
             symbolTable.setFunctionExtensions("barrier",                      1, &E_GL_NV_mesh_shader);
             symbolTable.setFunctionExtensions("memoryBarrierShared",          1, &E_GL_NV_mesh_shader);
             symbolTable.setFunctionExtensions("groupMemoryBarrier",           1, &E_GL_NV_mesh_shader);
@@ -9511,6 +9553,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_in", "gl_BackSecondaryColor",  EbvBackSecondaryColor,  symbolTable);
         BuiltInVariable("gl_in", "gl_TexCoord",            EbvTexCoord,            symbolTable);
         BuiltInVariable("gl_in", "gl_FogFragCoord",        EbvFogFragCoord,        symbolTable);
+
+        // extension requirements
+        if (profile == EEsProfile) {
+            symbolTable.setVariableExtensions("gl_in", "gl_PointSize", Num_AEP_tessellation_point_size, AEP_tessellation_point_size);
+        }
+
         break;
 
     default:
