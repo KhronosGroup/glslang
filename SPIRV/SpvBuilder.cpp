@@ -1306,11 +1306,13 @@ void Builder::makeDiscard()
 }
 
 // Comments in header
-Id Builder::createVariable(StorageClass storageClass, Id type, const char* name)
+Id Builder::createVariable(StorageClass storageClass, Id type, const char* name, Id initializer)
 {
     Id pointerType = makePointer(storageClass, type);
     Instruction* inst = new Instruction(getUniqueId(), pointerType, OpVariable);
     inst->addImmediateOperand(storageClass);
+    if (initializer != NoResult)
+        inst->addIdOperand(initializer);
 
     switch (storageClass) {
     case StorageClassFunction:
@@ -2649,12 +2651,19 @@ Id Builder::accessChainLoad(Decoration precision, Decoration nonUniform, Id resu
             if (constant) {
                 id = createCompositeExtract(accessChain.base, swizzleBase, indexes);
             } else {
-                // make a new function variable for this r-value
-                Id lValue = createVariable(StorageClassFunction, getTypeId(accessChain.base), "indexable");
-
-                // store into it
-                createStore(accessChain.base, lValue);
-
+                Id lValue = NoResult;
+                if (spvVersion >= Spv_1_4) {
+                    // make a new function variable for this r-value, using an initializer,
+                    // and mark it as NonWritable so that downstream it can be detected as a lookup
+                    // table
+                    lValue = createVariable(StorageClassFunction, getTypeId(accessChain.base), "indexable",
+                        accessChain.base);
+                    addDecoration(lValue, DecorationNonWritable);
+                } else {
+                    lValue = createVariable(StorageClassFunction, getTypeId(accessChain.base), "indexable");
+                    // store into it
+                    createStore(accessChain.base, lValue);
+                }
                 // move base to the new variable
                 accessChain.base = lValue;
                 accessChain.isRValue = false;

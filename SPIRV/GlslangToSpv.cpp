@@ -1711,6 +1711,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
     case glslang::EOpIndexDirect:
     case glslang::EOpIndexDirectStruct:
         {
+            // Structure, array, matrix, or vector indirection with statically known index.
             // Get the left part of the access chain.
             node->getLeft()->traverse(this);
 
@@ -1765,8 +1766,8 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
         return false;
     case glslang::EOpIndexIndirect:
         {
-            // Structure or array or vector indirection.
-            // Will use native SPIR-V access-chain for struct and array indirection;
+            // Array, matrix, or vector indirection with variable index.
+            // Will use native SPIR-V access-chain for and array indirection;
             // matrices are arrays of vectors, so will also work for a matrix.
             // Will use the access chain's 'component' for variable index into a vector.
 
