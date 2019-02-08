@@ -758,105 +758,66 @@ public:
     const TObjectReflection& getAtomicCounter(int index) const;
 
     // Legacy Reflection Interface - expressed in terms of above interface
-    int getNumLiveUniformVariables() const                 // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
-    {
-        return getNumUniformVariables();
-    }
 
-    int getNumLiveUniformBlocks() const                    // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
-    {
-        return getNumUniformBlocks();
-    }
+    // can be used for glGetProgramiv(GL_ACTIVE_UNIFORMS)
+    int getNumLiveUniformVariables() const             { return getNumUniformVariables(); }
 
-    int getNumLiveAttributes() const                       // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
-    {
-        return getNumPipeInputs();
-    }
+    // can be used for glGetProgramiv(GL_ACTIVE_UNIFORM_BLOCKS)
+    int getNumLiveUniformBlocks() const                { return getNumUniformBlocks(); }
 
-    int getUniformIndex(const char* name) const            // can be used for glGetUniformIndices()
-    {
-        return getReflectionIndex(name);
-    }
+    // can be used for glGetProgramiv(GL_ACTIVE_ATTRIBUTES)
+    int getNumLiveAttributes() const                   { return getNumPipeInputs(); }
 
-    const char* getUniformName(int index) const            // can be used for "name" part of glGetActiveUniform()
-    {
-        return getUniform(index).name.c_str();
-    }
+    // can be used for glGetUniformIndices()
+    int getUniformIndex(const char *name) const        { return getReflectionIndex(name); }
 
-    int getUniformBinding(int index) const                 // returns the binding number
-    {
-        return getUniform(index).getBinding();
-    }
+    // can be used for "name" part of glGetActiveUniform()
+    const char *getUniformName(int index) const        { return getUniform(index).name.c_str(); }
 
-    EShLanguageMask getUniformStages(int index) const      // returns Shaders Stages where a Uniform is present
-    {
-        return getUniform(index).stages;
-    }
+    // returns the binding number
+    int getUniformBinding(int index) const             { return getUniform(index).getBinding(); }
 
-    int getUniformBlockIndex(int index) const              // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
-    {
-        return getUniform(index).index;
-    }
+    // returns Shaders Stages where a Uniform is present
+    EShLanguageMask getUniformStages(int index) const  { return getUniform(index).stages; }
 
-    int getUniformType(int index) const                    // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
-    {
-        return getUniform(index).glDefineType;
-    }
+    // can be used for glGetActiveUniformsiv(GL_UNIFORM_BLOCK_INDEX)
+    int getUniformBlockIndex(int index) const          { return getUniform(index).index; }
 
-    int getUniformBufferOffset(int index) const            // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
-    {
-        return getUniform(index).offset;
-    }
+    // can be used for glGetActiveUniformsiv(GL_UNIFORM_TYPE)
+    int getUniformType(int index) const                { return getUniform(index).glDefineType; }
 
-    int getUniformArraySize(int index) const               // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
-    {
-        return getUniform(index).size;
-    }
+    // can be used for glGetActiveUniformsiv(GL_UNIFORM_OFFSET)
+    int getUniformBufferOffset(int index) const        { return getUniform(index).offset; }
 
-    const TType* getUniformTType(int index) const          // returns a TType*
-    {
-        return getUniform(index).getType();
-    }
+    // can be used for glGetActiveUniformsiv(GL_UNIFORM_SIZE)
+    int getUniformArraySize(int index) const           { return getUniform(index).size; }
 
-    const char* getUniformBlockName(int index) const  // can be used for glGetActiveUniformBlockName()
-    {
-        return getUniformBlock(index).name.c_str();
-    }
+    // returns a TType*
+    const TType *getUniformTType(int index) const      { return getUniform(index).getType(); }
 
-    int getUniformBlockSize(int index) const          // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
-    {
-        return getUniformBlock(index).size;
-    }
+    // can be used for glGetActiveUniformBlockName()
+    const char *getUniformBlockName(int index) const   { return getUniformBlock(index).name.c_str(); }
 
-    int getUniformBlockBinding(int index) const            // returns the block binding number
-    {
-        return getUniformBlock(index).getBinding();
-    }
+    // can be used for glGetActiveUniformBlockiv(UNIFORM_BLOCK_DATA_SIZE)
+    int getUniformBlockSize(int index) const           { return getUniformBlock(index).size; }
 
-    int getUniformBlockCounterIndex(int index) const       // returns block index of associated counter.
-    {
-        return getUniformBlock(index).counterIndex;
-    }
+    // returns the block binding number
+    int getUniformBlockBinding(int index) const        { return getUniformBlock(index).getBinding(); }
 
-    const TType* getUniformBlockTType(int index) const     // returns a TType*
-    {
-        return getUniformBlock(index).getType();
-    }
+    // returns block index of associated counter.
+    int getUniformBlockCounterIndex(int index) const   { return getUniformBlock(index).counterIndex; }
 
-    const char* getAttributeName(int index) const          // can be used for glGetActiveAttrib()
-    {
-        return getPipeInput(index).name.c_str();
-    }
+    // returns a TType*
+    const TType *getUniformBlockTType(int index) const { return getUniformBlock(index).getType(); }
 
-    int getAttributeType(int index) const                  // can be used for glGetActiveAttrib()
-    {
-        return getPipeInput(index).glDefineType;
-    }
+    // can be used for glGetActiveAttrib()
+    const char *getAttributeName(int index) const      { return getPipeInput(index).name.c_str(); }
 
-    const TType* getAttributeTType(int index) const        // returns a TType*
-    {
-        return getPipeInput(index).getType();
-    }
+    // can be used for glGetActiveAttrib()
+    int getAttributeType(int index) const              { return getPipeInput(index).glDefineType; }
+
+    // returns a TType*
+    const TType *getAttributeTType(int index) const    { return getPipeInput(index).getType(); }
 
     void dumpReflection();
 
