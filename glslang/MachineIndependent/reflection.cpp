@@ -121,7 +121,7 @@ public:
                 }
 
                 // by convention if this is an arrayed block we ignore the array in the reflection
-                if (type.isArray()) {
+                if (type.isArray() && type.getBasicType() == EbtBlock) {
                     blowUpIOAggregate(input, baseName, TType(type, 0));
                 } else {               
                     blowUpIOAggregate(input, baseName, type);
@@ -130,7 +130,8 @@ public:
                 TReflection::TNameToIndex::const_iterator it = reflection.nameToIndex.find(name.c_str());
                 if (it == reflection.nameToIndex.end()) {
                     reflection.nameToIndex[name.c_str()] = (int)ioItems.size();
-                    ioItems.push_back(TObjectReflection(name.c_str(), type, 0, mapToGlType(type), 0, 0));
+                    ioItems.push_back(
+                        TObjectReflection(name.c_str(), type, 0, mapToGlType(type), mapToGlArraySize(type), 0));
 
                     EShLanguageMask& stages = ioItems.back().stages;
                     stages = static_cast<EShLanguageMask>(stages | 1 << intermediate.getStage());
