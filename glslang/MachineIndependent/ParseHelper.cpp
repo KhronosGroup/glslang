@@ -572,7 +572,7 @@ void TParseContext::handleIoResizeArrayAccess(const TSourceLoc& /*loc*/, TInterm
 
     // fix array size, if it can be fixed and needs to be fixed (will allow variable indexing)
     if (symbolNode->getType().isUnsizedArray()) {
-        int newSize = getIoArrayImplicitSize(symbolNode->getType().getQualifier().isPerPrimitive());
+        int newSize = getIoArrayImplicitSize(symbolNode->getType().getQualifier());
         if (newSize > 0)
             symbolNode->getWritableType().changeOuterArraySize(newSize);
     }
@@ -586,9 +586,9 @@ void TParseContext::handleIoResizeArrayAccess(const TSourceLoc& /*loc*/, TInterm
 // Types without an array size will be given one.
 // Types already having a size that is wrong will get an error.
 //
-void TParseContext::checkIoArraysConsistency(const TSourceLoc& loc, bool tailOnly, bool isPerPrimitive)
+void TParseContext::checkIoArraysConsistency(const TSourceLoc &loc, const TQualifier &qualifier, bool tailOnly)
 {
-    int requiredSize = getIoArrayImplicitSize(isPerPrimitive);
+    int requiredSize = getIoArrayImplicitSize(qualifier);
     if (requiredSize == 0)
         return;
 
@@ -603,9 +603,15 @@ void TParseContext::checkIoArraysConsistency(const TSourceLoc& loc, bool tailOnl
 
         feature = "vertices";
 #ifdef NV_EXTENSIONS
-     else if (language == EShLangMeshNV) {
-        feature = isPerPrimitive ? "max_primitives" : "max_vertices";
-     }
+    else if (language == EShLangMeshNV) {
+        if (qualifier.builtIn == EbvPrimitiveIndicesNV) {
+            TLayoutGeometry outPrimitive = intermediate.getOutputPrimitive();
+            TString featureString = "max_primitives*";
+            featureString += TQualifier::getGeometryString(outPrimitive);
+            feature = featureString.c_str();
+        } else
+            feature = qualifier.isPerPrimitive() ? "max_primitives" : "max_vertices";
+    }
 #endif
     else
         feature = "unknown";
@@ -619,21 +625,24 @@ void TParseContext::checkIoArraysConsistency(const TSourceLoc& loc, bool tailOnl
         checkIoArrayConsistency(loc, requiredSize, feature, ioArraySymbolResizeList[i]->getWritableType(), ioArraySymbolResizeList[i]->getName());
 }
 
-int TParseContext::getIoArrayImplicitSize(bool isPerPrimitive) const
+int TParseContext::getIoArrayImplicitSize(const TQualifier& qualifier) const
 {
+    unsigned int maxVertices = intermediate.getVertices() != TQualifier::layoutNotSet ? intermediate.getVertices() : 0;
     if (language == EShLangGeometry)
         return TQualifier::mapGeometryToSize(intermediate.getInputPrimitive());
     else if (language == EShLangTessControl)
-        return intermediate.getVertices() != TQualifier::layoutNotSet ? intermediate.getVertices() : 0;
+        return maxVertices;
 #ifdef NV_EXTENSIONS
     else if (language == EShLangFragment)
         return 3; //Number of vertices for Fragment shader is always three.
     else if (language == EShLangMeshNV) {
-        if (isPerPrimitive) {
-            return intermediate.getPrimitives() != TQualifier::layoutNotSet ? intermediate.getPrimitives() : 0;
-        } else {
-            return intermediate.getVertices() != TQualifier::layoutNotSet ? intermediate.getVertices() : 0;
-        }
+        unsigned int maxPrimitives = intermediate.getPrimitives() != TQualifier::layoutNotSet ? intermediate.getPrimitives() : 0;
+        if (qualifier.builtIn == EbvPrimitiveIndicesNV)
+            return maxPrimitives * TQualifier::mapGeometryToSize(intermediate.getOutputPrimitive());
+        else if (qualifier.isPerPrimitive())
+            return maxPrimitives;
+        else
+            return maxVertices;
     }
 #endif
 
@@ -1386,7 +1395,7 @@ TIntermTyped* TParseContext::handleLengthMethod(const TSourceLoc& loc, TFunction
 #endif
                         )
                     {
-                        length = getIoArrayImplicitSize(type.getQualifier().isPerPrimitive());
+                        length = getIoArrayImplicitSize(type.getQualifier());
                     }
                 }
                 if (length == 0) {
@@ -3730,7 +3739,7 @@ void TParseContext::declareArray(const TSourceLoc& loc, const TString& identifie
             if (! symbolTable.atBuiltInLevel()) {
                 if (isIoResizeArray(type)) {
                     ioArraySymbolResizeList.push_back(symbol);
-                    checkIoArraysConsistency(loc, true, type.getQualifier().isPerPrimitive());
+                    checkIoArraysConsistency(loc, symbol->getType().getQualifier(), true);
                 } else
                     fixIoArraySize(loc, symbol->getWritableType());
             }
@@ -3783,7 +3792,7 @@ void TParseContext::declareArray(const TSourceLoc& loc, const TString& identifie
     existingType.updateArraySizes(type);
 
     if (isIoResizeArray(type))
-        checkIoArraysConsistency(loc, false, type.getQualifier().isPerPrimitive());
+        checkIoArraysConsistency(loc, symbol->getType().getQualifier(), true);
 }
 
 // Policy and error check for needing a runtime sized array.
@@ -3939,6 +3948,7 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
 #ifdef NV_EXTENSIONS
          identifier == "gl_SampleMask"                                                              ||
          identifier == "gl_Layer"                                                                   ||
+         identifier == "gl_PrimitiveIndicesNV"                                                      ||
 #endif
          identifier == "gl_TexCoord") {
 
@@ -4018,7 +4028,11 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
                     error(loc, "all redeclarations must use the same depth layout on", "redeclaration", symbol->getName().c_str());
             }
         }
-        else if (identifier == "gl_FragStencilRefARB") {
+        else if (
+#ifdef NV_EXTENSIONS
+            identifier == "gl_PrimitiveIndicesNV" ||
+#endif
+            identifier == "gl_FragStencilRefARB") {
             if (qualifier.hasLayout())
                 error(loc, "cannot apply layout qualifier to", "redeclaration", symbol->getName().c_str());
             if (qualifier.storage != EvqVaryingOut)
@@ -4270,7 +4284,7 @@ void TParseContext::redeclareBuiltinBlock(const TSourceLoc& loc, TTypeList& newT
     // Tracking for implicit sizing of array
     if (isIoResizeArray(block->getType())) {
         ioArraySymbolResizeList.push_back(block);
-        checkIoArraysConsistency(loc, true, block->getType().getQualifier().isPerPrimitive());
+        checkIoArraysConsistency(loc, block->getType().getQualifier(), true);
     } else if (block->getType().isArray())
         fixIoArraySize(loc, block->getWritableType());
 
@@ -7102,7 +7116,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
     // fix up
     if (isIoResizeArray(blockType)) {
         ioArraySymbolResizeList.push_back(&variable);
-        checkIoArraysConsistency(loc, true, blockType.getQualifier().isPerPrimitive());
+        checkIoArraysConsistency(loc, blockType.getQualifier(), true);
     } else
         fixIoArraySize(loc, variable.getWritableType());
 
@@ -7489,7 +7503,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             error(loc, "cannot change previously set layout value", id, "");
 
         if (language == EShLangTessControl)
-            checkIoArraysConsistency(loc);
+            checkIoArraysConsistency(loc, publicType.qualifier);
     }
 #ifdef NV_EXTENSIONS
     if (publicType.shaderQualifiers.primitives != TQualifier::layoutNotSet) {
@@ -7526,7 +7540,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
 #endif
                 if (intermediate.setInputPrimitive(publicType.shaderQualifiers.geometry)) {
                     if (language == EShLangGeometry)
-                        checkIoArraysConsistency(loc);
+                        checkIoArraysConsistency(loc, publicType.qualifier);
                 } else
                     error(loc, "cannot change previously set input primitive", TQualifier::getGeometryString(publicType.shaderQualifiers.geometry), "");
                 break;
@@ -7835,3 +7849,4 @@ TIntermNode* TParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* expre
 }
 
 } // end namespace glslang
+
