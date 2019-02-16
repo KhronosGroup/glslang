@@ -1056,7 +1056,7 @@ int TPpContext::tokenize(TPpToken& ppToken)
         // Handle token-pasting logic
         token = tokenPaste(token, ppToken);
 
-        if (token == EndOfInput || token == tMarkerInput::marker) {
+        if (token == EndOfInput) {
             missingEndifCheck();
             return EndOfInput;
         }

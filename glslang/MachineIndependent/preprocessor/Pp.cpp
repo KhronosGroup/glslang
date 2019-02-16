@@ -1027,7 +1027,9 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream& arg, TPpToken*
             case MacroExpandNotStarted:
                 break;
             case MacroExpandError:
-                token = EndOfInput;
+                // toss the rest of the pushed-input argument by scanning until tMarkerInput
+                while ((token = scanToken(ppToken)) != tMarkerInput::marker && token != EndOfInput)
+                    ;
                 break;
             case MacroExpandStarted:
             case MacroExpandUndef:
@@ -1039,13 +1041,10 @@ TPpContext::TokenStream* TPpContext::PrescanMacroArg(TokenStream& arg, TPpToken*
         expandedArg->putToken(token, ppToken);
     }
 
-    if (token == EndOfInput) {
+    if (token != tMarkerInput::marker) {
         // Error, or MacroExpand ate the marker, so had bad input, recover
         delete expandedArg;
         expandedArg = nullptr;
-    } else {
-        // remove the marker
-        popInput();
     }
 
     return expandedArg;
@@ -1262,7 +1261,7 @@ MacroExpandResult TPpContext::MacroExpand(TPpToken* ppToken, bool expandUndef, b
 
             if (token == ')') {
                 // closing paren of call
-                if (in->mac->args.size() == 1 && tokenRecorded == 0)
+                if (in->mac->args.size() == 1 && !tokenRecorded)
                     break;
                 arg++;
                 break;
