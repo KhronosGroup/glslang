@@ -34,6 +34,7 @@ struct OutputStruct {
 };
 
 out OutputStruct outval;
+out float outarr[3];
 
 void main()
 {
@@ -48,4 +49,5 @@ void main()
     f += ubo.flt[gl_InstanceID];
     TriangleInfo tlocal[5] = t;
     outval.val = f;
+    outarr[2] = f;
 }
