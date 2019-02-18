@@ -2878,6 +2878,11 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
             builder.addCapability(spv::CapabilityStorageUniformBufferBlock16);
             break;
         default:
+            if (node->getType().containsBasicType(glslang::EbtFloat16))
+                builder.addCapability(spv::CapabilityFloat16);
+            if (node->getType().containsBasicType(glslang::EbtInt16) ||
+                node->getType().containsBasicType(glslang::EbtUint16))
+                builder.addCapability(spv::CapabilityInt16);
             break;
         }
     }
@@ -2894,6 +2899,8 @@ spv::Id TGlslangToSpvTraverser::createSpvVariable(const glslang::TIntermSymbol* 
         } else if (storageClass == spv::StorageClassStorageBuffer) {
             builder.addExtension(spv::E_SPV_KHR_8bit_storage);
             builder.addCapability(spv::CapabilityStorageBuffer8BitAccess);
+        } else {
+            builder.addCapability(spv::CapabilityInt8);
         }
     }
 
@@ -3799,6 +3806,16 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
             symbolValues[parameters[p]->getAsSymbolNode()->getId()] = function->getParamId(p);
             // give a name too
             builder.addName(function->getParamId(p), parameters[p]->getAsSymbolNode()->getName().c_str());
+
+            const glslang::TType& paramType = parameters[p]->getAsTyped()->getType();
+            if (paramType.containsBasicType(glslang::EbtInt8) ||
+                paramType.containsBasicType(glslang::EbtUint8))
+                builder.addCapability(spv::CapabilityInt8);
+            if (paramType.containsBasicType(glslang::EbtInt16) ||
+                paramType.containsBasicType(glslang::EbtUint16))
+                builder.addCapability(spv::CapabilityInt16);
+            if (paramType.containsBasicType(glslang::EbtFloat16))
+                builder.addCapability(spv::CapabilityFloat16);
         }
     }
 }
