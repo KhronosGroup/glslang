@@ -252,11 +252,13 @@ public:
         public:
             Token(int atom, const TPpToken& ppToken) : 
                 atom(atom),
+                space(ppToken.space),
                 i64val(ppToken.i64val),
                 name(ppToken.name) { }
             int get(TPpToken& ppToken)
             {
                 ppToken.clear();
+                ppToken.space = space;
                 ppToken.i64val = i64val;
                 snprintf(ppToken.name, sizeof(ppToken.name), "%s", name.c_str());
                 return atom;
@@ -265,6 +267,7 @@ public:
         protected:
             Token() {}
             int atom;
+            bool space;        // did a space precede the token?
             long long i64val;
             TString name;
         };

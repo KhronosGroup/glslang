@@ -166,29 +166,43 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
     if (existing != nullptr) {
         if (! existing->undef) {
             // Already defined -- need to make sure they are identical:
-            // "Two replacement lists are identical if and only if the preprocessing tokens in both have the same number,
-            // ordering, spelling, and white-space separation, where all white-space separations are considered identical."
-            if (existing->functionLike != mac.functionLike)
-                parseContext.ppError(defineLoc, "Macro redefined; function-like versus object-like:", "#define", atomStrings.getString(defAtom));
-            else if (existing->args.size() != mac.args.size())
-                parseContext.ppError(defineLoc, "Macro redefined; different number of arguments:", "#define", atomStrings.getString(defAtom));
-            else {
-                if (existing->args != mac.args)
-                    parseContext.ppError(defineLoc, "Macro redefined; different argument names:", "#define", atomStrings.getString(defAtom));
+            // "Two replacement lists are identical if and only if the
+            // preprocessing tokens in both have the same number,
+            // ordering, spelling, and white-space separation, where all
+            // white-space separations are considered identical."
+            if (existing->functionLike != mac.functionLike) {
+                parseContext.ppError(defineLoc, "Macro redefined; function-like versus object-like:", "#define",
+                    atomStrings.getString(defAtom));
+            } else if (existing->args.size() != mac.args.size()) {
+                parseContext.ppError(defineLoc, "Macro redefined; different number of arguments:", "#define",
+                    atomStrings.getString(defAtom));
+            } else {
+                if (existing->args != mac.args) {
+                    parseContext.ppError(defineLoc, "Macro redefined; different argument names:", "#define",
+                       atomStrings.getString(defAtom));
+                }
+                // set up to compare the two
                 existing->body.reset();
                 mac.body.reset();
                 int newToken;
+                bool firstToken = true;
                 do {
                     int oldToken;
                     TPpToken oldPpToken;
                     TPpToken newPpToken;
                     oldToken = existing->body.getToken(parseContext, &oldPpToken);
                     newToken = mac.body.getToken(parseContext, &newPpToken);
+                    // for the first token, preceding spaces don't matter
+                    if (firstToken) {
+                        newPpToken.space = oldPpToken.space;
+                        firstToken = false;
+                    }
                     if (oldToken != newToken || oldPpToken != newPpToken) {
-                        parseContext.ppError(defineLoc, "Macro redefined; different substitutions:", "#define", atomStrings.getString(defAtom));
+                        parseContext.ppError(defineLoc, "Macro redefined; different substitutions:", "#define",
+                            atomStrings.getString(defAtom));
                         break;
                     }
-                } while (newToken > 0);
+                } while (newToken != EndOfInput);
             }
         }
         *existing = mac;
