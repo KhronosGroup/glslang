@@ -866,8 +866,7 @@ int TPpContext::CPPextension(TPpToken* ppToken)
     if (token != PpAtomIdentifier)
         parseContext.ppError(ppToken->loc, "extension name expected", "#extension", "");
 
-    assert(strlen(ppToken->name) <= MaxTokenLength);
-    strcpy(extensionName, ppToken->name);
+    snprintf(extensionName, sizeof(extensionName), "%s", ppToken->name);
 
     token = scanToken(ppToken);
     if (token != ':') {
