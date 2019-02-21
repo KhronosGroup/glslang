@@ -213,6 +213,7 @@ void main()
         f += deepB[i].d2.d1[i].va[1].x;
         deep3 d = deepC[1];
         deep3 da[2] = deepD;
+        deep1 db = deepA[i].d2.d1[i];
     } else
         f = ufDead3;
 
