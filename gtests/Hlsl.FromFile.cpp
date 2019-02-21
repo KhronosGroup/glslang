@@ -127,7 +127,6 @@ TEST_P(HlslLegalDebugTest, FromFile)
                             "/baseResults/", true, true);
 }
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
@@ -420,9 +419,7 @@ INSTANTIATE_TEST_CASE_P(
     }),
     FileNameAsCustomTestSuffix
 );
-// clang-format on
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslVulkan1_1CompileTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
@@ -438,9 +435,7 @@ INSTANTIATE_TEST_CASE_P(
     }),
     FileNameAsCustomTestSuffix
 );
-// clang-format on
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslCompileAndFlattenTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
@@ -449,10 +444,8 @@ INSTANTIATE_TEST_CASE_P(
     }),
     FileNameAsCustomTestSuffix
 );
-// clang-format on
 
 #if ENABLE_OPT
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslLegalizeTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
@@ -467,10 +460,8 @@ INSTANTIATE_TEST_CASE_P(
     }),
     FileNameAsCustomTestSuffix
 );
-// clang-format on
 #endif
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslDebugTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
@@ -488,7 +479,6 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, HlslLegalDebugTest,
     ::testing::ValuesIn(std::vector<FileNameEntryPointPair>{
@@ -497,7 +487,6 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 
-// clang-format on
 
 }  // anonymous namespace
 }  // namespace glslangtest

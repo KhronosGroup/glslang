@@ -746,7 +746,6 @@ TEST_P(HexFloatRoundTest, RoundDownToFP16) {
   EXPECT_EQ(carry_bit, GetParam().expected_results.second);
 }
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(F32ToF16, HexFloatRoundTest,
   ::testing::ValuesIn(std::vector<RoundSignificandCase>(
   {
@@ -794,7 +793,6 @@ INSTANTIATE_TEST_CASE_P(F32ToF16, HexFloatRoundTest,
     {static_cast<float>(ldexp(float_fractions({0, 1, 11, 13}), -131)), std::make_pair(half_bits_set({0}), false), spvutils::kRoundToNegativeInfinity},
     {static_cast<float>(ldexp(float_fractions({0, 1, 11, 13}), -130)), std::make_pair(half_bits_set({0, 9}), false), spvutils::kRoundToNearestEven},
   })));
-// clang-format on
 
 struct UpCastSignificandCase {
   uint16_t source_half;

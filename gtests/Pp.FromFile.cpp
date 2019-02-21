@@ -46,7 +46,6 @@ TEST_P(PreprocessingTest, FromFile)
     loadFilePreprocessAndCheck(GlobalTestSettings.testRoot, GetParam());
 }
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     Glsl, PreprocessingTest,
     ::testing::ValuesIn(std::vector<std::string>({
@@ -70,7 +69,6 @@ INSTANTIATE_TEST_CASE_P(
     })),
     FileNameAsCustomTestSuffix
 );
-// clang-format on
 
 }  // anonymous namespace
 }  // namespace glslangtest

@@ -94,7 +94,6 @@ TEST_P(ConfigTest, FromFile)
     checkEqAndUpdateIfRequested(expectedOutput, stream.str(), expectedOutputFname);
 }
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     Glsl, ConfigTest,
     ::testing::ValuesIn(std::vector<TestCaseSpec>({
@@ -102,7 +101,6 @@ INSTANTIATE_TEST_CASE_P(
         {"100Limits.vert", "100.conf", "100LimitsConf.vert.out", EShMsgCascadingErrors},
     }))
 );
-// clang-format on
 
 }  // anonymous namespace
 }  // namespace glslangtest

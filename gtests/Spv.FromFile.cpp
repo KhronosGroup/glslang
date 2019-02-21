@@ -202,7 +202,6 @@ TEST_P(CompileUpgradeTextureToSampledTextureAndDropSamplersTest, FromFile)
                                                                      Target::Spv);
 }
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     Glsl, CompileVulkanToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
@@ -395,7 +394,6 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     Glsl, CompileVulkanToDebugSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
@@ -404,7 +402,6 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     Glsl, CompileVulkan1_1ToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
@@ -443,7 +440,6 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     Hlsl, HlslIoMap,
     ::testing::ValuesIn(std::vector<IoMapData>{
@@ -463,7 +459,6 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffixIoMap
 );
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     Hlsl, GlslIoMap,
     ::testing::ValuesIn(std::vector<IoMapData>{
@@ -473,7 +468,6 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffixIoMap
 );
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     Glsl, CompileOpenGLToSpirvTest,
     ::testing::ValuesIn(std::vector<std::string>({
@@ -597,7 +591,6 @@ INSTANTIATE_TEST_CASE_P(
     })),
     FileNameAsCustomTestSuffix
 );
-// clang-format on
 
 }  // anonymous namespace
 }  // namespace glslangtest

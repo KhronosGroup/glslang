@@ -85,7 +85,6 @@ TEST_P(LinkTest, FromFile)
     checkEqAndUpdateIfRequested(expectedOutput, stream.str(), expectedOutputFname);
 }
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     Glsl, LinkTest,
     ::testing::ValuesIn(std::vector<std::vector<std::string>>({
@@ -103,7 +102,6 @@ INSTANTIATE_TEST_CASE_P(
         {"missingBodies.vert"}
     }))
 );
-// clang-format on
 
 }  // anonymous namespace
 }  // namespace glslangtest

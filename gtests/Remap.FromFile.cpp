@@ -79,7 +79,6 @@ TEST_P(RemapTest, FromFile)
     }
 }
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     ToSpirv, RemapTest,
     ::testing::ValuesIn(std::vector<RemapTestArgs>{
@@ -112,7 +111,6 @@ INSTANTIATE_TEST_CASE_P(
             }),
     FileNameAsCustomTestSuffix
 );
-// clang-format on
 
 }  // anonymous namespace
 }  // namespace glslangtest

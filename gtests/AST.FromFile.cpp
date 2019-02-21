@@ -62,7 +62,6 @@ TEST_P(CompileToAstTestNV, FromFile)
 }
 #endif
 
-// clang-format off
 INSTANTIATE_TEST_CASE_P(
     Glsl, CompileToAstTest,
     ::testing::ValuesIn(std::vector<std::string>({
@@ -249,7 +248,6 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 #endif
-// clang-format on
 
 }  // anonymous namespace
 }  // namespace glslangtest
