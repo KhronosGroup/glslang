@@ -93,6 +93,7 @@ INSTANTIATE_TEST_CASE_P(
         "cppSimple.vert",
         "cppIndent.vert",
         "cppIntMinOverNegativeOne.frag",
+        "cppMerge.frag",
         "cppNest.vert",
         "cppBad.vert",
         "cppBad2.vert",
