@@ -49,9 +49,7 @@ namespace spv {
 #ifdef AMD_EXTENSIONS
     #include "GLSL.ext.AMD.h"
 #endif
-#ifdef NV_EXTENSIONS
     #include "GLSL.ext.NV.h"
-#endif
 }
 
 // Glslang includes
