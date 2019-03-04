@@ -1628,6 +1628,7 @@ public:
             case EbtInt64:
             case EbtUint64:
             case EbtBool:
+            case EbtReference:
                 return true;
             default:
                 return false;
