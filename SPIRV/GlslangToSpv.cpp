@@ -7705,6 +7705,10 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
         case glslang::EbtBool:
             scalar = builder.makeBoolConstant(zero ? false : consts[nextConst].getBConst(), specConstant);
             break;
+        case glslang::EbtReference:
+            scalar = builder.makeUint64Constant(zero ? 0 : consts[nextConst].getU64Const(), specConstant);
+            scalar = builder.createUnaryOp(spv::OpBitcast, typeId, scalar);
+            break;
         default:
             assert(0);
             break;

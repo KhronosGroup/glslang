@@ -6527,11 +6527,7 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
         // We either have a folded constant in getAsConstantUnion, or we have to use
         // the initializer's subtree in the AST to represent the computation of a
         // specialization constant.
-        // A third case arises when a reference type is made non-constant due to
-        // addConstantReferenceConversion, but reference types can't be const, so
-        // this is an error.
-        assert(initializer->getAsConstantUnion() || initializer->getType().getQualifier().isSpecConstant() ||
-               initializer->getType().getBasicType() == EbtReference);
+        assert(initializer->getAsConstantUnion() || initializer->getType().getQualifier().isSpecConstant());
         if (initializer->getAsConstantUnion())
             variable->setConstArray(initializer->getAsConstantUnion()->getConstArray());
         else {

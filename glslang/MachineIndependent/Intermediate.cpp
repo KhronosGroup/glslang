@@ -725,19 +725,6 @@ TIntermTyped* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
     return newNode;
 }
 
-// Convert a constant that is a reference type to a uint64_t constant plus a
-// constructor instruction. This is needed because SPIR-V doesn't support
-// OpConstant on pointer types.
-TIntermTyped* TIntermediate::addConstantReferenceConversion(TIntermTyped* node)
-{
-    if (node->getType().getBasicType() == EbtReference && node->getAsConstantUnion()) {
-        const TType &type = node->getType();
-        node = addBuiltInFunctionCall(node->getLoc(), EOpConvPtrToUint64, true, node, TType(EbtUint64));
-        node = addUnaryNode(EOpConstructReference, node, node->getLoc(), type);
-    }
-    return node;
-}
-
 TIntermTyped* TIntermediate::addConversion(TBasicType convertTo, TIntermTyped* node) const
 {
     return createConversion(convertTo, node);
@@ -774,9 +761,6 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
         if (node0->getType().isCoopMat() || node1->getType().isCoopMat())
             return std::make_tuple(node0, node1);
     }
-
-    node0 = addConstantReferenceConversion(node0);
-    node1 = addConstantReferenceConversion(node1);
 
     auto promoteTo = std::make_tuple(EbtNumTypes, EbtNumTypes);
 
@@ -896,8 +880,6 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
 {
     if (!isConversionAllowed(op, node))
         return nullptr;
-
-    node = addConstantReferenceConversion(node);
 
     // Otherwise, if types are identical, no problem
     if (type == node->getType())
