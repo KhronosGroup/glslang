@@ -2188,6 +2188,16 @@ public:
         return ! operator==(right);
     }
 
+    unsigned int getBufferReferenceAlignment() const
+    {
+        if (getBasicType() == glslang::EbtReference) {
+            return getReferentType()->getQualifier().hasBufferReferenceAlign() ?
+                        (1u << getReferentType()->getQualifier().layoutBufferReferenceAlign) : 16u;
+        } else {
+            return 0;
+        }
+    }
+
 protected:
     // Require consumer to pick between deep copy and shallow copy.
     TType(const TType& type);
