@@ -565,14 +565,15 @@ spv::Builder::AccessChain::CoherentFlags TGlslangToSpvTraverser::TranslateCohere
     flags.workgroupcoherent = type.getQualifier().workgroupcoherent ||
                               type.getQualifier().storage == glslang::EvqShared;
     flags.subgroupcoherent = type.getQualifier().subgroupcoherent;
+    flags.volatil = type.getQualifier().volatil;
     // *coherent variables are implicitly nonprivate in GLSL
     flags.nonprivate = type.getQualifier().nonprivate ||
                        flags.subgroupcoherent ||
                        flags.workgroupcoherent ||
                        flags.queuefamilycoherent ||
                        flags.devicecoherent ||
-                       flags.coherent;
-    flags.volatil = type.getQualifier().volatil;
+                       flags.coherent ||
+                       flags.volatil;
     flags.isImage = type.getBasicType() == glslang::EbtSampler;
     return flags;
 }
@@ -580,7 +581,7 @@ spv::Builder::AccessChain::CoherentFlags TGlslangToSpvTraverser::TranslateCohere
 spv::Scope TGlslangToSpvTraverser::TranslateMemoryScope(const spv::Builder::AccessChain::CoherentFlags &coherentFlags)
 {
     spv::Scope scope;
-    if (coherentFlags.coherent) {
+    if (coherentFlags.volatil || coherentFlags.coherent) {
         // coherent defaults to Device scope in the old model, QueueFamilyKHR scope in the new model
         scope = glslangIntermediate->usingVulkanMemoryModel() ? spv::ScopeQueueFamilyKHR : spv::ScopeDevice;
     } else if (coherentFlags.devicecoherent) {
