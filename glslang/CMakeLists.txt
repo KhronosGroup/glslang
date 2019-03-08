@@ -80,6 +80,7 @@ set(HEADERS
 #                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 # set(BISON_GLSLParser_OUTPUT_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/MachineIndependent/glslang_tab.cpp)
 
+set(VERSION 7.11.3113)
 glslang_pch(SOURCES MachineIndependent/pch.cpp)
 
 add_library(glslang ${LIB_TYPE} ${BISON_GLSLParser_OUTPUT_SOURCE} ${SOURCES} ${HEADERS})
@@ -113,6 +114,8 @@ if(ENABLE_GLSLANG_INSTALL)
         install(TARGETS glslang
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/glslang.pc.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/glslang.pc @ONLY)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/glslang.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endif(ENABLE_GLSLANG_INSTALL)
 
 if(ENABLE_GLSLANG_INSTALL)

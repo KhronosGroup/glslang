@@ -48,6 +48,10 @@ set_property(TARGET SPIRV PROPERTY FOLDER glslang)
 set_property(TARGET SPIRV PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_include_directories(SPIRV PUBLIC ..)
 
+
+set(SPIRV_NAME spirv)
+set(SPIRV_VERSION 1.3)
+
 if (ENABLE_SPVREMAPPER)
     add_library(SPVRemapper ${LIB_TYPE} ${SPVREMAP_SOURCES} ${SPVREMAP_HEADERS})
     set_property(TARGET SPVRemapper PROPERTY FOLDER glslang)
@@ -61,13 +65,21 @@ if(WIN32 AND BUILD_SHARED_LIBS)
     endif()
 endif()
 
+target_include_directories(SPIRV PUBLIC ${SPIRV_TOOLS_INCLUDE_DIRS})
+target_compile_options(SPIRV PUBLIC ${SPIRV_TOOLS_CFLAGS_OTHER})
+target_link_libraries(SPIRV ${SPIRV_TOOLS_LIBRARIES})
+if(BUILD_SHARED_LIBS)
+    target_include_directories(SPIRV PUBLIC ${SPIRV_TOOLS_SHARED_INCLUDE_DIRS})
+    target_compile_options(SPIRV PUBLIC ${SPIRV_TOOLS_SHARED_CFLAGS_OTHER})
+    target_link_libraries(SPIRV ${SPIRV_TOOLS_SHARED_LIBRARIES})
+endif(BUILD_SHARED_LIBS)
+
 if(ENABLE_OPT)
     target_include_directories(SPIRV
         PRIVATE ${spirv-tools_SOURCE_DIR}/include
         PRIVATE ${spirv-tools_SOURCE_DIR}/source
     )
-    target_link_libraries(SPIRV glslang SPIRV-Tools-opt)
-    target_include_directories(SPIRV PUBLIC ../External)
+    target_link_libraries(SPIRV glslang)
 else()
     target_link_libraries(SPIRV glslang)
 endif(ENABLE_OPT)
@@ -96,5 +108,8 @@ if(ENABLE_GLSLANG_INSTALL)
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
 
+    # spirv.pc Configuration
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/spirv.pc.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/spirv.pc @ONLY)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/spirv.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
     install(FILES ${HEADERS} ${SPVREMAP_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SPIRV/)
 endif(ENABLE_GLSLANG_INSTALL)

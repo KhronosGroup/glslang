@@ -23,6 +23,14 @@ set(LIBRARIES
     SPVRemapper
     glslang-default-resource-limits)
 
+if(BUILD_SHARED_LIBS)
+    set(LIBRARIES ${LIBRARIES} ${SPIRV_TOOLS_SHARED_LIBRARIES})
+    target_include_directories(glslangValidator PUBLIC ${SPIRV_TOOLS_SHARED_INCLUDE_DIRS})
+else()
+    set(LIBRARIES ${LIBRARIES} ${SPIRV_TOOLS_LIBRARIES})
+    target_include_directories(glslangValidator PUBLIC ${SPIRV_TOOLS_INCLUDE_DIRS})
+endif(BUILD_SHARED_LIBS)
+
 if(WIN32)
     set(LIBRARIES ${LIBRARIES} psapi)
 elseif(UNIX)
@@ -33,7 +41,6 @@ endif(WIN32)
 
 target_link_libraries(glslangValidator ${LIBRARIES})
 target_link_libraries(spirv-remap ${LIBRARIES})
-target_include_directories(glslangValidator PUBLIC ../External)
 
 if(WIN32)
     source_group("Source" FILES ${SOURCES})
