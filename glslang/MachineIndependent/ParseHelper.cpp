@@ -377,7 +377,8 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
     // basic type checks...
     variableCheck(base);
 
-    if (! base->isArray() && ! base->isMatrix() && ! base->isVector() && ! base->getType().isCoopMat()) {
+    if (! base->isArray() && ! base->isMatrix() && ! base->isVector() && ! base->getType().isCoopMat() &&
+        base->getBasicType() != EbtReference) {
         if (base->getAsSymbolNode())
             error(loc, " left of '[' is not of type array, matrix, or vector ", base->getAsSymbolNode()->getName().c_str(), "");
         else
@@ -405,6 +406,14 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
 
     // at least one of base and index is not a front-end constant variable...
     TIntermTyped* result = nullptr;
+
+    if (base->getBasicType() == EbtReference && ! base->isArray()) {
+        requireExtensions(loc, 1, &E_GL_EXT_buffer_reference2, "buffer reference indexing");
+        result = intermediate.addBinaryMath(EOpAdd, base, index, loc);
+        result->setType(base->getType());
+        return result;
+    }
+
     if (index->getQualifier().isFrontEndConstant())
         checkIndex(loc, base->getType(), indexValue);
 
