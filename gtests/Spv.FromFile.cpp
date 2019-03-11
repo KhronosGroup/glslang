@@ -451,6 +451,8 @@ INSTANTIATE_TEST_CASE_P(
         "spv.subgroupExtendedTypesBallotNeg.comp",
         "spv.subgroupExtendedTypesClustered.comp",
         "spv.subgroupExtendedTypesClusteredNeg.comp",
+        "spv.subgroupExtendedTypesPartitioned.comp",
+        "spv.subgroupExtendedTypesPartitionedNeg.comp",
         "spv.subgroupExtendedTypesShuffle.comp",
         "spv.subgroupExtendedTypesShuffleNeg.comp",
         "spv.subgroupExtendedTypesShuffleRelative.comp",
