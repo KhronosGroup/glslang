@@ -118,9 +118,10 @@ void goodfoop()
 
 void bb()
 {
+    gl_BoundingBoxEXT[0] = vec4(0.0);
     gl_BoundingBoxOES[0] = vec4(0.0);
-    gl_BoundingBoxOES[1] = vec4(1.0);
-    gl_BoundingBoxOES[2] = vec4(2.0);  // ERROR, overflow
+    gl_BoundingBox[1] = vec4(1.0);
+    gl_BoundingBox[2] = vec4(2.0);  // ERROR, overflow
 }
 
 out patch badpatchBName {  // ERROR, array size required
