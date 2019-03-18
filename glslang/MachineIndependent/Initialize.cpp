@@ -8022,13 +8022,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     case EShLangTessControl:
         if (profile == EEsProfile && version >= 310) {
             BuiltInVariable("gl_BoundingBoxEXT", EbvBoundingBox, symbolTable);
-            if (version < 320)
-                symbolTable.setVariableExtensions("gl_BoundingBoxEXT", 1,
-                                                  &E_GL_EXT_primitive_bounding_box);
+            symbolTable.setVariableExtensions("gl_BoundingBoxEXT", 1,
+                                              &E_GL_EXT_primitive_bounding_box);
             BuiltInVariable("gl_BoundingBoxOES", EbvBoundingBox, symbolTable);
-            if (version < 320)
-                symbolTable.setVariableExtensions("gl_BoundingBoxOES", 1,
-                                                  &E_GL_OES_primitive_bounding_box);
+            symbolTable.setVariableExtensions("gl_BoundingBoxOES", 1,
+                                              &E_GL_OES_primitive_bounding_box);
 
             if (version >= 320) {
                 BuiltInVariable("gl_BoundingBox", EbvBoundingBox, symbolTable);
