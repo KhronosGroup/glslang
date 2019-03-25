@@ -6240,7 +6240,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         const char *callableDecls =
             "in    uvec3  gl_LaunchIDNV;"
             "in    uvec3  gl_LaunchSizeNV;"
-            "in    uint   gl_IncomingRayFlagsNV;"
             "\n";
 
         stageBuiltins[EShLangRayGenNV].append(rayGenDecls);
