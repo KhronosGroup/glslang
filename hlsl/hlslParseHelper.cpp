@@ -3255,8 +3255,8 @@ void HlslParseContext::decomposeStructBufferMethods(const TSourceLoc& loc, TInte
     if (argAggregate) {
         if (argAggregate->getSequence().empty())
             return;
-		if (argAggregate->getSequence()[0])
-	        bufferObj = argAggregate->getSequence()[0]->getAsTyped();
+        if (argAggregate->getSequence()[0])
+            bufferObj = argAggregate->getSequence()[0]->getAsTyped();
     } else {
         bufferObj = arguments->getAsSymbolNode();
     }
@@ -3756,7 +3756,7 @@ void HlslParseContext::decomposeSampleMethods(const TSourceLoc& loc, TIntermType
                 return;
         } else {
             if (argAggregate->getSequence().size() == 0 || 
-				argAggregate->getSequence()[0] == nullptr ||
+                argAggregate->getSequence()[0] == nullptr ||
                 argAggregate->getSequence()[0]->getAsTyped()->getBasicType() != EbtSampler)
                 return;
         }
@@ -4607,7 +4607,7 @@ void HlslParseContext::decomposeIntrinsic(const TSourceLoc& loc, TIntermTyped*& 
         if (nullptr == symbol) {
             type.getQualifier().builtIn = builtin;
 
-            TVariable* variable = new TVariable(new TString(name), type);
+            TVariable* variable = new TVariable(NewPoolTString(name), type);
 
             symbolTable.insert(*variable);
 
