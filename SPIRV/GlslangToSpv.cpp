@@ -4182,14 +4182,25 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 
     // Process a GLSL texturing op (will be SPV image)
 
-    const glslang::TType &imageType = node->getAsAggregate() ? node->getAsAggregate()->getSequence()[0]->getAsTyped()->getType()
-                                                             : node->getAsUnaryNode()->getOperand()->getAsTyped()->getType();
+    const glslang::TType &imageType = node->getAsAggregate()
+                                        ? node->getAsAggregate()->getSequence()[0]->getAsTyped()->getType()
+                                        : node->getAsUnaryNode()->getOperand()->getAsTyped()->getType();
     const glslang::TSampler sampler = imageType.getSampler();
 #ifdef AMD_EXTENSIONS
     bool f16ShadowCompare = (sampler.shadow && node->getAsAggregate())
-                                ? node->getAsAggregate()->getSequence()[1]->getAsTyped()->getType().getBasicType() == glslang::EbtFloat16
-                                : false;
+            ? node->getAsAggregate()->getSequence()[1]->getAsTyped()->getType().getBasicType() == glslang::EbtFloat16
+            : false;
 #endif
+
+    const auto signExtensionMask = [&]() {
+        if (builder.getSpvVersion() >= spv::Spv_1_4) {
+            if (sampler.type == glslang::EbtUint)
+                return spv::ImageOperandsZeroExtendMask;
+            else if (sampler.type == glslang::EbtInt)
+                return spv::ImageOperandsSignExtendMask;
+        }
+        return spv::ImageOperandsMaskNone;
+    };
 
     std::vector<spv::Id> arguments;
     if (node->getAsAggregate())
@@ -4269,11 +4280,17 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             spv::IdImmediate coord = { true,
                 builder.makeCompositeConstant(builder.makeVectorType(builder.makeIntType(32), 2), comps) };
             operands.push_back(coord);
+            spv::IdImmediate imageOperands = { false, spv::ImageOperandsMaskNone };
+            imageOperands.word = imageOperands.word | signExtensionMask();
             if (sampler.ms) {
-                spv::IdImmediate imageOperands = { false, spv::ImageOperandsSampleMask };
+                imageOperands.word = imageOperands.word | spv::ImageOperandsSampleMask;
+            }
+            if (imageOperands.word != spv::ImageOperandsMaskNone) {
                 operands.push_back(imageOperands);
-                spv::IdImmediate imageOperand = { true, *(opIt++) };
-                operands.push_back(imageOperand);
+                if (sampler.ms) {
+                    spv::IdImmediate imageOperand = { true, *(opIt++) };
+                    operands.push_back(imageOperand);
+                }
             }
             spv::Id result = builder.createOp(spv::OpImageRead, resultType(), operands);
             builder.setPrecision(result, precision);
@@ -4300,7 +4317,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 #endif
             mask = mask | TranslateImageOperands(TranslateCoherent(imageType));
             mask = (spv::ImageOperandsMask)(mask & ~spv::ImageOperandsMakeTexelAvailableKHRMask);
-            if (mask) {
+            mask = mask | signExtensionMask();
+            if (mask != spv::MemoryAccessMaskNone) {
                 spv::IdImmediate imageOperands = { false, (unsigned int)mask };
                 operands.push_back(imageOperands);
             }
@@ -4315,7 +4333,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             }
 #endif
             if (mask & spv::ImageOperandsMakeTexelVisibleKHRMask) {
-                spv::IdImmediate imageOperand = { true, builder.makeUintConstant(TranslateMemoryScope(TranslateCoherent(imageType))) };
+                spv::IdImmediate imageOperand = { true,
+                                    builder.makeUintConstant(TranslateMemoryScope(TranslateCoherent(imageType))) };
                 operands.push_back(imageOperand);
             }
 
@@ -4362,7 +4381,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 #endif
             mask = mask | TranslateImageOperands(TranslateCoherent(imageType));
             mask = (spv::ImageOperandsMask)(mask & ~spv::ImageOperandsMakeTexelVisibleKHRMask);
-            if (mask) {
+            mask = mask | signExtensionMask();
+            if (mask != spv::MemoryAccessMaskNone) {
                 spv::IdImmediate imageOperands = { false, (unsigned int)mask };
                 operands.push_back(imageOperands);
             }
@@ -4377,7 +4397,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             }
 #endif
             if (mask & spv::ImageOperandsMakeTexelAvailableKHRMask) {
-                spv::IdImmediate imageOperand = { true, builder.makeUintConstant(TranslateMemoryScope(TranslateCoherent(imageType))) };
+                spv::IdImmediate imageOperand = { true,
+                    builder.makeUintConstant(TranslateMemoryScope(TranslateCoherent(imageType))) };
                 operands.push_back(imageOperand);
             }
 
@@ -4386,7 +4407,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 builder.addCapability(spv::CapabilityStorageImageWriteWithoutFormat);
             return spv::NoResult;
 #ifdef AMD_EXTENSIONS
-        } else if (node->getOp() == glslang::EOpSparseImageLoad || node->getOp() == glslang::EOpSparseImageLoadLod) {
+        } else if (node->getOp() == glslang::EOpSparseImageLoad ||
+                   node->getOp() == glslang::EOpSparseImageLoadLod) {
 #else
         } else if (node->getOp() == glslang::EOpSparseImageLoad) {
 #endif
@@ -4408,7 +4430,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
 #endif
             mask = mask | TranslateImageOperands(TranslateCoherent(imageType));
             mask = (spv::ImageOperandsMask)(mask & ~spv::ImageOperandsMakeTexelAvailableKHRMask);
-            if (mask) {
+            mask = mask | signExtensionMask();
+            if (mask != spv::MemoryAccessMaskNone) {
                 spv::IdImmediate imageOperands = { false, (unsigned int)mask };
                 operands.push_back(imageOperands);
             }
@@ -4710,7 +4733,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         spv::Id resType = builder.makeStructType(members, "ResType");
 
         //call ImageFootprintNV
-        spv::Id res = builder.createTextureCall(precision, resType, sparse, cracked.fetch, cracked.proj, cracked.gather, noImplicitLod, params);
+        spv::Id res = builder.createTextureCall(precision, resType, sparse, cracked.fetch, cracked.proj,
+                                                cracked.gather, noImplicitLod, params, signExtensionMask());
         
         //copy resType (SPIR-V type) to resultStructType(OpenGL type)
         for (int i = 0; i < 5; i++) {
@@ -4763,7 +4787,8 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     }
 
     std::vector<spv::Id> result( 1, 
-        builder.createTextureCall(precision, resultType(), sparse, cracked.fetch, cracked.proj, cracked.gather, noImplicitLod, params)
+        builder.createTextureCall(precision, resultType(), sparse, cracked.fetch, cracked.proj, cracked.gather,
+                                  noImplicitLod, params, signExtensionMask())
     );
 
     if (components != node->getType().getVectorSize())

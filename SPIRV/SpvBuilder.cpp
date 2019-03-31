@@ -1808,7 +1808,7 @@ Id Builder::createBuiltinCall(Id resultType, Id builtins, int entryPoint, const 
 // Accept all parameters needed to create a texture instruction.
 // Create the correct instruction based on the inputs, and make the call.
 Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, bool fetch, bool proj, bool gather,
-    bool noImplicitLod, const TextureParameters& parameters)
+    bool noImplicitLod, const TextureParameters& parameters, ImageOperandsMask signExtensionMask)
 {
     static const int maxTextureArgs = 10;
     Id texArgs[maxTextureArgs] = {};
@@ -1835,8 +1835,8 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     //
     // Set up the optional arguments
     //
-    int optArgNum = numArgs;                        // track which operand, if it exists, is the mask of optional arguments
-    ++numArgs;                                      // speculatively make room for the mask operand
+    int optArgNum = numArgs;    // track which operand, if it exists, is the mask of optional arguments
+    ++numArgs;                  // speculatively make room for the mask operand
     ImageOperandsMask mask = ImageOperandsMaskNone; // the mask operand
     if (parameters.bias) {
         mask = (ImageOperandsMask)(mask | ImageOperandsBiasMask);
@@ -1889,6 +1889,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     if (parameters.volatil) {
         mask = mask | ImageOperandsVolatileTexelKHRMask;
     }
+    mask = mask | signExtensionMask;
     if (mask == ImageOperandsMaskNone)
         --numArgs;  // undo speculative reservation for the mask argument
     else

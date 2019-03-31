@@ -472,6 +472,9 @@ INSTANTIATE_TEST_CASE_P(
         "spv.1.4.OpCopyLogical.comp",
         "spv.1.4.OpCopyLogicalBool.comp",
         "spv.1.4.OpCopyLogical.funcall.frag",
+        "spv.1.4.image.frag",
+        "spv.1.4.sparseTexture.frag",
+        "spv.1.4.texture.frag",
     })),
     FileNameAsCustomTestSuffix
 );

@@ -416,7 +416,8 @@ public:
     };
 
     // Select the correct texture operation based on all inputs, and emit the correct instruction
-    Id createTextureCall(Decoration precision, Id resultType, bool sparse, bool fetch, bool proj, bool gather, bool noImplicit, const TextureParameters&);
+    Id createTextureCall(Decoration precision, Id resultType, bool sparse, bool fetch, bool proj, bool gather,
+        bool noImplicit, const TextureParameters&, ImageOperandsMask);
 
     // Emit the OpTextureQuery* instruction that was passed in.
     // Figure out the right return value and type, and return it.
