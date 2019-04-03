@@ -118,9 +118,6 @@ void Builder::postProcessType(const Instruction& inst, Id typeId)
     case OpAccessChain:
     case OpPtrAccessChain:
     case OpCopyObject:
-    case OpFConvert:
-    case OpSConvert:
-    case OpUConvert:
         break;
     case OpExtInst:
 #if AMD_EXTENSIONS
