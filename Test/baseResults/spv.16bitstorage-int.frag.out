@@ -4,6 +4,7 @@ spv.16bitstorage-int.frag
 // Id's are bound by 172
 
                               Capability Shader
+                              Capability Int16
                               Capability StorageUniformBufferBlock16
                               Capability StorageUniform16
                               Extension  "SPV_KHR_16bit_storage"
