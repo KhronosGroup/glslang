@@ -37,8 +37,7 @@
 #ifndef _COMMON_INCLUDED_
 #define _COMMON_INCLUDED_
 
-
-#if defined(__ANDROID__) || (defined(_MSC_VER) && _MSC_VER < 1700)
+// hack to define to_string as not all <string> libraries have it enabled by default
 #include <sstream>
 namespace std {
 template<typename T>
@@ -48,7 +47,6 @@ std::string to_string(const T& val) {
   return os.str();
 }
 }
-#endif
 
 #if (defined(_MSC_VER) && _MSC_VER < 1900 /*vs2015*/) || defined MINGW_HAS_SECURE_API
     #include <basetsd.h>
