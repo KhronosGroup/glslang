@@ -102,6 +102,7 @@ std::string to_string(const T& val) {
 #include <algorithm>
 #include <string>
 #include <cstdio>
+#include <cstdlib>
 #include <cassert>
 
 #include "PoolAlloc.h"
