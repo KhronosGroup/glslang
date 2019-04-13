@@ -1525,7 +1525,7 @@ void usage()
            "  --auto-map-locations | --aml      automatically locate input/output lacking\n"
            "                                    'location' (fragile, not cross stage)\n"
            "  --client {vulkan<ver>|opengl<ver>} see -V and -G\n"
-           "  --dump-builtin-symbols            prints builint symbol table prior each stage\n"
+           "  --dump-builtin-symbols            prints builtin symbol table prior each compile\n"
            "  -dumpfullversion | -dumpversion   print bare major.minor.patchlevel\n"
            "  --flatten-uniform-arrays | --fua  flatten uniform texture/sampler arrays to\n"
            "                                    scalars\n"

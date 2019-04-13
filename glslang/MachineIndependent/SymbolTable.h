@@ -116,7 +116,7 @@ public:
     }
     virtual int getNumExtensions() const { return extensions == nullptr ? 0 : (int)extensions->size(); }
     virtual const char** getExtensions() const { return extensions->data(); }
-    virtual void dump(TInfoSink &infoSink, bool pretty = false) const = 0;
+    virtual void dump(TInfoSink &infoSink, bool complete = false) const = 0;
     void dumpExtensions(TInfoSink &infoSink) const;
 
     virtual bool isReadOnly() const { return ! writable; }
