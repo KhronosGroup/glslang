@@ -196,8 +196,8 @@ void TVariable::dump(TInfoSink &infoSink, bool complete) const
     {
         infoSink.debug << getName().c_str() << ": " << type.getCompleteString();
         dumpExtensions(infoSink);
-    }
-    else {
+    } else
+    {
         infoSink.debug << getName().c_str() << ": " << type.getStorageQualifierString() << " "
                        << type.getBasicTypeString();
         if (type.isArray())
@@ -213,11 +213,14 @@ void TFunction::dump(TInfoSink &infoSink, bool complete) const
 {
     if (complete)
     {
-        infoSink.debug << getName().c_str() << ": " << returnType.getCompleteString() << " " << getName().c_str() << "(";
+        infoSink.debug << getName().c_str() << ": " << returnType.getCompleteString() << " " << getName().c_str()
+                       << "(";
         int numParams = getParamCount();
-        for (int i = 0; i < numParams; i++){
-          const TParameter& param = parameters[i];
-          infoSink.debug << param.type->getCompleteString() << " " << (param.name ? param.name->c_str() : "") << (i < numParams-1 ? "," : "");
+        for (int i = 0; i < numParams; i++)
+        {
+            const TParameter &param = parameters[i];
+            infoSink.debug << param.type->getCompleteString() << " "
+                           << (param.name ? param.name->c_str() : "") << (i < numParams - 1 ? "," : "");
         }
         infoSink.debug << ")";
         dumpExtensions(infoSink);

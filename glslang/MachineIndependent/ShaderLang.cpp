@@ -480,7 +480,9 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
 void DumpBuiltinSymbolTable(TInfoSink& infoSink, const TSymbolTable& symbolTable)
 {
     infoSink.debug << "BuiltinSymbolTable {\n";
+
     symbolTable.dump(infoSink, true);
+
     infoSink.debug << "}\n";
 }
 
@@ -915,9 +917,8 @@ bool ProcessDeferred(
         return false;
     }
 
-    if (messages & EShMsgBuiltinSymbolTable) {
+    if (messages & EShMsgBuiltinSymbolTable)
         DumpBuiltinSymbolTable(compiler->infoSink, *symbolTable);
-    }
 
     //
     // Now we can process the full shader under proper symbols and rules.
