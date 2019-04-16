@@ -179,31 +179,28 @@ void TType::buildMangledName(TString& mangledName) const
 void TSymbol::dumpExtensions(TInfoSink &infoSink) const
 {
     int numExtensions = getNumExtensions();
-    if (numExtensions)
-    {
+    if (numExtensions) {
         infoSink.debug << " <";
+
         for (int i = 0; i < numExtensions; i++)
-        {
             infoSink.debug << getExtensions()[i] << ",";
-        }
+        
         infoSink.debug << ">";
     }
 }
 
 void TVariable::dump(TInfoSink &infoSink, bool complete) const
 {
-    if (complete)
-    {
+    if (complete) {
         infoSink.debug << getName().c_str() << ": " << type.getCompleteString();
         dumpExtensions(infoSink);
     } else
     {
         infoSink.debug << getName().c_str() << ": " << type.getStorageQualifierString() << " "
                        << type.getBasicTypeString();
+
         if (type.isArray())
-        {
             infoSink.debug << "[0]";
-        }
     }
 
     infoSink.debug << "\n";
@@ -211,17 +208,17 @@ void TVariable::dump(TInfoSink &infoSink, bool complete) const
 
 void TFunction::dump(TInfoSink &infoSink, bool complete) const
 {
-    if (complete)
-    {
+    if (complete) {
         infoSink.debug << getName().c_str() << ": " << returnType.getCompleteString() << " " << getName().c_str()
                        << "(";
+
         int numParams = getParamCount();
-        for (int i = 0; i < numParams; i++)
-        {
+        for (int i = 0; i < numParams; i++) {
             const TParameter &param = parameters[i];
             infoSink.debug << param.type->getCompleteString() << " "
                            << (param.name ? param.name->c_str() : "") << (i < numParams - 1 ? "," : "");
         }
+
         infoSink.debug << ")";
         dumpExtensions(infoSink);
     } else
