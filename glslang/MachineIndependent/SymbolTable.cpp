@@ -216,7 +216,8 @@ void TFunction::dump(TInfoSink &infoSink, bool complete) const
         for (int i = 0; i < numParams; i++) {
             const TParameter &param = parameters[i];
             infoSink.debug << param.type->getCompleteString() << " "
-                           << (param.name ? param.name->c_str() : "") << (i < numParams - 1 ? "," : "");
+                           << (param.type->isStruct() ? "of " + param.type->getTypeName() + " " : "")
+                           << (param.name ? *param.name : "") << (i < numParams - 1 ? "," : "");
         }
 
         infoSink.debug << ")";
