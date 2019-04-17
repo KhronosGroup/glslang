@@ -176,7 +176,7 @@ void TType::buildMangledName(TString& mangledName) const
 // Dump functions.
 //
 
-void TSymbol::dumpExtensions(TInfoSink &infoSink) const
+void TSymbol::dumpExtensions(TInfoSink& infoSink) const
 {
     int numExtensions = getNumExtensions();
     if (numExtensions) {
@@ -189,13 +189,12 @@ void TSymbol::dumpExtensions(TInfoSink &infoSink) const
     }
 }
 
-void TVariable::dump(TInfoSink &infoSink, bool complete) const
+void TVariable::dump(TInfoSink& infoSink, bool complete) const
 {
     if (complete) {
         infoSink.debug << getName().c_str() << ": " << type.getCompleteString();
         dumpExtensions(infoSink);
-    } else
-    {
+    } else {
         infoSink.debug << getName().c_str() << ": " << type.getStorageQualifierString() << " "
                        << type.getBasicTypeString();
 
@@ -206,7 +205,7 @@ void TVariable::dump(TInfoSink &infoSink, bool complete) const
     infoSink.debug << "\n";
 }
 
-void TFunction::dump(TInfoSink &infoSink, bool complete) const
+void TFunction::dump(TInfoSink& infoSink, bool complete) const
 {
     if (complete) {
         infoSink.debug << getName().c_str() << ": " << returnType.getCompleteString() << " " << getName().c_str()
@@ -222,8 +221,7 @@ void TFunction::dump(TInfoSink &infoSink, bool complete) const
 
         infoSink.debug << ")";
         dumpExtensions(infoSink);
-    } else
-    {
+    } else {
         infoSink.debug << getName().c_str() << ": " << returnType.getBasicTypeString() << " "
                        << getMangledName().c_str() << "n";
     }
@@ -231,20 +229,20 @@ void TFunction::dump(TInfoSink &infoSink, bool complete) const
     infoSink.debug << "\n";
 }
 
-void TAnonMember::dump(TInfoSink &TInfoSink, bool complete) const
+void TAnonMember::dump(TInfoSink& TInfoSink, bool complete) const
 {
     TInfoSink.debug << "anonymous member " << getMemberNumber() << " of " << getAnonContainer().getName().c_str()
                     << "\n";
 }
 
-void TSymbolTableLevel::dump(TInfoSink &infoSink, bool complete) const
+void TSymbolTableLevel::dump(TInfoSink& infoSink, bool complete) const
 {
     tLevel::const_iterator it;
     for (it = level.begin(); it != level.end(); ++it)
         (*it).second->dump(infoSink, complete);
 }
 
-void TSymbolTable::dump(TInfoSink &infoSink, bool complete) const
+void TSymbolTable::dump(TInfoSink& infoSink, bool complete) const
 {
     for (int level = currentLevel(); level >= 0; --level) {
         infoSink.debug << "LEVEL " << level << "\n";
