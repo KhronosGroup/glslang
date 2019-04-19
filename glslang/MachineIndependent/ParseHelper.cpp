@@ -1156,6 +1156,8 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                             error(arguments->getLoc(), message, "readonly", "");
                         if (argQualifier.writeonly && ! formalQualifier.writeonly)
                             error(arguments->getLoc(), message, "writeonly", "");
+                        if (!builtIn && argQualifier.restrict && ! formalQualifier.restrict)
+                            error(arguments->getLoc(), message, "restrict", "");
                     }
                     if (!builtIn && argQualifier.layoutFormat != formalQualifier.layoutFormat) {
                         // we have mismatched formats, which should only be allowed if writeonly
