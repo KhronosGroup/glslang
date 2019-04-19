@@ -1157,6 +1157,13 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                         if (argQualifier.writeonly && ! formalQualifier.writeonly)
                             error(arguments->getLoc(), message, "writeonly", "");
                     }
+                    if (!builtIn && argQualifier.layoutFormat != formalQualifier.layoutFormat) {
+                        // we have mismatched formats, which should only be allowed if writeonly
+                        // and at least one format is unknown
+                        if (!formalQualifier.writeonly || (formalQualifier.layoutFormat != ElfNone &&
+                                                              argQualifier.layoutFormat != ElfNone))
+                            error(arguments->getLoc(), "image formats must match", "format", "");
+                    }
 
                     if (builtIn && arg->getAsTyped()->getType().containsBasicType(EbtFloat16))
                         requireFloat16Arithmetic(arguments->getLoc(), "built-in function", "float16 types can only be in uniform block or buffer storage");
