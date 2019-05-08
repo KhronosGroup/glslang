@@ -6951,9 +6951,10 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         break;
 
     case EOpConstructNonuniform:
-        node->getWritableType().getQualifier().nonUniform = true;
-        return node;
-        break;
+        // Make a nonuniform copy of node
+        newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpCopyObject, true, node, node->getType());
+        newNode->getWritableType().getQualifier().nonUniform = true;
+        return newNode;
 
     case EOpConstructReference:
         // construct reference from reference

@@ -237,6 +237,7 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
     case EOpPostDecrement:  out.debug << "Post-Decrement";       break;
     case EOpPreIncrement:   out.debug << "Pre-Increment";        break;
     case EOpPreDecrement:   out.debug << "Pre-Decrement";        break;
+    case EOpCopyObject:     out.debug << "copy object";          break;
 
     // * -> bool
     case EOpConvInt8ToBool:    out.debug << "Convert int8_t to bool";  break;
