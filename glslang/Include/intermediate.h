@@ -85,6 +85,8 @@ enum TOperator {
     EOpPreIncrement,
     EOpPreDecrement,
 
+    EOpCopyObject,
+
     // (u)int* -> bool
     EOpConvInt8ToBool,
     EOpConvUint8ToBool,

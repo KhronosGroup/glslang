@@ -5543,6 +5543,11 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
     case glslang::EOpConstructReference:
         unaryOp = spv::OpBitcast;
         break;
+
+    case glslang::EOpCopyObject:
+        unaryOp = spv::OpCopyObject;
+        break;
+
     default:
         return 0;
     }
