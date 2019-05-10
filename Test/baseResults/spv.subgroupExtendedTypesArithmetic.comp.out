@@ -829,14 +829,14 @@ spv.subgroupExtendedTypesArithmetic.comp
              648:      6(int) Load 8(invocation)
              649:    593(ptr) AccessChain 34(data) 37 46 38
              650:  19(int8_t) Load 649
-             651:  19(int8_t) GroupNonUniformSMin 42 Reduce 650
+             651:  19(int8_t) GroupNonUniformUMin 42 Reduce 650
              652:    593(ptr) AccessChain 34(data) 648 46 38
                               Store 652 651
              653:      6(int) Load 8(invocation)
              654:    600(ptr) AccessChain 34(data) 46 46
              655:  20(i8vec4) Load 654
              656: 599(i8vec2) VectorShuffle 655 655 0 1
-             657: 599(i8vec2) GroupNonUniformSMin 42 Reduce 656
+             657: 599(i8vec2) GroupNonUniformUMin 42 Reduce 656
              658:    600(ptr) AccessChain 34(data) 653 46
              659:  20(i8vec4) Load 658
              660:  20(i8vec4) VectorShuffle 659 657 4 5 2 3
@@ -845,7 +845,7 @@ spv.subgroupExtendedTypesArithmetic.comp
              662:    600(ptr) AccessChain 34(data) 57 46
              663:  20(i8vec4) Load 662
              664: 609(i8vec3) VectorShuffle 663 663 0 1 2
-             665: 609(i8vec3) GroupNonUniformSMin 42 Reduce 664
+             665: 609(i8vec3) GroupNonUniformUMin 42 Reduce 664
              666:    600(ptr) AccessChain 34(data) 661 46
              667:  20(i8vec4) Load 666
              668:  20(i8vec4) VectorShuffle 667 665 4 5 6 3
@@ -853,20 +853,20 @@ spv.subgroupExtendedTypesArithmetic.comp
              669:      6(int) Load 8(invocation)
              670:    600(ptr) AccessChain 34(data) 67 46
              671:  20(i8vec4) Load 670
-             672:  20(i8vec4) GroupNonUniformSMin 42 Reduce 671
+             672:  20(i8vec4) GroupNonUniformUMin 42 Reduce 671
              673:    600(ptr) AccessChain 34(data) 669 46
                               Store 673 672
              674:      6(int) Load 8(invocation)
              675:    593(ptr) AccessChain 34(data) 37 46 38
              676:  19(int8_t) Load 675
-             677:  19(int8_t) GroupNonUniformSMax 42 Reduce 676
+             677:  19(int8_t) GroupNonUniformUMax 42 Reduce 676
              678:    593(ptr) AccessChain 34(data) 674 46 38
                               Store 678 677
              679:      6(int) Load 8(invocation)
              680:    600(ptr) AccessChain 34(data) 46 46
              681:  20(i8vec4) Load 680
              682: 599(i8vec2) VectorShuffle 681 681 0 1
-             683: 599(i8vec2) GroupNonUniformSMax 42 Reduce 682
+             683: 599(i8vec2) GroupNonUniformUMax 42 Reduce 682
              684:    600(ptr) AccessChain 34(data) 679 46
              685:  20(i8vec4) Load 684
              686:  20(i8vec4) VectorShuffle 685 683 4 5 2 3
@@ -875,7 +875,7 @@ spv.subgroupExtendedTypesArithmetic.comp
              688:    600(ptr) AccessChain 34(data) 57 46
              689:  20(i8vec4) Load 688
              690: 609(i8vec3) VectorShuffle 689 689 0 1 2
-             691: 609(i8vec3) GroupNonUniformSMax 42 Reduce 690
+             691: 609(i8vec3) GroupNonUniformUMax 42 Reduce 690
              692:    600(ptr) AccessChain 34(data) 687 46
              693:  20(i8vec4) Load 692
              694:  20(i8vec4) VectorShuffle 693 691 4 5 6 3
@@ -883,7 +883,7 @@ spv.subgroupExtendedTypesArithmetic.comp
              695:      6(int) Load 8(invocation)
              696:    600(ptr) AccessChain 34(data) 67 46
              697:  20(i8vec4) Load 696
-             698:  20(i8vec4) GroupNonUniformSMax 42 Reduce 697
+             698:  20(i8vec4) GroupNonUniformUMax 42 Reduce 697
              699:    600(ptr) AccessChain 34(data) 695 46
                               Store 699 698
              700:      6(int) Load 8(invocation)
@@ -1039,14 +1039,14 @@ spv.subgroupExtendedTypesArithmetic.comp
              830:      6(int) Load 8(invocation)
              831:    593(ptr) AccessChain 34(data) 37 46 38
              832:  19(int8_t) Load 831
-             833:  19(int8_t) GroupNonUniformSMin 42 InclusiveScan 832
+             833:  19(int8_t) GroupNonUniformUMin 42 InclusiveScan 832
              834:    593(ptr) AccessChain 34(data) 830 46 38
                               Store 834 833
              835:      6(int) Load 8(invocation)
              836:    600(ptr) AccessChain 34(data) 46 46
              837:  20(i8vec4) Load 836
              838: 599(i8vec2) VectorShuffle 837 837 0 1
-             839: 599(i8vec2) GroupNonUniformSMin 42 InclusiveScan 838
+             839: 599(i8vec2) GroupNonUniformUMin 42 InclusiveScan 838
              840:    600(ptr) AccessChain 34(data) 835 46
              841:  20(i8vec4) Load 840
              842:  20(i8vec4) VectorShuffle 841 839 4 5 2 3
@@ -1055,7 +1055,7 @@ spv.subgroupExtendedTypesArithmetic.comp
              844:    600(ptr) AccessChain 34(data) 57 46
              845:  20(i8vec4) Load 844
              846: 609(i8vec3) VectorShuffle 845 845 0 1 2
-             847: 609(i8vec3) GroupNonUniformSMin 42 InclusiveScan 846
+             847: 609(i8vec3) GroupNonUniformUMin 42 InclusiveScan 846
              848:    600(ptr) AccessChain 34(data) 843 46
              849:  20(i8vec4) Load 848
              850:  20(i8vec4) VectorShuffle 849 847 4 5 6 3
@@ -1063,20 +1063,20 @@ spv.subgroupExtendedTypesArithmetic.comp
              851:      6(int) Load 8(invocation)
              852:    600(ptr) AccessChain 34(data) 67 46
              853:  20(i8vec4) Load 852
-             854:  20(i8vec4) GroupNonUniformSMin 42 InclusiveScan 853
+             854:  20(i8vec4) GroupNonUniformUMin 42 InclusiveScan 853
              855:    600(ptr) AccessChain 34(data) 851 46
                               Store 855 854
              856:      6(int) Load 8(invocation)
              857:    593(ptr) AccessChain 34(data) 37 46 38
              858:  19(int8_t) Load 857
-             859:  19(int8_t) GroupNonUniformSMax 42 InclusiveScan 858
+             859:  19(int8_t) GroupNonUniformUMax 42 InclusiveScan 858
              860:    593(ptr) AccessChain 34(data) 856 46 38
                               Store 860 859
              861:      6(int) Load 8(invocation)
              862:    600(ptr) AccessChain 34(data) 46 46
              863:  20(i8vec4) Load 862
              864: 599(i8vec2) VectorShuffle 863 863 0 1
-             865: 599(i8vec2) GroupNonUniformSMax 42 InclusiveScan 864
+             865: 599(i8vec2) GroupNonUniformUMax 42 InclusiveScan 864
              866:    600(ptr) AccessChain 34(data) 861 46
              867:  20(i8vec4) Load 866
              868:  20(i8vec4) VectorShuffle 867 865 4 5 2 3
@@ -1085,7 +1085,7 @@ spv.subgroupExtendedTypesArithmetic.comp
              870:    600(ptr) AccessChain 34(data) 57 46
              871:  20(i8vec4) Load 870
              872: 609(i8vec3) VectorShuffle 871 871 0 1 2
-             873: 609(i8vec3) GroupNonUniformSMax 42 InclusiveScan 872
+             873: 609(i8vec3) GroupNonUniformUMax 42 InclusiveScan 872
              874:    600(ptr) AccessChain 34(data) 869 46
              875:  20(i8vec4) Load 874
              876:  20(i8vec4) VectorShuffle 875 873 4 5 6 3
@@ -1093,7 +1093,7 @@ spv.subgroupExtendedTypesArithmetic.comp
              877:      6(int) Load 8(invocation)
              878:    600(ptr) AccessChain 34(data) 67 46
              879:  20(i8vec4) Load 878
-             880:  20(i8vec4) GroupNonUniformSMax 42 InclusiveScan 879
+             880:  20(i8vec4) GroupNonUniformUMax 42 InclusiveScan 879
              881:    600(ptr) AccessChain 34(data) 877 46
                               Store 881 880
              882:      6(int) Load 8(invocation)
@@ -1249,14 +1249,14 @@ spv.subgroupExtendedTypesArithmetic.comp
             1012:      6(int) Load 8(invocation)
             1013:    593(ptr) AccessChain 34(data) 37 46 38
             1014:  19(int8_t) Load 1013
-            1015:  19(int8_t) GroupNonUniformSMin 42 ExclusiveScan 1014
+            1015:  19(int8_t) GroupNonUniformUMin 42 ExclusiveScan 1014
             1016:    593(ptr) AccessChain 34(data) 1012 46 38
                               Store 1016 1015
             1017:      6(int) Load 8(invocation)
             1018:    600(ptr) AccessChain 34(data) 46 46
             1019:  20(i8vec4) Load 1018
             1020: 599(i8vec2) VectorShuffle 1019 1019 0 1
-            1021: 599(i8vec2) GroupNonUniformSMin 42 ExclusiveScan 1020
+            1021: 599(i8vec2) GroupNonUniformUMin 42 ExclusiveScan 1020
             1022:    600(ptr) AccessChain 34(data) 1017 46
             1023:  20(i8vec4) Load 1022
             1024:  20(i8vec4) VectorShuffle 1023 1021 4 5 2 3
@@ -1265,7 +1265,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             1026:    600(ptr) AccessChain 34(data) 57 46
             1027:  20(i8vec4) Load 1026
             1028: 609(i8vec3) VectorShuffle 1027 1027 0 1 2
-            1029: 609(i8vec3) GroupNonUniformSMin 42 ExclusiveScan 1028
+            1029: 609(i8vec3) GroupNonUniformUMin 42 ExclusiveScan 1028
             1030:    600(ptr) AccessChain 34(data) 1025 46
             1031:  20(i8vec4) Load 1030
             1032:  20(i8vec4) VectorShuffle 1031 1029 4 5 6 3
@@ -1273,20 +1273,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             1033:      6(int) Load 8(invocation)
             1034:    600(ptr) AccessChain 34(data) 67 46
             1035:  20(i8vec4) Load 1034
-            1036:  20(i8vec4) GroupNonUniformSMin 42 ExclusiveScan 1035
+            1036:  20(i8vec4) GroupNonUniformUMin 42 ExclusiveScan 1035
             1037:    600(ptr) AccessChain 34(data) 1033 46
                               Store 1037 1036
             1038:      6(int) Load 8(invocation)
             1039:    593(ptr) AccessChain 34(data) 37 46 38
             1040:  19(int8_t) Load 1039
-            1041:  19(int8_t) GroupNonUniformSMax 42 ExclusiveScan 1040
+            1041:  19(int8_t) GroupNonUniformUMax 42 ExclusiveScan 1040
             1042:    593(ptr) AccessChain 34(data) 1038 46 38
                               Store 1042 1041
             1043:      6(int) Load 8(invocation)
             1044:    600(ptr) AccessChain 34(data) 46 46
             1045:  20(i8vec4) Load 1044
             1046: 599(i8vec2) VectorShuffle 1045 1045 0 1
-            1047: 599(i8vec2) GroupNonUniformSMax 42 ExclusiveScan 1046
+            1047: 599(i8vec2) GroupNonUniformUMax 42 ExclusiveScan 1046
             1048:    600(ptr) AccessChain 34(data) 1043 46
             1049:  20(i8vec4) Load 1048
             1050:  20(i8vec4) VectorShuffle 1049 1047 4 5 2 3
@@ -1295,7 +1295,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             1052:    600(ptr) AccessChain 34(data) 57 46
             1053:  20(i8vec4) Load 1052
             1054: 609(i8vec3) VectorShuffle 1053 1053 0 1 2
-            1055: 609(i8vec3) GroupNonUniformSMax 42 ExclusiveScan 1054
+            1055: 609(i8vec3) GroupNonUniformUMax 42 ExclusiveScan 1054
             1056:    600(ptr) AccessChain 34(data) 1051 46
             1057:  20(i8vec4) Load 1056
             1058:  20(i8vec4) VectorShuffle 1057 1055 4 5 6 3
@@ -1303,7 +1303,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             1059:      6(int) Load 8(invocation)
             1060:    600(ptr) AccessChain 34(data) 67 46
             1061:  20(i8vec4) Load 1060
-            1062:  20(i8vec4) GroupNonUniformSMax 42 ExclusiveScan 1061
+            1062:  20(i8vec4) GroupNonUniformUMax 42 ExclusiveScan 1061
             1063:    600(ptr) AccessChain 34(data) 1059 46
                               Store 1063 1062
             1064:      6(int) Load 8(invocation)
@@ -2089,14 +2089,14 @@ spv.subgroupExtendedTypesArithmetic.comp
             1748:      6(int) Load 8(invocation)
             1749:   1693(ptr) AccessChain 34(data) 37 67 38
             1750: 23(int16_t) Load 1749
-            1751: 23(int16_t) GroupNonUniformSMin 42 Reduce 1750
+            1751: 23(int16_t) GroupNonUniformUMin 42 Reduce 1750
             1752:   1693(ptr) AccessChain 34(data) 1748 67 38
                               Store 1752 1751
             1753:      6(int) Load 8(invocation)
             1754:   1700(ptr) AccessChain 34(data) 46 67
             1755: 24(i16vec4) Load 1754
             1756:1699(i16vec2) VectorShuffle 1755 1755 0 1
-            1757:1699(i16vec2) GroupNonUniformSMin 42 Reduce 1756
+            1757:1699(i16vec2) GroupNonUniformUMin 42 Reduce 1756
             1758:   1700(ptr) AccessChain 34(data) 1753 67
             1759: 24(i16vec4) Load 1758
             1760: 24(i16vec4) VectorShuffle 1759 1757 4 5 2 3
@@ -2105,7 +2105,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             1762:   1700(ptr) AccessChain 34(data) 57 67
             1763: 24(i16vec4) Load 1762
             1764:1709(i16vec3) VectorShuffle 1763 1763 0 1 2
-            1765:1709(i16vec3) GroupNonUniformSMin 42 Reduce 1764
+            1765:1709(i16vec3) GroupNonUniformUMin 42 Reduce 1764
             1766:   1700(ptr) AccessChain 34(data) 1761 67
             1767: 24(i16vec4) Load 1766
             1768: 24(i16vec4) VectorShuffle 1767 1765 4 5 6 3
@@ -2113,20 +2113,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             1769:      6(int) Load 8(invocation)
             1770:   1700(ptr) AccessChain 34(data) 67 67
             1771: 24(i16vec4) Load 1770
-            1772: 24(i16vec4) GroupNonUniformSMin 42 Reduce 1771
+            1772: 24(i16vec4) GroupNonUniformUMin 42 Reduce 1771
             1773:   1700(ptr) AccessChain 34(data) 1769 67
                               Store 1773 1772
             1774:      6(int) Load 8(invocation)
             1775:   1693(ptr) AccessChain 34(data) 37 67 38
             1776: 23(int16_t) Load 1775
-            1777: 23(int16_t) GroupNonUniformSMax 42 Reduce 1776
+            1777: 23(int16_t) GroupNonUniformUMax 42 Reduce 1776
             1778:   1693(ptr) AccessChain 34(data) 1774 67 38
                               Store 1778 1777
             1779:      6(int) Load 8(invocation)
             1780:   1700(ptr) AccessChain 34(data) 46 67
             1781: 24(i16vec4) Load 1780
             1782:1699(i16vec2) VectorShuffle 1781 1781 0 1
-            1783:1699(i16vec2) GroupNonUniformSMax 42 Reduce 1782
+            1783:1699(i16vec2) GroupNonUniformUMax 42 Reduce 1782
             1784:   1700(ptr) AccessChain 34(data) 1779 67
             1785: 24(i16vec4) Load 1784
             1786: 24(i16vec4) VectorShuffle 1785 1783 4 5 2 3
@@ -2135,7 +2135,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             1788:   1700(ptr) AccessChain 34(data) 57 67
             1789: 24(i16vec4) Load 1788
             1790:1709(i16vec3) VectorShuffle 1789 1789 0 1 2
-            1791:1709(i16vec3) GroupNonUniformSMax 42 Reduce 1790
+            1791:1709(i16vec3) GroupNonUniformUMax 42 Reduce 1790
             1792:   1700(ptr) AccessChain 34(data) 1787 67
             1793: 24(i16vec4) Load 1792
             1794: 24(i16vec4) VectorShuffle 1793 1791 4 5 6 3
@@ -2143,7 +2143,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             1795:      6(int) Load 8(invocation)
             1796:   1700(ptr) AccessChain 34(data) 67 67
             1797: 24(i16vec4) Load 1796
-            1798: 24(i16vec4) GroupNonUniformSMax 42 Reduce 1797
+            1798: 24(i16vec4) GroupNonUniformUMax 42 Reduce 1797
             1799:   1700(ptr) AccessChain 34(data) 1795 67
                               Store 1799 1798
             1800:      6(int) Load 8(invocation)
@@ -2299,14 +2299,14 @@ spv.subgroupExtendedTypesArithmetic.comp
             1930:      6(int) Load 8(invocation)
             1931:   1693(ptr) AccessChain 34(data) 37 67 38
             1932: 23(int16_t) Load 1931
-            1933: 23(int16_t) GroupNonUniformSMin 42 InclusiveScan 1932
+            1933: 23(int16_t) GroupNonUniformUMin 42 InclusiveScan 1932
             1934:   1693(ptr) AccessChain 34(data) 1930 67 38
                               Store 1934 1933
             1935:      6(int) Load 8(invocation)
             1936:   1700(ptr) AccessChain 34(data) 46 67
             1937: 24(i16vec4) Load 1936
             1938:1699(i16vec2) VectorShuffle 1937 1937 0 1
-            1939:1699(i16vec2) GroupNonUniformSMin 42 InclusiveScan 1938
+            1939:1699(i16vec2) GroupNonUniformUMin 42 InclusiveScan 1938
             1940:   1700(ptr) AccessChain 34(data) 1935 67
             1941: 24(i16vec4) Load 1940
             1942: 24(i16vec4) VectorShuffle 1941 1939 4 5 2 3
@@ -2315,7 +2315,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             1944:   1700(ptr) AccessChain 34(data) 57 67
             1945: 24(i16vec4) Load 1944
             1946:1709(i16vec3) VectorShuffle 1945 1945 0 1 2
-            1947:1709(i16vec3) GroupNonUniformSMin 42 InclusiveScan 1946
+            1947:1709(i16vec3) GroupNonUniformUMin 42 InclusiveScan 1946
             1948:   1700(ptr) AccessChain 34(data) 1943 67
             1949: 24(i16vec4) Load 1948
             1950: 24(i16vec4) VectorShuffle 1949 1947 4 5 6 3
@@ -2323,20 +2323,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             1951:      6(int) Load 8(invocation)
             1952:   1700(ptr) AccessChain 34(data) 67 67
             1953: 24(i16vec4) Load 1952
-            1954: 24(i16vec4) GroupNonUniformSMin 42 InclusiveScan 1953
+            1954: 24(i16vec4) GroupNonUniformUMin 42 InclusiveScan 1953
             1955:   1700(ptr) AccessChain 34(data) 1951 67
                               Store 1955 1954
             1956:      6(int) Load 8(invocation)
             1957:   1693(ptr) AccessChain 34(data) 37 67 38
             1958: 23(int16_t) Load 1957
-            1959: 23(int16_t) GroupNonUniformSMax 42 InclusiveScan 1958
+            1959: 23(int16_t) GroupNonUniformUMax 42 InclusiveScan 1958
             1960:   1693(ptr) AccessChain 34(data) 1956 67 38
                               Store 1960 1959
             1961:      6(int) Load 8(invocation)
             1962:   1700(ptr) AccessChain 34(data) 46 67
             1963: 24(i16vec4) Load 1962
             1964:1699(i16vec2) VectorShuffle 1963 1963 0 1
-            1965:1699(i16vec2) GroupNonUniformSMax 42 InclusiveScan 1964
+            1965:1699(i16vec2) GroupNonUniformUMax 42 InclusiveScan 1964
             1966:   1700(ptr) AccessChain 34(data) 1961 67
             1967: 24(i16vec4) Load 1966
             1968: 24(i16vec4) VectorShuffle 1967 1965 4 5 2 3
@@ -2345,7 +2345,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             1970:   1700(ptr) AccessChain 34(data) 57 67
             1971: 24(i16vec4) Load 1970
             1972:1709(i16vec3) VectorShuffle 1971 1971 0 1 2
-            1973:1709(i16vec3) GroupNonUniformSMax 42 InclusiveScan 1972
+            1973:1709(i16vec3) GroupNonUniformUMax 42 InclusiveScan 1972
             1974:   1700(ptr) AccessChain 34(data) 1969 67
             1975: 24(i16vec4) Load 1974
             1976: 24(i16vec4) VectorShuffle 1975 1973 4 5 6 3
@@ -2353,7 +2353,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             1977:      6(int) Load 8(invocation)
             1978:   1700(ptr) AccessChain 34(data) 67 67
             1979: 24(i16vec4) Load 1978
-            1980: 24(i16vec4) GroupNonUniformSMax 42 InclusiveScan 1979
+            1980: 24(i16vec4) GroupNonUniformUMax 42 InclusiveScan 1979
             1981:   1700(ptr) AccessChain 34(data) 1977 67
                               Store 1981 1980
             1982:      6(int) Load 8(invocation)
@@ -2509,14 +2509,14 @@ spv.subgroupExtendedTypesArithmetic.comp
             2112:      6(int) Load 8(invocation)
             2113:   1693(ptr) AccessChain 34(data) 37 67 38
             2114: 23(int16_t) Load 2113
-            2115: 23(int16_t) GroupNonUniformSMin 42 ExclusiveScan 2114
+            2115: 23(int16_t) GroupNonUniformUMin 42 ExclusiveScan 2114
             2116:   1693(ptr) AccessChain 34(data) 2112 67 38
                               Store 2116 2115
             2117:      6(int) Load 8(invocation)
             2118:   1700(ptr) AccessChain 34(data) 46 67
             2119: 24(i16vec4) Load 2118
             2120:1699(i16vec2) VectorShuffle 2119 2119 0 1
-            2121:1699(i16vec2) GroupNonUniformSMin 42 ExclusiveScan 2120
+            2121:1699(i16vec2) GroupNonUniformUMin 42 ExclusiveScan 2120
             2122:   1700(ptr) AccessChain 34(data) 2117 67
             2123: 24(i16vec4) Load 2122
             2124: 24(i16vec4) VectorShuffle 2123 2121 4 5 2 3
@@ -2525,7 +2525,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             2126:   1700(ptr) AccessChain 34(data) 57 67
             2127: 24(i16vec4) Load 2126
             2128:1709(i16vec3) VectorShuffle 2127 2127 0 1 2
-            2129:1709(i16vec3) GroupNonUniformSMin 42 ExclusiveScan 2128
+            2129:1709(i16vec3) GroupNonUniformUMin 42 ExclusiveScan 2128
             2130:   1700(ptr) AccessChain 34(data) 2125 67
             2131: 24(i16vec4) Load 2130
             2132: 24(i16vec4) VectorShuffle 2131 2129 4 5 6 3
@@ -2533,20 +2533,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             2133:      6(int) Load 8(invocation)
             2134:   1700(ptr) AccessChain 34(data) 67 67
             2135: 24(i16vec4) Load 2134
-            2136: 24(i16vec4) GroupNonUniformSMin 42 ExclusiveScan 2135
+            2136: 24(i16vec4) GroupNonUniformUMin 42 ExclusiveScan 2135
             2137:   1700(ptr) AccessChain 34(data) 2133 67
                               Store 2137 2136
             2138:      6(int) Load 8(invocation)
             2139:   1693(ptr) AccessChain 34(data) 37 67 38
             2140: 23(int16_t) Load 2139
-            2141: 23(int16_t) GroupNonUniformSMax 42 ExclusiveScan 2140
+            2141: 23(int16_t) GroupNonUniformUMax 42 ExclusiveScan 2140
             2142:   1693(ptr) AccessChain 34(data) 2138 67 38
                               Store 2142 2141
             2143:      6(int) Load 8(invocation)
             2144:   1700(ptr) AccessChain 34(data) 46 67
             2145: 24(i16vec4) Load 2144
             2146:1699(i16vec2) VectorShuffle 2145 2145 0 1
-            2147:1699(i16vec2) GroupNonUniformSMax 42 ExclusiveScan 2146
+            2147:1699(i16vec2) GroupNonUniformUMax 42 ExclusiveScan 2146
             2148:   1700(ptr) AccessChain 34(data) 2143 67
             2149: 24(i16vec4) Load 2148
             2150: 24(i16vec4) VectorShuffle 2149 2147 4 5 2 3
@@ -2555,7 +2555,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             2152:   1700(ptr) AccessChain 34(data) 57 67
             2153: 24(i16vec4) Load 2152
             2154:1709(i16vec3) VectorShuffle 2153 2153 0 1 2
-            2155:1709(i16vec3) GroupNonUniformSMax 42 ExclusiveScan 2154
+            2155:1709(i16vec3) GroupNonUniformUMax 42 ExclusiveScan 2154
             2156:   1700(ptr) AccessChain 34(data) 2151 67
             2157: 24(i16vec4) Load 2156
             2158: 24(i16vec4) VectorShuffle 2157 2155 4 5 6 3
@@ -2563,7 +2563,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             2159:      6(int) Load 8(invocation)
             2160:   1700(ptr) AccessChain 34(data) 67 67
             2161: 24(i16vec4) Load 2160
-            2162: 24(i16vec4) GroupNonUniformSMax 42 ExclusiveScan 2161
+            2162: 24(i16vec4) GroupNonUniformUMax 42 ExclusiveScan 2161
             2163:   1700(ptr) AccessChain 34(data) 2159 67
                               Store 2163 2162
             2164:      6(int) Load 8(invocation)
@@ -3919,14 +3919,14 @@ spv.subgroupExtendedTypesArithmetic.comp
             3344:      6(int) Load 8(invocation)
             3347:   3346(ptr) AccessChain 34(data) 37 3345 38
             3348:29(float16_t) Load 3347
-            3349:29(float16_t) GroupNonUniformIAdd 42 Reduce 3348
+            3349:29(float16_t) GroupNonUniformFAdd 42 Reduce 3348
             3350:   3346(ptr) AccessChain 34(data) 3344 3345 38
                               Store 3350 3349
             3351:      6(int) Load 8(invocation)
             3354:   3353(ptr) AccessChain 34(data) 46 3345
             3355: 30(f16vec4) Load 3354
             3356:3352(f16vec2) VectorShuffle 3355 3355 0 1
-            3357:3352(f16vec2) GroupNonUniformIAdd 42 Reduce 3356
+            3357:3352(f16vec2) GroupNonUniformFAdd 42 Reduce 3356
             3358:   3353(ptr) AccessChain 34(data) 3351 3345
             3359: 30(f16vec4) Load 3358
             3360: 30(f16vec4) VectorShuffle 3359 3357 4 5 2 3
@@ -3935,7 +3935,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3363:   3353(ptr) AccessChain 34(data) 57 3345
             3364: 30(f16vec4) Load 3363
             3365:3362(f16vec3) VectorShuffle 3364 3364 0 1 2
-            3366:3362(f16vec3) GroupNonUniformIAdd 42 Reduce 3365
+            3366:3362(f16vec3) GroupNonUniformFAdd 42 Reduce 3365
             3367:   3353(ptr) AccessChain 34(data) 3361 3345
             3368: 30(f16vec4) Load 3367
             3369: 30(f16vec4) VectorShuffle 3368 3366 4 5 6 3
@@ -3943,20 +3943,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3370:      6(int) Load 8(invocation)
             3371:   3353(ptr) AccessChain 34(data) 67 3345
             3372: 30(f16vec4) Load 3371
-            3373: 30(f16vec4) GroupNonUniformIAdd 42 Reduce 3372
+            3373: 30(f16vec4) GroupNonUniformFAdd 42 Reduce 3372
             3374:   3353(ptr) AccessChain 34(data) 3370 3345
                               Store 3374 3373
             3375:      6(int) Load 8(invocation)
             3376:   3346(ptr) AccessChain 34(data) 37 3345 38
             3377:29(float16_t) Load 3376
-            3378:29(float16_t) GroupNonUniformIMul 42 Reduce 3377
+            3378:29(float16_t) GroupNonUniformFMul 42 Reduce 3377
             3379:   3346(ptr) AccessChain 34(data) 3375 3345 38
                               Store 3379 3378
             3380:      6(int) Load 8(invocation)
             3381:   3353(ptr) AccessChain 34(data) 46 3345
             3382: 30(f16vec4) Load 3381
             3383:3352(f16vec2) VectorShuffle 3382 3382 0 1
-            3384:3352(f16vec2) GroupNonUniformIMul 42 Reduce 3383
+            3384:3352(f16vec2) GroupNonUniformFMul 42 Reduce 3383
             3385:   3353(ptr) AccessChain 34(data) 3380 3345
             3386: 30(f16vec4) Load 3385
             3387: 30(f16vec4) VectorShuffle 3386 3384 4 5 2 3
@@ -3965,7 +3965,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3389:   3353(ptr) AccessChain 34(data) 57 3345
             3390: 30(f16vec4) Load 3389
             3391:3362(f16vec3) VectorShuffle 3390 3390 0 1 2
-            3392:3362(f16vec3) GroupNonUniformIMul 42 Reduce 3391
+            3392:3362(f16vec3) GroupNonUniformFMul 42 Reduce 3391
             3393:   3353(ptr) AccessChain 34(data) 3388 3345
             3394: 30(f16vec4) Load 3393
             3395: 30(f16vec4) VectorShuffle 3394 3392 4 5 6 3
@@ -3973,20 +3973,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3396:      6(int) Load 8(invocation)
             3397:   3353(ptr) AccessChain 34(data) 67 3345
             3398: 30(f16vec4) Load 3397
-            3399: 30(f16vec4) GroupNonUniformIMul 42 Reduce 3398
+            3399: 30(f16vec4) GroupNonUniformFMul 42 Reduce 3398
             3400:   3353(ptr) AccessChain 34(data) 3396 3345
                               Store 3400 3399
             3401:      6(int) Load 8(invocation)
             3402:   3346(ptr) AccessChain 34(data) 37 3345 38
             3403:29(float16_t) Load 3402
-            3404:29(float16_t) GroupNonUniformSMin 42 Reduce 3403
+            3404:29(float16_t) GroupNonUniformFMin 42 Reduce 3403
             3405:   3346(ptr) AccessChain 34(data) 3401 3345 38
                               Store 3405 3404
             3406:      6(int) Load 8(invocation)
             3407:   3353(ptr) AccessChain 34(data) 46 3345
             3408: 30(f16vec4) Load 3407
             3409:3352(f16vec2) VectorShuffle 3408 3408 0 1
-            3410:3352(f16vec2) GroupNonUniformSMin 42 Reduce 3409
+            3410:3352(f16vec2) GroupNonUniformFMin 42 Reduce 3409
             3411:   3353(ptr) AccessChain 34(data) 3406 3345
             3412: 30(f16vec4) Load 3411
             3413: 30(f16vec4) VectorShuffle 3412 3410 4 5 2 3
@@ -3995,7 +3995,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3415:   3353(ptr) AccessChain 34(data) 57 3345
             3416: 30(f16vec4) Load 3415
             3417:3362(f16vec3) VectorShuffle 3416 3416 0 1 2
-            3418:3362(f16vec3) GroupNonUniformSMin 42 Reduce 3417
+            3418:3362(f16vec3) GroupNonUniformFMin 42 Reduce 3417
             3419:   3353(ptr) AccessChain 34(data) 3414 3345
             3420: 30(f16vec4) Load 3419
             3421: 30(f16vec4) VectorShuffle 3420 3418 4 5 6 3
@@ -4003,20 +4003,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3422:      6(int) Load 8(invocation)
             3423:   3353(ptr) AccessChain 34(data) 67 3345
             3424: 30(f16vec4) Load 3423
-            3425: 30(f16vec4) GroupNonUniformSMin 42 Reduce 3424
+            3425: 30(f16vec4) GroupNonUniformFMin 42 Reduce 3424
             3426:   3353(ptr) AccessChain 34(data) 3422 3345
                               Store 3426 3425
             3427:      6(int) Load 8(invocation)
             3428:   3346(ptr) AccessChain 34(data) 37 3345 38
             3429:29(float16_t) Load 3428
-            3430:29(float16_t) GroupNonUniformSMax 42 Reduce 3429
+            3430:29(float16_t) GroupNonUniformFMax 42 Reduce 3429
             3431:   3346(ptr) AccessChain 34(data) 3427 3345 38
                               Store 3431 3430
             3432:      6(int) Load 8(invocation)
             3433:   3353(ptr) AccessChain 34(data) 46 3345
             3434: 30(f16vec4) Load 3433
             3435:3352(f16vec2) VectorShuffle 3434 3434 0 1
-            3436:3352(f16vec2) GroupNonUniformSMax 42 Reduce 3435
+            3436:3352(f16vec2) GroupNonUniformFMax 42 Reduce 3435
             3437:   3353(ptr) AccessChain 34(data) 3432 3345
             3438: 30(f16vec4) Load 3437
             3439: 30(f16vec4) VectorShuffle 3438 3436 4 5 2 3
@@ -4025,7 +4025,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3441:   3353(ptr) AccessChain 34(data) 57 3345
             3442: 30(f16vec4) Load 3441
             3443:3362(f16vec3) VectorShuffle 3442 3442 0 1 2
-            3444:3362(f16vec3) GroupNonUniformSMax 42 Reduce 3443
+            3444:3362(f16vec3) GroupNonUniformFMax 42 Reduce 3443
             3445:   3353(ptr) AccessChain 34(data) 3440 3345
             3446: 30(f16vec4) Load 3445
             3447: 30(f16vec4) VectorShuffle 3446 3444 4 5 6 3
@@ -4033,20 +4033,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3448:      6(int) Load 8(invocation)
             3449:   3353(ptr) AccessChain 34(data) 67 3345
             3450: 30(f16vec4) Load 3449
-            3451: 30(f16vec4) GroupNonUniformSMax 42 Reduce 3450
+            3451: 30(f16vec4) GroupNonUniformFMax 42 Reduce 3450
             3452:   3353(ptr) AccessChain 34(data) 3448 3345
                               Store 3452 3451
             3453:      6(int) Load 8(invocation)
             3454:   3346(ptr) AccessChain 34(data) 37 3345 38
             3455:29(float16_t) Load 3454
-            3456:29(float16_t) GroupNonUniformIAdd 42 InclusiveScan 3455
+            3456:29(float16_t) GroupNonUniformFAdd 42 InclusiveScan 3455
             3457:   3346(ptr) AccessChain 34(data) 3453 3345 38
                               Store 3457 3456
             3458:      6(int) Load 8(invocation)
             3459:   3353(ptr) AccessChain 34(data) 46 3345
             3460: 30(f16vec4) Load 3459
             3461:3352(f16vec2) VectorShuffle 3460 3460 0 1
-            3462:3352(f16vec2) GroupNonUniformIAdd 42 InclusiveScan 3461
+            3462:3352(f16vec2) GroupNonUniformFAdd 42 InclusiveScan 3461
             3463:   3353(ptr) AccessChain 34(data) 3458 3345
             3464: 30(f16vec4) Load 3463
             3465: 30(f16vec4) VectorShuffle 3464 3462 4 5 2 3
@@ -4055,7 +4055,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3467:   3353(ptr) AccessChain 34(data) 57 3345
             3468: 30(f16vec4) Load 3467
             3469:3362(f16vec3) VectorShuffle 3468 3468 0 1 2
-            3470:3362(f16vec3) GroupNonUniformIAdd 42 InclusiveScan 3469
+            3470:3362(f16vec3) GroupNonUniformFAdd 42 InclusiveScan 3469
             3471:   3353(ptr) AccessChain 34(data) 3466 3345
             3472: 30(f16vec4) Load 3471
             3473: 30(f16vec4) VectorShuffle 3472 3470 4 5 6 3
@@ -4063,20 +4063,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3474:      6(int) Load 8(invocation)
             3475:   3353(ptr) AccessChain 34(data) 67 3345
             3476: 30(f16vec4) Load 3475
-            3477: 30(f16vec4) GroupNonUniformIAdd 42 InclusiveScan 3476
+            3477: 30(f16vec4) GroupNonUniformFAdd 42 InclusiveScan 3476
             3478:   3353(ptr) AccessChain 34(data) 3474 3345
                               Store 3478 3477
             3479:      6(int) Load 8(invocation)
             3480:   3346(ptr) AccessChain 34(data) 37 3345 38
             3481:29(float16_t) Load 3480
-            3482:29(float16_t) GroupNonUniformIMul 42 InclusiveScan 3481
+            3482:29(float16_t) GroupNonUniformFMul 42 InclusiveScan 3481
             3483:   3346(ptr) AccessChain 34(data) 3479 3345 38
                               Store 3483 3482
             3484:      6(int) Load 8(invocation)
             3485:   3353(ptr) AccessChain 34(data) 46 3345
             3486: 30(f16vec4) Load 3485
             3487:3352(f16vec2) VectorShuffle 3486 3486 0 1
-            3488:3352(f16vec2) GroupNonUniformIMul 42 InclusiveScan 3487
+            3488:3352(f16vec2) GroupNonUniformFMul 42 InclusiveScan 3487
             3489:   3353(ptr) AccessChain 34(data) 3484 3345
             3490: 30(f16vec4) Load 3489
             3491: 30(f16vec4) VectorShuffle 3490 3488 4 5 2 3
@@ -4085,7 +4085,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3493:   3353(ptr) AccessChain 34(data) 57 3345
             3494: 30(f16vec4) Load 3493
             3495:3362(f16vec3) VectorShuffle 3494 3494 0 1 2
-            3496:3362(f16vec3) GroupNonUniformIMul 42 InclusiveScan 3495
+            3496:3362(f16vec3) GroupNonUniformFMul 42 InclusiveScan 3495
             3497:   3353(ptr) AccessChain 34(data) 3492 3345
             3498: 30(f16vec4) Load 3497
             3499: 30(f16vec4) VectorShuffle 3498 3496 4 5 6 3
@@ -4093,20 +4093,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3500:      6(int) Load 8(invocation)
             3501:   3353(ptr) AccessChain 34(data) 67 3345
             3502: 30(f16vec4) Load 3501
-            3503: 30(f16vec4) GroupNonUniformIMul 42 InclusiveScan 3502
+            3503: 30(f16vec4) GroupNonUniformFMul 42 InclusiveScan 3502
             3504:   3353(ptr) AccessChain 34(data) 3500 3345
                               Store 3504 3503
             3505:      6(int) Load 8(invocation)
             3506:   3346(ptr) AccessChain 34(data) 37 3345 38
             3507:29(float16_t) Load 3506
-            3508:29(float16_t) GroupNonUniformSMin 42 InclusiveScan 3507
+            3508:29(float16_t) GroupNonUniformFMin 42 InclusiveScan 3507
             3509:   3346(ptr) AccessChain 34(data) 3505 3345 38
                               Store 3509 3508
             3510:      6(int) Load 8(invocation)
             3511:   3353(ptr) AccessChain 34(data) 46 3345
             3512: 30(f16vec4) Load 3511
             3513:3352(f16vec2) VectorShuffle 3512 3512 0 1
-            3514:3352(f16vec2) GroupNonUniformSMin 42 InclusiveScan 3513
+            3514:3352(f16vec2) GroupNonUniformFMin 42 InclusiveScan 3513
             3515:   3353(ptr) AccessChain 34(data) 3510 3345
             3516: 30(f16vec4) Load 3515
             3517: 30(f16vec4) VectorShuffle 3516 3514 4 5 2 3
@@ -4115,7 +4115,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3519:   3353(ptr) AccessChain 34(data) 57 3345
             3520: 30(f16vec4) Load 3519
             3521:3362(f16vec3) VectorShuffle 3520 3520 0 1 2
-            3522:3362(f16vec3) GroupNonUniformSMin 42 InclusiveScan 3521
+            3522:3362(f16vec3) GroupNonUniformFMin 42 InclusiveScan 3521
             3523:   3353(ptr) AccessChain 34(data) 3518 3345
             3524: 30(f16vec4) Load 3523
             3525: 30(f16vec4) VectorShuffle 3524 3522 4 5 6 3
@@ -4123,20 +4123,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3526:      6(int) Load 8(invocation)
             3527:   3353(ptr) AccessChain 34(data) 67 3345
             3528: 30(f16vec4) Load 3527
-            3529: 30(f16vec4) GroupNonUniformSMin 42 InclusiveScan 3528
+            3529: 30(f16vec4) GroupNonUniformFMin 42 InclusiveScan 3528
             3530:   3353(ptr) AccessChain 34(data) 3526 3345
                               Store 3530 3529
             3531:      6(int) Load 8(invocation)
             3532:   3346(ptr) AccessChain 34(data) 37 3345 38
             3533:29(float16_t) Load 3532
-            3534:29(float16_t) GroupNonUniformSMax 42 InclusiveScan 3533
+            3534:29(float16_t) GroupNonUniformFMax 42 InclusiveScan 3533
             3535:   3346(ptr) AccessChain 34(data) 3531 3345 38
                               Store 3535 3534
             3536:      6(int) Load 8(invocation)
             3537:   3353(ptr) AccessChain 34(data) 46 3345
             3538: 30(f16vec4) Load 3537
             3539:3352(f16vec2) VectorShuffle 3538 3538 0 1
-            3540:3352(f16vec2) GroupNonUniformSMax 42 InclusiveScan 3539
+            3540:3352(f16vec2) GroupNonUniformFMax 42 InclusiveScan 3539
             3541:   3353(ptr) AccessChain 34(data) 3536 3345
             3542: 30(f16vec4) Load 3541
             3543: 30(f16vec4) VectorShuffle 3542 3540 4 5 2 3
@@ -4145,7 +4145,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3545:   3353(ptr) AccessChain 34(data) 57 3345
             3546: 30(f16vec4) Load 3545
             3547:3362(f16vec3) VectorShuffle 3546 3546 0 1 2
-            3548:3362(f16vec3) GroupNonUniformSMax 42 InclusiveScan 3547
+            3548:3362(f16vec3) GroupNonUniformFMax 42 InclusiveScan 3547
             3549:   3353(ptr) AccessChain 34(data) 3544 3345
             3550: 30(f16vec4) Load 3549
             3551: 30(f16vec4) VectorShuffle 3550 3548 4 5 6 3
@@ -4153,20 +4153,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3552:      6(int) Load 8(invocation)
             3553:   3353(ptr) AccessChain 34(data) 67 3345
             3554: 30(f16vec4) Load 3553
-            3555: 30(f16vec4) GroupNonUniformSMax 42 InclusiveScan 3554
+            3555: 30(f16vec4) GroupNonUniformFMax 42 InclusiveScan 3554
             3556:   3353(ptr) AccessChain 34(data) 3552 3345
                               Store 3556 3555
             3557:      6(int) Load 8(invocation)
             3558:   3346(ptr) AccessChain 34(data) 37 3345 38
             3559:29(float16_t) Load 3558
-            3560:29(float16_t) GroupNonUniformIAdd 42 ExclusiveScan 3559
+            3560:29(float16_t) GroupNonUniformFAdd 42 ExclusiveScan 3559
             3561:   3346(ptr) AccessChain 34(data) 3557 3345 38
                               Store 3561 3560
             3562:      6(int) Load 8(invocation)
             3563:   3353(ptr) AccessChain 34(data) 46 3345
             3564: 30(f16vec4) Load 3563
             3565:3352(f16vec2) VectorShuffle 3564 3564 0 1
-            3566:3352(f16vec2) GroupNonUniformIAdd 42 ExclusiveScan 3565
+            3566:3352(f16vec2) GroupNonUniformFAdd 42 ExclusiveScan 3565
             3567:   3353(ptr) AccessChain 34(data) 3562 3345
             3568: 30(f16vec4) Load 3567
             3569: 30(f16vec4) VectorShuffle 3568 3566 4 5 2 3
@@ -4175,7 +4175,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3571:   3353(ptr) AccessChain 34(data) 57 3345
             3572: 30(f16vec4) Load 3571
             3573:3362(f16vec3) VectorShuffle 3572 3572 0 1 2
-            3574:3362(f16vec3) GroupNonUniformIAdd 42 ExclusiveScan 3573
+            3574:3362(f16vec3) GroupNonUniformFAdd 42 ExclusiveScan 3573
             3575:   3353(ptr) AccessChain 34(data) 3570 3345
             3576: 30(f16vec4) Load 3575
             3577: 30(f16vec4) VectorShuffle 3576 3574 4 5 6 3
@@ -4183,20 +4183,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3578:      6(int) Load 8(invocation)
             3579:   3353(ptr) AccessChain 34(data) 67 3345
             3580: 30(f16vec4) Load 3579
-            3581: 30(f16vec4) GroupNonUniformIAdd 42 ExclusiveScan 3580
+            3581: 30(f16vec4) GroupNonUniformFAdd 42 ExclusiveScan 3580
             3582:   3353(ptr) AccessChain 34(data) 3578 3345
                               Store 3582 3581
             3583:      6(int) Load 8(invocation)
             3584:   3346(ptr) AccessChain 34(data) 37 3345 38
             3585:29(float16_t) Load 3584
-            3586:29(float16_t) GroupNonUniformIMul 42 ExclusiveScan 3585
+            3586:29(float16_t) GroupNonUniformFMul 42 ExclusiveScan 3585
             3587:   3346(ptr) AccessChain 34(data) 3583 3345 38
                               Store 3587 3586
             3588:      6(int) Load 8(invocation)
             3589:   3353(ptr) AccessChain 34(data) 46 3345
             3590: 30(f16vec4) Load 3589
             3591:3352(f16vec2) VectorShuffle 3590 3590 0 1
-            3592:3352(f16vec2) GroupNonUniformIMul 42 ExclusiveScan 3591
+            3592:3352(f16vec2) GroupNonUniformFMul 42 ExclusiveScan 3591
             3593:   3353(ptr) AccessChain 34(data) 3588 3345
             3594: 30(f16vec4) Load 3593
             3595: 30(f16vec4) VectorShuffle 3594 3592 4 5 2 3
@@ -4205,7 +4205,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3597:   3353(ptr) AccessChain 34(data) 57 3345
             3598: 30(f16vec4) Load 3597
             3599:3362(f16vec3) VectorShuffle 3598 3598 0 1 2
-            3600:3362(f16vec3) GroupNonUniformIMul 42 ExclusiveScan 3599
+            3600:3362(f16vec3) GroupNonUniformFMul 42 ExclusiveScan 3599
             3601:   3353(ptr) AccessChain 34(data) 3596 3345
             3602: 30(f16vec4) Load 3601
             3603: 30(f16vec4) VectorShuffle 3602 3600 4 5 6 3
@@ -4213,20 +4213,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3604:      6(int) Load 8(invocation)
             3605:   3353(ptr) AccessChain 34(data) 67 3345
             3606: 30(f16vec4) Load 3605
-            3607: 30(f16vec4) GroupNonUniformIMul 42 ExclusiveScan 3606
+            3607: 30(f16vec4) GroupNonUniformFMul 42 ExclusiveScan 3606
             3608:   3353(ptr) AccessChain 34(data) 3604 3345
                               Store 3608 3607
             3609:      6(int) Load 8(invocation)
             3610:   3346(ptr) AccessChain 34(data) 37 3345 38
             3611:29(float16_t) Load 3610
-            3612:29(float16_t) GroupNonUniformSMin 42 ExclusiveScan 3611
+            3612:29(float16_t) GroupNonUniformFMin 42 ExclusiveScan 3611
             3613:   3346(ptr) AccessChain 34(data) 3609 3345 38
                               Store 3613 3612
             3614:      6(int) Load 8(invocation)
             3615:   3353(ptr) AccessChain 34(data) 46 3345
             3616: 30(f16vec4) Load 3615
             3617:3352(f16vec2) VectorShuffle 3616 3616 0 1
-            3618:3352(f16vec2) GroupNonUniformSMin 42 ExclusiveScan 3617
+            3618:3352(f16vec2) GroupNonUniformFMin 42 ExclusiveScan 3617
             3619:   3353(ptr) AccessChain 34(data) 3614 3345
             3620: 30(f16vec4) Load 3619
             3621: 30(f16vec4) VectorShuffle 3620 3618 4 5 2 3
@@ -4235,7 +4235,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3623:   3353(ptr) AccessChain 34(data) 57 3345
             3624: 30(f16vec4) Load 3623
             3625:3362(f16vec3) VectorShuffle 3624 3624 0 1 2
-            3626:3362(f16vec3) GroupNonUniformSMin 42 ExclusiveScan 3625
+            3626:3362(f16vec3) GroupNonUniformFMin 42 ExclusiveScan 3625
             3627:   3353(ptr) AccessChain 34(data) 3622 3345
             3628: 30(f16vec4) Load 3627
             3629: 30(f16vec4) VectorShuffle 3628 3626 4 5 6 3
@@ -4243,20 +4243,20 @@ spv.subgroupExtendedTypesArithmetic.comp
             3630:      6(int) Load 8(invocation)
             3631:   3353(ptr) AccessChain 34(data) 67 3345
             3632: 30(f16vec4) Load 3631
-            3633: 30(f16vec4) GroupNonUniformSMin 42 ExclusiveScan 3632
+            3633: 30(f16vec4) GroupNonUniformFMin 42 ExclusiveScan 3632
             3634:   3353(ptr) AccessChain 34(data) 3630 3345
                               Store 3634 3633
             3635:      6(int) Load 8(invocation)
             3636:   3346(ptr) AccessChain 34(data) 37 3345 38
             3637:29(float16_t) Load 3636
-            3638:29(float16_t) GroupNonUniformSMax 42 ExclusiveScan 3637
+            3638:29(float16_t) GroupNonUniformFMax 42 ExclusiveScan 3637
             3639:   3346(ptr) AccessChain 34(data) 3635 3345 38
                               Store 3639 3638
             3640:      6(int) Load 8(invocation)
             3641:   3353(ptr) AccessChain 34(data) 46 3345
             3642: 30(f16vec4) Load 3641
             3643:3352(f16vec2) VectorShuffle 3642 3642 0 1
-            3644:3352(f16vec2) GroupNonUniformSMax 42 ExclusiveScan 3643
+            3644:3352(f16vec2) GroupNonUniformFMax 42 ExclusiveScan 3643
             3645:   3353(ptr) AccessChain 34(data) 3640 3345
             3646: 30(f16vec4) Load 3645
             3647: 30(f16vec4) VectorShuffle 3646 3644 4 5 2 3
@@ -4265,7 +4265,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3649:   3353(ptr) AccessChain 34(data) 57 3345
             3650: 30(f16vec4) Load 3649
             3651:3362(f16vec3) VectorShuffle 3650 3650 0 1 2
-            3652:3362(f16vec3) GroupNonUniformSMax 42 ExclusiveScan 3651
+            3652:3362(f16vec3) GroupNonUniformFMax 42 ExclusiveScan 3651
             3653:   3353(ptr) AccessChain 34(data) 3648 3345
             3654: 30(f16vec4) Load 3653
             3655: 30(f16vec4) VectorShuffle 3654 3652 4 5 6 3
@@ -4273,7 +4273,7 @@ spv.subgroupExtendedTypesArithmetic.comp
             3656:      6(int) Load 8(invocation)
             3657:   3353(ptr) AccessChain 34(data) 67 3345
             3658: 30(f16vec4) Load 3657
-            3659: 30(f16vec4) GroupNonUniformSMax 42 ExclusiveScan 3658
+            3659: 30(f16vec4) GroupNonUniformFMax 42 ExclusiveScan 3658
             3660:   3353(ptr) AccessChain 34(data) 3656 3345
                               Store 3660 3659
                               Return
