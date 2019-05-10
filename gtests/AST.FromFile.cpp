@@ -48,7 +48,7 @@ using CompileToAstTestNV = GlslangTest<::testing::TestWithParam<std::string>>;
 TEST_P(CompileToAstTest, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::OpenGL, glslang::EShTargetVulkan_1_0,
+                            Source::GLSL, Semantics::OpenGL, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::AST);
 }
 
@@ -57,7 +57,7 @@ TEST_P(CompileToAstTest, FromFile)
 TEST_P(CompileToAstTestNV, FromFile)
 {
     loadFileCompileAndCheck(GlobalTestSettings.testRoot, GetParam(),
-                            Source::GLSL, Semantics::OpenGL, glslang::EShTargetVulkan_1_0,
+                            Source::GLSL, Semantics::OpenGL, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::AST);
 }
 #endif

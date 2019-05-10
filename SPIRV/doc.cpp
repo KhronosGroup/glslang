@@ -575,7 +575,7 @@ const char* ImageChannelDataTypeString(int type)
     }
 }
 
-const int ImageOperandsCeiling = 12;
+const int ImageOperandsCeiling = 14;
 
 const char* ImageOperandsString(int format)
 {
@@ -592,6 +592,8 @@ const char* ImageOperandsString(int format)
     case ImageOperandsMakeTexelVisibleKHRShift:     return "MakeTexelVisibleKHR";
     case ImageOperandsNonPrivateTexelKHRShift:      return "NonPrivateTexelKHR";
     case ImageOperandsVolatileTexelKHRShift:        return "VolatileTexelKHR";
+    case ImageOperandsSignExtendShift:              return "SignExtend";
+    case ImageOperandsZeroExtendShift:              return "ZeroExtend";
 
     case ImageOperandsCeiling:
     default:
@@ -674,15 +676,20 @@ const char* SelectControlString(int cont)
     }
 }
 
-const int LoopControlCeiling = 4;
+const int LoopControlCeiling = LoopControlPartialCountShift + 1;
 
 const char* LoopControlString(int cont)
 {
     switch (cont) {
-    case 0:  return "Unroll";
-    case 1:  return "DontUnroll";
-    case 2:  return "DependencyInfinite";
-    case 3:  return "DependencyLength";
+    case LoopControlUnrollShift:             return "Unroll";
+    case LoopControlDontUnrollShift:         return "DontUnroll";
+    case LoopControlDependencyInfiniteShift: return "DependencyInfinite";
+    case LoopControlDependencyLengthShift:   return "DependencyLength";
+    case LoopControlMinIterationsShift:      return "MinIterations";
+    case LoopControlMaxIterationsShift:      return "MaxIterations";
+    case LoopControlIterationMultipleShift:  return "IterationMultiple";
+    case LoopControlPeelCountShift:          return "PeelCount";
+    case LoopControlPartialCountShift:       return "PartialCount";
 
     case LoopControlCeiling:
     default: return "Bad";
@@ -1026,6 +1033,7 @@ const char* OpcodeString(int op)
     case 82:  return "OpCompositeInsert";
     case 83:  return "OpCopyObject";
     case 84:  return "OpTranspose";
+    case OpCopyLogical: return "OpCopyLogical";
     case 85:  return "Bad";
     case 86:  return "OpSampledImage";
     case 87:  return "OpImageSampleImplicitLod";
@@ -1932,6 +1940,8 @@ void Parameterize()
     InstructionDesc[OpQuantizeToF16].operands.push(OperandId, "'Value'");
 
     InstructionDesc[OpTranspose].operands.push(OperandId, "'Matrix'");
+
+    InstructionDesc[OpCopyLogical].operands.push(OperandId, "'Operand'");
 
     InstructionDesc[OpIsNan].operands.push(OperandId, "'x'");
 
