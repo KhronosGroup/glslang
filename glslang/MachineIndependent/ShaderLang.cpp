@@ -2010,7 +2010,7 @@ bool TProgram::mapIO(TIoMapResolver* pResolver, TIoMapper* pIoMapper) {
                 return false;
         }
     }
-    return ioMapper->doMap(pResolver, *infoSink)
+    return ioMapper->doMap(pResolver, *infoSink);
 }
 
 } // end namespace glslang
