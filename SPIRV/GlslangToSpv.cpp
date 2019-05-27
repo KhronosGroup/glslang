@@ -888,7 +888,7 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilityShadingRateNV);
         return spv::BuiltInInvocationsPerPixelNV;
 
-    // raytracing
+    // ray tracing
     case glslang::EbvLaunchIdNV:
         return spv::BuiltInLaunchIdNV;
     case glslang::EbvLaunchSizeNV:
@@ -917,6 +917,8 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         return spv::BuiltInWorldToObjectNV;
     case glslang::EbvIncomingRayFlagsNV:
         return spv::BuiltInIncomingRayFlagsNV;
+
+    // barycentrics
     case glslang::EbvBaryCoordNV:
         builder.addExtension(spv::E_SPV_NV_fragment_shader_barycentric);
         builder.addCapability(spv::CapabilityFragmentBarycentricNV);
@@ -925,23 +927,25 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addExtension(spv::E_SPV_NV_fragment_shader_barycentric);
         builder.addCapability(spv::CapabilityFragmentBarycentricNV);
         return spv::BuiltInBaryCoordNoPerspNV;
-     case glslang::EbvTaskCountNV:
+
+    // mesh shaders
+    case glslang::EbvTaskCountNV:
         return spv::BuiltInTaskCountNV;
-     case glslang::EbvPrimitiveCountNV:
+    case glslang::EbvPrimitiveCountNV:
         return spv::BuiltInPrimitiveCountNV;
-     case glslang::EbvPrimitiveIndicesNV:
+    case glslang::EbvPrimitiveIndicesNV:
         return spv::BuiltInPrimitiveIndicesNV;
-     case glslang::EbvClipDistancePerViewNV:
+    case glslang::EbvClipDistancePerViewNV:
         return spv::BuiltInClipDistancePerViewNV;
-     case glslang::EbvCullDistancePerViewNV:
+    case glslang::EbvCullDistancePerViewNV:
         return spv::BuiltInCullDistancePerViewNV;
-     case glslang::EbvLayerPerViewNV:
+    case glslang::EbvLayerPerViewNV:
         return spv::BuiltInLayerPerViewNV;
-     case glslang::EbvMeshViewCountNV:
+    case glslang::EbvMeshViewCountNV:
         return spv::BuiltInMeshViewCountNV;
-     case glslang::EbvMeshViewIndicesNV:
+    case glslang::EbvMeshViewIndicesNV:
         return spv::BuiltInMeshViewIndicesNV;
-#endif 
+#endif
     default:
         return spv::BuiltInMax;
     }

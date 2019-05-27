@@ -103,8 +103,8 @@ ERROR: node is still EOpNull!
 0:3    Function Parameters: 
 0:3      'f4' ( in 4-component vector of float)
 0:?     Sequence
-0:6      'gl_SubgroupSize' ( in uint unknown built-in variable)
-0:7      'gl_SubgroupInvocationID' ( in uint unknown built-in variable)
+0:6      'gl_SubgroupSize' ( in uint SubgroupSize)
+0:7      'gl_SubgroupInvocationID' ( in uint SubgroupInvocationID)
 0:8      subgroupBarrier ( global void)
 0:9      subgroupMemoryBarrier ( global void)
 0:10      subgroupMemoryBarrierBuffer ( global void)
@@ -122,11 +122,11 @@ ERROR: node is still EOpNull!
 0:18          false (const bool)
 0:19      subgroupAllEqual ( global bool)
 0:19        'f4' ( in 4-component vector of float)
-0:21      'gl_SubgroupEqMask' ( in 4-component vector of uint unknown built-in variable)
-0:22      'gl_SubgroupGeMask' ( in 4-component vector of uint unknown built-in variable)
-0:23      'gl_SubgroupGtMask' ( in 4-component vector of uint unknown built-in variable)
-0:24      'gl_SubgroupLeMask' ( in 4-component vector of uint unknown built-in variable)
-0:25      'gl_SubgroupLtMask' ( in 4-component vector of uint unknown built-in variable)
+0:21      'gl_SubgroupEqMask' ( in 4-component vector of uint SubgroupEqMask)
+0:22      'gl_SubgroupGeMask' ( in 4-component vector of uint SubgroupGeMask)
+0:23      'gl_SubgroupGtMask' ( in 4-component vector of uint SubgroupGtMask)
+0:24      'gl_SubgroupLeMask' ( in 4-component vector of uint SubgroupLeMask)
+0:25      'gl_SubgroupLtMask' ( in 4-component vector of uint SubgroupLtMask)
 0:26      subgroupBroadcast ( global 4-component vector of float)
 0:26        'f4' ( in 4-component vector of float)
 0:26        Constant:
@@ -262,88 +262,67 @@ ERROR: node is still EOpNull!
 0:77          'parti' ( temp 4-component vector of uint)
 0:77          subgroupPartitionNV ( global 4-component vector of uint)
 0:77            'f4' ( in 4-component vector of float)
-0:78      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:78      subgroupPartitionedAddNV ( global 4-component vector of float)
 0:78        'f4' ( in 4-component vector of float)
 0:78        'parti' ( temp 4-component vector of uint)
-0:79      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:79      subgroupPartitionedMulNV ( global 4-component vector of float)
 0:79        'f4' ( in 4-component vector of float)
 0:79        'parti' ( temp 4-component vector of uint)
-0:80      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:80      subgroupPartitionedMinNV ( global 4-component vector of float)
 0:80        'f4' ( in 4-component vector of float)
 0:80        'parti' ( temp 4-component vector of uint)
-0:81      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:81      subgroupPartitionedMaxNV ( global 4-component vector of float)
 0:81        'f4' ( in 4-component vector of float)
 0:81        'parti' ( temp 4-component vector of uint)
-0:82      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:82      subgroupPartitionedAndNV ( global 4-component vector of uint)
 0:82        'ballot' ( temp 4-component vector of uint)
 0:82        'parti' ( temp 4-component vector of uint)
-0:83      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:83      subgroupPartitionedOrNV ( global 4-component vector of uint)
 0:83        'ballot' ( temp 4-component vector of uint)
 0:83        'parti' ( temp 4-component vector of uint)
-0:84      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:84      subgroupPartitionedXorNV ( global 4-component vector of uint)
 0:84        'ballot' ( temp 4-component vector of uint)
 0:84        'parti' ( temp 4-component vector of uint)
-0:85      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:85      subgroupPartitionedInclusiveAddNV ( global 4-component vector of float)
 0:85        'f4' ( in 4-component vector of float)
 0:85        'parti' ( temp 4-component vector of uint)
-0:86      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:86      subgroupPartitionedInclusiveMulNV ( global 4-component vector of float)
 0:86        'f4' ( in 4-component vector of float)
 0:86        'parti' ( temp 4-component vector of uint)
-0:87      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:87      subgroupPartitionedInclusiveMinNV ( global 4-component vector of float)
 0:87        'f4' ( in 4-component vector of float)
 0:87        'parti' ( temp 4-component vector of uint)
-0:88      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:88      subgroupPartitionedInclusiveMaxNV ( global 4-component vector of float)
 0:88        'f4' ( in 4-component vector of float)
 0:88        'parti' ( temp 4-component vector of uint)
-0:89      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:89      subgroupPartitionedInclusiveAndNV ( global 4-component vector of uint)
 0:89        'ballot' ( temp 4-component vector of uint)
 0:89        'parti' ( temp 4-component vector of uint)
-0:90      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:90      subgroupPartitionedInclusiveOrNV ( global 4-component vector of uint)
 0:90        'ballot' ( temp 4-component vector of uint)
 0:90        'parti' ( temp 4-component vector of uint)
-0:91      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:91      subgroupPartitionedInclusiveXorNV ( global 4-component vector of uint)
 0:91        'ballot' ( temp 4-component vector of uint)
 0:91        'parti' ( temp 4-component vector of uint)
-0:92      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:92      subgroupPartitionedExclusiveAddNV ( global 4-component vector of float)
 0:92        'f4' ( in 4-component vector of float)
 0:92        'parti' ( temp 4-component vector of uint)
-0:93      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:93      subgroupPartitionedExclusiveMulNV ( global 4-component vector of float)
 0:93        'f4' ( in 4-component vector of float)
 0:93        'parti' ( temp 4-component vector of uint)
-0:94      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:94      subgroupPartitionedExclusiveMinNV ( global 4-component vector of float)
 0:94        'f4' ( in 4-component vector of float)
 0:94        'parti' ( temp 4-component vector of uint)
-0:95      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:95      subgroupPartitionedExclusiveMaxNV ( global 4-component vector of float)
 0:95        'f4' ( in 4-component vector of float)
 0:95        'parti' ( temp 4-component vector of uint)
-0:96      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:96      subgroupPartitionedExclusiveAndNV ( global 4-component vector of uint)
 0:96        'ballot' ( temp 4-component vector of uint)
 0:96        'parti' ( temp 4-component vector of uint)
-0:97      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:97      subgroupPartitionedExclusiveOrNV ( global 4-component vector of uint)
 0:97        'ballot' ( temp 4-component vector of uint)
 0:97        'parti' ( temp 4-component vector of uint)
-0:98      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:98      subgroupPartitionedExclusiveXorNV ( global 4-component vector of uint)
 0:98        'ballot' ( temp 4-component vector of uint)
 0:98        'parti' ( temp 4-component vector of uint)
 0:100      Branch: Return with expression
@@ -359,8 +338,8 @@ ERROR: node is still EOpNull!
 0:111              0 (const uint)
 0:111          'gl_VertexID' ( gl_VertexId int VertexId)
 0:111        Construct uvec4 ( temp 4-component vector of uint)
-0:111          'gl_SubgroupSize' ( in uint unknown built-in variable)
-0:111          'gl_SubgroupInvocationID' ( in uint unknown built-in variable)
+0:111          'gl_SubgroupSize' ( in uint SubgroupSize)
+0:111          'gl_SubgroupInvocationID' ( in uint SubgroupInvocationID)
 0:111          Constant:
 0:111            0 (const uint)
 0:111          Constant:
@@ -374,11 +353,11 @@ ERROR: node is still EOpNull!
 0:120    Function Parameters: 
 0:120      'f4' ( in 4-component vector of float)
 0:121    Sequence
-0:121      'gl_SubgroupEqMask' ( in 4-component vector of uint unknown built-in variable)
-0:122      'gl_SubgroupGeMask' ( in 4-component vector of uint unknown built-in variable)
-0:123      'gl_SubgroupGtMask' ( in 4-component vector of uint unknown built-in variable)
-0:124      'gl_SubgroupLeMask' ( in 4-component vector of uint unknown built-in variable)
-0:125      'gl_SubgroupLtMask' ( in 4-component vector of uint unknown built-in variable)
+0:121      'gl_SubgroupEqMask' ( in 4-component vector of uint SubgroupEqMask)
+0:122      'gl_SubgroupGeMask' ( in 4-component vector of uint SubgroupGeMask)
+0:123      'gl_SubgroupGtMask' ( in 4-component vector of uint SubgroupGtMask)
+0:124      'gl_SubgroupLeMask' ( in 4-component vector of uint SubgroupLeMask)
+0:125      'gl_SubgroupLtMask' ( in 4-component vector of uint SubgroupLtMask)
 0:126      subgroupBroadcast ( global 4-component vector of float)
 0:126        'f4' ( in 4-component vector of float)
 0:126        Constant:
@@ -560,88 +539,67 @@ ERROR: node is still EOpNull!
 0:209            0 (const uint)
 0:209            0 (const uint)
 0:209            0 (const uint)
-0:210      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:210      subgroupPartitionedAddNV ( global 4-component vector of float)
 0:210        'f4' ( in 4-component vector of float)
 0:210        'parti' ( temp 4-component vector of uint)
-0:211      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:211      subgroupPartitionedMulNV ( global 4-component vector of float)
 0:211        'f4' ( in 4-component vector of float)
 0:211        'parti' ( temp 4-component vector of uint)
-0:212      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:212      subgroupPartitionedMinNV ( global 4-component vector of float)
 0:212        'f4' ( in 4-component vector of float)
 0:212        'parti' ( temp 4-component vector of uint)
-0:213      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:213      subgroupPartitionedMaxNV ( global 4-component vector of float)
 0:213        'f4' ( in 4-component vector of float)
 0:213        'parti' ( temp 4-component vector of uint)
-0:214      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:214      subgroupPartitionedAndNV ( global 4-component vector of uint)
 0:214        'ballot' ( temp 4-component vector of uint)
 0:214        'parti' ( temp 4-component vector of uint)
-0:215      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:215      subgroupPartitionedOrNV ( global 4-component vector of uint)
 0:215        'ballot' ( temp 4-component vector of uint)
 0:215        'parti' ( temp 4-component vector of uint)
-0:216      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:216      subgroupPartitionedXorNV ( global 4-component vector of uint)
 0:216        'ballot' ( temp 4-component vector of uint)
 0:216        'parti' ( temp 4-component vector of uint)
-0:217      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:217      subgroupPartitionedInclusiveAddNV ( global 4-component vector of float)
 0:217        'f4' ( in 4-component vector of float)
 0:217        'parti' ( temp 4-component vector of uint)
-0:218      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:218      subgroupPartitionedInclusiveMulNV ( global 4-component vector of float)
 0:218        'f4' ( in 4-component vector of float)
 0:218        'parti' ( temp 4-component vector of uint)
-0:219      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:219      subgroupPartitionedInclusiveMinNV ( global 4-component vector of float)
 0:219        'f4' ( in 4-component vector of float)
 0:219        'parti' ( temp 4-component vector of uint)
-0:220      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:220      subgroupPartitionedInclusiveMaxNV ( global 4-component vector of float)
 0:220        'f4' ( in 4-component vector of float)
 0:220        'parti' ( temp 4-component vector of uint)
-0:221      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:221      subgroupPartitionedInclusiveAndNV ( global 4-component vector of uint)
 0:221        'ballot' ( temp 4-component vector of uint)
 0:221        'parti' ( temp 4-component vector of uint)
-0:222      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:222      subgroupPartitionedInclusiveOrNV ( global 4-component vector of uint)
 0:222        'ballot' ( temp 4-component vector of uint)
 0:222        'parti' ( temp 4-component vector of uint)
-0:223      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:223      subgroupPartitionedInclusiveXorNV ( global 4-component vector of uint)
 0:223        'ballot' ( temp 4-component vector of uint)
 0:223        'parti' ( temp 4-component vector of uint)
-0:224      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:224      subgroupPartitionedExclusiveAddNV ( global 4-component vector of float)
 0:224        'f4' ( in 4-component vector of float)
 0:224        'parti' ( temp 4-component vector of uint)
-0:225      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:225      subgroupPartitionedExclusiveMulNV ( global 4-component vector of float)
 0:225        'f4' ( in 4-component vector of float)
 0:225        'parti' ( temp 4-component vector of uint)
-0:226      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:226      subgroupPartitionedExclusiveMinNV ( global 4-component vector of float)
 0:226        'f4' ( in 4-component vector of float)
 0:226        'parti' ( temp 4-component vector of uint)
-0:227      ERROR: Bad aggregation op
- ( global 4-component vector of float)
+0:227      subgroupPartitionedExclusiveMaxNV ( global 4-component vector of float)
 0:227        'f4' ( in 4-component vector of float)
 0:227        'parti' ( temp 4-component vector of uint)
-0:228      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:228      subgroupPartitionedExclusiveAndNV ( global 4-component vector of uint)
 0:228        'ballot' ( temp 4-component vector of uint)
 0:228        'parti' ( temp 4-component vector of uint)
-0:229      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:229      subgroupPartitionedExclusiveOrNV ( global 4-component vector of uint)
 0:229        'ballot' ( temp 4-component vector of uint)
 0:229        'parti' ( temp 4-component vector of uint)
-0:230      ERROR: Bad aggregation op
- ( global 4-component vector of uint)
+0:230      subgroupPartitionedExclusiveXorNV ( global 4-component vector of uint)
 0:230        'ballot' ( temp 4-component vector of uint)
 0:230        'parti' ( temp 4-component vector of uint)
 0:?   Linker Objects
@@ -675,8 +633,8 @@ ERROR: node is still EOpNull!
 0:111              0 (const uint)
 0:111          'gl_VertexID' ( gl_VertexId int VertexId)
 0:111        Construct uvec4 ( temp 4-component vector of uint)
-0:111          'gl_SubgroupSize' ( in uint unknown built-in variable)
-0:111          'gl_SubgroupInvocationID' ( in uint unknown built-in variable)
+0:111          'gl_SubgroupSize' ( in uint SubgroupSize)
+0:111          'gl_SubgroupInvocationID' ( in uint SubgroupInvocationID)
 0:111          Constant:
 0:111            0 (const uint)
 0:111          Constant:
