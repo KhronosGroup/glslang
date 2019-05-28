@@ -37,8 +37,8 @@
 #define _IOMAPPER_INCLUDED
 
 #include "LiveTraverser.h"
-#include <unordered_set>
 #include <unordered_map>
+#include <unordered_set>
 //
 // A reflection database and its interface, consistent with the OpenGL API reflection queries.
 //
@@ -49,19 +49,17 @@ namespace glslang {
 
 class TIntermediate;
 struct TVarEntryInfo {
-    int               id;
-    TIntermSymbol*    symbol;
-    bool              live;
-    int               newBinding;
-    int               newSet;
-    int               newLocation;
-    int               newComponent;
-    int               newIndex;
-    EShLanguage       stage;
+    int id;
+    TIntermSymbol* symbol;
+    bool live;
+    int newBinding;
+    int newSet;
+    int newLocation;
+    int newComponent;
+    int newIndex;
+    EShLanguage stage;
     struct TOrderById {
-        inline bool operator()(const TVarEntryInfo& l, const TVarEntryInfo& r) {
-            return l.id < r.id;
-        }
+        inline bool operator()(const TVarEntryInfo& l, const TVarEntryInfo& r) { return l.id < r.id; }
     };
 
     struct TOrderByPriority {
@@ -70,7 +68,8 @@ struct TVarEntryInfo {
         // 2) has binding but no set
         // 3) has no binding but set
         // 4) has no binding and no set
-        inline bool operator()(const TVarEntryInfo& l, const TVarEntryInfo& r) {
+        inline bool operator()(const TVarEntryInfo& l, const TVarEntryInfo& r)
+        {
             const TQualifier& lq = l.symbol->getQualifier();
             const TQualifier& rq = r.symbol->getQualifier();
 
@@ -91,24 +90,24 @@ struct TVarEntryInfo {
 // Base class for shared TIoMapResolver services, used by several derivations.
 struct TDefaultIoResolverBase : public glslang::TIoMapResolver {
 public:
-    TDefaultIoResolverBase(const TIntermediate &intermediate);
+    TDefaultIoResolverBase(const TIntermediate& intermediate);
     typedef std::vector<int> TSlotSet;
     typedef std::unordered_map<int, TSlotSet> TSlotSetMap;
 
     // grow the reflection stage by stage
-    void notifyBinding(EShLanguage, TVarEntryInfo& ent) override { }
-    void notifyInOut(EShLanguage, TVarEntryInfo& ent) override { }
-    void beginNotifications(EShLanguage) override { }
-    void endNotifications(EShLanguage) override { }
-    void beginResolve(EShLanguage) override { }
-    void endResolve(EShLanguage) override { }
-    void beginCollect(EShLanguage) override { }
-    void endCollect(EShLanguage) override { }
-    void reserverResourceSlot(TVarEntryInfo& ent, TInfoSink& infoSink) override { }
-    void reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& infoSink) override { }
+    void notifyBinding(EShLanguage, TVarEntryInfo& ent) override {}
+    void notifyInOut(EShLanguage, TVarEntryInfo& ent) override {}
+    void beginNotifications(EShLanguage) override {}
+    void endNotifications(EShLanguage) override {}
+    void beginResolve(EShLanguage) override {}
+    void endResolve(EShLanguage) override {}
+    void beginCollect(EShLanguage) override {}
+    void endCollect(EShLanguage) override {}
+    void reserverResourceSlot(TVarEntryInfo& ent, TInfoSink& infoSink) override {}
+    void reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& infoSink) override {}
     int getBaseBinding(TResourceType res, unsigned int set) const;
     const std::vector<std::string>& getResourceSetBinding() const;
-    TResourceType getResourceType(const glslang::TType& type);
+    virtual TResourceType getResourceType(const glslang::TType& type) = 0;
     bool doAutoBindingMapping() const;
     bool doAutoLocationMapping() const;
     TSlotSet::iterator findSlot(int set, int slot);
@@ -121,62 +120,70 @@ public:
     int resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) override;
     int resolveInOutComponent(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
     int resolveInOutIndex(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
-    void addStage(EShLanguage stage) override { if (stage < EShLangCount) stageMask[stage] = true; };
+    void addStage(EShLanguage stage) override
+    {
+        if (stage < EShLangCount)
+            stageMask[stage] = true;
+    };
     uint32_t computeTypeLocationSize(const TType& type, EShLanguage stage);
 
     TSlotSetMap slots;
+
 protected:
     TDefaultIoResolverBase(TDefaultIoResolverBase&);
     TDefaultIoResolverBase& operator=(TDefaultIoResolverBase&);
-    const TIntermediate &intermediate;
+    const TIntermediate& intermediate;
     int nextUniformLocation;
     int nextInputLocation;
     int nextOutputLocation;
-    bool stageMask[EShLangCount + 1] = { false };
+    bool stageMask[EShLangCount + 1] = {false};
     // Return descriptor set specific base if there is one, and the generic base otherwise.
-    int selectBaseBinding(int base, int descriptorSetBase) const {
+    int selectBaseBinding(int base, int descriptorSetBase) const
+    {
         return descriptorSetBase != -1 ? descriptorSetBase : base;
     }
 
-    static int getLayoutSet(const glslang::TType& type) {
+    static int getLayoutSet(const glslang::TType& type)
+    {
         if (type.getQualifier().hasSet())
             return type.getQualifier().layoutSet;
         else
             return 0;
     }
 
-    static bool isSamplerType(const glslang::TType& type) {
+    static bool isSamplerType(const glslang::TType& type)
+    {
         return type.getBasicType() == glslang::EbtSampler && type.getSampler().isPureSampler();
     }
 
-    static bool isTextureType(const glslang::TType& type) {
+    static bool isTextureType(const glslang::TType& type)
+    {
         return (type.getBasicType() == glslang::EbtSampler &&
                 (type.getSampler().isTexture() || type.getSampler().isSubpass()));
     }
 
-    static bool isUboType(const glslang::TType& type) {
-        return type.getQualifier().storage == EvqUniform;
-    }
+    static bool isUboType(const glslang::TType& type) { return type.getQualifier().storage == EvqUniform; }
 
-    static bool isImageType(const glslang::TType& type) {
+    static bool isImageType(const glslang::TType& type)
+    {
         return type.getBasicType() == glslang::EbtSampler && type.getSampler().isImage();
     }
 
-    static bool isSsboType(const glslang::TType& type) {
-        return type.getQualifier().storage == EvqBuffer;
-    }
+    static bool isSsboType(const glslang::TType& type) { return type.getQualifier().storage == EvqBuffer; }
 
     // Return true if this is a SRV (shader resource view) type:
-    static bool isSrvType(const glslang::TType& type) {
+    static bool isSrvType(const glslang::TType& type)
+    {
         return isTextureType(type) || type.getQualifier().storage == EvqBuffer;
     }
 
     // Return true if this is a UAV (unordered access view) type:
-    static bool isUavType(const glslang::TType& type) {
+    static bool isUavType(const glslang::TType& type)
+    {
         if (type.getQualifier().readonly)
             return false;
         return (type.getBasicType() == glslang::EbtSampler && type.getSampler().isImage()) ||
-            (type.getQualifier().storage == EvqBuffer);
+               (type.getQualifier().storage == EvqBuffer);
     }
 };
 
@@ -185,8 +192,9 @@ struct TDefaultGlslIoResolver : public TDefaultIoResolverBase {
 public:
     typedef std::map<TString, int> TVarSlotMap;  // <resourceName, location/binding>
     typedef std::map<int, TVarSlotMap> TSlotMap; // <resourceKey, TVarSlotMap>
-    TDefaultGlslIoResolver(const TIntermediate &intermediate);
+    TDefaultGlslIoResolver(const TIntermediate& intermediate);
     bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) { return true; };
+    TResourceType getResourceType(const glslang::TType& type) override;
     int resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) override;
     int resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
     int resolveBinding(EShLanguage /*stage*/, TVarEntryInfo& ent);
@@ -200,10 +208,12 @@ public:
     // We use stage and storage qualifier to construct a storage key. it can help us identify the same storage resource used in different stage.
     // if a resource is a program resource and we don't need know it usage stage, we can use same stage to build storage key.
     // Note: both stage and type must less then 0xffff.
-    int buildStorageKey(EShLanguage stage, TStorageQualifier type) {
+    int buildStorageKey(EShLanguage stage, TStorageQualifier type)
+    {
         assert(stage <= 0xffff && type <= 0xffff);
         return (stage << 16) | type;
     };
+
 protected:
     // Use for mark pre stage, to get more interface symbol information.
     EShLanguage preStage;
@@ -216,11 +226,36 @@ protected:
 };
 
 typedef std::map<TString, TVarEntryInfo> TVarLiveMap;
+
+// override function "operator=", if a vector<const _Kty, _Ty> being sort,
+// when use vc++, the sort function will call :
+// pair& operator=(const pair<_Other1, _Other2>& _Right)
+// {
+//     first = _Right.first;
+//     second = _Right.second;
+//     return (*this);
+// }
+// that will make a const type handing on left.
+// override this function can avoid a compiler error.
+// In the future, if the vc++ compiler can handle such a situation,
+// this part of the code will be removed.
+struct TVarLivePair : std::pair<const TString, TVarEntryInfo> {
+    TVarLivePair(std::pair < const TString, TVarEntryInfo>& _Right)
+        : pair (_Right.first, _Right.second) { }
+    TVarLivePair& operator=(const TVarLivePair& _Right)
+    {
+        const_cast<TString&>(first) = _Right.first;
+        second = _Right.second;
+        return (*this);
+    };
+};
+typedef std::vector<TVarLivePair> TVarLiveVector;
+
 // I/O mapper
 class TIoMapper {
 public:
-    TIoMapper() { }
-    virtual ~TIoMapper() { }
+    TIoMapper() {}
+    virtual ~TIoMapper() {}
     // grow the reflection stage by stage
     bool virtual addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*);
     bool virtual doMap(TIoMapResolver*, TInfoSink&) { return true; };
@@ -229,22 +264,19 @@ public:
 // I/O mapper for OpenGL
 class TGlslIoMapper : public TIoMapper {
 public:
-    TGlslIoMapper() { }
-    virtual ~TGlslIoMapper() {
-        for (size_t stage = 0; stage < EShLangCount; stage++)
-        {
-            if (inVarMaps[stage] != nullptr)
-            {
+    TGlslIoMapper() {}
+    virtual ~TGlslIoMapper()
+    {
+        for (size_t stage = 0; stage < EShLangCount; stage++) {
+            if (inVarMaps[stage] != nullptr) {
                 delete inVarMaps[stage];
                 inVarMaps[stage] = nullptr;
             }
-            if (outVarMaps[stage] != nullptr)
-            {
+            if (outVarMaps[stage] != nullptr) {
                 delete outVarMaps[stage];
                 outVarMaps[stage] = nullptr;
             }
-            if (uniformVarMap[stage] != nullptr)
-            {
+            if (uniformVarMap[stage] != nullptr) {
                 delete uniformVarMap[stage];
                 uniformVarMap[stage] = nullptr;
             }
@@ -255,8 +287,9 @@ public:
     // grow the reflection stage by stage
     bool addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*) override;
     bool doMap(TIoMapResolver*, TInfoSink&) override;
-    TVarLiveMap *inVarMaps[EShLangCount] = { nullptr }, *outVarMaps[EShLangCount] = { nullptr }, *uniformVarMap[EShLangCount] = { nullptr };
-    TIntermediate *intermediates[EShLangCount] = { nullptr };
+    TVarLiveMap *inVarMaps[EShLangCount] = {nullptr}, *outVarMaps[EShLangCount] = {nullptr},
+                *uniformVarMap[EShLangCount] = {nullptr};
+    TIntermediate* intermediates[EShLangCount] = {nullptr};
     bool hadError = false;
 };
 
