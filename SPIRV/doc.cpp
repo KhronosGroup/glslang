@@ -882,9 +882,9 @@ const char* CapabilityString(int info)
     case CapabilityStoragePushConstant16:       return "StoragePushConstant16";
     case CapabilityStorageInputOutput16:        return "StorageInputOutput16";
 
-    case CapabilityStorageBuffer8BitAccess:             return "CapabilityStorageBuffer8BitAccess";
-    case CapabilityUniformAndStorageBuffer8BitAccess:   return "CapabilityUniformAndStorageBuffer8BitAccess";
-    case CapabilityStoragePushConstant8:                return "CapabilityStoragePushConstant8";
+    case CapabilityStorageBuffer8BitAccess:             return "StorageBuffer8BitAccess";
+    case CapabilityUniformAndStorageBuffer8BitAccess:   return "UniformAndStorageBuffer8BitAccess";
+    case CapabilityStoragePushConstant8:                return "StoragePushConstant8";
 
     case CapabilityDeviceGroup: return "DeviceGroup";
     case CapabilityMultiView:   return "MultiView";
@@ -913,33 +913,34 @@ const char* CapabilityString(int info)
     case CapabilityComputeDerivativeGroupLinearNV:  return "ComputeDerivativeGroupLinearNV";
     case CapabilityFragmentBarycentricNV:           return "FragmentBarycentricNV";
     case CapabilityMeshShadingNV:                   return "MeshShadingNV";
-//    case CapabilityShadingRateNV:                   return "ShadingRateNV";  // superseded by CapabilityFragmentDensityEXT
+    case CapabilityImageFootprintNV:                return "ImageFootprintNV";
+//    case CapabilityShadingRateNV:                   return "ShadingRateNV";  // superseded by FragmentDensityEXT
 #endif
     case CapabilityFragmentDensityEXT:              return "FragmentDensityEXT";
 
     case CapabilityFragmentFullyCoveredEXT: return "FragmentFullyCoveredEXT";
 
-    case CapabilityShaderNonUniformEXT:                          return "CapabilityShaderNonUniformEXT";
-    case CapabilityRuntimeDescriptorArrayEXT:                    return "CapabilityRuntimeDescriptorArrayEXT";
-    case CapabilityInputAttachmentArrayDynamicIndexingEXT:       return "CapabilityInputAttachmentArrayDynamicIndexingEXT";
-    case CapabilityUniformTexelBufferArrayDynamicIndexingEXT:    return "CapabilityUniformTexelBufferArrayDynamicIndexingEXT";
-    case CapabilityStorageTexelBufferArrayDynamicIndexingEXT:    return "CapabilityStorageTexelBufferArrayDynamicIndexingEXT";
-    case CapabilityUniformBufferArrayNonUniformIndexingEXT:      return "CapabilityUniformBufferArrayNonUniformIndexingEXT";
-    case CapabilitySampledImageArrayNonUniformIndexingEXT:       return "CapabilitySampledImageArrayNonUniformIndexingEXT";
-    case CapabilityStorageBufferArrayNonUniformIndexingEXT:      return "CapabilityStorageBufferArrayNonUniformIndexingEXT";
-    case CapabilityStorageImageArrayNonUniformIndexingEXT:       return "CapabilityStorageImageArrayNonUniformIndexingEXT";
-    case CapabilityInputAttachmentArrayNonUniformIndexingEXT:    return "CapabilityInputAttachmentArrayNonUniformIndexingEXT";
-    case CapabilityUniformTexelBufferArrayNonUniformIndexingEXT: return "CapabilityUniformTexelBufferArrayNonUniformIndexingEXT";
-    case CapabilityStorageTexelBufferArrayNonUniformIndexingEXT: return "CapabilityStorageTexelBufferArrayNonUniformIndexingEXT";
+    case CapabilityShaderNonUniformEXT:                          return "ShaderNonUniformEXT";
+    case CapabilityRuntimeDescriptorArrayEXT:                    return "RuntimeDescriptorArrayEXT";
+    case CapabilityInputAttachmentArrayDynamicIndexingEXT:       return "InputAttachmentArrayDynamicIndexingEXT";
+    case CapabilityUniformTexelBufferArrayDynamicIndexingEXT:    return "UniformTexelBufferArrayDynamicIndexingEXT";
+    case CapabilityStorageTexelBufferArrayDynamicIndexingEXT:    return "StorageTexelBufferArrayDynamicIndexingEXT";
+    case CapabilityUniformBufferArrayNonUniformIndexingEXT:      return "UniformBufferArrayNonUniformIndexingEXT";
+    case CapabilitySampledImageArrayNonUniformIndexingEXT:       return "SampledImageArrayNonUniformIndexingEXT";
+    case CapabilityStorageBufferArrayNonUniformIndexingEXT:      return "StorageBufferArrayNonUniformIndexingEXT";
+    case CapabilityStorageImageArrayNonUniformIndexingEXT:       return "StorageImageArrayNonUniformIndexingEXT";
+    case CapabilityInputAttachmentArrayNonUniformIndexingEXT:    return "InputAttachmentArrayNonUniformIndexingEXT";
+    case CapabilityUniformTexelBufferArrayNonUniformIndexingEXT: return "UniformTexelBufferArrayNonUniformIndexingEXT";
+    case CapabilityStorageTexelBufferArrayNonUniformIndexingEXT: return "StorageTexelBufferArrayNonUniformIndexingEXT";
 
-    case CapabilityVulkanMemoryModelKHR:                return "CapabilityVulkanMemoryModelKHR";
-    case CapabilityVulkanMemoryModelDeviceScopeKHR:     return "CapabilityVulkanMemoryModelDeviceScopeKHR";
+    case CapabilityVulkanMemoryModelKHR:                return "VulkanMemoryModelKHR";
+    case CapabilityVulkanMemoryModelDeviceScopeKHR:     return "VulkanMemoryModelDeviceScopeKHR";
 
-    case CapabilityPhysicalStorageBufferAddressesEXT:   return "CapabilityPhysicalStorageBufferAddressesEXT";
+    case CapabilityPhysicalStorageBufferAddressesEXT:   return "PhysicalStorageBufferAddressesEXT";
 
-    case CapabilityVariablePointers:                    return "CapabilityVariablePointers";
+    case CapabilityVariablePointers:                    return "VariablePointers";
 
-    case CapabilityCooperativeMatrixNV:     return "CapabilityCooperativeMatrixNV";
+    case CapabilityCooperativeMatrixNV:     return "CooperativeMatrixNV";
 
     default: return "Bad";
     }
