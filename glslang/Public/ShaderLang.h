@@ -62,7 +62,7 @@
 //
 
 #ifdef __cplusplus
-extern "C" {
+    extern "C" {
 #endif
 
 // This should always increase, as some paths to do not consume
@@ -189,9 +189,9 @@ const char* StageName(EShLanguage);
 
 } // end namespace glslang
 
-    //
-    // Types of output the linker will create.
-    //
+//
+// Types of output the linker will create.
+//
 typedef enum {
     EShExVertexFragment,
     EShExFragment
@@ -323,9 +323,9 @@ SH_IMPORT_EXPORT const char* ShGetInfoLog(const ShHandle);
 SH_IMPORT_EXPORT const void* ShGetExecutable(const ShHandle);
 SH_IMPORT_EXPORT int ShSetVirtualAttributeBindings(const ShHandle, const ShBindingTable*);   // to detect user aliasing
 SH_IMPORT_EXPORT int ShSetFixedAttributeBindings(const ShHandle, const ShBindingTable*);     // to force any physical mappings
-                                                                                                //
-                                                                                                // Tell the linker to never assign a vertex attribute to this list of physical attributes
-                                                                                                //
+//
+// Tell the linker to never assign a vertex attribute to this list of physical attributes
+//
 SH_IMPORT_EXPORT int ShExcludeAttributes(const ShHandle, int *attributes, int count);
 
 //
