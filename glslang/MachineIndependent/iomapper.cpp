@@ -64,11 +64,9 @@ public:
                         TVarLiveMap& uniformList)
         : TLiveTraverser(i, traverseDeadCode, true, true, false), inputList(inList), outputList(outList),
           uniformList(uniformList)
-    {
-    }
+    { }
 
-    virtual void visitSymbol(TIntermSymbol* base)
-    {
+    virtual void visitSymbol(TIntermSymbol* base) {
         TVarLiveMap* target = nullptr;
         if (base->getQualifier().storage == EvqVaryingIn)
             target = &inputList;
@@ -100,11 +98,9 @@ public:
     TVarSetTraverser(const TIntermediate& i, const TVarLiveMap& inList, const TVarLiveMap& outList,
                      const TVarLiveMap& uniformList)
         : TLiveTraverser(i, true, true, true, false), inputList(inList), outputList(outList), uniformList(uniformList)
-    {
-    }
+    { }
 
-    virtual void visitSymbol(TIntermSymbol* base)
-    {
+    virtual void visitSymbol(TIntermSymbol* base) {
         const TVarLiveMap* source;
         if (base->getQualifier().storage == EvqVaryingIn)
             source = &inputList;
@@ -143,10 +139,9 @@ private:
 struct TNotifyUniformAdaptor {
     EShLanguage stage;
     TIoMapResolver& resolver;
-    inline TNotifyUniformAdaptor(EShLanguage s, TIoMapResolver& r) : stage(s), resolver(r) {}
+    inline TNotifyUniformAdaptor(EShLanguage s, TIoMapResolver& r) : stage(s), resolver(r) { }
 
-    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey)
-    {
+    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
         resolver.notifyBinding(stage, entKey.second);
     }
 
@@ -157,9 +152,8 @@ private:
 struct TNotifyInOutAdaptor {
     EShLanguage stage;
     TIoMapResolver& resolver;
-    inline TNotifyInOutAdaptor(EShLanguage s, TIoMapResolver& r) : stage(s), resolver(r) {}
-    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey)
-    {
+    inline TNotifyInOutAdaptor(EShLanguage s, TIoMapResolver& r) : stage(s), resolver(r) { }
+    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
         resolver.notifyInOut(stage, entKey.second);
     }
 
@@ -170,11 +164,9 @@ private:
 struct TResolverUniformAdaptor {
     TResolverUniformAdaptor(EShLanguage s, TIoMapResolver& r, TInfoSink& i, bool& e)
         : stage(s), resolver(r), infoSink(i), error(e)
-    {
-    }
+    { }
 
-    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey)
-    {
+    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
         TVarEntryInfo& ent = entKey.second;
         ent.newLocation = -1;
         ent.newComponent = -1;
@@ -222,11 +214,9 @@ private:
 struct TResolverInOutAdaptor {
     TResolverInOutAdaptor(EShLanguage s, TIoMapResolver& r, TInfoSink& i, bool& e)
         : stage(s), resolver(r), infoSink(i), error(e)
-    {
-    }
+    { }
 
-    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey)
-    {
+    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
         TVarEntryInfo& ent = entKey.second;
         ent.newLocation = -1;
         ent.newComponent = -1;
@@ -276,8 +266,7 @@ struct TSymbolValidater {
         memcpy(uniformVarMap, uniform, EShLangCount * (sizeof(TVarLiveMap*)));
     }
 
-    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey)
-    {
+    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
         TVarEntryInfo& ent1 = entKey.second;
         TIntermSymbol* base = ent1.symbol;
         const TType& type = ent1.symbol->getType();
@@ -361,10 +350,9 @@ private:
 };
 
 struct TSlotCollector {
-    TSlotCollector(TIoMapResolver& r, TInfoSink& i) : resolver(r), infoSink(i) {}
+    TSlotCollector(TIoMapResolver& r, TInfoSink& i) : resolver(r), infoSink(i) { }
 
-    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey)
-    {
+    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
         resolver.reserverStorageSlot(entKey.second, infoSink);
         resolver.reserverResourceSlot(entKey.second, infoSink);
     }
@@ -378,16 +366,13 @@ private:
 TDefaultIoResolverBase::TDefaultIoResolverBase(const TIntermediate& intermediate)
     : intermediate(intermediate), nextUniformLocation(intermediate.getUniformLocationBase()), nextInputLocation(0),
       nextOutputLocation(0)
-{
-}
+{ }
 
-int TDefaultIoResolverBase::getBaseBinding(TResourceType res, unsigned int set) const
-{
+int TDefaultIoResolverBase::getBaseBinding(TResourceType res, unsigned int set) const {
     return selectBaseBinding(intermediate.getShiftBinding(res), intermediate.getShiftBindingForSet(res, set));
 }
 
-const std::vector<std::string>& TDefaultIoResolverBase::getResourceSetBinding() const
-{
+const std::vector<std::string>& TDefaultIoResolverBase::getResourceSetBinding() const {
     return intermediate.getResourceSetBinding();
 }
 
@@ -395,19 +380,16 @@ bool TDefaultIoResolverBase::doAutoBindingMapping() const { return intermediate.
 
 bool TDefaultIoResolverBase::doAutoLocationMapping() const { return intermediate.getAutoMapLocations(); }
 
-TDefaultIoResolverBase::TSlotSet::iterator TDefaultIoResolverBase::findSlot(int set, int slot)
-{
+TDefaultIoResolverBase::TSlotSet::iterator TDefaultIoResolverBase::findSlot(int set, int slot) {
     return std::lower_bound(slots[set].begin(), slots[set].end(), slot);
 }
 
-bool TDefaultIoResolverBase::checkEmpty(int set, int slot)
-{
+bool TDefaultIoResolverBase::checkEmpty(int set, int slot) {
     TSlotSet::iterator at = findSlot(set, slot);
     return !(at != slots[set].end() && *at == slot);
 }
 
-int TDefaultIoResolverBase::reserveSlot(int set, int slot, int size)
-{
+int TDefaultIoResolverBase::reserveSlot(int set, int slot, int size) {
     TSlotSet::iterator at = findSlot(set, slot);
     // tolerate aliasing, by not double-recording aliases
     // (policy about appropriateness of the alias is higher up)
@@ -419,8 +401,7 @@ int TDefaultIoResolverBase::reserveSlot(int set, int slot, int size)
     return slot;
 }
 
-int TDefaultIoResolverBase::getFreeSlot(int set, int base, int size)
-{
+int TDefaultIoResolverBase::getFreeSlot(int set, int base, int size) {
     TSlotSet::iterator at = findSlot(set, base);
     if (at == slots[set].end())
         return reserveSlot(set, base, size);
@@ -433,8 +414,7 @@ int TDefaultIoResolverBase::getFreeSlot(int set, int base, int size)
     return reserveSlot(set, base, size);
 }
 
-int TDefaultIoResolverBase::resolveSet(EShLanguage /*stage*/, TVarEntryInfo& ent)
-{
+int TDefaultIoResolverBase::resolveSet(EShLanguage /*stage*/, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
     if (type.getQualifier().hasSet()) {
         ent.newSet = type.getQualifier().layoutSet;
@@ -446,8 +426,7 @@ int TDefaultIoResolverBase::resolveSet(EShLanguage /*stage*/, TVarEntryInfo& ent
     return ent.newSet = 0;
 }
 
-int TDefaultIoResolverBase::resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent)
-{
+int TDefaultIoResolverBase::resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
     const char* name = ent.symbol->getName().c_str();
     // kick out of not doing this
@@ -477,8 +456,7 @@ int TDefaultIoResolverBase::resolveUniformLocation(EShLanguage /*stage*/, TVarEn
     return ent.newLocation = location;
 }
 
-int TDefaultIoResolverBase::resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent)
-{
+int TDefaultIoResolverBase::resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
     // kick out of not doing this
     if (!doAutoLocationMapping()) {
@@ -512,15 +490,13 @@ int TDefaultIoResolverBase::resolveInOutLocation(EShLanguage stage, TVarEntryInf
     return ent.newLocation = location;
 }
 
-int TDefaultIoResolverBase::resolveInOutComponent(EShLanguage /*stage*/, TVarEntryInfo& ent)
-{
+int TDefaultIoResolverBase::resolveInOutComponent(EShLanguage /*stage*/, TVarEntryInfo& ent) {
     return ent.newComponent = -1;
 }
 
 int TDefaultIoResolverBase::resolveInOutIndex(EShLanguage /*stage*/, TVarEntryInfo& ent) { return ent.newIndex = -1; }
 
-uint32_t TDefaultIoResolverBase::computeTypeLocationSize(const TType& type, EShLanguage stage)
-{
+uint32_t TDefaultIoResolverBase::computeTypeLocationSize(const TType& type, EShLanguage stage) {
     int typeLocationSize;
     // Don’t take into account the outer-most array if the stage’s
     // interface is automatically an array.
@@ -534,8 +510,7 @@ uint32_t TDefaultIoResolverBase::computeTypeLocationSize(const TType& type, EShL
 }
 
 //TDefaultGlslIoResolver
-TResourceType TDefaultGlslIoResolver::getResourceType(const glslang::TType& type)
-{
+TResourceType TDefaultGlslIoResolver::getResourceType(const glslang::TType& type) {
     if (isImageType(type)) {
         return EResImage;
     }
@@ -556,11 +531,9 @@ TResourceType TDefaultGlslIoResolver::getResourceType(const glslang::TType& type
 
 TDefaultGlslIoResolver::TDefaultGlslIoResolver(const TIntermediate& intermediate)
     : TDefaultIoResolverBase(intermediate), preStage(EShLangCount), currentStage(EShLangCount)
-{
-}
+{ }
 
-int TDefaultGlslIoResolver::resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent)
-{
+int TDefaultGlslIoResolver::resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
     const TString& name = ent.symbol->getName();
     if (currentStage != stage) {
@@ -644,8 +617,7 @@ int TDefaultGlslIoResolver::resolveInOutLocation(EShLanguage stage, TVarEntryInf
     return ent.newLocation = location;
 }
 
-int TDefaultGlslIoResolver::resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent)
-{
+int TDefaultGlslIoResolver::resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
     const TString& name = ent.symbol->getName();
     // kick out of not doing this
@@ -654,7 +626,6 @@ int TDefaultGlslIoResolver::resolveUniformLocation(EShLanguage /*stage*/, TVarEn
     }
     // expand the location to each element if the symbol is a struct or array
     if (type.getQualifier().hasLocation() && (type.isStruct() || type.isArray())) {
-        glslang::TType* pType = const_cast<glslang::TType*>(&type);
         return ent.newLocation = type.getQualifier().layoutLocation;
     } else {
         // no locations added if already present, a built-in variable, a block, or an opaque
@@ -717,8 +688,7 @@ int TDefaultGlslIoResolver::resolveUniformLocation(EShLanguage /*stage*/, TVarEn
     return ent.newLocation = location;
 }
 
-int TDefaultGlslIoResolver::resolveBinding(EShLanguage /*stage*/, TVarEntryInfo& ent)
-{
+int TDefaultGlslIoResolver::resolveBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
     const TString& name = ent.symbol->getName();
     // On OpenGL arrays of opaque types take a seperate binding for each element
@@ -764,8 +734,7 @@ int TDefaultGlslIoResolver::resolveBinding(EShLanguage /*stage*/, TVarEntryInfo&
     return ent.newBinding = -1;
 }
 
-void TDefaultGlslIoResolver::beginResolve(EShLanguage stage)
-{
+void TDefaultGlslIoResolver::beginResolve(EShLanguage stage) {
     // reset stage state
     if (stage == EShLangCount)
         preStage = currentStage = stage;
@@ -776,13 +745,11 @@ void TDefaultGlslIoResolver::beginResolve(EShLanguage stage)
     }
 }
 
-void TDefaultGlslIoResolver::endResolve(EShLanguage stage)
-{
+void TDefaultGlslIoResolver::endResolve(EShLanguage /*stage*/) {
     // TODO nothing
 }
 
-void TDefaultGlslIoResolver::beginCollect(EShLanguage stage)
-{
+void TDefaultGlslIoResolver::beginCollect(EShLanguage stage) {
     // reset stage state
     if (stage == EShLangCount)
         preStage = currentStage = stage;
@@ -793,13 +760,11 @@ void TDefaultGlslIoResolver::beginCollect(EShLanguage stage)
     }
 }
 
-void TDefaultGlslIoResolver::endCollect(EShLanguage stage)
-{
+void TDefaultGlslIoResolver::endCollect(EShLanguage /*stage*/) {
     // TODO nothing
 }
 
-void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& infoSink)
-{
+void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& infoSink) {
     const TType& type = ent.symbol->getType();
     const TString& name = ent.symbol->getName();
     TStorageQualifier storage = type.getQualifier().storage;
@@ -810,7 +775,7 @@ void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& 
             //
             // Reserve the slots for the uniforms who has explicit location
             int storageKey = buildStorageKey(EShLangCount, EvqUniform);
-            unsigned int location = type.getQualifier().layoutLocation;
+            int location = type.getQualifier().layoutLocation;
             TVarSlotMap& varSlotMap = storageSlotMap[storageKey];
             TVarSlotMap::iterator iter = varSlotMap.find(name);
             if (iter == varSlotMap.end()) {
@@ -835,7 +800,7 @@ void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& 
             stage = storage == EvqVaryingIn ? preStage : stage;
             stage = storage == EvqVaryingOut ? currentStage : stage;
             int storageKey = buildStorageKey(stage, EvqInOut);
-            unsigned int location = type.getQualifier().layoutLocation;
+            int location = type.getQualifier().layoutLocation;
             TVarSlotMap& varSlotMap = storageSlotMap[storageKey];
             TVarSlotMap::iterator iter = varSlotMap.find(name);
             if (iter == varSlotMap.end()) {
@@ -857,15 +822,14 @@ void TDefaultGlslIoResolver::reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& 
     }
 }
 
-void TDefaultGlslIoResolver::reserverResourceSlot(TVarEntryInfo& ent, TInfoSink& infoSink)
-{
+void TDefaultGlslIoResolver::reserverResourceSlot(TVarEntryInfo& ent, TInfoSink& infoSink) {
     const TType& type = ent.symbol->getType();
     const TString& name = ent.symbol->getName();
     int resource = getResourceType(type);
     if (type.getQualifier().hasBinding()) {
         TVarSlotMap& varSlotMap = resourceSlotMap[resource];
         TVarSlotMap::iterator iter = varSlotMap.find(name);
-        unsigned int binding = type.getQualifier().layoutBinding;
+        int binding = type.getQualifier().layoutBinding;
         if (iter == varSlotMap.end()) {
             // Reserve the slots for the ubo, ssbo and opaques who has explicit binding
             int numBindings = type.isSizedArray() ? type.getCumulativeArraySize() : 1;
@@ -895,12 +859,11 @@ void TDefaultGlslIoResolver::reserverResourceSlot(TVarEntryInfo& ent, TInfoSink&
 * Default resolver
 */
 struct TDefaultIoResolver : public TDefaultIoResolverBase {
-    TDefaultIoResolver(const TIntermediate& intermediate) : TDefaultIoResolverBase(intermediate) {}
+    TDefaultIoResolver(const TIntermediate& intermediate) : TDefaultIoResolverBase(intermediate) { }
 
-    bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) override { return true; }
+    bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& /*ent*/) override { return true; }
 
-    TResourceType getResourceType(const glslang::TType& type) override
-    {
+    TResourceType getResourceType(const glslang::TType& type) override {
         if (isImageType(type)) {
             return EResImage;
         }
@@ -919,8 +882,7 @@ struct TDefaultIoResolver : public TDefaultIoResolverBase {
         return EResCount;
     }
 
-    int resolveBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) override
-    {
+    int resolveBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) override {
         const TType& type = ent.symbol->getType();
         const int set = getLayoutSet(type);
         // On OpenGL arrays of opaque types take a seperate binding for each element
@@ -984,12 +946,11 @@ b - for constant buffer views (CBV)
    CONSTANTBUFFER
  ********************************************************************************/
 struct TDefaultHlslIoResolver : public TDefaultIoResolverBase {
-    TDefaultHlslIoResolver(const TIntermediate& intermediate) : TDefaultIoResolverBase(intermediate) {}
+    TDefaultHlslIoResolver(const TIntermediate& intermediate) : TDefaultIoResolverBase(intermediate) { }
 
-    bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) override { return true; }
+    bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& /*ent*/) override { return true; }
 
-    TResourceType getResourceType(const glslang::TType& type) override
-    {
+    TResourceType getResourceType(const glslang::TType& type) override {
         if (isUavType(type)) {
             return EResUav;
         }
@@ -1005,8 +966,7 @@ struct TDefaultHlslIoResolver : public TDefaultIoResolverBase {
         return EResCount;
     }
 
-    int resolveBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) override
-    {
+    int resolveBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) override {
         const TType& type = ent.symbol->getType();
         const int set = getLayoutSet(type);
         TResourceType resource = getResourceType(type);
@@ -1028,8 +988,7 @@ struct TDefaultHlslIoResolver : public TDefaultIoResolverBase {
 // unbound but live variables.
 //
 // Returns false if the input is too malformed to do this.
-bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSink& infoSink, TIoMapResolver* resolver)
-{
+bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSink& infoSink, TIoMapResolver* resolver) {
     bool somethingToDo = !intermediate.getResourceSetBinding().empty() || intermediate.getAutoMapBindings() ||
                          intermediate.getAutoMapLocations();
     for (int res = 0; res < EResCount; ++res) {
@@ -1102,9 +1061,7 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
 // unbound but live variables.
 //
 // Returns false if the input is too malformed to do this.
-bool TGlslIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSink& infoSink,
-                             TIoMapResolver* resolver)
-{
+bool TGlslIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSink& infoSink, TIoMapResolver* resolver) {
 
     bool somethingToDo = !intermediate.getResourceSetBinding().empty() || intermediate.getAutoMapBindings() ||
                          intermediate.getAutoMapLocations();
@@ -1160,8 +1117,7 @@ bool TGlslIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TIn
     return !hadError;
 }
 
-bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink)
-{
+bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
     resolver->endResolve(EShLangCount);
     if (!hadError) {
         //Resolve uniform location, ubo/ssbo/opaque bindings across stages

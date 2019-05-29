@@ -68,8 +68,7 @@ struct TVarEntryInfo {
         // 2) has binding but no set
         // 3) has no binding but set
         // 4) has no binding and no set
-        inline bool operator()(const TVarEntryInfo& l, const TVarEntryInfo& r)
-        {
+        inline bool operator()(const TVarEntryInfo& l, const TVarEntryInfo& r) {
             const TQualifier& lq = l.symbol->getQualifier();
             const TQualifier& rq = r.symbol->getQualifier();
 
@@ -95,16 +94,16 @@ public:
     typedef std::unordered_map<int, TSlotSet> TSlotSetMap;
 
     // grow the reflection stage by stage
-    void notifyBinding(EShLanguage, TVarEntryInfo& ent) override {}
-    void notifyInOut(EShLanguage, TVarEntryInfo& ent) override {}
-    void beginNotifications(EShLanguage) override {}
-    void endNotifications(EShLanguage) override {}
-    void beginResolve(EShLanguage) override {}
-    void endResolve(EShLanguage) override {}
-    void beginCollect(EShLanguage) override {}
-    void endCollect(EShLanguage) override {}
-    void reserverResourceSlot(TVarEntryInfo& ent, TInfoSink& infoSink) override {}
-    void reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& infoSink) override {}
+    void notifyBinding(EShLanguage, TVarEntryInfo& /*ent*/) override { }
+    void notifyInOut(EShLanguage, TVarEntryInfo& /*ent*/) override { }
+    void beginNotifications(EShLanguage) override { }
+    void endNotifications(EShLanguage) override { }
+    void beginResolve(EShLanguage) override { }
+    void endResolve(EShLanguage) override { }
+    void beginCollect(EShLanguage) override { }
+    void endCollect(EShLanguage) override { }
+    void reserverResourceSlot(TVarEntryInfo& /*ent*/, TInfoSink& /*infoSink*/) override { }
+    void reserverStorageSlot(TVarEntryInfo& /*ent*/, TInfoSink& /*infoSink*/) override { }
     int getBaseBinding(TResourceType res, unsigned int set) const;
     const std::vector<std::string>& getResourceSetBinding() const;
     virtual TResourceType getResourceType(const glslang::TType& type) = 0;
@@ -112,7 +111,7 @@ public:
     bool doAutoLocationMapping() const;
     TSlotSet::iterator findSlot(int set, int slot);
     bool checkEmpty(int set, int slot);
-    bool validateInOut(EShLanguage /*stage*/, TVarEntryInfo& ent) override { return true; };
+    bool validateInOut(EShLanguage /*stage*/, TVarEntryInfo& /*ent*/) override { return true; };
     int reserveSlot(int set, int slot, int size = 1);
     int getFreeSlot(int set, int base, int size = 1);
     int resolveSet(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
@@ -120,8 +119,7 @@ public:
     int resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) override;
     int resolveInOutComponent(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
     int resolveInOutIndex(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
-    void addStage(EShLanguage stage) override
-    {
+    void addStage(EShLanguage stage) override {
         if (stage < EShLangCount)
             stageMask[stage] = true;
     };
@@ -138,48 +136,41 @@ protected:
     int nextOutputLocation;
     bool stageMask[EShLangCount + 1] = {false};
     // Return descriptor set specific base if there is one, and the generic base otherwise.
-    int selectBaseBinding(int base, int descriptorSetBase) const
-    {
+    int selectBaseBinding(int base, int descriptorSetBase) const {
         return descriptorSetBase != -1 ? descriptorSetBase : base;
     }
 
-    static int getLayoutSet(const glslang::TType& type)
-    {
+    static int getLayoutSet(const glslang::TType& type) {
         if (type.getQualifier().hasSet())
             return type.getQualifier().layoutSet;
         else
             return 0;
     }
 
-    static bool isSamplerType(const glslang::TType& type)
-    {
+    static bool isSamplerType(const glslang::TType& type) {
         return type.getBasicType() == glslang::EbtSampler && type.getSampler().isPureSampler();
     }
 
-    static bool isTextureType(const glslang::TType& type)
-    {
+    static bool isTextureType(const glslang::TType& type) {
         return (type.getBasicType() == glslang::EbtSampler &&
                 (type.getSampler().isTexture() || type.getSampler().isSubpass()));
     }
 
     static bool isUboType(const glslang::TType& type) { return type.getQualifier().storage == EvqUniform; }
 
-    static bool isImageType(const glslang::TType& type)
-    {
+    static bool isImageType(const glslang::TType& type) {
         return type.getBasicType() == glslang::EbtSampler && type.getSampler().isImage();
     }
 
     static bool isSsboType(const glslang::TType& type) { return type.getQualifier().storage == EvqBuffer; }
 
     // Return true if this is a SRV (shader resource view) type:
-    static bool isSrvType(const glslang::TType& type)
-    {
+    static bool isSrvType(const glslang::TType& type) {
         return isTextureType(type) || type.getQualifier().storage == EvqBuffer;
     }
 
     // Return true if this is a UAV (unordered access view) type:
-    static bool isUavType(const glslang::TType& type)
-    {
+    static bool isUavType(const glslang::TType& type) {
         if (type.getQualifier().readonly)
             return false;
         return (type.getBasicType() == glslang::EbtSampler && type.getSampler().isImage()) ||
@@ -193,7 +184,7 @@ public:
     typedef std::map<TString, int> TVarSlotMap;  // <resourceName, location/binding>
     typedef std::map<int, TVarSlotMap> TSlotMap; // <resourceKey, TVarSlotMap>
     TDefaultGlslIoResolver(const TIntermediate& intermediate);
-    bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) { return true; };
+    bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& /*ent*/) { return true; };
     TResourceType getResourceType(const glslang::TType& type) override;
     int resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) override;
     int resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
@@ -208,8 +199,7 @@ public:
     // We use stage and storage qualifier to construct a storage key. it can help us identify the same storage resource used in different stage.
     // if a resource is a program resource and we don't need know it usage stage, we can use same stage to build storage key.
     // Note: both stage and type must less then 0xffff.
-    int buildStorageKey(EShLanguage stage, TStorageQualifier type)
-    {
+    int buildStorageKey(EShLanguage stage, TStorageQualifier type) {
         assert(stage <= 0xffff && type <= 0xffff);
         return (stage << 16) | type;
     };
@@ -265,8 +255,7 @@ public:
 class TGlslIoMapper : public TIoMapper {
 public:
     TGlslIoMapper() {}
-    virtual ~TGlslIoMapper()
-    {
+    virtual ~TGlslIoMapper() {
         for (size_t stage = 0; stage < EShLangCount; stage++) {
             if (inVarMaps[stage] != nullptr) {
                 delete inVarMaps[stage];
