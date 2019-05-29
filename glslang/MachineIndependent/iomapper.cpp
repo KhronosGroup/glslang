@@ -72,16 +72,16 @@ public:
             target = &inputList;
         else if (base->getQualifier().storage == EvqVaryingOut)
             target = &outputList;
-        else if (base->getQualifier().isUniformOrBuffer() && !base->getQualifier().layoutPushConstant)
+        else if (base->getQualifier().isUniformOrBuffer() && ! base->getQualifier().layoutPushConstant)
             target = &uniformList;
         if (target) {
-            TVarEntryInfo ent = {base->getId(), base, !traverseAll};
+            TVarEntryInfo ent = {base->getId(), base, ! traverseAll};
             ent.stage = intermediate.getStage();
             TVarLiveMap::iterator at = target->find(
                 ent.symbol
                     ->getName()); // std::lower_bound(target->begin(), target->end(), ent, TVarEntryInfo::TOrderById());
             if (at != target->end() && at->second.id == ent.id)
-                at->second.live = at->second.live || !traverseAll; // update live state
+                at->second.live = at->second.live || ! traverseAll; // update live state
             else
                 (*target)[ent.symbol->getName()] = ent;
         }
@@ -319,7 +319,7 @@ struct TSymbolValidater {
                 }
                 return;
             }
-        } else if (base->getQualifier().isUniformOrBuffer() && !base->getQualifier().layoutPushConstant) {
+        } else if (base->getQualifier().isUniformOrBuffer() && ! base->getQualifier().layoutPushConstant) {
             // validate uniform type;
             for (int i = 0; i < EShLangCount; i++) {
                 if (i != currentStage && outVarMaps[i] != nullptr) {
@@ -386,7 +386,7 @@ TDefaultIoResolverBase::TSlotSet::iterator TDefaultIoResolverBase::findSlot(int 
 
 bool TDefaultIoResolverBase::checkEmpty(int set, int slot) {
     TSlotSet::iterator at = findSlot(set, slot);
-    return !(at != slots[set].end() && *at == slot);
+    return ! (at != slots[set].end() && *at == slot);
 }
 
 int TDefaultIoResolverBase::reserveSlot(int set, int slot, int size) {
@@ -430,7 +430,7 @@ int TDefaultIoResolverBase::resolveUniformLocation(EShLanguage /*stage*/, TVarEn
     const TType& type = ent.symbol->getType();
     const char* name = ent.symbol->getName().c_str();
     // kick out of not doing this
-    if (!doAutoLocationMapping()) {
+    if (! doAutoLocationMapping()) {
         return ent.newLocation = -1;
     }
     // no locations added if already present, a built-in variable, a block, or an opaque
@@ -459,7 +459,7 @@ int TDefaultIoResolverBase::resolveUniformLocation(EShLanguage /*stage*/, TVarEn
 int TDefaultIoResolverBase::resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) {
     const TType& type = ent.symbol->getType();
     // kick out of not doing this
-    if (!doAutoLocationMapping()) {
+    if (! doAutoLocationMapping()) {
         return ent.newLocation = -1;
     }
 
@@ -541,7 +541,7 @@ int TDefaultGlslIoResolver::resolveInOutLocation(EShLanguage stage, TVarEntryInf
         currentStage = stage;
     }
     // kick out of not doing this
-    if (!doAutoLocationMapping()) {
+    if (! doAutoLocationMapping()) {
         return ent.newLocation = -1;
     }
     // expand the location to each element if the symbol is a struct or array
@@ -579,7 +579,7 @@ int TDefaultGlslIoResolver::resolveInOutLocation(EShLanguage stage, TVarEntryInf
     // with explicit location in other stages, find the storageSlotMap firstly to check whether
     // the in/out has location
     int resourceKey = buildStorageKey(keyStage, storage);
-    if (!storageSlotMap[resourceKey].empty()) {
+    if (! storageSlotMap[resourceKey].empty()) {
         TVarSlotMap::iterator iter = storageSlotMap[resourceKey].find(name);
         if (iter != storageSlotMap[resourceKey].end()) {
             // If interface resource be found, set it has location and this symbol's new location
@@ -597,7 +597,7 @@ int TDefaultGlslIoResolver::resolveInOutLocation(EShLanguage stage, TVarEntryInf
             //        layout(location = 4) in vec4 b;
             // we need retraverse the map.
         }
-        if (!hasLocation) {
+        if (! hasLocation) {
             // If interface resource note found, It's mean the location in two stage are both implicit declarat.
             // So we should find a new slot for this interface.
             //
@@ -621,7 +621,7 @@ int TDefaultGlslIoResolver::resolveUniformLocation(EShLanguage /*stage*/, TVarEn
     const TType& type = ent.symbol->getType();
     const TString& name = ent.symbol->getName();
     // kick out of not doing this
-    if (!doAutoLocationMapping()) {
+    if (! doAutoLocationMapping()) {
         return ent.newLocation = -1;
     }
     // expand the location to each element if the symbol is a struct or array
@@ -657,7 +657,7 @@ int TDefaultGlslIoResolver::resolveUniformLocation(EShLanguage /*stage*/, TVarEn
     int resourceKey = buildStorageKey(EShLangCount, EvqUniform);
     TVarSlotMap& slotMap = storageSlotMap[resourceKey];
     // Check dose shader program has uniform resource
-    if (!slotMap.empty()) {
+    if (! slotMap.empty()) {
         // If uniform resource not empty, try find a same name uniform
         TVarSlotMap::iterator iter = slotMap.find(name);
         if (iter != slotMap.end()) {
@@ -669,7 +669,7 @@ int TDefaultGlslIoResolver::resolveUniformLocation(EShLanguage /*stage*/, TVarEn
             hasLocation = true;
             location = iter->second;
         }
-        if (!hasLocation) {
+        if (! hasLocation) {
             // No explicit location declaraten in other stage.
             // So we should find a new slot for this uniform.
             //
@@ -712,14 +712,14 @@ int TDefaultGlslIoResolver::resolveBinding(EShLanguage /*stage*/, TVarEntryInfo&
             // with explicit binding in other stages, find the resourceSlotMap firstly to check whether
             // the resource has binding, don't need to allocate if it already has a binding
             bool hasBinding = false;
-            if (!resourceSlotMap[resource].empty()) {
+            if (! resourceSlotMap[resource].empty()) {
                 TVarSlotMap::iterator iter = resourceSlotMap[resource].find(name);
                 if (iter != resourceSlotMap[resource].end()) {
                     hasBinding = true;
                     ent.newBinding = iter->second;
                 }
             }
-            if (!hasBinding) {
+            if (! hasBinding) {
                 TVarSlotMap varSlotMap;
                 // find free slot, the caller did make sure it passes all vars with binding
                 // first and now all are passed that do not have a binding and needs one
@@ -989,13 +989,13 @@ struct TDefaultHlslIoResolver : public TDefaultIoResolverBase {
 //
 // Returns false if the input is too malformed to do this.
 bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSink& infoSink, TIoMapResolver* resolver) {
-    bool somethingToDo = !intermediate.getResourceSetBinding().empty() || intermediate.getAutoMapBindings() ||
+    bool somethingToDo = ! intermediate.getResourceSetBinding().empty() || intermediate.getAutoMapBindings() ||
                          intermediate.getAutoMapLocations();
     for (int res = 0; res < EResCount; ++res) {
         somethingToDo = somethingToDo || (intermediate.getShiftBinding(TResourceType(res)) != 0) ||
                         intermediate.hasShiftBindingForSet(TResourceType(res));
     }
-    if (!somethingToDo && resolver == nullptr)
+    if (! somethingToDo && resolver == nullptr)
         return true;
     if (intermediate.getNumEntryPoints() != 1 || intermediate.isRecursive())
         return false;
@@ -1019,7 +1019,7 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
     TVarGatherTraverser iter_binding_live(intermediate, false, inVarMap, outVarMap, uniformVarMap);
     root->traverse(&iter_binding_all);
     iter_binding_live.pushFunction(intermediate.getEntryPointMangledName().c_str());
-    while (!iter_binding_live.functions.empty()) {
+    while (! iter_binding_live.functions.empty()) {
         TIntermNode* function = iter_binding_live.functions.back();
         iter_binding_live.functions.pop_back();
         function->traverse(&iter_binding_live);
@@ -1050,11 +1050,11 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
             at->second = p.second;
     });
     resolver->endResolve(stage);
-    if (!hadError) {
+    if (! hadError) {
         TVarSetTraverser iter_iomap(intermediate, inVarMap, outVarMap, uniformVarMap);
         root->traverse(&iter_iomap);
     }
-    return !hadError;
+    return ! hadError;
 }
 
 // Map I/O variables to provided offsets, and make bindings for
@@ -1063,13 +1063,13 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
 // Returns false if the input is too malformed to do this.
 bool TGlslIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSink& infoSink, TIoMapResolver* resolver) {
 
-    bool somethingToDo = !intermediate.getResourceSetBinding().empty() || intermediate.getAutoMapBindings() ||
+    bool somethingToDo = ! intermediate.getResourceSetBinding().empty() || intermediate.getAutoMapBindings() ||
                          intermediate.getAutoMapLocations();
     for (int res = 0; res < EResCount; ++res) {
         somethingToDo = somethingToDo || (intermediate.getShiftBinding(TResourceType(res)) != 0) ||
                         intermediate.hasShiftBindingForSet(TResourceType(res));
     }
-    if (!somethingToDo && resolver == nullptr) {
+    if (! somethingToDo && resolver == nullptr) {
         return true;
     }
     if (intermediate.getNumEntryPoints() != 1 || intermediate.isRecursive()) {
@@ -1092,7 +1092,7 @@ bool TGlslIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TIn
                                           *uniformVarMap[stage]);
     root->traverse(&iter_binding_all);
     iter_binding_live.pushFunction(intermediate.getEntryPointMangledName().c_str());
-    while (!iter_binding_live.functions.empty()) {
+    while (! iter_binding_live.functions.empty()) {
         TIntermNode* function = iter_binding_live.functions.back();
         iter_binding_live.functions.pop_back();
         function->traverse(&iter_binding_live);
@@ -1114,12 +1114,12 @@ bool TGlslIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TIn
     std::for_each(uniformVarMap[stage]->begin(), uniformVarMap[stage]->end(), slotCollector);
     resolver->endCollect(stage);
     intermediates[stage] = &intermediate;
-    return !hadError;
+    return ! hadError;
 }
 
 bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
     resolver->endResolve(EShLangCount);
-    if (!hadError) {
+    if (! hadError) {
         //Resolve uniform location, ubo/ssbo/opaque bindings across stages
         TResolverUniformAdaptor uniformResolve(EShLangCount, *resolver, infoSink, hadError);
         TResolverInOutAdaptor inOutResolve(EShLangCount, *resolver, infoSink, hadError);
@@ -1165,7 +1165,7 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
                 intermediates[stage]->getTreeRoot()->traverse(&iter_iomap);
             }
         }
-        return !hadError;
+        return ! hadError;
     } else {
         return false;
     }

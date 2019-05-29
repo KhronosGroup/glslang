@@ -96,10 +96,10 @@ TBuiltInParseables* CreateBuiltInParseables(TInfoSink& infoSink, EShSource sourc
 
 // Create a language specific version of a parse context.
 TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& intermediate,
-    int version, EProfile profile, EShSource source,
-    EShLanguage language, TInfoSink& infoSink,
-    SpvVersion spvVersion, bool forwardCompatible, EShMessages messages,
-    bool parsingBuiltIns, std::string sourceEntryPointName = "")
+                                      int version, EProfile profile, EShSource source,
+                                      EShLanguage language, TInfoSink& infoSink,
+                                      SpvVersion spvVersion, bool forwardCompatible, EShMessages messages,
+                                      bool parsingBuiltIns, std::string sourceEntryPointName = "")
 {
     switch (source) {
     case EShSourceGlsl: {
@@ -107,12 +107,12 @@ TParseContextBase* CreateParseContext(TSymbolTable& symbolTable, TIntermediate& 
             intermediate.setEntryPointName("main");
         TString entryPoint = sourceEntryPointName.c_str();
         return new TParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
-            language, infoSink, forwardCompatible, messages, &entryPoint);
+                                 language, infoSink, forwardCompatible, messages, &entryPoint);
     }
 #ifdef ENABLE_HLSL
     case EShSourceHlsl:
         return new HlslParseContext(symbolTable, intermediate, parsingBuiltIns, version, profile, spvVersion,
-            language, infoSink, sourceEntryPointName.c_str(), forwardCompatible, messages);
+                                    language, infoSink, sourceEntryPointName.c_str(), forwardCompatible, messages);
 #endif
     default:
         infoSink.info.message(EPrefixInternalError, "Unable to determine source language");
@@ -227,15 +227,15 @@ TPoolAllocator* PerProcessGPA = nullptr;
 // Parse and add to the given symbol table the content of the given shader string.
 //
 bool InitializeSymbolTable(const TString& builtIns, int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language,
-    EShSource source, TInfoSink& infoSink, TSymbolTable& symbolTable)
+                           EShSource source, TInfoSink& infoSink, TSymbolTable& symbolTable)
 {
     TIntermediate intermediate(language, version, profile);
 
     intermediate.setSource(source);
 
     std::unique_ptr<TParseContextBase> parseContext(CreateParseContext(symbolTable, intermediate, version, profile, source,
-        language, infoSink, spvVersion, true, EShMsgDefault,
-        true));
+                                                                       language, infoSink, spvVersion, true, EShMsgDefault,
+                                                                       true));
 
     TShader::ForbidIncluder includer;
     TPpContext ppContext(*parseContext, "", includer);
@@ -284,7 +284,7 @@ void InitializeStageSymbolTable(TBuiltInParseables& builtInParseables, int versi
 {
     (*symbolTables[language]).adoptLevels(*commonTable[CommonIndex(profile, language)]);
     InitializeSymbolTable(builtInParseables.getStageString(language), version, profile, spvVersion, language, source,
-        infoSink, *symbolTables[language]);
+                          infoSink, *symbolTables[language]);
     builtInParseables.identifyBuiltIns(version, profile, spvVersion, language, *symbolTables[language]);
     if (profile == EEsProfile && version >= 300)
         (*symbolTables[language]).setNoBuiltInRedeclarations();
@@ -308,68 +308,68 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable, TSy
 
     // do the common tables
     InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, EShLangVertex, source,
-        infoSink, *commonTable[EPcGeneral]);
+                          infoSink, *commonTable[EPcGeneral]);
     if (profile == EEsProfile)
         InitializeSymbolTable(builtInParseables->getCommonString(), version, profile, spvVersion, EShLangFragment, source,
-            infoSink, *commonTable[EPcFragment]);
+                              infoSink, *commonTable[EPcFragment]);
 
     // do the per-stage tables
 
     // always have vertex and fragment
     InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangVertex, source,
-        infoSink, commonTable, symbolTables);
+                               infoSink, commonTable, symbolTables);
     InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangFragment, source,
-        infoSink, commonTable, symbolTables);
+                               infoSink, commonTable, symbolTables);
 
     // check for tessellation
     if ((profile != EEsProfile && version >= 150) ||
         (profile == EEsProfile && version >= 310)) {
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTessControl, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTessEvaluation, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
     }
 
     // check for geometry
     if ((profile != EEsProfile && version >= 150) ||
         (profile == EEsProfile && version >= 310))
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangGeometry, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
 
     // check for compute
     if ((profile != EEsProfile && version >= 420) ||
         (profile == EEsProfile && version >= 310))
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangCompute, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
 
 #ifdef NV_EXTENSIONS
     // check for ray tracing stages
     if (profile != EEsProfile && version >= 450) {
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangRayGenNV, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangIntersectNV, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangAnyHitNV, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangClosestHitNV, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangMissNV, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangCallableNV, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
     }
 
     // check for mesh
     if ((profile != EEsProfile && version >= 450) ||
         (profile == EEsProfile && version >= 320))
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangMeshNV, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
 
     // check for task
     if ((profile != EEsProfile && version >= 450) ||
         (profile == EEsProfile && version >= 320))
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangTaskNV, source,
-            infoSink, commonTable, symbolTables);
+                                   infoSink, commonTable, symbolTables);
 #endif
 
 
@@ -378,7 +378,7 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable, TSy
 }
 
 bool AddContextSpecificSymbols(const TBuiltInResource* resources, TInfoSink& infoSink, TSymbolTable& symbolTable, int version,
-    EProfile profile, const SpvVersion& spvVersion, EShLanguage language, EShSource source)
+                               EProfile profile, const SpvVersion& spvVersion, EShLanguage language, EShSource source)
 {
     std::unique_ptr<TBuiltInParseables> builtInParseables(CreateBuiltInParseables(infoSink, source));
 
@@ -482,7 +482,7 @@ void DumpBuiltinSymbolTable(TInfoSink& infoSink, const TSymbolTable& symbolTable
 
 // Return true if the shader was correctly specified for version/profile/stage.
 bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNotFirst, int defaultVersion,
-    EShSource source, int& version, EProfile& profile, const SpvVersion& spvVersion)
+                          EShSource source, int& version, EProfile& profile, const SpvVersion& spvVersion)
 {
     const int FirstProfileVersion = 150;
     bool correct = true;
@@ -841,11 +841,11 @@ bool ProcessDeferred(
     EProfile profile = ENoProfile;
     bool versionNotFirstToken = false;
     bool versionNotFirst = (source == EShSourceHlsl)
-        ? true
-        : userInput.scanVersion(version, profile, versionNotFirstToken);
+                                ? true
+                                : userInput.scanVersion(version, profile, versionNotFirstToken);
     bool versionNotFound = version == 0;
     if (forceDefaultVersionAndProfile && source == EShSourceGlsl) {
-        if (! (messages & EShMsgSuppressWarnings) && !versionNotFound &&
+        if (! (messages & EShMsgSuppressWarnings) && ! versionNotFound &&
             (version != defaultVersion || profile != defaultProfile)) {
             compiler->infoSink.info << "Warning, (version, profile) forced to be ("
                                     << defaultVersion << ", " << ProfileName(defaultProfile)
@@ -906,7 +906,7 @@ bool ProcessDeferred(
     // Add built-in symbols that are potentially context dependent;
     // they get popped again further down.
     if (! AddContextSpecificSymbols(resources, compiler->infoSink, *symbolTable, version, profile, spvVersion,
-                                   stage, source)) {
+                                    stage, source)) {
         return false;
     }
 
@@ -1056,11 +1056,11 @@ struct DoPreprocessing {
 
         parseContext.setExtensionCallback([&lineSync, &outputBuffer](
             int line, const char* extension, const char* behavior) {
-            lineSync.syncToLine(line);
-            outputBuffer += "#extension ";
-            outputBuffer += extension;
-            outputBuffer += " : ";
-            outputBuffer += behavior;
+                lineSync.syncToLine(line);
+                outputBuffer += "#extension ";
+                outputBuffer += extension;
+                outputBuffer += " : ";
+                outputBuffer += behavior;
         });
 
         parseContext.setLineCallback([&lineSync, &outputBuffer, &parseContext](
@@ -1111,9 +1111,9 @@ struct DoPreprocessing {
 
         parseContext.setErrorCallback([&lineSync, &outputBuffer](
             int line, const char* errorMessage) {
-            lineSync.syncToLine(line);
-            outputBuffer += "#error ";
-            outputBuffer += errorMessage;
+                lineSync.syncToLine(line);
+                outputBuffer += "#error ";
+                outputBuffer += errorMessage;
         });
 
         int lastToken = EndOfInput; // lastToken records the last token processed.
