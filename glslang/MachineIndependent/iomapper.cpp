@@ -366,7 +366,9 @@ private:
 TDefaultIoResolverBase::TDefaultIoResolverBase(const TIntermediate& intermediate)
     : intermediate(intermediate), nextUniformLocation(intermediate.getUniformLocationBase()), nextInputLocation(0),
       nextOutputLocation(0)
-{ }
+{
+    memset(stageMask, false, EShLangCount + 1);
+}
 
 int TDefaultIoResolverBase::getBaseBinding(TResourceType res, unsigned int set) const {
     return selectBaseBinding(intermediate.getShiftBinding(res), intermediate.getShiftBindingForSet(res, set));
