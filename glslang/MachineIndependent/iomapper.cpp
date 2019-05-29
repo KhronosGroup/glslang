@@ -1137,7 +1137,7 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
             if (uniformVarMap[stage] != nullptr) {
                 uniformResolve.setStage(EShLanguage(stage));
                 // sort entries by priority. see TVarEntryInfo::TOrderByPriority for info.
-                std::for_each(uniformVarMap[stage]->begin(), uniformVarMap[stage]->begin(),
+                std::for_each(uniformVarMap[stage]->begin(), uniformVarMap[stage]->end(),
                               [&uniformVector](TVarLivePair p) { uniformVector.push_back(p); });
             }
         }
@@ -1165,7 +1165,7 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
                 intermediates[stage]->getTreeRoot()->traverse(&iter_iomap);
             }
         }
-        return hadError;
+        return !hadError;
     } else {
         return false;
     }
