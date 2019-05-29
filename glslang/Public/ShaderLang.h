@@ -335,7 +335,7 @@ SH_IMPORT_EXPORT int ShExcludeAttributes(const ShHandle, int *attributes, int co
 SH_IMPORT_EXPORT int ShGetUniformLocation(const ShHandle uniformMap, const char* name);
 
 #ifdef __cplusplus
-}  // end extern "C"
+    }  // end extern "C"
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////
