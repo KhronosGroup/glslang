@@ -3894,7 +3894,10 @@ void TParseContext::checkRuntimeSizable(const TSourceLoc& loc, const TIntermType
 
     // check for additional things allowed by GL_EXT_nonuniform_qualifier
     if (base.getBasicType() == EbtSampler ||
-            (base.getBasicType() == EbtBlock && base.getType().getQualifier().isUniformOrBuffer()))
+#ifdef NV_EXTENSIONS
+        base.getBasicType() == EbtAccStructNV ||
+#endif
+        (base.getBasicType() == EbtBlock && base.getType().getQualifier().isUniformOrBuffer()))
         requireExtensions(loc, 1, &E_GL_EXT_nonuniform_qualifier, "variable index");
     else
         error(loc, "", "[", "array must be redeclared with a size before being indexed with a variable");
