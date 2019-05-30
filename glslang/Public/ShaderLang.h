@@ -441,17 +441,20 @@ public:
     // These must be called so that parsing is done for the right source language and
     // target environment, either indirectly through TranslateEnvironment() based on
     // EShMessages et. al., or directly by the user.
-    void setEnvInput(EShSource lang, EShLanguage envStage, EShClient client, int version) {
+    void setEnvInput(EShSource lang, EShLanguage envStage, EShClient client, int version)
+    {
         environment.input.languageFamily = lang;
         environment.input.stage = envStage;
         environment.input.dialect = client;
         environment.input.dialectVersion = version;
     }
-    void setEnvClient(EShClient client, EShTargetClientVersion version) {
+    void setEnvClient(EShClient client, EShTargetClientVersion version)
+    {
         environment.client.client = client;
         environment.client.version = version;
     }
-    void setEnvTarget(EShTargetLanguage lang, EShTargetLanguageVersion version) {
+    void setEnvTarget(EShTargetLanguage lang, EShTargetLanguageVersion version)
+    {
         environment.target.language = lang;
         environment.target.version = version;
     }
@@ -636,7 +639,8 @@ protected:
     TObjectReflection()
         : offset(-1), glDefineType(-1), size(-1), index(-1), counterIndex(-1), numMembers(-1), arrayStride(0),
           topLevelArrayStride(0), stages(EShLanguageMask(0)), type(nullptr)
-    { }
+    {
+    }
 
     const TType* type;
 };

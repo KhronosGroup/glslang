@@ -180,7 +180,10 @@ private:
 
 struct TResolverUniformAdaptor {
     TResolverUniformAdaptor(EShLanguage s, TIoMapResolver& r, TInfoSink& i, bool& e)
-        : stage(s), resolver(r), infoSink(i), error(e)
+      : stage(s)
+      , resolver(r)
+      , infoSink(i)
+      , error(e)
     { }
 
     inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
