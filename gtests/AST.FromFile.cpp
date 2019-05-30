@@ -253,6 +253,8 @@ INSTANTIATE_TEST_CASE_P(
         "glsl.450.subgroupShuffleRelative.comp",
         "glsl.450.subgroupQuad.comp",
         "glsl.450.subgroupVote.comp",
+        "glsl.460.subgroup.mesh",
+        "glsl.460.subgroup.task",
         "glsl.es320.subgroup.frag",
         "glsl.es320.subgroup.geom",
         "glsl.es320.subgroup.tesc",
