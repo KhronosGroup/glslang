@@ -139,9 +139,9 @@ public:
     }
 
   private:
-    const    TVarLiveMap& inputList;
-    const    TVarLiveMap& outputList;
-    const    TVarLiveMap& uniformList;
+    const TVarLiveMap& inputList;
+    const TVarLiveMap& outputList;
+    const TVarLiveMap& uniformList;
 };
 
 struct TNotifyUniformAdaptor
