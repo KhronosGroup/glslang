@@ -60,19 +60,22 @@ namespace glslang {
 
 class TVarGatherTraverser : public TLiveTraverser {
 public:
-    TVarGatherTraverser(const TIntermediate& i, bool traverseDeadCode, TVarLiveMap& inList, TVarLiveMap& outList,
-                        TVarLiveMap& uniformList)
-        : TLiveTraverser(i, traverseDeadCode, true, true, false), inputList(inList), outputList(outList),
-          uniformList(uniformList)
-    { }
+    TVarGatherTraverser(const TIntermediate& i, bool traverseDeadCode, TVarLiveMap& inList, TVarLiveMap& outList, TVarLiveMap& uniformList)
+      : TLiveTraverser(i, traverseDeadCode, true, true, false)
+      , inputList(inList)
+      , outputList(outList)
+      , uniformList(uniformList)
+    {
+    }
 
-    virtual void visitSymbol(TIntermSymbol* base) {
+    virtual void visitSymbol(TIntermSymbol* base)
+    {
         TVarLiveMap* target = nullptr;
         if (base->getQualifier().storage == EvqVaryingIn)
             target = &inputList;
         else if (base->getQualifier().storage == EvqVaryingOut)
             target = &outputList;
-        else if (base->getQualifier().isUniformOrBuffer() && ! base->getQualifier().layoutPushConstant)
+        else if (base->getQualifier().isUniformOrBuffer() && !base->getQualifier().layoutPushConstant)
             target = &uniformList;
         if (target) {
             TVarEntryInfo ent = {base->getId(), base, ! traverseAll};
@@ -88,17 +91,21 @@ public:
     }
 
 private:
-    TVarLiveMap& inputList;
-    TVarLiveMap& outputList;
-    TVarLiveMap& uniformList;
+    TVarLiveMap&    inputList;
+    TVarLiveMap&    outputList;
+    TVarLiveMap&    uniformList;
 };
 
-class TVarSetTraverser : public TLiveTraverser {
+class TVarSetTraverser : public TLiveTraverser
+{
 public:
-    TVarSetTraverser(const TIntermediate& i, const TVarLiveMap& inList, const TVarLiveMap& outList,
-                     const TVarLiveMap& uniformList)
-        : TLiveTraverser(i, true, true, true, false), inputList(inList), outputList(outList), uniformList(uniformList)
-    { }
+    TVarSetTraverser(const TIntermediate& i, const TVarLiveMap& inList, const TVarLiveMap& outList, const TVarLiveMap& uniformList)
+      : TLiveTraverser(i, true, true, true, false)
+      , inputList(inList)
+      , outputList(outList)
+      , uniformList(uniformList)
+    {
+    }
 
     virtual void visitSymbol(TIntermSymbol* base) {
         const TVarLiveMap* source;
@@ -110,7 +117,8 @@ public:
             source = &uniformList;
         else
             return;
-        TVarEntryInfo ent = {base->getId()};
+
+        TVarEntryInfo ent = { base->getId() };
         TVarLiveMap::const_iterator at = source->find(base->getName());
         if (at == source->end())
             return;
@@ -130,18 +138,22 @@ public:
             base->getWritableType().getQualifier().layoutIndex = at->second.newIndex;
     }
 
-private:
-    const TVarLiveMap& inputList;
-    const TVarLiveMap& outputList;
-    const TVarLiveMap& uniformList;
+  private:
+    const    TVarLiveMap& inputList;
+    const    TVarLiveMap& outputList;
+    const    TVarLiveMap& uniformList;
 };
 
-struct TNotifyUniformAdaptor {
+struct TNotifyUniformAdaptor
+{
     EShLanguage stage;
     TIoMapResolver& resolver;
-    inline TNotifyUniformAdaptor(EShLanguage s, TIoMapResolver& r) : stage(s), resolver(r) { }
+    inline TNotifyUniformAdaptor(EShLanguage s, TIoMapResolver& r) : stage(s), resolver(r)
+    {
+    }
 
-    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
+    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey)
+    {
         resolver.notifyBinding(stage, entKey.second);
     }
 
@@ -149,11 +161,16 @@ private:
     TNotifyUniformAdaptor& operator=(TNotifyUniformAdaptor&);
 };
 
-struct TNotifyInOutAdaptor {
+struct TNotifyInOutAdaptor
+{
     EShLanguage stage;
     TIoMapResolver& resolver;
-    inline TNotifyInOutAdaptor(EShLanguage s, TIoMapResolver& r) : stage(s), resolver(r) { }
-    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
+    inline TNotifyInOutAdaptor(EShLanguage s, TIoMapResolver& r) : stage(s), resolver(r)
+    {
+    }
+
+    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey)
+    {
         resolver.notifyInOut(stage, entKey.second);
     }
 
@@ -182,6 +199,7 @@ struct TResolverUniformAdaptor {
             if (ent.newBinding != -1) {
                 if (ent.newBinding >= int(TQualifier::layoutBindingEnd)) {
                     TString err = "mapped binding out of range: " + entKey.first;
+
                     infoSink.info.message(EPrefixInternalError, err.c_str());
                     error = true;
                 }
@@ -189,6 +207,7 @@ struct TResolverUniformAdaptor {
             if (ent.newSet != -1) {
                 if (ent.newSet >= int(TQualifier::layoutSetEnd)) {
                     TString err = "mapped set out of range: " + entKey.first;
+
                     infoSink.info.message(EPrefixInternalError, err.c_str());
                     error = true;
                 }
@@ -202,10 +221,10 @@ struct TResolverUniformAdaptor {
 
     inline void setStage(EShLanguage s) { stage = s; }
 
-    EShLanguage stage;
+    EShLanguage     stage;
     TIoMapResolver& resolver;
-    TInfoSink& infoSink;
-    bool& error;
+    TInfoSink&      infoSink;
+    bool&           error;
 
 private:
     TResolverUniformAdaptor& operator=(TResolverUniformAdaptor&);
@@ -213,10 +232,15 @@ private:
 
 struct TResolverInOutAdaptor {
     TResolverInOutAdaptor(EShLanguage s, TIoMapResolver& r, TInfoSink& i, bool& e)
-        : stage(s), resolver(r), infoSink(i), error(e)
-    { }
+      : stage(s)
+      , resolver(r)
+      , infoSink(i)
+      , error(e)
+    {
+    }
 
-    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
+    inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey)
+    {
         TVarEntryInfo& ent = entKey.second;
         ent.newLocation = -1;
         ent.newComponent = -1;
@@ -244,10 +268,10 @@ struct TResolverInOutAdaptor {
 
     inline void setStage(EShLanguage s) { stage = s; }
 
-    EShLanguage stage;
+    EShLanguage     stage;
     TIoMapResolver& resolver;
-    TInfoSink& infoSink;
-    bool& error;
+    TInfoSink&      infoSink;
+    bool&           error;
 
 private:
     TResolverInOutAdaptor& operator=(TResolverInOutAdaptor&);
@@ -255,11 +279,16 @@ private:
 
 // The class is used for reserving explicit uniform locations and ubo/ssbo/opaque bindings
 
-struct TSymbolValidater {
+struct TSymbolValidater
+{
     TSymbolValidater(TIoMapResolver& r, TInfoSink& i, TVarLiveMap* in[EShLangCount], TVarLiveMap* out[EShLangCount],
                      TVarLiveMap* uniform[EShLangCount], bool& hadError)
-        : resolver(r), infoSink(i), currentStage(EShLangCount), preStage(EShLangCount), nextStage(EShLangCount),
-          hadError(hadError)
+        : resolver(r)
+        , infoSink(i)
+        , currentStage(EShLangCount)
+        , preStage(EShLangCount)
+        , nextStage(EShLangCount)
+        , hadError(hadError)
     {
         memcpy(inVarMaps, in, EShLangCount * (sizeof(TVarLiveMap*)));
         memcpy(outVarMaps, out, EShLangCount * (sizeof(TVarLiveMap*)));
@@ -364,10 +393,12 @@ private:
 };
 
 TDefaultIoResolverBase::TDefaultIoResolverBase(const TIntermediate& intermediate)
-    : intermediate(intermediate), nextUniformLocation(intermediate.getUniformLocationBase()), nextInputLocation(0),
-      nextOutputLocation(0)
+    : intermediate(intermediate)
+    , nextUniformLocation(intermediate.getUniformLocationBase())
+    , nextInputLocation(0)
+    , nextOutputLocation(0)
 {
-    memset(stageMask, false, EShLangCount + 1);
+    memset(stageMask, false, sizeof(bool) * (EShLangCount + 1));
 }
 
 int TDefaultIoResolverBase::getBaseBinding(TResourceType res, unsigned int set) const {
@@ -532,7 +563,9 @@ TResourceType TDefaultGlslIoResolver::getResourceType(const glslang::TType& type
 }
 
 TDefaultGlslIoResolver::TDefaultGlslIoResolver(const TIntermediate& intermediate)
-    : TDefaultIoResolverBase(intermediate), preStage(EShLangCount), currentStage(EShLangCount)
+    : TDefaultIoResolverBase(intermediate)
+    , preStage(EShLangCount)
+    , currentStage(EShLangCount)
 { }
 
 int TDefaultGlslIoResolver::resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) {
