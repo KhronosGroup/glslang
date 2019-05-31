@@ -593,6 +593,7 @@ INSTANTIATE_TEST_CASE_P(
     "spv.atomicInt64.comp",
     "spv.shadingRate.frag",
     "spv.RayGenShader.rgen",
+    "spv.RayGenShaderArray.rgen",
     "spv.RayGenShader_Errors.rgen",
     "spv.RayConstants.rgen",
     "spv.IntersectShader.rint",
