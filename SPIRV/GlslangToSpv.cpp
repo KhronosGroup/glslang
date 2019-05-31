@@ -48,6 +48,7 @@ namespace spv {
     #include "GLSL.ext.EXT.h"
     #include "GLSL.ext.AMD.h"
     #include "GLSL.ext.NV.h"
+    #include "NonSemanticDebugPrintf.h"
 }
 
 // Glslang includes
@@ -248,6 +249,7 @@ protected:
     const glslang::TIntermediate* glslangIntermediate;
     bool nanMinMaxClamp;               // true if use NMin/NMax/NClamp instead of FMin/FMax/FClamp
     spv::Id stdBuiltins;
+    spv::Id nonSemanticDebugPrintf;
     std::unordered_map<const char*, spv::Id> extBuiltinMap;
 
     std::unordered_map<int, spv::Id> symbolValues;
@@ -1375,7 +1377,8 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
         builder(spvVersion, (glslang::GetKhronosToolId() << 16) | glslang::GetSpirvGeneratorVersion(), logger),
         inEntryPoint(false), entryPointTerminated(false), linkageOnly(false),
         glslangIntermediate(glslangIntermediate),
-        nanMinMaxClamp(glslangIntermediate->getNanMinMaxClamp())
+        nanMinMaxClamp(glslangIntermediate->getNanMinMaxClamp()),
+        nonSemanticDebugPrintf(0)
 {
     spv::ExecutionModel executionModel = TranslateExecutionModel(glslangIntermediate->getStage());
 
@@ -2687,6 +2690,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         break;
 #endif
 
+    case glslang::EOpDebugPrintf:
+        noReturnValue = true;
+        break;
+
     default:
         break;
     }
@@ -2920,6 +2927,12 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         // Handle all atomics
         result = createAtomicOperation(node->getOp(), precision, resultType(), operands, node->getBasicType(),
             lvalueCoherentFlags);
+    } else if (node->getOp() == glslang::EOpDebugPrintf) {
+        if (!nonSemanticDebugPrintf) {
+            nonSemanticDebugPrintf = builder.import("NonSemantic.DebugPrintf");
+        }
+        result = builder.createBuiltinCall(builder.makeVoidType(), nonSemanticDebugPrintf, spv::NonSemanticDebugPrintfDebugPrintf, operands);
+        builder.addExtension(spv::E_SPV_KHR_non_semantic_info);
     } else {
         // Pass through to generic operations.
         switch (glslangOperands.size()) {
@@ -3566,6 +3579,9 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
             spvType = convertGlslangStructToSpvType(type, glslangMembers, explicitLayout, qualifier);
         }
         break;
+    case glslang::EbtString:
+        // no type used for OpString
+        return 0;
     default:
         assert(0);
         break;
@@ -8183,6 +8199,9 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
             scalar = builder.createUnaryOp(spv::OpBitcast, typeId, scalar);
             break;
 #endif
+        case glslang::EbtString:
+            scalar = builder.getStringId(consts[nextConst].getSConst()->c_str());
+            break;
         default:
             assert(0);
             break;

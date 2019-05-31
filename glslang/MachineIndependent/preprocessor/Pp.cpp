@@ -621,14 +621,25 @@ int TPpContext::CPPinclude(TPpToken* ppToken)
 {
     const TSourceLoc directiveLoc = ppToken->loc;
     bool startWithLocalSearch = true; // to additionally include the extra "" paths
-    int token = scanToken(ppToken);
+    int token;
 
-    // handle <header-name>-style #include
-    if (token == '<') {
+    // Find the first non-whitespace char after #include
+    int ch = getChar();
+    while (ch == ' ' || ch == '\t') {
+        ch = getChar();
+    }
+    if (ch == '<') {
+        // <header-name> style
         startWithLocalSearch = false;
         token = scanHeaderName(ppToken, '>');
+    } else if (ch == '"') {
+        // "header-name" style
+        token = scanHeaderName(ppToken, '"');
+    } else {
+        // unexpected, get the full token to generate the error
+        ungetChar();
+        token = scanToken(ppToken);
     }
-    // otherwise ppToken already has the header name and it was "header-name" style
 
     if (token != PpAtomConstString) {
         parseContext.ppError(directiveLoc, "must be followed by a header name", "#include", "");

@@ -9,8 +9,8 @@ hlsl.pp.line4.frag
                               EntryPoint Fragment 5  "MainPs" 70 74
                               ExecutionMode 5 OriginUpperLeft
                1:             String  "hlsl.pp.line4.frag"
-              17:             String  "C:\\Users\\Greg\\shaders\\line\\foo4.frag"
-              32:             String  "C:\\Users\\Greg\\shaders\\line\\u1.h"
+              17:             String  "C:\Users\Greg\shaders\line\foo4.frag"
+              32:             String  "C:\Users\Greg\shaders\line\u1.h"
                               Source HLSL 500 1  "// OpModuleProcessed auto-map-locations
 // OpModuleProcessed auto-map-bindings
 // OpModuleProcessed entry-point MainPs
