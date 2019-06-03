@@ -319,6 +319,8 @@ INSTANTIATE_TEST_CASE_P(
         "spv.fragmentDensity.vert",
         "spv.fragmentDensity-es.frag",
         "spv.fragmentDensity-neg.frag",
+        "spv.fsi.frag",
+        "spv.fsi_Error.frag",
         "spv.fullyCovered.frag",
         "spv.functionCall.frag",
         "spv.functionNestedOpaque.vert",

@@ -1410,6 +1410,44 @@ void TParseContext::checkLocation(const TSourceLoc& loc, TOperator op)
                 error(loc, "tessellation control barrier() cannot be placed after a return from main()", "", "");
         }
         break;
+    case EOpBeginInvocationInterlock:
+        if (language != EShLangFragment)
+            error(loc, "beginInvocationInterlockARB() must be in a fragment shader", "", "");
+        if (! inMain)
+            error(loc, "beginInvocationInterlockARB() must be in main()", "", "");
+        else if (postEntryPointReturn)
+            error(loc, "beginInvocationInterlockARB() cannot be placed after a return from main()", "", "");
+        if (controlFlowNestingLevel > 0)
+            error(loc, "beginInvocationInterlockARB() cannot be placed within flow control", "", "");
+
+        if (beginInvocationInterlockCount > 0)
+            error(loc, "beginInvocationInterlockARB() must only be called once", "", "");
+        if (endInvocationInterlockCount > 0)
+            error(loc, "beginInvocationInterlockARB() must be called before endInvocationInterlockARB()", "", "");
+
+        beginInvocationInterlockCount++;
+
+        // default to pixel_interlock_ordered
+        if (intermediate.getInterlockOrdering() == EioNone)
+            intermediate.setInterlockOrdering(EioPixelInterlockOrdered);
+        break;
+    case EOpEndInvocationInterlock:
+        if (language != EShLangFragment)
+            error(loc, "endInvocationInterlockARB() must be in a fragment shader", "", "");
+        if (! inMain)
+            error(loc, "endInvocationInterlockARB() must be in main()", "", "");
+        else if (postEntryPointReturn)
+            error(loc, "endInvocationInterlockARB() cannot be placed after a return from main()", "", "");
+        if (controlFlowNestingLevel > 0)
+            error(loc, "endInvocationInterlockARB() cannot be placed within flow control", "", "");
+
+        if (endInvocationInterlockCount > 0)
+            error(loc, "endInvocationInterlockARB() must only be called once", "", "");
+        if (beginInvocationInterlockCount == 0)
+            error(loc, "beginInvocationInterlockARB() must be called before endInvocationInterlockARB()", "", "");
+
+        endInvocationInterlockCount++;
+        break;
     default:
         break;
     }
@@ -4945,6 +4983,17 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
                 return;
             }
         }
+        for (TInterlockOrdering order = (TInterlockOrdering)(EioNone + 1); order < EioCount; order = (TInterlockOrdering)(order+1)) {
+            if (id == TQualifier::getInterlockOrderingString(order)) {
+                requireProfile(loc, ECoreProfile | ECompatibilityProfile, "fragment shader interlock layout qualifier");
+                profileRequires(loc, ECoreProfile | ECompatibilityProfile, 450, nullptr, "fragment shader interlock layout qualifier");
+                requireExtensions(loc, 1, &E_GL_ARB_fragment_shader_interlock, TQualifier::getInterlockOrderingString(order));
+                if (order == EioShadingRateInterlockOrdered || order == EioShadingRateInterlockUnordered)
+                    requireExtensions(loc, 1, &E_GL_NV_shading_rate_image, TQualifier::getInterlockOrderingString(order));
+                publicType.shaderQualifiers.interlockOrdering = order;
+                return;
+            }
+        }
         if (id.compare(0, 13, "blend_support") == 0) {
             bool found = false;
             for (TBlendEquationShift be = (TBlendEquationShift)0; be < EBlendCount; be = (TBlendEquationShift)(be + 1)) {
@@ -5945,6 +5994,8 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
         error(loc, message, "blend equation", "");
     if (shaderQualifiers.numViews != TQualifier::layoutNotSet)
         error(loc, message, "num_views", "");
+    if (shaderQualifiers.interlockOrdering != EioNone)
+        error(loc, message, TQualifier::getInterlockOrderingString(shaderQualifiers.interlockOrdering), "");
 }
 
 // Correct and/or advance an object's offset layout qualifier.
@@ -7873,6 +7924,14 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
     if (publicType.shaderQualifiers.blendEquation) {
         if (publicType.qualifier.storage != EvqVaryingOut)
             error(loc, "can only apply to 'out'", "blend equation", "");
+    }
+    if (publicType.shaderQualifiers.interlockOrdering) {
+        if (publicType.qualifier.storage == EvqVaryingIn) {
+            if (!intermediate.setInterlockOrdering(publicType.shaderQualifiers.interlockOrdering))
+                error(loc, "cannot change previously set fragment shader interlock ordering", TQualifier::getInterlockOrderingString(publicType.shaderQualifiers.interlockOrdering), "");
+        }
+        else
+            error(loc, "can only apply to 'in'", TQualifier::getInterlockOrderingString(publicType.shaderQualifiers.interlockOrdering), "");
     }
 
 #ifdef NV_EXTENSIONS

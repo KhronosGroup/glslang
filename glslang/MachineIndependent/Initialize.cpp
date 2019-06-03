@@ -5030,6 +5030,10 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+    stageBuiltins[EShLangFragment].append(
+        "void beginInvocationInterlockARB(void);"
+        "void endInvocationInterlockARB(void);");
+
 #ifdef AMD_EXTENSIONS
     // GL_AMD_shader_explicit_vertex_parameter
     if (profile != EEsProfile && version >= 450) {
@@ -9539,6 +9543,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         if (profile != EEsProfile)
             symbolTable.relateToOperator("interpolateAtVertexAMD", EOpInterpolateAtVertex);
 #endif
+
+        symbolTable.relateToOperator("beginInvocationInterlockARB", EOpBeginInvocationInterlock);
+        symbolTable.relateToOperator("endInvocationInterlockARB",   EOpEndInvocationInterlock);
+
         break;
 
     case EShLangCompute:
