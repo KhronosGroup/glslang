@@ -946,6 +946,24 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
     case glslang::EbvMeshViewIndicesNV:
         return spv::BuiltInMeshViewIndicesNV;
 #endif
+
+    // sm builtins
+    case glslang::EbvWarpsPerSM:
+        builder.addExtension(spv::E_SPV_NV_shader_sm_builtins);
+        builder.addCapability(spv::CapabilityShaderSMBuiltinsNV);
+        return spv::BuiltInWarpsPerSMNV;
+    case glslang::EbvSMCount:
+        builder.addExtension(spv::E_SPV_NV_shader_sm_builtins);
+        builder.addCapability(spv::CapabilityShaderSMBuiltinsNV);
+        return spv::BuiltInSMCountNV;
+    case glslang::EbvWarpID:
+        builder.addExtension(spv::E_SPV_NV_shader_sm_builtins);
+        builder.addCapability(spv::CapabilityShaderSMBuiltinsNV);
+        return spv::BuiltInWarpIDNV;
+    case glslang::EbvSMID:
+        builder.addExtension(spv::E_SPV_NV_shader_sm_builtins);
+        builder.addCapability(spv::CapabilityShaderSMBuiltinsNV);
+        return spv::BuiltInSMIDNV;
     default:
         return spv::BuiltInMax;
     }
