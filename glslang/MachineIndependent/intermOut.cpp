@@ -1502,6 +1502,8 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
             }
             infoSink.debug << "\n";
         }
+        if (interlockOrdering != EioNone)
+            infoSink.debug << "interlock ordering = " << TQualifier::getInterlockOrderingString(interlockOrdering) << "\n";
         break;
 
 #ifdef NV_EXTENSIONS

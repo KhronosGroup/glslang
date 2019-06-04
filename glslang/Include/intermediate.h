@@ -621,6 +621,9 @@ enum TOperator {
     EOpCooperativeMatrixStore,
     EOpCooperativeMatrixMulAdd,
 
+    EOpBeginInvocationInterlock, // Fragment only
+    EOpEndInvocationInterlock, // Fragment only
+
     //
     // Branch
     //

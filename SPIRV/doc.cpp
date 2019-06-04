@@ -191,6 +191,13 @@ const char* ExecutionModeString(int mode)
     case ExecutionModeDerivativeGroupLinearNV:  return "DerivativeGroupLinearNV";
 #endif
 
+    case ExecutionModePixelInterlockOrderedEXT:         return "PixelInterlockOrderedEXT";
+    case ExecutionModePixelInterlockUnorderedEXT:       return "PixelInterlockUnorderedEXT";
+    case ExecutionModeSampleInterlockOrderedEXT:        return "SampleInterlockOrderedEXT";
+    case ExecutionModeSampleInterlockUnorderedEXT:      return "SampleInterlockUnorderedEXT";
+    case ExecutionModeShadingRateInterlockOrderedEXT:   return "ShadingRateInterlockOrderedEXT";
+    case ExecutionModeShadingRateInterlockUnorderedEXT: return "ShadingRateInterlockUnorderedEXT";
+
     case ExecutionModeCeiling:
     default: return "Bad";
     }
@@ -942,6 +949,10 @@ const char* CapabilityString(int info)
 
     case CapabilityCooperativeMatrixNV:     return "CooperativeMatrixNV";
 
+    case CapabilityFragmentShaderSampleInterlockEXT:        return "CapabilityFragmentShaderSampleInterlockEXT";
+    case CapabilityFragmentShaderPixelInterlockEXT:         return "CapabilityFragmentShaderPixelInterlockEXT";
+    case CapabilityFragmentShaderShadingRateInterlockEXT:   return "CapabilityFragmentShaderShadingRateInterlockEXT";
+
     default: return "Bad";
     }
 }
@@ -1352,6 +1363,9 @@ const char* OpcodeString(int op)
     case OpCooperativeMatrixMulAddNV:       return "OpCooperativeMatrixMulAddNV";
     case OpCooperativeMatrixLengthNV:       return "OpCooperativeMatrixLengthNV";
 
+    case OpBeginInvocationInterlockEXT:     return "OpBeginInvocationInterlockEXT";
+    case OpEndInvocationInterlockEXT:       return "OpEndInvocationInterlockEXT";
+
     default:
         return "Bad";
     }
@@ -1465,6 +1479,8 @@ void Parameterize()
     InstructionDesc[OpModuleProcessed].setResultAndType(false, false);
     InstructionDesc[OpTypeCooperativeMatrixNV].setResultAndType(true, false);
     InstructionDesc[OpCooperativeMatrixStoreNV].setResultAndType(false, false);
+    InstructionDesc[OpBeginInvocationInterlockEXT].setResultAndType(false, false);
+    InstructionDesc[OpEndInvocationInterlockEXT].setResultAndType(false, false);
 
     // Specific additional context-dependent operands
 
