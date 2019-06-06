@@ -81,8 +81,7 @@ public:
             TVarEntryInfo ent = {base->getId(), base, ! traverseAll};
             ent.stage = intermediate.getStage();
             TVarLiveMap::iterator at = target->find(
-                ent.symbol
-                    ->getName()); // std::lower_bound(target->begin(), target->end(), ent, TVarEntryInfo::TOrderById());
+                ent.symbol->getName()); // std::lower_bound(target->begin(), target->end(), ent, TVarEntryInfo::TOrderById());
             if (at != target->end() && at->second.id == ent.id)
                 at->second.live = at->second.live || ! traverseAll; // update live state
             else
@@ -139,16 +138,18 @@ public:
     }
 
   private:
-    const TVarLiveMap& inputList;
-    const TVarLiveMap& outputList;
-    const TVarLiveMap& uniformList;
+    const TVarLiveMap&    inputList;
+    const TVarLiveMap&    outputList;
+    const TVarLiveMap&    uniformList;
 };
 
 struct TNotifyUniformAdaptor
 {
     EShLanguage stage;
     TIoMapResolver& resolver;
-    inline TNotifyUniformAdaptor(EShLanguage s, TIoMapResolver& r) : stage(s), resolver(r)
+    inline TNotifyUniformAdaptor(EShLanguage s, TIoMapResolver& r)
+      : stage(s)
+      , resolver(r)
     {
     }
 
@@ -184,7 +185,8 @@ struct TResolverUniformAdaptor {
       , resolver(r)
       , infoSink(i)
       , error(e)
-    { }
+    {
+    }
 
     inline void operator()(std::pair<const TString, TVarEntryInfo>& entKey) {
         TVarEntryInfo& ent = entKey.second;
@@ -742,8 +744,7 @@ int TDefaultGlslIoResolver::resolveBinding(EShLanguage /*stage*/, TVarEntryInfo&
     int set = resource;
     if (resource < EResCount) {
         if (type.getQualifier().hasBinding()) {
-            ent.newBinding =
-                reserveSlot(set, getBaseBinding(resource, set) + type.getQualifier().layoutBinding, numBindings);
+            ent.newBinding = reserveSlot(set, getBaseBinding(resource, set) + type.getQualifier().layoutBinding, numBindings);
             return ent.newBinding;
         } else if (ent.live && doAutoBindingMapping()) {
             // The resource in current stage is not declared with binding, but it is possible declared
@@ -1010,8 +1011,7 @@ struct TDefaultHlslIoResolver : public TDefaultIoResolverBase {
         TResourceType resource = getResourceType(type);
         if (resource < EResCount) {
             if (type.getQualifier().hasBinding()) {
-                return ent.newBinding =
-                           reserveSlot(set, getBaseBinding(resource, set) + type.getQualifier().layoutBinding);
+                return ent.newBinding = reserveSlot(set, getBaseBinding(resource, set) + type.getQualifier().layoutBinding);
             } else if (ent.live && doAutoBindingMapping()) {
                 // find free slot, the caller did make sure it passes all vars with binding
                 // first and now all are passed that do not have a binding and needs one
@@ -1088,11 +1088,11 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
             at->second = p.second;
     });
     resolver->endResolve(stage);
-    if (! hadError) {
+    if (!hadError) {
         TVarSetTraverser iter_iomap(intermediate, inVarMap, outVarMap, uniformVarMap);
         root->traverse(&iter_iomap);
     }
-    return ! hadError;
+    return !hadError;
 }
 
 // Map I/O variables to provided offsets, and make bindings for
@@ -1152,12 +1152,12 @@ bool TGlslIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TIn
     std::for_each(uniformVarMap[stage]->begin(), uniformVarMap[stage]->end(), slotCollector);
     resolver->endCollect(stage);
     intermediates[stage] = &intermediate;
-    return ! hadError;
+    return !hadError;
 }
 
 bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
     resolver->endResolve(EShLangCount);
-    if (! hadError) {
+    if (!hadError) {
         //Resolve uniform location, ubo/ssbo/opaque bindings across stages
         TResolverUniformAdaptor uniformResolve(EShLangCount, *resolver, infoSink, hadError);
         TResolverInOutAdaptor inOutResolve(EShLangCount, *resolver, infoSink, hadError);
@@ -1203,7 +1203,7 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
                 intermediates[stage]->getTreeRoot()->traverse(&iter_iomap);
             }
         }
-        return ! hadError;
+        return !hadError;
     } else {
         return false;
     }
