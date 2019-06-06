@@ -106,7 +106,6 @@ source_set("glslang_sources") {
     "glslang/MachineIndependent/attribute.cpp",
     "glslang/MachineIndependent/attribute.h",
     "glslang/MachineIndependent/gl_types.h",
-    "glslang/MachineIndependent/glslang.y",
     "glslang/MachineIndependent/glslang_tab.cpp",
     "glslang/MachineIndependent/glslang_tab.cpp.h",
     "glslang/MachineIndependent/intermOut.cpp",

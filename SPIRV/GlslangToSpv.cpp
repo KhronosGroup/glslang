@@ -888,7 +888,7 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addCapability(spv::CapabilityShadingRateNV);
         return spv::BuiltInInvocationsPerPixelNV;
 
-    // raytracing
+    // ray tracing
     case glslang::EbvLaunchIdNV:
         return spv::BuiltInLaunchIdNV;
     case glslang::EbvLaunchSizeNV:
@@ -917,6 +917,8 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         return spv::BuiltInWorldToObjectNV;
     case glslang::EbvIncomingRayFlagsNV:
         return spv::BuiltInIncomingRayFlagsNV;
+
+    // barycentrics
     case glslang::EbvBaryCoordNV:
         builder.addExtension(spv::E_SPV_NV_fragment_shader_barycentric);
         builder.addCapability(spv::CapabilityFragmentBarycentricNV);
@@ -925,23 +927,25 @@ spv::BuiltIn TGlslangToSpvTraverser::TranslateBuiltInDecoration(glslang::TBuiltI
         builder.addExtension(spv::E_SPV_NV_fragment_shader_barycentric);
         builder.addCapability(spv::CapabilityFragmentBarycentricNV);
         return spv::BuiltInBaryCoordNoPerspNV;
-     case glslang::EbvTaskCountNV:
+
+    // mesh shaders
+    case glslang::EbvTaskCountNV:
         return spv::BuiltInTaskCountNV;
-     case glslang::EbvPrimitiveCountNV:
+    case glslang::EbvPrimitiveCountNV:
         return spv::BuiltInPrimitiveCountNV;
-     case glslang::EbvPrimitiveIndicesNV:
+    case glslang::EbvPrimitiveIndicesNV:
         return spv::BuiltInPrimitiveIndicesNV;
-     case glslang::EbvClipDistancePerViewNV:
+    case glslang::EbvClipDistancePerViewNV:
         return spv::BuiltInClipDistancePerViewNV;
-     case glslang::EbvCullDistancePerViewNV:
+    case glslang::EbvCullDistancePerViewNV:
         return spv::BuiltInCullDistancePerViewNV;
-     case glslang::EbvLayerPerViewNV:
+    case glslang::EbvLayerPerViewNV:
         return spv::BuiltInLayerPerViewNV;
-     case glslang::EbvMeshViewCountNV:
+    case glslang::EbvMeshViewCountNV:
         return spv::BuiltInMeshViewCountNV;
-     case glslang::EbvMeshViewIndicesNV:
+    case glslang::EbvMeshViewIndicesNV:
         return spv::BuiltInMeshViewIndicesNV;
-#endif 
+#endif
     default:
         return spv::BuiltInMax;
     }
@@ -1465,6 +1469,30 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
 
         if (glslangIntermediate->getDepth() != glslang::EldUnchanged && glslangIntermediate->isDepthReplacing())
             builder.addExecutionMode(shaderEntry, spv::ExecutionModeDepthReplacing);
+
+        switch (glslangIntermediate->getInterlockOrdering()) {
+        case glslang::EioPixelInterlockOrdered:         mode = spv::ExecutionModePixelInterlockOrderedEXT;          break;
+        case glslang::EioPixelInterlockUnordered:       mode = spv::ExecutionModePixelInterlockUnorderedEXT;          break;
+        case glslang::EioSampleInterlockOrdered:        mode = spv::ExecutionModeSampleInterlockOrderedEXT;          break;
+        case glslang::EioSampleInterlockUnordered:      mode = spv::ExecutionModeSampleInterlockUnorderedEXT;          break;
+        case glslang::EioShadingRateInterlockOrdered:   mode = spv::ExecutionModeShadingRateInterlockOrderedEXT;          break;
+        case glslang::EioShadingRateInterlockUnordered: mode = spv::ExecutionModeShadingRateInterlockUnorderedEXT;          break;
+        default:                                        mode = spv::ExecutionModeMax;                   break;
+        }
+        if (mode != spv::ExecutionModeMax) {
+            builder.addExecutionMode(shaderEntry, (spv::ExecutionMode)mode);
+            if (mode == spv::ExecutionModeShadingRateInterlockOrderedEXT ||
+                mode == spv::ExecutionModeShadingRateInterlockUnorderedEXT) {
+                builder.addCapability(spv::CapabilityFragmentShaderShadingRateInterlockEXT);
+            } else if (mode == spv::ExecutionModePixelInterlockOrderedEXT ||
+                       mode == spv::ExecutionModePixelInterlockUnorderedEXT) {
+                builder.addCapability(spv::CapabilityFragmentShaderPixelInterlockEXT);
+            } else {
+                builder.addCapability(spv::CapabilityFragmentShaderSampleInterlockEXT);
+            }
+            builder.addExtension(spv::E_SPV_EXT_fragment_shader_interlock);
+        }
+
         break;
 
     case EShLangCompute:
@@ -2390,6 +2418,11 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 #endif
     case glslang::EOpCooperativeMatrixLoad:
     case glslang::EOpCooperativeMatrixStore:
+        noReturnValue = true;
+        break;
+    case glslang::EOpBeginInvocationInterlock:
+    case glslang::EOpEndInvocationInterlock:
+        builder.addExtension(spv::E_SPV_EXT_fragment_shader_interlock);
         noReturnValue = true;
         break;
 
@@ -7425,6 +7458,14 @@ spv::Id TGlslangToSpvTraverser::createNoArgOperation(glslang::TOperator op, spv:
         builder.createNoResultOp(spv::OpTerminateRayNV);
         return 0;
 #endif
+
+    case glslang::EOpBeginInvocationInterlock:
+        builder.createNoResultOp(spv::OpBeginInvocationInterlockEXT);
+        return 0;
+    case glslang::EOpEndInvocationInterlock:
+        builder.createNoResultOp(spv::OpEndInvocationInterlockEXT);
+        return 0;
+
     default:
         logger->missingFunctionality("unknown operation with no arguments");
         return 0;

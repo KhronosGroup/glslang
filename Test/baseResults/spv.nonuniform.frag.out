@@ -7,18 +7,18 @@ spv.nonuniform.frag
                               Capability InputAttachment
                               Capability SampledBuffer
                               Capability ImageBuffer
-                              Capability CapabilityShaderNonUniformEXT
-                              Capability CapabilityRuntimeDescriptorArrayEXT
-                              Capability CapabilityInputAttachmentArrayDynamicIndexingEXT
-                              Capability CapabilityUniformTexelBufferArrayDynamicIndexingEXT
-                              Capability CapabilityStorageTexelBufferArrayDynamicIndexingEXT
-                              Capability CapabilityUniformBufferArrayNonUniformIndexingEXT
-                              Capability CapabilitySampledImageArrayNonUniformIndexingEXT
-                              Capability CapabilityStorageBufferArrayNonUniformIndexingEXT
-                              Capability CapabilityStorageImageArrayNonUniformIndexingEXT
-                              Capability CapabilityInputAttachmentArrayNonUniformIndexingEXT
-                              Capability CapabilityUniformTexelBufferArrayNonUniformIndexingEXT
-                              Capability CapabilityStorageTexelBufferArrayNonUniformIndexingEXT
+                              Capability ShaderNonUniformEXT
+                              Capability RuntimeDescriptorArrayEXT
+                              Capability InputAttachmentArrayDynamicIndexingEXT
+                              Capability UniformTexelBufferArrayDynamicIndexingEXT
+                              Capability StorageTexelBufferArrayDynamicIndexingEXT
+                              Capability UniformBufferArrayNonUniformIndexingEXT
+                              Capability SampledImageArrayNonUniformIndexingEXT
+                              Capability StorageBufferArrayNonUniformIndexingEXT
+                              Capability StorageImageArrayNonUniformIndexingEXT
+                              Capability InputAttachmentArrayNonUniformIndexingEXT
+                              Capability UniformTexelBufferArrayNonUniformIndexingEXT
+                              Capability StorageTexelBufferArrayNonUniformIndexingEXT
                               Extension  "SPV_EXT_descriptor_indexing"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450

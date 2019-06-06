@@ -5,9 +5,9 @@ spv.nonuniform2.frag
 
                               Capability Shader
                               Capability ImageBuffer
-                              Capability CapabilityShaderNonUniformEXT
-                              Capability CapabilityRuntimeDescriptorArrayEXT
-                              Capability CapabilityStorageTexelBufferArrayNonUniformIndexingEXT
+                              Capability ShaderNonUniformEXT
+                              Capability RuntimeDescriptorArrayEXT
+                              Capability StorageTexelBufferArrayNonUniformIndexingEXT
                               Extension  "SPV_EXT_descriptor_indexing"
                1:             ExtInstImport  "GLSL.std.450"
                               MemoryModel Logical GLSL450

@@ -240,7 +240,7 @@ public:
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet),
         inputPrimitive(ElgNone), outputPrimitive(ElgNone),
         pixelCenterInteger(false), originUpperLeft(false),
-        vertexSpacing(EvsNone), vertexOrder(EvoNone), pointMode(false), earlyFragmentTests(false),
+        vertexSpacing(EvsNone), vertexOrder(EvoNone), interlockOrdering(EioNone), pointMode(false), earlyFragmentTests(false),
         postDepthCoverage(false), depthLayout(EldNone), depthReplacing(false),
         hlslFunctionality1(false),
         blendEquations(0), xfbMode(false), multiStream(false),
@@ -608,6 +608,15 @@ public:
     void setPointMode() { pointMode = true; }
     bool getPointMode() const { return pointMode; }
 
+    bool setInterlockOrdering(TInterlockOrdering o)
+    {
+        if (interlockOrdering != EioNone)
+            return interlockOrdering == o;
+        interlockOrdering = o;
+        return true;
+    }
+    TInterlockOrdering getInterlockOrdering() const { return interlockOrdering; }
+
     bool setLocalSize(int dim, int size)
     {
         if (localSize[dim] > 1)
@@ -826,6 +835,7 @@ protected:
     bool originUpperLeft;
     TVertexSpacing vertexSpacing;
     TVertexOrder vertexOrder;
+    TInterlockOrdering interlockOrdering;
     bool pointMode;
     int localSize[3];
     int localSizeSpecId[3];
