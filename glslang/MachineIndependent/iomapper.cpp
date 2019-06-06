@@ -166,7 +166,9 @@ struct TNotifyInOutAdaptor
 {
     EShLanguage stage;
     TIoMapResolver& resolver;
-    inline TNotifyInOutAdaptor(EShLanguage s, TIoMapResolver& r) : stage(s), resolver(r)
+    inline TNotifyInOutAdaptor(EShLanguage s, TIoMapResolver& r) 
+      : stage(s)
+      , resolver(r)
     {
     }
 
@@ -888,15 +890,15 @@ void TDefaultGlslIoResolver::reserverResourceSlot(TVarEntryInfo& ent, TInfoSink&
 //TDefaultGlslIoResolver end
 
 /*
-* Basic implementation of glslang::TIoMapResolver that replaces the
-* previous offset behavior.
-* It does the same, uses the offsets for the corresponding uniform
-* types. Also respects the EOptionAutoMapBindings flag and binds
-* them if needed.
-*/
+ * Basic implementation of glslang::TIoMapResolver that replaces the
+ * previous offset behavior.
+ * It does the same, uses the offsets for the corresponding uniform
+ * types. Also respects the EOptionAutoMapBindings flag and binds
+ * them if needed.
+ */
 /*
-* Default resolver
-*/
+ * Default resolver
+ */
 struct TDefaultIoResolver : public TDefaultIoResolverBase {
     TDefaultIoResolver(const TIntermediate& intermediate) : TDefaultIoResolverBase(intermediate) { }
 
