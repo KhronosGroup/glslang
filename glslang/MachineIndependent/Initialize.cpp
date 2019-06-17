@@ -6309,6 +6309,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         commonBuiltins.append("const int gl_SemanticsAcquireRelease  = 0x8;\n");
         commonBuiltins.append("const int gl_SemanticsMakeAvailable   = 0x2000;\n");
         commonBuiltins.append("const int gl_SemanticsMakeVisible     = 0x4000;\n");
+        commonBuiltins.append("const int gl_SemanticsVolatile        = 0x8000;\n");
 
         commonBuiltins.append("const int gl_StorageSemanticsNone     = 0x0;\n");
         commonBuiltins.append("const int gl_StorageSemanticsBuffer   = 0x40;\n");
@@ -8630,6 +8631,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setVariableExtensions("gl_SemanticsAcquireRelease", 1, &E_GL_KHR_memory_scope_semantics);
             symbolTable.setVariableExtensions("gl_SemanticsMakeAvailable",  1, &E_GL_KHR_memory_scope_semantics);
             symbolTable.setVariableExtensions("gl_SemanticsMakeVisible",    1, &E_GL_KHR_memory_scope_semantics);
+            symbolTable.setVariableExtensions("gl_SemanticsVolatile",       1, &E_GL_KHR_memory_scope_semantics);
 
             symbolTable.setVariableExtensions("gl_StorageSemanticsNone",    1, &E_GL_KHR_memory_scope_semantics);
             symbolTable.setVariableExtensions("gl_StorageSemanticsBuffer",  1, &E_GL_KHR_memory_scope_semantics);
