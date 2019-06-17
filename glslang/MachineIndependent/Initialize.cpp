@@ -8176,12 +8176,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
                 BuiltInVariable("gl_SubGroupSizeARB", EbvSubGroupSize, symbolTable);
         }
 
-        if (spvVersion.vulkan > 0)
-            // Treat "gl_SubGroupSizeARB" as shader input instead of uniform for Vulkan
-            SpecialQualifier("gl_SubGroupSizeARB", EvqVaryingIn, EbvSubGroupSize, symbolTable);
-	else
-            BuiltInVariable("gl_SubGroupSizeARB", EbvSubGroupSize, symbolTable);
-
         // GL_KHR_shader_subgroup
         if ((profile == EEsProfile && version >= 310) ||
             (profile != EEsProfile && version >= 140)) {
