@@ -224,6 +224,7 @@ protected:
     bool linkageOnly;                  // true when visiting the set of objects in the AST present only for establishing interface, whether or not they were statically used
     std::set<spv::Id> iOSet;           // all input/output variables from either static use or declaration of interface
     const glslang::TIntermediate* glslangIntermediate;
+    bool nanMinMaxClamp;               // true if use NMin/NMax/NClamp instead of FMin/FMax/FClamp
     spv::Id stdBuiltins;
     std::unordered_map<const char*, spv::Id> extBuiltinMap;
 
@@ -1313,7 +1314,8 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion, const gl
       sequenceDepth(0), logger(buildLogger),
       builder(spvVersion, (glslang::GetKhronosToolId() << 16) | glslang::GetSpirvGeneratorVersion(), logger),
       inEntryPoint(false), entryPointTerminated(false), linkageOnly(false),
-      glslangIntermediate(glslangIntermediate)
+      glslangIntermediate(glslangIntermediate),
+      nanMinMaxClamp(glslangIntermediate->getNanMinMaxClamp())
 {
     spv::ExecutionModel executionModel = TranslateExecutionModel(glslangIntermediate->getStage());
 
@@ -6997,7 +6999,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
     switch (op) {
     case glslang::EOpMin:
         if (isFloat)
-            libCall = spv::GLSLstd450FMin;
+            libCall = nanMinMaxClamp ? spv::GLSLstd450NMin : spv::GLSLstd450FMin;
         else if (isUnsigned)
             libCall = spv::GLSLstd450UMin;
         else
@@ -7009,7 +7011,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         break;
     case glslang::EOpMax:
         if (isFloat)
-            libCall = spv::GLSLstd450FMax;
+            libCall = nanMinMaxClamp ? spv::GLSLstd450NMax : spv::GLSLstd450FMax;
         else if (isUnsigned)
             libCall = spv::GLSLstd450UMax;
         else
@@ -7028,7 +7030,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
 
     case glslang::EOpClamp:
         if (isFloat)
-            libCall = spv::GLSLstd450FClamp;
+            libCall = nanMinMaxClamp ? spv::GLSLstd450NClamp : spv::GLSLstd450FClamp;
         else if (isUnsigned)
             libCall = spv::GLSLstd450UClamp;
         else
