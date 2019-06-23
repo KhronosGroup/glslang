@@ -296,6 +296,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.builtInXFB.vert",
         "spv.conditionalDiscard.frag",
         "spv.constStruct.vert",
+        "spv.constConstruct.vert",
         "spv.controlFlowAttributes.frag",
         "spv.conversion.frag",
         "spv.coopmat.comp",
