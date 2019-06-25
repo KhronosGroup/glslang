@@ -295,6 +295,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.bufferhandle_Error.frag",
         "spv.builtInXFB.vert",
         "spv.conditionalDiscard.frag",
+        "spv.constructComposite.comp",
         "spv.constStruct.vert",
         "spv.constConstruct.vert",
         "spv.controlFlowAttributes.frag",
@@ -482,6 +483,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.1.4.image.frag",
         "spv.1.4.sparseTexture.frag",
         "spv.1.4.texture.frag",
+        "spv.1.4.constructComposite.comp",
     })),
     FileNameAsCustomTestSuffix
 );
