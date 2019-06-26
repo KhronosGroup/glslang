@@ -3789,7 +3789,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
 
     for (int i=0; i < size; i++) {
 
-#define PROMOTE(Set, CType, Get) leftUnionArray[i].Set(static_cast<CType>(rightUnionArray[i].Get()));
+#define PROMOTE(Set, CType, Get) leftUnionArray[i].Set(static_cast<CType>(rightUnionArray[i].Get()))
 
 #define TO_ALL(Get)   \
         switch (promoteTo) { \
