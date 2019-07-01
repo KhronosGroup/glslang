@@ -1367,6 +1367,8 @@ const char* OpcodeString(int op)
     case OpCooperativeMatrixStoreNV:        return "OpCooperativeMatrixStoreNV";
     case OpCooperativeMatrixMulAddNV:       return "OpCooperativeMatrixMulAddNV";
     case OpCooperativeMatrixLengthNV:       return "OpCooperativeMatrixLengthNV";
+    case OpDemoteToHelperInvocationEXT:     return "OpDemoteToHelperInvocationEXT";
+    case OpIsHelperInvocationEXT:           return "OpIsHelperInvocationEXT";
 
     case OpBeginInvocationInterlockEXT:     return "OpBeginInvocationInterlockEXT";
     case OpEndInvocationInterlockEXT:       return "OpEndInvocationInterlockEXT";
@@ -2784,6 +2786,8 @@ void Parameterize()
     InstructionDesc[OpCooperativeMatrixMulAddNV].operands.push(OperandId, "'C'");
 
     InstructionDesc[OpCooperativeMatrixLengthNV].operands.push(OperandId, "'Type'");
+
+    InstructionDesc[OpDemoteToHelperInvocationEXT].setResultAndType(false, false);
 }
 
 }; // end spv namespace
