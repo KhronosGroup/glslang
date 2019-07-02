@@ -958,6 +958,8 @@ const char* CapabilityString(int info)
     case CapabilityFragmentShaderPixelInterlockEXT:         return "CapabilityFragmentShaderPixelInterlockEXT";
     case CapabilityFragmentShaderShadingRateInterlockEXT:   return "CapabilityFragmentShaderShadingRateInterlockEXT";
 
+    case CapabilityDemoteToHelperInvocationEXT:             return "DemoteToHelperInvocationEXT";
+
     default: return "Bad";
     }
 }
