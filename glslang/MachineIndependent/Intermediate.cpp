@@ -3790,6 +3790,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
     for (int i=0; i < size; i++) {
 
 #define PROMOTE(Set, CType, Get) leftUnionArray[i].Set(static_cast<CType>(rightUnionArray[i].Get()))
+#define PROMOTE_TO_BOOL(Get) leftUnionArray[i].setBConst(rightUnionArray[i].Get() != 0)
 
 #define TO_ALL(Get)   \
         switch (promoteTo) { \
@@ -3804,7 +3805,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
         case EbtUint16: PROMOTE(setU16Const, unsigned short, Get); break; \
         case EbtUint: PROMOTE(setUConst, unsigned int, Get); break; \
         case EbtUint64: PROMOTE(setU64Const, unsigned long long, Get); break; \
-        case EbtBool: PROMOTE(setBConst, bool, Get); break; \
+        case EbtBool: PROMOTE_TO_BOOL(Get); break; \
         default: return node; \
         }
 
