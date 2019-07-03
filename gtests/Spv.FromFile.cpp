@@ -545,6 +545,7 @@ INSTANTIATE_TEST_CASE_P(
         "vulkan.vert",
         "vulkan.comp",
         "samplerlessTextureFunctions.frag",
+        "spv.specConstArrayCheck.vert",
     })),
     FileNameAsCustomTestSuffix
 );
