@@ -1005,6 +1005,10 @@ enum TOperator {
     EOpWaveGetLaneIndex,                 // Will decompose to gl_SubgroupInvocationID.
     EOpWaveActiveCountBits,              // Will decompose to subgroupBallotBitCount(subgroupBallot()).
     EOpWavePrefixCountBits,              // Will decompose to subgroupBallotInclusiveBitCount(subgroupBallot()).
+
+    // Shader Clock Ops
+    EOpReadClockSubgroupKHR,
+    EOpReadClockDeviceKHR,
 };
 
 class TIntermTraverser;
