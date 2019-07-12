@@ -7738,6 +7738,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
               decoration = (spv::Decoration)spv::DecorationMax;
         builder.addDecoration(id, decoration);
         if (decoration != spv::DecorationMax) {
+            builder.addCapability(spv::CapabilitySampleMaskOverrideCoverageNV);
             builder.addExtension(spv::E_SPV_NV_sample_mask_override_coverage);
         }
     }
