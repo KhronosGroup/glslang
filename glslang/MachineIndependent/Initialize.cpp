@@ -5144,7 +5144,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     //E_SPV_NV_compute_shader_derivatives
-    if (profile == EEsProfile && version >= 320 || profile != EEsProfile && version >= 450) {
+    if ((profile == EEsProfile && version >= 320) || (profile != EEsProfile && version >= 450)) {
         stageBuiltins[EShLangCompute].append(derivatives);
         stageBuiltins[EShLangCompute].append(derivativeControls);
         stageBuiltins[EShLangCompute].append("\n");
