@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 Google, Inc.
+// Copyright (C) 2016-2018 Google, Inc.
 // Copyright (C) 2016 LunarG, Inc.
 //
 // All rights reserved.
@@ -122,7 +122,6 @@ public:
     void integerCheck(const TIntermTyped* node, const char* token);
     void globalCheck(const TSourceLoc&, const char* token);
     bool constructorError(const TSourceLoc&, TIntermNode*, TFunction&, TOperator, TType&);
-    bool constructorTextureSamplerError(const TSourceLoc&, const TFunction&);
     void arraySizeCheck(const TSourceLoc&, TIntermTyped* expr, TArraySize&);
     void arraySizeRequiredCheck(const TSourceLoc&, const TArraySizes&);
     void structArrayCheck(const TSourceLoc&, const TType& structure);
@@ -156,7 +155,7 @@ public:
     void declareBlock(const TSourceLoc&, TType&, const TString* instanceName = 0);
     void declareStructBufferCounter(const TSourceLoc& loc, const TType& bufferType, const TString& name);
     void fixBlockLocations(const TSourceLoc&, TQualifier&, TTypeList&, bool memberWithLocation, bool memberWithoutLocation);
-    void fixBlockXfbOffsets(TQualifier&, TTypeList&);
+    void fixXfbOffsets(TQualifier&, TTypeList&);
     void fixBlockUniformOffsets(const TQualifier&, TTypeList&);
     void addQualifierToExisting(const TSourceLoc&, TQualifier, const TString& identifier);
     void addQualifierToExisting(const TSourceLoc&, TQualifier, TIdentifierList&);
@@ -266,6 +265,7 @@ protected:
     TVariable* getSplitNonIoVar(int id) const;
     void addPatchConstantInvocation();
     void fixTextureShadowModes();
+    void finalizeAppendMethods();
     TIntermTyped* makeIntegerIndex(TIntermTyped*);
 
     void fixBuiltInIoType(TType&);
@@ -459,6 +459,17 @@ protected:
     };
 
     TVector<tMipsOperatorData> mipsOperatorMipArg;
+
+    // The geometry output stream is not copied out from the entry point as a typical output variable
+    // is.  It's written via EmitVertex (hlsl=Append), which may happen in arbitrary control flow.
+    // For this we need the real output symbol.  Since it may not be known at the time and Append()
+    // method is parsed, the sequence will be patched during finalization.
+    struct tGsAppendData {
+        TIntermAggregate* node;
+        TSourceLoc loc;
+    };
+
+    TVector<tGsAppendData> gsAppends;
 
     // A texture object may be used with shadow and non-shadow samplers, but both may not be
     // alive post-DCE in the same shader.  We do not know at compilation time which are alive: that's

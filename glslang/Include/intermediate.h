@@ -85,6 +85,8 @@ enum TOperator {
     EOpPreIncrement,
     EOpPreDecrement,
 
+    EOpCopyObject,
+
     // (u)int* -> bool
     EOpConvInt8ToBool,
     EOpConvUint8ToBool,
@@ -268,6 +270,10 @@ enum TOperator {
     // float64_t -> float*
     EOpConvDoubleToFloat16,
     EOpConvDoubleToFloat,
+
+    // uint64_t <-> pointer
+    EOpConvUint64ToPtr,
+    EOpConvPtrToUint64,
 
     //
     // binary operations
@@ -592,6 +598,8 @@ enum TOperator {
     EOpAtomicXor,
     EOpAtomicExchange,
     EOpAtomicCompSwap,
+    EOpAtomicLoad,
+    EOpAtomicStore,
 
     EOpAtomicCounterIncrement, // results in pre-increment value
     EOpAtomicCounterDecrement, // results in post-decrement value
@@ -609,6 +617,15 @@ enum TOperator {
     EOpAny,
     EOpAll,
 
+    EOpCooperativeMatrixLoad,
+    EOpCooperativeMatrixStore,
+    EOpCooperativeMatrixMulAdd,
+
+    EOpBeginInvocationInterlock, // Fragment only
+    EOpEndInvocationInterlock, // Fragment only
+
+    EOpIsHelperInvocation,
+
     //
     // Branch
     //
@@ -619,6 +636,7 @@ enum TOperator {
     EOpContinue,
     EOpCase,
     EOpDefault,
+    EOpDemote,          // Fragment only
 
     //
     // Constructors
@@ -636,9 +654,21 @@ enum TOperator {
     EOpConstructBool,
     EOpConstructFloat,
     EOpConstructDouble,
+    // Keep vector and matrix constructors in a consistent relative order for
+    // TParseContext::constructBuiltIn, which converts between 8/16/32 bit
+    // vector constructors
     EOpConstructVec2,
     EOpConstructVec3,
     EOpConstructVec4,
+    EOpConstructMat2x2,
+    EOpConstructMat2x3,
+    EOpConstructMat2x4,
+    EOpConstructMat3x2,
+    EOpConstructMat3x3,
+    EOpConstructMat3x4,
+    EOpConstructMat4x2,
+    EOpConstructMat4x3,
+    EOpConstructMat4x4,
     EOpConstructDVec2,
     EOpConstructDVec3,
     EOpConstructDVec4,
@@ -669,15 +699,6 @@ enum TOperator {
     EOpConstructU64Vec2,
     EOpConstructU64Vec3,
     EOpConstructU64Vec4,
-    EOpConstructMat2x2,
-    EOpConstructMat2x3,
-    EOpConstructMat2x4,
-    EOpConstructMat3x2,
-    EOpConstructMat3x3,
-    EOpConstructMat3x4,
-    EOpConstructMat4x2,
-    EOpConstructMat4x3,
-    EOpConstructMat4x4,
     EOpConstructDMat2x2,
     EOpConstructDMat2x3,
     EOpConstructDMat2x4,
@@ -730,6 +751,8 @@ enum TOperator {
     EOpConstructStruct,
     EOpConstructTextureSampler,
     EOpConstructNonuniform,     // expected to be transformed away, not present in final AST
+    EOpConstructReference,
+    EOpConstructCooperativeMatrix,
     EOpConstructGuardEnd,
 
     //
@@ -784,6 +807,8 @@ enum TOperator {
     EOpImageAtomicXor,
     EOpImageAtomicExchange,
     EOpImageAtomicCompSwap,
+    EOpImageAtomicLoad,
+    EOpImageAtomicStore,
 
     EOpSubpassLoad,
     EOpSubpassLoadMS,
@@ -861,6 +886,16 @@ enum TOperator {
 #endif
 
     EOpSparseTextureGuardEnd,
+
+#ifdef NV_EXTENSIONS
+    EOpImageFootprintGuardBegin,
+    EOpImageSampleFootprintNV,
+    EOpImageSampleFootprintClampNV,
+    EOpImageSampleFootprintLodNV,
+    EOpImageSampleFootprintGradNV,
+    EOpImageSampleFootprintGradClampNV,
+    EOpImageFootprintGuardEnd,
+#endif
     EOpSamplingGuardEnd,
     EOpTextureGuardEnd,
 
@@ -879,6 +914,14 @@ enum TOperator {
     EOpFindLSB,
     EOpFindMSB,
 
+#ifdef NV_EXTENSIONS
+    EOpTraceNV,
+    EOpReportIntersectionNV,
+    EOpIgnoreIntersectionNV,
+    EOpTerminateRayNV,
+    EOpExecuteCallableNV,
+    EOpWritePackedPrimitiveIndices4x8NV,
+#endif
     //
     // HLSL operations
     //
@@ -962,6 +1005,10 @@ enum TOperator {
     EOpWaveGetLaneIndex,                 // Will decompose to gl_SubgroupInvocationID.
     EOpWaveActiveCountBits,              // Will decompose to subgroupBallotBitCount(subgroupBallot()).
     EOpWavePrefixCountBits,              // Will decompose to subgroupBallotInclusiveBitCount(subgroupBallot()).
+
+    // Shader Clock Ops
+    EOpReadClockSubgroupKHR,
+    EOpReadClockDeviceKHR,
 };
 
 class TIntermTraverser;
@@ -1082,7 +1129,12 @@ public:
         first(testFirst),
         unroll(false),
         dontUnroll(false),
-        dependency(0)
+        dependency(0),
+        minIterations(0),
+        maxIterations(iterationsInfinite),
+        iterationMultiple(1),
+        peelCount(0),
+        partialCount(0)
     { }
 
     virtual       TIntermLoop* getAsLoopNode() { return this; }
@@ -1094,13 +1146,35 @@ public:
     bool testFirst() const { return first; }
 
     void setUnroll()     { unroll = true; }
-    void setDontUnroll() { dontUnroll = true; }
+    void setDontUnroll() {
+        dontUnroll = true;
+        peelCount = 0;
+        partialCount = 0;
+    }
     bool getUnroll()     const { return unroll; }
     bool getDontUnroll() const { return dontUnroll; }
 
     static const unsigned int dependencyInfinite = 0xFFFFFFFF;
+    static const unsigned int iterationsInfinite = 0xFFFFFFFF;
     void setLoopDependency(int d) { dependency = d; }
     int getLoopDependency() const { return dependency; }
+
+    void setMinIterations(unsigned int v) { minIterations = v; }
+    unsigned int getMinIterations() const { return minIterations; }
+    void setMaxIterations(unsigned int v) { maxIterations = v; }
+    unsigned int getMaxIterations() const { return maxIterations; }
+    void setIterationMultiple(unsigned int v) { iterationMultiple = v; }
+    unsigned int getIterationMultiple() const { return iterationMultiple; }
+    void setPeelCount(unsigned int v) {
+        peelCount = v;
+        dontUnroll = false;
+    }
+    unsigned int getPeelCount() const { return peelCount; }
+    void setPartialCount(unsigned int v) {
+        partialCount = v;
+        dontUnroll = false;
+    }
+    unsigned int getPartialCount() const { return partialCount; }
 
 protected:
     TIntermNode* body;       // code to loop over
@@ -1110,6 +1184,11 @@ protected:
     bool unroll;             // true if unroll requested
     bool dontUnroll;         // true if request to not unroll
     unsigned int dependency; // loop dependency hint; 0 means not set or unknown
+    unsigned int minIterations;      // as per the SPIR-V specification
+    unsigned int maxIterations;      // as per the SPIR-V specification
+    unsigned int iterationMultiple;  // as per the SPIR-V specification
+    unsigned int peelCount;          // as per the SPIR-V specification
+    unsigned int partialCount;       // as per the SPIR-V specification
 };
 
 //
@@ -1164,6 +1243,7 @@ public:
         constSubtree(nullptr)
           { name = n; }
     virtual int getId() const { return id; }
+    virtual void changeId(int i) { id = i; }
     virtual const TString& getName() const { return name; }
     virtual void traverse(TIntermTraverser*);
     virtual       TIntermSymbol* getAsSymbolNode()       { return this; }
@@ -1243,6 +1323,9 @@ public:
     bool isSampling() const { return op > EOpSamplingGuardBegin && op < EOpSamplingGuardEnd; }
     bool isImage()    const { return op > EOpImageGuardBegin    && op < EOpImageGuardEnd; }
     bool isSparseTexture() const { return op > EOpSparseTextureGuardBegin && op < EOpSparseTextureGuardEnd; }
+#ifdef NV_EXTENSIONS
+    bool isImageFootprint() const { return op > EOpImageFootprintGuardBegin && op < EOpImageFootprintGuardEnd; }
+#endif
     bool isSparseImage()   const { return op == EOpSparseImageLoad; }
 
     void setOperationPrecision(TPrecisionQualifier p) { operationPrecision = p; }
@@ -1414,6 +1497,23 @@ public:
         case EOpFragmentFetch:
             cracked.subpass = sampler.dim == EsdSubpass;
             cracked.fragMask = true;
+            break;
+#endif
+#ifdef NV_EXTENSIONS
+        case EOpImageSampleFootprintNV:
+            break;
+        case EOpImageSampleFootprintClampNV:
+            cracked.lodClamp = true;
+            break;
+        case EOpImageSampleFootprintLodNV:
+            cracked.lod = true;
+            break;
+        case EOpImageSampleFootprintGradNV:
+            cracked.grad = true;
+            break;
+        case EOpImageSampleFootprintGradClampNV:
+            cracked.lodClamp = true;
+            cracked.grad = true;
             break;
 #endif
         case EOpSubpassLoad:

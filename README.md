@@ -61,7 +61,7 @@ branch.
   (For MSVS: 2015 is recommended, 2013 is fully supported/tested, and 2010 support is attempted, but not tested.)
 * [CMake][cmake]: for generating compilation targets.
 * make: _Linux_, ninja is an alternative, if configured.
-* [Python 2.7][python]: for executing SPIRV-Tools scripts. (Optional if not using SPIRV-Tools.)
+* [Python 3.x][python]: for executing SPIRV-Tools scripts. (Optional if not using SPIRV-Tools and the 'External' subdirectory does not exist.)
 * [bison][bison]: _optional_, but needed when changing the grammar (glslang.y).
 * [googletest][googletest]: _optional_, but should use if making any changes to glslang.
 
@@ -82,6 +82,15 @@ git clone https://github.com/KhronosGroup/glslang.git
 ```bash
 cd <the directory glslang was cloned to, "External" will be a subdirectory>
 git clone https://github.com/google/googletest.git External/googletest
+```
+
+If you want to use googletest with Visual Studio 2013, you also need to check out an older version:
+
+```bash
+# to use googletest with Visual Studio 2013
+cd External/googletest
+git checkout 440527a61e1c91188195f7de212c63c77e8f0a45
+cd ../..
 ```
 
 If you wish to assure that SPIR-V generated from HLSL is legal for Vulkan,
@@ -105,8 +114,8 @@ cd $BUILD_DIR
 For building on Linux:
 
 ```bash
-cmake -DCMAKE_BUILD_TYPE={Debug|Release|RelWithDebInfo} \
-      -DCMAKE_INSTALL_PREFIX="$(pwd)/install" $SOURCE_DIR
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$(pwd)/install" $SOURCE_DIR
+# "Release" (for CMAKE_BUILD_TYPE) could also be "Debug" or "RelWithDebInfo"
 ```
 
 For building on Windows:
@@ -118,6 +127,9 @@ cmake $SOURCE_DIR -DCMAKE_INSTALL_PREFIX="$(pwd)/install"
 
 The CMake GUI also works for Windows (version 3.4.1 tested).
 
+Also, consider using `git config --global core.fileMode false` (or with `--local`) on Windows
+to prevent the addition of execution permission on files.
+
 #### 4) Build and Install
 
 ```bash
@@ -125,8 +137,8 @@ The CMake GUI also works for Windows (version 3.4.1 tested).
 make -j4 install
 
 # for Windows:
-cmake --build . --config {Release|Debug|MinSizeRel|RelWithDebInfo} \
-      --target install
+cmake --build . --config Release --target install
+# "Release" (for --config) could also be "Debug", "MinSizeRel", or "RelWithDebInfo"
 ```
 
 If using MSVC, after running CMake to configure, use the

@@ -152,7 +152,17 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
     case EvqBuffer:
         if (node->getQualifier().readonly)
             message = "can't modify a readonly buffer";
+#ifdef NV_EXTENSIONS
+        if (node->getQualifier().layoutShaderRecordNV)
+            message = "can't modify a shaderrecordnv qualified buffer";
+#endif
         break;
+#ifdef NV_EXTENSIONS
+    case EvqHitAttrNV:
+        if (language != EShLangIntersectNV)
+            message = "cannot modify hitAttributeNV in this stage";
+        break;
+#endif
 
     default:
         //
@@ -168,6 +178,11 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
         case EbtVoid:
             message = "can't modify void";
             break;
+#ifdef NV_EXTENSIONS
+        case EbtAccStructNV:
+            message = "can't modify accelerationStructureNV";
+            break;
+#endif
         default:
             break;
         }
@@ -239,11 +254,17 @@ void TParseContextBase::trackLinkage(TSymbol& symbol)
 // Give an error if not.
 void TParseContextBase::checkIndex(const TSourceLoc& loc, const TType& type, int& index)
 {
+    const auto sizeIsSpecializationExpression = [&type]() {
+        return type.containsSpecializationSize() &&
+               type.getArraySizes()->getOuterNode() != nullptr &&
+               type.getArraySizes()->getOuterNode()->getAsSymbolNode() == nullptr; };
+
     if (index < 0) {
         error(loc, "", "[", "index out of range '%d'", index);
         index = 0;
     } else if (type.isArray()) {
-        if (type.isSizedArray() && index >= type.getOuterArraySize()) {
+        if (type.isSizedArray() && !sizeIsSpecializationExpression() &&
+            index >= type.getOuterArraySize()) {
             error(loc, "", "[", "array index out of range '%d'", index);
             index = type.getOuterArraySize() - 1;
         }

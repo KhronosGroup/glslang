@@ -2,6 +2,7 @@
 // Copyright (C) 2002-2005  3Dlabs Inc. Ltd.
 // Copyright (C) 2012-2013 LunarG, Inc.
 // Copyright (C) 2017 ARM Limited.
+// Copyright (C) 2018 Google, Inc.
 //
 // All rights reserved.
 //
@@ -179,69 +180,76 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
             case EbtDouble:
             case EbtFloat:
             case EbtFloat16:
-                newConstArray[i].setDConst(leftUnionArray[i].getDConst() / rightUnionArray[i].getDConst());
+                if (rightUnionArray[i].getDConst() != 0.0)
+                    newConstArray[i].setDConst(leftUnionArray[i].getDConst() / rightUnionArray[i].getDConst());
+                else if (leftUnionArray[i].getDConst() > 0.0)
+                    newConstArray[i].setDConst((double)INFINITY);
+                else if (leftUnionArray[i].getDConst() < 0.0)
+                    newConstArray[i].setDConst(-(double)INFINITY);
+                else
+                    newConstArray[i].setDConst((double)NAN);
                 break;
             case EbtInt8:
-                if (rightUnionArray[i] == 0)
-                    newConstArray[i].setI8Const(0x7F);
-                else if (rightUnionArray[i].getI8Const() == -1 && leftUnionArray[i].getI8Const() == (signed char)0x80)
-                    newConstArray[i].setI8Const((signed char)0x80);
+                if (rightUnionArray[i] == (signed char)0)
+                    newConstArray[i].setI8Const((signed char)0x7F);
+                else if (rightUnionArray[i].getI8Const() == (signed char)-1 && leftUnionArray[i].getI8Const() == (signed char)-0x80)
+                    newConstArray[i].setI8Const((signed char)-0x80);
                 else
                     newConstArray[i].setI8Const(leftUnionArray[i].getI8Const() / rightUnionArray[i].getI8Const());
                 break;
 
             case EbtUint8:
-                if (rightUnionArray[i] == 0) {
-                    newConstArray[i].setU8Const(0xFF);
-                } else
+                if (rightUnionArray[i] == (unsigned char)0u)
+                    newConstArray[i].setU8Const((unsigned char)0xFFu);
+                else
                     newConstArray[i].setU8Const(leftUnionArray[i].getU8Const() / rightUnionArray[i].getU8Const());
                 break;
 
            case EbtInt16:
-                if (rightUnionArray[i] == 0)
-                    newConstArray[i].setI16Const(0x7FFF);
-                else if (rightUnionArray[i].getI16Const() == -1 && leftUnionArray[i].getI16Const() == (signed short)0x8000)
-                    newConstArray[i].setI16Const(short(0x8000));
+                if (rightUnionArray[i] == (signed short)0)
+                    newConstArray[i].setI16Const((signed short)0x7FFF);
+                else if (rightUnionArray[i].getI16Const() == (signed short)-1 && leftUnionArray[i].getI16Const() == (signed short)-0x8000)
+                    newConstArray[i].setI16Const((signed short)-0x8000);
                 else
                     newConstArray[i].setI16Const(leftUnionArray[i].getI16Const() / rightUnionArray[i].getI16Const());
                 break;
 
             case EbtUint16:
-                if (rightUnionArray[i] == 0) {
-                    newConstArray[i].setU16Const(0xFFFF);
-                } else
+                if (rightUnionArray[i] == (unsigned short)0u)
+                    newConstArray[i].setU16Const((unsigned short)0xFFFFu);
+                else
                     newConstArray[i].setU16Const(leftUnionArray[i].getU16Const() / rightUnionArray[i].getU16Const());
                 break;
 
             case EbtInt:
                 if (rightUnionArray[i] == 0)
                     newConstArray[i].setIConst(0x7FFFFFFF);
-                else if (rightUnionArray[i].getIConst() == -1 && leftUnionArray[i].getIConst() == (int)0x80000000)
-                    newConstArray[i].setIConst(0x80000000);
+                else if (rightUnionArray[i].getIConst() == -1 && leftUnionArray[i].getIConst() == (int)-0x80000000ll)
+                    newConstArray[i].setIConst((int)-0x80000000ll);
                 else
                     newConstArray[i].setIConst(leftUnionArray[i].getIConst() / rightUnionArray[i].getIConst());
                 break;
 
             case EbtUint:
-                if (rightUnionArray[i] == 0) {
+                if (rightUnionArray[i] == 0u)
                     newConstArray[i].setUConst(0xFFFFFFFFu);
-                } else
+                else
                     newConstArray[i].setUConst(leftUnionArray[i].getUConst() / rightUnionArray[i].getUConst());
                 break;
 
             case EbtInt64:
-                if (rightUnionArray[i] == 0)
+                if (rightUnionArray[i] == 0ll)
                     newConstArray[i].setI64Const(0x7FFFFFFFFFFFFFFFll);
-                else if (rightUnionArray[i].getI64Const() == -1 && leftUnionArray[i].getI64Const() == (long long)0x8000000000000000)
-                    newConstArray[i].setI64Const(0x8000000000000000);
+                else if (rightUnionArray[i].getI64Const() == -1 && leftUnionArray[i].getI64Const() == (long long)-0x8000000000000000ll)
+                    newConstArray[i].setI64Const((long long)-0x8000000000000000ll);
                 else
                     newConstArray[i].setI64Const(leftUnionArray[i].getI64Const() / rightUnionArray[i].getI64Const());
                 break;
 
             case EbtUint64:
-                if (rightUnionArray[i] == 0) {
+                if (rightUnionArray[i] == 0ull)
                     newConstArray[i].setU64Const(0xFFFFFFFFFFFFFFFFull);
-                } else
+                else
                     newConstArray[i].setU64Const(leftUnionArray[i].getU64Const() / rightUnionArray[i].getU64Const());
                 break;
             default:
@@ -407,8 +415,8 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
 
     case EOpEmitStreamVertex:
     case EOpEndStreamPrimitive:
-        // These don't actually fold
-        return 0;
+        // These don't fold
+        return nullptr;
 
     case EOpPackSnorm2x16:
     case EOpPackUnorm2x16:
@@ -483,8 +491,6 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         break;
     }
 
-    // TODO: 3.0 Functionality: unary constant folding: the rest of the ops have to be fleshed out
-
     case EOpPackSnorm2x16:
     case EOpPackUnorm2x16:
     case EOpPackHalf2x16:
@@ -502,7 +508,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
     case EOpDeterminant:
     case EOpMatrixInverse:
     case EOpTranspose:
-        return 0;
+        return nullptr;
 
     default:
         assert(componentWise);
@@ -530,7 +536,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             case EbtInt64: newConstArray[i].setI64Const(-unionArray[i].getI64Const()); break;
             case EbtUint64: newConstArray[i].setU64Const(static_cast<unsigned long long>(-static_cast<long long>(unionArray[i].getU64Const())));  break;
             default:
-                return 0;
+                return nullptr;
             }
             break;
         case EOpLogicalNot:
@@ -538,7 +544,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             switch (getType().getBasicType()) {
             case EbtBool:  newConstArray[i].setBConst(!unionArray[i].getBConst()); break;
             default:
-                return 0;
+                return nullptr;
             }
             break;
         case EOpBitwiseNot:
@@ -663,6 +669,283 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
             break;
         }
 
+        case EOpConvInt8ToBool:
+            newConstArray[i].setBConst(unionArray[i].getI8Const() != 0); break;
+        case EOpConvUint8ToBool:
+            newConstArray[i].setBConst(unionArray[i].getU8Const() != 0); break;
+        case EOpConvInt16ToBool:
+            newConstArray[i].setBConst(unionArray[i].getI16Const() != 0); break;
+        case EOpConvUint16ToBool:
+            newConstArray[i].setBConst(unionArray[i].getU16Const() != 0); break;
+        case EOpConvIntToBool:
+            newConstArray[i].setBConst(unionArray[i].getIConst() != 0); break;
+        case EOpConvUintToBool:
+            newConstArray[i].setBConst(unionArray[i].getUConst() != 0); break;
+        case EOpConvInt64ToBool:
+            newConstArray[i].setBConst(unionArray[i].getI64Const() != 0); break;
+        case EOpConvUint64ToBool:
+            newConstArray[i].setBConst(unionArray[i].getI64Const() != 0); break;
+        case EOpConvFloat16ToBool:
+            newConstArray[i].setBConst(unionArray[i].getDConst() != 0); break;
+        case EOpConvFloatToBool:
+            newConstArray[i].setBConst(unionArray[i].getDConst() != 0); break;
+        case EOpConvDoubleToBool:
+            newConstArray[i].setBConst(unionArray[i].getDConst() != 0); break;
+
+        case EOpConvBoolToInt8:
+            newConstArray[i].setI8Const(unionArray[i].getBConst()); break;
+        case EOpConvBoolToUint8:
+            newConstArray[i].setU8Const(unionArray[i].getBConst()); break;
+        case EOpConvBoolToInt16:
+            newConstArray[i].setI16Const(unionArray[i].getBConst()); break;
+        case EOpConvBoolToUint16:
+            newConstArray[i].setU16Const(unionArray[i].getBConst()); break;
+        case EOpConvBoolToInt:
+            newConstArray[i].setIConst(unionArray[i].getBConst()); break;
+        case EOpConvBoolToUint:
+            newConstArray[i].setUConst(unionArray[i].getBConst()); break;
+        case EOpConvBoolToInt64:
+            newConstArray[i].setI64Const(unionArray[i].getBConst()); break;
+        case EOpConvBoolToUint64:
+            newConstArray[i].setU64Const(unionArray[i].getBConst()); break;
+        case EOpConvBoolToFloat16:
+            newConstArray[i].setDConst(unionArray[i].getBConst()); break;
+        case EOpConvBoolToFloat:
+            newConstArray[i].setDConst(unionArray[i].getBConst()); break;
+        case EOpConvBoolToDouble:
+            newConstArray[i].setDConst(unionArray[i].getBConst()); break;
+
+        case EOpConvInt8ToInt16:
+            newConstArray[i].setI16Const(unionArray[i].getI8Const()); break;
+        case EOpConvInt8ToInt:
+            newConstArray[i].setIConst(unionArray[i].getI8Const()); break;
+        case EOpConvInt8ToInt64:
+            newConstArray[i].setI64Const(unionArray[i].getI8Const()); break;
+        case EOpConvInt8ToUint8:
+            newConstArray[i].setU8Const(unionArray[i].getI8Const()); break;
+        case EOpConvInt8ToUint16:
+            newConstArray[i].setU16Const(unionArray[i].getI8Const()); break;
+        case EOpConvInt8ToUint:
+            newConstArray[i].setUConst(unionArray[i].getI8Const()); break;
+        case EOpConvInt8ToUint64:
+            newConstArray[i].setU64Const(unionArray[i].getI8Const()); break;
+        case EOpConvUint8ToInt8:
+            newConstArray[i].setI8Const(unionArray[i].getU8Const()); break;
+        case EOpConvUint8ToInt16:
+            newConstArray[i].setI16Const(unionArray[i].getU8Const()); break;
+        case EOpConvUint8ToInt:
+            newConstArray[i].setIConst(unionArray[i].getU8Const()); break;
+        case EOpConvUint8ToInt64:
+            newConstArray[i].setI64Const(unionArray[i].getU8Const()); break;
+        case EOpConvUint8ToUint16:
+            newConstArray[i].setU16Const(unionArray[i].getU8Const()); break;
+        case EOpConvUint8ToUint:
+            newConstArray[i].setUConst(unionArray[i].getU8Const()); break;
+        case EOpConvUint8ToUint64:
+            newConstArray[i].setU64Const(unionArray[i].getU8Const()); break;
+        case EOpConvInt8ToFloat16:
+            newConstArray[i].setDConst(unionArray[i].getI8Const()); break;
+        case EOpConvInt8ToFloat:
+            newConstArray[i].setDConst(unionArray[i].getI8Const()); break;
+        case EOpConvInt8ToDouble:
+            newConstArray[i].setDConst(unionArray[i].getI8Const()); break;
+        case EOpConvUint8ToFloat16:
+            newConstArray[i].setDConst(unionArray[i].getU8Const()); break;
+        case EOpConvUint8ToFloat:
+            newConstArray[i].setDConst(unionArray[i].getU8Const()); break;
+        case EOpConvUint8ToDouble:
+            newConstArray[i].setDConst(unionArray[i].getU8Const()); break;
+
+        case EOpConvInt16ToInt8:
+            newConstArray[i].setI8Const(static_cast<signed char>(unionArray[i].getI16Const())); break;
+        case EOpConvInt16ToInt:
+            newConstArray[i].setIConst(unionArray[i].getI16Const()); break;
+        case EOpConvInt16ToInt64:
+            newConstArray[i].setI64Const(unionArray[i].getI16Const()); break;
+        case EOpConvInt16ToUint8:
+            newConstArray[i].setU8Const(static_cast<unsigned char>(unionArray[i].getI16Const())); break;
+        case EOpConvInt16ToUint16:
+            newConstArray[i].setU16Const(unionArray[i].getI16Const()); break;
+        case EOpConvInt16ToUint:
+            newConstArray[i].setUConst(unionArray[i].getI16Const()); break;
+        case EOpConvInt16ToUint64:
+            newConstArray[i].setU64Const(unionArray[i].getI16Const()); break;
+        case EOpConvUint16ToInt8:
+            newConstArray[i].setI8Const(static_cast<signed char>(unionArray[i].getU16Const())); break;
+        case EOpConvUint16ToInt16:
+            newConstArray[i].setI16Const(unionArray[i].getU16Const()); break;
+        case EOpConvUint16ToInt:
+            newConstArray[i].setIConst(unionArray[i].getU16Const()); break;
+        case EOpConvUint16ToInt64:
+            newConstArray[i].setI64Const(unionArray[i].getU16Const()); break;
+        case EOpConvUint16ToUint8:
+            newConstArray[i].setU8Const(static_cast<unsigned char>(unionArray[i].getU16Const())); break;
+
+        case EOpConvUint16ToUint:
+            newConstArray[i].setUConst(unionArray[i].getU16Const()); break;
+        case EOpConvUint16ToUint64:
+            newConstArray[i].setU64Const(unionArray[i].getU16Const()); break;
+        case EOpConvInt16ToFloat16:
+            newConstArray[i].setDConst(unionArray[i].getI16Const()); break;
+        case EOpConvInt16ToFloat:
+            newConstArray[i].setDConst(unionArray[i].getI16Const()); break;
+        case EOpConvInt16ToDouble:
+            newConstArray[i].setDConst(unionArray[i].getI16Const()); break;
+        case EOpConvUint16ToFloat16:
+            newConstArray[i].setDConst(unionArray[i].getU16Const()); break;
+        case EOpConvUint16ToFloat:
+            newConstArray[i].setDConst(unionArray[i].getU16Const()); break;
+        case EOpConvUint16ToDouble:
+            newConstArray[i].setDConst(unionArray[i].getU16Const()); break;
+
+        case EOpConvIntToInt8:
+            newConstArray[i].setI8Const((signed char)unionArray[i].getIConst()); break;
+        case EOpConvIntToInt16:
+            newConstArray[i].setI16Const((signed short)unionArray[i].getIConst()); break;
+        case EOpConvIntToInt64:
+            newConstArray[i].setI64Const(unionArray[i].getIConst()); break;
+        case EOpConvIntToUint8:
+            newConstArray[i].setU8Const((unsigned char)unionArray[i].getIConst()); break;
+        case EOpConvIntToUint16:
+            newConstArray[i].setU16Const((unsigned char)unionArray[i].getIConst()); break;
+        case EOpConvIntToUint:
+            newConstArray[i].setUConst(unionArray[i].getIConst()); break;
+        case EOpConvIntToUint64:
+            newConstArray[i].setU64Const(unionArray[i].getIConst()); break;
+
+        case EOpConvUintToInt8:
+            newConstArray[i].setI8Const((signed char)unionArray[i].getUConst()); break;
+        case EOpConvUintToInt16:
+            newConstArray[i].setI16Const((signed short)unionArray[i].getUConst()); break;
+        case EOpConvUintToInt:
+            newConstArray[i].setIConst(unionArray[i].getUConst()); break;
+        case EOpConvUintToInt64:
+            newConstArray[i].setI64Const(unionArray[i].getUConst()); break;
+        case EOpConvUintToUint8:
+            newConstArray[i].setU8Const((unsigned char)unionArray[i].getUConst()); break;
+        case EOpConvUintToUint16:
+            newConstArray[i].setU16Const((unsigned short)unionArray[i].getUConst()); break;
+        case EOpConvUintToUint64:
+            newConstArray[i].setU64Const(unionArray[i].getUConst()); break;
+        case EOpConvIntToFloat16:
+            newConstArray[i].setDConst(unionArray[i].getIConst()); break;
+        case EOpConvIntToFloat:
+            newConstArray[i].setDConst(unionArray[i].getIConst()); break;
+        case EOpConvIntToDouble:
+            newConstArray[i].setDConst(unionArray[i].getIConst()); break;
+        case EOpConvUintToFloat16:
+            newConstArray[i].setDConst(unionArray[i].getUConst()); break;
+        case EOpConvUintToFloat:
+            newConstArray[i].setDConst(unionArray[i].getUConst()); break;
+        case EOpConvUintToDouble:
+            newConstArray[i].setDConst(unionArray[i].getUConst()); break;
+        case EOpConvInt64ToInt8:
+            newConstArray[i].setI8Const(static_cast<signed char>(unionArray[i].getI64Const())); break;
+        case EOpConvInt64ToInt16:
+            newConstArray[i].setI16Const(static_cast<signed short>(unionArray[i].getI64Const())); break;
+        case EOpConvInt64ToInt:
+            newConstArray[i].setIConst(static_cast<int>(unionArray[i].getI64Const())); break;
+        case EOpConvInt64ToUint8:
+            newConstArray[i].setU8Const(static_cast<unsigned char>(unionArray[i].getI64Const())); break;
+        case EOpConvInt64ToUint16:
+            newConstArray[i].setU16Const(static_cast<unsigned short>(unionArray[i].getI64Const())); break;
+        case EOpConvInt64ToUint:
+            newConstArray[i].setUConst(static_cast<unsigned int>(unionArray[i].getI64Const())); break;
+        case EOpConvInt64ToUint64:
+            newConstArray[i].setU64Const(unionArray[i].getI64Const()); break;
+        case EOpConvUint64ToInt8:
+            newConstArray[i].setI8Const(static_cast<signed char>(unionArray[i].getU64Const())); break;
+        case EOpConvUint64ToInt16:
+            newConstArray[i].setI16Const(static_cast<signed short>(unionArray[i].getU64Const())); break;
+        case EOpConvUint64ToInt:
+            newConstArray[i].setIConst(static_cast<int>(unionArray[i].getU64Const())); break;
+        case EOpConvUint64ToInt64:
+            newConstArray[i].setI64Const(unionArray[i].getU64Const()); break;
+        case EOpConvUint64ToUint8:
+            newConstArray[i].setU8Const(static_cast<unsigned char>(unionArray[i].getU64Const())); break;
+        case EOpConvUint64ToUint16:
+            newConstArray[i].setU16Const(static_cast<unsigned short>(unionArray[i].getU64Const())); break;
+        case EOpConvUint64ToUint:
+            newConstArray[i].setUConst(static_cast<unsigned int>(unionArray[i].getU64Const())); break;
+        case EOpConvInt64ToFloat16:
+            newConstArray[i].setDConst(static_cast<double>(unionArray[i].getI64Const())); break;
+        case EOpConvInt64ToFloat:
+            newConstArray[i].setDConst(static_cast<double>(unionArray[i].getI64Const())); break;
+        case EOpConvInt64ToDouble:
+            newConstArray[i].setDConst(static_cast<double>(unionArray[i].getI64Const())); break;
+        case EOpConvUint64ToFloat16:
+            newConstArray[i].setDConst(static_cast<double>(unionArray[i].getU64Const())); break;
+        case EOpConvUint64ToFloat:
+            newConstArray[i].setDConst(static_cast<double>(unionArray[i].getU64Const())); break;
+        case EOpConvUint64ToDouble:
+            newConstArray[i].setDConst(static_cast<double>(unionArray[i].getU64Const())); break;
+        case EOpConvFloat16ToInt8:
+            newConstArray[i].setI8Const(static_cast<signed char>(unionArray[i].getDConst())); break;
+        case EOpConvFloat16ToInt16:
+            newConstArray[i].setI16Const(static_cast<signed short>(unionArray[i].getDConst())); break;
+        case EOpConvFloat16ToInt:
+            newConstArray[i].setIConst(static_cast<int>(unionArray[i].getDConst())); break;
+        case EOpConvFloat16ToInt64:
+            newConstArray[i].setI64Const(static_cast<long long>(unionArray[i].getDConst())); break;
+        case EOpConvFloat16ToUint8:
+            newConstArray[i].setU8Const(static_cast<unsigned char>(unionArray[i].getDConst())); break;
+        case EOpConvFloat16ToUint16:
+            newConstArray[i].setU16Const(static_cast<unsigned short>(unionArray[i].getDConst())); break;
+        case EOpConvFloat16ToUint:
+            newConstArray[i].setUConst(static_cast<unsigned int>(unionArray[i].getDConst())); break;
+        case EOpConvFloat16ToUint64:
+            newConstArray[i].setU64Const(static_cast<unsigned long long>(unionArray[i].getDConst())); break;
+        case EOpConvFloat16ToFloat:
+            newConstArray[i].setDConst(unionArray[i].getDConst()); break;
+        case EOpConvFloat16ToDouble:
+            newConstArray[i].setDConst(unionArray[i].getDConst()); break;
+        case EOpConvFloatToInt8:
+            newConstArray[i].setI8Const(static_cast<signed char>(unionArray[i].getDConst())); break;
+        case EOpConvFloatToInt16:
+            newConstArray[i].setI16Const(static_cast<signed short>(unionArray[i].getDConst())); break;
+        case EOpConvFloatToInt:
+            newConstArray[i].setIConst(static_cast<int>(unionArray[i].getDConst())); break;
+        case EOpConvFloatToInt64:
+            newConstArray[i].setI64Const(static_cast<long long>(unionArray[i].getDConst())); break;
+        case EOpConvFloatToUint8:
+            newConstArray[i].setU8Const(static_cast<unsigned char>(unionArray[i].getDConst())); break;
+        case EOpConvFloatToUint16:
+            newConstArray[i].setU16Const(static_cast<unsigned short>(unionArray[i].getDConst())); break;
+        case EOpConvFloatToUint:
+            newConstArray[i].setUConst(static_cast<unsigned int>(unionArray[i].getDConst())); break;
+        case EOpConvFloatToUint64:
+            newConstArray[i].setU64Const(static_cast<unsigned long long>(unionArray[i].getDConst())); break;
+        case EOpConvFloatToFloat16:
+            newConstArray[i].setDConst(unionArray[i].getDConst()); break;
+        case EOpConvFloatToDouble:
+            newConstArray[i].setDConst(unionArray[i].getDConst()); break;
+        case EOpConvDoubleToInt8:
+            newConstArray[i].setI8Const(static_cast<signed char>(unionArray[i].getDConst())); break;
+        case EOpConvDoubleToInt16:
+            newConstArray[i].setI16Const(static_cast<signed short>(unionArray[i].getDConst())); break;
+        case EOpConvDoubleToInt:
+            newConstArray[i].setIConst(static_cast<int>(unionArray[i].getDConst())); break;
+        case EOpConvDoubleToInt64:
+            newConstArray[i].setI64Const(static_cast<long long>(unionArray[i].getDConst())); break;
+        case EOpConvDoubleToUint8:
+            newConstArray[i].setU8Const(static_cast<unsigned char>(unionArray[i].getDConst())); break;
+        case EOpConvDoubleToUint16:
+            newConstArray[i].setU16Const(static_cast<unsigned short>(unionArray[i].getDConst())); break;
+        case EOpConvDoubleToUint:
+            newConstArray[i].setUConst(static_cast<unsigned int>(unionArray[i].getDConst())); break;
+        case EOpConvDoubleToUint64:
+            newConstArray[i].setU64Const(static_cast<unsigned long long>(unionArray[i].getDConst())); break;
+        case EOpConvDoubleToFloat16:
+            newConstArray[i].setDConst(unionArray[i].getDConst()); break;
+        case EOpConvDoubleToFloat:
+            newConstArray[i].setDConst(unionArray[i].getDConst()); break;
+        case EOpConvPtrToUint64:
+        case EOpConvUint64ToPtr:
+        case EOpConstructReference:
+            newConstArray[i].setU64Const(unionArray[i].getU64Const()); break;
+
+
+
         // TODO: 3.0 Functionality: unary constant folding: the rest of the ops have to be fleshed out
 
         case EOpSinh:
@@ -685,7 +968,7 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TType& returnType) 
         case EOpInt16BitsToFloat16:
         case EOpUint16BitsToFloat16:
         default:
-            return 0;
+            return nullptr;
         }
     }
 
@@ -916,12 +1199,17 @@ TIntermTyped* TIntermediate::fold(TIntermAggregate* aggrNode)
                 newConstArray[comp].setBConst(childConstUnions[0][arg0comp] != childConstUnions[1][arg1comp]);
                 break;
             case EOpMix:
-                if (children[2]->getAsTyped()->getBasicType() == EbtBool)
-                    newConstArray[comp].setDConst(childConstUnions[2][arg2comp].getBConst() ? childConstUnions[1][arg1comp].getDConst() :
-                                                                                              childConstUnions[0][arg0comp].getDConst());
-                else
-                    newConstArray[comp].setDConst(childConstUnions[0][arg0comp].getDConst() * (1.0 - childConstUnions[2][arg2comp].getDConst()) +
-                                                  childConstUnions[1][arg1comp].getDConst() *        childConstUnions[2][arg2comp].getDConst());
+                if (!children[0]->getAsTyped()->isFloatingDomain())
+                    return aggrNode;
+                if (children[2]->getAsTyped()->getBasicType() == EbtBool) {
+                    newConstArray[comp].setDConst(childConstUnions[2][arg2comp].getBConst()
+                        ? childConstUnions[1][arg1comp].getDConst()
+                        : childConstUnions[0][arg0comp].getDConst());
+                } else {
+                    newConstArray[comp].setDConst(
+                        childConstUnions[0][arg0comp].getDConst() * (1.0 - childConstUnions[2][arg2comp].getDConst()) +
+                        childConstUnions[1][arg1comp].getDConst() *        childConstUnions[2][arg2comp].getDConst());
+                }
                 break;
             case EOpStep:
                 newConstArray[comp].setDConst(childConstUnions[1][arg1comp].getDConst() < childConstUnions[0][arg0comp].getDConst() ? 0.0 : 1.0);
@@ -1073,7 +1361,9 @@ TIntermTyped* TIntermediate::foldDereference(TIntermTyped* node, int index, cons
     // arrays, vectors, matrices, all use simple multiplicative math
     // while structures need to add up heterogeneous members
     int start;
-    if (node->isArray() || ! node->isStruct())
+    if (node->getType().isCoopMat())
+        start = 0;
+    else if (node->isArray() || ! node->isStruct())
         start = size * index;
     else {
         // it is a structure

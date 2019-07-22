@@ -21,6 +21,7 @@ option(SKIP_GLSLANG_INSTALL "Skip installation" ${SKIP_GLSLANG_INSTALL})
 if(NOT ${SKIP_GLSLANG_INSTALL})
   set(ENABLE_GLSLANG_INSTALL ON)
 endif()
+option(ENABLE_SPVREMAPPER "Enables building of SPVRemapper" ON)
 
 option(ENABLE_AMD_EXTENSIONS "Enables support of AMD-specific extensions" ON)
 option(ENABLE_GLSLANG_BINARIES "Builds glslangValidator and spirv-remap" ON)
@@ -34,6 +35,26 @@ option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
     set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "..." FORCE)
 endif()
+
+option(USE_CCACHE "Use ccache" OFF)
+if(USE_CCACHE)
+    find_program(CCACHE_FOUND ccache)
+    if(CCACHE_FOUND)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    endif(CCACHE_FOUND)
+endif()
+
+# Precompiled header macro. Parameters are source file list and filename for pch cpp file.
+macro(glslang_pch SRCS PCHCPP)
+  if(MSVC AND CMAKE_GENERATOR MATCHES "^Visual Studio")
+    set(PCH_NAME "$(IntDir)\\pch.pch")
+    # make source files use/depend on PCH_NAME
+    set_source_files_properties(${${SRCS}} PROPERTIES COMPILE_FLAGS "/Yupch.h /FIpch.h /Fp${PCH_NAME} /Zm300" OBJECT_DEPENDS "${PCH_NAME}")
+    # make PCHCPP file compile and generate PCH_NAME
+    set_source_files_properties(${PCHCPP} PROPERTIES COMPILE_FLAGS "/Ycpch.h /Fp${PCH_NAME} /Zm300" OBJECT_OUTPUTS "${PCH_NAME}")
+    list(APPEND ${SRCS} "${PCHCPP}")
+  endif()
+endmacro(glslang_pch)
 
 project(glslang)
 # make testing optional
@@ -84,6 +105,8 @@ else()
     set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
+add_compile_options(-fno-rtti)
+
 function(glslang_set_link_args TARGET)
     # For MinGW compiles, statically link against the GCC and C++ runtimes.
     # This avoids the need to ship those runtimes as DLLs.
@@ -92,6 +115,12 @@ function(glslang_set_link_args TARGET)
                               LINK_FLAGS "-static -static-libgcc -static-libstdc++")
     endif()
 endfunction(glslang_set_link_args)
+
+# CMake needs to find the right version of python, right from the beginning,
+# otherwise, it will find the wrong version and fail later
+if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/External)
+    find_package(PythonInterp 3 REQUIRED)
+endif()
 
 # We depend on these for later projects, so they should come first.
 add_subdirectory(External)
