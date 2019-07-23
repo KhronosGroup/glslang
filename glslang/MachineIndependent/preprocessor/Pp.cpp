@@ -103,7 +103,8 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
         parseContext.ppError(ppToken->loc, "must be followed by macro name", "#define", "");
         return token;
     }
-    if (ppToken->loc.string >= 0) {
+    bool inUserCode(ppToken->loc.string >= 0);
+    if (inUserCode) {
         // We are in user code; check for reserved name use:
         parseContext.reservedPpErrorCheck(ppToken->loc, ppToken->name, "#define");
     }
@@ -206,8 +207,11 @@ int TPpContext::CPPdefine(TPpToken* ppToken)
             }
         }
         *existing = mac;
-    } else
+    } else {
         addMacroDef(defAtom, mac);
+        if (inUserCode && mac.args.empty() && mac.body.atEnd())
+            parseContext.intermediate.insertDeclaredNamedDefine(atomStrings.getString(defAtom));
+    }
 
     return '\n';
 }
@@ -268,6 +272,8 @@ int TPpContext::CPPelse(int matchelse, TPpToken* ppToken)
             } else {
                 ifdepth++;
                 elsetracker++;
+                if (nextAtom != PpAtomIf && scanToken(ppToken) == PpAtomIdentifier)
+                    parseContext.intermediate.insertAccessedNamedDefine(ppToken->name);
             }
         } else if (nextAtom == PpAtomEndif) {
             token = extraTokenCheck(nextAtom, ppToken, scanToken(ppToken));
@@ -440,7 +446,7 @@ int TPpContext::eval(int token, int precedence, bool shortCircuit, int& res, boo
 
                 return token;
             }
-
+            parseContext.intermediate.insertAccessedNamedDefine(ppToken->name);
             MacroSymbol* macro = lookupMacroDef(atomStrings.getAtom(ppToken->name));
             res = macro != nullptr ? !macro->undef : 0;
             token = scanToken(ppToken);
@@ -601,6 +607,7 @@ int TPpContext::CPPifdef(int defined, TPpToken* ppToken)
         else
             parseContext.ppError(ppToken->loc, "must be followed by macro name", "#ifndef", "");
     } else {
+        parseContext.intermediate.insertAccessedNamedDefine(ppToken->name);
         MacroSymbol* macro = lookupMacroDef(atomStrings.getAtom(ppToken->name));
         token = scanToken(ppToken);
         if (token != '\n') {

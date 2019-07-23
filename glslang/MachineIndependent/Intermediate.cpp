@@ -3836,6 +3836,14 @@ bool TIntermediate::specConstantPropagates(const TIntermTyped& node1, const TInt
            (node2.getType().getQualifier().isSpecConstant() && node1.getType().getQualifier().isConstant());
 }
 
+void TIntermediate::getAddDefines(std::unordered_set<std::string>& targetSet, const std::unordered_set<TString>& sourceSet) const
+{
+    targetSet.reserve(targetSet.size() + sourceSet.size());
+    for (auto& i : sourceSet)
+        targetSet.emplace(
+            i.c_str()); // need to convert from TString (pool-allocated) to normal std::basic_string, so it may be used after the pool is released
+}
+
 struct TextureUpgradeAndSamplerRemovalTransform : public TIntermTraverser {
     void visitSymbol(TIntermSymbol* symbol) override {
         if (symbol->getBasicType() == EbtSampler && symbol->getType().getSampler().isTexture()) {
