@@ -290,11 +290,11 @@ struct TSymbolValidater
 {
     TSymbolValidater(TIoMapResolver& r, TInfoSink& i, TVarLiveMap* in[EShLangCount], TVarLiveMap* out[EShLangCount],
                      TVarLiveMap* uniform[EShLangCount], bool& hadError)
-        : resolver(r)
-        , infoSink(i)
+        : preStage(EShLangCount)
         , currentStage(EShLangCount)
-        , preStage(EShLangCount)
         , nextStage(EShLangCount)
+        , resolver(r)
+        , infoSink(i)
         , hadError(hadError)
     {
         memcpy(inVarMaps, in, EShLangCount * (sizeof(TVarLiveMap*)));
