@@ -131,6 +131,7 @@ if(ENABLE_GLSLANG_WEB)
         set_target_properties(glslang.js PROPERTIES
           OUTPUT_NAME "glslang"
           SUFFIX ".js"
-          LINK_FLAGS "--bind")
+          LINK_FLAGS "--bind -s EXPORT_NAME=\"glslangModule\"")
+        em_link_pre_js(glslang.js ${CMAKE_CURRENT_SOURCE_DIR}/glslang.pre.js)
     endif(EMSCRIPTEN)
 endif(ENABLE_GLSLANG_WEB)
