@@ -359,7 +359,7 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
 
     switch (op) {
     case EOpLogicalNot:
-        if (source == EShSourceHlsl) {
+        if (getSource() == EShSourceHlsl) {
             break; // HLSL can promote logical not
         }
 
@@ -544,7 +544,7 @@ bool TIntermediate::isConversionAllowed(TOperator op, TIntermTyped* node) const
             break;
 
         // HLSL can assign samplers directly (no constructor)
-        if (source == EShSourceHlsl && node->getBasicType() == EbtSampler)
+        if (getSource() == EShSourceHlsl && node->getBasicType() == EbtSampler)
             break;
 
         // samplers can get assigned via a sampler constructor
@@ -921,7 +921,7 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
     case EOpLogicalAnd:
     case EOpLogicalOr:
     case EOpLogicalXor:
-        if (source == EShSourceHlsl)
+        if (getSource() == EShSourceHlsl)
             promoteTo = std::make_tuple(EbtBool, EbtBool);
         else
             return std::make_tuple(node0, node1);
@@ -932,7 +932,7 @@ TIntermediate::addConversion(TOperator op, TIntermTyped* node0, TIntermTyped* no
     // HLSL can promote bools to ints to make this work.
     case EOpLeftShift:
     case EOpRightShift:
-        if (source == EShSourceHlsl) {
+        if (getSource() == EShSourceHlsl) {
             TBasicType node0BasicType = node0->getBasicType();
             if (node0BasicType == EbtBool)
                 node0BasicType = EbtInt;
@@ -1133,7 +1133,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpLeftShiftAssign:
     case EOpRightShiftAssign:
     {
-        if (source == EShSourceHlsl && node->getType().getBasicType() == EbtBool)
+        if (getSource() == EShSourceHlsl && node->getType().getBasicType() == EbtBool)
             promoteTo = type.getBasicType();
         else {
             if (isTypeInt(type.getBasicType()) && isTypeInt(node->getBasicType()))
@@ -1179,7 +1179,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
 TIntermTyped* TIntermediate::addUniShapeConversion(TOperator op, const TType& type, TIntermTyped* node)
 {
     // some source languages don't do this
-    switch (source) {
+    switch (getSource()) {
     case EShSourceHlsl:
         break;
     case EShSourceGlsl:
@@ -1232,7 +1232,7 @@ TIntermTyped* TIntermediate::addUniShapeConversion(TOperator op, const TType& ty
 void TIntermediate::addBiShapeConversion(TOperator op, TIntermTyped*& lhsNode, TIntermTyped*& rhsNode)
 {
     // some source languages don't do this
-    switch (source) {
+    switch (getSource()) {
     case EShSourceHlsl:
         break;
     case EShSourceGlsl:
@@ -1335,7 +1335,7 @@ TIntermTyped* TIntermediate::addShapeConversion(const TType& type, TIntermTyped*
     // The new node that handles the conversion
     TOperator constructorOp = mapTypeToConstructorOp(type);
 
-    if (source == EShSourceHlsl) {
+    if (getSource() == EShSourceHlsl) {
         // HLSL rules for scalar, vector and matrix conversions:
         // 1) scalar can become anything, initializing every component with its value
         // 2) vector and matrix can become scalar, first element is used (warning: truncation)
@@ -1498,7 +1498,7 @@ bool TIntermediate::isIntegralConversion(TBasicType from, TBasicType to) const
     case EbtInt:
         switch(to) {
         case EbtUint:
-            return version >= 400 || (source == EShSourceHlsl);
+            return version >= 400 || getSource() == EShSourceHlsl;
         case EbtInt64:
         case EbtUint64:
             return true;
@@ -1588,7 +1588,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
 
     // TODO: Move more policies into language-specific handlers.
     // Some languages allow more general (or potentially, more specific) conversions under some conditions.
-    if (source == EShSourceHlsl) {
+    if (getSource() == EShSourceHlsl) {
         const bool fromConvertable = (from == EbtFloat || from == EbtDouble || from == EbtInt || from == EbtUint || from == EbtBool);
         const bool toConvertable = (to == EbtFloat || to == EbtDouble || to == EbtInt || to == EbtUint || to == EbtBool);
 
@@ -1655,7 +1655,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
         }
 
         // hlsl supported conversions
-        if (source == EShSourceHlsl) {
+        if (getSource() == EShSourceHlsl) {
             if (from == EbtBool && (to == EbtInt || to == EbtUint || to == EbtFloat))
                 return true;
         }
@@ -1687,7 +1687,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtFloat:
                  return true;
             case EbtBool:
-                 return (source == EShSourceHlsl);
+                 return (getSource() == EShSourceHlsl);
 #ifdef AMD_EXTENSIONS
             case EbtInt16:
             case EbtUint16:
@@ -1698,18 +1698,18 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
 #ifdef AMD_EXTENSIONS
                     extensionRequested(E_GL_AMD_gpu_shader_half_float) ||
 #endif
-                    (source == EShSourceHlsl);
+                    getSource() == EShSourceHlsl;
             default:
                  return false;
             }
         case EbtUint:
             switch (from) {
             case EbtInt:
-                 return version >= 400 || (source == EShSourceHlsl);
+                 return version >= 400 || getSource() == EShSourceHlsl;
             case EbtUint:
                 return true;
             case EbtBool:
-                return (source == EShSourceHlsl);
+                return getSource() == EShSourceHlsl;
 #ifdef AMD_EXTENSIONS
             case EbtInt16:
             case EbtUint16:
@@ -1723,7 +1723,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtInt:
                 return true;
             case EbtBool:
-                return (source == EShSourceHlsl);
+                return getSource() == EShSourceHlsl;
 #ifdef AMD_EXTENSIONS
             case EbtInt16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
@@ -1901,7 +1901,7 @@ std::tuple<TBasicType, TBasicType> TIntermediate::getConversionDestinatonType(TB
     if (profile == EEsProfile || version == 110)
         return std::make_tuple(res0, res1);;
 
-    if (source == EShSourceHlsl) {
+    if (getSource() == EShSourceHlsl) {
         if (canImplicitlyPromote(type1, type0, op)) {
             res0 = type0;
             res1 = type0;

@@ -943,6 +943,7 @@ struct TDefaultIoResolver : public TDefaultIoResolverBase {
     }
 };
 
+#ifdef ENABLE_HLSL
 /********************************************************************************
 The following IO resolver maps types in HLSL register space, as follows:
 
@@ -1023,6 +1024,7 @@ struct TDefaultHlslIoResolver : public TDefaultIoResolverBase {
         return ent.newBinding = -1;
     }
 };
+#endif
 
 // Map I/O variables to provided offsets, and make bindings for
 // unbound but live variables.
@@ -1044,6 +1046,7 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
         return false;
     // if no resolver is provided, use the default resolver with the given shifts and auto map settings
     TDefaultIoResolver defaultResolver(intermediate);
+#ifdef ENABLE_HLSL
     TDefaultHlslIoResolver defaultHlslResolver(intermediate);
     if (resolver == nullptr) {
         // TODO: use a passed in IO mapper for this
@@ -1053,6 +1056,10 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
             resolver = &defaultResolver;
     }
     resolver->addStage(stage);
+#else
+    resolver = &defaultResolver;
+#endif
+
     TVarLiveMap inVarMap, outVarMap, uniformVarMap;
     TVarLiveVector inVector, outVector, uniformVector;
     TVarGatherTraverser iter_binding_all(intermediate, true, inVarMap, outVarMap, uniformVarMap);

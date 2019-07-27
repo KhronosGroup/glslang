@@ -129,9 +129,13 @@ public:
     void getPreamble(std::string&);
     bool relaxedErrors()    const { return (messages & EShMsgRelaxedErrors) != 0; }
     bool suppressWarnings() const { return (messages & EShMsgSuppressWarnings) != 0; }
+#ifdef ENABLE_HLSL
     bool isReadingHLSL()    const { return (messages & EShMsgReadHlsl) == EShMsgReadHlsl; }
     bool hlslEnable16BitTypes() const { return (messages & EShMsgHlslEnable16BitTypes) != 0; }
     bool hlslDX9Compatible() const { return (messages & EShMsgHlslDX9Compatible) != 0; }
+#else
+    bool isReadingHLSL()    const { return false; }
+#endif
 
     TInfoSink& infoSink;
 

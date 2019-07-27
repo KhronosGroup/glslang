@@ -235,7 +235,11 @@ class TIntermediate {
 public:
     explicit TIntermediate(EShLanguage l, int v = 0, EProfile p = ENoProfile) :
         implicitThisName("@this"), implicitCounterName("@count"),
-        language(l), source(EShSourceNone), profile(p), version(v), treeRoot(0),
+        language(l),
+#ifdef ENABLE_HLSL
+        source(EShSourceNone),
+#endif
+        profile(p), version(v), treeRoot(0),
         numEntryPoints(0), numErrors(0), numPushConstants(0), recursive(false),
         invocations(TQualifier::layoutNotSet), vertices(TQualifier::layoutNotSet),
         inputPrimitive(ElgNone), outputPrimitive(ElgNone),
@@ -285,8 +289,13 @@ public:
     void output(TInfoSink&, bool tree);
     void removeTree();
 
+#ifdef ENABLE_HLSL
     void setSource(EShSource s) { source = s; }
     EShSource getSource() const { return source; }
+#else
+    void setSource(EShSource s) { assert(s == EShSourceGlsl); }
+    EShSource getSource() const { return EShSourceGlsl; }
+#endif
     void setEntryPointName(const char* ep)
     {
         entryPointName = ep;
@@ -842,7 +851,9 @@ protected:
     static const char* getResourceName(TResourceType);
 
     const EShLanguage language;  // stage, known at construction time
+#ifdef ENABLE_HLSL
     EShSource source;            // source language, known a bit later
+#endif
     std::string entryPointName;
     std::string entryPointMangledName;
     typedef std::list<TCall> TGraph;

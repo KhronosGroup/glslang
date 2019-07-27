@@ -833,13 +833,16 @@ bool ProcessDeferred(
 
     // Get all the stages, languages, clients, and other environment
     // stuff sorted out.
-    EShSource source = (messages & EShMsgReadHlsl) != 0 ? EShSourceHlsl : EShSourceGlsl;
+    EShSource sourceGuess = (messages & EShMsgReadHlsl) != 0 ? EShSourceHlsl : EShSourceGlsl;
     SpvVersion spvVersion;
     EShLanguage stage = compiler->getLanguage();
-    TranslateEnvironment(environment, messages, source, stage, spvVersion);
+    TranslateEnvironment(environment, messages, sourceGuess, stage, spvVersion);
 #ifdef ENABLE_HLSL
+    EShSource source = sourceGuess;
     if (environment != nullptr && environment->target.hlslFunctionality1)
         intermediate.setHlslFunctionality1();
+#else
+    const EShSource source = EShSourceGlsl;
 #endif
     // First, without using the preprocessor or parser, find the #version, so we know what
     // symbol tables, processing rules, etc. to set up.  This does not need the extra strings

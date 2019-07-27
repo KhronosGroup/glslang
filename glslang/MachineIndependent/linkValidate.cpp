@@ -106,9 +106,9 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
     if (language != unit.language)
         error(infoSink, "stages must match when linking into a single stage");
 
-    if (source == EShSourceNone)
-        source = unit.source;
-    if (source != unit.source)
+    if (getSource() == EShSourceNone)
+        setSource(unit.getSource());
+    if (getSource() != unit.getSource())
         error(infoSink, "can't link compilation units from different source languages");
 
     if (treeRoot == nullptr) {
@@ -609,7 +609,7 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
         return;
 
     if (numEntryPoints < 1) {
-        if (source == EShSourceGlsl)
+        if (getSource() == EShSourceGlsl)
             error(infoSink, "Missing entry point: Each stage requires one entry point");
         else
             warn(infoSink, "Entry point not found");
@@ -704,7 +704,7 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
             error(infoSink, "At least one shader must specify an output layout(vertices=...)");
         break;
     case EShLangTessEvaluation:
-        if (source == EShSourceGlsl) {
+        if (getSource() == EShSourceGlsl) {
             if (inputPrimitive == ElgNone)
                 error(infoSink, "At least one shader must specify an input layout primitive");
             if (vertexSpacing == EvsNone)
