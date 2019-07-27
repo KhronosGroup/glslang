@@ -142,6 +142,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
         ch = getChar();
         int firstDecimal = len;
 
+#ifdef ENABLE_HLSL
         // 1.#INF or -1.#INF
         if (ch == '#' && (ifdepth > 0 || parseContext.intermediate.getSource() == EShSourceHlsl)) {
             if ((len <  2) ||
@@ -169,6 +170,7 @@ int TPpContext::lFloatConst(int len, int ch, TPpToken* ppToken)
                 }
             }
         }
+#endif
 
         // Consume leading-zero digits after the decimal point
         while (ch == '0') {

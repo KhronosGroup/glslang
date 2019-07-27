@@ -376,26 +376,12 @@ public:
             processes.addProcess("no-storage-format");
     }
     bool getNoStorageFormat() const { return useUnknownFormat; }
-    void setHlslOffsets()
-    {
-        hlslOffsets = true;
-        if (hlslOffsets)
-            processes.addProcess("hlsl-offsets");
-    }
-    bool usingHlslOffsets() const { return hlslOffsets; }
     void setUseStorageBuffer()
     {
         useStorageBuffer = true;
         processes.addProcess("use-storage-buffer");
     }
     bool usingStorageBuffer() const { return useStorageBuffer; }
-    void setHlslIoMapping(bool b)
-    {
-        hlslIoMapping = b;
-        if (hlslIoMapping)
-            processes.addProcess("hlsl-iomap");
-    }
-    bool usingHlslIoMapping() { return hlslIoMapping; }
     void setUseVulkanMemoryModel()
     {
         useVulkanMemoryModel = true;
@@ -667,8 +653,28 @@ public:
     void setDepthReplacing() { depthReplacing = true; }
     bool isDepthReplacing() const { return depthReplacing; }
 
+#ifdef ENABLE_HLSL
     void setHlslFunctionality1() { hlslFunctionality1 = true; }
     bool getHlslFunctionality1() const { return hlslFunctionality1; }
+    void setHlslOffsets()
+    {
+        hlslOffsets = true;
+        if (hlslOffsets)
+            processes.addProcess("hlsl-offsets");
+    }
+    bool usingHlslOffsets() const { return hlslOffsets; }
+    void setHlslIoMapping(bool b)
+    {
+        hlslIoMapping = b;
+        if (hlslIoMapping)
+            processes.addProcess("hlsl-iomap");
+    }
+    bool usingHlslIoMapping() { return hlslIoMapping; }
+#else
+    bool getHlslFunctionality1() const { return false; }
+    bool usingHlslOffsets() const { return false; }
+    bool usingHlslIoMapping() { return false; }
+#endif
 
     void addBlendEquation(TBlendEquationShift b) { blendEquations |= (1 << b); }
     unsigned int getBlendEquations() const { return blendEquations; }

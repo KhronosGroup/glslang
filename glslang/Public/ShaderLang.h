@@ -432,7 +432,9 @@ public:
     void addUniformLocationOverride(const char* name, int loc);
     void setUniformLocationBase(int base);
     void setInvertY(bool invert);
+#ifdef ENABLE_HLSL
     void setHlslIoMapping(bool hlslIoMap);
+#endif
     void setFlattenUniformArrays(bool flatten);
     void setNoStorageFormat(bool useUnknownFormat);
     void setNanMinMaxClamp(bool nanMinMaxClamp);
@@ -459,8 +461,12 @@ public:
         environment.target.language = lang;
         environment.target.version = version;
     }
+#ifdef ENABLE_HLSL
     void setEnvTargetHlslFunctionality1() { environment.target.hlslFunctionality1 = true; }
     bool getEnvTargetHlslFunctionality1() const { return environment.target.hlslFunctionality1; }
+#else
+    bool getEnvTargetHlslFunctionality1() const { return false; }
+#endif
 
     // Interface to #include handlers.
     //

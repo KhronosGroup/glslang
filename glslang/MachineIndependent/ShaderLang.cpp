@@ -837,9 +837,10 @@ bool ProcessDeferred(
     SpvVersion spvVersion;
     EShLanguage stage = compiler->getLanguage();
     TranslateEnvironment(environment, messages, source, stage, spvVersion);
+#ifdef ENABLE_HLSL
     if (environment != nullptr && environment->target.hlslFunctionality1)
         intermediate.setHlslFunctionality1();
-
+#endif
     // First, without using the preprocessor or parser, find the #version, so we know what
     // symbol tables, processing rules, etc. to set up.  This does not need the extra strings
     // outlined above, just the user shader, after the system and user preambles.
@@ -887,8 +888,10 @@ bool ProcessDeferred(
     RecordProcesses(intermediate, messages, sourceEntryPointName);
     if (spvVersion.vulkan > 0)
         intermediate.setOriginUpperLeft();
+#ifdef ENABLE_HLSL
     if ((messages & EShMsgHlslOffsets) || source == EShSourceHlsl)
         intermediate.setHlslOffsets();
+#endif
     if (messages & EShMsgDebugInfo) {
         intermediate.setSourceFile(names[numPre]);
         for (int s = 0; s < numStrings; ++s) {
@@ -1788,7 +1791,9 @@ void TShader::setUniformLocationBase(int base)
     intermediate->setUniformLocationBase(base);
 }
 // See comment above TDefaultHlslIoMapper in iomapper.cpp:
+#ifdef ENABLE_HLSL
 void TShader::setHlslIoMapping(bool hlslIoMap)          { intermediate->setHlslIoMapping(hlslIoMap); }
+#endif
 void TShader::setFlattenUniformArrays(bool flatten)     { intermediate->setFlattenUniformArrays(flatten); }
 void TShader::setNoStorageFormat(bool useUnknownFormat) { intermediate->setNoStorageFormat(useUnknownFormat); }
 void TShader::setNanMinMaxClamp(bool useNonNan)         { intermediate->setNanMinMaxClamp(useNonNan); }
