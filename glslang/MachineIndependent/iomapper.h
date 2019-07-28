@@ -188,23 +188,23 @@ public:
     typedef std::map<TString, int> TVarSlotMap;  // <resourceName, location/binding>
     typedef std::map<int, TVarSlotMap> TSlotMap; // <resourceKey, TVarSlotMap>
     TDefaultGlslIoResolver(const TIntermediate& intermediate);
-    bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& /*ent*/) { return true; };
+    bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& /*ent*/) override { return true; };
     TResourceType getResourceType(const glslang::TType& type) override;
     int resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) override;
     int resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
-    int resolveBinding(EShLanguage /*stage*/, TVarEntryInfo& ent);
-    void beginResolve(EShLanguage /*stage*/);
-    void endResolve(EShLanguage stage);
+    int resolveBinding(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
+    void beginResolve(EShLanguage /*stage*/) override;
+    void endResolve(EShLanguage stage) override;
     void beginCollect(EShLanguage) override;
     void endCollect(EShLanguage) override;
-    void reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& infoSink);
-    void reserverResourceSlot(TVarEntryInfo& ent, TInfoSink& infoSink);
+    void reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& infoSink) override;
+    void reserverResourceSlot(TVarEntryInfo& ent, TInfoSink& infoSink) override;
     // in/out symbol and uniform symbol are stored in the same resourceSlotMap, the storage key is used to identify each type of symbol.
     // We use stage and storage qualifier to construct a storage key. it can help us identify the same storage resource used in different stage.
     // if a resource is a program resource and we don't need know it usage stage, we can use same stage to build storage key.
     // Note: both stage and type must less then 0xffff.
     int buildStorageKey(EShLanguage stage, TStorageQualifier type) {
-        assert(stage <= 0xffff && type <= 0xffff);
+        assert(static_cast<uint32_t>(stage) <= 0x0000ffff && static_cast<uint32_t>(type) <= 0x0000ffff);
         return (stage << 16) | type;
     };
 
