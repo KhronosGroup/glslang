@@ -1054,7 +1054,7 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
     }
     resolver->addStage(stage);
     TVarLiveMap inVarMap, outVarMap, uniformVarMap;
-    TVarLiveVector uniformVector;
+    TVarLiveVector inVector, outVector, uniformVector;
     TVarGatherTraverser iter_binding_all(intermediate, true, inVarMap, outVarMap, uniformVarMap);
     TVarGatherTraverser iter_binding_live(intermediate, false, inVarMap, outVarMap, uniformVarMap);
     root->traverse(&iter_binding_all);
@@ -1065,6 +1065,16 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
         function->traverse(&iter_binding_live);
     }
     // sort entries by priority. see TVarEntryInfo::TOrderByPriority for info.
+    std::for_each(inVarMap.begin(), inVarMap.end(),
+                  [&inVector](TVarLivePair p) { inVector.push_back(p); });
+    std::sort(inVector.begin(), inVector.end(), [](const TVarLivePair& p1, const TVarLivePair& p2) -> bool {
+        return TVarEntryInfo::TOrderByPriority()(p1.second, p2.second);
+    });
+    std::for_each(outVarMap.begin(), outVarMap.end(),
+                  [&outVector](TVarLivePair p) { outVector.push_back(p); });
+    std::sort(outVector.begin(), outVector.end(), [](const TVarLivePair& p1, const TVarLivePair& p2) -> bool {
+        return TVarEntryInfo::TOrderByPriority()(p1.second, p2.second);
+    });
     std::for_each(uniformVarMap.begin(), uniformVarMap.end(),
                   [&uniformVector](TVarLivePair p) { uniformVector.push_back(p); });
     std::sort(uniformVector.begin(), uniformVector.end(), [](const TVarLivePair& p1, const TVarLivePair& p2) -> bool {
@@ -1076,13 +1086,23 @@ bool TIoMapper::addStage(EShLanguage stage, TIntermediate& intermediate, TInfoSi
     TResolverUniformAdaptor uniformResolve(stage, *resolver, infoSink, hadError);
     TResolverInOutAdaptor inOutResolve(stage, *resolver, infoSink, hadError);
     resolver->beginNotifications(stage);
-    std::for_each(inVarMap.begin(), inVarMap.end(), inOutNotify);
-    std::for_each(outVarMap.begin(), outVarMap.end(), inOutNotify);
+    std::for_each(inVector.begin(), inVector.end(), inOutNotify);
+    std::for_each(outVector.begin(), outVector.end(), inOutNotify);
     std::for_each(uniformVector.begin(), uniformVector.end(), uniformNotify);
     resolver->endNotifications(stage);
     resolver->beginResolve(stage);
-    std::for_each(inVarMap.begin(), inVarMap.end(), inOutResolve);
-    std::for_each(outVarMap.begin(), outVarMap.end(), inOutResolve);
+    std::for_each(inVector.begin(), inVector.end(), inOutResolve);
+    std::for_each(inVector.begin(), inVector.end(), [&inVarMap](TVarLivePair p) {
+        auto at = inVarMap.find(p.second.symbol->getName());
+        if (at != inVarMap.end())
+            at->second = p.second;
+    });
+    std::for_each(outVector.begin(), outVector.end(), inOutResolve);
+    std::for_each(outVector.begin(), outVector.end(), [&outVarMap](TVarLivePair p) {
+        auto at = outVarMap.find(p.second.symbol->getName());
+        if (at != outVarMap.end())
+            at->second = p.second;
+    });
     std::for_each(uniformVector.begin(), uniformVector.end(), uniformResolve);
     std::for_each(uniformVector.begin(), uniformVector.end(), [&uniformVarMap](TVarLivePair p) {
         auto at = uniformVarMap.find(p.second.symbol->getName());
