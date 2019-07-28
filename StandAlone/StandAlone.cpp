@@ -146,11 +146,13 @@ void ProcessConfigFile()
 {
     if (ConfigFile.size() == 0)
         Resources = glslang::DefaultTBuiltInResource;
+#ifndef GLSLANG_WEB
     else {
         char* configString = ReadFileData(ConfigFile.c_str());
         glslang::DecodeResourceLimits(&Resources,  configString);
         FreeFileData(configString);
     }
+#endif
 }
 
 int ReflectOptions = EShReflectionDefault;
@@ -1118,8 +1120,10 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                         } else {
                             glslang::OutputSpvBin(spirv, GetBinaryName((EShLanguage)stage));
                         }
+#ifndef GLSLANG_WEB
                         if (!SpvToolsDisassembler && (Options & EOptionHumanReadableSpv))
                             spv::Disassemble(std::cout, spirv);
+#endif
                     }
                 }
             }
@@ -1207,11 +1211,13 @@ int singleMain()
         workList.add(item.get());
     });
 
+#ifndef GLSLANG_WEB
     if (Options & EOptionDumpConfig) {
         printf("%s", glslang::GetDefaultTBuiltInResourceString().c_str());
         if (workList.empty())
             return ESuccess;
     }
+#endif
 
     if (Options & EOptionDumpBareVersion) {
         printf("%d.%d.%d\n",

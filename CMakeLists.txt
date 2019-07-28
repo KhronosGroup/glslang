@@ -79,6 +79,10 @@ if(ENABLE_HLSL)
     add_definitions(-DENABLE_HLSL)
 endif(ENABLE_HLSL)
 
+if(ENABLE_GLSLANG_WEB)
+    add_definitions(-DGLSLANG_WEB)
+endif(ENABLE_GLSLANG_WEB)
+
 if(WIN32)
     set(CMAKE_DEBUG_POSTFIX "d")
     if(MSVC)

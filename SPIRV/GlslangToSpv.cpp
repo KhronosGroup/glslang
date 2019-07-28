@@ -1592,9 +1592,11 @@ void TGlslangToSpvTraverser::finishSpv()
     for (auto it = iOSet.cbegin(); it != iOSet.cend(); ++it)
         entryPoint->addIdOperand(*it);
 
+#ifndef GLSLANG_WEB
     // Add capabilities, extensions, remove unneeded decorations, etc., 
     // based on the resulting SPIR-V.
     builder.postProcess();
+#endif
 }
 
 // Write the SPV into 'out'.

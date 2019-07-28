@@ -2729,6 +2729,7 @@ bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/)
     if (aggRoot && aggRoot->getOp() == EOpNull)
         aggRoot->setOperator(EOpSequence);
 
+#ifndef GLSLANG_WEB
     // Propagate 'noContraction' label in backward from 'precise' variables.
     glslang::PropagateNoContraction(*this);
 
@@ -2739,6 +2740,7 @@ bool TIntermediate::postProcess(TIntermNode* root, EShLanguage /*language*/)
         performTextureUpgradeAndSamplerRemovalTransformation(root);
         break;
     }
+#endif
 
     return true;
 }

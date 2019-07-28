@@ -2089,6 +2089,7 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
     if (parameters.lod)
         query->addIdOperand(parameters.lod);
     buildPoint->addInstruction(std::unique_ptr<Instruction>(query));
+    addCapability(CapabilityImageQuery);
 
     return query->getResultId();
 }
