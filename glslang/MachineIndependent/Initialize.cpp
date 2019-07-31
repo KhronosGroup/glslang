@@ -64,6 +64,357 @@ const bool ForwardCompatibility = false;
 // Using PureOperatorBuiltins=false is deprecated.
 bool PureOperatorBuiltins = true;
 
+namespace {
+
+//
+// A set of definitions for tabling of the built-in functions.
+//
+
+// Order matters here, as does correlation with the subsequent
+// "const int ..." declarations and the ArgType enumerants.
+const char* TypeString[] = {
+   "bool",  "bvec2", "bvec3", "bvec4",
+   "float",  "vec2",  "vec3",  "vec4",
+   "int",   "ivec2", "ivec3", "ivec4",
+   "uint",  "uvec2", "uvec3", "uvec4",
+};
+const int TypeStringCount = sizeof(TypeString) / sizeof(char*); // number of entries in 'TypeString'
+const int TypeStringRowShift = 2;                               // shift amount to go downe one row in 'TypeString'
+const int TypeStringColumnMask = (1 << TypeStringRowShift) - 1; // reduce type to its column number in 'TypeString'
+const int TypeStringScalarMask = ~TypeStringColumnMask;         // take type to its scalar column in 'TypeString'
+
+enum ArgType {
+    // numbers hardcoded to correspond to 'TypeString'; order and value matter
+    TypeB =   1 << 0,  // Boolean
+    TypeF =   1 << 1,  // float 32
+    TypeI =   1 << 2,  // int 32
+    TypeU =   1 << 3,  // uint 32
+    TypeF16 = 1 << 4,  // float 16
+    TypeF64 = 1 << 5,  // float 64
+    TypeI8  = 1 << 6,  // int 8
+    TypeI16 = 1 << 7,  // int 16
+    TypeI64 = 1 << 8,  // int 64
+    TypeU8  = 1 << 9,  // uint 8
+    TypeU16 = 1 << 10, // uint 16
+    TypeU64 = 1 << 11, // uint 64
+};
+// Mixtures of the above, to help the function tables
+const ArgType TypeFI  = static_cast<ArgType>(TypeF | TypeI);
+const ArgType TypeFIB = static_cast<ArgType>(TypeF | TypeI | TypeB);
+const ArgType TypeIU  = static_cast<ArgType>(TypeI | TypeU);
+
+// The relationships between arguments and return type, whether anything is
+// output, or other unusual situations.
+enum ArgClass {
+    ClassRegular = 0,    // nothing special, just all vector widths with matching return type; traditional arithmetic
+    ClassLS   = 1 << 1,  // the last argument is also held fixed as a (type-matched) scalar while the others cycle
+    ClassLS2  = 1 << 2,  // the last two arguments are held fixed as a (type-matched) scalar while the others cycle
+    ClassFS   = 1 << 3,  // the first argument is held fixed as a (type-matched) scalar while the others cycle
+    ClassFS2  = 1 << 4,  // the first two arguments are held fixed as a (type-matched) scalar while the others cycle
+    ClassLO   = 1 << 5,  // the last argument is an output
+    ClassB    = 1 << 6,  // return type cycles through only bool/bvec, matching vector width of args
+    ClassLB   = 1 << 7,  // last argument cycles through only bool/bvec, matching vector width of args
+    ClassV1   = 1 << 8,  // scalar only
+    ClassFIO  = 1 << 9,  // first argument is inout
+    ClassRS   = 1 << 10, // the return is held scalar as the arguments cycle
+    ClassNS   = 1 << 11, // no scalar prototype
+    ClassCV   = 1 << 12, // first argument is 'coherent volatile'
+    ClassFO   = 1 << 13, // first argument is output
+    ClassV3   = 1 << 14, // vec3 only
+};
+// Mixtures of the above, to help the function tables
+const ArgClass ClassV1FIOCV = (ArgClass)(ClassV1 | ClassFIO | ClassCV);
+const ArgClass ClassV1FOCV  = (ArgClass)(ClassV1 | ClassFO  | ClassCV);
+const ArgClass ClassV1CV    = (ArgClass)(ClassV1 | ClassCV);
+const ArgClass ClassBNS     = (ArgClass)(ClassB  | ClassNS);
+const ArgClass ClassRSNS    = (ArgClass)(ClassRS | ClassNS);
+
+// A descriptor, for a single profile, of when something is available.
+// If the current profile does not match 'profile' mask below, the other fields
+// do not apply (nor validate).
+// profiles == EBadProfile is the end of an array of these
+struct Versioning {
+    EProfile profiles;       // the profile(s) (mask) that the following fields are valid for
+    int minExtendedVersion;  // earliest version when extensions are enabled; ignored if numExtensions is 0
+    int minCoreVersion;      // earliest version function is in core; 0 means never
+    int numExtensions;       // how many extensions are in the 'extensions' list
+    const char** extensions; // list of extension names enabling the function
+};
+
+EProfile EDesktopProfile = static_cast<EProfile>(ENoProfile | ECoreProfile | ECompatibilityProfile);
+
+// Declare pointers to put into the table for versioning.
+#ifdef GLSLANG_WEB
+    const Versioning* Es300Desktop130 = nullptr;
+#else
+    const Versioning Es300Desktop130Version[] = { { EEsProfile,      0, 300, 0, nullptr },
+                                                  { EDesktopProfile, 0, 130, 0, nullptr },
+                                                  { EBadProfile } };
+    const Versioning* Es300Desktop130 = &Es300Desktop130Version[0];
+    
+    const Versioning Es310Desktop430Version[] = { { EEsProfile,      0, 310, 0, nullptr },
+                                                  { EDesktopProfile, 0, 430, 0, nullptr },
+                                                  { EBadProfile } };
+    const Versioning* Es310Desktop430 = &Es310Desktop430Version[0];
+    
+    const Versioning Es310Desktop450Version[] = { { EEsProfile,      0, 310, 0, nullptr },
+                                                  { EDesktopProfile, 0, 450, 0, nullptr },
+                                                  { EBadProfile } };
+    const Versioning* Es310Desktop450 = &Es310Desktop450Version[0];
+#endif
+
+// The main descriptor of what a set of function prototypes can look like, and
+// a pointer to extra versioning information, when needed.
+struct BuiltInFunction {
+    TOperator op;                 // operator to map the name to
+    const char* name;             // function name
+    int numArguments;             // number of arguments (overloads with varying arguments need different entries)
+    ArgType types;                // ArgType mask
+    ArgClass classes;             // the ways this particular function entry manifests
+    const Versioning* versioning; // nullptr means always a valid version
+};
+
+// The tables can have the same built-in function name more than one time,
+// but the exact same prototype must be indicated at most once.
+// The prototypes that get declared are the union of all those indicated.
+// This is important when different releases add new prototypes for the same name.
+// It also also congnitively simpler tiling of the prototype space.
+// In practice, most names can be fully represented with one entry.
+//
+// Table is terminated by an OpNull TOperator.
+
+const BuiltInFunction BaseFunctions[] = {
+//    TOperator,           name,       arg-count,   ArgType,   ArgClass,     versioning
+//    ---------            ----        ---------    -------    --------      ----------
+    { EOpRadians,          "radians",          1,   TypeF,     ClassRegular, nullptr },
+    { EOpDegrees,          "degrees",          1,   TypeF,     ClassRegular, nullptr },
+    { EOpSin,              "sin",              1,   TypeF,     ClassRegular, nullptr },
+    { EOpCos,              "cos",              1,   TypeF,     ClassRegular, nullptr },
+    { EOpTan,              "tan",              1,   TypeF,     ClassRegular, nullptr },
+    { EOpAsin,             "asin",             1,   TypeF,     ClassRegular, nullptr },
+    { EOpAcos,             "acos",             1,   TypeF,     ClassRegular, nullptr },
+    { EOpAtan,             "atan",             2,   TypeF,     ClassRegular, nullptr },
+    { EOpAtan,             "atan",             1,   TypeF,     ClassRegular, nullptr },
+    { EOpPow,              "pow",              2,   TypeF,     ClassRegular, nullptr },
+    { EOpExp,              "exp",              1,   TypeF,     ClassRegular, nullptr },
+    { EOpLog,              "log",              1,   TypeF,     ClassRegular, nullptr },
+    { EOpExp2,             "exp2",             1,   TypeF,     ClassRegular, nullptr },
+    { EOpLog2,             "log2",             1,   TypeF,     ClassRegular, nullptr },
+    { EOpSqrt,             "sqrt",             1,   TypeF,     ClassRegular, nullptr },
+    { EOpInverseSqrt,      "inversesqrt",      1,   TypeF,     ClassRegular, nullptr },
+    { EOpAbs,              "abs",              1,   TypeF,     ClassRegular, nullptr },
+    { EOpSign,             "sign",             1,   TypeF,     ClassRegular, nullptr },
+    { EOpFloor,            "floor",            1,   TypeF,     ClassRegular, nullptr },
+    { EOpCeil,             "ceil",             1,   TypeF,     ClassRegular, nullptr },
+    { EOpFract,            "fract",            1,   TypeF,     ClassRegular, nullptr },
+    { EOpMod,              "mod",              2,   TypeF,     ClassLS,      nullptr },
+    { EOpMin,              "min",              2,   TypeF,     ClassLS,      nullptr },
+    { EOpMax,              "max",              2,   TypeF,     ClassLS,      nullptr },
+    { EOpClamp,            "clamp",            3,   TypeF,     ClassLS2,     nullptr },
+    { EOpMix,              "mix",              3,   TypeF,     ClassLS,      nullptr },
+    { EOpStep,             "step",             2,   TypeF,     ClassFS,      nullptr },
+    { EOpSmoothStep,       "smoothstep",       3,   TypeF,     ClassFS2,     nullptr },
+    { EOpNormalize,        "normalize",        1,   TypeF,     ClassRegular, nullptr },
+    { EOpFaceForward,      "faceforward",      3,   TypeF,     ClassRegular, nullptr },
+    { EOpReflect,          "reflect",          2,   TypeF,     ClassRegular, nullptr },
+    { EOpRefract,          "refract",          3,   TypeF,     ClassLS,      nullptr },
+    { EOpLength,           "length",           1,   TypeF,     ClassRS,      nullptr },
+    { EOpDistance,         "distance",         2,   TypeF,     ClassRS,      nullptr },
+    { EOpDot,              "dot",              2,   TypeF,     ClassRS,      nullptr },
+    { EOpCross,            "cross",            2,   TypeF,     ClassV3,      nullptr },
+    { EOpLessThan,         "lessThan",         2,   TypeFI,    ClassBNS,     nullptr },
+    { EOpLessThanEqual,    "lessThanEqual",    2,   TypeFI,    ClassBNS,     nullptr },
+    { EOpGreaterThan,      "greaterThan",      2,   TypeFI,    ClassBNS,     nullptr },
+    { EOpGreaterThanEqual, "greaterThanEqual", 2,   TypeFI,    ClassBNS,     nullptr },
+    { EOpVectorEqual,      "equal",            2,   TypeFIB,   ClassBNS,     nullptr },
+    { EOpVectorNotEqual,   "notEqual",         2,   TypeFIB,   ClassBNS,     nullptr },
+    { EOpAny,              "any",              1,   TypeB,     ClassRSNS,    nullptr },
+    { EOpAll,              "all",              1,   TypeB,     ClassRSNS,    nullptr },
+    { EOpVectorLogicalNot, "not",              1,   TypeB,     ClassNS,      nullptr },
+    { EOpSinh,             "sinh",             1,   TypeF,     ClassRegular, Es300Desktop130 },
+    { EOpCosh,             "cosh",             1,   TypeF,     ClassRegular, Es300Desktop130 },
+    { EOpTanh,             "tanh",             1,   TypeF,     ClassRegular, Es300Desktop130 },
+    { EOpAsinh,            "asinh",            1,   TypeF,     ClassRegular, Es300Desktop130 },
+    { EOpAcosh,            "acosh",            1,   TypeF,     ClassRegular, Es300Desktop130 },
+    { EOpAtanh,            "atanh",            1,   TypeF,     ClassRegular, Es300Desktop130 },
+    { EOpAbs,              "abs",              1,   TypeI,     ClassRegular, Es300Desktop130 },
+    { EOpSign,             "sign",             1,   TypeI,     ClassRegular, Es300Desktop130 },
+    { EOpTrunc,            "trunc",            1,   TypeF,     ClassRegular, Es300Desktop130 },
+    { EOpRound,            "round",            1,   TypeF,     ClassRegular, Es300Desktop130 },
+    { EOpRoundEven,        "roundEven",        1,   TypeF,     ClassRegular, Es300Desktop130 },
+    { EOpModf,             "modf",             2,   TypeF,     ClassLO,      Es300Desktop130 },
+    { EOpMin,              "min",              2,   TypeIU,    ClassLS,      Es300Desktop130 },
+    { EOpMax,              "max",              2,   TypeIU,    ClassLS,      Es300Desktop130 },
+    { EOpClamp,            "clamp",            3,   TypeIU,    ClassLS2,     Es300Desktop130 },
+    { EOpMix,              "mix",              3,   TypeF,     ClassLB,      Es300Desktop130 },
+    { EOpIsInf,            "isinf",            1,   TypeF,     ClassB,       Es300Desktop130 },
+    { EOpIsNan,            "isnan",            1,   TypeF,     ClassB,       Es300Desktop130 },
+    { EOpLessThan,         "lessThan",         2,   TypeU,     ClassBNS,     Es300Desktop130 },
+    { EOpLessThanEqual,    "lessThanEqual",    2,   TypeU,     ClassBNS,     Es300Desktop130 },
+    { EOpGreaterThan,      "greaterThan",      2,   TypeU,     ClassBNS,     Es300Desktop130 },
+    { EOpGreaterThanEqual, "greaterThanEqual", 2,   TypeU,     ClassBNS,     Es300Desktop130 },
+    { EOpVectorEqual,      "equal",            2,   TypeU,     ClassBNS,     Es300Desktop130 },
+    { EOpVectorNotEqual,   "notEqual",         2,   TypeU,     ClassBNS,     Es300Desktop130 },
+#ifndef GLSLANG_WEB
+    { EOpAtomicAdd,        "atomicAdd",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
+    { EOpAtomicMin,        "atomicMin",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
+    { EOpAtomicMax,        "atomicMax",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
+    { EOpAtomicAnd,        "atomicAnd",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
+    { EOpAtomicOr,         "atomicOr",         2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
+    { EOpAtomicXor,        "atomicXor",        2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
+    { EOpAtomicExchange,   "atomicExchange",   2,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
+    { EOpAtomicCompSwap,   "atomicCompSwap",   3,   TypeIU,    ClassV1FIOCV, Es310Desktop430 },
+    { EOpMix,              "mix",              3,   TypeB,     ClassRegular, Es310Desktop450 },
+    { EOpMix,              "mix",              3,   TypeIU,    ClassLB,      Es310Desktop450 },
+#endif
+    { EOpNull }
+};
+
+const BuiltInFunction DerivativeFunctions[] = {
+    { EOpDPdx,             "dFdx",             1,   TypeF,     ClassRegular, nullptr },
+    { EOpDPdy,             "dFdy",             1,   TypeF,     ClassRegular, nullptr },
+    { EOpFwidth,           "fwidth",           1,   TypeF,     ClassRegular, nullptr },
+    { EOpNull }
+};
+
+// For the given table of functions, add all the indicated prototypes for each
+// one, to be returned in the passed in decls.
+void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
+{
+    const auto isScalarType = [](int type) { return (type & TypeStringColumnMask) == 0; };
+
+    // loop across these two:
+    //  0: the varying arg set, and
+    //  1: the fixed scalar args
+    const ArgClass ClassFixed = (ArgClass)(ClassLS | ClassLS2 | ClassFS | ClassFS2);
+    for (int fixed = 0; fixed < ((function.classes & ClassFixed) > 0 ? 2 : 1); ++fixed) {
+
+        // walk the type strings in TypeString[]
+        for (int type = 0; type < TypeStringCount; ++type) {
+            // skip types not selected: go from type to row number to type bit
+            if ((function.types & (1 << (type >> TypeStringRowShift))) == 0)
+                continue;
+
+            // if we aren't on a scalar, and should be, skip
+            if ((function.classes & ClassV1) && !isScalarType(type))
+                continue;
+
+            // if we aren't on a 3-vector, and should be, skip
+            if ((function.classes & ClassV3) && (type & TypeStringColumnMask) != 2)
+                continue;
+
+            // skip replication of all scalars between the varying arg set and the fixed args
+            if (fixed == 1 && type == (type & TypeStringScalarMask))
+                continue;
+
+            // skip scalars when we are told to
+            if ((function.classes & ClassNS) && isScalarType(type))
+                continue;
+
+            // return type
+            if (function.classes & ClassB)
+                decls.append(TypeString[type & TypeStringColumnMask]);
+            else if (function.classes & ClassRS)
+                decls.append(TypeString[type & TypeStringScalarMask]);
+            else
+                decls.append(TypeString[type]);
+            decls.append(" ");
+            decls.append(function.name);
+            decls.append("(");
+
+            // arguments
+            for (int arg = 0; arg < function.numArguments; ++arg) {
+                if (arg == function.numArguments - 1 && (function.classes & ClassLO))
+                    decls.append("out ");
+                if (arg == 0) {
+                    if (function.classes & ClassCV)
+                        decls.append("coherent volatile ");
+                    if (function.classes & ClassFIO)
+                        decls.append("inout ");
+                    if (function.classes & ClassFO)
+                        decls.append("out ");
+                }
+                if ((function.classes & ClassLB) && arg == function.numArguments - 1)
+                    decls.append(TypeString[type & TypeStringColumnMask]);
+                else if (fixed && ((arg == function.numArguments - 1 && (function.classes & (ClassLS | ClassLS2))) ||
+                                   (arg == function.numArguments - 2 && (function.classes & ClassLS2))             ||
+                                   (arg == 0                         && (function.classes & (ClassFS | ClassFS2))) ||
+                                   (arg == 1                         && (function.classes & ClassFS2))))
+                    decls.append(TypeString[type & TypeStringScalarMask]);
+                else
+                    decls.append(TypeString[type]);
+                if (arg < function.numArguments - 1)
+                    decls.append(",");
+            }
+            decls.append(");\n");
+        }
+    }
+}
+
+// See if the tabled versioning information allows the current version.
+bool ValidVersion(const BuiltInFunction& function, int version, EProfile profile, const SpvVersion& spvVersion)
+{
+#ifdef GLSLANG_WEB
+    // all entries in table are valid
+    return true;
+#endif
+
+    // nullptr means always valid
+    if (function.versioning == nullptr)
+        return true;
+
+    // check for what is said about our current profile
+    for (const Versioning* v = function.versioning; v->profiles != EBadProfile; ++v) {
+        if ((v->profiles & profile) != 0) {
+            if (v->minCoreVersion <= version || (v->numExtensions > 0 && v->minExtendedVersion <= version))
+                return true;
+        }
+    }
+
+    return false;
+}
+
+// Relate a single table of built-ins to their AST operator.
+// This can get called redundantly (especially for the common built-ins, when
+// called once per stage). This is a performance issue only, not a correctness
+// concern.  It is done for quality arising from simplicity, as there are subtlies
+// to get correct if instead trying to do it surgically.
+void RelateTabledBuiltins(const BuiltInFunction* functions, TSymbolTable& symbolTable)
+{
+    while (functions->op != EOpNull) {
+        symbolTable.relateToOperator(functions->name, functions->op);
+        ++functions;
+    }
+}
+
+} // end anonymous namespace
+
+// Add declarations for all tables of built-in functions.
+void TBuiltIns::addTabledBuiltins(int version, EProfile profile, const SpvVersion& spvVersion)
+{
+    const auto forEachFunction = [&](TString& decls, const BuiltInFunction* function) {
+        while (function->op != EOpNull) {
+            if (ValidVersion(*function, version, profile, spvVersion))
+                AddTabledBuiltin(decls, *function);
+            ++function;
+        }
+    };
+
+    forEachFunction(commonBuiltins, BaseFunctions);
+    forEachFunction(stageBuiltins[EShLangFragment], DerivativeFunctions);
+
+    if ((profile == EEsProfile && version >= 320) || (profile != EEsProfile && version >= 450))
+        forEachFunction(stageBuiltins[EShLangCompute], DerivativeFunctions);
+}
+
+// Relate all tables of built-ins to the AST operators.
+void TBuiltIns::relateTabledBuiltins(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage stage,
+    TSymbolTable& symbolTable)
+{
+    RelateTabledBuiltins(BaseFunctions, symbolTable);
+    RelateTabledBuiltins(DerivativeFunctions, symbolTable);
+}
+
 inline bool IncludeLegacy(int version, EProfile profile, const SpvVersion& spvVersion)
 {
     return profile != EEsProfile && (version <= 130 || (spvVersion.spv == 0 && ARBCompatibility) || profile == ECompatibilityProfile);
@@ -122,6 +473,8 @@ TBuiltIns::~TBuiltIns()
 //
 void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvVersion)
 {
+    addTabledBuiltins(version, profile, spvVersion);
+
     //============================================================================
     //
     // Prototypes for built-in functions used repeatly by different shaders
@@ -131,23 +484,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     //
     // Derivatives Functions.
     //
-    TString derivatives (
-        "float dFdx(float p);"
-        "vec2  dFdx(vec2  p);"
-        "vec3  dFdx(vec3  p);"
-        "vec4  dFdx(vec4  p);"
-
-        "float dFdy(float p);"
-        "vec2  dFdy(vec2  p);"
-        "vec3  dFdy(vec3  p);"
-        "vec4  dFdy(vec4  p);"
-
-        "float fwidth(float p);"
-        "vec2  fwidth(vec2  p);"
-        "vec3  fwidth(vec3  p);"
-        "vec4  fwidth(vec4  p);"
-    );
-
     TString derivativeControls (
         "float dFdxFine(float p);"
         "vec2  dFdxFine(vec2  p);"
@@ -279,318 +615,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     // Prototypes for built-in functions seen by both vertex and fragment shaders.
     //
     //============================================================================
-
-    //
-    // Angle and Trigonometric Functions.
-    //
-    commonBuiltins.append(
-        "float radians(float degrees);"
-        "vec2  radians(vec2  degrees);"
-        "vec3  radians(vec3  degrees);"
-        "vec4  radians(vec4  degrees);"
-
-        "float degrees(float radians);"
-        "vec2  degrees(vec2  radians);"
-        "vec3  degrees(vec3  radians);"
-        "vec4  degrees(vec4  radians);"
-
-        "float sin(float angle);"
-        "vec2  sin(vec2  angle);"
-        "vec3  sin(vec3  angle);"
-        "vec4  sin(vec4  angle);"
-
-        "float cos(float angle);"
-        "vec2  cos(vec2  angle);"
-        "vec3  cos(vec3  angle);"
-        "vec4  cos(vec4  angle);"
-
-        "float tan(float angle);"
-        "vec2  tan(vec2  angle);"
-        "vec3  tan(vec3  angle);"
-        "vec4  tan(vec4  angle);"
-
-        "float asin(float x);"
-        "vec2  asin(vec2  x);"
-        "vec3  asin(vec3  x);"
-        "vec4  asin(vec4  x);"
-
-        "float acos(float x);"
-        "vec2  acos(vec2  x);"
-        "vec3  acos(vec3  x);"
-        "vec4  acos(vec4  x);"
-
-        "float atan(float y, float x);"
-        "vec2  atan(vec2  y, vec2  x);"
-        "vec3  atan(vec3  y, vec3  x);"
-        "vec4  atan(vec4  y, vec4  x);"
-
-        "float atan(float y_over_x);"
-        "vec2  atan(vec2  y_over_x);"
-        "vec3  atan(vec3  y_over_x);"
-        "vec4  atan(vec4  y_over_x);"
-
-        "\n");
-
-    if (version >= 130) {
-        commonBuiltins.append(
-            "float sinh(float angle);"
-            "vec2  sinh(vec2  angle);"
-            "vec3  sinh(vec3  angle);"
-            "vec4  sinh(vec4  angle);"
-
-            "float cosh(float angle);"
-            "vec2  cosh(vec2  angle);"
-            "vec3  cosh(vec3  angle);"
-            "vec4  cosh(vec4  angle);"
-
-            "float tanh(float angle);"
-            "vec2  tanh(vec2  angle);"
-            "vec3  tanh(vec3  angle);"
-            "vec4  tanh(vec4  angle);"
-
-            "float asinh(float x);"
-            "vec2  asinh(vec2  x);"
-            "vec3  asinh(vec3  x);"
-            "vec4  asinh(vec4  x);"
-
-            "float acosh(float x);"
-            "vec2  acosh(vec2  x);"
-            "vec3  acosh(vec3  x);"
-            "vec4  acosh(vec4  x);"
-
-            "float atanh(float y_over_x);"
-            "vec2  atanh(vec2  y_over_x);"
-            "vec3  atanh(vec3  y_over_x);"
-            "vec4  atanh(vec4  y_over_x);"
-
-            "\n");
-    }
-
-    //
-    // Exponential Functions.
-    //
-    commonBuiltins.append(
-        "float pow(float x, float y);"
-        "vec2  pow(vec2  x, vec2  y);"
-        "vec3  pow(vec3  x, vec3  y);"
-        "vec4  pow(vec4  x, vec4  y);"
-
-        "float exp(float x);"
-        "vec2  exp(vec2  x);"
-        "vec3  exp(vec3  x);"
-        "vec4  exp(vec4  x);"
-
-        "float log(float x);"
-        "vec2  log(vec2  x);"
-        "vec3  log(vec3  x);"
-        "vec4  log(vec4  x);"
-
-        "float exp2(float x);"
-        "vec2  exp2(vec2  x);"
-        "vec3  exp2(vec3  x);"
-        "vec4  exp2(vec4  x);"
-
-        "float log2(float x);"
-        "vec2  log2(vec2  x);"
-        "vec3  log2(vec3  x);"
-        "vec4  log2(vec4  x);"
-
-        "float sqrt(float x);"
-        "vec2  sqrt(vec2  x);"
-        "vec3  sqrt(vec3  x);"
-        "vec4  sqrt(vec4  x);"
-
-        "float inversesqrt(float x);"
-        "vec2  inversesqrt(vec2  x);"
-        "vec3  inversesqrt(vec3  x);"
-        "vec4  inversesqrt(vec4  x);"
-
-        "\n");
-
-    //
-    // Common Functions.
-    //
-    commonBuiltins.append(
-        "float abs(float x);"
-        "vec2  abs(vec2  x);"
-        "vec3  abs(vec3  x);"
-        "vec4  abs(vec4  x);"
-
-        "float sign(float x);"
-        "vec2  sign(vec2  x);"
-        "vec3  sign(vec3  x);"
-        "vec4  sign(vec4  x);"
-
-        "float floor(float x);"
-        "vec2  floor(vec2  x);"
-        "vec3  floor(vec3  x);"
-        "vec4  floor(vec4  x);"
-
-        "float ceil(float x);"
-        "vec2  ceil(vec2  x);"
-        "vec3  ceil(vec3  x);"
-        "vec4  ceil(vec4  x);"
-
-        "float fract(float x);"
-        "vec2  fract(vec2  x);"
-        "vec3  fract(vec3  x);"
-        "vec4  fract(vec4  x);"
-
-        "float mod(float x, float y);"
-        "vec2  mod(vec2  x, float y);"
-        "vec3  mod(vec3  x, float y);"
-        "vec4  mod(vec4  x, float y);"
-        "vec2  mod(vec2  x, vec2  y);"
-        "vec3  mod(vec3  x, vec3  y);"
-        "vec4  mod(vec4  x, vec4  y);"
-
-        "float min(float x, float y);"
-        "vec2  min(vec2  x, float y);"
-        "vec3  min(vec3  x, float y);"
-        "vec4  min(vec4  x, float y);"
-        "vec2  min(vec2  x, vec2  y);"
-        "vec3  min(vec3  x, vec3  y);"
-        "vec4  min(vec4  x, vec4  y);"
-
-        "float max(float x, float y);"
-        "vec2  max(vec2  x, float y);"
-        "vec3  max(vec3  x, float y);"
-        "vec4  max(vec4  x, float y);"
-        "vec2  max(vec2  x, vec2  y);"
-        "vec3  max(vec3  x, vec3  y);"
-        "vec4  max(vec4  x, vec4  y);"
-
-        "float clamp(float x, float minVal, float maxVal);"
-        "vec2  clamp(vec2  x, float minVal, float maxVal);"
-        "vec3  clamp(vec3  x, float minVal, float maxVal);"
-        "vec4  clamp(vec4  x, float minVal, float maxVal);"
-        "vec2  clamp(vec2  x, vec2  minVal, vec2  maxVal);"
-        "vec3  clamp(vec3  x, vec3  minVal, vec3  maxVal);"
-        "vec4  clamp(vec4  x, vec4  minVal, vec4  maxVal);"
-
-        "float mix(float x, float y, float a);"
-        "vec2  mix(vec2  x, vec2  y, float a);"
-        "vec3  mix(vec3  x, vec3  y, float a);"
-        "vec4  mix(vec4  x, vec4  y, float a);"
-        "vec2  mix(vec2  x, vec2  y, vec2  a);"
-        "vec3  mix(vec3  x, vec3  y, vec3  a);"
-        "vec4  mix(vec4  x, vec4  y, vec4  a);"
-
-        "float step(float edge, float x);"
-        "vec2  step(vec2  edge, vec2  x);"
-        "vec3  step(vec3  edge, vec3  x);"
-        "vec4  step(vec4  edge, vec4  x);"
-        "vec2  step(float edge, vec2  x);"
-        "vec3  step(float edge, vec3  x);"
-        "vec4  step(float edge, vec4  x);"
-
-        "float smoothstep(float edge0, float edge1, float x);"
-        "vec2  smoothstep(vec2  edge0, vec2  edge1, vec2  x);"
-        "vec3  smoothstep(vec3  edge0, vec3  edge1, vec3  x);"
-        "vec4  smoothstep(vec4  edge0, vec4  edge1, vec4  x);"
-        "vec2  smoothstep(float edge0, float edge1, vec2  x);"
-        "vec3  smoothstep(float edge0, float edge1, vec3  x);"
-        "vec4  smoothstep(float edge0, float edge1, vec4  x);"
-
-        "\n");
-
-    if (version >= 130) {
-        commonBuiltins.append(
-            "  int abs(  int x);"
-            "ivec2 abs(ivec2 x);"
-            "ivec3 abs(ivec3 x);"
-            "ivec4 abs(ivec4 x);"
-
-            "  int sign(  int x);"
-            "ivec2 sign(ivec2 x);"
-            "ivec3 sign(ivec3 x);"
-            "ivec4 sign(ivec4 x);"
-
-            "float trunc(float x);"
-            "vec2  trunc(vec2  x);"
-            "vec3  trunc(vec3  x);"
-            "vec4  trunc(vec4  x);"
-
-            "float round(float x);"
-            "vec2  round(vec2  x);"
-            "vec3  round(vec3  x);"
-            "vec4  round(vec4  x);"
-
-            "float roundEven(float x);"
-            "vec2  roundEven(vec2  x);"
-            "vec3  roundEven(vec3  x);"
-            "vec4  roundEven(vec4  x);"
-
-            "float modf(float, out float);"
-            "vec2  modf(vec2,  out vec2 );"
-            "vec3  modf(vec3,  out vec3 );"
-            "vec4  modf(vec4,  out vec4 );"
-
-            "  int min(int    x, int y);"
-            "ivec2 min(ivec2  x, int y);"
-            "ivec3 min(ivec3  x, int y);"
-            "ivec4 min(ivec4  x, int y);"
-            "ivec2 min(ivec2  x, ivec2  y);"
-            "ivec3 min(ivec3  x, ivec3  y);"
-            "ivec4 min(ivec4  x, ivec4  y);"
-
-            " uint min(uint   x, uint y);"
-            "uvec2 min(uvec2  x, uint y);"
-            "uvec3 min(uvec3  x, uint y);"
-            "uvec4 min(uvec4  x, uint y);"
-            "uvec2 min(uvec2  x, uvec2  y);"
-            "uvec3 min(uvec3  x, uvec3  y);"
-            "uvec4 min(uvec4  x, uvec4  y);"
-
-            "  int max(int    x, int y);"
-            "ivec2 max(ivec2  x, int y);"
-            "ivec3 max(ivec3  x, int y);"
-            "ivec4 max(ivec4  x, int y);"
-            "ivec2 max(ivec2  x, ivec2  y);"
-            "ivec3 max(ivec3  x, ivec3  y);"
-            "ivec4 max(ivec4  x, ivec4  y);"
-
-            " uint max(uint   x, uint y);"
-            "uvec2 max(uvec2  x, uint y);"
-            "uvec3 max(uvec3  x, uint y);"
-            "uvec4 max(uvec4  x, uint y);"
-            "uvec2 max(uvec2  x, uvec2  y);"
-            "uvec3 max(uvec3  x, uvec3  y);"
-            "uvec4 max(uvec4  x, uvec4  y);"
-
-            "int    clamp(int x, int minVal, int maxVal);"
-            "ivec2  clamp(ivec2  x, int minVal, int maxVal);"
-            "ivec3  clamp(ivec3  x, int minVal, int maxVal);"
-            "ivec4  clamp(ivec4  x, int minVal, int maxVal);"
-            "ivec2  clamp(ivec2  x, ivec2  minVal, ivec2  maxVal);"
-            "ivec3  clamp(ivec3  x, ivec3  minVal, ivec3  maxVal);"
-            "ivec4  clamp(ivec4  x, ivec4  minVal, ivec4  maxVal);"
-
-            "uint   clamp(uint x, uint minVal, uint maxVal);"
-            "uvec2  clamp(uvec2  x, uint minVal, uint maxVal);"
-            "uvec3  clamp(uvec3  x, uint minVal, uint maxVal);"
-            "uvec4  clamp(uvec4  x, uint minVal, uint maxVal);"
-            "uvec2  clamp(uvec2  x, uvec2  minVal, uvec2  maxVal);"
-            "uvec3  clamp(uvec3  x, uvec3  minVal, uvec3  maxVal);"
-            "uvec4  clamp(uvec4  x, uvec4  minVal, uvec4  maxVal);"
-
-            "float mix(float x, float y, bool  a);"
-            "vec2  mix(vec2  x, vec2  y, bvec2 a);"
-            "vec3  mix(vec3  x, vec3  y, bvec3 a);"
-            "vec4  mix(vec4  x, vec4  y, bvec4 a);"
-
-            "bool  isnan(float x);"
-            "bvec2 isnan(vec2  x);"
-            "bvec3 isnan(vec3  x);"
-            "bvec4 isnan(vec4  x);"
-
-            "bool  isinf(float x);"
-            "bvec2 isinf(vec2  x);"
-            "bvec3 isinf(vec3  x);"
-            "bvec4 isinf(vec4  x);"
-
-            "\n");
-    }
 
     //
     // double functions added to desktop 4.00, but not fma, frexp, ldexp, or pack/unpack
@@ -1085,43 +1109,27 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 430)) {
         commonBuiltins.append(
-            "uint atomicAdd(coherent volatile inout uint, uint);"
-            " int atomicAdd(coherent volatile inout  int,  int);"
             "uint atomicAdd(coherent volatile inout uint, uint, int, int, int);"
             " int atomicAdd(coherent volatile inout  int,  int, int, int, int);"
 
-            "uint atomicMin(coherent volatile inout uint, uint);"
-            " int atomicMin(coherent volatile inout  int,  int);"
             "uint atomicMin(coherent volatile inout uint, uint, int, int, int);"
             " int atomicMin(coherent volatile inout  int,  int, int, int, int);"
 
-            "uint atomicMax(coherent volatile inout uint, uint);"
-            " int atomicMax(coherent volatile inout  int,  int);"
             "uint atomicMax(coherent volatile inout uint, uint, int, int, int);"
             " int atomicMax(coherent volatile inout  int,  int, int, int, int);"
 
-            "uint atomicAnd(coherent volatile inout uint, uint);"
-            " int atomicAnd(coherent volatile inout  int,  int);"
             "uint atomicAnd(coherent volatile inout uint, uint, int, int, int);"
             " int atomicAnd(coherent volatile inout  int,  int, int, int, int);"
 
-            "uint atomicOr (coherent volatile inout uint, uint);"
-            " int atomicOr (coherent volatile inout  int,  int);"
             "uint atomicOr (coherent volatile inout uint, uint, int, int, int);"
             " int atomicOr (coherent volatile inout  int,  int, int, int, int);"
 
-            "uint atomicXor(coherent volatile inout uint, uint);"
-            " int atomicXor(coherent volatile inout  int,  int);"
             "uint atomicXor(coherent volatile inout uint, uint, int, int, int);"
             " int atomicXor(coherent volatile inout  int,  int, int, int, int);"
 
-            "uint atomicExchange(coherent volatile inout uint, uint);"
-            " int atomicExchange(coherent volatile inout  int,  int);"
             "uint atomicExchange(coherent volatile inout uint, uint, int, int, int);"
             " int atomicExchange(coherent volatile inout  int,  int, int, int, int);"
 
-            "uint atomicCompSwap(coherent volatile inout uint, uint, uint);"
-            " int atomicCompSwap(coherent volatile inout  int,  int,  int);"
             "uint atomicCompSwap(coherent volatile inout uint, uint, uint, int, int, int, int, int);"
             " int atomicCompSwap(coherent volatile inout  int,  int,  int, int, int, int, int, int);"
 
@@ -1181,27 +1189,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "void atomicStore(coherent volatile out uint64_t, uint64_t, int, int, int);"
             "void atomicStore(coherent volatile out  int64_t,  int64_t, int, int, int);"
-            "\n");
-    }
-
-    if ((profile == EEsProfile && version >= 310) ||
-        (profile != EEsProfile && version >= 450)) {
-        commonBuiltins.append(
-            "int    mix(int    x, int    y, bool  a);"
-            "ivec2  mix(ivec2  x, ivec2  y, bvec2 a);"
-            "ivec3  mix(ivec3  x, ivec3  y, bvec3 a);"
-            "ivec4  mix(ivec4  x, ivec4  y, bvec4 a);"
-
-            "uint   mix(uint   x, uint   y, bool  a);"
-            "uvec2  mix(uvec2  x, uvec2  y, bvec2 a);"
-            "uvec3  mix(uvec3  x, uvec3  y, bvec3 a);"
-            "uvec4  mix(uvec4  x, uvec4  y, bvec4 a);"
-
-            "bool   mix(bool   x, bool   y, bool  a);"
-            "bvec2  mix(bvec2  x, bvec2  y, bvec2 a);"
-            "bvec3  mix(bvec3  x, bvec3  y, bvec3 a);"
-            "bvec4  mix(bvec4  x, bvec4  y, bvec4 a);"
-
             "\n");
     }
 
@@ -1333,48 +1320,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     }
 
     //
-    // Geometric Functions.
-    //
-    commonBuiltins.append(
-        "float length(float x);"
-        "float length(vec2  x);"
-        "float length(vec3  x);"
-        "float length(vec4  x);"
-
-        "float distance(float p0, float p1);"
-        "float distance(vec2  p0, vec2  p1);"
-        "float distance(vec3  p0, vec3  p1);"
-        "float distance(vec4  p0, vec4  p1);"
-
-        "float dot(float x, float y);"
-        "float dot(vec2  x, vec2  y);"
-        "float dot(vec3  x, vec3  y);"
-        "float dot(vec4  x, vec4  y);"
-
-        "vec3 cross(vec3 x, vec3 y);"
-        "float normalize(float x);"
-        "vec2  normalize(vec2  x);"
-        "vec3  normalize(vec3  x);"
-        "vec4  normalize(vec4  x);"
-
-        "float faceforward(float N, float I, float Nref);"
-        "vec2  faceforward(vec2  N, vec2  I, vec2  Nref);"
-        "vec3  faceforward(vec3  N, vec3  I, vec3  Nref);"
-        "vec4  faceforward(vec4  N, vec4  I, vec4  Nref);"
-
-        "float reflect(float I, float N);"
-        "vec2  reflect(vec2  I, vec2  N);"
-        "vec3  reflect(vec3  I, vec3  N);"
-        "vec4  reflect(vec4  I, vec4  N);"
-
-        "float refract(float I, float N, float eta);"
-        "vec2  refract(vec2  I, vec2  N, float eta);"
-        "vec3  refract(vec3  I, vec3  N, float eta);"
-        "vec4  refract(vec4  I, vec4  N, float eta);"
-
-        "\n");
-
-    //
     // Matrix Functions.
     //
     commonBuiltins.append(
@@ -1429,109 +1374,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
                 "\n");
         }
-    }
-
-    //
-    // Vector relational functions.
-    //
-    commonBuiltins.append(
-        "bvec2 lessThan(vec2 x, vec2 y);"
-        "bvec3 lessThan(vec3 x, vec3 y);"
-        "bvec4 lessThan(vec4 x, vec4 y);"
-
-        "bvec2 lessThan(ivec2 x, ivec2 y);"
-        "bvec3 lessThan(ivec3 x, ivec3 y);"
-        "bvec4 lessThan(ivec4 x, ivec4 y);"
-
-        "bvec2 lessThanEqual(vec2 x, vec2 y);"
-        "bvec3 lessThanEqual(vec3 x, vec3 y);"
-        "bvec4 lessThanEqual(vec4 x, vec4 y);"
-
-        "bvec2 lessThanEqual(ivec2 x, ivec2 y);"
-        "bvec3 lessThanEqual(ivec3 x, ivec3 y);"
-        "bvec4 lessThanEqual(ivec4 x, ivec4 y);"
-
-        "bvec2 greaterThan(vec2 x, vec2 y);"
-        "bvec3 greaterThan(vec3 x, vec3 y);"
-        "bvec4 greaterThan(vec4 x, vec4 y);"
-
-        "bvec2 greaterThan(ivec2 x, ivec2 y);"
-        "bvec3 greaterThan(ivec3 x, ivec3 y);"
-        "bvec4 greaterThan(ivec4 x, ivec4 y);"
-
-        "bvec2 greaterThanEqual(vec2 x, vec2 y);"
-        "bvec3 greaterThanEqual(vec3 x, vec3 y);"
-        "bvec4 greaterThanEqual(vec4 x, vec4 y);"
-
-        "bvec2 greaterThanEqual(ivec2 x, ivec2 y);"
-        "bvec3 greaterThanEqual(ivec3 x, ivec3 y);"
-        "bvec4 greaterThanEqual(ivec4 x, ivec4 y);"
-
-        "bvec2 equal(vec2 x, vec2 y);"
-        "bvec3 equal(vec3 x, vec3 y);"
-        "bvec4 equal(vec4 x, vec4 y);"
-
-        "bvec2 equal(ivec2 x, ivec2 y);"
-        "bvec3 equal(ivec3 x, ivec3 y);"
-        "bvec4 equal(ivec4 x, ivec4 y);"
-
-        "bvec2 equal(bvec2 x, bvec2 y);"
-        "bvec3 equal(bvec3 x, bvec3 y);"
-        "bvec4 equal(bvec4 x, bvec4 y);"
-
-        "bvec2 notEqual(vec2 x, vec2 y);"
-        "bvec3 notEqual(vec3 x, vec3 y);"
-        "bvec4 notEqual(vec4 x, vec4 y);"
-
-        "bvec2 notEqual(ivec2 x, ivec2 y);"
-        "bvec3 notEqual(ivec3 x, ivec3 y);"
-        "bvec4 notEqual(ivec4 x, ivec4 y);"
-
-        "bvec2 notEqual(bvec2 x, bvec2 y);"
-        "bvec3 notEqual(bvec3 x, bvec3 y);"
-        "bvec4 notEqual(bvec4 x, bvec4 y);"
-
-        "bool any(bvec2 x);"
-        "bool any(bvec3 x);"
-        "bool any(bvec4 x);"
-
-        "bool all(bvec2 x);"
-        "bool all(bvec3 x);"
-        "bool all(bvec4 x);"
-
-        "bvec2 not(bvec2 x);"
-        "bvec3 not(bvec3 x);"
-        "bvec4 not(bvec4 x);"
-
-        "\n");
-
-    if (version >= 130) {
-        commonBuiltins.append(
-            "bvec2 lessThan(uvec2 x, uvec2 y);"
-            "bvec3 lessThan(uvec3 x, uvec3 y);"
-            "bvec4 lessThan(uvec4 x, uvec4 y);"
-
-            "bvec2 lessThanEqual(uvec2 x, uvec2 y);"
-            "bvec3 lessThanEqual(uvec3 x, uvec3 y);"
-            "bvec4 lessThanEqual(uvec4 x, uvec4 y);"
-
-            "bvec2 greaterThan(uvec2 x, uvec2 y);"
-            "bvec3 greaterThan(uvec3 x, uvec3 y);"
-            "bvec4 greaterThan(uvec4 x, uvec4 y);"
-
-            "bvec2 greaterThanEqual(uvec2 x, uvec2 y);"
-            "bvec3 greaterThanEqual(uvec3 x, uvec3 y);"
-            "bvec4 greaterThanEqual(uvec4 x, uvec4 y);"
-
-            "bvec2 equal(uvec2 x, uvec2 y);"
-            "bvec3 equal(uvec3 x, uvec3 y);"
-            "bvec4 equal(uvec4 x, uvec4 y);"
-
-            "bvec2 notEqual(uvec2 x, uvec2 y);"
-            "bvec3 notEqual(uvec3 x, uvec3 y);"
-            "bvec4 notEqual(uvec4 x, uvec4 y);"
-
-            "\n");
     }
 
     //
@@ -5000,9 +4842,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-    stageBuiltins[EShLangFragment].append(derivatives);
-    stageBuiltins[EShLangFragment].append("\n");
-
     // GL_ARB_derivative_control
     if (profile != EEsProfile && version >= 400) {
         stageBuiltins[EShLangFragment].append(derivativeControls);
@@ -5145,7 +4984,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
     //E_SPV_NV_compute_shader_derivatives
     if ((profile == EEsProfile && version >= 320) || (profile != EEsProfile && version >= 450)) {
-        stageBuiltins[EShLangCompute].append(derivatives);
         stageBuiltins[EShLangCompute].append(derivativeControls);
         stageBuiltins[EShLangCompute].append("\n");
     }
@@ -9130,7 +8968,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     // expected to be resolved through a library of functions, versus as
     // operations.
     //
-    symbolTable.relateToOperator("not",              EOpVectorLogicalNot);
+
+    relateTabledBuiltins(version, profile, spvVersion, language, symbolTable);
 
     symbolTable.relateToOperator("matrixCompMult",   EOpMul);
     // 120 and 150 are correct for both ES and desktop
@@ -9142,57 +8981,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("inverse", EOpMatrixInverse);
         }
     }
-
-    symbolTable.relateToOperator("mod",              EOpMod);
-    symbolTable.relateToOperator("modf",             EOpModf);
-
-    symbolTable.relateToOperator("equal",            EOpVectorEqual);
-    symbolTable.relateToOperator("notEqual",         EOpVectorNotEqual);
-    symbolTable.relateToOperator("lessThan",         EOpLessThan);
-    symbolTable.relateToOperator("greaterThan",      EOpGreaterThan);
-    symbolTable.relateToOperator("lessThanEqual",    EOpLessThanEqual);
-    symbolTable.relateToOperator("greaterThanEqual", EOpGreaterThanEqual);
-
-    symbolTable.relateToOperator("radians",      EOpRadians);
-    symbolTable.relateToOperator("degrees",      EOpDegrees);
-    symbolTable.relateToOperator("sin",          EOpSin);
-    symbolTable.relateToOperator("cos",          EOpCos);
-    symbolTable.relateToOperator("tan",          EOpTan);
-    symbolTable.relateToOperator("asin",         EOpAsin);
-    symbolTable.relateToOperator("acos",         EOpAcos);
-    symbolTable.relateToOperator("atan",         EOpAtan);
-    symbolTable.relateToOperator("sinh",         EOpSinh);
-    symbolTable.relateToOperator("cosh",         EOpCosh);
-    symbolTable.relateToOperator("tanh",         EOpTanh);
-    symbolTable.relateToOperator("asinh",        EOpAsinh);
-    symbolTable.relateToOperator("acosh",        EOpAcosh);
-    symbolTable.relateToOperator("atanh",        EOpAtanh);
-
-    symbolTable.relateToOperator("pow",          EOpPow);
-    symbolTable.relateToOperator("exp2",         EOpExp2);
-    symbolTable.relateToOperator("log",          EOpLog);
-    symbolTable.relateToOperator("exp",          EOpExp);
-    symbolTable.relateToOperator("log2",         EOpLog2);
-    symbolTable.relateToOperator("sqrt",         EOpSqrt);
-    symbolTable.relateToOperator("inversesqrt",  EOpInverseSqrt);
-
-    symbolTable.relateToOperator("abs",          EOpAbs);
-    symbolTable.relateToOperator("sign",         EOpSign);
-    symbolTable.relateToOperator("floor",        EOpFloor);
-    symbolTable.relateToOperator("trunc",        EOpTrunc);
-    symbolTable.relateToOperator("round",        EOpRound);
-    symbolTable.relateToOperator("roundEven",    EOpRoundEven);
-    symbolTable.relateToOperator("ceil",         EOpCeil);
-    symbolTable.relateToOperator("fract",        EOpFract);
-    symbolTable.relateToOperator("min",          EOpMin);
-    symbolTable.relateToOperator("max",          EOpMax);
-    symbolTable.relateToOperator("clamp",        EOpClamp);
-    symbolTable.relateToOperator("mix",          EOpMix);
-    symbolTable.relateToOperator("step",         EOpStep);
-    symbolTable.relateToOperator("smoothstep",   EOpSmoothStep);
-
-    symbolTable.relateToOperator("isnan",  EOpIsNan);
-    symbolTable.relateToOperator("isinf",  EOpIsInf);
 
     symbolTable.relateToOperator("floatBitsToInt",  EOpFloatBitsToInt);
     symbolTable.relateToOperator("floatBitsToUint", EOpFloatBitsToUint);
@@ -9253,18 +9041,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("unpack16",        EOpUnpack16);
     symbolTable.relateToOperator("unpack8",         EOpUnpack8);
 
-    symbolTable.relateToOperator("length",       EOpLength);
-    symbolTable.relateToOperator("distance",     EOpDistance);
-    symbolTable.relateToOperator("dot",          EOpDot);
-    symbolTable.relateToOperator("cross",        EOpCross);
-    symbolTable.relateToOperator("normalize",    EOpNormalize);
-    symbolTable.relateToOperator("faceforward",  EOpFaceForward);
-    symbolTable.relateToOperator("reflect",      EOpReflect);
-    symbolTable.relateToOperator("refract",      EOpRefract);
-
-    symbolTable.relateToOperator("any",          EOpAny);
-    symbolTable.relateToOperator("all",          EOpAll);
-
     symbolTable.relateToOperator("barrier",                    EOpBarrier);
     symbolTable.relateToOperator("controlBarrier",             EOpBarrier);
     symbolTable.relateToOperator("memoryBarrier",              EOpMemoryBarrier);
@@ -9272,14 +9048,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("memoryBarrierBuffer",        EOpMemoryBarrierBuffer);
     symbolTable.relateToOperator("memoryBarrierImage",         EOpMemoryBarrierImage);
 
-    symbolTable.relateToOperator("atomicAdd",      EOpAtomicAdd);
-    symbolTable.relateToOperator("atomicMin",      EOpAtomicMin);
-    symbolTable.relateToOperator("atomicMax",      EOpAtomicMax);
-    symbolTable.relateToOperator("atomicAnd",      EOpAtomicAnd);
-    symbolTable.relateToOperator("atomicOr",       EOpAtomicOr);
-    symbolTable.relateToOperator("atomicXor",      EOpAtomicXor);
-    symbolTable.relateToOperator("atomicExchange", EOpAtomicExchange);
-    symbolTable.relateToOperator("atomicCompSwap", EOpAtomicCompSwap);
     symbolTable.relateToOperator("atomicLoad",     EOpAtomicLoad);
     symbolTable.relateToOperator("atomicStore",    EOpAtomicStore);
 
