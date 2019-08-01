@@ -209,18 +209,18 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
 
         switch (type) {
         case EbtFloat:                   break;
-#ifdef AMD_EXTENSIONS
+        case EbtInt:    s.append("i");   break;
+        case EbtUint:   s.append("u");   break;
+#ifndef GLSLANG_WEB
         case EbtFloat16: s.append("f16"); break;
-#endif
         case EbtInt8:   s.append("i8");  break;
         case EbtUint16: s.append("u8");  break;
         case EbtInt16:  s.append("i16"); break;
         case EbtUint8:  s.append("u16"); break;
-        case EbtInt:    s.append("i");   break;
-        case EbtUint:   s.append("u");   break;
         case EbtInt64:  s.append("i64"); break;
         case EbtUint64: s.append("u64"); break;
-        default:  break;  // some compilers want this
+#endif
+        default:  break;
         }
         if (image) {
             if (dim == EsdSubpass)
@@ -472,11 +472,9 @@ public:
         centroid     = false;
         smooth       = false;
         flat         = false;
+#ifndef GLSLANG_WEB
         nopersp      = false;
-#ifdef AMD_EXTENSIONS
         explicitInterp = false;
-#endif
-#ifdef NV_EXTENSIONS
         pervertexNV = false;
         perPrimitiveNV = false;
         perViewNV = false;
@@ -523,11 +521,9 @@ public:
     bool centroid     : 1;
     bool smooth       : 1;
     bool flat         : 1;
+#ifndef GLSLANG_WEB
     bool nopersp      : 1;
-#ifdef AMD_EXTENSIONS
     bool explicitInterp : 1;
-#endif
-#ifdef NV_EXTENSIONS
     bool pervertexNV  : 1;
     bool perPrimitiveNV : 1;
     bool perViewNV : 1;
@@ -558,20 +554,24 @@ public:
     }
     bool bufferReferenceNeedsVulkanMemoryModel() const
     {
+#ifdef GLSLANG_WEB
+        return false;
+#else
         // include qualifiers that map to load/store availability/visibility/nonprivate memory access operands
         return subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || nonprivate;
+#endif
     }
 
     bool isInterpolation() const
     {
-#ifdef AMD_EXTENSIONS
+#ifndef GLSLANG_WEB
         return flat || smooth || nopersp || explicitInterp;
 #else
-        return flat || smooth || nopersp;
+        return flat || smooth;
 #endif
     }
 
-#ifdef AMD_EXTENSIONS
+#ifndef GLSLANG_WEB
     bool isExplicitInterpolation() const
     {
         return explicitInterp;
@@ -580,10 +580,10 @@ public:
 
     bool isAuxiliary() const
     {
-#ifdef NV_EXTENSIONS
+#ifndef GLSLANG_WEB
         return centroid || patch || sample || pervertexNV;
 #else
-        return centroid || patch || sample;
+        return centroid;
 #endif
     }
 
@@ -651,33 +651,6 @@ public:
         }
     }
 
-    bool isPerPrimitive() const
-    {
-#ifdef NV_EXTENSIONS
-        return perPrimitiveNV;
-#else
-        return false;
-#endif
-    }
-
-    bool isPerView() const
-    {
-#ifdef NV_EXTENSIONS
-        return perViewNV;
-#else
-        return false;
-#endif
-    }
-
-    bool isTaskMemory() const
-    {
-#ifdef NV_EXTENSIONS
-        return perTaskNV;
-#else
-        return false;
-#endif
-    }
-
     bool isIo() const
     {
         switch (storage) {
@@ -717,6 +690,15 @@ public:
         }
     }
 
+#ifdef GLSLANG_WEB
+    bool isPerView() const { return false; }
+    bool isTaskMemory() const { return false; }
+    bool isArrayedIo(EShLanguage language) const { return false; }
+#else
+    bool isPerPrimitive() const { return perPrimitiveNV; }
+    bool isPerView() const { return perViewNV; }
+    bool isTaskMemory() const { return perTaskNV; }
+
     // True if this type of IO is supposed to be arrayed with extra level for per-vertex data
     bool isArrayedIo(EShLanguage language) const
     {
@@ -727,40 +709,37 @@ public:
             return ! patch && (isPipeInput() || isPipeOutput());
         case EShLangTessEvaluation:
             return ! patch && isPipeInput();
-#ifdef NV_EXTENSIONS
         case EShLangFragment:
             return pervertexNV && isPipeInput();
         case EShLangMeshNV:
             return ! perTaskNV && isPipeOutput();
-#endif
 
         default:
             return false;
         }
     }
+#endif
 
     // Implementing an embedded layout-qualifier class here, since C++ can't have a real class bitfield
     void clearLayout()  // all layout
     {
         clearUniformLayout();
 
+#ifndef GLSLANG_WEB
         layoutPushConstant = false;
         layoutBufferReference = false;
-#ifdef NV_EXTENSIONS
         layoutPassthrough = false;
         layoutViewportRelative = false;
         // -2048 as the default value indicating layoutSecondaryViewportRelative is not set
         layoutSecondaryViewportRelativeOffset = -2048;
         layoutShaderRecordNV = false;
-#endif
-
         layoutBufferReferenceAlign = layoutBufferReferenceAlignEnd;
+        layoutFormat = ElfNone;
+#endif
 
         clearInterstageLayout();
 
         layoutSpecConstantId = layoutSpecConstantIdEnd;
-
-        layoutFormat = ElfNone;
     }
     void clearInterstageLayout()
     {
@@ -787,11 +766,9 @@ public:
                hasAnyLocation() ||
                hasStream() ||
                hasFormat() ||
-#ifdef NV_EXTENSIONS
-               layoutShaderRecordNV ||
-#endif
-               layoutPushConstant ||
-               layoutBufferReference;
+               isShaderRecordNV() ||
+               isPushConstant() ||
+               hasBufferReference();
     }
     bool hasLayout() const
     {
@@ -836,6 +813,7 @@ public:
                  unsigned int layoutSpecConstantId       : 11;
     static const unsigned int layoutSpecConstantIdEnd = 0x7FF;
 
+#ifndef GLSLANG_WEB
     // stored as log2 of the actual alignment value
                  unsigned int layoutBufferReferenceAlign :  6;
     static const unsigned int layoutBufferReferenceAlignEnd = 0x3F;
@@ -844,8 +822,6 @@ public:
 
     bool layoutPushConstant;
     bool layoutBufferReference;
-
-#ifdef NV_EXTENSIONS
     bool layoutPassthrough;
     bool layoutViewportRelative;
     int layoutSecondaryViewportRelativeOffset;
@@ -899,14 +875,6 @@ public:
     {
         return layoutLocation != layoutLocationEnd;
     }
-    bool hasComponent() const
-    {
-        return layoutComponent != layoutComponentEnd;
-    }
-    bool hasIndex() const
-    {
-        return layoutIndex != layoutIndexEnd;
-    }
     bool hasSet() const
     {
         return layoutSet != layoutSetEnd;
@@ -914,6 +882,32 @@ public:
     bool hasBinding() const
     {
         return layoutBinding != layoutBindingEnd;
+    }
+#ifdef GLSLANG_WEB
+    bool isNonPerspective() const { return false; }
+    bool hasIndex() const { return false; }
+    bool hasComponent() const { return false; }
+    bool hasStream() const { return false; }
+    bool hasFormat() const { return false; }
+    bool hasXfb() const { return false; }
+    bool hasXfbBuffer() const { return false; }
+    bool hasXfbStride() const { return false; }
+    bool hasXfbOffset() const { return false; }
+    bool hasAttachment() const { return false; }
+    TLayoutFormat getFormat() const { return ElfNone; }
+    bool isPushConstant() const { return false; }
+    bool isShaderRecordNV() const { return false; }
+    bool hasBufferReference() const { return false; }
+    bool hasBufferReferenceAlign() const { return false; }
+#else
+    bool isNonPerspective() const { return nopersp; }
+    bool hasIndex() const
+    {
+        return layoutIndex != layoutIndexEnd;
+    }
+    bool hasComponent() const
+    {
+        return layoutComponent != layoutComponentEnd;
     }
     bool hasStream() const
     {
@@ -945,15 +939,20 @@ public:
     {
         return layoutAttachment != layoutAttachmentEnd;
     }
+    TLayoutFormat getFormat() const { return layoutFormat; }
+    bool isPushConstant() const { return layoutPushConstant; }
+    bool isShaderRecordNV() const { return layoutShaderRecordNV; }
+    bool hasBufferReference() const { return layoutBufferReference; }
+    bool hasBufferReferenceAlign() const
+    {
+        return layoutBufferReferenceAlign != layoutBufferReferenceAlignEnd;
+    }
+#endif
     bool hasSpecConstantId() const
     {
         // Not the same thing as being a specialization constant, this
         // is just whether or not it was declared with an ID.
         return layoutSpecConstantId != layoutSpecConstantIdEnd;
-    }
-    bool hasBufferReferenceAlign() const
-    {
-        return layoutBufferReferenceAlign != layoutBufferReferenceAlignEnd;
     }
     bool isSpecConstant() const
     {
@@ -1150,18 +1149,20 @@ struct TShaderQualifiers {
     bool pointMode;
     int localSize[3];         // compute shader
     int localSizeSpecId[3];   // compute shader specialization id for gl_WorkGroupSize
+#ifndef GLSLANG_WEB
     bool earlyFragmentTests;  // fragment input
     bool postDepthCoverage;   // fragment input
     TLayoutDepth layoutDepth;
     bool blendEquation;       // true if any blend equation was specified
     int numViews;             // multiview extenstions
     TInterlockOrdering interlockOrdering;
-
-#ifdef NV_EXTENSIONS
     bool layoutOverrideCoverage;        // true if layout override_coverage set
     bool layoutDerivativeGroupQuads;    // true if layout derivative_group_quadsNV set
     bool layoutDerivativeGroupLinear;   // true if layout derivative_group_linearNV set
     int primitives;                     // mesh shader "max_primitives"DerivativeGroupLinear;   // true if layout derivative_group_linearNV set
+    TLayoutDepth getDepth() const { return layoutDepth; }
+#else
+    TLayoutDepth getDepth() const { return EldNone; }
 #endif
 
     void init()
@@ -1180,19 +1181,25 @@ struct TShaderQualifiers {
         localSizeSpecId[0] = TQualifier::layoutNotSet;
         localSizeSpecId[1] = TQualifier::layoutNotSet;
         localSizeSpecId[2] = TQualifier::layoutNotSet;
+#ifndef GLSLANG_WEB
         earlyFragmentTests = false;
         postDepthCoverage = false;
         layoutDepth = EldNone;
         blendEquation = false;
         numViews = TQualifier::layoutNotSet;
-#ifdef NV_EXTENSIONS
         layoutOverrideCoverage      = false;
         layoutDerivativeGroupQuads  = false;
         layoutDerivativeGroupLinear = false;
         primitives                  = TQualifier::layoutNotSet;
-#endif
         interlockOrdering = EioNone;
+#endif
     }
+
+#ifdef GLSLANG_WEB
+    bool hasBlendEquation() const { return false; }
+#else
+    bool hasBlendEquation() const { return blendEquation; }
+#endif
 
     // Merge in characteristics from the 'src' qualifier.  They can override when
     // set, but never erase when not set.
@@ -1222,6 +1229,7 @@ struct TShaderQualifiers {
             if (src.localSizeSpecId[i] != TQualifier::layoutNotSet)
                 localSizeSpecId[i] = src.localSizeSpecId[i];
         }
+#ifndef GLSLANG_WEB
         if (src.earlyFragmentTests)
             earlyFragmentTests = true;
         if (src.postDepthCoverage)
@@ -1232,7 +1240,6 @@ struct TShaderQualifiers {
             blendEquation = src.blendEquation;
         if (src.numViews != TQualifier::layoutNotSet)
             numViews = src.numViews;
-#ifdef NV_EXTENSIONS
         if (src.layoutOverrideCoverage)
             layoutOverrideCoverage = src.layoutOverrideCoverage;
         if (src.layoutDerivativeGroupQuads)
@@ -1241,10 +1248,9 @@ struct TShaderQualifiers {
             layoutDerivativeGroupLinear = src.layoutDerivativeGroupLinear;
         if (src.primitives != TQualifier::layoutNotSet)
             primitives = src.primitives;
-#endif
-
         if (src.interlockOrdering != EioNone)
             interlockOrdering = src.interlockOrdering;
+#endif
     }
 };
 
@@ -1580,9 +1586,9 @@ public:
         }
         return false;
     }
-    virtual bool isOpaque() const { return basicType == EbtSampler || basicType == EbtAtomicUint
-#ifdef NV_EXTENSIONS
-        || basicType == EbtAccStructNV
+    virtual bool isOpaque() const { return basicType == EbtSampler
+#ifndef GLSLANG_WEB
+         || basicType == EbtAtomicUint || basicType == EbtAccStructNV
 #endif
         ; }
     virtual bool isBuiltIn() const { return getQualifier().builtIn != EbvNone; }
@@ -1592,7 +1598,13 @@ public:
     virtual bool isSubpass() const { return basicType == EbtSampler && getSampler().isSubpass(); }
     virtual bool isTexture() const { return basicType == EbtSampler && getSampler().isTexture(); }
     virtual bool isParameterized()  const { return typeParameters != nullptr; }
+#ifdef GLSLANG_WEB
+    virtual bool isCoopMat() const { return false; }
+    virtual bool isReference() const { return false; }
+#else
     virtual bool isCoopMat() const { return coopmat; }
+    virtual bool isReference() const { return getBasicType() == EbtReference; }
+#endif
 
     // return true if this type contains any subtype which satisfies the given predicate.
     template <typename P>
@@ -1673,20 +1685,29 @@ public:
         return contains([](const TType* t) { return t->isArray() && t->arraySizes->isOuterSpecialization(); } );
     }
 
+#ifdef GLSLANG_WEB
+    virtual bool contains16BitFloat() const { return false; }
+    virtual bool contains16BitInt() const { return false; }
+    virtual bool contains8BitInt() const { return false; }
+    virtual bool containsCoopMat() const { return false; }
+#else
+    virtual bool contains16BitFloat() const
+    {
+        return containsBasicType(EbtFloat16);
+    }
     virtual bool contains16BitInt() const
     {
         return containsBasicType(EbtInt16) || containsBasicType(EbtUint16);
     }
-
     virtual bool contains8BitInt() const
     {
         return containsBasicType(EbtInt8) || containsBasicType(EbtUint8);
     }
-
     virtual bool containsCoopMat() const
     {
         return contains([](const TType* t) { return t->coopmat; } );
     }
+#endif
 
     // Array editing methods.  Array descriptors can be shared across
     // type instances.  This allows all uses of the same array
@@ -1746,11 +1767,9 @@ public:
     {
         if (isUnsizedArray() && !(skipNonvariablyIndexed || isArrayVariablyIndexed()))
             changeOuterArraySize(getImplicitArraySize());
-#ifdef NV_EXTENSIONS
         // For multi-dim per-view arrays, set unsized inner dimension size to 1
         if (qualifier.isPerView() && arraySizes && arraySizes->isInnerUnsized())
             arraySizes->clearInnerUnsized();
-#endif
         if (isStruct() && structure->size() > 0) {
             int lastMember = (int)structure->size() - 1;
             for (int i = 0; i < lastMember; ++i)
@@ -1808,16 +1827,17 @@ public:
     static const char* getBasicString(TBasicType t)
     {
         switch (t) {
-        case EbtVoid:              return "void";
         case EbtFloat:             return "float";
+        case EbtInt:               return "int";
+        case EbtUint:              return "uint";
+#ifndef GLSLANG_WEB
+        case EbtVoid:              return "void";
         case EbtDouble:            return "double";
         case EbtFloat16:           return "float16_t";
         case EbtInt8:              return "int8_t";
         case EbtUint8:             return "uint8_t";
         case EbtInt16:             return "int16_t";
         case EbtUint16:            return "uint16_t";
-        case EbtInt:               return "int";
-        case EbtUint:              return "uint";
         case EbtInt64:             return "int64_t";
         case EbtUint64:            return "uint64_t";
         case EbtBool:              return "bool";
@@ -1825,14 +1845,20 @@ public:
         case EbtSampler:           return "sampler/image";
         case EbtStruct:            return "structure";
         case EbtBlock:             return "block";
-#ifdef NV_EXTENSIONS
         case EbtAccStructNV:       return "accelerationStructureNV";
-#endif
         case EbtReference:         return "reference";
+#endif
         default:                   return "unknown type";
         }
     }
 
+#ifdef GLSLANG_WEB
+    TString getCompleteString() const { return ""; }
+    const char* getStorageQualifierString() const { return ""; }
+    const char* getBuiltInVariableString() const { return ""; }
+    const char* getPrecisionQualifierString() const { return ""; }
+    TString getBasicTypeString() const { return ""; }
+#else
     TString getCompleteString() const
     {
         TString typeString;
@@ -1921,7 +1947,6 @@ public:
                     appendUint(1u << qualifier.layoutBufferReferenceAlign);
                 }
 
-#ifdef NV_EXTENSIONS
                 if (qualifier.layoutPassthrough)
                     appendStr(" passthrough");
                 if (qualifier.layoutViewportRelative)
@@ -1932,7 +1957,6 @@ public:
                 }
                 if (qualifier.layoutShaderRecordNV)
                     appendStr(" shaderRecordNV");
-#endif
 
                 appendStr(")");
             }
@@ -1950,11 +1974,8 @@ public:
             appendStr(" flat");
         if (qualifier.nopersp)
             appendStr(" noperspective");
-#ifdef AMD_EXTENSIONS
         if (qualifier.explicitInterp)
             appendStr(" __explicitInterpAMD");
-#endif
-#ifdef NV_EXTENSIONS
         if (qualifier.pervertexNV)
             appendStr(" pervertexNV");
         if (qualifier.perPrimitiveNV)
@@ -1963,7 +1984,6 @@ public:
             appendStr(" perviewNV");
         if (qualifier.perTaskNV)
             appendStr(" taskNV");
-#endif
         if (qualifier.patch)
             appendStr(" patch");
         if (qualifier.sample)
@@ -2078,6 +2098,8 @@ public:
     const char* getStorageQualifierString() const { return GetStorageQualifierString(qualifier.storage); }
     const char* getBuiltInVariableString() const { return GetBuiltInVariableString(qualifier.builtIn); }
     const char* getPrecisionQualifierString() const { return GetPrecisionQualifierString(qualifier.precision); }
+#endif
+
     const TTypeList* getStruct() const { assert(isStruct()); return structure; }
     void setStruct(TTypeList* s) { assert(isStruct()); structure = s; }
     TTypeList* getWritableStruct() const { assert(isStruct()); return structure; }  // This should only be used when known to not be sharing with other threads
@@ -2146,10 +2168,10 @@ public:
 
     bool sameReferenceType(const TType& right) const
     {
-        if ((basicType == EbtReference) != (right.basicType == EbtReference))
+        if (isReference() != right.isReference())
             return false;
 
-        if ((basicType != EbtReference) && (right.basicType != EbtReference))
+        if (!isReference() && !right.isReference())
             return true;
 
         assert(referentType != nullptr);
@@ -2220,6 +2242,9 @@ public:
         return ! operator==(right);
     }
 
+#ifdef GLSLANG_WEB
+    unsigned int getBufferReferenceAlignment() const { return 0; }
+#else
     unsigned int getBufferReferenceAlignment() const
     {
         if (getBasicType() == glslang::EbtReference) {
@@ -2229,6 +2254,7 @@ public:
             return 0;
         }
     }
+#endif
 
 protected:
     // Require consumer to pick between deep copy and shallow copy.

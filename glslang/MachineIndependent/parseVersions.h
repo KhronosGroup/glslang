@@ -61,22 +61,55 @@ public:
           spvVersion(spvVersion), forwardCompatible(forwardCompatible),
           intermediate(interm), messages(messages), numErrors(0), currentScanner(0) { }
     virtual ~TParseVersions() { }
-    virtual void initializeExtensionBehavior();
     virtual void requireProfile(const TSourceLoc&, int queryProfiles, const char* featureDesc);
     virtual void profileRequires(const TSourceLoc&, int queryProfiles, int minVersion, int numExtensions, const char* const extensions[], const char* featureDesc);
     virtual void profileRequires(const TSourceLoc&, int queryProfiles, int minVersion, const char* const extension, const char* featureDesc);
     virtual void requireStage(const TSourceLoc&, EShLanguageMask, const char* featureDesc);
     virtual void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);
+#ifdef GLSLANG_WEB
+    virtual void initializeExtensionBehavior() { }
+    virtual void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc) { }
+    virtual void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc) { }
+    virtual void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
+        const char* featureDesc) { }
+    virtual void ppRequireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
+        const char* featureDesc) { }
+    virtual TExtensionBehavior getExtensionBehavior(const char*) { return EBhMissing; }
+    virtual bool extensionTurnedOn(const char* const extension) { return false; }
+    virtual bool extensionsTurnedOn(int numExtensions, const char* const extensions[]) { return false; }
+    virtual void updateExtensionBehavior(int line, const char* const extension, const char* behavior) { }
+    virtual void updateExtensionBehavior(const char* const extension, TExtensionBehavior) { }
+    virtual void checkExtensionStage(const TSourceLoc&, const char* const extension) { }
+    virtual void fullIntegerCheck(const TSourceLoc&, const char* op) { }
+    virtual void doubleCheck(const TSourceLoc&, const char* op) { }
+    virtual bool float16Arithmetic() { return false; }
+    virtual void requireFloat16Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc) { }
+    virtual bool int16Arithmetic() { return false; }
+    virtual void requireInt16Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc) { }
+    virtual bool int8Arithmetic() { return false; }
+    virtual void requireInt8Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc) { }
+    virtual void int64Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
+    virtual void explicitFloat32Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
+    virtual void explicitFloat64Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
+#else
+    virtual void initializeExtensionBehavior();
     virtual void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc);
     virtual void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc);
-    virtual void unimplemented(const TSourceLoc&, const char* featureDesc);
-    virtual void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
-    virtual void ppRequireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
+    virtual void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
+        const char* featureDesc);
+    virtual void ppRequireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
+        const char* featureDesc);
     virtual TExtensionBehavior getExtensionBehavior(const char*);
     virtual bool extensionTurnedOn(const char* const extension);
     virtual bool extensionsTurnedOn(int numExtensions, const char* const extensions[]);
     virtual void updateExtensionBehavior(int line, const char* const extension, const char* behavior);
+    virtual void updateExtensionBehavior(const char* const extension, TExtensionBehavior);
+    virtual bool checkExtensionsRequested(const TSourceLoc&, int numExtensions, const char* const extensions[],
+        const char* featureDesc);
+    virtual void checkExtensionStage(const TSourceLoc&, const char* const extension);
     virtual void fullIntegerCheck(const TSourceLoc&, const char* op);
+
+    virtual void unimplemented(const TSourceLoc&, const char* featureDesc);
     virtual void doubleCheck(const TSourceLoc&, const char* op);
     virtual void float16Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void float16ScalarVectorCheck(const TSourceLoc&, const char* op, bool builtIn = false);
@@ -88,23 +121,19 @@ public:
     virtual void int8ScalarVectorCheck(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual bool int8Arithmetic();
     virtual void requireInt8Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc);
-#ifdef AMD_EXTENSIONS
     virtual void float16OpaqueCheck(const TSourceLoc&, const char* op, bool builtIn = false);
-#endif
     virtual void int64Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void explicitInt8Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void explicitInt16Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void explicitInt32Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void explicitFloat32Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void explicitFloat64Check(const TSourceLoc&, const char* op, bool builtIn = false);
+    virtual void fcoopmatCheck(const TSourceLoc&, const char* op, bool builtIn = false);
+#endif // GLSLANG_WEB
     virtual void spvRemoved(const TSourceLoc&, const char* op);
     virtual void vulkanRemoved(const TSourceLoc&, const char* op);
     virtual void requireVulkan(const TSourceLoc&, const char* op);
     virtual void requireSpv(const TSourceLoc&, const char* op);
-    virtual bool checkExtensionsRequested(const TSourceLoc&, int numExtensions, const char* const extensions[], const char* featureDesc);
-    virtual void updateExtensionBehavior(const char* const extension, TExtensionBehavior);
-    virtual void checkExtensionStage(const TSourceLoc&, const char* const extension);
-    virtual void fcoopmatCheck(const TSourceLoc&, const char* op, bool builtIn = false);
 
     virtual void C_DECL error(const TSourceLoc&, const char* szReason, const char* szToken,
         const char* szExtraInfoFormat, ...) = 0;

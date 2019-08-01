@@ -123,12 +123,12 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     if ((op == EOpAdd || op == EOpSub) && extensionRequested(E_GL_EXT_buffer_reference2)) {
 
         // No addressing math on struct with unsized array.
-        if ((left->getBasicType() == EbtReference && left->getType().getReferentType()->containsUnsizedArray()) ||
-            (right->getBasicType() == EbtReference && right->getType().getReferentType()->containsUnsizedArray())) {
+        if ((left->isReference() && left->getType().getReferentType()->containsUnsizedArray()) ||
+            (right->isReference() && right->getType().getReferentType()->containsUnsizedArray())) {
             return nullptr;
         }
 
-        if (left->getBasicType() == EbtReference && isTypeInt(right->getBasicType())) {
+        if (left->isReference() && isTypeInt(right->getBasicType())) {
             const TType& referenceType = left->getType();
             TIntermConstantUnion* size = addConstantUnion((unsigned long long)computeBufferReferenceTypeSize(left->getType()), loc, true);
             left  = addBuiltInFunctionCall(loc, EOpConvPtrToUint64, true, left, TType(EbtUint64));
@@ -141,7 +141,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
             return node;
         }
 
-        if (op == EOpAdd && right->getBasicType() == EbtReference && isTypeInt(left->getBasicType())) {
+        if (op == EOpAdd && right->isReference() && isTypeInt(left->getBasicType())) {
             const TType& referenceType = right->getType();
             TIntermConstantUnion* size = addConstantUnion((unsigned long long)computeBufferReferenceTypeSize(right->getType()), loc, true);
             right = addBuiltInFunctionCall(loc, EOpConvPtrToUint64, true, right, TType(EbtUint64));
@@ -154,7 +154,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
             return node;
         }
 
-        if (op == EOpSub && left->getBasicType() == EbtReference && right->getBasicType() == EbtReference) {
+        if (op == EOpSub && left->isReference() && right->isReference()) {
             TIntermConstantUnion* size = addConstantUnion((long long)computeBufferReferenceTypeSize(left->getType()), loc, true);
 
             left = addBuiltInFunctionCall(loc, EOpConvPtrToUint64, true, left, TType(EbtUint64));
@@ -170,7 +170,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
         }
 
         // No other math operators supported on references
-        if (left->getBasicType() == EbtReference || right->getBasicType() == EbtReference) {
+        if (left->isReference() || right->isReference()) {
             return nullptr;
         }
     }
@@ -290,7 +290,7 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
     // Convert "reference += int" to "reference = reference + int". We need this because the
     // "reference + int" calculation involves a cast back to the original type, which makes it
     // not an lvalue.
-    if ((op == EOpAddAssign || op == EOpSubAssign) && left->getBasicType() == EbtReference &&
+    if ((op == EOpAddAssign || op == EOpSubAssign) && left->isReference() &&
         extensionRequested(E_GL_EXT_buffer_reference2)) {
 
         if (!(right->getType().isScalar() && right->getType().isIntegerDomain()))
@@ -536,9 +536,7 @@ bool TIntermediate::isConversionAllowed(TOperator op, TIntermTyped* node) const
         return false;
     case EbtAtomicUint:
     case EbtSampler:
-#ifdef NV_EXTENSIONS
     case EbtAccStructNV:
-#endif
         // opaque types can be passed to functions
         if (op == EOpFunction)
             break;
@@ -1110,7 +1108,7 @@ TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TInt
     case EOpConstructStruct:
     case EOpConstructCooperativeMatrix:
 
-        if (type.getBasicType() == EbtReference || node->getType().getBasicType() == EbtReference) {
+        if (type.isReference() || node->getType().isReference()) {
             // types must match to assign a reference
             if (type == node->getType())
                 return node;
@@ -1670,7 +1668,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtFloat:
             case EbtDouble:
                 return true;
-#ifdef AMD_EXTENSIONS
+#ifndef GLSLANG_WEB
             case EbtInt16:
             case EbtUint16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
@@ -1688,17 +1686,15 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                  return true;
             case EbtBool:
                  return (getSource() == EShSourceHlsl);
-#ifdef AMD_EXTENSIONS
+#ifndef GLSLANG_WEB
             case EbtInt16:
             case EbtUint16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
-#endif
             case EbtFloat16:
                 return 
-#ifdef AMD_EXTENSIONS
                     extensionRequested(E_GL_AMD_gpu_shader_half_float) ||
-#endif
                     getSource() == EShSourceHlsl;
+#endif
             default:
                  return false;
             }
@@ -1710,7 +1706,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                 return true;
             case EbtBool:
                 return getSource() == EShSourceHlsl;
-#ifdef AMD_EXTENSIONS
+#ifndef GLSLANG_WEB
             case EbtInt16:
             case EbtUint16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
@@ -1724,7 +1720,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
                 return true;
             case EbtBool:
                 return getSource() == EShSourceHlsl;
-#ifdef AMD_EXTENSIONS
+#ifndef GLSLANG_WEB
             case EbtInt16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
 #endif
@@ -1738,7 +1734,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtInt64:
             case EbtUint64:
                 return true;
-#ifdef AMD_EXTENSIONS
+#ifndef GLSLANG_WEB
             case EbtInt16:
             case EbtUint16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
@@ -1751,15 +1747,15 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtInt:
             case EbtInt64:
                 return true;
-#ifdef AMD_EXTENSIONS
+#ifndef GLSLANG_WEB
             case EbtInt16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);
 #endif
             default:
                 return false;
             }
+#ifndef GLSLANG_WEB
         case EbtFloat16:
-#ifdef AMD_EXTENSIONS
             switch (from) {
             case EbtInt16:
             case EbtUint16:
@@ -1769,10 +1765,8 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             default:
                 break;
             }
-#endif
             return false;
         case EbtUint16:
-#ifdef AMD_EXTENSIONS
             switch (from) {
             case EbtInt16:
             case EbtUint16:
@@ -1780,8 +1774,8 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             default:
                 break;
             }
-#endif
             return false;
+#endif
         default:
             return false;
         }

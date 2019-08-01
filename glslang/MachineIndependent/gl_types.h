@@ -78,7 +78,6 @@
 #define GL_DOUBLE_MAT4x2                  0x8F4D
 #define GL_DOUBLE_MAT4x3                  0x8F4E
 
-#ifdef AMD_EXTENSIONS
 // Those constants are borrowed from extension NV_gpu_shader5
 #define GL_FLOAT16_NV                     0x8FF8
 #define GL_FLOAT16_VEC2_NV                0x8FF9
@@ -94,7 +93,6 @@
 #define GL_FLOAT16_MAT3x4_AMD             0x91CB
 #define GL_FLOAT16_MAT4x2_AMD             0x91CC
 #define GL_FLOAT16_MAT4x3_AMD             0x91CD
-#endif
 
 #define GL_SAMPLER_1D                     0x8B5D
 #define GL_SAMPLER_2D                     0x8B5E

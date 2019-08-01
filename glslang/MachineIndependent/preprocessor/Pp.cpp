@@ -792,10 +792,8 @@ int TPpContext::CPPpragma(TPpToken* ppToken)
         case PpAtomConstUint:
         case PpAtomConstInt64:
         case PpAtomConstUint64:
-#ifdef AMD_EXTENSIONS
         case PpAtomConstInt16:
         case PpAtomConstUint16:
-#endif
         case PpAtomConstFloat:
         case PpAtomConstDouble:
         case PpAtomConstFloat16:
@@ -963,9 +961,11 @@ int TPpContext::readCPPline(TPpToken* ppToken)
         case PpAtomLine:
             token = CPPline(ppToken);
             break;
+#ifndef GLSLANG_WEB
         case PpAtomPragma:
             token = CPPpragma(ppToken);
             break;
+#endif
         case PpAtomUndef:
             token = CPPundef(ppToken);
             break;

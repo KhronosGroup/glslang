@@ -435,9 +435,7 @@ TBuiltIns::TBuiltIns()
     // Set up textual representations for making all the permutations
     // of texturing/imaging functions.
     prefixes[EbtFloat] =  "";
-#ifdef AMD_EXTENSIONS
     prefixes[EbtFloat16] = "f16";
-#endif
     prefixes[EbtInt8]  = "i8";
     prefixes[EbtUint8] = "u8";
     prefixes[EbtInt16]  = "i16";
@@ -481,6 +479,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     //
     //============================================================================
 
+#ifndef GLSLANG_WEB
     //
     // Derivatives Functions.
     //
@@ -1007,7 +1006,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         );
     }
 
-#ifdef AMD_EXTENSIONS
     // GL_AMD_shader_trinary_minmax
     if (profile != EEsProfile && version >= 430) {
         commonBuiltins.append(
@@ -1104,7 +1102,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n"
         );
     }
-#endif
 
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 430)) {
@@ -1191,6 +1188,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void atomicStore(coherent volatile out  int64_t,  int64_t, int, int, int);"
             "\n");
     }
+#endif
 
     if ((profile == EEsProfile && version >= 300) ||
         (profile != EEsProfile && version >= 330)) {
@@ -1218,6 +1216,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+#ifndef GLSLANG_WEB
     if ((profile != EEsProfile && version >= 400) ||
         (profile == EEsProfile && version >= 310)) {    // GL_OES_gpu_shader5
 
@@ -1271,6 +1270,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
     }
+#endif
 
     if ((profile == EEsProfile && version >= 300) ||
         (profile != EEsProfile && version >= 400)) {
@@ -1299,6 +1299,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+#ifndef GLSLANG_WEB
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
@@ -1318,6 +1319,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                     "vec4 unpackUnorm4x8(highp uint);"
             "\n");
     }
+#endif
 
     //
     // Matrix Functions.
@@ -1376,6 +1378,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         }
     }
 
+#ifndef GLSLANG_WEB
     //
     // Original-style texture functions existing in all stages.
     // (Per-stage functions below.)
@@ -2287,7 +2290,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec3  subgroupQuadSwapDiagonal(bvec3);\n"
             "bvec4  subgroupQuadSwapDiagonal(bvec4);\n"
 
-#ifdef NV_EXTENSIONS
             "uvec4  subgroupPartitionNV(float);\n"
             "uvec4  subgroupPartitionNV(vec2);\n"
             "uvec4  subgroupPartitionNV(vec3);\n"
@@ -2577,8 +2579,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "bvec2  subgroupPartitionedExclusiveXorNV(bvec2, uvec4 ballot);\n"
             "bvec3  subgroupPartitionedExclusiveXorNV(bvec3, uvec4 ballot);\n"
             "bvec4  subgroupPartitionedExclusiveXorNV(bvec4, uvec4 ballot);\n"
-#endif
-
             "\n");
 
         if (profile != EEsProfile && version >= 400) {
@@ -2718,8 +2718,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "dvec3  subgroupQuadSwapDiagonal(dvec3);\n"
                 "dvec4  subgroupQuadSwapDiagonal(dvec4);\n"
 
-
-#ifdef NV_EXTENSIONS
                 "uvec4  subgroupPartitionNV(double);\n"
                 "uvec4  subgroupPartitionNV(dvec2);\n"
                 "uvec4  subgroupPartitionNV(dvec3);\n"
@@ -2784,7 +2782,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "dvec2  subgroupPartitionedExclusiveMaxNV(dvec2, uvec4 ballot);\n"
                 "dvec3  subgroupPartitionedExclusiveMaxNV(dvec3, uvec4 ballot);\n"
                 "dvec4  subgroupPartitionedExclusiveMaxNV(dvec4, uvec4 ballot);\n"
-#endif
 
                 "\n");
             }
@@ -2794,7 +2791,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n"
             );
-#ifdef NV_EXTENSIONS
         stageBuiltins[EShLangMeshNV].append(
             "void subgroupMemoryBarrierShared();"
             "\n"
@@ -2803,7 +2799,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void subgroupMemoryBarrierShared();"
             "\n"
             );
-#endif
     }
 
     if (profile != EEsProfile && version >= 460) {
@@ -2815,7 +2810,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-#ifdef AMD_EXTENSIONS
     // GL_AMD_shader_ballot
     if (profile != EEsProfile && version >= 450) {
         commonBuiltins.append(
@@ -3712,10 +3706,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-#endif  // AMD_EXTENSIONS
-
-
-#ifdef NV_EXTENSIONS
     if ((profile != EEsProfile && version >= 450) || 
         (profile == EEsProfile && version >= 320)) {
         commonBuiltins.append(
@@ -3749,7 +3739,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-#endif // NV_EXTENSIONS
     // GL_AMD_gpu_shader_half_float/Explicit types
     if (profile != EEsProfile && version >= 450) {
         commonBuiltins.append(
@@ -4731,7 +4720,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangCompute].append(
             "void barrier();"
             );
-#ifdef NV_EXTENSIONS
     if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
         stageBuiltins[EShLangMeshNV].append(
             "void barrier();"
@@ -4740,7 +4728,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void barrier();"
             );
     }
-#endif
     if ((profile != EEsProfile && version >= 130) || esBarrier)
         commonBuiltins.append(
             "void memoryBarrier();"
@@ -4756,7 +4743,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void groupMemoryBarrier();"
             );
     }
-#ifdef NV_EXTENSIONS
     if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
         stageBuiltins[EShLangMeshNV].append(
             "void memoryBarrierShared();"
@@ -4767,7 +4753,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "void groupMemoryBarrier();"
         );
     }
-#endif
 
     commonBuiltins.append("void controlBarrier(int, int, int, int);\n"
                           "void memoryBarrier(int, int, int);\n");
@@ -4878,7 +4863,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         "bool helperInvocationEXT();"
         "\n");
 
-#ifdef AMD_EXTENSIONS
     // GL_AMD_shader_explicit_vertex_parameter
     if (profile != EEsProfile && version >= 450) {
         stageBuiltins[EShLangFragment].append(
@@ -4952,9 +4936,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
             "\n");
         }
-#endif
-
-#ifdef NV_EXTENSIONS
 
     // Builtins for GL_NV_ray_tracing
     if (profile != EEsProfile && version >= 460) {
@@ -5021,11 +5002,13 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "highp float diff;"   // f - n
                 );
         } else {
+#ifndef GLSLANG_WEB
             commonBuiltins.append(
                 "float near;"  // n
                 "float far;"   // f
                 "float diff;"  // f - n
                 );
+#endif
         }
 
         commonBuiltins.append(
@@ -5034,6 +5017,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
+#ifndef GLSLANG_WEB
     if (spvVersion.spv == 0 && IncludeLegacy(version, profile, spvVersion)) {
         //
         // Matrix state. p. 31, 32, 37, 39, 40.
@@ -5180,7 +5164,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-#ifdef NV_EXTENSIONS
     //============================================================================
     //
     // Define the interface to the mesh/task shader.
@@ -5268,7 +5251,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "\n");
         }
     }
-#endif
 
     //============================================================================
     //
@@ -5402,7 +5384,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 );
         }
 
-#ifdef NV_EXTENSIONS
         if (version >= 450)
             stageBuiltins[EShLangVertex].append(
                 "out int gl_ViewportMask[];"             // GL_NV_viewport_array2
@@ -5411,8 +5392,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "out vec4 gl_PositionPerViewNV[];"       // GL_NVX_multiview_per_view_attributes
                 "out int  gl_ViewportMaskPerViewNV[];"   // GL_NVX_multiview_per_view_attributes
                 );
-#endif
-
     } else {
         // ES profile
         if (version == 100) {
@@ -5421,6 +5400,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "mediump float gl_PointSize;" // needs qualifier fixed later
                 );
         } else {
+#endif
             if (spvVersion.vulkan == 0)
                 stageBuiltins[EShLangVertex].append(
                     "in highp int gl_VertexID;"      // needs qualifier fixed later
@@ -5443,6 +5423,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                         "highp float gl_PointSize;"   // needs qualifier fixed later
                     "};"
                     );
+#ifndef GLSLANG_WEB
         }
     }
 
@@ -5487,10 +5468,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         if (version >= 450)
             stageBuiltins[EShLangGeometry].append(
                 "float gl_CullDistance[];"
-#ifdef NV_EXTENSIONS
                 "vec4 gl_SecondaryPositionNV;"   // GL_NV_stereo_view_rendering
                 "vec4 gl_PositionPerViewNV[];"   // GL_NVX_multiview_per_view_attributes
-#endif
                 );
         stageBuiltins[EShLangGeometry].append(
             "} gl_in[];"
@@ -5536,7 +5515,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "in int gl_InvocationID;"
             );
 
-#ifdef NV_EXTENSIONS
         if (version >= 450)
             stageBuiltins[EShLangGeometry].append(
                 "out int gl_ViewportMask[];"               // GL_NV_viewport_array2
@@ -5545,7 +5523,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "out vec4 gl_PositionPerViewNV[];"         // GL_NVX_multiview_per_view_attributes
                 "out int  gl_ViewportMaskPerViewNV[];"     // GL_NVX_multiview_per_view_attributes
             );
-#endif
 
         stageBuiltins[EShLangGeometry].append("\n");
     } else if (profile == EEsProfile && version >= 310) {
@@ -5610,13 +5587,11 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         if (version >= 450)
             stageBuiltins[EShLangTessControl].append(
                 "float gl_CullDistance[];"
-#ifdef NV_EXTENSIONS
                 "int  gl_ViewportMask[];"             // GL_NV_viewport_array2
                 "vec4 gl_SecondaryPositionNV;"        // GL_NV_stereo_view_rendering
                 "int  gl_SecondaryViewportMaskNV[];"  // GL_NV_stereo_view_rendering
                 "vec4 gl_PositionPerViewNV[];"        // GL_NVX_multiview_per_view_attributes
                 "int  gl_ViewportMaskPerViewNV[];"    // GL_NVX_multiview_per_view_attributes
-#endif
                 );
         stageBuiltins[EShLangTessControl].append(
             "} gl_out[];"
@@ -5715,7 +5690,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "out int gl_Layer;"
                 "\n");
 
-#ifdef NV_EXTENSIONS
         if (version >= 450)
             stageBuiltins[EShLangTessEvaluation].append(
                 "out int  gl_ViewportMask[];"             // GL_NV_viewport_array2
@@ -5724,7 +5698,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "out vec4 gl_PositionPerViewNV[];"        // GL_NVX_multiview_per_view_attributes
                 "out int  gl_ViewportMaskPerViewNV[];"    // GL_NVX_multiview_per_view_attributes
                 );
-#endif
 
     } else if (profile == EEsProfile && version >= 310) {
         // Note:  "in gl_PerVertex {...} gl_in[gl_MaxPatchVertices];" is declared in initialize() below,
@@ -5849,7 +5822,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "flat in int   gl_FragInvocationCountEXT;"
                 );
 
-#ifdef AMD_EXTENSIONS
         if (version >= 450)
             stageBuiltins[EShLangFragment].append(
                 "in vec2 gl_BaryCoordNoPerspAMD;"
@@ -5860,9 +5832,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "in vec2 gl_BaryCoordSmoothSampleAMD;"
                 "in vec3 gl_BaryCoordPullModelAMD;"
                 );
-#endif
 
-#ifdef NV_EXTENSIONS
         if (version >= 430)
             stageBuiltins[EShLangFragment].append(
                 "in bool gl_FragFullyCoveredNV;"
@@ -5875,7 +5845,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "in vec3 gl_BaryCoordNoPerspNV;"
                 );
 
-#endif
     } else {
         // ES profile
 
@@ -5887,6 +5856,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "mediump vec2 gl_PointCoord;"   // needs qualifier fixed later
                 );
         }
+#endif
         if (version >= 300) {
             stageBuiltins[EShLangFragment].append(
                 "highp   vec4  gl_FragCoord;"    // needs qualifier fixed later
@@ -5895,6 +5865,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "highp   float gl_FragDepth;"    // needs qualifier fixed later
                 );
         }
+#ifndef GLSLANG_WEB
         if (version >= 310) {
             stageBuiltins[EShLangFragment].append(
                 "bool gl_HelperInvocation;"          // needs qualifier fixed later
@@ -5922,7 +5893,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "flat in ivec2 gl_FragSizeEXT;"
                 "flat in int   gl_FragInvocationCountEXT;"
             );
-#ifdef NV_EXTENSIONS
         if (version >= 320)
             stageBuiltins[EShLangFragment].append( // GL_NV_shading_rate_image
                 "flat in ivec2 gl_FragmentSizeNV;"
@@ -5933,13 +5903,15 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "in vec3 gl_BaryCoordNV;"
                 "in vec3 gl_BaryCoordNoPerspNV;"
                 );
+    }
 #endif
 
-    }
     stageBuiltins[EShLangFragment].append("\n");
 
     if (version >= 130)
         add2ndGenerationSamplingImaging(version, profile, spvVersion);
+
+#ifndef GLSLANG_WEB
 
     // GL_ARB_shader_ballot
     if (profile != EEsProfile && version >= 450) {
@@ -5967,10 +5939,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangGeometry]      .append(ballotDecls);
         stageBuiltins[EShLangCompute]       .append(ballotDecls);
         stageBuiltins[EShLangFragment]      .append(fragmentBallotDecls);
-#ifdef NV_EXTENSIONS
         stageBuiltins[EShLangMeshNV]        .append(ballotDecls);
         stageBuiltins[EShLangTaskNV]        .append(ballotDecls);
-#endif
     }
 
     if ((profile != EEsProfile && version >= 140) ||
@@ -6024,7 +5994,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangCompute]       .append(subgroupDecls);
         stageBuiltins[EShLangCompute]       .append(computeSubgroupDecls);
         stageBuiltins[EShLangFragment]      .append(fragmentSubgroupDecls);
-#ifdef NV_EXTENSIONS
         stageBuiltins[EShLangMeshNV]        .append(subgroupDecls);
         stageBuiltins[EShLangMeshNV]        .append(computeSubgroupDecls);
         stageBuiltins[EShLangTaskNV]        .append(subgroupDecls);
@@ -6035,10 +6004,8 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangClosestHitNV]  .append(subgroupDecls);
         stageBuiltins[EShLangMissNV]        .append(subgroupDecls);
         stageBuiltins[EShLangCallableNV]    .append(subgroupDecls);
-#endif
     }
 
-#ifdef NV_EXTENSIONS
     // GL_NV_ray_tracing
     if (profile != EEsProfile && version >= 460) {
 
@@ -6138,7 +6105,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         stageBuiltins[EShLangClosestHitNV].append(deviceIndex);
         stageBuiltins[EShLangMissNV].append(deviceIndex);
     }
-#endif
 
     if (version >= 300 /* both ES and non-ES */) {
         stageBuiltins[EShLangFragment].append(
@@ -6168,6 +6134,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         commonBuiltins.append("const int gl_StorageSemanticsImage    = 0x800;\n");
         commonBuiltins.append("const int gl_StorageSemanticsOutput   = 0x1000;\n");
     }
+#endif
 
     // printf("%s\n", commonBuiltins.c_str());
     // printf("%s\n", stageBuiltins[EShLangFragment].c_str());
@@ -6183,19 +6150,25 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
     // In this function proper, enumerate the types, then calls the next set of functions
     // to enumerate all the uses for that type.
     //
-#ifdef AMD_EXTENSIONS
     TBasicType bTypes[4] = { EbtFloat, EbtFloat16, EbtInt, EbtUint };
-#else
-    TBasicType bTypes[3] = { EbtFloat, EbtInt, EbtUint };
-#endif
     bool skipBuffer = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 140);
     bool skipCubeArrayed = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 130);
 
     // enumerate all the types
-    for (int image = 0; image <= 1; ++image) { // loop over "bool" image vs sampler
+#ifdef GLSLANG_WEB
+    const int image = 0;
+#else
+    for (int image = 0; image <= 1; ++image) // loop over "bool" image vs sampler
+#endif
+    {
 
         for (int shadow = 0; shadow <= 1; ++shadow) { // loop over "bool" shadow or not
-            for (int ms = 0; ms <=1; ++ms) {
+#ifdef GLSLANG_WEB
+            const int ms = 0;
+#else
+            for (int ms = 0; ms <= 1; ++ms)
+#endif
+            {
                 if ((ms || image) && shadow)
                     continue;
                 if (ms && profile != EEsProfile && version < 150)
@@ -6206,7 +6179,17 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                     continue;
 
                 for (int arrayed = 0; arrayed <= 1; ++arrayed) { // loop over "bool" arrayed or not
-                    for (int dim = Esd1D; dim < EsdNumDims; ++dim) { // 1D, 2D, ..., buffer
+#ifdef GLSLANG_WEB
+                    for (int dim = Esd2D; dim < EsdCube + 1; ++dim) { // 2D, 3D, and Cube
+#else
+                    for (int dim = Esd1D; dim < EsdNumDims; ++dim) { // 1D, 2D, ..., buffer, subpass
+                        if (dim == EsdSubpass && spvVersion.vulkan == 0)
+                            continue;
+                        if (dim == EsdSubpass && (image || shadow || arrayed))
+                            continue;
+                        if ((dim == Esd1D || dim == EsdRect) && profile == EEsProfile)
+                            continue;
+#endif
                         if (dim == EsdSubpass && spvVersion.vulkan == 0)
                             continue;
                         if (dim == EsdSubpass && (image || shadow || arrayed))
@@ -6227,7 +6210,6 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                             continue;
                         if (ms && arrayed && profile == EEsProfile && version < 310)
                             continue;
-#ifdef AMD_EXTENSIONS
                         for (int bType = 0; bType < 4; ++bType) { // float, float16, int, uint results
 
                             if (shadow && bType > 1)
@@ -6235,12 +6217,6 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
 
                             if (bTypes[bType] == EbtFloat16 && (profile == EEsProfile ||version < 450))
                                 continue;
-#else
-                        for (int bType = 0; bType < 3; ++bType) { // float, int, uint results
-
-                            if (shadow && bType > 0)
-                                continue;
-#endif
                             if (dim == EsdRect && version < 140 && bType > 0)
                                 continue;
 
@@ -6249,9 +6225,12 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                             //
 
                             TSampler sampler;
+#ifndef GLSLANG_WEB
                             if (dim == EsdSubpass) {
                                 sampler.setSubpass(bTypes[bType], ms ? true : false);
-                            } else if (image) {
+                            } else
+#endif
+                            if (image) {
                                 sampler.setImage(bTypes[bType], (TSamplerDim)dim, arrayed ? true : false,
                                                                                   shadow  ? true : false,
                                                                                   ms      ? true : false);
@@ -6263,10 +6242,12 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
 
                             TString typeName = sampler.getString();
 
+#ifndef GLSLANG_WEB
                             if (dim == EsdSubpass) {
                                 addSubpassSampling(sampler, typeName, version, profile);
                                 continue;
                             }
+#endif
 
                             addQueryFunctions(sampler, typeName, version, profile);
 
@@ -6274,8 +6255,8 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                                 addImageFunctions(sampler, typeName, version, profile);
                             else {
                                 addSamplingFunctions(sampler, typeName, version, profile);
+#ifndef GLSLANG_WEB
                                 addGatherFunctions(sampler, typeName, version, profile);
-
                                 if (spvVersion.vulkan > 0 && sampler.isCombined() && !sampler.shadow) {
                                     // Base Vulkan allows texelFetch() for
                                     // textureBuffer (i.e. without sampler).
@@ -6290,6 +6271,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                                     addSamplingFunctions(sampler, textureTypeName, version, profile);
                                     addQueryFunctions(sampler, textureTypeName, version, profile);
                                 }
+#endif
                             }
                         }
                     }
@@ -6331,9 +6313,11 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
         commonBuiltins.append("ivec");
         commonBuiltins.append(postfixes[sizeDims]);
     }
+#ifndef GLSLANG_WEB
     if (sampler.image)
         commonBuiltins.append(" imageSize(readonly writeonly volatile coherent ");
     else
+#endif
         commonBuiltins.append(" textureSize(");
     commonBuiltins.append(typeName);
     if (! sampler.image && sampler.dim != EsdRect && sampler.dim != EsdBuffer && ! sampler.ms)
@@ -6341,6 +6325,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
     else
         commonBuiltins.append(");\n");
 
+#ifndef GLSLANG_WEB
     //
     // textureSamples() and imageSamples()
     //
@@ -6362,39 +6347,26 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
     //
 
     if (profile != EEsProfile && version >= 400 && sampler.combined && sampler.dim != EsdRect && ! sampler.ms && sampler.dim != EsdBuffer) {
-#ifdef AMD_EXTENSIONS
         for (int f16TexAddr = 0; f16TexAddr < 2; ++f16TexAddr) {
             if (f16TexAddr && sampler.type != EbtFloat16)
                 continue;
-#endif
             stageBuiltins[EShLangFragment].append("vec2 textureQueryLod(");
             stageBuiltins[EShLangFragment].append(typeName);
             if (dimMap[sampler.dim] == 1)
-#ifdef AMD_EXTENSIONS
                 if (f16TexAddr)
                     stageBuiltins[EShLangFragment].append(", float16_t");
                 else
                     stageBuiltins[EShLangFragment].append(", float");
-#else
-                stageBuiltins[EShLangFragment].append(", float");
-#endif
             else {
-#ifdef AMD_EXTENSIONS
                 if (f16TexAddr)
                     stageBuiltins[EShLangFragment].append(", f16vec");
                 else
                     stageBuiltins[EShLangFragment].append(", vec");
-#else
-                stageBuiltins[EShLangFragment].append(", vec");
-#endif
                 stageBuiltins[EShLangFragment].append(postfixes[dimMap[sampler.dim]]);
             }
             stageBuiltins[EShLangFragment].append(");\n");
-#ifdef AMD_EXTENSIONS
         }
-#endif
 
-#ifdef NV_EXTENSIONS
         stageBuiltins[EShLangCompute].append("vec2 textureQueryLod(");
         stageBuiltins[EShLangCompute].append(typeName);
         if (dimMap[sampler.dim] == 1)
@@ -6404,7 +6376,6 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
             stageBuiltins[EShLangCompute].append(postfixes[dimMap[sampler.dim]]);
         }
         stageBuiltins[EShLangCompute].append(");\n");
-#endif
     }
 
     //
@@ -6416,6 +6387,7 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
         commonBuiltins.append(typeName);
         commonBuiltins.append(");\n");
     }
+#endif
 }
 
 //
@@ -6531,7 +6503,6 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
         }
     }
 
-#ifdef AMD_EXTENSIONS
     if (sampler.dim == EsdRect || sampler.dim == EsdBuffer || sampler.shadow || sampler.ms)
         return;
 
@@ -6566,7 +6537,6 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
         commonBuiltins.append("vec4");
         commonBuiltins.append(");\n");
     }
-#endif
 }
 
 //
@@ -6664,7 +6634,6 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                     continue;
                                 if (extraProj && (sampler.dim == Esd3D || sampler.shadow || !sampler.combined))
                                     continue;
-#ifdef AMD_EXTENSIONS
                                 for (int f16TexAddr = 0; f16TexAddr <= 1; ++f16TexAddr) { // loop over 16-bit floating-point texel addressing
 
                                     if (f16TexAddr && sampler.type != EbtFloat16)
@@ -6673,7 +6642,6 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                         compare = true; // compare argument is always present
                                         totalDims--;
                                     }
-#endif
                                     for (int lodClamp = 0; lodClamp <= 1 ;++lodClamp) { // loop over "bool" lod clamp
 
                                         if (lodClamp && (profile == EEsProfile || version < 450))
@@ -6696,14 +6664,10 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                                 s.append("int ");
                                             else {
                                                 if (sampler.shadow)
-#ifdef AMD_EXTENSIONS
                                                     if (sampler.type == EbtFloat16)
                                                         s.append("float16_t ");
                                                     else
                                                         s.append("float ");
-#else
-                                                    s.append("float ");
-#endif
                                                 else {
                                                     s.append(prefixes[sampler.type]);
                                                     s.append("vec4 ");
@@ -6741,7 +6705,6 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
 
                                             // sampler type
                                             s.append(typeName);
-#ifdef AMD_EXTENSIONS
                                             // P coordinate
                                             if (extraProj) {
                                                 if (f16TexAddr)
@@ -6759,22 +6722,6 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                                     s.append(postfixes[totalDims]);
                                                 }
                                             }
-#else
-                                            // P coordinate
-                                            if (extraProj)
-                                                s.append(",vec4");
-                                            else {
-                                                s.append(",");
-                                                TBasicType t = fetch ? EbtInt : EbtFloat;
-                                                if (totalDims == 1)
-                                                    s.append(TType::getBasicString(t));
-                                                else {
-                                                    s.append(prefixes[t]);
-                                                    s.append("vec");
-                                                    s.append(postfixes[totalDims]);
-                                                }
-                                            }
-#endif
                                             // non-optional compare
                                             if (compare)
                                                 s.append(",float");
@@ -6783,7 +6730,6 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                             if ((fetch && sampler.dim != EsdBuffer && sampler.dim != EsdRect && !sampler.ms) ||
                                                 (sampler.ms && fetch))
                                                 s.append(",int");
-#ifdef AMD_EXTENSIONS
                                             // non-optional lod
                                             if (lod) {
                                                 if (f16TexAddr)
@@ -6812,23 +6758,6 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                                     s.append(postfixes[dimMap[sampler.dim]]);
                                                 }
                                             }
-#else
-                                            // non-optional lod
-                                            if (lod)
-                                                s.append(",float");
-
-                                            // gradient arguments
-                                            if (grad) {
-                                                if (dimMap[sampler.dim] == 1)
-                                                    s.append(",float,float");
-                                                else {
-                                                    s.append(",vec");
-                                                    s.append(postfixes[dimMap[sampler.dim]]);
-                                                    s.append(",vec");
-                                                    s.append(postfixes[dimMap[sampler.dim]]);
-                                                }
-                                            }
-#endif
                                             // offset
                                             if (offset) {
                                                 if (dimMap[sampler.dim] == 1)
@@ -6839,7 +6768,6 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                                 }
                                             }
 
-#ifdef AMD_EXTENSIONS
                                             // lod clamp
                                             if (lodClamp) {
                                                 if (f16TexAddr)
@@ -6847,29 +6775,19 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                                 else
                                                     s.append(",float");
                                             }
-#else
-                                            // lod clamp
-                                            if (lodClamp)
-                                                s.append(",float");
-#endif
                                             // texel out (for sparse texture)
                                             if (sparse) {
                                                 s.append(",out ");
                                                 if (sampler.shadow)
-#ifdef AMD_EXTENSIONS
                                                     if (sampler.type == EbtFloat16)
                                                         s.append("float16_t");
                                                     else
                                                         s.append("float");
-#else
-                                                    s.append("float");
-#endif
                                                 else {
                                                     s.append(prefixes[sampler.type]);
                                                     s.append("vec4");
                                                 }
                                             }
-#ifdef AMD_EXTENSIONS
                                             // optional bias
                                             if (bias) {
                                                 if (f16TexAddr)
@@ -6877,27 +6795,18 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                                 else
                                                     s.append(",float");
                                             }
-#else
-                                            // optional bias
-                                            if (bias)
-                                                s.append(",float");
-#endif
                                             s.append(");\n");
 
                                             // Add to the per-language set of built-ins
                                             if (bias || lodClamp) {
                                                 stageBuiltins[EShLangFragment].append(s);
-#ifdef NV_EXTENSIONS
                                                 stageBuiltins[EShLangCompute].append(s);
-#endif
                                             } else
                                                 commonBuiltins.append(s);
 
                                         }
                                     }
-#ifdef AMD_EXTENSIONS
                                 }
-#endif
                             }
                         }
                     }
@@ -6930,12 +6839,10 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, const TString& typeName, in
     if (version < 140 && sampler.dim == EsdRect && sampler.type != EbtFloat)
         return;
 
-#ifdef AMD_EXTENSIONS
     for (int f16TexAddr = 0; f16TexAddr <= 1; ++f16TexAddr) { // loop over 16-bit floating-point texel addressing
 
         if (f16TexAddr && sampler.type != EbtFloat16)
             continue;
-#endif
         for (int offset = 0; offset < 3; ++offset) { // loop over three forms of offset in the call name:  none, Offset, and Offsets
 
             for (int comp = 0; comp < 2; ++comp) { // loop over presence of comp argument
@@ -6983,14 +6890,10 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, const TString& typeName, in
                     s.append(typeName);
 
                     // P coordinate argument
-#ifdef AMD_EXTENSIONS
                     if (f16TexAddr)
                         s.append(",f16vec");
                     else
                         s.append(",vec");
-#else
-                    s.append(",vec");
-#endif
                     int totalDims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0);
                     s.append(postfixes[totalDims]);
 
@@ -7018,14 +6921,11 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, const TString& typeName, in
 
                     s.append(");\n");
                     commonBuiltins.append(s);
-#ifdef AMD_EXTENSIONS
                 }
-#endif
             }
         }
     }
 
-#ifdef AMD_EXTENSIONS
     if (sampler.dim == EsdRect || sampler.shadow)
         return;
 
@@ -7151,7 +7051,6 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, const TString& typeName, in
             }
         }
     }
-#endif
 }
 
 //
@@ -7220,6 +7119,9 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
             s.append(builtInConstant);
         }
 
+#ifdef GLSLANG_WEB
+    }
+#else
         if (version >= 310) {
             // geometry
 
@@ -7278,10 +7180,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                     "in gl_PerVertex {"
                         "highp vec4 gl_Position;"
                         "highp float gl_PointSize;"
-#ifdef NV_EXTENSIONS
                         "highp vec4 gl_SecondaryPositionNV;"  // GL_NV_stereo_view_rendering
                         "highp vec4 gl_PositionPerViewNV[];"  // GL_NVX_multiview_per_view_attributes
-#endif
                     "} gl_in[gl_MaxPatchVertices];"
                     "\n");
             }
@@ -7468,10 +7368,8 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
                 if (profile != EEsProfile && version >= 450)
                     s.append(
                         "float gl_CullDistance[];"
-#ifdef NV_EXTENSIONS
                         "vec4 gl_SecondaryPositionNV;"  // GL_NV_stereo_view_rendering
                         "vec4 gl_PositionPerViewNV[];"  // GL_NVX_multiview_per_view_attributes
-#endif
                        );
                 s.append(
                     "} gl_in[gl_MaxPatchVertices];"
@@ -7599,7 +7497,6 @@ void TBuiltIns::initialize(const TBuiltInResource &resources, int version, EProf
         s.append(builtInConstant);
     }
 
-#ifdef NV_EXTENSIONS
     // SPV_NV_mesh_shader
     if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
         snprintf(builtInConstant, maxSize, "const int gl_MaxMeshOutputVerticesNV = %d;", resources.maxMeshOutputVerticesNV);
@@ -7717,6 +7614,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     switch(language) {
     case EShLangVertex:
+#ifndef GLSLANG_WEB
         if (profile != EEsProfile) {
             if (version >= 440) {
                 symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
@@ -7751,7 +7649,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
 
-#ifdef AMD_EXTENSIONS
         if (profile != EEsProfile) {
             symbolTable.setFunctionExtensions("minInvocationsAMD",                1, &E_GL_AMD_shader_ballot);
             symbolTable.setFunctionExtensions("maxInvocationsAMD",                1, &E_GL_AMD_shader_ballot);
@@ -7797,15 +7694,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("fragmentMaskFetchAMD", 1, &E_GL_AMD_shader_fragment_mask);
             symbolTable.setFunctionExtensions("fragmentFetchAMD",     1, &E_GL_AMD_shader_fragment_mask);
         }
-#endif
 
-#ifdef NV_EXTENSIONS
         symbolTable.setFunctionExtensions("textureFootprintNV",          1, &E_GL_NV_shader_texture_footprint);
         symbolTable.setFunctionExtensions("textureFootprintClampNV",     1, &E_GL_NV_shader_texture_footprint);
         symbolTable.setFunctionExtensions("textureFootprintLodNV",       1, &E_GL_NV_shader_texture_footprint);
         symbolTable.setFunctionExtensions("textureFootprintGradNV",      1, &E_GL_NV_shader_texture_footprint);
         symbolTable.setFunctionExtensions("textureFootprintGradClampNV", 1, &E_GL_NV_shader_texture_footprint);
-#endif
         // Compatibility variables, vertex only
         if (spvVersion.spv == 0) {
             BuiltInVariable("gl_Color",          EbvColor,          symbolTable);
@@ -7845,6 +7739,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("imageAtomicExchange", 1, &E_GL_OES_shader_image_atomic);
             symbolTable.setFunctionExtensions("imageAtomicCompSwap", 1, &E_GL_OES_shader_image_atomic);
         }
+#endif
 
         if (spvVersion.vulkan == 0) {
             SpecialQualifier("gl_VertexID",   EvqVertexId,   EbvVertexId,   symbolTable);
@@ -7856,6 +7751,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
         }
 
+
+#ifndef GLSLANG_WEB
         if (version >= 300 /* both ES and non-ES */) {
             symbolTable.setVariableExtensions("gl_ViewID_OVR", Num_OVR_multiview_EXTs, OVR_multiview_EXTs);
             BuiltInVariable("gl_ViewID_OVR", EbvViewIndex, symbolTable);
@@ -7865,10 +7762,12 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("shadow2DEXT",        1, &E_GL_EXT_shadow_samplers);
             symbolTable.setFunctionExtensions("shadow2DProjEXT",    1, &E_GL_EXT_shadow_samplers);
         }
-
+#endif
         // Fall through
 
     case EShLangTessControl:
+
+#ifndef GLSLANG_WEB
         if (profile == EEsProfile && version >= 310) {
             BuiltInVariable("gl_BoundingBoxEXT", EbvBoundingBox, symbolTable);
             symbolTable.setVariableExtensions("gl_BoundingBoxEXT", 1,
@@ -7881,22 +7780,26 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
                 BuiltInVariable("gl_BoundingBox", EbvBoundingBox, symbolTable);
             }
         }
-
+#endif
         // Fall through
 
     case EShLangTessEvaluation:
     case EShLangGeometry:
         SpecialQualifier("gl_Position",   EvqPosition,   EbvPosition,   symbolTable);
         SpecialQualifier("gl_PointSize",  EvqPointSize,  EbvPointSize,  symbolTable);
-        SpecialQualifier("gl_ClipVertex", EvqClipVertex, EbvClipVertex, symbolTable);
 
         BuiltInVariable("gl_in",  "gl_Position",     EbvPosition,     symbolTable);
         BuiltInVariable("gl_in",  "gl_PointSize",    EbvPointSize,    symbolTable);
-        BuiltInVariable("gl_in",  "gl_ClipDistance", EbvClipDistance, symbolTable);
-        BuiltInVariable("gl_in",  "gl_CullDistance", EbvCullDistance, symbolTable);
 
         BuiltInVariable("gl_out", "gl_Position",     EbvPosition,     symbolTable);
         BuiltInVariable("gl_out", "gl_PointSize",    EbvPointSize,    symbolTable);
+
+#ifndef GLSLANG_WEB
+        SpecialQualifier("gl_ClipVertex", EvqClipVertex, EbvClipVertex, symbolTable);
+
+        BuiltInVariable("gl_in",  "gl_ClipDistance", EbvClipDistance, symbolTable);
+        BuiltInVariable("gl_in",  "gl_CullDistance", EbvCullDistance, symbolTable);
+
         BuiltInVariable("gl_out", "gl_ClipDistance", EbvClipDistance, symbolTable);
         BuiltInVariable("gl_out", "gl_CullDistance", EbvCullDistance, symbolTable);
 
@@ -7908,19 +7811,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_Layer",           EbvLayer,          symbolTable);
         BuiltInVariable("gl_ViewportIndex",   EbvViewportIndex,  symbolTable);
 
-#ifdef NV_EXTENSIONS
         if (language != EShLangGeometry) {
             symbolTable.setVariableExtensions("gl_Layer",         Num_viewportEXTs, viewportEXTs);
             symbolTable.setVariableExtensions("gl_ViewportIndex", Num_viewportEXTs, viewportEXTs);
         }
-#else
-        if (language != EShLangGeometry && version >= 410) {
-            symbolTable.setVariableExtensions("gl_Layer",         1, &E_GL_ARB_shader_viewport_layer_array);
-            symbolTable.setVariableExtensions("gl_ViewportIndex", 1, &E_GL_ARB_shader_viewport_layer_array);
-        }
-#endif
-
-#ifdef NV_EXTENSIONS
         symbolTable.setVariableExtensions("gl_ViewportMask",            1, &E_GL_NV_viewport_array2);
         symbolTable.setVariableExtensions("gl_SecondaryPositionNV",     1, &E_GL_NV_stereo_view_rendering);
         symbolTable.setVariableExtensions("gl_SecondaryViewportMaskNV", 1, &E_GL_NV_stereo_view_rendering);
@@ -7951,7 +7845,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_out", "gl_SecondaryViewportMaskNV", EbvSecondaryViewportMaskNV, symbolTable);
         BuiltInVariable("gl_out", "gl_PositionPerViewNV",       EbvPositionPerViewNV,       symbolTable);
         BuiltInVariable("gl_out", "gl_ViewportMaskPerViewNV",   EbvViewportMaskPerViewNV,   symbolTable);
-#endif
 
         BuiltInVariable("gl_PatchVerticesIn", EbvPatchVertices,  symbolTable);
         BuiltInVariable("gl_TessLevelOuter",  EbvTessLevelOuter, symbolTable);
@@ -8052,7 +7945,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_WarpIDNV",              EbvWarpID,          symbolTable);
             BuiltInVariable("gl_SMIDNV",                EbvSMID,            symbolTable);
         }
-
+#endif
         break;
 
     case EShLangFragment:
@@ -8069,6 +7962,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             }
         }
         SpecialQualifier("gl_FragDepth",        EvqFragDepth,  EbvFragDepth,        symbolTable);
+#ifndef GLSLANG_WEB
         SpecialQualifier("gl_FragDepthEXT",     EvqFragDepth,  EbvFragDepth,        symbolTable);
         SpecialQualifier("gl_HelperInvocation", EvqVaryingIn,  EbvHelperInvocation, symbolTable);
 
@@ -8223,7 +8117,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("textureGradOffsetClampARB",          1, &E_GL_ARB_sparse_texture_clamp);
         }
 
-#ifdef AMD_EXTENSIONS
         // E_GL_AMD_shader_explicit_vertex_parameter
         if (profile != EEsProfile) {
             symbolTable.setVariableExtensions("gl_BaryCoordNoPerspAMD",         1, &E_GL_AMD_shader_explicit_vertex_parameter);
@@ -8261,9 +8154,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("imageStoreLodAMD",       1, &E_GL_AMD_shader_image_load_store_lod);
             symbolTable.setFunctionExtensions("sparseImageLoadLodAMD",  1, &E_GL_AMD_shader_image_load_store_lod);
         }
-#endif
-
-#ifdef NV_EXTENSIONS
         if (profile != EEsProfile && version >= 430) {
             symbolTable.setVariableExtensions("gl_FragFullyCoveredNV", 1, &E_GL_NV_conservative_raster_underestimation);
             BuiltInVariable("gl_FragFullyCoveredNV", EbvFragFullyCoveredNV, symbolTable);
@@ -8279,7 +8169,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             BuiltInVariable("gl_BaryCoordNV",        EbvBaryCoordNV,        symbolTable);
             BuiltInVariable("gl_BaryCoordNoPerspNV", EbvBaryCoordNoPerspNV, symbolTable);
         }
-#endif
 
         if ((profile != EEsProfile && version >= 450) ||
             (profile == EEsProfile && version >= 310)) {
@@ -8419,8 +8308,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("subgroupQuadSwapHorizontal",      1, &E_GL_KHR_shader_subgroup_quad);
             symbolTable.setFunctionExtensions("subgroupQuadSwapVertical",        1, &E_GL_KHR_shader_subgroup_quad);
             symbolTable.setFunctionExtensions("subgroupQuadSwapDiagonal",        1, &E_GL_KHR_shader_subgroup_quad);
-
-#ifdef NV_EXTENSIONS
             symbolTable.setFunctionExtensions("subgroupPartitionNV",                          1, &E_GL_NV_shader_subgroup_partitioned);
             symbolTable.setFunctionExtensions("subgroupPartitionedAddNV",                     1, &E_GL_NV_shader_subgroup_partitioned);
             symbolTable.setFunctionExtensions("subgroupPartitionedMulNV",                     1, &E_GL_NV_shader_subgroup_partitioned);
@@ -8443,7 +8330,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("subgroupPartitionedExclusiveAndNV",            1, &E_GL_NV_shader_subgroup_partitioned);
             symbolTable.setFunctionExtensions("subgroupPartitionedExclusiveOrNV",             1, &E_GL_NV_shader_subgroup_partitioned);
             symbolTable.setFunctionExtensions("subgroupPartitionedExclusiveXorNV",            1, &E_GL_NV_shader_subgroup_partitioned);
-#endif
 
             // GL_NV_shader_sm_builtins
             symbolTable.setVariableExtensions("gl_WarpsPerSMNV",         1, &E_GL_NV_shader_sm_builtins);
@@ -8483,8 +8369,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         }
 
         symbolTable.setFunctionExtensions("helperInvocationEXT",            1, &E_GL_EXT_demote_to_helper_invocation);
+#endif
         break;
 
+#ifndef GLSLANG_WEB
     case EShLangCompute:
         BuiltInVariable("gl_NumWorkGroups",         EbvNumWorkGroups,        symbolTable);
         BuiltInVariable("gl_WorkGroupSize",         EbvWorkGroupSize,        symbolTable);
@@ -8597,7 +8485,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.setFunctionExtensions("coopMatStoreNV",             1, &E_GL_NV_cooperative_matrix);
         symbolTable.setFunctionExtensions("coopMatMulAddNV",            1, &E_GL_NV_cooperative_matrix);
 
-#ifdef NV_EXTENSIONS
         if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
             symbolTable.setFunctionExtensions("dFdx",                   1, &E_GL_NV_compute_shader_derivatives);
             symbolTable.setFunctionExtensions("dFdy",                   1, &E_GL_NV_compute_shader_derivatives);
@@ -8609,10 +8496,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("dFdyCoarse",             1, &E_GL_NV_compute_shader_derivatives);
             symbolTable.setFunctionExtensions("fwidthCoarse",           1, &E_GL_NV_compute_shader_derivatives);
         }
-#endif
 
         break;
-#ifdef NV_EXTENSIONS
     case EShLangRayGenNV:
     case EShLangIntersectNV:
     case EShLangAnyHitNV:
@@ -8986,6 +8871,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("floatBitsToUint", EOpFloatBitsToUint);
     symbolTable.relateToOperator("intBitsToFloat",  EOpIntBitsToFloat);
     symbolTable.relateToOperator("uintBitsToFloat", EOpUintBitsToFloat);
+#ifndef GLSLANG_WEB
     symbolTable.relateToOperator("doubleBitsToInt64",  EOpDoubleBitsToInt64);
     symbolTable.relateToOperator("doubleBitsToUint64", EOpDoubleBitsToUint64);
     symbolTable.relateToOperator("int64BitsToDouble",  EOpInt64BitsToDouble);
@@ -8999,12 +8885,14 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     symbolTable.relateToOperator("int16BitsToHalf",  EOpInt16BitsToFloat16);
     symbolTable.relateToOperator("uint16BitsToHalf", EOpUint16BitsToFloat16);
+#endif
 
     symbolTable.relateToOperator("packSnorm2x16",   EOpPackSnorm2x16);
     symbolTable.relateToOperator("unpackSnorm2x16", EOpUnpackSnorm2x16);
     symbolTable.relateToOperator("packUnorm2x16",   EOpPackUnorm2x16);
     symbolTable.relateToOperator("unpackUnorm2x16", EOpUnpackUnorm2x16);
 
+#ifndef GLSLANG_WEB
     symbolTable.relateToOperator("packSnorm4x8",    EOpPackSnorm4x8);
     symbolTable.relateToOperator("unpackSnorm4x8",  EOpUnpackSnorm4x8);
     symbolTable.relateToOperator("packUnorm4x8",    EOpPackUnorm4x8);
@@ -9012,6 +8900,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     symbolTable.relateToOperator("packDouble2x32",    EOpPackDouble2x32);
     symbolTable.relateToOperator("unpackDouble2x32",  EOpUnpackDouble2x32);
+#endif
 
     symbolTable.relateToOperator("packHalf2x16",    EOpPackHalf2x16);
     symbolTable.relateToOperator("unpackHalf2x16",  EOpUnpackHalf2x16);
@@ -9021,6 +8910,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("packUint2x32",    EOpPackUint2x32);
     symbolTable.relateToOperator("unpackUint2x32",  EOpUnpackUint2x32);
 
+#ifndef GLSLANG_WEB
     symbolTable.relateToOperator("packInt2x16",     EOpPackInt2x16);
     symbolTable.relateToOperator("unpackInt2x16",   EOpUnpackInt2x16);
     symbolTable.relateToOperator("packUint2x16",    EOpPackUint2x16);
@@ -9088,8 +8978,10 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     symbolTable.relateToOperator("findMSB",           EOpFindMSB);
 
     symbolTable.relateToOperator("helperInvocationEXT",  EOpIsHelperInvocation);
+#endif
 
     if (PureOperatorBuiltins) {
+#ifndef GLSLANG_WEB
         symbolTable.relateToOperator("imageSize",               EOpImageQuerySize);
         symbolTable.relateToOperator("imageSamples",            EOpImageQuerySamples);
         symbolTable.relateToOperator("imageLoad",               EOpImageLoad);
@@ -9107,6 +8999,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
         symbolTable.relateToOperator("subpassLoad",             EOpSubpassLoad);
         symbolTable.relateToOperator("subpassLoadMS",           EOpSubpassLoadMS);
+#endif
 
         symbolTable.relateToOperator("textureSize",             EOpTextureQuerySize);
         symbolTable.relateToOperator("textureQueryLod",         EOpTextureQueryLod);
@@ -9127,6 +9020,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("textureProjGrad",         EOpTextureProjGrad);
         symbolTable.relateToOperator("textureProjGradOffset",   EOpTextureProjGradOffset);
         symbolTable.relateToOperator("textureGather",           EOpTextureGather);
+
+#ifndef GLSLANG_WEB
         symbolTable.relateToOperator("textureGatherOffset",     EOpTextureGatherOffset);
         symbolTable.relateToOperator("textureGatherOffsets",    EOpTextureGatherOffsets);
 
@@ -9135,13 +9030,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("noise3", EOpNoise);
         symbolTable.relateToOperator("noise4", EOpNoise);
 
-#ifdef NV_EXTENSIONS
         symbolTable.relateToOperator("textureFootprintNV",          EOpImageSampleFootprintNV);
         symbolTable.relateToOperator("textureFootprintClampNV",     EOpImageSampleFootprintClampNV);
         symbolTable.relateToOperator("textureFootprintLodNV",       EOpImageSampleFootprintLodNV);
         symbolTable.relateToOperator("textureFootprintGradNV",      EOpImageSampleFootprintGradNV);
         symbolTable.relateToOperator("textureFootprintGradClampNV", EOpImageSampleFootprintGradClampNV);
-#endif
 
         if (spvVersion.spv == 0 && (IncludeLegacy(version, profile, spvVersion) ||
             (profile == EEsProfile && version == 100))) {
@@ -9237,7 +9130,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
                 symbolTable.relateToOperator("allInvocations",              EOpAllInvocations);
                 symbolTable.relateToOperator("allInvocationsEqual",         EOpAllInvocationsEqual);
             }
-#ifdef AMD_EXTENSIONS
             symbolTable.relateToOperator("minInvocationsAMD",                           EOpMinInvocations);
             symbolTable.relateToOperator("maxInvocationsAMD",                           EOpMaxInvocations);
             symbolTable.relateToOperator("addInvocationsAMD",                           EOpAddInvocations);
@@ -9282,7 +9174,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
             symbolTable.relateToOperator("fragmentMaskFetchAMD",                EOpFragmentMaskFetch);
             symbolTable.relateToOperator("fragmentFetchAMD",                    EOpFragmentFetch);
-#endif
         }
 
         // GL_KHR_shader_subgroup
@@ -9343,7 +9234,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("subgroupQuadSwapVertical",        EOpSubgroupQuadSwapVertical);
             symbolTable.relateToOperator("subgroupQuadSwapDiagonal",        EOpSubgroupQuadSwapDiagonal);
 
-#ifdef NV_EXTENSIONS
             symbolTable.relateToOperator("subgroupPartitionNV",                          EOpSubgroupPartition);
             symbolTable.relateToOperator("subgroupPartitionedAddNV",                     EOpSubgroupPartitionedAdd);
             symbolTable.relateToOperator("subgroupPartitionedMulNV",                     EOpSubgroupPartitionedMul);
@@ -9366,15 +9256,16 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("subgroupPartitionedExclusiveAndNV",            EOpSubgroupPartitionedExclusiveAnd);
             symbolTable.relateToOperator("subgroupPartitionedExclusiveOrNV",             EOpSubgroupPartitionedExclusiveOr);
             symbolTable.relateToOperator("subgroupPartitionedExclusiveXorNV",            EOpSubgroupPartitionedExclusiveXor);
-#endif
         }
 
         if (profile == EEsProfile) {
             symbolTable.relateToOperator("shadow2DEXT",              EOpTexture);
             symbolTable.relateToOperator("shadow2DProjEXT",          EOpTextureProj);
         }
+#endif
     }
 
+#ifndef GLSLANG_WEB
     switch(language) {
     case EShLangVertex:
         break;
@@ -9391,9 +9282,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         break;
 
     case EShLangFragment:
-        symbolTable.relateToOperator("dFdx",         EOpDPdx);
-        symbolTable.relateToOperator("dFdy",         EOpDPdy);
-        symbolTable.relateToOperator("fwidth",       EOpFwidth);
         if (profile != EEsProfile && version >= 400) {
             symbolTable.relateToOperator("dFdxFine",     EOpDPdxFine);
             symbolTable.relateToOperator("dFdyFine",     EOpDPdyFine);
@@ -9406,10 +9294,8 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("interpolateAtSample",   EOpInterpolateAtSample);
         symbolTable.relateToOperator("interpolateAtOffset",   EOpInterpolateAtOffset);
 
-#ifdef AMD_EXTENSIONS
         if (profile != EEsProfile)
             symbolTable.relateToOperator("interpolateAtVertexAMD", EOpInterpolateAtVertex);
-#endif
 
         symbolTable.relateToOperator("beginInvocationInterlockARB", EOpBeginInvocationInterlock);
         symbolTable.relateToOperator("endInvocationInterlockARB",   EOpEndInvocationInterlock);
@@ -9420,7 +9306,6 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("memoryBarrierShared",         EOpMemoryBarrierShared);
         symbolTable.relateToOperator("groupMemoryBarrier",          EOpGroupMemoryBarrier);
         symbolTable.relateToOperator("subgroupMemoryBarrierShared", EOpSubgroupMemoryBarrierShared);
-#ifdef NV_EXTENSIONS
         if ((profile != EEsProfile && version >= 450) ||
             (profile == EEsProfile && version >= 320)) {
             symbolTable.relateToOperator("dFdx",        EOpDPdx);
@@ -9433,13 +9318,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("dFdyCoarse",  EOpDPdyCoarse);
             symbolTable.relateToOperator("fwidthCoarse",EOpFwidthCoarse);
         }
-#endif
         symbolTable.relateToOperator("coopMatLoadNV",              EOpCooperativeMatrixLoad);
         symbolTable.relateToOperator("coopMatStoreNV",             EOpCooperativeMatrixStore);
         symbolTable.relateToOperator("coopMatMulAddNV",            EOpCooperativeMatrixMulAdd);
         break;
 
-#ifdef NV_EXTENSIONS
     case EShLangRayGenNV:
     case EShLangClosestHitNV:
     case EShLangMissNV:
@@ -9475,11 +9358,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.relateToOperator("subgroupMemoryBarrierShared", EOpSubgroupMemoryBarrierShared);
         }
         break;
-#endif
 
     default:
         assert(false && "Language not supported");
     }
+#endif
 }
 
 //
@@ -9493,6 +9376,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 //
 void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage language, TSymbolTable& symbolTable, const TBuiltInResource &resources)
 {
+#ifndef GLSLANG_WEB
     if (profile != EEsProfile && version >= 430 && version < 440) {
         symbolTable.setVariableExtensions("gl_MaxTransformFeedbackBuffers", 1, &E_GL_ARB_enhanced_layouts);
         symbolTable.setVariableExtensions("gl_MaxTransformFeedbackInterleavedComponents", 1, &E_GL_ARB_enhanced_layouts);
@@ -9538,13 +9422,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         BuiltInVariable("gl_in", "gl_TexCoord",            EbvTexCoord,            symbolTable);
         BuiltInVariable("gl_in", "gl_FogFragCoord",        EbvFogFragCoord,        symbolTable);
 
-#ifdef NV_EXTENSIONS
         symbolTable.setVariableExtensions("gl_in", "gl_SecondaryPositionNV", 1, &E_GL_NV_stereo_view_rendering);
         symbolTable.setVariableExtensions("gl_in", "gl_PositionPerViewNV",   1, &E_GL_NVX_multiview_per_view_attributes);
 
         BuiltInVariable("gl_in", "gl_SecondaryPositionNV", EbvSecondaryPositionNV, symbolTable);
         BuiltInVariable("gl_in", "gl_PositionPerViewNV",   EbvPositionPerViewNV,   symbolTable);
-#endif
 
         // extension requirements
         if (profile == EEsProfile) {
@@ -9556,6 +9438,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     default:
         break;
     }
+#endif
 }
 
 } // end namespace glslang

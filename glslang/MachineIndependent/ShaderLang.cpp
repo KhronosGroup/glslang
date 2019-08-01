@@ -326,6 +326,7 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
     InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangFragment, source,
                                infoSink, commonTable, symbolTables);
 
+#ifndef GLSLANG_WEB
     // check for tessellation
     if ((profile != EEsProfile && version >= 150) ||
         (profile == EEsProfile && version >= 310)) {
@@ -347,7 +348,6 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangCompute, source,
                                    infoSink, commonTable, symbolTables);
 
-#ifdef NV_EXTENSIONS
     // check for ray tracing stages
     if (profile != EEsProfile && version >= 450) {
         InitializeStageSymbolTable(*builtInParseables, version, profile, spvVersion, EShLangRayGenNV, source,
@@ -581,6 +581,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
         break;
     }
 
+#ifndef GLSLANG_WEB
     // Correct for stage type...
     switch (stage) {
     case EShLangGeometry:
@@ -612,7 +613,6 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
             version = profile == EEsProfile ? 310 : 420;
         }
         break;
-#ifdef NV_EXTENSIONS
     case EShLangRayGenNV:
     case EShLangIntersectNV:
     case EShLangAnyHitNV:
@@ -633,10 +633,10 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
             infoSink.info.message(EPrefixError, "#version: mesh/task shaders require es profile with version 320 or above, or non-es profile with version 450 or above");
             version = profile == EEsProfile ? 320 : 450;
         }
-#endif
     default:
         break;
     }
+#endif
 
     if (profile == EEsProfile && version >= 300 && versionNotFirst) {
         correct = false;

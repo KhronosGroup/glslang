@@ -309,12 +309,16 @@ primary_expression
         $$ = $1;
     }
     | INT32CONSTANT {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt32Check($1.loc, "32-bit signed literal");
         $$ = parseContext.intermediate.addConstantUnion($1.i, $1.loc, true);
+#endif
     }
     | UINT32CONSTANT {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt32Check($1.loc, "32-bit signed literal");
         $$ = parseContext.intermediate.addConstantUnion($1.u, $1.loc, true);
+#endif
     }
     | INTCONSTANT {
         $$ = parseContext.intermediate.addConstantUnion($1.i, $1.loc, true);
@@ -332,12 +336,16 @@ primary_expression
         $$ = parseContext.intermediate.addConstantUnion($1.u64, $1.loc, true);
     }
     | INT16CONSTANT {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt16Check($1.loc, "16-bit integer literal");
         $$ = parseContext.intermediate.addConstantUnion((short)$1.i, $1.loc, true);
+#endif
     }
     | UINT16CONSTANT {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt16Check($1.loc, "16-bit unsigned integer literal");
         $$ = parseContext.intermediate.addConstantUnion((unsigned short)$1.u, $1.loc, true);
+#endif
     }
     | FLOATCONSTANT {
         $$ = parseContext.intermediate.addConstantUnion($1.d, EbtFloat, $1.loc, true);
@@ -347,8 +355,10 @@ primary_expression
         $$ = parseContext.intermediate.addConstantUnion($1.d, EbtDouble, $1.loc, true);
     }
     | FLOAT16CONSTANT {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float literal");
         $$ = parseContext.intermediate.addConstantUnion($1.d, EbtFloat16, $1.loc, true);
+#endif
     }
     | BOOLCONSTANT {
         $$ = parseContext.intermediate.addConstantUnion($1.b, $1.loc, true);
@@ -1136,15 +1146,13 @@ interpolation_qualifier
         $$.qualifier.flat = true;
     }
     | NOPERSPECTIVE {
+#ifndef GLSLANG_WEB
         parseContext.globalCheck($1.loc, "noperspective");
-#ifdef NV_EXTENSIONS
         parseContext.profileRequires($1.loc, EEsProfile, 0, E_GL_NV_shader_noperspective_interpolation, "noperspective");
-#else
-        parseContext.requireProfile($1.loc, ~EEsProfile, "noperspective");
-#endif
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "noperspective");
         $$.init($1.loc);
         $$.qualifier.nopersp = true;
+#endif
     }
     | EXPLICITINTERPAMD {
 #ifdef AMD_EXTENSIONS
@@ -1463,16 +1471,20 @@ storage_qualifier
         $$.qualifier.writeonly = true;
     }
     | SUBROUTINE {
+#ifndef GLSLANG_WEB
         parseContext.spvRemoved($1.loc, "subroutine");
         parseContext.globalCheck($1.loc, "subroutine");
         parseContext.unimplemented($1.loc, "subroutine");
         $$.init($1.loc);
+#endif
     }
     | SUBROUTINE LEFT_PAREN type_name_list RIGHT_PAREN {
+#ifndef GLSLANG_WEB
         parseContext.spvRemoved($1.loc, "subroutine");
         parseContext.globalCheck($1.loc, "subroutine");
         parseContext.unimplemented($1.loc, "subroutine");
         $$.init($1.loc);
+#endif
     }
     ;
 
@@ -1583,19 +1595,25 @@ type_specifier_nonarray
         $$.basicType = EbtDouble;
     }
     | FLOAT16_T {
+#ifndef GLSLANG_WEB
         parseContext.float16ScalarVectorCheck($1.loc, "float16_t", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
+#endif
     }
     | FLOAT32_T {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
+#endif
     }
     | FLOAT64_T {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
+#endif
     }
     | INT {
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
@@ -1607,34 +1625,46 @@ type_specifier_nonarray
         $$.basicType = EbtUint;
     }
     | INT8_T {
+#ifndef GLSLANG_WEB
         parseContext.int8ScalarVectorCheck($1.loc, "8-bit signed integer", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt8;
+#endif
     }
     | UINT8_T {
+#ifndef GLSLANG_WEB
         parseContext.int8ScalarVectorCheck($1.loc, "8-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint8;
+#endif
     }
     | INT16_T {
+#ifndef GLSLANG_WEB
         parseContext.int16ScalarVectorCheck($1.loc, "16-bit signed integer", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt16;
+#endif
     }
     | UINT16_T {
+#ifndef GLSLANG_WEB
         parseContext.int16ScalarVectorCheck($1.loc, "16-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint16;
+#endif
     }
     | INT32_T {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt32Check($1.loc, "32-bit signed integer", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt;
+#endif
     }
     | UINT32_T {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt32Check($1.loc, "32-bit unsigned integer", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint;
+#endif
     }
     | INT64_T {
         parseContext.int64Check($1.loc, "64-bit integer", parseContext.symbolTable.atBuiltInLevel());
@@ -1684,40 +1714,52 @@ type_specifier_nonarray
         $$.setVector(4);
     }
     | F16VEC2 {
+#ifndef GLSLANG_WEB
         parseContext.float16ScalarVectorCheck($1.loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setVector(2);
+#endif
     }
     | F16VEC3 {
+#ifndef GLSLANG_WEB
         parseContext.float16ScalarVectorCheck($1.loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setVector(3);
+#endif
     }
     | F16VEC4 {
+#ifndef GLSLANG_WEB
         parseContext.float16ScalarVectorCheck($1.loc, "half float vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setVector(4);
+#endif
     }
     | F32VEC2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setVector(2);
+#endif
     }
     | F32VEC3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setVector(3);
+#endif
     }
     | F32VEC4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setVector(4);
+#endif
     }
     | F64VEC2 {
         parseContext.explicitFloat64Check($1.loc, "float64_t vector", parseContext.symbolTable.atBuiltInLevel());
@@ -1768,58 +1810,76 @@ type_specifier_nonarray
         $$.setVector(4);
     }
     | I8VEC2 {
+#ifndef GLSLANG_WEB
         parseContext.int8ScalarVectorCheck($1.loc, "8-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt8;
         $$.setVector(2);
+#endif
     }
     | I8VEC3 {
+#ifndef GLSLANG_WEB
         parseContext.int8ScalarVectorCheck($1.loc, "8-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt8;
         $$.setVector(3);
+#endif
     }
     | I8VEC4 {
+#ifndef GLSLANG_WEB
         parseContext.int8ScalarVectorCheck($1.loc, "8-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt8;
         $$.setVector(4);
+#endif
     }
     | I16VEC2 {
+#ifndef GLSLANG_WEB
         parseContext.int16ScalarVectorCheck($1.loc, "16-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt16;
         $$.setVector(2);
+#endif
     }
     | I16VEC3 {
+#ifndef GLSLANG_WEB
         parseContext.int16ScalarVectorCheck($1.loc, "16-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt16;
         $$.setVector(3);
+#endif
     }
     | I16VEC4 {
+#ifndef GLSLANG_WEB
         parseContext.int16ScalarVectorCheck($1.loc, "16-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt16;
         $$.setVector(4);
+#endif
     }
     | I32VEC2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt32Check($1.loc, "32-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt;
         $$.setVector(2);
+#endif
     }
     | I32VEC3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt32Check($1.loc, "32-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt;
         $$.setVector(3);
+#endif
     }
     | I32VEC4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt32Check($1.loc, "32-bit signed integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtInt;
         $$.setVector(4);
+#endif
     }
     | I64VEC2 {
         parseContext.int64Check($1.loc, "64-bit integer vector", parseContext.symbolTable.atBuiltInLevel());
@@ -1858,58 +1918,76 @@ type_specifier_nonarray
         $$.setVector(4);
     }
     | U8VEC2 {
+#ifndef GLSLANG_WEB
         parseContext.int8ScalarVectorCheck($1.loc, "8-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint8;
         $$.setVector(2);
+#endif
     }
     | U8VEC3 {
+#ifndef GLSLANG_WEB
         parseContext.int8ScalarVectorCheck($1.loc, "8-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint8;
         $$.setVector(3);
+#endif
     }
     | U8VEC4 {
+#ifndef GLSLANG_WEB
         parseContext.int8ScalarVectorCheck($1.loc, "8-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint8;
         $$.setVector(4);
+#endif
     }
     | U16VEC2 {
+#ifndef GLSLANG_WEB
         parseContext.int16ScalarVectorCheck($1.loc, "16-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint16;
         $$.setVector(2);
+#endif
     }
     | U16VEC3 {
+#ifndef GLSLANG_WEB
         parseContext.int16ScalarVectorCheck($1.loc, "16-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint16;
         $$.setVector(3);
+#endif
     }
     | U16VEC4 {
+#ifndef GLSLANG_WEB
         parseContext.int16ScalarVectorCheck($1.loc, "16-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint16;
         $$.setVector(4);
+#endif
     }
     | U32VEC2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt32Check($1.loc, "32-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint;
         $$.setVector(2);
+#endif
     }
     | U32VEC3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt32Check($1.loc, "32-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint;
         $$.setVector(3);
+#endif
     }
     | U32VEC4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitInt32Check($1.loc, "32-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtUint;
         $$.setVector(4);
+#endif
     }
     | U64VEC2 {
         parseContext.int64Check($1.loc, "64-bit unsigned integer vector", parseContext.symbolTable.atBuiltInLevel());
@@ -2062,220 +2140,292 @@ type_specifier_nonarray
         $$.setMatrix(4, 4);
     }
     | F16MAT2 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(2, 2);
+#endif
     }
     | F16MAT3 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(3, 3);
+#endif
     }
     | F16MAT4 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(4, 4);
+#endif
     }
     | F16MAT2X2 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(2, 2);
+#endif
     }
     | F16MAT2X3 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(2, 3);
+#endif
     }
     | F16MAT2X4 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(2, 4);
+#endif
     }
     | F16MAT3X2 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(3, 2);
+#endif
     }
     | F16MAT3X3 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(3, 3);
+#endif
     }
     | F16MAT3X4 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(3, 4);
+#endif
     }
     | F16MAT4X2 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(4, 2);
+#endif
     }
     | F16MAT4X3 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(4, 3);
+#endif
     }
     | F16MAT4X4 {
+#ifndef GLSLANG_WEB
         parseContext.float16Check($1.loc, "half float matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat16;
         $$.setMatrix(4, 4);
+#endif
     }
     | F32MAT2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(2, 2);
+#endif
     }
     | F32MAT3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(3, 3);
+#endif
     }
     | F32MAT4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(4, 4);
+#endif
     }
     | F32MAT2X2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(2, 2);
+#endif
     }
     | F32MAT2X3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(2, 3);
+#endif
     }
     | F32MAT2X4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(2, 4);
+#endif
     }
     | F32MAT3X2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(3, 2);
+#endif
     }
     | F32MAT3X3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(3, 3);
+#endif
     }
     | F32MAT3X4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(3, 4);
+#endif
     }
     | F32MAT4X2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(4, 2);
+#endif
     }
     | F32MAT4X3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(4, 3);
+#endif
     }
     | F32MAT4X4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat32Check($1.loc, "float32_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.setMatrix(4, 4);
+#endif
     }
     | F64MAT2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(2, 2);
+#endif
     }
     | F64MAT3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(3, 3);
+#endif
     }
     | F64MAT4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(4, 4);
+#endif
     }
     | F64MAT2X2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(2, 2);
+#endif
     }
     | F64MAT2X3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(2, 3);
+#endif
     }
     | F64MAT2X4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(2, 4);
+#endif
     }
     | F64MAT3X2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(3, 2);
+#endif
     }
     | F64MAT3X3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(3, 3);
+#endif
     }
     | F64MAT3X4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(3, 4);
+#endif
     }
     | F64MAT4X2 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(4, 2);
+#endif
     }
     | F64MAT4X3 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(4, 3);
+#endif
     }
     | F64MAT4X4 {
+#ifndef GLSLANG_WEB
         parseContext.explicitFloat64Check($1.loc, "float64_t matrix", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtDouble;
         $$.setMatrix(4, 4);
+#endif
     }
     | ACCSTRUCTNV {
 #ifdef NV_EXTENSIONS
@@ -3215,10 +3365,12 @@ type_specifier_nonarray
         $$.sampler.setSubpass(EbtUint, true);
     }
     | FCOOPMATNV {
+#ifndef GLSLANG_WEB
         parseContext.fcoopmatCheck($1.loc, "fcoopmatNV", parseContext.symbolTable.atBuiltInLevel());
         $$.init($1.loc, parseContext.symbolTable.atGlobalLevel());
         $$.basicType = EbtFloat;
         $$.coopmat = true;
+#endif
     }
     | struct_specifier {
         $$ = $1;

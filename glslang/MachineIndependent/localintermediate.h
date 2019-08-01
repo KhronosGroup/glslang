@@ -149,20 +149,14 @@ struct TOffsetRange {
 
 // Things that need to be tracked per xfb buffer.
 struct TXfbBuffer {
-#ifdef AMD_EXTENSIONS
     TXfbBuffer() : stride(TQualifier::layoutXfbStrideEnd), implicitStride(0), contains64BitType(false),
                    contains32BitType(false), contains16BitType(false) { }
-#else
-    TXfbBuffer() : stride(TQualifier::layoutXfbStrideEnd), implicitStride(0), contains64BitType(false) { }
-#endif
     std::vector<TRange> ranges;  // byte offsets that have already been assigned
     unsigned int stride;
     unsigned int implicitStride;
     bool contains64BitType;
-#ifdef AMD_EXTENSIONS
     bool contains32BitType;
     bool contains16BitType;
-#endif
 };
 
 // Track a set of strings describing how the module was processed.
@@ -217,7 +211,6 @@ class TSymbolTable;
 class TSymbol;
 class TVariable;
 
-#ifdef NV_EXTENSIONS
 //
 // Texture and Sampler transformation mode.
 //
@@ -226,7 +219,6 @@ enum ComputeDerivativeMode {
     LayoutDerivativeGroupQuads,   // derivative_group_quadsNV
     LayoutDerivativeGroupLinear,  // derivative_group_linearNV
 };
-#endif
 
 //
 // Set of helper functions to help parse and build the tree.
@@ -248,7 +240,7 @@ public:
         postDepthCoverage(false), depthLayout(EldNone), depthReplacing(false),
         hlslFunctionality1(false),
         blendEquations(0), xfbMode(false), multiStream(false),
-#ifdef NV_EXTENSIONS
+#ifndef GLSLANG_WEB
         layoutOverrideCoverage(false),
         geoPassthroughEXT(false),
         numShaderRecordNVBlocks(0),
@@ -286,7 +278,11 @@ public:
     void setLimits(const TBuiltInResource& r) { resources = r; }
 
     bool postProcess(TIntermNode*, EShLanguage);
+#ifdef GLSLANG_WEB
+    void output(TInfoSink&, bool tree) { }
+#else
     void output(TInfoSink&, bool tree);
+#endif
     void removeTree();
 
 #ifdef ENABLE_HLSL
@@ -480,7 +476,12 @@ public:
     int getNumEntryPoints() const { return numEntryPoints; }
     int getNumErrors() const { return numErrors; }
     void addPushConstantCount() { ++numPushConstants; }
-#ifdef NV_EXTENSIONS
+#ifdef GLSLANG_WEB
+    int getNumPushConstants() const { return 0; }
+    void addShaderRecordNVCount() { }
+    void addTaskNVCount() { }
+#else
+    int getNumPushConstants() const { return numPushConstants; }
     void addShaderRecordNVCount() { ++numShaderRecordNVBlocks; }
     void addTaskNVCount() { ++numTaskNVBlocks; }
 #endif
@@ -702,6 +703,7 @@ public:
     static int computeTypeLocationSize(const TType&, EShLanguage);
     static int computeTypeUniformLocationSize(const TType&);
 
+#ifndef GLSLANG_WEB
     bool setXfbBufferStride(int buffer, unsigned stride)
     {
         if (xfbBuffers[buffer].stride != TQualifier::layoutXfbStrideEnd)
@@ -711,9 +713,7 @@ public:
     }
     unsigned getXfbStride(int buffer) const { return xfbBuffers[buffer].stride; }
     int addXfbBufferOffset(const TType&);
-#ifdef AMD_EXTENSIONS
     unsigned int computeTypeXfbSize(const TType&, bool& contains64BitType, bool& contains32BitType, bool& contains16BitType) const;
-#else
     unsigned int computeTypeXfbSize(const TType&, bool& contains64BitType) const;
 #endif
     static int getBaseAlignmentScalar(const TType&, int& size);
@@ -727,7 +727,7 @@ public:
     static int computeBufferReferenceTypeSize(const TType&);
     bool promote(TIntermOperator*);
 
-#ifdef NV_EXTENSIONS
+#ifndef GLSLANG_WEB
     void setLayoutOverrideCoverage() { layoutOverrideCoverage = true; }
     bool getLayoutOverrideCoverage() const { return layoutOverrideCoverage; }
     void setGeoPassthroughEXT() { geoPassthroughEXT = true; }
@@ -796,25 +796,27 @@ public:
     const char* const implicitCounterName;
 
     // Certain explicit conversions are allowed conditionally
+#ifdef GLSLANG_WEB
+    bool getArithemeticInt8Enabled() const { return false; }
+    bool getArithemeticInt16Enabled() const { return false; }
+    bool getArithemeticFloat16Enabled() const { return false; }
+#else
     bool getArithemeticInt8Enabled() const {
         return extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int8);
     }
     bool getArithemeticInt16Enabled() const {
         return extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-#ifdef AMD_EXTENSIONS
                extensionRequested(E_GL_AMD_gpu_shader_int16) ||
-#endif
                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_int16);
     }
 
     bool getArithemeticFloat16Enabled() const {
         return extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types) ||
-#ifdef AMD_EXTENSIONS
                extensionRequested(E_GL_AMD_gpu_shader_half_float) ||
-#endif
                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16);
     }
+#endif
 
 protected:
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, const TConstUnionArray&, TIntermTyped* subtree, const TSourceLoc&);
@@ -847,7 +849,15 @@ protected:
     bool isConversionAllowed(TOperator op, TIntermTyped* node) const;
     TIntermTyped* createConversion(TBasicType convertTo, TIntermTyped* node) const;
     std::tuple<TBasicType, TBasicType> getConversionDestinatonType(TBasicType type0, TBasicType type1, TOperator op) const;
+#ifdef GLSLANG_WEB
+    bool extensionRequested(const char *extension) const { return false; }
+#else
+    // I think this function should go away.
+    // This data structure is just a log to pass on to back ends.
+    // Versioning and extensions are handled in Version.cpp, with a rich
+    // set of functions for querying stages, versions, extension enable/disabled, etc.
     bool extensionRequested(const char *extension) const {return requestedExtensions.find(extension) != requestedExtensions.end();}
+#endif
     static const char* getResourceName(TResourceType);
 
     const EShLanguage language;  // stage, known at construction time
@@ -891,7 +901,7 @@ protected:
     std::vector<TXfbBuffer> xfbBuffers;     // all the data we need to track per xfb buffer
     bool multiStream;
 
-#ifdef NV_EXTENSIONS
+#ifndef GLSLANG_WEB
     bool layoutOverrideCoverage;
     bool geoPassthroughEXT;
     int numShaderRecordNVBlocks;

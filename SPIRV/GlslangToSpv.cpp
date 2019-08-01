@@ -441,7 +441,7 @@ spv::Decoration TGlslangToSpvTraverser::TranslateInterpolationDecoration(const g
     if (qualifier.smooth)
         // Smooth decoration doesn't exist in SPIR-V 1.0
         return spv::DecorationMax;
-    else if (qualifier.nopersp)
+    else if (qualifier.isNonPerspective())
         return spv::DecorationNoPerspective;
     else if (qualifier.flat)
         return spv::DecorationFlat;
@@ -984,7 +984,7 @@ spv::ImageFormat TGlslangToSpvTraverser::TranslateImageFormat(const glslang::TTy
     assert(type.getBasicType() == glslang::EbtSampler);
 
     // Check for capabilities
-    switch (type.getQualifier().layoutFormat) {
+    switch (type.getQualifier().getFormat()) {
     case glslang::ElfRg32f:
     case glslang::ElfRg16f:
     case glslang::ElfR11fG11fB10f:
@@ -1021,7 +1021,7 @@ spv::ImageFormat TGlslangToSpvTraverser::TranslateImageFormat(const glslang::TTy
     }
 
     // do the translation
-    switch (type.getQualifier().layoutFormat) {
+    switch (type.getQualifier().getFormat()) {
     case glslang::ElfNone:          return spv::ImageFormatUnknown;
     case glslang::ElfRgba32f:       return spv::ImageFormatRgba32f;
     case glslang::ElfRgba16f:       return spv::ImageFormatRgba16f;
@@ -1155,7 +1155,7 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     }
 
     if (type.getQualifier().isUniformOrBuffer()) {
-        if (type.getQualifier().layoutPushConstant)
+        if (type.getQualifier().isPushConstant())
             return spv::StorageClassPushConstant;
         if (type.getBasicType() == glslang::EbtBlock)
             return spv::StorageClassUniform;
@@ -1230,10 +1230,8 @@ bool IsDescriptorResource(const glslang::TType& type)
     // uniform and buffer blocks are included, unless it is a push_constant
     if (type.getBasicType() == glslang::EbtBlock)
         return type.getQualifier().isUniformOrBuffer() &&
-#ifdef NV_EXTENSIONS
-        ! type.getQualifier().layoutShaderRecordNV &&
-#endif
-        ! type.getQualifier().layoutPushConstant;
+        ! type.getQualifier().isShaderRecordNV() &&
+        ! type.getQualifier().isPushConstant();
 
     // non block...
     // basically samplerXXX/subpass/sampler/texture are all included
@@ -1253,9 +1251,9 @@ void InheritQualifiers(glslang::TQualifier& child, const glslang::TQualifier& pa
 
     if (parent.invariant)
         child.invariant = true;
+#ifndef GLSLANG_WEB
     if (parent.nopersp)
         child.nopersp = true;
-#ifdef AMD_EXTENSIONS
     if (parent.explicitInterp)
         child.explicitInterp = true;
 #endif
@@ -1802,7 +1800,7 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                 // Load through a block reference is performed with a dot operator that
                 // is mapped to EOpIndexDirectStruct. When we get to the actual reference,
                 // do a load and reset the access chain.
-                if (node->getLeft()->getBasicType() == glslang::EbtReference &&
+                if (node->getLeft()->isReference() &&
                     !node->getLeft()->getType().isArray() &&
                     node->getOp() == glslang::EOpIndexDirectStruct)
                 {
@@ -3560,7 +3558,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
 
             // Make forward pointers for any pointer members, and create a list of members to
             // convert to spirv types after creating the struct.
-            if (glslangMember.getBasicType() == glslang::EbtReference) {
+            if (glslangMember.isReference()) {
                 if (forwardPointers.find(glslangMember.getReferentType()) == forwardPointers.end()) {
                     deferredForwardPointers.push_back(std::make_pair(&glslangMember, memberQualifier));
                 }
@@ -4093,7 +4091,7 @@ void TGlslangToSpvTraverser::makeFunctions(const glslang::TIntermSequence& glslF
         if (paramPrecision != spv::NoPrecision)
             decorations.push_back(paramPrecision);
         TranslateMemoryDecoration(type.getQualifier(), decorations, useVulkanMemoryModel);
-        if (type.getBasicType() == glslang::EbtReference) {
+        if (type.isReference()) {
             // Original and non-writable params pass the pointer directly and
             // use restrict/aliased, others are stored to a pointer in Function
             // memory and use RestrictPointer/AliasedPointer.
@@ -7741,6 +7739,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
     }
     if (symbol->getQualifier().hasAttachment())
         builder.addDecoration(id, spv::DecorationInputAttachmentIndex, symbol->getQualifier().layoutAttachment);
+#ifndef GLSLANG_WEB
     if (glslangIntermediate->getXfbMode()) {
         builder.addCapability(spv::CapabilityTransformFeedback);
         if (symbol->getQualifier().hasXfbBuffer()) {
@@ -7752,6 +7751,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
         if (symbol->getQualifier().hasXfbOffset())
             builder.addDecoration(id, spv::DecorationOffset, symbol->getQualifier().layoutXfbOffset);
     }
+#endif
 
     if (symbol->getType().isImage()) {
         std::vector<spv::Decoration> memory;
@@ -7815,7 +7815,7 @@ spv::Id TGlslangToSpvTraverser::getSymbolId(const glslang::TIntermSymbol* symbol
                               symbol->getType().getQualifier().semanticName);
     }
 
-    if (symbol->getBasicType() == glslang::EbtReference) {
+    if (symbol->isReference()) {
         builder.addDecoration(id, symbol->getType().getQualifier().restrict ? spv::DecorationRestrictPointerEXT : spv::DecorationAliasedPointerEXT);
     }
 

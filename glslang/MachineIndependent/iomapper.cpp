@@ -75,7 +75,7 @@ public:
             target = &inputList;
         else if (base->getQualifier().storage == EvqVaryingOut)
             target = &outputList;
-        else if (base->getQualifier().isUniformOrBuffer() && !base->getQualifier().layoutPushConstant)
+        else if (base->getQualifier().isUniformOrBuffer() && !base->getQualifier().isPushConstant())
             target = &uniformList;
         if (target) {
             TVarEntryInfo ent = {base->getId(), base, ! traverseAll};
@@ -355,7 +355,7 @@ struct TSymbolValidater
                 }
                 return;
             }
-        } else if (base->getQualifier().isUniformOrBuffer() && ! base->getQualifier().layoutPushConstant) {
+        } else if (base->getQualifier().isUniformOrBuffer() && ! base->getQualifier().isPushConstant()) {
             // validate uniform type;
             for (int i = 0; i < EShLangCount; i++) {
                 if (i != currentStage && outVarMaps[i] != nullptr) {

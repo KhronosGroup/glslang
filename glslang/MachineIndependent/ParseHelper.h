@@ -299,10 +299,12 @@ public:
     TIntermTyped* handleBracketDereference(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
     void handleIndexLimits(const TSourceLoc&, TIntermTyped* base, TIntermTyped* index);
 
+#ifndef GLSLANG_WEB
     void makeEditable(TSymbol*&) override;
+    void ioArrayCheck(const TSourceLoc&, const TType&, const TString& identifier);
+#endif
     bool isIoResizeArray(const TType&) const;
     void fixIoArraySize(const TSourceLoc&, TType&);
-    void ioArrayCheck(const TSourceLoc&, const TType&, const TString& identifier);
     void handleIoResizeArrayAccess(const TSourceLoc&, TIntermTyped* base);
     void checkIoArraysConsistency(const TSourceLoc&, bool tailOnly = false);
     int getIoArrayImplicitSize(const TQualifier&, TString* featureString = nullptr) const;
@@ -443,7 +445,9 @@ protected:
     bool isRuntimeLength(const TIntermTyped&) const;
     TIntermNode* executeInitializer(const TSourceLoc&, TIntermTyped* initializer, TVariable* variable);
     TIntermTyped* convertInitializerList(const TSourceLoc&, const TType&, TIntermTyped* initializer);
+#ifndef GLSLANG_WEB
     void finish() override;
+#endif
 
 public:
     //

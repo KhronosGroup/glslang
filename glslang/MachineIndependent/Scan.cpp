@@ -1645,7 +1645,7 @@ int TScanContext::identifierOrType()
         if (const TVariable* variable = parserToken->sType.lex.symbol->getAsVariable()) {
             if (variable->isUserType() &&
                 // treat redeclaration of forward-declared buffer/uniform reference as an identifier
-                !(variable->getType().getBasicType() == EbtReference && afterBuffer)) {
+                !(variable->getType().isReference() && afterBuffer)) {
                 afterType = true;
 
                 return TYPE_NAME;

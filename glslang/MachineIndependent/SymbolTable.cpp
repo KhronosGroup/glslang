@@ -61,24 +61,24 @@ void TType::buildMangledName(TString& mangledName) const
 
     switch (basicType) {
     case EbtFloat:              mangledName += 'f';      break;
-    case EbtDouble:             mangledName += 'd';      break;
-    case EbtFloat16:            mangledName += "f16";    break;
     case EbtInt:                mangledName += 'i';      break;
     case EbtUint:               mangledName += 'u';      break;
+    case EbtBool:               mangledName += 'b';      break;
+#ifndef GLSLANG_WEB
+    case EbtDouble:             mangledName += 'd';      break;
+    case EbtFloat16:            mangledName += "f16";    break;
     case EbtInt8:               mangledName += "i8";     break;
     case EbtUint8:              mangledName += "u8";     break;
     case EbtInt16:              mangledName += "i16";    break;
     case EbtUint16:             mangledName += "u16";    break;
     case EbtInt64:              mangledName += "i64";    break;
     case EbtUint64:             mangledName += "u64";    break;
-    case EbtBool:               mangledName += 'b';      break;
     case EbtAtomicUint:         mangledName += "au";     break;
-#ifdef NV_EXTENSIONS
     case EbtAccStructNV:        mangledName += "asnv";   break;
 #endif
     case EbtSampler:
         switch (sampler.type) {
-#ifdef AMD_EXTENSIONS
+#ifndef GLSLANG_WEB
         case EbtFloat16: mangledName += "f16"; break;
 #endif
         case EbtInt:   mangledName += "i"; break;

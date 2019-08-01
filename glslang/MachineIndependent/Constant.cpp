@@ -292,13 +292,12 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, const TIntermTyped* right
                         newConstArray[i].setIConst(0);
                         break;
                     } else goto modulo_default;
-
+#ifndef GLSLANG_WEB
                 case EbtInt64:
                     if (rightUnionArray[i].getI64Const() == -1 && leftUnionArray[i].getI64Const() == LLONG_MIN) {
                         newConstArray[i].setI64Const(0);
                         break;
                     } else goto modulo_default;
-#ifdef AMD_EXTENSIONS
                 case EbtInt16:
                     if (rightUnionArray[i].getIConst() == -1 && leftUnionArray[i].getIConst() == SHRT_MIN) {
                         newConstArray[i].setIConst(0);
