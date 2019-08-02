@@ -36,6 +36,7 @@
 #ifndef _IOMAPPER_INCLUDED
 #define _IOMAPPER_INCLUDED
 
+#include <cstdint>
 #include "LiveTraverser.h"
 #include <unordered_map>
 #include <unordered_set>
