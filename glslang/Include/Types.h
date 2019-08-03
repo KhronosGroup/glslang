@@ -2047,6 +2047,13 @@ public:
             appendStr(getBuiltInVariableString());
         }
 
+        if (getBasicType() == EbtBlock) {
+            const TString& blockName = getTypeName();
+            appendStr(" '");
+            appendStr(blockName.c_str());
+            appendStr("'");
+        }
+
         // Add struct/block members
         if (isStruct() && structure) {
             appendStr("{");
