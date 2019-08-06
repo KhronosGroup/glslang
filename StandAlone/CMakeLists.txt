@@ -40,14 +40,18 @@ if(WIN32)
 endif(WIN32)
 
 if(ENABLE_GLSLANG_INSTALL)
-    install(TARGETS glslangValidator
+    install(TARGETS glslangValidator EXPORT glslangValidatorTargets
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-    install(TARGETS spirv-remap
+    install(TARGETS spirv-remap EXPORT spirv-remapTargets
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+	
+	install(EXPORT glslangValidatorTargets DESTINATION ${LIB_INSTALL_DIR}/cmake)
+	install(EXPORT spirv-remapTargets DESTINATION ${LIB_INSTALL_DIR}/cmake)
             
     if(BUILD_SHARED_LIBS)
-        install(TARGETS glslang-default-resource-limits
+        install(TARGETS glslang-default-resource-limits EXPORT glslang-default-resource-limitsTargets
                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+		install(EXPORT glslang-default-resource-limitsTargets DESTINATION ${LIB_INSTALL_DIR}/cmake)
     endif()
 endif(ENABLE_GLSLANG_INSTALL)

@@ -106,14 +106,15 @@ endif(WIN32)
 
 if(ENABLE_GLSLANG_INSTALL)
     if(BUILD_SHARED_LIBS)
-        install(TARGETS glslang
+        install(TARGETS glslang EXPORT glslangTargets
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     else()
-        install(TARGETS glslang
+        install(TARGETS glslang EXPORT glslangTargets
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
+	install(EXPORT glslangTargets DESTINATION ${LIB_INSTALL_DIR}/cmake)
 endif(ENABLE_GLSLANG_INSTALL)
 
 if(ENABLE_GLSLANG_INSTALL)
