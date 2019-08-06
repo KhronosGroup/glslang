@@ -33,7 +33,7 @@ if(BUILD_TESTING)
         if(ENABLE_GLSLANG_INSTALL)
             install(TARGETS glslangtests EXPORT glslangtestsTargets
                     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-			install(EXPORT glslangtestsTargets DESTINATION ${LIB_INSTALL_DIR}/cmake)
+			install(EXPORT glslangtestsTargets DESTINATION lib/cmake)
         endif(ENABLE_GLSLANG_INSTALL)
 
         set(GLSLANG_TEST_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../Test")
