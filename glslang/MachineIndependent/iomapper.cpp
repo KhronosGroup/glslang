@@ -33,6 +33,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
+#ifndef GLSLANG_WEB
+
 #include "../Include/Common.h"
 #include "../Include/InfoSink.h"
 
@@ -1239,3 +1241,5 @@ bool TGlslIoMapper::doMap(TIoMapResolver* resolver, TInfoSink& infoSink) {
 }
 
 } // end namespace glslang
+
+#endif // GLSLANG_WEB

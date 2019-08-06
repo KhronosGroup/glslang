@@ -3662,7 +3662,9 @@ selection_statement
         $$ = $1;
     }
     | attribute selection_statement_nonattributed {
+#ifndef GLSLANG_WEB
         parseContext.handleSelectionAttributes(*$1, $2);
+#endif
         $$ = $2;
     }
 
@@ -3707,7 +3709,9 @@ switch_statement
         $$ = $1;
     }
     | attribute switch_statement_nonattributed {
+#ifndef GLSLANG_WEB
         parseContext.handleSwitchAttributes(*$1, $2);
+#endif
         $$ = $2;
     }
 
@@ -3769,7 +3773,9 @@ iteration_statement
         $$ = $1;
     }
     | attribute iteration_statement_nonattributed {
+#ifndef GLSLANG_WEB
         parseContext.handleLoopAttributes(*$1, $2);
+#endif
         $$ = $2;
     }
 
@@ -3943,15 +3949,21 @@ attribute_list
         $$ = $1;
     }
     | attribute_list COMMA single_attribute {
+#ifndef GLSLANG_WEB
         $$ = parseContext.mergeAttributes($1, $3);
+#endif
     }
 
 single_attribute
     : IDENTIFIER {
+#ifndef GLSLANG_WEB
         $$ = parseContext.makeAttributes(*$1.string);
+#endif
     }
     | IDENTIFIER LEFT_PAREN constant_expression RIGHT_PAREN {
+#ifndef GLSLANG_WEB
         $$ = parseContext.makeAttributes(*$1.string, $3);
+#endif
     }
 
 %%

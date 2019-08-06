@@ -1071,11 +1071,13 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
     if (! (Options & EOptionOutputPreprocessed) && ! program.link(messages))
         LinkFailed = true;
 
+#ifndef GLSLANG_WEB
     // Map IO
     if (Options & EOptionSpv) {
         if (!program.mapIO())
             LinkFailed = true;
     }
+#endif
 
     // Report
     if (! (Options & EOptionSuppressInfolog) &&
@@ -1084,11 +1086,13 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         PutsIfNonEmpty(program.getInfoDebugLog());
     }
 
+#ifndef GLSLANG_WEB
     // Reflect
     if (Options & EOptionDumpReflection) {
         program.buildReflection(ReflectOptions);
         program.dumpReflection();
     }
+#endif
 
     // Dump SPIR-V
     if (Options & EOptionSpv) {

@@ -421,6 +421,7 @@ public:
     void wrapupSwitchSubsequence(TIntermAggregate* statements, TIntermNode* branchNode);
     TIntermNode* addSwitch(const TSourceLoc&, TIntermTyped* expression, TIntermAggregate* body);
 
+#ifndef GLSLANG_WEB
     TAttributeType attributeFromName(const TString& name) const;
     TAttributes* makeAttributes(const TString& identifier) const;
     TAttributes* makeAttributes(const TString& identifier, TIntermNode* node) const;
@@ -429,9 +430,9 @@ public:
     // Determine selection control from attributes
     void handleSelectionAttributes(const TAttributes& attributes, TIntermNode*);
     void handleSwitchAttributes(const TAttributes& attributes, TIntermNode*);
-
     // Determine loop control from attributes
     void handleLoopAttributes(const TAttributes& attributes, TIntermNode*);
+#endif
 
     void checkAndResizeMeshViewDim(const TSourceLoc&, TType&, bool isBlockMember);
 

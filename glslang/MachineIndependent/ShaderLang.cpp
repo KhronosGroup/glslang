@@ -1860,7 +1860,11 @@ const char* TShader::getInfoDebugLog()
     return infoSink->debug.c_str();
 }
 
-TProgram::TProgram() : reflection(0), linked(false)
+TProgram::TProgram() :
+#ifndef GLSLANG_WEB
+    reflection(0),
+#endif
+    linked(false)
 {
     pool = new TPoolAllocator;
     infoSink = new TInfoSink;
@@ -1873,7 +1877,9 @@ TProgram::TProgram() : reflection(0), linked(false)
 TProgram::~TProgram()
 {
     delete infoSink;
+#ifndef GLSLANG_WEB
     delete reflection;
+#endif
 
     for (int s = 0; s < EShLangCount; ++s)
         if (newedIntermediate[s])
@@ -1985,6 +1991,8 @@ const char* TProgram::getInfoDebugLog()
     return infoSink->debug.c_str();
 }
 
+#ifndef GLSLANG_WEB
+
 //
 // Reflection implementation.
 //
@@ -2061,5 +2069,7 @@ bool TProgram::mapIO(TIoMapResolver* pResolver, TIoMapper* pIoMapper)
 
     return ioMapper->doMap(pResolver, *infoSink);
 }
+
+#endif // GLSLANG_WEB
 
 } // end namespace glslang
