@@ -586,7 +586,7 @@ Id Builder::makeSampledImageType(Id imageType)
     return type->getResultId();
 }
 
-#ifdef NV_EXTENSIONS
+#ifndef GLSLANG_WEB
 Id Builder::makeAccelerationStructureNVType()
 {
     Instruction *type;
@@ -602,6 +602,7 @@ Id Builder::makeAccelerationStructureNVType()
     return type->getResultId();
 }
 #endif
+
 Id Builder::getDerefTypeId(Id resultId) const
 {
     Id typeId = getTypeId(resultId);
@@ -1904,7 +1905,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
             opCode = OpImageSparseFetch;
         else
             opCode = OpImageFetch;
-#ifdef NV_EXTENSIONS
+#ifndef GLSLANG_WEB
     } else if (parameters.granularity && parameters.coarse) {
         opCode = OpImageSampleFootprintNV;
 #endif
@@ -2067,11 +2068,7 @@ Id Builder::createTextureQueryCall(Op opCode, const TextureParameters& parameter
         break;
     }
     case OpImageQueryLod:
-#ifdef AMD_EXTENSIONS
         resultType = makeVectorType(getScalarTypeId(getTypeId(parameters.coords)), 2);
-#else
-        resultType = makeVectorType(makeFloatType(32), 2);
-#endif
         break;
     case OpImageQueryLevels:
     case OpImageQuerySamples:

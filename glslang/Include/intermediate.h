@@ -1299,10 +1299,17 @@ public:
     bool isConstructor() const;
     bool isTexture()  const { return op > EOpTextureGuardBegin  && op < EOpTextureGuardEnd; }
     bool isSampling() const { return op > EOpSamplingGuardBegin && op < EOpSamplingGuardEnd; }
+#ifdef GLSLANG_WEB
+    bool isImage()          const { return false; }
+    bool isSparseTexture()  const { return false; }
+    bool isImageFootprint() const { return false; }
+    bool isSparseImage()    const { return false; }
+#else
     bool isImage()    const { return op > EOpImageGuardBegin    && op < EOpImageGuardEnd; }
     bool isSparseTexture() const { return op > EOpSparseTextureGuardBegin && op < EOpSparseTextureGuardEnd; }
     bool isImageFootprint() const { return op > EOpImageFootprintGuardBegin && op < EOpImageFootprintGuardEnd; }
     bool isSparseImage()   const { return op == EOpSparseImageLoad; }
+#endif
 
     void setOperationPrecision(TPrecisionQualifier p) { operationPrecision = p; }
     TPrecisionQualifier getOperationPrecision() const { return operationPrecision != EpqNone ?

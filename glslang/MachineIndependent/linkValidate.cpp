@@ -525,7 +525,7 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     }
 
     // Precise...
-    if (! crossStage && symbol.getQualifier().noContraction != unitSymbol.getQualifier().noContraction) {
+    if (! crossStage && symbol.getQualifier().isNoContraction() != unitSymbol.getQualifier().isNoContraction()) {
         error(infoSink, "Presence of precise qualifier must match:");
         writeTypeComparison = true;
     }

@@ -1239,10 +1239,12 @@ layout_qualifier_id
 
 precise_qualifier
     : PRECISE {
+#ifndef GLSLANG_WEB
         parseContext.profileRequires($$.loc, ECoreProfile | ECompatibilityProfile, 400, E_GL_ARB_gpu_shader5, "precise");
         parseContext.profileRequires($1.loc, EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5, "precise");
         $$.init($1.loc);
         $$.qualifier.noContraction = true;
+#endif
     }
     ;
 

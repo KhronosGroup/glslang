@@ -442,9 +442,11 @@ public:
     {
         precision = EpqNone;
         invariant = false;
-        noContraction = false;
         makeTemporary();
         declaredBuiltIn = EbvNone;
+#ifndef GLSLANG_WEB
+        noContraction = false;
+#endif
     }
 
     // drop qualifiers that don't belong in a temporary variable
@@ -517,11 +519,11 @@ public:
     static_assert(EbvLast < 256, "need to increase size of TBuiltInVariable bitfields!");
     TPrecisionQualifier precision : 3;
     bool invariant    : 1; // require canonical treatment for cross-shader invariance
-    bool noContraction: 1; // prevent contraction and reassociation, e.g., for 'precise' keyword, and expressions it affects
     bool centroid     : 1;
     bool smooth       : 1;
     bool flat         : 1;
 #ifndef GLSLANG_WEB
+    bool noContraction: 1; // prevent contraction and reassociation, e.g., for 'precise' keyword, and expressions it affects
     bool nopersp      : 1;
     bool explicitInterp : 1;
     bool pervertexNV  : 1;
@@ -552,40 +554,36 @@ public:
     {
         return subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || volatil || restrict || readonly || writeonly;
     }
-    bool bufferReferenceNeedsVulkanMemoryModel() const
-    {
-#ifdef GLSLANG_WEB
-        return false;
-#else
-        // include qualifiers that map to load/store availability/visibility/nonprivate memory access operands
-        return subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || nonprivate;
-#endif
-    }
 
+#ifdef GLSLANG_WEB
+    bool bufferReferenceNeedsVulkanMemoryModel() const { return false; }
     bool isInterpolation() const
     {
-#ifndef GLSLANG_WEB
-        return flat || smooth || nopersp || explicitInterp;
-#else
         return flat || smooth;
-#endif
     }
-
-#ifndef GLSLANG_WEB
+    bool isExplicitInterpolation() const { return false; }
+    bool isAuxiliary() const { return centroid; }
+    bool isNoContraction() const { return false; }
+#else
+    bool bufferReferenceNeedsVulkanMemoryModel() const
+    {
+        // include qualifiers that map to load/store availability/visibility/nonprivate memory access operands
+        return subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || nonprivate;
+    }
+    bool isInterpolation() const
+    {
+        return flat || smooth || nopersp || explicitInterp;
+    }
     bool isExplicitInterpolation() const
     {
         return explicitInterp;
     }
-#endif
-
     bool isAuxiliary() const
     {
-#ifndef GLSLANG_WEB
         return centroid || patch || sample || pervertexNV;
-#else
-        return centroid;
-#endif
     }
+    bool isNoContraction() const { return noContraction; }
+#endif
 
     bool isPipeInput() const
     {

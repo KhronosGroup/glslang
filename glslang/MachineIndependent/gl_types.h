@@ -115,7 +115,6 @@
 #define GL_SAMPLER_CUBE_MAP_ARRAY_ARB     0x900C
 #define GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW_ARB 0x900D
 
-#ifdef AMD_EXTENSIONS
 #define GL_FLOAT16_SAMPLER_1D_AMD                       0x91CE
 #define GL_FLOAT16_SAMPLER_2D_AMD                       0x91CF
 #define GL_FLOAT16_SAMPLER_3D_AMD                       0x91D0
@@ -147,7 +146,6 @@
 #define GL_FLOAT16_IMAGE_BUFFER_AMD                     0x91E8
 #define GL_FLOAT16_IMAGE_2D_MULTISAMPLE_AMD             0x91E9
 #define GL_FLOAT16_IMAGE_2D_MULTISAMPLE_ARRAY_AMD       0x91EA
-#endif
 
 #define GL_INT_SAMPLER_1D                 0x8DC9
 #define GL_INT_SAMPLER_2D                 0x8DCA
