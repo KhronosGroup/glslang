@@ -84,6 +84,27 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool        yuv : 1;  // GL_EXT_YUV_target
     unsigned int vectorSize : 3;  // vector return type size.
 
+    // Encapsulate getting members' vector sizes packed into the vectorSize bitfield.
+    unsigned int getVectorSize() const { return vectorSize; }
+
+#ifdef GLSLANG_WEB
+    void clearReturnStruct() const { }
+    bool hasReturnStruct() const { return false; }
+    unsigned getStructReturnIndex() const { return 0; }
+    bool is1D()          const { return false; }
+    bool isBuffer()      const { return false; }
+    bool isRect()        const { return false; }
+    bool isSubpass()     const { return false; }
+    bool isCombined()    const { return true; }
+    bool isPureSampler() const { return false; }
+    bool isTexture()     const { return false; }
+    bool isImage()       const { return false; }
+    bool isImageClass()  const { return false; }
+    bool isMultiSample() const { return false; }
+    bool isExternal()    const { return false; }
+    void setExternal(bool e) { }
+    bool isYuv()         const { return false; }
+#else
     // Some languages support structures as sample results.  Storing the whole structure in the
     // TSampler is too large, so there is an index to a separate table.
     static const unsigned structReturnIndexBits = 4;                        // number of index bits to use.
@@ -93,18 +114,26 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     // Index into a language specific table of texture return structures.
     unsigned int structReturnIndex : structReturnIndexBits;
 
-    // Encapsulate getting members' vector sizes packed into the vectorSize bitfield.
-    unsigned int getVectorSize() const { return vectorSize; }
-
-    bool isImage()       const { return image && dim != EsdSubpass; }
+    void clearReturnStruct() { structReturnIndex = noReturnStruct; }
+    bool hasReturnStruct() const { return structReturnIndex != noReturnStruct; }
+    unsigned getStructReturnIndex() const { return structReturnIndex; }
+    bool is1D()          const { return dim == Esd1D; }
+    bool isBuffer()      const { return dim == EsdBuffer; }
+    bool isRect()        const { return dim == EsdRect; }
     bool isSubpass()     const { return dim == EsdSubpass; }
     bool isCombined()    const { return combined; }
     bool isPureSampler() const { return sampler; }
     bool isTexture()     const { return !sampler && !image; }
+    bool isImage()       const { return image && !isSubpass(); }
+    bool isImageClass()  const { return image; }
+    bool isMultiSample() const { return ms; }
+    bool isExternal()    const { return external; }
+    void setExternal(bool e) { external = e; }
+    bool isYuv()         const { return yuv; }
+#endif
+    void setCombined(bool c) { combined = c; }
     bool isShadow()      const { return shadow; }
     bool isArrayed()     const { return arrayed; }
-    bool isMultiSample() const { return ms; }
-    bool hasReturnStruct() const { return structReturnIndex != noReturnStruct; }
 
     void clear()
     {
@@ -118,7 +147,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         sampler = false;
         external = false;
         yuv = false;
-        structReturnIndex = noReturnStruct;
+        clearReturnStruct();
 
         // by default, returns a single vec4;
         vectorSize = 4;
@@ -183,14 +212,14 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
                      dim == right.dim &&
                  arrayed == right.arrayed &&
                   shadow == right.shadow &&
-                      ms == right.ms &&
-                   image == right.image &&
-                combined == right.combined &&
-                 sampler == right.sampler &&
-                external == right.external &&
-                     yuv == right.yuv &&
+         isMultiSample() == right.isMultiSample() &&
+          isImageClass() == right.isImageClass() &&
+            isCombined() == right.isCombined() &&
+         isPureSampler() == right.isPureSampler() &&
+            isExternal() == right.isExternal() &&
+                 isYuv() == right.isYuv() &&
               vectorSize == right.vectorSize &&
-       structReturnIndex == right.structReturnIndex;            
+  getStructReturnIndex() == right.getStructReturnIndex();
     }
 
     bool operator!=(const TSampler& right) const
@@ -202,13 +231,12 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     {
         TString s;
 
-        if (sampler) {
+        if (isPureSampler()) {
             s.append("sampler");
             return s;
         }
 
         switch (type) {
-        case EbtFloat:                   break;
         case EbtInt:    s.append("i");   break;
         case EbtUint:   s.append("u");   break;
 #ifndef GLSLANG_WEB
@@ -222,34 +250,36 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
 #endif
         default:  break;
         }
-        if (image) {
-            if (dim == EsdSubpass)
+        if (isImageClass()) {
+            if (isSubpass())
                 s.append("subpass");
             else
                 s.append("image");
-        } else if (combined) {
+        } else if (isCombined()) {
             s.append("sampler");
         } else {
             s.append("texture");
         }
-        if (external) {
+        if (isExternal()) {
             s.append("ExternalOES");
             return s;
         }
-        if (yuv) {
+        if (isYuv()) {
             return "__" + s + "External2DY2YEXT";
         }
         switch (dim) {
-        case Esd1D:      s.append("1D");      break;
         case Esd2D:      s.append("2D");      break;
         case Esd3D:      s.append("3D");      break;
         case EsdCube:    s.append("Cube");    break;
+#ifndef GLSLANG_WEB
+        case Esd1D:      s.append("1D");      break;
         case EsdRect:    s.append("2DRect");  break;
         case EsdBuffer:  s.append("Buffer");  break;
         case EsdSubpass: s.append("Input"); break;
+#endif
         default:  break;  // some compilers want this
         }
-        if (ms)
+        if (isMultiSample())
             s.append("MS");
         if (arrayed)
             s.append("Array");
@@ -897,6 +927,7 @@ public:
     bool isShaderRecordNV() const { return false; }
     bool hasBufferReference() const { return false; }
     bool hasBufferReferenceAlign() const { return false; }
+    bool isNonUniform() const { return false; }
 #else
     bool isNonPerspective() const { return nopersp; }
     bool hasIndex() const
@@ -945,6 +976,10 @@ public:
     {
         return layoutBufferReferenceAlign != layoutBufferReferenceAlignEnd;
     }
+    bool isNonUniform() const
+    {
+        return nonUniform;
+    }
 #endif
     bool hasSpecConstantId() const
     {
@@ -958,10 +993,6 @@ public:
         // had a specialization-constant ID, and false if it is not a
         // true front-end constant.
         return specConstant;
-    }
-    bool isNonUniform() const
-    {
-        return nonUniform;
     }
     bool isFrontEndConstant() const
     {
@@ -998,6 +1029,9 @@ public:
         default:             return "none";
         }
     }
+#ifdef GLSLANG_WEB
+    static const char* getLayoutFormatString(TLayoutFormat f) { return "none"; }
+#else
     static const char* getLayoutFormatString(TLayoutFormat f)
     {
         switch (f) {
@@ -1132,6 +1166,7 @@ public:
         default:                                return "none";
         }
     }
+#endif
 };
 
 // Qualifiers that don't need to be keep per object.  They have shader scope, not object scope.

@@ -435,25 +435,30 @@ TBuiltIns::TBuiltIns()
     // Set up textual representations for making all the permutations
     // of texturing/imaging functions.
     prefixes[EbtFloat] =  "";
+    prefixes[EbtInt]   = "i";
+    prefixes[EbtUint]  = "u";
+#ifndef GLSLANG_WEB
     prefixes[EbtFloat16] = "f16";
     prefixes[EbtInt8]  = "i8";
     prefixes[EbtUint8] = "u8";
     prefixes[EbtInt16]  = "i16";
     prefixes[EbtUint16] = "u16";
-    prefixes[EbtInt]   = "i";
-    prefixes[EbtUint]  = "u";
+#endif
+
     postfixes[2] = "2";
     postfixes[3] = "3";
     postfixes[4] = "4";
 
     // Map from symbolic class of texturing dimension to numeric dimensions.
-    dimMap[Esd1D] = 1;
     dimMap[Esd2D] = 2;
-    dimMap[EsdRect] = 2;
     dimMap[Esd3D] = 3;
     dimMap[EsdCube] = 3;
+#ifndef GLSLANG_WEB
+    dimMap[Esd1D] = 1;
+    dimMap[EsdRect] = 2;
     dimMap[EsdBuffer] = 1;
     dimMap[EsdSubpass] = 2;  // potientially unused for now
+#endif
 }
 
 TBuiltIns::~TBuiltIns()
@@ -6150,18 +6155,18 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
     // In this function proper, enumerate the types, then calls the next set of functions
     // to enumerate all the uses for that type.
     //
-    TBasicType bTypes[4] = { EbtFloat, EbtFloat16, EbtInt, EbtUint };
     bool skipBuffer = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 140);
     bool skipCubeArrayed = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 130);
 
     // enumerate all the types
 #ifdef GLSLANG_WEB
+    const TBasicType bTypes[] = { EbtFloat, EbtInt, EbtUint };
     const int image = 0;
 #else
+    const TBasicType bTypes[] = { EbtFloat, EbtInt, EbtUint, EbtFloat16 };
     for (int image = 0; image <= 1; ++image) // loop over "bool" image vs sampler
 #endif
     {
-
         for (int shadow = 0; shadow <= 1; ++shadow) { // loop over "bool" shadow or not
 #ifdef GLSLANG_WEB
             const int ms = 0;
@@ -6169,6 +6174,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
             for (int ms = 0; ms <= 1; ++ms)
 #endif
             {
+#ifndef GLSLANG_WEB
                 if ((ms || image) && shadow)
                     continue;
                 if (ms && profile != EEsProfile && version < 150)
@@ -6177,19 +6183,19 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                     continue;
                 if (ms && profile == EEsProfile && version < 310)
                     continue;
+#endif
 
                 for (int arrayed = 0; arrayed <= 1; ++arrayed) { // loop over "bool" arrayed or not
 #ifdef GLSLANG_WEB
-                    for (int dim = Esd2D; dim < EsdCube + 1; ++dim) { // 2D, 3D, and Cube
+                    for (int dim = Esd2D; dim <= EsdCube; ++dim) { // 2D, 3D, and Cube
 #else
-                    for (int dim = Esd1D; dim < EsdNumDims; ++dim) { // 1D, 2D, ..., buffer, subpass
+                    for (int dim = Esd1D; dim < EsdNumDims; ++dim) { // 1D, ..., buffer, subpass
                         if (dim == EsdSubpass && spvVersion.vulkan == 0)
                             continue;
                         if (dim == EsdSubpass && (image || shadow || arrayed))
                             continue;
                         if ((dim == Esd1D || dim == EsdRect) && profile == EEsProfile)
                             continue;
-#endif
                         if (dim == EsdSubpass && spvVersion.vulkan == 0)
                             continue;
                         if (dim == EsdSubpass && (image || shadow || arrayed))
@@ -6198,32 +6204,34 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                             continue;
                         if (dim != Esd2D && dim != EsdSubpass && ms)
                             continue;
-                        if ((dim == Esd3D || dim == EsdRect) && arrayed)
-                            continue;
-                        if (dim == Esd3D && shadow)
-                            continue;
-                        if (dim == EsdCube && arrayed && skipCubeArrayed)
-                            continue;
                         if (dim == EsdBuffer && skipBuffer)
                             continue;
                         if (dim == EsdBuffer && (shadow || arrayed || ms))
                             continue;
                         if (ms && arrayed && profile == EEsProfile && version < 310)
                             continue;
-                        for (int bType = 0; bType < 4; ++bType) { // float, float16, int, uint results
+#endif
+                        if (dim == Esd3D && shadow)
+                            continue;
+                        if (dim == EsdCube && arrayed && skipCubeArrayed)
+                            continue;
+                        if ((dim == Esd3D || dim == EsdRect) && arrayed)
+                            continue;
 
-                            if (shadow && bType > 1)
-                                continue;
-
-                            if (bTypes[bType] == EbtFloat16 && (profile == EEsProfile ||version < 450))
+                        // Loop over the bTypes
+                        for (int bType = 0; bType < sizeof(bTypes)/sizeof(TBasicType); ++bType) {
+#ifndef GLSLANG_WEB
+                            if (bTypes[bType] == EbtFloat16 && (profile == EEsProfile || version < 450))
                                 continue;
                             if (dim == EsdRect && version < 140 && bType > 0)
+                                continue;
+#endif
+                            if (shadow && (bTypes[bType] == EbtInt || bTypes[bType] == EbtUint))
                                 continue;
 
                             //
                             // Now, make all the function prototypes for the type we just built...
                             //
-
                             TSampler sampler;
 #ifndef GLSLANG_WEB
                             if (dim == EsdSubpass) {
@@ -6280,13 +6288,14 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
         }
     }
 
+#ifndef GLSLANG_WEB
     //
     // sparseTexelsResidentARB()
     //
-
     if (profile != EEsProfile && version >= 450) {
         commonBuiltins.append("bool sparseTexelsResidentARB(int code);\n");
     }
+#endif
 }
 
 //
@@ -6297,14 +6306,25 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
 //
 void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int version, EProfile profile)
 {
-    if (sampler.image && ((profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 430)))
-        return;
-
     //
     // textureSize() and imageSize()
     //
 
     int sizeDims = dimMap[sampler.dim] + (sampler.arrayed ? 1 : 0) - (sampler.dim == EsdCube ? 1 : 0);
+
+#ifdef GLSLANG_WEB
+    commonBuiltins.append("highp ");
+    commonBuiltins.append("ivec");
+    commonBuiltins.append(postfixes[sizeDims]);
+    commonBuiltins.append(" textureSize(");
+    commonBuiltins.append(typeName);
+    commonBuiltins.append(",int);\n");
+    return;
+#endif
+
+    if (sampler.isImage() && ((profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 430)))
+        return;
+
     if (profile == EEsProfile)
         commonBuiltins.append("highp ");
     if (sizeDims == 1)
@@ -6313,28 +6333,25 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
         commonBuiltins.append("ivec");
         commonBuiltins.append(postfixes[sizeDims]);
     }
-#ifndef GLSLANG_WEB
-    if (sampler.image)
+    if (sampler.isImage())
         commonBuiltins.append(" imageSize(readonly writeonly volatile coherent ");
     else
-#endif
         commonBuiltins.append(" textureSize(");
     commonBuiltins.append(typeName);
-    if (! sampler.image && sampler.dim != EsdRect && sampler.dim != EsdBuffer && ! sampler.ms)
+    if (! sampler.isImage() && ! sampler.isRect() && ! sampler.isBuffer() && ! sampler.isMultiSample())
         commonBuiltins.append(",int);\n");
     else
         commonBuiltins.append(");\n");
 
-#ifndef GLSLANG_WEB
     //
     // textureSamples() and imageSamples()
     //
 
     // GL_ARB_shader_texture_image_samples
     // TODO: spec issue? there are no memory qualifiers; how to query a writeonly/readonly image, etc?
-    if (profile != EEsProfile && version >= 430 && sampler.ms) {
+    if (profile != EEsProfile && version >= 430 && sampler.isMultiSample()) {
         commonBuiltins.append("int ");
-        if (sampler.image)
+        if (sampler.isImage())
             commonBuiltins.append("imageSamples(readonly writeonly volatile coherent ");
         else
             commonBuiltins.append("textureSamples(");
@@ -6346,7 +6363,8 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
     // textureQueryLod(), fragment stage only
     //
 
-    if (profile != EEsProfile && version >= 400 && sampler.combined && sampler.dim != EsdRect && ! sampler.ms && sampler.dim != EsdBuffer) {
+    if (profile != EEsProfile && version >= 400 && sampler.isCombined() && sampler.dim != EsdRect &&
+        ! sampler.isMultiSample() && ! sampler.isBuffer()) {
         for (int f16TexAddr = 0; f16TexAddr < 2; ++f16TexAddr) {
             if (f16TexAddr && sampler.type != EbtFloat16)
                 continue;
@@ -6382,12 +6400,12 @@ void TBuiltIns::addQueryFunctions(TSampler sampler, const TString& typeName, int
     // textureQueryLevels()
     //
 
-    if (profile != EEsProfile && version >= 430 && ! sampler.image && sampler.dim != EsdRect && ! sampler.ms && sampler.dim != EsdBuffer) {
+    if (profile != EEsProfile && version >= 430 && ! sampler.isImage() && sampler.dim != EsdRect &&
+        ! sampler.isMultiSample() && ! sampler.isBuffer()) {
         commonBuiltins.append("int textureQueryLevels(");
         commonBuiltins.append(typeName);
         commonBuiltins.append(");\n");
     }
-#endif
 }
 
 //
@@ -6410,7 +6428,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
         imageParams.append(", ivec");
         imageParams.append(postfixes[dims]);
     }
-    if (sampler.ms)
+    if (sampler.isMultiSample())
         imageParams.append(", int");
 
     if (profile == EEsProfile)
@@ -6426,7 +6444,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
     commonBuiltins.append(prefixes[sampler.type]);
     commonBuiltins.append("vec4);\n");
 
-    if (sampler.dim != Esd1D && sampler.dim != EsdBuffer && profile != EEsProfile && version >= 450) {
+    if (! sampler.is1D() && ! sampler.isBuffer() && profile != EEsProfile && version >= 450) {
         commonBuiltins.append("int sparseImageLoadARB(readonly volatile coherent ");
         commonBuiltins.append(imageParams);
         commonBuiltins.append(", out ");
@@ -6503,7 +6521,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
         }
     }
 
-    if (sampler.dim == EsdRect || sampler.dim == EsdBuffer || sampler.shadow || sampler.ms)
+    if (sampler.dim == EsdRect || sampler.dim == EsdBuffer || sampler.shadow || sampler.isMultiSample())
         return;
 
     if (profile == EEsProfile || version < 450)
@@ -6529,7 +6547,7 @@ void TBuiltIns::addImageFunctions(TSampler sampler, const TString& typeName, int
     commonBuiltins.append(prefixes[sampler.type]);
     commonBuiltins.append("vec4);\n");
 
-    if (sampler.dim != Esd1D) {
+    if (! sampler.is1D()) {
         commonBuiltins.append("int sparseImageLoadLodAMD(readonly volatile coherent ");
         commonBuiltins.append(imageLodParams);
         commonBuiltins.append(", out ");
@@ -6551,7 +6569,7 @@ void TBuiltIns::addSubpassSampling(TSampler sampler, const TString& typeName, in
     stageBuiltins[EShLangFragment].append("vec4 subpassLoad");
     stageBuiltins[EShLangFragment].append("(");
     stageBuiltins[EShLangFragment].append(typeName.c_str());
-    if (sampler.ms)
+    if (sampler.isMultiSample())
         stageBuiltins[EShLangFragment].append(", int");
     stageBuiltins[EShLangFragment].append(");\n");
 }
@@ -6569,12 +6587,13 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
     //
     for (int proj = 0; proj <= 1; ++proj) { // loop over "bool" projective or not
 
-        if (proj && (sampler.dim == EsdCube || sampler.dim == EsdBuffer || sampler.arrayed || sampler.ms || !sampler.combined))
+        if (proj && (sampler.dim == EsdCube || sampler.isBuffer() || sampler.arrayed || sampler.isMultiSample()
+            || !sampler.isCombined()))
             continue;
 
         for (int lod = 0; lod <= 1; ++lod) {
 
-            if (lod && (sampler.dim == EsdBuffer || sampler.dim == EsdRect || sampler.ms || !sampler.combined))
+            if (lod && (sampler.isBuffer() || sampler.isRect() || sampler.isMultiSample() || !sampler.isCombined()))
                 continue;
             if (lod && sampler.dim == Esd2D && sampler.arrayed && sampler.shadow)
                 continue;
@@ -6583,18 +6602,18 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
 
             for (int bias = 0; bias <= 1; ++bias) {
 
-                if (bias && (lod || sampler.ms || !sampler.combined))
+                if (bias && (lod || sampler.isMultiSample() || !sampler.isCombined()))
                     continue;
                 if (bias && (sampler.dim == Esd2D || sampler.dim == EsdCube) && sampler.shadow && sampler.arrayed)
                     continue;
-                if (bias && (sampler.dim == EsdRect || sampler.dim == EsdBuffer))
+                if (bias && (sampler.isRect() || sampler.isBuffer()))
                     continue;
 
                 for (int offset = 0; offset <= 1; ++offset) { // loop over "bool" offset or not
 
                     if (proj + offset + bias + lod > 3)
                         continue;
-                    if (offset && (sampler.dim == EsdCube || sampler.dim == EsdBuffer || sampler.ms))
+                    if (offset && (sampler.dim == EsdCube || sampler.isBuffer() || sampler.isMultiSample()))
                         continue;
 
                     for (int fetch = 0; fetch <= 1; ++fetch) { // loop over "bool" fetch or not
@@ -6605,14 +6624,15 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                             continue;
                         if (fetch && (sampler.shadow || sampler.dim == EsdCube))
                             continue;
-                        if (fetch == 0 && (sampler.ms || sampler.dim == EsdBuffer || !sampler.combined))
+                        if (fetch == 0 && (sampler.isMultiSample() || sampler.isBuffer()
+                            || !sampler.isCombined()))
                             continue;
 
                         for (int grad = 0; grad <= 1; ++grad) { // loop over "bool" grad or not
 
-                            if (grad && (lod || bias || sampler.ms || !sampler.combined))
+                            if (grad && (lod || bias || sampler.isMultiSample() || !sampler.isCombined()))
                                 continue;
-                            if (grad && sampler.dim == EsdBuffer)
+                            if (grad && sampler.isBuffer())
                                 continue;
                             if (proj + offset + fetch + grad + bias + lod > 3)
                                 continue;
@@ -6632,29 +6652,46 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
 
                                 if (extraProj && ! proj)
                                     continue;
-                                if (extraProj && (sampler.dim == Esd3D || sampler.shadow || !sampler.combined))
+                                if (extraProj && (sampler.dim == Esd3D || sampler.shadow || !sampler.isCombined()))
                                     continue;
-                                for (int f16TexAddr = 0; f16TexAddr <= 1; ++f16TexAddr) { // loop over 16-bit floating-point texel addressing
 
+                                // loop over 16-bit floating-point texel addressing
+#ifdef GLSLANG_WEB
+                                const int f16TexAddr = 0;
+#else
+                                for (int f16TexAddr = 0; f16TexAddr <= 1; ++f16TexAddr)
+#endif
+                                {
                                     if (f16TexAddr && sampler.type != EbtFloat16)
                                         continue;
                                     if (f16TexAddr && sampler.shadow && ! compare) {
                                         compare = true; // compare argument is always present
                                         totalDims--;
                                     }
-                                    for (int lodClamp = 0; lodClamp <= 1 ;++lodClamp) { // loop over "bool" lod clamp
-
+                                    // loop over "bool" lod clamp
+#ifdef GLSLANG_WEB
+                                    const int lodClamp = 0;
+#else
+                                    for (int lodClamp = 0; lodClamp <= 1 ;++lodClamp)
+#endif
+                                    {
                                         if (lodClamp && (profile == EEsProfile || version < 450))
                                             continue;
                                         if (lodClamp && (proj || lod || fetch))
                                             continue;
 
-                                        for (int sparse = 0; sparse <= 1; ++sparse) { // loop over "bool" sparse or not
-
+                                        // loop over "bool" sparse or not
+#ifdef GLSLANG_WEB
+                                        const int sparse = 0;
+#else
+                                        for (int sparse = 0; sparse <= 1; ++sparse)
+#endif
+                                        {
                                             if (sparse && (profile == EEsProfile || version < 450))
                                                 continue;
-                                            // Sparse sampling is not for 1D/1D array texture, buffer texture, and projective texture
-                                            if (sparse && (sampler.dim == Esd1D || sampler.dim == EsdBuffer || proj))
+                                            // Sparse sampling is not for 1D/1D array texture, buffer texture, and
+                                            // projective texture
+                                            if (sparse && (sampler.is1D() || sampler.isBuffer() || proj))
                                                 continue;
 
                                             TString s;
@@ -6727,8 +6764,9 @@ void TBuiltIns::addSamplingFunctions(TSampler sampler, const TString& typeName, 
                                                 s.append(",float");
 
                                             // non-optional lod argument (lod that's not driven by lod loop) or sample
-                                            if ((fetch && sampler.dim != EsdBuffer && sampler.dim != EsdRect && !sampler.ms) ||
-                                                (sampler.ms && fetch))
+                                            if ((fetch && !sampler.isBuffer() &&
+                                                 !sampler.isRect() && !sampler.isMultiSample())
+                                                 || (sampler.isMultiSample() && fetch))
                                                 s.append(",int");
                                             // non-optional lod
                                             if (lod) {
@@ -6833,7 +6871,7 @@ void TBuiltIns::addGatherFunctions(TSampler sampler, const TString& typeName, in
         return;
     }
 
-    if (sampler.ms)
+    if (sampler.isMultiSample())
         return;
 
     if (version < 140 && sampler.dim == EsdRect && sampler.type != EbtFloat)
@@ -9019,9 +9057,9 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
         symbolTable.relateToOperator("textureGradOffset",       EOpTextureGradOffset);
         symbolTable.relateToOperator("textureProjGrad",         EOpTextureProjGrad);
         symbolTable.relateToOperator("textureProjGradOffset",   EOpTextureProjGradOffset);
-        symbolTable.relateToOperator("textureGather",           EOpTextureGather);
 
 #ifndef GLSLANG_WEB
+        symbolTable.relateToOperator("textureGather",           EOpTextureGather);
         symbolTable.relateToOperator("textureGatherOffset",     EOpTextureGatherOffset);
         symbolTable.relateToOperator("textureGatherOffsets",    EOpTextureGatherOffsets);
 

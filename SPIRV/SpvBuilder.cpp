@@ -1908,7 +1908,6 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
 #ifndef GLSLANG_WEB
     } else if (parameters.granularity && parameters.coarse) {
         opCode = OpImageSampleFootprintNV;
-#endif
     } else if (gather) {
         if (parameters.Dref)
             if (sparse)
@@ -1920,6 +1919,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
                 opCode = OpImageSparseGather;
             else
                 opCode = OpImageGather;
+#endif
     } else if (explicitLod) {
         if (parameters.Dref) {
             if (proj)

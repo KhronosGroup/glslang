@@ -85,30 +85,32 @@ void TType::buildMangledName(TString& mangledName) const
         case EbtUint:  mangledName += "u"; break;
         default: break; // some compilers want this
         }
-        if (sampler.image)
-            mangledName += "I";  // a normal image
-        else if (sampler.sampler)
+        if (sampler.isImageClass())
+            mangledName += "I";  // a normal image or subpass
+        else if (sampler.isPureSampler())
             mangledName += "p";  // a "pure" sampler
-        else if (!sampler.combined)
+        else if (!sampler.isCombined())
             mangledName += "t";  // a "pure" texture
         else
             mangledName += "s";  // traditional combined sampler
-        if (sampler.arrayed)
+        if (sampler.isArrayed())
             mangledName += "A";
-        if (sampler.shadow)
+        if (sampler.isShadow())
             mangledName += "S";
-        if (sampler.external)
+        if (sampler.isExternal())
             mangledName += "E";
-        if (sampler.yuv)
+        if (sampler.isYuv())
             mangledName += "Y";
         switch (sampler.dim) {
-        case Esd1D:       mangledName += "1";  break;
         case Esd2D:       mangledName += "2";  break;
         case Esd3D:       mangledName += "3";  break;
         case EsdCube:     mangledName += "C";  break;
+#ifndef GLSLANG_WEB
+        case Esd1D:       mangledName += "1";  break;
         case EsdRect:     mangledName += "R2"; break;
         case EsdBuffer:   mangledName += "B";  break;
         case EsdSubpass:  mangledName += "P";  break;
+#endif
         default: break; // some compilers want this
         }
 
@@ -117,7 +119,7 @@ void TType::buildMangledName(TString& mangledName) const
             mangledName += "-tx-struct";
 
             char text[16]; // plenty enough space for the small integers.
-            snprintf(text, sizeof(text), "%d-", sampler.structReturnIndex);
+            snprintf(text, sizeof(text), "%d-", sampler.getStructReturnIndex());
             mangledName += text;
         } else {
             switch (sampler.getVectorSize()) {
@@ -128,7 +130,7 @@ void TType::buildMangledName(TString& mangledName) const
             }
         }
 
-        if (sampler.ms)
+        if (sampler.isMultiSample())
             mangledName += "M";
         break;
     case EbtStruct:

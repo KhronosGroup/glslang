@@ -1975,7 +1975,7 @@ TOperator TIntermediate::mapTypeToConstructorOp(const TType& type) const
         op = EOpConstructStruct;
         break;
     case EbtSampler:
-        if (type.getSampler().combined)
+        if (type.getSampler().isCombined())
             op = EOpConstructTextureSampler;
         break;
     case EbtFloat:
@@ -3835,7 +3835,7 @@ bool TIntermediate::specConstantPropagates(const TIntermTyped& node1, const TInt
 struct TextureUpgradeAndSamplerRemovalTransform : public TIntermTraverser {
     void visitSymbol(TIntermSymbol* symbol) override {
         if (symbol->getBasicType() == EbtSampler && symbol->getType().getSampler().isTexture()) {
-            symbol->getWritableType().getSampler().combined = true;
+            symbol->getWritableType().getSampler().setCombined(true);
         }
     }
     bool visitAggregate(TVisit, TIntermAggregate* ag) override {

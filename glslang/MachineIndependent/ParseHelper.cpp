@@ -129,7 +129,7 @@ void TParseContext::setPrecisionDefaults()
             sampler.set(EbtFloat, EsdCube);
             defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
             sampler.set(EbtFloat, Esd2D);
-            sampler.external = true;
+            sampler.setExternal(true);
             defaultSamplerPrecision[computeSamplerTypeIndex(sampler)] = EpqLow;
         }
 
@@ -1215,9 +1215,11 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                         intermediate.addToCallGraph(infoSink, currentCaller, fnCandidate->getMangledName());
                 }
 
+#ifndef GLSLANG_WEB
                 if (builtIn)
                     nonOpBuiltInCheck(loc, *fnCandidate, *call);
                 else
+#endif
                     userFunctionCallCheck(loc, *call);
             }
 
@@ -1823,6 +1825,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
     TString featureString;
     const char* feature = nullptr;
     switch (callNode.getOp()) {
+#ifndef GLSLANG_WEB
     case EOpTextureGather:
     case EOpTextureGatherOffset:
     case EOpTextureGatherOffsets:
@@ -1879,7 +1882,6 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
                 error(loc, "must be a compile-time constant:", feature, "component argument");
         }
 
-#ifndef GLSLANG_WEB
         bool bias = false;
         if (callNode.getOp() == EOpTextureGather)
             bias = fnCandidate.getParamCount() > 3;
@@ -1894,12 +1896,8 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             profileRequires(loc, ~EEsProfile, 450, nullptr, feature);
             requireExtensions(loc, 1, &E_GL_AMD_texture_gather_bias_lod, feature);
         }
-#endif
-
         break;
     }
-
-#ifndef GLSLANG_WEB
     case EOpSparseTextureGather:
     case EOpSparseTextureGatherOffset:
     case EOpSparseTextureGatherOffsets:
@@ -1977,7 +1975,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         int arg = -1;
         switch (callNode.getOp()) {
         case EOpTextureOffset:          arg = 2;  break;
-        case EOpTextureFetchOffset:     arg = (arg0->getType().getSampler().dim != EsdRect) ? 3 : 2; break;
+        case EOpTextureFetchOffset:     arg = (arg0->getType().getSampler().isRect()) ? 2 : 3; break;
         case EOpTextureProjOffset:      arg = 2;  break;
         case EOpTextureLodOffset:       arg = 3;  break;
         case EOpTextureProjLodOffset:   arg = 3;  break;
@@ -2175,7 +2173,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         const TSampler& sampler = fnCandidate[0].type->getSampler();
 
         const bool isTexture = sampler.isTexture() && !sampler.isCombined();
-        const bool isBuffer = sampler.dim == EsdBuffer;
+        const bool isBuffer = sampler.isBuffer();
         const bool isFetch = callNode.getOp() == EOpTextureFetch || callNode.getOp() == EOpTextureFetchOffset;
 
         if (isTexture && (!isBuffer || !isFetch))
@@ -2194,6 +2192,8 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             error(loc, "requires SPIR-V 1.3", "subgroup op", "");
     }
 }
+
+#ifndef GLSLANG_WEB
 
 extern bool PureOperatorBuiltins;
 
@@ -2320,6 +2320,8 @@ void TParseContext::nonOpBuiltInCheck(const TSourceLoc& loc, const TFunction& fn
         }
     }
 }
+
+#endif
 
 //
 // Do any extra checking for a user function call.
@@ -3066,7 +3068,7 @@ bool TParseContext::constructorTextureSamplerError(const TSourceLoc& loc, const 
     }
     // simulate the first argument's impact on the result type, so it can be compared with the encapsulated operator!=()
     TSampler texture = function.getType().getSampler();
-    texture.combined = false;
+    texture.setCombined(false);
     texture.shadow = false;
     if (texture != function[0].type->getSampler()) {
         error(loc, "sampler-constructor first argument must match type and dimensionality of constructor type", token, "");
@@ -3118,14 +3120,14 @@ void TParseContext::samplerCheck(const TSourceLoc& loc, const TType& type, const
 {
     // Check that the appropriate extension is enabled if external sampler is used.
     // There are two extensions. The correct one must be used based on GLSL version.
-    if (type.getBasicType() == EbtSampler && type.getSampler().external) {
+    if (type.getBasicType() == EbtSampler && type.getSampler().isExternal()) {
         if (version < 300) {
             requireExtensions(loc, 1, &E_GL_OES_EGL_image_external, "samplerExternalOES");
         } else {
             requireExtensions(loc, 1, &E_GL_OES_EGL_image_external_essl3, "samplerExternalOES");
         }
     }
-    if (type.getSampler().yuv) {
+    if (type.getSampler().isYuv()) {
         requireExtensions(loc, 1, &E_GL_EXT_YUV_target, "__samplerExternal2DY2YEXT");
     }
 
@@ -3551,11 +3553,11 @@ void TParseContext::setDefaultPrecision(const TSourceLoc& loc, TPublicType& publ
 // correlates with the declaration of defaultSamplerPrecision[]
 int TParseContext::computeSamplerTypeIndex(TSampler& sampler)
 {
-    int arrayIndex    = sampler.arrayed ? 1 : 0;
-    int shadowIndex   = sampler.shadow  ? 1 : 0;
-    int externalIndex = sampler.external? 1 : 0;
-    int imageIndex    = sampler.image   ? 1 : 0;
-    int msIndex       = sampler.ms      ? 1 : 0;
+    int arrayIndex    = sampler.arrayed         ? 1 : 0;
+    int shadowIndex   = sampler.shadow          ? 1 : 0;
+    int externalIndex = sampler.isExternal()    ? 1 : 0;
+    int imageIndex    = sampler.isImageClass()  ? 1 : 0;
+    int msIndex       = sampler.isMultiSample() ? 1 : 0;
 
     int flattened = EsdNumDims * (EbtNumTypes * (2 * (2 * (2 * (2 * arrayIndex + msIndex) + imageIndex) + shadowIndex) +
                                                  externalIndex) + sampler.type) + sampler.dim;
@@ -5916,12 +5918,14 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
 {
     const char* message = "can only apply to a standalone qualifier";
 
+#ifndef GLSLANG_WEB
     if (shaderQualifiers.geometry != ElgNone)
         error(loc, message, TQualifier::getGeometryString(shaderQualifiers.geometry), "");
     if (shaderQualifiers.spacing != EvsNone)
         error(loc, message, TQualifier::getVertexSpacingString(shaderQualifiers.spacing), "");
     if (shaderQualifiers.order != EvoNone)
         error(loc, message, TQualifier::getVertexOrderString(shaderQualifiers.order), "");
+#endif
     if (shaderQualifiers.pointMode)
         error(loc, message, "point_mode", "");
     if (shaderQualifiers.invocations != TQualifier::layoutNotSet)

@@ -1186,9 +1186,9 @@ void TGlslangToSpvTraverser::addIndirectionIndexCapabilities(const glslang::TTyp
         if (baseType.getBasicType() == glslang::EbtSampler) {
             if (baseType.getQualifier().hasAttachment())
                 builder.addCapability(spv::CapabilityInputAttachmentArrayNonUniformIndexingEXT);
-            else if (baseType.isImage() && baseType.getSampler().dim == glslang::EsdBuffer)
+            else if (baseType.isImage() && baseType.getSampler().isBuffer())
                 builder.addCapability(spv::CapabilityStorageTexelBufferArrayNonUniformIndexingEXT);
-            else if (baseType.isTexture() && baseType.getSampler().dim == glslang::EsdBuffer)
+            else if (baseType.isTexture() && baseType.getSampler().isBuffer())
                 builder.addCapability(spv::CapabilityUniformTexelBufferArrayNonUniformIndexingEXT);
             else if (baseType.isImage())
                 builder.addCapability(spv::CapabilityStorageImageArrayNonUniformIndexingEXT);
@@ -1206,10 +1206,10 @@ void TGlslangToSpvTraverser::addIndirectionIndexCapabilities(const glslang::TTyp
             if (baseType.getQualifier().hasAttachment()) {
                 builder.addExtension("SPV_EXT_descriptor_indexing");
                 builder.addCapability(spv::CapabilityInputAttachmentArrayDynamicIndexingEXT);
-            } else if (baseType.isImage() && baseType.getSampler().dim == glslang::EsdBuffer) {
+            } else if (baseType.isImage() && baseType.getSampler().isBuffer()) {
                 builder.addExtension("SPV_EXT_descriptor_indexing");
                 builder.addCapability(spv::CapabilityStorageTexelBufferArrayDynamicIndexingEXT);
-            } else if (baseType.isTexture() && baseType.getSampler().dim == glslang::EsdBuffer) {
+            } else if (baseType.isTexture() && baseType.getSampler().isBuffer()) {
                 builder.addExtension("SPV_EXT_descriptor_indexing");
                 builder.addCapability(spv::CapabilityUniformTexelBufferArrayDynamicIndexingEXT);
             }
@@ -3369,14 +3369,14 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
     case glslang::EbtSampler:
         {
             const glslang::TSampler& sampler = type.getSampler();
-            if (sampler.sampler) {
-                // pure sampler
+            if (sampler.isPureSampler()) {
                 spvType = builder.makeSamplerType();
             } else {
                 // an image is present, make its type
-                spvType = builder.makeImageType(getSampledType(sampler), TranslateDimensionality(sampler), sampler.shadow, sampler.arrayed, sampler.ms,
-                                                sampler.image ? 2 : 1, TranslateImageFormat(type));
-                if (sampler.combined) {
+                spvType = builder.makeImageType(getSampledType(sampler), TranslateDimensionality(sampler),
+                                                sampler.isShadow(), sampler.isArrayed(), sampler.isMultiSample(),
+                                                sampler.isImageClass() ? 2 : 1, TranslateImageFormat(type));
+                if (sampler.isCombined()) {
                     // already has both image and sampler, make the combined type
                     spvType = builder.makeSampledImageType(spvType);
                 }
@@ -4455,12 +4455,12 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             operands.push_back(coord);
             spv::IdImmediate imageOperands = { false, spv::ImageOperandsMaskNone };
             imageOperands.word = imageOperands.word | signExtensionMask();
-            if (sampler.ms) {
+            if (sampler.isMultiSample()) {
                 imageOperands.word = imageOperands.word | spv::ImageOperandsSampleMask;
             }
             if (imageOperands.word != spv::ImageOperandsMaskNone) {
                 operands.push_back(imageOperands);
-                if (sampler.ms) {
+                if (sampler.isMultiSample()) {
                     spv::IdImmediate imageOperand = { true, *(opIt++) };
                     operands.push_back(imageOperand);
                 }
@@ -4474,7 +4474,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         operands.push_back(coord);
         if (node->getOp() == glslang::EOpImageLoad || node->getOp() == glslang::EOpImageLoadLod) {
             spv::ImageOperandsMask mask = spv::ImageOperandsMaskNone;
-            if (sampler.ms) {
+            if (sampler.isMultiSample()) {
                 mask = mask | spv::ImageOperandsSampleMask;
             }
             if (cracked.lod) {
@@ -4517,7 +4517,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         } else if (node->getOp() == glslang::EOpImageStore || node->getOp() == glslang::EOpImageStoreLod) {
 
             // Push the texel value before the operands
-            if (sampler.ms || cracked.lod) {
+            if (sampler.isMultiSample() || cracked.lod) {
                 spv::IdImmediate texel = { true, *(opIt + 1) };
                 operands.push_back(texel);
             } else {
@@ -4526,7 +4526,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             }
 
             spv::ImageOperandsMask mask = spv::ImageOperandsMaskNone;
-            if (sampler.ms) {
+            if (sampler.isMultiSample()) {
                 mask = mask | spv::ImageOperandsSampleMask;
             }
             if (cracked.lod) {
@@ -4566,7 +4566,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
                 builder.addCapability(spv::CapabilityStorageImageReadWithoutFormat);
 
             spv::ImageOperandsMask mask = spv::ImageOperandsMaskNone;
-            if (sampler.ms) {
+            if (sampler.isMultiSample()) {
                 mask = mask | spv::ImageOperandsSampleMask;
             }
             if (cracked.lod) {
@@ -4612,7 +4612,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
             // GLSL "IMAGE_PARAMS" will involve in constructing an image texel pointer and this pointer,
             // as the first source operand, is required by SPIR-V atomic operations.
             // For non-MS, the sample value should be 0
-            spv::IdImmediate sample = { true, sampler.ms ? *(opIt++) : builder.makeUintConstant(0) };
+            spv::IdImmediate sample = { true, sampler.isMultiSample() ? *(opIt++) : builder.makeUintConstant(0) };
             operands.push_back(sample);
 
             spv::Id resultTypeId;
@@ -4676,7 +4676,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     // Check for texture functions other than queries
     bool sparse = node->isSparseTexture();
     bool imageFootprint = node->isImageFootprint();
-    bool cubeCompare = sampler.dim == glslang::EsdCube && sampler.arrayed && sampler.shadow;
+    bool cubeCompare = sampler.dim == glslang::EsdCube && sampler.isArrayed() && sampler.isShadow();
 
     // check for bias argument
     bool bias = false;
@@ -4763,7 +4763,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     }
 
     // multisample
-    if (sampler.ms) {
+    if (sampler.isMultiSample()) {
         params.sample = arguments[2 + extraArgs]; // For MS, "sample" should be specified
         ++extraArgs;
     }
@@ -4784,6 +4784,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         ++extraArgs;
     }
 
+#ifndef GLSLANG_WEB
     // lod clamp
     if (cracked.lodClamp) {
         params.lodClamp = arguments[2 + extraArgs];
@@ -4794,7 +4795,6 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         params.texelOut = arguments[2 + extraArgs];
         ++extraArgs;
     }
-
     // gather component
     if (cracked.gather && ! sampler.shadow) {
         // default component is 0, if missing, otherwise an argument
@@ -4804,7 +4804,6 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         } else
             params.component = builder.makeIntConstant(0);
     }
-#ifndef GLSLANG_WEB
     spv::Id  resultStruct = spv::NoResult;
     if (imageFootprint) {
         //Following three extra arguments
