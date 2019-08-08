@@ -32,6 +32,9 @@ option(ENABLE_HLSL "Enables HLSL input support" ON)
 
 option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
 
+option(ENABLE_GLSLANG_WEB "Reduces glslang to minumum needed for web use" OFF)
+option(ENABLE_EMSCRIPTEN_SINGLE_FILE "If using emscripten, enables SINGLE_FILE build" OFF)
+
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
     set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "..." FORCE)
 endif()
@@ -97,6 +100,27 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "MSVC")
     add_compile_options(/GR-) # Disable RTTI
 endif()
+
+if(ENABLE_GLSLANG_WEB)
+    if(EMSCRIPTEN)
+        add_compile_options(-Os -fno-exceptions)
+        add_compile_options("SHELL: -s WASM=1")
+        add_compile_options("SHELL: -s WASM_OBJECT_FILES=0")
+        add_link_options(-Os)
+        add_link_options("SHELL: -s FILESYSTEM=0")
+        add_link_options("SHELL: --llvm-lto 1")
+        add_link_options("SHELL: --closure 1")
+        add_link_options("SHELL: -s ENVIRONMENT=web,worker")
+        add_link_options("SHELL: -s ALLOW_MEMORY_GROWTH=1")
+
+        add_link_options("SHELL: -s MODULARIZE=1")
+        if(ENABLE_EMSCRIPTEN_SINGLE_FILE)
+            add_link_options("SHELL: -s SINGLE_FILE=1")
+        endif(ENABLE_EMSCRIPTEN_SINGLE_FILE)
+    else(EMSCRIPTEN)
+        add_compile_options(-Os -g -flto -fno-exceptions)
+    endif(EMSCRIPTEN)
+endif(ENABLE_GLSLANG_WEB)
 
 # Request C++11
 if(${CMAKE_VERSION} VERSION_LESS 3.1)
