@@ -615,7 +615,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     ungetch();
                 ppToken->name[len] = '\0';
 
-#ifndef GLSLANG_WEB
                 if (isInt64 && pp->parseContext.intermediate.getSource() == EShSourceGlsl) {
                     if (pp->ifdepth == 0) {
                         pp->parseContext.requireProfile(ppToken->loc, ~EEsProfile,
@@ -636,9 +635,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     }
                     ppToken->ival = (int)ival;
                     return isUnsigned ? PpAtomConstUint16 : PpAtomConstInt16;
-                } else
-#endif
-                {
+                } else {
                     if (ival > 0xffffffffu && !AlreadyComplained)
                         pp->parseContext.ppError(ppToken->loc, "hexadecimal literal too big", "", "");
                     ppToken->ival = (int)ival;
@@ -695,6 +692,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
 
+#ifndef GLSLANG_WEB
                     int nextCh = getch();
                     if (nextCh == 'l' || nextCh == 'L') {
                         if (len < MaxTokenLength)
@@ -703,7 +701,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     } else
                         ungetch();
 
-#ifndef GLSLANG_WEB
                     nextCh = getch();
                     if ((nextCh == 's' || nextCh == 'S') && 
                                 pp->parseContext.intermediate.getSource() == EShSourceGlsl) {
@@ -732,7 +729,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                 if (octalOverflow)
                     pp->parseContext.ppError(ppToken->loc, "octal literal too big", "", "");
 
-#ifndef GLSLANG_WEB
                 if (isInt64 && pp->parseContext.intermediate.getSource() == EShSourceGlsl) {
                     if (pp->ifdepth == 0) {
                         pp->parseContext.requireProfile(ppToken->loc, ~EEsProfile,
@@ -753,9 +749,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     }
                     ppToken->ival = (int)ival;
                     return isUnsigned ? PpAtomConstUint16 : PpAtomConstInt16;
-                } else
-#endif
-                {
+                } else {
                     ppToken->ival = (int)ival;
                     return isUnsigned ? PpAtomConstUint : PpAtomConstInt;
                 }
@@ -787,6 +781,7 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                         ppToken->name[len++] = (char)ch;
                     isUnsigned = true;
 
+#ifndef GLSLANG_WEB
                     int nextCh = getch();
                     if (nextCh == 'l' || nextCh == 'L') {
                         if (len < MaxTokenLength)
@@ -795,7 +790,6 @@ int TPpContext::tStringInput::scan(TPpToken* ppToken)
                     } else
                         ungetch();
 
-#ifndef GLSLANG_WEB
                     nextCh = getch();
                     if ((nextCh == 's' || nextCh == 'S') &&
                                 pp->parseContext.intermediate.getSource() == EShSourceGlsl) {

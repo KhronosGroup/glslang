@@ -2112,6 +2112,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
             spv::Id one = 0;
             if (node->getBasicType() == glslang::EbtFloat)
                 one = builder.makeFloatConstant(1.0F);
+#ifndef GLSLANG_WEB
             else if (node->getBasicType() == glslang::EbtDouble)
                 one = builder.makeDoubleConstant(1.0);
             else if (node->getBasicType() == glslang::EbtFloat16)
@@ -2122,6 +2123,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
                 one = builder.makeInt16Constant(1);
             else if (node->getBasicType() == glslang::EbtInt64 || node->getBasicType() == glslang::EbtUint64)
                 one = builder.makeInt64Constant(1);
+#endif
             else
                 one = builder.makeIntConstant(1);
             glslang::TOperator op;
@@ -5892,82 +5894,19 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
     int vectorSize = builder.isVectorType(destType) ? builder.getNumTypeComponents(destType) : 0;
 
     switch (op) {
-    case glslang::EOpConvInt8ToBool:
-    case glslang::EOpConvUint8ToBool:
-        zero = builder.makeUint8Constant(0);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
-    case glslang::EOpConvInt16ToBool:
-    case glslang::EOpConvUint16ToBool:
-        zero = builder.makeUint16Constant(0);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
     case glslang::EOpConvIntToBool:
     case glslang::EOpConvUintToBool:
         zero = builder.makeUintConstant(0);
         zero = makeSmearedConstant(zero, vectorSize);
         return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
-    case glslang::EOpConvInt64ToBool:
-    case glslang::EOpConvUint64ToBool:
-        zero = builder.makeUint64Constant(0);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
-
     case glslang::EOpConvFloatToBool:
         zero = builder.makeFloatConstant(0.0F);
         zero = makeSmearedConstant(zero, vectorSize);
         return builder.createBinOp(spv::OpFOrdNotEqual, destType, operand, zero);
-
-    case glslang::EOpConvDoubleToBool:
-        zero = builder.makeDoubleConstant(0.0);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpFOrdNotEqual, destType, operand, zero);
-
-    case glslang::EOpConvFloat16ToBool:
-        zero = builder.makeFloat16Constant(0.0F);
-        zero = makeSmearedConstant(zero, vectorSize);
-        return builder.createBinOp(spv::OpFOrdNotEqual, destType, operand, zero);
-
     case glslang::EOpConvBoolToFloat:
         convOp = spv::OpSelect;
         zero = builder.makeFloatConstant(0.0F);
         one  = builder.makeFloatConstant(1.0F);
-        break;
-
-    case glslang::EOpConvBoolToDouble:
-        convOp = spv::OpSelect;
-        zero = builder.makeDoubleConstant(0.0);
-        one  = builder.makeDoubleConstant(1.0);
-        break;
-
-    case glslang::EOpConvBoolToFloat16:
-        convOp = spv::OpSelect;
-        zero = builder.makeFloat16Constant(0.0F);
-        one = builder.makeFloat16Constant(1.0F);
-        break;
-
-    case glslang::EOpConvBoolToInt8:
-        zero = builder.makeInt8Constant(0);
-        one  = builder.makeInt8Constant(1);
-        convOp = spv::OpSelect;
-        break;
-
-    case glslang::EOpConvBoolToUint8:
-        zero = builder.makeUint8Constant(0);
-        one  = builder.makeUint8Constant(1);
-        convOp = spv::OpSelect;
-        break;
-
-    case glslang::EOpConvBoolToInt16:
-        zero = builder.makeInt16Constant(0);
-        one  = builder.makeInt16Constant(1);
-        convOp = spv::OpSelect;
-        break;
-
-    case glslang::EOpConvBoolToUint16:
-        zero = builder.makeUint16Constant(0);
-        one  = builder.makeUint16Constant(1);
-        convOp = spv::OpSelect;
         break;
 
     case glslang::EOpConvBoolToInt:
@@ -6030,17 +5969,6 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
         convOp = spv::OpConvertUToF;
         break;
 
-    case glslang::EOpConvDoubleToFloat:
-    case glslang::EOpConvFloatToDouble:
-    case glslang::EOpConvDoubleToFloat16:
-    case glslang::EOpConvFloat16ToDouble:
-    case glslang::EOpConvFloatToFloat16:
-    case glslang::EOpConvFloat16ToFloat:
-        convOp = spv::OpFConvert;
-        if (builder.isMatrixType(destType))
-            return createUnaryMatrixOperation(convOp, decorations, destType, operand, typeProxy);
-        break;
-
     case glslang::EOpConvFloat16ToInt8:
     case glslang::EOpConvFloatToInt8:
     case glslang::EOpConvDoubleToInt8:
@@ -6066,13 +5994,16 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
     case glslang::EOpConvInt64ToUint64:
         if (builder.isInSpecConstCodeGenMode()) {
             // Build zero scalar or vector for OpIAdd.
+#ifndef GLSLANG_WEB
             if(op == glslang::EOpConvUint8ToInt8 || op == glslang::EOpConvInt8ToUint8) {
                 zero = builder.makeUint8Constant(0);
             } else if (op == glslang::EOpConvUint16ToInt16 || op == glslang::EOpConvInt16ToUint16) {
                 zero = builder.makeUint16Constant(0);
             } else if (op == glslang::EOpConvUint64ToInt64 || op == glslang::EOpConvInt64ToUint64) {
                 zero = builder.makeUint64Constant(0);
-            } else {
+            } else
+#endif
+            {
                 zero = builder.makeUintConstant(0);
             }
             zero = makeSmearedConstant(zero, vectorSize);
@@ -6097,6 +6028,71 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
     case glslang::EOpConvDoubleToUint64:
     case glslang::EOpConvFloat16ToUint64:
         convOp = spv::OpConvertFToU;
+        break;
+
+#ifndef GLSLANG_WEB
+    case glslang::EOpConvInt8ToBool:
+    case glslang::EOpConvUint8ToBool:
+        zero = builder.makeUint8Constant(0);
+        zero = makeSmearedConstant(zero, vectorSize);
+        return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
+    case glslang::EOpConvInt16ToBool:
+    case glslang::EOpConvUint16ToBool:
+        zero = builder.makeUint16Constant(0);
+        zero = makeSmearedConstant(zero, vectorSize);
+        return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
+    case glslang::EOpConvInt64ToBool:
+    case glslang::EOpConvUint64ToBool:
+        zero = builder.makeUint64Constant(0);
+        zero = makeSmearedConstant(zero, vectorSize);
+        return builder.createBinOp(spv::OpINotEqual, destType, operand, zero);
+    case glslang::EOpConvDoubleToBool:
+        zero = builder.makeDoubleConstant(0.0);
+        zero = makeSmearedConstant(zero, vectorSize);
+        return builder.createBinOp(spv::OpFOrdNotEqual, destType, operand, zero);
+    case glslang::EOpConvFloat16ToBool:
+        zero = builder.makeFloat16Constant(0.0F);
+        zero = makeSmearedConstant(zero, vectorSize);
+        return builder.createBinOp(spv::OpFOrdNotEqual, destType, operand, zero);
+    case glslang::EOpConvBoolToDouble:
+        convOp = spv::OpSelect;
+        zero = builder.makeDoubleConstant(0.0);
+        one  = builder.makeDoubleConstant(1.0);
+        break;
+    case glslang::EOpConvBoolToFloat16:
+        convOp = spv::OpSelect;
+        zero = builder.makeFloat16Constant(0.0F);
+        one = builder.makeFloat16Constant(1.0F);
+        break;
+    case glslang::EOpConvBoolToInt8:
+        zero = builder.makeInt8Constant(0);
+        one  = builder.makeInt8Constant(1);
+        convOp = spv::OpSelect;
+        break;
+    case glslang::EOpConvBoolToUint8:
+        zero = builder.makeUint8Constant(0);
+        one  = builder.makeUint8Constant(1);
+        convOp = spv::OpSelect;
+        break;
+    case glslang::EOpConvBoolToInt16:
+        zero = builder.makeInt16Constant(0);
+        one  = builder.makeInt16Constant(1);
+        convOp = spv::OpSelect;
+        break;
+    case glslang::EOpConvBoolToUint16:
+        zero = builder.makeUint16Constant(0);
+        one  = builder.makeUint16Constant(1);
+        convOp = spv::OpSelect;
+        break;
+    case glslang::EOpConvDoubleToFloat:
+    case glslang::EOpConvFloatToDouble:
+    case glslang::EOpConvDoubleToFloat16:
+    case glslang::EOpConvFloat16ToDouble:
+    case glslang::EOpConvFloatToFloat16:
+    case glslang::EOpConvFloat16ToFloat:
+        convOp = spv::OpFConvert;
+        if (builder.isMatrixType(destType))
+            return createUnaryMatrixOperation(convOp, decorations, destType, operand, typeProxy);
         break;
 
     case glslang::EOpConvInt8ToInt16:
@@ -6209,6 +6205,8 @@ spv::Id TGlslangToSpvTraverser::createConversion(glslang::TOperator op, OpDecora
     case glslang::EOpConvPtrToUint64:
         convOp = spv::OpConvertPtrToU;
         break;
+#endif
+
     default:
         break;
     }
@@ -6395,8 +6393,6 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
         return resultId;
     }
 }
-
-#ifndef GLSLANG_WEB
 
 // Create group invocation operations.
 spv::Id TGlslangToSpvTraverser::createInvocationsOperation(glslang::TOperator op, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy)
@@ -7001,7 +6997,6 @@ spv::Id TGlslangToSpvTraverser::createSubgroupOperation(glslang::TOperator op, s
 
     return builder.createOp(opCode, typeId, spvGroupOperands);
 }
-#endif
 
 spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::Decoration precision, spv::Id typeId, std::vector<spv::Id>& operands, glslang::TBasicType typeProxy)
 {
@@ -7825,6 +7820,19 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
         for (unsigned int i = 0; i < (unsigned int)glslangType.getVectorSize(); ++i) {
             bool zero = nextConst >= consts.size();
             switch (glslangType.getBasicType()) {
+            case glslang::EbtInt:
+                spvConsts.push_back(builder.makeIntConstant(zero ? 0 : consts[nextConst].getIConst()));
+                break;
+            case glslang::EbtUint:
+                spvConsts.push_back(builder.makeUintConstant(zero ? 0 : consts[nextConst].getUConst()));
+                break;
+            case glslang::EbtFloat:
+                spvConsts.push_back(builder.makeFloatConstant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
+                break;
+            case glslang::EbtBool:
+                spvConsts.push_back(builder.makeBoolConstant(zero ? false : consts[nextConst].getBConst()));
+                break;
+#ifndef GLSLANG_WEB
             case glslang::EbtInt8:
                 spvConsts.push_back(builder.makeInt8Constant(zero ? 0 : consts[nextConst].getI8Const()));
                 break;
@@ -7837,20 +7845,11 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
             case glslang::EbtUint16:
                 spvConsts.push_back(builder.makeUint16Constant(zero ? 0 : consts[nextConst].getU16Const()));
                 break;
-            case glslang::EbtInt:
-                spvConsts.push_back(builder.makeIntConstant(zero ? 0 : consts[nextConst].getIConst()));
-                break;
-            case glslang::EbtUint:
-                spvConsts.push_back(builder.makeUintConstant(zero ? 0 : consts[nextConst].getUConst()));
-                break;
             case glslang::EbtInt64:
                 spvConsts.push_back(builder.makeInt64Constant(zero ? 0 : consts[nextConst].getI64Const()));
                 break;
             case glslang::EbtUint64:
                 spvConsts.push_back(builder.makeUint64Constant(zero ? 0 : consts[nextConst].getU64Const()));
-                break;
-            case glslang::EbtFloat:
-                spvConsts.push_back(builder.makeFloatConstant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
                 break;
             case glslang::EbtDouble:
                 spvConsts.push_back(builder.makeDoubleConstant(zero ? 0.0 : consts[nextConst].getDConst()));
@@ -7858,9 +7857,7 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
             case glslang::EbtFloat16:
                 spvConsts.push_back(builder.makeFloat16Constant(zero ? 0.0F : (float)consts[nextConst].getDConst()));
                 break;
-            case glslang::EbtBool:
-                spvConsts.push_back(builder.makeBoolConstant(zero ? false : consts[nextConst].getBConst()));
-                break;
+#endif
             default:
                 assert(0);
                 break;
@@ -7872,6 +7869,19 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
         bool zero = nextConst >= consts.size();
         spv::Id scalar = 0;
         switch (glslangType.getBasicType()) {
+        case glslang::EbtInt:
+            scalar = builder.makeIntConstant(zero ? 0 : consts[nextConst].getIConst(), specConstant);
+            break;
+        case glslang::EbtUint:
+            scalar = builder.makeUintConstant(zero ? 0 : consts[nextConst].getUConst(), specConstant);
+            break;
+        case glslang::EbtFloat:
+            scalar = builder.makeFloatConstant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
+            break;
+        case glslang::EbtBool:
+            scalar = builder.makeBoolConstant(zero ? false : consts[nextConst].getBConst(), specConstant);
+            break;
+#ifndef GLSLANG_WEB
         case glslang::EbtInt8:
             scalar = builder.makeInt8Constant(zero ? 0 : consts[nextConst].getI8Const(), specConstant);
             break;
@@ -7884,20 +7894,11 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
         case glslang::EbtUint16:
             scalar = builder.makeUint16Constant(zero ? 0 : consts[nextConst].getU16Const(), specConstant);
             break;
-        case glslang::EbtInt:
-            scalar = builder.makeIntConstant(zero ? 0 : consts[nextConst].getIConst(), specConstant);
-            break;
-        case glslang::EbtUint:
-            scalar = builder.makeUintConstant(zero ? 0 : consts[nextConst].getUConst(), specConstant);
-            break;
         case glslang::EbtInt64:
             scalar = builder.makeInt64Constant(zero ? 0 : consts[nextConst].getI64Const(), specConstant);
             break;
         case glslang::EbtUint64:
             scalar = builder.makeUint64Constant(zero ? 0 : consts[nextConst].getU64Const(), specConstant);
-            break;
-        case glslang::EbtFloat:
-            scalar = builder.makeFloatConstant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
             break;
         case glslang::EbtDouble:
             scalar = builder.makeDoubleConstant(zero ? 0.0 : consts[nextConst].getDConst(), specConstant);
@@ -7905,13 +7906,11 @@ spv::Id TGlslangToSpvTraverser::createSpvConstantFromConstUnionArray(const glsla
         case glslang::EbtFloat16:
             scalar = builder.makeFloat16Constant(zero ? 0.0F : (float)consts[nextConst].getDConst(), specConstant);
             break;
-        case glslang::EbtBool:
-            scalar = builder.makeBoolConstant(zero ? false : consts[nextConst].getBConst(), specConstant);
-            break;
         case glslang::EbtReference:
             scalar = builder.makeUint64Constant(zero ? 0 : consts[nextConst].getU64Const(), specConstant);
             scalar = builder.createUnaryOp(spv::OpBitcast, typeId, scalar);
             break;
+#endif
         default:
             assert(0);
             break;

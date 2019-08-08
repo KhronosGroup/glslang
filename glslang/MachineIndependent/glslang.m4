@@ -1101,7 +1101,9 @@ single_declaration
     : fully_specified_type {
         $$.type = $1;
         $$.intermNode = 0;
+GLSLANG_WEB_EXCLUDE_ON
         parseContext.declareTypeDefaults($$.loc, $$.type);
+GLSLANG_WEB_EXCLUDE_OFF
     }
     | fully_specified_type IDENTIFIER {
         $$.type = $1;

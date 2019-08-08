@@ -576,6 +576,18 @@ public:
     bool specConstant : 1;  // having a constant_id is not sufficient: expressions have no id, but are still specConstant
     bool nonUniform   : 1;
 
+#ifdef GLSLANG_WEB
+    bool isMemory() const { return false; }
+    bool isMemoryQualifierImageAndSSBOOnly() const { return false; }
+    bool bufferReferenceNeedsVulkanMemoryModel() const { return false; }
+    bool isInterpolation() const { return flat || smooth; }
+    bool isExplicitInterpolation() const { return false; }
+    bool isAuxiliary() const { return centroid; }
+    bool isPatch() const { return false; }
+    bool isNoContraction() const { return false; }
+    void setNoContraction() { }
+    bool isPervertexNV() const { return false; }
+#else
     bool isMemory() const
     {
         return subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || volatil || restrict || readonly || writeonly || nonprivate;
@@ -584,17 +596,6 @@ public:
     {
         return subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || volatil || restrict || readonly || writeonly;
     }
-
-#ifdef GLSLANG_WEB
-    bool bufferReferenceNeedsVulkanMemoryModel() const { return false; }
-    bool isInterpolation() const
-    {
-        return flat || smooth;
-    }
-    bool isExplicitInterpolation() const { return false; }
-    bool isAuxiliary() const { return centroid; }
-    bool isNoContraction() const { return false; }
-#else
     bool bufferReferenceNeedsVulkanMemoryModel() const
     {
         // include qualifiers that map to load/store availability/visibility/nonprivate memory access operands
@@ -612,7 +613,10 @@ public:
     {
         return centroid || patch || sample || pervertexNV;
     }
+    bool isPatch() const { return patch; }
     bool isNoContraction() const { return noContraction; }
+    void setNoContraction() { noContraction = true; }
+    bool isPervertexNV() const { return pervertexNV; }
 #endif
 
     bool isPipeInput() const
@@ -1581,7 +1585,11 @@ public:
     virtual int getOuterArraySize()  const { return arraySizes->getOuterSize(); }
     virtual TIntermTyped*  getOuterArrayNode() const { return arraySizes->getOuterNode(); }
     virtual int getCumulativeArraySize()  const { return arraySizes->getCumulativeSize(); }
+#ifdef GLSLANG_WEB
+    virtual bool isArrayOfArrays() const { return false; }
+#else
     virtual bool isArrayOfArrays() const { return arraySizes != nullptr && arraySizes->getNumDims() > 1; }
+#endif
     virtual int getImplicitArraySize() const { return arraySizes->getImplicitSize(); }
     virtual const TArraySizes* getArraySizes() const { return arraySizes; }
     virtual       TArraySizes* getArraySizes()       { return arraySizes; }
@@ -1719,14 +1727,25 @@ public:
     }
 
 #ifdef GLSLANG_WEB
+    virtual bool containsDouble() const { return false; }
     virtual bool contains16BitFloat() const { return false; }
+    virtual bool contains64BitInt() const { return false; }
     virtual bool contains16BitInt() const { return false; }
     virtual bool contains8BitInt() const { return false; }
     virtual bool containsCoopMat() const { return false; }
+    virtual bool containsReference() const { return false; }
 #else
+    virtual bool containsDouble() const
+    {
+        return containsBasicType(EbtDouble);
+    }
     virtual bool contains16BitFloat() const
     {
         return containsBasicType(EbtFloat16);
+    }
+    virtual bool contains64BitInt() const
+    {
+        return containsBasicType(EbtInt64) || containsBasicType(EbtUint64);
     }
     virtual bool contains16BitInt() const
     {
@@ -1739,6 +1758,10 @@ public:
     virtual bool containsCoopMat() const
     {
         return contains([](const TType* t) { return t->coopmat; } );
+    }
+    virtual bool containsReference() const
+    {
+        return containsBasicType(EbtReference);
     }
 #endif
 

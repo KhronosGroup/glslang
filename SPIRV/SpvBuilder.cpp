@@ -230,6 +230,11 @@ Id Builder::makePointerFromForwardPointer(StorageClass storageClass, Id forwardP
 
 Id Builder::makeIntegerType(int width, bool hasSign)
 {
+#ifdef GLSLANG_WEB
+    assert(width == 32);
+    width = 32;
+#endif
+
     // try to find it
     Instruction* type;
     for (int t = 0; t < (int)groupedTypes[OpTypeInt].size(); ++t) {
@@ -265,6 +270,11 @@ Id Builder::makeIntegerType(int width, bool hasSign)
 
 Id Builder::makeFloatType(int width)
 {
+#ifdef GLSLANG_WEB
+    assert(width == 32);
+    width = 32;
+#endif
+
     // try to find it
     Instruction* type;
     for (int t = 0; t < (int)groupedTypes[OpTypeFloat].size(); ++t) {

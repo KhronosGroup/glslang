@@ -1101,7 +1101,9 @@ single_declaration
     : fully_specified_type {
         $$.type = $1;
         $$.intermNode = 0;
+
         parseContext.declareTypeDefaults($$.loc, $$.type);
+
     }
     | fully_specified_type IDENTIFIER {
         $$.type = $1;

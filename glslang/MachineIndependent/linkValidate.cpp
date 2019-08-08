@@ -1374,6 +1374,10 @@ const int baseAlignmentVec4Std140 = 16;
 // Return value is the alignment..
 int TIntermediate::getBaseAlignmentScalar(const TType& type, int& size)
 {
+#ifdef GLSLANG_WEB
+    size = 4; return 4;
+#endif
+
     switch (type.getBasicType()) {
     case EbtInt64:
     case EbtUint64:
