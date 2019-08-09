@@ -1604,11 +1604,7 @@ bool TIntermediate::isFPIntegralConversion(TBasicType from, TBasicType to) const
 //
 bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperator op) const
 {
-#ifdef GLSLANG_WEB
-    return false;
-#endif
-
-    if (profile == EEsProfile || version == 110)
+    if (isEsProfile() || version == 110)
         return false;
 
     if (from == to)
@@ -1916,14 +1912,10 @@ static TBasicType getCorrespondingUnsignedType(TBasicType type)
 
 std::tuple<TBasicType, TBasicType> TIntermediate::getConversionDestinatonType(TBasicType type0, TBasicType type1, TOperator op) const
 {
-#ifdef GLSLANG_WEB
-    return std::make_tuple(EbtNumTypes, EbtNumTypes);
-#endif
-
     TBasicType res0 = EbtNumTypes;
     TBasicType res1 = EbtNumTypes;
 
-    if (profile == EEsProfile || version == 110)
+    if (isEsProfile() || version == 110)
         return std::make_tuple(res0, res1);
 
     if (getSource() == EShSourceHlsl) {

@@ -306,7 +306,7 @@ void TParseVersions::initializeExtensionBehavior()
 // or needed by the preprocessor (which does not use a shared symbol table).
 void TParseVersions::getPreamble(std::string& preamble)
 {
-    if (profile == EEsProfile) {
+    if (isEsProfile()) {
         preamble =
             "#define GL_ES 1\n"
             "#define GL_FRAGMENT_PRECISION_HIGH 1\n"
@@ -352,7 +352,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_shader_non_constant_global_initializers 1\n"
             ;
 
-            if (profile == EEsProfile && version >= 300) {
+            if (isEsProfile() && version >= 300) {
                 preamble += "#define GL_NV_shader_noperspective_interpolation 1\n";
             }
 
@@ -458,8 +458,8 @@ void TParseVersions::getPreamble(std::string& preamble)
     }
 
 #ifndef GLSLANG_WEB
-    if ((profile != EEsProfile && version >= 140) ||
-        (profile == EEsProfile && version >= 310)) {
+    if ((!isEsProfile() && version >= 140) ||
+        (isEsProfile() && version >= 310)) {
         preamble +=
             "#define GL_EXT_device_group 1\n"
             "#define GL_EXT_multiview 1\n"

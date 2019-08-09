@@ -460,6 +460,7 @@ public:
 #ifdef GLSLANG_WEB
     void output(TInfoSink&, bool tree) { }
 
+    bool isEsProfile() const { return false; }
     bool getXfbMode() const { return false; }
     bool isMultiStream() const { return false; }
     TLayoutGeometry getOutputPrimitive() const { return ElgNone; }
@@ -482,6 +483,8 @@ public:
     bool usingVariablePointers() const { return false; }
 #else
     void output(TInfoSink&, bool tree);
+
+    bool isEsProfile() const { return profile == EEsProfile; }
 
     void setShiftBinding(TResourceType res, unsigned int shift)
     {

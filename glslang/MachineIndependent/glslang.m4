@@ -3265,7 +3265,7 @@ struct_declaration
         if ($1.arraySizes) {
             parseContext.profileRequires($1.loc, ENoProfile, 120, E_GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
-            if (parseContext.profile == EEsProfile)
+            if (parseContext.isEsProfile())
                 parseContext.arraySizeRequiredCheck($1.loc, *$1.arraySizes);
         }
 
@@ -3287,7 +3287,7 @@ struct_declaration
         if ($2.arraySizes) {
             parseContext.profileRequires($2.loc, ENoProfile, 120, E_GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($2.loc, EEsProfile, 300, 0, "arrayed type");
-            if (parseContext.profile == EEsProfile)
+            if (parseContext.isEsProfile())
                 parseContext.arraySizeRequiredCheck($2.loc, *$2.arraySizes);
         }
 

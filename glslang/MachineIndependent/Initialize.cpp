@@ -6166,14 +6166,14 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
     // enumerate all the types
 #ifdef GLSLANG_WEB
     const TBasicType bTypes[] = { EbtFloat, EbtInt, EbtUint };
-    const int image = 0;
     bool skipBuffer = true;
     bool skipCubeArrayed = true;
+    const int image = 0;
 #else
     const TBasicType bTypes[] = { EbtFloat, EbtInt, EbtUint, EbtFloat16 };
-    for (int image = 0; image <= 1; ++image) // loop over "bool" image vs sampler
     bool skipBuffer = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 140);
     bool skipCubeArrayed = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 130);
+    for (int image = 0; image <= 1; ++image) // loop over "bool" image vs sampler
 #endif
     {
         for (int shadow = 0; shadow <= 1; ++shadow) { // loop over "bool" shadow or not

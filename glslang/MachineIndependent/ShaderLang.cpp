@@ -377,8 +377,6 @@ bool InitializeSymbolTables(TInfoSink& infoSink, TSymbolTable** commonTable,  TS
                                    infoSink, commonTable, symbolTables);
 #endif
 
-
-
     return true;
 }
 

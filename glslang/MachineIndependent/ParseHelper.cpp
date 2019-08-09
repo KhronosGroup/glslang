@@ -60,9 +60,9 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
             atomicUintOffsets(nullptr), anyIndexLimits(false)
 {
     // decide whether precision qualifiers should be ignored or respected
-    if (profile == EEsProfile || spvVersion.vulkan > 0) {
+    if (isEsProfile() || spvVersion.vulkan > 0) {
         precisionManager.respectPrecisionQualifiers();
-        if (! parsingBuiltins && language == EShLangFragment && profile != EEsProfile && spvVersion.vulkan > 0)
+        if (! parsingBuiltins && language == EShLangFragment && !isEsProfile() && spvVersion.vulkan > 0)
             precisionManager.warnAboutDefaults();
     }
 
@@ -123,7 +123,7 @@ void TParseContext::setPrecisionDefaults()
 
     // replace with real precision defaults for those that have them
     if (obeyPrecisionQualifiers()) {
-        if (profile == EEsProfile) {
+        if (isEsProfile()) {
             // Most don't have defaults, a few default to lowp.
             TSampler sampler;
             sampler.set(EbtFloat, Esd2D);
@@ -140,7 +140,7 @@ void TParseContext::setPrecisionDefaults()
         // is used to resolve the precision from the supplied arguments/operands instead.
         // So, we don't actually want to replace EpqNone with a default precision for built-ins.
         if (! parsingBuiltins) {
-            if (profile == EEsProfile && language == EShLangFragment) {
+            if (isEsProfile() && language == EShLangFragment) {
                 defaultPrecision[EbtInt] = EpqMedium;
                 defaultPrecision[EbtUint] = EpqMedium;
             } else {
@@ -149,7 +149,7 @@ void TParseContext::setPrecisionDefaults()
                 defaultPrecision[EbtFloat] = EpqHigh;
             }
 
-            if (profile != EEsProfile) {
+            if (!isEsProfile()) {
                 // Non-ES profile
                 // All sampler precisions default to highp.
                 for (int type = 0; type < maxSamplerIndex; ++type)
@@ -2049,7 +2049,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         } else {
             if (fnCandidate.getName().compare(0, 19, "imageAtomicExchange") != 0)
                 error(loc, "only supported on integer images", fnCandidate.getName().c_str(), "");
-            else if (imageType.getQualifier().getFormat() != ElfR32f && profile == EEsProfile)
+            else if (imageType.getQualifier().getFormat() != ElfR32f && isEsProfile())
                 error(loc, "only supported on image with format r32f", fnCandidate.getName().c_str(), "");
         }
 
@@ -2097,7 +2097,7 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
             //
             // ES and desktop 4.3 and earlier:  swizzles may not be used
             // desktop 4.4 and later: swizzles may be used
-            bool swizzleOkay = (profile != EEsProfile) && (version >= 440);
+            bool swizzleOkay = (!isEsProfile()) && (version >= 440);
             const TIntermTyped* base = TIntermediate::findLValueBase(arg0, swizzleOkay);
             if (base == nullptr || base->getType().getQualifier().storage != EvqVaryingIn)
                 error(loc, "first argument must be an interpolant, or interpolant-array element", fnCandidate.getName().c_str(), "");
@@ -2318,7 +2318,7 @@ void TParseContext::nonOpBuiltInCheck(const TSourceLoc& loc, const TFunction& fn
         } else {
             if (fnCandidate.getName().compare(0, 19, "imageAtomicExchange") != 0)
                 error(loc, "only supported on integer images", fnCandidate.getName().c_str(), "");
-            else if (imageType.getQualifier().getFormat() != ElfR32f && profile == EEsProfile)
+            else if (imageType.getQualifier().getFormat() != ElfR32f && isEsProfile())
                 error(loc, "only supported on image with format r32f", fnCandidate.getName().c_str(), "");
         }
     }
@@ -2545,7 +2545,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
     case EvqFragDepth:
         intermediate.setDepthReplacing();
         // "In addition, it is an error to statically write to gl_FragDepth in the fragment shader."
-        if (profile == EEsProfile && intermediate.getEarlyFragmentTests())
+        if (isEsProfile() && intermediate.getEarlyFragmentTests())
             message = "can't modify gl_FragDepth if using early_fragment_tests";
         break;
 
@@ -2639,7 +2639,7 @@ void TParseContext::reservedErrorCheck(const TSourceLoc& loc, const TString& ide
         // in undefined behavior."
         // however, before that, ES tests required an error.
         if (identifier.find("__") != TString::npos) {
-            if (profile == EEsProfile && version <= 300)
+            if (isEsProfile() && version <= 300)
                 error(loc, "identifiers containing consecutive underscores (\"__\") are reserved, and an error if version <= 300", identifier.c_str(), "");
             else
                 warn(loc, "identifiers containing consecutive underscores (\"__\") are reserved", identifier.c_str(), "");
@@ -2664,13 +2664,13 @@ void TParseContext::reservedPpErrorCheck(const TSourceLoc& loc, const char* iden
     else if (strncmp(identifier, "defined", 8) == 0)
         ppError(loc, "\"defined\" can't be (un)defined:", op,  identifier);
     else if (strstr(identifier, "__") != 0) {
-        if (profile == EEsProfile && version >= 300 &&
+        if (isEsProfile() && version >= 300 &&
             (strcmp(identifier, "__LINE__") == 0 ||
              strcmp(identifier, "__FILE__") == 0 ||
              strcmp(identifier, "__VERSION__") == 0))
             ppError(loc, "predefined names can't be (un)defined:", op,  identifier);
         else {
-            if (profile == EEsProfile && version <= 300)
+            if (isEsProfile() && version <= 300)
                 ppError(loc, "names containing consecutive underscores are reserved, and an error if version <= 300:", op, identifier);
             else
                 ppWarn(loc, "names containing consecutive underscores are reserved:", op, identifier);
@@ -2685,10 +2685,14 @@ void TParseContext::reservedPpErrorCheck(const TSourceLoc& loc, const char* iden
 //
 bool TParseContext::lineContinuationCheck(const TSourceLoc& loc, bool endOfComment)
 {
+#ifdef GLSLANG_WEB
+    return true;
+#endif
+
     const char* message = "line continuation";
 
-    bool lineContinuationAllowed = (profile == EEsProfile && version >= 300) ||
-                                   (profile != EEsProfile && (version >= 420 || extensionTurnedOn(E_GL_ARB_shading_language_420pack)));
+    bool lineContinuationAllowed = (isEsProfile() && version >= 300) ||
+                                   (!isEsProfile() && (version >= 420 || extensionTurnedOn(E_GL_ARB_shading_language_420pack)));
 
     if (endOfComment) {
         if (lineContinuationAllowed)
@@ -3414,8 +3418,8 @@ void TParseContext::mergeQualifiers(const TSourceLoc& loc, TQualifier& dst, cons
         error(loc, "can only have one interpolation qualifier (flat, smooth, noperspective, __explicitInterpAMD)", "", "");
 
     // Ordering
-    if (! force && ((profile != EEsProfile && version < 420) ||
-                    (profile == EEsProfile && version < 310))
+    if (! force && ((!isEsProfile() && version < 420) ||
+                    (isEsProfile() && version < 310))
                 && ! extensionTurnedOn(E_GL_ARB_shading_language_420pack)) {
         // non-function parameters
         if (src.isNoContraction() && (dst.invariant || dst.isInterpolation() || dst.isAuxiliary() || dst.storage != EvqTemporary || dst.precision != EpqNone))
@@ -3752,15 +3756,14 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
         error(loc, "only outermost dimension of an array of arrays can be a specialization constant", "[]", "");
 
     // desktop always allows outer-dimension-unsized variable arrays,
-#ifdef GLSLANG_WEB
-    return;
-#else
-    if (profile != EEsProfile)
+
+    if (!isEsProfile())
         return;
-#endif
 
     // for ES, if size isn't coming from an initializer, it has to be explicitly declared now,
     // with very few exceptions
+
+#ifndef GLSLANG_WEB
 
     // last member of ssbo block exception:
     if (qualifier.storage == EvqBuffer && lastMember)
@@ -3770,33 +3773,35 @@ void TParseContext::arraySizesCheck(const TSourceLoc& loc, const TQualifier& qua
     switch (language) {
     case EShLangGeometry:
         if (qualifier.storage == EvqVaryingIn)
-            if ((profile == EEsProfile && version >= 320) ||
+            if ((isEsProfile() && version >= 320) ||
                 extensionsTurnedOn(Num_AEP_geometry_shader, AEP_geometry_shader))
                 return;
         break;
     case EShLangTessControl:
         if ( qualifier.storage == EvqVaryingIn ||
             (qualifier.storage == EvqVaryingOut && ! qualifier.patch))
-            if ((profile == EEsProfile && version >= 320) ||
+            if ((isEsProfile() && version >= 320) ||
                 extensionsTurnedOn(Num_AEP_tessellation_shader, AEP_tessellation_shader))
                 return;
         break;
     case EShLangTessEvaluation:
         if ((qualifier.storage == EvqVaryingIn && ! qualifier.patch) ||
              qualifier.storage == EvqVaryingOut)
-            if ((profile == EEsProfile && version >= 320) ||
+            if ((isEsProfile() && version >= 320) ||
                 extensionsTurnedOn(Num_AEP_tessellation_shader, AEP_tessellation_shader))
                 return;
         break;
     case EShLangMeshNV:
         if (qualifier.storage == EvqVaryingOut)
-            if ((profile == EEsProfile && version >= 320) ||
+            if ((isEsProfile() && version >= 320) ||
                 extensionTurnedOn(E_GL_NV_mesh_shader))
                 return;
         break;
     default:
         break;
     }
+
+#endif
 
     arraySizeRequiredCheck(loc, *arraySizes);
 }
@@ -3995,7 +4000,7 @@ void TParseContext::checkAndResizeMeshViewDim(const TSourceLoc& loc, TType& type
 // source string number source-string-number.
 bool TParseContext::lineDirectiveShouldSetNextLine() const
 {
-    return profile == EEsProfile || version >= 330;
+    return isEsProfile() || version >= 330;
 }
 
 //
@@ -4030,15 +4035,15 @@ TSymbol* TParseContext::redeclareBuiltinVariable(const TSourceLoc& loc, const TS
     if (! builtInName(identifier) || symbolTable.atBuiltInLevel() || ! symbolTable.atGlobalLevel())
         return nullptr;
 
-    bool nonEsRedecls = (profile != EEsProfile && (version >= 130 || identifier == "gl_TexCoord"));
-    bool    esRedecls = (profile == EEsProfile &&
+    bool nonEsRedecls = (!isEsProfile() && (version >= 130 || identifier == "gl_TexCoord"));
+    bool    esRedecls = (isEsProfile() &&
                          (version >= 320 || extensionsTurnedOn(Num_AEP_shader_io_blocks, AEP_shader_io_blocks)));
     if (! esRedecls && ! nonEsRedecls)
         return nullptr;
 
     // Special case when using GL_ARB_separate_shader_objects
     bool ssoPre150 = false;  // means the only reason this variable is redeclared is due to this combination
-    if (profile != EEsProfile && version <= 140 && extensionTurnedOn(E_GL_ARB_separate_shader_objects)) {
+    if (!isEsProfile() && version <= 140 && extensionTurnedOn(E_GL_ARB_separate_shader_objects)) {
         if (identifier == "gl_Position"     ||
             identifier == "gl_PointSize"    ||
             identifier == "gl_ClipVertex"   ||
@@ -4722,18 +4727,18 @@ void TParseContext::finish()
     // about the stage itself.
     switch (language) {
     case EShLangGeometry:
-        if (profile == EEsProfile && version == 310)
+        if (isEsProfile() && version == 310)
             requireExtensions(getCurrentLoc(), Num_AEP_geometry_shader, AEP_geometry_shader, "geometry shaders");
         break;
     case EShLangTessControl:
     case EShLangTessEvaluation:
-        if (profile == EEsProfile && version == 310)
+        if (isEsProfile() && version == 310)
             requireExtensions(getCurrentLoc(), Num_AEP_tessellation_shader, AEP_tessellation_shader, "tessellation shaders");
-        else if (profile != EEsProfile && version < 400)
+        else if (!isEsProfile() && version < 400)
             requireExtensions(getCurrentLoc(), 1, &E_GL_ARB_tessellation_shader, "tessellation shaders");
         break;
     case EShLangCompute:
-        if (profile != EEsProfile && version < 430)
+        if (!isEsProfile() && version < 430)
             requireExtensions(getCurrentLoc(), 1, &E_GL_ARB_compute_shader, "compute shaders");
         break;
     case EShLangTaskNV:
@@ -5672,18 +5677,22 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
             if (spvVersion.vulkan == 0 && lastBinding >= resources.maxCombinedTextureImageUnits)
                 error(loc, "sampler binding not less than gl_MaxCombinedTextureImageUnits", "binding", type.isArray() ? "(using array)" : "");
         }
+#ifndef GLSLANG_WEB
         if (type.getBasicType() == EbtAtomicUint) {
             if (qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
                 error(loc, "atomic_uint binding is too large; see gl_MaxAtomicCounterBindings", "binding", "");
                 return;
             }
         }
+#endif
     } else if (!intermediate.getAutoMapBindings()) {
         // some types require bindings
 
+#ifndef GLSLANG_WEB
         // atomic_uint
         if (type.getBasicType() == EbtAtomicUint)
             error(loc, "layout(binding=X) is required", "atomic_uint", "");
+#endif
 
         // SPIR-V
         if (spvVersion.spv > 0) {
@@ -5725,7 +5734,7 @@ void TParseContext::layoutTypeCheck(const TSourceLoc& loc, const TType& type)
             if (type.getSampler().type == EbtUint && qualifier.getFormat() < ElfIntGuard)
                 error(loc, "does not apply to unsigned integer images", TQualifier::getLayoutFormatString(qualifier.getFormat()), "");
 
-            if (profile == EEsProfile) {
+            if (isEsProfile()) {
                 // "Except for image variables qualified with the format qualifiers r32f, r32i, and r32ui, image variables must
                 // specify either memory qualifier readonly or the memory qualifier writeonly."
                 if (! (qualifier.getFormat() == ElfR32f || qualifier.getFormat() == ElfR32i || qualifier.getFormat() == ElfR32ui)) {
@@ -5807,7 +5816,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         case EvqVaryingIn:
         {
             const char* feature = "location qualifier on input";
-            if (profile == EEsProfile && version < 310)
+            if (isEsProfile() && version < 310)
                 requireStage(loc, EShLangVertex, feature);
             else
                 requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
@@ -5824,7 +5833,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         case EvqVaryingOut:
         {
             const char* feature = "location qualifier on output";
-            if (profile == EEsProfile && version < 310)
+            if (isEsProfile() && version < 310)
                 requireStage(loc, EShLangFragment, feature);
             else
                 requireStage(loc, (EShLanguageMask)~EShLangComputeMask, feature);
@@ -5954,6 +5963,7 @@ void TParseContext::checkNoShaderLayouts(const TSourceLoc& loc, const TShaderQua
 // Correct and/or advance an object's offset layout qualifier.
 void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
 {
+#ifndef GLSLANG_WEB
     const TQualifier& qualifier = symbol.getType().getQualifier();
     if (symbol.getType().getBasicType() == EbtAtomicUint) {
         if (qualifier.hasBinding() && (int)qualifier.layoutBinding < resources.maxAtomicCounterBindings) {
@@ -5984,6 +5994,7 @@ void TParseContext::fixOffset(const TSourceLoc& loc, TSymbol& symbol)
             atomicUintOffsets[qualifier.layoutBinding] = offset + numOffsets;
         }
     }
+#endif
 }
 
 //
@@ -6012,7 +6023,7 @@ const TFunction* TParseContext::findFunction(const TSourceLoc& loc, const TFunct
                                 extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_float32) ||
                                 extensionTurnedOn(E_GL_EXT_shader_explicit_arithmetic_types_float64);
 
-    if (profile == EEsProfile || version < 120)
+    if (isEsProfile() || version < 120)
         function = findFunctionExact(loc, call, builtIn);
     else if (version < 400)
         function = findFunction120(loc, call, builtIn);
@@ -6299,11 +6310,13 @@ const TFunction* TParseContext::findFunctionExplicitTypes(const TSourceLoc& loc,
     return bestMatch;
 }
 
-// When a declaration includes a type, but not a variable name, it can be
+// When a declaration includes a type, but not a variable name, it can be used
 // to establish defaults.
 void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType& publicType)
 {
-    if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding() && publicType.qualifier.hasOffset()) {
+#ifndef GLSLANG_WEB
+    if (publicType.basicType == EbtAtomicUint && publicType.qualifier.hasBinding() &&
+        publicType.qualifier.hasOffset()) {
         if (publicType.qualifier.layoutBinding >= (unsigned int)resources.maxAtomicCounterBindings) {
             error(loc, "atomic_uint binding is too large", "binding", "");
             return;
@@ -6314,6 +6327,7 @@ void TParseContext::declareTypeDefaults(const TSourceLoc& loc, const TPublicType
 
     if (publicType.qualifier.hasLayout() && !publicType.qualifier.hasBufferReference())
         warn(loc, "useless application of layout qualifier", "layout", "");
+#endif
 }
 
 //
@@ -6510,7 +6524,7 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
     //
     TStorageQualifier qualifier = variable->getType().getQualifier().storage;
     if (! (qualifier == EvqTemporary || qualifier == EvqGlobal || qualifier == EvqConst ||
-           (qualifier == EvqUniform && profile != EEsProfile && version >= 120))) {
+           (qualifier == EvqUniform && !isEsProfile() && version >= 120))) {
         error(loc, " cannot initialize this type of qualifier ", variable->getType().getStorageQualifierString(), "");
         return nullptr;
     }
@@ -6582,7 +6596,7 @@ TIntermNode* TParseContext::executeInitializer(const TSourceLoc& loc, TIntermTyp
         // qualifier any initializer must be a constant expression."
         if (symbolTable.atGlobalLevel() && ! initializer->getType().getQualifier().isConstant()) {
             const char* initFeature = "non-constant global initializer (needs GL_EXT_shader_non_constant_global_initializers)";
-            if (profile == EEsProfile) {
+            if (isEsProfile()) {
                 if (relaxedErrors() && ! extensionTurnedOn(E_GL_EXT_shader_non_constant_global_initializers))
                     warn(loc, "not allowed in this version", initFeature, "");
                 else
@@ -7724,7 +7738,7 @@ void TParseContext::invariantCheck(const TSourceLoc& loc, const TQualifier& qual
 
     bool pipeOut = qualifier.isPipeOutput();
     bool pipeIn = qualifier.isPipeInput();
-    if (version >= 300 || (profile != EEsProfile && version >= 420)) {
+    if (version >= 300 || (!isEsProfile() && version >= 420)) {
         if (! pipeOut)
             error(loc, "can only apply to an output", "invariant", "");
     } else {
@@ -8080,7 +8094,7 @@ TIntermNode* TParseContext::addSwitch(const TSourceLoc& loc, TIntermTyped* expre
         // "it is an error to have no statement between a label and the end of the switch statement."
         // The specifications were updated to remove this (being ill-defined what a "statement" was),
         // so, this became a warning.  However, 3.0 tests still check for the error.
-        if (profile == EEsProfile && version <= 300 && ! relaxedErrors())
+        if (isEsProfile() && version <= 300 && ! relaxedErrors())
             error(loc, "last case/default label not followed by statements", "switch", "");
         else
             warn(loc, "last case/default label not followed by statements", "switch", "");

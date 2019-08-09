@@ -67,6 +67,7 @@ public:
     virtual void requireStage(const TSourceLoc&, EShLanguageMask, const char* featureDesc);
     virtual void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);
 #ifdef GLSLANG_WEB
+    bool isEsProfile() const { return true; }
     virtual void initializeExtensionBehavior() { }
     virtual void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc) { }
     virtual void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc) { }
@@ -92,6 +93,7 @@ public:
     virtual void explicitFloat32Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
     virtual void explicitFloat64Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
 #else
+    bool isEsProfile() const { return profile == EEsProfile; }
     virtual void initializeExtensionBehavior();
     virtual void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc);
     virtual void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc);

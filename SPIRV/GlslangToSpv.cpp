@@ -2075,6 +2075,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
     spv::Builder::AccessChain::CoherentFlags lvalueCoherentFlags;
 
+#ifndef GLSLANG_WEB
     if (node->getOp() == glslang::EOpAtomicCounterIncrement ||
         node->getOp() == glslang::EOpAtomicCounterDecrement ||
         node->getOp() == glslang::EOpAtomicCounter          ||
@@ -2083,7 +2084,10 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         lvalueCoherentFlags = builder.getAccessChain().coherentFlags;
         lvalueCoherentFlags |= TranslateCoherent(operandNode->getAsTyped()->getType());
     } else
+#endif
+    {
         operand = accessChainLoad(node->getOperand()->getType());
+    }
 
     OpDecorations decorations = { TranslatePrecisionDecoration(node->getOperationPrecision()),
                                   TranslateNoContractionDecoration(node->getType().getQualifier()),

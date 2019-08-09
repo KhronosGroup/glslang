@@ -120,7 +120,7 @@ void TIntermediate::mergeModes(TInfoSink& infoSink, TIntermediate& unit)
         version = unit.version;
         requestedExtensions = unit.requestedExtensions;
     } else {
-        if ((profile == EEsProfile) != (unit.profile == EEsProfile))
+        if ((isEsProfile()) != (unit.isEsProfile()))
             error(infoSink, "Cannot cross link ES and desktop profiles");
         else if (unit.profile == ECompatibilityProfile)
             profile = ECompatibilityProfile;
@@ -952,7 +952,7 @@ void TIntermediate::inOutLocationCheck(TInfoSink& infoSink)
         }
     }
 
-    if (profile == EEsProfile) {
+    if (isEsProfile()) {
         if (numFragOut > 1 && fragOutWithNoLocation)
             error(infoSink, "when more than one fragment shader output, all must have location qualifiers");
     }
@@ -1091,7 +1091,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
         TIoRange range(locationRange, componentRange, type.getBasicType(), qualifier.hasIndex() ? qualifier.layoutIndex : 0);
 
         // check for collisions, except for vertex inputs on desktop targeting OpenGL
-        if (! (profile != EEsProfile && language == EShLangVertex && qualifier.isPipeInput()) || spvVersion.vulkan > 0)
+        if (! (!isEsProfile() && language == EShLangVertex && qualifier.isPipeInput()) || spvVersion.vulkan > 0)
             collision = checkLocationRange(set, range, type, typeCollision);
 
         if (collision < 0)

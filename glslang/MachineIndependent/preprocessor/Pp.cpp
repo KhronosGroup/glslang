@@ -545,7 +545,7 @@ int TPpContext::evalToToken(int token, bool shortCircuit, int& res, bool& err, T
         case MacroExpandStarted:
             break;
         case MacroExpandUndef:
-            if (! shortCircuit && parseContext.profile == EEsProfile) {
+            if (! shortCircuit && parseContext.isEsProfile()) {
                 const char* message = "undefined macro in expression not allowed in es profile";
                 if (parseContext.relaxedErrors())
                     parseContext.ppWarn(ppToken->loc, message, "preprocessor evaluation", ppToken->name);

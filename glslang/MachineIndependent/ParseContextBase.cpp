@@ -170,13 +170,13 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
         case EbtSampler:
             message = "can't modify a sampler";
             break;
-        case EbtAtomicUint:
-            message = "can't modify an atomic_uint";
-            break;
         case EbtVoid:
             message = "can't modify void";
             break;
 #ifndef GLSLANG_WEB
+        case EbtAtomicUint:
+            message = "can't modify an atomic_uint";
+            break;
         case EbtAccStructNV:
             message = "can't modify accelerationStructureNV";
             break;

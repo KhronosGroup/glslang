@@ -894,10 +894,6 @@ public:
     {
         return layoutPacking != ElpNone;
     }
-    bool hasOffset() const
-    {
-        return layoutOffset != layoutNotSet;
-    }
     bool hasAlign() const
     {
         return layoutAlign != layoutNotSet;
@@ -921,6 +917,7 @@ public:
         return layoutBinding != layoutBindingEnd;
     }
 #ifdef GLSLANG_WEB
+    bool hasOffset() const { return false; }
     bool isNonPerspective() const { return false; }
     bool hasIndex() const { return false; }
     bool hasComponent() const { return false; }
@@ -938,6 +935,10 @@ public:
     bool hasBufferReferenceAlign() const { return false; }
     bool isNonUniform() const { return false; }
 #else
+    bool hasOffset() const
+    {
+        return layoutOffset != layoutNotSet;
+    }
     bool isNonPerspective() const { return nopersp; }
     bool hasIndex() const
     {
