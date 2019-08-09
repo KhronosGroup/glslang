@@ -9,6 +9,9 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
 
+# Needed for CMAKE_DEPENDENT_OPTION macro
+include(CMakeDependentOption)
+
 option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
 
 set(LIB_TYPE STATIC)
@@ -28,12 +31,12 @@ option(ENABLE_GLSLANG_BINARIES "Builds glslangValidator and spirv-remap" ON)
 
 option(ENABLE_NV_EXTENSIONS "Enables support of Nvidia-specific extensions" ON)
 
-option(ENABLE_HLSL "Enables HLSL input support" ON)
-
-option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
-
 option(ENABLE_GLSLANG_WEB "Reduces glslang to minumum needed for web use" OFF)
 option(ENABLE_EMSCRIPTEN_SINGLE_FILE "If using emscripten, enables SINGLE_FILE build" OFF)
+
+CMAKE_DEPENDENT_OPTION(ENABLE_HLSL "Enables HLSL input support" ON "NOT ENABLE_GLSLANG_WEB" OFF)
+
+option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND WIN32)
     set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "..." FORCE)
