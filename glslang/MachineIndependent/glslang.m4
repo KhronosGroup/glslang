@@ -1361,6 +1361,7 @@ storage_qualifier
         $$.init($1.loc);
         $$.qualifier.storage = EvqUniform;
     }
+GLSLANG_WEB_EXCLUDE_ON
     | SHARED {
         parseContext.globalCheck($1.loc, "shared");
         parseContext.profileRequires($1.loc, ECoreProfile | ECompatibilityProfile, 430, E_GL_ARB_compute_shader, "shared");
@@ -1369,7 +1370,6 @@ storage_qualifier
         $$.init($1.loc);
         $$.qualifier.storage = EvqShared;
     }
-GLSLANG_WEB_EXCLUDE_ON
     | BUFFER {
         parseContext.globalCheck($1.loc, "buffer");
         $$.init($1.loc);

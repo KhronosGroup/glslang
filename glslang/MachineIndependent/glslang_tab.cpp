@@ -958,7 +958,7 @@ static const yytype_uint16 yyrline[] =
     1143,  1170,  1179,  1186,  1194,  1201,  1208,  1216,  1226,  1233,
     1244,  1250,  1253,  1260,  1264,  1268,  1277,  1287,  1290,  1301,
     1304,  1307,  1311,  1315,  1320,  1324,  1331,  1335,  1340,  1346,
-    1352,  1359,  1364,  1373,  1378,  1390,  1404,  1410,  1415,  1423,
+    1352,  1359,  1365,  1373,  1378,  1390,  1404,  1410,  1415,  1423,
     1431,  1439,  1447,  1454,  1458,  1463,  1468,  1473,  1478,  1483,
     1487,  1491,  1495,  1499,  1505,  1516,  1523,  1526,  1535,  1540,
     1550,  1555,  1563,  1567,  1577,  1580,  1586,  1592,  1599,  1609,
@@ -5796,7 +5796,7 @@ yyreduce:
     break;
 
   case 162:
-#line 1364 "MachineIndependent/glslang.y" /* yacc.c:1646  */
+#line 1365 "MachineIndependent/glslang.y" /* yacc.c:1646  */
     {
         parseContext.globalCheck((yyvsp[0].lex).loc, "shared");
         parseContext.profileRequires((yyvsp[0].lex).loc, ECoreProfile | ECompatibilityProfile, 430, E_GL_ARB_compute_shader, "shared");

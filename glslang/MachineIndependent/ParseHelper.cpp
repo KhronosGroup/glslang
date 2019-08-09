@@ -83,6 +83,7 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
     globalInputDefaults.clear();
     globalOutputDefaults.clear();
 
+#ifndef GLSLANG_WEB
     // "Shaders in the transform
     // feedback capturing mode have an initial global default of
     //     layout(xfb_buffer = 0) out;"
@@ -94,6 +95,7 @@ TParseContext::TParseContext(TSymbolTable& symbolTable, TIntermediate& interm, b
 
     if (language == EShLangGeometry)
         globalOutputDefaults.layoutStream = 0;
+#endif
 
     if (entryPoint != nullptr && entryPoint->size() > 0 && *entryPoint != "main")
         infoSink.info.message(EPrefixError, "Source entry point must be \"main\"");
@@ -215,6 +217,7 @@ void TParseContext::parserError(const char* s)
 
 void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& tokens)
 {
+#ifndef GLSLANG_WEB
     if (pragmaCallback)
         pragmaCallback(loc.line, tokens);
 
@@ -287,6 +290,7 @@ void TParseContext::handlePragma(const TSourceLoc& loc, const TVector<TString>& 
         warn(loc, "not implemented", "#pragma once", "");
     } else if (tokens[0].compare("glslang_binary_double_output") == 0)
         intermediate.setBinaryDoubleOutput();
+#endif
 }
 
 //
@@ -1396,6 +1400,7 @@ TIntermNode* TParseContext::handleReturnValue(const TSourceLoc& loc, TIntermType
 // See if the operation is being done in an illegal location.
 void TParseContext::checkLocation(const TSourceLoc& loc, TOperator op)
 {
+#ifndef GLSLANG_WEB
     switch (op) {
     case EOpBarrier:
         if (language == EShLangTessControl) {
@@ -1448,6 +1453,7 @@ void TParseContext::checkLocation(const TSourceLoc& loc, TOperator op)
     default:
         break;
     }
+#endif
 }
 
 #ifndef GLSLANG_WEB
@@ -2467,6 +2473,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
         bool errorReturn = false;
 
         switch(binaryNode->getOp()) {
+#ifndef GLSLANG_WEB
         case EOpIndexDirect:
         case EOpIndexIndirect:
             // ...  tessellation control shader ...
@@ -2482,10 +2489,8 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc& loc, const char* op, TInt
                         error(loc, "tessellation-control per-vertex output l-value must be indexed with gl_InvocationID", "[]", "");
                 }
             }
-
             break; // left node is checked by base class
-        case EOpIndexDirectStruct:
-            break; // left node is checked by base class
+#endif
         case EOpVectorSwizzle:
             errorReturn = lValueErrorCheck(loc, op, binaryNode->getLeft());
             if (!errorReturn) {
@@ -3319,18 +3324,6 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
             if (qualifier.isAuxiliary() || qualifier.isInterpolation() || qualifier.isMemory() || qualifier.invariant)
                 error(loc, "vertex input cannot be further qualified", "", "");
             break;
-
-        case EShLangTessControl:
-            if (qualifier.patch)
-                error(loc, "can only use on output in tessellation-control shader", "patch", "");
-            break;
-
-        case EShLangTessEvaluation:
-            break;
-
-        case EShLangGeometry:
-            break;
-
         case EShLangFragment:
             if (publicType.userDef) {
                 profileRequires(loc, EEsProfile, 300, nullptr, "fragment-shader struct input");
@@ -3341,12 +3334,16 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                     requireProfile(loc, ~EEsProfile, "fragment-shader struct input containing an array");
             }
             break;
-
-        case EShLangCompute:
+#ifndef GLSLANG_WEB
+       case EShLangCompute:
             if (! symbolTable.atBuiltInLevel())
                 error(loc, "global storage input qualifier cannot be used in a compute shader", "in", "");
             break;
-
+       case EShLangTessControl:
+            if (qualifier.patch)
+                error(loc, "can only use on output in tessellation-control shader", "patch", "");
+            break;
+#endif
         default:
             break;
         }
@@ -3364,18 +3361,6 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
             }
 
             break;
-
-        case EShLangTessControl:
-            break;
-
-        case EShLangTessEvaluation:
-            if (qualifier.patch)
-                error(loc, "can only use on input in tessellation-evaluation shader", "patch", "");
-            break;
-
-        case EShLangGeometry:
-            break;
-
         case EShLangFragment:
             profileRequires(loc, EEsProfile, 300, nullptr, "fragment shader output");
             if (publicType.basicType == EbtStruct) {
@@ -3394,10 +3379,15 @@ void TParseContext::globalQualifierTypeCheck(const TSourceLoc& loc, const TQuali
                 error(loc, "cannot contain a double, int64, or uint64", GetStorageQualifierString(qualifier.storage), "");
         break;
 
+#ifndef GLSLANG_WEB
         case EShLangCompute:
             error(loc, "global storage output qualifier cannot be used in a compute shader", "out", "");
             break;
-
+        case EShLangTessEvaluation:
+            if (qualifier.patch)
+                error(loc, "can only use on input in tessellation-evaluation shader", "patch", "");
+            break;
+#endif
         default:
             break;
         }
@@ -6407,9 +6397,7 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
     if (symbol == nullptr)
         reservedErrorCheck(loc, identifier);
 
-#ifndef GLSLANG_WEB
     inheritGlobalDefaults(type.getQualifier());
-#endif
 
     // Declare the variable
     if (type.isArray()) {
@@ -6457,12 +6445,14 @@ TIntermNode* TParseContext::declareVariable(const TSourceLoc& loc, TString& iden
 // Pick up global defaults from the provide global defaults into dst.
 void TParseContext::inheritGlobalDefaults(TQualifier& dst) const
 {
+#ifndef GLSLANG_WEB
     if (dst.storage == EvqVaryingOut) {
         if (! dst.hasStream() && language == EShLangGeometry)
             dst.layoutStream = globalOutputDefaults.layoutStream;
         if (! dst.hasXfbBuffer())
             dst.layoutXfbBuffer = globalOutputDefaults.layoutXfbBuffer;
     }
+#endif
 }
 
 //
@@ -7411,6 +7401,7 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
         if (currentBlockQualifier.layoutPacking == ElpStd430 && ! currentBlockQualifier.isPushConstant())
             requireExtensions(loc, 1, &E_GL_EXT_scalar_block_layout, "std430 requires the buffer storage qualifier");
         break;
+#ifndef GLSLANG_WEB
     case EvqBuffer:
         requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, "buffer block");
         profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, "buffer block");
@@ -7425,11 +7416,9 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
         if (language == EShLangFragment) {
             profileRequires(loc, EEsProfile, 320, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, "fragment input block");
         }
-#ifndef GLSLANG_WEB
         else if (language == EShLangMeshNV && ! qualifier.isTaskMemory()) {
             error(loc, "input blocks cannot be used in a mesh shader", "out", "");
         }
-#endif
         break;
     case EvqVaryingOut:
         profileRequires(loc, ~EEsProfile, 150, E_GL_ARB_separate_shader_objects, "output block");
@@ -7446,7 +7435,6 @@ void TParseContext::blockStageIoCheck(const TSourceLoc& loc, const TQualifier& q
             error(loc, "output blocks cannot be used in a task shader", "out", "");
         }
         break;
-#ifndef GLSLANG_WEB
     case EvqPayloadNV:
         profileRequires(loc, ~EEsProfile, 460, E_GL_NV_ray_tracing, "rayPayloadNV block");
         requireStage(loc, (EShLanguageMask)(EShLangRayGenNVMask | EShLangAnyHitNVMask | EShLangClosestHitNVMask | EShLangMissNVMask),

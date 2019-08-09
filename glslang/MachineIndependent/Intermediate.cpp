@@ -3815,7 +3815,7 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
         case EbtFloat: PROMOTE(setDConst, double, Get); break; \
         case EbtInt: PROMOTE(setIConst, int, Get); break; \
         case EbtUint: PROMOTE(setUConst, unsigned int, Get); break; \
-        case EbtBool: PROMOTE(setBConst, bool, Get); break; \
+        case EbtBool: PROMOTE_TO_BOOL(Get); break; \
         default: return node; \
         }
 #else

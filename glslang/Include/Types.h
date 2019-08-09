@@ -778,9 +778,13 @@ public:
         layoutLocation = layoutLocationEnd;
         layoutComponent = layoutComponentEnd;
         layoutIndex = layoutIndexEnd;
+#ifndef GLSLANG_WEB
         clearStreamLayout();
         clearXfbLayout();
+#endif
     }
+
+#ifndef GLSLANG_WEB
     void clearStreamLayout()
     {
         layoutStream = layoutStreamEnd;
@@ -791,6 +795,7 @@ public:
         layoutXfbStride = layoutXfbStrideEnd;
         layoutXfbOffset = layoutXfbOffsetEnd;
     }
+#endif
 
     bool hasNonXfbLayout() const
     {

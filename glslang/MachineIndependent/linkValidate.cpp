@@ -614,11 +614,11 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
     // overlap/alias/missing I/O, etc.
     inOutLocationCheck(infoSink);
 
+#ifndef GLSLANG_WEB
     // invocations
     if (invocations == TQualifier::layoutNotSet)
         invocations = 1;
 
-#ifndef GLSLANG_WEB
     if (inIoAccessed("gl_ClipDistance") && inIoAccessed("gl_ClipVertex"))
         error(infoSink, "Can only use one of gl_ClipDistance or gl_ClipVertex (gl_ClipDistance is preferred)");
     if (inIoAccessed("gl_CullDistance") && inIoAccessed("gl_ClipVertex"))
@@ -1045,6 +1045,7 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
     // So, for the case of dvec3, we need two independent ioRanges.
 
     int collision = -1; // no collision
+#ifndef GLSLANG_WEB
     if (size == 2 && type.getBasicType() == EbtDouble && type.getVectorSize() == 3 &&
         (qualifier.isPipeInput() || qualifier.isPipeOutput())) {
         // Dealing with dvec3 in/out split across two locations.
@@ -1071,7 +1072,9 @@ int TIntermediate::addUsedLocation(const TQualifier& qualifier, const TType& typ
             if (collision < 0)
                 usedIo[set].push_back(range2);
         }
-    } else {
+    } else
+#endif
+    {
         // Not a dvec3 in/out split across two locations, generic path.
         // Need a single IO-range block.
 

@@ -977,6 +977,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
             shader->setPreamble(UserPreamble.get());
         shader->addProcesses(Processes);
 
+#ifndef GLSLANG_WEB
         // Set IO mapper binding shift values
         for (int r = 0; r < glslang::EResCount; ++r) {
             const glslang::TResourceType res = glslang::TResourceType(r);
@@ -990,16 +991,8 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
                  i != baseBindingForSet[res][compUnit.stage].end(); ++i)
                 shader->setShiftBindingForSet(res, i->second, i->first);
         }
-
-        shader->setFlattenUniformArrays((Options & EOptionFlattenUniformArrays) != 0);
         shader->setNoStorageFormat((Options & EOptionNoStorageFormat) != 0);
-        shader->setNanMinMaxClamp(NaNClamp);
         shader->setResourceSetBinding(baseResourceSetBinding[compUnit.stage]);
-
-#ifdef ENABLE_HLSL
-        if (Options & EOptionHlslIoMapping)
-            shader->setHlslIoMapping(true);
-#endif
 
         if (Options & EOptionAutoMapBindings)
             shader->setAutoMapBindings(true);
@@ -1007,15 +1000,24 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         if (Options & EOptionAutoMapLocations)
             shader->setAutoMapLocations(true);
 
-        if (Options & EOptionInvertY)
-            shader->setInvertY(true);
-
         for (auto& uniOverride : uniformLocationOverrides) {
             shader->addUniformLocationOverride(uniOverride.first.c_str(),
                                                uniOverride.second);
         }
 
         shader->setUniformLocationBase(uniformBase);
+#endif
+
+        shader->setNanMinMaxClamp(NaNClamp);
+
+#ifdef ENABLE_HLSL
+        shader->setFlattenUniformArrays((Options & EOptionFlattenUniformArrays) != 0);
+        if (Options & EOptionHlslIoMapping)
+            shader->setHlslIoMapping(true);
+#endif
+
+        if (Options & EOptionInvertY)
+            shader->setInvertY(true);
 
         // Set up the environment, some subsettings take precedence over earlier
         // ways of setting things.

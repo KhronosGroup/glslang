@@ -46,7 +46,9 @@
 
 #include "SpvBuilder.h"
 
+#ifndef GLSLANG_WEB
 #include "hex_float.h"
+#endif
 
 #ifndef _WIN32
     #include <cstdio>
@@ -950,6 +952,10 @@ Id Builder::makeFloatConstant(float f, bool specConstant)
 
 Id Builder::makeDoubleConstant(double d, bool specConstant)
 {
+#ifdef GLSLANG_WEB
+    assert(0);
+    return NoResult;
+#else
     Op opcode = specConstant ? OpSpecConstant : OpConstant;
     Id typeId = makeFloatType(64);
     union { double db; unsigned long long ull; } u;
@@ -974,10 +980,15 @@ Id Builder::makeDoubleConstant(double d, bool specConstant)
     module.mapInstruction(c);
 
     return c->getResultId();
+#endif
 }
 
 Id Builder::makeFloat16Constant(float f16, bool specConstant)
 {
+#ifdef GLSLANG_WEB
+    assert(0);
+    return NoResult;
+#else
     Op opcode = specConstant ? OpSpecConstant : OpConstant;
     Id typeId = makeFloatType(16);
 
@@ -1002,6 +1013,7 @@ Id Builder::makeFloat16Constant(float f16, bool specConstant)
     module.mapInstruction(c);
 
     return c->getResultId();
+#endif
 }
 
 Id Builder::makeFpConstant(Id type, double d, bool specConstant)

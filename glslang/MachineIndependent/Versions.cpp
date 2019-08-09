@@ -524,10 +524,11 @@ const char* StageName(EShLanguage stage)
 {
     switch(stage) {
     case EShLangVertex:         return "vertex";
+    case EShLangFragment:       return "fragment";
+#ifndef GLSLANG_WEB
     case EShLangTessControl:    return "tessellation control";
     case EShLangTessEvaluation: return "tessellation evaluation";
     case EShLangGeometry:       return "geometry";
-    case EShLangFragment:       return "fragment";
     case EShLangCompute:        return "compute";
     case EShLangRayGenNV:       return "ray-generation";
     case EShLangIntersectNV:    return "intersection";
@@ -537,6 +538,7 @@ const char* StageName(EShLanguage stage)
     case EShLangCallableNV:     return "callable";
     case EShLangMeshNV:         return "mesh";
     case EShLangTaskNV:         return "task";
+#endif
     default:                    return "unknown stage";
     }
 }

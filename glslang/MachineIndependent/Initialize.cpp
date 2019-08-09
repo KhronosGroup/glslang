@@ -403,6 +403,10 @@ void TBuiltIns::addTabledBuiltins(int version, EProfile profile, const SpvVersio
     forEachFunction(commonBuiltins, BaseFunctions);
     forEachFunction(stageBuiltins[EShLangFragment], DerivativeFunctions);
 
+#ifdef GLSLANG_WEB
+    return;
+#endif
+
     if ((profile == EEsProfile && version >= 320) || (profile != EEsProfile && version >= 450))
         forEachFunction(stageBuiltins[EShLangCompute], DerivativeFunctions);
 }
@@ -1298,13 +1302,14 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
         commonBuiltins.append(
             "mediump vec2 unpackHalf2x16(highp uint);"
             "\n");
-    } else if (profile != EEsProfile && version >= 420) {
+    }
+#ifndef GLSLANG_WEB
+    else if (profile != EEsProfile && version >= 420) {
         commonBuiltins.append(
             "        vec2 unpackHalf2x16(highp uint);"
             "\n");
     }
 
-#ifndef GLSLANG_WEB
     if ((profile == EEsProfile && version >= 310) ||
         (profile != EEsProfile && version >= 400)) {
         commonBuiltins.append(
@@ -5405,22 +5410,25 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                 "mediump float gl_PointSize;" // needs qualifier fixed later
                 );
         } else {
-#endif
             if (spvVersion.vulkan == 0)
                 stageBuiltins[EShLangVertex].append(
                     "in highp int gl_VertexID;"      // needs qualifier fixed later
                     "in highp int gl_InstanceID;"    // needs qualifier fixed later
                     );
             if (spvVersion.vulkan > 0)
+#endif
                 stageBuiltins[EShLangVertex].append(
                     "in highp int gl_VertexIndex;"
                     "in highp int gl_InstanceIndex;"
                     );
+#ifndef GLSLANG_WEB
             if (version < 310)
+#endif
                 stageBuiltins[EShLangVertex].append(
                     "highp vec4  gl_Position;"    // needs qualifier fixed later
                     "highp float gl_PointSize;"   // needs qualifier fixed later
                     );
+#ifndef GLSLANG_WEB
             else
                 stageBuiltins[EShLangVertex].append(
                     "out gl_PerVertex {"
@@ -5428,7 +5436,6 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
                         "highp float gl_PointSize;"   // needs qualifier fixed later
                     "};"
                     );
-#ifndef GLSLANG_WEB
         }
     }
 
@@ -6155,16 +6162,18 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
     // In this function proper, enumerate the types, then calls the next set of functions
     // to enumerate all the uses for that type.
     //
-    bool skipBuffer = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 140);
-    bool skipCubeArrayed = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 130);
 
     // enumerate all the types
 #ifdef GLSLANG_WEB
     const TBasicType bTypes[] = { EbtFloat, EbtInt, EbtUint };
     const int image = 0;
+    bool skipBuffer = true;
+    bool skipCubeArrayed = true;
 #else
     const TBasicType bTypes[] = { EbtFloat, EbtInt, EbtUint, EbtFloat16 };
     for (int image = 0; image <= 1; ++image) // loop over "bool" image vs sampler
+    bool skipBuffer = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 140);
+    bool skipCubeArrayed = (profile == EEsProfile && version < 310) || (profile != EEsProfile && version < 130);
 #endif
     {
         for (int shadow = 0; shadow <= 1; ++shadow) { // loop over "bool" shadow or not
@@ -7652,7 +7661,17 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
 
     switch(language) {
     case EShLangVertex:
+        if (spvVersion.vulkan > 0) {
+            BuiltInVariable("gl_VertexIndex",   EbvVertexIndex,   symbolTable);
+            BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
+        }
+
 #ifndef GLSLANG_WEB
+        if (spvVersion.vulkan == 0) {
+            SpecialQualifier("gl_VertexID",   EvqVertexId,   EbvVertexId,   symbolTable);
+            SpecialQualifier("gl_InstanceID", EvqInstanceId, EbvInstanceId, symbolTable);
+        }
+
         if (profile != EEsProfile) {
             if (version >= 440) {
                 symbolTable.setVariableExtensions("gl_BaseVertexARB",   1, &E_GL_ARB_shader_draw_parameters);
@@ -7777,20 +7796,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("imageAtomicExchange", 1, &E_GL_OES_shader_image_atomic);
             symbolTable.setFunctionExtensions("imageAtomicCompSwap", 1, &E_GL_OES_shader_image_atomic);
         }
-#endif
 
-        if (spvVersion.vulkan == 0) {
-            SpecialQualifier("gl_VertexID",   EvqVertexId,   EbvVertexId,   symbolTable);
-            SpecialQualifier("gl_InstanceID", EvqInstanceId, EbvInstanceId, symbolTable);
-        }
-
-        if (spvVersion.vulkan > 0) {
-            BuiltInVariable("gl_VertexIndex",   EbvVertexIndex,   symbolTable);
-            BuiltInVariable("gl_InstanceIndex", EbvInstanceIndex, symbolTable);
-        }
-
-
-#ifndef GLSLANG_WEB
         if (version >= 300 /* both ES and non-ES */) {
             symbolTable.setVariableExtensions("gl_ViewID_OVR", Num_OVR_multiview_EXTs, OVR_multiview_EXTs);
             BuiltInVariable("gl_ViewID_OVR", EbvViewIndex, symbolTable);
@@ -7800,12 +7806,9 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
             symbolTable.setFunctionExtensions("shadow2DEXT",        1, &E_GL_EXT_shadow_samplers);
             symbolTable.setFunctionExtensions("shadow2DProjEXT",    1, &E_GL_EXT_shadow_samplers);
         }
-#endif
         // Fall through
 
     case EShLangTessControl:
-
-#ifndef GLSLANG_WEB
         if (profile == EEsProfile && version >= 310) {
             BuiltInVariable("gl_BoundingBoxEXT", EbvBoundingBox, symbolTable);
             symbolTable.setVariableExtensions("gl_BoundingBoxEXT", 1,
@@ -7818,11 +7821,11 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
                 BuiltInVariable("gl_BoundingBox", EbvBoundingBox, symbolTable);
             }
         }
-#endif
         // Fall through
 
     case EShLangTessEvaluation:
     case EShLangGeometry:
+#endif
         SpecialQualifier("gl_Position",   EvqPosition,   EbvPosition,   symbolTable);
         SpecialQualifier("gl_PointSize",  EvqPointSize,  EbvPointSize,  symbolTable);
 
