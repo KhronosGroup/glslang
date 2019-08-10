@@ -56,8 +56,10 @@ namespace glslang {
 //
 void TIntermediate::error(TInfoSink& infoSink, const char* message)
 {
+#ifndef GLSLANG_WEB
     infoSink.info.prefix(EPrefixError);
     infoSink.info << "Linking " << StageName(language) << " stage: " << message << "\n";
+#endif
 
     ++numErrors;
 }
@@ -65,8 +67,10 @@ void TIntermediate::error(TInfoSink& infoSink, const char* message)
 // Link-time warning.
 void TIntermediate::warn(TInfoSink& infoSink, const char* message)
 {
+#ifndef GLSLANG_WEB
     infoSink.info.prefix(EPrefixWarning);
     infoSink.info << "Linking " << StageName(language) << " stage: " << message << "\n";
+#endif
 }
 
 // TODO: 4.4 offset/align:  "Two blocks linked together in the same program with the same block

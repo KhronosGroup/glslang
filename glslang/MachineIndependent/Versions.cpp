@@ -563,9 +563,8 @@ const char* StageName(EShLanguage stage)
 void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions, const char* const extensions[], const char* featureDesc)
 {
     if (profile & profileMask) {
-        bool okay = false;
-        if (minVersion > 0 && version >= minVersion)
-            okay = true;
+        bool okay = minVersion > 0 && version >= minVersion;
+#ifndef GLSLANG_WEB
         for (int i = 0; i < numExtensions; ++i) {
             switch (getExtensionBehavior(extensions[i])) {
             case EBhWarn:
@@ -578,7 +577,7 @@ void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int
             default: break; // some compilers want this
             }
         }
-
+#endif
         if (! okay)
             error(loc, "not supported for this version or the enabled extensions", featureDesc, "");
     }

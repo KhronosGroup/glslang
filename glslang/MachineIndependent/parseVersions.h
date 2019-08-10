@@ -137,6 +137,17 @@ public:
     virtual void requireVulkan(const TSourceLoc&, const char* op);
     virtual void requireSpv(const TSourceLoc&, const char* op);
 
+
+#if defined(GLSLANG_WEB) && !defined(GLSLANG_WEB_DEVEL)
+    void C_DECL   error(const TSourceLoc&, const char* szReason, const char* szToken,
+                        const char* szExtraInfoFormat, ...) { addError(); }
+    void C_DECL    warn(const TSourceLoc&, const char* szReason, const char* szToken,
+                        const char* szExtraInfoFormat, ...) { }
+    void C_DECL ppError(const TSourceLoc&, const char* szReason, const char* szToken,
+                        const char* szExtraInfoFormat, ...) { addError(); }
+    void C_DECL  ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
+                        const char* szExtraInfoFormat, ...) { }
+#else
     virtual void C_DECL error(const TSourceLoc&, const char* szReason, const char* szToken,
         const char* szExtraInfoFormat, ...) = 0;
     virtual void C_DECL  warn(const TSourceLoc&, const char* szReason, const char* szToken,
@@ -145,6 +156,7 @@ public:
         const char* szExtraInfoFormat, ...) = 0;
     virtual void C_DECL ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
         const char* szExtraInfoFormat, ...) = 0;
+#endif
 
     void addError() { ++numErrors; }
     int getNumErrors() const { return numErrors; }

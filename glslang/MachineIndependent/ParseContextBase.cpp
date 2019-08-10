@@ -67,6 +67,8 @@ void TParseContextBase::outputMessage(const TSourceLoc& loc, const char* szReaso
     }
 }
 
+#if !defined(GLSLANG_WEB) || defined(GLSLANG_WEB_DEVEL)
+
 void C_DECL TParseContextBase::error(const TSourceLoc& loc, const char* szReason, const char* szToken,
                                      const char* szExtraInfoFormat, ...)
 {
@@ -112,6 +114,8 @@ void C_DECL TParseContextBase::ppWarn(const TSourceLoc& loc, const char* szReaso
     outputMessage(loc, szReason, szToken, szExtraInfoFormat, EPrefixWarning, args);
     va_end(args);
 }
+
+#endif
 
 //
 // Both test and if necessary, spit out an error, to see if the node is really

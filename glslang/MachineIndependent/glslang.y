@@ -300,7 +300,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.intermTypedNode> conditional_expression constant_expression
 %type <interm.intermTypedNode> logical_or_expression logical_xor_expression logical_and_expression
 %type <interm.intermTypedNode> shift_expression and_expression exclusive_or_expression inclusive_or_expression
-%type <interm.intermTypedNode> function_call initializer initializer_list condition conditionopt
+%type <interm.intermTypedNode> function_call initializer condition conditionopt
 
 %type <interm.intermNode> translation_unit function_definition
 %type <interm.intermNode> statement simple_statement
@@ -342,6 +342,7 @@ extern int yylex(YYSTYPE*, TParseContext&);
 %type <interm.typeList> type_name_list
 %type <interm.attributes> attribute attribute_list single_attribute
 %type <interm.intermNode> demote_statement
+%type <interm.intermTypedNode> initializer_list
 
 
 %start translation_unit
@@ -857,7 +858,6 @@ declaration
     }
     | PRECISION precision_qualifier type_specifier SEMICOLON {
         parseContext.profileRequires($1.loc, ENoProfile, 130, 0, "precision statement");
-
         // lazy setting of the previous scope's defaults, has effect only the first time it is called in a particular scope
         parseContext.symbolTable.setPreviousDefaultPrecisions(&parseContext.defaultPrecision[0]);
         parseContext.setDefaultPrecision($1.loc, $3, $2.qualifier.precision);
@@ -1137,7 +1137,6 @@ fully_specified_type
             parseContext.profileRequires($1.loc, ENoProfile, 120, E_GL_3DL_array_objects, "arrayed type");
             parseContext.profileRequires($1.loc, EEsProfile, 300, 0, "arrayed type");
         }
-
         parseContext.precisionQualifierCheck($$.loc, $$.basicType, $$.qualifier);
     }
     | type_qualifier type_specifier  {
@@ -3339,6 +3338,7 @@ initializer
     : assignment_expression {
         $$ = $1;
     }
+
     | LEFT_BRACE initializer_list RIGHT_BRACE {
         const char* initFeature = "{ } style initializers";
         parseContext.requireProfile($1.loc, ~EEsProfile, initFeature);
@@ -3351,7 +3351,9 @@ initializer
         parseContext.profileRequires($1.loc, ~EEsProfile, 420, E_GL_ARB_shading_language_420pack, initFeature);
         $$ = $2;
     }
+
     ;
+
 
 initializer_list
     : initializer {
@@ -3361,6 +3363,7 @@ initializer_list
         $$ = parseContext.intermediate.growAggregate($1, $3);
     }
     ;
+
 
 declaration_statement
     : declaration { $$ = $1; }
@@ -3726,11 +3729,13 @@ external_declaration
     | declaration {
         $$ = $1;
     }
+
     | SEMICOLON {
         parseContext.requireProfile($1.loc, ~EEsProfile, "extraneous semicolon");
         parseContext.profileRequires($1.loc, ~EEsProfile, 460, nullptr, "extraneous semicolon");
         $$ = nullptr;
     }
+
     ;
 
 function_definition

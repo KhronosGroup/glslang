@@ -5813,6 +5813,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         // output block declarations, and output block member declarations."
 
         switch (qualifier.storage) {
+#ifndef GLSLANG_WEB
         case EvqVaryingIn:
         {
             const char* feature = "location qualifier on input";
@@ -5847,6 +5848,7 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
             }
             break;
         }
+#endif
         case EvqUniform:
         case EvqBuffer:
         {
@@ -7243,6 +7245,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
         if (memberQualifier.hasLocation()) {
             const char* feature = "location on block member";
             switch (currentBlockQualifier.storage) {
+#ifndef GLSLANG_WEB
             case EvqVaryingIn:
             case EvqVaryingOut:
                 requireProfile(memberLoc, ECoreProfile | ECompatibilityProfile | EEsProfile, feature);
@@ -7250,6 +7253,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
                 profileRequires(memberLoc, EEsProfile, 320, Num_AEP_shader_io_blocks, AEP_shader_io_blocks, feature);
                 memberWithLocation = true;
                 break;
+#endif
             default:
                 error(memberLoc, "can only use in an in/out block", feature, "");
                 break;

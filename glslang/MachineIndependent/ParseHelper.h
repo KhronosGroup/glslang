@@ -97,6 +97,7 @@ public:
     }
     virtual ~TParseContextBase() { }
 
+#if !defined(GLSLANG_WEB) || defined(GLSLANG_WEB_DEVEL)
     virtual void C_DECL   error(const TSourceLoc&, const char* szReason, const char* szToken,
                                 const char* szExtraInfoFormat, ...);
     virtual void C_DECL    warn(const TSourceLoc&, const char* szReason, const char* szToken,
@@ -105,6 +106,7 @@ public:
                                 const char* szExtraInfoFormat, ...);
     virtual void C_DECL  ppWarn(const TSourceLoc&, const char* szReason, const char* szToken,
                                 const char* szExtraInfoFormat, ...);
+#endif
 
     virtual void setLimits(const TBuiltInResource&) = 0;
 
