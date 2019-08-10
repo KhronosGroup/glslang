@@ -9,6 +9,9 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
 
+# Needed for CMAKE_DEPENDENT_OPTION macro
+include(CMakeDependentOption)
+
 option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
 
 set(LIB_TYPE STATIC)
@@ -28,7 +31,10 @@ option(ENABLE_GLSLANG_BINARIES "Builds glslangValidator and spirv-remap" ON)
 
 option(ENABLE_NV_EXTENSIONS "Enables support of Nvidia-specific extensions" ON)
 
-option(ENABLE_HLSL "Enables HLSL input support" ON)
+option(ENABLE_GLSLANG_WEB "Reduces glslang to minumum needed for web use" OFF)
+option(ENABLE_EMSCRIPTEN_SINGLE_FILE "If using emscripten, enables SINGLE_FILE build" OFF)
+
+CMAKE_DEPENDENT_OPTION(ENABLE_HLSL "Enables HLSL input support" ON "NOT ENABLE_GLSLANG_WEB" OFF)
 
 option(ENABLE_OPT "Enables spirv-opt capability if present" ON)
 
@@ -97,6 +103,32 @@ elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
 elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "MSVC")
     add_compile_options(/GR-) # Disable RTTI
 endif()
+
+if(ENABLE_GLSLANG_WEB)
+    if(EMSCRIPTEN)
+        add_compile_options(-Os -fno-exceptions)
+        add_compile_options("SHELL: -s WASM=1")
+        add_compile_options("SHELL: -s WASM_OBJECT_FILES=0")
+        add_link_options(-Os)
+        add_link_options("SHELL: -s FILESYSTEM=0")
+        add_link_options("SHELL: --llvm-lto 1")
+        add_link_options("SHELL: --closure 1")
+        add_link_options("SHELL: -s ENVIRONMENT=web,worker")
+        add_link_options("SHELL: -s ALLOW_MEMORY_GROWTH=1")
+
+        add_link_options("SHELL: -s MODULARIZE=1")
+        if(ENABLE_EMSCRIPTEN_SINGLE_FILE)
+            add_link_options("SHELL: -s SINGLE_FILE=1")
+        endif(ENABLE_EMSCRIPTEN_SINGLE_FILE)
+    else()
+      if(MSVC)
+        add_compile_options(/Os /GR-)
+      else()
+        add_compile_options(-Os -fno-exceptions)
+        add_link_options(-Os)
+      endif()
+    endif(EMSCRIPTEN)
+endif(ENABLE_GLSLANG_WEB)
 
 # Request C++11
 if(${CMAKE_VERSION} VERSION_LESS 3.1)

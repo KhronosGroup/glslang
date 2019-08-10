@@ -163,6 +163,22 @@ bison --defines=MachineIndependent/glslang_tab.cpp.h
 The above command is also available in the bash script at
 `glslang/updateGrammar`.
 
+### WASM for the the Web
+
+Use the steps in [Build Steps](#build-steps), which following notes/exceptions:
+* `emsdk` needs to be present in your executable search path, *PATH* for
+  Bash-like enivironments
+  + Instructions located
+    [here](https://emscripten.org/docs/getting_started/downloads.html#sdk-download-and-install)
+* Do not checkout SPIRV-Tools into `External`
+  + Does not work correctly with emscripten out of the box and we don't want it
+    in the build anyway. *TBD* Have build ignore SPIRV-Tools for web build
+* Wrap call to `cmake` using `emconfigure` with ENABLE_GLSLANG_WEB=ON:
+  + e.g. For Linux, `emconfigure cmake -DCMAKE_BUILD_TYPE=Release
+    -DENABLE_GLSLANG_WEB=ON -DCMAKE_INSTALL_PREFIX="$(pwd)/install" ..`
+* To get a 'true' minimized build, make sure to use `brotli` to compress the .js
+  and .wasm files
+
 Testing
 -------
 
