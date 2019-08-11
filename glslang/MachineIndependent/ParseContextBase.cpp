@@ -153,13 +153,13 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
     case EvqConst:          message = "can't modify a const";        break;
     case EvqConstReadOnly:  message = "can't modify a const";        break;
     case EvqUniform:        message = "can't modify a uniform";      break;
+#ifndef GLSLANG_WEB
     case EvqBuffer:
         if (node->getQualifier().readonly)
             message = "can't modify a readonly buffer";
         if (node->getQualifier().isShaderRecordNV())
             message = "can't modify a shaderrecordnv qualified buffer";
         break;
-#ifndef GLSLANG_WEB
     case EvqHitAttrNV:
         if (language != EShLangIntersectNV)
             message = "cannot modify hitAttributeNV in this stage";

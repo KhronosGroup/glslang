@@ -1147,6 +1147,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                             error(arguments->getLoc(), "Non-L-value cannot be passed for 'out' or 'inout' parameters.", "out", "");
                     }
                     TQualifier& argQualifier = arg->getAsTyped()->getQualifier();
+#ifndef GLSLANG_WEB
                     if (argQualifier.isMemory()) {
                         const char* message = "argument cannot drop memory qualifier when passed to formal parameter";
                         if (argQualifier.volatil && ! formalQualifier.volatil)
@@ -1176,7 +1177,7 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                                                               argQualifier.getFormat() != ElfNone))
                             error(arguments->getLoc(), "image formats must match", "format", "");
                     }
-
+#endif
                     if (builtIn && arg->getAsTyped()->getType().contains16BitFloat())
                         requireFloat16Arithmetic(arguments->getLoc(), "built-in function", "float16 types can only be in uniform block or buffer storage");
                     if (builtIn && arg->getAsTyped()->getType().contains16BitInt())
@@ -7507,7 +7508,7 @@ void TParseContext::blockQualifierCheck(const TSourceLoc& loc, const TQualifier&
         error(loc, "cannot use interpolation qualifiers on an interface block", "flat/smooth/noperspective", "");
     if (qualifier.centroid)
         error(loc, "cannot use centroid qualifier on an interface block", "centroid", "");
-    if (qualifier.sample)
+    if (qualifier.isSample())
         error(loc, "cannot use sample qualifier on an interface block", "sample", "");
     if (qualifier.invariant)
         error(loc, "cannot use invariant qualifier on an interface block", "invariant", "");

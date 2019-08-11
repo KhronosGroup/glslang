@@ -79,18 +79,27 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool         ms : 1;
     bool      image : 1;  // image, combined should be false
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
-    bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
-    bool   external : 1;  // GL_OES_EGL_image_external
-    bool        yuv : 1;  // GL_EXT_YUV_target
+#ifdef ENABLE_HLSL
     unsigned int vectorSize : 3;  // vector return type size.
-
-    // Encapsulate getting members' vector sizes packed into the vectorSize bitfield.
     unsigned int getVectorSize() const { return vectorSize; }
+    void clearReturnStruct() { structReturnIndex = noReturnStruct; }
+    bool hasReturnStruct() const { return structReturnIndex != noReturnStruct; }
+    unsigned getStructReturnIndex() const { return structReturnIndex; }
 
-#ifdef GLSLANG_WEB
+    static const unsigned structReturnIndexBits = 4;                        // number of index bits to use.
+    static const unsigned structReturnSlots = (1<<structReturnIndexBits)-1; // number of valid values
+    static const unsigned noReturnStruct = structReturnSlots;               // value if no return struct type.
+
+    // Index into a language specific table of texture return structures.
+    unsigned int structReturnIndex : structReturnIndexBits;
+#else
+    unsigned int getVectorSize() const { return 4; }
     void clearReturnStruct() const { }
     bool hasReturnStruct() const { return false; }
     unsigned getStructReturnIndex() const { return 0; }
+#endif
+
+#ifdef GLSLANG_WEB
     bool is1D()          const { return false; }
     bool isBuffer()      const { return false; }
     bool isRect()        const { return false; }
@@ -105,18 +114,12 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     void setExternal(bool e) { }
     bool isYuv()         const { return false; }
 #else
+    bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
+    bool   external : 1;  // GL_OES_EGL_image_external
+    bool        yuv : 1;  // GL_EXT_YUV_target
     // Some languages support structures as sample results.  Storing the whole structure in the
     // TSampler is too large, so there is an index to a separate table.
-    static const unsigned structReturnIndexBits = 4;                        // number of index bits to use.
-    static const unsigned structReturnSlots = (1<<structReturnIndexBits)-1; // number of valid values
-    static const unsigned noReturnStruct = structReturnSlots;               // value if no return struct type.
 
-    // Index into a language specific table of texture return structures.
-    unsigned int structReturnIndex : structReturnIndexBits;
-
-    void clearReturnStruct() { structReturnIndex = noReturnStruct; }
-    bool hasReturnStruct() const { return structReturnIndex != noReturnStruct; }
-    unsigned getStructReturnIndex() const { return structReturnIndex; }
     bool is1D()          const { return dim == Esd1D; }
     bool isBuffer()      const { return dim == EsdBuffer; }
     bool isRect()        const { return dim == EsdRect; }
@@ -144,13 +147,17 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         ms = false;
         image = false;
         combined = false;
+#ifndef GLSLANG_WEB
         sampler = false;
         external = false;
         yuv = false;
-        clearReturnStruct();
+#endif
 
+#ifdef ENABLE_HLSL
+        clearReturnStruct();
         // by default, returns a single vec4;
         vectorSize = 4;
+#endif
     }
 
     // make a combined sampler and texture
@@ -188,6 +195,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         ms = m;
     }
 
+#ifndef GLSLANG_WEB
     // make a subpass input attachment
     void setSubpass(TBasicType t, bool m = false)
     {
@@ -205,6 +213,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
         sampler = true;
         shadow = s;
     }
+#endif
 
     bool operator==(const TSampler& right) const
     {
@@ -218,7 +227,7 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
          isPureSampler() == right.isPureSampler() &&
             isExternal() == right.isExternal() &&
                  isYuv() == right.isYuv() &&
-              vectorSize == right.vectorSize &&
+         getVectorSize() == right.getVectorSize() &&
   getStructReturnIndex() == right.getStructReturnIndex();
     }
 
@@ -495,8 +504,10 @@ public:
     void clearInterstage()
     {
         clearInterpolation();
+#ifndef GLSLANG_WEB
         patch = false;
         sample = false;
+#endif
     }
 
     void clearInterpolation()
@@ -552,17 +563,6 @@ public:
     bool centroid     : 1;
     bool smooth       : 1;
     bool flat         : 1;
-#ifndef GLSLANG_WEB
-    bool noContraction: 1; // prevent contraction and reassociation, e.g., for 'precise' keyword, and expressions it affects
-    bool nopersp      : 1;
-    bool explicitInterp : 1;
-    bool pervertexNV  : 1;
-    bool perPrimitiveNV : 1;
-    bool perViewNV : 1;
-    bool perTaskNV : 1;
-#endif
-    bool patch        : 1;
-    bool sample       : 1;
     bool coherent     : 1;
     bool devicecoherent : 1;
     bool queuefamilycoherent : 1;
@@ -573,10 +573,12 @@ public:
     bool restrict     : 1;
     bool readonly     : 1;
     bool writeonly    : 1;
-    bool specConstant : 1;  // having a constant_id is not sufficient: expressions have no id, but are still specConstant
+    // having a constant_id is not sufficient: expressions have no id, but are still specConstant
+    bool specConstant : 1;
     bool nonUniform   : 1;
 
 #ifdef GLSLANG_WEB
+    bool isSample() const { return false; }
     bool isMemory() const { return false; }
     bool isMemoryQualifierImageAndSSBOOnly() const { return false; }
     bool bufferReferenceNeedsVulkanMemoryModel() const { return false; }
@@ -588,6 +590,16 @@ public:
     void setNoContraction() { }
     bool isPervertexNV() const { return false; }
 #else
+    bool noContraction: 1; // prevent contraction and reassociation, e.g., for 'precise' keyword, and expressions it affects
+    bool nopersp      : 1;
+    bool explicitInterp : 1;
+    bool pervertexNV  : 1;
+    bool perPrimitiveNV : 1;
+    bool perViewNV : 1;
+    bool perTaskNV : 1;
+    bool patch        : 1;
+    bool sample       : 1;
+    bool isSample() const { return sample; }
     bool isMemory() const
     {
         return subgroupcoherent || workgroupcoherent || queuefamilycoherent || devicecoherent || coherent || volatil || restrict || readonly || writeonly || nonprivate;
@@ -1592,9 +1604,9 @@ public:
     virtual TIntermTyped*  getOuterArrayNode() const { return arraySizes->getOuterNode(); }
     virtual int getCumulativeArraySize()  const { return arraySizes->getCumulativeSize(); }
 #ifdef GLSLANG_WEB
-    virtual bool isArrayOfArrays() const { return false; }
+    bool isArrayOfArrays() const { return false; }
 #else
-    virtual bool isArrayOfArrays() const { return arraySizes != nullptr && arraySizes->getNumDims() > 1; }
+    bool isArrayOfArrays() const { return arraySizes != nullptr && arraySizes->getNumDims() > 1; }
 #endif
     virtual int getImplicitArraySize() const { return arraySizes->getImplicitSize(); }
     virtual const TArraySizes* getArraySizes() const { return arraySizes; }
@@ -1646,11 +1658,11 @@ public:
     virtual bool isTexture() const { return basicType == EbtSampler && getSampler().isTexture(); }
     virtual bool isParameterized()  const { return typeParameters != nullptr; }
 #ifdef GLSLANG_WEB
-    virtual bool isCoopMat() const { return false; }
-    virtual bool isReference() const { return false; }
+    bool isCoopMat() const { return false; }
+    bool isReference() const { return false; }
 #else
-    virtual bool isCoopMat() const { return coopmat; }
-    virtual bool isReference() const { return getBasicType() == EbtReference; }
+    bool isCoopMat() const { return coopmat; }
+    bool isReference() const { return getBasicType() == EbtReference; }
 #endif
 
     // return true if this type contains any subtype which satisfies the given predicate.
@@ -1733,39 +1745,39 @@ public:
     }
 
 #ifdef GLSLANG_WEB
-    virtual bool containsDouble() const { return false; }
-    virtual bool contains16BitFloat() const { return false; }
-    virtual bool contains64BitInt() const { return false; }
-    virtual bool contains16BitInt() const { return false; }
-    virtual bool contains8BitInt() const { return false; }
-    virtual bool containsCoopMat() const { return false; }
-    virtual bool containsReference() const { return false; }
+    bool containsDouble() const { return false; }
+    bool contains16BitFloat() const { return false; }
+    bool contains64BitInt() const { return false; }
+    bool contains16BitInt() const { return false; }
+    bool contains8BitInt() const { return false; }
+    bool containsCoopMat() const { return false; }
+    bool containsReference() const { return false; }
 #else
-    virtual bool containsDouble() const
+    bool containsDouble() const
     {
         return containsBasicType(EbtDouble);
     }
-    virtual bool contains16BitFloat() const
+    bool contains16BitFloat() const
     {
         return containsBasicType(EbtFloat16);
     }
-    virtual bool contains64BitInt() const
+    bool contains64BitInt() const
     {
         return containsBasicType(EbtInt64) || containsBasicType(EbtUint64);
     }
-    virtual bool contains16BitInt() const
+    bool contains16BitInt() const
     {
         return containsBasicType(EbtInt16) || containsBasicType(EbtUint16);
     }
-    virtual bool contains8BitInt() const
+    bool contains8BitInt() const
     {
         return containsBasicType(EbtInt8) || containsBasicType(EbtUint8);
     }
-    virtual bool containsCoopMat() const
+    bool containsCoopMat() const
     {
         return contains([](const TType* t) { return t->coopmat; } );
     }
-    virtual bool containsReference() const
+    bool containsReference() const
     {
         return containsBasicType(EbtReference);
     }

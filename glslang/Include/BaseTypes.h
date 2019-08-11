@@ -527,7 +527,8 @@ __inline bool isTypeFloat(TBasicType type)
     }
 }
 
-__inline int getTypeRank(TBasicType type) {
+__inline int getTypeRank(TBasicType type)
+{
     int res = -1;
     switch(type) {
     case EbtInt8:

@@ -538,13 +538,14 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
     if (symbol.getQualifier().centroid  != unitSymbol.getQualifier().centroid ||
         symbol.getQualifier().smooth    != unitSymbol.getQualifier().smooth ||
         symbol.getQualifier().flat      != unitSymbol.getQualifier().flat ||
-        symbol.getQualifier().sample    != unitSymbol.getQualifier().sample ||
-        symbol.getQualifier().patch     != unitSymbol.getQualifier().patch ||
+        symbol.getQualifier().isSample()!= unitSymbol.getQualifier().isSample() ||
+        symbol.getQualifier().isPatch() != unitSymbol.getQualifier().isPatch() ||
         symbol.getQualifier().isNonPerspective() != unitSymbol.getQualifier().isNonPerspective()) {
         error(infoSink, "Interpolation and auxiliary storage qualifiers must match:");
         writeTypeComparison = true;
     }
 
+#ifndef GLSLANG_WEB
     // Memory...
     if (symbol.getQualifier().coherent          != unitSymbol.getQualifier().coherent ||
         symbol.getQualifier().devicecoherent    != unitSymbol.getQualifier().devicecoherent ||
@@ -559,6 +560,7 @@ void TIntermediate::mergeErrorCheck(TInfoSink& infoSink, const TIntermSymbol& sy
         error(infoSink, "Memory qualifiers must match:");
         writeTypeComparison = true;
     }
+#endif
 
     // Layouts...
     // TODO: 4.4 enhanced layouts: Generalize to include offset/align: current spec
@@ -608,9 +610,6 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
             warn(infoSink, "Entry point not found");
     }
 
-    if (getNumPushConstants() > 1)
-        error(infoSink, "Only one push_constant block is allowed per stage");
-
     // recursion and missing body checking
     checkCallGraphCycles(infoSink);
     checkCallGraphBodies(infoSink, keepUncalled);
@@ -619,6 +618,9 @@ void TIntermediate::finalCheck(TInfoSink& infoSink, bool keepUncalled)
     inOutLocationCheck(infoSink);
 
 #ifndef GLSLANG_WEB
+    if (getNumPushConstants() > 1)
+        error(infoSink, "Only one push_constant block is allowed per stage");
+
     // invocations
     if (invocations == TQualifier::layoutNotSet)
         invocations = 1;

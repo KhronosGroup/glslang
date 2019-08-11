@@ -434,8 +434,8 @@ public:
     void setInvertY(bool invert);
 #ifdef ENABLE_HLSL
     void setHlslIoMapping(bool hlslIoMap);
-#endif
     void setFlattenUniformArrays(bool flatten);
+#endif
     void setNoStorageFormat(bool useUnknownFormat);
     void setNanMinMaxClamp(bool nanMinMaxClamp);
     void setTextureSamplerTransformMode(EShTextureSamplerTransformMode mode);

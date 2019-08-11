@@ -1354,10 +1354,6 @@ public:
         case EOpTexture:
         case EOpSparseTexture:
             break;
-        case EOpTextureClamp:
-        case EOpSparseTextureClamp:
-            cracked.lodClamp = true;
-            break;
         case EOpTextureProj:
             cracked.proj = true;
             break;
@@ -1368,11 +1364,6 @@ public:
         case EOpTextureOffset:
         case EOpSparseTextureOffset:
             cracked.offset = true;
-            break;
-        case EOpTextureOffsetClamp:
-        case EOpSparseTextureOffsetClamp:
-            cracked.offset = true;
-            cracked.lodClamp = true;
             break;
         case EOpTextureFetch:
         case EOpSparseTextureFetch:
@@ -1409,11 +1400,6 @@ public:
         case EOpSparseTextureGrad:
             cracked.grad = true;
             break;
-        case EOpTextureGradClamp:
-        case EOpSparseTextureGradClamp:
-            cracked.grad = true;
-            cracked.lodClamp = true;
-            break;
         case EOpTextureGradOffset:
         case EOpSparseTextureGradOffset:
             cracked.grad = true;
@@ -1427,6 +1413,21 @@ public:
             cracked.grad = true;
             cracked.offset = true;
             cracked.proj = true;
+            break;
+#ifndef GLSLANG_WEB
+        case EOpTextureClamp:
+        case EOpSparseTextureClamp:
+            cracked.lodClamp = true;
+            break;
+        case EOpTextureOffsetClamp:
+        case EOpSparseTextureOffsetClamp:
+            cracked.offset = true;
+            cracked.lodClamp = true;
+            break;
+        case EOpTextureGradClamp:
+        case EOpSparseTextureGradClamp:
+            cracked.grad = true;
+            cracked.lodClamp = true;
             break;
         case EOpTextureGradOffsetClamp:
         case EOpSparseTextureGradOffsetClamp:
@@ -1497,6 +1498,7 @@ public:
         case EOpSubpassLoadMS:
             cracked.subpass = true;
             break;
+#endif
         default:
             break;
         }

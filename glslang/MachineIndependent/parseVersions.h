@@ -68,30 +68,30 @@ public:
     virtual void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);
 #ifdef GLSLANG_WEB
     bool isEsProfile() const { return true; }
-    virtual void initializeExtensionBehavior() { }
-    virtual void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc) { }
-    virtual void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc) { }
-    virtual void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
+    void initializeExtensionBehavior() { }
+    void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc) { }
+    void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc) { }
+    void requireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
         const char* featureDesc) { }
-    virtual void ppRequireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
+    void ppRequireExtensions(const TSourceLoc&, int numExtensions, const char* const extensions[],
         const char* featureDesc) { }
-    virtual TExtensionBehavior getExtensionBehavior(const char*) { return EBhMissing; }
-    virtual bool extensionTurnedOn(const char* const extension) { return false; }
-    virtual bool extensionsTurnedOn(int numExtensions, const char* const extensions[]) { return false; }
-    virtual void updateExtensionBehavior(int line, const char* const extension, const char* behavior) { }
-    virtual void updateExtensionBehavior(const char* const extension, TExtensionBehavior) { }
-    virtual void checkExtensionStage(const TSourceLoc&, const char* const extension) { }
-    virtual void fullIntegerCheck(const TSourceLoc&, const char* op) { }
-    virtual void doubleCheck(const TSourceLoc&, const char* op) { }
-    virtual bool float16Arithmetic() { return false; }
-    virtual void requireFloat16Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc) { }
-    virtual bool int16Arithmetic() { return false; }
-    virtual void requireInt16Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc) { }
-    virtual bool int8Arithmetic() { return false; }
-    virtual void requireInt8Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc) { }
-    virtual void int64Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
-    virtual void explicitFloat32Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
-    virtual void explicitFloat64Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
+    TExtensionBehavior getExtensionBehavior(const char*) { return EBhMissing; }
+    bool extensionTurnedOn(const char* const extension) { return false; }
+    bool extensionsTurnedOn(int numExtensions, const char* const extensions[]) { return false; }
+    void updateExtensionBehavior(int line, const char* const extension, const char* behavior) { }
+    void updateExtensionBehavior(const char* const extension, TExtensionBehavior) { }
+    void checkExtensionStage(const TSourceLoc&, const char* const extension) { }
+    void fullIntegerCheck(const TSourceLoc&, const char* op) { }
+    void doubleCheck(const TSourceLoc&, const char* op) { }
+    bool float16Arithmetic() { return false; }
+    void requireFloat16Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc) { }
+    bool int16Arithmetic() { return false; }
+    void requireInt16Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc) { }
+    bool int8Arithmetic() { return false; }
+    void requireInt8Arithmetic(const TSourceLoc& loc, const char* op, const char* featureDesc) { }
+    void int64Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
+    void explicitFloat32Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
+    void explicitFloat64Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
 #else
     bool isEsProfile() const { return profile == EEsProfile; }
     virtual void initializeExtensionBehavior();

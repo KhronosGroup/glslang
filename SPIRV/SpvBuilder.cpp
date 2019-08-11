@@ -528,6 +528,7 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
     constantsTypesGlobals.push_back(std::unique_ptr<Instruction>(type));
     module.mapInstruction(type);
 
+#ifndef GLSLANG_WEB
     // deal with capabilities
     switch (dim) {
     case DimBuffer:
@@ -573,6 +574,7 @@ Id Builder::makeImageType(Id sampledType, Dim dim, bool depth, bool arrayed, boo
                 addCapability(CapabilityImageMSArray);
         }
     }
+#endif
 
     return type->getResultId();
 }
@@ -1018,21 +1020,28 @@ Id Builder::makeFloat16Constant(float f16, bool specConstant)
 
 Id Builder::makeFpConstant(Id type, double d, bool specConstant)
 {
-        assert(isFloatType(type));
+#ifdef GLSLANG_WEB
+    const int width = 32;
+    assert(width == getScalarTypeWidth(type));
+#else
+    const int width = getScalarTypeWidth(type);
+#endif
 
-        switch (getScalarTypeWidth(type)) {
-        case 16:
-                return makeFloat16Constant((float)d, specConstant);
-        case 32:
-                return makeFloatConstant((float)d, specConstant);
-        case 64:
-                return makeDoubleConstant(d, specConstant);
-        default:
-                break;
-        }
+    assert(isFloatType(type));
 
-        assert(false);
-        return NoResult;
+    switch (width) {
+    case 16:
+            return makeFloat16Constant((float)d, specConstant);
+    case 32:
+            return makeFloatConstant((float)d, specConstant);
+    case 64:
+            return makeDoubleConstant(d, specConstant);
+    default:
+            break;
+    }
+
+    assert(false);
+    return NoResult;
 }
 
 Id Builder::findCompositeConstant(Op typeClass, Id typeId, const std::vector<Id>& comps)
@@ -1895,6 +1904,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
         mask = (ImageOperandsMask)(mask | ImageOperandsConstOffsetsMask);
         texArgs[numArgs++] = parameters.offsets;
     }
+#ifndef GLSLANG_WEB
     if (parameters.sample) {
         mask = (ImageOperandsMask)(mask | ImageOperandsSampleMask);
         texArgs[numArgs++] = parameters.sample;
@@ -1912,6 +1922,7 @@ Id Builder::createTextureCall(Decoration precision, Id resultType, bool sparse, 
     if (parameters.volatil) {
         mask = mask | ImageOperandsVolatileTexelKHRMask;
     }
+#endif
     mask = mask | signExtensionMask;
     if (mask == ImageOperandsMaskNone)
         --numArgs;  // undo speculative reservation for the mask argument
@@ -2302,7 +2313,12 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
     int numRows = getTypeNumRows(resultTypeId);
 
     Instruction* instr = module.getInstruction(componentTypeId);
-    unsigned bitCount = instr->getImmediateOperand(0);
+#ifdef GLSLANG_WEB
+    const unsigned bitCount = 32;
+    assert(bitcount == instr->getImmediateOperand(0));
+#else
+    const unsigned bitCount = instr->getImmediateOperand(0);
+#endif
 
     // Optimize matrix constructed from a bigger matrix
     if (isMatrix(sources[0]) && getNumColumns(sources[0]) >= numCols && getNumRows(sources[0]) >= numRows) {

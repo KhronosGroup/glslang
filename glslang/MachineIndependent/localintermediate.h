@@ -481,6 +481,8 @@ public:
     bool usingVulkanMemoryModel() const { return false; }
     bool usingPhysicalStorageBuffer() const { return false; }
     bool usingVariablePointers() const { return false; }
+    unsigned getXfbStride(int buffer) const { return 0; }
+    bool hasLayoutDerivativeModeNone() const { return false; }
 #else
     void output(TInfoSink&, bool tree);
 
@@ -544,6 +546,7 @@ public:
     }
     bool getAutoMapLocations() const { return autoMapLocations; }
 
+#ifdef ENABLE_HLSL
     void setFlattenUniformArrays(bool flatten)
     {
         flattenUniformArrays = flatten;
@@ -551,6 +554,7 @@ public:
             processes.addProcess("flatten-uniform-arrays");
     }
     bool getFlattenUniformArrays() const { return flattenUniformArrays; }
+#endif 
     void setNoStorageFormat(bool b)
     {
         useUnknownFormat = b;
@@ -576,12 +580,14 @@ public:
     }
     bool usingVariablePointers() const { return useVariablePointers; }
 
+#ifdef ENABLE_HLSL
     template<class T> T addCounterBufferName(const T& name) const { return name + implicitCounterName; }
     bool hasCounterBufferName(const TString& name) const {
         size_t len = strlen(implicitCounterName);
         return name.size() > len &&
                name.compare(name.size() - len, len, implicitCounterName) == 0;
     }
+#endif
 
     void setTextureSamplerTransformMode(EShTextureSamplerTransformMode mode) { textureSamplerTransformMode = mode; }
     int getNumPushConstants() const { return numPushConstants; }
@@ -703,6 +709,7 @@ public:
     void setGeoPassthroughEXT() { geoPassthroughEXT = true; }
     bool getGeoPassthroughEXT() const { return geoPassthroughEXT; }
     void setLayoutDerivativeMode(ComputeDerivativeMode mode) { computeDerivativeMode = mode; }
+    bool hasLayoutDerivativeModeNone() const { return computeDerivativeMode != LayoutDerivativeNone; }
     ComputeDerivativeMode getLayoutDerivativeModeNone() const { return computeDerivativeMode; }
     bool setPrimitives(int m)
     {
