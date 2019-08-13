@@ -1040,6 +1040,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
         DirStackFileIncluder includer;
         std::for_each(IncludeDirectoryList.rbegin(), IncludeDirectoryList.rend(), [&includer](const std::string& dir) {
             includer.pushExternalLocalDirectory(dir); });
+#ifndef GLSLANG_WEB
         if (Options & EOptionOutputPreprocessed) {
             std::string str;
             if (shader->preprocess(&Resources, defaultVersion, ENoProfile, false, false, messages, &str, includer)) {
@@ -1051,6 +1052,7 @@ void CompileAndLinkShaderUnits(std::vector<ShaderCompUnit> compUnits)
             StderrIfNonEmpty(shader->getInfoDebugLog());
             continue;
         }
+#endif
 
         if (! shader->parse(&Resources, defaultVersion, false, messages, includer))
             CompileFailed = true;

@@ -578,6 +578,8 @@ public:
     bool nonUniform   : 1;
 
 #ifdef GLSLANG_WEB
+    bool isWriteOnly() const { return false; }
+    bool isReadOnly() const { return false; }
     bool isSample() const { return false; }
     bool isMemory() const { return false; }
     bool isMemoryQualifierImageAndSSBOOnly() const { return false; }
@@ -599,6 +601,8 @@ public:
     bool perTaskNV : 1;
     bool patch        : 1;
     bool sample       : 1;
+    bool isWriteOnly() const { return writeonly; }
+    bool isReadOnly() const { return readonly; }
     bool isSample() const { return sample; }
     bool isMemory() const
     {
@@ -1035,11 +1039,13 @@ public:
     static const char* getLayoutPackingString(TLayoutPacking packing)
     {
         switch (packing) {
+        case ElpStd140:   return "std140";
+#ifndef GLSLANG_WEB
         case ElpPacked:   return "packed";
         case ElpShared:   return "shared";
-        case ElpStd140:   return "std140";
         case ElpStd430:   return "std430";
         case ElpScalar:   return "scalar";
+#endif
         default:          return "none";
         }
     }
@@ -1332,6 +1338,12 @@ public:
     TSourceLoc loc;
     TArraySizes* typeParameters;
 
+#ifdef GLSLANG_WEB
+    bool isCoopmat() const { return false; }
+#else
+    bool isCoopmat() const { return coopmat; }
+#endif
+
     void initType(const TSourceLoc& l)
     {
         basicType = EbtVoid;
@@ -1435,7 +1447,7 @@ public:
                                     }
                                     typeName = NewPoolTString(p.userDef->getTypeName().c_str());
                                 }
-                                if (p.coopmat && p.basicType == EbtFloat &&
+                                if (p.isCoopmat() && p.basicType == EbtFloat &&
                                     p.typeParameters && p.typeParameters->getNumDims() > 0 &&
                                     p.typeParameters->getDimSize(0) == 16) {
                                     basicType = EbtFloat16;
@@ -1544,7 +1556,7 @@ public:
             referentType = copyOf.referentType;
         }
         typeParameters = copyOf.typeParameters;
-        coopmat = copyOf.coopmat;
+        coopmat = copyOf.isCoopMat();
     }
 
     // Make complete copy of the whole type graph rooted at 'copyOf'.
@@ -1658,9 +1670,11 @@ public:
     virtual bool isTexture() const { return basicType == EbtSampler && getSampler().isTexture(); }
     virtual bool isParameterized()  const { return typeParameters != nullptr; }
 #ifdef GLSLANG_WEB
+    bool isAtomic() const { return false; }
     bool isCoopMat() const { return false; }
     bool isReference() const { return false; }
 #else
+    bool isAtomic() const { return basicType == EbtAtomicUint; }
     bool isCoopMat() const { return coopmat; }
     bool isReference() const { return getBasicType() == EbtReference; }
 #endif
@@ -2240,7 +2254,7 @@ public:
         return true;
     }
 
-    bool sameReferenceType(const TType& right) const
+     bool sameReferenceType(const TType& right) const
     {
         if (isReference() != right.isReference())
             return false;
@@ -2257,7 +2271,7 @@ public:
         return *referentType == *right.referentType;
     }
 
-    // See if two types match, in all aspects except arrayness
+   // See if two types match, in all aspects except arrayness
     bool sameElementType(const TType& right) const
     {
         return basicType == right.basicType && sameElementShape(right);
@@ -2292,7 +2306,7 @@ public:
                matrixCols == right.matrixCols &&
                matrixRows == right.matrixRows &&
                   vector1 == right.vector1    &&
-                  coopmat == right.coopmat    &&
+              isCoopMat() == right.isCoopMat() &&
                sameStructType(right)          &&
                sameReferenceType(right);
     }
@@ -2301,7 +2315,7 @@ public:
     // an OK function parameter
     bool coopMatParameterOK(const TType& right) const
     {
-        return coopmat && right.coopmat &&
+        return isCoopMat() && right.isCoopMat() &&
                typeParameters == nullptr && right.typeParameters != nullptr;
     }
 
@@ -2316,19 +2330,16 @@ public:
         return ! operator==(right);
     }
 
-#ifdef GLSLANG_WEB
-    unsigned int getBufferReferenceAlignment() const { return 0; }
-#else
     unsigned int getBufferReferenceAlignment() const
     {
+#ifndef GLSLANG_WEB
         if (getBasicType() == glslang::EbtReference) {
             return getReferentType()->getQualifier().hasBufferReferenceAlign() ?
                         (1u << getReferentType()->getQualifier().layoutBufferReferenceAlign) : 16u;
-        } else {
-            return 0;
         }
-    }
 #endif
+        return 0;
+    }
 
 protected:
     // Require consumer to pick between deep copy and shallow copy.

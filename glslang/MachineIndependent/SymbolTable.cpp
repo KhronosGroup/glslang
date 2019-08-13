@@ -174,6 +174,8 @@ void TType::buildMangledName(TString& mangledName) const
     }
 }
 
+#ifndef GLSLANG_WEB
+
 //
 // Dump functions.
 //
@@ -251,6 +253,8 @@ void TSymbolTable::dump(TInfoSink& infoSink, bool complete) const
         table[level]->dump(infoSink, complete);
     }
 }
+
+#endif
 
 //
 // Functions have buried pointers to delete.

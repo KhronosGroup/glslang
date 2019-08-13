@@ -477,11 +477,13 @@ void SetupBuiltinSymbolTable(int version, EProfile profile, const SpvVersion& sp
 // Function to Print all builtins
 void DumpBuiltinSymbolTable(TInfoSink& infoSink, const TSymbolTable& symbolTable)
 {
+#ifndef GLSLANG_WEB
     infoSink.debug << "BuiltinSymbolTable {\n";
 
     symbolTable.dump(infoSink, true);
 
     infoSink.debug << "}\n";
+#endif
 }
 
 // Return true if the shader was correctly specified for version/profile/stage.
@@ -634,7 +636,6 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     default:
         break;
     }
-#endif
 
     if (profile == EEsProfile && version >= 300 && versionNotFirst) {
         correct = false;
@@ -644,7 +645,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
     // Check for SPIR-V compatibility
     if (spvVersion.spv != 0) {
         switch (profile) {
-        case  EEsProfile:
+        case EEsProfile:
             if (spvVersion.vulkan > 0 && version < 310) {
                 correct = false;
                 infoSink.info.message(EPrefixError, "#version: ES shaders for Vulkan SPIR-V require version 310 or higher");
@@ -673,6 +674,7 @@ bool DeduceVersionProfile(TInfoSink& infoSink, EShLanguage stage, bool versionNo
             break;
         }
     }
+#endif
 
     return correct;
 }
@@ -854,6 +856,7 @@ bool ProcessDeferred(
                                 : userInput.scanVersion(version, profile, versionNotFirstToken);
     bool versionNotFound = version == 0;
     if (forceDefaultVersionAndProfile && source == EShSourceGlsl) {
+#ifndef GLSLANG_WEB
         if (! (messages & EShMsgSuppressWarnings) && ! versionNotFound &&
             (version != defaultVersion || profile != defaultProfile)) {
             compiler->infoSink.info << "Warning, (version, profile) forced to be ("
@@ -861,7 +864,7 @@ bool ProcessDeferred(
                                     << "), while in source code it is ("
                                     << version << ", " << ProfileName(profile) << ")\n";
         }
-
+#endif
         if (versionNotFound) {
             versionNotFirstToken = false;
             versionNotFirst = false;
@@ -874,6 +877,7 @@ bool ProcessDeferred(
     bool goodVersion = DeduceVersionProfile(compiler->infoSink, stage,
                                             versionNotFirst, defaultVersion, source, version, profile, spvVersion);
     bool versionWillBeError = (versionNotFound || (profile == EEsProfile && version >= 300 && versionNotFirst));
+#ifndef GLSLANG_WEB
     bool warnVersionNotFirst = false;
     if (! versionWillBeError && versionNotFirstToken) {
         if (messages & EShMsgRelaxedErrors)
@@ -881,6 +885,7 @@ bool ProcessDeferred(
         else
             versionWillBeError = true;
     }
+#endif
 
     intermediate.setSource(source);
     intermediate.setVersion(version);
@@ -942,11 +947,13 @@ bool ProcessDeferred(
     parseContext->setLimits(*resources);
     if (! goodVersion)
         parseContext->addError();
+#ifndef GLSLANG_WEB
     if (warnVersionNotFirst) {
         TSourceLoc loc;
         loc.init();
         parseContext->warn(loc, "Illegal to have non-comment, non-whitespace tokens before #version", "#version", "");
     }
+#endif
 
     parseContext->initializeExtensionBehavior();
 
@@ -976,6 +983,8 @@ bool ProcessDeferred(
                                      intermediate, optLevel, messages);
     return success;
 }
+
+#ifndef GLSLANG_WEB
 
 // Responsible for keeping track of the most recent source string and line in
 // the preprocessor and outputting newlines appropriately if the source string
@@ -1173,6 +1182,8 @@ struct DoPreprocessing {
     std::string* outputString;
 };
 
+#endif
+
 // DoFullParse is a valid ProcessingConext template argument for fully
 // parsing the shader.  It populates the "intermediate" with the AST.
 struct DoFullParse{
@@ -1203,6 +1214,7 @@ struct DoFullParse{
     }
 };
 
+#ifndef GLSLANG_WEB
 // Take a single compilation unit, and run the preprocessor on it.
 // Return: True if there were no issues found in preprocessing,
 //         False if during preprocessing any unknown version, pragmas or
@@ -1235,6 +1247,7 @@ bool PreprocessDeferred(
                            forwardCompatible, messages, intermediate, parser,
                            false, includer);
 }
+#endif
 
 //
 // do a partial compile on the given strings for a single compilation unit
@@ -1829,6 +1842,7 @@ bool TShader::parse(const TBuiltInResource* builtInResources, int defaultVersion
                            &environment);
 }
 
+#ifndef GLSLANG_WEB
 // Fill in a string with the result of preprocessing ShaderStrings
 // Returns true if all extensions, pragmas and version strings were valid.
 //
@@ -1853,6 +1867,7 @@ bool TShader::preprocess(const TBuiltInResource* builtInResources,
                               defaultProfile, forceDefaultVersionAndProfile,
                               forwardCompatible, message, includer, *intermediate, output_string);
 }
+#endif
 
 const char* TShader::getInfoLog()
 {
@@ -1928,6 +1943,7 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
     if (stages[stage].size() == 0)
         return true;
 
+#ifndef GLSLANG_WEB
     int numEsShaders = 0, numNonEsShaders = 0;
     for (auto it = stages[stage].begin(); it != stages[stage].end(); ++it) {
         if ((*it)->intermediate->getProfile() == EEsProfile) {
@@ -1976,7 +1992,9 @@ bool TProgram::linkStage(EShLanguage stage, EShMessages messages)
         for (it = stages[stage].begin(); it != stages[stage].end(); ++it)
             intermediate[stage]->merge(*infoSink, *(*it)->intermediate);
     }
-
+#else
+    intermediate[stage] = stages[stage].front()->intermediate;
+#endif
     intermediate[stage]->finalCheck(*infoSink, (messages & EShMsgKeepUncalled) != 0);
 
     if (messages & EShMsgAST)

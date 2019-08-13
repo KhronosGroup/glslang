@@ -390,9 +390,9 @@ void TranslateMemoryDecoration(const glslang::TQualifier& qualifier, std::vector
     }
     if (qualifier.restrict)
         memory.push_back(spv::DecorationRestrict);
-    if (qualifier.readonly)
+    if (qualifier.isReadOnly())
         memory.push_back(spv::DecorationNonWritable);
-    if (qualifier.writeonly)
+    if (qualifier.isWriteOnly())
        memory.push_back(spv::DecorationNonReadable);
 #endif
 }
@@ -1180,20 +1180,16 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
 
     if (glslangIntermediate->getSource() != glslang::EShSourceHlsl ||
             type.getQualifier().storage == glslang::EvqUniform) {
-#ifndef GLSLANG_WEB
-        if (type.getBasicType() == glslang::EbtAtomicUint)
+        if (type.isAtomic())
             return spv::StorageClassAtomicCounter;
-#endif
         if (type.containsOpaque())
             return spv::StorageClassUniformConstant;
     }
 
-#ifndef GLSLANG_WEB
     if (type.getQualifier().isUniformOrBuffer() &&
-        type.getQualifier().layoutShaderRecordNV) {
+        type.getQualifier().isShaderRecordNV()) {
         return spv::StorageClassShaderRecordBufferNV;
     }
-#endif
 
     if (glslangIntermediate->usingStorageBuffer() && type.getQualifier().storage == glslang::EvqBuffer) {
         addPre13Extension(spv::E_SPV_KHR_storage_buffer_storage_class);
@@ -1201,10 +1197,8 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     }
 
     if (type.getQualifier().isUniformOrBuffer()) {
-#ifndef GLSLANG_WEB
         if (type.getQualifier().isPushConstant())
             return spv::StorageClassPushConstant;
-#endif
         if (type.getBasicType() == glslang::EbtBlock)
             return spv::StorageClassUniform;
         return spv::StorageClassUniformConstant;
@@ -1215,7 +1209,7 @@ spv::StorageClass TGlslangToSpvTraverser::TranslateStorageClass(const glslang::T
     case glslang::EvqConstReadOnly: return spv::StorageClassFunction;
     case glslang::EvqTemporary:     return spv::StorageClassFunction;
 #ifndef GLSLANG_WEB
-    case glslang::EvqShared:        return spv::StorageClassWorkgroup;
+    case glslang::EvqShared:           return spv::StorageClassWorkgroup;
     case glslang::EvqPayloadNV:        return spv::StorageClassRayPayloadNV;
     case glslang::EvqPayloadInNV:      return spv::StorageClassIncomingRayPayloadNV;
     case glslang::EvqHitAttrNV:        return spv::StorageClassHitAttributeNV;

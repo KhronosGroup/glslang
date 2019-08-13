@@ -383,18 +383,20 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, TSo
     //
     TBasicType newType = EbtVoid;
     switch (op) {
-    case EOpConstructInt8:   newType = EbtInt8;   break;
-    case EOpConstructUint8:  newType = EbtUint8;  break;
-    case EOpConstructInt16:  newType = EbtInt16;    break;
-    case EOpConstructUint16: newType = EbtUint16;   break;
-    case EOpConstructInt:    newType = EbtInt;    break;
-    case EOpConstructUint:   newType = EbtUint;   break;
-    case EOpConstructInt64:  newType = EbtInt64;  break;
-    case EOpConstructUint64: newType = EbtUint64; break;
     case EOpConstructBool:   newType = EbtBool;   break;
     case EOpConstructFloat:  newType = EbtFloat;  break;
+    case EOpConstructInt:    newType = EbtInt;    break;
+    case EOpConstructUint:   newType = EbtUint;   break;
+#ifndef GLSLANG_WEB
+    case EOpConstructInt8:   newType = EbtInt8;   break;
+    case EOpConstructUint8:  newType = EbtUint8;  break;
+    case EOpConstructInt16:  newType = EbtInt16;  break;
+    case EOpConstructUint16: newType = EbtUint16; break;
+    case EOpConstructInt64:  newType = EbtInt64;  break;
+    case EOpConstructUint64: newType = EbtUint64; break;
     case EOpConstructDouble: newType = EbtDouble; break;
     case EOpConstructFloat16: newType = EbtFloat16; break;
+#endif
     default: break; // some compilers want this
     }
 
@@ -1562,6 +1564,17 @@ bool TIntermediate::isFPConversion(TBasicType from, TBasicType to) const
 bool TIntermediate::isFPIntegralConversion(TBasicType from, TBasicType to) const
 {
     switch (from) {
+    case EbtInt:
+    case EbtUint:
+        switch(to) {
+        case EbtFloat:
+        case EbtDouble:
+            return true;
+        default:
+            break;
+        }
+        break;
+#ifndef GLSLANG_WEB
     case EbtInt8:
     case EbtUint8:
     case EbtInt16:
@@ -1575,23 +1588,13 @@ bool TIntermediate::isFPIntegralConversion(TBasicType from, TBasicType to) const
             break;
         }
         break;
-    case EbtInt:
-    case EbtUint:
-        switch(to) {
-        case EbtFloat:
-        case EbtDouble:
-            return true;
-        default:
-            break;
-        }
-        break;
     case EbtInt64:
     case EbtUint64:
         if (to == EbtDouble) {
             return true;
         }
         break;
-
+#endif
     default:
         break;
     }
@@ -1709,7 +1712,7 @@ bool TIntermediate::canImplicitlyPromote(TBasicType from, TBasicType to, TOperat
             case EbtFloat:
                  return true;
             case EbtBool:
-                 return (getSource() == EShSourceHlsl);
+                 return getSource() == EShSourceHlsl;
             case EbtInt16:
             case EbtUint16:
                 return extensionRequested(E_GL_AMD_gpu_shader_int16);

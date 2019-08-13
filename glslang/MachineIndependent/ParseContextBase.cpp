@@ -155,7 +155,7 @@ bool TParseContextBase::lValueErrorCheck(const TSourceLoc& loc, const char* op, 
     case EvqUniform:        message = "can't modify a uniform";      break;
 #ifndef GLSLANG_WEB
     case EvqBuffer:
-        if (node->getQualifier().readonly)
+        if (node->getQualifier().isReadOnly())
             message = "can't modify a readonly buffer";
         if (node->getQualifier().isShaderRecordNV())
             message = "can't modify a shaderrecordnv qualified buffer";
@@ -236,7 +236,7 @@ void TParseContextBase::rValueErrorCheck(const TSourceLoc& loc, const char* op, 
     }
 
     TIntermSymbol* symNode = node->getAsSymbolNode();
-    if (symNode && symNode->getQualifier().writeonly)
+    if (symNode && symNode->getQualifier().isWriteOnly())
         error(loc, "can't read from writeonly object: ", op, symNode->getName().c_str());
 }
 

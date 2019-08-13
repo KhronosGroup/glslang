@@ -324,7 +324,9 @@ struct str_hash
 // A single global usable by all threads, by all versions, by all languages.
 // After a single process-level initialization, this is read only and thread safe
 std::unordered_map<const char*, int, str_hash, str_eq>* KeywordMap = nullptr;
+#ifndef GLSLANG_WEB
 std::unordered_set<const char*, str_hash, str_eq>* ReservedSet = nullptr;
+#endif
 
 };
 
@@ -758,8 +760,10 @@ void TScanContext::deleteKeywordMap()
 {
     delete KeywordMap;
     KeywordMap = nullptr;
+#ifndef GLSLANG_WEB
     delete ReservedSet;
     ReservedSet = nullptr;
+#endif
 }
 
 // Called by yylex to get the next token.
@@ -1051,6 +1055,11 @@ int TScanContext::tokenizeIdentifier()
 
     case SUBROUTINE:
         return es30ReservedFromGLSL(400);
+    case SHARED:
+        if ((parseContext.isEsProfile() && parseContext.version < 300) ||
+            (!parseContext.isEsProfile() && parseContext.version < 140))
+            return identifierOrType();
+        return keyword;
 #endif
 
     case LAYOUT:
@@ -1064,11 +1073,6 @@ int TScanContext::tokenizeIdentifier()
             return identifierOrType();
         return keyword;
     }
-    case SHARED:
-        if ((parseContext.isEsProfile() && parseContext.version < 300) ||
-            (!parseContext.isEsProfile() && parseContext.version < 140))
-            return identifierOrType();
-        return keyword;
 
     case HIGH_PRECISION:
     case MEDIUM_PRECISION:
@@ -1649,7 +1653,7 @@ int TScanContext::identifierOrReserved(bool reserved)
         return 0;
     }
 
-    if (parseContext.forwardCompatible)
+    if (parseContext.isForwardCompatible())
         parseContext.warn(loc, "using future reserved keyword", tokenText, "");
 
     return identifierOrType();
@@ -1664,7 +1668,7 @@ int TScanContext::es30ReservedFromGLSL(int version)
 
     if ((parseContext.isEsProfile() && parseContext.version < 300) ||
         (!parseContext.isEsProfile() && parseContext.version < version)) {
-            if (parseContext.forwardCompatible)
+            if (parseContext.isForwardCompatible())
                 parseContext.warn(loc, "future reserved word in ES 300 and keyword in GLSL", tokenText, "");
 
             return identifierOrType();
@@ -1680,7 +1684,7 @@ int TScanContext::nonreservedKeyword(int esVersion, int nonEsVersion)
 {
     if ((parseContext.isEsProfile() && parseContext.version < esVersion) ||
         (!parseContext.isEsProfile() && parseContext.version < nonEsVersion)) {
-        if (parseContext.forwardCompatible)
+        if (parseContext.isForwardCompatible())
             parseContext.warn(loc, "using future keyword", tokenText, "");
 
         return identifierOrType();
@@ -1694,7 +1698,7 @@ int TScanContext::precisionKeyword()
     if (parseContext.isEsProfile() || parseContext.version >= 130)
         return keyword;
 
-    if (parseContext.forwardCompatible)
+    if (parseContext.isForwardCompatible())
         parseContext.warn(loc, "using ES precision qualifier keyword", tokenText, "");
 
     return identifierOrType();
@@ -1707,7 +1711,7 @@ int TScanContext::matNxM()
     if (parseContext.version > 110)
         return keyword;
 
-    if (parseContext.forwardCompatible)
+    if (parseContext.isForwardCompatible())
         parseContext.warn(loc, "using future non-square matrix type keyword", tokenText, "");
 
     return identifierOrType();
@@ -1726,7 +1730,7 @@ int TScanContext::dMat()
     if (!parseContext.isEsProfile() && parseContext.version >= 400)
         return keyword;
 
-    if (parseContext.forwardCompatible)
+    if (parseContext.isForwardCompatible())
         parseContext.warn(loc, "using future type keyword", tokenText, "");
 
     return identifierOrType();
@@ -1747,7 +1751,7 @@ int TScanContext::firstGenerationImage(bool inEs310)
         return keyword;
     }
 
-    if (parseContext.forwardCompatible)
+    if (parseContext.isForwardCompatible())
         parseContext.warn(loc, "using future type keyword", tokenText, "");
 
     return identifierOrType();
@@ -1765,7 +1769,7 @@ int TScanContext::secondGenerationImage()
          (parseContext.version >= 420 || parseContext.extensionTurnedOn(E_GL_ARB_shader_image_load_store))))
         return keyword;
 
-    if (parseContext.forwardCompatible)
+    if (parseContext.isForwardCompatible())
         parseContext.warn(loc, "using future type keyword", tokenText, "");
 
     return identifierOrType();

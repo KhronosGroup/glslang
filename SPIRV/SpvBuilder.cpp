@@ -2315,7 +2315,7 @@ Id Builder::createMatrixConstructor(Decoration precision, const std::vector<Id>&
     Instruction* instr = module.getInstruction(componentTypeId);
 #ifdef GLSLANG_WEB
     const unsigned bitCount = 32;
-    assert(bitcount == instr->getImmediateOperand(0));
+    assert(bitCount == instr->getImmediateOperand(0));
 #else
     const unsigned bitCount = instr->getImmediateOperand(0);
 #endif

@@ -476,10 +476,11 @@ protected:
     TQualifier globalUniformDefaults;
     TQualifier globalInputDefaults;
     TQualifier globalOutputDefaults;
-    int* atomicUintOffsets;       // to become an array of the right size to hold an offset per binding point
     TString currentCaller;        // name of last function body entered (not valid when at global scope)
-    TIdSetType inductiveLoopIds;
+#ifndef GLSLANG_WEB
+    int* atomicUintOffsets;       // to become an array of the right size to hold an offset per binding point
     bool anyIndexLimits;
+    TIdSetType inductiveLoopIds;
     TVector<TIntermTyped*> needsIndexLimitationChecking;
 
     //
@@ -515,6 +516,7 @@ protected:
     //    array-sizing declarations
     //
     TVector<TSymbol*> ioArraySymbolResizeList;
+#endif
 };
 
 } // end namespace glslang

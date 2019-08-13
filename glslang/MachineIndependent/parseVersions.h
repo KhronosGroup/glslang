@@ -57,17 +57,37 @@ public:
     TParseVersions(TIntermediate& interm, int version, EProfile profile,
                    const SpvVersion& spvVersion, EShLanguage language, TInfoSink& infoSink,
                    bool forwardCompatible, EShMessages messages)
-        : infoSink(infoSink), version(version), profile(profile), language(language),
-          spvVersion(spvVersion), forwardCompatible(forwardCompatible),
-          intermediate(interm), messages(messages), numErrors(0), currentScanner(0) { }
+        :
+#ifndef GLSLANG_WEB
+        forwardCompatible(forwardCompatible),
+        profile(profile),
+#endif
+        infoSink(infoSink), version(version), 
+        language(language),
+        spvVersion(spvVersion), 
+        intermediate(interm), messages(messages), numErrors(0), currentScanner(0) { }
     virtual ~TParseVersions() { }
-    virtual void requireProfile(const TSourceLoc&, int queryProfiles, const char* featureDesc);
-    virtual void profileRequires(const TSourceLoc&, int queryProfiles, int minVersion, int numExtensions, const char* const extensions[], const char* featureDesc);
-    virtual void profileRequires(const TSourceLoc&, int queryProfiles, int minVersion, const char* const extension, const char* featureDesc);
-    virtual void requireStage(const TSourceLoc&, EShLanguageMask, const char* featureDesc);
-    virtual void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);
+    void requireStage(const TSourceLoc&, EShLanguageMask, const char* featureDesc);
+    void requireStage(const TSourceLoc&, EShLanguage, const char* featureDesc);
 #ifdef GLSLANG_WEB
+    const EProfile profile = EEsProfile;
     bool isEsProfile() const { return true; }
+    void requireProfile(const TSourceLoc& loc, int profileMask, const char* featureDesc)
+    {
+        if (! (EEsProfile & profileMask))
+            error(loc, "not supported with this profile:", featureDesc, ProfileName(profile));
+    }
+    void profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions,
+        const char* const extensions[], const char* featureDesc)
+    {
+        if ((EEsProfile & profileMask) && (minVersion == 0 || version < minVersion))
+            error(loc, "not supported for this version or the enabled extensions", featureDesc, "");
+    }
+    void profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, const char* extension,
+        const char* featureDesc)
+    {
+        profileRequires(loc, profileMask, minVersion, extension ? 1 : 0, &extension, featureDesc);
+    }
     void initializeExtensionBehavior() { }
     void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc) { }
     void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc) { }
@@ -92,8 +112,18 @@ public:
     void int64Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
     void explicitFloat32Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
     void explicitFloat64Check(const TSourceLoc&, const char* op, bool builtIn = false) { }
+    bool relaxedErrors()    const { return false; }
+    bool suppressWarnings() const { return true; }
+    bool isForwardCompatible() const { return false; }
 #else
+    bool forwardCompatible;      // true if errors are to be given for use of deprecated features
+    EProfile profile;            // the declared profile in the shader (core by default)
     bool isEsProfile() const { return profile == EEsProfile; }
+    void requireProfile(const TSourceLoc& loc, int profileMask, const char* featureDesc);
+    void profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions,
+        const char* const extensions[], const char* featureDesc);
+    void profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, const char* extension,
+        const char* featureDesc);
     virtual void initializeExtensionBehavior();
     virtual void checkDeprecated(const TSourceLoc&, int queryProfiles, int depVersion, const char* featureDesc);
     virtual void requireNotRemoved(const TSourceLoc&, int queryProfiles, int removedVersion, const char* featureDesc);
@@ -131,6 +161,9 @@ public:
     virtual void explicitFloat32Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void explicitFloat64Check(const TSourceLoc&, const char* op, bool builtIn = false);
     virtual void fcoopmatCheck(const TSourceLoc&, const char* op, bool builtIn = false);
+    bool relaxedErrors()    const { return (messages & EShMsgRelaxedErrors) != 0; }
+    bool suppressWarnings() const { return (messages & EShMsgSuppressWarnings) != 0; }
+    bool isForwardCompatible() const { return forwardCompatible; }
 #endif // GLSLANG_WEB
     virtual void spvRemoved(const TSourceLoc&, const char* op);
     virtual void vulkanRemoved(const TSourceLoc&, const char* op);
@@ -170,8 +203,6 @@ public:
     void setCurrentString(int string) { currentScanner->setString(string); }
 
     void getPreamble(std::string&);
-    bool relaxedErrors()    const { return (messages & EShMsgRelaxedErrors) != 0; }
-    bool suppressWarnings() const { return (messages & EShMsgSuppressWarnings) != 0; }
 #ifdef ENABLE_HLSL
     bool isReadingHLSL()    const { return (messages & EShMsgReadHlsl) == EShMsgReadHlsl; }
     bool hlslEnable16BitTypes() const { return (messages & EShMsgHlslEnable16BitTypes) != 0; }
@@ -184,10 +215,8 @@ public:
 
     // compilation mode
     int version;                 // version, updated by #version in the shader
-    EProfile profile;            // the declared profile in the shader (core by default)
     EShLanguage language;        // really the stage
     SpvVersion spvVersion;
-    bool forwardCompatible;      // true if errors are to be given for use of deprecated features
     TIntermediate& intermediate; // helper for making and hooking up pieces of the parse tree
 
 protected:

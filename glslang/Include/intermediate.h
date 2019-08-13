@@ -1089,7 +1089,8 @@ public:
     virtual bool isStruct() const { return type.isStruct(); }
     virtual bool isFloatingDomain() const { return type.isFloatingDomain(); }
     virtual bool isIntegerDomain() const { return type.isIntegerDomain(); }
-    virtual bool isReference() const { return type.isReference(); }
+    bool isAtomic() const { return type.isAtomic(); }
+    bool isReference() const { return type.isReference(); }
     TString getCompleteString() const { return type.getCompleteString(); }
 
 protected:

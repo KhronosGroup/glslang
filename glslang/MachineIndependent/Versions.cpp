@@ -503,21 +503,6 @@ void TParseVersions::getPreamble(std::string& preamble)
 }
 
 //
-// When to use requireProfile():
-//
-//     Use if only some profiles support a feature.  However, if within a profile the feature
-//     is version or extension specific, follow this call with calls to profileRequires().
-//
-// Operation:  If the current profile is not one of the profileMask,
-// give an error message.
-//
-void TParseVersions::requireProfile(const TSourceLoc& loc, int profileMask, const char* featureDesc)
-{
-    if (! (profile & profileMask))
-        error(loc, "not supported with this profile:", featureDesc, ProfileName(profile));
-}
-
-//
 // Map from stage enum to externally readable text name.
 //
 const char* StageName(EShLanguage stage)
@@ -544,6 +529,42 @@ const char* StageName(EShLanguage stage)
 }
 
 //
+// When to use requireStage()
+//
+//     If only some stages support a feature.
+//
+// Operation: If the current stage is not present, give an error message.
+//
+void TParseVersions::requireStage(const TSourceLoc& loc, EShLanguageMask languageMask, const char* featureDesc)
+{
+    if (((1 << language) & languageMask) == 0)
+        error(loc, "not supported in this stage:", featureDesc, StageName(language));
+}
+
+// If only one stage supports a feature, this can be called.  But, all supporting stages
+// must be specified with one call.
+void TParseVersions::requireStage(const TSourceLoc& loc, EShLanguage stage, const char* featureDesc)
+{
+    requireStage(loc, static_cast<EShLanguageMask>(1 << stage), featureDesc);
+}
+
+#ifndef GLSLANG_WEB
+//
+// When to use requireProfile():
+//
+//     Use if only some profiles support a feature.  However, if within a profile the feature
+//     is version or extension specific, follow this call with calls to profileRequires().
+//
+// Operation:  If the current profile is not one of the profileMask,
+// give an error message.
+//
+void TParseVersions::requireProfile(const TSourceLoc& loc, int profileMask, const char* featureDesc)
+{
+    if (! (profile & profileMask))
+        error(loc, "not supported with this profile:", featureDesc, ProfileName(profile));
+}
+
+//
 // When to use profileRequires():
 //
 //     If a set of profiles have the same requirements for what version or extensions
@@ -560,7 +581,8 @@ const char* StageName(EShLanguage stage)
 //
 
 // entry point that takes multiple extensions
-void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions, const char* const extensions[], const char* featureDesc)
+void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, int numExtensions,
+    const char* const extensions[], const char* featureDesc)
 {
     if (profile & profileMask) {
         bool okay = minVersion > 0 && version >= minVersion;
@@ -584,32 +606,11 @@ void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int
 }
 
 // entry point for the above that takes a single extension
-void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, const char* extension, const char* featureDesc)
+void TParseVersions::profileRequires(const TSourceLoc& loc, int profileMask, int minVersion, const char* extension,
+    const char* featureDesc)
 {
     profileRequires(loc, profileMask, minVersion, extension ? 1 : 0, &extension, featureDesc);
 }
-
-//
-// When to use requireStage()
-//
-//     If only some stages support a feature.
-//
-// Operation: If the current stage is not present, give an error message.
-//
-void TParseVersions::requireStage(const TSourceLoc& loc, EShLanguageMask languageMask, const char* featureDesc)
-{
-    if (((1 << language) & languageMask) == 0)
-        error(loc, "not supported in this stage:", featureDesc, StageName(language));
-}
-
-// If only one stage supports a feature, this can be called.  But, all supporting stages
-// must be specified with one call.
-void TParseVersions::requireStage(const TSourceLoc& loc, EShLanguage stage, const char* featureDesc)
-{
-    requireStage(loc, static_cast<EShLanguageMask>(1 << stage), featureDesc);
-}
-
-#ifndef GLSLANG_WEB
 
 void TParseVersions::unimplemented(const TSourceLoc& loc, const char* featureDesc)
 {
@@ -1106,15 +1107,19 @@ void TParseVersions::vulkanRemoved(const TSourceLoc& loc, const char* op)
 // Call for any operation that requires Vulkan.
 void TParseVersions::requireVulkan(const TSourceLoc& loc, const char* op)
 {
+#ifndef GLSLANG_WEB
     if (spvVersion.vulkan == 0)
         error(loc, "only allowed when using GLSL for Vulkan", op, "");
+#endif
 }
 
 // Call for any operation that requires SPIR-V.
 void TParseVersions::requireSpv(const TSourceLoc& loc, const char* op)
 {
+#ifndef GLSLANG_WEB
     if (spvVersion.spv == 0)
         error(loc, "only allowed when generating SPIR-V", op, "");
+#endif
 }
 
 } // end namespace glslang

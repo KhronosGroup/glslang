@@ -89,8 +89,6 @@ void TIntermediate::merge(TInfoSink& infoSink, TIntermediate& unit)
 #endif
 }
 
-#ifndef GLSLANG_WEB
-
 void TIntermediate::mergeCallGraphs(TInfoSink& infoSink, TIntermediate& unit)
 {
     if (unit.getNumEntryPoints() > 0) {
@@ -105,6 +103,8 @@ void TIntermediate::mergeCallGraphs(TInfoSink& infoSink, TIntermediate& unit)
 
     callGraph.insert(callGraph.end(), unit.callGraph.begin(), unit.callGraph.end());
 }
+
+#ifndef GLSLANG_WEB
 
 #define MERGE_MAX(member) member = std::max(member, unit.member)
 #define MERGE_TRUE(member) if (unit.member) member = unit.member;
@@ -307,6 +307,8 @@ void TIntermediate::mergeTrees(TInfoSink& infoSink, TIntermediate& unit)
     ioAccessed.insert(unit.ioAccessed.begin(), unit.ioAccessed.end());
 }
 
+#endif
+
 // Traverser that seeds an ID map with all built-ins, and tracks the
 // maximum ID used.
 // (It would be nice to put this in a function, but that causes warnings
@@ -485,7 +487,6 @@ void TIntermediate::mergeImplicitArraySizes(TType& type, const TType& unitType)
     for (int i = 0; i < (int)type.getStruct()->size(); ++i)
         mergeImplicitArraySizes(*(*type.getStruct())[i].type, *(*unitType.getStruct())[i].type);
 }
-#endif // not GLSLANG_WEB
 
 //
 // Compare two global objects from two compilation units and see if they match
@@ -1258,6 +1259,7 @@ int TIntermediate::computeTypeUniformLocationSize(const TType& type)
 }
 
 #ifndef GLSLANG_WEB
+
 // Accumulate xfb buffer ranges and check for collisions as the accumulation is done.
 //
 // Returns < 0 if no collision, >= 0 if collision and the value returned is a colliding value.
@@ -1374,7 +1376,8 @@ unsigned int TIntermediate::computeTypeXfbSize(const TType& type, bool& contains
         return 4 * numComponents;
     }
 }
-#endif // not GLSLANG_WEB
+
+#endif
 
 const int baseAlignmentVec4Std140 = 16;
 
