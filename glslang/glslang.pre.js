@@ -14,23 +14,24 @@ Module['compileGLSLZeroCopy'] = function(glsl, shader_stage, gen_debug) {
 
     var p_output = Module['_malloc'](4);
     var p_output_len = Module['_malloc'](4);
-    var err = ccall('convert_glsl_to_spirv',
+    var id = ccall('convert_glsl_to_spirv',
         'number',
-        ['string', 'number', 'number', 'number', 'boolean'],
-        [glsl, shader_stage_int, p_output, p_output_len, gen_debug]);
+        ['string', 'number', 'boolean', 'number', 'number'],
+        [glsl, shader_stage_int, gen_debug, p_output, p_output_len]);
     var output = getValue(p_output, 'i32');
     var output_len = getValue(p_output_len, 'i32');
     Module['_free'](p_output);
     Module['_free'](p_output_len);
 
-    if (err !== 0 || output_len === 0) {
+    if (id === 0) {
         throw new Error('GLSL compilation failed');
     }
 
     var ret = {};
-    ret.data = Module['HEAPU32'].subarray(output / 4, output / 4 + output_len);
+    var outputIndexU32 = output / 4;
+    ret.data = Module['HEAPU32'].subarray(outputIndexU32, outputIndexU32 + output_len);
     ret.free = function() {
-        Module['_destroy_output_buffer'](output);
+        Module['_destroy_output_buffer'](id);
     };
 
     return ret;

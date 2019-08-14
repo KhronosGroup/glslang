@@ -155,115 +155,95 @@ const TBuiltInResource DefaultTBuiltInResource = {
         /* .generalConstantMatrixVectorIndexing = */ 1,
     }};
 
+static bool initialized = false;
+
 extern "C" {
 
 /*
  * Takes in a GLSL shader as a string and converts it to SPIR-V in binary form.
  *
- * |glsl|          Char array created using create_input_buffer and populated
- *                 with the shader to be converted.
- *                 This buffer must be destroyed using destroy_input_buffer.
- * |shader_type|   Magic number indicating the type of shader being processed.
- *                 Legal values are as follows:
+ * |glsl|          Null-terminated string containing the shader to be converted.
+ * |stage_int|     Magic number indicating the type of shader being processed.
+*                  Legal values are as follows:
  *                   Vertex = 0
  *                   Fragment = 4
  *                   Compute = 5
- * |spirv|         Pointer to an output buffer that will be updated with the
- *                 resulting SPIR-V shader.
- *                 This buffer must be destroyed using destroy_output_buffer.
- *
- * |spirv_len|     Length of the output binary buffer.
  * |gen_debug|     Flag to indicate if debug information should be generated.
+ * |spirv|         Output parameter for a pointer to the resulting SPIR-V data.
+ * |spirv_len|     Output parameter for the length of the output binary buffer.
  *
- * Return 0 on success, non-0 on failure.
+ * Returns a void* pointer which, if not null, must be destroyed by
+ * destroy_output_buffer.o. (This is not the same pointer returned in |spirv|.)
+ * If null, the compilation failed.
  */
 EMSCRIPTEN_KEEPALIVE
-int convert_glsl_to_spirv(const char* glsl, int shader_type, uint32_t** spirv, size_t* spirv_len, bool gen_debug)
+void* convert_glsl_to_spirv(const char* glsl, int stage_int, bool gen_debug, uint32_t** spirv, size_t* spirv_len)
 {
-    int ret_val = 0;
-    if (glsl == nullptr || spirv == nullptr) {
-        return 1;
+    if (glsl == nullptr) {
+        fprintf(stderr, "Input pointer null\n");
+        return nullptr;
+    }
+    if (spirv == nullptr || spirv_len == nullptr) {
+        fprintf(stderr, "Output pointer null\n");
+        return nullptr;
     }
     *spirv = nullptr;
+    *spirv_len = 0;
 
-    if (shader_type != 0 && shader_type != 4 && shader_type != 5) {
-        return 2;
+    if (stage_int != 0 && stage_int != 4 && stage_int != 5) {
+        fprintf(stderr, "Invalid shader stage\n");
+        return nullptr;
+    }
+    EShLanguage stage = static_cast<EShLanguage>(stage_int);
+
+    if (!initialized) {
+        glslang::InitializeProcess();
+        initialized = true;
     }
 
-    EShLanguage shader_stage = static_cast<EShLanguage>(shader_type);
-
-    glslang::InitializeProcess();
-    {
-        glslang::TShader shader(shader_stage);
-        shader.setStrings(&glsl, 1);
-        shader.setEnvInput(glslang::EShSourceGlsl, shader_stage, glslang::EShClientVulkan, 100);
-        shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-        shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
-        if (!shader.parse(&DefaultTBuiltInResource, 100, true, EShMsgDefault)) {
-            fprintf(stderr, "Parse failed\n");
-            fprintf(stderr, "%s\n", shader.getInfoLog());
-            fprintf(stderr, "%s\n", shader.getInfoDebugLog());
-        }
-
-        glslang::TProgram program;
-        program.addShader(&shader);
-        if (!program.link(EShMsgDefault)) {
-            fprintf(stderr, "Link failed\n");
-            fprintf(stderr, "%s\n", program.getInfoLog());
-            fprintf(stderr, "%s\n", program.getInfoDebugLog());
-        }
-
-        std::vector<uint32_t> output;
-        glslang::SpvOptions spvOptions;
-        spvOptions.generateDebugInfo = gen_debug;
-        spvOptions.disableOptimizer = false;
-        spvOptions.optimizeSize = false;
-        spvOptions.disassemble = false;
-        spvOptions.validate = false;
-
-        glslang::GlslangToSpv(*program.getIntermediate(shader_stage), output, nullptr, &spvOptions);
-
-        *spirv_len = output.size();
-        *spirv = static_cast<uint32_t*>(malloc(*spirv_len * sizeof(uint32_t)));
-        if (*spirv != nullptr) {
-            memcpy(*spirv, output.data(), *spirv_len * sizeof(uint32_t));
-        } else {
-            ret_val = 3;
-        }
+    glslang::TShader shader(stage);
+    shader.setStrings(&glsl, 1);
+    shader.setEnvInput(glslang::EShSourceGlsl, stage, glslang::EShClientVulkan, 100);
+    shader.setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
+    shader.setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3);
+    if (!shader.parse(&DefaultTBuiltInResource, 100, true, EShMsgDefault)) {
+        fprintf(stderr, "Parse failed\n");
+        fprintf(stderr, "%s\n", shader.getInfoLog());
+        return nullptr;
     }
-    glslang::FinalizeProcess();
-    return ret_val;
-}
 
-/*
- * Created a valid input buffer.
- *
- * Must be destroyed later using destroy_input_buffer.
- */
-EMSCRIPTEN_KEEPALIVE
-char* create_input_buffer(int count) { return static_cast<char*>(malloc(count * sizeof(char))); }
+    glslang::TProgram program;
+    program.addShader(&shader);
+    if (!program.link(EShMsgDefault)) {
+        fprintf(stderr, "Link failed\n");
+        fprintf(stderr, "%s\n", program.getInfoLog());
+        return nullptr;
+    }
 
-/*
- * Destroys a buffer created by create_input_buffer
- */
-EMSCRIPTEN_KEEPALIVE
-void destroy_input_buffer(char* p)
-{
-    if (p != nullptr)
-        free(p);
+    glslang::SpvOptions spvOptions;
+    spvOptions.generateDebugInfo = gen_debug;
+    spvOptions.optimizeSize = false;
+    spvOptions.disassemble = false;
+    spvOptions.validate = false;
+
+    std::vector<uint32_t>* output = new std::vector<uint32_t>;
+    glslang::GlslangToSpv(*program.getIntermediate(stage), *output, nullptr, &spvOptions);
+
+    *spirv_len = output->size();
+    *spirv = output->data();
+    return output;
 }
 
 /*
  * Destroys a buffer created by convert_glsl_to_spirv
  */
 EMSCRIPTEN_KEEPALIVE
-void destroy_output_buffer(uint32_t* p)
+void destroy_output_buffer(void* p)
 {
-    if (p != nullptr)
-        free(p);
+    delete static_cast<std::vector<uint32_t>*>(p);
 }
 
-} // extern "C"
+}  // extern "C"
 
 /*
  * For non-Emscripten builds we supply a generic main, so that the glslang.js
@@ -274,21 +254,17 @@ void destroy_output_buffer(uint32_t* p)
  */
 #ifndef __EMSCRIPTEN__
 int main() {
-    const char* input_text = R"(#version 310 es
+    const char* input = R"(#version 310 es
 
 void main() { })";
 
-    char* input;
     uint32_t* output;
     size_t output_len;
 
-    input = create_input_buffer(sizeof(input_text));
-    assert(input != nullptr);
-    memcpy(input, input_text, sizeof(input_text));
-
-    convert_glsl_to_spirv(input, 4, &output, &output_len, false);
-    destroy_output_buffer(output);
-    destroy_input_buffer(input);
+    void* id = convert_glsl_to_spirv(input, 4, false, &output, &output_len);
+    assert(output != nullptr);
+    assert(output_len != 0);
+    destroy_output_buffer(id);
     return 0;
 }
-#endif  // !__EMSCRIPTEN__
+#endif  // ifndef __EMSCRIPTEN__
