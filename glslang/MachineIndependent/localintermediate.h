@@ -308,6 +308,12 @@ public:
         case EShTargetSpv_1_3:
             processes.addProcess("target-env spirv1.3");
             break;
+        case EShTargetSpv_1_4:
+            processes.addProcess("target-env spirv1.4");
+            break;
+        case EShTargetSpv_1_5:
+            processes.addProcess("target-env spirv1.5");
+            break;
         default:
             processes.addProcess("target-env spirvUnknown");
             break;
