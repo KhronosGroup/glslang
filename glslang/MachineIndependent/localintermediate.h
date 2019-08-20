@@ -801,7 +801,7 @@ public:
                extensionRequested(E_GL_EXT_shader_explicit_arithmetic_types_float16);
     }
 
-	void insertAccessedNamedDefine(const char* defName) { accessedNamedDefines.emplace(defName); }
+    void insertAccessedNamedDefine(const char* defName) { accessedNamedDefines.emplace(defName); }
     void insertDeclaredNamedDefine(const char* defName) { declaredNamedDefines.emplace(defName); }
     void getAddAccessedNamedDefines(std::unordered_set<std::string>& targetSet) const { getAddDefines(targetSet, accessedNamedDefines); }
     void getAddDeclaredNamedDefines(std::unordered_set<std::string>& targetSet) const { getAddDefines(targetSet, declaredNamedDefines); }
