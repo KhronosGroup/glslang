@@ -107,7 +107,8 @@ const ArgType TypeIU  = static_cast<ArgType>(TypeI | TypeU);
 // output, or other unusual situations.
 enum ArgClass {
     ClassRegular = 0,    // nothing special, just all vector widths with matching return type; traditional arithmetic
-    ClassLS   = 1 << 1,  // the last argument is also held fixed as a (type-matched) scalar while the others cycle
+    ClassLS   = 1 << 0,  // the last argument is also held fixed as a (type-matched) scalar while the others cycle
+    ClassXLS  = 1 << 1,  // the last argument is exclusively a (type-matched) scalar while the others cycle
     ClassLS2  = 1 << 2,  // the last two arguments are held fixed as a (type-matched) scalar while the others cycle
     ClassFS   = 1 << 3,  // the first argument is held fixed as a (type-matched) scalar while the others cycle
     ClassFS2  = 1 << 4,  // the first two arguments are held fixed as a (type-matched) scalar while the others cycle
@@ -217,7 +218,7 @@ const BuiltInFunction BaseFunctions[] = {
     { EOpNormalize,        "normalize",        1,   TypeF,     ClassRegular, nullptr },
     { EOpFaceForward,      "faceforward",      3,   TypeF,     ClassRegular, nullptr },
     { EOpReflect,          "reflect",          2,   TypeF,     ClassRegular, nullptr },
-    { EOpRefract,          "refract",          3,   TypeF,     ClassLS,      nullptr },
+    { EOpRefract,          "refract",          3,   TypeF,     ClassXLS,     nullptr },
     { EOpLength,           "length",           1,   TypeF,     ClassRS,      nullptr },
     { EOpDistance,         "distance",         2,   TypeF,     ClassRS,      nullptr },
     { EOpDot,              "dot",              2,   TypeF,     ClassRS,      nullptr },
@@ -286,8 +287,11 @@ void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
     // loop across these two:
     //  0: the varying arg set, and
     //  1: the fixed scalar args
-    const ArgClass ClassFixed = (ArgClass)(ClassLS | ClassLS2 | ClassFS | ClassFS2);
+    const ArgClass ClassFixed = (ArgClass)(ClassLS | ClassXLS | ClassLS2 | ClassFS | ClassFS2);
     for (int fixed = 0; fixed < ((function.classes & ClassFixed) > 0 ? 2 : 1); ++fixed) {
+
+        if (fixed == 0 && (function.classes & ClassXLS))
+            continue;
 
         // walk the type strings in TypeString[]
         for (int type = 0; type < TypeStringCount; ++type) {
@@ -303,8 +307,8 @@ void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
             if ((function.classes & ClassV3) && (type & TypeStringColumnMask) != 2)
                 continue;
 
-            // skip replication of all scalars between the varying arg set and the fixed args
-            if (fixed == 1 && type == (type & TypeStringScalarMask))
+            // skip replication of all arg scalars between the varying arg set and the fixed args
+            if (fixed == 1 && type == (type & TypeStringScalarMask) && (function.classes & ClassXLS) == 0)
                 continue;
 
             // skip scalars when we are told to
@@ -336,7 +340,8 @@ void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
                 }
                 if ((function.classes & ClassLB) && arg == function.numArguments - 1)
                     decls.append(TypeString[type & TypeStringColumnMask]);
-                else if (fixed && ((arg == function.numArguments - 1 && (function.classes & (ClassLS | ClassLS2))) ||
+                else if (fixed && ((arg == function.numArguments - 1 && (function.classes & (ClassLS | ClassXLS |
+                                                                                                       ClassLS2))) ||
                                    (arg == function.numArguments - 2 && (function.classes & ClassLS2))             ||
                                    (arg == 0                         && (function.classes & (ClassFS | ClassFS2))) ||
                                    (arg == 1                         && (function.classes & ClassFS2))))
