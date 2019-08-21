@@ -41,9 +41,7 @@ namespace {
 
 using CompileToAstTest = GlslangTest<::testing::TestWithParam<std::string>>;
 
-#ifdef NV_EXTENSIONS
 using CompileToAstTestNV = GlslangTest<::testing::TestWithParam<std::string>>;
-#endif
 
 TEST_P(CompileToAstTest, FromFile)
 {
@@ -52,7 +50,6 @@ TEST_P(CompileToAstTest, FromFile)
                             Target::AST);
 }
 
-#ifdef NV_EXTENSIONS
 // Compiling GLSL to SPIR-V under OpenGL semantics (NV extensions enabled).
 TEST_P(CompileToAstTestNV, FromFile)
 {
@@ -60,7 +57,6 @@ TEST_P(CompileToAstTestNV, FromFile)
                             Source::GLSL, Semantics::OpenGL, glslang::EShTargetVulkan_1_0, glslang::EShTargetSpv_1_0,
                             Target::AST);
 }
-#endif
 
 // clang-format off
 INSTANTIATE_TEST_CASE_P(
@@ -281,7 +277,6 @@ INSTANTIATE_TEST_CASE_P(
     FileNameAsCustomTestSuffix
 );
 
-#ifdef NV_EXTENSIONS
 INSTANTIATE_TEST_CASE_P(
     Glsl, CompileToAstTestNV,
     ::testing::ValuesIn(std::vector<std::string>({
@@ -289,7 +284,6 @@ INSTANTIATE_TEST_CASE_P(
     })),
     FileNameAsCustomTestSuffix
 );
-#endif
 // clang-format on
 
 }  // anonymous namespace

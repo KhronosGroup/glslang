@@ -26,10 +26,7 @@ if(NOT ${SKIP_GLSLANG_INSTALL})
 endif()
 option(ENABLE_SPVREMAPPER "Enables building of SPVRemapper" ON)
 
-option(ENABLE_AMD_EXTENSIONS "Enables support of AMD-specific extensions" ON)
 option(ENABLE_GLSLANG_BINARIES "Builds glslangValidator and spirv-remap" ON)
-
-option(ENABLE_NV_EXTENSIONS "Enables support of Nvidia-specific extensions" ON)
 
 option(ENABLE_GLSLANG_WEB "Reduces glslang to minumum needed for web use" OFF)
 option(ENABLE_EMSCRIPTEN_SINGLE_FILE "If using emscripten, enables SINGLE_FILE build" OFF)
@@ -67,17 +64,13 @@ project(glslang)
 # make testing optional
 include(CTest)
 
-if(ENABLE_AMD_EXTENSIONS)
-    add_definitions(-DAMD_EXTENSIONS)
-endif(ENABLE_AMD_EXTENSIONS)
-
-if(ENABLE_NV_EXTENSIONS)
-    add_definitions(-DNV_EXTENSIONS)
-endif(ENABLE_NV_EXTENSIONS)
-
 if(ENABLE_HLSL)
     add_definitions(-DENABLE_HLSL)
 endif(ENABLE_HLSL)
+
+if(ENABLE_GLSLANG_WEB)
+    add_definitions(-DGLSLANG_WEB)
+endif(ENABLE_GLSLANG_WEB)
 
 if(WIN32)
     set(CMAKE_DEBUG_POSTFIX "d")
