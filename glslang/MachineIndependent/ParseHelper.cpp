@@ -3180,7 +3180,7 @@ void TParseContext::accStructNVCheck(const TSourceLoc& loc, const TType& type, c
 
 }
 
-#endif GLSLANG_WEB
+#endif // GLSLANG_WEB
 
 void TParseContext::transparentOpaqueCheck(const TSourceLoc& loc, const TType& type, const TString& identifier)
 {
