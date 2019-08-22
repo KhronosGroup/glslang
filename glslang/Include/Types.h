@@ -539,20 +539,6 @@ public:
         writeonly    = false;
     }
 
-    // Drop just the storage qualification, which perhaps should
-    // never be done, as it is fundamentally inconsistent, but need to
-    // explore what downstream consumers need.
-    // E.g., in a dereference, it is an inconsistency between:
-    // A) partially dereferenced resource is still in the storage class it started in
-    // B) partially dereferenced resource is a new temporary object
-    // If A, then nothing should change, if B, then everything should change, but this is half way.
-    void makePartialTemporary()
-    {
-        storage      = EvqTemporary;
-        specConstant = false;
-        nonUniform   = false;
-    }
-
     const char*         semanticName;
     TStorageQualifier   storage   : 6;
     TBuiltInVariable    builtIn   : 9;

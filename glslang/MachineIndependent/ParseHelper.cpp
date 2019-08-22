@@ -473,7 +473,7 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
                 profileRequires(base->getLoc(), EEsProfile, 320, Num_AEP_gpu_shader5, AEP_gpu_shader5,
                                 "variable indexing uniform block array");
             else {
-                // input/output blocks either don't exist or can be variable indexed
+                // input/output blocks either don't exist or can't be variably indexed
             }
         } else if (language == EShLangFragment && base->getQualifier().isPipeOutput())
             requireProfile(base->getLoc(), ~EEsProfile, "variable indexing fragment shader output array");
@@ -487,8 +487,8 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
         result = intermediate.addIndex(EOpIndexIndirect, base, index, loc);
     }
 
-    // Insert valid dereferenced result
-    TType newType(base->getType(), 0);  // dereferenced type
+    // Insert valid dereferenced result type
+    TType newType(base->getType(), 0);
     if (base->getType().getQualifier().isConstant() && index->getQualifier().isConstant()) {
         newType.getQualifier().storage = EvqConst;
         // If base or index is a specialization constant, the result should also be a specialization constant.
@@ -496,11 +496,14 @@ TIntermTyped* TParseContext::handleBracketDereference(const TSourceLoc& loc, TIn
             newType.getQualifier().makeSpecConstant();
         }
     } else {
-        newType.getQualifier().makePartialTemporary();
+        newType.getQualifier().storage = EvqTemporary;
+        newType.getQualifier().specConstant = false;
     }
     result->setType(newType);
 
 #ifndef GLSLANG_WEB
+    inheritMemoryQualifiers(base->getQualifier(), result->getWritableType().getQualifier());
+
     // Propagate nonuniform
     if (base->getQualifier().isNonUniform() || index->getQualifier().isNonUniform())
         result->getWritableType().getQualifier().nonUniform = true;
@@ -881,6 +884,7 @@ TIntermTyped* TParseContext::handleDotDereference(const TSourceLoc& loc, TInterm
                 if ((*fields)[member].type->getQualifier().isIo())
                     intermediate.addIoAccessed(field);
             }
+            inheritMemoryQualifiers(base->getQualifier(), result->getWritableType().getQualifier());
         } else
             error(loc, "no such field in structure", field.c_str(), "");
     } else
@@ -7124,6 +7128,23 @@ TIntermTyped* TParseContext::constructAggregate(TIntermNode* node, const TType& 
     return converted;
 }
 
+// If a memory qualifier is present in 'to', also make it present in 'from'.
+void TParseContext::inheritMemoryQualifiers(const TQualifier& from, TQualifier& to)
+{
+#ifndef GLSLANG_WEB
+    if (from.isReadOnly())
+        to.readonly = from.readonly;
+    if (from.isWriteOnly())
+        to.writeonly = from.writeonly;
+    if (from.coherent)
+        to.coherent = from.coherent;
+    if (from.volatil)
+        to.volatil = from.volatil;
+    if (from.restrict)
+        to.restrict = from.restrict;
+#endif
+}
+
 //
 // Do everything needed to add an interface block.
 //
@@ -7139,7 +7160,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
             requireProfile(loc, ~EEsProfile, "array-of-array of block");
     }
 
-    // fix and check for member storage qualifiers and types that don't belong within a block
+    // Inherit and check member storage qualifiers WRT to the block-level qualifier.
     for (unsigned int member = 0; member < typeList.size(); ++member) {
         TType& memberType = *typeList[member].type;
         TQualifier& memberQualifier = memberType.getQualifier();
@@ -7149,6 +7170,7 @@ void TParseContext::declareBlock(const TSourceLoc& loc, TTypeList& typeList, con
             error(memberLoc, "member storage qualifier cannot contradict block storage qualifier", memberType.getFieldName().c_str(), "");
         memberQualifier.storage = currentBlockQualifier.storage;
 #ifndef GLSLANG_WEB
+        inheritMemoryQualifiers(currentBlockQualifier, memberQualifier);
         if (currentBlockQualifier.perPrimitiveNV)
             memberQualifier.perPrimitiveNV = currentBlockQualifier.perPrimitiveNV;
         if (currentBlockQualifier.perViewNV)

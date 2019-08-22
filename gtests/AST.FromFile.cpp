@@ -121,6 +121,7 @@ INSTANTIATE_TEST_CASE_P(
         "310.tesc",
         "310.tese",
         "310implicitSizeArrayError.vert",
+        "310.inheritMemory.frag",
         "310AofA.vert",
         "310runtimeArray.vert",
         "320.comp",
