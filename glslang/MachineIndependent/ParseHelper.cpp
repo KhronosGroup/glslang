@@ -5101,7 +5101,8 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
         return;
     } else if (id == "location") {
         profileRequires(loc, EEsProfile, 300, nullptr, "location");
-        const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location };
+        const char* exts[2] = { E_GL_ARB_separate_shader_objects, E_GL_ARB_explicit_attrib_location }; 
+        // GL_ARB_explicit_uniform_location requires 330 or GL_ARB_explicit_attrib_location we do not need to add it here
         profileRequires(loc, ~EEsProfile, 330, 2, exts, "location");
         if ((unsigned int)value >= TQualifier::layoutLocationEnd)
             error(loc, "location is too large", id.c_str(), "");
@@ -5858,8 +5859,11 @@ void TParseContext::layoutQualifierCheck(const TSourceLoc& loc, const TQualifier
         case EvqBuffer:
         {
             const char* feature = "location qualifier on uniform or buffer";
-            requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile, feature);
-            profileRequires(loc, ECoreProfile | ECompatibilityProfile, 430, nullptr, feature);
+            requireProfile(loc, EEsProfile | ECoreProfile | ECompatibilityProfile | ENoProfile, feature);
+            profileRequires(loc, ~EEsProfile, 330, E_GL_ARB_explicit_attrib_location, feature);
+            if (!isEsProfile() && (extensionTurnedOn(E_GL_ARB_explicit_attrib_location) || version >= 330)) {
+                profileRequires(loc, ~EEsProfile, 430, E_GL_ARB_explicit_uniform_location, feature);
+            }
             profileRequires(loc, EEsProfile, 310, nullptr, feature);
             break;
         }
