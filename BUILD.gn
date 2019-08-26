@@ -131,7 +131,11 @@ source_set("glslang_sources") {
     "glslang/Public/ShaderLang.h",
   ]
 
-  defines = [ "ENABLE_OPT=1" ]
+  defines = [
+    "ENABLE_OPT=1",
+    "ENABLE_HLSL=1",
+  ]
+
   if (is_win) {
     sources += [ "glslang/OSDependent/Windows/ossource.cpp" ]
     defines += [ "GLSLANG_OSINCLUDE_WIN32" ]
