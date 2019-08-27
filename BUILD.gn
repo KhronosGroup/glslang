@@ -131,6 +131,21 @@ source_set("glslang_sources") {
     "glslang/MachineIndependent/reflection.h",
     "glslang/OSDependent/osinclude.h",
     "glslang/Public/ShaderLang.h",
+    "hlsl/hlslAttributes.cpp",
+    "hlsl/hlslAttributes.h",
+    "hlsl/hlslGrammar.cpp",
+    "hlsl/hlslGrammar.h",
+    "hlsl/hlslOpMap.cpp",
+    "hlsl/hlslOpMap.h",
+    "hlsl/hlslParseHelper.cpp",
+    "hlsl/hlslParseHelper.h",
+    "hlsl/hlslParseables.cpp",
+    "hlsl/hlslParseables.h",
+    "hlsl/hlslScanContext.cpp",
+    "hlsl/hlslScanContext.h",
+    "hlsl/hlslTokenStream.cpp",
+    "hlsl/hlslTokenStream.h",
+    "hlsl/hlslTokens.h",
   ]
 
   defines = [ "ENABLE_OPT=1" ]
