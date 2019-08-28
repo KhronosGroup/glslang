@@ -7081,7 +7081,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             switch (type.getBasicType()) {
             default:
                 assert(0);
-                break;
+                return nullptr;
             case EbtInt:
             {
                 switch (node->getType().getBasicType()) {
@@ -7090,7 +7090,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     case EbtUint8:   op = EOpConvUint8ToInt;    break;
                     case EbtInt8:    op = EOpConvInt8ToInt;     break;
                     case EbtUint:    op = EOpConvUintToInt;     break;
-                    default: assert(0);
+                    default:
+                        assert(0);
+                        return nullptr;
                 }
 
             }
@@ -7104,7 +7106,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     case EbtInt8:    op = EOpConvInt8ToUint;    break;
                     case EbtInt:     op = EOpConvIntToUint;      break;
                     case EbtUint:    op = EOpConvUintToInt8;     break;
-                    default: assert(0);
+                    default:
+                        assert(0);
+                        return nullptr;
                 }
 
             }
@@ -7118,7 +7122,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     case EbtUint8:   op = EOpConvUint8ToInt8;    break;
                     case EbtInt:     op = EOpConvIntToInt8;      break;
                     case EbtUint:    op = EOpConvUintToInt8;     break;
-                    default: assert(0);
+                    default:
+                        assert(0);
+                        return nullptr;
                 }
 
             }
@@ -7130,7 +7136,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     case EbtInt8:    op = EOpConvInt8ToUint8;    break;
                     case EbtInt:     op = EOpConvIntToUint8;     break;
                     case EbtUint:    op = EOpConvUintToUint8;    break;
-                    default: assert(0);
+                    default:
+                        assert(0);
+                        return nullptr;
                 }
             }
                 break;
@@ -7142,7 +7150,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     case EbtUint8:   op = EOpConvUint8ToFloat;    break;
                     case EbtInt:     op = EOpConvIntToFloat;      break;
                     case EbtUint:    op = EOpConvUintToFloat;     break;
-                    default: assert(0);
+                    default:
+                        assert(0);
+                        return nullptr;
                 }
             }
                 break;
@@ -7154,7 +7164,9 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
                     case EbtUint8:  op = EOpConvUint8ToFloat16;  break;
                     case EbtInt:    op = EOpConvIntToFloat16;    break;
                     case EbtUint:   op = EOpConvUintToFloat16;   break;
-                    default: assert(0);
+                    default:
+                        assert(0);
+                        return nullptr;
                 }
             }
                 break;
