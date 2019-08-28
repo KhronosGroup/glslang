@@ -126,8 +126,8 @@ class TType;
 
 typedef enum {
     EShSourceNone,
-    EShSourceGlsl,
-    EShSourceHlsl,
+    EShSourceGlsl,               // GLSL, includes ESSL (OpenGL ES GLSL)
+    EShSourceHlsl,               // HLSL
 } EShSource;                     // if EShLanguage were EShStage, this could be EShLanguage instead
 
 typedef enum {

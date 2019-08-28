@@ -293,7 +293,7 @@ class TProgram
 
 For just validating (not generating code), subsitute these calls:
 
-```
+```cxx
     setEnvInput(EShSourceHlsl or EShSourceGlsl, stage,  EShClientNone, 0);
     setEnvClient(EShClientNone, 0);
     setEnvTarget(EShTargetNone, 0);
