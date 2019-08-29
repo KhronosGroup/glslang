@@ -7077,7 +7077,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             }
             node = intermediate.setAggregateOperator(node, EOpConstructCooperativeMatrix, type, node->getLoc());
         } else {
-            TOperator op;
+            TOperator op = EOpNull;
             switch (type.getBasicType()) {
             default:
                 assert(0);
