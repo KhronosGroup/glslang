@@ -1152,8 +1152,9 @@ TIntermTyped* TParseContext::handleFunctionCall(const TSourceLoc& loc, TFunction
                         if (lValueErrorCheck(arguments->getLoc(), "assign", arg->getAsTyped()))
                             error(arguments->getLoc(), "Non-L-value cannot be passed for 'out' or 'inout' parameters.", "out", "");
                     }
-                    TQualifier& argQualifier = arg->getAsTyped()->getQualifier();
-                    if (argQualifier.isMemory()) {
+                    const TType& argType = arg->getAsTyped()->getType();
+                    const TQualifier& argQualifier = argType.getQualifier();
+                    if (argQualifier.isMemory() && (argType.containsOpaque() || argType.isReference())) {
                         const char* message = "argument cannot drop memory qualifier when passed to formal parameter";
                         if (argQualifier.volatil && ! formalQualifier.volatil)
                             error(arguments->getLoc(), message, "volatile", "");
