@@ -693,9 +693,9 @@ public:
     bool getPixelCenterInteger() const { return pixelCenterInteger; }
     void addBlendEquation(TBlendEquationShift b) { blendEquations |= (1 << b); }
     unsigned int getBlendEquations() const { return blendEquations; }
-    bool setXfbBufferStride(int buffer, unsigned stride)
+    bool setXfbBufferStride(int buffer, unsigned stride, bool force = false)
     {
-        if (xfbBuffers[buffer].stride != TQualifier::layoutXfbStrideEnd)
+        if (xfbBuffers[buffer].stride != TQualifier::layoutXfbStrideEnd && force == false)
             return xfbBuffers[buffer].stride == stride;
         xfbBuffers[buffer].stride = stride;
         return true;
@@ -775,6 +775,9 @@ public:
     void addToCallGraph(TInfoSink&, const TString& caller, const TString& callee);
     void merge(TInfoSink&, TIntermediate&);
     void finalCheck(TInfoSink&, bool keepUncalled);
+
+    bool buildConvertOp(TBasicType dst, TBasicType src, TOperator& convertOp) const;
+    TIntermTyped* createConversion(TBasicType convertTo, TIntermTyped* node) const;
 
     void addIoAccessed(const TString& name) { ioAccessed.insert(name); }
     bool inIoAccessed(const TString& name) const { return ioAccessed.find(name) != ioAccessed.end(); }
@@ -866,7 +869,6 @@ protected:
     bool specConstantPropagates(const TIntermTyped&, const TIntermTyped&);
     void performTextureUpgradeAndSamplerRemovalTransformation(TIntermNode* root);
     bool isConversionAllowed(TOperator op, TIntermTyped* node) const;
-    TIntermTyped* createConversion(TBasicType convertTo, TIntermTyped* node) const;
     std::tuple<TBasicType, TBasicType> getConversionDestinatonType(TBasicType type0, TBasicType type1, TOperator op) const;
 
     // JohnK: I think this function should go away.

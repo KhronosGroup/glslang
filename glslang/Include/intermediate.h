@@ -1185,6 +1185,7 @@ public:
     virtual void traverse(TIntermTraverser*);
     TOperator getFlowOp() const { return flowOp; }
     TIntermTyped* getExpression() const { return expression; }
+    void setExpression(TIntermTyped* pExpression) { expression = pExpression; }
 protected:
     TOperator flowOp;
     TIntermTyped* expression;
