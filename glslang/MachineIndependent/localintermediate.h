@@ -693,9 +693,9 @@ public:
     bool getPixelCenterInteger() const { return pixelCenterInteger; }
     void addBlendEquation(TBlendEquationShift b) { blendEquations |= (1 << b); }
     unsigned int getBlendEquations() const { return blendEquations; }
-    bool setXfbBufferStride(int buffer, unsigned stride, bool force = false)
+    bool setXfbBufferStride(int buffer, unsigned stride)
     {
-        if (xfbBuffers[buffer].stride != TQualifier::layoutXfbStrideEnd && force == false)
+        if (xfbBuffers[buffer].stride != TQualifier::layoutXfbStrideEnd)
             return xfbBuffers[buffer].stride == stride;
         xfbBuffers[buffer].stride = stride;
         return true;

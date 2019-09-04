@@ -839,8 +839,7 @@ TIntermTyped* TIntermediate::createConversion(TBasicType convertTo, TIntermTyped
             return nullptr;
     }
 
-    if (!buildConvertOp(convertTo, node->getBasicType(), newOp))
-    {
+    if (!buildConvertOp(convertTo, node->getBasicType(), newOp)) {
         return nullptr;
     }
 
