@@ -300,6 +300,12 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_shader_explicit_arithmetic_types_float16] = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_explicit_arithmetic_types_float32] = EBhDisable;
     extensionBehavior[E_GL_EXT_shader_explicit_arithmetic_types_float64] = EBhDisable;
+
+    // subgroup extended types
+    extensionBehavior[E_GL_EXT_shader_subgroup_extended_types_int8]    = EBhDisable;
+    extensionBehavior[E_GL_EXT_shader_subgroup_extended_types_int16]   = EBhDisable;
+    extensionBehavior[E_GL_EXT_shader_subgroup_extended_types_int64]   = EBhDisable;
+    extensionBehavior[E_GL_EXT_shader_subgroup_extended_types_float16] = EBhDisable;
 }
 #endif // GLSLANG_WEB
 
@@ -447,6 +453,11 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_shader_explicit_arithmetic_types_float16 1\n"
             "#define GL_EXT_shader_explicit_arithmetic_types_float32 1\n"
             "#define GL_EXT_shader_explicit_arithmetic_types_float64 1\n"
+
+            "#define GL_EXT_shader_subgroup_extended_types_int8 1\n"
+            "#define GL_EXT_shader_subgroup_extended_types_int16 1\n"
+            "#define GL_EXT_shader_subgroup_extended_types_int64 1\n"
+            "#define GL_EXT_shader_subgroup_extended_types_float16 1\n"
             ;
 
         if (version >= 150) {
@@ -826,6 +837,15 @@ void TParseVersions::updateExtensionBehavior(int line, const char* extension, co
         updateExtensionBehavior(line, "GL_EXT_buffer_reference", behaviorString);
     else if (strcmp(extension, "GL_NV_integer_cooperative_matrix") == 0)
         updateExtensionBehavior(line, "GL_NV_cooperative_matrix", behaviorString);
+    // subgroup extended types to explicit types
+    else if (strcmp(extension, "GL_EXT_shader_subgroup_extended_types_int8") == 0)
+        updateExtensionBehavior(line, "GL_EXT_shader_explicit_arithmetic_types_int8", behaviorString);
+    else if (strcmp(extension, "GL_EXT_shader_subgroup_extended_types_int16") == 0)
+        updateExtensionBehavior(line, "GL_EXT_shader_explicit_arithmetic_types_int16", behaviorString);
+    else if (strcmp(extension, "GL_EXT_shader_subgroup_extended_types_int64") == 0)
+        updateExtensionBehavior(line, "GL_EXT_shader_explicit_arithmetic_types_int64", behaviorString);
+    else if (strcmp(extension, "GL_EXT_shader_subgroup_extended_types_float16") == 0)
+        updateExtensionBehavior(line, "GL_EXT_shader_explicit_arithmetic_types_float16", behaviorString);
 }
 
 void TParseVersions::updateExtensionBehavior(const char* extension, TExtensionBehavior behavior)
