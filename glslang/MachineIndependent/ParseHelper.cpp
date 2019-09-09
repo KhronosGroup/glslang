@@ -5360,14 +5360,17 @@ void TParseContext::setLayoutQualifier(const TSourceLoc& loc, TPublicType& publi
             }
             if (id == "local_size_x") {
                 publicType.shaderQualifiers.localSize[0] = value;
+                publicType.shaderQualifiers.localSizeNotDefault[0] = true;
                 return;
             }
             if (id == "local_size_y") {
                 publicType.shaderQualifiers.localSize[1] = value;
+                publicType.shaderQualifiers.localSizeNotDefault[1] = true;
                 return;
             }
             if (id == "local_size_z") {
                 publicType.shaderQualifiers.localSize[2] = value;
+                publicType.shaderQualifiers.localSizeNotDefault[2] = true;
                 return;
             }
             if (spvVersion.spv != 0) {
@@ -7945,7 +7948,7 @@ void TParseContext::updateStandaloneQualifierDefaults(const TSourceLoc& loc, con
             error(loc, "can only apply to 'in'", "point_mode", "");
     }
     for (int i = 0; i < 3; ++i) {
-        if (publicType.shaderQualifiers.localSize[i] > 1) {
+        if (publicType.shaderQualifiers.localSizeNotDefault[i]) {
             if (publicType.qualifier.storage == EvqVaryingIn) {
                 if (! intermediate.setLocalSize(i, publicType.shaderQualifiers.localSize[i]))
                     error(loc, "cannot change previously set size", "local_size", "");
