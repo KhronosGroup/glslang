@@ -152,12 +152,12 @@ EProfile EDesktopProfile = static_cast<EProfile>(ENoProfile | ECoreProfile | ECo
                                                   { EDesktopProfile, 0, 130, 0, nullptr },
                                                   { EBadProfile } };
     const Versioning* Es300Desktop130 = &Es300Desktop130Version[0];
-    
+
     const Versioning Es310Desktop430Version[] = { { EEsProfile,      0, 310, 0, nullptr },
                                                   { EDesktopProfile, 0, 430, 0, nullptr },
                                                   { EBadProfile } };
     const Versioning* Es310Desktop430 = &Es310Desktop430Version[0];
-    
+
     const Versioning Es310Desktop450Version[] = { { EEsProfile,      0, 310, 0, nullptr },
                                                   { EDesktopProfile, 0, 450, 0, nullptr },
                                                   { EBadProfile } };
@@ -357,7 +357,7 @@ void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
 }
 
 // See if the tabled versioning information allows the current version.
-bool ValidVersion(const BuiltInFunction& function, int version, EProfile profile, const SpvVersion& spvVersion)
+bool ValidVersion(const BuiltInFunction& function, int version, EProfile profile)
 {
 #ifdef GLSLANG_WEB
     // all entries in table are valid
@@ -395,11 +395,11 @@ void RelateTabledBuiltins(const BuiltInFunction* functions, TSymbolTable& symbol
 } // end anonymous namespace
 
 // Add declarations for all tables of built-in functions.
-void TBuiltIns::addTabledBuiltins(int version, EProfile profile, const SpvVersion& spvVersion)
+void TBuiltIns::addTabledBuiltins(int version, EProfile profile)
 {
     const auto forEachFunction = [&](TString& decls, const BuiltInFunction* function) {
         while (function->op != EOpNull) {
-            if (ValidVersion(*function, version, profile, spvVersion))
+            if (ValidVersion(*function, version, profile))
                 AddTabledBuiltin(decls, *function);
             ++function;
         }
@@ -417,8 +417,7 @@ void TBuiltIns::addTabledBuiltins(int version, EProfile profile, const SpvVersio
 }
 
 // Relate all tables of built-ins to the AST operators.
-void TBuiltIns::relateTabledBuiltins(int version, EProfile profile, const SpvVersion& spvVersion, EShLanguage stage,
-    TSymbolTable& symbolTable)
+void TBuiltIns::relateTabledBuiltins(TSymbolTable& symbolTable)
 {
     RelateTabledBuiltins(BaseFunctions, symbolTable);
     RelateTabledBuiltins(DerivativeFunctions, symbolTable);
@@ -485,7 +484,7 @@ TBuiltIns::~TBuiltIns()
 //
 void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvVersion)
 {
-    addTabledBuiltins(version, profile, spvVersion);
+    addTabledBuiltins(version, profile);
 
     //============================================================================
     //
@@ -3721,7 +3720,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "\n");
     }
 
-    if ((profile != EEsProfile && version >= 450) || 
+    if ((profile != EEsProfile && version >= 450) ||
         (profile == EEsProfile && version >= 320)) {
         commonBuiltins.append(
             "struct gl_TextureFootprint2DNV {"
@@ -5047,7 +5046,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
     if ((profile != EEsProfile && version >= 450) || (profile == EEsProfile && version >= 320)) {
         stageBuiltins[EShLangMeshNV].append(
             "void writePackedPrimitiveIndices4x8NV(uint, uint);"
-            "\n");   
+            "\n");
     }
 #endif
 
@@ -5986,7 +5985,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
 
     // GL_ARB_shader_ballot
     if (profile != EEsProfile && version >= 450) {
-        const char* ballotDecls = 
+        const char* ballotDecls =
             "uniform uint gl_SubGroupSizeARB;"
             "in uint     gl_SubGroupInvocationARB;"
             "in uint64_t gl_SubGroupEqMaskARB;"
@@ -5995,7 +5994,7 @@ void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvV
             "in uint64_t gl_SubGroupLeMaskARB;"
             "in uint64_t gl_SubGroupLtMaskARB;"
             "\n";
-        const char* fragmentBallotDecls = 
+        const char* fragmentBallotDecls =
             "uniform uint gl_SubGroupSizeARB;"
             "flat in uint     gl_SubGroupInvocationARB;"
             "flat in uint64_t gl_SubGroupEqMaskARB;"
@@ -6287,7 +6286,7 @@ void TBuiltIns::add2ndGenerationSamplingImaging(int version, EProfile profile, c
                             continue;
 
                         // Loop over the bTypes
-                        for (int bType = 0; bType < sizeof(bTypes)/sizeof(TBasicType); ++bType) {
+                        for (size_t bType = 0; bType < sizeof(bTypes)/sizeof(TBasicType); ++bType) {
 #ifndef GLSLANG_WEB
                             if (bTypes[bType] == EbtFloat16 && (profile == EEsProfile || version < 450))
                                 continue;
@@ -8957,7 +8956,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     // operations.
     //
 
-    relateTabledBuiltins(version, profile, spvVersion, language, symbolTable);
+    relateTabledBuiltins(symbolTable);
 
     symbolTable.relateToOperator("matrixCompMult",   EOpMul);
     // 120 and 150 are correct for both ES and desktop
