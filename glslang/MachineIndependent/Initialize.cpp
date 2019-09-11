@@ -357,7 +357,7 @@ void AddTabledBuiltin(TString& decls, const BuiltInFunction& function)
 }
 
 // See if the tabled versioning information allows the current version.
-bool ValidVersion(const BuiltInFunction& function, int version, EProfile profile)
+bool ValidVersion(const BuiltInFunction& function, int version, EProfile profile, const SpvVersion& /* spVersion */)
 {
 #ifdef GLSLANG_WEB
     // all entries in table are valid
@@ -395,11 +395,11 @@ void RelateTabledBuiltins(const BuiltInFunction* functions, TSymbolTable& symbol
 } // end anonymous namespace
 
 // Add declarations for all tables of built-in functions.
-void TBuiltIns::addTabledBuiltins(int version, EProfile profile)
+void TBuiltIns::addTabledBuiltins(int version, EProfile profile, const SpvVersion& spvVersion)
 {
     const auto forEachFunction = [&](TString& decls, const BuiltInFunction* function) {
         while (function->op != EOpNull) {
-            if (ValidVersion(*function, version, profile))
+            if (ValidVersion(*function, version, profile, spvVersion))
                 AddTabledBuiltin(decls, *function);
             ++function;
         }
@@ -417,7 +417,7 @@ void TBuiltIns::addTabledBuiltins(int version, EProfile profile)
 }
 
 // Relate all tables of built-ins to the AST operators.
-void TBuiltIns::relateTabledBuiltins(TSymbolTable& symbolTable)
+void TBuiltIns::relateTabledBuiltins(int /* version */, EProfile /* profile */, const SpvVersion& /* spvVersion */, EShLanguage /* stage */, TSymbolTable& symbolTable)
 {
     RelateTabledBuiltins(BaseFunctions, symbolTable);
     RelateTabledBuiltins(DerivativeFunctions, symbolTable);
@@ -484,7 +484,7 @@ TBuiltIns::~TBuiltIns()
 //
 void TBuiltIns::initialize(int version, EProfile profile, const SpvVersion& spvVersion)
 {
-    addTabledBuiltins(version, profile);
+    addTabledBuiltins(version, profile, spvVersion);
 
     //============================================================================
     //
@@ -8956,7 +8956,7 @@ void TBuiltIns::identifyBuiltIns(int version, EProfile profile, const SpvVersion
     // operations.
     //
 
-    relateTabledBuiltins(symbolTable);
+    relateTabledBuiltins(version, profile, spvVersion, language, symbolTable);
 
     symbolTable.relateToOperator("matrixCompMult",   EOpMul);
     // 120 and 150 are correct for both ES and desktop
