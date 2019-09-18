@@ -2204,6 +2204,30 @@ void TParseContext::builtInOpCheck(const TSourceLoc& loc, const TFunction& fnCan
         // these require SPIR-V 1.3
         if (spvVersion.spv > 0 && spvVersion.spv < EShTargetSpv_1_3)
             error(loc, "requires SPIR-V 1.3", "subgroup op", "");
+
+        // Check that if extended types are being used that the correct extensions are enabled.
+        if (arg0 != nullptr) {
+            const TType& type = arg0->getType();
+            switch (type.getBasicType()) {
+            default:
+                break;
+            case EbtInt8:
+            case EbtUint8:
+                requireExtensions(loc, 1, &E_GL_EXT_shader_subgroup_extended_types_int8, type.getCompleteString().c_str());
+                break;
+            case EbtInt16:
+            case EbtUint16:
+                requireExtensions(loc, 1, &E_GL_EXT_shader_subgroup_extended_types_int16, type.getCompleteString().c_str());
+                break;
+            case EbtInt64:
+            case EbtUint64:
+                requireExtensions(loc, 1, &E_GL_EXT_shader_subgroup_extended_types_int64, type.getCompleteString().c_str());
+                break;
+            case EbtFloat16:
+                requireExtensions(loc, 1, &E_GL_EXT_shader_subgroup_extended_types_float16, type.getCompleteString().c_str());
+                break;
+            }
+        }
     }
 }
 
