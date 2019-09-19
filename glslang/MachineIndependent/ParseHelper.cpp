@@ -6941,6 +6941,12 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
         break;
 
     case EOpConstructUVec2:
+        if (node->getType().getBasicType() == EbtReference) {
+            requireExtensions(loc, 1, &E_GL_EXT_buffer_reference_uvec2, "reference conversion to uvec2");
+            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvPtrToUvec2, true, node,
+                type);
+            return newNode;
+        }
     case EOpConstructUVec3:
     case EOpConstructUVec4:
     case EOpConstructUint:
@@ -7098,7 +7104,15 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
             return newNode;
         // construct reference from uint64
         } else if (node->getType().isScalar() && node->getType().getBasicType() == EbtUint64) {
-            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUint64ToPtr, true, node, type);
+            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUint64ToPtr, true, node,
+                type);
+            return newNode;
+        // construct reference from uvec2
+        } else if (node->getType().isVector() && node->getType().getBasicType() == EbtUint &&
+                   node->getVectorSize() == 2) {
+            requireExtensions(loc, 1, &E_GL_EXT_buffer_reference_uvec2, "uvec2 conversion to reference");
+            TIntermTyped* newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpConvUvec2ToPtr, true, node,
+                type);
             return newNode;
         } else {
             return nullptr;

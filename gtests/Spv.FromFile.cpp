@@ -284,6 +284,7 @@ INSTANTIATE_TEST_CASE_P(
         "spv.bufferhandle7.frag",
         "spv.bufferhandle8.frag",
         "spv.bufferhandle9.frag",
+        "spv.bufferhandleUvec2.frag",
         "spv.bufferhandle_Error.frag",
         "spv.builtInXFB.vert",
         "spv.conditionalDemote.frag",

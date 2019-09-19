@@ -214,6 +214,7 @@ void TParseVersions::initializeExtensionBehavior()
     extensionBehavior[E_GL_EXT_fragment_invocation_density]             = EBhDisable;
     extensionBehavior[E_GL_EXT_buffer_reference]                        = EBhDisable;
     extensionBehavior[E_GL_EXT_buffer_reference2]                       = EBhDisable;
+    extensionBehavior[E_GL_EXT_buffer_reference_uvec2]                  = EBhDisable;
     extensionBehavior[E_GL_EXT_demote_to_helper_invocation]             = EBhDisable;
 
     extensionBehavior[E_GL_EXT_shader_16bit_storage]                    = EBhDisable;
@@ -404,6 +405,7 @@ void TParseVersions::getPreamble(std::string& preamble)
             "#define GL_EXT_fragment_invocation_density 1\n"
             "#define GL_EXT_buffer_reference 1\n"
             "#define GL_EXT_buffer_reference2 1\n"
+            "#define GL_EXT_buffer_reference_uvec2 1\n"
             "#define GL_EXT_demote_to_helper_invocation 1\n"
 
             // GL_KHR_shader_subgroup
@@ -833,7 +835,8 @@ void TParseVersions::updateExtensionBehavior(int line, const char* extension, co
         updateExtensionBehavior(line, "GL_KHR_shader_subgroup_basic", behaviorString);
     else if (strcmp(extension, "GL_NV_shader_subgroup_partitioned") == 0)
         updateExtensionBehavior(line, "GL_KHR_shader_subgroup_basic", behaviorString);
-    else if (strcmp(extension, "GL_EXT_buffer_reference2") == 0)
+    else if (strcmp(extension, "GL_EXT_buffer_reference2") == 0 ||
+             strcmp(extension, "GL_EXT_buffer_reference_uvec2") == 0)
         updateExtensionBehavior(line, "GL_EXT_buffer_reference", behaviorString);
     else if (strcmp(extension, "GL_NV_integer_cooperative_matrix") == 0)
         updateExtensionBehavior(line, "GL_NV_cooperative_matrix", behaviorString);
