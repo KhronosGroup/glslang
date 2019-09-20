@@ -2774,10 +2774,25 @@ bool TParseContext::builtInName(const TString& identifier)
 //
 bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, TFunction& function, TOperator op, TType& type)
 {
-    type.shallowCopy(function.getType());
+    // See if the constructor does not establish the main type, only requalifies
+    // it, in which case the type comes from the argument instead of from the
+    // constructor function.
+    switch (op) {
+    case EOpConstructNonuniform:
+        if (node != nullptr && node->getAsTyped() != nullptr) {
+            type.shallowCopy(node->getAsTyped()->getType());
+            type.getQualifier().makeTemporary();
+            type.getQualifier().nonUniform = true;
+        }
+        break;
+    default:
+        type.shallowCopy(function.getType());
+        break;
+    }
 
+    // See if it's a matrix
     bool constructingMatrix = false;
-    switch(op) {
+    switch (op) {
 #ifndef GLSLANG_WEB
     case EOpConstructTextureSampler:
         return constructorTextureSamplerError(loc, function);
@@ -2871,6 +2886,8 @@ bool TParseContext::constructorError(const TSourceLoc& loc, TIntermNode* node, T
             }
         }
     }
+    if (op == EOpConstructNonuniform)
+        constType = false;
 
 #ifndef GLSLANG_WEB
     switch (op) {
@@ -7093,8 +7110,7 @@ TIntermTyped* TParseContext::constructBuiltIn(const TType& type, TOperator op, T
 
     case EOpConstructNonuniform:
         // Make a nonuniform copy of node
-        newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpCopyObject, true, node, node->getType());
-        newNode->getWritableType().getQualifier().nonUniform = true;
+        newNode = intermediate.addBuiltInFunctionCall(node->getLoc(), EOpCopyObject, true, node, type);
         return newNode;
 
     case EOpConstructReference:
