@@ -98,7 +98,9 @@ namespace glslang {
             if (name == "format_rg8ui")         return EatFormatRg8ui;
             if (name == "format_r16ui")         return EatFormatR16ui;
             if (name == "format_r8ui")          return EatFormatR8ui;
-            return EatFormatUnknown;
+
+            if (name == "nonwritable")    return EatNonWritable;
+            if (name == "nonreadable")    return EatNonReadable;
         } else if (nameSpace.size() > 0)
             return EatNone;
 

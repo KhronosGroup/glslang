@@ -1993,6 +1993,9 @@ void HlslParseContext::transferTypeAttributes(const TSourceLoc& loc, const TAttr
         case EatFormatR8ui:         type.getQualifier().layoutFormat = ElfR8ui;         break;
         case EatFormatUnknown:      type.getQualifier().layoutFormat = ElfNone;         break;
 
+        case EatNonWritable:  type.getQualifier().readonly = true;   break;
+        case EatNonReadable:  type.getQualifier().writeonly = true;  break;
+
         default:
             if (! allowEntry)
                 warn(loc, "attribute does not apply to a type", "", "");

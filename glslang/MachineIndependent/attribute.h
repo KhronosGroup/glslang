@@ -116,7 +116,9 @@ namespace glslang {
         EatFormatRg8ui,
         EatFormatR16ui,
         EatFormatR8ui,
-        EatFormatUnknown
+        EatFormatUnknown,
+        EatNonWritable,
+        EatNonReadable
     };
 
     class TIntermAggregate;
